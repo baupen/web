@@ -1,0 +1,7 @@
+{% extends 'bundles/TwigBundle/Exception/error.html.twig' %}
+
+{% trans_default_domain "error" %}
+
+{% block additional_error_info %}
+    <p>{{ "index.500"|trans }} <a href="mailto:info@nodika.ch">{{ SUPPORT_EMAIL }}</a> </p>
+{% endblock %}

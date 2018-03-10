@@ -1,0 +1,18 @@
+{% extends "single_content_base.html.twig" %}
+
+{% block title %}{{ "index.title"|trans }}{% endblock %}
+{% block description %}{{ "index.description"|trans }}{% endblock %}
+
+{% trans_default_domain "backend_login" %}
+
+{% block single_content %}
+    {{ form_start(form, {"action" : path("backend_login_check")}) }}
+    {{ form_errors(form) }}
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+    {{ form_end(form) }}
+    <p>
+        <a href="{{ path("backend_login_recover") }}">{{ "index.forgot_password_action"|trans }}</a><br/>
+        <a href="{{ path("backend_register_index") }}">{{ "index.register_action"|trans }}</a>
+    </p>
+
+{% endblock %}

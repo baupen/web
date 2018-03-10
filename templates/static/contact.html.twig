@@ -1,0 +1,10 @@
+{% extends 'single_content_base.html.twig' %}
+
+{% block title %}{{ "contact.title"|trans }}{% endblock %}
+{% block description %}{{ "contact.description"|trans }}{% endblock %}
+
+{% trans_default_domain "static" %}
+
+{% block single_content %}
+    {{ form(form) }}
+{% endblock %}

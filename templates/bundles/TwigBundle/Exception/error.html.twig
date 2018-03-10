@@ -1,0 +1,21 @@
+{% extends 'single_content_base.html.twig' %}
+
+{% block title %}{{ "index.title"|trans }}{% endblock %}
+{% block description %}{{ "index.description"|trans }}{% endblock %}
+
+{% trans_default_domain "error" %}
+
+{% set show_login = false %}
+{% set show_help = false %}
+{% set show_dashboard = false %}
+{% set theme_color = globals_theme_color_error %}
+
+{% block single_content %}
+    {% if block('additional_error_info') is defined %}
+        {% set _block = block('additional_error_info') %}
+        {{ _block|raw }}
+    {% else %}
+        <p>{{ "index.fallback"|trans }}</p>
+    {% endif %}
+    <p><a href="{{ path("static_index") }}">{{ "index.back_to_homepage"|trans }}</a></p>
+{% endblock %}

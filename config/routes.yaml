@@ -1,0 +1,13 @@
+app:
+    resource: "../src/Controller/"
+    type:     annotation
+
+app.frontend:
+    resource: "../src/Controller/Frontend"
+    type:     annotation
+    prefix:   /frontend
+
+app.backend:
+    resource: "../src/Controller/Backend"
+    type:     annotation
+    prefix:   /backend

@@ -1,0 +1,28 @@
+menu:
+  menu: 'Menu'
+  admin:
+    add_organisation: 'neue erstellen'
+    add_member: 'neues erstellen'
+    add_event_line: 'neue erstellen'
+    add_event: 'neuer erstellen'
+    add_person: 'neuer erstellen'
+    administer: 'verwalten'
+  user:
+    advanced: 'Sonstiges'
+    about: "über nodika"
+    logout: "abmelden"
+    contact_support: "support kontaktieren"
+    add_own_organisation: 'Eigene Organisation erstellen'
+    assign_events: 'Termine zuweisen'
+    confirm_events: 'Termine bestätigen'
+    my_member_events: 'Termine meiner Praxis'
+    my_person_events: 'Eigene Termine'
+    search_events: 'Terminsuche'
+    offer_index: Termine tauschen
+
+navigation:
+  dashboard: 'zum Dashboard'
+  login: 'login'
+  go_back: 'zurück'
+  register: 'registrieren'
+  to_start_page: 'zur Startseite'

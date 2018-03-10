@@ -1,0 +1,25 @@
+/* general small utility classes */
+.full-width
+  width: 100%
+
+.full-height
+  height: 100%
+
+.gray-background, .default-color
+  background-color: $grey-light
+  color: $grey-dark
+  @include shadow()
+
+a.gray-background, a.default-color
+  &:hover
+    background-color: $grey-light
+
+.warning-color, .info-color, .error-color, .success-color
+  a
+    color: $grey-light
+    text-decoration: underline
+
+.blue-background, .info-color, .brown-background, .warning-color, .green-background, .success-color, .green2-background, .red-background, .error-color
+  color: $grey-light
+  &:hover, &:active, &:focus
+    color: $grey-light

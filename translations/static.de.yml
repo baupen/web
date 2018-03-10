@@ -1,0 +1,44 @@
+index:
+  title: 'example.ch'
+  description: 'Kurze Beschreibung der Seite'
+  login: 'Login'
+  login_description: 'Hier gelangen Sie zum Login'
+  register: 'Registrieren'
+  register_description: 'Noch keinen Account? Hier können Sie sich registrieren'
+  about: 'Über Nodika'
+  about_description: 'Erfahren Sie mehr über diese Webseite'
+  contact: 'Kontakt'
+  contact_description: 'Nehmen Sie bei Fragen Kontakt auf'
+
+introduction:
+  header: 'Überblick'
+  header_description: 'Das webbasierte Tool übernimmt folgende Funktionen'
+  paragraph_1: >
+    Funktion 1
+  paragraph_2: >
+    Funktion 2
+
+about:
+  title: 'Über example.ch'
+  description: 'Erfahren Sie mehr über diese Webseite'
+  features:
+    header: 'Funktionen'
+    header_description: >
+      Diese Webseite mach vieles
+    reason_1_name: 'Grund 1'
+    reason_1_description: 'Beschreibung dieses Grundes'
+
+contact:
+  title: 'Noch Fragen?'
+  description: 'Nehmen sie mit uns Kontakt auf'
+  success:
+    email_sent: 'Vielen Dank für die Kontaktaufnahme. Wir melden uns.'
+
+#register/check page
+register:
+  title: "Registrieren"
+  description: "Möchten Sie einen neuen Account erstellen?"
+  help_frontend_user: "Beschreibung frontend."
+  create_frontend_user: "frontend user erstellen"
+  help_backend_user: "Beschreibung backend."
+  create_backend_user: "backend user erstellen"

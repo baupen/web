@@ -1,0 +1,18 @@
+.base: &base
+  hostname: ftp.HOST.ch
+  user: USER
+  http_user: USER
+  branch: master
+  deploy_path: ~/www/deploy/symfony-template.ch/{{stage}}
+  sshOptions:
+    StrictHostKeyChecking: no
+
+dev:
+  <<: *base
+  stage: dev
+  branch: develop
+
+production:
+  <<: *base
+  stage: production
+  branch: master

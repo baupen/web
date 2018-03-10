@@ -1,0 +1,41 @@
+{% extends 'layout_base.html.twig' %}
+
+{% block title %}{{ "about.title"|trans }}{% endblock %}
+{% block description %}{{ "about.description"|trans }}{% endblock %}
+
+{% trans_default_domain "static" %}
+
+{% block content %}
+    <section class="introduction">
+        <div class="container index-container default-color">
+            <div class="row">
+                <div class="color-title col-md-4">
+                    <h2>{{ "introduction.header"|trans }}</h2>
+                    <p class="h2-description">{{ "introduction.header_description"|trans }}</p>
+                </div>
+                <div class="color-content offset-md-2 col-md-6">
+                    <p>{{ "introduction.paragraph_1"|trans }}</p>
+                    <p>{{ "introduction.paragraph_2"|trans }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="features">
+        <div class="container index-container default-color">
+            <div class="row">
+                <div class="color-title col-md-4">
+                    <h2>{{ "about.features.header"|trans }}</h2>
+                    <p class="h2-description">{{ "about.features.header_description"|trans }}</p>
+                </div>
+                <div class="color-content offset-md-2 col-md-6">
+                    <ul>
+                        <li>
+                            <b>{{ "about.features.reason_1_name"|trans }}:</b>
+                            {{ "about.features.reason_1_description"|trans }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

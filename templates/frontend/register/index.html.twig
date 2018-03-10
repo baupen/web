@@ -1,0 +1,10 @@
+{% extends "single_content_base.html.twig" %}
+
+{% block title %}{{ "index.title"|trans }}{% endblock %}
+{% block description %}{{ "index.description"|trans }}{% endblock %}
+
+{% trans_default_domain "frontend_register" %}
+
+{% block single_content %}
+    {{ form(form) }}
+{% endblock %}
