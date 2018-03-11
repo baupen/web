@@ -6,6 +6,7 @@
     "php": "^7.1",
     "ext-iconv": "*",
     "ext-pdo_sqlite": "*",
+    "deployer/deployer": "^6.1",
     "doctrine/doctrine-fixtures-bundle": "^3.0",
     "easycorp/easyadmin-bundle": "^1.17",
     "fzaninotto/faker": "^1.7",
@@ -34,7 +35,6 @@
   },
   "require-dev": {
     "codacy/coverage": "^1.4",
-    "deployer/deployer": "^6.1",
     "friendsofphp/php-cs-fixer": "^2.7",
     "symfony/browser-kit": "^4.0",
     "symfony/css-selector": "^4.0",

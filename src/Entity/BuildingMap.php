@@ -11,13 +11,15 @@
 
 namespace App\Entity;
 
+
+use App\Api\ApiSerializable;
 use App\Entity\Base\BaseEntity;
-use App\Entity\Traits\GuidTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\ThingTrait;
 use App\Enum\EmailType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * An Email is a sent email to the specified receivers.
@@ -26,10 +28,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\BuildingMapRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class BuildingMap extends BaseEntity
+class BuildingMap extends BaseEntity implements ApiSerializable
 {
     use IdTrait;
-    use GuidTrait;
     use ThingTrait;
 
     /**
@@ -96,5 +97,14 @@ class BuildingMap extends BaseEntity
     public function getMarkers()
     {
         return $this->markers;
+    }
+
+    /**
+     * remove all array collections, setting them to null
+     */
+    public function flattenDoctrineStructures()
+    {
+        $this->markers = null;
+        $this->building = $this->building->getId();
     }
 }

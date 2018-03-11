@@ -11,13 +11,12 @@
 
 namespace App\Entity;
 
+
+use App\Api\ApiSerializable;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\CommunicationTrait;
-use App\Entity\Traits\GuidTrait;
 use App\Entity\Traits\IdTrait;
-use App\Entity\Traits\PersonTrait;
 use App\Entity\Traits\ThingTrait;
-use App\Enum\EmailType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,10 +27,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\CraftsmanRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Craftsman extends BaseEntity
+class Craftsman extends BaseEntity implements ApiSerializable
 {
     use IdTrait;
-    use GuidTrait;
     use ThingTrait;
     use CommunicationTrait;
 
@@ -57,5 +55,13 @@ class Craftsman extends BaseEntity
     public function getMarkers()
     {
         return $this->markers;
+    }
+
+    /**
+     * remove all array collections, setting them to null
+     */
+    public function flattenDoctrineStructures()
+    {
+        $this->markers = null;
     }
 }

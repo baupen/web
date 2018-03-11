@@ -12,6 +12,7 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
+use App\Entity\AppUser;
 use App\Entity\BuildingMap;
 use App\Entity\Craftsman;
 use App\Entity\Marker;
@@ -28,16 +29,22 @@ class LoadMarkerData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        /* @var Marker[] $markers */
-        $markers = $this->loadSomeRandoms($manager);
 
         $faker = $this->getFaker();
         $craftsman = $manager->getRepository(Craftsman::class)->findAll();
         $buildingMaps = $manager->getRepository(BuildingMap::class)->findAll();
+        $appUsers = $manager->getRepository(AppUser::class)->findAll();
 
-        foreach ($markers as $marker) {
-            $marker->setCraftsman($faker->randomElement($craftsman));
-            $marker->setBuildingMap($faker->randomElement($buildingMaps));
+        foreach ($buildingMaps as $buildingMap) {
+            /* @var Marker[] $markers */
+            $markers = $this->loadSomeRandoms($manager);
+
+            foreach ($markers as $marker) {
+                $marker->setCraftsman($faker->randomElement($craftsman));
+                $marker->setBuildingMap($buildingMap);
+                $marker->setCreatedBy($faker->randomElement($appUsers));
+            }
+
         }
         $manager->flush();
     }
@@ -47,7 +54,7 @@ class LoadMarkerData extends BaseFixture
      */
     public function getOrder()
     {
-        return 1;
+        return 20;
     }
 
     /**
@@ -72,5 +79,14 @@ class LoadMarkerData extends BaseFixture
         $marker->setMarkYPercentage($marker->getFrameYPercentage() + $marker->getFrameYLength() * 0.5);
 
         return $marker;
+    }
+
+    /**
+     * @return Marker
+     */
+    public static function getSample()
+    {
+        $instance = new static();
+        return $instance->getAllRandomInstance();
     }
 }

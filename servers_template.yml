@@ -3,7 +3,7 @@
   user: USER
   http_user: USER
   branch: master
-  deploy_path: ~/www/deploy/symfony-template.ch/{{stage}}
+  deploy_path: ~/www/deploy/mangel.io/{{stage}}
   sshOptions:
     StrictHostKeyChecking: no
 

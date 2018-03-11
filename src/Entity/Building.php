@@ -11,9 +11,10 @@
 
 namespace App\Entity;
 
+
+use App\Api\ApiSerializable;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AddressTrait;
-use App\Entity\Traits\GuidTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\ThingTrait;
 use App\Enum\EmailType;
@@ -27,10 +28,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\BuildingRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Building extends BaseEntity
+class Building extends BaseEntity implements ApiSerializable
 {
     use IdTrait;
-    use GuidTrait;
     use ThingTrait;
     use AddressTrait;
 
@@ -40,6 +40,13 @@ class Building extends BaseEntity
      * @ORM\ManyToMany(targetEntity="App\Entity\AppUser", mappedBy="buildings")
      */
     private $appUsers;
+
+    /**
+     * @var BuildingMap[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\BuildingMap", mappedBy="building")
+     */
+    private $buildingMaps;
 
     /**
      * Building constructor.
@@ -57,4 +64,20 @@ class Building extends BaseEntity
         return $this->appUsers;
     }
 
+    /**
+     * @return BuildingMap[]|ArrayCollection
+     */
+    public function getBuildingMaps()
+    {
+        return $this->buildingMaps;
+    }
+
+    /**
+     * remove all array collections, setting them to null
+     */
+    public function flattenDoctrineStructures()
+    {
+        $this->appUsers = null;
+        $this->buildingMaps = null;
+    }
 }

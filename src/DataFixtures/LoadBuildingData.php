@@ -34,8 +34,8 @@ class LoadBuildingData extends BaseFixture
         $buildings = $this->loadSomeRandoms($manager);
         foreach ($buildings as $building) {
             foreach ($appUsers as $appUser) {
-                if (rand(0, 5) == 0) {
-                    $building->getAppUsers()->add($appUser);
+                if (rand(0, 1) == 0) {
+                    $appUser->getBuildings()->add($building);
                 }
             }
         }

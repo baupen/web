@@ -5,3 +5,4 @@ parameters:
     MAILER_URL: '%env(MAILER_URL)%'
     MAILER_SENDER: '%env(MAILER_SENDER)%'
     SUPPORT_EMAIL: '%env(SUPPORT_EMAIL)%'
+    PUBLIC_DIR: "%kernel.root_dir%/../public"

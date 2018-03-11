@@ -21,13 +21,13 @@ trait IdTrait
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(name="id", type="guid")
+     * @ORM\GeneratedValue(strategy="UUID")
      */
     private $id;
 
     /**
-     * @return int
+     * @return string
      */
     public function getId()
     {

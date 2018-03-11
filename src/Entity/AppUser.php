@@ -11,10 +11,9 @@
 
 namespace App\Entity;
 
+
+use App\Api\ApiSerializable;
 use App\Entity\Base\BaseEntity;
-use App\Entity\Traits\AddressTrait;
-use App\Entity\Traits\CommunicationTrait;
-use App\Entity\Traits\GuidTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\PersonTrait;
 use App\Entity\Traits\UserTrait;
@@ -30,10 +29,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Entity(repositoryClass="App\Repository\AppUserRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class AppUser extends BaseEntity
+class AppUser extends BaseEntity implements ApiSerializable
 {
     use IdTrait;
-    use GuidTrait;
     use PersonTrait;
 
     /**
@@ -182,5 +180,14 @@ class AppUser extends BaseEntity
     public function getMarkers()
     {
         return $this->markers;
+    }
+
+    /**
+     * remove all array collections, setting them to null
+     */
+    public function flattenDoctrineStructures()
+    {
+        $this->markers = null;
+        $this->buildings = null;
     }
 }

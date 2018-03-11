@@ -36,4 +36,14 @@ class LoginResponse extends BaseResponse
     {
         $this->user = $user;
     }
+
+    /**
+     * prepares the object to be serialized.
+     * removes unnecessary properties
+     */
+    public function prepareSerialization()
+    {
+        parent::prepareSerialization();
+        $this->user->flattenDoctrineStructures();
+    }
 }

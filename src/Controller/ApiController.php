@@ -11,26 +11,33 @@
 
 namespace App\Controller;
 
-use App\Api\Request\AuthenticationStatusRequest;
+
+use App\Api\ApiSerializable;
 use App\Api\Request\Base\BaseRequest;
+use App\Api\Request\DownloadFileRequest;
 use App\Api\Request\LoginRequest;
 use App\Api\Response\Base\BaseResponse;
 use App\Api\Response\LoginResponse;
+use App\Api\Request\SyncRequest;
+use App\Api\Response\SyncResponse;
 use App\Controller\Base\BaseDoctrineController;
 use App\Controller\Base\BaseFormController;
 use App\Entity\AppUser;
+use App\Entity\Building;
+use App\Entity\BuildingMap;
+use App\Entity\Craftsman;
 use App\Entity\FrontendUser;
+use App\Entity\Marker;
+use App\Entity\Traits\IdTrait;
 use App\Enum\ApiStatus;
-use App\Form\Model\ContactRequest\ContactRequestType;
-use App\Model\ContactRequest;
-use App\Service\EmailService;
-use Symfony\Bundle\FrameworkBundle\Tests\Functional\SerializerTest;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\FormInterface;
+use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -110,6 +117,147 @@ class ApiController extends BaseDoctrineController
     }
 
     /**
+     * @Route("/file/upload", name="api_file_upload")
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @return Response
+     */
+    public function fileUploadAction(Request $request, SerializerInterface $serializer)
+    {
+        if (!($content = $request->getContent())) {
+            return $this->failed(ApiStatus::EMPTY_REQUEST);
+        }
+
+        /* @var BaseRequest $authenticationStatusRequest */
+        $authenticationStatusRequest = $serializer->deserialize($content, BaseRequest::class, "json");
+
+        $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["authenticationToken" => $authenticationStatusRequest->getAuthenticationToken()]);
+        if ($user === null) {
+            return $this->failed(ApiStatus::INVALID_AUTHENTICATION_TOKEN);
+        }
+
+        foreach ($request->files->all() as $key => $file) {
+            /* @var UploadedFile $file */
+            if (!$file->move($this->getParameter("PUBLIC_DIR") . "/upload")) {
+                return $this->failed(ApiStatus::INVALID_FILE);
+            }
+            $marker = $this->getDoctrine()->getRepository(Marker::class)->find($key);
+            $marker->setImageFileName($file->getFilename());
+            $this->fastSave($marker);
+        }
+
+        return $this->json(new BaseResponse());
+    }
+
+    /**
+     * @Route("/file/download", name="api_file_download")
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @return Response
+     */
+    public function fileDownloadAction(Request $request, SerializerInterface $serializer)
+    {
+        if (!($content = $request->getContent())) {
+            return $this->failed(ApiStatus::EMPTY_REQUEST);
+        }
+
+        /* @var DownloadFileRequest $downloadFileRequest */
+        $downloadFileRequest = $serializer->deserialize($content, DownloadFileRequest::class, "json");
+
+        $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["authenticationToken" => $downloadFileRequest->getAuthenticationToken()]);
+        if ($user === null) {
+            return $this->failed(ApiStatus::INVALID_AUTHENTICATION_TOKEN);
+        }
+
+        $marker = $this->getDoctrine()->getRepository(Marker::class)->findOneBy(["imageFileName" => $downloadFileRequest->getFileName()]);
+        if ($marker === null) {
+            return $this->failed(ApiStatus::INVALID_FILE);
+        }
+
+        return $this->file($this->getParameter("PUBLIC_DIR") . "/upload/" . $marker->getImageFileName());
+    }
+
+    /**
+     * @Route("/sync", name="api_sync")
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @return Response
+     */
+    public function syncAction(Request $request, SerializerInterface $serializer)
+    {
+        if (!($content = $request->getContent())) {
+            return $this->failed(ApiStatus::EMPTY_REQUEST);
+        }
+
+        /* @var SyncRequest $syncRequest */
+        $syncRequest = $serializer->deserialize($content, SyncRequest::class, "json");
+
+        $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["authenticationToken" => $syncRequest->getAuthenticationToken()]);
+        if ($user === null) {
+            return $this->failed(ApiStatus::INVALID_AUTHENTICATION_TOKEN);
+        }
+
+        $foundMap = null;
+
+        //replace entities
+        if (is_array($syncRequest->getMarkers())) {
+            foreach ($syncRequest->getMarkers() as $marker) {
+                //replace guid with objects
+                $buildingMap = $this->getDoctrine()->getRepository(BuildingMap::class)->find($marker["buildingMap"]);
+                $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->find($marker["craftsman"]);
+
+                //unset properties which are not of the correct type
+                unset($marker["buildingMap"]);
+                unset($marker["craftsman"]);
+
+                //if id forgotten; add one here
+                if (!isset($marker["id"])) {
+                    $marker["id"] = strtoupper(Uuid::uuid4());
+                }
+
+                /* @var Marker $markerEntity */
+                $markerEntity = $serializer->deserialize(json_encode((object)$marker), Marker::class, "json");
+                $markerEntity->setCreatedBy($user);
+                $markerEntity->setBuildingMap($buildingMap);
+                $markerEntity->setCraftsman($craftsman);
+                $markerEntity->setContent("aaaaaaaaaaaa");
+                $this->fastSave($markerEntity);
+
+
+                $foundMap = $buildingMap;
+            }
+        }
+
+        $syncResponse = new SyncResponse();
+        $syncResponse->setUser($user);
+        $syncResponse->setBuildings($this->getDoctrine()->getRepository(Building::class)->findByAppUser($user));
+        $syncResponse->setCraftsmen($this->getDoctrine()->getRepository(Craftsman::class)->findAll());
+
+        $maps = [];
+        $syncResponse->setBuildingMaps([]);
+        foreach ($syncResponse->getBuildings() as $building) {
+            $maps = array_merge($building->getBuildingMaps()->toArray(), $syncResponse->getBuildingMaps());
+        }
+        $syncResponse->setBuildingMaps($maps);
+
+        $markers = [];
+        $syncResponse->setMarkers([]);
+        dump("here");
+        foreach ($syncResponse->getBuildingMaps() as $buildingMap) {
+            $markers = array_merge($buildingMap->getMarkers()->toArray(), $syncResponse->getMarkers());
+            if ($foundMap != null && $foundMap->getId() == $buildingMap->getId()) {
+                dump("found map");
+            }
+        }
+        $syncResponse->setMarkers($markers);
+
+        return $this->json($syncResponse);
+    }
+
+    /**
      * @param ApiStatus|int $apiError
      * @return JsonResponse
      */
@@ -120,5 +268,38 @@ class ApiController extends BaseDoctrineController
         $response->setApiErrorMessage(ApiStatus::getTranslationForValue($apiError, $this->get("translator")));
 
         return $this->json($response);
+    }
+
+    /**
+     * Returns a JsonResponse that uses the serializer component if enabled, or json_encode.
+     *
+     * @final
+     * @param $data
+     * @param int $status
+     * @param array $headers
+     * @param array $context
+     * @return JsonResponse
+     */
+    protected function json($data, int $status = 200, array $headers = array(), array $context = array()): JsonResponse
+    {
+        $normalizer = new ObjectNormalizer();
+        $normalizer->setCircularReferenceLimit(0);
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            /* @var IdTrait $object */
+            return $object->getId();
+        });
+
+        $serializer = new Serializer([$normalizer], [new JsonEncoder()]);
+
+        if ($data instanceof BaseResponse) {
+            $data->prepareSerialization();
+
+        }
+
+        $json = $serializer->serialize($data, 'json', array_merge(array(
+            'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,
+        ), $context));
+
+        return new JsonResponse($json, $status, $headers, true);
     }
 }

@@ -11,8 +11,9 @@
 
 namespace App\Entity;
 
+
+use App\Api\ApiSerializable;
 use App\Entity\Base\BaseEntity;
-use App\Entity\Traits\GuidTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use App\Enum\EmailType;
@@ -25,10 +26,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\MarkerRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Marker extends BaseEntity
+class Marker extends BaseEntity implements ApiSerializable
 {
     use IdTrait;
-    use GuidTrait;
     use TimeTrait;
 
     /**
@@ -90,7 +90,7 @@ class Marker extends BaseEntity
     /**
      * @var Craftsman
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="makers")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="markers")
      */
     private $craftsman;
 
@@ -305,5 +305,15 @@ class Marker extends BaseEntity
     public function setCreatedBy($createdBy)
     {
         $this->createdBy = $createdBy;
+    }
+
+    /**
+     * remove all array collections, setting them to null
+     */
+    public function flattenDoctrineStructures()
+    {
+        $this->buildingMap = $this->buildingMap->getId();
+        $this->craftsman = $this->craftsman->getId();
+        $this->createdBy = $this->createdBy->getId();
     }
 }

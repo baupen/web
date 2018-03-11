@@ -9,6 +9,7 @@
 namespace App\Api\Response\Base;
 
 
+use App\Api\ApiSerializable;
 use App\Enum\ApiStatus;
 
 class BaseResponse
@@ -53,5 +54,13 @@ class BaseResponse
     public function setApiErrorMessage($apiErrorMessage)
     {
         $this->apiErrorMessage = $apiErrorMessage;
+    }
+
+    /**
+     * prepare this object to be used with the serializer
+     */
+    public function prepareSerialization()
+    {
+        //nothing to do; override this in the subclass if needed
     }
 }

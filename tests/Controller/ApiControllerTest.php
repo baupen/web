@@ -8,14 +8,15 @@
 
 namespace App\Tests\Controller;
 
-use App\Api\Response\Normalizers\LoginResponseNormalizer;
 use App\Api\Response\LoginResponse;
+use App\Api\Request\SyncRequest;
+use App\Api\Response\SyncResponse;
+use App\DataFixtures\LoadMarkerData;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Base\FixturesTestCase;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Client;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ApiControllerTest extends FixturesTestCase
 {
@@ -57,9 +58,16 @@ class ApiControllerTest extends FixturesTestCase
         $checkResponse(ApiStatus::WRONG_PASSWORD);
 
         $doRequest("j", "asdf");
+
         $checkResponse(ApiStatus::SUCCESSFUL);
     }
 
+    /**
+     * gets an authentication token
+     *
+     * @param Client $client
+     * @return string
+     */
     private function getAuthenticationToken(Client $client)
     {
         $serializer = $client->getContainer()->get("serializer");
@@ -85,7 +93,7 @@ class ApiControllerTest extends FixturesTestCase
     }
 
     /**
-     * tests the login functionality
+     * tests the authentication works properly
      */
     public function testAuthenticationStatus()
     {
@@ -130,5 +138,170 @@ class ApiControllerTest extends FixturesTestCase
 
         $doRequest($realToken);
         $checkResponse(ApiStatus::INVALID_AUTHENTICATION_TOKEN);
+    }
+
+    private function getSomeMarkerId(Client $client, $authenticationToken)
+    {
+        $serializer = $client->getContainer()->get("serializer");
+        $client->request(
+            'POST',
+            '/api/sync',
+            [],
+            [],
+            ["CONTENT_TYPE" => "application/json"],
+            '{"authenticationToken":"' . $authenticationToken . '"}'
+        );
+
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+
+        /* @var SyncResponse $syncReponse */
+        $syncReponse = $serializer->deserialize($response->getContent(), SyncResponse::class, "json");
+        $this->assertEquals(ApiStatus::SUCCESSFUL, $syncReponse->getApiStatus());
+        return $syncReponse->getMarkers()[0]["id"];
+    }
+
+    /**
+     * tests the authentication works properly
+     */
+    public function testSyncPull()
+    {
+        $client = static::createClient();
+        $serializer = $client->getContainer()->get("serializer");
+
+        $realToken = $this->getAuthenticationToken($client);
+
+        $client->request(
+            'POST',
+            '/api/sync',
+            [],
+            [],
+            ["CONTENT_TYPE" => "application/json"],
+            '{"authenticationToken":"' . $realToken . '"}'
+        );
+
+        $response = $client->getResponse();
+        file_put_contents("example.html", $response->getContent());
+        $this->assertEquals(200, $response->getStatusCode());
+
+        /* @var SyncResponse $syncReponse */
+        $syncReponse = $serializer->deserialize($response->getContent(), SyncResponse::class, "json");
+        $this->assertEquals(ApiStatus::SUCCESSFUL, $syncReponse->getApiStatus());
+
+        $this->assertTrue(count($syncReponse->getBuildings()) > 0);
+        $this->assertTrue(count($syncReponse->getCraftsmen()) > 0);
+        $this->assertTrue(count($syncReponse->getBuildingMaps()) > 0);
+        $this->assertTrue(count($syncReponse->getMarkers()) > 0);
+        $this->assertTrue($syncReponse->getUser() != null);
+    }
+
+    /**
+     * tests the authentication works properly
+     */
+    public function testSyncPush()
+    {
+        $client = static::createClient();
+        $serializer = $client->getContainer()->get("serializer");
+
+        $realToken = $this->getAuthenticationToken($client);
+
+        $client->request(
+            'POST',
+            '/api/sync',
+            [],
+            [],
+            ["CONTENT_TYPE" => "application/json"],
+            '{"authenticationToken":"' . $realToken . '"}'
+        );
+
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+
+        /* @var SyncResponse $syncReponse */
+        $syncReponse = $serializer->deserialize($response->getContent(), SyncResponse::class, "json");
+        $this->assertEquals(ApiStatus::SUCCESSFUL, $syncReponse->getApiStatus());
+
+        $craftManGuid = $syncReponse->getCraftsmen()[0]["id"];
+        $buildingMapGuid = $syncReponse->getBuildingMaps()[0]["id"];
+
+        $marker = LoadMarkerData::getSample();
+        $marker->setCraftsman($craftManGuid);
+        $marker->setBuildingMap($buildingMapGuid);
+
+        $syncRequest = new SyncRequest();
+        $syncRequest->setMarkers([$marker]);
+        $syncRequest->setAuthenticationToken($realToken);
+
+        $client->request(
+            'POST',
+            '/api/sync',
+            [],
+            [],
+            ["CONTENT_TYPE" => "application/json"],
+            $serializer->serialize($syncRequest, "json")
+        );
+
+        $secondResponse = $client->getResponse();
+        file_put_contents("example.html", $secondResponse->getContent());
+
+        $this->assertEquals(200, $secondResponse->getStatusCode());
+
+        /* @var SyncResponse $secondSyncReponse */
+        $secondSyncReponse = $serializer->deserialize($secondResponse->getContent(), SyncResponse::class, "json");
+        $this->assertEquals(ApiStatus::SUCCESSFUL, $secondSyncReponse->getApiStatus());
+
+        $this->assertTrue(count($secondSyncReponse->getMarkers()) - 1 == count($syncReponse->getMarkers()));
+    }
+
+    /**
+     * tests upload/download functionality
+     */
+    public function testFileUploadDownload()
+    {
+        $client = static::createClient();
+        $serializer = $client->getContainer()->get("serializer");
+
+        $realToken = $this->getAuthenticationToken($client);
+
+        $markerId = $this->getSomeMarkerId($client, $realToken);
+
+        $filePath = __DIR__ . "/../Files/sample.jpg";
+        $copyPath = __DIR__ . "/../Files/sample_2.jpg";
+        copy($filePath, $copyPath);
+
+        $file = new UploadedFile(
+            $copyPath,
+            'upload.jpg',
+            'image/jpeg'
+        );
+        $client->request(
+            'POST',
+            '/api/file/upload',
+            [],
+            [$markerId => $file],
+            ["CONTENT_TYPE" => "application/json"],
+            '{"authenticationToken":"' . $realToken . '"}'
+        );
+
+
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+
+        /* @var SyncResponse $syncReponse */
+        $syncReponse = $serializer->deserialize($response->getContent(), SyncResponse::class, "json");
+        $this->assertEquals(ApiStatus::SUCCESSFUL, $syncReponse->getApiStatus());
+
+
+        $client->request(
+            'POST',
+            '/api/file/download',
+            [],
+            [],
+            ["CONTENT_TYPE" => "application/json"],
+            '{"authenticationToken":"' . $realToken . '", "fileName": "sample_2.jpg"}'
+        );
+
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
     }
 }

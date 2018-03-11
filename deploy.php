@@ -11,7 +11,10 @@
 
 namespace Deployer;
 
-require 'vendor/deployer/deployer/recipe/symfony-flex.php';
+require 'vendor/deployer/deployer/recipe/symfony4.php';
+
+set('bin_dir', 'bin');
+set('var_dir', 'var');
 
 // Configuration
 set('repository', 'git@gitlab.com:MaengelApp/mangel.io.git');
@@ -19,6 +22,7 @@ set('shared_files', array_merge(get('shared_files'), ['var/data.sqlite']));
 set('shared_dirs', array_merge(get('shared_dirs'), ['public/upload']));
 set('symfony_env_file', '.env');
 set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader --no-scripts');
+set('env_file_path', ".env");
 
 // import servers
 inventory('servers.yml');
@@ -42,12 +46,6 @@ task('frontend:build', function () {
     runLocally('rsync -azP public/dist {{user}}@{{hostname}}:{{release_path}}/public');
 })->desc('Build frontend assets');
 
-// Symfony console bin
-set('bin/console', function () {
-    $env = get('env_file_path');
-
-    return sprintf('--version && cd {{release_path}} && set -a && source '.$env.' && set +a && {{bin/php}} {{release_path}}/%s/console', trim(get('bin_dir'), '/'));
-});
 
 // kill php processes to ensure symlinks are refreshed
 task('deploy:refresh_symlink', function () {
@@ -56,6 +54,6 @@ task('deploy:refresh_symlink', function () {
 //frontend stuff
 after('deploy:vendors', 'frontend:build');
 // migrations
-after('deploy:writable', 'database:migrate');
+after('deploy:vendors', 'database:migrate');
 // refresh symlink
 after('deploy:symlink', 'deploy:refresh_symlink');
