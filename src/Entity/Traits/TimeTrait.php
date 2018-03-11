@@ -36,7 +36,7 @@ trait TimeTrait
     /**
      * @ORM\PrePersist()
      */
-    public function prePersist()
+    public function prePersistTime()
     {
         $this->createdAt = new \DateTime();
         $this->lastChangedAt = new \DateTime();
@@ -45,7 +45,7 @@ trait TimeTrait
     /**
      * @ORM\PreUpdate()
      */
-    public function preUpdate()
+    public function preUpdateTime()
     {
         $this->lastChangedAt = new \DateTime();
     }

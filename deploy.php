@@ -14,7 +14,7 @@ namespace Deployer;
 require 'vendor/deployer/deployer/recipe/symfony-flex.php';
 
 // Configuration
-set('repository', 'git@github.com:famoser/symfony-template.git');
+set('repository', 'git@gitlab.com:MaengelApp/mangel.io.git');
 set('shared_files', array_merge(get('shared_files'), ['var/data.sqlite']));
 set('shared_dirs', array_merge(get('shared_dirs'), ['public/upload']));
 set('symfony_env_file', '.env');
@@ -28,10 +28,10 @@ set('default_stage', 'dev');
 //only keep two releases
 set('keep_releases', 2);
 
-//use php 7.1
+//use php 7.2
 set(
     'bin/php',
-    '/usr/local/php71/bin/php'
+    '/usr/local/php72/bin/php'
 );
 
 //build yarn stuff & upload

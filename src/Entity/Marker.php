@@ -12,7 +12,9 @@
 namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
+use App\Entity\Traits\GuidTrait;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\TimeTrait;
 use App\Enum\EmailType;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -20,12 +22,14 @@ use Doctrine\ORM\Mapping as ORM;
  * An Email is a sent email to the specified receivers.
  *
  * @ORM\Table
- * @ORM\Entity(repositoryClass="App\Repository\EmailRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\MarkerRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class Marker extends BaseEntity
 {
     use IdTrait;
+    use GuidTrait;
+    use TimeTrait;
 
     /**
      * @var int
@@ -96,6 +100,13 @@ class Marker extends BaseEntity
      * @ORM\ManyToOne(targetEntity="App\Entity\BuildingMap", inversedBy="markers")
      */
     private $buildingMap;
+
+    /**
+     * @var AppUser
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\AppUser", inversedBy="markers")
+     */
+    private $createdBy;
 
     /**
      * @var string
@@ -278,5 +289,21 @@ class Marker extends BaseEntity
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return AppUser
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * @param AppUser $createdBy
+     */
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
     }
 }

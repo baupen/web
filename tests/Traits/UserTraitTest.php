@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\AppBundle\Traits;
+namespace App\Tests\Traits;
 
 use App\Entity\FrontendUser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;

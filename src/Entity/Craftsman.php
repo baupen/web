@@ -13,6 +13,7 @@ namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\CommunicationTrait;
+use App\Entity\Traits\GuidTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\PersonTrait;
 use App\Entity\Traits\ThingTrait;
@@ -24,12 +25,13 @@ use Doctrine\ORM\Mapping as ORM;
  * An Email is a sent email to the specified receivers.
  *
  * @ORM\Table
- * @ORM\Entity(repositoryClass="App\Repository\EmailRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\CraftsmanRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class Craftsman extends BaseEntity
 {
     use IdTrait;
+    use GuidTrait;
     use ThingTrait;
     use CommunicationTrait;
 

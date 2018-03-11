@@ -14,9 +14,11 @@ namespace App\Entity;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\CommunicationTrait;
+use App\Entity\Traits\GuidTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\PersonTrait;
 use App\Entity\Traits\UserTrait;
+use App\Enum\MarkerType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Migrations\Configuration\ArrayConfiguration;
 use Doctrine\ORM\Mapping as ORM;
@@ -31,6 +33,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class AppUser extends BaseEntity
 {
     use IdTrait;
+    use GuidTrait;
     use PersonTrait;
 
     /**
@@ -47,6 +50,12 @@ class AppUser extends BaseEntity
      */
     private $passwordHash;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text")
+     */
+    private $authenticationToken;
 
     /**
      * @var string
@@ -62,11 +71,19 @@ class AppUser extends BaseEntity
     private $buildings;
 
     /**
+     * @var Marker[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Marker", mappedBy="createdBy")
+     */
+    private $markers;
+
+    /**
      * constructor.
      */
     public function __construct()
     {
         $this->buildings = new ArrayCollection();
+        $this->markers = new ArrayCollection();
     }
 
     /**
@@ -123,5 +140,47 @@ class AppUser extends BaseEntity
     public function setPassword()
     {
         $this->passwordHash = hash("sha256", $this->plainPassword);
+    }
+
+    /**
+     * sets a new authentication token
+     */
+    public function setAuthenticationToken()
+    {
+        $newHash = '';
+        //0-9, A-Z, a-z
+        $allowedRanges = [[48, 57], [65, 90], [97, 122]];
+        for ($i = 0; $i < 20; ++$i) {
+            $rand = mt_rand(20, 160);
+            $allowed = false;
+            for ($j = 0; $j < count($allowedRanges); ++$j) {
+                if ($allowedRanges[$j][0] <= $rand && $allowedRanges[$j][1] >= $rand) {
+                    $allowed = true;
+                }
+            }
+            if ($allowed) {
+                $newHash .= chr($rand);
+            } else {
+                --$i;
+            }
+        }
+
+        $this->authenticationToken = $newHash;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthenticationToken()
+    {
+        return $this->authenticationToken;
+    }
+
+    /**
+     * @return Marker[]|ArrayCollection
+     */
+    public function getMarkers()
+    {
+        return $this->markers;
     }
 }

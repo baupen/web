@@ -12,6 +12,7 @@
 namespace App\Enum\Base;
 
 use ReflectionClass;
+use Symfony\Component\Translation\TranslatorInterface;
 
 abstract class BaseEnum
 {
@@ -23,8 +24,21 @@ abstract class BaseEnum
     public static function getChoicesForBuilder()
     {
         $elem = new static();
-
         return $elem->getChoicesForBuilderInternal();
+    }
+
+    /**
+     * returns a translation string for the passed enum value.
+     *
+     * @param $enumValue
+     *
+     * @param TranslatorInterface $translator
+     * @return string
+     */
+    public static function getTranslationForValue($enumValue, TranslatorInterface $translator)
+    {
+        $elem = new static();
+        return $elem->getTranslationForValueInternal($enumValue, $translator);
     }
 
     /**
@@ -44,7 +58,7 @@ abstract class BaseEnum
      *
      * @return array
      */
-    protected function getChoicesForBuilderInternal()
+    private function getChoicesForBuilderInternal()
     {
         try {
             $res = [];
@@ -66,9 +80,10 @@ abstract class BaseEnum
      *
      * @param $enumValue
      *
+     * @param TranslatorInterface $translator
      * @return bool|string
      */
-    protected function getTranslationForValueInternal($enumValue)
+    private function getTranslationForValueInternal($enumValue, TranslatorInterface $translator)
     {
         try {
             $reflection = new ReflectionClass(get_class($this));
@@ -76,26 +91,12 @@ abstract class BaseEnum
 
             foreach ($choices as $name => $value) {
                 if ($value === $enumValue) {
-                    return strtolower($name);
+                    $translator->trans(strtolower($name), [], $this->camelCaseToTranslation($reflection->getShortName()));
                 }
             }
         } catch (\ReflectionException $e) {
         }
 
         return "";
-    }
-
-    /**
-     * returns a translation string for the passed enum value.
-     *
-     * @param $enumValue
-     *
-     * @return string
-     */
-    public static function getTranslationForValue($enumValue)
-    {
-        $elem = new static();
-
-        return $elem->getTranslationForValueInternal($enumValue);
     }
 }

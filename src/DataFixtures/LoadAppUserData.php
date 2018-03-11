@@ -35,6 +35,7 @@ class LoadAppUserData extends BaseFixture
         $testAppUser->setPlainPassword("asdf");
         $testAppUser->setIdentifier("j");
         $appUsers[] = $testAppUser;
+        $manager->persist($testAppUser);
 
         foreach ($appUsers as $appUser) {
             $appUser->setPassword();
@@ -59,6 +60,7 @@ class LoadAppUserData extends BaseFixture
         $appUser = new AppUser();
         $appUser->setPlainPassword($faker->asciify());
         $appUser->setIdentifier($faker->asciify());
+        $appUser->setAuthenticationToken();
         $this->fillRandomPerson($appUser);
 
         return $appUser;

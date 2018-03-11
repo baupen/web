@@ -53,18 +53,21 @@ if you're developing in the backend:
  - `php bin/console server:run` #starts the symfony server
  
 if you're developing the frontend (css/js), execute afterwards:
- - `gulp watch` #serves as a proxy between the symfony server & the webpage displayed in the browser
- - go to the webpage display in the console from gulp, propably http://localhost:3000/
+ - `yarn encore dev-server` #serves as a proxy between the symfony server & the webpage displayed in the browser
  - edit files in web/assets/sass or web/assets/js, save them to see the change instantly in the browser
  - test error templates inside TwigBundle/views by accessing `/_error/404` and `/_error/500`
  
 if you want to login as an admin
  - go to /login
- - use the user `info@nodika.ch` with pass `asdf1234`
+ - use the user `info@mangel.io` with pass `asdf1234`
  
 if you've changed the Entities and need to adapt the database
  - `php bin/console doctrine:migrations:diff` to generate the migration class
  - `php bin/console doctrine:migrations:migrate` to migrate db to the newest version
+ 
+if you want to test
+ - execute ` ./vendor/bin/simple-phpunit`, ensure you have the `composer.phar` and ` wget` installed
+
  
 if you want to deploy
  - rename `servers_template.yml` to `servers.yml`, correct entries

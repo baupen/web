@@ -98,13 +98,17 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
      *
      * @param $count
      * @param ObjectManager $manager
+     * @return array
      */
     protected function loadSomeRandoms(ObjectManager $manager, $count = 5)
     {
+        $res = [];
         for ($i = 0; $i < $count; ++$i) {
             $instance = $this->getAllRandomInstance();
+            $res[] = $instance;
             $manager->persist($instance);
         }
+        return $res;
     }
 
     /**

@@ -11,95 +11,87 @@
 
 namespace App\Controller;
 
+use App\Api\Request\LoginRequest;
+use App\Api\Response\Base\BaseResponse;
+use App\Api\Response\LoginResponse;
+use App\Controller\Base\BaseDoctrineController;
 use App\Controller\Base\BaseFormController;
+use App\Entity\AppUser;
 use App\Entity\FrontendUser;
+use App\Enum\ApiStatus;
 use App\Form\Model\ContactRequest\ContactRequestType;
 use App\Model\ContactRequest;
 use App\Service\EmailService;
+use Symfony\Bundle\FrameworkBundle\Tests\Functional\SerializerTest;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * @Route("/api", name="static_index")
+ * @Route("/api")
  *
  * @return Response
  */
-class ApiController extends BaseFormController
+class ApiController extends BaseDoctrineController
 {
-    /**
-     * @Route("/", name="static_index")
-     *
-     * @return Response
-     */
-    public function indexAction()
-    {
-        if ($this->getUser() instanceof FrontendUser) {
-            return $this->redirectToRoute('frontend_dashboard_index');
-        }
 
-        return $this->render('static/index.html.twig');
+    /**
+     * inject the translator service
+     *
+     * @return array
+     */
+    public static function getSubscribedServices()
+    {
+        return parent::getSubscribedServices() + ['translator' => TranslatorInterface::class];
     }
 
     /**
-     * @Route("/register", name="static_register")
-     *
-     * @return FormInterface|Response
-     */
-    public function registerCheckAction()
-    {
-        return $this->render('static/register_check.html.twig');
-    }
-
-    /**
-     * @Route("/about", name="static_about")
-     *
-     * @return Response
-     */
-    public function aboutAction()
-    {
-        $arr = [];
-        return $this->render('static/about.html.twig', $arr);
-    }
-
-    /**
-     * @Route("/contact", name="static_contact")
+     * @Route("/login", name="api_login")
      *
      * @param Request $request
-     * @param TranslatorInterface $translator
-     * @param EmailService $emailService
-     *
+     * @param SerializerInterface $serializer
      * @return Response
      */
-    public function contactAction(Request $request, TranslatorInterface $translator, EmailService $emailService)
+    public function loginAction(Request $request, SerializerInterface $serializer)
     {
-        $arr = [];
-        $contactRequest = new ContactRequest();
-        $form = $this->handleForm(
-            $this->createForm(ContactRequestType::class, $contactRequest)
-                ->add("form.send", SubmitType::class),
-            $request,
-            function () use ($contactRequest, $translator, $emailService) {
-                /* @var FormInterface $form */
-                $emailService->sendTextEmail(
-                    $this->getParameter('SUPPORT_EMAIL'),
-                    'Kontaktanfrage von nodika',
-                    "Sie haben eine Kontaktanfrage auf nodika erhalten: \n" .
-                    "\nEmail: " . $contactRequest->getEmail() .
-                    "\nName: " . $contactRequest->getName() .
-                    "\nNachricht: " . $contactRequest->getMessage()
-                );
+        if (!($content = $request->getContent())) {
+            return $this->failed(ApiStatus::EMPTY_REQUEST);
+        }
+        /* @var LoginRequest $loginRequest */
+        $loginRequest = $serializer->deserialize($content, LoginRequest::class, "json");
 
-                $this->displaySuccess($translator->trans('contact.success.email_sent', [], 'static'));
+        $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["identifier" => $loginRequest->getIdentifier()]);
+        if ($user === null) {
+            return $this->failed(ApiStatus::UNKNOWN_IDENTIFIER);
+        }
+        if ($user->getPasswordHash() !== $loginRequest->getPasswordHash()) {
+            return $this->failed(ApiStatus::WRONG_PASSWORD);
+        }
 
-                return $this->createForm(ContactRequestType::class);
-            }
-        );
-        $arr['form'] = $form->createView();
+        $user->setAuthenticationToken();
+        $this->fastSave($user);
 
-        return $this->render('static/contact.html.twig', $arr);
+        $loginResponse = new LoginResponse();
+        $loginResponse->setUser($user);
+        return $this->json($loginResponse);
+    }
+
+    /**
+     * @param ApiStatus|int $apiError
+     * @return JsonResponse
+     */
+    private function failed($apiError)
+    {
+        $response = new BaseResponse();
+        $response->setApiStatus($apiError);
+        $response->setApiErrorMessage(ApiStatus::getTranslationForValue($apiError, $this->get("translator")));
+
+        return $this->json($response);
     }
 }

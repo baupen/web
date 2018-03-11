@@ -13,6 +13,7 @@ namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AddressTrait;
+use App\Entity\Traits\GuidTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\ThingTrait;
 use App\Enum\EmailType;
@@ -23,12 +24,13 @@ use Doctrine\ORM\Mapping as ORM;
  * An Email is a sent email to the specified receivers.
  *
  * @ORM\Table
- * @ORM\Entity(repositoryClass="App\Repository\EmailRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\BuildingRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class Building extends BaseEntity
 {
     use IdTrait;
+    use GuidTrait;
     use ThingTrait;
     use AddressTrait;
 
