@@ -11,6 +11,8 @@
 
 namespace App\Controller;
 
+use App\Api\Request\AuthenticationStatusRequest;
+use App\Api\Request\Base\BaseRequest;
 use App\Api\Request\LoginRequest;
 use App\Api\Response\Base\BaseResponse;
 use App\Api\Response\LoginResponse;
@@ -63,6 +65,7 @@ class ApiController extends BaseDoctrineController
         if (!($content = $request->getContent())) {
             return $this->failed(ApiStatus::EMPTY_REQUEST);
         }
+
         /* @var LoginRequest $loginRequest */
         $loginRequest = $serializer->deserialize($content, LoginRequest::class, "json");
 
@@ -80,6 +83,30 @@ class ApiController extends BaseDoctrineController
         $loginResponse = new LoginResponse();
         $loginResponse->setUser($user);
         return $this->json($loginResponse);
+    }
+
+    /**
+     * @Route("/authentication_status", name="api_authentication_status")
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @return Response
+     */
+    public function authenticationStatusAction(Request $request, SerializerInterface $serializer)
+    {
+        if (!($content = $request->getContent())) {
+            return $this->failed(ApiStatus::EMPTY_REQUEST);
+        }
+
+        /* @var BaseRequest $authenticationStatusRequest */
+        $authenticationStatusRequest = $serializer->deserialize($content, BaseRequest::class, "json");
+
+        $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["authenticationToken" => $authenticationStatusRequest->getAuthenticationToken()]);
+        if ($user === null) {
+            return $this->failed(ApiStatus::INVALID_AUTHENTICATION_TOKEN);
+        }
+
+        return $this->json(new BaseResponse());
     }
 
     /**

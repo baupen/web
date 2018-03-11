@@ -23,6 +23,8 @@
     "symfony/framework-bundle": "^4.0",
     "symfony/monolog-bundle": "^3.1",
     "symfony/orm-pack": "^1.0",
+    "symfony/property-access": "^4.0",
+    "symfony/property-info": "^4.0",
     "symfony/requirements-checker": "^1.0",
     "symfony/security-bundle": "^4.0",
     "symfony/serializer": "^4.0",

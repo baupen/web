@@ -12,6 +12,7 @@ namespace App\Api\Response;
 use App\Api\Response\Base\BaseResponse;
 use App\Entity\AppUser;
 use AppTestBundle\Entity\FunctionalTests\User;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class LoginResponse extends BaseResponse
 {

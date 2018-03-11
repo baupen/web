@@ -11,5 +11,24 @@ namespace App\Api\Request\Base;
 
 class BaseRequest
 {
+    /**
+     * @var string
+     */
+    private $authenticationToken;
 
+    /**
+     * @return string
+     */
+    public function getAuthenticationToken()
+    {
+        return $this->authenticationToken;
+    }
+
+    /**
+     * @param string $authenticationToken
+     */
+    public function setAuthenticationToken(string $authenticationToken): void
+    {
+        $this->authenticationToken = $authenticationToken;
+    }
 }

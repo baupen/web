@@ -326,6 +326,9 @@
     "symfony/property-access": {
         "version": "v3.4.2"
     },
+    "symfony/property-info": {
+        "version": "v4.0.6"
+    },
     "symfony/requirements-checker": {
         "version": "1.0",
         "recipe": {
