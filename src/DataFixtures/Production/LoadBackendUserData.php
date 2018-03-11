@@ -27,8 +27,8 @@ class LoadBackendUserData extends BaseFixture
     public function load(ObjectManager $manager)
     {
         $user = new BackendUser();
-        $user->setEmail('info@example.com');
-        $user->setPlainPassword('heafhwabechabwehjcbwa');
+        $user->setEmail('info@mangel.io');
+        $user->setPlainPassword('janfwkjnwaekjcnawebcakewbc');
         $user->setPassword();
         $user->setResetHash();
         $user->setRegistrationDate(new \DateTime());

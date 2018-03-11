@@ -30,7 +30,6 @@ class FrontendUser extends BaseEntity implements AdvancedUserInterface, Equatabl
 {
     use IdTrait;
     use UserTrait;
-    use AddressTrait;
 
     /**
      * @var Setting[]|ArrayCollection

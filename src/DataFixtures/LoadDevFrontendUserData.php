@@ -25,7 +25,7 @@ class LoadDevFrontendUserData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $user = $manager->getRepository("App:FrontendUser")->findOneBy(["email" => "info@example.com"]);
+        $user = $manager->getRepository("App:FrontendUser")->findOneBy(["email" => "info@mangel.io"]);
         $user->setPlainPassword("asdf1234");
         $user->setPassword();
         $manager->persist($user);

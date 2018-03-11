@@ -12,9 +12,12 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
+use App\Entity\AppUser;
+use App\Entity\Building;
+use App\Entity\Craftsman;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class LoadDevBackendUserData extends BaseFixture
+class LoadBuildingData extends BaseFixture
 {
     /**
      * Load data fixtures with the passed EntityManager.
@@ -25,10 +28,18 @@ class LoadDevBackendUserData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $user = $manager->getRepository("App:BackendUser")->findOneBy(["email" => "info@mangel.io"]);
-        $user->setPlainPassword("asdf1234");
-        $user->setPassword();
-        $manager->persist($user);
+        $appUsers = $manager->getRepository(AppUser::class)->findAll();
+
+        /* @var Building[] $buildings */
+        $buildings = $this->loadSomeRandoms($manager);
+        foreach ($buildings as $building) {
+            foreach ($appUsers as $appUser) {
+                if (rand(0, 5) == 0) {
+                    $building->getAppUsers()->add($appUser);
+                }
+            }
+        }
+
         $manager->flush();
     }
 
@@ -40,10 +51,14 @@ class LoadDevBackendUserData extends BaseFixture
     /**
      * create an instance with all random values.
      *
-     * @return mixed
+     * @return Building
      */
     protected function getAllRandomInstance()
     {
-        return null;
+        $building = new Building();
+        $this->fillRandomThing($building);
+        $this->fillRandomAddress($building);
+
+        return $building;
     }
 }

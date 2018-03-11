@@ -12,9 +12,12 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
+use App\Entity\AppUser;
+use App\Entity\Building;
+use App\Entity\Craftsman;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class LoadDevBackendUserData extends BaseFixture
+class LoadAppUserData extends BaseFixture
 {
     /**
      * Load data fixtures with the passed EntityManager.
@@ -25,25 +28,39 @@ class LoadDevBackendUserData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $user = $manager->getRepository("App:BackendUser")->findOneBy(["email" => "info@mangel.io"]);
-        $user->setPlainPassword("asdf1234");
-        $user->setPassword();
-        $manager->persist($user);
+        /* @var AppUser[] $appUsers */
+        $appUsers = $this->loadSomeRandoms($manager);
+
+        $testAppUser = $this->getAllRandomInstance();
+        $testAppUser->setPlainPassword("asdf");
+        $testAppUser->setIdentifier("j");
+        $appUsers[] = $testAppUser;
+
+        foreach ($appUsers as $appUser) {
+            $appUser->setPassword();
+        }
         $manager->flush();
     }
 
     public function getOrder()
     {
-        return 10;
+        return 5;
     }
 
     /**
      * create an instance with all random values.
      *
-     * @return mixed
+     * @return AppUser
      */
     protected function getAllRandomInstance()
     {
-        return null;
+        $faker = $this->getFaker();
+
+        $appUser = new AppUser();
+        $appUser->setPlainPassword($faker->asciify());
+        $appUser->setIdentifier($faker->asciify());
+        $this->fillRandomPerson($appUser);
+
+        return $appUser;
     }
 }

@@ -12,9 +12,10 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
+use App\Entity\Craftsman;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class LoadDevBackendUserData extends BaseFixture
+class LoadCraftsmanData extends BaseFixture
 {
     /**
      * Load data fixtures with the passed EntityManager.
@@ -25,25 +26,27 @@ class LoadDevBackendUserData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $user = $manager->getRepository("App:BackendUser")->findOneBy(["email" => "info@mangel.io"]);
-        $user->setPlainPassword("asdf1234");
-        $user->setPassword();
-        $manager->persist($user);
+        $this->loadSomeRandoms($manager);
+
         $manager->flush();
     }
 
     public function getOrder()
     {
-        return 10;
+        return 1;
     }
 
     /**
      * create an instance with all random values.
      *
-     * @return mixed
+     * @return Craftsman
      */
     protected function getAllRandomInstance()
     {
-        return null;
+        $craftsmen = new Craftsman();
+        $this->fillRandomCommunication($craftsmen);
+        $this->fillRandomThing($craftsmen);
+
+        return $craftsmen;
     }
 }

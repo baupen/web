@@ -13,7 +13,9 @@ namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\ThingTrait;
 use App\Enum\EmailType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,244 +28,71 @@ use Doctrine\ORM\Mapping as ORM;
 class BuildingMap extends BaseEntity
 {
     use IdTrait;
+    use ThingTrait;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text")
      */
-    private $receiver;
+    private $fileName;
 
     /**
-     * @var string
+     * @var Building
      *
-     * @ORM\Column(type="text")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Building", inversedBy="buildingMaps")
      */
-    private $identifier;
+    private $building;
 
     /**
-     * @var string
+     * @var Marker[]|ArrayCollection
      *
-     * @ORM\Column(type="text")
+     * @ORM\OneToMany(targetEntity="App\Entity\Marker", mappedBy="buildingMap")
      */
-    private $subject;
+    private $markers;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text")
-     */
-    private $body;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $actionText;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $actionLink;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $carbonCopy;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     */
-    private $emailType = EmailType::TEXT_EMAIL;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
-     */
-    private $sentDateTime;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $visitedDateTime;
-
-    /**
-     * @return string
-     */
-    public function getBody()
+    public function __construct()
     {
-        return $this->body;
-    }
-
-    /**
-     * @param string $body
-     */
-    public function setBody(string $body)
-    {
-        $this->body = $body;
+        $this->markers = new ArrayCollection();
     }
 
     /**
      * @return string
      */
-    public function getActionText()
+    public function getFileName()
     {
-        return $this->actionText;
+        return $this->fileName;
     }
 
     /**
-     * @param string $actionText
+     * @param string $fileName
      */
-    public function setActionText(string $actionText)
+    public function setFileName($fileName)
     {
-        $this->actionText = $actionText;
+        $this->fileName = $fileName;
     }
 
     /**
-     * @return string
+     * @return Building
      */
-    public function getActionLink()
+    public function getBuilding()
     {
-        return $this->actionLink;
+        return $this->building;
     }
 
     /**
-     * @param string $actionLink
+     * @param Building $building
      */
-    public function setActionLink(string $actionLink)
+    public function setBuilding($building)
     {
-        $this->actionLink = $actionLink;
+        $this->building = $building;
     }
 
     /**
-     * @return string
+     * @return Marker[]|ArrayCollection
      */
-    public function getCarbonCopy()
+    public function getMarkers()
     {
-        return $this->carbonCopy;
-    }
-
-    /**
-     * @param string $carbonCopy
-     */
-    public function setCarbonCopy($carbonCopy)
-    {
-        $this->carbonCopy = $carbonCopy;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getSentDateTime()
-    {
-        return $this->sentDateTime;
-    }
-
-    /**
-     * @param \DateTime $sentDateTime
-     */
-    public function setSentDateTime(\DateTime $sentDateTime)
-    {
-        $this->sentDateTime = $sentDateTime;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getVisitedDateTime()
-    {
-        return $this->visitedDateTime;
-    }
-
-    /**
-     * @param \DateTime $visitedDateTime
-     */
-    public function setVisitedDateTime(\DateTime $visitedDateTime)
-    {
-        $this->visitedDateTime = $visitedDateTime;
-    }
-
-    /**
-     * returns a string representation of this entity.
-     *
-     * @return string
-     */
-    public function getFullIdentifier()
-    {
-        return $this->getReceiver() . ' ' . $this->getSubject();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getReceiver()
-    {
-        return $this->receiver;
-    }
-
-    /**
-     * @param mixed $receiver
-     */
-    public function setReceiver($receiver)
-    {
-        $this->receiver = $receiver;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSubject()
-    {
-        return $this->subject;
-    }
-
-    /**
-     * @param string $subject
-     */
-    public function setSubject(string $subject)
-    {
-        $this->subject = $subject;
-    }
-
-    /**
-     * @return int
-     */
-    public function getEmailType()
-    {
-        return $this->emailType;
-    }
-
-    /**
-     * @param int $emailType
-     */
-    public function setEmailType(int $emailType)
-    {
-        $this->emailType = $emailType;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIdentifier()
-    {
-        return $this->identifier;
-    }
-
-    /**
-     * @param string $identifier
-     */
-    public function setIdentifier(string $identifier)
-    {
-        $this->identifier = $identifier;
+        return $this->markers;
     }
 }
