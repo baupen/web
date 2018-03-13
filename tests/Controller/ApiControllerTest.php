@@ -181,7 +181,6 @@ class ApiControllerTest extends FixturesTestCase
         );
 
         $response = $client->getResponse();
-        file_put_contents("example.html", $response->getContent());
         $this->assertEquals(200, $response->getStatusCode());
 
         /* @var SyncResponse $syncReponse */
@@ -224,24 +223,37 @@ class ApiControllerTest extends FixturesTestCase
         $craftManGuid = $syncReponse->getCraftsmen()[0]["id"];
         $buildingMapGuid = $syncReponse->getBuildingMaps()[0]["id"];
 
-        $marker = LoadMarkerData::getSample();
-        $marker->setCraftsman($craftManGuid);
-        $marker->setBuildingMap($buildingMapGuid);
-
-        $syncRequest = new SyncRequest();
-        $syncRequest->setMarkers([$marker]);
-        $syncRequest->setAuthenticationToken($realToken);
-
         $client->request(
             'POST',
             '/api/sync',
             [],
             [],
             ["CONTENT_TYPE" => "application/json"],
-            $serializer->serialize($syncRequest, "json")
+            '{
+                "authenticationToken": "' . $realToken . '",
+                "markers": [
+                        {
+                            "markXPercentage": 0.621,
+                            "markYPercentage": 0.22,
+                            "frameXPercentage": 0.521,
+                            "frameYPercentage": 0.07,
+                            "content": "Consectetur et dolor sit.",
+                            "craftsman": "' . $craftManGuid . '",
+                            "buildingMap": "' . $buildingMapGuid . '",
+                            "imageFileName": "mark_image.jpg",
+                            "frameXHeight": 0.2,
+                            "frameYLength": 0.3,
+                            "status": 1,
+                            "createdAt": "2018-03-12T18:01:45.347956",
+                            "lastChangedAt": "2018-03-12T18:01:45.347956",
+                            "fullIdentifier": "13.03.2018 08:14"
+                        }
+                ]
+            }'
         );
 
         $secondResponse = $client->getResponse();
+
         file_put_contents("example.html", $secondResponse->getContent());
 
         $this->assertEquals(200, $secondResponse->getStatusCode());

@@ -1,10 +1,6 @@
 Introduction
 ======
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-[![Travis Build Status](https://travis-ci.org/famoser/symfony-template.svg?branch=master)](https://travis-ci.org/famoser/symfony-template)
-[![Code Climate](https://codeclimate.com/github/famoser/symfony-template/badges/gpa.svg)](https://codeclimate.com/github/famoser/symfony-template)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ca101539e534469d88fb5739e21af367)](https://www.codacy.com/app/famoser/symfony-template)
-[![Scrutinizer](https://scrutinizer-ci.com/g/famoser/symfony-template/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/famoser/symfony-template)
 
 dependencies (you need this on your machine):
  - `xampp` https://www.apachefriends.org/de/index.html

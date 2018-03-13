@@ -200,6 +200,7 @@ class ApiController extends BaseDoctrineController
             return $this->failed(ApiStatus::INVALID_AUTHENTICATION_TOKEN);
         }
 
+        $newMarkers = [];
         //replace entities
         if (is_array($syncRequest->getMarkers())) {
             foreach ($syncRequest->getMarkers() as $marker) {
@@ -211,13 +212,29 @@ class ApiController extends BaseDoctrineController
                 unset($marker["buildingMap"]);
                 unset($marker["craftsman"]);
 
-                //if id forgotten; add one here
-                if (!isset($marker["id"])) {
-                    $marker["id"] = strtoupper(Uuid::uuid4());
+                $markerEntity = null;
+                if (isset($marker["id"])) {
+                    $markerEntity = $this->getDoctrine()->getRepository(Marker::class)->findOneBy(["id" => $marker["id"]]);
                 }
 
-                /* @var Marker $markerEntity */
-                $markerEntity = $serializer->deserialize(json_encode((object)$marker), Marker::class, "json");
+                if ($markerEntity == null) {
+                    /* @var Marker $markerEntity */
+                    $markerEntity = new Marker();
+                    $newMarkers[] = $markerEntity;
+                }
+
+                $markerEntity->setContent($marker["content"]);
+                $markerEntity->setImageFileName($marker["imageFileName"]);
+                $markerEntity->setStatus($marker["status"]);
+                $markerEntity->setMarkXPercentage($marker["markXPercentage"]);
+                $markerEntity->setMarkYPercentage($marker["markYPercentage"]);
+                $markerEntity->setFrameXPercentage($marker["frameXPercentage"]);
+                $markerEntity->setFrameYPercentage($marker["frameYPercentage"]);
+                $markerEntity->setFrameXHeight($marker["frameXHeight"]);
+                $markerEntity->setFrameYLength($marker["frameYLength"]);
+                $markerEntity->setCraftsman($craftsman);
+                $markerEntity->setCreatedBy($user);
+                $markerEntity->setBuildingMap($buildingMap);
                 $markerEntity->setCreatedBy($user);
                 $markerEntity->setBuildingMap($buildingMap);
                 $markerEntity->setCraftsman($craftsman);
@@ -242,6 +259,7 @@ class ApiController extends BaseDoctrineController
         foreach ($syncResponse->getBuildingMaps() as $buildingMap) {
             $markers = array_merge($buildingMap->getMarkers()->toArray(), $syncResponse->getMarkers());
         }
+        $markers = array_merge($markers, $newMarkers);
         $syncResponse->setMarkers($markers);
 
         return $this->json($syncResponse);

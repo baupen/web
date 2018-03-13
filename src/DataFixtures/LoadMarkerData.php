@@ -80,13 +80,4 @@ class LoadMarkerData extends BaseFixture
 
         return $marker;
     }
-
-    /**
-     * @return Marker
-     */
-    public static function getSample()
-    {
-        $instance = new static();
-        return $instance->getAllRandomInstance();
-    }
 }
