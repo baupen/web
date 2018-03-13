@@ -200,8 +200,6 @@ class ApiController extends BaseDoctrineController
             return $this->failed(ApiStatus::INVALID_AUTHENTICATION_TOKEN);
         }
 
-        $foundMap = null;
-
         //replace entities
         if (is_array($syncRequest->getMarkers())) {
             foreach ($syncRequest->getMarkers() as $marker) {
@@ -223,11 +221,7 @@ class ApiController extends BaseDoctrineController
                 $markerEntity->setCreatedBy($user);
                 $markerEntity->setBuildingMap($buildingMap);
                 $markerEntity->setCraftsman($craftsman);
-                $markerEntity->setContent("aaaaaaaaaaaa");
                 $this->fastSave($markerEntity);
-
-
-                $foundMap = $buildingMap;
             }
         }
 
@@ -245,12 +239,8 @@ class ApiController extends BaseDoctrineController
 
         $markers = [];
         $syncResponse->setMarkers([]);
-        dump("here");
         foreach ($syncResponse->getBuildingMaps() as $buildingMap) {
             $markers = array_merge($buildingMap->getMarkers()->toArray(), $syncResponse->getMarkers());
-            if ($foundMap != null && $foundMap->getId() == $buildingMap->getId()) {
-                dump("found map");
-            }
         }
         $syncResponse->setMarkers($markers);
 
