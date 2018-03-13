@@ -1,4 +1,4 @@
-image: 7.2
+image: php:7.2
 
 # Select what we should cache
 cache:
