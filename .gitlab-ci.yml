@@ -1,0 +1,30 @@
+# Select what we should cache
+cache:
+  paths:
+  - vendor/
+
+before_script:
+- cp phpunit.xml.dist phpunit.xml
+
+# Install git, not installed yet
+- apt-get update -yqq
+- apt-get install git -yqq
+
+# Install Xdebug
+- pecl install xdebug-2.6.0RC2
+
+# Enable Xdebug
+- docker-php-ext-enable xdebug
+
+# Install composer
+- curl -sS https://getcomposer.org/installer | php
+
+# Install all project dependencies
+- php composer.phar config --global discard-changes true
+- php composer.phar install --dev
+
+# We test
+test:default:
+  image: 7.2
+  script:
+  - vendor/bin/phpunit --configuration phpunit.xml --coverage-text --debug
