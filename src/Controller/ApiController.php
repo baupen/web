@@ -225,7 +225,11 @@ class ApiController extends BaseDoctrineController
 
                 $markerEntity->setContent($marker["content"]);
                 $markerEntity->setImageFileName($marker["imageFileName"]);
-                $markerEntity->setStatus($marker["status"]);
+                if ($marker["approved"] != null) {
+                    $markerEntity->setApproved(new \DateTime($marker["approved"]));
+                } else {
+                    $markerEntity->setApproved(null);
+                }
                 $markerEntity->setMarkXPercentage($marker["markXPercentage"]);
                 $markerEntity->setMarkYPercentage($marker["markYPercentage"]);
                 $markerEntity->setFrameXPercentage($marker["frameXPercentage"]);

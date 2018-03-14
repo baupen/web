@@ -68,7 +68,11 @@ class LoadMarkerData extends BaseFixture
 
         $marker = new Marker();
         $marker->setContent($faker->text(30));
-        $marker->setStatus(rand(1, 3));
+        if (rand(1, 3) == 1) {
+            $marker->setApproved(new \DateTime());
+        } else {
+            $marker->setApproved(null);
+        }
         $marker->setImageFileName("mark_image.jpg");
 
         $marker->setFrameXPercentage($faker->randomFloat(3, 0, 1));

@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20180311140841 extends AbstractMigration
+class Version20180314214359 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -41,7 +41,7 @@ class Version20180311140841 extends AbstractMigration
         , craftsman_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
         , building_map_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
         , created_by_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
-        , status INTEGER NOT NULL, mark_xpercentage DOUBLE PRECISION NOT NULL, mark_ypercentage DOUBLE PRECISION NOT NULL, frame_xpercentage DOUBLE PRECISION NOT NULL, frame_ypercentage DOUBLE PRECISION NOT NULL, frame_xheight DOUBLE PRECISION NOT NULL, frame_ylength DOUBLE PRECISION NOT NULL, content CLOB NOT NULL, image_file_name CLOB NOT NULL, created_at DATETIME DEFAULT NULL, last_changed_at DATETIME DEFAULT NULL, PRIMARY KEY(id))');
+        , approved DATETIME DEFAULT NULL, mark_xpercentage DOUBLE PRECISION NOT NULL, mark_ypercentage DOUBLE PRECISION NOT NULL, frame_xpercentage DOUBLE PRECISION NOT NULL, frame_ypercentage DOUBLE PRECISION NOT NULL, frame_xheight DOUBLE PRECISION NOT NULL, frame_ylength DOUBLE PRECISION NOT NULL, content CLOB NOT NULL, image_file_name CLOB NOT NULL, created_at DATETIME DEFAULT NULL, last_changed_at DATETIME DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_82CF20FE34508F72 ON marker (craftsman_id)');
         $this->addSql('CREATE INDEX IDX_82CF20FE4373858F ON marker (building_map_id)');
         $this->addSql('CREATE INDEX IDX_82CF20FEB03A8386 ON marker (created_by_id)');

@@ -89,7 +89,7 @@ request
     			"imageFileName": "mark_image.jpg",
     			"frameXHeight": 0.2,
     			"frameYLength": 0.3,
-    			"status": 1,
+    			"approved": null,
     			"createdBy": "03D567A8-497E-47D0-B4F6-DF620EA8D6D3",
     			"createdAt": "2018-03-12T18:01:45.347956",
     			"lastChangedAt": "2018-03-12T18:01:45.347956",
@@ -172,7 +172,7 @@ response
 			"imageFileName": "mark_image.jpg",
 			"frameXHeight": 0.2,
 			"frameYLength": 0.3,
-			"status": 1,
+			"approved": null,
 			"createdBy": "03D567A8-497E-47D0-B4F6-DF620EA8D6D3",
 			"id": "FAD29C44-D515-4A20-A689-0CCAA1246588",
 			"createdAt": {

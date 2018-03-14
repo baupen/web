@@ -32,11 +32,11 @@ class Marker extends BaseEntity implements ApiSerializable
     use TimeTrait;
 
     /**
-     * @var int
+     * @var \DateTime
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    private $status;
+    private $approved;
 
     /**
      * @var float
@@ -276,22 +276,6 @@ class Marker extends BaseEntity implements ApiSerializable
     }
 
     /**
-     * @return int
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param int $status
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
-    /**
      * @return AppUser
      */
     public function getCreatedBy()
@@ -315,5 +299,21 @@ class Marker extends BaseEntity implements ApiSerializable
         $this->buildingMap = $this->buildingMap->getId();
         $this->craftsman = $this->craftsman->getId();
         $this->createdBy = $this->createdBy->getId();
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getApproved()
+    {
+        return $this->approved;
+    }
+
+    /**
+     * @param \DateTime $approved
+     */
+    public function setApproved($approved): void
+    {
+        $this->approved = $approved;
     }
 }

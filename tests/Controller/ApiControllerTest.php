@@ -243,7 +243,7 @@ class ApiControllerTest extends FixturesTestCase
                             "imageFileName": "mark_image.jpg",
                             "frameXHeight": 0.2,
                             "frameYLength": 0.3,
-                            "status": 1,
+                            "approved": "2018-03-12T18:01:45.347956",
                             "createdAt": "2018-03-12T18:01:45.347956",
                             "lastChangedAt": "2018-03-12T18:01:45.347956",
                             "fullIdentifier": "13.03.2018 08:14"
