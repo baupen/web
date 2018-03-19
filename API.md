@@ -167,7 +167,7 @@ response
 			"frameXPercentage": 0.521,
 			"frameYPercentage": 0.07,
 			"content": "Consectetur et dolor sit.",
-			"craftsman": "2D51591E-5DAD-47BB-9705-ED6413D161A6",
+			"craftsman": "2D51591E-5DAD-47BB-9705-ED6413statusD161A6",
 			"buildingMap": "A843A3D6-E406-4F3C-9855-D8D84529B5D1",
 			"imageFileName": "mark_image.jpg",
 			"frameXHeight": 0.2,

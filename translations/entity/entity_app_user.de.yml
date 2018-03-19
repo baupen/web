@@ -1,0 +1,6 @@
+entity:
+  name: 'App Benutzer'
+  description: 'Ein Benutzer der iOS App'
+
+identifier: Identifikation
+plain_password: Passwort
