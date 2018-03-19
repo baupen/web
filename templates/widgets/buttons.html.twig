@@ -1,0 +1,21 @@
+{% macro add_button(href, label) %}
+    {% import _self as buttons %}
+    {{ buttons.button(href, label|default("new"|trans({}, "common_crud")), "plus", "primary") }}
+{% endmacro %}
+
+{% macro edit_button(href) %}
+    {% import _self as buttons %}
+    {{ buttons.button(href, "edit"|trans({}, "common_crud"), "pencil") }}
+{% endmacro %}
+
+{% macro remove_button(href) %}
+    {% import _self as buttons %}
+    {{ buttons.button(href, "delete"|trans({}, "common_crud"), "trash") }}
+{% endmacro %}
+
+{% macro button(href, text, icon, type = "secondary") %}
+    <a class="btn btn-{{ type }}" href="{{ href }}">
+        {{ text }}
+        <span class="oi oi-{{ icon }}" title="{{ icon }} icon" aria-hidden="true"></span>
+    </a>
+{% endmacro %}

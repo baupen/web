@@ -14,8 +14,9 @@ namespace App\Controller\Frontend;
 use App\Controller\Frontend\Base\BaseFrontendController;
 use App\Entity\AppUser;
 use App\Form\AppUser\AppUserType;
-use function foo\func;
+use App\Model\Breadcrumb;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,9 +36,10 @@ class AppUserController extends BaseFrontendController
      */
     public function indexAction()
     {
-        $arr["app_user"] = $this->getDoctrine()->getRepository(AppUser::class)->findAll();
+        $arr["app_users"] = $this->getDoctrine()->getRepository(AppUser::class)->findAll();
         return $this->render('frontend/app_user/index.html.twig', $arr);
     }
+
 
     /**
      * @Route("/new", name="frontend_app_user_new")
@@ -47,12 +49,32 @@ class AppUserController extends BaseFrontendController
      */
     public function newAction(Request $request)
     {
-        return $this->handleAppUserForm(
+        $appUser = new AppUser();
+        $form = $this->handleCreateForm(
             $request,
-            new AppUser(),
-            function ($arr) {
-                return $this->render('frontend/app_user/new.html.twig', $arr);
+            $appUser,
+            function ($entity) {
+                /* @var AppUser $entity */
+
+                //look for existing
+                $existing = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["identifier" => $entity->getIdentifier()]);
+                if ($existing !== null) {
+                    $this->displayError($this->getTranslator()->trans("new.error.identifier_already_exists", [], "frontend_app_user"));
+                    return false;
+                }
+
+                $entity->setPassword();
+                $entity->setAuthenticationToken();
+                return true;
             }
+        );
+        if ($form instanceof Response)
+            return $form;
+
+        $arr["form"] = $form->createView();
+        return $this->render(
+            'frontend/app_user/new.html.twig',
+            $arr
         );
     }
 
@@ -65,13 +87,31 @@ class AppUserController extends BaseFrontendController
      */
     public function editAction(Request $request, AppUser $appUser)
     {
-        return $this->handleAppUserForm(
+        $form = $this->handleUpdateForm(
             $request,
             $appUser,
-            function ($arr) {
-                return $this->render('frontend/app_user/edit.html.twig', $arr);
+            function ($entity) {
+                /* @var AppUser $entity */
+
+                //look for existing
+                $existing = $this->getDoctrine()->getRepository(AppUser::class)->findBy(["identifier" => $entity->getIdentifier()]);
+                if (count($existing) > 1 || (count($existing) == 1 && $existing[0]->getId() != $entity->getId())) {
+                    $this->displayError($this->getTranslator()->trans("new.error.identifier_already_exists", [], "frontend_app_user"));
+                    return false;
+                }
+
+                $entity->setPassword();
+                $entity->setAuthenticationToken();
+                return true;
             }
         );
+        if ($form instanceof Response)
+            return $form;
+
+        $arr["form"] = $form->createView();
+        $arr["app_user"] = $appUser;
+        return $this->render('frontend/app_user/edit.html.twig', $arr);
+
     }
 
     /**
@@ -83,43 +123,40 @@ class AppUserController extends BaseFrontendController
      */
     public function removeAction(Request $request, AppUser $appUser)
     {
+        $removed = false;
         $form = $this->handleRemoveForm(
             $request,
             $appUser,
-            function () {
-                return $this->generateUrl("frontend_app_user_index");
+            function () use (&$removed) {
+                $removed = true;
             }
         );
+        if ($removed)
+            return $this->redirectToRoute("frontend_app_user_index");
+
         $arr["form"] = $form->createView();
         $arr["app_user"] = $appUser;
         return $this->render('frontend/app_user/remove.html.twig', $arr);
     }
 
     /**
-     * @param Request $request
-     * @param AppUser $appUser
-     * @param callable $render
-     * @return Response
+     * get the breadcrumbs leading to this controller
+     *
+     * @return Breadcrumb[]
      */
-    private function handleAppUserForm(Request $request, AppUser $appUser, callable $render)
+    protected function getIndexBreadcrumbs()
     {
+        $translator = $this->getTranslator();
 
-        $form = $this->handleForm(
-            $this->createForm(AppUserType::class, $appUser),
-            $request,
-            function ($form) use ($appUser) {
-                $appUser->setPassword();
-                $appUser->setAuthenticationToken();
-                $this->fastSave($appUser);
-
-                return $this->redirectToRoute("frontend_app_user_index");
-            }
-        );
-        if ($form instanceof Response)
-            return $form;
-
-        $arr["form"] = $form->createView();
-        $arr["app_user"] = $appUser;
-        return $render($arr);
+        return [
+            new Breadcrumb(
+                $this->generateUrl("frontend_dashboard_index"),
+                $translator->trans("index.title", [], "frontend_dashboard")
+            ),
+            new Breadcrumb(
+                $this->generateUrl("frontend_app_user_index"),
+                $translator->trans("index.title", [], "frontend_app_user")
+            )
+        ];
     }
 }

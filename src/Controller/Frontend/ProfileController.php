@@ -12,6 +12,7 @@
 namespace App\Controller\Frontend;
 
 use App\Controller\Frontend\Base\BaseFrontendController;
+use App\Model\Breadcrumb;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -29,5 +30,15 @@ class ProfileController extends BaseFrontendController
     public function indexAction()
     {
         return $this->render('frontend/profile/index.html.twig');
+    }
+
+    /**
+     * get the breadcrumbs leading to this controller
+     *
+     * @return Breadcrumb[]
+     */
+    protected function getIndexBreadcrumbs()
+    {
+        return [];
     }
 }

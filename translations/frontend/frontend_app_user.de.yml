@@ -1,0 +1,18 @@
+index:
+  title: 'Benutzer'
+  description: 'Die Benutzer der App'
+  no_app_users: 'Noch keine Benutzer erfasst'
+  new_app_user: 'Benutzer hinzufügen'
+
+new:
+  title: 'Benutzer hinzufügen'
+  description: 'Neuer Benutzer erfassen'
+  error:
+    identifier_already_exists: "Ein Benutzer mit dieser Kennung existiert bereits"
+
+edit:
+  title: 'Benutzer bearbeiten'
+
+remove:
+  title: 'Benutzer entfernen'
+  confirmation: 'Wollen Sie wirklich den Benutzer %identifier% entfernen?'

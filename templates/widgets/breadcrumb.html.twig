@@ -1,0 +1,7 @@
+{% macro sep() %}
+    <i class="oi oi-caret-right breadcrumb-separator" aria-hidden="true"></i>
+{% endmacro %}
+
+{% macro link(name, href) %}
+    <a href="{{ href }}" class="breadcrumb-item" role="menuitem">{{ name }}</a>
+{% endmacro %}

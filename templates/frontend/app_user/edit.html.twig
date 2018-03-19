@@ -1,0 +1,11 @@
+{% extends "single_content_base.html.twig" %}
+{% import "widgets/breadcrumb.html.twig" as breadcrumb %}
+
+{% block title %}{{ "edit.title"|trans }}{% endblock %}
+{% block description %}{{ app_user.identifier }}{% endblock %}
+
+{% trans_default_domain "frontend_app_user" %}
+
+{% block single_content %}
+    {{ form(form) }}
+{% endblock %}

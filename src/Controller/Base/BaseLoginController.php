@@ -36,14 +36,6 @@ class BaseLoginController extends BaseFormController
     }
 
     /**
-     * @return TranslatorInterface
-     */
-    private function getTranslator()
-    {
-        return $this->get("translator");
-    }
-
-    /**
      * @param Request $request
      * @param UserTrait|BaseEntity $user
      * @param FormInterface $loginForm
