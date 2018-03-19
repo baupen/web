@@ -1,0 +1,23 @@
+index:
+  title: 'Gebäude'
+  description: 'Die Gebäude der App'
+  no_buildings: 'Noch keine Gebäude erfasst'
+  new_building: 'Gebäude hinzufügen'
+
+view:
+  title: 'Details'
+  description: 'Alle Informationen über dieses Gebäude'
+  no_building_maps: 'Noch keine Grundrisse hinzugefügt'
+  new_building_map: 'Grundrisse hinzufügen'
+  no_markers: 'Noch keine Markierungen hinzugefügt'
+
+new:
+  title: 'Gebäude hinzufügen'
+  description: 'Neues Gebäude erfassen'
+
+edit:
+  title: 'Gebäude bearbeiten'
+
+remove:
+  title: 'Gebäude entfernen'
+  confirmation: 'Wollen Sie wirklich das Gebäude %identifier% entfernen?'

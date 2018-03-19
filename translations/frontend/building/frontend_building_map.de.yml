@@ -1,0 +1,12 @@
+
+
+new:
+  title: 'Grundriss hinzufügen'
+  description: 'Neuer Grundriss erfassen'
+
+edit:
+  title: 'Grundriss bearbeiten'
+
+remove:
+  title: 'Grundriss entfernen'
+  confirmation: 'Wollen Sie wirklich den Grundriss %identifier% entfernen?'

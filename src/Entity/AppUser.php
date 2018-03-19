@@ -190,4 +190,9 @@ class AppUser extends BaseEntity implements ApiSerializable
         $this->markers = null;
         $this->buildings = null;
     }
+
+    public function __toString()
+    {
+        return $this->getFullName();
+    }
 }

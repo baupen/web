@@ -1,0 +1,3 @@
+entity:
+  name: 'Markierung'
+  description: 'Ein Markierung wird auf einem Grundrissplan platziert'

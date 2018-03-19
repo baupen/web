@@ -7,6 +7,11 @@ app.frontend:
     type:     annotation
     prefix:   /frontend
 
+app.frontend.building:
+    resource: "../src/Controller/Frontend/Building"
+    type:     annotation
+    prefix:   /frontend/building/{building}
+
 app.backend:
     resource: "../src/Controller/Backend"
     type:     annotation

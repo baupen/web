@@ -80,4 +80,12 @@ class Building extends BaseEntity implements ApiSerializable
         $this->appUsers = null;
         $this->buildingMaps = null;
     }
+
+    /**
+     * @param AppUser[]|ArrayCollection $appUsers
+     */
+    public function setAppUsers($appUsers): void
+    {
+        $this->appUsers = $appUsers;
+    }
 }

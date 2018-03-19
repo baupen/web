@@ -1,0 +1,17 @@
+{% extends "single_content_base.html.twig" %}
+{% import "widgets/breadcrumb.html.twig" as breadcrumb %}
+
+{% block title %}{{ "view.title"|trans }}{% endblock %}
+{% block description %}{{ building.name }}{% endblock %}
+
+{% trans_default_domain "frontend_building" %}
+
+{% block single_content %}
+    <h2>{{ "entity.name"|trans({}, "entity_building_map") }}</h2>
+    <p>
+        {{ buttons.add_button(path("frontend_building_map_new"), "index.new_building"|trans) }}
+    </p>
+    {% include "frontend/building/map/list.html.twig" %}
+
+    <h2>{{ "entity.name"|trans({}, "entity_marker") }}</h2>
+{% endblock %}

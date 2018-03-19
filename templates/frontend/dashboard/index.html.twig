@@ -6,5 +6,13 @@
 {% trans_default_domain "frontend_dashboard" %}
 
 {% block single_content %}
-    <a href="{{ path("frontend_app_user_index") }}">{{ "index.title"|trans({}, "frontend_app_user") }}</a>
+    <p>
+
+        <a href="{{ path("frontend_app_user_index") }}">
+            {{ "index.title"|trans({}, "frontend_app_user") }}
+        </a><br/>
+        <a href="{{ path("frontend_building_index") }}">
+            {{ "index.title"|trans({}, "frontend_building") }}
+        </a>
+    </p>
 {% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'single_content_base.html.twig' %}
+{% import "widgets/buttons.html.twig" as buttons %}
+{% import 'widgets/breadcrumb.html.twig' as breadcrumb %}
+
+{% block title %}{{ "index.title"|trans }}{% endblock %}
+{% block description %}{{ "index.description"|trans }}{% endblock %}
+
+{% trans_default_domain "frontend_building" %}
+
+{% block single_content %}
+
+    <p>
+        {{ buttons.add_button(path("frontend_building_new"), "index.new_building"|trans) }}
+    </p>
+
+    {% if buildings|length > 0 %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>{{ "name"|trans({}, "trait_thing") }}</th>
+                <th>{{ "entity.name"|trans({}, "entity_app_user") }}</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for building in buildings %}
+                <tr>
+                    <td>
+                        <a href="{{ path('frontend_building_view', {"building" : building.id}) }}">
+                            {{ building.name }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ building.buildingMaps.count }}
+                    </td>
+                    <td>
+                        {{ buttons.edit_button(path("frontend_building_edit", {"building" : building.id})) }}
+                    </td>
+                    <td>
+                        {{ buttons.remove_button(path("frontend_building_remove", {"building" : building.id})) }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>{{ "index.no_buildings"|trans }}</p>
+    {% endif %}
+{% endblock %}

@@ -1,6 +1,7 @@
 require("../sass/app.sass");
 var $ = require("jquery");
 var bootstrap = require("bootstrap");
+var multiselect = require("bootstra");
 
 window.$ = $;
 
@@ -13,6 +14,17 @@ var disableFormButton = function () {
     }
 };
 
+var initializeSelects = function () {
+    $('select').multiselect({
+        buttonClass: 'btn btn-secondary',
+        templates: {
+            li: '<li><a tabindex="0" class="dropdown-item"><label></label></a></li>'
+        }
+    });
+};
+
+
 $(document).ready(function () {
     $("form").on("submit", disableFormButton);
+    initializeSelects();
 });

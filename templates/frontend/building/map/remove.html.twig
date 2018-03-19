@@ -1,0 +1,14 @@
+{% extends "single_content_base.html.twig" %}
+{% import "widgets/breadcrumb.html.twig" as breadcrumb %}
+
+{% block title %}{{ "remove.title"|trans }}{% endblock %}
+{% block description %}{{ building.name }}{% endblock %}
+
+{% trans_default_domain "frontend_building" %}
+
+{% block single_content %}
+    <p>
+        {{ "remove.confirmation"|trans({'%identifier%': building.name}) }}
+    </p>
+    {{ form(form) }}
+{% endblock %}
