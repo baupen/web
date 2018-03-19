@@ -19,6 +19,7 @@ use App\Entity\Traits\ThingTrait;
 use App\Enum\EmailType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -34,9 +35,14 @@ class BuildingMap extends BaseEntity implements ApiSerializable
     use ThingTrait;
 
     /**
+     * @var UploadedFile
+     */
+    private $file;
+
+    /**
      * @var string
      *
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $fileName;
 
@@ -106,5 +112,21 @@ class BuildingMap extends BaseEntity implements ApiSerializable
     {
         $this->markers = null;
         $this->building = $this->building->getId();
+    }
+
+    /**
+     * @return UploadedFile
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param UploadedFile $file
+     */
+    public function setFile(UploadedFile $file): void
+    {
+        $this->file = $file;
     }
 }

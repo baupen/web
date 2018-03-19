@@ -73,6 +73,18 @@ class Building extends BaseEntity implements ApiSerializable
     }
 
     /**
+     * @return Marker[]
+     */
+    public function getMarkers()
+    {
+        $markers = [];
+        foreach ($this->getBuildingMaps() as $buildingMap) {
+            $markers = array_merge($markers, $buildingMap->getMarkers()->toArray());
+        }
+        return $markers;
+    }
+
+    /**
      * remove all array collections, setting them to null
      */
     public function flattenDoctrineStructures()

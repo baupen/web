@@ -1,5 +1,8 @@
 {% extends "single_content_base.html.twig" %}
+{% import "widgets/buttons.html.twig" as buttons %}
 {% import "widgets/breadcrumb.html.twig" as breadcrumb %}
+{% import "frontend/building/map/macros.html.twig" as map_macro %}
+{% import "frontend/building/map/marker/macros.html.twig" as marker_macro %}
 
 {% block title %}{{ "view.title"|trans }}{% endblock %}
 {% block description %}{{ building.name }}{% endblock %}
@@ -7,11 +10,12 @@
 {% trans_default_domain "frontend_building" %}
 
 {% block single_content %}
-    <h2>{{ "entity.name"|trans({}, "entity_building_map") }}</h2>
+    <h3>{{ "entity.plural"|trans({}, "entity_building_map") }}</h3>
     <p>
-        {{ buttons.add_button(path("frontend_building_map_new"), "index.new_building"|trans) }}
+        {{ buttons.add_button(path("frontend_building_map_new", {"building" : building.id}), "index.new_building"|trans) }}
     </p>
-    {% include "frontend/building/map/list.html.twig" %}
+    {{ map_macro.list(building.buildingMaps) }}
 
-    <h2>{{ "entity.name"|trans({}, "entity_marker") }}</h2>
+    <h3>{{ "entity.plural"|trans({}, "entity_marker") }}</h3>
+    {{ marker_macro.list(building.markers) }}
 {% endblock %}

@@ -158,7 +158,7 @@ class BaseFormController extends BaseDoctrineController
         $myOnSuccessCallable = function ($form) use ($entity, $successText, $beforePersistCallable) {
             $manager = $this->getDoctrine()->getManager();
 
-            if ($beforePersistCallable($entity, $manager) !== false) {
+            if ($beforePersistCallable($manager) !== false) {
                 $manager->persist($entity);
                 $manager->flush();
                 $this->displaySuccess($successText);

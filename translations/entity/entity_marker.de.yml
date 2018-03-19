@@ -1,3 +1,8 @@
 entity:
   name: 'Markierung'
+  plural: 'Markierungen'
   description: 'Ein Markierung wird auf einem Grundrissplan platziert'
+
+content: 'Text'
+created_by: 'Erstellt von'
+craftsman: 'Verantwortlicher Handwerker'

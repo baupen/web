@@ -1,0 +1,32 @@
+{% macro list(markers) %}
+    {% import "widgets/buttons.html.twig" as buttons %}
+
+    {% if markers|length > 0 %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>{{ "content"|trans({}, "entity_marker") }}</th>
+                <th>{{ "created_by"|trans({}, "entity_marker") }}</th>
+                <th>{{ "craftsman"|trans({}, "entity_marker") }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for marker in markers %}
+                <tr>
+                    <td>{{ marker.content }}</td>
+                    <td>{{ marker.createdBy }}</td>
+                    <td>{{ marker.craftsman }}</td>
+                    <td>
+                        {% if marker.approved is not null %}
+                            <span class="oi oi-check" title="check icon" aria-hidden="true"></span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>{{ "marcro.list.no_markers"|trans({}, "frontend_building_map_marker") }}</p>
+    {% endif %}
+
+{% endmacro %}

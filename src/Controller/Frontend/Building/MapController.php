@@ -16,6 +16,7 @@ use App\Entity\Building;
 use App\Entity\BuildingMap;
 use App\Entity\Map;
 use App\Model\Breadcrumb;
+use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,18 +31,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class MapController extends BaseFrontendController
 {
     /**
-     * @Route("/", name="frontend_building_map_index")
-     *
-     * @param Building $building
-     * @return Response
-     */
-    public function indexAction(Building $building)
-    {
-        $arr["building"] = $building;
-        return $this->render('list.html.twig', $arr);
-    }
-
-    /**
      * @Route("/new", name="frontend_building_map_new")
      *
      * @param Request $request
@@ -54,10 +43,47 @@ class MapController extends BaseFrontendController
 
         $form = $this->handleCreateForm(
             $request,
-            $map
+            $map,
+            function ($manager) use ($map) {
+                /* @var EntityManager $manager */
+                $file = $map->getFile();
+                if ($file != null) {
+                    if ($file->getError() != UPLOAD_ERR_OK) {
+                        $this->displayError(
+                            $this->getTranslator()->trans("edit.error.upload_failed", [], "frontend_building_map")
+                        );
+                        return false;
+                    }
+                    
+                    //persist so we get an id
+                    $manager->persist($map);
+                    $manager->flush();
+
+                    //create filename & move the file
+                    $fileName = $map->getId() . '.' . $file->guessExtension();
+                    $file->move(
+                        $this->getParameter('UPLOAD_DIR'),
+                        $fileName
+                    );
+
+                    //store the filename
+                    $map->setFileName($fileName);
+                    return true;
+                } else {
+                    $this->displayError(
+                        $this->getTranslator()->trans("new.error.no_file", [], "frontend_building_map")
+                    );
+                    return false;
+                }
+            }
         );
         $arr["form"] = $form->createView();
-        return $this->render('frontend/building/map/new.html.twig', $arr);
+        return $this->render(
+            'frontend/building/map/new.html.twig',
+            $arr,
+            null,
+            $this->getBuildingBreadcrumbs($building)
+        );
     }
 
     /**
@@ -67,25 +93,56 @@ class MapController extends BaseFrontendController
      * @param BuildingMap $map
      * @return Response
      */
-    public function editAction(Request $request, BuildingMap $map)
+    public function editAction(Request $request, Building $building, BuildingMap $map)
     {
         $form = $this->handleUpdateForm(
             $request,
-            $map
+            $map,
+            function ($manager) use ($map) {
+                /* @var EntityManager $manager */
+                $file = $map->getFile();
+                if ($file != null) {
+                    if ($file->getError() != UPLOAD_ERR_OK) {
+                        $this->displayError(
+                            $this->getTranslator()->trans("edit.error.upload_failed", [], "frontend_building_map")
+                        );
+                        return false;
+                    }
+                    //persist so we get an id
+                    $manager->persist($map);
+                    $manager->flush();
+
+                    $fileName = $map->getId() . '.' . $file->guessExtension();
+                    //create filename & move the file
+                    $file->move(
+                        $this->getParameter('UPLOAD_DIR'),
+                        $fileName
+                    );
+
+                    //store the filename
+                    $map->setFileName($fileName);
+                }
+            }
         );
         $arr["form"] = $form->createView();
         $arr["map"] = $map;
-        return $this->render('frontend/building/map/edit.html.twig', $arr);
+        return $this->render(
+            'frontend/building/map/edit.html.twig',
+            $arr,
+            null,
+            $this->getBuildingBreadcrumbs($building)
+        );
     }
 
     /**
      * @Route("/{map}/remove", name="frontend_building_map_remove")
      *
      * @param Request $request
+     * @param Building $building
      * @param BuildingMap $map
      * @return Response
      */
-    public function removeAction(Request $request, BuildingMap $map)
+    public function removeAction(Request $request, Building $building, BuildingMap $map)
     {
         $removed = false;
         $form = $this->handleRemoveForm(
@@ -96,12 +153,31 @@ class MapController extends BaseFrontendController
             }
         );
         if ($removed)
-            return $this->redirectToRoute("frontend_building_map_index");
+            return $this->redirectToRoute("frontend_building_view", ["building" => $building->getId()]);
 
         $arr["form"] = $form->createView();
         $arr["map"] = $map;
-        return $this->render('frontend/building/map/remove.html.twig', $arr);
+        return $this->render(
+            'frontend/building/map/remove.html.twig',
+            $arr,
+            null,
+            $this->getBuildingBreadcrumbs($building)
+        );
     }
+
+    /**
+     * @param Building $building
+     * @return Breadcrumb[]
+     */
+    private function getBuildingBreadcrumbs(Building $building)
+    {
+        $translator = $this->getTranslator();
+        return [new Breadcrumb(
+            $this->generateUrl("frontend_building_view", ["building" => $building->getId()]),
+            $translator->trans("index.title", [], "frontend_building")
+        )];
+    }
+
 
     /**
      * get the breadcrumbs leading to this controller
@@ -116,10 +192,6 @@ class MapController extends BaseFrontendController
             new Breadcrumb(
                 $this->generateUrl("frontend_dashboard_index"),
                 $translator->trans("index.title", [], "frontend_dashboard")
-            ),
-            new Breadcrumb(
-                $this->generateUrl("frontend_building_map_index"),
-                $translator->trans("index.title", [], "frontend_building_map")
             )
         ];
     }

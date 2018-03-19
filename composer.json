@@ -89,7 +89,7 @@
     "projectTitle": "nodika",
     "symfony": {
       "id": "01C1WTEKAQ8E4EGPA14JTQ2WHZ",
-      "allow-contrib": false
+      "allow-contrib": "true"
     }
   }
 }

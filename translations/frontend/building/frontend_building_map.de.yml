@@ -1,11 +1,17 @@
-
+marcro:
+  list:
+    no_maps: 'Noch keine Grundrisse'
 
 new:
   title: 'Grundriss hinzufügen'
   description: 'Neuer Grundriss erfassen'
+  error:
+    no_file: "Bitte wählen Sie eine pdf Datei aus"
 
 edit:
   title: 'Grundriss bearbeiten'
+  error:
+    upload_failed: "Die Datei konnte nicht verarbeitet werden."
 
 remove:
   title: 'Grundriss entfernen'

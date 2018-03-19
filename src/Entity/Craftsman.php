@@ -64,4 +64,12 @@ class Craftsman extends BaseEntity implements ApiSerializable
     {
         $this->markers = null;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }

@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/bin/node /usr/bin/yarn update
+  /usr/bin/node /usr/bin/yarn install
 
 PATH: 
   /usr/local/bin:/usr/local/sbin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
@@ -23,10 +23,11 @@ npm manifest:
     },
     "dependencies": {
       "bootstrap": "^4",
+      "bootstrap-multiselect": "^0.9",
       "open-iconic": "^1",
       "open-sans-fontface": "^1.4",
       "popper.js": "^1.12",
-      "bootstrap-multiselect": "^0.9"
+      "@fontawesome/fontawesome": "^5"
     }
   }
 
@@ -66,7 +67,7 @@ Lockfile:
   
   "@types/node@*":
     version "9.4.7"
-    resolved "https://registry.yarnpkg.com/@types/node/-/node-9.4.7.tgz#57d81cd98719df2c9de118f2d5f3b1120dcd7275"
+    resolved "http://registry.npmjs.org/@types/node/-/node-9.4.7.tgz#57d81cd98719df2c9de118f2d5f3b1120dcd7275"
   
   "@types/tapable@^0":
     version "0.2.5"
@@ -79,8 +80,8 @@ Lockfile:
       source-map "^0.6.1"
   
   "@types/webpack@^3.0.5":
-    version "3.8.10"
-    resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-3.8.10.tgz#2086c1d3969afea84ffc4159e646d3919248ee7b"
+    version "3.8.11"
+    resolved "http://registry.npmjs.org/@types/webpack/-/webpack-3.8.11.tgz#df2d7f8db43dbc15b4e8ecbdc91e6f68ed6b83ab"
     dependencies:
       "@types/node" "*"
       "@types/tapable" "^0"
@@ -145,8 +146,8 @@ Lockfile:
       json-schema-traverse "^0.3.0"
   
   ajv@^6.1.0:
-    version "6.2.1"
-    resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.2.1.tgz#28a6abc493a2abe0fb4c8507acaedb43fa550671"
+    version "6.3.0"
+    resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.3.0.tgz#1650a41114ef00574cac10b8032d8f4c14812da7"
     dependencies:
       fast-deep-equal "^1.0.0"
       fast-json-stable-stringify "^2.0.0"
@@ -1103,12 +1104,12 @@ Lockfile:
       lodash.uniq "^4.5.0"
   
   caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
-    version "1.0.30000814"
-    resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000814.tgz#2c9eed7fbc2724066474cb7e1a924f0ea12fe4a2"
+    version "1.0.30000815"
+    resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000815.tgz#0e218fa133d0d071c886aa041b435258cc746891"
   
   caniuse-lite@^1.0.30000792:
-    version "1.0.30000814"
-    resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000814.tgz#73eb6925ac2e54d495218f1ea0007da3940e488b"
+    version "1.0.30000815"
+    resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000815.tgz#3a4258e6850362185adb11b0d754a48402d35bf6"
   
   caseless@~0.11.0:
     version "0.11.0"
@@ -1135,7 +1136,7 @@ Lockfile:
       strip-ansi "^3.0.0"
       supports-color "^2.0.0"
   
-  chalk@^2.3.1:
+  chalk@^2.3.2:
     version "2.3.2"
     resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.3.2.tgz#250dc96b07491bfd601e648d66ddf5f60c7a5c65"
     dependencies:
@@ -1301,7 +1302,7 @@ Lockfile:
   
   compression@^1.5.2:
     version "1.7.2"
-    resolved "https://registry.yarnpkg.com/compression/-/compression-1.7.2.tgz#aaffbcd6aaf854b44ebb280353d5ad1651f59a69"
+    resolved "http://registry.npmjs.org/compression/-/compression-1.7.2.tgz#aaffbcd6aaf854b44ebb280353d5ad1651f59a69"
     dependencies:
       accepts "~1.3.4"
       bytes "3.0.0"
@@ -1750,8 +1751,8 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   
   electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.30:
-    version "1.3.37"
-    resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.37.tgz#4a92734e0044c8cf0b1553be57eae21a4c6e5fab"
+    version "1.3.39"
+    resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.39.tgz#d7a4696409ca0995e2750156da612c221afad84d"
   
   elliptic@^6.0.0:
     version "6.4.0"
@@ -1823,11 +1824,12 @@ Lockfile:
       is-symbol "^1.0.1"
   
   es5-ext@^0.10.14, es5-ext@^0.10.35, es5-ext@^0.10.9, es5-ext@~0.10.14:
-    version "0.10.40"
-    resolved "https://registry.yarnpkg.com/es5-ext/-/es5-ext-0.10.40.tgz#ab3d2179b943008c5e9ef241beb25ef41424c774"
+    version "0.10.41"
+    resolved "https://registry.yarnpkg.com/es5-ext/-/es5-ext-0.10.41.tgz#bab3e982d750f0112f0cb9e6abed72c59eb33eb2"
     dependencies:
       es6-iterator "~2.0.3"
       es6-symbol "~3.1.1"
+      next-tick "1"
   
   es6-iterator@^2.0.1, es6-iterator@~2.0.1, es6-iterator@~2.0.3:
     version "2.0.3"
@@ -2625,8 +2627,8 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/icss-replace-symbols/-/icss-replace-symbols-1.1.0.tgz#06ea6f83679a7749e386cfe1fe812ae5db223ded"
   
   ieee754@^1.1.4:
-    version "1.1.8"
-    resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.1.8.tgz#be33d40ac10ef1926701f6f08a2d86fbfd1ad3e4"
+    version "1.1.10"
+    resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.1.10.tgz#719a6f7b026831e64bdb838b0de1bb0029bbf716"
   
   import-local@^1.0.0:
     version "1.0.0"
@@ -2683,8 +2685,8 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.1.0.tgz#7ed1b1410c6a0e0f78cf95d3b8440c63f78b8614"
   
   invariant@^2.2.2:
-    version "2.2.3"
-    resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.3.tgz#1a827dfde7dcbd7c323f0ca826be8fa7c5e9d688"
+    version "2.2.4"
+    resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
     dependencies:
       loose-envify "^1.0.0"
   
@@ -3454,8 +3456,8 @@ Lockfile:
       thunky "^1.0.2"
   
   nan@^2.3.0, nan@^2.3.2:
-    version "2.9.2"
-    resolved "https://registry.yarnpkg.com/nan/-/nan-2.9.2.tgz#f564d75f5f8f36a6d9456cca7a6c4fe488ab7866"
+    version "2.10.0"
+    resolved "https://registry.yarnpkg.com/nan/-/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
   
   nanomatch@^1.2.9:
     version "1.2.9"
@@ -3481,6 +3483,10 @@ Lockfile:
   neo-async@^2.5.0:
     version "2.5.0"
     resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.5.0.tgz#76b1c823130cca26acfbaccc8fbaf0a2fa33b18f"
+  
+  next-tick@1:
+    version "1.0.0"
+    resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
   
   node-forge@0.7.1:
     version "0.7.1"
@@ -3714,8 +3720,8 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/open-sans-fontface/-/open-sans-fontface-1.4.0.tgz#03cc6d1bf5e6a8b5b47910888562f722c5dd3428"
   
   opn@^5.1.0:
-    version "5.2.0"
-    resolved "https://registry.yarnpkg.com/opn/-/opn-5.2.0.tgz#71fdf934d6827d676cecbea1531f95d354641225"
+    version "5.3.0"
+    resolved "https://registry.yarnpkg.com/opn/-/opn-5.3.0.tgz#64871565c863875f052cfdf53d3e3cb5adb53b1c"
     dependencies:
       is-wsl "^1.1.0"
   
@@ -3916,8 +3922,8 @@ Lockfile:
       find-up "^1.0.0"
   
   popper.js@^1.12:
-    version "1.14.0"
-    resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.14.0.tgz#3d73132100c83bfdc5fabb4769be925f57e59dc2"
+    version "1.14.1"
+    resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.14.1.tgz#b8815e5cda6f62fc2042e47618649f75866e6753"
   
   portfinder@^1.0.9:
     version "1.0.13"
@@ -4170,12 +4176,12 @@ Lockfile:
       supports-color "^3.2.3"
   
   postcss@^6.0.1:
-    version "6.0.19"
-    resolved "https://registry.yarnpkg.com/postcss/-/postcss-6.0.19.tgz#76a78386f670b9d9494a655bf23ac012effd1555"
+    version "6.0.20"
+    resolved "https://registry.yarnpkg.com/postcss/-/postcss-6.0.20.tgz#686107e743a12d5530cb68438c590d5b2bf72c3c"
     dependencies:
-      chalk "^2.3.1"
+      chalk "^2.3.2"
       source-map "^0.6.1"
-      supports-color "^5.2.0"
+      supports-color "^5.3.0"
   
   prepend-http@^1.0.0:
     version "1.0.4"
@@ -5035,8 +5041,8 @@ Lockfile:
       readable-stream "^2.0.2"
   
   stream-http@^2.7.2:
-    version "2.8.0"
-    resolved "https://registry.yarnpkg.com/stream-http/-/stream-http-2.8.0.tgz#fd86546dac9b1c91aff8fc5d287b98fafb41bc10"
+    version "2.8.1"
+    resolved "https://registry.yarnpkg.com/stream-http/-/stream-http-2.8.1.tgz#d0441be1a457a73a733a8a7b53570bebd9ef66a4"
     dependencies:
       builtin-status-codes "^3.0.0"
       inherits "^2.0.1"
@@ -5147,7 +5153,7 @@ Lockfile:
     dependencies:
       has-flag "^2.0.0"
   
-  supports-color@^5.1.0, supports-color@^5.2.0, supports-color@^5.3.0:
+  supports-color@^5.1.0, supports-color@^5.3.0:
     version "5.3.0"
     resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.3.0.tgz#5b24ac15db80fa927cf5227a4a33fd3c4c7676c0"
     dependencies:
@@ -5672,14 +5678,14 @@ Lockfile:
       window-size "0.1.0"
 
 Trace: 
-  Error: Command "update" not found.
-      at new MessageError (/usr/lib/node_modules/yarn/lib/cli.js:186:110)
-      at /usr/lib/node_modules/yarn/lib/cli.js:87307:17
-      at Generator.next (<anonymous>)
-      at step (/usr/lib/node_modules/yarn/lib/cli.js:98:30)
-      at /usr/lib/node_modules/yarn/lib/cli.js:116:14
-      at new Promise (<anonymous>)
-      at new F (/usr/lib/node_modules/yarn/lib/cli.js:23451:28)
-      at /usr/lib/node_modules/yarn/lib/cli.js:95:12
-      at runCommand (/usr/lib/node_modules/yarn/lib/cli.js:87312:22)
-      at Object.<anonymous> (/usr/lib/node_modules/yarn/lib/cli.js:87412:14)
+  Error: https://registry.yarnpkg.com/@fontawesome%2ffontawesome: Not found
+      at Request.params.callback [as _callback] (/usr/lib/node_modules/yarn/lib/cli.js:65019:18)
+      at Request.self.callback (/usr/lib/node_modules/yarn/lib/cli.js:132430:22)
+      at Request.emit (events.js:180:13)
+      at Request.<anonymous> (/usr/lib/node_modules/yarn/lib/cli.js:133413:10)
+      at Request.emit (events.js:180:13)
+      at IncomingMessage.<anonymous> (/usr/lib/node_modules/yarn/lib/cli.js:133333:12)
+      at Object.onceWrapper (events.js:272:13)
+      at IncomingMessage.emit (events.js:185:15)
+      at endReadableNT (_stream_readable.js:1101:12)
+      at process._tickCallback (internal/process/next_tick.js:114:19)

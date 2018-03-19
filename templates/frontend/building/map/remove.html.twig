@@ -2,13 +2,13 @@
 {% import "widgets/breadcrumb.html.twig" as breadcrumb %}
 
 {% block title %}{{ "remove.title"|trans }}{% endblock %}
-{% block description %}{{ building.name }}{% endblock %}
+{% block description %}{{ map.name }}{% endblock %}
 
-{% trans_default_domain "frontend_building" %}
+{% trans_default_domain "frontend_building_map" %}
 
 {% block single_content %}
     <p>
-        {{ "remove.confirmation"|trans({'%identifier%': building.name}) }}
+        {{ "remove.confirmation"|trans({'%identifier%': map.name}) }}
     </p>
     {{ form(form) }}
 {% endblock %}

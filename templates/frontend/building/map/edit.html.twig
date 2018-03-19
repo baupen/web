@@ -2,9 +2,9 @@
 {% import "widgets/breadcrumb.html.twig" as breadcrumb %}
 
 {% block title %}{{ "edit.title"|trans }}{% endblock %}
-{% block description %}{{ building.name }}{% endblock %}
+{% block description %}{{ map.name }}{% endblock %}
 
-{% trans_default_domain "frontend_building" %}
+{% trans_default_domain "frontend_building_map" %}
 
 {% block single_content %}
     {{ form(form) }}

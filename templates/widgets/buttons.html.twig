@@ -14,8 +14,7 @@
 {% endmacro %}
 
 {% macro button(href, text, icon, type = "secondary") %}
-    <a class="btn btn-{{ type }}" href="{{ href }}">
-        {{ text }}
+    <a class="btn btn-{{ type }}" href="{{ href }}" aria-describedby="{{ text }}">
         <span class="oi oi-{{ icon }}" title="{{ icon }} icon" aria-hidden="true"></span>
     </a>
 {% endmacro %}

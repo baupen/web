@@ -1,0 +1,33 @@
+{% macro list(maps) %}
+    {% import "widgets/buttons.html.twig" as buttons %}
+
+    {% if maps|length > 0 %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>{{ "name"|trans({}, "trait_thing") }}</th>
+                <th>{{ "entity.plural"|trans({}, "entity_marker") }}</th>
+                <th class="minimal-width"></th>
+                <th class="minimal-width"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for map in maps %}
+                <tr>
+                    <td>{{ map.name }}</td>
+                    <td>{{ map.markers.count }}</td>
+                    <td>
+                        {{ buttons.edit_button(path("frontend_building_map_edit", {"building" : map.building.id, "map": map.id })) }}
+                    </td>
+                    <td>
+                        {{ buttons.remove_button(path("frontend_building_map_remove", {"building" : map.building.id, "map": map.id })) }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>{{ "marcro.list.no_maps"|trans({}, "frontend_building_map") }}</p>
+    {% endif %}
+
+{% endmacro %}
