@@ -10,6 +10,7 @@ before_script:
 - cp phpunit.xml.dist phpunit.xml
 
 # install git, yarn
+- apt remove cmdtest
 - apt-get update -y
 - apt-get install yarn -y
 
