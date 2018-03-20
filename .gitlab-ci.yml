@@ -9,13 +9,9 @@ cache:
 before_script:
 - cp phpunit.xml.dist phpunit.xml
 
-# - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E1DD270288B4E6030699E45FA1715D88E1DF1F24
-# - su -c "echo 'deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main' > /etc/apt/sources.list.d/git.list"
-
-
 # install git, yarn
 - apt-get update -y
-- apt-get install git, yarn -y
+- apt-get install git-core, yarn -y
 
 # install frontend & build stuff
 - yarn install
