@@ -11,6 +11,8 @@ before_script:
 
 # install git, yarn
 - apt-get update -y
+- apt-get help
+- apt-get search git
 - apt-get install git-core, yarn -y
 
 # install frontend & build stuff
