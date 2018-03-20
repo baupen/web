@@ -1,0 +1,16 @@
+index:
+  title: 'Handwerker'
+  description: 'Die Handwerker der App'
+  no_craftsmen: 'Noch keine Handwerker erfasst'
+  new_craftsman: 'Handwerker hinzufügen'
+
+new:
+  title: 'Handwerker hinzufügen'
+  description: 'Neuer Handwerker erfassen'
+
+edit:
+  title: 'Handwerker bearbeiten'
+
+remove:
+  title: 'Handwerker entfernen'
+  confirmation: 'Wollen Sie wirklich den Handwerker %identifier% entfernen?'
