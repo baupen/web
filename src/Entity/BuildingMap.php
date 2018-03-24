@@ -15,6 +15,7 @@ namespace App\Entity;
 use App\Api\ApiSerializable;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\PublicAccessibleTrait;
 use App\Entity\Traits\ThingTrait;
 use App\Enum\EmailType;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -33,6 +34,7 @@ class BuildingMap extends BaseEntity implements ApiSerializable
 {
     use IdTrait;
     use ThingTrait;
+    use PublicAccessibleTrait;
 
     /**
      * @var UploadedFile

@@ -54,7 +54,7 @@ class MapController extends BaseFrontendController
                         );
                         return false;
                     }
-                    
+
                     //persist so we get an id
                     $manager->persist($map);
                     $manager->flush();
@@ -122,6 +122,7 @@ class MapController extends BaseFrontendController
                     //store the filename
                     $map->setFileName($fileName);
                 }
+                return true;
             }
         );
         $arr["form"] = $form->createView();
@@ -166,15 +167,30 @@ class MapController extends BaseFrontendController
     }
 
     /**
+     * @Route("/{map}/publish", name="frontend_building_map_publish")
+     *
+     * @param Building $building
+     * @param BuildingMap $map
+     * @return Response
+     * @throws \Exception
+     */
+    public function publicAction(Building $building, BuildingMap $map)
+    {
+        $map->publish();
+        $this->fastSave($map);
+
+        return $this->redirectToRoute("frontend_building_evaluate", ["building" => $building->getId()]);
+    }
+
+    /**
      * @param Building $building
      * @return Breadcrumb[]
      */
     private function getBuildingBreadcrumbs(Building $building)
     {
-        $translator = $this->getTranslator();
         return [new Breadcrumb(
             $this->generateUrl("frontend_building_view", ["building" => $building->getId()]),
-            $translator->trans("index.title", [], "frontend_building")
+            $building->getName()
         )];
     }
 
@@ -192,6 +208,10 @@ class MapController extends BaseFrontendController
             new Breadcrumb(
                 $this->generateUrl("frontend_dashboard_index"),
                 $translator->trans("index.title", [], "frontend_dashboard")
+            ),
+            new Breadcrumb(
+                $this->generateUrl("frontend_building_index"),
+                $translator->trans("index.title", [], "frontend_building")
             )
         ];
     }

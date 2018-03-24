@@ -2,17 +2,12 @@
 {% import "widgets/buttons.html.twig" as buttons %}
 {% import 'widgets/breadcrumb.html.twig' as breadcrumb %}
 
-{% block title %}{{ "index.title"|trans }}{% endblock %}
-{% block description %}{{ "index.description"|trans }}{% endblock %}
+{% block title %}{{ "archived.title"|trans }}{% endblock %}
+{% block description %}{{ "archived.description"|trans }}{% endblock %}
 
 {% trans_default_domain "frontend_building" %}
 
 {% block single_content %}
-
-    <p>
-        {{ buttons.add_button(path("frontend_building_new"), "index.new_building"|trans) }}
-        <a class="btn btn-outline-secondary float-right" href="{{ path("frontend_building_archived") }}">{{ "archived.title"|trans }}</a>
-    </p>
 
     {% if buildings|length > 0 %}
         <table class="table table-striped">
@@ -20,7 +15,6 @@
             <tr>
                 <th>{{ "name"|trans({}, "trait_thing") }}</th>
                 <th>{{ "entity.name"|trans({}, "entity_app_user") }}</th>
-                <th></th>
                 <th></th>
             </tr>
             </thead>
@@ -36,10 +30,7 @@
                         {{ building.buildingMaps.count }}
                     </td>
                     <td>
-                        {{ buttons.edit_button(path("frontend_building_edit", {"building" : building.id})) }}
-                    </td>
-                    <td>
-                        {{ buttons.remove_button(path("frontend_building_remove", {"building" : building.id})) }}
+                        <a href="{{ path("frontend_building_un_archive", {"building" : building.id}) }}">{{ "archived.unarchive"|trans }}</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -48,5 +39,4 @@
     {% else %}
         <p>{{ "index.no_buildings"|trans }}</p>
     {% endif %}
-
 {% endblock %}

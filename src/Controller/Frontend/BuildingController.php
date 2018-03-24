@@ -13,7 +13,12 @@ namespace App\Controller\Frontend;
 
 use App\Controller\Frontend\Base\BaseFrontendController;
 use App\Entity\Building;
+use App\Entity\Craftsman;
+use App\Entity\Marker;
+use App\Model\Base\MarkerInfo;
 use App\Model\Breadcrumb;
+use App\Model\BuildingMap\BuildingMapMarkerInfo;
+use App\Model\Craftsman\CraftsmanMarkerInfo;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,8 +39,19 @@ class BuildingController extends BaseFrontendController
      */
     public function indexAction()
     {
-        $arr["buildings"] = $this->getDoctrine()->getRepository(Building::class)->findAll();
+        $arr["buildings"] = $this->getDoctrine()->getRepository(Building::class)->findBy(["isArchived" => false]);
         return $this->render('frontend/building/index.html.twig', $arr);
+    }
+
+    /**
+     * @Route("/archived", name="frontend_building_archived")
+     *
+     * @return Response
+     */
+    public function archivedAction()
+    {
+        $arr["buildings"] = $this->getDoctrine()->getRepository(Building::class)->findBy(["isArchived" => true]);
+        return $this->render('frontend/building/index_archived.html.twig', $arr);
     }
 
     /**
@@ -102,14 +118,124 @@ class BuildingController extends BaseFrontendController
     /**
      * @Route("/{building}", name="frontend_building_view")
      *
-     * @param Request $request
      * @param Building $building
      * @return Response
      */
-    public function viewAction(Request $request, Building $building)
+    public function viewAction(Building $building)
     {
         $arr["building"] = $building;
         return $this->render('frontend/building/view.html.twig', $arr);
+    }
+
+    /**
+     * @Route("/{building}/un_archive", name="frontend_building_un_archive")
+     *
+     * @param Building $building
+     * @return Response
+     */
+    public function unArchiveAction(Building $building)
+    {
+        $building->setIsArchived(false);
+        $this->fastSave($building);
+        return $this->redirectToRoute("frontend_building_index");
+    }
+
+    /**
+     * @Route("/{building}/archive", name="frontend_building_archive")
+     *
+     * @param Building $building
+     * @return Response
+     */
+    public function archiveAction(Building $building)
+    {
+        $building->setIsArchived(true);
+        $this->fastSave($building);
+        return $this->redirectToRoute("frontend_building_index");
+    }
+
+    /**
+     * @Route("/{building}/un_publish", name="frontend_building_un_publish")
+     *
+     * @param Building $building
+     * @return Response
+     * @throws \Exception
+     */
+    public function unPublicAction(Building $building)
+    {
+        $building->unPublish();
+        $this->fastSave($building);
+
+        return $this->redirectToRoute("frontend_building_evaluate", ["building" => $building->getId()]);
+    }
+
+    /**
+     * @Route("/{building}/notify", name="frontend_building_notify")
+     *
+     * @param Building $building
+     * @return Response
+     * @throws \Exception
+     */
+    public function notifyAction(Building $building)
+    {
+        if (!$building->isAccessible()) {
+            $building->publish();
+            $this->fastSave($building);
+        }
+        //TODO: send mails to all craftsmen
+
+        return $this->redirectToRoute("frontend_building_evaluate", ["building" => $building->getId()]);
+    }
+
+    /**
+     * @Route("/{building}/evaluate", name="frontend_building_evaluate")
+     *
+     * @param Building $building
+     * @return Response
+     */
+    public function evaluateAction(Building $building)
+    {
+        $arr["building"] = $building;
+
+        $setMarkerInfo = function ($marker, $markerInfo) {
+            /* @var Marker $marker */
+            /* @var MarkerInfo $markerInfo */
+            if ($marker->getApproved() instanceof \DateTime) {
+                $markerInfo->setClosedMarkers($markerInfo->getClosedMarkers() + 1);
+            } else {
+                $markerInfo->setOpenMarkers($markerInfo->getOpenMarkers() + 1);
+            }
+        };
+
+        $markers = $building->getMarkers();
+
+        /* @var CraftsmanMarkerInfo[] $craftsmen */
+        $craftsmen = [];
+        foreach ($markers as $marker) {
+            if (!isset($craftsmen[$marker->getCraftsman()->getId()])) {
+                $model = new CraftsmanMarkerInfo();
+                $model->setCraftsman($marker->getCraftsman());
+                $craftsmen[$marker->getCraftsman()->getId()] = $model;
+            }
+            $craftsman = $craftsmen[$marker->getCraftsman()->getId()];
+            $setMarkerInfo($marker, $craftsman);
+        }
+        $arr["craftsmen"] = $craftsmen;
+
+        /* @var BuildingMapMarkerInfo[] $maps */
+        $maps = [];
+        foreach ($markers as $marker) {
+            if (!isset($maps[$marker->getBuildingMap()->getId()])) {
+                $model = new BuildingMapMarkerInfo();
+                $model->setBuildingMap($marker->getBuildingMap());
+                $maps[$marker->getBuildingMap()->getId()] = $model;
+            }
+            $craftsman = $maps[$marker->getBuildingMap()->getId()];
+            $setMarkerInfo($marker, $craftsman);
+        }
+        $arr["maps"] = $maps;
+
+
+        return $this->render('frontend/building/evaluate.html.twig', $arr);
     }
 
     /**
