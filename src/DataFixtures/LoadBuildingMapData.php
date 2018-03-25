@@ -32,43 +32,31 @@ class LoadBuildingMapData extends BaseFixture
     {
         $buildings = $manager->getRepository(Building::class)->findAll();
 
-        foreach ($buildings as $building) {
-            $map = new BuildingMap();
-            $map->setFileName("1UG.pdf");
-            $map->setBuilding($building);
-            $map->setName("1UG");
-            $map->setDescription("Übersichtskarte vom 1UG");
-            $manager->persist($map);
+        $entries = [
+            ["d320e74c-cf71-451c-805e-eadd4920f073.pdf", "1UG", "Übersichtskarte vom 1UG"],
+            ["91209286-75f2-4cf1-a8e8-5b9e7d357914.pdf", "2OG", "Übersichtskarte vom 2OG"],
+            ["f7032a13-e6d6-4fa6-ab43-060f5422d384.pdf", "2OG rechts", "2OG rechter Bereich"],
+            ["7f3fd26d-9f32-47a7-a738-3bbbf262f432.pdf", "2OG links", "2OG linker Bereich"],
+            ["3384138c-ea50-4f92-a72a-05bf7918518a.pdf", "2OG Treppen", "2OG Treppenhaus"],
+        ];
 
-            $map = new BuildingMap();
-            $map->setFileName("2OG_full.pdf");
-            $map->setBuilding($building);
-            $map->setName("2OG");
-            $map->setDescription("Übersichtskarte vom 2OG");
-            $manager->persist($map);
+        foreach ($entries as $entry) {
+            foreach ($buildings as $building) {
+                $map = new BuildingMap();
+                $map->setBuilding($building);
+                $map->setFileName($entry[0]);
+                $map->setName($entry[1]);
+                $map->setDescription($entry[2]);
+                $manager->persist($map);
 
-            $map = new BuildingMap();
-            $map->setFileName("2OG_links.pdf");
-            $map->setBuilding($building);
-            $map->setName("2OG links");
-            $map->setDescription("2OG linker Bereich");
-            $manager->persist($map);
+                //move file to correct place
+                $targetFile = __DIR__ . "/../../public/upload/" . $entry[0];
+                if (file_exists($targetFile))
+                    unlink($targetFile);
+                copy(__DIR__ . "/Resources/" . $entry[0], $targetFile);
 
-            $map = new BuildingMap();
-            $map->setFileName("2OG_rechts.pdf");
-            $map->setBuilding($building);
-            $map->setName("2OG rechts");
-            $map->setDescription("2OG rechter Bereich");
-            $manager->persist($map);
-
-            $map = new BuildingMap();
-            $map->setFileName("2OG_treppenhaus.pdf");
-            $map->setBuilding($building);
-            $map->setName("2OG Treppenhaus");
-            $map->setDescription("2OG Treppenhaus");
-            $manager->persist($map);
+            }
         }
-
         $manager->flush();
     }
 

@@ -28,15 +28,23 @@ class LoadBuildingData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $appUsers = $manager->getRepository(AppUser::class)->findAll();
+        $entries = [
+            ["Sun Park", "Der Wohnpark in einladender Umgebung", "Parkstrasse", 12, 7270, "Davos"]
+        ];
 
-        /* @var Building[] $buildings */
-        $buildings = $this->loadSomeRandoms($manager);
-        foreach ($buildings as $building) {
+        $appUsers = $manager->getRepository(AppUser::class)->findAll();
+        foreach ($entries as $entry) {
+            $building = new Building();
+            $building->setName($entry[0]);
+            $building->setDescription($entry[1]);
+            $building->setStreet($entry[2]);
+            $building->setStreetNr($entry[3]);
+            $building->setPostalCode($entry[4]);
+            $building->setCity($entry[5]);
+            $manager->persist($building);
+
             foreach ($appUsers as $appUser) {
-                if (rand(0, 1) == 0) {
-                    $appUser->getBuildings()->add($building);
-                }
+                $appUser->getBuildings()->add($building);
             }
         }
 

@@ -41,3 +41,14 @@ evaluate:
 notify:
   title: 'Handwerker informieren'
   description: "Emails versenden"
+  email:
+    subject: "Mängelliste %building_name%"
+    body: >
+      Sehr geehrte/r %name%
+
+      Bei der Inspektion von %building_name% haben wir einige Mängel entdeckt.
+
+      Wir danken für Ihre Mitarbeit.
+
+      Freundliche Grüsse
+    action_text: "Mängelliste ansehen"

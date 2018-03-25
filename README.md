@@ -12,6 +12,10 @@ ubuntu installation:
  - `sudo add-apt-repository ppa:ondrej/php`
  - `sudo apt-get update`
  - `sudo apt-get install php php-xml php-zip php-mbstring npm yard`
+ 
+deploy dependencies:
+ - all extensions listen in the `composer.json` 
+ - ghostscript `gs`
 
 backend with symfony4, with the additional bundles:
  - `server` for a better symfony server

@@ -19,10 +19,12 @@ use App\Model\Base\MarkerInfo;
 use App\Model\Breadcrumb;
 use App\Model\BuildingMap\BuildingMapMarkerInfo;
 use App\Model\Craftsman\CraftsmanMarkerInfo;
+use App\Service\Interfaces\EmailServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @Route("/building")
@@ -172,16 +174,34 @@ class BuildingController extends BaseFrontendController
      * @Route("/{building}/notify", name="frontend_building_notify")
      *
      * @param Building $building
+     * @param EmailServiceInterface $emailService
+     * @param TranslatorInterface $translator
      * @return Response
-     * @throws \Exception
      */
-    public function notifyAction(Building $building)
+    public function notifyAction(Building $building, EmailServiceInterface $emailService, TranslatorInterface $translator)
     {
         if (!$building->isAccessible()) {
             $building->publish();
             $this->fastSave($building);
         }
-        //TODO: send mails to all craftsmen
+
+        /* @var Craftsman[] $toInform */
+        $toInform = [];
+        foreach ($building->getMarkers() as $marker) {
+            if ($marker->getApproved() == null) {
+                $toInform[$marker->getCraftsman()->getId()] = $marker->getCraftsman();
+            }
+        }
+
+        foreach ($toInform as $craftsman) {
+            $emailService->sendActionEmail(
+                $craftsman->getEmail(),
+                $translator->trans("notify.email.subject", ["%building_name%" => $building->getName()], "frontend_building"),
+                $translator->trans("notify.email.body", ["%building_name%" => $building->getName(), "%name%" => $craftsman->getName()], "frontend_building"),
+                $translator->trans("notify.email.action_text", [], "frontend_building"),
+                $this->generateUrl("public_view_2", ["guid" => $building->getPublicIdentifier(), "guid2" => $craftsman->getId()])
+            );
+        }
 
         return $this->redirectToRoute("frontend_building_evaluate", ["building" => $building->getId()]);
     }

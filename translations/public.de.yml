@@ -1,0 +1,9 @@
+view:
+  title: 'Mängelliste'
+  description: 'Noch vorzunehmende Änderungen'
+  approved: "Diese Änderungen wurden von uns verifiziert"
+
+not_accessible:
+  title: 'Nicht verfügbar'
+  description: 'Der Link ist nicht mehr gültig'
+  why: "Dies ist normalerweise kein Grund zur Sorge, und heisst für Sie das wir keine Mängel mehr gefunden haben"
