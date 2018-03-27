@@ -178,7 +178,7 @@ class ApiController extends BaseDoctrineController
                 return $this->failed(ApiStatus::INVALID_FILE);
         }
 
-        return $this->file($this->getParameter("PUBLIC_DIR") . "/upload/" . $marker->getImageFileName());
+        return $this->file($this->getParameter("PUBLIC_DIR") . "/upload/" . $downloadFileRequest->getFileName());
     }
 
     /**
