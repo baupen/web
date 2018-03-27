@@ -1,0 +1,46 @@
+{% extends 'single_content_base.html.twig' %}
+{% import "widgets/buttons.html.twig" as buttons %}
+{% import 'widgets/breadcrumb.html.twig' as breadcrumb %}
+
+{% block title %}{{ "index.title"|trans }}{% endblock %}
+{% block description %}{{ "index.description"|trans }}{% endblock %}
+
+{% trans_default_domain "frontend_craftsman" %}
+
+{% block single_content %}
+
+    <p>
+        {{ buttons.add_button(path("frontend_craftsman_new"), "index.new_craftsman"|trans) }}
+    </p>
+
+    {% if craftsmen|length > 0 %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>{{ "name"|trans({}, "trait_thing") }}</th>
+                <th>{{ "description"|trans({}, "trait_thing") }}</th>
+                <th>{{ "email"|trans({}, "trait_communication") }}</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for craftsman in craftsmen %}
+                <tr>
+                    <td>{{ craftsman.name }}</td>
+                    <td>{{ craftsman.description }}</td>
+                    <td>{{ craftsman.email }}</td>
+                    <td>
+                        {{ buttons.edit_button(path("frontend_craftsman_edit", {"craftsman" : craftsman.id})) }}
+                    </td>
+                    <td>
+                        {{ buttons.remove_button(path("frontend_craftsman_remove", {"craftsman" : craftsman.id})) }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>{{ "index.no_craftsmen"|trans }}</p>
+    {% endif %}
+{% endblock %}

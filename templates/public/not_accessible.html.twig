@@ -1,0 +1,10 @@
+{% extends 'single_content_base.html.twig' %}
+
+{% block title %}{{ "not_accessible.title"|trans }}{% endblock %}
+{% block description %}{{ "not_accessible.description"|trans }}{% endblock %}
+
+{% trans_default_domain "public" %}
+
+{% block additional_error_info %}
+    <p>{{ "not_accessible.why"|trans }}</p>
+{% endblock %}

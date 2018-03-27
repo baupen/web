@@ -28,17 +28,21 @@ class LoadAppUserData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        /* @var AppUser[] $appUsers */
-        $appUsers = $this->loadSomeRandoms($manager);
+        $entries = [
+            ["j", "asdf", "Julian", "Dunskus"],
+            ["a", "asdf", "Adrian", "Hoffmann"],
+            ["f", "asdf", "Florian", "Moser"]
+        ];
 
-        $testAppUser = $this->getAllRandomInstance();
-        $testAppUser->setPlainPassword("asdf");
-        $testAppUser->setIdentifier("j");
-        $appUsers[] = $testAppUser;
-        $manager->persist($testAppUser);
-
-        foreach ($appUsers as $appUser) {
+        foreach ($entries as $entry) {
+            $appUser = new AppUser();
+            $appUser->setIdentifier($entry[0]);
+            $appUser->setPlainPassword($entry[1]);
+            $appUser->setGivenName($entry[2]);
+            $appUser->setFamilyName($entry[3]);
+            $appUser->setAuthenticationToken();
             $appUser->setPassword();
+            $manager->persist($appUser);
         }
         $manager->flush();
     }

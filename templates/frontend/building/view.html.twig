@@ -13,9 +13,18 @@
     <h3>{{ "entity.plural"|trans({}, "entity_building_map") }}</h3>
     <p>
         {{ buttons.add_button(path("frontend_building_map_new", {"building" : building.id}), "index.new_building"|trans) }}
+        <a class="btn btn-outline-secondary float-right" href="{{ path("frontend_building_evaluate", {"building": building.id}) }}">{{ "evaluate.title"|trans }}</a>
     </p>
     {{ map_macro.list(building.buildingMaps) }}
 
     <h3>{{ "entity.plural"|trans({}, "entity_marker") }}</h3>
     {{ marker_macro.list(building.markers) }}
+
+    {% if building.archived %}
+        <p>
+            <a class="btn btn-secondary" href="{{ path("frontend_building_archive") }}">
+                {{ "view.archive"|trans }}
+            </a>
+        </p>
+    {% endif %}
 {% endblock %}

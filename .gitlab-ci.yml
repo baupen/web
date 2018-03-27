@@ -10,8 +10,9 @@ before_script:
 - cp phpunit.xml.dist phpunit.xml
 
 # install git, yarn
-- apt-get update -yqq
-- apt-get install git, yarn -yqq
+- apt-get update -y
+- apt-get install npm -y
+- npm install -g yarn
 
 # install frontend & build stuff
 - yarn install

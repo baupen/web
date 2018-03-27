@@ -181,6 +181,7 @@ class ApiControllerTest extends FixturesTestCase
         );
 
         $response = $client->getResponse();
+        file_put_contents("debug.html", $response->getContent());
         $this->assertEquals(200, $response->getStatusCode());
 
         /* @var SyncResponse $syncReponse */

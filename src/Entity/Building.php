@@ -16,6 +16,7 @@ use App\Api\ApiSerializable;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\PublicAccessibleTrait;
 use App\Entity\Traits\ThingTrait;
 use App\Enum\EmailType;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -33,6 +34,13 @@ class Building extends BaseEntity implements ApiSerializable
     use IdTrait;
     use ThingTrait;
     use AddressTrait;
+    use PublicAccessibleTrait;
+
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private $isArchived = false;
 
     /**
      * @var AppUser[]|ArrayCollection
@@ -78,8 +86,24 @@ class Building extends BaseEntity implements ApiSerializable
     public function getMarkers()
     {
         $markers = [];
-        foreach ($this->getBuildingMaps() as $buildingMap) {
-            $markers = array_merge($markers, $buildingMap->getMarkers()->toArray());
+        if ($this->getBuildingMaps() != null) {
+            foreach ($this->getBuildingMaps() as $buildingMap) {
+                $markers = array_merge($markers, $buildingMap->getMarkers()->toArray());
+            }
+        }
+        return $markers;
+    }
+
+    /**
+     * @return Marker[]
+     */
+    public function getOpenMarkerByCraftsman()
+    {
+        $markers = [];
+        if ($this->getBuildingMaps() != null) {
+            foreach ($this->getBuildingMaps() as $buildingMap) {
+                $markers = array_merge($markers, $buildingMap->getMarkers()->toArray());
+            }
         }
         return $markers;
     }
@@ -99,5 +123,21 @@ class Building extends BaseEntity implements ApiSerializable
     public function setAppUsers($appUsers): void
     {
         $this->appUsers = $appUsers;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isArchived()
+    {
+        return $this->isArchived;
+    }
+
+    /**
+     * @param bool $isArchived
+     */
+    public function setIsArchived(bool $isArchived): void
+    {
+        $this->isArchived = $isArchived;
     }
 }

@@ -10,6 +10,7 @@ view:
   no_building_maps: 'Noch keine Grundrisse hinzugefügt'
   new_building_map: 'Grundrisse hinzufügen'
   no_markers: 'Noch keine Markierungen hinzugefügt'
+  archive: "Gebäude archivieren"
 
 new:
   title: 'Gebäude hinzufügen'
@@ -21,3 +22,33 @@ edit:
 remove:
   title: 'Gebäude entfernen'
   confirmation: 'Wollen Sie wirklich das Gebäude %identifier% entfernen?'
+
+archived:
+  title: "Archivierte Gebäude"
+  description: "Die archivierten Gebäude"
+  unarchive: "wieder aktiv setzen"
+
+evaluate:
+  title: "Auswertung"
+  description: "Links & Statistiken"
+  by_map: "Nach Karte sortiert"
+  by_craftsman: "Nach Handwerker sortiert"
+  unpublish_craftsmen: 'Zugriff der Handwerker wieder entfernen'
+  publish_map: 'Neuer Link setzen'
+  see_map: "ansehen"
+
+
+notify:
+  title: 'Handwerker informieren'
+  description: "Emails versenden"
+  email:
+    subject: "Mängelliste %building_name%"
+    body: >
+      Sehr geehrte/r %name%
+
+      Bei der Inspektion von %building_name% haben wir einige Mängel entdeckt.
+
+      Wir danken für Ihre Mitarbeit.
+
+      Freundliche Grüsse
+    action_text: "Mängelliste ansehen"
