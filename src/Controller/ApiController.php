@@ -173,7 +173,9 @@ class ApiController extends BaseDoctrineController
 
         $marker = $this->getDoctrine()->getRepository(Marker::class)->findOneBy(["imageFileName" => $downloadFileRequest->getFileName()]);
         if ($marker === null) {
-            return $this->failed(ApiStatus::INVALID_FILE);
+            $buildingMap = $this->getDoctrine()->getRepository(BuildingMap::class)->findOneBy(["fileName" => $downloadFileRequest->getFileName()]);
+            if ($buildingMap === null)
+                return $this->failed(ApiStatus::INVALID_FILE);
         }
 
         return $this->file($this->getParameter("PUBLIC_DIR") . "/upload/" . $marker->getImageFileName());
