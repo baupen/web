@@ -16,3 +16,8 @@ app.backend:
     resource: "../src/Controller/Backend"
     type:     annotation
     prefix:   /backend
+
+app.ajax:
+    resource: "../src/Controller/Ajax"
+    type:     annotation
+    prefix:   /ajax

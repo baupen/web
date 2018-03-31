@@ -1,8 +1,6 @@
 {% extends "single_content_base.html.twig" %}
 {% import "widgets/buttons.html.twig" as buttons %}
 {% import "widgets/breadcrumb.html.twig" as breadcrumb %}
-{% import "frontend/building/map/macros.html.twig" as map_macro %}
-{% import "frontend/building/map/marker/macros.html.twig" as marker_macro %}
 
 {% block title %}{{ "view.title"|trans }}{% endblock %}
 {% block description %}{{ building.name }}{% endblock %}
@@ -13,12 +11,74 @@
     <h3>{{ "entity.plural"|trans({}, "entity_building_map") }}</h3>
     <p>
         {{ buttons.add_button(path("frontend_building_map_new", {"building" : building.id}), "index.new_building"|trans) }}
-        <a class="btn btn-outline-secondary float-right" href="{{ path("frontend_building_evaluate", {"building": building.id}) }}">{{ "evaluate.title"|trans }}</a>
+        <a class="btn btn-outline-secondary float-right"
+           href="{{ path("frontend_building_evaluate", {"building": building.id}) }}">{{ "evaluate.title"|trans }}</a>
     </p>
-    {{ map_macro.list(building.buildingMaps) }}
+    {% if building.buildingMaps|length > 0 %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>{{ "name"|trans({}, "trait_thing") }}</th>
+                <th>{{ "entity.plural"|trans({}, "entity_marker") }}</th>
+                <th class="minimal-width"></th>
+                <th class="minimal-width"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for map in building.buildingMaps %}
+                <tr>
+                    <td>{{ map.name }}</td>
+                    <td>{{ map.markers.count }}</td>
+                    <td>
+                        <a class="btn btn-outline-secondary" href="{{ path("frontend_building_map_markers", {"map" : map.id, "building" : building.id}) }}">
+                            {{ "markers.title"|trans }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ buttons.edit_button(path("frontend_building_map_edit", {"building" : building.id, "map": map.id })) }}
+                    </td>
+                    <td>
+                        {{ buttons.remove_button(path("frontend_building_map_remove", {"building" : building.id, "map": map.id })) }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>{{ "marcro.list.no_maps"|trans({}, "frontend_building_map") }}</p>
+    {% endif %}
 
     <h3>{{ "entity.plural"|trans({}, "entity_marker") }}</h3>
-    {{ marker_macro.list(building.markers) }}
+
+    {% if building.markers|length > 0 %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>{{ "entity.name"|trans({}, "entity_building_map") }}</th>
+                <th>{{ "content"|trans({}, "entity_marker") }}</th>
+                <th>{{ "created_by"|trans({}, "entity_marker") }}</th>
+                <th>{{ "craftsman"|trans({}, "entity_marker") }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for marker in building.markers %}
+                <tr>
+                    <td>{{ marker.buildingMap.name }}</td>
+                    <td>{{ marker.content }}</td>
+                    <td>{{ marker.createdBy }}</td>
+                    <td>{{ marker.craftsman }}</td>
+                    <td>
+                        {% if marker.approved is not null %}
+                            <span class="oi oi-check" title="check icon" aria-hidden="true"></span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>{{ "marcro.list.no_markers"|trans({}, "frontend_building_map_marker") }}</p>
+    {% endif %}
 
     {% if building.archived %}
         <p>

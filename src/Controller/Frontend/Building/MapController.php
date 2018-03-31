@@ -136,6 +136,20 @@ class MapController extends BaseFrontendController
     }
 
     /**
+     * @Route("/{map}/markers", name="frontend_building_map_markers")
+     *
+     * @param Building $building
+     * @param BuildingMap $map
+     * @return Response
+     */
+    public function markersAction(Building $building, BuildingMap $map)
+    {
+        $arr["building"] = $building;
+        $arr['map'] = $map;
+        return $this->render('frontend/building/map/markers.html.twig', $arr);
+    }
+
+    /**
      * @Route("/{map}/remove", name="frontend_building_map_remove")
      *
      * @param Request $request

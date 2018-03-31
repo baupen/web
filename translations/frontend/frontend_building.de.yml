@@ -52,3 +52,9 @@ notify:
 
       Freundliche Grüsse
     action_text: "Mängelliste ansehen"
+
+markers:
+  title: 'Markierungen bearbeiten'
+  description: 'Texte bearbeiten'
+  save: 'speichern'
+  click_on_marker: 'Klicken Sie auf eine Markierung links um die Karte anzuzeigen'
