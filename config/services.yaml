@@ -38,3 +38,8 @@ services:
 
     App\Service\EmailService:
         arguments: ["@mailer", "@doctrine", "@logger","@twig","%env(MAILER_SENDER)%"]
+
+    # tag it with serializer so datetime is serialized in a meaningful way
+    Symfony\Component\Serializer\Normalizer\DateTimeNormalizer:
+        public: false
+        tags: ['serializer.normalizer']

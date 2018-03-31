@@ -36,6 +36,7 @@ evaluate:
   unpublish_craftsmen: 'Zugriff der Handwerker wieder entfernen'
   publish_map: 'Neuer Link setzen'
   see_map: "ansehen"
+  see_craftsman: 'ansehen'
 
 
 notify:

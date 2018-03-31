@@ -1,33 +1,15 @@
 {% extends 'layout_base.html.twig' %}
+{% import "widgets/breadcrumb.html.twig" as breadcrumb %}
 
 {% block content %}
-    {% set _block_title = block("title") %}
     <section class="content">
         {% if breadcrumbs is defined %}
-            <div class="container default-color index-container">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        {% for breadcrumb in breadcrumbs %}
-                            {% if breadcrumb.path != app.request.pathinfo %}
-                                <li class="breadcrumb-item">
-                                    <a href="{{ breadcrumb.path }}">
-                                        {{ breadcrumb.name }}
-                                    </a>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-
-                        <li class="breadcrumb-item active" aria-current="page">
-                            {{ _block_title }}
-                        </li>
-                    </ol>
-                </nav>
-            </div>
+            {{ breadcrumb.breadcrumbs(breadcrumbs, app.request, block("title")) }}
         {% endif %}
         <div class="container index-container default-color">
             <div class="row">
                 <div class="col-md-12">
-                    <h1>{{ _block_title }}</h1>
+                    <h1>{{ block("title") }}</h1>
                     <h2>{% block description %}{% endblock %}</h2>
                     {% block single_content %}
                     {% endblock single_content %}

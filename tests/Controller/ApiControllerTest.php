@@ -11,6 +11,7 @@ namespace App\Tests\Controller;
 use App\Api\Response\LoginResponse;
 use App\Api\Request\SyncRequest;
 use App\Api\Response\SyncResponse;
+use App\Controller\ApiController;
 use App\DataFixtures\LoadMarkerData;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Base\FixturesTestCase;
@@ -21,12 +22,27 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class ApiControllerTest extends FixturesTestCase
 {
     /**
+     * Creates a Client.
+     *
+     * @param array $options An array of options to pass to the createKernel class
+     * @param array $server An array of server parameters
+     *
+     * @return Client A Client instance
+     */
+    protected static function createClient(array $options = array(), array $server = array())
+    {
+        $client = parent::createClient($options, $server);
+        $client->getContainer()->set("serializer", ApiController::getSerializer());
+        return $client;
+    }
+
+    /**
      * tests the login functionality
      */
     public function testLogin()
     {
         $client = static::createClient();
-        $serializer = $client->getContainer()->get("serializer");
+        $serializer = ApiController::getSerializer(); //$client->getContainer()->get("serializer");
 
         $doRequest = function ($identifier, $password) use ($client) {
             $client->request(
@@ -43,7 +59,6 @@ class ApiControllerTest extends FixturesTestCase
             $response = $client->getResponse();
 
             $this->assertEquals(200, $response->getStatusCode());
-
 
             /* @var LoginResponse $loginResponse */
             $loginResponse = $serializer->deserialize($response->getContent(), LoginResponse::class, "json");

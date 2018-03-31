@@ -146,7 +146,12 @@ class MapController extends BaseFrontendController
     {
         $arr["building"] = $building;
         $arr['map'] = $map;
-        return $this->render('frontend/building/map/markers.html.twig', $arr);
+        return $this->render(
+            'frontend/building/map/markers.html.twig',
+            $arr,
+            null,
+            $this->getBuildingBreadcrumbs($building)
+        );
     }
 
     /**

@@ -37,6 +37,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -69,6 +70,7 @@ class ApiController extends BaseDoctrineController
      */
     public function loginAction(Request $request, SerializerInterface $serializer)
     {
+        $normalizer = new DateTimeNormalizer();
         if (!($content = $request->getContent())) {
             return $this->failed(ApiStatus::EMPTY_REQUEST);
         }
@@ -281,7 +283,23 @@ class ApiController extends BaseDoctrineController
         $response->setApiStatus($apiError);
         $response->setApiErrorMessage(ApiStatus::getTranslationForValue($apiError, $this->get("translator")));
 
+
         return $this->json($response);
+    }
+
+    /**
+     * @return Serializer
+     */
+    public static function getSerializer()
+    {
+        $normalizer = new ObjectNormalizer();
+        $normalizer->setCircularReferenceLimit(0);
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            /* @var IdTrait $object */
+            return $object->getId();
+        });
+
+        return new Serializer([new DateTimeNormalizer(), $normalizer], [new JsonEncoder()]);
     }
 
     /**
@@ -296,18 +314,10 @@ class ApiController extends BaseDoctrineController
      */
     protected function json($data, int $status = 200, array $headers = array(), array $context = array()): JsonResponse
     {
-        $normalizer = new ObjectNormalizer();
-        $normalizer->setCircularReferenceLimit(0);
-        $normalizer->setCircularReferenceHandler(function ($object) {
-            /* @var IdTrait $object */
-            return $object->getId();
-        });
-
-        $serializer = new Serializer([$normalizer], [new JsonEncoder()]);
+        $serializer = static::getSerializer();
 
         if ($data instanceof BaseResponse) {
             $data->prepareSerialization();
-
         }
 
         $json = $serializer->serialize($data, 'json', array_merge(array(

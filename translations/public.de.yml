@@ -2,6 +2,7 @@ view:
   title: 'Mängelliste'
   description: 'Noch vorzunehmende Änderungen'
   approved: "Diese Änderungen wurden von uns verifiziert"
+  print: 'Jetzt drucken'
 
 not_accessible:
   title: 'Nicht verfügbar'

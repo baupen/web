@@ -12,7 +12,7 @@
                 <div class="col-md-12">
                     <h1>{{ block("title") }}</h1>
                     <h2>{{ block("description") }}</h2>
-
+                    <button class="btn btn-outline-secondary" onclick="window.print()">{{ "view.print"|trans }}</button>
                 </div>
             </div>
         </div>
@@ -20,18 +20,25 @@
         {% for marker in pending_markers %}
             <div class="container index-container default-color">
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-6">
+
+
                         <blockquote class="blockquote">
                             <p class="mb-0">{{ marker.content }}</p>
                             <footer class="blockquote-footer"> {{ marker.createdBy.fullName }}
                                 ({{ marker.createdAt|dateFormat }})
                             </footer>
                         </blockquote>
-
-                        <img class="img-fluid" src="{{ path("public_render", {"marker": marker.id}) }}">
+                        <a href="{{ path("public_render", {"marker": marker.id}) }}"
+                           data-toggle="lightbox" data-type="image" data-gallery="{{ marker.id }}">
+                            <img class="img-fluid" src="{{ path("public_render", {"marker": marker.id}) }}">
+                        </a>
                     </div>
-                    <div class="col-md-4">
-                        <img class="img-fluid" src="/upload/{{ marker.imageFileName }}">
+                    <div class="col-md-6">
+                        <a href="/upload/{{ marker.imageFileName }}" data-toggle="lightbox"
+                           data-type="image" data-gallery="{{ marker.id }}">
+                            <img class="img-fluid" src="/upload/{{ marker.imageFileName }}">
+                        </a>
                     </div>
                 </div>
             </div>

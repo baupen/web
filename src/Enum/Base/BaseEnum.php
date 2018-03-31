@@ -91,7 +91,7 @@ abstract class BaseEnum
 
             foreach ($choices as $name => $value) {
                 if ($value === $enumValue) {
-                    $translator->trans(strtolower($name), [], $this->camelCaseToTranslation($reflection->getShortName()));
+                    return $translator->trans(strtolower($name), [], "enum_" . $this->camelCaseToTranslation($reflection->getShortName()));
                 }
             }
         } catch (\ReflectionException $e) {

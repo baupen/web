@@ -8,12 +8,12 @@
 
 {% block content %}
     <section class="content">
+        {{ breadcrumb.breadcrumbs(breadcrumbs, app.request, block("title")) }}
         <div class="container index-container default-color">
             <div class="row">
                 <div class="col-md-12">
                     <h1>{{ block("title") }}</h1>
                     <h2>{{ block("description") }}</h2>
-
                 </div>
             </div>
         </div>
@@ -21,9 +21,20 @@
         {% for marker in map.markers %}
             <div class="container index-container default-color">
                 <div class="row">
-                    <div class="col-md-8">
-                        <img class="img-fluid" src="{{ path("public_render", {"marker": marker.id}) }}">
-
+                    <div class="col-md-6">
+                        <a href="{{ path("public_render", {"marker": marker.id}) }}"
+                           data-toggle="lightbox" data-type="image" data-gallery="{{ marker.id }}">
+                            <img class="img-fluid" src="{{ path("public_render", {"marker": marker.id}) }}">
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="/upload/{{ marker.imageFileName }}" data-toggle="lightbox"
+                           data-type="image" data-gallery="{{ marker.id }}">
+                            <img class="img-fluid" data-toggle="lightbox" src="/upload/{{ marker.imageFileName }}">
+                        </a>
+                    </div>
+                    <div class="col-md-12">
+                        <hr/>
                         <form action="{{ path("frontend_ajax_marker_edit", {"marker": marker.id}) }}" method="post"
                               class="ajax-form">
                             <input type="hidden" name="back_url" value="{{ app.request.uri }}">
@@ -40,13 +51,6 @@
                                 {{ "markers.save"|trans }}
                             </button>
                         </form>
-
-                        <footer class="blockquote-footer"> {{ marker.createdBy.fullName }}
-                            ({{ marker.createdAt|dateFormat }})
-                        </footer>
-                    </div>
-                    <div class="col-md-4">
-                        <img class="img-fluid" src="/upload/{{ marker.imageFileName }}">
                     </div>
                 </div>
             </div>

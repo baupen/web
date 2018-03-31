@@ -41,6 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -80,32 +81,34 @@ class PublicController extends BaseDoctrineController
             $width = $image->getWidth();
             $height = $image->getHeight();
 
+            $newWidth = $width * $marker->getFrameYLength();
+            $newHeight = $height * $marker->getFrameXHeight();
             $image = $image->crop(
-                (int)($width * $marker->getFrameYLength()),
-                (int)($height * $marker->getFrameXHeight()),
+                (int)($newWidth),
+                (int)($newHeight),
                 (int)($width * $marker->getFrameXPercentage()),
                 (int)($height * $marker->getFrameYPercentage())
             );
 
-            $xPos = $width * $marker->getMarkXPercentage();
-            $yPos = $height * $marker->getMarkYPercentage();
 
-            $sensibleNumber = function ($relative) use ($width) {
-                return (int)($width / 1000 * $relative);
+            $xPos = $newWidth * $marker->getMarkXPercentage();
+            $yPos = $newHeight * $marker->getMarkYPercentage();
+
+            $total = $newWidth + $newHeight;
+
+            $sensibleNumber = function ($relative) use ($total) {
+                return (int)($total / 200 * $relative);
             };
 
-            $color = "#e00000";
-            $image->circle($sensibleNumber(1), $xPos, $yPos, function ($draw) use ($color) {
+            $color = "#403075";
+            $image = $image->circle($sensibleNumber(1), $xPos, $yPos, function ($draw) use ($color) {
                 $draw->background($color);
             });
 
-            $image->circle($sensibleNumber(3.2), $xPos, $yPos, function ($draw) use ($color, $sensibleNumber) {
-                $draw->border($sensibleNumber(0.2), $color);
-            });
-
-            $image->circle($sensibleNumber(8.6), $xPos, $yPos, function ($draw) use ($color, $sensibleNumber) {
+            $image = $image->circle($sensibleNumber(6), $xPos, $yPos, function ($draw) use ($color, $sensibleNumber) {
                 $draw->border($sensibleNumber(0.6), $color);
             });
+
 
             $image->save($renderFilename);
         }

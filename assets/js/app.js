@@ -2,8 +2,10 @@ require("../sass/app.sass");
 var $ = require("jquery");
 var bootstrap = require("bootstrap");
 var multiselect = require("bootstrap-multiselect/dist/js/bootstrap-multiselect.js");
+var ekkoLightbox = require("ekko-lightbox");
 
 window.$ = $;
+window.ekkoLightbox = ekkoLightbox;
 
 //prevent double submit & give user instant feedback
 var disableFormButton = function () {
@@ -25,8 +27,18 @@ var initializeSelects = function () {
     });
 };
 
+var initializeLightbox = function (event) {
+    event.preventDefault();
+    $(this).ekkoLightbox();
+    console.log("found");
+};
+
 
 $(document).ready(function () {
+    console.log("stuff");
     $("form").on("submit", disableFormButton);
+    $("a[data-toggle=lightbox]").on('click', initializeLightbox);
     initializeSelects();
+
 });
+
