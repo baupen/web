@@ -74,7 +74,7 @@ class PublicController extends BaseDoctrineController
             $marker->getMarkXPercentage() . $marker->getMarkYPercentage() .
             ".jpg";
 
-        if (!file_exists($renderFilename) || true) {
+        if (!file_exists($renderFilename)) {
             $manager = new ImageManager(array('driver' => 'imagick'));
             $image = $manager->make($imageFileName);
 
