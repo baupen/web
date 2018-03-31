@@ -14,7 +14,6 @@ namespace App\DataFixtures;
 use App\DataFixtures\Base\BaseFixture;
 use App\Entity\AppUser;
 use App\Entity\Building;
-use App\Entity\Craftsman;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class LoadBuildingData extends BaseFixture

@@ -16,7 +16,6 @@ use App\Api\ApiSerializable;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
-use App\Enum\EmailType;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

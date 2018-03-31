@@ -18,7 +18,6 @@ use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\PublicAccessibleTrait;
 use App\Entity\Traits\ThingTrait;
-use App\Enum\EmailType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 

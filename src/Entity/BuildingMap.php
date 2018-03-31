@@ -17,11 +17,9 @@ use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\PublicAccessibleTrait;
 use App\Entity\Traits\ThingTrait;
-use App\Enum\EmailType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * An Email is a sent email to the specified receivers.

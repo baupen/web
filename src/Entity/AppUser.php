@@ -16,14 +16,8 @@ use App\Api\ApiSerializable;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\PersonTrait;
-use App\Entity\Traits\UserTrait;
-use App\Enum\MarkerType;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\DBAL\Migrations\Configuration\ArrayConfiguration;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
-use Symfony\Component\Security\Core\User\EquatableInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AppUserRepository")

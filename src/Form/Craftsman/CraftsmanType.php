@@ -8,18 +8,10 @@
 
 namespace App\Form\Craftsman;
 
-use App\Entity\AppUser;
 use App\Entity\Craftsman;
-use App\Entity\FrontendUser;
-use App\Entity\Traits\PersonTrait;
 use App\Form\Base\BaseAbstractType;
-use App\Form\Traits\Address\AddressType;
 use App\Form\Traits\Communication\CommunicationType;
-use App\Form\Traits\Person\PersonType;
 use App\Form\Traits\Thing\ThingType;
-use App\Form\Traits\User\RegisterType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 

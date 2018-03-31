@@ -9,16 +9,8 @@
 namespace App\Api\Request;
 
 
-use App\Api\ApiSerializable;
 use App\Api\Request\Base\BaseRequest;
-use App\Api\Response\Base\BaseResponse;
-use App\Entity\AppUser;
-use App\Entity\Building;
-use App\Entity\BuildingMap;
-use App\Entity\Craftsman;
 use App\Entity\Marker;
-use AppTestBundle\Entity\FunctionalTests\User;
-use Symfony\Component\Validator\Constraints as Assert;
 
 class SyncRequest extends BaseRequest
 {

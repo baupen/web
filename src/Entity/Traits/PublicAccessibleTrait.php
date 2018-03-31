@@ -13,7 +13,6 @@ namespace App\Entity\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /*
  * Address information

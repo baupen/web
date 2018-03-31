@@ -14,7 +14,6 @@ namespace App\Controller\Frontend\Building;
 use App\Controller\Frontend\Base\BaseFrontendController;
 use App\Entity\Building;
 use App\Entity\BuildingMap;
-use App\Entity\Map;
 use App\Model\Breadcrumb;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -34,6 +33,7 @@ class MapController extends BaseFrontendController
      * @Route("/new", name="frontend_building_map_new")
      *
      * @param Request $request
+     * @param Building $building
      * @return Response
      */
     public function newAction(Request $request, Building $building)
@@ -90,6 +90,7 @@ class MapController extends BaseFrontendController
      * @Route("/{map}/edit", name="frontend_building_map_edit")
      *
      * @param Request $request
+     * @param Building $building
      * @param BuildingMap $map
      * @return Response
      */

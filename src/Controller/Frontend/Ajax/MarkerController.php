@@ -13,16 +13,12 @@ namespace App\Controller\Frontend\Ajax;
 
 use App\Api\Response\Base\BaseResponse;
 use App\Controller\Base\BaseDoctrineController;
-use App\Controller\Frontend\Base\BaseFrontendController;
-use App\Entity\Building;
-use App\Entity\Craftsman;
 use App\Entity\Marker;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @Route("/marker")

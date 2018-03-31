@@ -12,11 +12,8 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
-use App\Entity\AppUser;
 use App\Entity\Building;
 use App\Entity\BuildingMap;
-use App\Entity\Craftsman;
-use App\Extension\MyTwigExtension;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class LoadBuildingMapData extends BaseFixture

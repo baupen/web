@@ -9,13 +9,10 @@
 namespace App\Tests\Controller;
 
 use App\Api\Response\LoginResponse;
-use App\Api\Request\SyncRequest;
 use App\Api\Response\SyncResponse;
 use App\Controller\ApiController;
-use App\DataFixtures\LoadMarkerData;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Base\FixturesTestCase;
-use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 

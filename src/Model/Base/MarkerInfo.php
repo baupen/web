@@ -9,9 +9,6 @@
 namespace App\Model\Base;
 
 
-use App\Entity\BuildingMap;
-use App\Entity\Craftsman;
-
 class MarkerInfo
 {
     /**

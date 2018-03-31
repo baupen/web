@@ -9,7 +9,6 @@
 namespace App\Api\Response\Base;
 
 
-use App\Api\ApiSerializable;
 use App\Enum\ApiStatus;
 
 class BaseResponse

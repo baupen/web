@@ -6,14 +6,15 @@
  * Time: 17:17
  */
 
-namespace App\Form\BuildingMap;
+namespace App\Form\BackendUser;
 
-use App\Entity\BuildingMap;
+use App\Entity\BackendUser;
 use App\Form\Base\BaseAbstractType;
+use App\Form\Traits\User\RegisterType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class DeleteBuildingMapType extends BaseAbstractType
+class BackendUserType extends BaseAbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -21,7 +22,7 @@ class DeleteBuildingMapType extends BaseAbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
+        $builder->add('user', RegisterType::class, ["label" => false, "inherit_data" => true]);
     }
 
     /**
@@ -30,8 +31,8 @@ class DeleteBuildingMapType extends BaseAbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'translation_domain' => 'entity_building_map',
-            'data_class' => BuildingMap::class
+            'translation_domain' => 'trait_user',
+            'data_class' => BackendUser::class
         ]);
     }
 }

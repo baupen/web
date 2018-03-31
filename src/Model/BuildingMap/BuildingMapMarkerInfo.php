@@ -10,7 +10,6 @@ namespace App\Model\BuildingMap;
 
 
 use App\Entity\BuildingMap;
-use App\Entity\Craftsman;
 use App\Model\Base\MarkerInfo;
 
 class BuildingMapMarkerInfo extends MarkerInfo
