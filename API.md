@@ -175,50 +175,8 @@ response
 			"approved": null,
 			"createdBy": "03D567A8-497E-47D0-B4F6-DF620EA8D6D3",
 			"id": "FAD29C44-D515-4A20-A689-0CCAA1246588",
-			"createdAt": {
-				"timezone": {
-					"name": "UTC",
-					"transitions": [
-						{
-							"ts": -9223372036854776000,
-							"time": "-292277022657-01-27T08:29:52+0000",
-							"offset": 0,
-							"isdst": false,
-							"abbr": "UTC"
-						}
-					],
-					"location": {
-						"country_code": "??",
-						"latitude": 0,
-						"longitude": 0,
-						"comments": ""
-					}
-				},
-				"offset": 0,
-				"timestamp": 1520928889
-			},
-			"lastChangedAt": {
-				"timezone": {
-					"name": "UTC",
-					"transitions": [
-						{
-							"ts": -9223372036854776000,
-							"time": "-292277022657-01-27T08:29:52+0000",
-							"offset": 0,
-							"isdst": false,
-							"abbr": "UTC"
-						}
-					],
-					"location": {
-						"country_code": "??",
-						"latitude": 0,
-						"longitude": 0,
-						"comments": ""
-					}
-				},
-				"offset": 0,
-				"timestamp": 1520928889
-			},
+			"createdAt": "2018-03-12T18:01:45.347956",
+			"lastChangedAt": "2018-03-12T18:01:45.347956",
 			"fullIdentifier": "13.03.2018 08:14"
 		}
 	],
