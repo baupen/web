@@ -7,6 +7,11 @@ app.frontend:
     type:     annotation
     prefix:   /frontend
 
+app.frontend.ajax:
+    resource: "../src/Controller/Frontend/Ajax"
+    type:     annotation
+    prefix:   /frontend/ajax
+
 app.frontend.building:
     resource: "../src/Controller/Frontend/Building"
     type:     annotation
@@ -16,8 +21,3 @@ app.backend:
     resource: "../src/Controller/Backend"
     type:     annotation
     prefix:   /backend
-
-app.ajax:
-    resource: "../src/Controller/Ajax"
-    type:     annotation
-    prefix:   /ajax

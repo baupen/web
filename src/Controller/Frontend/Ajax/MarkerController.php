@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Controller\Ajax;
+namespace App\Controller\Frontend\Ajax;
 
 use App\Api\Response\Base\BaseResponse;
 use App\Controller\Base\BaseDoctrineController;
@@ -17,11 +17,6 @@ use App\Controller\Frontend\Base\BaseFrontendController;
 use App\Entity\Building;
 use App\Entity\Craftsman;
 use App\Entity\Marker;
-use App\Model\Base\MarkerInfo;
-use App\Model\Breadcrumb;
-use App\Model\BuildingMap\BuildingMapMarkerInfo;
-use App\Model\Craftsman\CraftsmanMarkerInfo;
-use App\Service\Interfaces\EmailServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,7 +33,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 class MarkerController extends BaseDoctrineController
 {
     /**
-     * @Route("/{marker}/edit", name="ajax_marker_edit")
+     * @Route("/{marker}/edit", name="frontend_ajax_marker_edit")
      * @Method({"POST"})
      *
      * @param Request $request
