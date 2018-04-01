@@ -72,6 +72,24 @@ response
 *in binary*
 
 
+**/file/upload**
+request
+all files with the correct filename & additionally this json:
+````json
+{
+	"authenticationToken": "WhyDJ6FZqAQHD32aSdgC",
+	"fileName": "image.jpg"
+}
+````
+
+response
+````json
+{
+   "apiStatus":0,
+   "apiErrorMessage":null
+}
+````
+
 **/sync**  
 request
 ````json

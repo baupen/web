@@ -7,7 +7,6 @@
     "ext-iconv": "*",
     "ext-pdo_sqlite": "*",
     "ext-imagick": "*",
-    "deployer/deployer": "^6.1",
     "doctrine/doctrine-fixtures-bundle": "^3.0",
     "easycorp/easyadmin-bundle": "^1.17",
     "fzaninotto/faker": "^1.7",
@@ -37,6 +36,7 @@
     "symfony/webpack-encore-pack": "^1.0"
   },
   "require-dev": {
+    "deployer/deployer": "^6.1",
     "codacy/coverage": "^1.4",
     "friendsofphp/php-cs-fixer": "^2.7",
     "symfony/browser-kit": "^4.0",
