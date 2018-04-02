@@ -27,6 +27,7 @@ use App\Entity\Craftsman;
 use App\Entity\Marker;
 use App\Entity\Traits\IdTrait;
 use App\Enum\ApiStatus;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -141,13 +142,6 @@ class ApiController extends BaseDoctrineController
             if (!$file->move($this->getParameter("PUBLIC_DIR") . "/upload", $file->getClientOriginalName())) {
                 return $this->failed(ApiStatus::INVALID_FILE);
             }
-            $marker = $this->getDoctrine()->getRepository(Marker::class)->find($key);
-            if ($marker == null) {
-                return $this->failed(ApiStatus::UNKNOWN_IDENTIFIER);
-            }
-
-            $marker->setImageFileName($file->getClientOriginalName());
-            $this->fastSave($marker);
         }
 
         return $this->json(new BaseResponse());
