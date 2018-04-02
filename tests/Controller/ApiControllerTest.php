@@ -8,6 +8,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Api\Response\Base\BaseResponse;
 use App\Api\Response\LoginResponse;
 use App\Api\Response\SyncResponse;
 use App\Controller\ApiController;
@@ -70,7 +71,6 @@ class ApiControllerTest extends FixturesTestCase
         $checkResponse(ApiStatus::WRONG_PASSWORD);
 
         $doRequest("j", "asdf");
-
         $checkResponse(ApiStatus::SUCCESSFUL);
     }
 
@@ -267,8 +267,6 @@ class ApiControllerTest extends FixturesTestCase
 
         $secondResponse = $client->getResponse();
 
-        file_put_contents("example.html", $secondResponse->getContent());
-
         $this->assertEquals(200, $secondResponse->getStatusCode());
 
         /* @var SyncResponse $secondSyncReponse */
@@ -304,17 +302,17 @@ class ApiControllerTest extends FixturesTestCase
             '/api/file/upload',
             [],
             [$markerId => $file],
-            ["CONTENT_TYPE" => "application/json"],
-            '{"authenticationToken":"' . $realToken . '"}'
+            ["HTTP_MANGEL_AUTHENTICATION_TOKEN" => $realToken]
         );
 
 
         $response = $client->getResponse();
+        file_put_contents("file.html", $response->getContent());
         $this->assertEquals(200, $response->getStatusCode());
 
-        /* @var SyncResponse $syncReponse */
-        $syncReponse = $serializer->deserialize($response->getContent(), SyncResponse::class, "json");
-        $this->assertEquals(ApiStatus::SUCCESSFUL, $syncReponse->getApiStatus());
+        /* @var SyncResponse $uploadResponse */
+        $uploadResponse = $serializer->deserialize($response->getContent(), BaseResponse::class, "json");
+        $this->assertEquals(ApiStatus::SUCCESSFUL, $uploadResponse->getApiStatus());
 
 
         $client->request(

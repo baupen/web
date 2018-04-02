@@ -21,31 +21,43 @@ use Symfony\Component\Validator\Constraints as Assert;
 trait AddressTrait
 {
     /**
+     * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $street;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $streetNr;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $addressLine;
 
     /**
+     * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $postalCode;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $city;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      * @Assert\Country()
      */

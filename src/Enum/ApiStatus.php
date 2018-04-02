@@ -19,7 +19,9 @@ class ApiStatus extends BaseEnum
     const EMPTY_REQUEST = 1;
     const UNKNOWN_IDENTIFIER = 2;
     const WRONG_PASSWORD = 3;
-    const INVALID_AUTHENTICATION_TOKEN = 4;
-    const INVALID_FILE = 5;
-    const EXECUTION_FAILED = 6;
+    const MISSING_AUTHENTICATION_TOKEN = 4;
+    const INVALID_AUTHENTICATION_TOKEN = 5;
+    const INVALID_FILE = 6;
+    const EXECUTION_FAILED = 7;
+    const NO_FILES = 8;
 }

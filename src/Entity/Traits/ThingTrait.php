@@ -21,12 +21,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 trait ThingTrait
 {
     /**
+     * @var string
+     *
      * @ORM\Column(type="text")
      * @Assert\NotBlank()
      */
     private $name;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;

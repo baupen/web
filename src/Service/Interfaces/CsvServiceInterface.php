@@ -25,4 +25,5 @@ interface CsvServiceInterface
      *
      * @return StreamedResponse
      */
+    public function renderCsv($filename, $data, $header = null);
 }

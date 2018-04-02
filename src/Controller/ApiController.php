@@ -117,21 +117,23 @@ class ApiController extends BaseDoctrineController
      * @Route("/file/upload", name="api_file_upload")
      *
      * @param Request $request
-     * @param SerializerInterface $serializer
      * @return Response
      */
-    public function fileUploadAction(Request $request, SerializerInterface $serializer)
+    public function fileUploadAction(Request $request)
     {
-        if (!($content = $request->getContent())) {
-            return $this->failed(ApiStatus::EMPTY_REQUEST);
+        if (!$request->headers->has("mangel-authentication-token")) {
+            return $this->failed(ApiStatus::MISSING_AUTHENTICATION_TOKEN);
         }
 
-        /* @var BaseRequest $authenticationStatusRequest */
-        $authenticationStatusRequest = $serializer->deserialize($content, BaseRequest::class, "json");
+        $authenticationToken = $request->headers->get("mangel-authentication-token");
 
-        $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["authenticationToken" => $authenticationStatusRequest->getAuthenticationToken()]);
+        $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["authenticationToken" => $authenticationToken]);
         if ($user === null) {
             return $this->failed(ApiStatus::INVALID_AUTHENTICATION_TOKEN);
+        }
+
+        if (count($request->files->all()) == 0) {
+            return $this->failed(ApiStatus::NO_FILES);
         }
 
         foreach ($request->files->all() as $key => $file) {

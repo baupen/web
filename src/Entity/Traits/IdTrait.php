@@ -20,6 +20,8 @@ use Doctrine\ORM\Mapping as ORM;
 trait IdTrait
 {
     /**
+     * @var string
+     *
      * @ORM\Id
      * @ORM\Column(name="id", type="guid")
      * @ORM\GeneratedValue(strategy="UUID")

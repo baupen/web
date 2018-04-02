@@ -74,12 +74,10 @@ response
 
 **/file/upload**
 request
-all files with the correct filename & additionally this json:
-````json
-{
-	"authenticationToken": "WhyDJ6FZqAQHD32aSdgC",
-	"fileName": "image.jpg"
-}
+all files with the correct filename as `multipart/form-data` request  
+additionally this header:
+````
+MANGEL_AUTHENTICATION_TOKEN: WhyDJ6FZqAQHD32aSdgC
 ````
 
 response
