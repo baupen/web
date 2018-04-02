@@ -138,11 +138,15 @@ class ApiController extends BaseDoctrineController
 
         foreach ($request->files->all() as $key => $file) {
             /* @var UploadedFile $file */
-            if (!$file->move($this->getParameter("PUBLIC_DIR") . "/upload", $file->getFilename())) {
+            if (!$file->move($this->getParameter("PUBLIC_DIR") . "/upload", $file->getClientOriginalName())) {
                 return $this->failed(ApiStatus::INVALID_FILE);
             }
             $marker = $this->getDoctrine()->getRepository(Marker::class)->find($key);
-            $marker->setImageFileName($file->getFilename());
+            if ($marker == null) {
+                return $this->failed(ApiStatus::UNKNOWN_IDENTIFIER);
+            }
+
+            $marker->setImageFileName($file->getClientOriginalName());
             $this->fastSave($marker);
         }
 
