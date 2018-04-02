@@ -77,7 +77,7 @@ request
 all files with the correct filename as `multipart/form-data` request  
 additionally this header:
 ````
-MANGEL_AUTHENTICATION_TOKEN: WhyDJ6FZqAQHD32aSdgC
+mangel-authentication-token: WhyDJ6FZqAQHD32aSdgC
 ````
 
 response
