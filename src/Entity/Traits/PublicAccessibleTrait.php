@@ -55,7 +55,7 @@ trait PublicAccessibleTrait
      *
      * @param int $validInDays
      */
-    public function publish($validInDays = 30)
+    public function publish($validInDays = 90)
     {
         $this->publicIdentifier = Uuid::uuid4();
         $offset = new \DateTime();

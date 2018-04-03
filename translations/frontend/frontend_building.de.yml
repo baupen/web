@@ -11,6 +11,12 @@ view:
   new_building_map: 'Grundrisse hinzufügen'
   no_markers: 'Noch keine Markierungen hinzugefügt'
   archive: "Gebäude archivieren"
+  see_craftsman_view: 'Handwerkeransicht'
+  send_email_now: "Jetzt Email versenden"
+  send_email_all_now: "Jetzt an alle mit offenen Mängel E-Mails versenden"
+  see_map_view: 'Kartenansicht'
+  all_markers: 'Alle Mängel'
+  marker_by_craftsman: 'Mängel nach Handwerker'
 
 new:
   title: 'Gebäude hinzufügen'
@@ -27,17 +33,6 @@ archived:
   title: "Archivierte Gebäude"
   description: "Die archivierten Gebäude"
   unarchive: "wieder aktiv setzen"
-
-evaluate:
-  title: "Auswertung"
-  description: "Links & Statistiken"
-  by_map: "Nach Karte sortiert"
-  by_craftsman: "Nach Handwerker sortiert"
-  unpublish_craftsmen: 'Zugriff der Handwerker wieder entfernen'
-  publish_map: 'Neuer Link setzen'
-  see_map: "ansehen"
-  see_craftsman: 'ansehen'
-
 
 notify:
   title: 'Handwerker informieren'

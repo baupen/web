@@ -9,6 +9,7 @@
     "@fortawesome/fontawesome": "^1.1",
     "bootstrap": "^4",
     "bootstrap-multiselect": "^0.9",
+    "datatables.net-bs4": "^1.10",
     "ekko-lightbox": "5.3",
     "open-iconic": "^1",
     "open-sans-fontface": "^1.4",

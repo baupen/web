@@ -1,8 +1,11 @@
 entity:
-  name: 'Markierung'
-  plural: 'Markierungen'
-  description: 'Ein Markierung wird auf einem Grundrissplan platziert'
+  name: 'Mangel'
+  plural: 'Mängel'
+  description: 'Ein Mangel wird auf einem Grundrissplan platziert'
 
 content: 'Text'
 created_by: 'Erstellt von'
 craftsman: 'Verantwortlicher Handwerker'
+new_marker_count: 'Neue Mängel'
+open_marker_count: 'Offene Mängel'
+approved: 'OK'

@@ -87,6 +87,13 @@ class Marker extends BaseEntity implements ApiSerializable
     private $content;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private $viewedOnline = false;
+
+    /**
      * @var Craftsman
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="markers")
@@ -314,5 +321,21 @@ class Marker extends BaseEntity implements ApiSerializable
     public function setApproved($approved): void
     {
         $this->approved = $approved;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getViewedOnline(): bool
+    {
+        return $this->viewedOnline;
+    }
+
+    /**
+     * @param bool $viewedOnline
+     */
+    public function setViewedOnline(bool $viewedOnline): void
+    {
+        $this->viewedOnline = $viewedOnline;
     }
 }

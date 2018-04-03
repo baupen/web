@@ -40,6 +40,7 @@ class LoadBuildingData extends BaseFixture
             $building->setStreetNr($entry[3]);
             $building->setPostalCode($entry[4]);
             $building->setCity($entry[5]);
+            $building->publish();
             $manager->persist($building);
 
             foreach ($appUsers as $appUser) {

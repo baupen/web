@@ -129,4 +129,32 @@ class BuildingMap extends BaseEntity implements ApiSerializable
     {
         $this->file = $file;
     }
+
+    /**
+     * @return int
+     */
+    public function newMarkerCount()
+    {
+        $count = 0;
+        foreach ($this->getMarkers() as $marker) {
+            if (!$marker->getViewedOnline()) {
+                $count++;
+            }
+        }
+        return $count;
+    }
+
+    /**
+     * @return int
+     */
+    public function openMarkerCount()
+    {
+        $count = 0;
+        foreach ($this->getMarkers() as $marker) {
+            if (!$marker->getApproved()) {
+                $count++;
+            }
+        }
+        return $count;
+    }
 }

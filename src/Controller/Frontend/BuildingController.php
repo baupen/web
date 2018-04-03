@@ -65,6 +65,7 @@ class BuildingController extends BaseFrontendController
     public function newAction(Request $request)
     {
         $building = new Building();
+        $building->publish();
         $form = $this->handleCreateForm(
             $request,
             $building
@@ -125,6 +126,26 @@ class BuildingController extends BaseFrontendController
     public function viewAction(Building $building)
     {
         $arr["building"] = $building;
+
+        $markers = $building->getMarkers();
+
+        /* @var CraftsmanMarkerInfo[] $craftsmen */
+        $craftsmen = [];
+        foreach ($markers as $marker) {
+            if (!isset($craftsmen[$marker->getCraftsman()->getId()])) {
+                $model = new CraftsmanMarkerInfo();
+                $model->setCraftsman($marker->getCraftsman());
+                $craftsmen[$marker->getCraftsman()->getId()] = $model;
+            }
+            $craftsman = $craftsmen[$marker->getCraftsman()->getId()];
+            if ($marker->getApproved() instanceof \DateTime) {
+                $craftsman->setClosedMarkers($craftsman->getClosedMarkers() + 1);
+            } else {
+                $craftsman->setOpenMarkers($craftsman->getOpenMarkers() + 1);
+            }
+        }
+        $arr["craftsmen"] = $craftsmen;
+
         return $this->render('frontend/building/view.html.twig', $arr);
     }
 
@@ -152,21 +173,6 @@ class BuildingController extends BaseFrontendController
         $building->setIsArchived(true);
         $this->fastSave($building);
         return $this->redirectToRoute("frontend_building_index");
-    }
-
-    /**
-     * @Route("/{building}/un_publish", name="frontend_building_un_publish")
-     *
-     * @param Building $building
-     * @return Response
-     * @throws \Exception
-     */
-    public function unPublicAction(Building $building)
-    {
-        $building->unPublish();
-        $this->fastSave($building);
-
-        return $this->redirectToRoute("frontend_building_evaluate", ["building" => $building->getId()]);
     }
 
     /**
@@ -202,59 +208,7 @@ class BuildingController extends BaseFrontendController
             );
         }
 
-        return $this->redirectToRoute("frontend_building_evaluate", ["building" => $building->getId()]);
-    }
-
-    /**
-     * @Route("/{building}/evaluate", name="frontend_building_evaluate")
-     *
-     * @param Building $building
-     * @return Response
-     */
-    public function evaluateAction(Building $building)
-    {
-        $arr["building"] = $building;
-
-        $setMarkerInfo = function ($marker, $markerInfo) {
-            /* @var Marker $marker */
-            /* @var MarkerInfo $markerInfo */
-            if ($marker->getApproved() instanceof \DateTime) {
-                $markerInfo->setClosedMarkers($markerInfo->getClosedMarkers() + 1);
-            } else {
-                $markerInfo->setOpenMarkers($markerInfo->getOpenMarkers() + 1);
-            }
-        };
-
-        $markers = $building->getMarkers();
-
-        /* @var CraftsmanMarkerInfo[] $craftsmen */
-        $craftsmen = [];
-        foreach ($markers as $marker) {
-            if (!isset($craftsmen[$marker->getCraftsman()->getId()])) {
-                $model = new CraftsmanMarkerInfo();
-                $model->setCraftsman($marker->getCraftsman());
-                $craftsmen[$marker->getCraftsman()->getId()] = $model;
-            }
-            $craftsman = $craftsmen[$marker->getCraftsman()->getId()];
-            $setMarkerInfo($marker, $craftsman);
-        }
-        $arr["craftsmen"] = $craftsmen;
-
-        /* @var BuildingMapMarkerInfo[] $maps */
-        $maps = [];
-        foreach ($markers as $marker) {
-            if (!isset($maps[$marker->getBuildingMap()->getId()])) {
-                $model = new BuildingMapMarkerInfo();
-                $model->setBuildingMap($marker->getBuildingMap());
-                $maps[$marker->getBuildingMap()->getId()] = $model;
-            }
-            $craftsman = $maps[$marker->getBuildingMap()->getId()];
-            $setMarkerInfo($marker, $craftsman);
-        }
-        $arr["maps"] = $maps;
-
-
-        return $this->render('frontend/building/evaluate.html.twig', $arr);
+        return $this->redirectToRoute("frontend_building_view", ["building" => $building->getId()]);
     }
 
     /**

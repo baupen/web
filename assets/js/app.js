@@ -3,6 +3,7 @@ var $ = require("jquery");
 var bootstrap = require("bootstrap");
 var multiselect = require("bootstrap-multiselect/dist/js/bootstrap-multiselect.js");
 var ekkoLightbox = require("ekko-lightbox");
+var dataTable = require("datatables.net-bs4");
 
 window.$ = $;
 window.ekkoLightbox = ekkoLightbox;
@@ -33,15 +34,58 @@ var initializeSelects = function () {
 var initializeLightbox = function (event) {
     event.preventDefault();
     $(this).ekkoLightbox();
-    console.log("found");
 };
 
 
 $(document).ready(function () {
-    console.log("stuff");
     $("form").on("submit", disableFormButton);
     $("a[data-toggle=lightbox]").on('click', initializeLightbox);
     initializeSelects();
 
+    //force reload on user browser button navigation
+    $(window).on('popstate', function () {
+        location.reload(true);
+    });
+
+
+    /* Default class modification */
+    $.extend( dataTable.ext.classes, {
+        sWrapper:      "dataTables_wrapper dt-bootstrap4"
+    } );
+
+    $('.data-table').dataTable(
+        {
+            language: {
+                emptyTable: "Keine Daten in der Tabelle vorhanden",
+                info: "_START_ bis _END_ von _TOTAL_ Einträgen",
+                infoEmpty: "0 bis 0 von 0 Einträgen",
+                infoFiltered: "(gefiltert von _MAX_ Einträgen)",
+                infoPostFix: "",
+                infoThousands: ".",
+                lengthMenu: "_MENU_ Einträge anzeigen",
+                loadingRecords: "Wird geladen...",
+                processing: "Bitte warten...",
+                search: "Suchen",
+                zeroRecords: "Keine Einträge vorhanden.",
+                paginate: {
+                    first: "Erste",
+                    previous: "Zurück",
+                    next: "Nächste",
+                    last: "Letzte"
+                },
+                aria: {
+                    sortAscending: ": aktivieren, um Spalte aufsteigend zu sortieren",
+                    sortDescending: ": aktivieren, um Spalte absteigend zu sortieren"
+                },
+                select: {
+                    rows: {
+                        _: '%d Zeilen ausgewählt',
+                        0: 'Zum Auswählen auf eine Zeile klicken',
+                        1: '1 Zeile ausgewählt'
+                    }
+                }
+            }
+        }
+    );
 });
 

@@ -27,7 +27,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @return Response
  */
-class MapController extends BaseFrontendController
+class MapController extends BaseBuildingController
 {
     /**
      * @Route("/new", name="frontend_building_map_new")
@@ -40,6 +40,7 @@ class MapController extends BaseFrontendController
     {
         $map = new BuildingMap();
         $map->setBuilding($building);
+        $map->publish();
 
         $form = $this->handleCreateForm(
             $request,
@@ -147,6 +148,12 @@ class MapController extends BaseFrontendController
     {
         $arr["building"] = $building;
         $arr['map'] = $map;
+        foreach ($map->getMarkers() as $marker) {
+            if (!$marker->getViewedOnline()) {
+                $marker->setViewedOnline(true);
+                $this->fastSave($marker);
+            }
+        }
         return $this->render(
             'frontend/building/map/markers.html.twig',
             $arr,
@@ -184,55 +191,5 @@ class MapController extends BaseFrontendController
             null,
             $this->getBuildingBreadcrumbs($building)
         );
-    }
-
-    /**
-     * @Route("/{map}/publish", name="frontend_building_map_publish")
-     *
-     * @param Building $building
-     * @param BuildingMap $map
-     * @return Response
-     * @throws \Exception
-     */
-    public function publicAction(Building $building, BuildingMap $map)
-    {
-        $map->publish();
-        $this->fastSave($map);
-
-        return $this->redirectToRoute("frontend_building_evaluate", ["building" => $building->getId()]);
-    }
-
-    /**
-     * @param Building $building
-     * @return Breadcrumb[]
-     */
-    private function getBuildingBreadcrumbs(Building $building)
-    {
-        return [new Breadcrumb(
-            $this->generateUrl("frontend_building_view", ["building" => $building->getId()]),
-            $building->getName()
-        )];
-    }
-
-
-    /**
-     * get the breadcrumbs leading to this controller
-     *
-     * @return Breadcrumb[]
-     */
-    protected function getIndexBreadcrumbs()
-    {
-        $translator = $this->getTranslator();
-
-        return [
-            new Breadcrumb(
-                $this->generateUrl("frontend_dashboard_index"),
-                $translator->trans("index.title", [], "frontend_dashboard")
-            ),
-            new Breadcrumb(
-                $this->generateUrl("frontend_building_index"),
-                $translator->trans("index.title", [], "frontend_building")
-            )
-        ];
     }
 }

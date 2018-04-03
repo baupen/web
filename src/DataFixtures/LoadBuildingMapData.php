@@ -44,6 +44,7 @@ class LoadBuildingMapData extends BaseFixture
                 $map->setFileName($entry[0]);
                 $map->setName($entry[1]);
                 $map->setDescription($entry[2]);
+                $map->publish();
                 $manager->persist($map);
 
                 //move file to correct place
