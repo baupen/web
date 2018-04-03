@@ -54,13 +54,26 @@ var initializeAjax = function (event) {
 
 
 $(document).ready(function () {
+
     $("form").on("submit", disableFormButton);
     $("a[data-toggle=lightbox]").on('click', initializeLightbox);
     initializeSelects();
 
-    if ($("html").hasClass("print")) {
+    $(".print-button").on("click", function (e) {
+        var $button = $(this);
+        var href = $button.attr("data-target");
+        $("<iframe class='printpage'>") // create a new iframe element
+            .attr("src", href) // point the iframe to the page link you want to print
+            .appendTo("body");
+    });
+
+    var url = window.location.href;
+    var endOfUrl = url.substr(url.lastIndexOf('/') + 1);
+
+    if (endOfUrl === "print") {
         window.print();
     }
+
 
     //force reload on user browser button navigation
     $(window).on('popstate', function () {

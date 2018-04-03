@@ -19,6 +19,7 @@ use App\Entity\Craftsman;
 use App\Entity\Marker;
 use App\Model\BuildingMap\BuildingMapMarkerInfo;
 use Intervention\Image\ImageManager;
+use Psr\Http\Message\ResponseInterface;
 use Spatie\PdfToImage\Exceptions\PdfDoesNotExist;
 use Spatie\PdfToImage\Pdf;
 use Symfony\Component\HttpFoundation\Response;
@@ -100,15 +101,20 @@ class PublicController extends BaseDoctrineController
      */
     public function viewAction($guid)
     {
-        //probably a map
-        $map = $this->getDoctrine()->getRepository(BuildingMap::class)->findOneBy(["publicIdentifier" => $guid]);
-        if ($map == null || !$map->isAccessible()) {
-            return $this->notAccessibleError();
-        }
-
-        /* @var Marker[] $markers */
-        $markers = $map->getMarkers()->toArray();
+        $markers = $this->getMarkers($guid);
         return $this->viewMarkers($markers);
+    }
+
+
+    /**
+     * @Route("/{guid}/print", name="public_view")
+     * @param $guid
+     * @return Response
+     */
+    public function viewPrintAction($guid)
+    {
+        $markers = $this->getMarkers($guid);
+        return $this->printMarkers($markers);
     }
 
     /**
@@ -161,11 +167,33 @@ class PublicController extends BaseDoctrineController
     }
 
     /**
-     * @param Marker[] $markers
+     * @param $guid
+     * @return Marker[]|Response
+     */
+    private function getMarkers($guid)
+    {
+
+        //probably a map
+        $map = $this->getDoctrine()->getRepository(BuildingMap::class)->findOneBy(["publicIdentifier" => $guid]);
+        if ($map == null || !$map->isAccessible()) {
+            return $this->notAccessibleError();
+        }
+
+        /* @var Marker[] $markers */
+        $markers = $map->getMarkers()->toArray();
+        return $markers;
+    }
+
+    /**
+     * @param Marker[]|Response $markers
      * @return Response
      */
-    private function viewMarkers(array $markers)
+    private function viewMarkers($markers)
     {
+        if ($markers instanceof Response) {
+            return $markers;
+        }
+
         /* @var Marker[] $pendingMarkers */
         $pendingMarkers = [];
         /* @var Marker[] $approvedMarkers */
@@ -182,11 +210,15 @@ class PublicController extends BaseDoctrineController
     }
 
     /**
-     * @param Marker[] $markers
+     * @param Marker[]|Response $markers
      * @return Response
      */
-    private function printMarkers(array $markers)
+    private function printMarkers($markers)
     {
+        if ($markers instanceof Response) {
+            return $markers;
+        }
+
         /* @var BuildingMapMarkerInfo[] $mapMarkerInfo */
         $mapMarkerInfo = [];
         foreach ($markers as $marker) {
