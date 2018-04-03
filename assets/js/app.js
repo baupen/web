@@ -8,6 +8,17 @@ var dataTable = require("datatables.net-bs4");
 window.$ = $;
 window.ekkoLightbox = ekkoLightbox;
 
+//icons
+const fontawesome = require('@fortawesome/fontawesome');
+const building = require('@fortawesome/fontawesome-free-regular/faBuilding');
+const gavel = require('@fortawesome/fontawesome-free-solid/faGavel');
+const user = require('@fortawesome/fontawesome-free-regular/faUser');
+
+fontawesome.library.add(user, building, gavel);
+
+
+
+
 //prevent double submit & give user instant feedback
 var disableFormButton = function () {
     var $form = $(this);
