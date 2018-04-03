@@ -248,7 +248,7 @@ class ApiController extends BaseDoctrineController
         $syncResponse = new SyncResponse();
         $syncResponse->setUser($user);
         $syncResponse->setBuildings($this->getDoctrine()->getRepository(Building::class)->findByAppUser($user));
-        $syncResponse->setCraftsmen($this->getDoctrine()->getRepository(Craftsman::class)->findAll());
+        $syncResponse->setCraftsmen($this->getDoctrine()->getRepository(Craftsman::class)->findBy([], ["name" => "ASC"]));
 
         $maps = [];
         $syncResponse->setBuildingMaps([]);

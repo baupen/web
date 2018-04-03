@@ -52,6 +52,7 @@ class Building extends BaseEntity implements ApiSerializable
      * @var BuildingMap[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="App\Entity\BuildingMap", mappedBy="building")
+     * @ORM\OrderBy({"name": "ASC"})
      */
     private $buildingMaps;
 

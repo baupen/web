@@ -43,3 +43,7 @@ services:
     Symfony\Component\Serializer\Normalizer\DateTimeNormalizer:
         public: false
         tags: ['serializer.normalizer']
+
+    App\EventListener\ExceptionListener:
+      tags:
+       - { name: kernel.event_listener, event: kernel.exception }

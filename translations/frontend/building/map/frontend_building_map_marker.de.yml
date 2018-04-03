@@ -10,6 +10,7 @@ edit:
 remove:
   title: 'Grundriss entfernen'
   confirmation: 'Wollen Sie wirklich den Grundriss %identifier% entfernen?'
+
 marcro:
   list:
     no_markers: 'frontend_building_map_marker'

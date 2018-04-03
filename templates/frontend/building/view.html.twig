@@ -30,7 +30,8 @@
                     <td>{{ map.name }}</td>
                     <td>{{ map.markers.count }}</td>
                     <td>
-                        <a class="btn btn-outline-secondary" href="{{ path("frontend_building_map_markers", {"map" : map.id, "building" : building.id}) }}">
+                        <a class="btn btn-outline-secondary"
+                           href="{{ path("frontend_building_map_markers", {"map" : map.id, "building" : building.id}) }}">
                             {{ "markers.title"|trans }}
                         </a>
                     </td>
@@ -45,7 +46,7 @@
             </tbody>
         </table>
     {% else %}
-        <p>{{ "marcro.list.no_maps"|trans({}, "frontend_building_map") }}</p>
+        <p>{{ "view.no_building_maps"|trans }}</p>
     {% endif %}
 
     <h3>{{ "entity.plural"|trans({}, "entity_marker") }}</h3>
@@ -77,7 +78,7 @@
             </tbody>
         </table>
     {% else %}
-        <p>{{ "marcro.list.no_markers"|trans({}, "frontend_building_map_marker") }}</p>
+        <p>{{ "view.no_markers"|trans }}</p>
     {% endif %}
 
     {% if building.archived %}

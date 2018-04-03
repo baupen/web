@@ -7,14 +7,10 @@
             {{ breadcrumb.breadcrumbs(breadcrumbs, app.request, block("title")) }}
         {% endif %}
         <div class="container index-container default-color">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1>{{ block("title") }}</h1>
-                    <h2>{% block description %}{% endblock %}</h2>
-                    {% block single_content %}
-                    {% endblock single_content %}
-                </div>
-            </div>
+            <h1>{{ block("title") }}</h1>
+            <h2>{% block description %}{% endblock %}</h2>
+            {% block single_content %}
+            {% endblock single_content %}
         </div>
     </section>
 {% endblock %}

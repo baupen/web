@@ -65,7 +65,6 @@ class BuildingController extends BaseFrontendController
     public function newAction(Request $request)
     {
         $building = new Building();
-
         $form = $this->handleCreateForm(
             $request,
             $building

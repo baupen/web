@@ -1,7 +1,3 @@
-marcro:
-  list:
-    no_maps: 'Noch keine Grundrisse'
-
 new:
   title: 'Grundriss hinzufügen'
   description: 'Neuer Grundriss erfassen'

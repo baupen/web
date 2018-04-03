@@ -24,4 +24,5 @@ class ApiStatus extends BaseEnum
     const INVALID_FILE = 6;
     const EXECUTION_FAILED = 7;
     const NO_FILES = 8;
+    const EXCEPTION_OCCURRED = 9;
 }
