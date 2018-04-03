@@ -1,0 +1,32 @@
+{% extends 'print_layout_base.html.twig' %}
+
+{% block title %}{{ "print.title"|trans }}{% endblock %}
+{% block description %}{{ "print.description"|trans }}{% endblock %}
+
+{% trans_default_domain "public" %}
+
+{% block content %}
+    <section class="content">
+        {% for map in map_info %}
+            <h3>{{ map.buildingMap.name }}</h3>
+            <p>{{ map.buildingMap.description }}</p>
+            {% for marker in map.markers %}
+                <div class="row">
+                    <div class="col-md-4">
+                        <img class="img-fluid print-image" src="{{ path("public_render", {"marker": marker.id}) }}">
+                    </div>
+                    <div class="col-md-4">
+                        <img class="img-fluid print-image" src="/upload/{{ marker.imageFileName }}">
+                    </div>
+                    <div class="col-md-4">
+                        <p class="mb-0">{{ marker.content }}</p>
+                        <footer class="blockquote-footer"> {{ marker.createdBy.fullName }}
+                            ({{ marker.createdAt|dateFormat }})
+                        </footer>
+                    </div>
+                </div>
+            {% endfor %}
+            <hr/>
+        {% endfor %}
+    </section>
+{% endblock %}

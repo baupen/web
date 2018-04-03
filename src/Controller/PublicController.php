@@ -17,6 +17,7 @@ use App\Entity\Building;
 use App\Entity\BuildingMap;
 use App\Entity\Craftsman;
 use App\Entity\Marker;
+use App\Model\BuildingMap\BuildingMapMarkerInfo;
 use Intervention\Image\ImageManager;
 use Spatie\PdfToImage\Exceptions\PdfDoesNotExist;
 use Spatie\PdfToImage\Pdf;
@@ -107,7 +108,7 @@ class PublicController extends BaseDoctrineController
 
         /* @var Marker[] $markers */
         $markers = $map->getMarkers()->toArray();
-        return $this->markers($markers);
+        return $this->viewMarkers($markers);
     }
 
     /**
@@ -117,6 +118,29 @@ class PublicController extends BaseDoctrineController
      * @return Response
      */
     public function viewDoubleAction($guid, $guid2)
+    {
+        $markers = $this->getMarkersForDouble($guid, $guid2);
+        return $this->viewMarkers($markers);
+    }
+
+    /**
+     * @Route("/{guid}/{guid2}/print", name="public_view_2_print")
+     * @param $guid
+     * @param $guid2
+     * @return Response
+     */
+    public function viewDoublePrintAction($guid, $guid2)
+    {
+        $markers = $this->getMarkersForDouble($guid, $guid2);
+        return $this->printMarkers($markers);
+    }
+
+    /**
+     * @param $guid
+     * @param $guid2
+     * @return array|Response
+     */
+    private function getMarkersForDouble($guid, $guid2)
     {
         //guid from building, guid2 from craftsman
         $building = $this->getDoctrine()->getRepository(Building::class)->findOneBy(["publicIdentifier" => $guid]);
@@ -133,14 +157,14 @@ class PublicController extends BaseDoctrineController
                 $markers[] = $marker;
             }
         }
-        return $this->markers($markers);
+        return $markers;
     }
 
     /**
      * @param Marker[] $markers
      * @return Response
      */
-    private function markers(array $markers)
+    private function viewMarkers(array $markers)
     {
         /* @var Marker[] $pendingMarkers */
         $pendingMarkers = [];
@@ -155,7 +179,27 @@ class PublicController extends BaseDoctrineController
         }
 
         return $this->render("public/view.html.twig", ["pending_markers" => $pendingMarkers, "approved_markers" => $approvedMarkers]);
+    }
 
+    /**
+     * @param Marker[] $markers
+     * @return Response
+     */
+    private function printMarkers(array $markers)
+    {
+        /* @var BuildingMapMarkerInfo[] $mapMarkerInfo */
+        $mapMarkerInfo = [];
+        foreach ($markers as $marker) {
+            if (!isset($mapMarkerInfo[$marker->getId()])) {
+                $new = new BuildingMapMarkerInfo();
+                $new->setBuildingMap($marker->getBuildingMap());
+                $mapMarkerInfo[$marker->getId()] = $new;
+            }
+            $info = $mapMarkerInfo[$marker->getId()];
+            $info->addMarker($marker);
+        }
+
+        return $this->render("public/print.html.twig", ["map_info" => $mapMarkerInfo]);
     }
 
     private function notAccessibleError()

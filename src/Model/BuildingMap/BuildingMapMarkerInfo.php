@@ -10,14 +10,20 @@ namespace App\Model\BuildingMap;
 
 
 use App\Entity\BuildingMap;
+use App\Entity\Marker;
 use App\Model\Base\MarkerInfo;
 
-class BuildingMapMarkerInfo extends MarkerInfo
+class BuildingMapMarkerInfo
 {
     /**
      * @var BuildingMap
      */
     private $buildingMap;
+
+    /**
+     * @var Marker[]
+     */
+    private $marker = [];
 
     /**
      * @return BuildingMap
@@ -33,5 +39,21 @@ class BuildingMapMarkerInfo extends MarkerInfo
     public function setBuildingMap(BuildingMap $buildingMap): void
     {
         $this->buildingMap = $buildingMap;
+    }
+
+    /**
+     * @param Marker $marker
+     */
+    public function addMarker(Marker $marker)
+    {
+        $this->marker[] = $marker;
+    }
+
+    /**
+     * @return Marker[]
+     */
+    public function getMarkers(): array
+    {
+        return $this->marker;
     }
 }

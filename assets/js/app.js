@@ -58,6 +58,10 @@ $(document).ready(function () {
     $("a[data-toggle=lightbox]").on('click', initializeLightbox);
     initializeSelects();
 
+    if ($("html").hasClass("print")) {
+        window.print();
+    }
+
     //force reload on user browser button navigation
     $(window).on('popstate', function () {
         location.reload(true);

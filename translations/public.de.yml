@@ -4,6 +4,10 @@ view:
   approved: "Diese Änderungen wurden von uns verifiziert"
   print: 'Jetzt drucken'
 
+print:
+  title: "Mängelliste drucken"
+  description: "Noch vorzunehmende Änderungen"
+
 not_accessible:
   title: 'Nicht verfügbar'
   description: 'Der Link ist nicht mehr gültig'
