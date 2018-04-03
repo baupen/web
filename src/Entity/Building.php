@@ -44,7 +44,8 @@ class Building extends BaseEntity implements ApiSerializable
     /**
      * @var AppUser[]|ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="App\Entity\AppUser", mappedBy="buildings")
+     * @ORM\ManyToMany(targetEntity="App\Entity\AppUser", inversedBy="buildings")
+     * @ORM\JoinTable(name="buildings_app_users")
      */
     private $appUsers;
 
