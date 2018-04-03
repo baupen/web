@@ -48,6 +48,8 @@ notify:
 
       Freundliche Grüsse
     action_text: "Mängelliste ansehen"
+  success_all: "Email an %count% Handwerker versandt"
+  success_single: "Email an %name% versandt"
 
 markers:
   title: 'Markierungen bearbeiten'

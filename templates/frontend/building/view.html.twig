@@ -45,7 +45,7 @@
                             </a>
                         </td>
                         <td>
-                            <a class="btn btn-outline-secondary"
+                            <a class="btn btn-outline-info"
                                href="{{ path("public_view", {"guid": map.publicIdentifier}) }}">
                                 {{ "view.see_map_view"|trans }}
                             </a>
@@ -71,7 +71,7 @@
         <h3>{{ "view.marker_by_craftsman"|trans }}</h3>
         <p>
             <a class="btn btn-secondary"
-               href="{{ path("frontend_building_notify", {"building": building.id}) }}">
+               href="{{ path("frontend_building_notify_all", {"building": building.id}) }}">
                 {{ "view.send_email_all_now"|trans }}
             </a>
         </p>
@@ -91,12 +91,12 @@
                     <td>{{ craftsman.openMarkers }}</td>
                     <td>
                         <a class="btn btn-outline-secondary"
-                           href="{{ path("public_view_2", {"guid": building.publicIdentifier, "guid2": craftsman.craftsman.id}) }}">
+                           href="{{ path("frontend_building_notify_craftsman", {"building": building.id, "craftsman" : craftsman.craftsman.id}) }}">
                             {{ "view.send_email_now"|trans }}
                         </a>
                     </td>
                     <td>
-                        <a class="btn btn-outline-secondary"
+                        <a class="btn btn-outline-info"
                            href="{{ path("public_view_2", {"guid": building.publicIdentifier, "guid2": craftsman.craftsman.id}) }}">
                             {{ "view.see_craftsman_view"|trans }}
                         </a>

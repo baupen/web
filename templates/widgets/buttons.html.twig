@@ -10,7 +10,7 @@
 
 {% macro remove_button(href) %}
     {% import _self as buttons %}
-    {{ buttons.button(href, "delete"|trans({}, "common_crud"), "trash") }}
+    {{ buttons.button(href, "delete"|trans({}, "common_crud"), "trash", "danger") }}
 {% endmacro %}
 
 {% macro button(href, text, icon, type = "secondary") %}

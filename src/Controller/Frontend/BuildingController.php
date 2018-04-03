@@ -176,14 +176,14 @@ class BuildingController extends BaseFrontendController
     }
 
     /**
-     * @Route("/{building}/notify", name="frontend_building_notify")
+     * @Route("/{building}/notify/all", name="frontend_building_notify_all")
      *
      * @param Building $building
      * @param EmailServiceInterface $emailService
      * @param TranslatorInterface $translator
      * @return Response
      */
-    public function notifyAction(Building $building, EmailServiceInterface $emailService, TranslatorInterface $translator)
+    public function notifyAllAction(Building $building, EmailServiceInterface $emailService, TranslatorInterface $translator)
     {
         if (!$building->isAccessible()) {
             $building->publish();
@@ -199,16 +199,52 @@ class BuildingController extends BaseFrontendController
         }
 
         foreach ($toInform as $craftsman) {
-            $emailService->sendActionEmail(
-                $craftsman->getEmail(),
-                $translator->trans("notify.email.subject", ["%building_name%" => $building->getName()], "frontend_building"),
-                $translator->trans("notify.email.body", ["%building_name%" => $building->getName(), "%name%" => $craftsman->getName()], "frontend_building"),
-                $translator->trans("notify.email.action_text", [], "frontend_building"),
-                $this->generateUrl("public_view_2", ["guid" => $building->getPublicIdentifier(), "guid2" => $craftsman->getId()])
-            );
+            $this->sendNotifyEmail($building, $craftsman, $translator, $emailService);
         }
 
+        $this->displaySuccess($translator->trans("notify.success_all", ["%count%" => count($toInform)], "frontend_building"));
         return $this->redirectToRoute("frontend_building_view", ["building" => $building->getId()]);
+    }
+
+    /**
+     * @Route("/{building}/notify/{craftsman}", name="frontend_building_notify_craftsman")
+     *
+     * @param Building $building
+     * @param Craftsman $craftsman
+     * @param EmailServiceInterface $emailService
+     * @param TranslatorInterface $translator
+     * @return Response
+     */
+    public function notifyCraftsmanAction(Building $building, Craftsman $craftsman, TranslatorInterface $translator, EmailServiceInterface $emailService)
+    {
+        if (!$building->isAccessible()) {
+            $building->publish();
+            $this->fastSave($building);
+        }
+
+        $this->sendNotifyEmail($building, $craftsman, $translator, $emailService);
+
+        $this->displaySuccess($translator->trans("notify.success_single", ["%name%" => $craftsman->getName()], "frontend_building"));
+        return $this->redirectToRoute("frontend_building_view", ["building" => $building->getId()]);
+    }
+
+    /**
+     * sends the notification email to the craftsman
+     *
+     * @param Building $building
+     * @param Craftsman $craftsman
+     * @param TranslatorInterface $translator
+     * @param EmailServiceInterface $emailService
+     */
+    private function sendNotifyEmail(Building $building, Craftsman $craftsman, TranslatorInterface $translator, EmailServiceInterface $emailService)
+    {
+        $emailService->sendActionEmail(
+            $craftsman->getEmail(),
+            $translator->trans("notify.email.subject", ["%building_name%" => $building->getName()], "frontend_building"),
+            $translator->trans("notify.email.body", ["%building_name%" => $building->getName(), "%name%" => $craftsman->getName()], "frontend_building"),
+            $translator->trans("notify.email.action_text", [], "frontend_building"),
+            $this->generateUrl("public_view_2", ["guid" => $building->getPublicIdentifier(), "guid2" => $craftsman->getId()])
+        );
     }
 
     /**
