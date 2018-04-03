@@ -49,7 +49,7 @@
 <![endif]-->
 
 <div class="background-image">
-    
+
 </div>
 
 <header class="header">
@@ -74,19 +74,24 @@
 </header>
 
 <div class="content-wrapper">
-    {# flashbag #}
-    <div class="container">
-        {% for type, messages in app.session.flashbag.all() %}
-            {% for message in messages %}
-                <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
-                    {{ message|raw }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {% endfor %}
-        {% endfor %}
-    </div>
+    {% set flashes = app.session.flashbag.all() %}
+    {% if flashes|length > 0 %}
+        {# flashbag #}
+        <div class="container">
+            <div class="row">
+                {% for type, messages in flashes %}
+                    {% for message in messages %}
+                        <div class="col-md-12 alert alert-{{ type }} alert-dismissible fade show" role="alert">
+                            {{ message|raw }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
 
     {% block content %}
 

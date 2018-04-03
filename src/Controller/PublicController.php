@@ -107,7 +107,7 @@ class PublicController extends BaseDoctrineController
 
 
     /**
-     * @Route("/{guid}/print", name="public_view")
+     * @Route("/{guid}/print", name="public_view_print")
      * @param $guid
      * @return Response
      */

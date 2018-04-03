@@ -10,6 +10,29 @@
   color: $grey-dark
   @include shadow()
 
+.gray-background, .white-color
+  background-color: $white
+  color: $grey-dark
+  @include shadow()
+
+.area-wrapper
+  padding: 20px
+  @include shadow()
+
+.primary-area
+  background-color: $grey-light
+  color: $grey-dark
+  margin-bottom: 0
+
+.secondary-area
+  background-color: $grey-light
+  opacity: 0.8
+  color: $grey-dark
+  margin-bottom: 0
+
+.shadow
+  @include shadow()
+
 a.gray-background, a.default-color
   &:hover
     background-color: $grey-light

@@ -6,46 +6,57 @@
 {% trans_default_domain "frontend_dashboard" %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="card-columns">
-                <div class="card">
-                    <div class="card-body text-center">
-                        <a href="{{ path("frontend_app_user_index") }}">
-                            <i class="far fa-user fa-10x"></i>
-                            <br/>
-                            <h2 class="text-center icon-description">
-                                {{ "index.title"|trans({}, "frontend_app_user") }}
-                            </h2>
-                        </a>
-                    </div>
-                </div>
+    <section class="content">
 
-                <div class="card">
-                    <div class="card-body  text-center">
-                        <a href="{{ path("frontend_building_index") }}">
-                            <i class="far fa-building fa-10x"></i>
-                            <br/>
-                            <h2 class="text-center icon-description">
-                                {{ "index.title"|trans({}, "frontend_building") }}
-                            </h2>
-                        </a>
-                    </div>
+        <div class="container index-container white-color">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>{{ block("title") }}</h1>
+                    <h2>{{ block("description") }}</h2>
                 </div>
+            </div>
+        </div>
 
-                <div class="card">
-                    <div class="card-body text-center">
-                        <a href="{{ path("frontend_craftsman_index") }}">
-                            <i class="fas fa-gavel fa-10x"></i>
-                            <br/>
-                            <h2 class="text-center icon-description">
-                                {{ "index.title"|trans({}, "frontend_craftsman") }}
-                            </h2>
-                        </a>
+        <div class="container">
+            <div class="row">
+                <div class="card-columns">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <a href="{{ path("frontend_app_user_index") }}">
+                                <i class="far fa-user fa-10x"></i>
+                                <br/>
+                                <h2 class="text-center icon-description">
+                                    {{ "index.title"|trans({}, "frontend_app_user") }}
+                                </h2>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body  text-center">
+                            <a href="{{ path("frontend_building_index") }}">
+                                <i class="far fa-building fa-10x"></i>
+                                <br/>
+                                <h2 class="text-center icon-description">
+                                    {{ "index.title"|trans({}, "frontend_building") }}
+                                </h2>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <a href="{{ path("frontend_craftsman_index") }}">
+                                <i class="fas fa-gavel fa-10x"></i>
+                                <br/>
+                                <h2 class="text-center icon-description">
+                                    {{ "index.title"|trans({}, "frontend_craftsman") }}
+                                </h2>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
+    </section>
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "single_content_base.html.twig" %}
+{% extends "form_content_base.html.twig" %}
 {% import "widgets/buttons.html.twig" as buttons %}
 {% import 'widgets/breadcrumb.html.twig' as breadcrumb %}
 
@@ -6,7 +6,3 @@
 {% block description %}{{ "new.description"|trans }}{% endblock %}
 
 {% trans_default_domain "frontend_craftsman" %}
-
-{% block single_content %}
-    {{ form(form) }}
-{% endblock %}
