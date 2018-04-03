@@ -8,6 +8,8 @@ var dataTable = require("datatables.net-bs4");
 window.$ = $;
 window.ekkoLightbox = ekkoLightbox;
 
+FontAwesomeConfig = { autoAddCss: false }
+
 //icons
 const fontawesome = require('@fortawesome/fontawesome');
 const building = require('@fortawesome/fontawesome-free-regular/faBuilding');
