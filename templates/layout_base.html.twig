@@ -64,9 +64,11 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
                     {{ self.menu_entry("index.title"|trans({}, "static"), path("static_index")) }}
-                    {{ self.menu_entry("about.title"|trans({}, "static"), path("static_about")) }}
                     {{ self.menu_entry("contact.title"|trans({}, "static"), path("static_contact")) }}
+                    {#
+                    {{ self.menu_entry("about.title"|trans({}, "static"), path("static_about")) }}
                     {{ self.menu_entry("register.title"|trans({}, "static"), path("static_register")) }}
+                    #}
                 </ul>
             </div>
         </div>
