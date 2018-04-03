@@ -1,12 +1,11 @@
-{% extends "single_content_base.html.twig" %}
-{% import "widgets/breadcrumb.html.twig" as breadcrumb %}
+{% extends "form_content_base.html.twig" %}
 
 {% block title %}{{ "remove.title"|trans }}{% endblock %}
 {% block description %}{{ map.name }}{% endblock %}
 
 {% trans_default_domain "frontend_building_map" %}
 
-{% block single_content %}
+{% block form_content %}
     <p>
         {{ "remove.confirmation"|trans({'%identifier%': map.name}) }}
     </p>
