@@ -18,42 +18,52 @@
             </div>
         </div>
 
-        {% for marker in map.markers %}
-            <div class="container index-container default-color">
-                <div class="row">
-                    <div class="col-md-6">
-                        <a href="{{ path("public_render", {"marker": marker.id}) }}"
-                           data-toggle="lightbox" data-type="image" data-gallery="{{ marker.id }}">
-                            <img class="img-fluid" src="{{ path("public_render", {"marker": marker.id}) }}">
-                        </a>
-                    </div>
-                    <div class="col-md-6">
-                        <a href="/upload/{{ marker.imageFileName }}" data-toggle="lightbox"
-                           data-type="image" data-gallery="{{ marker.id }}">
-                            <img class="img-fluid" data-toggle="lightbox" src="/upload/{{ marker.imageFileName }}">
-                        </a>
-                    </div>
-                    <div class="col-md-12">
-                        <hr/>
-                        <form action="{{ path("frontend_ajax_marker_edit", {"marker": marker.id}) }}" method="post"
-                              class="ajax-form">
-                            <input type="hidden" name="back_url" value="{{ app.request.uri }}">
-
-                            <div class="form-group">
-                                <label class="form-control-label required" for="content">
-                                    {{ "content"|trans({}, "entity_marker") }}
-                                </label>
-                                <input class="form-control" id="content" type="text" name="content"
-                                       value="{{ marker.content }}">
+        <div class="container">
+            <div class="row">
+                <div class="card-columns">
+                    {% for marker in map.markers %}
+                        <div class="card">
+                            <div class="card-img-top">
+                                <div class="row">
+                                    <div class="col">
+                                        <a href="{{ path("public_render", {"marker": marker.id}) }}"
+                                           data-toggle="lightbox" data-type="image" data-gallery="{{ marker.id }}">
+                                            <img class="img-fluid"
+                                                 src="{{ path("public_render", {"marker": marker.id}) }}">
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        <a href="/upload/{{ marker.imageFileName }}" data-toggle="lightbox"
+                                           data-type="image" data-gallery="{{ marker.id }}">
+                                            <img class="img-fluid" data-toggle="lightbox"
+                                                 src="/upload/{{ marker.imageFileName }}">
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
+                            <div class="card-body">
+                                <form action="{{ path("frontend_ajax_marker_edit", {"marker": marker.id}) }}"
+                                      method="post"
+                                      class="ajax-form">
+                                    <input type="hidden" name="back_url" value="{{ app.request.uri }}">
 
-                            <button type="submit" class="btn btn-secondary">
-                                {{ "markers.save"|trans }}
-                            </button>
-                        </form>
-                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label required" for="content">
+                                            {{ "content"|trans({}, "entity_marker") }}
+                                        </label>
+                                        <input class="form-control" id="content" type="text" name="content"
+                                               value="{{ marker.content }}">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-secondary">
+                                        {{ "markers.save"|trans }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
-        {% endfor %}
+        </div>
     </section>
 {% endblock %}

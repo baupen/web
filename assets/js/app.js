@@ -36,6 +36,22 @@ var initializeLightbox = function (event) {
     $(this).ekkoLightbox();
 };
 
+var initializeAjax = function (event) {
+    event.preventDefault();
+    var $form = $(this);
+    var url = $form.attr("action");
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: $form.serialize(), // serializes the form's elements.
+        success: function (data) {
+            var $buttons = $(".btn", $form);
+            $buttons.removeClass("disabled");
+        }
+    });
+};
+
 
 $(document).ready(function () {
     $("form").on("submit", disableFormButton);
@@ -47,11 +63,12 @@ $(document).ready(function () {
         location.reload(true);
     });
 
+    $('form.ajax-form').on("submit", initializeAjax);
 
     /* Default class modification */
-    $.extend( dataTable.ext.classes, {
-        sWrapper:      "dataTables_wrapper dt-bootstrap4"
-    } );
+    $.extend(dataTable.ext.classes, {
+        sWrapper: "dataTables_wrapper dt-bootstrap4"
+    });
 
     $('.data-table').dataTable(
         {
