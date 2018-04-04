@@ -43,8 +43,9 @@ class LoadBuildingData extends BaseFixture
             $building->publish();
             $manager->persist($building);
 
+
             foreach ($appUsers as $appUser) {
-                $appUser->getBuildings()->add($building);
+                $building->getAppUsers()->add($appUser);
             }
         }
 
