@@ -1,36 +1,27 @@
 index:
   title: 'mangel.io'
-  description: 'Effiziente Inspektionen'
-  login: 'Login'
-  login_description: 'Hier gelangen Sie zum Login'
-  register: 'Registrieren'
-  register_description: 'Noch keinen Account? Hier können Sie sich registrieren'
-  about: 'Über Nodika'
-  about_description: 'Erfahren Sie mehr über diese Webseite'
-  contact: 'Kontakt'
-  contact_description: 'Nehmen Sie bei Fragen Kontakt auf'
-
-introduction:
-  header: 'Überblick'
-  header_description: 'Das webbasierte Tool übernimmt folgende Funktionen'
-  paragraph_1: >
-    Funktion 1
-  paragraph_2: >
-    Funktion 2
-
-about:
-  title: 'Über example.ch'
-  description: 'Erfahren Sie mehr über diese Webseite'
-  features:
-    header: 'Funktionen'
-    header_description: >
-      Diese Webseite mach vieles
-    reason_1_name: 'Grund 1'
-    reason_1_description: 'Beschreibung dieses Grundes'
+  description: 'Baumängel erfassen. Handwerker informieren.'
+  pre_title: 'Bau'
+  pre_we_can_little: "Wenig Funktionen."
+  we_can_little: "Perfekt umgesetzt."
+  we_can_little_description: "Wir konzentrieren uns aufs wesentliche."
+  we_can_little_list_1: "Gebäudepläne erfassen."
+  we_can_little_list_2: "Objekt inspizieren."
+  we_can_little_list_3: "Handwerker informieren."
+  we_can_little_list_4: "Baumängel archivieren."
+  pre_together_with_baulink: "Neu enwickelt."
+  together_with_baulink: "Mit einer Baufirma."
+  together_with_baulink_description: "Wir verstehen die Bedürfnisse"
+  together_with_baulink_description_2: "von Bauleitern, Handwerkern und Verwaltung"
+  together_with_baulink_1: "Weil Software nicht für"
+  together_with_baulink_2: "sondern mit den Benutzern entwicklet werden muss"
+  pre_curious: "Neugierig?"
+  curious: "Kontakt aufnehmen!"
+  curious_description: "Schreiben Sie uns, wir freuen uns auf Sie."
 
 contact:
-  title: 'Noch Fragen?'
-  description: 'Nehmen sie mit uns Kontakt auf'
+  title: 'Kontaktieren Sie uns'
+  description: 'Wir helfen Ihnen gerne.'
   success:
     email_sent: 'Vielen Dank für die Kontaktaufnahme. Wir melden uns.'
 
