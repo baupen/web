@@ -41,13 +41,14 @@ class PublicController extends BaseDoctrineController
     public function renderAction(Marker $marker)
     {
         $mapFileName = __DIR__ . "/../../public/upload/" . $marker->getBuildingMap()->getFileName();
-        $imageFileName = $mapFileName . ".jpg";
+        $imageFileName = "render_" . $mapFileName . ".jpg";
         if (!file_exists($imageFileName)) {
             $pdf = new Pdf($mapFileName);
+            $pdf->setResolution(1080);
             $pdf->saveImage($imageFileName);
         }
 
-        $renderFilename = $mapFileName . "_" .
+        $renderFilename = "render_" . $mapFileName . "_" .
             $marker->getFrameYLength() . $marker->getFrameXHeight() . $marker->getFrameYPercentage() . $marker->getFrameXPercentage() .
             $marker->getMarkXPercentage() . $marker->getMarkYPercentage() .
             ".jpg";
@@ -61,16 +62,20 @@ class PublicController extends BaseDoctrineController
 
             $newWidth = $width * $marker->getFrameYLength();
             $newHeight = $height * $marker->getFrameXHeight();
+
+            $xShift = $width * $marker->getFrameXPercentage();
+            $yShift = $height * $marker->getFrameYPercentage();
+
             $image = $image->crop(
                 (int)($newWidth),
                 (int)($newHeight),
-                (int)($width * $marker->getFrameXPercentage()),
-                (int)($height * $marker->getFrameYPercentage())
+                (int)($xShift),
+                (int)($yShift)
             );
 
 
-            $xPos = $newWidth * $marker->getMarkXPercentage();
-            $yPos = $newHeight * $marker->getMarkYPercentage();
+            $xPos = $width * $marker->getMarkXPercentage() - $xShift;
+            $yPos = $height * $marker->getMarkYPercentage() - $yShift;
 
             $total = $newWidth + $newHeight;
 
