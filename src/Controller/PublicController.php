@@ -53,27 +53,22 @@ class PublicController extends BaseDoctrineController
     public function renderAction(Marker $marker)
     {
         $folder = __DIR__ . "/../../public/upload/";
-        $mapFileName = $folder . $marker->getBuildingMap()->getFileName();
-        $imageFileName = $folder . "render_" . $mapFileName . ".jpg";
-        if (!file_exists($imageFileName)) {
-            $im = $this->getImagickInstance();
-            $im->setResolution(300, 300);
-            $im->readImage($mapFileName . '[0]');
-            $im->setImageFormat('jpeg');
-            $im->writeImage($imageFileName);
-            $im->clear();
-            $im->destroy();
+        $mapFileName = $marker->getBuildingMap()->getFileName();
+        $mapFilePath = $folder . $mapFileName;
+        $imageFilePath = $folder . "render_" . $mapFileName . ".jpg";
+        if (!file_exists($imageFilePath)) {
+            exec("gs -sDEVICE=jpeg -r300 -dJPEGQ=80 -dUseCropBox -o " . $imageFilePath . " " . $mapFilePath);
         }
 
         $fileName = md5(
             $marker->getFrameYLength() . $marker->getFrameXHeight() . $marker->getFrameYPercentage() . $marker->getFrameXPercentage() .
             $marker->getMarkXPercentage() . $marker->getMarkYPercentage()
         );
-        $renderFilename = "render_" . $mapFileName . "_" . $fileName . ".jpg";
+        $renderFilename = $folder . "render_" . $mapFileName . "_" . $fileName . ".jpg";
 
-        if (!file_exists($renderFilename)) {
+        if (!file_exists($renderFilename) || true) {
             $image = $this->getImagickInstance();
-            $image->readImage($imageFileName);
+            $image->readImage($imageFilePath);
 
             $width = $image->getImageGeometry()["width"];
             $height = $image->getImageGeometry()["height"];
@@ -101,7 +96,7 @@ class PublicController extends BaseDoctrineController
                 return (int)($total / 200 * $relative);
             };
 
-            $color = "#403075";
+            $color = "rgb(64, 48, 117)";
             $fillColor = new \ImagickPixel($color);
 
             $draw = new ImagickDraw();
@@ -110,14 +105,15 @@ class PublicController extends BaseDoctrineController
 
             $image->drawImage($draw);
 
-
             $draw = new ImagickDraw();
             $draw->circle($xPos, $yPos, $xPos + $sensibleNumber(6), $yPos);
             $draw->setStrokeColor($fillColor);
-            $draw->setStrokeWidth($sensibleNumber(0.6));
+            $draw->setStrokeWidth(1);
             $draw->setStrokeOpacity(1);
+            $draw->setFillOpacity(0);
 
             $image->drawImage($draw);
+
 
             $image->writeImage($renderFilename);
         }
