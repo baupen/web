@@ -32,19 +32,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class PublicController extends BaseDoctrineController
 {
     /**
-     * @return Imagick
-     * @throws \ImagickException
-     */
-    private function getImagickInstance()
-    {
-        $im = new Imagick();
-        Imagick::setResourceLimit(Imagick::RESOURCETYPE_DISK, 1024 * 1024); //max 1GB
-        Imagick::setResourceLimit(Imagick::RESOURCETYPE_TIME, 60); //max 5 seconds
-
-        return $im;
-    }
-
-    /**
      * @Route("/render/{marker}", name="public_render")
      * @param Marker $marker
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
@@ -66,12 +53,15 @@ class PublicController extends BaseDoctrineController
         );
         $renderFilename = $folder . "render_" . $mapFileName . "_" . $fileName . ".jpg";
 
-        if (!file_exists($renderFilename) || true) {
-            $image = $this->getImagickInstance();
-            $image->readImage($imageFilePath);
+        if (!file_exists($renderFilename)) {
+            Imagick::setResourceLimit(Imagick::RESOURCETYPE_DISK, 1024 * 1024); //max 1GB
+            Imagick::setResourceLimit(Imagick::RESOURCETYPE_TIME, 60); //max 5 seconds
 
-            $width = $image->getImageGeometry()["width"];
-            $height = $image->getImageGeometry()["height"];
+            $manager = new ImageManager(array('driver' => 'imagick'));
+            $image = $manager->make($imageFilePath);
+
+            $width = $image->getWidth();
+            $height = $image->getHeight();
 
             $newWidth = $width * $marker->getFrameYLength();
             $newHeight = $height * $marker->getFrameXHeight();
@@ -79,7 +69,7 @@ class PublicController extends BaseDoctrineController
             $xShift = $width * $marker->getFrameXPercentage();
             $yShift = $height * $marker->getFrameYPercentage();
 
-            $image->cropImage(
+            $image = $image->crop(
                 (int)($newWidth),
                 (int)($newHeight),
                 (int)($xShift),
@@ -96,26 +86,17 @@ class PublicController extends BaseDoctrineController
                 return (int)($total / 200 * $relative);
             };
 
-            $color = "rgb(64, 48, 117)";
-            $fillColor = new \ImagickPixel($color);
+            $color = "#403075";
+            $image = $image->circle($sensibleNumber(1), $xPos, $yPos, function ($draw) use ($color) {
+                $draw->background($color);
+            });
 
-            $draw = new ImagickDraw();
-            $draw->circle($xPos, $yPos, $xPos + $sensibleNumber(1), $yPos);
-            $draw->setFillColor($fillColor);
-
-            $image->drawImage($draw);
-
-            $draw = new ImagickDraw();
-            $draw->circle($xPos, $yPos, $xPos + $sensibleNumber(6), $yPos);
-            $draw->setStrokeColor($fillColor);
-            $draw->setStrokeWidth(1);
-            $draw->setStrokeOpacity(1);
-            $draw->setFillOpacity(0);
-
-            $image->drawImage($draw);
+            $image = $image->circle($sensibleNumber(6), $xPos, $yPos, function ($draw) use ($color, $sensibleNumber) {
+                $draw->border($sensibleNumber(0.6), $color);
+            });
 
 
-            $image->writeImage($renderFilename);
+            $image->save($renderFilename);
         }
 
         return $this->file($renderFilename);
