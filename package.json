@@ -6,9 +6,11 @@
     "sass-loader": "^6"
   },
   "dependencies": {
-    "@fortawesome/fontawesome": "^1.1",
-    "@fortawesome/fontawesome-free-regular": "^5.0",
-    "@fortawesome/fontawesome-free-solid": "^5.0",
+    "@fortawesome/fontawesome": "^1",
+    "@fortawesome/fontawesome-free-brands": "^5.0",
+    "@fortawesome/fontawesome-pro-light": "^5",
+    "@fortawesome/fontawesome-pro-regular": "^5",
+    "@fortawesome/fontawesome-pro-solid": "^5",
     "bootstrap": "^4",
     "bootstrap-multiselect": "^0.9",
     "datatables.net-bs4": "^1.10",

@@ -16,6 +16,7 @@ use App\Entity\Building;
 use App\Entity\BuildingMap;
 use App\Model\Breadcrumb;
 use Doctrine\ORM\EntityManager;
+use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,7 +62,7 @@ class MapController extends BaseBuildingController
                     $manager->flush();
 
                     //create filename & move the file
-                    $fileName = $map->getId() . '.' . $file->guessExtension();
+                    $fileName = Uuid::uuid4()->toString() . '.' . $file->guessExtension();
                     $file->move(
                         $this->getParameter('UPLOAD_DIR'),
                         $fileName

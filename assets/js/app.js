@@ -8,15 +8,15 @@ var dataTable = require("datatables.net-bs4");
 window.$ = $;
 window.ekkoLightbox = ekkoLightbox;
 
-FontAwesomeConfig = { autoAddCss: false }
+FontAwesomeConfig = { autoAddCss: false };
 
 //icons
 const fontawesome = require('@fortawesome/fontawesome');
-const building = require('@fortawesome/fontawesome-free-regular/faBuilding');
-const gavel = require('@fortawesome/fontawesome-free-solid/faGavel');
-const user = require('@fortawesome/fontawesome-free-regular/faUser');
-
-fontawesome.library.add(user, building, gavel);
+fontawesome.library.add(
+    require('@fortawesome/fontawesome-pro-light/faBuilding'),
+    require('@fortawesome/fontawesome-pro-light/faGavel'),
+    require('@fortawesome/fontawesome-pro-light/faUser')
+);
 
 
 
@@ -73,11 +73,8 @@ $(document).ready(function () {
     initializeSelects();
 
     $(".print-button").on("click", function (e) {
-        var $button = $(this);
-        var href = $button.attr("data-target");
-        $("<iframe class='printpage'>") // create a new iframe element
-            .attr("src", href) // point the iframe to the page link you want to print
-            .appendTo("body");
+        console.log("printing")
+        window.print()
     });
 
     var url = window.location.href;
