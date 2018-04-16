@@ -18,10 +18,9 @@ use App\Entity\BuildingMap;
 use App\Entity\Craftsman;
 use App\Entity\Marker;
 use App\Model\BuildingMap\BuildingMapMarkerInfo;
+use Imagick;
+use ImagickDraw;
 use Intervention\Image\ImageManager;
-use Psr\Http\Message\ResponseInterface;
-use Spatie\PdfToImage\Exceptions\PdfDoesNotExist;
-use Spatie\PdfToImage\Pdf;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -33,32 +32,51 @@ use Symfony\Component\Routing\Annotation\Route;
 class PublicController extends BaseDoctrineController
 {
     /**
+     * @return Imagick
+     * @throws \ImagickException
+     */
+    private function getImagickInstance()
+    {
+        $im = new Imagick();
+        Imagick::setResourceLimit(Imagick::RESOURCETYPE_DISK, 1024 * 1024); //max 1GB
+        Imagick::setResourceLimit(Imagick::RESOURCETYPE_TIME, 60); //max 5 seconds
+
+        return $im;
+    }
+
+    /**
      * @Route("/render/{marker}", name="public_render")
      * @param Marker $marker
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-     * @throws PdfDoesNotExist
+     * @throws \ImagickException
      */
     public function renderAction(Marker $marker)
     {
-        $mapFileName = __DIR__ . "/../../public/upload/" . $marker->getBuildingMap()->getFileName();
-        $imageFileName = "render_" . $mapFileName . ".jpg";
+        $folder = __DIR__ . "/../../public/upload/";
+        $mapFileName = $folder . $marker->getBuildingMap()->getFileName();
+        $imageFileName = $folder . "render_" . $mapFileName . ".jpg";
         if (!file_exists($imageFileName)) {
-            $pdf = new Pdf($mapFileName);
-            $pdf->setResolution(1080);
-            $pdf->saveImage($imageFileName);
+            $im = $this->getImagickInstance();
+            $im->setResolution(300, 300);
+            $im->readImage($mapFileName . '[0]');
+            $im->setImageFormat('jpeg');
+            $im->writeImage($imageFileName);
+            $im->clear();
+            $im->destroy();
         }
 
-        $renderFilename = "render_" . $mapFileName . "_" .
+        $fileName = md5(
             $marker->getFrameYLength() . $marker->getFrameXHeight() . $marker->getFrameYPercentage() . $marker->getFrameXPercentage() .
-            $marker->getMarkXPercentage() . $marker->getMarkYPercentage() .
-            ".jpg";
+            $marker->getMarkXPercentage() . $marker->getMarkYPercentage()
+        );
+        $renderFilename = "render_" . $mapFileName . "_" . $fileName . ".jpg";
 
         if (!file_exists($renderFilename)) {
-            $manager = new ImageManager(array('driver' => 'imagick'));
-            $image = $manager->make($imageFileName);
+            $image = $this->getImagickInstance();
+            $image->readImage($imageFileName);
 
-            $width = $image->getWidth();
-            $height = $image->getHeight();
+            $width = $image->getImageGeometry()["width"];
+            $height = $image->getImageGeometry()["height"];
 
             $newWidth = $width * $marker->getFrameYLength();
             $newHeight = $height * $marker->getFrameXHeight();
@@ -66,7 +84,7 @@ class PublicController extends BaseDoctrineController
             $xShift = $width * $marker->getFrameXPercentage();
             $yShift = $height * $marker->getFrameYPercentage();
 
-            $image = $image->crop(
+            $image->cropImage(
                 (int)($newWidth),
                 (int)($newHeight),
                 (int)($xShift),
@@ -84,16 +102,24 @@ class PublicController extends BaseDoctrineController
             };
 
             $color = "#403075";
-            $image = $image->circle($sensibleNumber(1), $xPos, $yPos, function ($draw) use ($color) {
-                $draw->background($color);
-            });
+            $fillColor = new \ImagickPixel($color);
 
-            $image = $image->circle($sensibleNumber(6), $xPos, $yPos, function ($draw) use ($color, $sensibleNumber) {
-                $draw->border($sensibleNumber(0.6), $color);
-            });
+            $draw = new ImagickDraw();
+            $draw->circle($xPos, $yPos, $xPos + $sensibleNumber(1), $yPos);
+            $draw->setFillColor($fillColor);
+
+            $image->drawImage($draw);
 
 
-            $image->save($renderFilename);
+            $draw = new ImagickDraw();
+            $draw->circle($xPos, $yPos, $xPos + $sensibleNumber(6), $yPos);
+            $draw->setStrokeColor($fillColor);
+            $draw->setStrokeWidth($sensibleNumber(0.6));
+            $draw->setStrokeOpacity(1);
+
+            $image->drawImage($draw);
+
+            $image->writeImage($renderFilename);
         }
 
         return $this->file($renderFilename);
