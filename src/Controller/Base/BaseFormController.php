@@ -167,21 +167,6 @@ class BaseFormController extends BaseDoctrineController
         );
     }
 
-
-    /**
-     * persist the entity to the database if submitted successfully
-     * @param Request $request
-     * @param BaseEntity $entity
-     * @param string $formType namespace of form type to use
-     * @param string $buttonLabel label of button
-     * @param string $successText content of text displayed if successful
-     * @param callable $beforePersistCallable
-     * @return FormInterface the constructed form
-     */
-    private function handlePersistFormInternal(Request $request, BaseEntity $entity, $formType, $buttonLabel, $successText, $beforePersistCallable)
-    {
-    }
-
     /**
      * persist the entity to the database if submitted successfully
      * @param Request $request

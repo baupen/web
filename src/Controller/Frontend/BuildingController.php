@@ -24,6 +24,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -243,7 +244,7 @@ class BuildingController extends BaseFrontendController
             $translator->trans("notify.email.subject", ["%building_name%" => $building->getName()], "frontend_building"),
             $translator->trans("notify.email.body", ["%building_name%" => $building->getName(), "%name%" => $craftsman->getName()], "frontend_building"),
             $translator->trans("notify.email.action_text", [], "frontend_building"),
-            $this->generateUrl("public_view_2", ["guid" => $building->getPublicIdentifier(), "guid2" => $craftsman->getId()])
+            $this->generateUrl("public_view_2", ["guid" => $building->getPublicIdentifier(), "guid2" => $craftsman->getId()], UrlGeneratorInterface::ABSOLUTE_URL)
         );
     }
 

@@ -1,9 +1,9 @@
 require("../sass/app.sass");
-var $ = require("jquery");
-var bootstrap = require("bootstrap");
-var multiselect = require("bootstrap-multiselect/dist/js/bootstrap-multiselect.js");
-var ekkoLightbox = require("ekko-lightbox");
-var dataTable = require("datatables.net-bs4");
+const $ = require("jquery");
+const bootstrap = require("bootstrap");
+const multiselect = require("bootstrap-multiselect/dist/js/bootstrap-multiselect.js");
+const ekkoLightbox = require("ekko-lightbox");
+const dataTable = require("datatables.net-bs4");
 
 window.$ = $;
 window.ekkoLightbox = ekkoLightbox;
@@ -19,18 +19,16 @@ fontawesome.library.add(
 );
 
 
-
-
 //prevent double submit & give user instant feedback
-var disableFormButton = function () {
-    var $form = $(this);
-    var $buttons = $(".btn", $form);
+const disableFormButton = function () {
+    const $form = $(this);
+    const $buttons = $(".btn", $form);
     if (!$buttons.hasClass("no-disable")) {
         $buttons.addClass("disabled");
     }
 };
 
-var initializeSelects = function () {
+const initializeSelects = function () {
     $('select[multiple]').multiselect({
         buttonClass: 'btn btn-secondary',
         templates: {
@@ -44,22 +42,22 @@ var initializeSelects = function () {
     });
 };
 
-var initializeLightbox = function (event) {
+const initializeLightbox = function (event) {
     event.preventDefault();
     $(this).ekkoLightbox();
 };
 
-var initializeAjax = function (event) {
+const initializeAjax = function (event) {
     event.preventDefault();
-    var $form = $(this);
-    var url = $form.attr("action");
+    const $form = $(this);
+    const url = $form.attr("action");
 
     $.ajax({
         type: "POST",
         url: url,
         data: $form.serialize(), // serializes the form's elements.
         success: function (data) {
-            var $buttons = $(".btn", $form);
+            const $buttons = $(".btn", $form);
             $buttons.removeClass("disabled");
         }
     });
@@ -77,8 +75,8 @@ $(document).ready(function () {
         window.print()
     });
 
-    var url = window.location.href;
-    var endOfUrl = url.substr(url.lastIndexOf('/') + 1);
+    const url = window.location.href;
+    const endOfUrl = url.substr(url.lastIndexOf('/') + 1);
 
     if (endOfUrl === "print") {
         window.print();

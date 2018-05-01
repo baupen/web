@@ -51,18 +51,18 @@ class AppUserController extends BaseFrontendController
         $form = $this->handleCreateForm(
             $request,
             $appUser,
-            function ($entity) {
-                /* @var AppUser $entity */
+            function () use ($appUser) {
+                /* @var AppUser $appUser */
 
                 //look for existing
-                $existing = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["identifier" => $entity->getIdentifier()]);
+                $existing = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["identifier" => $appUser->getIdentifier()]);
                 if ($existing !== null) {
                     $this->displayError($this->getTranslator()->trans("new.error.identifier_already_exists", [], "frontend_app_user"));
                     return false;
                 }
 
-                $entity->setPassword();
-                $entity->setAuthenticationToken();
+                $appUser->setPassword();
+                $appUser->setAuthenticationToken();
                 return true;
             }
         );
@@ -88,18 +88,22 @@ class AppUserController extends BaseFrontendController
         $form = $this->handleUpdateForm(
             $request,
             $appUser,
-            function ($entity) {
-                /* @var AppUser $entity */
+            function () use ($appUser) {
+                /* @var AppUser $appUser */
 
                 //look for existing
-                $existing = $this->getDoctrine()->getRepository(AppUser::class)->findBy(["identifier" => $entity->getIdentifier()]);
-                if (count($existing) > 1 || (count($existing) == 1 && $existing[0]->getId() != $entity->getId())) {
+                $existing = $this->getDoctrine()->getRepository(AppUser::class)->findBy(["identifier" => $appUser->getIdentifier()]);
+                if (count($existing) > 1 || (count($existing) == 1 && $existing[0]->getId() != $appUser->getId())) {
                     $this->displayError($this->getTranslator()->trans("new.error.identifier_already_exists", [], "frontend_app_user"));
                     return false;
                 }
 
-                $entity->setPassword();
-                $entity->setAuthenticationToken();
+                if ($appUser->getPlainPassword() != "") {
+                    $this->displaySuccess($this->getTranslator()->trans("edit.success.password_changed", [], "frontend_app_user"));
+                    $appUser->setPassword();
+                    $appUser->setAuthenticationToken();
+                }
+
                 return true;
             }
         );

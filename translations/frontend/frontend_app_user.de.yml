@@ -12,6 +12,8 @@ new:
 
 edit:
   title: 'Benutzer bearbeiten'
+  success:
+    password_changed: "Passwort geändert"
 
 remove:
   title: 'Benutzer entfernen'
