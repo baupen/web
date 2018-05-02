@@ -28,10 +28,14 @@
                                 ({{ marker.createdAt|dateFormat }})
                             </footer>
                         </blockquote>
+                        <hr/>
+                        <figure class="figure">
                         <a href="{{ path("public_render", {"marker": marker.id}) }}"
                            data-toggle="lightbox" data-type="image" data-gallery="{{ marker.id }}">
                             <img class="img-fluid" src="{{ path("public_render", {"marker": marker.id}) }}">
                         </a>
+                        <figcaption class="figure-caption">{{ marker.buildingMap.name }}</figcaption>
+                        </figure>
                     </div>
                     <div class="col-md-6">
                         <a href="/upload/{{ marker.imageFileName }}" data-toggle="lightbox"

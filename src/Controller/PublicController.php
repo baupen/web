@@ -48,7 +48,7 @@ class PublicController extends BaseDoctrineController
         }
 
         $fileName = md5(
-            $marker->getFrameYLength() . $marker->getFrameXHeight() . $marker->getFrameYPercentage() . $marker->getFrameXPercentage() .
+            $marker->getFrameXHeight(). $marker->getFrameYLength() . $marker->getFrameYPercentage() . $marker->getFrameXPercentage() .
             $marker->getMarkXPercentage() . $marker->getMarkYPercentage()
         );
         $renderFilename = $folder . "render_" . $mapFileName . "_" . $fileName . ".jpg";
@@ -63,8 +63,8 @@ class PublicController extends BaseDoctrineController
             $width = $image->getWidth();
             $height = $image->getHeight();
 
-            $newWidth = $width * $marker->getFrameYLength();
-            $newHeight = $height * $marker->getFrameXHeight();
+            $newWidth = $width * $marker->getFrameXHeight();
+            $newHeight = $height * $marker->getFrameYLength();
 
             $xShift = $width * $marker->getFrameXPercentage();
             $yShift = $height * $marker->getFrameYPercentage();
