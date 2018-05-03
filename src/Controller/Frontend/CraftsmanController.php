@@ -34,7 +34,7 @@ class CraftsmanController extends BaseFrontendController
      */
     public function indexAction()
     {
-        $arr["craftsmen"] = $this->getDoctrine()->getRepository(Craftsman::class)->findAll();
+        $arr["craftsmen"] = $this->getDoctrine()->getRepository(Craftsman::class)->findBy([], ["name" => "ASC"]);
         return $this->render('frontend/craftsman/index.html.twig', $arr);
     }
 

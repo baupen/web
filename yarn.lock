@@ -2,39 +2,39 @@
 # yarn lockfile v1
 
 
-"@fortawesome/fontawesome-common-types@^0.1.3", "@fortawesome/fontawesome-common-types@^0.1.4":
-  version "0.1.4"
-  resolved "https://npm.fontawesome.com/4DDEB6DC-27A1-4DAB-BE98-1FF5DF35BE94/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.1.4.tgz#1fbc66f0223646f23c5550c2c12e341078e2c262"
+"@fortawesome/fontawesome-common-types@^0.1.5":
+  version "0.1.5"
+  resolved "https://npm.fontawesome.com/4DDEB6DC-27A1-4DAB-BE98-1FF5DF35BE94/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.1.5.tgz#d44485071f94ffac7f66ff6117b290eb7c908d58"
 
 "@fortawesome/fontawesome-free-brands@^5.0":
-  version "5.0.10"
-  resolved "https://npm.fontawesome.com/4DDEB6DC-27A1-4DAB-BE98-1FF5DF35BE94/@fortawesome/fontawesome-free-brands/-/fontawesome-free-brands-5.0.10.tgz#37f007a2f548682c8bfb7086b7e03dc65758580a"
+  version "5.0.11"
+  resolved "https://npm.fontawesome.com/4DDEB6DC-27A1-4DAB-BE98-1FF5DF35BE94/@fortawesome/fontawesome-free-brands/-/fontawesome-free-brands-5.0.11.tgz#1e2eda34f2c6208facabe44a90a49972b37307e9"
   dependencies:
-    "@fortawesome/fontawesome-common-types" "^0.1.4"
+    "@fortawesome/fontawesome-common-types" "^0.1.5"
 
 "@fortawesome/fontawesome-pro-light@^5":
-  version "5.0.10"
-  resolved "https://npm.fontawesome.com/4DDEB6DC-27A1-4DAB-BE98-1FF5DF35BE94/@fortawesome/fontawesome-pro-light/-/fontawesome-pro-light-5.0.10.tgz#6880ecdcfdc3dd23c9c9125502bf70697b74f715"
+  version "5.0.11"
+  resolved "https://npm.fontawesome.com/4DDEB6DC-27A1-4DAB-BE98-1FF5DF35BE94/@fortawesome/fontawesome-pro-light/-/fontawesome-pro-light-5.0.11.tgz#c898b3cdc199f9d1244b9a6c2eac48efaa8e8baa"
   dependencies:
-    "@fortawesome/fontawesome-common-types" "^0.1.4"
+    "@fortawesome/fontawesome-common-types" "^0.1.5"
 
 "@fortawesome/fontawesome-pro-regular@^5":
-  version "5.0.10"
-  resolved "https://npm.fontawesome.com/4DDEB6DC-27A1-4DAB-BE98-1FF5DF35BE94/@fortawesome/fontawesome-pro-regular/-/fontawesome-pro-regular-5.0.10.tgz#0d2d878d3082c6272d87ed06da79d6c193913809"
+  version "5.0.11"
+  resolved "https://npm.fontawesome.com/4DDEB6DC-27A1-4DAB-BE98-1FF5DF35BE94/@fortawesome/fontawesome-pro-regular/-/fontawesome-pro-regular-5.0.11.tgz#ebb1ed1c61d74b33acb3e06993b7333658cd731e"
   dependencies:
-    "@fortawesome/fontawesome-common-types" "^0.1.4"
+    "@fortawesome/fontawesome-common-types" "^0.1.5"
 
 "@fortawesome/fontawesome-pro-solid@^5":
-  version "5.0.10"
-  resolved "https://npm.fontawesome.com/4DDEB6DC-27A1-4DAB-BE98-1FF5DF35BE94/@fortawesome/fontawesome-pro-solid/-/fontawesome-pro-solid-5.0.10.tgz#b0b1c1cd13cd751148828f319fc756536bf72ef7"
+  version "5.0.11"
+  resolved "https://npm.fontawesome.com/4DDEB6DC-27A1-4DAB-BE98-1FF5DF35BE94/@fortawesome/fontawesome-pro-solid/-/fontawesome-pro-solid-5.0.11.tgz#672579eacc44458191934d3051cabf1eca9f6bac"
   dependencies:
-    "@fortawesome/fontawesome-common-types" "^0.1.4"
+    "@fortawesome/fontawesome-common-types" "^0.1.5"
 
 "@fortawesome/fontawesome@^1":
-  version "1.1.5"
-  resolved "https://npm.fontawesome.com/4DDEB6DC-27A1-4DAB-BE98-1FF5DF35BE94/@fortawesome/fontawesome/-/fontawesome-1.1.5.tgz#c7cfafdd3364245626293cc670357f9fb8487170"
+  version "1.1.6"
+  resolved "https://npm.fontawesome.com/4DDEB6DC-27A1-4DAB-BE98-1FF5DF35BE94/@fortawesome/fontawesome/-/fontawesome-1.1.6.tgz#edee6108aa3485c6f0fb3a16e6a222086b2abb42"
   dependencies:
-    "@fortawesome/fontawesome-common-types" "^0.1.3"
+    "@fortawesome/fontawesome-common-types" "^0.1.5"
 
 "@symfony/webpack-encore@^0.17":
   version "0.17.1"
@@ -63,8 +63,8 @@
     yargs "^8.0.1"
 
 "@types/node@*":
-  version "8.10.11"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.11.tgz#971ea8cb91adbe0b74e3fbd867dec192d5893a5f"
+  version "10.0.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.2.tgz#180046ebbc37de8b64777765c2486ebecb59448e"
 
 "@types/tapable@^0":
   version "0.2.5"
@@ -1093,12 +1093,12 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
-  version "1.0.30000832"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000832.tgz#afe34c9f7c62139fd1c607db2ab7308bbb6a5158"
+  version "1.0.30000833"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000833.tgz#2bd7be72a401658d2cbcb8f4d7600deebeb1c676"
 
 caniuse-lite@^1.0.30000792:
-  version "1.0.30000832"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000832.tgz#22a277f1d623774cc9aea2f7c1a65cb1603c63b8"
+  version "1.0.30000833"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000833.tgz#98e84fcdb4399c6fa0b0fd41490d3217ac7802b4"
 
 caseless@~0.11.0:
   version "0.11.0"
@@ -1762,8 +1762,8 @@ ekko-lightbox@5.3:
   resolved "https://registry.yarnpkg.com/ekko-lightbox/-/ekko-lightbox-5.3.0.tgz#fbfcd9df93a8d1cdbf8770adc8c05aaac4d24f56"
 
 electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.30:
-  version "1.3.44"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.44.tgz#ef6b150a60d523082388cadad88085ecd2fd4684"
+  version "1.3.45"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.45.tgz#458ac1b1c5c760ce8811a16d2bfbd97ec30bafb8"
 
 elliptic@^6.0.0:
   version "6.4.0"
