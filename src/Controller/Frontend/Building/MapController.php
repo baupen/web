@@ -114,7 +114,7 @@ class MapController extends BaseBuildingController
                     //persist so we get an id
                     $manager->persist($map);
                     $manager->flush();
-                    
+
                     //create filename & move the file
                     $fileName = Uuid::uuid4()->toString() . '.' . $file->guessExtension();
                     $file->move(
