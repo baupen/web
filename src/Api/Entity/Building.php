@@ -26,7 +26,7 @@ class Building
     /**
      * @var string|null
      */
-    private $imageFileName;
+    private $imageFilename;
 
     /**
      * @var string[]

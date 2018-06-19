@@ -41,7 +41,7 @@ class Issue
     /**
      * @var string|null
      */
-    private $imageFileName;
+    private $imageFilename;
 
     /**
      * @var IssueStatus

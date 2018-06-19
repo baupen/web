@@ -24,7 +24,7 @@ use App\Entity\ConstructionManager;
 use App\Entity\Building;
 use App\Entity\Map;
 use App\Entity\Craftsman;
-use App\Entity\Marker;
+use App\Entity\Issue;
 use App\Entity\Traits\IdTrait;
 use App\Enum\ApiStatus;
 use Psr\Log\LoggerInterface;
@@ -168,7 +168,7 @@ class ApiController extends BaseDoctrineController
             return $this->failed(ApiStatus::INVALID_AUTHENTICATION_TOKEN);
         }
 
-        $marker = $this->getDoctrine()->getRepository(Marker::class)->findOneBy(["imageFileName" => $downloadFileRequest->getFileName()]);
+        $marker = $this->getDoctrine()->getRepository(Issue::class)->findOneBy(["imageFileName" => $downloadFileRequest->getFileName()]);
         if ($marker === null) {
             $buildingMap = $this->getDoctrine()->getRepository(Map::class)->findOneBy(["fileName" => $downloadFileRequest->getFileName()]);
             if ($buildingMap === null)
@@ -212,12 +212,12 @@ class ApiController extends BaseDoctrineController
 
                 $markerEntity = null;
                 if (isset($marker["id"])) {
-                    $markerEntity = $this->getDoctrine()->getRepository(Marker::class)->findOneBy(["id" => $marker["id"]]);
+                    $markerEntity = $this->getDoctrine()->getRepository(Issue::class)->findOneBy(["id" => $marker["id"]]);
                 }
 
                 if ($markerEntity == null) {
-                    /* @var Marker $markerEntity */
-                    $markerEntity = new Marker();
+                    /* @var Issue $markerEntity */
+                    $markerEntity = new Issue();
                 }
 
                 $markerEntity->setContent($marker["content"]);

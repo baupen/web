@@ -12,12 +12,9 @@
 namespace App\Entity;
 
 
-use App\Api\ApiSerializable;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;
-use App\Entity\Traits\PublicAccessibleTrait;
-use App\Entity\Traits\ThingTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -42,7 +39,7 @@ class Building extends BaseEntity
     /**
      * @var string|null
      *
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $imageFileName;
 

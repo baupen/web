@@ -16,7 +16,7 @@ use App\Controller\Base\BaseDoctrineController;
 use App\Entity\Building;
 use App\Entity\Map;
 use App\Entity\Craftsman;
-use App\Entity\Marker;
+use App\Entity\Issue;
 use App\Model\BuildingMap\BuildingMapMarkerInfo;
 use Imagick;
 use ImagickDraw;
@@ -33,11 +33,11 @@ class PublicController extends BaseDoctrineController
 {
     /**
      * @Route("/render/{marker}", name="public_render")
-     * @param Marker $marker
+     * @param Issue $marker
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      * @throws \ImagickException
      */
-    public function renderAction(Marker $marker)
+    public function renderAction(Issue $marker)
     {
         $folder = __DIR__ . "/../../public/upload/";
         $mapFileName = $marker->getBuildingMap()->getFileName();
@@ -176,7 +176,7 @@ class PublicController extends BaseDoctrineController
 
     /**
      * @param $guid
-     * @return Marker[]|Response
+     * @return Issue[]|Response
      */
     private function getMarkers($guid)
     {
@@ -187,13 +187,13 @@ class PublicController extends BaseDoctrineController
             return $this->notAccessibleError();
         }
 
-        /* @var Marker[] $markers */
+        /* @var Issue[] $markers */
         $markers = $map->getMarkers()->toArray();
         return $markers;
     }
 
     /**
-     * @param Marker[]|Response $markers
+     * @param Issue[]|Response $markers
      * @return Response
      */
     private function viewMarkers($markers)
@@ -202,9 +202,9 @@ class PublicController extends BaseDoctrineController
             return $markers;
         }
 
-        /* @var Marker[] $pendingMarkers */
+        /* @var Issue[] $pendingMarkers */
         $pendingMarkers = [];
-        /* @var Marker[] $approvedMarkers */
+        /* @var Issue[] $approvedMarkers */
         $approvedMarkers = [];
         foreach ($markers as $marker) {
             if ($marker->getApproved()) {
@@ -218,7 +218,7 @@ class PublicController extends BaseDoctrineController
     }
 
     /**
-     * @param Marker[]|Response $markers
+     * @param Issue[]|Response $markers
      * @return Response
      */
     private function printMarkers($markers)

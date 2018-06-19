@@ -12,48 +12,37 @@
 namespace App\Entity;
 
 
-use App\Api\ApiSerializable;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
-use App\Entity\Traits\PersonTrait;
 use App\Entity\Traits\TimeTrait;
+use App\Entity\Traits\UserTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
-class ConstructionManager extends BaseEntity
+class ConstructionManager extends BaseEntity implements UserInterface
 {
     use IdTrait;
     use TimeTrait;
+    use UserTrait;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
-    private $identifier;
+    private $name;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
-    private $passwordHash;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text")
-     */
-    private $authenticationToken;
-
-    /**
-     * @var string
-     */
-    private $plainPassword;
+    private $phone;
 
     /**
      * @var Building[]|ArrayCollection
@@ -63,9 +52,9 @@ class ConstructionManager extends BaseEntity
     private $buildings;
 
     /**
-     * @var Marker[]|ArrayCollection
+     * @var Issue[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Marker", mappedBy="createdBy")
+     * @ORM\OneToMany(targetEntity="Issue", mappedBy="registrationBy")
      */
     private $markers;
 
@@ -79,43 +68,35 @@ class ConstructionManager extends BaseEntity
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getIdentifier()
+    public function getName(): ?string
     {
-        return $this->identifier;
+        return $this->name;
     }
 
     /**
-     * @param string $identifier
+     * @param null|string $name
      */
-    public function setIdentifier($identifier)
+    public function setName(?string $name): void
     {
-        $this->identifier = $identifier;
+        $this->name = $name;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getPasswordHash()
+    public function getPhone(): ?string
     {
-        return $this->passwordHash;
+        return $this->phone;
     }
 
     /**
-     * @return string
+     * @param null|string $phone
      */
-    public function getPlainPassword()
+    public function setPhone(?string $phone): void
     {
-        return $this->plainPassword;
-    }
-
-    /**
-     * @param string $plainPassword
-     */
-    public function setPlainPassword($plainPassword)
-    {
-        $this->plainPassword = $plainPassword;
+        $this->phone = $phone;
     }
 
     /**
@@ -127,49 +108,7 @@ class ConstructionManager extends BaseEntity
     }
 
     /**
-     * hashes the plain password
-     */
-    public function setPassword()
-    {
-        $this->passwordHash = hash("sha256", $this->plainPassword);
-    }
-
-    /**
-     * sets a new authentication token
-     */
-    public function setAuthenticationToken()
-    {
-        $newHash = '';
-        //0-9, A-Z, a-z
-        $allowedRanges = [[48, 57], [65, 90], [97, 122]];
-        for ($i = 0; $i < 20; ++$i) {
-            $rand = mt_rand(20, 160);
-            $allowed = false;
-            for ($j = 0; $j < count($allowedRanges); ++$j) {
-                if ($allowedRanges[$j][0] <= $rand && $allowedRanges[$j][1] >= $rand) {
-                    $allowed = true;
-                }
-            }
-            if ($allowed) {
-                $newHash .= chr($rand);
-            } else {
-                --$i;
-            }
-        }
-
-        $this->authenticationToken = $newHash;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAuthenticationToken()
-    {
-        return $this->authenticationToken;
-    }
-
-    /**
-     * @return Marker[]|ArrayCollection
+     * @return Issue[]|ArrayCollection
      */
     public function getMarkers()
     {
@@ -177,16 +116,23 @@ class ConstructionManager extends BaseEntity
     }
 
     /**
-     * remove all array collections, setting them to null
+     * Returns the roles granted to the user.
+     *
+     * <code>
+     * public function getRoles()
+     * {
+     *     return array('ROLE_USER');
+     * }
+     * </code>
+     *
+     * Alternatively, the roles might be stored on a ``roles`` property,
+     * and populated in any number of different ways when the user object
+     * is created.
+     *
+     * @return (Role|string)[] The user roles
      */
-    public function flattenDoctrineStructures()
+    public function getRoles()
     {
-        $this->markers = null;
-        $this->buildings = null;
-    }
-
-    public function __toString()
-    {
-        return $this->getFullName();
+        return ["ROLE_USER"];
     }
 }

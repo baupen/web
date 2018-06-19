@@ -16,7 +16,7 @@ class IssueStatus
     /**
      * @var IssueStatusEvent|null
      */
-    private $creation;
+    private $registration;
 
     /**
      * @var IssueStatusEvent|null

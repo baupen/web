@@ -11,20 +11,26 @@
 
 namespace App\Security;
 
-use App\Entity\FrontendUser;
+use App\Entity\BackendUser;
+use App\Entity\ConstructionManager;
 use App\Security\Base\BaseUserProvider;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class FrontendUserProvider extends BaseUserProvider
+class ConstructionManagerProvider extends BaseUserProvider
 {
     /**
      * @var RegistryInterface
      */
     private $registry;
 
+    /**
+     * AdminUserProvider constructor.
+     *
+     * @param RegistryInterface $registry
+     */
     public function __construct(RegistryInterface $registry)
     {
         $this->registry = $registry;
@@ -46,7 +52,7 @@ class FrontendUserProvider extends BaseUserProvider
      */
     public function refreshUser(UserInterface $user)
     {
-        if (!$user instanceof FrontendUser) {
+        if (!$user instanceof ConstructionManager) {
             throw new UnsupportedUserException(
                 sprintf('Instances of "%s" are not supported.', get_class($user))
             );
@@ -69,13 +75,13 @@ class FrontendUserProvider extends BaseUserProvider
      */
     public function loadUserByUsername($username)
     {
-        $user = $this->registry->getRepository('App:FrontendUser')->findOneBy(['email' => $username]);
+        $user = $this->registry->getRepository('App:ConstructionManager')->findOneBy(['email' => $username]);
         if (null !== $user) {
             return $user;
         }
 
         throw new UsernameNotFoundException(
-            sprintf('Username "%s" does not exist in UserProvider.', $username)
+            sprintf('Username "%s" does not exist in CustomerUserProvider.', $username)
         );
     }
 
@@ -88,6 +94,6 @@ class FrontendUserProvider extends BaseUserProvider
      */
     public function supportsClass($class)
     {
-        return FrontendUser::class === $class;
+        return ConstructionManager::class === $class;
     }
 }

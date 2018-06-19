@@ -15,7 +15,7 @@ use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionManager;
 use App\Entity\Map;
 use App\Entity\Craftsman;
-use App\Entity\Marker;
+use App\Entity\Issue;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class LoadMarkerData extends BaseFixture
@@ -45,7 +45,7 @@ class LoadMarkerData extends BaseFixture
 
         foreach ($entries as $entry) {
             foreach ($buildingMaps as $buildingMap) {
-                $marker = new Marker();
+                $marker = new Issue();
                 $marker->setBuildingMap($buildingMap);
                 $marker->setCraftsman($faker->randomElement($craftsmen));
                 $marker->setImageFileName($entry[0]);
@@ -83,13 +83,13 @@ class LoadMarkerData extends BaseFixture
     /**
      * create an instance with all random values.
      *
-     * @return Marker
+     * @return Issue
      */
     protected function getAllRandomInstance()
     {
         $faker = $this->getFaker();
 
-        $marker = new Marker();
+        $marker = new Issue();
         $marker->setContent($faker->text(30));
         if (rand(1, 3) == 1) {
             $marker->setApproved(new \DateTime());

@@ -41,7 +41,7 @@ class LoadBuildingMapData extends BaseFixture
             foreach ($buildings as $building) {
                 $map = new Map();
                 $map->setBuilding($building);
-                $map->setFileName($entry[0]);
+                $map->setFilename($entry[0]);
                 $map->setName($entry[1]);
                 $map->setDescription($entry[2]);
                 $map->publish();

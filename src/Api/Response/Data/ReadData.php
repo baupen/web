@@ -17,7 +17,6 @@ use App\Api\Entity\ObjectMeta;
 use App\Api\Request\Base\AbstractRequest;
 use App\Api\Request\Base\AuthenticatedRequest;
 use App\Api\Response\Base\AbstractResponse;
-use App\Entity\Marker;
 
 class ReadData extends AbstractResponse
 {
@@ -29,7 +28,7 @@ class ReadData extends AbstractResponse
     /**
      * @var string[]
      */
-    private $removedCraftsmanIds;
+    private $removedCraftsmanIDs;
 
     /**
      * @var Building[]
@@ -39,7 +38,7 @@ class ReadData extends AbstractResponse
     /**
      * @var string[]
      */
-    private $removedBuildingIds;
+    private $removedBuildingIDs;
 
     /**
      * @var Map[]
@@ -49,7 +48,7 @@ class ReadData extends AbstractResponse
     /**
      * @var string[]
      */
-    private $removedMapIds;
+    private $removedMapIDs;
 
     /**
      * @var Issue[]
@@ -59,5 +58,5 @@ class ReadData extends AbstractResponse
     /**
      * @var string[]
      */
-    private $removedIssueIds;
+    private $removedIssueIDs;
 }

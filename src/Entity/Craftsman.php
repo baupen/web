@@ -46,9 +46,9 @@ class Craftsman extends BaseEntity implements ApiSerializable
     private $trade;
 
     /**
-     * @var Marker[]|ArrayCollection
+     * @var Issue[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Marker", mappedBy="craftsman")
+     * @ORM\OneToMany(targetEntity="Issue", mappedBy="craftsman")
      */
     private $markers;
 
@@ -68,7 +68,7 @@ class Craftsman extends BaseEntity implements ApiSerializable
     }
 
     /**
-     * @return Marker[]|ArrayCollection
+     * @return Issue[]|ArrayCollection
      */
     public function getMarkers()
     {

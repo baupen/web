@@ -21,7 +21,7 @@ class Map
     /**
      * @var string|null
      */
-    private $fileName;
+    private $filename;
 
     /**
      * @var string[]

@@ -12,7 +12,7 @@ namespace App\Api\Request;
 use App\Api\Entity\ObjectMeta;
 use App\Api\Request\Base\AbstractRequest;
 use App\Api\Request\Base\AuthenticatedRequest;
-use App\Entity\Marker;
+use App\Entity\Issue;
 
 class ReadRequest extends AuthenticatedRequest
 {
