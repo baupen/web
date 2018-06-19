@@ -31,7 +31,7 @@ class LoadConstructionManagerData extends BaseFixture
         $entries = [
             ["j@mangel.io", "asdf", "Julian", "Dunskus"],
             ["a@mangel.io", "asdf", "Adrian", "Hoffmann"],
-            ["f@mangel.io", "f", "asdf", "Florian", "Moser"]
+            ["f@mangel.io", "asdf", "Florian", "Moser"]
         ];
 
         foreach ($entries as $entry) {
@@ -41,6 +41,8 @@ class LoadConstructionManagerData extends BaseFixture
             $appUser->setGivenName($entry[2]);
             $appUser->setFamilyName($entry[3]);
             $appUser->setPassword();
+            $appUser->setResetHash();
+            $appUser->setRegistrationDate();
             $manager->persist($appUser);
         }
         $manager->flush();

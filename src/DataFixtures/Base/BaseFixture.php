@@ -16,6 +16,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -66,5 +67,28 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
             $manager->persist($instance);
         }
         return $res;
+    }
+
+    /**
+     * copies a file from the resource folder to the public part of the application
+     *
+     * @param string $targetFolder
+     * @param string $resourceFileName
+     * @param string $fileEnding
+     */
+    protected function safeCopyToPublic($targetFolder, $resourceFileName, $fileEnding)
+    {
+        //get target folder & ensure it exists
+        $targetFolder = __DIR__ . "/../../public" . $targetFolder;
+        if (!file_exists($targetFolder)) {
+            mkdir($targetFolder, 0777, true);
+        }
+
+        // copy file to new location
+        $targetFileName = Uuid::uuid4()->toString() . "." . $fileEnding;
+        $targetFilePath = $targetFolder . "/" . $targetFileName;
+        if (file_exists($targetFilePath))
+            unlink($targetFilePath);
+        copy(__DIR__ . "/../Resources/" . $resourceFileName, $targetFilePath);
     }
 }

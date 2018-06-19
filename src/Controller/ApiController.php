@@ -69,6 +69,7 @@ class ApiController extends BaseDoctrineController
         /* @var LoginRequest $loginRequest */
         $loginRequest = $serializer->deserialize($content, LoginRequest::class, "json");
 
+        /** @var ConstructionManager $constructionManager */
         $constructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(["email" => $loginRequest->getUsername()]);
         if ($constructionManager === null) {
             return $this->json(new FailResponse(static::UNKNOWN_USERNAME));

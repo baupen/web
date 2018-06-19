@@ -19,6 +19,7 @@ class AbstractMessageResponse extends AbstractResponse
     public function __construct(string $apiStatus, string $message)
     {
         parent::__construct($apiStatus);
+        $this->message = $message;
     }
 
     /**

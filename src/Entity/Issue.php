@@ -147,6 +147,13 @@ class Issue extends BaseEntity
     private $craftsman;
 
     /**
+     * @var Map
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="issues")
+     */
+    private $map;
+
+    /**
      * @return int|null
      */
     public function getNumber(): ?int
@@ -416,5 +423,21 @@ class Issue extends BaseEntity
     public function setCraftsman(?Craftsman $craftsman): void
     {
         $this->craftsman = $craftsman;
+    }
+
+    /**
+     * @return Map
+     */
+    public function getMap(): Map
+    {
+        return $this->map;
+    }
+
+    /**
+     * @param Map $map
+     */
+    public function setMap(Map $map): void
+    {
+        $this->map = $map;
     }
 }

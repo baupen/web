@@ -5,8 +5,8 @@
   "require": {
     "php": "^7.1",
     "ext-iconv": "*",
-    "ext-pdo_sqlite": "*",
     "ext-imagick": "*",
+    "ext-pdo_sqlite": "*",
     "doctrine/doctrine-fixtures-bundle": "^3.0",
     "easycorp/easyadmin-bundle": "^1.17",
     "fzaninotto/faker": "^1.7",

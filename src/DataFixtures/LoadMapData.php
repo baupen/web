@@ -56,12 +56,7 @@ class LoadMapData extends BaseFixture
      */
     private function loadMaps(ObjectManager $manager, ConstructionSite $constructionSite, $entry, $parent)
     {
-        // copy file to new location
-        $targetFileName = Uuid::uuid4()->toString() . ".pdf";
-        $targetFile = __DIR__ . "/../../public/upload/" . $constructionSite->getId() . "/map/" . $targetFileName;
-        if (file_exists($targetFile))
-            unlink($targetFile);
-        copy(__DIR__ . "/Resources/" . $entry[0], $targetFile);
+        $targetFileName = $this->safeCopyToPublic("/upload/" . $constructionSite->getId() . "/map", $entry[0], "pdf");
 
         // create map
         $map = new Map();
@@ -72,8 +67,10 @@ class LoadMapData extends BaseFixture
         $manager->persist($map);
 
         // create children
-        foreach ($entry[2] as $row) {
-            $this->loadMaps($manager, $constructionSite, $row, $map);
+        if (isset($entry[2])) {
+            foreach ($entry[2] as $row) {
+                $this->loadMaps($manager, $constructionSite, $row, $map);
+            }
         }
     }
 

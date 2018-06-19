@@ -31,6 +31,13 @@ trait UserTrait
      *
      * @ORM\Column(type="text")
      */
+    private $password;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text")
+     */
     private $passwordHash;
 
     /**
@@ -108,11 +115,11 @@ trait UserTrait
     }
 
     /**
-     * @param \DateTime $registrationDate
+     *
      */
-    public function setRegistrationDate($registrationDate)
+    public function setRegistrationDate()
     {
-        $this->registrationDate = $registrationDate;
+        $this->registrationDate = new \DateTime();
     }
 
     /**
@@ -198,6 +205,16 @@ trait UserTrait
      * @return string The password
      */
     public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * sha256 hash of the password
+     *
+     * @return string
+     */
+    public function getPasswordHash()
     {
         return $this->passwordHash;
     }
@@ -332,7 +349,8 @@ trait UserTrait
      */
     public function setPassword()
     {
-        $this->passwordHash = password_hash($this->getPlainPassword(), PASSWORD_BCRYPT);
+        $this->password = password_hash($this->getPlainPassword(), PASSWORD_BCRYPT);
+        $this->passwordHash = hash("sha256", $this->getPlainPassword());
         $this->setPlainPassword(null);
         $this->setRepeatPlainPassword(null);
     }

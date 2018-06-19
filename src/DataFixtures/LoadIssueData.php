@@ -59,17 +59,11 @@ class LoadIssueData extends BaseFixture
         $numberCount = 1;
         foreach ($entries as $entry) {
             foreach ($maps as $map) {
-                // copy file to new location
-                $targetFileName = Uuid::uuid4()->toString() . ".jpg";
-                $targetFile = __DIR__ . "/../../public/upload/" . $constructionSite->getId() . "/issue/" . $targetFileName;
-                if (file_exists($targetFile))
-                    unlink($targetFile);
-                copy(__DIR__ . "/Resources/" . $entry[0], $targetFile);
-
-                $craftman = $getCraftsman();
+                $craftsman = $getCraftsman();
+                $targetFileName = $this->safeCopyToPublic("/upload/" . $constructionSite->getId() . "/issue", $entry[0], "jpg");
 
                 $issue = new Issue();
-                $issue->setCraftsman($craftman);
+                $issue->setCraftsman($craftsman);
                 $issue->setImageFilename($targetFileName);
                 $issue->setDescription($entry[1]);
                 $issue->setIsMarked($entry[2]);
@@ -78,6 +72,7 @@ class LoadIssueData extends BaseFixture
                 $issue->setPositionY($entry[5]);
                 $issue->setPositionZoomScale($entry[6]);
                 $issue->setNumber($numberCount++);
+                $issue->setMap($map);
 
                 $issue->setUploadBy($constructionManager);
                 $issue->setUploadedAt(new \DateTime("-10 hours"));
@@ -89,7 +84,7 @@ class LoadIssueData extends BaseFixture
                         $issue->setReviewedAt(new \DateTime());
                     /** @noinspection PhpMissingBreakStatementInspection */
                     case 2:
-                        $issue->setResponseBy($craftman);
+                        $issue->setResponseBy($craftsman);
                         $issue->setRespondedAt(new \DateTime("-2 hours"));
                     case 1:
                         $issue->setRegistrationBy($constructionManager);
