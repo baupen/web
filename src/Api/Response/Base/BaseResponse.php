@@ -14,52 +14,17 @@ use App\Enum\ApiStatus;
 class BaseResponse
 {
     /**
-     * @var int
+     * @var string
      */
-    private $apiStatus = ApiStatus::SUCCESSFUL;
+    private $status = ApiStatus::SUCCESSFUL;
+
+    /**
+     * @var object
+     */
+    private $data;
 
     /**
      * @var string
      */
-    private $apiErrorMessage;
-
-    /**
-     * @return int
-     */
-    public function getApiStatus()
-    {
-        return $this->apiStatus;
-    }
-
-    /**
-     * @param int $apiStatus
-     */
-    public function setApiStatus($apiStatus)
-    {
-        $this->apiStatus = $apiStatus;
-    }
-
-    /**
-     * @return string
-     */
-    public function getApiErrorMessage()
-    {
-        return $this->apiErrorMessage;
-    }
-
-    /**
-     * @param string $apiErrorMessage
-     */
-    public function setApiErrorMessage($apiErrorMessage)
-    {
-        $this->apiErrorMessage = $apiErrorMessage;
-    }
-
-    /**
-     * prepare this object to be used with the serializer
-     */
-    public function prepareSerialization()
-    {
-        //nothing to do; override this in the subclass if needed
-    }
+    private $message;
 }

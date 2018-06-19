@@ -9,9 +9,9 @@
 namespace App\Api\Request;
 
 
-use App\Api\Request\Base\BaseRequest;
+use App\Api\Request\Base\AbstractRequest;
 
-class LoginRequest extends BaseRequest
+class LoginRequest extends AbstractRequest
 {
     /**
      * @var string

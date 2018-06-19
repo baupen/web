@@ -12,10 +12,10 @@
 namespace App\Controller;
 
 
-use App\Api\Request\Base\BaseRequest;
+use App\Api\Request\Base\AbstractRequest;
 use App\Api\Request\DownloadFileRequest;
 use App\Api\Request\LoginRequest;
-use App\Api\Request\SyncRequest;
+use App\Api\Request\ReadRequest;
 use App\Api\Response\Base\BaseResponse;
 use App\Api\Response\LoginResponse;
 use App\Api\Response\SyncResponse;
@@ -103,8 +103,8 @@ class ApiController extends BaseDoctrineController
             return $this->failed(ApiStatus::EMPTY_REQUEST);
         }
 
-        /* @var BaseRequest $authenticationStatusRequest */
-        $authenticationStatusRequest = $serializer->deserialize($content, BaseRequest::class, "json");
+        /* @var AbstractRequest $authenticationStatusRequest */
+        $authenticationStatusRequest = $serializer->deserialize($content, AbstractRequest::class, "json");
 
         $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["authenticationToken" => $authenticationStatusRequest->getAuthenticationToken()]);
         if ($user === null) {
@@ -191,8 +191,8 @@ class ApiController extends BaseDoctrineController
             return $this->failed(ApiStatus::EMPTY_REQUEST);
         }
 
-        /* @var SyncRequest $syncRequest */
-        $syncRequest = $serializer->deserialize($content, SyncRequest::class, "json");
+        /* @var ReadRequest $syncRequest */
+        $syncRequest = $serializer->deserialize($content, ReadRequest::class, "json");
 
         $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["authenticationToken" => $syncRequest->getAuthenticationToken()]);
         if ($user === null) {

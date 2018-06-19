@@ -9,28 +9,26 @@
 namespace App\Api\Request;
 
 
-use App\Api\Request\Base\BaseRequest;
+use App\Api\Entity\Building;
+use App\Api\Entity\Issue;
+use App\Api\Entity\Map;
+use App\Api\Request\Base\AbstractRequest;
+use App\Api\Request\Base\AuthenticatedRequest;
 
-class DownloadFileRequest extends BaseRequest
+class DownloadFileRequest extends AuthenticatedRequest
 {
     /**
-     * @var string
+     * @var Building|null
      */
-    private $fileName;
+    private $building;
 
     /**
-     * @return string
+     * @var Map|null
      */
-    public function getFileName()
-    {
-        return $this->fileName;
-    }
+    private $map;
 
     /**
-     * @param string $fileName
+     * @var Issue
      */
-    public function setFileName(string $fileName): void
-    {
-        $this->fileName = $fileName;
-    }
+    private $issue;
 }

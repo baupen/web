@@ -9,7 +9,7 @@
 namespace App\Api\Request\Base;
 
 
-class BaseRequest
+class AuthenticatedRequest extends AbstractRequest
 {
     /**
      * @var string

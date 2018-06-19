@@ -9,39 +9,30 @@
 namespace App\Api\Response;
 
 
+use App\Api\Entity\User;
 use App\Api\Response\Base\BaseResponse;
 use App\Entity\AppUser;
 
 class LoginResponse extends BaseResponse
 {
     /**
-     * @var AppUser $user
+     * @var User $user
      */
     private $user;
 
     /**
-     * @return AppUser
+     * @return User
      */
-    public function getUser()
+    public function     getUser(): User
     {
         return $this->user;
     }
 
     /**
-     * @param AppUser $user
+     * @param User $user
      */
-    public function setUser($user)
+    public function setUser(User $user): void
     {
         $this->user = $user;
-    }
-
-    /**
-     * prepares the object to be serialized.
-     * removes unnecessary properties
-     */
-    public function prepareSerialization()
-    {
-        parent::prepareSerialization();
-        $this->user->flattenDoctrineStructures();
     }
 }
