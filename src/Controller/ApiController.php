@@ -74,7 +74,7 @@ class ApiController extends BaseDoctrineController
         /* @var LoginRequest $loginRequest */
         $loginRequest = $serializer->deserialize($content, LoginRequest::class, "json");
 
-        $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["identifier" => $loginRequest->getIdentifier()]);
+        $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["identifier" => $loginRequest->getUsername()]);
         if ($user === null) {
             return $this->failed(ApiStatus::UNKNOWN_IDENTIFIER);
         }

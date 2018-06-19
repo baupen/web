@@ -16,7 +16,7 @@ class LoginRequest extends BaseRequest
     /**
      * @var string
      */
-    private $identifier;
+    private $username;
 
     /**
      * @var string
@@ -26,17 +26,17 @@ class LoginRequest extends BaseRequest
     /**
      * @return string
      */
-    public function getIdentifier()
+    public function getUsername()
     {
-        return $this->identifier;
+        return $this->username;
     }
 
     /**
-     * @param string $identifier
+     * @param string $username
      */
-    public function setIdentifier($identifier)
+    public function setUsername($username)
     {
-        $this->identifier = $identifier;
+        $this->username = $username;
     }
 
     /**
