@@ -32,6 +32,15 @@ services:
         public: false
         tags: ['serializer.normalizer']
 
+    Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor:
+        public: false
+
+    # tag it with serializer so datetime is serialized in a meaningful way
+    Symfony\Component\Serializer\Normalizer\ObjectNormalizer:
+        arguments: [null, null, null,'@Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor']
+        public: false
+        tags: ['serializer.normalizer']
+
     App\EventListener\ExceptionListener:
       tags:
        - { name: kernel.event_listener, event: kernel.exception }

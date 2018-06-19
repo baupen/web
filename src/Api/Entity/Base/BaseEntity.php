@@ -10,6 +10,8 @@ namespace App\Api\Entity\Base;
 
 
 use App\Api\Entity\ObjectMeta;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 trait BaseEntity
 {

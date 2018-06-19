@@ -33,7 +33,7 @@ class IssueModify extends AuthenticatedRequest
     /**
      * @param Issue $issue
      */
-    public function setIssue(Issue $issue): void
+    public function setIssue($issue): void
     {
         $this->issue = $issue;
     }

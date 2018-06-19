@@ -8,21 +8,28 @@
 
 namespace App\Api\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 
 class IssuePosition
 {
     /**
      * @var double
+     *
+     * @Assert\NotBlank()
      */
     private $x;
 
     /**
      * @var double
+     *
+     * @Assert\NotBlank()
      */
     private $y;
 
     /**
      * @var double
+     *
+     * @Assert\NotBlank()
      */
     private $zoomScale;
 

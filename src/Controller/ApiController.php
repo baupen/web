@@ -14,17 +14,20 @@ namespace App\Controller;
 
 use App\Api\Request\IssueModify;
 use App\Api\Request\LoginRequest;
+use App\Api\Response\Data\EmptyData;
 use App\Api\Response\Data\LoginData;
 use App\Api\Response\FailResponse;
 use App\Api\Response\SuccessfulResponse;
 use App\Controller\Base\BaseDoctrineController;
 use App\Entity\AuthenticationToken;
 use App\Entity\ConstructionManager;
+use App\Entity\Issue;
 use App\Service\Interfaces\ApiEntityConversionServiceInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
@@ -46,6 +49,7 @@ class ApiController extends BaseDoctrineController
     const UNKNOWN_USERNAME = "unknown username";
     const WRONG_PASSWORD = "wrong password";
     const GUID_ALREADY_IN_USE = "guid already in use";
+    const AUTHENTICATION_TOKEN_INVALID = "authentication token invalid";
 
     /**
      * inject the translator service
@@ -54,7 +58,7 @@ class ApiController extends BaseDoctrineController
      */
     public static function getSubscribedServices()
     {
-        return parent::getSubscribedServices() + ['translator' => TranslatorInterface::class];
+        return parent::getSubscribedServices() + ['translator' => TranslatorInterface::class, "logger" => LoggerInterface::class];
     }
 
     /**
@@ -110,6 +114,7 @@ class ApiController extends BaseDoctrineController
      * @param ValidatorInterface $validator
      * @param ApiEntityConversionServiceInterface $apiEntityConversionService
      * @return Response
+     * @throws \Doctrine\ORM\ORMException
      */
     public function issueCreateAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, ApiEntityConversionServiceInterface $apiEntityConversionService)
     {
@@ -118,7 +123,7 @@ class ApiController extends BaseDoctrineController
             return $this->fail(static::EMPTY_REQUEST);
         }
 
-        /* @var LoginRequest $issueModifyRequest */
+        /* @var IssueModify $issueModifyRequest */
         $issueModifyRequest = $serializer->deserialize($content, IssueModify::class, "json");
 
         // check all properties defined
@@ -127,24 +132,17 @@ class ApiController extends BaseDoctrineController
             return $this->fail(static::INVALID_REQUEST);
         }
 
-        //check username & password
+        //check auth token
         /** @var ConstructionManager $constructionManager */
-        $constructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(["email" => $issueModifyRequest->getUsername()]);
+        $constructionManager = $this->getDoctrine()->getRepository(AuthenticationToken::class)->getConstructionManager($issueModifyRequest);
         if ($constructionManager === null) {
-            return $this->fail(static::UNKNOWN_USERNAME);
-        }
-        if ($constructionManager->getPasswordHash() !== $issueModifyRequest->getPasswordHash()) {
-            return $this->fail(static::WRONG_PASSWORD);
+            return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
         }
 
-        //create auth token
-        $authToken = new AuthenticationToken($constructionManager);
-        $this->fastSave($authToken);
+        $issue =        $apiEntityConversionService->getIssue();
 
         //construct answer
-        $user = $apiEntityConversionService->convertToUser($constructionManager, $authToken->getToken());
-        $loginData = new LoginData($user);
-        return $this->success($loginData);
+        return $this->success(new EmptyData());
     }
 
 
@@ -172,7 +170,15 @@ class ApiController extends BaseDoctrineController
         $logger = $this->get("logger");
         $request = $this->get("request_stack")->getCurrentRequest();
         $logger->error("Api fail " . ": " . $message . " for " . $request->getContent());
-        $code = $message == static::INVALID_REQUEST ? Response::HTTP_BAD_REQUEST : Response::HTTP_OK;
+        $code = Response::HTTP_OK;
+        switch ($message) {
+            case static::INVALID_REQUEST:
+                $code = Response::HTTP_BAD_REQUEST;
+                break;
+            case static::AUTHENTICATION_TOKEN_INVALID:
+                $code = Response::HTTP_UNAUTHORIZED;
+                break;
+        }
         return $this->json(new FailResponse($message), $code);
     }
 

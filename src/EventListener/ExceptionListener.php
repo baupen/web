@@ -40,7 +40,7 @@ class ExceptionListener
         //format error message
         $exception = $event->getException();
         $message = sprintf(
-            'An exception occurred: %s with code: %s',
+            'An exception occurred: %s with code %s',
             $exception->getMessage(),
             $exception->getCode()
         );

@@ -9,6 +9,7 @@
 namespace App\Service\Interfaces;
 
 
+use App\Api\Entity\Issue;
 use App\Api\Entity\User;
 use App\Entity\ConstructionManager;
 

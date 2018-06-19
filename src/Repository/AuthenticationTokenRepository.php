@@ -9,6 +9,7 @@
 namespace App\Repository;
 
 
+use App\Api\Request\Base\AuthenticatedRequest;
 use App\Entity\AuthenticationToken;
 use App\Helper\HashHelper;
 use Doctrine\ORM\EntityRepository;
@@ -19,18 +20,18 @@ class AuthenticationTokenRepository extends EntityRepository
      * get the construction manager assigned to that authentication token
      * returns null if the token is invalid or not found
      *
-     * @param string|null $authenticationToken
+     * @param AuthenticatedRequest $authenticatedRequest
      * @return \App\Entity\ConstructionManager|null
      * @throws \Doctrine\ORM\ORMException
      */
-    public function getConstructionManager($authenticationToken)
+    public function getConstructionManager(AuthenticatedRequest $authenticatedRequest)
     {
-        if (mb_strlen($authenticationToken) != HashHelper::HASH_LENGTH) {
+        if ($authenticatedRequest == null || mb_strlen($authenticatedRequest->getAuthenticationToken()) != HashHelper::HASH_LENGTH) {
             return null;
         }
 
         /** @var AuthenticationToken $token */
-        $token = $this->findOneBy(["token" => $authenticationToken]);
+        $token = $this->findOneBy(["token" => $authenticatedRequest->getAuthenticationToken()]);
         if ($token != null) {
             // remember last used date
             $token->setLastUsed();

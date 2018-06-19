@@ -74,7 +74,7 @@ class ApiControllerTest extends FixturesTestCase
             return $successful;
         } else if ($apiStatus == ApiStatus::FAIL) {
             $failed = json_decode($response->getContent());
-            $this->assertEquals($apiStatus, $failed->status);
+            $this->assertEquals($apiStatus, $failed->status, $response->getContent());
             $this->assertEquals($message, $failed->message);
             $this->assertEquals(200, $response->getStatusCode());
             return $failed;
@@ -122,7 +122,7 @@ class ApiControllerTest extends FixturesTestCase
             $json = '{"authenticationToken":"' . $authenticationToken . '", "issue":' . $serializer->serialize($issue, "json") . '}';
             $client->request(
                 'POST',
-                '/api/login',
+                '/api/issue/create',
                 [],
                 [],
                 ["CONTENT_TYPE" => "application/json"],
@@ -155,7 +155,6 @@ class ApiControllerTest extends FixturesTestCase
         $issue->setPosition($issuePosition);
 
         $response = $doRequest($issue);
-        dump($response->getContent());
         $this->checkResponse($response, ApiStatus::SUCCESSFUL);
 
         $response = $doRequest($issue);
