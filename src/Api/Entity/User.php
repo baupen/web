@@ -9,6 +9,8 @@
 namespace App\Api\Entity;
 
 
+use App\Api\Entity\Base\BaseEntity;
+
 class User
 {
     use BaseEntity;
@@ -27,4 +29,52 @@ class User
      * @var string
      */
     private $familyName;
+
+    /**
+     * @return string
+     */
+    public function getAuthenticationToken(): string
+    {
+        return $this->authenticationToken;
+    }
+
+    /**
+     * @param string $authenticationToken
+     */
+    public function setAuthenticationToken(string $authenticationToken): void
+    {
+        $this->authenticationToken = $authenticationToken;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGivenName(): string
+    {
+        return $this->givenName;
+    }
+
+    /**
+     * @param string $givenName
+     */
+    public function setGivenName(string $givenName): void
+    {
+        $this->givenName = $givenName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFamilyName(): string
+    {
+        return $this->familyName;
+    }
+
+    /**
+     * @param string $familyName
+     */
+    public function setFamilyName(string $familyName): void
+    {
+        $this->familyName = $familyName;
+    }
 }

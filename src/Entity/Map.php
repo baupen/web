@@ -74,4 +74,84 @@ class Map extends BaseEntity
         $this->children = new ArrayCollection();
         $this->issues = new ArrayCollection();
     }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getFilename(): ?string
+    {
+        return $this->filename;
+    }
+
+    /**
+     * @param null|string $filename
+     */
+    public function setFilename(?string $filename): void
+    {
+        $this->filename = $filename;
+    }
+
+    /**
+     * @return ConstructionSite|null
+     */
+    public function getConstructionSite(): ?ConstructionSite
+    {
+        return $this->constructionSite;
+    }
+
+    /**
+     * @param ConstructionSite|null $constructionSite
+     */
+    public function setConstructionSite(?ConstructionSite $constructionSite): void
+    {
+        $this->constructionSite = $constructionSite;
+    }
+
+    /**
+     * @return Map|null
+     */
+    public function getParent(): ?Map
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param Map|null $parent
+     */
+    public function setParent(?Map $parent): void
+    {
+        $this->parent = $parent;
+    }
+
+    /**
+     * @return Map[]
+     */
+    public function getChildren(): array
+    {
+        return $this->children;
+    }
+
+    /**
+     * @return Issue[]
+     */
+    public function getIssues(): array
+    {
+        return $this->issues;
+    }
 }

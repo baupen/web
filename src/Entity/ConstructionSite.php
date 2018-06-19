@@ -62,7 +62,7 @@ class ConstructionSite extends BaseEntity
     /**
      * @var Craftsman[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="building")
+     * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite")
      * @ORM\OrderBy({"name": "ASC"})
      */
     private $craftsmen;

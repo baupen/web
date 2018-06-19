@@ -15,8 +15,10 @@ use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionManager;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class LoadAppUserData extends BaseFixture
+class LoadConstructionManagerData extends BaseFixture
 {
+    const ORDER = 0;
+
     /**
      * Load data fixtures with the passed EntityManager.
      *
@@ -27,18 +29,17 @@ class LoadAppUserData extends BaseFixture
     public function load(ObjectManager $manager)
     {
         $entries = [
-            ["j", "asdf", "Julian", "Dunskus"],
-            ["a", "asdf", "Adrian", "Hoffmann"],
-            ["f", "asdf", "Florian", "Moser"]
+            ["j@mangel.io", "asdf", "Julian", "Dunskus"],
+            ["a@mangel.io", "asdf", "Adrian", "Hoffmann"],
+            ["f@mangel.io", "f", "asdf", "Florian", "Moser"]
         ];
 
         foreach ($entries as $entry) {
             $appUser = new ConstructionManager();
-            $appUser->setIdentifier($entry[0]);
+            $appUser->setEmail($entry[0]);
             $appUser->setPlainPassword($entry[1]);
             $appUser->setGivenName($entry[2]);
             $appUser->setFamilyName($entry[3]);
-            $appUser->setAuthenticationToken();
             $appUser->setPassword();
             $manager->persist($appUser);
         }
@@ -47,24 +48,6 @@ class LoadAppUserData extends BaseFixture
 
     public function getOrder()
     {
-        return 5;
-    }
-
-    /**
-     * create an instance with all random values.
-     *
-     * @return ConstructionManager
-     */
-    protected function getAllRandomInstance()
-    {
-        $faker = $this->getFaker();
-
-        $appUser = new ConstructionManager();
-        $appUser->setPlainPassword($faker->asciify());
-        $appUser->setIdentifier($faker->asciify());
-        $appUser->setAuthenticationToken();
-        $this->fillRandomPerson($appUser);
-
-        return $appUser;
+        return static::ORDER;
     }
 }

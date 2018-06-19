@@ -12,12 +12,14 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
-use App\Entity\ConstructionSite;
 use App\Entity\ConstructionManager;
+use App\Entity\ConstructionSite;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class LoadBuildingData extends BaseFixture
+class LoadConstructionSiteData extends BaseFixture
 {
+    const ORDER = LoadConstructionManagerData::ORDER + 1;
+
     /**
      * Load data fixtures with the passed EntityManager.
      *
@@ -28,19 +30,17 @@ class LoadBuildingData extends BaseFixture
     public function load(ObjectManager $manager)
     {
         $entries = [
-            ["Sun Park", "Der Wohnpark in einladender Umgebung", "Parkstrasse", 12, 7270, "Davos"]
+            ["Sun Park", "Parkstrasse 12", 7270, "Davos", "CH"]
         ];
 
         $appUsers = $manager->getRepository(ConstructionManager::class)->findAll();
         foreach ($entries as $entry) {
             $building = new ConstructionSite();
             $building->setName($entry[0]);
-            $building->setDescription($entry[1]);
-            $building->setStreetAddress($entry[2]);
-            $building->setStreetNr($entry[3]);
-            $building->setPostalCode($entry[4]);
-            $building->setLocality($entry[5]);
-            $building->publish();
+            $building->setStreetAddress($entry[1]);
+            $building->setPostalCode($entry[2]);
+            $building->setLocality($entry[3]);
+            $building->setCountry($entry[4]);
             $manager->persist($building);
 
 
@@ -54,20 +54,6 @@ class LoadBuildingData extends BaseFixture
 
     public function getOrder()
     {
-        return 10;
-    }
-
-    /**
-     * create an instance with all random values.
-     *
-     * @return ConstructionSite
-     */
-    protected function getAllRandomInstance()
-    {
-        $building = new ConstructionSite();
-        $this->fillRandomThing($building);
-        $this->fillRandomAddress($building);
-
-        return $building;
+        return static::ORDER;
     }
 }

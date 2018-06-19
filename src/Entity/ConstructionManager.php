@@ -35,7 +35,14 @@ class ConstructionManager extends BaseEntity implements UserInterface
      *
      * @ORM\Column(type="text", nullable=true)
      */
-    private $name;
+    private $givenName;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $familyName;
 
     /**
      * @var string|null
@@ -70,17 +77,33 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @return null|string
      */
-    public function getName(): ?string
+    public function getGivenName(): ?string
     {
-        return $this->name;
+        return $this->givenName;
     }
 
     /**
-     * @param null|string $name
+     * @param null|string $givenName
      */
-    public function setName(?string $name): void
+    public function setGivenName(?string $givenName): void
     {
-        $this->name = $name;
+        $this->givenName = $givenName;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getFamilyName(): ?string
+    {
+        return $this->familyName;
+    }
+
+    /**
+     * @param null|string $familyName
+     */
+    public function setFamilyName(?string $familyName): void
+    {
+        $this->familyName = $familyName;
     }
 
     /**
@@ -129,7 +152,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
      * and populated in any number of different ways when the user object
      * is created.
      *
-     * @return (Role|string)[] The user roles
+     * @return string[] The user roles
      */
     public function getRoles()
     {

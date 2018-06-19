@@ -41,6 +41,13 @@ class Craftsman extends BaseEntity
     private $trade;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="text")
+     */
+    private $email;
+
+    /**
      * @var Issue[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Issue", mappedBy="craftsman")
@@ -50,9 +57,9 @@ class Craftsman extends BaseEntity
     /**
      * @var ConstructionSite
      *
-     * @ORM\ManyToOne(targetEntity="ConstructionSite", mappedBy="craftsmen")
+     * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="craftsmen")
      */
-    private $building;
+    private $constructionSite;
 
     /**
      * Craftsman constructor.
@@ -60,6 +67,54 @@ class Craftsman extends BaseEntity
     public function __construct()
     {
         $this->markers = new ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrade(): string
+    {
+        return $this->trade;
+    }
+
+    /**
+     * @param string $trade
+     */
+    public function setTrade(string $trade): void
+    {
+        $this->trade = $trade;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
     }
 
     /**
@@ -71,18 +126,18 @@ class Craftsman extends BaseEntity
     }
 
     /**
-     * remove all array collections, setting them to null
+     * @return ConstructionSite
      */
-    public function flattenDoctrineStructures()
+    public function getConstructionSite(): ConstructionSite
     {
-        $this->markers = null;
+        return $this->constructionSite;
     }
 
     /**
-     * @return string
+     * @param ConstructionSite $constructionSite
      */
-    public function __toString()
+    public function setConstructionSite(ConstructionSite $constructionSite): void
     {
-        return $this->getName();
+        $this->constructionSite = $constructionSite;
     }
 }

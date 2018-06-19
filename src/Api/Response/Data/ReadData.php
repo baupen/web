@@ -12,9 +12,8 @@ use App\Api\Entity\Building;
 use App\Api\Entity\Craftsman;
 use App\Api\Entity\Issue;
 use App\Api\Entity\Map;
-use App\Api\Response\Base\AbstractResponse;
 
-class ReadData extends AbstractResponse
+class ReadData
 {
     /**
      * @var Craftsman[]

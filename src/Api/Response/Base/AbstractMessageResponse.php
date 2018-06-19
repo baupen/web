@@ -14,6 +14,7 @@ class AbstractMessageResponse extends AbstractResponse
     /**
      * AbstractResponse constructor.
      * @param string $apiStatus
+     * @param string $message
      */
     public function __construct(string $apiStatus, string $message)
     {

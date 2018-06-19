@@ -27,10 +27,6 @@ class StaticController extends BaseFormController
      */
     public function indexAction()
     {
-        if ($this->getUser() instanceof FrontendUser) {
-            return $this->redirectToRoute('frontend_dashboard_index');
-        }
-
         return $this->render('static/index.html.twig');
     }
 }

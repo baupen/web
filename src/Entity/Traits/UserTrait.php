@@ -11,6 +11,7 @@
 
 namespace App\Entity\Traits;
 
+use App\Helper\HashHelper;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -341,24 +342,6 @@ trait UserTrait
      */
     public function setResetHash()
     {
-        $newHash = '';
-        //0-9, A-Z, a-z
-        $allowedRanges = [[48, 57], [65, 90], [97, 122]];
-        for ($i = 0; $i < 20; ++$i) {
-            $rand = mt_rand(20, 160);
-            $allowed = false;
-            for ($j = 0; $j < count($allowedRanges); ++$j) {
-                if ($allowedRanges[$j][0] <= $rand && $allowedRanges[$j][1] >= $rand) {
-                    $allowed = true;
-                }
-            }
-            if ($allowed) {
-                $newHash .= chr($rand);
-            } else {
-                --$i;
-            }
-        }
-
-        $this->resetHash = $newHash;
+        $this->resetHash = HashHelper::getHash();
     }
 }

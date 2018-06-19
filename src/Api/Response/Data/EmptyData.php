@@ -8,10 +8,7 @@
 
 namespace App\Api\Response\Data;
 
-
-use App\Api\Response\Base\AbstractResponse;
-
-class EmptyData extends AbstractResponse
+class EmptyData
 {
 
 }

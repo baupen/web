@@ -18,7 +18,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -76,9 +76,9 @@ class BaseLoginController extends BaseFormController
 
     /**
      * @param Request $request
-     * @param AdvancedUserInterface $user
+     * @param UserInterface $user
      */
-    protected function loginUser(Request $request, AdvancedUserInterface $user)
+    protected function loginUser(Request $request, UserInterface $user)
     {
         //login programmatically
         $token = new UsernamePasswordToken($user, $user->getPassword(), 'main', $user->getRoles());

@@ -12,9 +12,6 @@
 namespace App\DataFixtures\Base;
 
 use App\Entity\Traits\AddressTrait;
-use App\Entity\Traits\CommunicationTrait;
-use App\Entity\Traits\PersonTrait;
-use App\Entity\Traits\ThingTrait;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -39,10 +36,6 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
     {
         $faker = $this->getFaker();
         $obj->setStreetAddress($faker->streetAddress);
-        $obj->setStreetNr($faker->numberBetween(0, 300));
-        if ($faker->numberBetween(0, 10) > 8) {
-            $obj->setAddressLine($faker->streetAddress);
-        }
         $obj->setPostalCode($faker->numberBetween(0, 9999));
         $obj->setLocality($faker->city);
         $obj->setCountry($faker->countryCode);
@@ -57,64 +50,21 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
     }
 
     /**
-     * @param CommunicationTrait $obj
-     */
-    protected function fillRandomCommunication($obj)
-    {
-        $faker = $this->getFaker();
-        $obj->setEmail($faker->email);
-        if ($faker->numberBetween(0, 10) > 5) {
-            $obj->setPhone($faker->phoneNumber);
-        }
-        if ($faker->numberBetween(0, 10) > 8) {
-            $obj->setWebpage($faker->url);
-        }
-    }
-
-    /**
-     * @param ThingTrait $obj
-     */
-    protected function fillRandomThing($obj)
-    {
-        $faker = $this->getFaker();
-        $obj->setName($faker->text(50));
-        if ($faker->numberBetween(0, 10) > 5) {
-            $obj->setDescription($faker->text(200));
-        }
-    }
-
-    /**
-     * @param PersonTrait $obj
-     */
-    protected function fillRandomPerson($obj)
-    {
-        $faker = $this->getFaker();
-        $obj->setGivenName($faker->firstName);
-        $obj->setFamilyName($faker->lastName);
-    }
-
-    /**
      * create random instances.
      *
-     * @param $count
      * @param ObjectManager $manager
+     * @param callable $loader
+     * @param int $count
      * @return array
      */
-    protected function loadSomeRandoms(ObjectManager $manager, $count = 5)
+    protected function loadSomeRandoms(ObjectManager $manager, $loader, $count = 5)
     {
         $res = [];
         for ($i = 0; $i < $count; ++$i) {
-            $instance = $this->getAllRandomInstance();
+            $instance = $loader();
             $res[] = $instance;
             $manager->persist($instance);
         }
         return $res;
     }
-
-    /**
-     * create an instance with all random values.
-     *
-     * @return mixed
-     */
-    abstract protected function getAllRandomInstance();
 }
