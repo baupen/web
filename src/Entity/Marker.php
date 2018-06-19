@@ -101,16 +101,16 @@ class Marker extends BaseEntity implements ApiSerializable
     private $craftsman;
 
     /**
-     * @var BuildingMap
+     * @var Map
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\BuildingMap", inversedBy="markers")
+     * @ORM\ManyToOne(targetEntity="Map", inversedBy="markers")
      */
     private $buildingMap;
 
     /**
-     * @var AppUser
+     * @var ConstructionManager
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\AppUser", inversedBy="markers")
+     * @ORM\ManyToOne(targetEntity="ConstructionManager", inversedBy="markers")
      */
     private $createdBy;
 
@@ -218,7 +218,7 @@ class Marker extends BaseEntity implements ApiSerializable
     }
 
     /**
-     * @return BuildingMap
+     * @return Map
      */
     public function getBuildingMap()
     {
@@ -226,7 +226,7 @@ class Marker extends BaseEntity implements ApiSerializable
     }
 
     /**
-     * @param BuildingMap $buildingMap
+     * @param Map $buildingMap
      */
     public function setBuildingMap($buildingMap)
     {
@@ -282,7 +282,7 @@ class Marker extends BaseEntity implements ApiSerializable
     }
 
     /**
-     * @return AppUser
+     * @return ConstructionManager
      */
     public function getCreatedBy()
     {
@@ -290,7 +290,7 @@ class Marker extends BaseEntity implements ApiSerializable
     }
 
     /**
-     * @param AppUser $createdBy
+     * @param ConstructionManager $createdBy
      */
     public function setCreatedBy($createdBy)
     {

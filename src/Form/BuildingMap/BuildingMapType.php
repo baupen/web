@@ -8,7 +8,7 @@
 
 namespace App\Form\BuildingMap;
 
-use App\Entity\BuildingMap;
+use App\Entity\Map;
 use App\Form\Base\BaseAbstractType;
 use App\Form\Traits\Thing\ThingType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -34,7 +34,7 @@ class BuildingMapType extends BaseAbstractType
     {
         $resolver->setDefaults([
             'translation_domain' => 'entity_building_map',
-            'data_class' => BuildingMap::class
+            'data_class' => Map::class
         ]);
     }
 }

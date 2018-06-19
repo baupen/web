@@ -12,7 +12,7 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
-use App\Entity\AppUser;
+use App\Entity\ConstructionManager;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class LoadAppUserData extends BaseFixture
@@ -33,7 +33,7 @@ class LoadAppUserData extends BaseFixture
         ];
 
         foreach ($entries as $entry) {
-            $appUser = new AppUser();
+            $appUser = new ConstructionManager();
             $appUser->setIdentifier($entry[0]);
             $appUser->setPlainPassword($entry[1]);
             $appUser->setGivenName($entry[2]);
@@ -53,13 +53,13 @@ class LoadAppUserData extends BaseFixture
     /**
      * create an instance with all random values.
      *
-     * @return AppUser
+     * @return ConstructionManager
      */
     protected function getAllRandomInstance()
     {
         $faker = $this->getFaker();
 
-        $appUser = new AppUser();
+        $appUser = new ConstructionManager();
         $appUser->setPlainPassword($faker->asciify());
         $appUser->setIdentifier($faker->asciify());
         $appUser->setAuthenticationToken();

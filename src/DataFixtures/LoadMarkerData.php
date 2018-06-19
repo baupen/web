@@ -12,8 +12,8 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
-use App\Entity\AppUser;
-use App\Entity\BuildingMap;
+use App\Entity\ConstructionManager;
+use App\Entity\Map;
 use App\Entity\Craftsman;
 use App\Entity\Marker;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -30,9 +30,9 @@ class LoadMarkerData extends BaseFixture
     public function load(ObjectManager $manager)
     {
 
-        $buildingMaps = $manager->getRepository(BuildingMap::class)->findAll();
+        $buildingMaps = $manager->getRepository(Map::class)->findAll();
         $craftsmen = $manager->getRepository(Craftsman::class)->findAll();
-        $appUsers = $manager->getRepository(AppUser::class)->findAll();
+        $appUsers = $manager->getRepository(ConstructionManager::class)->findAll();
 
         $entries = [
             ["88286618-2247-489e-9bf4-30516ce4b201.jpg", "Laminat fehlerhaft", new \DateTime(), 0.2, 0.2, 0.4, 0.6, 0.3, 0.4],

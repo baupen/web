@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @ORM\Entity(repositoryClass="App\Repository\BuildingMapRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class BuildingMap extends BaseEntity implements ApiSerializable
+class Map extends BaseEntity implements ApiSerializable
 {
     use IdTrait;
     use ThingTrait;
@@ -49,7 +49,7 @@ class BuildingMap extends BaseEntity implements ApiSerializable
     /**
      * @var Building
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Building", inversedBy="buildingMaps")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Building", inversedBy="maps")
      */
     private $building;
 

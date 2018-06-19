@@ -8,7 +8,7 @@
 
 namespace App\Form\Building;
 
-use App\Entity\AppUser;
+use App\Entity\ConstructionManager;
 use App\Entity\Building;
 use App\Form\Base\BaseAbstractType;
 use App\Form\Traits\Address\AddressType;
@@ -28,7 +28,7 @@ class BuildingType extends BaseAbstractType
         $builder->add("thing", ThingType::class, ["inherit_data" => true, "label" => false]);
         $builder->add("address", AddressType::class, ["inherit_data" => true]);
 
-        $builder->add('appUsers', EntityType::class, ["multiple" => true, "class" => AppUser::class]);
+        $builder->add('appUsers', EntityType::class, ["multiple" => true, "class" => ConstructionManager::class]);
     }
 
     /**

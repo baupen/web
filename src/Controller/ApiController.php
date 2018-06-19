@@ -20,9 +20,9 @@ use App\Api\Response\Base\BaseResponse;
 use App\Api\Response\LoginResponse;
 use App\Api\Response\SyncResponse;
 use App\Controller\Base\BaseDoctrineController;
-use App\Entity\AppUser;
+use App\Entity\ConstructionManager;
 use App\Entity\Building;
-use App\Entity\BuildingMap;
+use App\Entity\Map;
 use App\Entity\Craftsman;
 use App\Entity\Marker;
 use App\Entity\Traits\IdTrait;
@@ -74,7 +74,7 @@ class ApiController extends BaseDoctrineController
         /* @var LoginRequest $loginRequest */
         $loginRequest = $serializer->deserialize($content, LoginRequest::class, "json");
 
-        $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["identifier" => $loginRequest->getUsername()]);
+        $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(["identifier" => $loginRequest->getUsername()]);
         if ($user === null) {
             return $this->failed(ApiStatus::UNKNOWN_IDENTIFIER);
         }
@@ -106,7 +106,7 @@ class ApiController extends BaseDoctrineController
         /* @var AbstractRequest $authenticationStatusRequest */
         $authenticationStatusRequest = $serializer->deserialize($content, AbstractRequest::class, "json");
 
-        $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["authenticationToken" => $authenticationStatusRequest->getAuthenticationToken()]);
+        $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(["authenticationToken" => $authenticationStatusRequest->getAuthenticationToken()]);
         if ($user === null) {
             return $this->failed(ApiStatus::INVALID_AUTHENTICATION_TOKEN);
         }
@@ -128,7 +128,7 @@ class ApiController extends BaseDoctrineController
 
         $authenticationToken = $request->headers->get("mangel-authentication-token");
 
-        $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["authenticationToken" => $authenticationToken]);
+        $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(["authenticationToken" => $authenticationToken]);
         if ($user === null) {
             return $this->failed(ApiStatus::INVALID_AUTHENTICATION_TOKEN);
         }
@@ -163,14 +163,14 @@ class ApiController extends BaseDoctrineController
         /* @var DownloadFileRequest $downloadFileRequest */
         $downloadFileRequest = $serializer->deserialize($content, DownloadFileRequest::class, "json");
 
-        $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["authenticationToken" => $downloadFileRequest->getAuthenticationToken()]);
+        $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(["authenticationToken" => $downloadFileRequest->getAuthenticationToken()]);
         if ($user === null) {
             return $this->failed(ApiStatus::INVALID_AUTHENTICATION_TOKEN);
         }
 
         $marker = $this->getDoctrine()->getRepository(Marker::class)->findOneBy(["imageFileName" => $downloadFileRequest->getFileName()]);
         if ($marker === null) {
-            $buildingMap = $this->getDoctrine()->getRepository(BuildingMap::class)->findOneBy(["fileName" => $downloadFileRequest->getFileName()]);
+            $buildingMap = $this->getDoctrine()->getRepository(Map::class)->findOneBy(["fileName" => $downloadFileRequest->getFileName()]);
             if ($buildingMap === null)
                 return $this->failed(ApiStatus::INVALID_FILE);
         }
@@ -194,7 +194,7 @@ class ApiController extends BaseDoctrineController
         /* @var ReadRequest $syncRequest */
         $syncRequest = $serializer->deserialize($content, ReadRequest::class, "json");
 
-        $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(["authenticationToken" => $syncRequest->getAuthenticationToken()]);
+        $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(["authenticationToken" => $syncRequest->getAuthenticationToken()]);
         if ($user === null) {
             return $this->failed(ApiStatus::INVALID_AUTHENTICATION_TOKEN);
         }
@@ -203,7 +203,7 @@ class ApiController extends BaseDoctrineController
         if (is_array($syncRequest->getMarkers())) {
             foreach ($syncRequest->getMarkers() as $marker) {
                 //replace guid with objects
-                $buildingMap = $this->getDoctrine()->getRepository(BuildingMap::class)->find($marker["buildingMap"]);
+                $buildingMap = $this->getDoctrine()->getRepository(Map::class)->find($marker["buildingMap"]);
                 $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->find($marker["craftsman"]);
 
                 //unset properties which are not of the correct type
@@ -251,7 +251,7 @@ class ApiController extends BaseDoctrineController
         $maps = [];
         $syncResponse->setBuildingMaps([]);
         foreach ($syncResponse->getBuildings() as $building) {
-            $maps = array_merge($building->getBuildingMaps()->toArray(), $maps);
+            $maps = array_merge($building->getMaps()->toArray(), $maps);
         }
         $syncResponse->setBuildingMaps($maps);
 

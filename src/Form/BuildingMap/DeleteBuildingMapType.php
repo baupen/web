@@ -8,7 +8,7 @@
 
 namespace App\Form\BuildingMap;
 
-use App\Entity\BuildingMap;
+use App\Entity\Map;
 use App\Form\Base\BaseAbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -31,7 +31,7 @@ class DeleteBuildingMapType extends BaseAbstractType
     {
         $resolver->setDefaults([
             'translation_domain' => 'entity_building_map',
-            'data_class' => BuildingMap::class
+            'data_class' => Map::class
         ]);
     }
 }

@@ -28,117 +28,112 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\BuildingRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Building extends BaseEntity implements ApiSerializable
+class Building extends BaseEntity
 {
     use IdTrait;
-    use ThingTrait;
     use AddressTrait;
-    use PublicAccessibleTrait;
 
     /**
-     * @var bool
-     * @ORM\Column(type="boolean", options={"default": false})
-     */
-    private $isArchived = false;
-
-    /**
-     * @var AppUser[]|ArrayCollection
+     * @var string
      *
-     * @ORM\ManyToMany(targetEntity="App\Entity\AppUser", inversedBy="buildings")
-     * @ORM\JoinTable(name="buildings_app_users")
+     * @ORM\Column(type="text")
      */
-    private $appUsers;
+    private $name;
 
     /**
-     * @var BuildingMap[]|ArrayCollection
+     * @var string|null
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\BuildingMap", mappedBy="building")
+     * @ORM\Column(type="text")
+     */
+    private $imageFileName;
+
+    /**
+     * @var ConstructionManager[]|ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="ConstructionManager", inversedBy="buildings")
+     * @ORM\JoinTable(name="buildings_construction_managers")
+     */
+    private $constructionManagers;
+
+    /**
+     * @var Map[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Map", mappedBy="building")
      * @ORM\OrderBy({"name": "ASC"})
      */
-    private $buildingMaps;
+    private $maps;
+
+    /**
+     * @var Craftsman[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="building")
+     * @ORM\OrderBy({"name": "ASC"})
+     */
+    private $craftsmen;
 
     /**
      * Building constructor.
      */
     public function __construct()
     {
-        $this->appUsers = new ArrayCollection();
+        $this->constructionManagers = new ArrayCollection();
+        $this->maps = new ArrayCollection();
+        $this->craftsmen = new ArrayCollection();
     }
 
     /**
-     * @return AppUser[]|ArrayCollection
+     * @return string
      */
-    public function getAppUsers()
+    public function getName(): string
     {
-        return $this->appUsers;
+        return $this->name;
     }
 
     /**
-     * @return BuildingMap[]|ArrayCollection
+     * @param string $name
      */
-    public function getBuildingMaps()
+    public function setName(string $name): void
     {
-        return $this->buildingMaps;
+        $this->name = $name;
     }
 
     /**
-     * @return Marker[]
+     * @return null|string
      */
-    public function getMarkers()
+    public function getImageFileName(): ?string
     {
-        $markers = [];
-        if ($this->getBuildingMaps() != null) {
-            foreach ($this->getBuildingMaps() as $buildingMap) {
-                $markers = array_merge($markers, $buildingMap->getMarkers()->toArray());
-            }
-        }
-        return $markers;
+        return $this->imageFileName;
     }
 
     /**
-     * @return Marker[]
+     * @param null|string $imageFileName
      */
-    public function getOpenMarkerByCraftsman()
+    public function setImageFileName(?string $imageFileName): void
     {
-        $markers = [];
-        if ($this->getBuildingMaps() != null) {
-            foreach ($this->getBuildingMaps() as $buildingMap) {
-                $markers = array_merge($markers, $buildingMap->getMarkers()->toArray());
-            }
-        }
-        return $markers;
+        $this->imageFileName = $imageFileName;
     }
 
     /**
-     * remove all array collections, setting them to null
+     * @return ConstructionManager[]|ArrayCollection
      */
-    public function flattenDoctrineStructures()
+    public function getConstructionManagers()
     {
-        $this->appUsers = null;
-        $this->buildingMaps = null;
+        return $this->constructionManagers;
     }
 
     /**
-     * @param AppUser[]|ArrayCollection $appUsers
+     * @return Map[]|ArrayCollection
      */
-    public function setAppUsers($appUsers): void
+    public function getMaps()
     {
-        $this->appUsers = $appUsers;
+        return $this->maps;
     }
 
     /**
-     * @return bool
+     * @return Craftsman[]|ArrayCollection
      */
-    public function isArchived()
+    public function getCraftsmen()
     {
-        return $this->isArchived;
-    }
-
-    /**
-     * @param bool $isArchived
-     */
-    public function setIsArchived(bool $isArchived): void
-    {
-        $this->isArchived = $isArchived;
+        return $this->craftsmen;
     }
 }

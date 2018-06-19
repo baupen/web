@@ -8,7 +8,7 @@
 
 namespace App\Form\AppUser;
 
-use App\Entity\AppUser;
+use App\Entity\ConstructionManager;
 use App\Form\Base\BaseAbstractType;
 use App\Form\Traits\Person\PersonType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -37,7 +37,7 @@ class AppUserType extends BaseAbstractType
     {
         $resolver->setDefaults([
             'translation_domain' => 'entity_app_user',
-            'data_class' => AppUser::class
+            'data_class' => ConstructionManager::class
         ]);
     }
 }

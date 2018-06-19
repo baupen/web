@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\AppUser;
+use App\Entity\ConstructionManager;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -14,10 +14,10 @@ use Doctrine\ORM\EntityRepository;
 class BuildingRepository extends EntityRepository
 {
     /**
-     * @param AppUser $appUser
+     * @param ConstructionManager $appUser
      * @return mixed
      */
-    public function findByAppUser(AppUser $appUser)
+    public function findByAppUser(ConstructionManager $appUser)
     {
         return $this->createQueryBuilder('b')
             ->innerJoin('b.appUsers', 'au')

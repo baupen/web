@@ -38,13 +38,13 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
     protected function fillRandomAddress($obj)
     {
         $faker = $this->getFaker();
-        $obj->setStreet($faker->streetAddress);
+        $obj->setStreetAddress($faker->streetAddress);
         $obj->setStreetNr($faker->numberBetween(0, 300));
         if ($faker->numberBetween(0, 10) > 8) {
             $obj->setAddressLine($faker->streetAddress);
         }
         $obj->setPostalCode($faker->numberBetween(0, 9999));
-        $obj->setCity($faker->city);
+        $obj->setLocality($faker->city);
         $obj->setCountry($faker->countryCode);
     }
 

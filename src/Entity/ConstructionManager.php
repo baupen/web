@@ -23,7 +23,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\AppUserRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class AppUser extends BaseEntity implements ApiSerializable
+class ConstructionManager extends BaseEntity
 {
     use IdTrait;
     use PersonTrait;
@@ -57,7 +57,7 @@ class AppUser extends BaseEntity implements ApiSerializable
     /**
      * @var Building[]|ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Building", mappedBy="appUsers")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Building", mappedBy="constructionManagers")
      */
     private $buildings;
 

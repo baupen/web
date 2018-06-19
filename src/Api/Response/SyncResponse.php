@@ -10,16 +10,16 @@ namespace App\Api\Response;
 
 
 use App\Api\Response\Base\BaseResponse;
-use App\Entity\AppUser;
+use App\Entity\ConstructionManager;
 use App\Entity\Building;
-use App\Entity\BuildingMap;
+use App\Entity\Map;
 use App\Entity\Craftsman;
 use App\Entity\Marker;
 
 class SyncResponse extends BaseResponse
 {
     /**
-     * @var AppUser $user
+     * @var ConstructionManager $user
      */
     private $user;
 
@@ -34,7 +34,7 @@ class SyncResponse extends BaseResponse
     private $buildings;
 
     /**
-     * @var BuildingMap[]
+     * @var Map[]
      */
     private $buildingMaps;
 
@@ -44,7 +44,7 @@ class SyncResponse extends BaseResponse
     private $markers;
 
     /**
-     * @return AppUser
+     * @return ConstructionManager
      */
     public function getUser()
     {
@@ -52,7 +52,7 @@ class SyncResponse extends BaseResponse
     }
 
     /**
-     * @param AppUser $user
+     * @param ConstructionManager $user
      */
     public function setUser($user)
     {
@@ -92,7 +92,7 @@ class SyncResponse extends BaseResponse
     }
 
     /**
-     * @return BuildingMap[]
+     * @return Map[]
      */
     public function getBuildingMaps()
     {
@@ -100,7 +100,7 @@ class SyncResponse extends BaseResponse
     }
 
     /**
-     * @param BuildingMap[] $buildingMaps
+     * @param Map[] $buildingMaps
      */
     public function setBuildingMaps(array $buildingMaps): void
     {

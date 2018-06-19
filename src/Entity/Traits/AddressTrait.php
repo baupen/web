@@ -25,21 +25,7 @@ trait AddressTrait
      *
      * @ORM\Column(type="text", nullable=true)
      */
-    private $street;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $streetNr;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $addressLine;
+    private $streetAddress;
 
     /**
      * @var int
@@ -53,7 +39,7 @@ trait AddressTrait
      *
      * @ORM\Column(type="text", nullable=true)
      */
-    private $city;
+    private $locality;
 
     /**
      * @var string
@@ -68,69 +54,21 @@ trait AddressTrait
      *
      * @return string
      */
-    public function getStreet()
+    public function getStreetAddress()
     {
-        return $this->street;
+        return $this->streetAddress;
     }
 
     /**
      * Set street.
      *
-     * @param string $street
+     * @param string $streetAddress
      *
      * @return static
      */
-    public function setStreet($street)
+    public function setStreetAddress($streetAddress)
     {
-        $this->street = $street;
-
-        return $this;
-    }
-
-    /**
-     * Get streetNr.
-     *
-     * @return string
-     */
-    public function getStreetNr()
-    {
-        return $this->streetNr;
-    }
-
-    /**
-     * Set streetNr.
-     *
-     * @param string $streetNr
-     *
-     * @return static
-     */
-    public function setStreetNr($streetNr)
-    {
-        $this->streetNr = $streetNr;
-
-        return $this;
-    }
-
-    /**
-     * Get addressLine.
-     *
-     * @return string
-     */
-    public function getAddressLine()
-    {
-        return $this->addressLine;
-    }
-
-    /**
-     * Set addressLine.
-     *
-     * @param string $addressLine
-     *
-     * @return static
-     */
-    public function setAddressLine($addressLine)
-    {
-        $this->addressLine = $addressLine;
+        $this->streetAddress = $streetAddress;
 
         return $this;
     }
@@ -164,21 +102,21 @@ trait AddressTrait
      *
      * @return string
      */
-    public function getCity()
+    public function getLocality()
     {
-        return $this->city;
+        return $this->locality;
     }
 
     /**
      * Set addressRegion.
      *
-     * @param string $city
+     * @param string $locality
      *
      * @return static
      */
-    public function setCity($city)
+    public function setLocality($locality)
     {
-        $this->city = $city;
+        $this->locality = $locality;
 
         return $this;
     }
@@ -210,28 +148,25 @@ trait AddressTrait
      */
     public function getAddressLines()
     {
-        $res = [];
-        $lineOne = $this->getStreet();
-        if (mb_strlen($lineOne) > 0 && mb_strlen($this->getStreetNr()) > 0) {
-            $lineOne .= ' ' . $this->getStreetNr();
-        }
-        if (mb_strlen($lineOne) > 0) {
-            $res[] = $lineOne;
-        }
-        if (mb_strlen($this->getAddressLine()) > 0) {
-            $res[] = $this->getAddressLine();
-        }
-        $line3 = $this->getPostalCode();
-        if (mb_strlen($line3) > 0 && mb_strlen($this->getCity() > 0)) {
-            $line3 .= ' ' . $this->getCity();
-        }
-        if (mb_strlen($line3) > 0) {
-            $res[] = $line3;
-        }
+        $res = explode("\n", $this->getStreetAddress());
+        $prefix = "";
         if (mb_strlen($this->getCountry()) > 0) {
-            $res[] = $this->getCountry();
+            $prefix = $this->getCountry() . " ";
         }
+        if (mb_strlen($this->getPostalCode()) > 0) {
+            $prefix .= $this->getPostalCode() . " ";
+        }
+        if (mb_strlen($this->getLocality()) > 0) {
+            $prefix .= $this->getLocality();
+        }
+        $res[] = trim($prefix);
 
-        return $res;
+        $result = [];
+        foreach ($res as $entry) {
+            if (mb_strlen($entry) > 0) {
+                $result[] = $entry;
+            }
+        }
+        return $result;
     }
 }

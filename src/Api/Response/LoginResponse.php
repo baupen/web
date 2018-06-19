@@ -11,7 +11,7 @@ namespace App\Api\Response;
 
 use App\Api\Entity\User;
 use App\Api\Response\Base\BaseResponse;
-use App\Entity\AppUser;
+use App\Entity\ConstructionManager;
 
 class LoginResponse extends BaseResponse
 {

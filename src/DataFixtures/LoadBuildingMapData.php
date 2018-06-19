@@ -13,7 +13,7 @@ namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
 use App\Entity\Building;
-use App\Entity\BuildingMap;
+use App\Entity\Map;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class LoadBuildingMapData extends BaseFixture
@@ -39,7 +39,7 @@ class LoadBuildingMapData extends BaseFixture
 
         foreach ($entries as $entry) {
             foreach ($buildings as $building) {
-                $map = new BuildingMap();
+                $map = new Map();
                 $map->setBuilding($building);
                 $map->setFileName($entry[0]);
                 $map->setName($entry[1]);
@@ -66,11 +66,11 @@ class LoadBuildingMapData extends BaseFixture
     /**
      * create an instance with all random values.
      *
-     * @return BuildingMap
+     * @return Map
      */
     protected function getAllRandomInstance()
     {
-        $buildingMap = new BuildingMap();
+        $buildingMap = new Map();
         $this->fillRandomThing($buildingMap);
 
         return $buildingMap;

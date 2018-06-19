@@ -14,7 +14,7 @@ namespace App\Controller;
 
 use App\Controller\Base\BaseDoctrineController;
 use App\Entity\Building;
-use App\Entity\BuildingMap;
+use App\Entity\Map;
 use App\Entity\Craftsman;
 use App\Entity\Marker;
 use App\Model\BuildingMap\BuildingMapMarkerInfo;
@@ -182,7 +182,7 @@ class PublicController extends BaseDoctrineController
     {
 
         //probably a map
-        $map = $this->getDoctrine()->getRepository(BuildingMap::class)->findOneBy(["publicIdentifier" => $guid]);
+        $map = $this->getDoctrine()->getRepository(Map::class)->findOneBy(["publicIdentifier" => $guid]);
         if ($map == null || !$map->isAccessible()) {
             return $this->notAccessibleError();
         }

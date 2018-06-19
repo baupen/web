@@ -8,7 +8,7 @@
 
 namespace App\Form\AppUser;
 
-use App\Entity\AppUser;
+use App\Entity\ConstructionManager;
 use App\Form\Base\BaseAbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -31,7 +31,7 @@ class DeleteAppUserType extends BaseAbstractType
     {
         $resolver->setDefaults([
             'translation_domain' => 'entity_app_user',
-            'data_class' => AppUser::class
+            'data_class' => ConstructionManager::class
         ]);
     }
 }

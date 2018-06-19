@@ -12,7 +12,7 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
-use App\Entity\AppUser;
+use App\Entity\ConstructionManager;
 use App\Entity\Building;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -31,21 +31,21 @@ class LoadBuildingData extends BaseFixture
             ["Sun Park", "Der Wohnpark in einladender Umgebung", "Parkstrasse", 12, 7270, "Davos"]
         ];
 
-        $appUsers = $manager->getRepository(AppUser::class)->findAll();
+        $appUsers = $manager->getRepository(ConstructionManager::class)->findAll();
         foreach ($entries as $entry) {
             $building = new Building();
             $building->setName($entry[0]);
             $building->setDescription($entry[1]);
-            $building->setStreet($entry[2]);
+            $building->setStreetAddress($entry[2]);
             $building->setStreetNr($entry[3]);
             $building->setPostalCode($entry[4]);
-            $building->setCity($entry[5]);
+            $building->setLocality($entry[5]);
             $building->publish();
             $manager->persist($building);
 
 
             foreach ($appUsers as $appUser) {
-                $building->getAppUsers()->add($appUser);
+                $building->getConstructionManagers()->add($appUser);
             }
         }
 
