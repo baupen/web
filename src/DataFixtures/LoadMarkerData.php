@@ -13,9 +13,9 @@ namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionManager;
-use App\Entity\Map;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
+use App\Entity\Map;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class LoadMarkerData extends BaseFixture

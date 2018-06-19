@@ -15,13 +15,8 @@ use App\Controller\Base\BaseFormController;
 use App\Entity\FrontendUser;
 use App\Form\Model\ContactRequest\ContactRequestType;
 use App\Model\ContactRequest;
-use App\Service\EmailService;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Translation\TranslatorInterface;
 
 class StaticController extends BaseFormController
 {

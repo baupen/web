@@ -45,11 +45,11 @@ class ConstructionManager extends BaseEntity implements UserInterface
     private $phone;
 
     /**
-     * @var Building[]|ArrayCollection
+     * @var ConstructionSite[]|ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Building", mappedBy="constructionManagers")
+     * @ORM\ManyToMany(targetEntity="ConstructionSite", mappedBy="constructionManagers")
      */
-    private $buildings;
+    private $constructionSites;
 
     /**
      * @var Issue[]|ArrayCollection
@@ -63,7 +63,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
      */
     public function __construct()
     {
-        $this->buildings = new ArrayCollection();
+        $this->constructionSites = new ArrayCollection();
         $this->markers = new ArrayCollection();
     }
 
@@ -100,11 +100,11 @@ class ConstructionManager extends BaseEntity implements UserInterface
     }
 
     /**
-     * @return Building[]|ArrayCollection
+     * @return ConstructionSite[]|ArrayCollection
      */
-    public function getBuildings()
+    public function getConstructionSites()
     {
-        return $this->buildings;
+        return $this->constructionSites;
     }
 
     /**

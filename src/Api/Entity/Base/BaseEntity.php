@@ -6,7 +6,7 @@
  * Time: 10:10 AM
  */
 
-namespace App\Api\Entity;
+namespace App\Api\Entity\Base;
 
 
 trait BaseEntity

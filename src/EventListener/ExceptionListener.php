@@ -10,11 +10,9 @@ namespace App\EventListener;
 
 
 use App\Api\Response\ErrorResponse;
-use App\Enum\ApiStatus;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class ExceptionListener
 {

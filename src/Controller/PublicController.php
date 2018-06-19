@@ -13,13 +13,12 @@ namespace App\Controller;
 
 
 use App\Controller\Base\BaseDoctrineController;
-use App\Entity\Building;
-use App\Entity\Map;
+use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
+use App\Entity\Map;
 use App\Model\BuildingMap\BuildingMapMarkerInfo;
 use Imagick;
-use ImagickDraw;
 use Intervention\Image\ImageManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -157,7 +156,7 @@ class PublicController extends BaseDoctrineController
     private function getMarkersForDouble($guid, $guid2)
     {
         //guid from building, guid2 from craftsman
-        $building = $this->getDoctrine()->getRepository(Building::class)->findOneBy(["publicIdentifier" => $guid]);
+        $building = $this->getDoctrine()->getRepository(ConstructionSite::class)->findOneBy(["publicIdentifier" => $guid]);
         if ($building == null || !$building->isAccessible()) {
             return $this->notAccessibleError();
         }

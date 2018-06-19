@@ -6,16 +6,9 @@
  * Time: 11:00 AM
  */
 
-namespace App\Api\Data\Response;
+namespace App\Api\Response\Data;
 
 
-use App\Api\Entity\Building;
-use App\Api\Entity\Craftsman;
-use App\Api\Entity\Issue;
-use App\Api\Entity\Map;
-use App\Api\Entity\ObjectMeta;
-use App\Api\Request\Base\AbstractRequest;
-use App\Api\Request\Base\AuthenticatedRequest;
 use App\Api\Response\Base\AbstractResponse;
 
 class EmptyData extends AbstractResponse

@@ -9,9 +9,6 @@
 namespace App\Api\Request;
 
 
-use App\Api\Entity\Issue;
-use App\Api\Entity\ObjectMeta;
-use App\Api\Request\Base\AbstractRequest;
 use App\Api\Request\Base\AuthenticatedRequest;
 
 class IssueAction extends AuthenticatedRequest

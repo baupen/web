@@ -9,8 +9,6 @@
 namespace App\Api\Response\Base;
 
 
-use App\Enum\ApiStatus;
-
 class AbstractMessageResponse extends AbstractResponse
 {
     /**

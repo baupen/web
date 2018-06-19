@@ -1,9 +1,9 @@
 .base: &base
-  hostname: ftp.HOST.ch
-  user: USER
-  http_user: USER
+  hostname: ftp.mangel.io
+  user: mangelio
+  http_user: mangelio
   branch: master
-  deploy_path: ~/www/deploy/mangel.io/{{stage}}
+  deploy_path: ~/www/app.mangel.io/{{stage}}
   sshOptions:
     StrictHostKeyChecking: no
 

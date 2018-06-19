@@ -12,7 +12,7 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
-use App\Entity\Building;
+use App\Entity\ConstructionSite;
 use App\Entity\Map;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -27,7 +27,7 @@ class LoadBuildingMapData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $buildings = $manager->getRepository(Building::class)->findAll();
+        $buildings = $manager->getRepository(ConstructionSite::class)->findAll();
 
         $entries = [
             ["d320e74c-cf71-451c-805e-eadd4920f073.pdf", "1UG", "Übersichtskarte vom 1UG"],

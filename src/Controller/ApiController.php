@@ -20,14 +20,13 @@ use App\Api\Response\Base\AbstractResponse;
 use App\Api\Response\LoginContent;
 use App\Api\Response\SyncResponse;
 use App\Controller\Base\BaseDoctrineController;
+use App\Entity\ConstructionSite;
 use App\Entity\ConstructionManager;
-use App\Entity\Building;
-use App\Entity\Map;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
+use App\Entity\Map;
 use App\Entity\Traits\IdTrait;
 use App\Enum\ApiStatus;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -245,7 +244,7 @@ class ApiController extends BaseDoctrineController
 
         $syncResponse = new SyncResponse();
         $syncResponse->setUser($user);
-        $syncResponse->setBuildings($this->getDoctrine()->getRepository(Building::class)->findByAppUser($user));
+        $syncResponse->setBuildings($this->getDoctrine()->getRepository(ConstructionSite::class)->findByAppUser($user));
         $syncResponse->setCraftsmen($this->getDoctrine()->getRepository(Craftsman::class)->findBy([], ["name" => "ASC"]));
 
         $maps = [];

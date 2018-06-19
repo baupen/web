@@ -16,7 +16,6 @@ use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * An Email is a sent email to the specified receivers.
@@ -43,11 +42,11 @@ class Map extends BaseEntity
     private $filename;
 
     /**
-     * @var Building|null
+     * @var ConstructionSite|null
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Building", inversedBy="maps")
+     * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="maps")
      */
-    private $building;
+    private $constructionSite;
 
     /**
      * @var Map|null

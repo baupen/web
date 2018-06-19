@@ -11,23 +11,18 @@
 
 namespace App\Entity;
 
-
-use App\Api\ApiSerializable;
 use App\Entity\Base\BaseEntity;
-use App\Entity\Traits\CommunicationTrait;
 use App\Entity\Traits\IdTrait;
-use App\Entity\Traits\ThingTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * An Email is a sent email to the specified receivers.
+ * a craftsman receives information about open issues, and answers them.
  *
- * @ORM\Table
- * @ORM\Entity(repositoryClass="App\Repository\CraftsmanRepository")
+ * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
-class Craftsman extends BaseEntity implements ApiSerializable
+class Craftsman extends BaseEntity
 {
     use IdTrait;
 
@@ -53,9 +48,9 @@ class Craftsman extends BaseEntity implements ApiSerializable
     private $markers;
 
     /**
-     * @var Building
+     * @var ConstructionSite
      *
-     * @ORM\ManyToOne(targetEntity="Building", mappedBy="craftsmen")
+     * @ORM\ManyToOne(targetEntity="ConstructionSite", mappedBy="craftsmen")
      */
     private $building;
 

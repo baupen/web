@@ -12,8 +12,8 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
+use App\Entity\ConstructionSite;
 use App\Entity\ConstructionManager;
-use App\Entity\Building;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class LoadBuildingData extends BaseFixture
@@ -33,7 +33,7 @@ class LoadBuildingData extends BaseFixture
 
         $appUsers = $manager->getRepository(ConstructionManager::class)->findAll();
         foreach ($entries as $entry) {
-            $building = new Building();
+            $building = new ConstructionSite();
             $building->setName($entry[0]);
             $building->setDescription($entry[1]);
             $building->setStreetAddress($entry[2]);
@@ -60,11 +60,11 @@ class LoadBuildingData extends BaseFixture
     /**
      * create an instance with all random values.
      *
-     * @return Building
+     * @return ConstructionSite
      */
     protected function getAllRandomInstance()
     {
-        $building = new Building();
+        $building = new ConstructionSite();
         $this->fillRandomThing($building);
         $this->fillRandomAddress($building);
 

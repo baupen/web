@@ -24,18 +24,6 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    # controllers are imported separately to make sure services can be injected
-    # as action arguments even if you don't extend any base controller class
-    App\Controller\Frontend\:
-        resource: '../src/Controller/Frontend'
-        tags: ['controller.service_arguments']
-
-    # controllers are imported separately to make sure services can be injected
-    # as action arguments even if you don't extend any base controller class
-    App\Controller\Backend\:
-        resource: '../src/Controller/Backend'
-        tags: ['controller.service_arguments']
-
     App\Service\EmailService:
         arguments: ["@mailer", "@doctrine", "@logger","@twig","%env(MAILER_SENDER)%"]
 

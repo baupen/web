@@ -6,12 +6,11 @@
  * Time: 11:00 AM
  */
 
-namespace App\Api\Data\Response;
+namespace App\Api\Response\Data;
 
 
 use App\Api\Entity\User;
 use App\Api\Response\Base\AbstractResponse;
-use App\Entity\ConstructionManager;
 
 class LoginData extends AbstractResponse
 {

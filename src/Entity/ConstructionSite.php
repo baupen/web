@@ -19,12 +19,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * An Email is a sent email to the specified receivers.
+ * a construction site is the place the construction manager & the craftsmen work together
  *
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
-class Building extends BaseEntity
+class ConstructionSite extends BaseEntity
 {
     use IdTrait;
     use AddressTrait;
@@ -46,7 +46,7 @@ class Building extends BaseEntity
     /**
      * @var ConstructionManager[]|ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="ConstructionManager", inversedBy="buildings")
+     * @ORM\ManyToMany(targetEntity="ConstructionManager", inversedBy="constructionSites")
      * @ORM\JoinTable(name="buildings_construction_managers")
      */
     private $constructionManagers;
@@ -54,7 +54,7 @@ class Building extends BaseEntity
     /**
      * @var Map[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Map", mappedBy="building")
+     * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite")
      * @ORM\OrderBy({"name": "ASC"})
      */
     private $maps;

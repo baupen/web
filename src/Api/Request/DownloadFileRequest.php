@@ -12,7 +12,6 @@ namespace App\Api\Request;
 use App\Api\Entity\Building;
 use App\Api\Entity\Issue;
 use App\Api\Entity\Map;
-use App\Api\Request\Base\AbstractRequest;
 use App\Api\Request\Base\AuthenticatedRequest;
 
 class DownloadFileRequest extends AuthenticatedRequest
