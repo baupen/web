@@ -13,9 +13,20 @@ use App\Api\Response\ErrorResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class ExceptionListener
 {
+    /**
+     * @var SerializerInterface $serializer
+     */
+    private $serializer;
+
+    public function __construct(SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
     /**
      * @param GetResponseForExceptionEvent $event
      */
@@ -29,14 +40,15 @@ class ExceptionListener
         //format error message
         $exception = $event->getException();
         $message = sprintf(
-            'An exception occurred. Error says: %s with code: %s',
+            'An exception occurred: %s with code: %s',
             $exception->getMessage(),
             $exception->getCode()
         );
 
-        //construct base response
+        //construct error response
         $errorObj = new ErrorResponse($message);
-        $response = new JsonResponse($errorObj, Response::HTTP_INTERNAL_SERVER_ERROR);
+        $json = $this->serializer->serialize($errorObj, "json");
+        $response = new JsonResponse($json, Response::HTTP_INTERNAL_SERVER_ERROR, [], true);
 
         // sends the modified response object to the event
         $event->setResponse($response);

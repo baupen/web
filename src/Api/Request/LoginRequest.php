@@ -10,16 +10,21 @@ namespace App\Api\Request;
 
 
 use App\Api\Request\Base\AbstractRequest;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class LoginRequest extends AbstractRequest
 {
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     private $username;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     private $passwordHash;
 

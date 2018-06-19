@@ -8,6 +8,10 @@
 
 namespace App\Tests\Controller;
 
+use App\Api\Entity\Issue;
+use App\Api\Entity\IssuePosition;
+use App\Api\Entity\IssueStatus;
+use App\Api\Entity\ObjectMeta;
 use App\Api\Response\Base\AbstractResponse;
 use App\Api\Response\ErrorResponse;
 use App\Api\Response\FailResponse;
@@ -15,6 +19,7 @@ use App\Api\Response\SuccessfulResponse;
 use App\Controller\ApiController;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Base\FixturesTestCase;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -28,8 +33,6 @@ class ApiControllerTest extends FixturesTestCase
     public function testLogin()
     {
         $client = static::createClient();
-        $serializer = $client->getContainer()->get("serializer");
-
         $doRequest = function ($username, $password) use ($client) {
             $client->request(
                 'POST',
@@ -45,65 +48,120 @@ class ApiControllerTest extends FixturesTestCase
 
 
         $response = $doRequest("unknwon", "ad");
-        $this->checkResponse($serializer, $response,ApiStatus::FAIL, ApiController::UNKNOWN_USERNAME);
+        $this->checkResponse($response, ApiStatus::FAIL, ApiController::UNKNOWN_USERNAME);
 
         $response = $doRequest("f@mangel.io", "ad");
-        $this->checkResponse($serializer, $response,ApiStatus::FAIL, ApiController::WRONG_PASSWORD);
+        $this->checkResponse($response, ApiStatus::FAIL, ApiController::WRONG_PASSWORD);
 
         $response = $doRequest("f@mangel.io", "asdf");
-        $this->checkResponse($serializer, $response,ApiStatus::SUCCESSFUL);
+        $loginResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+
+        $this->assertNotNull($loginResponse->data);
+        $this->assertNotNull($loginResponse->data->user);
+        $this->assertNotNull($loginResponse->data->user->givenName);
+        $this->assertNotNull($loginResponse->data->user->familyName);
+        $this->assertNotNull($loginResponse->data->user->authenticationToken);
+        $this->assertNotNull($loginResponse->data->user->meta->id);
+        $this->assertNotNull($loginResponse->data->user->meta->lastChangeTime);
     }
 
-    private function checkResponse(SerializerInterface $serializer, Response $response, $apiStatus, $message = "")
+    private function checkResponse(Response $response, $apiStatus, $message = "")
     {
         if ($apiStatus == ApiStatus::SUCCESSFUL) {
             $successful = json_decode($response->getContent());
             $this->assertEquals($apiStatus, $successful->status, $response->getContent());
             $this->assertEquals(200, $response->getStatusCode());
+            return $successful;
         } else if ($apiStatus == ApiStatus::FAIL) {
             $failed = json_decode($response->getContent());
             $this->assertEquals($apiStatus, $failed->status);
             $this->assertEquals($message, $failed->message);
             $this->assertEquals(200, $response->getStatusCode());
+            return $failed;
         } else if ($apiStatus == ApiStatus::ERROR) {
             $error = json_decode($response->getContent());
             $this->assertEquals($apiStatus, $error->status);
             $this->assertEquals($message, $error->message);
             $this->assertNotEquals(200, $response->getStatusCode());
+            return $error;
         }
+        return null;
     }
-//    }
-//
-//    /**
-//     * gets an authentication token
-//     *
-//     * @param Client $client
-//     * @return string
-//     */
-//    private function getAuthenticationToken(Client $client)
-//    {
-//        $serializer = $client->getContainer()->get("serializer");
-//
-//        $client->request(
-//            'POST',
-//            '/api/login',
-//            [],
-//            [],
-//            ["CONTENT_TYPE" => "application/json"],
-//            '{"identifier":"j", "passwordHash":"' . hash("sha256", "asdf") . '"}'
-//        );
-//
-//        $response = $client->getResponse();
-//
-//        $this->assertEquals(200, $response->getStatusCode());
-//
-//        /* @var LoginContent $loginResponse */
-//        $loginResponse = $serializer->deserialize($response->getContent(), LoginContent::class, "json");
-//        $this->assertEquals(ApiStatus::SUCCESSFUL, $loginResponse->getApiStatus());
-//
-//        return $loginResponse->getUser()["authenticationToken"];
-//    }
-//
+
+    /**
+     * gets an authentication token
+     *
+     * @param Client $client
+     * @return string
+     */
+    private function getAuthenticationToken(Client $client)
+    {
+        $client->request(
+            'POST',
+            '/api/login',
+            [],
+            [],
+            ["CONTENT_TYPE" => "application/json"],
+            '{"username":"f@mangel.io", "passwordHash":"' . hash("sha256", "asdf") . '"}'
+        );
+
+        $json = $client->getResponse()->getContent();
+        $response = json_decode($json);
+        return $response->data->user->authenticationToken;
+    }
+
+    /**
+     * tests the create issue method
+     */
+    public function testCreateIssue()
+    {
+        $client = static::createClient();
+        $authenticationToken = $this->getAuthenticationToken($client);
+        $serializer = $client->getContainer()->get("serializer");
+        $doRequest = function (Issue $issue) use ($client, $authenticationToken, $serializer) {
+            $json = '{"authenticationToken":"' . $authenticationToken . '", "issue":' . $serializer->serialize($issue, "json") . '}';
+            $client->request(
+                'POST',
+                '/api/login',
+                [],
+                [],
+                ["CONTENT_TYPE" => "application/json"],
+                $json
+            );
+
+
+            return $client->getResponse();
+        };
+
+        $imageFilename = Uuid::uuid4()->toString() . ".jpg";
+
+        $issue = new Issue();
+        $issue->setWasAddedWithClient(true);
+        $issue->setIsMarked(true);
+        $issue->setImageFilename($imageFilename);
+        $issue->setDescription("description");
+
+        $issue->setStatus(new IssueStatus());
+
+        $meta = new ObjectMeta();
+        $meta->setId(Uuid::uuid4()->toString());
+        $meta->setLastChangeTime((new \DateTime())->format("c"));
+        $issue->setMeta($meta);
+
+        $issuePosition = new IssuePosition();
+        $issuePosition->setX(0.4);
+        $issuePosition->setY(0.3);
+        $issuePosition->setZoomScale(0.5);
+        $issue->setPosition($issuePosition);
+
+        $response = $doRequest($issue);
+        dump($response->getContent());
+        $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+
+        $response = $doRequest($issue);
+        $this->checkResponse($response, ApiStatus::FAIL, ApiController::GUID_ALREADY_IN_USE);
+    }
+
 //    /**
 //     * tests the authentication works properly
 //     */
@@ -124,7 +182,7 @@ class ApiControllerTest extends FixturesTestCase
 //        };
 //
 //        $checkResponse = function ($apiStatus) use ($client, $serializer) {
-//            $response = $client->getResponse();
+//            $response = $c{lient->getResponse();
 //
 //            $this->assertEquals(200, $response->getStatusCode());
 //

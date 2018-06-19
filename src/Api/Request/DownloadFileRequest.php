@@ -27,7 +27,55 @@ class DownloadFileRequest extends AuthenticatedRequest
     private $map;
 
     /**
-     * @var Issue
+     * @var Issue|null
      */
     private $issue;
+
+    /**
+     * @return Building|null
+     */
+    public function getBuilding(): ?Building
+    {
+        return $this->building;
+    }
+
+    /**
+     * @param Building|null $building
+     */
+    public function setBuilding(?Building $building): void
+    {
+        $this->building = $building;
+    }
+
+    /**
+     * @return Map|null
+     */
+    public function getMap(): ?Map
+    {
+        return $this->map;
+    }
+
+    /**
+     * @param Map|null $map
+     */
+    public function setMap(?Map $map): void
+    {
+        $this->map = $map;
+    }
+
+    /**
+     * @return Issue|null
+     */
+    public function getIssue(): ?Issue
+    {
+        return $this->issue;
+    }
+
+    /**
+     * @param Issue|null $issue
+     */
+    public function setIssue(?Issue $issue): void
+    {
+        $this->issue = $issue;
+    }
 }

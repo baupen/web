@@ -12,6 +12,7 @@
 namespace App\Controller;
 
 
+use App\Api\Request\IssueModify;
 use App\Api\Request\LoginRequest;
 use App\Api\Response\Data\LoginData;
 use App\Api\Response\FailResponse;
@@ -20,6 +21,7 @@ use App\Controller\Base\BaseDoctrineController;
 use App\Entity\AuthenticationToken;
 use App\Entity\ConstructionManager;
 use App\Service\Interfaces\ApiEntityConversionServiceInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,6 +32,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/api")
@@ -39,8 +42,10 @@ use Symfony\Component\Translation\TranslatorInterface;
 class ApiController extends BaseDoctrineController
 {
     const EMPTY_REQUEST = "request empty";
+    const INVALID_REQUEST = "invalid request";
     const UNKNOWN_USERNAME = "unknown username";
     const WRONG_PASSWORD = "wrong password";
+    const GUID_ALREADY_IN_USE = "guid already in use";
 
     /**
      * inject the translator service
@@ -57,43 +62,92 @@ class ApiController extends BaseDoctrineController
      *
      * @param Request $request
      * @param SerializerInterface $serializer
+     * @param ValidatorInterface $validator
      * @param ApiEntityConversionServiceInterface $apiEntityConversionService
      * @return Response
      */
-    public function loginAction(Request $request, SerializerInterface $serializer, ApiEntityConversionServiceInterface $apiEntityConversionService)
+    public function loginAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, ApiEntityConversionServiceInterface $apiEntityConversionService)
     {
+        //check if empty request
         if (!($content = $request->getContent())) {
-            return $this->json(new FailResponse(static::EMPTY_REQUEST));
+            return $this->fail(static::EMPTY_REQUEST);
         }
 
         /* @var LoginRequest $loginRequest */
         $loginRequest = $serializer->deserialize($content, LoginRequest::class, "json");
 
+        // check all properties defined
+        $errors = $validator->validate($loginRequest);
+        if (count($errors) > 0) {
+            return $this->fail(static::INVALID_REQUEST);
+        }
+
+        //check username & password
         /** @var ConstructionManager $constructionManager */
         $constructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(["email" => $loginRequest->getUsername()]);
         if ($constructionManager === null) {
-            return $this->json(new FailResponse(static::UNKNOWN_USERNAME));
+            return $this->fail(static::UNKNOWN_USERNAME);
         }
         if ($constructionManager->getPasswordHash() !== $loginRequest->getPasswordHash()) {
-            return $this->json(new FailResponse(static::WRONG_PASSWORD));
+            return $this->fail(static::WRONG_PASSWORD);
         }
 
+        //create auth token
         $authToken = new AuthenticationToken($constructionManager);
         $this->fastSave($authToken);
 
+        //construct answer
         $user = $apiEntityConversionService->convertToUser($constructionManager, $authToken->getToken());
+        $loginData = new LoginData($user);
+        return $this->success($loginData);
+    }
 
-        $loginResponse = new LoginData($user);
-        return $this->json(new SuccessfulResponse($loginResponse));
+    /**
+     * @Route("/issue/create", name="issue_create")
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param ValidatorInterface $validator
+     * @param ApiEntityConversionServiceInterface $apiEntityConversionService
+     * @return Response
+     */
+    public function issueCreateAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, ApiEntityConversionServiceInterface $apiEntityConversionService)
+    {
+        //check if empty request
+        if (!($content = $request->getContent())) {
+            return $this->fail(static::EMPTY_REQUEST);
+        }
+
+        /* @var LoginRequest $issueModifyRequest */
+        $issueModifyRequest = $serializer->deserialize($content, IssueModify::class, "json");
+
+        // check all properties defined
+        $errors = $validator->validate($issueModifyRequest);
+        if (count($errors) > 0) {
+            return $this->fail(static::INVALID_REQUEST);
+        }
+
+        //check username & password
+        /** @var ConstructionManager $constructionManager */
+        $constructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(["email" => $issueModifyRequest->getUsername()]);
+        if ($constructionManager === null) {
+            return $this->fail(static::UNKNOWN_USERNAME);
+        }
+        if ($constructionManager->getPasswordHash() !== $issueModifyRequest->getPasswordHash()) {
+            return $this->fail(static::WRONG_PASSWORD);
+        }
+
+        //create auth token
+        $authToken = new AuthenticationToken($constructionManager);
+        $this->fastSave($authToken);
+
+        //construct answer
+        $user = $apiEntityConversionService->convertToUser($constructionManager, $authToken->getToken());
+        $loginData = new LoginData($user);
+        return $this->success($loginData);
     }
 
 
-    /**
-     * @Route("/file/upload", name="api_file_upload")
-     *
-     * @param Request $request
-     * @return Response
-     */
 //    public function fileUploadAction(Request $request)
 //    {
 //        foreach ($request->files->all() as $key => $file) {
@@ -107,6 +161,33 @@ class ApiController extends BaseDoctrineController
 //    }
 
     /**
+     * if request failed
+     *
+     * @param string $message
+     * @param int $code
+     * @return Response
+     */
+    protected function fail(string $message)
+    {
+        $logger = $this->get("logger");
+        $request = $this->get("request_stack")->getCurrentRequest();
+        $logger->error("Api fail " . ": " . $message . " for " . $request->getContent());
+        $code = $message == static::INVALID_REQUEST ? Response::HTTP_BAD_REQUEST : Response::HTTP_OK;
+        return $this->json(new FailResponse($message), $code);
+    }
+
+    /**
+     * if request was successful
+     *
+     * @param $data
+     * @return JsonResponse
+     */
+    protected function success($data)
+    {
+        return $this->json(new SuccessfulResponse($data));
+    }
+
+    /**
      * Returns a JsonResponse that uses the serializer component if enabled, or json_encode.
      *
      * @final
@@ -118,7 +199,7 @@ class ApiController extends BaseDoctrineController
      */
     protected function json($data, int $status = 200, array $headers = array(), array $context = array()): JsonResponse
     {
-        $serializer = new Serializer([new DateTimeNormalizer(), new ObjectNormalizer()], [new JsonEncoder()]);
+        $serializer = $this->get("serializer");
 
         $json = $serializer->serialize($data, 'json', array_merge(array(
             'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,

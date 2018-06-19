@@ -79,7 +79,7 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
     protected function safeCopyToPublic($targetFolder, $resourceFileName, $fileEnding)
     {
         //get target folder & ensure it exists
-        $targetFolder = __DIR__ . "/../../public" . $targetFolder;
+        $targetFolder = __DIR__ . "/../../../public" . $targetFolder;
         if (!file_exists($targetFolder)) {
             mkdir($targetFolder, 0777, true);
         }

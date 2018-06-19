@@ -15,6 +15,8 @@ trait BaseEntity
 {
     /**
      * @var ObjectMeta
+     *
+     * @Assert\NotBlank()
      */
     private $meta;
 

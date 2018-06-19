@@ -8,16 +8,22 @@
 
 namespace App\Api\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 class ObjectMeta
 {
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     private $id;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     private $lastChangeTime;
 
