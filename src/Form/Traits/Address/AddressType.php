@@ -11,14 +11,15 @@
 
 namespace App\Form\Traits\Address;
 
-use App\Form\Base\BaseAbstractType;
+use App\Entity\Building;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AddressType extends BaseAbstractType
+class AddressType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -26,12 +27,10 @@ class AddressType extends BaseAbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('street', TextType::class);
-        $builder->add('streetNr', TextType::class);
-        $builder->add('addressLine', TextType::class, ["required" => false]);
-        $builder->add('postalCode', NumberType::class);
-        $builder->add('city', TextType::class);
-        $builder->add('country', CountryType::class);
+        $builder->add('streetAddress', TextType::class, ["required" => false]);
+        $builder->add('postalCode', NumberType::class, ["required" => false]);
+        $builder->add('locality', TextType::class, ["required" => false]);
+        $builder->add('country', CountryType::class, ["required" => false]);
     }
 
     /**
@@ -40,7 +39,8 @@ class AddressType extends BaseAbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'translation_domain' => 'trait_address'
+            'translation_domain' => 'trait_address',
+            'data_class' => Building::class
         ]);
     }
 }

@@ -12,11 +12,12 @@
 namespace App\Form\Traits\User;
 
 use App\Form\Base\BaseAbstractType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SetPasswordType extends BaseAbstractType
+class SetPasswordType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder

@@ -8,8 +8,8 @@
 
 namespace App\Tests\Controller;
 
-use App\Api\Response\Base\BaseResponse;
-use App\Api\Response\LoginResponse;
+use App\Api\Response\Base\AbstractResponse;
+use App\Api\Response\LoginContent;
 use App\Api\Response\SyncResponse;
 use App\Controller\ApiController;
 use App\Enum\ApiStatus;
@@ -58,8 +58,8 @@ class ApiControllerTest extends FixturesTestCase
 
             $this->assertEquals(200, $response->getStatusCode());
 
-            /* @var LoginResponse $loginResponse */
-            $loginResponse = $serializer->deserialize($response->getContent(), LoginResponse::class, "json");
+            /* @var LoginContent $loginResponse */
+            $loginResponse = $serializer->deserialize($response->getContent(), LoginContent::class, "json");
             $this->assertEquals($apiStatus, $loginResponse->getApiStatus());
         };
 
@@ -97,8 +97,8 @@ class ApiControllerTest extends FixturesTestCase
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        /* @var LoginResponse $loginResponse */
-        $loginResponse = $serializer->deserialize($response->getContent(), LoginResponse::class, "json");
+        /* @var LoginContent $loginResponse */
+        $loginResponse = $serializer->deserialize($response->getContent(), LoginContent::class, "json");
         $this->assertEquals(ApiStatus::SUCCESSFUL, $loginResponse->getApiStatus());
 
         return $loginResponse->getUser()["authenticationToken"];
@@ -129,8 +129,8 @@ class ApiControllerTest extends FixturesTestCase
             $this->assertEquals(200, $response->getStatusCode());
 
 
-            /* @var LoginResponse $loginResponse */
-            $loginResponse = $serializer->deserialize($response->getContent(), LoginResponse::class, "json");
+            /* @var LoginContent $loginResponse */
+            $loginResponse = $serializer->deserialize($response->getContent(), LoginContent::class, "json");
             $this->assertEquals($apiStatus, $loginResponse->getApiStatus());
         };
 
@@ -309,7 +309,7 @@ class ApiControllerTest extends FixturesTestCase
         $this->assertEquals(200, $response->getStatusCode());
 
         /* @var SyncResponse $uploadResponse */
-        $uploadResponse = $serializer->deserialize($response->getContent(), BaseResponse::class, "json");
+        $uploadResponse = $serializer->deserialize($response->getContent(), AbstractResponse::class, "json");
         $this->assertEquals(ApiStatus::SUCCESSFUL, $uploadResponse->getApiStatus());
 
 

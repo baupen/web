@@ -6,14 +6,14 @@
  * Time: 11:00 AM
  */
 
-namespace App\Api\Response;
+namespace App\Api\Data\Response;
 
 
 use App\Api\Entity\User;
-use App\Api\Response\Base\BaseResponse;
+use App\Api\Response\Base\AbstractResponse;
 use App\Entity\ConstructionManager;
 
-class LoginResponse extends BaseResponse
+class LoginData extends AbstractResponse
 {
     /**
      * @var User $user

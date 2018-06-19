@@ -30,9 +30,20 @@ use Doctrine\ORM\Mapping as ORM;
 class Craftsman extends BaseEntity implements ApiSerializable
 {
     use IdTrait;
-    use ThingTrait;
-    use CommunicationTrait;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text")
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text")
+     */
+    private $trade;
 
     /**
      * @var Marker[]|ArrayCollection
@@ -40,6 +51,13 @@ class Craftsman extends BaseEntity implements ApiSerializable
      * @ORM\OneToMany(targetEntity="App\Entity\Marker", mappedBy="craftsman")
      */
     private $markers;
+
+    /**
+     * @var Building
+     *
+     * @ORM\ManyToOne(targetEntity="Building", mappedBy="craftsmen")
+     */
+    private $building;
 
     /**
      * Craftsman constructor.

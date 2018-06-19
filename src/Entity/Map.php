@@ -28,11 +28,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @ORM\Entity(repositoryClass="App\Repository\BuildingMapRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Map extends BaseEntity implements ApiSerializable
+class Map extends BaseEntity
 {
     use IdTrait;
-    use ThingTrait;
-    use PublicAccessibleTrait;
 
     /**
      * @var UploadedFile

@@ -9,6 +9,7 @@
 namespace App\EventListener;
 
 
+use App\Api\Response\ErrorResponse;
 use App\Enum\ApiStatus;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,9 +37,7 @@ class ExceptionListener
         );
 
         //construct base response
-        $errorObj = new \stdClass();
-        $errorObj->apiStatus = ApiStatus::EXCEPTION_OCCURRED;
-        $errorObj->apiErrorMessage = $message;
+        $errorObj = new ErrorResponse($message);
         $response = new JsonResponse($errorObj, Response::HTTP_INTERNAL_SERVER_ERROR);
 
         // sends the modified response object to the event

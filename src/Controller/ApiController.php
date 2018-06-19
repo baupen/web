@@ -16,8 +16,8 @@ use App\Api\Request\Base\AbstractRequest;
 use App\Api\Request\DownloadFileRequest;
 use App\Api\Request\LoginRequest;
 use App\Api\Request\ReadRequest;
-use App\Api\Response\Base\BaseResponse;
-use App\Api\Response\LoginResponse;
+use App\Api\Response\Base\AbstractResponse;
+use App\Api\Response\LoginContent;
 use App\Api\Response\SyncResponse;
 use App\Controller\Base\BaseDoctrineController;
 use App\Entity\ConstructionManager;
@@ -85,7 +85,7 @@ class ApiController extends BaseDoctrineController
         $user->setAuthenticationToken();
         $this->fastSave($user);
 
-        $loginResponse = new LoginResponse();
+        $loginResponse = new LoginContent();
         $loginResponse->setUser($user);
         return $this->json($loginResponse);
     }
@@ -111,7 +111,7 @@ class ApiController extends BaseDoctrineController
             return $this->failed(ApiStatus::INVALID_AUTHENTICATION_TOKEN);
         }
 
-        return $this->json(new BaseResponse());
+        return $this->json(new AbstractResponse());
     }
 
     /**
@@ -144,7 +144,7 @@ class ApiController extends BaseDoctrineController
             }
         }
 
-        return $this->json(new BaseResponse());
+        return $this->json(new AbstractResponse());
     }
 
     /**
@@ -271,7 +271,7 @@ class ApiController extends BaseDoctrineController
      */
     private function failed($apiError)
     {
-        $response = new BaseResponse();
+        $response = new AbstractResponse();
         $response->setApiStatus($apiError);
         $response->setApiErrorMessage(ApiStatus::getTranslationForValue($apiError, $this->get("translator")));
 
@@ -308,7 +308,7 @@ class ApiController extends BaseDoctrineController
     {
         $serializer = static::getSerializer();
 
-        if ($data instanceof BaseResponse) {
+        if ($data instanceof AbstractResponse) {
             $data->prepareSerialization();
         }
 

@@ -24,8 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * An Email is a sent email to the specified receivers.
  *
- * @ORM\Table
- * @ORM\Entity(repositoryClass="App\Repository\BuildingRepository")
+ * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
 class Building extends BaseEntity

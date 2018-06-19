@@ -16,17 +16,18 @@ use App\Api\ApiSerializable;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\PersonTrait;
+use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\AppUserRepository")
- * @ORM\HasLifecycleCallbacks()
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  */
 class ConstructionManager extends BaseEntity
 {
     use IdTrait;
-    use PersonTrait;
+    use TimeTrait;
 
     /**
      * @var string
