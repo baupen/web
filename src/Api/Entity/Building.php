@@ -9,6 +9,8 @@
 namespace App\Api\Entity;
 
 
+use App\Api\Entity\Base\BaseEntity;
+
 class Building
 {
     use BaseEntity;
@@ -37,4 +39,20 @@ class Building
      * @var string[]
      */
     private $craftsmen;
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
 }

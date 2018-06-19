@@ -15,6 +15,11 @@ use App\Api\Request\Base\AuthenticatedRequest;
 class ReadRequest extends AuthenticatedRequest
 {
     /**
+     * @var ObjectMeta
+     */
+    private $user;
+
+    /**
      * @var ObjectMeta[]
      */
     private $craftsmen;

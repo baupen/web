@@ -12,6 +12,7 @@ use App\Api\Entity\Building;
 use App\Api\Entity\Craftsman;
 use App\Api\Entity\Issue;
 use App\Api\Entity\Map;
+use App\Api\Entity\User;
 
 class ReadData
 {
@@ -54,4 +55,9 @@ class ReadData
      * @var string[]
      */
     private $removedIssueIDs;
+
+    /**
+     * @var User
+     */
+    private $user;
 }

@@ -9,13 +9,15 @@
 namespace App\Tests\Controller;
 
 use App\Api\Response\Base\AbstractResponse;
-use App\Api\Response\LoginContent;
-use App\Api\Response\SyncResponse;
+use App\Api\Response\FailResponse;
+use App\Api\Response\SuccessfulResponse;
 use App\Controller\ApiController;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Base\FixturesTestCase;
 use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class ApiControllerTest extends FixturesTestCase
 {
@@ -40,38 +42,49 @@ class ApiControllerTest extends FixturesTestCase
     public function testLogin()
     {
         $client = static::createClient();
-        $serializer = ApiController::getSerializer(); //$client->getContainer()->get("serializer");
+        $serializer = $client->getContainer()->get("serializer");
 
-        $doRequest = function ($identifier, $password) use ($client) {
+        $doRequest = function ($username, $password) use ($client) {
             $client->request(
                 'POST',
                 '/api/login',
                 [],
                 [],
                 ["CONTENT_TYPE" => "application/json"],
-                '{"identifier":"' . $identifier . '", "passwordHash":"' . hash("sha256", $password) . '"}'
+                '{"username":"' . $username . '", "passwordHash":"' . hash("sha256", $password) . '"}'
             );
+
+            return $client->getResponse();
         };
 
         $checkResponse = function ($apiStatus) use ($client, $serializer) {
-            $response = $client->getResponse();
-
             $this->assertEquals(200, $response->getStatusCode());
 
             /* @var LoginContent $loginResponse */
-            $loginResponse = $serializer->deserialize($response->getContent(), LoginContent::class, "json");
-            $this->assertEquals($apiStatus, $loginResponse->getApiStatus());
         };
 
 
         $doRequest("unknwon", "ad");
-        $checkResponse(ApiStatus::UNKNOWN_IDENTIFIER);
+        $checkResponse(ApiStatus::FAIL, ApiController::UNKNOWN_USERNAME);
 
         $doRequest("j", "ad");
-        $checkResponse(ApiStatus::WRONG_PASSWORD);
+        $checkResponse(ApiStatus::FAIL, ApiController::WRONG_PASSWORD);
 
         $doRequest("j", "asdf");
         $checkResponse(ApiStatus::SUCCESSFUL);
+    }
+
+    private function checkResponse(SerializerInterface $serializer, Response $response, $apiStatus, $message = "")
+    {
+        if ($apiStatus == ApiStatus::SUCCESSFUL) {
+            $successful = $serializer->deserialize($response->getContent(), SuccessfulResponse::class, "json");
+            $this->assertEquals($apiStatus, $successful->getApiStatus());
+            $this->assertEquals(200, $response->getStatusCode());
+        } else if ($apiStatus == ApiStatus::FAIL) {
+            $successful = $serializer->deserialize($response->getContent(), FailResponse::class, "json");
+            $this->assertEquals($apiStatus, $successful->getApiStatus());
+            $this->assertEquals(200, $response->getStatusCode());
+        }
     }
 
     /**

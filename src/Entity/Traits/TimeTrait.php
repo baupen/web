@@ -68,17 +68,4 @@ trait TimeTrait
     {
         return $this->lastChangedAt;
     }
-
-    /**
-     * returns a string representation of this entity.
-     *
-     * @return string
-     */
-    public function getFullIdentifier()
-    {
-        if ($this->createdAt != null) {
-            return $this->createdAt->format(DateTimeFormatter::DATE_TIME_FORMAT);
-        }
-        return get_class($this);
-    }
 }
