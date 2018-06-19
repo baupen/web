@@ -10,6 +10,7 @@ namespace App\Api\Entity;
 
 
 use App\Api\Entity\Base\BaseEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class Issue
 {
@@ -39,6 +40,13 @@ class Issue
      * @var string|null
      */
     private $craftsman;
+
+    /**
+     * @var string
+     *
+     * @Assert\NotBlank()
+     */
+    private $map;
 
     /**
      * @var string|null
@@ -181,5 +189,21 @@ class Issue
     public function setPosition(?IssuePosition $position): void
     {
         $this->position = $position;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMap(): string
+    {
+        return $this->map;
+    }
+
+    /**
+     * @param string $map
+     */
+    public function setMap(string $map): void
+    {
+        $this->map = $map;
     }
 }

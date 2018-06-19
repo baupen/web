@@ -22,6 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * a construction site is the place the construction manager & the craftsmen work together
  *
+ * @ORM\Table(name="construction_sites")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */

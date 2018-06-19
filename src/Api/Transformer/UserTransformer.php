@@ -16,16 +16,27 @@ use App\Entity\ConstructionManager;
 class UserTransformer
 {
     /**
+     * @var ObjectMetaTransformer
+     */
+    private $objectMetaTransformer;
+
+    public function __construct(ObjectMetaTransformer $objectMetaTransformer)
+    {
+        $this->objectMetaTransformer = $objectMetaTransformer;
+    }
+
+    /**
      * @param ConstructionManager $constructionManager
      * @param string $authenticationToken
      * @return User
      */
-    public function transform(ConstructionManager $constructionManager, string $authenticationToken)
+    public function toApi(ConstructionManager $constructionManager, string $authenticationToken)
     {
         $user = new User();
         $user->setAuthenticationToken($authenticationToken);
         $user->setGivenName($constructionManager->getGivenName());
         $user->setFamilyName($constructionManager->getFamilyName());
+        $user->setMeta($this->objectMetaTransformer->toApi($constructionManager));
         return $user;
     }
 }

@@ -113,6 +113,14 @@ class ApiControllerTest extends FixturesTestCase
     /**
      * tests the create issue method
      */
+    public function testRead()
+    {
+
+    }
+
+    /**
+     * tests the create issue method
+     */
     public function testCreateIssue()
     {
         $client = static::createClient();
@@ -140,6 +148,7 @@ class ApiControllerTest extends FixturesTestCase
         $issue->setIsMarked(true);
         $issue->setImageFilename($imageFilename);
         $issue->setDescription("description");
+        $issue->setMap("guid");
 
         $issue->setStatus(new IssueStatus());
 

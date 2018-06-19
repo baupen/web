@@ -12,17 +12,27 @@
 namespace App\Controller;
 
 
-use App\Api\Request\IssueModify;
+use App\Api\Entity\ObjectMeta;
+use App\Api\Request\IssueModifyRequest;
 use App\Api\Request\LoginRequest;
+use App\Api\Request\ReadRequest;
 use App\Api\Response\Data\EmptyData;
 use App\Api\Response\Data\LoginData;
 use App\Api\Response\FailResponse;
 use App\Api\Response\SuccessfulResponse;
+use App\Api\Transformer\IssueTransformer;
+use App\Api\Transformer\UserTransformer;
 use App\Controller\Base\BaseDoctrineController;
 use App\Entity\AuthenticationToken;
 use App\Entity\ConstructionManager;
+use App\Entity\Craftsman;
 use App\Entity\Issue;
+use App\Entity\Map;
 use App\Service\Interfaces\ApiEntityConversionServiceInterface;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Doctrine\ORM\QueryBuilder;
+use Proxies\__CG__\App\Entity\ConstructionSite;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,6 +59,7 @@ class ApiController extends BaseDoctrineController
     const UNKNOWN_USERNAME = "unknown username";
     const WRONG_PASSWORD = "wrong password";
     const GUID_ALREADY_IN_USE = "guid already in use";
+    const INVALID_ENTITY = "invalid entity";
     const AUTHENTICATION_TOKEN_INVALID = "authentication token invalid";
 
     /**
@@ -67,10 +78,10 @@ class ApiController extends BaseDoctrineController
      * @param Request $request
      * @param SerializerInterface $serializer
      * @param ValidatorInterface $validator
-     * @param ApiEntityConversionServiceInterface $apiEntityConversionService
+     * @param UserTransformer $userTransformer
      * @return Response
      */
-    public function loginAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, ApiEntityConversionServiceInterface $apiEntityConversionService)
+    public function loginAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, UserTransformer $userTransformer)
     {
         //check if empty request
         if (!($content = $request->getContent())) {
@@ -101,30 +112,143 @@ class ApiController extends BaseDoctrineController
         $this->fastSave($authToken);
 
         //construct answer
-        $user = $apiEntityConversionService->convertToUser($constructionManager, $authToken->getToken());
+        $user = $userTransformer->toApi($constructionManager, $authToken->getToken());
         $loginData = new LoginData($user);
         return $this->success($loginData);
+
     }
 
     /**
-     * @Route("/issue/create", name="issue_create")
+     * @Route("/read", name="api_read")
      *
      * @param Request $request
      * @param SerializerInterface $serializer
      * @param ValidatorInterface $validator
-     * @param ApiEntityConversionServiceInterface $apiEntityConversionService
+     * @param IssueTransformer $issueTransformer
      * @return Response
      * @throws \Doctrine\ORM\ORMException
      */
-    public function issueCreateAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, ApiEntityConversionServiceInterface $apiEntityConversionService)
+    public function apiAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
     {
         //check if empty request
         if (!($content = $request->getContent())) {
             return $this->fail(static::EMPTY_REQUEST);
         }
 
-        /* @var IssueModify $issueModifyRequest */
-        $issueModifyRequest = $serializer->deserialize($content, IssueModify::class, "json");
+        /* @var ReadRequest $readRequest */
+        $readRequest = $serializer->deserialize($content, ReadRequest::class, "json");
+
+        // check all properties defined
+        $errors = $validator->validate($readRequest);
+        if (count($errors) > 0) {
+            return $this->fail(static::INVALID_REQUEST);
+        }
+
+        //check auth token
+        /** @var ConstructionManager $constructionManager */
+        $constructionManager = $this->getDoctrine()->getRepository(AuthenticationToken::class)->getConstructionManager($readRequest);
+        if ($constructionManager === null) {
+            return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
+        }
+
+        //process changes
+        $this->processObjectMeta(Craftsman::class, "craftsmen", $readRequest->getCraftsmen());
+        $this->processObjectMeta(Map::class, "maps", $readRequest->getMaps());
+        $this->processObjectMeta(Issue::class, "issues", $readRequest->getIssues());
+        $this->processObjectMeta(ConstructionSite::class, "construction_sites", $readRequest->getBuildings());
+
+
+        //ensure GUID not in use already
+        $existing = $this->getDoctrine()->getRepository(Issue::class)->find($readRequest->getIssue()->getMeta()->getId());
+        if ($existing != null) {
+            return $this->fail(static::GUID_ALREADY_IN_USE);
+        }
+
+        //transform to entity & persist
+        $issue = $issueTransformer->fromApi($readRequest->getIssue(), Issue::createFromId($readRequest->getIssue()->getMeta()->getId()));
+        if ($issue == null) {
+            return $this->fail(static::INVALID_ENTITY);
+        }
+        $issue->setUploadBy($constructionManager);
+        $issue->setUploadedAt(new \DateTime());
+        $this->fastSave($issue);
+
+        //construct answer
+        return $this->success(new EmptyData());
+    }
+
+    /**
+     * @param string $class
+     * @param string $table
+     * @param ObjectMeta[] $objectMetas
+     */
+    private function processObjectMeta($class, $table, $objectMetas)
+    {
+        /** @var EntityManager $manager */
+        $manager = $this->getDoctrine()->getManager();
+
+        //prepare sql
+        $selectClause = "SELECT u.id FROM " . $table ." u WHERE ";
+        $resultSetMapping = new ResultSetMappingBuilder($manager);
+        $resultSetMapping->addRootEntityFromClassMetadata($class, 'u');
+        $resultSetMapping->addFieldResult('u', 'id', 'id');
+
+        //prepare updated
+        $whereCondition = "";
+        $idParameters = [];
+        $timeParameters = [];
+        $counter = 0;
+        foreach ($objectMetas as $objectMeta) {
+            if (strlen($whereCondition) > 0) {
+                $whereCondition .= " OR ";
+            }
+            $whereCondition .= "(id == :id" . $counter . " AND lastChangedAt > :time" . $counter . ")";
+
+            $idParameters["id" . $counter] = $objectMeta->getId();
+            $timeParameters["time" . $counter] = $objectMeta->getId();
+
+            $counter++;
+        }
+
+        //get updated
+        $query = $manager->createNativeQuery($selectClause . $whereCondition, $resultSetMapping);
+        $query->setParameters($idParameters + $timeParameters);
+        $updatedObjects = $query->getResult();
+
+        //get new
+        $query = $manager->createNativeQuery($selectClause . " u.id NOT IN (". implode(", ", array_keys($idParameters)) .")", $resultSetMapping);
+        $query->setParameters($idParameters + $timeParameters);
+        $newObjects = $query->getResult();
+
+        //get deletedObjects
+        $query = $manager->createNativeQuery(
+            "with temp(id) as (select * from (values (" . implode("),(", array_keys($idParameters)). ") 
+            select u.id from temp u 
+            EXCEPT SELECT id FROM " . $table, $resultSetMapping);
+
+        $query->setParameters($idParameters);
+        $removedObjects = $query->getResult();
+    }
+
+    /**
+     * @Route("/issue/create", name="api_issue_create")
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function issueCreateAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
+    {
+        //check if empty request
+        if (!($content = $request->getContent())) {
+            return $this->fail(static::EMPTY_REQUEST);
+        }
+
+        /* @var IssueModifyRequest $issueModifyRequest */
+        $issueModifyRequest = $serializer->deserialize($content, IssueModifyRequest::class, "json");
 
         // check all properties defined
         $errors = $validator->validate($issueModifyRequest);
@@ -139,7 +263,20 @@ class ApiController extends BaseDoctrineController
             return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
         }
 
-        $issue =        $apiEntityConversionService->getIssue();
+        //ensure GUID not in use already
+        $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
+        if ($existing != null) {
+            return $this->fail(static::GUID_ALREADY_IN_USE);
+        }
+
+        //transform to entity & persist
+        $issue = $issueTransformer->fromApi($issueModifyRequest->getIssue(), Issue::createFromId($issueModifyRequest->getIssue()->getMeta()->getId()));
+        if ($issue == null) {
+            return $this->fail(static::INVALID_ENTITY);
+        }
+        $issue->setUploadBy($constructionManager);
+        $issue->setUploadedAt(new \DateTime());
+        $this->fastSave($issue);
 
         //construct answer
         return $this->success(new EmptyData());

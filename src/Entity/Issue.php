@@ -19,6 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * An issue is something created by the construction manager to inform the craftsman of it
  *
+ * @ORM\Table(name="issues")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */

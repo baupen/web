@@ -9,32 +9,31 @@
 namespace App\Api\Request;
 
 
-use App\Api\Entity\Issue;
 use App\Api\Request\Base\AuthenticatedRequest;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class IssueModify extends AuthenticatedRequest
+class IssueActionRequest extends AuthenticatedRequest
 {
     /**
-     * @var Issue
+     * @var string
      *
      * @Assert\NotBlank()
      */
-    private $issue;
+    private $issueID;
 
     /**
-     * @return Issue
+     * @return string
      */
-    public function getIssue(): Issue
+    public function getIssueID(): string
     {
-        return $this->issue;
+        return $this->issueID;
     }
 
     /**
-     * @param Issue $issue
+     * @param string $issueID
      */
-    public function setIssue($issue): void
+    public function setIssueID(string $issueID): void
     {
-        $this->issue = $issue;
+        $this->issueID = $issueID;
     }
 }

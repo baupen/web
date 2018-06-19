@@ -35,4 +35,17 @@ trait IdTrait
     {
         return $this->id;
     }
+
+    /**
+     * create entity with given GUID
+     *
+     * @param $id
+     * @return static
+     */
+    public static function createFromId($id)
+    {
+        $instance = new static();
+        $instance->id = $id;
+        return $instance;
+    }
 }
