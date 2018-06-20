@@ -22,7 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * a construction site is the place the construction manager & the craftsmen work together
  *
- * @ORM\Table(name="construction_sites")
+ * @ORM\Table(name="construction_site")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
@@ -50,7 +50,7 @@ class ConstructionSite extends BaseEntity
      * @var ConstructionManager[]|ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="ConstructionManager", inversedBy="constructionSites")
-     * @ORM\JoinTable(name="buildings_construction_managers")
+     * @ORM\JoinTable(name="construction_site_construction_manager")
      */
     private $constructionManagers;
 
@@ -71,7 +71,7 @@ class ConstructionSite extends BaseEntity
     private $craftsmen;
 
     /**
-     * Building constructor.
+     * Consutruction site constructor.
      */
     public function __construct()
     {

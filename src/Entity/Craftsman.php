@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * a craftsman receives information about open issues, and answers them.
  *
- * @ORM\Table(name="craftsmen")
+ * @ORM\Table(name="craftsman")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */

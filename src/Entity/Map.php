@@ -21,7 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * An Email is a sent email to the specified receivers.
  *
- * @ORM\Table(name="maps")
+ * @ORM\Table(name="map")
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */

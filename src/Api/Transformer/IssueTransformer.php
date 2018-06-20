@@ -9,15 +9,19 @@
 namespace App\Api\Transformer;
 
 
-use App\Api\Entity\Issue;
+use App\Api\Entity\IssuePosition;
+use App\Api\Entity\IssueStatus;
+use App\Api\Entity\IssueStatusEvent;
 use App\Api\Entity\ObjectMeta;
 use App\Api\Entity\User;
+use App\Api\Transformer\Base\AbstractTransformer;
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
+use App\Entity\Issue;
 use App\Entity\Map;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class IssueTransformer
+class IssueTransformer extends AbstractTransformer
 {
     /**
      * @var ObjectMetaTransformer
@@ -36,11 +40,11 @@ class IssueTransformer
     }
 
     /**
-     * @param Issue $issue
+     * @param \App\Api\Entity\Issue $issue
      * @param \App\Entity\Issue $entity
      * @return \App\Entity\Issue|null
      */
-    public function fromApi(Issue $issue, \App\Entity\Issue $entity)
+    public function fromApi(\App\Api\Entity\Issue $issue, Issue $entity)
     {
         $map = $this->doctrine->getRepository(Map::class)->findOneBy(["id" => $issue->getMap()]);
         if ($map == null) {
@@ -72,5 +76,66 @@ class IssueTransformer
             $entity->setPositionZoomScale(null);
         }
         return $entity;
+    }
+
+    public function toApi(Issue $entity)
+    {
+        $issue = new \App\Api\Entity\Issue();
+        $issue->setWasAddedWithClient($entity->isWasAddedWithClient());
+        $issue->setIsMarked($entity->isMarked());
+        $issue->setImageFilename($entity->getImageFilename());
+        $issue->setDescription($entity->getDescription());
+        $issue->setNumber($entity->getNumber());
+
+        if ($entity->getPositionZoomScale() != null) {
+            $issuePosition = new IssuePosition();
+            $issuePosition->setZoomScale($entity->getPositionZoomScale());
+            $issuePosition->setY($entity->getPositionY());
+            $issuePosition->setX($entity->getPositionX());
+            $issue->setPosition($issuePosition);
+        }
+
+
+        $issueStatus = new IssueStatus();
+        if ($entity->getRegisteredAt() != null) {
+            $issueStatusEvent = new IssueStatusEvent();
+            $issueStatusEvent->setAuthor($entity->getRegistrationBy()->getName());
+            $issueStatusEvent->setTime($entity->getRegisteredAt()->format("c"));
+            $issueStatus->setRegistration($issueStatusEvent);
+        }
+
+        if ($entity->getRespondedAt() != null) {
+            $issueStatusEvent = new IssueStatusEvent();
+            $issueStatusEvent->setAuthor($entity->getResponseBy()->getName());
+            $issueStatusEvent->setTime($entity->getRespondedAt()->format("c"));
+            $issueStatus->setResponse($issueStatusEvent);
+        }
+        if ($entity->getReviewedAt() != null) {
+            $issueStatusEvent = new IssueStatusEvent();
+            $issueStatusEvent->setAuthor($entity->getReviewBy()->getName());
+            $issueStatusEvent->setTime($entity->getReviewedAt()->format("c"));
+            $issueStatus->setReview($issueStatusEvent);
+        }
+        $issue->setStatus($issueStatus);
+
+
+        $issue->setMap($entity->getMap()->getId());
+        if ($entity->getCraftsman() != null) {
+            $issue->setCraftsman($entity->getCraftsman()->getId());
+        }
+
+        $issue->setMeta($this->objectMetaTransformer->toApi($entity));
+        return $issue;
+    }
+
+    /**
+     * @param Craftsman[] $entities
+     * @return \App\Api\Entity\Craftsman[]
+     */
+    public function toApiMultiple(array $entities)
+    {
+        return parent::toApiMultipleInternal($entities, function ($entity) {
+            return $this->toApi($entity);
+        });
     }
 }

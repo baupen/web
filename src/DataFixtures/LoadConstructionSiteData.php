@@ -30,7 +30,8 @@ class LoadConstructionSiteData extends BaseFixture
     public function load(ObjectManager $manager)
     {
         $entries = [
-            ["Sun Park", "Parkstrasse 12", 7270, "Davos", "CH"]
+            ["Sun Park", "Parkstrasse 12", 7270, "Davos", "CH"],
+            ["Sun Park (empty)", "Parkstrasse 12", 7270, "Davos", "CH"],
         ];
 
         $appUsers = $manager->getRepository(ConstructionManager::class)->findAll();

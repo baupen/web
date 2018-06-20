@@ -12,6 +12,7 @@ use App\Api\Entity\Issue;
 use App\Api\Entity\IssuePosition;
 use App\Api\Entity\IssueStatus;
 use App\Api\Entity\ObjectMeta;
+use App\Api\Request\ReadRequest;
 use App\Api\Response\Base\AbstractResponse;
 use App\Api\Response\ErrorResponse;
 use App\Api\Response\FailResponse;
@@ -89,12 +90,12 @@ class ApiControllerTest extends FixturesTestCase
     }
 
     /**
-     * gets an authentication token
+     * gets an authenticated user
      *
      * @param Client $client
-     * @return string
+     * @return \stdClass
      */
-    private function getAuthenticationToken(Client $client)
+    private function getAuthenticatedUser(Client $client)
     {
         $client->request(
             'POST',
@@ -107,7 +108,18 @@ class ApiControllerTest extends FixturesTestCase
 
         $json = $client->getResponse()->getContent();
         $response = json_decode($json);
-        return $response->data->user->authenticationToken;
+        return $response->data->user;
+    }
+
+    /**
+     * gets an authentication token
+     *
+     * @param Client $client
+     * @return string
+     */
+    private function getAuthenticationToken(Client $client)
+    {
+        return $this->getAuthenticatedUser($client)->authenticationToken;
     }
 
     /**
@@ -115,7 +127,63 @@ class ApiControllerTest extends FixturesTestCase
      */
     public function testRead()
     {
+        $client = static::createClient();
+        $authenticatedUser = $this->getAuthenticatedUser($client);
+        $serializer = $client->getContainer()->get("serializer");
+        $doRequest = function (ReadRequest $readRequest) use ($client, $serializer) {
+            $json = $serializer->serialize($readRequest, "json");
+            $client->request(
+                'POST',
+                '/api/read',
+                [],
+                [],
+                ["CONTENT_TYPE" => "application/json"],
+                $json
+            );
 
+            return $client->getResponse();
+        };
+
+        # read all
+        $readRequest = new ReadRequest();
+        $readRequest->setAuthenticationToken($authenticatedUser->authenticationToken);
+
+        $userMeta = new ObjectMeta();
+        $userMeta->setId($authenticatedUser->meta->id);
+        $userMeta->setLastChangeTime((new \DateTime())->setTimestamp(0)->format("c"));
+        $readRequest->setUser($userMeta);
+
+        $readRequest->setBuildings([]);
+        $readRequest->setCraftsmen([]);
+        $readRequest->setIssues([]);
+        $readRequest->setMaps([]);
+
+        $response = $doRequest($readRequest);
+        $readResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+
+        $this->assertNotNull($readResponse->data);
+        $this->assertNotNull($readResponse->data->user);
+        $this->assertNotNull($readResponse->data->changedBuildings);
+        $this->assertTrue(count($readResponse->data->changedBuildings) > 0);
+
+        # read none
+        $userMeta->setLastChangeTime($authenticatedUser->meta->lastChangeTime);
+
+        $buildingMetas = [];
+        foreach ($readResponse->data->changedBuildings as $changedBuilding) {
+            $buildingMeta = new ObjectMeta();
+            $buildingMeta->setId($changedBuilding->meta->id);
+            $buildingMeta->setLastChangeTime($changedBuilding->meta->lastChangeTime);
+            $buildingMetas[] = $buildingMeta;
+        }
+        $readRequest->setBuildings($buildingMetas);
+
+        $response = $doRequest($readRequest);
+        $readResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+
+        $this->assertNotNull($readResponse->data);
+        $this->assertNull($readResponse->data->user);
+        $this->assertEmpty($readResponse->data->changedBuildings);
     }
 
     /**

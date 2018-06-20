@@ -8,7 +8,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20180619171455 extends AbstractMigration
+final class Version20180620081527 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
@@ -32,11 +32,11 @@ final class Version20180619171455 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_7DC593834994A532 ON craftsman (construction_site_id)');
         $this->addSql('CREATE TABLE construction_site (id CHAR(36) NOT NULL --(DC2Type:guid)
         , name CLOB NOT NULL, image_file_name CLOB DEFAULT NULL, created_at DATETIME NOT NULL, last_changed_at DATETIME NOT NULL, street_address CLOB DEFAULT NULL, postal_code INTEGER DEFAULT NULL, locality CLOB DEFAULT NULL, country CLOB DEFAULT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE buildings_construction_managers (construction_site_id CHAR(36) NOT NULL --(DC2Type:guid)
+        $this->addSql('CREATE TABLE construction_site_construction_manager (construction_site_id CHAR(36) NOT NULL --(DC2Type:guid)
         , construction_manager_id CHAR(36) NOT NULL --(DC2Type:guid)
         , PRIMARY KEY(construction_site_id, construction_manager_id))');
-        $this->addSql('CREATE INDEX IDX_5686F37B4994A532 ON buildings_construction_managers (construction_site_id)');
-        $this->addSql('CREATE INDEX IDX_5686F37BA69C9147 ON buildings_construction_managers (construction_manager_id)');
+        $this->addSql('CREATE INDEX IDX_BC4D21F04994A532 ON construction_site_construction_manager (construction_site_id)');
+        $this->addSql('CREATE INDEX IDX_BC4D21F0A69C9147 ON construction_site_construction_manager (construction_manager_id)');
         $this->addSql('CREATE TABLE authentication_token (id CHAR(36) NOT NULL --(DC2Type:guid)
         , construction_manager_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
         , token CLOB NOT NULL, last_used DATETIME NOT NULL, created_at DATETIME NOT NULL, last_changed_at DATETIME NOT NULL, PRIMARY KEY(id))');
@@ -67,7 +67,7 @@ final class Version20180619171455 extends AbstractMigration
         $this->addSql('DROP TABLE email');
         $this->addSql('DROP TABLE craftsman');
         $this->addSql('DROP TABLE construction_site');
-        $this->addSql('DROP TABLE buildings_construction_managers');
+        $this->addSql('DROP TABLE construction_site_construction_manager');
         $this->addSql('DROP TABLE authentication_token');
         $this->addSql('DROP TABLE issue');
     }

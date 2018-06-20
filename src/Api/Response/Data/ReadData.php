@@ -57,7 +57,7 @@ class ReadData
     private $removedIssueIDs;
 
     /**
-     * @var User
+     * @var User|null
      */
     private $user;
 
@@ -190,9 +190,9 @@ class ReadData
     }
 
     /**
-     * @return User
+     * @return User|null
      */
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }

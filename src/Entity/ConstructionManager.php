@@ -21,7 +21,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity
+ * @ORM\Table(name="construction_manager")
+ * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
 class ConstructionManager extends BaseEntity implements UserInterface
@@ -136,6 +137,14 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public function getMarkers()
     {
         return $this->markers;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getGivenName() . " " . $this->getFamilyName();
     }
 
     /**

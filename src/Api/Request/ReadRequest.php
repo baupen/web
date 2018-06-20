@@ -18,35 +18,35 @@ class ReadRequest extends AuthenticatedRequest
     /**
      * @var ObjectMeta
      *
-     * @Assert\NotBlank()
+     * @Assert\NotNull()
      */
     private $user;
 
     /**
      * @var ObjectMeta[]
      *
-     * @Assert\NotBlank()
+     * @Assert\NotNull()
      */
     private $craftsmen;
 
     /**
      * @var ObjectMeta[]
      *
-     * @Assert\NotBlank()
+     * @Assert\NotNull()
      */
     private $buildings;
 
     /**
      * @var ObjectMeta[]
      *
-     * @Assert\NotBlank()
+     * @Assert\NotNull()
      */
     private $maps;
 
     /**
      * @var ObjectMeta[]
      *
-     * @Assert\NotBlank()
+     * @Assert\NotNull()
      */
     private $issues;
 
