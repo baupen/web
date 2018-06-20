@@ -12,6 +12,7 @@
 namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
+use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -21,20 +22,28 @@ use Doctrine\ORM\Mapping as ORM;
  * a craftsman receives information about open issues, and answers them.
  *
  * @ORM\Table(name="craftsman")
- * @ORM\Entity
+ * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
 class Craftsman extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
+    use AddressTrait;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text")
      */
-    private $name;
+    private $contactName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text")
+     */
+    private $company;
 
     /**
      * @var string
@@ -65,6 +74,13 @@ class Craftsman extends BaseEntity
     private $constructionSite;
 
     /**
+     * @var Issue[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="craftsman")
+     */
+    private $issues;
+
+    /**
      * Craftsman constructor.
      */
     public function __construct()
@@ -75,17 +91,33 @@ class Craftsman extends BaseEntity
     /**
      * @return string
      */
-    public function getName(): string
+    public function getContactName(): string
     {
-        return $this->name;
+        return $this->contactName;
     }
 
     /**
-     * @param string $name
+     * @param string $contactName
      */
-    public function setName(string $name): void
+    public function setContactName(string $contactName): void
     {
-        $this->name = $name;
+        $this->contactName = $contactName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCompany(): string
+    {
+        return $this->company;
+    }
+
+    /**
+     * @param string $company
+     */
+    public function setCompany(string $company): void
+    {
+        $this->company = $company;
     }
 
     /**
@@ -142,5 +174,21 @@ class Craftsman extends BaseEntity
     public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;
+    }
+
+    /**
+     * @return Issue[]|ArrayCollection
+     */
+    public function getIssues()
+    {
+        return $this->issues;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName() : string
+    {
+        return $this->getContactName() . " (" . $this->getCompany() . ")";
     }
 }

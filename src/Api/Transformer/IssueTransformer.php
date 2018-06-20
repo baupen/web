@@ -103,13 +103,14 @@ class IssueTransformer extends AbstractTransformer
             $issueStatusEvent->setTime($entity->getRegisteredAt()->format("c"));
             $issueStatus->setRegistration($issueStatusEvent);
         }
-
+        /*
         if ($entity->getRespondedAt() != null) {
             $issueStatusEvent = new IssueStatusEvent();
             $issueStatusEvent->setAuthor($entity->getResponseBy()->getName());
             $issueStatusEvent->setTime($entity->getRespondedAt()->format("c"));
             $issueStatus->setResponse($issueStatusEvent);
         }
+        */
         if ($entity->getReviewedAt() != null) {
             $issueStatusEvent = new IssueStatusEvent();
             $issueStatusEvent->setAuthor($entity->getReviewBy()->getName());
@@ -117,7 +118,6 @@ class IssueTransformer extends AbstractTransformer
             $issueStatus->setReview($issueStatusEvent);
         }
         $issue->setStatus($issueStatus);
-
 
         $issue->setMap($entity->getMap()->getId());
         if ($entity->getCraftsman() != null) {
@@ -129,8 +129,8 @@ class IssueTransformer extends AbstractTransformer
     }
 
     /**
-     * @param Craftsman[] $entities
-     * @return \App\Api\Entity\Craftsman[]
+     * @param Issue[] $entities
+     * @return \App\Api\Entity\Issue[]
      */
     public function toApiMultiple(array $entities)
     {

@@ -144,7 +144,7 @@ class ApiControllerTest extends FixturesTestCase
             return $client->getResponse();
         };
 
-        # read all
+        # update all
         $readRequest = new ReadRequest();
         $readRequest->setAuthenticationToken($authenticatedUser->authenticationToken);
 
@@ -165,18 +165,50 @@ class ApiControllerTest extends FixturesTestCase
         $this->assertNotNull($readResponse->data->user);
         $this->assertNotNull($readResponse->data->changedBuildings);
         $this->assertTrue(count($readResponse->data->changedBuildings) > 0);
+        $this->assertTrue(count($readResponse->data->changedCraftsmen) > 0);
+        $this->assertTrue(count($readResponse->data->changedMaps) > 0);
+        $this->assertTrue(count($readResponse->data->changedIssues) > 0);
 
-        # read none
+
+        ### update none
         $userMeta->setLastChangeTime($authenticatedUser->meta->lastChangeTime);
 
-        $buildingMetas = [];
-        foreach ($readResponse->data->changedBuildings as $changedBuilding) {
-            $buildingMeta = new ObjectMeta();
-            $buildingMeta->setId($changedBuilding->meta->id);
-            $buildingMeta->setLastChangeTime($changedBuilding->meta->lastChangeTime);
-            $buildingMetas[] = $buildingMeta;
-        }
-        $readRequest->setBuildings($buildingMetas);
+        //transform objects to meta object
+        $getMetas = function ($entities, $invalids = 1, $old = 0, $lost = 10) {
+            //convert to object meta
+            $metas = [];
+            foreach ($entities as $entity) {
+                if ($lost-- > 0) {
+                    //skip to lose meta
+                    continue;
+                }
+                $meta = new ObjectMeta();
+                $meta->setId($entity->meta->id);
+                if ($old-- > 0) {
+                    //set to min datetime to force update
+                    $meta->setLastChangeTime(((new \DateTime())->setTimestamp(0)->format("c")));
+                } else {
+                    $meta->setLastChangeTime($entity->meta->lastChangeTime);
+                }
+                $metas[] = $meta;
+            }
+
+            for ($i = 0; $i < $invalids; $i++) {
+                //create invalid & add
+                $meta = new ObjectMeta();
+                $meta->setId(Uuid::uuid4());
+                $meta->setLastChangeTime($entity->meta->lastChangeTime);
+                $metas[] = $meta;
+            }
+
+            return $metas;
+        };
+
+        //set them in the request
+        $readRequest->setBuildings($getMetas($readResponse->data->changedBuildings));
+        $readRequest->setCraftsmen($getMetas($readResponse->data->changedCraftsmen));
+        $readRequest->setMaps($getMetas($readResponse->data->changedMaps));
+        $readRequest->setIssues($getMetas($readResponse->data->changedIssues));
 
         $response = $doRequest($readRequest);
         $readResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
@@ -184,6 +216,34 @@ class ApiControllerTest extends FixturesTestCase
         $this->assertNotNull($readResponse->data);
         $this->assertNull($readResponse->data->user);
         $this->assertEmpty($readResponse->data->changedBuildings);
+        $this->assertEmpty($readResponse->data->changedCraftsmen);
+        $this->assertEmpty($readResponse->data->changedMaps);
+        $this->assertEmpty($readResponse->data->changedIssues);
+        $this->assertCount(1, $readResponse->data->removedBuildingIDs);
+        $this->assertCount(1, $readResponse->data->removedCraftsmanIDs);
+        $this->assertCount(1, $readResponse->data->removedMapIDs);
+        $this->assertCount(1, $readResponse->data->removedIssueIDs);
+
+        ### update, remove & add at the same time
+        //set them in the request
+        $readRequest->setBuildings($getMetas($readResponse->data->changedBuildings, 1, 1, 1));
+        $readRequest->setCraftsmen($getMetas($readResponse->data->changedCraftsmen, 1, 1, 1));
+        $readRequest->setMaps($getMetas($readResponse->data->changedMaps, 1, 1, 1));
+        $readRequest->setIssues($getMetas($readResponse->data->changedIssues, 1, 1, 1));
+
+        $response = $doRequest($readRequest);
+        $readResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+
+        $this->assertNotNull($readResponse->data);
+        $this->assertNull($readResponse->data->user);
+        $this->assertCount(2, $readResponse->data->changedBuildings);
+        $this->assertCount(2, $readResponse->data->changedCraftsmen);
+        $this->assertCount(2, $readResponse->data->changedMaps);
+        $this->assertCount(2, $readResponse->data->changedIssues);
+        $this->assertCount(1, $readResponse->data->removedBuildingIDs);
+        $this->assertCount(1, $readResponse->data->removedCraftsmanIDs);
+        $this->assertCount(1, $readResponse->data->removedMapIDs);
+        $this->assertCount(1, $readResponse->data->removedIssueIDs);
     }
 
     /**

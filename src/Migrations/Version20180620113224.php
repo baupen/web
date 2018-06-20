@@ -8,7 +8,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20180620081527 extends AbstractMigration
+final class Version20180620113224 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
@@ -28,7 +28,7 @@ final class Version20180620081527 extends AbstractMigration
         , receiver CLOB NOT NULL, identifier CLOB NOT NULL, subject CLOB NOT NULL, body CLOB NOT NULL, action_text CLOB DEFAULT NULL, action_link CLOB DEFAULT NULL, carbon_copy CLOB DEFAULT NULL, email_type INTEGER NOT NULL, sent_date_time DATETIME NOT NULL, visited_date_time DATETIME DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE craftsman (id CHAR(36) NOT NULL --(DC2Type:guid)
         , construction_site_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
-        , name CLOB NOT NULL, trade CLOB NOT NULL, email CLOB NOT NULL, created_at DATETIME NOT NULL, last_changed_at DATETIME NOT NULL, PRIMARY KEY(id))');
+        , contact_name CLOB NOT NULL, company CLOB NOT NULL, trade CLOB NOT NULL, email CLOB NOT NULL, created_at DATETIME NOT NULL, last_changed_at DATETIME NOT NULL, street_address CLOB DEFAULT NULL, postal_code INTEGER DEFAULT NULL, locality CLOB DEFAULT NULL, country CLOB DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_7DC593834994A532 ON craftsman (construction_site_id)');
         $this->addSql('CREATE TABLE construction_site (id CHAR(36) NOT NULL --(DC2Type:guid)
         , name CLOB NOT NULL, image_file_name CLOB DEFAULT NULL, created_at DATETIME NOT NULL, last_changed_at DATETIME NOT NULL, street_address CLOB DEFAULT NULL, postal_code INTEGER DEFAULT NULL, locality CLOB DEFAULT NULL, country CLOB DEFAULT NULL, PRIMARY KEY(id))');

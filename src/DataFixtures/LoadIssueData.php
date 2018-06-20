@@ -45,8 +45,6 @@ class LoadIssueData extends BaseFixture
             ["farbfleck.jpg", "Flecken an der Wand", false, false, 0.5, 0.3, 1, 1]
         ];
 
-        $faker = $this->getFaker();
-
         $craftsmanIndex = 0;
         $getCraftsman = function () use (&$craftsmanIndex, $craftsmen) {
             $res = $craftsmen[$craftsmanIndex++];

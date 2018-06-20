@@ -44,7 +44,8 @@ class LoadCraftsmanData extends BaseFixture
             $craftsman = new Craftsman();
             $craftsman->setConstructionSite($constructionSite);
             $craftsman->setTrade($data[0]);
-            $craftsman->setName($data[2] . " (" . $data[1] . ")");
+            $craftsman->setCompany($data[1]);
+            $craftsman->setContactName($data[2]);
             $craftsman->setEmail($data[3] . ".example.com");
             $manager->persist($craftsman);
         }

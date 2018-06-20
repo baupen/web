@@ -13,13 +13,14 @@ use App\Api\Entity\Building;
 use App\Api\Entity\Issue;
 use App\Api\Entity\ObjectMeta;
 use App\Api\Entity\User;
+use App\Api\Transformer\Base\AbstractTransformer;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Map;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class MapTransformer
+class MapTransformer extends AbstractTransformer
 {
     /**
      * @var ObjectMetaTransformer
@@ -32,6 +33,10 @@ class MapTransformer
         $this->objectMetaTransformer = $objectMetaTransformer;
     }
 
+    /**
+     * @param Map $entity
+     * @return \App\Api\Entity\Map
+     */
     public function toApi(Map $entity)
     {
         $map = new \App\Api\Entity\Map();
@@ -51,6 +56,17 @@ class MapTransformer
         $map->setChildren($childrenIds);
 
         $map->setMeta($this->objectMetaTransformer->toApi($entity));
-        return $entity;
+        return $map;
+    }
+
+    /**
+     * @param Issue[] $entities
+     * @return \App\Api\Entity\Issue[]
+     */
+    public function toApiMultiple(array $entities)
+    {
+        return parent::toApiMultipleInternal($entities, function ($entity) {
+            return $this->toApi($entity);
+        });
     }
 }

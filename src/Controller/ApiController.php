@@ -227,7 +227,7 @@ WHERE cscm.construction_manager_id = :id";
         //get updated / new buildings
         $sql = 'SELECT DISTINCT s.id FROM construction_site s WHERE s.id IN ("' . implode('", "', $allValidIds) . '")';
         $parameters = [];
-        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds);
+        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, "s");
 
         //execute query for updated
         $query = $manager->createNativeQuery($sql, $resultSetMapping);
@@ -248,6 +248,7 @@ WHERE cscm.construction_manager_id = :id";
                 $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(["id" => $retrieveConstructionSiteIds])
             )
         );
+        $validConstructionSiteIds = $allValidIds;
 
         ### craftsman ###
         //prepare mapping builder
@@ -256,19 +257,19 @@ WHERE cscm.construction_manager_id = :id";
         $resultSetMapping->addFieldResult('c', 'id', 'id');
 
         //get allowed craftsman ids
-        $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.construction_side_id IN ("' . implode('", "', $allValidIds) . '")';
+        $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.construction_site_id IN ("' . implode('", "', $validConstructionSiteIds) . '")';
         $query = $manager->createNativeQuery($sql, $resultSetMapping);
-        /** @var IdTrait[] $validConstructionSites */
+        /** @var IdTrait[] $validCraftsmen */
         $validCraftsmen = $query->getResult();
-        $this->filterIds($readRequest->getBuildings(), $validCraftsmen, $allValidIds, $removeIds, $knownIds);
+        $this->filterIds($readRequest->getCraftsmen(), $validCraftsmen, $allValidIds, $removeIds, $knownIds);
 
-        //set the removed/invalid buildings
+        //set the removed/invalid craftsmen
         $readData->setRemovedCraftsmanIDs(array_keys($removeIds));
 
         //get updated / new craftsmen
         $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.id IN ("' . implode('", "', $allValidIds) . '")';
         $parameters = [];
-        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds);
+        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, "c");
 
         //execute query for updated
         $query = $manager->createNativeQuery($sql, $resultSetMapping);
@@ -290,6 +291,89 @@ WHERE cscm.construction_manager_id = :id";
             )
         );
 
+        ### maps ###
+        //prepare mapping builder
+        $resultSetMapping = new ResultSetMappingBuilder($manager);
+        $resultSetMapping->addRootEntityFromClassMetadata(Map::class, 'm');
+        $resultSetMapping->addFieldResult('m', 'id', 'id');
+
+        //get allowed craftsman ids
+        $sql = 'SELECT DISTINCT m.id FROM map m WHERE m.construction_site_id IN ("' . implode('", "', $validConstructionSiteIds) . '")';
+        $query = $manager->createNativeQuery($sql, $resultSetMapping);
+        /** @var IdTrait[] $validMaps */
+        $validMaps = $query->getResult();
+        $this->filterIds($readRequest->getMaps(), $validMaps, $allValidIds, $removeIds, $knownIds);
+
+        //set the removed/invalid maps
+        $readData->setRemovedMapIDs(array_keys($removeIds));
+
+        //get updated / new maps
+        $sql = 'SELECT DISTINCT m.id FROM map m WHERE m.id IN ("' . implode('", "', $allValidIds) . '")';
+        $parameters = [];
+        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, "m");
+
+        //execute query for updated
+        $query = $manager->createNativeQuery($sql, $resultSetMapping);
+        $query->setParameters($parameters);
+        /** @var IdTrait[] $updatedMaps */
+        $updatedMaps = $query->getResult();
+
+        //collect ids to retrieve
+        $retrieveMapIds = [];
+        foreach ($updatedMaps as $object) {
+            //detach because it is not fully constructed
+            $manager->detach($object);
+            $retrieveMapIds[] = $object->getId();
+        }
+
+        $readData->setChangedMaps(
+            $transformerFactory->getMapTransformer()->toApiMultiple(
+                $this->getDoctrine()->getRepository(Map::class)->findBy(["id" => $retrieveMapIds])
+            )
+        );
+        $validMapIds = $allValidIds;
+
+
+        ### issues ###
+        //prepare mapping builder
+        $resultSetMapping = new ResultSetMappingBuilder($manager);
+        $resultSetMapping->addRootEntityFromClassMetadata(Issue::class, 'i');
+        $resultSetMapping->addFieldResult('i', 'id', 'id');
+
+        //get allowed craftsman ids
+        $sql = 'SELECT DISTINCT i.id FROM issue i WHERE i.map_id IN ("' . implode('", "', $validMapIds) . '")';
+        $query = $manager->createNativeQuery($sql, $resultSetMapping);
+        /** @var IdTrait[] $validIssues */
+        $validIssues = $query->getResult();
+        $this->filterIds($readRequest->getIssues(), $validIssues, $allValidIds, $removeIds, $knownIds);
+
+        //set the removed/invalid issues
+        $readData->setRemovedIssueIDs(array_keys($removeIds));
+
+        //get updated / new issues
+        $sql = 'SELECT DISTINCT i.id FROM issue i WHERE i.id IN ("' . implode('", "', $allValidIds) . '")';
+        $parameters = [];
+        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, "i");
+
+        //execute query for updated
+        $query = $manager->createNativeQuery($sql, $resultSetMapping);
+        $query->setParameters($parameters);
+        /** @var IdTrait[] $updatedIssues */
+        $updatedIssues = $query->getResult();
+
+        //collect ids to retrieve
+        $retrieveIssueIds = [];
+        foreach ($updatedIssues as $object) {
+            //detach because it is not fully constructed
+            $manager->detach($object);
+            $retrieveIssueIds[] = $object->getId();
+        }
+
+        $readData->setChangedIssues(
+            $transformerFactory->getIssueTransformer()->toApiMultiple(
+                $this->getDoctrine()->getRepository(Issue::class)->findBy(["id" => $retrieveIssueIds])
+            )
+        );
     }
 
     /**
@@ -315,7 +399,7 @@ WHERE cscm.construction_manager_id = :id";
 
     }
 
-    private function addUpdateUnknownConditions(&$parameters, &$sql, $guidTimeDictionary)
+    private function addUpdateUnknownConditions(&$parameters, &$sql, $guidTimeDictionary, $tableShort)
     {
         $sql .= ' AND (';
         //only return confirmed buildings if they are updated
@@ -330,7 +414,7 @@ WHERE cscm.construction_manager_id = :id";
                 if (strlen($whereCondition) > 0) {
                     $whereCondition .= " OR ";
                 }
-                $whereCondition .= '(id == "' . $confirmedBuildingId . '" AND last_changed_at > :time_' . $counter . ')';
+                $whereCondition .= '(' . $tableShort . '.id == "' . $confirmedBuildingId . '" AND ' . $tableShort . '.last_changed_at > :time_' . $counter . ')';
                 $parameters["time_" . $counter] = $guidTimeDictionary[$confirmedBuildingId];
 
                 $counter++;
@@ -341,7 +425,7 @@ WHERE cscm.construction_manager_id = :id";
 
         //return buildings unknown to the requester
         if (count($guidTimeDictionary) > 0) {
-            $sql .= 's.id NOT IN ("' . implode('", "', array_keys($guidTimeDictionary)) . '")';
+            $sql .= $tableShort . '.id NOT IN ("' . implode('", "', array_keys($guidTimeDictionary)) . '")';
         } else {
             //allow all
             $sql .= "1 = 1";

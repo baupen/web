@@ -143,17 +143,17 @@ class Map extends BaseEntity
     }
 
     /**
-     * @return Map[]
+     * @return Map[]|ArrayCollection
      */
-    public function getChildren(): array
+    public function getChildren()
     {
         return $this->children;
     }
 
     /**
-     * @return Issue[]
+     * @return Issue[]|ArrayCollection
      */
-    public function getIssues(): array
+    public function getIssues()
     {
         return $this->issues;
     }
