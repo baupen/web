@@ -441,4 +441,16 @@ class Issue extends BaseEntity
     {
         $this->map = $map;
     }
+
+    /**
+     * @return null|string
+     */
+    public function getImageFilePath(): ?string
+    {
+        if ($this->getImageFilename() != null) {
+            return "upload/" . $this->getMap()->getConstructionSite()->getId() . "/issue/" . $this->getImageFilename();
+        } else {
+            return null;
+        }
+    }
 }

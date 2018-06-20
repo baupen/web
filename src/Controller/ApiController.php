@@ -12,7 +12,9 @@
 namespace App\Controller;
 
 
+use App\Api\Entity\Building;
 use App\Api\Entity\ObjectMeta;
+use App\Api\Request\DownloadFileRequest;
 use App\Api\Request\IssueActionRequest;
 use App\Api\Request\IssueModifyRequest;
 use App\Api\Request\LoginRequest;
@@ -38,19 +40,13 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Doctrine\ORM\QueryBuilder;
-use MongoDB\Driver\ReadConcern;
-use PhpCsFixer\Tokenizer\TransformerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -70,6 +66,8 @@ class ApiController extends BaseDoctrineController
     const GUID_NOT_FOUND = "guid not found";
     const INVALID_ENTITY = "invalid entity";
     const INVALID_ACTION = "invalid action";
+    const INVALID_FILE = "invalid file";
+    const INVALID_TIMESTAMP = "invalid timestamp";
     const AUTHENTICATION_TOKEN_INVALID = "authentication token invalid";
 
     /**
@@ -138,7 +136,7 @@ class ApiController extends BaseDoctrineController
      * @return Response
      * @throws \Doctrine\ORM\ORMException
      */
-    public function apiAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, TransformerFactory $transformerFactory)
+    public function readAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, TransformerFactory $transformerFactory)
     {
         //check if empty request
         if (!($content = $request->getContent())) {
@@ -181,6 +179,80 @@ class ApiController extends BaseDoctrineController
         //construct answer
         return $this->success($readData);
     }
+
+    /**
+     * @Route("/file/download", name="api_file_download")
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function fileDownloadAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
+    {
+        //check if empty request
+        if (!($content = $request->getContent())) {
+            return $this->fail(static::EMPTY_REQUEST);
+        }
+
+        /* @var DownloadFileRequest $downloadFileRequest */
+        $downloadFileRequest = $serializer->deserialize($content, DownloadFileRequest::class, "json");
+
+        // check all properties defined
+        $errors = $validator->validate($downloadFileRequest);
+        if (count($errors) > 0) {
+            return $this->fail(static::INVALID_REQUEST);
+        }
+
+        //check auth token
+        /** @var ConstructionManager $constructionManager */
+        $constructionManager = $this->getDoctrine()->getRepository(AuthenticationToken::class)->getConstructionManager($downloadFileRequest);
+        if ($constructionManager === null) {
+            return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
+        }
+
+        //get file
+        if ($downloadFileRequest->getMap() != null) {
+            /** @var Map $realMap */
+            $realMap = $this->getDoctrine()->getRepository(Map::class)->find($downloadFileRequest->getMap()->getId());
+            if ($realMap != null && $realMap->getConstructionSite()->getConstructionManagers()->contains($constructionManager)) {
+                if ($realMap->getLastChangedAt()->format("c") != $downloadFileRequest->getMap()->getLastChangeTime()) {
+                    return $this->fail(static::INVALID_TIMESTAMP);
+                }
+                return $this->file($this->getParameter("PUBLIC_DIR") . "/" . $realMap->getFilename());
+            } else {
+                return $this->fail(static::GUID_NOT_FOUND);
+            }
+        } else if ($downloadFileRequest->getIssue() != null) {
+            /** @var Issue $realIssue */
+            $realIssue = $this->getDoctrine()->getRepository(Issue::class)->find($downloadFileRequest->getIssue()->getId());
+            if ($realIssue != null && $realIssue->getMap()->getConstructionSite()->getConstructionManagers()->contains($constructionManager)) {
+                if ($realIssue->getLastChangedAt()->format("c") != $downloadFileRequest->getIssue()->getLastChangeTime()) {
+                    return $this->fail(static::INVALID_TIMESTAMP);
+                }
+                return $this->file($this->getParameter("PUBLIC_DIR") . "/" . $realIssue->getImageFilename());
+            } else {
+                return $this->fail(static::GUID_NOT_FOUND);
+            }
+        } else if ($downloadFileRequest->getBuilding() != null) {
+            /** @var ConstructionSite $realBuilding */
+            $realBuilding = $this->getDoctrine()->getRepository(Building::class)->find($downloadFileRequest->getBuilding()->getId());
+            if ($realBuilding != null && $realBuilding->getConstructionManagers()->contains($constructionManager)) {
+                if ($realBuilding->getLastChangedAt()->format("c") != $downloadFileRequest->getBuilding()->getLastChangeTime()) {
+                    return $this->fail(static::INVALID_TIMESTAMP);
+                }
+                return $this->file($this->getParameter("PUBLIC_DIR") . "/" . $realBuilding->getImageFilename());
+            } else {
+                return $this->fail(static::GUID_NOT_FOUND);
+            }
+        }
+
+        //construct answer
+        return $this->fail(static::INVALID_REQUEST);
+    }
+
 
     /**
      * @param ObjectMeta[] $objectMetas
@@ -379,6 +451,8 @@ WHERE cscm.construction_manager_id = :id";
     }
 
     /**
+     * break down id structure to some helper structures
+     *
      * @param ObjectMeta[] $requestObjectMeta the given ids
      * @param IdTrait[] $dbEntities
      * @param string[] $allValidIds contains all ids from the db
@@ -401,6 +475,14 @@ WHERE cscm.construction_manager_id = :id";
 
     }
 
+    /**
+     * append to query the add/update condition
+     *
+     * @param $parameters
+     * @param $sql
+     * @param $guidTimeDictionary
+     * @param $tableShort
+     */
     private function addUpdateUnknownConditions(&$parameters, &$sql, $guidTimeDictionary, $tableShort)
     {
         $sql .= ' AND (';
@@ -525,6 +607,18 @@ WHERE cscm.construction_manager_id = :id";
         $issue->setUploadBy($constructionManager);
         $issue->setUploadedAt(new \DateTime());
 
+        //handle file uploads
+        foreach ($request->files->all() as $key => $file) {
+            /** @var UploadedFile $file */
+            $targetFolder = $this->getParameter("PUBLIC_DIR") . "/upload/" . $issue->getMap()->getConstructionSite()->getId() . "/issue";
+            if (!file_exists($targetFolder)) {
+                mkdir($targetFolder, 0777, true);
+            }
+            if (!$file->move($targetFolder, $issue->getImageFilename())) {
+                return $this->fail(static::INVALID_FILE);
+            }
+        }
+
         if ($mode == "create") {
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
@@ -630,7 +724,7 @@ WHERE cscm.construction_manager_id = :id";
             function ($issue, $constructionManager) {
                 /** @var Issue $issue */
                 /** @var ConstructionManager $constructionManager */
-                if ($issue->getRegisteredAt() != null && $issue->getRespondedAt() != null || ) {
+                if ($issue->getRegisteredAt() != null) {
                     if ($issue->getReviewedAt() != null) {
                         $issue->setReviewedAt(null);
                         $issue->setReviewBy(null);

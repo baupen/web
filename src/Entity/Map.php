@@ -45,7 +45,7 @@ class Map extends BaseEntity
     private $filename;
 
     /**
-     * @var ConstructionSite|null
+     * @var ConstructionSite
      *
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="maps")
      */
@@ -111,17 +111,17 @@ class Map extends BaseEntity
     }
 
     /**
-     * @return ConstructionSite|null
+     * @return ConstructionSite
      */
-    public function getConstructionSite(): ?ConstructionSite
+    public function getConstructionSite(): ConstructionSite
     {
         return $this->constructionSite;
     }
 
     /**
-     * @param ConstructionSite|null $constructionSite
+     * @param ConstructionSite $constructionSite
      */
-    public function setConstructionSite(?ConstructionSite $constructionSite): void
+    public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;
     }
@@ -157,4 +157,17 @@ class Map extends BaseEntity
     {
         return $this->issues;
     }
+
+    /**
+     * @return null|string
+     */
+    public function getFilePath(): ?string
+    {
+        if ($this->getFilename() != null) {
+            return "upload/" . $this->getConstructionSite()->getId() . "/map/" . $this->getFilename();
+        } else {
+            return null;
+        }
+    }
+
 }

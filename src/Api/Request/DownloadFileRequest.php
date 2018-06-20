@@ -12,69 +12,70 @@ namespace App\Api\Request;
 use App\Api\Entity\Building;
 use App\Api\Entity\Issue;
 use App\Api\Entity\Map;
+use App\Api\Entity\ObjectMeta;
 use App\Api\Request\Base\AuthenticatedRequest;
 
 class DownloadFileRequest extends AuthenticatedRequest
 {
     /**
-     * @var Building|null
+     * @var ObjectMeta|null
      */
     private $building;
 
     /**
-     * @var Map|null
+     * @var ObjectMeta|null
      */
     private $map;
 
     /**
-     * @var Issue|null
+     * @var ObjectMeta|null
      */
     private $issue;
 
     /**
-     * @return Building|null
+     * @return ObjectMeta|null
      */
-    public function getBuilding(): ?Building
+    public function getBuilding(): ?ObjectMeta
     {
         return $this->building;
     }
 
     /**
-     * @param Building|null $building
+     * @param ObjectMeta|null $building
      */
-    public function setBuilding(?Building $building): void
+    public function setBuilding(?ObjectMeta $building): void
     {
         $this->building = $building;
     }
 
     /**
-     * @return Map|null
+     * @return ObjectMeta|null
      */
-    public function getMap(): ?Map
+    public function getMap(): ?ObjectMeta
     {
         return $this->map;
     }
 
     /**
-     * @param Map|null $map
+     * @param ObjectMeta|null $map
      */
-    public function setMap(?Map $map): void
+    public function setMap(?ObjectMeta $map): void
     {
         $this->map = $map;
     }
 
     /**
-     * @return Issue|null
+     * @return ObjectMeta|null
      */
-    public function getIssue(): ?Issue
+    public function getIssue(): ?ObjectMeta
     {
         return $this->issue;
     }
 
     /**
-     * @param Issue|null $issue
+     * @param ObjectMeta|null $issue
      */
-    public function setIssue(?Issue $issue): void
+    public function setIssue(?ObjectMeta $issue): void
     {
         $this->issue = $issue;
     }

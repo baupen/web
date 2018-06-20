@@ -60,6 +60,14 @@ class Map
     }
 
     /**
+     * @return null|string
+     */
+    public function getFilePath(): ?string
+    {
+        return $this->filename;
+    }
+
+    /**
      * @param null|string $filename
      */
     public function setFilename(?string $filename): void
