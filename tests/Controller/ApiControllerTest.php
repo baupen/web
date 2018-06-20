@@ -304,7 +304,7 @@ class ApiControllerTest extends FixturesTestCase
 
         $serverData = $this->getServerEntities($client, $user);
 
-        $imageFilename = Uuid::uuid4()->toString() . ".jpg";
+        $imageFilename = $this->getNewGuid() . ".jpg";
 
         $issue = new Issue();
         $issue->setWasAddedWithClient(true);
@@ -316,7 +316,7 @@ class ApiControllerTest extends FixturesTestCase
         $issue->setStatus(new IssueStatus());
 
         $meta = new ObjectMeta();
-        $meta->setId(Uuid::uuid4()->toString());
+        $meta->setId($this->getNewGuid());
         $meta->setLastChangeTime((new \DateTime())->format("c"));
         $issue->setMeta($meta);
 
@@ -333,6 +333,23 @@ class ApiControllerTest extends FixturesTestCase
         $this->assertNotNull($issueResponse->data);
         $this->assertNotNull($issueResponse->data->issue);
         $checkIssue = $issueResponse->data->issue;
+        //fully check issue
+        $this->verifyIssue($checkIssue, $issue);
+
+        $response = $doRequest($issue);
+        $this->checkResponse($response, ApiStatus::FAIL, ApiController::GUID_ALREADY_IN_USE);
+
+        //check issue without position
+        $issue->setPosition(null);
+        $issue->getMeta()->setId($this->getNewGuid());
+        $response = $doRequest($issue);
+        $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $this->verifyIssue($issueResponse->data->issue, $issue);
+    }
+
+    private function verifyIssue($checkIssue, Issue $issue)
+    {
+        //check properties
         $this->assertEquals($checkIssue->wasAddedWithClient, $issue->getWasAddedWithClient());
         $this->assertEquals($checkIssue->isMarked, $issue->getIsMarked());
         $this->assertEquals($checkIssue->imageFilename, $issue->getImageFilename());
@@ -344,20 +361,17 @@ class ApiControllerTest extends FixturesTestCase
         $this->assertTrue($checkIssue->meta->lastChangeTime >= $issue->getMeta()->getLastChangeTime());
 
         //check position transferred correctly
-        $this->assertNotNull($checkIssue->position);
-        $this->assertEquals($checkIssue->position->x, $issuePosition->getX());
-        $this->assertEquals($checkIssue->position->y, $issuePosition->getY());
-        $this->assertEquals($checkIssue->position->zoomScale, $issuePosition->getZoomScale());
+        if ($issue->getPosition() != null) {
+            $this->assertNotNull($checkIssue->position);
+            $this->assertEquals($checkIssue->position->x, $issue->getPosition()->getX());
+            $this->assertEquals($checkIssue->position->y, $issue->getPosition()->getY());
+            $this->assertEquals($checkIssue->position->zoomScale, $issue->getPosition()->getZoomScale());
+        } else {
+            $this->assertNull($checkIssue->position);
+        }
 
         //check status
         $this->assertNotNull($checkIssue->status);
-        $this->assertNull($checkIssue->status->registration);
-        $this->assertNull($checkIssue->status->response);
-        $this->assertNull($checkIssue->status->review);
-
-
-        $response = $doRequest($issue);
-        $this->checkResponse($response, ApiStatus::FAIL, ApiController::GUID_ALREADY_IN_USE);
     }
 
     /**
@@ -372,16 +386,57 @@ class ApiControllerTest extends FixturesTestCase
             $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($issue, "json") . '}';
             $client->request(
                 'POST',
-                '/api/issue/create',
+                '/api/issue/update',
                 [],
                 [],
                 ["CONTENT_TYPE" => "application/json"],
                 $json
             );
 
-
             return $client->getResponse();
         };
+
+        $serverData = $this->getServerEntities($client, $user);
+
+        $imageFilename = $this->getNewGuid() . ".jpg";
+
+        /** @var Issue $issue */
+        $issue = $serializer->deserialize(json_encode($serverData->issues[0]), Issue::class, "json");
+        $issue->setWasAddedWithClient(false);
+        $issue->setIsMarked(false);
+        $issue->setImageFilename($imageFilename);
+        $issue->setDescription("description 2");
+        $issue->setMap($serverData->maps[0]->meta->id);
+
+        $issue->setStatus(new IssueStatus());
+
+        $issuePosition = new IssuePosition();
+        $issuePosition->setX(0.4);
+        $issuePosition->setY(0.3);
+        $issuePosition->setZoomScale(0.5);
+        $issue->setPosition($issuePosition);
+
+        dump($issue);
+
+        $response = $doRequest($issue);
+        $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+
+        //check response has issue
+        $this->assertNotNull($issueResponse->data);
+        $this->assertNotNull($issueResponse->data->issue);
+        $checkIssue = $issueResponse->data->issue;
+        //fully check issue
+        $this->verifyIssue($checkIssue, $issue);
+
+        //check with non-existing
+        $issue->getMeta()->setId($this->getNewGuid());
+        $response = $doRequest($issue);
+        $this->checkResponse($response, ApiStatus::FAIL, ApiController::GUID_NOT_FOUND);
+    }
+
+    private function getNewGuid()
+    {
+        return strtoupper(Uuid::uuid4()->toString());
     }
 
 //    /**
