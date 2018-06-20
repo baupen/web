@@ -21,6 +21,7 @@ class FixturesTestCase extends WebTestCase
      */
     protected function setUp()
     {
+        return;
         $client = static::createClient();
 
         $application = new Application($client->getKernel());

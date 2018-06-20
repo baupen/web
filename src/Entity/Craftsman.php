@@ -93,6 +93,9 @@ class Craftsman extends BaseEntity
      */
     public function getContactName(): string
     {
+        if ($this->contactName == "") {
+            dump($this);
+        }
         return $this->contactName;
     }
 

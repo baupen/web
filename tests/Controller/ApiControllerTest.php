@@ -160,6 +160,7 @@ class ApiControllerTest extends FixturesTestCase
 
         $response = $doRequest($readRequest);
         $readResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $completeResponse = $readResponse;
 
         $this->assertNotNull($readResponse->data);
         $this->assertNotNull($readResponse->data->user);
@@ -174,7 +175,7 @@ class ApiControllerTest extends FixturesTestCase
         $userMeta->setLastChangeTime($authenticatedUser->meta->lastChangeTime);
 
         //transform objects to meta object
-        $getMetas = function ($entities, $invalids = 1, $old = 0, $lost = 10) {
+        $getMetas = function ($entities, $invalids = 1, $old = 0, $lost = 0) {
             //convert to object meta
             $metas = [];
             foreach ($entities as $entity) {
@@ -197,7 +198,7 @@ class ApiControllerTest extends FixturesTestCase
                 //create invalid & add
                 $meta = new ObjectMeta();
                 $meta->setId(Uuid::uuid4());
-                $meta->setLastChangeTime($entity->meta->lastChangeTime);
+                $meta->setLastChangeTime((new \DateTime())->setTimestamp(0)->format("c"));
                 $metas[] = $meta;
             }
 
@@ -205,10 +206,10 @@ class ApiControllerTest extends FixturesTestCase
         };
 
         //set them in the request
-        $readRequest->setBuildings($getMetas($readResponse->data->changedBuildings));
-        $readRequest->setCraftsmen($getMetas($readResponse->data->changedCraftsmen));
-        $readRequest->setMaps($getMetas($readResponse->data->changedMaps));
-        $readRequest->setIssues($getMetas($readResponse->data->changedIssues));
+        $readRequest->setBuildings($getMetas($completeResponse->data->changedBuildings));
+        $readRequest->setCraftsmen($getMetas($completeResponse->data->changedCraftsmen));
+        $readRequest->setMaps($getMetas($completeResponse->data->changedMaps));
+        $readRequest->setIssues($getMetas($completeResponse->data->changedIssues));
 
         $response = $doRequest($readRequest);
         $readResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
@@ -226,10 +227,10 @@ class ApiControllerTest extends FixturesTestCase
 
         ### update, remove & add at the same time
         //set them in the request
-        $readRequest->setBuildings($getMetas($readResponse->data->changedBuildings, 1, 1, 1));
-        $readRequest->setCraftsmen($getMetas($readResponse->data->changedCraftsmen, 1, 1, 1));
-        $readRequest->setMaps($getMetas($readResponse->data->changedMaps, 1, 1, 1));
-        $readRequest->setIssues($getMetas($readResponse->data->changedIssues, 1, 1, 1));
+        $readRequest->setBuildings($getMetas($completeResponse->data->changedBuildings, 1, 1, 1));
+        $readRequest->setCraftsmen($getMetas($completeResponse->data->changedCraftsmen, 1, 1, 1));
+        $readRequest->setMaps($getMetas($completeResponse->data->changedMaps, 1, 1, 1));
+        $readRequest->setIssues($getMetas($completeResponse->data->changedIssues, 1, 1, 1));
 
         $response = $doRequest($readRequest);
         $readResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);

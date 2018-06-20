@@ -103,14 +103,12 @@ class IssueTransformer extends AbstractTransformer
             $issueStatusEvent->setTime($entity->getRegisteredAt()->format("c"));
             $issueStatus->setRegistration($issueStatusEvent);
         }
-        /*
         if ($entity->getRespondedAt() != null) {
             $issueStatusEvent = new IssueStatusEvent();
             $issueStatusEvent->setAuthor($entity->getResponseBy()->getName());
             $issueStatusEvent->setTime($entity->getRespondedAt()->format("c"));
             $issueStatus->setResponse($issueStatusEvent);
         }
-        */
         if ($entity->getReviewedAt() != null) {
             $issueStatusEvent = new IssueStatusEvent();
             $issueStatusEvent->setAuthor($entity->getReviewBy()->getName());

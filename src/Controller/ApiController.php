@@ -34,6 +34,7 @@ use App\Entity\Map;
 use App\Entity\Traits\IdTrait;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\ORM\QueryBuilder;
 use MongoDB\Driver\ReadConcern;
@@ -195,22 +196,27 @@ class ApiController extends BaseDoctrineController
      * @param ObjectMeta[] $objectMetas
      * @param ConstructionManager $constructionManager
      * @param ReadData $readData
+     * @throws ORMException
      */
     private function processObjectMeta(TransformerFactory $transformerFactory, ReadRequest $readRequest, ConstructionManager $constructionManager, ReadData $readData)
     {
         /** @var EntityManager $manager */
         $manager = $this->getDoctrine()->getManager();
+        $incompleteManager = $manager->create(
+            $manager->getConnection(),
+            $manager->getConfiguration()
+        );
 
         ### BUILDING ###
         //prepare mapping builder
-        $resultSetMapping = new ResultSetMappingBuilder($manager);
+        $resultSetMapping = new ResultSetMappingBuilder($incompleteManager);
         $resultSetMapping->addRootEntityFromClassMetadata(ConstructionSite::class, 's');
         $resultSetMapping->addFieldResult('s', 'id', 'id');
 
         //get allowed building ids
         $sql = "SELECT DISTINCT s.id FROM construction_site s INNER JOIN construction_site_construction_manager cscm ON cscm.construction_site_id = s.id
 WHERE cscm.construction_manager_id = :id";
-        $query = $manager->createNativeQuery($sql, $resultSetMapping);
+        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
         $query->setParameters(["id" => $constructionManager->getId()]);
         /** @var IdTrait[] $validConstructionSites */
         $validConstructionSites = $query->getResult();
@@ -230,7 +236,7 @@ WHERE cscm.construction_manager_id = :id";
         $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, "s");
 
         //execute query for updated
-        $query = $manager->createNativeQuery($sql, $resultSetMapping);
+        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
         $query->setParameters($parameters);
         /** @var IdTrait[] $updatedConstructionSites */
         $updatedConstructionSites = $query->getResult();
@@ -238,27 +244,25 @@ WHERE cscm.construction_manager_id = :id";
         //collect ids to retrieve
         $retrieveConstructionSiteIds = [];
         foreach ($updatedConstructionSites as $object) {
-            //detach because it is not fully constructed
-            $manager->detach($object);
             $retrieveConstructionSiteIds[] = $object->getId();
         }
 
         $readData->setChangedBuildings(
             $transformerFactory->getBuildingTransformer()->toApiMultiple(
-                $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(["id" => $retrieveConstructionSiteIds])
+                $manager->getRepository(ConstructionSite::class)->findBy(["id" => $retrieveConstructionSiteIds])
             )
         );
         $validConstructionSiteIds = $allValidIds;
 
         ### craftsman ###
         //prepare mapping builder
-        $resultSetMapping = new ResultSetMappingBuilder($manager);
+        $resultSetMapping = new ResultSetMappingBuilder($incompleteManager);
         $resultSetMapping->addRootEntityFromClassMetadata(Craftsman::class, 'c');
         $resultSetMapping->addFieldResult('c', 'id', 'id');
 
         //get allowed craftsman ids
         $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.construction_site_id IN ("' . implode('", "', $validConstructionSiteIds) . '")';
-        $query = $manager->createNativeQuery($sql, $resultSetMapping);
+        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
         /** @var IdTrait[] $validCraftsmen */
         $validCraftsmen = $query->getResult();
         $this->filterIds($readRequest->getCraftsmen(), $validCraftsmen, $allValidIds, $removeIds, $knownIds);
@@ -272,7 +276,7 @@ WHERE cscm.construction_manager_id = :id";
         $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, "c");
 
         //execute query for updated
-        $query = $manager->createNativeQuery($sql, $resultSetMapping);
+        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
         $query->setParameters($parameters);
         /** @var IdTrait[] $updatedCraftsmen */
         $updatedCraftsmen = $query->getResult();
@@ -280,26 +284,24 @@ WHERE cscm.construction_manager_id = :id";
         //collect ids to retrieve
         $retrieveCraftsmanIds = [];
         foreach ($updatedCraftsmen as $object) {
-            //detach because it is not fully constructed
-            $manager->detach($object);
             $retrieveCraftsmanIds[] = $object->getId();
         }
 
         $readData->setChangedCraftsmen(
             $transformerFactory->getCraftsmanTransformer()->toApiMultiple(
-                $this->getDoctrine()->getRepository(Craftsman::class)->findBy(["id" => $retrieveCraftsmanIds])
+                $manager->getRepository(Craftsman::class)->findBy(["id" => $retrieveCraftsmanIds])
             )
         );
 
         ### maps ###
         //prepare mapping builder
-        $resultSetMapping = new ResultSetMappingBuilder($manager);
+        $resultSetMapping = new ResultSetMappingBuilder($incompleteManager);
         $resultSetMapping->addRootEntityFromClassMetadata(Map::class, 'm');
         $resultSetMapping->addFieldResult('m', 'id', 'id');
 
         //get allowed craftsman ids
         $sql = 'SELECT DISTINCT m.id FROM map m WHERE m.construction_site_id IN ("' . implode('", "', $validConstructionSiteIds) . '")';
-        $query = $manager->createNativeQuery($sql, $resultSetMapping);
+        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
         /** @var IdTrait[] $validMaps */
         $validMaps = $query->getResult();
         $this->filterIds($readRequest->getMaps(), $validMaps, $allValidIds, $removeIds, $knownIds);
@@ -313,7 +315,7 @@ WHERE cscm.construction_manager_id = :id";
         $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, "m");
 
         //execute query for updated
-        $query = $manager->createNativeQuery($sql, $resultSetMapping);
+        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
         $query->setParameters($parameters);
         /** @var IdTrait[] $updatedMaps */
         $updatedMaps = $query->getResult();
@@ -321,14 +323,12 @@ WHERE cscm.construction_manager_id = :id";
         //collect ids to retrieve
         $retrieveMapIds = [];
         foreach ($updatedMaps as $object) {
-            //detach because it is not fully constructed
-            $manager->detach($object);
             $retrieveMapIds[] = $object->getId();
         }
 
         $readData->setChangedMaps(
             $transformerFactory->getMapTransformer()->toApiMultiple(
-                $this->getDoctrine()->getRepository(Map::class)->findBy(["id" => $retrieveMapIds])
+                $manager->getRepository(Map::class)->findBy(["id" => $retrieveMapIds])
             )
         );
         $validMapIds = $allValidIds;
@@ -336,13 +336,13 @@ WHERE cscm.construction_manager_id = :id";
 
         ### issues ###
         //prepare mapping builder
-        $resultSetMapping = new ResultSetMappingBuilder($manager);
+        $resultSetMapping = new ResultSetMappingBuilder($incompleteManager);
         $resultSetMapping->addRootEntityFromClassMetadata(Issue::class, 'i');
         $resultSetMapping->addFieldResult('i', 'id', 'id');
 
         //get allowed craftsman ids
         $sql = 'SELECT DISTINCT i.id FROM issue i WHERE i.map_id IN ("' . implode('", "', $validMapIds) . '")';
-        $query = $manager->createNativeQuery($sql, $resultSetMapping);
+        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
         /** @var IdTrait[] $validIssues */
         $validIssues = $query->getResult();
         $this->filterIds($readRequest->getIssues(), $validIssues, $allValidIds, $removeIds, $knownIds);
@@ -356,7 +356,7 @@ WHERE cscm.construction_manager_id = :id";
         $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, "i");
 
         //execute query for updated
-        $query = $manager->createNativeQuery($sql, $resultSetMapping);
+        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
         $query->setParameters($parameters);
         /** @var IdTrait[] $updatedIssues */
         $updatedIssues = $query->getResult();
@@ -364,14 +364,12 @@ WHERE cscm.construction_manager_id = :id";
         //collect ids to retrieve
         $retrieveIssueIds = [];
         foreach ($updatedIssues as $object) {
-            //detach because it is not fully constructed
-            $manager->detach($object);
             $retrieveIssueIds[] = $object->getId();
         }
 
         $readData->setChangedIssues(
             $transformerFactory->getIssueTransformer()->toApiMultiple(
-                $this->getDoctrine()->getRepository(Issue::class)->findBy(["id" => $retrieveIssueIds])
+                $manager->getRepository(Issue::class)->findBy(["id" => $retrieveIssueIds])
             )
         );
     }
