@@ -21,7 +21,7 @@ class FixturesTestCase extends WebTestCase
      */
     protected function setUp()
     {
-        return;
+        /*
         $client = static::createClient();
 
         $application = new Application($client->getKernel());
@@ -35,5 +35,6 @@ class FixturesTestCase extends WebTestCase
         foreach ($commands as $command) {
             $application->run(new StringInput($command));
         }
+        */
     }
 }

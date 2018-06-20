@@ -67,6 +67,12 @@ class ApiControllerTest extends FixturesTestCase
         $this->assertNotNull($loginResponse->data->user->meta->lastChangeTime);
     }
 
+    /**
+     * @param Response $response
+     * @param $apiStatus
+     * @param string $message
+     * @return mixed|null
+     */
     private function checkResponse(Response $response, $apiStatus, $message = "")
     {
         if ($apiStatus == ApiStatus::SUCCESSFUL) {
@@ -110,17 +116,6 @@ class ApiControllerTest extends FixturesTestCase
         $json = $client->getResponse()->getContent();
         $response = json_decode($json);
         return $response->data->user;
-    }
-
-    /**
-     * gets an authentication token
-     *
-     * @param Client $client
-     * @return string
-     */
-    private function getAuthenticationToken(Client $client)
-    {
-        return $this->getAuthenticatedUser($client)->authenticationToken;
     }
 
     /**
@@ -304,11 +299,10 @@ class ApiControllerTest extends FixturesTestCase
                 $json
             );
 
-
             return $client->getResponse();
         };
 
-        $serverData = $this->getServerEntities($client,  $user);
+        $serverData = $this->getServerEntities($client, $user);
 
         $imageFilename = Uuid::uuid4()->toString() . ".jpg";
 
@@ -333,10 +327,61 @@ class ApiControllerTest extends FixturesTestCase
         $issue->setPosition($issuePosition);
 
         $response = $doRequest($issue);
-        $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+
+        //check response has issue
+        $this->assertNotNull($issueResponse->data);
+        $this->assertNotNull($issueResponse->data->issue);
+        $checkIssue = $issueResponse->data->issue;
+        $this->assertEquals($checkIssue->wasAddedWithClient, $issue->getWasAddedWithClient());
+        $this->assertEquals($checkIssue->isMarked, $issue->getIsMarked());
+        $this->assertEquals($checkIssue->imageFilename, $issue->getImageFilename());
+        $this->assertEquals($checkIssue->description, $issue->getDescription());
+        $this->assertEquals($checkIssue->map, $issue->getMap());
+
+        //check meta is newer/equal & id is preserved
+        $this->assertEquals($checkIssue->meta->id, $issue->getMeta()->getId());
+        $this->assertTrue($checkIssue->meta->lastChangeTime >= $issue->getMeta()->getLastChangeTime());
+
+        //check position transferred correctly
+        $this->assertNotNull($checkIssue->position);
+        $this->assertEquals($checkIssue->position->x, $issuePosition->getX());
+        $this->assertEquals($checkIssue->position->y, $issuePosition->getY());
+        $this->assertEquals($checkIssue->position->zoomScale, $issuePosition->getZoomScale());
+
+        //check status
+        $this->assertNotNull($checkIssue->status);
+        $this->assertNull($checkIssue->status->registration);
+        $this->assertNull($checkIssue->status->response);
+        $this->assertNull($checkIssue->status->review);
+
 
         $response = $doRequest($issue);
         $this->checkResponse($response, ApiStatus::FAIL, ApiController::GUID_ALREADY_IN_USE);
+    }
+
+    /**
+     * tests the create issue method
+     */
+    public function testUpdateIssue()
+    {
+        $client = static::createClient();
+        $user = $this->getAuthenticatedUser($client);
+        $serializer = $client->getContainer()->get("serializer");
+        $doRequest = function (Issue $issue) use ($client, $user, $serializer) {
+            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($issue, "json") . '}';
+            $client->request(
+                'POST',
+                '/api/issue/create',
+                [],
+                [],
+                ["CONTENT_TYPE" => "application/json"],
+                $json
+            );
+
+
+            return $client->getResponse();
+        };
     }
 
 //    /**

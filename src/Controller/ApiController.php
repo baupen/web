@@ -17,6 +17,7 @@ use App\Api\Request\IssueModifyRequest;
 use App\Api\Request\LoginRequest;
 use App\Api\Request\ReadRequest;
 use App\Api\Response\Data\EmptyData;
+use App\Api\Response\Data\IssueData;
 use App\Api\Response\Data\LoginData;
 use App\Api\Response\Data\ReadData;
 use App\Api\Response\FailResponse;
@@ -65,6 +66,7 @@ class ApiController extends BaseDoctrineController
     const UNKNOWN_USERNAME = "unknown username";
     const WRONG_PASSWORD = "wrong password";
     const GUID_ALREADY_IN_USE = "guid already in use";
+    const GUID_NOT_FOUND = "guid not found";
     const INVALID_ENTITY = "invalid entity";
     const AUTHENTICATION_TOKEN_INVALID = "authentication token invalid";
 
@@ -444,6 +446,35 @@ WHERE cscm.construction_manager_id = :id";
      */
     public function issueCreateAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
     {
+        return $this->processIssueModifyRequest($request, $serializer, $validator, $issueTransformer, "create");
+    }
+
+    /**
+     * @Route("/issue/update", name="api_issue_update")
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function issueUpdateAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
+    {
+        return $this->processIssueModifyRequest($request, $serializer, $validator, $issueTransformer, "update");
+    }
+
+    /**
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
+     * @return JsonResponse|Response
+     * @throws ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    private function processIssueModifyRequest(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer, $mode)
+    {
         //check if empty request
         if (!($content = $request->getContent())) {
             return $this->fail(static::EMPTY_REQUEST);
@@ -465,31 +496,48 @@ WHERE cscm.construction_manager_id = :id";
             return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
         }
 
-        //ensure GUID not in use already
-        $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
-        if ($existing != null) {
-            return $this->fail(static::GUID_ALREADY_IN_USE);
+        $entity = null;
+        if ($mode == "create") {
+            //ensure GUID not in use already
+            $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
+            if ($existing != null) {
+                return $this->fail(static::GUID_ALREADY_IN_USE);
+            }
+            $entity = new Issue();
+        } else if ($mode == "update") {
+            //ensure issue exists
+            $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
+            if ($existing == null) {
+                return $this->fail(static::GUID_NOT_FOUND);
+            }
+            $entity = $existing;
+        } else {
+            throw new \InvalidArgumentException("mode must be create or update");
         }
 
         //transform to entity & persist
-        $issue = $issueTransformer->fromApi($issueModifyRequest->getIssue(), new Issue());
+        $issue = $issueTransformer->fromApi($issueModifyRequest->getIssue(), $entity);
         if ($issue == null) {
             return $this->fail(static::INVALID_ENTITY);
         }
         $issue->setUploadBy($constructionManager);
         $issue->setUploadedAt(new \DateTime());
 
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        $metadata = $em->getClassMetadata(get_class($issue));
-        $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
-        $metadata->setIdGenerator(new \Doctrine\ORM\Id\AssignedGenerator());
-        $issue->setId($issueModifyRequest->getIssue()->getMeta()->getId());
-        $em->persist($issue);
-        $em->flush();
+        if ($mode == "create") {
+            /** @var EntityManager $em */
+            $em = $this->getDoctrine()->getManager();
+            $metadata = $em->getClassMetadata(get_class($issue));
+            $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+            $metadata->setIdGenerator(new \Doctrine\ORM\Id\AssignedGenerator());
+            $issue->setId($issueModifyRequest->getIssue()->getMeta()->getId());
+            $em->persist($issue);
+            $em->flush();
+        } else {
+            $this->fastSave($issue);
+        }
 
         //construct answer
-        return $this->success(new EmptyData());
+        return $this->success(new IssueData($issueTransformer->toApi($issue)));
     }
 
 
