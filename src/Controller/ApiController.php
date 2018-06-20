@@ -13,6 +13,7 @@ namespace App\Controller;
 
 
 use App\Api\Entity\ObjectMeta;
+use App\Api\Request\IssueActionRequest;
 use App\Api\Request\IssueModifyRequest;
 use App\Api\Request\LoginRequest;
 use App\Api\Request\ReadRequest;
@@ -68,6 +69,7 @@ class ApiController extends BaseDoctrineController
     const GUID_ALREADY_IN_USE = "guid already in use";
     const GUID_NOT_FOUND = "guid not found";
     const INVALID_ENTITY = "invalid entity";
+    const INVALID_ACTION = "invalid action";
     const AUTHENTICATION_TOKEN_INVALID = "authentication token invalid";
 
     /**
@@ -534,6 +536,160 @@ WHERE cscm.construction_manager_id = :id";
             $em->flush();
         } else {
             $this->fastSave($issue);
+        }
+
+        //construct answer
+        return $this->success(new IssueData($issueTransformer->toApi($issue)));
+    }
+
+    /**
+     * @Route("/issue/delete", name="api_issue_delete")
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function issueDeleteAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
+    {
+        return $this->processIssueActionRequest($request, $serializer, $validator, $issueTransformer,
+            function ($issue) {
+                /** @var Issue $issue */
+                if ($issue->getRegisteredAt() == null) {
+                    $this->fastRemove($issue);
+                    return $this->success(new EmptyData());
+                } else {
+                    return $this->fail(static::INVALID_ACTION);
+                }
+            });
+    }
+
+    /**
+     * @Route("/issue/mark", name="api_issue_mark")
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function issueMarkAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
+    {
+        return $this->processIssueActionRequest($request, $serializer, $validator, $issueTransformer,
+            function ($issue) {
+                /** @var Issue $issue */
+                $issue->setIsMarked(!$issue->getIsMarked());
+                $this->fastSave($issue);
+                return true;
+            });
+    }
+
+    /**
+     * @Route("/issue/review", name="api_issue_review")
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function issueReviewAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
+    {
+        return $this->processIssueActionRequest($request, $serializer, $validator, $issueTransformer,
+            function ($issue, $constructionManager) {
+                /** @var Issue $issue */
+                /** @var ConstructionManager $constructionManager */
+                if ($issue->getRegisteredAt() != null && $issue->getReviewedAt() == null) {
+                    $issue->setReviewedAt(new \DateTime());
+                    $issue->setReviewBy($constructionManager);
+                    $this->fastSave($issue);
+                    return true;
+                } else {
+                    return $this->fail(static::INVALID_ACTION);
+                }
+            });
+    }
+
+    /**
+     * @Route("/issue/revert", name="api_issue_revert")
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function issueRevertAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
+    {
+        return $this->processIssueActionRequest($request, $serializer, $validator, $issueTransformer,
+            function ($issue, $constructionManager) {
+                /** @var Issue $issue */
+                /** @var ConstructionManager $constructionManager */
+                if ($issue->getRegisteredAt() != null && $issue->getRespondedAt() != null || ) {
+                    if ($issue->getReviewedAt() != null) {
+                        $issue->setReviewedAt(null);
+                        $issue->setReviewBy(null);
+                    } else if ($issue->getRespondedAt() != null) {
+                        $issue->setRespondedAt(null);
+                        $issue->setResponseBy(null);
+                    } else {
+                        return $this->fail(static::INVALID_ACTION);
+                    }
+                    $this->fastSave($issue);
+                    return true;
+                } else {
+                    return $this->fail(static::INVALID_ACTION);
+                }
+            });
+    }
+
+    /**
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
+     * @return JsonResponse|Response
+     * @throws ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    private function processIssueActionRequest(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer, $action)
+    {
+        //check if empty request
+        if (!($content = $request->getContent())) {
+            return $this->fail(static::EMPTY_REQUEST);
+        }
+
+        /* @var IssueActionRequest $issueActionRequest */
+        $issueActionRequest = $serializer->deserialize($content, IssueActionRequest::class, "json");
+
+        // check all properties defined
+        $errors = $validator->validate($issueActionRequest);
+        if (count($errors) > 0) {
+            return $this->fail(static::INVALID_REQUEST);
+        }
+
+        //check auth token
+        /** @var ConstructionManager $constructionManager */
+        $constructionManager = $this->getDoctrine()->getRepository(AuthenticationToken::class)->getConstructionManager($issueActionRequest);
+        if ($constructionManager === null) {
+            return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
+        }
+
+        //get issue
+        $issue = $this->getDoctrine()->getRepository(Issue::class)->find($issueActionRequest->getIssueID());
+        if ($issue == null) {
+            return $this->fail(static::GUID_NOT_FOUND);
+        }
+
+        //execute action
+        $response = $action($issue, $constructionManager);
+        if ($response instanceof Response) {
+            return $response;
         }
 
         //construct answer

@@ -347,6 +347,12 @@ class ApiControllerTest extends FixturesTestCase
         $this->verifyIssue($issueResponse->data->issue, $issue);
     }
 
+    /**
+     * checks if the issue is of the expected form
+     *
+     * @param $checkIssue
+     * @param Issue $issue
+     */
     private function verifyIssue($checkIssue, Issue $issue)
     {
         //check properties
