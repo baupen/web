@@ -58,11 +58,10 @@ class LoadIssueData extends BaseFixture
         foreach ($entries as $entry) {
             foreach ($maps as $map) {
                 $craftsman = $getCraftsman();
-                $targetFileName = $this->safeCopyToPublic("/upload/" . $constructionSite->getId() . "/issue", $entry[0], "jpg");
 
                 $issue = new Issue();
+                $issue->setImageFilename(Uuid::uuid4()->toString() . ".jpg");
                 $issue->setCraftsman($craftsman);
-                $issue->setImageFilename($targetFileName);
                 $issue->setDescription($entry[1]);
                 $issue->setIsMarked($entry[2]);
                 $issue->setWasAddedWithClient($entry[3]);
@@ -90,6 +89,8 @@ class LoadIssueData extends BaseFixture
                 }
 
                 $manager->persist($issue);
+
+                $this->safeCopyToPublic($issue->getImageFilePath(), $entry[0]);
             }
         }
         $manager->flush();

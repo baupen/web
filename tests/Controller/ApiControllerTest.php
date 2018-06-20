@@ -421,9 +421,7 @@ class ApiControllerTest extends FixturesTestCase
         $issuePosition->setY(0.3);
         $issuePosition->setZoomScale(0.5);
         $issue->setPosition($issuePosition);
-
-        dump($issue);
-
+        
         $response = $doRequest($issue);
         $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
 

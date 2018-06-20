@@ -15,6 +15,7 @@ use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use Doctrine\Common\Persistence\ObjectManager;
+use Ramsey\Uuid\Uuid;
 
 class LoadConstructionSiteData extends BaseFixture
 {
@@ -30,13 +31,15 @@ class LoadConstructionSiteData extends BaseFixture
     public function load(ObjectManager $manager)
     {
         $entries = [
-            ["Sun Park", "Parkstrasse 12", 7270, "Davos", "CH"],
-            ["Sun Park (empty)", "Parkstrasse 12", 7270, "Davos", "CH"],
+            ["Sun Park", "Parkstrasse 12", 7270, "Davos", "CH", "preview.jpg"],
+            ["Sun Park (empty)", "Parkstrasse 12", 7270, "Davos", "CH", "preview2.jpg"],
         ];
 
         $appUsers = $manager->getRepository(ConstructionManager::class)->findAll();
         foreach ($entries as $entry) {
             $building = new ConstructionSite();
+
+            $building->setImageFileName(Uuid::uuid4()->toString() . ".jpg");
             $building->setName($entry[0]);
             $building->setStreetAddress($entry[1]);
             $building->setPostalCode($entry[2]);
@@ -44,6 +47,7 @@ class LoadConstructionSiteData extends BaseFixture
             $building->setCountry($entry[4]);
             $manager->persist($building);
 
+            $this->safeCopyToPublic($building->getImageFilePath(), $entry[5]);
 
             foreach ($appUsers as $appUser) {
                 $building->getConstructionManagers()->add($appUser);

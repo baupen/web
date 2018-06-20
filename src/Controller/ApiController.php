@@ -610,7 +610,7 @@ WHERE cscm.construction_manager_id = :id";
         //handle file uploads
         foreach ($request->files->all() as $key => $file) {
             /** @var UploadedFile $file */
-            $targetFolder = $this->getParameter("PUBLIC_DIR") . "/upload/" . $issue->getMap()->getConstructionSite()->getId() . "/issue";
+            $targetFolder =  $this->getParameter("PUBLIC_DIR") . "/" . dirname($issue->getImageFilePath());
             if (!file_exists($targetFolder)) {
                 mkdir($targetFolder, 0777, true);
             }
@@ -789,19 +789,6 @@ WHERE cscm.construction_manager_id = :id";
         //construct answer
         return $this->success(new IssueData($issueTransformer->toApi($issue)));
     }
-
-
-//    public function fileUploadAction(Request $request)
-//    {
-//        foreach ($request->files->all() as $key => $file) {
-//            /** @var UploadedFile $file */
-//            if (!$file->move($this->getParameter("PUBLIC_DIR") . "/upload", $file->getClientOriginalName())) {
-//                return $this->failed(ApiStatus::INVALID_FILE);
-//            }
-//        }
-//
-//        return $this->file($this->getParameter("PUBLIC_DIR") . "/upload/" . $downloadFileRequest->getFileName());
-//    }
 
     /**
      * if request failed

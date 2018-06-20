@@ -56,15 +56,15 @@ class LoadMapData extends BaseFixture
      */
     private function loadMaps(ObjectManager $manager, ConstructionSite $constructionSite, $entry, $parent)
     {
-        $targetFileName = $this->safeCopyToPublic("/upload/" . $constructionSite->getId() . "/map", $entry[0], "pdf");
-
         // create map
         $map = new Map();
         $map->setConstructionSite($constructionSite);
         $map->setName($entry[1]);
-        $map->setFilename($targetFileName);
         $map->setParent($parent);
+        $map->setFilename(Uuid::uuid4()->toString() . ".pdf");
         $manager->persist($map);
+
+        $this->safeCopyToPublic($map->getFilePath(), $entry[0]);
 
         // create children
         if (isset($entry[2])) {
