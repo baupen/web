@@ -82,7 +82,7 @@ class Issue
     /**
      * @return bool
      */
-    public function isMarked(): bool
+    public function getIsMarked(): bool
     {
         return $this->isMarked;
     }
@@ -98,7 +98,7 @@ class Issue
     /**
      * @return bool
      */
-    public function isWasAddedWithClient(): bool
+    public function getWasAddedWithClient(): bool
     {
         return $this->wasAddedWithClient;
     }

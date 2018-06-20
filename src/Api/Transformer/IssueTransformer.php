@@ -63,8 +63,8 @@ class IssueTransformer extends AbstractTransformer
         $entity->setCraftsman($craftsman);
         $entity->setDescription($issue->getDescription());
         $entity->setImageFilename($issue->getImageFilename());
-        $entity->setIsMarked($issue->isMarked());
-        $entity->setWasAddedWithClient($issue->isWasAddedWithClient());
+        $entity->setIsMarked($issue->getIsMarked());
+        $entity->setWasAddedWithClient($issue->getWasAddedWithClient());
 
         if ($issue->getPosition() != null) {
             $entity->setPositionX($issue->getPosition()->getX());
@@ -81,8 +81,8 @@ class IssueTransformer extends AbstractTransformer
     public function toApi(Issue $entity)
     {
         $issue = new \App\Api\Entity\Issue();
-        $issue->setWasAddedWithClient($entity->isWasAddedWithClient());
-        $issue->setIsMarked($entity->isMarked());
+        $issue->setWasAddedWithClient($entity->getWasAddedWithClient());
+        $issue->setIsMarked($entity->getIsMarked());
         $issue->setImageFilename($entity->getImageFilename());
         $issue->setDescription($entity->getDescription());
         $issue->setNumber($entity->getNumber());

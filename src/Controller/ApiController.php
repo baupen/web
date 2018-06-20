@@ -472,13 +472,21 @@ WHERE cscm.construction_manager_id = :id";
         }
 
         //transform to entity & persist
-        $issue = $issueTransformer->fromApi($issueModifyRequest->getIssue(), Issue::createFromId($issueModifyRequest->getIssue()->getMeta()->getId()));
+        $issue = $issueTransformer->fromApi($issueModifyRequest->getIssue(), new Issue());
         if ($issue == null) {
             return $this->fail(static::INVALID_ENTITY);
         }
         $issue->setUploadBy($constructionManager);
         $issue->setUploadedAt(new \DateTime());
-        $this->fastSave($issue);
+
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        $metadata = $em->getClassMetadata(get_class($issue));
+        $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+        $metadata->setIdGenerator(new \Doctrine\ORM\Id\AssignedGenerator());
+        $issue->setId($issueModifyRequest->getIssue()->getMeta()->getId());
+        $em->persist($issue);
+        $em->flush();
 
         //construct answer
         return $this->success(new EmptyData());

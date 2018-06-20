@@ -12,6 +12,7 @@ use App\Api\Entity\Issue;
 use App\Api\Entity\IssuePosition;
 use App\Api\Entity\IssueStatus;
 use App\Api\Entity\ObjectMeta;
+use App\Api\Entity\User;
 use App\Api\Request\ReadRequest;
 use App\Api\Response\Base\AbstractResponse;
 use App\Api\Response\ErrorResponse;
@@ -123,12 +124,14 @@ class ApiControllerTest extends FixturesTestCase
     }
 
     /**
-     * tests the create issue method
+     * get the state of the server
+     *
+     * @param Client $client
+     * @param $authenticatedUser
+     * @return mixed|null
      */
-    public function testRead()
+    private function getServerEntities(Client $client, $authenticatedUser)
     {
-        $client = static::createClient();
-        $authenticatedUser = $this->getAuthenticatedUser($client);
         $serializer = $client->getContainer()->get("serializer");
         $doRequest = function (ReadRequest $readRequest) use ($client, $serializer) {
             $json = $serializer->serialize($readRequest, "json");
@@ -160,7 +163,6 @@ class ApiControllerTest extends FixturesTestCase
 
         $response = $doRequest($readRequest);
         $readResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
-        $completeResponse = $readResponse;
 
         $this->assertNotNull($readResponse->data);
         $this->assertNotNull($readResponse->data->user);
@@ -170,9 +172,45 @@ class ApiControllerTest extends FixturesTestCase
         $this->assertTrue(count($readResponse->data->changedMaps) > 0);
         $this->assertTrue(count($readResponse->data->changedIssues) > 0);
 
+        $serverData = new \stdClass();
+        $serverData->buildings = $readResponse->data->changedBuildings;
+        $serverData->craftsmen = $readResponse->data->changedCraftsmen;
+        $serverData->maps = $readResponse->data->changedMaps;
+        $serverData->issues = $readResponse->data->changedIssues;
+
+        return $serverData;
+    }
+
+    /**
+     * tests the create issue method
+     */
+    public function testRead()
+    {
+        $client = static::createClient();
+        $authenticatedUser = $this->getAuthenticatedUser($client);
+        $serializer = $client->getContainer()->get("serializer");
+        $doRequest = function (ReadRequest $readRequest) use ($client, $serializer) {
+            $json = $serializer->serialize($readRequest, "json");
+            $client->request(
+                'POST',
+                '/api/read',
+                [],
+                [],
+                ["CONTENT_TYPE" => "application/json"],
+                $json
+            );
+
+            return $client->getResponse();
+        };
+        $serverData = $this->getServerEntities($client, $authenticatedUser);
 
         ### update none
+        $readRequest = new ReadRequest();
+        $readRequest->setAuthenticationToken($authenticatedUser->authenticationToken);
+        $userMeta = new ObjectMeta();
+        $userMeta->setId($authenticatedUser->meta->id);
         $userMeta->setLastChangeTime($authenticatedUser->meta->lastChangeTime);
+        $readRequest->setUser($userMeta);
 
         //transform objects to meta object
         $getMetas = function ($entities, $invalids = 1, $old = 0, $lost = 0) {
@@ -206,10 +244,10 @@ class ApiControllerTest extends FixturesTestCase
         };
 
         //set them in the request
-        $readRequest->setBuildings($getMetas($completeResponse->data->changedBuildings));
-        $readRequest->setCraftsmen($getMetas($completeResponse->data->changedCraftsmen));
-        $readRequest->setMaps($getMetas($completeResponse->data->changedMaps));
-        $readRequest->setIssues($getMetas($completeResponse->data->changedIssues));
+        $readRequest->setBuildings($getMetas($serverData->buildings));
+        $readRequest->setCraftsmen($getMetas($serverData->craftsmen));
+        $readRequest->setMaps($getMetas($serverData->maps));
+        $readRequest->setIssues($getMetas($serverData->issues));
 
         $response = $doRequest($readRequest);
         $readResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
@@ -227,10 +265,10 @@ class ApiControllerTest extends FixturesTestCase
 
         ### update, remove & add at the same time
         //set them in the request
-        $readRequest->setBuildings($getMetas($completeResponse->data->changedBuildings, 1, 1, 1));
-        $readRequest->setCraftsmen($getMetas($completeResponse->data->changedCraftsmen, 1, 1, 1));
-        $readRequest->setMaps($getMetas($completeResponse->data->changedMaps, 1, 1, 1));
-        $readRequest->setIssues($getMetas($completeResponse->data->changedIssues, 1, 1, 1));
+        $readRequest->setBuildings($getMetas($serverData->buildings, 1, 1, 1));
+        $readRequest->setCraftsmen($getMetas($serverData->craftsmen, 1, 1, 1));
+        $readRequest->setMaps($getMetas($serverData->maps, 1, 1, 1));
+        $readRequest->setIssues($getMetas($serverData->issues, 1, 1, 1));
 
         $response = $doRequest($readRequest);
         $readResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
@@ -253,10 +291,10 @@ class ApiControllerTest extends FixturesTestCase
     public function testCreateIssue()
     {
         $client = static::createClient();
-        $authenticationToken = $this->getAuthenticationToken($client);
+        $user = $this->getAuthenticatedUser($client);
         $serializer = $client->getContainer()->get("serializer");
-        $doRequest = function (Issue $issue) use ($client, $authenticationToken, $serializer) {
-            $json = '{"authenticationToken":"' . $authenticationToken . '", "issue":' . $serializer->serialize($issue, "json") . '}';
+        $doRequest = function (Issue $issue) use ($client, $user, $serializer) {
+            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($issue, "json") . '}';
             $client->request(
                 'POST',
                 '/api/issue/create',
@@ -270,6 +308,8 @@ class ApiControllerTest extends FixturesTestCase
             return $client->getResponse();
         };
 
+        $serverData = $this->getServerEntities($client,  $user);
+
         $imageFilename = Uuid::uuid4()->toString() . ".jpg";
 
         $issue = new Issue();
@@ -277,7 +317,7 @@ class ApiControllerTest extends FixturesTestCase
         $issue->setIsMarked(true);
         $issue->setImageFilename($imageFilename);
         $issue->setDescription("description");
-        $issue->setMap("guid");
+        $issue->setMap($serverData->maps[0]->meta->id);
 
         $issue->setStatus(new IssueStatus());
 
