@@ -24,6 +24,11 @@ set('symfony_env_file', '.env');
 set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader --no-scripts');
 set('env_file_path', ".env");
 
+if (true) {
+    set('composer_options', '{{composer_action}} --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts');
+    after('database:migrate', 'database:fixtures');
+}
+
 // import servers
 inventory('servers.yml');
 
@@ -49,8 +54,18 @@ task('frontend:build', function () {
 
 // kill php processes to ensure symlinks are refreshed
 task('deploy:refresh_symlink', function () {
-    run('killall -9 php-cgi'); //kill all php processes so symlink is refreshed
+    try {
+        run('killall -9 php-cgi'); //kill all php processes so symlink is refreshed
+    } catch (\Exception $e) {
+        //fails if no active processes; therefore no problem
+    }
 })->desc('Refreshing symlink');
+
+desc('Load fixtures');
+task('database:fixtures', function () {
+    run('{{bin/console}} doctrine:fixtures:load -q');
+});
+
 //frontend stuff
 after('deploy:vendors', 'frontend:build');
 // migrations
