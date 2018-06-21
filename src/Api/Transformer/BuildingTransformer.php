@@ -11,15 +11,8 @@ namespace App\Api\Transformer;
 
 use App\Api\Entity\Address;
 use App\Api\Entity\Building;
-use App\Api\Entity\Issue;
-use App\Api\Entity\ObjectMeta;
-use App\Api\Entity\User;
 use App\Api\Transformer\Base\AbstractTransformer;
-use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
-use App\Entity\Craftsman;
-use App\Entity\Map;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class BuildingTransformer extends AbstractTransformer
 {

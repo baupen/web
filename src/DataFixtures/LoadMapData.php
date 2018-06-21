@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the nodika project.
+ * This file is part of the mangel.io project.
  *
  * (c) Florian Moser <git@famoser.ch>
  *
@@ -16,11 +16,10 @@ use App\Entity\ConstructionSite;
 use App\Entity\Map;
 use Doctrine\Common\Persistence\ObjectManager;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\ExpressionLanguage\Tests\Node\Obj;
 
 class LoadMapData extends BaseFixture
 {
-    const ORDER = LoadConstructionSiteData::ORDER + 1;
+    const ORDER = LoadConstructionSiteData::ORDER + ClearPublicUploadDir::ORDER + 1;
 
     /**
      * Load data fixtures with the passed EntityManager.

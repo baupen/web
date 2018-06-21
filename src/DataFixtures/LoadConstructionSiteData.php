@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the nodika project.
+ * This file is part of the mangel.io project.
  *
  * (c) Florian Moser <git@famoser.ch>
  *
@@ -19,7 +19,7 @@ use Ramsey\Uuid\Uuid;
 
 class LoadConstructionSiteData extends BaseFixture
 {
-    const ORDER = LoadConstructionManagerData::ORDER + 1;
+    const ORDER = LoadConstructionManagerData::ORDER + ClearPublicUploadDir::ORDER + 1;
 
     /**
      * Load data fixtures with the passed EntityManager.

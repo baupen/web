@@ -9,8 +9,6 @@
 namespace App\Api\Entity;
 
 
-use App\Api\Entity\Base\BaseEntity;
-
 class IssueStatusEvent
 {
     /**

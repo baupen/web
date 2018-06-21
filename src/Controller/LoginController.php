@@ -76,7 +76,7 @@ class LoginController extends BaseLoginController
                     $translator->trans("recover.email.reset_password.subject", [], "frontend_login"),
                     $translator->trans("recover.email.reset_password.message", [], "frontend_login"),
                     $translator->trans("recover.email.reset_password.action_text", [], "frontend_login"),
-                    $this->generateUrl("frontend_login_reset", ["resetHash" => $exitingUser->getResetHash()], UrlGeneratorInterface::ABSOLUTE_URL)
+                    $this->generateUrl("login_reset", ["resetHash" => $exitingUser->getResetHash()], UrlGeneratorInterface::ABSOLUTE_URL)
                 );
 
                 return $form;
@@ -96,12 +96,13 @@ class LoginController extends BaseLoginController
      */
     public function resetAction(Request $request, $resetHash, TranslatorInterface $translator)
     {
-        $user = $this->getDoctrine()->getRepository(ContructionManager::class)->findOneBy(["resetHash" => $resetHash]);
+        $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(["resetHash" => $resetHash]);
+        $arr = [];
         if (null === $user) {
             $this->displayError($translator->trans("reset.error.invalid_hash", [], "frontend_login"));
         } else {
             $form = $this->handleForm(
-                $this->createForm(SetPasswordType::class, $user, ["data_class" => ContructionManager::class])
+                $this->createForm(SetPasswordType::class, $user, ["data_class" => ConstructionManager::class])
                     ->add("form.set_password", SubmitType::class),
                 $request,
                 function ($form) use ($user, $translator, $request) {
@@ -121,7 +122,7 @@ class LoginController extends BaseLoginController
 
                     //login user & redirect
                     $this->loginUser($request, $user);
-                    return $this->redirectToRoute("frontend_dashboard_index");
+                    return $this->redirectToRoute("dashboard_index");
                 }
             );
 

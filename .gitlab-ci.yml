@@ -11,10 +11,12 @@ before_script:
 
 # install git, yarn
 - apt-get update -y
-- apt-get install npm -y
+- apt-get install -y gnupg git
+- curl -sL https://deb.nodesource.com/setup_10.x | bash -
+- apt-get install nodejs -y
 - npm install -g yarn
 
-# install frontend & build stuff
+# install & build frontend
 - yarn install
 - yarn encore dev
 
@@ -22,13 +24,14 @@ before_script:
 - curl --location --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit.phar
 - chmod +x /usr/local/bin/phpunit
 
-# install xdebug
+# install xdebuug requirements
 - pecl install xdebug-2.6.0RC2
-
-# enable php extensions
 - docker-php-ext-enable xdebug
-- docker-php-ext-enable zip
-- docker-php-ext-enable sqlite3
+
+# install imagick
+- apt-get install -y libmagickwand-dev
+- pecl install imagick-3.4.3
+- docker-php-ext-enable imagick
 
 # install composer
 - curl -sS https://getcomposer.org/installer | php

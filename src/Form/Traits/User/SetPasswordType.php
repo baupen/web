@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the nodika project.
+ * This file is part of the mangel.io project.
  *
  * (c) Florian Moser <git@famoser.ch>
  *
@@ -11,7 +11,6 @@
 
 namespace App\Form\Traits\User;
 
-use App\Form\Base\BaseAbstractType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;

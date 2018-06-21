@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the nodika project.
+ * This file is part of the mangel.io project.
  *
  * (c) Florian Moser <git@famoser.ch>
  *
@@ -13,7 +13,6 @@ namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionManager;
-use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Entity\Map;
@@ -22,7 +21,7 @@ use Ramsey\Uuid\Uuid;
 
 class LoadIssueData extends BaseFixture
 {
-    const ORDER = LoadConstructionSiteData::ORDER + LoadConstructionManagerData::ORDER + LoadCraftsmanData::ORDER + 1;
+    const ORDER = LoadConstructionSiteData::ORDER + LoadConstructionManagerData::ORDER + LoadCraftsmanData::ORDER + ClearPublicUploadDir::ORDER + 1;
 
     /**
      * Load data fixtures with the passed EntityManager.
@@ -36,7 +35,6 @@ class LoadIssueData extends BaseFixture
         $maps = $manager->getRepository(Map::class)->findAll();
         $craftsmen = $manager->getRepository(Craftsman::class)->findAll();
         $constructionManager = $manager->getRepository(ConstructionManager::class)->findOneBy([]);
-        $constructionSite = $manager->getRepository(ConstructionSite::class)->findOneBy([]);
 
         $entries = [
             ["parkett.jpg", "Laminat fehlerhaft", true, false, 0.8, 0.3, 0.5, 2],

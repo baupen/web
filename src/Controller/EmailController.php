@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the nodika project.
+ * This file is part of the mangel.io project.
  *
  * (c) Florian Moser <git@famoser.ch>
  *

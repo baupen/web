@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the nodika project.
+ * This file is part of the mangel.io project.
  *
  * (c) Florian Moser <git@famoser.ch>
  *
@@ -12,9 +12,6 @@
 namespace App\Controller;
 
 use App\Controller\Base\BaseFormController;
-use App\Entity\FrontendUser;
-use App\Form\Model\ContactRequest\ContactRequestType;
-use App\Model\ContactRequest;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
