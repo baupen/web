@@ -630,7 +630,7 @@ class ApiControllerTest extends FixturesTestCase
         //revert responded
         $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");
         $this->checkResponse($response, ApiStatus::SUCCESSFUL);
-        //do it twice because of earlier actions
+        //revert twice because of earlier actions
         $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");
         $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");
         $this->checkResponse($response, ApiStatus::FAIL, ApiController::INVALID_ACTION);

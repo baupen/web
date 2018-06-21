@@ -24,7 +24,8 @@ set('symfony_env_file', '.env');
 set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader --no-scripts');
 set('env_file_path', ".env");
 
-if (true) {
+if (get('dev')) {
+    echo "[WRANING] dev branch; executing fixtures\n";
     set('composer_options', '{{composer_action}} --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts');
     after('database:migrate', 'database:fixtures');
 }
@@ -43,7 +44,13 @@ set(
     '/usr/local/php72/bin/php'
 );
 
+desc('Installing vendors');
+task('deploy:vendors', function () {
+    run('cd {{release_path}} && {{bin/composer}} {{composer_options}}', ["timeout" => 600]);
+});
+
 //build yarn stuff & upload
+desc('Bundling locally css/js and then uploading it');
 task('frontend:build', function () {
     runLocally('yarn install');
     runLocally('yarn upgrade');
@@ -53,6 +60,7 @@ task('frontend:build', function () {
 
 
 // kill php processes to ensure symlinks are refreshed
+desc('Refreshing symlink by terminating any running php processes');
 task('deploy:refresh_symlink', function () {
     try {
         run('killall -9 php-cgi'); //kill all php processes so symlink is refreshed
@@ -61,7 +69,7 @@ task('deploy:refresh_symlink', function () {
     }
 })->desc('Refreshing symlink');
 
-desc('Load fixtures');
+desc('Loading fixtures');
 task('database:fixtures', function () {
     run('{{bin/console}} doctrine:fixtures:load -q');
 });
