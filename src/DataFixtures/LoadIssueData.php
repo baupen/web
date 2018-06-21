@@ -42,7 +42,8 @@ class LoadIssueData extends BaseFixture
             ["parkett.jpg", "Laminat fehlerhaft", true, false, 0.8, 0.3, 0.5, 2],
             ["steckdose.jpg", "Steckdose eingedrückt", false, false, 0.1, 0.1, 0.2, 3],
             ["parkett2.jpg", "Löcher im Parkett", false, false, 0.2, 0.2, 0.6, 3],
-            ["farbfleck.jpg", "Flecken an der Wand", false, false, 0.5, 0.3, 1, 1]
+            ["farbfleck.jpg", "Flecken an der Wand", false, false, 0.5, 0.3, 1, 1],
+            ["farbfleck.jpg", "Flecken an der Wand (new)", false, false, 0.5, 0.3, 1, 0]
         ];
 
         $craftsmanIndex = 0;

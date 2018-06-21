@@ -484,7 +484,13 @@ class ApiControllerTest extends FixturesTestCase
         };
 
         $serverData = $this->getServerEntities($client, $user);
-        $issue = $serverData->getIssues()[0];
+
+        /** @var Issue[] $newIssues */
+        /** @var Issue[] $registeredIssues */
+        /** @var Issue[] $respondedIssues */
+        /** @var Issue[] $reviewedIssues */
+        $this->categorizeIssues($serverData->getIssues(), $newIssues, $registeredIssues, $respondedIssues, $reviewedIssues);
+        $issue = $newIssues[0];
 
         $filePath = __DIR__ . "/../Files/sample.jpg";
         $copyPath = __DIR__ . "/../Files/sample_2.jpg";
@@ -538,7 +544,6 @@ class ApiControllerTest extends FixturesTestCase
         };
 
         $response = $doRequest($serverData->getBuildings()[0]->getMeta());
-        dump($response);
         $this->assertInstanceOf(BinaryFileResponse::class, $response);
 
         //test map download
@@ -559,5 +564,102 @@ class ApiControllerTest extends FixturesTestCase
 
         $response = $doRequest($serverData->getMaps()[0]->getMeta());
         $this->assertInstanceOf(BinaryFileResponse::class, $response);
+    }
+
+    /**
+     * tests upload/download functionality
+     */
+    public function testIssueActions()
+    {
+        $client = static::createClient();
+        $user = $this->getAuthenticatedUser($client);
+        $serializer = $client->getContainer()->get("serializer");
+        $doRequest = function ($issueId, $action) use ($client, $user, $serializer) {
+            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issueID":"' . $issueId . '"}';
+            $client->request(
+                'POST',
+                '/api/issue/' . $action,
+                [],
+                [],
+                ["CONTENT_TYPE" => "application/json"],
+                $json
+            );
+
+            return $client->getResponse();
+        };
+
+        $serverData = $this->getServerEntities($client, $user);
+        $issue = $serverData->getIssues()[0];
+
+        $response = $doRequest($issue->getMeta()->getId(), "mark");
+        $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+
+        //check response issue updated
+        $issue->setIsMarked(!$issue->getIsMarked());
+        $this->verifyIssue($issueResponse->data->issue, $issue);
+        $issue = $serializer->deserialize(json_encode($issueResponse->data->issue), Issue::class, "json");
+
+        /** @var Issue[] $newIssues */
+        /** @var Issue[] $registeredIssues */
+        /** @var Issue[] $respondedIssues */
+        /** @var Issue[] $reviewedIssues */
+        $this->categorizeIssues($serverData->getIssues(), $newIssues, $registeredIssues, $respondedIssues, $reviewedIssues);
+
+        //delete
+        $response = $doRequest($newIssues[0]->getMeta()->getId(), "delete");
+        $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $response = $doRequest($newIssues[0]->getMeta()->getId(), "delete");
+        $this->checkResponse($response, ApiStatus::FAIL, ApiController::GUID_NOT_FOUND);
+
+        //review registered
+        $response = $doRequest($registeredIssues[0]->getMeta()->getId(), "review");
+        $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $response = $doRequest($registeredIssues[0]->getMeta()->getId(), "review");
+        $this->checkResponse($response, ApiStatus::FAIL, ApiController::INVALID_ACTION);
+
+        //review responded
+        $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "review");
+        $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "review");
+        $this->checkResponse($response, ApiStatus::FAIL, ApiController::INVALID_ACTION);
+
+        //revert reviewed
+        $response = $doRequest($reviewedIssues[0]->getMeta()->getId(), "revert");
+        $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+
+        //revert responded
+        $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");
+        $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        //do it twice because of earlier actions
+        $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");
+        $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");
+        $this->checkResponse($response, ApiStatus::FAIL, ApiController::INVALID_ACTION);
+    }
+
+    /**
+     * @param Issue[] $issues
+     * @param Issue[] $newIssues
+     * @param Issue[] $registeredIssues
+     * @param Issue[] $respondedIssues
+     * @param Issue[] $reviewedIssues
+     */
+    private function categorizeIssues($issues, &$newIssues, &$registeredIssues, &$respondedIssues, &$reviewedIssues)
+    {
+        $newIssues = [];
+        $registeredIssues = [];
+        $respondedIssues = [];
+        $reviewedIssues = [];
+
+        foreach ($issues as $issue) {
+            if ($issue->getStatus()->getReview() != null) {
+                $reviewedIssues[] = $issue;
+            } else if ($issue->getStatus()->getResponse() != null) {
+                $respondedIssues[] = $issue;
+            } else if ($issue->getStatus()->getRegistration() != null) {
+                $registeredIssues[] = $issue;
+            } else {
+                $newIssues[] = $issue;
+            }
+        }
     }
 }
