@@ -11,7 +11,7 @@ before_script:
 
 # install git, yarn
 - apt-get update -y
-- apt-get install npm -y
+- apt-get install nodejs -y
 - npm install -g yarn
 
 # install frontend & build stuff
