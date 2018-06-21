@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the nodika project.
+ * This file is part of the mangel.io project.
  *
  * (c) Florian Moser <git@famoser.ch>
  *
@@ -35,7 +35,6 @@ use App\Entity\Issue;
 use App\Entity\Map;
 use App\Entity\Traits\IdTrait;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Psr\Log\LoggerInterface;
@@ -43,7 +42,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -130,9 +128,9 @@ class ApiController extends BaseDoctrineController
      * @param Request $request
      * @param SerializerInterface $serializer
      * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
+     * @param TransformerFactory $transformerFactory
      * @return Response
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      */
     public function readAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, TransformerFactory $transformerFactory)
     {
@@ -184,11 +182,10 @@ class ApiController extends BaseDoctrineController
      * @param Request $request
      * @param SerializerInterface $serializer
      * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
      * @return Response
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      */
-    public function fileDownloadAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
+    public function fileDownloadAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
     {
         //check if empty request
         if (!($content = $request->getContent())) {
@@ -267,7 +264,7 @@ class ApiController extends BaseDoctrineController
 
     /**
      * @param TransformerFactory $transformerFactory
-     * @param ObjectMeta[] $objectMetas
+     * @param ReadRequest $readRequest
      * @param ConstructionManager $constructionManager
      * @param ReadData $readData
      * @throws ORMException
@@ -551,6 +548,7 @@ WHERE cscm.construction_manager_id = :id";
      * @param SerializerInterface $serializer
      * @param ValidatorInterface $validator
      * @param IssueTransformer $issueTransformer
+     * @param $mode
      * @return JsonResponse|Response
      * @throws ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -719,9 +717,8 @@ WHERE cscm.construction_manager_id = :id";
     public function issueRevertAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
     {
         return $this->processIssueActionRequest($request, $serializer, $validator, $issueTransformer,
-            function ($issue, $constructionManager) {
+            function ($issue) {
                 /** @var Issue $issue */
-                /** @var ConstructionManager $constructionManager */
                 if ($issue->getRegisteredAt() != null) {
                     if ($issue->getReviewedAt() != null) {
                         $issue->setReviewedAt(null);
@@ -745,9 +742,9 @@ WHERE cscm.construction_manager_id = :id";
      * @param SerializerInterface $serializer
      * @param ValidatorInterface $validator
      * @param IssueTransformer $issueTransformer
+     * @param $action
      * @return JsonResponse|Response
      * @throws ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     private function processIssueActionRequest(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer, $action)
     {
@@ -792,7 +789,6 @@ WHERE cscm.construction_manager_id = :id";
      * if request failed
      *
      * @param string $message
-     * @param int $code
      * @return Response
      */
     protected function fail(string $message)

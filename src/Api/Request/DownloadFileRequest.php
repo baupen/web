@@ -9,9 +9,6 @@
 namespace App\Api\Request;
 
 
-use App\Api\Entity\Building;
-use App\Api\Entity\Issue;
-use App\Api\Entity\Map;
 use App\Api\Entity\ObjectMeta;
 use App\Api\Request\Base\AuthenticatedRequest;
 

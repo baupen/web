@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the nodika project.
+ * This file is part of the mangel.io project.
  *
  * (c) Florian Moser <git@famoser.ch>
  *
@@ -11,7 +11,6 @@
 
 namespace App\Security;
 
-use App\Entity\BackendUser;
 use App\Entity\ConstructionManager;
 use App\Security\Base\BaseUserProvider;
 use Symfony\Bridge\Doctrine\RegistryInterface;

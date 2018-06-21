@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the nodika project.
+ * This file is part of the mangel.io project.
  *
  * (c) Florian Moser <git@famoser.ch>
  *
@@ -23,12 +23,6 @@ set('shared_dirs', array_merge(get('shared_dirs'), ['public/upload']));
 set('symfony_env_file', '.env');
 set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader --no-scripts');
 set('env_file_path', ".env");
-
-if (get('dev')) {
-    echo "[WRANING] dev branch; executing fixtures\n";
-    set('composer_options', '{{composer_action}} --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts');
-    after('database:migrate', 'database:fixtures');
-}
 
 // import servers
 inventory('servers.yml');
@@ -71,12 +65,27 @@ task('deploy:refresh_symlink', function () {
 
 desc('Loading fixtures');
 task('database:fixtures', function () {
-    run('{{bin/console}} doctrine:fixtures:load -q');
+    if (get("branch") == "dev") {
+        run('{{bin/console}} doctrine:fixtures:load -q');
+        writeln("fixtures executed");
+    }
+});
+
+desc('print any warnings');
+task('deploy:configure', function () {
+    //fixtures deploy if on dev branch
+    if (get("branch") == "dev") {
+        writeln("[WARNING] deploying dev branch; executing fixtures. STOP DEPLOYING IMMEDIATELY IF YOU DO NOT EXPECT / UNDERSTAND THIS MESSAGE.");
+        set('composer_options', '{{composer_action}} --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts');
+    }
 });
 
 //frontend stuff
+after('deploy:info', 'deploy:configure');
 after('deploy:vendors', 'frontend:build');
 // migrations
 after('deploy:vendors', 'database:migrate');
+// migrations
+after('database:migrate', 'database:fixtures');
 // refresh symlink
 after('deploy:symlink', 'deploy:refresh_symlink');

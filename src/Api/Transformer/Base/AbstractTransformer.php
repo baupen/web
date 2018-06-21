@@ -9,8 +9,6 @@
 namespace App\Api\Transformer\Base;
 
 
-use App\Entity\Traits\IdTrait;
-
 abstract class AbstractTransformer
 {
     /**

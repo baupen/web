@@ -9,7 +9,6 @@
 namespace App\Api\Transformer;
 
 
-use App\Api\Entity\ObjectMeta;
 use App\Api\Entity\User;
 use App\Entity\ConstructionManager;
 
