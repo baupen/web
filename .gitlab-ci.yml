@@ -11,7 +11,7 @@ before_script:
 
 # install git, yarn
 - apt-get update -y
-- apt-get install -y gnupg
+- apt-get install -y gnupg git
 - curl -sL https://deb.nodesource.com/setup_10.x | bash -
 - apt-get install nodejs -y
 - npm install -g yarn
