@@ -9,6 +9,7 @@
 namespace App\Api\Transformer;
 
 
+use App\Api\Entity\Address;
 use App\Api\Entity\Building;
 use App\Api\Entity\Issue;
 use App\Api\Entity\ObjectMeta;
@@ -52,7 +53,29 @@ class BuildingTransformer extends AbstractTransformer
     {
         $building = new Building();
         $building->setName($entity->getName());
+        $building->setImageFilename($entity->getImageFilePath());
+
+        $childrenIds = [];
+        foreach ($entity->getMaps() as $child) {
+            $childrenIds[] = $child->getId();
+        }
+        $building->setMaps($childrenIds);
+
+        $childrenIds = [];
+        foreach ($entity->getCraftsmen() as $child) {
+            $childrenIds[] = $child->getId();
+        }
+        $building->setCraftsmen($childrenIds);
+
+        $address = new Address();
+        $address->setStreetAddress($entity->getStreetAddress());
+        $address->setLocality($entity->getLocality());
+        $address->setPostalCode($entity->getPostalCode());
+        $address->setCountry($entity->getCountry());
+        $building->setAddress($address);
+
         $building->setMeta($this->objectMetaTransformer->toApi($entity));
+
         return $building;
     }
 }

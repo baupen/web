@@ -60,13 +60,6 @@ class Craftsman extends BaseEntity
     private $email;
 
     /**
-     * @var Issue[]|ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="Issue", mappedBy="craftsman")
-     */
-    private $markers;
-
-    /**
      * @var ConstructionSite
      *
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="craftsmen")
@@ -76,7 +69,7 @@ class Craftsman extends BaseEntity
     /**
      * @var Issue[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="craftsman")
+     * @ORM\OneToMany(targetEntity="Issue", mappedBy="craftsman")
      */
     private $issues;
 
@@ -85,7 +78,7 @@ class Craftsman extends BaseEntity
      */
     public function __construct()
     {
-        $this->markers = new ArrayCollection();
+        $this->issues = new ArrayCollection();
     }
 
     /**
@@ -93,9 +86,6 @@ class Craftsman extends BaseEntity
      */
     public function getContactName(): string
     {
-        if ($this->contactName == "") {
-            dump($this);
-        }
         return $this->contactName;
     }
 
@@ -153,14 +143,6 @@ class Craftsman extends BaseEntity
     public function setEmail(string $email): void
     {
         $this->email = $email;
-    }
-
-    /**
-     * @return Issue[]|ArrayCollection
-     */
-    public function getMarkers()
-    {
-        return $this->markers;
     }
 
     /**

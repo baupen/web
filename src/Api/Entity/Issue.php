@@ -12,10 +12,8 @@ namespace App\Api\Entity;
 use App\Api\Entity\Base\BaseEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class Issue
+class Issue extends BaseEntity
 {
-    use BaseEntity;
-
     /**
      * @var int|null
      */

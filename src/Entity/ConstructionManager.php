@@ -60,19 +60,11 @@ class ConstructionManager extends BaseEntity implements UserInterface
     private $constructionSites;
 
     /**
-     * @var Issue[]|ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="Issue", mappedBy="registrationBy")
-     */
-    private $markers;
-
-    /**
      * constructor.
      */
     public function __construct()
     {
         $this->constructionSites = new ArrayCollection();
-        $this->markers = new ArrayCollection();
     }
 
     /**
@@ -129,14 +121,6 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public function getConstructionSites()
     {
         return $this->constructionSites;
-    }
-
-    /**
-     * @return Issue[]|ArrayCollection
-     */
-    public function getMarkers()
-    {
-        return $this->markers;
     }
 
     /**

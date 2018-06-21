@@ -11,10 +11,8 @@ namespace App\Api\Entity;
 
 use App\Api\Entity\Base\BaseEntity;
 
-class Map
+class Map extends BaseEntity
 {
-    use BaseEntity;
-
     /**
      * @var string
      */

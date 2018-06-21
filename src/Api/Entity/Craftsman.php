@@ -11,10 +11,8 @@ namespace App\Api\Entity;
 
 use App\Api\Entity\Base\BaseEntity;
 
-class Craftsman
+class Craftsman extends BaseEntity
 {
-    use BaseEntity;
-
     /**
      * @var string
      */

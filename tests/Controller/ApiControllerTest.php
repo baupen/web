@@ -8,9 +8,13 @@
 
 namespace App\Tests\Controller;
 
+use App\Api\Entity\Base\BaseEntity;
+use App\Api\Entity\Building;
+use App\Api\Entity\Craftsman;
 use App\Api\Entity\Issue;
 use App\Api\Entity\IssuePosition;
 use App\Api\Entity\IssueStatus;
+use App\Api\Entity\Map;
 use App\Api\Entity\ObjectMeta;
 use App\Api\Entity\User;
 use App\Api\Request\ReadRequest;
@@ -124,7 +128,7 @@ class ApiControllerTest extends FixturesTestCase
      *
      * @param Client $client
      * @param $authenticatedUser
-     * @return mixed|null
+     * @return ServerData
      */
     private function getServerEntities(Client $client, $authenticatedUser)
     {
@@ -168,13 +172,24 @@ class ApiControllerTest extends FixturesTestCase
         $this->assertTrue(count($readResponse->data->changedMaps) > 0);
         $this->assertTrue(count($readResponse->data->changedIssues) > 0);
 
-        $serverData = new \stdClass();
-        $serverData->buildings = $readResponse->data->changedBuildings;
-        $serverData->craftsmen = $readResponse->data->changedCraftsmen;
-        $serverData->maps = $readResponse->data->changedMaps;
-        $serverData->issues = $readResponse->data->changedIssues;
+        $buildings = [];
+        foreach ($readResponse->data->changedBuildings as $stdClass) {
+            $buildings[] = $serializer->deserialize(json_encode($stdClass), Building::class, "json");
+        }
+        $craftsmen = [];
+        foreach ($readResponse->data->changedCraftsmen as $stdClass) {
+            $craftsmen[] = $serializer->deserialize(json_encode($stdClass), Craftsman::class, "json");
+        }
+        $maps = [];
+        foreach ($readResponse->data->changedMaps as $stdClass) {
+            $maps[] = $serializer->deserialize(json_encode($stdClass), Map::class, "json");
+        }
+        $issues = [];
+        foreach ($readResponse->data->changedIssues as $stdClass) {
+            $issues[] = $serializer->deserialize(json_encode($stdClass), Issue::class, "json");
+        }
 
-        return $serverData;
+        return new ServerData($buildings, $maps, $craftsmen, $issues);
     }
 
     /**
@@ -209,21 +224,22 @@ class ApiControllerTest extends FixturesTestCase
         $readRequest->setUser($userMeta);
 
         //transform objects to meta object
-        $getMetas = function ($entities, $invalids = 1, $old = 0, $lost = 0) {
+        $getMetas = function (array $entities, $invalids = 1, $old = 0, $lost = 0) {
             //convert to object meta
             $metas = [];
             foreach ($entities as $entity) {
+                /** @var BaseEntity $entity */
                 if ($lost-- > 0) {
                     //skip to lose meta
                     continue;
                 }
                 $meta = new ObjectMeta();
-                $meta->setId($entity->meta->id);
+                $meta->setId($entity->getMeta()->getId());
                 if ($old-- > 0) {
                     //set to min datetime to force update
                     $meta->setLastChangeTime(((new \DateTime())->setTimestamp(0)->format("c")));
                 } else {
-                    $meta->setLastChangeTime($entity->meta->lastChangeTime);
+                    $meta->setLastChangeTime($entity->getMeta()->getLastChangeTime());
                 }
                 $metas[] = $meta;
             }
@@ -240,10 +256,10 @@ class ApiControllerTest extends FixturesTestCase
         };
 
         //set them in the request
-        $readRequest->setBuildings($getMetas($serverData->buildings));
-        $readRequest->setCraftsmen($getMetas($serverData->craftsmen));
-        $readRequest->setMaps($getMetas($serverData->maps));
-        $readRequest->setIssues($getMetas($serverData->issues));
+        $readRequest->setBuildings($getMetas($serverData->getBuildings()));
+        $readRequest->setCraftsmen($getMetas($serverData->getCraftsmen()));
+        $readRequest->setMaps($getMetas($serverData->getMaps()));
+        $readRequest->setIssues($getMetas($serverData->getIssues()));
 
         $response = $doRequest($readRequest);
         $readResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
@@ -261,10 +277,10 @@ class ApiControllerTest extends FixturesTestCase
 
         ### update, remove & add at the same time
         //set them in the request
-        $readRequest->setBuildings($getMetas($serverData->buildings, 1, 1, 1));
-        $readRequest->setCraftsmen($getMetas($serverData->craftsmen, 1, 1, 1));
-        $readRequest->setMaps($getMetas($serverData->maps, 1, 1, 1));
-        $readRequest->setIssues($getMetas($serverData->issues, 1, 1, 1));
+        $readRequest->setBuildings($getMetas($serverData->getBuildings(), 1, 1, 1));
+        $readRequest->setCraftsmen($getMetas($serverData->getCraftsmen(), 1, 1, 1));
+        $readRequest->setMaps($getMetas($serverData->getMaps(), 1, 1, 1));
+        $readRequest->setIssues($getMetas($serverData->getIssues(), 1, 1, 1));
 
         $response = $doRequest($readRequest);
         $readResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
@@ -312,7 +328,7 @@ class ApiControllerTest extends FixturesTestCase
         $issue->setIsMarked(true);
         $issue->setImageFilename($imageFilename);
         $issue->setDescription("description");
-        $issue->setMap($serverData->maps[0]->meta->id);
+        $issue->setMap($serverData->getMaps()[0]->getMeta()->getId());
 
         $issue->setStatus(new IssueStatus());
 
@@ -408,12 +424,12 @@ class ApiControllerTest extends FixturesTestCase
         $imageFilename = $this->getNewGuid() . ".jpg";
 
         /** @var Issue $issue */
-        $issue = $serializer->deserialize(json_encode($serverData->issues[0]), Issue::class, "json");
+        $issue = $serverData->getIssues()[0];
         $issue->setWasAddedWithClient(false);
         $issue->setIsMarked(false);
         $issue->setImageFilename($imageFilename);
         $issue->setDescription("description 2");
-        $issue->setMap($serverData->maps[0]->meta->id);
+        $issue->setMap($serverData->getMaps()[0]->getMeta()->getId());
 
         $issue->setStatus(new IssueStatus());
 
@@ -468,7 +484,7 @@ class ApiControllerTest extends FixturesTestCase
         };
 
         $serverData = $this->getServerEntities($client, $user);
-        $issue = $serverData->issues[0];
+        $issue = $serverData->getIssues()[0];
 
         $filePath = __DIR__ . "/../Files/sample.jpg";
         $copyPath = __DIR__ . "/../Files/sample_2.jpg";
@@ -483,12 +499,11 @@ class ApiControllerTest extends FixturesTestCase
         $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
 
         //check response issue updated
-        $this->verifyIssue($issueResponse->issue, $issue);
-
+        $this->verifyIssue($issueResponse->data->issue, $issue);
+        //refresh issue version
+        $issue = $serializer->deserialize(json_encode($issueResponse->data->issue), Issue::class, "json");
 
         $client = static::createClient();
-        $user = $this->getAuthenticatedUser($client);
-        $serializer = $client->getContainer()->get("serializer");
         $doRequest = function (ObjectMeta $objectMeta) use ($client, $user, $serializer) {
             $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($objectMeta, "json") . '}';
             $client->request(
@@ -503,11 +518,46 @@ class ApiControllerTest extends FixturesTestCase
             return $client->getResponse();
         };
 
-        $issueMeta = new ObjectMeta();
-        $issueMeta->setId($issue->id);
-        $issueMeta->setLastChangeTime($issue->lastChangeTime);
-        $response = $doRequest($issueMeta);
+        $response = $doRequest($issue->getMeta());
         $this->assertInstanceOf(BinaryFileResponse::class, $response);
 
+        //test building image download
+        $client = static::createClient();
+        $doRequest = function (ObjectMeta $objectMeta) use ($client, $user, $serializer) {
+            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "building":' . $serializer->serialize($objectMeta, "json") . '}';
+            $client->request(
+                'POST',
+                '/api/file/download',
+                [],
+                [],
+                ["CONTENT_TYPE" => "application/json"],
+                $json
+            );
+
+            return $client->getResponse();
+        };
+
+        $response = $doRequest($serverData->getBuildings()[0]->getMeta());
+        dump($response);
+        $this->assertInstanceOf(BinaryFileResponse::class, $response);
+
+        //test map download
+        $client = static::createClient();
+        $doRequest = function (ObjectMeta $objectMeta) use ($client, $user, $serializer) {
+            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "map":' . $serializer->serialize($objectMeta, "json") . '}';
+            $client->request(
+                'POST',
+                '/api/file/download',
+                [],
+                [],
+                ["CONTENT_TYPE" => "application/json"],
+                $json
+            );
+
+            return $client->getResponse();
+        };
+
+        $response = $doRequest($serverData->getMaps()[0]->getMeta());
+        $this->assertInstanceOf(BinaryFileResponse::class, $response);
     }
 }

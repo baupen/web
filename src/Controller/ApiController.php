@@ -11,8 +11,6 @@
 
 namespace App\Controller;
 
-
-use App\Api\Entity\Building;
 use App\Api\Entity\ObjectMeta;
 use App\Api\Request\DownloadFileRequest;
 use App\Api\Request\IssueActionRequest;
@@ -221,7 +219,7 @@ class ApiController extends BaseDoctrineController
                 if ($realMap->getLastChangedAt()->format("c") != $downloadFileRequest->getMap()->getLastChangeTime()) {
                     return $this->fail(static::INVALID_TIMESTAMP);
                 }
-                return $this->file($this->getParameter("PUBLIC_DIR") . "/" . $realMap->getFilename());
+                return $this->file($this->getParameter("PUBLIC_DIR") . "/" . $realMap->getFilePath());
             } else {
                 return $this->fail(static::GUID_NOT_FOUND);
             }
@@ -232,18 +230,18 @@ class ApiController extends BaseDoctrineController
                 if ($realIssue->getLastChangedAt()->format("c") != $downloadFileRequest->getIssue()->getLastChangeTime()) {
                     return $this->fail(static::INVALID_TIMESTAMP);
                 }
-                return $this->file($this->getParameter("PUBLIC_DIR") . "/" . $realIssue->getImageFilename());
+                return $this->file($this->getParameter("PUBLIC_DIR") . "/" . $realIssue->getImageFilePath());
             } else {
                 return $this->fail(static::GUID_NOT_FOUND);
             }
         } else if ($downloadFileRequest->getBuilding() != null) {
             /** @var ConstructionSite $realBuilding */
-            $realBuilding = $this->getDoctrine()->getRepository(Building::class)->find($downloadFileRequest->getBuilding()->getId());
+            $realBuilding = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($downloadFileRequest->getBuilding()->getId());
             if ($realBuilding != null && $realBuilding->getConstructionManagers()->contains($constructionManager)) {
                 if ($realBuilding->getLastChangedAt()->format("c") != $downloadFileRequest->getBuilding()->getLastChangeTime()) {
                     return $this->fail(static::INVALID_TIMESTAMP);
                 }
-                return $this->file($this->getParameter("PUBLIC_DIR") . "/" . $realBuilding->getImageFilename());
+                return $this->file($this->getParameter("PUBLIC_DIR") . "/" . $realBuilding->getImageFilePath());
             } else {
                 return $this->fail(static::GUID_NOT_FOUND);
             }
@@ -610,7 +608,7 @@ WHERE cscm.construction_manager_id = :id";
         //handle file uploads
         foreach ($request->files->all() as $key => $file) {
             /** @var UploadedFile $file */
-            $targetFolder =  $this->getParameter("PUBLIC_DIR") . "/" . dirname($issue->getImageFilePath());
+            $targetFolder = $this->getParameter("PUBLIC_DIR") . "/" . dirname($issue->getImageFilePath());
             if (!file_exists($targetFolder)) {
                 mkdir($targetFolder, 0777, true);
             }

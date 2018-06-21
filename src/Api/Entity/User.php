@@ -11,10 +11,8 @@ namespace App\Api\Entity;
 
 use App\Api\Entity\Base\BaseEntity;
 
-class User
+class User extends BaseEntity
 {
-    use BaseEntity;
-
     /**
      * @var string
      */
