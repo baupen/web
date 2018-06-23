@@ -63,8 +63,8 @@
     yargs "^8.0.1"
 
 "@types/node@*":
-  version "10.3.4"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.4.tgz#c74e8aec19e555df44609b8057311052a2c84d9e"
+  version "10.3.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.5.tgz#8423cdf6e6fb83433e489900d7600d3b61c8260c"
 
 "@types/tapable@^0":
   version "0.2.5"
@@ -1538,15 +1538,15 @@ dashdash@^1.12.0:
     assert-plus "^1.0.0"
 
 datatables.net-bs4@^1.10:
-  version "1.10.18"
-  resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.10.18.tgz#cd44031efb0af62b7b63c41647ffc45baacda436"
+  version "1.10.19"
+  resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.10.19.tgz#0608dff22008cf3c7b8a68b1bc702ed255b404fb"
   dependencies:
-    datatables.net "1.10.18"
+    datatables.net "1.10.19"
     jquery ">=1.7"
 
-datatables.net@1.10.18:
-  version "1.10.18"
-  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.10.18.tgz#b6f045aa533101bcd33714e5338da8f905d3ef09"
+datatables.net@1.10.19:
+  version "1.10.19"
+  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.10.19.tgz#97a1ed41c85e62d61040603481b59790a172dd1f"
   dependencies:
     jquery ">=1.7"
 
@@ -1748,8 +1748,8 @@ ekko-lightbox@5.3:
   resolved "https://registry.yarnpkg.com/ekko-lightbox/-/ekko-lightbox-5.3.0.tgz#fbfcd9df93a8d1cdbf8770adc8c05aaac4d24f56"
 
 electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.47:
-  version "1.3.49"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.49.tgz#651384b0d81f078a96639b2b36975141b7915004"
+  version "1.3.50"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.50.tgz#7438b76f92b41b919f3fbdd350fbd0757dacddf7"
 
 elliptic@^6.0.0:
   version "6.4.0"
@@ -4194,8 +4194,8 @@ postcss@^5.0.10, postcss@^5.0.11, postcss@^5.0.12, postcss@^5.0.13, postcss@^5.0
     supports-color "^3.2.3"
 
 postcss@^6.0.1:
-  version "6.0.22"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-6.0.22.tgz#e23b78314905c3b90cbd61702121e7a78848f2a3"
+  version "6.0.23"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-6.0.23.tgz#61c82cc328ac60e677645f979054eb98bc0e3324"
   dependencies:
     chalk "^2.4.1"
     source-map "^0.6.1"

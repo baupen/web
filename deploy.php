@@ -66,7 +66,8 @@ task('deploy:refresh_symlink', function () {
 desc('Loading fixtures');
 task('database:fixtures', function () {
     if (get("branch") == "dev") {
-        run('{{bin/console}} doctrine:fixtures:load -q');
+        run('cd {{release_path}} && {{bin/composer}} install --no-scripts --optimize-autoloader');
+        run('{{bin/console}} doctrine:fixtures:load -q --env=dev');
         writeln("fixtures executed");
     }
 });
@@ -76,7 +77,6 @@ task('deploy:configure', function () {
     //fixtures deploy if on dev branch
     if (get("branch") == "dev") {
         writeln("[WARNING] deploying dev branch; executing fixtures. STOP DEPLOYING IMMEDIATELY IF YOU DO NOT EXPECT / UNDERSTAND THIS MESSAGE.");
-        set('composer_options', '{{composer_action}} --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts');
     }
 });
 

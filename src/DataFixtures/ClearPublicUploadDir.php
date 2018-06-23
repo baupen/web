@@ -29,19 +29,15 @@ class ClearPublicUploadDir extends BaseFixture
     {
         $dir = __DIR__ . "/../../public/upload";
         if (is_dir($dir)) {
-            $this->deleteDirectory($dir);
+            $this->deleteDirectoryContents($dir, true);
         }
-
-        //recreate dir & gitignore
-        mkdir($dir);
-        file_put_contents($dir . "/" . ".gitignore", "**/**");
     }
 
     /**
      * @param $dir
      * @return bool
      */
-    private function deleteDirectory($dir)
+    private function deleteDirectoryContents($dir, $isRoot = false)
     {
         if (!file_exists($dir)) {
             return true;
@@ -56,13 +52,16 @@ class ClearPublicUploadDir extends BaseFixture
                 continue;
             }
 
-            if (!$this->deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
+            if (!$this->deleteDirectoryContents($dir . DIRECTORY_SEPARATOR . $item)) {
                 return false;
             }
 
         }
-
-        return rmdir($dir);
+        
+        if (!$isRoot) {
+            return rmdir($dir);
+        }
+        return true;
     }
 
     public function getOrder()
