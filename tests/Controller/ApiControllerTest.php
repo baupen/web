@@ -89,13 +89,13 @@ class ApiControllerTest extends FixturesTestCase
             $failed = json_decode($response->getContent());
             $this->assertEquals($apiStatus, $failed->status, $response->getContent());
             $this->assertEquals($message, $failed->message);
-            $this->assertEquals(200, $response->getStatusCode());
+            $this->assertEquals(400, $response->getStatusCode());
             return $failed;
         } else if ($apiStatus == ApiStatus::ERROR) {
             $error = json_decode($response->getContent());
             $this->assertEquals($apiStatus, $error->status);
             $this->assertEquals($message, $error->message);
-            $this->assertNotEquals(200, $response->getStatusCode());
+            $this->assertNotEquals(500, $response->getStatusCode());
             return $error;
         }
         return null;
@@ -326,7 +326,6 @@ class ApiControllerTest extends FixturesTestCase
         $issue = new Issue();
         $issue->setWasAddedWithClient(true);
         $issue->setIsMarked(true);
-        $issue->setImageFilename($imageFilename);
         $issue->setDescription("description");
         $issue->setMap($serverData->getMaps()[0]->getMeta()->getId());
 
@@ -354,7 +353,7 @@ class ApiControllerTest extends FixturesTestCase
         $this->verifyIssue($checkIssue, $issue);
 
         $response = $doRequest($issue);
-        $this->checkResponse($response, ApiStatus::FAIL, ApiController::GUID_ALREADY_IN_USE);
+        $this->checkResponse($response, ApiStatus::FAIL, ApiController::ISSUE_GUID_ALREADY_IN_USE);
 
         //check issue without position
         $issue->setPosition(null);
@@ -427,7 +426,6 @@ class ApiControllerTest extends FixturesTestCase
         $issue = $serverData->getIssues()[0];
         $issue->setWasAddedWithClient(false);
         $issue->setIsMarked(false);
-        $issue->setImageFilename($imageFilename);
         $issue->setDescription("description 2");
         $issue->setMap($serverData->getMaps()[0]->getMeta()->getId());
 
@@ -452,7 +450,7 @@ class ApiControllerTest extends FixturesTestCase
         //check with non-existing
         $issue->getMeta()->setId($this->getNewGuid());
         $response = $doRequest($issue);
-        $this->checkResponse($response, ApiStatus::FAIL, ApiController::GUID_NOT_FOUND);
+        $this->checkResponse($response, ApiStatus::FAIL, ApiController::ISSUE_NOT_FOUND);
     }
 
     private function getNewGuid()
@@ -501,6 +499,7 @@ class ApiControllerTest extends FixturesTestCase
             'upload.jpg',
             'image/jpeg'
         );
+        $issue->setImageFilename(Uuid::uuid4()->toString() . ".jpg");
         $response = $doRequest($issue, $file);
         $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
 
@@ -609,19 +608,19 @@ class ApiControllerTest extends FixturesTestCase
         $response = $doRequest($newIssues[0]->getMeta()->getId(), "delete");
         $this->checkResponse($response, ApiStatus::SUCCESSFUL);
         $response = $doRequest($newIssues[0]->getMeta()->getId(), "delete");
-        $this->checkResponse($response, ApiStatus::FAIL, ApiController::GUID_NOT_FOUND);
+        $this->checkResponse($response, ApiStatus::FAIL, ApiController::ISSUE_NOT_FOUND);
 
         //review registered
         $response = $doRequest($registeredIssues[0]->getMeta()->getId(), "review");
         $this->checkResponse($response, ApiStatus::SUCCESSFUL);
         $response = $doRequest($registeredIssues[0]->getMeta()->getId(), "review");
-        $this->checkResponse($response, ApiStatus::FAIL, ApiController::INVALID_ACTION);
+        $this->checkResponse($response, ApiStatus::FAIL, ApiController::ISSUE_ACTION_NOT_ALLOWED);
 
         //review responded
         $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "review");
         $this->checkResponse($response, ApiStatus::SUCCESSFUL);
         $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "review");
-        $this->checkResponse($response, ApiStatus::FAIL, ApiController::INVALID_ACTION);
+        $this->checkResponse($response, ApiStatus::FAIL, ApiController::ISSUE_ACTION_NOT_ALLOWED);
 
         //revert reviewed
         $response = $doRequest($reviewedIssues[0]->getMeta()->getId(), "revert");
@@ -633,7 +632,7 @@ class ApiControllerTest extends FixturesTestCase
         //revert twice because of earlier actions
         $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");
         $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");
-        $this->checkResponse($response, ApiStatus::FAIL, ApiController::INVALID_ACTION);
+        $this->checkResponse($response, ApiStatus::FAIL, ApiController::ISSUE_ACTION_NOT_ALLOWED);
     }
 
     /**

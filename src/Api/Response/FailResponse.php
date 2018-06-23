@@ -20,8 +20,8 @@ use App\Enum\ApiStatus;
  */
 class FailResponse extends AbstractMessageResponse
 {
-    public function __construct(string $message)
+    public function __construct(string $message, int $errorCode)
     {
-        parent::__construct(ApiStatus::FAIL, $message);
+        parent::__construct(ApiStatus::FAIL, $message, $errorCode);
     }
 }

@@ -21,6 +21,7 @@ use App\Api\Response\Data\EmptyData;
 use App\Api\Response\Data\IssueData;
 use App\Api\Response\Data\LoginData;
 use App\Api\Response\Data\ReadData;
+use App\Api\Response\ErrorResponse;
 use App\Api\Response\FailResponse;
 use App\Api\Response\SuccessfulResponse;
 use App\Api\Transformer\IssueTransformer;
@@ -34,7 +35,9 @@ use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\TimeTrait;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Psr\Log\LoggerInterface;
@@ -55,16 +58,58 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class ApiController extends BaseDoctrineController
 {
     const EMPTY_REQUEST = "request empty";
-    const INVALID_REQUEST = "invalid request";
+    const REQUEST_VALIDATION_FAILED = "request validation failed, not all required fields are set";
+
     const UNKNOWN_USERNAME = "unknown username";
     const WRONG_PASSWORD = "wrong password";
-    const GUID_ALREADY_IN_USE = "guid already in use";
-    const GUID_NOT_FOUND = "guid not found";
-    const INVALID_ENTITY = "invalid entity";
-    const INVALID_ACTION = "invalid action";
-    const INVALID_FILE = "invalid file";
-    const INVALID_TIMESTAMP = "invalid timestamp";
     const AUTHENTICATION_TOKEN_INVALID = "authentication token invalid";
+
+    const ISSUE_GUID_ALREADY_IN_USE = "guid already in use";
+
+    const ISSUE_NOT_FOUND = "issue was not found";
+    const ISSUE_ACCESS_DENIED = "issue access not allowed";
+    const ISSUE_ACTION_NOT_ALLOWED = "this action can not be executed on the entity";
+
+    const MAP_NOT_FOUND = "map was not found";
+    const MAP_ACCESS_DENIED = "map access not allowed";
+
+    const CRAFTSMAN_NOT_FOUND = "craftsman was not found";
+    const CRAFTSMAN_ACCESS_DENIED = "craftsman access not allowed";
+
+    const MAP_CRAFTSMAN_NOT_ON_SAME_CONSTRUCTION_SITE = "the craftsman does not work on the same construction site as the assigned map";
+
+    const ENTITY_NOT_FOUND = "entity was not found";
+    const ENTITY_ACCESS_DENIED = "you are not allowed to access this entity";
+    const ENTITY_NO_DOWNLOADABLE_FILE = "entity has no file to download";
+    const ENTITY_FILE_NOT_FOUND = "the server could not find the file of the entity";
+
+    const ISSUE_FILE_UPLOAD_FAILED = "the uploaded file could not be processes";
+    const ISSUE_NO_FILE_TO_UPLOAD = "no file could be found in the request, but one was expected";
+    const ISSUE_NO_FILE_UPLOAD_EXPECTED = "a file was uploaded, but not specified in the issue";
+    const INVALID_TIMESTAMP = "invalid timestamp";
+
+    private function errorMessageToStatusCode($message)
+    {
+        switch ($message) {
+            case static::EMPTY_REQUEST:
+            case static::REQUEST_VALIDATION_FAILED:
+            case static::ISSUE_FILE_UPLOAD_FAILED:
+                return 1;
+            case static::AUTHENTICATION_TOKEN_INVALID:
+                return 2;
+            case static::UNKNOWN_USERNAME:
+                return 100;
+            case static::WRONG_PASSWORD:
+                return 101;
+            case static::ISSUE_GUID_ALREADY_IN_USE:
+                return 200;
+            case static::ISSUE_NOT_FOUND:
+                return 201;
+            case static::ISSUE_ACTION_NOT_ALLOWED:
+                return 203;
+        }
+        return 202;
+    }
 
     /**
      * inject the translator service
@@ -98,7 +143,7 @@ class ApiController extends BaseDoctrineController
         // check all properties defined
         $errors = $validator->validate($loginRequest);
         if (count($errors) > 0) {
-            return $this->fail(static::INVALID_REQUEST);
+            return $this->fail(static::REQUEST_VALIDATION_FAILED);
         }
 
         //check username & password
@@ -145,7 +190,7 @@ class ApiController extends BaseDoctrineController
         // check all properties defined
         $errors = $validator->validate($readRequest);
         if (count($errors) > 0) {
-            return $this->fail(static::INVALID_REQUEST);
+            return $this->fail(static::REQUEST_VALIDATION_FAILED);
         }
 
         //check auth token
@@ -198,7 +243,7 @@ class ApiController extends BaseDoctrineController
         // check all properties defined
         $errors = $validator->validate($downloadFileRequest);
         if (count($errors) > 0) {
-            return $this->fail(static::INVALID_REQUEST);
+            return $this->fail(static::REQUEST_VALIDATION_FAILED);
         }
 
         //check auth token
@@ -208,58 +253,81 @@ class ApiController extends BaseDoctrineController
             return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
         }
 
+        $downloadFile = function ($repository, $objectMeta, $verifyAccess, $accessFilePath) {
+            /** @var ObjectMeta $objectMeta */
+            /** @var EntityRepository $repository */
+            $entity = $repository->find($objectMeta->getId());
+
+            /** @var TimeTrait $entity */
+            if ($entity == null) {
+                return $this->fail(static::ENTITY_NO_DOWNLOADABLE_FILE);
+            }
+
+            if (!$verifyAccess($entity)) {
+                return $this->fail(static::ENTITY_ACCESS_DENIED);
+            }
+
+            if ($entity->getLastChangedAt()->format("c") != $objectMeta->getLastChangeTime()) {
+                return $this->fail(static::INVALID_TIMESTAMP);
+            }
+
+            $filePath = $accessFilePath($entity);
+            if ($filePath == null) {
+                return $this->fail(static::ENTITY_ACCESS_DENIED);
+            }
+
+            $filePath = $this->getParameter("PUBLIC_DIR") . "/" . $filePath;
+            if (!file_exists($filePath)) {
+                return $this->fail(static::ENTITY_FILE_NOT_FOUND);
+            }
+
+            return $this->file($filePath);
+        };
+
         //get file
         if ($downloadFileRequest->getMap() != null) {
-            /** @var Map $realMap */
-            $realMap = $this->getDoctrine()->getRepository(Map::class)->find($downloadFileRequest->getMap()->getId());
-            if ($realMap != null && $realMap->getConstructionSite()->getConstructionManagers()->contains($constructionManager)) {
-                if ($realMap->getLastChangedAt()->format("c") != $downloadFileRequest->getMap()->getLastChangeTime()) {
-                    return $this->fail(static::INVALID_TIMESTAMP);
+            return $downloadFile(
+                $this->getDoctrine()->getRepository(Map::class),
+                $downloadFileRequest->getMap(),
+                function ($entity) use ($constructionManager) {
+                    /** @var Map $entity */
+                    return $entity->getConstructionSite()->getConstructionManagers()->contains($constructionManager);
+                },
+                function ($entity) {
+                    /** @var Map $entity */
+                    return $entity->getFilePath();
                 }
-                return $this->file($this->getParameter("PUBLIC_DIR") . "/" . $realMap->getFilePath());
-            } else {
-                return $this->fail(static::GUID_NOT_FOUND);
-            }
+            );
         } else if ($downloadFileRequest->getIssue() != null) {
-            /** @var Issue $realIssue */
-            $realIssue = $this->getDoctrine()->getRepository(Issue::class)->find($downloadFileRequest->getIssue()->getId());
-            if ($realIssue != null && $realIssue->getMap()->getConstructionSite()->getConstructionManagers()->contains($constructionManager)) {
-                if ($realIssue->getLastChangedAt()->format("c") != $downloadFileRequest->getIssue()->getLastChangeTime()) {
-                    return $this->fail(static::INVALID_TIMESTAMP);
+            return $downloadFile(
+                $this->getDoctrine()->getRepository(Issue::class),
+                $downloadFileRequest->getIssue(),
+                function ($entity) use ($constructionManager) {
+                    /** @var Issue $entity */
+                    return $entity->getMap()->getConstructionSite()->getConstructionManagers()->contains($constructionManager);
+                },
+                function ($entity) {
+                    /** @var Issue $entity */
+                    return $entity->getImageFilePath();
                 }
-                return $this->file($this->getParameter("PUBLIC_DIR") . "/" . $realIssue->getImageFilePath());
-            } else {
-                return $this->fail(static::GUID_NOT_FOUND);
-            }
+            );
         } else if ($downloadFileRequest->getBuilding() != null) {
-            /** @var ConstructionSite $realBuilding */
-            $realBuilding = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($downloadFileRequest->getBuilding()->getId());
-            if ($realBuilding != null && $realBuilding->getConstructionManagers()->contains($constructionManager)) {
-                if ($realBuilding->getLastChangedAt()->format("c") != $downloadFileRequest->getBuilding()->getLastChangeTime()) {
-                    return $this->fail(static::INVALID_TIMESTAMP);
+            return $downloadFile(
+                $this->getDoctrine()->getRepository(ConstructionSite::class),
+                $downloadFileRequest->getBuilding(),
+                function ($entity) use ($constructionManager) {
+                    /** @var ConstructionSite $entity */
+                    return $entity->getConstructionManagers()->contains($constructionManager);
+                },
+                function ($entity) {
+                    /** @var ConstructionSite $entity */
+                    return $entity->getImageFilePath();
                 }
-                return $this->file($this->getParameter("PUBLIC_DIR") . "/" . $realBuilding->getImageFilePath());
-            } else {
-                return $this->fail(static::GUID_NOT_FOUND);
-            }
+            );
         }
 
         //construct answer
-        return $this->fail(static::INVALID_REQUEST);
-    }
-
-
-    /**
-     * @param ObjectMeta[] $objectMetas
-     * @return array
-     */
-    private function objectMetaToDictionary(array $objectMetas)
-    {
-        $res = [];
-        foreach ($objectMetas as $objectMeta) {
-            $res[$objectMeta["id"]] = $objectMeta["lastChangeTime"];
-        }
-        return $res;
+        return $this->fail(static::REQUEST_VALIDATION_FAILED);
     }
 
     /**
@@ -456,8 +524,12 @@ WHERE cscm.construction_manager_id = :id";
      */
     private function filterIds($requestObjectMeta, $dbEntities, &$allValidIds, &$removeIds, &$knownIds)
     {
+        $removeIds = [];
+        foreach ($requestObjectMeta as $objectMeta) {
+            $removeIds[$objectMeta["id"]] = $objectMeta["lastChangeTime"];
+        }
+
         $allValidIds = [];
-        $removeIds = $this->objectMetaToDictionary($requestObjectMeta);
         $knownIds = [];
         foreach ($dbEntities as $validConstructionSite) {
             $validConstructionSiteId = $validConstructionSite->getId();
@@ -566,7 +638,7 @@ WHERE cscm.construction_manager_id = :id";
         // check all properties defined
         $errors = $validator->validate($issueModifyRequest);
         if (count($errors) > 0) {
-            return $this->fail(static::INVALID_REQUEST);
+            return $this->fail(static::REQUEST_VALIDATION_FAILED);
         }
 
         //check auth token
@@ -577,33 +649,70 @@ WHERE cscm.construction_manager_id = :id";
         }
 
         $entity = null;
+        $newImageExpected = $issueModifyRequest->getIssue()->getImageFilename() != "";
         if ($mode == "create") {
             //ensure GUID not in use already
             $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
             if ($existing != null) {
-                return $this->fail(static::GUID_ALREADY_IN_USE);
+                return $this->fail(static::ISSUE_GUID_ALREADY_IN_USE);
             }
             $entity = new Issue();
         } else if ($mode == "update") {
             //ensure issue exists
             $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
             if ($existing == null) {
-                return $this->fail(static::GUID_NOT_FOUND);
+                return $this->fail(static::ISSUE_NOT_FOUND);
             }
             $entity = $existing;
+            $newImageExpected &= $issueModifyRequest->getIssue()->getImageFilename() != $existing->getImageFilename();
         } else {
             throw new \InvalidArgumentException("mode must be create or update");
         }
 
-        //transform to entity & persist
+        //transform to entity
         $issue = $issueTransformer->fromApi($issueModifyRequest->getIssue(), $entity);
-        if ($issue == null) {
-            return $this->fail(static::INVALID_ENTITY);
-        }
         $issue->setUploadBy($constructionManager);
         $issue->setUploadedAt(new \DateTime());
 
+        //get map & check access
+        if ($issueModifyRequest->getIssue()->getMap() !== null) {
+            /** @var Map $map */
+            $map = $this->getDoctrine()->getRepository(Map::class)->findOneBy(["id" => $issueModifyRequest->getIssue()->getMap()]);
+            if ($map == null) {
+                return $this->fail(static::MAP_NOT_FOUND);
+            }
+            if (!$map->getConstructionSite()->getConstructionManagers()->contains($constructionManager)) {
+                return $this->fail(static::MAP_ACCESS_DENIED);
+            }
+            $issue->setMap($map);
+        }
+
+        //get craftsmen & check access
+        if ($issueModifyRequest->getIssue()->getCraftsman() != null) {
+            /** @var Craftsman $craftsman */
+            $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(["id" => $issueModifyRequest->getIssue()->getCraftsman()]);
+            if ($craftsman == null) {
+                return $this->fail(static::CRAFTSMAN_NOT_FOUND);
+            }
+            if (!$craftsman->getConstructionSite()->getConstructionManagers()->contains($constructionManager)) {
+                return $this->fail(static::CRAFTSMAN_ACCESS_DENIED);
+            }
+            $issue->setCraftsman($craftsman);
+        }
+
+        //ensure craftsman & map on same construction site
+        if ($issue->getMap() != null && $issue->getCraftsman() != null &&
+            $issue->getMap()->getConstructionSite()->getId() !== $issue->getCraftsman()->getConstructionSite()->getId()) {
+            return $this->fail(static::MAP_CRAFTSMAN_NOT_ON_SAME_CONSTRUCTION_SITE);
+        }
+
         //handle file uploads
+        if ($newImageExpected && count($request->files->all()) != 1) {
+            return $this->fail(static::ISSUE_NO_FILE_TO_UPLOAD);
+        }
+        if (!$newImageExpected && count($request->files->all()) != 0) {
+            return $this->fail(static::ISSUE_NO_FILE_UPLOAD_EXPECTED);
+        }
         foreach ($request->files->all() as $key => $file) {
             /** @var UploadedFile $file */
             $targetFolder = $this->getParameter("PUBLIC_DIR") . "/" . dirname($issue->getImageFilePath());
@@ -611,17 +720,21 @@ WHERE cscm.construction_manager_id = :id";
                 mkdir($targetFolder, 0777, true);
             }
             if (!$file->move($targetFolder, $issue->getImageFilename())) {
-                return $this->fail(static::INVALID_FILE);
+                return $this->fail(static::ISSUE_FILE_UPLOAD_FAILED);
             }
         }
 
         if ($mode == "create") {
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
+
+            //deactivate guid generator so we can use the one the client has sent us
             $metadata = $em->getClassMetadata(get_class($issue));
             $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
             $metadata->setIdGenerator(new \Doctrine\ORM\Id\AssignedGenerator());
             $issue->setId($issueModifyRequest->getIssue()->getMeta()->getId());
+
+            //persist to db
             $em->persist($issue);
             $em->flush();
         } else {
@@ -651,7 +764,7 @@ WHERE cscm.construction_manager_id = :id";
                     $this->fastRemove($issue);
                     return $this->success(new EmptyData());
                 } else {
-                    return $this->fail(static::INVALID_ACTION);
+                    return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
                 }
             });
     }
@@ -699,7 +812,7 @@ WHERE cscm.construction_manager_id = :id";
                     $this->fastSave($issue);
                     return true;
                 } else {
-                    return $this->fail(static::INVALID_ACTION);
+                    return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
                 }
             });
     }
@@ -727,12 +840,12 @@ WHERE cscm.construction_manager_id = :id";
                         $issue->setRespondedAt(null);
                         $issue->setResponseBy(null);
                     } else {
-                        return $this->fail(static::INVALID_ACTION);
+                        return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
                     }
                     $this->fastSave($issue);
                     return true;
                 } else {
-                    return $this->fail(static::INVALID_ACTION);
+                    return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
                 }
             });
     }
@@ -759,7 +872,7 @@ WHERE cscm.construction_manager_id = :id";
         // check all properties defined
         $errors = $validator->validate($issueActionRequest);
         if (count($errors) > 0) {
-            return $this->fail(static::INVALID_REQUEST);
+            return $this->fail(static::REQUEST_VALIDATION_FAILED);
         }
 
         //check auth token
@@ -770,9 +883,14 @@ WHERE cscm.construction_manager_id = :id";
         }
 
         //get issue
+        /** @var Issue $issue */
         $issue = $this->getDoctrine()->getRepository(Issue::class)->find($issueActionRequest->getIssueID());
         if ($issue == null) {
-            return $this->fail(static::GUID_NOT_FOUND);
+            return $this->fail(static::ISSUE_NOT_FOUND);
+        }
+        //ensure we are allowed to access this issue
+        if (!$issue->getMap()->getConstructionSite()->getConstructionManagers()->contains($constructionManager)) {
+            return $this->fail(static::ISSUE_ACCESS_DENIED);
         }
 
         //execute action
@@ -786,7 +904,21 @@ WHERE cscm.construction_manager_id = :id";
     }
 
     /**
-     * if request failed
+     * if request errored (server error)
+     *
+     * @param string $message
+     * @return Response
+     */
+    protected function error(string $message)
+    {
+        $logger = $this->get("logger");
+        $request = $this->get("request_stack")->getCurrentRequest();
+        $logger->error("Api error " . ": " . $message . " for " . $request->getContent());
+        return $this->json(new ErrorResponse($message, $this->errorMessageToStatusCode($message)), Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * if request failed (client error)
      *
      * @param string $message
      * @return Response
@@ -796,16 +928,7 @@ WHERE cscm.construction_manager_id = :id";
         $logger = $this->get("logger");
         $request = $this->get("request_stack")->getCurrentRequest();
         $logger->error("Api fail " . ": " . $message . " for " . $request->getContent());
-        $code = Response::HTTP_OK;
-        switch ($message) {
-            case static::INVALID_REQUEST:
-                $code = Response::HTTP_BAD_REQUEST;
-                break;
-            case static::AUTHENTICATION_TOKEN_INVALID:
-                $code = Response::HTTP_UNAUTHORIZED;
-                break;
-        }
-        return $this->json(new FailResponse($message), $code);
+        return $this->json(new FailResponse($message, $this->errorMessageToStatusCode($message)), Response::HTTP_BAD_REQUEST);
     }
 
     /**

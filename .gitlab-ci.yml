@@ -9,11 +9,10 @@ cache:
 before_script:
 - cp phpunit.xml.dist phpunit.xml
 
-# install git, yarn
+# install git, yarn, nodejs, libmagickwand-dev (for imagick extension)
 - apt-get update -y
-- apt-get install -y gnupg git
 - curl -sL https://deb.nodesource.com/setup_10.x | bash -
-- apt-get install nodejs -y
+- apt-get install -y gnupg git nodejs libmagickwand-dev
 - npm install -g yarn
 
 # install & build frontend
@@ -29,7 +28,6 @@ before_script:
 - docker-php-ext-enable xdebug
 
 # install imagick
-- apt-get install -y libmagickwand-dev
 - pecl install imagick-3.4.3
 - docker-php-ext-enable imagick
 

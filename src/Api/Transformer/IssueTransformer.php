@@ -13,6 +13,7 @@ use App\Api\Entity\IssuePosition;
 use App\Api\Entity\IssueStatus;
 use App\Api\Entity\IssueStatusEvent;
 use App\Api\Transformer\Base\AbstractTransformer;
+use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Entity\Map;
@@ -43,21 +44,6 @@ class IssueTransformer extends AbstractTransformer
      */
     public function fromApi(\App\Api\Entity\Issue $issue, Issue $entity)
     {
-        $map = $this->doctrine->getRepository(Map::class)->findOneBy(["id" => $issue->getMap()]);
-        if ($map == null) {
-            return null;
-        }
-
-        $craftsman = null;
-        if ($issue->getCraftsman() != "") {
-            $craftsman = $this->doctrine->getRepository(Craftsman::class)->findOneBy(["id" => $issue->getCraftsman()]);
-            if ($craftsman == null) {
-                return null;
-            }
-        }
-
-        $entity->setMap($map);
-        $entity->setCraftsman($craftsman);
         $entity->setDescription($issue->getDescription());
         $entity->setImageFilename($issue->getImageFilename());
         $entity->setIsMarked($issue->getIsMarked());
@@ -91,7 +77,6 @@ class IssueTransformer extends AbstractTransformer
             $issuePosition->setX($entity->getPositionX());
             $issue->setPosition($issuePosition);
         }
-
 
         $issueStatus = new IssueStatus();
         if ($entity->getRegisteredAt() != null) {

@@ -1,6 +1,6 @@
 {
-  "name": "famoser/symfony-template",
-  "description": "a ready-to-use symfony template",
+  "name": "famoser/app.mangel.io",
+  "description": "issue management for construction managers",
   "license": "MIT",
   "require": {
     "php": "^7.1",
