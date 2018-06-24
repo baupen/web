@@ -22,7 +22,7 @@ class SuccessfulResponse extends AbstractResponse
 {
     public function __construct($data)
     {
-        parent::__construct(ApiStatus::SUCCESSFUL);
+        parent::__construct(ApiStatus::SUCCESS);
         $this->data = $data;
     }
 

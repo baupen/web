@@ -61,7 +61,7 @@ class ApiControllerTest extends FixturesTestCase
         $this->checkResponse($response, ApiStatus::FAIL, ApiController::WRONG_PASSWORD);
 
         $response = $doRequest("f@mangel.io", "asdf");
-        $loginResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $loginResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($loginResponse->data);
         $this->assertNotNull($loginResponse->data->user);
@@ -80,7 +80,7 @@ class ApiControllerTest extends FixturesTestCase
      */
     private function checkResponse(Response $response, $apiStatus, $message = "")
     {
-        if ($apiStatus == ApiStatus::SUCCESSFUL) {
+        if ($apiStatus == ApiStatus::SUCCESS) {
             $successful = json_decode($response->getContent());
             $this->assertEquals($apiStatus, $successful->status, $response->getContent());
             $this->assertEquals(200, $response->getStatusCode());
@@ -135,6 +135,7 @@ class ApiControllerTest extends FixturesTestCase
         $serializer = $client->getContainer()->get("serializer");
         $doRequest = function (ReadRequest $readRequest) use ($client, $serializer) {
             $json = $serializer->serialize($readRequest, "json");
+            dump($json);
             $client->request(
                 'POST',
                 '/api/read',
@@ -162,10 +163,10 @@ class ApiControllerTest extends FixturesTestCase
         $readRequest->setMaps([]);
 
         $response = $doRequest($readRequest);
-        $readResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $readResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($readResponse->data);
-        $this->assertNotNull($readResponse->data->user);
+        $this->assertNotNull($readResponse->data->changedUser);
         $this->assertNotNull($readResponse->data->changedBuildings);
         $this->assertTrue(count($readResponse->data->changedBuildings) > 0);
         $this->assertTrue(count($readResponse->data->changedCraftsmen) > 0);
@@ -188,6 +189,8 @@ class ApiControllerTest extends FixturesTestCase
         foreach ($readResponse->data->changedIssues as $stdClass) {
             $issues[] = $serializer->deserialize(json_encode($stdClass), Issue::class, "json");
         }
+
+        $this->assertNotNull($readResponse->data->changedBuildings[0]->address);
 
         return new ServerData($buildings, $maps, $craftsmen, $issues);
     }
@@ -262,10 +265,10 @@ class ApiControllerTest extends FixturesTestCase
         $readRequest->setIssues($getMetas($serverData->getIssues()));
 
         $response = $doRequest($readRequest);
-        $readResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $readResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($readResponse->data);
-        $this->assertNull($readResponse->data->user);
+        $this->assertNull($readResponse->data->changedUser);
         $this->assertEmpty($readResponse->data->changedBuildings);
         $this->assertEmpty($readResponse->data->changedCraftsmen);
         $this->assertEmpty($readResponse->data->changedMaps);
@@ -283,10 +286,10 @@ class ApiControllerTest extends FixturesTestCase
         $readRequest->setIssues($getMetas($serverData->getIssues(), 1, 1, 1));
 
         $response = $doRequest($readRequest);
-        $readResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $readResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($readResponse->data);
-        $this->assertNull($readResponse->data->user);
+        $this->assertNull($readResponse->data->changedUser);
         $this->assertCount(2, $readResponse->data->changedBuildings);
         $this->assertCount(2, $readResponse->data->changedCraftsmen);
         $this->assertCount(2, $readResponse->data->changedMaps);
@@ -343,7 +346,7 @@ class ApiControllerTest extends FixturesTestCase
         $issue->setPosition($issuePosition);
 
         $response = $doRequest($issue);
-        $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         //check response has issue
         $this->assertNotNull($issueResponse->data);
@@ -359,7 +362,7 @@ class ApiControllerTest extends FixturesTestCase
         $issue->setPosition(null);
         $issue->getMeta()->setId($this->getNewGuid());
         $response = $doRequest($issue);
-        $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
         $this->verifyIssue($issueResponse->data->issue, $issue);
     }
 
@@ -438,7 +441,7 @@ class ApiControllerTest extends FixturesTestCase
         $issue->setPosition($issuePosition);
 
         $response = $doRequest($issue);
-        $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         //check response has issue
         $this->assertNotNull($issueResponse->data);
@@ -501,7 +504,7 @@ class ApiControllerTest extends FixturesTestCase
         );
         $issue->setImageFilename(Uuid::uuid4()->toString() . ".jpg");
         $response = $doRequest($issue, $file);
-        $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         //check response issue updated
         $this->verifyIssue($issueResponse->data->issue, $issue);
@@ -591,7 +594,7 @@ class ApiControllerTest extends FixturesTestCase
         $issue = $serverData->getIssues()[0];
 
         $response = $doRequest($issue->getMeta()->getId(), "mark");
-        $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         //check response issue updated
         $issue->setIsMarked(!$issue->getIsMarked());
@@ -606,29 +609,29 @@ class ApiControllerTest extends FixturesTestCase
 
         //delete
         $response = $doRequest($newIssues[0]->getMeta()->getId(), "delete");
-        $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $this->checkResponse($response, ApiStatus::SUCCESS);
         $response = $doRequest($newIssues[0]->getMeta()->getId(), "delete");
         $this->checkResponse($response, ApiStatus::FAIL, ApiController::ISSUE_NOT_FOUND);
 
         //review registered
         $response = $doRequest($registeredIssues[0]->getMeta()->getId(), "review");
-        $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $this->checkResponse($response, ApiStatus::SUCCESS);
         $response = $doRequest($registeredIssues[0]->getMeta()->getId(), "review");
         $this->checkResponse($response, ApiStatus::FAIL, ApiController::ISSUE_ACTION_NOT_ALLOWED);
 
         //review responded
         $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "review");
-        $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $this->checkResponse($response, ApiStatus::SUCCESS);
         $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "review");
         $this->checkResponse($response, ApiStatus::FAIL, ApiController::ISSUE_ACTION_NOT_ALLOWED);
 
         //revert reviewed
         $response = $doRequest($reviewedIssues[0]->getMeta()->getId(), "revert");
-        $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $this->checkResponse($response, ApiStatus::SUCCESS);
 
         //revert responded
         $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");
-        $this->checkResponse($response, ApiStatus::SUCCESSFUL);
+        $this->checkResponse($response, ApiStatus::SUCCESS);
         //revert twice because of earlier actions
         $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");
         $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");

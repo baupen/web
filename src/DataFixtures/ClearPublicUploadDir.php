@@ -55,9 +55,8 @@ class ClearPublicUploadDir extends BaseFixture
             if (!$this->deleteDirectoryContents($dir . DIRECTORY_SEPARATOR . $item)) {
                 return false;
             }
-
         }
-        
+
         if (!$isRoot) {
             return rmdir($dir);
         }

@@ -59,7 +59,7 @@ class ReadData
     /**
      * @var User|null
      */
-    private $user;
+    private $changedUser;
 
     /**
      * @return Craftsman[]
@@ -192,16 +192,16 @@ class ReadData
     /**
      * @return User|null
      */
-    public function getUser(): ?User
+    public function getChangedUser(): ?User
     {
-        return $this->user;
+        return $this->changedUser;
     }
 
     /**
-     * @param User $user
+     * @param User $changedUser
      */
-    public function setUser(User $user): void
+    public function setChangedUser(User $changedUser): void
     {
-        $this->user = $user;
+        $this->changedUser = $changedUser;
     }
 }
