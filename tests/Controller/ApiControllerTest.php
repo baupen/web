@@ -80,6 +80,7 @@ class ApiControllerTest extends FixturesTestCase
      */
     private function checkResponse(Response $response, $apiStatus, $message = "")
     {
+        $this->assertFalse(strpos($response->getContent(),"\u00") > 0);
         if ($apiStatus == ApiStatus::SUCCESS) {
             $successful = json_decode($response->getContent());
             $this->assertEquals($apiStatus, $successful->status, $response->getContent());
@@ -135,7 +136,6 @@ class ApiControllerTest extends FixturesTestCase
         $serializer = $client->getContainer()->get("serializer");
         $doRequest = function (ReadRequest $readRequest) use ($client, $serializer) {
             $json = $serializer->serialize($readRequest, "json");
-            dump($json);
             $client->request(
                 'POST',
                 '/api/read',

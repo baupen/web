@@ -29,26 +29,28 @@ class ClearPublicUploadDir extends BaseFixture
     {
         $dir = __DIR__ . "/../../public/upload";
         if (is_dir($dir)) {
-            $this->deleteDirectoryContents($dir, true);
+            $this->deleteDirectoryContents($dir, true, [".gitignore"]);
         }
     }
 
     /**
      * @param $dir
+     * @param bool $isRoot
+     * @param array $exceptions
      * @return bool
      */
-    private function deleteDirectoryContents($dir, $isRoot = false)
+    private function deleteDirectoryContents($dir, $isRoot = false, $exceptions = ["st"])
     {
         if (!file_exists($dir)) {
             return true;
         }
 
-        if (!is_dir($dir)) {
+        if (!is_dir($dir) && !in_array(basename($dir), $exceptions)) {
             return unlink($dir);
         }
 
         foreach (scandir($dir) as $item) {
-            if ($item == '.' || $item == '..') {
+            if ($item == '.' || $item == '..' || in_array($item, $exceptions)) {
                 continue;
             }
 

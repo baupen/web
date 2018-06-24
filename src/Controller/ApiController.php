@@ -12,7 +12,6 @@
 namespace App\Controller;
 
 use App\Api\Entity\ObjectMeta;
-use App\Api\JsonResponse;
 use App\Api\Request\DownloadFileRequest;
 use App\Api\Request\IssueActionRequest;
 use App\Api\Request\IssueModifyRequest;
@@ -43,6 +42,7 @@ use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

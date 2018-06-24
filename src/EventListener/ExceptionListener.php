@@ -10,6 +10,7 @@ namespace App\EventListener;
 
 
 use App\Api\Response\ErrorResponse;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -22,9 +23,15 @@ class ExceptionListener
      */
     private $serializer;
 
-    public function __construct(SerializerInterface $serializer)
+    /**
+     * @var LoggerInterface $logger
+     */
+    private $logger;
+
+    public function __construct(SerializerInterface $serializer, LoggerInterface $logger)
     {
         $this->serializer = $serializer;
+        $this->logger = $logger;
     }
 
     /**
@@ -49,6 +56,8 @@ class ExceptionListener
         $errorObj = new ErrorResponse($message, 300);
         $json = $this->serializer->serialize($errorObj, "json");
         $response = new JsonResponse($json, Response::HTTP_INTERNAL_SERVER_ERROR, [], true);
+
+        $this->logger->error("api error: " . $exception->getMessage() . " at " . $exception->getFile() . " line " . $exception->getLine() . $exception->getTraceAsString() . " for \n" . $event->getRequest()->getContent());
 
         // sends the modified response object to the event
         $event->setResponse($response);
