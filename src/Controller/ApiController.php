@@ -626,7 +626,7 @@ WHERE cscm.construction_manager_id = :id";
     private function processIssueModifyRequest(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer, $mode)
     {
         //check if empty request
-        if (!($content = $request->getContent())) {
+        if (!($content = $request->request->get("message"))) {
             return $this->fail(static::EMPTY_REQUEST);
         }
 
