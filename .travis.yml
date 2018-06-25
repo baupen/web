@@ -27,7 +27,7 @@ before_install:
   - '[[ "$TRAVIS_PHP_VERSION" == "nightly" ]] || phpenv config-rm xdebug.ini'
 
   # install git, yarn, nodejs, libmagickwand-dev (for imagick extension)
-  - curl -sL https://deb.nodesource.com/setup_10.x | bash -
+  - curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
   - sudo apt-get install -y gnupg git nodejs libmagickwand-dev
   - npm install -g yarn
 

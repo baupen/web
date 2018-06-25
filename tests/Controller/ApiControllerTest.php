@@ -18,11 +18,7 @@ use App\Api\Entity\Map;
 use App\Api\Entity\ObjectMeta;
 use App\Api\Entity\User;
 use App\Api\Request\ReadRequest;
-use App\Api\Response\Base\AbstractResponse;
-use App\Api\Response\ErrorResponse;
-use App\Api\Response\FailResponse;
-use App\Api\Response\SuccessfulResponse;
-use App\Controller\ApiController;
+use App\Controller\Api\Base\BaseApiController;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Base\FixturesTestCase;
 use Ramsey\Uuid\Uuid;
@@ -55,10 +51,10 @@ class ApiControllerTest extends FixturesTestCase
 
 
         $response = $doRequest("unknwon", "ad");
-        $this->checkResponse($response, ApiStatus::FAIL, ApiController::UNKNOWN_USERNAME);
+        $this->checkResponse($response, ApiStatus::FAIL, BaseApiController::UNKNOWN_USERNAME);
 
         $response = $doRequest("f@mangel.io", "ad");
-        $this->checkResponse($response, ApiStatus::FAIL, ApiController::WRONG_PASSWORD);
+        $this->checkResponse($response, ApiStatus::FAIL, BaseApiController::WRONG_PASSWORD);
 
         $response = $doRequest("f@mangel.io", "asdf");
         $loginResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
@@ -354,7 +350,7 @@ class ApiControllerTest extends FixturesTestCase
         $this->verifyIssue($checkIssue, $issue);
 
         $response = $doRequest($issue);
-        $this->checkResponse($response, ApiStatus::FAIL, ApiController::ISSUE_GUID_ALREADY_IN_USE);
+        $this->checkResponse($response, ApiStatus::FAIL, BaseApiController::ISSUE_GUID_ALREADY_IN_USE);
 
         //check issue without position
         $issue->setPosition(null);
@@ -451,7 +447,7 @@ class ApiControllerTest extends FixturesTestCase
         //check with non-existing
         $issue->getMeta()->setId($this->getNewGuid());
         $response = $doRequest($issue);
-        $this->checkResponse($response, ApiStatus::FAIL, ApiController::ISSUE_NOT_FOUND);
+        $this->checkResponse($response, ApiStatus::FAIL, BaseApiController::ISSUE_NOT_FOUND);
     }
 
     private function getNewGuid()
@@ -609,19 +605,19 @@ class ApiControllerTest extends FixturesTestCase
         $response = $doRequest($newIssues[0]->getMeta()->getId(), "delete");
         $this->checkResponse($response, ApiStatus::SUCCESS);
         $response = $doRequest($newIssues[0]->getMeta()->getId(), "delete");
-        $this->checkResponse($response, ApiStatus::FAIL, ApiController::ISSUE_NOT_FOUND);
+        $this->checkResponse($response, ApiStatus::FAIL, BaseApiController::ISSUE_NOT_FOUND);
 
         //review registered
         $response = $doRequest($registeredIssues[0]->getMeta()->getId(), "review");
         $this->checkResponse($response, ApiStatus::SUCCESS);
         $response = $doRequest($registeredIssues[0]->getMeta()->getId(), "review");
-        $this->checkResponse($response, ApiStatus::FAIL, ApiController::ISSUE_ACTION_NOT_ALLOWED);
+        $this->checkResponse($response, ApiStatus::FAIL, BaseApiController::ISSUE_ACTION_NOT_ALLOWED);
 
         //review responded
         $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "review");
         $this->checkResponse($response, ApiStatus::SUCCESS);
         $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "review");
-        $this->checkResponse($response, ApiStatus::FAIL, ApiController::ISSUE_ACTION_NOT_ALLOWED);
+        $this->checkResponse($response, ApiStatus::FAIL, BaseApiController::ISSUE_ACTION_NOT_ALLOWED);
 
         //revert reviewed
         $response = $doRequest($reviewedIssues[0]->getMeta()->getId(), "revert");
@@ -633,7 +629,7 @@ class ApiControllerTest extends FixturesTestCase
         //revert twice because of earlier actions
         $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");
         $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");
-        $this->checkResponse($response, ApiStatus::FAIL, ApiController::ISSUE_ACTION_NOT_ALLOWED);
+        $this->checkResponse($response, ApiStatus::FAIL, BaseApiController::ISSUE_ACTION_NOT_ALLOWED);
     }
 
     /**
