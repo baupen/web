@@ -28,20 +28,15 @@ before_install:
 
   # install git, yarn, nodejs, libmagickwand-dev (for imagick extension)
   - curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
-  - sudo apt-get install -y gnupg git nodejs libmagickwand-dev
+  - sudo apt-get install -y gnupg git nodejs libmagickwand-dev pecl
   - npm install -g yarn
 
   # install phpunit
   - sudo curl --location --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit.phar
   - sudo chmod +x /usr/local/bin/phpunit
 
-  # install xdebuug requirements
-  - sudo pecl install xdebug-2.6.0RC2
-  - sudo docker-php-ext-enable xdebug
-
-  # install imagick
+  # install imagick requirements
   - sudo pecl install imagick-3.4.3
-  - sudo docker-php-ext-enable imagick
 
   # execute composer
   - php composer.phar config --global discard-changes true
