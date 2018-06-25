@@ -14,7 +14,6 @@ namespace App\Api\Transformer;
 use App\Api\Entity\IssuePosition;
 use App\Api\Entity\IssueStatus;
 use App\Api\Entity\IssueStatusEvent;
-
 use App\Api\Transformer\Base\BatchTransformer;
 use App\Entity\Issue;
 use Symfony\Bridge\Doctrine\RegistryInterface;

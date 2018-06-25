@@ -11,8 +11,6 @@
 
 namespace App\Api\Transformer\Base;
 
-use Symfony\Component\Form\AbstractType;
-
 abstract class BatchTransformer
 {
     public abstract function toApi($entity);

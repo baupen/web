@@ -11,7 +11,6 @@
 
 namespace App\Form\Traits\Address;
 
-use App\Entity\ConstructionSite;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;

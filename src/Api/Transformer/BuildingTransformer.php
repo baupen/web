@@ -13,7 +13,6 @@ namespace App\Api\Transformer;
 
 use App\Api\Entity\Address;
 use App\Api\Entity\Building;
-
 use App\Api\Transformer\Base\BatchTransformer;
 use App\Entity\ConstructionSite;
 

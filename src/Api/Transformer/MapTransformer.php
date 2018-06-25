@@ -11,8 +11,6 @@
 
 namespace App\Api\Transformer;
 
-use App\Api\Entity\Issue;
-
 use App\Api\Transformer\Base\BatchTransformer;
 use App\Entity\Map;
 

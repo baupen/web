@@ -17,7 +17,6 @@ use App\Service\Interfaces\EmailServiceInterface;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Twig\Environment;
 
 class EmailService implements EmailServiceInterface

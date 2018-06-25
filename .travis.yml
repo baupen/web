@@ -35,7 +35,7 @@ before_install:
   - sudo chmod +x /usr/local/bin/phpunit
 
   # install imagick requirements
-  - sudo pecl install imagick-3.4.3
+  - printf "\n" | sudo pecl install imagick-3.4.3
 
   # execute composer
   - php composer.phar config --global discard-changes true
