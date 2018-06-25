@@ -37,10 +37,6 @@ before_install:
   # install imagick requirements
   - printf "\n" | sudo pecl install imagick-3.4.3
 
-  # execute composer
-  - php composer.phar config --global discard-changes true
-  - php composer.phar install --dev
-
 # prepare programming environement
 install:
   # copy config files
