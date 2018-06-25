@@ -125,10 +125,10 @@ class ApiController extends BaseDoctrineController
     /**
      * @Route("/login", name="api_login")
      *
-     * @param Request             $request
+     * @param Request $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface  $validator
-     * @param UserTransformer     $userTransformer
+     * @param ValidatorInterface $validator
+     * @param UserTransformer $userTransformer
      *
      * @return Response
      */
@@ -172,10 +172,10 @@ class ApiController extends BaseDoctrineController
     /**
      * @Route("/read", name="api_read")
      *
-     * @param Request             $request
+     * @param Request $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface  $validator
-     * @param TransformerFactory  $transformerFactory
+     * @param ValidatorInterface $validator
+     * @param TransformerFactory $transformerFactory
      *
      * @throws ORMException
      *
@@ -228,9 +228,9 @@ class ApiController extends BaseDoctrineController
     /**
      * @Route("/file/download", name="api_file_download")
      *
-     * @param Request             $request
+     * @param Request $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface  $validator
+     * @param ValidatorInterface $validator
      *
      * @throws ORMException
      *
@@ -282,7 +282,7 @@ class ApiController extends BaseDoctrineController
                 return $this->fail(static::ENTITY_ACCESS_DENIED);
             }
 
-            $filePath = $this->getParameter('PUBLIC_DIR').'/'.$filePath;
+            $filePath = $this->getParameter('PUBLIC_DIR') . '/' . $filePath;
             if (!file_exists($filePath)) {
                 return $this->fail(static::ENTITY_FILE_NOT_FOUND);
             }
@@ -337,10 +337,10 @@ class ApiController extends BaseDoctrineController
     }
 
     /**
-     * @param TransformerFactory  $transformerFactory
-     * @param ReadRequest         $readRequest
+     * @param TransformerFactory $transformerFactory
+     * @param ReadRequest $readRequest
      * @param ConstructionManager $constructionManager
-     * @param ReadData            $readData
+     * @param ReadData $readData
      *
      * @throws ORMException
      */
@@ -377,7 +377,7 @@ WHERE cscm.construction_manager_id = :id';
         }
 
         //get updated / new buildings
-        $sql = 'SELECT DISTINCT s.id FROM construction_site s WHERE s.id IN ("'.implode('", "', $allValidIds).'")';
+        $sql = 'SELECT DISTINCT s.id FROM construction_site s WHERE s.id IN ("' . implode('", "', $allValidIds) . '")';
         $parameters = [];
         $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 's');
 
@@ -407,7 +407,7 @@ WHERE cscm.construction_manager_id = :id';
         $resultSetMapping->addFieldResult('c', 'id', 'id');
 
         //get allowed craftsman ids
-        $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.construction_site_id IN ("'.implode('", "', $validConstructionSiteIds).'")';
+        $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.construction_site_id IN ("' . implode('", "', $validConstructionSiteIds) . '")';
         $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
         /** @var IdTrait[] $validCraftsmen */
         $validCraftsmen = $query->getResult();
@@ -417,7 +417,7 @@ WHERE cscm.construction_manager_id = :id';
         $readData->setRemovedCraftsmanIDs(array_keys($removeIds));
 
         //get updated / new craftsmen
-        $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.id IN ("'.implode('", "', $allValidIds).'")';
+        $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.id IN ("' . implode('", "', $allValidIds) . '")';
         $parameters = [];
         $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 'c');
 
@@ -446,7 +446,7 @@ WHERE cscm.construction_manager_id = :id';
         $resultSetMapping->addFieldResult('m', 'id', 'id');
 
         //get allowed craftsman ids
-        $sql = 'SELECT DISTINCT m.id FROM map m WHERE m.construction_site_id IN ("'.implode('", "', $validConstructionSiteIds).'")';
+        $sql = 'SELECT DISTINCT m.id FROM map m WHERE m.construction_site_id IN ("' . implode('", "', $validConstructionSiteIds) . '")';
         $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
         /** @var IdTrait[] $validMaps */
         $validMaps = $query->getResult();
@@ -456,7 +456,7 @@ WHERE cscm.construction_manager_id = :id';
         $readData->setRemovedMapIDs(array_keys($removeIds));
 
         //get updated / new maps
-        $sql = 'SELECT DISTINCT m.id FROM map m WHERE m.id IN ("'.implode('", "', $allValidIds).'")';
+        $sql = 'SELECT DISTINCT m.id FROM map m WHERE m.id IN ("' . implode('", "', $allValidIds) . '")';
         $parameters = [];
         $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 'm');
 
@@ -486,7 +486,7 @@ WHERE cscm.construction_manager_id = :id';
         $resultSetMapping->addFieldResult('i', 'id', 'id');
 
         //get allowed craftsman ids
-        $sql = 'SELECT DISTINCT i.id FROM issue i WHERE i.map_id IN ("'.implode('", "', $validMapIds).'")';
+        $sql = 'SELECT DISTINCT i.id FROM issue i WHERE i.map_id IN ("' . implode('", "', $validMapIds) . '")';
         $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
         /** @var IdTrait[] $validIssues */
         $validIssues = $query->getResult();
@@ -496,7 +496,7 @@ WHERE cscm.construction_manager_id = :id';
         $readData->setRemovedIssueIDs(array_keys($removeIds));
 
         //get updated / new issues
-        $sql = 'SELECT DISTINCT i.id FROM issue i WHERE i.id IN ("'.implode('", "', $allValidIds).'")';
+        $sql = 'SELECT DISTINCT i.id FROM issue i WHERE i.id IN ("' . implode('", "', $allValidIds) . '")';
         $parameters = [];
         $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 'i');
 
@@ -523,10 +523,10 @@ WHERE cscm.construction_manager_id = :id';
      * break down id structure to some helper structures.
      *
      * @param ObjectMeta[] $requestObjectMeta the given ids
-     * @param IdTrait[]    $dbEntities
-     * @param string[]     $allValidIds       contains all ids from the db
-     * @param string[]     $removeIds         contains the invalid given (ids -> time)
-     * @param string[]     $knownIds          contains the valid given (id -> time)
+     * @param IdTrait[] $dbEntities
+     * @param string[] $allValidIds contains all ids from the db
+     * @param string[] $removeIds contains the invalid given (ids -> time)
+     * @param string[] $knownIds contains the valid given (id -> time)
      */
     private function filterIds($requestObjectMeta, $dbEntities, &$allValidIds, &$removeIds, &$knownIds)
     {
@@ -570,8 +570,8 @@ WHERE cscm.construction_manager_id = :id';
                 if (mb_strlen($whereCondition) > 0) {
                     $whereCondition .= ' OR ';
                 }
-                $whereCondition .= '('.$tableShort.'.id == "'.$confirmedBuildingId.'" AND '.$tableShort.'.last_changed_at > :time_'.$counter.')';
-                $parameters['time_'.$counter] = $guidTimeDictionary[$confirmedBuildingId];
+                $whereCondition .= '(' . $tableShort . '.id == "' . $confirmedBuildingId . '" AND ' . $tableShort . '.last_changed_at > :time_' . $counter . ')';
+                $parameters['time_' . $counter] = $guidTimeDictionary[$confirmedBuildingId];
 
                 ++$counter;
             }
@@ -581,7 +581,7 @@ WHERE cscm.construction_manager_id = :id';
 
         //return buildings unknown to the requester
         if (count($guidTimeDictionary) > 0) {
-            $sql .= $tableShort.'.id NOT IN ("'.implode('", "', array_keys($guidTimeDictionary)).'")';
+            $sql .= $tableShort . '.id NOT IN ("' . implode('", "', array_keys($guidTimeDictionary)) . '")';
         } else {
             //allow all
             $sql .= '1 = 1';
@@ -593,10 +593,10 @@ WHERE cscm.construction_manager_id = :id';
     /**
      * @Route("/issue/create", name="api_issue_create")
      *
-     * @param Request             $request
+     * @param Request $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface  $validator
-     * @param IssueTransformer    $issueTransformer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
      *
      * @throws \Doctrine\ORM\ORMException
      *
@@ -610,10 +610,10 @@ WHERE cscm.construction_manager_id = :id';
     /**
      * @Route("/issue/update", name="api_issue_update")
      *
-     * @param Request             $request
+     * @param Request $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface  $validator
-     * @param IssueTransformer    $issueTransformer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
      *
      * @throws \Doctrine\ORM\ORMException
      *
@@ -625,10 +625,10 @@ WHERE cscm.construction_manager_id = :id';
     }
 
     /**
-     * @param Request             $request
+     * @param Request $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface  $validator
-     * @param IssueTransformer    $issueTransformer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
      * @param $mode
      *
      * @throws ORMException
@@ -638,8 +638,12 @@ WHERE cscm.construction_manager_id = :id';
      */
     private function processIssueModifyRequest(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer, $mode)
     {
-        //check if empty request
-        if (!($content = $request->request->get('message'))) {
+        //check if empty request, ensure multipart correctly handled
+        $content = $request->request->get('message');
+        if (!$content) {
+            $content = $request->getContent();
+        }
+        if (!($content)) {
             return $this->fail(static::EMPTY_REQUEST);
         }
 
@@ -726,7 +730,7 @@ WHERE cscm.construction_manager_id = :id';
         }
         foreach ($request->files->all() as $key => $file) {
             /** @var UploadedFile $file */
-            $targetFolder = $this->getParameter('PUBLIC_DIR').'/'.dirname($issue->getImageFilePath());
+            $targetFolder = $this->getParameter('PUBLIC_DIR') . '/' . dirname($issue->getImageFilePath());
             if (!file_exists($targetFolder)) {
                 mkdir($targetFolder, 0777, true);
             }
@@ -759,10 +763,10 @@ WHERE cscm.construction_manager_id = :id';
     /**
      * @Route("/issue/delete", name="api_issue_delete")
      *
-     * @param Request             $request
+     * @param Request $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface  $validator
-     * @param IssueTransformer    $issueTransformer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
      *
      * @throws \Doctrine\ORM\ORMException
      *
@@ -791,10 +795,10 @@ WHERE cscm.construction_manager_id = :id';
     /**
      * @Route("/issue/mark", name="api_issue_mark")
      *
-     * @param Request             $request
+     * @param Request $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface  $validator
-     * @param IssueTransformer    $issueTransformer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
      *
      * @throws \Doctrine\ORM\ORMException
      *
@@ -820,10 +824,10 @@ WHERE cscm.construction_manager_id = :id';
     /**
      * @Route("/issue/review", name="api_issue_review")
      *
-     * @param Request             $request
+     * @param Request $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface  $validator
-     * @param IssueTransformer    $issueTransformer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
      *
      * @throws \Doctrine\ORM\ORMException
      *
@@ -855,10 +859,10 @@ WHERE cscm.construction_manager_id = :id';
     /**
      * @Route("/issue/revert", name="api_issue_revert")
      *
-     * @param Request             $request
+     * @param Request $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface  $validator
-     * @param IssueTransformer    $issueTransformer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
      *
      * @throws \Doctrine\ORM\ORMException
      *
@@ -894,10 +898,10 @@ WHERE cscm.construction_manager_id = :id';
     }
 
     /**
-     * @param Request             $request
+     * @param Request $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface  $validator
-     * @param IssueTransformer    $issueTransformer
+     * @param ValidatorInterface $validator
+     * @param IssueTransformer $issueTransformer
      * @param $action
      *
      * @throws ORMException
@@ -959,7 +963,7 @@ WHERE cscm.construction_manager_id = :id';
     {
         $logger = $this->get('logger');
         $request = $this->get('request_stack')->getCurrentRequest();
-        $logger->error('Api error '.': '.$message.' for '.$request->getContent());
+        $logger->error('Api error ' . ': ' . $message . ' for ' . $request->getContent());
 
         return $this->json(new ErrorResponse($message, $this->errorMessageToStatusCode($message)), Response::HTTP_INTERNAL_SERVER_ERROR);
     }
@@ -975,7 +979,7 @@ WHERE cscm.construction_manager_id = :id';
     {
         $logger = $this->get('logger');
         $request = $this->get('request_stack')->getCurrentRequest();
-        $logger->error('Api fail '.': '.$message.' for '.$request->getContent());
+        $logger->error('Api fail ' . ': ' . $message . ' for ' . $request->getContent());
 
         return $this->json(new FailResponse($message, $this->errorMessageToStatusCode($message)), Response::HTTP_BAD_REQUEST);
     }
@@ -998,7 +1002,7 @@ WHERE cscm.construction_manager_id = :id';
      * @final
      *
      * @param $data
-     * @param int   $status
+     * @param int $status
      * @param array $headers
      * @param array $context
      *

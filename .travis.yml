@@ -27,10 +27,8 @@ before_install:
   - '[[ "$TRAVIS_PHP_VERSION" == "nightly" ]] || phpenv config-rm xdebug.ini'
 
   # install git, yarn, nodejs, libmagickwand-dev (for imagick extension)
-  - sudo su
-  - apt-get update -y
   - curl -sL https://deb.nodesource.com/setup_10.x | bash -
-  - apt-get install -y gnupg git nodejs libmagickwand-dev
+  - sudo apt-get install -y gnupg git nodejs libmagickwand-dev
   - npm install -g yarn
 
   # install phpunit
@@ -38,11 +36,11 @@ before_install:
   - chmod +x /usr/local/bin/phpunit
 
   # install xdebuug requirements
-  - pecl install xdebug-2.6.0RC2
+  - sudo pecl install xdebug-2.6.0RC2
   - docker-php-ext-enable xdebug
 
   # install imagick
-  - pecl install imagick-3.4.3
+  - sudo pecl install imagick-3.4.3
   - docker-php-ext-enable imagick
 
   # execute composer

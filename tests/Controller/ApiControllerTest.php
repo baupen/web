@@ -324,8 +324,6 @@ class ApiControllerTest extends FixturesTestCase
 
         $serverData = $this->getServerEntities($client, $user);
 
-        $imageFilename = $this->getNewGuid() . ".jpg";
-
         $issue = new Issue();
         $issue->setWasAddedWithClient(true);
         $issue->setIsMarked(true);
