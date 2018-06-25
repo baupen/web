@@ -32,11 +32,6 @@ class EmailService implements EmailServiceInterface
     private $contactEmail;
 
     /**
-     * @var RegistryInterface
-     */
-    private $doctrine;
-
-    /**
      * @var Environment
      */
     private $twig;
@@ -49,52 +44,26 @@ class EmailService implements EmailServiceInterface
     /**
      * EmailService constructor.
      *
-     * @param \Swift_Mailer     $mailer
-     * @param RegistryInterface $registry
-     * @param LoggerInterface   $logger
-     * @param Environment       $twig
-     * @param string            $contactEmail
+     * @param \Swift_Mailer $mailer
+     * @param LoggerInterface $logger
+     * @param Environment $twig
+     * @param string $contactEmail
      */
-    public function __construct(\Swift_Mailer $mailer, RegistryInterface $registry, LoggerInterface $logger, Environment $twig, string $contactEmail)
+    public function __construct(\Swift_Mailer $mailer, LoggerInterface $logger, Environment $twig, string $contactEmail)
     {
         $this->mailer = $mailer;
-        $this->doctrine = $registry;
         $this->twig = $twig;
         $this->logger = $logger;
         $this->contactEmail = $contactEmail;
     }
 
     /**
-     * @param string      $receiver
-     * @param string      $subject
-     * @param string      $body
-     * @param string|null $carbonCopy
-     *
-     * @return bool
-     */
-    public function sendTextEmail($receiver, $subject, $body, $carbonCopy = null)
-    {
-        $email = new Email();
-        $email->setReceiver($receiver);
-        $email->setSubject($subject);
-        $email->setBody($body);
-        $email->setCarbonCopy($carbonCopy);
-        $email->setEmailType(EmailType::TEXT_EMAIL);
-
-        return $this->processEmail($email);
-    }
-
-    /**
      * @param Email $email
      */
-    private function processEmail(Email $email)
+    public function sendEmail(Email $email)
     {
         $email->setSentDateTime(new \DateTime());
         $email->setIdentifier(Uuid::uuid4());
-
-        $manager = $this->doctrine->getManager();
-        $manager->persist($email);
-        $manager->flush();
 
         $message = (new \Swift_Message())
             ->setSubject($email->getSubject())
@@ -103,7 +72,7 @@ class EmailService implements EmailServiceInterface
 
         $body = $email->getBody();
         if (null !== $email->getActionLink()) {
-            $body .= "\n\n".$email->getActionText().': '.$email->getActionLink();
+            $body .= "\n\n" . $email->getActionText() . ': ' . $email->getActionLink();
         }
         $message->setBody($body, 'text/plain');
 
@@ -121,53 +90,6 @@ class EmailService implements EmailServiceInterface
             }
         }
 
-        if (null !== $email->getCarbonCopy()) {
-            $message->addCc($email->getCarbonCopy());
-        }
         $this->mailer->send($message);
-    }
-
-    /**
-     * @param string $receiver
-     * @param string $subject
-     * @param string $body
-     * @param $actionText
-     * @param string      $actionLink
-     * @param string|null $carbonCopy
-     *
-     * @return bool
-     */
-    public function sendActionEmail($receiver, $subject, $body, $actionText, $actionLink, $carbonCopy = null)
-    {
-        $email = new Email();
-        $email->setReceiver($receiver);
-        $email->setSubject($subject);
-        $email->setBody($body);
-        $email->setActionText($actionText);
-        $email->setActionLink($actionLink);
-        $email->setCarbonCopy($carbonCopy);
-        $email->setEmailType(EmailType::ACTION_EMAIL);
-
-        return $this->processEmail($email);
-    }
-
-    /**
-     * @param string      $receiver
-     * @param string      $subject
-     * @param string      $body
-     * @param string|null $carbonCopy
-     *
-     * @return bool
-     */
-    public function sendPlainEmail($receiver, $subject, $body, $carbonCopy = null)
-    {
-        $email = new Email();
-        $email->setReceiver($receiver);
-        $email->setSubject($subject);
-        $email->setBody($body);
-        $email->setCarbonCopy($carbonCopy);
-        $email->setEmailType(EmailType::PLAIN_EMAIL);
-
-        return $this->processEmail($email);
     }
 }

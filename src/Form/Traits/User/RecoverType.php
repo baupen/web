@@ -11,12 +11,13 @@
 
 namespace App\Form\Traits\User;
 
+use App\Form\Traits\User\Base\BaseType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RecoverType extends AbstractType
+class RecoverType extends BaseType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -25,15 +26,5 @@ class RecoverType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('email', TextType::class);
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'translation_domain' => 'trait_user',
-        ]);
     }
 }

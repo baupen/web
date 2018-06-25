@@ -11,12 +11,13 @@
 
 namespace App\Form\Traits\User;
 
+use App\Form\Traits\User\Base\BaseType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SetPasswordType extends AbstractType
+class SetPasswordType extends BaseType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -26,15 +27,5 @@ class SetPasswordType extends AbstractType
     {
         $builder->add('plainPassword', PasswordType::class);
         $builder->add('repeatPlainPassword', PasswordType::class);
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'translation_domain' => 'trait_user',
-        ]);
     }
 }

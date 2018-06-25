@@ -69,13 +69,6 @@ class Email extends BaseEntity
     private $actionLink;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $carbonCopy;
-
-    /**
      * @var int
      *
      * @ORM\Column(type="integer")
@@ -142,22 +135,6 @@ class Email extends BaseEntity
     public function setActionLink(string $actionLink)
     {
         $this->actionLink = $actionLink;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCarbonCopy()
-    {
-        return $this->carbonCopy;
-    }
-
-    /**
-     * @param string $carbonCopy
-     */
-    public function setCarbonCopy($carbonCopy)
-    {
-        $this->carbonCopy = $carbonCopy;
     }
 
     /**

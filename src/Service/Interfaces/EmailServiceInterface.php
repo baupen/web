@@ -11,37 +11,13 @@
 
 namespace App\Service\Interfaces;
 
+use App\Entity\Email;
+
 interface EmailServiceInterface
 {
     /**
-     * @param string      $receiver
-     * @param string      $subject
-     * @param string      $body
-     * @param string|null $carbonCopy
-     *
+     * @param Email $email
      * @return bool
      */
-    public function sendTextEmail($receiver, $subject, $body, $carbonCopy = null);
-
-    /**
-     * @param string      $receiver
-     * @param string      $subject
-     * @param string      $body
-     * @param string|null $carbonCopy
-     *
-     * @return bool
-     */
-    public function sendPlainEmail($receiver, $subject, $body, $carbonCopy = null);
-
-    /**
-     * @param string $receiver
-     * @param string $subject
-     * @param string $body
-     * @param $actionText
-     * @param string      $actionLink
-     * @param string|null $carbonCopy
-     *
-     * @return bool
-     */
-    public function sendActionEmail($receiver, $subject, $body, $actionText, $actionLink, $carbonCopy = null);
+    public function sendEmail(Email $email);
 }
