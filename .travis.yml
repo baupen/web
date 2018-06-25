@@ -36,6 +36,7 @@ before_install:
 
   # install imagick requirements
   - printf "\n" | sudo pecl install imagick-3.4.3
+  - echo extension=imagick.so>> php.ini
 
 # prepare programming environement
 install:
@@ -86,7 +87,7 @@ script:
   # this checks that Doctrine's mapping configurations are valid
   - ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
   # this executes the phpunit tests
-  - ./vendor/bin/simple-phpunit
+  - ./vendor/bin/simple-phpunit --coverage-clover=coverage.xml
 
 # report code coverage
 after_script:
@@ -94,6 +95,7 @@ after_script:
   - if [[ $COVERAGE == true ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover ./build/logs/clover.xml; fi
   # codacy reporting
   - if [[ $COVERAGE == true ]]; then php ./vendor/bin/codacycoverage clover ./build/logs/clover.xml fi
+  bash <(curl -s https://codecov.io/bash)
 
 # deactivated
 # install composer curl -sS https://getcomposer.org/installer | php #use now with php composer.phar
