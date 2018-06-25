@@ -23,7 +23,7 @@ matrix:
 
 # prepare virtual environment
 before_install:
-  - '[[ "$TRAVIS_PHP_VERSION" == "nightly" ]] || phpenv config-rm xdebug.ini'
+  - if [[ $COVERAGE" == false ]]; then phpenv config-rm xdebug.ini'
 
   # install git, yarn, nodejs, libmagickwand-dev (for imagick extension)
   - curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
@@ -94,8 +94,7 @@ after_script:
   # scrutinizer reporting
   - if [[ $COVERAGE == true ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover ./build/logs/clover.xml; fi
   # codacy reporting
-  - if [[ $COVERAGE == true ]]; then php ./vendor/bin/codacycoverage clover ./build/logs/clover.xml fi
-  bash <(curl -s https://codecov.io/bash)
+  - if [[ $COVERAGE == true ]]; then bash <(curl -s https://codecov.io/bash)
 
 # deactivated
 # install composer curl -sS https://getcomposer.org/installer | php #use now with php composer.phar

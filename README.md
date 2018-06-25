@@ -1,5 +1,10 @@
 # Introduction
-[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) 
+[![Build Status](https://travis-ci.org/mangelio/app.svg?branch=master)](https://travis-ci.org/mangelio/app)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mangelio/app/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/mangelio/app/?branch=master)
+[![codecov](https://codecov.io/gh/mangelio/app/branch/master/graph/badge.svg)](https://codecov.io/gh/mangelio/app) 
+
+
 
 mangel.io aims to make the issue management on a construction site more pleasing and straight-forward.
 

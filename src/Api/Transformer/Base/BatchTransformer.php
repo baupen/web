@@ -20,7 +20,7 @@ abstract class BatchTransformer
      *
      * @return array
      */
-    protected function toApiMultipleInternal(array $entities)
+    public function toApiMultiple(array $entities)
     {
         $res = [];
         foreach ($entities as $entity) {
