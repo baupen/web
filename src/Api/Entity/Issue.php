@@ -8,7 +8,6 @@
 
 namespace App\Api\Entity;
 
-
 use App\Api\Entity\Base\BaseEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 

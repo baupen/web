@@ -10,5 +10,4 @@ namespace App\Api\Response\Data;
 
 class EmptyData
 {
-
 }

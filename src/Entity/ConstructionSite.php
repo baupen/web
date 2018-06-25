@@ -11,7 +11,6 @@
 
 namespace App\Entity;
 
-
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;

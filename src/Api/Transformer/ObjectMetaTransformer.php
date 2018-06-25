@@ -8,7 +8,6 @@
 
 namespace App\Api\Transformer;
 
-
 use App\Api\Entity\ObjectMeta;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
@@ -25,6 +24,5 @@ class ObjectMetaTransformer
         $meta->setId($entity->getId());
         $meta->setLastChangeTime($entity->getLastChangedAt()->format("c"));
         return $meta;
-
     }
 }

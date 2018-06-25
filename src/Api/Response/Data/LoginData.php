@@ -8,7 +8,6 @@
 
 namespace App\Api\Response\Data;
 
-
 use App\Api\Entity\User;
 
 class LoginData

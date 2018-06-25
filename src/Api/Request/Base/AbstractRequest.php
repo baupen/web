@@ -8,7 +8,6 @@
 
 namespace App\Api\Request\Base;
 
-
 abstract class AbstractRequest
 {
 }

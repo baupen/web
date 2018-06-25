@@ -7,8 +7,8 @@
  */
 
 namespace App\Api\Request\Base;
-use Symfony\Component\Validator\Constraints as Assert;
 
+use Symfony\Component\Validator\Constraints as Assert;
 
 class AuthenticatedRequest extends AbstractRequest
 {

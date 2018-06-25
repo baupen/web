@@ -8,7 +8,6 @@
 
 namespace App\Api\Entity;
 
-
 class Address
 {
     /**
@@ -94,5 +93,4 @@ class Address
     {
         $this->country = $country;
     }
-
 }

@@ -8,7 +8,6 @@
 
 namespace App\EventListener;
 
-
 use App\Api\Response\ErrorResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;

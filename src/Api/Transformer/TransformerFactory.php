@@ -8,7 +8,6 @@
 
 namespace App\Api\Transformer;
 
-
 class TransformerFactory
 {
     /**

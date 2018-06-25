@@ -11,7 +11,6 @@
 
 namespace App\Entity;
 
-
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
@@ -169,5 +168,4 @@ class Map extends BaseEntity
             return null;
         }
     }
-
 }

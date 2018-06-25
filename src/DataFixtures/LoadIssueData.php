@@ -79,9 +79,11 @@ class LoadIssueData extends BaseFixture
                         $issue->setReviewBy($constructionManager);
                         $issue->setReviewedAt(new \DateTime());
                     /** @noinspection PhpMissingBreakStatementInspection */
+                    // no break
                     case 2:
                         $issue->setResponseBy($craftsman);
                         $issue->setRespondedAt(new \DateTime("-2 hours"));
+                        // no break
                     case 1:
                         $issue->setRegistrationBy($constructionManager);
                         $issue->setRegisteredAt(new \DateTime("-5 hours"));

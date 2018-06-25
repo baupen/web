@@ -8,7 +8,6 @@
 
 namespace App\Api\Response\Base;
 
-
 class AbstractResponse
 {
     /**

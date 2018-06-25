@@ -164,7 +164,6 @@ class ApiController extends BaseDoctrineController
         $user = $userTransformer->toApi($constructionManager, $authToken->getToken());
         $loginData = new LoginData($user);
         return $this->success($loginData);
-
     }
 
     /**
@@ -298,7 +297,7 @@ class ApiController extends BaseDoctrineController
                     return $entity->getFilePath();
                 }
             );
-        } else if ($downloadFileRequest->getIssue() != null) {
+        } elseif ($downloadFileRequest->getIssue() != null) {
             return $downloadFile(
                 $this->getDoctrine()->getRepository(Issue::class),
                 $downloadFileRequest->getIssue(),
@@ -311,7 +310,7 @@ class ApiController extends BaseDoctrineController
                     return $entity->getImageFilePath();
                 }
             );
-        } else if ($downloadFileRequest->getBuilding() != null) {
+        } elseif ($downloadFileRequest->getBuilding() != null) {
             return $downloadFile(
                 $this->getDoctrine()->getRepository(ConstructionSite::class),
                 $downloadFileRequest->getBuilding(),
@@ -539,7 +538,6 @@ WHERE cscm.construction_manager_id = :id";
             }
             $allValidIds[] = $validConstructionSiteId;
         }
-
     }
 
     /**
@@ -657,7 +655,7 @@ WHERE cscm.construction_manager_id = :id";
                 return $this->fail(static::ISSUE_GUID_ALREADY_IN_USE);
             }
             $entity = new Issue();
-        } else if ($mode == "update") {
+        } elseif ($mode == "update") {
             //ensure issue exists
             $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
             if ($existing == null) {
@@ -757,7 +755,11 @@ WHERE cscm.construction_manager_id = :id";
      */
     public function issueDeleteAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
     {
-        return $this->processIssueActionRequest($request, $serializer, $validator, $issueTransformer,
+        return $this->processIssueActionRequest(
+            $request,
+            $serializer,
+            $validator,
+            $issueTransformer,
             function ($issue) {
                 /** @var Issue $issue */
                 if ($issue->getRegisteredAt() == null) {
@@ -766,7 +768,8 @@ WHERE cscm.construction_manager_id = :id";
                 } else {
                     return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
                 }
-            });
+            }
+        );
     }
 
     /**
@@ -781,13 +784,18 @@ WHERE cscm.construction_manager_id = :id";
      */
     public function issueMarkAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
     {
-        return $this->processIssueActionRequest($request, $serializer, $validator, $issueTransformer,
+        return $this->processIssueActionRequest(
+            $request,
+            $serializer,
+            $validator,
+            $issueTransformer,
             function ($issue) {
                 /** @var Issue $issue */
                 $issue->setIsMarked(!$issue->getIsMarked());
                 $this->fastSave($issue);
                 return true;
-            });
+            }
+        );
     }
 
     /**
@@ -802,7 +810,11 @@ WHERE cscm.construction_manager_id = :id";
      */
     public function issueReviewAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
     {
-        return $this->processIssueActionRequest($request, $serializer, $validator, $issueTransformer,
+        return $this->processIssueActionRequest(
+            $request,
+            $serializer,
+            $validator,
+            $issueTransformer,
             function ($issue, $constructionManager) {
                 /** @var Issue $issue */
                 /** @var ConstructionManager $constructionManager */
@@ -814,7 +826,8 @@ WHERE cscm.construction_manager_id = :id";
                 } else {
                     return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
                 }
-            });
+            }
+        );
     }
 
     /**
@@ -829,14 +842,18 @@ WHERE cscm.construction_manager_id = :id";
      */
     public function issueRevertAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
     {
-        return $this->processIssueActionRequest($request, $serializer, $validator, $issueTransformer,
+        return $this->processIssueActionRequest(
+            $request,
+            $serializer,
+            $validator,
+            $issueTransformer,
             function ($issue) {
                 /** @var Issue $issue */
                 if ($issue->getRegisteredAt() != null) {
                     if ($issue->getReviewedAt() != null) {
                         $issue->setReviewedAt(null);
                         $issue->setReviewBy(null);
-                    } else if ($issue->getRespondedAt() != null) {
+                    } elseif ($issue->getRespondedAt() != null) {
                         $issue->setRespondedAt(null);
                         $issue->setResponseBy(null);
                     } else {
@@ -847,7 +864,8 @@ WHERE cscm.construction_manager_id = :id";
                 } else {
                     return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
                 }
-            });
+            }
+        );
     }
 
     /**

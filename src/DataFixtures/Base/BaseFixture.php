@@ -84,8 +84,9 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
         }
 
         // copy file to new location
-        if (file_exists($targetFilePath))
+        if (file_exists($targetFilePath)) {
             unlink($targetFilePath);
+        }
         copy(__DIR__ . "/../Resources/" . $resourceFileName, $targetFilePath);
     }
 }

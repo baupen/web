@@ -8,7 +8,6 @@
 
 namespace App\Api\Request;
 
-
 use App\Api\Request\Base\AuthenticatedRequest;
 use Symfony\Component\Validator\Constraints as Assert;
 

@@ -8,7 +8,6 @@
 
 namespace App\Api\Response;
 
-
 use App\Api\Response\Base\AbstractResponse;
 use App\Enum\ApiStatus;
 

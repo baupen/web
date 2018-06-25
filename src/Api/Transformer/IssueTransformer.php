@@ -8,7 +8,6 @@
 
 namespace App\Api\Transformer;
 
-
 use App\Api\Entity\IssuePosition;
 use App\Api\Entity\IssueStatus;
 use App\Api\Entity\IssueStatusEvent;

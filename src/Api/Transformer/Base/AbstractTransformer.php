@@ -8,7 +8,6 @@
 
 namespace App\Api\Transformer\Base;
 
-
 abstract class AbstractTransformer
 {
     /**

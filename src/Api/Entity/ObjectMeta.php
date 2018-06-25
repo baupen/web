@@ -10,7 +10,6 @@ namespace App\Api\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 class ObjectMeta
 {
     /**

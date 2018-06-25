@@ -8,7 +8,6 @@
 
 namespace App\Api\Transformer;
 
-
 use App\Api\Transformer\Base\AbstractTransformer;
 use App\Entity\Craftsman;
 
