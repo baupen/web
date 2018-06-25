@@ -46,7 +46,7 @@ install:
   - cp phpunit.xml.dist phpunit.xml
 
   # install dependencies
-  - composer install --dev
+  - composer install
   - yarn install
   - ./vendor/bin/simple-phpunit install
   - chmod +x ./bin/console
@@ -87,7 +87,7 @@ script:
   # this checks that Doctrine's mapping configurations are valid
   - ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
   # this executes the phpunit tests
-  - ./vendor/bin/simple-phpunit --coverage-clover=coverage.xml
+  - ./vendor/bin/simple-phpunit
 
 # report code coverage
 after_script:
