@@ -73,7 +73,7 @@ class AuthenticationToken extends BaseEntity
     }
 
     /**
-     *  refreshes the last used date to the current datetime
+     *  refreshes the last used date to the current datetime.
      */
     public function setLastUsed(): void
     {

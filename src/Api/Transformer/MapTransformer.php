@@ -1,9 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 6/19/18
- * Time: 3:20 PM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Api\Transformer;
@@ -19,7 +22,6 @@ class MapTransformer extends AbstractTransformer
      */
     private $objectMetaTransformer;
 
-
     public function __construct(ObjectMetaTransformer $objectMetaTransformer)
     {
         $this->objectMetaTransformer = $objectMetaTransformer;
@@ -27,6 +29,7 @@ class MapTransformer extends AbstractTransformer
 
     /**
      * @param Map $entity
+     *
      * @return \App\Api\Entity\Map
      */
     public function toApi(Map $entity)
@@ -48,11 +51,13 @@ class MapTransformer extends AbstractTransformer
         $map->setChildren($childrenIds);
 
         $map->setMeta($this->objectMetaTransformer->toApi($entity));
+
         return $map;
     }
 
     /**
      * @param Issue[] $entities
+     *
      * @return \App\Api\Entity\Issue[]
      */
     public function toApiMultiple(array $entities)

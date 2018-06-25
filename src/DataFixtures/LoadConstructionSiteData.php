@@ -31,15 +31,15 @@ class LoadConstructionSiteData extends BaseFixture
     public function load(ObjectManager $manager)
     {
         $entries = [
-            ["Sun Park", "Parkstrasse 12", 7270, "Davos", "CH", "preview.jpg"],
-            ["Sun Park (empty)", "Parkstrasse 12", 7270, "Davos", "CH", "preview2.jpg"],
+            ['Sun Park', 'Parkstrasse 12', 7270, 'Davos', 'CH', 'preview.jpg'],
+            ['Sun Park (empty)', 'Parkstrasse 12', 7270, 'Davos', 'CH', 'preview2.jpg'],
         ];
 
         $appUsers = $manager->getRepository(ConstructionManager::class)->findAll();
         foreach ($entries as $entry) {
             $building = new ConstructionSite();
 
-            $building->setImageFileName(Uuid::uuid4()->toString() . ".jpg");
+            $building->setImageFileName(Uuid::uuid4()->toString().'.jpg');
             $building->setName($entry[0]);
             $building->setStreetAddress($entry[1]);
             $building->setPostalCode($entry[2]);

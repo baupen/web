@@ -31,11 +31,11 @@ class LoadMapData extends BaseFixture
     public function load(ObjectManager $manager)
     {
         $entries = [
-            ["1UG.pdf", "1UG"],
-            ["2OG.pdf", "2OG", [
-                ["2OG_links.pdf", "2OG rechter Bereich"],
-                ["2OG_rechts.pdf", "2OG linker Bereich"],
-                ["2OG_treppenhau.pdf", "2OG Treppenhaus"]
+            ['1UG.pdf', '1UG'],
+            ['2OG.pdf', '2OG', [
+                ['2OG_links.pdf', '2OG rechter Bereich'],
+                ['2OG_rechts.pdf', '2OG linker Bereich'],
+                ['2OG_treppenhau.pdf', '2OG Treppenhaus'],
             ]],
         ];
 
@@ -48,10 +48,10 @@ class LoadMapData extends BaseFixture
     }
 
     /**
-     * @param ObjectManager $manager
+     * @param ObjectManager    $manager
      * @param ConstructionSite $constructionSite
-     * @param array $entry
-     * @param Map|null $parent
+     * @param array            $entry
+     * @param Map|null         $parent
      */
     private function loadMaps(ObjectManager $manager, ConstructionSite $constructionSite, $entry, $parent)
     {
@@ -60,7 +60,7 @@ class LoadMapData extends BaseFixture
         $map->setConstructionSite($constructionSite);
         $map->setName($entry[1]);
         $map->setParent($parent);
-        $map->setFilename(Uuid::uuid4()->toString() . ".pdf");
+        $map->setFilename(Uuid::uuid4()->toString().'.pdf');
         $manager->persist($map);
 
         $this->safeCopyToPublic($map->getFilePath(), $entry[0]);

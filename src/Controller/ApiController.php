@@ -57,36 +57,36 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class ApiController extends BaseDoctrineController
 {
-    const EMPTY_REQUEST = "request empty";
-    const REQUEST_VALIDATION_FAILED = "request validation failed, not all required fields are set";
+    const EMPTY_REQUEST = 'request empty';
+    const REQUEST_VALIDATION_FAILED = 'request validation failed, not all required fields are set';
 
-    const UNKNOWN_USERNAME = "unknown username";
-    const WRONG_PASSWORD = "wrong password";
-    const AUTHENTICATION_TOKEN_INVALID = "authentication token invalid";
+    const UNKNOWN_USERNAME = 'unknown username';
+    const WRONG_PASSWORD = 'wrong password';
+    const AUTHENTICATION_TOKEN_INVALID = 'authentication token invalid';
 
-    const ISSUE_GUID_ALREADY_IN_USE = "guid already in use";
+    const ISSUE_GUID_ALREADY_IN_USE = 'guid already in use';
 
-    const ISSUE_NOT_FOUND = "issue was not found";
-    const ISSUE_ACCESS_DENIED = "issue access not allowed";
-    const ISSUE_ACTION_NOT_ALLOWED = "this action can not be executed on the entity";
+    const ISSUE_NOT_FOUND = 'issue was not found';
+    const ISSUE_ACCESS_DENIED = 'issue access not allowed';
+    const ISSUE_ACTION_NOT_ALLOWED = 'this action can not be executed on the entity';
 
-    const MAP_NOT_FOUND = "map was not found";
-    const MAP_ACCESS_DENIED = "map access not allowed";
+    const MAP_NOT_FOUND = 'map was not found';
+    const MAP_ACCESS_DENIED = 'map access not allowed';
 
-    const CRAFTSMAN_NOT_FOUND = "craftsman was not found";
-    const CRAFTSMAN_ACCESS_DENIED = "craftsman access not allowed";
+    const CRAFTSMAN_NOT_FOUND = 'craftsman was not found';
+    const CRAFTSMAN_ACCESS_DENIED = 'craftsman access not allowed';
 
-    const MAP_CRAFTSMAN_NOT_ON_SAME_CONSTRUCTION_SITE = "the craftsman does not work on the same construction site as the assigned map";
+    const MAP_CRAFTSMAN_NOT_ON_SAME_CONSTRUCTION_SITE = 'the craftsman does not work on the same construction site as the assigned map';
 
-    const ENTITY_NOT_FOUND = "entity was not found";
-    const ENTITY_ACCESS_DENIED = "you are not allowed to access this entity";
-    const ENTITY_NO_DOWNLOADABLE_FILE = "entity has no file to download";
-    const ENTITY_FILE_NOT_FOUND = "the server could not find the file of the entity";
+    const ENTITY_NOT_FOUND = 'entity was not found';
+    const ENTITY_ACCESS_DENIED = 'you are not allowed to access this entity';
+    const ENTITY_NO_DOWNLOADABLE_FILE = 'entity has no file to download';
+    const ENTITY_FILE_NOT_FOUND = 'the server could not find the file of the entity';
 
-    const ISSUE_FILE_UPLOAD_FAILED = "the uploaded file could not be processes";
-    const ISSUE_NO_FILE_TO_UPLOAD = "no file could be found in the request, but one was expected";
-    const ISSUE_NO_FILE_UPLOAD_EXPECTED = "a file was uploaded, but not specified in the issue";
-    const INVALID_TIMESTAMP = "invalid timestamp";
+    const ISSUE_FILE_UPLOAD_FAILED = 'the uploaded file could not be processes';
+    const ISSUE_NO_FILE_TO_UPLOAD = 'no file could be found in the request, but one was expected';
+    const ISSUE_NO_FILE_UPLOAD_EXPECTED = 'a file was uploaded, but not specified in the issue';
+    const INVALID_TIMESTAMP = 'invalid timestamp';
 
     private function errorMessageToStatusCode($message)
     {
@@ -108,26 +108,28 @@ class ApiController extends BaseDoctrineController
             case static::ISSUE_ACTION_NOT_ALLOWED:
                 return 203;
         }
+
         return 202;
     }
 
     /**
-     * inject the translator service
+     * inject the translator service.
      *
      * @return array
      */
     public static function getSubscribedServices()
     {
-        return parent::getSubscribedServices() + ['translator' => TranslatorInterface::class, "logger" => LoggerInterface::class];
+        return parent::getSubscribedServices() + ['translator' => TranslatorInterface::class, 'logger' => LoggerInterface::class];
     }
 
     /**
      * @Route("/login", name="api_login")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param UserTransformer $userTransformer
+     * @param ValidatorInterface  $validator
+     * @param UserTransformer     $userTransformer
+     *
      * @return Response
      */
     public function loginAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, UserTransformer $userTransformer)
@@ -138,7 +140,7 @@ class ApiController extends BaseDoctrineController
         }
 
         /* @var LoginRequest $loginRequest */
-        $loginRequest = $serializer->deserialize($content, LoginRequest::class, "json");
+        $loginRequest = $serializer->deserialize($content, LoginRequest::class, 'json');
 
         // check all properties defined
         $errors = $validator->validate($loginRequest);
@@ -148,8 +150,8 @@ class ApiController extends BaseDoctrineController
 
         //check username & password
         /** @var ConstructionManager $constructionManager */
-        $constructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(["email" => $loginRequest->getUsername()]);
-        if ($constructionManager === null) {
+        $constructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $loginRequest->getUsername()]);
+        if (null === $constructionManager) {
             return $this->fail(static::UNKNOWN_USERNAME);
         }
         if ($constructionManager->getPasswordHash() !== $loginRequest->getPasswordHash()) {
@@ -163,18 +165,21 @@ class ApiController extends BaseDoctrineController
         //construct answer
         $user = $userTransformer->toApi($constructionManager, $authToken->getToken());
         $loginData = new LoginData($user);
+
         return $this->success($loginData);
     }
 
     /**
      * @Route("/read", name="api_read")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param TransformerFactory $transformerFactory
-     * @return Response
+     * @param ValidatorInterface  $validator
+     * @param TransformerFactory  $transformerFactory
+     *
      * @throws ORMException
+     *
+     * @return Response
      */
     public function readAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, TransformerFactory $transformerFactory)
     {
@@ -184,7 +189,7 @@ class ApiController extends BaseDoctrineController
         }
 
         /* @var ReadRequest $readRequest */
-        $readRequest = $serializer->deserialize($content, ReadRequest::class, "json");
+        $readRequest = $serializer->deserialize($content, ReadRequest::class, 'json');
 
         // check all properties defined
         $errors = $validator->validate($readRequest);
@@ -195,7 +200,7 @@ class ApiController extends BaseDoctrineController
         //check auth token
         /** @var ConstructionManager $constructionManager */
         $constructionManager = $this->getDoctrine()->getRepository(AuthenticationToken::class)->getConstructionManager($readRequest);
-        if ($constructionManager === null) {
+        if (null === $constructionManager) {
             return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
         }
 
@@ -223,11 +228,13 @@ class ApiController extends BaseDoctrineController
     /**
      * @Route("/file/download", name="api_file_download")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @return Response
+     * @param ValidatorInterface  $validator
+     *
      * @throws ORMException
+     *
+     * @return Response
      */
     public function fileDownloadAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
     {
@@ -237,7 +244,7 @@ class ApiController extends BaseDoctrineController
         }
 
         /* @var DownloadFileRequest $downloadFileRequest */
-        $downloadFileRequest = $serializer->deserialize($content, DownloadFileRequest::class, "json");
+        $downloadFileRequest = $serializer->deserialize($content, DownloadFileRequest::class, 'json');
 
         // check all properties defined
         $errors = $validator->validate($downloadFileRequest);
@@ -248,7 +255,7 @@ class ApiController extends BaseDoctrineController
         //check auth token
         /** @var ConstructionManager $constructionManager */
         $constructionManager = $this->getDoctrine()->getRepository(AuthenticationToken::class)->getConstructionManager($downloadFileRequest);
-        if ($constructionManager === null) {
+        if (null === $constructionManager) {
             return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
         }
 
@@ -258,7 +265,7 @@ class ApiController extends BaseDoctrineController
             $entity = $repository->find($objectMeta->getId());
 
             /** @var TimeTrait $entity */
-            if ($entity == null) {
+            if (null === $entity) {
                 return $this->fail(static::ENTITY_NO_DOWNLOADABLE_FILE);
             }
 
@@ -266,16 +273,16 @@ class ApiController extends BaseDoctrineController
                 return $this->fail(static::ENTITY_ACCESS_DENIED);
             }
 
-            if ($entity->getLastChangedAt()->format("c") != $objectMeta->getLastChangeTime()) {
+            if ($entity->getLastChangedAt()->format('c') !== $objectMeta->getLastChangeTime()) {
                 return $this->fail(static::INVALID_TIMESTAMP);
             }
 
             $filePath = $accessFilePath($entity);
-            if ($filePath == null) {
+            if (null === $filePath) {
                 return $this->fail(static::ENTITY_ACCESS_DENIED);
             }
 
-            $filePath = $this->getParameter("PUBLIC_DIR") . "/" . $filePath;
+            $filePath = $this->getParameter('PUBLIC_DIR').'/'.$filePath;
             if (!file_exists($filePath)) {
                 return $this->fail(static::ENTITY_FILE_NOT_FOUND);
             }
@@ -284,42 +291,42 @@ class ApiController extends BaseDoctrineController
         };
 
         //get file
-        if ($downloadFileRequest->getMap() != null) {
+        if (null !== $downloadFileRequest->getMap()) {
             return $downloadFile(
                 $this->getDoctrine()->getRepository(Map::class),
                 $downloadFileRequest->getMap(),
                 function ($entity) use ($constructionManager) {
-                    /** @var Map $entity */
+                    /* @var Map $entity */
                     return $entity->getConstructionSite()->getConstructionManagers()->contains($constructionManager);
                 },
                 function ($entity) {
-                    /** @var Map $entity */
+                    /* @var Map $entity */
                     return $entity->getFilePath();
                 }
             );
-        } elseif ($downloadFileRequest->getIssue() != null) {
+        } elseif (null !== $downloadFileRequest->getIssue()) {
             return $downloadFile(
                 $this->getDoctrine()->getRepository(Issue::class),
                 $downloadFileRequest->getIssue(),
                 function ($entity) use ($constructionManager) {
-                    /** @var Issue $entity */
+                    /* @var Issue $entity */
                     return $entity->getMap()->getConstructionSite()->getConstructionManagers()->contains($constructionManager);
                 },
                 function ($entity) {
-                    /** @var Issue $entity */
+                    /* @var Issue $entity */
                     return $entity->getImageFilePath();
                 }
             );
-        } elseif ($downloadFileRequest->getBuilding() != null) {
+        } elseif (null !== $downloadFileRequest->getBuilding()) {
             return $downloadFile(
                 $this->getDoctrine()->getRepository(ConstructionSite::class),
                 $downloadFileRequest->getBuilding(),
                 function ($entity) use ($constructionManager) {
-                    /** @var ConstructionSite $entity */
+                    /* @var ConstructionSite $entity */
                     return $entity->getConstructionManagers()->contains($constructionManager);
                 },
                 function ($entity) {
-                    /** @var ConstructionSite $entity */
+                    /* @var ConstructionSite $entity */
                     return $entity->getImageFilePath();
                 }
             );
@@ -330,10 +337,11 @@ class ApiController extends BaseDoctrineController
     }
 
     /**
-     * @param TransformerFactory $transformerFactory
-     * @param ReadRequest $readRequest
+     * @param TransformerFactory  $transformerFactory
+     * @param ReadRequest         $readRequest
      * @param ConstructionManager $constructionManager
-     * @param ReadData $readData
+     * @param ReadData            $readData
+     *
      * @throws ORMException
      */
     private function processObjectMeta(TransformerFactory $transformerFactory, ReadRequest $readRequest, ConstructionManager $constructionManager, ReadData $readData)
@@ -345,17 +353,17 @@ class ApiController extends BaseDoctrineController
             $manager->getConfiguration()
         );
 
-        ### BUILDING ###
+        //## BUILDING ###
         //prepare mapping builder
         $resultSetMapping = new ResultSetMappingBuilder($incompleteManager);
         $resultSetMapping->addRootEntityFromClassMetadata(ConstructionSite::class, 's');
         $resultSetMapping->addFieldResult('s', 'id', 'id');
 
         //get allowed building ids
-        $sql = "SELECT DISTINCT s.id FROM construction_site s INNER JOIN construction_site_construction_manager cscm ON cscm.construction_site_id = s.id
-WHERE cscm.construction_manager_id = :id";
+        $sql = 'SELECT DISTINCT s.id FROM construction_site s INNER JOIN construction_site_construction_manager cscm ON cscm.construction_site_id = s.id
+WHERE cscm.construction_manager_id = :id';
         $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
-        $query->setParameters(["id" => $constructionManager->getId()]);
+        $query->setParameters(['id' => $constructionManager->getId()]);
         /** @var IdTrait[] $validConstructionSites */
         $validConstructionSites = $query->getResult();
         $this->filterIds($readRequest->getBuildings(), $validConstructionSites, $allValidIds, $removeIds, $knownIds);
@@ -364,14 +372,14 @@ WHERE cscm.construction_manager_id = :id";
         $readData->setRemovedBuildingIDs(array_keys($removeIds));
 
         //if no access to any buildings do an early return
-        if (count($allValidIds) == 0) {
+        if (0 === count($allValidIds)) {
             return;
         }
 
         //get updated / new buildings
-        $sql = 'SELECT DISTINCT s.id FROM construction_site s WHERE s.id IN ("' . implode('", "', $allValidIds) . '")';
+        $sql = 'SELECT DISTINCT s.id FROM construction_site s WHERE s.id IN ("'.implode('", "', $allValidIds).'")';
         $parameters = [];
-        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, "s");
+        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 's');
 
         //execute query for updated
         $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
@@ -387,19 +395,19 @@ WHERE cscm.construction_manager_id = :id";
 
         $readData->setChangedBuildings(
             $transformerFactory->getBuildingTransformer()->toApiMultiple(
-                $manager->getRepository(ConstructionSite::class)->findBy(["id" => $retrieveConstructionSiteIds])
+                $manager->getRepository(ConstructionSite::class)->findBy(['id' => $retrieveConstructionSiteIds])
             )
         );
         $validConstructionSiteIds = $allValidIds;
 
-        ### craftsman ###
+        //## craftsman ###
         //prepare mapping builder
         $resultSetMapping = new ResultSetMappingBuilder($incompleteManager);
         $resultSetMapping->addRootEntityFromClassMetadata(Craftsman::class, 'c');
         $resultSetMapping->addFieldResult('c', 'id', 'id');
 
         //get allowed craftsman ids
-        $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.construction_site_id IN ("' . implode('", "', $validConstructionSiteIds) . '")';
+        $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.construction_site_id IN ("'.implode('", "', $validConstructionSiteIds).'")';
         $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
         /** @var IdTrait[] $validCraftsmen */
         $validCraftsmen = $query->getResult();
@@ -409,9 +417,9 @@ WHERE cscm.construction_manager_id = :id";
         $readData->setRemovedCraftsmanIDs(array_keys($removeIds));
 
         //get updated / new craftsmen
-        $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.id IN ("' . implode('", "', $allValidIds) . '")';
+        $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.id IN ("'.implode('", "', $allValidIds).'")';
         $parameters = [];
-        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, "c");
+        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 'c');
 
         //execute query for updated
         $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
@@ -427,18 +435,18 @@ WHERE cscm.construction_manager_id = :id";
 
         $readData->setChangedCraftsmen(
             $transformerFactory->getCraftsmanTransformer()->toApiMultiple(
-                $manager->getRepository(Craftsman::class)->findBy(["id" => $retrieveCraftsmanIds])
+                $manager->getRepository(Craftsman::class)->findBy(['id' => $retrieveCraftsmanIds])
             )
         );
 
-        ### maps ###
+        //## maps ###
         //prepare mapping builder
         $resultSetMapping = new ResultSetMappingBuilder($incompleteManager);
         $resultSetMapping->addRootEntityFromClassMetadata(Map::class, 'm');
         $resultSetMapping->addFieldResult('m', 'id', 'id');
 
         //get allowed craftsman ids
-        $sql = 'SELECT DISTINCT m.id FROM map m WHERE m.construction_site_id IN ("' . implode('", "', $validConstructionSiteIds) . '")';
+        $sql = 'SELECT DISTINCT m.id FROM map m WHERE m.construction_site_id IN ("'.implode('", "', $validConstructionSiteIds).'")';
         $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
         /** @var IdTrait[] $validMaps */
         $validMaps = $query->getResult();
@@ -448,9 +456,9 @@ WHERE cscm.construction_manager_id = :id";
         $readData->setRemovedMapIDs(array_keys($removeIds));
 
         //get updated / new maps
-        $sql = 'SELECT DISTINCT m.id FROM map m WHERE m.id IN ("' . implode('", "', $allValidIds) . '")';
+        $sql = 'SELECT DISTINCT m.id FROM map m WHERE m.id IN ("'.implode('", "', $allValidIds).'")';
         $parameters = [];
-        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, "m");
+        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 'm');
 
         //execute query for updated
         $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
@@ -466,20 +474,19 @@ WHERE cscm.construction_manager_id = :id";
 
         $readData->setChangedMaps(
             $transformerFactory->getMapTransformer()->toApiMultiple(
-                $manager->getRepository(Map::class)->findBy(["id" => $retrieveMapIds])
+                $manager->getRepository(Map::class)->findBy(['id' => $retrieveMapIds])
             )
         );
         $validMapIds = $allValidIds;
 
-
-        ### issues ###
+        //## issues ###
         //prepare mapping builder
         $resultSetMapping = new ResultSetMappingBuilder($incompleteManager);
         $resultSetMapping->addRootEntityFromClassMetadata(Issue::class, 'i');
         $resultSetMapping->addFieldResult('i', 'id', 'id');
 
         //get allowed craftsman ids
-        $sql = 'SELECT DISTINCT i.id FROM issue i WHERE i.map_id IN ("' . implode('", "', $validMapIds) . '")';
+        $sql = 'SELECT DISTINCT i.id FROM issue i WHERE i.map_id IN ("'.implode('", "', $validMapIds).'")';
         $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
         /** @var IdTrait[] $validIssues */
         $validIssues = $query->getResult();
@@ -489,9 +496,9 @@ WHERE cscm.construction_manager_id = :id";
         $readData->setRemovedIssueIDs(array_keys($removeIds));
 
         //get updated / new issues
-        $sql = 'SELECT DISTINCT i.id FROM issue i WHERE i.id IN ("' . implode('", "', $allValidIds) . '")';
+        $sql = 'SELECT DISTINCT i.id FROM issue i WHERE i.id IN ("'.implode('", "', $allValidIds).'")';
         $parameters = [];
-        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, "i");
+        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 'i');
 
         //execute query for updated
         $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
@@ -507,25 +514,25 @@ WHERE cscm.construction_manager_id = :id";
 
         $readData->setChangedIssues(
             $transformerFactory->getIssueTransformer()->toApiMultiple(
-                $manager->getRepository(Issue::class)->findBy(["id" => $retrieveIssueIds])
+                $manager->getRepository(Issue::class)->findBy(['id' => $retrieveIssueIds])
             )
         );
     }
 
     /**
-     * break down id structure to some helper structures
+     * break down id structure to some helper structures.
      *
      * @param ObjectMeta[] $requestObjectMeta the given ids
-     * @param IdTrait[] $dbEntities
-     * @param string[] $allValidIds contains all ids from the db
-     * @param string[] $removeIds contains the invalid given (ids -> time)
-     * @param string[] $knownIds contains the valid given (id -> time)
+     * @param IdTrait[]    $dbEntities
+     * @param string[]     $allValidIds       contains all ids from the db
+     * @param string[]     $removeIds         contains the invalid given (ids -> time)
+     * @param string[]     $knownIds          contains the valid given (id -> time)
      */
     private function filterIds($requestObjectMeta, $dbEntities, &$allValidIds, &$removeIds, &$knownIds)
     {
         $removeIds = [];
         foreach ($requestObjectMeta as $objectMeta) {
-            $removeIds[$objectMeta["id"]] = $objectMeta["lastChangeTime"];
+            $removeIds[$objectMeta['id']] = $objectMeta['lastChangeTime'];
         }
 
         $allValidIds = [];
@@ -541,7 +548,7 @@ WHERE cscm.construction_manager_id = :id";
     }
 
     /**
-     * append to query the add/update condition
+     * append to query the add/update condition.
      *
      * @param $parameters
      * @param $sql
@@ -553,85 +560,91 @@ WHERE cscm.construction_manager_id = :id";
         $sql .= ' AND (';
         //only return confirmed buildings if they are updated
         if (count($guidTimeDictionary) > 0) {
-            $sql .= "(";
+            $sql .= '(';
 
             //get all where id matches but last change date does not
-            $whereCondition = "";
+            $whereCondition = '';
             $parameters = [];
             $counter = 0;
             foreach (array_keys($guidTimeDictionary) as $confirmedBuildingId) {
-                if (strlen($whereCondition) > 0) {
-                    $whereCondition .= " OR ";
+                if (mb_strlen($whereCondition) > 0) {
+                    $whereCondition .= ' OR ';
                 }
-                $whereCondition .= '(' . $tableShort . '.id == "' . $confirmedBuildingId . '" AND ' . $tableShort . '.last_changed_at > :time_' . $counter . ')';
-                $parameters["time_" . $counter] = $guidTimeDictionary[$confirmedBuildingId];
+                $whereCondition .= '('.$tableShort.'.id == "'.$confirmedBuildingId.'" AND '.$tableShort.'.last_changed_at > :time_'.$counter.')';
+                $parameters['time_'.$counter] = $guidTimeDictionary[$confirmedBuildingId];
 
-                $counter++;
+                ++$counter;
             }
             $sql .= $whereCondition;
-            $sql .= ") OR ";
+            $sql .= ') OR ';
         }
 
         //return buildings unknown to the requester
         if (count($guidTimeDictionary) > 0) {
-            $sql .= $tableShort . '.id NOT IN ("' . implode('", "', array_keys($guidTimeDictionary)) . '")';
+            $sql .= $tableShort.'.id NOT IN ("'.implode('", "', array_keys($guidTimeDictionary)).'")';
         } else {
             //allow all
-            $sql .= "1 = 1";
+            $sql .= '1 = 1';
         }
 
-        $sql .= ")";
+        $sql .= ')';
     }
 
     /**
      * @Route("/issue/create", name="api_issue_create")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
-     * @return Response
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
+     *
      * @throws \Doctrine\ORM\ORMException
+     *
+     * @return Response
      */
     public function issueCreateAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
     {
-        return $this->processIssueModifyRequest($request, $serializer, $validator, $issueTransformer, "create");
+        return $this->processIssueModifyRequest($request, $serializer, $validator, $issueTransformer, 'create');
     }
 
     /**
      * @Route("/issue/update", name="api_issue_update")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
-     * @return Response
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
+     *
      * @throws \Doctrine\ORM\ORMException
+     *
+     * @return Response
      */
     public function issueUpdateAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
     {
-        return $this->processIssueModifyRequest($request, $serializer, $validator, $issueTransformer, "update");
+        return $this->processIssueModifyRequest($request, $serializer, $validator, $issueTransformer, 'update');
     }
 
     /**
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
      * @param $mode
-     * @return JsonResponse|Response
+     *
      * @throws ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return JsonResponse|Response
      */
     private function processIssueModifyRequest(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer, $mode)
     {
         //check if empty request
-        if (!($content = $request->request->get("message"))) {
+        if (!($content = $request->request->get('message'))) {
             return $this->fail(static::EMPTY_REQUEST);
         }
 
         /* @var IssueModifyRequest $issueModifyRequest */
-        $issueModifyRequest = $serializer->deserialize($content, IssueModifyRequest::class, "json");
+        $issueModifyRequest = $serializer->deserialize($content, IssueModifyRequest::class, 'json');
 
         // check all properties defined
         $errors = $validator->validate($issueModifyRequest);
@@ -642,29 +655,29 @@ WHERE cscm.construction_manager_id = :id";
         //check auth token
         /** @var ConstructionManager $constructionManager */
         $constructionManager = $this->getDoctrine()->getRepository(AuthenticationToken::class)->getConstructionManager($issueModifyRequest);
-        if ($constructionManager === null) {
+        if (null === $constructionManager) {
             return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
         }
 
         $entity = null;
-        $newImageExpected = $issueModifyRequest->getIssue()->getImageFilename() != "";
-        if ($mode == "create") {
+        $newImageExpected = '' !== $issueModifyRequest->getIssue()->getImageFilename();
+        if ('create' === $mode) {
             //ensure GUID not in use already
             $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
-            if ($existing != null) {
+            if (null !== $existing) {
                 return $this->fail(static::ISSUE_GUID_ALREADY_IN_USE);
             }
             $entity = new Issue();
-        } elseif ($mode == "update") {
+        } elseif ('update' === $mode) {
             //ensure issue exists
             $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
-            if ($existing == null) {
+            if (null === $existing) {
                 return $this->fail(static::ISSUE_NOT_FOUND);
             }
             $entity = $existing;
-            $newImageExpected &= $issueModifyRequest->getIssue()->getImageFilename() != $existing->getImageFilename();
+            $newImageExpected &= $issueModifyRequest->getIssue()->getImageFilename() !== $existing->getImageFilename();
         } else {
-            throw new \InvalidArgumentException("mode must be create or update");
+            throw new \InvalidArgumentException('mode must be create or update');
         }
 
         //transform to entity
@@ -673,10 +686,10 @@ WHERE cscm.construction_manager_id = :id";
         $issue->setUploadedAt(new \DateTime());
 
         //get map & check access
-        if ($issueModifyRequest->getIssue()->getMap() !== null) {
+        if (null !== $issueModifyRequest->getIssue()->getMap()) {
             /** @var Map $map */
-            $map = $this->getDoctrine()->getRepository(Map::class)->findOneBy(["id" => $issueModifyRequest->getIssue()->getMap()]);
-            if ($map == null) {
+            $map = $this->getDoctrine()->getRepository(Map::class)->findOneBy(['id' => $issueModifyRequest->getIssue()->getMap()]);
+            if (null === $map) {
                 return $this->fail(static::MAP_NOT_FOUND);
             }
             if (!$map->getConstructionSite()->getConstructionManagers()->contains($constructionManager)) {
@@ -686,10 +699,10 @@ WHERE cscm.construction_manager_id = :id";
         }
 
         //get craftsmen & check access
-        if ($issueModifyRequest->getIssue()->getCraftsman() != null) {
+        if (null !== $issueModifyRequest->getIssue()->getCraftsman()) {
             /** @var Craftsman $craftsman */
-            $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(["id" => $issueModifyRequest->getIssue()->getCraftsman()]);
-            if ($craftsman == null) {
+            $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['id' => $issueModifyRequest->getIssue()->getCraftsman()]);
+            if (null === $craftsman) {
                 return $this->fail(static::CRAFTSMAN_NOT_FOUND);
             }
             if (!$craftsman->getConstructionSite()->getConstructionManagers()->contains($constructionManager)) {
@@ -699,21 +712,21 @@ WHERE cscm.construction_manager_id = :id";
         }
 
         //ensure craftsman & map on same construction site
-        if ($issue->getMap() != null && $issue->getCraftsman() != null &&
+        if (null !== $issue->getMap() && null !== $issue->getCraftsman() &&
             $issue->getMap()->getConstructionSite()->getId() !== $issue->getCraftsman()->getConstructionSite()->getId()) {
             return $this->fail(static::MAP_CRAFTSMAN_NOT_ON_SAME_CONSTRUCTION_SITE);
         }
 
         //handle file uploads
-        if ($newImageExpected && count($request->files->all()) != 1) {
+        if ($newImageExpected && 1 !== count($request->files->all())) {
             return $this->fail(static::ISSUE_NO_FILE_TO_UPLOAD);
         }
-        if (!$newImageExpected && count($request->files->all()) != 0) {
+        if (!$newImageExpected && 0 !== count($request->files->all())) {
             return $this->fail(static::ISSUE_NO_FILE_UPLOAD_EXPECTED);
         }
         foreach ($request->files->all() as $key => $file) {
             /** @var UploadedFile $file */
-            $targetFolder = $this->getParameter("PUBLIC_DIR") . "/" . dirname($issue->getImageFilePath());
+            $targetFolder = $this->getParameter('PUBLIC_DIR').'/'.dirname($issue->getImageFilePath());
             if (!file_exists($targetFolder)) {
                 mkdir($targetFolder, 0777, true);
             }
@@ -722,7 +735,7 @@ WHERE cscm.construction_manager_id = :id";
             }
         }
 
-        if ($mode == "create") {
+        if ('create' === $mode) {
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
 
@@ -746,12 +759,14 @@ WHERE cscm.construction_manager_id = :id";
     /**
      * @Route("/issue/delete", name="api_issue_delete")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
-     * @return Response
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
+     *
      * @throws \Doctrine\ORM\ORMException
+     *
+     * @return Response
      */
     public function issueDeleteAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
     {
@@ -762,12 +777,13 @@ WHERE cscm.construction_manager_id = :id";
             $issueTransformer,
             function ($issue) {
                 /** @var Issue $issue */
-                if ($issue->getRegisteredAt() == null) {
+                if (null === $issue->getRegisteredAt()) {
                     $this->fastRemove($issue);
+
                     return $this->success(new EmptyData());
-                } else {
-                    return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
                 }
+
+                return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
             }
         );
     }
@@ -775,12 +791,14 @@ WHERE cscm.construction_manager_id = :id";
     /**
      * @Route("/issue/mark", name="api_issue_mark")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
-     * @return Response
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
+     *
      * @throws \Doctrine\ORM\ORMException
+     *
+     * @return Response
      */
     public function issueMarkAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
     {
@@ -790,9 +808,10 @@ WHERE cscm.construction_manager_id = :id";
             $validator,
             $issueTransformer,
             function ($issue) {
-                /** @var Issue $issue */
+                /* @var Issue $issue */
                 $issue->setIsMarked(!$issue->getIsMarked());
                 $this->fastSave($issue);
+
                 return true;
             }
         );
@@ -801,12 +820,14 @@ WHERE cscm.construction_manager_id = :id";
     /**
      * @Route("/issue/review", name="api_issue_review")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
-     * @return Response
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
+     *
      * @throws \Doctrine\ORM\ORMException
+     *
+     * @return Response
      */
     public function issueReviewAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
     {
@@ -817,15 +838,16 @@ WHERE cscm.construction_manager_id = :id";
             $issueTransformer,
             function ($issue, $constructionManager) {
                 /** @var Issue $issue */
-                /** @var ConstructionManager $constructionManager */
-                if ($issue->getRegisteredAt() != null && $issue->getReviewedAt() == null) {
+                /* @var ConstructionManager $constructionManager */
+                if (null !== $issue->getRegisteredAt() && null === $issue->getReviewedAt()) {
                     $issue->setReviewedAt(new \DateTime());
                     $issue->setReviewBy($constructionManager);
                     $this->fastSave($issue);
+
                     return true;
-                } else {
-                    return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
                 }
+
+                return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
             }
         );
     }
@@ -833,12 +855,14 @@ WHERE cscm.construction_manager_id = :id";
     /**
      * @Route("/issue/revert", name="api_issue_revert")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
-     * @return Response
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
+     *
      * @throws \Doctrine\ORM\ORMException
+     *
+     * @return Response
      */
     public function issueRevertAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
     {
@@ -849,33 +873,36 @@ WHERE cscm.construction_manager_id = :id";
             $issueTransformer,
             function ($issue) {
                 /** @var Issue $issue */
-                if ($issue->getRegisteredAt() != null) {
-                    if ($issue->getReviewedAt() != null) {
+                if (null !== $issue->getRegisteredAt()) {
+                    if (null !== $issue->getReviewedAt()) {
                         $issue->setReviewedAt(null);
                         $issue->setReviewBy(null);
-                    } elseif ($issue->getRespondedAt() != null) {
+                    } elseif (null !== $issue->getRespondedAt()) {
                         $issue->setRespondedAt(null);
                         $issue->setResponseBy(null);
                     } else {
                         return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
                     }
                     $this->fastSave($issue);
+
                     return true;
-                } else {
-                    return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
                 }
+
+                return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
             }
         );
     }
 
     /**
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
      * @param $action
-     * @return JsonResponse|Response
+     *
      * @throws ORMException
+     *
+     * @return JsonResponse|Response
      */
     private function processIssueActionRequest(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer, $action)
     {
@@ -885,7 +912,7 @@ WHERE cscm.construction_manager_id = :id";
         }
 
         /* @var IssueActionRequest $issueActionRequest */
-        $issueActionRequest = $serializer->deserialize($content, IssueActionRequest::class, "json");
+        $issueActionRequest = $serializer->deserialize($content, IssueActionRequest::class, 'json');
 
         // check all properties defined
         $errors = $validator->validate($issueActionRequest);
@@ -896,14 +923,14 @@ WHERE cscm.construction_manager_id = :id";
         //check auth token
         /** @var ConstructionManager $constructionManager */
         $constructionManager = $this->getDoctrine()->getRepository(AuthenticationToken::class)->getConstructionManager($issueActionRequest);
-        if ($constructionManager === null) {
+        if (null === $constructionManager) {
             return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
         }
 
         //get issue
         /** @var Issue $issue */
         $issue = $this->getDoctrine()->getRepository(Issue::class)->find($issueActionRequest->getIssueID());
-        if ($issue == null) {
+        if (null === $issue) {
             return $this->fail(static::ISSUE_NOT_FOUND);
         }
         //ensure we are allowed to access this issue
@@ -922,37 +949,42 @@ WHERE cscm.construction_manager_id = :id";
     }
 
     /**
-     * if request errored (server error)
+     * if request errored (server error).
      *
      * @param string $message
+     *
      * @return Response
      */
     protected function error(string $message)
     {
-        $logger = $this->get("logger");
-        $request = $this->get("request_stack")->getCurrentRequest();
-        $logger->error("Api error " . ": " . $message . " for " . $request->getContent());
+        $logger = $this->get('logger');
+        $request = $this->get('request_stack')->getCurrentRequest();
+        $logger->error('Api error '.': '.$message.' for '.$request->getContent());
+
         return $this->json(new ErrorResponse($message, $this->errorMessageToStatusCode($message)), Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
-     * if request failed (client error)
+     * if request failed (client error).
      *
      * @param string $message
+     *
      * @return Response
      */
     protected function fail(string $message)
     {
-        $logger = $this->get("logger");
-        $request = $this->get("request_stack")->getCurrentRequest();
-        $logger->error("Api fail " . ": " . $message . " for " . $request->getContent());
+        $logger = $this->get('logger');
+        $request = $this->get('request_stack')->getCurrentRequest();
+        $logger->error('Api fail '.': '.$message.' for '.$request->getContent());
+
         return $this->json(new FailResponse($message, $this->errorMessageToStatusCode($message)), Response::HTTP_BAD_REQUEST);
     }
 
     /**
-     * if request was successful
+     * if request was successful.
      *
      * @param $data
+     *
      * @return JsonResponse
      */
     protected function success($data)
@@ -964,19 +996,21 @@ WHERE cscm.construction_manager_id = :id";
      * Returns a JsonResponse that uses the serializer component if enabled, or json_encode.
      *
      * @final
+     *
      * @param $data
-     * @param int $status
+     * @param int   $status
      * @param array $headers
      * @param array $context
+     *
      * @return JsonResponse
      */
-    protected function json($data, int $status = 200, array $headers = array(), array $context = array()): JsonResponse
+    protected function json($data, int $status = 200, array $headers = [], array $context = []): JsonResponse
     {
-        $serializer = $this->get("serializer");
+        $serializer = $this->get('serializer');
 
-        $json = $serializer->serialize($data, 'json', array_merge(array(
+        $json = $serializer->serialize($data, 'json', array_merge([
             'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS | JSON_UNESCAPED_UNICODE,
-        ), $context));
+        ], $context));
 
         return new JsonResponse($json, $status, $headers, true);
     }

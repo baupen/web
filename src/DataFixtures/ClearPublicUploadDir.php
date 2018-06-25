@@ -27,34 +27,35 @@ class ClearPublicUploadDir extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $dir = __DIR__ . "/../../public/upload";
+        $dir = __DIR__.'/../../public/upload';
         if (is_dir($dir)) {
-            $this->deleteDirectoryContents($dir, true, [".gitignore"]);
+            $this->deleteDirectoryContents($dir, true, ['.gitignore']);
         }
     }
 
     /**
      * @param $dir
-     * @param bool $isRoot
+     * @param bool  $isRoot
      * @param array $exceptions
+     *
      * @return bool
      */
-    private function deleteDirectoryContents($dir, $isRoot = false, $exceptions = ["st"])
+    private function deleteDirectoryContents($dir, $isRoot = false, $exceptions = ['st'])
     {
         if (!file_exists($dir)) {
             return true;
         }
 
-        if (!is_dir($dir) && !in_array(basename($dir), $exceptions)) {
+        if (!is_dir($dir) && !in_array(basename($dir), $exceptions, true)) {
             return unlink($dir);
         }
 
         foreach (scandir($dir) as $item) {
-            if ($item == '.' || $item == '..' || in_array($item, $exceptions)) {
+            if ('.' === $item || '..' === $item || in_array($item, $exceptions, true)) {
                 continue;
             }
 
-            if (!$this->deleteDirectoryContents($dir . DIRECTORY_SEPARATOR . $item)) {
+            if (!$this->deleteDirectoryContents($dir.\DIRECTORY_SEPARATOR.$item)) {
                 return false;
             }
         }
@@ -62,6 +63,7 @@ class ClearPublicUploadDir extends BaseFixture
         if (!$isRoot) {
             return rmdir($dir);
         }
+
         return true;
     }
 

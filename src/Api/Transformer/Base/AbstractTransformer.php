@@ -1,9 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 6/20/18
- * Time: 11:35 AM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Api\Transformer\Base;
@@ -11,8 +14,9 @@ namespace App\Api\Transformer\Base;
 abstract class AbstractTransformer
 {
     /**
-     * @param array $entities
+     * @param array    $entities
      * @param callable $toAiMethod
+     *
      * @return array
      */
     protected function toApiMultipleInternal(array $entities, $toAiMethod)
@@ -21,6 +25,7 @@ abstract class AbstractTransformer
         foreach ($entities as $entity) {
             $res[] = $toAiMethod($entity);
         }
+
         return $res;
     }
 }

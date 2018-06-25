@@ -37,11 +37,11 @@ class LoadIssueData extends BaseFixture
         $constructionManager = $manager->getRepository(ConstructionManager::class)->findOneBy([]);
 
         $entries = [
-            ["parkett.jpg", "Laminat fehlerhaft", true, false, 0.8, 0.3, 0.5, 2],
-            ["steckdose.jpg", "Steckdose eingedrückt", false, false, 0.1, 0.1, 0.2, 3],
-            ["parkett2.jpg", "Löcher im Parkett", false, false, 0.2, 0.2, 0.6, 3],
-            ["farbfleck.jpg", "Flecken an der Wand", false, false, 0.5, 0.3, 1, 1],
-            ["farbfleck.jpg", "Flecken an der Wand (new)", false, false, 0.5, 0.3, 1, 0]
+            ['parkett.jpg', 'Laminat fehlerhaft', true, false, 0.8, 0.3, 0.5, 2],
+            ['steckdose.jpg', 'Steckdose eingedrückt', false, false, 0.1, 0.1, 0.2, 3],
+            ['parkett2.jpg', 'Löcher im Parkett', false, false, 0.2, 0.2, 0.6, 3],
+            ['farbfleck.jpg', 'Flecken an der Wand', false, false, 0.5, 0.3, 1, 1],
+            ['farbfleck.jpg', 'Flecken an der Wand (new)', false, false, 0.5, 0.3, 1, 0],
         ];
 
         $craftsmanIndex = 0;
@@ -50,6 +50,7 @@ class LoadIssueData extends BaseFixture
             if ($craftsmanIndex >= count($craftsmen)) {
                 $craftsmanIndex = 0;
             }
+
             return $res;
         };
 
@@ -59,7 +60,7 @@ class LoadIssueData extends BaseFixture
                 $craftsman = $getCraftsman();
 
                 $issue = new Issue();
-                $issue->setImageFilename(Uuid::uuid4()->toString() . ".jpg");
+                $issue->setImageFilename(Uuid::uuid4()->toString().'.jpg');
                 $issue->setCraftsman($craftsman);
                 $issue->setDescription($entry[1]);
                 $issue->setIsMarked($entry[2]);
@@ -71,22 +72,22 @@ class LoadIssueData extends BaseFixture
                 $issue->setMap($map);
 
                 $issue->setUploadBy($constructionManager);
-                $issue->setUploadedAt(new \DateTime("-10 hours"));
+                $issue->setUploadedAt(new \DateTime('-10 hours'));
 
                 switch ($entry[7]) {
-                    /** @noinspection PhpMissingBreakStatementInspection */
+                    /* @noinspection PhpMissingBreakStatementInspection */
                     case 3:
                         $issue->setReviewBy($constructionManager);
                         $issue->setReviewedAt(new \DateTime());
-                    /** @noinspection PhpMissingBreakStatementInspection */
+                    /* @noinspection PhpMissingBreakStatementInspection */
                     // no break
                     case 2:
                         $issue->setResponseBy($craftsman);
-                        $issue->setRespondedAt(new \DateTime("-2 hours"));
+                        $issue->setRespondedAt(new \DateTime('-2 hours'));
                         // no break
                     case 1:
                         $issue->setRegistrationBy($constructionManager);
-                        $issue->setRegisteredAt(new \DateTime("-5 hours"));
+                        $issue->setRegisteredAt(new \DateTime('-5 hours'));
                 }
 
                 $manager->persist($issue);

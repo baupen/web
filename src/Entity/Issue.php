@@ -17,7 +17,7 @@ use App\Entity\Traits\TimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * An issue is something created by the construction manager to inform the craftsman of it
+ * An issue is something created by the construction manager to inform the craftsman of it.
  *
  * @ORM\Table(name="issue")
  * @ORM\Entity
@@ -120,21 +120,21 @@ class Issue extends BaseEntity
     private $reviewBy;
 
     /**
-     * @var double|null
+     * @var float|null
      *
      * @ORM\Column(type="float", nullable=true)
      */
     private $positionX;
 
     /**
-     * @var double|null
+     * @var float|null
      *
      * @ORM\Column(type="float", nullable=true)
      */
     private $positionY;
 
     /**
-     * @var double|null
+     * @var float|null
      *
      * @ORM\Column(type="float", nullable=true)
      */
@@ -447,10 +447,10 @@ class Issue extends BaseEntity
      */
     public function getImageFilePath(): ?string
     {
-        if ($this->getImageFilename() != null) {
-            return "upload/" . $this->getMap()->getConstructionSite()->getId() . "/issue/" . $this->getImageFilename();
-        } else {
-            return null;
+        if (null !== $this->getImageFilename()) {
+            return 'upload/'.$this->getMap()->getConstructionSite()->getId().'/issue/'.$this->getImageFilename();
         }
+
+        return null;
     }
 }

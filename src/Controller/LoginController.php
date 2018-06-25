@@ -1,9 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 22/02/2018
- * Time: 11:35
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Controller;
@@ -35,33 +38,35 @@ class LoginController extends BaseLoginController
     public function indexAction()
     {
         $form = $this->createForm(LoginType::class);
-        $form->add("form.login", SubmitType::class);
-        $arr["form"] = $form->createView();
+        $form->add('form.login', SubmitType::class);
+        $arr['form'] = $form->createView();
+
         return $this->render('login/index.html.twig', $arr);
     }
 
     /**
      * @Route("/recover", name="login_recover")
      *
-     * @param Request $request
+     * @param Request               $request
      * @param EmailServiceInterface $emailService
-     * @param TranslatorInterface $translator
+     * @param TranslatorInterface   $translator
+     *
      * @return Response
      */
     public function recoverAction(Request $request, EmailServiceInterface $emailService, TranslatorInterface $translator)
     {
         $form = $this->handleForm(
             $this->createForm(RecoverType::class)
-                ->add("form.recover", SubmitType::class),
+                ->add('form.recover', SubmitType::class),
             $request,
             function ($form) use ($emailService, $translator) {
                 /* @var FormInterface $form */
 
                 //display success
-                $this->displaySuccess($translator->trans("recover.success.email_sent", [], "frontend_login"));
+                $this->displaySuccess($translator->trans('recover.success.email_sent', [], 'frontend_login'));
 
                 //check if user exists
-                $exitingUser = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(["email" => $form->getData()["email"]]);
+                $exitingUser = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $form->getData()['email']]);
                 if (null === $exitingUser) {
                     return $form;
                 }
@@ -73,16 +78,17 @@ class LoginController extends BaseLoginController
                 //sent according email
                 $emailService->sendActionEmail(
                     $exitingUser->getEmail(),
-                    $translator->trans("recover.email.reset_password.subject", [], "frontend_login"),
-                    $translator->trans("recover.email.reset_password.message", [], "frontend_login"),
-                    $translator->trans("recover.email.reset_password.action_text", [], "frontend_login"),
-                    $this->generateUrl("login_reset", ["resetHash" => $exitingUser->getResetHash()], UrlGeneratorInterface::ABSOLUTE_URL)
+                    $translator->trans('recover.email.reset_password.subject', [], 'frontend_login'),
+                    $translator->trans('recover.email.reset_password.message', [], 'frontend_login'),
+                    $translator->trans('recover.email.reset_password.action_text', [], 'frontend_login'),
+                    $this->generateUrl('login_reset', ['resetHash' => $exitingUser->getResetHash()], UrlGeneratorInterface::ABSOLUTE_URL)
                 );
 
                 return $form;
             }
         );
-        $arr["form"] = $form->createView();
+        $arr['form'] = $form->createView();
+
         return $this->render('login/recover.html.twig', $arr);
     }
 
@@ -92,28 +98,30 @@ class LoginController extends BaseLoginController
      * @param Request $request
      * @param $resetHash
      * @param TranslatorInterface $translator
+     *
      * @return Response
      */
     public function resetAction(Request $request, $resetHash, TranslatorInterface $translator)
     {
-        $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(["resetHash" => $resetHash]);
+        $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['resetHash' => $resetHash]);
         $arr = [];
         if (null === $user) {
-            $this->displayError($translator->trans("reset.error.invalid_hash", [], "frontend_login"));
+            $this->displayError($translator->trans('reset.error.invalid_hash', [], 'frontend_login'));
         } else {
             $form = $this->handleForm(
-                $this->createForm(SetPasswordType::class, $user, ["data_class" => ConstructionManager::class])
-                    ->add("form.set_password", SubmitType::class),
+                $this->createForm(SetPasswordType::class, $user, ['data_class' => ConstructionManager::class])
+                    ->add('form.set_password', SubmitType::class),
                 $request,
                 function ($form) use ($user, $translator, $request) {
                     //check for valid password
-                    if ($user->getPlainPassword() != $user->getRepeatPlainPassword()) {
-                        $this->displayError($translator->trans("reset.error.passwords_do_not_match", [], "frontend_login"));
+                    if ($user->getPlainPassword() !== $user->getRepeatPlainPassword()) {
+                        $this->displayError($translator->trans('reset.error.passwords_do_not_match', [], 'frontend_login'));
+
                         return $form;
                     }
 
                     //display success
-                    $this->displaySuccess($translator->trans("reset.success.password_set", [], "frontend_login"));
+                    $this->displaySuccess($translator->trans('reset.success.password_set', [], 'frontend_login'));
 
                     //set new password & save
                     $user->setPassword();
@@ -122,7 +130,8 @@ class LoginController extends BaseLoginController
 
                     //login user & redirect
                     $this->loginUser($request, $user);
-                    return $this->redirectToRoute("dashboard_index");
+
+                    return $this->redirectToRoute('dashboard_index');
                 }
             );
 
@@ -130,7 +139,7 @@ class LoginController extends BaseLoginController
                 return $form;
             }
 
-            $arr["form"] = $form->createView();
+            $arr['form'] = $form->createView();
         }
 
         return $this->render('login/reset.html.twig', $arr);

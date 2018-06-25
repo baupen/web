@@ -29,9 +29,9 @@ class LoadConstructionManagerData extends BaseFixture
     public function load(ObjectManager $manager)
     {
         $entries = [
-            ["j@mangel.io", "asdf", "Julian", "Dunskus"],
-            ["a@mangel.io", "asdf", "Adrian", "Hoffmann"],
-            ["f@mangel.io", "asdf", "Florian", "Moser"]
+            ['j@mangel.io', 'asdf', 'Julian', 'Dunskus'],
+            ['a@mangel.io', 'asdf', 'Adrian', 'Hoffmann'],
+            ['f@mangel.io', 'asdf', 'Florian', 'Moser'],
         ];
 
         foreach ($entries as $entry) {

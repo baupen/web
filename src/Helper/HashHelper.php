@@ -14,8 +14,9 @@ namespace App\Helper;
 class HashHelper
 {
     const HASH_LENGTH = 20;
+
     /**
-     * generates a hash from alpha nummeric characters of length 20
+     * generates a hash from alpha nummeric characters of length 20.
      *
      * @return string
      */
@@ -38,6 +39,7 @@ class HashHelper
                 --$i;
             }
         }
+
         return $newHash;
     }
 }

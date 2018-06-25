@@ -2,17 +2,6 @@ Introduction
 ======
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
-dependencies (you need this on your machine):
- - `xampp` https://www.apachefriends.org/de/index.html
- - `composer` https://getcomposer.org/download/
- - `npm` https://nodejs.org/en/download/
- - `yarn` https://yarnpkg.com/lang/en/docs/install/
- 
-ubuntu installation:
- - `sudo add-apt-repository ppa:ondrej/php`
- - `sudo apt-get update`
- - `sudo apt-get install php php-xml php-zip php-mbstring npm yard`
- 
 deploy dependencies:
  - all extensions listen in the `composer.json` 
  - ghostscript `gs`
@@ -33,7 +22,6 @@ backend with symfony4, with the additional bundles:
  - `expression-language` for fancy expressions & annotations
 
 using the following libraries:
- - `erusev/parsedown` to convert markup to html
  - `friendsofphp/php-cs-fixer` to fix code styling issues
   
 frontend building tools:
@@ -61,13 +49,14 @@ if you want to login as an admin
  - go to /login
  - use the user `info@mangel.io` with pass `asdf1234`
  
-if you've changed the Entities and need to adapt the database
- - `php bin/console doctrine:migrations:diff` to generate the migration class
- - `php bin/console doctrine:migrations:migrate` to migrate db to the newest version
- 
-if you want to test
- - execute ` ./vendor/bin/simple-phpunit`, ensure you have the `composer.phar` and ` wget` installed
+symfony-cmd:
+ - `doctrine:migrations:diff` to generate the migration class
+ - `doctrine:migrations:migrate` to execute all migrations
+ - `doctrine:fixtures:load` to load fixtures
 
+cmd:
+- `phpunit` to execute the unit tests
+- `vendor/bin/php-cs-fixer fix ../../src` to fix code style issues
  
 if you want to deploy
  - rename `servers_template.yml` to `servers.yml`, correct entries

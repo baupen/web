@@ -31,14 +31,14 @@ class BaseLoginController extends BaseFormController
             [
                 'event_dispatcher' => EventDispatcherInterface::class,
                 'security.token_storage' => TokenStorageInterface::class,
-                'translator' => TranslatorInterface::class
+                'translator' => TranslatorInterface::class,
             ];
     }
 
     /**
-     * @param Request $request
+     * @param Request              $request
      * @param UserTrait|BaseEntity $user
-     * @param FormInterface $loginForm
+     * @param FormInterface        $loginForm
      *
      * @return FormInterface
      */
@@ -75,7 +75,7 @@ class BaseLoginController extends BaseFormController
     }
 
     /**
-     * @param Request $request
+     * @param Request       $request
      * @param UserInterface $user
      */
     protected function loginUser(Request $request, UserInterface $user)

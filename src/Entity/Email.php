@@ -199,7 +199,7 @@ class Email extends BaseEntity
      */
     public function getFullIdentifier()
     {
-        return $this->getReceiver() . ' ' . $this->getSubject();
+        return $this->getReceiver().' '.$this->getSubject();
     }
 
     /**

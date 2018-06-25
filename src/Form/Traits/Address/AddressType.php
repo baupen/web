@@ -23,14 +23,14 @@ class AddressType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('streetAddress', TextType::class, ["required" => false]);
-        $builder->add('postalCode', NumberType::class, ["required" => false]);
-        $builder->add('locality', TextType::class, ["required" => false]);
-        $builder->add('country', CountryType::class, ["required" => false]);
+        $builder->add('streetAddress', TextType::class, ['required' => false]);
+        $builder->add('postalCode', NumberType::class, ['required' => false]);
+        $builder->add('locality', TextType::class, ['required' => false]);
+        $builder->add('country', CountryType::class, ['required' => false]);
     }
 
     /**
@@ -40,7 +40,7 @@ class AddressType extends AbstractType
     {
         $resolver->setDefaults([
             'translation_domain' => 'trait_address',
-            'data_class' => ConstructionSite::class
+            'data_class' => ConstructionSite::class,
         ]);
     }
 }

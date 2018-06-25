@@ -15,7 +15,7 @@ use App\Enum\Base\BaseEnum;
 
 class ApiStatus extends BaseEnum
 {
-    const SUCCESS = "success";
-    const FAIL = "fail";
-    const ERROR = "error";
+    const SUCCESS = 'success';
+    const FAIL = 'fail';
+    const ERROR = 'error';
 }

@@ -1,9 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 6/20/18
- * Time: 9:52 AM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Api\Transformer;
@@ -37,11 +40,12 @@ class TransformerFactory
 
     /**
      * TransformerFactory constructor.
-     * @param BuildingTransformer $buildingTransformer
+     *
+     * @param BuildingTransformer  $buildingTransformer
      * @param CraftsmanTransformer $craftsmanTransformer
-     * @param MapTransformer $mapTransformer
-     * @param IssueTransformer $issueTransformer
-     * @param UserTransformer $userTransformer
+     * @param MapTransformer       $mapTransformer
+     * @param IssueTransformer     $issueTransformer
+     * @param UserTransformer      $userTransformer
      */
     public function __construct(BuildingTransformer $buildingTransformer, CraftsmanTransformer $craftsmanTransformer, MapTransformer $mapTransformer, IssueTransformer $issueTransformer, UserTransformer $userTransformer)
     {

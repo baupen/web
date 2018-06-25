@@ -1,9 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 4/3/18
- * Time: 8:59 AM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\EventListener;
@@ -18,12 +21,12 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ExceptionListener
 {
     /**
-     * @var SerializerInterface $serializer
+     * @var SerializerInterface
      */
     private $serializer;
 
     /**
-     * @var LoggerInterface $logger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -39,7 +42,7 @@ class ExceptionListener
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         //catch only api errors
-        if (strpos($event->getRequest()->getPathInfo(), "/api") !== 0) {
+        if (0 !== mb_strpos($event->getRequest()->getPathInfo(), '/api')) {
             return;
         }
 
@@ -53,10 +56,10 @@ class ExceptionListener
 
         //construct error response
         $errorObj = new ErrorResponse($message, 300);
-        $json = $this->serializer->serialize($errorObj, "json");
+        $json = $this->serializer->serialize($errorObj, 'json');
         $response = new JsonResponse($json, Response::HTTP_INTERNAL_SERVER_ERROR, [], true);
 
-        $this->logger->error("api error: " . $exception->getMessage() . " at " . $exception->getFile() . " line " . $exception->getLine() . $exception->getTraceAsString() . " for \n" . $event->getRequest()->getContent());
+        $this->logger->error('api error: '.$exception->getMessage().' at '.$exception->getFile().' line '.$exception->getLine().$exception->getTraceAsString()." for \n".$event->getRequest()->getContent());
 
         // sends the modified response object to the event
         $event->setResponse($response);
