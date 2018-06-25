@@ -11,10 +11,11 @@
 
 namespace App\Api\Transformer;
 
-use App\Api\Transformer\Base\AbstractTransformer;
+
+use App\Api\Transformer\Base\BatchTransformer;
 use App\Entity\Craftsman;
 
-class CraftsmanTransformer extends AbstractTransformer
+class CraftsmanTransformer extends BatchTransformer
 {
     /**
      * @var ObjectMetaTransformer
@@ -31,7 +32,7 @@ class CraftsmanTransformer extends AbstractTransformer
      *
      * @return \App\Api\Entity\Craftsman
      */
-    public function toApi(Craftsman $entity)
+    public function toApi($entity)
     {
         $craftsman = new \App\Api\Entity\Craftsman();
         $craftsman->setName($entity->getName());
@@ -40,17 +41,5 @@ class CraftsmanTransformer extends AbstractTransformer
         $craftsman->setMeta($this->objectMetaTransformer->toApi($entity));
 
         return $craftsman;
-    }
-
-    /**
-     * @param Craftsman[] $entities
-     *
-     * @return \App\Api\Entity\Craftsman[]
-     */
-    public function toApiMultiple(array $entities)
-    {
-        return parent::toApiMultipleInternal($entities, function ($entity) {
-            return $this->toApi($entity);
-        });
     }
 }

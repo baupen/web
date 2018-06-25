@@ -12,10 +12,11 @@
 namespace App\Api\Transformer;
 
 use App\Api\Entity\Issue;
-use App\Api\Transformer\Base\AbstractTransformer;
+
+use App\Api\Transformer\Base\BatchTransformer;
 use App\Entity\Map;
 
-class MapTransformer extends AbstractTransformer
+class MapTransformer extends BatchTransformer
 {
     /**
      * @var ObjectMetaTransformer
@@ -53,17 +54,5 @@ class MapTransformer extends AbstractTransformer
         $map->setMeta($this->objectMetaTransformer->toApi($entity));
 
         return $map;
-    }
-
-    /**
-     * @param Issue[] $entities
-     *
-     * @return \App\Api\Entity\Issue[]
-     */
-    public function toApiMultiple(array $entities)
-    {
-        return parent::toApiMultipleInternal($entities, function ($entity) {
-            return $this->toApi($entity);
-        });
     }
 }

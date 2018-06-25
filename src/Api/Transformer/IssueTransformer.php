@@ -14,11 +14,12 @@ namespace App\Api\Transformer;
 use App\Api\Entity\IssuePosition;
 use App\Api\Entity\IssueStatus;
 use App\Api\Entity\IssueStatusEvent;
-use App\Api\Transformer\Base\AbstractTransformer;
+
+use App\Api\Transformer\Base\BatchTransformer;
 use App\Entity\Issue;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class IssueTransformer extends AbstractTransformer
+class IssueTransformer extends BatchTransformer
 {
     /**
      * @var ObjectMetaTransformer
@@ -62,7 +63,11 @@ class IssueTransformer extends AbstractTransformer
         return $entity;
     }
 
-    public function toApi(Issue $entity)
+    /**
+     * @param Issue $entity
+     * @return \App\Api\Entity\Issue
+     */
+    public function toApi($entity)
     {
         $issue = new \App\Api\Entity\Issue();
         $issue->setWasAddedWithClient($entity->getWasAddedWithClient());
@@ -108,17 +113,5 @@ class IssueTransformer extends AbstractTransformer
         $issue->setMeta($this->objectMetaTransformer->toApi($entity));
 
         return $issue;
-    }
-
-    /**
-     * @param Issue[] $entities
-     *
-     * @return \App\Api\Entity\Issue[]
-     */
-    public function toApiMultiple(array $entities)
-    {
-        return parent::toApiMultipleInternal($entities, function ($entity) {
-            return $this->toApi($entity);
-        });
     }
 }

@@ -11,19 +11,22 @@
 
 namespace App\Api\Transformer\Base;
 
-abstract class AbstractTransformer
+use Symfony\Component\Form\AbstractType;
+
+abstract class BatchTransformer
 {
+    public abstract function toApi($entity);
+
     /**
      * @param array    $entities
-     * @param callable $toAiMethod
      *
      * @return array
      */
-    protected function toApiMultipleInternal(array $entities, $toAiMethod)
+    protected function toApiMultipleInternal(array $entities)
     {
         $res = [];
         foreach ($entities as $entity) {
-            $res[] = $toAiMethod($entity);
+            $res[] = $this->toApi($entity);
         }
 
         return $res;

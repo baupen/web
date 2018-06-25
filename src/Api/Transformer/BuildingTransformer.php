@@ -13,10 +13,11 @@ namespace App\Api\Transformer;
 
 use App\Api\Entity\Address;
 use App\Api\Entity\Building;
-use App\Api\Transformer\Base\AbstractTransformer;
+
+use App\Api\Transformer\Base\BatchTransformer;
 use App\Entity\ConstructionSite;
 
-class BuildingTransformer extends AbstractTransformer
+class BuildingTransformer extends BatchTransformer
 {
     /**
      * @var ObjectMetaTransformer
@@ -29,23 +30,11 @@ class BuildingTransformer extends AbstractTransformer
     }
 
     /**
-     * @param ConstructionSite[] $entities
-     *
-     * @return Building[]
-     */
-    public function toApiMultiple(array $entities)
-    {
-        return parent::toApiMultipleInternal($entities, function ($entity) {
-            return $this->toApi($entity);
-        });
-    }
-
-    /**
      * @param ConstructionSite $entity
      *
      * @return Building
      */
-    public function toApi(ConstructionSite $entity)
+    public function toApi($entity)
     {
         $building = new Building();
         $building->setName($entity->getName());
