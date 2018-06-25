@@ -2,24 +2,7 @@ Introduction
 ======
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
-deploy dependencies:
- - all extensions listen in the `composer.json` 
- - ghostscript `gs`
-
-backend with symfony4, with the additional bundles:
- - `server` for a better symfony server
- - `doctrine` the database wrapper 
- - `migrations` to migrate between different versions of the database
- - `orm-fixtures` to generate sample data
- - `admin` for the admin
- - `annotation` to configure routes in the controller
- - `form` to easely manage html forms
- - `logger` who doesn't need logging?
- - `profiler` to measure performance
- - `mailer` to send mails via smtp
- - `apache-pack` for the .htaccess file
- - `phpunit-bridge` to run tests
- - `expression-language` for fancy expressions & annotations
+deploy
 
 using the following libraries:
  - `friendsofphp/php-cs-fixer` to fix code styling issues
@@ -56,13 +39,16 @@ symfony-cmd:
 
 cmd:
 - `phpunit` to execute the unit tests
-- `vendor/bin/php-cs-fixer fix ../../src` to fix code style issues
+- `vendor/bin/php-cs-fixer fix` to fix code style issues
  
-if you want to deploy
- - rename `servers_template.yml` to `servers.yml`, correct entries
- - execute `dep deploy ENVIRONMENT`, replacing `ENVIRONMENT` by ether `dev`, `testing` or `production` (defaults to `dev`) 
- - if you deploy the fist time to production:
-    - while `deploy:composer` is running, set the `.env` file in `/shared/.env`
+deploy:
+deployment can be done with composer
+
+server requirements are ghostscript (`gs`) and any other dependencies composer.json requires
+
+ - rename `servers_template.yml` to `servers.yml` & fill out server infos
+ - execute `dep deploy [ENVIRONMENT]`, replacing `[ENVIRONMENT]` by ether `dev`, `testing` or `production` (defaults to `dev`) 
+ - if you deploy the fist time to production, while `deploy:composer` is running, set the `.env` file in `/shared/.env`
     
 if you're setting up deployment on a new server
  - `cat ~/.ssh/id_rsa.pub` to ensure you already have created an ssh key for yourself, if none:
@@ -75,4 +61,4 @@ if you're setting up deployment on a new server
  - go to https://github.com/famoser/nodika/deploy_keys and add the server ssh key
  - point the web directory to `~/myurl.ch/ENV/current/web`
  - deploy!
- - you may want to check with `php bin/symfony_requirements` if your server does support symfony
+ - you may want to check with `php bin/symfony_requirements` if your server fully supports symfony
