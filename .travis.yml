@@ -36,7 +36,7 @@ before_install:
 
   # install imagick requirements
   - printf "\n" | sudo pecl install imagick-3.4.3
-  - echo extension=imagick.so>> php.ini
+  - echo "extension=imagick.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 # prepare programming environement
 install:
