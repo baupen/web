@@ -23,7 +23,7 @@ matrix:
 
 # prepare virtual environment
 before_install:
-  - if [[ $COVERAGE" == false ]]; then phpenv config-rm xdebug.ini'
+  - if [[ $COVERAGE" == false ]]; then phpenv config-rm xdebug.ini
 
   # install git, yarn, nodejs, libmagickwand-dev (for imagick extension)
   - curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
