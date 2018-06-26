@@ -83,7 +83,7 @@ class FileController extends BaseApiController
                 return $this->fail(static::ENTITY_ACCESS_DENIED);
             }
 
-            if ($entity->getLastChangedAt()->format('c') !== $objectMeta->getLastChangeTime()) {
+            if ($entity->getLastChangedAt() > new \DateTime($objectMeta->getLastChangeTime())) {
                 return $this->fail(static::INVALID_TIMESTAMP);
             }
 
