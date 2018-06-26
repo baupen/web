@@ -138,17 +138,15 @@ class IssueController extends BaseApiController
         $issue->setUploadedAt(new \DateTime());
 
         //get map & check access
-        if (null !== $issueModifyRequest->getIssue()->getMap()) {
-            /** @var Map $map */
-            $map = $this->getDoctrine()->getRepository(Map::class)->findOneBy(['id' => $issueModifyRequest->getIssue()->getMap()]);
-            if (null === $map) {
-                return $this->fail(static::MAP_NOT_FOUND);
-            }
-            if (!$map->getConstructionSite()->getConstructionManagers()->contains($constructionManager)) {
-                return $this->fail(static::MAP_ACCESS_DENIED);
-            }
-            $issue->setMap($map);
+        /** @var Map $map */
+        $map = $this->getDoctrine()->getRepository(Map::class)->findOneBy(['id' => $issueModifyRequest->getIssue()->getMap()]);
+        if (null === $map) {
+            return $this->fail(static::MAP_NOT_FOUND);
         }
+        if (!$map->getConstructionSite()->getConstructionManagers()->contains($constructionManager)) {
+            return $this->fail(static::MAP_ACCESS_DENIED);
+        }
+        $issue->setMap($map);
 
         //get craftsmen & check access
         if (null !== $issueModifyRequest->getIssue()->getCraftsman()) {

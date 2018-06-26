@@ -13,7 +13,7 @@ namespace App\Api\Transformer\Base;
 
 abstract class BatchTransformer
 {
-    public abstract function toApi($entity);
+    abstract public function toApi($entity);
 
     /**
      * @param array    $entities
