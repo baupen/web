@@ -37,7 +37,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class FileController extends ExternalApiController
 {
     /**
-     * @Route("/download", name="api_file_download")
+     * @Route("/download", name="api_external_file_download")
      *
      * @param Request $request
      * @param SerializerInterface $serializer

@@ -31,7 +31,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class LoginController extends ExternalApiController
 {
     /**
-     * @Route("", name="api_login")
+     * @Route("", name="api_external_login")
      *
      * @param Request $request
      * @param SerializerInterface $serializer

@@ -11,6 +11,27 @@
 
 namespace App\Controller\Api;
 
-class CraftsmanController
+use App\Controller\Api\Base\AbstractApiController;
+use App\Entity\ConstructionSite;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+/**
+ * @Route("/craftsman")
+ */
+class CraftsmanController extends AbstractApiController
 {
+    /**
+     * @Route("/{constructionSite}/list", name="api_craftsman_list")
+     *
+     * @param ConstructionSite $constructionSite
+     *
+     * @return Response
+     */
+    public function listAction(ConstructionSite $constructionSite)
+    {
+        $craftsmen = $constructionSite->getCraftsmen();
+
+        return $this->json($this->get('serializer')->serialize($craftsmen, 'json', ['attributes' => ['name']]));
+    }
 }
