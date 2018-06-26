@@ -112,7 +112,6 @@ class IssueController extends BaseApiController
             return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
         }
 
-        $entity = null;
         $newImageExpected = null !== $issueModifyRequest->getIssue()->getImageFilename();
         if ('create' === $mode) {
             //ensure GUID not in use already
