@@ -63,8 +63,8 @@
     yargs "^8.0.1"
 
 "@types/node@*":
-  version "10.3.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.5.tgz#8423cdf6e6fb83433e489900d7600d3b61c8260c"
+  version "10.3.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.6.tgz#ea8aab9439b59f40d19ec5f13b44642344872b11"
 
 "@types/tapable@^0":
   version "0.2.5"
@@ -77,8 +77,8 @@
     source-map "^0.6.1"
 
 "@types/webpack@^3.0.5":
-  version "3.8.12"
-  resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-3.8.12.tgz#c5db4f273fb8f2a4929db6c486e19e68c350e7ac"
+  version "3.8.13"
+  resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-3.8.13.tgz#10f3867de1d11ceea50ae3c0c83f84dd250f14f2"
   dependencies:
     "@types/node" "*"
     "@types/tapable" "^0"
@@ -1080,12 +1080,12 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
-  version "1.0.30000858"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000858.tgz#153c9348350641dc624d150ec174262c2ad985e5"
+  version "1.0.30000859"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000859.tgz#6e813a1757f19a93cb3675f6b5037aca80bea062"
 
 caniuse-lite@^1.0.30000844:
-  version "1.0.30000858"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000858.tgz#f6f203a9128bac507136de1cf6cfd966d2df027c"
+  version "1.0.30000859"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000859.tgz#da974adc5348fffe94724877a7ef8cb5d6d3d777"
 
 caseless@~0.11.0:
   version "0.11.0"
@@ -2503,8 +2503,8 @@ home-or-tmp@^2.0.0:
     os-tmpdir "^1.0.1"
 
 hosted-git-info@^2.1.4:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.6.0.tgz#23235b29ab230c576aab0d4f13fc046b0b038222"
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.6.1.tgz#6e4cee78b01bb849dcf93527708c69fdbee410df"
 
 hpack.js@^2.1.6:
   version "2.1.6"

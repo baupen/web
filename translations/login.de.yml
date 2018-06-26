@@ -2,14 +2,19 @@
 login:
   title: 'Bitte einloggen.'
   description: 'Benutzen Sie die E-Mail, für die Sie eingeladen wurden.'
+  submit: 'einloggen'
+  forgot_passwort: 'Haben Sie das Passwort vergessen?'
   errors:
     login_failed: 'Login fehlgeschlagen'
 
 #reset page
 recover:
-  title: 'Passwort zurücksetzen'
-  description: 'Passwort mit der hinterlegten E-Mail zurücksetzen'
-  set_email_form_description: 'Geben Sie die E-Mail ein, die Sie beim Login verwenden. Wir senden Ihnen dann einen Link zu, mit dem Sie das Passwort neu setzen können.'
+  title: 'Passwort zurücksetzen.'
+  description: 'Wir senden Ihnen eine Nachricht an Ihre E-Mail.'
+  submit: 'Nachricht senden'
+  forgot_email: 'E-Mail vergessen oder sonstige Probleme?'
+  remembered_login: "Login noch einmal versuchen?"
+  back_to_login: "Zurück zum Login"
   success:
     email_sent: 'Wir haben Ihnen soeben eine E-Mail versandt.'
   fail:
@@ -17,15 +22,15 @@ recover:
     email_not_found: 'Diese E-Mail wurde nicht in unserem System gefunden.'
   email:
     reset_password:
-      subject: 'Passwort zurücksetzen: %page%'
+      subject: 'Passwort zurücksetzen auf %page%'
       message: 'Benutzen Sie den folgenden Link um das Passwort zurückzusetzen:'
       action_text: 'Jetzt Passwort zurücksetzen'
 
 #reset/confirm page
 reset:
-  title: 'Passwort setzen'
-  description: 'Setzen Sie Ihr neues Passwort'
-  reset_password_form_description: 'Setzen Sie Ihr neues Passwort'
+  title: 'Willkommen zurück!'
+  description: 'Setzen Sie Ihr neues Passwort.'
+  submit: 'Passwort setzen'
   success:
     password_set: 'Neues Passwort erfolgreich gesetzt'
   error:
@@ -36,14 +41,3 @@ reset:
 invalid:
   title: 'Link ungültig'
   description: 'Der aufgerufene Link ist ungültig'
-
-
-register:
-  subject: 'Registrierung abschliessen'
-  message: 'Vielen Dank für Ihr Interesse! Ihr Account wurde erstellt.'
-  action_text: 'Registrierung abschliessen'
-
-resend_invitation:
-  subject: "Einladung für nodika"
-  message: "Sie wurden auf nodika eingeladen. Folgen Sie dem Link, um die Einladung anzunehmen"
-  action_text: 'Jetzt Einladung annehmen'

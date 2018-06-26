@@ -11,7 +11,6 @@
 
 namespace App\Controller\Api\Base;
 
-use App\Api\Response\ErrorResponse;
 use App\Api\Response\FailResponse;
 use App\Api\Response\SuccessfulResponse;
 use App\Controller\Base\BaseDoctrineController;
@@ -85,22 +84,6 @@ class BaseApiController extends BaseDoctrineController
     public static function getSubscribedServices()
     {
         return parent::getSubscribedServices() + ['translator' => TranslatorInterface::class, 'logger' => LoggerInterface::class];
-    }
-
-    /**
-     * if request errored (server error).
-     *
-     * @param string $message
-     *
-     * @return Response
-     */
-    protected function error(string $message)
-    {
-        $logger = $this->get('logger');
-        $request = $this->get('request_stack')->getCurrentRequest();
-        $logger->error('Api error ' . ': ' . $message . ' for ' . $request->getContent());
-
-        return $this->json(new ErrorResponse($message, $this->errorMessageToStatusCode($message)), Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**

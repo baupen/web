@@ -1,6 +1,17 @@
-{% extends "login/_layout.html.twig" %}
+{% extends "center_form_content.html.twig" %}
 
 {% block title %}{{ "recover.title"|trans }}{% endblock %}
 {% block description %}{{ "recover.description"|trans }}{% endblock %}
 
-{% trans_default_domain "frontend_login" %}
+{% trans_default_domain "login" %}
+
+{% block secondary_content %}
+    <p class="small text-secondary">
+        {{ "recover.forgot_email"|trans }}
+        <a href="{{ path("support") }}">{{ "support.title"|trans({},"support") }}</a>
+
+        <br/>
+        {{ "recover.remembered_login"|trans }}
+        <a href="{{ path("login") }}">{{ "recover.back_to_login"|trans }}</a>
+    </p>
+{% endblock %}

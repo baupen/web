@@ -62,6 +62,7 @@ abstract class BaseEnum
      */
     private function getChoicesForBuilderInternal()
     {
+        $res = [];
         try {
             $reflection = new ReflectionClass(get_class($this));
             $choices = $reflection->getConstants();
@@ -75,7 +76,7 @@ abstract class BaseEnum
             //this never happens due to ReflectionClass is passed the class of the $this object (always valid)
         }
 
-        return [];
+        return $res;
     }
 
     /**

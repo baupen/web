@@ -36,28 +36,24 @@
 {% if flashes|length > 0 %}
     <div class="flash-wrapper">
         {# flashbag #}
-        <div class="container">
-            <div class="row">
-                {% for type, messages in flashes %}
-                    {% for message in messages %}
-                        <div class="col-md-12 alert alert-{{ type }} alert-dismissible fade show" role="alert">
-                            {{ message|raw }}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    {% endfor %}
-                {% endfor %}
-            </div>
-        </div>
+        {% for type, messages in flashes %}
+            {% for message in messages %}
+                <div class="col-12 alert alert-{{ type }} alert-dismissible fade show" role="alert">
+                    <div class="container text-center">
+                        {{ message|raw }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
     </div>
 {% endif %}
 
-<div class="content-wrapper">
-    {% block content %}
+{% block content %}
 
-    {% endblock %}
-</div>
+{% endblock %}
 
 <script src="{{ asset('dist/app.js') }}"></script>
 {% block javascript %}

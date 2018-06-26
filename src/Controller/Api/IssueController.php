@@ -187,7 +187,7 @@ class IssueController extends BaseApiController
             }
         }
 
-        //if create, need to enfore correct GUID
+        //if create, need to enforce correct GUID
         if ('create' === $mode) {
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();

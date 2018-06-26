@@ -26,7 +26,7 @@ security:
             form_login:
                 login_path: login
                 check_path: login_check
-                default_target_path: dashboard_index
+                default_target_path: dashboard
                 csrf_token_generator: security.csrf.token_manager
                 # field names for the username and password fields
                 username_parameter: login[email]
@@ -44,5 +44,6 @@ security:
     access_control:
         - { path: ^/api, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/support, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, role: ROLE_USER }
 

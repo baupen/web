@@ -11,19 +11,19 @@
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseFormController;
+use App\Controller\Base\BaseLoginController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class StaticController extends BaseFormController
+class IndexController extends BaseLoginController
 {
     /**
-     * @Route("/", name="static_index")
+     * @Route("/", name="index")
      *
      * @return Response
      */
     public function indexAction()
     {
-        return $this->render('static/login.html.twig');
+        return $this->redirectToRoute('dashboard');
     }
 }

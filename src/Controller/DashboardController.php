@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class DashboardController extends BaseLoginController
 {
     /**
-     * @Route("/", name="dashboard_index")
+     * @Route("", name="dashboard")
      *
      * @return Response
      */

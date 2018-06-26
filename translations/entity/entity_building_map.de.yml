@@ -1,6 +1,0 @@
-entity:
-  name: 'Grundriss'
-  description: 'Ein Grundriss ist Teil eines Gebäudes'
-  plural: 'Grundrisse'
-
-file: 'PDF Dokument'

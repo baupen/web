@@ -1,1 +1,37 @@
 @import "variables"
+
+html, body
+  height: 100%
+
+//display flashes over all content
+.flash-wrapper
+  position: absolute
+  top: 0
+  width: 100%
+
+.flash-wrapper > .alert
+  margin-bottom: 0.5rem
+
+//center layout for messages & easy forms
+.center-wrapper
+  height: 100%
+  display: -ms-flexbox
+  display: flex
+  -ms-flex-align: center
+  align-items: center
+  background: $gray-100
+
+.center-content
+  width: 100%
+  margin: auto
+  max-width: 540px
+
+.center-content-primary
+  padding: 2rem 2rem 1rem 2rem
+  background: $white
+
+  > *:last-child
+    margin-bottom: 0
+
+.center-content-secondary
+  padding: 1rem 2rem
