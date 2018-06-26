@@ -132,7 +132,7 @@ class FileController extends BaseApiController
 
         /** @var TimeTrait $entity */
         if (null === $entity) {
-            return $this->fail(static::ENTITY_NO_DOWNLOADABLE_FILE);
+            return $this->fail(static::ENTITY_NOT_FOUND);
         }
 
         if (!$verifyAccess($entity)) {
@@ -145,7 +145,7 @@ class FileController extends BaseApiController
 
         $filePath = $accessFilePath($entity);
         if (null === $filePath) {
-            return $this->fail(static::ENTITY_ACCESS_DENIED);
+            return $this->fail(static::ENTITY_NO_DOWNLOADABLE_FILE);
         }
 
         $filePath = $this->getParameter('PUBLIC_DIR') . '/' . $filePath;
