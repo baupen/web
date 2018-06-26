@@ -11,7 +11,7 @@
 
 namespace App\Repository;
 
-use App\Api\Request\Base\AuthenticatedRequest;
+use App\Api\External\Request\Base\AuthenticatedRequest;
 use App\Entity\AuthenticationToken;
 use App\Helper\HashHelper;
 use Doctrine\ORM\EntityRepository;

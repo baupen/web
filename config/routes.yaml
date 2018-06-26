@@ -6,3 +6,8 @@ app_api:
     resource: "../src/Controller/Api/"
     type:     annotation
     prefix:   /api
+
+app_api_external:
+    resource: "../src/Controller/Api/External/"
+    type:     annotation
+    prefix:   /api/external

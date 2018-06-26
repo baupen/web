@@ -42,8 +42,9 @@ security:
               always_remember_me: true
 
     access_control:
-        - { path: ^/api, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/external, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/support, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/email, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, role: ROLE_USER }
 

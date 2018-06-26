@@ -11,7 +11,7 @@
 
 namespace App\EventListener;
 
-use App\Api\Response\ErrorResponse;
+use App\Api\External\Response\ErrorResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
