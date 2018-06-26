@@ -1,30 +1,29 @@
 #login page
-index:
-  title: 'Login'
-  description: 'In einen existierenden Account einloggen'
-  login_form_header: 'Login'
-  forgot_password_action: 'Passwort vergessen'
-  register_action: 'Neu registrieren'
+login:
+  title: 'Bitte einloggen.'
+  description: 'Benutzen Sie die E-Mail, für die Sie eingeladen wurden.'
   errors:
     login_failed: 'Login fehlgeschlagen'
 
 #reset page
 recover:
   title: 'Passwort zurücksetzen'
-  description: 'Setzen Sie Ihr Passwort mit Ihrer E-Mail zurück'
+  description: 'Passwort mit der hinterlegten E-Mail zurücksetzen'
   set_email_form_description: 'Geben Sie die E-Mail ein, die Sie beim Login verwenden. Wir senden Ihnen dann einen Link zu, mit dem Sie das Passwort neu setzen können.'
   success:
-    email_sent: 'Sofern diese E-Mail in unserem System gefunden wurde, haben wir Ihnen soeben eine E-Mail versandt'
+    email_sent: 'Wir haben Ihnen soeben eine E-Mail versandt.'
+  fail:
+    email_not_sent: 'Der E-Mail Versand ist fehlgeschlagen. Dies ist ein interner Fehler, bitte kontaktieren Sie den Support.'
+    email_not_found: 'Diese E-Mail wurde nicht in unserem System gefunden.'
   email:
     reset_password:
-      subject: 'Passwort zurücksetzen'
-      message: 'Wir wurden beauftragt Ihr Passwort zurückzusetzen. Sie können diese E-Mail ignorieren wenn nicht Sie diese Anfrage gestellt haben.'
+      subject: 'Passwort zurücksetzen: %page%'
+      message: 'Benutzen Sie den folgenden Link um das Passwort zurückzusetzen:'
       action_text: 'Jetzt Passwort zurücksetzen'
-
 
 #reset/confirm page
 reset:
-  title: 'Passwort zurücksetzen'
+  title: 'Passwort setzen'
   description: 'Setzen Sie Ihr neues Passwort'
   reset_password_form_description: 'Setzen Sie Ihr neues Passwort'
   success:

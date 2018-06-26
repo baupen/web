@@ -1,9 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 3/11/18
- * Time: 11:57 AM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Tests\Controller;
@@ -15,8 +18,8 @@ class LoginControllerTest extends WebTestCase
     public function testShowIndex()
     {
         $client = static::createClient();
-        $client->request('GET', '/login/');
+        $client->request('GET', '/login');
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertSame(200, $client->getResponse()->getStatusCode());
     }
 }

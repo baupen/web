@@ -55,6 +55,7 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
      * @param ObjectManager $manager
      * @param callable $loader
      * @param int $count
+     *
      * @return array
      */
     protected function loadSomeRandoms(ObjectManager $manager, $loader, $count = 5)
@@ -65,11 +66,12 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
             $res[] = $instance;
             $manager->persist($instance);
         }
+
         return $res;
     }
 
     /**
-     * copies a file from the resource folder to the public part of the application
+     * copies a file from the resource folder to the public part of the application.
      *
      * @param string $targetFilePath
      * @param string $resourceFileName
@@ -77,15 +79,16 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
     protected function safeCopyToPublic($targetFilePath, $resourceFileName)
     {
         //get target folder & ensure it exists
-        $targetFilePath = __DIR__ . "/../../../public/" . $targetFilePath;
+        $targetFilePath = __DIR__ . '/../../../public/' . $targetFilePath;
         $targetFolder = dirname($targetFilePath);
         if (!file_exists($targetFolder)) {
             mkdir($targetFolder, 0777, true);
         }
 
         // copy file to new location
-        if (file_exists($targetFilePath))
+        if (file_exists($targetFilePath)) {
             unlink($targetFilePath);
-        copy(__DIR__ . "/../Resources/" . $resourceFileName, $targetFilePath);
+        }
+        copy(__DIR__ . '/../Resources/' . $resourceFileName, $targetFilePath);
     }
 }

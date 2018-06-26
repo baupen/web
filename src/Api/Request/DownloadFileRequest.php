@@ -1,13 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 3/11/18
- * Time: 10:37 AM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Api\Request;
-
 
 use App\Api\Entity\ObjectMeta;
 use App\Api\Request\Base\AuthenticatedRequest;

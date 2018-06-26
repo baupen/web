@@ -1,89 +1,54 @@
-Introduction
-======
-[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+# Introduction
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) 
+[![Build Status](https://travis-ci.org/mangelio/app.svg?branch=master)](https://travis-ci.org/mangelio/app)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mangelio/app/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/mangelio/app/?branch=master)
+[![codecov](https://codecov.io/gh/mangelio/app/branch/master/graph/badge.svg)](https://codecov.io/gh/mangelio/app) 
 
-dependencies (you need this on your machine):
- - `xampp` https://www.apachefriends.org/de/index.html
- - `composer` https://getcomposer.org/download/
- - `npm` https://nodejs.org/en/download/
- - `yarn` https://yarnpkg.com/lang/en/docs/install/
- 
-ubuntu installation:
- - `sudo add-apt-repository ppa:ondrej/php`
- - `sudo apt-get update`
- - `sudo apt-get install php php-xml php-zip php-mbstring npm yard`
- 
-deploy dependencies:
- - all extensions listen in the `composer.json` 
- - ghostscript `gs`
 
-backend with symfony4, with the additional bundles:
- - `server` for a better symfony server
- - `doctrine` the database wrapper 
- - `migrations` to migrate between different versions of the database
- - `orm-fixtures` to generate sample data
- - `admin` for the admin
- - `annotation` to configure routes in the controller
- - `form` to easely manage html forms
- - `logger` who doesn't need logging?
- - `profiler` to measure performance
- - `mailer` to send mails via smtp
- - `apache-pack` for the .htaccess file
- - `phpunit-bridge` to run tests
- - `expression-language` for fancy expressions & annotations
 
-using the following libraries:
- - `erusev/parsedown` to convert markup to html
- - `friendsofphp/php-cs-fixer` to fix code styling issues
-  
-frontend building tools:
- - `@symfony/webpack-encore` for the encore provided by symfony
- - `jquery` to simplify DOM access
- - `bootstrap-sass` bootstrap for basic css styling
- - `font-awesome` font with icons
- - `sass-loader node-sass` to enable the sass precompiler
- 
-after first pull, execute from project root:
- - `yarn install` installs npm dependencies 
- - `composer install` installs php dependencies
- - `yarn encore dev` builds css / js files
- - `php bin/console doctrine:fixtures:load` loads sample data & user
- 
-if you're developing in the backend:
- - `php bin/console server:run` #starts the symfony server
- 
-if you're developing the frontend (css/js), execute afterwards:
- - `yarn encore dev-server` #serves as a proxy between the symfony server & the webpage displayed in the browser
- - edit files in web/assets/sass or web/assets/js, save them to see the change instantly in the browser
- - test error templates inside TwigBundle/views by accessing `/_error/404` and `/_error/500`
- 
-if you want to login as an admin
- - go to /login
- - use the user `info@mangel.io` with pass `asdf1234`
- 
-if you've changed the Entities and need to adapt the database
- - `php bin/console doctrine:migrations:diff` to generate the migration class
- - `php bin/console doctrine:migrations:migrate` to migrate db to the newest version
- 
-if you want to test
- - execute ` ./vendor/bin/simple-phpunit`, ensure you have the `composer.phar` and ` wget` installed
+mangel.io aims to make the issue management on a construction site more pleasing and straight-forward.
 
+
+## Useful commands
+
+##### symfony-cmd
+`php bin/console server:run` to start the symfony server  
+`doctrine:migrations:diff` to generate the migration class  
+`doctrine:migrations:migrate` to execute all migrations  
+`doctrine:fixtures:load` to load fixtures
+
+##### cmd
+`composer install` to install backend dependencies  
+`yarn install && yarn encore dev` to install & build frontend dependencies  
+`phpunit` to execute the unit tests  
+`vendor/bin/php-cs-fixer fix` to fix code style issues  
+`dep deploy` to deploy  
+
+##### develop
+login with `info@mangel.io`, `asdf`  
+`yarn encode dev-server` starts the frontend dev server  
+test error templates inside TwigBundle/views by accessing `/_error/404` and `/_error/500`
+
+##### deploy
+server must fulfil requirements of `composer.json` & include ghostscript (`gs`)  
+if you deploy the fist time, while `deploy:composer` is running, set the `.env` file in `/shared/.env`  
  
-if you want to deploy
- - rename `servers_template.yml` to `servers.yml`, correct entries
- - execute `dep deploy ENVIRONMENT`, replacing `ENVIRONMENT` by ether `dev`, `testing` or `production` (defaults to `dev`) 
- - if you deploy the fist time to production:
-    - while `deploy:composer` is running, set the `.env` file in `/shared/.env`
-    
-if you're setting up deployment on a new server
- - `cat ~/.ssh/id_rsa.pub` to ensure you already have created an ssh key for yourself, if none:
-    - `ssh-keygen -t rsa -b 4096 -C "info@famoser.ch"` generate a new key
-    - `eval $(ssh-agent -s)` start the ssh agent
-    - `ssh-add ~/.ssh/id_rsa` add the new key
- - add own ssh key to the server with `ssh-copy-id -i ~/.ssh/id_rsa.pub username@server.domain` 
- - connect to server with `ssh username@server.domain`
- - `cat ~/.ssh/id_rsa.pub` to display the sever ssh key, if none see above on how to create one
- - go to https://github.com/famoser/nodika/deploy_keys and add the server ssh key
- - point the web directory to `~/myurl.ch/ENV/current/web`
- - deploy!
- - you may want to check with `php bin/symfony_requirements` if your server does support symfony
+##### ssh
+`ssh-copy-id -i ~/.ssh/id_rsa.pub username@domain` to add ssh key  
+`cat ~/.ssh/id_rsa.pub` to query the active ssh key  
+`ssh-keygen -t rsa -b 4096 -C "username@domain" && eval $(ssh-agent -s) && ssh-add ~/.ssh/id_rsa` generate a new key & add it to ssh  
+
+## git hooks
+##### pre-commit
+```
+#!/bin/sh
+./vendor/bin/php-cs-fixer fix --dry-run -v > /dev/null 2>&1
+status=$?
+
+if [ "$status" = 0 ] ; then
+    exit 0
+else
+    echo 1>&2 "Found not properly formatted files. Please run the php-cs-fixer before pproceeding."
+    exit 1
+fi
+```

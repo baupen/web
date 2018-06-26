@@ -27,42 +27,44 @@ class ClearPublicUploadDir extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $dir = __DIR__ . "/../../public/upload";
+        $dir = __DIR__ . '/../../public/upload';
         if (is_dir($dir)) {
-            $this->deleteDirectory($dir);
+            $this->deleteDirectoryContents($dir, true, ['.gitignore']);
         }
-
-        //recreate dir & gitignore
-        mkdir($dir);
-        file_put_contents($dir . "/" . ".gitignore", "**/**");
     }
 
     /**
      * @param $dir
+     * @param bool $isRoot
+     * @param array $exceptions
+     *
      * @return bool
      */
-    private function deleteDirectory($dir)
+    private function deleteDirectoryContents($dir, $isRoot = false, $exceptions = ['st'])
     {
         if (!file_exists($dir)) {
             return true;
         }
 
-        if (!is_dir($dir)) {
+        if (!is_dir($dir) && !in_array(basename($dir), $exceptions, true)) {
             return unlink($dir);
         }
 
         foreach (scandir($dir) as $item) {
-            if ($item == '.' || $item == '..') {
+            if ('.' === $item || '..' === $item || in_array($item, $exceptions, true)) {
                 continue;
             }
 
-            if (!$this->deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
+            if (!$this->deleteDirectoryContents($dir . \DIRECTORY_SEPARATOR . $item)) {
                 return false;
             }
-
         }
 
-        return rmdir($dir);
+        if (!$isRoot) {
+            return rmdir($dir);
+        }
+
+        return true;
     }
 
     public function getOrder()

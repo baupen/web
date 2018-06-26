@@ -27,10 +27,10 @@ class LoadConstructionManagerData extends BaseFixture
     public function load(ObjectManager $manager)
     {
         $user = new ConstructionManager();
-        $user->setEmail("info@mangel.io");
-        $user->setPlainPassword("kjkdakjdw");
-        $user->setGivenName("Florian");
-        $user->setFamilyName("Moser");
+        $user->setEmail('info@mangel.io');
+        $user->setPlainPassword('kjkdakjdw');
+        $user->setGivenName('Florian');
+        $user->setFamilyName('Moser');
         $user->setPassword();
         $user->setResetHash();
         $user->setRegistrationDate();

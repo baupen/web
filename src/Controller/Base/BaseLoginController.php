@@ -31,7 +31,7 @@ class BaseLoginController extends BaseFormController
             [
                 'event_dispatcher' => EventDispatcherInterface::class,
                 'security.token_storage' => TokenStorageInterface::class,
-                'translator' => TranslatorInterface::class
+                'translator' => TranslatorInterface::class,
             ];
     }
 

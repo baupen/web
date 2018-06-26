@@ -24,6 +24,7 @@ abstract class BaseEnum
     public static function getChoicesForBuilder()
     {
         $elem = new static();
+
         return $elem->getChoicesForBuilderInternal();
     }
 
@@ -31,13 +32,14 @@ abstract class BaseEnum
      * returns a translation string for the passed enum value.
      *
      * @param $enumValue
-     *
      * @param TranslatorInterface $translator
+     *
      * @return string
      */
     public static function getTranslationForValue($enumValue, TranslatorInterface $translator)
     {
         $elem = new static();
+
         return $elem->getTranslationForValueInternal($enumValue, $translator);
     }
 
@@ -61,15 +63,16 @@ abstract class BaseEnum
     private function getChoicesForBuilderInternal()
     {
         try {
-            $res = [];
             $reflection = new ReflectionClass(get_class($this));
             $choices = $reflection->getConstants();
 
             foreach ($choices as $name => $value) {
-                $res[strtolower($name)] = $value;
+                $res[mb_strtolower($name)] = $value;
             }
-            return ['choices' => $res, 'choice_translation_domain' => "enum_" . $this->camelCaseToTranslation($reflection->getShortName())];
+
+            return ['choices' => $res, 'choice_translation_domain' => 'enum_' . $this->camelCaseToTranslation($reflection->getShortName())];
         } catch (\ReflectionException $e) {
+            //this never happens due to ReflectionClass is passed the class of the $this object (always valid)
         }
 
         return [];
@@ -79,8 +82,8 @@ abstract class BaseEnum
      * returns a translation string for the passed enum value.
      *
      * @param $enumValue
-     *
      * @param TranslatorInterface $translator
+     *
      * @return bool|string
      */
     private function getTranslationForValueInternal($enumValue, TranslatorInterface $translator)
@@ -91,12 +94,13 @@ abstract class BaseEnum
 
             foreach ($choices as $name => $value) {
                 if ($value === $enumValue) {
-                    return $translator->trans(strtolower($name), [], "enum_" . $this->camelCaseToTranslation($reflection->getShortName()));
+                    return $translator->trans(mb_strtolower($name), [], 'enum_' . $this->camelCaseToTranslation($reflection->getShortName()));
                 }
             }
         } catch (\ReflectionException $e) {
+            //this never happens due to ReflectionClass is passed the class of the $this object (always valid)
         }
 
-        return "";
+        return '';
     }
 }

@@ -1,9 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 6/19/18
- * Time: 10:08 AM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Api\Entity;
@@ -13,21 +16,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 class IssuePosition
 {
     /**
-     * @var double
+     * @var float
      *
      * @Assert\NotBlank()
      */
     private $x;
 
     /**
-     * @var double
+     * @var float
      *
      * @Assert\NotBlank()
      */
     private $y;
 
     /**
-     * @var double
+     * @var float
      *
      * @Assert\NotBlank()
      */

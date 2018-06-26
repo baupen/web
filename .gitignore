@@ -1,3 +1,15 @@
+# development
+.idea
+*.phar
+/node_modules/
+
+# deployment
+servers.yml
+public/dist/*
+
+# debug
+yarn-error.log
+build
 
 ###> symfony/framework-bundle ###
 .env
@@ -9,19 +21,6 @@
 ###> symfony/web-server-bundle ###
 .web-server-pid
 ###< symfony/web-server-bundle ###
-
-# nodejs
-/node_modules/
-
-# IDE files
-.idea
-
-#phar files
-*.phar
-
-#deployment info
-servers.yml
-public/dist/*
 
 public/build
 ###> symfony/phpunit-bridge ###

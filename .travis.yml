@@ -14,28 +14,43 @@ env:
 matrix:
   fast_finish: true
   include:
-    - php: 7.1
+    - php: 7.2
       env:
         - COVERAGE=true
-    - php: 7.2
     - php: nightly
-
   allow_failures:
     - php: nightly
 
+# prepare virtual environment
 before_install:
+  - if [[ $COVERAGE == false ]]; then phpenv config-rm xdebug.ini; fi
+
+  # install git, yarn, nodejs, libmagickwand-dev (for imagick extension)
+  - curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
+  - sudo apt-get install -y gnupg git nodejs libmagickwand-dev php-pear
+  - npm install -g yarn
+
+  # install phpunit
+  - sudo curl --location --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit.phar
+  - sudo chmod +x /usr/local/bin/phpunit
+
+  # install imagick requirements
+  - printf "\n" | sudo pecl install imagick-3.4.3
+  - echo "extension=imagick.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+
+# prepare programming environement
+install:
+  # copy config files
   - cp .env.travis .env
   - cp .env.travis .env.test
   - cp phpunit.xml.dist phpunit.xml
-  - '[[ "$TRAVIS_PHP_VERSION" == "nightly" ]] || phpenv config-rm xdebug.ini'
-  - composer self-update
 
-install:
-  - composer install --dev
+  # install dependencies
+  - composer install
+  - yarn install
   - ./vendor/bin/simple-phpunit install
   - chmod +x ./bin/console
 
-before_script:
   # print versions just in case
   - php --version
   - php ./bin/console --version
@@ -44,31 +59,42 @@ before_script:
   # check if travis fulfills symfony requirements
   - php ./vendor/bin/requirements-checker
 
+# prepare tests
+before_script:
+
+  # warmup cache to avoid excessive memory usage
+  - php bin/console cache:warmup
+
+  # init db & data
+  - php bin/console doctrine:migrations:migrate -q
+  - php bin/console doctrine:fixtures:load -q
+
+  # init frontend
+  - yarn encore production
+
+# execute tests
 script:
-  # this executes the phpunit tests
-  - ./vendor/bin/simple-phpunit
   # this checks that the source code follows the Symfony Code Syntax rules (DEACTIVATED)
-  # - '[[ "$TRAVIS_PHP_VERSION" == "nightly" ]] || ./vendor/bin/php-cs-fixer fix --diff --dry-run -v'
+  - '[[ "$TRAVIS_PHP_VERSION" == "nightly" ]] || ./vendor/bin/php-cs-fixer fix --diff --dry-run -v'
   # this checks that the YAML config files contain no syntax errors
   - ./bin/console lint:yaml config
   # this checks that the Twig template files contain no syntax errors
   - ./bin/console lint:twig templates
-  # this checks that the XLIFF translations contain no syntax errors
-  - ./bin/console lint:xliff translations
   # this checks that the application doesn't use dependencies with known security vulnerabilities
   - ./bin/console security:check --end-point=http://security.sensiolabs.org/check_lock
-  # this checks that the application doesn't use dependencies with known security vulnerabilities
-  # - ./bin/console security:check --end-point=http://security.sensiolabs.org/check_lock
   # this checks that the composer.json and composer.lock files are valid
   - composer validate --strict
   # this checks that Doctrine's mapping configurations are valid
   - ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
+  # this executes the phpunit tests
+  - ./vendor/bin/simple-phpunit
 
-
+# report code coverage
 after_script:
   # scrutinizer reporting
   - if [[ $COVERAGE == true ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover ./build/logs/clover.xml; fi
   # codacy reporting
-  - if [[ $COVERAGE == true ]]; then php ./vendor/bin/codacycoverage clover ./build/logs/clover.xml fi
-  # coveralls reporting
-  - if [[ $COVERAGE == true ]]; then php ./vendor/bin/coveralls -v; fi
+  - if [[ $COVERAGE == true ]]; then bash <(curl -s https://codecov.io/bash); fi
+
+# deactivated
+# install composer curl -sS https://getcomposer.org/installer | php #use now with php composer.phar

@@ -95,7 +95,7 @@ trait UserTrait
     }
 
     /**
-     * @param boolean $isEnabled
+     * @param bool $isEnabled
      *
      * @return static
      */
@@ -114,9 +114,6 @@ trait UserTrait
         return $this->registrationDate;
     }
 
-    /**
-     *
-     */
     public function setRegistrationDate()
     {
         $this->registrationDate = new \DateTime();
@@ -210,7 +207,7 @@ trait UserTrait
     }
 
     /**
-     * sha256 hash of the password
+     * sha256 hash of the password.
      *
      * @return string
      */
@@ -350,13 +347,13 @@ trait UserTrait
     public function setPassword()
     {
         $this->password = password_hash($this->getPlainPassword(), PASSWORD_BCRYPT);
-        $this->passwordHash = hash("sha256", $this->getPlainPassword());
+        $this->passwordHash = hash('sha256', $this->getPlainPassword());
         $this->setPlainPassword(null);
         $this->setRepeatPlainPassword(null);
     }
 
     /**
-     * creates a new reset hash
+     * creates a new reset hash.
      */
     public function setResetHash()
     {

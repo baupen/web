@@ -17,12 +17,12 @@ set('bin_dir', 'bin');
 set('var_dir', 'var');
 
 // Configuration
-set('repository', 'git@gitlab.com:MaengelApp/app.mangel.io.git');
+set('repository', 'git@github.com:mangelio/app.git');
 set('shared_files', array_merge(get('shared_files'), ['var/data.sqlite']));
 set('shared_dirs', array_merge(get('shared_dirs'), ['public/upload']));
 set('symfony_env_file', '.env');
 set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader --no-scripts');
-set('env_file_path', ".env");
+set('env_file_path', '.env');
 
 // import servers
 inventory('servers.yml');
@@ -40,7 +40,7 @@ set(
 
 desc('Installing vendors');
 task('deploy:vendors', function () {
-    run('cd {{release_path}} && {{bin/composer}} {{composer_options}}', ["timeout" => 600]);
+    run('cd {{release_path}} && {{bin/composer}} {{composer_options}}', ['timeout' => 600]);
 });
 
 //build yarn stuff & upload
@@ -51,7 +51,6 @@ task('frontend:build', function () {
     runLocally('yarn run encore production');
     runLocally('rsync -azP public/dist {{user}}@{{hostname}}:{{release_path}}/public');
 })->desc('Build frontend assets');
-
 
 // kill php processes to ensure symlinks are refreshed
 desc('Refreshing symlink by terminating any running php processes');
@@ -65,18 +64,18 @@ task('deploy:refresh_symlink', function () {
 
 desc('Loading fixtures');
 task('database:fixtures', function () {
-    if (get("branch") == "dev") {
-        run('{{bin/console}} doctrine:fixtures:load -q');
-        writeln("fixtures executed");
+    if ('dev' === get('branch')) {
+        run('cd {{release_path}} && {{bin/composer}} install --no-scripts --optimize-autoloader');
+        run('{{bin/console}} doctrine:fixtures:load -q --env=dev');
+        writeln('fixtures executed');
     }
 });
 
 desc('print any warnings');
 task('deploy:configure', function () {
     //fixtures deploy if on dev branch
-    if (get("branch") == "dev") {
-        writeln("[WARNING] deploying dev branch; executing fixtures. STOP DEPLOYING IMMEDIATELY IF YOU DO NOT EXPECT / UNDERSTAND THIS MESSAGE.");
-        set('composer_options', '{{composer_action}} --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts');
+    if ('dev' === get('branch')) {
+        writeln('[WARNING] deploying dev branch; executing fixtures. STOP DEPLOYING IMMEDIATELY IF YOU DO NOT EXPECT / UNDERSTAND THIS MESSAGE.');
     }
 });
 

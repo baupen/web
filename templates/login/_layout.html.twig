@@ -1,0 +1,22 @@
+{% extends 'layout_base.html.twig' %}
+
+{% block content %}
+    <section class="content">
+        <h1>{{ block("title") }}</h1>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-4 offset-4">
+                    {% if message is defined %}
+                        <p>{{ message }}</p>
+                    {% else %}
+                        <p>{{ block("description") }}</p>
+                    {% endif %}
+                    {% if form is defined %}
+                        {{ form(form) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

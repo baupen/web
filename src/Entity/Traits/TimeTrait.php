@@ -33,7 +33,6 @@ trait TimeTrait
      */
     private $lastChangedAt;
 
-
     /**
      * @ORM\PrePersist()
      */
@@ -50,7 +49,6 @@ trait TimeTrait
     {
         $this->lastChangedAt = new \DateTime();
     }
-
 
     /**
      * @return \DateTime

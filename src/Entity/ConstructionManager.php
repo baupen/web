@@ -11,7 +11,6 @@
 
 namespace App\Entity;
 
-
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
@@ -128,7 +127,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
      */
     public function getName()
     {
-        return $this->getGivenName() . " " . $this->getFamilyName();
+        return $this->getGivenName() . ' ' . $this->getFamilyName();
     }
 
     /**
@@ -149,6 +148,6 @@ class ConstructionManager extends BaseEntity implements UserInterface
      */
     public function getRoles()
     {
-        return ["ROLE_USER"];
+        return ['ROLE_USER'];
     }
 }

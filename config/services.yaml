@@ -24,8 +24,12 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
+    App\Controller\Api\:
+        resource: '../src/Controller/Api'
+        tags: ['controller.service_arguments']
+
     App\Service\EmailService:
-        arguments: ["@mailer", "@doctrine", "@logger","@twig","%env(MAILER_SENDER)%"]
+        arguments: ["@mailer", "@logger","@twig","%env(MAILER_SENDER)%"]
 
     # tag it with serializer so datetime is serialized in a meaningful way
     Symfony\Component\Serializer\Normalizer\DateTimeNormalizer:

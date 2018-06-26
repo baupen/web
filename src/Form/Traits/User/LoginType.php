@@ -11,13 +11,12 @@
 
 namespace App\Form\Traits\User;
 
-use Symfony\Component\Form\AbstractType;
+use App\Form\Traits\User\Base\BaseType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class LoginType extends AbstractType
+class LoginType extends BaseType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -27,15 +26,5 @@ class LoginType extends AbstractType
     {
         $builder->add('email', TextType::class);
         $builder->add('password', PasswordType::class);
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'translation_domain' => 'trait_user'
-        ]);
     }
 }

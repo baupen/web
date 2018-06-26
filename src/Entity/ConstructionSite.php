@@ -11,7 +11,6 @@
 
 namespace App\Entity;
 
-
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;
@@ -20,7 +19,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * a construction site is the place the construction manager & the craftsmen work together
+ * a construction site is the place the construction manager & the craftsmen work together.
  *
  * @ORM\Table(name="construction_site")
  * @ORM\Entity
@@ -140,10 +139,10 @@ class ConstructionSite extends BaseEntity
      */
     public function getImageFilePath(): ?string
     {
-        if ($this->getImageFilename() != null) {
-            return "upload/" . $this->getId() . "/" . $this->getImageFilename();
-        } else {
-            return null;
+        if (null !== $this->getImageFilename()) {
+            return 'upload/' . $this->getId() . '/' . $this->getImageFilename();
         }
+
+        return null;
     }
 }

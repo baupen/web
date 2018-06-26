@@ -32,8 +32,8 @@ class LoadCraftsmanData extends BaseFixture
         $entries = [];
 
         $handle = fopen(__DIR__ . '/Resources/craftsmen_list.csv', 'r');
-        while (($data = fgetcsv($handle, null, ",")) !== false) {
-            if (count($data) >= 10 && $data[0] != "") {
+        while (false !== ($data = fgetcsv($handle, null, ','))) {
+            if (count($data) >= 10 && '' !== $data[0]) {
                 $entries[] = [$data[1], $data[2], $data[3], $data[10]];
             }
         }
@@ -46,7 +46,7 @@ class LoadCraftsmanData extends BaseFixture
             $craftsman->setTrade($data[0]);
             $craftsman->setCompany($data[1]);
             $craftsman->setContactName($data[2]);
-            $craftsman->setEmail($data[3] . ".example.com");
+            $craftsman->setEmail($data[3] . '.example.com');
             $manager->persist($craftsman);
         }
 

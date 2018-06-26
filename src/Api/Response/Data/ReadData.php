@@ -1,9 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 3/11/18
- * Time: 11:00 AM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Api\Response\Data;
@@ -59,7 +62,7 @@ class ReadData
     /**
      * @var User|null
      */
-    private $user;
+    private $changedUser;
 
     /**
      * @return Craftsman[]
@@ -192,16 +195,16 @@ class ReadData
     /**
      * @return User|null
      */
-    public function getUser(): ?User
+    public function getChangedUser(): ?User
     {
-        return $this->user;
+        return $this->changedUser;
     }
 
     /**
-     * @param User $user
+     * @param User $changedUser
      */
-    public function setUser(User $user): void
+    public function setChangedUser(User $changedUser): void
     {
-        $this->user = $user;
+        $this->changedUser = $changedUser;
     }
 }

@@ -1,13 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 3/11/18
- * Time: 11:00 AM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Api\Response\Data;
-
 
 use App\Api\Entity\User;
 
@@ -15,6 +17,7 @@ class LoginData
 {
     /**
      * LoginData constructor.
+     *
      * @param User $user
      */
     public function __construct(User $user)
@@ -23,7 +26,7 @@ class LoginData
     }
 
     /**
-     * @var User $user
+     * @var User
      */
     private $user;
 

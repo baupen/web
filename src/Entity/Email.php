@@ -38,13 +38,6 @@ class Email extends BaseEntity
      *
      * @ORM\Column(type="text")
      */
-    private $identifier;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text")
-     */
     private $subject;
 
     /**
@@ -55,25 +48,18 @@ class Email extends BaseEntity
     private $body;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(type="text", nullable=true)
      */
     private $actionText;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(type="text", nullable=true)
      */
     private $actionLink;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $carbonCopy;
 
     /**
      * @var int
@@ -99,121 +85,15 @@ class Email extends BaseEntity
     /**
      * @return string
      */
-    public function getBody()
-    {
-        return $this->body;
-    }
-
-    /**
-     * @param string $body
-     */
-    public function setBody(string $body)
-    {
-        $this->body = $body;
-    }
-
-    /**
-     * @return string
-     */
-    public function getActionText()
-    {
-        return $this->actionText;
-    }
-
-    /**
-     * @param string $actionText
-     */
-    public function setActionText(string $actionText)
-    {
-        $this->actionText = $actionText;
-    }
-
-    /**
-     * @return string
-     */
-    public function getActionLink()
-    {
-        return $this->actionLink;
-    }
-
-    /**
-     * @param string $actionLink
-     */
-    public function setActionLink(string $actionLink)
-    {
-        $this->actionLink = $actionLink;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCarbonCopy()
-    {
-        return $this->carbonCopy;
-    }
-
-    /**
-     * @param string $carbonCopy
-     */
-    public function setCarbonCopy($carbonCopy)
-    {
-        $this->carbonCopy = $carbonCopy;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getSentDateTime()
-    {
-        return $this->sentDateTime;
-    }
-
-    /**
-     * @param \DateTime $sentDateTime
-     */
-    public function setSentDateTime(\DateTime $sentDateTime)
-    {
-        $this->sentDateTime = $sentDateTime;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getVisitedDateTime()
-    {
-        return $this->visitedDateTime;
-    }
-
-    /**
-     * @param \DateTime $visitedDateTime
-     */
-    public function setVisitedDateTime(\DateTime $visitedDateTime)
-    {
-        $this->visitedDateTime = $visitedDateTime;
-    }
-
-    /**
-     * returns a string representation of this entity.
-     *
-     * @return string
-     */
-    public function getFullIdentifier()
-    {
-        return $this->getReceiver() . ' ' . $this->getSubject();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getReceiver()
+    public function getReceiver(): string
     {
         return $this->receiver;
     }
 
     /**
-     * @param mixed $receiver
+     * @param string $receiver
      */
-    public function setReceiver($receiver)
+    public function setReceiver(string $receiver)
     {
         $this->receiver = $receiver;
     }
@@ -221,7 +101,7 @@ class Email extends BaseEntity
     /**
      * @return string
      */
-    public function getSubject()
+    public function getSubject(): string
     {
         return $this->subject;
     }
@@ -237,7 +117,7 @@ class Email extends BaseEntity
     /**
      * @return int
      */
-    public function getEmailType()
+    public function getEmailType(): int
     {
         return $this->emailType;
     }
@@ -253,16 +133,80 @@ class Email extends BaseEntity
     /**
      * @return string
      */
-    public function getIdentifier()
+    public function getBody()
     {
-        return $this->identifier;
+        return $this->body;
     }
 
     /**
-     * @param string $identifier
+     * @param string $body
      */
-    public function setIdentifier(string $identifier)
+    public function setBody(string $body)
     {
-        $this->identifier = $identifier;
+        $this->body = $body;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getActionText(): ?string
+    {
+        return $this->actionText;
+    }
+
+    /**
+     * @param string $actionText
+     */
+    public function setActionText(string $actionText)
+    {
+        $this->actionText = $actionText;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getActionLink(): ?string
+    {
+        return $this->actionLink;
+    }
+
+    /**
+     * @param string $actionLink
+     */
+    public function setActionLink(string $actionLink)
+    {
+        $this->actionLink = $actionLink;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getSentDateTime(): ?\DateTime
+    {
+        return $this->sentDateTime;
+    }
+
+    /**
+     * @param \DateTime $sentDateTime
+     */
+    public function setSentDateTime(\DateTime $sentDateTime)
+    {
+        $this->sentDateTime = $sentDateTime;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getVisitedDateTime(): ?\DateTime
+    {
+        return $this->visitedDateTime;
+    }
+
+    /**
+     * @param \DateTime $visitedDateTime
+     */
+    public function setVisitedDateTime(\DateTime $visitedDateTime)
+    {
+        $this->visitedDateTime = $visitedDateTime;
     }
 }

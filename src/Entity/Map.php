@@ -11,7 +11,6 @@
 
 namespace App\Entity;
 
-
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
@@ -129,7 +128,7 @@ class Map extends BaseEntity
     /**
      * @return Map|null
      */
-    public function getParent(): ?Map
+    public function getParent(): ?self
     {
         return $this->parent;
     }
@@ -137,7 +136,7 @@ class Map extends BaseEntity
     /**
      * @param Map|null $parent
      */
-    public function setParent(?Map $parent): void
+    public function setParent(?self $parent): void
     {
         $this->parent = $parent;
     }
@@ -163,11 +162,10 @@ class Map extends BaseEntity
      */
     public function getFilePath(): ?string
     {
-        if ($this->getFilename() != null) {
-            return "upload/" . $this->getConstructionSite()->getId() . "/map/" . $this->getFilename();
-        } else {
-            return null;
+        if (null !== $this->getFilename()) {
+            return 'upload/' . $this->getConstructionSite()->getId() . '/map/' . $this->getFilename();
         }
-    }
 
+        return null;
+    }
 }
