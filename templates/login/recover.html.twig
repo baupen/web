@@ -3,4 +3,12 @@
 {% block title %}{{ "recover.title"|trans }}{% endblock %}
 {% block description %}{{ "recover.description"|trans }}{% endblock %}
 
-{% trans_default_domain "frontend_login" %}
+{% trans_default_domain "login" %}
+
+
+{% block secondary_content %}
+    <p class="small text-secondary">
+        {{ "recover.forgot_email"|trans }}
+        <a href="{{ path("support") }}">{{ "support.title"|trans({},"support") }}</a>
+    </p>
+{% endblock %}

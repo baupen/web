@@ -1,5 +1,0 @@
-entity:
-  name: 'Gebäude'
-  description: 'Ein Gebäude enthält Grundrisspläne'
-
-app_users: 'Gebäudeleiter'

@@ -15,15 +15,20 @@ use App\Controller\Base\BaseFormController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class StaticController extends BaseFormController
+/**
+ * @Route("/support")
+ *
+ * @return Response
+ */
+class SupportController extends BaseFormController
 {
     /**
-     * @Route("/", name="static_index")
+     * @Route("", name="support")
      *
      * @return Response
      */
-    public function indexAction()
+    public function supportAction()
     {
-        return $this->render('static/login.html.twig');
+        return $this->render('support/support.html.twig');
     }
 }

@@ -1,8 +1,0 @@
-successful: 'successful'
-empty_request: 'empty request'
-unknown_identifier: 'unknown identifer'
-wrong_password: 'wrong password'
-invalid_authentication_token: 'invalid authentication token'
-missing_authentication_token: 'missing authentication token'
-execution_failed: 'execution failed'
-no_files: 'no files'
