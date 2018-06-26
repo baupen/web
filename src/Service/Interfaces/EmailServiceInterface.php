@@ -17,8 +17,9 @@ interface EmailServiceInterface
 {
     /**
      * @param Email $email
+     * @param string[] $options
      *
      * @return bool
      */
-    public function sendEmail(Email $email);
+    public function sendEmail(Email $email, $options = []);
 }

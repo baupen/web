@@ -38,10 +38,11 @@ class LoginController extends BaseLoginController
      *
      * @return Response
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $form = $this->createForm(LoginType::class);
         $form->add('login.submit', SubmitType::class, ['translation_domain' => 'login']);
+        $this->handleLoginForm($request, new ConstructionManager(), $form);
 
         return $this->render('login/login.html.twig', ['form' => $form->createView()]);
     }
@@ -146,7 +147,7 @@ class LoginController extends BaseLoginController
                     //login user & redirect
                     $this->loginUser($request, $user);
 
-                    return $this->redirectToRoute('dashboard_index');
+                    return $this->redirectToRoute('dashboard');
                 }
             );
 

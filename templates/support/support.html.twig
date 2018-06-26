@@ -1,23 +1,13 @@
-{% extends "login/_layout.html.twig" %}
+{% extends "center_form_content.html.twig" %}
 
-{% block title %}{{ "login.title"|trans }}{% endblock %}
-{% block description %}{{ "login.description"|trans }}{% endblock %}
+{% block title %}{{ "support.title"|trans }}{% endblock %}
+{% block description %}{{ "support.description"|trans }}{% endblock %}
 
-{% trans_default_domain "login" %}
-
-{% block form_content %}
-    <div class="form-wrapper">
-        {{ form_start(form, {"action" : path("login_check")}) }}
-        {{ form_errors(form) }}
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-        {{ form_rest(form) }}
-        {{ form_end(form) }}
-    </div>
-{% endblock %}
+{% trans_default_domain "support" %}
 
 {% block secondary_content %}
-    <p class="small text-secondary">
-        {{ "login.forgot_passwort"|trans }}
-        <a href="{{ path("login_recover") }}">{{ "recover.forgot_email"|trans }}</a>
+    <p class="text-secondary">
+        {{ "support.ready"|trans }}
+        <a href="{{ path("login") }}">{{ "support.back_to_the_application"|trans }}</a>
     </p>
 {% endblock %}
