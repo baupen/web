@@ -2,17 +2,19 @@
 
 {% block content %}
     <section class="content">
-        <div class="container index-container white-color">
-            <h1>{{ block("title") }}</h1>
-            <h2>{% block description %}{% endblock %}</h2>
-        </div>
+        <h1>{{ block("title") }}</h1>
 
-        <div class="container shadow">
+        <div class="container">
             <div class="row">
-                <div class="col-md-4 col-md-offset-4">
-                    {% block form_content %}
+                <div class="col-4 offset-4">
+                    {% if message is defined %}
+                        <p>{{ message }}</p>
+                    {% else %}
+                        <p>{{ block("description") }}</p>
+                    {% endif %}
+                    {% if form is defined %}
                         {{ form(form) }}
-                    {% endblock %}
+                    {% endif %}
                 </div>
             </div>
         </div>

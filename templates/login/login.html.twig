@@ -1,7 +1,7 @@
 {% extends "login/_layout.html.twig" %}
 
-{% block title %}{{ "index.title"|trans }}{% endblock %}
-{% block description %}{{ "index.description"|trans }}{% endblock %}
+{% block title %}{{ "login.title"|trans }}{% endblock %}
+{% block description %}{{ "login.description"|trans }}{% endblock %}
 
 {% trans_default_domain "frontend_login" %}
 
@@ -11,7 +11,8 @@
     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
     {{ form_end(form) }}
     <p>
-        <a href="{{ path("login_recover") }}">{{ "index.forgot_password_action"|trans }}</a>
+        <a href="{{ path("login_recover") }}">{{ "recover.title"|trans }}</a>
     </p>
-
 {% endblock %}
+
+{% set message = "login.message"|trans %}

@@ -18,7 +18,7 @@ class LoginControllerTest extends WebTestCase
     public function testShowIndex()
     {
         $client = static::createClient();
-        $client->request('GET', '/login/');
+        $client->request('GET', '/login');
 
         $this->assertSame(200, $client->getResponse()->getStatusCode());
     }
