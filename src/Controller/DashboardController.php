@@ -27,6 +27,6 @@ class DashboardController extends BaseLoginController
      */
     public function indexAction()
     {
-        return $this->render('dashboard/index.html.twig');
+        return $this->render('dashboard/login.html.twig');
     }
 }

@@ -34,7 +34,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 class LoginController extends BaseLoginController
 {
     /**
-     * @Route("/", name="login_index")
+     * @Route("", name="login")
      *
      * @return Response
      */
@@ -43,7 +43,7 @@ class LoginController extends BaseLoginController
         $form = $this->createForm(LoginType::class);
         $form->add('form.login', SubmitType::class);
 
-        return $this->render('login/index.html.twig', ['form' => $form->createView()]);
+        return $this->render('login/login.html.twig', ['form' => $form->createView()]);
     }
 
     /**

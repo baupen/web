@@ -1,11 +1,7 @@
 {% extends 'layout_base.html.twig' %}
-{% import "widgets/breadcrumb.html.twig" as breadcrumb %}
 
 {% block content %}
     <section class="content">
-        {% if breadcrumbs is defined %}
-            {{ breadcrumb.breadcrumbs(breadcrumbs, app.request, block("title")) }}
-        {% endif %}
         <div class="container index-container white-color">
             <h1>{{ block("title") }}</h1>
             <h2>{% block description %}{% endblock %}</h2>
@@ -13,13 +9,10 @@
 
         <div class="container shadow">
             <div class="row">
-                <div class="col-md-8 index-container primary-area">
+                <div class="col-md-4 col-md-offset-4">
                     {% block form_content %}
                         {{ form(form) }}
                     {% endblock %}
-                </div>
-                <div class="col-md-4 index-container secondary-area">
-
                 </div>
             </div>
         </div>

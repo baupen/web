@@ -24,7 +24,7 @@ security:
             anonymous: ~
             provider: construction_manager_provider
             form_login:
-                login_path: login_index
+                login_path: login
                 check_path: login_check
                 default_target_path: dashboard_index
                 csrf_token_generator: security.csrf.token_manager

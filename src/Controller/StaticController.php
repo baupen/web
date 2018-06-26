@@ -24,6 +24,6 @@ class StaticController extends BaseFormController
      */
     public function indexAction()
     {
-        return $this->render('static/index.html.twig');
+        return $this->render('static/login.html.twig');
     }
 }
