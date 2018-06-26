@@ -53,11 +53,9 @@
     </div>
 {% endif %}
 
-<div class="content-wrapper">
-    {% block content %}
+{% block content %}
 
-    {% endblock %}
-</div>
+{% endblock %}
 
 <script src="{{ asset('dist/app.js') }}"></script>
 {% block javascript %}

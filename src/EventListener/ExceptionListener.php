@@ -55,7 +55,7 @@ class ExceptionListener
         );
 
         //construct error response
-        $errorObj = new ErrorResponse($message, 300);
+        $errorObj = new ErrorResponse($message);
         $json = $this->serializer->serialize($errorObj, 'json');
         $response = new JsonResponse($json, Response::HTTP_INTERNAL_SERVER_ERROR, [], true);
 
