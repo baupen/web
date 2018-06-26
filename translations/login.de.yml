@@ -22,7 +22,7 @@ recover:
     email_not_found: 'Diese E-Mail wurde nicht in unserem System gefunden.'
   email:
     reset_password:
-      subject: 'Passwort zurücksetzen: %page%'
+      subject: 'Passwort zurücksetzen auf %page%'
       message: 'Benutzen Sie den folgenden Link um das Passwort zurückzusetzen:'
       action_text: 'Jetzt Passwort zurücksetzen'
 

@@ -61,7 +61,7 @@ class LoginController extends BaseLoginController
             $this->createForm(RecoverType::class)
                 ->add('recover.submit', SubmitType::class, ['translation_domain' => 'login']),
             $request,
-            function ($form) use ($emailService, $translator, $logger) {
+            function ($form) use ($emailService, $translator, $logger, $request) {
                 /* @var FormInterface $form */
                 //check if user exists
                 $exitingUser = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $form->getData()['email']]);
@@ -80,7 +80,7 @@ class LoginController extends BaseLoginController
                 $email = new Email();
                 $email->setEmailType(EmailType::ACTION_EMAIL);
                 $email->setReceiver($exitingUser->getEmail());
-                $email->setSubject($translator->trans('recover.email.reset_password.subject', [], 'login'));
+                $email->setSubject($translator->trans('recover.email.reset_password.subject', ['%page%' => $request->getHttpHost()], 'login'));
                 $email->setBody($translator->trans('recover.email.reset_password.message', [], 'login'));
                 $email->setActionText($translator->trans('recover.email.reset_password.action_text', [], 'login'));
                 $email->setActionLink($this->generateUrl('login_reset', ['resetHash' => $exitingUser->getResetHash()], UrlGeneratorInterface::ABSOLUTE_URL));

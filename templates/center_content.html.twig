@@ -5,17 +5,7 @@
         <div class="center-content">
             <div class="center-content-primary shadow">
                 <h1>{{ block("title") }}</h1>
-
-                <p class="text-secondary">
-                    {% if message is defined %}{{ message }}
-                    {% else %}
-                        {{ block("description") }}
-                    {% endif %}
-                </p>
-                {% block form_content %}
-                    <div class="form-wrapper">
-                        {{ form(form) }}
-                    </div>
+                {% block primary_content %}
                 {% endblock %}
             </div>
             <div class="center-content-secondary">

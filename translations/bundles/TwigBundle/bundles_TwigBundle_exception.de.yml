@@ -1,7 +1,7 @@
 index:
-  title: 'Fehler'
-  description: 'Diese Seite existiert nicht oder kann nicht angezeigt werden'
-  404: 'Diese Seite wurde nicht gefunden'
-  fallback: 'Ein Problem hat verhindert dass diese Anfrage ausgeführt werden konnte'
-  500: 'Ein kritischer Fehler ist bei der Ausführung Ihrer Anfrage aufgetreten. Probieren sie es am Besten einfach noch einmal. Besteht das Problem weiterhin, schreiben Sie uns eine E-Mail an'
-  back_to_homepage: 'Hier geht''s zurück zur Startseite'
+  title: 'Fehler %status_code%'
+  description: 'Diese Seite kann nicht angezeigt werden.'
+  404: 'Diese Seite wurde nicht gefunden.'
+  contact_support: 'Wir können Ihnen weiterhelfen: '
+  500: 'Ein Fehler ist bei der Ausführung Ihrer Anfrage aufgetreten.'
+  back_to_dashboard: 'zurück zum Dashboard'
