@@ -71,7 +71,7 @@ class Email extends BaseEntity
     /**
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $sentDateTime;
 

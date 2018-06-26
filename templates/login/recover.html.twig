@@ -10,5 +10,9 @@
     <p class="small text-secondary">
         {{ "recover.forgot_email"|trans }}
         <a href="{{ path("support") }}">{{ "support.title"|trans({},"support") }}</a>
+
+        <br/>
+        {{ "recover.remembered_login"|trans }}
+        <a href="{{ path("login") }}">{{ "recover.back_to_login"|trans }}</a>
     </p>
 {% endblock %}

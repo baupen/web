@@ -13,6 +13,8 @@ recover:
   description: 'Wir senden Ihnen eine Nachricht an Ihre E-Mail.'
   submit: 'Nachricht senden'
   forgot_email: 'E-Mail vergessen oder sonstige Probleme?'
+  remembered_login: "Login noch einmal versuchen?"
+  back_to_login: "Zurück zum Login"
   success:
     email_sent: 'Wir haben Ihnen soeben eine E-Mail versandt.'
   fail:

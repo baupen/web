@@ -41,7 +41,7 @@ class LoginController extends BaseLoginController
     public function indexAction()
     {
         $form = $this->createForm(LoginType::class);
-        $form->add('form.login', SubmitType::class);
+        $form->add('login.submit', SubmitType::class, ['translation_domain' => 'login']);
 
         return $this->render('login/login.html.twig', ['form' => $form->createView()]);
     }
@@ -59,7 +59,7 @@ class LoginController extends BaseLoginController
     {
         $form = $this->handleForm(
             $this->createForm(RecoverType::class)
-                ->add('form.recover', SubmitType::class),
+                ->add('recover.submit', SubmitType::class, ['translation_domain' => 'login']),
             $request,
             function ($form) use ($emailService, $translator, $logger) {
                 /* @var FormInterface $form */
@@ -67,7 +67,7 @@ class LoginController extends BaseLoginController
                 $exitingUser = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $form->getData()['email']]);
                 if (null === $exitingUser) {
                     $logger->info('could not reset password of unknown user ' . $form->getData()['email']);
-                    $this->displaySuccess($translator->trans('recover.fail.email_not_found', [], 'frontend_login'));
+                    $this->displaySuccess($translator->trans('recover.fail.email_not_found', [], 'login'));
 
                     return $form;
                 }
@@ -80,9 +80,9 @@ class LoginController extends BaseLoginController
                 $email = new Email();
                 $email->setEmailType(EmailType::ACTION_EMAIL);
                 $email->setReceiver($exitingUser->getEmail());
-                $email->setSubject($translator->trans('recover.email.reset_password.subject', [], 'frontend_login'));
-                $email->setBody($translator->trans('recover.email.reset_password.message', [], 'frontend_login'));
-                $email->setActionText($translator->trans('recover.email.reset_password.action_text', [], 'frontend_login'));
+                $email->setSubject($translator->trans('recover.email.reset_password.subject', [], 'login'));
+                $email->setBody($translator->trans('recover.email.reset_password.message', [], 'login'));
+                $email->setActionText($translator->trans('recover.email.reset_password.action_text', [], 'login'));
                 $email->setActionLink($this->generateUrl('login_reset', ['resetHash' => $exitingUser->getResetHash()], UrlGeneratorInterface::ABSOLUTE_URL));
 
                 //save & send
@@ -92,10 +92,10 @@ class LoginController extends BaseLoginController
                     $this->fastSave($email);
 
                     $logger->info('sent password reset email to ' . $email->getReceiver());
-                    $this->displaySuccess($translator->trans('recover.success.email_sent', [], 'frontend_login'));
+                    $this->displaySuccess($translator->trans('recover.success.email_sent', [], 'login'));
                 } else {
                     $logger->error('could not send password reset email ' . $email->getId());
-                    $this->displaySuccess($translator->trans('recover.fail.email_not_sent', [], 'frontend_login'));
+                    $this->displaySuccess($translator->trans('recover.fail.email_not_sent', [], 'login'));
                 }
 
                 return $form;
@@ -125,18 +125,18 @@ class LoginController extends BaseLoginController
         if (null !== $user) {
             $form = $this->handleForm(
                 $this->createForm(SetPasswordType::class, $user, ['data_class' => ConstructionManager::class])
-                    ->add('form.set_password', SubmitType::class),
+                    ->add('reset.submit', SubmitType::class, ['translation_domain' => 'login']),
                 $request,
                 function ($form) use ($user, $translator, $request) {
                     //check for valid password
                     if ($user->getPlainPassword() !== $user->getRepeatPlainPassword()) {
-                        $this->displayError($translator->trans('reset.error.passwords_do_not_match', [], 'frontend_login'));
+                        $this->displayError($translator->trans('reset.error.passwords_do_not_match', [], 'login'));
 
                         return $form;
                     }
 
                     //display success
-                    $this->displaySuccess($translator->trans('reset.success.password_set', [], 'frontend_login'));
+                    $this->displaySuccess($translator->trans('reset.success.password_set', [], 'login'));
 
                     //set new password & save
                     $user->setPassword();
@@ -156,7 +156,9 @@ class LoginController extends BaseLoginController
 
             $arr['form'] = $form->createView();
         } else {
-            $this->displayError($translator->trans('reset.error.invalid_hash', [], 'frontend_login'));
+            $this->displayError($translator->trans('reset.error.invalid_hash', [], 'login'));
+
+            return $this->redirectToRoute('login_recover');
         }
 
         return $this->render('login/reset.html.twig', $arr);
