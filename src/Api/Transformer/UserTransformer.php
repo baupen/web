@@ -28,7 +28,7 @@ class UserTransformer
 
     /**
      * @param ConstructionManager $constructionManager
-     * @param string              $authenticationToken
+     * @param string $authenticationToken
      *
      * @return User
      */

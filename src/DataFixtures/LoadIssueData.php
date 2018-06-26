@@ -60,7 +60,7 @@ class LoadIssueData extends BaseFixture
                 $craftsman = $getCraftsman();
 
                 $issue = new Issue();
-                $issue->setImageFilename(Uuid::uuid4()->toString().'.jpg');
+                $issue->setImageFilename(Uuid::uuid4()->toString() . '.jpg');
                 $issue->setCraftsman($craftsman);
                 $issue->setDescription($entry[1]);
                 $issue->setIsMarked($entry[2]);

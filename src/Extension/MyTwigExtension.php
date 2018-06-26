@@ -63,7 +63,7 @@ class MyTwigExtension extends Twig_Extension
     public function dateFormatFilter($date)
     {
         if ($date instanceof \DateTime) {
-            return $this->prependDayName($date).', '.$date->format(DateTimeFormatter::DATE_FORMAT);
+            return $this->prependDayName($date) . ', ' . $date->format(DateTimeFormatter::DATE_FORMAT);
         }
 
         return '-';
@@ -77,7 +77,7 @@ class MyTwigExtension extends Twig_Extension
     public function dateTimeFormatFilter($date)
     {
         if ($date instanceof \DateTime) {
-            return $this->prependDayName($date).', '.$date->format(DateTimeFormatter::DATE_TIME_FORMAT);
+            return $this->prependDayName($date) . ', ' . $date->format(DateTimeFormatter::DATE_TIME_FORMAT);
         }
 
         return '-';
@@ -92,7 +92,7 @@ class MyTwigExtension extends Twig_Extension
      */
     private function prependDayName(DateTime $date)
     {
-        return $this->translator->trans('date_time.'.$date->format('D'), [], 'framework');
+        return $this->translator->trans('date_time.' . $date->format('D'), [], 'framework');
     }
 
     /**

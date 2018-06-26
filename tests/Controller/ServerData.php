@@ -41,10 +41,10 @@ class ServerData
     /**
      * ServerData constructor.
      *
-     * @param Building[]  $buildings
-     * @param Map[]       $maps
+     * @param Building[] $buildings
+     * @param Map[] $maps
      * @param Craftsman[] $craftsman
-     * @param Issue[]     $issues
+     * @param Issue[] $issues
      */
     public function __construct($buildings, $maps, $craftsman, $issues)
     {

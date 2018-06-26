@@ -38,7 +38,7 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * @param \App\Api\Entity\Issue $issue
-     * @param \App\Entity\Issue     $entity
+     * @param \App\Entity\Issue $entity
      *
      * @return \App\Entity\Issue
      */

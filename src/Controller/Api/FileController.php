@@ -38,9 +38,9 @@ class FileController extends BaseApiController
     /**
      * @Route("/download", name="api_file_download")
      *
-     * @param Request             $request
+     * @param Request $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface  $validator
+     * @param ValidatorInterface $validator
      *
      * @throws ORMException
      *
@@ -92,7 +92,7 @@ class FileController extends BaseApiController
                 return $this->fail(static::ENTITY_ACCESS_DENIED);
             }
 
-            $filePath = $this->getParameter('PUBLIC_DIR').'/'.$filePath;
+            $filePath = $this->getParameter('PUBLIC_DIR') . '/' . $filePath;
             if (!file_exists($filePath)) {
                 return $this->fail(static::ENTITY_FILE_NOT_FOUND);
             }

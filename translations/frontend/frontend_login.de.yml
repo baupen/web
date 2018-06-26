@@ -14,7 +14,10 @@ recover:
   description: 'Setzen Sie Ihr Passwort mit Ihrer E-Mail zurück'
   set_email_form_description: 'Geben Sie die E-Mail ein, die Sie beim Login verwenden. Wir senden Ihnen dann einen Link zu, mit dem Sie das Passwort neu setzen können.'
   success:
-    email_sent: 'Sofern diese E-Mail in unserem System gefunden wurde, haben wir Ihnen soeben eine E-Mail versandt'
+    email_sent: 'Wir haben Ihnen soeben eine E-Mail versandt.'
+  fail:
+    email_not_sent: 'Der E-Mail Versand ist fehlgeschlagen. Dies ist ein interner Fehler, bitte kontaktieren Sie den Support.'
+    email_not_found: 'Diese E-Mail wurde nicht in unserem System gefunden.'
   email:
     reset_password:
       subject: 'Passwort zurücksetzen'

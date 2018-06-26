@@ -48,10 +48,10 @@ class LoadMapData extends BaseFixture
     }
 
     /**
-     * @param ObjectManager    $manager
+     * @param ObjectManager $manager
      * @param ConstructionSite $constructionSite
-     * @param array            $entry
-     * @param Map|null         $parent
+     * @param array $entry
+     * @param Map|null $parent
      */
     private function loadMaps(ObjectManager $manager, ConstructionSite $constructionSite, $entry, $parent)
     {
@@ -60,7 +60,7 @@ class LoadMapData extends BaseFixture
         $map->setConstructionSite($constructionSite);
         $map->setName($entry[1]);
         $map->setParent($parent);
-        $map->setFilename(Uuid::uuid4()->toString().'.pdf');
+        $map->setFilename(Uuid::uuid4()->toString() . '.pdf');
         $manager->persist($map);
 
         $this->safeCopyToPublic($map->getFilePath(), $entry[0]);

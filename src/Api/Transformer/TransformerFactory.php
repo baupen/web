@@ -41,11 +41,11 @@ class TransformerFactory
     /**
      * TransformerFactory constructor.
      *
-     * @param BuildingTransformer  $buildingTransformer
+     * @param BuildingTransformer $buildingTransformer
      * @param CraftsmanTransformer $craftsmanTransformer
-     * @param MapTransformer       $mapTransformer
-     * @param IssueTransformer     $issueTransformer
-     * @param UserTransformer      $userTransformer
+     * @param MapTransformer $mapTransformer
+     * @param IssueTransformer $issueTransformer
+     * @param UserTransformer $userTransformer
      */
     public function __construct(BuildingTransformer $buildingTransformer, CraftsmanTransformer $craftsmanTransformer, MapTransformer $mapTransformer, IssueTransformer $issueTransformer, UserTransformer $userTransformer)
     {

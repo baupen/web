@@ -140,7 +140,7 @@ class ConstructionSite extends BaseEntity
     public function getImageFilePath(): ?string
     {
         if (null !== $this->getImageFilename()) {
-            return 'upload/'.$this->getId().'/'.$this->getImageFilename();
+            return 'upload/' . $this->getId() . '/' . $this->getImageFilename();
         }
 
         return null;

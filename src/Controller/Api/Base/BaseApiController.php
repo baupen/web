@@ -98,7 +98,7 @@ class BaseApiController extends BaseDoctrineController
     {
         $logger = $this->get('logger');
         $request = $this->get('request_stack')->getCurrentRequest();
-        $logger->error('Api error '.': '.$message.' for '.$request->getContent());
+        $logger->error('Api error ' . ': ' . $message . ' for ' . $request->getContent());
 
         return $this->json(new ErrorResponse($message, $this->errorMessageToStatusCode($message)), Response::HTTP_INTERNAL_SERVER_ERROR);
     }
@@ -114,7 +114,7 @@ class BaseApiController extends BaseDoctrineController
     {
         $logger = $this->get('logger');
         $request = $this->get('request_stack')->getCurrentRequest();
-        $logger->error('Api fail '.': '.$message.' for '.$request->getContent());
+        $logger->error('Api fail ' . ': ' . $message . ' for ' . $request->getContent());
 
         return $this->json(new FailResponse($message, $this->errorMessageToStatusCode($message)), Response::HTTP_BAD_REQUEST);
     }
@@ -137,7 +137,7 @@ class BaseApiController extends BaseDoctrineController
      * @final
      *
      * @param $data
-     * @param int   $status
+     * @param int $status
      * @param array $headers
      * @param array $context
      *

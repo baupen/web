@@ -36,9 +36,9 @@ class BaseLoginController extends BaseFormController
     }
 
     /**
-     * @param Request              $request
+     * @param Request $request
      * @param UserTrait|BaseEntity $user
-     * @param FormInterface        $loginForm
+     * @param FormInterface $loginForm
      *
      * @return FormInterface
      */
@@ -75,7 +75,7 @@ class BaseLoginController extends BaseFormController
     }
 
     /**
-     * @param Request       $request
+     * @param Request $request
      * @param UserInterface $user
      */
     protected function loginUser(Request $request, UserInterface $user)

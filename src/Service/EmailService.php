@@ -16,7 +16,6 @@ use App\Enum\EmailType;
 use App\Service\Interfaces\EmailServiceInterface;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
 use Twig\Environment;
 
 class EmailService implements EmailServiceInterface
@@ -43,10 +42,10 @@ class EmailService implements EmailServiceInterface
     /**
      * EmailService constructor.
      *
-     * @param \Swift_Mailer   $mailer
+     * @param \Swift_Mailer $mailer
      * @param LoggerInterface $logger
-     * @param Environment     $twig
-     * @param string          $contactEmail
+     * @param Environment $twig
+     * @param string $contactEmail
      */
     public function __construct(\Swift_Mailer $mailer, LoggerInterface $logger, Environment $twig, string $contactEmail)
     {
@@ -58,22 +57,21 @@ class EmailService implements EmailServiceInterface
 
     /**
      * @param Email $email
+     *
+     * @return bool
      */
     public function sendEmail(Email $email)
     {
-        $email->setSentDateTime(new \DateTime());
-        $email->setIdentifier(Uuid::uuid4());
-
         $message = (new \Swift_Message())
             ->setSubject($email->getSubject())
             ->setFrom($this->contactEmail)
             ->setTo($email->getReceiver());
 
-        $body = $email->getBody();
+        $bodyText = $email->getBody();
         if (null !== $email->getActionLink()) {
-            $body .= "\n\n".$email->getActionText().': '.$email->getActionLink();
+            $bodyText .= "\n\n" . $email->getActionText() . ': ' . $email->getActionLink();
         }
-        $message->setBody($body, 'text/plain');
+        $message->setBody($bodyText, 'text/plain');
 
         if (EmailType::PLAIN_EMAIL !== $email->getEmailType()) {
             try {
@@ -85,10 +83,12 @@ class EmailService implements EmailServiceInterface
                     'text/html'
                 );
             } catch (\Exception $e) {
-                $this->logger->log(Logger::ERROR, 'can not render email', $e);
+                $this->logger->error('can not render email ' . $email->getId());
+
+                return false;
             }
         }
 
-        $this->mailer->send($message);
+        return $this->mailer->send($message) > 0;
     }
 }

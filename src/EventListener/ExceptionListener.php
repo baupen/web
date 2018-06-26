@@ -59,7 +59,7 @@ class ExceptionListener
         $json = $this->serializer->serialize($errorObj, 'json');
         $response = new JsonResponse($json, Response::HTTP_INTERNAL_SERVER_ERROR, [], true);
 
-        $this->logger->error('api error: '.$exception->getMessage().' at '.$exception->getFile().' line '.$exception->getLine().$exception->getTraceAsString()." for \n".$event->getRequest()->getContent());
+        $this->logger->error('api error: ' . $exception->getMessage() . ' at ' . $exception->getFile() . ' line ' . $exception->getLine() . $exception->getTraceAsString() . " for \n" . $event->getRequest()->getContent());
 
         // sends the modified response object to the event
         $event->setResponse($response);

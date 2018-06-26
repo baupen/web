@@ -27,7 +27,7 @@ class ClearPublicUploadDir extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $dir = __DIR__.'/../../public/upload';
+        $dir = __DIR__ . '/../../public/upload';
         if (is_dir($dir)) {
             $this->deleteDirectoryContents($dir, true, ['.gitignore']);
         }
@@ -35,7 +35,7 @@ class ClearPublicUploadDir extends BaseFixture
 
     /**
      * @param $dir
-     * @param bool  $isRoot
+     * @param bool $isRoot
      * @param array $exceptions
      *
      * @return bool
@@ -55,7 +55,7 @@ class ClearPublicUploadDir extends BaseFixture
                 continue;
             }
 
-            if (!$this->deleteDirectoryContents($dir.\DIRECTORY_SEPARATOR.$item)) {
+            if (!$this->deleteDirectoryContents($dir . \DIRECTORY_SEPARATOR . $item)) {
                 return false;
             }
         }

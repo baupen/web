@@ -45,7 +45,7 @@ class ApiControllerTest extends FixturesTestCase
                 [],
                 [],
                 ['CONTENT_TYPE' => 'application/json'],
-                '{"username":"'.$username.'", "passwordHash":"'.hash('sha256', $password).'"}'
+                '{"username":"' . $username . '", "passwordHash":"' . hash('sha256', $password) . '"}'
             );
 
             return $client->getResponse();
@@ -119,7 +119,7 @@ class ApiControllerTest extends FixturesTestCase
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            '{"username":"f@mangel.io", "passwordHash":"'.hash('sha256', 'asdf').'"}'
+            '{"username":"f@mangel.io", "passwordHash":"' . hash('sha256', 'asdf') . '"}'
         );
 
         $json = $client->getResponse()->getContent();
@@ -314,7 +314,7 @@ class ApiControllerTest extends FixturesTestCase
         $user = $this->getAuthenticatedUser($client);
         $serializer = $client->getContainer()->get('serializer');
         $doRequest = function (Issue $issue) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "issue":'.$serializer->serialize($issue, 'json').'}';
+            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($issue, 'json') . '}';
             $client->request(
                 'POST',
                 '/api/issue/create',
@@ -411,7 +411,7 @@ class ApiControllerTest extends FixturesTestCase
         $user = $this->getAuthenticatedUser($client);
         $serializer = $client->getContainer()->get('serializer');
         $doRequest = function (Issue $issue) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "issue":'.$serializer->serialize($issue, 'json').'}';
+            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($issue, 'json') . '}';
             $client->request(
                 'POST',
                 '/api/issue/update',
@@ -426,7 +426,7 @@ class ApiControllerTest extends FixturesTestCase
 
         $serverData = $this->getServerEntities($client, $user);
 
-        $imageFilename = $this->getNewGuid().'.jpg';
+        $imageFilename = $this->getNewGuid() . '.jpg';
 
         /** @var Issue $issue */
         $issue = $serverData->getIssues()[0];
@@ -473,7 +473,7 @@ class ApiControllerTest extends FixturesTestCase
         $user = $this->getAuthenticatedUser($client);
         $serializer = $client->getContainer()->get('serializer');
         $doRequest = function ($issue, UploadedFile $file) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "issue":'.$serializer->serialize($issue, 'json').'}';
+            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($issue, 'json') . '}';
             $client->request(
                 'POST',
                 '/api/issue/update',
@@ -495,8 +495,8 @@ class ApiControllerTest extends FixturesTestCase
         $this->categorizeIssues($serverData->getIssues(), $newIssues, $registeredIssues, $respondedIssues, $reviewedIssues);
         $issue = $newIssues[0];
 
-        $filePath = __DIR__.'/../Files/sample.jpg';
-        $copyPath = __DIR__.'/../Files/sample_2.jpg';
+        $filePath = __DIR__ . '/../Files/sample.jpg';
+        $copyPath = __DIR__ . '/../Files/sample_2.jpg';
         copy($filePath, $copyPath);
 
         $file = new UploadedFile(
@@ -504,7 +504,7 @@ class ApiControllerTest extends FixturesTestCase
             'upload.jpg',
             'image/jpeg'
         );
-        $issue->setImageFilename(Uuid::uuid4()->toString().'.jpg');
+        $issue->setImageFilename(Uuid::uuid4()->toString() . '.jpg');
         $response = $doRequest($issue, $file);
         $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
 
@@ -515,7 +515,7 @@ class ApiControllerTest extends FixturesTestCase
 
         $client = static::createClient();
         $doRequest = function (ObjectMeta $objectMeta) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "issue":'.$serializer->serialize($objectMeta, 'json').'}';
+            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($objectMeta, 'json') . '}';
             $client->request(
                 'POST',
                 '/api/file/download',
@@ -534,7 +534,7 @@ class ApiControllerTest extends FixturesTestCase
         //test building image download
         $client = static::createClient();
         $doRequest = function (ObjectMeta $objectMeta) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "building":'.$serializer->serialize($objectMeta, 'json').'}';
+            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "building":' . $serializer->serialize($objectMeta, 'json') . '}';
             $client->request(
                 'POST',
                 '/api/file/download',
@@ -553,7 +553,7 @@ class ApiControllerTest extends FixturesTestCase
         //test map download
         $client = static::createClient();
         $doRequest = function (ObjectMeta $objectMeta) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "map":'.$serializer->serialize($objectMeta, 'json').'}';
+            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "map":' . $serializer->serialize($objectMeta, 'json') . '}';
             $client->request(
                 'POST',
                 '/api/file/download',
@@ -579,10 +579,10 @@ class ApiControllerTest extends FixturesTestCase
         $user = $this->getAuthenticatedUser($client);
         $serializer = $client->getContainer()->get('serializer');
         $doRequest = function ($issueId, $action) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "issueID":"'.$issueId.'"}';
+            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issueID":"' . $issueId . '"}';
             $client->request(
                 'POST',
-                '/api/issue/'.$action,
+                '/api/issue/' . $action,
                 [],
                 [],
                 ['CONTENT_TYPE' => 'application/json'],

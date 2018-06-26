@@ -49,9 +49,9 @@ class LoginController extends BaseLoginController
     /**
      * @Route("/recover", name="login_recover")
      *
-     * @param Request               $request
+     * @param Request $request
      * @param EmailServiceInterface $emailService
-     * @param TranslatorInterface   $translator
+     * @param TranslatorInterface $translator
      *
      * @return Response
      */
@@ -63,14 +63,11 @@ class LoginController extends BaseLoginController
             $request,
             function ($form) use ($emailService, $translator, $logger) {
                 /* @var FormInterface $form */
-
-                //display success
-                $this->displaySuccess($translator->trans('recover.success.email_sent', [], 'frontend_login'));
-
                 //check if user exists
                 $exitingUser = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $form->getData()['email']]);
                 if (null === $exitingUser) {
-                    $logger->info('could not reset password of unknown user '.$form->getData()['email']);
+                    $logger->info('could not reset password of unknown user ' . $form->getData()['email']);
+                    $this->displaySuccess($translator->trans('recover.fail.email_not_found', [], 'frontend_login'));
 
                     return $form;
                 }
@@ -88,10 +85,18 @@ class LoginController extends BaseLoginController
                 $email->setActionText($translator->trans('recover.email.reset_password.action_text', [], 'frontend_login'));
                 $email->setActionLink($this->generateUrl('login_reset', ['resetHash' => $exitingUser->getResetHash()], UrlGeneratorInterface::ABSOLUTE_URL));
 
-                //send & save
-                $emailService->sendEmail($email);
+                //save & send
                 $this->fastSave($email);
-                $logger->info('sent password reset email to '.$email->getReceiver());
+                if ($emailService->sendEmail($email)) {
+                    $email->setSentDateTime(new \DateTime());
+                    $this->fastSave($email);
+
+                    $logger->info('sent password reset email to ' . $email->getReceiver());
+                    $this->displaySuccess($translator->trans('recover.success.email_sent', [], 'frontend_login'));
+                } else {
+                    $logger->error('could not send password reset email ' . $email->getId());
+                    $this->displaySuccess($translator->trans('recover.fail.email_not_sent', [], 'frontend_login'));
+                }
 
                 return $form;
             }

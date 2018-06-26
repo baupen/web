@@ -39,7 +39,7 @@ class LoadConstructionSiteData extends BaseFixture
         foreach ($entries as $entry) {
             $building = new ConstructionSite();
 
-            $building->setImageFileName(Uuid::uuid4()->toString().'.jpg');
+            $building->setImageFileName(Uuid::uuid4()->toString() . '.jpg');
             $building->setName($entry[0]);
             $building->setStreetAddress($entry[1]);
             $building->setPostalCode($entry[2]);

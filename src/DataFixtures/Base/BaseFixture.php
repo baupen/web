@@ -53,8 +53,8 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
      * create random instances.
      *
      * @param ObjectManager $manager
-     * @param callable      $loader
-     * @param int           $count
+     * @param callable $loader
+     * @param int $count
      *
      * @return array
      */
@@ -79,7 +79,7 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
     protected function safeCopyToPublic($targetFilePath, $resourceFileName)
     {
         //get target folder & ensure it exists
-        $targetFilePath = __DIR__.'/../../../public/'.$targetFilePath;
+        $targetFilePath = __DIR__ . '/../../../public/' . $targetFilePath;
         $targetFolder = dirname($targetFilePath);
         if (!file_exists($targetFolder)) {
             mkdir($targetFolder, 0777, true);
@@ -89,6 +89,6 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
         if (file_exists($targetFilePath)) {
             unlink($targetFilePath);
         }
-        copy(__DIR__.'/../Resources/'.$resourceFileName, $targetFilePath);
+        copy(__DIR__ . '/../Resources/' . $resourceFileName, $targetFilePath);
     }
 }
