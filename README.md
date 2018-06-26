@@ -48,7 +48,11 @@ status=$?
 if [ "$status" = 0 ] ; then
     exit 0
 else
-    echo 1>&2 "Found not properly formatted files. Please run the php-cs-fixer before pproceeding."
-    exit 1
+    ./vendor/bin/php-cs-fixer fix > /dev/null 2>&1
+    git add *
+    echo 1>&2 "Found not properly formatted files. php-cs-fixer
+was run."
+    exit 0
 fi
+
 ```
