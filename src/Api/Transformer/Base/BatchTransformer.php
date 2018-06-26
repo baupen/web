@@ -16,7 +16,7 @@ abstract class BatchTransformer
     abstract public function toApi($entity);
 
     /**
-     * @param array    $entities
+     * @param array $entities
      *
      * @return array
      */

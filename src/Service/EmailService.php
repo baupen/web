@@ -43,10 +43,10 @@ class EmailService implements EmailServiceInterface
     /**
      * EmailService constructor.
      *
-     * @param \Swift_Mailer $mailer
+     * @param \Swift_Mailer   $mailer
      * @param LoggerInterface $logger
-     * @param Environment $twig
-     * @param string $contactEmail
+     * @param Environment     $twig
+     * @param string          $contactEmail
      */
     public function __construct(\Swift_Mailer $mailer, LoggerInterface $logger, Environment $twig, string $contactEmail)
     {
@@ -71,7 +71,7 @@ class EmailService implements EmailServiceInterface
 
         $body = $email->getBody();
         if (null !== $email->getActionLink()) {
-            $body .= "\n\n" . $email->getActionText() . ': ' . $email->getActionLink();
+            $body .= "\n\n".$email->getActionText().': '.$email->getActionLink();
         }
         $message->setBody($body, 'text/plain');
 

@@ -1,9 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 3/11/18
- * Time: 12:38 PM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Tests\Controller\Base;
@@ -28,7 +31,7 @@ class FixturesTestCase extends WebTestCase
 
         $commands = [
             'doctrine:migrations:migrate -q',
-            'doctrine:fixtures:load -n -q'
+            'doctrine:fixtures:load -n -q',
         ];
 
         foreach ($commands as $command) {

@@ -84,6 +84,9 @@
     ],
     "post-update-cmd": [
       "@auto-scripts"
+    ],
+    "setup": [
+      //define cp of config files
     ]
   },
   "conflict": {

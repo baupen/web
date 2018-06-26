@@ -33,10 +33,10 @@ class LoginController extends BaseApiController
     /**
      * @Route("", name="api_login")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param UserTransformer $userTransformer
+     * @param ValidatorInterface  $validator
+     * @param UserTransformer     $userTransformer
      *
      * @return Response
      */

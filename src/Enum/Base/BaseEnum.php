@@ -70,10 +70,11 @@ abstract class BaseEnum
                 $res[mb_strtolower($name)] = $value;
             }
 
-            return ['choices' => $res, 'choice_translation_domain' => 'enum_' . $this->camelCaseToTranslation($reflection->getShortName())];
+            return ['choices' => $res, 'choice_translation_domain' => 'enum_'.$this->camelCaseToTranslation($reflection->getShortName())];
         } catch (\ReflectionException $e) {
             //this never happens due to ReflectionClass is passed the class of the $this object (always valid)
         }
+
         return [];
     }
 
@@ -93,12 +94,13 @@ abstract class BaseEnum
 
             foreach ($choices as $name => $value) {
                 if ($value === $enumValue) {
-                    return $translator->trans(mb_strtolower($name), [], 'enum_' . $this->camelCaseToTranslation($reflection->getShortName()));
+                    return $translator->trans(mb_strtolower($name), [], 'enum_'.$this->camelCaseToTranslation($reflection->getShortName()));
                 }
             }
         } catch (\ReflectionException $e) {
             //this never happens due to ReflectionClass is passed the class of the $this object (always valid)
         }
+
         return '';
     }
 }

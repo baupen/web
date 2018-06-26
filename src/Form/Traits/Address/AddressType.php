@@ -38,7 +38,7 @@ class AddressType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'translation_domain' => 'trait_address'
+            'translation_domain' => 'trait_address',
         ]);
     }
 }

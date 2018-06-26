@@ -11,7 +11,6 @@
 
 namespace App\Api\Transformer;
 
-
 use App\Api\Transformer\Base\BatchTransformer;
 use App\Entity\Craftsman;
 

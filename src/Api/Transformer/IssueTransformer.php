@@ -64,6 +64,7 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * @param Issue $entity
+     *
      * @return \App\Api\Entity\Issue
      */
     public function toApi($entity)

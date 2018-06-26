@@ -1,9 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 3/11/18
- * Time: 11:57 AM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Tests\Controller;
@@ -24,14 +27,13 @@ use App\Tests\Controller\Base\FixturesTestCase;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class ApiControllerTest extends FixturesTestCase
 {
     /**
-     * tests the login functionality
+     * tests the login functionality.
      */
     public function testLogin()
     {
@@ -42,21 +44,20 @@ class ApiControllerTest extends FixturesTestCase
                 '/api/login',
                 [],
                 [],
-                ["CONTENT_TYPE" => "application/json"],
-                '{"username":"' . $username . '", "passwordHash":"' . hash("sha256", $password) . '"}'
+                ['CONTENT_TYPE' => 'application/json'],
+                '{"username":"'.$username.'", "passwordHash":"'.hash('sha256', $password).'"}'
             );
 
             return $client->getResponse();
         };
 
-
-        $response = $doRequest("unknwon", "ad");
+        $response = $doRequest('unknwon', 'ad');
         $this->checkResponse($response, ApiStatus::FAIL, BaseApiController::UNKNOWN_USERNAME);
 
-        $response = $doRequest("f@mangel.io", "ad");
+        $response = $doRequest('f@mangel.io', 'ad');
         $this->checkResponse($response, ApiStatus::FAIL, BaseApiController::WRONG_PASSWORD);
 
-        $response = $doRequest("f@mangel.io", "asdf");
+        $response = $doRequest('f@mangel.io', 'asdf');
         $loginResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($loginResponse->data);
@@ -72,36 +73,42 @@ class ApiControllerTest extends FixturesTestCase
      * @param Response $response
      * @param $apiStatus
      * @param string $message
+     *
      * @return mixed|null
      */
-    private function checkResponse(Response $response, $apiStatus, $message = "")
+    private function checkResponse(Response $response, $apiStatus, $message = '')
     {
-        $this->assertFalse(strpos($response->getContent(),"\u00") > 0);
-        if ($apiStatus == ApiStatus::SUCCESS) {
+        $this->assertFalse(mb_strpos($response->getContent(), "\u00") > 0);
+        if (ApiStatus::SUCCESS === $apiStatus) {
             $successful = json_decode($response->getContent());
-            $this->assertEquals($apiStatus, $successful->status, $response->getContent());
-            $this->assertEquals(200, $response->getStatusCode());
+            $this->assertSame($apiStatus, $successful->status, $response->getContent());
+            $this->assertSame(200, $response->getStatusCode());
+
             return $successful;
-        } else if ($apiStatus == ApiStatus::FAIL) {
+        } elseif (ApiStatus::FAIL === $apiStatus) {
             $failed = json_decode($response->getContent());
-            $this->assertEquals($apiStatus, $failed->status, $response->getContent());
-            $this->assertEquals($message, $failed->message);
-            $this->assertEquals(400, $response->getStatusCode());
+            $this->assertSame($apiStatus, $failed->status, $response->getContent());
+            $this->assertSame($message, $failed->message);
+            $this->assertSame(400, $response->getStatusCode());
+
             return $failed;
-        } else if ($apiStatus == ApiStatus::ERROR) {
+        } elseif (ApiStatus::ERROR === $apiStatus) {
             $error = json_decode($response->getContent());
-            $this->assertEquals($apiStatus, $error->status);
-            $this->assertEquals($message, $error->message);
-            $this->assertNotEquals(500, $response->getStatusCode());
+            $this->assertSame($apiStatus, $error->status);
+            $this->assertSame($message, $error->message);
+            $this->assertNotSame(500, $response->getStatusCode());
+
             return $error;
         }
+
         return null;
     }
 
     /**
-     * gets an authenticated user
+     * gets an authenticated user.
      *
      * @param Client $client
+     *
      * @return \stdClass
      */
     private function getAuthenticatedUser(Client $client)
@@ -111,46 +118,48 @@ class ApiControllerTest extends FixturesTestCase
             '/api/login',
             [],
             [],
-            ["CONTENT_TYPE" => "application/json"],
-            '{"username":"f@mangel.io", "passwordHash":"' . hash("sha256", "asdf") . '"}'
+            ['CONTENT_TYPE' => 'application/json'],
+            '{"username":"f@mangel.io", "passwordHash":"'.hash('sha256', 'asdf').'"}'
         );
 
         $json = $client->getResponse()->getContent();
         $response = json_decode($json);
+
         return $response->data->user;
     }
 
     /**
-     * get the state of the server
+     * get the state of the server.
      *
      * @param Client $client
      * @param $authenticatedUser
+     *
      * @return ServerData
      */
     private function getServerEntities(Client $client, $authenticatedUser)
     {
-        $serializer = $client->getContainer()->get("serializer");
+        $serializer = $client->getContainer()->get('serializer');
         $doRequest = function (ReadRequest $readRequest) use ($client, $serializer) {
-            $json = $serializer->serialize($readRequest, "json");
+            $json = $serializer->serialize($readRequest, 'json');
             $client->request(
                 'POST',
                 '/api/read',
                 [],
                 [],
-                ["CONTENT_TYPE" => "application/json"],
+                ['CONTENT_TYPE' => 'application/json'],
                 $json
             );
 
             return $client->getResponse();
         };
 
-        # update all
+        // update all
         $readRequest = new ReadRequest();
         $readRequest->setAuthenticationToken($authenticatedUser->authenticationToken);
 
         $userMeta = new ObjectMeta();
         $userMeta->setId($authenticatedUser->meta->id);
-        $userMeta->setLastChangeTime((new \DateTime())->setTimestamp(0)->format("c"));
+        $userMeta->setLastChangeTime((new \DateTime())->setTimestamp(0)->format('c'));
         $readRequest->setUser($userMeta);
 
         $readRequest->setBuildings([]);
@@ -171,19 +180,19 @@ class ApiControllerTest extends FixturesTestCase
 
         $buildings = [];
         foreach ($readResponse->data->changedBuildings as $stdClass) {
-            $buildings[] = $serializer->deserialize(json_encode($stdClass), Building::class, "json");
+            $buildings[] = $serializer->deserialize(json_encode($stdClass), Building::class, 'json');
         }
         $craftsmen = [];
         foreach ($readResponse->data->changedCraftsmen as $stdClass) {
-            $craftsmen[] = $serializer->deserialize(json_encode($stdClass), Craftsman::class, "json");
+            $craftsmen[] = $serializer->deserialize(json_encode($stdClass), Craftsman::class, 'json');
         }
         $maps = [];
         foreach ($readResponse->data->changedMaps as $stdClass) {
-            $maps[] = $serializer->deserialize(json_encode($stdClass), Map::class, "json");
+            $maps[] = $serializer->deserialize(json_encode($stdClass), Map::class, 'json');
         }
         $issues = [];
         foreach ($readResponse->data->changedIssues as $stdClass) {
-            $issues[] = $serializer->deserialize(json_encode($stdClass), Issue::class, "json");
+            $issues[] = $serializer->deserialize(json_encode($stdClass), Issue::class, 'json');
         }
 
         $this->assertNotNull($readResponse->data->changedBuildings[0]->address);
@@ -192,21 +201,21 @@ class ApiControllerTest extends FixturesTestCase
     }
 
     /**
-     * tests the create issue method
+     * tests the create issue method.
      */
     public function testRead()
     {
         $client = static::createClient();
         $authenticatedUser = $this->getAuthenticatedUser($client);
-        $serializer = $client->getContainer()->get("serializer");
+        $serializer = $client->getContainer()->get('serializer');
         $doRequest = function (ReadRequest $readRequest) use ($client, $serializer) {
-            $json = $serializer->serialize($readRequest, "json");
+            $json = $serializer->serialize($readRequest, 'json');
             $client->request(
                 'POST',
                 '/api/read',
                 [],
                 [],
-                ["CONTENT_TYPE" => "application/json"],
+                ['CONTENT_TYPE' => 'application/json'],
                 $json
             );
 
@@ -214,7 +223,7 @@ class ApiControllerTest extends FixturesTestCase
         };
         $serverData = $this->getServerEntities($client, $authenticatedUser);
 
-        ### update none
+        //## update none
         $readRequest = new ReadRequest();
         $readRequest->setAuthenticationToken($authenticatedUser->authenticationToken);
         $userMeta = new ObjectMeta();
@@ -227,7 +236,7 @@ class ApiControllerTest extends FixturesTestCase
             //convert to object meta
             $metas = [];
             foreach ($entities as $entity) {
-                /** @var BaseEntity $entity */
+                /* @var BaseEntity $entity */
                 if ($lost-- > 0) {
                     //skip to lose meta
                     continue;
@@ -236,18 +245,18 @@ class ApiControllerTest extends FixturesTestCase
                 $meta->setId($entity->getMeta()->getId());
                 if ($old-- > 0) {
                     //set to min datetime to force update
-                    $meta->setLastChangeTime(((new \DateTime())->setTimestamp(0)->format("c")));
+                    $meta->setLastChangeTime(((new \DateTime())->setTimestamp(0)->format('c')));
                 } else {
                     $meta->setLastChangeTime($entity->getMeta()->getLastChangeTime());
                 }
                 $metas[] = $meta;
             }
 
-            for ($i = 0; $i < $invalids; $i++) {
+            for ($i = 0; $i < $invalids; ++$i) {
                 //create invalid & add
                 $meta = new ObjectMeta();
                 $meta->setId(Uuid::uuid4());
-                $meta->setLastChangeTime((new \DateTime())->setTimestamp(0)->format("c"));
+                $meta->setLastChangeTime((new \DateTime())->setTimestamp(0)->format('c'));
                 $metas[] = $meta;
             }
 
@@ -274,7 +283,7 @@ class ApiControllerTest extends FixturesTestCase
         $this->assertCount(1, $readResponse->data->removedMapIDs);
         $this->assertCount(1, $readResponse->data->removedIssueIDs);
 
-        ### update, remove & add at the same time
+        //## update, remove & add at the same time
         //set them in the request
         $readRequest->setBuildings($getMetas($serverData->getBuildings(), 1, 1, 1));
         $readRequest->setCraftsmen($getMetas($serverData->getCraftsmen(), 1, 1, 1));
@@ -297,21 +306,21 @@ class ApiControllerTest extends FixturesTestCase
     }
 
     /**
-     * tests the create issue method
+     * tests the create issue method.
      */
     public function testCreateIssue()
     {
         $client = static::createClient();
         $user = $this->getAuthenticatedUser($client);
-        $serializer = $client->getContainer()->get("serializer");
+        $serializer = $client->getContainer()->get('serializer');
         $doRequest = function (Issue $issue) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($issue, "json") . '}';
+            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "issue":'.$serializer->serialize($issue, 'json').'}';
             $client->request(
                 'POST',
                 '/api/issue/create',
                 [],
                 [],
-                ["CONTENT_TYPE" => "application/json"],
+                ['CONTENT_TYPE' => 'application/json'],
                 $json
             );
 
@@ -323,14 +332,14 @@ class ApiControllerTest extends FixturesTestCase
         $issue = new Issue();
         $issue->setWasAddedWithClient(true);
         $issue->setIsMarked(true);
-        $issue->setDescription("description");
+        $issue->setDescription('description');
         $issue->setMap($serverData->getMaps()[0]->getMeta()->getId());
 
         $issue->setStatus(new IssueStatus());
 
         $meta = new ObjectMeta();
         $meta->setId($this->getNewGuid());
-        $meta->setLastChangeTime((new \DateTime())->format("c"));
+        $meta->setLastChangeTime((new \DateTime())->format('c'));
         $issue->setMeta($meta);
 
         $issuePosition = new IssuePosition();
@@ -361,7 +370,7 @@ class ApiControllerTest extends FixturesTestCase
     }
 
     /**
-     * checks if the issue is of the expected form
+     * checks if the issue is of the expected form.
      *
      * @param $checkIssue
      * @param Issue $issue
@@ -369,22 +378,22 @@ class ApiControllerTest extends FixturesTestCase
     private function verifyIssue($checkIssue, Issue $issue)
     {
         //check properties
-        $this->assertEquals($checkIssue->wasAddedWithClient, $issue->getWasAddedWithClient());
-        $this->assertEquals($checkIssue->isMarked, $issue->getIsMarked());
-        $this->assertEquals($checkIssue->imageFilename, $issue->getImageFilename());
-        $this->assertEquals($checkIssue->description, $issue->getDescription());
-        $this->assertEquals($checkIssue->map, $issue->getMap());
+        $this->assertSame($checkIssue->wasAddedWithClient, $issue->getWasAddedWithClient());
+        $this->assertSame($checkIssue->isMarked, $issue->getIsMarked());
+        $this->assertSame($checkIssue->imageFilename, $issue->getImageFilename());
+        $this->assertSame($checkIssue->description, $issue->getDescription());
+        $this->assertSame($checkIssue->map, $issue->getMap());
 
         //check meta is newer/equal & id is preserved
-        $this->assertEquals($checkIssue->meta->id, $issue->getMeta()->getId());
+        $this->assertSame($checkIssue->meta->id, $issue->getMeta()->getId());
         $this->assertTrue($checkIssue->meta->lastChangeTime >= $issue->getMeta()->getLastChangeTime());
 
         //check position transferred correctly
-        if ($issue->getPosition() != null) {
+        if (null !== $issue->getPosition()) {
             $this->assertNotNull($checkIssue->position);
-            $this->assertEquals($checkIssue->position->x, $issue->getPosition()->getX());
-            $this->assertEquals($checkIssue->position->y, $issue->getPosition()->getY());
-            $this->assertEquals($checkIssue->position->zoomScale, $issue->getPosition()->getZoomScale());
+            $this->assertSame($checkIssue->position->x, $issue->getPosition()->getX());
+            $this->assertSame($checkIssue->position->y, $issue->getPosition()->getY());
+            $this->assertSame($checkIssue->position->zoomScale, $issue->getPosition()->getZoomScale());
         } else {
             $this->assertNull($checkIssue->position);
         }
@@ -394,21 +403,21 @@ class ApiControllerTest extends FixturesTestCase
     }
 
     /**
-     * tests the create issue method
+     * tests the create issue method.
      */
     public function testUpdateIssue()
     {
         $client = static::createClient();
         $user = $this->getAuthenticatedUser($client);
-        $serializer = $client->getContainer()->get("serializer");
+        $serializer = $client->getContainer()->get('serializer');
         $doRequest = function (Issue $issue) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($issue, "json") . '}';
+            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "issue":'.$serializer->serialize($issue, 'json').'}';
             $client->request(
                 'POST',
                 '/api/issue/update',
                 [],
                 [],
-                ["CONTENT_TYPE" => "application/json"],
+                ['CONTENT_TYPE' => 'application/json'],
                 $json
             );
 
@@ -417,13 +426,13 @@ class ApiControllerTest extends FixturesTestCase
 
         $serverData = $this->getServerEntities($client, $user);
 
-        $imageFilename = $this->getNewGuid() . ".jpg";
+        $imageFilename = $this->getNewGuid().'.jpg';
 
         /** @var Issue $issue */
         $issue = $serverData->getIssues()[0];
         $issue->setWasAddedWithClient(false);
         $issue->setIsMarked(false);
-        $issue->setDescription("description 2");
+        $issue->setDescription('description 2');
         $issue->setMap($serverData->getMaps()[0]->getMeta()->getId());
 
         $issue->setStatus(new IssueStatus());
@@ -452,26 +461,25 @@ class ApiControllerTest extends FixturesTestCase
 
     private function getNewGuid()
     {
-        return strtoupper(Uuid::uuid4()->toString());
+        return mb_strtoupper(Uuid::uuid4()->toString());
     }
 
-
     /**
-     * tests upload/download functionality
+     * tests upload/download functionality.
      */
     public function testFileUploadDownload()
     {
         $client = static::createClient();
         $user = $this->getAuthenticatedUser($client);
-        $serializer = $client->getContainer()->get("serializer");
+        $serializer = $client->getContainer()->get('serializer');
         $doRequest = function ($issue, UploadedFile $file) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($issue, "json") . '}';
+            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "issue":'.$serializer->serialize($issue, 'json').'}';
             $client->request(
                 'POST',
                 '/api/issue/update',
                 [],
-                ["some key" => $file],
-                ["CONTENT_TYPE" => "application/json"],
+                ['some key' => $file],
+                ['CONTENT_TYPE' => 'application/json'],
                 $json
             );
 
@@ -480,15 +488,15 @@ class ApiControllerTest extends FixturesTestCase
 
         $serverData = $this->getServerEntities($client, $user);
 
-        /** @var Issue[] $newIssues */
-        /** @var Issue[] $registeredIssues */
-        /** @var Issue[] $respondedIssues */
-        /** @var Issue[] $reviewedIssues */
+        /* @var Issue[] $newIssues */
+        /* @var Issue[] $registeredIssues */
+        /* @var Issue[] $respondedIssues */
+        /* @var Issue[] $reviewedIssues */
         $this->categorizeIssues($serverData->getIssues(), $newIssues, $registeredIssues, $respondedIssues, $reviewedIssues);
         $issue = $newIssues[0];
 
-        $filePath = __DIR__ . "/../Files/sample.jpg";
-        $copyPath = __DIR__ . "/../Files/sample_2.jpg";
+        $filePath = __DIR__.'/../Files/sample.jpg';
+        $copyPath = __DIR__.'/../Files/sample_2.jpg';
         copy($filePath, $copyPath);
 
         $file = new UploadedFile(
@@ -496,24 +504,24 @@ class ApiControllerTest extends FixturesTestCase
             'upload.jpg',
             'image/jpeg'
         );
-        $issue->setImageFilename(Uuid::uuid4()->toString() . ".jpg");
+        $issue->setImageFilename(Uuid::uuid4()->toString().'.jpg');
         $response = $doRequest($issue, $file);
         $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         //check response issue updated
         $this->verifyIssue($issueResponse->data->issue, $issue);
         //refresh issue version
-        $issue = $serializer->deserialize(json_encode($issueResponse->data->issue), Issue::class, "json");
+        $issue = $serializer->deserialize(json_encode($issueResponse->data->issue), Issue::class, 'json');
 
         $client = static::createClient();
         $doRequest = function (ObjectMeta $objectMeta) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($objectMeta, "json") . '}';
+            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "issue":'.$serializer->serialize($objectMeta, 'json').'}';
             $client->request(
                 'POST',
                 '/api/file/download',
                 [],
                 [],
-                ["CONTENT_TYPE" => "application/json"],
+                ['CONTENT_TYPE' => 'application/json'],
                 $json
             );
 
@@ -526,13 +534,13 @@ class ApiControllerTest extends FixturesTestCase
         //test building image download
         $client = static::createClient();
         $doRequest = function (ObjectMeta $objectMeta) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "building":' . $serializer->serialize($objectMeta, "json") . '}';
+            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "building":'.$serializer->serialize($objectMeta, 'json').'}';
             $client->request(
                 'POST',
                 '/api/file/download',
                 [],
                 [],
-                ["CONTENT_TYPE" => "application/json"],
+                ['CONTENT_TYPE' => 'application/json'],
                 $json
             );
 
@@ -545,13 +553,13 @@ class ApiControllerTest extends FixturesTestCase
         //test map download
         $client = static::createClient();
         $doRequest = function (ObjectMeta $objectMeta) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "map":' . $serializer->serialize($objectMeta, "json") . '}';
+            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "map":'.$serializer->serialize($objectMeta, 'json').'}';
             $client->request(
                 'POST',
                 '/api/file/download',
                 [],
                 [],
-                ["CONTENT_TYPE" => "application/json"],
+                ['CONTENT_TYPE' => 'application/json'],
                 $json
             );
 
@@ -563,21 +571,21 @@ class ApiControllerTest extends FixturesTestCase
     }
 
     /**
-     * tests upload/download functionality
+     * tests upload/download functionality.
      */
     public function testIssueActions()
     {
         $client = static::createClient();
         $user = $this->getAuthenticatedUser($client);
-        $serializer = $client->getContainer()->get("serializer");
+        $serializer = $client->getContainer()->get('serializer');
         $doRequest = function ($issueId, $action) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issueID":"' . $issueId . '"}';
+            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "issueID":"'.$issueId.'"}';
             $client->request(
                 'POST',
-                '/api/issue/' . $action,
+                '/api/issue/'.$action,
                 [],
                 [],
-                ["CONTENT_TYPE" => "application/json"],
+                ['CONTENT_TYPE' => 'application/json'],
                 $json
             );
 
@@ -587,48 +595,48 @@ class ApiControllerTest extends FixturesTestCase
         $serverData = $this->getServerEntities($client, $user);
         $issue = $serverData->getIssues()[0];
 
-        $response = $doRequest($issue->getMeta()->getId(), "mark");
+        $response = $doRequest($issue->getMeta()->getId(), 'mark');
         $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         //check response issue updated
         $issue->setIsMarked(!$issue->getIsMarked());
         $this->verifyIssue($issueResponse->data->issue, $issue);
-        $issue = $serializer->deserialize(json_encode($issueResponse->data->issue), Issue::class, "json");
+        $issue = $serializer->deserialize(json_encode($issueResponse->data->issue), Issue::class, 'json');
 
-        /** @var Issue[] $newIssues */
-        /** @var Issue[] $registeredIssues */
-        /** @var Issue[] $respondedIssues */
-        /** @var Issue[] $reviewedIssues */
+        /* @var Issue[] $newIssues */
+        /* @var Issue[] $registeredIssues */
+        /* @var Issue[] $respondedIssues */
+        /* @var Issue[] $reviewedIssues */
         $this->categorizeIssues($serverData->getIssues(), $newIssues, $registeredIssues, $respondedIssues, $reviewedIssues);
 
         //delete
-        $response = $doRequest($newIssues[0]->getMeta()->getId(), "delete");
+        $response = $doRequest($newIssues[0]->getMeta()->getId(), 'delete');
         $this->checkResponse($response, ApiStatus::SUCCESS);
-        $response = $doRequest($newIssues[0]->getMeta()->getId(), "delete");
+        $response = $doRequest($newIssues[0]->getMeta()->getId(), 'delete');
         $this->checkResponse($response, ApiStatus::FAIL, BaseApiController::ISSUE_NOT_FOUND);
 
         //review registered
-        $response = $doRequest($registeredIssues[0]->getMeta()->getId(), "review");
+        $response = $doRequest($registeredIssues[0]->getMeta()->getId(), 'review');
         $this->checkResponse($response, ApiStatus::SUCCESS);
-        $response = $doRequest($registeredIssues[0]->getMeta()->getId(), "review");
+        $response = $doRequest($registeredIssues[0]->getMeta()->getId(), 'review');
         $this->checkResponse($response, ApiStatus::FAIL, BaseApiController::ISSUE_ACTION_NOT_ALLOWED);
 
         //review responded
-        $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "review");
+        $response = $doRequest($respondedIssues[0]->getMeta()->getId(), 'review');
         $this->checkResponse($response, ApiStatus::SUCCESS);
-        $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "review");
+        $response = $doRequest($respondedIssues[0]->getMeta()->getId(), 'review');
         $this->checkResponse($response, ApiStatus::FAIL, BaseApiController::ISSUE_ACTION_NOT_ALLOWED);
 
         //revert reviewed
-        $response = $doRequest($reviewedIssues[0]->getMeta()->getId(), "revert");
+        $response = $doRequest($reviewedIssues[0]->getMeta()->getId(), 'revert');
         $this->checkResponse($response, ApiStatus::SUCCESS);
 
         //revert responded
-        $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");
+        $response = $doRequest($respondedIssues[0]->getMeta()->getId(), 'revert');
         $this->checkResponse($response, ApiStatus::SUCCESS);
         //revert twice because of earlier actions
-        $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");
-        $response = $doRequest($respondedIssues[0]->getMeta()->getId(), "revert");
+        $doRequest($respondedIssues[0]->getMeta()->getId(), 'revert');
+        $response = $doRequest($respondedIssues[0]->getMeta()->getId(), 'revert');
         $this->checkResponse($response, ApiStatus::FAIL, BaseApiController::ISSUE_ACTION_NOT_ALLOWED);
     }
 
@@ -647,11 +655,11 @@ class ApiControllerTest extends FixturesTestCase
         $reviewedIssues = [];
 
         foreach ($issues as $issue) {
-            if ($issue->getStatus()->getReview() != null) {
+            if (null !== $issue->getStatus()->getReview()) {
                 $reviewedIssues[] = $issue;
-            } else if ($issue->getStatus()->getResponse() != null) {
+            } elseif (null !== $issue->getStatus()->getResponse()) {
                 $respondedIssues[] = $issue;
-            } else if ($issue->getStatus()->getRegistration() != null) {
+            } elseif (null !== $issue->getStatus()->getRegistration()) {
                 $registeredIssues[] = $issue;
             } else {
                 $newIssues[] = $issue;

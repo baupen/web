@@ -42,10 +42,10 @@ class IssueController extends BaseApiController
     /**
      * @Route("/create", name="api_issue_create")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
      *
      * @throws \Doctrine\ORM\ORMException
      *
@@ -59,10 +59,10 @@ class IssueController extends BaseApiController
     /**
      * @Route("/update", name="api_issue_update")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
      *
      * @throws \Doctrine\ORM\ORMException
      *
@@ -74,10 +74,10 @@ class IssueController extends BaseApiController
     }
 
     /**
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
      * @param $mode
      *
      * @throws ORMException
@@ -178,7 +178,7 @@ class IssueController extends BaseApiController
         //handle file upload
         foreach ($request->files->all() as $key => $file) {
             /** @var UploadedFile $file */
-            $targetFolder = $this->getParameter('PUBLIC_DIR') . '/' . dirname($issue->getImageFilePath());
+            $targetFolder = $this->getParameter('PUBLIC_DIR').'/'.dirname($issue->getImageFilePath());
             if (!file_exists($targetFolder)) {
                 mkdir($targetFolder, 0777, true);
             }
@@ -212,10 +212,10 @@ class IssueController extends BaseApiController
     /**
      * @Route("/delete", name="api_issue_delete")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
      *
      * @throws \Doctrine\ORM\ORMException
      *
@@ -244,10 +244,10 @@ class IssueController extends BaseApiController
     /**
      * @Route("/mark", name="api_issue_mark")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
      *
      * @throws \Doctrine\ORM\ORMException
      *
@@ -273,10 +273,10 @@ class IssueController extends BaseApiController
     /**
      * @Route("/review", name="api_issue_review")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
      *
      * @throws \Doctrine\ORM\ORMException
      *
@@ -308,10 +308,10 @@ class IssueController extends BaseApiController
     /**
      * @Route("/revert", name="api_issue_revert")
      *
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
      *
      * @throws \Doctrine\ORM\ORMException
      *
@@ -347,10 +347,10 @@ class IssueController extends BaseApiController
     }
 
     /**
-     * @param Request $request
+     * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
-     * @param IssueTransformer $issueTransformer
+     * @param ValidatorInterface  $validator
+     * @param IssueTransformer    $issueTransformer
      * @param $action
      *
      * @throws ORMException

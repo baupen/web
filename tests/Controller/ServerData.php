@@ -1,13 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 6/21/18
- * Time: 9:49 AM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Tests\Controller;
-
 
 use App\Api\Entity\Building;
 use App\Api\Entity\Craftsman;
@@ -38,10 +40,11 @@ class ServerData
 
     /**
      * ServerData constructor.
-     * @param Building[] $buildings
-     * @param Map[] $maps
+     *
+     * @param Building[]  $buildings
+     * @param Map[]       $maps
      * @param Craftsman[] $craftsman
-     * @param Issue[] $issues
+     * @param Issue[]     $issues
      */
     public function __construct($buildings, $maps, $craftsman, $issues)
     {

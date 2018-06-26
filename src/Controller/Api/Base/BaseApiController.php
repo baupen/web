@@ -1,13 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 6/25/18
- * Time: 8:00 PM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Controller\Api\Base;
-
 
 use App\Api\Response\ErrorResponse;
 use App\Api\Response\FailResponse;
@@ -85,7 +87,6 @@ class BaseApiController extends BaseDoctrineController
         return parent::getSubscribedServices() + ['translator' => TranslatorInterface::class, 'logger' => LoggerInterface::class];
     }
 
-
     /**
      * if request errored (server error).
      *
@@ -97,7 +98,7 @@ class BaseApiController extends BaseDoctrineController
     {
         $logger = $this->get('logger');
         $request = $this->get('request_stack')->getCurrentRequest();
-        $logger->error('Api error ' . ': ' . $message . ' for ' . $request->getContent());
+        $logger->error('Api error '.': '.$message.' for '.$request->getContent());
 
         return $this->json(new ErrorResponse($message, $this->errorMessageToStatusCode($message)), Response::HTTP_INTERNAL_SERVER_ERROR);
     }
@@ -113,7 +114,7 @@ class BaseApiController extends BaseDoctrineController
     {
         $logger = $this->get('logger');
         $request = $this->get('request_stack')->getCurrentRequest();
-        $logger->error('Api fail ' . ': ' . $message . ' for ' . $request->getContent());
+        $logger->error('Api fail '.': '.$message.' for '.$request->getContent());
 
         return $this->json(new FailResponse($message, $this->errorMessageToStatusCode($message)), Response::HTTP_BAD_REQUEST);
     }
@@ -136,7 +137,7 @@ class BaseApiController extends BaseDoctrineController
      * @final
      *
      * @param $data
-     * @param int $status
+     * @param int   $status
      * @param array $headers
      * @param array $context
      *

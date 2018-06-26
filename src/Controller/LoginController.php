@@ -49,9 +49,9 @@ class LoginController extends BaseLoginController
     /**
      * @Route("/recover", name="login_recover")
      *
-     * @param Request $request
+     * @param Request               $request
      * @param EmailServiceInterface $emailService
-     * @param TranslatorInterface $translator
+     * @param TranslatorInterface   $translator
      *
      * @return Response
      */
@@ -70,7 +70,8 @@ class LoginController extends BaseLoginController
                 //check if user exists
                 $exitingUser = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $form->getData()['email']]);
                 if (null === $exitingUser) {
-                    $logger->info("could not reset password of unknown user " . $form->getData()['email']);
+                    $logger->info('could not reset password of unknown user '.$form->getData()['email']);
+
                     return $form;
                 }
 
@@ -90,7 +91,7 @@ class LoginController extends BaseLoginController
                 //send & save
                 $emailService->sendEmail($email);
                 $this->fastSave($email);
-                $logger->info("sent password reset email to " . $email->getReceiver());
+                $logger->info('sent password reset email to '.$email->getReceiver());
 
                 return $form;
             }
@@ -125,6 +126,7 @@ class LoginController extends BaseLoginController
                     //check for valid password
                     if ($user->getPlainPassword() !== $user->getRepeatPlainPassword()) {
                         $this->displayError($translator->trans('reset.error.passwords_do_not_match', [], 'frontend_login'));
+
                         return $form;
                     }
 
@@ -138,6 +140,7 @@ class LoginController extends BaseLoginController
 
                     //login user & redirect
                     $this->loginUser($request, $user);
+
                     return $this->redirectToRoute('dashboard_index');
                 }
             );
