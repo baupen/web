@@ -393,7 +393,7 @@ class ApiControllerTest extends FixturesTestCase
             $this->assertNotNull($checkIssue->position);
             $this->assertSame($checkIssue->position->x, $issue->getPosition()->getX());
             $this->assertSame($checkIssue->position->y, $issue->getPosition()->getY());
-            $this->assertSame($checkIssue->position->zoomScale, $issue->getPosition()->getZoomScale());
+            $this->assertSame((float)$checkIssue->position->zoomScale, $issue->getPosition()->getZoomScale());
         } else {
             $this->assertNull($checkIssue->position);
         }

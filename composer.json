@@ -71,22 +71,26 @@
     "symfony/polyfill-php56": "*"
   },
   "scripts": {
+    "prepare-environment": [
+      "cp -n .env.dist .env",
+      "cp -n .php_cs.dist .php_cs",
+      "cp -n phpunit.xml.dist phpunit.xml",
+      "cp -n servers.yml.dist servers.yml"
+    ],
     "auto-scripts": {
-      "cache:clear": "symfony-cmd",
-      "assets:install --symlink --relative %PUBLIC_DIR%": "symfony-cmd",
+      "requirements-checker": "script",
       "security:check --end-point=http://security.sensiolabs.org/check_lock": "symfony-cmd",
       "doctrine:migrations:migrate -q": "symfony-cmd",
-      "doctrine:fixtures:load -q": "symfony-cmd",
-      "requirements-checker": "script"
+      "doctrine:fixtures:load -q": "symfony-cmd"
     },
     "post-install-cmd": [
       "@auto-scripts"
     ],
+    "pre-install-cmd": [
+      "@prepare-environment"
+    ],
     "post-update-cmd": [
       "@auto-scripts"
-    ],
-    "setup": [
-      //define cp of config files
     ]
   },
   "conflict": {

@@ -1,7 +1,7 @@
 .base: &base
   hostname: ftp.mangel.io
-  user: mangelio
-  http_user: mangelio
+  user: USER
+  http_user: USER
   branch: master
   deploy_path: ~/www/app.mangel.io/{{stage}}
   sshOptions:
@@ -10,7 +10,7 @@
 dev:
   <<: *base
   stage: dev
-  branch: develop
+  branch: dev
 
 production:
   <<: *base

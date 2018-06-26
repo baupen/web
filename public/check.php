@@ -35,8 +35,8 @@ $symfonyRequirements = new SymfonyRequirements(dirname(dirname(realpath($autoloa
 
 $majorProblems = $symfonyRequirements->getFailedRequirements();
 $minorProblems = $symfonyRequirements->getFailedRecommendations();
-$hasMajorProblems = (bool) count($majorProblems);
-$hasMinorProblems = (bool) count($minorProblems);
+$hasMajorProblems = (bool)count($majorProblems);
+$hasMinorProblems = (bool)count($minorProblems);
 
 ?>
 <!DOCTYPE html>
