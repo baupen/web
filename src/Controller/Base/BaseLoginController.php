@@ -11,8 +11,7 @@
 
 namespace App\Controller\Base;
 
-use App\Entity\Base\BaseEntity;
-use App\Entity\Traits\UserTrait;
+use App\Entity\ConstructionManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,12 +36,12 @@ class BaseLoginController extends BaseFormController
 
     /**
      * @param Request $request
-     * @param UserTrait|BaseEntity $user
+     * @param ConstructionManager $user
      * @param FormInterface $loginForm
      *
      * @return FormInterface
      */
-    protected function handleLoginForm(Request $request, BaseEntity $user, FormInterface $loginForm)
+    protected function handleLoginForm(Request $request, ConstructionManager $user, FormInterface $loginForm)
     {
         /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
         $session = $request->getSession();
@@ -58,7 +57,7 @@ class BaseLoginController extends BaseFormController
             $error = null;
         }
         if (null !== $error) {
-            $this->displayError($this->getTranslator()->trans('index.errors.login_failed', [], 'frontend_login'));
+            $this->displayError($this->getTranslator()->trans('login.errors.login_failed', [], 'login'));
         }
 
         // last username entered by the user

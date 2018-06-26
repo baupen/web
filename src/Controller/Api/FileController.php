@@ -20,6 +20,7 @@ use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Entity\Traits\TimeTrait;
+use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,40 +70,9 @@ class FileController extends BaseApiController
             return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
         }
 
-        $downloadFile = function ($repository, $objectMeta, $verifyAccess, $accessFilePath) {
-            /** @var ObjectMeta $objectMeta */
-            /** @var EntityRepository $repository */
-            $entity = $repository->find($objectMeta->getId());
-
-            /** @var TimeTrait $entity */
-            if (null === $entity) {
-                return $this->fail(static::ENTITY_NO_DOWNLOADABLE_FILE);
-            }
-
-            if (!$verifyAccess($entity)) {
-                return $this->fail(static::ENTITY_ACCESS_DENIED);
-            }
-
-            if ($entity->getLastChangedAt() > new \DateTime($objectMeta->getLastChangeTime())) {
-                return $this->fail(static::INVALID_TIMESTAMP);
-            }
-
-            $filePath = $accessFilePath($entity);
-            if (null === $filePath) {
-                return $this->fail(static::ENTITY_ACCESS_DENIED);
-            }
-
-            $filePath = $this->getParameter('PUBLIC_DIR') . '/' . $filePath;
-            if (!file_exists($filePath)) {
-                return $this->fail(static::ENTITY_FILE_NOT_FOUND);
-            }
-
-            return $this->file($filePath);
-        };
-
         //get file
         if (null !== $downloadFileRequest->getMap()) {
-            return $downloadFile(
+            return $this->downloadFile(
                 $this->getDoctrine()->getRepository(Map::class),
                 $downloadFileRequest->getMap(),
                 function ($entity) use ($constructionManager) {
@@ -115,7 +85,7 @@ class FileController extends BaseApiController
                 }
             );
         } elseif (null !== $downloadFileRequest->getIssue()) {
-            return $downloadFile(
+            return $this->downloadFile(
                 $this->getDoctrine()->getRepository(Issue::class),
                 $downloadFileRequest->getIssue(),
                 function ($entity) use ($constructionManager) {
@@ -128,7 +98,7 @@ class FileController extends BaseApiController
                 }
             );
         } elseif (null !== $downloadFileRequest->getBuilding()) {
-            return $downloadFile(
+            return $this->downloadFile(
                 $this->getDoctrine()->getRepository(ConstructionSite::class),
                 $downloadFileRequest->getBuilding(),
                 function ($entity) use ($constructionManager) {
@@ -144,5 +114,45 @@ class FileController extends BaseApiController
 
         //construct answer
         return $this->fail(static::REQUEST_VALIDATION_FAILED);
+    }
+
+    /**
+     * @param ObjectRepository $repository
+     * @param ObjectMeta $objectMeta
+     * @param callable $verifyAccess
+     * @param callable $accessFilePath
+     *
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|Response
+     */
+    private function downloadFile(ObjectRepository $repository, ObjectMeta $objectMeta, callable $verifyAccess, callable $accessFilePath)
+    {
+        /** @var ObjectMeta $objectMeta */
+        /** @var EntityRepository $repository */
+        $entity = $repository->find($objectMeta->getId());
+
+        /** @var TimeTrait $entity */
+        if (null === $entity) {
+            return $this->fail(static::ENTITY_NO_DOWNLOADABLE_FILE);
+        }
+
+        if (!$verifyAccess($entity)) {
+            return $this->fail(static::ENTITY_ACCESS_DENIED);
+        }
+
+        if ($entity->getLastChangedAt() > new \DateTime($objectMeta->getLastChangeTime())) {
+            return $this->fail(static::INVALID_TIMESTAMP);
+        }
+
+        $filePath = $accessFilePath($entity);
+        if (null === $filePath) {
+            return $this->fail(static::ENTITY_ACCESS_DENIED);
+        }
+
+        $filePath = $this->getParameter('PUBLIC_DIR') . '/' . $filePath;
+        if (!file_exists($filePath)) {
+            return $this->fail(static::ENTITY_FILE_NOT_FOUND);
+        }
+
+        return $this->file($filePath);
     }
 }
