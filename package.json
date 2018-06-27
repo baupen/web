@@ -3,7 +3,9 @@
     "@symfony/webpack-encore": "^0.17",
     "jquery": "^3.2",
     "node-sass": "^4",
-    "sass-loader": "^6"
+    "sass-loader": "^6",
+    "vue-loader": "^14.2.2",
+    "vue-template-compiler": "^2.5.16"
   },
   "dependencies": {
     "@fortawesome/fontawesome": "^1",
@@ -17,6 +19,11 @@
     "ekko-lightbox": "5.3",
     "open-iconic": "^1",
     "open-sans-fontface": "^1.4",
-    "popper.js": "^1.12"
+    "popper.js": "^1.12",
+    "vue": "^2.5",
+    "axios": "^0.18",
+    "vue-i18n": "^8.0",
+    "epic-spinners": "^1",
+    "date-fns": "^1.29"
   }
 }

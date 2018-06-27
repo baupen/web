@@ -12,11 +12,7 @@
         <a href="{{ path("index") }}">{{ "index.back"|trans }}</a>
     </p>
 
-    <div class="error-image">
-        {% block errorimage %}
-            <img src="https://media.giphy.com/media/jWexOOlYe241y/giphy.gif">
-        {% endblock %}
-    </div>
+    <div class="error-image {% block image_class %}image-unknown-error{% endblock %}"></div>
 {% endblock %}
 
 
