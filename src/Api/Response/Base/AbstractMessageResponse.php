@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\External\Response\Base;
+namespace App\Api\Response\Base;
 
 class AbstractMessageResponse extends AbstractResponse
 {

@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\External\Response;
+namespace App\Api\Response;
 
-use App\Api\External\Response\Base\AbstractMessageResponse;
+use App\Api\Response\Base\AbstractMessageResponse;
 use App\Enum\ApiStatus;
 
 /**

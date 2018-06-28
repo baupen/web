@@ -11,8 +11,8 @@
 
 namespace App\Controller\Api\External\Base;
 
-use App\Api\External\Response\FailResponse;
-use App\Api\External\Response\SuccessfulResponse;
+use App\Api\Response\FailResponse;
+use App\Api\Response\SuccessfulResponse;
 use App\Controller\Api\Base\AbstractApiController;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
