@@ -16,12 +16,12 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
     /**
      * @var int
      */
-    private $unreadIssuesCount;
+    private $noteReadIssuesCount;
 
     /**
      * @var int
      */
-    private $openIssuesCount;
+    private $notRespondedIssuesCount;
 
     /**
      * @var \DateTime|null
@@ -41,33 +41,33 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
     /**
      * @return int
      */
-    public function getUnreadIssuesCount(): int
+    public function getNoteReadIssuesCount(): int
     {
-        return $this->unreadIssuesCount;
+        return $this->noteReadIssuesCount;
     }
 
     /**
-     * @param int $unreadIssuesCount
+     * @param int $noteReadIssuesCount
      */
-    public function setUnreadIssuesCount(int $unreadIssuesCount): void
+    public function setNoteReadIssuesCount(int $noteReadIssuesCount): void
     {
-        $this->unreadIssuesCount = $unreadIssuesCount;
+        $this->noteReadIssuesCount = $noteReadIssuesCount;
     }
 
     /**
      * @return int
      */
-    public function getOpenIssuesCount(): int
+    public function getNotRespondedIssuesCount(): int
     {
-        return $this->openIssuesCount;
+        return $this->notRespondedIssuesCount;
     }
 
     /**
-     * @param int $openIssuesCount
+     * @param int $notRespondedIssuesCount
      */
-    public function setOpenIssuesCount(int $openIssuesCount): void
+    public function setNotRespondedIssuesCount(int $notRespondedIssuesCount): void
     {
-        $this->openIssuesCount = $openIssuesCount;
+        $this->notRespondedIssuesCount = $notRespondedIssuesCount;
     }
 
     /**

@@ -61,8 +61,8 @@ class DispatchControllerTest extends AbstractApiController
             $this->assertNotNull($craftsman);
             $this->assertObjectHasAttribute("name", $craftsman);
             $this->assertObjectHasAttribute("trade", $craftsman);
-            $this->assertObjectHasAttribute("unreadIssuesCount", $craftsman);
-            $this->assertObjectHasAttribute("openIssuesCount", $craftsman);
+            $this->assertObjectHasAttribute("notReadIssuesCount", $craftsman);
+            $this->assertObjectHasAttribute("notRespondedIssuesCount", $craftsman);
             $this->assertObjectHasAttribute("nextResponseLimit", $craftsman);
             $this->assertObjectHasAttribute("lastEmailSent", $craftsman);
             $this->assertObjectHasAttribute("lastOnlineVisit", $craftsman);

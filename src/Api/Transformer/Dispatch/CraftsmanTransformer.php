@@ -44,6 +44,7 @@ class CraftsmanTransformer extends BatchTransformer
         $craftsman->setLastEmailSent($entity->getLastEmailSent());
         $craftsman->setLastOnlineVisit($entity->getLastOnlineVisit());
 
+        //TODO: similar code when sending the mail; consider merging it
         $nextResponseLimit = null;
         $unread = 0;
         $open = 0;
@@ -51,7 +52,7 @@ class CraftsmanTransformer extends BatchTransformer
             //if registered then valid
             if ($issue->getRegisteredAt() !== null) {
                 if ($issue->getReviewedAt() === null) {
-                    if ($issue->getRegisteredAt() > $craftsman->getLastOnlineVisit()) {
+                    if ($craftsman->getLastOnlineVisit() === null || $issue->getRegisteredAt() > $craftsman->getLastOnlineVisit()) {
                         ++$unread;
                     }
                     ++$open;
@@ -62,8 +63,8 @@ class CraftsmanTransformer extends BatchTransformer
             }
         }
 
-        $craftsman->setOpenIssuesCount($open);
-        $craftsman->setUnreadIssuesCount($unread);
+        $craftsman->setNotRespondedIssuesCount($open);
+        $craftsman->setNoteReadIssuesCount($unread);
         $craftsman->setNextResponseLimit($nextResponseLimit);
 
         return $craftsman;
