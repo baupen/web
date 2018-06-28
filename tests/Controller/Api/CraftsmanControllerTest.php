@@ -59,7 +59,7 @@ class CraftsmanControllerTest extends AbstractApiController
             $this->assertObjectHasAttribute("trade", $craftsman);
             $this->assertObjectHasAttribute("unreadIssuesCount", $craftsman);
             $this->assertObjectHasAttribute("openIssuesCount", $craftsman);
-            $this->assertObjectHasAttribute("nextAnswerLimit", $craftsman);
+            $this->assertObjectHasAttribute("nextResponseLimit", $craftsman);
             $this->assertObjectHasAttribute("lastEmailSent", $craftsman);
             $this->assertObjectHasAttribute("lastOnlineVisit", $craftsman);
         }

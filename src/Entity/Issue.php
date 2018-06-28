@@ -68,7 +68,7 @@ class Issue extends BaseEntity
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $answerLimit;
+    private $responseLimit;
 
     /**
      * @var \DateTime
@@ -244,17 +244,17 @@ class Issue extends BaseEntity
     /**
      * @return \DateTime|null
      */
-    public function getAnswerLimit(): ?\DateTime
+    public function getResponseLimit(): ?\DateTime
     {
-        return $this->answerLimit;
+        return $this->responseLimit;
     }
 
     /**
-     * @param \DateTime|null $answerLimit
+     * @param \DateTime|null $responseLimit
      */
-    public function setAnswerLimit(?\DateTime $answerLimit): void
+    public function setResponseLimit(?\DateTime $responseLimit): void
     {
-        $this->answerLimit = $answerLimit;
+        $this->responseLimit = $responseLimit;
     }
 
     /**

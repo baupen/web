@@ -26,7 +26,7 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
     /**
      * @var \DateTime|null
      */
-    private $nextAnswerLimit;
+    private $nextResponseLimit;
 
     /**
      * @var \DateTime|null
@@ -73,17 +73,17 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
     /**
      * @return \DateTime|null
      */
-    public function getNextAnswerLimit(): ?\DateTime
+    public function getNextResponseLimit(): ?\DateTime
     {
-        return $this->nextAnswerLimit;
+        return $this->nextResponseLimit;
     }
 
     /**
-     * @param \DateTime|null $nextAnswerLimit
+     * @param \DateTime|null $nextResponseLimit
      */
-    public function setNextAnswerLimit(?\DateTime $nextAnswerLimit): void
+    public function setNextResponseLimit(?\DateTime $nextResponseLimit): void
     {
-        $this->nextAnswerLimit = $nextAnswerLimit;
+        $this->nextResponseLimit = $nextResponseLimit;
     }
 
     /**

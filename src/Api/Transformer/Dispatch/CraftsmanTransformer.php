@@ -44,7 +44,7 @@ class CraftsmanTransformer extends BatchTransformer
         $craftsman->setLastEmailSent($entity->getLastEmailSent());
         $craftsman->setLastOnlineVisit($entity->getLastOnlineVisit());
 
-        $nextAnswerLimit = null;
+        $nextResponseLimit = null;
         $unread = 0;
         $open = 0;
         foreach ($entity->getIssues() as $issue) {
@@ -55,8 +55,8 @@ class CraftsmanTransformer extends BatchTransformer
                         ++$unread;
                     }
                     ++$open;
-                    if (null !== $issue->getAnswerLimit() && (null === $nextAnswerLimit || $issue->getAnswerLimit() < $nextAnswerLimit)) {
-                        $nextAnswerLimit = $issue->getAnswerLimit();
+                    if (null !== $issue->getResponseLimit() && (null === $nextResponseLimit || $issue->getResponseLimit() < $nextResponseLimit)) {
+                        $nextResponseLimit = $issue->getResponseLimit();
                     }
                 }
             }
@@ -64,7 +64,7 @@ class CraftsmanTransformer extends BatchTransformer
 
         $craftsman->setOpenIssuesCount($open);
         $craftsman->setUnreadIssuesCount($unread);
-        $craftsman->setNextAnswerLimit($nextAnswerLimit);
+        $craftsman->setNextResponseLimit($nextResponseLimit);
 
         return $craftsman;
     }

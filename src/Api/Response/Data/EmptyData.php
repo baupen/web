@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\External\Response\Data;
+namespace App\Api\Response\Data;
 
 class EmptyData
 {

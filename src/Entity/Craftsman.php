@@ -222,4 +222,17 @@ class Craftsman extends BaseEntity
     {
         $this->lastOnlineVisit = $lastOnlineVisit;
     }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastAction()
+    {
+        $lastAction = $this->getLastOnlineVisit();
+        if (null === $lastAction || $lastAction < $this->getLastEmailSent()) {
+            return $this->getLastEmailSent();
+        }
+
+        return $lastAction;
+    }
 }

@@ -13,9 +13,9 @@ namespace App\Controller\Api\External;
 
 use App\Api\External\Request\IssueActionRequest;
 use App\Api\External\Request\IssueModifyRequest;
-use App\Api\External\Response\Data\EmptyData;
 use App\Api\External\Response\Data\IssueData;
 use App\Api\External\Transformer\IssueTransformer;
+use App\Api\Response\Data\EmptyData;
 use App\Controller\Api\External\Base\ExternalApiController;
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;

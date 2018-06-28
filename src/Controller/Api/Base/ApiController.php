@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 abstract class ApiController extends AbstractApiController
 {
     //override default status code
-    const UNKNOWN_STATUS_CODE = 202;
+    const UNKNOWN_STATUS_CODE = 1;
 
     const CONSTRUCTION_SITE_NOT_FOUND = 'site not found';
     const ACCESS_DENIED = 'access denied';
