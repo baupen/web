@@ -15,9 +15,9 @@ use App\Controller\Base\BaseLoginController;
 use App\Entity\ConstructionManager;
 use App\Entity\Email;
 use App\Enum\EmailType;
-use App\Form\Traits\User\LoginType;
-use App\Form\Traits\User\RecoverType;
-use App\Form\Traits\User\SetPasswordType;
+use App\Form\ConstructionManager\LoginType;
+use App\Form\ConstructionManager\RecoverType;
+use App\Form\ConstructionManager\SetPasswordType;
 use App\Service\Interfaces\EmailServiceInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -36,13 +36,22 @@ class LoginController extends BaseLoginController
     /**
      * @Route("", name="login")
      *
+     * @param Request $request
+     *
      * @return Response
      */
     public function indexAction(Request $request)
     {
         $form = $this->createForm(LoginType::class);
         $form->add('login.submit', SubmitType::class, ['translation_domain' => 'login']);
-        $this->handleLoginForm($request, new ConstructionManager(), $form);
+        $this->handleLoginForm(
+            $request,
+            $form,
+            function ($username) {
+                return $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $username]);
+            },
+            new ConstructionManager()
+        );
 
         return $this->render('login/login.html.twig', ['form' => $form->createView()]);
     }
@@ -96,7 +105,7 @@ class LoginController extends BaseLoginController
                     $this->displaySuccess($translator->trans('recover.success.email_sent', [], 'login'));
                 } else {
                     $logger->error('could not send password reset email ' . $email->getId());
-                    $this->displaySuccess($translator->trans('recover.fail.email_not_sent', [], 'login'));
+                    $this->displayError($translator->trans('recover.fail.email_not_sent', [], 'login'));
                 }
 
                 return $form;

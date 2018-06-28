@@ -11,7 +11,7 @@
 
 namespace App\Controller\Base;
 
-use App\Entity\ConstructionManager;
+use App\Entity\Traits\UserTrait;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,12 +36,13 @@ class BaseLoginController extends BaseFormController
 
     /**
      * @param Request $request
-     * @param ConstructionManager $user
      * @param FormInterface $loginForm
+     * @param callable $findEntityCallable
+     * @param UserTrait $entity
      *
      * @return FormInterface
      */
-    protected function handleLoginForm(Request $request, ConstructionManager $user, FormInterface $loginForm)
+    protected function handleLoginForm(Request $request, FormInterface $loginForm, callable $findEntityCallable, $entity)
     {
         /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
         $session = $request->getSession();
@@ -56,14 +57,26 @@ class BaseLoginController extends BaseFormController
         } else {
             $error = null;
         }
-        if (null !== $error) {
-            $this->displayError($this->getTranslator()->trans('login.errors.login_failed', [], 'login'));
-        }
 
         // last username entered by the user
         $lastUsername = (null === $session) ? '' : $session->get(Security::LAST_USERNAME);
-        $user->setEmail($lastUsername);
 
+        if (null !== $error) {
+            if (null !== $lastUsername) {
+                $constructionManager = $findEntityCallable($lastUsername);
+                if (null !== $constructionManager) {
+                    $this->displayError($this->getTranslator()->trans('login.errors.password_wrong', [], 'login'));
+                } else {
+                    $this->displayError($this->getTranslator()->trans('login.errors.email_not_found', [], 'login'));
+                }
+            } else {
+                $this->displayError($this->getTranslator()->trans('login.errors.login_failed', [], 'login'));
+            }
+        }
+
+        $entity->setEmail($lastUsername);
+
+        $loginForm->setData($entity);
         $loginForm->handleRequest($request);
 
         if ($loginForm->isSubmitted()) {
