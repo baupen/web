@@ -35,3 +35,6 @@ reset:
   error:
     passwords_do_not_match: 'Die Passwörter stimmen nicht überein.'
     invalid_hash: "Dieser Link ist nicht mehr gültig. Beachten Sie, das jeder Link nur einmal benutzt werden kann."
+
+logout:
+  title: 'Logout'

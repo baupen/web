@@ -24,5 +24,6 @@ class SetPasswordType extends \App\Form\Traits\User\SetPasswordType
         $resolver->setDefaults([
             'data_class' => ConstructionManager::class,
         ]);
+        parent::configureOptions($resolver);
     }
 }

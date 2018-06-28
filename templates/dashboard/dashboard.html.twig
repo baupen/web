@@ -1,1 +1,13 @@
-<h1>hi mom</h1>
+{% extends 'layout_base.html.twig' %}
+
+{% block title %}{{ "dashboard.title"|trans }}{% endblock %}
+{% block description %}{{ "dashboard.description"|trans }}{% endblock %}
+
+{% trans_default_domain "dashboard" %}
+
+{% block content %}
+    <p>
+        <a href="{{ path("dispatch") }}">{{ "dispatch.title"|trans({}, "dispatch") }}</a>
+        <a href="{{ path("login_logout") }}">{{ "logout.title"|trans({}, "login") }}</a>
+    </p>
+{% endblock %}

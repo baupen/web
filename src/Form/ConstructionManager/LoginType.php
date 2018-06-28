@@ -24,5 +24,6 @@ class LoginType extends \App\Form\Traits\User\LoginType
         $resolver->setDefaults([
             'data_class' => ConstructionManager::class,
         ]);
+        parent::configureOptions($resolver);
     }
 }

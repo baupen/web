@@ -8,6 +8,7 @@ window.$ = $;
 // bootstrap
 const bootstrap = require("bootstrap");
 
+
 // other parts of the application
 require("./icons");
 require("./usability");

@@ -59,6 +59,13 @@ class ConstructionManager extends BaseEntity implements UserInterface
     private $constructionSites;
 
     /**
+     * @var ConstructionSite|null
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite")
+     */
+    private $activeConstructionSite;
+
+    /**
      * constructor.
      */
     public function __construct()
@@ -149,5 +156,21 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public function getRoles()
     {
         return ['ROLE_USER'];
+    }
+
+    /**
+     * @return ConstructionSite|null
+     */
+    public function getActiveConstructionSite(): ?ConstructionSite
+    {
+        return $this->activeConstructionSite;
+    }
+
+    /**
+     * @param ConstructionSite|null $activeConstructionSite
+     */
+    public function setActiveConstructionSite(?ConstructionSite $activeConstructionSite): void
+    {
+        $this->activeConstructionSite = $activeConstructionSite;
     }
 }

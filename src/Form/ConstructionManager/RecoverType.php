@@ -24,5 +24,6 @@ class RecoverType extends \App\Form\Traits\User\RecoverType
         $resolver->setDefaults([
             'data_class' => ConstructionManager::class,
         ]);
+        parent::configureOptions($resolver);
     }
 }

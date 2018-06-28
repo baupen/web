@@ -16,16 +16,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/dispatch")
+ * @Route("/construction_site")
  */
-class DispatchController extends BaseDoctrineController
+class ConstructionSiteController extends BaseDoctrineController
 {
     /**
-     * @Route("", name="dispatch")
+     * @Route("/list", name="construction_site_list")
      *
      * @return Response
      */
-    public function dispatchAction()
+    public function listAction()
     {
         return $this->render('dispatch/dispatch.html.twig');
     }

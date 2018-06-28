@@ -24,5 +24,6 @@ class BaseType extends AbstractType
         $resolver->setDefaults([
             'translation_domain' => 'trait_user',
         ]);
+        parent::configureOptions($resolver);
     }
 }
