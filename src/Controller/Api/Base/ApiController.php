@@ -42,7 +42,7 @@ abstract class ApiController extends AbstractApiController
         //check auth token
         /** @var ConstructionSite $constructionSite */
         $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($parsedRequest->getConstructionSiteId());
-        if (null === $constructionSite) {
+        if ($constructionSite === null) {
             $errorResponse = $this->fail(self::CONSTRUCTION_SITE_NOT_FOUND);
 
             return false;

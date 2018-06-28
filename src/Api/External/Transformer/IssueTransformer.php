@@ -49,7 +49,7 @@ class IssueTransformer extends BatchTransformer
         $entity->setIsMarked($issue->getIsMarked());
         $entity->setWasAddedWithClient($issue->getWasAddedWithClient());
 
-        if (null !== $issue->getPosition()) {
+        if ($issue->getPosition() !== null) {
             $entity->setPositionX($issue->getPosition()->getX());
             $entity->setPositionY($issue->getPosition()->getY());
             $entity->setPositionZoomScale($issue->getPosition()->getZoomScale());
@@ -76,7 +76,7 @@ class IssueTransformer extends BatchTransformer
         $issue->setDescription($entity->getDescription());
         $issue->setNumber($entity->getNumber());
 
-        if (null !== $entity->getPositionZoomScale()) {
+        if ($entity->getPositionZoomScale() !== null) {
             $issuePosition = new IssuePosition();
             $issuePosition->setZoomScale($entity->getPositionZoomScale());
             $issuePosition->setY($entity->getPositionY());
@@ -85,19 +85,19 @@ class IssueTransformer extends BatchTransformer
         }
 
         $issueStatus = new IssueStatus();
-        if (null !== $entity->getRegisteredAt()) {
+        if ($entity->getRegisteredAt() !== null) {
             $issueStatusEvent = new IssueStatusEvent();
             $issueStatusEvent->setAuthor($entity->getRegistrationBy()->getName());
             $issueStatusEvent->setTime($entity->getRegisteredAt()->format('c'));
             $issueStatus->setRegistration($issueStatusEvent);
         }
-        if (null !== $entity->getRespondedAt()) {
+        if ($entity->getRespondedAt() !== null) {
             $issueStatusEvent = new IssueStatusEvent();
             $issueStatusEvent->setAuthor($entity->getResponseBy()->getName());
             $issueStatusEvent->setTime($entity->getRespondedAt()->format('c'));
             $issueStatus->setResponse($issueStatusEvent);
         }
-        if (null !== $entity->getReviewedAt()) {
+        if ($entity->getReviewedAt() !== null) {
             $issueStatusEvent = new IssueStatusEvent();
             $issueStatusEvent->setAuthor($entity->getReviewBy()->getName());
             $issueStatusEvent->setTime($entity->getReviewedAt()->format('c'));
@@ -106,7 +106,7 @@ class IssueTransformer extends BatchTransformer
         $issue->setStatus($issueStatus);
 
         $issue->setMap($entity->getMap()->getId());
-        if (null !== $entity->getCraftsman()) {
+        if ($entity->getCraftsman() !== null) {
             $issue->setCraftsman($entity->getCraftsman()->getId());
         }
 

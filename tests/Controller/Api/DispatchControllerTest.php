@@ -15,12 +15,12 @@ use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\AbstractApiController;
 use App\Tests\Controller\Base\FixturesTestCase;
 
-class CraftsmanControllerTest extends AbstractApiController
+class DispatchControllerTest extends AbstractApiController
 {
     /**
      * tests the login functionality.
      */
-    public function testList()
+    public function testCraftsmanList()
     {
         $client = static::createClient([], [
             'PHP_AUTH_USER' => 'f@mangel.io',
@@ -33,7 +33,7 @@ class CraftsmanControllerTest extends AbstractApiController
         $doRequest = function ($constructionSite) use ($client, $serializer) {
             $client->request(
                 'POST',
-                '/api/craftsman/list',
+                '/api/dispatch/craftsman/list',
                 [],
                 [],
                 ['CONTENT_TYPE' => 'application/json'],

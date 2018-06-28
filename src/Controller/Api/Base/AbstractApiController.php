@@ -62,7 +62,7 @@ abstract class AbstractApiController extends BaseDoctrineController
     {
         //check if empty request, handle multipart correctly
         $content = $request->request->get('message');
-        if (null === $content) {
+        if ($content === null) {
             $content = $request->getContent();
         }
         if (!($content)) {

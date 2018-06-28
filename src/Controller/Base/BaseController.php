@@ -91,7 +91,7 @@ class BaseController extends AbstractController
      */
     private function displayFlash($type, $message, $link = null)
     {
-        if (null !== $link) {
+        if ($link !== null) {
             $message = '<a href="' . $link . '">' . $message . '</a>';
         }
         $this->get('session')->getFlashBag()->set($type, $message);

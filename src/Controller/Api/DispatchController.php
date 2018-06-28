@@ -26,6 +26,7 @@ use App\Service\Interfaces\EmailServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -74,7 +75,8 @@ class DispatchController extends ApiController
      * @Route("", name="api_dispatch", methods={"POST"})
      *
      * @param Request $request
-     * @param CraftsmanTransformer $craftsmanTransformer
+     * @param TranslatorInterface $translator
+     * @param EmailServiceInterface $emailService
      *
      * @throws \Doctrine\ORM\ORMException
      *
@@ -83,6 +85,7 @@ class DispatchController extends ApiController
     public function dispatchAction(Request $request, TranslatorInterface $translator, EmailServiceInterface $emailService)
     {
         /** @var DispatchRequest $dispatchRequest */
+        /** @var ConstructionSite $constructionSite */
         if (!$this->parseConstructionSiteRequest($request, DispatchRequest::class, $dispatchRequest, $errorResponse, $constructionSite)) {
             return $errorResponse;
         }
@@ -100,6 +103,10 @@ class DispatchController extends ApiController
             $craftsmen[] = $craftsman;
         }
 
+        $sentEmails = 0;
+        $errorEmails = 0;
+        $skippedEmails = 0;
+
         $now = new \DateTime();
         foreach ($craftsmen as $craftsman) {
             //count event occurrences
@@ -110,10 +117,10 @@ class DispatchController extends ApiController
             $nextAnswerLimit = null;
             $lastAction = $craftsman->getLastAction();
             foreach ($craftsman->getIssues() as $issue) {
-                if (null !== $issue->getRegisteredAt() && null === $issue->getRespondedAt()) {
-                    if (null === $issue->getReviewedAt()) {
+                if ($issue->getRegisteredAt() !== null && $issue->getRespondedAt() === null) {
+                    if ($issue->getReviewedAt() === null) {
                         ++$openIssues;
-                        if (null === $lastAction || $issue->getRegisteredAt() > $lastAction) {
+                        if ($lastAction === null || $issue->getRegisteredAt() > $lastAction) {
                             ++$unreadIssues;
                         }
 
@@ -121,22 +128,35 @@ class DispatchController extends ApiController
                             ++$overdueIssues;
                         }
 
-                        if (null === $nextAnswerLimit || $issue->getResponseLimit() < $nextAnswerLimit) {
+                        if ($nextAnswerLimit === null || $issue->getResponseLimit() < $nextAnswerLimit) {
                             $nextAnswerLimit = $issue->getResponseLimit();
                         }
-                    } elseif (null === $lastAction || $issue->getReviewedAt() > $lastAction) {
+                    } elseif ($lastAction === null || $issue->getReviewedAt() > $lastAction) {
                         ++$closedIssues;
                     }
                 }
             }
 
+            //only send emails if there are issues
+            if ($openIssues === 0) {
+                ++$skippedEmails;
+                continue;
+            }
+
+            // build up base text
             if ($overdueIssues > 0) {
                 $subject = $translator->transChoice('email.overdue.subject', $overdueIssues, [], 'dispatch');
                 $body = $translator->transChoice('email.overdue.body', $openIssues, [], 'dispatch');
+            } elseif ($unreadIssues > 0) {
+                $subject = $translator->transChoice('email.unread.subject', $unreadIssues, [], 'dispatch');
+                $body = $translator->transChoice('email.unread.body', $openIssues, [], 'dispatch');
+            } else {
+                $subject = $translator->transChoice('email.open.subject', $openIssues, [], 'dispatch');
+                $body = $translator->transChoice('email.open.body', $openIssues, [], 'dispatch');
             }
 
             //append next limit info
-            if (0 === $overdueIssues && null !== $nextAnswerLimit) {
+            if ($overdueIssues === 0 && $nextAnswerLimit !== null) {
                 $body .= "\n";
                 $body .= $translator->trans(
                     'email.body_limit_info',
@@ -151,16 +171,27 @@ class DispatchController extends ApiController
                 $body .= $translator->transChoice('email.body_closed_issues_infos', $closedIssues, [], 'dispatch');
             }
 
-            $subject .= $translator->trans('email.subject_appendix', [], 'dispatch');
+            //append suffix
+            $subject .= $translator->trans('email.subject_appendix', ['%construction_site_name%' => $constructionSite->getName()], 'dispatch');
 
             //send email
             $email = new Email();
-            $email->setReceiver($craftsman->getEmail());
-            $email->setBody($body);
-            $email->setSubject($subject);
             $email->setEmailType(EmailType::ACTION_EMAIL);
-            $email->setActionText($translator->trans('email.action_text', [], 'dispatch'));
             $email->setReceiver($craftsman->getEmail());
+            $email->setSubject($subject);
+            $email->setBody($body);
+            $email->setActionText($translator->trans('email.action_text', [], 'dispatch'));
+            $email->setActionLink($this->generateUrl('external_view_issues', ['identifier' => null], UrlGeneratorInterface::ABSOLUTE_URL));
+            $this->fastSave($email);
+
+            if ($emailService->sendEmail($email)) {
+                $email->setSentDateTime(new \DateTime());
+                $this->fastSave($email);
+
+                ++$sentEmails;
+            } else {
+                ++$errorEmails;
+            }
         }
 
         return $this->success(new EmptyData());

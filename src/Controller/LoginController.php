@@ -75,7 +75,7 @@ class LoginController extends BaseLoginController
                 /* @var FormInterface $form */
                 //check if user exists
                 $exitingUser = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $form->getData()['email']]);
-                if (null === $exitingUser) {
+                if ($exitingUser === null) {
                     $logger->info('could not reset password of unknown user ' . $form->getData()['email']);
                     $this->displaySuccess($translator->trans('recover.fail.email_not_found', [], 'login'));
 
@@ -132,7 +132,7 @@ class LoginController extends BaseLoginController
         $arr = [];
 
         $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['resetHash' => $resetHash]);
-        if (null !== $user) {
+        if ($user !== null) {
             $form = $this->handleForm(
                 $this->createForm(SetPasswordType::class, $user, ['data_class' => ConstructionManager::class])
                     ->add('reset.submit', SubmitType::class, ['translation_domain' => 'login']),

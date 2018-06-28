@@ -229,7 +229,7 @@ class Craftsman extends BaseEntity
     public function getLastAction()
     {
         $lastAction = $this->getLastOnlineVisit();
-        if (null === $lastAction || $lastAction < $this->getLastEmailSent()) {
+        if ($lastAction === null || $lastAction < $this->getLastEmailSent()) {
             return $this->getLastEmailSent();
         }
 

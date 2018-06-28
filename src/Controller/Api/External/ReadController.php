@@ -111,7 +111,7 @@ WHERE cscm.construction_manager_id = :id';
         $readData->setRemovedBuildingIDs(array_keys($removeIds));
 
         //if no access to any buildings do an early return
-        if (0 === count($allValidIds)) {
+        if (count($allValidIds) === 0) {
             return;
         }
 

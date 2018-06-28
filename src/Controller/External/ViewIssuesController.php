@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Controller;
+namespace App\Controller\External;
 
 use App\Controller\Base\BaseController;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,21 +17,21 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/email")
+ * @Route("/view_issues")
  */
-class EmailController extends BaseController
+class ViewIssuesController extends BaseController
 {
     /**
-     * @Route("/{identifier}", name="view_email")
+     * @Route("/{identifier}", name="external_view_issues")
      *
      * @param $identifier
      *
      * @return Response
      */
-    public function emailAction($identifier)
+    public function viewIssuesAction($identifier)
     {
-        $email = $this->getDoctrine()->getRepository('App:Email')->findOneBy(['id' => $identifier]);
-        if (null === $email) {
+        $email = $this->getDoctrine()->getRepository('App:Filter')->findOneBy(['id' => $identifier]);
+        if ($email === null) {
             throw new NotFoundHttpException();
         }
 

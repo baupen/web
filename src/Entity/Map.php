@@ -162,7 +162,7 @@ class Map extends BaseEntity
      */
     public function getFilePath(): ?string
     {
-        if (null !== $this->getFilename()) {
+        if ($this->getFilename() !== null) {
             return 'upload/' . $this->getConstructionSite()->getId() . '/map/' . $this->getFilename();
         }
 

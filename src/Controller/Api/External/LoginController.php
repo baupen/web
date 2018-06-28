@@ -68,7 +68,7 @@ class LoginController extends ExternalApiController
         //check username & password
         /** @var ConstructionManager $constructionManager */
         $constructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $loginRequest->getUsername()]);
-        if (null === $constructionManager) {
+        if ($constructionManager === null) {
             return $this->fail(static::UNKNOWN_USERNAME);
         }
         if ($constructionManager->getPasswordHash() !== $loginRequest->getPasswordHash()) {

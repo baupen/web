@@ -49,13 +49,13 @@ class CraftsmanTransformer extends BatchTransformer
         $open = 0;
         foreach ($entity->getIssues() as $issue) {
             //if registered then valid
-            if (null !== $issue->getRegisteredAt()) {
-                if (null === $issue->getReviewedAt()) {
+            if ($issue->getRegisteredAt() !== null) {
+                if ($issue->getReviewedAt() === null) {
                     if ($issue->getRegisteredAt() > $craftsman->getLastOnlineVisit()) {
                         ++$unread;
                     }
                     ++$open;
-                    if (null !== $issue->getResponseLimit() && (null === $nextResponseLimit || $issue->getResponseLimit() < $nextResponseLimit)) {
+                    if ($issue->getResponseLimit() !== null && ($nextResponseLimit === null || $issue->getResponseLimit() < $nextResponseLimit)) {
                         $nextResponseLimit = $issue->getResponseLimit();
                     }
                 }
