@@ -14,7 +14,7 @@ namespace App\Controller\Api;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\DispatchRequest;
 use App\Api\Response\Data\CraftsmanData;
-use App\Api\Response\Data\EmptyData;
+use App\Api\Response\Data\DispatchData;
 use App\Api\Transformer\Dispatch\CraftsmanTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionSite;
@@ -194,6 +194,11 @@ class DispatchController extends ApiController
             }
         }
 
-        return $this->success(new EmptyData());
+        $dispatchData = new DispatchData();
+        $dispatchData->setErrorEmailCount($errorEmails);
+        $dispatchData->setSentEmailCount($sentEmails);
+        $dispatchData->setSkippedEmailCount($skippedEmails);
+
+        return $this->success($dispatchData);
     }
 }
