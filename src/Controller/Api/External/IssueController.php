@@ -28,8 +28,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/issue")
@@ -55,7 +53,6 @@ class IssueController extends ExternalApiController
     const ISSUE_FILE_UPLOAD_FAILED = 'the uploaded file could not be processes';
     const ISSUE_NO_FILE_TO_UPLOAD = 'no file could be found in the request, but one was expected';
     const ISSUE_NO_FILE_UPLOAD_EXPECTED = 'a file was uploaded, but not specified in the issue';
-    const INVALID_TIMESTAMP = 'invalid timestamp';
 
     /**
      * gives the appropiate error code the specified error message.
@@ -82,40 +79,36 @@ class IssueController extends ExternalApiController
      * @Route("/create", name="api_external_issue_create", methods={"POST"})
      *
      * @param Request $request
-     * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
      * @param IssueTransformer $issueTransformer
      *
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return Response
      */
-    public function issueCreateAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
+    public function issueCreateAction(Request $request, IssueTransformer $issueTransformer)
     {
-        return $this->processIssueModifyRequest($request, $serializer, $validator, $issueTransformer, 'create');
+        return $this->processIssueModifyRequest($request, $issueTransformer, 'create');
     }
 
     /**
      * @Route("/update", name="api_external_issue_update", methods={"POST"})
      *
      * @param Request $request
-     * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
      * @param IssueTransformer $issueTransformer
      *
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return Response
      */
-    public function issueUpdateAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
+    public function issueUpdateAction(Request $request, IssueTransformer $issueTransformer)
     {
-        return $this->processIssueModifyRequest($request, $serializer, $validator, $issueTransformer, 'update');
+        return $this->processIssueModifyRequest($request, $issueTransformer, 'update');
     }
 
     /**
      * @param Request $request
-     * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
      * @param IssueTransformer $issueTransformer
      * @param $mode
      *
@@ -124,7 +117,7 @@ class IssueController extends ExternalApiController
      *
      * @return JsonResponse|Response
      */
-    private function processIssueModifyRequest(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer, $mode)
+    private function processIssueModifyRequest(Request $request, IssueTransformer $issueTransformer, $mode)
     {
         /** @var IssueModifyRequest $issueModifyRequest */
         /** @var ConstructionManager $constructionManager */
@@ -233,22 +226,16 @@ class IssueController extends ExternalApiController
      * @Route("/delete", name="api_external_issue_delete", methods={"POST"})
      *
      * @param Request $request
-     * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
      * @param IssueTransformer $issueTransformer
      *
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      *
      * @return Response
      */
-    public function issueDeleteAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
+    public function issueDeleteAction(Request $request, IssueTransformer $issueTransformer)
     {
         return $this->processIssueActionRequest(
-            $request,
-            $serializer,
-            $validator,
-            $issueTransformer,
-            function ($issue) {
+            $request, $issueTransformer, function ($issue) {
                 /** @var Issue $issue */
                 if (null === $issue->getRegisteredAt()) {
                     $this->fastRemove($issue);
@@ -265,22 +252,16 @@ class IssueController extends ExternalApiController
      * @Route("/mark", name="api_external_issue_mark", methods={"POST"})
      *
      * @param Request $request
-     * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
      * @param IssueTransformer $issueTransformer
      *
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      *
      * @return Response
      */
-    public function issueMarkAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
+    public function issueMarkAction(Request $request, IssueTransformer $issueTransformer)
     {
         return $this->processIssueActionRequest(
-            $request,
-            $serializer,
-            $validator,
-            $issueTransformer,
-            function ($issue) {
+            $request, $issueTransformer, function ($issue) {
                 /* @var Issue $issue */
                 $issue->setIsMarked(!$issue->getIsMarked());
                 $this->fastSave($issue);
@@ -294,22 +275,16 @@ class IssueController extends ExternalApiController
      * @Route("/review", name="api_external_issue_review", methods={"POST"})
      *
      * @param Request $request
-     * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
      * @param IssueTransformer $issueTransformer
      *
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      *
      * @return Response
      */
-    public function issueReviewAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
+    public function issueReviewAction(Request $request, IssueTransformer $issueTransformer)
     {
         return $this->processIssueActionRequest(
-            $request,
-            $serializer,
-            $validator,
-            $issueTransformer,
-            function ($issue, $constructionManager) {
+            $request, $issueTransformer, function ($issue, $constructionManager) {
                 /** @var Issue $issue */
                 /* @var ConstructionManager $constructionManager */
                 if (null !== $issue->getRegisteredAt() && null === $issue->getReviewedAt()) {
@@ -329,22 +304,16 @@ class IssueController extends ExternalApiController
      * @Route("/revert", name="api_external_issue_revert", methods={"POST"})
      *
      * @param Request $request
-     * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
      * @param IssueTransformer $issueTransformer
      *
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      *
      * @return Response
      */
-    public function issueRevertAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer)
+    public function issueRevertAction(Request $request, IssueTransformer $issueTransformer)
     {
         return $this->processIssueActionRequest(
-            $request,
-            $serializer,
-            $validator,
-            $issueTransformer,
-            function ($issue) {
+            $request, $issueTransformer, function ($issue) {
                 /** @var Issue $issue */
                 if (null !== $issue->getRegisteredAt()) {
                     if (null !== $issue->getReviewedAt()) {
@@ -368,8 +337,6 @@ class IssueController extends ExternalApiController
 
     /**
      * @param Request $request
-     * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
      * @param IssueTransformer $issueTransformer
      * @param $action
      *
@@ -377,7 +344,7 @@ class IssueController extends ExternalApiController
      *
      * @return JsonResponse|Response
      */
-    private function processIssueActionRequest(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer, $action)
+    private function processIssueActionRequest(Request $request, IssueTransformer $issueTransformer, $action)
     {
         /** @var IssueActionRequest $issueActionRequest */
         /** @var ConstructionManager $constructionManager */

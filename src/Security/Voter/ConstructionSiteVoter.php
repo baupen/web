@@ -13,10 +13,11 @@ namespace App\Security\Voter;
 
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
+use App\Security\Voter\Base\BaseVoter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class ConstructionSiteVoter extends Voter
+class ConstructionSiteVoter extends BaseVoter
 {
     /**
      * Determines if the attribute and subject are supported by this voter.

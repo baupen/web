@@ -11,6 +11,7 @@
 
 namespace App\Api\External\Request\Base;
 
+use App\Api\Request\Base\AbstractRequest;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AuthenticatedRequest extends AbstractRequest

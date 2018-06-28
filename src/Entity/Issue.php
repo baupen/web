@@ -64,6 +64,13 @@ class Issue extends BaseEntity
     private $imageFilename;
 
     /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $answerLimit;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(type="datetime")
@@ -232,6 +239,22 @@ class Issue extends BaseEntity
     public function setImageFilename(?string $imageFilename): void
     {
         $this->imageFilename = $imageFilename;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getAnswerLimit(): ?\DateTime
+    {
+        return $this->answerLimit;
+    }
+
+    /**
+     * @param \DateTime|null $answerLimit
+     */
+    public function setAnswerLimit(?\DateTime $answerLimit): void
+    {
+        $this->answerLimit = $answerLimit;
     }
 
     /**

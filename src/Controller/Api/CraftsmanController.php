@@ -12,8 +12,10 @@
 namespace App\Controller\Api;
 
 use App\Api\Request\ConstructionSiteRequest;
-use App\Api\Response\Data\CraftsmanResponse;
-use App\Controller\Api\Base\AbstractApiController;
+use App\Api\Response\Data\CraftsmanData;
+use App\Api\Transformer\Dispatch\CraftsmanTransformer;
+use App\Controller\Api\Base\ApiController;
+use App\Entity\ConstructionSite;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,38 +23,28 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/craftsman")
  */
-class CraftsmanController extends AbstractApiController
+class CraftsmanController extends ApiController
 {
     /**
      * @Route("/list", name="api_craftsman_list", methods={"POST"})
      *
      * @param Request $request
+     * @param CraftsmanTransformer $craftsmanTransformer
+     *
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Response
      */
-    public function listAction(Request $request)
+    public function listAction(Request $request, CraftsmanTransformer $craftsmanTransformer)
     {
-        if (!$this->parseRequest($request, ConstructionSiteRequest::class, $constructionSiteRequest, $errorResponse)) {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $constructionSiteRequest, $errorResponse, $constructionSite)) {
             return $errorResponse;
         }
 
-        $this->ensureAccessAllowed($constructionSite);
+        $data = new CraftsmanData();
+        $data->setCraftsmen($craftsmanTransformer->toApiMultiple($constructionSite->getCraftsmen()->toArray()));
 
-        $data = new CraftsmanResponse();
-        $data->setCraftsmen($constructionSite->getCraftsmen());
-
-        return $this->json($this->get('serializer')->serialize($craftsmen, 'json', ['attributes' => ['name']]));
-    }
-
-    /**
-     * gives the appropiate error code the specified error message.
-     *
-     * @param string $message
-     *
-     * @return int
-     */
-    protected function errorMessageToStatusCode($message)
-    {
-        // TODO: Implement errorMessageToStatusCode() method.
+        return $this->success($data);
     }
 }

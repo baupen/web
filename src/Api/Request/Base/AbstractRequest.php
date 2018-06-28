@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\External\Request\Base;
+namespace App\Api\Request\Base;
 
 abstract class AbstractRequest
 {

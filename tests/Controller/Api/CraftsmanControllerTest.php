@@ -9,10 +9,13 @@
 namespace App\Tests\Controller\Api;
 
 
+use App\Api\Request\ConstructionSiteRequest;
 use App\Entity\ConstructionSite;
+use App\Enum\ApiStatus;
+use App\Tests\Controller\Api\Base\AbstractApiController;
 use App\Tests\Controller\Base\FixturesTestCase;
 
-class CraftsmanControllerTest extends FixturesTestCase
+class CraftsmanControllerTest extends AbstractApiController
 {
     /**
      * tests the login functionality.
@@ -23,19 +26,42 @@ class CraftsmanControllerTest extends FixturesTestCase
             'PHP_AUTH_USER' => 'f@mangel.io',
             'PHP_AUTH_PW' => 'asdf',
         ]);
+        $serializer = $client->getContainer()->get('serializer');
+
         /** @var ConstructionSite $constructionSite */
         $constructionSite = $client->getContainer()->get('doctrine')->getRepository(ConstructionSite::class)->findOneBy([]);
-        $doRequest = function ($constructionSiteId) use ($client) {
+        $doRequest = function ($constructionSite) use ($client, $serializer) {
             $client->request(
-                'GET',
-                '/api/craftsman/' . $constructionSiteId . '/list'
+                'POST',
+                '/api/craftsman/list',
+                [],
+                [],
+                ['CONTENT_TYPE' => 'application/json'],
+                $serializer->serialize($constructionSite, 'json')
             );
 
             return $client->getResponse();
         };
 
-        $response = $doRequest($constructionSite->getId());
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
 
-        $this->assertNotNull($response->getContent());
+        $response = $doRequest($constructionSiteRequest);
+        $craftsmanData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($craftsmanData->data);
+        $this->assertNotNull($craftsmanData->data->craftsmen);
+
+        $this->assertTrue(is_array($craftsmanData->data->craftsmen));
+        foreach ($craftsmanData->data->craftsmen as $craftsman) {
+            $this->assertNotNull($craftsman);
+            $this->assertObjectHasAttribute("name", $craftsman);
+            $this->assertObjectHasAttribute("trade", $craftsman);
+            $this->assertObjectHasAttribute("unreadIssuesCount", $craftsman);
+            $this->assertObjectHasAttribute("openIssuesCount", $craftsman);
+            $this->assertObjectHasAttribute("nextAnswerLimit", $craftsman);
+            $this->assertObjectHasAttribute("lastEmailSent", $craftsman);
+            $this->assertObjectHasAttribute("lastOnlineVisit", $craftsman);
+        }
     }
 }

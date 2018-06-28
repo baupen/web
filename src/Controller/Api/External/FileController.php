@@ -25,8 +25,6 @@ use Doctrine\ORM\ORMException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/file")
@@ -39,19 +37,18 @@ class FileController extends ExternalApiController
     const ENTITY_ACCESS_DENIED = 'you are not allowed to access this entity';
     const ENTITY_NO_DOWNLOADABLE_FILE = 'entity has no file to download';
     const ENTITY_FILE_NOT_FOUND = 'the server could not find the file of the entity';
+    const INVALID_TIMESTAMP = 'invalid timestamp';
 
     /**
      * @Route("/download", name="api_external_file_download", methods={"POST"})
      *
      * @param Request $request
-     * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
      *
      * @throws ORMException
      *
      * @return Response
      */
-    public function fileDownloadAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
+    public function fileDownloadAction(Request $request)
     {
         /** @var DownloadFileRequest $downloadFileRequest */
         /** @var ConstructionManager $constructionManager */

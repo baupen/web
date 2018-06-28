@@ -32,18 +32,18 @@ class ExternalApiController extends AbstractApiController
      *
      * @return bool
      */
-    protected function parseAuthenticatedRequest(Request $request, $targetClass, &$parsedRequest, &$errorResponse, &$constructionManager)
+    protected function parseAuthenticatedRequest(Request $request, $targetClass, &$authenticatedRequest, &$errorResponse, &$constructionManager)
     {
-        /** @var AuthenticatedRequest $parsedRequest */
-        if (!parent::parseRequest($request, $targetClass, $parsedRequest, $errorResponse)) {
+        /** @var AuthenticatedRequest $authenticatedRequest */
+        if (!parent::parseRequest($request, $targetClass, $authenticatedRequest, $errorResponse)) {
             return false;
         }
 
         //check auth token
         /** @var ConstructionManager $constructionManager */
-        $constructionManager = $this->getDoctrine()->getRepository(AuthenticationToken::class)->getConstructionManager($parsedRequest);
+        $constructionManager = $this->getDoctrine()->getRepository(AuthenticationToken::class)->getConstructionManager($authenticatedRequest);
         if (null === $constructionManager) {
-            $errorResponse = $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
+            $errorResponse = $this->fail(self::AUTHENTICATION_TOKEN_INVALID);
 
             return false;
         }
@@ -61,7 +61,7 @@ class ExternalApiController extends AbstractApiController
     protected function errorMessageToStatusCode($message)
     {
         switch ($message) {
-            case static::AUTHENTICATION_TOKEN_INVALID:
+            case self::AUTHENTICATION_TOKEN_INVALID:
                 return 2;
         }
 

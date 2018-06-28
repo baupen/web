@@ -11,9 +11,9 @@
 
 namespace App\Api\Response\Data;
 
-use App\Api\External\Entity\Craftsman;
+use App\Api\Entity\Base\Craftsman;
 
-class CraftsmanResponse
+class CraftsmanData
 {
     /**
      * @var Craftsman[]

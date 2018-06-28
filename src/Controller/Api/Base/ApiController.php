@@ -11,40 +11,51 @@
 
 namespace App\Controller\Api\Base;
 
-use App\Controller\Base\BaseDoctrineController;
+use App\Api\Request\ConstructionSiteRequest;
+use App\Entity\ConstructionSite;
+use App\Security\Voter\Base\BaseVoter;
+use Symfony\Component\HttpFoundation\Request;
 
-abstract class ApiController extends BaseDoctrineController
+abstract class ApiController extends AbstractApiController
 {
-    const EMPTY_REQUEST = 'request empty';
-    const REQUEST_VALIDATION_FAILED = 'request validation failed, not all required fields are set';
+    //override default status code
+    const UNKNOWN_STATUS_CODE = 202;
 
-    const UNKNOWN_USERNAME = 'unknown username';
-    const WRONG_PASSWORD = 'wrong password';
-    const AUTHENTICATION_TOKEN_INVALID = 'authentication token invalid';
+    const CONSTRUCTION_SITE_NOT_FOUND = 'site not found';
+    const ACCESS_DENIED = 'access denied';
 
-    const ISSUE_GUID_ALREADY_IN_USE = 'guid already in use';
+    /**
+     * @param Request $request
+     * @param string $targetClass
+     *
+     * @throws \Doctrine\ORM\ORMException
+     *
+     * @return bool
+     */
+    protected function parseConstructionSiteRequest(Request $request, $targetClass, &$parsedRequest, &$errorResponse, &$constructionSite)
+    {
+        /** @var ConstructionSiteRequest $parsedRequest */
+        if (!parent::parseRequest($request, $targetClass, $parsedRequest, $errorResponse)) {
+            return false;
+        }
 
-    const ISSUE_NOT_FOUND = 'issue was not found';
-    const ISSUE_ACCESS_DENIED = 'issue access not allowed';
-    const ISSUE_ACTION_NOT_ALLOWED = 'this action can not be executed on the entity';
+        //check auth token
+        /** @var ConstructionSite $constructionSite */
+        $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($parsedRequest->getConstructionSiteId());
+        if (null === $constructionSite) {
+            $errorResponse = $this->fail(self::CONSTRUCTION_SITE_NOT_FOUND);
 
-    const MAP_NOT_FOUND = 'map was not found';
-    const MAP_ACCESS_DENIED = 'map access not allowed';
+            return false;
+        }
 
-    const CRAFTSMAN_NOT_FOUND = 'craftsman was not found';
-    const CRAFTSMAN_ACCESS_DENIED = 'craftsman access not allowed';
+        if (!$this->isGranted(BaseVoter::ANY_ATTRIBUTE, $constructionSite)) {
+            $errorResponse = $this->fail(self::ACCESS_DENIED);
 
-    const MAP_CRAFTSMAN_NOT_ON_SAME_CONSTRUCTION_SITE = 'the craftsman does not work on the same construction site as the assigned map';
+            return false;
+        }
 
-    const ENTITY_NOT_FOUND = 'entity was not found';
-    const ENTITY_ACCESS_DENIED = 'you are not allowed to access this entity';
-    const ENTITY_NO_DOWNLOADABLE_FILE = 'entity has no file to download';
-    const ENTITY_FILE_NOT_FOUND = 'the server could not find the file of the entity';
-
-    const ISSUE_FILE_UPLOAD_FAILED = 'the uploaded file could not be processes';
-    const ISSUE_NO_FILE_TO_UPLOAD = 'no file could be found in the request, but one was expected';
-    const ISSUE_NO_FILE_UPLOAD_EXPECTED = 'a file was uploaded, but not specified in the issue';
-    const INVALID_TIMESTAMP = 'invalid timestamp';
+        return true;
+    }
 
     /**
      * gives the appropiate error code the specified error message.
@@ -56,24 +67,10 @@ abstract class ApiController extends BaseDoctrineController
     protected function errorMessageToStatusCode($message)
     {
         switch ($message) {
-            case static::EMPTY_REQUEST:
-            case static::REQUEST_VALIDATION_FAILED:
-            case static::ISSUE_FILE_UPLOAD_FAILED:
-                return 1;
-            case static::AUTHENTICATION_TOKEN_INVALID:
+            case static::CONSTRUCTION_SITE_NOT_FOUND:
                 return 2;
-            case static::UNKNOWN_USERNAME:
-                return 100;
-            case static::WRONG_PASSWORD:
-                return 101;
-            case static::ISSUE_GUID_ALREADY_IN_USE:
-                return 200;
-            case static::ISSUE_NOT_FOUND:
-                return 201;
-            case static::ISSUE_ACTION_NOT_ALLOWED:
-                return 203;
         }
 
-        return 202;
+        return parent::errorMessageToStatusCode($message);
     }
 }

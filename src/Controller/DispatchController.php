@@ -29,13 +29,4 @@ class DispatchController extends BaseDoctrineController
     {
         return $this->render('dashboard/dashboard.html.twig');
     }
-
-    /**
-     * @Route("/craftsmen", name="dispatch_craftsmen")
-     *
-     * @return Response
-     */
-    public function craftsmenAction()
-    {
-    }
 }

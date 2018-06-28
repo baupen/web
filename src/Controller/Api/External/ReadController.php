@@ -28,8 +28,6 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/read")
@@ -42,15 +40,13 @@ class ReadController extends ExternalApiController
      * @Route("", name="api_external_read", methods={"POST"})
      *
      * @param Request $request
-     * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
      * @param TransformerFactory $transformerFactory
      *
      * @throws ORMException
      *
      * @return Response
      */
-    public function readAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, TransformerFactory $transformerFactory)
+    public function readAction(Request $request, TransformerFactory $transformerFactory)
     {
         /** @var ReadRequest $readRequest */
         /** @var ConstructionManager $constructionManager */

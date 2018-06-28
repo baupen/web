@@ -20,8 +20,6 @@ use App\Entity\ConstructionManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/login")
@@ -56,13 +54,11 @@ class LoginController extends ExternalApiController
      * @Route("", name="api_external_login", methods={"POST"})
      *
      * @param Request $request
-     * @param SerializerInterface $serializer
-     * @param ValidatorInterface $validator
      * @param UserTransformer $userTransformer
      *
      * @return Response
      */
-    public function loginAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, UserTransformer $userTransformer)
+    public function loginAction(Request $request, UserTransformer $userTransformer)
     {
         /** @var LoginRequest|Response $loginRequest */
         if (!$this->parseRequest($request, LoginRequest::class, $loginRequest, $errorResponse)) {

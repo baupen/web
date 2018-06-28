@@ -11,10 +11,10 @@
 
 namespace App\Api\Request;
 
-use App\Api\External\Request\Base\AuthenticatedRequest;
+use App\Api\Request\Base\AbstractRequest;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ConstructionSiteRequest extends AuthenticatedRequest
+class ConstructionSiteRequest extends AbstractRequest
 {
     /**
      * @var string
