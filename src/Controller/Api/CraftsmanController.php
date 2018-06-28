@@ -11,8 +11,10 @@
 
 namespace App\Controller\Api;
 
+use App\Api\Request\ConstructionSiteRequest;
+use App\Api\Response\Data\CraftsmanResponse;
 use App\Controller\Api\Base\AbstractApiController;
-use App\Entity\ConstructionSite;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -22,16 +24,35 @@ use Symfony\Component\Routing\Annotation\Route;
 class CraftsmanController extends AbstractApiController
 {
     /**
-     * @Route("/{constructionSite}/list", name="api_craftsman_list")
+     * @Route("/list", name="api_craftsman_list", methods={"POST"})
      *
-     * @param ConstructionSite $constructionSite
+     * @param Request $request
      *
      * @return Response
      */
-    public function listAction(ConstructionSite $constructionSite)
+    public function listAction(Request $request)
     {
-        $craftsmen = $constructionSite->getCraftsmen();
+        if (!$this->parseRequest($request, ConstructionSiteRequest::class, $constructionSiteRequest, $errorResponse)) {
+            return $errorResponse;
+        }
+
+        $this->ensureAccessAllowed($constructionSite);
+
+        $data = new CraftsmanResponse();
+        $data->setCraftsmen($constructionSite->getCraftsmen());
 
         return $this->json($this->get('serializer')->serialize($craftsmen, 'json', ['attributes' => ['name']]));
+    }
+
+    /**
+     * gives the appropiate error code the specified error message.
+     *
+     * @param string $message
+     *
+     * @return int
+     */
+    protected function errorMessageToStatusCode($message)
+    {
+        // TODO: Implement errorMessageToStatusCode() method.
     }
 }

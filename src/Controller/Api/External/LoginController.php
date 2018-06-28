@@ -30,6 +30,28 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class LoginController extends ExternalApiController
 {
+    const UNKNOWN_USERNAME = 'unknown username';
+    const WRONG_PASSWORD = 'wrong password';
+
+    /**
+     * gives the appropiate error code the specified error message.
+     *
+     * @param string $message
+     *
+     * @return int
+     */
+    protected function errorMessageToStatusCode($message)
+    {
+        switch ($message) {
+            case static::UNKNOWN_USERNAME:
+                return 100;
+            case static::WRONG_PASSWORD:
+                return 101;
+        }
+
+        return parent::errorMessageToStatusCode($message);
+    }
+
     /**
      * @Route("", name="api_external_login", methods={"POST"})
      *
@@ -42,18 +64,9 @@ class LoginController extends ExternalApiController
      */
     public function loginAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, UserTransformer $userTransformer)
     {
-        //check if empty request
-        if (!($content = $request->getContent())) {
-            return $this->fail(static::EMPTY_REQUEST);
-        }
-
-        /* @var LoginRequest $loginRequest */
-        $loginRequest = $serializer->deserialize($content, LoginRequest::class, 'json');
-
-        // check all properties defined
-        $errors = $validator->validate($loginRequest);
-        if (count($errors) > 0) {
-            return $this->fail(static::REQUEST_VALIDATION_FAILED);
+        /** @var LoginRequest|Response $loginRequest */
+        if (!$this->parseRequest($request, LoginRequest::class, $loginRequest, $errorResponse)) {
+            return $errorResponse;
         }
 
         //check username & password

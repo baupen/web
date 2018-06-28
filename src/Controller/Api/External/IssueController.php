@@ -17,7 +17,6 @@ use App\Api\External\Response\Data\EmptyData;
 use App\Api\External\Response\Data\IssueData;
 use App\Api\External\Transformer\IssueTransformer;
 use App\Controller\Api\External\Base\ExternalApiController;
-use App\Entity\AuthenticationToken;
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
@@ -39,6 +38,46 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class IssueController extends ExternalApiController
 {
+    const ISSUE_GUID_ALREADY_IN_USE = 'guid already in use';
+
+    const ISSUE_NOT_FOUND = 'issue was not found';
+    const ISSUE_ACCESS_DENIED = 'issue access not allowed';
+    const ISSUE_ACTION_NOT_ALLOWED = 'this action can not be executed on the entity';
+
+    const MAP_NOT_FOUND = 'map was not found';
+    const MAP_ACCESS_DENIED = 'map access not allowed';
+
+    const CRAFTSMAN_NOT_FOUND = 'craftsman was not found';
+    const CRAFTSMAN_ACCESS_DENIED = 'craftsman access not allowed';
+
+    const MAP_CRAFTSMAN_NOT_ON_SAME_CONSTRUCTION_SITE = 'the craftsman does not work on the same construction site as the assigned map';
+
+    const ISSUE_FILE_UPLOAD_FAILED = 'the uploaded file could not be processes';
+    const ISSUE_NO_FILE_TO_UPLOAD = 'no file could be found in the request, but one was expected';
+    const ISSUE_NO_FILE_UPLOAD_EXPECTED = 'a file was uploaded, but not specified in the issue';
+    const INVALID_TIMESTAMP = 'invalid timestamp';
+
+    /**
+     * gives the appropiate error code the specified error message.
+     *
+     * @param string $message
+     *
+     * @return int
+     */
+    protected function errorMessageToStatusCode($message)
+    {
+        switch ($message) {
+            case static::ISSUE_GUID_ALREADY_IN_USE:
+                return 200;
+            case static::ISSUE_NOT_FOUND:
+                return 201;
+            case static::ISSUE_ACTION_NOT_ALLOWED:
+                return 203;
+        }
+
+        return parent::errorMessageToStatusCode($message);
+    }
+
     /**
      * @Route("/create", name="api_external_issue_create", methods={"POST"})
      *
@@ -87,29 +126,10 @@ class IssueController extends ExternalApiController
      */
     private function processIssueModifyRequest(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer, $mode)
     {
-        //check if empty request, ensure multipart correctly handled
-        $content = $request->request->get('message');
-        if (!$content) {
-            $content = $request->getContent();
-        }
-        if (!($content)) {
-            return $this->fail(static::EMPTY_REQUEST);
-        }
-
-        /* @var IssueModifyRequest $issueModifyRequest */
-        $issueModifyRequest = $serializer->deserialize($content, IssueModifyRequest::class, 'json');
-
-        // check all properties defined
-        $errors = $validator->validate($issueModifyRequest);
-        if (count($errors) > 0) {
-            return $this->fail(static::REQUEST_VALIDATION_FAILED);
-        }
-
-        //check auth token
+        /** @var IssueModifyRequest $issueModifyRequest */
         /** @var ConstructionManager $constructionManager */
-        $constructionManager = $this->getDoctrine()->getRepository(AuthenticationToken::class)->getConstructionManager($issueModifyRequest);
-        if (null === $constructionManager) {
-            return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
+        if (!$this->parseAuthenticatedRequest($request, IssueModifyRequest::class, $issueModifyRequest, $errorResponse, $constructionManager)) {
+            return $errorResponse;
         }
 
         $newImageExpected = null !== $issueModifyRequest->getIssue()->getImageFilename();
@@ -359,25 +379,10 @@ class IssueController extends ExternalApiController
      */
     private function processIssueActionRequest(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, IssueTransformer $issueTransformer, $action)
     {
-        //check if empty request
-        if (!($content = $request->getContent())) {
-            return $this->fail(static::EMPTY_REQUEST);
-        }
-
-        /* @var IssueActionRequest $issueActionRequest */
-        $issueActionRequest = $serializer->deserialize($content, IssueActionRequest::class, 'json');
-
-        // check all properties defined
-        $errors = $validator->validate($issueActionRequest);
-        if (count($errors) > 0) {
-            return $this->fail(static::REQUEST_VALIDATION_FAILED);
-        }
-
-        //check auth token
+        /** @var IssueActionRequest $issueActionRequest */
         /** @var ConstructionManager $constructionManager */
-        $constructionManager = $this->getDoctrine()->getRepository(AuthenticationToken::class)->getConstructionManager($issueActionRequest);
-        if (null === $constructionManager) {
-            return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
+        if (!$this->parseAuthenticatedRequest($request, IssueActionRequest::class, $issueActionRequest, $errorResponse, $constructionManager)) {
+            return $errorResponse;
         }
 
         //get issue

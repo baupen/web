@@ -16,7 +16,6 @@ use App\Api\External\Request\ReadRequest;
 use App\Api\External\Response\Data\ReadData;
 use App\Api\External\Transformer\TransformerFactory;
 use App\Controller\Api\External\Base\ExternalApiController;
-use App\Entity\AuthenticationToken;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
@@ -53,25 +52,10 @@ class ReadController extends ExternalApiController
      */
     public function readAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, TransformerFactory $transformerFactory)
     {
-        //check if empty request
-        if (!($content = $request->getContent())) {
-            return $this->fail(static::EMPTY_REQUEST);
-        }
-
-        /* @var ReadRequest $readRequest */
-        $readRequest = $serializer->deserialize($content, ReadRequest::class, 'json');
-
-        // check all properties defined
-        $errors = $validator->validate($readRequest);
-        if (count($errors) > 0) {
-            return $this->fail(static::REQUEST_VALIDATION_FAILED);
-        }
-
-        //check auth token
+        /** @var ReadRequest $readRequest */
         /** @var ConstructionManager $constructionManager */
-        $constructionManager = $this->getDoctrine()->getRepository(AuthenticationToken::class)->getConstructionManager($readRequest);
-        if (null === $constructionManager) {
-            return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
+        if (!$this->parseAuthenticatedRequest($request, ReadRequest::class, $readRequest, $errorResponse, $constructionManager)) {
+            return $errorResponse;
         }
 
         //construct read data

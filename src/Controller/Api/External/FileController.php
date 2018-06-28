@@ -14,7 +14,6 @@ namespace App\Controller\Api\External;
 use App\Api\External\Entity\ObjectMeta;
 use App\Api\External\Request\DownloadFileRequest;
 use App\Controller\Api\External\Base\ExternalApiController;
-use App\Entity\AuthenticationToken;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;
@@ -36,6 +35,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class FileController extends ExternalApiController
 {
+    const ENTITY_NOT_FOUND = 'entity was not found';
+    const ENTITY_ACCESS_DENIED = 'you are not allowed to access this entity';
+    const ENTITY_NO_DOWNLOADABLE_FILE = 'entity has no file to download';
+    const ENTITY_FILE_NOT_FOUND = 'the server could not find the file of the entity';
+
     /**
      * @Route("/download", name="api_external_file_download", methods={"POST"})
      *
@@ -49,25 +53,10 @@ class FileController extends ExternalApiController
      */
     public function fileDownloadAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
     {
-        //check if empty request
-        if (!($content = $request->getContent())) {
-            return $this->fail(static::EMPTY_REQUEST);
-        }
-
-        /* @var DownloadFileRequest $downloadFileRequest */
-        $downloadFileRequest = $serializer->deserialize($content, DownloadFileRequest::class, 'json');
-
-        // check all properties defined
-        $errors = $validator->validate($downloadFileRequest);
-        if (count($errors) > 0) {
-            return $this->fail(static::REQUEST_VALIDATION_FAILED);
-        }
-
-        //check auth token
+        /** @var DownloadFileRequest $downloadFileRequest */
         /** @var ConstructionManager $constructionManager */
-        $constructionManager = $this->getDoctrine()->getRepository(AuthenticationToken::class)->getConstructionManager($downloadFileRequest);
-        if (null === $constructionManager) {
-            return $this->fail(static::AUTHENTICATION_TOKEN_INVALID);
+        if (!$this->parseAuthenticatedRequest($request, DownloadFileRequest::class, $downloadFileRequest, $errorResponse, $constructionManager)) {
+            return $errorResponse;
         }
 
         //get file

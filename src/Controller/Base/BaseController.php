@@ -96,4 +96,14 @@ class BaseController extends AbstractController
         }
         $this->get('session')->getFlashBag()->set($type, $message);
     }
+
+    /**
+     * fails if not allowed to access according to the voters.
+     *
+     * @param $entity
+     */
+    protected function ensureAccessAllowed($entity)
+    {
+        $this->denyAccessUnlessGranted('any', $entity);
+    }
 }

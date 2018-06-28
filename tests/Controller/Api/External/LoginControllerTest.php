@@ -21,6 +21,7 @@ use App\Api\External\Entity\Map;
 use App\Api\External\Entity\ObjectMeta;
 use App\Api\External\Request\ReadRequest;
 use App\Controller\Api\External\Base\ExternalApiController;
+use App\Controller\Api\External\LoginController;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\External\Base\ApiController;
 use App\Tests\Controller\Base\FixturesTestCase;
@@ -53,10 +54,10 @@ class LoginControllerTest extends ApiController
         };
 
         $response = $doRequest('unknwon', 'ad');
-        $this->checkResponse($response, ApiStatus::FAIL, ExternalApiController::UNKNOWN_USERNAME);
+        $this->checkResponse($response, ApiStatus::FAIL, LoginController::UNKNOWN_USERNAME);
 
         $response = $doRequest('f@mangel.io', 'ad');
-        $this->checkResponse($response, ApiStatus::FAIL, ExternalApiController::WRONG_PASSWORD);
+        $this->checkResponse($response, ApiStatus::FAIL, LoginController::WRONG_PASSWORD);
 
         $response = $doRequest('f@mangel.io', 'asdf');
         $loginResponse = $this->checkResponse($response, ApiStatus::SUCCESS);

@@ -21,6 +21,8 @@ use App\Api\External\Entity\Map;
 use App\Api\External\Entity\ObjectMeta;
 use App\Api\External\Request\ReadRequest;
 use App\Controller\Api\External\Base\ExternalApiController;
+use App\Controller\Api\External\IssueController;
+use App\Controller\Api\External\ReadController;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\External\Base\ApiController;
 use App\Tests\Controller\Base\FixturesTestCase;
@@ -87,7 +89,7 @@ class IssueControllerTest extends ApiController
         $this->verifyIssue($checkIssue, $issue);
 
         $response = $doRequest($issue);
-        $this->checkResponse($response, ApiStatus::FAIL, ExternalApiController::ISSUE_GUID_ALREADY_IN_USE);
+        $this->checkResponse($response, ApiStatus::FAIL, IssueController::ISSUE_GUID_ALREADY_IN_USE);
 
         //check issue without position
         $issue->setPosition(null);
@@ -151,7 +153,7 @@ class IssueControllerTest extends ApiController
         //check with non-existing
         $issue->getMeta()->setId($this->getNewGuid());
         $response = $doRequest($issue);
-        $this->checkResponse($response, ApiStatus::FAIL, ExternalApiController::ISSUE_NOT_FOUND);
+        $this->checkResponse($response, ApiStatus::FAIL, IssueController::ISSUE_NOT_FOUND);
     }
 
     /**
@@ -197,19 +199,19 @@ class IssueControllerTest extends ApiController
         $response = $doRequest($newIssues[0]->getMeta()->getId(), 'delete');
         $this->checkResponse($response, ApiStatus::SUCCESS);
         $response = $doRequest($newIssues[0]->getMeta()->getId(), 'delete');
-        $this->checkResponse($response, ApiStatus::FAIL, ExternalApiController::ISSUE_NOT_FOUND);
+        $this->checkResponse($response, ApiStatus::FAIL, IssueController::ISSUE_NOT_FOUND);
 
         //review registered
         $response = $doRequest($registeredIssues[0]->getMeta()->getId(), 'review');
         $this->checkResponse($response, ApiStatus::SUCCESS);
         $response = $doRequest($registeredIssues[0]->getMeta()->getId(), 'review');
-        $this->checkResponse($response, ApiStatus::FAIL, ExternalApiController::ISSUE_ACTION_NOT_ALLOWED);
+        $this->checkResponse($response, ApiStatus::FAIL, IssueController::ISSUE_ACTION_NOT_ALLOWED);
 
         //review responded
         $response = $doRequest($respondedIssues[0]->getMeta()->getId(), 'review');
         $this->checkResponse($response, ApiStatus::SUCCESS);
         $response = $doRequest($respondedIssues[0]->getMeta()->getId(), 'review');
-        $this->checkResponse($response, ApiStatus::FAIL, ExternalApiController::ISSUE_ACTION_NOT_ALLOWED);
+        $this->checkResponse($response, ApiStatus::FAIL, IssueController::ISSUE_ACTION_NOT_ALLOWED);
 
         //revert reviewed
         $response = $doRequest($reviewedIssues[0]->getMeta()->getId(), 'revert');
@@ -221,6 +223,6 @@ class IssueControllerTest extends ApiController
         //revert twice because of earlier actions
         $doRequest($respondedIssues[0]->getMeta()->getId(), 'revert');
         $response = $doRequest($respondedIssues[0]->getMeta()->getId(), 'revert');
-        $this->checkResponse($response, ApiStatus::FAIL, ExternalApiController::ISSUE_ACTION_NOT_ALLOWED);
+        $this->checkResponse($response, ApiStatus::FAIL, IssueController::ISSUE_ACTION_NOT_ALLOWED);
     }
 }
