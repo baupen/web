@@ -13,17 +13,17 @@
     "@fortawesome/fontawesome-pro-light": "^5",
     "@fortawesome/fontawesome-pro-regular": "^5",
     "@fortawesome/fontawesome-pro-solid": "^5",
+    "axios": "^0.18",
     "bootstrap": "^4",
     "bootstrap-multiselect": "^0.9",
     "datatables.net-bs4": "^1.10",
+    "date-fns": "^1.29",
     "ekko-lightbox": "5.3",
+    "epic-spinners": "^1",
     "open-iconic": "^1",
     "open-sans-fontface": "^1.4",
     "popper.js": "^1.12",
     "vue": "^2.5",
-    "axios": "^0.18",
-    "vue-i18n": "^8.0",
-    "epic-spinners": "^1",
-    "date-fns": "^1.29"
+    "vue-i18n": "^8.0"
   }
 }

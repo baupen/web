@@ -40,7 +40,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class ReadController extends ExternalApiController
 {
     /**
-     * @Route("", name="api_external_read")
+     * @Route("", name="api_external_read", methods={"POST"})
      *
      * @param Request $request
      * @param SerializerInterface $serializer

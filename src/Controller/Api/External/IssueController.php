@@ -40,7 +40,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class IssueController extends ExternalApiController
 {
     /**
-     * @Route("/create", name="api_external_issue_create")
+     * @Route("/create", name="api_external_issue_create", methods={"POST"})
      *
      * @param Request $request
      * @param SerializerInterface $serializer
@@ -57,7 +57,7 @@ class IssueController extends ExternalApiController
     }
 
     /**
-     * @Route("/update", name="api_external_issue_update")
+     * @Route("/update", name="api_external_issue_update", methods={"POST"})
      *
      * @param Request $request
      * @param SerializerInterface $serializer
@@ -210,7 +210,7 @@ class IssueController extends ExternalApiController
     }
 
     /**
-     * @Route("/delete", name="api_external_issue_delete")
+     * @Route("/delete", name="api_external_issue_delete", methods={"POST"})
      *
      * @param Request $request
      * @param SerializerInterface $serializer
@@ -242,7 +242,7 @@ class IssueController extends ExternalApiController
     }
 
     /**
-     * @Route("/mark", name="api_external_issue_mark")
+     * @Route("/mark", name="api_external_issue_mark", methods={"POST"})
      *
      * @param Request $request
      * @param SerializerInterface $serializer
@@ -271,7 +271,7 @@ class IssueController extends ExternalApiController
     }
 
     /**
-     * @Route("/review", name="api_external_issue_review")
+     * @Route("/review", name="api_external_issue_review", methods={"POST"})
      *
      * @param Request $request
      * @param SerializerInterface $serializer
@@ -306,7 +306,7 @@ class IssueController extends ExternalApiController
     }
 
     /**
-     * @Route("/revert", name="api_external_issue_revert")
+     * @Route("/revert", name="api_external_issue_revert", methods={"POST"})
      *
      * @param Request $request
      * @param SerializerInterface $serializer
