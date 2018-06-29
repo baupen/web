@@ -11,10 +11,10 @@
 
 namespace App\Tests\Controller;
 
-use App\Api\Entity\Building;
-use App\Api\Entity\Craftsman;
-use App\Api\Entity\Issue;
-use App\Api\Entity\Map;
+use App\Api\External\Entity\Building;
+use App\Api\External\Entity\Craftsman;
+use App\Api\External\Entity\Issue;
+use App\Api\External\Entity\Map;
 
 class ServerData
 {

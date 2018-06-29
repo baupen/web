@@ -15,7 +15,7 @@ use App\Api\Response\Base\AbstractMessageResponse;
 use App\Enum\ApiStatus;
 
 /**
- * for invalid requests.
+ * for requests causing an exception.
  *
  * Class FailResponse
  */

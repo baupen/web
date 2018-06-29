@@ -28,6 +28,10 @@ services:
         resource: '../src/Controller/Api'
         tags: ['controller.service_arguments']
 
+    App\Controller\Api\External\:
+        resource: '../src/Controller/Api/External'
+        tags: ['controller.service_arguments']
+
     App\Service\EmailService:
         arguments: ["@mailer", "@logger","@twig","%env(MAILER_SENDER)%", "%env(SUPPORT_EMAIL)%"]
 

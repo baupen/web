@@ -64,6 +64,13 @@ class Issue extends BaseEntity
     private $imageFilename;
 
     /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $responseLimit;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(type="datetime")
@@ -232,6 +239,22 @@ class Issue extends BaseEntity
     public function setImageFilename(?string $imageFilename): void
     {
         $this->imageFilename = $imageFilename;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getResponseLimit(): ?\DateTime
+    {
+        return $this->responseLimit;
+    }
+
+    /**
+     * @param \DateTime|null $responseLimit
+     */
+    public function setResponseLimit(?\DateTime $responseLimit): void
+    {
+        $this->responseLimit = $responseLimit;
     }
 
     /**
@@ -447,7 +470,7 @@ class Issue extends BaseEntity
      */
     public function getImageFilePath(): ?string
     {
-        if (null !== $this->getImageFilename()) {
+        if ($this->getImageFilename() !== null) {
             return 'upload/' . $this->getMap()->getConstructionSite()->getId() . '/issue/' . $this->getImageFilename();
         }
 

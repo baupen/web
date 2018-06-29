@@ -1,0 +1,36 @@
+{% macro nav_item(link, text) %}
+    <li class="nav-item {% if app.request.pathInfo == link %}active{% endif %}">
+        <a class="nav-link" href="{{ link }}">{{ text }}</a>
+    </li>
+{% endmacro %}
+
+{% extends 'layout_base.html.twig' %}
+{% import _self as own_macros %}
+
+{% block content %}
+    <nav class="navbar navbar-dark bg-dark navbar-expand">
+        <a class="navbar-brand" href="{{ path("index") }}">{{ app.request.host }}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                {{ own_macros.nav_item(path("dashboard"), "dashboard.title"|trans({}, "dashboard")) }}
+                {{ own_macros.nav_item(path("dispatch"), "dispatch.title"|trans({}, "dispatch")) }}
+            </ul>
+        </div>
+    </nav>
+
+    <section class="admin-wrapper">
+        <h1>{{ block("title") }}</h1>
+        <p class="text-secondary">{{ block("description") }}</p>
+        <div class="admin-content">
+            {% block admin_content %}
+
+            {% endblock %}
+        </div>
+    </section>
+
+{% endblock %}

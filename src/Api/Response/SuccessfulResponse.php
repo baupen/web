@@ -28,12 +28,12 @@ class SuccessfulResponse extends AbstractResponse
     }
 
     /**
-     * @var object
+     * @var mixed
      */
     private $data;
 
     /**
-     * @return object
+     * @return mixed
      */
     public function getData()
     {

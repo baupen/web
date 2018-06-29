@@ -11,31 +11,28 @@
 
 namespace App\Api\Entity\Base;
 
-use App\Api\Entity\ObjectMeta;
-use Symfony\Component\Validator\Constraints as Assert;
-
 class BaseEntity
 {
     /**
-     * @var ObjectMeta
+     * BaseEntity constructor.
      *
-     * @Assert\NotBlank()
+     * @param string $id
      */
-    private $meta;
-
-    /**
-     * @return ObjectMeta
-     */
-    public function getMeta(): ObjectMeta
+    public function __construct($id)
     {
-        return $this->meta;
+        $this->id = $id;
     }
 
     /**
-     * @param ObjectMeta $meta
+     * @var string
      */
-    public function setMeta(ObjectMeta $meta): void
+    private $id;
+
+    /**
+     * @return string
+     */
+    public function getId(): string
     {
-        $this->meta = $meta;
+        return $this->id;
     }
 }

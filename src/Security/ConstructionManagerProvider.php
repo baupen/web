@@ -75,7 +75,7 @@ class ConstructionManagerProvider extends BaseUserProvider
     public function loadUserByUsername($username)
     {
         $user = $this->registry->getRepository('App:ConstructionManager')->findOneBy(['email' => $username]);
-        if (null !== $user) {
+        if ($user !== null) {
             return $user;
         }
 
@@ -93,6 +93,6 @@ class ConstructionManagerProvider extends BaseUserProvider
      */
     public function supportsClass($class)
     {
-        return ConstructionManager::class === $class;
+        return $class === ConstructionManager::class;
     }
 }

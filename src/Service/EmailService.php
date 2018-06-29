@@ -14,7 +14,6 @@ namespace App\Service;
 use App\Entity\Email;
 use App\Enum\EmailType;
 use App\Service\Interfaces\EmailServiceInterface;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Twig\Environment;
 
@@ -85,13 +84,13 @@ class EmailService implements EmailServiceInterface
 
         //construct plain body
         $bodyText = $email->getBody();
-        if (null !== $email->getActionLink()) {
+        if ($email->getActionLink() !== null) {
             $bodyText .= "\n\n" . $email->getActionText() . ': ' . $email->getActionLink();
         }
         $message->setBody($bodyText, 'text/plain');
 
         //construct html body if applicable
-        if (EmailType::PLAIN_EMAIL !== $email->getEmailType()) {
+        if ($email->getEmailType() !== EmailType::PLAIN_EMAIL) {
             try {
                 $message->addPart(
                     $this->twig->render(

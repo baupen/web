@@ -33,8 +33,8 @@
 <![endif]-->
 
 {% set flashes = app.session.flashbag.all() %}
-{% if flashes|length > 0 %}
-    <div class="flash-wrapper">
+<div class="flash-wrapper">
+    {% if flashes|length > 0 %}
         {# flashbag #}
         {% for type, messages in flashes %}
             {% for message in messages %}
@@ -48,8 +48,8 @@
                 </div>
             {% endfor %}
         {% endfor %}
-    </div>
-{% endif %}
+    {% endif %}
+</div>
 
 {% block content %}
 

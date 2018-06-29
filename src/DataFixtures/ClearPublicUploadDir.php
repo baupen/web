@@ -51,7 +51,7 @@ class ClearPublicUploadDir extends BaseFixture
         }
 
         foreach (scandir($dir) as $item) {
-            if ('.' === $item || '..' === $item || in_array($item, $exceptions, true)) {
+            if ($item === '.' || $item === '..' || in_array($item, $exceptions, true)) {
                 continue;
             }
 

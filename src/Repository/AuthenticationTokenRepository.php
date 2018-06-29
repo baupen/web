@@ -11,7 +11,7 @@
 
 namespace App\Repository;
 
-use App\Api\Request\Base\AuthenticatedRequest;
+use App\Api\External\Request\Base\AuthenticatedRequest;
 use App\Entity\AuthenticationToken;
 use App\Helper\HashHelper;
 use Doctrine\ORM\EntityRepository;
@@ -30,13 +30,13 @@ class AuthenticationTokenRepository extends EntityRepository
      */
     public function getConstructionManager(AuthenticatedRequest $authenticatedRequest)
     {
-        if (null === $authenticatedRequest || HashHelper::HASH_LENGTH !== mb_strlen($authenticatedRequest->getAuthenticationToken())) {
+        if ($authenticatedRequest === null || mb_strlen($authenticatedRequest->getAuthenticationToken()) !== HashHelper::HASH_LENGTH) {
             return null;
         }
 
         /** @var AuthenticationToken $token */
         $token = $this->findOneBy(['token' => $authenticatedRequest->getAuthenticationToken()]);
-        if (null !== $token) {
+        if ($token !== null) {
             // remember last used date
             $token->setLastUsed();
             $this->getEntityManager()->flush();

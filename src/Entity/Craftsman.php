@@ -74,6 +74,20 @@ class Craftsman extends BaseEntity
     private $issues;
 
     /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastEmailSent;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastOnlineVisit;
+
+    /**
      * Craftsman constructor.
      */
     public function __construct()
@@ -175,5 +189,50 @@ class Craftsman extends BaseEntity
     public function getName(): string
     {
         return $this->getContactName() . ' (' . $this->getCompany() . ')';
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastEmailSent(): ?\DateTime
+    {
+        return $this->lastEmailSent;
+    }
+
+    /**
+     * @param \DateTime|null $lastEmailSent
+     */
+    public function setLastEmailSent(?\DateTime $lastEmailSent): void
+    {
+        $this->lastEmailSent = $lastEmailSent;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastOnlineVisit(): ?\DateTime
+    {
+        return $this->lastOnlineVisit;
+    }
+
+    /**
+     * @param \DateTime|null $lastOnlineVisit
+     */
+    public function setLastOnlineVisit(?\DateTime $lastOnlineVisit): void
+    {
+        $this->lastOnlineVisit = $lastOnlineVisit;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastAction()
+    {
+        $lastAction = $this->getLastOnlineVisit();
+        if ($lastAction === null || $lastAction < $this->getLastEmailSent()) {
+            return $this->getLastEmailSent();
+        }
+
+        return $lastAction;
     }
 }

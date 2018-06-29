@@ -33,7 +33,8 @@ return PhpCsFixer\Config::create()
         'mb_str_functions' => true,
         'strict_comparison' => true,
         'strict_param' => true,
-        'cast_spaces' => ['space' => 'none']
+        'cast_spaces' => ['space' => 'none'],
+        'yoda_style' =>  false
     ])
     ->setFinder($finder)
     ->setCacheFile(__DIR__.'/var/.php_cs.cache')

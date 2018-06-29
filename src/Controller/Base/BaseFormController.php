@@ -52,7 +52,7 @@ class BaseFormController extends BaseDoctrineController
             }
 
             $this->displayError(
-                $this->getTranslator()->trans('error.form_validation_failed', [], 'form')
+                $this->getTranslator()->trans('error.form_validation_failed', [], 'framework')
             );
         }
 
