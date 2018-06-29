@@ -47,7 +47,6 @@ class FoyerController extends ApiController
 
     /**
      * @param Request $request
-     * @param $issues
      * @param $entities
      * @param $errorResponse
      * @param $constructionSite
@@ -146,8 +145,6 @@ class FoyerController extends ApiController
      * @param Request $request
      * @param IssueTransformer $issueTransformer
      *
-     * @throws \Doctrine\ORM\ORMException
-     *
      * @return Response
      */
     public function issueListAction(Request $request, IssueTransformer $issueTransformer)
@@ -172,8 +169,6 @@ class FoyerController extends ApiController
      * @param Request $request
      * @param CraftsmanTransformer $craftsmanTransformer
      *
-     * @throws \Doctrine\ORM\ORMException
-     *
      * @return Response
      */
     public function craftsmanListAction(Request $request, CraftsmanTransformer $craftsmanTransformer)
@@ -193,6 +188,7 @@ class FoyerController extends ApiController
      * @Route("/issue/update", name="api_foyer_issue_update", methods={"POST"})
      *
      * @param Request $request
+     * @param IssueTransformer $issueTransformer
      *
      * @return Response
      */

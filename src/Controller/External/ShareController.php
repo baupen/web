@@ -13,7 +13,6 @@ namespace App\Controller\External;
 
 use App\Controller\Base\BaseController;
 use App\Entity\Craftsman;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Intl\Exception\NotImplementedException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,8 +26,6 @@ class ShareController extends BaseController
      * @Route("/{identifier}", name="external_share")
      *
      * @param $identifier
-     *
-     * @return Response
      */
     public function shareAction($identifier)
     {

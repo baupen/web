@@ -55,8 +55,6 @@ class DispatchController extends ApiController
      * @param Request $request
      * @param CraftsmanTransformer $craftsmanTransformer
      *
-     * @throws \Doctrine\ORM\ORMException
-     *
      * @return Response
      */
     public function listAction(Request $request, CraftsmanTransformer $craftsmanTransformer)
@@ -78,8 +76,6 @@ class DispatchController extends ApiController
      * @param Request $request
      * @param TranslatorInterface $translator
      * @param EmailServiceInterface $emailService
-     *
-     * @throws \Doctrine\ORM\ORMException
      *
      * @return Response
      */
@@ -147,6 +143,7 @@ class DispatchController extends ApiController
     /**
      * @param Craftsman $craftsman
      * @param CurrentIssueState $state
+     * @param ConstructionSite $constructionSite
      * @param EmailServiceInterface $emailService
      * @param TranslatorInterface $translator
      *

@@ -15,7 +15,6 @@ use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Security\Voter\Base\BaseVoter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class CraftsmanVoter extends BaseVoter
 {
