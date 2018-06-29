@@ -1,10 +1,13 @@
 <template>
     <div id="dispatch">
         <div v-if="craftsmen.length > 0" class="selectable-table">
-            <table class="table table-hover table-striped">
+            <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th class="minimal-width"></th>
+                    <th class="minimal-width">
+                        <input title="check" type="checkbox" v-bind:indeterminate.prop="indeterminate"
+                               v-bind:checked="selected" v-on:click.prevent="selectAll()"/>
+                    </th>
                     <th>{{ $t("craftsman.name")}}</th>
                     <th>{{ $t("craftsman.trade")}}</th>
                     <th>{{ $t("craftsman.not_read_issues_count")}}</th>
@@ -15,7 +18,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="craftsman in craftsmen" v-on:click.prevent="craftsman.selected = !craftsman.selected">
+                <tr v-for="craftsman in craftsmen" v-on:click.prevent="craftsman.selected = !craftsman.selected" v-bind:class="{ 'table-active': craftsman.selected   }">
                     <td class="minimal-width">
                         <input title="check" type="checkbox" v-model="craftsman.selected"/>
                     </td>
@@ -44,7 +47,7 @@
 
                 </tbody>
             </table>
-            <button class="btn btn-primary" v-on:click.prevent="sendEmails()">{{$t("send_emails")}}</button>
+            <button class="btn btn-primary" v-bind:disabled="isLoading" v-on:click.prevent="sendEmails()">{{$t("send_emails")}}</button>
         </div>
         <div v-else-if="!isLoading">
             <p>{{ $t("no_craftsmen") }}</p>
@@ -75,6 +78,7 @@
                     "craftsmanIds": this.craftsmen.filter(c => c.selected).map(c => c.id)
                 }).then((response) => {
                     this.isLoading = false;
+                    this.craftsmen.forEach(c => c.selected = false);
                 });
             },
             formatDateTime: function (value) {
@@ -82,6 +86,18 @@
                     return "-"
                 }
                 return moment(value).fromNow();
+            },
+            selectAll: function () {
+                let newVal = !(this.indeterminate || this.selected);
+                this.craftsmen.forEach(c => c.selected = newVal);
+            }
+        },
+        computed: {
+            indeterminate: function () {
+                return !this.selected && this.craftsmen.filter(c => c.selected).length > 0;
+            },
+            selected: function () {
+                return this.craftsmen.filter(c => !c.selected).length === 0;
             }
         },
         mounted() {
