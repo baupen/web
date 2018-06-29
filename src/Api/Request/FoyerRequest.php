@@ -12,48 +12,47 @@
 namespace App\Api\Request;
 
 use App\Api\Entity\Foyer\Issue;
-use App\Api\Request\Base\AbstractRequest;
 
-class FoyerRequest extends AbstractRequest
+class FoyerRequest extends ConstructionSiteRequest
 {
     /**
-     * @var Issue[]
+     * @var Issue[]|null
      */
     private $issues;
 
     /**
-     * @var string[]
+     * @var string[]|null
      */
     private $issueIds;
 
     /**
-     * @return Issue[]
+     * @return Issue[]|null
      */
-    public function getIssues(): array
+    public function getIssues(): ?array
     {
         return $this->issues;
     }
 
     /**
-     * @param Issue[] $issues
+     * @param Issue[]|null $issues
      */
-    public function setIssues(array $issues): void
+    public function setIssues(?array $issues): void
     {
         $this->issues = $issues;
     }
 
     /**
-     * @return string[]
+     * @return null|string[]
      */
-    public function getIssueIds(): array
+    public function getIssueIds(): ?array
     {
         return $this->issueIds;
     }
 
     /**
-     * @param string[] $issueIds
+     * @param null|string[] $issueIds
      */
-    public function setIssueIds(array $issueIds): void
+    public function setIssueIds(?array $issueIds): void
     {
         $this->issueIds = $issueIds;
     }

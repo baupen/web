@@ -13,15 +13,21 @@ namespace App\Controller\Api;
 
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\FoyerRequest;
+use App\Api\Request\IssueRequest;
 use App\Api\Response\Data\CraftsmanData;
-use App\Api\Response\Data\FoyerData;
+use App\Api\Response\Data\Foyer\DeletedIssueData;
+use App\Api\Response\Data\Foyer\NumberIssueData;
 use App\Api\Response\Data\IssueData;
+use App\Api\Transformer\Base\BaseEntityTransformer;
 use App\Api\Transformer\Foyer\CraftsmanTransformer;
 use App\Api\Transformer\Foyer\IssueTransformer;
+use App\Api\Transformer\Foyer\NumberIssueTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
+use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,6 +40,10 @@ class FoyerController extends ApiController
     const INVALID_CONSTRUCTION_SITE = 'invalid construction site';
     const CRAFTSMAN_NOT_FOUND = 'craftsman not found';
     const INVALID_CRAFTSMAN = 'invalid craftsman';
+    const FILE_UPLOAD_FAILED = 'file upload failed';
+    const INCORRECT_NUMBER_OF_FILES = 'incorrect number of files';
+    const ISSUE_NOT_FOUND = 'issue not found';
+    const INVALID_ISSUE = 'invalid issue';
 
     /**
      * @param Request $request
@@ -170,6 +180,7 @@ class FoyerController extends ApiController
             return $errorResponse;
         }
 
+        //write properties to issues
         foreach ($issues as $guid => $issue) {
             if (array_key_exists($guid, $entities)) {
                 $entity = $entities[$guid];
@@ -191,8 +202,64 @@ class FoyerController extends ApiController
 
         $this->fastSave(...$entities);
 
-        $data = new FoyerData();
-        $data->setProcessedCount(count($entities));
+        //create response
+        $data = new IssueData();
+        $data->setIssues($issueTransformer->toApiMultiple($issues));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/issue/image", name="api_foyer_issue_image", methods={"POST"})
+     *
+     * @param Request $request
+     * @param IssueTransformer $issueTransformer
+     *
+     * @return Response
+     */
+    public function issueImageAction(Request $request, IssueTransformer $issueTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var IssueRequest $issueRequest */
+        if (!$this->parseConstructionSiteRequest($request, IssueRequest::class, $issueRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        //get issue & ensure its on this construction site
+        /** @var Issue $issue */
+        $issue = $this->getDoctrine()->getRepository(Issue::class)->find($issueRequest->getIssueId());
+        if ($issue === null) {
+            return $this->fail(self::ISSUE_NOT_FOUND);
+        }
+        if ($issue->getMap()->getConstructionSite() !== $constructionSite) {
+            return $this->fail(self::INVALID_ISSUE);
+        }
+
+        //check if file is here
+        if ($request->files->count() !== 1) {
+            return $this->fail(self::INCORRECT_NUMBER_OF_FILES);
+        }
+
+        /** @var UploadedFile $file */
+        $file = $request->files->all()[0];
+
+        //set new filename to avoid caching issues
+        $issue->setImageFilename(Uuid::uuid4()->toString() . '.' . $file->guessExtension());
+
+        //create folder & put file in there
+        $targetFolder = $this->getParameter('PUBLIC_DIR') . '/' . dirname($issue->getImageFilePath());
+        if (!file_exists($targetFolder)) {
+            mkdir($targetFolder, 0777, true);
+        }
+        if (!$file->move($targetFolder, $issue->getImageFilename())) {
+            return $this->fail(self::FILE_UPLOAD_FAILED);
+        }
+
+        $this->fastSave($issue);
+
+        //create response
+        $data = new IssueData();
+        $data->setIssues([$issueTransformer->toApi($issue)]);
 
         return $this->success($data);
     }
@@ -201,10 +268,11 @@ class FoyerController extends ApiController
      * @Route("/issue/delete", name="api_foyer_issue_delete", methods={"POST"})
      *
      * @param Request $request
+     * @param BaseEntityTransformer $baseEntityTransformer
      *
      * @return Response
      */
-    public function issueDeleteAction(Request $request)
+    public function issueDeleteAction(Request $request, BaseEntityTransformer $baseEntityTransformer)
     {
         /** @var ConstructionSite $constructionSite */
         if (!$this->parseFoyerRequest($request, $issues, $entities, $errorResponse, $constructionSite)) {
@@ -213,8 +281,8 @@ class FoyerController extends ApiController
 
         $this->fastRemove(...$entities);
 
-        $data = new FoyerData();
-        $data->setProcessedCount(count($entities));
+        $data = new DeletedIssueData();
+        $data->setDeletedIssues($baseEntityTransformer->toApiMultiple($entities));
 
         return $this->success($data);
     }
@@ -223,12 +291,13 @@ class FoyerController extends ApiController
      * @Route("/issue/confirm", name="api_foyer_issue_confirm", methods={"POST"})
      *
      * @param Request $request
+     * @param NumberIssueTransformer $numberIssueTransformer
      *
-     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      *
      * @return Response
      */
-    public function issueConfirmAction(Request $request)
+    public function issueConfirmAction(Request $request, NumberIssueTransformer $numberIssueTransformer)
     {
         /** @var ConstructionSite $constructionSite */
         /** @var Issue[] $entities */
@@ -253,8 +322,8 @@ class FoyerController extends ApiController
         $this->fastSave(...$entities);
 
         //stats to client
-        $data = new FoyerData();
-        $data->setProcessedCount(count($entities));
+        $data = new NumberIssueData();
+        $data->setNumberIssues($numberIssueTransformer->toApiMultiple($entities));
 
         return $this->success($data);
     }

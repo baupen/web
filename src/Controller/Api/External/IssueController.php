@@ -189,7 +189,7 @@ class IssueController extends ExternalApiController
         }
 
         //handle file upload
-        foreach ($request->files->all() as $key => $file) {
+        foreach ($request->files->all() as $file) {
             /** @var UploadedFile $file */
             $targetFolder = $this->getParameter('PUBLIC_DIR') . '/' . dirname($issue->getImageFilePath());
             if (!file_exists($targetFolder)) {

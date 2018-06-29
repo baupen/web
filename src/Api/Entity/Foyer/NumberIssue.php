@@ -11,7 +11,9 @@
 
 namespace App\Api\Entity\Foyer;
 
-class NumberIssue extends \App\Api\Entity\Base\Issue
+use App\Api\Entity\Base\BaseEntity;
+
+class NumberIssue extends BaseEntity
 {
     /**
      * @var int
