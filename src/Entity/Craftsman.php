@@ -17,6 +17,7 @@ use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * a craftsman receives information about open issues, and answers them.
@@ -86,6 +87,13 @@ class Craftsman extends BaseEntity
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $lastOnlineVisit;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $emailIdentifier;
 
     /**
      * Craftsman constructor.
@@ -234,5 +242,18 @@ class Craftsman extends BaseEntity
         }
 
         return $lastAction;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getEmailIdentifier(): ?string
+    {
+        return $this->emailIdentifier;
+    }
+
+    public function setEmailIdentifier(): void
+    {
+        $this->emailIdentifier = Uuid::uuid4()->toString();
     }
 }

@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
  * An issue is something created by the construction manager to inform the craftsman of it.
  *
  * @ORM\Table(name="issue")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class Issue extends BaseEntity
@@ -31,7 +31,7 @@ class Issue extends BaseEntity
     /**
      * @var int|null
      *
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=true, unique=true)
      */
     private $number;
 

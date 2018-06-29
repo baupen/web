@@ -9,11 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Transformer\Dispatch;
+namespace App\Api\Transformer\Foyer;
 
 use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\Craftsman;
-use App\Model\Craftsman\CurrentIssueState;
 
 class CraftsmanTransformer extends BatchTransformer
 {
@@ -41,14 +40,6 @@ class CraftsmanTransformer extends BatchTransformer
     {
         $craftsman = new \App\Api\Entity\Dispatch\Craftsman($entity->getId());
         $this->craftsmanTransformer->writeApiProperties($entity, $craftsman);
-
-        $craftsman->setLastEmailSent($entity->getLastEmailSent());
-        $craftsman->setLastOnlineVisit($entity->getLastOnlineVisit());
-
-        $state = new CurrentIssueState($entity, new \DateTime());
-        $craftsman->setNotRespondedIssuesCount($state->getNotRespondedIssuesCount());
-        $craftsman->setNotReadIssuesCount($state->getNotReadIssuesCount());
-        $craftsman->setNextResponseLimit($state->getNextResponseLimit());
 
         return $craftsman;
     }

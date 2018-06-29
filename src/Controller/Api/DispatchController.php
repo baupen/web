@@ -119,62 +119,89 @@ class DispatchController extends ApiController
                 continue;
             }
 
-            // build up base text
-            if ($state->getOverdueIssuesCount() > 0) {
-                $subject = $translator->transChoice('email.overdue.subject', $state->getOverdueIssuesCount(), [], 'dispatch');
-                $body = $translator->transChoice('email.overdue.body', $state->getNotRespondedIssuesCount(), [], 'dispatch');
-            } elseif ($state->getNotReadIssuesCount() > 0) {
-                $subject = $translator->transChoice('email.unread.subject', $state->getNotReadIssuesCount(), [], 'dispatch');
-                $body = $translator->transChoice('email.unread.body', $state->getNotRespondedIssuesCount(), [], 'dispatch');
-            } else {
-                $subject = $translator->transChoice('email.open.subject', $state->getNotRespondedIssuesCount(), [], 'dispatch');
-                $body = $translator->transChoice('email.open.body', $state->getNotRespondedIssuesCount(), [], 'dispatch');
+            //ensure craftsman has email identifier
+            if ($craftsman->getLastEmailSent() === null) {
+                $craftsman->setEmailIdentifier();
+                $this->fastSave($craftsman);
             }
 
-            //append next limit info
-            if ($state->getOverdueIssuesCount() === 0 && $state->getNextResponseLimit() !== null) {
-                $body .= "\n";
-                $body .= $translator->trans(
-                    'email.body_limit_info',
-                    ['%limit%' => $state->getNextResponseLimit()->format(DateTimeFormatter::DATE_FORMAT)],
-                    'dispatch'
-                );
-            }
-
-            //append closed issues info
-            if ($state->getRecentlyReviewedIssuesCount() > 0) {
-                $body .= "\n";
-                $body .= $translator->transChoice('email.body_closed_issues_infos', $state->getRecentlyReviewedIssuesCount(), [], 'dispatch');
-            }
-
-            //append suffix
-            $subject .= $translator->trans('email.subject_appendix', ['%construction_site_name%' => $constructionSite->getName()], 'dispatch');
-
-            //send email
-            $email = new Email();
-            $email->setEmailType(EmailType::ACTION_EMAIL);
-            $email->setReceiver($craftsman->getEmail());
-            $email->setSubject($subject);
-            $email->setBody($body);
-            $email->setActionText($translator->trans('email.action_text', [], 'dispatch'));
-            $email->setActionLink($this->generateUrl('external_view_issues', ['identifier' => null], UrlGeneratorInterface::ABSOLUTE_URL));
-            $this->fastSave($email);
-
-            if ($emailService->sendEmail($email)) {
-                $email->setSentDateTime(new \DateTime());
-                $this->fastSave($email);
-
+            //send mail & remember if it worked
+            if ($this->sendMail($craftsman, $state, $constructionSite, $emailService, $translator)) {
+                $craftsman->setLastEmailSent(new \DateTime());
+                $this->fastSave($craftsman);
                 ++$sentEmails;
             } else {
                 ++$errorEmails;
             }
         }
 
+        //construct answer
         $dispatchData = new DispatchData();
         $dispatchData->setErrorEmailCount($errorEmails);
         $dispatchData->setSentEmailCount($sentEmails);
         $dispatchData->setSkippedEmailCount($skippedEmails);
 
         return $this->success($dispatchData);
+    }
+
+    /**
+     * @param Craftsman $craftsman
+     * @param CurrentIssueState $state
+     * @param EmailServiceInterface $emailService
+     * @param TranslatorInterface $translator
+     *
+     * @return bool
+     */
+    private function sendMail(Craftsman $craftsman, CurrentIssueState $state, ConstructionSite $constructionSite, EmailServiceInterface $emailService, TranslatorInterface $translator)
+    {
+        // build up base text
+        if ($state->getOverdueIssuesCount() > 0) {
+            $subject = $translator->transChoice('email.overdue.subject', $state->getOverdueIssuesCount(), [], 'dispatch');
+            $body = $translator->transChoice('email.overdue.body', $state->getNotRespondedIssuesCount(), [], 'dispatch');
+        } elseif ($state->getNotReadIssuesCount() > 0) {
+            $subject = $translator->transChoice('email.unread.subject', $state->getNotReadIssuesCount(), [], 'dispatch');
+            $body = $translator->transChoice('email.unread.body', $state->getNotRespondedIssuesCount(), [], 'dispatch');
+        } else {
+            $subject = $translator->transChoice('email.open.subject', $state->getNotRespondedIssuesCount(), [], 'dispatch');
+            $body = $translator->transChoice('email.open.body', $state->getNotRespondedIssuesCount(), [], 'dispatch');
+        }
+
+        //append next limit info
+        if ($state->getOverdueIssuesCount() === 0 && $state->getNextResponseLimit() !== null) {
+            $body .= "\n";
+            $body .= $translator->trans(
+                'email.body_limit_info',
+                ['%limit%' => $state->getNextResponseLimit()->format(DateTimeFormatter::DATE_FORMAT)],
+                'dispatch'
+            );
+        }
+
+        //append closed issues info
+        if ($state->getRecentlyReviewedIssuesCount() > 0) {
+            $body .= "\n";
+            $body .= $translator->transChoice('email.body_closed_issues_infos', $state->getRecentlyReviewedIssuesCount(), [], 'dispatch');
+        }
+
+        //append suffix
+        $subject .= $translator->trans('email.subject_appendix', ['%construction_site_name%' => $constructionSite->getName()], 'dispatch');
+
+        //send email
+        $email = new Email();
+        $email->setEmailType(EmailType::ACTION_EMAIL);
+        $email->setReceiver($craftsman->getEmail());
+        $email->setSubject($subject);
+        $email->setBody($body);
+        $email->setActionText($translator->trans('email.action_text', [], 'dispatch'));
+        $email->setActionLink($this->generateUrl('external_share', ['identifier' => $craftsman->getEmailIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL));
+        $this->fastSave($email);
+
+        if ($emailService->sendEmail($email)) {
+            $email->setSentDateTime(new \DateTime());
+            $this->fastSave($email);
+
+            return true;
+        }
+
+        return false;
     }
 }

@@ -5,8 +5,10 @@
                 <thead>
                 <tr>
                     <th class="minimal-width">
-                        <input title="check" type="checkbox" v-bind:indeterminate.prop="indeterminate"
-                               v-bind:checked="selected" v-on:click.prevent="selectAll()"/>
+                        <input title="check" type="checkbox"
+                               v-bind:indeterminate.prop="indeterminate"
+                               v-bind:checked="selected"
+                               v-on:click.prevent="selectAll()" />
                     </th>
                     <th>{{ $t("craftsman.name")}}</th>
                     <th>{{ $t("craftsman.trade")}}</th>

@@ -27,8 +27,9 @@ abstract class ApiController extends AbstractApiController
     /**
      * @param Request $request
      * @param string $targetClass
-     *
-     * @throws \Doctrine\ORM\ORMException
+     * @param $parsedRequest
+     * @param $errorResponse
+     * @param $constructionSite
      *
      * @return bool
      */
