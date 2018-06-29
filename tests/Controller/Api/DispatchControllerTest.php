@@ -10,7 +10,7 @@ namespace App\Tests\Controller\Api;
 
 
 use App\Api\Request\ConstructionSiteRequest;
-use App\Api\Request\DispatchRequest;
+use App\Api\Request\CraftsmenRequest;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Enum\ApiStatus;
@@ -97,7 +97,7 @@ class DispatchControllerTest extends AbstractApiController
             return $client->getResponse();
         };
 
-        $dispatchRequest = new DispatchRequest();
+        $dispatchRequest = new CraftsmenRequest();
         $dispatchRequest->setConstructionSiteId($constructionSite->getId());
         $dispatchRequest->setCraftsmanIds([$craftsman->getId()]);
 

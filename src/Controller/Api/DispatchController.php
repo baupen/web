@@ -12,7 +12,7 @@
 namespace App\Controller\Api;
 
 use App\Api\Request\ConstructionSiteRequest;
-use App\Api\Request\DispatchRequest;
+use App\Api\Request\CraftsmenRequest;
 use App\Api\Response\Data\CraftsmanData;
 use App\Api\Response\Data\ProcessingData;
 use App\Api\Transformer\Dispatch\CraftsmanTransformer;
@@ -85,9 +85,9 @@ class DispatchController extends ApiController
      */
     public function dispatchAction(Request $request, TranslatorInterface $translator, EmailServiceInterface $emailService)
     {
-        /** @var DispatchRequest $dispatchRequest */
+        /** @var CraftsmenRequest $dispatchRequest */
         /** @var ConstructionSite $constructionSite */
-        if (!$this->parseConstructionSiteRequest($request, DispatchRequest::class, $dispatchRequest, $errorResponse, $constructionSite)) {
+        if (!$this->parseConstructionSiteRequest($request, CraftsmenRequest::class, $dispatchRequest, $errorResponse, $constructionSite)) {
             return $errorResponse;
         }
 

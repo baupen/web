@@ -10,7 +10,7 @@ namespace App\Tests\Controller\Api;
 
 
 use App\Api\Request\ConstructionSiteRequest;
-use App\Api\Request\DispatchRequest;
+use App\Api\Request\CraftsmenRequest;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Enum\ApiStatus;

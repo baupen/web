@@ -12,8 +12,8 @@
 namespace App\Controller\Api;
 
 use App\Api\Request\ConstructionSiteRequest;
-use App\Api\Request\FoyerRequest;
 use App\Api\Request\IssueRequest;
+use App\Api\Request\IssuesRequest;
 use App\Api\Response\Data\CraftsmanData;
 use App\Api\Response\Data\Foyer\DeletedIssueData;
 use App\Api\Response\Data\Foyer\NumberIssueData;
@@ -54,36 +54,61 @@ class FoyerController extends ApiController
      *
      * @return bool
      */
-    protected function parseFoyerRequest(Request $request, &$issues, &$entities, &$errorResponse, &$constructionSite)
+    private function parseIssuesRequest(Request $request, &$entities, &$errorResponse, &$constructionSite)
     {
-        /** @var FoyerRequest $parsedRequest */
-        if (!parent::parseConstructionSiteRequest($request, FoyerRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+        /** @var IssuesRequest $parsedRequest */
+        if (!parent::parseConstructionSiteRequest($request, IssueRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
             return false;
-        }
-
-        //check at least one property set
-        if (!is_array($parsedRequest->getIssues()) && !is_array($parsedRequest->getIssueIds())) {
-            $errorResponse = $this->fail(self::REQUEST_VALIDATION_FAILED);
         }
 
         //retrieve all issues from the db
         /** @var Issue[] $requestedIssues */
-        $requestedIssues = [];
         /** @var \App\Api\Entity\Foyer\Issue[] $issues */
-        $issues = [];
         $issueRepo = $this->getDoctrine()->getRepository(Issue::class);
-        if (is_array($parsedRequest->getIssueIds())) {
-            $requestedIssues = $issueRepo->findBy(['id' => $parsedRequest->getIssueIds()]);
-            $issues = array_flip($parsedRequest->getIssueIds());
-        } else {
-            foreach ($parsedRequest->getIssues() as $issue) {
-                $issues[$issue->getId()] = $issue;
-            }
+        $requestedIssues = $issueRepo->findBy(['id' => $parsedRequest->getIssueIds()]);
+        $issues = array_flip($parsedRequest->getIssueIds());
 
-            $requestedIssues = $issueRepo->findBy(['id' => array_keys($issues)]);
+        return $this->checkIssueEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
+    }
+
+    /**
+     * @param Request $request
+     * @param $issues
+     * @param $entities
+     * @param $errorResponse
+     * @param $constructionSite
+     *
+     * @return bool
+     */
+    private function parseDispatchIssuesRequest(Request $request, &$issues, &$entities, &$errorResponse, &$constructionSite)
+    {
+        /** @var \App\Api\Request\Dispatch\IssuesRequest $parsedRequest */
+        if (!parent::parseConstructionSiteRequest($request, IssueRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return false;
         }
 
-        //ensure no issue from another contruction site
+        //retrieve all issues from the db
+        $issues = [];
+        foreach ($parsedRequest->getIssues() as $issue) {
+            $issues[$issue->getId()] = $issue;
+        }
+        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['id' => array_keys($issues)]);
+
+        return $this->checkIssueEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
+    }
+
+    /**
+     * @param Issue[] $requestedIssues
+     * @param ConstructionSite $constructionSite
+     * @param \App\Api\Entity\Foyer\Issue[] $issues
+     * @param $entities
+     * @param $errorResponse
+     *
+     * @return bool
+     */
+    private function checkIssueEntities($requestedIssues, ConstructionSite $constructionSite, $issues, &$entities, &$errorResponse)
+    {
+        //ensure no issue from another construction site
         foreach ($requestedIssues as $entity) {
             if ($entity->getMap()->getConstructionSite() !== $constructionSite) {
                 $errorResponse = $this->fail(self::INVALID_CONSTRUCTION_SITE);
@@ -176,7 +201,7 @@ class FoyerController extends ApiController
         /** @var ConstructionSite $constructionSite */
         /** @var \App\Api\Entity\Foyer\Issue[] $issues */
         /** @var Issue[] $entities */
-        if (!$this->parseFoyerRequest($request, $issues, $entities, $errorResponse, $constructionSite)) {
+        if (!$this->parseDispatchIssuesRequest($request, $issues, $entities, $errorResponse, $constructionSite)) {
             return $errorResponse;
         }
 
@@ -275,7 +300,7 @@ class FoyerController extends ApiController
     public function issueDeleteAction(Request $request, BaseEntityTransformer $baseEntityTransformer)
     {
         /** @var ConstructionSite $constructionSite */
-        if (!$this->parseFoyerRequest($request, $issues, $entities, $errorResponse, $constructionSite)) {
+        if (!$this->parseIssuesRequest($request, $entities, $errorResponse, $constructionSite)) {
             return $errorResponse;
         }
 
@@ -301,7 +326,7 @@ class FoyerController extends ApiController
     {
         /** @var ConstructionSite $constructionSite */
         /** @var Issue[] $entities */
-        if (!$this->parseFoyerRequest($request, $issues, $entities, $errorResponse, $constructionSite)) {
+        if (!$this->parseIssuesRequest($request, $entities, $errorResponse, $constructionSite)) {
             return $errorResponse;
         }
 
