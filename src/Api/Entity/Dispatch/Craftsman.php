@@ -16,7 +16,7 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
     /**
      * @var int
      */
-    private $noteReadIssuesCount;
+    private $notReadIssuesCount;
 
     /**
      * @var int
@@ -41,17 +41,17 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
     /**
      * @return int
      */
-    public function getNoteReadIssuesCount(): int
+    public function getNotReadIssuesCount(): int
     {
-        return $this->noteReadIssuesCount;
+        return $this->notReadIssuesCount;
     }
 
     /**
-     * @param int $noteReadIssuesCount
+     * @param int $notReadIssuesCount
      */
-    public function setNoteReadIssuesCount(int $noteReadIssuesCount): void
+    public function setNotReadIssuesCount(int $notReadIssuesCount): void
     {
-        $this->noteReadIssuesCount = $noteReadIssuesCount;
+        $this->notReadIssuesCount = $notReadIssuesCount;
     }
 
     /**

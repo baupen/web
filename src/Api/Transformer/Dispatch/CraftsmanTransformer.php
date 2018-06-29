@@ -64,7 +64,7 @@ class CraftsmanTransformer extends BatchTransformer
         }
 
         $craftsman->setNotRespondedIssuesCount($open);
-        $craftsman->setNoteReadIssuesCount($unread);
+        $craftsman->setNotReadIssuesCount($unread);
         $craftsman->setNextResponseLimit($nextResponseLimit);
 
         return $craftsman;
