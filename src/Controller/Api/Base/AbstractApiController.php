@@ -53,10 +53,10 @@ abstract class AbstractApiController extends BaseDoctrineController
     /**
      * @param Request $request
      * @param string $targetClass
-     * @param null $parsedRequest
-     * @param null $errorResponse
+     * @param mixed|null $parsedRequest
+     * @param Response|null $errorResponse
      *
-     * @return mixed|Response
+     * @return bool
      */
     protected function parseRequest(Request $request, $targetClass, &$parsedRequest, &$errorResponse)
     {

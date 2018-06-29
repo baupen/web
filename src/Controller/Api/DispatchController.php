@@ -22,6 +22,7 @@ use App\Entity\Craftsman;
 use App\Entity\Email;
 use App\Enum\EmailType;
 use App\Helper\DateTimeFormatter;
+use App\Model\Craftsman\CurrentIssueState;
 use App\Service\Interfaces\EmailServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -110,65 +111,40 @@ class DispatchController extends ApiController
         $now = new \DateTime();
         foreach ($craftsmen as $craftsman) {
             //count event occurrences
-            $unreadIssues = 0;
-            $closedIssues = 0;
-            $openIssues = 0;
-            $overdueIssues = 0;
-            $nextAnswerLimit = null;
-            $lastAction = $craftsman->getLastAction();
-            foreach ($craftsman->getIssues() as $issue) {
-                if ($issue->getRegisteredAt() !== null && $issue->getRespondedAt() === null) {
-                    if ($issue->getReviewedAt() === null) {
-                        ++$openIssues;
-                        if ($lastAction === null || $issue->getRegisteredAt() > $lastAction) {
-                            ++$unreadIssues;
-                        }
-
-                        if ($issue->getResponseLimit() < $now) {
-                            ++$overdueIssues;
-                        }
-
-                        if ($nextAnswerLimit === null || $issue->getResponseLimit() < $nextAnswerLimit) {
-                            $nextAnswerLimit = $issue->getResponseLimit();
-                        }
-                    } elseif ($lastAction === null || $issue->getReviewedAt() > $lastAction) {
-                        ++$closedIssues;
-                    }
-                }
-            }
+            $state = new CurrentIssueState($craftsman, $now);
 
             //only send emails if there are issues
-            if ($openIssues === 0) {
+            if ($state->getNotRespondedIssuesCount() === 0) {
                 ++$skippedEmails;
                 continue;
             }
 
             // build up base text
-            if ($overdueIssues > 0) {
-                $subject = $translator->transChoice('email.overdue.subject', $overdueIssues, [], 'dispatch');
-                $body = $translator->transChoice('email.overdue.body', $openIssues, [], 'dispatch');
-            } elseif ($unreadIssues > 0) {
-                $subject = $translator->transChoice('email.unread.subject', $unreadIssues, [], 'dispatch');
-                $body = $translator->transChoice('email.unread.body', $openIssues, [], 'dispatch');
+            if ($state->getOverdueIssuesCount() > 0) {
+                $subject = $translator->transChoice('email.overdue.subject', $state->getOverdueIssuesCount(), [], 'dispatch');
+                $body = $translator->transChoice('email.overdue.body', $state->getNotRespondedIssuesCount(), [], 'dispatch');
+            } elseif ($state->getNotReadIssuesCount() > 0) {
+                $subject = $translator->transChoice('email.unread.subject', $state->getNotReadIssuesCount(), [], 'dispatch');
+                $body = $translator->transChoice('email.unread.body', $state->getNotRespondedIssuesCount(), [], 'dispatch');
             } else {
-                $subject = $translator->transChoice('email.open.subject', $openIssues, [], 'dispatch');
-                $body = $translator->transChoice('email.open.body', $openIssues, [], 'dispatch');
+                $subject = $translator->transChoice('email.open.subject', $state->getNotRespondedIssuesCount(), [], 'dispatch');
+                $body = $translator->transChoice('email.open.body', $state->getNotRespondedIssuesCount(), [], 'dispatch');
             }
 
             //append next limit info
-            if ($overdueIssues === 0 && $nextAnswerLimit !== null) {
+            if ($state->getOverdueIssuesCount() === 0 && $state->getNextResponseLimit() !== null) {
                 $body .= "\n";
                 $body .= $translator->trans(
                     'email.body_limit_info',
-                    ['%limit%' => $nextAnswerLimit->format(DateTimeFormatter::DATE_FORMAT)],
+                    ['%limit%' => $state->getNextResponseLimit()->format(DateTimeFormatter::DATE_FORMAT)],
                     'dispatch'
                 );
             }
 
             //append closed issues info
-            if ($closedIssues > 0) {
+            if ($state->getRecentlyReviewedIssuesCount() > 0) {
                 $body .= "\n";
-                $body .= $translator->transChoice('email.body_closed_issues_infos', $closedIssues, [], 'dispatch');
+                $body .= $translator->transChoice('email.body_closed_issues_infos', $state->getRecentlyReviewedIssuesCount(), [], 'dispatch');
             }
 
             //append suffix

@@ -13,6 +13,7 @@ namespace App\Api\Transformer\Dispatch;
 
 use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\Craftsman;
+use App\Model\Craftsman\CurrentIssueState;
 
 class CraftsmanTransformer extends BatchTransformer
 {
@@ -44,28 +45,10 @@ class CraftsmanTransformer extends BatchTransformer
         $craftsman->setLastEmailSent($entity->getLastEmailSent());
         $craftsman->setLastOnlineVisit($entity->getLastOnlineVisit());
 
-        //TODO: similar code when sending the mail; consider merging it
-        $nextResponseLimit = null;
-        $unread = 0;
-        $open = 0;
-        foreach ($entity->getIssues() as $issue) {
-            //if registered then valid
-            if ($issue->getRegisteredAt() !== null) {
-                if ($issue->getReviewedAt() === null) {
-                    if ($craftsman->getLastOnlineVisit() === null || $issue->getRegisteredAt() > $craftsman->getLastOnlineVisit()) {
-                        ++$unread;
-                    }
-                    ++$open;
-                    if ($issue->getResponseLimit() !== null && ($nextResponseLimit === null || $issue->getResponseLimit() < $nextResponseLimit)) {
-                        $nextResponseLimit = $issue->getResponseLimit();
-                    }
-                }
-            }
-        }
-
-        $craftsman->setNotRespondedIssuesCount($open);
-        $craftsman->setNotReadIssuesCount($unread);
-        $craftsman->setNextResponseLimit($nextResponseLimit);
+        $state = new CurrentIssueState($entity, new \DateTime());
+        $craftsman->setNotRespondedIssuesCount($state->getNotRespondedIssuesCount());
+        $craftsman->setNotReadIssuesCount($state->getNotReadIssuesCount());
+        $craftsman->setNextResponseLimit($state->getNextResponseLimit());
 
         return $craftsman;
     }

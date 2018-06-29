@@ -32,7 +32,7 @@ class LoadCraftsmanData extends BaseFixture
         $entries = [];
 
         $handle = fopen(__DIR__ . '/Resources/craftsmen_list.csv', 'r');
-        while (($data = fgetcsv($handle, null, ',')) !== false) {
+        while ($handle && ($data = fgetcsv($handle, null, ',')) !== false) {
             if (count($data) >= 10 && $data[0] !== '') {
                 $entries[] = [$data[1], $data[2], $data[3], $data[10]];
             }
