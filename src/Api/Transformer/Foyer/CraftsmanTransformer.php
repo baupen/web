@@ -34,11 +34,11 @@ class CraftsmanTransformer extends BatchTransformer
     /**
      * @param Craftsman $entity
      *
-     * @return \App\Api\Entity\Dispatch\Craftsman
+     * @return \App\Api\Entity\Foyer\Craftsman
      */
     public function toApi($entity)
     {
-        $craftsman = new \App\Api\Entity\Dispatch\Craftsman($entity->getId());
+        $craftsman = new \App\Api\Entity\Foyer\Craftsman($entity->getId());
         $this->craftsmanTransformer->writeApiProperties($entity, $craftsman);
 
         return $craftsman;

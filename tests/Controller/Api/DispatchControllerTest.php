@@ -16,41 +16,21 @@ use App\Entity\Craftsman;
 use App\Enum\ApiStatus;
 use App\Service\Interfaces\EmailServiceInterface;
 use App\Tests\Controller\Api\Base\AbstractApiController;
+use App\Tests\Controller\Api\Base\ApiController;
 use App\Tests\Controller\Base\FixturesTestCase;
 use App\Tests\Mock\MockEmailService;
 
-class DispatchControllerTest extends AbstractApiController
+class DispatchControllerTest extends ApiController
 {
-    /**
-     * tests the login functionality.
-     */
     public function testCraftsmanList()
     {
-        $client = static::createClient([], [
-            'PHP_AUTH_USER' => 'f@mangel.io',
-            'PHP_AUTH_PW' => 'asdf',
-        ]);
-        $serializer = $client->getContainer()->get('serializer');
+        $url = '/api/dispatch/craftsman/list';
 
-        /** @var ConstructionSite $constructionSite */
-        $constructionSite = $client->getContainer()->get('doctrine')->getRepository(ConstructionSite::class)->findOneBy([]);
-        $doRequest = function ($constructionSite) use ($client, $serializer) {
-            $client->request(
-                'POST',
-                '/api/dispatch/craftsman/list',
-                [],
-                [],
-                ['CONTENT_TYPE' => 'application/json'],
-                $serializer->serialize($constructionSite, 'json')
-            );
-
-            return $client->getResponse();
-        };
-
+        $constructionSite = $this->getSomeConstructionSite();
         $constructionSiteRequest = new ConstructionSiteRequest();
         $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
 
-        $response = $doRequest($constructionSiteRequest);
+        $response = $this->authenticatedPostRequest($url, $constructionSiteRequest);
         $craftsmanData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($craftsmanData->data);
@@ -69,39 +49,20 @@ class DispatchControllerTest extends AbstractApiController
         }
     }
 
-    /**
-     * tests the login functionality.
-     */
     public function testDispatch()
     {
-        $client = static::createClient([], [
-            'PHP_AUTH_USER' => 'f@mangel.io',
-            'PHP_AUTH_PW' => 'asdf',
-        ]);
+        $url = '/api/dispatch';
+
+        $client = $this->getAuthenticatedClient();
         $client->getContainer()->set(EmailServiceInterface::class, new MockEmailService());
-        $serializer = $client->getContainer()->get('serializer');
-        /** @var ConstructionSite $constructionSite */
-        $constructionSite = $client->getContainer()->get('doctrine')->getRepository(ConstructionSite::class)->findOneBy([]);
-        /** @var Craftsman $craftsman */
-        $craftsman = $client->getContainer()->get('doctrine')->getRepository(Craftsman::class)->findOneBy(["constructionSite" => $constructionSite]);
-        $doRequest = function ($request) use ($client, $serializer) {
-            $client->request(
-                'POST',
-                '/api/dispatch',
-                [],
-                [],
-                ['CONTENT_TYPE' => 'application/json'],
-                $serializer->serialize($request, 'json')
-            );
 
-            return $client->getResponse();
-        };
-
+        $constructionSite = $this->getSomeConstructionSite();
+        $craftsman = $constructionSite->getCraftsmen()[0];
         $dispatchRequest = new CraftsmenRequest();
         $dispatchRequest->setConstructionSiteId($constructionSite->getId());
         $dispatchRequest->setCraftsmanIds([$craftsman->getId()]);
 
-        $response = $doRequest($dispatchRequest);
+        $response = $this->authenticatedPostRequest($url, $dispatchRequest);
         $craftsmanData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($craftsmanData->data);
