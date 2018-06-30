@@ -14,43 +14,43 @@ namespace App\Api\Entity\Foyer;
 class Issue extends \App\Api\Entity\Base\Issue
 {
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      */
     private $uploadedAt;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $uploadByName;
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getUploadedAt(): \DateTime
+    public function getUploadedAt(): ?\DateTime
     {
         return $this->uploadedAt;
     }
 
     /**
-     * @param \DateTime $uploadedAt
+     * @param \DateTime|null $uploadedAt
      */
-    public function setUploadedAt(\DateTime $uploadedAt): void
+    public function setUploadedAt(?\DateTime $uploadedAt): void
     {
         $this->uploadedAt = $uploadedAt;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getUploadByName(): string
+    public function getUploadByName(): ?string
     {
         return $this->uploadByName;
     }
 
     /**
-     * @param string $uploadByName
+     * @param null|string $uploadByName
      */
-    public function setUploadByName(string $uploadByName): void
+    public function setUploadByName(?string $uploadByName): void
     {
         $this->uploadByName = $uploadByName;
     }

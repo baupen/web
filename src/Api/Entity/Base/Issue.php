@@ -39,7 +39,7 @@ class Issue extends BaseEntity
     private $responseLimit;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $craftsmanId;
 
@@ -129,33 +129,33 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCraftsmanId(): string
+    public function getCraftsmanId(): ?string
     {
         return $this->craftsmanId;
     }
 
     /**
-     * @param string $craftsmanId
+     * @param string|null $craftsmanId
      */
-    public function setCraftsmanId(string $craftsmanId): void
+    public function setCraftsmanId(?string $craftsmanId): void
     {
         $this->craftsmanId = $craftsmanId;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMap(): string
+    public function getMap(): ?string
     {
         return $this->map;
     }
 
     /**
-     * @param string $map
+     * @param string|null $map
      */
-    public function setMap(string $map): void
+    public function setMap(?string $map): void
     {
         $this->map = $map;
     }

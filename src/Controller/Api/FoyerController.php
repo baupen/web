@@ -82,15 +82,17 @@ class FoyerController extends ApiController
     private function parseDispatchIssuesRequest(Request $request, &$issues, &$entities, &$errorResponse, &$constructionSite)
     {
         /** @var \App\Api\Request\Dispatch\IssuesRequest $parsedRequest */
-        if (!parent::parseConstructionSiteRequest($request, IssueRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+        if (!parent::parseConstructionSiteRequest($request, \App\Api\Request\Dispatch\IssuesRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
             return false;
         }
 
-        //retrieve all issues from the db
         $issues = [];
-        foreach ($parsedRequest->getIssues() as $issue) {
+        foreach ($parsedRequest->getIssues() as $arrayIssue) {
+            $issue = $this->get('serializer')->deserialize(json_encode($arrayIssue), \App\Api\Entity\Foyer\Issue::class, 'json');
             $issues[$issue->getId()] = $issue;
         }
+
+        //retrieve all issues from the db
         $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['id' => array_keys($issues)]);
 
         return $this->checkIssueEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
@@ -108,19 +110,21 @@ class FoyerController extends ApiController
     private function checkIssueEntities($requestedIssues, ConstructionSite $constructionSite, $issues, &$entities, &$errorResponse)
     {
         //ensure no issue from another construction site
+        $validIssues = [];
         foreach ($requestedIssues as $entity) {
             if ($entity->getMap()->getConstructionSite() !== $constructionSite) {
                 $errorResponse = $this->fail(self::INVALID_CONSTRUCTION_SITE);
 
                 return false;
             }
+            $validIssues[$entity->getId()] = $entity;
         }
 
         //sort entities
         $entities = [];
         foreach ($issues as $guid => $issue) {
-            if (array_key_exists($guid, $requestedIssues)) {
-                $entities[$guid] = $requestedIssues;
+            if (array_key_exists($guid, $validIssues)) {
+                $entities[$guid] = $validIssues[$guid];
             }
         }
 
@@ -221,11 +225,11 @@ class FoyerController extends ApiController
             }
         }
 
-        $this->fastSave(...$entities);
+        $this->fastSave(...array_values($entities));
 
         //create response
         $data = new IssueData();
-        $data->setIssues($issueTransformer->toApiMultiple($issues));
+        $data->setIssues($issueTransformer->toApiMultiple($entities));
 
         return $this->success($data);
     }

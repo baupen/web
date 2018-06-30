@@ -84,11 +84,20 @@ class ApiController extends AbstractApiController
         return $client->getResponse();
     }
 
+
+    /**
+     * @var ConstructionSite
+     */
+    private $someConstructionSite = null;
+
     /**
      * @return ConstructionSite
      */
     protected function getSomeConstructionSite()
     {
-        return $this->getAuthenticatedClient()->getContainer()->get('doctrine')->getRepository(ConstructionSite::class)->findOneBy([]);
+        if ($this->someConstructionSite == null) {
+            $this->someConstructionSite = $this->getAuthenticatedClient()->getContainer()->get('doctrine')->getRepository(ConstructionSite::class)->findOneBy([]);
+        }
+        return $this->someConstructionSite;
     }
 }

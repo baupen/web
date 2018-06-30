@@ -17,22 +17,22 @@ use App\Api\Request\ConstructionSiteRequest;
 class IssuesRequest extends ConstructionSiteRequest
 {
     /**
-     * @var Issue[]|null
+     * @var Issue[]
      */
     private $issues;
 
     /**
-     * @return Issue[]|null
+     * @return Issue[]
      */
-    public function getIssues(): ?array
+    public function getIssues(): array
     {
         return $this->issues;
     }
 
     /**
-     * @param Issue[]|null $issues
+     * @param Issue[] $issues
      */
-    public function setIssues(?array $issues): void
+    public function setIssues(array $issues): void
     {
         $this->issues = $issues;
     }
