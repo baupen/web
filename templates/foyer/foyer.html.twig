@@ -1,0 +1,10 @@
+{% extends 'admin_layout.html.twig' %}
+
+{% block title %}{{ "foyer.title"|trans }}{% endblock %}
+{% block description %}{{ "foyer.description"|trans }}{% endblock %}
+
+{% trans_default_domain "foyer" %}
+
+{% block admin_content %}
+    <div id="foyer"></div>
+{% endblock %}

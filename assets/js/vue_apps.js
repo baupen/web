@@ -15,14 +15,11 @@ import {library} from '@fortawesome/fontawesome-svg-core'
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
-// localization
-import Messages from './localization/dispatch'
-
-// initialize apps
+import DispatchMessages from './localization/dispatch'
 import Dispatch from './apps/dispatch'
 
 if (document.getElementById("dispatch") != null) {
-    const messagesDispatch = Messages;
+    const messagesDispatch = DispatchMessages;
 
     const lang = document.documentElement.lang.substr(0, 2);
     const i18nConfirm = new VueI18n({
@@ -41,5 +38,34 @@ if (document.getElementById("dispatch") != null) {
         el: '#dispatch',
         template: '<Dispatch/>',
         components: {Dispatch}
+    });
+}
+
+
+import FoyerMessages from './localization/foyer'
+import Foyer from './apps/foyer'
+
+if (document.getElementById("foyer") != null) {
+    const messagesFoyer = FoyerMessages;
+
+    const lang = document.documentElement.lang.substr(0, 2);
+    const i18nConfirm = new VueI18n({
+        locale: lang,
+        messages: messagesFoyer,
+    });
+
+    library.add(
+        require('@fortawesome/fontawesome-pro-solid/faSortUp'),
+        require('@fortawesome/fontawesome-pro-solid/faSortDown'),
+        require('@fortawesome/fontawesome-pro-light/faSort'),
+        require('@fortawesome/fontawesome-pro-solid/faStar'),
+        require('@fortawesome/fontawesome-pro-light/faStar')
+    );
+
+    new Vue({
+        i18n: i18nConfirm,
+        el: '#foyer',
+        template: '<Foyer/>',
+        components: {Foyer}
     });
 }

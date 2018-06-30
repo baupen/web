@@ -15,14 +15,14 @@
                                v-bind:checked="selected"
                                v-on:click.prevent="selectAll()"/>
                     </th>
-                    <th @click="sortBy('name')" :class="{ active: 'name' === sortKey }">
+                    <th class="sortable" @click="sortBy('name')" :class="{ active: 'name' === sortKey }">
                         {{ $t("craftsman.name")}}
                         <font-awesome-icon v-if="sortKey === 'name'"
                                            :icon="sortOrders['name'] > 0 ? 'sort-up' : 'sort-down'"/>
                         <font-awesome-icon v-else :icon="['fal', 'sort']"/>
                     </th>
 
-                    <th @click="sortBy('trade')" :class="{ active: 'trade' === sortKey }">
+                    <th class="sortable" @click="sortBy('trade')" :class="{ active: 'trade' === sortKey }">
                         {{ $t("craftsman.trade")}}
                         <font-awesome-icon v-if="sortKey === 'trade'"
                                            :icon="sortOrders['trade'] > 0 ? 'sort-up' : 'sort-down'"/>
