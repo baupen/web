@@ -31,12 +31,35 @@
                         <font-awesome-icon v-else :icon="['fal', 'sort']"/>
                     </th>
 
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+                    <th class="sortable" @click="sortBy('craftsman')" :class="{ active: 'craftsman' === sortKey }">
+                        {{ $t("issue.craftsman")}}
+                        <font-awesome-icon v-if="sortKey === 'craftsman'"
+                                           :icon="sortOrders['craftsman'] > 0 ? 'sort-up' : 'sort-down'"/>
+                        <font-awesome-icon v-else :icon="['fal', 'sort']"/>
+                    </th>
+
+                    <th class="sortable" @click="sortBy('responseLimit')"
+                        :class="{ active: 'responseLimit' === sortKey }">
+                        {{ $t("issue.response_limit")}}
+                        <font-awesome-icon v-if="sortKey === 'responseLimit'"
+                                           :icon="sortOrders['responseLimit'] > 0 ? 'sort-up' : 'sort-down'"/>
+                        <font-awesome-icon v-else :icon="['fal', 'sort']"/>
+                    </th>
+
+                    <th class="sortable" @click="sortBy('map')" :class="{ active: 'map' === sortKey }">
+                        {{ $t("issue.map")}}
+                        <font-awesome-icon v-if="sortKey === 'map'"
+                                           :icon="sortOrders['map'] > 0 ? 'sort-up' : 'sort-down'"/>
+                        <font-awesome-icon v-else :icon="['fal', 'sort']"/>
+                    </th>
+
+                    <th class="sortable" @click="sortBy('uploadByName')"
+                        :class="{ active: 'uploadByName' === sortKey }">
+
+                        <font-awesome-icon v-if="sortKey === 'uploadByName'"
+                                           :icon="sortOrders['uploadByName'] > 0 ? 'sort-up' : 'sort-down'"/>
+                        <font-awesome-icon v-else :icon="['fal', 'sort']"/>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -46,30 +69,32 @@
                         <span v-if="issue.number">#{{issue.number}}</span>
                         <input v-else title="check" type="checkbox" v-model="issue.selected"/>
                     </td>
-                    <td>
+                    <td class="minimal-width">
                         <font-awesome-icon v-if="issue.isMarked" :icon="['fas', 'star']"/>
                         <font-awesome-icon v-else :icon="['fal', 'star']"/>
                     </td>
                     <td>
-                        {{issue.description}}
+                        <span v-if="editDescription === null || !issue.selected" class="editable" @click.prevent.stop="startEditDescription(issue)">
+                            {{issue.description}}
+                        </span>
+                        <input class="form-control" v-else type="text" v-model="editDescription" @click.prevent.stop="" @keyup.enter.prevent.stop="saveDescription"
+                               @keyup.escape.prevent.stop="abortDescription"/>
                     </td>
                     <td>
-                        {{issue.map}}
-                    </td>
-                    <td>
-                        {{issue.uploadedByName}}
-                    </td>
-                    <td>
-                        {{ issue.craftsmanName}}
-                    </td>
-                    <td>
-                        {{ issue.craftsmanTrade}}
+                        <span class="editable">
+                            {{ issue.craftsmanName}} <br/>
+                            {{ issue.craftsmanTrade}}
+                        </span>
                     </td>
                     <td>
                         {{ formatDateTime(issue.responseLimit)}}
                     </td>
                     <td>
-                        {{ formatDateTime(issue.uploadedAt)}}
+                        {{issue.map}}
+                    </td>
+                    <td class="minimal-width">
+                        {{issue.uploadByName}} <br/>
+                        <span class="small">{{ formatDateTime(issue.uploadedAt)}}</span>
                     </td>
                 </tr>
 
@@ -98,20 +123,36 @@
     export default {
         data: function () {
             const sortOrders = {};
-            ["isMarked"].forEach(e => sortOrders[e] = 1);
+            ["isMarked", "description", "craftsman", "responseLimit", "map", "uploadByName"].forEach(e => sortOrders[e] = 1);
             return {
                 issues: [],
-                craftsmen: [],
-                craftsmenLookup: {},
+                craftsmen: null,
+                craftsmenLookup: null,
                 trades: [],
                 isLoading: true,
                 constructionSiteId: null,
                 sortKey: "isMarked",
                 sortOrders: sortOrders,
-                textFilter: null
+                textFilter: null,
+                editDescription: null
             }
         },
         methods: {
+            startEditDescription: function (issue) {
+                if (!issue.selected) {
+                    issue.selected = true;
+                } else {
+                    this.editDescription = issue.description;
+                }
+            },
+            saveDescription: function () {
+                this.issues.filter(i => i.selected).forEach(i => i.description = this.editDescription);
+                this.editDescription = null;
+                this.save();
+            },
+            abortDescription: function () {
+                this.editDescription = null;
+            },
             confirm: function () {
                 this.isLoading = true;
                 axios.post("/api/foyer/issue/confirm", {
@@ -120,7 +161,7 @@
                 }).then((response) => {
                     this.isLoading = false;
                     let issueNumberLookup = [];
-                    response.data.numberIssues.forEach(i => {
+                    response.data.issues.forEach(i => {
                         issueNumberLookup[i.id] = i.number;
                     });
                     this.issues.filter(c => c.selected).forEach(c => {
@@ -132,6 +173,27 @@
 
                     this.displayInfoFlash(this.$t("added_to_register"));
                     window.setTimeout(e => this.issues = this.issues.filter(i => i.number === null), 3000);
+                });
+            },
+            save: function () {
+                this.isLoading = true;
+                axios.post("/api/foyer/issue/update", {
+                    "constructionSiteId": this.constructionSiteId,
+                    "issues": this.issues.filter(c => c.selected)
+                }).then((response) => {
+                    this.isLoading = false;
+                    const activeIssues = this.issues.filter(c => c.selected);
+                    response.data.issues.forEach(c => {
+                        let match = activeIssues.filter(i => i.id === c.id);
+                        if (match.length === 1) {
+                            match[0].description = c.description;
+                            match[0].craftsmanId = c.craftsmanId;
+                            match[0].responseLimit = c.responseLimit;
+                        }
+                        console.log("found: " + match.length);
+                    });
+
+                    this.displayInfoFlash(this.$t("saved"));
                 });
             },
             displayInfoFlash: function (content) {
@@ -163,10 +225,6 @@
                 this.issues.forEach(c => c.selected = newVal);
             },
             sortBy: function (key) {
-                if (!(key in this.sortOrders)) {
-                    this.sortOrders[key] = 1;
-                }
-
                 if (this.sortKey === key) {
                     this.sortOrders[key] *= -1;
                 } else {
@@ -186,7 +244,7 @@
                 return "-";
             },
             refreshComputedIssueProperties: function () {
-                if (this.issues.length > 0 && this.craftsmenLookup.length > 0) {
+                if (this.issues !== null && this.craftsmenLookup !== null) {
                     this.issues.filter(i => i.craftsmanId in this.craftsmenLookup).forEach(i => {
                         const craftsman = this.craftsmenLookup[i.craftsmanId];
                         i.craftsmanName = craftsman.name;
@@ -211,10 +269,15 @@
                     data = data.filter(issues => issues.description.toLowerCase().indexOf(filterKey) > -1);
                 }
                 if (sortKey) {
-                    data = data.sort(function (a, b) {
-                        a = a[sortKey];
-                        b = b[sortKey];
-                        return (a === b ? 0 : a > b ? 1 : -1) * order
+                    data = data.sort((a, b) => {
+                        if (sortKey === 'craftsman') {
+                            a = this.craftsmanName(a) + this.craftsmanTrade(a);
+                            b = this.craftsmanName(b) + this.craftsmanTrade(b);
+                        } else {
+                            a = a[sortKey];
+                            b = b[sortKey];
+                        }
+                        return (a === b ? 0 : a > b ? 1 : -1) * order;
                     })
                 }
                 return data;
@@ -241,6 +304,8 @@
                     response.data.issues.forEach(i => {
                         i.selected = false;
                         i.number = null;
+                        i.craftsmanName = null;
+                        i.craftsmanTrade = null;
                     });
                     this.issues = response.data.issues;
                     this.isLoading = false;
@@ -251,7 +316,11 @@
                     "constructionSiteId": this.constructionSiteId
                 }).then((response) => {
                     this.craftsmen = response.data.craftsmen;
-                    this.craftsmen.forEach(c => this.craftsmenLookup[c.id] = c);
+
+                    const newLookup = [];
+                    this.craftsmen.forEach(c => newLookup[c.id] = c);
+                    this.craftsmenLookup = newLookup;
+
                     this.trades = response.data.craftsmen.map(a => a.trade).unique();
                     this.refreshComputedIssueProperties();
                 });
@@ -264,5 +333,14 @@
 <style>
     .filter-field {
         max-width: 400px;
+    }
+
+    .editable {
+        display: inline-block;
+        border: 1px solid rgba(0, 0, 0, 0)
+    }
+
+    .editable:hover {
+        border: 1px solid
     }
 </style>
