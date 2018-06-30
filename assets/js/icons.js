@@ -9,5 +9,5 @@ fontawesome.library.add(
     require('@fortawesome/fontawesome-pro-solid/faCheck'),
     require('@fortawesome/fontawesome-pro-solid/faEdit'),
     require('@fortawesome/fontawesome-pro-solid/faTrash'),
-    require('@fortawesome/fontawesome-pro-solid/faPlus')
+    require('@fortawesome/fontawesome-pro-solid/faPlus'),
 );

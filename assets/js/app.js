@@ -10,6 +10,6 @@ const bootstrap = require("bootstrap");
 
 
 // other parts of the application
-require("./icons");
+//require("./icons");
 require("./usability");
 require("./vue_apps");

@@ -1,16 +1,23 @@
 import Vue from 'vue'
+
+Vue.config.productionTip = false;
+
+// plugins
 import VueI18n from 'vue-i18n'
 import BootstrapVue from 'bootstrap-vue'
 import Vuex from 'vuex'
 
-Vue.config.productionTip = false;
-
-// translations
 Vue.use(VueI18n);
 Vue.use(BootstrapVue);
 Vue.use(Vuex);
 
-//confirm app
+// components
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
+import {library} from '@fortawesome/fontawesome-svg-core'
+
+Vue.component('font-awesome-icon', FontAwesomeIcon);
+
+// initialize apps
 import Dispatch from './apps/dispatch/dispatch'
 
 if (document.getElementById("dispatch") != null) {
@@ -34,6 +41,12 @@ if (document.getElementById("dispatch") != null) {
         locale: 'de',
         messages: messagesDispatch,
     });
+
+    library.add(
+        require('@fortawesome/fontawesome-pro-solid/faSortUp'),
+        require('@fortawesome/fontawesome-pro-solid/faSortDown'),
+        require('@fortawesome/fontawesome-pro-light/faSort')
+    );
 
     new Vue({
         i18n: i18nConfirm,
