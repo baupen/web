@@ -63,7 +63,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="issue in sortedIssues" v-on:click.prevent="issue.selected = !issue.selected"
+                <tr v-for="issue in sortedIssues" v-on:click.prevent="selectIssue(issue)"
                     v-bind:class="{ 'table-active': issue.selected, 'table-success': issue.number > 0 }">
                     <td class="minimal-width">
                         <span v-if="issue.number">#{{issue.number}}</span>
@@ -74,10 +74,12 @@
                         <font-awesome-icon v-else :icon="['fal', 'star']"/>
                     </td>
                     <td>
-                        <span v-if="editDescription === null || !issue.selected" class="editable" @click.prevent.stop="startEditDescription(issue)">
+                        <span v-if="editDescription === null || !issue.selected" class="editable"
+                              @click.prevent.stop="startEditDescription(issue)">
                             {{issue.description}}
                         </span>
-                        <input class="form-control" v-else type="text" v-model="editDescription" @click.prevent.stop="" @keyup.enter.prevent.stop="saveDescription"
+                        <input :ref="'description-' + issue.id" class="form-control" v-else type="text" v-model="editDescription"
+                               @click.prevent.stop="" @keyup.enter.prevent.stop="saveDescription"
                                @keyup.escape.prevent.stop="abortDescription"/>
                     </td>
                     <td>
@@ -141,9 +143,13 @@
             startEditDescription: function (issue) {
                 if (!issue.selected) {
                     issue.selected = true;
-                } else {
-                    this.editDescription = issue.description;
                 }
+                this.editDescription = issue.description;
+
+                this.$nextTick(() => {
+                    let input = this.$refs["description-" + issue.id][0];
+                    input.focus();
+                });
             },
             saveDescription: function () {
                 this.issues.filter(i => i.selected).forEach(i => i.description = this.editDescription);
@@ -152,6 +158,12 @@
             },
             abortDescription: function () {
                 this.editDescription = null;
+            },
+            selectIssue: function (issue) {
+                issue.selected = !issue.selected;
+                if (this.issues.filter(i => i.selected).length === 0) {
+                    this.editDescription = null;
+                }
             },
             confirm: function () {
                 this.isLoading = true;
