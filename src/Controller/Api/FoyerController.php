@@ -14,10 +14,11 @@ namespace App\Controller\Api;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\IssueRequest;
 use App\Api\Request\IssuesRequest;
-use App\Api\Response\Data\CraftsmanData;
+use App\Api\Response\Data\CraftsmenData;
 use App\Api\Response\Data\Foyer\DeletedIssueData;
 use App\Api\Response\Data\Foyer\NumberIssueData;
 use App\Api\Response\Data\IssueData;
+use App\Api\Response\Data\IssuesData;
 use App\Api\Transformer\Base\BaseEntityTransformer;
 use App\Api\Transformer\Foyer\CraftsmanTransformer;
 use App\Api\Transformer\Foyer\IssueTransformer;
@@ -43,7 +44,6 @@ class FoyerController extends ApiController
     const FILE_UPLOAD_FAILED = 'file upload failed';
     const INCORRECT_NUMBER_OF_FILES = 'incorrect number of files';
     const ISSUE_NOT_FOUND = 'issue not found';
-    const INVALID_ISSUE = 'invalid issue';
 
     /**
      * @param Request $request
@@ -56,7 +56,7 @@ class FoyerController extends ApiController
     private function parseIssuesRequest(Request $request, &$entities, &$errorResponse, &$constructionSite)
     {
         /** @var IssuesRequest $parsedRequest */
-        if (!parent::parseConstructionSiteRequest($request, IssueRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+        if (!parent::parseConstructionSiteRequest($request, IssuesRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
             return false;
         }
 
@@ -96,6 +96,39 @@ class FoyerController extends ApiController
         $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['id' => array_keys($issues)]);
 
         return $this->checkIssueEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
+    }
+
+    /**
+     * @param Request $request
+     * @param $issues
+     * @param $entities
+     * @param $errorResponse
+     * @param $constructionSite
+     *
+     * @return bool
+     */
+    private function parseIssueRequest(Request $request, &$issue, &$entity, &$errorResponse, &$constructionSite)
+    {
+        /** @var IssueRequest $parsedRequest */
+        if (!parent::parseConstructionSiteRequest($request, IssueRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return false;
+        }
+
+        //get issue & ensure its on this construction site
+        /** @var Issue $entity */
+        $entity = $this->getDoctrine()->getRepository(Issue::class)->find($parsedRequest->getIssueId());
+        if ($entity === null) {
+            $errorResponse = $this->fail(self::ISSUE_NOT_FOUND);
+
+            return false;
+        }
+        if ($entity->getMap()->getConstructionSite() !== $constructionSite) {
+            $errorResponse = $this->fail(self::INVALID_CONSTRUCTION_SITE);
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -161,7 +194,7 @@ class FoyerController extends ApiController
         $issues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['registeredAt' => null], ['isMarked' => 'DESC', 'uploadedAt' => 'DESC']);
 
         //create response
-        $data = new IssueData();
+        $data = new IssuesData();
         $data->setIssues($issueTransformer->toApiMultiple($issues));
 
         return $this->success($data);
@@ -182,7 +215,7 @@ class FoyerController extends ApiController
             return $errorResponse;
         }
 
-        $data = new CraftsmanData();
+        $data = new CraftsmenData();
         $data->setCraftsmen($craftsmanTransformer->toApiMultiple($constructionSite->getCraftsmen()->toArray()));
 
         return $this->success($data);
@@ -228,7 +261,7 @@ class FoyerController extends ApiController
         $this->fastSave(...array_values($entities));
 
         //create response
-        $data = new IssueData();
+        $data = new IssuesData();
         $data->setIssues($issueTransformer->toApiMultiple($entities));
 
         return $this->success($data);
@@ -246,18 +279,9 @@ class FoyerController extends ApiController
     {
         /** @var ConstructionSite $constructionSite */
         /** @var IssueRequest $issueRequest */
-        if (!$this->parseConstructionSiteRequest($request, IssueRequest::class, $issueRequest, $errorResponse, $constructionSite)) {
+        /** @var Issue $entity */
+        if (!$this->parseIssueRequest($request, $issue, $entity, $errorResponse, $constructionSite)) {
             return $errorResponse;
-        }
-
-        //get issue & ensure its on this construction site
-        /** @var Issue $issue */
-        $issue = $this->getDoctrine()->getRepository(Issue::class)->find($issueRequest->getIssueId());
-        if ($issue === null) {
-            return $this->fail(self::ISSUE_NOT_FOUND);
-        }
-        if ($issue->getMap()->getConstructionSite() !== $constructionSite) {
-            return $this->fail(self::INVALID_ISSUE);
         }
 
         //check if file is here
@@ -266,25 +290,25 @@ class FoyerController extends ApiController
         }
 
         /** @var UploadedFile $file */
-        $file = $request->files->all()[0];
+        $file = $request->files->getIterator()->current();
 
         //set new filename to avoid caching issues
-        $issue->setImageFilename(Uuid::uuid4()->toString() . '.' . $file->guessExtension());
+        $entity->setImageFilename(Uuid::uuid4()->toString() . '.' . $file->guessExtension());
 
         //create folder & put file in there
-        $targetFolder = $this->getParameter('PUBLIC_DIR') . '/' . dirname($issue->getImageFilePath());
+        $targetFolder = $this->getParameter('PUBLIC_DIR') . '/' . dirname($entity->getImageFilePath());
         if (!file_exists($targetFolder)) {
             mkdir($targetFolder, 0777, true);
         }
-        if (!$file->move($targetFolder, $issue->getImageFilename())) {
+        if (!$file->move($targetFolder, $entity->getImageFilename())) {
             return $this->fail(self::FILE_UPLOAD_FAILED);
         }
 
-        $this->fastSave($issue);
+        $this->fastSave($entity);
 
         //create response
         $data = new IssueData();
-        $data->setIssues([$issueTransformer->toApi($issue)]);
+        $data->setIssue($issueTransformer->toApi($entity));
 
         return $this->success($data);
     }
@@ -304,10 +328,10 @@ class FoyerController extends ApiController
             return $errorResponse;
         }
 
-        $this->fastRemove(...$entities);
-
         $data = new DeletedIssueData();
         $data->setDeletedIssues($baseEntityTransformer->toApiMultiple($entities));
+
+        $this->fastRemove(...array_values($entities));
 
         return $this->success($data);
     }
@@ -331,20 +355,15 @@ class FoyerController extends ApiController
         }
 
         //set number & register event
-        $canProceed = false;
-        while (!$canProceed) {
-            $highestNumber = $this->getDoctrine()->getRepository(Issue::class)->getHighestNumber($constructionSite);
-            foreach ($entities as $entity) {
-                $entity->setNumber($highestNumber++);
-                $entity->setRegisteredAt(new \DateTime());
-                $entity->setRegistrationBy($this->getUser());
-            }
-
-            //ensure no others have attempted to use these numbers
-            $canProceed = $highestNumber === $this->getDoctrine()->getRepository(Issue::class)->getHighestNumber($constructionSite);
+        //note that this is unsafe to race conditions, and will crash because of db enforced constraints
+        $highestNumber = $this->getDoctrine()->getRepository(Issue::class)->getHighestNumber($constructionSite);
+        foreach ($entities as $entity) {
+            $entity->setNumber(++$highestNumber);
+            $entity->setRegisteredAt(new \DateTime());
+            $entity->setRegistrationBy($this->getUser());
         }
 
-        $this->fastSave(...$entities);
+        $this->fastSave(...array_values($entities));
 
         //stats to client
         $data = new NumberIssueData();

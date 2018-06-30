@@ -13,7 +13,7 @@ namespace App\Controller\Api;
 
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\CraftsmenRequest;
-use App\Api\Response\Data\CraftsmanData;
+use App\Api\Response\Data\CraftsmenData;
 use App\Api\Response\Data\ProcessingData;
 use App\Api\Transformer\Dispatch\CraftsmanTransformer;
 use App\Controller\Api\Base\ApiController;
@@ -64,7 +64,7 @@ class DispatchController extends ApiController
             return $errorResponse;
         }
 
-        $data = new CraftsmanData();
+        $data = new CraftsmenData();
         $data->setCraftsmen($craftsmanTransformer->toApiMultiple($constructionSite->getCraftsmen()->toArray()));
 
         return $this->success($data);

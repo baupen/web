@@ -50,9 +50,10 @@ class ApiController extends AbstractApiController
     /**
      * @param string $url
      * @param mixed $payload
+     * @param array $files
      * @return Response
      */
-    protected function authenticatedPostRequest($url, $payload)
+    protected function authenticatedPostRequest($url, $payload, $files = [])
     {
         $client = $this->getAuthenticatedClient();
 
@@ -60,7 +61,7 @@ class ApiController extends AbstractApiController
             'POST',
             $url,
             [],
-            [],
+            $files,
             ['CONTENT_TYPE' => 'application/json'],
             $client->getContainer()->get('serializer')->serialize($payload, 'json')
         );

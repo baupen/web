@@ -13,26 +13,26 @@ namespace App\Api\Response\Data;
 
 use App\Api\Entity\Base\Issue;
 
-class IssueData
+class IssuesData
 {
     /**
-     * @var Issue
+     * @var Issue[]
      */
-    private $issue;
+    private $issues;
 
     /**
-     * @return Issue
+     * @return Issue[]
      */
-    public function getIssue(): Issue
+    public function getIssues(): array
     {
-        return $this->issue;
+        return $this->issues;
     }
 
     /**
-     * @param Issue $issue
+     * @param Issue[] $issues
      */
-    public function setIssue(Issue $issue): void
+    public function setIssues(array $issues): void
     {
-        $this->issue = $issue;
+        $this->issues = $issues;
     }
 }

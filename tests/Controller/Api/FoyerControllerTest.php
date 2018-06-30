@@ -12,6 +12,8 @@ namespace App\Tests\Controller\Api;
 use App\Api\Entity\Foyer\Issue;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\CraftsmenRequest;
+use App\Api\Request\IssueRequest;
+use App\Api\Request\IssuesRequest;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Enum\ApiStatus;
@@ -20,6 +22,7 @@ use App\Tests\Controller\Api\Base\AbstractApiController;
 use App\Tests\Controller\Api\Base\ApiController;
 use App\Tests\Controller\Base\FixturesTestCase;
 use App\Tests\Mock\MockEmailService;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FoyerControllerTest extends ApiController
 {
@@ -104,7 +107,6 @@ class FoyerControllerTest extends ApiController
         $response = $this->authenticatedPostRequest($url, $request);
         $issuesData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
-        dump($issuesData);
         $this->assertNotNull($issuesData->data);
         $this->assertNotNull($issuesData->data->issues);
 
@@ -117,5 +119,95 @@ class FoyerControllerTest extends ApiController
             $this->assertEquals("hello world", $issue->description);
             $this->assertEquals($craftsman->getId(), $issue->craftsmanId);
         }
+    }
+
+    public function testIssueImage()
+    {
+        $url = '/api/foyer/issue/image';
+
+        $apiIssue = $this->getIssues()->data->issues[0];
+
+        $request = new IssueRequest();
+        $request->setIssueId($apiIssue->id);
+        $request->setConstructionSiteId($this->getSomeConstructionSite()->getId());
+
+        $filePath = __DIR__ . '/../../Files/sample.jpg';
+        $copyPath = __DIR__ . '/../../Files/sample_2.jpg';
+        copy($filePath, $copyPath);
+        $file = new UploadedFile(
+            $copyPath,
+            'upload.jpg',
+            'image/jpeg'
+        );
+
+        $response = $this->authenticatedPostRequest($url, $request, ["some_key" => $file]);
+        $issuesData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($issuesData->data);
+        $this->assertNotNull($issuesData->data->issue);
+
+        $this->assertEquals($issuesData->data->issue->id, $apiIssue->id);
+        $this->assertNotEquals($issuesData->data->issue->imageFilePath, $apiIssue->imageFilePath);
+    }
+
+    public function testIssueDelete()
+    {
+        $url = '/api/foyer/issue/delete';
+
+        $ids = [];
+        foreach ($this->getIssues()->data->issues as $issue) {
+            $ids[] = $issue->id;
+        }
+
+        $request = new IssuesRequest();
+        $request->setIssueIds($ids);
+        $request->setConstructionSiteId($this->getSomeConstructionSite()->getId());
+
+        $response = $this->authenticatedPostRequest($url, $request);
+        $issuesData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($issuesData->data);
+        $this->assertNotNull($issuesData->data->deletedIssues);
+
+        $this->assertSameSize($ids, $issuesData->data->deletedIssues);
+
+        $issues = $this->getIssues();
+        $this->assertTrue(count($issues->data->issues) === 0);
+    }
+
+    public function testIssueConfirm()
+    {
+        $url = '/api/foyer/issue/confirm';
+
+        $ids = [];
+        foreach ($this->getIssues()->data->issues as $issue) {
+            $ids[] = $issue->id;
+        }
+
+        $request = new IssuesRequest();
+        $request->setIssueIds($ids);
+        $request->setConstructionSiteId($this->getSomeConstructionSite()->getId());
+
+        $response = $this->authenticatedPostRequest($url, $request);
+        $issuesData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($issuesData->data);
+        $this->assertNotNull($issuesData->data->numberIssues);
+
+        $this->assertSameSize($ids, $issuesData->data->numberIssues);
+
+        $seenNumbers = [];
+        foreach ($issuesData->data->numberIssues as $numberIssue) {
+            $this->assertNotNull($numberIssue);
+
+            $this->assertObjectHasAttribute("number", $numberIssue);
+            $this->assertObjectHasAttribute("id", $numberIssue);
+
+            $this->assertNotContains($numberIssue->number, $seenNumbers);
+            $seenNumbers[] = $numberIssue->number;
+        }
+
+        $issues = $this->getIssues();
+        $this->assertTrue(count($issues->data->issues) === 0);
     }
 }

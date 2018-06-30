@@ -13,7 +13,7 @@ namespace App\Api\Response\Data;
 
 use App\Api\Entity\Base\Craftsman;
 
-class CraftsmanData
+class CraftsmenData
 {
     /**
      * @var Craftsman[]
