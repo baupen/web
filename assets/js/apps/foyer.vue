@@ -160,7 +160,7 @@
             },
             selectAll: function () {
                 let newVal = !(this.indeterminate || this.selected);
-                this.craftsmen.forEach(c => c.selected = newVal);
+                this.issues.forEach(c => c.selected = newVal);
             },
             sortBy: function (key) {
                 if (!(key in this.sortOrders)) {
