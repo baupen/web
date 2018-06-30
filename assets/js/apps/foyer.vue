@@ -114,7 +114,17 @@
                         </div>
                     </td>
                     <td>
-                        {{ formatDateTime(issue.responseLimit)}}
+                        <span v-if="editResponseLimit === false || !issue.selected" class="editable"
+                              @click.prevent.stop="startEditResponseLimit(issue)">
+                            {{ formatDateTime(issue.responseLimit)}}
+                        </span>
+                        <div v-else  @click.prevent.stop="">
+                            <datepicker :lang="de" :ref="'response-limit-' + issue.id" :value="editResponseLimit.date">
+
+                            </datepicker>
+                            <button class="btn btn-secondary" @click="saveResponseLimit">{{$t("save")}}</button>
+                        </div>
+
                     </td>
                     <td>
                         {{issue.map}}
@@ -140,6 +150,8 @@
 <script>
     import axios from "axios"
     import moment from "moment";
+    import Datepicker from 'vuejs-datepicker';
+    import {de} from 'vuejs-datepicker/dist/locale'
 
     moment.locale('de');
 
@@ -152,6 +164,7 @@
             const sortOrders = {};
             ["isMarked", "description", "craftsman", "responseLimit", "map", "uploadByName"].forEach(e => sortOrders[e] = 1);
             return {
+                de: de,
                 issues: [],
                 craftsmen: null,
                 craftsmenLookup: null,
@@ -165,8 +178,14 @@
                 selectedTrade: null,
                 selectedCraftsman: null,
                 craftsmanPerTrade: [],
-                tradeSelectWatch: null
+                tradeSelectWatch: null,
+                editResponseLimit: {
+                    date: new Date()
+                }
             }
+        },
+        components: {
+            Datepicker
         },
         methods: {
             startEditDescription: function (issue) {
@@ -180,19 +199,44 @@
                     input.focus();
                 });
             },
+            saveDescription: function () {
+                this.issues.filter(i => i.selected).forEach(i => i.description = this.editDescription);
+                this.abortDescription();
+                this.save();
+            },
+            abortDescription: function () {
+                this.editDescription = null;
+            },
+            startEditResponseLimit: function (issue) {
+                if (!issue.selected) {
+                    issue.selected = true;
+                }
+                if (issue.responseLimit !== null) {
+                    this.editResponseLimit.date = Date.parse(issue.responseLimit);
+                } else {
+                    this.editResponseLimit.date = Date.now();
+                }
+
+                this.$nextTick(() => {
+                    let input = this.$refs["response-limit-" + issue.id][0];
+                    console.log(input);
+                    //input.focus();
+                });
+            },
+            saveResponseLimit: function () {
+                console.log(this.editResponseLimit.date);
+                this.issues.filter(i => i.selected).forEach(i => i.responseLimit = (new Date(this.editResponseLimit.date)).toISOString());
+                this.abortResponseLimit();
+                this.save();
+            },
+            abortResponseLimit: function () {
+                this.editResponseLimit.date = null;
+            },
             changedTrade: function () {
                 if (!this.selectedTrade in this.craftsmanPerTrade) {
                     this.craftsmanPerTrade[this.selectedTrade] = this.craftsmen.filter(c => c.trade === this.selectedTrade)[0];
                 }
                 this.selectedCraftsman = this.craftsmanPerTrade[this.selectedTrade];
-            },
-            saveDescription: function () {
-                this.issues.filter(i => i.selected).forEach(i => i.description = this.editDescription);
-                this.editDescription = null;
-                this.save();
-            },
-            abortDescription: function () {
-                this.editDescription = null;
             },
             startEditCraftsman: function (issue) {
                 if (!issue.selected) {
@@ -243,7 +287,7 @@
                 }).then((response) => {
                     this.isLoading = false;
                     let issueNumberLookup = [];
-                    response.data.issues.forEach(i => {
+                    response.data.numberIssues.forEach(i => {
                         issueNumberLookup[i.id] = i.number;
                     });
                     this.issues.filter(c => c.selected).forEach(c => {
