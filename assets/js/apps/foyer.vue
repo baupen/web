@@ -69,7 +69,7 @@
                         <span v-if="issue.number">#{{issue.number}}</span>
                         <input v-else title="check" type="checkbox" v-model="issue.selected"/>
                     </td>
-                    <td class="minimal-width">
+                    <td class="minimal-width clickable" @click.prevent.stop="markIssue(issue)">
                         <font-awesome-icon v-if="issue.isMarked" :icon="['fas', 'star']"/>
                         <font-awesome-icon v-else :icon="['fal', 'star']"/>
                     </td>
@@ -78,15 +78,40 @@
                               @click.prevent.stop="startEditDescription(issue)">
                             {{issue.description}}
                         </span>
-                        <input :ref="'description-' + issue.id" class="form-control" v-else type="text" v-model="editDescription"
-                               @click.prevent.stop="" @keyup.enter.prevent.stop="saveDescription"
-                               @keyup.escape.prevent.stop="abortDescription"/>
+                        <div v-else>
+                            <input :ref="'description-' + issue.id" class="form-control" type="text"
+                                   v-model="editDescription"
+                                   @click.prevent.stop="" @keyup.enter.prevent.stop="saveDescription"
+                                   @keyup.escape.prevent.stop="abortDescription"/>
+
+                            <button class="btn btn-secondary" @click="saveCraftsman">{{$t("save")}}</button>
+                        </div>
                     </td>
                     <td>
-                        <span class="editable">
-                            {{ issue.craftsmanName}} <br/>
-                            {{ issue.craftsmanTrade}}
+                        <span v-if="selectedTrade === null || !issue.selected" class="editable"
+                              @click.prevent.stop="startEditCraftsman(issue)">
+                            {{ issue.craftsmanTrade}}<br/>
+                            {{ issue.craftsmanName}}
                         </span>
+                        <div class="form-group" v-else>
+                            <select class="form-control form-control-sm" v-model="selectedTrade"
+                                    @click.prevent.stop="" @keyup.tab.prevent="saveCraftsmanTrade(issue)"
+                                    @keyup.escape.prevent.stop="abortCraftsman"
+                                    :ref="'trade-' + issue.id">
+                                <option v-for="trade in trades" v-bind:value="trade">
+                                    {{ trade }}
+                                </option>
+                            </select>
+                            <select class="form-control form-control-sm" v-model="selectedCraftsman"
+                                    @click.prevent.stop=""
+                                    @keyup.escape.prevent.stop="abortCraftsman"
+                                    :ref="'craftsman-' + issue.id">
+                                <option v-for="craftsman in craftsmanByTrade" v-bind:value="craftsman">
+                                    {{ craftsman.name }}
+                                </option>
+                            </select>
+                            <button class="btn btn-secondary" @click="saveCraftsman">{{$t("save")}}</button>
+                        </div>
                     </td>
                     <td>
                         {{ formatDateTime(issue.responseLimit)}}
@@ -136,7 +161,11 @@
                 sortKey: "isMarked",
                 sortOrders: sortOrders,
                 textFilter: null,
-                editDescription: null
+                editDescription: null,
+                selectedTrade: null,
+                selectedCraftsman: null,
+                craftsmanPerTrade: [],
+                tradeSelectWatch: null
             }
         },
         methods: {
@@ -151,6 +180,12 @@
                     input.focus();
                 });
             },
+            changedTrade: function () {
+                if (!this.selectedTrade in this.craftsmanPerTrade) {
+                    this.craftsmanPerTrade[this.selectedTrade] = this.craftsmen.filter(c => c.trade === this.selectedTrade)[0];
+                }
+                this.selectedCraftsman = this.craftsmanPerTrade[this.selectedTrade];
+            },
             saveDescription: function () {
                 this.issues.filter(i => i.selected).forEach(i => i.description = this.editDescription);
                 this.editDescription = null;
@@ -159,11 +194,46 @@
             abortDescription: function () {
                 this.editDescription = null;
             },
+            startEditCraftsman: function (issue) {
+                if (!issue.selected) {
+                    issue.selected = true;
+                }
+
+                this.tradeSelectWatch = this.$watch('selectedTrade', (newVal, oldVal) => {
+                    this.changedTrade();
+                });
+                this.selectedTrade = this.craftsmanTrade(issue);
+
+                this.$nextTick(() => {
+                    let input = this.$refs["trade-" + issue.id][0];
+                    input.focus();
+                });
+            },
+            saveCraftsmanTrade: function (issue) {
+                this.$nextTick(() => {
+                    let input = this.$refs["craftsman-" + issue.id][0];
+                    input.focus();
+                });
+            },
+            abortCraftsman: function () {
+                this.tradeSelectWatch();
+                this.selectedTrade = null;
+                this.selectedCraftsman = null;
+            },
+            saveCraftsman: function () {
+                this.issues.filter(i => i.selected).forEach(i => i.craftsmanId = this.selectedCraftsman.id);
+                this.abortCraftsman();
+                this.save();
+            },
             selectIssue: function (issue) {
                 issue.selected = !issue.selected;
                 if (this.issues.filter(i => i.selected).length === 0) {
                     this.editDescription = null;
                 }
+            },
+            markIssue: function (issue) {
+                issue.isMarked = !issue.isMarked;
+                this.save();
             },
             confirm: function () {
                 this.isLoading = true;
@@ -202,9 +272,9 @@
                             match[0].craftsmanId = c.craftsmanId;
                             match[0].responseLimit = c.responseLimit;
                         }
-                        console.log("found: " + match.length);
                     });
 
+                    this.refreshComputedIssueProperties();
                     this.displayInfoFlash(this.$t("saved"));
                 });
             },
@@ -272,6 +342,9 @@
             selected: function () {
                 return this.issues.filter(c => !c.selected).length === 0;
             },
+            craftsmanByTrade: function () {
+                return this.craftsmen.filter(c => c.trade === this.selectedTrade);
+            },
             sortedIssues: function () {
                 const sortKey = this.sortKey;
                 const filterKey = this.textFilter && this.textFilter.toLowerCase();
@@ -289,7 +362,12 @@
                             a = a[sortKey];
                             b = b[sortKey];
                         }
-                        return (a === b ? 0 : a > b ? 1 : -1) * order;
+
+                        let currentOrder = order;
+                        if (sortKey === 'isMarked') {
+                            currentOrder *= -1;
+                        }
+                        return (a === b ? 0 : a > b ? 1 : -1) * currentOrder;
                     })
                 }
                 return data;
@@ -329,9 +407,11 @@
                 }).then((response) => {
                     this.craftsmen = response.data.craftsmen;
 
-                    const newLookup = [];
-                    this.craftsmen.forEach(c => newLookup[c.id] = c);
-                    this.craftsmenLookup = newLookup;
+                    this.craftsmenLookup = [];
+                    this.craftsmen.forEach(c => this.craftsmenLookup[c.id] = c);
+
+                    this.craftsmanPerTrade = [];
+                    this.craftsmen.forEach(c => this.craftsmanPerTrade[c.trade] = c);
 
                     this.trades = response.data.craftsmen.map(a => a.trade).unique();
                     this.refreshComputedIssueProperties();
@@ -354,5 +434,9 @@
 
     .editable:hover {
         border: 1px solid
+    }
+
+    .clickable {
+        cursor: pointer;
     }
 </style>

@@ -11,6 +11,7 @@ export default {
         filter: "Beschreibung suchen...",
         added_to_register: "Zum Verzeichnis hinzugefügt.",
         saved: "Änderungen gespeichert",
+        save: "speichern",
         error: "Es ist ein Fehler aufgetreten. Laden Sie die Seite neu, und versuchen Sie es erneut."
     }
 }
