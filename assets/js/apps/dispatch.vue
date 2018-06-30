@@ -1,7 +1,11 @@
 <template>
     <div id="dispatch">
         <div v-if="craftsmen.length > 0" class="selectable-table">
-            <input type="text" v-model="textFilter" title="search"/>
+            <div class="filter-field">
+                <div class="form-group">
+                    <input class="form-control" id="filter" type="text" v-model="textFilter" :placeholder="$t('filter')" />
+                </div>
+            </div>
             <table class="table table-hover">
                 <thead>
                 <tr>
@@ -92,7 +96,6 @@
                 textFilter: null
             }
         },
-        components: {},
         methods: {
             sendEmails: function () {
                 this.isLoading = true;
@@ -102,10 +105,32 @@
                 }).then((response) => {
                     this.isLoading = false;
                     this.craftsmen.filter(c => c.selected).forEach(c => {
-                        c.lastEmailSent = (new Date()).toISOString();
+                        if (response.data.successfulIds.includes(c.id)) {
+                            c.lastEmailSent = (new Date()).toISOString();
+                        }
                         c.selected = false;
                     });
+
+                    this.displayInfoFlash(this.$t("emails_sent"));
                 });
+            },
+            displayInfoFlash: function (content) {
+                this.displayFlash(content, "success");
+            },
+            displayErrorFlash: function (content) {
+                this.displayFlash(content, "danger");
+            },
+            displayFlash: function (content, alertType) {
+                let alert = $('#alert-template').html();
+                const uniqueId = 'id-' + Math.random().toString(36).substr(2, 16);
+                alert = alert.replace("ALERT_TYPE", alertType).replace("ID", uniqueId).replace("MESSAGE", content);
+
+                $('.flash-wrapper').append(alert);
+                $('#' + uniqueId).alert();
+
+                setTimeout(function () {
+                    $('#' + uniqueId).alert('close');
+                }, 3000);
             },
             formatDateTime: function (value) {
                 if (value === null) {
@@ -142,7 +167,7 @@
                 const order = this.sortOrders[sortKey];
                 let data = this.craftsmen;
                 if (filterKey) {
-                    data = data.filter(craftsman => craftsman.name.toLowerCase().indexOf(filterKey) > -1);
+                    data = data.filter(craftsman => craftsman.name.toLowerCase().indexOf(filterKey) > -1 || craftsman.trade.toLowerCase().indexOf(filterKey) > -1);
                 }
                 if (sortKey) {
                     data = data.sort(function (a, b) {
@@ -161,11 +186,10 @@
                     return response.data;
                 },
                 error => {
-                    console.log(error.response.data.message);
+                    this.displayErrorFlash(this.$t("error") + " (" + error.response.data.message + ")");
                     return Promise.reject(error);
                 }
             );
-
             axios.get("/api/configuration").then((response) => {
                 this.constructionSiteId = response.data.constructionSite.id;
                 axios.post("/api/dispatch/craftsman/list", {
@@ -180,3 +204,9 @@
     }
 
 </script>
+
+<style>
+    .filter-field {
+        max-width: 400px;
+    }
+</style>

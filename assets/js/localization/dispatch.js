@@ -10,6 +10,9 @@ export default {
             next_response_limit: "Nächste Limite",
             last_email_sent: "Letzte versandte E-Mail",
             last_online_visit: "Letzter Webseitenbesuch"
-        }
+        },
+        filter: "Handwerker/Funktion suchen...",
+        emails_sent: "Emails versandt",
+        error: "Es ist ein Fehler aufgetreten. Laden Sie die Seite neu, und versuchen Sie es erneut."
     }
 }

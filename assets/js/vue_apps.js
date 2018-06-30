@@ -4,12 +4,9 @@ Vue.config.productionTip = false;
 
 // plugins
 import VueI18n from 'vue-i18n'
-import BootstrapVue from 'bootstrap-vue'
 import Vuex from 'vuex'
-import Messages from './localization/dispatch'
 
 Vue.use(VueI18n);
-Vue.use(BootstrapVue);
 Vue.use(Vuex);
 
 // components
@@ -17,6 +14,9 @@ import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 import {library} from '@fortawesome/fontawesome-svg-core'
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
+
+// localization
+import Messages from './localization/dispatch'
 
 // initialize apps
 import Dispatch from './apps/dispatch'
