@@ -6,6 +6,7 @@ Vue.config.productionTip = false;
 import VueI18n from 'vue-i18n'
 import BootstrapVue from 'bootstrap-vue'
 import Vuex from 'vuex'
+import Messages from './localization/dispatch'
 
 Vue.use(VueI18n);
 Vue.use(BootstrapVue);
@@ -18,27 +19,14 @@ import {library} from '@fortawesome/fontawesome-svg-core'
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 // initialize apps
-import Dispatch from './apps/dispatch/dispatch'
+import Dispatch from './apps/dispatch'
 
 if (document.getElementById("dispatch") != null) {
-    const messagesDispatch = {
-        de: {
-            no_craftsmen: "Keine Handwerker erfasst",
-            send_emails: "Emails versenden",
-            craftsman: {
-                name: "Name",
-                trade: "Funktion",
-                not_responded_issues_count: "Unbeantwortet Pendenzen",
-                not_read_issues_count: "Ungelesene Pendenzen",
-                next_response_limit: "Nächste Limite",
-                last_email_sent: "Letzte versandte E-Mail",
-                last_online_visit: "Letzter Webseitenbesuch"
-            }
-        }
-    };
+    const messagesDispatch = Messages;
 
+    const lang = document.documentElement.lang.substr(0, 2);
     const i18nConfirm = new VueI18n({
-        locale: 'de',
+        locale: lang,
         messages: messagesDispatch,
     });
 

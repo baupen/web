@@ -57,12 +57,14 @@ class CurrentIssueState
                         ++$this->notReadIssuesCount;
                     }
 
-                    if ($issue->getResponseLimit() < $referenceTime) {
-                        ++$this->overdueIssuesCount;
-                    }
+                    if ($issue->getResponseLimit() !== null) {
+                        if ($issue->getResponseLimit() < $referenceTime) {
+                            ++$this->overdueIssuesCount;
+                        }
 
-                    if ($this->nextResponseLimit === null || $issue->getResponseLimit() < $this->nextResponseLimit) {
-                        $this->nextResponseLimit = $issue->getResponseLimit();
+                        if ($this->nextResponseLimit === null || $issue->getResponseLimit() < $this->nextResponseLimit) {
+                            $this->nextResponseLimit = $issue->getResponseLimit();
+                        }
                     }
                 } elseif ($lastAction === null || $issue->getReviewedAt() > $lastAction) {
                     ++$this->recentlyReviewedIssuesCount;

@@ -14,7 +14,7 @@ namespace App\Controller\Api;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\CraftsmenRequest;
 use App\Api\Response\Data\CraftsmenData;
-use App\Api\Response\Data\ProcessingData;
+use App\Api\Response\Data\ProcessingEntitiesData;
 use App\Api\Transformer\Dispatch\CraftsmanTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionSite;
@@ -100,18 +100,15 @@ class DispatchController extends ApiController
             $craftsmen[] = $craftsman;
         }
 
-        $sentEmails = 0;
-        $errorEmails = 0;
-        $skippedEmails = 0;
-
         $now = new \DateTime();
+        $dispatchData = new ProcessingEntitiesData();
         foreach ($craftsmen as $craftsman) {
             //count event occurrences
             $state = new CurrentIssueState($craftsman, $now);
 
             //only send emails if there are issues
             if ($state->getNotRespondedIssuesCount() === 0) {
-                ++$skippedEmails;
+                $dispatchData->addSkippedId($craftsman->getId());
                 continue;
             }
 
@@ -125,17 +122,11 @@ class DispatchController extends ApiController
             if ($this->sendMail($craftsman, $state, $constructionSite, $emailService, $translator)) {
                 $craftsman->setLastEmailSent(new \DateTime());
                 $this->fastSave($craftsman);
-                ++$sentEmails;
+                $dispatchData->addSuccessfulId($craftsman->getId());
             } else {
-                ++$errorEmails;
+                $dispatchData->addFailedId($craftsman->getId());
             }
         }
-
-        //construct answer
-        $dispatchData = new ProcessingData();
-        $dispatchData->setFailed($errorEmails);
-        $dispatchData->setSuccessful($sentEmails);
-        $dispatchData->setSkipped($skippedEmails);
 
         return $this->success($dispatchData);
     }

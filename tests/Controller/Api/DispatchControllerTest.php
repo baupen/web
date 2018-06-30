@@ -66,9 +66,9 @@ class DispatchControllerTest extends ApiController
         $craftsmanData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($craftsmanData->data);
-        $this->assertObjectHasAttribute("successful", $craftsmanData->data);
-        $this->assertObjectHasAttribute("skipped", $craftsmanData->data);
-        $this->assertObjectHasAttribute("failed", $craftsmanData->data);
+        $this->assertObjectHasAttribute("successfulIds", $craftsmanData->data);
+        $this->assertObjectHasAttribute("skippedIds", $craftsmanData->data);
+        $this->assertObjectHasAttribute("failedIds", $craftsmanData->data);
 
         /** @var MockEmailService $emailService */
         $emailService = $client->getContainer()->get(EmailServiceInterface::class);
