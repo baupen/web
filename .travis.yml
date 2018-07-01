@@ -39,7 +39,7 @@ before_install:
   - echo "extension=imagick.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   
   # install license scan
-  - curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
+  # - curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
 
 # prepare programming environement
 install:
@@ -65,7 +65,7 @@ install:
 # prepare tests
 before_script:
   # perform license check
-  - FOSSA_API_KEY=FOSSA_TOKEN fossa
+  # - FOSSA_API_KEY=FOSSA_TOKEN fossa
 
   # warmup cache to avoid excessive memory usage
   - php bin/console cache:warmup
