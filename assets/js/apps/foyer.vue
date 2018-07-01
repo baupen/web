@@ -1,6 +1,13 @@
 <template>
     <div id="foyer">
         <div v-if="issues.length > 0" class="selectable-table">
+            <div v-if="lightbox.enabled" class="lightbox" @click="closeLightbox()">
+                <div class="lightbox-content">
+                    <img :src="lightbox.imageSrc"/>
+                </div>
+
+                <font-awesome-icon class="lightbox-close" :icon="['fal', 'times']"/>
+            </div>
             <div class="filter-field">
                 <div class="form-group">
                     <input class="form-control" id="filter" type="text" v-model="textFilter"
@@ -76,7 +83,7 @@
                         <font-awesome-icon v-else :icon="['fal', 'star']"/>
                     </td>
                     <td class="minimal-width">
-                        <lightbox :thumbnail="issue.imageFilePath" :images="[issue.imageFilePath]"></lightbox>
+                        <img class="lightbox-thumbnail" @click="openLightbox(issue)" :src="issue.imageFilePath">
                     </td>
                     <td>
                         <span v-if="editDescription === null || !issue.selected" class="editable"
@@ -124,7 +131,8 @@
                             {{ formatDateTime(issue.responseLimit)}}
                         </span>
                         <div v-else @click.prevent.stop="">
-                            <datepicker :lang="de" format="dd.MM.yyyy" :ref="'response-limit-' + issue.id" v-model="editResponseLimit">
+                            <datepicker :lang="de" format="dd.MM.yyyy" :ref="'response-limit-' + issue.id"
+                                        v-model="editResponseLimit">
                             </datepicker>
                             <button class="btn btn-secondary" @click="saveResponseLimit">{{$t("save")}}</button>
                         </div>
@@ -182,7 +190,11 @@
                 selectedTrade: null,
                 selectedCraftsman: null,
                 craftsmanPerTrade: [],
-                editResponseLimit: null
+                editResponseLimit: null,
+                lightbox: {
+                    enabled: false,
+                    imageSrc: null
+                }
             }
         },
         components: {
@@ -194,6 +206,13 @@
             }
         },
         methods: {
+            openLightbox: function (issue) {
+                this.lightbox.enabled = true;
+                this.lightbox.imageSrc = issue.imageFilePath;
+            },
+            closeLightbox: function () {
+                this.lightbox.enabled = false;
+            },
             startEditDescription: function (issue) {
                 if (!issue.selected) {
                     issue.selected = true;
@@ -488,20 +507,38 @@
         cursor: pointer;
     }
 
-    .lightbox__image img {
-        width: auto !important;
-        max-width: 100% !important;
-        height: auto !important;
-        margin: 0 auto !important;
-        display: block !important;
-    }
-
-    .lightbox__thumbnail img {
-        height: 3rem !important;
-        width: auto !important;
+    .lightbox-thumbnail {
+        height: 3rem;
+        width: auto;
+        cursor: pointer;
     }
 
     .lightbox {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
         z-index: 100 !important;
+    }
+
+    .lightbox-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        max-height: 100%;
+        transform: translate(-50%, -50%);
+    }
+
+    .lightbox-close {
+        position: absolute;
+        right: 0;
+        top: 0;
+        font-size: 3rem;
+        margin-right: 0.5rem;
+        cursor: pointer;
+        color: white;
+        margin-top: 0.2rem;
     }
 </style>

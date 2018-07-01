@@ -5,11 +5,9 @@ Vue.config.productionTip = false;
 // plugins
 import VueI18n from 'vue-i18n'
 import Vuex from 'vuex'
-import Lightbox from 'vue-pure-lightbox'
 
 Vue.use(VueI18n);
 Vue.use(Vuex);
-Vue.use(Lightbox);
 
 // components
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
@@ -61,7 +59,8 @@ if (document.getElementById("foyer") != null) {
         require('@fortawesome/fontawesome-pro-solid/faSortDown'),
         require('@fortawesome/fontawesome-pro-light/faSort'),
         require('@fortawesome/fontawesome-pro-solid/faStar'),
-        require('@fortawesome/fontawesome-pro-light/faStar')
+        require('@fortawesome/fontawesome-pro-light/faStar'),
+    require('@fortawesome/fontawesome-pro-light/faTimes')
     );
 
     new Vue({
