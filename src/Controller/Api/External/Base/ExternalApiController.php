@@ -27,6 +27,9 @@ class ExternalApiController extends AbstractApiController
     /**
      * @param Request $request
      * @param string $targetClass
+     * @param $authenticatedRequest
+     * @param $errorResponse
+     * @param $constructionManager
      *
      * @throws \Doctrine\ORM\ORMException
      *

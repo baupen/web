@@ -13,13 +13,13 @@
     "@fortawesome/fontawesome-pro-light": "^5",
     "@fortawesome/fontawesome-pro-regular": "^5",
     "@fortawesome/fontawesome-pro-solid": "^5",
+    "@fortawesome/fontawesome-svg-core": "^1.2.0",
+    "@fortawesome/vue-fontawesome": "^0.1.0",
     "axios": "^0.18",
     "bootstrap": "^4",
     "bootstrap-multiselect": "^0.9",
     "bootstrap-vue": "^2.0.0-rc.11",
-    "datatables.net-bs4": "^1.10",
     "date-fns": "^1.29",
-    "ekko-lightbox": "5.3",
     "epic-spinners": "^1",
     "moment": "^2.22.2",
     "open-iconic": "^1",
@@ -27,6 +27,7 @@
     "popper.js": "^1.12",
     "vue": "^2.5",
     "vue-i18n": "^8.0",
+    "vuejs-datepicker": "^1.5.2",
     "vuex": "^3.0.1"
   }
 }

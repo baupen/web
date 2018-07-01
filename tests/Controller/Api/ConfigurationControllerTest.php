@@ -10,34 +10,23 @@ namespace App\Tests\Controller\Api;
 
 
 use App\Api\Request\ConstructionSiteRequest;
-use App\Api\Request\DispatchRequest;
+use App\Api\Request\CraftsmenRequest;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Enum\ApiStatus;
 use App\Service\Interfaces\EmailServiceInterface;
 use App\Tests\Controller\Api\Base\AbstractApiController;
+use App\Tests\Controller\Api\Base\ApiController;
 use App\Tests\Controller\Base\FixturesTestCase;
 use App\Tests\Mock\MockEmailService;
 
-class ConfigurationControllerTest extends AbstractApiController
+class ConfigurationControllerTest extends ApiController
 {
-    /**
-     * tests if the configuration node returns all elements
-     */
     public function testConfiguration()
     {
-        $client = static::createClient([], [
-            'PHP_AUTH_USER' => 'f@mangel.io',
-            'PHP_AUTH_PW' => 'asdf',
-        ]);
-        $serializer = $client->getContainer()->get('serializer');
+        $url = '/api/configuration';
 
-        $doRequest = function () use ($client, $serializer) {
-            $client->request('GET', '/api/configuration');
-            return $client->getResponse();
-        };
-
-        $response = $doRequest();
+        $response = $this->authenticatedGetRequest($url);
         $configurationData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($configurationData->data);

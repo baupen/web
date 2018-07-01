@@ -13,7 +13,7 @@ namespace App\Api\Request;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class DispatchRequest extends ConstructionSiteRequest
+class CraftsmenRequest extends ConstructionSiteRequest
 {
     /**
      * @var string[]

@@ -1,44 +1,72 @@
 import Vue from 'vue'
-import VueI18n from 'vue-i18n'
-import BootstrapVue from 'bootstrap-vue'
-import Vuex from 'vuex'
 
 Vue.config.productionTip = false;
 
-// translations
+// plugins
+import VueI18n from 'vue-i18n'
+import Vuex from 'vuex'
+
 Vue.use(VueI18n);
-Vue.use(BootstrapVue);
 Vue.use(Vuex);
 
-//confirm app
-import Dispatch from './apps/dispatch/dispatch'
+// components
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
+import {library} from '@fortawesome/fontawesome-svg-core'
+
+Vue.component('font-awesome-icon', FontAwesomeIcon);
+
+import DispatchMessages from './localization/dispatch'
+import Dispatch from './apps/dispatch'
 
 if (document.getElementById("dispatch") != null) {
-    const messagesDispatch = {
-        de: {
-            no_craftsmen: "Keine Handwerker erfasst",
-            send_emails: "Emails versenden",
-            craftsman: {
-                name: "Name",
-                trade: "Funktion",
-                not_responded_issues_count: "Unbeantwortet Pendenzen",
-                not_read_issues_count: "Ungelesene Pendenzen",
-                next_response_limit: "Nächste Limite",
-                last_email_sent: "Letzte versandte E-Mail",
-                last_online_visit: "Letzter Webseitenbesuch"
-            }
-        }
-    };
+    const messagesDispatch = DispatchMessages;
 
+    const lang = document.documentElement.lang.substr(0, 2);
     const i18nConfirm = new VueI18n({
-        locale: 'de',
+        locale: lang,
         messages: messagesDispatch,
     });
+
+    library.add(
+        require('@fortawesome/fontawesome-pro-solid/faSortUp'),
+        require('@fortawesome/fontawesome-pro-solid/faSortDown'),
+        require('@fortawesome/fontawesome-pro-light/faSort')
+    );
 
     new Vue({
         i18n: i18nConfirm,
         el: '#dispatch',
         template: '<Dispatch/>',
         components: {Dispatch}
+    });
+}
+
+
+import FoyerMessages from './localization/foyer'
+import Foyer from './apps/foyer'
+
+if (document.getElementById("foyer") != null) {
+    const messagesFoyer = FoyerMessages;
+
+    const lang = document.documentElement.lang.substr(0, 2);
+    const i18nConfirm = new VueI18n({
+        locale: lang,
+        messages: messagesFoyer,
+    });
+
+    library.add(
+        require('@fortawesome/fontawesome-pro-solid/faSortUp'),
+        require('@fortawesome/fontawesome-pro-solid/faSortDown'),
+        require('@fortawesome/fontawesome-pro-light/faSort'),
+        require('@fortawesome/fontawesome-pro-solid/faStar'),
+        require('@fortawesome/fontawesome-pro-light/faStar'),
+    require('@fortawesome/fontawesome-pro-light/faTimes')
+    );
+
+    new Vue({
+        i18n: i18nConfirm,
+        el: '#foyer',
+        template: '<Foyer/>',
+        components: {Foyer}
     });
 }

@@ -19,7 +19,7 @@ class CraftsmanTransformer
      * @param Craftsman $source
      * @param \App\Api\Entity\Base\Craftsman $target
      */
-    public function writeProperties($source, $target)
+    public function writeApiProperties($source, $target)
     {
         $target->setName($source->getName());
         $target->setTrade($source->getTrade());

@@ -62,6 +62,7 @@ class LoginController extends BaseLoginController
      * @param Request $request
      * @param EmailServiceInterface $emailService
      * @param TranslatorInterface $translator
+     * @param LoggerInterface $logger
      *
      * @return Response
      */

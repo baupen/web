@@ -34,6 +34,16 @@
 
 {% set flashes = app.session.flashbag.all() %}
 <div class="flash-wrapper">
+    <div id="alert-template" class="hidden">
+        <div id="ID" class="generated col-12 alert alert-ALERT_TYPE alert-dismissible fade show generated" role="alert">
+            <div class="container text-center">
+                MESSAGE
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
     {% if flashes|length > 0 %}
         {# flashbag #}
         {% for type, messages in flashes %}

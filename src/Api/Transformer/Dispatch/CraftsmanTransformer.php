@@ -40,7 +40,7 @@ class CraftsmanTransformer extends BatchTransformer
     public function toApi($entity)
     {
         $craftsman = new \App\Api\Entity\Dispatch\Craftsman($entity->getId());
-        $this->craftsmanTransformer->writeProperties($entity, $craftsman);
+        $this->craftsmanTransformer->writeApiProperties($entity, $craftsman);
 
         $craftsman->setLastEmailSent($entity->getLastEmailSent());
         $craftsman->setLastOnlineVisit($entity->getLastOnlineVisit());

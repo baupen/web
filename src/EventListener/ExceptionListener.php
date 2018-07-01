@@ -54,6 +54,10 @@ class ExceptionListener
             $exception->getCode()
         );
 
+        if (function_exists('dump')) {
+            dump($exception);
+        }
+
         //construct error response
         $errorObj = new ErrorResponse($message);
         $json = $this->serializer->serialize($errorObj, 'json');
