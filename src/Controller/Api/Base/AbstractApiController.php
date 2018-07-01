@@ -32,7 +32,7 @@ abstract class AbstractApiController extends BaseDoctrineController
     const UNKNOWN_STATUS_CODE = 1;
 
     /**
-     * gives the appropiate error code the specified error message.
+     * gives the appropriate error code the specified error message.
      *
      * @param string $message
      *

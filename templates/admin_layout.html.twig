@@ -10,16 +10,19 @@
 {% block content %}
     <nav class="navbar navbar-dark bg-dark navbar-expand">
         <a class="navbar-brand" href="{{ path("index") }}">{{ app.request.host }}</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavbar"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav mr-auto">
                 {{ own_macros.nav_item(path("dashboard"), "dashboard.title"|trans({}, "dashboard")) }}
                 {{ own_macros.nav_item(path("dispatch"), "dispatch.title"|trans({}, "dispatch")) }}
                 {{ own_macros.nav_item(path("foyer"), "foyer.title"|trans({}, "foyer")) }}
+            </ul>
+            <ul class="navbar-nav">
+                {{ own_macros.nav_item(path("login_logout"), "logout.title"|trans({}, "login")) }}
             </ul>
         </div>
     </nav>

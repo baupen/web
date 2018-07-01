@@ -55,7 +55,7 @@ class IssueController extends ExternalApiController
     const ISSUE_NO_FILE_UPLOAD_EXPECTED = 'a file was uploaded, but not specified in the issue';
 
     /**
-     * gives the appropiate error code the specified error message.
+     * gives the appropriate error code the specified error message.
      *
      * @param string $message
      *

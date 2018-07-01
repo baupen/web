@@ -16,7 +16,7 @@ class HashHelper
     const HASH_LENGTH = 20;
 
     /**
-     * generates a hash from alpha nummeric characters of length 20.
+     * generates a hash from alpha numeric characters of length 20.
      *
      * @return string
      */

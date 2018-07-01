@@ -64,7 +64,7 @@ class FoyerController extends ApiController
         /** @var Issue[] $requestedIssues */
         /** @var \App\Api\Entity\Foyer\Issue[] $issues */
         $issueRepo = $this->getDoctrine()->getRepository(Issue::class);
-        $requestedIssues = $issueRepo->findBy(['id' => $parsedRequest->getIssueIds()]);
+        $requestedIssues = $issueRepo->findBy(['id' => $parsedRequest->getIssueIds(), 'registeredAt' => null]);
         $issues = array_flip($parsedRequest->getIssueIds());
 
         return $this->checkIssueEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
@@ -93,21 +93,20 @@ class FoyerController extends ApiController
         }
 
         //retrieve all issues from the db
-        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['id' => array_keys($issues)]);
+        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['id' => array_keys($issues), 'registeredAt' => null]);
 
         return $this->checkIssueEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
     }
 
     /**
      * @param Request $request
-     * @param $issues
-     * @param $entities
+     * @param $entity
      * @param $errorResponse
      * @param $constructionSite
      *
      * @return bool
      */
-    private function parseIssueRequest(Request $request, &$issue, &$entity, &$errorResponse, &$constructionSite)
+    private function parseIssueRequest(Request $request, &$entity, &$errorResponse, &$constructionSite)
     {
         /** @var IssueRequest $parsedRequest */
         if (!parent::parseConstructionSiteRequest($request, IssueRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
@@ -117,7 +116,7 @@ class FoyerController extends ApiController
         //get issue & ensure its on this construction site
         /** @var Issue $entity */
         $entity = $this->getDoctrine()->getRepository(Issue::class)->find($parsedRequest->getIssueId());
-        if ($entity === null) {
+        if ($entity === null || $entity->getRegisteredAt() !== null) {
             $errorResponse = $this->fail(self::ISSUE_NOT_FOUND);
 
             return false;
@@ -278,9 +277,9 @@ class FoyerController extends ApiController
     public function issueImageAction(Request $request, IssueTransformer $issueTransformer)
     {
         /** @var ConstructionSite $constructionSite */
-        /** @var IssueRequest $issueRequest */
+        /* @var IssueRequest $issueRequest */
         /** @var Issue $entity */
-        if (!$this->parseIssueRequest($request, $issue, $entity, $errorResponse, $constructionSite)) {
+        if (!$this->parseIssueRequest($request, $entity, $errorResponse, $constructionSite)) {
             return $errorResponse;
         }
 
