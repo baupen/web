@@ -75,7 +75,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="issue in sortedIssues" v-on:click.prevent="selectIssue(issue)"
-                    v-bind:class="{ 'table-active': issue.selected, 'table-success': issue.number > 0 }">
+                    v-bind:class="{ 'table-active': !onDelete && issue.selected, 'table-success': issue.number > 0, 'table-danger': onDelete && issue.selected }">
                     <td class="minimal-width">
                         <span v-if="issue.number">#{{issue.number}}</span>
                         <input v-else title="check" type="checkbox" v-model="issue.selected"/>
@@ -130,13 +130,14 @@
                     <td>
                         <span v-if="editResponseLimit === null || !issue.selected" class="editable"
                               @click.prevent.stop="startEditResponseLimit(issue)">
-                            {{ formatDateTime(issue.responseLimit)}}
+                            {{ formatLimitDateTime(issue.responseLimit)}}
                         </span>
                         <div v-else @click.prevent.stop="">
                             <datepicker :lang="de" format="dd.MM.yyyy" :ref="'response-limit-' + issue.id"
                                         v-model="editResponseLimit">
                             </datepicker>
                             <button class="btn btn-secondary" @click="saveResponseLimit">{{$t("save")}}</button>
+                            <button class="btn btn-secondary" @click="removeResponseLimit">{{$t("remove")}}</button>
                         </div>
                     </td>
                     <td>
@@ -150,9 +151,31 @@
 
                 </tbody>
             </table>
-            <button class="btn btn-primary" v-bind:disabled="isLoading" v-on:click.prevent="confirm()">
-                {{$t("confirm_issues")}}
-            </button>
+            <div v-if="!onDelete">
+                <button class="btn btn-primary"
+                        v-bind:disabled="isLoading || issues.filter(i => i.selected).length === 0"
+                        v-on:click.prevent="confirm()">
+                    {{$t("confirm_issues")}}
+                </button>
+                <button class="btn btn-outline-danger"
+                        v-bind:disabled="isLoading || issues.filter(i => i.selected).length === 0"
+                        v-on:click.prevent="remove()">
+                    {{$t("remove_issues")}}
+                </button>
+            </div>
+            <div v-else>
+                <p class="text-danger">
+                    {{$t("cant_undo_remove")}}
+                </p>
+                <button class="btn btn-danger"
+                        v-on:click.prevent="removeConfirm()">
+                    {{$t("remove_issues")}}
+                </button>
+                <button class="btn"
+                        v-on:click.prevent="abortRemove()">
+                    {{$t("abort_remove_issues")}}
+                </button>
+            </div>
         </div>
         <div v-else-if="!isLoading">
             <p>{{ $t("no_issues") }}</p>
@@ -196,7 +219,8 @@
                 lightbox: {
                     enabled: false,
                     issue: null
-                }
+                },
+                onDelete: false
             }
         },
         components: {
@@ -263,7 +287,14 @@
                 });
             },
             saveResponseLimit: function () {
-                this.issues.filter(i => i.selected).forEach(i => i.responseLimit = this.editResponseLimit.toISOString());
+                if (typeof this.editResponseLimit.toISOString === "function") {
+                    this.issues.filter(i => i.selected).forEach(i => i.responseLimit = this.editResponseLimit.toISOString());
+                    this.save();
+                }
+                this.abortResponseLimit();
+            },
+            removeResponseLimit: function () {
+                this.issues.filter(i => i.selected).forEach(i => i.responseLimit = null);
                 this.abortResponseLimit();
                 this.save();
             },
@@ -337,6 +368,27 @@
                     window.setTimeout(e => this.issues = this.issues.filter(i => i.number === null), 3000);
                 });
             },
+            remove: function () {
+                this.onDelete = true;
+            },
+            abortRemove: function () {
+                this.onDelete = false;
+            },
+            removeConfirm: function () {
+                this.isLoading = true;
+                axios.post("/api/foyer/issue/delete", {
+                    "constructionSiteId": this.constructionSiteId,
+                    "issueIds": this.issues.filter(c => c.selected).map(c => c.id)
+                }).then((response) => {
+                    this.isLoading = false;
+
+                    let idLookup = [];
+                    response.data.deletedIssues.forEach(i => idLookup[i.id] = true);
+                    this.issues = this.issues.filter(i => !(i.id in idLookup));
+                    this.abortRemove();
+                    this.displayInfoFlash(this.$t("removed"));
+                });
+            },
             save: function () {
                 this.isLoading = true;
                 axios.post("/api/foyer/issue/update", {
@@ -380,6 +432,12 @@
             formatDateTime: function (value) {
                 if (value === null) {
                     return "-"
+                }
+                return moment(value).fromNow();
+            },
+            formatLimitDateTime: function (value) {
+                if (value === null) {
+                    return this.$t("limit_not_set");
                 }
                 return moment(value).fromNow();
             },
