@@ -3,7 +3,8 @@
         <div v-if="craftsmen.length > 0" class="selectable-table">
             <div class="filter-field">
                 <div class="form-group">
-                    <input class="form-control" id="filter" type="text" v-model="textFilter" :placeholder="$t('filter')" />
+                    <input class="form-control" id="filter" type="text" v-model="textFilter"
+                           :placeholder="$t('filter')"/>
                 </div>
             </div>
             <table class="table table-hover">
@@ -29,11 +30,49 @@
                         <font-awesome-icon v-else :icon="['fal', 'sort']"/>
                     </th>
 
-                    <th>{{ $t("craftsman.not_read_issues_count")}}</th>
-                    <th>{{ $t("craftsman.not_responded_issues_count")}}</th>
-                    <th>{{ $t("craftsman.next_response_limit")}}</th>
-                    <th>{{ $t("craftsman.last_email_sent")}}</th>
-                    <th>{{ $t("craftsman.last_online_visit")}}</th>
+                    <th class="sortable" @click="sortBy('notReadIssuesCount')"
+                        :class="{ active: 'notReadIssuesCount' === sortKey }">
+                        {{ $t("craftsman.not_read_issues_count")}}
+                        <font-awesome-icon v-if="sortKey === 'notReadIssuesCount'"
+                                           :icon="sortOrders['notReadIssuesCount'] > 0 ? 'sort-up' : 'sort-down'"/>
+                        <font-awesome-icon v-else :icon="['fal', 'sort']"/>
+                    </th>
+
+
+                    <th class="sortable" @click="sortBy('notRespondedIssuesCount')"
+                        :class="{ active: 'notRespondedIssuesCount' === sortKey }">
+                        {{ $t("craftsman.not_responded_issues_count")}}
+                        <font-awesome-icon v-if="sortKey === 'notRespondedIssuesCount'"
+                                           :icon="sortOrders['notRespondedIssuesCount'] > 0 ? 'sort-up' : 'sort-down'"/>
+                        <font-awesome-icon v-else :icon="['fal', 'sort']"/>
+                    </th>
+
+
+                    <th class="sortable" @click="sortBy('nextResponseLimit')"
+                        :class="{ active: 'nextResponseLimit' === sortKey }">
+                        {{ $t("craftsman.next_response_limit")}}
+                        <font-awesome-icon v-if="sortKey === 'nextResponseLimit'"
+                                           :icon="sortOrders['nextResponseLimit'] > 0 ? 'sort-up' : 'sort-down'"/>
+                        <font-awesome-icon v-else :icon="['fal', 'sort']"/>
+                    </th>
+
+
+                    <th class="sortable" @click="sortBy('lastEmailSent')"
+                        :class="{ active: 'lastEmailSent' === sortKey }">
+                        {{ $t("craftsman.last_email_sent")}}
+                        <font-awesome-icon v-if="sortKey === 'lastEmailSent'"
+                                           :icon="sortOrders['lastEmailSent'] > 0 ? 'sort-up' : 'sort-down'"/>
+                        <font-awesome-icon v-else :icon="['fal', 'sort']"/>
+                    </th>
+
+
+                    <th class="sortable" @click="sortBy('lastOnlineVisit')"
+                        :class="{ active: 'lastOnlineVisit' === sortKey }">
+                        {{ $t("craftsman.last_online_visit")}}
+                        <font-awesome-icon v-if="sortKey === 'lastOnlineVisit'"
+                                           :icon="sortOrders['lastOnlineVisit'] > 0 ? 'sort-up' : 'sort-down'"/>
+                        <font-awesome-icon v-else :icon="['fal', 'sort']"/>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -86,14 +125,15 @@
     export default {
         data: function () {
             const sortOrders = {};
-            ["name", "trade"].forEach(e => sortOrders[e] = 1);
+            ["name", "trade", "notReadIssuesCount", "notRespondedIssuesCount", "nextResponseLimit", "lastEmailSent", "lastOnlineVisit"].forEach(e => sortOrders[e] = 1);
             return {
                 craftsmen: [],
                 isLoading: true,
                 constructionSiteId: null,
                 sortKey: "name",
                 sortOrders: sortOrders,
-                textFilter: null
+                textFilter: null,
+                lastSortCache: null
             }
         },
         methods: {
@@ -143,10 +183,6 @@
                 this.craftsmen.forEach(c => c.selected = newVal);
             },
             sortBy: function (key) {
-                if (!(key in this.sortOrders)) {
-                    this.sortOrders[key] = 1;
-                }
-
                 if (this.sortKey === key) {
                     this.sortOrders[key] *= -1;
                 } else {
@@ -166,6 +202,9 @@
                 const filterKey = this.textFilter && this.textFilter.toLowerCase();
                 const order = this.sortOrders[sortKey];
                 let data = this.craftsmen;
+                if (this.lastSortCache != null) {
+                    data = this.lastSortCache;
+                }
                 if (filterKey) {
                     data = data.filter(craftsman => craftsman.name.toLowerCase().indexOf(filterKey) > -1 || craftsman.trade.toLowerCase().indexOf(filterKey) > -1);
                 }
@@ -173,8 +212,26 @@
                     data = data.sort(function (a, b) {
                         a = a[sortKey];
                         b = b[sortKey];
-                        return (a === b ? 0 : a > b ? 1 : -1) * order
+
+                        if (sortKey === "nextResponseLimit" || sortKey === "lastEmailSent" || sortKey === "lastOnlineVisit") {
+                            if (a === null && b !== null) {
+                                return 1;
+                            } else if (a !== null && b === null) {
+                                return -1;
+                            }
+                        }
+
+                        let currentOrder = order;
+                        if (sortKey === "notRespondedIssuesCount" || sortKey === "notReadIssuesCount") {
+                            currentOrder *= -1;
+                        }
+                        return (a === b ? 0 : a > b ? 1 : -1) * currentOrder;
                     })
+                }
+                if (filterKey === null) {
+                    this.lastSortCache = data;
+                } else {
+                    this.lastSortCache = null;
                 }
                 return data;
             }
