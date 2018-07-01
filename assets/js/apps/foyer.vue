@@ -3,9 +3,11 @@
         <div v-if="issues.length > 0" class="selectable-table">
             <div v-if="lightbox.enabled" class="lightbox" @click="closeLightbox()">
                 <div class="lightbox-content">
-                    <img :src="lightbox.imageSrc"/>
+                    <img :src="lightbox.issue.imageFilePath"/>
+                    <div class="file-upload-field">
+                        <input class="form-control" @click.stop="" type="file" @change="processFile($event)"/>
+                    </div>
                 </div>
-
                 <font-awesome-icon class="lightbox-close" :icon="['fal', 'times']"/>
             </div>
             <div class="filter-field">
@@ -193,7 +195,7 @@
                 editResponseLimit: null,
                 lightbox: {
                     enabled: false,
-                    imageSrc: null
+                    issue: null
                 }
             }
         },
@@ -206,9 +208,21 @@
             }
         },
         methods: {
+            processFile: function ($event) {
+                let data = new FormData();
+                data.append('message', JSON.stringify({
+                    "constructionSiteId": this.constructionSiteId,
+                    "issueId": this.lightbox.issue.id
+                }));
+                data.append('file', event.target.files[0]);
+
+                axios.post("/api/foyer/issue/image", data).then((response) => {
+                    this.lightbox.issue.imageFilePath = response.data.issue.imageFilePath;
+                });
+            },
             openLightbox: function (issue) {
                 this.lightbox.enabled = true;
-                this.lightbox.imageSrc = issue.imageFilePath;
+                this.lightbox.issue = issue;
             },
             closeLightbox: function () {
                 this.lightbox.enabled = false;
@@ -531,6 +545,10 @@
         transform: translate(-50%, -50%);
     }
 
+    .lightbox-content img {
+        width: 100%;
+    }
+
     .lightbox-close {
         position: absolute;
         right: 0;
@@ -540,5 +558,11 @@
         cursor: pointer;
         color: white;
         margin-top: 0.2rem;
+    }
+
+    .file-upload-field > .form-control {
+        width: 100%;
+        padding: 1rem;
+        margin: 0.5rem 0;
     }
 </style>
