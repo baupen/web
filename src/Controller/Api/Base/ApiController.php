@@ -59,7 +59,7 @@ abstract class ApiController extends AbstractApiController
     }
 
     /**
-     * gives the appropiate error code the specified error message.
+     * gives the appropriate error code the specified error message.
      *
      * @param string $message
      *

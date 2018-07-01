@@ -126,7 +126,7 @@ class Filter extends BaseEntity
     /**
      * @return bool|null
      */
-    public function getisMarked(): ?bool
+    public function getIsMarked(): ?bool
     {
         return $this->isMarked;
     }

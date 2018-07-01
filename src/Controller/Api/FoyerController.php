@@ -100,8 +100,7 @@ class FoyerController extends ApiController
 
     /**
      * @param Request $request
-     * @param $issues
-     * @param $entities
+     * @param $entity
      * @param $errorResponse
      * @param $constructionSite
      *

@@ -38,7 +38,7 @@ class DispatchController extends ApiController
     const INVALID_CRAFTSMAN = 'invalid craftsman';
 
     /**
-     * gives the appropiate error code the specified error message.
+     * gives the appropriate error code the specified error message.
      *
      * @param string $message
      *
@@ -167,7 +167,7 @@ class DispatchController extends ApiController
         //append closed issues info
         if ($state->getRecentlyReviewedIssuesCount() > 0) {
             $body .= "\n";
-            $body .= $translator->transChoice('email.body_closed_issues_infos', $state->getRecentlyReviewedIssuesCount(), [], 'dispatch');
+            $body .= $translator->transChoice('email.body_closed_issues_info', $state->getRecentlyReviewedIssuesCount(), [], 'dispatch');
         }
 
         //append suffix

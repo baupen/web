@@ -40,7 +40,7 @@ class ClearPublicUploadDir extends BaseFixture
      *
      * @return bool
      */
-    private function deleteDirectoryContents($dir, $isRoot = false, $exceptions = ['st'])
+    private function deleteDirectoryContents($dir, $isRoot = false, $exceptions = [])
     {
         if (!file_exists($dir)) {
             return true;

@@ -69,7 +69,7 @@ class ConstructionSite extends BaseEntity
     private $craftsmen;
 
     /**
-     * Consutruction site constructor.
+     * Construction site constructor.
      */
     public function __construct()
     {
