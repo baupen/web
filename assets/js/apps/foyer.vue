@@ -24,6 +24,8 @@
                         <font-awesome-icon v-else :icon="['fal', 'sort']"/>
                     </th>
 
+                    <th></th>
+
                     <th class="sortable" @click="sortBy('description')" :class="{ active: 'description' === sortKey }">
                         {{ $t("issue.description")}}
                         <font-awesome-icon v-if="sortKey === 'description'"
@@ -73,6 +75,9 @@
                         <font-awesome-icon v-if="issue.isMarked" :icon="['fas', 'star']"/>
                         <font-awesome-icon v-else :icon="['fal', 'star']"/>
                     </td>
+                    <td class="minimal-width">
+                        <lightbox :thumbnail="issue.imageFilePath" :images="[issue.imageFilePath]"></lightbox>
+                    </td>
                     <td>
                         <span v-if="editDescription === null || !issue.selected" class="editable"
                               @click.prevent.stop="startEditDescription(issue)">
@@ -114,17 +119,15 @@
                         </div>
                     </td>
                     <td>
-                        <span v-if="editResponseLimit === false || !issue.selected" class="editable"
+                        <span v-if="editResponseLimit === null || !issue.selected" class="editable"
                               @click.prevent.stop="startEditResponseLimit(issue)">
                             {{ formatDateTime(issue.responseLimit)}}
                         </span>
-                        <div v-else  @click.prevent.stop="">
-                            <datepicker :lang="de" :ref="'response-limit-' + issue.id" :value="editResponseLimit.date">
-
+                        <div v-else @click.prevent.stop="">
+                            <datepicker :lang="de" format="dd.MM.yyyy" :ref="'response-limit-' + issue.id" v-model="editResponseLimit">
                             </datepicker>
                             <button class="btn btn-secondary" @click="saveResponseLimit">{{$t("save")}}</button>
                         </div>
-
                     </td>
                     <td>
                         {{issue.map}}
@@ -153,6 +156,7 @@
     import Datepicker from 'vuejs-datepicker';
     import {de} from 'vuejs-datepicker/dist/locale'
 
+
     moment.locale('de');
 
     Array.prototype.unique = function () {
@@ -178,14 +182,16 @@
                 selectedTrade: null,
                 selectedCraftsman: null,
                 craftsmanPerTrade: [],
-                tradeSelectWatch: null,
-                editResponseLimit: {
-                    date: new Date()
-                }
+                editResponseLimit: null
             }
         },
         components: {
             Datepicker
+        },
+        watch: {
+            selectedTrade: function () {
+                this.changedTrade();
+            }
         },
         methods: {
             startEditDescription: function (issue) {
@@ -212,9 +218,9 @@
                     issue.selected = true;
                 }
                 if (issue.responseLimit !== null) {
-                    this.editResponseLimit.date = Date.parse(issue.responseLimit);
+                    this.editResponseLimit = Date.parse(issue.responseLimit);
                 } else {
-                    this.editResponseLimit.date = Date.now();
+                    this.editResponseLimit = Date.now();
                 }
 
                 this.$nextTick(() => {
@@ -224,13 +230,12 @@
                 });
             },
             saveResponseLimit: function () {
-                console.log(this.editResponseLimit.date);
-                this.issues.filter(i => i.selected).forEach(i => i.responseLimit = (new Date(this.editResponseLimit.date)).toISOString());
+                this.issues.filter(i => i.selected).forEach(i => i.responseLimit = this.editResponseLimit.toISOString());
                 this.abortResponseLimit();
                 this.save();
             },
             abortResponseLimit: function () {
-                this.editResponseLimit.date = null;
+                this.editResponseLimit = null;
             },
             changedTrade: function () {
                 if (!this.selectedTrade in this.craftsmanPerTrade) {
@@ -243,9 +248,6 @@
                     issue.selected = true;
                 }
 
-                this.tradeSelectWatch = this.$watch('selectedTrade', (newVal, oldVal) => {
-                    this.changedTrade();
-                });
                 this.selectedTrade = this.craftsmanTrade(issue);
 
                 this.$nextTick(() => {
@@ -260,7 +262,6 @@
                 });
             },
             abortCraftsman: function () {
-                this.tradeSelectWatch();
                 this.selectedTrade = null;
                 this.selectedCraftsman = null;
             },
@@ -272,7 +273,9 @@
             selectIssue: function (issue) {
                 issue.selected = !issue.selected;
                 if (this.issues.filter(i => i.selected).length === 0) {
-                    this.editDescription = null;
+                    this.abortDescription();
+                    this.abortResponseLimit();
+                    this.abortCraftsman();
                 }
             },
             markIssue: function (issue) {
@@ -315,6 +318,7 @@
                             match[0].description = c.description;
                             match[0].craftsmanId = c.craftsmanId;
                             match[0].responseLimit = c.responseLimit;
+                            match[0].imageFilePath = c.imageFilePath;
                         }
                     });
 
@@ -400,8 +404,8 @@
                 if (sortKey) {
                     data = data.sort((a, b) => {
                         if (sortKey === 'craftsman') {
-                            a = this.craftsmanName(a) + this.craftsmanTrade(a);
-                            b = this.craftsmanName(b) + this.craftsmanTrade(b);
+                            a = this.craftsmanTrade(a) + this.craftsmanName(a);
+                            b = this.craftsmanTrade(b) + this.craftsmanName(b);
                         } else {
                             a = a[sortKey];
                             b = b[sortKey];
@@ -482,5 +486,22 @@
 
     .clickable {
         cursor: pointer;
+    }
+
+    .lightbox__image img {
+        width: auto !important;
+        max-width: 100% !important;
+        height: auto !important;
+        margin: 0 auto !important;
+        display: block !important;
+    }
+
+    .lightbox__thumbnail img {
+        height: 3rem !important;
+        width: auto !important;
+    }
+
+    .lightbox {
+        z-index: 100 !important;
     }
 </style>

@@ -5,9 +5,11 @@ Vue.config.productionTip = false;
 // plugins
 import VueI18n from 'vue-i18n'
 import Vuex from 'vuex'
+import Lightbox from 'vue-pure-lightbox'
 
 Vue.use(VueI18n);
 Vue.use(Vuex);
+Vue.use(Lightbox);
 
 // components
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
