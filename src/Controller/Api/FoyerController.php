@@ -64,7 +64,7 @@ class FoyerController extends ApiController
         /** @var Issue[] $requestedIssues */
         /** @var \App\Api\Entity\Foyer\Issue[] $issues */
         $issueRepo = $this->getDoctrine()->getRepository(Issue::class);
-        $requestedIssues = $issueRepo->findBy(['id' => $parsedRequest->getIssueIds()]);
+        $requestedIssues = $issueRepo->findBy(['id' => $parsedRequest->getIssueIds(), 'registeredAt' => null]);
         $issues = array_flip($parsedRequest->getIssueIds());
 
         return $this->checkIssueEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
@@ -93,7 +93,7 @@ class FoyerController extends ApiController
         }
 
         //retrieve all issues from the db
-        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['id' => array_keys($issues)]);
+        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['id' => array_keys($issues), 'registeredAt' => null]);
 
         return $this->checkIssueEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
     }
@@ -117,7 +117,7 @@ class FoyerController extends ApiController
         //get issue & ensure its on this construction site
         /** @var Issue $entity */
         $entity = $this->getDoctrine()->getRepository(Issue::class)->find($parsedRequest->getIssueId());
-        if ($entity === null) {
+        if ($entity === null || $entity->getRegisteredAt() !== null) {
             $errorResponse = $this->fail(self::ISSUE_NOT_FOUND);
 
             return false;
