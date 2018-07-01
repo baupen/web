@@ -65,7 +65,7 @@ install:
 # prepare tests
 before_script:
   # perform license check
-  - FOSSA_API_KEY=FOSSA_TOKEN fossa
+  - fossa
 
   # warmup cache to avoid excessive memory usage
   - php bin/console cache:warmup
