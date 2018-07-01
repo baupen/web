@@ -107,7 +107,7 @@ class FoyerController extends ApiController
      *
      * @return bool
      */
-    private function parseIssueRequest(Request $request, &$issue, &$entity, &$errorResponse, &$constructionSite)
+    private function parseIssueRequest(Request $request, &$entity, &$errorResponse, &$constructionSite)
     {
         /** @var IssueRequest $parsedRequest */
         if (!parent::parseConstructionSiteRequest($request, IssueRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
@@ -278,9 +278,9 @@ class FoyerController extends ApiController
     public function issueImageAction(Request $request, IssueTransformer $issueTransformer)
     {
         /** @var ConstructionSite $constructionSite */
-        /** @var IssueRequest $issueRequest */
+        /* @var IssueRequest $issueRequest */
         /** @var Issue $entity */
-        if (!$this->parseIssueRequest($request, $issue, $entity, $errorResponse, $constructionSite)) {
+        if (!$this->parseIssueRequest($request, $entity, $errorResponse, $constructionSite)) {
             return $errorResponse;
         }
 
