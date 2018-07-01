@@ -1,5 +1,6 @@
 # Introduction
-[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) 
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmangelio%2Fapp.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmangelio%2Fapp?ref=badge_shield)
+
 [![Build Status](https://travis-ci.org/mangelio/app.svg?branch=master)](https://travis-ci.org/mangelio/app)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mangelio/app/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/mangelio/app/?branch=master)
 [![codecov](https://codecov.io/gh/mangelio/app/branch/master/graph/badge.svg)](https://codecov.io/gh/mangelio/app) 
@@ -48,7 +49,15 @@ status=$?
 if [ "$status" = 0 ] ; then
     exit 0
 else
-    echo 1>&2 "Found not properly formatted files. Please run the php-cs-fixer before pproceeding."
-    exit 1
+    ./vendor/bin/php-cs-fixer fix > /dev/null 2>&1
+    git add *
+    echo 1>&2 "Found not properly formatted files. php-cs-fixer
+was run."
+    exit 0
 fi
+
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmangelio%2Fapp.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmangelio%2Fapp?ref=badge_large)
