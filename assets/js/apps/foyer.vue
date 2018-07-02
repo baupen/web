@@ -75,6 +75,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="issue in sortedIssues" v-on:click.prevent="selectIssue(issue)"
+                    class="selectable"
                     v-bind:class="{ 'table-active': !onDelete && issue.selected, 'table-success': issue.number > 0, 'table-danger': onDelete && issue.selected }">
                     <td class="minimal-width">
                         <span v-if="issue.number">#{{issue.number}}</span>
@@ -232,7 +233,7 @@
             }
         },
         methods: {
-            processFile: function ($event) {
+            processFile: function (event) {
                 let data = new FormData();
                 data.append('message', JSON.stringify({
                     "constructionSiteId": this.constructionSiteId,
@@ -622,5 +623,9 @@
         width: 100%;
         padding: 1rem;
         margin: 0.5rem 0;
+    }
+
+    input[type=checkbox] {
+        transform: scale(1.4);
     }
 </style>

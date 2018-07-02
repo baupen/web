@@ -1,0 +1,14 @@
+{% extends 'layout_base.html.twig' %}
+
+{% block content %}
+    <section class="public-wrapper">
+        <h1>{{ block("title") }}</h1>
+        <p class="text-secondary">{{ block("description") }}</p>
+        <div class="public-content">
+            {% block public_content %}
+
+            {% endblock %}
+        </div>
+    </section>
+
+{% endblock %}

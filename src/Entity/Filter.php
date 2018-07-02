@@ -26,6 +26,13 @@ class Filter extends BaseEntity
     use IdTrait;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $constructionSite;
+
+    /**
      * @var bool|null
      *
      * @ORM\Column(type="boolean", nullable=true)
@@ -122,6 +129,22 @@ class Filter extends BaseEntity
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $limitEnd = null;
+
+    /**
+     * @return string
+     */
+    public function getConstructionSite(): string
+    {
+        return $this->constructionSite;
+    }
+
+    /**
+     * @param string $constructionSite
+     */
+    public function setConstructionSite(string $constructionSite): void
+    {
+        $this->constructionSite = $constructionSite;
+    }
 
     /**
      * @return bool|null

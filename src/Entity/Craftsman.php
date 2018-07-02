@@ -196,7 +196,7 @@ class Craftsman extends BaseEntity
      */
     public function getName(): string
     {
-        return $this->getContactName() . ' (' . $this->getCompany() . ')';
+        return $this->getCompany() . ' (' . $this->getContactName() . ')';
     }
 
     /**

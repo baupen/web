@@ -1,0 +1,10 @@
+{% extends 'public_layout.html.twig' %}
+
+{% block title %}{{ "craftsman.title"|transchoice(issues|length) }}{% endblock %}
+{% block description %}{{ "craftsman.description"|trans({"%craftsman%": craftsman.name}) }}{% endblock %}
+
+{% trans_default_domain "share" %}
+
+{% block public_content %}
+
+{% endblock %}
