@@ -56,6 +56,7 @@ class LoadConstructionSiteData extends BaseFixture
                 $constructionSite->getConstructionManagers()->add($appUser);
             }
 
+            //stop here because sample data wrongly generated
             break;
         }
 

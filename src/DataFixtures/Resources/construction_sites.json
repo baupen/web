@@ -14,5 +14,13 @@
     "locality": "Bern",
     "country": "CH",
     "imageFilename": "swim_land.jpg"
+  },
+  {
+    "name": "ETH",
+    "streetAddress": "Rämistrasse 121",
+    "postalCode": 8050,
+    "locality": "Zürich",
+    "country": "CH",
+    "imageFilename": "eth.jpg"
   }
 ]

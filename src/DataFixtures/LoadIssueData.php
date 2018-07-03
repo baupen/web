@@ -123,6 +123,8 @@ class LoadIssueData extends BaseFixture
             if ($setStatus !== 0 || $this->getRandomNumber(7, 11) > 7) {
                 //if no status is set leave craftsman null sometime
                 $issue->setCraftsman($this->getRandomEntry($randomCraftsmanCounter, $constructionSite->getCraftsmen()));
+            } else {
+                assert($issue->getCraftsman() === null);
             }
 
             $issue->setUploadBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionSite->getConstructionManagers()));

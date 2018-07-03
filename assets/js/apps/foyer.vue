@@ -121,12 +121,12 @@
                                     {{ trade }}
                                 </option>
                             </select>
-                            <template v-if="craftsmenPerTrade.length > 1">
+                            <template v-if="craftsmenByTrade.length > 1">
                                 <select class="form-control form-control-sm" v-model="selectedCraftsman"
                                         @click.prevent.stop=""
                                         @keyup.escape.prevent.stop="abortCraftsman"
                                         :ref="'craftsman-' + issue.id">
-                                    <option v-for="craftsman in craftsmanByTrade" v-bind:value="craftsman">
+                                    <option v-for="craftsman in craftsmenByTrade" v-bind:value="craftsman">
                                         {{ craftsman.name }}
                                     </option>
                                 </select>
@@ -226,6 +226,7 @@
                 selectedTrade: null,
                 selectedCraftsman: null,
                 editResponseLimit: null,
+                lastSelectedIssue: null,
                 lightbox: {
                     enabled: false,
                     issue: null
@@ -284,23 +285,31 @@
                 if (!issue.selected) {
                     issue.selected = true;
                 }
+                this.lastSelectedIssue = issue;
                 if (issue.responseLimit !== null) {
                     this.editResponseLimit = Date.parse(issue.responseLimit);
                 } else {
-                    this.editResponseLimit = Date.now();
+                    this.editResponseLimit = new Date();
                 }
 
                 this.$nextTick(() => {
                     let input = this.$refs["response-limit-" + issue.id][0];
-                    console.log(input);
                     //input.focus();
                 });
             },
             saveResponseLimit: function () {
-                if (typeof this.editResponseLimit.toISOString === "function") {
-                    this.issues.filter(i => i.selected).forEach(i => i.responseLimit = this.editResponseLimit.toISOString());
-                    this.save();
+                //library destroys element if not set newly
+                let responseLimit = this.editResponseLimit;
+                if (typeof responseLimit.toISOString !== "function") {
+                    if (this.lastSelectedIssue.responseLimit !== null) {
+                        responseLimit = Date.parse(issue.responseLimit);
+                    } else {
+                        responseLimit = new Date();
+                    }
+                    console.log(responseLimit.toISOString());
                 }
+                this.issues.filter(i => i.selected).forEach(i => i.responseLimit = responseLimit.toISOString());
+                this.save();
                 this.abortResponseLimit();
             },
             removeResponseLimit: function () {
@@ -312,10 +321,7 @@
                 this.editResponseLimit = null;
             },
             changedTrade: function () {
-                if (!this.selectedTrade in this.craftsmenPerTrade) {
-                    this.craftsmenPerTrade[this.selectedTrade] = this.craftsmen.filter(c => c.trade === this.selectedTrade)[0];
-                }
-                this.selectedCraftsman = this.craftsmenPerTrade[this.selectedTrade];
+                this.selectedCraftsman = this.craftsmenByTrade[0];
             },
             startEditCraftsman: function (issue) {
                 if (!issue.selected) {
@@ -491,7 +497,7 @@
             selected: function () {
                 return this.issues.filter(c => !c.selected).length === 0;
             },
-            craftsmanByTrade: function () {
+            craftsmenByTrade: function () {
                 return this.craftsmen.filter(c => c.trade === this.selectedTrade);
             },
             craftsmanById: function () {
@@ -535,7 +541,6 @@
                     return response.data;
                 },
                 error => {
-                    console.log(error.response.data);
                     this.displayErrorFlash(this.$t("error") + " (" + error.response.data.message + ")");
                     return Promise.reject(error);
                 }
