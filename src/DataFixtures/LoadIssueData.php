@@ -15,9 +15,8 @@ use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\PersistentCollection;
 use MongoDB\Driver\Manager;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -61,11 +60,11 @@ class LoadIssueData extends BaseFixture
         $constructionSites = $manager->getRepository(ConstructionSite::class)->findAll();
         foreach ($constructionSites as $constructionSite) {
             for ($i = 0; $i < 3; ++$i) {
-                $this->add($constructionSite, $manager, $getFreshIssueSet(), [], $issueNumber);
-                $this->add($constructionSite, $manager, $getFreshIssueSet(), [self::REGISTRATION_SET], $issueNumber);
-                $this->add($constructionSite, $manager, $getFreshIssueSet(), [self::REGISTRATION_SET | self::RESPONSE_SET], $issueNumber);
-                $this->add($constructionSite, $manager, $getFreshIssueSet(), [self::REGISTRATION_SET | self::RESPONSE_SET | self::REVIEW_SET], $issueNumber);
-                $this->add($constructionSite, $manager, $getFreshIssueSet(), [self::REGISTRATION_SET | self::REVIEW_SET], $issueNumber);
+                $this->add($constructionSite, $manager, $getFreshIssueSet(), $issueNumber, 0);
+                $this->add($constructionSite, $manager, $getFreshIssueSet(), $issueNumber, self::REGISTRATION_SET);
+                $this->add($constructionSite, $manager, $getFreshIssueSet(), $issueNumber, self::REGISTRATION_SET | self::RESPONSE_SET);
+                $this->add($constructionSite, $manager, $getFreshIssueSet(), $issueNumber, self::REGISTRATION_SET | self::RESPONSE_SET | self::REVIEW_SET);
+                $this->add($constructionSite, $manager, $getFreshIssueSet(), $issueNumber, self::REGISTRATION_SET | self::REVIEW_SET);
             }
         }
         $manager->flush();
@@ -73,12 +72,11 @@ class LoadIssueData extends BaseFixture
 
     /**
      * @param $index
-     * @param ArrayCollection $collection
-     * @param bool $nullable
+     * @param Collection $collection
      *
      * @return mixed
      */
-    private function getRandomEntry(&$index, PersistentCollection $collection)
+    private function getRandomEntry(&$index, Collection $collection)
     {
         $index = ($index + 1) % $collection->count();
 
@@ -106,11 +104,10 @@ class LoadIssueData extends BaseFixture
      * @param ConstructionSite $constructionSite
      * @param ObjectManager $manager
      * @param Issue[] $issues
-     * @param array $setStatus
-     * @param $issueNumber
-     * @param int $repetitions
+     * @param int $setStatus
+     * @param int $issueNumber
      */
-    private function add(ConstructionSite $constructionSite, ObjectManager $manager, array $issues, array $setStatus, int &$issueNumber)
+    private function add(ConstructionSite $constructionSite, ObjectManager $manager, array $issues, int &$issueNumber, int $setStatus = 0)
     {
         //use global counters so result of randomization is always the same
         $randomMapCounter = $this->randomMapCounter;

@@ -57,7 +57,6 @@ class LoadConstructionSiteData extends BaseFixture
             }
 
             //stop here because sample data wrongly generated
-            break;
         }
 
         $manager->flush();

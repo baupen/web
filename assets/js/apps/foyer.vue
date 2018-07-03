@@ -109,7 +109,6 @@
                             <span v-else>
                             {{ issue.craftsmanTrade}}<br/>
                             {{ issue.craftsmanName}}
-                                {{issue.craftsmanId}}
                                 </span>
                         </span>
                         <div class="form-group" v-else>
@@ -306,7 +305,6 @@
                     } else {
                         responseLimit = new Date();
                     }
-                    console.log(responseLimit.toISOString());
                 }
                 this.issues.filter(i => i.selected).forEach(i => i.responseLimit = responseLimit.toISOString());
                 this.save();
@@ -328,7 +326,11 @@
                     issue.selected = true;
                 }
 
-                this.selectedTrade = this.craftsmanTrade(issue);
+                if (issue.craftsmanId in this.craftsmanById) {
+                    this.selectedTrade = this.craftsmanById[issue.craftsmanId].trade;
+                } else {
+                    this.selectedTrade = this.craftsmanById[this.craftsmen[0].id].trade;
+                }
 
                 this.$nextTick(() => {
                     let input = this.$refs["trade-" + issue.id][0];

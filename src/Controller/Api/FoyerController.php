@@ -56,6 +56,7 @@ class FoyerController extends ApiController
     private function parseIssuesRequest(Request $request, &$entities, &$errorResponse, &$constructionSite)
     {
         /** @var IssuesRequest $parsedRequest */
+        /** @var ConstructionSite $constructionSite */
         if (!parent::parseConstructionSiteRequest($request, IssuesRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
             return false;
         }
@@ -64,7 +65,7 @@ class FoyerController extends ApiController
         /** @var Issue[] $requestedIssues */
         /** @var \App\Api\Entity\Foyer\Issue[] $issues */
         $issueRepo = $this->getDoctrine()->getRepository(Issue::class);
-        $requestedIssues = $issueRepo->findBy(['id' => $parsedRequest->getIssueIds(), 'registeredAt' => null]);
+        $requestedIssues = $issueRepo->findBy(['id' => $parsedRequest->getIssueIds(), 'registeredAt' => null, 'map' => $constructionSite->getMapIds()]);
         $issues = array_flip($parsedRequest->getIssueIds());
 
         return $this->checkIssueEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
@@ -82,6 +83,7 @@ class FoyerController extends ApiController
     private function parseDispatchIssuesRequest(Request $request, &$issues, &$entities, &$errorResponse, &$constructionSite)
     {
         /** @var \App\Api\Request\Dispatch\IssuesRequest $parsedRequest */
+        /** @var ConstructionSite $constructionSite */
         if (!parent::parseConstructionSiteRequest($request, \App\Api\Request\Dispatch\IssuesRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
             return false;
         }
@@ -93,7 +95,7 @@ class FoyerController extends ApiController
         }
 
         //retrieve all issues from the db
-        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['id' => array_keys($issues), 'registeredAt' => null]);
+        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['id' => array_keys($issues), 'registeredAt' => null, 'map' => $constructionSite->getMapIds()]);
 
         return $this->checkIssueEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
     }
@@ -142,21 +144,16 @@ class FoyerController extends ApiController
     private function checkIssueEntities($requestedIssues, ConstructionSite $constructionSite, $issues, &$entities, &$errorResponse)
     {
         //ensure no issue from another construction site
-        $validIssues = [];
+        $entityLookup = [];
         foreach ($requestedIssues as $entity) {
-            if ($entity->getMap()->getConstructionSite() !== $constructionSite) {
-                $errorResponse = $this->fail(self::INVALID_CONSTRUCTION_SITE);
-
-                return false;
-            }
-            $validIssues[$entity->getId()] = $entity;
+            $entityLookup[$entity->getId()] = $entity;
         }
 
         //sort entities
         $entities = [];
         foreach ($issues as $guid => $issue) {
-            if (array_key_exists($guid, $validIssues)) {
-                $entities[$guid] = $validIssues[$guid];
+            if (array_key_exists($guid, $entityLookup)) {
+                $entities[$guid] = $entityLookup[$guid];
             }
         }
 
@@ -190,7 +187,7 @@ class FoyerController extends ApiController
             return $errorResponse;
         }
 
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['registeredAt' => null], ['isMarked' => 'DESC', 'uploadedAt' => 'DESC']);
+        $issues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['registeredAt' => null, 'map' => $constructionSite->getMapIds()], ['isMarked' => 'DESC', 'uploadedAt' => 'DESC']);
 
         //create response
         $data = new IssuesData();

@@ -127,6 +127,17 @@ class ConstructionSite extends BaseEntity
     }
 
     /**
+     * @return string[]
+     */
+    public function getMapIds()
+    {
+        return array_map(function ($m) {
+            /* @var Map $m */
+            return $m->getId();
+        }, $this->getMaps()->toArray());
+    }
+
+    /**
      * @return Craftsman[]|ArrayCollection
      */
     public function getCraftsmen()

@@ -25,9 +25,12 @@ class IssueTransformer
         $target->setIsMarked($source->getIsMarked());
         $target->setDescription($source->getDescription());
         $target->setWasAddedWithClient($source->getWasAddedWithClient());
-        $target->setCraftsmanId($source->getCraftsman()->getId());
         $target->setImageFilePath($source->getImageFilePath());
         $target->setResponseLimit($source->getResponseLimit());
+
+        if ($source->getCraftsman() !== null) {
+            $target->setCraftsmanId($source->getCraftsman()->getId());
+        }
     }
 
     /**
