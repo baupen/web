@@ -16,8 +16,14 @@
         "filename": "2OG_rechts.pdf"
       },
       {
-        "name": "Treppenhaus",
-        "filename": "2OG_treppenhaus.pdf"
+        "name": "mitte",
+        "filename": null,
+        "children": [
+          {
+            "name": "Treppenhaus",
+            "filename": "2OG_treppenhaus.pdf"
+          }
+        ]
       }
     ]
   }
