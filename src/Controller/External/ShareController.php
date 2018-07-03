@@ -24,9 +24,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class ShareController extends BaseDoctrineController
 {
     /**
-     * @Route("/{identifier}", name="external_share")
+     * @Route("/c/{identifier}", name="external_share_craftsman")
      *
      * @param $identifier
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function shareAction($identifier)
     {
@@ -35,6 +37,18 @@ class ShareController extends BaseDoctrineController
             return $this->forCraftsman($craftsman);
         }
 
+        throw new NotFoundHttpException();
+    }
+
+    /**
+     * @Route("/f/{identifier}", name="external_share_filter")
+     *
+     * @param $identifier
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function shareFilterAction($identifier)
+    {
         $filter = $this->getDoctrine()->getRepository('App:Filter')->findOneBy(['id' => $identifier]);
         if ($filter !== null) {
             throw new \InvalidArgumentException('not implemented yet');
@@ -57,6 +71,7 @@ class ShareController extends BaseDoctrineController
         $filter->setConstructionSite($craftsman->getConstructionSite()->getId());
         $filter->setCraftsmen([$craftsman->getId()]);
         $filter->setRespondedStatus(false);
+        $filter->setRegistrationStatus(true);
 
         $arr['craftsman'] = $craftsman;
         $arr['issues'] = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);

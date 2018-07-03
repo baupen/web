@@ -130,7 +130,6 @@ class IssueControllerTest extends ApiController
         $issue->setWasAddedWithClient(false);
         $issue->setIsMarked(false);
         $issue->setDescription('description 2');
-        $issue->setMap($serverData->getMaps()[0]->getMeta()->getId());
 
         $issue->setStatus(new IssueStatus());
 

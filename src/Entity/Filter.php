@@ -72,7 +72,7 @@ class Filter extends BaseEntity
      *
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $readStatus = null;
+    private $registrationStatus = null;
 
     /**
      * @var bool|null
@@ -229,17 +229,17 @@ class Filter extends BaseEntity
     /**
      * @return bool|null
      */
-    public function getReadStatus(): ?bool
+    public function getRegistrationStatus(): ?bool
     {
-        return $this->readStatus;
+        return $this->registrationStatus;
     }
 
     /**
-     * @param bool|null $readStatus
+     * @param bool|null $registrationStatus
      */
-    public function setReadStatus(?bool $readStatus): void
+    public function setRegistrationStatus(?bool $registrationStatus): void
     {
-        $this->readStatus = $readStatus;
+        $this->registrationStatus = $registrationStatus;
     }
 
     /**

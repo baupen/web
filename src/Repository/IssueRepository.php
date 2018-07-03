@@ -59,6 +59,38 @@ class IssueRepository extends EntityRepository
             $qb->setParameter(':craftsmen', $filter->getCraftsmen());
         }
 
+        if ($filter->getMaps() !== null) {
+            $qb->andWhere('m.id IN (:maps)');
+            $qb->setParameter(':maps', $filter->getMaps());
+        }
+
+        $statusToString = function ($condition) {
+            return 'IS ' . (!$condition ? ' NOT' : '') . 'NULL';
+        };
+        if ($filter->getRegistrationStatus() !== null) {
+            $qb->andWhere('i.registeredAt ' . $statusToString($filter->getRegistrationStatus()));
+        }
+
+        if ($filter->getRespondedStatus() !== null) {
+            $qb->andWhere('i.respondedAt ' . $statusToString($filter->getRespondedStatus()));
+            if ($filter->getRespondedStatus()) {
+                if ($filter->getRespondedStart() !== null) {
+                    $qb->andWhere('i.respondedAt >= :responded_start');
+                    $qb->setParameter(':responded_start', $filter->getRespondedStart());
+                }
+                if ($filter->getRespondedEnd() !== null) {
+                    $qb->andWhere('i.respondedAt <= :responded_end');
+                    $qb->setParameter(':responded_end', $filter->getRespondedEnd());
+                }
+            }
+        }
+
+        if ($filter->getReviewedStatus() !== null) {
+            $qb->andWhere('i.reviewedAt ' . $statusToString($filter->getReviewedStatus()));
+        }
+
+        //more properties missing
+
         return $qb->getQuery()->getResult();
     }
 }
