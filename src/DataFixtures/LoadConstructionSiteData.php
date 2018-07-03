@@ -30,6 +30,15 @@ class LoadConstructionSiteData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
+        $entries = [];
+
+        $handle = fopen(__DIR__ . '/Resources/construction_sites.csv', 'r');
+        while ($handle && ($data = fgetcsv($handle, null, ',')) !== false) {
+            if (count($data) >= 10 && $data[0] !== '') {
+                $entries[] = [$data[0], $data[1], $data[2], $data[3], $data[4]];
+            }
+        }
+
         $entries = [
             ['Sun Park', 'Parkstrasse 12', 7270, 'Davos', 'CH', 'preview.jpg'],
             ['Sun Park (empty)', 'Parkstrasse 12', 7270, 'Davos', 'CH', 'preview2.jpg'],
@@ -47,7 +56,7 @@ class LoadConstructionSiteData extends BaseFixture
             $building->setCountry($entry[4]);
             $manager->persist($building);
 
-            $this->safeCopyToPublic($building->getImageFilePath(), $entry[5]);
+            $this->safeCopyToPublic($building->getImageFilePath(), 'construction_site_images', $entry[5]);
 
             foreach ($appUsers as $appUser) {
                 $building->getConstructionManagers()->add($appUser);

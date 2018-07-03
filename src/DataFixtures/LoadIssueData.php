@@ -92,7 +92,7 @@ class LoadIssueData extends BaseFixture
 
                 $manager->persist($issue);
 
-                $this->safeCopyToPublic($issue->getImageFilePath(), $entry[0]);
+                $this->safeCopyToPublic($issue->getImageFilePath(), 'issue_images', $entry[0]);
             }
         }
         $manager->flush();

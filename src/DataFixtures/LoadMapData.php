@@ -63,7 +63,7 @@ class LoadMapData extends BaseFixture
         $map->setFilename(Uuid::uuid4()->toString() . '.pdf');
         $manager->persist($map);
 
-        $this->safeCopyToPublic($map->getFilePath(), $entry[0]);
+        $this->safeCopyToPublic($map->getFilePath(), 'maps', $entry[0]);
 
         // create children
         if (isset($entry[2])) {

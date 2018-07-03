@@ -15,10 +15,21 @@ use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class LoadCraftsmanData extends BaseFixture
 {
     const ORDER = LoadConstructionSiteData::ORDER + 1;
+
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    public function __construct(SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
+    }
 
     /**
      * Load data fixtures with the passed EntityManager.
@@ -29,24 +40,14 @@ class LoadCraftsmanData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $entries = [];
-
-        $handle = fopen(__DIR__ . '/Resources/craftsmen_list.csv', 'r');
-        while ($handle && ($data = fgetcsv($handle, null, ',')) !== false) {
-            if (count($data) >= 10 && $data[0] !== '') {
-                $entries[] = [$data[1], $data[2], $data[3], $data[10]];
-            }
-        }
+        $json = file_get_contents(__DIR__ . '/Resources/craftsmen.json', 'r');
+        /** @var Craftsman[] $craftsmen */
+        $craftsmen = $this->serializer->deserialize($json, Craftsman::class . '[]', 'json');
 
         $constructionSite = $manager->getRepository(ConstructionSite::class)->findOneBy([]);
-
-        foreach ($entries as $data) {
-            $craftsman = new Craftsman();
+        foreach ($craftsmen as $craftsman) {
             $craftsman->setConstructionSite($constructionSite);
-            $craftsman->setTrade($data[0]);
-            $craftsman->setCompany($data[1]);
-            $craftsman->setContactName($data[2]);
-            $craftsman->setEmail($data[3] . '.example.com');
+            $craftsman->setEmail($craftsman->getEmail() . '.example.com');
             $manager->persist($craftsman);
         }
 

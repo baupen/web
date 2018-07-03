@@ -74,9 +74,10 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
      * copies a file from the resource folder to the public part of the application.
      *
      * @param string $targetFilePath
+     * @param string $resourceFolder
      * @param string $resourceFileName
      */
-    protected function safeCopyToPublic($targetFilePath, $resourceFileName)
+    protected function safeCopyToPublic($targetFilePath, $resourceFolder, $resourceFileName)
     {
         //get target folder & ensure it exists
         $targetFilePath = __DIR__ . '/../../../public/' . $targetFilePath;
@@ -89,6 +90,6 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
         if (file_exists($targetFilePath)) {
             unlink($targetFilePath);
         }
-        copy(__DIR__ . '/../Resources/' . $resourceFileName, $targetFilePath);
+        copy(__DIR__ . '/../Resources/' . $resourceFolder . '/' . $resourceFileName, $targetFilePath);
     }
 }

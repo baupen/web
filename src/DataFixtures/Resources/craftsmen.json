@@ -1,0 +1,92 @@
+[
+  {
+    "company": "Baulink AG",
+    "contactName": "Flurina Rüesch",
+    "trade": "Hochbauzeichner",
+    "email": "fr@baulink.ch"
+  },
+  {
+    "company": "Baulink AG",
+    "contactName": "Dominic Koch",
+    "trade": "Bauleitung",
+    "email": "mmi@baulink.ch"
+  },
+  {
+    "company": "Baulink AG",
+    "contactName": "Hans-Peter Hoffmann",
+    "trade": "Projektleitung",
+    "email": "hph@baulink.ch"
+  },
+  {
+    "company": "Davoser Ingenieure AG (DIAG)",
+    "contactName": "Paul Schweighauser",
+    "trade": "Bauingenieur",
+    "email": "schweighauser@diag-ing.ch"
+  },
+  {
+    "company": "Wildhaber Elektroplanung AG",
+    "contactName": "René Wildhaber",
+    "trade": "Elektroingenieur",
+    "email": "info@wildhaber-elektroplanung.ch"
+  },
+  {
+    "company": "Remo Collenberg",
+    "contactName": "Remo Collenberg",
+    "trade": "Heizungsingeneiur",
+    "email": "remo.collenberg@remocollenberg.ch"
+  },
+  {
+    "company": "Marco Felix AG",
+    "contactName": "Sandro Darms",
+    "trade": "Sanitäringenieur",
+    "email": "s.darms@felix-haustechnik.ch"
+  },
+  {
+    "company": "Kuster + Partner AG",
+    "contactName": "Thomas Kuster",
+    "trade": "Bauphysiker",
+    "email": "chur@kusterpartner.ch"
+  },
+  {
+    "company": "Toneatti AG",
+    "contactName": "Patrick Hager",
+    "trade": "Baumeisterarbeiten",
+    "email": "p.hager@toneattiag.ch"
+  },
+  {
+    "company": "Elekto Rhyner AG",
+    "contactName": "Celso Duarte",
+    "trade": "Elektroinstallationen",
+    "email": "cd@erag.ch"
+  },
+  {
+    "company": "Kunz AG",
+    "contactName": "Alek Tobler",
+    "trade": "Heizungsanlagen",
+    "email": "alek@kunz.ch"
+  },
+  {
+    "company": "Kunz AG",
+    "contactName": "Mario Casanova",
+    "trade": "Lüftungsanlagen",
+    "email": "mario@kunz.ch"
+  },
+  {
+    "company": "Kunz AG",
+    "contactName": "Rico Buchli",
+    "trade": "Sanitäranlagen",
+    "email": "rico@kunz.ch"
+  },
+  {
+    "company": "Bernhard Holzbau AG",
+    "contactName": "Janine Bernhard",
+    "trade": "Kücheneinrichtungen",
+    "email": "jb@holzbernhard.ch"
+  },
+  {
+    "company": "Schindler Aufzüge AG",
+    "contactName": "Remo Caprez",
+    "trade": "Transportanlagen \/ Aufzüge",
+    "email": "remo.caprez@ch.schindler.com"
+  }
+]
