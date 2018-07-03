@@ -17,6 +17,7 @@ export default {
         saved: "Änderungen gespeichert.",
         save: "speichern",
         limit_not_set: "nicht gesetzt",
+        no_craftsman_set: "noch nicht gesetzt",
         remove: "entfernen",
         error: "Es ist ein Fehler aufgetreten. Laden Sie die Seite neu, und versuchen Sie es erneut."
     }

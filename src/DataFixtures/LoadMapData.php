@@ -15,11 +15,21 @@ use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionSite;
 use App\Entity\Map;
 use Doctrine\Common\Persistence\ObjectManager;
-use Ramsey\Uuid\Uuid;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class LoadMapData extends BaseFixture
 {
     const ORDER = LoadConstructionSiteData::ORDER + ClearPublicUploadDir::ORDER + 1;
+
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    public function __construct(SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
+    }
 
     /**
      * Load data fixtures with the passed EntityManager.
@@ -30,46 +40,42 @@ class LoadMapData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $entries = [
-            ['1UG.pdf', '1UG'],
-            ['2OG.pdf', '2OG', [
-                ['2OG_links.pdf', '2OG rechter Bereich'],
-                ['2OG_rechts.pdf', '2OG linker Bereich'],
-                ['2OG_treppenhau.pdf', '2OG Treppenhaus'],
-            ]],
-        ];
+        $json = file_get_contents(__DIR__ . '/Resources/maps.json', 'r');
+        $rawMaps = json_decode($json);
 
-        $constructionSite = $manager->getRepository(ConstructionSite::class)->findOneBy([]);
-
-        foreach ($entries as $entry) {
-            $this->loadMaps($manager, $constructionSite, $entry, null);
+        $constructionSites = $manager->getRepository(ConstructionSite::class)->findAll();
+        foreach ($constructionSites as $constructionSite) {
+            $this->loadMaps($manager, $constructionSite, $rawMaps, null);
         }
+
         $manager->flush();
     }
 
     /**
      * @param ObjectManager $manager
      * @param ConstructionSite $constructionSite
-     * @param array $entry
+     * @param array $rawMaps
      * @param Map|null $parent
      */
-    private function loadMaps(ObjectManager $manager, ConstructionSite $constructionSite, $entry, $parent)
+    private function loadMaps(ObjectManager $manager, ConstructionSite $constructionSite, $rawMaps, $parent)
     {
-        // create map
-        $map = new Map();
-        $map->setConstructionSite($constructionSite);
-        $map->setName($entry[1]);
-        $map->setParent($parent);
-        $map->setFilename(Uuid::uuid4()->toString() . '.pdf');
-        $manager->persist($map);
+        foreach ($rawMaps as $rawMap) {
+            //create map
+            $map = new Map();
+            $map->setConstructionSite($constructionSite);
+            $map->setName($rawMap->name);
+            $map->setParent($parent);
 
-        $this->safeCopyToPublic($map->getFilePath(), 'maps', $entry[0]);
+            //copy image to correct location
+            $map->setFilename($rawMap->filename);
+            $map->setFilename($this->safeCopyToPublic($map->getFilePath(), 'maps'));
 
-        // create children
-        if (isset($entry[2])) {
-            foreach ($entry[2] as $row) {
-                $this->loadMaps($manager, $constructionSite, $row, $map);
+            //create children
+            if (property_exists($rawMap, 'children')) {
+                $this->loadMaps($manager, $constructionSite, $rawMap->children, $map);
             }
+
+            $manager->persist($map);
         }
     }
 

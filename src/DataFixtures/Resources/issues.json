@@ -1,0 +1,29 @@
+[
+  {
+    "imageFilename": "farbfleck.jpg",
+    "description": "Schwarzer Fleck",
+    "isMarked": true,
+    "wasAddedWithClient": false,
+    "positionX": 0.6,
+    "positionY": 0.3,
+    "positionZoomScale": 0.5
+  },
+  {
+    "imageFilename": "parkett.jpg",
+    "description": "Schwarzer Fleck",
+    "isMarked": false,
+    "wasAddedWithClient": false,
+    "positionX": 0.6,
+    "positionY": 0.3,
+    "positionZoomScale": 0.3
+  },
+  {
+    "imageFilename": "steckdose.jpg",
+    "description": "Stackdose eingedrückt",
+    "isMarked": false,
+    "wasAddedWithClient": false,
+    "positionX": 0.4,
+    "positionY": 0.6,
+    "positionZoomScale": 0.7
+  }
+]

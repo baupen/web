@@ -41,14 +41,16 @@ class LoadCraftsmanData extends BaseFixture
     public function load(ObjectManager $manager)
     {
         $json = file_get_contents(__DIR__ . '/Resources/craftsmen.json', 'r');
-        /** @var Craftsman[] $craftsmen */
-        $craftsmen = $this->serializer->deserialize($json, Craftsman::class . '[]', 'json');
 
-        $constructionSite = $manager->getRepository(ConstructionSite::class)->findOneBy([]);
-        foreach ($craftsmen as $craftsman) {
-            $craftsman->setConstructionSite($constructionSite);
-            $craftsman->setEmail($craftsman->getEmail() . '.example.com');
-            $manager->persist($craftsman);
+        $constructionSites = $manager->getRepository(ConstructionSite::class)->findAll();
+        foreach ($constructionSites as $constructionSite) {
+            /** @var Craftsman[] $craftsmen */
+            $craftsmen = $this->serializer->deserialize($json, Craftsman::class . '[]', 'json');
+            foreach ($craftsmen as $craftsman) {
+                $craftsman->setConstructionSite($constructionSite);
+                $craftsman->setEmail($craftsman->getEmail() . '.example.com');
+                $manager->persist($craftsman);
+            }
         }
 
         $manager->flush();

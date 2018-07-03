@@ -1,0 +1,18 @@
+[
+  {
+    "name": "Sun Park",
+    "streetAddress": "Parkstrasse 12",
+    "postalCode": 7270,
+    "locality": "Davos",
+    "country": "CH",
+    "imageFilename": "sun_park.jpg"
+  },
+  {
+    "name": "Swim Land",
+    "streetAddress": "Ab dem Boden 72",
+    "postalCode": 2334,
+    "locality": "Bern",
+    "country": "CH",
+    "imageFilename": "swim_land.jpg"
+  }
+]

@@ -43,7 +43,7 @@ class ConstructionSite extends BaseEntity
      *
      * @ORM\Column(type="text", nullable=true)
      */
-    private $imageFileName;
+    private $imageFilename;
 
     /**
      * @var ConstructionManager[]|ArrayCollection
@@ -97,17 +97,17 @@ class ConstructionSite extends BaseEntity
     /**
      * @return null|string
      */
-    public function getImageFileName(): ?string
+    public function getImageFilename(): ?string
     {
-        return $this->imageFileName;
+        return $this->imageFilename;
     }
 
     /**
-     * @param null|string $imageFileName
+     * @param null|string $imageFilename
      */
-    public function setImageFileName(?string $imageFileName): void
+    public function setImageFilename(?string $imageFilename): void
     {
-        $this->imageFileName = $imageFileName;
+        $this->imageFilename = $imageFilename;
     }
 
     /**
