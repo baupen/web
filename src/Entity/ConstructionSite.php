@@ -131,10 +131,12 @@ class ConstructionSite extends BaseEntity
      */
     public function getMapIds()
     {
-        return array_map(function ($m) {
-            /* @var Map $m */
-            return $m->getId();
-        }, $this->getMaps()->toArray());
+        $ids = [];
+        foreach ($this->getMaps() as $map) {
+            $ids[] = $map->getId();
+        }
+
+        return $ids;
     }
 
     /**

@@ -366,11 +366,14 @@
             },
             confirm: function () {
                 this.isLoading = true;
+                console.log("hi");
                 axios.post("/api/foyer/issue/confirm", {
                     "constructionSiteId": this.constructionSiteId,
                     "issueIds": this.issues.filter(c => c.selected).map(c => c.id)
                 }).then((response) => {
                     this.isLoading = false;
+                    console.log("done");
+                    console.log(response);
                     let issueNumberLookup = [];
                     response.data.numberIssues.forEach(i => {
                         issueNumberLookup[i.id] = i.number;
@@ -382,6 +385,7 @@
                         c.selected = false;
                     });
 
+                    console.log("here1");
                     this.displayInfoFlash(this.$t("added_to_register"));
                     window.setTimeout(e => this.issues = this.issues.filter(i => i.number === null), 3000);
                 });
@@ -505,7 +509,6 @@
             craftsmanById: function () {
                 let res = [];
                 this.craftsmen.forEach(c => res[c.id] = c);
-                console.log(res);
                 return res;
             },
             sortedIssues: function () {
@@ -544,6 +547,8 @@
                 },
                 error => {
                     this.displayErrorFlash(this.$t("error") + " (" + error.response.data.message + ")");
+                    console.log("request failed");
+                    console.log(error.response.data);
                     return Promise.reject(error);
                 }
             );

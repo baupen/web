@@ -31,7 +31,7 @@ class Issue extends BaseEntity
     /**
      * @var int|null
      *
-     * @ORM\Column(type="integer", nullable=true, unique=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $number;
 
