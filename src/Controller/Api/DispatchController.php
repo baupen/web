@@ -180,7 +180,7 @@ class DispatchController extends ApiController
         $email->setSubject($subject);
         $email->setBody($body);
         $email->setActionText($translator->trans('email.action_text', [], 'dispatch'));
-        $email->setActionLink($this->generateUrl('external_share', ['identifier' => $craftsman->getEmailIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL));
+        $email->setActionLink($this->generateUrl('external_share_craftsman', ['identifier' => $craftsman->getEmailIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL));
         $this->fastSave($email);
 
         if ($emailService->sendEmail($email)) {
