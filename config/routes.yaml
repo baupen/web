@@ -11,3 +11,8 @@ app_api_external:
     resource: "../src/Controller/Api/External/"
     type:     annotation
     prefix:   /api/external
+
+app_external:
+    resource: "../src/Controller/External/"
+    type:     annotation
+    prefix:   /external

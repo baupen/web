@@ -18,20 +18,6 @@ services:
         resource: '../src/*'
         exclude: '../src/{Entity,Migrations,Tests}'
 
-    # controllers are imported separately to make sure services can be injected
-    # as action arguments even if you don't extend any base controller class
-    App\Controller\:
-        resource: '../src/Controller'
-        tags: ['controller.service_arguments']
-
-    App\Controller\Api\:
-        resource: '../src/Controller/Api'
-        tags: ['controller.service_arguments']
-
-    App\Controller\Api\External\:
-        resource: '../src/Controller/Api/External'
-        tags: ['controller.service_arguments']
-
     App\Service\EmailService:
         arguments: ["@mailer", "@logger","@twig","%env(MAILER_SENDER)%", "%env(SUPPORT_EMAIL)%"]
 
