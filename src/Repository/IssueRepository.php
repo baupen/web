@@ -65,7 +65,7 @@ class IssueRepository extends EntityRepository
         }
 
         $statusToString = function ($condition) {
-            return 'IS ' . (!$condition ? ' NOT' : '') . 'NULL';
+            return 'IS ' . ($condition ? 'NOT ' : '') . 'NULL';
         };
         if ($filter->getRegistrationStatus() !== null) {
             $qb->andWhere('i.registeredAt ' . $statusToString($filter->getRegistrationStatus()));

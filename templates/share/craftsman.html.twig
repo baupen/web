@@ -6,5 +6,7 @@
 {% trans_default_domain "share" %}
 
 {% block public_content %}
-<img src="{{ path("external_image_map_craftsman", {"identifier" => craftsman.id, "map": issues[0].map.id}) }}">
+    {% if issues|length > 0 %}
+        <img src="{{ path("external_image_map_craftsman", {"identifier": craftsman.emailIdentifier, "map": issues[0].map.id}) }}">
+    {% endif %}
 {% endblock %}

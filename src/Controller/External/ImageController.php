@@ -50,8 +50,26 @@ class ImageController extends BaseDoctrineController
         $filter->setReviewedStatus(false);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
 
-        $folder = __DIR__ . '/../../../public/upload/60D43E3F-0FEF-49E0-A97B-9675A8AFD56B/e92a195e-739f-4739-a65b-e4a8a353ed0d.jpg';
+        return $this->file($this->getOrCreateIssuesImage($map, $issues));
+    }
 
-        return $this->file($folder);
+    private function getOrCreateIssuesImage(Map $map, array $issues)
+    {
+        $folder = __DIR__ . '/../../../public/generated/' . $map->getConstructionSite()->getId() . '/map/' . $map->getId();
+        $filename = hash('sha256', implode(',', array_map(function ($issue) {
+            /* @var Issue $issue */
+            return $issue->getId();
+        }, $issues)));
+        $filePath = $folder . '/' . $filename;
+
+        if (file_exists($filePath)) {
+            return $filePath;
+        }
+
+        if (!file_exists($folder)) {
+            mkdir($folder, 0777, true);
+        }
+
+        return null;
     }
 }
