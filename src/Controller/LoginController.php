@@ -74,11 +74,13 @@ class LoginController extends BaseLoginController
             $request,
             function ($form) use ($emailService, $translator, $logger, $request) {
                 /* @var FormInterface $form */
+                /** @var ConstructionManager $constructionManager */
+                $constructionManager = $form->getData();
                 //check if user exists
-                $exitingUser = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $form->getData()['email']]);
+                $exitingUser = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
                 if ($exitingUser === null) {
-                    $logger->info('could not reset password of unknown user ' . $form->getData()['email']);
-                    $this->displaySuccess($translator->trans('recover.fail.email_not_found', [], 'login'));
+                    $logger->info('could not reset password of unknown user ' . $constructionManager->getEmail());
+                    $this->displayError($translator->trans('recover.fail.email_not_found', [], 'login'));
 
                     return $form;
                 }
