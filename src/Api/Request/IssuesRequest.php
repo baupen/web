@@ -14,22 +14,22 @@ namespace App\Api\Request;
 class IssuesRequest extends ConstructionSiteRequest
 {
     /**
-     * @var string[]|null
+     * @var string[]
      */
     private $issueIds;
 
     /**
-     * @return null|string[]
+     * @return string[]
      */
-    public function getIssueIds(): ?array
+    public function getIssueIds(): array
     {
         return $this->issueIds;
     }
 
     /**
-     * @param null|string[] $issueIds
+     * @param string[] $issueIds
      */
-    public function setIssueIds(?array $issueIds): void
+    public function setIssueIds(array $issueIds): void
     {
         $this->issueIds = $issueIds;
     }

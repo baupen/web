@@ -21,16 +21,9 @@ class IssueTransformer
      */
     public function writeApiProperties($source, $target)
     {
-        $target->setMap($source->getMap()->getName());
-        $target->setIsMarked($source->getIsMarked());
         $target->setDescription($source->getDescription());
-        $target->setWasAddedWithClient($source->getWasAddedWithClient());
         $target->setImageFilePath($source->getImageFilePath());
         $target->setResponseLimit($source->getResponseLimit());
-
-        if ($source->getCraftsman() !== null) {
-            $target->setCraftsmanId($source->getCraftsman()->getId());
-        }
     }
 
     /**
@@ -39,9 +32,7 @@ class IssueTransformer
      */
     public function writeEntityProperties($source, $target)
     {
-        $target->setIsMarked($source->getIsMarked());
         $target->setDescription($source->getDescription());
-        $target->setWasAddedWithClient($source->getWasAddedWithClient());
         $target->setResponseLimit($source->getResponseLimit());
     }
 }

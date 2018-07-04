@@ -41,14 +41,26 @@ class IssueTransformer extends BatchTransformer
         $issue = new \App\Api\Entity\Foyer\Issue($entity->getId());
         $this->issueTransformer->writeApiProperties($entity, $issue);
 
+        $issue->setMap($entity->getMap()->getName());
+        $issue->setIsMarked($entity->getIsMarked());
+        $issue->setWasAddedWithClient($entity->getWasAddedWithClient());
+        if ($entity->getCraftsman() !== null) {
+            $issue->setCraftsmanId($entity->getCraftsman()->getId());
+        }
         $issue->setUploadedAt($entity->getUploadedAt());
         $issue->setUploadByName($entity->getUploadBy()->getName());
 
         return $issue;
     }
 
+    /**
+     * @param \App\Api\Entity\Foyer\Issue $issue
+     * @param Issue $entity
+     */
     public function fromApi(\App\Api\Entity\Foyer\Issue $issue, Issue $entity)
     {
+        $entity->setIsMarked($issue->getIsMarked());
+        $entity->setWasAddedWithClient($issue->getWasAddedWithClient());
         $this->issueTransformer->writeEntityProperties($issue, $entity);
     }
 }
