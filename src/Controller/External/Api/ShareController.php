@@ -75,7 +75,7 @@ class ShareController extends ApiController
      *
      * @return bool
      */
-    private function parseIssueRequest(Request $request, $identifier, Craftsman $craftsman, &$issue, &$errorResponse)
+    private function parseIssueRequest(Request $request, $identifier, &$craftsman, &$issue, &$errorResponse)
     {
         /** @var Craftsman $craftsman */
         if (!$this->parseIdentifierRequest($identifier, $craftsman, $errorResponse)) {
@@ -98,7 +98,7 @@ class ShareController extends ApiController
     }
 
     /**
-     * @Route("/c/{identifier}/maps/list", name="external_api_share_craftsman_maps_list", methods={"POST"})
+     * @Route("/c/{identifier}/maps/list", name="external_api_share_craftsman_maps_list", methods={"GET"})
      *
      * @param $identifier
      * @param MapTransformer $mapTransformer
@@ -125,7 +125,7 @@ class ShareController extends ApiController
         /** @var Issue[][] $issuesPerMap */
         $issuesPerMap = [];
         foreach ($issues as $issue) {
-            $maps[$issue->getMap()->getId()] = $issue;
+            $maps[$issue->getMap()->getId()] = $issue->getMap();
             $issuesPerMap[$issue->getMap()->getId()][] = $issue;
         }
 
