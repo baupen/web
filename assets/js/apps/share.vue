@@ -38,7 +38,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="map in maps" class="clickable">
+                        <tr v-for="map in maps" class="clickable" @click.prevent="scrollTo('map-' + map.id)">
                             <td>
                                 {{map.name}}<br/>
                                 <span class="small">{{map.context}}</span>
@@ -50,7 +50,7 @@
                     </table>
                     <div class="map-content">
                         <div class="container">
-                            <div v-for="map in maps" class="map-wrapper">
+                            <div :ref="'map-' + map.id"  v-for="map in maps" class="map-wrapper">
                                 <h2>{{map.name}}</h2>
                                 <p v-if="map.context !== ''" class="text-secondary"> {{ map.context }} </p>
                                 <div class="card-columns">
@@ -121,6 +121,11 @@
             }
         },
         methods: {
+            scrollTo: function (ref) {
+                const messageDisplay = this.$refs[ref][0];
+                console.log(messageDisplay);
+                messageDisplay.scrollIntoView();
+            },
             openLightbox: function (element) {
                 this.lightbox.enabled = true;
                 this.lightbox.imageFilePath = element.imageFilePath;
