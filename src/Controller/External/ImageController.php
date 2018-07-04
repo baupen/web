@@ -114,6 +114,7 @@ class ImageController extends BaseDoctrineController
         $xCoordinate = $issue->getPositionX() * $xSize;
 
         //white font; orange circle
+        //colors sometime do not work and show up as black. just choose another color as close as possible to workaround
         $white = $this->createColor($image, 255, 255, 255);
         $orange = $this->createColor($image, 255, 204, 51);
 
