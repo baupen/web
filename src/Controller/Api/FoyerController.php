@@ -68,7 +68,9 @@ class FoyerController extends ApiController
         $requestedIssues = $issueRepo->findBy(['id' => $parsedRequest->getIssueIds(), 'registeredAt' => null, 'map' => $constructionSite->getMapIds()]);
         $issues = array_flip($parsedRequest->getIssueIds());
 
-        return $this->orderEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
+        $this->orderEntities($requestedIssues, $issues, $entities);
+
+        return true;
     }
 
     /**
@@ -97,7 +99,9 @@ class FoyerController extends ApiController
         //retrieve all issues from the db
         $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['id' => array_keys($issues), 'registeredAt' => null, 'map' => $constructionSite->getMapIds()]);
 
-        return $this->orderEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
+        $this->orderEntities($requestedIssues, $issues, $entities);
+
+        return true;
     }
 
     /**
@@ -135,9 +139,7 @@ class FoyerController extends ApiController
     /**
      * @param Issue[] $requestedIssues
      * @param \App\Api\Entity\Foyer\Issue[] $issues
-     * @param $entities
-     *
-     * @return bool
+     * @param Issue[] $entities
      */
     private function orderEntities($requestedIssues, $issues, &$entities)
     {
@@ -154,8 +156,6 @@ class FoyerController extends ApiController
                 $entities[$guid] = $entityLookup[$guid];
             }
         }
-
-        return true;
     }
 
     /**
