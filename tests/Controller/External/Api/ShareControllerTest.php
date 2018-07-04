@@ -91,6 +91,20 @@ class ShareControllerTest extends ApiController
     /**
      * @throws ORMException
      */
+    public function testCraftsman()
+    {
+        $response = $this->authenticatedRequest("/read");
+        $mapData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($mapData->data);
+        $this->assertNotNull($mapData->data->craftsman);
+        $this->assertObjectHasAttribute("name", $mapData->data->craftsman);
+        $this->assertObjectHasAttribute("trade", $mapData->data->craftsman);
+    }
+
+    /**
+     * @throws ORMException
+     */
     public function testRespond()
     {
         $response = $this->authenticatedRequest("/maps/list");

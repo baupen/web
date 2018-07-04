@@ -1,10 +1,12 @@
-{% extends 'public_layout.html.twig' %}
+{% extends 'layout_base.html.twig' %}
 
 {% block title %}{{ "craftsman.title"|transchoice(issues|length) }}{% endblock %}
 {% block description %}{{ "craftsman.description"|trans({"%craftsman%": craftsman.name}) }}{% endblock %}
 
 {% trans_default_domain "share" %}
 
-{% block public_content %}
-    <img src="{{ path("external_image_map_craftsman", {"identifier": craftsman.emailIdentifier, "map": issues[0].map.id}) }}">
+{% block content %}
+    <div id="share">
+
+    </div>
 {% endblock %}

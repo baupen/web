@@ -21,6 +21,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class LoadIssueData extends BaseFixture
 {
     const ORDER = LoadConstructionSiteData::ORDER + LoadConstructionManagerData::ORDER + LoadCraftsmanData::ORDER + ClearPublicUploadDir::ORDER + 1;
+    const MULTIPLICATION_FACTOR = 10;
 
     /**
      * @var SerializerInterface
@@ -57,7 +58,7 @@ class LoadIssueData extends BaseFixture
         $issueNumber = 1;
         $constructionSites = $manager->getRepository(ConstructionSite::class)->findAll();
         foreach ($constructionSites as $constructionSite) {
-            for ($i = 0; $i < 3; ++$i) {
+            for ($i = 0; $i < self::MULTIPLICATION_FACTOR; ++$i) {
                 $this->add($constructionSite, $manager, $getFreshIssueSet(), $issueNumber, 0);
                 $this->add($constructionSite, $manager, $getFreshIssueSet(), $issueNumber, self::REGISTRATION_SET);
                 $this->add($constructionSite, $manager, $getFreshIssueSet(), $issueNumber, self::REGISTRATION_SET | self::RESPONSE_SET);

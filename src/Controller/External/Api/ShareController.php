@@ -12,8 +12,10 @@
 namespace App\Controller\External\Api;
 
 use App\Api\Request\Share\IssueRequest;
+use App\Api\Response\Data\CraftsmanData;
 use App\Api\Response\Data\MapsData;
 use App\Api\Response\Data\ProcessingEntitiesData;
+use App\Api\Transformer\Share\CraftsmanTransformer;
 use App\Api\Transformer\Share\IssueTransformer;
 use App\Api\Transformer\Share\MapTransformer;
 use App\Controller\Api\Base\ApiController;
@@ -95,6 +97,26 @@ class ShareController extends ApiController
         }
 
         return true;
+    }
+
+    /**
+     * @Route("/c/{identifier}/read", name="external_api_share_craftsman_read", methods={"GET"})
+     *
+     * @param $identifier
+     *
+     * @return Response
+     */
+    public function readAction($identifier, CraftsmanTransformer $craftsmanTransformer)
+    {
+        /** @var Craftsman $craftsman */
+        if (!$this->parseIdentifierRequest($identifier, $craftsman, $errorResponse)) {
+            return $errorResponse;
+        }
+
+        $data = new CraftsmanData();
+        $data->setCraftsman($craftsmanTransformer->toApi($craftsman));
+
+        return $this->success($data);
     }
 
     /**
