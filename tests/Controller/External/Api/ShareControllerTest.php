@@ -83,6 +83,7 @@ class ShareControllerTest extends ApiController
                 $this->assertObjectHasAttribute("description", $issue);
                 $this->assertObjectHasAttribute("imageFilePath", $issue);
                 $this->assertObjectHasAttribute("responseLimit", $issue);
+                $this->assertObjectHasAttribute("number", $issue);
                 $this->assertObjectHasAttribute("id", $issue);
             }
         }

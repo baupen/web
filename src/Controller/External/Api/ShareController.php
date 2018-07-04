@@ -156,7 +156,9 @@ class ShareController extends ApiController
         $apiMaps = [];
         foreach ($maps as $key => $map) {
             $apiMap = $mapTransformer->toApi($map);
-            $apiMap->setImageFilePath($this->generateUrl('external_image_map_craftsman', ['map' => $map->getId(), 'identifier' => $craftsman->getEmailIdentifier()]));
+            if ($map->getFilename() !== null) {
+                $apiMap->setImageFilePath($this->generateUrl('external_image_map_craftsman', ['map' => $map->getId(), 'identifier' => $craftsman->getEmailIdentifier()]));
+            }
             $apiMap->setIssues($issueTransformer->toApiMultiple($issuesPerMap[$key]));
             $apiMaps[] = $apiMap;
         }

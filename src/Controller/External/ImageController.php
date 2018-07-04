@@ -79,12 +79,12 @@ class ImageController extends BaseDoctrineController
         $renderedMapPath = $folder . '/render.jpg';
         if (!file_exists($folder)) {
             mkdir($folder, 0777, true);
-        } else {
-            if (!file_exists($renderedMapPath)) {
-                $mapFilePath = $pubFolder . '/' . $map->getFilePath();
-                $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=80 -dUseCropBox -dPDFFitPage -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
-                exec($command);
-            }
+        }
+        if (!file_exists($renderedMapPath)) {
+            $mapFilePath = $pubFolder . '/' . $map->getFilePath();
+            $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=80 -dUseCropBox -dPDFFitPage -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
+            exec($command);
+            dump($command);
         }
 
         //draw the issues on the map
@@ -114,8 +114,8 @@ class ImageController extends BaseDoctrineController
         $xCoordinate = $issue->getPositionX() * $xSize;
 
         //white font; orange circle
-        $white = imagecolorallocate($image, 255, 255, 255);
-        $orange = imagecolorallocate($image, 255, 140, 0);
+        $white = $this->createColor($image, 255, 255, 255);
+        $orange = $this->createColor($image, 255, 204, 51);
 
         //get text size
         $font = __DIR__ . '/../../../assets/fonts/OpenSans-Regular.ttf';
@@ -134,5 +134,32 @@ class ImageController extends BaseDoctrineController
 
         //draw text
         imagettftext($image, $fontSize, 0, $xCoordinate - ($txtWidth / 2), $yCoordinate + ($txtHeight / 2), $white, $font, (string)$issue->getNumber());
+    }
+
+    /**
+     * @param resource $image
+     * @param int $red
+     * @param int $green
+     * @param int $blue
+     *
+     * @return int
+     */
+    private function createColor($image, $red, $green, $blue)
+    {
+        //get color from palette
+        $color = imagecolorexact($image, $red, $green, $blue);
+        if ($color === -1) {
+            //color does not exist...
+            //test if we have used up palette
+            if (imagecolorstotal($image) >= 255) {
+                //palette used up; pick closest assigned color
+                $color = imagecolorclosest($image, $red, $green, $blue);
+            } else {
+                //palette NOT used up; assign new color
+                $color = imagecolorallocate($image, $red, $green, $blue);
+            }
+        }
+
+        return $color;
     }
 }

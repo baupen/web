@@ -600,45 +600,6 @@
         cursor: pointer;
     }
 
-    .lightbox-thumbnail {
-        height: 3rem;
-        width: auto;
-        cursor: pointer;
-    }
-
-    .lightbox {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.6);
-        z-index: 100 !important;
-    }
-
-    .lightbox-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        max-height: 100%;
-        transform: translate(-50%, -50%);
-    }
-
-    .lightbox-content img {
-        width: 100%;
-    }
-
-    .lightbox-close {
-        position: absolute;
-        right: 0;
-        top: 0;
-        font-size: 3rem;
-        margin-right: 0.5rem;
-        cursor: pointer;
-        color: white;
-        margin-top: 0.2rem;
-    }
-
     .file-upload-field > .form-control {
         width: 100%;
         padding: 1rem;

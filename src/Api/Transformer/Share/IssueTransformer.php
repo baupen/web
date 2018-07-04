@@ -43,6 +43,7 @@ class IssueTransformer extends BatchTransformer
 
         $issue->setRegisteredAt($entity->getRegisteredAt());
         $issue->setRegistrationByName($entity->getRegistrationBy()->getName());
+        $issue->setNumber($entity->getNumber());
 
         return $issue;
     }

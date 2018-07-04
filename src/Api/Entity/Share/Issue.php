@@ -24,6 +24,11 @@ class Issue extends \App\Api\Entity\Base\Issue
     private $registrationByName;
 
     /**
+     * @var int
+     */
+    private $number;
+
+    /**
      * @return \DateTime
      */
     public function getRegisteredAt(): \DateTime
@@ -53,5 +58,21 @@ class Issue extends \App\Api\Entity\Base\Issue
     public function setRegistrationByName(string $registrationByName): void
     {
         $this->registrationByName = $registrationByName;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumber(): int
+    {
+        return $this->number;
+    }
+
+    /**
+     * @param int $number
+     */
+    public function setNumber(int $number): void
+    {
+        $this->number = $number;
     }
 }

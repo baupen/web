@@ -9,9 +9,11 @@ export default {
             name: "Karte"
         },
         open_issues: "Offene Pendenzen",
+        send_response: "erledigt",
+        remove_response: "rückgängig",
         next_response_limit: "Nächste Frist",
         issue: {
-            responseTime: "Frist"
+            response_limit: "Frist"
         }
     }
 }

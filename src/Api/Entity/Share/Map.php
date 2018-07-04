@@ -24,9 +24,9 @@ class Map extends \App\Api\Entity\Base\Map
     private $issues;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getImageFilePath(): string
+    public function getImageFilePath(): ?string
     {
         return $this->imageFilePath;
     }

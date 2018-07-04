@@ -85,7 +85,8 @@ if (document.getElementById("share") != null) {
     });
 
     library.add(
-        require('@fortawesome/fontawesome-pro-light/faCheck')
+        require('@fortawesome/fontawesome-pro-light/faCheck'),
+        require('@fortawesome/fontawesome-pro-light/faTimes')
     );
 
     new Vue({
