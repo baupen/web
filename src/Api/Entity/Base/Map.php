@@ -14,7 +14,7 @@ namespace App\Api\Entity\Base;
 class Map extends BaseEntity
 {
     /**
-     * @var bool
+     * @var string
      */
     private $name;
 
@@ -24,17 +24,17 @@ class Map extends BaseEntity
     private $context;
 
     /**
-     * @return bool
+     * @return string
      */
-    public function isName(): bool
+    public function isName(): string
     {
         return $this->name;
     }
 
     /**
-     * @param bool $name
+     * @param string $name
      */
-    public function setName(bool $name): void
+    public function setName(string $name): void
     {
         $this->name = $name;
     }

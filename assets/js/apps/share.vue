@@ -4,15 +4,41 @@
         <section class="public-wrapper">
             <template>
                 <h1 v-if="issues === null">{{ $tc("loading_open_issues")}}</h1>
-                <h1 v-else>{{ $tc("open_issues", issuesLength, {count: issuesLength})}}</h1>
+                <h1 v-else>{{ $tc("open_issues_header", issuesLength, {count: issuesLength})}}</h1>
             </template>
-            <p v-if="craftsman !== null" class="text-secondary">{{ $t("of_craftsman", {craftsman: craftsman.name}) }}</p>
+            <p v-if="craftsman !== null" class="text-secondary">{{ $t("of_craftsman", {craftsman: craftsman.name})
+                }}</p>
             <div class="public-content">
                 <div v-if="issues !== null && issues.length === 0">
                     <h2 class="display-1">{{ $t("thanks") }}</h2>
                 </div>
-                <div v-else>
-
+                <div class="row" v-else>
+                    <div class="col-md-6">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>{{ $t("map.name")}}</th>
+                                <th>{{ $t("open_issues")}}</th>
+                                <th>{{ $t("next_response_limit")}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="map in maps" class="clickable">
+                                <td>
+                                    {{map.name}}<br/>
+                                    <span class="small">{{map.context}}</span>
+                                </td>
+                                <td>{{map.issues.filter(i => !i.responded).length}}</td>
+                                <td>{{nextResponseLimit(map.issues.filter(i => !i.responded))}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <div v-for="map in maps">
+                            <img :src="map.imageFilePath" class="img-responsive"/>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -36,23 +62,6 @@
             }
         },
         methods: {
-            sendEmails: function () {
-                this.isLoading = true;
-                axios.post("/api/dispatch", {
-                    "constructionSiteId": this.constructionSiteId,
-                    "craftsmanIds": this.craftsmen.filter(c => c.selected).map(c => c.id)
-                }).then((response) => {
-                    this.isLoading = false;
-                    this.craftsmen.filter(c => c.selected).forEach(c => {
-                        if (response.data.successfulIds.includes(c.id)) {
-                            c.lastEmailSent = (new Date()).toISOString();
-                        }
-                        c.selected = false;
-                    });
-
-                    this.displayInfoFlash(this.$t("emails_sent"));
-                });
-            },
             displayInfoFlash: function (content) {
                 this.displayFlash(content, "success");
             },
@@ -77,16 +86,18 @@
                 }
                 return moment(value).fromNow();
             },
-            selectAll: function () {
-                let newVal = !(this.indeterminate || this.selected);
-                this.craftsmen.forEach(c => c.selected = newVal);
-            },
-            sortBy: function (key) {
-                if (this.sortKey === key) {
-                    this.sortOrders[key] *= -1;
-                } else {
-                    this.sortKey = key;
+            nextResponseLimit: function (array) {
+                let currentResponseLimit = null;
+                array.forEach(i => {
+                    if (currentResponseLimit === null || (i.responseLimit !== null && i.responseLimit < currentResponseLimit)) {
+                        currentResponseLimit = i.responseLimit;
+                    }
+                });
+
+                if (currentResponseLimit === null) {
+                    return "-"
                 }
+                return this.formatDateTime(currentResponseLimit);
             }
         },
         computed: {
@@ -115,9 +126,14 @@
             axios.get("/external/api/share/c/" + this.identifier + "/read").then((response) => {
                 this.craftsman = response.data.craftsman;
                 axios.get("/external/api/share/c/" + this.identifier + "/maps/list").then((response) => {
+                    console.log(response);
                     this.maps = response.data.maps;
+                    console.log(this.maps);
                     let issues = [];
-                    this.maps.forEach(m => issues = issues.concat(m.issues));
+                    this.maps.forEach(m => {
+                        issues = issues.concat(m.issues);
+                        m.issues.forEach(i => i.responded = false);
+                    });
                     this.issues = issues;
                     this.isLoading = false;
                 });
@@ -128,7 +144,7 @@
 </script>
 
 <style>
-    .filter-field {
-        max-width: 400px;
+    .clickable {
+        cursor: pointer;
     }
 </style>
