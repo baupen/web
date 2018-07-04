@@ -99,7 +99,7 @@
                                    @click.prevent.stop="" @keyup.enter.prevent.stop="saveDescription"
                                    @keyup.escape.prevent.stop="abortDescription"/>
 
-                            <button class="btn btn-secondary" @click="saveCraftsman">{{$t("save")}}</button>
+                            <button class="btn btn-secondary" @click="saveDescription">{{$t("save")}}</button>
                         </div>
                     </td>
                     <td>
