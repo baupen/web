@@ -18,8 +18,8 @@
         <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav mr-auto">
                 {{ own_macros.nav_item(path("dashboard"), "dashboard.title"|trans({}, "dashboard")) }}
-                {{ own_macros.nav_item(path("dispatch"), "dispatch.title"|trans({}, "dispatch")) }}
                 {{ own_macros.nav_item(path("foyer"), "foyer.title"|trans({}, "foyer")) }}
+                {{ own_macros.nav_item(path("dispatch"), "dispatch.title"|trans({}, "dispatch")) }}
             </ul>
             <ul class="navbar-nav">
                 {{ own_macros.nav_item(path("login_logout"), "logout.title"|trans({}, "login")) }}
