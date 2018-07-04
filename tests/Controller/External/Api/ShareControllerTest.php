@@ -9,15 +9,10 @@
 namespace App\Tests\Controller\Api;
 
 
-use App\Api\Request\ConstructionSiteRequest;
-use App\Api\Request\CraftsmenRequest;
 use App\Api\Request\Share\IssueRequest;
 use App\Entity\Craftsman;
 use App\Enum\ApiStatus;
-use App\Service\Interfaces\EmailServiceInterface;
 use App\Tests\Controller\External\Api\Base\ApiController;
-use App\Tests\Mock\MockEmailService;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 
 class ShareControllerTest extends ApiController

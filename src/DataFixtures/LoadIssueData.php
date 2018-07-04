@@ -13,11 +13,9 @@ namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionSite;
-use App\Entity\Craftsman;
 use App\Entity\Issue;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ObjectManager;
-use MongoDB\Driver\Manager;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class LoadIssueData extends BaseFixture

@@ -25,7 +25,6 @@ class MapTransformer extends BatchTransformer
      * CraftsmanTransformer constructor.
      *
      * @param \App\Api\Transformer\Base\MapTransformer $mapTransformer
-     * @param IssueTransformer $issueTransformer
      */
     public function __construct(\App\Api\Transformer\Base\MapTransformer $mapTransformer)
     {

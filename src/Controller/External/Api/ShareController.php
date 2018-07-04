@@ -102,6 +102,7 @@ class ShareController extends ApiController
      *
      * @param $identifier
      * @param MapTransformer $mapTransformer
+     * @param IssueTransformer $issueTransformer
      *
      * @return Response
      */

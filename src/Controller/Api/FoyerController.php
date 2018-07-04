@@ -68,7 +68,7 @@ class FoyerController extends ApiController
         $requestedIssues = $issueRepo->findBy(['id' => $parsedRequest->getIssueIds(), 'registeredAt' => null, 'map' => $constructionSite->getMapIds()]);
         $issues = array_flip($parsedRequest->getIssueIds());
 
-        return $this->checkIssueEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
+        return $this->orderEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
     }
 
     /**
@@ -97,7 +97,7 @@ class FoyerController extends ApiController
         //retrieve all issues from the db
         $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['id' => array_keys($issues), 'registeredAt' => null, 'map' => $constructionSite->getMapIds()]);
 
-        return $this->checkIssueEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
+        return $this->orderEntities($requestedIssues, $constructionSite, $issues, $entities, $errorResponse);
     }
 
     /**
@@ -134,14 +134,12 @@ class FoyerController extends ApiController
 
     /**
      * @param Issue[] $requestedIssues
-     * @param ConstructionSite $constructionSite
      * @param \App\Api\Entity\Foyer\Issue[] $issues
      * @param $entities
-     * @param $errorResponse
      *
      * @return bool
      */
-    private function checkIssueEntities($requestedIssues, ConstructionSite $constructionSite, $issues, &$entities, &$errorResponse)
+    private function orderEntities($requestedIssues, $issues, &$entities)
     {
         //ensure no issue from another construction site
         $entityLookup = [];
