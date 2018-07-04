@@ -67,8 +67,10 @@ class LoadMapData extends BaseFixture
             $map->setParent($parent);
 
             //copy image to correct location
-            $map->setFilename($rawMap->filename);
-            $map->setFilename($this->safeCopyToPublic($map->getFilePath(), 'maps'));
+            if ($rawMap->filename !== null) {
+                $map->setFilename($rawMap->filename);
+                $map->setFilename($this->safeCopyToPublic($map->getFilePath(), 'maps'));
+            }
 
             //create children
             if (property_exists($rawMap, 'children')) {
