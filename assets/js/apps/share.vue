@@ -2,41 +2,60 @@
     <div id="share">
 
         <section class="public-wrapper">
-            <template>
-                <h1 v-if="issues === null">{{ $tc("loading_open_issues")}}</h1>
-                <h1 v-else>{{ $tc("open_issues_header", issuesLength, {count: issuesLength})}}</h1>
-            </template>
-            <p v-if="craftsman !== null" class="text-secondary">{{ $t("of_craftsman", {craftsman: craftsman.name})
-                }}</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <template>
+                        <h1 v-if="issues === null">{{ $tc("loading_open_issues")}}</h1>
+                        <h1 v-else>{{ $tc("open_issues_header", issuesLength, {count: issuesLength})}}</h1>
+                    </template>
+                    <p v-if="craftsman !== null" class="text-secondary">
+                        {{ $t("of_craftsman", {craftsman: craftsman.name}) }}
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-outline-primary btn-lg float-right">{{$t("print")}}</button>
+                </div>
+            </div>
+
             <div class="public-content">
                 <div v-if="issues !== null && issues.length === 0">
                     <h2 class="display-1">{{ $t("thanks") }}</h2>
                 </div>
-                <div class="row" v-else>
-                    <div class="col-md-6">
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
-                                <th>{{ $t("map.name")}}</th>
-                                <th>{{ $t("open_issues")}}</th>
-                                <th>{{ $t("next_response_limit")}}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr v-for="map in maps" class="clickable">
-                                <td>
-                                    {{map.name}}<br/>
-                                    <span class="small">{{map.context}}</span>
-                                </td>
-                                <td>{{map.issues.filter(i => !i.responded).length}}</td>
-                                <td>{{nextResponseLimit(map.issues.filter(i => !i.responded))}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-md-6">
-                        <div v-for="map in maps">
-                            <img :src="map.imageFilePath" class="img-responsive"/>
+                <div v-else>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>{{ $t("map.name")}}</th>
+                            <th>{{ $t("open_issues")}}</th>
+                            <th>{{ $t("next_response_limit")}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="map in maps" class="clickable">
+                            <td>
+                                {{map.name}}<br/>
+                                <span class="small">{{map.context}}</span>
+                            </td>
+                            <td>{{map.issues.filter(i => !i.responded).length}}</td>
+                            <td>{{nextResponseLimit(map.issues.filter(i => !i.responded))}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="map-content">
+                        <div class="container">
+                            <div v-for="map in maps" class="map-wrapper">
+                                <h2>{{map.name}}</h2>
+                                <p v-if="map.context !== ''" class="text-secondary"> {{ map.context }} </p>
+                                <div class="card-columns">
+                                    <div class="card" v-for="issue in map.issues">
+                                        <img class="card-img-top" :src="issue.imageFilePath" alt="Card image cap">
+                                        <div class="card-body">
+                                            <p class="card-text">{{issue.description}}</p>
+                                            <p class="card-text"><small class="text-muted">{{issue.registrationByName}} - {{formatDateTime(issue.registeredAt)}}</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -146,5 +165,19 @@
 <style>
     .clickable {
         cursor: pointer;
+    }
+
+    .map-content {
+        padding-top: 4rem;
+        padding-bottom: 2rem;
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .container {
+        max-width: 1400px;
+    }
+
+    .map-wrapper {
+        margin-top: 5rem;
     }
 </style>
