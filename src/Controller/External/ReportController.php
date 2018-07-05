@@ -14,45 +14,40 @@ namespace App\Controller\External;
 use App\Controller\Base\BaseDoctrineController;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
-use App\Entity\Issue;
-use App\Entity\Map;
-use App\Service\Interfaces\ImageServiceInterface;
+use App\Service\Interfaces\ReportServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/image")
+ * @Route("/report")
  */
-class ImageController extends BaseDoctrineController
+class ReportController extends BaseDoctrineController
 {
     /**
-     * @Route("/map/{map}/c/{identifier}/{hash}", name="external_image_map_craftsman")
+     * @Route("/c/{identifier}/{hash}", name="external_report_craftsman")
      *
-     * @param Map $map
      * @param $identifier
      * @param $hash
-     * @param ImageServiceInterface $imageService
+     * @param ReportServiceInterface $reportService
      *
      * @return Response
      */
-    public function imageAction(Map $map, $identifier, ImageServiceInterface $imageService)
+    public function craftsmanAction($identifier, $hash, ReportServiceInterface $reportService)
     {
         /** @var Craftsman $craftsman */
         $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['emailIdentifier' => $identifier]);
-        if ($craftsman === null || $map->getConstructionSite() !== $craftsman->getConstructionSite()) {
+        if ($craftsman === null) {
             throw new NotFoundHttpException();
         }
 
         $filter = new Filter();
         $filter->setConstructionSite($craftsman->getConstructionSite()->getId());
         $filter->setCraftsmen([$craftsman->getId()]);
-        $filter->setMaps([$map->getId()]);
         $filter->setRespondedStatus(false);
         $filter->setRegistrationStatus(true);
         $filter->setReviewedStatus(false);
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
 
-        return $this->file($imageService->generateMapImage($map, $issues));
+        return $this->file($reportService->generateReport($craftsman->getConstructionSite(), $filter));
     }
 }

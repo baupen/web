@@ -476,4 +476,25 @@ class Issue extends BaseEntity
 
         return null;
     }
+
+    /**
+     * returns a unique code for all possible status.
+     *
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        $res = 1;
+        if ($this->getRegisteredAt() !== null) {
+            $res = $res | 2;
+        }
+        if ($this->getRespondedAt() !== null) {
+            $res = $res | 4;
+        }
+        if ($this->getReviewedAt() !== null) {
+            $res = $res | 8;
+        }
+
+        return $res;
+    }
 }

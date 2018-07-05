@@ -67,4 +67,29 @@ class HashHelper
             )
         );
     }
+
+    /**
+     * creates a hash from a 2d arrays of entities using the guid.
+     *
+     * @param IdTrait[][] $entities
+     *
+     * @return string
+     */
+    public static function hash2dEntities($entities)
+    {
+        $res = [];
+        foreach ($entities as $innerEntities) {
+            $res[] = implode(
+                ',',
+                array_map(
+                    function ($issue) {
+                        /* @var IdTrait $issue */
+                        return $issue->getId();
+                    },
+                    $innerEntities)
+            );
+        }
+
+        return hash('sha256', implode(',', $res));
+    }
 }

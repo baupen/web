@@ -23,7 +23,8 @@ use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
-use App\Helper\HashHelper;
+use App\Entity\Traits\IdTrait;
+use App\Helper\IssueHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -145,23 +146,30 @@ class ShareController extends ApiController
         $filter->setReviewedStatus(false);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
 
-        /** @var Map[] $maps */
-        $maps = [];
-        /** @var Issue[][] $issuesPerMap */
-        $issuesPerMap = [];
-        foreach ($issues as $issue) {
-            $maps[$issue->getMap()->getId()] = $issue->getMap();
-            $issuesPerMap[$issue->getMap()->getId()][] = $issue;
-        }
+        /* @var Map[] $orderedMaps */
+        /* @var Issue[][] $issuesPerMap */
+        IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
 
         //convert to api format
         $apiMaps = [];
-        foreach ($maps as $key => $map) {
+        foreach ($orderedMaps as $key => $map) {
             $apiMap = $mapTransformer->toApi($map);
             if ($map->getFilename() !== null) {
+                //generate hash from ids of issues
+                $hash = hash('sha256',
+                    implode(
+                        ',',
+                        array_map(
+                            function ($issue) {
+                                /* @var IdTrait $issue */
+                                return $issue->getId();
+                            },
+                            $issuesPerMap[$key])
+                    )
+                );
                 $apiMap->setImageFilePath(
                     $this->generateUrl('external_image_map_craftsman',
-                        ['map' => $map->getId(), 'identifier' => $craftsman->getEmailIdentifier(), 'hash' => HashHelper::hashEntities($issuesPerMap[$key])]
+                        ['map' => $map->getId(), 'identifier' => $craftsman->getEmailIdentifier(), 'hash' => $hash]
                     )
                 );
             }
