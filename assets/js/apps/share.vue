@@ -1,6 +1,11 @@
 <template>
     <div id="share">
 
+        <vue-headful
+                :title="title"
+                :description="description"
+        />
+
         <div v-if="lightbox.enabled" class="lightbox" @click="closeLightbox()">
             <div class="lightbox-content">
                 <img :src="lightbox.imageFilePath"/>
@@ -11,12 +16,9 @@
         <section class="public-wrapper">
             <div class="row">
                 <div class="col-md-6">
-                    <template>
-                        <h1 v-if="issues === null">{{ $tc("loading_open_issues")}}</h1>
-                        <h1 v-else>{{ $tc("open_issues_header", issuesLength, {count: issuesLength})}}</h1>
-                    </template>
-                    <p v-if="craftsman !== null" class="text-secondary">
-                        {{ $t("of_craftsman", {craftsman: craftsman.name}) }}
+                    <h1>{{title}}</h1>
+                    <p v-if="description !== ''" class="text-secondary">
+                        {{description}}
                     </p>
                 </div>
                 <div class="col-md-6">
@@ -50,7 +52,7 @@
                     </table>
                     <div class="map-content">
                         <div class="container">
-                            <div :ref="'map-' + map.id"  v-for="map in maps" class="map-wrapper">
+                            <div :ref="'map-' + map.id" v-for="map in maps" class="map-wrapper">
                                 <h2>{{map.name}}</h2>
                                 <p v-if="map.context !== ''" class="text-secondary"> {{ map.context }} </p>
                                 <div class="card-columns">
@@ -161,8 +163,7 @@
                 axios.post("/external/api/share/c/" + this.identifier + "/issue/respond", {issueId: issue.id}).then((response) => {
                     if (response.data.successfulIds.length > 0) {
                         issue.responded = true;
-                        console.log("here");
-                        console.log(issue);
+                        this.adaptImageFilePath(issue.map);
                     }
                 });
             },
@@ -170,8 +171,7 @@
                 axios.post("/external/api/share/c/" + this.identifier + "/issue/remove_response", {issueId: issue.id}).then((response) => {
                     if (response.data.successfulIds.length > 0) {
                         issue.responded = false;
-                        console.log("here");
-                        console.log(issue);
+                        this.adaptImageFilePath(issue.map);
                     }
                 });
             },
@@ -187,16 +187,58 @@
                     return "-"
                 }
                 return this.formatDateTime(currentResponseLimit);
-            }
+            },
+            adaptImageFilePath: function (map) {
+                let str = map.issues.filter(i => !i.responded).map(i => i.id).join(",");
+                this.hash(str).then(hash => {
+                    let prepared = map.imageFilePath.substring(0, map.imageFilePath.lastIndexOf("/"));
+                    console.log(prepared);
+                    map.imageFilePath = prepared + "/" + hash;
+                })
+            },
+            hash: function (message) {
+                // We transform the string into an arraybuffer.
+                const buffer = new TextEncoder("utf-8").encode(message);
+                return crypto.subtle.digest("SHA-256", buffer).then(function (hash) {
+                    const hexCodes = [];
+                    const view = new DataView(hash);
+                    for (let i = 0; i < view.byteLength; i += 4) {
+                        // Using getUint32 reduces the number of iterations needed (we process 4 bytes each time)
+                        const value = view.getUint32(i);
+                        // toString(16) will give the hex representation of the number without padding
+                        const stringValue = value.toString(16);
+                        // We use concatenation and slice for padding
+                        const padding = '00000000';
+                        const paddedValue = (padding + stringValue).slice(-padding.length);
+                        hexCodes.push(paddedValue);
+                    }
+
+                    // Join all the hex strings into one
+                    return hexCodes.join("");
+                });
+            },
         },
         computed: {
             issuesLength: function () {
                 if (this.issues === null) {
                     return 0;
                 } else {
-                    return this.issues.length;
+                    return this.issues.filter(i => !i.responded).length;
                 }
-            }
+            },
+            title: function () {
+                if (this.issues !== null) {
+                    return this.$tc("open_issues_header", this.issuesLength, {count: this.issuesLength});
+                }
+                return this.$t("loading_open_issues");
+            },
+            description: function () {
+                if (this.craftsman !== null) {
+                    return this.$t("of_craftsman", {craftsman: this.craftsman.name});
+                }
+                return "";
+
+            },
         },
         mounted() {
             // Add a response interceptor
@@ -218,8 +260,10 @@
                     this.maps = response.data.maps;
                     let issues = [];
                     this.maps.forEach(m => {
+                        m.issues.forEach(i => i.map = m);
                         issues = issues.concat(m.issues);
                     });
+
                     issues.forEach(i => this.$set(i, "responded", false));
                     this.issues = issues;
                     this.isLoading = false;
@@ -260,4 +304,15 @@
         padding: 0.5rem;
         background-color: rgba(255, 255, 255, 0.7);
     }
+
+    @media (max-width : 680px) {
+        .map-wrapper {
+            margin-top: 2rem;
+        }
+
+        .map-content {
+            padding-top: 2rem;
+        }
+    }
+
 </style>

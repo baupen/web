@@ -23,6 +23,7 @@ use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
+use App\Helper\HashHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -141,6 +142,7 @@ class ShareController extends ApiController
         $filter->setCraftsmen([$craftsman->getId()]);
         $filter->setRespondedStatus(false);
         $filter->setRegistrationStatus(true);
+        $filter->setReviewedStatus(false);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
 
         /** @var Map[] $maps */
@@ -157,7 +159,11 @@ class ShareController extends ApiController
         foreach ($maps as $key => $map) {
             $apiMap = $mapTransformer->toApi($map);
             if ($map->getFilename() !== null) {
-                $apiMap->setImageFilePath($this->generateUrl('external_image_map_craftsman', ['map' => $map->getId(), 'identifier' => $craftsman->getEmailIdentifier()]));
+                $apiMap->setImageFilePath(
+                    $this->generateUrl('external_image_map_craftsman',
+                        ['map' => $map->getId(), 'identifier' => $craftsman->getEmailIdentifier(), 'hash' => HashHelper::hashEntities($issuesPerMap[$key])]
+                    )
+                );
             }
             $apiMap->setIssues($issueTransformer->toApiMultiple($issuesPerMap[$key]));
             $apiMaps[] = $apiMap;

@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class LoadIssueData extends BaseFixture
 {
     const ORDER = LoadConstructionSiteData::ORDER + LoadConstructionManagerData::ORDER + LoadCraftsmanData::ORDER + ClearPublicUploadDir::ORDER + 1;
-    const MULTIPLICATION_FACTOR = 10;
+    const MULTIPLICATION_FACTOR = 3;
 
     /**
      * @var SerializerInterface

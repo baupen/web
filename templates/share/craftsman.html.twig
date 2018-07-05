@@ -1,7 +1,7 @@
 {% extends 'layout_base.html.twig' %}
 
-{% block title %}{{ "craftsman.title"|transchoice(issues|length) }}{% endblock %}
-{% block description %}{{ "craftsman.description"|trans({"%craftsman%": craftsman.name}) }}{% endblock %}
+{% block title %}{{ "craftsman.title"|trans }}{% endblock %}
+{% block description %}{{ "craftsman.description"|trans }}{% endblock %}
 
 {% trans_default_domain "share" %}
 

@@ -12,7 +12,9 @@ Vue.use(Vuex);
 // components
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 import {library} from '@fortawesome/fontawesome-svg-core'
+import vueHeadful from 'vue-headful';
 
+Vue.component('vue-headful', vueHeadful);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 import DispatchMessages from './localization/dispatch'

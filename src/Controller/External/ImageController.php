@@ -16,6 +16,7 @@ use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
+use App\Helper\HashHelper;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,14 +27,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class ImageController extends BaseDoctrineController
 {
     /**
-     * @Route("/map/{map}/c/{identifier}/", name="external_image_map_craftsman")
+     * @Route("/map/{map}/c/{identifier}/{hash}", name="external_image_map_craftsman")
      *
      * @param Map $map
      * @param $identifier
+     * @param $hash
      *
      * @return Response
      */
-    public function imageAction(Map $map, $identifier)
+    public function imageAction(Map $map, $identifier, $hash)
     {
         /** @var Craftsman $craftsman */
         $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['emailIdentifier' => $identifier]);
@@ -50,25 +52,28 @@ class ImageController extends BaseDoctrineController
         $filter->setReviewedStatus(false);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
 
-        return $this->file($this->getOrCreateIssuesImage($map, $issues));
+        $fileHash = HashHelper::hashEntities($issues);
+        if ($fileHash !== $hash) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->file($this->getOrCreateIssuesImage($map, $issues, $fileHash));
     }
 
     /**
      * @param Map $map
      * @param Issue[] $issues
+     * @param $filename
      *
      * @return string
      */
-    private function getOrCreateIssuesImage(Map $map, array $issues)
+    private function getOrCreateIssuesImage(Map $map, array $issues, $filename)
     {
         $pubFolder = __DIR__ . '/../../../public';
 
         //construct filename & directly return if already exists
         $folder = $pubFolder . '/generated/' . $map->getConstructionSite()->getId() . '/map/' . $map->getId();
-        $filename = hash('sha256', implode(',', array_map(function ($issue) {
-            /* @var Issue $issue */
-            return $issue->getId();
-        }, $issues))) . '.jpg';
+        $filename = $filename . '.jpg';
         $filePath = $folder . '/' . $filename;
 
         if (file_exists($filePath) && false) {
@@ -84,18 +89,15 @@ class ImageController extends BaseDoctrineController
             $mapFilePath = $pubFolder . '/' . $map->getFilePath();
             $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=80 -dUseCropBox -dPDFFitPage -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
             exec($command);
-            dump($command);
         }
 
         //draw the issues on the map
+        $sourceImage = imagecreatefromjpeg($renderedMapPath);
         foreach ($issues as $issue) {
-            $sourceImage = imagecreatefromjpeg($renderedMapPath);
-
             $this->draw($issue, $sourceImage);
-
-            imagejpeg($sourceImage, $filePath, 90);
-            imagedestroy($sourceImage);
         }
+        imagejpeg($sourceImage, $filePath, 90);
+        imagedestroy($sourceImage);
 
         return $filePath;
     }

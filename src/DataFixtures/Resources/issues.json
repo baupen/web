@@ -25,5 +25,68 @@
     "positionX": 0.4,
     "positionY": 0.6,
     "positionZoomScale": 0.7
+  },
+  {
+    "imageFilename": "color.jpg",
+    "description": "Viel zu viele Farben",
+    "isMarked": false,
+    "wasAddedWithClient": true,
+    "positionX": 0.3,
+    "positionY": 0.25,
+    "positionZoomScale": 0.7
+  },
+  {
+    "imageFilename": "colordots.jpeg",
+    "description": "Unebene Oberfläche",
+    "isMarked": true,
+    "wasAddedWithClient": false,
+    "positionX": 0.7,
+    "positionY": 0.75,
+    "positionZoomScale": 0.6
+  },
+  {
+    "imageFilename": "drawing.jpeg",
+    "description": "Weiss übermalen",
+    "isMarked": false,
+    "wasAddedWithClient": false,
+    "positionX": 0.3,
+    "positionY": 0.72,
+    "positionZoomScale": 0.21
+  },
+  {
+    "imageFilename": "gummi_bears.jpeg",
+    "description": "Unebene oberfläche",
+    "isMarked": false,
+    "wasAddedWithClient": false,
+    "positionX": 0.9,
+    "positionY": 0.72,
+    "positionZoomScale": 0.21
+  },
+  {
+    "imageFilename": "marker.jpeg",
+    "description": "Unebene oberfläche",
+    "isMarked": false,
+    "wasAddedWithClient": false,
+    "positionX": 0.5,
+    "positionY": 0.72,
+    "positionZoomScale": 0.91
+  },
+  {
+    "imageFilename": "pinsel.jpeg",
+    "description": "Dreckige oberfläche",
+    "isMarked": false,
+    "wasAddedWithClient": false,
+    "positionX": 0.5,
+    "positionY": 0.12,
+    "positionZoomScale": 0.5
+  },
+  {
+    "imageFilename": "sweets.jpeg",
+    "description": "Bitte essen",
+    "isMarked": false,
+    "wasAddedWithClient": false,
+    "positionX": 0.1,
+    "positionY": 0.24,
+    "positionZoomScale": 0.3
   }
 ]

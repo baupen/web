@@ -14,7 +14,6 @@ namespace App\Controller\External;
 use App\Controller\Base\BaseDoctrineController;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
-use App\Entity\Issue;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -67,15 +66,6 @@ class ShareController extends BaseDoctrineController
         $craftsman->setLastOnlineVisit(new \DateTime());
         $this->fastSave($craftsman);
 
-        $filter = new Filter();
-        $filter->setConstructionSite($craftsman->getConstructionSite()->getId());
-        $filter->setCraftsmen([$craftsman->getId()]);
-        $filter->setRespondedStatus(false);
-        $filter->setRegistrationStatus(true);
-
-        $arr['craftsman'] = $craftsman;
-        $arr['issues'] = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
-
-        return $this->render('share/craftsman.html.twig', $arr);
+        return $this->render('share/craftsman.html.twig');
     }
 }

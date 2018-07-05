@@ -1,6 +1,6 @@
 craftsman:
-  title: 'one: Eine offene Pendenz|some: %count% offene Pendenzen'
-  description: 'von %craftsman%'
+  title: '? offene Pendenzen'
+  description: 'von '
 
 email:
   # is appended to all subjects
