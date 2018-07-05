@@ -24,7 +24,6 @@ abstract class AbstractApiController extends FixturesTestCase
      */
     protected function checkResponse(Response $response, $apiStatus, $message = '')
     {
-        dump($response->getContent());
         $content = str_replace("\u003E", ">", $response->getContent());
         $this->assertFalse(mb_strpos($content, "\u00") > 0, mb_strpos($content, "\u00"));
         if (ApiStatus::SUCCESS === $apiStatus) {
