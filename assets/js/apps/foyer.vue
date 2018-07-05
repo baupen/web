@@ -75,6 +75,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="issue in sortedIssues" v-on:click.prevent="selectIssue(issue)"
+                    class="selectable"
                     v-bind:class="{ 'table-active': !onDelete && issue.selected, 'table-success': issue.number > 0, 'table-danger': onDelete && issue.selected }">
                     <td class="minimal-width">
                         <span v-if="issue.number">#{{issue.number}}</span>
@@ -98,14 +99,17 @@
                                    @click.prevent.stop="" @keyup.enter.prevent.stop="saveDescription"
                                    @keyup.escape.prevent.stop="abortDescription"/>
 
-                            <button class="btn btn-secondary" @click="saveCraftsman">{{$t("save")}}</button>
+                            <button class="btn btn-secondary" @click="saveDescription">{{$t("save")}}</button>
                         </div>
                     </td>
                     <td>
                         <span v-if="selectedTrade === null || !issue.selected" class="editable"
                               @click.prevent.stop="startEditCraftsman(issue)">
+                            <span v-if="issue.craftsmanId == null">{{$t("no_craftsman_set")}}</span>
+                            <span v-else>
                             {{ issue.craftsmanTrade}}<br/>
                             {{ issue.craftsmanName}}
+                                </span>
                         </span>
                         <div class="form-group" v-else>
                             <select class="form-control form-control-sm" v-model="selectedTrade"
@@ -116,14 +120,21 @@
                                     {{ trade }}
                                 </option>
                             </select>
-                            <select class="form-control form-control-sm" v-model="selectedCraftsman"
-                                    @click.prevent.stop=""
-                                    @keyup.escape.prevent.stop="abortCraftsman"
-                                    :ref="'craftsman-' + issue.id">
-                                <option v-for="craftsman in craftsmanByTrade" v-bind:value="craftsman">
-                                    {{ craftsman.name }}
-                                </option>
-                            </select>
+                            <template v-if="craftsmenByTrade.length > 1">
+                                <select class="form-control form-control-sm" v-model="selectedCraftsman"
+                                        @click.prevent.stop=""
+                                        @keyup.escape.prevent.stop="abortCraftsman"
+                                        :ref="'craftsman-' + issue.id">
+                                    <option v-for="craftsman in craftsmenByTrade" v-bind:value="craftsman">
+                                        {{ craftsman.name }}
+                                    </option>
+                                </select>
+                            </template>
+                            <template v-else>
+                                <div class="form-control-preselected">
+                                    <span>{{selectedCraftsman.name}}</span>
+                                </div>
+                            </template>
                             <button class="btn btn-secondary" @click="saveCraftsman">{{$t("save")}}</button>
                         </div>
                     </td>
@@ -204,7 +215,6 @@
                 de: de,
                 issues: [],
                 craftsmen: null,
-                craftsmenLookup: null,
                 trades: [],
                 isLoading: true,
                 constructionSiteId: null,
@@ -214,8 +224,8 @@
                 editDescription: null,
                 selectedTrade: null,
                 selectedCraftsman: null,
-                craftsmanPerTrade: [],
                 editResponseLimit: null,
+                lastSelectedIssue: null,
                 lightbox: {
                     enabled: false,
                     issue: null
@@ -232,7 +242,7 @@
             }
         },
         methods: {
-            processFile: function ($event) {
+            processFile: function (event) {
                 let data = new FormData();
                 data.append('message', JSON.stringify({
                     "constructionSiteId": this.constructionSiteId,
@@ -274,23 +284,30 @@
                 if (!issue.selected) {
                     issue.selected = true;
                 }
+                this.lastSelectedIssue = issue;
                 if (issue.responseLimit !== null) {
                     this.editResponseLimit = Date.parse(issue.responseLimit);
                 } else {
-                    this.editResponseLimit = Date.now();
+                    this.editResponseLimit = new Date();
                 }
 
                 this.$nextTick(() => {
                     let input = this.$refs["response-limit-" + issue.id][0];
-                    console.log(input);
                     //input.focus();
                 });
             },
             saveResponseLimit: function () {
-                if (typeof this.editResponseLimit.toISOString === "function") {
-                    this.issues.filter(i => i.selected).forEach(i => i.responseLimit = this.editResponseLimit.toISOString());
-                    this.save();
+                //library destroys element if not set newly
+                let responseLimit = this.editResponseLimit;
+                if (typeof responseLimit.toISOString !== "function") {
+                    if (this.lastSelectedIssue.responseLimit !== null) {
+                        responseLimit = Date.parse(issue.responseLimit);
+                    } else {
+                        responseLimit = new Date();
+                    }
                 }
+                this.issues.filter(i => i.selected).forEach(i => i.responseLimit = responseLimit.toISOString());
+                this.save();
                 this.abortResponseLimit();
             },
             removeResponseLimit: function () {
@@ -302,17 +319,18 @@
                 this.editResponseLimit = null;
             },
             changedTrade: function () {
-                if (!this.selectedTrade in this.craftsmanPerTrade) {
-                    this.craftsmanPerTrade[this.selectedTrade] = this.craftsmen.filter(c => c.trade === this.selectedTrade)[0];
-                }
-                this.selectedCraftsman = this.craftsmanPerTrade[this.selectedTrade];
+                this.selectedCraftsman = this.craftsmenByTrade[0];
             },
             startEditCraftsman: function (issue) {
                 if (!issue.selected) {
                     issue.selected = true;
                 }
 
-                this.selectedTrade = this.craftsmanTrade(issue);
+                if (issue.craftsmanId in this.craftsmanById) {
+                    this.selectedTrade = this.craftsmanById[issue.craftsmanId].trade;
+                } else {
+                    this.selectedTrade = this.craftsmanById[this.craftsmen[0].id].trade;
+                }
 
                 this.$nextTick(() => {
                     let input = this.$refs["trade-" + issue.id][0];
@@ -348,11 +366,14 @@
             },
             confirm: function () {
                 this.isLoading = true;
+                console.log("hi");
                 axios.post("/api/foyer/issue/confirm", {
                     "constructionSiteId": this.constructionSiteId,
                     "issueIds": this.issues.filter(c => c.selected).map(c => c.id)
                 }).then((response) => {
                     this.isLoading = false;
+                    console.log("done");
+                    console.log(response);
                     let issueNumberLookup = [];
                     response.data.numberIssues.forEach(i => {
                         issueNumberLookup[i.id] = i.number;
@@ -364,6 +385,7 @@
                         c.selected = false;
                     });
 
+                    console.log("here1");
                     this.displayInfoFlash(this.$t("added_to_register"));
                     window.setTimeout(e => this.issues = this.issues.filter(i => i.number === null), 3000);
                 });
@@ -453,21 +475,21 @@
                 }
             },
             craftsmanTrade: function (issue) {
-                if (issue.craftsmanId in this.craftsmenLookup) {
-                    return this.craftsmenLookup[issue.craftsmanId].trade;
+                if (issue.craftsmanId in this.craftsmanById) {
+                    return this.craftsmanById[issue.craftsmanId].trade;
                 }
                 return "-";
             },
             craftsmanName: function (issue) {
-                if (issue.craftsmanId in this.craftsmenLookup) {
-                    return this.craftsmenLookup[issue.craftsmanId].name;
+                if (issue.craftsmanId in this.craftsmanById) {
+                    return this.craftsmanById[issue.craftsmanId].name;
                 }
                 return "-";
             },
             refreshComputedIssueProperties: function () {
-                if (this.issues !== null && this.craftsmenLookup !== null) {
-                    this.issues.filter(i => i.craftsmanId in this.craftsmenLookup).forEach(i => {
-                        const craftsman = this.craftsmenLookup[i.craftsmanId];
+                if (this.issues !== null && this.craftsmen !== null) {
+                    this.issues.filter(i => i.craftsmanId in this.craftsmanById).forEach(i => {
+                        const craftsman = this.craftsmanById[i.craftsmanId];
                         i.craftsmanName = craftsman.name;
                         i.craftsmanTrade = craftsman.trade;
                     })
@@ -481,8 +503,13 @@
             selected: function () {
                 return this.issues.filter(c => !c.selected).length === 0;
             },
-            craftsmanByTrade: function () {
+            craftsmenByTrade: function () {
                 return this.craftsmen.filter(c => c.trade === this.selectedTrade);
+            },
+            craftsmanById: function () {
+                let res = [];
+                this.craftsmen.forEach(c => res[c.id] = c);
+                return res;
             },
             sortedIssues: function () {
                 const sortKey = this.sortKey;
@@ -519,8 +546,9 @@
                     return response.data;
                 },
                 error => {
-                    console.log(error.response.data);
                     this.displayErrorFlash(this.$t("error") + " (" + error.response.data.message + ")");
+                    console.log("request failed");
+                    console.log(error.response.data);
                     return Promise.reject(error);
                 }
             );
@@ -545,13 +573,6 @@
                     "constructionSiteId": this.constructionSiteId
                 }).then((response) => {
                     this.craftsmen = response.data.craftsmen;
-
-                    this.craftsmenLookup = [];
-                    this.craftsmen.forEach(c => this.craftsmenLookup[c.id] = c);
-
-                    this.craftsmanPerTrade = [];
-                    this.craftsmen.forEach(c => this.craftsmanPerTrade[c.trade] = c);
-
                     this.trades = response.data.craftsmen.map(a => a.trade).unique();
                     this.refreshComputedIssueProperties();
                 });
@@ -579,48 +600,17 @@
         cursor: pointer;
     }
 
-    .lightbox-thumbnail {
-        height: 3rem;
-        width: auto;
-        cursor: pointer;
-    }
-
-    .lightbox {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.6);
-        z-index: 100 !important;
-    }
-
-    .lightbox-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        max-height: 100%;
-        transform: translate(-50%, -50%);
-    }
-
-    .lightbox-content img {
-        width: 100%;
-    }
-
-    .lightbox-close {
-        position: absolute;
-        right: 0;
-        top: 0;
-        font-size: 3rem;
-        margin-right: 0.5rem;
-        cursor: pointer;
-        color: white;
-        margin-top: 0.2rem;
-    }
-
     .file-upload-field > .form-control {
         width: 100%;
         padding: 1rem;
         margin: 0.5rem 0;
+    }
+
+    input[type=checkbox] {
+        transform: scale(1.4);
+    }
+
+    .form-control-preselected {
+        padding: 0.5rem;
     }
 </style>

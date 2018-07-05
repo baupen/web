@@ -42,7 +42,7 @@ class ExceptionListener
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         //catch only api errors
-        if (mb_strpos($event->getRequest()->getPathInfo(), '/api') !== 0) {
+        if (mb_strpos($event->getRequest()->getPathInfo(), '/api') !== 0 && mb_strpos($event->getRequest()->getPathInfo(), '/external/api') !== 0) {
             return;
         }
 

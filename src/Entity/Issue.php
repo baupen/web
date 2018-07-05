@@ -31,7 +31,7 @@ class Issue extends BaseEntity
     /**
      * @var int|null
      *
-     * @ORM\Column(type="integer", nullable=true, unique=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $number;
 
@@ -471,7 +471,7 @@ class Issue extends BaseEntity
     public function getImageFilePath(): ?string
     {
         if ($this->getImageFilename() !== null) {
-            return 'upload/' . $this->getMap()->getConstructionSite()->getId() . '/issue/' . $this->getImageFilename();
+            return '/upload/' . $this->getMap()->getConstructionSite()->getId() . '/issue/' . $this->getImageFilename();
         }
 
         return null;

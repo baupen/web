@@ -11,27 +11,13 @@
 
 namespace App\Tests\Controller\Api\External;
 
-use App\Api\External\Entity\Base\BaseEntity;
-use App\Api\External\Entity\Building;
-use App\Api\External\Entity\Craftsman;
 use App\Api\External\Entity\Issue;
 use App\Api\External\Entity\IssuePosition;
 use App\Api\External\Entity\IssueStatus;
-use App\Api\External\Entity\Map;
 use App\Api\External\Entity\ObjectMeta;
-use App\Api\External\Request\ReadRequest;
-use App\Controller\Api\External\Base\ExternalApiController;
 use App\Controller\Api\External\IssueController;
-use App\Controller\Api\External\ReadController;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\External\Base\ApiController;
-use App\Tests\Controller\Base\FixturesTestCase;
-use App\Tests\Controller\ServerData;
-use Ramsey\Uuid\Uuid;
-use Symfony\Bundle\FrameworkBundle\Client;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\Response;
 
 class IssueControllerTest extends ApiController
 {
@@ -130,7 +116,6 @@ class IssueControllerTest extends ApiController
         $issue->setWasAddedWithClient(false);
         $issue->setIsMarked(false);
         $issue->setDescription('description 2');
-        $issue->setMap($serverData->getMaps()[0]->getMeta()->getId());
 
         $issue->setStatus(new IssueStatus());
 

@@ -12,7 +12,9 @@ Vue.use(Vuex);
 // components
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 import {library} from '@fortawesome/fontawesome-svg-core'
+import vueHeadful from 'vue-headful';
 
+Vue.component('vue-headful', vueHeadful);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 import DispatchMessages from './localization/dispatch'
@@ -60,7 +62,7 @@ if (document.getElementById("foyer") != null) {
         require('@fortawesome/fontawesome-pro-light/faSort'),
         require('@fortawesome/fontawesome-pro-solid/faStar'),
         require('@fortawesome/fontawesome-pro-light/faStar'),
-    require('@fortawesome/fontawesome-pro-light/faTimes')
+        require('@fortawesome/fontawesome-pro-light/faTimes')
     );
 
     new Vue({
@@ -68,5 +70,31 @@ if (document.getElementById("foyer") != null) {
         el: '#foyer',
         template: '<Foyer/>',
         components: {Foyer}
+    });
+}
+
+
+import ShareMessages from './localization/share'
+import Share from './apps/share'
+
+if (document.getElementById("share") != null) {
+    const messagesShare = ShareMessages;
+
+    const lang = document.documentElement.lang.substr(0, 2);
+    const i18nConfirm = new VueI18n({
+        locale: lang,
+        messages: messagesShare,
+    });
+
+    library.add(
+        require('@fortawesome/fontawesome-pro-light/faCheck'),
+        require('@fortawesome/fontawesome-pro-light/faTimes')
+    );
+
+    new Vue({
+        i18n: i18nConfirm,
+        el: '#share',
+        template: '<Share/>',
+        components: {Share}
     });
 }

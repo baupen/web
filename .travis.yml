@@ -38,8 +38,8 @@ before_install:
   - printf "\n" | sudo pecl install imagick-3.4.3
   - echo "extension=imagick.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   
-  # install license scan
-  - curl https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
+  # install license scan (disabled as due to fossa server issues it fails build sometimes)
+  # - curl https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
 
 # prepare programming environement
 install:
@@ -64,8 +64,8 @@ install:
 
 # prepare tests
 before_script:
-  # perform license check
-  - fossa
+  # perform license check (before enable enable seciton in before_install again)
+  # - fossa
 
   # warmup cache to avoid excessive memory usage
   - php bin/console cache:warmup

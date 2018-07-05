@@ -1,0 +1,30 @@
+[
+  {
+    "name": "1UG",
+    "filename": "1UG.pdf"
+  },
+  {
+    "name": "2OG",
+    "filename": "2OG.pdf",
+    "children": [
+      {
+        "name": "links",
+        "filename": "2OG_links.pdf"
+      },
+      {
+        "name": "rechts",
+        "filename": "2OG_rechts.pdf"
+      },
+      {
+        "name": "mitte",
+        "filename": null,
+        "children": [
+          {
+            "name": "Treppenhaus",
+            "filename": "2OG_treppenhaus.pdf"
+          }
+        ]
+      }
+    ]
+  }
+]

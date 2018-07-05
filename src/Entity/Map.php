@@ -168,4 +168,21 @@ class Map extends BaseEntity
 
         return null;
     }
+
+    /**
+     * @return string
+     */
+    public function getContext()
+    {
+        if ($this->getParent() !== null) {
+            $parentContext = $this->getParent()->getContext();
+            if ($parentContext !== '') {
+                $parentContext .= ' -> ';
+            }
+
+            return $parentContext . $this->getParent()->getName();
+        }
+
+        return '';
+    }
 }

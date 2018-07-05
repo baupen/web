@@ -14,16 +14,6 @@ namespace App\Api\Entity\Base;
 class Issue extends BaseEntity
 {
     /**
-     * @var bool
-     */
-    private $isMarked;
-
-    /**
-     * @var bool
-     */
-    private $wasAddedWithClient;
-
-    /**
      * @var string|null
      */
     private $description;
@@ -37,48 +27,6 @@ class Issue extends BaseEntity
      * @var \DateTime|null
      */
     private $responseLimit;
-
-    /**
-     * @var string|null
-     */
-    private $craftsmanId;
-
-    /**
-     * @var string
-     */
-    private $map;
-
-    /**
-     * @return bool
-     */
-    public function getIsMarked(): bool
-    {
-        return $this->isMarked;
-    }
-
-    /**
-     * @param bool $isMarked
-     */
-    public function setIsMarked(bool $isMarked): void
-    {
-        $this->isMarked = $isMarked;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getWasAddedWithClient(): bool
-    {
-        return $this->wasAddedWithClient;
-    }
-
-    /**
-     * @param bool $wasAddedWithClient
-     */
-    public function setWasAddedWithClient(bool $wasAddedWithClient): void
-    {
-        $this->wasAddedWithClient = $wasAddedWithClient;
-    }
 
     /**
      * @return null|string
@@ -126,37 +74,5 @@ class Issue extends BaseEntity
     public function setResponseLimit(?\DateTime $responseLimit): void
     {
         $this->responseLimit = $responseLimit;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCraftsmanId(): ?string
-    {
-        return $this->craftsmanId;
-    }
-
-    /**
-     * @param string|null $craftsmanId
-     */
-    public function setCraftsmanId(?string $craftsmanId): void
-    {
-        $this->craftsmanId = $craftsmanId;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getMap(): ?string
-    {
-        return $this->map;
-    }
-
-    /**
-     * @param string|null $map
-     */
-    public function setMap(?string $map): void
-    {
-        $this->map = $map;
     }
 }

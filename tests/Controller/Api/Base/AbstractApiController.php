@@ -12,18 +12,6 @@ namespace App\Tests\Controller\Api\Base;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Base\FixturesTestCase;
 use Symfony\Component\HttpFoundation\Response;
-use App\Api\External\Entity\Base\BaseEntity;
-use App\Api\External\Entity\Building;
-use App\Api\External\Entity\Craftsman;
-use App\Api\External\Entity\Issue;
-use App\Api\External\Entity\IssuePosition;
-use App\Api\External\Entity\IssueStatus;
-use App\Api\External\Entity\Map;
-use App\Api\External\Entity\ObjectMeta;
-use App\Api\External\Request\ReadRequest;
-use App\Tests\Controller\ServerData;
-use Ramsey\Uuid\Uuid;
-use Symfony\Bundle\FrameworkBundle\Client;
 
 abstract class AbstractApiController extends FixturesTestCase
 {
@@ -36,7 +24,8 @@ abstract class AbstractApiController extends FixturesTestCase
      */
     protected function checkResponse(Response $response, $apiStatus, $message = '')
     {
-        $this->assertFalse(mb_strpos($response->getContent(), "\u00") > 0);
+        $content = str_replace("\u003E", ">", $response->getContent());
+        $this->assertFalse(mb_strpos($content, "\u00") > 0, mb_strpos($content, "\u00"));
         if (ApiStatus::SUCCESS === $apiStatus) {
             $successful = json_decode($response->getContent());
             $this->assertSame($apiStatus, $successful->status, $response->getContent());

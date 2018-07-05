@@ -26,6 +26,13 @@ class Filter extends BaseEntity
     use IdTrait;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $constructionSite;
+
+    /**
      * @var bool|null
      *
      * @ORM\Column(type="boolean", nullable=true)
@@ -65,7 +72,7 @@ class Filter extends BaseEntity
      *
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $readStatus = null;
+    private $registrationStatus = null;
 
     /**
      * @var bool|null
@@ -122,6 +129,22 @@ class Filter extends BaseEntity
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $limitEnd = null;
+
+    /**
+     * @return string
+     */
+    public function getConstructionSite(): string
+    {
+        return $this->constructionSite;
+    }
+
+    /**
+     * @param string $constructionSite
+     */
+    public function setConstructionSite(string $constructionSite): void
+    {
+        $this->constructionSite = $constructionSite;
+    }
 
     /**
      * @return bool|null
@@ -206,17 +229,17 @@ class Filter extends BaseEntity
     /**
      * @return bool|null
      */
-    public function getReadStatus(): ?bool
+    public function getRegistrationStatus(): ?bool
     {
-        return $this->readStatus;
+        return $this->registrationStatus;
     }
 
     /**
-     * @param bool|null $readStatus
+     * @param bool|null $registrationStatus
      */
-    public function setReadStatus(?bool $readStatus): void
+    public function setRegistrationStatus(?bool $registrationStatus): void
     {
-        $this->readStatus = $readStatus;
+        $this->registrationStatus = $registrationStatus;
     }
 
     /**

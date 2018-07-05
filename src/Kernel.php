@@ -11,6 +11,7 @@
 
 namespace App;
 
+use App\Entity\Traits\IdTrait;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -67,4 +68,10 @@ class Kernel extends BaseKernel
         }
         $routes->import($confDir . '/routes' . self::CONFIG_EXTS, '/', 'glob');
     }
+}
+
+function getIdFilter($element)
+{
+    /* @var IdTrait $element */
+    return $element->getId();
 }
