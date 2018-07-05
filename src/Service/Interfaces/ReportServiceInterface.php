@@ -19,8 +19,9 @@ interface ReportServiceInterface
     /**
      * @param ConstructionSite $constructionSite
      * @param Filter $filter
+     * @param string $author
      *
      * @return string
      */
-    public function generateReport(ConstructionSite $constructionSite, Filter $filter);
+    public function generateReport(ConstructionSite $constructionSite, Filter $filter, string $author);
 }

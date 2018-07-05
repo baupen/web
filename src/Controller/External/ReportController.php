@@ -16,6 +16,7 @@ use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Service\Interfaces\ReportServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -48,6 +49,6 @@ class ReportController extends BaseDoctrineController
         $filter->setRegistrationStatus(true);
         $filter->setReviewedStatus(false);
 
-        return $this->file($reportService->generateReport($craftsman->getConstructionSite(), $filter));
+        return $this->file($reportService->generateReport($craftsman->getConstructionSite(), $filter, $craftsman->getName()), 'report.pdf', ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

@@ -16,6 +16,9 @@ use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Helper\IssueHelper;
+use App\Report\Pdf;
+use App\Report\Report;
+use App\Report\ReportDefinition;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -61,28 +64,48 @@ class ReportService implements ReportServiceInterface
      * @param ConstructionSite $constructionSite
      * @param Filter $filter
      * @param array $issues
-     * @param $filePath
+     * @param string $author
+     * @param string $filePath
      */
-    private function render(ConstructionSite $constructionSite, Filter $filter, array $issues, $filePath)
+    private function render(ConstructionSite $constructionSite, Filter $filter, string $author, array $issues, string $filePath)
     {
         /* @var Map[] $orderedMaps */
         /* @var Issue[][] $issuesPerMap */
         IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
+
+        //define report
+        $report = new ReportDefinition($constructionSite, $filter, $author);
+        foreach ($orderedMaps as $map) {
+            $issues = $issuesPerMap[$map->getId()];
+            $report->addMap($map, $issues, $this->imageService->generateMapImage($map, $issues));
+        }
+
+        //create report & generate pdf
+        $pdf = new Report($report);
+        $pdf->generate($filePath);
     }
 
     /**
      * @param ConstructionSite $constructionSite
      * @param Filter $filter
+     * @param string $author
      *
      * @return string
      */
-    public function generateReport(ConstructionSite $constructionSite, Filter $filter)
+    public function generateReport(ConstructionSite $constructionSite, Filter $filter, string $author)
     {
         $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
 
-        $filePath = $this->getPathFor($constructionSite, $filter, $issues);
-        if (!file_exists($filePath) && false) {
-            $this->render($constructionSite, $filter, $issues, $filePath);
+        //create folder
+        $generationTargetFolder = $this->getGenerationTargetFolder($constructionSite);
+        if (!file_exists($generationTargetFolder)) {
+            mkdir($generationTargetFolder, 0777, true);
+        }
+
+        //only generate report if it does not already exist
+        $filePath = $this->getPathFor($constructionSite);
+        if (!file_exists($filePath)) {
+            $this->render($constructionSite, $filter, $author, $issues, $filePath);
         }
 
         return $filePath;
@@ -95,7 +118,7 @@ class ReportService implements ReportServiceInterface
      *
      * @return string
      */
-    private function getPathFor(ConstructionSite $constructionSite, Filter $filter, array $issues)
+    private function getPathFor(ConstructionSite $constructionSite)
     {
         //consider changing the filename to hash input values of the generation
         $filename = uniqid() . '.pdf';
@@ -104,7 +127,7 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
-     * @param Map $map
+     * @param ConstructionSite $constructionSite
      *
      * @return string
      */

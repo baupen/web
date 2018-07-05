@@ -40,7 +40,6 @@ class ImageService implements ImageServiceInterface
             $mapFilePath = $this->pubFolder . '/' . $map->getFilePath();
             $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=80 -dUseCropBox -dPDFFitPage -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
             exec($command);
-            dump($command);
         }
 
         //open image file
