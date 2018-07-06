@@ -91,7 +91,7 @@ class ImageService implements ImageServiceInterface
     private function drawCircleWithText($yCoordinate, $xCoordinate, $circleColor, $text, &$image)
     {
         //get text size
-        $font = __DIR__ . '/Resources/OpenSans-Regular.ttf';
+        $font = __DIR__ . '../../assets/fonts/OpenSans-Regular.ttf';
         $fontSize = 20;
         $txtSize = imagettfbbox($fontSize, 0, $font, $text);
         $txtWidth = abs($txtSize[4] - $txtSize[0]);

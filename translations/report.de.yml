@@ -6,3 +6,6 @@ filter:
   trades: 'one: Gewerbe|some: Gewerbe'
   craftsmen: 'one: Firma|some: Firmen'
   maps: 'one: Karte|some: Karten'
+
+table:
+  by_map: 'Pendenzen nach Karte'

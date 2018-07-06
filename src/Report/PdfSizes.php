@@ -31,12 +31,12 @@ class PdfSizes
     /**
      * @var int
      */
-    private $headerSize = 12;
+    private $headerSize = 8;
 
     /**
      * @var int
      */
-    private $headerFooterToContentMargin = 2;
+    private $differentContentMargin = 6;
 
     /**
      * @var int
@@ -44,14 +44,19 @@ class PdfSizes
     private $footerSize = 4;
 
     /**
-     * @var float[]
+     * @var float
      */
-    private $fontSizes = [6.15, 8, 10.4, 13.52];
+    private $baseFontSizes = 8;
+
+    /**
+     * @var float
+     */
+    private $scalingFactor = 1.6;
 
     /**
      * @var int
      */
-    private $gutterSize = 5;
+    private $gutterSize = 2;
 
     /**
      * the total width of the document.
@@ -120,7 +125,7 @@ class PdfSizes
      */
     public function getContentYStart(): int
     {
-        return $this->getHeaderYStart() + $this->getHeaderHeight() + $this->headerFooterToContentMargin;
+        return $this->getHeaderYStart() + $this->getHeaderHeight() + $this->differentContentMargin;
     }
 
     /**
@@ -130,7 +135,7 @@ class PdfSizes
      */
     public function getContentYEnd()
     {
-        return $this->getPageSizeY() - $this->marginVerticalOuter - $this->footerSize - $this->headerFooterToContentMargin;
+        return $this->getPageSizeY() - $this->marginVerticalOuter - $this->footerSize - $this->differentContentMargin;
     }
 
     /**
@@ -148,7 +153,7 @@ class PdfSizes
      */
     public function getFooterYStart(): int
     {
-        return $this->getContentYEnd() + $this->headerFooterToContentMargin;
+        return $this->getContentYEnd() + $this->differentContentMargin;
     }
 
     /**
@@ -164,9 +169,21 @@ class PdfSizes
      *
      * @return float|int
      */
-    public function getColumnSize($numberOfColumns)
+    public function getColumnContentWidth($numberOfColumns)
     {
-        return $this->getContentXSize() / $numberOfColumns - ($numberOfColumns - 1) * $this->getColumnGutter();
+        $gutterSpace = ($numberOfColumns - 1) * $this->getColumnGutter();
+
+        return (float)($this->getContentXSize() - $gutterSpace) / $numberOfColumns;
+    }
+
+    /**
+     * @param $numberOfColumns
+     *
+     * @return float|int
+     */
+    public function getColumnWidth($numberOfColumns)
+    {
+        return $this->getColumnContentWidth($numberOfColumns) + $this->getColumnGutter();
     }
 
     /**
@@ -177,7 +194,7 @@ class PdfSizes
      */
     public function getColumnStart($currentColumn, $numberOfColumns)
     {
-        return $this->getContentXStart() + ($this->getColumnSize($numberOfColumns) + $this->getColumnGutter()) * $currentColumn;
+        return ($this->getColumnWidth($numberOfColumns)) * $currentColumn + $this->getContentXStart();
     }
 
     /**
@@ -187,7 +204,7 @@ class PdfSizes
      */
     public function getSmallFontSize()
     {
-        return $this->fontSizes[0];
+        return $this->getRegularFontSize() / $this->scalingFactor;
     }
 
     /**
@@ -197,7 +214,7 @@ class PdfSizes
      */
     public function getRegularFontSize()
     {
-        return $this->fontSizes[1];
+        return $this->baseFontSizes;
     }
 
     /**
@@ -207,7 +224,7 @@ class PdfSizes
      */
     public function getBigFontSize()
     {
-        return $this->fontSizes[2];
+        return $this->baseFontSizes * $this->scalingFactor;
     }
 
     /**
@@ -217,7 +234,15 @@ class PdfSizes
      */
     public function getLargeFontSize()
     {
-        return $this->fontSizes[3];
+        return $this->baseFontSizes * ($this->scalingFactor ** 2);
+    }
+
+    /**
+     * @return float
+     */
+    public function getLnHeight()
+    {
+        return $this->scalingFactor;
     }
 
     /**
@@ -264,5 +289,37 @@ class PdfSizes
         }
 
         return [$realWidth * $scale, $realHeight * $scale];
+    }
+
+    /**
+     * @return int
+     */
+    public function getContentSpacerBig(): int
+    {
+        return $this->differentContentMargin;
+    }
+
+    /**
+     * @return int
+     */
+    public function getContentSpacerSmall(): int
+    {
+        return $this->differentContentMargin / $this->scalingFactor ** 2;
+    }
+
+    /**
+     * @return float[]
+     */
+    public function getDefaultCellPadding(): array
+    {
+        return [0, 1, 0, 1];
+    }
+
+    /**
+     * @return float[]
+     */
+    public function getTableCellPadding(): array
+    {
+        return [$this->scalingFactor, 1, $this->scalingFactor, 1];
     }
 }

@@ -29,6 +29,11 @@ class Report
     private $pdfSizes;
 
     /**
+     * @var PdfDesign
+     */
+    private $pdfDesign;
+
+    /**
      * @var string
      */
     private $publicPath = __DIR__ . '/../../public';
@@ -36,16 +41,39 @@ class Report
     /**
      * @var float|null
      */
-    private $currentContentHeight = null;
+    private $currentHeight = null;
 
     public function __construct(PdfDefinition $pdfDefinition)
     {
         $this->pdfSizes = new PdfSizes();
+        $this->pdfDesign = new PdfDesign();
         $this->pdfDocument = new Pdf($pdfDefinition, $this->pdfSizes);
 
-        // default fill & font color
-        $this->pdfDocument->SetFillColor(200, 200, 200);
-        $this->pdfDocument->SetTextColor(33, 37, 41);
+        //prepare fonts
+        $checkFilePath = K_PATH_FONTS . '/.copied';
+        if (!file_exists($checkFilePath)) {
+            //copy all fonts from the assets to the fonts folder of tcpdf
+            shell_exec('\cp -r ' . K_PATH_FONTS . '/* ' . K_PATH_FONTS);
+            file_put_contents($checkFilePath, time());
+        }
+
+        $this->setDefaults();
+    }
+
+    private function setDefaults()
+    {
+        //set typography
+        $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
+
+        // set colors
+        $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
+        $this->pdfDocument->SetDrawColor(...$this->pdfDesign->getDarkBackground());
+        $this->pdfDocument->SetTextColor(...$this->pdfDesign->getTextColor());
+
+        //set layout
+        $this->pdfDocument->SetLeftMargin($this->pdfSizes->getContentXStart());
+        $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getDefaultCellPadding());
     }
 
     /**
@@ -53,19 +81,28 @@ class Report
      */
     private function getCurrentY()
     {
-        if ($this->currentContentHeight === null) {
+        if ($this->currentHeight === null) {
             $this->pdfDocument->AddPage();
-            $this->currentContentHeight = 0;
+            $this->currentHeight = $this->pdfSizes->getContentYStart();
         }
 
-        return $this->pdfSizes->getContentYStart() + $this->currentContentHeight;
+        return $this->currentHeight;
+    }
+
+    /**
+     * @param $currentY
+     */
+    private function setCurrentY($currentY)
+    {
+        $this->currentHeight = $currentY;
     }
 
     /**
      * @param ConstructionSite $constructionSite
      * @param string[] $filterEntries
+     * @param string $filterHeader
      */
-    public function addIntroduction(ConstructionSite $constructionSite, $filterEntries)
+    public function addIntroduction(ConstructionSite $constructionSite, array $filterEntries, string $filterHeader)
     {
         $maxContentHeight = $this->getCurrentY();
 
@@ -76,40 +113,45 @@ class Report
         //image
         $imagePath = $this->publicPath . '/' . $constructionSite->getImageFilePath();
         if (file_exists($imagePath)) {
-            $maxImageWidth = $this->pdfSizes->getColumnSize($columnCount);
+            $maxImageWidth = $this->pdfSizes->getColumnContentWidth($columnCount);
             list($width, $height) = $this->pdfSizes->getWidthHeightArguments($imagePath, $maxImageWidth, $maxImageWidth);
             $this->pdfDocument->Image($imagePath, $this->pdfSizes->getContentXStart(), $this->getCurrentY(), $width, $height);
-            $maxContentHeight = max($height, $maxContentHeight);
+            $maxContentHeight = max($this->pdfDocument->GetY() + $height, $maxContentHeight);
 
             //set position for the next content
             ++$currentColumn;
         } else {
-            $columnCount = 2;
+            --$columnCount;
         }
 
-        $columnWidth = $this->pdfSizes->getColumnSize($columnCount);
+        $columnWidth = $this->pdfSizes->getColumnContentWidth($columnCount);
 
         //construction site description
-        $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount), $this->getCurrentY());
+        $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
+        $this->pdfDocument->SetY($this->getCurrentY());
+
         $this->pdfDocument->SetFontSize($this->pdfSizes->getBigFontSize());
-        $this->pdfDocument->Cell($columnWidth, 0, $constructionSite->getName(), 0, 1);
+        $this->pdfDocument->MultiCell($columnWidth, 0, $constructionSite->getName(), 0, 'L', false, 1);
+        $this->pdfDocument->Ln($this->pdfSizes->getLnHeight());
         $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
-        $this->pdfDocument->Cell($columnWidth, 0, implode(', ', $constructionSite->getAddressLines()), 0, 2);
+        $this->pdfDocument->MultiCell($columnWidth, 0, implode("\n", $constructionSite->getAddressLines()), 0, 'L', false, 2);
         $maxContentHeight = max($this->pdfDocument->GetY(), $maxContentHeight);
         ++$currentColumn;
 
         //filter used for generation
-        $this->currentContentHeight = $maxContentHeight;
-        $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount), $this->getCurrentY());
+        $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
+        $this->pdfDocument->SetY($this->getCurrentY());
+
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getBigFontSize());
+        $this->pdfDocument->MultiCell($columnWidth, 0, $filterHeader, 0, 'L', false, 1);
+        $this->pdfDocument->Ln($this->pdfSizes->getLnHeight());
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
         foreach ($filterEntries as $name => $value) {
-            $this->pdfDocument->SetFont($this->pdfSizes->getRegularFontSize(), 'b');
-            $this->pdfDocument->Cell(0, 0, $name . ': ');
-            $this->pdfDocument->SetFont($this->pdfSizes->getRegularFontSize());
-            $this->pdfDocument->Cell(0, 0, $value);
+            $this->pdfDocument->writeHTML('<b>' . $name . '</b>: ' . $value, true, false, false, true);
         }
 
         //save content height for next part
-        $this->currentContentHeight = max($this->pdfDocument->GetY(), $maxContentHeight);
+        $this->setCurrentY(max($this->pdfDocument->GetY(), $maxContentHeight) + $this->pdfSizes->getContentSpacerBig());
     }
 
     /**
@@ -127,12 +169,62 @@ class Report
      */
     public function addMap($map, $mapImageFilePath, array $issues)
     {
+        $this->setDefaults();
     }
 
-    public function addTable($tableHeader, $tableContent)
+    public function addTable($tableHeader, $tableContent, $tableName)
     {
+        $this->setDefaults();
+
+        $this->pdfDocument->SetXY($this->pdfSizes->getContentXStart(), $this->getCurrentY());
+
+        //table header
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getBigFontSize());
+        $this->pdfDocument->SetFont(...$this->pdfDesign->getEmphasisFontFamily());
+        $this->pdfDocument->MultiCell($this->pdfSizes->getContentXSize(), 0, $tableName, 0, 'L', false, 2);
+        $this->setCurrentY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerSmall());
+
+        //adapt font for table content
+        $maxContentHeight = $this->getCurrentY();
+        $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
+        $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
+
+        //go through header
+        $currentColumn = 0;
         $columnCount = count($tableHeader);
-        $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount), $this->getCurrentY());
-        //$this->pdfDocument->Cell($columnWidth, )
+        $columnContentWidth = $this->pdfSizes->getColumnContentWidth($columnCount);
+        foreach ($tableHeader as $item) {
+            $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount), $this->getCurrentY());
+            $this->pdfDocument->MultiCell($columnContentWidth, 0, mb_strtoupper($item), 0, 'L', true, 1);
+            $maxContentHeight = max($maxContentHeight, $this->pdfDocument->GetY());
+            ++$currentColumn;
+        }
+        $this->setCurrentY($maxContentHeight);
+
+        $currentRow = 0;
+        foreach ($tableContent as $row) {
+            //alternative background colors
+            if ($currentRow % 2 === 0) {
+                $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
+            } else {
+                $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
+            }
+
+            //put columns
+            $maxContentHeight = 0;
+            $currentColumn = 0;
+            foreach ($row as $item) {
+                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount), $this->getCurrentY());
+                $this->pdfDocument->MultiCell($columnContentWidth, 0, $item, 0, 'L');
+                $maxContentHeight = max($maxContentHeight, $this->pdfDocument->GetY());
+                ++$currentColumn;
+            }
+            $this->setCurrentY($maxContentHeight);
+            $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $this->getCurrentY(), $this->pdfSizes->getContentXEnd(), $this->getCurrentY());
+            ++$currentRow;
+        }
+
+        $this->setCurrentY(max($this->pdfDocument->GetY(), $maxContentHeight) + $this->pdfSizes->getContentSpacerBig());
     }
 }

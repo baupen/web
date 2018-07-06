@@ -79,4 +79,9 @@ class Pdf extends TCPDF
         $this->SetXY($this->pdfSizes->getContentXEnd() - $contentWidthPart + 10, $this->pdfSizes->getFooterYStart());
         $this->Cell($contentWidthPart, 0, $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, 0, 'R');
     }
+
+    public function Error($msg)
+    {
+        throw new \Exception($msg);
+    }
 }

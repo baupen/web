@@ -126,9 +126,9 @@ class ReportService implements ReportServiceInterface
                 return '(' . $this->translator->trans('filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
             } elseif ($end !== null) {
                 return '(' . $this->translator->trans('filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
-            } else {
-                return '';
             }
+
+            return '';
         };
 
         //creates the status string
@@ -201,7 +201,7 @@ class ReportService implements ReportServiceInterface
             $filterEntries[$this->translator->transChoice('filter.trades', count($filter->getTrades()), [], 'report')] = implode(', ', $filter->getTrades());
         }
 
-        $report->addIntroduction($constructionSite, $filterEntries);
+        $report->addIntroduction($constructionSite, $filterEntries, $this->translator->trans('entity.name', [], 'entity_filter'));
     }
 
     private function addTableByMap(Report $report, Filter $filter, $issues)
@@ -261,7 +261,8 @@ class ReportService implements ReportServiceInterface
             }
         }
 
-        $report->addTable($tableHeader, $tableContent);
+        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_map', [], 'report'));
+        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_map', [], 'report'));
     }
 
     /**
