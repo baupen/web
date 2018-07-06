@@ -13,6 +13,7 @@ namespace App\Service;
 
 use App\Entity\Issue;
 use App\Entity\Map;
+use App\Helper\ImageHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 
 class ImageService implements ImageServiceInterface
@@ -21,6 +22,16 @@ class ImageService implements ImageServiceInterface
      * @var string
      */
     private $pubFolder = __DIR__ . '/../../public';
+
+    /**
+     * @var int the bubble size as an abstract unit
+     */
+    private $bubbleSize = 40;
+
+    /**
+     * @var bool if the cache should be disabled
+     */
+    private $disableCache = true;
 
     /**
      * @param Map $map
@@ -36,9 +47,18 @@ class ImageService implements ImageServiceInterface
 
         //compile pdf to image
         $renderedMapPath = $generationTargetFolder . '/render.jpg';
-        if (!file_exists($renderedMapPath)) {
+        if (!file_exists($renderedMapPath) || $this->disableCache) {
             $mapFilePath = $this->pubFolder . '/' . $map->getFilePath();
-            $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=80 -dUseCropBox -dPDFFitPage -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
+
+            //do first low quality render to get artboxsize
+            $renderedMapPath = $generationTargetFolder . '/pre_render.jpg';
+            $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=10 -dUseArtBox -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
+            exec($command);
+
+            //second render with correct image dimensions
+            list($width, $height) = ImageHelper::getWidthHeightArguments($renderedMapPath, 3840, 2160);
+            $renderedMapPath = $generationTargetFolder . '/render.jpg';
+            $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=' . $width . ' -dDEVICEHEIGHTPOINTS=' . $height . ' -dJPEGQ=80 -dFitPage -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
             exec($command);
         }
 
@@ -91,14 +111,14 @@ class ImageService implements ImageServiceInterface
     private function drawCircleWithText($yCoordinate, $xCoordinate, $circleColor, $text, &$image)
     {
         //get text size
-        $font = __DIR__ . '../../assets/fonts/OpenSans-Regular.ttf';
-        $fontSize = 20;
+        $font = __DIR__ . '/../../assets/fonts/OpenSans-Regular.ttf';
+        $fontSize = $this->bubbleSize;
         $txtSize = imagettfbbox($fontSize, 0, $font, $text);
         $txtWidth = abs($txtSize[4] - $txtSize[0]);
         $txtHeight = abs($txtSize[5] - $txtSize[1]);
 
         //calculate diameter around text
-        $buffer = 20;
+        $buffer = $this->bubbleSize * 1.6;
         $diameter = max($txtWidth, $txtHeight) + $buffer;
 
         //draw white base ellipse before the colored one
@@ -180,7 +200,7 @@ class ImageService implements ImageServiceInterface
     public function generateMapImage(Map $map, array $issues)
     {
         $filePath = $this->getFilePathFor($map, $issues);
-        if (!file_exists($filePath)) {
+        if (!file_exists($filePath) || $this->disableCache) {
             $this->render($map, $issues, $filePath);
         }
 

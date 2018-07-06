@@ -21,7 +21,7 @@ class PdfDesign
     /**
      * @var int[]
      */
-    private $textColor = [37, 200, 200];
+    private $textColor = [37, 40, 32];
 
     /**
      * @var int[]
@@ -84,5 +84,13 @@ class PdfDesign
     public function getLighterBackground(): array
     {
         return $this->lighterBackground;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getWhiteBackground(): array
+    {
+        return [255, 255, 255];
     }
 }

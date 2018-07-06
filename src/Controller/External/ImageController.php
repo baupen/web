@@ -18,6 +18,7 @@ use App\Entity\Issue;
 use App\Entity\Map;
 use App\Service\Interfaces\ImageServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -53,6 +54,6 @@ class ImageController extends BaseDoctrineController
         $filter->setReviewedStatus(false);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
 
-        return $this->file($imageService->generateMapImage($map, $issues));
+        return $this->file($imageService->generateMapImage($map, $issues), null, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

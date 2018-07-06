@@ -11,6 +11,7 @@
 
 namespace App\Report;
 
+use App\Helper\ImageHelper;
 use TCPDF;
 
 class Pdf extends TCPDF
@@ -52,7 +53,7 @@ class Pdf extends TCPDF
 
         //set image
         $headerHeight = $this->pdfSizes->getHeaderHeight();
-        list($width, $height) = $this->pdfSizes->getWidthHeightArguments($this->pdfDefinition->getLogoPath(), $contentWidthPart, $headerHeight);
+        list($width, $height) = ImageHelper::getWidthHeightArguments($this->pdfDefinition->getLogoPath(), $contentWidthPart, $headerHeight);
         $this->Image($this->pdfDefinition->getLogoPath(), $this->pdfSizes->getContentXEnd() - $width, $this->pdfSizes->getHeaderYStart(), $width, $height, '', '', 'R');
 
         //set header text

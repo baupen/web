@@ -14,32 +14,32 @@ namespace App\Report;
 class PdfSizes
 {
     /**
-     * @var int the used page size
+     * @var float the used page size
      */
     private $pageSize = [210, 297];
 
     /**
-     * @var int
+     * @var float
      */
     private $marginSide = 10;
 
     /**
-     * @var int
+     * @var float
      */
     private $marginVerticalOuter = 6;
 
     /**
-     * @var int
+     * @var float
      */
     private $headerSize = 8;
 
     /**
-     * @var int
+     * @var float
      */
     private $differentContentMargin = 6;
 
     /**
-     * @var int
+     * @var float
      */
     private $footerSize = 4;
 
@@ -54,14 +54,14 @@ class PdfSizes
     private $scalingFactor = 1.6;
 
     /**
-     * @var int
+     * @var float
      */
     private $gutterSize = 2;
 
     /**
      * the total width of the document.
      *
-     * @return int
+     * @return float
      */
     private function getPageSizeX()
     {
@@ -71,7 +71,7 @@ class PdfSizes
     /**
      * the total width of the document.
      *
-     * @return int
+     * @return float
      */
     private function getPageSizeY()
     {
@@ -79,25 +79,25 @@ class PdfSizes
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getHeaderYStart(): int
+    public function getHeaderYStart(): float
     {
         return $this->marginVerticalOuter;
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getHeaderHeight(): int
+    public function getHeaderHeight(): float
     {
         return $this->headerSize;
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getContentXStart(): int
+    public function getContentXStart(): float
     {
         return $this->marginSide;
     }
@@ -105,15 +105,15 @@ class PdfSizes
     /**
      * the width of the document till the right margin.
      *
-     * @return int
+     * @return float
      */
-    public function getContentXEnd()
+    public function getContentXEnd(): float
     {
         return $this->getPageSizeX() - $this->marginSide;
     }
 
     /**
-     * @return int
+     * @return float
      */
     public function getContentXSize()
     {
@@ -121,9 +121,9 @@ class PdfSizes
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getContentYStart(): int
+    public function getContentYStart(): float
     {
         return $this->getHeaderYStart() + $this->getHeaderHeight() + $this->differentContentMargin;
     }
@@ -131,7 +131,7 @@ class PdfSizes
     /**
      * the width of the document till the right margin.
      *
-     * @return int
+     * @return float
      */
     public function getContentYEnd()
     {
@@ -141,7 +141,7 @@ class PdfSizes
     /**
      * the width of the content of the document.
      *
-     * @return int
+     * @return float
      */
     public function getContentYSize()
     {
@@ -149,15 +149,15 @@ class PdfSizes
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getFooterYStart(): int
+    public function getFooterYStart(): float
     {
         return $this->getContentYEnd() + $this->differentContentMargin;
     }
 
     /**
-     * @return int
+     * @return float
      */
     public function getColumnGutter()
     {
@@ -167,7 +167,7 @@ class PdfSizes
     /**
      * @param $numberOfColumns
      *
-     * @return float|int
+     * @return float|float
      */
     public function getColumnContentWidth($numberOfColumns)
     {
@@ -179,7 +179,7 @@ class PdfSizes
     /**
      * @param $numberOfColumns
      *
-     * @return float|int
+     * @return float|float
      */
     public function getColumnWidth($numberOfColumns)
     {
@@ -190,7 +190,7 @@ class PdfSizes
      * @param $currentColumn
      * @param $numberOfColumns
      *
-     * @return float|int
+     * @return float|float
      */
     public function getColumnStart($currentColumn, $numberOfColumns)
     {
@@ -246,65 +246,19 @@ class PdfSizes
     }
 
     /**
-     * gives back the width and height to be passed to tcpdf
-     * be aware that if passed 0 tcpdf expands to fill the.
-     *
-     * @param $imgPath
-     * @param $maxWidth
-     * @param $maxHeight
-     *
-     * @return array
+     * @return float
      */
-    public function getWidthHeightArguments($imgPath, $maxWidth, $maxHeight)
-    {
-        //get image sizes
-        $imageSizes = getimagesize($imgPath);
-        $realWidth = $imageSizes[0];
-        $realHeight = $imageSizes[1];
-
-        //get ratios
-        $widthRatio = $maxWidth / $realWidth;
-        $heightRatio = $maxHeight / $realHeight;
-
-        if ($widthRatio < 1 && $heightRatio < 1) {
-            //image bigger than box
-            if ($widthRatio < $heightRatio) {
-                $scale = $widthRatio;
-            } else {
-                $scale = $heightRatio;
-            }
-        } elseif ($widthRatio > 1 && $heightRatio > 1) {
-            //image smaller than box
-            if ($widthRatio > $heightRatio) {
-                $scale = $widthRatio;
-            } else {
-                $scale = $heightRatio;
-            }
-        } else {
-            if ($widthRatio < 1) {
-                $scale = $widthRatio;
-            } else {
-                $scale = $heightRatio;
-            }
-        }
-
-        return [$realWidth * $scale, $realHeight * $scale];
-    }
-
-    /**
-     * @return int
-     */
-    public function getContentSpacerBig(): int
+    public function getContentSpacerBig(): float
     {
         return $this->differentContentMargin;
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getContentSpacerSmall(): int
+    public function getContentSpacerSmall(): float
     {
-        return $this->differentContentMargin / $this->scalingFactor ** 2;
+        return (float)$this->differentContentMargin / $this->scalingFactor ** 2;
     }
 
     /**

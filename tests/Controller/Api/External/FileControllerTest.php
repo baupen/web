@@ -86,7 +86,7 @@ class FileControllerTest extends ApiController
         };
 
         $response = $doRequest($issue->getMeta());
-        $this->assertInstanceOf(BinaryFileResponse::class, $response);
+        $this->assertInstanceOf(BinaryFileResponse::class, $response, $response->getContent());
 
         //test building image download
         $client = static::createClient();
@@ -105,7 +105,7 @@ class FileControllerTest extends ApiController
         };
 
         $response = $doRequest($serverData->getBuildings()[0]->getMeta());
-        $this->assertInstanceOf(BinaryFileResponse::class, $response);
+        $this->assertInstanceOf(BinaryFileResponse::class, $response, $response->getContent());
 
         //test map download
         $client = static::createClient();
@@ -124,6 +124,6 @@ class FileControllerTest extends ApiController
         };
 
         $response = $doRequest($serverData->getMaps()[0]->getMeta());
-        $this->assertInstanceOf(BinaryFileResponse::class, $response);
+        $this->assertInstanceOf(BinaryFileResponse::class, $response, $response->getContent());
     }
 }
