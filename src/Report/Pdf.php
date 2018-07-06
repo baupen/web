@@ -20,83 +20,63 @@ class Pdf extends TCPDF
      */
     private $pdfDefinition;
 
-    public function __construct(PdfDefinition $pdfDefinition)
+    /**
+     * @var PdfSizes
+     */
+    private $pdfSizes;
+
+    public function __construct(PdfDefinition $pdfDefinition, PdfSizes $pdfSizes)
     {
         parent::__construct();
 
         $this->pdfDefinition = $pdfDefinition;
+        $this->pdfSizes = $pdfSizes;
 
-        $this->SetMargins(72, 36, 72, true);
+        //set margin
+        $this->SetMargins($this->pdfSizes->getContentXStart(), $this->pdfSizes->getContentYStart());
         $this->SetAutoPageBreak(true, 36);
 
         // Set document meta-information
         $this->SetCreator(PDF_CREATOR);
         $this->SetAuthor($pdfDefinition->getAuthor());
         $this->SetTitle($pdfDefinition->getTitle());
-
-        //set image scale factor
-        $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
     }
 
-    // Page header and footer code.
+    /**
+     * logo right & text left.
+     */
     public function Header()
     {
-        // The image is this much larger than the company name text.
-        $this->ImagePngAlpha($this->pdfDefinition->getLogoPath(), 19, 19, 100, 40, 100, 20, 'PNG', null, 'T', false, 72, 'L');
+        //image max one third, the header text the other two thirds
+        $contentWidthPart = $this->pdfSizes->getContentXSize() / 3;
 
-        /*
-                $this->SetY(1.5 * 72, true);
-                $this->SetLineStyle(['width' => 2, 'color' => [$webcolor['black']]]);
-                $this->Line(72, 36 + $imageScale, $this->getPageWidth() - 72, 36 + $imageScale);
-                */
+        //set image
+        $headerHeight = $this->pdfSizes->getHeaderHeight();
+        list($width, $height) = $this->pdfSizes->getWidthHeightArguments($this->pdfDefinition->getLogoPath(), $contentWidthPart, $headerHeight);
+        $this->Image($this->pdfDefinition->getLogoPath(), $this->pdfSizes->getContentXEnd() - $width, $this->pdfSizes->getHeaderYStart(), $width, $height, '', '', 'R');
+
+        //set header text
+        $this->SetXY($this->pdfSizes->getContentXStart(), $this->pdfSizes->getHeaderYStart());
+        $this->SetFontSize($this->pdfSizes->getRegularFontSize());
+        $this->Cell($contentWidthPart * 2, 0, $this->pdfDefinition->getTitle(), 0, 0, 'L');
     }
 
+    /**
+     * bottom left author.
+     */
     public function Footer()
     {
-        $this->SetFont('times', '', 8);
-        $this->SetY(-1.5 * 72, true);
-        $this->Cell(72, 0, 'sample');
-    }
+        //author three forths, page numbers one forth
+        $contentWidthPart = $this->pdfSizes->getContentXSize() / 8;
 
-    private function CreateInvoice()
-    {
-        $this->AddPage();
-        $this->SetFont('helvetica', '', 11);
-        $this->SetY(144, true);
+        //set author
+        $this->SetFontSize($this->pdfSizes->getSmallFontSize());
+        $this->SetXY($this->pdfSizes->getContentXStart(), $this->pdfSizes->getFooterYStart());
+        $this->Cell($contentWidthPart * 3, 0, $this->pdfDefinition->getAuthor(), 0, 0, 'L');
 
-        // Table parameters
-        //
-        // Column size, wide (description) column, table indent, row height.
-        $col = 72;
-        $wideCol = 3 * $col;
-        $indent = ($this->getPageWidth() - 2 * 72 - $wideCol - 3 * $col) / 2;
-        $line = 18;
-
-        // Table header
-        $this->SetFont('', 'b');
-        $this->Cell($indent);
-        $this->Cell($wideCol, $line, 'Item', 1, 0, 'L');
-        $this->Cell($col, $line, 'Quantity', 1, 0, 'R');
-        $this->Cell($col, $line, 'Price', 1, 0, 'R');
-        $this->Cell($col, $line, 'Cost', 1, 0, 'R');
-        $this->Ln();
-
-        // Table content rows
-        $this->SetFont('', '');
-        foreach ($this->invoiceData['items'] as $item) {
-            $this->Cell($indent);
-            $this->Cell($wideCol, $line, $item[0], 1, 0, 'L');
-            $this->Cell($col, $line, $item[1], 1, 0, 'R');
-            $this->Cell($col, $line, $item[2], 1, 0, 'R');
-            $this->Cell($col, $line, $item[3], 1, 0, 'R');
-            $this->Ln();
-        }
-
-        // Table Total row
-        $this->SetFont('', 'b');
-        $this->Cell($indent);
-        $this->Cell($wideCol + $col * 2, $line, 'Total:', 1, 0, 'R');
-        $this->SetFont('', '');
-        $this->Cell($col, $line, $this->invoiceData['total'], 1, 0, 'R');
+        //set page numbers
+        //+10 because TCPDF uses a placeholder for the page numbers which is replaced at the end. this leads to incorrect alignment.
+        $this->SetXY($this->pdfSizes->getContentXEnd() - $contentWidthPart + 10, $this->pdfSizes->getFooterYStart());
+        $this->Cell($contentWidthPart, 0, $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, 0, 'R');
     }
 }

@@ -14,6 +14,7 @@ namespace App\Controller\External;
 use App\Controller\Base\BaseDoctrineController;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
+use App\Report\ReportElements;
 use App\Service\Interfaces\ReportServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -49,6 +50,12 @@ class ReportController extends BaseDoctrineController
         $filter->setRegistrationStatus(true);
         $filter->setReviewedStatus(false);
 
-        return $this->file($reportService->generateReport($craftsman->getConstructionSite(), $filter, $craftsman->getName()), 'report.pdf', ResponseHeaderBag::DISPOSITION_INLINE);
+        $reportElements = ReportElements::forCraftsman();
+
+        return $this->file(
+            $reportService->generateReport($craftsman->getConstructionSite(), $filter, $craftsman->getName(), $reportElements),
+            'report.pdf',
+            ResponseHeaderBag::DISPOSITION_INLINE
+        );
     }
 }
