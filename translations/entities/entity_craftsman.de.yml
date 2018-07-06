@@ -1,3 +1,5 @@
 #name
 trait:
- name: ausführende Firma
+ name: 'ausführende Firma'
+
+trade: 'Gewerbe'

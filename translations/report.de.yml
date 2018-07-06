@@ -1,3 +1,8 @@
-generated: "generiert von %name% am %date%"
-table:
-  map: Karte
+generated: 'generiert von %name% am %date%'
+filter:
+  later_than: 'nach %date%'
+  earlier_than: 'vor %date%'
+  not: 'nicht %state%'
+  trades: 'one: Gewerbe|some: Gewerbe'
+  craftsmen: 'one: Firma|some: Firmen'
+  maps: 'one: Karte|some: Karten'

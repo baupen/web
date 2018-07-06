@@ -1,7 +1,13 @@
 entity:
- name: Pendenz
+ name: 'Pendenz'
 
-status:
-  registered: Offen
-  responded: Beantwortet
-  reviewed: Bestätigt
+status_values:
+  all: 'Alle'
+  none: 'Keine'
+  registered: 'Offen'
+  responded: 'Beantwortet'
+  reviewed: 'Bestätigt'
+
+number: 'Nummer'
+status: 'Status'
+response_limit: 'Frist'
