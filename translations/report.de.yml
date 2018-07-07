@@ -9,3 +9,4 @@ filter:
 
 table:
   by_map: 'Pendenzen nach Karte'
+  in_state_since: '%status% seit'

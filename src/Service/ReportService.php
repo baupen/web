@@ -103,6 +103,7 @@ class ReportService implements ReportServiceInterface
         foreach ($orderedMaps as $map) {
             $issues = $issuesPerMap[$map->getId()];
             $report->addMap($map, $this->imageService->generateMapImage($map, $issues));
+            $this->addIssueTable($report, $filter, $issues);
             //add table with issues
             //add columns with images
         }
@@ -206,7 +207,64 @@ class ReportService implements ReportServiceInterface
         $report->addIntroduction($constructionSite, $filterEntries, $this->translator->trans('entity.name', [], 'entity_filter'));
     }
 
-    private function addTableByMap(Report $report, Filter $filter, $issues)
+    /**
+     * @param Report $report
+     * @param Filter $filter
+     * @param Issue[] $issues
+     */
+    private function addIssueTable(Report $report, Filter $filter, array $issues)
+    {
+        $showRegistered = $filter->getRegistrationStatus() === null || $filter->getRegistrationStatus();
+        $showResponded = $filter->getRespondedStatus() === null || $filter->getRespondedStatus();
+        $showReviewed = $filter->getReviewedStatus() === null || $filter->getReviewedStatus();
+
+        $tableHeader[] = count($issues);
+        $tableHeader[] = $this->translator->trans('description', [], 'entity_issue');
+        $tableHeader[] = $this->translator->trans('response_limit', [], 'entity_issue');
+
+        if ($showRegistered) {
+            $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('status_values.registered', [], 'entity_issue')], 'report');
+        }
+
+        if ($showResponded) {
+            $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('status_values.responded', [], 'entity_issue')], 'report');
+        }
+
+        if ($showReviewed) {
+            $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('status_values.reviewed', [], 'entity_issue')], 'report');
+        }
+
+        $tableContent = [];
+        foreach ($issues as $issue) {
+            $row = [];
+            $row[] = $issue->getNumber();
+            $row[] = $issue->getDescription();
+            $row[] = ($issue->getResponseLimit() !== null) ? $issue->getResponseLimit()->format(DateTimeFormatter::DATE_FORMAT) : '';
+
+            if ($showRegistered) {
+                $row[] = $issue->getRegisteredAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getRegistrationBy()->getName();
+            }
+
+            if ($showResponded) {
+                $row[] = $issue->getRespondedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getResponseBy()->getName();
+            }
+
+            if ($showReviewed) {
+                $row[] = $issue->getReviewedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getReviewBy()->getName();
+            }
+
+            $tableContent[] = $row;
+        }
+
+        $report->addTable($tableHeader, $tableContent);
+    }
+
+    /**
+     * @param Report $report
+     * @param Filter $filter
+     * @param Issue[] $issues
+     */
+    private function addTableByMap(Report $report, Filter $filter, array $issues)
     {
         /* @var Map[] $orderedMaps */
         /* @var Issue[][] $issuesPerMap */
@@ -263,7 +321,6 @@ class ReportService implements ReportServiceInterface
             }
         }
 
-        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_map', [], 'report'));
         $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_map', [], 'report'));
     }
 

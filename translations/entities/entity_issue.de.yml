@@ -11,3 +11,4 @@ status_values:
 number: 'Nummer'
 status: 'Status'
 response_limit: 'Frist'
+description: 'Beschreibung'

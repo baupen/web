@@ -56,7 +56,7 @@ class PdfSizes
     /**
      * @var float
      */
-    private $gutterSize = 2;
+    private $gutterSize = 4;
 
     /**
      * the total width of the document.
@@ -73,7 +73,7 @@ class PdfSizes
      *
      * @return float
      */
-    private function getPageSizeY()
+    public function getPageSizeY()
     {
         return $this->pageSize[1];
     }
@@ -159,6 +159,14 @@ class PdfSizes
     /**
      * @return float
      */
+    public function getMarginBottom(): float
+    {
+        return $this->getPageSizeY() - $this->getFooterYStart() + $this->differentContentMargin;
+    }
+
+    /**
+     * @return float
+     */
     public function getColumnGutter()
     {
         return $this->gutterSize;
@@ -177,13 +185,19 @@ class PdfSizes
     }
 
     /**
+     * @param $currentColumn
      * @param $numberOfColumns
      *
      * @return float|float
      */
-    public function getColumnWidth($numberOfColumns)
+    public function getColumnWidth($currentColumn, $numberOfColumns)
     {
-        return $this->getColumnContentWidth($numberOfColumns) + $this->getColumnGutter();
+        $baseWidth = $this->getColumnContentWidth($numberOfColumns);
+        if ($currentColumn === $numberOfColumns - 1) {
+            return $baseWidth;
+        }
+
+        return $baseWidth + $this->getColumnGutter();
     }
 
     /**
@@ -194,7 +208,7 @@ class PdfSizes
      */
     public function getColumnStart($currentColumn, $numberOfColumns)
     {
-        return ($this->getColumnWidth($numberOfColumns)) * $currentColumn + $this->getContentXStart();
+        return ($this->getColumnWidth($currentColumn - 1, $numberOfColumns)) * $currentColumn + $this->getContentXStart();
     }
 
     /**
@@ -266,7 +280,7 @@ class PdfSizes
      */
     public function getDefaultCellPadding(): array
     {
-        return [0, 1, 0, 1];
+        return [0, 0, 0, 0];
     }
 
     /**
@@ -275,5 +289,13 @@ class PdfSizes
     public function getTableCellPadding(): array
     {
         return [$this->scalingFactor, 1, $this->scalingFactor, 1];
+    }
+
+    /**
+     * @return float
+     */
+    public function getImagePadding(): float
+    {
+        return $this->getContentSpacerSmall() / 2;
     }
 }
