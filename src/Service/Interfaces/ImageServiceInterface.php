@@ -22,4 +22,9 @@ interface ImageServiceInterface
      * @return string
      */
     public function generateMapImage(Map $map, array $issues);
+
+    /**
+     * @param string|null $imagePath
+     */
+    public function generateThumbnails(?string $imagePath);
 }

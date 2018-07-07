@@ -9,4 +9,4 @@
 	Doctype: HTML5
 	IDE: PhpStorm, Symfony plugin, Notepad++, FileZilla, Illustrator
 	Technology: Apache, PHP, JavaScript, CSS, HTML
-	Libraries: Symfony, Bootstrap, Ionicons, OpenSans, FontAwesome, NPM
+	Libraries: Symfony, VueJS, Bootstrap, OpenSans, FontAwesome

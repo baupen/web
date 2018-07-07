@@ -23,7 +23,6 @@ use App\Entity\Issue;
 use App\Entity\Map;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -190,14 +189,7 @@ class IssueController extends ExternalApiController
 
         //handle file upload
         foreach ($request->files->all() as $file) {
-            /** @var UploadedFile $file */
-            $targetFolder = $this->getParameter('PUBLIC_DIR') . '/' . dirname($issue->getImageFilePath());
-            if (!file_exists($targetFolder)) {
-                mkdir($targetFolder, 0777, true);
-            }
-            if (!$file->move($targetFolder, $issue->getImageFilename())) {
-                return $this->fail(static::ISSUE_FILE_UPLOAD_FAILED);
-            }
+            $this->uploadImage($file, $issue->getImageFilePath(), static::ISSUE_FILE_UPLOAD_FAILED);
         }
 
         //if create, need to enforce correct GUID

@@ -14,7 +14,9 @@ namespace App\Controller\Api\Base;
 use App\Api\Response\FailResponse;
 use App\Api\Response\SuccessfulResponse;
 use App\Controller\Base\BaseDoctrineController;
+use App\Service\Interfaces\ImageServiceInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -119,6 +121,7 @@ abstract class AbstractApiController extends BaseDoctrineController
                 'serializer' => SerializerInterface::class,
                 'validator' => ValidatorInterface::class,
                 'request_stack' => RequestStack::class,
+                ImageServiceInterface::class => ImageServiceInterface::class,
             ];
     }
 
@@ -146,5 +149,27 @@ abstract class AbstractApiController extends BaseDoctrineController
     protected function success($data)
     {
         return $this->json(new SuccessfulResponse($data));
+    }
+
+    /**
+     * @param UploadedFile $file
+     * @param $targetFilePath
+     * @param $error
+     *
+     * @return bool|JsonResponse
+     */
+    protected function uploadImage(UploadedFile $file, $targetFilePath, $error)
+    {
+        /** @var UploadedFile $file */
+        $targetFolder = $this->getParameter('PUBLIC_DIR') . '/' . dirname($targetFilePath);
+        if (!file_exists($targetFolder)) {
+            mkdir($targetFolder, 0777, true);
+        }
+        if (!$file->move($targetFolder, $targetFilePath)) {
+            return $this->fail($error);
+        }
+        $this->get(ImageServiceInterface::class)->generateThumbnails($this->getParameter('PUBLIC_DIR') . '/' . $targetFilePath);
+
+        return true;
     }
 }

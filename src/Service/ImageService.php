@@ -216,9 +216,52 @@ class ImageService implements ImageServiceInterface
 
         $filePath = $this->getFilePathFor($map, $issues);
         if (!file_exists($filePath) || $this->disableCache) {
-            return $this->render($map, $issues, $filePath);
+            $filePath = $this->render($map, $issues, $filePath);
+            $this->generateThumbnails($filePath, true);
         }
 
         return $filePath;
+    }
+
+    /**
+     * @param null|string $imagePath
+     * @param bool $absolutePath
+     */
+    public function generateThumbnails(?string $imagePath, $absolutePath = false)
+    {
+        if (!$absolutePath) {
+            $imagePath = $this->pubFolder . '/' . $imagePath;
+        }
+        if (!file_exists($imagePath)) {
+            return;
+        }
+
+        $this->createVariant($imagePath, 100, 50, 'thumb');
+        $this->createVariant($imagePath, 300, 500, 'share_view');
+        $this->createVariant($imagePath, 600, 600, 'report');
+    }
+
+    /**
+     * @param string $imagePath
+     * @param int $maxWidth
+     * @param int $maxHeight
+     * @param string $appendix
+     */
+    private function createVariant(string $imagePath, int $maxWidth, int $maxHeight, string $appendix)
+    {
+        list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $maxWidth, $maxHeight);
+
+        $splitPoint = mb_strrpos($imagePath, '.');
+        $ending = mb_substr($imagePath, $splitPoint);
+        $path = mb_substr($imagePath, 0, $splitPoint);
+        $newPath = $path . '_' . $appendix . $ending;
+
+        //resize & save
+        $resizedImage = imagecreatetruecolor($width, $height);
+        if ($ending === '.jpg' || $ending === '.jpeg') {
+            $originalImage = imagecreatefromjpeg($imagePath);
+            imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
+            imagejpeg($resizedImage, $newPath);
+        }
     }
 }
