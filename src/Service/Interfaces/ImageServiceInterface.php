@@ -15,6 +15,11 @@ use App\Entity\Map;
 
 interface ImageServiceInterface
 {
+    const SIZE_THUMB = 'thumb';
+    const SIZE_FULL = 'full';
+    const SIZE_SHARE_VIEW = 'share_view';
+    const SIZE_REPORT = 'report';
+
     /**
      * @param Map $map
      * @param array $issues
@@ -25,6 +30,9 @@ interface ImageServiceInterface
 
     /**
      * @param string|null $imagePath
+     * @param string $size
+     *
+     * @return string|null
      */
-    public function generateThumbnails(?string $imagePath);
+    public function getSize(?string $imagePath, $size = self::SIZE_THUMB);
 }

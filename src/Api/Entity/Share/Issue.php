@@ -29,6 +29,16 @@ class Issue extends \App\Api\Entity\Base\Issue
     private $number;
 
     /**
+     * @var string|null
+     */
+    private $imageShareView;
+
+    /**
+     * @var string|null
+     */
+    private $imageFull;
+
+    /**
      * @return \DateTime
      */
     public function getRegisteredAt(): \DateTime
@@ -74,5 +84,37 @@ class Issue extends \App\Api\Entity\Base\Issue
     public function setNumber(int $number): void
     {
         $this->number = $number;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getImageShareView(): ?string
+    {
+        return $this->imageShareView;
+    }
+
+    /**
+     * @param null|string $imageShareView
+     */
+    public function setImageShareView(?string $imageShareView): void
+    {
+        $this->imageShareView = $imageShareView;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getImageFull(): ?string
+    {
+        return $this->imageFull;
+    }
+
+    /**
+     * @param null|string $imageFull
+     */
+    public function setImageFull(?string $imageFull): void
+    {
+        $this->imageFull = $imageFull;
     }
 }

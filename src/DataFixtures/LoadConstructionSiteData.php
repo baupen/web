@@ -49,7 +49,7 @@ class LoadConstructionSiteData extends BaseFixture
             $manager->persist($constructionSite);
 
             //copy image to correct location
-            $constructionSite->setImageFilename($this->safeCopyToPublic($constructionSite->getImageFilePath(), 'construction_site_images', true));
+            $constructionSite->setImageFilename($this->safeCopyToPublic($constructionSite->getImageFilePath(), 'construction_site_images'));
 
             //add user access
             foreach ($appUsers as $appUser) {

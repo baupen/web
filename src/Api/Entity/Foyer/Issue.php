@@ -44,6 +44,16 @@ class Issue extends \App\Api\Entity\Base\Issue
     private $uploadByName;
 
     /**
+     * @var string|null
+     */
+    private $imageThumbnail;
+
+    /**
+     * @var string|null
+     */
+    private $imageFull;
+
+    /**
      * @return bool
      */
     public function getIsMarked(): bool
@@ -137,5 +147,37 @@ class Issue extends \App\Api\Entity\Base\Issue
     public function setUploadByName(?string $uploadByName): void
     {
         $this->uploadByName = $uploadByName;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getImageThumbnail(): ?string
+    {
+        return $this->imageThumbnail;
+    }
+
+    /**
+     * @param null|string $imageThumbnail
+     */
+    public function setImageThumbnail(?string $imageThumbnail): void
+    {
+        $this->imageThumbnail = $imageThumbnail;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getImageFull(): ?string
+    {
+        return $this->imageFull;
+    }
+
+    /**
+     * @param null|string $imageFull
+     */
+    public function setImageFull(?string $imageFull): void
+    {
+        $this->imageFull = $imageFull;
     }
 }

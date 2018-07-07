@@ -20,10 +20,11 @@ class ImageHelper
      * @param $imgPath
      * @param $maxWidth
      * @param $maxHeight
+     * @param bool $expand
      *
      * @return array
      */
-    public static function getWidthHeightArguments($imgPath, $maxWidth, $maxHeight)
+    public static function getWidthHeightArguments($imgPath, $maxWidth, $maxHeight, $expand = true)
     {
         //get image sizes
         $imageSizes = getimagesize($imgPath);
@@ -54,6 +55,10 @@ class ImageHelper
             } else {
                 $scale = $heightRatio;
             }
+        }
+
+        if (!$expand && $scale > 1) {
+            $scale = 1;
         }
 
         return [$realWidth * $scale, $realHeight * $scale];

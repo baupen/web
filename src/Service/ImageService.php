@@ -217,7 +217,6 @@ class ImageService implements ImageServiceInterface
         $filePath = $this->getFilePathFor($map, $issues);
         if (!file_exists($filePath) || $this->disableCache) {
             $filePath = $this->render($map, $issues, $filePath);
-            $this->generateThumbnails($filePath, true);
         }
 
         return $filePath;
@@ -225,43 +224,90 @@ class ImageService implements ImageServiceInterface
 
     /**
      * @param null|string $imagePath
-     * @param bool $absolutePath
+     * @param string $size
+     *
+     * @return null|string
      */
-    public function generateThumbnails(?string $imagePath, $absolutePath = false)
+    public function getSize(?string $imagePath, $size = ImageServiceInterface::SIZE_THUMB)
     {
-        if (!$absolutePath) {
-            $imagePath = $this->pubFolder . '/' . $imagePath;
-        }
         if (!file_exists($imagePath)) {
-            return;
+            return null;
         }
 
-        $this->createVariant($imagePath, 100, 50, 'thumb');
-        $this->createVariant($imagePath, 300, 500, 'share_view');
-        $this->createVariant($imagePath, 600, 600, 'report');
+        //get name of variant on disk
+        $endingSplitPoint = mb_strrpos($imagePath, '.');
+        $path = mb_substr($imagePath, 0, $endingSplitPoint);
+
+        //replace "upload" with "generated" folder
+        $pathSplitPoint = mb_strrpos($path, '/upload/');
+        $path = mb_substr($path, 0, $pathSplitPoint) . 'generated' . mb_substr($path, $pathSplitPoint + 7);
+        $ending = mb_substr($imagePath, $endingSplitPoint);
+        $newPath = $path . '_' . $size . $ending;
+
+        if (!file_exists($newPath)) {
+            //generate variant if possible
+            $res = false;
+            switch ($size) {
+                case ImageServiceInterface::SIZE_THUMB:
+                    $res = $this->createVariant($imagePath, $newPath, 100, 50, $ending);
+                    break;
+                case ImageServiceInterface::SIZE_SHARE_VIEW:
+                    $res = $this->createVariant($imagePath, $newPath, 300, 500, $ending);
+                    break;
+                case ImageServiceInterface::SIZE_REPORT:
+                    $res = $this->createVariant($imagePath, $newPath, 600, 600, $ending);
+                    break;
+                case ImageServiceInterface::SIZE_FULL:
+                    $res = $this->createVariant($imagePath, $newPath, 1920, 1080, $ending);
+                    break;
+            }
+
+            //check is successful
+            if (!$res || !file_exists($newPath)) {
+                return null;
+            }
+        }
+
+        return $newPath;
     }
 
     /**
-     * @param string $imagePath
+     * @param string $sourcePath
+     * @param string $targetPath
      * @param int $maxWidth
      * @param int $maxHeight
-     * @param string $appendix
+     * @param string $ending
+     *
+     * @return bool
      */
-    private function createVariant(string $imagePath, int $maxWidth, int $maxHeight, string $appendix)
+    private function createVariant(string $sourcePath, string $targetPath, int $maxWidth, int $maxHeight, string $ending)
     {
-        list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $maxWidth, $maxHeight);
+        list($width, $height) = ImageHelper::getWidthHeightArguments($sourcePath, $maxWidth, $maxHeight, false);
 
-        $splitPoint = mb_strrpos($imagePath, '.');
-        $ending = mb_substr($imagePath, $splitPoint);
-        $path = mb_substr($imagePath, 0, $splitPoint);
-        $newPath = $path . '_' . $appendix . $ending;
+        //create folder if needed
+        $folder = dirname($targetPath);
+        if (!file_exists($folder)) {
+            mkdir($folder, 0777, true);
+        }
 
         //resize & save
-        $resizedImage = imagecreatetruecolor($width, $height);
+        $newImage = imagecreatetruecolor($width, $height);
         if ($ending === '.jpg' || $ending === '.jpeg') {
-            $originalImage = imagecreatefromjpeg($imagePath);
-            imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
-            imagejpeg($resizedImage, $newPath);
+            $originalImage = imagecreatefromjpeg($sourcePath);
+            imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
+            imagejpeg($newImage, $targetPath);
+        } elseif ($ending === '.png') {
+            $originalImage = imagecreatefrompng($sourcePath);
+            imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
+            imagepng($newImage, $targetPath);
+        } elseif ($ending === '.gif') {
+            $originalImage = imagecreatefromgif($sourcePath);
+            imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
+            imagegif($newImage, $targetPath);
+        } else {
+            return false;
         }
+
+        return true;
     }
 }

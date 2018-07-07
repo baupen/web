@@ -13,6 +13,8 @@ namespace App\Api\Transformer\Share;
 
 use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\Issue;
+use App\Service\Interfaces\ImageServiceInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class IssueTransformer extends BatchTransformer
 {
@@ -22,13 +24,20 @@ class IssueTransformer extends BatchTransformer
     private $issueTransformer;
 
     /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
      * CraftsmanTransformer constructor.
      *
      * @param \App\Api\Transformer\Base\IssueTransformer $issueTransformer
+     * @param RouterInterface $router
      */
-    public function __construct(\App\Api\Transformer\Base\IssueTransformer $issueTransformer)
+    public function __construct(\App\Api\Transformer\Base\IssueTransformer $issueTransformer, RouterInterface $router)
     {
         $this->issueTransformer = $issueTransformer;
+        $this->router = $router;
     }
 
     /**
@@ -44,6 +53,9 @@ class IssueTransformer extends BatchTransformer
         $issue->setRegisteredAt($entity->getRegisteredAt());
         $issue->setRegistrationByName($entity->getRegistrationBy()->getName());
         $issue->setNumber($entity->getNumber());
+
+        $issue->setImageShareView($this->router->generate('image_issue', ['issue' => $entity->getId(), 'size' => ImageServiceInterface::SIZE_SHARE_VIEW]));
+        $issue->setImageFull($this->router->generate('image_issue', ['issue' => $entity->getId(), 'size' => ImageServiceInterface::SIZE_FULL]));
 
         return $issue;
     }

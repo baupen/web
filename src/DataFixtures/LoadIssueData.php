@@ -142,7 +142,7 @@ class LoadIssueData extends BaseFixture
             }
 
             if ($issue->getImageFilename() !== null) {
-                $issue->setImageFilename($this->safeCopyToPublic($issue->getImageFilePath(), 'issue_images', true));
+                $issue->setImageFilename($this->safeCopyToPublic($issue->getImageFilePath(), 'issue_images'));
             }
 
             $manager->persist($issue);

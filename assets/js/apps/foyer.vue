@@ -3,7 +3,7 @@
         <div v-if="issues.length > 0" class="selectable-table">
             <div v-if="lightbox.enabled" class="lightbox" @click="closeLightbox()">
                 <div class="lightbox-content">
-                    <img :src="lightbox.issue.imageFilePath"/>
+                    <img :src="lightbox.issue.imageFull"/>
                     <div class="file-upload-field">
                         <input class="form-control" @click.stop="" type="file" @change="processFile($event)"/>
                     </div>
@@ -86,7 +86,7 @@
                         <font-awesome-icon v-else :icon="['fal', 'star']"/>
                     </td>
                     <td class="minimal-width">
-                        <img class="lightbox-thumbnail" @click="openLightbox(issue)" :src="issue.imageFilePath">
+                        <img class="lightbox-thumbnail" @click="openLightbox(issue)" :src="issue.imageThumbnail">
                     </td>
                     <td>
                         <span v-if="editDescription === null || !issue.selected" class="editable"
@@ -251,7 +251,8 @@
                 data.append('file', event.target.files[0]);
 
                 axios.post("/api/foyer/issue/image", data).then((response) => {
-                    this.lightbox.issue.imageFilePath = response.data.issue.imageFilePath;
+                    this.lightbox.issue.imageFull = response.data.issue.imageFull;
+                    this.lightbox.issue.imageThumbnail = response.data.issue.imageThumbnail;
                 });
             },
             openLightbox: function (issue) {
@@ -425,7 +426,8 @@
                             match[0].description = c.description;
                             match[0].craftsmanId = c.craftsmanId;
                             match[0].responseLimit = c.responseLimit;
-                            match[0].imageFilePath = c.imageFilePath;
+                            match[0].imageFull = c.imageFull;
+                            match[0].imageThumbnail = c.imageThumbnail;
                         }
                     });
 

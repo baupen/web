@@ -28,16 +28,16 @@ use Symfony\Component\Routing\Annotation\Route;
 class ImageController extends BaseDoctrineController
 {
     /**
-     * @Route("/map/{map}/c/{identifier}/{hash}", name="external_image_map_craftsman")
+     * @Route("/map/{map}/c/{identifier}/{hash}/{size}", name="external_image_map_craftsman")
      *
      * @param Map $map
      * @param $identifier
-     * @param $hash
+     * @param $size
      * @param ImageServiceInterface $imageService
      *
      * @return Response
      */
-    public function imageAction(Map $map, $identifier, ImageServiceInterface $imageService)
+    public function mapAction(Map $map, $identifier, $size, ImageServiceInterface $imageService)
     {
         /** @var Craftsman $craftsman */
         $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['emailIdentifier' => $identifier]);
@@ -54,6 +54,29 @@ class ImageController extends BaseDoctrineController
         $filter->setReviewedStatus(false);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
 
-        return $this->file($imageService->generateMapImage($map, $issues), null, ResponseHeaderBag::DISPOSITION_INLINE);
+        $imagePath = $imageService->generateMapImage($map, $issues);
+
+        return $this->file($imageService->getSize($imagePath, $size), null, ResponseHeaderBag::DISPOSITION_INLINE);
+    }
+
+    /**
+     * @Route("/issue/{issue}/c/{identifier}/{size}", name="external_image_map_craftsman")
+     *
+     * @param Issue $issue
+     * @param $identifier
+     * @param $size
+     * @param ImageServiceInterface $imageService
+     *
+     * @return Response
+     */
+    public function issueAction(Issue $issue, $identifier, $size, ImageServiceInterface $imageService)
+    {
+        /** @var Craftsman $craftsman */
+        $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['emailIdentifier' => $identifier]);
+        if ($craftsman === null || $issue->getMap()->getConstructionSite() !== $craftsman->getConstructionSite()) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->file($imageService->getSize($issue->getImageFilePath(), $size), null, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

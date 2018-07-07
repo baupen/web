@@ -12,8 +12,6 @@
 namespace App\DataFixtures\Base;
 
 use App\Entity\Traits\AddressTrait;
-use App\Service\ImageService;
-use App\Service\Interfaces\ImageServiceInterface;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -78,11 +76,10 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
      *
      * @param string $targetFilePath
      * @param string $resourceFolder
-     * @param bool $isImage
      *
      * @return string
      */
-    protected function safeCopyToPublic($targetFilePath, $resourceFolder, $isImage = false)
+    protected function safeCopyToPublic($targetFilePath, $resourceFolder)
     {
         $targetFolder = __DIR__ . '/../../../public/' . dirname($targetFilePath);
 
@@ -99,13 +96,6 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
         //copy file to target folder
         $destination = $targetFolder . '/' . $newFilename;
         copy(__DIR__ . '/../Resources/' . $resourceFolder . '/' . $resourceFileName, $destination);
-
-        //generate thumbs if necessary
-        if ($isImage) {
-            /** @var ImageServiceInterface $imageService */
-            $imageService = $this->container->get(ImageService::class);
-            $imageService->generateThumbnails($destination);
-        }
 
         return $newFilename;
     }
