@@ -165,21 +165,28 @@ class PdfSizes
     }
 
     /**
+     * @param bool $compact
+     *
      * @return float
      */
-    public function getColumnGutter()
+    public function getColumnGutter($compact = false)
     {
+        if ($compact) {
+            return $this->gutterSize / 2;
+        }
+
         return $this->gutterSize;
     }
 
     /**
      * @param $numberOfColumns
+     * @param bool $compact
      *
      * @return float|float
      */
-    public function getColumnContentWidth($numberOfColumns)
+    public function getColumnContentWidth($numberOfColumns, $compact = false)
     {
-        $gutterSpace = ($numberOfColumns - 1) * $this->getColumnGutter();
+        $gutterSpace = ($numberOfColumns - 1) * $this->getColumnGutter($compact);
 
         return (float)($this->getContentXSize() - $gutterSpace) / $numberOfColumns;
     }
@@ -187,28 +194,30 @@ class PdfSizes
     /**
      * @param $currentColumn
      * @param $numberOfColumns
+     * @param bool $compact
      *
      * @return float|float
      */
-    public function getColumnWidth($currentColumn, $numberOfColumns)
+    public function getColumnWidth($currentColumn, $numberOfColumns, $compact = false)
     {
-        $baseWidth = $this->getColumnContentWidth($numberOfColumns);
+        $baseWidth = $this->getColumnContentWidth($numberOfColumns, $compact);
         if ($currentColumn === $numberOfColumns - 1) {
             return $baseWidth;
         }
 
-        return $baseWidth + $this->getColumnGutter();
+        return $baseWidth + $this->getColumnGutter($compact);
     }
 
     /**
      * @param $currentColumn
      * @param $numberOfColumns
+     * @param bool $compact
      *
      * @return float|float
      */
-    public function getColumnStart($currentColumn, $numberOfColumns)
+    public function getColumnStart($currentColumn, $numberOfColumns, $compact = false)
     {
-        return ($this->getColumnWidth($currentColumn - 1, $numberOfColumns)) * $currentColumn + $this->getContentXStart();
+        return ($this->getColumnWidth($currentColumn - 1, $numberOfColumns, $compact)) * $currentColumn + $this->getContentXStart();
     }
 
     /**

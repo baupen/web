@@ -13,6 +13,7 @@ namespace App\Report;
 
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
+use App\Entity\Issue;
 use App\Entity\Map;
 use App\Helper\ImageHelper;
 
@@ -38,11 +39,6 @@ class Report
      */
     private $publicPath = __DIR__ . '/../../public';
 
-    /**
-     * @var float|null
-     */
-    private $currentHeight = null;
-
     public function __construct(PdfDefinition $pdfDefinition)
     {
         $this->pdfSizes = new PdfSizes();
@@ -56,6 +52,9 @@ class Report
             shell_exec('\cp -r ' . K_PATH_FONTS . '/* ' . K_PATH_FONTS);
             file_put_contents($checkFilePath, time());
         }
+
+        $this->pdfDocument->AddPage();
+        $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
 
         $this->setDefaults();
     }
@@ -76,28 +75,11 @@ class Report
         $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getDefaultCellPadding());
 
         //set position
-        $this->pdfDocument->SetXY($this->pdfSizes->getContentXStart(), $this->getCurrentY());
-    }
-
-    /**
-     * @return float|int
-     */
-    private function getCurrentY()
-    {
-        if ($this->currentHeight === null) {
+        $this->pdfDocument->SetX($this->pdfSizes->getContentXStart());
+        if ($this->pdfDocument->GetY() > $this->pdfSizes->getContentYEnd()) {
             $this->pdfDocument->AddPage();
-            $this->currentHeight = $this->pdfSizes->getContentYStart();
+            $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
         }
-
-        return $this->currentHeight;
-    }
-
-    /**
-     * @param $currentY
-     */
-    private function setCurrentY($currentY)
-    {
-        $this->currentHeight = $currentY;
     }
 
     /**
@@ -107,7 +89,8 @@ class Report
      */
     public function addIntroduction(ConstructionSite $constructionSite, array $filterEntries, string $filterHeader)
     {
-        $maxContentHeight = $this->getCurrentY();
+        $startY = $this->pdfDocument->GetY();
+        $maxContentHeight = $startY;
 
         //three or two column layout
         $columnCount = 3;
@@ -118,7 +101,7 @@ class Report
         if (file_exists($imagePath)) {
             $maxImageWidth = $this->pdfSizes->getColumnContentWidth($columnCount);
             list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $maxImageWidth, $maxImageWidth);
-            $this->pdfDocument->Image($imagePath, $this->pdfSizes->getContentXStart(), $this->getCurrentY(), $width, $height);
+            $this->pdfDocument->Image($imagePath, $this->pdfSizes->getContentXStart(), $startY, $width, $height);
             $maxContentHeight = max($this->pdfDocument->GetY() + $height, $maxContentHeight);
 
             //set position for the next content
@@ -131,7 +114,7 @@ class Report
 
         //construction site description
         $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
-        $this->pdfDocument->SetY($this->getCurrentY());
+        $this->pdfDocument->SetY($startY);
 
         $this->printH2($constructionSite->getName(), $columnWidth);
 
@@ -141,7 +124,7 @@ class Report
 
         //filter used for generation
         $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
-        $this->pdfDocument->SetY($this->getCurrentY());
+        $this->pdfDocument->SetY($startY);
 
         $this->printH2($filterHeader, $columnWidth);
 
@@ -151,8 +134,8 @@ class Report
             $this->printHtmlP('<b>' . $name . '</b>: ' . $value);
         }
 
-        //save content height for next part
-        $this->setCurrentY(max($this->pdfDocument->GetY(), $maxContentHeight) + $this->pdfSizes->getContentSpacerBig());
+        //define start of next part
+        $this->pdfDocument->SetY(max($this->pdfDocument->GetY(), $maxContentHeight) + $this->pdfSizes->getContentSpacerBig());
     }
 
     private function printH2($text, $columnWidth = 0, $description = '')
@@ -229,33 +212,52 @@ class Report
     public function addMap($map, $mapImageFilePath)
     {
         $this->setDefaults();
+        $startY = $this->pdfDocument->GetY();
 
         $headerHeight = $this->getHeightOf(function () use ($map) {
             $this->printH2($map->getName(), 0, $map->getContext());
         });
 
         if (file_exists($mapImageFilePath)) {
-            $imgPadding = 2 * $this->pdfSizes->getImagePadding();
-            $maxWidth = $this->pdfSizes->getContentXSize() - $imgPadding;
-            $maxHeight = $this->pdfSizes->getContentYSize() - $headerHeight - $imgPadding;
+            $imgPadding = $this->pdfSizes->getImagePadding();
+            $doubleImgPadding = 2 * $this->pdfSizes->getImagePadding();
+
+            $maxWidth = $this->pdfSizes->getContentXSize() - $doubleImgPadding;
+            $maxHeight = $this->pdfSizes->getContentYSize() - $headerHeight - $doubleImgPadding;
             list($width, $height) = ImageHelper::getWidthHeightArguments($mapImageFilePath, $maxWidth, $maxHeight);
 
-            if ($headerHeight + $height + $this->getCurrentY() + $this->pdfSizes->getContentSpacerBig() + $imgPadding < $this->pdfSizes->getContentYEnd()) {
+            //check if image fits on current page
+            if ($headerHeight + $height + $startY + $this->pdfSizes->getContentSpacerBig() + $doubleImgPadding < $this->pdfSizes->getContentYEnd()) {
                 //add content spacer & continue on same page
-                $this->pdfDocument->SetY($this->getCurrentY() + $this->pdfSizes->getContentSpacerSmall(), true, false);
+                $this->pdfDocument->SetY($startY + $this->pdfSizes->getContentSpacerSmall(), true, false);
             } else {
                 //force new page
                 $this->pdfDocument->AddPage();
+                $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
             }
+
+            //print title
             $this->printH2($map->getName(), 0, $map->getContext());
-            $this->setCurrentY($this->pdfDocument->GetY());
-            $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $height + $imgPadding, '', 0, 1, '', true);
-            $this->setCurrentY($this->getCurrentY() + $this->pdfSizes->getImagePadding());
-            $this->pdfDocument->Image($mapImageFilePath, $this->pdfSizes->getContentXStart() + (((float)$this->pdfSizes->getContentXSize() - $width) / 2), $this->getCurrentY(), $width, $height);
-            $this->setCurrentY($this->pdfDocument->GetY() + $height);
+
+            //print image with surrounding box
+            $startY = $this->pdfDocument->GetY();
+            $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $height + $doubleImgPadding, '', 0, 2, '', true);
+            $this->pdfDocument->SetY($startY);
+            $this->pdfDocument->Image($mapImageFilePath, $this->pdfSizes->getContentXStart() + (((float)$this->pdfSizes->getContentXSize() - $width) / 2), $this->pdfDocument->GetY() + $imgPadding, $width, $height);
+
+            //adapt Y with spacer for next
+            $this->pdfDocument->SetY($startY + $height + $doubleImgPadding + $this->pdfSizes->getContentSpacerBig());
+        } else {
+            //only print title
+            $this->printH2($map->getName(), 0, $map->getContext());
         }
     }
 
+    /**
+     * @param $tableHead
+     * @param $tableContent
+     * @param null $tableTitle
+     */
     public function addTable($tableHead, $tableContent, $tableTitle = null)
     {
         $this->setDefaults();
@@ -263,11 +265,12 @@ class Report
         if ($tableTitle !== null) {
             //table header
             $this->printH3($tableTitle, $this->pdfSizes->getContentXSize());
-            $this->setCurrentY($this->pdfDocument->GetY());
         }
 
+        //table needs to know where to start
+        $startY = $this->pdfDocument->GetY();
+
         //adapt font for table content
-        $maxContentHeight = $this->getCurrentY();
         $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
         $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
         $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
@@ -275,13 +278,12 @@ class Report
         //go through header
         $currentColumn = 0;
         $columnCount = count($tableHead);
+        $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
         foreach ($tableHead as $item) {
-            $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount), $this->getCurrentY());
+            $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount), $startY);
             $this->pdfDocument->MultiCell($this->pdfSizes->getColumnWidth($currentColumn, $columnCount), 0, mb_strtoupper($item), 0, 'L', true, 1);
-            $maxContentHeight = max($maxContentHeight, $this->pdfDocument->GetY());
             ++$currentColumn;
         }
-        $this->setCurrentY($maxContentHeight);
 
         $currentRow = 0;
         $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
@@ -293,11 +295,12 @@ class Report
             $maxContentHeight = 0;
             $currentColumn = 0;
             $fullWidth = 0;
+            $startY = $this->pdfDocument->GetY();
             foreach ($row as $item) {
-                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount), $this->getCurrentY());
+                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount), $startY);
                 $currentWidth = $this->pdfSizes->getColumnWidth($currentColumn, $columnCount);
 
-                $this->pdfDocument->MultiCell($currentWidth, $maxContentHeight - $this->getCurrentY(), $item, 0, 'L', $fill, 1);
+                $this->pdfDocument->MultiCell($currentWidth, $maxContentHeight - $startY, $item, 0, 'L', $fill, 1);
 
                 if ($maxContentHeight !== 0 && $this->pdfDocument->GetY() > $maxContentHeight) {
                     $diff = $this->pdfDocument->GetY() - $maxContentHeight;
@@ -315,11 +318,81 @@ class Report
                 ++$currentColumn;
                 $fullWidth += $currentWidth;
             }
-            $this->setCurrentY($maxContentHeight);
-            $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $this->getCurrentY(), $this->pdfSizes->getContentXEnd(), $this->getCurrentY());
+            $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $maxContentHeight, $this->pdfSizes->getContentXEnd(), $maxContentHeight);
+            $this->pdfDocument->SetY($maxContentHeight);
             ++$currentRow;
         }
 
-        $this->setCurrentY(max($this->pdfDocument->GetY(), $maxContentHeight) + $this->pdfSizes->getContentSpacerBig());
+        //define start of next part
+        $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
+    }
+
+    /**
+     * @param Issue[] $issues
+     */
+    public function addIssueImageGrid($issues)
+    {
+        $this->setDefaults();
+
+        $columnCount = 4;
+        $columnWidth = $this->pdfSizes->getColumnContentWidth($columnCount, true);
+
+        $imageGrid = [];
+        $currentRow = ['height' => 0, 'issues' => []];
+        foreach ($issues as $issue) {
+            $imagePath = $this->publicPath . '/' . $issue->getImageFilePath();
+            if (!file_exists($imagePath)) {
+                continue;
+            }
+
+            //add to current row
+            list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $columnWidth, $columnWidth);
+            $currentRow['height'] = max($currentRow['height'], $height);
+            $currentIssue['imagePath'] = $imagePath;
+            $currentIssue['width'] = $width;
+            $currentIssue['height'] = $height;
+            $currentIssue['identification'] = $issue->getNumber();
+            $currentRow['issues'][] = $currentIssue;
+
+            //add row to grid if applicable
+            if (count($currentRow['issues']) === $columnCount) {
+                $imageGrid[] = $currentRow;
+                $currentRow['height'] = 0;
+                $currentRow['issues'] = [];
+            }
+        }
+        if (count($currentRow['issues']) > 0) {
+            $imageGrid[] = $currentRow;
+        }
+
+        $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
+        $cellWidthPadding = $this->pdfSizes->getTableCellPadding()[0] + $this->pdfSizes->getTableCellPadding()[2];
+        foreach ($imageGrid as $row) {
+            //check if image fits on current page
+            if ($this->pdfDocument->GetY() + $row['height'] + $this->pdfSizes->getColumnGutter() > $this->pdfSizes->getContentYEnd()) {
+                //force new page
+                $this->pdfDocument->AddPage();
+                $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
+            }
+            $startY = $this->pdfDocument->GetY();
+
+            $currentColumn = 0;
+
+            foreach ($row['issues'] as $issue) {
+                //image
+                $height = $issue['height'];
+                $width = $issue['width'];
+                $xStart = $this->pdfSizes->getColumnStart($currentColumn, $columnCount, true) + (((float)$columnWidth - $width) / 2);
+                $this->pdfDocument->Image($issue['imagePath'], $xStart, $startY, $width, $height, '', '', '', '', 300, '', false, false, 1);
+
+                //identification
+                $this->pdfDocument->SetXY($xStart, $startY);
+                $width = mb_strlen((string)$issue['identification']) * $this->pdfSizes->getRegularFontSize() / 5 + $cellWidthPadding;
+                $this->pdfDocument->Cell($width, 0, $issue['identification'], 0, 0, '', true);
+                ++$currentColumn;
+            }
+
+            $this->pdfDocument->SetY($startY + $row['height'] + $this->pdfSizes->getColumnGutter());
+        }
     }
 }

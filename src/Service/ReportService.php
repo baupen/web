@@ -104,6 +104,9 @@ class ReportService implements ReportServiceInterface
             $issues = $issuesPerMap[$map->getId()];
             $report->addMap($map, $this->imageService->generateMapImage($map, $issues));
             $this->addIssueTable($report, $filter, $issues);
+            if ($elements->getWithImages()) {
+                $report->addIssueImageGrid($issues);
+            }
             //add table with issues
             //add columns with images
         }
@@ -170,12 +173,16 @@ class ReportService implements ReportServiceInterface
         $filterEntries[$this->translator->trans('status', [], 'entity_issue')] = $statusEntry;
 
         //add craftsmen
+        $trades = null;
         if ($filter->getCraftsmen() !== null) {
             $entities = $this->doctrine->getRepository(Craftsman::class)->findBy(['id' => $filter->getCraftsmen()]);
             $names = [];
+            $trades = [];
             foreach ($entities as $item) {
-                $names[] = $item->getName();
+                $names[$item->getName()] = 1;
+                $trades[$item->getTrade()] = 1;
             }
+            $names = array_keys($names);
             $filterEntries[$this->translator->transChoice('filter.craftsmen', count($names), [], 'report')] = implode(', ', $names);
         }
 
@@ -200,8 +207,16 @@ class ReportService implements ReportServiceInterface
         if ($filter->getNumber() !== null) {
             $filterEntries[$this->translator->trans('number', [], 'entity_issue')] = $filter->getNumber();
         }
-        if ($filter->getTrades() !== null) {
-            $filterEntries[$this->translator->transChoice('filter.trades', count($filter->getTrades()), [], 'report')] = implode(', ', $filter->getTrades());
+        if ($filter->getTrades() !== null || $trades !== null) {
+            if ($trades === null) {
+                $trades = [];
+            }
+            if ($filter->getTrades() !== null) {
+                foreach ($filter->getTrades() as $trade) {
+                    $trades[$trade] = 1;
+                }
+            }
+            $filterEntries[$this->translator->transChoice('filter.trades', count($trades), [], 'report')] = implode(', ', array_keys($trades));
         }
 
         $report->addIntroduction($constructionSite, $filterEntries, $this->translator->trans('entity.name', [], 'entity_filter'));
@@ -218,7 +233,7 @@ class ReportService implements ReportServiceInterface
         $showResponded = $filter->getRespondedStatus() === null || $filter->getRespondedStatus();
         $showReviewed = $filter->getReviewedStatus() === null || $filter->getReviewedStatus();
 
-        $tableHeader[] = count($issues);
+        $tableHeader[] = '#';
         $tableHeader[] = $this->translator->trans('description', [], 'entity_issue');
         $tableHeader[] = $this->translator->trans('response_limit', [], 'entity_issue');
 
