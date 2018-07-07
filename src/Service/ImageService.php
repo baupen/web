@@ -31,13 +31,16 @@ class ImageService implements ImageServiceInterface
     /**
      * @var bool if the cache should be disabled
      */
-    private $disableCache = true;
+    private $disableCache = false;
 
     /**
      * @param Map $map
      * @param Issue[] $issues
+     * @param string $filePath
+     *
+     * @return string|null
      */
-    private function render(Map $map, array $issues, $filePath)
+    private function render(Map $map, array $issues, $filePath): ?string
     {
         //create folder
         $generationTargetFolder = $this->getGenerationTargetFolder($map);
@@ -52,14 +55,20 @@ class ImageService implements ImageServiceInterface
 
             //do first low quality render to get artboxsize
             $renderedMapPath = $generationTargetFolder . '/pre_render.jpg';
-            $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=10 -dUseArtBox -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
+            $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=10 -dFitArtBox -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
             exec($command);
+            if (!file_exists($renderedMapPath)) {
+                return null;
+            }
 
             //second render with correct image dimensions
             list($width, $height) = ImageHelper::getWidthHeightArguments($renderedMapPath, 3840, 2160);
             $renderedMapPath = $generationTargetFolder . '/render.jpg';
             $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=' . $width . ' -dDEVICEHEIGHTPOINTS=' . $height . ' -dJPEGQ=80 -dFitPage -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
             exec($command);
+            if (!file_exists($renderedMapPath)) {
+                return null;
+            }
         }
 
         //open image file
@@ -73,6 +82,8 @@ class ImageService implements ImageServiceInterface
         //write to disk & destroy
         imagejpeg($sourceImage, $filePath, 90);
         imagedestroy($sourceImage);
+
+        return file_exists($filePath) ? $filePath : null;
     }
 
     /**
@@ -199,9 +210,13 @@ class ImageService implements ImageServiceInterface
      */
     public function generateMapImage(Map $map, array $issues)
     {
+        if ($map->getFilename() === null) {
+            return null;
+        }
+
         $filePath = $this->getFilePathFor($map, $issues);
         if (!file_exists($filePath) || $this->disableCache) {
-            $this->render($map, $issues, $filePath);
+            return $this->render($map, $issues, $filePath);
         }
 
         return $filePath;

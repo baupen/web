@@ -201,7 +201,7 @@ class Report
             list($width, $height) = ImageHelper::getWidthHeightArguments($mapImageFilePath, $this->pdfSizes->getContentXSize(), $this->pdfSizes->getContentYSize());
             $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $height + $this->pdfSizes->getContentSpacerSmall() * 2, '', 1);
             $this->pdfDocument->SetY($this->getCurrentY() + $this->pdfSizes->getContentSpacerSmall());
-            $this->pdfDocument->setPage($this->pdfDocument->getPage() - 1);
+            //$this->pdfDocument->setPage($this->pdfDocument->getPage() - 1);
             $this->pdfDocument->Image($mapImageFilePath, $this->pdfSizes->getContentXStart() + (((float)$this->pdfSizes->getContentXSize() - $width)), $this->getCurrentY(), $width, $height, '', '', 'C', false, 300, '', '', false, 1);
         }
     }
@@ -250,7 +250,7 @@ class Report
                 ++$currentColumn;
             }
             $this->setCurrentY($maxContentHeight);
-            $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $this->getCurrentY(), $this->pdfSizes->getContentXEnd() + 2, $this->getCurrentY());
+            $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $this->getCurrentY(), $this->pdfSizes->getContentXEnd(), $this->getCurrentY());
             ++$currentRow;
         }
 
