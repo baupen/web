@@ -12,11 +12,9 @@
 namespace App\Controller;
 
 use App\Controller\Base\BaseDoctrineController;
+use App\Controller\Traits\ImageDownloadTrait;
 use App\Entity\Issue;
-use App\Service\Interfaces\ImageServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -24,29 +22,21 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ImageController extends BaseDoctrineController
 {
+    use ImageDownloadTrait;
+
     /**
      * @Route("/issue/{issue}/{imageFilename}/{size}", name="image_issue")
      *
      * @param Issue $issue
      * @param string $imageFilename
      * @param string $size
-     * @param ImageServiceInterface $imageService
      *
      * @return Response
      */
-    public function issueAction(Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService)
+    public function issueAction(Issue $issue, $imageFilename, $size)
     {
         $this->ensureAccess($issue);
 
-        if ($issue->getImageFilename() !== $imageFilename) {
-            throw new NotFoundHttpException();
-        }
-
-        $filePath = $imageService->getSize($this->getParameter('PUBLIC_DIR') . '/' . $issue->getImageFilePath(), $size);
-        if ($filePath === null) {
-            throw new NotFoundHttpException();
-        }
-
-        return $this->file($filePath, null, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->downloadIssueImage($issue, $imageFilename, $size);
     }
 }

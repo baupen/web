@@ -237,38 +237,42 @@ class ImageService implements ImageServiceInterface
         //get name of variant on disk
         $endingSplitPoint = mb_strrpos($imagePath, '.');
         $path = mb_substr($imagePath, 0, $endingSplitPoint);
+        $ending = mb_substr($imagePath, $endingSplitPoint);
 
         //replace "upload" with "generated" folder
         $pathSplitPoint = mb_strrpos($path, '/upload/');
-        $path = mb_substr($path, 0, $pathSplitPoint) . 'generated' . mb_substr($path, $pathSplitPoint + 7);
-        $ending = mb_substr($imagePath, $endingSplitPoint);
-        $newPath = $path . '_' . $size . $ending;
+        if ($pathSplitPoint > 0) {
+            $path = mb_substr($path, 0, $pathSplitPoint) . 'generated' . mb_substr($path, $pathSplitPoint + 7);
+        }
 
-        if (!file_exists($newPath)) {
+        //add size & ending
+        $path .= '_' . $size . $ending;
+
+        if (!file_exists($path) || $this->disableCache) {
             //generate variant if possible
             $res = false;
             switch ($size) {
                 case ImageServiceInterface::SIZE_THUMBNAIL:
-                    $res = $this->createVariant($imagePath, $newPath, 100, 50, $ending);
+                    $res = $this->createVariant($imagePath, $path, 100, 50, $ending);
                     break;
                 case ImageServiceInterface::SIZE_SHARE_VIEW:
-                    $res = $this->createVariant($imagePath, $newPath, 300, 500, $ending);
+                    $res = $this->createVariant($imagePath, $path, 300, 500, $ending);
                     break;
                 case ImageServiceInterface::SIZE_REPORT:
-                    $res = $this->createVariant($imagePath, $newPath, 600, 600, $ending);
+                    $res = $this->createVariant($imagePath, $path, 600, 600, $ending);
                     break;
                 case ImageServiceInterface::SIZE_FULL:
-                    $res = $this->createVariant($imagePath, $newPath, 1920, 1080, $ending);
+                    $res = $this->createVariant($imagePath, $path, 1920, 1080, $ending);
                     break;
             }
 
             //check is successful
-            if (!$res || !file_exists($newPath)) {
+            if (!$res || !file_exists($path)) {
                 return null;
             }
         }
 
-        return $newPath;
+        return $path;
     }
 
     /**
@@ -295,15 +299,15 @@ class ImageService implements ImageServiceInterface
         if ($ending === '.jpg' || $ending === '.jpeg') {
             $originalImage = imagecreatefromjpeg($sourcePath);
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
-            imagejpeg($newImage, $targetPath);
+            imagejpeg($newImage, $targetPath, 90);
         } elseif ($ending === '.png') {
             $originalImage = imagecreatefrompng($sourcePath);
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
-            imagepng($newImage, $targetPath);
+            imagepng($newImage, $targetPath, 90);
         } elseif ($ending === '.gif') {
             $originalImage = imagecreatefromgif($sourcePath);
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
-            imagegif($newImage, $targetPath);
+            imagegif($newImage, $targetPath, 90);
         } else {
             return false;
         }

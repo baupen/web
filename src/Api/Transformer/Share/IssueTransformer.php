@@ -55,8 +55,9 @@ class IssueTransformer extends BatchTransformer
         $issue->setRegistrationByName($entity->getRegistrationBy()->getName());
         $issue->setNumber($entity->getNumber());
 
-        $issue->setImageShareView($this->router->generate('external_image_issue_craftsman', ['identifier' => $args['identifier'], 'issue' => $entity->getId(), 'size' => ImageServiceInterface::SIZE_SHARE_VIEW]));
-        $issue->setImageFull($this->router->generate('external_image_issue_craftsman', ['identifier' => $args['identifier'], 'issue' => $entity->getId(), 'size' => ImageServiceInterface::SIZE_FULL]));
+        $routeArguments = ['identifier' => $args['identifier'], 'imageFilename' => $entity->getImageFilename(), 'issue' => $entity->getId()];
+        $issue->setImageShareView($this->router->generate('external_image_issue_craftsman', $routeArguments + ['size' => ImageServiceInterface::SIZE_SHARE_VIEW]));
+        $issue->setImageFull($this->router->generate('external_image_issue_craftsman', $routeArguments + ['size' => ImageServiceInterface::SIZE_FULL]));
 
         return $issue;
     }

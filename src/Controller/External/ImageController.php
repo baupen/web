@@ -12,6 +12,7 @@
 namespace App\Controller\External;
 
 use App\Controller\Base\BaseDoctrineController;
+use App\Controller\Traits\ImageDownloadTrait;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
@@ -27,6 +28,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ImageController extends BaseDoctrineController
 {
+    use ImageDownloadTrait;
+
     /**
      * @Route("/map/{map}/c/{identifier}/{hash}/{size}", name="external_image_map_craftsman")
      *
@@ -60,16 +63,15 @@ class ImageController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/issue/{issue}/c/{identifier}/{size}", name="external_image_issue_craftsman")
+     * @Route("/issue/{issue}/{imageFilename}/c/{identifier}/{size}", name="external_image_issue_craftsman")
      *
      * @param Issue $issue
      * @param $identifier
      * @param $size
-     * @param ImageServiceInterface $imageService
      *
      * @return Response
      */
-    public function issueAction(Issue $issue, $identifier, $size, ImageServiceInterface $imageService)
+    public function issueAction(Issue $issue, $imageFilename, $identifier, $size)
     {
         /** @var Craftsman $craftsman */
         $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['emailIdentifier' => $identifier]);
@@ -77,6 +79,6 @@ class ImageController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
-        return $this->file($imageService->getSize($issue->getImageFilePath(), $size), null, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->downloadIssueImage($issue, $imageFilename, $size);
     }
 }
