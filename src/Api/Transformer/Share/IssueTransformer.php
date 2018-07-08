@@ -42,7 +42,7 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * @param Issue $entity
-     * @param null $args
+     * @param array $args
      *
      * @return \App\Api\Entity\Share\Issue
      */

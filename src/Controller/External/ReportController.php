@@ -30,12 +30,11 @@ class ReportController extends BaseDoctrineController
      * @Route("/c/{identifier}/{hash}", name="external_report_craftsman")
      *
      * @param $identifier
-     * @param $hash
      * @param ReportServiceInterface $reportService
      *
      * @return Response
      */
-    public function craftsmanAction($identifier, $hash, ReportServiceInterface $reportService)
+    public function craftsmanAction($identifier, ReportServiceInterface $reportService)
     {
         /** @var Craftsman $craftsman */
         $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['emailIdentifier' => $identifier]);

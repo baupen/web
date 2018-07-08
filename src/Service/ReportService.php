@@ -65,6 +65,7 @@ class ReportService implements ReportServiceInterface
      * @param ImageServiceInterface $imageService
      * @param RegistryInterface $registry
      * @param SerializerInterface $serializer
+     * @param TranslatorInterface $translator
      */
     public function __construct(ImageServiceInterface $imageService, RegistryInterface $registry, SerializerInterface $serializer, TranslatorInterface $translator)
     {
@@ -425,8 +426,6 @@ class ReportService implements ReportServiceInterface
 
     /**
      * @param ConstructionSite $constructionSite
-     * @param Filter $filter
-     * @param array $issues
      *
      * @return string
      */

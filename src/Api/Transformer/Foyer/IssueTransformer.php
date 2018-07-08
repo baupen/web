@@ -32,6 +32,7 @@ class IssueTransformer extends BatchTransformer
      * CraftsmanTransformer constructor.
      *
      * @param \App\Api\Transformer\Base\IssueTransformer $issueTransformer
+     * @param RouterInterface $router
      */
     public function __construct(\App\Api\Transformer\Base\IssueTransformer $issueTransformer, RouterInterface $router)
     {

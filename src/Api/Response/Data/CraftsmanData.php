@@ -21,7 +21,7 @@ class CraftsmanData
     private $craftsman;
 
     /**
-     * @return Craftsman[]
+     * @return Craftsman
      */
     public function getCraftsman(): Craftsman
     {
@@ -29,7 +29,7 @@ class CraftsmanData
     }
 
     /**
-     * @param Craftsman[] $craftsman
+     * @param Craftsman $craftsman
      */
     public function setCraftsman(Craftsman $craftsman): void
     {

@@ -40,7 +40,7 @@ set(
 
 desc('Installing vendors');
 task('deploy:vendors', function () {
-    run('cd {{release_path}} && {{bin/composer}} {{composer_options}}', ['timeout' => 600]);
+    run('cd {{release_path}} && {{bin/composer}} {{composer_options}}', ['timeout' => 400]);
 });
 
 //build yarn stuff & upload
