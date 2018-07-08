@@ -21,6 +21,9 @@ services:
     App\Service\EmailService:
         arguments: ["@mailer", "@logger","@twig","%env(MAILER_SENDER)%", "%env(SUPPORT_EMAIL)%"]
 
+    App\Service\ImageService:
+      public: true
+
     # tag it with serializer so datetime is serialized in a meaningful way
     Symfony\Component\Serializer\Normalizer\DateTimeNormalizer:
         public: false

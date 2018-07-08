@@ -151,7 +151,7 @@ trait AddressTrait
         $res = explode("\n", $this->getStreetAddress());
         $prefix = '';
         if (mb_strlen($this->getCountry()) > 0) {
-            $prefix = $this->getCountry() . ' ';
+            $prefix = $this->getCountry() . ((mb_strlen($this->getPostalCode()) > 0) ? '-' : ' ');
         }
         if (mb_strlen($this->getPostalCode()) > 0) {
             $prefix .= $this->getPostalCode() . ' ';

@@ -8,7 +8,7 @@
 
         <div v-if="lightbox.enabled" class="lightbox" @click="closeLightbox()">
             <div class="lightbox-content">
-                <img :src="lightbox.imageFilePath"/>
+                <img :src="lightbox.imageFull"/>
             </div>
             <font-awesome-icon class="lightbox-close" :icon="['fal', 'times']"/>
         </div>
@@ -22,7 +22,7 @@
                     </p>
                 </div>
                 <div class="col-md-6">
-                    <button class="btn btn-outline-primary btn-lg float-right">{{$t("print")}}</button>
+                    <a :href="craftsman.reportUrl" target="_blank" class="btn btn-outline-primary btn-lg float-right">{{$t("print")}}</a>
                 </div>
             </div>
 
@@ -56,14 +56,14 @@
                                 <h2>{{map.name}}</h2>
                                 <p v-if="map.context !== ''" class="text-secondary"> {{ map.context }} </p>
                                 <div class="card-columns">
-                                    <div v-if="map.imageFilePath !== ''" class="card">
-                                        <img class="card-img clickable" :src="map.imageFilePath"
+                                    <div v-if="map.imageShareView !== ''" class="card">
+                                        <img class="card-img clickable" :src="map.imageShareView"
                                              @click.prevent="openLightbox(map)">
                                     </div>
                                     <div class="card numbered-card" :class="{ 'border-success' : issue.responded }"
                                          v-for="issue in map.issues">
-                                        <img v-if="issue.imageFilePath !== ''" class="card-img-top clickable"
-                                             :src="issue.imageFilePath" @click.prevent="openLightbox(issue)">
+                                        <img v-if="issue.imageShareView !== ''" class="card-img-top clickable"
+                                             :src="issue.imageShareView" @click.prevent="openLightbox(issue)">
                                         <div class="card-number"
                                              :class="{ 'bg-success text-white' : issue.responded, 'bg-warning text-white': !issue.responded }">
                                             {{ issue.number }}
@@ -118,7 +118,7 @@
                 maps: null,
                 lightbox: {
                     enabled: false,
-                    imageFilePath: null
+                    imageFull: null
                 }
             }
         },
@@ -130,7 +130,7 @@
             },
             openLightbox: function (element) {
                 this.lightbox.enabled = true;
-                this.lightbox.imageFilePath = element.imageFilePath;
+                this.lightbox.imageFull = element.imageFull;
             },
             closeLightbox: function () {
                 this.lightbox.enabled = false;
@@ -163,7 +163,7 @@
                 axios.post("/external/api/share/c/" + this.identifier + "/issue/respond", {issueId: issue.id}).then((response) => {
                     if (response.data.successfulIds.length > 0) {
                         issue.responded = true;
-                        this.adaptImageFilePath(issue.map);
+                        this.adaptImageSrc(issue.map);
                     }
                 });
             },
@@ -171,7 +171,7 @@
                 axios.post("/external/api/share/c/" + this.identifier + "/issue/remove_response", {issueId: issue.id}).then((response) => {
                     if (response.data.successfulIds.length > 0) {
                         issue.responded = false;
-                        this.adaptImageFilePath(issue.map);
+                        this.adaptImageSrc(issue.map);
                     }
                 });
             },
@@ -188,8 +188,8 @@
                 }
                 return this.formatDateTime(currentResponseLimit);
             },
-            adaptImageFilePath: function (map) {
-                let str = map.issues.filter(i => !i.responded).map(i => i.id).join(",");
+            adaptImageSrc: function (map) {
+                let str = map.id + "," + map.issues.filter(i => !i.responded).map(i => i.id).join(",");
                 this.hash(str).then(hash => {
                     let prepared = map.imageFilePath.substring(0, map.imageFilePath.lastIndexOf("/"));
                     console.log(prepared);

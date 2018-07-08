@@ -94,7 +94,8 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
         $newFilename = Uuid::uuid4()->toString() . '.' . $extension;
 
         //copy file to target folder
-        copy(__DIR__ . '/../Resources/' . $resourceFolder . '/' . $resourceFileName, $targetFolder . '/' . $newFilename);
+        $destination = $targetFolder . '/' . $newFilename;
+        copy(__DIR__ . '/../Resources/' . $resourceFolder . '/' . $resourceFileName, $destination);
 
         return $newFilename;
     }

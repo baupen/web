@@ -476,4 +476,30 @@ class Issue extends BaseEntity
 
         return null;
     }
+
+    const UPLOAD_STATUS = 1;
+    const REGISTRATION_STATUS = 2;
+    const RESPONSE_STATUS = 4;
+    const REVIEW_STATUS = 8;
+
+    /**
+     * returns a unique code for all possible status.
+     *
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        $res = self::UPLOAD_STATUS;
+        if ($this->getRegisteredAt() !== null) {
+            $res = $res | self::REGISTRATION_STATUS;
+        }
+        if ($this->getRespondedAt() !== null) {
+            $res = $res | self::RESPONSE_STATUS;
+        }
+        if ($this->getReviewedAt() !== null) {
+            $res = $res | self::REVIEW_STATUS;
+        }
+
+        return $res;
+    }
 }

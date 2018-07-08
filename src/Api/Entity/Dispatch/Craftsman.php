@@ -39,6 +39,11 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
     private $lastOnlineVisit;
 
     /**
+     * @var string
+     */
+    private $personalUrl;
+
+    /**
      * @return int
      */
     public function getNotReadIssuesCount(): int
@@ -116,5 +121,21 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
     public function setLastOnlineVisit(?\DateTime $lastOnlineVisit): void
     {
         $this->lastOnlineVisit = $lastOnlineVisit;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPersonalUrl(): string
+    {
+        return $this->personalUrl;
+    }
+
+    /**
+     * @param string $personalUrl
+     */
+    public function setPersonalUrl(string $personalUrl): void
+    {
+        $this->personalUrl = $personalUrl;
     }
 }

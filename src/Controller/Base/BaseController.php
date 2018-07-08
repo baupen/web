@@ -12,6 +12,7 @@
 namespace App\Controller\Base;
 
 use App\Entity\ConstructionManager;
+use App\Security\Voter\Base\BaseVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -104,5 +105,13 @@ class BaseController extends AbstractController
     protected function getUser()
     {
         return parent::getUser();
+    }
+
+    /**
+     * @param $entity
+     */
+    protected function ensureAccess($entity)
+    {
+        $this->denyAccessUnlessGranted(BaseVoter::ANY_ATTRIBUTE, $entity);
     }
 }

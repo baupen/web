@@ -1,0 +1,12 @@
+generated: 'generiert von %name% am %date%'
+filter:
+  later_than: 'nach %date%'
+  earlier_than: 'vor %date%'
+  not: 'nicht %state%'
+  trades: 'one: Gewerbe|some: Gewerbe'
+  craftsmen: 'one: Firma|some: Firmen'
+  maps: 'one: Karte|some: Karten'
+
+table:
+  by_map: 'Pendenzen nach Karte'
+  in_state_since: '%status% seit'

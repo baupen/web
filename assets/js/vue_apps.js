@@ -32,7 +32,8 @@ if (document.getElementById("dispatch") != null) {
     library.add(
         require('@fortawesome/fontawesome-pro-solid/faSortUp'),
         require('@fortawesome/fontawesome-pro-solid/faSortDown'),
-        require('@fortawesome/fontawesome-pro-light/faSort')
+        require('@fortawesome/fontawesome-pro-light/faSort'),
+        require('@fortawesome/fontawesome-pro-light/faUserAlt')
     );
 
     new Vue({

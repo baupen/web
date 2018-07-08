@@ -13,6 +13,8 @@ namespace App\Api\Transformer\Foyer;
 
 use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\Issue;
+use App\Service\Interfaces\ImageServiceInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class IssueTransformer extends BatchTransformer
 {
@@ -22,21 +24,28 @@ class IssueTransformer extends BatchTransformer
     private $issueTransformer;
 
     /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
      * CraftsmanTransformer constructor.
      *
      * @param \App\Api\Transformer\Base\IssueTransformer $issueTransformer
      */
-    public function __construct(\App\Api\Transformer\Base\IssueTransformer $issueTransformer)
+    public function __construct(\App\Api\Transformer\Base\IssueTransformer $issueTransformer, RouterInterface $router)
     {
         $this->issueTransformer = $issueTransformer;
+        $this->router = $router;
     }
 
     /**
      * @param Issue $entity
+     * @param null $args
      *
      * @return \App\Api\Entity\Foyer\Issue
      */
-    public function toApi($entity)
+    public function toApi($entity, $args = null)
     {
         $issue = new \App\Api\Entity\Foyer\Issue($entity->getId());
         $this->issueTransformer->writeApiProperties($entity, $issue);
@@ -49,6 +58,9 @@ class IssueTransformer extends BatchTransformer
         }
         $issue->setUploadedAt($entity->getUploadedAt());
         $issue->setUploadByName($entity->getUploadBy()->getName());
+
+        $issue->setImageThumbnail($this->router->generate('image_issue', ['issue' => $entity->getId(), 'imageFilename' => $entity->getImageFilename(), 'size' => ImageServiceInterface::SIZE_THUMBNAIL]));
+        $issue->setImageFull($this->router->generate('image_issue', ['issue' => $entity->getId(), 'imageFilename' => $entity->getImageFilename(), 'size' => ImageServiceInterface::SIZE_FULL]));
 
         return $issue;
     }

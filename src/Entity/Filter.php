@@ -341,7 +341,7 @@ class Filter extends BaseEntity
     /**
      * @return \DateTime|null
      */
-    public function getLimitStart(): ?\DateTime
+    public function getResponseLimitStart(): ?\DateTime
     {
         return $this->limitStart;
     }
@@ -357,7 +357,7 @@ class Filter extends BaseEntity
     /**
      * @return \DateTime|null
      */
-    public function getLimitEnd(): ?\DateTime
+    public function getResponseLimitEnd(): ?\DateTime
     {
         return $this->limitEnd;
     }

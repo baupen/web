@@ -49,6 +49,7 @@ class LoadCraftsmanData extends BaseFixture
             foreach ($craftsmen as $craftsman) {
                 $craftsman->setConstructionSite($constructionSite);
                 $craftsman->setEmail($craftsman->getEmail() . '.example.com');
+                $craftsman->setEmailIdentifier();
                 $manager->persist($craftsman);
             }
         }

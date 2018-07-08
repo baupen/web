@@ -289,15 +289,8 @@ class FoyerController extends ApiController
         //set new filename to avoid caching issues
         $entity->setImageFilename(Uuid::uuid4()->toString() . '.' . $file->guessExtension());
 
-        //create folder & put file in there
-        $targetFolder = $this->getParameter('PUBLIC_DIR') . '/' . dirname($entity->getImageFilePath());
-        if (!file_exists($targetFolder)) {
-            mkdir($targetFolder, 0777, true);
-        }
-        if (!$file->move($targetFolder, $entity->getImageFilename())) {
-            return $this->fail(self::FILE_UPLOAD_FAILED);
-        }
-
+        //save file
+        $this->uploadImage($file, $entity->getImageFilePath(), self::FILE_UPLOAD_FAILED);
         $this->fastSave($entity);
 
         //create response

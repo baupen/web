@@ -22,7 +22,6 @@ class IssueTransformer
     public function writeApiProperties($source, $target)
     {
         $target->setDescription($source->getDescription());
-        $target->setImageFilePath($source->getImageFilePath());
         $target->setResponseLimit($source->getResponseLimit());
     }
 

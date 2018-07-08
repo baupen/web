@@ -32,8 +32,8 @@ class FoyerControllerTest extends ApiController
             $this->assertObjectHasAttribute("isMarked", $issue);
             $this->assertObjectHasAttribute("wasAddedWithClient", $issue);
             $this->assertObjectHasAttribute("description", $issue);
-            $this->assertObjectHasAttribute("imageFilePath", $issue);
-            $this->assertObjectHasAttribute("responseLimit", $issue);
+            $this->assertObjectHasAttribute("imageThumbnail", $issue);
+            $this->assertObjectHasAttribute("imageFull", $issue);
             $this->assertObjectHasAttribute("craftsmanId", $issue);
             $this->assertObjectHasAttribute("map", $issue);
             $this->assertObjectHasAttribute("uploadedAt", $issue);
@@ -140,7 +140,8 @@ class FoyerControllerTest extends ApiController
         $this->assertNotNull($issuesData->data->issue);
 
         $this->assertEquals($issuesData->data->issue->id, $apiIssue->id);
-        $this->assertNotEquals($issuesData->data->issue->imageFilePath, $apiIssue->imageFilePath);
+        $this->assertNotEquals($issuesData->data->issue->imageThumbnail, $apiIssue->imageThumbnail);
+        $this->assertNotEquals($issuesData->data->issue->imageFull, $apiIssue->imageFull);
     }
 
     public function testIssueDelete()

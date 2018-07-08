@@ -23,7 +23,7 @@ use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
-use App\Helper\HashHelper;
+use App\Helper\IssueHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -115,7 +115,7 @@ class ShareController extends ApiController
         }
 
         $data = new CraftsmanData();
-        $data->setCraftsman($craftsmanTransformer->toApi($craftsman));
+        $data->setCraftsman($craftsmanTransformer->toApi($craftsman, $identifier));
 
         return $this->success($data);
     }
@@ -145,27 +145,14 @@ class ShareController extends ApiController
         $filter->setReviewedStatus(false);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
 
-        /** @var Map[] $maps */
-        $maps = [];
-        /** @var Issue[][] $issuesPerMap */
-        $issuesPerMap = [];
-        foreach ($issues as $issue) {
-            $maps[$issue->getMap()->getId()] = $issue->getMap();
-            $issuesPerMap[$issue->getMap()->getId()][] = $issue;
-        }
+        /* @var Map[] $orderedMaps */
+        /* @var Issue[][] $issuesPerMap */
+        IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
 
         //convert to api format
         $apiMaps = [];
-        foreach ($maps as $key => $map) {
-            $apiMap = $mapTransformer->toApi($map);
-            if ($map->getFilename() !== null) {
-                $apiMap->setImageFilePath(
-                    $this->generateUrl('external_image_map_craftsman',
-                        ['map' => $map->getId(), 'identifier' => $craftsman->getEmailIdentifier(), 'hash' => HashHelper::hashEntities($issuesPerMap[$key])]
-                    )
-                );
-            }
-            $apiMap->setIssues($issueTransformer->toApiMultiple($issuesPerMap[$key]));
+        foreach ($orderedMaps as $key => $map) {
+            $apiMap = $mapTransformer->toApi($map, $craftsman->getEmailIdentifier(), $issuesPerMap[$key]);
             $apiMaps[] = $apiMap;
         }
 
@@ -193,7 +180,6 @@ class ShareController extends ApiController
         }
 
         $data = new ProcessingEntitiesData();
-
         if ($issue->getRespondedAt() === null) {
             $issue->setRespondedAt(new \DateTime());
             $issue->setResponseBy($craftsman);

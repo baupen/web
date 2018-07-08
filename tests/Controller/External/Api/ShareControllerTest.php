@@ -74,14 +74,16 @@ class ShareControllerTest extends ApiController
             $this->assertNotNull($map);
             $this->assertObjectHasAttribute("name", $map);
             $this->assertObjectHasAttribute("context", $map);
-            $this->assertObjectHasAttribute("imageFilePath", $map);
+            $this->assertObjectHasAttribute("imageShareView", $map);
+            $this->assertObjectHasAttribute("imageFull", $map);
 
             $this->assertTrue(is_array($map->issues));
             foreach ($map->issues as $issue) {
                 $this->assertObjectHasAttribute("registeredAt", $issue);
                 $this->assertObjectHasAttribute("registrationByName", $issue);
                 $this->assertObjectHasAttribute("description", $issue);
-                $this->assertObjectHasAttribute("imageFilePath", $issue);
+                $this->assertObjectHasAttribute("imageShareView", $issue);
+                $this->assertObjectHasAttribute("imageFull", $issue);
                 $this->assertObjectHasAttribute("responseLimit", $issue);
                 $this->assertObjectHasAttribute("number", $issue);
                 $this->assertObjectHasAttribute("id", $issue);
@@ -101,6 +103,7 @@ class ShareControllerTest extends ApiController
         $this->assertNotNull($mapData->data->craftsman);
         $this->assertObjectHasAttribute("name", $mapData->data->craftsman);
         $this->assertObjectHasAttribute("trade", $mapData->data->craftsman);
+        $this->assertObjectHasAttribute("reportUrl", $mapData->data->craftsman);
     }
 
     /**

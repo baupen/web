@@ -443,6 +443,9 @@
     "symfony/yaml": {
         "version": "v3.4.2"
     },
+    "tecnickcom/tcpdf": {
+        "version": "6.2.17"
+    },
     "twig/extensions": {
         "version": "1.0",
         "recipe": {

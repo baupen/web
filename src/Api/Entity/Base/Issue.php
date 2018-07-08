@@ -19,11 +19,6 @@ class Issue extends BaseEntity
     private $description;
 
     /**
-     * @var string|null
-     */
-    private $imageFilePath;
-
-    /**
      * @var \DateTime|null
      */
     private $responseLimit;
@@ -42,22 +37,6 @@ class Issue extends BaseEntity
     public function setDescription(?string $description): void
     {
         $this->description = $description;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getImageFilePath(): ?string
-    {
-        return $this->imageFilePath;
-    }
-
-    /**
-     * @param null|string $imageFilePath
-     */
-    public function setImageFilePath(?string $imageFilePath): void
-    {
-        $this->imageFilePath = $imageFilePath;
     }
 
     /**

@@ -30,10 +30,11 @@ class BuildingTransformer extends BatchTransformer
 
     /**
      * @param ConstructionSite $entity
+     * @param null $args
      *
      * @return Building
      */
-    public function toApi($entity)
+    public function toApi($entity, $args = null)
     {
         $building = new Building();
         $building->setName($entity->getName());

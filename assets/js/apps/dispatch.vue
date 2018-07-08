@@ -73,6 +73,9 @@
                                            :icon="sortOrders['lastOnlineVisit'] > 0 ? 'sort-up' : 'sort-down'"/>
                         <font-awesome-icon v-else :icon="['fal', 'sort']"/>
                     </th>
+                    <th>
+
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -101,6 +104,11 @@
                     </td>
                     <td>
                         {{ formatDateTime(craftsman.lastOnlineVisit)}}
+                    </td>
+                    <td>
+                        <a :href="craftsman.personalUrl" target="_blank">
+                            <font-awesome-icon v-on:click.stop="" :icon="['fal', 'user-alt']"/>
+                        </a>
                     </td>
                 </tr>
 
