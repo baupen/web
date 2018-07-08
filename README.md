@@ -57,7 +57,3 @@ was run."
 fi
 
 ```
-
-
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmangelio%2Fapp.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmangelio%2Fapp?ref=badge_large)
