@@ -50,14 +50,14 @@ class ImageService implements ImageServiceInterface
 
         //compile pdf to image
         $renderedMapPath = $generationTargetFolder . '/render.jpg';
-        if (!file_exists($renderedMapPath) || $this->disableCache) {
+        if (!is_file($renderedMapPath) || $this->disableCache) {
             $mapFilePath = $this->pubFolder . '/' . $map->getFilePath();
 
             //do first low quality render to get artboxsize
             $renderedMapPath = $generationTargetFolder . '/pre_render.jpg';
             $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=10 -dFitArtBox -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
             exec($command);
-            if (!file_exists($renderedMapPath)) {
+            if (!is_file($renderedMapPath)) {
                 return null;
             }
 
@@ -66,7 +66,7 @@ class ImageService implements ImageServiceInterface
             $renderedMapPath = $generationTargetFolder . '/render.jpg';
             $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=' . $width . ' -dDEVICEHEIGHTPOINTS=' . $height . ' -dJPEGQ=80 -dFitPage -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
             exec($command);
-            if (!file_exists($renderedMapPath)) {
+            if (!is_file($renderedMapPath)) {
                 return null;
             }
         }
@@ -83,7 +83,7 @@ class ImageService implements ImageServiceInterface
         imagejpeg($sourceImage, $filePath, 90);
         imagedestroy($sourceImage);
 
-        return file_exists($filePath) ? $filePath : null;
+        return is_file($filePath) ? $filePath : null;
     }
 
     /**
@@ -215,7 +215,7 @@ class ImageService implements ImageServiceInterface
         }
 
         $filePath = $this->getFilePathFor($map, $issues);
-        if (!file_exists($filePath) || $this->disableCache) {
+        if (!is_file($filePath) || $this->disableCache) {
             $filePath = $this->render($map, $issues, $filePath);
         }
 
@@ -230,7 +230,7 @@ class ImageService implements ImageServiceInterface
      */
     public function getSize(?string $imagePath, $size = ImageServiceInterface::SIZE_THUMBNAIL)
     {
-        if (!file_exists($imagePath)) {
+        if (!is_file($imagePath)) {
             return null;
         }
 
@@ -248,7 +248,7 @@ class ImageService implements ImageServiceInterface
         //add size & ending
         $path .= '_' . $size . $ending;
 
-        if (!file_exists($path) || $this->disableCache) {
+        if (!is_file($path) || $this->disableCache) {
             //generate variant if possible
             $res = false;
             switch ($size) {
@@ -267,7 +267,7 @@ class ImageService implements ImageServiceInterface
             }
 
             //check is successful
-            if (!$res || !file_exists($path)) {
+            if (!$res || !is_file($path)) {
                 return null;
             }
         }
@@ -307,7 +307,7 @@ class ImageService implements ImageServiceInterface
         } elseif ($ending === '.gif') {
             $originalImage = imagecreatefromgif($sourcePath);
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
-            imagegif($newImage, $targetPath, 90);
+            imagegif($newImage, $targetPath);
         } else {
             return false;
         }

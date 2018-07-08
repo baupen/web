@@ -18,7 +18,6 @@ use App\Entity\Issue;
 use App\Entity\Map;
 use App\Helper\DateTimeFormatter;
 use App\Helper\IssueHelper;
-use App\Report\Pdf;
 use App\Report\PdfDefinition;
 use App\Report\Report;
 use App\Report\ReportElements;
@@ -127,8 +126,7 @@ class ReportService implements ReportServiceInterface
     private function addMap(Report $report, Map $map, array $issues)
     {
         $mapImage = $this->imageService->generateMapImage($map, $issues);
-        $path = $this->publicPath . '/' . $mapImage;
-        $report->addMap($map->getName(), $map->getContext(), $this->imageService->getSize($path, ImageServiceInterface::SIZE_FULL));
+        $report->addMap($map->getName(), $map->getContext(), $this->imageService->getSize($mapImage, ImageServiceInterface::SIZE_FULL));
     }
 
     /**
@@ -435,8 +433,7 @@ class ReportService implements ReportServiceInterface
     private function getPathFor(ConstructionSite $constructionSite)
     {
         //consider changing the filename to hash input values of the generation
-        //$filename = uniqid() . '.pdf';
-        $filename = 'trial.pdf';
+        $filename = uniqid() . '.pdf';
 
         return $this->getGenerationTargetFolder($constructionSite) . '/' . $filename;
     }
