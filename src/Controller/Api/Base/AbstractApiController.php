@@ -168,7 +168,6 @@ abstract class AbstractApiController extends BaseDoctrineController
         if (!$file->move($targetFolder, $targetFilePath)) {
             return $this->fail($error);
         }
-        $this->get(ImageServiceInterface::class)->getSize($this->getParameter('PUBLIC_DIR') . '/' . $targetFilePath);
 
         return true;
     }

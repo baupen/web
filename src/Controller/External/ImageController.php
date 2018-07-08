@@ -60,7 +60,7 @@ class ImageController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/issue/{issue}/c/{identifier}/{size}", name="external_image_map_craftsman")
+     * @Route("/issue/{issue}/c/{identifier}/{size}", name="external_image_issue_craftsman")
      *
      * @param Issue $issue
      * @param $identifier

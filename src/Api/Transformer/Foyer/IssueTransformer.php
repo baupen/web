@@ -41,10 +41,11 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * @param Issue $entity
+     * @param null $args
      *
      * @return \App\Api\Entity\Foyer\Issue
      */
-    public function toApi($entity)
+    public function toApi($entity, $args = null)
     {
         $issue = new \App\Api\Entity\Foyer\Issue($entity->getId());
         $this->issueTransformer->writeApiProperties($entity, $issue);
@@ -58,8 +59,8 @@ class IssueTransformer extends BatchTransformer
         $issue->setUploadedAt($entity->getUploadedAt());
         $issue->setUploadByName($entity->getUploadBy()->getName());
 
-        $issue->setImageThumbnail($this->router->generate('image_issue', ['issue' => $entity->getId(), 'size' => ImageServiceInterface::SIZE_THUMB]));
-        $issue->setImageFull($this->router->generate('image_issue', ['issue' => $entity->getId(), 'size' => ImageServiceInterface::SIZE_FULL]));
+        $issue->setImageThumbnail($this->router->generate('image_issue', ['issue' => $entity->getId(), 'imageFilename' => $entity->getImageFilename(), 'size' => ImageServiceInterface::SIZE_THUMBNAIL]));
+        $issue->setImageFull($this->router->generate('image_issue', ['issue' => $entity->getId(), 'imageFilename' => $entity->getImageFilename(), 'size' => ImageServiceInterface::SIZE_FULL]));
 
         return $issue;
     }

@@ -25,16 +25,23 @@ use Symfony\Component\Routing\Annotation\Route;
 class ImageController extends BaseDoctrineController
 {
     /**
-     * @Route("/issue/{issue}/{size}", name="image_issue")
+     * @Route("/issue/{issue}/{imageFilename}/{size}", name="image_issue")
      *
      * @param Issue $issue
-     * @param $size
+     * @param string $imageFilename
+     * @param string $size
      * @param ImageServiceInterface $imageService
      *
      * @return Response
      */
-    public function issueAction(Issue $issue, $size, ImageServiceInterface $imageService)
+    public function issueAction(Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService)
     {
+        $this->ensureAccess($issue);
+
+        if ($issue->getImageFilename() !== $imageFilename) {
+            throw new NotFoundHttpException();
+        }
+
         $filePath = $imageService->getSize($this->getParameter('PUBLIC_DIR') . '/' . $issue->getImageFilePath(), $size);
         if ($filePath === null) {
             throw new NotFoundHttpException();

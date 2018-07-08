@@ -64,10 +64,11 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * @param Issue $entity
+     * @param null $args
      *
      * @return \App\Api\External\Entity\Issue
      */
-    public function toApi($entity)
+    public function toApi($entity, $args = null)
     {
         $issue = new \App\Api\External\Entity\Issue();
         $issue->setWasAddedWithClient($entity->getWasAddedWithClient());

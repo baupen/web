@@ -14,30 +14,19 @@ namespace App\Api\Entity\Share;
 class Map extends \App\Api\Entity\Base\Map
 {
     /**
-     * @var string
-     */
-    private $imageFilePath;
-
-    /**
      * @var Issue[]
      */
     private $issues;
 
     /**
-     * @return string|null
+     * @var string|null
      */
-    public function getImageFilePath(): ?string
-    {
-        return $this->imageFilePath;
-    }
+    private $imageShareView;
 
     /**
-     * @param string $imageFilePath
+     * @var string|null
      */
-    public function setImageFilePath(string $imageFilePath): void
-    {
-        $this->imageFilePath = $imageFilePath;
-    }
+    private $imageFull;
 
     /**
      * @return Issue[]
@@ -53,5 +42,37 @@ class Map extends \App\Api\Entity\Base\Map
     public function setIssues(array $issues): void
     {
         $this->issues = $issues;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getImageShareView(): ?string
+    {
+        return $this->imageShareView;
+    }
+
+    /**
+     * @param null|string $imageShareView
+     */
+    public function setImageShareView(?string $imageShareView): void
+    {
+        $this->imageShareView = $imageShareView;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getImageFull(): ?string
+    {
+        return $this->imageFull;
+    }
+
+    /**
+     * @param null|string $imageFull
+     */
+    public function setImageFull(?string $imageFull): void
+    {
+        $this->imageFull = $imageFull;
     }
 }

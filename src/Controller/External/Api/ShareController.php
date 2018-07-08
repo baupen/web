@@ -23,7 +23,6 @@ use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
-use App\Entity\Traits\IdTrait;
 use App\Helper\IssueHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -153,27 +152,7 @@ class ShareController extends ApiController
         //convert to api format
         $apiMaps = [];
         foreach ($orderedMaps as $key => $map) {
-            $apiMap = $mapTransformer->toApi($map);
-            if ($map->getFilename() !== null) {
-                //generate hash from ids of issues
-                $hash = hash('sha256',
-                    implode(
-                        ',',
-                        array_map(
-                            function ($issue) {
-                                /* @var IdTrait $issue */
-                                return $issue->getId();
-                            },
-                            $issuesPerMap[$key])
-                    )
-                );
-                $apiMap->setImageFilePath(
-                    $this->generateUrl('external_image_map_craftsman',
-                        ['map' => $map->getId(), 'identifier' => $craftsman->getEmailIdentifier(), 'hash' => $hash]
-                    )
-                );
-            }
-            $apiMap->setIssues($issueTransformer->toApiMultiple($issuesPerMap[$key]));
+            $apiMap = $mapTransformer->toApi($map, $craftsman->getEmailIdentifier(), $issuesPerMap[$key]);
             $apiMaps[] = $apiMap;
         }
 
@@ -201,7 +180,6 @@ class ShareController extends ApiController
         }
 
         $data = new ProcessingEntitiesData();
-
         if ($issue->getRespondedAt() === null) {
             $issue->setRespondedAt(new \DateTime());
             $issue->setResponseBy($craftsman);

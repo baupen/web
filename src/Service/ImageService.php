@@ -228,7 +228,7 @@ class ImageService implements ImageServiceInterface
      *
      * @return null|string
      */
-    public function getSize(?string $imagePath, $size = ImageServiceInterface::SIZE_THUMB)
+    public function getSize(?string $imagePath, $size = ImageServiceInterface::SIZE_THUMBNAIL)
     {
         if (!file_exists($imagePath)) {
             return null;
@@ -248,7 +248,7 @@ class ImageService implements ImageServiceInterface
             //generate variant if possible
             $res = false;
             switch ($size) {
-                case ImageServiceInterface::SIZE_THUMB:
+                case ImageServiceInterface::SIZE_THUMBNAIL:
                     $res = $this->createVariant($imagePath, $newPath, 100, 50, $ending);
                     break;
                 case ImageServiceInterface::SIZE_SHARE_VIEW:

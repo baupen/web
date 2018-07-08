@@ -18,10 +18,11 @@ class NumberIssueTransformer extends BatchTransformer
 {
     /**
      * @param Issue $entity
+     * @param null $args
      *
      * @return \App\Api\Entity\Foyer\NumberIssue
      */
-    public function toApi($entity)
+    public function toApi($entity, $args = null)
     {
         $issue = new \App\Api\Entity\Foyer\NumberIssue($entity->getId());
         $issue->setNumber($entity->getNumber());

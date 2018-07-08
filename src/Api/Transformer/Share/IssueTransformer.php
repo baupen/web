@@ -42,10 +42,11 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * @param Issue $entity
+     * @param null $args
      *
      * @return \App\Api\Entity\Share\Issue
      */
-    public function toApi($entity)
+    public function toApi($entity, $args = [])
     {
         $issue = new \App\Api\Entity\Share\Issue($entity->getId());
         $this->issueTransformer->writeApiProperties($entity, $issue);
@@ -54,8 +55,8 @@ class IssueTransformer extends BatchTransformer
         $issue->setRegistrationByName($entity->getRegistrationBy()->getName());
         $issue->setNumber($entity->getNumber());
 
-        $issue->setImageShareView($this->router->generate('image_issue', ['issue' => $entity->getId(), 'size' => ImageServiceInterface::SIZE_SHARE_VIEW]));
-        $issue->setImageFull($this->router->generate('image_issue', ['issue' => $entity->getId(), 'size' => ImageServiceInterface::SIZE_FULL]));
+        $issue->setImageShareView($this->router->generate('external_image_issue_craftsman', ['identifier' => $args['identifier'], 'issue' => $entity->getId(), 'size' => ImageServiceInterface::SIZE_SHARE_VIEW]));
+        $issue->setImageFull($this->router->generate('external_image_issue_craftsman', ['identifier' => $args['identifier'], 'issue' => $entity->getId(), 'size' => ImageServiceInterface::SIZE_FULL]));
 
         return $issue;
     }
