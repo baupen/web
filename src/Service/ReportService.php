@@ -56,6 +56,11 @@ class ReportService implements ReportServiceInterface
     private $translator;
 
     /**
+     * @var bool
+     */
+    private $disableCache = false;
+
+    /**
      * ReportService constructor.
      *
      * @param ImageServiceInterface $imageService
@@ -102,7 +107,7 @@ class ReportService implements ReportServiceInterface
         IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
         foreach ($orderedMaps as $map) {
             $issues = $issuesPerMap[$map->getId()];
-            $report->addMap($map, $this->imageService->generateMapImage($map, $issues));
+            $this->addMap($report, $map, $issues);
             $this->addIssueTable($report, $filter, $issues);
             if ($elements->getWithImages()) {
                 $this->addIssueImageGrid($report, $issues);
@@ -112,6 +117,18 @@ class ReportService implements ReportServiceInterface
         }
 
         $report->save($filePath);
+    }
+
+    /**
+     * @param Report $report
+     * @param Map $map
+     * @param Issue[] $issues
+     */
+    private function addMap(Report $report, Map $map, array $issues)
+    {
+        $mapImage = $this->imageService->generateMapImage($map, $issues);
+        $path = $this->publicPath . '/' . $mapImage;
+        $report->addMap($map->getName(), $map->getContext(), $this->imageService->getSize($path, ImageServiceInterface::SIZE_FULL));
     }
 
     /**
@@ -143,6 +160,11 @@ class ReportService implements ReportServiceInterface
         $report->addImageGrid($imageGrid, $columnCount);
     }
 
+    /**
+     * @param Report $report
+     * @param ConstructionSite $constructionSite
+     * @param Filter $filter
+     */
     private function addIntroduction(Report $report, ConstructionSite $constructionSite, Filter $filter)
     {
         $filterEntries = [];
@@ -248,7 +270,14 @@ class ReportService implements ReportServiceInterface
             $filterEntries[$this->translator->transChoice('filter.trades', count($trades), [], 'report')] = implode(', ', array_keys($trades));
         }
 
-        $report->addIntroduction($constructionSite, $filterEntries, $this->translator->trans('entity.name', [], 'entity_filter'));
+        //print
+        $report->addIntroduction(
+            $this->imageService->getSize($this->publicPath . '/' . $constructionSite->getImageFilePath(), ImageServiceInterface::SIZE_REPORT),
+            $constructionSite->getName(),
+            implode("\n", $constructionSite->getAddressLines()),
+            $filterEntries,
+            $this->translator->trans('entity.name', [], 'entity_filter')
+        );
     }
 
     /**
@@ -388,7 +417,7 @@ class ReportService implements ReportServiceInterface
 
         //only generate report if it does not already exist
         $filePath = $this->getPathFor($constructionSite);
-        if (!file_exists($filePath) || true) {
+        if (!file_exists($filePath) || $this->disableCache) {
             $author = $this->translator->trans('generated', ['%date%' => (new \DateTime())->format('c'), '%name%' => $author], 'report');
             $this->render($constructionSite, $filter, $author, $elements, $issues, $filePath);
         }

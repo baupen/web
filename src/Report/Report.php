@@ -11,9 +11,6 @@
 
 namespace App\Report;
 
-use App\Entity\ConstructionSite;
-use App\Entity\Filter;
-use App\Entity\Map;
 use App\Helper\ImageHelper;
 
 class Report
@@ -32,11 +29,6 @@ class Report
      * @var PdfDesign
      */
     private $pdfDesign;
-
-    /**
-     * @var string
-     */
-    private $publicPath = __DIR__ . '/../../public';
 
     public function __construct(PdfDefinition $pdfDefinition)
     {
@@ -82,11 +74,13 @@ class Report
     }
 
     /**
-     * @param ConstructionSite $constructionSite
+     * @param null|string $headerImage
+     * @param string $name
+     * @param string $address
      * @param string[] $filterEntries
      * @param string $filterHeader
      */
-    public function addIntroduction(ConstructionSite $constructionSite, array $filterEntries, string $filterHeader)
+    public function addIntroduction(?string $headerImage, string $name, string $address, array $filterEntries, string $filterHeader)
     {
         $startY = $this->pdfDocument->GetY();
         $maxContentHeight = $startY;
@@ -96,11 +90,10 @@ class Report
         $currentColumn = 0;
 
         //image
-        $imagePath = $this->publicPath . '/' . $constructionSite->getImageFilePath();
-        if (file_exists($imagePath)) {
+        if (file_exists($headerImage)) {
             $maxImageWidth = $this->pdfSizes->getColumnContentWidth($columnCount);
-            list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $maxImageWidth, $maxImageWidth);
-            $this->pdfDocument->Image($imagePath, $this->pdfSizes->getContentXStart(), $startY, $width, $height);
+            list($width, $height) = ImageHelper::getWidthHeightArguments($headerImage, $maxImageWidth, $maxImageWidth);
+            $this->pdfDocument->Image($headerImage, $this->pdfSizes->getContentXStart(), $startY, $width, $height);
             $maxContentHeight = max($this->pdfDocument->GetY() + $height, $maxContentHeight);
 
             //set position for the next content
@@ -115,9 +108,9 @@ class Report
         $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
         $this->pdfDocument->SetY($startY);
 
-        $this->printH2($constructionSite->getName(), $columnWidth);
+        $this->printH2($name, $columnWidth);
 
-        $this->printP(implode("\n", $constructionSite->getAddressLines()), $columnWidth);
+        $this->printP($address, $columnWidth);
         $maxContentHeight = max($this->pdfDocument->GetY(), $maxContentHeight);
         ++$currentColumn;
 
@@ -205,16 +198,17 @@ class Report
     }
 
     /**
-     * @param Map $map
-     * @param string $mapImageFilePath
+     * @param string $name
+     * @param null|string $context
+     * @param null|string $mapImageFilePath
      */
-    public function addMap($map, $mapImageFilePath)
+    public function addMap(string $name, ?string $context, ?string $mapImageFilePath = null)
     {
         $this->setDefaults();
         $startY = $this->pdfDocument->GetY();
 
-        $headerHeight = $this->getHeightOf(function () use ($map) {
-            $this->printH2($map->getName(), 0, $map->getContext());
+        $headerHeight = $this->getHeightOf(function () use ($name, $context) {
+            $this->printH2($name, 0, $context);
         });
 
         if (file_exists($mapImageFilePath)) {
@@ -236,7 +230,7 @@ class Report
             }
 
             //print title
-            $this->printH2($map->getName(), 0, $map->getContext());
+            $this->printH2($name, 0, $context);
 
             //print image with surrounding box
             $startY = $this->pdfDocument->GetY();
@@ -248,7 +242,7 @@ class Report
             $this->pdfDocument->SetY($startY + $height + $doubleImgPadding + $this->pdfSizes->getContentSpacerBig());
         } else {
             //only print title
-            $this->printH2($map->getName(), 0, $map->getContext());
+            $this->printH2($name, 0, $context);
         }
     }
 
