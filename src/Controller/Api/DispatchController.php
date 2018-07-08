@@ -112,12 +112,6 @@ class DispatchController extends ApiController
                 continue;
             }
 
-            //ensure craftsman has email identifier
-            if ($craftsman->getLastEmailSent() === null) {
-                $craftsman->setEmailIdentifier();
-                $this->fastSave($craftsman);
-            }
-
             //send mail & remember if it worked
             if ($this->sendMail($craftsman, $state, $constructionSite, $emailService, $translator)) {
                 $craftsman->setLastEmailSent(new \DateTime());

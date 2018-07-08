@@ -89,9 +89,9 @@ class Craftsman extends BaseEntity
     private $lastOnlineVisit;
 
     /**
-     * @var string|null
+     * @var string
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text")
      */
     private $emailIdentifier;
 
@@ -247,7 +247,7 @@ class Craftsman extends BaseEntity
     /**
      * @return null|string
      */
-    public function getEmailIdentifier(): ?string
+    public function getEmailIdentifier(): string
     {
         return $this->emailIdentifier;
     }

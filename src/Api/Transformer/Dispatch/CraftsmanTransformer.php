@@ -14,6 +14,7 @@ namespace App\Api\Transformer\Dispatch;
 use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\Craftsman;
 use App\Model\Craftsman\CurrentIssueState;
+use Symfony\Component\Routing\RouterInterface;
 
 class CraftsmanTransformer extends BatchTransformer
 {
@@ -23,13 +24,19 @@ class CraftsmanTransformer extends BatchTransformer
     private $craftsmanTransformer;
 
     /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
      * CraftsmanTransformer constructor.
      *
      * @param \App\Api\Transformer\Base\CraftsmanTransformer $craftsmanTransformer
      */
-    public function __construct(\App\Api\Transformer\Base\CraftsmanTransformer $craftsmanTransformer)
+    public function __construct(\App\Api\Transformer\Base\CraftsmanTransformer $craftsmanTransformer, RouterInterface $router)
     {
         $this->craftsmanTransformer = $craftsmanTransformer;
+        $this->router = $router;
     }
 
     /**
@@ -45,6 +52,7 @@ class CraftsmanTransformer extends BatchTransformer
 
         $craftsman->setLastEmailSent($entity->getLastEmailSent());
         $craftsman->setLastOnlineVisit($entity->getLastOnlineVisit());
+        $craftsman->setPersonalUrl($this->router->generate('external_share_craftsman', ['identifier' => $entity->getEmailIdentifier()]));
 
         $state = new CurrentIssueState($entity, new \DateTime());
         $craftsman->setNotRespondedIssuesCount($state->getNotRespondedIssuesCount());

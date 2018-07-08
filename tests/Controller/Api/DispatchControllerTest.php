@@ -42,6 +42,7 @@ class DispatchControllerTest extends ApiController
             $this->assertObjectHasAttribute("nextResponseLimit", $craftsman);
             $this->assertObjectHasAttribute("lastEmailSent", $craftsman);
             $this->assertObjectHasAttribute("lastOnlineVisit", $craftsman);
+            $this->assertObjectHasAttribute("personalUrl", $craftsman);
         }
     }
 
