@@ -11,10 +11,10 @@
 
 namespace App\Api\Transformer\Share;
 
-use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\Craftsman;
+use Symfony\Component\Routing\RouterInterface;
 
-class CraftsmanTransformer extends BatchTransformer
+class CraftsmanTransformer
 {
     /**
      * @var \App\Api\Transformer\Base\CraftsmanTransformer
@@ -22,26 +22,34 @@ class CraftsmanTransformer extends BatchTransformer
     private $craftsmanTransformer;
 
     /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
      * CraftsmanTransformer constructor.
      *
      * @param \App\Api\Transformer\Base\CraftsmanTransformer $craftsmanTransformer
      */
-    public function __construct(\App\Api\Transformer\Base\CraftsmanTransformer $craftsmanTransformer)
+    public function __construct(\App\Api\Transformer\Base\CraftsmanTransformer $craftsmanTransformer, RouterInterface $router)
     {
         $this->craftsmanTransformer = $craftsmanTransformer;
+        $this->router = $router;
     }
 
     /**
      * @param Craftsman $entity
-     * @param null $args
+     * @param string $identifier
      *
      * @return \App\Api\Entity\Base\Craftsman
      */
-    public function toApi($entity, $args = null)
+    public function toApi($entity, string $identifier)
     {
-        $map = new \App\Api\Entity\Base\Craftsman($entity->getId());
-        $this->craftsmanTransformer->writeApiProperties($entity, $map);
+        $craftsman = new \App\Api\Entity\Share\Craftsman($entity->getId());
+        $this->craftsmanTransformer->writeApiProperties($entity, $craftsman);
 
-        return $map;
+        $craftsman->setReportUrl($this->router->generate('external_report_craftsman', ['identifier' => $identifier, 'hash' => uniqid()]));
+
+        return $craftsman;
     }
 }

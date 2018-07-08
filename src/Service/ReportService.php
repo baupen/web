@@ -33,7 +33,7 @@ class ReportService implements ReportServiceInterface
     /**
      * @var string
      */
-    private $pubFolder = __DIR__ . '/../../public';
+    private $publicPath = __DIR__ . '/../../public';
 
     /**
      * @var ImageServiceInterface
@@ -105,13 +105,42 @@ class ReportService implements ReportServiceInterface
             $report->addMap($map, $this->imageService->generateMapImage($map, $issues));
             $this->addIssueTable($report, $filter, $issues);
             if ($elements->getWithImages()) {
-                $report->addIssueImageGrid($issues);
+                $this->addIssueImageGrid($report, $issues);
             }
             //add table with issues
             //add columns with images
         }
 
         $report->save($filePath);
+    }
+
+    /**
+     * @param Report $report
+     * @param Issue[] $issues
+     */
+    private function addIssueImageGrid(Report $report, array $issues)
+    {
+        $columnCount = 4;
+
+        $imageGrid = [];
+        $currentRow = [];
+        foreach ($issues as $issue) {
+            $imagePath = $this->imageService->getSize($this->publicPath . '/' . $issue->getImageFilePath(), ImageServiceInterface::SIZE_REPORT);
+            $currentIssue['imagePath'] = $imagePath;
+            $currentIssue['identification'] = $issue->getNumber();
+            $currentRow[] = $currentIssue;
+
+            //add row to grid if applicable
+            if (count($currentRow) === $columnCount) {
+                $imageGrid[] = $currentRow;
+                $currentRow = [];
+            }
+        }
+        if (count($currentRow) > 0) {
+            $imageGrid[] = $currentRow;
+        }
+
+        $report->addImageGrid($imageGrid, $columnCount);
     }
 
     private function addIntroduction(Report $report, ConstructionSite $constructionSite, Filter $filter)
@@ -390,6 +419,6 @@ class ReportService implements ReportServiceInterface
      */
     private function getGenerationTargetFolder(ConstructionSite $constructionSite)
     {
-        return $this->pubFolder . '/generated/' . $constructionSite->getId() . '/report';
+        return $this->publicPath . '/generated/' . $constructionSite->getId() . '/report';
     }
 }

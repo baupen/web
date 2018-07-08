@@ -13,7 +13,6 @@ namespace App\Report;
 
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
-use App\Entity\Issue;
 use App\Entity\Map;
 use App\Helper\ImageHelper;
 
@@ -328,71 +327,54 @@ class Report
     }
 
     /**
-     * @param Issue[] $issues
+     * @param array $imageGrid each grid entry must define an imagePath & identification
+     * @param int $columnCount
      */
-    public function addIssueImageGrid($issues)
+    public function addImageGrid(array $imageGrid, int $columnCount)
     {
         $this->setDefaults();
 
-        $columnCount = 4;
         $columnWidth = $this->pdfSizes->getColumnContentWidth($columnCount, true);
-
-        $imageGrid = [];
-        $currentRow = ['height' => 0, 'issues' => []];
-        foreach ($issues as $issue) {
-            $imagePath = $this->publicPath . '/' . $issue->getImageFilePath();
-            if (!file_exists($imagePath)) {
-                continue;
-            }
-
-            //add to current row
-            list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $columnWidth, $columnWidth);
-            $currentRow['height'] = max($currentRow['height'], $height);
-            $currentIssue['imagePath'] = $imagePath;
-            $currentIssue['width'] = $width;
-            $currentIssue['height'] = $height;
-            $currentIssue['identification'] = $issue->getNumber();
-            $currentRow['issues'][] = $currentIssue;
-
-            //add row to grid if applicable
-            if (count($currentRow['issues']) === $columnCount) {
-                $imageGrid[] = $currentRow;
-                $currentRow['height'] = 0;
-                $currentRow['issues'] = [];
-            }
-        }
-        if (count($currentRow['issues']) > 0) {
-            $imageGrid[] = $currentRow;
-        }
 
         $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
         $cellWidthPadding = $this->pdfSizes->getTableCellPadding()[0] + $this->pdfSizes->getTableCellPadding()[2];
         foreach ($imageGrid as $row) {
+            //get row height & calculate the other sizes
+            $rowHeight = 0;
+            foreach ($row as &$entry) {
+                $imagePath = $entry['imagePath'];
+
+                list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $columnWidth, $columnWidth);
+                $rowHeight = max($rowHeight, $height);
+                $entry['width'] = $width;
+                $entry['height'] = $height;
+            }
+
             //check if image fits on current page
-            if ($this->pdfDocument->GetY() + $row['height'] + $this->pdfSizes->getColumnGutter() > $this->pdfSizes->getContentYEnd()) {
+            if ($this->pdfDocument->GetY() + $rowHeight + $this->pdfSizes->getColumnGutter() > $this->pdfSizes->getContentYEnd()) {
                 //force new page
                 $this->pdfDocument->AddPage();
                 $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
             }
             $startY = $this->pdfDocument->GetY();
 
+            //print images
             $currentColumn = 0;
-
-            foreach ($row['issues'] as $issue) {
+            foreach ($row as $entry) {
                 //image
-                $height = $issue['height'];
-                $width = $issue['width'];
+                $height = $entry['height'];
+                $width = $entry['width'];
                 $xStart = $this->pdfSizes->getColumnStart($currentColumn, $columnCount, true) + (((float)$columnWidth - $width) / 2);
-                $this->pdfDocument->Image($issue['imagePath'], $xStart, $startY, $width, $height, '', '', '', '', 300, '', false, false, 1);
+                $this->pdfDocument->Image($entry['imagePath'], $xStart, $startY, $width, $height, '', '', '', '', 300, '', false, false, 1);
 
                 //identification
                 $this->pdfDocument->SetXY($xStart, $startY);
-                $width = mb_strlen((string)$issue['identification']) * $this->pdfSizes->getRegularFontSize() / 5 + $cellWidthPadding;
-                $this->pdfDocument->Cell($width, 0, $issue['identification'], 0, 0, '', true);
+                $width = mb_strlen((string)$entry['identification']) * $this->pdfSizes->getRegularFontSize() / 5 + $cellWidthPadding;
+                $this->pdfDocument->Cell($width, 0, $entry['identification'], 0, 0, '', true);
                 ++$currentColumn;
             }
 
-            $this->pdfDocument->SetY($startY + $row['height'] + $this->pdfSizes->getColumnGutter());
+            $this->pdfDocument->SetY($startY + $rowHeight + $this->pdfSizes->getColumnGutter());
         }
     }
 }

@@ -115,7 +115,7 @@ class ShareController extends ApiController
         }
 
         $data = new CraftsmanData();
-        $data->setCraftsman($craftsmanTransformer->toApi($craftsman));
+        $data->setCraftsman($craftsmanTransformer->toApi($craftsman, $identifier));
 
         return $this->success($data);
     }

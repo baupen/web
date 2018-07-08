@@ -103,6 +103,7 @@ class ShareControllerTest extends ApiController
         $this->assertNotNull($mapData->data->craftsman);
         $this->assertObjectHasAttribute("name", $mapData->data->craftsman);
         $this->assertObjectHasAttribute("trade", $mapData->data->craftsman);
+        $this->assertObjectHasAttribute("reportUrl", $mapData->data->craftsman);
     }
 
     /**

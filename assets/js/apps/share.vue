@@ -22,7 +22,7 @@
                     </p>
                 </div>
                 <div class="col-md-6">
-                    <button class="btn btn-outline-primary btn-lg float-right">{{$t("print")}}</button>
+                    <a :href="craftsman.reportUrl" target="_blank" class="btn btn-outline-primary btn-lg float-right">{{$t("print")}}</a>
                 </div>
             </div>
 
