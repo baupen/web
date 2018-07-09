@@ -177,7 +177,7 @@ class Map extends BaseEntity
         if ($this->getParent() !== null) {
             $parentContext = $this->getParent()->getContext();
             if ($parentContext !== '') {
-                $parentContext .= ' -> ';
+                $parentContext .= ' > ';
             }
 
             return $parentContext . $this->getParent()->getName();
