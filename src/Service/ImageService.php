@@ -15,6 +15,7 @@ use App\Entity\Issue;
 use App\Entity\Map;
 use App\Helper\ImageHelper;
 use App\Service\Interfaces\ImageServiceInterface;
+use ReflectionClass;
 
 class ImageService implements ImageServiceInterface
 {
@@ -313,5 +314,23 @@ class ImageService implements ImageServiceInterface
         }
 
         return true;
+    }
+
+    /**
+     * generates all sizes so the getSize call goes faster once it is really needed.
+     *
+     * @param null|string $imagePath
+     */
+    public function warmupCache(?string $imagePath)
+    {
+        try {
+            $oClass = new ReflectionClass(ImageServiceInterface::class);
+            foreach ($oClass->getConstants() as $name => $value) {
+                if (mb_strpos($name, 'SIZE') === 0) {
+                    $this->getSize($imagePath, $value);
+                }
+            }
+        } catch (\ReflectionException $e) {
+        }
     }
 }

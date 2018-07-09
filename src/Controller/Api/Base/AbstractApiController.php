@@ -169,6 +169,10 @@ abstract class AbstractApiController extends BaseDoctrineController
             return $this->fail($error);
         }
 
+        /** @var ImageServiceInterface $imageService */
+        $imageService = $this->get(ImageServiceInterface::class);
+        $imageService->warmupCache($targetFilePath);
+
         return true;
     }
 }

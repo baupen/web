@@ -35,4 +35,13 @@ interface ImageServiceInterface
      * @return string|null
      */
     public function getSize(?string $imagePath, $size = self::SIZE_THUMBNAIL);
+
+    /**
+     * generates all sizes so the getSize call goes faster once it is really needed.
+     *
+     * @param null|string $imagePath
+     *
+     * @return
+     */
+    public function warmupCache(?string $imagePath);
 }
