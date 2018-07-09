@@ -40,7 +40,7 @@ class LoadMapData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $json = file_get_contents(__DIR__ . '/Resources/maps.json', 'r');
+        $json = file_get_contents(__DIR__ . '/Resources/maps.json');
         $rawMaps = json_decode($json);
 
         $constructionSites = $manager->getRepository(ConstructionSite::class)->findAll();

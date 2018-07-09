@@ -134,7 +134,7 @@ class Map extends BaseEntity
     }
 
     /**
-     * @param null|Map $parent
+     * @param null|self $parent
      */
     public function setParent(?self $parent): void
     {

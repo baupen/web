@@ -13,7 +13,6 @@ namespace App\Controller\External;
 
 use App\Controller\Base\BaseDoctrineController;
 use App\Entity\Craftsman;
-use App\Entity\Filter;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -43,8 +42,6 @@ class ShareController extends BaseDoctrineController
      * @Route("/f/{identifier}", name="external_share_filter")
      *
      * @param $identifier
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function shareFilterAction($identifier)
     {

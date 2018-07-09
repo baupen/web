@@ -40,7 +40,7 @@ class LoadCraftsmanData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $json = file_get_contents(__DIR__ . '/Resources/craftsmen.json', 'r');
+        $json = file_get_contents(__DIR__ . '/Resources/craftsmen.json');
 
         $constructionSites = $manager->getRepository(ConstructionSite::class)->findAll();
         foreach ($constructionSites as $constructionSite) {

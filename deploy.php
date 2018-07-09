@@ -40,7 +40,7 @@ set(
 
 desc('Installing vendors');
 task('deploy:vendors', function () {
-    run('cd {{release_path}} && {{bin/composer}} {{composer_options}}', ['timeout' => 600]);
+    run('cd {{release_path}} && {{bin/composer}} {{composer_options}}', ['timeout' => 400]);
 });
 
 //build yarn stuff & upload
@@ -79,12 +79,30 @@ task('deploy:configure', function () {
     }
 });
 
-//frontend stuff
+
+//automatic till vendors comand
+desc('Deploy project');
+task('deploy', [
+    'deploy:info',
+    'deploy:prepare',
+    'deploy:lock',
+    'deploy:release',
+    'deploy:update_code',
+    'deploy:shared',
+    'deploy:writable',
+    'deploy:vendors'
+]);
+
+//shows infos to the user
 after('deploy:info', 'deploy:configure');
+
+//add the other tasks
 after('deploy:vendors', 'frontend:build');
-// migrations
-after('deploy:vendors', 'database:migrate');
-// migrations
 after('database:migrate', 'database:fixtures');
-// refresh symlink
+after('deploy:vendors', 'database:migrate');
+after('deploy:vendors', 'deploy:cache:clear');
+after('deploy:cache:clear', 'deploy:cache:warmup');
+after('deploy:cache:warmup', 'deploy:symlink');
 after('deploy:symlink', 'deploy:refresh_symlink');
+after('deploy:refresh_symlink', 'deploy:unlock');
+after('deploy:unlock', 'cleanup');

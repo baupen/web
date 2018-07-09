@@ -40,7 +40,7 @@ class LoadConstructionSiteData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $json = file_get_contents(__DIR__ . '/Resources/construction_sites.json', 'r');
+        $json = file_get_contents(__DIR__ . '/Resources/construction_sites.json');
         /** @var ConstructionSite[] $constructionSites */
         $constructionSites = $this->serializer->deserialize($json, ConstructionSite::class . '[]', 'json');
 

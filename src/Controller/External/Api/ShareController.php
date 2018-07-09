@@ -16,7 +16,6 @@ use App\Api\Response\Data\CraftsmanData;
 use App\Api\Response\Data\MapsData;
 use App\Api\Response\Data\ProcessingEntitiesData;
 use App\Api\Transformer\Share\CraftsmanTransformer;
-use App\Api\Transformer\Share\IssueTransformer;
 use App\Api\Transformer\Share\MapTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Entity\Craftsman;
@@ -104,6 +103,7 @@ class ShareController extends ApiController
      * @Route("/c/{identifier}/read", name="external_api_share_craftsman_read", methods={"GET"})
      *
      * @param $identifier
+     * @param CraftsmanTransformer $craftsmanTransformer
      *
      * @return Response
      */
@@ -125,11 +125,10 @@ class ShareController extends ApiController
      *
      * @param $identifier
      * @param MapTransformer $mapTransformer
-     * @param IssueTransformer $issueTransformer
      *
      * @return Response
      */
-    public function craftsmanMapsListAction($identifier, MapTransformer $mapTransformer, IssueTransformer $issueTransformer)
+    public function craftsmanMapsListAction($identifier, MapTransformer $mapTransformer)
     {
         /** @var Craftsman $craftsman */
         if (!$this->parseIdentifierRequest($identifier, $craftsman, $errorResponse)) {

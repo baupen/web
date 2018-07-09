@@ -46,7 +46,7 @@ class LoadIssueData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $json = file_get_contents(__DIR__ . '/Resources/issues.json', 'r');
+        $json = file_get_contents(__DIR__ . '/Resources/issues.json');
 
         $getFreshIssueSet = function () use ($json) {
             /** @var Issue[] $issues */

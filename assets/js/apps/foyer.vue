@@ -76,7 +76,7 @@
                 <tbody>
                 <tr v-for="issue in sortedIssues" v-on:click.prevent="selectIssue(issue)"
                     class="selectable"
-                    v-bind:class="{ 'table-active': !onDelete && issue.selected, 'table-success': issue.number > 0, 'table-danger': onDelete && issue.selected }">
+                    v-bind:class="{ 'table-active': !onDelete && issue.selected && !issue.error, 'table-success': issue.number > 0, 'table-danger': onDelete && issue.selected, 'table-warning':  issue.error}">
                     <td class="minimal-width">
                         <span v-if="issue.number">#{{issue.number}}</span>
                         <input v-else title="check" type="checkbox" v-model="issue.selected"/>
@@ -154,7 +154,7 @@
                     <td>
                         {{issue.map}}
                     </td>
-                    <td class="minimal-width">
+                    <td class="minimal-width" :class="{'bg-primary text-white': issue.wasAddedWithClient}">
                         {{issue.uploadByName}} <br/>
                         <span class="small">{{ formatDateTime(issue.uploadedAt)}}</span>
                     </td>
@@ -367,7 +367,14 @@
             },
             confirm: function () {
                 this.isLoading = true;
-                console.log("hi");
+                let errorIssues = this.issues.filter(c => c.selected && (c.description.length === 0 || c.craftsmanId === null));
+                if (errorIssues.length > 0) {
+                    this.displayWarningFlash(this.$t("issues_cant_be_confirmed"));
+                    errorIssues.forEach(i => i.error = true);
+                    window.setTimeout(e => errorIssues.forEach(i => i.error = false), 3000);
+                    return;
+                }
+
                 axios.post("/api/foyer/issue/confirm", {
                     "constructionSiteId": this.constructionSiteId,
                     "issueIds": this.issues.filter(c => c.selected).map(c => c.id)
@@ -440,6 +447,9 @@
             },
             displayErrorFlash: function (content) {
                 this.displayFlash(content, "danger");
+            },
+            displayWarningFlash: function (content) {
+                this.displayFlash(content, "warning");
             },
             displayFlash: function (content, alertType) {
                 let alert = $('#alert-template').html();
@@ -565,6 +575,7 @@
                         i.number = null;
                         i.craftsmanName = null;
                         i.craftsmanTrade = null;
+                        i.error = false;
                     });
                     this.issues = response.data.issues;
                     this.isLoading = false;
