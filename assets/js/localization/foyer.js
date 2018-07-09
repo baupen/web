@@ -19,6 +19,7 @@ export default {
         limit_not_set: "nicht gesetzt",
         no_craftsman_set: "noch nicht gesetzt",
         remove: "entfernen",
-        error: "Es ist ein Fehler aufgetreten. Laden Sie die Seite neu, und versuchen Sie es erneut."
+        error: "Es ist ein Fehler aufgetreten. Laden Sie die Seite neu, und versuchen Sie es erneut.",
+        issues_cant_be_confirmed: 'Bitte geben Sie bei allen Pendenzen die Beschreibung und den Handwerker an'
     }
 }
