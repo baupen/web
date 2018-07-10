@@ -19,6 +19,7 @@ use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Entity\Traits\TimeTrait;
+use App\Service\Interfaces\ImageServiceInterface;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
@@ -43,12 +44,13 @@ class FileController extends ExternalApiController
      * @Route("/download", name="api_external_file_download", methods={"POST"})
      *
      * @param Request $request
+     * @param ImageServiceInterface $imageService
      *
      * @throws ORMException
      *
      * @return Response
      */
-    public function fileDownloadAction(Request $request)
+    public function fileDownloadAction(Request $request, ImageServiceInterface $imageService)
     {
         /** @var DownloadFileRequest $downloadFileRequest */
         /** @var ConstructionManager $constructionManager */
@@ -81,7 +83,8 @@ class FileController extends ExternalApiController
                 function ($entity) {
                     /* @var Issue $entity */
                     return $entity->getImageFilePath();
-                }
+                },
+                $imageService
             );
         } elseif ($downloadFileRequest->getBuilding() !== null) {
             return $this->downloadFile(
@@ -94,7 +97,8 @@ class FileController extends ExternalApiController
                 function ($entity) {
                     /* @var ConstructionSite $entity */
                     return $entity->getImageFilePath();
-                }
+                },
+                $imageService
             );
         }
 
@@ -107,10 +111,11 @@ class FileController extends ExternalApiController
      * @param ObjectMeta $objectMeta
      * @param callable $verifyAccess
      * @param callable $accessFilePath
+     * @param ImageServiceInterface|null $imageService pass if its an image, then resize
      *
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|Response
      */
-    private function downloadFile(ObjectRepository $repository, ObjectMeta $objectMeta, callable $verifyAccess, callable $accessFilePath)
+    private function downloadFile(ObjectRepository $repository, ObjectMeta $objectMeta, callable $verifyAccess, callable $accessFilePath, ImageServiceInterface $imageService = null)
     {
         /** @var ObjectMeta $objectMeta */
         /** @var EntityRepository $repository */
@@ -137,6 +142,10 @@ class FileController extends ExternalApiController
         $filePath = $this->getParameter('PUBLIC_DIR') . '/' . $filePath;
         if (!file_exists($filePath)) {
             return $this->fail(static::ENTITY_FILE_NOT_FOUND);
+        }
+        //resize images if image service passed
+        if ($imageService !== null) {
+            $filePath = $imageService->getSize($filePath, ImageServiceInterface::SIZE_FULL);
         }
 
         return $this->file($filePath);

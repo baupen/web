@@ -243,7 +243,7 @@ class ImageService implements ImageServiceInterface
         //replace "upload" with "generated" folder
         $pathSplitPoint = mb_strrpos($path, '/upload/');
         if ($pathSplitPoint > 0) {
-            $path = mb_substr($path, 0, $pathSplitPoint) . 'generated' . mb_substr($path, $pathSplitPoint + 7);
+            $path = mb_substr($path, 0, $pathSplitPoint) . '/generated' . mb_substr($path, $pathSplitPoint + 7);
         }
 
         //add size & ending
