@@ -144,6 +144,9 @@ class FileController extends ExternalApiController
             return $this->fail(static::ENTITY_FILE_NOT_FOUND);
         }
 
+        dump($filePath);
+        dump($this->getParameter('PUBLIC_DIR'));
+
         //resize images if image service passed
         if ($imageService !== null) {
             $filePath = $imageService->getSize($filePath, ImageServiceInterface::SIZE_FULL);
