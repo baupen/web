@@ -17,9 +17,6 @@
 
         <env name="DATABASE_URL" value="sqlite:///%kernel.project_dir%/var/data.db"/>
         <env name="MAILER_URL" value="null://localhost"/>
-
-        <!-- one of the used components for testing uses a deprecated routing. till this is fixed unfortunately we need to disable deprecation notices -->
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" />
     </php>
 
     <testsuites>
