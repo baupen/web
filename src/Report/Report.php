@@ -78,10 +78,11 @@ class Report
      * @param null|string $headerImage
      * @param string $name
      * @param string $address
+     * @param string $elements
      * @param string[] $filterEntries
      * @param string $filterHeader
      */
-    public function addIntroduction(?string $headerImage, string $name, string $address, array $filterEntries, string $filterHeader)
+    public function addIntroduction(?string $headerImage, string $name, string $address, string $elements, array $filterEntries, string $filterHeader)
     {
         $startY = $this->pdfDocument->GetY();
         $maxContentHeight = $startY;
@@ -110,8 +111,10 @@ class Report
         $this->pdfDocument->SetY($startY);
 
         $this->printH2($name, $columnWidth);
-
         $this->printP($address, $columnWidth);
+
+        $this->pdfDocument->Ln($this->pdfSizes->getLnHeight() * M_PI);
+        $this->printP($elements, $columnWidth, true);
         $maxContentHeight = max($this->pdfDocument->GetY(), $maxContentHeight);
         ++$currentColumn;
 
@@ -160,10 +163,17 @@ class Report
         $this->pdfDocument->Ln($this->pdfSizes->getLnHeight());
     }
 
-    private function printP($text, $columnWidth = 0)
+    private function printP($text, $columnWidth = 0, $secondary = false)
     {
+        if ($secondary) {
+            $this->pdfDocument->SetTextColor(...$this->pdfDesign->getSecondaryTextColor());
+        } else {
+            $this->pdfDocument->SetTextColor(...$this->pdfDesign->getTextColor());
+        }
         $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
         $this->pdfDocument->MultiCell($columnWidth, 0, $text, 0, 'L', false, 2);
+
+        $this->pdfDocument->SetTextColor(...$this->pdfDesign->getTextColor());
     }
 
     private function printHtmlP($html)
@@ -208,8 +218,13 @@ class Report
         $this->setDefaults();
         $startY = $this->pdfDocument->GetY();
 
-        $headerHeight = $this->getHeightOf(function () use ($name, $context) {
+        $printTitle = function () use ($name, $context) {
+            $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
             $this->printH2($name, 0, $context);
+        };
+
+        $headerHeight = $this->getHeightOf(function () use ($printTitle) {
+            $printTitle();
         });
 
         if (file_exists($mapImageFilePath)) {
@@ -231,7 +246,7 @@ class Report
             }
 
             //print title
-            $this->printH2($name, 0, $context);
+            $printTitle();
 
             //print image with surrounding box
             $startY = $this->pdfDocument->GetY();

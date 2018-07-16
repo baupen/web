@@ -79,26 +79,26 @@ class ReportService implements ReportServiceInterface
      * @param ConstructionSite $constructionSite
      * @param Filter $filter
      * @param string $author
-     * @param ReportElements $elements
+     * @param ReportElements $reportElements
      * @param Issue[] $issues
      * @param string $filePath
      */
-    private function render(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $elements, array $issues, string $filePath)
+    private function render(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $reportElements, array $issues, string $filePath)
     {
         // initialize report
         $pdfDefinition = new PdfDefinition($constructionSite->getName(), $author, __DIR__ . '/../../public/files/report_logo.png');
         $report = new Report($pdfDefinition);
 
-        $this->addIntroduction($report, $constructionSite, $filter);
+        $this->addIntroduction($report, $constructionSite, $filter, $reportElements);
 
         //add tables
-        if ($elements->getTableByCraftsman()) {
+        if ($reportElements->getTableByCraftsman()) {
             $this->addTableByCraftsman($report, $filter, $issues);
         }
-        if ($elements->getTableByMap()) {
+        if ($reportElements->getTableByMap()) {
             $this->addTableByMap($report, $filter, $issues);
         }
-        if ($elements->getTableByTrade()) {
+        if ($reportElements->getTableByTrade()) {
             $this->addTableByTrade($report, $filter, $issues);
         }
 
@@ -109,7 +109,7 @@ class ReportService implements ReportServiceInterface
             $issues = $issuesPerMap[$map->getId()];
             $this->addMap($report, $map, $issues);
             $this->addIssueTable($report, $filter, $issues);
-            if ($elements->getWithImages()) {
+            if ($reportElements->getWithImages()) {
                 $this->addIssueImageGrid($report, $issues);
             }
             //add table with issues
@@ -163,8 +163,9 @@ class ReportService implements ReportServiceInterface
      * @param Report $report
      * @param ConstructionSite $constructionSite
      * @param Filter $filter
+     * @param ReportElements $reportElements
      */
-    private function addIntroduction(Report $report, ConstructionSite $constructionSite, Filter $filter)
+    private function addIntroduction(Report $report, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
     {
         $filterEntries = [];
 
@@ -269,11 +270,28 @@ class ReportService implements ReportServiceInterface
             $filterEntries[$this->translator->transChoice('filter.trades', count($trades), [], 'report')] = implode(', ', array_keys($trades));
         }
 
+        //add list of elements which are part of this report
+        $elements = [];
+        if ($reportElements->getTableByCraftsman()) {
+            $elements[] = $this->translator->trans('table.by_craftsman', [], 'report');
+        }
+        if ($reportElements->getTableByMap()) {
+            $elements[] = $this->translator->trans('table.by_map', [], 'report');
+        }
+        if ($reportElements->getTableByTrade()) {
+            $elements[] = $this->translator->trans('table.by_trade', [], 'report');
+        }
+        $elements[] = $this->translator->trans('issues.detailed', [], 'report');
+        if ($reportElements->getWithImages()) {
+            $elements[count($elements) - 1] .= ' ' . $this->translator->trans('issues.with_images', [], 'report');
+        }
+
         //print
         $report->addIntroduction(
             $this->imageService->getSize($this->publicPath . '/' . $constructionSite->getImageFilePath(), ImageServiceInterface::SIZE_REPORT_ISSUE),
             $constructionSite->getName(),
             implode("\n", $constructionSite->getAddressLines()),
+            implode(', ', $elements),
             $filterEntries,
             $this->translator->trans('entity.name', [], 'entity_filter')
         );

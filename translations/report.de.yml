@@ -12,3 +12,7 @@ table:
   by_craftsman: 'Pendenzen nach ausführender Firma'
   by_trade: 'Pendenzen nach Handwerk'
   in_state_since: '%status% seit'
+
+issues:
+  detailed: 'Pendenzendetails nach Karte'
+  with_images: 'mit Bildern'
