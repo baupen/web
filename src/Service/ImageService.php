@@ -57,7 +57,7 @@ class ImageService implements ImageServiceInterface
 
             //do first low quality render to get artboxsize
             $renderedMapPath = $generationTargetFolder . '/pre_render.jpg';
-            $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=10 -dFitArtBox -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
+            $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=10 -dUseCropBox -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
             exec($command);
             if (!is_file($renderedMapPath)) {
                 return null;
