@@ -26,13 +26,14 @@ class ImageService implements ImageServiceInterface
 
     /**
      * @var int the bubble size as an abstract unit
+     *          the higher the number the smaller the resulting bubble
      */
-    private $bubbleSize = 40;
+    private $bubbleScale = 1000;
 
     /**
      * @var bool if the cache should be disabled
      */
-    private $disableCache = false;
+    private $disableCache = true;
 
     /**
      * @param Map $map
@@ -107,7 +108,7 @@ class ImageService implements ImageServiceInterface
             $circleColor = $this->createColor($image, 204, 255, 255);
         } else {
             //orange
-            $circleColor = $this->createColor($image, 255, 204, 51);
+            $circleColor = $this->createColor($image, 201, 151, 0);
         }
 
         $this->drawCircleWithText($yCoordinate, $xCoordinate, $circleColor, (string)$issue->getNumber(), $image);
@@ -122,15 +123,20 @@ class ImageService implements ImageServiceInterface
      */
     private function drawCircleWithText($yCoordinate, $xCoordinate, $circleColor, $text, &$image)
     {
+        //get sizes
+        $xSize = imagesx($image);
+        $ySize = imagesy($image);
+        $imageSize = $xSize * $ySize;
+        $fontSize = sqrt($imageSize / ($this->bubbleScale * M_PI));
+
         //get text size
         $font = __DIR__ . '/../../assets/fonts/OpenSans-Regular.ttf';
-        $fontSize = $this->bubbleSize;
         $txtSize = imagettfbbox($fontSize, 0, $font, $text);
         $txtWidth = abs($txtSize[4] - $txtSize[0]);
         $txtHeight = abs($txtSize[5] - $txtSize[1]);
 
         //calculate diameter around text
-        $buffer = $this->bubbleSize * 1.6;
+        $buffer = $fontSize * 1.6;
         $diameter = max($txtWidth, $txtHeight) + $buffer;
 
         //draw white base ellipse before the colored one
