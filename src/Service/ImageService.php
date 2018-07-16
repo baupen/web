@@ -130,7 +130,7 @@ class ImageService implements ImageServiceInterface
         $fontSize = sqrt($imageSize / ($this->bubbleScale * M_PI));
 
         //get text size
-        $font = __DIR__ . '/../../assets/fonts/OpenSans-Regular.ttf';
+        $font = __DIR__ . '/../../assets/fonts/OpenSans-Bold.ttf';
         $txtSize = imagettfbbox($fontSize, 0, $font, $text);
         $txtWidth = abs($txtSize[4] - $txtSize[0]);
         $txtHeight = abs($txtSize[5] - $txtSize[1]);
