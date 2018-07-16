@@ -9,4 +9,6 @@ filter:
 
 table:
   by_map: 'Pendenzen nach Karte'
+  by_craftsman: 'Pendenzen nach ausführender Firma'
+  by_trade: 'Pendenzen nach Handwerk'
   in_state_since: '%status% seit'

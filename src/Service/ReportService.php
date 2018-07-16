@@ -93,13 +93,13 @@ class ReportService implements ReportServiceInterface
 
         //add tables
         if ($elements->getTableByCraftsman()) {
-            $report->addTableByCraftsman($issues);
+            $this->addTableByCraftsman($report, $filter, $issues);
         }
         if ($elements->getTableByMap()) {
             $this->addTableByMap($report, $filter, $issues);
         }
         if ($elements->getTableByTrade()) {
-            $report->addTableByTrade($issues);
+            $this->addTableByTrade($report, $filter, $issues);
         }
 
         /* @var Map[] $orderedMaps */
@@ -332,6 +332,56 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
+     * @param Filter $filter
+     * @param array $orderedMaps
+     * @param Issue[][] $issuesPerMap
+     * @param $tableContent
+     * @param $tableHeader
+     */
+    private function addAggregatedIssuesInfo(Filter $filter, array $orderedMaps, array $issuesPerMap, array &$tableContent, array &$tableHeader)
+    {
+        //count issue status per map
+        $countsPerElement = [];
+        foreach ($orderedMaps as $index => $element) {
+            $countPerMap = [0, 0, 0];
+            foreach ($issuesPerMap[$index] as $issue) {
+                if ($issue->getStatusCode() >= Issue::REVIEW_STATUS) {
+                    ++$countPerMap[2];
+                } elseif ($issue->getStatusCode() >= Issue::RESPONSE_STATUS) {
+                    ++$countPerMap[1];
+                } else {
+                    ++$countPerMap[0];
+                }
+            }
+            $countsPerElement[$index] = $countPerMap;
+        }
+
+        //add registration count if filter did not exclude
+        if ($filter->getRegistrationStatus() === null || $filter->getRegistrationStatus()) {
+            $tableHeader[] = $this->translator->trans('status_values.registered', [], 'entity_issue');
+            foreach ($countsPerElement as $elementId => $count) {
+                $tableContent[$elementId][] = $count[0];
+            }
+        }
+
+        //add response count if filter did not exclude
+        if ($filter->getRespondedStatus() === null || $filter->getRespondedStatus()) {
+            $tableHeader[] = $this->translator->trans('status_values.responded', [], 'entity_issue');
+            foreach ($countsPerElement as $elementId => $count) {
+                $tableContent[$elementId][] = $count[1];
+            }
+        }
+
+        //add review count if filter did not exclude
+        if ($filter->getReviewedStatus() === null || $filter->getReviewedStatus()) {
+            $tableHeader[] = $this->translator->trans('status_values.reviewed', [], 'entity_issue');
+            foreach ($countsPerElement as $elementId => $count) {
+                $tableContent[$elementId][] = $count[2];
+            }
+        }
+    }
+
+    /**
      * @param Report $report
      * @param Filter $filter
      * @param Issue[] $issues
@@ -342,58 +392,71 @@ class ReportService implements ReportServiceInterface
         /* @var Issue[][] $issuesPerMap */
         IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
 
-        //count issue status per map
-        $countsPerMap = [];
-        foreach ($orderedMaps as $orderedMap) {
-            $countPerMap = [0, 0, 0];
-            foreach ($issuesPerMap[$orderedMap->getId()] as $issue) {
-                if ($issue->getStatusCode() >= Issue::REVIEW_STATUS) {
-                    ++$countPerMap[2];
-                } elseif ($issue->getStatusCode() >= Issue::RESPONSE_STATUS) {
-                    ++$countPerMap[1];
-                } else {
-                    ++$countPerMap[0];
-                }
-            }
-            $countsPerMap[$orderedMap->getId()] = $countPerMap;
-        }
-
-        $tableHeader[] = $this->translator->trans('context', [], 'entity_map');
-        $tableHeader[] = $this->translator->trans('entity.name', [], 'entity_map');
-        $tableContent = [];
+        //prepare header & content with specific content
+        $tableHeader = [$this->translator->trans('context', [], 'entity_map'), $this->translator->trans('entity.name', [], 'entity_map')];
 
         //add map name & map context to table
-        foreach ($countsPerMap as $mapId => $count) {
-            $tableContent[$mapId] = [];
-            $tableContent[$mapId][] = $orderedMaps[$mapId]->getContext();
-            $tableContent[$mapId][] = $orderedMaps[$mapId]->getName();
+        foreach ($orderedMaps as $mapId => $map) {
+            $tableContent[$mapId] = [$map->getContext(), $map->getName()];
         }
 
-        //add registration count if filter did not exclude
-        if ($filter->getRegistrationStatus() === null || $filter->getRegistrationStatus()) {
-            $tableHeader[] = $this->translator->trans('status_values.registered', [], 'entity_issue');
-            foreach ($countsPerMap as $mapId => $count) {
-                $tableContent[$mapId][] = $count[0];
-            }
-        }
+        //add accumulated info
+        $this->addAggregatedIssuesInfo($filter, $orderedMaps, $issuesPerMap, $tableContent, $tableHeader);
 
-        //add response count if filter did not exclude
-        if ($filter->getRespondedStatus() === null || $filter->getRespondedStatus()) {
-            $tableHeader[] = $this->translator->trans('status_values.responded', [], 'entity_issue');
-            foreach ($countsPerMap as $mapId => $count) {
-                $tableContent[$mapId][] = $count[1];
-            }
-        }
-
-        //add review count if filter did not exclude
-        if ($filter->getReviewedStatus() === null || $filter->getReviewedStatus()) {
-            $tableHeader[] = $this->translator->trans('status_values.reviewed', [], 'entity_issue');
-            foreach ($countsPerMap as $mapId => $count) {
-                $tableContent[$mapId][] = $count[2];
-            }
-        }
-
+        //write to pdf
         $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_map', [], 'report'));
+    }
+
+    /**
+     * @param Report $report
+     * @param Filter $filter
+     * @param Issue[] $issues
+     */
+    private function addTableByCraftsman(Report $report, Filter $filter, array $issues)
+    {
+        /* @var Craftsman[] $orderedCraftsman */
+        /* @var Issue[][] $issuesPerCraftsman */
+        IssueHelper::issuesToOrderedCraftsman($issues, $orderedCraftsman, $issuesPerCraftsman);
+
+        //prepare header & content with specific content
+        $tableHeader = [$this->translator->trans('entity.name', [], 'entity_craftsman')];
+
+        //add map name & map context to table
+        foreach ($orderedCraftsman as $craftsmanId => $craftsman) {
+            $tableContent[$craftsmanId] = [$craftsman->getName()];
+        }
+
+        //add accumulated info
+        $this->addAggregatedIssuesInfo($filter, $orderedCraftsman, $issuesPerCraftsman, $tableContent, $tableHeader);
+
+        //write to pdf
+        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_craftsman', [], 'report'));
+    }
+
+    /**
+     * @param Report $report
+     * @param Filter $filter
+     * @param Issue[] $issues
+     */
+    private function addTableByTrade(Report $report, Filter $filter, array $issues)
+    {
+        /* @var string[] $orderedTrade */
+        /* @var Issue[][] $issuesPerTrade */
+        IssueHelper::issuesToOrderedTrade($issues, $orderedTrade, $issuesPerTrade);
+
+        //prepare header & content with specific content
+        $tableHeader = [$this->translator->trans('trade', [], 'entity_craftsman')];
+
+        //add map name & map context to table
+        foreach ($orderedTrade as $trade) {
+            $tableContent[$trade] = [$trade];
+        }
+
+        //add accumulated info
+        $this->addAggregatedIssuesInfo($filter, $orderedTrade, $issuesPerTrade, $tableContent, $tableHeader);
+
+        //write to pdf
+        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_trade', [], 'report'));
     }
 
     /**

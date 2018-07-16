@@ -33,7 +33,7 @@ class ImageService implements ImageServiceInterface
     /**
      * @var bool if the cache should be disabled
      */
-    private $disableCache = true;
+    private $disableCache = false;
 
     /**
      * @param Map $map
