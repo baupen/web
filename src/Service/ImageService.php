@@ -105,7 +105,7 @@ class ImageService implements ImageServiceInterface
         //colors sometime do not work and show up as black. just choose another color as close as possible to workaround
         if ($issue->getReviewedAt() !== null) {
             //green
-            $circleColor = $this->createColor($image, 204, 255, 255);
+            $circleColor = $this->createColor($image, 18, 140, 45);
         } else {
             //orange
             $circleColor = $this->createColor($image, 201, 151, 0);
