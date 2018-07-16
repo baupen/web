@@ -126,8 +126,8 @@ class ReportService implements ReportServiceInterface
      */
     private function addMap(Report $report, Map $map, array $issues)
     {
-        $mapImage = $this->imageService->generateMapImage($map, $issues);
-        $report->addMap($map->getName(), $map->getContext(), $this->imageService->getSize($mapImage, ImageServiceInterface::SIZE_FULL));
+        $mapImage = $this->imageService->generateMapImageForReport($map, $issues);
+        $report->addMap($map->getName(), $map->getContext(), $this->imageService->getSize($mapImage, ImageServiceInterface::SIZE_REPORT_MAP));
     }
 
     /**
@@ -141,7 +141,7 @@ class ReportService implements ReportServiceInterface
         $imageGrid = [];
         $currentRow = [];
         foreach ($issues as $issue) {
-            $imagePath = $this->imageService->getSize($this->publicPath . '/' . $issue->getImageFilePath(), ImageServiceInterface::SIZE_REPORT);
+            $imagePath = $this->imageService->getSize($this->publicPath . '/' . $issue->getImageFilePath(), ImageServiceInterface::SIZE_REPORT_ISSUE);
             $currentIssue['imagePath'] = $imagePath;
             $currentIssue['identification'] = $issue->getNumber();
             $currentRow[] = $currentIssue;
@@ -271,7 +271,7 @@ class ReportService implements ReportServiceInterface
 
         //print
         $report->addIntroduction(
-            $this->imageService->getSize($this->publicPath . '/' . $constructionSite->getImageFilePath(), ImageServiceInterface::SIZE_REPORT),
+            $this->imageService->getSize($this->publicPath . '/' . $constructionSite->getImageFilePath(), ImageServiceInterface::SIZE_REPORT_ISSUE),
             $constructionSite->getName(),
             implode("\n", $constructionSite->getAddressLines()),
             $filterEntries,
@@ -358,15 +358,15 @@ class ReportService implements ReportServiceInterface
             $countsPerMap[$orderedMap->getId()] = $countPerMap;
         }
 
-        $tableHeader[] = $this->translator->trans('entity.name', [], 'entity_map');
         $tableHeader[] = $this->translator->trans('context', [], 'entity_map');
+        $tableHeader[] = $this->translator->trans('entity.name', [], 'entity_map');
         $tableContent = [];
 
         //add map name & map context to table
         foreach ($countsPerMap as $mapId => $count) {
             $tableContent[$mapId] = [];
-            $tableContent[$mapId][] = $orderedMaps[$mapId]->getName();
             $tableContent[$mapId][] = $orderedMaps[$mapId]->getContext();
+            $tableContent[$mapId][] = $orderedMaps[$mapId]->getName();
         }
 
         //add registration count if filter did not exclude

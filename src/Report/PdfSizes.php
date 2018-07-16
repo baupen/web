@@ -305,6 +305,6 @@ class PdfSizes
      */
     public function getImagePadding(): float
     {
-        return $this->getContentSpacerSmall() / 2;
+        return $this->getContentSpacerSmall() / 4;
     }
 }

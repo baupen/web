@@ -18,7 +18,8 @@ interface ImageServiceInterface
     const SIZE_THUMBNAIL = 'thumbnail';
     const SIZE_FULL = 'full';
     const SIZE_SHARE_VIEW = 'share_view';
-    const SIZE_REPORT = 'report';
+    const SIZE_REPORT_ISSUE = 'report_issue';
+    const SIZE_REPORT_MAP = 'report_map';
 
     /**
      * @param Map $map
@@ -27,6 +28,14 @@ interface ImageServiceInterface
      * @return string
      */
     public function generateMapImage(Map $map, array $issues);
+
+    /**
+     * @param Map $map
+     * @param array $issues
+     *
+     * @return string
+     */
+    public function generateMapImageForReport(Map $map, array $issues);
 
     /**
      * @param string|null $imagePath

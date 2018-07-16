@@ -267,7 +267,7 @@ class Report
         //adapt font for table content
         $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
         $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
-        $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
+        $this->pdfDocument->SetFont(...$this->pdfDesign->getEmphasisFontFamily());
 
         //go through header
         $currentColumn = 0;
@@ -281,6 +281,7 @@ class Report
 
         $currentRow = 0;
         $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
+        $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
         foreach ($tableContent as $row) {
             //alternative background colors
             $fill = $currentRow % 2;

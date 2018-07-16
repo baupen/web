@@ -28,7 +28,7 @@ class ImageService implements ImageServiceInterface
      * @var int the bubble size as an abstract unit
      *          the higher the number the smaller the resulting bubble
      */
-    private $bubbleScale = 1000;
+    private $bubbleScale = 1500;
 
     /**
      * @var bool if the cache should be disabled
@@ -39,10 +39,11 @@ class ImageService implements ImageServiceInterface
      * @param Map $map
      * @param Issue[] $issues
      * @param string $filePath
+     * @param bool $forceLandscape
      *
      * @return string|null
      */
-    private function render(Map $map, array $issues, $filePath): ?string
+    private function render(Map $map, array $issues, $filePath, $forceLandscape = false): ?string
     {
         //create folder
         $generationTargetFolder = $this->getGenerationTargetFolder($map);
@@ -75,6 +76,15 @@ class ImageService implements ImageServiceInterface
 
         //open image file
         $sourceImage = imagecreatefromjpeg($renderedMapPath);
+
+        if ($forceLandscape) {
+            $width = imagesx($sourceImage);
+            $height = imagesy($sourceImage);
+
+            if ($height > $width) {
+                $sourceImage = imagerotate($sourceImage, 90, 0);
+            }
+        }
 
         //draw the issues on the map
         foreach ($issues as $issue) {
@@ -178,10 +188,11 @@ class ImageService implements ImageServiceInterface
     /**
      * @param Map $map
      * @param array $issues
+     * @param string $appendix
      *
      * @return string
      */
-    private function getFilePathFor(Map $map, array $issues)
+    private function getFilePathFor(Map $map, array $issues, $appendix = '')
     {
         //hash issue all used issue info
         $hash = hash('sha256',
@@ -193,7 +204,7 @@ class ImageService implements ImageServiceInterface
                         return $issue->getId() . $issue->getStatusCode();
                     },
                     $issues)
-            )
+            ) . $appendix
         );
 
         return $this->getGenerationTargetFolder($map) . '/' . $hash . '.jpg';
@@ -265,11 +276,14 @@ class ImageService implements ImageServiceInterface
                 case ImageServiceInterface::SIZE_SHARE_VIEW:
                     $res = $this->createVariant($imagePath, $path, 300, 500, $ending);
                     break;
-                case ImageServiceInterface::SIZE_REPORT:
+                case ImageServiceInterface::SIZE_REPORT_ISSUE:
                     $res = $this->createVariant($imagePath, $path, 600, 600, $ending);
                     break;
                 case ImageServiceInterface::SIZE_FULL:
                     $res = $this->createVariant($imagePath, $path, 1920, 1080, $ending);
+                    break;
+                case ImageServiceInterface::SIZE_REPORT_MAP:
+                    $res = $this->createVariant($imagePath, $path, 2480, 2480, $ending);
                     break;
             }
 
@@ -338,5 +352,25 @@ class ImageService implements ImageServiceInterface
             }
         } catch (\ReflectionException $e) {
         }
+    }
+
+    /**
+     * @param Map $map
+     * @param array $issues
+     *
+     * @return string
+     */
+    public function generateMapImageForReport(Map $map, array $issues)
+    {
+        if ($map->getFilename() === null) {
+            return null;
+        }
+
+        $filePath = $this->getFilePathFor($map, $issues, 'landscape');
+        if (!is_file($filePath) || $this->disableCache) {
+            $filePath = $this->render($map, $issues, $filePath, true);
+        }
+
+        return $filePath;
     }
 }
