@@ -2,8 +2,7 @@
     <span v-if="editEnabled" class="form-group">
         <select class="form-control form-control-sm"
                 v-model="selectedTrade"
-                @keyup.tab="focusCraftsman"
-                @keyup.escape="$emit('abort-edit')"
+                @keyup.escape="$emit('edit-abort')"
                 :ref="'trade'">
             <option v-for="trade in selectableTrades" v-bind:value="trade">
                 {{ trade }}
@@ -11,16 +10,16 @@
         </select>
         <select class="form-control form-control-sm"
                 v-model="selectedCraftsman"
-                @keyup.escape="$emit('abort-edit')"
+                @keyup.escape="$emit('edit-abort')"
                 :ref="'craftsman'">
             <option v-for="craftsman in selectableCraftsmen" v-bind:value="craftsman">
                 {{ craftsman.name }}
             </option>
         </select>
-        <button class="btn btn-primary" @click="confirmEdit">{{$t("save")}}</button>
-        <button class="btn btn-outline-secondary" @click="$emit('abort-edit')">{{$t("abort")}}</button>
+        <button class="btn btn-primary" @click="editConfirm">{{$t("save")}}</button>
+        <button class="btn btn-outline-secondary" @click="$emit('edit-abort')">{{$t("abort")}}</button>
     </span>
-    <div v-else class="editable">
+    <div v-else class="editable" @click="$emit('edit-start')">
         <span v-if="issue.craftsmanId === null">
             {{$t("no_craftsman_set")}}
         </span>
@@ -58,15 +57,9 @@
             }
         },
         methods: {
-            focusCraftsman: function () {
-                this.$nextTick(() => {
-                    let input = this.$refs['craftsman'][0];
-                    input.focus();
-                });
-            },
-            confirmEdit: function () {
+            editConfirm: function () {
                 this.issue.craftsmanId = this.selectedCraftsman.id;
-                this.$emit('confirm-edit');
+                this.$emit('edit-confirm');
             }
         },
         watch: {
@@ -76,18 +69,24 @@
                     return;
                 }
 
-                //set trade selected
+                //set selected entries
                 if (this.issue.craftsmanId in this.craftsmanById) {
-                    this.selectedTrade = this.craftsmanById[this.issue.craftsmanId].trade;
+                    this.selectedCraftsman = this.craftsmanById[this.issue.craftsmanId];
                 } else {
-                    this.selectedTrade = this.craftsmanById[this.craftsmen[0].id].trade;
+                    this.selectedCraftsman = this.craftsmen[0];
                 }
+                this.selectedTrade = this.selectedCraftsman.trade;
 
                 //focus input on next tick
                 this.$nextTick(() => {
                     let input = this.$refs['trade'][0];
                     input.focus();
                 });
+            },
+            selectedTrade: function () {
+                if (this.selectableCraftsmen.indexOf(this.selectedCraftsman) === -1) {
+                    this.selectedCraftsman = this.selectableCraftsmen[0];
+                }
             }
         },
         computed: {

@@ -43,9 +43,9 @@
                 <tr v-for="issue in sortedIssues"
                     @click.ctrl.exact="issueCtrlClicked(issue)"
                     @click.exact="issueClicked(issue)"
-                    @click.shift.exact="issueShiftClicked(issue)"
+                    @click.shift.exact.prevent.stop="issueShiftClicked(issue)"
                     class="selectable"
-                    v-bind:class="{ 'table-active': issue in selectedIssues}">
+                    v-bind:class="{ 'table-active': selectedIssues.indexOf(issue) >= 0 }">
 
                     <td class="minimal-width">
                         {{issue.number}}
@@ -61,8 +61,12 @@
                         {{issue.description}}
                     </td>
                     <td>
-                        <craftsman-cell v-on:confirm-edit="cellEdited" v-on:abort-edit="" :issue="issue"
-                                        :craftsmen="craftsmen" :edit-enabled="false"></craftsman-cell>
+                        <craftsman-cell @edit-confirm="cellEditConfirm"
+                                        @edit-abort="cellEditAbort"
+                                        @edit-start="cellEditStart(issue, 'craftsman')"
+                                        :issue="issue"
+                                        :craftsmen="craftsmen"
+                                        :edit-enabled="editIssue === issue && editEnabled.craftsman"></craftsman-cell>
                     </td>
                     <td>
                         {{ formatLimitDateTime(issue.responseLimit)}}
@@ -131,12 +135,17 @@
                 sortOrders: sortOrders,
                 textFilter: null,
 
+                editIssue: null,
                 selectedIssues: [],
                 lastSelectedIssue: null,
 
                 lightbox: {
                     enabled: false,
                     issue: null
+                },
+
+                editEnabled: {
+                    craftsman: false
                 }
             }
         },
@@ -153,7 +162,7 @@
                 this.selectedIssues = [issue];
             },
             issueCtrlClicked: function (issue) {
-                if (issue in this.selectedIssues) {
+                if (this.selectedIssues.indexOf(issue) >= 0) {
                     this.selectedIssues = this.selectedIssues.filter(i => i !== issue);
                 } else {
                     this.selectedIssues.push(issue);
@@ -166,20 +175,34 @@
                     return;
                 }
 
+                //remove all selections
+                document.getSelection().removeAllRanges();
+
                 //check indexes
                 const index1 = this.issues.indexOf(this.lastSelectedIssue);
                 const index2 = this.issues.indexOf(issue);
 
                 //mark if both are valid
                 if (index1 >= 0 && index2 >= 0) {
-                    this.selectedIssues = this.issues.slice(min(index1, index2), max(index1, index2));
+                    this.selectedIssues = this.issues.slice(Math.min(index1, index2), Math.max(index1, index2) + 1);
                 }
             },
-            cellEdited: function () {
+            cellEditStart: function (issue, cell) {
+                //select issue if not done already
+                if (this.selectedIssues.indexOf(issue) === -1) {
+                    this.issueClicked();
+                }
+
+                //enable edit
+                this.editEnabled[cell] = true;
+                this.editIssue = issue;
+            },
+            cellEditConfirm: function () {
 
             },
-            cellEditAborted: function () {
-
+            cellEditAbort: function (cell) {
+                //disable edit
+                this.editEnabled[cell] = false;
             },
             formatLimitDateTime: function (value) {
                 if (value === null) {
