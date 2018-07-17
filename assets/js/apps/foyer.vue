@@ -203,10 +203,6 @@
 
     moment.locale('de');
 
-    Array.prototype.unique = function () {
-        return Array.from(new Set(this));
-    };
-
     export default {
         data: function () {
             const sortOrders = {};

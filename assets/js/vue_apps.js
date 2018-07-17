@@ -17,6 +17,10 @@ import vueHeadful from 'vue-headful';
 Vue.component('vue-headful', vueHeadful);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
+Array.prototype.unique = function () {
+    return Array.from(new Set(this));
+};
+
 import DispatchMessages from './localization/dispatch'
 import Dispatch from './apps/dispatch'
 
@@ -97,5 +101,36 @@ if (document.getElementById("share") != null) {
         el: '#share',
         template: '<Share/>',
         components: {Share}
+    });
+}
+
+
+import RegisterMessages from './localization/register'
+import Register from './apps/register'
+
+if (document.getElementById("register") != null) {
+    const messagesShare = RegisterMessages;
+
+    const lang = document.documentElement.lang.substr(0, 2);
+    const i18nConfirm = new VueI18n({
+        locale: lang,
+        messages: messagesShare,
+    });
+
+    library.add(
+        require('@fortawesome/fontawesome-pro-light/faCheck'),
+        require('@fortawesome/fontawesome-pro-solid/faSortUp'),
+        require('@fortawesome/fontawesome-pro-solid/faSortDown'),
+        require('@fortawesome/fontawesome-pro-light/faSort'),
+        require('@fortawesome/fontawesome-pro-solid/faStar'),
+        require('@fortawesome/fontawesome-pro-light/faStar'),
+        require('@fortawesome/fontawesome-pro-light/faTimes')
+    );
+
+    new Vue({
+        i18n: i18nConfirm,
+        el: '#register',
+        template: '<Register/>',
+        components: {Register}
     });
 }

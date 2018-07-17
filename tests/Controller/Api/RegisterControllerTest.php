@@ -53,8 +53,6 @@ class RegisterControllerTest extends ApiController
             }
         }
 
-        dump($issuesData->data->issues);
-        dump($once);
         foreach ($once as $item) {
             $this->assertTrue($item);
         }
