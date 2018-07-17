@@ -42,13 +42,10 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * @param Issue $entity
-     * @param null $args
-     *
-     * @return \App\Api\Entity\Foyer\Issue
+     * @param \App\Api\Entity\Foyer\Issue $issue
      */
-    public function toApi($entity, $args = null)
+    public function writeApiProperties(Issue $entity, \App\Api\Entity\Foyer\Issue $issue)
     {
-        $issue = new \App\Api\Entity\Foyer\Issue($entity->getId());
         $this->issueTransformer->writeApiProperties($entity, $issue);
 
         $issue->setMap($entity->getMap()->getName());
@@ -62,6 +59,18 @@ class IssueTransformer extends BatchTransformer
 
         $issue->setImageThumbnail($this->router->generate('image_issue', ['issue' => $entity->getId(), 'imageFilename' => $entity->getImageFilename(), 'size' => ImageServiceInterface::SIZE_THUMBNAIL]));
         $issue->setImageFull($this->router->generate('image_issue', ['issue' => $entity->getId(), 'imageFilename' => $entity->getImageFilename(), 'size' => ImageServiceInterface::SIZE_FULL]));
+    }
+
+    /**
+     * @param Issue $entity
+     * @param null $args
+     *
+     * @return \App\Api\Entity\Foyer\Issue
+     */
+    public function toApi($entity, $args = null)
+    {
+        $issue = new \App\Api\Entity\Foyer\Issue($entity->getId());
+        $this->writeApiProperties($entity, $issue);
 
         return $issue;
     }

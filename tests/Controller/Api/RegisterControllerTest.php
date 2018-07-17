@@ -1,0 +1,122 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: famoser
+ * Date: 6/26/18
+ * Time: 8:40 PM
+ */
+
+namespace App\Tests\Controller\Api;
+
+
+use App\Api\Entity\Foyer\Issue;
+use App\Api\Request\ConstructionSiteRequest;
+use App\Api\Request\IssueRequest;
+use App\Api\Request\IssuesRequest;
+use App\Enum\ApiStatus;
+use App\Tests\Controller\Api\Base\ApiController;
+use ReflectionClass;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+class RegisterControllerTest extends ApiController
+{
+    /**
+     * @throws \ReflectionException
+     */
+    public function testIssuesList()
+    {
+        $issuesData = $this->getIssues();
+
+        $this->assertNotNull($issuesData->data);
+        $this->assertNotNull($issuesData->data->issues);
+
+        $this->assertTrue(is_array($issuesData->data->issues));
+        $once = [false, false, false, false];
+        $onceProperties = ["respondedAt", "responseByName", "reviewedAt", "reviewByName"];
+        foreach ($issuesData->data->issues as $issue) {
+            $this->assertNotNull($issue);
+
+            $this->assertObjectHasAttribute("isMarked", $issue);
+            $this->assertObjectHasAttribute("wasAddedWithClient", $issue);
+            $this->assertObjectHasAttribute("description", $issue);
+            $this->assertObjectHasAttribute("imageThumbnail", $issue);
+            $this->assertObjectHasAttribute("imageFull", $issue);
+            $this->assertObjectHasAttribute("craftsmanId", $issue);
+            $this->assertObjectHasAttribute("map", $issue);
+            $this->assertObjectHasAttribute("uploadedAt", $issue);
+            $this->assertObjectHasAttribute("uploadByName", $issue);
+            $this->assertObjectHasAttribute("registrationByName", $issue);
+            $this->assertObjectHasAttribute("registeredAt", $issue);
+
+            for ($i = 0; $i < count($onceProperties); $i++) {
+                $once[$i] =  $once[$i] || property_exists($issue, $onceProperties[$i]);
+            }
+        }
+
+        dump($issuesData->data->issues);
+        dump($once);
+        foreach ($once as $item) {
+            $this->assertTrue($item);
+        }
+    }
+
+    public function testCraftsmanList()
+    {
+        $url = '/api/register/craftsman/list';
+
+        $constructionSite = $this->getSomeConstructionSite();
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+
+        $response = $this->authenticatedPostRequest($url, $constructionSiteRequest);
+        $craftsmanData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($craftsmanData->data);
+        $this->assertNotNull($craftsmanData->data->craftsmen);
+
+        $this->assertTrue(is_array($craftsmanData->data->craftsmen));
+        foreach ($craftsmanData->data->craftsmen as $craftsman) {
+            $this->assertNotNull($craftsman);
+            $this->assertObjectHasAttribute("name", $craftsman);
+            $this->assertObjectHasAttribute("trade", $craftsman);
+        }
+    }
+
+    public function testMapList()
+    {
+        $url = '/api/register/map/list';
+
+        $constructionSite = $this->getSomeConstructionSite();
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+
+        $response = $this->authenticatedPostRequest($url, $constructionSiteRequest);
+        $mapData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($mapData->data);
+        $this->assertNotNull($mapData->data->maps);
+
+        $this->assertTrue(is_array($mapData->data->maps));
+        foreach ($mapData->data->maps as $map) {
+            $this->assertNotNull($map);
+            $this->assertObjectHasAttribute("name", $map);
+            $this->assertObjectHasAttribute("context", $map);
+            $this->assertObjectHasAttribute("children", $map);
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getIssues()
+    {
+        $url = '/api/register/issue/list';
+
+        $constructionSite = $this->getSomeConstructionSite();
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+
+        $response = $this->authenticatedPostRequest($url, $constructionSiteRequest);
+        return $this->checkResponse($response, ApiStatus::SUCCESS);
+    }
+}

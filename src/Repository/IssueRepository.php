@@ -53,6 +53,7 @@ class IssueRepository extends EntityRepository
         $qb->where('cs.id = :constructionSite');
         $qb->setParameter(':constructionSite', $filter->getConstructionSite());
         $qb->orderBy('i.number', 'ASC');
+        $qb->orderBy('i.createdAt', 'ASC');
 
         if ($filter->getCraftsmen() !== null) {
             $qb->andWhere('c.id IN (:craftsmen)');

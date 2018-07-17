@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Transformer\Foyer;
+namespace App\Api\Transformer\Register;
 
 use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\Craftsman;
@@ -17,35 +17,30 @@ use App\Entity\Craftsman;
 class CraftsmanTransformer extends BatchTransformer
 {
     /**
-     * @var \App\Api\Transformer\Base\CraftsmanTransformer
+     * @var \App\Api\Transformer\Foyer\CraftsmanTransformer
      */
     private $craftsmanTransformer;
 
     /**
      * CraftsmanTransformer constructor.
      *
-     * @param \App\Api\Transformer\Base\CraftsmanTransformer $craftsmanTransformer
+     * @param \App\Api\Transformer\Foyer\CraftsmanTransformer $craftsmanTransformer
      */
-    public function __construct(\App\Api\Transformer\Base\CraftsmanTransformer $craftsmanTransformer)
+    public function __construct(\App\Api\Transformer\Foyer\CraftsmanTransformer $craftsmanTransformer)
     {
         $this->craftsmanTransformer = $craftsmanTransformer;
-    }
-
-    public function writeApiProperties(Craftsman $entity, \App\Api\Entity\Foyer\Craftsman $craftsman)
-    {
-        $this->craftsmanTransformer->writeApiProperties($entity, $craftsman);
     }
 
     /**
      * @param Craftsman $entity
      * @param null $args
      *
-     * @return \App\Api\Entity\Foyer\Craftsman
+     * @return \App\Api\Entity\Register\Craftsman
      */
     public function toApi($entity, $args = null)
     {
-        $craftsman = new \App\Api\Entity\Foyer\Craftsman($entity->getId());
-        $this->writeApiProperties($entity, $craftsman);
+        $craftsman = new \App\Api\Entity\Register\Craftsman($entity->getId());
+        $this->craftsmanTransformer->writeApiProperties($entity, $craftsman);
 
         return $craftsman;
     }
