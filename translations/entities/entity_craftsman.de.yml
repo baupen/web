@@ -1,5 +1,5 @@
 #name
-trait:
+entity:
  name: 'ausführende Firma'
 
 trade: 'Gewerbe'

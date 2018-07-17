@@ -26,8 +26,9 @@ class ImageService implements ImageServiceInterface
 
     /**
      * @var int the bubble size as an abstract unit
+     *          the higher the number the smaller the resulting bubble
      */
-    private $bubbleSize = 40;
+    private $bubbleScale = 1500;
 
     /**
      * @var bool if the cache should be disabled
@@ -38,10 +39,11 @@ class ImageService implements ImageServiceInterface
      * @param Map $map
      * @param Issue[] $issues
      * @param string $filePath
+     * @param bool $forceLandscape
      *
      * @return string|null
      */
-    private function render(Map $map, array $issues, $filePath): ?string
+    private function render(Map $map, array $issues, $filePath, $forceLandscape = false): ?string
     {
         //create folder
         $generationTargetFolder = $this->getGenerationTargetFolder($map);
@@ -56,7 +58,7 @@ class ImageService implements ImageServiceInterface
 
             //do first low quality render to get artboxsize
             $renderedMapPath = $generationTargetFolder . '/pre_render.jpg';
-            $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=10 -dFitArtBox -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
+            $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=10 -dUseCropBox -sPageList=1 -o ' . $renderedMapPath . ' ' . $mapFilePath;
             exec($command);
             if (!is_file($renderedMapPath)) {
                 return null;
@@ -74,6 +76,15 @@ class ImageService implements ImageServiceInterface
 
         //open image file
         $sourceImage = imagecreatefromjpeg($renderedMapPath);
+
+        if ($forceLandscape) {
+            $width = imagesx($sourceImage);
+            $height = imagesy($sourceImage);
+
+            if ($height > $width) {
+                $sourceImage = imagerotate($sourceImage, 90, 0);
+            }
+        }
 
         //draw the issues on the map
         foreach ($issues as $issue) {
@@ -104,10 +115,10 @@ class ImageService implements ImageServiceInterface
         //colors sometime do not work and show up as black. just choose another color as close as possible to workaround
         if ($issue->getReviewedAt() !== null) {
             //green
-            $circleColor = $this->createColor($image, 204, 255, 255);
+            $circleColor = $this->createColor($image, 18, 140, 45);
         } else {
             //orange
-            $circleColor = $this->createColor($image, 255, 204, 51);
+            $circleColor = $this->createColor($image, 201, 151, 0);
         }
 
         $this->drawCircleWithText($yCoordinate, $xCoordinate, $circleColor, (string)$issue->getNumber(), $image);
@@ -122,15 +133,20 @@ class ImageService implements ImageServiceInterface
      */
     private function drawCircleWithText($yCoordinate, $xCoordinate, $circleColor, $text, &$image)
     {
+        //get sizes
+        $xSize = imagesx($image);
+        $ySize = imagesy($image);
+        $imageSize = $xSize * $ySize;
+        $fontSize = sqrt($imageSize / ($this->bubbleScale * M_PI));
+
         //get text size
-        $font = __DIR__ . '/../../assets/fonts/OpenSans-Regular.ttf';
-        $fontSize = $this->bubbleSize;
+        $font = __DIR__ . '/../../assets/fonts/OpenSans-Bold.ttf';
         $txtSize = imagettfbbox($fontSize, 0, $font, $text);
         $txtWidth = abs($txtSize[4] - $txtSize[0]);
         $txtHeight = abs($txtSize[5] - $txtSize[1]);
 
         //calculate diameter around text
-        $buffer = $this->bubbleSize * 1.6;
+        $buffer = $fontSize * 1.6;
         $diameter = max($txtWidth, $txtHeight) + $buffer;
 
         //draw white base ellipse before the colored one
@@ -172,10 +188,11 @@ class ImageService implements ImageServiceInterface
     /**
      * @param Map $map
      * @param array $issues
+     * @param string $appendix
      *
      * @return string
      */
-    private function getFilePathFor(Map $map, array $issues)
+    private function getFilePathFor(Map $map, array $issues, $appendix = '')
     {
         //hash issue all used issue info
         $hash = hash('sha256',
@@ -187,7 +204,7 @@ class ImageService implements ImageServiceInterface
                         return $issue->getId() . $issue->getStatusCode();
                     },
                     $issues)
-            )
+            ) . $appendix
         );
 
         return $this->getGenerationTargetFolder($map) . '/' . $hash . '.jpg';
@@ -259,11 +276,14 @@ class ImageService implements ImageServiceInterface
                 case ImageServiceInterface::SIZE_SHARE_VIEW:
                     $res = $this->createVariant($imagePath, $path, 300, 500, $ending);
                     break;
-                case ImageServiceInterface::SIZE_REPORT:
+                case ImageServiceInterface::SIZE_REPORT_ISSUE:
                     $res = $this->createVariant($imagePath, $path, 600, 600, $ending);
                     break;
                 case ImageServiceInterface::SIZE_FULL:
                     $res = $this->createVariant($imagePath, $path, 1920, 1080, $ending);
+                    break;
+                case ImageServiceInterface::SIZE_REPORT_MAP:
+                    $res = $this->createVariant($imagePath, $path, 2480, 2480, $ending);
                     break;
             }
 
@@ -332,5 +352,25 @@ class ImageService implements ImageServiceInterface
             }
         } catch (\ReflectionException $e) {
         }
+    }
+
+    /**
+     * @param Map $map
+     * @param array $issues
+     *
+     * @return string
+     */
+    public function generateMapImageForReport(Map $map, array $issues)
+    {
+        if ($map->getFilename() === null) {
+            return null;
+        }
+
+        $filePath = $this->getFilePathFor($map, $issues, 'landscape');
+        if (!is_file($filePath) || $this->disableCache) {
+            $filePath = $this->render($map, $issues, $filePath, true);
+        }
+
+        return $filePath;
     }
 }

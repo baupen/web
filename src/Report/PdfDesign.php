@@ -26,6 +26,11 @@ class PdfDesign
     /**
      * @var int[]
      */
+    private $secondaryTextColor = [68, 73, 58];
+
+    /**
+     * @var int[]
+     */
     private $darkBackground = [200, 200, 200];
 
     /**
@@ -92,5 +97,21 @@ class PdfDesign
     public function getWhiteBackground(): array
     {
         return [255, 255, 255];
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getSecondaryTextColor(): array
+    {
+        return $this->secondaryTextColor;
+    }
+
+    /**
+     * @param int[] $secondaryTextColor
+     */
+    public function setSecondaryTextColor(array $secondaryTextColor): void
+    {
+        $this->secondaryTextColor = $secondaryTextColor;
     }
 }

@@ -71,15 +71,15 @@ class IssueHelper
 
     /**
      * @param Issue[] $issues
-     * @param $orderedCraftsman
-     * @param $issuesPerCraftsman
+     * @param $orderedTrade
+     * @param $issuesPerTrade
      */
-    public static function issuesToOrderedTrade(array $issues, &$orderedCraftsman, &$issuesPerCraftsman)
+    public static function issuesToOrderedTrade(array $issues, &$orderedTrade, &$issuesPerTrade)
     {
         static::issuesToOrderedElements(
             $issues,
-            $orderedCraftsman,
-            $issuesPerCraftsman,
+            $orderedTrade,
+            $issuesPerTrade,
             function ($issue) {
                 /* @var Issue $issue */
                 return $issue->getCraftsman()->getTrade();

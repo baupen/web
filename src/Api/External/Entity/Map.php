@@ -36,6 +36,11 @@ class Map extends BaseEntity
     private $issues;
 
     /**
+     * @var string
+     */
+    private $buildingID;
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -105,5 +110,21 @@ class Map extends BaseEntity
     public function setIssues(array $issues): void
     {
         $this->issues = $issues;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBuildingID(): string
+    {
+        return $this->buildingID;
+    }
+
+    /**
+     * @param string $buildingID
+     */
+    public function setBuildingID(string $buildingID): void
+    {
+        $this->buildingID = $buildingID;
     }
 }

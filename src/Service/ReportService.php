@@ -79,27 +79,27 @@ class ReportService implements ReportServiceInterface
      * @param ConstructionSite $constructionSite
      * @param Filter $filter
      * @param string $author
-     * @param ReportElements $elements
+     * @param ReportElements $reportElements
      * @param Issue[] $issues
      * @param string $filePath
      */
-    private function render(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $elements, array $issues, string $filePath)
+    private function render(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $reportElements, array $issues, string $filePath)
     {
         // initialize report
         $pdfDefinition = new PdfDefinition($constructionSite->getName(), $author, __DIR__ . '/../../public/files/report_logo.png');
         $report = new Report($pdfDefinition);
 
-        $this->addIntroduction($report, $constructionSite, $filter);
+        $this->addIntroduction($report, $constructionSite, $filter, $reportElements);
 
         //add tables
-        if ($elements->getTableByCraftsman()) {
-            $report->addTableByCraftsman($issues);
+        if ($reportElements->getTableByCraftsman()) {
+            $this->addTableByCraftsman($report, $filter, $issues);
         }
-        if ($elements->getTableByMap()) {
+        if ($reportElements->getTableByMap()) {
             $this->addTableByMap($report, $filter, $issues);
         }
-        if ($elements->getTableByTrade()) {
-            $report->addTableByTrade($issues);
+        if ($reportElements->getTableByTrade()) {
+            $this->addTableByTrade($report, $filter, $issues);
         }
 
         /* @var Map[] $orderedMaps */
@@ -109,7 +109,7 @@ class ReportService implements ReportServiceInterface
             $issues = $issuesPerMap[$map->getId()];
             $this->addMap($report, $map, $issues);
             $this->addIssueTable($report, $filter, $issues);
-            if ($elements->getWithImages()) {
+            if ($reportElements->getWithImages()) {
                 $this->addIssueImageGrid($report, $issues);
             }
             //add table with issues
@@ -126,8 +126,8 @@ class ReportService implements ReportServiceInterface
      */
     private function addMap(Report $report, Map $map, array $issues)
     {
-        $mapImage = $this->imageService->generateMapImage($map, $issues);
-        $report->addMap($map->getName(), $map->getContext(), $this->imageService->getSize($mapImage, ImageServiceInterface::SIZE_FULL));
+        $mapImage = $this->imageService->generateMapImageForReport($map, $issues);
+        $report->addMap($map->getName(), $map->getContext(), $this->imageService->getSize($mapImage, ImageServiceInterface::SIZE_REPORT_MAP));
     }
 
     /**
@@ -141,7 +141,7 @@ class ReportService implements ReportServiceInterface
         $imageGrid = [];
         $currentRow = [];
         foreach ($issues as $issue) {
-            $imagePath = $this->imageService->getSize($this->publicPath . '/' . $issue->getImageFilePath(), ImageServiceInterface::SIZE_REPORT);
+            $imagePath = $this->imageService->getSize($this->publicPath . '/' . $issue->getImageFilePath(), ImageServiceInterface::SIZE_REPORT_ISSUE);
             $currentIssue['imagePath'] = $imagePath;
             $currentIssue['identification'] = $issue->getNumber();
             $currentRow[] = $currentIssue;
@@ -163,8 +163,9 @@ class ReportService implements ReportServiceInterface
      * @param Report $report
      * @param ConstructionSite $constructionSite
      * @param Filter $filter
+     * @param ReportElements $reportElements
      */
-    private function addIntroduction(Report $report, ConstructionSite $constructionSite, Filter $filter)
+    private function addIntroduction(Report $report, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
     {
         $filterEntries = [];
 
@@ -269,11 +270,28 @@ class ReportService implements ReportServiceInterface
             $filterEntries[$this->translator->transChoice('filter.trades', count($trades), [], 'report')] = implode(', ', array_keys($trades));
         }
 
+        //add list of elements which are part of this report
+        $elements = [];
+        if ($reportElements->getTableByCraftsman()) {
+            $elements[] = $this->translator->trans('table.by_craftsman', [], 'report');
+        }
+        if ($reportElements->getTableByMap()) {
+            $elements[] = $this->translator->trans('table.by_map', [], 'report');
+        }
+        if ($reportElements->getTableByTrade()) {
+            $elements[] = $this->translator->trans('table.by_trade', [], 'report');
+        }
+        $elements[] = $this->translator->trans('issues.detailed', [], 'report');
+        if ($reportElements->getWithImages()) {
+            $elements[count($elements) - 1] .= ' ' . $this->translator->trans('issues.with_images', [], 'report');
+        }
+
         //print
         $report->addIntroduction(
-            $this->imageService->getSize($this->publicPath . '/' . $constructionSite->getImageFilePath(), ImageServiceInterface::SIZE_REPORT),
+            $this->imageService->getSize($this->publicPath . '/' . $constructionSite->getImageFilePath(), ImageServiceInterface::SIZE_REPORT_ISSUE),
             $constructionSite->getName(),
             implode("\n", $constructionSite->getAddressLines()),
+            implode(', ', $elements),
             $filterEntries,
             $this->translator->trans('entity.name', [], 'entity_filter')
         );
@@ -332,6 +350,56 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
+     * @param Filter $filter
+     * @param array $orderedMaps
+     * @param Issue[][] $issuesPerMap
+     * @param $tableContent
+     * @param $tableHeader
+     */
+    private function addAggregatedIssuesInfo(Filter $filter, array $orderedMaps, array $issuesPerMap, array &$tableContent, array &$tableHeader)
+    {
+        //count issue status per map
+        $countsPerElement = [];
+        foreach ($orderedMaps as $index => $element) {
+            $countPerMap = [0, 0, 0];
+            foreach ($issuesPerMap[$index] as $issue) {
+                if ($issue->getStatusCode() >= Issue::REVIEW_STATUS) {
+                    ++$countPerMap[2];
+                } elseif ($issue->getStatusCode() >= Issue::RESPONSE_STATUS) {
+                    ++$countPerMap[1];
+                } else {
+                    ++$countPerMap[0];
+                }
+            }
+            $countsPerElement[$index] = $countPerMap;
+        }
+
+        //add registration count if filter did not exclude
+        if ($filter->getRegistrationStatus() === null || $filter->getRegistrationStatus()) {
+            $tableHeader[] = $this->translator->trans('status_values.registered', [], 'entity_issue');
+            foreach ($countsPerElement as $elementId => $count) {
+                $tableContent[$elementId][] = $count[0];
+            }
+        }
+
+        //add response count if filter did not exclude
+        if ($filter->getRespondedStatus() === null || $filter->getRespondedStatus()) {
+            $tableHeader[] = $this->translator->trans('status_values.responded', [], 'entity_issue');
+            foreach ($countsPerElement as $elementId => $count) {
+                $tableContent[$elementId][] = $count[1];
+            }
+        }
+
+        //add review count if filter did not exclude
+        if ($filter->getReviewedStatus() === null || $filter->getReviewedStatus()) {
+            $tableHeader[] = $this->translator->trans('status_values.reviewed', [], 'entity_issue');
+            foreach ($countsPerElement as $elementId => $count) {
+                $tableContent[$elementId][] = $count[2];
+            }
+        }
+    }
+
+    /**
      * @param Report $report
      * @param Filter $filter
      * @param Issue[] $issues
@@ -342,58 +410,71 @@ class ReportService implements ReportServiceInterface
         /* @var Issue[][] $issuesPerMap */
         IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
 
-        //count issue status per map
-        $countsPerMap = [];
-        foreach ($orderedMaps as $orderedMap) {
-            $countPerMap = [0, 0, 0];
-            foreach ($issuesPerMap[$orderedMap->getId()] as $issue) {
-                if ($issue->getStatusCode() >= Issue::REVIEW_STATUS) {
-                    ++$countPerMap[2];
-                } elseif ($issue->getStatusCode() >= Issue::RESPONSE_STATUS) {
-                    ++$countPerMap[1];
-                } else {
-                    ++$countPerMap[0];
-                }
-            }
-            $countsPerMap[$orderedMap->getId()] = $countPerMap;
-        }
-
-        $tableHeader[] = $this->translator->trans('entity.name', [], 'entity_map');
-        $tableHeader[] = $this->translator->trans('context', [], 'entity_map');
-        $tableContent = [];
+        //prepare header & content with specific content
+        $tableHeader = [$this->translator->trans('context', [], 'entity_map'), $this->translator->trans('entity.name', [], 'entity_map')];
 
         //add map name & map context to table
-        foreach ($countsPerMap as $mapId => $count) {
-            $tableContent[$mapId] = [];
-            $tableContent[$mapId][] = $orderedMaps[$mapId]->getName();
-            $tableContent[$mapId][] = $orderedMaps[$mapId]->getContext();
+        foreach ($orderedMaps as $mapId => $map) {
+            $tableContent[$mapId] = [$map->getContext(), $map->getName()];
         }
 
-        //add registration count if filter did not exclude
-        if ($filter->getRegistrationStatus() === null || $filter->getRegistrationStatus()) {
-            $tableHeader[] = $this->translator->trans('status_values.registered', [], 'entity_issue');
-            foreach ($countsPerMap as $mapId => $count) {
-                $tableContent[$mapId][] = $count[0];
-            }
-        }
+        //add accumulated info
+        $this->addAggregatedIssuesInfo($filter, $orderedMaps, $issuesPerMap, $tableContent, $tableHeader);
 
-        //add response count if filter did not exclude
-        if ($filter->getRespondedStatus() === null || $filter->getRespondedStatus()) {
-            $tableHeader[] = $this->translator->trans('status_values.responded', [], 'entity_issue');
-            foreach ($countsPerMap as $mapId => $count) {
-                $tableContent[$mapId][] = $count[1];
-            }
-        }
-
-        //add review count if filter did not exclude
-        if ($filter->getReviewedStatus() === null || $filter->getReviewedStatus()) {
-            $tableHeader[] = $this->translator->trans('status_values.reviewed', [], 'entity_issue');
-            foreach ($countsPerMap as $mapId => $count) {
-                $tableContent[$mapId][] = $count[2];
-            }
-        }
-
+        //write to pdf
         $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_map', [], 'report'));
+    }
+
+    /**
+     * @param Report $report
+     * @param Filter $filter
+     * @param Issue[] $issues
+     */
+    private function addTableByCraftsman(Report $report, Filter $filter, array $issues)
+    {
+        /* @var Craftsman[] $orderedCraftsman */
+        /* @var Issue[][] $issuesPerCraftsman */
+        IssueHelper::issuesToOrderedCraftsman($issues, $orderedCraftsman, $issuesPerCraftsman);
+
+        //prepare header & content with specific content
+        $tableHeader = [$this->translator->trans('entity.name', [], 'entity_craftsman')];
+
+        //add map name & map context to table
+        foreach ($orderedCraftsman as $craftsmanId => $craftsman) {
+            $tableContent[$craftsmanId] = [$craftsman->getName()];
+        }
+
+        //add accumulated info
+        $this->addAggregatedIssuesInfo($filter, $orderedCraftsman, $issuesPerCraftsman, $tableContent, $tableHeader);
+
+        //write to pdf
+        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_craftsman', [], 'report'));
+    }
+
+    /**
+     * @param Report $report
+     * @param Filter $filter
+     * @param Issue[] $issues
+     */
+    private function addTableByTrade(Report $report, Filter $filter, array $issues)
+    {
+        /* @var string[] $orderedTrade */
+        /* @var Issue[][] $issuesPerTrade */
+        IssueHelper::issuesToOrderedTrade($issues, $orderedTrade, $issuesPerTrade);
+
+        //prepare header & content with specific content
+        $tableHeader = [$this->translator->trans('trade', [], 'entity_craftsman')];
+
+        //add map name & map context to table
+        foreach ($orderedTrade as $trade) {
+            $tableContent[$trade] = [$trade];
+        }
+
+        //add accumulated info
+        $this->addAggregatedIssuesInfo($filter, $orderedTrade, $issuesPerTrade, $tableContent, $tableHeader);
+
+        //write to pdf
+        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_trade', [], 'report'));
     }
 
     /**

@@ -38,6 +38,13 @@ class LoadIssueData extends BaseFixture
     const REVIEW_SET = 4;
 
     /**
+     * @var array to generate random positions/scales; length 11/7/5 which are all prime
+     */
+    private $xOrientationArray = [0.12, 0.26, 0.31, 0.36, 0.45, 0.56, 0.57, 0.63, 0.74, 0.79, 0.85];
+    private $yOrientationArray = [0.21, 0.34, 0.45, 0.51, 0.67, 0.79, 0.89];
+    private $scaleArray = [0.2, 0.6, 0.78, 0.89, 1];
+
+    /**
      * Load data fixtures with the passed EntityManager.
      *
      * @param ObjectManager $manager
@@ -48,9 +55,29 @@ class LoadIssueData extends BaseFixture
     {
         $json = file_get_contents(__DIR__ . '/Resources/issues.json');
 
-        $getFreshIssueSet = function () use ($json) {
+        $getFreshIssueSet = function ($counter) use ($json) {
             /** @var Issue[] $issues */
             $issues = $this->serializer->deserialize($json, Issue::class . '[]', 'json');
+
+            //permute
+            shuffle($issues);
+
+            //set random positions
+            foreach ($issues as $issue) {
+                if ($counter % 4 > 0) {
+                    // each 4th issue has an optional position
+                    $x = $this->xOrientationArray[$counter % count($this->xOrientationArray)];
+                    $y = $this->yOrientationArray[$counter % count($this->yOrientationArray)];
+                    if ($counter % 3 === 0) {
+                        $issue->setPositionX($y);
+                        $issue->setPositionY($x);
+                    } else {
+                        $issue->setPositionX($x);
+                        $issue->setPositionY($y);
+                    }
+                    $issue->setPositionZoomScale($this->scaleArray[$counter % count($this->scaleArray)]);
+                }
+            }
 
             return $issues;
         };
@@ -59,11 +86,11 @@ class LoadIssueData extends BaseFixture
         $constructionSites = $manager->getRepository(ConstructionSite::class)->findAll();
         foreach ($constructionSites as $constructionSite) {
             for ($i = 0; $i < self::MULTIPLICATION_FACTOR; ++$i) {
-                $this->add($constructionSite, $manager, $getFreshIssueSet(), $issueNumber, 0);
-                $this->add($constructionSite, $manager, $getFreshIssueSet(), $issueNumber, self::REGISTRATION_SET);
-                $this->add($constructionSite, $manager, $getFreshIssueSet(), $issueNumber, self::REGISTRATION_SET | self::RESPONSE_SET);
-                $this->add($constructionSite, $manager, $getFreshIssueSet(), $issueNumber, self::REGISTRATION_SET | self::RESPONSE_SET | self::REVIEW_SET);
-                $this->add($constructionSite, $manager, $getFreshIssueSet(), $issueNumber, self::REGISTRATION_SET | self::REVIEW_SET);
+                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $issueNumber, 0);
+                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $issueNumber, self::REGISTRATION_SET);
+                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $issueNumber, self::REGISTRATION_SET | self::RESPONSE_SET);
+                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $issueNumber, self::REGISTRATION_SET | self::RESPONSE_SET | self::REVIEW_SET);
+                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $issueNumber, self::REGISTRATION_SET | self::REVIEW_SET);
             }
         }
         $manager->flush();
