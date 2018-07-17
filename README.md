@@ -17,6 +17,3 @@ It suggests the following workflow:
  - the craftsman receives the email, and sees all currently open issues with a special link
  - on the construction site, using the link he can respond to issues, or he had printed the issues in his office and contacts the manager after completion personally
  - the manager inspects the issues for which the craftsman already has responded and marks issues as completed which have been resolved
- 
-The application works with little navigation, it allows getting done all tasks of a specific kind on the same page.
-It is build for efficiency, but tries be visually pleasing, because a long time is spend daily within this application.
