@@ -11,8 +11,11 @@ export default {
             craftsman: "Handwerker",
             response_limit: "Limite",
             map: "Karte",
-            status: "Status"
+            status: "Status",
+            number: "Nummer"
         },
+        only_marked: "nur markierte",
+        only_over_limit: "nur mit überschrittener Limite",
         filter_by_description: "Beschreibung suchen...",
         filter: {
             later_than: "später als",

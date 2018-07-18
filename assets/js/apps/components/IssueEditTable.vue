@@ -1,99 +1,89 @@
 <template>
-    <div id="foyer">
-        <div v-if="isMounting">
-            <atom-spinner
-                    :animation-duration="1000"
-                    :size="60"
-                    :color="'#ff1d5e'"
-            />
-        </div>
-        <div v-else class="selectable-table">
-            <div class="filter-field">
-                <div class="form-group">
-                    <input class="form-control" id="filter" type="text" v-model="textFilter"
-                           :placeholder="$t('filter_by_description')"/>
-                </div>
+    <div class="selectable-table">
+        <div class="filter-field">
+            <div class="form-group">
+                <input class="form-control" id="filter" type="text" v-model="textFilter"
+                       :placeholder="$t('filter_by_description')"/>
             </div>
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <sortable-header @do-sort="sortBy('number')"
-                                     :sort-state="sortKey === 'number' ? sortOrders[sortKey] : 0">
-                        #
-                    </sortable-header>
-                    <sortable-header @do-sort="sortBy('isMarked')"
-                                     :sort-state="sortKey === 'isMarked' ? sortOrders[sortKey] : 0"/>
-                    <th></th>
-
-                    <sortable-header @do-sort="sortBy('description')"
-                                     :sort-state="sortKey === 'description' ? sortOrders[sortKey] : 0">
-                        {{ $t("issue.description")}}
-                    </sortable-header>
-
-                    <sortable-header @do-sort="sortBy('craftsmanId')"
-                                     :sort-state="sortKey === 'craftsmanId' ? sortOrders[sortKey] : 0">
-                        {{ $t("issue.craftsman")}}
-                    </sortable-header>
-
-                    <sortable-header @do-sort="sortBy('responseLimit')"
-                                     :sort-state="sortKey === 'responseLimit' ? sortOrders[sortKey] : 0">
-                        {{ $t("issue.response_limit")}}
-                    </sortable-header>
-
-                    <sortable-header @do-sort="sortBy('map')" :sort-state="sortKey === 'map' ? sortOrders[sortKey] : 0">
-                        {{ $t("issue.map")}}
-                    </sortable-header>
-
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-if="issues.length === 0">
-                    <td colspan="7">{{ $t("no_issues") }}</td>
-                </tr>
-                <tr v-for="issue in sortedIssues"
-                    @click.ctrl.exact="issueCtrlClicked(issue)"
-                    @click.exact="issueClicked(issue)"
-                    @click.shift.exact.prevent.stop="issueShiftClicked(issue)"
-                    class="selectable"
-                    v-bind:class="{ 'table-active': selectedIssues.indexOf(issue) >= 0 }">
-
-                    <td class="minimal-width">
-                        {{issue.number}}
-                    </td>
-                    <td class="minimal-width clickable" @click.prevent.stop="markIssue(issue)">
-                        <font-awesome-icon v-if="issue.isMarked" :icon="['fas', 'star']"/>
-                        <font-awesome-icon v-else :icon="['fal', 'star']"/>
-                    </td>
-                    <td class="minimal-width">
-                        <img class="lightbox-thumbnail" :src="issue.imageThumbnail">
-                    </td>
-                    <td>
-                        {{issue.description}}
-                    </td>
-                    <td>
-                        <craftsman-cell @edit-confirm="cellEditConfirm('craftsmanId', issue)"
-                                        @edit-abort="cellEditAbort('craftsmanId')"
-                                        @edit-start="cellEditStart('craftsmanId', issue)"
-                                        :issue="issue"
-                                        :craftsmen="craftsmen"
-                                        :edit-enabled="editIssue === issue && editEnabled.craftsmanId">
-                            <template slot="save-button-content">
-                                <span v-if="selectedIssues.length > 1">{{$t("edit.save_all")}}</span>
-                                <span v-else>{{$t("edit.save")}}</span>
-                            </template>
-                        </craftsman-cell>
-                    </td>
-                    <td>
-                        {{ formatLimitDateTime(issue.responseLimit)}}
-                    </td>
-                    <td>
-                        {{issue.map}}
-                    </td>
-                </tr>
-
-                </tbody>
-            </table>
         </div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <sortable-header @do-sort="sortBy('number')"
+                                 :sort-state="sortKey === 'number' ? sortOrders[sortKey] : 0">
+                    #
+                </sortable-header>
+                <sortable-header @do-sort="sortBy('isMarked')"
+                                 :sort-state="sortKey === 'isMarked' ? sortOrders[sortKey] : 0"/>
+                <th></th>
+
+                <sortable-header @do-sort="sortBy('description')"
+                                 :sort-state="sortKey === 'description' ? sortOrders[sortKey] : 0">
+                    {{ $t("issue.description")}}
+                </sortable-header>
+
+                <sortable-header @do-sort="sortBy('craftsmanId')"
+                                 :sort-state="sortKey === 'craftsmanId' ? sortOrders[sortKey] : 0">
+                    {{ $t("issue.craftsman")}}
+                </sortable-header>
+
+                <sortable-header @do-sort="sortBy('responseLimit')"
+                                 :sort-state="sortKey === 'responseLimit' ? sortOrders[sortKey] : 0">
+                    {{ $t("issue.response_limit")}}
+                </sortable-header>
+
+                <sortable-header @do-sort="sortBy('map')" :sort-state="sortKey === 'map' ? sortOrders[sortKey] : 0">
+                    {{ $t("issue.map")}}
+                </sortable-header>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-if="issues.length === 0">
+                <td colspan="7">{{ $t("no_issues") }}</td>
+            </tr>
+            <tr v-for="issue in sortedIssues"
+                @click.ctrl.exact="issueCtrlClicked(issue)"
+                @click.exact="issueClicked(issue)"
+                @click.shift.exact.prevent.stop="issueShiftClicked(issue)"
+                class="selectable"
+                v-bind:class="{ 'table-active': selectedIssues.indexOf(issue) >= 0 }">
+
+                <td class="minimal-width">
+                    {{issue.number}}
+                </td>
+                <td class="minimal-width clickable" @click.prevent.stop="markIssue(issue)">
+                    <font-awesome-icon v-if="issue.isMarked" :icon="['fas', 'star']"/>
+                    <font-awesome-icon v-else :icon="['fal', 'star']"/>
+                </td>
+                <td class="minimal-width">
+                    <img class="lightbox-thumbnail" :src="issue.imageThumbnail">
+                </td>
+                <td>
+                    {{issue.description}}
+                </td>
+                <td>
+                    <craftsman-cell @edit-confirm="cellEditConfirm('craftsmanId', issue)"
+                                    @edit-abort="cellEditAbort('craftsmanId')"
+                                    @edit-start="cellEditStart('craftsmanId', issue)"
+                                    :issue="issue"
+                                    :craftsmen="craftsmen"
+                                    :edit-enabled="editIssue === issue && editEnabled.craftsmanId">
+                        <template slot="save-button-content">
+                            <span v-if="selectedIssues.length > 1">{{$t("edit.save_all")}}</span>
+                            <span v-else>{{$t("edit.save")}}</span>
+                        </template>
+                    </craftsman-cell>
+                </td>
+                <td>
+                    {{ formatLimitDateTime(issue.responseLimit)}}
+                </td>
+                <td>
+                    {{issue.map}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
@@ -102,7 +92,6 @@
     import moment from "moment";
     import Datepicker from 'vuejs-datepicker';
     import {de} from 'vuejs-datepicker/dist/locale'
-    import {AtomSpinner} from 'epic-spinners'
     import notifications from '../mixins/Notifications'
     import CraftsmanCell from './CraftsmanCell'
     import SortableHeader from './SortableHeader'
@@ -122,10 +111,6 @@
             },
             issues: {
                 type: Array,
-                required: true
-            },
-            isMounting: {
-                type: Boolean,
                 required: true
             }
         },
@@ -156,7 +141,6 @@
         },
         components: {
             Datepicker,
-            AtomSpinner,
             CraftsmanCell,
             SortableHeader
         },

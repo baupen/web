@@ -3,22 +3,53 @@
         <div class="row">
             <div class="col-md-2">
                 <h2>{{$t("headers.search")}}</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <base-text-input v-model="filter.numberText">
+                            {{$t("issue.number")}}
+                        </base-text-input>
+                        <base-checkbox v-model="filter.onlyMarked">
+                            {{$t("only_marked")}}
+                        </base-checkbox>
+                        <base-checkbox v-model="filter.onlyOverLimit">
+                            {{$t("only_over_limit")}}
+                        </base-checkbox>
+                    </div>
+                </div>
 
                 <div class="vertical-spacer-big"></div>
                 <h2>{{$t("headers.filter")}}</h2>
                 <div class="card">
                     <div class="card-body">
-                        <status-filter :status-filter="filter.status" />
+                        <status-filter :filter="filter.status"/>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <atom-spinner v-if="isLoading"
+                                      :animation-duration="1000"
+                                      :size="60"
+                                      :color="'#ff1d5e'"
+                        />
+                        <craftsman-filter v-else :filter="filter.craftsman" :craftsmen="craftsmen"/>
                     </div>
                 </div>
             </div>
             <div class="col-md-8">
-                <issue-edit-table :is-mounting="isLoading"
-                                  :craftsmen="craftsmen"
-                                  :issues="filteredIssues">
-                </issue-edit-table>
+                <atom-spinner
+                        v-if="isLoading"
+                        :animation-duration="1000"
+                        :size="60"
+                        :color="'#ff1d5e'"
+                />
+                <div v-else>
+                    <issue-edit-table :craftsmen="craftsmen"
+                                      :issues="filteredIssues">
+                    </issue-edit-table>
+                </div>
             </div>
             <div class="col-md-2">
+
 
             </div>
 
@@ -31,7 +62,11 @@
     import moment from "moment";
     import IssueEditTable from "./components/IssueEditTable"
     import StatusFilter from "./components/StatusFilter"
+    import CraftsmanFilter from "./components/CraftsmanFilter"
+    import BaseTextInput from "./components/BaseTextInput"
+    import BaseCheckbox from "./components/BaseCheckbox"
     import {de} from 'vuejs-datepicker/dist/locale'
+    import {AtomSpinner} from 'epic-spinners'
 
     moment.locale('de');
 
@@ -46,6 +81,7 @@
                 issues: [],
                 isLoading: true,
                 craftsmen: [],
+                trade: [],
                 date_picker_locale: de,
                 filter: {
                     status: {
@@ -61,28 +97,57 @@
                             end: null
                         },
                         responded: {
-                            active: false,
+                            active: true,
                             value: true,
                             start: null,
                             end: null
                         },
                         reviewed: {
-                            active: false,
+                            active: true,
                             value: false,
                             start: null,
                             end: null
                         }
-                    }
+                    },
+                    craftsman: {
+                        enabled: false,
+                        craftsmen: []
+                    },
+                    trade: {
+                        enabled: false,
+                        trades: []
+                    },
+                    map: {
+                        enabled: false,
+                        maps: []
+                    },
+                    onlyMarked: false,
+                    onlyOverLimit: false,
+                    numberText: ""
                 }
             }
         },
         components: {
             IssueEditTable,
-            StatusFilter
+            StatusFilter,
+            CraftsmanFilter,
+            AtomSpinner,
+            BaseTextInput,
+            BaseCheckbox
         },
         computed: {
             filteredIssues: function () {
                 let res = this.issues;
+
+                const numberText = this.filter.numberText;
+                if (numberText.length > 0) {
+                    res = res.filter(i => i.number.startsWith(numberText));
+                }
+
+                if (this.filter.onlyMarked) {
+                    res = res.filter(i => i.isMarked === true);
+                }
+
                 const statusFilter = this.filter.status;
                 if (statusFilter.enabled) {
                     if (statusFilter.read.active) {
@@ -100,6 +165,29 @@
                     if (statusFilter.reviewed.active) {
                         res = this.filterStartEnd(res, statusFilter.reviewed.value, statusFilter.reviewed, "reviewedAt");
                     }
+                }
+
+                const craftsmanFilter = this.filter.craftsman;
+                if (craftsmanFilter.enabled) {
+                    const ids = craftsmanFilter.craftsmen.map(c => c.id);
+                    res = res.filter(i => ids.indexOf(i.craftsmanId) >= 0);
+                }
+
+                const mapFilter = this.filter.map;
+                if (mapFilter.enabled) {
+                    const ids = mapFilter.maps.map(c => c.id);
+                    res = res.filter(i => ids.indexOf(i.mapId) >= 0);
+                }
+
+                const tradeFilter = this.filter.trade;
+                if (tradeFilter.enabled) {
+                    const ids = this.craftsmen.filter(c => tradeFilter.trades.indexOf(c.trade) >= 0).map(c => c.id);
+                    res = res.filter(i => ids.indexOf(i.craftsmanId) >= 0);
+                }
+
+                if (this.filter.onlyOverLimit) {
+                    const today = (new Date()).toISOString();
+                    res = res.filter(i => i.responseLimit > today);
                 }
 
                 return res;

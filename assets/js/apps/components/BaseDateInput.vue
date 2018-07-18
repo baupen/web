@@ -24,7 +24,6 @@
         watch: {
             dateValue: function () {
                 //emit event to work as v-model
-                console.log("emmitting");
                 this.$emit('input', this.dateValue);
             }
         },
