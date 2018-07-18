@@ -21,6 +21,7 @@ export default {
         remove: "entfernen",
         error: "Es ist ein Fehler aufgetreten. Laden Sie die Seite neu, und versuchen Sie es erneut.",
         issues_cant_be_confirmed: 'Bitte geben Sie bei allen Pendenzen die Beschreibung und den Handwerker an',
-        craftsman_not_found: 'Handwerker nicht gefunden'
+        craftsman_not_found: 'Handwerker nicht gefunden',
+        save_all: "alle speichern"
     }
 }

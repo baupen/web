@@ -23,8 +23,8 @@
                         {{ $t("issue.description")}}
                     </sortable-header>
 
-                    <sortable-header @do-sort="sortBy('craftsman')"
-                                     :sort-state="sortKey === 'craftsman' ? sortOrders[sortKey] : 0">
+                    <sortable-header @do-sort="sortBy('craftsmanId')"
+                                     :sort-state="sortKey === 'craftsmanId' ? sortOrders[sortKey] : 0">
                         {{ $t("issue.craftsman")}}
                     </sortable-header>
 
@@ -61,12 +61,17 @@
                         {{issue.description}}
                     </td>
                     <td>
-                        <craftsman-cell @edit-confirm="cellEditConfirm"
-                                        @edit-abort="cellEditAbort"
-                                        @edit-start="cellEditStart(issue, 'craftsman')"
+                        <craftsman-cell @edit-confirm="cellEditConfirm('craftsmanId', issue)"
+                                        @edit-abort="cellEditAbort('craftsmanId')"
+                                        @edit-start="cellEditStart('craftsmanId', issue)"
                                         :issue="issue"
                                         :craftsmen="craftsmen"
-                                        :edit-enabled="editIssue === issue && editEnabled.craftsman"></craftsman-cell>
+                                        :edit-enabled="editIssue === issue && editEnabled.craftsmanId">
+                            <template slot="save-button-content">
+                                <span v-if="selectedIssues.length > 1">{{$t("save_all")}}</span>
+                                <span v-else>{{$t("save")}}</span>
+                            </template>
+                        </craftsman-cell>
                     </td>
                     <td>
                         {{ formatLimitDateTime(issue.responseLimit)}}
@@ -127,7 +132,7 @@
         mixins: [notifications],
         data: function () {
             const sortOrders = {};
-            ["number", "isMarked", "description", "craftsman", "responseLimit", "map"].forEach(e => sortOrders[e] = 1);
+            ["number", "isMarked", "description", "craftsmanId", "responseLimit", "map"].forEach(e => sortOrders[e] = 1);
             return {
                 datePickerLocale: de,
 
@@ -145,7 +150,7 @@
                 },
 
                 editEnabled: {
-                    craftsman: false
+                    craftsmanId: false
                 }
             }
         },
@@ -157,9 +162,13 @@
         },
         methods: {
             issueClicked: function (issue) {
+                console.log("issueClicked");
                 //reset selection
                 this.lastSelectedIssue = issue;
                 this.selectedIssues = [issue];
+
+                //reset edit
+                this.editIssue = null;
             },
             issueCtrlClicked: function (issue) {
                 if (this.selectedIssues.indexOf(issue) >= 0) {
@@ -187,22 +196,25 @@
                     this.selectedIssues = this.issues.slice(Math.min(index1, index2), Math.max(index1, index2) + 1);
                 }
             },
-            cellEditStart: function (issue, cell) {
+            cellEditStart: function (cell, issue) {
+                console.log("editStart");
                 //select issue if not done already
                 if (this.selectedIssues.indexOf(issue) === -1) {
-                    this.issueClicked();
+                    this.issueClicked(issue);
                 }
 
                 //enable edit
                 this.editEnabled[cell] = true;
                 this.editIssue = issue;
             },
-            cellEditConfirm: function () {
-
+            cellEditConfirm: function (cell, issue) {
+                this.selectedIssues.filter(i => i !== issue).forEach(i => i[cell] = issue[cell]);
+                this.cellEditAbort(cell);
             },
             cellEditAbort: function (cell) {
                 //disable edit
                 this.editEnabled[cell] = false;
+                this.editIssue = null;
             },
             formatLimitDateTime: function (value) {
                 if (value === null) {
@@ -235,7 +247,7 @@
                 }
                 if (sortKey) {
                     data = data.sort((a, b) => {
-                        if (sortKey === 'craftsman') {
+                        if (sortKey === 'craftsmanId') {
                             if (a.craftsmanId in this.craftsmanById) {
                                 a = this.craftsmanById[a.craftsmanId].trade + "_" + this.craftsmanById[a.craftsmanId].name
                             } else {

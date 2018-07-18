@@ -1,5 +1,5 @@
 <template>
-    <span v-if="editEnabled" class="form-group">
+    <span v-if="editEnabled" class="form-group" @click.exact.prevent.stop="">
         <select class="form-control form-control-sm"
                 v-model="selectedTrade"
                 @keyup.escape="$emit('edit-abort')"
@@ -16,10 +16,12 @@
                 {{ craftsman.name }}
             </option>
         </select>
-        <button class="btn btn-primary" @click="editConfirm">{{$t("save")}}</button>
+        <button class="btn btn-primary" @click="editConfirm">
+            <slot name="save-button-content"></slot>
+        </button>
         <button class="btn btn-outline-secondary" @click="$emit('edit-abort')">{{$t("abort")}}</button>
     </span>
-    <div v-else class="editable" @click="$emit('edit-start')">
+    <div v-else class="editable" @click.exact.prevent.stop="$emit('edit-start')">
         <span v-if="issue.craftsmanId === null">
             {{$t("no_craftsman_set")}}
         </span>
