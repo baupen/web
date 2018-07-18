@@ -34,6 +34,26 @@
                         <craftsman-filter v-else :filter="filter.craftsman" :craftsmen="craftsmen"/>
                     </div>
                 </div>
+                <div class="card">
+                    <div class="card-body">
+                        <atom-spinner v-if="isLoading"
+                                      :animation-duration="1000"
+                                      :size="60"
+                                      :color="'#ff1d5e'"
+                        />
+                        <trade-filter v-else :filter="filter.trade" :craftsmen="craftsmen"/>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <atom-spinner v-if="isLoading"
+                                      :animation-duration="1000"
+                                      :size="60"
+                                      :color="'#ff1d5e'"
+                        />
+                        <map-filter v-else :filter="filter.map" :maps="maps"/>
+                    </div>
+                </div>
             </div>
             <div class="col-md-8">
                 <atom-spinner
@@ -63,6 +83,8 @@
     import IssueEditTable from "./components/IssueEditTable"
     import StatusFilter from "./components/StatusFilter"
     import CraftsmanFilter from "./components/CraftsmanFilter"
+    import TradeFilter from "./components/TradeFilter"
+    import MapFilter from "./components/MapFilter"
     import BaseTextInput from "./components/BaseTextInput"
     import BaseCheckbox from "./components/BaseCheckbox"
     import {de} from 'vuejs-datepicker/dist/locale'
@@ -82,6 +104,7 @@
                 isLoading: true,
                 craftsmen: [],
                 trade: [],
+                maps: [],
                 date_picker_locale: de,
                 filter: {
                     status: {
@@ -131,6 +154,8 @@
             IssueEditTable,
             StatusFilter,
             CraftsmanFilter,
+            TradeFilter,
+            MapFilter,
             AtomSpinner,
             BaseTextInput,
             BaseCheckbox
@@ -246,6 +271,12 @@
                     "constructionSiteId": this.constructionSiteId
                 }).then((response) => {
                     this.craftsmen = response.data.craftsmen;
+                });
+
+                axios.post("/api/register/map/list", {
+                    "constructionSiteId": this.constructionSiteId
+                }).then((response) => {
+                    this.maps = response.data.maps;
                 });
             });
         },

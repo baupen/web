@@ -54,6 +54,11 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     private $isRead;
 
     /**
+     * @var string
+     */
+    private $mapId;
+
+    /**
      * @return string
      */
     public function getNumber(): string
@@ -179,5 +184,21 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     public function setIsRead(bool $isRead): void
     {
         $this->isRead = $isRead;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMapId(): string
+    {
+        return $this->mapId;
+    }
+
+    /**
+     * @param string $mapId
+     */
+    public function setMapId(string $mapId): void
+    {
+        $this->mapId = $mapId;
     }
 }

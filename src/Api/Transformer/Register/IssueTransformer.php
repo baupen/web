@@ -61,6 +61,7 @@ class IssueTransformer extends BatchTransformer
 
         $lastVisit = $entity->getCraftsman()->getLastOnlineVisit();
         $issue->setIsRead($lastVisit !== null && $lastVisit > $entity->getRegisteredAt());
+        $issue->setMapId($entity->getMap()->getId());
 
         return $issue;
     }

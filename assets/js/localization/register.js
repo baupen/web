@@ -12,7 +12,8 @@ export default {
             response_limit: "Limite",
             map: "Karte",
             status: "Status",
-            number: "Nummer"
+            number: "Nummer",
+            trade: "Handwerk"
         },
         only_marked: "nur markierte",
         only_over_limit: "nur mit überschrittener Limite",
