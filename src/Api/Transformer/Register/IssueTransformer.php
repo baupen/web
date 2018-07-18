@@ -59,6 +59,9 @@ class IssueTransformer extends BatchTransformer
             $issue->setReviewByName($entity->getReviewBy()->getName());
         }
 
+        $lastVisit = $entity->getCraftsman()->getLastOnlineVisit();
+        $issue->setIsRead($lastVisit !== null && $lastVisit > $entity->getRegisteredAt());
+
         return $issue;
     }
 }

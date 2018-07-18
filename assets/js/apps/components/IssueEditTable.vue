@@ -4,7 +4,7 @@
             <div class="filter-field">
                 <div class="form-group">
                     <input class="form-control" id="filter" type="text" v-model="textFilter"
-                           :placeholder="$t('filter')"/>
+                           :placeholder="$t('filter_by_description')"/>
                 </div>
             </div>
             <table class="table table-hover">
@@ -68,8 +68,8 @@
                                         :craftsmen="craftsmen"
                                         :edit-enabled="editIssue === issue && editEnabled.craftsmanId">
                             <template slot="save-button-content">
-                                <span v-if="selectedIssues.length > 1">{{$t("save_all")}}</span>
-                                <span v-else>{{$t("save")}}</span>
+                                <span v-if="selectedIssues.length > 1">{{$t("edit.save_all")}}</span>
+                                <span v-else>{{$t("edit.save")}}</span>
                             </template>
                         </craftsman-cell>
                     </td>
@@ -162,7 +162,6 @@
         },
         methods: {
             issueClicked: function (issue) {
-                console.log("issueClicked");
                 //reset selection
                 this.lastSelectedIssue = issue;
                 this.selectedIssues = [issue];
@@ -197,7 +196,6 @@
                 }
             },
             cellEditStart: function (cell, issue) {
-                console.log("editStart");
                 //select issue if not done already
                 if (this.selectedIssues.indexOf(issue) === -1) {
                     this.issueClicked(issue);
@@ -218,7 +216,7 @@
             },
             formatLimitDateTime: function (value) {
                 if (value === null) {
-                    return this.$t("limit_not_set");
+                    return this.$t("view.limit_not_set");
                 }
                 return moment(value).fromNow();
             },

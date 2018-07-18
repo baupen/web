@@ -41,6 +41,7 @@ class LoadCraftsmanData extends BaseFixture
     public function load(ObjectManager $manager)
     {
         $json = file_get_contents(__DIR__ . '/Resources/craftsmen.json');
+        $counter = 0;
 
         $constructionSites = $manager->getRepository(ConstructionSite::class)->findAll();
         foreach ($constructionSites as $constructionSite) {
@@ -50,6 +51,11 @@ class LoadCraftsmanData extends BaseFixture
                 $craftsman->setConstructionSite($constructionSite);
                 $craftsman->setEmail($craftsman->getEmail() . '.example.com');
                 $craftsman->setEmailIdentifier();
+                if ($counter++ % 3 === 0) {
+                    $craftsman->setLastOnlineVisit(new \DateTime());
+                    $craftsman->setLastEmailSent(new \DateTime());
+                }
+
                 $manager->persist($craftsman);
             }
         }

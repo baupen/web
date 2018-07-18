@@ -49,6 +49,11 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     private $reviewByName;
 
     /**
+     * @var bool
+     */
+    private $isRead;
+
+    /**
      * @return string
      */
     public function getNumber(): string
@@ -158,5 +163,21 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     public function setReviewByName(?string $reviewByName): void
     {
         $this->reviewByName = $reviewByName;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsRead(): bool
+    {
+        return $this->isRead;
+    }
+
+    /**
+     * @param bool $isRead
+     */
+    public function setIsRead(bool $isRead): void
+    {
+        $this->isRead = $isRead;
     }
 }
