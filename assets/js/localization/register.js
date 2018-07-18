@@ -15,6 +15,9 @@ export default {
         },
         filter_by_description: "Beschreibung suchen...",
         filter: {
+            later_than: "später als",
+            earlier_than: "früher als",
+            status_set: "status gesetzt",
             status: {
                 read: "gelesen",
                 registered: "registriert",

@@ -1,15 +1,16 @@
 <template>
-    <div class="custom-control custom-checkbox">
-        <input type="checkbox"
-               class="custom-control-input"
-               :id="id"
-               true-value="yes"
-               false-value="no"
-               v-model="checkboxValue">
-        <label class="custom-control-label" :for="id">
+    <div class="switch-wrapper">
+        <label class="col-form-label-sm" :for="id">
             <slot>
-
             </slot>
+        </label><br/>
+        <label class="switch">
+            <input type="checkbox"
+                   true-value="yes"
+                   false-value="no"
+                   v-model="checkboxValue"
+                   :id="id">
+            <span class="slider"></span>
         </label>
     </div>
 </template>
@@ -19,7 +20,7 @@
         props: {
             value: Boolean
         },
-        data: function() {
+        data: function () {
             return {
                 checkboxValue: 'no',
                 id: null
@@ -31,7 +32,7 @@
                 this.$emit('input', this.checkboxValue === 'yes');
             }
         },
-        mounted () {
+        mounted() {
             //get unique id of component for id attribute
             this.id = this._uid;
             this.checkboxValue = this.value ? 'yes' : 'no';

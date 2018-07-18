@@ -12,15 +12,31 @@
                         <base-checkbox v-model="filter.status.registered.active">
                             {{$t("filter.status.registered")}}
                         </base-checkbox>
+                        <div class="filter-property-wrapper" v-if="filter.status.registered.active">
+                            <filter-status :status="filter.status.registered" allow-value-choose="false" allow-date-choose="true"/>
+                        </div>
+
                         <base-checkbox v-model="filter.status.read.active">
                             {{$t("filter.status.read")}}
                         </base-checkbox>
+                        <div class="filter-property-wrapper" v-if="filter.status.read.active">
+                            <filter-status :status="filter.status.read" />
+                        </div>
+
+
                         <base-checkbox v-model="filter.status.responded.active">
                             {{$t("filter.status.responded")}}
                         </base-checkbox>
+                        <div class="filter-property-wrapper" v-if="filter.status.responded.active">
+                            <filter-status :status="filter.status.responded" allow-date-choose="true"/>
+                        </div>
+
                         <base-checkbox v-model="filter.status.reviewed.active">
                             {{$t("filter.status.reviewed")}}
                         </base-checkbox>
+                        <div class="filter-property-wrapper" v-if="filter.status.reviewed.active">
+                            <filter-status :status="filter.status.reviewed" allow-date-choose="true"/>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -43,6 +59,9 @@
     import moment from "moment";
     import IssueEditTable from "./components/IssueEditTable"
     import BaseCheckbox from "./components/BaseCheckbox"
+    import BaseDateInput from './components/BaseDateInput'
+    import BaseSliderCheckbox from "./components/BaseSliderCheckbox"
+    import FilterStatus from './components/FilterStatus'
     import {de} from 'vuejs-datepicker/dist/locale'
 
     moment.locale('de');
@@ -54,9 +73,11 @@
     export default {
         data: function () {
             return {
+                constructionSiteId: null,
                 issues: [],
                 isLoading: true,
                 craftsmen: [],
+                date_picker_locale: de,
                 filter: {
                     status: {
                         enabled: true,
@@ -87,7 +108,10 @@
         },
         components: {
             IssueEditTable,
-            BaseCheckbox
+            BaseCheckbox,
+            BaseSliderCheckbox,
+            BaseDateInput,
+            FilterStatus
         },
         computed: {
             filteredIssues: function () {
@@ -133,6 +157,8 @@
                     return issues.filter(i => i[property] >= start);
                 }
                 if (end !== null) {
+                    console.log(end);
+                    console.log(issues[0][property]);
                     return issues.filter(i => i[property] <= end);
                 }
                 return issues;
@@ -173,34 +199,15 @@
 </script>
 
 <style>
-    .filter-field {
-        max-width: 400px;
+    .filter-property-wrapper {
+        margin-bottom: 1em;
+        margin-top: 0.2em;
+        margin-left: 1.5rem;
+        padding: 0.5rem 1rem;
+        background-color: #efefef;
     }
 
-    .editable {
-        display: inline-block;
-        border: 1px solid rgba(0, 0, 0, 0)
-    }
-
-    .editable:hover {
-        border: 1px solid
-    }
-
-    .clickable {
-        cursor: pointer;
-    }
-
-    .file-upload-field > .form-control {
-        width: 100%;
-        padding: 1rem;
-        margin: 0.5rem 0;
-    }
-
-    input[type=checkbox] {
-        transform: scale(1.4);
-    }
-
-    .form-control-preselected {
-        padding: 0.5rem;
+    input[type=date].form-control-sm {
+        padding-right: 0;
     }
 </style>
