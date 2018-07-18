@@ -8,35 +8,7 @@
                 <h2>{{$t("headers.filter")}}</h2>
                 <div class="card">
                     <div class="card-body">
-                        <h4>{{$t("issue.status")}}</h4>
-                        <base-checkbox v-model="filter.status.registered.active">
-                            {{$t("filter.status.registered")}}
-                        </base-checkbox>
-                        <div class="filter-property-wrapper" v-if="filter.status.registered.active">
-                            <filter-status :status="filter.status.registered" allow-value-choose="false" allow-date-choose="true"/>
-                        </div>
-
-                        <base-checkbox v-model="filter.status.read.active">
-                            {{$t("filter.status.read")}}
-                        </base-checkbox>
-                        <div class="filter-property-wrapper" v-if="filter.status.read.active">
-                            <filter-status :status="filter.status.read" />
-                        </div>
-
-
-                        <base-checkbox v-model="filter.status.responded.active">
-                            {{$t("filter.status.responded")}}
-                        </base-checkbox>
-                        <div class="filter-property-wrapper" v-if="filter.status.responded.active">
-                            <filter-status :status="filter.status.responded" allow-date-choose="true"/>
-                        </div>
-
-                        <base-checkbox v-model="filter.status.reviewed.active">
-                            {{$t("filter.status.reviewed")}}
-                        </base-checkbox>
-                        <div class="filter-property-wrapper" v-if="filter.status.reviewed.active">
-                            <filter-status :status="filter.status.reviewed" allow-date-choose="true"/>
-                        </div>
+                        <status-filter :status-filter="filter.status" />
                     </div>
                 </div>
             </div>
@@ -58,10 +30,7 @@
     import axios from "axios"
     import moment from "moment";
     import IssueEditTable from "./components/IssueEditTable"
-    import BaseCheckbox from "./components/BaseCheckbox"
-    import BaseDateInput from './components/BaseDateInput'
-    import BaseSliderCheckbox from "./components/BaseSliderCheckbox"
-    import FilterStatus from './components/FilterStatus'
+    import StatusFilter from "./components/StatusFilter"
     import {de} from 'vuejs-datepicker/dist/locale'
 
     moment.locale('de');
@@ -87,6 +56,7 @@
                         },
                         registered: {
                             active: false,
+                            value: true,
                             start: null,
                             end: null
                         },
@@ -108,10 +78,7 @@
         },
         components: {
             IssueEditTable,
-            BaseCheckbox,
-            BaseSliderCheckbox,
-            BaseDateInput,
-            FilterStatus
+            StatusFilter
         },
         computed: {
             filteredIssues: function () {

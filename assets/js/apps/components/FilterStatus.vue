@@ -33,8 +33,16 @@
                 type: Object,
                 required: true,
             },
-            allowDateChoose: false,
-            allowValueChoose: true
+            allowDateChoose: {
+                type: Boolean,
+                required: false,
+                default: true
+            },
+            allowValueChoose: {
+                type: Boolean,
+                required: false,
+                default: true
+            }
         },
         components: {
             BaseSliderCheckbox,

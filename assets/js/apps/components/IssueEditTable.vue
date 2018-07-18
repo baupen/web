@@ -1,6 +1,13 @@
 <template>
     <div id="foyer">
-        <div v-if="issues.length > 0" class="selectable-table">
+        <div v-if="isMounting">
+            <atom-spinner
+                    :animation-duration="1000"
+                    :size="60"
+                    :color="'#ff1d5e'"
+            />
+        </div>
+        <div v-else class="selectable-table">
             <div class="filter-field">
                 <div class="form-group">
                     <input class="form-control" id="filter" type="text" v-model="textFilter"
@@ -40,6 +47,9 @@
                 </tr>
                 </thead>
                 <tbody>
+                <tr v-if="issues.length === 0">
+                    <td colspan="7">{{ $t("no_issues") }}</td>
+                </tr>
                 <tr v-for="issue in sortedIssues"
                     @click.ctrl.exact="issueCtrlClicked(issue)"
                     @click.exact="issueClicked(issue)"
@@ -83,16 +93,6 @@
 
                 </tbody>
             </table>
-        </div>
-        <div v-else-if="!isMounting">
-            <p>{{ $t("no_issues") }}</p>
-        </div>
-        <div v-else>
-            <atom-spinner
-                    :animation-duration="1000"
-                    :size="60"
-                    :color="'#ff1d5e'"
-            />
         </div>
     </div>
 </template>
