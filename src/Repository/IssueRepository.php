@@ -70,6 +70,16 @@ class IssueRepository extends EntityRepository
         };
         if ($filter->getRegistrationStatus() !== null) {
             $qb->andWhere('i.registeredAt ' . $statusToString($filter->getRegistrationStatus()));
+            if ($filter->getRespondedStatus()) {
+                if ($filter->getRegistrationStart() !== null) {
+                    $qb->andWhere('i.registeredAt >= :registration_end');
+                    $qb->setParameter(':responded_start', $filter->getRegistrationStart());
+                }
+                if ($filter->getRegistrationEnd() !== null) {
+                    $qb->andWhere('i.registeredAt <= :registration_end');
+                    $qb->setParameter(':registration_end', $filter->getRegistrationEnd());
+                }
+            }
         }
 
         if ($filter->getRespondedStatus() !== null) {
@@ -88,9 +98,25 @@ class IssueRepository extends EntityRepository
 
         if ($filter->getReviewedStatus() !== null) {
             $qb->andWhere('i.reviewedAt ' . $statusToString($filter->getReviewedStatus()));
+            if ($filter->getReviewedStatus()) {
+                if ($filter->getReviewedStart() !== null) {
+                    $qb->andWhere('i.reviewedAt >= :reviewed_start');
+                    $qb->setParameter(':reviewed_start', $filter->getReviewedStart());
+                }
+                if ($filter->getReviewedEnd() !== null) {
+                    $qb->andWhere('i.reviewedAt <= :reviewed_end');
+                    $qb->setParameter(':reviewed_end', $filter->getReviewedEnd());
+                }
+            }
         }
 
-        //more properties missing
+        if ($filter->getReadStatus() !== null) {
+            if ($filter->getReadStatus()) {
+                $qb->andWhere('i.registeredAt < c.lastOnlineVisit');
+            } else {
+                $qb->andWhere('i.registeredAt >= c.lastOnlineVisit');
+            }
+        }
 
         return $qb->getQuery()->getResult();
     }

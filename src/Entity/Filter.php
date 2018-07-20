@@ -75,6 +75,27 @@ class Filter extends BaseEntity
     private $registrationStatus = null;
 
     /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $registrationStart = null;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $registrationEnd = null;
+
+    /**
+     * @var bool|null
+     *
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $readStatus = null;
+
+    /**
      * @var bool|null
      *
      * @ORM\Column(type="boolean", nullable=true)
@@ -368,5 +389,53 @@ class Filter extends BaseEntity
     public function setLimitEnd(?\DateTime $limitEnd): void
     {
         $this->limitEnd = $limitEnd;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getRegistrationStart(): ?\DateTime
+    {
+        return $this->registrationStart;
+    }
+
+    /**
+     * @param \DateTime|null $registrationStart
+     */
+    public function setRegistrationStart(?\DateTime $registrationStart): void
+    {
+        $this->registrationStart = $registrationStart;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getRegistrationEnd(): ?\DateTime
+    {
+        return $this->registrationEnd;
+    }
+
+    /**
+     * @param \DateTime|null $registrationEnd
+     */
+    public function setRegistrationEnd(?\DateTime $registrationEnd): void
+    {
+        $this->registrationEnd = $registrationEnd;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getReadStatus(): ?bool
+    {
+        return $this->readStatus;
+    }
+
+    /**
+     * @param bool|null $readStatus
+     */
+    public function setReadStatus(?bool $readStatus): void
+    {
+        $this->readStatus = $readStatus;
     }
 }

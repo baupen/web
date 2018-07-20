@@ -76,19 +76,21 @@ class ImageService implements ImageServiceInterface
 
         //open image file
         $sourceImage = imagecreatefromjpeg($renderedMapPath);
+        $rotated = false;
 
         if ($forceLandscape) {
             $width = imagesx($sourceImage);
             $height = imagesy($sourceImage);
 
             if ($height > $width) {
+                $rotated = true;
                 $sourceImage = imagerotate($sourceImage, 90, 0);
             }
         }
 
         //draw the issues on the map
         foreach ($issues as $issue) {
-            $this->draw($issue, $sourceImage);
+            $this->draw($issue, $rotated, $sourceImage);
         }
 
         //write to disk & destroy
@@ -102,15 +104,22 @@ class ImageService implements ImageServiceInterface
      * @param Issue $issue
      * @param $image
      */
-    private function draw(Issue $issue, &$image)
+    private function draw(Issue $issue, bool $rotated, &$image)
     {
         //get sizes
         $xSize = imagesx($image);
         $ySize = imagesy($image);
 
         //target location
-        $yCoordinate = $issue->getPositionY() * $ySize;
-        $xCoordinate = $issue->getPositionX() * $xSize;
+        if ($rotated) {
+            $yCoordinate = $issue->getPositionX();
+            $xCoordinate = $issue->getPositionY();
+        } else {
+            $yCoordinate = $issue->getPositionY();
+            $xCoordinate = $issue->getPositionX();
+        }
+        $yCoordinate *= $ySize;
+        $xCoordinate *= $xSize;
 
         //colors sometime do not work and show up as black. just choose another color as close as possible to workaround
         if ($issue->getReviewedAt() !== null) {

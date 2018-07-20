@@ -323,6 +323,7 @@ class Report
             $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount), $startY);
             $currentWidth = $this->pdfSizes->getColumnWidth($currentColumn, $columnCount);
 
+            //draw cell content
             $this->pdfDocument->MultiCell($currentWidth, $maxContentHeight - $startY, $item, 0, 'L', $fill, 1);
 
             //if new page started; remove from old page and retry on new page
@@ -346,12 +347,16 @@ class Report
                     $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
                 }
                 $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $newHeight - $this->pdfSizes->getContentYStart(), '', 0, 0, '', true);
-
-                $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
-                $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
+                //draw line
                 $lineX = $this->pdfSizes->getContentYStart();
                 $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $lineX, $this->pdfSizes->getContentXEnd(), $lineX);
+
+                //set position to start new row
                 $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount) + $this->pdfSizes->getLineWidth(), $lineX);
+
+                //reset colors
+                $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
+                $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
 
                 return false;
             }
@@ -365,9 +370,11 @@ class Report
                 if ($fill) {
                     $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount), $maxContentHeight);
                     $this->pdfDocument->SetCellPadding(0);
-                    $this->pdfDocument->Cell($fullWidth, $diff - 2, '', 0, 0, '', $fill);
+                    $this->pdfDocument->Cell($fullWidth, $diff, '', 0, 0, '', $fill);
                     $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
                 }
+
+                //set position for new row
                 $this->pdfDocument->SetY($newMaxHeight);
                 $maxContentHeight += $diff;
             } else {
@@ -376,6 +383,8 @@ class Report
             ++$currentColumn;
             $fullWidth += $currentWidth;
         }
+
+        //draw finishing line & set position for new row
         $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $maxContentHeight, $this->pdfSizes->getContentXEnd(), $maxContentHeight);
         $this->pdfDocument->SetY($maxContentHeight + $this->pdfSizes->getLineWidth());
         ++$currentRow;
