@@ -152,6 +152,20 @@ class Filter extends BaseEntity
     private $limitEnd = null;
 
     /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $shareAccessLimit = null;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $numberText = null;
+
+    /**
      * @return string
      */
     public function getConstructionSite(): string
@@ -437,5 +451,37 @@ class Filter extends BaseEntity
     public function setReadStatus(?bool $readStatus): void
     {
         $this->readStatus = $readStatus;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getShareAccessLimit(): ?\DateTime
+    {
+        return $this->shareAccessLimit;
+    }
+
+    /**
+     * @param \DateTime|null $shareAccessLimit
+     */
+    public function setShareAccessLimit(?\DateTime $shareAccessLimit): void
+    {
+        $this->shareAccessLimit = $shareAccessLimit;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getNumberText(): ?string
+    {
+        return $this->numberText;
+    }
+
+    /**
+     * @param null|string $numberText
+     */
+    public function setNumberText(?string $numberText): void
+    {
+        $this->numberText = $numberText;
     }
 }

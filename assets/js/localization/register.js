@@ -54,6 +54,12 @@ export default {
                     table_by_trade: "nach Handwerk",
                     table_by_map: "nach Karte"
                 }
+            },
+            link: {
+                name: "Link",
+                with_limit: "Mit Ablaufdatum",
+                valid_till: "gültig bis",
+                generate: "erstellen"
             }
         }
     }

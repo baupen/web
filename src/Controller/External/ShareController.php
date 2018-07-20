@@ -13,6 +13,7 @@ namespace App\Controller\External;
 
 use App\Controller\Base\BaseDoctrineController;
 use App\Entity\Craftsman;
+use App\Entity\Filter;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -39,15 +40,12 @@ class ShareController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/f/{identifier}", name="external_share_filter")
-     *
-     * @param $identifier
+     * @Route("/f/{filter}", name="external_share_filter")
      */
-    public function shareFilterAction($identifier)
+    public function shareFilterAction(Filter $filter)
     {
-        $filter = $this->getDoctrine()->getRepository('App:Filter')->findOneBy(['id' => $identifier]);
-        if ($filter !== null) {
-            throw new \InvalidArgumentException('not implemented yet');
+        if ($filter->getShareAccessLimit() !== null && $filter->getShareAccessLimit() < new \DateTime()) {
+            throw new NotFoundHttpException();
         }
 
         throw new NotFoundHttpException();

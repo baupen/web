@@ -272,46 +272,52 @@ class Report
     {
         $this->setDefaults();
 
+        //print table header
         if ($tableTitle !== null) {
-            //table header
             $this->printH3($tableTitle, $this->pdfSizes->getContentXSize());
         }
-
-        //table needs to know where to start
-        $startY = $this->pdfDocument->GetY();
 
         //adapt font for table content
         $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
         $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
         $this->pdfDocument->SetFont(...$this->pdfDesign->getEmphasisFontFamily());
 
-        //go through header
-        $currentColumn = 0;
-        $columnCount = count($tableHead);
-        $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
+        //make header upper case
+        $row = [];
         foreach ($tableHead as $item) {
-            $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount), $startY);
-            $this->pdfDocument->MultiCell($this->pdfSizes->getColumnWidth($currentColumn, $columnCount), 0, $item, 0, 'L', true, 1);
-            ++$currentColumn;
+            //strtotupper does not know these letters
+            $manualReplace = ['ä' => 'Ä', 'ö' => 'Ö', 'ü' => 'Ü'];
+            foreach ($manualReplace as $search => $replace) {
+                $item = str_replace($search, $replace, $item);
+            }
+
+            $row[] = mb_strtoupper($item);
         }
 
+        //print header
+        $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
+        while (!$this->printRow($row, true, $this->pdfDesign->getLightBackground())) {
+        }
+
+        //print content
         $currentRow = 0;
         $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
         $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
         foreach ($tableContent as $row) {
-            while (!$this->printRow($currentRow, $currentColumn, $row)) {
+            while (!$this->printRow($row, $currentRow % 2 === 1, $this->pdfDesign->getLighterBackground())) {
                 //simply retry to print row if it did not work
             }
+            ++$currentRow;
         }
 
         //define start of next part
         $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
     }
 
-    private function printRow(&$currentRow, $columnCount, $row)
+    private function printRow($row, $fill, $fillBackground)
     {
         //alternative background colors
-        $fill = $currentRow % 2;
+        $columnCount = count($row);
 
         //put columns
         $maxContentHeight = 0;
@@ -344,7 +350,7 @@ class Report
 
                 //print over started row
                 if ($fill) {
-                    $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
+                    $this->pdfDocument->SetFillColor(...$fillBackground);
                 }
                 $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $newHeight - $this->pdfSizes->getContentYStart(), '', 0, 0, '', true);
                 //draw line
@@ -355,7 +361,7 @@ class Report
                 $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount) + $this->pdfSizes->getLineWidth(), $lineX);
 
                 //reset colors
-                $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
+                $this->pdfDocument->SetFillColor(...$fillBackground);
                 $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
 
                 return false;
@@ -387,7 +393,6 @@ class Report
         //draw finishing line & set position for new row
         $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $maxContentHeight, $this->pdfSizes->getContentXEnd(), $maxContentHeight);
         $this->pdfDocument->SetY($maxContentHeight + $this->pdfSizes->getLineWidth());
-        ++$currentRow;
 
         return true;
     }

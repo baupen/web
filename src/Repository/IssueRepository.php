@@ -118,6 +118,20 @@ class IssueRepository extends EntityRepository
             }
         }
 
-        return $qb->getQuery()->getResult();
+        /** @var Issue[] $issues */
+        $issues = $qb->getQuery()->getResult();
+        if ($filter->getNumberText() === null) {
+            return $issues;
+        }
+
+        //filter by issue number text
+        $res = [];
+        foreach ($issues as $issue) {
+            if (mb_strpos((string)$issue->getNumber(), $filter->getNumberText()) === 0) {
+                $res[] = $issue;
+            }
+        }
+
+        return $res;
     }
 }

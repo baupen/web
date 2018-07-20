@@ -72,6 +72,11 @@
                 <h2>{{$t("headers.export")}}</h2>
                 <div class="card">
                     <div class="card-body">
+                        <link-export :filter="filter"/>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
                         <pdf-export :filter="filter"/>
                     </div>
                 </div>
@@ -93,6 +98,7 @@
     import BaseTextInput from "./components/BaseTextInput"
     import BaseCheckbox from "./components/BaseCheckbox"
     import PdfExport from "./components/PdfExport"
+    import LinkExport from "./components/LinkExport"
     import {de} from 'vuejs-datepicker/dist/locale'
     import {AtomSpinner} from 'epic-spinners'
 
@@ -166,7 +172,8 @@
             AtomSpinner,
             BaseTextInput,
             BaseCheckbox,
-            PdfExport
+            PdfExport,
+            LinkExport
         },
         computed: {
             filteredIssues: function () {
