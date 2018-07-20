@@ -332,15 +332,15 @@ class ReportService implements ReportServiceInterface
             $row[] = ($issue->getResponseLimit() !== null) ? $issue->getResponseLimit()->format(DateTimeFormatter::DATE_FORMAT) : '';
 
             if ($showRegistered) {
-                $row[] = $issue->getRegisteredAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getRegistrationBy()->getName();
+                $row[] = $issue->getRegisteredAt() !== null ? $issue->getRegisteredAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getRegistrationBy()->getName() : '';
             }
 
             if ($showResponded) {
-                $row[] = $issue->getRespondedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getResponseBy()->getName();
+                $row[] = $issue->getRespondedAt() !== null ? $issue->getRespondedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getResponseBy()->getName() : '';
             }
 
             if ($showReviewed) {
-                $row[] = $issue->getReviewedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getReviewBy()->getName();
+                $row[] = $issue->getReviewedAt() !== null ? $issue->getReviewedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getReviewBy()->getName() : '';
             }
 
             $tableContent[] = $row;

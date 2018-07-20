@@ -69,7 +69,12 @@
                 </div>
             </div>
             <div class="col-md-2">
-
+                <h2>{{$t("headers.export")}}</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <pdf-export :filter="filter"/>
+                    </div>
+                </div>
 
             </div>
 
@@ -87,6 +92,7 @@
     import MapFilter from "./components/MapFilter"
     import BaseTextInput from "./components/BaseTextInput"
     import BaseCheckbox from "./components/BaseCheckbox"
+    import PdfExport from "./components/PdfExport"
     import {de} from 'vuejs-datepicker/dist/locale'
     import {AtomSpinner} from 'epic-spinners'
 
@@ -107,6 +113,7 @@
                 maps: [],
                 date_picker_locale: de,
                 filter: {
+                    constructionSiteId: null,
                     status: {
                         enabled: true,
                         read: {
@@ -158,7 +165,8 @@
             MapFilter,
             AtomSpinner,
             BaseTextInput,
-            BaseCheckbox
+            BaseCheckbox,
+            PdfExport
         },
         computed: {
             filteredIssues: function () {
@@ -259,6 +267,7 @@
             );
             axios.get("/api/configuration").then((response) => {
                 this.constructionSiteId = response.data.constructionSite.id;
+                this.filter.constructionSiteId = this.constructionSiteId;
 
                 axios.post("/api/register/issue/list", {
                     "constructionSiteId": this.constructionSiteId

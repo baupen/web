@@ -59,6 +59,11 @@ class PdfSizes
     private $gutterSize = 4;
 
     /**
+     * @var float
+     */
+    private $lineWidth = 0.2;
+
+    /**
      * the total width of the document.
      *
      * @return float
@@ -306,5 +311,13 @@ class PdfSizes
     public function getImagePadding(): float
     {
         return $this->getContentSpacerSmall() / 4;
+    }
+
+    /**
+     * @return float
+     */
+    public function getLineWidth(): float
+    {
+        return $this->lineWidth;
     }
 }

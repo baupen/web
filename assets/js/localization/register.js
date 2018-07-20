@@ -8,7 +8,7 @@ export default {
         },
         issue: {
             description: "Beschreibung",
-            craftsman: "Handwerker",
+            craftsman: "Firma",
             response_limit: "Limite",
             map: "Karte",
             status: "Status",
@@ -37,11 +37,24 @@ export default {
         view: {
             limit_not_set: "nicht gesetzt",
             no_craftsman_set: "noch nicht gesetzt",
-            craftsman_not_found: 'Handwerker nicht gefunden',
+            craftsman_not_found: 'Firma nicht gefunden',
         },
         messages: {
             general_error: "Es ist ein Fehler aufgetreten. Laden Sie die Seite neu, und versuchen Sie es erneut.",
             saved_changes: "Änderungen gespeichert."
+        },
+        export: {
+            pdf: {
+                name: "PDF",
+                with_images: "mit Fotos",
+                generate: "generieren",
+                tables: {
+                    name: "Zusammenfassungstabellen",
+                    table_by_craftsman: "nach Firma",
+                    table_by_trade: "nach Handwerk",
+                    table_by_map: "nach Karte"
+                }
+            }
         }
     }
 }
