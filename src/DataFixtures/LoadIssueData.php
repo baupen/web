@@ -114,7 +114,7 @@ class LoadIssueData extends BaseFixture
      */
     private function getRandomNumber()
     {
-        return (7 ** ($this->currentExponent++ % 11)) % 11;
+        return (7 ** ($this->currentExponent++ % 17)) % 17;
     }
 
     private $currentExponent = 7;
