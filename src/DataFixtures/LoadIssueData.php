@@ -40,8 +40,8 @@ class LoadIssueData extends BaseFixture
     /**
      * @var array to generate random positions/scales; length 11/7/5 which are all prime
      */
-    private $xOrientationArray = [0.12, 0.26, 0.31, 0.36, 0.45, 0.56, 0.57, 0.63, 0.74, 0.79, 0.85];
-    private $yOrientationArray = [0.21, 0.34, 0.45, 0.51, 0.67, 0.79, 0.89];
+    private $xOrientationArray = [0.12, 0.26, 0.31, 0.36, 0.45, 0.56, 0.57, 0.63, 0.74, 0.78, 0.85];
+    private $yOrientationArray = [0.21, 0.34, 0.44, 0.51, 0.67, 0.79, 0.89];
     private $scaleArray = [0.2, 0.6, 0.78, 0.89, 1];
 
     /**
@@ -77,6 +77,7 @@ class LoadIssueData extends BaseFixture
                     }
                     $issue->setPositionZoomScale($this->scaleArray[$counter % count($this->scaleArray)]);
                 }
+                ++$counter;
             }
 
             return $issues;

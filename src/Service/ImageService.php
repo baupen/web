@@ -90,7 +90,9 @@ class ImageService implements ImageServiceInterface
 
         //draw the issues on the map
         foreach ($issues as $issue) {
-            $this->draw($issue, $rotated, $sourceImage);
+            if ($issue->getPositionX() !== null) {
+                $this->draw($issue, $rotated, $sourceImage);
+            }
         }
 
         //write to disk & destroy
