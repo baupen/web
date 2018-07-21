@@ -36,6 +36,10 @@
                     {{ $t("issue.map")}}
                 </sortable-header>
 
+
+                <sortable-header @do-sort="sortBy('status')" :sort-state="sortKey === 'status' ? sortOrders[sortKey] : 0">
+                    {{ $t("issue.status")}}
+                </sortable-header>
             </tr>
             </thead>
             <tbody>
@@ -84,10 +88,10 @@
                 </td>
                 <td>
                     <response-limit-cell @edit-confirm="cellEditConfirm('responseLimit', issue)"
-                                    @edit-abort="cellEditAbort('responseLimit')"
-                                    @edit-start="cellEditStart('responseLimit', issue)"
-                                    :issue="issue"
-                                    :edit-enabled="editIssue === issue && editEnabled.responseLimit">
+                                         @edit-abort="cellEditAbort('responseLimit')"
+                                         @edit-start="cellEditStart('responseLimit', issue)"
+                                         :issue="issue"
+                                         :edit-enabled="editIssue === issue && editEnabled.responseLimit">
                         <template slot="save-button-content">
                             <save-button :multiple="selectedIssues.length > 1"/>
                         </template>
@@ -95,6 +99,17 @@
                 </td>
                 <td>
                     {{issue.map}}
+                </td>
+                <td>
+                    <status-cell @edit-confirm="cellEditConfirm('status', issue)"
+                                         @edit-abort="cellEditAbort('status')"
+                                         @edit-start="cellEditStart('status', issue)"
+                                         :issue="issue"
+                                         :edit-enabled="editIssue === issue && editEnabled.status">
+                        <template slot="save-button-content">
+                            <save-button :multiple="selectedIssues.length > 1"/>
+                        </template>
+                    </status-cell>
                 </td>
             </tr>
             </tbody>
@@ -108,6 +123,7 @@
     import ResponseLimitCell from './components/ResponseLimitCell'
     import SortableHeader from './components/SortableHeader'
     import SaveButton from './components/SaveButton'
+    import StatusCell from './components/StatusCell'
 
     Array.prototype.unique = function () {
         return Array.from(new Set(this));
@@ -126,7 +142,7 @@
         },
         data: function () {
             const sortOrders = {};
-            ["number", "isMarked", "description", "craftsmanId", "responseLimit", "map"].forEach(e => sortOrders[e] = 1);
+            ["number", "isMarked", "description", "craftsmanId", "responseLimit", "map", "status"].forEach(e => sortOrders[e] = 1);
             return {
                 sortKey: "number",
                 sortOrders: sortOrders,
@@ -144,7 +160,8 @@
                 editEnabled: {
                     craftsmanId: false,
                     description: false,
-                    responseLimit: false
+                    responseLimit: false,
+                    status: false
                 }
             }
         },
@@ -153,7 +170,8 @@
             CraftsmanCell,
             SortableHeader,
             SaveButton,
-            DescriptionCell
+            DescriptionCell,
+            StatusCell
         },
         methods: {
             issueClicked: function (issue) {
@@ -206,9 +224,11 @@
                 this.editIssue = issue;
             },
             cellEditConfirm: function (cell, issue) {
-                //set property to all selected cells & save
-                this.selectedIssues.filter(i => i !== issue).forEach(i => i[cell] = issue[cell]);
-                this.$emit('update-issues', this.selectedIssues);
+                if (cell !== "status") {
+                    //set property to all selected cells & save
+                    this.selectedIssues.filter(i => i !== issue).forEach(i => i[cell] = issue[cell]);
+                    this.$emit('update-issues', this.selectedIssues);
+                }
 
                 this.cellEditAbort(cell);
             },

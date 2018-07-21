@@ -1,6 +1,7 @@
 <template>
     <span v-if="editEnabled" class="form-group" @click.exact.prevent.stop="">
-        <date-picker :lang="datePickerTranslation" format="dd.MM.yyyy" ref="responseLimit" @keyup.enter="editConfirm" @keyup.esc="$emit('edit-abort')" v-model="responseLimit" class="form-control form-control-sm" />
+        <date-picker :lang="datePickerTranslation" format="dd.MM.yyyy" ref="responseLimit" @keyup.enter="editConfirm"
+                     @keyup.esc="$emit('edit-abort')" v-model="responseLimit" class="form-control form-control-sm"/>
         <button class="btn btn-primary" @click="editConfirm">
             <slot name="save-button-content"></slot>
         </button>
@@ -17,6 +18,7 @@
 <script>
     import moment from "moment";
     import DatePicker from 'vuejs-datepicker';
+
     const locale = require('vuejs-datepicker/dist/locale');
 
     const lang = document.documentElement.lang.substr(0, 2);
