@@ -27,6 +27,7 @@ use App\Api\Transformer\Foyer\UpdateIssueTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
+use App\Entity\Filter;
 use App\Entity\Issue;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -63,12 +64,18 @@ class FoyerController extends ApiController
         }
 
         //retrieve all issues from the db
+        $filter = new Filter();
+        $filter->setRegistrationStatus(false);
+        $filter->setConstructionSite($constructionSite->getId());
+        $filter->setIssues($parsedRequest->getIssueIds());
+
         /** @var Issue[] $requestedIssues */
         /** @var \App\Api\Entity\Foyer\Issue[] $issues */
-        $issueRepo = $this->getDoctrine()->getRepository(Issue::class);
-        $requestedIssues = $issueRepo->findBy(['id' => $parsedRequest->getIssueIds(), 'registeredAt' => null, 'map' => $constructionSite->getMapIds()]);
-        $issues = array_flip($parsedRequest->getIssueIds());
+        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
+        dump('afte rquery. ' . count($requestedIssues));
 
+        //order as requested
+        $issues = array_flip($parsedRequest->getIssueIds());
         $this->orderEntities($requestedIssues, $issues, $entities);
 
         return true;
@@ -98,7 +105,12 @@ class FoyerController extends ApiController
         }
 
         //retrieve all issues from the db
-        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['id' => array_keys($issues), 'registeredAt' => null, 'map' => $constructionSite->getMapIds()]);
+        $filter = new Filter();
+        $filter->setRegistrationStatus(false);
+        $filter->setConstructionSite($constructionSite->getId());
+        $filter->setIssues(array_keys($issues));
+
+        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
         $this->orderEntities($requestedIssues, $issues, $entities);
 
         return true;
@@ -185,7 +197,12 @@ class FoyerController extends ApiController
             return $errorResponse;
         }
 
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['registeredAt' => null, 'map' => $constructionSite->getMapIds()], ['isMarked' => 'DESC', 'uploadedAt' => 'DESC']);
+        $filter = new Filter();
+        $filter->setRegistrationStatus(false);
+        $filter->setConstructionSite($constructionSite->getId());
+        $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
+
+        dump(count($issues));
 
         //create response
         $data = new IssuesData();

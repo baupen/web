@@ -68,6 +68,13 @@ class Filter extends BaseEntity
     private $maps = null;
 
     /**
+     * @var string[]|null
+     *
+     * @ORM\Column(type="simple_array", nullable=true)
+     */
+    private $issues = null;
+
+    /**
      * @var bool|null
      *
      * @ORM\Column(type="boolean", nullable=true)
@@ -483,5 +490,21 @@ class Filter extends BaseEntity
     public function setNumberText(?string $numberText): void
     {
         $this->numberText = $numberText;
+    }
+
+    /**
+     * @return null|string[]
+     */
+    public function getIssues(): ?array
+    {
+        return $this->issues;
+    }
+
+    /**
+     * @param null|string[] $issues
+     */
+    public function setIssues(?array $issues): void
+    {
+        $this->issues = $issues;
     }
 }

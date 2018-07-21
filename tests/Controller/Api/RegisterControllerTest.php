@@ -134,7 +134,7 @@ class RegisterControllerTest extends ApiController
             $issue->setDescription("hello world");
             $issues[] = $issue;
         }
-        $request = new \App\Api\Request\Foyer\UpdateIssuesRequest();
+        $request = new \App\Api\Request\Register\UpdateIssuesRequest();
         $request->setUpdateIssues($issues);
         $request->setConstructionSiteId($this->getSomeConstructionSite()->getId());
 
@@ -151,6 +151,38 @@ class RegisterControllerTest extends ApiController
             $this->assertEquals(false, $issue->isMarked);
             $this->assertEquals("hello world", $issue->description);
             $this->assertEquals($craftsman->getId(), $issue->craftsmanId);
+        }
+    }
+
+
+    public function testIssueStatus()
+    {
+        $url = '/api/register/issue/status';
+
+        $issuesIds = [];
+        foreach ($this->getIssues()->data->issues as $apiIssue) {
+            $issuesIds[] = $apiIssue->id;
+        }
+        $request = new \App\Api\Request\Register\SetStatusRequest();
+        $request->setIssueIds($issuesIds);
+        $request->setRespondedStatusSet(true);
+        $request->setReviewedStatusSet(false);
+        $request->setConstructionSiteId($this->getSomeConstructionSite()->getId());
+
+        $response = $this->authenticatedPostRequest($url, $request);
+        $issuesData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($issuesData->data);
+        $this->assertNotNull($issuesData->data->issues);
+
+        $this->assertTrue(is_array($issuesData->data->issues));
+        $this->assertSameSize($issuesIds, $issuesData->data->issues);
+        foreach ($issuesData->data->issues as $issue) {
+            $this->assertNotNull($issue);
+            $this->assertNotNull($issue->respondedAt);
+            $this->assertNotNull($issue->responseByName);
+            $this->assertNull($issue->reviewedAt);
+            $this->assertNull($issue->reviewByName);
         }
     }
 }

@@ -12,6 +12,8 @@
 namespace App\Controller\Api;
 
 use App\Api\Request\ConstructionSiteRequest;
+use App\Api\Request\IssuesRequest;
+use App\Api\Request\Register\SetStatusRequest;
 use App\Api\Response\Data\CraftsmenData;
 use App\Api\Response\Data\IssuesData;
 use App\Api\Response\Data\MapsData;
@@ -45,6 +47,60 @@ class RegisterController extends ApiController
 
     /**
      * @param Request $request
+     * @param $entities
+     * @param $errorResponse
+     * @param $constructionSite
+     * @param $parsedRequest
+     * @param string $class
+     *
+     * @return bool
+     */
+    private function parseIssuesRequest(Request $request, &$entities, &$errorResponse, &$constructionSite, &$parsedRequest, $class = IssuesRequest::class)
+    {
+        /** @var IssuesRequest $parsedRequest */
+        /** @var ConstructionSite $constructionSite */
+        if (!parent::parseConstructionSiteRequest($request, $class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return false;
+        }
+
+        //retrieve all issues from the db
+        $filter = new Filter();
+        $filter->setRegistrationStatus(true);
+        $filter->setConstructionSite($constructionSite->getId());
+        $filter->setIssues($parsedRequest->getIssueIds());
+
+        /** @var Issue[] $requestedIssues */
+        /** @var \App\Api\Entity\Foyer\Issue[] $issues */
+        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
+        $issues = array_flip($parsedRequest->getIssueIds());
+
+        $this->orderEntities($requestedIssues, $issues, $entities);
+
+        return true;
+    }
+
+    /**
+     * @param Request $request
+     * @param $entities
+     * @param $errorResponse
+     * @param $constructionSite
+     * @param $parsedRequest
+     *
+     * @return bool
+     */
+    private function parseSetStatusRequest(Request $request, &$entities, &$errorResponse, &$constructionSite, &$parsedRequest)
+    {
+        /** @var IssuesRequest $parsedRequest */
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseIssuesRequest($request, $entities, $errorResponse, $constructionSite, $parsedRequest, SetStatusRequest::class)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Request $request
      * @param $issues
      * @param $entities
      * @param $errorResponse
@@ -67,7 +123,12 @@ class RegisterController extends ApiController
         }
 
         //retrieve all issues from the db
-        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['id' => array_keys($issues), 'map' => $constructionSite->getMapIds()]);
+        $filter = new Filter();
+        $filter->setRegistrationStatus(true);
+        $filter->setConstructionSite($constructionSite->getId());
+        $filter->setIssues(array_keys($issues));
+
+        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
         $this->orderEntities($requestedIssues, $issues, $entities);
 
         return true;
@@ -252,6 +313,66 @@ class RegisterController extends ApiController
                 if ($res !== true) {
                     /* @var Response $res */
                     return $res;
+                }
+            }
+        }
+
+        $this->fastSave(...array_values($entities));
+
+        //create response
+        $data = new IssuesData();
+        $data->setIssues($issueTransformer->toApiMultiple($entities));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/issue/status", name="api_register_issue_status", methods={"POST"})
+     *
+     * @param Request $request
+     * @param IssueTransformer $issueTransformer
+     *
+     * @return Response
+     */
+    public function issueStatusAction(Request $request, IssueTransformer $issueTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var Issue[] $entities */
+        /** @var SetStatusRequest $parsedRequest */
+        if (!$this->parseSetStatusRequest($request, $entities, $errorResponse, $constructionSite, $parsedRequest)) {
+            return $errorResponse;
+        }
+
+        //correct responded status
+        if ($parsedRequest->isRespondedStatusSet()) {
+            foreach ($entities as $entity) {
+                if ($entity->getRespondedAt() === null) {
+                    $entity->setRespondedAt(new \DateTime());
+                    $entity->setResponseBy($entity->getCraftsman());
+                }
+            }
+        } else {
+            foreach ($entities as $entity) {
+                if ($entity->getRespondedAt() !== null) {
+                    $entity->setRespondedAt(null);
+                    $entity->setResponseBy(null);
+                }
+            }
+        }
+
+        //correct reviewed status
+        if ($parsedRequest->isReviewedStatusSet()) {
+            foreach ($entities as $entity) {
+                if ($entity->getReviewedAt() === null) {
+                    $entity->setReviewedAt(new \DateTime());
+                    $entity->setReviewBy($this->getUser());
+                }
+            }
+        } else {
+            foreach ($entities as $entity) {
+                if ($entity->getReviewedAt() !== null) {
+                    $entity->setReviewedAt(null);
+                    $entity->setReviewBy(null);
                 }
             }
         }

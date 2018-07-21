@@ -47,8 +47,8 @@ class IssueRepository extends EntityRepository
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('i')->from(Issue::class, 'i');
+        $qb->leftJoin('i.craftsman', 'c');
         $qb->join('i.map', 'm');
-        $qb->join('i.craftsman', 'c');
         $qb->join('m.constructionSite', 'cs');
         $qb->where('cs.id = :constructionSite');
         $qb->setParameter(':constructionSite', $filter->getConstructionSite());
@@ -63,6 +63,11 @@ class IssueRepository extends EntityRepository
         if ($filter->getMaps() !== null) {
             $qb->andWhere('m.id IN (:maps)');
             $qb->setParameter(':maps', $filter->getMaps());
+        }
+
+        if ($filter->getIssues() !== null) {
+            $qb->andWhere('i.id IN (:issues)');
+            $qb->setParameter(':issues', $filter->getIssues());
         }
 
         $statusToString = function ($condition) {
