@@ -100,7 +100,7 @@
                 <td>
                     {{issue.map}}
                 </td>
-                <td>
+                <td class="minimal-width status-column">
                     <status-cell @edit-confirm="cellEditConfirm('status', issue)"
                                          @edit-abort="cellEditAbort('status')"
                                          @edit-start="cellEditStart('status', issue)"
@@ -261,6 +261,9 @@
                     data = data.filter(issues => issues.description.toLowerCase().indexOf(filterKey) > -1);
                 }
                 if (sortKey) {
+                    const statusScore = function (issue) {
+                        return 1*issue.isRead + (2*(issue.respondedAt !== null)) + (4*(issue.reviewedAt !== null));
+                    };
                     data = data.sort((a, b) => {
                         if (sortKey === 'craftsmanId') {
                             if (a.craftsmanId in this.craftsmanById) {
@@ -276,6 +279,9 @@
                         } else if (sortKey === 'number') {
                             a = Number(a[sortKey]);
                             b = Number(b[sortKey]);
+                        } else if (sortKey === 'status') {
+                            a = statusScore(a);
+                            b = statusScore(b);
                         } else {
                             a = a[sortKey];
                             b = b[sortKey];
@@ -311,5 +317,9 @@
 
     input[type=checkbox] {
         transform: scale(1.4);
+    }
+
+    .status-column {
+        min-width: 12em;
     }
 </style>

@@ -11,10 +11,10 @@
         </button>
         <button class="btn btn-outline-secondary" @click="$emit('edit-abort')">{{$t("actions.abort")}}</button>
     </div>
-    <div v-else class="editable hoverable" @click.exact.prevent.stop="$emit('edit-start')" @mouseover="hover = true"
+    <div v-else class="hoverable" @mouseover="hover = true"
          @mouseleave="hover = false">
         <div class="tooltip-wrapper">
-            <div class="tooltip bs-tooltip-top progressbar-tooltip" :class="{'show': hover}">
+            <div class="tooltip bs-tooltip-top progressbar-tooltip" :class="{'show': hover && !expanded}">
                 <div class="tooltip-inner">
                     <span v-if="issue.reviewedAt !== null">{{$t("issue.status_values.reviewed")}}</span>
                     <span v-else-if="issue.respondedAt !== null">{{$t("issue.status_values.responded")}}</span>
@@ -23,11 +23,36 @@
                 </div>
             </div>
         </div>
-        <ul class="progressbar">
-            <li :class="{'active': issue.isRead || issue.respondedAt !== null }"></li>
-            <li :class="{'active': issue.respondedAt !== null}"></li>
+        <ul class="progressbar editable" @click.exact.prevent.stop="$emit('edit-start')">
+            <li :class="{'active': issue.isRead || issue.respondedAt !== null || issue.reviewedAt !== null }"></li>
+            <li :class="{'active': issue.respondedAt !== null || issue.reviewedAt !== null}"></li>
             <li :class="{'active': issue.reviewedAt !== null}"></li>
         </ul>
+        <br/>
+        <a href="#" v-if="!expanded" @click.prevent="expanded = true">{{ $t("view.more") }}</a>
+        <a href="#" v-if="expanded" @click.prevent="expanded = false">{{ $t("view.less") }}</a>
+        <div v-if="expanded">
+            <span v-if="issue.registrationAt !== null">
+                <b>{{$t("issue.status_values.registered")}}</b>
+                {{ formatDateTime(issue.registrationAt) }},
+                {{ issue.registrationByName }}
+                <br/>
+            </span>
+
+            <span v-if="issue.respondedAt !== null">
+                <b>{{$t("issue.status_values.responded")}}</b>
+                {{ formatDateTime(issue.respondedAt) }},
+                {{ issue.responseByName }}
+                <br/>
+            </span>
+
+            <span v-if="issue.reviewedAt !== null">
+                <b>{{$t("issue.status_values.reviewed")}}</b>
+                {{ formatDateTime(issue.reviewedAt) }},
+                {{ issue.reviewByName }}
+                <br/>
+            </span>
+        </div>
     </div>
 </template>
 
@@ -70,7 +95,8 @@
             return {
                 respondedStatusSet: false,
                 reviewedStatusSet: false,
-                hover: false
+                hover: false,
+                expanded: false
             }
         },
         methods: {
@@ -80,8 +106,11 @@
                     this.$emit('edit-confirm', this.respondedStatusSet, this.reviewedStatusSet);
                 }
             },
-            mouseOver: function () {
-                this.hover = !this.hover;
+            formatDateTime: function (dateTime) {
+                if (dateTime === null) {
+                    return "-";
+                }
+                return moment(dateTime).fromNow();
             }
         },
         computed: {
@@ -89,8 +118,8 @@
                 if (this.issue.responseLimit === null) {
                     return this.$t("issue.no_response_limit");
                 }
-                return moment(this.issue.responseLimit).fromNow();
-            },
+                return this.formatDateTime(this.issue.responseLimit);
+            }
         },
         watch: {
             editEnabled: function () {
