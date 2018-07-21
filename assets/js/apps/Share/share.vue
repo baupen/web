@@ -6,12 +6,7 @@
                 :description="description"
         />
 
-        <div v-if="lightbox.enabled" class="lightbox" @click="closeLightbox()">
-            <div class="lightbox-content">
-                <img :src="lightbox.imageFull"/>
-            </div>
-            <font-awesome-icon class="lightbox-close" :icon="['fal', 'times']"/>
-        </div>
+        <lightbox :open="lightbox.enabled" :imageSrc="lightbox.imageFull" @close="lightbox.enabled = false" />
 
         <section class="public-wrapper">
             <div class="row">
@@ -105,6 +100,7 @@
 <script>
     import axios from "axios"
     import moment from "moment";
+    import Lightbox from '../components/Lightbox'
 
     moment.locale('de');
 
@@ -121,6 +117,9 @@
                     imageFull: null
                 }
             }
+        },
+        components: {
+            Lightbox
         },
         methods: {
             scrollTo: function (ref) {

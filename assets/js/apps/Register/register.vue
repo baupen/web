@@ -278,7 +278,7 @@
                     respondedStatusSet,
                     reviewedStatusSet
                 }).then((response) => {
-                    this.writeProperties(response.data.issues)
+                    this.writeProperties(response.data.issues);
                     this.displayInfoFlash(this.$t("messages.success.saved_changes"));
                 });
             },
