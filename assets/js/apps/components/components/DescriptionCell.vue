@@ -1,6 +1,6 @@
 <template>
     <span v-if="editEnabled" class="form-group" @click.exact.prevent.stop="">
-        <input type="text" ref="description" @keyup.enter="editConfirm" @keyup.esc="$emit('edit-abort')" v-model="text" class="form-control form-control-sm" />
+        <input type="text" ref="description" @keyup.enter="editConfirm" @keyup.esc="$emit('edit-abort')" v-model="description" class="form-control form-control-sm" />
         <button class="btn btn-primary" @click="editConfirm">
             <slot name="save-button-content"></slot>
         </button>
@@ -28,12 +28,12 @@
         },
         data: function () {
             return {
-                text: null
+                description: null
             }
         },
         methods: {
             editConfirm: function () {
-                this.issue.description = this.text;
+                this.issue.description = this.description;
                 this.$emit('edit-confirm');
             }
         },
@@ -44,7 +44,7 @@
                     return;
                 }
 
-                this.text = this.issue.description;
+                this.description = this.issue.description;
 
                 //focus input on next tick
                 this.$nextTick(() => {

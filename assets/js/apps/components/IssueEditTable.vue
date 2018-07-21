@@ -64,7 +64,6 @@
                                       @edit-abort="cellEditAbort('description')"
                                       @edit-start="cellEditStart('description', issue)"
                                       :issue="issue"
-                                      :craftsmen="craftsmen"
                                       :edit-enabled="editIssue === issue && editEnabled.description">
                         <template slot="save-button-content">
                             <save-button :multiple="selectedIssues.length > 1"/>
@@ -84,7 +83,15 @@
                     </craftsman-cell>
                 </td>
                 <td>
-                    {{ formatLimitDateTime(issue.responseLimit)}}
+                    <response-limit-cell @edit-confirm="cellEditConfirm('responseLimit', issue)"
+                                    @edit-abort="cellEditAbort('responseLimit')"
+                                    @edit-start="cellEditStart('responseLimit', issue)"
+                                    :issue="issue"
+                                    :edit-enabled="editIssue === issue && editEnabled.responseLimit">
+                        <template slot="save-button-content">
+                            <save-button :multiple="selectedIssues.length > 1"/>
+                        </template>
+                    </response-limit-cell>
                 </td>
                 <td>
                     {{issue.map}}
@@ -96,16 +103,11 @@
 </template>
 
 <script>
-    import moment from "moment";
-    import Datepicker from 'vuejs-datepicker';
-    import {de} from 'vuejs-datepicker/dist/locale'
     import CraftsmanCell from './components/CraftsmanCell'
     import DescriptionCell from './components/DescriptionCell'
+    import ResponseLimitCell from './components/ResponseLimitCell'
     import SortableHeader from './components/SortableHeader'
     import SaveButton from './components/SaveButton'
-
-
-    moment.locale('de');
 
     Array.prototype.unique = function () {
         return Array.from(new Set(this));
@@ -126,8 +128,6 @@
             const sortOrders = {};
             ["number", "isMarked", "description", "craftsmanId", "responseLimit", "map"].forEach(e => sortOrders[e] = 1);
             return {
-                datePickerLocale: de,
-
                 sortKey: "number",
                 sortOrders: sortOrders,
                 textFilter: null,
@@ -143,12 +143,13 @@
 
                 editEnabled: {
                     craftsmanId: false,
-                    description: false
+                    description: false,
+                    responseLimit: false
                 }
             }
         },
         components: {
-            Datepicker,
+            ResponseLimitCell,
             CraftsmanCell,
             SortableHeader,
             SaveButton,
@@ -215,12 +216,6 @@
                 //disable edit
                 this.editEnabled[cell] = false;
                 this.editIssue = null;
-            },
-            formatLimitDateTime: function (value) {
-                if (value === null) {
-                    return this.$t("issue.no_response_limit");
-                }
-                return moment(value).fromNow();
             },
             sortBy: function (key) {
                 if (this.sortKey === key) {
