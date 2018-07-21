@@ -60,8 +60,16 @@
                     <img class="lightbox-thumbnail" :src="issue.imageThumbnail">
                 </td>
                 <td>
-
-                    {{issue.description}}
+                    <description-cell @edit-confirm="cellEditConfirm('description', issue)"
+                                      @edit-abort="cellEditAbort('description')"
+                                      @edit-start="cellEditStart('description', issue)"
+                                      :issue="issue"
+                                      :craftsmen="craftsmen"
+                                      :edit-enabled="editIssue === issue && editEnabled.description">
+                        <template slot="save-button-content">
+                            <save-button :multiple="selectedIssues.length > 1"/>
+                        </template>
+                    </description-cell>
                 </td>
                 <td>
                     <craftsman-cell @edit-confirm="cellEditConfirm('craftsmanId', issue)"
@@ -71,7 +79,7 @@
                                     :craftsmen="craftsmen"
                                     :edit-enabled="editIssue === issue && editEnabled.craftsmanId">
                         <template slot="save-button-content">
-                            <save-button :multiple="selectedIssues.length > 1" />
+                            <save-button :multiple="selectedIssues.length > 1"/>
                         </template>
                     </craftsman-cell>
                 </td>
@@ -92,6 +100,7 @@
     import Datepicker from 'vuejs-datepicker';
     import {de} from 'vuejs-datepicker/dist/locale'
     import CraftsmanCell from './components/CraftsmanCell'
+    import DescriptionCell from './components/DescriptionCell'
     import SortableHeader from './components/SortableHeader'
     import SaveButton from './components/SaveButton'
 
@@ -133,7 +142,8 @@
                 },
 
                 editEnabled: {
-                    craftsmanId: false
+                    craftsmanId: false,
+                    description: false
                 }
             }
         },
@@ -141,7 +151,8 @@
             Datepicker,
             CraftsmanCell,
             SortableHeader,
-            SaveButton
+            SaveButton,
+            DescriptionCell
         },
         methods: {
             issueClicked: function (issue) {
@@ -184,7 +195,12 @@
                     this.issueClicked(issue);
                 }
 
-                //enable edit
+                //stop other edits
+                Object.keys(this.editEnabled).filter(key => this.editEnabled[key]).forEach(key => {
+                    this.cellEditAbort(key);
+                });
+
+                //start edit
                 this.editEnabled[cell] = true;
                 this.editIssue = issue;
             },
