@@ -13,7 +13,7 @@
             <div class="filter-field">
                 <div class="form-group">
                     <input class="form-control" id="filter" type="text" v-model="textFilter"
-                           :placeholder="$t('filter')"/>
+                           :placeholder="$t('table.filter_placeholder')"/>
                 </div>
             </div>
             <table class="table table-hover">
@@ -99,13 +99,13 @@
                                    @click.prevent.stop="" @keyup.enter.prevent.stop="saveDescription"
                                    @keyup.escape.prevent.stop="abortDescription"/>
 
-                            <button class="btn btn-secondary" @click="saveDescription">{{$t("save")}}</button>
+                            <button class="btn btn-secondary" @click="saveDescription">{{$t("actions.save")}}</button>
                         </div>
                     </td>
                     <td>
                         <span v-if="selectedTrade === null || !issue.selected" class="editable"
                               @click.prevent.stop="startEditCraftsman(issue)">
-                            <span v-if="issue.craftsmanId == null">{{$t("no_craftsman_set")}}</span>
+                            <span v-if="issue.craftsmanId == null">{{$t("issue.no_craftsman")}}</span>
                             <span v-else>
                             {{ issue.craftsmanTrade}}<br/>
                             {{ issue.craftsmanName}}
@@ -135,7 +135,7 @@
                                     <span>{{selectedCraftsman.name}}</span>
                                 </div>
                             </template>
-                            <button class="btn btn-secondary" @click="saveCraftsman">{{$t("save")}}</button>
+                            <button class="btn btn-secondary" @click="saveCraftsman">{{$t("actions.save")}}</button>
                         </div>
                     </td>
                     <td>
@@ -147,8 +147,8 @@
                             <datepicker :lang="de" format="dd.MM.yyyy" :ref="'response-limit-' + issue.id"
                                         v-model="editResponseLimit">
                             </datepicker>
-                            <button class="btn btn-secondary" @click="saveResponseLimit">{{$t("save")}}</button>
-                            <button class="btn btn-secondary" @click="removeResponseLimit">{{$t("remove")}}</button>
+                            <button class="btn btn-secondary" @click="saveResponseLimit">{{$t("actions.save")}}</button>
+                            <button class="btn btn-secondary" @click="removeResponseLimit">{{$t("actions.remove")}}</button>
                         </div>
                     </td>
                     <td>
@@ -166,30 +166,30 @@
                 <button class="btn btn-primary"
                         v-bind:disabled="isLoading || issues.filter(i => i.selected).length === 0"
                         v-on:click.prevent="confirm()">
-                    {{$t("confirm_issues")}}
+                    {{$t("actions.confirm_issues")}}
                 </button>
                 <button class="btn btn-outline-danger"
                         v-bind:disabled="isLoading || issues.filter(i => i.selected).length === 0"
                         v-on:click.prevent="remove()">
-                    {{$t("remove_issues")}}
+                    {{$t("actions.remove_all")}}
                 </button>
             </div>
             <div v-else>
                 <p class="text-danger">
-                    {{$t("cant_undo_remove")}}
+                    {{$t("dialog.cant_undo_remove")}}
                 </p>
                 <button class="btn btn-danger"
                         v-on:click.prevent="removeConfirm()">
-                    {{$t("remove_issues")}}
+                    {{$t("actions.remove_all")}}
                 </button>
                 <button class="btn"
                         v-on:click.prevent="abortRemove()">
-                    {{$t("abort_remove_issues")}}
+                    {{$t("actions.abort")}}
                 </button>
             </div>
         </div>
         <div v-else-if="!isLoading">
-            <p>{{ $t("no_issues") }}</p>
+            <p>{{ $t("table.no_entries") }}</p>
         </div>
     </div>
 </template>
@@ -365,7 +365,7 @@
                 this.isLoading = true;
                 let errorIssues = this.issues.filter(c => c.selected && (c.description.length === 0 || c.craftsmanId === null));
                 if (errorIssues.length > 0) {
-                    this.displayWarningFlash(this.$t("issues_cant_be_confirmed"));
+                    this.displayWarningFlash(this.$t("messages.danger.confirm_issues_impossible"));
                     errorIssues.forEach(i => i.error = true);
                     window.setTimeout(e => errorIssues.forEach(i => i.error = false), 3000);
                     return;
@@ -390,7 +390,7 @@
                     });
 
                     console.log("here1");
-                    this.displayInfoFlash(this.$t("added_to_register"));
+                    this.displayInfoFlash(this.$t("messages.success.added_to_register"));
                     window.setTimeout(e => this.issues = this.issues.filter(i => i.number === null), 3000);
                 });
             },
@@ -412,7 +412,7 @@
                     response.data.deletedIssues.forEach(i => idLookup[i.id] = true);
                     this.issues = this.issues.filter(i => !(i.id in idLookup));
                     this.abortRemove();
-                    this.displayInfoFlash(this.$t("removed"));
+                    this.displayInfoFlash(this.$t("messages.success.removed_entries"));
                 });
             },
             save: function () {
@@ -435,7 +435,7 @@
                     });
 
                     this.refreshComputedIssueProperties();
-                    this.displayInfoFlash(this.$t("saved"));
+                    this.displayInfoFlash(this.$t("messages.success.saved_changes"));
                 });
             },
             displayInfoFlash: function (content) {
@@ -467,7 +467,7 @@
             },
             formatLimitDateTime: function (value) {
                 if (value === null) {
-                    return this.$t("limit_not_set");
+                    return this.$t("issue.no_response_limit");
                 }
                 return moment(value).fromNow();
             },
@@ -554,7 +554,7 @@
                     return response.data;
                 },
                 error => {
-                    this.displayErrorFlash(this.$t("error") + " (" + error.response.data.message + ")");
+                    this.displayErrorFlash(this.$t("messages.danger.unrecoverable") + " (" + error.response.data.message + ")");
                     console.log("request failed");
                     console.log(error.response.data);
                     return Promise.reject(error);

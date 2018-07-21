@@ -1,7 +1,7 @@
 <template>
     <span>
-        <span v-if="multiple">{{$t("edit.save_all")}}</span>
-        <span v-else>{{$t("edit.save")}}</span>
+        <span v-if="multiple">{{$t("actions.save_all")}}</span>
+        <span v-else>{{$t("actions.save")}}</span>
     </span>
 </template>
 

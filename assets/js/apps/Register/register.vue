@@ -2,23 +2,23 @@
     <div id="register">
         <div class="row">
             <div class="col-md-2">
-                <h2>{{$t("headers.search")}}</h2>
+                <h2>{{$t("search.name")}}</h2>
                 <div class="card">
                     <div class="card-body">
                         <base-text-input v-model="filter.numberText">
                             {{$t("issue.number")}}
                         </base-text-input>
                         <base-checkbox v-model="filter.onlyMarked">
-                            {{$t("only_marked")}}
+                            {{$t("search.only_marked")}}
                         </base-checkbox>
                         <base-checkbox v-model="filter.onlyOverLimit">
-                            {{$t("only_over_limit")}}
+                            {{$t("search.only_over_limit")}}
                         </base-checkbox>
                     </div>
                 </div>
 
                 <div class="vertical-spacer-big"></div>
-                <h2>{{$t("headers.filter")}}</h2>
+                <h2>{{$t("filter.name")}}</h2>
                 <div class="card">
                     <div class="card-body">
                         <status-filter :filter="filter.status"/>
@@ -70,7 +70,7 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <h2>{{$t("headers.export")}}</h2>
+                <h2>{{$t("export.name")}}</h2>
                 <div class="card">
                     <div class="card-body">
                         <link-export :filter="filter"/>
@@ -271,7 +271,7 @@
                         match[0].craftmanId = c.craftsmanId;
                     });
 
-                    this.displayInfoFlash(this.$t("messages.saved_changes"));
+                    this.displayInfoFlash(this.$t("messages.success.saved_changes"));
                 });
             }
         },
@@ -282,7 +282,7 @@
                     return response.data;
                 },
                 error => {
-                    this.displayErrorFlash(this.$t("error") + " (" + error.response.data.message + ")");
+                    this.displayErrorFlash(this.$t("messages.danger.unrecoverable") + " (" + error.response.data.message + ")");
                     console.log("request failed");
                     console.log(error.response.data);
                     return Promise.reject(error);

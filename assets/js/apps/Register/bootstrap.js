@@ -6,22 +6,20 @@ Vue.config.productionTip = false;
 // components
 import {library} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
-import vueHeadful from 'vue-headful';
 
 // app
-import Dispatch from './dispatch'
+import Register from './register'
 
 // messages
-import Messages from '../../localization/dispatch'
+import Messages from '../../localization/register'
 import mergeMessages from '../../localization/shared/_all'
 
 // initialize app if html element is found
-if (document.getElementById("dispatch") != null) {
+if (document.getElementById("register") != null) {
     // register plugins
     Vue.use(VueI18n);
 
     // register components
-    Vue.component('vue-headful', vueHeadful);
     Vue.component('font-awesome-icon', FontAwesomeIcon);
 
     // initialize messages
@@ -32,17 +30,20 @@ if (document.getElementById("dispatch") != null) {
 
     // add icons
     library.add(
+        require('@fortawesome/fontawesome-pro-light/faCheck'),
         require('@fortawesome/fontawesome-pro-solid/faSortUp'),
         require('@fortawesome/fontawesome-pro-solid/faSortDown'),
         require('@fortawesome/fontawesome-pro-light/faSort'),
-        require('@fortawesome/fontawesome-pro-light/faUserAlt')
+        require('@fortawesome/fontawesome-pro-solid/faStar'),
+        require('@fortawesome/fontawesome-pro-light/faStar'),
+        require('@fortawesome/fontawesome-pro-light/faTimes')
     );
 
     // boot app
     new Vue({
         i18n,
-        el: '#dispatch',
-        template: '<Dispatch/>',
-        components: {Dispatch}
+        el: '#register',
+        template: '<Register/>',
+        components: {Register}
     });
 }

@@ -3,7 +3,7 @@
         <div class="filter-field">
             <div class="form-group">
                 <input class="form-control" id="filter" type="text" v-model="textFilter"
-                       :placeholder="$t('filter_by_description')"/>
+                       :placeholder="$t('table.filter_placeholder')"/>
             </div>
         </div>
         <table class="table table-hover">
@@ -40,7 +40,7 @@
             </thead>
             <tbody>
             <tr v-if="issues.length === 0">
-                <td colspan="7">{{ $t("no_issues") }}</td>
+                <td colspan="7">{{ $t("table.no_entries") }}</td>
             </tr>
             <tr v-for="issue in sortedIssues"
                 @click.ctrl.exact="issueCtrlClicked(issue)"
@@ -202,7 +202,7 @@
             },
             formatLimitDateTime: function (value) {
                 if (value === null) {
-                    return this.$t("view.limit_not_set");
+                    return this.$t("issue.no_response_limit");
                 }
                 return moment(value).fromNow();
             },

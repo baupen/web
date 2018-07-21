@@ -19,14 +19,14 @@
         <button class="btn btn-primary" @click="editConfirm">
             <slot name="save-button-content"></slot>
         </button>
-        <button class="btn btn-outline-secondary" @click="$emit('edit-abort')">{{$t("edit.abort")}}</button>
+        <button class="btn btn-outline-secondary" @click="$emit('edit-abort')">{{$t("actions.abort")}}</button>
     </span>
     <div v-else class="editable" @click.exact.prevent.stop="$emit('edit-start')">
         <span v-if="issue.craftsmanId === null">
-            {{$t("view.no_craftsman_set")}}
+            {{$t("issue.no_craftsman")}}
         </span>
         <span v-else-if="!(issue.craftsmanId in this.craftsmanById)">
-            {{$t("view.craftsman_not_found")}}
+            {{$t("issue.craftsman_not_found")}}
         </span>
         <span v-else>
             {{ craftsmanTrade}}<br/>

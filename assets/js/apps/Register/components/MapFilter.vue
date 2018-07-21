@@ -10,7 +10,7 @@
 
 <script>
 
-    import FilterStatus from './FilterStatus'
+    import FilterStatus from './StatusFilterEntry'
     import BaseCheckbox from '../../components/Base/BaseCheckbox'
     import MapFilterLevel from './MapFilterLevel'
 

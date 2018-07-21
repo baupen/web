@@ -3,32 +3,31 @@
         <h4 @click="toggleFilter" class="clickable" :class="{'mark' : filter.enabled }">{{$t("issue.status")}}</h4>
         <div v-if="filter.enabled">
             <base-checkbox v-model="filter.registered.active">
-                {{$t("filter.status.registered")}}
+                {{$t("issue.status_values.registered")}}
             </base-checkbox>
             <div class="filter-property-wrapper" v-if="filter.registered.active">
-                <filter-status :status="filter.registered" :allow-value-choose="false"/>
+                <status-filter-entry :status="filter.registered" :allow-value-choose="false"/>
             </div>
 
             <base-checkbox v-model="filter.read.active">
-                {{$t("filter.status.read")}}
+                {{$t("issue.status_values.read")}}
             </base-checkbox>
             <div class="filter-property-wrapper" v-if="filter.read.active">
-                <filter-status :status="filter.read" :allow-date-choose="false"/>
+                <status-filter-entry :status="filter.read" :allow-date-choose="false"/>
             </div>
 
-
             <base-checkbox v-model="filter.responded.active">
-                {{$t("filter.status.responded")}}
+                {{$t("issue.status_values.responded")}}
             </base-checkbox>
             <div class="filter-property-wrapper" v-if="filter.responded.active">
-                <filter-status :status="filter.responded"/>
+                <status-filter-entry :status="filter.responded"/>
             </div>
 
             <base-checkbox v-model="filter.reviewed.active">
-                {{$t("filter.status.reviewed")}}
+                {{$t("issue.status_values.reviewed")}}
             </base-checkbox>
             <div class="filter-property-wrapper" v-if="filter.reviewed.active">
-                <filter-status :status="filter.reviewed"/>
+                <status-filter-entry :status="filter.reviewed"/>
             </div>
         </div>
     </div>
@@ -36,7 +35,7 @@
 
 <script>
 
-    import FilterStatus from './FilterStatus'
+    import StatusFilterEntry from './StatusFilterEntry'
     import BaseCheckbox from '../../components/Base/BaseCheckbox'
 
     export default {
@@ -47,7 +46,7 @@
             }
         },
         components: {
-            FilterStatus,
+            StatusFilterEntry,
             BaseCheckbox
         },
         methods: {
