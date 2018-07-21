@@ -64,7 +64,8 @@
                 />
                 <div v-else>
                     <issue-edit-table :craftsmen="craftsmen"
-                                      :issues="filteredIssues">
+                                      :issues="filteredIssues"
+                                      @update-issues="updateIssues">
                     </issue-edit-table>
                 </div>
             </div>
@@ -101,6 +102,7 @@
     import LinkExport from "./components/LinkExport"
     import {de} from 'vuejs-datepicker/dist/locale'
     import {AtomSpinner} from 'epic-spinners'
+    import notifications from './mixins/Notifications'
 
     moment.locale('de');
 
@@ -163,6 +165,7 @@
                 }
             }
         },
+        mixins: [notifications],
         components: {
             IssueEditTable,
             StatusFilter,
@@ -257,6 +260,20 @@
                     return issues.filter(i => i[property] <= end);
                 }
                 return issues;
+            },
+            updateIssues: function (issues) {
+                axios.post("/api/register/issue/update", {
+                    "constructionSiteId": this.constructionSiteId,
+                    "updateIssues": issues
+                }).then((response) => {
+                    response.data.issues.forEach(c => {
+                        let match = this.issues.filter(i => i.id === c.id);
+                        const index = this.issues.indexOf(match[0]);
+                        this.$set(this.issues, index, c);
+                    });
+
+                    this.displayInfoFlash(this.$t("saved"));
+                });
             }
         },
         mounted() {

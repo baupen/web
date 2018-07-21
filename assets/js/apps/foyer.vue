@@ -419,7 +419,7 @@
                 this.isLoading = true;
                 axios.post("/api/foyer/issue/update", {
                     "constructionSiteId": this.constructionSiteId,
-                    "issues": this.issues.filter(c => c.selected)
+                    "updateIssues": this.issues.filter(c => c.selected)
                 }).then((response) => {
                     this.isLoading = false;
                     const activeIssues = this.issues.filter(c => c.selected);

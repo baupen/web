@@ -23,6 +23,7 @@ use App\Api\Transformer\Base\BaseEntityTransformer;
 use App\Api\Transformer\Foyer\CraftsmanTransformer;
 use App\Api\Transformer\Foyer\IssueTransformer;
 use App\Api\Transformer\Foyer\NumberIssueTransformer;
+use App\Api\Transformer\Foyer\UpdateIssueTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
@@ -82,23 +83,22 @@ class FoyerController extends ApiController
      *
      * @return bool
      */
-    private function parseDispatchIssuesRequest(Request $request, &$issues, &$entities, &$errorResponse, &$constructionSite)
+    private function parseFoyerIssuesRequest(Request $request, &$issues, &$entities, &$errorResponse, &$constructionSite)
     {
-        /** @var \App\Api\Request\Dispatch\IssuesRequest $parsedRequest */
+        /** @var \App\Api\Request\Foyer\UpdateIssuesRequest $parsedRequest */
         /** @var ConstructionSite $constructionSite */
-        if (!parent::parseConstructionSiteRequest($request, \App\Api\Request\Dispatch\IssuesRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+        if (!parent::parseConstructionSiteRequest($request, \App\Api\Request\Foyer\UpdateIssuesRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
             return false;
         }
 
         $issues = [];
-        foreach ($parsedRequest->getIssues() as $arrayIssue) {
-            $issue = $this->get('serializer')->deserialize(json_encode($arrayIssue), \App\Api\Entity\Foyer\Issue::class, 'json');
+        foreach ($parsedRequest->getUpdateIssues() as $arrayIssue) {
+            $issue = $this->get('serializer')->deserialize(json_encode($arrayIssue), \App\Api\Entity\Foyer\UpdateIssue::class, 'json');
             $issues[$issue->getId()] = $issue;
         }
 
         //retrieve all issues from the db
         $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['id' => array_keys($issues), 'registeredAt' => null, 'map' => $constructionSite->getMapIds()]);
-
         $this->orderEntities($requestedIssues, $issues, $entities);
 
         return true;
@@ -143,7 +143,7 @@ class FoyerController extends ApiController
      */
     private function orderEntities($requestedIssues, $issues, &$entities)
     {
-        //ensure no issue from another construction site
+        //build lookup from database entities
         $entityLookup = [];
         foreach ($requestedIssues as $entity) {
             $entityLookup[$entity->getId()] = $entity;
@@ -219,16 +219,17 @@ class FoyerController extends ApiController
      * @Route("/issue/update", name="api_foyer_issue_update", methods={"POST"})
      *
      * @param Request $request
+     * @param UpdateIssueTransformer $updateIssueTransformer
      * @param IssueTransformer $issueTransformer
      *
      * @return Response
      */
-    public function issueUpdateAction(Request $request, IssueTransformer $issueTransformer)
+    public function issueUpdateAction(Request $request, UpdateIssueTransformer $updateIssueTransformer, IssueTransformer $issueTransformer)
     {
         /** @var ConstructionSite $constructionSite */
-        /** @var \App\Api\Entity\Foyer\Issue[] $issues */
+        /** @var \App\Api\Entity\Foyer\UpdateIssue[] $issues */
         /** @var Issue[] $entities */
-        if (!$this->parseDispatchIssuesRequest($request, $issues, $entities, $errorResponse, $constructionSite)) {
+        if (!$this->parseFoyerIssuesRequest($request, $issues, $entities, $errorResponse, $constructionSite)) {
             return $errorResponse;
         }
 
@@ -236,18 +237,20 @@ class FoyerController extends ApiController
         foreach ($issues as $guid => $issue) {
             if (array_key_exists($guid, $entities)) {
                 $entity = $entities[$guid];
-                $issueTransformer->fromApi($issue, $entity);
-
-                //get craftsman
-                if ($issue->getCraftsmanId() !== null) {
-                    $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->find($issue->getCraftsmanId());
+                $res = $updateIssueTransformer->fromApi($issue, $entity, function ($craftsman) use ($constructionSite) {
+                    /** @var Craftsman $craftsman */
                     if ($craftsman === null) {
                         return $this->fail(self::CRAFTSMAN_NOT_FOUND);
                     }
                     if ($craftsman->getConstructionSite() !== $constructionSite) {
                         return $this->fail(self::INVALID_CRAFTSMAN);
                     }
-                    $entity->setCraftsman($craftsman);
+
+                    return true;
+                });
+                if ($res !== true) {
+                    /* @var Response $res */
+                    return $res;
                 }
             }
         }

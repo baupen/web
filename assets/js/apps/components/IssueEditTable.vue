@@ -88,11 +88,9 @@
 </template>
 
 <script>
-    import axios from "axios"
     import moment from "moment";
     import Datepicker from 'vuejs-datepicker';
     import {de} from 'vuejs-datepicker/dist/locale'
-    import notifications from '../mixins/Notifications'
     import CraftsmanCell from './CraftsmanCell'
     import SortableHeader from './SortableHeader'
 
@@ -114,7 +112,6 @@
                 required: true
             }
         },
-        mixins: [notifications],
         data: function () {
             const sortOrders = {};
             ["number", "isMarked", "description", "craftsmanId", "responseLimit", "map"].forEach(e => sortOrders[e] = 1);
@@ -190,7 +187,10 @@
                 this.editIssue = issue;
             },
             cellEditConfirm: function (cell, issue) {
+                //set property to all selected cells & save
                 this.selectedIssues.filter(i => i !== issue).forEach(i => i[cell] = issue[cell]);
+                this.$emit('update-issues', this.issues.filter(c => this.selectedIssues.indexOf(c) >= 0));
+
                 this.cellEditAbort(cell);
             },
             cellEditAbort: function (cell) {

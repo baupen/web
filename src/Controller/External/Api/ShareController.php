@@ -11,7 +11,7 @@
 
 namespace App\Controller\External\Api;
 
-use App\Api\Request\Share\IssueRequest;
+use App\Api\Request\External\Share\IssueRequest;
 use App\Api\Response\Data\CraftsmanData;
 use App\Api\Response\Data\MapsData;
 use App\Api\Response\Data\ProcessingEntitiesData;

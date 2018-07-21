@@ -9,31 +9,32 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Request\Dispatch;
+namespace App\Api\Request\Register;
 
 use App\Api\Entity\Foyer\Issue;
+use App\Api\Entity\Register\UpdateIssue;
 use App\Api\Request\ConstructionSiteRequest;
 
-class IssuesRequest extends ConstructionSiteRequest
+class UpdateIssuesRequest extends ConstructionSiteRequest
 {
     /**
-     * @var Issue[]
+     * @var UpdateIssue[]
      */
-    private $issues;
+    private $updateIssues;
 
     /**
      * @return Issue[]
      */
-    public function getIssues(): array
+    public function getUpdateIssues(): array
     {
-        return $this->issues;
+        return $this->updateIssues;
     }
 
     /**
-     * @param Issue[] $issues
+     * @param Issue[] $updateIssues
      */
-    public function setIssues(array $issues): void
+    public function setUpdateIssues(array $updateIssues): void
     {
-        $this->issues = $issues;
+        $this->updateIssues = $updateIssues;
     }
 }

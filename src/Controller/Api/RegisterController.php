@@ -19,6 +19,7 @@ use App\Api\Response\Data\Register\ShareData;
 use App\Api\Transformer\Register\CraftsmanTransformer;
 use App\Api\Transformer\Register\IssueTransformer;
 use App\Api\Transformer\Register\MapTransformer;
+use App\Api\Transformer\Register\UpdateIssueTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Controller\Traits\QueryParseTrait;
 use App\Entity\ConstructionSite;
@@ -38,6 +39,61 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class RegisterController extends ApiController
 {
     use QueryParseTrait;
+
+    const CRAFTSMAN_NOT_FOUND = 'craftsman not found';
+    const INVALID_CRAFTSMAN = 'invalid craftsman';
+
+    /**
+     * @param Request $request
+     * @param $issues
+     * @param $entities
+     * @param $errorResponse
+     * @param $constructionSite
+     *
+     * @return bool
+     */
+    private function parseRegisterIssuesRequest(Request $request, &$issues, &$entities, &$errorResponse, &$constructionSite)
+    {
+        /** @var \App\Api\Request\Register\UpdateIssuesRequest $parsedRequest */
+        /** @var ConstructionSite $constructionSite */
+        if (!parent::parseConstructionSiteRequest($request, \App\Api\Request\Register\UpdateIssuesRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return false;
+        }
+
+        $issues = [];
+        foreach ($parsedRequest->getUpdateIssues() as $arrayIssue) {
+            $issue = $this->get('serializer')->deserialize(json_encode($arrayIssue), \App\Api\Entity\Register\UpdateIssue::class, 'json');
+            $issues[$issue->getId()] = $issue;
+        }
+
+        //retrieve all issues from the db
+        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findBy(['id' => array_keys($issues), 'map' => $constructionSite->getMapIds()]);
+        $this->orderEntities($requestedIssues, $issues, $entities);
+
+        return true;
+    }
+
+    /**
+     * @param Issue[] $requestedIssues
+     * @param \App\Api\Entity\Register\UpdateIssue[] $issues
+     * @param Issue[] $entities
+     */
+    private function orderEntities($requestedIssues, $issues, &$entities)
+    {
+        //build lookup from database entities
+        $entityLookup = [];
+        foreach ($requestedIssues as $entity) {
+            $entityLookup[$entity->getId()] = $entity;
+        }
+
+        //sort entities
+        $entities = [];
+        foreach ($issues as $guid => $issue) {
+            if (array_key_exists($guid, $entityLookup)) {
+                $entities[$guid] = $entityLookup[$guid];
+            }
+        }
+    }
 
     /**
      * @Route("/issue/list", name="api_register_issues_list", methods={"POST"})
@@ -156,6 +212,55 @@ class RegisterController extends ApiController
         //send response
         $data = new ShareData();
         $data->setLink($this->generateUrl('external_share_filter', ['filter' => $filter->getId()], UrlGeneratorInterface::ABSOLUTE_URL));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/issue/update", name="api_register_issue_update", methods={"POST"})
+     *
+     * @param Request $request
+     * @param UpdateIssueTransformer $updateIssueTransformer
+     * @param IssueTransformer $issueTransformer
+     *
+     * @return Response
+     */
+    public function issueUpdateAction(Request $request, UpdateIssueTransformer $updateIssueTransformer, IssueTransformer $issueTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var \App\Api\Entity\Register\UpdateIssue[] $issues */
+        /** @var Issue[] $entities */
+        if (!$this->parseRegisterIssuesRequest($request, $issues, $entities, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        //write properties to issues
+        foreach ($issues as $guid => $issue) {
+            if (array_key_exists($guid, $entities)) {
+                $entity = $entities[$guid];
+                $res = $updateIssueTransformer->fromApi($issue, $entity, function ($craftsman) use ($constructionSite) {
+                    /** @var Craftsman $craftsman */
+                    if ($craftsman === null) {
+                        return $this->fail(self::CRAFTSMAN_NOT_FOUND);
+                    }
+                    if ($craftsman->getConstructionSite() !== $constructionSite) {
+                        return $this->fail(self::INVALID_CRAFTSMAN);
+                    }
+
+                    return true;
+                });
+                if ($res !== true) {
+                    /* @var Response $res */
+                    return $res;
+                }
+            }
+        }
+
+        $this->fastSave(...array_values($entities));
+
+        //create response
+        $data = new IssuesData();
+        $data->setIssues($issueTransformer->toApiMultiple($entities));
 
         return $this->success($data);
     }

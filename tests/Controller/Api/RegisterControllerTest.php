@@ -10,6 +10,7 @@ namespace App\Tests\Controller\Api;
 
 
 use App\Api\Entity\Foyer\Issue;
+use App\Api\Entity\Register\UpdateIssue;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\IssueRequest;
 use App\Api\Request\IssuesRequest;
@@ -116,5 +117,40 @@ class RegisterControllerTest extends ApiController
 
         $response = $this->authenticatedPostRequest($url, $constructionSiteRequest);
         return $this->checkResponse($response, ApiStatus::SUCCESS);
+    }
+
+
+    public function testIssueUpdate()
+    {
+        $url = '/api/register/issue/update';
+
+        $craftsman = $this->getSomeConstructionSite()->getCraftsmen()[0];
+        $issues = [];
+        foreach ($this->getIssues()->data->issues as $apiIssue) {
+            $issue = new UpdateIssue($apiIssue->id);
+            $issue->setIsMarked(false);
+            $issue->setResponseLimit(new \DateTime());
+            $issue->setCraftsmanId($craftsman->getId());
+            $issue->setDescription("hello world");
+            $issues[] = $issue;
+        }
+        $request = new \App\Api\Request\Foyer\UpdateIssuesRequest();
+        $request->setUpdateIssues($issues);
+        $request->setConstructionSiteId($this->getSomeConstructionSite()->getId());
+
+        $response = $this->authenticatedPostRequest($url, $request);
+        $issuesData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($issuesData->data);
+        $this->assertNotNull($issuesData->data->issues);
+
+        $this->assertTrue(is_array($issuesData->data->issues));
+        $this->assertSameSize($issues, $issuesData->data->issues);
+        foreach ($issuesData->data->issues as $issue) {
+            $this->assertNotNull($issue);
+            $this->assertEquals(false, $issue->isMarked);
+            $this->assertEquals("hello world", $issue->description);
+            $this->assertEquals($craftsman->getId(), $issue->craftsmanId);
+        }
     }
 }

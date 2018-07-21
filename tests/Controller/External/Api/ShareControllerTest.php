@@ -9,7 +9,7 @@
 namespace App\Tests\Controller\Api;
 
 
-use App\Api\Request\Share\IssueRequest;
+use App\Api\Request\External\Share\IssueRequest;
 use App\Entity\Craftsman;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\External\Api\Base\ApiController;
