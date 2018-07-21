@@ -184,5 +184,21 @@ class RegisterControllerTest extends ApiController
             $this->assertNull($issue->reviewedAt);
             $this->assertNull($issue->reviewByName);
         }
+
+        $request->setRespondedStatusSet(false);
+        $request->setReviewedStatusSet(true);
+
+        $response = $this->authenticatedPostRequest($url, $request);
+        $issuesData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertTrue(is_array($issuesData->data->issues));
+        $this->assertSameSize($issuesIds, $issuesData->data->issues);
+        foreach ($issuesData->data->issues as $issue) {
+            $this->assertNotNull($issue);
+            $this->assertNull($issue->respondedAt);
+            $this->assertNull($issue->responseByName);
+            $this->assertNotNull($issue->reviewedAt);
+            $this->assertNotNull($issue->reviewByName);
+        }
     }
 }

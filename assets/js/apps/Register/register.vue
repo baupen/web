@@ -65,7 +65,8 @@
                 <div v-else>
                     <issue-edit-table :craftsmen="craftsmen"
                                       :issues="filteredIssues"
-                                      @update-issues="updateIssues">
+                                      @update-issues="updateIssues"
+                                      @update-status="updateStatus">
                     </issue-edit-table>
                 </div>
             </div>
@@ -266,12 +267,31 @@
                     "constructionSiteId": this.constructionSiteId,
                     "updateIssues": issues
                 }).then((response) => {
-                    response.data.issues.forEach(c => {
-                        let match = this.issues.filter(i => i.id === c.id);
-                        match[0].craftmanId = c.craftsmanId;
-                    });
-
+                    this.writeProperties(response.data.issues);
                     this.displayInfoFlash(this.$t("messages.success.saved_changes"));
+                });
+            },
+            updateStatus: function (issues, respondedStatusSet, reviewedStatusSet) {
+                axios.post("/api/register/issue/status", {
+                    "constructionSiteId": this.constructionSiteId,
+                    "issueIds": issues.map(i => i.id),
+                    respondedStatusSet,
+                    reviewedStatusSet
+                }).then((response) => {
+                    this.writeProperties(response.data.issues)
+                    this.displayInfoFlash(this.$t("messages.success.saved_changes"));
+                });
+            },
+            writeProperties: function (newIssues) {
+                newIssues.forEach(c => {
+                    let match = this.issues.filter(i => i.id === c.id)[0];
+                    match.craftmanId = c.craftsmanId;
+                    match.description = c.description;
+                    match.reponseLimit = c.reponseLimit;
+                    match.respondedAt = c.respondedAt;
+                    match.responseByName = c.responseByName;
+                    match.reviewedAt = c.reviewedAt;
+                    match.reviewByName = c.reviewByName;
                 });
             }
         },

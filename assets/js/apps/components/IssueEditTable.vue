@@ -101,7 +101,7 @@
                     {{issue.map}}
                 </td>
                 <td class="minimal-width status-column">
-                    <status-cell @edit-confirm="cellEditConfirm('status', issue)"
+                    <status-cell @edit-confirm="cellEditConfirm('status', issue, arguments)"
                                          @edit-abort="cellEditAbort('status')"
                                          @edit-start="cellEditStart('status', issue)"
                                          :issue="issue"
@@ -223,8 +223,11 @@
                 this.editEnabled[cell] = true;
                 this.editIssue = issue;
             },
-            cellEditConfirm: function (cell, issue) {
-                if (cell !== "status") {
+            cellEditConfirm: function (cell, issue, args = null) {
+                if (cell === "status") {
+                    this.$emit('update-status', this.selectedIssues, args[0], args[1]);
+                }
+                else {
                     //set property to all selected cells & save
                     this.selectedIssues.filter(i => i !== issue).forEach(i => i[cell] = issue[cell]);
                     this.$emit('update-issues', this.selectedIssues);

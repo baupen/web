@@ -104,6 +104,9 @@
                 //if any changes emit change event
                 if (this.respondedStatusSet !== (this.issue.respondedAt !== null) || this.reviewedStatusSet !== (this.issue.reviewedAt !== null)) {
                     this.$emit('edit-confirm', this.respondedStatusSet, this.reviewedStatusSet);
+                } else {
+                    console.log("no changes detected");
+                    this.$emit('edit-abort');
                 }
             },
             formatDateTime: function (dateTime) {
