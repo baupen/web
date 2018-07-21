@@ -285,13 +285,7 @@ class Report
         //make header upper case
         $row = [];
         foreach ($tableHead as $item) {
-            //strtotupper does not know these letters
-            $manualReplace = ['ä' => 'Ä', 'ö' => 'Ö', 'ü' => 'Ü'];
-            foreach ($manualReplace as $search => $replace) {
-                $item = str_replace($search, $replace, $item);
-            }
-
-            $row[] = mb_strtoupper($item);
+            $row[] = mb_strtoupper($item, 'UTF-8');
         }
 
         //print header

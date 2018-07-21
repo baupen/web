@@ -93,7 +93,7 @@
     import {de} from 'vuejs-datepicker/dist/locale'
     import CraftsmanCell from './components/CraftsmanCell'
     import SortableHeader from './components/SortableHeader'
-    import SaveButton from './SaveButton'
+    import SaveButton from './components/SaveButton'
 
 
     moment.locale('de');

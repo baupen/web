@@ -91,7 +91,7 @@
 <script>
     import axios from "axios"
     import moment from "moment";
-    import IssueEditTable from "../components/IssueEditTable/IssueEditTable"
+    import IssueEditTable from "../components/IssueEditTable"
     import StatusFilter from "./components/StatusFilter"
     import CraftsmanFilter from "./components/CraftsmanFilter"
     import TradeFilter from "./components/TradeFilter"
