@@ -1,17 +1,9 @@
 <template>
     <div>
-        <h4 class="clickable" @click="toggleFilter" :class="{'mark' : filter.enabled }">{{$t("issue.trade")}}</h4>
+        <h4 class="clickable" @click="toggleFilter" :class="{'mark' : filter.enabled }">{{$t("issue.map")}}</h4>
 
         <div v-if="filter.enabled">
-            <div v-for="trade in trades" v-bind:key="trade" class="custom-control custom-checkbox">
-                <input type="checkbox"
-                       class="custom-control-input"
-                       :id="'trade' + trade + id"
-                       v-model="filter.trades" :value="trade">
-                <label class="custom-control-label" :for="'trade' + trade + id">
-                    {{ trade }}
-                </label>
-            </div>
+            <map-filter-level :filter="filter" :maps="maps"/>
         </div>
     </div>
 </template>
@@ -19,7 +11,8 @@
 <script>
 
     import FilterStatus from './FilterStatus'
-    import BaseCheckbox from './BaseCheckbox'
+    import BaseCheckbox from '../../components/Base/BaseCheckbox'
+    import MapFilterLevel from './MapFilterLevel'
 
     export default {
         props: {
@@ -27,7 +20,7 @@
                 type: Object,
                 required: true
             },
-            craftsmen: {
+            maps: {
                 type: Array,
                 required: true
             }
@@ -37,14 +30,10 @@
                 id: null
             }
         },
-        computed: {
-            trades: function() {
-                return this.craftsmen.map(c => c.trade).unique();
-            }
-        },
         components: {
             FilterStatus,
-            BaseCheckbox
+            BaseCheckbox,
+            MapFilterLevel
         },
         methods: {
             toggleFilter: function () {

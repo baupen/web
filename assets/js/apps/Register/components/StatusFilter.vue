@@ -37,7 +37,7 @@
 <script>
 
     import FilterStatus from './FilterStatus'
-    import BaseCheckbox from './BaseCheckbox'
+    import BaseCheckbox from '../../components/Base/BaseCheckbox'
 
     export default {
         props: {

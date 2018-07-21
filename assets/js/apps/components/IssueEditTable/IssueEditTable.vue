@@ -60,6 +60,7 @@
                     <img class="lightbox-thumbnail" :src="issue.imageThumbnail">
                 </td>
                 <td>
+
                     {{issue.description}}
                 </td>
                 <td>
@@ -70,8 +71,7 @@
                                     :craftsmen="craftsmen"
                                     :edit-enabled="editIssue === issue && editEnabled.craftsmanId">
                         <template slot="save-button-content">
-                            <span v-if="selectedIssues.length > 1">{{$t("edit.save_all")}}</span>
-                            <span v-else>{{$t("edit.save")}}</span>
+                            <save-button :multiple="selectedIssues.length > 1" />
                         </template>
                     </craftsman-cell>
                 </td>
@@ -91,8 +91,9 @@
     import moment from "moment";
     import Datepicker from 'vuejs-datepicker';
     import {de} from 'vuejs-datepicker/dist/locale'
-    import CraftsmanCell from './CraftsmanCell'
-    import SortableHeader from './SortableHeader'
+    import CraftsmanCell from './components/CraftsmanCell'
+    import SortableHeader from './components/SortableHeader'
+    import SaveButton from './SaveButton'
 
 
     moment.locale('de');
@@ -139,7 +140,8 @@
         components: {
             Datepicker,
             CraftsmanCell,
-            SortableHeader
+            SortableHeader,
+            SaveButton
         },
         methods: {
             issueClicked: function (issue) {
@@ -189,7 +191,7 @@
             cellEditConfirm: function (cell, issue) {
                 //set property to all selected cells & save
                 this.selectedIssues.filter(i => i !== issue).forEach(i => i[cell] = issue[cell]);
-                this.$emit('update-issues', this.issues.filter(c => this.selectedIssues.indexOf(c) >= 0));
+                this.$emit('update-issues', this.selectedIssues);
 
                 this.cellEditAbort(cell);
             },

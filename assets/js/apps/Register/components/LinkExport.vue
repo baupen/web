@@ -29,8 +29,8 @@
 <script>
 
     import FilterStatus from './FilterStatus'
-    import BaseCheckbox from './BaseCheckbox'
-    import BaseDateInput from './BaseDateInput'
+    import BaseCheckbox from '../../components/Base/BaseCheckbox'
+    import BaseDateInput from '../../components/Base/BaseDateInput'
     import $ from 'jquery'
     import axios from "axios"
 

@@ -1,56 +1,9 @@
-import Vue from 'vue'
+require("./apps/Dispatch/bootstrap");
 
-Vue.config.productionTip = false;
-
-// plugins
-import VueI18n from 'vue-i18n'
-import Vuex from 'vuex'
-
-Vue.use(VueI18n);
-Vue.use(Vuex);
-
-// components
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
-import {library} from '@fortawesome/fontawesome-svg-core'
-import vueHeadful from 'vue-headful';
-
-Vue.component('vue-headful', vueHeadful);
-Vue.component('font-awesome-icon', FontAwesomeIcon);
-
-Array.prototype.unique = function () {
-    return Array.from(new Set(this));
-};
-
-import DispatchMessages from './localization/dispatch'
-import Dispatch from './apps/dispatch'
-
-if (document.getElementById("dispatch") != null) {
-    const messagesDispatch = DispatchMessages;
-
-    const lang = document.documentElement.lang.substr(0, 2);
-    const i18nConfirm = new VueI18n({
-        locale: lang,
-        messages: messagesDispatch,
-    });
-
-    library.add(
-        require('@fortawesome/fontawesome-pro-solid/faSortUp'),
-        require('@fortawesome/fontawesome-pro-solid/faSortDown'),
-        require('@fortawesome/fontawesome-pro-light/faSort'),
-        require('@fortawesome/fontawesome-pro-light/faUserAlt')
-    );
-
-    new Vue({
-        i18n: i18nConfirm,
-        el: '#dispatch',
-        template: '<Dispatch/>',
-        components: {Dispatch}
-    });
-}
-
+/*
 
 import FoyerMessages from './localization/foyer'
-import Foyer from './apps/foyer'
+import Foyer from './apps/Foyer/foyer'
 
 if (document.getElementById("foyer") != null) {
     const messagesFoyer = FoyerMessages;
@@ -80,7 +33,7 @@ if (document.getElementById("foyer") != null) {
 
 
 import ShareMessages from './localization/share'
-import Share from './apps/share'
+import Share from './apps/Share/share'
 
 if (document.getElementById("share") != null) {
     const messagesShare = ShareMessages;
@@ -106,7 +59,7 @@ if (document.getElementById("share") != null) {
 
 
 import RegisterMessages from './localization/register'
-import Register from './apps/register'
+import Register from './apps/Register/register'
 
 if (document.getElementById("register") != null) {
     const messagesShare = RegisterMessages;
@@ -134,3 +87,4 @@ if (document.getElementById("register") != null) {
         components: {Register}
     });
 }
+*/

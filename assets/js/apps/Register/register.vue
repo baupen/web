@@ -91,18 +91,18 @@
 <script>
     import axios from "axios"
     import moment from "moment";
-    import IssueEditTable from "./components/IssueEditTable"
+    import IssueEditTable from "../components/IssueEditTable/IssueEditTable"
     import StatusFilter from "./components/StatusFilter"
     import CraftsmanFilter from "./components/CraftsmanFilter"
     import TradeFilter from "./components/TradeFilter"
     import MapFilter from "./components/MapFilter"
-    import BaseTextInput from "./components/BaseTextInput"
-    import BaseCheckbox from "./components/BaseCheckbox"
+    import BaseTextInput from "../components/Base/BaseTextInput"
+    import BaseCheckbox from "../components/Base/BaseCheckbox"
     import PdfExport from "./components/PdfExport"
     import LinkExport from "./components/LinkExport"
     import {de} from 'vuejs-datepicker/dist/locale'
     import {AtomSpinner} from 'epic-spinners'
-    import notifications from './mixins/Notifications'
+    import notifications from '../mixins/Notifications'
 
     moment.locale('de');
 
@@ -268,11 +268,10 @@
                 }).then((response) => {
                     response.data.issues.forEach(c => {
                         let match = this.issues.filter(i => i.id === c.id);
-                        const index = this.issues.indexOf(match[0]);
-                        this.$set(this.issues, index, c);
+                        match[0].craftmanId = c.craftsmanId;
                     });
 
-                    this.displayInfoFlash(this.$t("saved"));
+                    this.displayInfoFlash(this.$t("messages.saved_changes"));
                 });
             }
         },

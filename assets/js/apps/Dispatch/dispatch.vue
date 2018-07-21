@@ -4,7 +4,7 @@
             <div class="filter-field">
                 <div class="form-group">
                     <input class="form-control" id="filter" type="text" v-model="textFilter"
-                           :placeholder="$t('filter')"/>
+                           :placeholder="$t('table.filter_placeholder')"/>
                 </div>
             </div>
             <table class="table table-hover">
@@ -115,11 +115,11 @@
                 </tbody>
             </table>
             <button class="btn btn-primary" v-bind:disabled="isLoading" v-on:click.prevent="sendEmails()">
-                {{$t("send_emails")}}
+                {{$t("actions.send_emails")}}
             </button>
         </div>
         <div v-else-if="!isLoading">
-            <p>{{ $t("no_craftsmen") }}</p>
+            <p>{{ $t("table.no_entries") }}</p>
         </div>
     </div>
 </template>
