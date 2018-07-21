@@ -131,9 +131,6 @@
                 this.lightbox.enabled = true;
                 this.lightbox.imageFull = element.imageFull;
             },
-            closeLightbox: function () {
-                this.lightbox.enabled = false;
-            },
             displayInfoFlash: function (content) {
                 this.displayFlash(content, "success");
             },
