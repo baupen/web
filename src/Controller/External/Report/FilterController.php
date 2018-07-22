@@ -40,7 +40,7 @@ class FilterController extends BaseDoctrineController
     public function generateAction($identifier, ReportServiceInterface $reportService)
     {
         /** @var Filter $filter */
-        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter, $errorResponse)) {
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter)) {
             throw new NotFoundHttpException();
         }
 

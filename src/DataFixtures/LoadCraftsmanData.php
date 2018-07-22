@@ -55,8 +55,9 @@ class LoadCraftsmanData extends BaseFixture
                     $craftsman->setLastOnlineVisit(new \DateTime());
                     $craftsman->setLastEmailSent(new \DateTime());
                 }
-
                 $manager->persist($craftsman);
+                $manager->flush();
+                $manager->persist($craftsman->setShareViewFilter());
             }
         }
 

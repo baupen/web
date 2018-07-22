@@ -20,7 +20,6 @@ use App\Api\Transformer\Share\Craftsman\MapTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Controller\External\Traits\CraftsmanAuthenticationTrait;
 use App\Entity\Craftsman;
-use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Helper\IssueHelper;
@@ -63,7 +62,9 @@ class CraftsmanController extends ApiController
     private function parseIssueRequest(Request $request, $identifier, &$craftsman, &$issue, &$errorResponse)
     {
         /** @var Craftsman $craftsman */
-        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman, $errorResponse)) {
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
+            $errorResponse = $this->fail(self::INVALID_IDENTIFIER);
+
             return false;
         }
 
@@ -93,8 +94,8 @@ class CraftsmanController extends ApiController
     public function readAction($identifier, CraftsmanTransformer $craftsmanTransformer)
     {
         /** @var Craftsman $craftsman */
-        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman, $errorResponse)) {
-            return $errorResponse;
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
+            return $this->fail(self::INVALID_IDENTIFIER);
         }
 
         $data = new CraftsmanData();
@@ -114,18 +115,12 @@ class CraftsmanController extends ApiController
     public function craftsmanMapsListAction($identifier, MapTransformer $mapTransformer)
     {
         /** @var Craftsman $craftsman */
-        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman, $errorResponse)) {
-            return $errorResponse;
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
+            return $this->fail(self::INVALID_IDENTIFIER);
         }
 
         //get all relevant issues
-        $filter = new Filter();
-        $filter->setConstructionSite($craftsman->getConstructionSite()->getId());
-        $filter->setCraftsmen([$craftsman->getId()]);
-        $filter->setRespondedStatus(false);
-        $filter->setRegistrationStatus(true);
-        $filter->setReviewedStatus(false);
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
+        $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($craftsman->getShareViewFilter());
 
         /* @var Map[] $orderedMaps */
         /* @var Issue[][] $issuesPerMap */

@@ -45,7 +45,7 @@ class CraftsmanController extends BaseDoctrineController
     public function mapAction($identifier, Map $map, $size, ImageServiceInterface $imageService)
     {
         /** @var Craftsman $craftsman */
-        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman, $errorResponse)) {
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
             throw new NotFoundHttpException();
         }
 
@@ -78,7 +78,7 @@ class CraftsmanController extends BaseDoctrineController
     public function issueAction($identifier, Issue $issue, $imageFilename, $size)
     {
         /** @var Craftsman $craftsman */
-        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman, $errorResponse)) {
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
             throw new NotFoundHttpException();
         }
 

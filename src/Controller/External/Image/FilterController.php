@@ -44,7 +44,7 @@ class FilterController extends BaseDoctrineController
     public function mapAction($identifier, Map $map, $size, ImageServiceInterface $imageService)
     {
         /** @var Filter $filter */
-        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter, $errorResponse)) {
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter)) {
             throw new NotFoundHttpException();
         }
 
@@ -68,7 +68,7 @@ class FilterController extends BaseDoctrineController
     public function issueAction($identifier, Issue $issue, $imageFilename, $size)
     {
         /** @var Filter $filter */
-        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter, $errorResponse)) {
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter)) {
             throw new NotFoundHttpException();
         }
 

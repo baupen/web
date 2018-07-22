@@ -25,13 +25,11 @@ trait FilterAuthenticationTrait
      *
      * @return bool
      */
-    private function parseIdentifierRequest(ManagerRegistry $doctrine, $identifier, &$filter, &$errorResponse)
+    private function parseIdentifierRequest(ManagerRegistry $doctrine, $identifier, &$filter)
     {
         /** @var Craftsman $filter */
         $filter = $doctrine->getRepository(Filter::class)->findOneBy(['accessIdentifier' => $identifier]);
         if ($filter === null) {
-            $errorResponse = $this->fail(self::INVALID_IDENTIFIER);
-
             return false;
         }
 

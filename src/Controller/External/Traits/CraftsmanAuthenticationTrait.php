@@ -24,13 +24,11 @@ trait CraftsmanAuthenticationTrait
      *
      * @return bool
      */
-    private function parseIdentifierRequest(ManagerRegistry $doctrine, $identifier, &$craftsman, &$errorResponse)
+    private function parseIdentifierRequest(ManagerRegistry $doctrine, $identifier, &$craftsman)
     {
         /** @var Craftsman $craftsman */
         $craftsman = $doctrine->getRepository(Craftsman::class)->findOneBy(['emailIdentifier' => $identifier]);
         if ($craftsman === null) {
-            $errorResponse = $this->fail(self::INVALID_IDENTIFIER);
-
             return false;
         }
 

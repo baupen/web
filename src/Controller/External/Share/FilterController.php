@@ -34,7 +34,7 @@ class FilterController extends BaseDoctrineController
     public function shareAction($identifier)
     {
         /** @var Filter $filter */
-        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter, $errorResponse)) {
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter)) {
             throw new NotFoundHttpException();
         }
 

@@ -34,7 +34,7 @@ class CraftsmanController extends BaseDoctrineController
     public function shareAction($identifier)
     {
         /** @var Craftsman $craftsman */
-        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman, $errorResponse)) {
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
             throw new NotFoundHttpException();
         }
 

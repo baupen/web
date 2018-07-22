@@ -7,6 +7,7 @@ export default {
             thanks: "Wir sagen Danke!",
         },
         actions: {
+            read_only_view: 'Schreibgeschützer Link',
             send_response: "als erledigt markieren",
             remove_response: "rückgängig"
         }

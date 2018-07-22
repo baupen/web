@@ -19,6 +19,11 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
     private $reportUrl;
 
     /**
+     * @var string
+     */
+    private $readOnlyViewUrl;
+
+    /**
      * @return string
      */
     public function getReportUrl(): string
@@ -32,5 +37,21 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
     public function setReportUrl(string $reportUrl): void
     {
         $this->reportUrl = $reportUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReadOnlyViewUrl(): string
+    {
+        return $this->readOnlyViewUrl;
+    }
+
+    /**
+     * @param string $readOnlyViewUrl
+     */
+    public function setReadOnlyViewUrl(string $readOnlyViewUrl): void
+    {
+        $this->readOnlyViewUrl = $readOnlyViewUrl;
     }
 }

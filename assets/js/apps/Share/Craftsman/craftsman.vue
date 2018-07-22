@@ -13,8 +13,14 @@
                     </p>
                 </div>
                 <div class="col-md-6">
-                    <a v-if="craftsman !== null" :href="craftsman.reportUrl" target="_blank"
-                       class="btn btn-outline-primary btn-lg float-right">{{$t("actions.print")}}</a>
+                    <div class="float-right">
+                        <div class="btn-group-vertical">
+                            <a v-if="craftsman !== null" :href="craftsman.reportUrl" target="_blank"
+                               class="btn btn-outline-primary btn-lg">{{$t("actions.print")}}</a> <br/>
+                            <a v-if="craftsman !== null" :href="craftsman.readOnlyViewUrl" target="_blank"
+                               class="btn btn-outline-primary btn">{{$t("actions.read_only_view")}}</a>
+                        </div>
+                    </div>
                 </div>
             </div>
 

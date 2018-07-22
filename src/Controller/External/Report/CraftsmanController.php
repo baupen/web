@@ -40,7 +40,7 @@ class CraftsmanController extends BaseDoctrineController
     public function generateAction($identifier, ReportServiceInterface $reportService)
     {
         /** @var Craftsman $craftsman */
-        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman, $errorResponse)) {
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
             throw new NotFoundHttpException();
         }
 
