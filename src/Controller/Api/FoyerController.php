@@ -72,7 +72,6 @@ class FoyerController extends ApiController
         /** @var Issue[] $requestedIssues */
         /** @var \App\Api\Entity\Foyer\Issue[] $issues */
         $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
-        dump('afte rquery. ' . count($requestedIssues));
 
         //order as requested
         $issues = array_flip($parsedRequest->getIssueIds());
@@ -201,8 +200,6 @@ class FoyerController extends ApiController
         $filter->setRegistrationStatus(false);
         $filter->setConstructionSite($constructionSite->getId());
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
-
-        dump(count($issues));
 
         //create response
         $data = new IssuesData();

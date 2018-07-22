@@ -28,9 +28,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/share")
+ * @Route("/share/c/{identifier}")
  */
-class ShareController extends ApiController
+class ShareCraftsmanController extends ApiController
 {
     const INVALID_IDENTIFIER = 'invalid identifier';
     const INVALID_ISSUE = 'invalid issue';
@@ -100,7 +100,7 @@ class ShareController extends ApiController
     }
 
     /**
-     * @Route("/c/{identifier}/read", name="external_api_share_craftsman_read", methods={"GET"})
+     * @Route("/read", name="external_api_share_craftsman_read", methods={"GET"})
      *
      * @param $identifier
      * @param CraftsmanTransformer $craftsmanTransformer
@@ -121,7 +121,7 @@ class ShareController extends ApiController
     }
 
     /**
-     * @Route("/c/{identifier}/maps/list", name="external_api_share_craftsman_maps_list", methods={"GET"})
+     * @Route("/maps/list", name="external_api_share_craftsman_maps_list", methods={"GET"})
      *
      * @param $identifier
      * @param MapTransformer $mapTransformer
@@ -163,7 +163,7 @@ class ShareController extends ApiController
     }
 
     /**
-     * @Route("/c/{identifier}/issue/respond", name="external_api_share_craftsman_issue_respond", methods={"POST"})
+     * @Route("/issue/respond", name="external_api_share_craftsman_issue_respond", methods={"POST"})
      *
      * @param Request $request
      * @param $identifier
@@ -192,7 +192,7 @@ class ShareController extends ApiController
     }
 
     /**
-     * @Route("/c/{identifier}/issue/remove_response", name="external_api_share_craftsman_issue_remove_response", methods={"POST"})
+     * @Route("/issue/remove_response", name="external_api_share_craftsman_issue_remove_response", methods={"POST"})
      *
      * @param Request $request
      * @param $identifier

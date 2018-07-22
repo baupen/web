@@ -9,14 +9,14 @@ import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 import VueHeadful from 'vue-headful'
 
 // app
-import Share from './share'
+import ShareCraftsman from './share_craftsman'
 
 // messages
-import Messages from '../../localization/share'
+import Messages from '../../localization/share_craftsman'
 import mergeMessages from '../../localization/shared/_all'
 
 // initialize app if html element is found
-if (document.getElementById("share") != null) {
+if (document.getElementById("share-craftsman") != null) {
     // share plugins
     Vue.use(VueI18n);
 
@@ -40,8 +40,8 @@ if (document.getElementById("share") != null) {
     // boot app
     new Vue({
         i18n,
-        el: '#share',
-        template: '<Share/>',
-        components: {Share}
+        el: '#share-craftsman',
+        template: '<ShareCraftsman/>',
+        components: {ShareCraftsman}
     });
 }

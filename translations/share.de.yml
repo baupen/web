@@ -2,6 +2,10 @@ craftsman:
   title: '? offene Pendenzen'
   description: 'von '
 
+filter:
+  title: 'Pendenzenüberblick'
+  description: 'Pendenzenüberblick'
+
 email:
   # is appended to all subjects
   subject_appendix: ' auf der Baustelle %construction_site_name%'

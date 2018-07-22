@@ -32,15 +32,22 @@ class ShareController extends BaseDoctrineController
     public function shareAction($identifier)
     {
         $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['emailIdentifier' => $identifier]);
-        if ($craftsman !== null) {
-            return $this->forCraftsman($craftsman);
+        if ($craftsman === null) {
+            throw new NotFoundHttpException();
         }
 
-        throw new NotFoundHttpException();
+        $craftsman->setLastOnlineVisit(new \DateTime());
+        $this->fastSave($craftsman);
+
+        return $this->render('share/craftsman.html.twig');
     }
 
     /**
      * @Route("/f/{filter}", name="external_share_filter")
+     *
+     * @param Filter $filter
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function shareFilterAction(Filter $filter)
     {
@@ -48,19 +55,6 @@ class ShareController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
-        throw new NotFoundHttpException();
-    }
-
-    /**
-     * @param Craftsman $craftsman
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    private function forCraftsman(Craftsman $craftsman)
-    {
-        $craftsman->setLastOnlineVisit(new \DateTime());
-        $this->fastSave($craftsman);
-
-        return $this->render('share/craftsman.html.twig');
+        return $this->render('share/filter.html.twig');
     }
 }

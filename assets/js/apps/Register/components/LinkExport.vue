@@ -31,6 +31,7 @@
     import FilterStatus from './StatusFilterEntry'
     import BaseCheckbox from '../../components/Base/BaseCheckbox'
     import BaseDateInput from '../../components/Base/BaseDateInput'
+    import notifications from '../../mixins/Notifications'
     import $ from 'jquery'
     import axios from "axios"
 
@@ -41,6 +42,7 @@
                 required: true
             }
         },
+        mixins: [notifications],
         data: function () {
             return {
                 id: null,

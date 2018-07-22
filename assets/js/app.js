@@ -9,4 +9,5 @@ require("./bootstrap_vanilla");
 require("./apps/Dispatch/bootstrap");
 require("./apps/Foyer/bootstrap");
 require("./apps/Register/bootstrap");
-require("./apps/Share/bootstrap");
+require("./apps/ShareCraftsman/bootstrap");
+require("./apps/SharePublic/bootstrap");
