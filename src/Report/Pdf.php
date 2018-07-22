@@ -81,6 +81,11 @@ class Pdf extends TCPDF
         $this->Cell($contentWidthPart, 0, $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, 0, 'R');
     }
 
+    /**
+     * @param $msg
+     *
+     * @throws \Exception
+     */
     public function Error($msg)
     {
         throw new \Exception($msg);

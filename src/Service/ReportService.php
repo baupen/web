@@ -250,7 +250,7 @@ class ReportService implements ReportServiceInterface
         //add limit
         $limitValue = $getDateTimeRange($filter->getResponseLimitStart(), $filter->getResponseLimitEnd());
         if ($limitValue !== '') {
-            $filterEntries[$this->translator->transChoice('response_limit', count($names), [], 'entity_issue')] = $limitValue;
+            $filterEntries[$this->translator->trans('response_limit', [], 'entity_issue')] = $limitValue;
         }
 
         //set other properties

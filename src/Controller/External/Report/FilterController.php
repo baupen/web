@@ -9,10 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Controller\External;
+namespace App\Controller\External\Report;
 
 use App\Controller\Base\BaseDoctrineController;
-use App\Entity\Craftsman;
+use App\Controller\External\Traits\FilterAuthenticationTrait;
+use App\Entity\ConstructionSite;
 use App\Entity\Filter;
 use App\Report\ReportElements;
 use App\Service\Interfaces\ReportServiceInterface;
@@ -22,37 +23,32 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/report")
+ * @Route("/f/{identifier}")
  */
-class ReportController extends BaseDoctrineController
+class FilterController extends BaseDoctrineController
 {
+    use FilterAuthenticationTrait;
+
     /**
-     * @Route("/c/{identifier}/{hash}", name="external_report_craftsman")
+     * @Route("/{hash}", name="external_report_filter")
      *
      * @param $identifier
      * @param ReportServiceInterface $reportService
      *
      * @return Response
      */
-    public function craftsmanAction($identifier, ReportServiceInterface $reportService)
+    public function generateAction($identifier, ReportServiceInterface $reportService)
     {
-        /** @var Craftsman $craftsman */
-        $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['emailIdentifier' => $identifier]);
-        if ($craftsman === null) {
+        /** @var Filter $filter */
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter, $errorResponse)) {
             throw new NotFoundHttpException();
         }
 
-        $filter = new Filter();
-        $filter->setConstructionSite($craftsman->getConstructionSite()->getId());
-        $filter->setCraftsmen([$craftsman->getId()]);
-        $filter->setRespondedStatus(false);
-        $filter->setRegistrationStatus(true);
-        $filter->setReviewedStatus(false);
-
+        $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($filter->getConstructionSite());
         $reportElements = ReportElements::forCraftsman();
 
         return $this->file(
-            $reportService->generateReport($craftsman->getConstructionSite(), $filter, $craftsman->getName(), $reportElements),
+            $reportService->generateReport($constructionSite, $filter, $filter->getId(), $reportElements),
             'report.pdf',
             ResponseHeaderBag::DISPOSITION_INLINE
         );

@@ -290,7 +290,10 @@ class Report
 
         //print header
         $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
-        while (!$this->printRow($row, true, $this->pdfDesign->getLightBackground())) {
+        $maxTries = 3;
+        while (!$this->printRow($row, true, $this->pdfDesign->getLightBackground()) && $maxTries > 0) {
+            //simply retry to print row if it did not work
+            --$maxTries;
         }
 
         //print content
@@ -298,8 +301,10 @@ class Report
         $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
         $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
         foreach ($tableContent as $row) {
-            while (!$this->printRow($row, $currentRow % 2 === 1, $this->pdfDesign->getLighterBackground())) {
+            $maxTries = 3;
+            while (!$this->printRow($row, $currentRow % 2 === 1, $this->pdfDesign->getLighterBackground()) && $maxTries > 0) {
                 //simply retry to print row if it did not work
+                --$maxTries;
             }
             ++$currentRow;
         }

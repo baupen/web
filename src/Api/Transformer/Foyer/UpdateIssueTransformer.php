@@ -51,6 +51,7 @@ class UpdateIssueTransformer
     public function fromApi(\App\Api\Entity\Foyer\UpdateIssue $issue, Issue $entity, $validateCraftsman)
     {
         $entity->setIsMarked($issue->getIsMarked());
+        $entity->setResponseLimit($issue->getResponseLimit());
 
         //get craftsman
         if ($issue->getCraftsmanId() !== null) {

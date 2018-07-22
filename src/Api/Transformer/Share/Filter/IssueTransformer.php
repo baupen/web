@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Transformer\Share;
+namespace App\Api\Transformer\Share\Filter;
 
 use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\Issue;
@@ -19,7 +19,7 @@ use Symfony\Component\Routing\RouterInterface;
 class IssueTransformer extends BatchTransformer
 {
     /**
-     * @var \App\Api\Transformer\Base\IssueTransformer
+     * @var \App\Api\Transformer\Base\PublicIssueTransformer
      */
     private $issueTransformer;
 
@@ -31,10 +31,10 @@ class IssueTransformer extends BatchTransformer
     /**
      * CraftsmanTransformer constructor.
      *
-     * @param \App\Api\Transformer\Base\IssueTransformer $issueTransformer
+     * @param \App\Api\Transformer\Base\PublicIssueTransformer $issueTransformer
      * @param RouterInterface $router
      */
-    public function __construct(\App\Api\Transformer\Base\IssueTransformer $issueTransformer, RouterInterface $router)
+    public function __construct(\App\Api\Transformer\Base\PublicIssueTransformer $issueTransformer, RouterInterface $router)
     {
         $this->issueTransformer = $issueTransformer;
         $this->router = $router;
@@ -44,20 +44,20 @@ class IssueTransformer extends BatchTransformer
      * @param Issue $entity
      * @param array $args
      *
-     * @return \App\Api\Entity\Share\Issue
+     * @return \App\Api\Entity\Share\Filter\Issue
      */
     public function toApi($entity, $args = [])
     {
-        $issue = new \App\Api\Entity\Share\Issue($entity->getId());
+        $issue = new \App\Api\Entity\Share\Filter\Issue($entity->getId());
         $this->issueTransformer->writeApiProperties($entity, $issue);
-
-        $issue->setRegisteredAt($entity->getRegisteredAt());
-        $issue->setRegistrationByName($entity->getRegistrationBy()->getName());
-        $issue->setNumber($entity->getNumber());
+        if ($entity->getReviewedAt() !== null) {
+            $issue->setReviewedAt($entity->getReviewedAt());
+            $issue->setReviewedByName($entity->getReviewBy()->getName());
+        }
 
         $routeArguments = ['identifier' => $args['identifier'], 'imageFilename' => $entity->getImageFilename(), 'issue' => $entity->getId()];
-        $issue->setImageShareView($this->router->generate('external_image_issue_craftsman', $routeArguments + ['size' => ImageServiceInterface::SIZE_SHARE_VIEW]));
-        $issue->setImageFull($this->router->generate('external_image_issue_craftsman', $routeArguments + ['size' => ImageServiceInterface::SIZE_FULL]));
+        $issue->setImageShareView($this->router->generate('external_image_filter_issue', $routeArguments + ['size' => ImageServiceInterface::SIZE_SHARE_VIEW]));
+        $issue->setImageFull($this->router->generate('external_image_filter_issue', $routeArguments + ['size' => ImageServiceInterface::SIZE_FULL]));
 
         return $issue;
     }

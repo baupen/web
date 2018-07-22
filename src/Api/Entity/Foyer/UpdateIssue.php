@@ -24,6 +24,11 @@ class UpdateIssue extends \App\Api\Entity\Base\Issue
     private $craftsmanId;
 
     /**
+     * @var \DateTime|null
+     */
+    private $responseLimit;
+
+    /**
      * @return bool
      */
     public function getIsMarked(): bool
@@ -53,5 +58,21 @@ class UpdateIssue extends \App\Api\Entity\Base\Issue
     public function setCraftsmanId(?string $craftsmanId): void
     {
         $this->craftsmanId = $craftsmanId;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getResponseLimit(): ?\DateTime
+    {
+        return $this->responseLimit;
+    }
+
+    /**
+     * @param \DateTime|null $responseLimit
+     */
+    public function setResponseLimit(?\DateTime $responseLimit): void
+    {
+        $this->responseLimit = $responseLimit;
     }
 }

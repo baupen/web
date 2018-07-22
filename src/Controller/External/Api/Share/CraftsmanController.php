@@ -9,15 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Controller\External\Api;
+namespace App\Controller\External\Api\Share;
 
-use App\Api\Request\External\Share\IssueRequest;
+use App\Api\Request\Share\Craftsman\IssueRequest;
 use App\Api\Response\Data\CraftsmanData;
 use App\Api\Response\Data\MapsData;
 use App\Api\Response\Data\ProcessingEntitiesData;
-use App\Api\Transformer\Share\CraftsmanTransformer;
-use App\Api\Transformer\Share\MapTransformer;
+use App\Api\Transformer\Share\Craftsman\CraftsmanTransformer;
+use App\Api\Transformer\Share\Craftsman\MapTransformer;
 use App\Controller\Api\Base\ApiController;
+use App\Controller\External\Traits\CraftsmanAuthenticationTrait;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
@@ -28,10 +29,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/share/c/{identifier}")
+ * @Route("/c/{identifier}")
  */
-class ShareCraftsmanController extends ApiController
+class CraftsmanController extends ApiController
 {
+    use CraftsmanAuthenticationTrait;
+
     const INVALID_IDENTIFIER = 'invalid identifier';
     const INVALID_ISSUE = 'invalid issue';
     const TIMEOUT_EXCEEDED = "timeout exceeded; can't change response anymore";
@@ -49,26 +52,6 @@ class ShareCraftsmanController extends ApiController
     }
 
     /**
-     * @param $identifier
-     * @param $craftsman
-     * @param $errorResponse
-     *
-     * @return bool
-     */
-    private function parseIdentifierRequest($identifier, &$craftsman, &$errorResponse)
-    {
-        /** @var Craftsman $craftsman */
-        $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['emailIdentifier' => $identifier]);
-        if ($craftsman === null) {
-            $errorResponse = $this->fail(self::INVALID_IDENTIFIER);
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * @param Request $request
      * @param $identifier
      * @param Craftsman $craftsman
@@ -80,7 +63,7 @@ class ShareCraftsmanController extends ApiController
     private function parseIssueRequest(Request $request, $identifier, &$craftsman, &$issue, &$errorResponse)
     {
         /** @var Craftsman $craftsman */
-        if (!$this->parseIdentifierRequest($identifier, $craftsman, $errorResponse)) {
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman, $errorResponse)) {
             return false;
         }
 
@@ -110,7 +93,7 @@ class ShareCraftsmanController extends ApiController
     public function readAction($identifier, CraftsmanTransformer $craftsmanTransformer)
     {
         /** @var Craftsman $craftsman */
-        if (!$this->parseIdentifierRequest($identifier, $craftsman, $errorResponse)) {
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman, $errorResponse)) {
             return $errorResponse;
         }
 
@@ -131,7 +114,7 @@ class ShareCraftsmanController extends ApiController
     public function craftsmanMapsListAction($identifier, MapTransformer $mapTransformer)
     {
         /** @var Craftsman $craftsman */
-        if (!$this->parseIdentifierRequest($identifier, $craftsman, $errorResponse)) {
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman, $errorResponse)) {
             return $errorResponse;
         }
 

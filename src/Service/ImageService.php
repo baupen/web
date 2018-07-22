@@ -104,6 +104,7 @@ class ImageService implements ImageServiceInterface
 
     /**
      * @param Issue $issue
+     * @param bool $rotated
      * @param $image
      */
     private function draw(Issue $issue, bool $rotated, &$image)

@@ -258,13 +258,14 @@ class RegisterController extends ApiController
         $this->setFilterProperties($filter, $constructionSite, $queryFilter);
         $filter->setRegistrationStatus(true);
         $filter->setConstructionSite($constructionSite->getId());
+        $filter->setAccessIdentifier();
 
         //check if limit applies
         $linkParameters = new ParameterBag($queryLimit);
         if ($linkParameters->getBoolean('enabled')) {
             $limit = $linkParameters->get('limit', null);
             $dateLimit = $limit !== null && $limit !== '' ? new \DateTime($limit) : null;
-            $filter->setShareAccessLimit($dateLimit);
+            $filter->setAccessUntil($dateLimit);
         }
 
         //save
@@ -272,7 +273,7 @@ class RegisterController extends ApiController
 
         //send response
         $data = new ShareData();
-        $data->setLink($this->generateUrl('external_share_filter', ['filter' => $filter->getId()], UrlGeneratorInterface::ABSOLUTE_URL));
+        $data->setLink($this->generateUrl('external_share_filter', ['filter' => $filter->getAccessIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL));
 
         return $this->success($data);
     }

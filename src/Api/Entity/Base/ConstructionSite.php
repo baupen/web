@@ -9,28 +9,28 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Entity\Share;
+namespace App\Api\Entity\Base;
 
-class Craftsman extends \App\Api\Entity\Base\Craftsman
+class ConstructionSite extends BaseEntity
 {
     /**
      * @var string
      */
-    private $reportUrl;
+    private $name;
 
     /**
      * @return string
      */
-    public function getReportUrl(): string
+    public function getName(): string
     {
-        return $this->reportUrl;
+        return $this->name;
     }
 
     /**
-     * @param string $reportUrl
+     * @param string $name
      */
-    public function setReportUrl(string $reportUrl): void
+    public function setName(string $name): void
     {
-        $this->reportUrl = $reportUrl;
+        $this->name = $name;
     }
 }

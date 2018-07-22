@@ -9,20 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Entity\Share;
+namespace App\Api\Entity\Base;
 
-class Map extends \App\Api\Entity\Base\Map
+class PublicMap extends Map
 {
-    /**
-     * @var \DateTime|null
-     */
-    private $nextResponseLimit;
-
-    /**
-     * @var Issue[]
-     */
-    private $issues;
-
     /**
      * @var string|null
      */
@@ -32,38 +22,6 @@ class Map extends \App\Api\Entity\Base\Map
      * @var string|null
      */
     private $imageFull;
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getNextResponseLimit(): ?\DateTime
-    {
-        return $this->nextResponseLimit;
-    }
-
-    /**
-     * @param \DateTime|null $nextResponseLimit
-     */
-    public function setNextResponseLimit(?\DateTime $nextResponseLimit): void
-    {
-        $this->nextResponseLimit = $nextResponseLimit;
-    }
-
-    /**
-     * @return Issue[]
-     */
-    public function getIssues(): array
-    {
-        return $this->issues;
-    }
-
-    /**
-     * @param Issue[] $issues
-     */
-    public function setIssues(array $issues): void
-    {
-        $this->issues = $issues;
-    }
 
     /**
      * @return null|string

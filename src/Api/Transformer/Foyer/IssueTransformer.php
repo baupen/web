@@ -48,6 +48,7 @@ class IssueTransformer extends BatchTransformer
     {
         $this->issueTransformer->writeApiProperties($entity, $issue);
 
+        $issue->setResponseLimit($entity->getResponseLimit());
         $issue->setMap($entity->getMap()->getName());
         $issue->setIsMarked($entity->getIsMarked());
         $issue->setWasAddedWithClient($entity->getWasAddedWithClient());
@@ -83,6 +84,7 @@ class IssueTransformer extends BatchTransformer
     {
         $entity->setIsMarked($issue->getIsMarked());
         $entity->setWasAddedWithClient($issue->getWasAddedWithClient());
+        $entity->setResponseLimit($issue->getResponseLimit());
         $this->issueTransformer->writeEntityProperties($issue, $entity);
     }
 }

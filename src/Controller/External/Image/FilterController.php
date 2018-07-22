@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Controller\External;
+namespace App\Controller\External\Image;
 
 use App\Controller\Base\BaseDoctrineController;
+use App\Controller\External\Traits\FilterAuthenticationTrait;
 use App\Controller\Traits\ImageDownloadTrait;
-use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
@@ -24,59 +24,50 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/image")
+ * @Route("/f/{identifier}")
  */
-class ImageController extends BaseDoctrineController
+class FilterController extends BaseDoctrineController
 {
     use ImageDownloadTrait;
+    use FilterAuthenticationTrait;
 
     /**
-     * @Route("/map/{map}/c/{identifier}/{hash}/{size}", name="external_image_map_craftsman")
+     * @Route("/map/{map}/{hash}/{size}", name="external_image_filter_map")
      *
-     * @param Map $map
      * @param $identifier
+     * @param Map $map
      * @param $size
      * @param ImageServiceInterface $imageService
      *
      * @return Response
      */
-    public function mapAction(Map $map, $identifier, $size, ImageServiceInterface $imageService)
+    public function mapAction($identifier, Map $map, $size, ImageServiceInterface $imageService)
     {
-        /** @var Craftsman $craftsman */
-        $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['emailIdentifier' => $identifier]);
-        if ($craftsman === null || $map->getConstructionSite() !== $craftsman->getConstructionSite()) {
+        /** @var Filter $filter */
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter, $errorResponse)) {
             throw new NotFoundHttpException();
         }
 
-        $filter = new Filter();
-        $filter->setConstructionSite($craftsman->getConstructionSite()->getId());
-        $filter->setCraftsmen([$craftsman->getId()]);
-        $filter->setMaps([$map->getId()]);
-        $filter->setRespondedStatus(false);
-        $filter->setRegistrationStatus(true);
-        $filter->setReviewedStatus(false);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
-
         $imagePath = $imageService->generateMapImage($map, $issues);
 
         return $this->file($imageService->getSize($imagePath, $size), null, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 
     /**
-     * @Route("/issue/{issue}/{imageFilename}/c/{identifier}/{size}", name="external_image_issue_craftsman")
+     * @Route("/issue/{issue}/{imageFilename}/{size}", name="external_image_filter_issue")
      *
+     * @param $identifier
      * @param Issue $issue
      * @param $imageFilename
-     * @param $identifier
      * @param $size
      *
      * @return Response
      */
-    public function issueAction(Issue $issue, $imageFilename, $identifier, $size)
+    public function issueAction($identifier, Issue $issue, $imageFilename, $size)
     {
-        /** @var Craftsman $craftsman */
-        $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['emailIdentifier' => $identifier]);
-        if ($craftsman === null || $issue->getMap()->getConstructionSite() !== $craftsman->getConstructionSite()) {
+        /** @var Filter $filter */
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter, $errorResponse)) {
             throw new NotFoundHttpException();
         }
 

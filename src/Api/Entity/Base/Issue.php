@@ -19,11 +19,6 @@ class Issue extends BaseEntity
     private $description;
 
     /**
-     * @var \DateTime|null
-     */
-    private $responseLimit;
-
-    /**
      * @return null|string
      */
     public function getDescription(): ?string
@@ -37,21 +32,5 @@ class Issue extends BaseEntity
     public function setDescription(?string $description): void
     {
         $this->description = $description;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getResponseLimit(): ?\DateTime
-    {
-        return $this->responseLimit;
-    }
-
-    /**
-     * @param \DateTime|null $responseLimit
-     */
-    public function setResponseLimit(?\DateTime $responseLimit): void
-    {
-        $this->responseLimit = $responseLimit;
     }
 }

@@ -13,7 +13,6 @@ namespace App\Api\Transformer\Register;
 
 use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\Issue;
-use Symfony\Component\Routing\RouterInterface;
 
 class IssueTransformer extends BatchTransformer
 {
@@ -26,12 +25,10 @@ class IssueTransformer extends BatchTransformer
      * CraftsmanTransformer constructor.
      *
      * @param \App\Api\Transformer\Foyer\IssueTransformer $issueTransformer
-     * @param RouterInterface $router
      */
-    public function __construct(\App\Api\Transformer\Foyer\IssueTransformer $issueTransformer, RouterInterface $router)
+    public function __construct(\App\Api\Transformer\Foyer\IssueTransformer $issueTransformer)
     {
         $this->issueTransformer = $issueTransformer;
-        $this->router = $router;
     }
 
     /**

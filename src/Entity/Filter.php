@@ -14,6 +14,7 @@ namespace App\Entity;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * A Filter is used to share a selection of issues.
@@ -159,18 +160,32 @@ class Filter extends BaseEntity
     private $limitEnd = null;
 
     /**
-     * @var \DateTime|null
+     * @var string|null
      *
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
-    private $shareAccessLimit = null;
+    private $numberText = null;
 
     /**
      * @var string|null
      *
      * @ORM\Column(type="text", nullable=true)
      */
-    private $numberText = null;
+    private $accessIdentifier;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $accessUntil = null;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastAccess = null;
 
     /**
      * @return string
@@ -463,17 +478,17 @@ class Filter extends BaseEntity
     /**
      * @return \DateTime|null
      */
-    public function getShareAccessLimit(): ?\DateTime
+    public function getAccessUntil(): ?\DateTime
     {
-        return $this->shareAccessLimit;
+        return $this->accessUntil;
     }
 
     /**
-     * @param \DateTime|null $shareAccessLimit
+     * @param \DateTime|null $accessUntil
      */
-    public function setShareAccessLimit(?\DateTime $shareAccessLimit): void
+    public function setAccessUntil(?\DateTime $accessUntil): void
     {
-        $this->shareAccessLimit = $shareAccessLimit;
+        $this->accessUntil = $accessUntil;
     }
 
     /**
@@ -506,5 +521,37 @@ class Filter extends BaseEntity
     public function setIssues(?array $issues): void
     {
         $this->issues = $issues;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getAccessIdentifier(): ?string
+    {
+        return $this->accessIdentifier;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastAccess(): ?\DateTime
+    {
+        return $this->lastAccess;
+    }
+
+    /**
+     * @param \DateTime|null $lastAccess
+     */
+    public function setLastAccess(?\DateTime $lastAccess): void
+    {
+        $this->lastAccess = $lastAccess;
+    }
+
+    /**
+     * sets a new access identifier for public access.
+     */
+    public function setAccessIdentifier(): void
+    {
+        $this->accessIdentifier = Uuid::uuid4()->toString();
     }
 }

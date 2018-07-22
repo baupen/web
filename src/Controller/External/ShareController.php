@@ -51,7 +51,7 @@ class ShareController extends BaseDoctrineController
      */
     public function shareFilterAction(Filter $filter)
     {
-        if ($filter->getShareAccessLimit() !== null && $filter->getShareAccessLimit() < new \DateTime()) {
+        if ($filter->getAccessUntil() !== null && $filter->getAccessUntil() < new \DateTime()) {
             throw new NotFoundHttpException();
         }
 

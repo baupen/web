@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Transformer\Share;
+namespace App\Api\Transformer\Share\Craftsman;
 
-use App\Api\Entity\Share\Issue;
+use App\Api\Entity\Share\Craftsman\Issue;
 use App\Entity\Map;
 use App\Entity\Traits\IdTrait;
 use App\Service\Interfaces\ImageServiceInterface;
@@ -53,21 +53,12 @@ class MapTransformer
      * @param string $identifier
      * @param Issue[] $issues
      *
-     * @return \App\Api\Entity\Share\Map
+     * @return \App\Api\Entity\Share\Craftsman\Map
      */
     public function toApi($entity, string $identifier, array $issues)
     {
-        $map = new \App\Api\Entity\Share\Map($entity->getId());
+        $map = new \App\Api\Entity\Share\Craftsman\Map($entity->getId());
         $this->mapTransformer->writeApiProperties($entity, $map);
-
-        //get earliest response limit
-        $nextResponseLimit = null;
-        foreach ($issues as $issue) {
-            if ($issue->getResponseLimit() !== null && ($nextResponseLimit === null || $nextResponseLimit > $issue->getResponseLimit())) {
-                $nextResponseLimit = $issue->getResponseLimit();
-            }
-        }
-        $map->setNextResponseLimit($nextResponseLimit);
 
         //add images
         if ($entity->getFilename() !== null) {
@@ -81,12 +72,12 @@ class MapTransformer
 
             //set image urls
             $map->setImageShareView(
-                $this->router->generate('external_image_map_craftsman',
+                $this->router->generate('external_image_craftsman_map',
                     ['map' => $map->getId(), 'identifier' => $identifier, 'hash' => $hash, 'size' => ImageServiceInterface::SIZE_SHARE_VIEW]
                 )
             );
             $map->setImageFull(
-                $this->router->generate('external_image_map_craftsman',
+                $this->router->generate('external_image_craftsman_map',
                     ['map' => $map->getId(), 'identifier' => $identifier, 'hash' => $hash, 'size' => ImageServiceInterface::SIZE_FULL]
                 )
             );

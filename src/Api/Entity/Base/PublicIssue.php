@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Entity\Share;
+namespace App\Api\Entity\Base;
 
-class Issue extends \App\Api\Entity\Base\Issue
+class PublicIssue extends Issue
 {
     /**
      * @var \DateTime

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Request\External\Share;
+namespace App\Api\Request\Share\Craftsman;
 
 use Symfony\Component\Validator\Constraints as Assert;
 

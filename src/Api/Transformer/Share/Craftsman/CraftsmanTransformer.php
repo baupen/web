@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Transformer\Share;
+namespace App\Api\Transformer\Share\Craftsman;
 
 use App\Entity\Craftsman;
 use Symfony\Component\Routing\RouterInterface;
@@ -46,7 +46,7 @@ class CraftsmanTransformer
      */
     public function toApi($entity, string $identifier)
     {
-        $craftsman = new \App\Api\Entity\Share\Craftsman($entity->getId());
+        $craftsman = new \App\Api\Entity\Share\Craftsman\Craftsman($entity->getId());
         $this->craftsmanTransformer->writeApiProperties($entity, $craftsman);
 
         $craftsman->setReportUrl($this->router->generate('external_report_craftsman', ['identifier' => $identifier, 'hash' => uniqid()]));

@@ -6,16 +6,16 @@
  * Time: 8:40 PM
  */
 
-namespace App\Tests\Controller\Api;
+namespace App\Tests\Controller\Api\Share;
 
 
-use App\Api\Request\External\Share\IssueRequest;
+use App\Api\Request\Share\Craftsman\IssueRequest;
 use App\Entity\Craftsman;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\External\Api\Base\ApiController;
 use Doctrine\ORM\ORMException;
 
-class ShareControllerTest extends ApiController
+class CraftsmanControllerTest extends ApiController
 {
     /**
      * @var Craftsman|null
@@ -94,7 +94,7 @@ class ShareControllerTest extends ApiController
     /**
      * @throws ORMException
      */
-    public function testCraftsman()
+    public function testRead()
     {
         $response = $this->authenticatedRequest("/read");
         $mapData = $this->checkResponse($response, ApiStatus::SUCCESS);
