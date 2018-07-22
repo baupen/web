@@ -64,11 +64,10 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * @param Issue $entity
-     * @param null $args
      *
      * @return \App\Api\Entity\Foyer\Issue
      */
-    public function toApi($entity, $args = null)
+    public function toApi($entity)
     {
         $issue = new \App\Api\Entity\Foyer\Issue($entity->getId());
         $this->writeApiProperties($entity, $issue);

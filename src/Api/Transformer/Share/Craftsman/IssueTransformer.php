@@ -11,12 +11,11 @@
 
 namespace App\Api\Transformer\Share\Craftsman;
 
-use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\Issue;
 use App\Service\Interfaces\ImageServiceInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-class IssueTransformer extends BatchTransformer
+class IssueTransformer
 {
     /**
      * @var \App\Api\Transformer\Base\PublicIssueTransformer
@@ -42,17 +41,17 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * @param Issue $entity
-     * @param array $args
+     * @param string $identifier
      *
      * @return \App\Api\Entity\Share\Craftsman\Issue
      */
-    public function toApi($entity, $args = [])
+    public function toApi($entity, string $identifier)
     {
         $issue = new \App\Api\Entity\Share\Craftsman\Issue($entity->getId());
         $this->issueTransformer->writeApiProperties($entity, $issue);
         $issue->setResponseLimit($entity->getResponseLimit());
 
-        $routeArguments = ['identifier' => $args['identifier'], 'imageFilename' => $entity->getImageFilename(), 'issue' => $entity->getId()];
+        $routeArguments = ['identifier' => $identifier, 'imageFilename' => $entity->getImageFilename(), 'issue' => $entity->getId()];
         $issue->setImageShareView($this->router->generate('external_image_craftsman_issue', $routeArguments + ['size' => ImageServiceInterface::SIZE_SHARE_VIEW]));
         $issue->setImageFull($this->router->generate('external_image_craftsman_issue', $routeArguments + ['size' => ImageServiceInterface::SIZE_FULL]));
 

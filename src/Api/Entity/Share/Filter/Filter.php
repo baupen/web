@@ -11,7 +11,7 @@
 
 namespace App\Api\Entity\Share\Filter;
 
-class Filter extends \App\Api\Entity\Base\Filter
+class Filter
 {
     /**
      * @var string

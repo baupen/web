@@ -28,7 +28,7 @@ class CraftsmanTransformer extends BatchTransformer
 
     /**
      * @param Craftsman $entity
-     * @param null $args
+     * @param array|null $args
      *
      * @return \App\Api\External\Entity\Craftsman
      */

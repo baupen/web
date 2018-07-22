@@ -84,7 +84,11 @@ class MapTransformer
         }
 
         //add issues
-        $map->setIssues($this->issueTransformer->toApiMultiple($issues, ['identifier' => $identifier]));
+        $convertedIssues = [];
+        foreach ($issues as $issue) {
+            $convertedIssues[] = $this->issueTransformer->toApi($issue, $identifier);
+        }
+        $map->setIssues($convertedIssues);
 
         return $map;
     }

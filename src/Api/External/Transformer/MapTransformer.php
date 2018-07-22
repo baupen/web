@@ -28,7 +28,7 @@ class MapTransformer extends BatchTransformer
 
     /**
      * @param Map $entity
-     * @param null $args
+     * @param array|null $args
      *
      * @return \App\Api\External\Entity\Map
      */

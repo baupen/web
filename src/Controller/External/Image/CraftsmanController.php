@@ -33,6 +33,14 @@ class CraftsmanController extends BaseDoctrineController
     use CraftsmanAuthenticationTrait;
 
     /**
+     * @return array
+     */
+    public static function getSubscribedServices()
+    {
+        return parent::getSubscribedServices() + [ImageServiceInterface::class => ImageServiceInterface::class];
+    }
+
+    /**
      * @Route("/map/{map}/{hash}/{size}", name="external_image_craftsman_map")
      *
      * @param $identifier
@@ -72,16 +80,17 @@ class CraftsmanController extends BaseDoctrineController
      * @param Issue $issue
      * @param $imageFilename
      * @param $size
+     * @param ImageServiceInterface $imageService
      *
      * @return Response
      */
-    public function issueAction($identifier, Issue $issue, $imageFilename, $size)
+    public function issueAction($identifier, Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService)
     {
         /** @var Craftsman $craftsman */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
             throw new NotFoundHttpException();
         }
 
-        return $this->downloadIssueImage($issue, $imageFilename, $size);
+        return $this->file($this->getImagePath($this->getParameter('PUBLIC_DIR'), $issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

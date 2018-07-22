@@ -42,11 +42,10 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * @param Issue $entity
-     * @param array $args
      *
      * @return \App\Api\Entity\Share\Filter\Issue
      */
-    public function toApi($entity, $args = [])
+    public function toApi($entity)
     {
         $issue = new \App\Api\Entity\Share\Filter\Issue($entity->getId());
         $this->issueTransformer->writeApiProperties($entity, $issue);

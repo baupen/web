@@ -33,11 +33,10 @@ class ConstructionSiteTransformer extends BatchTransformer
 
     /**
      * @param ConstructionSite $entity
-     * @param array $args
      *
      * @return \App\Api\Entity\Share\Filter\ConstructionSite
      */
-    public function toApi($entity, $args = [])
+    public function toApi($entity)
     {
         $issue = new \App\Api\Entity\Share\Filter\ConstructionSite($entity->getId());
         $this->constructionSiteTransformer->writeApiProperties($entity, $issue);

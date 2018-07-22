@@ -13,13 +13,18 @@ namespace App\Api\External\Transformer\Base;
 
 abstract class BatchTransformer
 {
-    abstract public function toApi($entity, $args = null);
+    /**
+     * @param $entity
+     *
+     * @return mixed
+     */
+    abstract public function toApi($entity);
 
     /**
      * transforms all toApi, preserving the ordering.
      *
      * @param array $entities
-     * @param null $args
+     * @param array|null $args
      *
      * @return array
      */
@@ -27,7 +32,7 @@ abstract class BatchTransformer
     {
         $res = [];
         foreach ($entities as $entity) {
-            $res[] = $this->toApi($entity, $args);
+            $res[] = $this->toApi($entity);
         }
 
         return $res;

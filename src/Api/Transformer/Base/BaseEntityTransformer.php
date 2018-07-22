@@ -19,11 +19,11 @@ class BaseEntityTransformer extends BatchTransformer
 {
     /**
      * @param IdTrait $entity
-     * @param null $args
+     * @param array|null $args
      *
      * @return BaseEntity
      */
-    public function toApi($entity, $args = null)
+    public function toApi($entity)
     {
         return new BaseEntity($entity->getId());
     }

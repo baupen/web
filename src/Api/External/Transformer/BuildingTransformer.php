@@ -30,7 +30,7 @@ class BuildingTransformer extends BatchTransformer
 
     /**
      * @param ConstructionSite $entity
-     * @param null $args
+     * @param array|null $args
      *
      * @return Building
      */

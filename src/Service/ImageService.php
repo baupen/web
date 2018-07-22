@@ -137,13 +137,13 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
-     * @param $yCoordinate
-     * @param $xCoordinate
+     * @param float $yPosition
+     * @param float $xPosition
      * @param $circleColor
      * @param $text
      * @param $image
      */
-    private function drawCircleWithText($yCoordinate, $xCoordinate, $circleColor, $text, &$image)
+    private function drawCircleWithText($yPosition, $xPosition, $circleColor, $text, &$image)
     {
         //get sizes
         $xSize = imagesx($image);
@@ -163,11 +163,11 @@ class ImageService implements ImageServiceInterface
 
         //draw white base ellipse before the colored one
         $white = $this->createColor($image, 255, 255, 255);
-        imagefilledellipse($image, $xCoordinate, $yCoordinate, $diameter + 2, $diameter + 2, $white);
-        imagefilledellipse($image, $xCoordinate, $yCoordinate, $diameter, $diameter, $circleColor);
+        imagefilledellipse($image, (int)$xPosition, (int)$yPosition, (int)($diameter + 2), (int)($diameter + 2), $white);
+        imagefilledellipse($image, (int)$xPosition, (int)$yPosition, (int)$diameter, (int)$diameter, $circleColor);
 
         //draw text
-        imagettftext($image, $fontSize, 0, $xCoordinate - ($txtWidth / 2), $yCoordinate + ($txtHeight / 2), $white, $font, $text);
+        imagettftext($image, $fontSize, 0, (int)($xPosition - ($txtWidth / 2)), (int)($yPosition + ($txtHeight / 2)), $white, $font, $text);
     }
 
     /**
@@ -363,6 +363,7 @@ class ImageService implements ImageServiceInterface
                 }
             }
         } catch (\ReflectionException $e) {
+            //this will not fail because the ImageServiceInterface is well defined
         }
     }
 

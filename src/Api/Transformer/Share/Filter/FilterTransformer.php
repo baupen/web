@@ -17,11 +17,6 @@ use Symfony\Component\Routing\RouterInterface;
 class FilterTransformer
 {
     /**
-     * @var \App\Api\Transformer\Base\FilterTransformer
-     */
-    private $filterTransformer;
-
-    /**
      * @var RouterInterface
      */
     private $router;
@@ -29,12 +24,10 @@ class FilterTransformer
     /**
      * CraftsmanTransformer constructor.
      *
-     * @param \App\Api\Transformer\Base\FilterTransformer $filterTransformer
      * @param RouterInterface $router
      */
-    public function __construct(\App\Api\Transformer\Base\FilterTransformer $filterTransformer, RouterInterface $router)
+    public function __construct(RouterInterface $router)
     {
-        $this->filterTransformer = $filterTransformer;
         $this->router = $router;
     }
 
@@ -47,7 +40,6 @@ class FilterTransformer
     public function toApi($entity, string $identifier)
     {
         $issue = new \App\Api\Entity\Share\Filter\Filter($entity->getId());
-        $this->filterTransformer->writeApiProperties($entity, $issue);
 
         //because we can't cache reports anyways; just generate a random hash anytime this is converted
         $issue->setReportUrl($this->router->generate('external_report_filter', ['identifier' => $identifier, 'hash' => sha1(time())]));
