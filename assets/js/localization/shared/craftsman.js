@@ -2,7 +2,7 @@ export default {
     de: {
         name: "Name",
         trade: "Funktion",
-        not_responded_issues_count: "Unbeantwortet Pendenzen",
+        not_responded_issues_count: "Unbeantwortete Pendenzen",
         not_read_issues_count: "Ungelesene Pendenzen",
         open_issues_count: "Offene Pendenzen",
         next_response_limit: "Nächste Limite",

@@ -1,5 +1,7 @@
 export default {
     de: {
-        name: "Karte"
+        name: "Karte",
+        open_issues_count: "Offene Pendenzen",
+        next_response_limit: "Nächste Limite",
     }
 }

@@ -285,7 +285,7 @@ class ImageService implements ImageServiceInterface
                     $res = $this->createVariant($imagePath, $path, 100, 50, $ending);
                     break;
                 case ImageServiceInterface::SIZE_SHARE_VIEW:
-                    $res = $this->createVariant($imagePath, $path, 300, 500, $ending);
+                    $res = $this->createVariant($imagePath, $path, 450, 600, $ending);
                     break;
                 case ImageServiceInterface::SIZE_REPORT_ISSUE:
                     $res = $this->createVariant($imagePath, $path, 600, 600, $ending);

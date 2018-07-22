@@ -6,6 +6,7 @@ Vue.config.productionTip = false;
 // components
 import {library} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
+import VueHeadful from 'vue-headful'
 
 // app
 import Share from './share'
@@ -21,6 +22,8 @@ if (document.getElementById("share") != null) {
 
     // share components
     Vue.component('font-awesome-icon', FontAwesomeIcon);
+    Vue.component('vue-headful', VueHeadful);
+
 
     // initialize messages
     const i18n = new VueI18n({

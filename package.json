@@ -27,6 +27,7 @@
     "open-sans-fontface": "^1.4",
     "popper.js": "^1.12",
     "vue": "^2.5",
+    "vue-async-computed": "^3.3.1",
     "vue-headful": "^2.0.1",
     "vue-i18n": "^8.0",
     "vuejs-datepicker": "^1.5.2",

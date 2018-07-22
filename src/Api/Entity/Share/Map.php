@@ -14,6 +14,11 @@ namespace App\Api\Entity\Share;
 class Map extends \App\Api\Entity\Base\Map
 {
     /**
+     * @var \DateTime|null
+     */
+    private $nextResponseLimit;
+
+    /**
      * @var Issue[]
      */
     private $issues;
@@ -27,6 +32,22 @@ class Map extends \App\Api\Entity\Base\Map
      * @var string|null
      */
     private $imageFull;
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getNextResponseLimit(): ?\DateTime
+    {
+        return $this->nextResponseLimit;
+    }
+
+    /**
+     * @param \DateTime|null $nextResponseLimit
+     */
+    public function setNextResponseLimit(?\DateTime $nextResponseLimit): void
+    {
+        $this->nextResponseLimit = $nextResponseLimit;
+    }
 
     /**
      * @return Issue[]

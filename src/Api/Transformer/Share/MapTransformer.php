@@ -60,6 +60,15 @@ class MapTransformer
         $map = new \App\Api\Entity\Share\Map($entity->getId());
         $this->mapTransformer->writeApiProperties($entity, $map);
 
+        //get earliest response limit
+        $nextResponseLimit = null;
+        foreach ($issues as $issue) {
+            if ($issue->getResponseLimit() !== null && ($nextResponseLimit === null || $nextResponseLimit > $issue->getResponseLimit())) {
+                $nextResponseLimit = $issue->getResponseLimit();
+            }
+        }
+        $map->setNextResponseLimit($nextResponseLimit);
+
         //add images
         if ($entity->getFilename() !== null) {
             //generate hash from ids of issues
