@@ -42,15 +42,13 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * @param Issue $entity
-     * @param null $args
-     *
-     * @return \App\Api\Entity\Foyer\Issue
+     * @param \App\Api\Entity\Foyer\Issue $issue
      */
-    public function toApi($entity, $args = null)
+    public function writeApiProperties(Issue $entity, \App\Api\Entity\Foyer\Issue $issue)
     {
-        $issue = new \App\Api\Entity\Foyer\Issue($entity->getId());
         $this->issueTransformer->writeApiProperties($entity, $issue);
 
+        $issue->setResponseLimit($entity->getResponseLimit());
         $issue->setMap($entity->getMap()->getName());
         $issue->setIsMarked($entity->getIsMarked());
         $issue->setWasAddedWithClient($entity->getWasAddedWithClient());
@@ -62,6 +60,18 @@ class IssueTransformer extends BatchTransformer
 
         $issue->setImageThumbnail($this->router->generate('image_issue', ['issue' => $entity->getId(), 'imageFilename' => $entity->getImageFilename(), 'size' => ImageServiceInterface::SIZE_THUMBNAIL]));
         $issue->setImageFull($this->router->generate('image_issue', ['issue' => $entity->getId(), 'imageFilename' => $entity->getImageFilename(), 'size' => ImageServiceInterface::SIZE_FULL]));
+    }
+
+    /**
+     * @param Issue $entity
+     * @param null $args
+     *
+     * @return \App\Api\Entity\Foyer\Issue
+     */
+    public function toApi($entity, $args = null)
+    {
+        $issue = new \App\Api\Entity\Foyer\Issue($entity->getId());
+        $this->writeApiProperties($entity, $issue);
 
         return $issue;
     }
@@ -74,6 +84,7 @@ class IssueTransformer extends BatchTransformer
     {
         $entity->setIsMarked($issue->getIsMarked());
         $entity->setWasAddedWithClient($issue->getWasAddedWithClient());
+        $entity->setResponseLimit($issue->getResponseLimit());
         $this->issueTransformer->writeEntityProperties($issue, $entity);
     }
 }

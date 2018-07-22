@@ -1,15 +1,13 @@
 // include styling
 require("../sass/app.sass");
 
-// jquery & attach to window
-const $ = require("jquery");
-window.$ = $;
+// prepare js environement
+require("./extensions");
+require("./bootstrap_vanilla");
 
-// bootstrap
-const bootstrap = require("bootstrap");
-
-
-// other parts of the application
-require("./utils");
-require("./usability");
-require("./vue_apps");
+// include vuejs apps
+require("./apps/Dispatch/bootstrap");
+require("./apps/Foyer/bootstrap");
+require("./apps/Register/bootstrap");
+require("./apps/Share/Craftsman/bootstrap");
+require("./apps/Share/Filter/bootstrap");

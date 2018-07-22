@@ -45,23 +45,34 @@ class IssueRepository extends EntityRepository
      */
     public function filter(Filter $filter)
     {
+        // due to a bug in doctrine empty arrays are the same as null arrays after persist/retrieve from db
+        // therefore handle empty arrays as null arrays in lack of a better solution
+        // bugfix will only be included in 3.0 because its a breaking change
+        $unsafeArrays = $filter->getId() !== null;
+
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('i')->from(Issue::class, 'i');
+        $qb->leftJoin('i.craftsman', 'c');
         $qb->join('i.map', 'm');
-        $qb->join('i.craftsman', 'c');
         $qb->join('m.constructionSite', 'cs');
         $qb->where('cs.id = :constructionSite');
         $qb->setParameter(':constructionSite', $filter->getConstructionSite());
         $qb->orderBy('i.number', 'ASC');
+        $qb->orderBy('i.createdAt', 'ASC');
 
-        if ($filter->getCraftsmen() !== null) {
+        if ($filter->getCraftsmen() !== null && !($unsafeArrays && empty($filter->getCraftsmen()))) {
             $qb->andWhere('c.id IN (:craftsmen)');
             $qb->setParameter(':craftsmen', $filter->getCraftsmen());
         }
 
-        if ($filter->getMaps() !== null) {
+        if ($filter->getMaps() !== null && !($unsafeArrays && empty($filter->getMaps()))) {
             $qb->andWhere('m.id IN (:maps)');
             $qb->setParameter(':maps', $filter->getMaps());
+        }
+
+        if ($filter->getIssues() !== null && !($unsafeArrays && empty($filter->getIssues()))) {
+            $qb->andWhere('i.id IN (:issues)');
+            $qb->setParameter(':issues', $filter->getIssues());
         }
 
         $statusToString = function ($condition) {
@@ -69,6 +80,16 @@ class IssueRepository extends EntityRepository
         };
         if ($filter->getRegistrationStatus() !== null) {
             $qb->andWhere('i.registeredAt ' . $statusToString($filter->getRegistrationStatus()));
+            if ($filter->getRespondedStatus()) {
+                if ($filter->getRegistrationStart() !== null) {
+                    $qb->andWhere('i.registeredAt >= :registration_end');
+                    $qb->setParameter(':responded_start', $filter->getRegistrationStart());
+                }
+                if ($filter->getRegistrationEnd() !== null) {
+                    $qb->andWhere('i.registeredAt <= :registration_end');
+                    $qb->setParameter(':registration_end', $filter->getRegistrationEnd());
+                }
+            }
         }
 
         if ($filter->getRespondedStatus() !== null) {
@@ -87,10 +108,40 @@ class IssueRepository extends EntityRepository
 
         if ($filter->getReviewedStatus() !== null) {
             $qb->andWhere('i.reviewedAt ' . $statusToString($filter->getReviewedStatus()));
+            if ($filter->getReviewedStatus()) {
+                if ($filter->getReviewedStart() !== null) {
+                    $qb->andWhere('i.reviewedAt >= :reviewed_start');
+                    $qb->setParameter(':reviewed_start', $filter->getReviewedStart());
+                }
+                if ($filter->getReviewedEnd() !== null) {
+                    $qb->andWhere('i.reviewedAt <= :reviewed_end');
+                    $qb->setParameter(':reviewed_end', $filter->getReviewedEnd());
+                }
+            }
         }
 
-        //more properties missing
+        if ($filter->getReadStatus() !== null) {
+            if ($filter->getReadStatus()) {
+                $qb->andWhere('i.registeredAt < c.lastOnlineVisit');
+            } else {
+                $qb->andWhere('i.registeredAt >= c.lastOnlineVisit');
+            }
+        }
 
-        return $qb->getQuery()->getResult();
+        /** @var Issue[] $issues */
+        $issues = $qb->getQuery()->getResult();
+        if ($filter->getNumberText() === null) {
+            return $issues;
+        }
+
+        //filter by issue number text
+        $res = [];
+        foreach ($issues as $issue) {
+            if (mb_strpos((string)$issue->getNumber(), $filter->getNumberText()) === 0) {
+                $res[] = $issue;
+            }
+        }
+
+        return $res;
     }
 }

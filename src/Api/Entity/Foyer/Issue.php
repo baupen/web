@@ -54,6 +54,11 @@ class Issue extends \App\Api\Entity\Base\Issue
     private $imageFull;
 
     /**
+     * @var \DateTime|null
+     */
+    private $responseLimit;
+
+    /**
      * @return bool
      */
     public function getIsMarked(): bool
@@ -179,5 +184,21 @@ class Issue extends \App\Api\Entity\Base\Issue
     public function setImageFull(?string $imageFull): void
     {
         $this->imageFull = $imageFull;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getResponseLimit(): ?\DateTime
+    {
+        return $this->responseLimit;
+    }
+
+    /**
+     * @param \DateTime|null $responseLimit
+     */
+    public function setResponseLimit(?\DateTime $responseLimit): void
+    {
+        $this->responseLimit = $responseLimit;
     }
 }

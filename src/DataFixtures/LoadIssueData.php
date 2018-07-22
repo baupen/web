@@ -40,8 +40,8 @@ class LoadIssueData extends BaseFixture
     /**
      * @var array to generate random positions/scales; length 11/7/5 which are all prime
      */
-    private $xOrientationArray = [0.12, 0.26, 0.31, 0.36, 0.45, 0.56, 0.57, 0.63, 0.74, 0.79, 0.85];
-    private $yOrientationArray = [0.21, 0.34, 0.45, 0.51, 0.67, 0.79, 0.89];
+    private $xOrientationArray = [0.12, 0.26, 0.31, 0.36, 0.45, 0.56, 0.57, 0.63, 0.74, 0.78, 0.85];
+    private $yOrientationArray = [0.21, 0.34, 0.44, 0.51, 0.67, 0.79, 0.89];
     private $scaleArray = [0.2, 0.6, 0.78, 0.89, 1];
 
     /**
@@ -77,6 +77,7 @@ class LoadIssueData extends BaseFixture
                     }
                     $issue->setPositionZoomScale($this->scaleArray[$counter % count($this->scaleArray)]);
                 }
+                ++$counter;
             }
 
             return $issues;
@@ -110,14 +111,11 @@ class LoadIssueData extends BaseFixture
     }
 
     /**
-     * @param int $generator
-     * @param int $group
-     *
      * @return int
      */
-    private function getRandomNumber($generator, $group)
+    private function getRandomNumber()
     {
-        return ($generator ** ($this->currentExponent++ % $group)) % $group;
+        return (7 ** ($this->currentExponent++ % 17)) % 17;
     }
 
     private $currentExponent = 7;
@@ -143,29 +141,40 @@ class LoadIssueData extends BaseFixture
         foreach ($issues as $issue) {
             $issue->setMap($this->getRandomEntry($randomMapCounter, $constructionSite->getMaps()));
 
-            if ($setStatus !== 0 || $this->getRandomNumber(7, 11) > 7) {
+            if ($setStatus !== 0 || $this->getRandomNumber() > 7) {
                 //if no status is set leave craftsman null sometime
                 $issue->setCraftsman($this->getRandomEntry($randomCraftsmanCounter, $constructionSite->getCraftsmen()));
             } else {
                 assert($issue->getCraftsman() === null);
             }
 
-            $issue->setUploadBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionSite->getConstructionManagers()));
-            $issue->setUploadedAt(new \DateTime('-' . ($this->getRandomNumber(7, 11) + 50) . ' hours'));
-
+            $dayOffset = 0;
             if ($setStatus & self::REGISTRATION_SET) {
                 $issue->setNumber($issueNumber++);
-                $issue->setRegistrationBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionSite->getConstructionManagers()));
-                $issue->setRegisteredAt(new \DateTime('-' . ($this->getRandomNumber(7, 11) + 35) . ' hours'));
+
+                if ($setStatus & self::REVIEW_SET) {
+                    $issue->setReviewBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionSite->getConstructionManagers()));
+                    $dayOffset = $this->getRandomNumber();
+                    $issue->setReviewedAt(new \DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
+                }
 
                 if ($setStatus & self::RESPONSE_SET) {
                     $issue->setResponseBy($issue->getCraftsman());
-                    $issue->setRespondedAt(new \DateTime('-' . ($this->getRandomNumber(7, 11) + 20) . ' hours'));
+                    $dayOffset += $this->getRandomNumber() + 1;
+                    $issue->setRespondedAt(new \DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
                 }
-                if ($setStatus & self::REVIEW_SET) {
-                    $issue->setReviewBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionSite->getConstructionManagers()));
-                    $issue->setReviewedAt(new \DateTime('-' . ($this->getRandomNumber(7, 11)) . ' hours'));
-                }
+
+                $issue->setRegistrationBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionSite->getConstructionManagers()));
+                $dayOffset += $this->getRandomNumber() + 1;
+                $issue->setRegisteredAt(new \DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
+            }
+
+            $issue->setUploadBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionSite->getConstructionManagers()));
+            $dayOffset += $this->getRandomNumber() + 1;
+            $issue->setUploadedAt(new \DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
+
+            if ($this->getRandomNumber() > 7) {
+                $issue->setResponseLimit(new \DateTime(($this->getRandomNumber()) . ' days'));
             }
 
             if ($issue->getImageFilename() !== null) {

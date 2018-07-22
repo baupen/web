@@ -22,7 +22,6 @@ class IssueTransformer
     public function writeApiProperties($source, $target)
     {
         $target->setDescription($source->getDescription());
-        $target->setResponseLimit($source->getResponseLimit());
     }
 
     /**
@@ -32,6 +31,5 @@ class IssueTransformer
     public function writeEntityProperties($source, $target)
     {
         $target->setDescription($source->getDescription());
-        $target->setResponseLimit($source->getResponseLimit());
     }
 }

@@ -250,7 +250,7 @@ class ReportService implements ReportServiceInterface
         //add limit
         $limitValue = $getDateTimeRange($filter->getResponseLimitStart(), $filter->getResponseLimitEnd());
         if ($limitValue !== '') {
-            $filterEntries[$this->translator->transChoice('response_limit', count($names), [], 'entity_issue')] = $limitValue;
+            $filterEntries[$this->translator->trans('response_limit', [], 'entity_issue')] = $limitValue;
         }
 
         //set other properties
@@ -332,15 +332,15 @@ class ReportService implements ReportServiceInterface
             $row[] = ($issue->getResponseLimit() !== null) ? $issue->getResponseLimit()->format(DateTimeFormatter::DATE_FORMAT) : '';
 
             if ($showRegistered) {
-                $row[] = $issue->getRegisteredAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getRegistrationBy()->getName();
+                $row[] = $issue->getRegisteredAt() !== null ? $issue->getRegisteredAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getRegistrationBy()->getName() : '';
             }
 
             if ($showResponded) {
-                $row[] = $issue->getRespondedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getResponseBy()->getName();
+                $row[] = $issue->getRespondedAt() !== null ? $issue->getRespondedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getResponseBy()->getName() : '';
             }
 
             if ($showReviewed) {
-                $row[] = $issue->getReviewedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getReviewBy()->getName();
+                $row[] = $issue->getReviewedAt() !== null ? $issue->getReviewedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getReviewBy()->getName() : '';
             }
 
             $tableContent[] = $row;
@@ -414,6 +414,7 @@ class ReportService implements ReportServiceInterface
         $tableHeader = [$this->translator->trans('context', [], 'entity_map'), $this->translator->trans('entity.name', [], 'entity_map')];
 
         //add map name & map context to table
+        $tableContent = [];
         foreach ($orderedMaps as $mapId => $map) {
             $tableContent[$mapId] = [$map->getContext(), $map->getName()];
         }

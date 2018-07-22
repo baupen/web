@@ -17,7 +17,22 @@ app_external:
     type:     annotation
     prefix:   /external
 
-app_external_api:
-    resource: "../src/Controller/External/Api/"
+app_external_api_share:
+    resource: "../src/Controller/External/Api/Share"
     type:     annotation
-    prefix:   /external/api
+    prefix:   /external/api/share
+
+app_external_image:
+    resource: "../src/Controller/External/Image/"
+    type:     annotation
+    prefix:   /external/image
+
+app_external_report:
+    resource: "../src/Controller/External/Report/"
+    type:     annotation
+    prefix:   /external/report
+
+app_external_share:
+    resource: "../src/Controller/External/Share/"
+    type:     annotation
+    prefix:   /external/share

@@ -56,6 +56,7 @@ class Report
         //set typography
         $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
         $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
+        $this->pdfDocument->SetLineWidth($this->pdfSizes->getLineWidth());
 
         // set colors
         $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
@@ -271,70 +272,128 @@ class Report
     {
         $this->setDefaults();
 
+        //print table header
         if ($tableTitle !== null) {
-            //table header
             $this->printH3($tableTitle, $this->pdfSizes->getContentXSize());
         }
-
-        //table needs to know where to start
-        $startY = $this->pdfDocument->GetY();
 
         //adapt font for table content
         $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
         $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
         $this->pdfDocument->SetFont(...$this->pdfDesign->getEmphasisFontFamily());
 
-        //go through header
-        $currentColumn = 0;
-        $columnCount = count($tableHead);
-        $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
+        //make header upper case
+        $row = [];
         foreach ($tableHead as $item) {
-            $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount), $startY);
-            $this->pdfDocument->MultiCell($this->pdfSizes->getColumnWidth($currentColumn, $columnCount), 0, mb_strtoupper($item), 0, 'L', true, 1);
-            ++$currentColumn;
+            $row[] = mb_strtoupper($item, 'UTF-8');
         }
 
+        //print header
+        $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
+        $maxTries = 3;
+        while (!$this->printRow($row, true, $this->pdfDesign->getLightBackground()) && $maxTries > 0) {
+            //simply retry to print row if it did not work
+            --$maxTries;
+        }
+
+        //print content
         $currentRow = 0;
         $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
         $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
         foreach ($tableContent as $row) {
-            //alternative background colors
-            $fill = $currentRow % 2;
-
-            //put columns
-            $maxContentHeight = 0;
-            $currentColumn = 0;
-            $fullWidth = 0;
-            $startY = $this->pdfDocument->GetY();
-            foreach ($row as $item) {
-                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount), $startY);
-                $currentWidth = $this->pdfSizes->getColumnWidth($currentColumn, $columnCount);
-
-                $this->pdfDocument->MultiCell($currentWidth, $maxContentHeight - $startY, $item, 0, 'L', $fill, 1);
-
-                if ($maxContentHeight !== 0 && $this->pdfDocument->GetY() > $maxContentHeight) {
-                    $diff = $this->pdfDocument->GetY() - $maxContentHeight;
-                    $newMaxHeight = $this->pdfDocument->GetY();
-                    $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount), $maxContentHeight);
-                    $this->pdfDocument->SetCellPadding(0);
-                    $this->pdfDocument->Cell($fullWidth, $diff - 2, '', 0, 0, '', $fill);
-                    $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
-
-                    $this->pdfDocument->SetY($newMaxHeight);
-                    $maxContentHeight += $diff;
-                } else {
-                    $maxContentHeight = $this->pdfDocument->GetY();
-                }
-                ++$currentColumn;
-                $fullWidth += $currentWidth;
+            $maxTries = 3;
+            while (!$this->printRow($row, $currentRow % 2 === 1, $this->pdfDesign->getLighterBackground()) && $maxTries > 0) {
+                //simply retry to print row if it did not work
+                --$maxTries;
             }
-            $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $maxContentHeight, $this->pdfSizes->getContentXEnd(), $maxContentHeight);
-            $this->pdfDocument->SetY($maxContentHeight);
             ++$currentRow;
         }
 
         //define start of next part
         $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
+    }
+
+    private function printRow($row, $fill, $fillBackground)
+    {
+        //alternative background colors
+        $columnCount = count($row);
+
+        //put columns
+        $maxContentHeight = 0;
+        $currentColumn = 0;
+        $fullWidth = 0;
+        $startY = $this->pdfDocument->GetY();
+        $startPage = $this->pdfDocument->getPage();
+        foreach ($row as $item) {
+            $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount), $startY);
+            $currentWidth = $this->pdfSizes->getColumnWidth($currentColumn, $columnCount);
+
+            //draw cell content
+            $this->pdfDocument->MultiCell($currentWidth, $maxContentHeight - $startY, $item, 0, 'L', $fill, 1);
+
+            //if new page started; remove from old page and retry on new page
+            if ($this->pdfDocument->getPage() > $startPage) {
+                $newHeight = $this->pdfDocument->GetY();
+
+                //row did not fit on current page; start over on new page
+                //print over started row
+                $this->pdfDocument->setPage($startPage);
+                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount), $startY);
+                $this->pdfDocument->SetCellPadding(0);
+                $this->pdfDocument->SetFillColor(...$this->pdfDesign->getWhiteBackground());
+                $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $this->pdfSizes->getContentYEnd() - $startY, '', 0, 0, '', true);
+
+                //go to new page
+                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount), $this->pdfSizes->getContentYStart());
+                $this->pdfDocument->setPage($startPage + 1);
+
+                //print over started row
+                if ($fill) {
+                    $this->pdfDocument->SetFillColor(...$fillBackground);
+                }
+                $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $newHeight - $this->pdfSizes->getContentYStart(), '', 0, 0, '', true);
+                //draw line
+                $lineX = $this->pdfSizes->getContentYStart();
+                $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $lineX, $this->pdfSizes->getContentXEnd(), $lineX);
+
+                //set position to start new row
+                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount) + $this->pdfSizes->getLineWidth(), $lineX);
+
+                //reset colors
+                $this->pdfDocument->SetFillColor(...$fillBackground);
+                $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
+
+                return false;
+            }
+
+            //if row is higher now than before; draw background from preceding columns
+            if ($maxContentHeight !== 0 && $this->pdfDocument->GetY() > $maxContentHeight) {
+                $diff = $this->pdfDocument->GetY() - $maxContentHeight;
+                $newMaxHeight = $this->pdfDocument->GetY();
+
+                //redraw fill if needed
+                if ($fill) {
+                    $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount), $maxContentHeight);
+                    $this->pdfDocument->SetCellPadding(0);
+                    $this->pdfDocument->Cell($fullWidth, $diff, '', 0, 0, '', $fill);
+                    $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
+                }
+
+                //set position for new row
+                $this->pdfDocument->SetY($newMaxHeight);
+                $maxContentHeight += $diff;
+            } else {
+                $maxContentHeight = $this->pdfDocument->GetY();
+            }
+            ++$currentColumn;
+            $fullWidth += $currentWidth;
+        }
+
+        //draw finishing line & set position for new row
+        $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $maxContentHeight, $this->pdfSizes->getContentXEnd(), $maxContentHeight);
+        $this->pdfDocument->SetY($maxContentHeight + $this->pdfSizes->getLineWidth());
+
+        return true;
     }
 
     /**

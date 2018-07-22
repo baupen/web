@@ -16,7 +16,7 @@ use App\Api\Entity\Base\Craftsman;
 class CraftsmanData
 {
     /**
-     * @var Craftsman[]
+     * @var Craftsman
      */
     private $craftsman;
 

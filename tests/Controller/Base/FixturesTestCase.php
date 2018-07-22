@@ -11,6 +11,7 @@
 
 namespace App\Tests\Controller\Base;
 
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Input\StringInput;
@@ -18,6 +19,14 @@ use Symfony\Component\Console\Input\StringInput;
 class FixturesTestCase extends WebTestCase
 {
     protected static $application;
+
+    /**
+     * @return RegistryInterface
+     */
+    protected function getDoctrine(): RegistryInterface
+    {
+        return $this->doctrine;
+    }
 
     /**
      * @throws \Exception
@@ -37,5 +46,13 @@ class FixturesTestCase extends WebTestCase
         foreach ($commands as $command) {
             $application->run(new StringInput($command));
         }
+
+        $this->doctrine = $client->getKernel()->getContainer()
+            ->get('doctrine');
     }
+
+    /**
+     * @var RegistryInterface $doctrine
+     */
+    private $doctrine;
 }

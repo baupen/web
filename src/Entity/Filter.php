@@ -14,6 +14,7 @@ namespace App\Entity;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * A Filter is used to share a selection of issues.
@@ -68,11 +69,39 @@ class Filter extends BaseEntity
     private $maps = null;
 
     /**
+     * @var string[]|null
+     *
+     * @ORM\Column(type="simple_array", nullable=true)
+     */
+    private $issues = null;
+
+    /**
      * @var bool|null
      *
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $registrationStatus = null;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $registrationStart = null;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $registrationEnd = null;
+
+    /**
+     * @var bool|null
+     *
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $readStatus = null;
 
     /**
      * @var bool|null
@@ -129,6 +158,34 @@ class Filter extends BaseEntity
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $limitEnd = null;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $numberText = null;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $accessIdentifier;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $accessUntil = null;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastAccess = null;
 
     /**
      * @return string
@@ -368,5 +425,133 @@ class Filter extends BaseEntity
     public function setLimitEnd(?\DateTime $limitEnd): void
     {
         $this->limitEnd = $limitEnd;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getRegistrationStart(): ?\DateTime
+    {
+        return $this->registrationStart;
+    }
+
+    /**
+     * @param \DateTime|null $registrationStart
+     */
+    public function setRegistrationStart(?\DateTime $registrationStart): void
+    {
+        $this->registrationStart = $registrationStart;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getRegistrationEnd(): ?\DateTime
+    {
+        return $this->registrationEnd;
+    }
+
+    /**
+     * @param \DateTime|null $registrationEnd
+     */
+    public function setRegistrationEnd(?\DateTime $registrationEnd): void
+    {
+        $this->registrationEnd = $registrationEnd;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getReadStatus(): ?bool
+    {
+        return $this->readStatus;
+    }
+
+    /**
+     * @param bool|null $readStatus
+     */
+    public function setReadStatus(?bool $readStatus): void
+    {
+        $this->readStatus = $readStatus;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getAccessUntil(): ?\DateTime
+    {
+        return $this->accessUntil;
+    }
+
+    /**
+     * @param \DateTime|null $accessUntil
+     */
+    public function setAccessUntil(?\DateTime $accessUntil): void
+    {
+        $this->accessUntil = $accessUntil;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getNumberText(): ?string
+    {
+        return $this->numberText;
+    }
+
+    /**
+     * @param null|string $numberText
+     */
+    public function setNumberText(?string $numberText): void
+    {
+        $this->numberText = $numberText;
+    }
+
+    /**
+     * @return null|string[]
+     */
+    public function getIssues(): ?array
+    {
+        return $this->issues;
+    }
+
+    /**
+     * @param null|string[] $issues
+     */
+    public function setIssues(?array $issues): void
+    {
+        $this->issues = $issues;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getAccessIdentifier(): ?string
+    {
+        return $this->accessIdentifier;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastAccess(): ?\DateTime
+    {
+        return $this->lastAccess;
+    }
+
+    /**
+     * @param \DateTime|null $lastAccess
+     */
+    public function setLastAccess(?\DateTime $lastAccess): void
+    {
+        $this->lastAccess = $lastAccess;
+    }
+
+    /**
+     * sets a new access identifier for public access.
+     */
+    public function setAccessIdentifier(): void
+    {
+        $this->accessIdentifier = Uuid::uuid4()->toString();
     }
 }
