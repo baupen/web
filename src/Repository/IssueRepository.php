@@ -45,6 +45,11 @@ class IssueRepository extends EntityRepository
      */
     public function filter(Filter $filter)
     {
+        // due to a bug in doctrine empty arrays are the same as null arrays after persist/retrieve from db
+        // therefore handle empty arrays as null arrays in lack of a better solution
+        // bugfix will only be included in 3.0 because its a breaking change
+        $unsafeArrays = $filter->getId() !== null;
+
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('i')->from(Issue::class, 'i');
         $qb->leftJoin('i.craftsman', 'c');
@@ -55,17 +60,17 @@ class IssueRepository extends EntityRepository
         $qb->orderBy('i.number', 'ASC');
         $qb->orderBy('i.createdAt', 'ASC');
 
-        if ($filter->getCraftsmen() !== null) {
+        if ($filter->getCraftsmen() !== null && !($unsafeArrays && empty($filter->getCraftsmen()))) {
             $qb->andWhere('c.id IN (:craftsmen)');
             $qb->setParameter(':craftsmen', $filter->getCraftsmen());
         }
 
-        if ($filter->getMaps() !== null) {
+        if ($filter->getMaps() !== null && !($unsafeArrays && empty($filter->getMaps()))) {
             $qb->andWhere('m.id IN (:maps)');
             $qb->setParameter(':maps', $filter->getMaps());
         }
 
-        if ($filter->getIssues() !== null) {
+        if ($filter->getIssues() !== null && !($unsafeArrays && empty($filter->getIssues()))) {
             $qb->andWhere('i.id IN (:issues)');
             $qb->setParameter(':issues', $filter->getIssues());
         }

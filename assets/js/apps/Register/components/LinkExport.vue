@@ -63,7 +63,8 @@
                 newObj["filter"] = this.filter;
                 newObj["limit"] = this.linkLimit;
 
-                axios.get("/api/register/link/create?" + $.param(newObj)).then((response) => {
+                const url = "/api/register/link/create?" + $.param(newObj);
+                axios.get(url).then((response) => {
                     this.link = response.data.link;
                     this.isLoading = false;
                 });

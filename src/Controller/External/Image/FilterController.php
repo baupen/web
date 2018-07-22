@@ -48,6 +48,7 @@ class FilterController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
+        //before filter is shared the unsafe condition is checked
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
         $imagePath = $imageService->generateMapImage($map, $issues);
 

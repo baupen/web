@@ -3,9 +3,9 @@
         <h2>{{map.name}}</h2>
         <p v-if="map.context !== ''" class="text-secondary"> {{ map.context }} </p>
         <div class="card-columns">
-            <div v-if="this.map.imageShareView !== null" class="card">
-                <img class="card-img clickable" :src="this.map.imageShareView"
-                     @click.prevent="$emit('open-lightbox', this.map.imageFull)">
+            <div v-if="map.imageShareView !== null" class="card">
+                <img class="card-img clickable" :src="map.imageShareView"
+                     @click.prevent="$emit('open-lightbox', map.imageFull)">
             </div>
             <issue-details v-for="issue in map.issues" v-bind:key="issue.id"
                            :issue="issue"

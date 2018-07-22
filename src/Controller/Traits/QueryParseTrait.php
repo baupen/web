@@ -55,9 +55,11 @@ trait QueryParseTrait
         $tradeParameters = new ParameterBag($parameterBag->get('trade', []));
         if ($tradeParameters->getBoolean('enabled', false)) {
             $allowedTrades = $toArray($tradeParameters->get('trades', []));
+
             $craftsmanIds = [];
             foreach ($constructionSite->getCraftsmen() as $craftsman) {
-                if (in_array($craftsman->getTrade(), $allowedTrades, true)) {
+                if (in_array($craftsman->getTrade(), $allowedTrades, true) &&
+                    ($filter->getCraftsmen() === null || in_array($craftsman->getId(), $filter->getCraftsmen(), true))) {
                     $craftsmanIds[] = $craftsman->getId();
                 }
             }
@@ -79,21 +81,21 @@ trait QueryParseTrait
             $registeredParameters = new ParameterBag($statusParameters->get('registered', []));
             if ($registeredParameters->getBoolean('active')) {
                 $filter->setRegistrationStart($toDateTime($registeredParameters->get('start', null)));
-                $filter->setRegistrationEnd($toDateTime($registeredParameters->getBoolean('end', null)));
+                $filter->setRegistrationEnd($toDateTime($registeredParameters->get('end', null)));
             }
 
             $respondedParameters = new ParameterBag($statusParameters->get('responded', []));
             if ($respondedParameters->getBoolean('active')) {
                 $filter->setRespondedStatus($respondedParameters->getBoolean('value'));
                 $filter->setRespondedStart($toDateTime($respondedParameters->get('start', null)));
-                $filter->setRespondedEnd($toDateTime($respondedParameters->getBoolean('end', null)));
+                $filter->setRespondedEnd($toDateTime($respondedParameters->get('end', null)));
             }
 
             $reviewedParameters = new ParameterBag($statusParameters->get('reviewed', []));
             if ($reviewedParameters->getBoolean('active')) {
                 $filter->setreviewedStatus($reviewedParameters->getBoolean('value'));
                 $filter->setreviewedStart($toDateTime($reviewedParameters->get('start', null)));
-                $filter->setreviewedEnd($toDateTime($reviewedParameters->getBoolean('end', null)));
+                $filter->setreviewedEnd($toDateTime($reviewedParameters->get('end', null)));
             }
         }
     }

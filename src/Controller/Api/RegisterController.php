@@ -44,6 +44,7 @@ class RegisterController extends ApiController
 
     const CRAFTSMAN_NOT_FOUND = 'craftsman not found';
     const INVALID_CRAFTSMAN = 'invalid craftsman';
+    const EMPTY_CONDITIONS_NOT_ALLOWED = 'empty conditions not allowed';
 
     /**
      * @param Request $request
@@ -268,12 +269,19 @@ class RegisterController extends ApiController
             $filter->setAccessUntil($dateLimit);
         }
 
+        //ensure no unsafe filters are saved
+        $nonEmptyArrays = [$filter->getIssues(), $filter->getCraftsmen(), $filter->getMaps()];
+        foreach ($nonEmptyArrays as $nonEmptyArray) {
+            if ($nonEmptyArray !== null && count($filter->getIssues()) === 0) {
+                return $this->fail(self::EMPTY_CONDITIONS_NOT_ALLOWED);
+            }
+        }
         //save
         $this->fastSave($filter);
 
         //send response
         $data = new ShareData();
-        $data->setLink($this->generateUrl('external_share_filter', ['filter' => $filter->getAccessIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL));
+        $data->setLink($this->generateUrl('external_share_filter', ['identifier' => $filter->getAccessIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL));
 
         return $this->success($data);
     }
