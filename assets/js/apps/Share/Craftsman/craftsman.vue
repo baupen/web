@@ -1,5 +1,5 @@
 <template>
-    <div id="share">
+    <div>
 
         <vue-headful :title="title" :description="description"/>
         <lightbox :open="lightbox.enabled" :imageSrc="lightbox.imageFull" @close="lightbox.enabled = false"/>
@@ -60,8 +60,8 @@
 
 <script>
     import axios from "axios"
-    import Lightbox from '../components/Lightbox'
-    import notifications from '../mixins/Notifications'
+    import Lightbox from '../../components/Lightbox'
+    import notifications from '../../mixins/Notifications'
     import MapDetails from './components/MapDetails'
     import MapRow from './components/MapRow'
     import {AtomSpinner} from 'epic-spinners'

@@ -9,11 +9,11 @@ import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 import VueHeadful from 'vue-headful'
 
 // app
-import SharePublic from './share_public'
+import Filter from './filter'
 
 // messages
-import Messages from '../../localization/share_public'
-import mergeMessages from '../../localization/shared/_all'
+import Messages from '../../../localization/share/filter'
+import mergeMessages from '../../../localization/shared/_all'
 
 // initialize app if html element is found
 if (document.getElementById("share-public") != null) {
@@ -41,7 +41,7 @@ if (document.getElementById("share-public") != null) {
     new Vue({
         i18n,
         el: '#share-public',
-        template: '<SharePublic/>',
-        components: {SharePublic}
+        template: '<MyFilter/>',
+        components: {MyFilter: Filter}
     });
 }

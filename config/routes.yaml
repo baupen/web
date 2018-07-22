@@ -31,3 +31,8 @@ app_external_report:
     resource: "../src/Controller/External/Report/"
     type:     annotation
     prefix:   /external/report
+
+app_external_share:
+    resource: "../src/Controller/External/Share/"
+    type:     annotation
+    prefix:   /external/share

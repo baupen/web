@@ -1,6 +1,8 @@
 <template>
-    <div id="share">
+    <div>
+
         <lightbox :open="lightbox.enabled" :imageSrc="lightbox.imageFull" @close="lightbox.enabled = false"/>
+        <vue-headful :title="$t('issues_overview')" :description="description"/>
 
         <atom-spinner
                 v-if="readLoading"
@@ -12,7 +14,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <h1>{{ constructionSite.name }}</h1>
-                    <p class="text-secondary">{{ $('issues_overview') }}</p>
+                    <p class="text-secondary">{{ $t('issues_overview') }}</p>
                 </div>
                 <div class="col-md-6">
                     <a target="_blank" :href="filter.reportUrl" class="btn btn-outline-primary btn-lg float-right">{{$t("actions.print")}}</a>
@@ -56,8 +58,8 @@
 
 <script>
     import axios from "axios"
-    import Lightbox from '../components/Lightbox'
-    import notifications from '../mixins/Notifications'
+    import Lightbox from '../../components/Lightbox'
+    import notifications from '../../mixins/Notifications'
     import MapDetails from './components/MapDetails'
     import MapRow from './components/MapRow'
     import {AtomSpinner} from 'epic-spinners'
@@ -104,7 +106,10 @@
                 return this.maps.reduce((total, map) => total + map.issues.filter(i => this.issuesWithResponse.indexOf(i) === -1).length, 0);
             },
             description: function () {
-                return this.$t("of_craftsman", {craftsman: this.craftsman.name});
+                if (this.constructionSite !== null) {
+                    return this.constructionSite.name;
+                }
+                return '';
             }
         },
         mounted() {
@@ -124,8 +129,10 @@
             axios.get("/external/api/share/f/" + this.identifier + "/read").then((response) => {
                 this.constructionSite = response.data.constructionSite;
                 this.filter = response.data.filter;
+                this.readLoading = false;
                 axios.get("/external/api/share/f/" + this.identifier + "/maps/list").then((response) => {
                     this.maps = response.data.maps;
+                    this.mapsLoading = false;
                 });
             });
         },

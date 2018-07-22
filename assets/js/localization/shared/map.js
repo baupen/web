@@ -2,6 +2,7 @@ export default {
     de: {
         name: "Karte",
         open_issues_count: "Offene Pendenzen",
-        next_response_limit: "Nächste Limite",
+        reviewed_issues_count: "Erledigte Pendenzen",
+        next_response_limit: "Nächste Limite"
     }
 }

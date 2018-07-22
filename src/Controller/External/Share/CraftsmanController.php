@@ -9,21 +9,23 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Controller\External;
+namespace App\Controller\External\Share;
 
 use App\Controller\Base\BaseDoctrineController;
+use App\Controller\External\Traits\CraftsmanAuthenticationTrait;
 use App\Entity\Craftsman;
-use App\Entity\Filter;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/share")
+ * @Route("/c/{identifier}")
  */
-class ShareController extends BaseDoctrineController
+class CraftsmanController extends BaseDoctrineController
 {
+    use CraftsmanAuthenticationTrait;
+
     /**
-     * @Route("/c/{identifier}", name="external_share_craftsman")
+     * @Route("", name="external_share_craftsman")
      *
      * @param $identifier
      *
@@ -31,8 +33,8 @@ class ShareController extends BaseDoctrineController
      */
     public function shareAction($identifier)
     {
-        $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['emailIdentifier' => $identifier]);
-        if ($craftsman === null) {
+        /** @var Craftsman $craftsman */
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman, $errorResponse)) {
             throw new NotFoundHttpException();
         }
 
@@ -40,21 +42,5 @@ class ShareController extends BaseDoctrineController
         $this->fastSave($craftsman);
 
         return $this->render('share/craftsman.html.twig');
-    }
-
-    /**
-     * @Route("/f/{filter}", name="external_share_filter")
-     *
-     * @param Filter $filter
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function shareFilterAction(Filter $filter)
-    {
-        if ($filter->getAccessUntil() !== null && $filter->getAccessUntil() < new \DateTime()) {
-            throw new NotFoundHttpException();
-        }
-
-        return $this->render('share/filter.html.twig');
     }
 }

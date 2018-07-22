@@ -414,6 +414,7 @@ class ReportService implements ReportServiceInterface
         $tableHeader = [$this->translator->trans('context', [], 'entity_map'), $this->translator->trans('entity.name', [], 'entity_map')];
 
         //add map name & map context to table
+        $tableContent = [];
         foreach ($orderedMaps as $mapId => $map) {
             $tableContent[$mapId] = [$map->getContext(), $map->getName()];
         }

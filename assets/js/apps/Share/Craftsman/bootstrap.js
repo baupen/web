@@ -1,6 +1,7 @@
 // vuejs & plugins
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
+
 Vue.config.productionTip = false;
 
 // components
@@ -9,11 +10,11 @@ import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 import VueHeadful from 'vue-headful'
 
 // app
-import ShareCraftsman from './share_craftsman'
+import Craftsman from './craftsman'
 
 // messages
-import Messages from '../../localization/share_craftsman'
-import mergeMessages from '../../localization/shared/_all'
+import Messages from '../../../localization/share/craftsman'
+import mergeMessages from '../../../localization/shared/_all'
 
 // initialize app if html element is found
 if (document.getElementById("share-craftsman") != null) {
@@ -41,7 +42,7 @@ if (document.getElementById("share-craftsman") != null) {
     new Vue({
         i18n,
         el: '#share-craftsman',
-        template: '<ShareCraftsman/>',
-        components: {ShareCraftsman}
+        template: '<Craftsman/>',
+        components: {Craftsman}
     });
 }
