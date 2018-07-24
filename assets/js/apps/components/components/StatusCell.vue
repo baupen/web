@@ -11,8 +11,7 @@
         </button>
         <button class="btn btn-outline-secondary" @click="$emit('edit-abort')">{{$t("actions.abort")}}</button>
     </div>
-    <div v-else class="hoverable" @mouseover="hover = true"
-         @mouseleave="hover = false">
+    <div v-else>
         <div class="tooltip-wrapper">
             <div class="tooltip bs-tooltip-top progressbar-tooltip" :class="{'show': hover && !expanded}">
                 <div class="tooltip-inner">
@@ -23,11 +22,14 @@
                 </div>
             </div>
         </div>
-        <ul class="progressbar editable" @click.exact.prevent.stop="$emit('edit-start')">
-            <li :class="{'active': issue.isRead || issue.respondedAt !== null || issue.reviewedAt !== null }"></li>
-            <li :class="{'active': issue.respondedAt !== null || issue.reviewedAt !== null}"></li>
-            <li :class="{'active': issue.reviewedAt !== null}"></li>
-        </ul>
+        <div class="hoverable" @mouseover="hover = true"
+             @mouseleave="hover = false">
+            <ul class="progressbar editable" @click.exact.prevent.stop="$emit('edit-start')">
+                <li :class="{'active': issue.isRead || issue.respondedAt !== null || issue.reviewedAt !== null }"></li>
+                <li :class="{'active': issue.respondedAt !== null || issue.reviewedAt !== null}"></li>
+                <li :class="{'active': issue.reviewedAt !== null}"></li>
+            </ul>
+        </div>
         <div>
             <a href="#" v-if="!expanded" @click.prevent="expanded = true">{{ $t("view.more") }}</a>
             <a href="#" v-if="expanded" @click.prevent="expanded = false">{{ $t("view.less") }}</a>
@@ -45,7 +47,7 @@
                     <br/>
                 </span>
 
-                    <span v-if="issue.reviewedAt !== null">
+                <span v-if="issue.reviewedAt !== null">
                     <b>{{$t("issue.status_values.reviewed")}}</b>
                     {{ formatDateTime(issue.reviewedAt) }},
                     {{ issue.reviewByName }}
