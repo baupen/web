@@ -1,44 +1,28 @@
 <template>
     <div id="dashboard">
-        <b-alert v-if="!isOverviewLoading" :show="overview.newIssuesCount > 0" variant="warning">
-            <h4>{{ $tc("dialog.new_issues_in_foyer", overview.newIssuesCount, {count:
-                overview.newIssuesCount})}}</h4>
-            <p><a href="/foyer">{{t("dialog.add_to_register")}}</a></p>
-        </b-alert>
-
-        <h2><a href="/register">{{$t("register.name")}}</a></h2>
-        <atom-spinner v-if="isOverviewLoading"
-                      :animation-duration="1000"
-                      :size="60"
-                      :color="'#ff1d5e'"
-        />
-        <div v-else class="row">
-            <number-tile class="col-md-3" link="/register?view=open"
-                         :number="overview.openIssuesCount"
-                         :description="$t('issue.status_values.open')"/>
-
-            <number-tile class="col-md-3" link="/register?view=overdue"
-                         :number="overview.overdueIssuesCount"
-                         :description="$t('register.status_action.overdue')"/>
-
-            <number-tile class="col-md-3" link="/register?view=to_inspect"
-                         :number="overview.respondedNotReviewedIssuesCount"
-                         :description="$t('register.status_action.to_inspect')"/>
-
-            <number-tile class="col-md-3" link="/register?view=marked"
-                         :number="overview.markedIssuesCount"
-                         :description="$t('register.status_action.marked')"/>
-        </div>
         <div class="row">
             <div class="col">
-                <h2>{{$t("feed.name")}}</h2>
-                <feed />
+                <h2>{{$t("register.name")}}</h2>
+                <atom-spinner v-if="isOverviewLoading"
+                              :animation-duration="1000"
+                              :size="60"
+                              :color="'#ff1d5e'"
+                />
+                <b-alert v-if="!isOverviewLoading" :show="overview.newIssuesCount > 0" variant="warning">
+                    <h4>{{ $tc("dialog.new_issues_in_foyer", overview.newIssuesCount, {count:
+                        overview.newIssuesCount})}}</h4>
+                    <p><a href="/foyer">{{$t("dialog.add_to_register")}}</a></p>
+                </b-alert>
+                <overview v-if="!isOverviewLoading" :overview="overview" />
+
+                <div class="vertical-spacer-big" ></div>
+                <h2>{{$t("notes.name")}}</h2>
+                <notes/>
             </div>
             <div class="col">
-                <h2>{{$t("notes.name")}}</h2>
 
-                <notes />
-
+                <h2>{{$t("feed.name")}}</h2>
+                <feed/>
             </div>
         </div>
     </div>
@@ -50,9 +34,9 @@
     import bAlert from 'bootstrap-vue/es/components/alert/alert'
     import {AtomSpinner} from 'epic-spinners'
     import notifications from '../mixins/Notifications'
-    import NumberTile from "./components/NumberTile";
     import Feed from "./components/Feed";
     import Notes from "./components/Notes";
+    import Overview from "./components/Overview";
 
     moment.locale('de');
 
@@ -66,9 +50,9 @@
         },
         mixins: [notifications],
         components: {
+            Overview,
             Notes,
             Feed,
-            NumberTile,
             bAlert,
             AtomSpinner
         },
@@ -90,12 +74,13 @@
             //fill register
             axios.get("/api/configuration").then((response) => {
                 this.constructionSiteId = response.data.constructionSite.id;
-                this.filter.constructionSiteId = this.constructionSiteId;
 
-                axios.post("/api/dashboard/statistics/overview", {
+                console.log("stuff");
+                axios.post("/api/statistics/issues/overview", {
                     "constructionSiteId": this.constructionSiteId,
                 }).then((response) => {
                     this.overview = response.data.overview;
+                    console.log(this.overview);
                     this.isOverviewLoading = false;
                 });
             });

@@ -1,11 +1,15 @@
 <template>
-    <a :href="link">
-        <h3>{{ number }}</h3>
-        <p>{{description}}</p>
-    </a>
+    <b-card class="text-center">
+        <a class="card-text" :href="link">
+            <h3>{{ number }}</h3>
+            <p class="card-text">{{description}}</p>
+        </a>
+    </b-card>
 </template>
 
 <script>
+    import bCard from 'bootstrap-vue/es/components/card/card'
+
     export default {
         props: {
             number: {
@@ -20,6 +24,9 @@
                 type: String,
                 required: true
             }
+        },
+        components: {
+            bCard
         }
     }
 </script>
