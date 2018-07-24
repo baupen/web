@@ -19,8 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * An note is something created by the construction manager to remember something.
  *
- * @ORM\Table(name="issue")
- * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
+ * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
 class Note extends BaseEntity
