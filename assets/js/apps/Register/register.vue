@@ -123,7 +123,7 @@
                         enabled: true,
                         read: {
                             active: false,
-                            value: true
+                            value: false
                         },
                         registered: {
                             active: false,
@@ -227,7 +227,7 @@
 
                 if (this.filter.onlyOverLimit) {
                     const today = (new Date()).toISOString();
-                    res = res.filter(i => i.responseLimit > today);
+                    res = res.filter(i => i.responseLimit < today);
                 }
 
                 return res;
@@ -304,6 +304,8 @@
                     return Promise.reject(error);
                 }
             );
+
+            //fill register
             axios.get("/api/configuration").then((response) => {
                 this.constructionSiteId = response.data.constructionSite.id;
                 this.filter.constructionSiteId = this.constructionSiteId;
@@ -327,6 +329,19 @@
                     this.maps = response.data.maps;
                 });
             });
+
+            //set filter default values
+            if (window.location.href.endsWith("overdue")) {
+                this.filter.status.enabled = false;
+                this.filter.onlyOverLimit = true;
+            } else if (window.location.href.endsWith("marked")) {
+                this.filter.status.enabled = false;
+                this.filter.onlyMarked = true;
+            } else if (window.location.href.endsWith("open")) {
+                this.filter.status.responded.active = false;
+            } else if (window.location.href.endsWith("to_inspect")) {
+                //default view; no changes necessary
+            }
         },
     }
 
