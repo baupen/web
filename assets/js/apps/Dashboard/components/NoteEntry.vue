@@ -9,10 +9,9 @@
                 {{ formattedTimestamp }} - {{ entry.authorName }}
                 <span v-if="entry.canEdit">
                     - <font-awesome-icon class="clickable" v-if="entry.canEdit" @click="$emit('remove')"
-                                   :icon="['fal', 'trash']"/>
+                                         :icon="['fal', 'trash']"/>
                 </span>
             </span>
-
         </p>
         <div v-else>
             <BaseTextInput v-model="noteEdit"></BaseTextInput>

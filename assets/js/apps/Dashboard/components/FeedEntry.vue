@@ -8,7 +8,7 @@
             {{ $t("feed.entries.visited_webpage",
             { craftsman: entry.craftsmanName })}}
         </span>
-        <span v-else-if="entry.type === 'response-received'">
+        <span v-else-if="entry.type === 'overdue'">
             {{ $tc("feed.entries.overdue_limit", entry.count,
             { count: entry.count, craftsman: entry.craftsmanName })}}
         </span>

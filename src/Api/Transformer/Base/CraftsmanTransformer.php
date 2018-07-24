@@ -24,4 +24,17 @@ class CraftsmanTransformer
         $target->setName($source->getName());
         $target->setTrade($source->getTrade());
     }
+
+    /**
+     * @param Craftsman $craftsman
+     *
+     * @return \App\Api\Entity\Base\Craftsman
+     */
+    public function toApi($craftsman)
+    {
+        $api = new \App\Api\Entity\Base\Craftsman($craftsman->getId());
+        $this->writeApiProperties($craftsman, $api);
+
+        return $api;
+    }
 }

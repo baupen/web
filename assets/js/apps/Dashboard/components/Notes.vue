@@ -1,6 +1,6 @@
 <template>
     <div>
-        <BaseTextarea v-model="newNote">{{$t("notes.actions.add_new")}}</BaseTextarea>
+        <BaseTextarea v-model="newNote" :placeholder="$t('notes.actions.add_new')"></BaseTextarea>
         <button v-if="newNote.length > 0"
                 :disabled="isLoading"
                 class="btn" :class="{ 'btn-primary': newNote.length > 0, 'disabled': isLoading}"

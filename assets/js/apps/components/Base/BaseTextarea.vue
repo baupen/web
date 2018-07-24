@@ -7,7 +7,7 @@
         </label>
         <textarea :id="id" class="form-control"
                   rows="4"
-                  v-bind:value="value"
+                  v-bind:value="value" :placeholder="placeholder"
                   v-on:input="$emit('input', $event.target.value)">
         </textarea>
     </div>
@@ -16,7 +16,11 @@
 <script>
     export default {
         props: {
-            value: String
+            value: String,
+            placeholder: {
+                type: String,
+                required: false
+            }
         },
         data: function () {
             return {

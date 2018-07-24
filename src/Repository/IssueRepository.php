@@ -44,7 +44,7 @@ class IssueRepository extends EntityRepository
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
      *
-     * @return mixed
+     * @return int
      */
     public function filterCount(Filter $filter)
     {
@@ -57,6 +57,35 @@ class IssueRepository extends EntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
+    /**
+     * gets recently changed issues.
+     *
+     * @param ConstructionSite $constructionSite
+     * @param int $days
+     *
+     * @return Issue[]
+     */
+    public function getContextIssues(ConstructionSite $constructionSite, $days = 14)
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+        $queryBuilder->select('i');
+        $queryBuilder->from(Issue::class, 'i');
+        $queryBuilder->leftJoin('i.craftsman', 'c');
+        $queryBuilder->where('c.constructionSite = :constructionSite');
+        $queryBuilder->setParameter(':constructionSite', $constructionSite->getId());
+        $queryBuilder->andWhere('i.lastChangedAt > :lastChangedAt');
+        $queryBuilder->setParameter('lastChangedAt', new \DateTime('now -' . $days . ' days'));
+        $queryBuilder->orderBy('i.lastChangedAt', 'DESC');
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * apply the filter to the query builder.
+     *
+     * @param QueryBuilder $queryBuilder
+     * @param Filter $filter
+     */
     private function applyFilter(QueryBuilder $queryBuilder, Filter $filter)
     {
         // due to a bug in doctrine empty arrays are the same as null arrays after persist/retrieve from db
