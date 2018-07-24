@@ -11,14 +11,33 @@
 
 namespace App\Api\Entity\Note;
 
-use App\Api\Entity\Base\BaseEntity;
-
-class UpdateNote extends BaseEntity
+class UpdateNote
 {
+    /**
+     * @var string|null
+     */
+    private $id;
+
     /**
      * @var string
      */
     private $content;
+
+    /**
+     * @return null|string
+     */
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param null|string $id
+     */
+    public function setId(?string $id): void
+    {
+        $this->id = $id;
+    }
 
     /**
      * @return string

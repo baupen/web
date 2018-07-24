@@ -101,14 +101,14 @@ class NoteController extends ApiController
         }
 
         $entity->setContent($parsedRequest->getNote()->getContent());
-        $this->fail($entity);
+        $this->fastSave($entity);
 
         $noteData = new NoteData();
         $noteData->setNote($noteTransformer->toApi($entity, function ($issue) {
             return $this->canEditNote($issue);
         }));
 
-        return $this->success(new EmptyData());
+        return $this->success($noteData);
     }
 
     /**

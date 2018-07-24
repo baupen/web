@@ -14,6 +14,11 @@ namespace App\Api\Entity\Base;
 class BaseEntity
 {
     /**
+     * @var string
+     */
+    private $id;
+
+    /**
      * BaseEntity constructor.
      *
      * @param string $id
@@ -22,11 +27,6 @@ class BaseEntity
     {
         $this->id = $id;
     }
-
-    /**
-     * @var string
-     */
-    private $id;
 
     /**
      * @return string
