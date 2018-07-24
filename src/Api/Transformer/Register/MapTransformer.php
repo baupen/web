@@ -33,11 +33,10 @@ class MapTransformer extends BatchTransformer
 
     /**
      * @param Map $entity
-     * @param null $args
      *
      * @return \App\Api\Entity\Register\Map
      */
-    public function toApi($entity, $args = null)
+    public function toApi($entity)
     {
         $map = new \App\Api\Entity\Register\Map($entity->getId());
         $this->mapTransformer->writeApiProperties($entity, $map);

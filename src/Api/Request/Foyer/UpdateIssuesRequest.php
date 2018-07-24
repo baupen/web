@@ -11,7 +11,6 @@
 
 namespace App\Api\Request\Foyer;
 
-use App\Api\Entity\Foyer\Issue;
 use App\Api\Entity\Foyer\UpdateIssue;
 use App\Api\Request\ConstructionSiteRequest;
 
@@ -23,7 +22,7 @@ class UpdateIssuesRequest extends ConstructionSiteRequest
     private $updateIssues;
 
     /**
-     * @return Issue[]
+     * @return UpdateIssue[]
      */
     public function getUpdateIssues(): array
     {
@@ -31,7 +30,7 @@ class UpdateIssuesRequest extends ConstructionSiteRequest
     }
 
     /**
-     * @param Issue[] $updateIssues
+     * @param UpdateIssue[] $updateIssues
      */
     public function setUpdateIssues(array $updateIssues): void
     {

@@ -13,39 +13,30 @@ namespace App\Controller\Traits;
 
 use App\Entity\Issue;
 use App\Service\Interfaces\ImageServiceInterface;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait ImageDownloadTrait
 {
     /**
-     * @return array
-     */
-    public static function getSubscribedServices()
-    {
-        return parent::getSubscribedServices() + [ImageServiceInterface::class => ImageServiceInterface::class];
-    }
-
-    /**
+     * @param string $publicDir
      * @param Issue $issue
      * @param $imageFilename
      * @param $size
+     * @param ImageServiceInterface $imageService
      *
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return string
      */
-    protected function downloadIssueImage(Issue $issue, $imageFilename, $size)
+    protected function getImagePath($publicDir, Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService)
     {
         if ($issue->getImageFilename() !== $imageFilename) {
             throw new NotFoundHttpException();
         }
 
-        /** @var ImageServiceInterface $imageService */
-        $imageService = $this->get(ImageServiceInterface::class);
-        $filePath = $imageService->getSize($this->getParameter('PUBLIC_DIR') . '/' . $issue->getImageFilePath(), $size);
+        $filePath = $imageService->getSize($publicDir . '/' . $issue->getImageFilePath(), $size);
         if ($filePath === null) {
             throw new NotFoundHttpException();
         }
 
-        return $this->file($filePath, null, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $filePath;
     }
 }

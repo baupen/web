@@ -266,7 +266,7 @@ class Report
     /**
      * @param $tableHead
      * @param $tableContent
-     * @param null $tableTitle
+     * @param string|null $tableTitle
      */
     public function addTable($tableHead, $tableContent, $tableTitle = null)
     {

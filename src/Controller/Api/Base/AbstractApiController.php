@@ -134,7 +134,12 @@ abstract class AbstractApiController extends BaseDoctrineController
      */
     protected function fail(string $message)
     {
-        $this->get('logger')->error('Api fail ' . ': ' . $message . ' for ' . $this->get('request_stack')->getCurrentRequest()->getContent());
+        //shorten request context
+        $requestContext = $this->get('request_stack')->getCurrentRequest()->getContent();
+        if (mb_strlen($requestContext) > 200) {
+            $requestContext = mb_substr($requestContext, 0, 200);
+        }
+        $this->get('logger')->error('Api fail ' . ': ' . $message . ' for ' . $requestContext);
 
         return $this->json(new FailResponse($message, $this->errorMessageToStatusCode($message)), Response::HTTP_BAD_REQUEST);
     }

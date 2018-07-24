@@ -1,119 +1,124 @@
 <template>
-    <div class="selectable-table">
-        <div class="filter-field">
-            <div class="form-group">
-                <input class="form-control" id="filter" type="text" v-model="textFilter"
-                       :placeholder="$t('table.filter_placeholder')"/>
+    <div>
+        <lightbox :open="lightbox.enabled" :imageSrc="lightbox.imageFull" @close="lightbox.enabled = false"/>
+        <div class="selectable-table">
+            <div class="filter-field">
+                <div class="form-group">
+                    <input class="form-control" id="filter" type="text" v-model="textFilter"
+                           :placeholder="$t('table.filter_placeholder')"/>
+                </div>
             </div>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <sortable-header @do-sort="sortBy('number')"
+                                     :sort-state="sortKey === 'number' ? sortOrders[sortKey] : 0">
+                        #
+                    </sortable-header>
+                    <sortable-header @do-sort="sortBy('isMarked')"
+                                     :sort-state="sortKey === 'isMarked' ? sortOrders[sortKey] : 0"/>
+                    <th></th>
+
+                    <sortable-header @do-sort="sortBy('description')"
+                                     :sort-state="sortKey === 'description' ? sortOrders[sortKey] : 0">
+                        {{ $t("issue.description")}}
+                    </sortable-header>
+
+                    <sortable-header @do-sort="sortBy('craftsmanId')"
+                                     :sort-state="sortKey === 'craftsmanId' ? sortOrders[sortKey] : 0">
+                        {{ $t("issue.craftsman")}}
+                    </sortable-header>
+
+                    <sortable-header @do-sort="sortBy('responseLimit')"
+                                     :sort-state="sortKey === 'responseLimit' ? sortOrders[sortKey] : 0">
+                        {{ $t("issue.response_limit")}}
+                    </sortable-header>
+
+                    <sortable-header @do-sort="sortBy('map')" :sort-state="sortKey === 'map' ? sortOrders[sortKey] : 0">
+                        {{ $t("issue.map")}}
+                    </sortable-header>
+
+
+                    <sortable-header @do-sort="sortBy('status')"
+                                     :sort-state="sortKey === 'status' ? sortOrders[sortKey] : 0">
+                        {{ $t("issue.status")}}
+                    </sortable-header>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-if="issues.length === 0">
+                    <td colspan="7">{{ $t("table.no_entries") }}</td>
+                </tr>
+                <tr v-for="issue in sortedIssues"
+                    @click.ctrl.exact="issueCtrlClicked(issue)"
+                    @click.meta.exact="issueCtrlClicked(issue)"
+                    @click.exact="issueClicked(issue)"
+                    @click.shift.exact.prevent.stop="issueShiftClicked(issue)"
+                    class="selectable"
+                    v-bind:class="{ 'table-active': selectedIssues.indexOf(issue) >= 0 }">
+
+                    <td class="minimal-width">
+                        {{issue.number}}
+                    </td>
+                    <td class="minimal-width">
+                        <marked-cell @toggle-mark="toggleMark(issue)" :issue="issue"/>
+                    </td>
+                    <td class="minimal-width">
+                        <img class="lightbox-thumbnail" @click.prevent.stop="openLightbox(issue.imageFull)"
+                             :src="issue.imageThumbnail">
+                    </td>
+                    <td>
+                        <description-cell @edit-confirm="cellEditConfirm('description', issue)"
+                                          @edit-abort="cellEditAbort('description')"
+                                          @edit-start="cellEditStart('description', issue)"
+                                          :issue="issue"
+                                          :edit-enabled="editIssue === issue && editEnabled.description">
+                            <template slot="save-button-content">
+                                <save-button :multiple="selectedIssues.length > 1"/>
+                            </template>
+                        </description-cell>
+                    </td>
+                    <td>
+                        <craftsman-cell @edit-confirm="cellEditConfirm('craftsmanId', issue)"
+                                        @edit-abort="cellEditAbort('craftsmanId')"
+                                        @edit-start="cellEditStart('craftsmanId', issue)"
+                                        :issue="issue"
+                                        :craftsmen="craftsmen"
+                                        :edit-enabled="editIssue === issue && editEnabled.craftsmanId">
+                            <template slot="save-button-content">
+                                <save-button :multiple="selectedIssues.length > 1"/>
+                            </template>
+                        </craftsman-cell>
+                    </td>
+                    <td>
+                        <response-limit-cell @edit-confirm="cellEditConfirm('responseLimit', issue)"
+                                             @edit-abort="cellEditAbort('responseLimit')"
+                                             @edit-start="cellEditStart('responseLimit', issue)"
+                                             :issue="issue"
+                                             :edit-enabled="editIssue === issue && editEnabled.responseLimit">
+                            <template slot="save-button-content">
+                                <save-button :multiple="selectedIssues.length > 1"/>
+                            </template>
+                        </response-limit-cell>
+                    </td>
+                    <td>
+                        {{issue.map}}
+                    </td>
+                    <td class="minimal-width status-column">
+                        <status-cell @edit-confirm="cellEditConfirm('status', issue, arguments)"
+                                     @edit-abort="cellEditAbort('status')"
+                                     @edit-start="cellEditStart('status', issue)"
+                                     :issue="issue"
+                                     :edit-enabled="editIssue === issue && editEnabled.status">
+                            <template slot="save-button-content">
+                                <save-button :multiple="selectedIssues.length > 1"/>
+                            </template>
+                        </status-cell>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <sortable-header @do-sort="sortBy('number')"
-                                 :sort-state="sortKey === 'number' ? sortOrders[sortKey] : 0">
-                    #
-                </sortable-header>
-                <sortable-header @do-sort="sortBy('isMarked')"
-                                 :sort-state="sortKey === 'isMarked' ? sortOrders[sortKey] : 0"/>
-                <th></th>
-
-                <sortable-header @do-sort="sortBy('description')"
-                                 :sort-state="sortKey === 'description' ? sortOrders[sortKey] : 0">
-                    {{ $t("issue.description")}}
-                </sortable-header>
-
-                <sortable-header @do-sort="sortBy('craftsmanId')"
-                                 :sort-state="sortKey === 'craftsmanId' ? sortOrders[sortKey] : 0">
-                    {{ $t("issue.craftsman")}}
-                </sortable-header>
-
-                <sortable-header @do-sort="sortBy('responseLimit')"
-                                 :sort-state="sortKey === 'responseLimit' ? sortOrders[sortKey] : 0">
-                    {{ $t("issue.response_limit")}}
-                </sortable-header>
-
-                <sortable-header @do-sort="sortBy('map')" :sort-state="sortKey === 'map' ? sortOrders[sortKey] : 0">
-                    {{ $t("issue.map")}}
-                </sortable-header>
-
-
-                <sortable-header @do-sort="sortBy('status')" :sort-state="sortKey === 'status' ? sortOrders[sortKey] : 0">
-                    {{ $t("issue.status")}}
-                </sortable-header>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-if="issues.length === 0">
-                <td colspan="7">{{ $t("table.no_entries") }}</td>
-            </tr>
-            <tr v-for="issue in sortedIssues"
-                @click.ctrl.exact="issueCtrlClicked(issue)"
-                @click.exact="issueClicked(issue)"
-                @click.shift.exact.prevent.stop="issueShiftClicked(issue)"
-                class="selectable"
-                v-bind:class="{ 'table-active': selectedIssues.indexOf(issue) >= 0 }">
-
-                <td class="minimal-width">
-                    {{issue.number}}
-                </td>
-                <td class="minimal-width clickable" @click.prevent.stop="markIssue(issue)">
-                    <font-awesome-icon v-if="issue.isMarked" :icon="['fas', 'star']"/>
-                    <font-awesome-icon v-else :icon="['fal', 'star']"/>
-                </td>
-                <td class="minimal-width">
-                    <img class="lightbox-thumbnail" :src="issue.imageThumbnail">
-                </td>
-                <td>
-                    <description-cell @edit-confirm="cellEditConfirm('description', issue)"
-                                      @edit-abort="cellEditAbort('description')"
-                                      @edit-start="cellEditStart('description', issue)"
-                                      :issue="issue"
-                                      :edit-enabled="editIssue === issue && editEnabled.description">
-                        <template slot="save-button-content">
-                            <save-button :multiple="selectedIssues.length > 1"/>
-                        </template>
-                    </description-cell>
-                </td>
-                <td>
-                    <craftsman-cell @edit-confirm="cellEditConfirm('craftsmanId', issue)"
-                                    @edit-abort="cellEditAbort('craftsmanId')"
-                                    @edit-start="cellEditStart('craftsmanId', issue)"
-                                    :issue="issue"
-                                    :craftsmen="craftsmen"
-                                    :edit-enabled="editIssue === issue && editEnabled.craftsmanId">
-                        <template slot="save-button-content">
-                            <save-button :multiple="selectedIssues.length > 1"/>
-                        </template>
-                    </craftsman-cell>
-                </td>
-                <td>
-                    <response-limit-cell @edit-confirm="cellEditConfirm('responseLimit', issue)"
-                                         @edit-abort="cellEditAbort('responseLimit')"
-                                         @edit-start="cellEditStart('responseLimit', issue)"
-                                         :issue="issue"
-                                         :edit-enabled="editIssue === issue && editEnabled.responseLimit">
-                        <template slot="save-button-content">
-                            <save-button :multiple="selectedIssues.length > 1"/>
-                        </template>
-                    </response-limit-cell>
-                </td>
-                <td>
-                    {{issue.map}}
-                </td>
-                <td class="minimal-width status-column">
-                    <status-cell @edit-confirm="cellEditConfirm('status', issue, arguments)"
-                                         @edit-abort="cellEditAbort('status')"
-                                         @edit-start="cellEditStart('status', issue)"
-                                         :issue="issue"
-                                         :edit-enabled="editIssue === issue && editEnabled.status">
-                        <template slot="save-button-content">
-                            <save-button :multiple="selectedIssues.length > 1"/>
-                        </template>
-                    </status-cell>
-                </td>
-            </tr>
-            </tbody>
-        </table>
     </div>
 </template>
 
@@ -124,6 +129,8 @@
     import SortableHeader from './components/SortableHeader'
     import SaveButton from './components/SaveButton'
     import StatusCell from './components/StatusCell'
+    import Lightbox from './Lightbox'
+    import MarkedCell from "./components/MarkedCell";
 
     Array.prototype.unique = function () {
         return Array.from(new Set(this));
@@ -154,7 +161,7 @@
 
                 lightbox: {
                     enabled: false,
-                    issue: null
+                    imageFull: null
                 },
 
                 editEnabled: {
@@ -166,12 +173,14 @@
             }
         },
         components: {
+            MarkedCell,
             ResponseLimitCell,
             CraftsmanCell,
             SortableHeader,
             SaveButton,
             DescriptionCell,
-            StatusCell
+            StatusCell,
+            Lightbox
         },
         methods: {
             issueClicked: function (issue) {
@@ -188,6 +197,9 @@
                 } else {
                     this.selectedIssues.push(issue);
                 }
+
+                //remove all selections
+                document.getSelection().removeAllRanges();
             },
             issueShiftClicked: function (issue) {
                 //if none selected; select the one pressed
@@ -240,6 +252,14 @@
                 this.editEnabled[cell] = false;
                 this.editIssue = null;
             },
+            toggleMark: function (issue) {
+                issue.isMarked = !issue.isMarked;
+                this.$emit('update-issues', [issue]);
+            },
+            openLightbox: function (url) {
+                this.lightbox.enabled = true;
+                this.lightbox.imageFull = url;
+            },
             sortBy: function (key) {
                 if (this.sortKey === key) {
                     this.sortOrders[key] *= -1;
@@ -265,7 +285,7 @@
                 }
                 if (sortKey) {
                     const statusScore = function (issue) {
-                        return 1*issue.isRead + (2*(issue.respondedAt !== null)) + (4*(issue.reviewedAt !== null));
+                        return 1 * issue.isRead + (2 * (issue.respondedAt !== null)) + (4 * (issue.reviewedAt !== null));
                     };
                     data = data.sort((a, b) => {
                         if (sortKey === 'craftsmanId') {
@@ -323,6 +343,6 @@
     }
 
     .status-column {
-        min-width: 12em;
+        min-width: 9em;
     }
 </style>

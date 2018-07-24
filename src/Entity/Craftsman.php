@@ -268,9 +268,9 @@ class Craftsman extends BaseEntity
     }
 
     /**
-     * @return Filter
+     * @return Filter|null
      */
-    public function getShareViewFilter(): Filter
+    public function getShareViewFilter(): ?Filter
     {
         return $this->shareViewFilter;
     }

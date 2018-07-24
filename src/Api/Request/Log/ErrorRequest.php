@@ -9,28 +9,25 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Entity\Share\Filter;
+namespace App\Api\Request\Log;
 
-class Filter
+class ErrorRequest
 {
-    /**
-     * @var string
-     */
-    private $reportUrl;
+    private $message;
 
     /**
      * @return string
      */
-    public function getReportUrl(): string
+    public function getMessage()
     {
-        return $this->reportUrl;
+        return $this->message;
     }
 
     /**
-     * @param string $reportUrl
+     * @param string $message
      */
-    public function setReportUrl(string $reportUrl): void
+    public function setMessage($message): void
     {
-        $this->reportUrl = $reportUrl;
+        $this->message = $message;
     }
 }

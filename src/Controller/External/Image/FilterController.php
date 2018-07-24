@@ -32,6 +32,14 @@ class FilterController extends BaseDoctrineController
     use FilterAuthenticationTrait;
 
     /**
+     * @return array
+     */
+    public static function getSubscribedServices()
+    {
+        return parent::getSubscribedServices() + [ImageServiceInterface::class => ImageServiceInterface::class];
+    }
+
+    /**
      * @Route("/map/{map}/{hash}/{size}", name="external_image_filter_map")
      *
      * @param $identifier
@@ -49,6 +57,7 @@ class FilterController extends BaseDoctrineController
         }
 
         //before filter is shared the unsafe condition is checked
+        $filter->setMaps([$map->getId()]);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
         $imagePath = $imageService->generateMapImage($map, $issues);
 
@@ -60,18 +69,19 @@ class FilterController extends BaseDoctrineController
      *
      * @param $identifier
      * @param Issue $issue
-     * @param $imageFilename
-     * @param $size
+     * @param string $imageFilename
+     * @param string $size
+     * @param ImageServiceInterface $imageService
      *
      * @return Response
      */
-    public function issueAction($identifier, Issue $issue, $imageFilename, $size)
+    public function issueAction($identifier, Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService)
     {
         /** @var Filter $filter */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter)) {
             throw new NotFoundHttpException();
         }
 
-        return $this->downloadIssueImage($issue, $imageFilename, $size);
+        return $this->file($this->getImagePath($this->getParameter('PUBLIC_DIR'), $issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

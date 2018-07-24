@@ -64,7 +64,7 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * @param Issue $entity
-     * @param null $args
+     * @param array|null $args
      *
      * @return \App\Api\External\Entity\Issue
      */
