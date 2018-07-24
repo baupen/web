@@ -57,6 +57,7 @@ class FilterController extends BaseDoctrineController
         }
 
         //before filter is shared the unsafe condition is checked
+        $filter->setMaps([$map->getId()]);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
         $imagePath = $imageService->generateMapImage($map, $issues);
 
