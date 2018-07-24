@@ -1,8 +1,8 @@
 <template>
     <div>
         <BaseTextarea v-model="newNote">{{$t("notes.actions.add_new")}}</BaseTextarea>
-        <button :disabled="isLoading" class="btn"
-                :class="{ 'btn-primary': newNote.length > 0, 'btn-outline-primary': newNote.length === 0, 'disabled': isLoading}">
+        <button  v-if="newNote.length > 0" :disabled="isLoading" class="btn"
+                :class="{ 'btn-primary': newNote.length > 0, 'disabled': isLoading}">
             {{$t("notes.actions.add_new")}}
         </button>
         <atom-spinner v-if="isMounting"
@@ -37,7 +37,7 @@
         methods: {
             add: function () {
                 this.isLoading = true;
-                axios.post("/api/dashboard/notes/create", {
+                axios.post("/api/notes/create", {
                     "constructionSiteId": this.constructionSiteId,
                     "note": {content: newNote}
                 }).then((response) => {
@@ -47,7 +47,7 @@
                 });
             },
             save: function (note) {
-                axios.post("/api/dashboard/notes/update", {
+                axios.post("/api/notes/update", {
                     "constructionSiteId": this.constructionSiteId,
                     "note": {content: note.content}
                 }).then((response) => {
@@ -56,7 +56,7 @@
                 });
             },
             remove: function (note) {
-                axios.post("/api/dashboard/notes/delete", {
+                axios.post("/api/notes/delete", {
                     "constructionSiteId": this.constructionSiteId,
                     "noteId": note.id
                 }).then((response) => {
@@ -66,7 +66,7 @@
             }
         },
         mounted() {
-            axios.post("/api/dashboard/notes/list", {
+            axios.post("/api/notes/list", {
                 "constructionSiteId": this.constructionSiteId
             }).then((response) => {
                 this.notes = response.data.notes;

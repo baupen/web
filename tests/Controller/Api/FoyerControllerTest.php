@@ -12,8 +12,8 @@ namespace App\Tests\Controller\Api;
 use App\Api\Entity\Foyer\Issue;
 use App\Api\Entity\Foyer\UpdateIssue;
 use App\Api\Request\ConstructionSiteRequest;
-use App\Api\Request\IssueRequest;
-use App\Api\Request\IssuesRequest;
+use App\Api\Request\IssueIdRequest;
+use App\Api\Request\IssueIdsRequest;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\ApiController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -119,7 +119,7 @@ class FoyerControllerTest extends ApiController
 
         $apiIssue = $this->getIssues()->data->issues[0];
 
-        $request = new IssueRequest();
+        $request = new IssueIdRequest();
         $request->setIssueId($apiIssue->id);
         $request->setConstructionSiteId($this->getSomeConstructionSite()->getId());
 
@@ -152,7 +152,7 @@ class FoyerControllerTest extends ApiController
             $ids[] = $issue->id;
         }
 
-        $request = new IssuesRequest();
+        $request = new IssueIdsRequest();
         $request->setIssueIds($ids);
         $request->setConstructionSiteId($this->getSomeConstructionSite()->getId());
 
@@ -177,7 +177,7 @@ class FoyerControllerTest extends ApiController
             $ids[] = $issue->id;
         }
 
-        $request = new IssuesRequest();
+        $request = new IssueIdsRequest();
         $request->setIssueIds($ids);
         $request->setConstructionSiteId($this->getSomeConstructionSite()->getId());
 

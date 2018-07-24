@@ -12,7 +12,7 @@
 namespace App\Controller\Api;
 
 use App\Api\Request\ConstructionSiteRequest;
-use App\Api\Request\IssuesRequest;
+use App\Api\Request\IssueIdsRequest;
 use App\Api\Request\Register\SetStatusRequest;
 use App\Api\Response\Data\CraftsmenData;
 use App\Api\Response\Data\IssuesData;
@@ -56,9 +56,9 @@ class RegisterController extends ApiController
      *
      * @return bool
      */
-    private function parseIssuesRequest(Request $request, &$entities, &$errorResponse, &$constructionSite, &$parsedRequest, $class = IssuesRequest::class)
+    private function parseIssuesRequest(Request $request, &$entities, &$errorResponse, &$constructionSite, &$parsedRequest, $class = IssueIdsRequest::class)
     {
-        /** @var IssuesRequest $parsedRequest */
+        /** @var IssueIdsRequest $parsedRequest */
         /** @var ConstructionSite $constructionSite */
         if (!parent::parseConstructionSiteRequest($request, $class, $parsedRequest, $errorResponse, $constructionSite)) {
             return false;
@@ -91,7 +91,7 @@ class RegisterController extends ApiController
      */
     private function parseSetStatusRequest(Request $request, &$entities, &$errorResponse, &$constructionSite, &$parsedRequest)
     {
-        /** @var IssuesRequest $parsedRequest */
+        /** @var IssueIdsRequest $parsedRequest */
         /** @var ConstructionSite $constructionSite */
         if (!$this->parseIssuesRequest($request, $entities, $errorResponse, $constructionSite, $parsedRequest, SetStatusRequest::class)) {
             return false;

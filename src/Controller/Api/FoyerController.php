@@ -12,8 +12,8 @@
 namespace App\Controller\Api;
 
 use App\Api\Request\ConstructionSiteRequest;
-use App\Api\Request\IssueRequest;
-use App\Api\Request\IssuesRequest;
+use App\Api\Request\IssueIdRequest;
+use App\Api\Request\IssueIdsRequest;
 use App\Api\Response\Data\CraftsmenData;
 use App\Api\Response\Data\Foyer\DeletedIssueData;
 use App\Api\Response\Data\Foyer\NumberIssueData;
@@ -57,9 +57,9 @@ class FoyerController extends ApiController
      */
     private function parseIssuesRequest(Request $request, &$entities, &$errorResponse, &$constructionSite)
     {
-        /** @var IssuesRequest $parsedRequest */
+        /** @var IssueIdsRequest $parsedRequest */
         /** @var ConstructionSite $constructionSite */
-        if (!parent::parseConstructionSiteRequest($request, IssuesRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+        if (!parent::parseConstructionSiteRequest($request, IssueIdsRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
             return false;
         }
 
@@ -125,8 +125,8 @@ class FoyerController extends ApiController
      */
     private function parseIssueRequest(Request $request, &$entity, &$errorResponse, &$constructionSite)
     {
-        /** @var IssueRequest $parsedRequest */
-        if (!parent::parseConstructionSiteRequest($request, IssueRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+        /** @var IssueIdRequest $parsedRequest */
+        if (!parent::parseConstructionSiteRequest($request, IssueIdRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
             return false;
         }
 
@@ -289,7 +289,7 @@ class FoyerController extends ApiController
     public function issueImageAction(Request $request, IssueTransformer $issueTransformer)
     {
         /** @var ConstructionSite $constructionSite */
-        /* @var IssueRequest $issueRequest */
+        /* @var IssueIdRequest $issueRequest */
         /** @var Issue $entity */
         if (!$this->parseIssueRequest($request, $entity, $errorResponse, $constructionSite)) {
             return $errorResponse;
