@@ -30,7 +30,8 @@ if (document.getElementById("dashboard") != null) {
 
     // add icons
     library.add(
-
+        require('@fortawesome/fontawesome-pro-light/faPencil'),
+        require('@fortawesome/fontawesome-pro-light/faTrash'),
     );
 
     // boot app

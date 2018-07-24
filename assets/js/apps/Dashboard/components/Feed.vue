@@ -24,6 +24,12 @@
                 feed: []
             }
         },
+        props: {
+            constructionSiteId: {
+                type: String,
+                required: true
+            }
+        },
         mounted() {
             axios.post("/api/dashboard/feed/list", {
                 "constructionSiteId": this.constructionSiteId

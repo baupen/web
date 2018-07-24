@@ -17,12 +17,12 @@
 
                 <div class="vertical-spacer-big" ></div>
                 <h2>{{$t("notes.name")}}</h2>
-                <notes/>
+                <notes v-if="constructionSiteId !== null" :construction-site-id="constructionSiteId" />
             </div>
             <div class="col">
 
                 <h2>{{$t("feed.name")}}</h2>
-                <feed/>
+                <feed v-if="constructionSiteId !== null" :construction-site-id="constructionSiteId" />
             </div>
         </div>
     </div>
@@ -75,7 +75,6 @@
             axios.get("/api/configuration").then((response) => {
                 this.constructionSiteId = response.data.constructionSite.id;
 
-                console.log("stuff");
                 axios.post("/api/statistics/issues/overview", {
                     "constructionSiteId": this.constructionSiteId,
                 }).then((response) => {

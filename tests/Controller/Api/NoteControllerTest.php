@@ -31,7 +31,10 @@ class NoteControllerTest extends ApiController
         $this->assertNotNull($mapData->data->notes);
         $this->assertNotEmpty($mapData->data->notes);
         foreach ($mapData->data->notes as $note) {
+            $this->assertObjectHasAttribute("id", $note);
             $this->assertObjectHasAttribute("content", $note);
+            $this->assertObjectHasAttribute("timestamp", $note);
+            $this->assertObjectHasAttribute("authorName", $note);
         }
     }
 

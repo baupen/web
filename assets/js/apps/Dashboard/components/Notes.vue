@@ -1,8 +1,10 @@
 <template>
     <div>
         <BaseTextarea v-model="newNote">{{$t("notes.actions.add_new")}}</BaseTextarea>
-        <button  v-if="newNote.length > 0" :disabled="isLoading" class="btn"
-                :class="{ 'btn-primary': newNote.length > 0, 'disabled': isLoading}">
+        <button v-if="newNote.length > 0"
+                :disabled="isLoading"
+                class="btn" :class="{ 'btn-primary': newNote.length > 0, 'disabled': isLoading}"
+                @click="add">
             {{$t("notes.actions.add_new")}}
         </button>
         <atom-spinner v-if="isMounting"
@@ -12,7 +14,10 @@
         />
         <div v-else>
             <hr/>
-            <note-entry v-for="entry in notes" :key="entry.id" @save="save(entry)" @remove="remove(entry)" :entry="entry"/>
+            <note-entry v-for="entry in notes" :key="entry.id"
+                        @save="save(entry)"
+                        @remove="remove(entry)"
+                        :entry="entry"/>
         </div>
     </div>
 </template>
@@ -34,12 +39,18 @@
                 newNote: ""
             }
         },
+        props: {
+            constructionSiteId: {
+                type: String,
+                required: true
+            }
+        },
         methods: {
             add: function () {
                 this.isLoading = true;
-                axios.post("/api/notes/create", {
+                axios.post("/api/note/create", {
                     "constructionSiteId": this.constructionSiteId,
-                    "note": {content: newNote}
+                    "note": {content: this.newNote}
                 }).then((response) => {
                     this.notes.unshift(response.data.note);
                     this.newNote = "";
@@ -47,26 +58,28 @@
                 });
             },
             save: function (note) {
-                axios.post("/api/notes/update", {
+                axios.post("/api/note/update", {
                     "constructionSiteId": this.constructionSiteId,
                     "note": {content: note.content}
                 }).then((response) => {
-                    this.notes.push(response.data.note);
-                    this.newNote = "";
+                    const newNote = response.data.note;
+                    const match = this.notes.filter(n => n.id === newNote.id);
+                    match[0].content = newNote.content;
+                    match[0].authorName = newNote.authorName;
+                    match[0].timestamp = newNote.timestamp;
                 });
             },
             remove: function (note) {
-                axios.post("/api/notes/delete", {
+                axios.post("/api/note/delete", {
                     "constructionSiteId": this.constructionSiteId,
                     "noteId": note.id
                 }).then((response) => {
-                    this.notes.push(response.data.note);
-                    this.newNote = "";
+                    this.notes = this.notes.filter(n => n.id !== note.id);
                 });
             }
         },
         mounted() {
-            axios.post("/api/notes/list", {
+            axios.post("/api/note/list", {
                 "constructionSiteId": this.constructionSiteId
             }).then((response) => {
                 this.notes = response.data.notes;
