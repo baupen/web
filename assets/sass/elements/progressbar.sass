@@ -1,11 +1,15 @@
 .progressbar 
   counter-reset: step
+  margin-bottom: 0
+  padding-left: 0
 
 .progressbar li
   list-style-type: none
   float: left
   position: relative
   margin-right: 1em
+  &:last-child
+    margin-right: 0
 
 // the bubble
 .progressbar li
