@@ -30,7 +30,7 @@ class FeedEntry
     private $type;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $count;
 
@@ -66,17 +66,17 @@ class FeedEntry
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getCount(): int
+    public function getCount(): ?int
     {
         return $this->count;
     }
 
     /**
-     * @param int $count
+     * @param int|null $count
      */
-    public function setCount(int $count): void
+    public function setCount(?int $count): void
     {
         $this->count = $count;
     }

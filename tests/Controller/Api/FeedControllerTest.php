@@ -40,7 +40,7 @@ class FeedControllerTest extends ApiController
         $this->assertNotEmpty($data->data->feed->entries);
         foreach ($data->data->feed->entries as $entry) {
             $this->assertObjectHasAttribute("id", $entry);
-            $this->assertObjectHasAttribute("craftsmanName", $entry);
+            $this->assertObjectHasAttribute("craftsman", $entry);
             $this->assertObjectHasAttribute("timestamp", $entry);
             $this->assertObjectHasAttribute("type", $entry);
         }
