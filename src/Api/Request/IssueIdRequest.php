@@ -13,7 +13,7 @@ namespace App\Api\Request;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class IssueRequest extends ConstructionSiteRequest
+class IssueIdRequest extends ConstructionSiteRequest
 {
     /**
      * @var string

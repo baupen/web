@@ -9,30 +9,30 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Entity\Base;
+namespace App\Api\Response\Data;
 
-class BaseEntity
+use App\Api\Entity\Base\Note;
+
+class NoteData
 {
     /**
-     * @var string
+     * @var Note
      */
-    private $id;
+    private $note;
 
     /**
-     * BaseEntity constructor.
-     *
-     * @param string $id
+     * @return Note
      */
-    public function __construct($id)
+    public function getNote(): Note
     {
-        $this->id = $id;
+        return $this->note;
     }
 
     /**
-     * @return string
+     * @param Note $note
      */
-    public function getId(): string
+    public function setNote(Note $note): void
     {
-        return $this->id;
+        $this->note = $note;
     }
 }

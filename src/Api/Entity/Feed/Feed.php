@@ -9,30 +9,28 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Entity\Base;
+namespace App\Api\Entity\Feed;
 
-class BaseEntity
+class Feed
 {
     /**
-     * @var string
+     * @var FeedEntry[]
      */
-    private $id;
+    private $entries;
 
     /**
-     * BaseEntity constructor.
-     *
-     * @param string $id
+     * @return FeedEntry[]
      */
-    public function __construct($id)
+    public function getEntries(): array
     {
-        $this->id = $id;
+        return $this->entries;
     }
 
     /**
-     * @return string
+     * @param FeedEntry[] $entries
      */
-    public function getId(): string
+    public function setEntries(array $entries): void
     {
-        return $this->id;
+        $this->entries = $entries;
     }
 }

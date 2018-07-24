@@ -29,6 +29,9 @@
             checkboxValue: function () {
                 //emit event to work as v-model
                 this.$emit('input', this.checkboxValue === 'yes');
+            },
+            value: function () {
+                this.checkboxValue = this.value ? 'yes' : 'no';
             }
         },
         mounted () {

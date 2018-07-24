@@ -11,7 +11,7 @@
 
 namespace App\Api\Request;
 
-class IssuesRequest extends ConstructionSiteRequest
+class IssueIdsRequest extends ConstructionSiteRequest
 {
     /**
      * @var string[]

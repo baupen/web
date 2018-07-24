@@ -123,7 +123,7 @@
                         enabled: true,
                         read: {
                             active: false,
-                            value: true
+                            value: false
                         },
                         registered: {
                             active: false,
@@ -227,7 +227,7 @@
 
                 if (this.filter.onlyOverLimit) {
                     const today = (new Date()).toISOString();
-                    res = res.filter(i => i.responseLimit > today);
+                    res = res.filter(i => i.responseLimit < today);
                 }
 
                 return res;
@@ -304,6 +304,10 @@
                     return Promise.reject(error);
                 }
             );
+
+            const url = new URL(window.location.href);
+
+            //fill register
             axios.get("/api/configuration").then((response) => {
                 this.constructionSiteId = response.data.constructionSite.id;
                 this.filter.constructionSiteId = this.constructionSiteId;
@@ -313,12 +317,24 @@
                 }).then((response) => {
                     this.issues = response.data.issues;
                     this.isLoading = false;
+
+                    if (url.searchParams.has("issue")) {
+                        this.filter.status.enabled = false;
+                        this.filter.numberText = url.searchParams.get("issue");
+                    }
                 });
 
                 axios.post("/api/register/craftsman/list", {
                     "constructionSiteId": this.constructionSiteId
                 }).then((response) => {
                     this.craftsmen = response.data.craftsmen;
+
+                    if (url.searchParams.has("craftsman")) {
+                        this.filter.status.enabled = false;
+
+                        this.filter.craftsman.enabled = true;
+                        this.filter.craftsman.craftsmen = this.craftsmen.filter(c => c.id === url.searchParams.get("craftsman"));
+                    }
                 });
 
                 axios.post("/api/register/map/list", {
@@ -327,7 +343,22 @@
                     this.maps = response.data.maps;
                 });
             });
-        },
+
+            if (url.searchParams.has("view")) {
+                //set filter default values
+                if (url.searchParams.get("view") === "overdue") {
+                    this.filter.status.enabled = false;
+                    this.filter.onlyOverLimit = true;
+                } else if (url.searchParams.get("view") === "marked") {
+                    this.filter.status.enabled = false;
+                    this.filter.onlyMarked = true;
+                } else if (url.searchParams.get("view") === "open") {
+                    this.filter.status.responded.active = false;
+                } else {
+                    //to_inspect is the default view
+                }
+            }
+        }
     }
 
 </script>

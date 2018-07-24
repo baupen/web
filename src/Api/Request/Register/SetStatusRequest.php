@@ -11,9 +11,9 @@
 
 namespace App\Api\Request\Register;
 
-use App\Api\Request\IssuesRequest;
+use App\Api\Request\IssueIdsRequest;
 
-class SetStatusRequest extends IssuesRequest
+class SetStatusRequest extends IssueIdsRequest
 {
     /**
      * @var bool
