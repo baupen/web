@@ -1,16 +1,13 @@
 <template>
     <p>
-        <span v-if="entry.type === 'response-received'">
-            {{ $tc("feed.entries.response_received", entry.count,
-            { count: entry.count, craftsman: entry.craftsmanName })}}
+        <span v-if="entry.type === 'response-received'"
+              v-html="$tc('feed.entries.response_received', entry.count, { count: entry.count, craftsman: craftsmanLink })">
         </span>
-        <span v-else-if="entry.type === 'visited-webpage'">
-            {{ $t("feed.entries.visited_webpage",
-            { craftsman: entry.craftsmanName })}}
+        <span v-else-if="entry.type === 'visited-webpage'"
+              v-html="$tc('feed.entries.visited_webpage', entry.count, { craftsman: craftsmanLink })">
         </span>
-        <span v-else-if="entry.type === 'overdue'">
-            {{ $tc("feed.entries.overdue_limit", entry.count,
-            { count: entry.count, craftsman: entry.craftsmanName })}}
+        <span v-else-if="entry.type === 'overdue'"
+              v-html="$tc('feed.entries.overdue_limit', entry.count, { count: entry.count, craftsman: craftsmanLink })">
         </span>
         - <span class="text-secondary">{{ formattedTimestamp }}</span>
     </p>
@@ -32,6 +29,9 @@
         computed: {
             formattedTimestamp: function () {
                 return moment(this.entry.timestamp).fromNow();
+            },
+            craftsmanLink: function () {
+                return '<a href="/register?craftsman=' + this.entry.craftsman.id + '">' + this.entry.craftsman.name + '</a>';
             }
         }
     }

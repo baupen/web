@@ -69,6 +69,8 @@ class DailyEventRegistration
         if (!isset($this->counts[$timeKey][$receiverKey])) {
             $this->counts[$timeKey][$receiverKey] = 0;
         }
+
+        ++$this->counts[$timeKey][$receiverKey];
     }
 
     /**

@@ -16,7 +16,7 @@ export default {
         feed: {
             name: "Feed",
             entries: {
-                response_received: "{craftsman} hat eine Pendenzen beantwortet. | {craftsman} hat {count} Pendenzen beantwortet.",
+                response_received: "{craftsman} hat eine Pendenz beantwortet. | {craftsman} hat {count} Pendenzen beantwortet.",
                 visited_webpage: "{craftsman} hat die Pendenzen angeschaut.",
                 overdue_limit: "{craftsman} hat die Frist vom %limit% bei {count} Pendenzen überschritten.",
             }

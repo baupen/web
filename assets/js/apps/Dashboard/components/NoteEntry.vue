@@ -1,7 +1,7 @@
 <template>
     <div>
         <p v-if="!editActive">
-            <span>{{ entry.content }}</span>
+            <span v-html="parsedContent"></span>
             <span class="text-secondary">
                 <span v-if="entry.canEdit">
                     <font-awesome-icon class="clickable" @click="startEdit" :icon="['fal', 'pencil']"/> -
@@ -61,6 +61,38 @@
         computed: {
             formattedTimestamp: function () {
                 return moment(this.entry.timestamp).fromNow();
+            },
+            parsedContent: function () {
+                let start = "";
+                let inIssue = false;
+                let issueId = "";
+                this.entry.content.split('').forEach(c => {
+                    if (inIssue) {
+                        if (c === ' ') {
+                            inIssue = false;
+                            if (issueId.length > 0) {
+                                start += '<a href="/register?issue=' + issueId + '">#' + issueId + '</a> ';
+                                issueId = "";
+                            } else {
+                                start += '#' + c;
+                            }
+                        } else if (c >= '0' && c <= '9') {
+                            issueId += c;
+                        } else {
+                            inIssue = false;
+                            start += '#' + issueId;
+                            issueId = "";
+                        }
+                    } else {
+                        if (c === '#') {
+                            inIssue = true;
+                        } else {
+                            start += c;
+                        }
+                    }
+                });
+                start += issueId;
+                return this.entry.content + "         " +start;
             }
         }
     }

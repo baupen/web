@@ -20,7 +20,7 @@
         components: {FeedEntry, AtomSpinner},
         data: function() {
             return {
-                isMounting: false,
+                isMounting: true,
                 feed: []
             }
         },
@@ -31,7 +31,7 @@
             }
         },
         mounted() {
-            axios.post("/api/dashboard/feed/list", {
+            axios.post("/api/feed/list", {
                 "constructionSiteId": this.constructionSiteId
             }).then((response) => {
                 this.feed = response.data.feed;
