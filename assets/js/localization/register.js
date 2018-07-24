@@ -7,7 +7,7 @@ export default {
         search: {
             name: "Suche",
             only_marked: "nur markierte",
-            only_over_limit: "nur mit überschrittener Limite",
+            only_over_limit: "nur mit überschrittener Frist",
         },
         filter: {
             name: "Filter",

@@ -2,7 +2,7 @@ export default {
     de: {
         description: "Beschreibung",
         craftsman: "Firma",
-        response_limit: "Limite",
+        response_limit: "Frist",
         map: "Karte",
         status: "Status",
         number: "Nummer",
