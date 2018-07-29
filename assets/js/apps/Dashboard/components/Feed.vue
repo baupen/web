@@ -6,7 +6,10 @@
                       :color="'#ff1d5e'"
         />
         <div v-else>
-            <feed-entry v-for="entry in feed.entries" :key="entry.id" :entry="entry" />
+            <feed-entry v-for="entry in showEntries" :key="entry.id" :entry="entry" />
+            <button class="btn btn-outline-secondary" v-if="showEntries.length < feed.entries.length" @click="maxEntries += 10">
+                {{$t("feed.show_more")}}
+            </button>
         </div>
     </div>
 </template>
@@ -21,13 +24,23 @@
         data: function() {
             return {
                 isMounting: true,
-                feed: []
+                feed: [],
+                maxEntries: 20
             }
         },
         props: {
             constructionSiteId: {
                 type: String,
                 required: true
+            }
+        },
+        computed: {
+            showEntries: function () {
+                if (this.feed === null) {
+                    return [];
+                }
+                let currentEntries = 0;
+                return this.feed.entries.filter(e => currentEntries++ < this.maxEntries);
             }
         },
         mounted() {
