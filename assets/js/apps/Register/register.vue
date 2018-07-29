@@ -190,7 +190,7 @@
                 let res = this.issues;
 
                 const statusFilter = this.filter.status;
-                if (statusFilter.enabled) {
+                if (statusFilter.enabled && (statusFilter.registered || statusFilter.read || statusFilter.responded || statusFilter.reviewed)) {
                     if (!statusFilter.registered) {
                         res = res.filter(i => i.isRead || i.reviewedAt !== null || i.respondedAt !== null);
                     }
@@ -207,7 +207,7 @@
 
                 const numberText = this.filter.numberText;
                 if (numberText.length > 0) {
-                    res = res.filter(i => i.number.startsWith(numberText));
+                    res = res.filter(i => i.number === numberText);
                 }
 
                 if (this.filter.onlyMarked) {
@@ -215,7 +215,7 @@
                 }
 
                 const timeFilter = this.filter.time;
-                if (timeFilter.enabled) {
+                if (timeFilter.enabled && (timeFilter.read.active || timeFilter.registered.active || timeFilter.responded.active || timeFilter.reviewed.active)) {
                     if (timeFilter.read.active) {
                         res = res.filter(i => i.isRead === timeFilter.read.active);
                     }
@@ -234,19 +234,19 @@
                 }
 
                 const craftsmanFilter = this.filter.craftsman;
-                if (craftsmanFilter.enabled) {
+                if (craftsmanFilter.enabled && craftsmanFilter.craftsmen.length > 0) {
                     const ids = craftsmanFilter.craftsmen.map(c => c.id);
                     res = res.filter(i => ids.indexOf(i.craftsmanId) >= 0);
                 }
 
                 const mapFilter = this.filter.map;
-                if (mapFilter.enabled) {
+                if (mapFilter.enabled && mapFilter.maps.length > 0) {
                     const ids = mapFilter.maps.map(c => c.id);
                     res = res.filter(i => ids.indexOf(i.mapId) >= 0);
                 }
 
                 const tradeFilter = this.filter.trade;
-                if (tradeFilter.enabled) {
+                if (tradeFilter.enabled && tradeFilter.trades.length > 0) {
                     const ids = this.craftsmen.filter(c => tradeFilter.trades.indexOf(c.trade) >= 0).map(c => c.id);
                     res = res.filter(i => ids.indexOf(i.craftsmanId) >= 0);
                 }
