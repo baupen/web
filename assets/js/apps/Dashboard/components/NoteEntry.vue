@@ -92,7 +92,7 @@
                     }
                 });
                 start += issueId;
-                return this.entry.content + "         " +start;
+                return start;
             }
         }
     }

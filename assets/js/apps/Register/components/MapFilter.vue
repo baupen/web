@@ -9,9 +9,6 @@
 </template>
 
 <script>
-
-    import FilterStatus from './StatusFilterEntry'
-    import BaseCheckbox from '../../components/Base/BaseCheckbox'
     import MapFilterLevel from './MapFilterLevel'
 
     export default {
@@ -31,8 +28,6 @@
             }
         },
         components: {
-            FilterStatus,
-            BaseCheckbox,
             MapFilterLevel
         },
         methods: {

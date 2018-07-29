@@ -27,8 +27,6 @@
 </template>
 
 <script>
-
-    import FilterStatus from './StatusFilterEntry'
     import BaseCheckbox from '../../components/Base/BaseCheckbox'
     import BaseDateInput from '../../components/Base/BaseDateInput'
     import notifications from '../../mixins/Notifications'
@@ -89,7 +87,6 @@
             }
         },
         components: {
-            FilterStatus,
             BaseCheckbox,
             BaseDateInput
         },
