@@ -14,12 +14,16 @@
             </span>
         </p>
         <div v-else>
-            <BaseTextInput v-model="noteEdit"></BaseTextInput>
-            <button v-if="noteEdit.length > 0"
-                    class="btn" :class="{ 'btn-outline-primary': noteEdit.length > 0 }"
-                    @click="save">
-                {{$t("notes.actions.add_new")}}
-            </button>
+
+            <div class="input-group">
+                <input type="text" @keyup.enter="save" v-model="noteEdit" class="form-control form-control-sm">
+                <span class="input-group-btn input-group-btn">
+                <button :disabled="noteEdit.length === 0"
+                        class="btn btn-sm btn-outline-primary" :class="{ 'disabled': noteEdit.length === 0}"
+                        @click="save" type="button">
+                    {{$t("actions.save")}}</button>
+            </span>
+            </div>
         </div>
     </div>
 </template>

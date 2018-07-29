@@ -79,7 +79,6 @@
                     "constructionSiteId": this.constructionSiteId,
                 }).then((response) => {
                     this.overview = response.data.overview;
-                    console.log(this.overview);
                     this.isOverviewLoading = false;
                 });
             });
