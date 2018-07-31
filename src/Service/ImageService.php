@@ -28,12 +28,12 @@ class ImageService implements ImageServiceInterface
      * @var int the bubble size as an abstract unit
      *          the higher the number the smaller the resulting bubble
      */
-    private $bubbleScale = 1500;
+    private $bubbleScale = 500;
 
     /**
      * @var bool if the cache should be disabled
      */
-    private $disableCache = false;
+    private $disableCache = true;
 
     /**
      * @param Map $map
@@ -95,6 +95,8 @@ class ImageService implements ImageServiceInterface
             }
         }
 
+        //throw new \Exception();
+
         //write to disk & destroy
         imagejpeg($sourceImage, $filePath, 90);
         imagedestroy($sourceImage);
@@ -134,7 +136,10 @@ class ImageService implements ImageServiceInterface
         }
 
         $this->drawCircleWithText($yCoordinate, $xCoordinate, $circleColor, (string)$issue->getNumber(), $image);
+        $this->drawCircleWithText($yCoordinate, $xCoordinate - 400, $circleColor, (string)$issue->getNumber(), $image);
     }
+
+    private $text = '';
 
     /**
      * @param float $yPosition
@@ -145,21 +150,31 @@ class ImageService implements ImageServiceInterface
      */
     private function drawCircleWithText($yPosition, $xPosition, $circleColor, $text, &$image)
     {
+        $this->text .= '2';
+        $text = $this->text;
+
         //get sizes
         $xSize = imagesx($image);
         $ySize = imagesy($image);
         $imageSize = $xSize * $ySize;
-        $fontSize = sqrt($imageSize / ($this->bubbleScale * M_PI));
+        $targetTextDimension = sqrt($imageSize / ($this->bubbleScale * M_PI));
 
-        //get text size
+        //get text dimensions
         $font = __DIR__ . '/../../assets/fonts/OpenSans-Bold.ttf';
-        $txtSize = imagettfbbox($fontSize, 0, $font, $text);
-        $txtWidth = abs($txtSize[4] - $txtSize[0]);
-        $txtHeight = abs($txtSize[5] - $txtSize[1]);
+        $testFontSize = 30;
+        $txtSize = imagettfbbox($testFontSize, 0, $font, $text);
+        $testTextWidth = abs($txtSize[4] - $txtSize[0]);
+        $testTextHeight = abs($txtSize[5] - $txtSize[1]);
+
+        //calculate appropriate font size
+        $maxTextDimension = max($testTextWidth, $testTextHeight * 1.4); //*1.4 to counter single number being too big
+        $scalingFactor = $targetTextDimension / $maxTextDimension;
+        $fontSize = $scalingFactor * $testFontSize;
+        $textWidth = $testTextWidth * $scalingFactor;
+        $textHeight = $testTextHeight * $scalingFactor;
 
         //calculate diameter around text
-        $buffer = $fontSize * 1.6;
-        $diameter = max($txtWidth, $txtHeight) + $buffer;
+        $diameter = $targetTextDimension * 1.6; //*1.6 to have 0.3 at each circle end
 
         //draw white base ellipse before the colored one
         $white = $this->createColor($image, 255, 255, 255);
@@ -167,7 +182,7 @@ class ImageService implements ImageServiceInterface
         imagefilledellipse($image, (int)$xPosition, (int)$yPosition, (int)$diameter, (int)$diameter, $circleColor);
 
         //draw text
-        imagettftext($image, $fontSize, 0, (int)($xPosition - ($txtWidth / 2)), (int)($yPosition + ($txtHeight / 2)), $white, $font, $text);
+        imagettftext($image, $fontSize, 0, (int)($xPosition - ($textWidth / 2)), (int)($yPosition + ($textHeight / 2)), $white, $font, $text);
     }
 
     /**
