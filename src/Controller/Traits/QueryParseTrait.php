@@ -43,18 +43,23 @@ trait QueryParseTrait
             return is_array($input) && count($input) > 0 ? $input : null;
         };
 
+        $issueParameters = new ParameterBag($parameterBag->get('craftsman', []));
+        if ($issueParameters->getBoolean('enabled')) {
+            $filter->setIssues($toArray($issueParameters->get('issues', [])));
+        }
+
         $craftsmanParameters = new ParameterBag($parameterBag->get('craftsman', []));
-        if ($craftsmanParameters->getBoolean('enabled', false)) {
+        if ($craftsmanParameters->getBoolean('enabled')) {
             $filter->setCraftsmen($toArray($craftsmanParameters->get('craftsmen', [])));
         }
 
         $mapParameters = new ParameterBag($parameterBag->get('map', []));
-        if ($mapParameters->getBoolean('enabled', false)) {
+        if ($mapParameters->getBoolean('enabled')) {
             $filter->setMaps($toArray($mapParameters->get('maps', [])));
         }
 
         $tradeParameters = new ParameterBag($parameterBag->get('trade', []));
-        if ($tradeParameters->getBoolean('enabled', false)) {
+        if ($tradeParameters->getBoolean('enabled')) {
             $allowedTrades = $toArray($tradeParameters->get('trades', []));
             if (is_array($allowedTrades)) {
                 $craftsmanIds = [];

@@ -268,6 +268,12 @@
                 }
             }
         },
+        watch: {
+            selectedIssues: function () {
+                //call event
+                this.$emit('selection-changed', this.selectedIssues);
+            }
+        },
         computed: {
             selectAllEnabled: function () {
                 return this.issues.filter(c => !c.selected).length > 0;
