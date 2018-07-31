@@ -503,7 +503,7 @@ class ReportService implements ReportServiceInterface
         //only generate report if it does not already exist
         $filePath = $this->getPathFor($constructionSite);
         if (!file_exists($filePath) || $this->disableCache) {
-            $author = $this->translator->trans('generated', ['%date%' => (new \DateTime())->format('c'), '%name%' => $author], 'report');
+            $author = $this->translator->trans('generated', ['%date%' => (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT), '%name%' => $author], 'report');
             $this->render($constructionSite, $filter, $author, $elements, $issues, $filePath);
         }
 
