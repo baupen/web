@@ -381,15 +381,17 @@
             if (url.searchParams.has("view")) {
                 //set filter default values
                 if (url.searchParams.get("view") === "overdue") {
-                    this.filter.status.enabled = false;
                     this.filter.onlyOverLimit = true;
                 } else if (url.searchParams.get("view") === "marked") {
-                    this.filter.status.enabled = false;
                     this.filter.onlyMarked = true;
                 } else if (url.searchParams.get("view") === "open") {
-                    this.filter.status.responded.active = false;
-                } else {
-                    //to_inspect is the default view
+                    this.filter.status.enabled = true;
+                    this.filter.status.registered = true;
+                    this.filter.status.read = true;
+                    this.filter.status.responded = true;
+                } else if (url.searchParams.get("view") === "to_inspect") {
+                    this.filter.status.enabled = true;
+                    this.filter.status.responded = true;
                 }
             }
         }

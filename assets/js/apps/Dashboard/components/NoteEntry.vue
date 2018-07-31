@@ -70,6 +70,7 @@
                 let start = "";
                 let inIssue = false;
                 let issueId = "";
+                this.entry.content += ' ';
                 this.entry.content.split('').forEach(c => {
                     if (inIssue) {
                         if (c === ' ') {
@@ -96,7 +97,7 @@
                     }
                 });
                 start += issueId;
-                return start;
+                return start.trim();
             }
         }
     }
