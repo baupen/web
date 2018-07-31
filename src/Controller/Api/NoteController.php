@@ -53,7 +53,7 @@ class NoteController extends ApiController
             return $errorResponse;
         }
 
-        $notes = $this->getDoctrine()->getRepository(Note::class)->findBy(['constructionSite' => $constructionSite->getId()]);
+        $notes = $this->getDoctrine()->getRepository(Note::class)->findBy(['constructionSite' => $constructionSite->getId()], ['createdAt' => 'DESC']);
         /** @var \App\Api\Entity\Base\Note[] $apiNotes */
         $apiNotes = [];
         $canEdit = function ($issue) {

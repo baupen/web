@@ -166,7 +166,7 @@ class IssueRepository extends EntityRepository
             if ($filter->getReadStatus()) {
                 $queryBuilder->andWhere('i.registeredAt < c.lastOnlineVisit');
             } else {
-                $queryBuilder->andWhere('i.registeredAt >= c.lastOnlineVisit');
+                $queryBuilder->andWhere('i.registeredAt >= c.lastOnlineVisit OR c.lastOnlineVisit IS NULL');
             }
         }
     }

@@ -1,12 +1,15 @@
 <template>
     <div>
-        <BaseTextarea v-model="newNote" :placeholder="$t('notes.actions.add_new')"></BaseTextarea>
-        <button v-if="newNote.length > 0"
-                :disabled="isLoading"
-                class="btn" :class="{ 'btn-primary': newNote.length > 0, 'disabled': isLoading}"
-                @click="add">
-            {{$t("notes.actions.add_new")}}
-        </button>
+        <div class="input-group">
+            <input type="text" @keyup.enter="add" :disabled="isLoading" v-model="newNote" :class="{ 'disabled': isLoading }" class="form-control">
+            <span class="input-group-btn">
+                <button :disabled="isLoading || newNote.length === 0"
+                        class="btn" :class="{ 'disabled': isLoading || newNote.length === 0}"
+                        @click="add" type="button">
+                    {{$t("notes.actions.add_new")}}</button>
+            </span>
+        </div>
+
         <atom-spinner v-if="isMounting"
                       :animation-duration="1000"
                       :size="60"
@@ -26,10 +29,10 @@
     import axios from 'axios'
     import {AtomSpinner} from 'epic-spinners'
     import NoteEntry from "./NoteEntry";
-    import BaseTextarea from "../../components/Base/BaseTextarea";
+    import BaseTextInput from "../../components/Base/BaseTextInput";
 
     export default {
-        components: {BaseTextarea, NoteEntry, AtomSpinner},
+        components: {BaseTextInput, NoteEntry, AtomSpinner},
         data: function () {
             return {
                 isMounting: false,
@@ -60,7 +63,7 @@
             save: function (note) {
                 axios.post("/api/note/update", {
                     "constructionSiteId": this.constructionSiteId,
-                    "note": {content: note.content}
+                    "note": {content: note.content, id: note.id}
                 }).then((response) => {
                     const newNote = response.data.note;
                     const match = this.notes.filter(n => n.id === newNote.id);

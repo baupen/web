@@ -34,8 +34,6 @@
 </template>
 
 <script>
-
-    import FilterStatus from './StatusFilterEntry'
     import BaseCheckbox from '../../components/Base/BaseCheckbox'
     import $ from 'jquery'
 
@@ -69,7 +67,6 @@
             }
         },
         components: {
-            FilterStatus,
             BaseCheckbox
         },
         mounted() {

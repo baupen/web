@@ -18,7 +18,6 @@
 
 <script>
 
-    import FilterStatus from './StatusFilterEntry'
     import BaseCheckbox from '../../components/Base/BaseCheckbox'
 
     export default {
@@ -43,7 +42,6 @@
             }
         },
         components: {
-            FilterStatus,
             BaseCheckbox
         },
         methods: {

@@ -15,6 +15,7 @@ export default {
         },
         feed: {
             name: "Feed",
+            show_more: "Mehr anzeigen",
             entries: {
                 response_received: "{craftsman} hat eine Pendenz beantwortet. | {craftsman} hat {count} Pendenzen beantwortet.",
                 visited_webpage: "{craftsman} hat die Pendenzen angeschaut.",

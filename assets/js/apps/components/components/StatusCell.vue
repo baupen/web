@@ -61,6 +61,7 @@
 <style>
     .tooltip-wrapper {
         position: relative;
+        pointer-events: none;
     }
 
     .progressbar-tooltip {

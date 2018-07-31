@@ -141,6 +141,8 @@ class ReportService implements ReportServiceInterface
         $imageGrid = [];
         $currentRow = [];
         foreach ($issues as $issue) {
+            $currentIssue = [];
+
             $imagePath = $this->imageService->getSize($this->publicPath . '/' . $issue->getImageFilePath(), ImageServiceInterface::SIZE_REPORT_ISSUE);
             $currentIssue['imagePath'] = $imagePath;
             $currentIssue['identification'] = $issue->getNumber();
@@ -441,6 +443,7 @@ class ReportService implements ReportServiceInterface
         $tableHeader = [$this->translator->trans('entity.name', [], 'entity_craftsman')];
 
         //add map name & map context to table
+        $tableContent = [];
         foreach ($orderedCraftsman as $craftsmanId => $craftsman) {
             $tableContent[$craftsmanId] = [$craftsman->getName()];
         }
@@ -467,6 +470,7 @@ class ReportService implements ReportServiceInterface
         $tableHeader = [$this->translator->trans('trade', [], 'entity_craftsman')];
 
         //add map name & map context to table
+        $tableContent = [];
         foreach ($orderedTrade as $trade) {
             $tableContent[$trade] = [$trade];
         }

@@ -13,7 +13,9 @@ export default {
             name: "Filter",
             later_than: "später als",
             earlier_than: "früher als",
-            status_set: "Status gesetzt"
+            status_set: "Status gesetzt",
+            time: "Zeit",
+            time_set: "{state} am"
         },
         export: {
             name: "Export",

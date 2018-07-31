@@ -430,7 +430,7 @@ class Report
 
             //print images
             $currentColumn = 0;
-            foreach ($row as $entry) {
+            foreach ($row as &$entry) {
                 //image
                 $height = $entry['height'];
                 $width = $entry['width'];

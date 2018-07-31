@@ -83,7 +83,7 @@ class FeedController extends ApiController
 
         //put entries into feed
         $feed = new Feed();
-        $feed->setEntries($feedEntries);
+        $feed->setEntries(array_values($feedEntries));
 
         //create data object & return
         $feedData = new FeedData();

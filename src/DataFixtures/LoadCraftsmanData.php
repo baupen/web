@@ -12,6 +12,7 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
+use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -19,7 +20,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class LoadCraftsmanData extends BaseFixture
 {
-    const ORDER = LoadConstructionSiteData::ORDER + 1;
+    const ORDER = LoadConstructionSiteData::ORDER + LoadConstructionManagerData::ORDER + 1;
 
     /**
      * @var SerializerInterface
@@ -46,10 +47,15 @@ class LoadCraftsmanData extends BaseFixture
         $constructionSites = $manager->getRepository(ConstructionSite::class)->findAll();
         foreach ($constructionSites as $constructionSite) {
             /** @var Craftsman[] $craftsmen */
-            $craftsmen = $this->serializer->deserialize($json, Craftsman::class . '[]', 'json');
+            $craftsmen = [];
+            foreach ($this->serializer->deserialize($json, Craftsman::class . '[]', 'json') as $craftsman) {
+                /* @var Craftsman $craftsman */
+                $craftsman->setEmail($craftsman->getEmail() . '.example.com');
+                $craftsmen[] = $craftsman;
+            }
+            $craftsmen = array_merge($craftsmen, $this->getConstructionSiteCraftsmen($manager));
             foreach ($craftsmen as $craftsman) {
                 $craftsman->setConstructionSite($constructionSite);
-                $craftsman->setEmail($craftsman->getEmail() . '.example.com');
                 $craftsman->setEmailIdentifier();
                 if ($counter++ % 3 === 0) {
                     $craftsman->setLastOnlineVisit(new \DateTime());
@@ -62,6 +68,26 @@ class LoadCraftsmanData extends BaseFixture
         }
 
         $manager->flush();
+    }
+
+    /**
+     * @param ObjectManager $manager
+     *
+     * @return array
+     */
+    private function getConstructionSiteCraftsmen(ObjectManager $manager)
+    {
+        $craftsmen = [];
+        foreach ($manager->getRepository(ConstructionManager::class)->findAll() as $constructionManager) {
+            $craftsman = new Craftsman();
+            $craftsman->setEmail($constructionManager->getEmail());
+            $craftsman->setCompany('mangel.io');
+            $craftsman->setTrade('Programmierung');
+            $craftsman->setContactName($constructionManager->getName());
+            $craftsmen[] = $craftsman;
+        }
+
+        return $craftsmen;
     }
 
     public function getOrder()

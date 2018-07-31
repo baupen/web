@@ -126,6 +126,7 @@
 
 <script>
     import axios from "axios"
+    import notifications from "../mixins/Notifications"
     import moment from "moment";
 
     moment.locale('de');
@@ -144,6 +145,7 @@
                 lastSortCache: null
             }
         },
+        mixins: [notifications],
         methods: {
             sendEmails: function () {
                 this.isLoading = true;
@@ -159,26 +161,13 @@
                         c.selected = false;
                     });
 
-                    this.displayInfoFlash(this.$t("emails_sent"));
+                    this.displayInfoFlash(this.$t("messages.emails_sent"));
+
+                    const skipped = response.data.skippedIds.length;
+                    if (skipped > 0) {
+                        this.displayWarningFlash(this.$t("messages.skipped_emails", {count: skipped}));
+                    }
                 });
-            },
-            displayInfoFlash: function (content) {
-                this.displayFlash(content, "success");
-            },
-            displayErrorFlash: function (content) {
-                this.displayFlash(content, "danger");
-            },
-            displayFlash: function (content, alertType) {
-                let alert = $('#alert-template').html();
-                const uniqueId = 'id-' + Math.random().toString(36).substr(2, 16);
-                alert = alert.replace("ALERT_TYPE", alertType).replace("ID", uniqueId).replace("MESSAGE", content);
-
-                $('.flash-wrapper').append(alert);
-                $('#' + uniqueId).alert();
-
-                setTimeout(function () {
-                    $('#' + uniqueId).alert('close');
-                }, 3000);
             },
             formatDateTime: function (value) {
                 if (value === null) {
