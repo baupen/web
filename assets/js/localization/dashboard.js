@@ -3,10 +3,10 @@ export default {
         register: {
             name: "Pendenze",
             status_actions: {
-                open: "Aperte",
-                overdue: "Termine superato",
+                open: "Apri",
+                overdue: "Termine scaduto",
                 to_inspect: "Da ispezionare",
-                marked: "Contrassegnate"
+                marked: "Contrassegnato"
             }
         },
         dialog: {
@@ -15,11 +15,11 @@ export default {
         },
         feed: {
             name: "Feed",
-            show_more: "Mostra di più",
+            show_more: "Mostrare di più",
             entries: {
                 response_received: "{craftsman} ha risposto ad una pendenza. | {craftsman} ha risposto a {count} pendenze.",
                 visited_webpage: "{craftsman} ha visualizzato le pendenze.",
-                overdue_limit: "{craftsman} ha superato il limite di {count} pendenze di %limit%.",
+                overdue_limit: "{craftsman} ha superato il termine di {count} pendenze di %limit%.",
             }
         },
         notes: {
@@ -45,11 +45,11 @@ export default {
         },
         feed: {
             name: "Feed",
-            show_more: "Mostra di più",
+            show_more: "Mostrare di più",
             entries: {
                 response_received: "{craftsman} ha risposto ad una pendenza. | {craftsman} ha risposto a {count} pendenze.",
                 visited_webpage: "{craftsman} ha visualizzato le pendenze.",
-                overdue_limit: "{craftsman} ha superato il limite di {count} pendenze di %limit%.",
+                overdue_limit: "{craftsman} ha superato il termine di {count} pendenze di %limit%.",
             }
         },
         notes: {
