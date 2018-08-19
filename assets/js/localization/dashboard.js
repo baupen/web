@@ -1,31 +1,31 @@
 export default {
     de: {
         register: {
-            name: "Pendenze",
+            name: "Pendenzen",
             status_actions: {
-                open: "Apri",
-                overdue: "Termine scaduto",
-                to_inspect: "Da ispezionare",
-                marked: "Contrassegnato"
+                open: "Offen",
+                overdue: "Frist überschritten",
+                to_inspect: "Zur Inspektion",
+                marked: "Markiert"
             }
         },
         dialog: {
-            new_issues_in_foyer: "Una nuova pendenza | {count} nuove pendenze",
-            add_to_register: "Aggiungere al registro"
+            new_issues_in_foyer: "Eine neue Pendenz | {count} neue Pendenzen",
+            add_to_register: "Jetzt zum Verzeichnis hinzufügen"
         },
         feed: {
             name: "Feed",
-            show_more: "Mostrare di più",
+            show_more: "Mehr anzeigen",
             entries: {
-                response_received: "{craftsman} ha risposto ad una pendenza. | {craftsman} ha risposto a {count} pendenze.",
-                visited_webpage: "{craftsman} ha visualizzato le pendenze.",
-                overdue_limit: "{craftsman} ha superato il termine di {count} pendenze di %limit%.",
+                response_received: "{craftsman} hat eine Pendenz beantwortet. | {craftsman} hat {count} Pendenzen beantwortet.",
+                visited_webpage: "{craftsman} hat die Pendenzen angeschaut.",
+                overdue_limit: "{craftsman} hat die Frist vom %limit% bei {count} Pendenzen überschritten.",
             }
         },
         notes: {
-            name: "Note",
+            name: "Notizen",
             actions: {
-                add_new: "Aggiungi"
+                add_new: "Neu erfassen"
             }
         }
     },
@@ -56,36 +56,6 @@ export default {
             name: "Note",
             actions: {
                 add_new: "Aggiungi"
-            }
-        }
-    },
-    it: {
-        register: {
-            name: "Pendenzen",
-            status_actions: {
-                open: "Offen",
-                overdue: "Frist überschritten",
-                to_inspect: "Zur Inspektion",
-                marked: "Markiert"
-            }
-        },
-        dialog: {
-            new_issues_in_foyer: "Eine neue Pendenz | {count} neue Pendenzen",
-            add_to_register: "Jetzt zum Verzeichnis hinzufügen"
-        },
-        feed: {
-            name: "Feed",
-            show_more: "Mehr anzeigen",
-            entries: {
-                response_received: "{craftsman} hat eine Pendenz beantwortet. | {craftsman} hat {count} Pendenzen beantwortet.",
-                visited_webpage: "{craftsman} hat die Pendenzen angeschaut.",
-                overdue_limit: "{craftsman} hat die Frist vom %limit% bei {count} Pendenzen überschritten.",
-            }
-        },
-        notes: {
-            name: "Notizen",
-            actions: {
-                add_new: "Neu erfassen"
             }
         }
     }
