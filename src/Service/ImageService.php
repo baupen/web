@@ -33,7 +33,7 @@ class ImageService implements ImageServiceInterface
     /**
      * @var bool if the cache should be disabled
      */
-    private $disableCache = true;
+    private $disableCache = false;
 
     /**
      * @param Map $map
@@ -136,7 +136,6 @@ class ImageService implements ImageServiceInterface
         }
 
         $this->drawCircleWithText($yCoordinate, $xCoordinate, $circleColor, (string)$issue->getNumber(), $image);
-        $this->drawCircleWithText($yCoordinate, $xCoordinate - 400, $circleColor, (string)$issue->getNumber(), $image);
     }
 
     /**

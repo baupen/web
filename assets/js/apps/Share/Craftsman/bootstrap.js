@@ -5,7 +5,6 @@ import VueI18n from 'vue-i18n'
 Vue.config.productionTip = false;
 
 // components
-import {library} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 import VueHeadful from 'vue-headful'
 
@@ -31,12 +30,6 @@ if (document.getElementById("share-craftsman") != null) {
         locale: document.documentElement.lang.substr(0, 2),
         messages: mergeMessages(Messages),
     });
-
-    // add icons
-    library.add(
-        require('@fortawesome/pro-light-svg-icons/faCheck'),
-        require('@fortawesome/pro-light-svg-icons/faTimes')
-    );
 
     // boot app
     new Vue({
