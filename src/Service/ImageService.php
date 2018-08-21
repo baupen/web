@@ -139,8 +139,6 @@ class ImageService implements ImageServiceInterface
         $this->drawCircleWithText($yCoordinate, $xCoordinate - 400, $circleColor, (string)$issue->getNumber(), $image);
     }
 
-    private $text = '';
-
     /**
      * @param float $yPosition
      * @param float $xPosition
@@ -150,9 +148,6 @@ class ImageService implements ImageServiceInterface
      */
     private function drawCircleWithText($yPosition, $xPosition, $circleColor, $text, &$image)
     {
-        $this->text .= '2';
-        $text = $this->text;
-
         //get sizes
         $xSize = imagesx($image);
         $ySize = imagesy($image);
