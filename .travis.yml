@@ -48,7 +48,7 @@ install:
   - cp .env.travis .env.test
   - cp phpunit.xml.dist phpunit.xml
 
-  # prevnet deprecations notices to fail the build, as mostly only libraries are slow at updating
+  # prevent deprecations notices to fail the build, as mostly only libraries are slow at updating
   - export SYMFONY_DEPRECATIONS_HELPER=disable
 
   # install dependencies
