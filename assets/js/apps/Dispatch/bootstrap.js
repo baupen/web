@@ -32,10 +32,10 @@ if (document.getElementById("dispatch") != null) {
 
     // add icons
     library.add(
-        require('@fortawesome/fontawesome-pro-solid/faSortUp'),
-        require('@fortawesome/fontawesome-pro-solid/faSortDown'),
-        require('@fortawesome/fontawesome-pro-light/faSort'),
-        require('@fortawesome/fontawesome-pro-light/faUserAlt')
+        require('@fortawesome/pro-solid-svg-icons/faSortUp'),
+        require('@fortawesome/pro-solid-svg-icons/faSortDown'),
+        require('@fortawesome/pro-light-svg-icons/faSort'),
+        require('@fortawesome/pro-light-svg-icons/faUserAlt')
     );
 
     // boot app

@@ -34,8 +34,8 @@ if (document.getElementById("share-craftsman") != null) {
 
     // add icons
     library.add(
-        require('@fortawesome/fontawesome-pro-light/faCheck'),
-        require('@fortawesome/fontawesome-pro-light/faTimes')
+        require('@fortawesome/pro-light-svg-icons/faCheck'),
+        require('@fortawesome/pro-light-svg-icons/faTimes')
     );
 
     // boot app

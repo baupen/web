@@ -30,13 +30,13 @@ if (document.getElementById("register") != null) {
 
     // add icons
     library.add(
-        require('@fortawesome/fontawesome-pro-light/faCheck'),
-        require('@fortawesome/fontawesome-pro-solid/faSortUp'),
-        require('@fortawesome/fontawesome-pro-solid/faSortDown'),
-        require('@fortawesome/fontawesome-pro-light/faSort'),
-        require('@fortawesome/fontawesome-pro-solid/faStar'),
-        require('@fortawesome/fontawesome-pro-light/faStar'),
-        require('@fortawesome/fontawesome-pro-light/faTimes')
+        require('@fortawesome/pro-light-svg-icons/faCheck'),
+        require('@fortawesome/pro-solid-svg-icons/faSortUp'),
+        require('@fortawesome/pro-solid-svg-icons/faSortDown'),
+        require('@fortawesome/pro-light-svg-icons/faSort'),
+        require('@fortawesome/pro-solid-svg-icons/faStar'),
+        require('@fortawesome/pro-light-svg-icons/faStar'),
+        require('@fortawesome/pro-light-svg-icons/faTimes')
     );
 
     // boot app
