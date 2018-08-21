@@ -21,7 +21,6 @@ if (document.getElementById("dispatch") != null) {
 
     // register components
     Vue.component('vue-headful', vueHeadful);
-    Vue.component('font-awesome-icon', FontAwesomeIcon);
 
     // initialize messages
     const i18n = new VueI18n({
