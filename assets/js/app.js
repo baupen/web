@@ -4,6 +4,8 @@ require("../sass/app.sass");
 // prepare js environement
 require("./extensions");
 require("./bootstrap_vanilla");
+require("./font_awesome_light");
+require("./font_awesome_solid");
 
 // include vuejs apps
 require("./apps/Dispatch/bootstrap");

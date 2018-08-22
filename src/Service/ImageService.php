@@ -33,7 +33,7 @@ class ImageService implements ImageServiceInterface
     /**
      * @var bool if the cache should be disabled
      */
-    private $disableCache = true;
+    private $disableCache = false;
 
     /**
      * @param Map $map
@@ -136,10 +136,7 @@ class ImageService implements ImageServiceInterface
         }
 
         $this->drawCircleWithText($yCoordinate, $xCoordinate, $circleColor, (string)$issue->getNumber(), $image);
-        $this->drawCircleWithText($yCoordinate, $xCoordinate - 400, $circleColor, (string)$issue->getNumber(), $image);
     }
-
-    private $text = '';
 
     /**
      * @param float $yPosition
@@ -150,9 +147,6 @@ class ImageService implements ImageServiceInterface
      */
     private function drawCircleWithText($yPosition, $xPosition, $circleColor, $text, &$image)
     {
-        $this->text .= '2';
-        $text = $this->text;
-
         //get sizes
         $xSize = imagesx($image);
         $ySize = imagesy($image);

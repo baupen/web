@@ -17,6 +17,8 @@
 
         <env name="DATABASE_URL" value="sqlite:///%kernel.project_dir%/var/data.db"/>
         <env name="MAILER_URL" value="null://localhost"/>
+
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" />
     </php>
 
     <testsuites>

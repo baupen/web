@@ -10,6 +10,7 @@ cache:
 env:
   global:
     - SYMFONY_PHPUNIT_DIR="$HOME/symfony-bridge/.phpunit"
+    - SYMFONY_DEPRECATIONS_HELPER=disabled
 
 matrix:
   fast_finish: true
@@ -48,6 +49,9 @@ install:
   - cp .env.travis .env.test
   - cp phpunit.xml.dist phpunit.xml
 
+  # prevent deprecations notices to fail the build, as mostly only libraries are slow at updating
+  - export SYMFONY_DEPRECATIONS_HELPER=disabled
+
   # install dependencies
   - composer install
   - yarn install
@@ -58,13 +62,14 @@ install:
   - php --version
   - php ./bin/console --version
   - php ./vendor/bin/simple-phpunit --version
+  - phpunit --version
 
   # check if travis fulfills symfony requirements
   - php ./vendor/bin/requirements-checker
 
 # prepare tests
 before_script:
-  # perform license check (before enable enable seciton in before_install again)
+  # perform license check (before enable, enable section in before_install again)
   # - fossa
 
   # warmup cache to avoid excessive memory usage
@@ -92,7 +97,7 @@ script:
   # this checks that Doctrine's mapping configurations are valid
   - ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
   # this executes the phpunit tests
-  - ./vendor/bin/simple-phpunit
+  - export SYMFONY_DEPRECATIONS_HELPER=disabled && phpunit
 
 # report code coverage
 after_script:

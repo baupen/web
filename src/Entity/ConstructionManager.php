@@ -66,6 +66,13 @@ class ConstructionManager extends BaseEntity implements UserInterface
     private $activeConstructionSite;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="text", options={"default": "de"})
+     */
+    private $locale = 'de';
+
+    /**
      * constructor.
      */
     public function __construct()
@@ -172,5 +179,21 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public function setActiveConstructionSite(?ConstructionSite $activeConstructionSite): void
     {
         $this->activeConstructionSite = $activeConstructionSite;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocale(): string
+    {
+        return $this->locale;
+    }
+
+    /**
+     * @param string $locale
+     */
+    public function setLocale(string $locale): void
+    {
+        $this->locale = $locale;
     }
 }

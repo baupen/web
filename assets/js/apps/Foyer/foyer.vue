@@ -200,7 +200,6 @@
     import Datepicker from 'vuejs-datepicker';
     import {de} from 'vuejs-datepicker/dist/locale'
 
-
     moment.locale('de');
 
     export default {
@@ -376,8 +375,6 @@
                     "issueIds": this.issues.filter(c => c.selected).map(c => c.id)
                 }).then((response) => {
                     this.isLoading = false;
-                    console.log("done");
-                    console.log(response);
                     let issueNumberLookup = [];
                     response.data.numberIssues.forEach(i => {
                         issueNumberLookup[i.id] = i.number;
@@ -389,7 +386,6 @@
                         c.selected = false;
                     });
 
-                    console.log("here1");
                     this.displayInfoFlash(this.$t("messages.success.added_to_register"));
                     window.setTimeout(e => this.issues = this.issues.filter(i => i.number === null), 3000);
                 });
