@@ -61,6 +61,7 @@ install:
   - php --version
   - php ./bin/console --version
   - php ./vendor/bin/simple-phpunit --version
+  - phpunit --version
 
   # check if travis fulfills symfony requirements
   - php ./vendor/bin/requirements-checker
@@ -95,7 +96,7 @@ script:
   # this checks that Doctrine's mapping configurations are valid
   - ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
   # this executes the phpunit tests
-  - ./vendor/bin/simple-phpunit
+  - phpunit
 
 # report code coverage
 after_script:
