@@ -50,7 +50,7 @@ install:
   - cp phpunit.xml.dist phpunit.xml
 
   # prevent deprecations notices to fail the build, as mostly only libraries are slow at updating
-  - export SYMFONY_DEPRECATIONS_HELPER=disable
+  - export SYMFONY_DEPRECATIONS_HELPER=disabled
 
   # install dependencies
   - composer install
@@ -97,7 +97,7 @@ script:
   # this checks that Doctrine's mapping configurations are valid
   - ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
   # this executes the phpunit tests
-  - phpunit
+  - export SYMFONY_DEPRECATIONS_HELPER=disabled && phpunit
 
 # report code coverage
 after_script:
