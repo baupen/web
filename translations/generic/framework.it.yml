@@ -1,0 +1,11 @@
+date_time:
+  Mon: “Lu”
+  Tue: “Ma”
+  Wed: "Me”
+  Thu: “Gio”
+  Fri: “Ve”
+  Sat: "Sa"
+  Sun: “Do"
+
+error:
+  form_validation_failed: ‘L’elaborazione dei dati non è avvenuta correttamente. Tutti i campi necessari sono stati riempiti correttamente?'

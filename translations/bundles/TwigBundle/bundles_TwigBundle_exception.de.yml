@@ -1,7 +1,0 @@
-index:
-  title: 'Fehler %status_code%'
-  description: 'Diese Seite kann nicht angezeigt werden.'
-  404: 'Diese Seite wurde nicht gefunden.'
-  contact_support: 'Wir können Ihnen weiterhelfen: '
-  500: 'Ein Fehler ist bei der Ausführung Ihrer Anfrage aufgetreten.'
-  back: 'zurück'
