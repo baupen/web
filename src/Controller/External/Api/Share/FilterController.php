@@ -67,7 +67,7 @@ class FilterController extends ApiController
 
         $data = new ReadData();
         $data->setConstructionSite($constructionSiteTransformer->toApi($constructionSite));
-        $data->setFilter($filterTransformer->toApi($filter, $identifier));
+        $data->setFilter($filterTransformer->toApi($identifier));
 
         return $this->success($data);
     }

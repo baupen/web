@@ -28,11 +28,10 @@ class MapTransformer extends BatchTransformer
 
     /**
      * @param Map $entity
-     * @param array|null $args
      *
      * @return \App\Api\External\Entity\Map
      */
-    public function toApi($entity, $args = null)
+    public function toApi($entity)
     {
         $map = new \App\Api\External\Entity\Map();
         $map->setFilename($entity->getFilename());

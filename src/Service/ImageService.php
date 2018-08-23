@@ -95,8 +95,6 @@ class ImageService implements ImageServiceInterface
             }
         }
 
-        //throw new \Exception();
-
         //write to disk & destroy
         imagejpeg($sourceImage, $filePath, 90);
         imagedestroy($sourceImage);
@@ -269,7 +267,7 @@ class ImageService implements ImageServiceInterface
      */
     public function getSize(?string $imagePath, $size = ImageServiceInterface::SIZE_THUMBNAIL)
     {
-        if (!is_file($imagePath)) {
+        if ($imagePath !== null && !is_file($imagePath)) {
             return null;
         }
 
