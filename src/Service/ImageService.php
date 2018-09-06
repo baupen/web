@@ -343,7 +343,7 @@ class ImageService implements ImageServiceInterface
         } elseif ($ending === '.png') {
             $originalImage = imagecreatefrompng($sourcePath);
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
-            imagepng($newImage, $targetPath, 90);
+            imagepng($newImage, $targetPath, 9);
         } elseif ($ending === '.gif') {
             $originalImage = imagecreatefromgif($sourcePath);
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
