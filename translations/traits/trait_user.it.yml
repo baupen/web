@@ -1,0 +1,8 @@
+#name
+trait:
+ name: Utente
+
+email: E-mail
+password: Password
+plain_password: Password
+repeat_plain_password: Ripetere la password
