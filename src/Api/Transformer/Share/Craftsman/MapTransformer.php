@@ -11,7 +11,7 @@
 
 namespace App\Api\Transformer\Share\Craftsman;
 
-use App\Api\Entity\Share\Craftsman\Issue;
+use App\Entity\Issue;
 use App\Entity\Map;
 use App\Entity\Traits\IdTrait;
 use App\Service\Interfaces\ImageServiceInterface;

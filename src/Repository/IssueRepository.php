@@ -169,6 +169,11 @@ class IssueRepository extends EntityRepository
                 $queryBuilder->andWhere('i.registeredAt >= c.lastOnlineVisit OR c.lastOnlineVisit IS NULL');
             }
         }
+
+        if ($filter->getIsMarked() !== null) {
+            $queryBuilder->andWhere('i.isMarked = :is_marked');
+            $queryBuilder->setParameter('is_marked', $filter->getIsMarked());
+        }
     }
 
     /**

@@ -28,11 +28,10 @@ class CraftsmanTransformer extends BatchTransformer
 
     /**
      * @param Craftsman $entity
-     * @param array|null $args
      *
      * @return \App\Api\External\Entity\Craftsman
      */
-    public function toApi($entity, $args = null)
+    public function toApi($entity)
     {
         $craftsman = new \App\Api\External\Entity\Craftsman();
         $craftsman->setName($entity->getName());

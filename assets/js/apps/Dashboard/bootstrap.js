@@ -1,10 +1,10 @@
 // vuejs & plugins
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
+
 Vue.config.productionTip = false;
 
 // components
-import {library} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 
 // app
@@ -27,12 +27,6 @@ if (document.getElementById("dashboard") != null) {
         locale: document.documentElement.lang.substr(0, 2),
         messages: mergeMessages(Messages),
     });
-
-    // add icons
-    library.add(
-        require('@fortawesome/fontawesome-pro-light/faPencil'),
-        require('@fortawesome/fontawesome-pro-light/faTrash'),
-    );
 
     // boot app
     new Vue({

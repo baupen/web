@@ -38,7 +38,6 @@
                         {{ $t("issue.map")}}
                     </sortable-header>
 
-
                     <sortable-header @do-sort="sortBy('status')"
                                      :sort-state="sortKey === 'status' ? sortOrders[sortKey] : 0">
                         {{ $t("issue.status")}}

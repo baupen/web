@@ -21,7 +21,6 @@ security:
         # main firewall for logged in users
         main:
             pattern:   ^/
-            anonymous: ~
             provider: construction_manager_provider
             form_login:
                 login_path: login
