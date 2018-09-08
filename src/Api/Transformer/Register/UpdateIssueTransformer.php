@@ -18,7 +18,7 @@ use Symfony\Component\Routing\RouterInterface;
 class UpdateIssueTransformer
 {
     /**
-     * @var \App\Api\Transformer\Base\IssueTransformer
+     * @var \App\Api\Transformer\Foyer\UpdateIssueTransformer
      */
     private $updateIssueTransformer;
 

@@ -4,7 +4,6 @@ import VueI18n from 'vue-i18n'
 Vue.config.productionTip = false;
 
 // components
-import {library} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 
 // app
@@ -28,15 +27,6 @@ if (document.getElementById("foyer") != null) {
         messages: mergeMessages(Messages),
     });
 
-    // add icons
-    library.add(
-        require('@fortawesome/fontawesome-pro-solid/faSortUp'),
-        require('@fortawesome/fontawesome-pro-solid/faSortDown'),
-        require('@fortawesome/fontawesome-pro-light/faSort'),
-        require('@fortawesome/fontawesome-pro-solid/faStar'),
-        require('@fortawesome/fontawesome-pro-light/faStar'),
-        require('@fortawesome/fontawesome-pro-light/faTimes')
-    );
 
     // boot app
     new Vue({

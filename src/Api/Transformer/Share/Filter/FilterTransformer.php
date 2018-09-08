@@ -11,7 +11,6 @@
 
 namespace App\Api\Transformer\Share\Filter;
 
-use App\Entity\Filter;
 use Symfony\Component\Routing\RouterInterface;
 
 class FilterTransformer
@@ -32,18 +31,17 @@ class FilterTransformer
     }
 
     /**
-     * @param Filter $entity
-     * @param array $args
+     * @param string $identifier
      *
      * @return \App\Api\Entity\Share\Filter\Filter
      */
-    public function toApi($entity, string $identifier)
+    public function toApi(string $identifier)
     {
-        $issue = new \App\Api\Entity\Share\Filter\Filter($entity->getId());
+        $filter = new \App\Api\Entity\Share\Filter\Filter();
 
         //because we can't cache reports anyways; just generate a random hash anytime this is converted
-        $issue->setReportUrl($this->router->generate('external_report_filter', ['identifier' => $identifier, 'hash' => sha1(time())]));
+        $filter->setReportUrl($this->router->generate('external_report_filter', ['identifier' => $identifier, 'hash' => sha1(time())]));
 
-        return $issue;
+        return $filter;
     }
 }

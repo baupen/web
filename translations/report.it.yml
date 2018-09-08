@@ -1,18 +1,18 @@
-generated: ‘generato da %name% il %date%'
+generated: 'generato da %name% il %date%'
 filter:
-  later_than: ‘dopo il %date%'
-  earlier_than: ‘prima del %date%'
-  not: ‘non %state%'
-  trades: 'one: Settore|some: Settori’
-  craftsmen: 'one: Azienda|some: Aziende’
-  maps: 'one: Mappa|some: Mappe’
+  later_than: 'dopo il %date%'
+  earlier_than: 'prima del %date%'
+  not: 'non %state%'
+  trades: 'one: Settore|some: Settori'
+  craftsmen: 'one: Azienda|some: Aziende'
+  maps: 'one: Mappa|some: Mappe'
 
 table:
-  by_map: ‘Pendenze sulla mappa’
-  by_craftsman: ‘Pendenze per azienda esecutiva’
-  by_trade: ‘Pendenze per settore’
-  in_state_since: ‘da %status%'
+  by_map: 'Pendenze sulla mappa'
+  by_craftsman: 'Pendenze per azienda esecutiva'
+  by_trade: 'Pendenze per settore'
+  in_state_since: 'da %status%'
 
 issues:
-  detailed: ‘Dettagli delle pendenze sulla mappa’
-  with_images: ‘con immagini’
+  detailed: 'Dettagli delle pendenze sulla mappa'
+  with_images: 'con immagini'

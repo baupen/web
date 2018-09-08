@@ -45,9 +45,13 @@ class DailyEventRegistration
      */
     protected function normalizeReceiver($receiver)
     {
-        if (in_array($receiver, $this->receivers, true)) {
-            return array_search($receiver, $this->receivers, true);
+        //get existing receiver & return it if found
+        $res = array_search($receiver, $this->receivers, true);
+        if ($res) {
+            return $res;
         }
+
+        //create new receiver
         $this->receivers[] = $receiver;
 
         return count($this->receivers) - 1;
@@ -55,7 +59,7 @@ class DailyEventRegistration
 
     /**
      * @param \DateTime $time
-     * @param string $receiver
+     * @param mixed $receiver
      */
     protected function register(\DateTime $time, $receiver)
     {

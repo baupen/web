@@ -35,9 +35,11 @@
 
 <script>
     import BaseCheckbox from '../../components/Base/BaseCheckbox'
+    import NormalizeFilter from '../mixins/NormalizeFilter'
     import $ from 'jquery'
 
     export default {
+        mixins: [NormalizeFilter],
         props: {
             filter: {
                 type: Object,
@@ -61,7 +63,7 @@
         computed: {
             url: function () {
                 let newObj = {};
-                newObj["filter"] = this.filter;
+                newObj["filter"] = this.normalizeFilter(this.filter);
                 newObj["reportElements"] = this.reportElements;
                 return "/report" + "?" + $.param(newObj);
             }

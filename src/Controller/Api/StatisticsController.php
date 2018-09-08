@@ -14,7 +14,6 @@ namespace App\Controller\Api;
 use App\Api\Entity\Statistics\Overview;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Response\Data\Statistics\OverviewData;
-use App\Api\Transformer\Register\IssueTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
@@ -32,13 +31,12 @@ class StatisticsController extends ApiController
      * @Route("/issues/overview", name="api_statistics_overview", methods={"POST"})
      *
      * @param Request $request
-     * @param IssueTransformer $issueTransformer
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
      *
      * @return Response
      */
-    public function issuesOverviewAction(Request $request, IssueTransformer $issueTransformer)
+    public function issuesOverviewAction(Request $request)
     {
         /** @var ConstructionSite $constructionSite */
         if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $constructionSiteRequest, $errorResponse, $constructionSite)) {

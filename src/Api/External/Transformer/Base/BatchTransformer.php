@@ -24,11 +24,10 @@ abstract class BatchTransformer
      * transforms all toApi, preserving the ordering.
      *
      * @param array $entities
-     * @param array|null $args
      *
      * @return array
      */
-    public function toApiMultiple(array $entities, $args = null)
+    public function toApiMultiple(array $entities)
     {
         $res = [];
         foreach ($entities as $entity) {

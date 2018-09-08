@@ -1,9 +1,9 @@
 craftsman:
-  title: ‘? pendenze aperte’
-  description: ‘da '
+  title: '? pendenze aperte'
+  description: 'da '
 
 filter:
-  title: ‘Panoramica delle pendenze’
+  title: 'Panoramica delle pendenze'
   description: 'Panoramica delle pendenze'
 
 email:
@@ -17,11 +17,11 @@ email:
   action_text: 'Visualizzare le pendenze'
 
   unread:
-    subject: 'one: Una pendenza non letta|some: %count% pendenze non lette’
+    subject: 'one: Una pendenza non letta|some: %count% pendenze non lette'
     body: 'one: Una nuova pendenza aperta.|some: Ci sono ancora %count% pendenze aperte.'
   open:
     subject: 'one: Una pendenza aperta|some: %count% pendenze aperte'
     body: 'one: C’è ancora una pendenza aperta.|some: Ci sono ancora %count% pendenze aperte.'
   overdue:
-    subject: 'one: Il termine per una pendenza è scaduto|some: Il termine per %count% pendenze è scaduto’
+    subject: 'one: Il termine per una pendenza è scaduto|some: Il termine per %count% pendenze è scaduto'
     body: 'one: Purtroppo il termine fissato per la correzione di una pendenza è stato oltrepassato. Preghiamo di risolverla il prima possibile.|some: Purtroppo il termine fissato per la correzione di %count% pendenze è stato oltrepassato. Preghiamo di risolverle il prima possibile.'

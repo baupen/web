@@ -1,17 +1,25 @@
 support:
+<<<<<<< HEAD
   title: ‘Contattare il supporto.’
   description: ‘Ci occupiamo il più velocemente possibile della vostra richiesta.'
   ready: ‘Tutto pronto?’
   back_to_the_application: ‘indietro all’applicazione’
   submit: ‘Inviare messaggio’
+=======
+  title: 'Contattare il supporto.'
+  description: 'Ci occupiamo il più velocemente possibile della vostra richiesta.'
+  ready: 'Alles fertig?'
+  back_to_the_application: 'indietro all’applicazione'
+  submit: 'Inviare messaggio'
+>>>>>>> 854e41f3053fac7206b4ea529cda72f842812d36
   email:
-    subject: ‘Richiesta di supporto ricevuta: %page%'
+    subject: 'Richiesta di supporto ricevuta: %page%'
     body: >
       Name: %name%
       Email: %email%
 
       Nachricht: %message%
   success:
-    email_sent: ‘Abbiamo ricevuto il vostro messaggio.’
+    email_sent: 'Abbiamo ricevuto il vostro messaggio.'
   fail:
-    email_not_sent: ‘Il vostro messaggio non ha potuto essere inviato.’
+    email_not_sent: 'Il vostro messaggio non ha potuto essere inviato.'
