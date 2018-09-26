@@ -31,8 +31,8 @@ export default {
         status_values: {
             read: "letto",
             registered: "registrato",
-            responded: "risposto’,
-            reviewed: "chiuso’
+            responded: "risposto",
+            reviewed: "chiuso"
         }
     }
 }
