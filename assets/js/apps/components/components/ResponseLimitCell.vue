@@ -19,11 +19,10 @@
     import moment from "moment";
     import DatePicker from 'vuejs-datepicker';
 
-    const locale = require('vuejs-datepicker/dist/locale');
-
     const lang = document.documentElement.lang.substr(0, 2);
-    const datePickerTranslation = locale[lang];
-    moment.locale(lang);
+
+    const datePickerLocale = require('vuejs-datepicker/dist/locale');
+    const datePickerTranslation = datePickerLocale[lang];
 
 
     export default {
@@ -43,7 +42,8 @@
         data: function () {
             return {
                 responseLimit: null,
-                datePickerTranslation
+                datePickerTranslation,
+                locale: lang
             }
         },
         methods: {
@@ -66,7 +66,7 @@
                 if (this.issue.responseLimit === null) {
                     return this.$t("issue.no_response_limit");
                 }
-                return moment(this.issue.responseLimit).fromNow();
+                return moment(this.issue.responseLimit).locale(this.locale).fromNow();
             },
         },
         watch: {

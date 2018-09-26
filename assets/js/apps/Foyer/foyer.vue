@@ -144,7 +144,7 @@
                             {{ formatLimitDateTime(issue.responseLimit)}}
                         </span>
                         <div v-else @click.prevent.stop="">
-                            <datepicker :lang="de" format="dd.MM.yyyy" :ref="'response-limit-' + issue.id"
+                            <datepicker :lang="datePickerLang" format="dd.MM.yyyy" :ref="'response-limit-' + issue.id"
                                         v-model="editResponseLimit">
                             </datepicker>
                             <button class="btn btn-secondary" @click="saveResponseLimit">{{$t("actions.save")}}</button>
@@ -197,17 +197,16 @@
 <script>
     import axios from "axios"
     import moment from "moment";
-    import Datepicker from 'vuejs-datepicker';
-    import {de} from 'vuejs-datepicker/dist/locale'
 
-    moment.locale('de');
+    import Datepicker from 'vuejs-datepicker';
+    import {de, it} from 'vuejs-datepicker/dist/locale'
 
     export default {
         data: function () {
             const sortOrders = {};
             ["isMarked", "description", "craftsman", "responseLimit", "map", "uploadByName"].forEach(e => sortOrders[e] = 1);
             return {
-                de: de,
+                datePickerLang: document.documentElement.lang.substr(0, 2) === "de" ? de: it,
                 issues: [],
                 craftsmen: null,
                 trades: [],
@@ -459,13 +458,13 @@
                 if (value === null) {
                     return "-"
                 }
-                return moment(value).fromNow();
+                return moment(value).locale(document.documentElement.lang.substr(0, 2)).fromNow();
             },
             formatLimitDateTime: function (value) {
                 if (value === null) {
                     return this.$t("issue.no_response_limit");
                 }
-                return moment(value).fromNow();
+                return moment(value).locale(document.documentElement.lang.substr(0, 2)).fromNow();
             },
             selectAll: function () {
                 let newVal = !(this.indeterminate || this.selected);

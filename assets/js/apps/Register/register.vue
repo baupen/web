@@ -97,7 +97,6 @@
 
 <script>
     import axios from "axios"
-    import moment from "moment";
     import IssueEditTable from "../components/IssueEditTable"
     import TimeFilter from "./components/TimeFilter"
     import StatusFilter from "./components/StatusFilter"
@@ -108,11 +107,12 @@
     import BaseCheckbox from "../components/Base/BaseCheckbox"
     import PdfExport from "./components/PdfExport"
     import LinkExport from "./components/LinkExport"
-    import {de} from 'vuejs-datepicker/dist/locale'
     import {AtomSpinner} from 'epic-spinners'
     import notifications from '../mixins/Notifications'
-
-    moment.locale('de');
+    
+    const lang = document.documentElement.lang.substr(0, 2);
+    const datePickerLocale = require('vuejs-datepicker/dist/locale');
+    const datePickerTranslation = datePickerLocale[lang];
 
     export default {
         data: function () {
@@ -123,7 +123,7 @@
                 craftsmen: [],
                 trade: [],
                 maps: [],
-                date_picker_locale: de,
+                datePickerLocale: datePickerTranslation,
                 filter: {
                     constructionSiteId: null,
                     issue: {

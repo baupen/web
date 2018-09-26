@@ -34,7 +34,6 @@
     import BaseTextInput from "../../components/Base/BaseTextInput";
 
     const lang = document.documentElement.lang.substr(0, 2);
-    moment.locale(lang);
 
     export default {
         components: {BaseTextInput, BaseTextarea},
@@ -48,6 +47,7 @@
             return {
                 editActive: false,
 
+                locale: lang,
                 noteEdit: ""
             }
         },
@@ -64,7 +64,7 @@
         },
         computed: {
             formattedTimestamp: function () {
-                return moment(this.entry.timestamp).fromNow();
+                return moment(this.entry.timestamp).locale(this.locale).fromNow();
             },
             parsedContent: function () {
                 let start = "";
