@@ -1,7 +1,7 @@
 export default {
     de: {
         register: {
-            name: “Pendenze”,
+            name: "Pendenze",
             status_actions: {
                 open: "Offen",
                 overdue: "Frist überschritten",
