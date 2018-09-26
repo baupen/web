@@ -9,3 +9,8 @@ date_time:
 
 error:
   form_validation_failed: 'Die Verarbeitung konnte nicht abgeschlossen werden. Sind alle benötigten Felder richtig ausgefüllt?'
+
+outdated:
+  your_browser_is_outdated: "Ihr Browser wird nicht unterstützt!"
+  update_to_view_correctly: "Bitte aktualisieren Sie Ihren Browser, um diese Webseite korrekt benutzen zu können."
+  update_now: "Browser jetzt aktualisieren "

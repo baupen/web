@@ -2,6 +2,7 @@
 require("../sass/app.sass");
 
 // prepare js environement
+require("./legacy");
 require("./extensions");
 require("./bootstrap_vanilla");
 require("./font_awesome_light");

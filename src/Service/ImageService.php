@@ -267,7 +267,7 @@ class ImageService implements ImageServiceInterface
      */
     public function getSize(?string $imagePath, $size = ImageServiceInterface::SIZE_THUMBNAIL)
     {
-        if ($imagePath !== null && !is_file($imagePath)) {
+        if ($imagePath === null && !is_file($imagePath)) {
             return null;
         }
 
