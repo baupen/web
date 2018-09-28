@@ -17,7 +17,6 @@
     import moment from "moment";
 
     const lang = document.documentElement.lang.substr(0, 2);
-    moment.locale(lang);
 
     export default {
         props: {
@@ -26,9 +25,14 @@
                 required: true
             }
         },
+        data() {
+            return {
+                locale: lang
+            }
+        },
         computed: {
             formattedTimestamp: function () {
-                return moment(this.entry.timestamp).fromNow();
+                return moment(this.entry.timestamp).locale(this.locale).fromNow();
             },
             craftsmanLink: function () {
                 return '<a href="/register?craftsman=' + this.entry.craftsman.id + '">' + this.entry.craftsman.name + '</a>';

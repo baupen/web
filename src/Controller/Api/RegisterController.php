@@ -272,7 +272,7 @@ class RegisterController extends ApiController
         //ensure no unsafe filters are saved
         $nonEmptyArrays = [$filter->getIssues(), $filter->getCraftsmen(), $filter->getMaps()];
         foreach ($nonEmptyArrays as $nonEmptyArray) {
-            if ($nonEmptyArray !== null && count($nonEmptyArray) === 0) {
+            if ($nonEmptyArray !== null && \count($nonEmptyArray) === 0) {
                 return $this->fail(self::EMPTY_CONDITIONS_NOT_ALLOWED);
             }
         }

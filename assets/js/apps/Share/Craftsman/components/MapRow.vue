@@ -13,7 +13,6 @@
     import moment from 'moment'
 
     const lang = document.documentElement.lang.substr(0, 2);
-    moment.locale(lang);
 
     export default {
         props: {
@@ -26,9 +25,14 @@
                 required: true
             }
         },
+        data() {
+            return {
+                locale: lang
+            }
+        },
         methods: {
             formatDateTime: function (value) {
-                return value === null ? "-" : moment(value).fromNow();
+                return value === null ? "-" : moment(value).locale(this.locale).fromNow();
             }
         },
         computed: {

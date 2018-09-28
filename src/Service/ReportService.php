@@ -149,12 +149,12 @@ class ReportService implements ReportServiceInterface
             $currentRow[] = $currentIssue;
 
             //add row to grid if applicable
-            if (count($currentRow) === $columnCount) {
+            if (\count($currentRow) === $columnCount) {
                 $imageGrid[] = $currentRow;
                 $currentRow = [];
             }
         }
-        if (count($currentRow) > 0) {
+        if (\count($currentRow) > 0) {
             $imageGrid[] = $currentRow;
         }
 
@@ -215,10 +215,10 @@ class ReportService implements ReportServiceInterface
         }
 
         //convert all set status to a single string
-        if (count($statusEntries) === 3 && !$timeSpecified) {
+        if (\count($statusEntries) === 3 && !$timeSpecified) {
             //shorten
             $statusEntry = $this->translator->trans('status_values.all', [], 'entity_issue');
-        } elseif (count($statusEntries) === 0) {
+        } elseif (\count($statusEntries) === 0) {
             $statusEntry = $this->translator->trans('status_values.none', [], 'entity_issue');
         } else {
             $statusEntry = implode(', ', $statusEntries);
@@ -236,7 +236,7 @@ class ReportService implements ReportServiceInterface
                 $trades[$item->getTrade()] = 1;
             }
             $names = array_keys($names);
-            $filterEntries[$this->translator->transChoice('filter.craftsmen', count($names), [], 'report')] = implode(', ', $names);
+            $filterEntries[$this->translator->transChoice('filter.craftsmen', \count($names), [], 'report')] = implode(', ', $names);
         }
 
         //add maps
@@ -246,7 +246,7 @@ class ReportService implements ReportServiceInterface
             foreach ($entities as $item) {
                 $names[] = $item->getName() . ' (' . $item->getContext() . ')';
             }
-            $filterEntries[$this->translator->transChoice('filter.maps', count($names), [], 'report')] = implode(', ', $names);
+            $filterEntries[$this->translator->transChoice('filter.maps', \count($names), [], 'report')] = implode(', ', $names);
         }
 
         //add limit
@@ -269,7 +269,7 @@ class ReportService implements ReportServiceInterface
                     $trades[$trade] = 1;
                 }
             }
-            $filterEntries[$this->translator->transChoice('filter.trades', count($trades), [], 'report')] = implode(', ', array_keys($trades));
+            $filterEntries[$this->translator->transChoice('filter.trades', \count($trades), [], 'report')] = implode(', ', array_keys($trades));
         }
 
         //add list of elements which are part of this report
@@ -285,7 +285,7 @@ class ReportService implements ReportServiceInterface
         }
         $elements[] = $this->translator->trans('issues.detailed', [], 'report');
         if ($reportElements->getWithImages()) {
-            $elements[count($elements) - 1] .= ' ' . $this->translator->trans('issues.with_images', [], 'report');
+            $elements[\count($elements) - 1] .= ' ' . $this->translator->trans('issues.with_images', [], 'report');
         }
 
         //print
