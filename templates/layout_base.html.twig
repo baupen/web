@@ -29,10 +29,12 @@
     <base href="/" target="_self">
 </head>
 <body>
-<!--[if lte IE 9]>
-<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
-    your browser</a> to improve your experience and security.</p>
-<![endif]-->
+
+<div id="outdated">
+    <h6>{{ "outdated.your_browser_is_outdated"|trans({}, "framework") }}</h6>
+    <p>{{ "outdated.update_to_view_correctly"|trans({}, "framework") }} <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">{{ "outdated.update_now"|trans({}, "framework") }}</a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
 
 {% set flashes = app.session.flashbag.all() %}
 <div class="flash-wrapper">
