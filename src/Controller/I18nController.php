@@ -30,7 +30,7 @@ class I18nController extends BaseLoginController
     public function setLocaleAction(Request $request, $locale)
     {
         //only change locale to valid values
-        if (in_array($locale, ['de', 'it'], true)) {
+        if (\in_array($locale, ['de', 'it'], true)) {
             $request->getSession()->set('_locale', $locale);
             $request->setLocale($locale);
             $this->getUser()->setLocale($locale);

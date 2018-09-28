@@ -66,8 +66,8 @@ class LoadIssueData extends BaseFixture
             foreach ($issues as $issue) {
                 if ($counter % 4 > 0) {
                     // each 4th issue has an optional position
-                    $x = $this->xOrientationArray[$counter % count($this->xOrientationArray)];
-                    $y = $this->yOrientationArray[$counter % count($this->yOrientationArray)];
+                    $x = $this->xOrientationArray[$counter % \count($this->xOrientationArray)];
+                    $y = $this->yOrientationArray[$counter % \count($this->yOrientationArray)];
                     if ($counter % 3 === 0) {
                         $issue->setPositionX($y);
                         $issue->setPositionY($x);
@@ -75,7 +75,7 @@ class LoadIssueData extends BaseFixture
                         $issue->setPositionX($x);
                         $issue->setPositionY($y);
                     }
-                    $issue->setPositionZoomScale($this->scaleArray[$counter % count($this->scaleArray)]);
+                    $issue->setPositionZoomScale($this->scaleArray[$counter % \count($this->scaleArray)]);
                 }
                 ++$counter;
             }
@@ -145,7 +145,7 @@ class LoadIssueData extends BaseFixture
                 //if no status is set leave craftsman null sometime
                 $issue->setCraftsman($this->getRandomEntry($randomCraftsmanCounter, $constructionSite->getCraftsmen()));
             } else {
-                assert($issue->getCraftsman() === null);
+                \assert($issue->getCraftsman() === null);
             }
 
             $dayOffset = 0;

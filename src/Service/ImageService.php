@@ -329,7 +329,7 @@ class ImageService implements ImageServiceInterface
         list($width, $height) = ImageHelper::getWidthHeightArguments($sourcePath, $maxWidth, $maxHeight, false);
 
         //create folder if needed
-        $folder = dirname($targetPath);
+        $folder = \dirname($targetPath);
         if (!file_exists($folder)) {
             mkdir($folder, 0777, true);
         }
