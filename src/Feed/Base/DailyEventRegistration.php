@@ -54,7 +54,7 @@ class DailyEventRegistration
         //create new receiver
         $this->receivers[] = $receiver;
 
-        return count($this->receivers) - 1;
+        return \count($this->receivers) - 1;
     }
 
     /**

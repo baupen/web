@@ -44,12 +44,12 @@ class ClearPublicUploadDir extends BaseFixture
             return true;
         }
 
-        if (!is_dir($dir) && !in_array(basename($dir), $exceptions, true)) {
+        if (!is_dir($dir) && !\in_array(basename($dir), $exceptions, true)) {
             return unlink($dir);
         }
 
         foreach (scandir($dir) as $item) {
-            if ($item === '.' || $item === '..' || in_array($item, $exceptions, true)) {
+            if ($item === '.' || $item === '..' || \in_array($item, $exceptions, true)) {
                 continue;
             }
 

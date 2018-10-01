@@ -47,7 +47,6 @@ task('deploy:vendors', function () {
 desc('Bundling locally css/js and then uploading it');
 task('frontend:build', function () {
     runLocally('yarn install');
-    runLocally('yarn upgrade');
     runLocally('yarn run encore production');
     runLocally('rsync -azP public/dist {{user}}@{{hostname}}:{{release_path}}/public');
 })->desc('Build frontend assets');

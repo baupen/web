@@ -111,7 +111,7 @@ WHERE cscm.construction_manager_id = :id';
         $readData->setRemovedBuildingIDs(array_keys($removeIds));
 
         //if no access to any buildings do an early return
-        if (count($allValidIds) === 0) {
+        if (\count($allValidIds) === 0) {
             return;
         }
 
@@ -298,7 +298,7 @@ WHERE cscm.construction_manager_id = :id';
     {
         $sql .= ' AND (';
         //only return confirmed buildings if they are updated
-        if (count($guidTimeDictionary) > 0) {
+        if (\count($guidTimeDictionary) > 0) {
             $sql .= '(';
 
             //get all where id matches but last change date does not
@@ -319,7 +319,7 @@ WHERE cscm.construction_manager_id = :id';
         }
 
         //return buildings unknown to the requester
-        if (count($guidTimeDictionary) > 0) {
+        if (\count($guidTimeDictionary) > 0) {
             $sql .= $tableShort . '.id NOT IN ("' . implode('", "', array_keys($guidTimeDictionary)) . '")';
         } else {
             //allow all
