@@ -1,7 +1,7 @@
 support:
   title: 'Contattare il supporto.'
   description: 'Ci occupiamo il più velocemente possibile della vostra richiesta.'
-  ready: 'Alles fertig?'
+  ready: 'Tutto pronto?'
   back_to_the_application: 'indietro all’applicazione'
   submit: 'Inviare messaggio'
   email:
