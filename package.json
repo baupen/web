@@ -1,16 +1,21 @@
 {
   "devDependencies": {
-    "@symfony/webpack-encore": "^0.17",
+    "@symfony/webpack-encore": "^0.22",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.9.0",
+    "eslint-config-standard": "^12.0.0",
     "eslint-plugin-flowtype": "^3.2.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "flow-bin": "^0.86.0",
     "husky": "^1.2.0",
     "jquery": "^3.2",
     "lint-staged": "^8.1.0",
     "node-sass": "^4",
-    "sass-loader": "^6",
-    "vue-loader": "^14.2.2",
+    "sass-loader": "^7",
+    "vue-loader": "^15",
     "vue-template-compiler": "^2.5.16"
   },
   "dependencies": {
@@ -41,7 +46,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && echo \"HUSKY DONE\""
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {

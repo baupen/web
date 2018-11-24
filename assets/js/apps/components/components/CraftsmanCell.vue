@@ -96,7 +96,7 @@
                 return this.craftsmen.filter(c => c.trade === this.selectedTrade);
             },
             selectableTrades: function () {
-                return this.craftsmen.map(c => c.trade).unique();
+                return Array.from(new Set(this.craftsmen.map(c => c.trade)));
             },
             craftsmanTrade: function () {
                 if (this.issue.craftsmanId in this.craftsmanById) {

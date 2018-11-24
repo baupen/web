@@ -38,7 +38,7 @@
         },
         computed: {
             trades: function() {
-                return this.craftsmen.map(c => c.trade).unique();
+                return Array.from(new Set(this.craftsmen.map(c => c.trade)));
             }
         },
         components: {

@@ -577,7 +577,7 @@
                     "constructionSiteId": this.constructionSiteId
                 }).then((response) => {
                     this.craftsmen = response.data.craftsmen;
-                    this.trades = response.data.craftsmen.map(a => a.trade).unique();
+                    this.trades = Array.from(new Set(response.data.craftsmen.map(a => a.trade)));
                     this.refreshComputedIssueProperties();
                 });
             });
