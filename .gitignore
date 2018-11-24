@@ -2,6 +2,7 @@
 .idea
 *.phar
 /node_modules/
+.DS_Store
 yarn-error.log
 
 # deployment
@@ -13,7 +14,8 @@ yarn-error.log
 build
 
 ###> symfony/framework-bundle ###
-.env
+.env.local
+.env.*.local
 /public/bundles/
 /var/
 /vendor/

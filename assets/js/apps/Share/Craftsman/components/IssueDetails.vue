@@ -35,7 +35,6 @@
     import moment from "moment";
 
     const lang = document.documentElement.lang.substr(0, 2);
-    moment.locale(lang);
 
     export default {
         props: {
@@ -46,6 +45,11 @@
             issueHasResponse: {
                 type: Boolean,
                 required: true
+            }
+        },
+        data() {
+            return {
+                locale: lang
             }
         },
         methods: {

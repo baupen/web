@@ -1,7 +1,13 @@
 {
   "devDependencies": {
     "@symfony/webpack-encore": "^0.17",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.9.0",
+    "eslint-plugin-flowtype": "^3.2.0",
+    "flow-bin": "^0.86.0",
+    "husky": "^1.2.0",
     "jquery": "^3.2",
+    "lint-staged": "^8.1.0",
     "node-sass": "^4",
     "sass-loader": "^6",
     "vue-loader": "^14.2.2",
@@ -25,11 +31,36 @@
     "open-iconic": "^1",
     "open-sans-fontface": "^1",
     "popper.js": "^1.12",
+    "promise-polyfill": "^8.1.0",
     "vue": "^2.5",
     "vue-async-computed": "^3",
     "vue-headful": "^2",
     "vue-i18n": "^8",
     "vuejs-datepicker": "^1",
     "vuex": "^3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && echo \"HUSKY DONE\""
+    }
+  },
+  "lint-staged": {
+    "assets/js/**/*.js": [
+      "eslint --fix",
+      "git add"
+    ],
+    "src/**/*.php": [
+      "./vendor/bin/php-cs-fixer fix",
+      "git add"
+    ],
+    "tests/**/*.php": [
+      "./vendor/bin/php-cs-fixer fix",
+      "git add"
+    ]
+  },
+  "scripts": {
+    "lint": "eslint assets/js",
+    "flow": "flow check",
+    "postinstall": "node ./node_modules/husky/lib/installer/bin install"
   }
 }

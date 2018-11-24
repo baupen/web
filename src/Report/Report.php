@@ -316,7 +316,7 @@ class Report
     private function printRow($row, $fill, $fillBackground)
     {
         //alternative background colors
-        $columnCount = count($row);
+        $columnCount = \count($row);
 
         //put columns
         $maxContentHeight = 0;

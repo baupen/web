@@ -11,7 +11,7 @@
 
 namespace App\Api\Transformer\Share\Filter;
 
-use App\Api\Entity\Share\Filter\Issue;
+use App\Entity\Issue;
 use App\Entity\Map;
 use App\Entity\Traits\IdTrait;
 use App\Service\Interfaces\ImageServiceInterface;

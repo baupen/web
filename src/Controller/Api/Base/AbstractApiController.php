@@ -77,7 +77,7 @@ abstract class AbstractApiController extends BaseDoctrineController
 
         // check all properties defined
         $errors = $this->get('validator')->validate($parsedRequest);
-        if (count($errors) > 0) {
+        if (\count($errors) > 0) {
             $errorResponse = $this->fail(self::REQUEST_VALIDATION_FAILED);
 
             return false;
@@ -165,8 +165,10 @@ abstract class AbstractApiController extends BaseDoctrineController
      */
     protected function uploadImage(UploadedFile $file, $targetFilePath, $error)
     {
-        /** @var UploadedFile $file */
-        $targetFolder = $this->getParameter('PUBLIC_DIR') . '/' . dirname($targetFilePath);
+        $publicDir = $this->getParameter('PUBLIC_DIR');
+
+        //create folder & copy file
+        $targetFolder = $publicDir . '/' . \dirname($targetFilePath);
         if (!file_exists($targetFolder)) {
             mkdir($targetFolder, 0777, true);
         }
@@ -176,7 +178,7 @@ abstract class AbstractApiController extends BaseDoctrineController
 
         /** @var ImageServiceInterface $imageService */
         $imageService = $this->get(ImageServiceInterface::class);
-        $imageService->warmupCache($targetFilePath);
+        $imageService->warmupCache($publicDir . '/' . $targetFilePath);
 
         return true;
     }

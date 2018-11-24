@@ -4,7 +4,6 @@ import VueI18n from 'vue-i18n'
 Vue.config.productionTip = false;
 
 // components
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 import vueHeadful from 'vue-headful';
 
 // app

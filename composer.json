@@ -7,6 +7,9 @@
     "ext-iconv": "*",
     "ext-imagick": "*",
     "ext-pdo_sqlite": "*",
+    "ext-simplexml": "*",
+    "ext-xml": "*",
+    "ext-gd": "*",
     "doctrine/doctrine-fixtures-bundle": "^3.0",
     "easycorp/easyadmin-bundle": "^1.17",
     "fzaninotto/faker": "^1.7",
@@ -73,7 +76,7 @@
   },
   "scripts": {
     "prepare-environment": [
-      "cp -n .env.dist .env",
+      "cp -n .env .env.local",
       "cp -n .php_cs.dist .php_cs",
       "cp -n phpunit.xml.dist phpunit.xml",
       "cp -n servers.yml.dist servers.yml"

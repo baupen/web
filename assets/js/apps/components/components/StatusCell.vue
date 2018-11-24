@@ -74,10 +74,8 @@
 <script>
     import moment from "moment";
     import BaseSliderCheckbox from '../Base/BaseSliderCheckbox'
-    import BaseCheckbox from '../Base/BaseCheckbox'
 
     const lang = document.documentElement.lang.substr(0, 2);
-    moment.locale(lang);
 
 
     export default {
@@ -99,7 +97,8 @@
                 respondedStatusSet: false,
                 reviewedStatusSet: false,
                 hover: false,
-                expanded: false
+                expanded: false,
+                locale: lang
             }
         },
         methods: {
@@ -116,7 +115,7 @@
                 if (dateTime === null) {
                     return "-";
                 }
-                return moment(dateTime).fromNow();
+                return moment(dateTime).locale(this.locale).fromNow();
             }
         },
         computed: {

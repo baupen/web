@@ -54,7 +54,7 @@ class ExceptionListener
             $exception->getCode()
         );
 
-        if (function_exists('dump')) {
+        if (\function_exists('dump')) {
             dump($exception);
         }
 

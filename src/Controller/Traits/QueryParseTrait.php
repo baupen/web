@@ -40,7 +40,7 @@ trait QueryParseTrait
         //parse input to array
         //empty arrays are not considered
         $toArray = function ($input) {
-            return is_array($input) && count($input) > 0 ? $input : null;
+            return \is_array($input) && \count($input) > 0 ? $input : null;
         };
 
         $issueParameters = new ParameterBag($parameterBag->get('craftsman', []));
@@ -61,11 +61,11 @@ trait QueryParseTrait
         $tradeParameters = new ParameterBag($parameterBag->get('trade', []));
         if ($tradeParameters->getBoolean('enabled')) {
             $allowedTrades = $toArray($tradeParameters->get('trades', []));
-            if (is_array($allowedTrades)) {
+            if (\is_array($allowedTrades)) {
                 $craftsmanIds = [];
                 foreach ($constructionSite->getCraftsmen() as $craftsman) {
-                    if (in_array($craftsman->getTrade(), $allowedTrades, true) &&
-                        ($filter->getCraftsmen() === null || in_array($craftsman->getId(), $filter->getCraftsmen(), true))) {
+                    if (\in_array($craftsman->getTrade(), $allowedTrades, true) &&
+                        ($filter->getCraftsmen() === null || \in_array($craftsman->getId(), $filter->getCraftsmen(), true))) {
                         $craftsmanIds[] = $craftsman->getId();
                     }
                 }
@@ -140,7 +140,7 @@ trait QueryParseTrait
 
         //parse input to array
         $toArray = function ($input) {
-            return is_array($input) ? $input : [];
+            return \is_array($input) ? $input : [];
         };
         $tableParameters = new ParameterBag($toArray($parameterBag->get('tables', [])));
         $reportElements->setTableByCraftsman($tableParameters->getBoolean('tableByCraftsman', $reportElements->getTableByCraftsman()));

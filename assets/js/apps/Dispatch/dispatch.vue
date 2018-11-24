@@ -129,8 +129,6 @@
     import notifications from "../mixins/Notifications"
     import moment from "moment";
 
-    moment.locale('de');
-
     export default {
         data: function () {
             const sortOrders = {};
@@ -173,7 +171,7 @@
                 if (value === null) {
                     return "-"
                 }
-                return moment(value).fromNow();
+                return moment(value).locale(document.documentElement.lang.substr(0, 2)).fromNow();
             },
             selectAll: function () {
                 let newVal = !(this.indeterminate || this.selected);

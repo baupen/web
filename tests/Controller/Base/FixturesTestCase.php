@@ -33,8 +33,8 @@ class FixturesTestCase extends WebTestCase
      */
     protected function setUp()
     {
-        $client = static::createClient();
 
+        $client = static::createClient();
         $application = new Application($client->getKernel());
         $application->setAutoExit(false);
 

@@ -82,6 +82,8 @@
                     this.isOverviewLoading = false;
                 });
             });
+
+            this.displayInfoFlash("hi mom");
         },
     }
 

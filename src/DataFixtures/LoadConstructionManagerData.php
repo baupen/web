@@ -32,6 +32,7 @@ class LoadConstructionManagerData extends BaseFixture
             ['j@mangel.io', 'asdf', 'Julian', 'Dunskus'],
             ['a@mangel.io', 'asdf', 'Adrian', 'Hoffmann'],
             ['f@mangel.io', 'asdf', 'Florian', 'Moser'],
+            ['l@mangel.io', 'asdf', 'Lexu', 'Cardoso'],
         ];
 
         foreach ($entries as $entry) {

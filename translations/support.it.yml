@@ -1,0 +1,17 @@
+support:
+  title: 'Contattare il supporto.'
+  description: 'Ci occupiamo il più velocemente possibile della vostra richiesta.'
+  ready: 'Tutto pronto?'
+  back_to_the_application: 'indietro all’applicazione'
+  submit: 'Inviare messaggio'
+  email:
+    subject: 'Richiesta di supporto ricevuta: %page%'
+    body: >
+      Name: %name%
+      Email: %email%
+
+      Nachricht: %message%
+  success:
+    email_sent: 'Abbiamo ricevuto il vostro messaggio.'
+  fail:
+    email_not_sent: 'Il vostro messaggio non ha potuto essere inviato.'

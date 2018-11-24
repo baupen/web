@@ -95,8 +95,6 @@ class ImageService implements ImageServiceInterface
             }
         }
 
-        //throw new \Exception();
-
         //write to disk & destroy
         imagejpeg($sourceImage, $filePath, 90);
         imagedestroy($sourceImage);
@@ -269,7 +267,7 @@ class ImageService implements ImageServiceInterface
      */
     public function getSize(?string $imagePath, $size = ImageServiceInterface::SIZE_THUMBNAIL)
     {
-        if (!is_file($imagePath)) {
+        if ($imagePath === null && !is_file($imagePath)) {
             return null;
         }
 
@@ -331,7 +329,7 @@ class ImageService implements ImageServiceInterface
         list($width, $height) = ImageHelper::getWidthHeightArguments($sourcePath, $maxWidth, $maxHeight, false);
 
         //create folder if needed
-        $folder = dirname($targetPath);
+        $folder = \dirname($targetPath);
         if (!file_exists($folder)) {
             mkdir($folder, 0777, true);
         }
@@ -345,7 +343,7 @@ class ImageService implements ImageServiceInterface
         } elseif ($ending === '.png') {
             $originalImage = imagecreatefrompng($sourcePath);
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
-            imagepng($newImage, $targetPath, 90);
+            imagepng($newImage, $targetPath, 9);
         } elseif ($ending === '.gif') {
             $originalImage = imagecreatefromgif($sourcePath);
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));

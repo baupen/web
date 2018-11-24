@@ -53,7 +53,7 @@ class ConstructionManagerProvider extends BaseUserProvider
     {
         if (!$user instanceof ConstructionManager) {
             throw new UnsupportedUserException(
-                sprintf('Instances of "%s" are not supported.', get_class($user))
+                sprintf('Instances of "%s" are not supported.', \get_class($user))
             );
         }
 

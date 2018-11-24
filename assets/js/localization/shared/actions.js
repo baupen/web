@@ -6,5 +6,13 @@ export default {
         remove_all: "alle entfernen",
         abort: 'abbrechen',
         print: 'drucken'
+    },
+    it: {
+        save: "salva",
+        save_all: "salva tutto",
+        remove: "rimuovi",
+        remove_all: "rimuovi tutto",
+        abort: "annulla",
+        print: "stampa"
     }
 }

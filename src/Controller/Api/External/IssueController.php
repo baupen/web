@@ -180,10 +180,10 @@ class IssueController extends ExternalApiController
         }
 
         //ensure correct number of files
-        if ($newImageExpected && count($request->files->all()) !== 1) {
+        if ($newImageExpected && \count($request->files->all()) !== 1) {
             return $this->fail(static::ISSUE_NO_FILE_TO_UPLOAD);
         }
-        if (!$newImageExpected && count($request->files->all()) !== 0) {
+        if (!$newImageExpected && \count($request->files->all()) !== 0) {
             return $this->fail(static::ISSUE_NO_FILE_UPLOAD_EXPECTED);
         }
 
@@ -198,7 +198,7 @@ class IssueController extends ExternalApiController
             $em = $this->getDoctrine()->getManager();
 
             //deactivate guid generator so we can use the one the client has sent us
-            $metadata = $em->getClassMetadata(get_class($issue));
+            $metadata = $em->getClassMetadata(\get_class($issue));
             $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
             $metadata->setIdGenerator(new \Doctrine\ORM\Id\AssignedGenerator());
             $issue->setId($issueModifyRequest->getIssue()->getMeta()->getId());
