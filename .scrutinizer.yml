@@ -1,6 +1,8 @@
 build:
     nodes:
         analysis:
+            environment:
+                node: v8.9
             project_setup:
                 override: true
             tests:
