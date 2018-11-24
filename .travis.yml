@@ -31,15 +31,14 @@ before_install:
   # nodejs source script
   # same functionality than if you would execute sudo curl -sL https://deb.nodesource.com/setup_10.x | sudo bash
   # but the above install script needs apt-get update to succeed to proceed (which is broken in the chosen container)
-  - sudo curl -sLf -o /dev/null 'https://deb.nodesource.com/node_10.x/dists/trusty/Release'
   - sudo curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
   - sudo su -c "echo 'deb https://deb.nodesource.com/node_10.x trusty main' > /etc/apt/sources.list.d/nodesource.list"
   - sudo su -c "echo 'deb-src https://deb.nodesource.com/node_10.x trusty main' >> /etc/apt/sources.list.d/nodesource.list"
-  - sudo apt-get update
 
   # install git, yarn, nodejs, libmagickwand-dev (for imagick extension)
   - sudo apt-get update
-  - sudo apt-get install -y gnupg git nodejs libmagickwand-dev php-pear
+  - sudo apt-get install -y gnupg git libmagickwand-dev php-pear nodejs
+  - PATH=/usr/bin:$PATH # to use new nodejs
   - npm install -g yarn
 
   # install phpunit
