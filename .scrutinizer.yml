@@ -2,7 +2,7 @@ build:
     nodes:
         analysis:
             environment:
-                node: v8.9
+                node: v10.13
             project_setup:
                 override: true
             tests:

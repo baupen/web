@@ -26,7 +26,7 @@ before_install:
   - if [[ $COVERAGE == false ]]; then phpenv config-rm xdebug.ini; fi
 
   # install git, yarn, nodejs, libmagickwand-dev (for imagick extension)
-  - curl -sL https://deb.nodesource.com/setup_11.x | sudo bash -
+  - curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
   - sudo apt-get install -y gnupg git nodejs libmagickwand-dev php-pear
   - npm install -g yarn
 
@@ -37,11 +37,14 @@ before_install:
   # install imagick requirements
   - printf "\n" | sudo pecl install imagick-3.4.3
   - echo "extension=imagick.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  
-  # install license scan (disabled as due to fossa server issues it fails build sometimes)
-  # - curl https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
 
-# prepare programming environement
+  # print versions just in case
+  - php --version
+  - php ./bin/console --version
+  - phpunit --version
+  - node --version
+
+# prepare programming environment
 install:
   # copy config files
   - cp .env.travis .env
@@ -52,11 +55,6 @@ install:
   - composer install
   - yarn install
   - chmod +x ./bin/console
-
-  # print versions just in case
-  - php --version
-  - php ./bin/console --version
-  - phpunit --version
 
   # check if travis fulfills symfony requirements
   - php ./vendor/bin/requirements-checker
@@ -78,7 +76,7 @@ before_script:
 
 # execute tests
 script:
-  # this checks that the source code follows the Symfony Code Syntax rules (DEACTIVATED)
+  # this checks that the source code follows the Symfony Code Syntax rules
   - '[[ "$TRAVIS_PHP_VERSION" == "nightly" ]] || ./vendor/bin/php-cs-fixer fix --diff --dry-run -v'
     # this checks that the YAML config files contain no syntax errors
   - ./bin/console lint:yaml config
