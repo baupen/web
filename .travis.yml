@@ -1,6 +1,9 @@
 language: php
 sudo: false
 
+node_js:
+  - "lts/10"
+
 cache:
   directories:
     - $HOME/.composer/cache/files
@@ -40,7 +43,6 @@ before_install:
 
   # print versions just in case
   - php --version
-  - php ./bin/console --version
   - phpunit --version
   - node --version
 
@@ -61,9 +63,6 @@ install:
 
 # prepare tests
 before_script:
-  # perform license check (before enable, enable section in before_install again)
-  # - fossa
-
   # warmup cache to avoid excessive memory usage
   - php bin/console cache:warmup
 
