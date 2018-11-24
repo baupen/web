@@ -165,8 +165,10 @@ abstract class AbstractApiController extends BaseDoctrineController
      */
     protected function uploadImage(UploadedFile $file, $targetFilePath, $error)
     {
+        $publicDir = $this->getParameter('PUBLIC_DIR');
+
         /** @var UploadedFile $file */
-        $targetFolder = $this->getParameter('PUBLIC_DIR') . '/' . \dirname($targetFilePath);
+        $targetFolder = $publicDir . '/' . \dirname($targetFilePath);
         if (!file_exists($targetFolder)) {
             mkdir($targetFolder, 0777, true);
         }
@@ -176,7 +178,7 @@ abstract class AbstractApiController extends BaseDoctrineController
 
         /** @var ImageServiceInterface $imageService */
         $imageService = $this->get(ImageServiceInterface::class);
-        $imageService->warmupCache($targetFilePath);
+        $imageService->warmupCache($publicDir . "/" . $targetFilePath);
 
         return true;
     }

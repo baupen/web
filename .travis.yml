@@ -49,8 +49,8 @@ before_install:
 # prepare programming environment
 install:
   # copy config files
-  - cp .env.travis .env
-  - cp .env.travis .env.test
+  - cp .env.test.travis .env.test
+  # - cp .env.travis .env.test
   - cp phpunit.xml.dist phpunit.xml
 
   # configure fontawesome
@@ -94,7 +94,7 @@ script:
   # this checks that Doctrine's mapping configurations are valid
   - ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
   # this executes the phpunit tests with deprecation checks disabled 
-  - export SYMFONY_DEPRECATIONS_HELPER=disabled && phpunit
+  - phpunit
 
 # report code coverage
 after_script:

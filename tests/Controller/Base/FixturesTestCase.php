@@ -33,8 +33,8 @@ class FixturesTestCase extends WebTestCase
      */
     protected function setUp()
     {
-        $client = static::createClient();
 
+        $client = static::createClient();
         $application = new Application($client->getKernel());
         $application->setAutoExit(false);
 
@@ -56,7 +56,7 @@ class FixturesTestCase extends WebTestCase
      */
     protected function preventImageUploadTesting()
     {
-        if (getenv("TRAVIS") === "true") {
+        if (getenv("SKIP_IMAGE_UPLOAD_TESTS") === "true") {
             $this->markTestSkipped(
                 'On Travis, skipping tests dealing with image upload because of unreliable results.'
             );
