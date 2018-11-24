@@ -115,6 +115,10 @@ class FoyerControllerTest extends ApiController
 
     public function testIssueImage()
     {
+        if ($this->preventImageUploadTesting()) {
+            return;
+        }
+
         $url = '/api/foyer/issue/image';
 
         $apiIssue = $this->getIssues()->data->issues[0];
