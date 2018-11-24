@@ -2,12 +2,12 @@ export default {
   de: {
     table: {
       no_entries: 'Keine Pendenzen',
-      filter_placeholder: 'Beschreibung suchen...',
+      filter_placeholder: 'Beschreibung suchen...'
     },
     search: {
       name: 'Suche',
       only_marked: 'nur markierte',
-      only_over_limit: 'nur mit überschrittener Frist',
+      only_over_limit: 'nur mit überschrittener Frist'
     },
     filter: {
       name: 'Filter',
@@ -41,12 +41,12 @@ export default {
   it: {
     table: {
       no_entries: 'Nessuna pendenza',
-      filter_placeholder: 'Cerca descrizione…',
+      filter_placeholder: 'Cerca descrizione…'
     },
     search: {
       name: 'Ricerca',
       only_marked: 'solo marcate',
-      only_over_limit: 'solo oltre il termine',
+      only_over_limit: 'solo oltre il termine'
     },
     filter: {
       name: 'Filtro',

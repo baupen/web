@@ -10,7 +10,7 @@ import messages from './messages';
 import view from './view';
 
 // merge in single object; mapping to the correct property
-const translations = {actions, craftsman, issue, map, messages, view};
+const translations = { actions, craftsman, issue, map, messages, view };
 let sharedTranslations = {};
 Object.keys(translations).forEach(property => {
   const translation = translations[property];

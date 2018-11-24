@@ -4,7 +4,7 @@ export default {
     open_issues_header: 'Keine offenen Pendenzen | Eine offene Pendenz | {count} offene Pendenzen',
     of_craftsman: 'von {craftsman}',
     dialog: {
-      thanks: 'Wir sagen Danke!',
+      thanks: 'Wir sagen Danke!'
     },
     actions: {
       read_only_view: 'Schreibgeschützer Link',
@@ -17,7 +17,7 @@ export default {
     open_issues_header: 'Nessuna pendenza aperta | Una pendenza aperta | {count} pendenze aperte',
     of_craftsman: 'da {craftsman}',
     dialog: {
-      thanks: 'Grazie!',
+      thanks: 'Grazie!'
     },
     actions: {
       read_only_view: 'Link protetto da scrittura',

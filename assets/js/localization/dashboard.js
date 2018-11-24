@@ -19,7 +19,7 @@ export default {
       entries: {
         response_received: '{craftsman} hat eine Pendenz beantwortet. | {craftsman} hat {count} Pendenzen beantwortet.',
         visited_webpage: '{craftsman} hat die Pendenzen angeschaut.',
-        overdue_limit: '{craftsman} hat die Frist vom %limit% bei {count} Pendenzen überschritten.',
+        overdue_limit: '{craftsman} hat die Frist vom %limit% bei {count} Pendenzen überschritten.'
       }
     },
     notes: {
@@ -49,7 +49,7 @@ export default {
       entries: {
         response_received: '{craftsman} ha risposto ad una pendenza. | {craftsman} ha risposto a {count} pendenze.',
         visited_webpage: '{craftsman} ha visualizzato le pendenze.',
-        overdue_limit: '{craftsman} ha superato il termine di {count} pendenze di %limit%.',
+        overdue_limit: '{craftsman} ha superato il termine di {count} pendenze di %limit%.'
       }
     },
     notes: {
