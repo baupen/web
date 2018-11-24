@@ -49,11 +49,11 @@
       "eslint --fix",
       "git add"
     ],
-    "src/*.php": [
+    "src/**/*.php": [
       "./vendor/bin/php-cs-fixer fix",
       "git add"
     ],
-    "tests/*.php": [
+    "tests/**/*.php": [
       "./vendor/bin/php-cs-fixer fix",
       "git add"
     ]
