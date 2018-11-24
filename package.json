@@ -1,6 +1,7 @@
 {
   "devDependencies": {
     "@symfony/webpack-encore": "^0.17",
+    "flow-bin": "^0.86.0",
     "jquery": "^3.2",
     "node-sass": "^4",
     "sass-loader": "^6",
@@ -15,12 +16,17 @@
     "@fortawesome/pro-solid-svg-icons": "^5",
     "@fortawesome/vue-fontawesome": "^0.1",
     "axios": "^0.18",
+    "babel-eslint": "^10.0.1",
     "bootstrap": "^4",
     "bootstrap-multiselect": "^0.9",
     "bootstrap-vue": "^2.0.0-rc.11",
     "date-fns": "^1.29",
     "deepmerge": "^2",
     "epic-spinners": "^1",
+    "eslint": "^5.9.0",
+    "eslint-plugin-flowtype": "^3.2.0",
+    "husky": "^1.2.0",
+    "lint-staged": "^8.1.0",
     "moment": "^2.22.2",
     "open-iconic": "^1",
     "open-sans-fontface": "^1",
@@ -33,5 +39,28 @@
     "vue-i18n": "^8",
     "vuejs-datepicker": "^1",
     "vuex": "^3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "assets/js/**/*.js": [
+      "eslint --fix",
+      "git add"
+    ],
+    "src/*.php": [
+      "./vendor/bin/php-cs-fixer fix",
+      "git add"
+    ],
+    "tests/*.php": [
+      "./vendor/bin/php-cs-fixer fix",
+      "git add"
+    ]
+  },
+  "scripts": {
+    "lint": "eslint assets/js",
+    "flow": "flow check"
   }
 }

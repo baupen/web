@@ -10,15 +10,23 @@ export default {
             this.displayFlash(content, "warning");
         },
         displayFlash: function (content, alertType, time = 2000) {
-            let alert = $('#alert-template').html();
+            // construct new alert html
+            const alertTemplate = document.getElementById("alert-template");
+            let alert = alertTemplate.innerHTML;
             const uniqueId = 'id-' + Math.random().toString(36).substr(2, 16);
             alert = alert.replace("ALERT_TYPE", alertType).replace("ID", uniqueId).replace("MESSAGE", content);
 
-            $('.flash-wrapper').append(alert);
-            $('#' + uniqueId).alert();
+            // construct new element
+            var alertElement = document.createElement('div');
+            alertElement.innerHTML = alert;
 
+            // append to document
+            const flashWrapper = document.getElementsByClassName("flash-wrapper")[0];
+            flashWrapper.appendChild(alertElement);
+
+            // remove after timeout
             setTimeout(function () {
-                $('#' + uniqueId).alert('close');
+                flashWrapper.removeChild(alertElement);
             }, time);
         }
     }

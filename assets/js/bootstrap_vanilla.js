@@ -4,6 +4,7 @@ window.$ = $;
 
 // include bootstrap
 const bootstrap = require("bootstrap");
+window.bootstrap = bootstrap;
 
 //register some basic usability functionality
 $(document).ready(function () {
@@ -18,6 +19,6 @@ $(document).ready(function () {
 
     //force reload on user browser button navigation
     $(window).on('popstate', function () {
-        location.reload(true);
+                        location.reload(true);
     });
 });
