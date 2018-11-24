@@ -26,10 +26,6 @@ class FileControllerTest extends ApiController
      */
     public function testFileUploadDownload()
     {
-        if ($this->preventImageUploadTesting()) {
-            return;
-        }
-
         $client = static::createClient();
         $user = $this->getAuthenticatedUser($client);
         $serializer = $client->getContainer()->get('serializer');
