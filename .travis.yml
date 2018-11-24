@@ -28,18 +28,10 @@ matrix:
 before_install:
   - if [[ $COVERAGE == false ]]; then phpenv config-rm xdebug.ini; fi
 
-  # nodejs source script
-  # same functionality than if you would execute sudo curl -sL https://deb.nodesource.com/setup_10.x | sudo bash
-  # but the above install script needs apt-get update to succeed to proceed (which is broken in the chosen container)
-  - sudo curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
-  - sudo su -c "echo 'deb https://deb.nodesource.com/node_10.x trusty main' > /etc/apt/sources.list.d/nodesource.list"
-  - sudo su -c "echo 'deb-src https://deb.nodesource.com/node_10.x trusty main' >> /etc/apt/sources.list.d/nodesource.list"
-
-  # install git, yarn, nodejs, libmagickwand-dev (for imagick extension)
+  # install git, yarn, libmagickwand-dev (for imagick extension) & use node 10.4
   - sudo apt-get update
   - sudo apt-get install -y gnupg git libmagickwand-dev php-pear nodejs
-  - PATH=/usr/bin:$PATH # to use new nodejs
-  - npm install -g yarn
+  - nvm install 10.4
 
   # install phpunit
   - sudo curl --location --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit.phar
