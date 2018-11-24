@@ -50,7 +50,6 @@ before_install:
 install:
   # copy config files
   - cp .env.test.travis .env.test
-  # - cp .env.travis .env.test
   - cp phpunit.xml.dist phpunit.xml
 
   # configure fontawesome

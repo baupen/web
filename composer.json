@@ -37,7 +37,7 @@
     "symfony/swiftmailer-bundle": "^3.1",
     "symfony/translation": "^4.0",
     "symfony/webpack-encore-pack": "^1.0",
-    "tecnickcom/tcpdf": "^6.2",
+    "tecnickcom/tcpdf": "^6.2"
   },
   "require-dev": {
     "deployer/deployer": "^6.1",
