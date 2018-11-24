@@ -28,6 +28,9 @@ matrix:
 before_install:
   - if [[ $COVERAGE == false ]]; then phpenv config-rm xdebug.ini; fi
 
+  # remove old version of libraties
+  - sudo apt purge nodejs
+
   # install git, yarn, nodejs, libmagickwand-dev (for imagick extension)
   - curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
   - sudo apt-get install -y gnupg git nodejs libmagickwand-dev php-pear
