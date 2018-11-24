@@ -76,7 +76,7 @@
   },
   "scripts": {
     "prepare-environment": [
-      "cp -n .env.dist .env",
+      "cp -n .env .env.local",
       "cp -n .php_cs.dist .php_cs",
       "cp -n phpunit.xml.dist phpunit.xml",
       "cp -n servers.yml.dist servers.yml"
