@@ -52,6 +52,20 @@ class FixturesTestCase extends WebTestCase
     }
 
     /**
+     * @return bool
+     */
+    protected function preventImageUploadTesting()
+    {
+        if (getenv("TRAVIS") === "true") {
+            $this->markTestSkipped(
+                'On Travis, skipping tests dealing with image upload because of unreliable results.'
+            );
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @var RegistryInterface $doctrine
      */
     private $doctrine;
