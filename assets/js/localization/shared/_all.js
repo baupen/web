@@ -1,13 +1,13 @@
 // library import
-import merge from 'deepmerge'
+import merge from 'deepmerge';
 
 // get all shared lang files
-import actions from './actions'
-import craftsman from './craftsman'
-import issue from './issue'
-import map from './map'
-import messages from './messages'
-import view from './view'
+import actions from './actions';
+import craftsman from './craftsman';
+import issue from './issue';
+import map from './map';
+import messages from './messages';
+import view from './view';
 
 // merge in single object; mapping to the correct property
 const translations = {actions, craftsman, issue, map, messages, view};
@@ -18,7 +18,7 @@ Object.keys(translations).forEach(property => {
         if (!(lang in sharedTranslations)) {
             sharedTranslations[lang] = {};
         }
-        sharedTranslations[lang][property] = translation[lang]
+        sharedTranslations[lang][property] = translation[lang];
     });
 });
 

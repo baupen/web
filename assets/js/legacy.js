@@ -12,7 +12,7 @@ function addLoadEvent(func) {
                 oldonload();
             }
             func();
-        }
+        };
     }
 }
 
@@ -22,12 +22,12 @@ addLoadEvent(function () {
         bgColor: '#f25648',
         color: '#ffffff',
         cssProp: 'borderImage'
-    })
+    });
 });
 
 var outdatedBrowser = function (options) {
     //Variable definition (before ajax)
-    var outdated = document.getElementById("outdated");
+    var outdated = document.getElementById('outdated');
 
     //Define opacity and fadeIn/fadeOut functions
     var done = true;
@@ -88,8 +88,8 @@ var outdatedBrowser = function (options) {
 
     //events and colors
     function startStylesAndEvents() {
-        var btnClose = document.getElementById("btnCloseUpdateBrowser");
-        var btnUpdate = document.getElementById("btnUpdateBrowser");
+        var btnClose = document.getElementById('btnCloseUpdateBrowser');
+        var btnUpdate = document.getElementById('btnUpdateBrowser');
 
         //check settings attributes
         outdated.style.backgroundColor = options.bgColor;

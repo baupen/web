@@ -24,16 +24,16 @@ export default {
                 let nTime = {enabled: true};
 
                 if (time.read.active) {
-                    nTime.read = {active: true}
+                    nTime.read = {active: true};
                 }
                 if (filter.time.registered.active) {
-                    nTime.registered = {active: true, start: time.registered.start, end: time.registered.end}
+                    nTime.registered = {active: true, start: time.registered.start, end: time.registered.end};
                 }
                 if (filter.time.responded.active) {
-                    nTime.responded = {active: true, start: time.responded.start, end: time.responded.end}
+                    nTime.responded = {active: true, start: time.responded.start, end: time.responded.end};
                 }
                 if (filter.time.reviewed.active) {
-                    nTime.reviewed = {active: true, start: time.reviewed.start, end: time.reviewed.end}
+                    nTime.reviewed = {active: true, start: time.reviewed.start, end: time.reviewed.end};
                 }
 
                 normalized.time = nTime;
@@ -46,4 +46,4 @@ export default {
             return normalized;
         }
     }
-}
+};

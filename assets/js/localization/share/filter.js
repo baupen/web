@@ -3,6 +3,6 @@ export default {
         issues_overview: 'Pendenzenüberblick'
     },
     it: {
-        issues_overview: "Panoramica delle pendenze"
+        issues_overview: 'Panoramica delle pendenze'
     }
-}
+};
