@@ -1,8 +1,13 @@
 {
   "devDependencies": {
     "@symfony/webpack-encore": "^0.17",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.9.0",
+    "eslint-plugin-flowtype": "^3.2.0",
     "flow-bin": "^0.86.0",
+    "husky": "^1.2.0",
     "jquery": "^3.2",
+    "lint-staged": "^8.1.0",
     "node-sass": "^4",
     "sass-loader": "^6",
     "vue-loader": "^14.2.2",
@@ -16,21 +21,15 @@
     "@fortawesome/pro-solid-svg-icons": "^5",
     "@fortawesome/vue-fontawesome": "^0.1",
     "axios": "^0.18",
-    "babel-eslint": "^10.0.1",
     "bootstrap": "^4",
     "bootstrap-multiselect": "^0.9",
     "bootstrap-vue": "^2.0.0-rc.11",
     "date-fns": "^1.29",
     "deepmerge": "^2",
     "epic-spinners": "^1",
-    "eslint": "^5.9.0",
-    "eslint-plugin-flowtype": "^3.2.0",
-    "husky": "^1.2.0",
-    "lint-staged": "^8.1.0",
     "moment": "^2.22.2",
     "open-iconic": "^1",
     "open-sans-fontface": "^1",
-    "outdated-browser": "^1.0.2",
     "popper.js": "^1.12",
     "promise-polyfill": "^8.1.0",
     "vue": "^2.5",
@@ -61,6 +60,7 @@
   },
   "scripts": {
     "lint": "eslint assets/js",
-    "flow": "flow check"
+    "flow": "flow check",
+    "postinstall": "node ./node_modules/husky/lib/installer/bin install"
   }
 }

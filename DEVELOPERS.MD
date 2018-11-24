@@ -10,14 +10,17 @@ to be able to download the fortawesome pro fonts, you need to setup the registry
 You can find the auth token on the [fontawesome account page](https://fontawesome.com/account)
 
 You need to add this auth token to all CI services too.  
-[**scrutinizer**](https://scrutinizer-ci.com/g/famoser/nodika/settings/build-config)
+[**scrutinizer**](https://scrutinizer-ci.com/g/mangelio/app/settings/build-config)
 ```
 build:
     dependencies:
         before:
             - npm config set "@fortawesome:registry" https://npm.fontawesome.com/
-            - npm config set "//npm.fontawesome.com/:_authToken" 4DDEB6DC-27A1-4DAB-BE98-1FF5DF35BE94
+            - npm config set "//npm.fontawesome.com/:_authToken" FONTAWESOME_AUTH_TOKEN
 ```
+[**travis**](https://travis-ci.org/mangelio/app/settings)  
+add an environment variable called `FONTAWESOME_AUTH_TOKEN`
+
 
 ##### symfony-cmd
 `php bin/console server:run` to start the symfony server  
