@@ -37,7 +37,7 @@
             }
         },
         computed: {
-            trades: function() {
+            trades: function () {
                 return Array.from(new Set(this.craftsmen.map(c => c.trade)));
             }
         },

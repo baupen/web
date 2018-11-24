@@ -22,6 +22,11 @@ build:
 add an environment variable called `FONTAWESOME_AUTH_TOKEN`
 
 
+##### setup PhpStorm
+install the symfony plugin and enable it  
+install the editorconfig plugin and enable it  
+enable ESLint  
+
 ##### symfony-cmd
 `php bin/console server:run` to start the symfony server  
 `doctrine:migrations:diff` to generate the migration class  

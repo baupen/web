@@ -17,25 +17,25 @@ Vue.config.productionTip = false;
 
 // initialize app if html element is found
 if (document.getElementById('share-craftsman') != null) {
-    // share plugins
-    Vue.use(VueI18n);
+  // share plugins
+  Vue.use(VueI18n);
 
-    // share components
-    Vue.component('font-awesome-icon', FontAwesomeIcon);
-    Vue.component('vue-headful', VueHeadful);
+  // share components
+  Vue.component('font-awesome-icon', FontAwesomeIcon);
+  Vue.component('vue-headful', VueHeadful);
 
-    // initialize messages
-    const i18n = new VueI18n({
-        locale: document.documentElement.lang.substr(0, 2),
-        messages: mergeMessages(Messages)
-    });
+  // initialize messages
+  const i18n = new VueI18n({
+    locale: document.documentElement.lang.substr(0, 2),
+    messages: mergeMessages(Messages)
+  });
 
-    // boot app
-    // eslint-disable-next-line no-new
-    new Vue({
-        i18n,
-        el: '#share-craftsman',
-        template: '<Craftsman/>',
-        components: { Craftsman }
-    });
+  // boot app
+  // eslint-disable-next-line no-new
+  new Vue({
+    i18n,
+    el: '#share-craftsman',
+    template: '<Craftsman/>',
+    components: { Craftsman }
+  });
 }
