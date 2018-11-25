@@ -28,9 +28,9 @@ matrix:
 before_install:
   - if [[ $COVERAGE == false ]]; then phpenv config-rm xdebug.ini; fi
 
-  # install git, yarn, libmagickwand-dev (for imagick extension) & use node 10.4
+  # install git, libmagickwand-dev (for imagick extension) & use node 10.4
   - sudo apt-get update
-  - sudo apt-get install -y gnupg git libmagickwand-dev php-pear nodejs
+  - sudo apt-get install -y gnupg git libmagickwand-dev php-pear
   - nvm install 10.4
 
   # install phpunit
@@ -79,7 +79,7 @@ before_script:
 # execute tests
 script:
   # frontend lint
-  -
+  - ./node_modules/.bin/eslint assets/js
 
   # backend lint
   - '[[ "$TRAVIS_PHP_VERSION" == "nightly" ]] || ./vendor/bin/php-cs-fixer fix --diff --dry-run -v'

@@ -13,6 +13,10 @@ module.exports = {
         "semi": [
             "error",
             "always"
+        ],
+        "no-console": [
+            "error",
+            "always"
         ]
     }
 };
