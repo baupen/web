@@ -63,7 +63,7 @@ class ConstructionSite extends BaseEntity
     /**
      * @var Map[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite")
+     * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite", cascade={"persist"})
      * @ORM\OrderBy({"name": "ASC"})
      */
     private $maps;
@@ -71,7 +71,7 @@ class ConstructionSite extends BaseEntity
     /**
      * @var Craftsman[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite")
+     * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite", cascade={"persist"})
      */
     private $craftsmen;
 

@@ -50,6 +50,6 @@ class ImageController extends BaseDoctrineController
     {
         $this->ensureAccess($issue);
 
-        return $this->file($this->getImagePath($issue, $imageFilename, $size, $pathService, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($this->getImagePath($issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

@@ -24,6 +24,11 @@ class ClearContentFolders extends BaseFixture
      */
     private $pathService;
 
+    public function __construct(PathServiceInterface $pathService)
+    {
+        $this->pathService = $pathService;
+    }
+
     /**
      * Load data fixtures with the passed EntityManager.
      *

@@ -52,7 +52,7 @@ class SetupContentFolders extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $sourceFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'construction_sites';
+        $sourceFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'Resources' . \DIRECTORY_SEPARATOR . 'construction_sites';
         $targetFolder = $this->pathService->getFolderRoot();
         $this->recurse_copy($sourceFolder, $targetFolder);
 

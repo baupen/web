@@ -40,23 +40,23 @@ class PathService implements PathServiceInterface
     }
 
     /**
-     * @param Map $map
+     * @param ConstructionSite $constructionSite
      *
      * @return string
      */
-    public function getFolderForMap(Map $map)
+    public function getFolderForMap(ConstructionSite $constructionSite)
     {
-        return $this->getFolderForConstructionSite($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . 'maps';
+        return $this->getFolderForConstructionSite($constructionSite) . \DIRECTORY_SEPARATOR . 'maps';
     }
 
     /**
-     * @param Issue $issue
+     * @param ConstructionSite $constructionSite
      *
      * @return string
      */
-    public function getFolderForIssue(Issue $issue)
+    public function getFolderForIssue(ConstructionSite $constructionSite)
     {
-        return $this->getFolderForConstructionSite($issue->getMap()->getConstructionSite()) . \DIRECTORY_SEPARATOR . 'issues';
+        return $this->getFolderForConstructionSite($constructionSite) . \DIRECTORY_SEPARATOR . 'issues';
     }
 
     /**
@@ -86,7 +86,7 @@ class PathService implements PathServiceInterface
      */
     public function getTransientFolderForIssue(Issue $issue)
     {
-        return $this->getTransientFolderForConstructionSite($issue->getMap()->getConstructionSite()) . \DIRECTORY_SEPARATOR . 'issues' . \DIRECTORY_SEPARATOR . $issue->getId();
+        return $this->getTransientFolderForConstructionSite($issue->getMap()->getConstructionSite()) . \DIRECTORY_SEPARATOR . 'issues' . $issue->getImageFilename();
     }
 
     /**

@@ -69,9 +69,9 @@ class CraftsmanController extends BaseDoctrineController
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
 
         //generate map & print
-        $imagePath = $imageService->generateMapImage($map, $issues);
+        $imagePath = $imageService->generateMapImage($map, $issues, $imageService->ensureValidSize($size));
 
-        return $this->file($imageService->getSize($imagePath, $size), null, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($imagePath, null, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 
     /**
@@ -93,6 +93,6 @@ class CraftsmanController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
-        return $this->file($this->getImagePath($issue, $imageFilename, $size, $pathService, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($this->getImagePath($issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

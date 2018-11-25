@@ -188,7 +188,7 @@ class LoadIssueData extends BaseFixture
             }
 
             if ($issue->getImageFilename() !== null) {
-                $this->safeCopyToPublic($this->pathService->getFolderForIssue($issue) . \DIRECTORY_SEPARATOR . $issue->getImageFilename(), 'issue_images');
+                $this->safeCopyToPublic($this->pathService->getFolderForIssue($issue->getMap()->getConstructionSite()) . \DIRECTORY_SEPARATOR . $issue->getImageFilename(), 'issue_images');
             }
 
             $manager->persist($issue);

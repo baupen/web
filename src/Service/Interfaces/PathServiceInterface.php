@@ -30,18 +30,18 @@ interface PathServiceInterface
     public function getFolderForConstructionSite(ConstructionSite $constructionSite);
 
     /**
-     * @param Map $map
+     * @param ConstructionSite $constructionSite
      *
      * @return string
      */
-    public function getFolderForMap(Map $map);
+    public function getFolderForMap(ConstructionSite $constructionSite);
 
     /**
-     * @param Issue $issue
+     * @param ConstructionSite $constructionSite
      *
      * @return string
      */
-    public function getFolderForIssue(Issue $issue);
+    public function getFolderForIssue(ConstructionSite $constructionSite);
 
     /**
      * @return string

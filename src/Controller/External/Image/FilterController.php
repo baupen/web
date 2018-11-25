@@ -60,9 +60,9 @@ class FilterController extends BaseDoctrineController
         //before filter is shared the unsafe condition is checked
         $filter->setMaps([$map->getId()]);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
-        $imagePath = $imageService->generateMapImage($map, $issues);
+        $imagePath = $imageService->generateMapImage($map, $issues, $imageService->ensureValidSize($size));
 
-        return $this->file($imageService->getSize($imagePath, $size), null, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($imagePath, null, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 
     /**
@@ -84,6 +84,6 @@ class FilterController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
-        return $this->file($this->getImagePath($issue, $imageFilename, $size, $pathService, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($this->getImagePath($issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

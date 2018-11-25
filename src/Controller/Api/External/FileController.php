@@ -72,7 +72,7 @@ class FileController extends ExternalApiController
                 },
                 function ($entity) use ($pathService) {
                     /* @var Map $entity */
-                    return  $entity->getFilename() ? $pathService->getFolderForMap($entity) . \DIRECTORY_SEPARATOR . $entity->getFilename() : null;
+                    return  $entity->getFilename() ? $pathService->getFolderForMap($entity->getConstructionSite()) . \DIRECTORY_SEPARATOR . $entity->getFilename() : null;
                 }
             );
         } elseif ($downloadFileRequest->getIssue() !== null) {
@@ -83,11 +83,10 @@ class FileController extends ExternalApiController
                     /* @var Issue $entity */
                     return $entity->getMap()->getConstructionSite()->getConstructionManagers()->contains($constructionManager);
                 },
-                function ($entity) use ($pathService) {
+                function ($entity) use ($imageService) {
                     /* @var Issue $entity */
-                    return $entity->getImageFilename() ? $pathService->getFolderForIssue($entity) . \DIRECTORY_SEPARATOR . $entity->getImageFilename() : null;
-                },
-                $imageService
+                    return $entity->getImageFilename() !== null ? $imageService->getSizeForIssue($entity, ImageServiceInterface::SIZE_FULL) : null;
+                }
             );
         } elseif ($downloadFileRequest->getBuilding() !== null) {
             return $this->downloadFile(
@@ -97,11 +96,10 @@ class FileController extends ExternalApiController
                     /* @var ConstructionSite $entity */
                     return $entity->getConstructionManagers()->contains($constructionManager);
                 },
-                function ($entity) use ($pathService) {
+                function ($entity) use ($imageService) {
                     /* @var ConstructionSite $entity */
-                    return $entity->getImageFilename() ? $pathService->getFolderForConstructionSite($entity) . \DIRECTORY_SEPARATOR . $entity->getImageFilename() : null;
-                },
-                $imageService
+                    return $entity->getImageFilename() !== null ? $imageService->getSizeForConstructionSite($entity, ImageServiceInterface::SIZE_FULL) : null;
+                }
             );
         }
 
@@ -120,7 +118,7 @@ class FileController extends ExternalApiController
      *
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|Response
      */
-    private function downloadFile(ObjectRepository $repository, ObjectMeta $objectMeta, callable $verifyAccess, callable $accessFilePath, ImageServiceInterface $imageService = null)
+    private function downloadFile(ObjectRepository $repository, ObjectMeta $objectMeta, callable $verifyAccess, callable $accessFilePath)
     {
         /** @var ObjectMeta $objectMeta */
         /** @var EntityRepository $repository */
@@ -146,10 +144,6 @@ class FileController extends ExternalApiController
 
         if (!file_exists($filePath)) {
             return $this->fail(static::ENTITY_FILE_NOT_FOUND);
-        }
-        //resize images if image service passed
-        if ($imageService !== null) {
-            $filePath = $imageService->getSize($filePath, ImageServiceInterface::SIZE_FULL);
         }
 
         return $this->file($filePath);

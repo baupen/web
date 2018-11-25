@@ -13,7 +13,6 @@ namespace App\Controller\Traits;
 
 use App\Entity\Issue;
 use App\Service\Interfaces\ImageServiceInterface;
-use App\Service\Interfaces\PathServiceInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait ImageDownloadTrait
@@ -22,18 +21,17 @@ trait ImageDownloadTrait
      * @param Issue $issue
      * @param $expectedImageFilename
      * @param $size
-     * @param PathServiceInterface $pathService
      * @param ImageServiceInterface $imageService
      *
      * @return string
      */
-    protected function getImagePath(Issue $issue, $expectedImageFilename, $size, PathServiceInterface $pathService, ImageServiceInterface $imageService)
+    protected function getImagePath(Issue $issue, $expectedImageFilename, $size, ImageServiceInterface $imageService)
     {
         if ($issue->getImageFilename() !== $expectedImageFilename) {
             throw new NotFoundHttpException();
         }
 
-        $filePath = $imageService->getSize($pathService->getFolderForIssue($issue) . \DIRECTORY_SEPARATOR . $issue->getImageFilename(), $size);
+        $filePath = $imageService->getSizeForIssue($issue, $imageService->ensureValidSize($size));
         if ($filePath === null) {
             throw new NotFoundHttpException();
         }
