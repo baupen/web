@@ -57,7 +57,7 @@
       "git add"
     ],
     "src/**/*.php": [
-      "./vendor/bin/php-cs-fixer fix",
+      "./vendor/bin/php-cs-fixer fix --config=.php_cs",
       "git add"
     ],
     "tests/**/*.php": [

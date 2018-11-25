@@ -11,7 +11,7 @@
 
 namespace App\Service\Interfaces;
 
-interface FileSystemSyncService
+interface FileSystemSyncServiceInterface
 {
     /**
      * syncs the filesystem with the database, creating/updating construction sites as needed.

@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class LoadCraftsmanData extends BaseFixture
 {
-    const ORDER = SimulateServerDirectoryStructure::ORDER + LoadConstructionManagerData::ORDER + 1;
+    const ORDER = EnrichConstructionSiteData::ORDER + LoadConstructionManagerData::ORDER + 1;
 
     /**
      * @var SerializerInterface
@@ -38,6 +38,7 @@ class LoadCraftsmanData extends BaseFixture
      * @param ObjectManager $manager
      *
      * @throws \BadMethodCallException
+     * @throws \Exception
      */
     public function load(ObjectManager $manager)
     {

@@ -12,6 +12,7 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
+use App\Service\Interfaces\FileSystemSyncServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -30,10 +31,16 @@ class SetupContentFolders extends BaseFixture
      */
     private $serializer;
 
-    public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer)
+    /**
+     * @var FileSystemSyncServiceInterface
+     */
+    private $fileSystemSyncService;
+
+    public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer, FileSystemSyncServiceInterface $fileSystemSyncService)
     {
         $this->pathService = $pathService;
         $this->serializer = $serializer;
+        $this->fileSystemSyncService = $fileSystemSyncService;
     }
 
     /**
@@ -48,6 +55,8 @@ class SetupContentFolders extends BaseFixture
         $sourceFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'construction_sites';
         $targetFolder = $this->pathService->getFolderRoot();
         $this->recurse_copy($sourceFolder, $targetFolder);
+
+        $this->fileSystemSyncService->sync();
     }
 
     private function recurse_copy($sourceFolder, $destinationFolder)
