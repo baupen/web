@@ -19,6 +19,7 @@ use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Service\Interfaces\ImageServiceInterface;
+use App\Service\Interfaces\PathServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -81,16 +82,17 @@ class CraftsmanController extends BaseDoctrineController
      * @param $imageFilename
      * @param $size
      * @param ImageServiceInterface $imageService
+     * @param PathServiceInterface $pathService
      *
      * @return Response
      */
-    public function issueAction($identifier, Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService)
+    public function issueAction($identifier, Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService, PathServiceInterface $pathService)
     {
         /** @var Craftsman $craftsman */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
             throw new NotFoundHttpException();
         }
 
-        return $this->file($this->getImagePath($this->getParameter('PUBLIC_DIR'), $issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($this->getImagePath($issue, $imageFilename, $size, $pathService, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

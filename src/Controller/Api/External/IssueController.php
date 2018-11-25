@@ -21,6 +21,8 @@ use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Entity\Map;
+use App\Service\Interfaces\ImageServiceInterface;
+use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -79,15 +81,17 @@ class IssueController extends ExternalApiController
      *
      * @param Request $request
      * @param IssueTransformer $issueTransformer
+     * @param PathServiceInterface $pathService
+     * @param ImageServiceInterface $imageService
      *
      * @throws ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return Response
      */
-    public function issueCreateAction(Request $request, IssueTransformer $issueTransformer)
+    public function issueCreateAction(Request $request, IssueTransformer $issueTransformer, PathServiceInterface $pathService, ImageServiceInterface $imageService)
     {
-        return $this->processIssueModifyRequest($request, $issueTransformer, 'create');
+        return $this->processIssueModifyRequest($request, $issueTransformer, $pathService, $imageService, 'create');
     }
 
     /**
@@ -95,28 +99,33 @@ class IssueController extends ExternalApiController
      *
      * @param Request $request
      * @param IssueTransformer $issueTransformer
+     * @param PathServiceInterface $pathService
+     * @param ImageServiceInterface $imageService
      *
      * @throws ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return Response
      */
-    public function issueUpdateAction(Request $request, IssueTransformer $issueTransformer)
+    public function issueUpdateAction(Request $request, IssueTransformer $issueTransformer, PathServiceInterface $pathService, ImageServiceInterface $imageService)
     {
-        return $this->processIssueModifyRequest($request, $issueTransformer, 'update');
+        return $this->processIssueModifyRequest($request, $issueTransformer, $pathService, $imageService, 'update');
     }
 
     /**
      * @param Request $request
      * @param IssueTransformer $issueTransformer
+     * @param PathServiceInterface $pathService
+     * @param ImageServiceInterface $imageService
      * @param $mode
      *
      * @throws ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
      *
      * @return JsonResponse|Response
      */
-    private function processIssueModifyRequest(Request $request, IssueTransformer $issueTransformer, $mode)
+    private function processIssueModifyRequest(Request $request, IssueTransformer $issueTransformer, PathServiceInterface $pathService, ImageServiceInterface $imageService, $mode)
     {
         /** @var IssueModifyRequest $issueModifyRequest */
         /** @var ConstructionManager $constructionManager */
@@ -189,7 +198,7 @@ class IssueController extends ExternalApiController
 
         //handle file upload
         foreach ($request->files->all() as $file) {
-            $this->uploadImage($file, $issue->getImageFilePath(), static::ISSUE_FILE_UPLOAD_FAILED);
+            $this->uploadImage($file, $issue, $pathService, $imageService, static::ISSUE_FILE_UPLOAD_FAILED);
         }
 
         //if create, need to enforce correct GUID

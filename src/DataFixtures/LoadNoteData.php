@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class LoadNoteData extends BaseFixture
 {
-    const ORDER = LoadConstructionSiteData::ORDER + LoadConstructionManagerData::ORDER + 1;
+    const ORDER = SimulateServerDirectoryStructure::ORDER + LoadConstructionManagerData::ORDER + 1;
 
     /**
      * @var SerializerInterface

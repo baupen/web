@@ -18,6 +18,7 @@ use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Service\Interfaces\ImageServiceInterface;
+use App\Service\Interfaces\PathServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -72,16 +73,17 @@ class FilterController extends BaseDoctrineController
      * @param string $imageFilename
      * @param string $size
      * @param ImageServiceInterface $imageService
+     * @param PathServiceInterface $pathService
      *
      * @return Response
      */
-    public function issueAction($identifier, Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService)
+    public function issueAction($identifier, Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService, PathServiceInterface $pathService)
     {
         /** @var Filter $filter */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter)) {
             throw new NotFoundHttpException();
         }
 
-        return $this->file($this->getImagePath($this->getParameter('PUBLIC_DIR'), $issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($this->getImagePath($issue, $imageFilename, $size, $pathService, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

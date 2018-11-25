@@ -20,6 +20,7 @@ use App\Entity\Issue;
 use App\Entity\Map;
 use App\Entity\Traits\TimeTrait;
 use App\Service\Interfaces\ImageServiceInterface;
+use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
@@ -44,13 +45,15 @@ class FileController extends ExternalApiController
      * @Route("/download", name="api_external_file_download", methods={"POST"})
      *
      * @param Request $request
+     * @param PathServiceInterface $pathService
      * @param ImageServiceInterface $imageService
      *
      * @throws ORMException
+     * @throws \Exception
      *
      * @return Response
      */
-    public function fileDownloadAction(Request $request, ImageServiceInterface $imageService)
+    public function fileDownloadAction(Request $request, PathServiceInterface $pathService, ImageServiceInterface $imageService)
     {
         /** @var DownloadFileRequest $downloadFileRequest */
         /** @var ConstructionManager $constructionManager */
@@ -67,9 +70,9 @@ class FileController extends ExternalApiController
                     /* @var Map $entity */
                     return $entity->getConstructionSite()->getConstructionManagers()->contains($constructionManager);
                 },
-                function ($entity) {
+                function ($entity) use ($pathService) {
                     /* @var Map $entity */
-                    return $entity->getFilePath();
+                    return  $entity->getFilename() ? $pathService->getFolderForMap($entity) . \DIRECTORY_SEPARATOR . $entity->getFilename() : null;
                 }
             );
         } elseif ($downloadFileRequest->getIssue() !== null) {
@@ -80,9 +83,9 @@ class FileController extends ExternalApiController
                     /* @var Issue $entity */
                     return $entity->getMap()->getConstructionSite()->getConstructionManagers()->contains($constructionManager);
                 },
-                function ($entity) {
+                function ($entity) use ($pathService) {
                     /* @var Issue $entity */
-                    return $entity->getImageFilePath();
+                    return $entity->getImageFilename() ? $pathService->getFolderForIssue($entity) . \DIRECTORY_SEPARATOR . $entity->getImageFilename() : null;
                 },
                 $imageService
             );
@@ -94,9 +97,9 @@ class FileController extends ExternalApiController
                     /* @var ConstructionSite $entity */
                     return $entity->getConstructionManagers()->contains($constructionManager);
                 },
-                function ($entity) {
+                function ($entity) use ($pathService) {
                     /* @var ConstructionSite $entity */
-                    return $entity->getImageFilePath();
+                    return $entity->getImageFilename() ? $pathService->getFolderForConstructionSite($entity) . \DIRECTORY_SEPARATOR . $entity->getImageFilename() : null;
                 },
                 $imageService
             );
@@ -112,6 +115,8 @@ class FileController extends ExternalApiController
      * @param callable $verifyAccess
      * @param callable $accessFilePath
      * @param ImageServiceInterface|null $imageService pass if its an image, then resize
+     *
+     * @throws \Exception
      *
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|Response
      */
@@ -139,7 +144,6 @@ class FileController extends ExternalApiController
             return $this->fail(static::ENTITY_NO_DOWNLOADABLE_FILE);
         }
 
-        $filePath = $this->getParameter('PUBLIC_DIR') . '/' . $filePath;
         if (!file_exists($filePath)) {
             return $this->fail(static::ENTITY_FILE_NOT_FOUND);
         }

@@ -15,6 +15,7 @@
     "lint-staged": "^8.1.0",
     "node-sass": "^4",
     "sass-loader": "^7",
+    "stylelint": "^9.8.0",
     "vue-loader": "^15",
     "vue-template-compiler": "^2.5.16"
   },
@@ -37,6 +38,7 @@
     "open-sans-fontface": "^1",
     "popper.js": "^1.12",
     "promise-polyfill": "^8.1.0",
+    "stylelint-config-standard": "^18.2.0",
     "vue": "^2.5",
     "vue-async-computed": "^3",
     "vue-headful": "^2",

@@ -10,6 +10,7 @@
     "ext-simplexml": "*",
     "ext-xml": "*",
     "ext-gd": "*",
+    "ext-json": "*",
     "doctrine/doctrine-fixtures-bundle": "^3.0",
     "easycorp/easyadmin-bundle": "^1.17",
     "fzaninotto/faker": "^1.7",

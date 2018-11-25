@@ -14,21 +14,28 @@ namespace App\DataFixtures;
 use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionSite;
 use App\Entity\Map;
+use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class LoadMapData extends BaseFixture
 {
-    const ORDER = LoadConstructionSiteData::ORDER + ClearPublicUploadDir::ORDER + 1;
+    const ORDER = SimulateServerDirectoryStructure::ORDER + ClearContentFolders::ORDER + 1;
 
     /**
      * @var SerializerInterface
      */
     private $serializer;
 
-    public function __construct(SerializerInterface $serializer)
+    /**
+     * @var PathServiceInterface
+     */
+    private $pathService;
+
+    public function __construct(SerializerInterface $serializer, PathServiceInterface $pathService)
     {
         $this->serializer = $serializer;
+        $this->pathService = $pathService;
     }
 
     /**
@@ -69,7 +76,7 @@ class LoadMapData extends BaseFixture
             //copy image to correct location
             if ($rawMap->filename !== null) {
                 $map->setFilename($rawMap->filename);
-                $map->setFilename($this->safeCopyToPublic($map->getFilePath(), 'maps'));
+                $this->safeCopyToPublic($this->pathService->getFolderForMap($map) . \DIRECTORY_SEPARATOR . $map->getFilename(), 'maps');
             }
 
             //create children

@@ -16,7 +16,6 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -76,12 +75,10 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
      *
      * @param string $targetFilePath
      * @param string $resourceFolder
-     *
-     * @return string
      */
     protected function safeCopyToPublic($targetFilePath, $resourceFolder)
     {
-        $targetFolder = __DIR__ . '/../../../public/' . \dirname($targetFilePath);
+        $targetFolder = \dirname($targetFilePath);
 
         //ensure target folder exists
         if (!file_exists($targetFolder)) {
@@ -89,14 +86,11 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
         }
 
         //create new filename
-        $resourceFileName = basename($targetFilePath);
-        $extension = pathinfo($resourceFileName, PATHINFO_EXTENSION);
-        $newFilename = Uuid::uuid4()->toString() . '.' . $extension;
+        $fileName = basename($targetFilePath);
+        $source = __DIR__ . '/../Resources/' . $resourceFolder . \DIRECTORY_SEPARATOR . $fileName;
+        $destination = $targetFilePath;
 
         //copy file to target folder
-        $destination = $targetFolder . '/' . $newFilename;
-        copy(__DIR__ . '/../Resources/' . $resourceFolder . '/' . $resourceFileName, $destination);
-
-        return $newFilename;
+        copy($source, $destination);
     }
 }

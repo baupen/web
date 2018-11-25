@@ -15,14 +15,15 @@ use App\Entity\Issue;
 use App\Entity\Map;
 use App\Helper\ImageHelper;
 use App\Service\Interfaces\ImageServiceInterface;
+use App\Service\Interfaces\PathServiceInterface;
 use ReflectionClass;
 
 class ImageService implements ImageServiceInterface
 {
     /**
-     * @var string
+     * @var PathServiceInterface
      */
-    private $pubFolder = __DIR__ . '/../../public';
+    private $pathService;
 
     /**
      * @var int the bubble size as an abstract unit
@@ -35,6 +36,11 @@ class ImageService implements ImageServiceInterface
      */
     private $disableCache = false;
 
+    public function __construct(PathServiceInterface $pathService)
+    {
+        $this->pathService = $pathService;
+    }
+
     /**
      * @param Map $map
      * @param Issue[] $issues
@@ -46,7 +52,7 @@ class ImageService implements ImageServiceInterface
     private function render(Map $map, array $issues, $filePath, $forceLandscape = false): ?string
     {
         //create folder
-        $generationTargetFolder = $this->getGenerationTargetFolder($map);
+        $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
         if (!file_exists($generationTargetFolder)) {
             mkdir($generationTargetFolder, 0777, true);
         }
@@ -54,7 +60,7 @@ class ImageService implements ImageServiceInterface
         //compile pdf to image
         $renderedMapPath = $generationTargetFolder . '/render.jpg';
         if (!is_file($renderedMapPath) || $this->disableCache) {
-            $mapFilePath = $this->pubFolder . '/' . $map->getFilePath();
+            $mapFilePath = $this->pathService->getFolderForMap($map) . \DIRECTORY_SEPARATOR . $map->getFilename();
 
             //do first low quality render to get artboxsize
             $renderedMapPath = $generationTargetFolder . '/pre_render.jpg';
@@ -226,17 +232,7 @@ class ImageService implements ImageServiceInterface
             ) . $appendix
         );
 
-        return $this->getGenerationTargetFolder($map) . '/' . $hash . '.jpg';
-    }
-
-    /**
-     * @param Map $map
-     *
-     * @return string
-     */
-    private function getGenerationTargetFolder(Map $map)
-    {
-        return $this->pubFolder . '/generated/' . $map->getConstructionSite()->getId() . '/map/' . $map->getId();
+        return $this->pathService->getTransientFolderForMap($map) . \DIRECTORY_SEPARATOR . $hash . '.jpg';
     }
 
     /**
@@ -358,11 +354,16 @@ class ImageService implements ImageServiceInterface
     /**
      * generates all sizes so the getSize call goes faster once it is really needed.
      *
-     * @param null|string $imagePath
+     * @param Issue $issue
      */
-    public function warmupCache(?string $imagePath)
+    public function warmupCacheForIssue(Issue $issue)
     {
         try {
+            if (!$issue->getImageFilename()) {
+                return;
+            }
+
+            $imagePath = $this->pathService->getTransientFolderForIssue($issue) . \DIRECTORY_SEPARATOR . $issue->getImageFilename();
             $oClass = new ReflectionClass(ImageServiceInterface::class);
             foreach ($oClass->getConstants() as $name => $value) {
                 if (mb_strpos($name, 'SIZE') === 0) {

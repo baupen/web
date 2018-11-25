@@ -22,6 +22,7 @@ use App\Report\PdfDefinition;
 use App\Report\Report;
 use App\Report\ReportElements;
 use App\Service\Interfaces\ImageServiceInterface;
+use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -30,9 +31,9 @@ use Symfony\Component\Translation\TranslatorInterface;
 class ReportService implements ReportServiceInterface
 {
     /**
-     * @var string
+     * @var PathServiceInterface
      */
-    private $publicPath = __DIR__ . '/../../public';
+    private $pathService;
 
     /**
      * @var ImageServiceInterface
@@ -66,13 +67,15 @@ class ReportService implements ReportServiceInterface
      * @param RegistryInterface $registry
      * @param SerializerInterface $serializer
      * @param TranslatorInterface $translator
+     * @param PathServiceInterface $pathService
      */
-    public function __construct(ImageServiceInterface $imageService, RegistryInterface $registry, SerializerInterface $serializer, TranslatorInterface $translator)
+    public function __construct(ImageServiceInterface $imageService, RegistryInterface $registry, SerializerInterface $serializer, TranslatorInterface $translator, PathServiceInterface $pathService)
     {
         $this->imageService = $imageService;
         $this->doctrine = $registry;
         $this->serializer = $serializer;
         $this->translator = $translator;
+        $this->pathService = $pathService;
     }
 
     /**
@@ -143,7 +146,7 @@ class ReportService implements ReportServiceInterface
         foreach ($issues as $issue) {
             $currentIssue = [];
 
-            $imagePath = $this->imageService->getSize($this->publicPath . '/' . $issue->getImageFilePath(), ImageServiceInterface::SIZE_REPORT_ISSUE);
+            $imagePath = $this->imageService->getSize($this->pathService->getFolderForIssue($issue) . \DIRECTORY_SEPARATOR . $issue->getImageFilename(), ImageServiceInterface::SIZE_REPORT_ISSUE);
             $currentIssue['imagePath'] = $imagePath;
             $currentIssue['identification'] = $issue->getNumber();
             $currentRow[] = $currentIssue;
@@ -290,7 +293,7 @@ class ReportService implements ReportServiceInterface
 
         //print
         $report->addIntroduction(
-            $this->imageService->getSize($this->publicPath . '/' . $constructionSite->getImageFilePath(), ImageServiceInterface::SIZE_REPORT_ISSUE),
+            $this->imageService->getSize($this->pathService->getFolderForConstructionSite($constructionSite) . \DIRECTORY_SEPARATOR . $constructionSite->getImageFilename(), ImageServiceInterface::SIZE_REPORT_ISSUE),
             $constructionSite->getName(),
             implode("\n", $constructionSite->getAddressLines()),
             implode(', ', $elements),
@@ -488,6 +491,8 @@ class ReportService implements ReportServiceInterface
      * @param string $author
      * @param ReportElements $elements
      *
+     * @throws \Exception
+     *
      * @return string
      */
     public function generateReport(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $elements)
@@ -495,41 +500,18 @@ class ReportService implements ReportServiceInterface
         $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
 
         //create folder
-        $generationTargetFolder = $this->getGenerationTargetFolder($constructionSite);
+        $generationTargetFolder = $this->pathService->getTransientFolderForReports($constructionSite);
         if (!file_exists($generationTargetFolder)) {
             mkdir($generationTargetFolder, 0777, true);
         }
 
         //only generate report if it does not already exist
-        $filePath = $this->getPathFor($constructionSite);
+        $filePath = $generationTargetFolder . \DIRECTORY_SEPARATOR . uniqid() . '.pdf';
         if (!file_exists($filePath) || $this->disableCache) {
             $author = $this->translator->trans('generated', ['%date%' => (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT), '%name%' => $author], 'report');
             $this->render($constructionSite, $filter, $author, $elements, $issues, $filePath);
         }
 
         return $filePath;
-    }
-
-    /**
-     * @param ConstructionSite $constructionSite
-     *
-     * @return string
-     */
-    private function getPathFor(ConstructionSite $constructionSite)
-    {
-        //consider changing the filename to hash input values of the generation
-        $filename = uniqid() . '.pdf';
-
-        return $this->getGenerationTargetFolder($constructionSite) . '/' . $filename;
-    }
-
-    /**
-     * @param ConstructionSite $constructionSite
-     *
-     * @return string
-     */
-    private function getGenerationTargetFolder(ConstructionSite $constructionSite)
-    {
-        return $this->publicPath . '/generated/' . $constructionSite->getId() . '/report';
     }
 }

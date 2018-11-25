@@ -102,7 +102,7 @@ class Map extends BaseEntity
     }
 
     /**
-     * @param null|string $filename
+     * @param string|null $filename
      */
     public function setFilename(?string $filename): void
     {
@@ -155,18 +155,6 @@ class Map extends BaseEntity
     public function getIssues()
     {
         return $this->issues;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getFilePath(): ?string
-    {
-        if ($this->getFilename() !== null) {
-            return 'upload/' . $this->getConstructionSite()->getId() . '/map/' . $this->getFilename();
-        }
-
-        return null;
     }
 
     /**

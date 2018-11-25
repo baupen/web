@@ -50,28 +50,14 @@ var outdatedBrowser = function (options) {
   var supports = (function () {
     var div = document.createElement('div');
 
-    var vendors = 'Khtml Ms O Moz Webkit'.split(' ');
-
-    var len = vendors.length;
-
     return function (prop) {
-      if (prop in div.style) return true;
-
-      prop = prop.replace(/^[a-z]/, function (val) {
-        return val.toUpperCase();
-      });
-
-      while (len--) {
-        if (vendors[len] + prop in div.style) {
-          return true;
-        }
-      }
-      return false;
+      div.style[prop] = 'inherit';
+      return div.style[prop] === 'inherit';
     };
   })();
 
   // if browser does not supports css3 property (transform=default), if does > exit all this
-  if (!supports('' + options.cssProp + '')) {
+  if (!supports(options.cssProp)) {
     if (done && outdated.style.opacity !== '1') {
       done = false;
       for (var i = 1; i <= 100; i++) {

@@ -72,18 +72,19 @@
             );
 
             //fill register
+            console.log("hi");
             axios.get("/api/configuration").then((response) => {
                 this.constructionSiteId = response.data.constructionSite.id;
+                console.log("hi");
 
                 axios.post("/api/statistics/issues/overview", {
                     "constructionSiteId": this.constructionSiteId,
                 }).then((response) => {
                     this.overview = response.data.overview;
                     this.isOverviewLoading = false;
+                    console.log("hi");
                 });
             });
-
-            this.displayInfoFlash("hi mom");
         },
     }
 

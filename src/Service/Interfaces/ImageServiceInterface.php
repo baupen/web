@@ -11,6 +11,7 @@
 
 namespace App\Service\Interfaces;
 
+use App\Entity\Issue;
 use App\Entity\Map;
 
 interface ImageServiceInterface
@@ -48,9 +49,7 @@ interface ImageServiceInterface
     /**
      * generates all sizes so the getSize call goes faster once it is really needed.
      *
-     * @param null|string $imagePath
-     *
-     * @return
+     * @param Issue $issue
      */
-    public function warmupCache(?string $imagePath);
+    public function warmupCacheForIssue(Issue $issue);
 }

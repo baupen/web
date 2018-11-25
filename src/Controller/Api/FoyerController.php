@@ -29,6 +29,8 @@ use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
+use App\Service\Interfaces\ImageServiceInterface;
+use App\Service\Interfaces\PathServiceInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -283,10 +285,14 @@ class FoyerController extends ApiController
      *
      * @param Request $request
      * @param IssueTransformer $issueTransformer
+     * @param PathServiceInterface $pathService
+     * @param ImageServiceInterface $imageService
+     *
+     * @throws \Exception
      *
      * @return Response
      */
-    public function issueImageAction(Request $request, IssueTransformer $issueTransformer)
+    public function issueImageAction(Request $request, IssueTransformer $issueTransformer, PathServiceInterface $pathService, ImageServiceInterface $imageService)
     {
         /** @var ConstructionSite $constructionSite */
         /* @var IssueIdRequest $issueRequest */
@@ -307,7 +313,7 @@ class FoyerController extends ApiController
         $entity->setImageFilename(Uuid::uuid4()->toString() . '.' . $file->guessExtension());
 
         //save file
-        $this->uploadImage($file, $entity->getImageFilePath(), self::FILE_UPLOAD_FAILED);
+        $this->uploadImage($file, $entity, $pathService, $imageService, self::FILE_UPLOAD_FAILED);
         $this->fastSave($entity);
 
         //create response

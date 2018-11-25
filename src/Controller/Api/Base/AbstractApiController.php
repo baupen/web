@@ -14,7 +14,9 @@ namespace App\Controller\Api\Base;
 use App\Api\Response\FailResponse;
 use App\Api\Response\SuccessfulResponse;
 use App\Controller\Base\BaseDoctrineController;
+use App\Entity\Issue;
 use App\Service\Interfaces\ImageServiceInterface;
+use App\Service\Interfaces\PathServiceInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -158,27 +160,27 @@ abstract class AbstractApiController extends BaseDoctrineController
 
     /**
      * @param UploadedFile $file
-     * @param $targetFilePath
+     * @param Issue $issue
+     * @param PathServiceInterface $pathService
+     * @param ImageServiceInterface $imageService
      * @param $error
      *
      * @return bool|JsonResponse
      */
-    protected function uploadImage(UploadedFile $file, $targetFilePath, $error)
+    protected function uploadImage(UploadedFile $file, Issue $issue, PathServiceInterface $pathService, ImageServiceInterface $imageService, $error)
     {
-        $publicDir = $this->getParameter('PUBLIC_DIR');
-
-        //create folder & copy file
-        $targetFolder = $publicDir . '/' . \dirname($targetFilePath);
+        //create folder
+        $targetFolder = $pathService->getFolderForIssue($issue);
         if (!file_exists($targetFolder)) {
             mkdir($targetFolder, 0777, true);
         }
-        if (!$file->move($targetFolder, $targetFilePath)) {
+
+        //move file
+        if (!$file->move($targetFolder, $issue->getImageFilename())) {
             return $this->fail($error);
         }
 
-        /** @var ImageServiceInterface $imageService */
-        $imageService = $this->get(ImageServiceInterface::class);
-        $imageService->warmupCache($publicDir . '/' . $targetFilePath);
+        $imageService->warmupCacheForIssue($issue);
 
         return true;
     }

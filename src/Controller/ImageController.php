@@ -15,6 +15,7 @@ use App\Controller\Base\BaseDoctrineController;
 use App\Controller\Traits\ImageDownloadTrait;
 use App\Entity\Issue;
 use App\Service\Interfaces\ImageServiceInterface;
+use App\Service\Interfaces\PathServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,16 +39,17 @@ class ImageController extends BaseDoctrineController
      * @Route("/issue/{issue}/{imageFilename}/{size}", name="image_issue")
      *
      * @param Issue $issue
-     * @param ImageServiceInterface $imageService
      * @param string $imageFilename
      * @param string $size
+     * @param ImageServiceInterface $imageService
+     * @param PathServiceInterface $pathService
      *
      * @return Response
      */
-    public function issueAction(Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService)
+    public function issueAction(Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService, PathServiceInterface $pathService)
     {
         $this->ensureAccess($issue);
 
-        return $this->file($this->getImagePath($this->getParameter('PUBLIC_DIR'), $issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($this->getImagePath($issue, $imageFilename, $size, $pathService, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }
