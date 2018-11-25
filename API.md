@@ -24,7 +24,6 @@
 ```
 username: String
 passwordHash: SHA256
-clientVersion: Int
 ```
 
 ##### response:
@@ -191,7 +190,9 @@ issue: Issue
 	* fail: the request is invalid in some way (preconditions etc.) (http response code may differ from 200, but can still be 200)
 	* error: some error occurred (http response code 500)
 * fails may be instead returned as errors (e.g. if hard-to-implement), but errors should never be returned as fails
+* the application is only allowed to parse a request if it expects the version value 
 ```
+version: Integer
 status: String // "success"/"fail"/"error"
 data: Object // exists if "success" (missing otherwise)
 error: Error // exists if fail
