@@ -38,8 +38,8 @@ class ClearContentFolders extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $this->deleteDirectoryContents($this->pathService->getTransientFolderRoot(), true);
-        $this->deleteDirectoryContents($this->pathService->getFolderRoot(), true, ['data.sqlite', 'data.sqlite-journal']);
+        $this->deleteDirectoryContents($this->pathService->getTransientFolderRoot(), true, ['.gitkeep']);
+        $this->deleteDirectoryContents($this->pathService->getFolderRoot(), true, ['data.sqlite', 'data.sqlite-journal', '.gitkeep']);
     }
 
     /**
