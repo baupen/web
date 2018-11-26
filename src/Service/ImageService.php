@@ -17,6 +17,7 @@ use App\Entity\Map;
 use App\Helper\ImageHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class ImageService implements ImageServiceInterface
 {
@@ -48,13 +49,19 @@ class ImageService implements ImageServiceInterface
     private const MAP_RENDER_NAME = 'render.jpg';
 
     /**
+     * @var string prevents calls to warmup cache from archiving something
+     */
+    private $preventCacheWarmup;
+
+    /**
      * ImageService constructor.
      *
      * @param PathServiceInterface $pathService
      */
-    public function __construct(PathServiceInterface $pathService)
+    public function __construct(PathServiceInterface $pathService, KernelInterface $kernel)
     {
         $this->pathService = $pathService;
+        $this->preventCacheWarmup = $kernel->getEnvironment() !== 'prod';
     }
 
     /**
@@ -106,6 +113,10 @@ class ImageService implements ImageServiceInterface
      */
     public function warmupCacheForIssue(Issue $issue)
     {
+        if ($issue->getImageFilename() === null || $this->preventCacheWarmup) {
+            return;
+        }
+
         //setup paths
         $sourceFolder = $this->pathService->getFolderForIssue($issue->getMap()->getConstructionSite());
         $targetFolder = $this->pathService->getTransientFolderForIssue($issue);
@@ -123,6 +134,10 @@ class ImageService implements ImageServiceInterface
      */
     public function warmupCacheForConstructionSite(ConstructionSite $constructionSite)
     {
+        if ($constructionSite->getImageFilename() === null || $this->preventCacheWarmup) {
+            return;
+        }
+
         //setup paths
         $sourceFolder = $this->pathService->getFolderForConstructionSite($constructionSite);
         $targetFolder = $this->pathService->getTransientFolderForConstructionSite($constructionSite);
@@ -130,6 +145,28 @@ class ImageService implements ImageServiceInterface
 
         foreach ($this->validSizes as $validSize) {
             $this->renderSizeFor($constructionSite->getImageFilename(), $sourceFolder, $targetFolder, $validSize);
+        }
+    }
+
+    /**
+     * generates all sizes so the getSize call goes faster once it is really needed.
+     *
+     * @param Map $map
+     */
+    public function warmupCacheForMap(Map $map)
+    {
+        if ($map->getFilename() === null || $this->preventCacheWarmup) {
+            return;
+        }
+
+        //setup paths
+        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFilename();
+        $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
+        $this->ensureFolderExists($generationTargetFolder);
+
+        //prerender all sizes
+        foreach ($this->validSizes as $validSize) {
+            $this->generateMapImageInternal([], $sourceFilePath, $generationTargetFolder, false, $validSize);
         }
     }
 
@@ -173,28 +210,6 @@ class ImageService implements ImageServiceInterface
         $this->ensureFolderExists($targetFolder);
 
         return $this->renderSizeFor($constructionSite->getImageFilename(), $sourceFolder, $targetFolder, $size);
-    }
-
-    /**
-     * generates all sizes so the getSize call goes faster once it is really needed.
-     *
-     * @param Map $map
-     */
-    public function warmupCacheForMap(Map $map)
-    {
-        if ($map->getFilename() === null) {
-            return;
-        }
-
-        //setup paths
-        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFilename();
-        $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
-        $this->ensureFolderExists($generationTargetFolder);
-
-        //prerender all sizes
-        foreach ($this->validSizes as $validSize) {
-            $this->generateMapImageInternal([], $sourceFilePath, $generationTargetFolder, false, $validSize);
-        }
     }
 
     /**

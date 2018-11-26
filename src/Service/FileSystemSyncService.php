@@ -94,7 +94,6 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         if ($constructionSite->getImageFilename() === null && file_exists($previewImagePath)) {
             $constructionSite->setImageFilename($previewImageFilename);
             $this->imageService->warmupCacheForConstructionSite($constructionSite);
-
             //TODO: update hash of construction site preview file
         }
 
@@ -134,6 +133,10 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         }
 
         $this->createTreeStructure($constructionSite->getMaps()->toArray());
+
+        foreach ($constructionSite->getMaps() as $map) {
+            $this->imageService->warmupCacheForMap($map);
+        }
 
         $manager = $this->registry->getManager();
         $manager->persist($constructionSite);

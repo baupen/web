@@ -31,9 +31,8 @@ class FixturesTestCase extends WebTestCase
     /**
      * @throws \Exception
      */
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-
         $client = static::createClient();
         $application = new Application($client->getKernel());
         $application->setAutoExit(false);
@@ -46,13 +45,22 @@ class FixturesTestCase extends WebTestCase
         foreach ($commands as $command) {
             $application->run(new StringInput($command));
         }
-
-        $this->doctrine = $client->getKernel()->getContainer()
-            ->get('doctrine');
     }
 
     /**
-     * @var RegistryInterface $doctrine
+     * @throws \Exception
+     */
+    protected function setUp()
+    {
+        $client = static::createClient();
+        $application = new Application($client->getKernel());
+        $application->setAutoExit(false);
+
+        $this->doctrine = $client->getKernel()->getContainer()->get('doctrine');
+    }
+
+    /**
+     * @var RegistryInterface
      */
     private $doctrine;
 }
