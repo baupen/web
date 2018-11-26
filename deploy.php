@@ -18,8 +18,7 @@ set('var_dir', 'var');
 
 // Configuration
 set('repository', 'git@github.com:mangelio/app.git');
-set('shared_files', array_merge(get('shared_files'), ['var/data.sqlite']));
-set('shared_dirs', array_merge(get('shared_dirs'), ['public/upload', 'public/generated']));
+set('shared_dirs', array_merge(get('shared_dirs'), ['var/persistent', 'var/transient']));
 set('symfony_env_file', '.env');
 set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader --no-scripts');
 set('env_file_path', '.env');
