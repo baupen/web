@@ -52,14 +52,18 @@ class SetupContentFolders extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $sourceFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'Resources' . \DIRECTORY_SEPARATOR . 'construction_sites';
+        $sourceFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'Resources' . \DIRECTORY_SEPARATOR . 'persistent';
         $targetFolder = $this->pathService->getFolderRoot();
-        $this->recurse_copy($sourceFolder, $targetFolder);
+        $this->copyRecursively($sourceFolder, $targetFolder);
 
         $this->fileSystemSyncService->sync();
     }
 
-    private function recurse_copy($sourceFolder, $destinationFolder)
+    /**
+     * @param $sourceFolder
+     * @param $destinationFolder
+     */
+    private function copyRecursively($sourceFolder, $destinationFolder)
     {
         $dir = opendir($sourceFolder);
         if (!is_dir($destinationFolder)) {
@@ -68,7 +72,7 @@ class SetupContentFolders extends BaseFixture
         while (false !== ($file = readdir($dir))) {
             if (($file !== '.') && ($file !== '..')) {
                 if (is_dir($sourceFolder . '/' . $file)) {
-                    $this->recurse_copy($sourceFolder . '/' . $file, $destinationFolder . '/' . $file);
+                    $this->copyRecursively($sourceFolder . '/' . $file, $destinationFolder . '/' . $file);
                 } else {
                     copy($sourceFolder . '/' . $file, $destinationFolder . '/' . $file);
                 }

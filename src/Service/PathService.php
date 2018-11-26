@@ -36,7 +36,7 @@ class PathService implements PathServiceInterface
      */
     public function getFolderForConstructionSite(ConstructionSite $constructionSite)
     {
-        return $this->getFolderRoot() . \DIRECTORY_SEPARATOR . 'construction_sites' . \DIRECTORY_SEPARATOR . $constructionSite->getFolderName();
+        return $this->getConstructionSiteFolderRoot() . \DIRECTORY_SEPARATOR . $constructionSite->getFolderName();
     }
 
     /**
@@ -76,7 +76,7 @@ class PathService implements PathServiceInterface
      */
     public function getTransientFolderForMap(Map $map)
     {
-        return $this->getTransientFolderForConstructionSite($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . 'maps' . \DIRECTORY_SEPARATOR . $map->getFilename();
+        return $this->getTransientFolderForConstructionSite($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . 'maps' . \DIRECTORY_SEPARATOR . $map->getId();
     }
 
     /**
@@ -86,7 +86,7 @@ class PathService implements PathServiceInterface
      */
     public function getTransientFolderForIssue(Issue $issue)
     {
-        return $this->getTransientFolderForConstructionSite($issue->getMap()->getConstructionSite()) . \DIRECTORY_SEPARATOR . 'issues' . $issue->getImageFilename();
+        return $this->getTransientFolderForConstructionSite($issue->getMap()->getConstructionSite()) . \DIRECTORY_SEPARATOR . 'issues' . \DIRECTORY_SEPARATOR . $issue->getId();
     }
 
     /**
@@ -113,5 +113,13 @@ class PathService implements PathServiceInterface
     public function getTransientFolderRoot()
     {
         return $this->publicDir . \DIRECTORY_SEPARATOR . 'transient';
+    }
+
+    /**
+     * @return string
+     */
+    public function getConstructionSiteFolderRoot()
+    {
+        return $this->getFolderRoot() . \DIRECTORY_SEPARATOR . 'construction_sites';
     }
 }

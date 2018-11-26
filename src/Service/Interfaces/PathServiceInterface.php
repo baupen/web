@@ -23,6 +23,11 @@ interface PathServiceInterface
     public function getFolderRoot();
 
     /**
+     * @return string
+     */
+    public function getConstructionSiteFolderRoot();
+
+    /**
      * @param ConstructionSite $constructionSite
      *
      * @return string
