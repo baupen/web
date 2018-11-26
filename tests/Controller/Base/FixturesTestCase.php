@@ -38,6 +38,8 @@ class FixturesTestCase extends WebTestCase
         $application->setAutoExit(false);
 
         $commands = [
+            'doctrine:migrations:migrate -q',
+            'doctrine:fixtures:load -n -q',
         ];
 
         foreach ($commands as $command) {
