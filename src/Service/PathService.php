@@ -15,18 +15,33 @@ use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Service\Interfaces\PathServiceInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class PathService implements PathServiceInterface
 {
     /**
      * @var string
      */
-    private $publicDir;
+    private $folderRoot;
 
-    public function __construct(ParameterBagInterface $parameterBag)
+    /**
+     * @var string
+     */
+    private $transientFolderRoot;
+
+    /**
+     * @var string
+     */
+    private $constructionSiteFolderRoot;
+
+    public function __construct(KernelInterface $kernel)
     {
-        $this->publicDir = $parameterBag->get('PUBLIC_DIR');
+        $baseDir = $kernel->getRootDir() . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . 'var' . \DIRECTORY_SEPARATOR;
+        $environment = $kernel->getEnvironment();
+
+        $this->folderRoot = $baseDir . \DIRECTORY_SEPARATOR . 'persistent' . \DIRECTORY_SEPARATOR . $environment;
+        $this->transientFolderRoot = $baseDir . \DIRECTORY_SEPARATOR . 'transient' . \DIRECTORY_SEPARATOR . $environment;
+        $this->constructionSiteFolderRoot = $this->folderRoot . \DIRECTORY_SEPARATOR . 'construction_sites';
     }
 
     /**
@@ -104,15 +119,7 @@ class PathService implements PathServiceInterface
      */
     public function getFolderRoot()
     {
-        return $this->publicDir . \DIRECTORY_SEPARATOR . 'persistent';
-    }
-
-    /**
-     * @return string
-     */
-    public function getTransientFolderRoot()
-    {
-        return $this->publicDir . \DIRECTORY_SEPARATOR . 'transient';
+        return $this->folderRoot;
     }
 
     /**
@@ -120,6 +127,14 @@ class PathService implements PathServiceInterface
      */
     public function getConstructionSiteFolderRoot()
     {
-        return $this->getFolderRoot() . \DIRECTORY_SEPARATOR . 'construction_sites';
+        return $this->constructionSiteFolderRoot;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTransientFolderRoot()
+    {
+        return $this->transientFolderRoot;
     }
 }
