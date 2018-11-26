@@ -54,7 +54,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
             $constructionSitesLookup[$constructionSite->getFolderName()] = $constructionSite;
         }
 
-        $existingDirectories = glob($this->pathService->getFolderRoot() . \DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
+        $existingDirectories = glob($this->pathService->getConstructionSiteFolderRoot() . \DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
         foreach ($existingDirectories as $directory) {
             $folderName = mb_substr($directory, mb_strrpos($directory, \DIRECTORY_SEPARATOR) + 1);
             if (!array_key_exists($folderName, $constructionSitesLookup)) {
@@ -128,11 +128,12 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
             $mapNames[] = $this->deriveNameForMap($item->getFilename());
         }
         $newNames = $this->normalizeNames($mapNames);
+        $counter = 0;
         foreach ($constructionSite->getMaps() as $map) {
-            $map->setName($newNames);
+            $map->setName($newNames[$counter++]);
         }
 
-        $this->createTreeStructure($constructionSite->getMaps());
+        $this->createTreeStructure($constructionSite->getMaps()->toArray());
 
         $manager = $this->registry->getManager();
         $manager->persist($constructionSite);
@@ -195,6 +196,11 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
      */
     private function normalizeNames(array $mapNames)
     {
+        //skip normalization if too few map names
+        if (\count($mapNames) < 3) {
+            return $mapNames;
+        }
+
         // remove any entries occurring always
         /** @var string[][] $partsAnalytics */
         $partsAnalytics = [];
@@ -227,6 +233,10 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
                     unset($mapPart[$i]);
                     $mapPart = array_values($mapPart);
                 }
+
+                //remove processed entry group
+                unset($partsAnalytics[$i]);
+                $partsAnalytics = array_values($partsAnalytics);
                 --$i;
             }
         }
@@ -254,6 +264,11 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
                     unset($mapPart[$i]);
                     $mapPart = array_values($mapPart);
                 }
+
+                //remove processed entry group
+                unset($partsAnalytics[$i]);
+                $partsAnalytics = array_values($partsAnalytics);
+                --$i;
             }
         }
 

@@ -17,12 +17,10 @@ use App\Entity\Map;
 use App\Helper\ImageHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
-use ReflectionClass;
-use function Sodium\library_version_major;
 
 class ImageService implements ImageServiceInterface
 {
-    // TODO: unit test to detect all enums in here
+    // TODO: unit test to detect if all enums in here
     /**
      * @var array
      */
@@ -44,82 +42,236 @@ class ImageService implements ImageServiceInterface
      */
     private $disableCache = false;
 
+    /**
+     * the name of the image rendered from the map pdf.
+     */
+    private const MAP_RENDER_NAME = 'render.jpg';
+
+    /**
+     * ImageService constructor.
+     *
+     * @param PathServiceInterface $pathService
+     */
     public function __construct(PathServiceInterface $pathService)
     {
         $this->pathService = $pathService;
     }
 
     /**
-     * @param string $sourcePdfPath
-     * @param string $targetFilepath
-     * @return string|null
+     * @param Map $map
+     * @param Issue[] $issues
+     * @param string $size
+     *
+     * @return string
      */
-    private function renderPdfToImage(string $sourcePdfPath, string $targetFilepath)
+    public function generateMapImage(Map $map, array $issues, $size = self::SIZE_THUMBNAIL)
     {
-        //compile pdf to image
-        if (!is_file($targetFilepath) || $this->disableCache) {
-            // setup paths
-            list($targetFolder, $targetFilename) = $this->decomposePath($targetFilepath);
-            list($filenameWithoutEnding, $ending) = $this->decomposeFilename($targetFilename);
-
-
-            //do first low quality render to get artboxsize
-            $renderedMapPath = $targetFolder . DIRECTORY_SEPARATOR . $filenameWithoutEnding . "_pre_render" . $ending;
-            $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=10 -dUseCropBox -sPageList=1 -o ' . $renderedMapPath . ' ' . $sourcePdfPath;
-            exec($command);
-            if (!is_file($renderedMapPath)) {
-                return null;
-            }
-
-            //second render with correct image dimensions
-            list($width, $height) = ImageHelper::getWidthHeightArguments($renderedMapPath, 3840, 2160);
-            $renderedMapPath = $targetFolder . DIRECTORY_SEPARATOR  . $targetFilepath;
-            $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=' . $width . ' -dDEVICEHEIGHTPOINTS=' . $height . ' -dJPEGQ=80 -dFitPage -sPageList=1 -o ' . $renderedMapPath . ' ' . $sourcePdfPath;
-            exec($command);
-            if (!is_file($renderedMapPath)) {
-                return null;
-            }
+        if ($map->getFilename() === null) {
+            return null;
         }
 
-        return $renderedMapPath;
+        //setup paths
+        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFilename();
+        $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
+        $this->ensureFolderExists($generationTargetFolder);
+
+        return $this->generateMapImageInternal($issues, $sourceFilePath, $generationTargetFolder, false, $size);
     }
 
     /**
-     * @param Issue[] $issues
-     * @param string $mapImagePath
-     * @param string $targetPath
-     * @param bool $forceLandscape
+     * @param Map $map
+     * @param array $issues
+     * @param string $size
+     *
+     * @return string
+     */
+    public function generateMapImageForReport(Map $map, array $issues, $size = self::SIZE_THUMBNAIL)
+    {
+        if ($map->getFilename() === null) {
+            return null;
+        }
+
+        //setup paths
+        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFilename();
+        $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
+        $this->ensureFolderExists($generationTargetFolder);
+
+        return $this->generateMapImageInternal($issues, $sourceFilePath, $generationTargetFolder, true, $size);
+    }
+
+    /**
+     * generates all sizes so the getSize call goes faster once it is really needed.
+     *
+     * @param Issue $issue
+     */
+    public function warmupCacheForIssue(Issue $issue)
+    {
+        //setup paths
+        $sourceFolder = $this->pathService->getFolderForIssue($issue->getMap()->getConstructionSite());
+        $targetFolder = $this->pathService->getTransientFolderForIssue($issue);
+        $this->ensureFolderExists($targetFolder);
+
+        foreach ($this->validSizes as $validSize) {
+            $this->renderSizeFor($issue->getImageFilename(), $sourceFolder, $targetFolder, $validSize);
+        }
+    }
+
+    /**
+     * generates all sizes so the getSize call goes faster once it is really needed.
+     *
+     * @param ConstructionSite $constructionSite
+     */
+    public function warmupCacheForConstructionSite(ConstructionSite $constructionSite)
+    {
+        //setup paths
+        $sourceFolder = $this->pathService->getFolderForConstructionSite($constructionSite);
+        $targetFolder = $this->pathService->getTransientFolderForConstructionSite($constructionSite);
+        $this->ensureFolderExists($targetFolder);
+
+        foreach ($this->validSizes as $validSize) {
+            $this->renderSizeFor($constructionSite->getImageFilename(), $sourceFolder, $targetFolder, $validSize);
+        }
+    }
+
+    /**
+     * @param string $uncheckedSize
+     *
+     * @return string
+     */
+    public function ensureValidSize($uncheckedSize)
+    {
+        return \in_array($uncheckedSize, $this->validSizes, true) ? $uncheckedSize : ImageServiceInterface::SIZE_THUMBNAIL;
+    }
+
+    /**
+     * @param Issue $issue
+     * @param string $size
      *
      * @return string|null
      */
-    private function renderIssues(array $issues, string $mapImagePath, string $targetPath, $forceLandscape = false): ?string
+    public function getSizeForIssue(Issue $issue, $size = self::SIZE_THUMBNAIL)
     {
-        //open image file
-        $sourceImage = imagecreatefromjpeg($mapImagePath);
-        $rotated = false;
+        //setup paths
+        $sourceFolder = $this->pathService->getFolderForIssue($issue->getMap()->getConstructionSite());
+        $targetFolder = $this->pathService->getTransientFolderForIssue($issue);
+        $this->ensureFolderExists($targetFolder);
 
-        if ($forceLandscape) {
-            $width = imagesx($sourceImage);
-            $height = imagesy($sourceImage);
+        return $this->renderSizeFor($issue->getImageFilename(), $sourceFolder, $targetFolder, $size);
+    }
 
-            if ($height > $width) {
-                $rotated = true;
-                $sourceImage = imagerotate($sourceImage, 90, 0);
+    /**
+     * @param ConstructionSite $constructionSite
+     * @param string $size
+     *
+     * @return string|null
+     */
+    public function getSizeForConstructionSite(ConstructionSite $constructionSite, $size = self::SIZE_THUMBNAIL)
+    {
+        //setup paths
+        $sourceFolder = $this->pathService->getFolderForConstructionSite($constructionSite);
+        $targetFolder = $this->pathService->getTransientFolderForConstructionSite($constructionSite);
+        $this->ensureFolderExists($targetFolder);
+
+        return $this->renderSizeFor($constructionSite->getImageFilename(), $sourceFolder, $targetFolder, $size);
+    }
+
+    /**
+     * generates all sizes so the getSize call goes faster once it is really needed.
+     *
+     * @param Map $map
+     */
+    public function warmupCacheForMap(Map $map)
+    {
+        if ($map->getFilename() === null) {
+            return;
+        }
+
+        //setup paths
+        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFilename();
+        $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
+        $this->ensureFolderExists($generationTargetFolder);
+
+        //prerender all sizes
+        foreach ($this->validSizes as $validSize) {
+            $this->generateMapImageInternal([], $sourceFilePath, $generationTargetFolder, false, $validSize);
+        }
+    }
+
+    /**
+     * @param string|null $sourceFileName
+     * @param string $sourceFolder
+     * @param string $targetFolder
+     * @param $size
+     *
+     * @return string
+     */
+    private function renderSizeFor(?string $sourceFileName, string $sourceFolder, string $targetFolder, $size)
+    {
+        if ($sourceFileName === null) {
+            return null;
+        }
+
+        //setup paths
+        $sourceFilePath = $sourceFolder . \DIRECTORY_SEPARATOR . $sourceFileName;
+        $targetFileName = $this->getSizeFilename($sourceFileName, $size);
+        $targetFilePath = $targetFolder . \DIRECTORY_SEPARATOR . $targetFileName;
+
+        if (!file_exists($targetFilePath) || $this->disableCache) {
+            $this->renderSizeOfImage($sourceFilePath, $targetFilePath, $size);
+
+            //abort if generation failed
+            if (!file_exists($targetFilePath)) {
+                return null;
             }
         }
 
-        //draw the issues on the map
-        foreach ($issues as $issue) {
-            if ($issue->getPositionX() !== null) {
-                $this->draw($issue, $rotated, $sourceImage);
-            }
+        return $targetFilePath;
+    }
+
+    /**
+     * @param string $sourceFilePath
+     * @param string $targetFilePath
+     * @param string $size
+     */
+    private function renderSizeOfImage(string $sourceFilePath, string $targetFilePath, $size = ImageServiceInterface::SIZE_THUMBNAIL)
+    {
+        //generate variant if possible
+        switch ($size) {
+            case ImageServiceInterface::SIZE_THUMBNAIL:
+                $this->resizeImage($sourceFilePath, $targetFilePath, 100, 50);
+                break;
+            case ImageServiceInterface::SIZE_SHARE_VIEW:
+                $this->resizeImage($sourceFilePath, $targetFilePath, 450, 600);
+                break;
+            case ImageServiceInterface::SIZE_REPORT_ISSUE:
+                $this->resizeImage($sourceFilePath, $targetFilePath, 600, 600);
+                break;
+            case ImageServiceInterface::SIZE_FULL:
+                $this->resizeImage($sourceFilePath, $targetFilePath, 1920, 1080);
+                break;
+            case ImageServiceInterface::SIZE_REPORT_MAP:
+                $this->resizeImage($sourceFilePath, $targetFilePath, 2480, 2480);
+                break;
+        }
+    }
+
+    /**
+     * @param string $sourcePdfPath
+     * @param string $targetFilepath
+     */
+    private function renderPdfToImage(string $sourcePdfPath, string $targetFilepath)
+    {
+        //do first low quality render to get artboxsize
+        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=10 -dUseCropBox -sPageList=1 -o ' . $targetFilepath . ' ' . $sourcePdfPath;
+        exec($command);
+        if (!is_file($targetFilepath)) {
+            return;
         }
 
-        //write to disk & destroy
-        imagejpeg($sourceImage, $targetPath, 90);
-        imagedestroy($sourceImage);
-
-        return is_file($targetPath) ? $targetPath : null;
+        //second render with correct image dimensions
+        list($width, $height) = ImageHelper::getWidthHeightArguments($targetFilepath, 3840, 2160);
+        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=' . $width . ' -dDEVICEHEIGHTPOINTS=' . $height . ' -dJPEGQ=80 -dFitPage -sPageList=1 -o ' . $targetFilepath . ' ' . $sourcePdfPath;
+        exec($command);
     }
 
     /**
@@ -127,7 +279,7 @@ class ImageService implements ImageServiceInterface
      * @param bool $rotated
      * @param $image
      */
-    private function draw(Issue $issue, bool $rotated, &$image)
+    private function drawIssue(Issue $issue, bool $rotated, &$image)
     {
         //get sizes
         $xSize = imagesx($image);
@@ -225,58 +377,117 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
-     * @param array $issues
-     * @param string $appendix
+     * render issues on image if it does not already exist.
+     *
+     * @param Issue[] $issues
+     * @param string $pdfRenderPath
+     * @param string $issueImagePath
+     * @param string $landscapeIssueImagePath
+     * @param bool $forceLandscape
      *
      * @return string
      */
-    private function getStatefulHash(array $issues, $appendix = '')
+    private function renderIssues(array $issues, $pdfRenderPath, $issueImagePath, $landscapeIssueImagePath, $forceLandscape)
     {
-        //hash issue all used issue info
-        return hash('sha256',
-            implode(
-                ',',
-                array_map(
-                    function ($issue) {
-                        /* @var Issue $issue */
-                        return $issue->getId() . $issue->getStatusCode() . $issue->getLastChangedAt()->format("c");
-                    },
-                    $issues)
-            ) . $appendix
-        );
+        $targetImagePath = null;
+        $sourceImageStream = null;
+        $rotated = false;
+        if ($forceLandscape) {
+            if (!is_file($landscapeIssueImagePath) || $this->disableCache) {
+                $targetImagePath = $landscapeIssueImagePath;
+                $sourceImageStream = imagecreatefromjpeg($pdfRenderPath);
+                $width = imagesx($sourceImageStream);
+                $height = imagesy($sourceImageStream);
+
+                if ($height > $width) {
+                    $sourceImageStream = imagerotate($sourceImageStream, 90, 0);
+                    $rotated = true;
+                } elseif (file_exists($issueImagePath)) {
+                    //simply copy already rendered file
+                    copy($issueImagePath, $landscapeIssueImagePath);
+                    imagedestroy($sourceImageStream);
+                    $sourceImageStream = null;
+                }
+            }
+        } elseif (!is_file($issueImagePath) || $this->disableCache) {
+            $targetImagePath = $issueImagePath;
+            $sourceImageStream = imagecreatefromjpeg($pdfRenderPath);
+        }
+
+        //render if needed
+        if ($sourceImageStream !== null) {
+            //draw the issues on the map
+            foreach ($issues as $issue) {
+                if ($issue->getPositionX() !== null) {
+                    $this->drawIssue($issue, $rotated, $sourceImageStream);
+                }
+            }
+
+            //write to disk & destroy
+            imagejpeg($sourceImageStream, $targetImagePath, 90);
+            imagedestroy($sourceImageStream);
+        }
+
+        return $forceLandscape ? $landscapeIssueImagePath : $issueImagePath;
     }
 
     /**
-     * @param Map $map
-     * @param array $issues
+     * @param Issue[] $issues
+     * @param string $sourceFilePath
+     * @param string $generationTargetFolder
+     * @param bool $forceLandscape
+     * @param string $size
      *
-     * @return string
+     * @return string|null
      */
-    public function generateMapImage(Map $map, array $issues)
+    private function generateMapImageInternal(array $issues, string $sourceFilePath, string $generationTargetFolder, $forceLandscape, $size)
     {
-        if ($map->getFilename() === null) {
-            return null;
+        //render pdf to image
+        $pdfRenderPath = $generationTargetFolder . \DIRECTORY_SEPARATOR . self::MAP_RENDER_NAME;
+        if (!file_exists($pdfRenderPath) || $this->disableCache) {
+            $this->renderPdfToImage($sourceFilePath, $pdfRenderPath);
+
+            //abort if creation failed
+            if (!file_exists($pdfRenderPath)) {
+                return null;
+            }
         }
 
-        //create folder
-        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite());
-        $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
-        $this->ensureFolderExists($generationTargetFolder);
+        // shortcut if no issues to be printed
+        if (\count($issues) > 0) {
+            //prepare filename for exact issue combination
+            $issueToString = function ($issue) {
+                /* @var Issue $issue */
+                return $issue->getId() . $issue->getStatusCode() . $issue->getLastChangedAt()->format('c');
+            };
+            $issueHash = hash('sha256', implode(',', array_map($issueToString, $issues)));
 
-        //TODO confinue here
-
-
-
-        $renderedMapPath = $this->renderPdfToImage($sourceFilePath)
-
-        $filePath = $this->getStatefulHash($map, $issues);
-        if (!is_file($filePath) || $this->disableCache) {
-            $filePath = $this->renderIssues($map, $issues, $filePath);
+            //render issue image
+            $issueImagePath = $generationTargetFolder . \DIRECTORY_SEPARATOR . $issueHash . '.jpg';
+            $landscapeIssueImagePath = $generationTargetFolder . \DIRECTORY_SEPARATOR . $issueHash . '_landscape.jpg';
+            $issueRenderPath = $this->renderIssues($issues, $pdfRenderPath, $issueImagePath, $landscapeIssueImagePath, $forceLandscape);
+        } else {
+            $issueRenderPath = $pdfRenderPath;
         }
 
-        return $filePath;
+        //render size variant
+        $issueImagePathSize = $generationTargetFolder . \DIRECTORY_SEPARATOR . $this->getSizeFilename($issueRenderPath, $size);
+        if (!is_file($issueImagePathSize) || $this->disableCache) {
+            $this->renderSizeOfImage($issueRenderPath, $issueImagePathSize, $size);
+
+            //abort if creation failed
+            if (!is_file($issueImagePathSize)) {
+                return null;
+            }
+        }
+
+        //return the path of the rendered file
+        return $issueImagePathSize;
     }
 
+    /**
+     * @param string $folderName
+     */
     private function ensureFolderExists(string $folderName)
     {
         if (!is_dir($folderName)) {
@@ -285,82 +496,19 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
-     * @param string $filename
-     * @return array
-     */
-    private function decomposeFilename(string $filename)
-    {
-        $endingIndex = strrpos($filename, ".");
-        $ending = substr($filename, $endingIndex);
-        $filenameWithoutEnding = substr($filename, 0, $endingIndex);
-
-        return [$ending, $filenameWithoutEnding];
-    }
-
-
-    /**
-     * @param string $filename
-     * @return array
-     */
-    private function decomposePath(string $filename)
-    {
-        $directorySeparatorIndex = strrpos($filename, DIRECTORY_SEPARATOR);
-        $fileName = substr($filename, $directorySeparatorIndex + 1);
-        $folder = substr($filename, 0, $directorySeparatorIndex);
-
-        return [$folder, $fileName];
-    }
-
-    /**
-     * @param string $sourceFolder
-     * @param string $sourceFilename
-     * @param string $targetFolder
+     * adds sizing infos to filename.
+     *
+     * @param string $fileName
      * @param string $size
      *
-     * @return null|string
+     * @return string
      */
-    private function renderSize(string $sourceFolder, string $sourceFilename, string $targetFolder, $size = ImageServiceInterface::SIZE_THUMBNAIL)
+    private function getSizeFilename(string $fileName, $size)
     {
-        // decompose filename
-        list($filenameWithoutEnding, $ending) = $this->decomposeFilename($sourceFilename);
+        $ending = pathinfo($fileName, PATHINFO_EXTENSION);
+        $filenameWithoutEnding = mb_substr($fileName, 0, -(\mb_strlen($ending) + 1));
 
-        // setup paths
-        $sourceFilePath = $sourceFolder . DIRECTORY_SEPARATOR . $sourceFilename;
-        $targetFilePath = $targetFolder . DIRECTORY_SEPARATOR . $filenameWithoutEnding . "_" . $size . $ending;
-        //TODO: take care of file hash
-
-        if (!is_file($sourceFilePath)) {
-            return null;
-        }
-
-        if (!is_file($targetFilePath) || $this->disableCache) {
-            //generate variant if possible
-            $res = false;
-            switch ($size) {
-                case ImageServiceInterface::SIZE_THUMBNAIL:
-                    $res = $this->createVariant($sourceFilePath, $targetFilePath, 100, 50, $ending);
-                    break;
-                case ImageServiceInterface::SIZE_SHARE_VIEW:
-                    $res = $this->createVariant($sourceFilePath, $targetFilePath, 450, 600, $ending);
-                    break;
-                case ImageServiceInterface::SIZE_REPORT_ISSUE:
-                    $res = $this->createVariant($sourceFilePath, $targetFilePath, 600, 600, $ending);
-                    break;
-                case ImageServiceInterface::SIZE_FULL:
-                    $res = $this->createVariant($sourceFilePath, $targetFilePath, 1920, 1080, $ending);
-                    break;
-                case ImageServiceInterface::SIZE_REPORT_MAP:
-                    $res = $this->createVariant($sourceFilePath, $targetFilePath, 2480, 2480, $ending);
-                    break;
-            }
-
-            //check if successful
-            if (!$res || !is_file($targetFilePath)) {
-                return null;
-            }
-        }
-
-        return $targetFilePath;
+        return $filenameWithoutEnding . '_' . $size . '.' . $ending;
     }
 
     /**
@@ -368,31 +516,25 @@ class ImageService implements ImageServiceInterface
      * @param string $targetPath
      * @param int $maxWidth
      * @param int $maxHeight
-     * @param string $ending
      *
      * @return bool
      */
-    private function createVariant(string $sourcePath, string $targetPath, int $maxWidth, int $maxHeight, string $ending)
+    private function resizeImage(string $sourcePath, string $targetPath, int $maxWidth, int $maxHeight)
     {
         list($width, $height) = ImageHelper::getWidthHeightArguments($sourcePath, $maxWidth, $maxHeight, false);
-
-        //create folder if needed
-        $folder = \dirname($targetPath);
-        if (!file_exists($folder)) {
-            mkdir($folder, 0777, true);
-        }
+        $ending = pathinfo($sourcePath, PATHINFO_EXTENSION);
 
         //resize & save
         $newImage = imagecreatetruecolor($width, $height);
-        if ($ending === '.jpg' || $ending === '.jpeg') {
+        if ($ending === 'jpg' || $ending === 'jpeg') {
             $originalImage = imagecreatefromjpeg($sourcePath);
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
             imagejpeg($newImage, $targetPath, 90);
-        } elseif ($ending === '.png') {
+        } elseif ($ending === 'png') {
             $originalImage = imagecreatefrompng($sourcePath);
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
             imagepng($newImage, $targetPath, 9);
-        } elseif ($ending === '.gif') {
+        } elseif ($ending === 'gif') {
             $originalImage = imagecreatefromgif($sourcePath);
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
             imagegif($newImage, $targetPath);
@@ -401,102 +543,5 @@ class ImageService implements ImageServiceInterface
         }
 
         return true;
-    }
-
-    /**
-     * generates all sizes so the getSize call goes faster once it is really needed.
-     *
-     * @param Issue $issue
-     */
-    public function warmupCacheForIssue(Issue $issue)
-    {
-        foreach ($this->validSizes as $validSize) {
-            $this->getSizeForIssue($issue, $validSize);
-        }
-    }
-
-    /**
-     * generates all sizes so the getSize call goes faster once it is really needed.
-     *
-     * @param ConstructionSite $constructionSite
-     */
-    public function warmupCacheForConstructionSite(ConstructionSite $constructionSite)
-    {
-        foreach ($this->validSizes as $validSize) {
-            $this->getSizeForConstructionSite($constructionSite, $validSize);
-        }
-    }
-
-    /**
-     * @param string $uncheckedSize
-     * @return string
-     */
-    public function ensureValidSize($uncheckedSize)
-    {
-        return in_array($uncheckedSize, $this->validSizes) ? $uncheckedSize : ImageServiceInterface::SIZE_THUMBNAIL;
-    }
-
-    /**
-     * @param Issue $issue
-     * @param string $size
-     *
-     * @return string|null
-     */
-    public function getSizeForIssue(Issue $issue, $size = self::SIZE_THUMBNAIL)
-    {
-        if ($issue->getImageFilename() === null) {
-            return null;
-        }
-
-        $sourceFolder = $this->pathService->getFolderForIssue($issue->getMap()->getConstructionSite());
-        $targetFolder = $this->pathService->getTransientFolderForIssue($issue);
-        return $this->renderSize($sourceFolder, $issue->getImageFilename(), $targetFolder, $size);
-    }
-
-    /**
-     * @param ConstructionSite $constructionSite
-     * @param string $size
-     *
-     * @return string|null
-     */
-    public function getSizeForConstructionSite(ConstructionSite $constructionSite, $size = self::SIZE_THUMBNAIL)
-    {
-        if ($constructionSite->getImageFilename() === null) {
-            return null;
-        }
-
-        $sourceFolder = $this->pathService->getFolderForConstructionSite($constructionSite);
-        $targetFolder = $this->pathService->getTransientFolderForConstructionSite($constructionSite);
-        return $this->renderSize($sourceFolder, $constructionSite->getImageFilename(), $targetFolder, $size);
-    }
-
-    /**
-     * generates all sizes so the getSize call goes faster once it is really needed.
-     *
-     * @param Map $map
-     */
-    public function warmupCacheForMap(Map $map)
-    {
-        // TODO: Implement warmupCacheForMap() method.
-    }
-
-    /**
-     * @param Map $map
-     * @param array $issues
-     *
-     * @return string
-     */
-    public function generateMapImageForReport(Map $map, array $issues)
-    {
-        if ($map->getFilename() === null) {
-            return null;
-        }
-
-        $filePath = $this->getStatefulHash($map, $issues, 'landscape');
-        if (!is_file($filePath) || $this->disableCache) {
-            $filePath = $this->renderIssues($map, $issues, $filePath, true);
-        }
-
-        return $filePath;
     }
 }
