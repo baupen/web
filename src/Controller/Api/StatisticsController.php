@@ -33,6 +33,7 @@ class StatisticsController extends ApiController
      * @param Request $request
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Exception
      *
      * @return Response
      */

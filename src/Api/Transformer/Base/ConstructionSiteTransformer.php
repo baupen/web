@@ -12,9 +12,25 @@
 namespace App\Api\Transformer\Base;
 
 use App\Entity\ConstructionSite;
+use Symfony\Component\Routing\RouterInterface;
 
 class ConstructionSiteTransformer
 {
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
+     * CraftsmanTransformer constructor.
+     *
+     * @param RouterInterface $router
+     */
+    public function __construct(RouterInterface $router)
+    {
+        $this->router = $router;
+    }
+
     /**
      * @param ConstructionSite $source
      * @param \App\Api\Entity\Base\ConstructionSite $target

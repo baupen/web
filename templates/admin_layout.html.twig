@@ -23,6 +23,9 @@
                 {{ own_macros.nav_item(path("dispatch"), "dispatch.title"|trans({}, "dispatch")) }}
             </ul>
             <ul class="navbar-nav mr-2">
+                {{ own_macros.nav_item(path("switch"), "switch.title"|trans({}, "switch")) }}
+            </ul>
+            <ul class="navbar-nav mr-2">
                 {{ own_macros.nav_item(path("set_locale", {"locale": "de", "return_to": app.request.requestUri}), "locale.de"|trans({}, "i18n"), app.request.locale != "de") }}
                 {{ own_macros.nav_item(path("set_locale", {"locale": "it", "return_to": app.request.requestUri}), "locale.it"|trans({}, "i18n"), app.request.locale != "it") }}
             </ul>

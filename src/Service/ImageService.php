@@ -25,7 +25,7 @@ class ImageService implements ImageServiceInterface
     /**
      * @var array
      */
-    private $validSizes = [ImageServiceInterface::SIZE_FULL, ImageServiceInterface::SIZE_REPORT_ISSUE, ImageServiceInterface::SIZE_REPORT_MAP, ImageServiceInterface::SIZE_SHARE_VIEW, ImageServiceInterface::SIZE_THUMBNAIL];
+    private $validSizes = [ImageServiceInterface::SIZE_FULL, ImageServiceInterface::SIZE_REPORT_ISSUE, ImageServiceInterface::SIZE_REPORT_MAP, ImageServiceInterface::SIZE_SHARE_VIEW, ImageServiceInterface::SIZE_THUMBNAIL, ImageServiceInterface::SIZE_MEDIUM];
 
     /**
      * @var PathServiceInterface
@@ -259,6 +259,9 @@ class ImageService implements ImageServiceInterface
                 $this->resizeImage($sourceFilePath, $targetFilePath, 450, 600);
                 break;
             case ImageServiceInterface::SIZE_REPORT_ISSUE:
+                $this->resizeImage($sourceFilePath, $targetFilePath, 600, 600);
+                break;
+            case ImageServiceInterface::SIZE_MEDIUM:
                 $this->resizeImage($sourceFilePath, $targetFilePath, 600, 600);
                 break;
             case ImageServiceInterface::SIZE_FULL:

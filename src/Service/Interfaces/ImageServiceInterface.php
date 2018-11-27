@@ -21,6 +21,7 @@ interface ImageServiceInterface
     const SIZE_FULL = 'full';
     const SIZE_SHARE_VIEW = 'share_view';
     const SIZE_REPORT_ISSUE = 'report_issue';
+    const SIZE_MEDIUM = 'medium';
     const SIZE_REPORT_MAP = 'report_map';
 
     /**
@@ -33,6 +34,7 @@ interface ImageServiceInterface
     /**
      * @param Map $map
      * @param array $issues
+     * @param string $size
      *
      * @return string
      */
@@ -41,6 +43,7 @@ interface ImageServiceInterface
     /**
      * @param Map $map
      * @param array $issues
+     * @param string $size
      *
      * @return string
      */

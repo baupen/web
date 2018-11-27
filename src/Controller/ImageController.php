@@ -13,9 +13,9 @@ namespace App\Controller;
 
 use App\Controller\Base\BaseDoctrineController;
 use App\Controller\Traits\ImageDownloadTrait;
+use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use App\Service\Interfaces\ImageServiceInterface;
-use App\Service\Interfaces\PathServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
@@ -42,14 +42,30 @@ class ImageController extends BaseDoctrineController
      * @param string $imageFilename
      * @param string $size
      * @param ImageServiceInterface $imageService
-     * @param PathServiceInterface $pathService
      *
      * @return Response
      */
-    public function issueAction(Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService, PathServiceInterface $pathService)
+    public function issueAction(Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService)
     {
         $this->ensureAccess($issue);
 
-        return $this->file($this->getImagePath($issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($this->getImagePathForIssue($issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+    }
+
+    /**
+     * @Route("/constructionSite/{constructionSite}/{imageFilename}/{size}", name="image_construction_site")
+     *
+     * @param ConstructionSite $constructionSite
+     * @param string $imageFilename
+     * @param string $size
+     * @param ImageServiceInterface $imageService
+     *
+     * @return Response
+     */
+    public function constructionSiteAction(ConstructionSite $constructionSite, $imageFilename, $size, ImageServiceInterface $imageService)
+    {
+        $this->ensureAccess($constructionSite);
+
+        return $this->file($this->getImagePathForConstructionSite($constructionSite, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

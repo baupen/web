@@ -84,6 +84,6 @@ class FilterController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
-        return $this->file($this->getImagePath($issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($this->getImagePathForIssue($issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }
