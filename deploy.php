@@ -66,17 +66,26 @@ task('deploy:refresh_symlink', function () {
 desc('Loading fixtures');
 task('database:fixtures', function () {
     if ('dev' === get('branch')) {
-        run('cd {{release_path}} && {{bin/composer}} install --no-scripts --optimize-autoloader');
+        //install composer dev dependencies
+        run('cd {{release_path}} && {{bin/composer}} install --no-scripts');
+
+        //rename dev to dev2, prod to dev
+        run('cd {{release_path}} && mv var/transient/dev var/transient/dev2');
+        run('cd {{release_path}} && mv var/persistent/dev var/persistent/dev2');
+        run('cd {{release_path}} && mv var/transient/prod var/transient/dev');
+        run('cd {{release_path}} && mv var/persistent/prod var/persistent/dev');
+
+        //execute fixtures in dev environment
         writeln('executing fixtures...');
         run('{{bin/console}} doctrine:migrations:migrate -q --env=dev');
         run('{{bin/console}} doctrine:fixtures:load -q --env=dev');
+
+        //rename dev to prod, dev2 to dev
         writeln('setting up file system...');
-        run('cd {{release_path}} && rm -rf var/transient/prod');
-        run('cd {{release_path}} && rm -rf var/persistent/prod');
         run('cd {{release_path}} && mv var/transient/dev var/transient/prod');
         run('cd {{release_path}} && mv var/persistent/dev var/persistent/prod');
-        run('cd {{release_path}} && mkdir var/transient/dev');
-        run('cd {{release_path}} && mkdir var/persistent/dev');
+        run('cd {{release_path}} && mv var/transient/dev2 var/transient/dev');
+        run('cd {{release_path}} && mv var/persistent/dev2 var/persistent/dev');
         writeln('fixtures executed');
     }
 });
