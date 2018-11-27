@@ -13,7 +13,7 @@
             <number-tile link="/register?view=overdue"
                          :number="overview.overdueIssuesCount"
                          :description="$t('register.status_actions.overdue')"/>
-            
+
             <number-tile link="/register?view=to_inspect"
                          :number="overview.respondedNotReviewedIssuesCount"
                          :description="$t('register.status_actions.to_inspect')"/>

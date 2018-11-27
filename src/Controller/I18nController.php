@@ -12,7 +12,6 @@
 namespace App\Controller;
 
 use App\Controller\Base\BaseLoginController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,6 +36,6 @@ class I18nController extends BaseLoginController
             $this->fastSave($this->getUser());
         }
 
-        return new RedirectResponse($request->query->get('return_to', $this->generateUrl('index')));
+        return $this->redirect($request->query->get('return_to', $this->generateUrl('index')));
     }
 }

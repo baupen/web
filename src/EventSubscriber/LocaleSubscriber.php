@@ -14,13 +14,25 @@ namespace App\EventSubscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class LocaleSubscriber implements EventSubscriberInterface
 {
     private $defaultLocale;
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
 
-    public function __construct($defaultLocale = 'de')
+    /**
+     * LocaleSubscriber constructor.
+     *
+     * @param TokenStorageInterface $tokenStorage
+     * @param string $defaultLocale
+     */
+    public function __construct(TokenStorageInterface $tokenStorage, $defaultLocale = 'de')
     {
+        $this->tokenStorage = $tokenStorage;
         $this->defaultLocale = $defaultLocale;
     }
 
@@ -32,7 +44,7 @@ class LocaleSubscriber implements EventSubscriberInterface
         }
 
         // override locale in request from session locale
-        $request->setLocale($request->getSession()->get('_locale', $this->defaultLocale));
+        $request->setLocale($request->getSession()->get('_locale'));
     }
 
     public static function getSubscribedEvents()
