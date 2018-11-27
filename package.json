@@ -30,6 +30,7 @@
     "bootstrap": "^4",
     "bootstrap-multiselect": "^0.9",
     "bootstrap-vue": "^2.0.0-rc.11",
+    "core-js": "^2.5.7",
     "date-fns": "^1.29",
     "deepmerge": "^2",
     "epic-spinners": "^1",
