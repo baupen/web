@@ -75,6 +75,8 @@ task('database:fixtures', function () {
         run('cd {{release_path}} && rm -rf var/persistent/prod');
         run('cd {{release_path}} && mv var/transient/dev var/transient/prod');
         run('cd {{release_path}} && mv var/persistent/dev var/persistent/prod');
+        run('cd {{release_path}} && mkdir var/transient/dev');
+        run('cd {{release_path}} && mkdir var/persistent/dev');
         writeln('fixtures executed');
     }
 });
