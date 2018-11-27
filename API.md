@@ -195,7 +195,7 @@ issue: Issue
 version: Integer
 status: String // "success"/"fail"/"error"
 data: Object // exists if "success" (missing otherwise)
-error: Error // exists if fail
+error: Error // exists if "fail"
 message: String // exists if not "success". not user-facing (but developer-readable if reasonable)
 ```
 
@@ -232,7 +232,7 @@ invalidAction = 203 // whatever the client is trying to do is impossible, e.g. r
 ## `Color`
 
 * represented as `String` for transfer purposes
-* hex string, #RRGGBB
+* hex string, #RRGGBB, capitalized. e.g. `#BB0044`
 
 
 ## `Point`
@@ -299,6 +299,7 @@ name: String
 
 
 ## `Map.Sector`
+* `points` are in counterclockwise order (origin in top left)
 ```
 name: String
 color: Color?
