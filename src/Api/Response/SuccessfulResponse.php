@@ -23,20 +23,6 @@ class SuccessfulResponse extends AbstractResponse
 {
     public function __construct($data)
     {
-        parent::__construct(ApiStatus::SUCCESS);
-        $this->data = $data;
-    }
-
-    /**
-     * @var mixed
-     */
-    private $data;
-
-    /**
-     * @return mixed
-     */
-    public function getData()
-    {
-        return $this->data;
+        parent::__construct(ApiStatus::SUCCESS, $data);
     }
 }

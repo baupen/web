@@ -17,10 +17,24 @@ class AbstractResponse
      * AbstractResponse constructor.
      *
      * @param string $apiStatus
+     * @param mixed $data
+     * @param null $error
+     * @param null $message
      */
-    public function __construct(string $apiStatus)
+    public function __construct(string $apiStatus, $data, $message = null, $error = null)
     {
         $this->status = $apiStatus;
+        $this->data = $data;
+        $this->error = $error;
+        $this->message = $message;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVersion(): int
+    {
+        return 1;
     }
 
     /**
@@ -34,5 +48,44 @@ class AbstractResponse
     public function getStatus(): string
     {
         return $this->status;
+    }
+
+    /**
+     * @var mixed
+     */
+    private $data;
+
+    /**
+     * @return mixed
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @var string
+     */
+    private $message;
+
+    /**
+     * @var int|null
+     */
+    private $error;
+
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getError()
+    {
+        return $this->error;
     }
 }

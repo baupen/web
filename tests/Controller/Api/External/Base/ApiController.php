@@ -1,13 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 6/26/18
- * Time: 8:11 PM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Tests\Controller\Api\External\Base;
-
 
 use App\Api\External\Entity\Building;
 use App\Api\External\Entity\Craftsman;
@@ -53,6 +55,8 @@ class ApiController extends AbstractApiController
      * @param Client $client
      * @param $authenticatedUser
      *
+     * @throws \Exception
+     *
      * @return ServerData
      */
     protected function getServerEntities(Client $client, $authenticatedUser)
@@ -92,10 +96,10 @@ class ApiController extends AbstractApiController
         $this->assertNotNull($readResponse->data);
         $this->assertNotNull($readResponse->data->changedUser);
         $this->assertNotNull($readResponse->data->changedBuildings);
-        $this->assertTrue(count($readResponse->data->changedBuildings) > 0);
-        $this->assertTrue(count($readResponse->data->changedCraftsmen) > 0);
-        $this->assertTrue(count($readResponse->data->changedMaps) > 0);
-        $this->assertTrue(count($readResponse->data->changedIssues) > 0);
+        $this->assertTrue(\count($readResponse->data->changedBuildings) > 0);
+        $this->assertTrue(\count($readResponse->data->changedCraftsmen) > 0);
+        $this->assertTrue(\count($readResponse->data->changedMaps) > 0);
+        $this->assertTrue(\count($readResponse->data->changedIssues) > 0);
 
         $buildings = [];
         foreach ($readResponse->data->changedBuildings as $stdClass) {
@@ -153,7 +157,9 @@ class ApiController extends AbstractApiController
     }
 
     /**
-     * generates a new guid (database id)
+     * generates a new guid (database id).
+     *
+     * @throws \Exception
      *
      * @return mixed|null|string|string[]
      */
@@ -163,7 +169,7 @@ class ApiController extends AbstractApiController
     }
 
     /**
-     * split up passed issue list into respective lists
+     * split up passed issue list into respective lists.
      *
      * @param Issue[] $issues
      * @param Issue[] $newIssues
