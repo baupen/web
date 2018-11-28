@@ -49,7 +49,6 @@ class MapTransformer extends BatchTransformer
         }
         $map->setChildren($childrenIds);
         $map->setBuildingID($entity->getConstructionSite()->getId());
-
         $map->setMeta($this->objectMetaTransformer->toApi($entity));
 
         return $map;
