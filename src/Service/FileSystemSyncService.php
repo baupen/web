@@ -109,48 +109,129 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         }
 
         // create map object for each file not found
+        $newMaps = [];
         foreach ($existingMaps as $existingMap) {
             $fileName = mb_substr($existingMap, $mapFolderLength + 1);
             if (!array_key_exists($fileName, $mapLookup)) {
                 $map = new Map();
                 $map->setConstructionSite($constructionSite);
                 $map->setFilename($fileName);
-                $constructionSite->getMaps()->add($map);
+                $newMaps[] = $map;
             }
 
             //TODO: update hash of map file
         }
+        /** @var Map[] $allMaps */
+        $allMaps = array_merge($newMaps, array_values($mapLookup));
 
-        // normalize map names
+        // derive a fitting name for the map depending on file name
         $mapNames = [];
-        foreach ($constructionSite->getMaps() as $item) {
+        foreach ($allMaps as $item) {
             $mapNames[] = $this->deriveNameForMap($item->getFilename());
         }
+
+        // normalize map names looking at all names given & write back
         $newNames = $this->normalizeNames($mapNames);
         $counter = 0;
-        foreach ($constructionSite->getMaps() as $map) {
+        foreach ($allMaps as $map) {
             $map->setName($newNames[$counter++]);
         }
 
+        // remove duplicates based on map name
+        $this->removeDuplicates($constructionSite->getMaps(), $newMaps);
+
+        // still remaining maps are added
+        foreach ($newMaps as $newMap) {
+            $constructionSite->getMaps()->add($newMap);
+        }
+
+        // put all in tree structure
         $this->createTreeStructure($constructionSite->getMaps()->toArray());
 
-        foreach ($constructionSite->getMaps() as $map) {
+        // warmup cache for new maps
+        foreach ($newMaps as $map) {
             $this->imageService->warmupCacheForMap($map);
         }
 
+        // persist all changes
         $manager = $this->registry->getManager();
+        foreach ($constructionSite->getMaps() as $map) {
+            if (!$map->getPreventAutomaticEdit()) {
+                $manager->persist($map);
+            }
+        }
         $manager->persist($constructionSite);
         $manager->flush();
     }
 
+    /**
+     * @param Map[] $maps
+     */
     private function createTreeStructure(array $maps)
     {
-        // TODO: create tree structure by looking at the cleaned up filenames
+        $mapLookup = [];
+        foreach ($maps as $map) {
+            $mapLookup[$map->getName()] = $map;
+        }
+        $mapNames = array_keys($mapLookup);
+
+        // find longest matching prefix & set as parent
+        foreach ($maps as $map) {
+            $parts = explode(' ', $map);
+            for ($i = \count($parts); $i > 0; --$i) {
+                $prefix = '';
+                for ($j = 0; $j < $i; ++$j) {
+                    $prefix .= $parts[$j] . ' ';
+                }
+
+                // find shortest maps name with that prefix
+                $shortestPrefixMatch = null;
+                foreach ($mapNames as $mapName) {
+                    // prefix match
+                    if (mb_strpos($mapName, $prefix) === 0) {
+                        if ($shortestPrefixMatch === null || \mb_strlen($mapName) < $shortestPrefixMatch) {
+                            $shortestPrefixMatch = $mapName;
+                        }
+                    }
+                }
+
+                // if map found, set as parent & stop for current map
+                if ($shortestPrefixMatch !== null) {
+                    $parent = $mapLookup[$shortestPrefixMatch];
+                    $map->setParent($parent);
+                    break;
+                }
+            }
+        }
     }
 
-    private function markDuplicates(array $maps)
+    /**
+     * finds already existing maps and replaces values from the newly created duplicate.
+     *
+     * @param Map[] $existingMaps
+     * @param Map[] $newMaps
+     */
+    private function removeDuplicates(array $existingMaps, array &$newMaps)
     {
-        // TODO: mark potentially duplicated maps for the user to resolve "merge" conflicts
+        /** @var Map[] $existingMapLookup */
+        $existingMapLookup = [];
+        foreach ($existingMaps as $item) {
+            $existingMapLookup[$item->getName()] = $item;
+        }
+
+        for ($i = 0; $i < \count($newMaps); ++$i) {
+            // TODO: if more than one refreshed files exist, this fails
+            if (array_key_exists($newMaps[$i]->getName(), $existingMapLookup)) {
+                $newMap = $newMaps[$i];
+                $existingMap = $existingMapLookup[$newMap->getName()];
+                $existingMap->setFilename($newMap->getFilename());
+
+                // remove entry from array & reset
+                unset($newMaps[$i]);
+                $newMaps = array_values($newMaps);
+                --$i;
+            }
+        }
     }
 
     /**
