@@ -81,7 +81,10 @@ script:
   # frontend lint
   - ./node_modules/.bin/eslint assets/js
 
-  # backend lint
+  # frontend vulnerability check
+  - yarn audit
+
+    # backend lint
   - '[[ "$TRAVIS_PHP_VERSION" == "nightly" ]] || ./vendor/bin/php-cs-fixer fix --diff --dry-run -v'
   - ./bin/console lint:yaml config
   - ./bin/console lint:yaml translations

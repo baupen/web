@@ -24,4 +24,20 @@ trait AutomaticEditTrait
      * @ORM\Column(type="text", options={"default": false})
      */
     private $preventAutomaticEdit = false;
+
+    /**
+     * @return bool
+     */
+    public function isPreventAutomaticEdit(): bool
+    {
+        return $this->preventAutomaticEdit;
+    }
+
+    /**
+     * @param bool $preventAutomaticEdit
+     */
+    public function setPreventAutomaticEdit(bool $preventAutomaticEdit): void
+    {
+        $this->preventAutomaticEdit = $preventAutomaticEdit;
+    }
 }
