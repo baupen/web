@@ -123,7 +123,7 @@ class FileController extends ExternalApiController
         /** @var EntityRepository $repository */
         $entity = $repository->find($objectMeta->getId());
 
-        /** @var TimeTrait $entity */
+        /** @var TimeTrait|null $entity */
         if ($entity === null) {
             return $this->fail(static::ENTITY_NOT_FOUND);
         }
