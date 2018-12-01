@@ -39,6 +39,13 @@ class ConstructionSite extends BaseEntity
     private $name;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="text")
+     */
+    private $folderName;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(type="text", nullable=true)
@@ -64,7 +71,7 @@ class ConstructionSite extends BaseEntity
     /**
      * @var Craftsman[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite")
+     * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite", cascade={"persist"})
      */
     private $craftsmen;
 
@@ -92,6 +99,22 @@ class ConstructionSite extends BaseEntity
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFolderName(): string
+    {
+        return $this->folderName;
+    }
+
+    /**
+     * @param string $folderName
+     */
+    public function setFolderName(string $folderName): void
+    {
+        $this->folderName = $folderName;
     }
 
     /**
@@ -145,17 +168,5 @@ class ConstructionSite extends BaseEntity
     public function getCraftsmen()
     {
         return $this->craftsmen;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getImageFilePath(): ?string
-    {
-        if ($this->getImageFilename() !== null) {
-            return 'upload/' . $this->getId() . '/' . $this->getImageFilename();
-        }
-
-        return null;
     }
 }

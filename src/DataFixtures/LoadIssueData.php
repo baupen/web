@@ -14,13 +14,14 @@ namespace App\DataFixtures;
 use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;
+use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class LoadIssueData extends BaseFixture
 {
-    const ORDER = LoadConstructionSiteData::ORDER + LoadConstructionManagerData::ORDER + LoadCraftsmanData::ORDER + ClearPublicUploadDir::ORDER + 1;
+    const ORDER = EnrichConstructionSiteData::ORDER + LoadConstructionManagerData::ORDER + LoadCraftsmanData::ORDER + ClearContentFolders::ORDER + 1;
     const MULTIPLICATION_FACTOR = 3;
 
     /**
@@ -28,9 +29,15 @@ class LoadIssueData extends BaseFixture
      */
     private $serializer;
 
-    public function __construct(SerializerInterface $serializer)
+    /**
+     * @var PathServiceInterface
+     */
+    private $pathService;
+
+    public function __construct(SerializerInterface $serializer, PathServiceInterface $pathService)
     {
         $this->serializer = $serializer;
+        $this->pathService = $pathService;
     }
 
     const REGISTRATION_SET = 1;
@@ -50,6 +57,7 @@ class LoadIssueData extends BaseFixture
      * @param ObjectManager $manager
      *
      * @throws \BadMethodCallException
+     * @throws \Exception
      */
     public function load(ObjectManager $manager)
     {
@@ -130,6 +138,8 @@ class LoadIssueData extends BaseFixture
      * @param Issue[] $issues
      * @param int $setStatus
      * @param int $issueNumber
+     *
+     * @throws \Exception
      */
     private function add(ConstructionSite $constructionSite, ObjectManager $manager, array $issues, int &$issueNumber, int $setStatus = 0)
     {
@@ -178,7 +188,7 @@ class LoadIssueData extends BaseFixture
             }
 
             if ($issue->getImageFilename() !== null) {
-                $issue->setImageFilename($this->safeCopyToPublic($issue->getImageFilePath(), 'issue_images'));
+                $this->safeCopyToPublic($this->pathService->getFolderForIssue($issue->getMap()->getConstructionSite()) . \DIRECTORY_SEPARATOR . $issue->getImageFilename(), 'issue_images');
             }
 
             $manager->persist($issue);

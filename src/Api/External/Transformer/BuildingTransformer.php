@@ -37,7 +37,7 @@ class BuildingTransformer extends BatchTransformer
     {
         $building = new Building();
         $building->setName($entity->getName());
-        $building->setImageFilename($entity->getImageFilePath());
+        $building->setImageFilename($entity->getImageFilename());
 
         $childrenIds = [];
         foreach ($entity->getMaps() as $child) {

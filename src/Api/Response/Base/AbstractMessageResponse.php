@@ -22,34 +22,6 @@ class AbstractMessageResponse extends AbstractResponse
      */
     public function __construct(string $apiStatus, string $message, $errorCode)
     {
-        parent::__construct($apiStatus);
-        $this->message = $message;
-        $this->error = $errorCode;
-    }
-
-    /**
-     * @var string
-     */
-    private $message;
-
-    /**
-     * @var int|null
-     */
-    private $error;
-
-    /**
-     * @return string
-     */
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getError(): ?int
-    {
-        return $this->error;
+        parent::__construct($apiStatus, null, $message, $errorCode);
     }
 }

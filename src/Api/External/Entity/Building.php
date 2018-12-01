@@ -31,6 +31,11 @@ class Building extends BaseEntity
     private $imageFilename;
 
     /**
+     * @var string|null
+     */
+    private $imageHash;
+
+    /**
      * @var string[]
      */
     private $maps;
@@ -86,6 +91,22 @@ class Building extends BaseEntity
     public function setImageFilename(?string $imageFilename): void
     {
         $this->imageFilename = $imageFilename;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getImageHash(): ?string
+    {
+        return $this->imageHash;
+    }
+
+    /**
+     * @param string|null $imageHash
+     */
+    public function setImageHash(?string $imageHash): void
+    {
+        $this->imageHash = $imageHash;
     }
 
     /**

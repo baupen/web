@@ -1,0 +1,23 @@
+{% extends "public_layout.html.twig" %}
+
+{% block title %}{{ "switch.title"|trans }}{% endblock %}
+{% block description %}{{ "switch.description"|trans }}{% endblock %}
+
+{% trans_default_domain "switch" %}
+
+{% block public_content %}
+    <div class="row">
+        {% for constructionSite in constructionSites %}
+            <div class="col-md-3">
+                <a class="card card-clickable" href="{{ path('switch_switch', {"constructionSite" : constructionSite.id}) }}">
+                    <img class="card-img-top"
+                         src="{{ path("image_construction_site", {"constructionSite": constructionSite.id, "imageFilename": constructionSite.imageFilename, "size": "medium"}) }}"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <h4>{{ constructionSite.name }}</h4>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -2,27 +2,24 @@
     <div id="dashboard">
         <div class="row">
             <div class="col">
-                <h2>{{$t("register.name")}}</h2>
+                <construction-site-info v-if="constructionSite != null"
+                                        :construction-site-id="constructionSiteId"></construction-site-info>
+                <div class="vertical-spacer-big"></div>
+
                 <atom-spinner v-if="isOverviewLoading"
                               :animation-duration="1000"
                               :size="60"
                               :color="'#ff1d5e'"
                 />
-                <b-alert v-if="!isOverviewLoading" :show="overview.newIssuesCount > 0" variant="warning">
-                    <h4>{{ $tc("dialog.new_issues_in_foyer", overview.newIssuesCount, {count:
-                        overview.newIssuesCount})}}</h4>
-                    <p><a href="/foyer">{{$t("dialog.add_to_register")}}</a></p>
-                </b-alert>
-                <overview v-if="!isOverviewLoading" :overview="overview" />
-
-                <div class="vertical-spacer-big" ></div>
+                <overview v-if="!isOverviewLoading" :overview="overview"
+                          :construction-site-id="constructionSiteId"/>
+                <div class="vertical-spacer-big"></div>
                 <h2>{{$t("notes.name")}}</h2>
-                <notes v-if="constructionSiteId !== null" :construction-site-id="constructionSiteId" />
+                <notes v-if="constructionSiteId !== null" :construction-site-id="constructionSiteId"/>
             </div>
             <div class="col">
-
                 <h2>{{$t("feed.name")}}</h2>
-                <feed v-if="constructionSiteId !== null" :construction-site-id="constructionSiteId" />
+                <feed v-if="constructionSiteId !== null" :construction-site-id="constructionSiteId"/>
             </div>
         </div>
     </div>
@@ -37,12 +34,14 @@
     import Feed from "./components/Feed";
     import Notes from "./components/Notes";
     import Overview from "./components/Overview";
+    import ConstructionSiteInfo from "./components/ConstructionSiteInfo";
 
     moment.locale('de');
 
     export default {
         data: function () {
             return {
+                constructionSite: null,
                 constructionSiteId: null,
                 isOverviewLoading: true,
                 overview: null
@@ -50,6 +49,7 @@
         },
         mixins: [notifications],
         components: {
+            ConstructionSiteInfo,
             Overview,
             Notes,
             Feed,
@@ -73,17 +73,18 @@
 
             //fill register
             axios.get("/api/configuration").then((response) => {
-                this.constructionSiteId = response.data.constructionSite.id;
+                this.constructionSite = response.data.constructionSite;
+                console.log(this.constructionSite);
+                this.constructionSiteId = this.constructionSite.id;
 
                 axios.post("/api/statistics/issues/overview", {
                     "constructionSiteId": this.constructionSiteId,
                 }).then((response) => {
                     this.overview = response.data.overview;
                     this.isOverviewLoading = false;
+                    console.log("hi");
                 });
             });
-
-            this.displayInfoFlash("hi mom");
         },
     }
 

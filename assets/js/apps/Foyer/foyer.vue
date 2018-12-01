@@ -148,7 +148,8 @@
                                         v-model="editResponseLimit">
                             </datepicker>
                             <button class="btn btn-secondary" @click="saveResponseLimit">{{$t("actions.save")}}</button>
-                            <button class="btn btn-secondary" @click="removeResponseLimit">{{$t("actions.remove")}}</button>
+                            <button class="btn btn-secondary" @click="removeResponseLimit">{{$t("actions.remove")}}
+                            </button>
                         </div>
                     </td>
                     <td>
@@ -206,7 +207,7 @@
             const sortOrders = {};
             ["isMarked", "description", "craftsman", "responseLimit", "map", "uploadByName"].forEach(e => sortOrders[e] = 1);
             return {
-                datePickerLang: document.documentElement.lang.substr(0, 2) === "de" ? de: it,
+                datePickerLang: document.documentElement.lang.substr(0, 2) === "de" ? de : it,
                 issues: [],
                 craftsmen: null,
                 trades: [],
@@ -577,7 +578,7 @@
                     "constructionSiteId": this.constructionSiteId
                 }).then((response) => {
                     this.craftsmen = response.data.craftsmen;
-                    this.trades = response.data.craftsmen.map(a => a.trade).unique();
+                    this.trades = Array.from(new Set(response.data.craftsmen.map(a => a.trade)));
                     this.refreshComputedIssueProperties();
                 });
             });

@@ -1,13 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 6/26/18
- * Time: 8:11 PM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Tests\Controller\Api\Base;
-
 
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Base\FixturesTestCase;
@@ -24,8 +26,9 @@ abstract class AbstractApiController extends FixturesTestCase
      */
     protected function checkResponse(Response $response, $apiStatus, $message = '')
     {
-        $content = str_replace("\u003E", ">", $response->getContent());
+        $content = str_replace("\u003E", '>', $response->getContent());
         $this->assertFalse(mb_strpos($content, "\u00") > 0, mb_strpos($content, "\u00"));
+        $this->assertTrue(mb_strpos($response->getContent(), '{"version":1') === 0);
         if (ApiStatus::SUCCESS === $apiStatus) {
             $successful = json_decode($response->getContent());
             $this->assertSame($apiStatus, $successful->status, $response->getContent());

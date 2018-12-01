@@ -22,6 +22,11 @@ build:
 add an environment variable called `FONTAWESOME_AUTH_TOKEN`
 
 
+##### setup PhpStorm
+install the symfony plugin and enable it  
+install the editorconfig plugin and enable it  
+enable ESLint  
+
 ##### symfony-cmd
 `php bin/console server:run` to start the symfony server  
 `doctrine:migrations:diff` to generate the migration class  
@@ -42,7 +47,13 @@ test error templates inside TwigBundle/views by accessing `/_error/404` and `/_e
 
 ##### deploy
 server must fulfil requirements of `composer.json` & include ghostscript (`gs`)  
-if you deploy the fist time, while `deploy:composer` is running, set the `.env` file in `/shared/.env`  
+if you deploy the fist time, while `deploy:composer` is running, set the `.env.local` file in `/shared`, for example like this
+```
+APP_ENV=prod
+APP_SECRET=NEW_SECRET
+MAILER_URL=smtp://info@example.com:NOT_REAL@smtp.mail.com:465/?encryption=ssl&auth_mode=login
+DATABASE_URL=sqlite:///%kernel.project_dir%/var/persistent/prod/data.sqlite  
+```
  
 ##### ssh
 `ssh-copy-id -i ~/.ssh/id_rsa.pub username@domain` to add ssh key  

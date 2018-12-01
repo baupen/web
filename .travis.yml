@@ -28,9 +28,9 @@ matrix:
 before_install:
   - if [[ $COVERAGE == false ]]; then phpenv config-rm xdebug.ini; fi
 
-  # install git, yarn, libmagickwand-dev (for imagick extension) & use node 10.4
+  # install git, libmagickwand-dev (for imagick extension) & use node 10.4
   - sudo apt-get update
-  - sudo apt-get install -y gnupg git libmagickwand-dev php-pear nodejs
+  - sudo apt-get install -y gnupg git libmagickwand-dev php-pear
   - nvm install 10.4
 
   # install phpunit
@@ -78,21 +78,21 @@ before_script:
 
 # execute tests
 script:
-  # this checks that the source code follows the Symfony Code Syntax rules
+  # frontend lint
+  - ./node_modules/.bin/eslint assets/js
+
+  # backend lint
   - '[[ "$TRAVIS_PHP_VERSION" == "nightly" ]] || ./vendor/bin/php-cs-fixer fix --diff --dry-run -v'
-    # this checks that the YAML config files contain no syntax errors
   - ./bin/console lint:yaml config
-  # this checks that the translation files contain no syntax errors
   - ./bin/console lint:yaml translations
-  # this checks that the Twig template files contain no syntax errors
   - ./bin/console lint:twig templates
-  # this checks that the application doesn't use dependencies with known security vulnerabilities
-  - ./bin/console security:check --end-point=http://security.sensiolabs.org/check_lock
-  # this checks that the composer.json and composer.lock files are valid
   - composer validate --strict
-  # this checks that Doctrine's mapping configurations are valid
+
+  # backend vulnerability check
+  - ./bin/console security:check --end-point=http://security.sensiolabs.org/check_lock
+
+  # backend tests
   - ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
-  # this executes the phpunit tests with deprecation checks disabled 
   - phpunit
 
 # report code coverage

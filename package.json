@@ -1,16 +1,22 @@
 {
   "devDependencies": {
-    "@symfony/webpack-encore": "^0.17",
+    "@symfony/webpack-encore": "^0.22",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.9.0",
+    "eslint-config-standard": "^12.0.0",
     "eslint-plugin-flowtype": "^3.2.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "flow-bin": "^0.86.0",
     "husky": "^1.2.0",
     "jquery": "^3.2",
     "lint-staged": "^8.1.0",
     "node-sass": "^4",
-    "sass-loader": "^6",
-    "vue-loader": "^14.2.2",
+    "sass-loader": "^7",
+    "stylelint": "^9.8.0",
+    "vue-loader": "^15",
     "vue-template-compiler": "^2.5.16"
   },
   "dependencies": {
@@ -24,6 +30,7 @@
     "bootstrap": "^4",
     "bootstrap-multiselect": "^0.9",
     "bootstrap-vue": "^2.0.0-rc.11",
+    "core-js": "^2.5.7",
     "date-fns": "^1.29",
     "deepmerge": "^2",
     "epic-spinners": "^1",
@@ -32,6 +39,7 @@
     "open-sans-fontface": "^1",
     "popper.js": "^1.12",
     "promise-polyfill": "^8.1.0",
+    "stylelint-config-standard": "^18.2.0",
     "vue": "^2.5",
     "vue-async-computed": "^3",
     "vue-headful": "^2",
@@ -41,7 +49,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && echo \"HUSKY DONE\""
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
@@ -50,11 +58,11 @@
       "git add"
     ],
     "src/**/*.php": [
-      "./vendor/bin/php-cs-fixer fix",
+      "./vendor/bin/php-cs-fixer fix --config=.php_cs",
       "git add"
     ],
     "tests/**/*.php": [
-      "./vendor/bin/php-cs-fixer fix",
+      "./vendor/bin/php-cs-fixer fix --config=.php_cs",
       "git add"
     ]
   },

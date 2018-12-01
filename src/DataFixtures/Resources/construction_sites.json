@@ -1,26 +1,26 @@
 [
   {
+    "folderName": "2230_Parkstrasse_15_Umbau_MFH_Moon_Land_Berlin",
     "name": "Sun Park",
-    "streetAddress": "Parkstrasse 12",
+    "streetAddress": "Parkstrasse 15",
     "postalCode": 7270,
     "locality": "Davos",
-    "country": "CH",
-    "imageFilename": "sun_park.jpg"
+    "country": "CH"
   },
   {
-    "name": "Swim Land",
+    "folderName": "2218_Tierferien_Niederweningen",
+    "name": "Tierferien Niederweningen",
     "streetAddress": "Ab dem Boden 72",
     "postalCode": 2334,
     "locality": "Bern",
-    "country": "CH",
-    "imageFilename": "swim_land.jpg"
+    "country": "CH"
   },
   {
+    "folderName": "2000_Entwicklungsland",
     "name": "ETH",
     "streetAddress": "Rämistrasse 121",
     "postalCode": 8050,
     "locality": "Zürich",
-    "country": "CH",
-    "imageFilename": "eth.jpg"
+    "country": "CH"
   }
 ]

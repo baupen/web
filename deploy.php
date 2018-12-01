@@ -17,10 +17,10 @@ set('bin_dir', 'bin');
 set('var_dir', 'var');
 
 // Configuration
+
 set('repository', 'git@github.com:mangelio/app.git');
-set('shared_files', array_merge(get('shared_files'), ['var/data.sqlite']));
-set('shared_dirs', array_merge(get('shared_dirs'), ['public/upload', 'public/generated']));
-set('symfony_env_file', '.env');
+set('shared_dirs', array_merge(get('shared_dirs'), ['var/persistent', 'var/transient']));
+set('shared_files', ['.env.local']);
 set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader --no-scripts');
 set('env_file_path', '.env');
 
@@ -46,6 +46,8 @@ task('deploy:vendors', function () {
 //build yarn stuff & upload
 desc('Bundling locally css/js and then uploading it');
 task('frontend:build', function () {
+    runLocally('git pull');
+    runLocally('git checkout {{branch}}');
     runLocally('yarn install');
     runLocally('yarn run encore production');
     runLocally('rsync -azP public/dist {{user}}@{{hostname}}:{{release_path}}/public');
@@ -64,8 +66,26 @@ task('deploy:refresh_symlink', function () {
 desc('Loading fixtures');
 task('database:fixtures', function () {
     if ('dev' === get('branch')) {
-        run('cd {{release_path}} && {{bin/composer}} install --no-scripts --optimize-autoloader');
+        //install composer dev dependencies
+        run('cd {{release_path}} && {{bin/composer}} install --no-scripts');
+
+        //rename dev to dev2, prod to dev
+        run('cd {{release_path}} && mv var/transient/dev var/transient/dev2');
+        run('cd {{release_path}} && mv var/persistent/dev var/persistent/dev2');
+        run('cd {{release_path}} && mv var/transient/prod var/transient/dev');
+        run('cd {{release_path}} && mv var/persistent/prod var/persistent/dev');
+
+        //execute fixtures in dev environment
+        writeln('executing fixtures...');
+        run('{{bin/console}} doctrine:migrations:migrate -q --env=dev');
         run('{{bin/console}} doctrine:fixtures:load -q --env=dev');
+
+        //rename dev to prod, dev2 to dev
+        writeln('setting up file system...');
+        run('cd {{release_path}} && mv var/transient/dev var/transient/prod');
+        run('cd {{release_path}} && mv var/persistent/dev var/persistent/prod');
+        run('cd {{release_path}} && mv var/transient/dev2 var/transient/dev');
+        run('cd {{release_path}} && mv var/persistent/dev2 var/persistent/dev');
         writeln('fixtures executed');
     }
 });
@@ -74,7 +94,7 @@ desc('print any warnings');
 task('deploy:configure', function () {
     //fixtures deploy if on dev branch
     if ('dev' === get('branch')) {
-        writeln('[WARNING] deploying dev branch; executing fixtures. STOP DEPLOYING IMMEDIATELY IF YOU DO NOT EXPECT / UNDERSTAND THIS MESSAGE.');
+        writeln('[WARNING] deploying dev branch; executing fixtures. THIS WILL ERASE ALL USER DATA. STOP DEPLOYING IMMEDIATELY IF YOU DO NOT EXPECT / UNDERSTAND THIS MESSAGE.');
     }
 });
 
@@ -97,9 +117,9 @@ after('deploy:info', 'deploy:configure');
 
 //add the other tasks
 after('deploy:vendors', 'frontend:build');
+after('frontend:build', 'database:migrate');
 after('database:migrate', 'database:fixtures');
-after('deploy:vendors', 'database:migrate');
-after('deploy:vendors', 'deploy:cache:clear');
+after('database:fixtures', 'deploy:cache:clear');
 after('deploy:cache:clear', 'deploy:cache:warmup');
 after('deploy:cache:warmup', 'deploy:symlink');
 after('deploy:symlink', 'deploy:refresh_symlink');

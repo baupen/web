@@ -18,6 +18,7 @@ use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Service\Interfaces\ImageServiceInterface;
+use App\Service\Interfaces\PathServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -59,9 +60,9 @@ class FilterController extends BaseDoctrineController
         //before filter is shared the unsafe condition is checked
         $filter->setMaps([$map->getId()]);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
-        $imagePath = $imageService->generateMapImage($map, $issues);
+        $imagePath = $imageService->generateMapImage($map, $issues, $imageService->ensureValidSize($size));
 
-        return $this->file($imageService->getSize($imagePath, $size), null, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($imagePath, null, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 
     /**
@@ -72,16 +73,17 @@ class FilterController extends BaseDoctrineController
      * @param string $imageFilename
      * @param string $size
      * @param ImageServiceInterface $imageService
+     * @param PathServiceInterface $pathService
      *
      * @return Response
      */
-    public function issueAction($identifier, Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService)
+    public function issueAction($identifier, Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService, PathServiceInterface $pathService)
     {
         /** @var Filter $filter */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter)) {
             throw new NotFoundHttpException();
         }
 
-        return $this->file($this->getImagePath($this->getParameter('PUBLIC_DIR'), $issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($this->getImagePathForIssue($issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }
