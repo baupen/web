@@ -94,7 +94,6 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         if ($constructionSite->getImageFilename() === null && file_exists($previewImagePath)) {
             $constructionSite->setImageFilename($previewImageFilename);
             $this->imageService->warmupCacheForConstructionSite($constructionSite);
-            //TODO: update hash of construction site preview file
         }
 
         // add maps which do not exist already
@@ -118,8 +117,6 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
                 $map->setFilename($fileName);
                 $newMaps[] = $map;
             }
-
-            //TODO: update hash of map file
         }
         /** @var Map[] $allMaps */
         $allMaps = array_merge($newMaps, array_values($mapLookup));
@@ -138,7 +135,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         }
 
         // remove duplicates based on map name
-        $this->removeDuplicates($constructionSite->getMaps(), $newMaps);
+        $this->removeDuplicates($constructionSite->getMaps()->toArray(), $newMaps);
 
         // still remaining maps are added
         foreach ($newMaps as $newMap) {
@@ -156,9 +153,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         // persist all changes
         $manager = $this->registry->getManager();
         foreach ($constructionSite->getMaps() as $map) {
-            if (!$map->getPreventAutomaticEdit()) {
-                $manager->persist($map);
-            }
+            $manager->persist($map);
         }
         $manager->persist($constructionSite);
         $manager->flush();
@@ -177,7 +172,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
 
         // find longest matching prefix & set as parent
         foreach ($maps as $map) {
-            $parts = explode(' ', $map);
+            $parts = explode(' ', $map->getFilename());
             for ($i = \count($parts); $i > 0; --$i) {
                 $prefix = '';
                 for ($j = 0; $j < $i; ++$j) {

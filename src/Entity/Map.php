@@ -44,20 +44,6 @@ class Map extends BaseEntity
     private $filename;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $hash;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(type="text", options={"default": false})
-     */
-    private $preventAutomaticEdit = false;
-
-    /**
      * @var ConstructionSite
      *
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="maps")
@@ -186,37 +172,5 @@ class Map extends BaseEntity
         }
 
         return '';
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getHash(): ?string
-    {
-        return $this->hash;
-    }
-
-    /**
-     * @param null|string $hash
-     */
-    public function setHash(?string $hash): void
-    {
-        $this->hash = $hash;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getPreventAutomaticEdit(): bool
-    {
-        return $this->preventAutomaticEdit;
-    }
-
-    /**
-     * @param bool $preventAutomaticEdit
-     */
-    public function setPreventAutomaticEdit(bool $preventAutomaticEdit): void
-    {
-        $this->preventAutomaticEdit = $preventAutomaticEdit;
     }
 }
