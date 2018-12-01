@@ -35,8 +35,6 @@ trait TimeTrait
 
     /**
      * @ORM\PrePersist()
-     *
-     * @throws \Exception
      */
     public function prePersistTime()
     {
@@ -46,8 +44,6 @@ trait TimeTrait
 
     /**
      * @ORM\PreUpdate()
-     *
-     * @throws \Exception
      */
     public function preUpdateTime()
     {
