@@ -53,6 +53,13 @@ class ConstructionSite extends BaseEntity
     private $imageFilename;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $imageHash;
+
+    /**
      * @var ConstructionManager[]|ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="ConstructionManager", inversedBy="constructionSites")
@@ -63,7 +70,7 @@ class ConstructionSite extends BaseEntity
     /**
      * @var Map[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite")
      * @ORM\OrderBy({"name": "ASC"})
      */
     private $maps;
@@ -168,5 +175,21 @@ class ConstructionSite extends BaseEntity
     public function getCraftsmen()
     {
         return $this->craftsmen;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getImageHash(): ?string
+    {
+        return $this->imageHash;
+    }
+
+    /**
+     * @param null|string $imageHash
+     */
+    public function setImageHash(?string $imageHash): void
+    {
+        $this->imageHash = $imageHash;
     }
 }

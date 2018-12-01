@@ -302,7 +302,7 @@ name: String
 * `points` are in counterclockwise order (origin in top left)
 ```
 name: String
-color: Color?
+color: Color
 points: [Point]
 ```
 
