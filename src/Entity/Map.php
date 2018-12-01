@@ -108,7 +108,7 @@ class Map extends BaseEntity
      */
     public function getFilename(): ?string
     {
-        return $this->currentFile->getId();
+        //TODO: replace calls
     }
 
     /**
@@ -116,7 +116,7 @@ class Map extends BaseEntity
      */
     public function setFilename(?string $filename): void
     {
-        $this->filename = $filename;
+        //TODO: replace calls
     }
 
     /**

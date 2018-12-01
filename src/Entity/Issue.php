@@ -14,6 +14,7 @@ namespace App\Entity;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -55,13 +56,6 @@ class Issue extends BaseEntity
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $imageFilename;
 
     /**
      * @var \DateTime|null
@@ -127,25 +121,25 @@ class Issue extends BaseEntity
     private $reviewBy;
 
     /**
-     * @var float|null
+     * @var IssuePosition
      *
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\IssuePosition", mappedBy="issue")
      */
-    private $positionX;
+    private $positions;
 
     /**
-     * @var float|null
+     * @var IssueImage[]
      *
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\IssueImage", mappedBy="issue")
      */
-    private $positionY;
+    private $images;
 
     /**
-     * @var float|null
+     * @var IssueImage
      *
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\ManyToOne(targetEntity="App\Entity\IssueImage")
      */
-    private $positionZoomScale;
+    private $image;
 
     /**
      * @var Craftsman|null
@@ -167,6 +161,11 @@ class Issue extends BaseEntity
      * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="issues")
      */
     private $mapFile;
+
+    public function __construct()
+    {
+        $this->images = new ArrayCollection();
+    }
 
     /**
      * @return int|null
@@ -237,7 +236,7 @@ class Issue extends BaseEntity
      */
     public function getImageFilename(): ?string
     {
-        return $this->imageFilename;
+        //TODO replace calls
     }
 
     /**
@@ -245,7 +244,7 @@ class Issue extends BaseEntity
      */
     public function setImageFilename(?string $imageFilename): void
     {
-        $this->imageFilename = $imageFilename;
+        //TODO replace calls
     }
 
     /**
@@ -397,7 +396,7 @@ class Issue extends BaseEntity
      */
     public function getPositionX(): ?float
     {
-        return $this->positionX;
+        //TODO replace calls
     }
 
     /**
@@ -405,7 +404,7 @@ class Issue extends BaseEntity
      */
     public function setPositionX(?float $positionX): void
     {
-        $this->positionX = $positionX;
+        //TODO replace calls
     }
 
     /**
@@ -413,7 +412,7 @@ class Issue extends BaseEntity
      */
     public function getPositionY(): ?float
     {
-        return $this->positionY;
+        //TODO replace calls
     }
 
     /**
@@ -421,7 +420,7 @@ class Issue extends BaseEntity
      */
     public function setPositionY(?float $positionY): void
     {
-        $this->positionY = $positionY;
+        //TODO replace calls
     }
 
     /**
@@ -429,7 +428,7 @@ class Issue extends BaseEntity
      */
     public function getPositionZoomScale(): ?float
     {
-        return $this->positionZoomScale;
+        //TODO replace calls
     }
 
     /**
@@ -437,7 +436,7 @@ class Issue extends BaseEntity
      */
     public function setPositionZoomScale(?float $positionZoomScale): void
     {
-        $this->positionZoomScale = $positionZoomScale;
+        //TODO replace calls
     }
 
     /**
@@ -472,18 +471,6 @@ class Issue extends BaseEntity
         $this->map = $map;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getImageFilePath(): ?string
-    {
-        if ($this->getImageFilename() !== null) {
-            return 'upload/' . $this->getMap()->getConstructionSite()->getId() . '/issue/' . $this->getImageFilename();
-        }
-
-        return null;
-    }
-
     const UPLOAD_STATUS = 1;
     const REGISTRATION_STATUS = 2;
     const RESPONSE_STATUS = 4;
@@ -508,5 +495,29 @@ class Issue extends BaseEntity
         }
 
         return $res;
+    }
+
+    /**
+     * @return IssueImage[]
+     */
+    public function getImages(): array
+    {
+        return $this->images;
+    }
+
+    /**
+     * @return IssueImage
+     */
+    public function getImage(): IssueImage
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param IssueImage $image
+     */
+    public function setImage(IssueImage $image): void
+    {
+        $this->image = $image;
     }
 }

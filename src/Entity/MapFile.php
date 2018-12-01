@@ -36,15 +36,15 @@ class MapFile extends BaseEntity
     private $map;
 
     /**
-     * @var Issue[]
+     * @var IssuePosition[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="map")
+     * @ORM\OneToMany(targetEntity="App\Entity\IssuePosition", mappedBy="mapFile")
      */
-    private $issues;
+    private $issuePositions;
 
     public function __construct()
     {
-        $this->issues = new ArrayCollection();
+        $this->issuePositions = new ArrayCollection();
     }
 
     /**
@@ -64,10 +64,10 @@ class MapFile extends BaseEntity
     }
 
     /**
-     * @return Issue[]|ArrayCollection
+     * @return IssuePosition[]
      */
-    public function getIssues()
+    public function getIssuePositions(): array
     {
-        return $this->issues;
+        return $this->issuePositions;
     }
 }

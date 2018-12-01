@@ -46,11 +46,18 @@ class ConstructionSite extends BaseEntity
     private $folderName;
 
     /**
-     * @var string|null
+     * @var ConstructionSiteImage[]
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\ConstructionSiteImage", mappedBy="constructionSite")
      */
-    private $imageFilename;
+    private $images;
+
+    /**
+     * @var ConstructionSiteImage
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSiteImage")
+     */
+    private $image;
 
     /**
      * @var ConstructionManager[]|ArrayCollection
@@ -83,6 +90,7 @@ class ConstructionSite extends BaseEntity
         $this->constructionManagers = new ArrayCollection();
         $this->maps = new ArrayCollection();
         $this->craftsmen = new ArrayCollection();
+        $this->image = new ArrayCollection();
     }
 
     /**
@@ -122,7 +130,7 @@ class ConstructionSite extends BaseEntity
      */
     public function getImageFilename(): ?string
     {
-        return $this->imageFilename;
+        // TODO: replace calls
     }
 
     /**
@@ -130,7 +138,7 @@ class ConstructionSite extends BaseEntity
      */
     public function setImageFilename(?string $imageFilename): void
     {
-        $this->imageFilename = $imageFilename;
+        // TODO: replace calls
     }
 
     /**
