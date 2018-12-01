@@ -112,7 +112,6 @@ class FileController extends ExternalApiController
      * @param ObjectMeta $objectMeta
      * @param callable $verifyAccess
      * @param callable $accessFilePath
-     * @param ImageServiceInterface|null $imageService pass if its an image, then resize
      *
      * @throws \Exception
      *

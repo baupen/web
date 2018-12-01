@@ -162,6 +162,13 @@ class Issue extends BaseEntity
     private $map;
 
     /**
+     * @var MapFile
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="issues")
+     */
+    private $mapFile;
+
+    /**
      * @return int|null
      */
     public function getNumber(): ?int

@@ -27,14 +27,21 @@ class MapFile extends BaseEntity
     use TimeTrait;
 
     /**
-     * @var string|null
+     * @var string
      *
      * @ORM\Column(type="text", nullable=true)
      */
     private $filename;
 
     /**
-     * @var Map|null
+     * @var string
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $hash;
+
+    /**
+     * @var Map
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="children")
      */
@@ -53,19 +60,35 @@ class MapFile extends BaseEntity
     }
 
     /**
-     * @return null|string
+     * @return string
      */
-    public function getFilename(): ?string
+    public function getFilename(): string
     {
         return $this->filename;
     }
 
     /**
-     * @param string|null $filename
+     * @param string $filename
      */
-    public function setFilename(?string $filename): void
+    public function setFilename(string $filename): void
     {
         $this->filename = $filename;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHash(): string
+    {
+        return $this->hash;
+    }
+
+    /**
+     * @param string $hash
+     */
+    public function setHash(string $hash): void
+    {
+        $this->hash = $hash;
     }
 
     /**

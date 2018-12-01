@@ -12,6 +12,7 @@
 namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
+use App\Entity\Traits\AutomaticEditTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -28,6 +29,7 @@ class Map extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
+    use AutomaticEditTrait;
 
     /**
      * @var string
@@ -35,27 +37,6 @@ class Map extends BaseEntity
      * @ORM\Column(type="text")
      */
     private $name;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $filename;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $hash;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(type="text", options={"default": false})
-     */
-    private $preventAutomaticEdit = false;
 
     /**
      * @var ConstructionSite
@@ -79,6 +60,20 @@ class Map extends BaseEntity
     private $children;
 
     /**
+     * @var MapFile[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\MapFile", mappedBy="map")
+     */
+    private $files;
+
+    /**
+     * @var MapFile
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile")
+     */
+    private $currentFile;
+
+    /**
      * @var Issue[]
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="map")
@@ -87,6 +82,7 @@ class Map extends BaseEntity
 
     public function __construct()
     {
+        $this->files = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->issues = new ArrayCollection();
     }
@@ -112,7 +108,7 @@ class Map extends BaseEntity
      */
     public function getFilename(): ?string
     {
-        return $this->filename;
+        return $this->currentFile->getId();
     }
 
     /**
@@ -148,7 +144,7 @@ class Map extends BaseEntity
     }
 
     /**
-     * @param null|self $parent
+     * @param self|null $parent
      */
     public function setParent(?self $parent): void
     {
@@ -168,7 +164,7 @@ class Map extends BaseEntity
      */
     public function getIssues()
     {
-        return $this->issues;
+        return $this->getIssues();
     }
 
     /**
@@ -189,34 +185,26 @@ class Map extends BaseEntity
     }
 
     /**
-     * @return null|string
+     * @return MapFile[]
      */
-    public function getHash(): ?string
+    public function getFiles(): array
     {
-        return $this->hash;
+        return $this->files;
     }
 
     /**
-     * @param null|string $hash
+     * @return MapFile
      */
-    public function setHash(?string $hash): void
+    public function getCurrentFile(): MapFile
     {
-        $this->hash = $hash;
+        return $this->currentFile;
     }
 
     /**
-     * @return bool
+     * @param MapFile $currentFile
      */
-    public function getPreventAutomaticEdit(): bool
+    public function setCurrentFile(MapFile $currentFile): void
     {
-        return $this->preventAutomaticEdit;
-    }
-
-    /**
-     * @param bool $preventAutomaticEdit
-     */
-    public function setPreventAutomaticEdit(bool $preventAutomaticEdit): void
-    {
-        $this->preventAutomaticEdit = $preventAutomaticEdit;
+        $this->currentFile = $currentFile;
     }
 }
