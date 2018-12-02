@@ -133,7 +133,7 @@ class IssueController extends ExternalApiController
             return $errorResponse;
         }
 
-        $newImageExpected = $issueModifyRequest->getIssue()->getImageFilename() !== null;
+        $newImageExpected = $issueModifyRequest->getIssue()->getImage() !== null;
         if ($mode === 'create') {
             //ensure GUID not in use already
             $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
@@ -148,7 +148,7 @@ class IssueController extends ExternalApiController
                 return $this->fail(static::ISSUE_NOT_FOUND);
             }
             $entity = $existing;
-            $newImageExpected &= $issueModifyRequest->getIssue()->getImageFilename() !== $existing->getImageFilename();
+            $newImageExpected &= $issueModifyRequest->getIssue()->getImage() !== $existing->getImageFilename();
         } else {
             throw new \InvalidArgumentException('mode must be create or update');
         }
@@ -196,9 +196,16 @@ class IssueController extends ExternalApiController
             return $this->fail(static::ISSUE_NO_FILE_UPLOAD_EXPECTED);
         }
 
-        //handle file upload
+        //check if file is here
         foreach ($request->files->all() as $file) {
-            $this->uploadImage($file, $issue, $pathService, $imageService, static::ISSUE_FILE_UPLOAD_FAILED);
+            $issueImage = $this->uploadIssueImage($file, $issue, $issueModifyRequest->getIssue()->getImage()->getFilename(), $pathService, $imageService);
+            if ($issueImage === null) {
+                return $this->fail(self::ISSUE_FILE_UPLOAD_FAILED);
+            }
+
+            $issueImage->setIssue($issue);
+            $issue->getImages()->add($issueImage);
+            $issue->setImage($issueImage);
         }
 
         //if create, need to enforce correct GUID
@@ -206,10 +213,14 @@ class IssueController extends ExternalApiController
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
 
-            //deactivate guid generator so we can use the one the client has sent us
+            //deactivate guid generator so we can use the ids the client has sent us
             $metadata = $em->getClassMetadata(\get_class($issue));
             $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
             $metadata->setIdGenerator(new \Doctrine\ORM\Id\AssignedGenerator());
+            $issue->setId($issueModifyRequest->getIssue()->getMeta()->getId());
+            if ($issueModifyRequest->getIssue()->getImage()->getId() !== null) {
+                $issue->getImage()->setId($issueModifyRequest->getIssue()->getImage()->getId());
+            }
             $issue->setId($issueModifyRequest->getIssue()->getMeta()->getId());
 
             //persist to db

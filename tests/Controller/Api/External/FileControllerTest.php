@@ -11,6 +11,7 @@
 
 namespace App\Tests\Controller\Api\External;
 
+use App\Api\External\Entity\File;
 use App\Api\External\Entity\Issue;
 use App\Api\External\Entity\ObjectMeta;
 use App\Enum\ApiStatus;
@@ -23,6 +24,8 @@ class FileControllerTest extends ApiController
 {
     /**
      * tests upload/download functionality.
+     *
+     * @throws \Exception
      */
     public function testFileUploadDownload()
     {
@@ -61,7 +64,10 @@ class FileControllerTest extends ApiController
             'upload.jpg',
             'image/jpeg'
         );
-        $issue->setImageFilename(Uuid::uuid4()->toString() . '.jpg');
+        $issueImage = new File();
+        $issueImage->setFilename(Uuid::uuid4()->toString() . '.jpg');
+        $issueImage->setId(Uuid::uuid4()->toString());
+        $issue->setImage($issueImage);
         $response = $doRequest($issue, $file);
         $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
 
@@ -105,7 +111,7 @@ class FileControllerTest extends ApiController
         };
 
         $imageBuilding = null;
-        foreach ($serverData->getBuildings() as $building) {
+        foreach ($serverData->getConstructionSites() as $building) {
             if ($building->getImage() !== null) {
                 $imageBuilding = $building;
                 break;
@@ -134,7 +140,7 @@ class FileControllerTest extends ApiController
 
         $imageMap = null;
         foreach ($serverData->getMaps() as $map) {
-            if ($map->getFilename() !== null) {
+            if ($map->getFile() !== null) {
                 $imageMap = $map;
                 break;
             }

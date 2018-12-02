@@ -21,11 +21,6 @@ class Map extends BaseEntity
     private $name;
 
     /**
-     * @var string|null
-     */
-    private $filename;
-
-    /**
      * @var string[]
      */
     private $children;
@@ -41,6 +36,11 @@ class Map extends BaseEntity
     private $buildingID;
 
     /**
+     * @var File|null
+     */
+    private $file;
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -54,22 +54,6 @@ class Map extends BaseEntity
     public function setName(string $name): void
     {
         $this->name = $name;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getFilename(): ?string
-    {
-        return $this->filename;
-    }
-
-    /**
-     * @param null|string $filename
-     */
-    public function setFilename(?string $filename): void
-    {
-        $this->filename = $filename;
     }
 
     /**
@@ -118,5 +102,21 @@ class Map extends BaseEntity
     public function setBuildingID(string $buildingID): void
     {
         $this->buildingID = $buildingID;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getFile(): ?File
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param File|null $file
+     */
+    public function setFile(?File $file): void
+    {
+        $this->file = $file;
     }
 }

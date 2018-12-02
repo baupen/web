@@ -19,7 +19,6 @@ use App\Entity\Traits\FileTrait;
 use App\Service\Interfaces\FileSystemSyncServiceInterface;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
-use Ramsey\Uuid\Uuid;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class FileSystemSyncService implements FileSystemSyncServiceInterface
@@ -96,8 +95,6 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
      * @param FileTrait[] $knownFiles
      * @param callable $createNewFile
      *
-     * @throws \Exception
-     *
      * @return FileTrait[]
      */
     private function getFiles(string $folder, string $ending, array $knownFiles, callable $createNewFile)
@@ -120,7 +117,6 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
                 $fileTrait = $createNewFile($file);
                 $fileTrait->setFilename($fileName);
                 $fileTrait->setHash(hash_file('sha256', $file));
-                $fileTrait->setVersionId(Uuid::uuid4());
                 $newFiles[] = $fileTrait;
             }
         }

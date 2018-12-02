@@ -18,8 +18,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 trait FileTrait
 {
-    use TimeTrait;
-
     /**
      * @var string
      *
@@ -40,13 +38,6 @@ trait FileTrait
      * @ORM\Column(type="text")
      */
     private $hash;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text")
-     */
-    private $versionId;
 
     /**
      * @return string
@@ -78,22 +69,6 @@ trait FileTrait
     public function setHash(string $hash): void
     {
         $this->hash = $hash;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVersionId(): string
-    {
-        return $this->versionId;
-    }
-
-    /**
-     * @param string $versionId
-     */
-    public function setVersionId(string $versionId): void
-    {
-        $this->versionId = $versionId;
     }
 
     /**

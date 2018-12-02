@@ -13,7 +13,7 @@ namespace App\Api\External\Entity;
 
 use App\Api\External\Entity\Base\BaseEntity;
 
-class Building extends BaseEntity
+class ConstructionSite extends BaseEntity
 {
     /**
      * @var string

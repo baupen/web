@@ -310,10 +310,17 @@ class FoyerController extends ApiController
         $file = $request->files->getIterator()->current();
 
         //set new filename to avoid caching issues
-        $entity->setImageFilename(Uuid::uuid4()->toString() . '.' . $file->guessExtension());
+        $targetFileName = Uuid::uuid4()->toString() . '.' . $file->guessExtension();
 
         //save file
-        $this->uploadImage($file, $entity, $pathService, $imageService, self::FILE_UPLOAD_FAILED);
+        $issueImage = $this->uploadIssueImage($file, $entity, $targetFileName, $pathService, $imageService);
+        if ($issueImage === null) {
+            return $this->fail(self::FILE_UPLOAD_FAILED);
+        }
+
+        $issueImage->setIssue($entity);
+        $entity->getImages()->add($issueImage);
+        $entity->setImage($issueImage);
         $this->fastSave($entity);
 
         //create response

@@ -84,7 +84,7 @@ class ReadControllerTest extends ApiController
         };
 
         //set them in the request
-        $readRequest->setBuildings($getMetas($serverData->getBuildings()));
+        $readRequest->setConstructionSites($getMetas($serverData->getConstructionSites()));
         $readRequest->setCraftsmen($getMetas($serverData->getCraftsmen()));
         $readRequest->setMaps($getMetas($serverData->getMaps()));
         $readRequest->setIssues($getMetas($serverData->getIssues()));
@@ -105,7 +105,7 @@ class ReadControllerTest extends ApiController
 
         //## update, remove & add at the same time
         //set them in the request
-        $readRequest->setBuildings($getMetas($serverData->getBuildings(), 1, 1, 1));
+        $readRequest->setConstructionSites($getMetas($serverData->getConstructionSites(), 1, 1, 1));
         $readRequest->setCraftsmen($getMetas($serverData->getCraftsmen(), 1, 1, 1));
         $readRequest->setMaps($getMetas($serverData->getMaps(), 1, 1, 1));
         $readRequest->setIssues($getMetas($serverData->getIssues(), 1, 1, 1));

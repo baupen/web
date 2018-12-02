@@ -26,14 +26,20 @@ class IssueTransformer extends BatchTransformer
     private $objectMetaTransformer;
 
     /**
+     * @var FileTransformer
+     */
+    private $fileTransformer;
+
+    /**
      * @var RegistryInterface
      */
     private $doctrine;
 
-    public function __construct(ObjectMetaTransformer $objectMetaTransformer, RegistryInterface $registry)
+    public function __construct(ObjectMetaTransformer $objectMetaTransformer, FileTransformer $fileTransformer, RegistryInterface $registry)
     {
         $this->objectMetaTransformer = $objectMetaTransformer;
         $this->doctrine = $registry;
+        $this->fileTransformer = $fileTransformer;
     }
 
     /**
@@ -45,7 +51,6 @@ class IssueTransformer extends BatchTransformer
     public function fromApi(\App\Api\External\Entity\Issue $issue, Issue $entity)
     {
         $entity->setDescription($issue->getDescription());
-        $entity->setImageFilename($issue->getImageFilename());
         $entity->setIsMarked($issue->getIsMarked());
         $entity->setWasAddedWithClient($issue->getWasAddedWithClient());
 
@@ -72,7 +77,7 @@ class IssueTransformer extends BatchTransformer
         $issue = new \App\Api\External\Entity\Issue();
         $issue->setWasAddedWithClient($entity->getWasAddedWithClient());
         $issue->setIsMarked($entity->getIsMarked());
-        $issue->setImageFilename($entity->getImageFilename());
+        $issue->setImage($this->fileTransformer->toApi($entity->getImage()));
         $issue->setDescription($entity->getDescription());
         $issue->setNumber($entity->getNumber());
 

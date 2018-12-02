@@ -13,10 +13,14 @@ namespace App\Api\External\Entity;
 
 class File
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     private $id;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $filename;
 
     /**
