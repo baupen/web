@@ -34,10 +34,6 @@ class IssueImage extends BaseEntity
      */
     private $issue;
 
-    public function __construct()
-    {
-    }
-
     /**
      * @return Issue
      */

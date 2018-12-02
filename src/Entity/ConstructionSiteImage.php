@@ -34,10 +34,6 @@ class ConstructionSiteImage extends BaseEntity
      */
     private $constructionSite;
 
-    public function __construct()
-    {
-    }
-
     /**
      * @return ConstructionSite
      */

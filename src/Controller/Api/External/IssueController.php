@@ -148,7 +148,7 @@ class IssueController extends ExternalApiController
                 return $this->fail(static::ISSUE_NOT_FOUND);
             }
             $entity = $existing;
-            $newImageExpected &= $issueModifyRequest->getIssue()->getImage() !== $existing->getImageFilename();
+            $newImageExpected &= $issueModifyRequest->getIssue()->getImage()->getId() !== $existing->getImage()->getId();
         } else {
             throw new \InvalidArgumentException('mode must be create or update');
         }
