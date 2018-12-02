@@ -41,7 +41,7 @@ user: User
 authenticationToken: String
 user: ObjectMeta
 craftsmen: [ObjectMeta]
-buildings: [ObjectMeta]
+constructionSites: [ObjectMeta]
 maps: [ObjectMeta]
 issues: [ObjectMeta]
 ```
@@ -50,8 +50,8 @@ issues: [ObjectMeta]
 ```
 changedCraftsmen: [Craftsman]
 removedCraftsmanIDs: [UUID]
-changedBuildings: [Building]
-removedBuildingIDs: [UUID]
+changedConstructionSites: [ConstructionSite]
+removedConstructionSiteIDs: [UUID]
 changedMaps: [Map]
 removedMapIDs: [UUID]
 changedIssues: [Issue]
@@ -64,10 +64,10 @@ changedUser: User?
 * used to download file data
 
 ##### request:
-* `building` xor `map` xor `issue` has to be non-null
+* `constructionSite` xor `map` xor `issue` has to be non-null
 ```
 authenticationToken: String
-building: ObjectMeta?
+constructionSite: ObjectMeta?
 map: ObjectMeta?
 issue: ObjectMeta?
 ```
@@ -265,7 +265,7 @@ familyName: String
 ```
 
 
-## `Building`
+## `ConstructionSite`
 ```
 meta: ObjectMeta
 name: String
