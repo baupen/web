@@ -60,18 +60,18 @@ class Map extends BaseEntity
     private $children;
 
     /**
-     * @var MapFile[]
+     * @var MapFile[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\MapFile", mappedBy="map")
+     * @ORM\OneToMany(targetEntity="App\Entity\MapFile", mappedBy="map", cascade={"persist"})
      */
     private $files;
 
     /**
      * @var MapFile
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile")
+     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", cascade={"persist"})
      */
-    private $currentFile;
+    private $file;
 
     /**
      * @var Issue[]
@@ -185,9 +185,9 @@ class Map extends BaseEntity
     }
 
     /**
-     * @return MapFile[]
+     * @return MapFile[]|ArrayCollection
      */
-    public function getFiles(): array
+    public function getFiles()
     {
         return $this->files;
     }
@@ -195,16 +195,16 @@ class Map extends BaseEntity
     /**
      * @return MapFile
      */
-    public function getCurrentFile(): MapFile
+    public function getFile(): MapFile
     {
-        return $this->currentFile;
+        return $this->file;
     }
 
     /**
-     * @param MapFile $currentFile
+     * @param MapFile $file
      */
-    public function setCurrentFile(MapFile $currentFile): void
+    public function setFile(MapFile $file): void
     {
-        $this->currentFile = $currentFile;
+        $this->file = $file;
     }
 }

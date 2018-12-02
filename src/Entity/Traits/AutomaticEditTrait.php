@@ -28,7 +28,7 @@ trait AutomaticEditTrait
     /**
      * @return bool
      */
-    public function isPreventAutomaticEdit(): bool
+    public function getPreventAutomaticEdit(): bool
     {
         return $this->preventAutomaticEdit;
     }

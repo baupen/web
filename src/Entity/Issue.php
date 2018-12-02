@@ -128,16 +128,16 @@ class Issue extends BaseEntity
     private $positions;
 
     /**
-     * @var IssueImage[]
+     * @var IssueImage[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\IssueImage", mappedBy="issue")
+     * @ORM\OneToMany(targetEntity="App\Entity\IssueImage", mappedBy="issue", cascade={"persist"})
      */
     private $images;
 
     /**
      * @var IssueImage
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\IssueImage")
+     * @ORM\ManyToOne(targetEntity="App\Entity\IssueImage", cascade={"persist"})
      */
     private $image;
 
@@ -498,9 +498,9 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @return IssueImage[]
+     * @return IssueImage[]|ArrayCollection
      */
-    public function getImages(): array
+    public function getImages()
     {
         return $this->images;
     }

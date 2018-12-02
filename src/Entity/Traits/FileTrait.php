@@ -23,21 +23,28 @@ trait FileTrait
     /**
      * @var string
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text")
      */
     private $filename;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text")
+     */
+    private $displayFilename;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text")
      */
     private $hash;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text")
      */
     private $versionId;
 
@@ -87,5 +94,21 @@ trait FileTrait
     public function setVersionId(string $versionId): void
     {
         $this->versionId = $versionId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisplayFilename(): string
+    {
+        return $this->displayFilename;
+    }
+
+    /**
+     * @param string $displayFilename
+     */
+    public function setDisplayFilename(string $displayFilename): void
+    {
+        $this->displayFilename = $displayFilename;
     }
 }

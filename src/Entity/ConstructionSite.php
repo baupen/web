@@ -13,6 +13,7 @@ namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AddressTrait;
+use App\Entity\Traits\AutomaticEditTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,6 +31,7 @@ class ConstructionSite extends BaseEntity
     use IdTrait;
     use TimeTrait;
     use AddressTrait;
+    use AutomaticEditTrait;
 
     /**
      * @var string
@@ -46,16 +48,16 @@ class ConstructionSite extends BaseEntity
     private $folderName;
 
     /**
-     * @var ConstructionSiteImage[]
+     * @var ConstructionSiteImage[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\ConstructionSiteImage", mappedBy="constructionSite")
+     * @ORM\OneToMany(targetEntity="App\Entity\ConstructionSiteImage", mappedBy="constructionSite", cascade={"persist"})
      */
     private $images;
 
     /**
-     * @var ConstructionSiteImage
+     * @var ConstructionSiteImage|null
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSiteImage")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSiteImage", cascade={"persist"})
      */
     private $image;
 
@@ -70,7 +72,7 @@ class ConstructionSite extends BaseEntity
     /**
      * @var Map[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite")
+     * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite", cascade={"persist"})
      * @ORM\OrderBy({"name": "ASC"})
      */
     private $maps;
@@ -176,5 +178,29 @@ class ConstructionSite extends BaseEntity
     public function getCraftsmen()
     {
         return $this->craftsmen;
+    }
+
+    /**
+     * @return ConstructionSiteImage[]|ArrayCollection
+     */
+    public function getImages()
+    {
+        return $this->images;
+    }
+
+    /**
+     * @return ConstructionSiteImage|null
+     */
+    public function getImage(): ?ConstructionSiteImage
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param ConstructionSiteImage|null $image
+     */
+    public function setImage(?ConstructionSiteImage $image): void
+    {
+        $this->image = $image;
     }
 }
