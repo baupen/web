@@ -196,7 +196,7 @@ class LoadIssueData extends BaseFixture
                 $sourceImage = $images[$issueNumber % \count($images)];
                 $targetFolder = $this->pathService->getFolderForIssue($issue->getMap()->getConstructionSite());
 
-                //ensure target folder exists
+                // ensure target folder exists
                 if (!file_exists($targetFolder)) {
                     mkdir($targetFolder, 0777, true);
                 }

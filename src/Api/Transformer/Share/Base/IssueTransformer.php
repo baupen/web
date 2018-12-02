@@ -44,17 +44,18 @@ class IssueTransformer
      * @param Issue $entity
      * @param PublicIssue $issue
      * @param string $identifier
+     * @param callable $generateRoute
      *
      * @return PublicIssue
      */
-    public function writeApiProperties($entity, $issue, $identifier)
+    public function writeApiProperties($entity, $issue, $identifier, callable $generateRoute)
     {
         $this->issueTransformer->writeApiProperties($entity, $issue);
 
         if ($entity->getImage() !== null) {
-            $routeArguments = ['identifier' => $identifier, 'imageId' => $entity->getImage()->getId(), 'issue' => $entity->getId()];
-            $issue->setImageShareView($this->router->generate('external_image_craftsman_issue', $routeArguments + ['size' => ImageServiceInterface::SIZE_SHARE_VIEW]));
-            $issue->setImageFull($this->router->generate('external_image_craftsman_issue', $routeArguments + ['size' => ImageServiceInterface::SIZE_FULL]));
+            $routeArguments = ['identifier' => $identifier, 'image' => $entity->getImage()->getId(), 'issue' => $entity->getId()];
+            $issue->setImageShareView($generateRoute($this->router, $routeArguments + ['size' => ImageServiceInterface::SIZE_SHARE_VIEW]));
+            $issue->setImageShareView($generateRoute($this->router, $routeArguments + ['size' => ImageServiceInterface::SIZE_FULL]));
         }
 
         return $issue;

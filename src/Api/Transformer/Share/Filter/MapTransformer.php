@@ -13,6 +13,7 @@ namespace App\Api\Transformer\Share\Filter;
 
 use App\Entity\Issue;
 use App\Entity\Map;
+use Symfony\Component\Routing\RouterInterface;
 
 class MapTransformer
 {
@@ -48,7 +49,10 @@ class MapTransformer
     public function toApi($entity, string $identifier, array $issues)
     {
         $map = new \App\Api\Entity\Share\Filter\Map($entity->getId());
-        $this->mapTransformer->writeApiProperties($entity, $map, $identifier, $issues);
+        $this->mapTransformer->writeApiProperties($entity, $map, $identifier, $issues, function ($router, $arguments) {
+            /* @var RouterInterface $router */
+            return $router->generate('external_image_filter_map', $arguments);
+        });
 
         //add issues
         $convertedIssues = [];

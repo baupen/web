@@ -12,6 +12,7 @@
 namespace App\Api\Transformer\Share\Craftsman;
 
 use App\Entity\Issue;
+use Symfony\Component\Routing\RouterInterface;
 
 class IssueTransformer
 {
@@ -39,7 +40,11 @@ class IssueTransformer
     public function toApi($entity, string $identifier)
     {
         $issue = new \App\Api\Entity\Share\Craftsman\Issue($entity->getId());
-        $this->issueTransformer->writeApiProperties($entity, $issue, $identifier);
+        $this->issueTransformer->writeApiProperties($entity, $issue, $identifier, function ($router, $arguments) {
+            /* @var RouterInterface $router */
+            return $router->generate('external_image_craftsman_issue', $arguments);
+        });
+
         $issue->setResponseLimit($entity->getResponseLimit());
 
         return $issue;

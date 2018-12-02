@@ -53,33 +53,30 @@ class MapTransformer
      * @param PublicMap $map
      * @param string $identifier
      * @param IdTrait[] $issues
+     * @param callable $generateRoute
      *
      * @return PublicMap
      */
-    public function writeApiProperties($entity, $map, string $identifier, array $issues)
+    public function writeApiProperties($entity, $map, string $identifier, array $issues, callable $generateRoute)
     {
         $this->mapTransformer->writeApiProperties($entity, $map);
 
         //add images
-        if ($entity->getFilename() !== null) {
+        if ($entity->getFile() !== null) {
             //generate hash from ids of issues
-            $hashContent = $entity->getId() . ',' .
-                implode(',', array_map(function ($issue) {
-                    /* @var IdTrait $issue */
-                    return $issue->getId();
-                }, $issues));
+            $hashContent = implode(',', array_map(function ($issue) {
+                /* @var IdTrait $issue */
+                return $issue->getId();
+            }, $issues));
             $hash = hash('sha256', $hashContent);
 
             //set image urls
+            $arguments = ['map' => $map->getId(), 'file' => $entity->getFile()->getId(), 'identifier' => $identifier, 'hash' => $hash];
             $map->setImageShareView(
-                $this->router->generate('external_image_filter_map',
-                    ['map' => $map->getId(), 'identifier' => $identifier, 'hash' => $hash, 'size' => ImageServiceInterface::SIZE_SHARE_VIEW]
-                )
+                $generateRoute($this->router, $arguments + ['size' => ImageServiceInterface::SIZE_SHARE_VIEW])
             );
             $map->setImageFull(
-                $this->router->generate('external_image_filter_map',
-                    ['map' => $map->getId(), 'identifier' => $identifier, 'hash' => $hash, 'size' => ImageServiceInterface::SIZE_FULL]
-                )
+                $generateRoute($this->router, $arguments + ['size' => ImageServiceInterface::SIZE_FULL])
             );
         }
 

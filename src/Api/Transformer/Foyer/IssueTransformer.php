@@ -59,8 +59,8 @@ class IssueTransformer extends BatchTransformer
         $issue->setUploadByName($entity->getUploadBy()->getName());
 
         if ($entity->getImage() !== null) {
-            $issue->setImageThumbnail($this->router->generate('image_issue', ['issue' => $entity->getId(), 'imageId' => $entity->getImage()->getId(), 'size' => ImageServiceInterface::SIZE_THUMBNAIL]));
-            $issue->setImageFull($this->router->generate('image_issue', ['issue' => $entity->getId(), 'imageId' => $entity->getImage()->getId(), 'size' => ImageServiceInterface::SIZE_FULL]));
+            $issue->setImageThumbnail($this->router->generate('image_issue', ['issue' => $entity->getId(), 'image' => $entity->getImage()->getId(), 'size' => ImageServiceInterface::SIZE_THUMBNAIL]));
+            $issue->setImageFull($this->router->generate('image_issue', ['issue' => $entity->getId(), 'image' => $entity->getImage()->getId(), 'size' => ImageServiceInterface::SIZE_FULL]));
         }
     }
 

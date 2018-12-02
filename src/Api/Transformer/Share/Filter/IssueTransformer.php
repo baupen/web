@@ -12,6 +12,7 @@
 namespace App\Api\Transformer\Share\Filter;
 
 use App\Entity\Issue;
+use Symfony\Component\Routing\RouterInterface;
 
 class IssueTransformer
 {
@@ -39,7 +40,11 @@ class IssueTransformer
     public function toApi($entity, string $identifier)
     {
         $issue = new \App\Api\Entity\Share\Filter\Issue($entity->getId());
-        $this->issueTransformer->writeApiProperties($entity, $issue, $identifier);
+        $this->issueTransformer->writeApiProperties($entity, $issue, $identifier, function ($router, $arguments) {
+            /* @var RouterInterface $router */
+            return $router->generate('external_image_filter_issue', $arguments);
+        });
+
         if ($entity->getReviewedAt() !== null) {
             $issue->setReviewedAt($entity->getReviewedAt());
             $issue->setReviewedByName($entity->getReviewBy()->getName());

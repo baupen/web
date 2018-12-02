@@ -232,22 +232,6 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @return null|string
-     */
-    public function getImageFilename(): ?string
-    {
-        //TODO replace calls
-    }
-
-    /**
-     * @param null|string $imageFilename
-     */
-    public function setImageFilename(?string $imageFilename): void
-    {
-        //TODO replace calls
-    }
-
-    /**
      * @return \DateTime|null
      */
     public function getResponseLimit(): ?\DateTime
