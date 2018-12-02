@@ -241,6 +241,12 @@ x: Double
 y: Double
 ```
 
+## `File`
+```
+id: UUID
+filename: string
+```
+
 
 ## `ObjectMeta`
 * used for /update
@@ -264,7 +270,7 @@ familyName: String
 meta: ObjectMeta
 name: String
 address: Address
-imageFilename: String?
+image: File?
 maps: [UUID]
 craftsmen: [UUID]
 ```
@@ -293,7 +299,7 @@ meta: ObjectMeta
 children: [UUID]
 sectors: [Sector]
 issues: [UUID]
-filename: String?
+file: File?
 name: String
 ```
 
@@ -313,7 +319,7 @@ meta: ObjectMeta
 number: Int?
 isMarked: Bool
 wasAddedWithClient: Bool // "abnahmemodus"
-imageFilename: String?
+image: File?
 description: String?
 craftsman: UUID?
 map: UUID // only really used before registration
@@ -325,6 +331,7 @@ position: Position?
 ```
 point: Point
 zoomScale: Double
+fileId: UUID
 ```
 
 ### `Issue.Status`

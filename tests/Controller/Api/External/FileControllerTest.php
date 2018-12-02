@@ -106,7 +106,7 @@ class FileControllerTest extends ApiController
 
         $imageBuilding = null;
         foreach ($serverData->getBuildings() as $building) {
-            if ($building->getImageFilename() !== null) {
+            if ($building->getImage() !== null) {
                 $imageBuilding = $building;
                 break;
             }
@@ -115,7 +115,6 @@ class FileControllerTest extends ApiController
             $response = $doRequest($imageBuilding->getMeta());
             $this->assertInstanceOf(BinaryFileResponse::class, $response, $response->getContent());
         }
-
 
         //test map download
         $client = static::createClient();
