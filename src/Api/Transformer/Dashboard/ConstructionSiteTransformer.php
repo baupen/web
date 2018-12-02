@@ -48,8 +48,8 @@ class ConstructionSiteTransformer extends BatchTransformer
     {
         $this->constructionSiteTransformer->writeApiProperties($entity, $constructionSite);
 
-        if ($entity->getImageFilename() !== null) {
-            $constructionSite->setImageMedium($this->router->generate('image_construction_site', ['constructionSite' => $entity->getId(), 'imageFilename' => $entity->getImageFilename(), 'size' => ImageServiceInterface::SIZE_MEDIUM]));
+        if ($entity->getImage() !== null) {
+            $constructionSite->setImageMedium($this->router->generate('image_construction_site', ['constructionSite' => $entity->getId(), 'imageId' => $entity->getImage()->getId(), 'size' => ImageServiceInterface::SIZE_MEDIUM]));
         }
     }
 

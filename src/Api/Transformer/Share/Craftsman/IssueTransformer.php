@@ -12,31 +12,22 @@
 namespace App\Api\Transformer\Share\Craftsman;
 
 use App\Entity\Issue;
-use App\Service\Interfaces\ImageServiceInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class IssueTransformer
 {
     /**
-     * @var \App\Api\Transformer\Base\PublicIssueTransformer
+     * @var \App\Api\Transformer\Share\Base\IssueTransformer
      */
     private $issueTransformer;
 
     /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
      * CraftsmanTransformer constructor.
      *
-     * @param \App\Api\Transformer\Base\PublicIssueTransformer $issueTransformer
-     * @param RouterInterface $router
+     * @param \App\Api\Transformer\Share\Base\IssueTransformer $issueTransformer
      */
-    public function __construct(\App\Api\Transformer\Base\PublicIssueTransformer $issueTransformer, RouterInterface $router)
+    public function __construct(\App\Api\Transformer\Share\Base\IssueTransformer $issueTransformer)
     {
         $this->issueTransformer = $issueTransformer;
-        $this->router = $router;
     }
 
     /**
@@ -48,12 +39,8 @@ class IssueTransformer
     public function toApi($entity, string $identifier)
     {
         $issue = new \App\Api\Entity\Share\Craftsman\Issue($entity->getId());
-        $this->issueTransformer->writeApiProperties($entity, $issue);
+        $this->issueTransformer->writeApiProperties($entity, $issue, $identifier);
         $issue->setResponseLimit($entity->getResponseLimit());
-
-        $routeArguments = ['identifier' => $identifier, 'imageFilename' => $entity->getImageFilename(), 'issue' => $entity->getId()];
-        $issue->setImageShareView($this->router->generate('external_image_craftsman_issue', $routeArguments + ['size' => ImageServiceInterface::SIZE_SHARE_VIEW]));
-        $issue->setImageFull($this->router->generate('external_image_craftsman_issue', $routeArguments + ['size' => ImageServiceInterface::SIZE_FULL]));
 
         return $issue;
     }

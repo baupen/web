@@ -19,7 +19,6 @@ use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Service\Interfaces\ImageServiceInterface;
-use App\Service\Interfaces\PathServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -75,24 +74,23 @@ class CraftsmanController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/issue/{issue}/{imageFilename}/{size}", name="external_image_craftsman_issue")
+     * @Route("/issue/{issue}/{imageId}/{size}", name="external_image_craftsman_issue")
      *
      * @param $identifier
      * @param Issue $issue
-     * @param $imageFilename
+     * @param $imageId
      * @param $size
      * @param ImageServiceInterface $imageService
-     * @param PathServiceInterface $pathService
      *
      * @return Response
      */
-    public function issueAction($identifier, Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService, PathServiceInterface $pathService)
+    public function issueAction($identifier, Issue $issue, $imageId, $size, ImageServiceInterface $imageService)
     {
         /** @var Craftsman $craftsman */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
             throw new NotFoundHttpException();
         }
 
-        return $this->file($this->getImagePathForIssue($issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($this->getImagePathForIssue($issue, $imageId, $size, $imageService), $issue->getImage()->getFilename(), ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

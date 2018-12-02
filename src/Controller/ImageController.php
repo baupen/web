@@ -36,36 +36,36 @@ class ImageController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/issue/{issue}/{imageFilename}/{size}", name="image_issue")
+     * @Route("/issue/{issue}/{imageId}/{size}", name="image_issue")
      *
      * @param Issue $issue
-     * @param string $imageFilename
+     * @param string $imageId
      * @param string $size
      * @param ImageServiceInterface $imageService
      *
      * @return Response
      */
-    public function issueAction(Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService)
+    public function issueAction(Issue $issue, $imageId, $size, ImageServiceInterface $imageService)
     {
         $this->ensureAccess($issue);
 
-        return $this->file($this->getImagePathForIssue($issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($this->getImagePathForIssue($issue, $imageId, $size, $imageService), $issue->getImage()->getFilename(), ResponseHeaderBag::DISPOSITION_INLINE);
     }
 
     /**
-     * @Route("/constructionSite/{constructionSite}/{imageFilename}/{size}", name="image_construction_site")
+     * @Route("/constructionSite/{constructionSite}/{imageId}/{size}", name="image_construction_site")
      *
      * @param ConstructionSite $constructionSite
-     * @param string $imageFilename
+     * @param string $imageId
      * @param string $size
      * @param ImageServiceInterface $imageService
      *
      * @return Response
      */
-    public function constructionSiteAction(ConstructionSite $constructionSite, $imageFilename, $size, ImageServiceInterface $imageService)
+    public function constructionSiteAction(ConstructionSite $constructionSite, $imageId, $size, ImageServiceInterface $imageService)
     {
         $this->ensureAccess($constructionSite);
 
-        return $this->file($this->getImagePathForConstructionSite($constructionSite, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($this->getImagePathForConstructionSite($constructionSite, $imageId, $size, $imageService), $constructionSite->getImage()->getFilename(), ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

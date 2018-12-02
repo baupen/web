@@ -128,22 +128,6 @@ class ConstructionSite extends BaseEntity
     }
 
     /**
-     * @return null|string
-     */
-    public function getImageFilename(): ?string
-    {
-        // TODO: replace calls
-    }
-
-    /**
-     * @param null|string $imageFilename
-     */
-    public function setImageFilename(?string $imageFilename): void
-    {
-        // TODO: replace calls
-    }
-
-    /**
      * @return ConstructionManager[]|ArrayCollection
      */
     public function getConstructionManagers()

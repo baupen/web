@@ -20,15 +20,15 @@ trait ImageDownloadTrait
 {
     /**
      * @param Issue $issue
-     * @param string $expectedImageFilename
+     * @param string $expectedId
      * @param string $size
      * @param ImageServiceInterface $imageService
      *
      * @return string
      */
-    protected function getImagePathForIssue(Issue $issue, $expectedImageFilename, $size, ImageServiceInterface $imageService)
+    protected function getImagePathForIssue(Issue $issue, $expectedId, $size, ImageServiceInterface $imageService)
     {
-        if ($issue->getImageFilename() !== $expectedImageFilename) {
+        if ($issue->getImage() === null || $issue->getImage()->getId() !== $expectedId) {
             throw new NotFoundHttpException();
         }
 
@@ -42,15 +42,15 @@ trait ImageDownloadTrait
 
     /**
      * @param ConstructionSite $constructionSite
-     * @param string $expectedImageFilename
+     * @param string $expectedId
      * @param string $size
      * @param ImageServiceInterface $imageService
      *
      * @return string
      */
-    protected function getImagePathForConstructionSite(ConstructionSite $constructionSite, $expectedImageFilename, $size, ImageServiceInterface $imageService)
+    protected function getImagePathForConstructionSite(ConstructionSite $constructionSite, $expectedId, $size, ImageServiceInterface $imageService)
     {
-        if ($constructionSite->getImageFilename() !== $expectedImageFilename) {
+        if ($constructionSite->getImage() === null || $constructionSite->getImage()->getId() !== $expectedId) {
             throw new NotFoundHttpException();
         }
 

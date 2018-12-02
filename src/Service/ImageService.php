@@ -113,7 +113,7 @@ class ImageService implements ImageServiceInterface
      */
     public function warmupCacheForIssue(Issue $issue)
     {
-        if ($issue->getImageFilename() === null || $this->preventCacheWarmup) {
+        if ($issue->getImage() === null || $this->preventCacheWarmup) {
             return;
         }
 
@@ -123,7 +123,7 @@ class ImageService implements ImageServiceInterface
         $this->ensureFolderExists($targetFolder);
 
         foreach ($this->validSizes as $validSize) {
-            $this->renderSizeFor($issue->getImageFilename(), $sourceFolder, $targetFolder, $validSize);
+            $this->renderSizeFor($issue->getImage()->getFilename(), $sourceFolder, $targetFolder, $validSize);
         }
     }
 
@@ -134,7 +134,7 @@ class ImageService implements ImageServiceInterface
      */
     public function warmupCacheForConstructionSite(ConstructionSite $constructionSite)
     {
-        if ($constructionSite->getImageFilename() === null || $this->preventCacheWarmup) {
+        if ($constructionSite->getImage() === null || $this->preventCacheWarmup) {
             return;
         }
 
@@ -144,7 +144,7 @@ class ImageService implements ImageServiceInterface
         $this->ensureFolderExists($targetFolder);
 
         foreach ($this->validSizes as $validSize) {
-            $this->renderSizeFor($constructionSite->getImageFilename(), $sourceFolder, $targetFolder, $validSize);
+            $this->renderSizeFor($constructionSite->getImage()->getFilename(), $sourceFolder, $targetFolder, $validSize);
         }
     }
 
@@ -193,7 +193,7 @@ class ImageService implements ImageServiceInterface
         $targetFolder = $this->pathService->getTransientFolderForIssue($issue);
         $this->ensureFolderExists($targetFolder);
 
-        return $this->renderSizeFor($issue->getImageFilename(), $sourceFolder, $targetFolder, $size);
+        return $this->renderSizeFor($issue->getImage()->getFilename(), $sourceFolder, $targetFolder, $size);
     }
 
     /**
@@ -209,7 +209,7 @@ class ImageService implements ImageServiceInterface
         $targetFolder = $this->pathService->getTransientFolderForConstructionSite($constructionSite);
         $this->ensureFolderExists($targetFolder);
 
-        return $this->renderSizeFor($constructionSite->getImageFilename(), $sourceFolder, $targetFolder, $size);
+        return $this->renderSizeFor($constructionSite->getImage()->getFilename(), $sourceFolder, $targetFolder, $size);
     }
 
     /**
