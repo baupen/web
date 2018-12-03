@@ -147,6 +147,10 @@ class ReportService implements ReportServiceInterface
             $currentIssue = [];
 
             $imagePath = $this->imageService->getSizeForIssue($issue, ImageServiceInterface::SIZE_REPORT_ISSUE);
+            if ($imagePath === null) {
+                continue;
+            }
+
             $currentIssue['imagePath'] = $imagePath;
             $currentIssue['identification'] = $issue->getNumber();
             $currentRow[] = $currentIssue;

@@ -76,8 +76,8 @@ class LoadIssueData extends BaseFixture
 
             //set random positions
             foreach ($issues as $issue) {
-                if ($counter % 4 > 0) {
-                    // each 4th issue has an optional position
+                if ($counter % 8 > 0) {
+                    // each 8th issue has an optional position
                     $x = $this->xOrientationArray[$counter % \count($this->xOrientationArray)];
                     $y = $this->yOrientationArray[$counter % \count($this->yOrientationArray)];
                     $position = new IssuePosition();
@@ -90,6 +90,7 @@ class LoadIssueData extends BaseFixture
                     }
                     $position->setPositionZoomScale($this->scaleArray[$counter % \count($this->scaleArray)]);
                     $issue->setPosition($position);
+                    $position->setIssue($issue);
                 }
                 ++$counter;
             }
@@ -199,7 +200,7 @@ class LoadIssueData extends BaseFixture
 
             if ($this->getRandomNumber() > 3) {
                 // add image to issue
-                $sourceImage = $images[$issueNumber % \count($images)];
+                $sourceImage = $images[$issueNumber * $this->getRandomNumber() % \count($images)];
                 $targetFolder = $this->pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
 
                 // ensure target folder exists

@@ -188,6 +188,10 @@ class ImageService implements ImageServiceInterface
      */
     public function getSizeForIssue(Issue $issue, $size = self::SIZE_THUMBNAIL)
     {
+        if ($issue->getImage() === null) {
+            return null;
+        }
+
         //setup paths
         $sourceFolder = $this->pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
         $targetFolder = $this->pathService->getTransientFolderForIssueImage($issue);
@@ -204,6 +208,10 @@ class ImageService implements ImageServiceInterface
      */
     public function getSizeForConstructionSite(ConstructionSite $constructionSite, $size = self::SIZE_THUMBNAIL)
     {
+        if ($constructionSite->getImage() === null) {
+            return null;
+        }
+
         //setup paths
         $sourceFolder = $this->pathService->getFolderForConstructionSiteImage($constructionSite);
         $targetFolder = $this->pathService->getTransientFolderForConstructionSiteImage($constructionSite);
@@ -288,7 +296,7 @@ class ImageService implements ImageServiceInterface
 
         //second render with correct image dimensions
         list($width, $height) = ImageHelper::getWidthHeightArguments($targetFilepath, 3840, 2160);
-        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=' . $width . ' -dDEVICEHEIGHTPOINTS=' . $height . ' -dJPEGQ=80 -dFitPage -sPageList=1 -o ' . $targetFilepath . ' ' . $sourcePdfPath;
+        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=' . $width . ' -dDEVICEHEIGHTPOINTS=' . $height . ' -dJPEGQ=80 -dUseCropBox -dFitPage -sPageList=1 -o ' . $targetFilepath . ' ' . $sourcePdfPath;
         exec($command);
     }
 
@@ -490,7 +498,8 @@ class ImageService implements ImageServiceInterface
         }
 
         //render size variant
-        $issueImagePathSize = $generationTargetFolder . \DIRECTORY_SEPARATOR . $this->getSizeFilename($issueRenderPath, $size);
+        $fileName = pathinfo($issueRenderPath, PATHINFO_BASENAME);
+        $issueImagePathSize = $generationTargetFolder . \DIRECTORY_SEPARATOR . $this->getSizeFilename($fileName, $size);
         if (!is_file($issueImagePathSize) || $this->disableCache) {
             $this->renderSizeOfImage($issueRenderPath, $issueImagePathSize, $size);
 

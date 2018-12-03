@@ -85,7 +85,7 @@ class FileController extends ExternalApiController
                 },
                 function ($entity) use ($imageService) {
                     /* @var Issue $entity */
-                    return $entity->getImage() !== null ? $imageService->getSizeForIssue($entity, ImageServiceInterface::SIZE_FULL) : null;
+                    return $imageService->getSizeForIssue($entity, ImageServiceInterface::SIZE_FULL);
                 }
             );
         } elseif ($downloadFileRequest->getBuilding() !== null) {
@@ -98,7 +98,7 @@ class FileController extends ExternalApiController
                 },
                 function ($entity) use ($imageService) {
                     /* @var ConstructionSite $entity */
-                    return $entity->getImage() !== null ? $imageService->getSizeForConstructionSite($entity, ImageServiceInterface::SIZE_FULL) : null;
+                    return $imageService->getSizeForConstructionSite($entity, ImageServiceInterface::SIZE_FULL);
                 }
             );
         }
