@@ -78,8 +78,8 @@ class ImageService implements ImageServiceInterface
         }
 
         //setup paths
-        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
-        $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
+        $sourceFilePath = $this->pathService->getFolderForMapFile($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
+        $generationTargetFolder = $this->pathService->getTransientFolderForMapFile($map);
         $this->ensureFolderExists($generationTargetFolder);
 
         return $this->generateMapImageInternal($issues, $sourceFilePath, $generationTargetFolder, false, $size);
@@ -99,8 +99,8 @@ class ImageService implements ImageServiceInterface
         }
 
         //setup paths
-        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
-        $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
+        $sourceFilePath = $this->pathService->getFolderForMapFile($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
+        $generationTargetFolder = $this->pathService->getTransientFolderForMapFile($map);
         $this->ensureFolderExists($generationTargetFolder);
 
         return $this->generateMapImageInternal($issues, $sourceFilePath, $generationTargetFolder, true, $size);
@@ -118,8 +118,8 @@ class ImageService implements ImageServiceInterface
         }
 
         //setup paths
-        $sourceFolder = $this->pathService->getFolderForIssue($issue->getMap()->getConstructionSite());
-        $targetFolder = $this->pathService->getTransientFolderForIssue($issue);
+        $sourceFolder = $this->pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
+        $targetFolder = $this->pathService->getTransientFolderForIssueImage($issue);
         $this->ensureFolderExists($targetFolder);
 
         foreach ($this->validSizes as $validSize) {
@@ -139,8 +139,8 @@ class ImageService implements ImageServiceInterface
         }
 
         //setup paths
-        $sourceFolder = $this->pathService->getFolderForConstructionSite($constructionSite);
-        $targetFolder = $this->pathService->getTransientFolderForConstructionSite($constructionSite);
+        $sourceFolder = $this->pathService->getFolderForConstructionSiteImage($constructionSite);
+        $targetFolder = $this->pathService->getTransientFolderForConstructionSiteImage($constructionSite);
         $this->ensureFolderExists($targetFolder);
 
         foreach ($this->validSizes as $validSize) {
@@ -160,8 +160,8 @@ class ImageService implements ImageServiceInterface
         }
 
         //setup paths
-        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
-        $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
+        $sourceFilePath = $this->pathService->getFolderForMapFile($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
+        $generationTargetFolder = $this->pathService->getTransientFolderForMapFile($map);
         $this->ensureFolderExists($generationTargetFolder);
 
         //prerender all sizes
@@ -189,8 +189,8 @@ class ImageService implements ImageServiceInterface
     public function getSizeForIssue(Issue $issue, $size = self::SIZE_THUMBNAIL)
     {
         //setup paths
-        $sourceFolder = $this->pathService->getFolderForIssue($issue->getMap()->getConstructionSite());
-        $targetFolder = $this->pathService->getTransientFolderForIssue($issue);
+        $sourceFolder = $this->pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
+        $targetFolder = $this->pathService->getTransientFolderForIssueImage($issue);
         $this->ensureFolderExists($targetFolder);
 
         return $this->renderSizeFor($issue->getImage()->getFilename(), $sourceFolder, $targetFolder, $size);
@@ -205,8 +205,8 @@ class ImageService implements ImageServiceInterface
     public function getSizeForConstructionSite(ConstructionSite $constructionSite, $size = self::SIZE_THUMBNAIL)
     {
         //setup paths
-        $sourceFolder = $this->pathService->getFolderForConstructionSite($constructionSite);
-        $targetFolder = $this->pathService->getTransientFolderForConstructionSite($constructionSite);
+        $sourceFolder = $this->pathService->getFolderForConstructionSiteImage($constructionSite);
+        $targetFolder = $this->pathService->getTransientFolderForConstructionSiteImage($constructionSite);
         $this->ensureFolderExists($targetFolder);
 
         return $this->renderSizeFor($constructionSite->getImage()->getFilename(), $sourceFolder, $targetFolder, $size);

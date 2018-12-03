@@ -200,7 +200,7 @@ class LoadIssueData extends BaseFixture
             if ($this->getRandomNumber() > 3) {
                 // add image to issue
                 $sourceImage = $images[$issueNumber % \count($images)];
-                $targetFolder = $this->pathService->getFolderForIssue($issue->getMap()->getConstructionSite());
+                $targetFolder = $this->pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
 
                 // ensure target folder exists
                 if (!file_exists($targetFolder)) {
