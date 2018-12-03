@@ -52,7 +52,7 @@ class IssuePosition extends BaseEntity
     /**
      * @var Issue
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Issue", inversedBy="position")
+     * @ORM\OneToOne(targetEntity="App\Entity\Issue", inversedBy="position")
      */
     private $issue;
 
@@ -125,5 +125,21 @@ class IssuePosition extends BaseEntity
     public function setIssue(Issue $issue): void
     {
         $this->issue = $issue;
+    }
+
+    /**
+     * @return MapFile
+     */
+    public function getMapFile(): MapFile
+    {
+        return $this->mapFile;
+    }
+
+    /**
+     * @param MapFile $mapFile
+     */
+    public function setMapFile(MapFile $mapFile): void
+    {
+        $this->mapFile = $mapFile;
     }
 }

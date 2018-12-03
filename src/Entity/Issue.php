@@ -121,11 +121,11 @@ class Issue extends BaseEntity
     private $reviewBy;
 
     /**
-     * @var IssuePosition
+     * @var IssuePosition|null
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\IssuePosition", mappedBy="issue")
+     * @ORM\OneToOne(targetEntity="App\Entity\IssuePosition", mappedBy="issue")
      */
-    private $positions;
+    private $position;
 
     /**
      * @var IssueImage[]|ArrayCollection
@@ -503,5 +503,21 @@ class Issue extends BaseEntity
     public function setImage(IssueImage $image): void
     {
         $this->image = $image;
+    }
+
+    /**
+     * @return IssuePosition|null
+     */
+    public function getPosition(): ?IssuePosition
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param IssuePosition|null $position
+     */
+    public function setPosition(?IssuePosition $position): void
+    {
+        $this->position = $position;
     }
 }
