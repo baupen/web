@@ -51,6 +51,7 @@ class IssueController extends ExternalApiController
 
     const MAP_CRAFTSMAN_NOT_ON_SAME_CONSTRUCTION_SITE = 'the craftsman does not work on the same construction site as the assigned map';
 
+    const ISSUE_POSITION_INVALID = 'issue position is invalid';
     const ISSUE_FILE_UPLOAD_FAILED = 'the uploaded file could not be processes';
     const ISSUE_NO_FILE_TO_UPLOAD = 'no file could be found in the request, but one was expected';
     const ISSUE_NO_FILE_UPLOAD_EXPECTED = 'a file was uploaded, but not specified in the issue';
@@ -157,6 +158,11 @@ class IssueController extends ExternalApiController
         $issue = $issueTransformer->fromApi($issueModifyRequest->getIssue(), $entity);
         $issue->setUploadBy($constructionManager);
         $issue->setUploadedAt(new \DateTime());
+
+        //check position validity
+        if ($issue->getPosition() === null && $issueModifyRequest->getIssue()->getPosition() !== null) {
+            return $this->fail(static::ISSUE_POSITION_INVALID);
+        }
 
         //get map & check access
         /** @var Map $map */

@@ -123,7 +123,7 @@ class Issue extends BaseEntity
     /**
      * @var IssuePosition|null
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\IssuePosition", mappedBy="issue")
+     * @ORM\OneToOne(targetEntity="App\Entity\IssuePosition", mappedBy="issue", cascade={"all"})
      */
     private $position;
 
