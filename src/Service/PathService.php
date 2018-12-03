@@ -36,17 +36,16 @@ class PathService implements PathServiceInterface
 
     public function __construct(KernelInterface $kernel)
     {
-        $baseDir = $kernel->getLogDir() . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . '..';
-
-        $this->folderRoot = $baseDir . \DIRECTORY_SEPARATOR . 'persistent';
-        $this->transientFolderRoot = $baseDir . \DIRECTORY_SEPARATOR . 'transient';
+        $baseDir = $kernel->getLogDir() . \DIRECTORY_SEPARATOR . '..';
 
         // add test to path to be able to unit test without messing up local dev state
         $environment = $kernel->getEnvironment();
         if ($environment === 'test') {
-            $this->folderRoot .= \DIRECTORY_SEPARATOR . $environment;
-            $this->transientFolderRoot .= \DIRECTORY_SEPARATOR . $environment;
+            $baseDir .= \DIRECTORY_SEPARATOR . $environment;
         }
+
+        $this->folderRoot = $baseDir . \DIRECTORY_SEPARATOR . 'persistent';
+        $this->transientFolderRoot = $baseDir . \DIRECTORY_SEPARATOR . 'transient';
 
         $this->constructionSiteFolderRoot = $this->folderRoot . \DIRECTORY_SEPARATOR . 'construction_sites';
     }
