@@ -20,6 +20,7 @@ use App\Controller\Api\External\Base\ExternalApiController;
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
+use App\Entity\IssueImage;
 use App\Entity\Map;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
@@ -173,7 +174,7 @@ class IssueController extends ExternalApiController
         //check position validity
         if ($issue->getPosition() === null && $issueModifyRequest->getIssue()->getPosition() !== null) {
             return $this->fail(static::ISSUE_POSITION_INVALID);
-        } elseif (!$issue->getMap()->getFiles()->contains($issue->getPosition()->getMapFile())) {
+        } elseif ($issue->getPosition() !== null && !$issue->getMap()->getFiles()->contains($issue->getPosition()->getMapFile())) {
             return $this->fail(static::ISSUE_POSITION_INVALID);
         }
 
@@ -216,27 +217,22 @@ class IssueController extends ExternalApiController
             $issue->setImage($issueImage);
         }
 
-        //if create, need to enforce correct GUID
-        if ($mode === 'create') {
-            /** @var EntityManager $em */
-            $em = $this->getDoctrine()->getManager();
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
 
-            //deactivate guid generator so we can use the ids the client has sent us
-            $metadata = $em->getClassMetadata(\get_class($issue));
+        //deactivate guid generator so we can use the ids the client has sent us
+        foreach ([Issue::class, IssueImage::class] as $class) {
+            $metadata = $em->getClassMetadata($class);
             $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
             $metadata->setIdGenerator(new \Doctrine\ORM\Id\AssignedGenerator());
-            $issue->setId($issueModifyRequest->getIssue()->getMeta()->getId());
-            if ($issueModifyRequest->getIssue()->getImage()->getId() !== null) {
-                $issue->getImage()->setId($issueModifyRequest->getIssue()->getImage()->getId());
-            }
-            $issue->setId($issueModifyRequest->getIssue()->getMeta()->getId());
-
-            //persist to db
-            $em->persist($issue);
-            $em->flush();
-        } else {
-            $this->fastSave($issue);
         }
+
+        // need to enforce correct guids
+        if ($issueModifyRequest->getIssue()->getImage() !== null) {
+            $issue->getImage()->setId($issueModifyRequest->getIssue()->getImage()->getId());
+        }
+        $issue->setId($issueModifyRequest->getIssue()->getMeta()->getId());
+        $this->fastSave($issue);
 
         //construct answer
         return $this->success(new IssueData($issueTransformer->toApi($issue)));

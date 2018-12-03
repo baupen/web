@@ -134,8 +134,13 @@ class ApiController extends AbstractApiController
         //check properties
         $this->assertSame($checkIssue->wasAddedWithClient, $issue->getWasAddedWithClient());
         $this->assertSame($checkIssue->isMarked, $issue->getIsMarked());
-        $this->assertSame($checkIssue->image->id, $issue->getImage()->getId());
-        $this->assertSame($checkIssue->image->filename, $issue->getImage()->getFilename());
+        if ($issue->getImage() !== null) {
+            $this->assertTrue(property_exists($checkIssue, "image"));
+            $this->assertSame($checkIssue->image->id, $issue->getImage()->getId());
+            $this->assertSame($checkIssue->image->filename, $issue->getImage()->getFilename());
+        } else {
+            $this->assertTrue(!property_exists($checkIssue, "image") || $checkIssue->image === null);
+        }
         $this->assertSame($checkIssue->description, $issue->getDescription());
         $this->assertSame($checkIssue->map, $issue->getMap());
 

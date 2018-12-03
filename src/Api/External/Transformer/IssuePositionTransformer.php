@@ -34,6 +34,10 @@ class IssuePositionTransformer
      */
     public function toApi($entity)
     {
+        if ($entity === null) {
+            return null;
+        }
+
         $position = new \App\Api\External\Entity\IssuePosition();
         $position->setX($entity->getPositionX());
         $position->setY($entity->getPositionY());

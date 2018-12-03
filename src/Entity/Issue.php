@@ -135,7 +135,7 @@ class Issue extends BaseEntity
     private $images;
 
     /**
-     * @var IssueImage
+     * @var IssueImage|null
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\IssueImage", cascade={"persist"})
      */
@@ -442,17 +442,17 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @return IssueImage
+     * @return IssueImage|null
      */
-    public function getImage(): IssueImage
+    public function getImage(): ?IssueImage
     {
         return $this->image;
     }
 
     /**
-     * @param IssueImage $image
+     * @param IssueImage|null $image
      */
-    public function setImage(IssueImage $image): void
+    public function setImage(?IssueImage $image): void
     {
         $this->image = $image;
     }
