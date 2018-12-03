@@ -148,7 +148,7 @@ class Map extends BaseEntity
      */
     public function getIssues()
     {
-        return $this->getIssues();
+        return $this->issues;
     }
 
     /**

@@ -309,7 +309,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
                 // if map found, set as parent & stop for current map
                 if ($shortestPrefixMatch !== null) {
                     $parent = $mapLookup[$shortestPrefixMatch];
-                    if (!$map->getPreventAutomaticEdit()) {
+                    if (!$map->getPreventAutomaticEdit() && $parent !== $map) {
                         $map->setParent($parent);
                     }
                     break;
