@@ -92,7 +92,7 @@ class ConstructionSite extends BaseEntity
         $this->constructionManagers = new ArrayCollection();
         $this->maps = new ArrayCollection();
         $this->craftsmen = new ArrayCollection();
-        $this->image = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     /**

@@ -104,22 +104,6 @@ class Map extends BaseEntity
     }
 
     /**
-     * @return null|string
-     */
-    public function getFilename(): ?string
-    {
-        //TODO: replace calls
-    }
-
-    /**
-     * @param string|null $filename
-     */
-    public function setFilename(?string $filename): void
-    {
-        //TODO: replace calls
-    }
-
-    /**
      * @return ConstructionSite
      */
     public function getConstructionSite(): ConstructionSite

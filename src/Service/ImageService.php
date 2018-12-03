@@ -73,12 +73,12 @@ class ImageService implements ImageServiceInterface
      */
     public function generateMapImage(Map $map, array $issues, $size = self::SIZE_THUMBNAIL)
     {
-        if ($map->getFilename() === null) {
+        if ($map->getFile() === null) {
             return null;
         }
 
         //setup paths
-        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFilename();
+        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
         $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
         $this->ensureFolderExists($generationTargetFolder);
 
@@ -94,12 +94,12 @@ class ImageService implements ImageServiceInterface
      */
     public function generateMapImageForReport(Map $map, array $issues, $size = self::SIZE_THUMBNAIL)
     {
-        if ($map->getFilename() === null) {
+        if ($map->getFile() === null) {
             return null;
         }
 
         //setup paths
-        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFilename();
+        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
         $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
         $this->ensureFolderExists($generationTargetFolder);
 
@@ -155,12 +155,12 @@ class ImageService implements ImageServiceInterface
      */
     public function warmupCacheForMap(Map $map)
     {
-        if ($map->getFilename() === null || $this->preventCacheWarmup) {
+        if ($map->getFile() === null || $this->preventCacheWarmup) {
             return;
         }
 
         //setup paths
-        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFilename();
+        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
         $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
         $this->ensureFolderExists($generationTargetFolder);
 

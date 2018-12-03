@@ -19,8 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * An issue is something created by the construction manager to inform the craftsman of it.
  *
- * @ORM\Table(name="issue")
- * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
+ * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
 class IssuePosition extends BaseEntity

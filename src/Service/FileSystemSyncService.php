@@ -288,7 +288,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
 
         // find longest matching prefix & set as parent
         foreach ($maps as $map) {
-            $parts = explode(' ', $map->getFilename());
+            $parts = explode(' ', $map->getFile()->getDisplayFilename());
             for ($i = \count($parts); $i > 0; --$i) {
                 $prefix = '';
                 for ($j = 0; $j < $i; ++$j) {
@@ -339,7 +339,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         $ending = pathinfo($fileName, PATHINFO_EXTENSION);
 
         // strip artificial hash
-        if (preg_match('_hash([A-Fa-f0-9]){64}.' . $ending, $fileName, $matches, PREG_OFFSET_CAPTURE)) {
+        if (preg_match('/_hash([A-Fa-f0-9]){64}.' . $ending . '/', $fileName, $matches, PREG_OFFSET_CAPTURE)) {
             $index = $matches[0][1];
             $output = mb_substr($fileName, 0, $index);
         } else {
@@ -380,7 +380,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         $output = preg_replace('/(?<!^)([0-9]+)/', ' $0', $output);
 
         // add point after all numbers which are before any letters
-        if (preg_match('[a-zA-Z]', $output, $matches, PREG_OFFSET_CAPTURE)) {
+        if (preg_match('/[a-zA-Z]/', $output, $matches, PREG_OFFSET_CAPTURE)) {
             $index = $matches[0][1];
             $before = mb_substr($output, 0, $index);
             $after = mb_substr($output, $index);

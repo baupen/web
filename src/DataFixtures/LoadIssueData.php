@@ -157,7 +157,9 @@ class LoadIssueData extends BaseFixture
 
         foreach ($issues as $issue) {
             $issue->setMap($this->getRandomEntry($randomMapCounter, $constructionSite->getMaps()));
-            $issue->getPosition()->setMapFile($issue->getMap()->getFile());
+            if ($issue->getPosition() !== null) {
+                $issue->getPosition()->setMapFile($issue->getMap()->getFile());
+            }
 
             if ($setStatus !== 0 || $this->getRandomNumber() > 7) {
                 //if no status is set leave craftsman null sometime
@@ -217,7 +219,7 @@ class LoadIssueData extends BaseFixture
                 $file = new IssueImage();
                 $file->setFilename($fileName);
                 $file->setDisplayFilename($fileName);
-                $file->setHash(hash_file('sha264', $targetPath));
+                $file->setHash(hash_file('sha256', $targetPath));
                 $file->setIssue($issue);
                 $issue->setImage($file);
                 $issue->getImages()->add($file);

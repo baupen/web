@@ -207,7 +207,7 @@ abstract class AbstractApiController extends BaseDoctrineController
 
         $file = new IssueImage();
         $file->setFilename($targetFileName);
-        $file->setHash(hash_file('sha264', $targetPath));
+        $file->setHash(hash_file('sha256', $targetPath));
         $file->setDisplayFilename($targetFileName);
 
         return $file;
