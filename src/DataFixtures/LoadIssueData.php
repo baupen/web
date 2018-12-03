@@ -157,6 +157,7 @@ class LoadIssueData extends BaseFixture
 
         foreach ($issues as $issue) {
             $issue->setMap($this->getRandomEntry($randomMapCounter, $constructionSite->getMaps()));
+            $issue->getPosition()->setMapFile($issue->getMap()->getFile());
 
             if ($setStatus !== 0 || $this->getRandomNumber() > 7) {
                 //if no status is set leave craftsman null sometime

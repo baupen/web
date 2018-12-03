@@ -159,11 +159,6 @@ class IssueController extends ExternalApiController
         $issue->setUploadBy($constructionManager);
         $issue->setUploadedAt(new \DateTime());
 
-        //check position validity
-        if ($issue->getPosition() === null && $issueModifyRequest->getIssue()->getPosition() !== null) {
-            return $this->fail(static::ISSUE_POSITION_INVALID);
-        }
-
         //get map & check access
         /** @var Map $map */
         $map = $this->getDoctrine()->getRepository(Map::class)->findOneBy(['id' => $issueModifyRequest->getIssue()->getMap()]);
@@ -174,6 +169,13 @@ class IssueController extends ExternalApiController
             return $this->fail(static::MAP_ACCESS_DENIED);
         }
         $issue->setMap($map);
+
+        //check position validity
+        if ($issue->getPosition() === null && $issueModifyRequest->getIssue()->getPosition() !== null) {
+            return $this->fail(static::ISSUE_POSITION_INVALID);
+        } elseif (!$issue->getMap()->getFiles()->contains($issue->getPosition()->getMapFile())) {
+            return $this->fail(static::ISSUE_POSITION_INVALID);
+        }
 
         //get craftsmen & check access
         if ($issueModifyRequest->getIssue()->getCraftsman() !== null) {

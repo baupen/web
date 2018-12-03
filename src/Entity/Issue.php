@@ -376,55 +376,6 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @return float|null
-     */
-    public function getPositionX(): ?float
-    {
-        //TODO: ensure where map is set, always map file set at issue position
-        //TODO replace calls
-    }
-
-    /**
-     * @param float|null $positionX
-     */
-    public function setPositionX(?float $positionX): void
-    {
-        //TODO replace calls
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getPositionY(): ?float
-    {
-        //TODO replace calls
-    }
-
-    /**
-     * @param float|null $positionY
-     */
-    public function setPositionY(?float $positionY): void
-    {
-        //TODO replace calls
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getPositionZoomScale(): ?float
-    {
-        //TODO replace calls
-    }
-
-    /**
-     * @param float|null $positionZoomScale
-     */
-    public function setPositionZoomScale(?float $positionZoomScale): void
-    {
-        //TODO replace calls
-    }
-
-    /**
      * @return Craftsman|null
      */
     public function getCraftsman(): ?Craftsman
