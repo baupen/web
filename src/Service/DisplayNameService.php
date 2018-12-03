@@ -83,7 +83,7 @@ class DisplayNameService implements DisplayNameServiceInterface
             $after = mb_substr($output, $index);
 
             // match single numbers followed by a space (1 Obergeschoss) to add a point
-            while (preg_match('/[0-9]{1}[ ]/', $before, $matches, PREG_OFFSET_CAPTURE)) {
+            if (preg_match('/[0-9]{1}[ ]/', $before, $matches, PREG_OFFSET_CAPTURE)) {
                 foreach ($matches as $match) {
                     $matchLength = mb_strlen($match[0]);
                     $index = $match[1];
