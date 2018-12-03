@@ -58,17 +58,7 @@ class IssueTransformer extends BatchTransformer
         $entity->setDescription($issue->getDescription());
         $entity->setIsMarked($issue->getIsMarked());
         $entity->setWasAddedWithClient($issue->getWasAddedWithClient());
-        $issue->setPosition($this->issuePositionTransformer->fromApi($entity->getPosition(), $entity));
-
-        if ($issue->getPosition() !== null) {
-            $entity->setPositionX($issue->getPosition()->getX());
-            $entity->setPositionY($issue->getPosition()->getY());
-            $entity->setPositionZoomScale($issue->getPosition()->getZoomScale());
-        } else {
-            $entity->setPositionX(null);
-            $entity->setPositionY(null);
-            $entity->setPositionZoomScale(null);
-        }
+        $entity->setPosition($this->issuePositionTransformer->fromApi($issue->getPosition(), $entity));
 
         return $entity;
     }

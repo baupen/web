@@ -380,6 +380,7 @@ class Issue extends BaseEntity
      */
     public function getPositionX(): ?float
     {
+        //TODO: ensure where map is set, always map file set at issue position
         //TODO replace calls
     }
 

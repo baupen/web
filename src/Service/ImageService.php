@@ -304,12 +304,13 @@ class ImageService implements ImageServiceInterface
         $ySize = imagesy($image);
 
         //target location
+        $position = $issue->getPosition();
         if ($rotated) {
-            $yCoordinate = $issue->getPositionX();
-            $xCoordinate = $issue->getPositionY();
+            $yCoordinate = $position->getPositionX();
+            $xCoordinate = $position->getPositionY();
         } else {
-            $yCoordinate = $issue->getPositionY();
-            $xCoordinate = $issue->getPositionX();
+            $yCoordinate = $position->getPositionY();
+            $xCoordinate = $position->getPositionX();
         }
         $yCoordinate *= $ySize;
         $xCoordinate *= $xSize;
@@ -436,7 +437,7 @@ class ImageService implements ImageServiceInterface
         if ($sourceImageStream !== null) {
             //draw the issues on the map
             foreach ($issues as $issue) {
-                if ($issue->getPositionX() !== null) {
+                if ($issue->getPosition() !== null) {
                     $this->drawIssue($issue, $rotated, $sourceImageStream);
                 }
             }

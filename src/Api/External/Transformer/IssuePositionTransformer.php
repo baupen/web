@@ -54,23 +54,24 @@ class IssuePositionTransformer
                 $manager->remove($existing);
                 $manager->flush();
             }
-        } else {
-            if ($existing === null) {
-                $existing = new IssuePosition();
-                $existing->setIssue($entity);
-            }
 
-            $linkedMapFile = $this->doctrine->getRepository(MapFile::class)->find($position->getMapFileId());
-            if ($linkedMapFile === null) {
-                return null;
-            }
-
-            $existing->setMapFile($linkedMapFile);
-            $existing->setPositionX($position->getX());
-            $existing->setPositionY($position->getY());
-            $existing->setPositionZoomScale($position->getZoomScale());
-
-            return $existing;
+            return null;
         }
+        if ($existing === null) {
+            $existing = new IssuePosition();
+            $existing->setIssue($entity);
+        }
+
+        $linkedMapFile = $this->doctrine->getRepository(MapFile::class)->find($position->getMapFileId());
+        if ($linkedMapFile === null) {
+            return null;
+        }
+
+        $existing->setMapFile($linkedMapFile);
+        $existing->setPositionX($position->getX());
+        $existing->setPositionY($position->getY());
+        $existing->setPositionZoomScale($position->getZoomScale());
+
+        return $existing;
     }
 }

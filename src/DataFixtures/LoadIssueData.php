@@ -15,6 +15,7 @@ use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use App\Entity\IssueImage;
+use App\Entity\IssuePosition;
 use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -79,14 +80,16 @@ class LoadIssueData extends BaseFixture
                     // each 4th issue has an optional position
                     $x = $this->xOrientationArray[$counter % \count($this->xOrientationArray)];
                     $y = $this->yOrientationArray[$counter % \count($this->yOrientationArray)];
+                    $position = new IssuePosition();
                     if ($counter % 3 === 0) {
-                        $issue->setPositionX($y);
-                        $issue->setPositionY($x);
+                        $position->setPositionX($y);
+                        $position->setPositionY($x);
                     } else {
-                        $issue->setPositionX($x);
-                        $issue->setPositionY($y);
+                        $position->setPositionX($x);
+                        $position->setPositionY($y);
                     }
-                    $issue->setPositionZoomScale($this->scaleArray[$counter % \count($this->scaleArray)]);
+                    $position->setPositionZoomScale($this->scaleArray[$counter % \count($this->scaleArray)]);
+                    $issue->setPosition($position);
                 }
                 ++$counter;
             }
