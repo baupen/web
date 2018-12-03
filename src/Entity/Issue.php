@@ -155,13 +155,6 @@ class Issue extends BaseEntity
      */
     private $map;
 
-    /**
-     * @var MapFile
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="issues")
-     */
-    private $mapFile;
-
     public function __construct()
     {
         $this->images = new ArrayCollection();

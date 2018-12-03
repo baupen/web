@@ -58,7 +58,7 @@ class IssuePosition extends BaseEntity
     /**
      * @var MapFile
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="issues")
+     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="issuePositions")
      */
     private $mapFile;
 
