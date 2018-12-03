@@ -30,7 +30,7 @@ services:
     tags: ['serializer.normalizer']
 
   Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor:
-    public: false
+    public: true
 
   # tag it with serializer so datetime is serialized in a meaningful way
   Symfony\Component\Serializer\Normalizer\ObjectNormalizer:
