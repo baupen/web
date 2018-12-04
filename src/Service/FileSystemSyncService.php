@@ -16,6 +16,7 @@ use App\Entity\ConstructionSiteImage;
 use App\Entity\Map;
 use App\Entity\MapFile;
 use App\Entity\Traits\FileTrait;
+use App\Service\Interfaces\DisplayNameServiceInterface;
 use App\Service\Interfaces\FileSystemSyncServiceInterface;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
@@ -38,11 +39,17 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
      */
     private $imageService;
 
-    public function __construct(RegistryInterface $registry, PathServiceInterface $pathService, ImageServiceInterface $imageService)
+    /**
+     * @var DisplayNameServiceInterface
+     */
+    private $displayNameService;
+
+    public function __construct(RegistryInterface $registry, PathServiceInterface $pathService, ImageServiceInterface $imageService, DisplayNameServiceInterface $displayNameService)
     {
         $this->registry = $registry;
         $this->pathService = $pathService;
         $this->imageService = $imageService;
+        $this->displayNameService = $displayNameService;
     }
 
     /**
@@ -82,7 +89,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         $folderName = mb_substr($directory, mb_strrpos($directory, \DIRECTORY_SEPARATOR) + 1);
         $constructionSite = new ConstructionSite();
         $constructionSite->setFolderName($folderName);
-        $constructionSite->setName($this->deriveNameForConstructionSite($folderName));
+        $constructionSite->setName($this->displayNameService->forConstructionSite($folderName));
         $manager->persist($constructionSite);
         $manager->flush();
 
@@ -140,8 +147,75 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
          * if a file should be added, but one already exists with a different hash, the new file is created as "<original_filename>_hash<hash>.<original_extension>
          * for example, if the file "preview.jpg" already exists, a file "preview_hash872z71237q8w78712837.jpg" is added if it does not exist already.
          */
-        $manager = $this->registry->getManager();
+        $isCacheInvalidatedConstructionSite = false;
+        $this->syncConstructionSite($directory, $constructionSite, $isCacheInvalidatedConstructionSite);
 
+        $cacheInvalidatedMaps = [];
+        $this->syncConstructionSiteMaps($directory, $constructionSite, $cacheInvalidatedMaps);
+
+        $manager = $this->registry->getManager();
+        $manager->persist($constructionSite);
+        $manager->flush();
+
+        // warmup cache
+        if ($isCacheInvalidatedConstructionSite) {
+            $this->imageService->warmupCacheForConstructionSite($constructionSite);
+        }
+        foreach ($cacheInvalidatedMaps as $changedMap) {
+            $this->imageService->warmupCacheForMap($changedMap);
+        }
+    }
+
+    /**
+     * @param Map[] $maps
+     */
+    private function createTreeStructure(array $maps)
+    {
+        $mapLookup = [];
+        foreach ($maps as $map) {
+            $mapLookup[$map->getName()] = $map;
+        }
+        $mapNames = array_keys($mapLookup);
+
+        // find longest matching prefix & set as parent
+        foreach ($maps as $map) {
+            $parts = explode(' ', $map->getFile()->getDisplayFilename());
+            for ($i = \count($parts); $i > 0; --$i) {
+                $prefix = '';
+                for ($j = 0; $j < $i; ++$j) {
+                    $prefix .= $parts[$j] . ' ';
+                }
+
+                // find shortest maps name with that prefix
+                $shortestPrefixMatch = null;
+                foreach ($mapNames as $mapName) {
+                    // prefix match
+                    if (mb_strpos($mapName, $prefix) === 0) {
+                        if ($shortestPrefixMatch === null || \mb_strlen($mapName) < $shortestPrefixMatch) {
+                            $shortestPrefixMatch = $mapName;
+                        }
+                    }
+                }
+
+                // if map found, set as parent & stop for current map
+                if ($shortestPrefixMatch !== null) {
+                    $parent = $mapLookup[$shortestPrefixMatch];
+                    if (!$map->getPreventAutomaticEdit() && $parent !== $map) {
+                        $map->setParent($parent);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param string $directory
+     * @param ConstructionSite $constructionSite
+     * @param bool $isCacheInvalidatedConstructionSite
+     */
+    private function syncConstructionSite(string $directory, ConstructionSite $constructionSite, bool &$isCacheInvalidatedConstructionSite)
+    {
         // get all files from the directory
         $existingFiles = $constructionSite->getImages()->toArray();
         $constructionSiteImagesDirectory = $directory . \DIRECTORY_SEPARATOR . 'images';
@@ -155,7 +229,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
 
         // refresh recommended filenames
         foreach ($allImages as $image) {
-            $image->setDisplayFilename($this->deriveNameForConstructionSiteImage($image->getFilename()));
+            $image->setDisplayFilename($this->displayNameService->forConstructionSiteImage($image->getFilename()));
         }
 
         // add all newly discovered files
@@ -183,7 +257,15 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
                 $isCacheInvalidatedConstructionSite = true;
             }
         }
+    }
 
+    /**
+     * @param string $directory
+     * @param ConstructionSite $constructionSite
+     * @param array $cacheInvalidatedMaps
+     */
+    private function syncConstructionSiteMaps(string $directory, ConstructionSite $constructionSite, array $cacheInvalidatedMaps)
+    {
         // get all files from the directory
         /** @var MapFile[] $existingMapFiles */
         $existingMapFiles = [];
@@ -205,10 +287,10 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         // refresh recommended filenames
         $mapNames = [];
         foreach ($allMapFiles as $mapFile) {
-            $mapFile->setDisplayFilename($this->deriveNameForMapFile($mapFile->getFilename()));
+            $mapFile->setDisplayFilename($this->displayNameService->forMapFile($mapFile->getFilename()));
             $mapNames[] = $mapFile->getDisplayFilename();
         }
-        $mapNames = $this->normalizeNames($mapNames);
+        $mapNames = $this->displayNameService->normalizeMapNames($mapNames);
         $counter = 0;
         foreach ($allMapFiles as $mapFile) {
             $mapFile->setDisplayFilename($mapNames[$counter++]);
@@ -262,232 +344,5 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
 
         // put all in tree structure
         $this->createTreeStructure($constructionSite->getMaps()->toArray());
-
-        $manager->persist($constructionSite);
-        $manager->flush();
-
-        // warmup cache
-        if ($isCacheInvalidatedConstructionSite) {
-            $this->imageService->warmupCacheForConstructionSite($constructionSite);
-        }
-        foreach ($cacheInvalidatedMaps as $changedMap) {
-            $this->imageService->warmupCacheForMap($changedMap);
-        }
-    }
-
-    /**
-     * @param Map[] $maps
-     */
-    private function createTreeStructure(array $maps)
-    {
-        $mapLookup = [];
-        foreach ($maps as $map) {
-            $mapLookup[$map->getName()] = $map;
-        }
-        $mapNames = array_keys($mapLookup);
-
-        // find longest matching prefix & set as parent
-        foreach ($maps as $map) {
-            $parts = explode(' ', $map->getFilename());
-            for ($i = \count($parts); $i > 0; --$i) {
-                $prefix = '';
-                for ($j = 0; $j < $i; ++$j) {
-                    $prefix .= $parts[$j] . ' ';
-                }
-
-                // find shortest maps name with that prefix
-                $shortestPrefixMatch = null;
-                foreach ($mapNames as $mapName) {
-                    // prefix match
-                    if (mb_strpos($mapName, $prefix) === 0) {
-                        if ($shortestPrefixMatch === null || \mb_strlen($mapName) < $shortestPrefixMatch) {
-                            $shortestPrefixMatch = $mapName;
-                        }
-                    }
-                }
-
-                // if map found, set as parent & stop for current map
-                if ($shortestPrefixMatch !== null) {
-                    $parent = $mapLookup[$shortestPrefixMatch];
-                    if (!$map->getPreventAutomaticEdit()) {
-                        $map->setParent($parent);
-                    }
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
-     * @param string $folderName
-     *
-     * @return string
-     */
-    private function deriveNameForConstructionSite(string $folderName)
-    {
-        return str_replace('_', ' ', $folderName);
-    }
-
-    /**
-     * @param string $fileName
-     *
-     * @return string
-     */
-    private function deriveNameForFile(string $fileName)
-    {
-        // strip file ending
-        $ending = pathinfo($fileName, PATHINFO_EXTENSION);
-
-        // strip artificial hash
-        if (preg_match('_hash([A-Fa-f0-9]){64}.' . $ending, $fileName, $matches, PREG_OFFSET_CAPTURE)) {
-            $index = $matches[0][1];
-            $output = mb_substr($fileName, 0, $index);
-        } else {
-            $output = pathinfo($fileName, PATHINFO_FILENAME);
-        }
-
-        return $output;
-    }
-
-    /**
-     * @param string $mapName
-     *
-     * @return string
-     */
-    private function deriveNameForConstructionSiteImage(string $mapName)
-    {
-        $output = $this->deriveNameForFile($mapName);
-
-        return $output;
-    }
-
-    /**
-     * @param string $mapName
-     *
-     * @return string
-     */
-    private function deriveNameForMapFile(string $mapName)
-    {
-        $output = $this->deriveNameForFile($mapName);
-
-        // replace _ with space
-        $output = str_replace('_', ' ', $mapName);
-
-        // add space before all capitals which are followed by at least 2 non-capital (ObergeschossHaus)
-        $output = preg_replace('/(?<!^)([A-Z][a-z]{2,})/', ' $0', $output);
-
-        // add space before all numbers (Haus2)
-        $output = preg_replace('/(?<!^)([0-9]+)/', ' $0', $output);
-
-        // add point after all numbers which are before any letters
-        if (preg_match('[a-zA-Z]', $output, $matches, PREG_OFFSET_CAPTURE)) {
-            $index = $matches[0][1];
-            $before = mb_substr($output, 0, $index);
-            $after = mb_substr($output, $index);
-
-            // match only single numbers followed by a space (1 Obergeschoss)
-            $output = preg_replace('/[0-9]{1}[ ]/', '$0.', $before) . $after;
-        }
-
-        // remove multiple whitespaces
-        return preg_replace('/\s+/', ' ', $output);
-    }
-
-    /**
-     * @param string[] $mapNames
-     *
-     * @return string[]
-     */
-    private function normalizeNames(array $mapNames)
-    {
-        //skip normalization if too few map names
-        if (\count($mapNames) < 3) {
-            return $mapNames;
-        }
-
-        // remove any entries occurring always
-        /** @var string[][] $partsAnalytics */
-        $partsAnalytics = [];
-        $mapParts = [];
-
-        // collect stats about file names
-        foreach ($mapNames as $mapName) {
-            $parts = explode(' ', $mapName);
-            $mapParts[] = $parts;
-            for ($i = 0; $i < \count($parts); ++$i) {
-                if (!array_key_exists($i, $partsAnalytics)) {
-                    $partsAnalytics[$i] = [];
-                }
-
-                $currentPart = $parts[$i];
-                if (!array_key_exists($currentPart, $partsAnalytics[$i])) {
-                    $partsAnalytics[$i][$currentPart] = 1;
-                } else {
-                    ++$partsAnalytics[$i][$currentPart];
-                }
-            }
-        }
-
-        // remove groups which are always the same
-        for ($i = 0; $i < \count($partsAnalytics); ++$i) {
-            // only one value; can safely remove because will not contain any useful information
-            if (\count($partsAnalytics[$i]) === 1) {
-                // remove from parts list
-                foreach ($mapParts as &$mapPart) {
-                    unset($mapPart[$i]);
-                    $mapPart = array_values($mapPart);
-                }
-
-                //remove processed entry group
-                unset($partsAnalytics[$i]);
-                $partsAnalytics = array_values($partsAnalytics);
-                --$i;
-            }
-        }
-
-        // remove groups which are very likely date groups
-        for ($i = 0; $i < \count($partsAnalytics); ++$i) {
-            $probablyDateGroup = true;
-            foreach ($partsAnalytics[$i] as $element => $counter) {
-                if (!is_numeric($element)) {
-                    $probablyDateGroup = false;
-                    break;
-                }
-
-                $probableYear = mb_substr($element, 0, 2);
-                $currentYear = mb_substr(date('Y'), 2, 2);
-                if ($probableYear < 10 || $probableYear > $currentYear) {
-                    $probablyDateGroup = false;
-                    break;
-                }
-            }
-
-            if ($probablyDateGroup) {
-                // remove from parts list
-                foreach ($mapParts as &$mapPart) {
-                    unset($mapPart[$i]);
-                    $mapPart = array_values($mapPart);
-                }
-
-                //remove processed entry group
-                unset($partsAnalytics[$i]);
-                $partsAnalytics = array_values($partsAnalytics);
-                --$i;
-            }
-        }
-
-        $counter = 0;
-        $resultingNames = [];
-        foreach ($mapNames as $key => $mapName) {
-            // join parts back together
-            $newName = implode(' ', $mapParts[$counter++]);
-
-            // remove multiple whitespaces
-            $newName = preg_replace('/\s+/', ' ', $newName);
-
-            $resultingNames[$key] = $newName;
-        }
-
-        return $resultingNames;
     }
 }

@@ -121,11 +121,11 @@ class Issue extends BaseEntity
     private $reviewBy;
 
     /**
-     * @var IssuePosition
+     * @var IssuePosition|null
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\IssuePosition", mappedBy="issue")
+     * @ORM\OneToOne(targetEntity="App\Entity\IssuePosition", mappedBy="issue", cascade={"persist"})
      */
-    private $positions;
+    private $position;
 
     /**
      * @var IssueImage[]|ArrayCollection
@@ -135,7 +135,7 @@ class Issue extends BaseEntity
     private $images;
 
     /**
-     * @var IssueImage
+     * @var IssueImage|null
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\IssueImage", cascade={"persist"})
      */
@@ -154,13 +154,6 @@ class Issue extends BaseEntity
      * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="issues")
      */
     private $map;
-
-    /**
-     * @var MapFile
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="issues")
-     */
-    private $mapFile;
 
     public function __construct()
     {
@@ -376,54 +369,6 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @return float|null
-     */
-    public function getPositionX(): ?float
-    {
-        //TODO replace calls
-    }
-
-    /**
-     * @param float|null $positionX
-     */
-    public function setPositionX(?float $positionX): void
-    {
-        //TODO replace calls
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getPositionY(): ?float
-    {
-        //TODO replace calls
-    }
-
-    /**
-     * @param float|null $positionY
-     */
-    public function setPositionY(?float $positionY): void
-    {
-        //TODO replace calls
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getPositionZoomScale(): ?float
-    {
-        //TODO replace calls
-    }
-
-    /**
-     * @param float|null $positionZoomScale
-     */
-    public function setPositionZoomScale(?float $positionZoomScale): void
-    {
-        //TODO replace calls
-    }
-
-    /**
      * @return Craftsman|null
      */
     public function getCraftsman(): ?Craftsman
@@ -490,18 +435,34 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @return IssueImage
+     * @return IssueImage|null
      */
-    public function getImage(): IssueImage
+    public function getImage(): ?IssueImage
     {
         return $this->image;
     }
 
     /**
-     * @param IssueImage $image
+     * @param IssueImage|null $image
      */
-    public function setImage(IssueImage $image): void
+    public function setImage(?IssueImage $image): void
     {
         $this->image = $image;
+    }
+
+    /**
+     * @return IssuePosition|null
+     */
+    public function getPosition(): ?IssuePosition
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param IssuePosition|null $position
+     */
+    public function setPosition(?IssuePosition $position): void
+    {
+        $this->position = $position;
     }
 }

@@ -30,7 +30,7 @@ class ConstructionSiteImage extends BaseEntity
     /**
      * @var ConstructionSite
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="image")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="images")
      */
     private $constructionSite;
 

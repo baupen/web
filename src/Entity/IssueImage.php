@@ -30,7 +30,7 @@ class IssueImage extends BaseEntity
     /**
      * @var Issue
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Issue", inversedBy="image")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Issue", inversedBy="images")
      */
     private $issue;
 

@@ -76,6 +76,9 @@ class CraftsmanController extends BaseDoctrineController
 
         //generate map & print
         $imagePath = $imageService->generateMapImage($map, $issues, $imageService->ensureValidSize($size));
+        if ($imagePath === null) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->file($imagePath, null, ResponseHeaderBag::DISPOSITION_INLINE);
     }

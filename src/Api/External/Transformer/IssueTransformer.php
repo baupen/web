@@ -11,7 +11,6 @@
 
 namespace App\Api\External\Transformer;
 
-use App\Api\External\Entity\IssuePosition;
 use App\Api\External\Entity\IssueStatus;
 use App\Api\External\Entity\IssueStatusEvent;
 use App\Api\External\Transformer\Base\BatchTransformer;
@@ -31,15 +30,21 @@ class IssueTransformer extends BatchTransformer
     private $fileTransformer;
 
     /**
+     * @var IssuePositionTransformer
+     */
+    private $issuePositionTransformer;
+
+    /**
      * @var RegistryInterface
      */
     private $doctrine;
 
-    public function __construct(ObjectMetaTransformer $objectMetaTransformer, FileTransformer $fileTransformer, RegistryInterface $registry)
+    public function __construct(ObjectMetaTransformer $objectMetaTransformer, FileTransformer $fileTransformer, IssuePositionTransformer $issuePositionTransformer, RegistryInterface $registry)
     {
         $this->objectMetaTransformer = $objectMetaTransformer;
         $this->doctrine = $registry;
         $this->fileTransformer = $fileTransformer;
+        $this->issuePositionTransformer = $issuePositionTransformer;
     }
 
     /**
@@ -53,16 +58,7 @@ class IssueTransformer extends BatchTransformer
         $entity->setDescription($issue->getDescription());
         $entity->setIsMarked($issue->getIsMarked());
         $entity->setWasAddedWithClient($issue->getWasAddedWithClient());
-
-        if ($issue->getPosition() !== null) {
-            $entity->setPositionX($issue->getPosition()->getX());
-            $entity->setPositionY($issue->getPosition()->getY());
-            $entity->setPositionZoomScale($issue->getPosition()->getZoomScale());
-        } else {
-            $entity->setPositionX(null);
-            $entity->setPositionY(null);
-            $entity->setPositionZoomScale(null);
-        }
+        $entity->setPosition($this->issuePositionTransformer->fromApi($issue->getPosition(), $entity));
 
         return $entity;
     }
@@ -80,14 +76,7 @@ class IssueTransformer extends BatchTransformer
         $issue->setImage($this->fileTransformer->toApi($entity->getImage()));
         $issue->setDescription($entity->getDescription());
         $issue->setNumber($entity->getNumber());
-
-        if ($entity->getPositionZoomScale() !== null) {
-            $issuePosition = new IssuePosition();
-            $issuePosition->setZoomScale($entity->getPositionZoomScale());
-            $issuePosition->setY($entity->getPositionY());
-            $issuePosition->setX($entity->getPositionX());
-            $issue->setPosition($issuePosition);
-        }
+        $issue->setPosition($this->issuePositionTransformer->toApi($entity->getPosition()));
 
         $issueStatus = new IssueStatus();
         if ($entity->getRegisteredAt() !== null) {

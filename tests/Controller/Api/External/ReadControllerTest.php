@@ -94,11 +94,11 @@ class ReadControllerTest extends ApiController
 
         $this->assertNotNull($readResponse->data);
         $this->assertNull($readResponse->data->changedUser);
-        $this->assertEmpty($readResponse->data->changedBuildings);
+        $this->assertEmpty($readResponse->data->changedConstructionSites);
         $this->assertEmpty($readResponse->data->changedCraftsmen);
         $this->assertEmpty($readResponse->data->changedMaps);
         $this->assertEmpty($readResponse->data->changedIssues);
-        $this->assertCount(1, $readResponse->data->removedBuildingIDs);
+        $this->assertCount(1, $readResponse->data->removedConstructionSiteIDs);
         $this->assertCount(1, $readResponse->data->removedCraftsmanIDs);
         $this->assertCount(1, $readResponse->data->removedMapIDs);
         $this->assertCount(1, $readResponse->data->removedIssueIDs);
@@ -115,11 +115,11 @@ class ReadControllerTest extends ApiController
 
         $this->assertNotNull($readResponse->data);
         $this->assertNull($readResponse->data->changedUser);
-        $this->assertCount(2, $readResponse->data->changedBuildings);
+        $this->assertCount(2, $readResponse->data->changedConstructionSites);
         $this->assertCount(2, $readResponse->data->changedCraftsmen);
         $this->assertCount(2, $readResponse->data->changedMaps);
         $this->assertCount(2, $readResponse->data->changedIssues);
-        $this->assertCount(1, $readResponse->data->removedBuildingIDs);
+        $this->assertCount(1, $readResponse->data->removedConstructionSiteIDs);
         $this->assertCount(1, $readResponse->data->removedCraftsmanIDs);
         $this->assertCount(1, $readResponse->data->removedMapIDs);
         $this->assertCount(1, $readResponse->data->removedIssueIDs);

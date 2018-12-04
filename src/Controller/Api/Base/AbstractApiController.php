@@ -171,7 +171,7 @@ abstract class AbstractApiController extends BaseDoctrineController
     protected function uploadIssueImage(UploadedFile $file, Issue $issue, string $targetFileName, PathServiceInterface $pathService, ImageServiceInterface $imageService)
     {
         //create folder
-        $targetFolder = $pathService->getFolderForIssue($issue->getMap()->getConstructionSite());
+        $targetFolder = $pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
         if (!file_exists($targetFolder)) {
             mkdir($targetFolder, 0777, true);
         }
@@ -207,7 +207,7 @@ abstract class AbstractApiController extends BaseDoctrineController
 
         $file = new IssueImage();
         $file->setFilename($targetFileName);
-        $file->setHash(hash_file('sha264', $targetPath));
+        $file->setHash(hash_file('sha256', $targetPath));
         $file->setDisplayFilename($targetFileName);
 
         return $file;

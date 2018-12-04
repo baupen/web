@@ -19,8 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * An issue is something created by the construction manager to inform the craftsman of it.
  *
- * @ORM\Table(name="issue")
- * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
+ * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
 class IssuePosition extends BaseEntity
@@ -52,14 +51,14 @@ class IssuePosition extends BaseEntity
     /**
      * @var Issue
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Issue", inversedBy="position")
+     * @ORM\OneToOne(targetEntity="App\Entity\Issue", inversedBy="position")
      */
     private $issue;
 
     /**
      * @var MapFile
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="issues")
+     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="issuePositions")
      */
     private $mapFile;
 
@@ -125,5 +124,21 @@ class IssuePosition extends BaseEntity
     public function setIssue(Issue $issue): void
     {
         $this->issue = $issue;
+    }
+
+    /**
+     * @return MapFile
+     */
+    public function getMapFile(): MapFile
+    {
+        return $this->mapFile;
+    }
+
+    /**
+     * @param MapFile $mapFile
+     */
+    public function setMapFile(MapFile $mapFile): void
+    {
+        $this->mapFile = $mapFile;
     }
 }

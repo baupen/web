@@ -23,6 +23,7 @@ class IssueControllerTest extends ApiController
 {
     /**
      * tests the create issue method.
+     * @throws \Exception
      */
     public function testCreateIssue()
     {
@@ -44,12 +45,13 @@ class IssueControllerTest extends ApiController
         };
 
         $serverData = $this->getServerEntities($client, $user);
+        $map = $serverData->getMaps()[0];
 
         $issue = new Issue();
         $issue->setWasAddedWithClient(true);
         $issue->setIsMarked(true);
         $issue->setDescription('description');
-        $issue->setMap($serverData->getMaps()[0]->getMeta()->getId());
+        $issue->setMap($map->getMeta()->getId());
 
         $issue->setStatus(new IssueStatus());
 
@@ -62,6 +64,7 @@ class IssueControllerTest extends ApiController
         $issuePosition->setX(0.4);
         $issuePosition->setY(0.3);
         $issuePosition->setZoomScale(0.5);
+        $issuePosition->setMapFileId($map->getFile()->getId());
         $issue->setPosition($issuePosition);
 
         $response = $doRequest($issue);
@@ -118,12 +121,6 @@ class IssueControllerTest extends ApiController
         $issue->setDescription('description 2');
 
         $issue->setStatus(new IssueStatus());
-
-        $issuePosition = new IssuePosition();
-        $issuePosition->setX(0.4);
-        $issuePosition->setY(0.3);
-        $issuePosition->setZoomScale(0.5);
-        $issue->setPosition($issuePosition);
 
         $response = $doRequest($issue);
         $issueResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
