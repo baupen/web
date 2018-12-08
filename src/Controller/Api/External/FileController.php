@@ -72,7 +72,7 @@ class FileController extends ExternalApiController
                 },
                 function ($entity) use ($pathService) {
                     /* @var Map $entity */
-                    return  $entity->getFilename() ? $pathService->getFolderForMap($entity->getConstructionSite()) . \DIRECTORY_SEPARATOR . $entity->getFilename() : null;
+                    return  $entity->getFile() ? $pathService->getFolderForMapFile($entity->getConstructionSite()) . \DIRECTORY_SEPARATOR . $entity->getFile()->getFilename() : null;
                 }
             );
         } elseif ($downloadFileRequest->getIssue() !== null) {
@@ -85,7 +85,7 @@ class FileController extends ExternalApiController
                 },
                 function ($entity) use ($imageService) {
                     /* @var Issue $entity */
-                    return $entity->getImageFilename() !== null ? $imageService->getSizeForIssue($entity, ImageServiceInterface::SIZE_FULL) : null;
+                    return $imageService->getSizeForIssue($entity, ImageServiceInterface::SIZE_FULL);
                 }
             );
         } elseif ($downloadFileRequest->getBuilding() !== null) {
@@ -98,7 +98,7 @@ class FileController extends ExternalApiController
                 },
                 function ($entity) use ($imageService) {
                     /* @var ConstructionSite $entity */
-                    return $entity->getImageFilename() !== null ? $imageService->getSizeForConstructionSite($entity, ImageServiceInterface::SIZE_FULL) : null;
+                    return $imageService->getSizeForConstructionSite($entity, ImageServiceInterface::SIZE_FULL);
                 }
             );
         }
@@ -112,7 +112,6 @@ class FileController extends ExternalApiController
      * @param ObjectMeta $objectMeta
      * @param callable $verifyAccess
      * @param callable $accessFilePath
-     * @param ImageServiceInterface|null $imageService pass if its an image, then resize
      *
      * @throws \Exception
      *
@@ -124,7 +123,7 @@ class FileController extends ExternalApiController
         /** @var EntityRepository $repository */
         $entity = $repository->find($objectMeta->getId());
 
-        /** @var TimeTrait $entity */
+        /** @var TimeTrait|null $entity */
         if ($entity === null) {
             return $this->fail(static::ENTITY_NOT_FOUND);
         }

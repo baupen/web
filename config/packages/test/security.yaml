@@ -1,4 +1,4 @@
 security:
-    firewalls:
-       main:
-           http_basic: ~
+  firewalls:
+    main:
+      http_basic: ~

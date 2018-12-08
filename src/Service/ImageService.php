@@ -73,13 +73,13 @@ class ImageService implements ImageServiceInterface
      */
     public function generateMapImage(Map $map, array $issues, $size = self::SIZE_THUMBNAIL)
     {
-        if ($map->getFilename() === null) {
+        if ($map->getFile() === null) {
             return null;
         }
 
         //setup paths
-        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFilename();
-        $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
+        $sourceFilePath = $this->pathService->getFolderForMapFile($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
+        $generationTargetFolder = $this->pathService->getTransientFolderForMapFile($map);
         $this->ensureFolderExists($generationTargetFolder);
 
         return $this->generateMapImageInternal($issues, $sourceFilePath, $generationTargetFolder, false, $size);
@@ -94,13 +94,13 @@ class ImageService implements ImageServiceInterface
      */
     public function generateMapImageForReport(Map $map, array $issues, $size = self::SIZE_THUMBNAIL)
     {
-        if ($map->getFilename() === null) {
+        if ($map->getFile() === null) {
             return null;
         }
 
         //setup paths
-        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFilename();
-        $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
+        $sourceFilePath = $this->pathService->getFolderForMapFile($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
+        $generationTargetFolder = $this->pathService->getTransientFolderForMapFile($map);
         $this->ensureFolderExists($generationTargetFolder);
 
         return $this->generateMapImageInternal($issues, $sourceFilePath, $generationTargetFolder, true, $size);
@@ -113,17 +113,17 @@ class ImageService implements ImageServiceInterface
      */
     public function warmupCacheForIssue(Issue $issue)
     {
-        if ($issue->getImageFilename() === null || $this->preventCacheWarmup) {
+        if ($issue->getImage() === null || $this->preventCacheWarmup) {
             return;
         }
 
         //setup paths
-        $sourceFolder = $this->pathService->getFolderForIssue($issue->getMap()->getConstructionSite());
-        $targetFolder = $this->pathService->getTransientFolderForIssue($issue);
+        $sourceFolder = $this->pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
+        $targetFolder = $this->pathService->getTransientFolderForIssueImage($issue);
         $this->ensureFolderExists($targetFolder);
 
         foreach ($this->validSizes as $validSize) {
-            $this->renderSizeFor($issue->getImageFilename(), $sourceFolder, $targetFolder, $validSize);
+            $this->renderSizeFor($issue->getImage()->getFilename(), $sourceFolder, $targetFolder, $validSize);
         }
     }
 
@@ -134,17 +134,17 @@ class ImageService implements ImageServiceInterface
      */
     public function warmupCacheForConstructionSite(ConstructionSite $constructionSite)
     {
-        if ($constructionSite->getImageFilename() === null || $this->preventCacheWarmup) {
+        if ($constructionSite->getImage() === null || $this->preventCacheWarmup) {
             return;
         }
 
         //setup paths
-        $sourceFolder = $this->pathService->getFolderForConstructionSite($constructionSite);
-        $targetFolder = $this->pathService->getTransientFolderForConstructionSite($constructionSite);
+        $sourceFolder = $this->pathService->getFolderForConstructionSiteImage($constructionSite);
+        $targetFolder = $this->pathService->getTransientFolderForConstructionSiteImage($constructionSite);
         $this->ensureFolderExists($targetFolder);
 
         foreach ($this->validSizes as $validSize) {
-            $this->renderSizeFor($constructionSite->getImageFilename(), $sourceFolder, $targetFolder, $validSize);
+            $this->renderSizeFor($constructionSite->getImage()->getFilename(), $sourceFolder, $targetFolder, $validSize);
         }
     }
 
@@ -155,13 +155,13 @@ class ImageService implements ImageServiceInterface
      */
     public function warmupCacheForMap(Map $map)
     {
-        if ($map->getFilename() === null || $this->preventCacheWarmup) {
+        if ($map->getFile() === null || $this->preventCacheWarmup) {
             return;
         }
 
         //setup paths
-        $sourceFilePath = $this->pathService->getFolderForMap($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFilename();
-        $generationTargetFolder = $this->pathService->getTransientFolderForMap($map);
+        $sourceFilePath = $this->pathService->getFolderForMapFile($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
+        $generationTargetFolder = $this->pathService->getTransientFolderForMapFile($map);
         $this->ensureFolderExists($generationTargetFolder);
 
         //prerender all sizes
@@ -188,12 +188,16 @@ class ImageService implements ImageServiceInterface
      */
     public function getSizeForIssue(Issue $issue, $size = self::SIZE_THUMBNAIL)
     {
+        if ($issue->getImage() === null) {
+            return null;
+        }
+
         //setup paths
-        $sourceFolder = $this->pathService->getFolderForIssue($issue->getMap()->getConstructionSite());
-        $targetFolder = $this->pathService->getTransientFolderForIssue($issue);
+        $sourceFolder = $this->pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
+        $targetFolder = $this->pathService->getTransientFolderForIssueImage($issue);
         $this->ensureFolderExists($targetFolder);
 
-        return $this->renderSizeFor($issue->getImageFilename(), $sourceFolder, $targetFolder, $size);
+        return $this->renderSizeFor($issue->getImage()->getFilename(), $sourceFolder, $targetFolder, $size);
     }
 
     /**
@@ -204,12 +208,16 @@ class ImageService implements ImageServiceInterface
      */
     public function getSizeForConstructionSite(ConstructionSite $constructionSite, $size = self::SIZE_THUMBNAIL)
     {
+        if ($constructionSite->getImage() === null) {
+            return null;
+        }
+
         //setup paths
-        $sourceFolder = $this->pathService->getFolderForConstructionSite($constructionSite);
-        $targetFolder = $this->pathService->getTransientFolderForConstructionSite($constructionSite);
+        $sourceFolder = $this->pathService->getFolderForConstructionSiteImage($constructionSite);
+        $targetFolder = $this->pathService->getTransientFolderForConstructionSiteImage($constructionSite);
         $this->ensureFolderExists($targetFolder);
 
-        return $this->renderSizeFor($constructionSite->getImageFilename(), $sourceFolder, $targetFolder, $size);
+        return $this->renderSizeFor($constructionSite->getImage()->getFilename(), $sourceFolder, $targetFolder, $size);
     }
 
     /**
@@ -288,7 +296,7 @@ class ImageService implements ImageServiceInterface
 
         //second render with correct image dimensions
         list($width, $height) = ImageHelper::getWidthHeightArguments($targetFilepath, 3840, 2160);
-        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=' . $width . ' -dDEVICEHEIGHTPOINTS=' . $height . ' -dJPEGQ=80 -dFitPage -sPageList=1 -o ' . $targetFilepath . ' ' . $sourcePdfPath;
+        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=' . $width . ' -dDEVICEHEIGHTPOINTS=' . $height . ' -dJPEGQ=80 -dUseCropBox -dFitPage -sPageList=1 -o ' . $targetFilepath . ' ' . $sourcePdfPath;
         exec($command);
     }
 
@@ -304,12 +312,13 @@ class ImageService implements ImageServiceInterface
         $ySize = imagesy($image);
 
         //target location
+        $position = $issue->getPosition();
         if ($rotated) {
-            $yCoordinate = $issue->getPositionX();
-            $xCoordinate = $issue->getPositionY();
+            $yCoordinate = $position->getPositionX();
+            $xCoordinate = $position->getPositionY();
         } else {
-            $yCoordinate = $issue->getPositionY();
-            $xCoordinate = $issue->getPositionX();
+            $yCoordinate = $position->getPositionY();
+            $xCoordinate = $position->getPositionX();
         }
         $yCoordinate *= $ySize;
         $xCoordinate *= $xSize;
@@ -436,7 +445,7 @@ class ImageService implements ImageServiceInterface
         if ($sourceImageStream !== null) {
             //draw the issues on the map
             foreach ($issues as $issue) {
-                if ($issue->getPositionX() !== null) {
+                if ($issue->getPosition() !== null) {
                     $this->drawIssue($issue, $rotated, $sourceImageStream);
                 }
             }
@@ -489,7 +498,8 @@ class ImageService implements ImageServiceInterface
         }
 
         //render size variant
-        $issueImagePathSize = $generationTargetFolder . \DIRECTORY_SEPARATOR . $this->getSizeFilename($issueRenderPath, $size);
+        $fileName = pathinfo($issueRenderPath, PATHINFO_BASENAME);
+        $issueImagePathSize = $generationTargetFolder . \DIRECTORY_SEPARATOR . $this->getSizeFilename($fileName, $size);
         if (!is_file($issueImagePathSize) || $this->disableCache) {
             $this->renderSizeOfImage($issueRenderPath, $issueImagePathSize, $size);
 

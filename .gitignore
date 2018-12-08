@@ -40,3 +40,8 @@ public/build
 /node_modules/
 /public/build/
 ###< symfony/webpack-encore-pack ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+###< phpunit/phpunit ###
+

@@ -36,7 +36,7 @@ class ReadRequest extends AuthenticatedRequest
      *
      * @Assert\NotNull()
      */
-    private $buildings;
+    private $constructionSites;
 
     /**
      * @var ObjectMeta[]
@@ -87,17 +87,17 @@ class ReadRequest extends AuthenticatedRequest
     /**
      * @return ObjectMeta[]
      */
-    public function getBuildings(): array
+    public function getConstructionSites(): array
     {
-        return $this->buildings;
+        return $this->constructionSites;
     }
 
     /**
-     * @param ObjectMeta[] $buildings
+     * @param ObjectMeta[] $constructionSites
      */
-    public function setBuildings(array $buildings): void
+    public function setConstructionSites(array $constructionSites): void
     {
-        $this->buildings = $buildings;
+        $this->constructionSites = $constructionSites;
     }
 
     /**

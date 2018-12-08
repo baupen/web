@@ -12,7 +12,11 @@
 namespace App\Service;
 
 use App\Entity\ConstructionSite;
+use App\Entity\ConstructionSiteImage;
 use App\Entity\Map;
+use App\Entity\MapFile;
+use App\Entity\Traits\FileTrait;
+use App\Service\Interfaces\DisplayNameServiceInterface;
 use App\Service\Interfaces\FileSystemSyncServiceInterface;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
@@ -35,15 +39,23 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
      */
     private $imageService;
 
-    public function __construct(RegistryInterface $registry, PathServiceInterface $pathService, ImageServiceInterface $imageService)
+    /**
+     * @var DisplayNameServiceInterface
+     */
+    private $displayNameService;
+
+    public function __construct(RegistryInterface $registry, PathServiceInterface $pathService, ImageServiceInterface $imageService, DisplayNameServiceInterface $displayNameService)
     {
         $this->registry = $registry;
         $this->pathService = $pathService;
         $this->imageService = $imageService;
+        $this->displayNameService = $displayNameService;
     }
 
     /**
      * syncs the filesystem with the database, creating/updating construction sites as needed.
+     *
+     * @throws \Exception
      */
     public function sync()
     {
@@ -67,6 +79,8 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
 
     /**
      * @param string $directory
+     *
+     * @throws \Exception
      */
     private function addConstructionSite(string $directory)
     {
@@ -75,7 +89,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         $folderName = mb_substr($directory, mb_strrpos($directory, \DIRECTORY_SEPARATOR) + 1);
         $constructionSite = new ConstructionSite();
         $constructionSite->setFolderName($folderName);
-        $constructionSite->setName($this->deriveNameForConstructionSite($folderName));
+        $constructionSite->setName($this->displayNameService->forConstructionSite($folderName));
         $manager->persist($constructionSite);
         $manager->flush();
 
@@ -83,80 +97,73 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
     }
 
     /**
+     * @param string $folder
+     * @param string $ending
+     * @param FileTrait[] $knownFiles
+     * @param callable $createNewFile
+     *
+     * @return FileTrait[]
+     */
+    private function getFiles(string $folder, string $ending, array $knownFiles, callable $createNewFile)
+    {
+        $knownFilesLookup = [];
+        foreach ($knownFiles as $knownFile) {
+            $knownFilesLookup[$knownFile->getFilename()] = $knownFile;
+        }
+
+        /** @var FileTrait[] $newFiles */
+        $newFiles = [];
+
+        $folderLength = \mb_strlen($folder);
+        $files = glob($folder . \DIRECTORY_SEPARATOR . '*' . $ending);
+        foreach ($files as $file) {
+            $fileName = mb_substr($file, $folderLength + 1);
+
+            if (!array_key_exists($fileName, $knownFilesLookup)) {
+                /** @var FileTrait $fileTrait */
+                $fileTrait = $createNewFile($file);
+                $fileTrait->setFilename($fileName);
+                $fileTrait->setHash(hash_file('sha256', $file));
+                $newFiles[] = $fileTrait;
+            }
+        }
+
+        return $newFiles;
+    }
+
+    /**
      * @param string $directory
      * @param ConstructionSite $constructionSite
+     *
+     * @throws \Exception
      */
     private function syncDirectory(string $directory, ConstructionSite $constructionSite)
     {
-        // add file if it does not exist already
-        $previewImageFilename = 'preview.jpg';
-        $previewImagePath = $directory . \DIRECTORY_SEPARATOR . $previewImageFilename;
-        if ($constructionSite->getImageFilename() === null && file_exists($previewImagePath)) {
-            $constructionSite->setImageFilename($previewImageFilename);
-            $this->imageService->warmupCacheForConstructionSite($constructionSite);
-        }
+        /**
+         * conventions:
+         * images for the construction site are inside the /images folder
+         * pdfs/dwgs containing maps are inside the /maps folder
+         * no file is ever replaced/removed; only add is allowed
+         * if a file should be added, but one already exists with a different hash, the new file is created as "<original_filename>_hash<hash>.<original_extension>
+         * for example, if the file "preview.jpg" already exists, a file "preview_hash872z71237q8w78712837.jpg" is added if it does not exist already.
+         */
+        $isCacheInvalidatedConstructionSite = false;
+        $this->syncConstructionSite($directory, $constructionSite, $isCacheInvalidatedConstructionSite);
 
-        // add maps which do not exist already
-        $mapFolder = $this->pathService->getFolderForMap($constructionSite);
-        $mapFolderLength = \mb_strlen($mapFolder);
-        $existingMaps = glob($mapFolder . \DIRECTORY_SEPARATOR . '*.pdf');
+        $cacheInvalidatedMaps = [];
+        $this->syncConstructionSiteMaps($directory, $constructionSite, $cacheInvalidatedMaps);
 
-        /** @var Map[] $mapLookup */
-        $mapLookup = [];
-        foreach ($constructionSite->getMaps() as $map) {
-            $mapLookup[$map->getFilename()] = $map;
-        }
-
-        // create map object for each file not found
-        $newMaps = [];
-        foreach ($existingMaps as $existingMap) {
-            $fileName = mb_substr($existingMap, $mapFolderLength + 1);
-            if (!array_key_exists($fileName, $mapLookup)) {
-                $map = new Map();
-                $map->setConstructionSite($constructionSite);
-                $map->setFilename($fileName);
-                $newMaps[] = $map;
-            }
-        }
-        /** @var Map[] $allMaps */
-        $allMaps = array_merge($newMaps, array_values($mapLookup));
-
-        // derive a fitting name for the map depending on file name
-        $mapNames = [];
-        foreach ($allMaps as $item) {
-            $mapNames[] = $this->deriveNameForMap($item->getFilename());
-        }
-
-        // normalize map names looking at all names given & write back
-        $newNames = $this->normalizeNames($mapNames);
-        $counter = 0;
-        foreach ($allMaps as $map) {
-            $map->setName($newNames[$counter++]);
-        }
-
-        // remove duplicates based on map name
-        $this->removeDuplicates($constructionSite->getMaps()->toArray(), $newMaps);
-
-        // still remaining maps are added
-        foreach ($newMaps as $newMap) {
-            $constructionSite->getMaps()->add($newMap);
-        }
-
-        // put all in tree structure
-        $this->createTreeStructure($constructionSite->getMaps()->toArray());
-
-        // warmup cache for new maps
-        foreach ($newMaps as $map) {
-            $this->imageService->warmupCacheForMap($map);
-        }
-
-        // persist all changes
         $manager = $this->registry->getManager();
-        foreach ($constructionSite->getMaps() as $map) {
-            $manager->persist($map);
-        }
         $manager->persist($constructionSite);
         $manager->flush();
+
+        // warmup cache
+        if ($isCacheInvalidatedConstructionSite) {
+            $this->imageService->warmupCacheForConstructionSite($constructionSite);
+        }
+        foreach ($cacheInvalidatedMaps as $changedMap) {
+            $this->imageService->warmupCacheForMap($changedMap);
+        }
     }
 
     /**
@@ -172,7 +179,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
 
         // find longest matching prefix & set as parent
         foreach ($maps as $map) {
-            $parts = explode(' ', $map->getFilename());
+            $parts = explode(' ', $map->getFile()->getDisplayFilename());
             for ($i = \count($parts); $i > 0; --$i) {
                 $prefix = '';
                 for ($j = 0; $j < $i; ++$j) {
@@ -193,7 +200,9 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
                 // if map found, set as parent & stop for current map
                 if ($shortestPrefixMatch !== null) {
                     $parent = $mapLookup[$shortestPrefixMatch];
-                    $map->setParent($parent);
+                    if (!$map->getPreventAutomaticEdit() && $parent !== $map) {
+                        $map->setParent($parent);
+                    }
                     break;
                 }
             }
@@ -201,168 +210,139 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
     }
 
     /**
-     * finds already existing maps and replaces values from the newly created duplicate.
-     *
-     * @param Map[] $existingMaps
-     * @param Map[] $newMaps
+     * @param string $directory
+     * @param ConstructionSite $constructionSite
+     * @param bool $isCacheInvalidatedConstructionSite
      */
-    private function removeDuplicates(array $existingMaps, array &$newMaps)
+    private function syncConstructionSite(string $directory, ConstructionSite $constructionSite, bool &$isCacheInvalidatedConstructionSite)
     {
-        /** @var Map[] $existingMapLookup */
-        $existingMapLookup = [];
-        foreach ($existingMaps as $item) {
-            $existingMapLookup[$item->getName()] = $item;
+        // get all files from the directory
+        $existingFiles = $constructionSite->getImages()->toArray();
+        $constructionSiteImagesDirectory = $directory . \DIRECTORY_SEPARATOR . 'images';
+        /** @var ConstructionSiteImage[] $newImages */
+        $newImages = $this->getFiles($constructionSiteImagesDirectory, '.jpg', $existingFiles, function () {
+            return new ConstructionSiteImage();
+        });
+
+        /** @var ConstructionSiteImage[] $allImages */
+        $allImages = array_merge($newImages, $existingFiles);
+
+        // refresh recommended filenames
+        foreach ($allImages as $image) {
+            $image->setDisplayFilename($this->displayNameService->forConstructionSiteImage($image->getFilename()));
         }
 
-        for ($i = 0; $i < \count($newMaps); ++$i) {
-            // TODO: if more than one refreshed files exist, this fails
-            if (array_key_exists($newMaps[$i]->getName(), $existingMapLookup)) {
-                $newMap = $newMaps[$i];
-                $existingMap = $existingMapLookup[$newMap->getName()];
-                $existingMap->setFilename($newMap->getFilename());
+        // add all newly discovered files
+        foreach ($newImages as $newImage) {
+            $newImage->setConstructionSite($constructionSite);
+            $constructionSite->getImages()->add($newImage);
+        }
 
-                // remove entry from array & reset
-                unset($newMaps[$i]);
-                $newMaps = array_values($newMaps);
-                --$i;
+        // refresh current image if needed
+        $isCacheInvalidatedConstructionSite = false;
+        if (!$constructionSite->getPreventAutomaticEdit()) {
+            if ($constructionSite->getImage() !== null) {
+                $currentName = $constructionSite->getImage()->getDisplayFilename();
+                foreach ($newImages as $newImage) {
+                    if ($currentName === $newImage->getDisplayFilename()) {
+                        //replace match & stop
+                        $constructionSite->setImage($newImage);
+                        $isCacheInvalidatedConstructionSite = true;
+                        break;
+                    }
+                }
+            } elseif (\count($newImages) > 0) {
+                // set initial image if none
+                $constructionSite->setImage($newImages[0]);
+                $isCacheInvalidatedConstructionSite = true;
             }
         }
     }
 
     /**
-     * @param string $folderName
-     *
-     * @return string
+     * @param string $directory
+     * @param ConstructionSite $constructionSite
+     * @param array $cacheInvalidatedMaps
      */
-    private function deriveNameForConstructionSite(string $folderName)
+    private function syncConstructionSiteMaps(string $directory, ConstructionSite $constructionSite, array $cacheInvalidatedMaps)
     {
-        return str_replace('_', ' ', $folderName);
-    }
-
-    /**
-     * @param string $mapName
-     *
-     * @return string
-     */
-    private function deriveNameForMap(string $mapName)
-    {
-        $output = str_replace('_', ' ', $mapName);
-
-        // add space before all capitals which are followed by at least 2 non-capital (ObergeschossHaus)
-        $output = preg_replace('/(?<!^)([A-Z][a-z]{2,})/', ' $0', $output);
-
-        // add space before all numbers (Haus2)
-        $output = preg_replace('/(?<!^)([0-9]+)/', ' $0', $output);
-
-        // add point after all numbers which are before any letters
-        if (preg_match('[a-zA-Z]', $output, $matches, PREG_OFFSET_CAPTURE)) {
-            $index = $matches[0][1];
-            $before = mb_substr($output, 0, $index);
-            $after = mb_substr($output, $index);
-
-            // match only single numbers followed by a space (1 Obergeschoss)
-            $output = preg_replace('/[0-9]{1}[ ]/', '$0.', $before) . $after;
-        }
-
-        // remove multiple whitespaces
-        return preg_replace('/\s+/', ' ', $output);
-    }
-
-    /**
-     * @param string[] $mapNames
-     *
-     * @return string[]
-     */
-    private function normalizeNames(array $mapNames)
-    {
-        //skip normalization if too few map names
-        if (\count($mapNames) < 3) {
-            return $mapNames;
-        }
-
-        // remove any entries occurring always
-        /** @var string[][] $partsAnalytics */
-        $partsAnalytics = [];
-        $mapParts = [];
-
-        // collect stats about file names
-        foreach ($mapNames as $mapName) {
-            $parts = explode(' ', $mapName);
-            $mapParts[] = $parts;
-            for ($i = 0; $i < \count($parts); ++$i) {
-                if (!array_key_exists($i, $partsAnalytics)) {
-                    $partsAnalytics[$i] = [];
-                }
-
-                $currentPart = $parts[$i];
-                if (!array_key_exists($currentPart, $partsAnalytics[$i])) {
-                    $partsAnalytics[$i][$currentPart] = 1;
-                } else {
-                    ++$partsAnalytics[$i][$currentPart];
-                }
+        // get all files from the directory
+        /** @var MapFile[] $existingMapFiles */
+        $existingMapFiles = [];
+        foreach ($constructionSite->getMaps() as $map) {
+            $existingMapFiles = array_merge($existingMapFiles, $map->getFiles()->toArray());
+            foreach ($map->getFiles() as $file) {
+                $existingMapFiles[$file->getId()] = $file;
             }
         }
+        $mapsDirectory = $directory . \DIRECTORY_SEPARATOR . 'maps';
+        /** @var MapFile[] $newMapFiles */
+        $newMapFiles = $this->getFiles($mapsDirectory, '.pdf', $existingMapFiles, function () {
+            return new MapFile();
+        });
 
-        // remove groups which are always the same
-        for ($i = 0; $i < \count($partsAnalytics); ++$i) {
-            // only one value; can safely remove because will not contain any useful information
-            if (\count($partsAnalytics[$i]) === 1) {
-                // remove from parts list
-                foreach ($mapParts as &$mapPart) {
-                    unset($mapPart[$i]);
-                    $mapPart = array_values($mapPart);
-                }
+        /** @var MapFile[] $allMapFiles */
+        $allMapFiles = array_merge($newMapFiles, $existingMapFiles);
 
-                //remove processed entry group
-                unset($partsAnalytics[$i]);
-                $partsAnalytics = array_values($partsAnalytics);
-                --$i;
-            }
+        // refresh recommended filenames
+        $mapNames = [];
+        foreach ($allMapFiles as $mapFile) {
+            $mapFile->setDisplayFilename($this->displayNameService->forMapFile($mapFile->getFilename()));
+            $mapNames[] = $mapFile->getDisplayFilename();
         }
-
-        // remove groups which are very likely date groups
-        for ($i = 0; $i < \count($partsAnalytics); ++$i) {
-            $probablyDateGroup = true;
-            foreach ($partsAnalytics[$i] as $element => $counter) {
-                if (!is_numeric($element)) {
-                    $probablyDateGroup = false;
-                    break;
-                }
-
-                $probableYear = mb_substr($element, 0, 2);
-                $currentYear = mb_substr(date('Y'), 2, 2);
-                if ($probableYear < 10 || $probableYear > $currentYear) {
-                    $probablyDateGroup = false;
-                    break;
-                }
-            }
-
-            if ($probablyDateGroup) {
-                // remove from parts list
-                foreach ($mapParts as &$mapPart) {
-                    unset($mapPart[$i]);
-                    $mapPart = array_values($mapPart);
-                }
-
-                //remove processed entry group
-                unset($partsAnalytics[$i]);
-                $partsAnalytics = array_values($partsAnalytics);
-                --$i;
-            }
-        }
-
+        $mapNames = $this->displayNameService->normalizeMapNames($mapNames);
         $counter = 0;
-        $resultingNames = [];
-        foreach ($mapNames as $key => $mapName) {
-            // join parts back together
-            $newName = implode(' ', $mapParts[$counter++]);
-
-            // remove multiple whitespaces
-            $newName = preg_replace('/\s+/', ' ', $newName);
-
-            $resultingNames[$key] = $newName;
+        foreach ($allMapFiles as $mapFile) {
+            $mapFile->setDisplayFilename($mapNames[$counter++]);
         }
 
-        return $resultingNames;
+        // create lookup of known file names
+        /** @var Map[] $displayNameToMapLookup */
+        $displayNameToMapLookup = [];
+        foreach ($existingMapFiles as $existingMapFile) {
+            $key = $existingMapFile->getDisplayFilename();
+            if (!array_key_exists($key, $displayNameToMapLookup)) {
+                $displayNameToMapLookup[$key] = $existingMapFile->getMap();
+            } elseif ($displayNameToMapLookup[$key]->getPreventAutomaticEdit() && !$existingMapFile->getMap()->getPreventAutomaticEdit()) {
+                $displayNameToMapLookup[$key] = $existingMapFile->getMap();
+            }
+        }
+
+        // tries to find parent for all newly found maps
+        /** @var Map[] $cacheInvalidatedMaps */
+        $cacheInvalidatedMaps = [];
+        foreach ($newMapFiles as $newMapFile) {
+            $key = $newMapFile->getDisplayFilename();
+            if (array_key_exists($key, $displayNameToMapLookup)) {
+                $targetMap = $displayNameToMapLookup[$key];
+                $newMapFile->setMap($targetMap);
+                $targetMap->getFiles()->add($newMapFile);
+
+                // write if not disabled
+                if (!$targetMap->getPreventAutomaticEdit()) {
+                    $targetMap->setFile($newMapFile);
+                    $targetMap->setName($key);
+
+                    if (!\in_array($targetMap, $cacheInvalidatedMaps, true)) {
+                        $cacheInvalidatedMaps[] = $targetMap;
+                    }
+                }
+            } else {
+                // create new map for map file
+                $map = new Map();
+                $map->setName($key);
+                $map->setFile($newMapFile);
+                $map->setConstructionSite($constructionSite);
+                $constructionSite->getMaps()->add($map);
+                $map->getFiles()->add($newMapFile);
+                $newMapFile->setMap($map);
+
+                $displayNameToMapLookup[$key] = $map;
+                $cacheInvalidatedMaps[] = $map;
+            }
+        }
+
+        // put all in tree structure
+        $this->createTreeStructure($constructionSite->getMaps()->toArray());
     }
 }

@@ -14,7 +14,9 @@ namespace App\Controller;
 use App\Controller\Base\BaseDoctrineController;
 use App\Controller\Traits\ImageDownloadTrait;
 use App\Entity\ConstructionSite;
+use App\Entity\ConstructionSiteImage;
 use App\Entity\Issue;
+use App\Entity\IssueImage;
 use App\Service\Interfaces\ImageServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -36,36 +38,36 @@ class ImageController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/issue/{issue}/{imageFilename}/{size}", name="image_issue")
+     * @Route("/issue/{issue}/{image}/{size}", name="image_issue")
      *
      * @param Issue $issue
-     * @param string $imageFilename
+     * @param IssueImage $image
      * @param string $size
      * @param ImageServiceInterface $imageService
      *
      * @return Response
      */
-    public function issueAction(Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService)
+    public function issueAction(Issue $issue, IssueImage $image, $size, ImageServiceInterface $imageService)
     {
         $this->ensureAccess($issue);
 
-        return $this->file($this->getImagePathForIssue($issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($this->getImagePathForIssue($issue, $image, $size, $imageService), $image->getFilename(), ResponseHeaderBag::DISPOSITION_INLINE);
     }
 
     /**
-     * @Route("/constructionSite/{constructionSite}/{imageFilename}/{size}", name="image_construction_site")
+     * @Route("/constructionSite/{constructionSite}/{image}/{size}", name="image_construction_site")
      *
      * @param ConstructionSite $constructionSite
-     * @param string $imageFilename
+     * @param ConstructionSiteImage $image
      * @param string $size
      * @param ImageServiceInterface $imageService
      *
      * @return Response
      */
-    public function constructionSiteAction(ConstructionSite $constructionSite, $imageFilename, $size, ImageServiceInterface $imageService)
+    public function constructionSiteAction(ConstructionSite $constructionSite, ConstructionSiteImage $image, $size, ImageServiceInterface $imageService)
     {
         $this->ensureAccess($constructionSite);
 
-        return $this->file($this->getImagePathForConstructionSite($constructionSite, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($this->getImagePathForConstructionSite($constructionSite, $image, $size, $imageService), $image->getFilename(), ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

@@ -12,7 +12,9 @@
 namespace App\Controller\Traits;
 
 use App\Entity\ConstructionSite;
+use App\Entity\ConstructionSiteImage;
 use App\Entity\Issue;
+use App\Entity\IssueImage;
 use App\Service\Interfaces\ImageServiceInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -20,15 +22,15 @@ trait ImageDownloadTrait
 {
     /**
      * @param Issue $issue
-     * @param string $expectedImageFilename
+     * @param IssueImage $image
      * @param string $size
      * @param ImageServiceInterface $imageService
      *
      * @return string
      */
-    protected function getImagePathForIssue(Issue $issue, $expectedImageFilename, $size, ImageServiceInterface $imageService)
+    protected function getImagePathForIssue(Issue $issue, IssueImage $image, $size, ImageServiceInterface $imageService)
     {
-        if ($issue->getImageFilename() !== $expectedImageFilename) {
+        if ($issue->getImage() !== $image) {
             throw new NotFoundHttpException();
         }
 
@@ -42,15 +44,15 @@ trait ImageDownloadTrait
 
     /**
      * @param ConstructionSite $constructionSite
-     * @param string $expectedImageFilename
+     * @param ConstructionSiteImage $image
      * @param string $size
      * @param ImageServiceInterface $imageService
      *
      * @return string
      */
-    protected function getImagePathForConstructionSite(ConstructionSite $constructionSite, $expectedImageFilename, $size, ImageServiceInterface $imageService)
+    protected function getImagePathForConstructionSite(ConstructionSite $constructionSite, ConstructionSiteImage $image, $size, ImageServiceInterface $imageService)
     {
-        if ($constructionSite->getImageFilename() !== $expectedImageFilename) {
+        if ($constructionSite->getImage() !== $image) {
             throw new NotFoundHttpException();
         }
 

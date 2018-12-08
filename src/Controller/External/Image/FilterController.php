@@ -16,9 +16,10 @@ use App\Controller\External\Traits\FilterAuthenticationTrait;
 use App\Controller\Traits\ImageDownloadTrait;
 use App\Entity\Filter;
 use App\Entity\Issue;
+use App\Entity\IssueImage;
 use App\Entity\Map;
+use App\Entity\MapFile;
 use App\Service\Interfaces\ImageServiceInterface;
-use App\Service\Interfaces\PathServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -41,19 +42,24 @@ class FilterController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/map/{map}/{hash}/{size}", name="external_image_filter_map")
+     * @Route("/map/{map}/{file}/{hash}/{size}", name="external_image_filter_map")
      *
      * @param $identifier
      * @param Map $map
-     * @param $size
+     * @param MapFile $file
+     * @param string $size
      * @param ImageServiceInterface $imageService
      *
      * @return Response
      */
-    public function mapAction($identifier, Map $map, $size, ImageServiceInterface $imageService)
+    public function mapAction($identifier, Map $map, MapFile $file, $size, ImageServiceInterface $imageService)
     {
         /** @var Filter $filter */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter)) {
+            throw new NotFoundHttpException();
+        }
+
+        if ($map->getFile() !== $file) {
             throw new NotFoundHttpException();
         }
 
@@ -61,29 +67,35 @@ class FilterController extends BaseDoctrineController
         $filter->setMaps([$map->getId()]);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
         $imagePath = $imageService->generateMapImage($map, $issues, $imageService->ensureValidSize($size));
+        if ($imagePath === null) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->file($imagePath, null, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 
     /**
-     * @Route("/issue/{issue}/{imageFilename}/{size}", name="external_image_filter_issue")
+     * @Route("/issue/{issue}/{image}/{size}", name="external_image_filter_issue")
      *
      * @param $identifier
      * @param Issue $issue
-     * @param string $imageFilename
+     * @param IssueImage $image
      * @param string $size
      * @param ImageServiceInterface $imageService
-     * @param PathServiceInterface $pathService
      *
      * @return Response
      */
-    public function issueAction($identifier, Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService, PathServiceInterface $pathService)
+    public function issueAction($identifier, Issue $issue, IssueImage $image, $size, ImageServiceInterface $imageService)
     {
         /** @var Filter $filter */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter)) {
             throw new NotFoundHttpException();
         }
 
-        return $this->file($this->getImagePathForIssue($issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        if ($issue->getImage() !== $image) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->file($this->getImagePathForIssue($issue, $image, $size, $imageService), $image->getFilename(), ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

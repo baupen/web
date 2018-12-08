@@ -41,7 +41,7 @@ user: User
 authenticationToken: String
 user: ObjectMeta
 craftsmen: [ObjectMeta]
-buildings: [ObjectMeta]
+constructionSites: [ObjectMeta]
 maps: [ObjectMeta]
 issues: [ObjectMeta]
 ```
@@ -50,8 +50,8 @@ issues: [ObjectMeta]
 ```
 changedCraftsmen: [Craftsman]
 removedCraftsmanIDs: [UUID]
-changedBuildings: [Building]
-removedBuildingIDs: [UUID]
+changedConstructionSites: [ConstructionSite]
+removedConstructionSiteIDs: [UUID]
 changedMaps: [Map]
 removedMapIDs: [UUID]
 changedIssues: [Issue]
@@ -64,10 +64,10 @@ changedUser: User?
 * used to download file data
 
 ##### request:
-* `building` xor `map` xor `issue` has to be non-null
+* `constructionSite` xor `map` xor `issue` has to be non-null
 ```
 authenticationToken: String
-building: ObjectMeta?
+constructionSite: ObjectMeta?
 map: ObjectMeta?
 issue: ObjectMeta?
 ```
@@ -241,6 +241,12 @@ x: Double
 y: Double
 ```
 
+## `File`
+```
+id: UUID
+filename: string
+```
+
 
 ## `ObjectMeta`
 * used for /update
@@ -259,12 +265,12 @@ familyName: String
 ```
 
 
-## `Building`
+## `ConstructionSite`
 ```
 meta: ObjectMeta
 name: String
 address: Address
-imageFilename: String?
+image: File?
 maps: [UUID]
 craftsmen: [UUID]
 ```
@@ -293,7 +299,7 @@ meta: ObjectMeta
 children: [UUID]
 sectors: [Sector]
 issues: [UUID]
-filename: String?
+file: File?
 name: String
 ```
 
@@ -313,7 +319,7 @@ meta: ObjectMeta
 number: Int?
 isMarked: Bool
 wasAddedWithClient: Bool // "abnahmemodus"
-imageFilename: String?
+image: File?
 description: String?
 craftsman: UUID?
 map: UUID // only really used before registration
@@ -325,6 +331,7 @@ position: Position?
 ```
 point: Point
 zoomScale: Double
+fileId: UUID
 ```
 
 ### `Issue.Status`

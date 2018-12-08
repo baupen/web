@@ -21,7 +21,6 @@ trait FilterAuthenticationTrait
      * @param ManagerRegistry $doctrine
      * @param $identifier
      * @param $filter
-     * @param $errorResponse
      *
      * @return bool
      */

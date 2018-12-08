@@ -15,6 +15,7 @@ use App\Api\Response\FailResponse;
 use App\Api\Response\SuccessfulResponse;
 use App\Controller\Base\BaseDoctrineController;
 use App\Entity\Issue;
+use App\Entity\IssueImage;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use Psr\Log\LoggerInterface;
@@ -161,27 +162,54 @@ abstract class AbstractApiController extends BaseDoctrineController
     /**
      * @param UploadedFile $file
      * @param Issue $issue
+     * @param string $targetFileName
      * @param PathServiceInterface $pathService
      * @param ImageServiceInterface $imageService
-     * @param $error
      *
-     * @return bool|JsonResponse
+     * @return IssueImage|null
      */
-    protected function uploadImage(UploadedFile $file, Issue $issue, PathServiceInterface $pathService, ImageServiceInterface $imageService, $error)
+    protected function uploadIssueImage(UploadedFile $file, Issue $issue, string $targetFileName, PathServiceInterface $pathService, ImageServiceInterface $imageService)
     {
         //create folder
-        $targetFolder = $pathService->getFolderForIssue($issue->getMap()->getConstructionSite());
+        $targetFolder = $pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
         if (!file_exists($targetFolder)) {
             mkdir($targetFolder, 0777, true);
         }
 
+        //ensure nothing is overridden
+        $targetPath = $targetFolder . \DIRECTORY_SEPARATOR . $targetFileName;
+        if (is_file($targetPath)) {
+            $extension = pathinfo($targetPath, PATHINFO_EXTENSION);
+            $filename = pathinfo($targetPath, PATHINFO_FILENAME);
+
+            // try at most 100 times
+            $successful = false;
+            for ($i = 1; $i < 100; ++$i) {
+                $targetFileName = $filename . $i . '.' . $extension;
+                $targetPath = $targetFolder . \DIRECTORY_SEPARATOR . $targetFileName;
+                if (!is_file($targetPath)) {
+                    $successful = true;
+                    break;
+                }
+            }
+
+            if (!$successful) {
+                return null;
+            }
+        }
+
         //move file
-        if (!$file->move($targetFolder, $issue->getImageFilename())) {
-            return $this->fail($error);
+        if (!$file->move($targetFolder, $targetFileName)) {
+            return null;
         }
 
         $imageService->warmupCacheForIssue($issue);
 
-        return true;
+        $file = new IssueImage();
+        $file->setFilename($targetFileName);
+        $file->setHash(hash_file('sha256', $targetPath));
+        $file->setDisplayFilename($targetFileName);
+
+        return $file;
     }
 }
