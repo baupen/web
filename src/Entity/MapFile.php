@@ -15,6 +15,7 @@ use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\FileTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
+use App\Model\Frame;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -49,9 +50,24 @@ class MapFile extends BaseEntity
      */
     private $issuePositions;
 
+    /**
+     * @var MapFileSector[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\MapFileSector", mappedBy="mapFile")
+     */
+    private $mapFileSectors;
+
+    /**
+     * @var Frame|null
+     *
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $sectorFrame;
+
     public function __construct()
     {
         $this->issuePositions = new ArrayCollection();
+        $this->mapFileSectors = new ArrayCollection();
     }
 
     /**
@@ -92,5 +108,21 @@ class MapFile extends BaseEntity
     public function setMap(?Map $map): void
     {
         $this->map = $map;
+    }
+
+    /**
+     * @return Frame|null
+     */
+    public function getSectorFrame(): ?Frame
+    {
+        return $this->sectorFrame;
+    }
+
+    /**
+     * @param Frame|null $sectorFrame
+     */
+    public function setSectorFrame(?Frame $sectorFrame): void
+    {
+        $this->sectorFrame = $sectorFrame;
     }
 }
