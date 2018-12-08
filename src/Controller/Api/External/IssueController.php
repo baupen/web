@@ -22,8 +22,7 @@ use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\Map;
-use App\Service\Interfaces\ImageServiceInterface;
-use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Interfaces\UploadServiceInterface;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -83,17 +82,16 @@ class IssueController extends ExternalApiController
      *
      * @param Request $request
      * @param IssueTransformer $issueTransformer
-     * @param PathServiceInterface $pathService
-     * @param ImageServiceInterface $imageService
+     * @param UploadServiceInterface $uploadService
      *
      * @throws ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
      *
      * @return Response
      */
-    public function issueCreateAction(Request $request, IssueTransformer $issueTransformer, PathServiceInterface $pathService, ImageServiceInterface $imageService)
+    public function issueCreateAction(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService)
     {
-        return $this->processIssueModifyRequest($request, $issueTransformer, $pathService, $imageService, 'create');
+        return $this->processIssueModifyRequest($request, $issueTransformer, $uploadService, 'create');
     }
 
     /**
@@ -101,33 +99,30 @@ class IssueController extends ExternalApiController
      *
      * @param Request $request
      * @param IssueTransformer $issueTransformer
-     * @param PathServiceInterface $pathService
-     * @param ImageServiceInterface $imageService
+     * @param UploadServiceInterface $uploadService
      *
      * @throws ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
      *
      * @return Response
      */
-    public function issueUpdateAction(Request $request, IssueTransformer $issueTransformer, PathServiceInterface $pathService, ImageServiceInterface $imageService)
+    public function issueUpdateAction(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService)
     {
-        return $this->processIssueModifyRequest($request, $issueTransformer, $pathService, $imageService, 'update');
+        return $this->processIssueModifyRequest($request, $issueTransformer, $uploadService, 'update');
     }
 
     /**
      * @param Request $request
      * @param IssueTransformer $issueTransformer
-     * @param PathServiceInterface $pathService
-     * @param ImageServiceInterface $imageService
+     * @param UploadServiceInterface $uploadService
      * @param $mode
      *
      * @throws ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Exception
      *
      * @return JsonResponse|Response
      */
-    private function processIssueModifyRequest(Request $request, IssueTransformer $issueTransformer, PathServiceInterface $pathService, ImageServiceInterface $imageService, $mode)
+    private function processIssueModifyRequest(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService, $mode)
     {
         /** @var IssueModifyRequest $issueModifyRequest */
         /** @var ConstructionManager $constructionManager */
@@ -207,7 +202,7 @@ class IssueController extends ExternalApiController
 
         //check if file is here
         foreach ($request->files->all() as $file) {
-            $issueImage = $this->uploadIssueImage($file, $issue, $issueModifyRequest->getIssue()->getImage()->getFilename(), $pathService, $imageService);
+            $issueImage = $uploadService->uploadIssueImage($file, $issue, $issueModifyRequest->getIssue()->getImage()->getFilename());
             if ($issueImage === null) {
                 return $this->fail(self::ISSUE_FILE_UPLOAD_FAILED);
             }
