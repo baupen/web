@@ -151,7 +151,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         $this->syncConstructionSite($directory, $constructionSite, $isCacheInvalidatedConstructionSite);
 
         $cacheInvalidatedMaps = [];
-        $this->syncConstructionSiteMaps($directory, $constructionSite, $cacheInvalidatedMaps);
+        $this->syncConstructionSiteMaps($directory, $constructionSite);
 
         $manager = $this->registry->getManager();
         $manager->persist($constructionSite);
@@ -167,15 +167,32 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
     }
 
     /**
+     * @param ConstructionSite $constructionSite
      * @param Map[] $maps
+     *
+     * @return Map[]
      */
-    private function createTreeStructure(array $maps)
+    private function createTreeStructure(ConstructionSite $constructionSite, array $maps)
     {
         $mapLookup = [];
         foreach ($maps as $map) {
             $mapLookup[$map->getName()] = $map;
         }
         $mapNames = array_keys($mapLookup);
+
+        // ensure a map exists for all common prefixes (as a folder)
+        $prefixMap = $this->createPrefixMap(array_keys($mapLookup));
+        foreach ($prefixMap as $prefix => $count) {
+            if ($count > 1) {
+                if (!array_key_exists($prefix, $mapLookup)) {
+                    $map = new Map();
+                    $map->setConstructionSite($constructionSite);
+                    $map->setName($prefix);
+                    $mapLookup[$prefix] = $map;
+                    $maps[] = $map;
+                }
+            }
+        }
 
         // find longest matching prefix & set as parent
         foreach ($maps as $map) {
@@ -207,6 +224,34 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
                 }
             }
         }
+
+        return $maps;
+    }
+
+    private function createPrefixMap(array $names)
+    {
+        $prefixMap = [];
+
+        foreach ($names as $name) {
+            $currentPrefix = $name;
+
+            while (true) {
+                if (!array_key_exists($currentPrefix, $prefixMap)) {
+                    $prefixMap[$currentPrefix] = 1;
+                } else {
+                    ++$prefixMap[$currentPrefix];
+                }
+
+                $newCutoff = mb_strripos($currentPrefix, ' ');
+                if ($newCutoff < 0) {
+                    break;
+                }
+
+                $currentPrefix = trim(mb_substr($currentPrefix, 0, $newCutoff));
+            }
+        }
+
+        return $prefixMap;
     }
 
     /**
@@ -262,9 +307,8 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
     /**
      * @param string $directory
      * @param ConstructionSite $constructionSite
-     * @param array $cacheInvalidatedMaps
      */
-    private function syncConstructionSiteMaps(string $directory, ConstructionSite $constructionSite, array $cacheInvalidatedMaps)
+    private function syncConstructionSiteMaps(string $directory, ConstructionSite $constructionSite)
     {
         // get all files from the directory
         /** @var MapFile[] $existingMapFiles */
@@ -282,23 +326,31 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         /** @var MapFile[] $allMapFiles */
         $allMapFiles = array_merge($newMapFiles, $existingMapFiles);
 
-        // refresh recommended filenames
-        $mapNames = [];
-        foreach ($allMapFiles as $mapFile) {
-            $mapFile->setDisplayFilename($this->displayNameService->forMapFile($mapFile->getFilename()));
-            $mapNames[] = $mapFile->getDisplayFilename();
-        }
-        $mapNames = $this->displayNameService->normalizeMapNames($mapNames);
-        $counter = 0;
-        foreach ($allMapFiles as $mapFile) {
-            $mapFile->setDisplayFilename($mapNames[$counter++]);
-        }
+        // refresh display file name
+        $this->refreshDisplayFileNames($allMapFiles);
 
         // sets map parent for all newly found map files
         $this->assignMapFilesToMaps($constructionSite, $allMapFiles);
 
         // put all in tree structure
-        $this->createTreeStructure($constructionSite->getMaps()->toArray());
+        $this->createTreeStructure($constructionSite, $allMapFiles);
+    }
+
+    /**
+     * @param MapFile[] $mapFiles
+     */
+    private function refreshDisplayFileNames(array $mapFiles)
+    {
+        $mapNames = [];
+        foreach ($mapFiles as $mapFile) {
+            $mapFile->setDisplayFilename($this->displayNameService->forMapFile($mapFile->getFilename()));
+            $mapNames[] = $mapFile->getDisplayFilename();
+        }
+        $mapNames = $this->displayNameService->normalizeMapNames($mapNames);
+        $counter = 0;
+        foreach ($mapFiles as $mapFile) {
+            $mapFile->setDisplayFilename($mapNames[$counter++]);
+        }
     }
 
     /**
