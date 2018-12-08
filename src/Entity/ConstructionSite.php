@@ -13,6 +13,7 @@ namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AddressTrait;
+use App\Entity\Traits\AutomaticEditTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,6 +31,7 @@ class ConstructionSite extends BaseEntity
     use IdTrait;
     use TimeTrait;
     use AddressTrait;
+    use AutomaticEditTrait;
 
     /**
      * @var string
@@ -46,11 +48,18 @@ class ConstructionSite extends BaseEntity
     private $folderName;
 
     /**
-     * @var string|null
+     * @var ConstructionSiteImage[]|ArrayCollection
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\ConstructionSiteImage", mappedBy="constructionSite", cascade={"persist"})
      */
-    private $imageFilename;
+    private $images;
+
+    /**
+     * @var ConstructionSiteImage|null
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSiteImage", cascade={"persist"})
+     */
+    private $image;
 
     /**
      * @var ConstructionManager[]|ArrayCollection
@@ -63,7 +72,7 @@ class ConstructionSite extends BaseEntity
     /**
      * @var Map[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite")
+     * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite", cascade={"persist"})
      * @ORM\OrderBy({"name": "ASC"})
      */
     private $maps;
@@ -83,6 +92,7 @@ class ConstructionSite extends BaseEntity
         $this->constructionManagers = new ArrayCollection();
         $this->maps = new ArrayCollection();
         $this->craftsmen = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     /**
@@ -115,22 +125,6 @@ class ConstructionSite extends BaseEntity
     public function setFolderName(string $folderName): void
     {
         $this->folderName = $folderName;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getImageFilename(): ?string
-    {
-        return $this->imageFilename;
-    }
-
-    /**
-     * @param null|string $imageFilename
-     */
-    public function setImageFilename(?string $imageFilename): void
-    {
-        $this->imageFilename = $imageFilename;
     }
 
     /**
@@ -168,5 +162,29 @@ class ConstructionSite extends BaseEntity
     public function getCraftsmen()
     {
         return $this->craftsmen;
+    }
+
+    /**
+     * @return ConstructionSiteImage[]|ArrayCollection
+     */
+    public function getImages()
+    {
+        return $this->images;
+    }
+
+    /**
+     * @return ConstructionSiteImage|null
+     */
+    public function getImage(): ?ConstructionSiteImage
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param ConstructionSiteImage|null $image
+     */
+    public function setImage(?ConstructionSiteImage $image): void
+    {
+        $this->image = $image;
     }
 }

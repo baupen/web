@@ -49,9 +49,9 @@ class Issue extends BaseEntity
     private $map;
 
     /**
-     * @var string|null
+     * @var File|null
      */
-    private $imageFilename;
+    private $image;
 
     /**
      * @var IssueStatus
@@ -144,22 +144,6 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @return null|string
-     */
-    public function getImageFilename(): ?string
-    {
-        return $this->imageFilename;
-    }
-
-    /**
-     * @param null|string $imageFilename
-     */
-    public function setImageFilename(?string $imageFilename): void
-    {
-        $this->imageFilename = $imageFilename;
-    }
-
-    /**
      * @return IssueStatus
      */
     public function getStatus(): IssueStatus
@@ -205,5 +189,21 @@ class Issue extends BaseEntity
     public function setMap(string $map): void
     {
         $this->map = $map;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getImage(): ?File
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param File|null $image
+     */
+    public function setImage(?File $image): void
+    {
+        $this->image = $image;
     }
 }

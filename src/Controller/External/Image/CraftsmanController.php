@@ -17,9 +17,10 @@ use App\Controller\Traits\ImageDownloadTrait;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
+use App\Entity\IssueImage;
 use App\Entity\Map;
+use App\Entity\MapFile;
 use App\Service\Interfaces\ImageServiceInterface;
-use App\Service\Interfaces\PathServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -42,19 +43,24 @@ class CraftsmanController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/map/{map}/{hash}/{size}", name="external_image_craftsman_map")
+     * @Route("/map/{map}/{file}/{hash}/{size}", name="external_image_craftsman_map")
      *
      * @param $identifier
      * @param Map $map
+     * @param MapFile $file
      * @param $size
      * @param ImageServiceInterface $imageService
      *
      * @return Response
      */
-    public function mapAction($identifier, Map $map, $size, ImageServiceInterface $imageService)
+    public function mapAction($identifier, Map $map, MapFile $file, $size, ImageServiceInterface $imageService)
     {
         /** @var Craftsman $craftsman */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
+            throw new NotFoundHttpException();
+        }
+
+        if ($map->getFile() !== $file) {
             throw new NotFoundHttpException();
         }
 
@@ -70,29 +76,31 @@ class CraftsmanController extends BaseDoctrineController
 
         //generate map & print
         $imagePath = $imageService->generateMapImage($map, $issues, $imageService->ensureValidSize($size));
+        if ($imagePath === null) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->file($imagePath, null, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 
     /**
-     * @Route("/issue/{issue}/{imageFilename}/{size}", name="external_image_craftsman_issue")
+     * @Route("/issue/{issue}/{image}/{size}", name="external_image_craftsman_issue")
      *
      * @param $identifier
      * @param Issue $issue
-     * @param $imageFilename
+     * @param IssueImage $image
      * @param $size
      * @param ImageServiceInterface $imageService
-     * @param PathServiceInterface $pathService
      *
      * @return Response
      */
-    public function issueAction($identifier, Issue $issue, $imageFilename, $size, ImageServiceInterface $imageService, PathServiceInterface $pathService)
+    public function issueAction($identifier, Issue $issue, IssueImage $image, $size, ImageServiceInterface $imageService)
     {
         /** @var Craftsman $craftsman */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
             throw new NotFoundHttpException();
         }
 
-        return $this->file($this->getImagePathForIssue($issue, $imageFilename, $size, $imageService), $imageFilename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->file($this->getImagePathForIssue($issue, $image, $size, $imageService), $image->getFilename(), ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

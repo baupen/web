@@ -84,7 +84,7 @@ class ReadControllerTest extends ApiController
         };
 
         //set them in the request
-        $readRequest->setBuildings($getMetas($serverData->getBuildings()));
+        $readRequest->setConstructionSites($getMetas($serverData->getConstructionSites()));
         $readRequest->setCraftsmen($getMetas($serverData->getCraftsmen()));
         $readRequest->setMaps($getMetas($serverData->getMaps()));
         $readRequest->setIssues($getMetas($serverData->getIssues()));
@@ -94,18 +94,18 @@ class ReadControllerTest extends ApiController
 
         $this->assertNotNull($readResponse->data);
         $this->assertNull($readResponse->data->changedUser);
-        $this->assertEmpty($readResponse->data->changedBuildings);
+        $this->assertEmpty($readResponse->data->changedConstructionSites);
         $this->assertEmpty($readResponse->data->changedCraftsmen);
         $this->assertEmpty($readResponse->data->changedMaps);
         $this->assertEmpty($readResponse->data->changedIssues);
-        $this->assertCount(1, $readResponse->data->removedBuildingIDs);
+        $this->assertCount(1, $readResponse->data->removedConstructionSiteIDs);
         $this->assertCount(1, $readResponse->data->removedCraftsmanIDs);
         $this->assertCount(1, $readResponse->data->removedMapIDs);
         $this->assertCount(1, $readResponse->data->removedIssueIDs);
 
         //## update, remove & add at the same time
         //set them in the request
-        $readRequest->setBuildings($getMetas($serverData->getBuildings(), 1, 1, 1));
+        $readRequest->setConstructionSites($getMetas($serverData->getConstructionSites(), 1, 1, 1));
         $readRequest->setCraftsmen($getMetas($serverData->getCraftsmen(), 1, 1, 1));
         $readRequest->setMaps($getMetas($serverData->getMaps(), 1, 1, 1));
         $readRequest->setIssues($getMetas($serverData->getIssues(), 1, 1, 1));
@@ -115,11 +115,11 @@ class ReadControllerTest extends ApiController
 
         $this->assertNotNull($readResponse->data);
         $this->assertNull($readResponse->data->changedUser);
-        $this->assertCount(2, $readResponse->data->changedBuildings);
+        $this->assertCount(2, $readResponse->data->changedConstructionSites);
         $this->assertCount(2, $readResponse->data->changedCraftsmen);
         $this->assertCount(2, $readResponse->data->changedMaps);
         $this->assertCount(2, $readResponse->data->changedIssues);
-        $this->assertCount(1, $readResponse->data->removedBuildingIDs);
+        $this->assertCount(1, $readResponse->data->removedConstructionSiteIDs);
         $this->assertCount(1, $readResponse->data->removedCraftsmanIDs);
         $this->assertCount(1, $readResponse->data->removedMapIDs);
         $this->assertCount(1, $readResponse->data->removedIssueIDs);

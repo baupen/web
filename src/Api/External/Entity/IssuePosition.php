@@ -37,6 +37,13 @@ class IssuePosition
     private $zoomScale;
 
     /**
+     * @var string
+     *
+     * @Assert\NotBlank()
+     */
+    private $mapFileId;
+
+    /**
      * @return float
      */
     public function getX(): float
@@ -82,5 +89,21 @@ class IssuePosition
     public function setZoomScale(float $zoomScale): void
     {
         $this->zoomScale = $zoomScale;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMapFileId(): string
+    {
+        return $this->mapFileId;
+    }
+
+    /**
+     * @param string $mapFileId
+     */
+    public function setMapFileId(string $mapFileId): void
+    {
+        $this->mapFileId = $mapFileId;
     }
 }

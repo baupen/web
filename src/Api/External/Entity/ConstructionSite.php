@@ -13,7 +13,7 @@ namespace App\Api\External\Entity;
 
 use App\Api\External\Entity\Base\BaseEntity;
 
-class Building extends BaseEntity
+class ConstructionSite extends BaseEntity
 {
     /**
      * @var string
@@ -26,14 +26,9 @@ class Building extends BaseEntity
     private $address;
 
     /**
-     * @var string|null
+     * @var File|null
      */
-    private $imageFilename;
-
-    /**
-     * @var string|null
-     */
-    private $imageHash;
+    private $image;
 
     /**
      * @var string[]
@@ -78,38 +73,6 @@ class Building extends BaseEntity
     }
 
     /**
-     * @return null|string
-     */
-    public function getImageFilename(): ?string
-    {
-        return $this->imageFilename;
-    }
-
-    /**
-     * @param null|string $imageFilename
-     */
-    public function setImageFilename(?string $imageFilename): void
-    {
-        $this->imageFilename = $imageFilename;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getImageHash(): ?string
-    {
-        return $this->imageHash;
-    }
-
-    /**
-     * @param string|null $imageHash
-     */
-    public function setImageHash(?string $imageHash): void
-    {
-        $this->imageHash = $imageHash;
-    }
-
-    /**
      * @return string[]
      */
     public function getMaps(): array
@@ -139,5 +102,21 @@ class Building extends BaseEntity
     public function setCraftsmen(array $craftsmen): void
     {
         $this->craftsmen = $craftsmen;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getImage(): ?File
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param File|null $image
+     */
+    public function setImage(?File $image): void
+    {
+        $this->image = $image;
     }
 }

@@ -63,6 +63,8 @@ class IssueRepository extends EntityRepository
      * @param ConstructionSite $constructionSite
      * @param int $days
      *
+     * @throws \Exception
+     *
      * @return Issue[]
      */
     public function getContextIssues(ConstructionSite $constructionSite, $days = 14)

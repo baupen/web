@@ -11,7 +11,7 @@
 
 namespace App\Tests\Controller\Api\External\Base;
 
-use App\Api\External\Entity\Building;
+use App\Api\External\Entity\ConstructionSite;
 use App\Api\External\Entity\Craftsman;
 use App\Api\External\Entity\Issue;
 use App\Api\External\Entity\Map;
@@ -85,7 +85,7 @@ class ApiController extends AbstractApiController
         $userMeta->setLastChangeTime((new \DateTime())->setTimestamp(0)->format('c'));
         $readRequest->setUser($userMeta);
 
-        $readRequest->setBuildings([]);
+        $readRequest->setConstructionSites([]);
         $readRequest->setCraftsmen([]);
         $readRequest->setIssues([]);
         $readRequest->setMaps([]);
@@ -95,15 +95,15 @@ class ApiController extends AbstractApiController
 
         $this->assertNotNull($readResponse->data);
         $this->assertNotNull($readResponse->data->changedUser);
-        $this->assertNotNull($readResponse->data->changedBuildings);
-        $this->assertTrue(\count($readResponse->data->changedBuildings) > 0);
+        $this->assertNotNull($readResponse->data->changedConstructionSites);
+        $this->assertTrue(\count($readResponse->data->changedConstructionSites) > 0);
         $this->assertTrue(\count($readResponse->data->changedCraftsmen) > 0);
         $this->assertTrue(\count($readResponse->data->changedMaps) > 0);
         $this->assertTrue(\count($readResponse->data->changedIssues) > 0);
 
-        $buildings = [];
-        foreach ($readResponse->data->changedBuildings as $stdClass) {
-            $buildings[] = $serializer->deserialize(json_encode($stdClass), Building::class, 'json');
+        $constructionSites = [];
+        foreach ($readResponse->data->changedConstructionSites as $stdClass) {
+            $constructionSites[] = $serializer->deserialize(json_encode($stdClass), ConstructionSite::class, 'json');
         }
         $craftsmen = [];
         foreach ($readResponse->data->changedCraftsmen as $stdClass) {
@@ -118,9 +118,9 @@ class ApiController extends AbstractApiController
             $issues[] = $serializer->deserialize(json_encode($stdClass), Issue::class, 'json');
         }
 
-        $this->assertNotNull($readResponse->data->changedBuildings[0]->address);
+        $this->assertNotNull($readResponse->data->changedConstructionSites[0]->address);
 
-        return new ServerData($buildings, $maps, $craftsmen, $issues);
+        return new ServerData($constructionSites, $maps, $craftsmen, $issues);
     }
 
     /**
@@ -134,7 +134,13 @@ class ApiController extends AbstractApiController
         //check properties
         $this->assertSame($checkIssue->wasAddedWithClient, $issue->getWasAddedWithClient());
         $this->assertSame($checkIssue->isMarked, $issue->getIsMarked());
-        $this->assertSame($checkIssue->imageFilename, $issue->getImageFilename());
+        if ($issue->getImage() !== null) {
+            $this->assertTrue(property_exists($checkIssue, "image"));
+            $this->assertSame($checkIssue->image->id, $issue->getImage()->getId());
+            $this->assertSame($checkIssue->image->filename, $issue->getImage()->getFilename());
+        } else {
+            $this->assertTrue(!property_exists($checkIssue, "image") || $checkIssue->image === null);
+        }
         $this->assertSame($checkIssue->description, $issue->getDescription());
         $this->assertSame($checkIssue->map, $issue->getMap());
 

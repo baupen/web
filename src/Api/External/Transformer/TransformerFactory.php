@@ -14,7 +14,7 @@ namespace App\Api\External\Transformer;
 class TransformerFactory
 {
     /**
-     * @var BuildingTransformer
+     * @var ConstructionSiteTransformer
      */
     private $buildingTransformer;
 
@@ -41,13 +41,13 @@ class TransformerFactory
     /**
      * TransformerFactory constructor.
      *
-     * @param BuildingTransformer $buildingTransformer
+     * @param ConstructionSiteTransformer $buildingTransformer
      * @param CraftsmanTransformer $craftsmanTransformer
      * @param MapTransformer $mapTransformer
      * @param IssueTransformer $issueTransformer
      * @param UserTransformer $userTransformer
      */
-    public function __construct(BuildingTransformer $buildingTransformer, CraftsmanTransformer $craftsmanTransformer, MapTransformer $mapTransformer, IssueTransformer $issueTransformer, UserTransformer $userTransformer)
+    public function __construct(ConstructionSiteTransformer $buildingTransformer, CraftsmanTransformer $craftsmanTransformer, MapTransformer $mapTransformer, IssueTransformer $issueTransformer, UserTransformer $userTransformer)
     {
         $this->buildingTransformer = $buildingTransformer;
         $this->craftsmanTransformer = $craftsmanTransformer;
@@ -57,9 +57,9 @@ class TransformerFactory
     }
 
     /**
-     * @return BuildingTransformer
+     * @return ConstructionSiteTransformer
      */
-    public function getBuildingTransformer(): BuildingTransformer
+    public function getBuildingTransformer(): ConstructionSiteTransformer
     {
         return $this->buildingTransformer;
     }

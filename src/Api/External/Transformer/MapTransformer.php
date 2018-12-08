@@ -21,9 +21,15 @@ class MapTransformer extends BatchTransformer
      */
     private $objectMetaTransformer;
 
-    public function __construct(ObjectMetaTransformer $objectMetaTransformer)
+    /**
+     * @var FileTransformer
+     */
+    private $fileTransformer;
+
+    public function __construct(ObjectMetaTransformer $objectMetaTransformer, FileTransformer $fileTransformer)
     {
         $this->objectMetaTransformer = $objectMetaTransformer;
+        $this->fileTransformer = $fileTransformer;
     }
 
     /**
@@ -34,7 +40,7 @@ class MapTransformer extends BatchTransformer
     public function toApi($entity)
     {
         $map = new \App\Api\External\Entity\Map();
-        $map->setFilename($entity->getFilename());
+        $map->setFile($this->fileTransformer->toApi($entity->getFile()));
         $map->setName($entity->getName());
 
         $issueIds = [];

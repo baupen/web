@@ -1,60 +1,50 @@
 [
   {
-    "imageFilename": "farbfleck.jpg",
     "description": "Schwarzer Fleck",
     "isMarked": true,
     "wasAddedWithClient": false
   },
   {
-    "imageFilename": "parkett.jpg",
     "description": "Schwarzer Fleck",
     "isMarked": false,
     "wasAddedWithClient": false
   },
   {
-    "imageFilename": "steckdose.jpg",
     "description": "Steckdose eingedrückt",
     "isMarked": false,
     "wasAddedWithClient": false
   },
   {
-    "imageFilename": "color.jpg",
     "description": "Viel zu viele Farben",
     "isMarked": false,
     "wasAddedWithClient": true
   },
   {
-    "imageFilename": "colordots.jpeg",
     "description": "Unebene Oberfläche",
     "isMarked": true,
     "wasAddedWithClient": false
   },
   {
-    "imageFilename": "drawing.jpeg",
     "description": "Weiss übermalen",
     "isMarked": false,
     "wasAddedWithClient": false
   },
   {
-    "imageFilename": "gummi_bears.jpeg",
     "description": "Unebene oberfläche",
     "isMarked": false,
     "wasAddedWithClient": false
   },
   {
-    "imageFilename": "marker.jpeg",
     "description": "Unebene oberfläche",
     "isMarked": false,
     "wasAddedWithClient": false
   },
   {
-    "imageFilename": "pinsel.jpeg",
     "description": "Dreckige oberfläche",
     "isMarked": false,
     "wasAddedWithClient": false
   },
   {
-    "imageFilename": "sweets.jpeg",
     "description": "Bitte essen",
     "isMarked": false,
     "wasAddedWithClient": false

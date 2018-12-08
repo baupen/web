@@ -12,32 +12,37 @@
 namespace App\Api\External\Transformer;
 
 use App\Api\External\Entity\Address;
-use App\Api\External\Entity\Building;
+use App\Api\External\Entity\ConstructionSite;
 use App\Api\External\Transformer\Base\BatchTransformer;
-use App\Entity\ConstructionSite;
 
-class BuildingTransformer extends BatchTransformer
+class ConstructionSiteTransformer extends BatchTransformer
 {
     /**
      * @var ObjectMetaTransformer
      */
     private $objectMetaTransformer;
 
-    public function __construct(ObjectMetaTransformer $objectMetaTransformer)
+    /**
+     * @var FileTransformer
+     */
+    private $fileTransformer;
+
+    public function __construct(ObjectMetaTransformer $objectMetaTransformer, FileTransformer $fileTransformer)
     {
         $this->objectMetaTransformer = $objectMetaTransformer;
+        $this->fileTransformer = $fileTransformer;
     }
 
     /**
-     * @param ConstructionSite $entity
+     * @param \App\Entity\ConstructionSite $entity
      *
-     * @return Building
+     * @return ConstructionSite
      */
     public function toApi($entity)
     {
-        $building = new Building();
+        $building = new ConstructionSite();
         $building->setName($entity->getName());
-        $building->setImageFilename($entity->getImageFilename());
+        $building->setImage($this->fileTransformer->toApi($entity->getImage()));
 
         $childrenIds = [];
         foreach ($entity->getMaps() as $child) {

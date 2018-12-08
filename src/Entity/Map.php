@@ -12,6 +12,7 @@
 namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
+use App\Entity\Traits\AutomaticEditTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -28,6 +29,7 @@ class Map extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
+    use AutomaticEditTrait;
 
     /**
      * @var string
@@ -35,13 +37,6 @@ class Map extends BaseEntity
      * @ORM\Column(type="text")
      */
     private $name;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $filename;
 
     /**
      * @var ConstructionSite
@@ -65,6 +60,20 @@ class Map extends BaseEntity
     private $children;
 
     /**
+     * @var MapFile[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\MapFile", mappedBy="map", cascade={"persist"})
+     */
+    private $files;
+
+    /**
+     * @var MapFile
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", cascade={"persist"})
+     */
+    private $file;
+
+    /**
      * @var Issue[]
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="map")
@@ -73,6 +82,7 @@ class Map extends BaseEntity
 
     public function __construct()
     {
+        $this->files = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->issues = new ArrayCollection();
     }
@@ -91,22 +101,6 @@ class Map extends BaseEntity
     public function setName(string $name): void
     {
         $this->name = $name;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getFilename(): ?string
-    {
-        return $this->filename;
-    }
-
-    /**
-     * @param string|null $filename
-     */
-    public function setFilename(?string $filename): void
-    {
-        $this->filename = $filename;
     }
 
     /**
@@ -134,7 +128,7 @@ class Map extends BaseEntity
     }
 
     /**
-     * @param null|self $parent
+     * @param self|null $parent
      */
     public function setParent(?self $parent): void
     {
@@ -172,5 +166,29 @@ class Map extends BaseEntity
         }
 
         return '';
+    }
+
+    /**
+     * @return MapFile[]|ArrayCollection
+     */
+    public function getFiles()
+    {
+        return $this->files;
+    }
+
+    /**
+     * @return MapFile
+     */
+    public function getFile(): MapFile
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param MapFile $file
+     */
+    public function setFile(MapFile $file): void
+    {
+        $this->file = $file;
     }
 }

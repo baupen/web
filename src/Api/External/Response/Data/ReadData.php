@@ -11,7 +11,7 @@
 
 namespace App\Api\External\Response\Data;
 
-use App\Api\External\Entity\Building;
+use App\Api\External\Entity\ConstructionSite;
 use App\Api\External\Entity\Craftsman;
 use App\Api\External\Entity\Issue;
 use App\Api\External\Entity\Map;
@@ -30,14 +30,14 @@ class ReadData
     private $removedCraftsmanIDs;
 
     /**
-     * @var Building[]
+     * @var ConstructionSite[]
      */
-    private $changedBuildings;
+    private $changedConstructionSites;
 
     /**
      * @var string[]
      */
-    private $removedBuildingIDs;
+    private $removedConstructionSiteIDs;
 
     /**
      * @var Map[]
@@ -97,35 +97,35 @@ class ReadData
     }
 
     /**
-     * @return Building[]
+     * @return ConstructionSite[]
      */
-    public function getChangedBuildings(): array
+    public function getChangedConstructionSites(): array
     {
-        return $this->changedBuildings;
+        return $this->changedConstructionSites;
     }
 
     /**
-     * @param Building[] $changedBuildings
+     * @param ConstructionSite[] $changedConstructionSites
      */
-    public function setChangedBuildings(array $changedBuildings): void
+    public function setChangedConstructionSites(array $changedConstructionSites): void
     {
-        $this->changedBuildings = $changedBuildings;
+        $this->changedConstructionSites = $changedConstructionSites;
     }
 
     /**
      * @return string[]
      */
-    public function getRemovedBuildingIDs(): array
+    public function getRemovedConstructionSiteIDs(): array
     {
-        return $this->removedBuildingIDs;
+        return $this->removedConstructionSiteIDs;
     }
 
     /**
-     * @param string[] $removedBuildingIDs
+     * @param string[] $removedConstructionSiteIDs
      */
-    public function setRemovedBuildingIDs(array $removedBuildingIDs): void
+    public function setRemovedConstructionSiteIDs(array $removedConstructionSiteIDs): void
     {
-        $this->removedBuildingIDs = $removedBuildingIDs;
+        $this->removedConstructionSiteIDs = $removedConstructionSiteIDs;
     }
 
     /**

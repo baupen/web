@@ -14,9 +14,12 @@ namespace App\DataFixtures;
 use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;
+use App\Entity\IssueImage;
+use App\Entity\IssuePosition;
 use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ObjectManager;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class LoadIssueData extends BaseFixture
@@ -61,29 +64,33 @@ class LoadIssueData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $json = file_get_contents(__DIR__ . '/Resources/issues.json');
+        $issuesJson = file_get_contents(__DIR__ . '/Resources/issues.json');
+        $images = glob(__DIR__ . \DIRECTORY_SEPARATOR . 'Resources' . \DIRECTORY_SEPARATOR . 'issue_images' . \DIRECTORY_SEPARATOR . '*.*');
 
-        $getFreshIssueSet = function ($counter) use ($json) {
+        $getFreshIssueSet = function ($counter) use ($issuesJson) {
             /** @var Issue[] $issues */
-            $issues = $this->serializer->deserialize($json, Issue::class . '[]', 'json');
+            $issues = $this->serializer->deserialize($issuesJson, Issue::class . '[]', 'json');
 
             //permute
             shuffle($issues);
 
             //set random positions
             foreach ($issues as $issue) {
-                if ($counter % 4 > 0) {
-                    // each 4th issue has an optional position
+                if ($counter % 8 > 0) {
+                    // each 8th issue has an optional position
                     $x = $this->xOrientationArray[$counter % \count($this->xOrientationArray)];
                     $y = $this->yOrientationArray[$counter % \count($this->yOrientationArray)];
+                    $position = new IssuePosition();
                     if ($counter % 3 === 0) {
-                        $issue->setPositionX($y);
-                        $issue->setPositionY($x);
+                        $position->setPositionX($y);
+                        $position->setPositionY($x);
                     } else {
-                        $issue->setPositionX($x);
-                        $issue->setPositionY($y);
+                        $position->setPositionX($x);
+                        $position->setPositionY($y);
                     }
-                    $issue->setPositionZoomScale($this->scaleArray[$counter % \count($this->scaleArray)]);
+                    $position->setPositionZoomScale($this->scaleArray[$counter % \count($this->scaleArray)]);
+                    $issue->setPosition($position);
+                    $position->setIssue($issue);
                 }
                 ++$counter;
             }
@@ -95,11 +102,11 @@ class LoadIssueData extends BaseFixture
         $constructionSites = $manager->getRepository(ConstructionSite::class)->findAll();
         foreach ($constructionSites as $constructionSite) {
             for ($i = 0; $i < self::MULTIPLICATION_FACTOR; ++$i) {
-                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $issueNumber, 0);
-                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $issueNumber, self::REGISTRATION_SET);
-                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $issueNumber, self::REGISTRATION_SET | self::RESPONSE_SET);
-                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $issueNumber, self::REGISTRATION_SET | self::RESPONSE_SET | self::REVIEW_SET);
-                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $issueNumber, self::REGISTRATION_SET | self::REVIEW_SET);
+                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $images, $issueNumber, 0);
+                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $images, $issueNumber, self::REGISTRATION_SET);
+                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $images, $issueNumber, self::REGISTRATION_SET | self::RESPONSE_SET);
+                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $images, $issueNumber, self::REGISTRATION_SET | self::RESPONSE_SET | self::REVIEW_SET);
+                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $images, $issueNumber, self::REGISTRATION_SET | self::REVIEW_SET);
             }
         }
         $manager->flush();
@@ -136,12 +143,13 @@ class LoadIssueData extends BaseFixture
      * @param ConstructionSite $constructionSite
      * @param ObjectManager $manager
      * @param Issue[] $issues
-     * @param int $setStatus
+     * @param string[] $images
      * @param int $issueNumber
+     * @param int $setStatus
      *
      * @throws \Exception
      */
-    private function add(ConstructionSite $constructionSite, ObjectManager $manager, array $issues, int &$issueNumber, int $setStatus = 0)
+    private function add(ConstructionSite $constructionSite, ObjectManager $manager, array $issues, array $images, int &$issueNumber, int $setStatus = 0)
     {
         //use global counters so result of randomization is always the same
         $randomMapCounter = $this->randomMapCounter;
@@ -150,6 +158,9 @@ class LoadIssueData extends BaseFixture
 
         foreach ($issues as $issue) {
             $issue->setMap($this->getRandomEntry($randomMapCounter, $constructionSite->getMaps()));
+            if ($issue->getPosition() !== null) {
+                $issue->getPosition()->setMapFile($issue->getMap()->getFile());
+            }
 
             if ($setStatus !== 0 || $this->getRandomNumber() > 7) {
                 //if no status is set leave craftsman null sometime
@@ -187,8 +198,32 @@ class LoadIssueData extends BaseFixture
                 $issue->setResponseLimit(new \DateTime(($this->getRandomNumber()) . ' days'));
             }
 
-            if ($issue->getImageFilename() !== null) {
-                $this->safeCopyToPublic($this->pathService->getFolderForIssue($issue->getMap()->getConstructionSite()) . \DIRECTORY_SEPARATOR . $issue->getImageFilename(), 'issue_images');
+            if ($this->getRandomNumber() > 3) {
+                // add image to issue
+                $sourceImage = $images[$issueNumber * $this->getRandomNumber() % \count($images)];
+                $targetFolder = $this->pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
+
+                // ensure target folder exists
+                if (!file_exists($targetFolder)) {
+                    mkdir($targetFolder, 0777, true);
+                }
+
+                // create new filename
+                $extension = pathinfo($sourceImage, PATHINFO_EXTENSION);
+                $fileName = Uuid::uuid4()->toString() . '.' . $extension;
+                $targetPath = $targetFolder . \DIRECTORY_SEPARATOR . $fileName;
+
+                //copy file to target folder
+                copy($sourceImage, $targetPath);
+
+                // save to db
+                $file = new IssueImage();
+                $file->setFilename($fileName);
+                $file->setDisplayFilename($fileName);
+                $file->setHash(hash_file('sha256', $targetPath));
+                $file->setIssue($issue);
+                $issue->setImage($file);
+                $issue->getImages()->add($file);
             }
 
             $manager->persist($issue);

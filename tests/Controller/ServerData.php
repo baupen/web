@@ -11,7 +11,7 @@
 
 namespace App\Tests\Controller;
 
-use App\Api\External\Entity\Building;
+use App\Api\External\Entity\ConstructionSite;
 use App\Api\External\Entity\Craftsman;
 use App\Api\External\Entity\Issue;
 use App\Api\External\Entity\Map;
@@ -19,9 +19,9 @@ use App\Api\External\Entity\Map;
 class ServerData
 {
     /**
-     * @var Building[]
+     * @var ConstructionSite[]
      */
-    private $buildings;
+    private $constructionSites;
 
     /**
      * @var Map[]
@@ -41,25 +41,25 @@ class ServerData
     /**
      * ServerData constructor.
      *
-     * @param Building[] $buildings
+     * @param ConstructionSite[] $constructionSites
      * @param Map[] $maps
      * @param Craftsman[] $craftsman
      * @param Issue[] $issues
      */
-    public function __construct($buildings, $maps, $craftsman, $issues)
+    public function __construct($constructionSites, $maps, $craftsman, $issues)
     {
-        $this->buildings = $buildings;
+        $this->constructionSites = $constructionSites;
         $this->maps = $maps;
         $this->craftsmen = $craftsman;
         $this->issues = $issues;
     }
 
     /**
-     * @return Building[]
+     * @return ConstructionSite[]
      */
-    public function getBuildings(): array
+    public function getConstructionSites(): array
     {
-        return $this->buildings;
+        return $this->constructionSites;
     }
 
     /**

@@ -43,6 +43,7 @@ class ReadController extends ExternalApiController
      * @param TransformerFactory $transformerFactory
      *
      * @throws ORMException
+     * @throws \Exception
      *
      * @return Response
      */
@@ -59,11 +60,11 @@ class ReadController extends ExternalApiController
         if ($constructionManager->getLastChangedAt() > new \DateTime($readRequest->getUser()->getLastChangeTime())) {
             $readData->setChangedUser($transformerFactory->getUserTransformer()->toApi($constructionManager, $readRequest->getAuthenticationToken()));
         }
-        $readData->setChangedBuildings([]);
+        $readData->setChangedConstructionSites([]);
         $readData->setChangedCraftsmen([]);
         $readData->setChangedIssues([]);
         $readData->setChangedMaps([]);
-        $readData->setRemovedBuildingIDs([]);
+        $readData->setRemovedConstructionSiteIDs([]);
         $readData->setRemovedCraftsmanIDs([]);
         $readData->setRemovedIssueIDs([]);
         $readData->setRemovedMapIDs([]);
@@ -105,10 +106,10 @@ WHERE cscm.construction_manager_id = :id';
         $query->setParameters(['id' => $constructionManager->getId()]);
         /** @var IdTrait[] $validConstructionSites */
         $validConstructionSites = $query->getResult();
-        $this->filterIds($readRequest->getBuildings(), $validConstructionSites, $allValidIds, $removeIds, $knownIds);
+        $this->filterIds($readRequest->getConstructionSites(), $validConstructionSites, $allValidIds, $removeIds, $knownIds);
 
         //set the removed/invalid buildings
-        $readData->setRemovedBuildingIDs(array_keys($removeIds));
+        $readData->setRemovedConstructionSiteIDs(array_keys($removeIds));
 
         //if no access to any buildings do an early return
         if (\count($allValidIds) === 0) {
@@ -132,7 +133,7 @@ WHERE cscm.construction_manager_id = :id';
             $retrieveConstructionSiteIds[] = $object->getId();
         }
 
-        $readData->setChangedBuildings(
+        $readData->setChangedConstructionSites(
             $transformerFactory->getBuildingTransformer()->toApiMultiple(
                 $manager->getRepository(ConstructionSite::class)->findBy(['id' => $retrieveConstructionSiteIds])
             )
