@@ -268,18 +268,16 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
     {
         // get all files from the directory
         /** @var MapFile[] $existingMapFiles */
-        $existingMapFiles = [];
-        foreach ($constructionSite->getMaps() as $map) {
-            $existingMapFiles = array_merge($existingMapFiles, $map->getFiles()->toArray());
-            foreach ($map->getFiles() as $file) {
-                $existingMapFiles[$file->getId()] = $file;
-            }
-        }
+        $existingMapFiles = $this->registry->getRepository(MapFile::class)->findBy(['constructionSite' => $constructionSite->getId()]);
         $mapsDirectory = $directory . \DIRECTORY_SEPARATOR . 'maps';
         /** @var MapFile[] $newMapFiles */
         $newMapFiles = $this->getFiles($mapsDirectory, '.pdf', $existingMapFiles, function () {
             return new MapFile();
         });
+
+        foreach ($newMapFiles as $newMapFile) {
+            $newMapFile->setConstructionSite($constructionSite);
+        }
 
         /** @var MapFile[] $allMapFiles */
         $allMapFiles = array_merge($newMapFiles, $existingMapFiles);
@@ -296,31 +294,51 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
             $mapFile->setDisplayFilename($mapNames[$counter++]);
         }
 
-        // create lookup of known file names
+        // sets map parent for all newly found map files
+        $this->assignMapFilesToMaps($constructionSite, $allMapFiles);
+
+        // put all in tree structure
+        $this->createTreeStructure($constructionSite->getMaps()->toArray());
+    }
+
+    /**
+     * @param ConstructionSite $constructionSite
+     * @param MapFile[] $mapFiles
+     */
+    private function assignMapFilesToMaps(ConstructionSite $constructionSite, $mapFiles)
+    {
         /** @var Map[] $displayNameToMapLookup */
         $displayNameToMapLookup = [];
-        foreach ($existingMapFiles as $existingMapFile) {
-            $key = $existingMapFile->getDisplayFilename();
+        foreach ($mapFiles as $mapFile) {
+            if ($mapFile->getMap() === null) {
+                continue;
+            }
+
+            $key = $mapFile->getDisplayFilename();
             if (!array_key_exists($key, $displayNameToMapLookup)) {
-                $displayNameToMapLookup[$key] = $existingMapFile->getMap();
-            } elseif ($displayNameToMapLookup[$key]->getPreventAutomaticEdit() && !$existingMapFile->getMap()->getPreventAutomaticEdit()) {
-                $displayNameToMapLookup[$key] = $existingMapFile->getMap();
+                $displayNameToMapLookup[$key] = $mapFile->getMap();
+            } elseif ($displayNameToMapLookup[$key]->getPreventAutomaticEdit() && !$mapFile->getMap()->getPreventAutomaticEdit()) {
+                $displayNameToMapLookup[$key] = $mapFile->getMap();
             }
         }
 
-        // tries to find parent for all newly found maps
         /** @var Map[] $cacheInvalidatedMaps */
         $cacheInvalidatedMaps = [];
-        foreach ($newMapFiles as $newMapFile) {
-            $key = $newMapFile->getDisplayFilename();
+        foreach ($mapFiles as $mapFile) {
+            if ($mapFile->getMap() !== null) {
+                continue;
+            }
+
+            $key = $mapFile->getDisplayFilename();
             if (array_key_exists($key, $displayNameToMapLookup)) {
                 $targetMap = $displayNameToMapLookup[$key];
-                $newMapFile->setMap($targetMap);
-                $targetMap->getFiles()->add($newMapFile);
+
+                $mapFile->setMap($targetMap);
+                $targetMap->getFiles()->add($mapFile);
 
                 // write if not disabled
                 if (!$targetMap->getPreventAutomaticEdit()) {
-                    $targetMap->setFile($newMapFile);
+                    $targetMap->setFile($mapFile);
                     $targetMap->setName($key);
 
                     if (!\in_array($targetMap, $cacheInvalidatedMaps, true)) {
@@ -331,18 +349,16 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
                 // create new map for map file
                 $map = new Map();
                 $map->setName($key);
-                $map->setFile($newMapFile);
+                $map->setFile($mapFile);
                 $map->setConstructionSite($constructionSite);
                 $constructionSite->getMaps()->add($map);
-                $map->getFiles()->add($newMapFile);
-                $newMapFile->setMap($map);
+
+                $mapFile->setMap($map);
+                $map->getFiles()->add($mapFile);
 
                 $displayNameToMapLookup[$key] = $map;
                 $cacheInvalidatedMaps[] = $map;
             }
         }
-
-        // put all in tree structure
-        $this->createTreeStructure($constructionSite->getMaps()->toArray());
     }
 }

@@ -24,10 +24,11 @@ class MapFileTransformer
      */
     public function toApi($entity)
     {
-        $craftsman = new \App\Api\Entity\Edit\MapFile($entity->getId());
-        $craftsman->setCreatedAt($entity->getCreatedAt());
-        $craftsman->setFilename($entity->getFilename());
+        $mapFile = new \App\Api\Entity\Edit\MapFile($entity->getId());
+        $mapFile->setCreatedAt($entity->getCreatedAt());
+        $mapFile->setFilename($entity->getFilename());
+        $mapFile->setMapId($entity->getMap() ? $entity->getMap()->getId() : null);
 
-        return $craftsman;
+        return $mapFile;
     }
 }

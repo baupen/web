@@ -43,6 +43,46 @@ class EditController extends ApiController
     }
 
     /**
+     * @Route("/map_files", name="api_edit_map_files", methods={"POST"})
+     *
+     * @param Request $request
+     * @param MapFileTransformer $mapFileTransformer
+     * @param UploadServiceInterface $uploadService
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function mapFilesAction(Request $request, MapFileTransformer $mapFileTransformer, UploadServiceInterface $uploadService)
+    {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        //check if file is here
+        if ($request->files->count() !== 1) {
+            return $this->fail(self::INCORRECT_NUMBER_OF_FILES);
+        }
+
+        /** @var UploadedFile $file */
+        $file = $request->files->getIterator()->current();
+
+        //save file
+        $mapFile = $uploadService->uploadMapFile($file, $constructionSite);
+        if ($mapFile === null) {
+            return $this->fail(self::MAP_FILE_UPLOAD_FAILED);
+        }
+        $this->fastSave($mapFile);
+
+        //create response
+        $data = new MapFileData();
+        $data->setMapFile($mapFileTransformer->toApi($mapFile));
+
+        return $this->success($data);
+    }
+
+    /**
      * @Route("/map_files/upload", name="api_edit_map_files_upload", methods={"POST"})
      *
      * @param Request $request
@@ -73,6 +113,7 @@ class EditController extends ApiController
         if ($mapFile === null) {
             return $this->fail(self::MAP_FILE_UPLOAD_FAILED);
         }
+        $mapFile->setConstructionSite($constructionSite);
         $this->fastSave($mapFile);
 
         //create response

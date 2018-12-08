@@ -24,6 +24,11 @@ class MapFile extends BaseEntity
     private $filename;
 
     /**
+     * @var string|null
+     */
+    private $mapId;
+
+    /**
      * @return \DateTime
      */
     public function getCreatedAt(): \DateTime
@@ -53,5 +58,21 @@ class MapFile extends BaseEntity
     public function setFilename(string $filename): void
     {
         $this->filename = $filename;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMapId(): ?string
+    {
+        return $this->mapId;
+    }
+
+    /**
+     * @param string|null $mapId
+     */
+    public function setMapId(?string $mapId): void
+    {
+        $this->mapId = $mapId;
     }
 }

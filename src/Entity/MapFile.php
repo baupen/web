@@ -29,7 +29,14 @@ class MapFile extends BaseEntity
     use FileTrait;
 
     /**
-     * @var Map
+     * @var ConstructionSite
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="files")
+     */
+    private $constructionSite;
+
+    /**
+     * @var Map|null
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="files")
      */
@@ -48,26 +55,42 @@ class MapFile extends BaseEntity
     }
 
     /**
-     * @return Map
-     */
-    public function getMap(): Map
-    {
-        return $this->map;
-    }
-
-    /**
-     * @param Map $map
-     */
-    public function setMap(Map $map): void
-    {
-        $this->map = $map;
-    }
-
-    /**
      * @return IssuePosition[]
      */
     public function getIssuePositions(): array
     {
         return $this->issuePositions;
+    }
+
+    /**
+     * @return ConstructionSite
+     */
+    public function getConstructionSite(): ConstructionSite
+    {
+        return $this->constructionSite;
+    }
+
+    /**
+     * @param ConstructionSite $constructionSite
+     */
+    public function setConstructionSite(ConstructionSite $constructionSite): void
+    {
+        $this->constructionSite = $constructionSite;
+    }
+
+    /**
+     * @return Map|null
+     */
+    public function getMap(): ?Map
+    {
+        return $this->map;
+    }
+
+    /**
+     * @param Map|null $map
+     */
+    public function setMap(?Map $map): void
+    {
+        $this->map = $map;
     }
 }
