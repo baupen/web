@@ -9,10 +9,13 @@
     <div class="row">
         {% for constructionSite in constructionSites %}
             <div class="col-md-3">
-                <a class="card card-clickable" href="{{ path('switch_switch', {"constructionSite" : constructionSite.id}) }}">
-                    <img class="card-img-top"
-                         src="{{ path("image_construction_site", {"constructionSite": constructionSite.id, "imageFilename": constructionSite.imageFilename, "size": "medium"}) }}"
-                         alt="Card image cap">
+                <a class="card card-clickable"
+                   href="{{ path('switch_switch', {"constructionSite" : constructionSite.id}) }}">
+                    {% if constructionSite.image is not null %}
+                        <img class="card-img-top"
+                             src="{{ path("image_construction_site", {"constructionSite": constructionSite.id, "image": constructionSite.image.id, "size": "medium"}) }}"
+                             alt="Card image cap">
+                    {% endif %}
                     <div class="card-body">
                         <h4>{{ constructionSite.name }}</h4>
                     </div>

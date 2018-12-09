@@ -43,6 +43,8 @@ class CraftsmanTransformer extends BatchTransformer
     /**
      * @param Craftsman $entity
      *
+     * @throws \Exception
+     *
      * @return \App\Api\Entity\Dispatch\Craftsman
      */
     public function toApi($entity)

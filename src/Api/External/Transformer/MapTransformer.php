@@ -26,10 +26,22 @@ class MapTransformer extends BatchTransformer
      */
     private $fileTransformer;
 
-    public function __construct(ObjectMetaTransformer $objectMetaTransformer, FileTransformer $fileTransformer)
+    /**
+     * @var MapSectorTransformer
+     */
+    private $mapSectorTransformer;
+
+    /**
+     * @var FrameTransformer
+     */
+    private $frameTransformer;
+
+    public function __construct(ObjectMetaTransformer $objectMetaTransformer, FileTransformer $fileTransformer, MapSectorTransformer $mapSectorTransformer, FrameTransformer $frameTransformer)
     {
         $this->objectMetaTransformer = $objectMetaTransformer;
         $this->fileTransformer = $fileTransformer;
+        $this->mapSectorTransformer = $mapSectorTransformer;
+        $this->frameTransformer = $frameTransformer;
     }
 
     /**
@@ -40,8 +52,10 @@ class MapTransformer extends BatchTransformer
     public function toApi($entity)
     {
         $map = new \App\Api\External\Entity\Map();
-        $map->setFile($this->fileTransformer->toApi($entity->getFile()));
         $map->setName($entity->getName());
+        $map->setFile($this->fileTransformer->toApi($entity->getFile()));
+        $map->setSectors($entity->getFile() !== null ? $this->mapSectorTransformer->toApiMultiple($entity->getFile()->getSectors()->toArray()) : []);
+        $map->setSectorFrame($entity->getFile() !== null ? $this->frameTransformer->toApi($entity->getFile()->getSectorFrame()) : null);
 
         $issueIds = [];
         foreach ($entity->getIssues() as $issue) {
@@ -54,7 +68,6 @@ class MapTransformer extends BatchTransformer
             $childrenIds[] = $child->getId();
         }
         $map->setChildren($childrenIds);
-        $map->setBuildingID($entity->getConstructionSite()->getId());
         $map->setMeta($this->objectMetaTransformer->toApi($entity));
 
         return $map;

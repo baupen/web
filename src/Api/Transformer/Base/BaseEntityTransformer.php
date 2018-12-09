@@ -19,7 +19,6 @@ class BaseEntityTransformer extends BatchTransformer
 {
     /**
      * @param IdTrait $entity
-     * @param array|null $args
      *
      * @return BaseEntity
      */

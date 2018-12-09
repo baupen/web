@@ -20,8 +20,189 @@ use Ramsey\Uuid\Uuid;
 
 class ReadControllerTest extends ApiController
 {
+    const TYPE_STRING = 1;
+    const TYPE_INT = 2;
+    const TYPE_BOOLEAN = 4;
+    const TYPE_DOUBLE = 8;
+    const TYPE_UUID = 16;
+    const TYPE_DATE_TIME = 32;
+    const TYPE_UUID_ARRAY = 64;
+    const TYPE_NULLABLE = 128;
+
     /**
-     * tests the create issue method.
+     * tests that only valid, specified properties are returned
+     * @throws \Exception
+     */
+    public function testPublicProperties()
+    {
+        $client = static::createClient();
+        $authenticatedUser = $this->getAuthenticatedUser($client);
+        $serializer = $client->getContainer()->get('serializer');
+        $doRequest = function (ReadRequest $readRequest) use ($client, $serializer) {
+            $json = $serializer->serialize($readRequest, 'json');
+            $client->request(
+                'POST',
+                '/api/external/read',
+                [],
+                [],
+                ['CONTENT_TYPE' => 'application/json'],
+                $json
+            );
+
+            return $client->getResponse();
+        };
+
+        //## update none
+        $readRequest = new ReadRequest();
+        $readRequest->setAuthenticationToken($authenticatedUser->authenticationToken);
+        $userMeta = new ObjectMeta();
+        $userMeta->setId($authenticatedUser->meta->id);
+        $userMeta->setLastChangeTime($authenticatedUser->meta->lastChangeTime);
+        $readRequest->setUser($userMeta);
+        $readRequest->setConstructionSites([]);
+        $readRequest->setCraftsmen([]);
+        $readRequest->setIssues([]);
+        $readRequest->setMaps([]);
+
+        $response = $doRequest($readRequest);
+        $readResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($readResponse->data);
+        $this->assertNull($readResponse->data->changedUser);
+        $this->assertNotEmpty($readResponse->data->changedConstructionSites);
+
+        $metaDefinition = ["id" => self::TYPE_UUID, "lastChangeTime" => self::TYPE_DATE_TIME];
+
+        $this->assertPropertiesMatch($readResponse->data->changedConstructionSites, [
+                "name" => self::TYPE_STRING,
+                "address" => [
+                    "_required" => false,
+                    "streetAddress" => self::TYPE_STRING | self::TYPE_NULLABLE,
+                    "postalCode" => self::TYPE_INT | self::TYPE_NULLABLE,
+                    "locality" => self::TYPE_STRING | self::TYPE_NULLABLE,
+                    "country" => self::TYPE_STRING | self::TYPE_NULLABLE
+                ],
+                "maps" => self::TYPE_UUID_ARRAY,
+                "craftsmen" => self::TYPE_UUID_ARRAY,
+                "image" => ["id" => self::TYPE_UUID, "filename" => self::TYPE_STRING],
+                "meta" => $metaDefinition
+            ]
+        );
+
+        $this->assertPropertiesMatch(
+            $readResponse->data->changedCraftsmen, [
+                "name" => self::TYPE_STRING,
+                "trade" => self::TYPE_STRING,
+                "meta" => $metaDefinition
+            ]
+        );
+
+        $eventDefinition = ["time" => self::TYPE_DATE_TIME, "author" => self::TYPE_STRING];
+        $pointDefinition = ["x" => self::TYPE_DOUBLE, "y" => self::TYPE_DOUBLE];
+        $fileDefinition = ["id" => self::TYPE_UUID, "filename" => self::TYPE_STRING];
+        $this->assertPropertiesMatch(
+            $readResponse->data->changedIssues, [
+                "number" => self::TYPE_INT | self::TYPE_NULLABLE,
+                "isMarked" => self::TYPE_BOOLEAN,
+                "wasAddedWithClient" => self::TYPE_BOOLEAN,
+                "image" => $fileDefinition,
+                "description" => self::TYPE_STRING | self::TYPE_NULLABLE,
+                "craftsman" => self::TYPE_UUID | self::TYPE_NULLABLE,
+                "map" => self::TYPE_UUID,
+                "status" => [
+                    "registration" => $eventDefinition,
+                    "response" => $eventDefinition,
+                    "review" => $eventDefinition
+                ],
+                "position" => ["point" => $pointDefinition, "zoomScale" => self::TYPE_DOUBLE, "mapFileId" => self::TYPE_UUID],
+                "meta" => $metaDefinition
+            ]
+        );
+
+        $this->assertPropertiesMatch(
+            $readResponse->data->changedMaps, [
+                "name" => self::TYPE_STRING,
+                "children" => self::TYPE_UUID_ARRAY,
+                "issues" => self::TYPE_UUID_ARRAY,
+                "file" => $fileDefinition,
+                "sectors" => ["name" => self::TYPE_STRING, "color" => self::TYPE_STRING, "points" => $pointDefinition],
+                "sectorFrame" => ["startX" => self::TYPE_DOUBLE, "startY" => self::TYPE_DOUBLE, "width" => self::TYPE_DOUBLE, "height" => self::TYPE_DOUBLE],
+                "meta" => $metaDefinition
+            ]
+        );
+
+        $this->assertNotEmpty($readResponse->data->changedCraftsmen);
+        $this->assertNotEmpty($readResponse->data->changedMaps);
+        $this->assertNotEmpty($readResponse->data->changedIssues);
+    }
+
+    private function assertPropertiesMatch($object, $expectedProperties)
+    {
+        $required = false;
+        if (isset($expectedProperties["_required"])) {
+            $required = $expectedProperties["_required"];
+            unset($expectedProperties["_required"]);
+        }
+
+        if (is_null($object)) {
+            if ($required) {
+                $this->fail("required object was not set");
+            }
+            return;
+        }
+
+        $checkValueType = function ($value, $type) {
+        };
+
+        $checkObject = function ($object) use ($expectedProperties, $checkValueType) {
+            $properties = get_object_vars($object);
+            $this->assertSameSize($expectedProperties, $properties, implode(", ", array_keys($properties)));
+
+            foreach ($expectedProperties as $name => $type) {
+                $this->assertTrue(property_exists($object, $name), "property " . $name . " not found");
+
+                $value = $object->$name;
+                if (is_array($type)) {
+                    $this->assertPropertiesMatch($value, $type);
+                } else {
+                    if ($type & self::TYPE_NULLABLE && $value === null) {
+                        // fine!
+                    } else if ($type & self::TYPE_STRING) {
+                        $this->assertTrue(is_string($value));
+                    } else if ($type & self::TYPE_INT) {
+                        $this->assertTrue(is_int($value));
+                    } else if ($type & self::TYPE_BOOLEAN) {
+                        $this->assertTrue(is_bool($value));
+                    } else if ($type & self::TYPE_DOUBLE) {
+                        $this->assertTrue(is_double($value) || is_int($value));
+                    } else if ($type & self::TYPE_UUID) {
+                        $this->assertTrue(is_string($value));
+                        $this->assertTrue(strlen(Uuid::NIL) === strlen($value));
+                    } else if ($type & self::TYPE_DATE_TIME) {
+                        $this->assertTrue(is_string($value));
+                        $this->assertTrue(strlen("2018-12-09T14:22:47+01:00") === strlen($value));
+                    } else if ($type & self::TYPE_UUID_ARRAY) {
+                        $this->assertTrue(is_array($value));
+                        foreach ($value as $item) {
+                            $this->assertTrue(strlen(Uuid::NIL) === strlen($item));
+                        }
+                    }
+                }
+            }
+        };
+
+        if (is_array($object)) {
+            foreach ($object as $item) {
+                $checkObject($item);
+            }
+        } else {
+            $checkObject($object);
+        }
+    }
+
+    /**
+     * tests the read method.
+     * @throws \Exception
      */
     public function testRead()
     {

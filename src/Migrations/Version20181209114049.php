@@ -19,41 +19,25 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20181203192737 extends AbstractMigration
+final class Version20181209114049 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
-        $this->addSql('CREATE TABLE construction_site_image (id CHAR(36) NOT NULL --(DC2Type:guid)
-        , construction_site_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
-        , created_at DATETIME NOT NULL, last_changed_at DATETIME NOT NULL, filename CLOB NOT NULL, display_filename CLOB NOT NULL, hash CLOB NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX IDX_DFC5717E4994A532 ON construction_site_image (construction_site_id)');
-        $this->addSql('CREATE TABLE issue (id CHAR(36) NOT NULL --(DC2Type:guid)
-        , upload_by_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
-        , registration_by_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
-        , response_by_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
-        , review_by_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
-        , image_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
-        , craftsman_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
-        , map_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
-        , number INTEGER DEFAULT NULL, is_marked BOOLEAN NOT NULL, was_added_with_client BOOLEAN NOT NULL, description CLOB DEFAULT NULL, response_limit DATETIME DEFAULT NULL, uploaded_at DATETIME NOT NULL, registered_at DATETIME DEFAULT NULL, responded_at DATETIME DEFAULT NULL, reviewed_at DATETIME DEFAULT NULL, created_at DATETIME NOT NULL, last_changed_at DATETIME NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX IDX_12AD233E83BA6D1B ON issue (upload_by_id)');
-        $this->addSql('CREATE INDEX IDX_12AD233E254D80EC ON issue (registration_by_id)');
-        $this->addSql('CREATE INDEX IDX_12AD233EBA91FB54 ON issue (response_by_id)');
-        $this->addSql('CREATE INDEX IDX_12AD233EB9690C1F ON issue (review_by_id)');
-        $this->addSql('CREATE INDEX IDX_12AD233E3DA5256D ON issue (image_id)');
-        $this->addSql('CREATE INDEX IDX_12AD233E34508F72 ON issue (craftsman_id)');
-        $this->addSql('CREATE INDEX IDX_12AD233E53C55F64 ON issue (map_id)');
-        $this->addSql('CREATE TABLE issue_image (id CHAR(36) NOT NULL --(DC2Type:guid)
-        , issue_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
-        , created_at DATETIME NOT NULL, last_changed_at DATETIME NOT NULL, filename CLOB NOT NULL, display_filename CLOB NOT NULL, hash CLOB NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX IDX_57B76D0C5E7AA58C ON issue_image (issue_id)');
         $this->addSql('CREATE TABLE map_file (id CHAR(36) NOT NULL --(DC2Type:guid)
+        , construction_site_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
         , map_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
+        , sector_frame CLOB DEFAULT NULL --(DC2Type:json)
         , created_at DATETIME NOT NULL, last_changed_at DATETIME NOT NULL, filename CLOB NOT NULL, display_filename CLOB NOT NULL, hash CLOB NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_1FB791854994A532 ON map_file (construction_site_id)');
         $this->addSql('CREATE INDEX IDX_1FB7918553C55F64 ON map_file (map_id)');
+        $this->addSql('CREATE TABLE map_sector (id CHAR(36) NOT NULL --(DC2Type:guid)
+        , map_file_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
+        , name CLOB NOT NULL, color CLOB NOT NULL, points CLOB NOT NULL --(DC2Type:json)
+        , identifier CLOB NOT NULL, prevent_automatic_edit CLOB DEFAULT \'\' NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_F2702D4BCE08130 ON map_sector (map_file_id)');
         $this->addSql('CREATE TABLE construction_manager (id CHAR(36) NOT NULL --(DC2Type:guid)
         , active_construction_site_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
         , given_name CLOB DEFAULT NULL, family_name CLOB DEFAULT NULL, phone CLOB DEFAULT NULL, locale CLOB DEFAULT \'de\' NOT NULL, created_at DATETIME NOT NULL, last_changed_at DATETIME NOT NULL, email CLOB NOT NULL, password CLOB NOT NULL, password_hash CLOB NOT NULL, reset_hash CLOB NOT NULL, is_enabled BOOLEAN NOT NULL, registration_date DATETIME NOT NULL, agb_accepted BOOLEAN DEFAULT \'0\' NOT NULL, PRIMARY KEY(id))');
@@ -65,6 +49,14 @@ final class Version20181203192737 extends AbstractMigration
         , position_x DOUBLE PRECISION DEFAULT NULL, position_y DOUBLE PRECISION DEFAULT NULL, position_zoom_scale DOUBLE PRECISION DEFAULT NULL, created_at DATETIME NOT NULL, last_changed_at DATETIME NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_9184CE5E5E7AA58C ON issue_position (issue_id)');
         $this->addSql('CREATE INDEX IDX_9184CE5EBCE08130 ON issue_position (map_file_id)');
+        $this->addSql('CREATE TABLE issue_image (id CHAR(36) NOT NULL --(DC2Type:guid)
+        , issue_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
+        , created_at DATETIME NOT NULL, last_changed_at DATETIME NOT NULL, filename CLOB NOT NULL, display_filename CLOB NOT NULL, hash CLOB NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_57B76D0C5E7AA58C ON issue_image (issue_id)');
+        $this->addSql('CREATE TABLE construction_site_image (id CHAR(36) NOT NULL --(DC2Type:guid)
+        , construction_site_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
+        , created_at DATETIME NOT NULL, last_changed_at DATETIME NOT NULL, filename CLOB NOT NULL, display_filename CLOB NOT NULL, hash CLOB NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_DFC5717E4994A532 ON construction_site_image (construction_site_id)');
         $this->addSql('CREATE TABLE map (id CHAR(36) NOT NULL --(DC2Type:guid)
         , construction_site_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
         , parent_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
@@ -106,6 +98,22 @@ final class Version20181203192737 extends AbstractMigration
         , construction_manager_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
         , token CLOB NOT NULL, last_used DATETIME NOT NULL, created_at DATETIME NOT NULL, last_changed_at DATETIME NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_B54C4ADDA69C9147 ON authentication_token (construction_manager_id)');
+        $this->addSql('CREATE TABLE issue (id CHAR(36) NOT NULL --(DC2Type:guid)
+        , upload_by_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
+        , registration_by_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
+        , response_by_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
+        , review_by_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
+        , image_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
+        , craftsman_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
+        , map_id CHAR(36) DEFAULT NULL --(DC2Type:guid)
+        , number INTEGER DEFAULT NULL, is_marked BOOLEAN NOT NULL, was_added_with_client BOOLEAN NOT NULL, description CLOB DEFAULT NULL, response_limit DATETIME DEFAULT NULL, uploaded_at DATETIME NOT NULL, registered_at DATETIME DEFAULT NULL, responded_at DATETIME DEFAULT NULL, reviewed_at DATETIME DEFAULT NULL, created_at DATETIME NOT NULL, last_changed_at DATETIME NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_12AD233E83BA6D1B ON issue (upload_by_id)');
+        $this->addSql('CREATE INDEX IDX_12AD233E254D80EC ON issue (registration_by_id)');
+        $this->addSql('CREATE INDEX IDX_12AD233EBA91FB54 ON issue (response_by_id)');
+        $this->addSql('CREATE INDEX IDX_12AD233EB9690C1F ON issue (review_by_id)');
+        $this->addSql('CREATE INDEX IDX_12AD233E3DA5256D ON issue (image_id)');
+        $this->addSql('CREATE INDEX IDX_12AD233E34508F72 ON issue (craftsman_id)');
+        $this->addSql('CREATE INDEX IDX_12AD233E53C55F64 ON issue (map_id)');
     }
 
     public function down(Schema $schema): void
@@ -113,12 +121,12 @@ final class Version20181203192737 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
-        $this->addSql('DROP TABLE construction_site_image');
-        $this->addSql('DROP TABLE issue');
-        $this->addSql('DROP TABLE issue_image');
         $this->addSql('DROP TABLE map_file');
+        $this->addSql('DROP TABLE map_sector');
         $this->addSql('DROP TABLE construction_manager');
         $this->addSql('DROP TABLE issue_position');
+        $this->addSql('DROP TABLE issue_image');
+        $this->addSql('DROP TABLE construction_site_image');
         $this->addSql('DROP TABLE map');
         $this->addSql('DROP TABLE email');
         $this->addSql('DROP TABLE craftsman');
@@ -127,5 +135,6 @@ final class Version20181203192737 extends AbstractMigration
         $this->addSql('DROP TABLE construction_site');
         $this->addSql('DROP TABLE construction_site_construction_manager');
         $this->addSql('DROP TABLE authentication_token');
+        $this->addSql('DROP TABLE issue');
     }
 }

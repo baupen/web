@@ -241,6 +241,15 @@ x: Double
 y: Double
 ```
 
+## `Frame`
+origin is top left
+```
+startX: Double
+startY: Double
+height: Double
+width: Double
+```
+
 ## `File`
 ```
 id: UUID
@@ -298,6 +307,7 @@ trade: String // e.g. "Gipser", "Maler"
 meta: ObjectMeta
 children: [UUID]
 sectors: [Sector]
+sectorFrame: Frame?
 issues: [UUID]
 file: File?
 name: String
@@ -331,7 +341,7 @@ position: Position?
 ```
 point: Point
 zoomScale: Double
-fileId: UUID
+mapFileId: UUID
 ```
 
 ### `Issue.Status`

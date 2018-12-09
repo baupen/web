@@ -29,8 +29,7 @@ use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
-use App\Service\Interfaces\ImageServiceInterface;
-use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Interfaces\UploadServiceInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -285,14 +284,13 @@ class FoyerController extends ApiController
      *
      * @param Request $request
      * @param IssueTransformer $issueTransformer
-     * @param PathServiceInterface $pathService
-     * @param ImageServiceInterface $imageService
+     * @param UploadServiceInterface $uploadService
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function issueImageAction(Request $request, IssueTransformer $issueTransformer, PathServiceInterface $pathService, ImageServiceInterface $imageService)
+    public function issueImageAction(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService)
     {
         /** @var ConstructionSite $constructionSite */
         /* @var IssueIdRequest $issueRequest */
@@ -313,7 +311,7 @@ class FoyerController extends ApiController
         $targetFileName = Uuid::uuid4()->toString() . '.' . $file->guessExtension();
 
         //save file
-        $issueImage = $this->uploadIssueImage($file, $entity, $targetFileName, $pathService, $imageService);
+        $issueImage = $uploadService->uploadIssueImage($file, $entity, $targetFileName);
         if ($issueImage === null) {
             return $this->fail(self::FILE_UPLOAD_FAILED);
         }
@@ -321,7 +319,7 @@ class FoyerController extends ApiController
         $issueImage->setIssue($entity);
         $entity->getImages()->add($issueImage);
         $entity->setImage($issueImage);
-        $this->fastSave($entity);
+        $this->fastSave($issueImage, $entity);
 
         //create response
         $data = new IssueData();

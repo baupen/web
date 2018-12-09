@@ -74,7 +74,7 @@ trait FileTrait
     /**
      * @return string
      */
-    public function getDisplayFilename(): string
+    public function getDisplayFilename(): ?string
     {
         return $this->displayFilename;
     }

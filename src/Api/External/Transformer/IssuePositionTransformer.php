@@ -11,6 +11,7 @@
 
 namespace App\Api\External\Transformer;
 
+use App\Api\External\Entity\Point;
 use App\Entity\IssuePosition;
 use App\Entity\MapFile;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -39,8 +40,12 @@ class IssuePositionTransformer
         }
 
         $position = new \App\Api\External\Entity\IssuePosition();
-        $position->setX($entity->getPositionX());
-        $position->setY($entity->getPositionY());
+
+        $point = new Point();
+        $point->setX($entity->getPositionX());
+        $point->setY($entity->getPositionY());
+        $position->setPoint($point);
+
         $position->setZoomScale($entity->getPositionZoomScale());
         $position->setMapFileId($entity->getMapFile()->getId());
 
@@ -72,8 +77,8 @@ class IssuePositionTransformer
         }
 
         $existing->setMapFile($linkedMapFile);
-        $existing->setPositionX($position->getX());
-        $existing->setPositionY($position->getY());
+        $existing->setPositionX($position->getPoint()->getX());
+        $existing->setPositionY($position->getPoint()->getY());
         $existing->setPositionZoomScale($position->getZoomScale());
 
         return $existing;

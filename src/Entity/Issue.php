@@ -123,21 +123,21 @@ class Issue extends BaseEntity
     /**
      * @var IssuePosition|null
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\IssuePosition", mappedBy="issue", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\IssuePosition", mappedBy="issue")
      */
     private $position;
 
     /**
      * @var IssueImage[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\IssueImage", mappedBy="issue", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\IssueImage", mappedBy="issue")
      */
     private $images;
 
     /**
      * @var IssueImage|null
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\IssueImage", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\IssueImage")
      */
     private $image;
 
