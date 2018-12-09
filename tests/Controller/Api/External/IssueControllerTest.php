@@ -45,7 +45,7 @@ class IssueControllerTest extends ApiController
         };
 
         $serverData = $this->getServerEntities($client, $user);
-        $map = $serverData->getMaps()[0];
+        $map = $this->getMapWithFile($serverData->getMaps());
 
         $issue = new Issue();
         $issue->setWasAddedWithClient(true);

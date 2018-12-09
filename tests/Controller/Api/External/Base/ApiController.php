@@ -124,6 +124,21 @@ class ApiController extends AbstractApiController
     }
 
     /**
+     * @param Map[] $maps
+     * @return Map
+     */
+    protected function getMapWithFile($maps)
+    {
+        foreach ($maps as $map) {
+            if ($map->getFile() !== null) {
+                return $map;
+            }
+        }
+        $this->fail("no map found with a file attached");
+        return null;
+    }
+
+    /**
      * checks if the issue is of the expected form.
      *
      * @param $checkIssue

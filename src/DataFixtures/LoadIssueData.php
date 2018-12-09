@@ -114,12 +114,17 @@ class LoadIssueData extends BaseFixture
             }
 
             for ($i = 0; $i < self::MULTIPLICATION_FACTOR; ++$i) {
-                $arguments = [$manager, $maps, $craftsmen, $constructionSiteManagers, $getFreshIssueSet($issueNumber), $images, $issueNumber];
-                $this->add(...($arguments));
-                $this->add(...(array_merge($arguments, [self::REGISTRATION_SET])));
-                $this->add(...(array_merge($arguments + [self::REGISTRATION_SET | self::RESPONSE_SET])));
-                $this->add(...(array_merge($arguments + [self::REGISTRATION_SET | self::RESPONSE_SET | self::REVIEW_SET])));
-                $this->add(...(array_merge($arguments + [self::REGISTRATION_SET | self::REVIEW_SET])));
+                $statusSets = [
+                    0,
+                    self::REGISTRATION_SET,
+                    self::REGISTRATION_SET | self::RESPONSE_SET,
+                    self::REGISTRATION_SET | self::RESPONSE_SET | self::REVIEW_SET,
+                    self::REGISTRATION_SET | self::REVIEW_SET,
+                ];
+
+                foreach ($statusSets as $statusSet) {
+                    $this->add($manager, $maps, $craftsmen, $constructionSiteManagers, $getFreshIssueSet($issueNumber), $images, $issueNumber, $statusSet);
+                }
             }
         }
         $manager->flush();
@@ -164,7 +169,7 @@ class LoadIssueData extends BaseFixture
      *
      * @throws \Exception
      */
-    private function add(ObjectManager $manager, array $maps, array $craftsmen, array $constructionManagers, array $issues, array $images, int &$issueNumber, int $setStatus = 0)
+    private function add(ObjectManager $manager, array $maps, array $craftsmen, array $constructionManagers, array $issues, array $images, int &$issueNumber, int $setStatus)
     {
         //use global counters so result of randomization is always the same
         $randomMapCounter = $this->randomMapCounter;

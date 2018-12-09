@@ -319,7 +319,7 @@ class FoyerController extends ApiController
         $issueImage->setIssue($entity);
         $entity->getImages()->add($issueImage);
         $entity->setImage($issueImage);
-        $this->fastSave($entity);
+        $this->fastSave($issueImage, $entity);
 
         //create response
         $data = new IssueData();
