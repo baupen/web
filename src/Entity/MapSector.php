@@ -100,7 +100,12 @@ class MapSector extends BaseEntity
      */
     public function getPoints()
     {
-        return $this->points;
+        $res = [];
+        foreach ($this->points as $point) {
+            $res[] = (object)$point;
+        }
+
+        return $res;
     }
 
     /**

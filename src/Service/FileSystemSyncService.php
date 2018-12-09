@@ -613,8 +613,8 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
             }
 
             $point = new Point();
-            $point->x = $item;
-            $point->y = $item;
+            $point->x = $item->x;
+            $point->y = $item->x;
             $points[] = $point;
         }
 

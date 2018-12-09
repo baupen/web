@@ -31,14 +31,19 @@ class Map extends BaseEntity
     private $issues;
 
     /**
-     * @var string
+     * @var MapSector[]|null
      */
-    private $buildingID;
+    private $sectors;
 
     /**
      * @var File|null
      */
     private $file;
+
+    /**
+     * @var Frame|null
+     */
+    private $sectorFrame;
 
     /**
      * @return string
@@ -102,5 +107,37 @@ class Map extends BaseEntity
     public function setFile(?File $file): void
     {
         $this->file = $file;
+    }
+
+    /**
+     * @return MapSector[]
+     */
+    public function getSectors(): ?array
+    {
+        return $this->sectors;
+    }
+
+    /**
+     * @param MapSector[] $sectors
+     */
+    public function setSectors(?array $sectors): void
+    {
+        $this->sectors = $sectors;
+    }
+
+    /**
+     * @return Frame|null
+     */
+    public function getSectorFrame(): ?Frame
+    {
+        return $this->sectorFrame;
+    }
+
+    /**
+     * @param Frame|null $sectorFrame
+     */
+    public function setSectorFrame(?Frame $sectorFrame): void
+    {
+        $this->sectorFrame = $sectorFrame;
     }
 }
