@@ -115,7 +115,7 @@ class LoadIssueData extends BaseFixture
 
             for ($i = 0; $i < self::MULTIPLICATION_FACTOR; ++$i) {
                 $arguments = [$manager, $maps, $craftsmen, $constructionSiteManagers, $getFreshIssueSet($issueNumber), $images, $issueNumber];
-                $this->add(...(array_merge($arguments, [0])));
+                $this->add(...($arguments));
                 $this->add(...(array_merge($arguments, [self::REGISTRATION_SET])));
                 $this->add(...(array_merge($arguments + [self::REGISTRATION_SET | self::RESPONSE_SET])));
                 $this->add(...(array_merge($arguments + [self::REGISTRATION_SET | self::RESPONSE_SET | self::REVIEW_SET])));
@@ -164,7 +164,7 @@ class LoadIssueData extends BaseFixture
      *
      * @throws \Exception
      */
-    private function add(ObjectManager $manager, array $maps, array $craftsmen, array $constructionManagers, array $issues, array $images, int &$issueNumber, int $setStatus)
+    private function add(ObjectManager $manager, array $maps, array $craftsmen, array $constructionManagers, array $issues, array $images, int &$issueNumber, int $setStatus = 0)
     {
         //use global counters so result of randomization is always the same
         $randomMapCounter = $this->randomMapCounter;
