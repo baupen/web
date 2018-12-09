@@ -100,6 +100,11 @@ class MapSector extends BaseEntity
      */
     public function getPoints()
     {
+        if (\count($this->points) === 0 || \is_object($this->points[0])) {
+            return $this->points;
+        }
+
+        // doctrine deserializes to associative array instead of object
         $res = [];
         foreach ($this->points as $point) {
             $res[] = (object)$point;

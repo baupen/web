@@ -38,8 +38,10 @@ class Frame
      *
      * @return bool
      */
-    public function equals(?self $other)
+    public function equals($other)
     {
+        dump($other);
+
         return $other !== null &&
             $this->startX === $other->startX &&
             $this->startY === $other->startY &&
