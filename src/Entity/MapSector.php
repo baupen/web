@@ -57,6 +57,13 @@ class MapSector extends BaseEntity
     private $points;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="text")
+     */
+    private $identifier;
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -132,5 +139,21 @@ class MapSector extends BaseEntity
         }
 
         return json_encode($this->getPoints()) === json_encode($other->getPoints());
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentifier(): string
+    {
+        return $this->identifier;
+    }
+
+    /**
+     * @param string $identifier
+     */
+    public function setIdentifier(string $identifier): void
+    {
+        $this->identifier = $identifier;
     }
 }
