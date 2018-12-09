@@ -163,7 +163,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
 
         // find longest matching prefix & set as parent
         foreach ($maps as $map) {
-            $parts = explode(' ', $map->getFile()->getDisplayFilename());
+            $parts = explode(' ', $map->getName());
             for ($i = \count($parts); $i > 0; --$i) {
                 $prefix = '';
                 for ($j = 0; $j < $i; ++$j) {
@@ -174,7 +174,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
                 $shortestPrefixMatch = null;
                 foreach ($mapNames as $mapName) {
                     // prefix match
-                    if (mb_strpos($mapName, $prefix) === 0) {
+                    if (\mb_strpos($mapName, $prefix) === 0) {
                         if ($shortestPrefixMatch === null || \mb_strlen($mapName) < $shortestPrefixMatch) {
                             $shortestPrefixMatch = $mapName;
                         }
@@ -217,12 +217,12 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
                     ++$prefixMap[$currentPrefix];
                 }
 
-                $newCutoff = mb_strripos($currentPrefix, ' ');
-                if ($newCutoff < 0) {
+                $newCutoff = \mb_strripos($currentPrefix, ' ');
+                if ($newCutoff === false) {
                     break;
                 }
 
-                $currentPrefix = trim(mb_substr($currentPrefix, 0, $newCutoff));
+                $currentPrefix = trim(\mb_substr($currentPrefix, 0, $newCutoff));
             }
         }
 
@@ -381,7 +381,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
 
         $this->assignMapFilesToMaps($syncTransaction, $constructionSite, $mapFiles, $maps);
 
-        $this->createTreeStructure($syncTransaction, $constructionSite, $mapFiles);
+        $this->createTreeStructure($syncTransaction, $constructionSite, $maps);
     }
 
     /**
@@ -562,7 +562,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
 
         $checkIfMatch = function (array $needles) use ($name) {
             foreach ($needles as $needle) {
-                if (mb_strpos($name, $needle) !== -1) {
+                if (\mb_strpos($name, $needle) !== false) {
                     return true;
                 }
             }

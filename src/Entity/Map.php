@@ -177,17 +177,17 @@ class Map extends BaseEntity
     }
 
     /**
-     * @return MapFile
+     * @return MapFile|null
      */
-    public function getFile(): MapFile
+    public function getFile(): ?MapFile
     {
         return $this->file;
     }
 
     /**
-     * @param MapFile $file
+     * @param MapFile|null $file
      */
-    public function setFile(MapFile $file): void
+    public function setFile(?MapFile $file): void
     {
         $this->file = $file;
     }
