@@ -166,8 +166,9 @@ class ApiController extends AbstractApiController
         //check position transferred correctly
         if (null !== $issue->getPosition()) {
             $this->assertNotNull($checkIssue->position);
-            $this->assertSame($checkIssue->position->x, $issue->getPosition()->getX());
-            $this->assertSame($checkIssue->position->y, $issue->getPosition()->getY());
+            $this->assertNotNull($checkIssue->position->point);
+            $this->assertSame($checkIssue->position->point->x, $issue->getPosition()->getPoint()->getX());
+            $this->assertSame($checkIssue->position->point->y, $issue->getPosition()->getPoint()->getY());
             $this->assertSame((float)$checkIssue->position->zoomScale, $issue->getPosition()->getZoomScale());
         } else {
             $this->assertNull($checkIssue->position);

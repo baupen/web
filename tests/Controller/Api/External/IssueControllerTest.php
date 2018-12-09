@@ -15,6 +15,7 @@ use App\Api\External\Entity\Issue;
 use App\Api\External\Entity\IssuePosition;
 use App\Api\External\Entity\IssueStatus;
 use App\Api\External\Entity\ObjectMeta;
+use App\Api\External\Entity\Point;
 use App\Controller\Api\External\IssueController;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\External\Base\ApiController;
@@ -61,8 +62,10 @@ class IssueControllerTest extends ApiController
         $issue->setMeta($meta);
 
         $issuePosition = new IssuePosition();
-        $issuePosition->setX(0.4);
-        $issuePosition->setY(0.3);
+        $point = new Point();
+        $point->setX(0.3);
+        $point->setY(0.4);
+        $issuePosition->setPoint($point);
         $issuePosition->setZoomScale(0.5);
         $issuePosition->setMapFileId($map->getFile()->getId());
         $issue->setPosition($issuePosition);
@@ -90,6 +93,7 @@ class IssueControllerTest extends ApiController
 
     /**
      * tests the create issue method.
+     * @throws \Exception
      */
     public function testUpdateIssue()
     {
@@ -111,8 +115,6 @@ class IssueControllerTest extends ApiController
         };
 
         $serverData = $this->getServerEntities($client, $user);
-
-        $imageFilename = $this->getNewGuid() . '.jpg';
 
         /** @var Issue $issue */
         $issue = $serverData->getIssues()[0];
@@ -140,6 +142,7 @@ class IssueControllerTest extends ApiController
 
     /**
      * tests upload/download functionality.
+     * @throws \Exception
      */
     public function testIssueActions()
     {

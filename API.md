@@ -331,7 +331,7 @@ position: Position?
 ```
 point: Point
 zoomScale: Double
-fileId: UUID
+mapFileId: UUID
 ```
 
 ### `Issue.Status`

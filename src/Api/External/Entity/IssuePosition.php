@@ -16,18 +16,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class IssuePosition
 {
     /**
-     * @var float
+     * @var Point
      *
      * @Assert\NotBlank()
      */
-    private $x;
-
-    /**
-     * @var float
-     *
-     * @Assert\NotBlank()
-     */
-    private $y;
+    private $point;
 
     /**
      * @var float
@@ -42,38 +35,6 @@ class IssuePosition
      * @Assert\NotBlank()
      */
     private $mapFileId;
-
-    /**
-     * @return float
-     */
-    public function getX(): float
-    {
-        return $this->x;
-    }
-
-    /**
-     * @param float $x
-     */
-    public function setX(float $x): void
-    {
-        $this->x = $x;
-    }
-
-    /**
-     * @return float
-     */
-    public function getY(): float
-    {
-        return $this->y;
-    }
-
-    /**
-     * @param float $y
-     */
-    public function setY(float $y): void
-    {
-        $this->y = $y;
-    }
 
     /**
      * @return float
@@ -105,5 +66,21 @@ class IssuePosition
     public function setMapFileId(string $mapFileId): void
     {
         $this->mapFileId = $mapFileId;
+    }
+
+    /**
+     * @return Point
+     */
+    public function getPoint(): Point
+    {
+        return $this->point;
+    }
+
+    /**
+     * @param Point $point
+     */
+    public function setPoint(Point $point): void
+    {
+        $this->point = $point;
     }
 }
