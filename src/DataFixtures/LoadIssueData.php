@@ -12,10 +12,13 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
+use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
+use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\IssuePosition;
+use App\Entity\Map;
 use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -101,12 +104,22 @@ class LoadIssueData extends BaseFixture
         $issueNumber = 1;
         $constructionSites = $manager->getRepository(ConstructionSite::class)->findAll();
         foreach ($constructionSites as $constructionSite) {
+            $constructionSiteManagers = $constructionSite->getConstructionManagers()->toArray();
+            $craftsmen = $constructionSite->getCraftsmen()->toArray();
+            $maps = [];
+            foreach ($constructionSite->getMaps() as $map) {
+                if ($map->getFile() !== null) {
+                    $maps[] = $map;
+                }
+            }
+
             for ($i = 0; $i < self::MULTIPLICATION_FACTOR; ++$i) {
-                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $images, $issueNumber, 0);
-                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $images, $issueNumber, self::REGISTRATION_SET);
-                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $images, $issueNumber, self::REGISTRATION_SET | self::RESPONSE_SET);
-                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $images, $issueNumber, self::REGISTRATION_SET | self::RESPONSE_SET | self::REVIEW_SET);
-                $this->add($constructionSite, $manager, $getFreshIssueSet($issueNumber), $images, $issueNumber, self::REGISTRATION_SET | self::REVIEW_SET);
+                $arguments = [$manager, $maps, $craftsmen, $constructionSiteManagers, $getFreshIssueSet($issueNumber), $images, $issueNumber];
+                $this->add(...($arguments + [0]));
+                $this->add(...($arguments + [self::REGISTRATION_SET]));
+                $this->add(...($arguments + [self::REGISTRATION_SET | self::RESPONSE_SET]));
+                $this->add(...($arguments + [self::REGISTRATION_SET | self::RESPONSE_SET | self::REVIEW_SET]));
+                $this->add(...($arguments + [self::REGISTRATION_SET | self::REVIEW_SET]));
             }
         }
         $manager->flush();
@@ -118,11 +131,11 @@ class LoadIssueData extends BaseFixture
      *
      * @return mixed
      */
-    private function getRandomEntry(&$index, Collection $collection)
+    private function getRandomEntry(&$index, array $collection)
     {
-        $index = ($index + 1) % $collection->count();
+        $index = ($index + 1) % \count($collection);
 
-        return $collection->get($index);
+        return $collection[$index];
     }
 
     /**
@@ -140,8 +153,10 @@ class LoadIssueData extends BaseFixture
     private $randomConstructionManagerCounter = 0;
 
     /**
-     * @param ConstructionSite $constructionSite
      * @param ObjectManager $manager
+     * @param Map[] $maps
+     * @param Craftsman[] $craftsmen
+     * @param ConstructionManager[] $constructionManagers
      * @param Issue[] $issues
      * @param string[] $images
      * @param int $issueNumber
@@ -149,7 +164,7 @@ class LoadIssueData extends BaseFixture
      *
      * @throws \Exception
      */
-    private function add(ConstructionSite $constructionSite, ObjectManager $manager, array $issues, array $images, int &$issueNumber, int $setStatus = 0)
+    private function add(ObjectManager $manager, array $maps, array $craftsmen, array $constructionManagers, array $issues, array $images, int &$issueNumber, int $setStatus = 0)
     {
         //use global counters so result of randomization is always the same
         $randomMapCounter = $this->randomMapCounter;
@@ -157,14 +172,14 @@ class LoadIssueData extends BaseFixture
         $randomConstructionManagerCounter = $this->randomConstructionManagerCounter;
 
         foreach ($issues as $issue) {
-            $issue->setMap($this->getRandomEntry($randomMapCounter, $constructionSite->getMaps()));
+            $issue->setMap($this->getRandomEntry($randomMapCounter, $maps));
             if ($issue->getPosition() !== null) {
                 $issue->getPosition()->setMapFile($issue->getMap()->getFile());
             }
 
             if ($setStatus !== 0 || $this->getRandomNumber() > 7) {
                 //if no status is set leave craftsman null sometime
-                $issue->setCraftsman($this->getRandomEntry($randomCraftsmanCounter, $constructionSite->getCraftsmen()));
+                $issue->setCraftsman($this->getRandomEntry($randomCraftsmanCounter, $craftsmen));
             } else {
                 \assert($issue->getCraftsman() === null);
             }
@@ -174,7 +189,7 @@ class LoadIssueData extends BaseFixture
                 $issue->setNumber($issueNumber++);
 
                 if ($setStatus & self::REVIEW_SET) {
-                    $issue->setReviewBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionSite->getConstructionManagers()));
+                    $issue->setReviewBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionManagers));
                     $dayOffset = $this->getRandomNumber();
                     $issue->setReviewedAt(new \DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
                 }
@@ -185,12 +200,12 @@ class LoadIssueData extends BaseFixture
                     $issue->setRespondedAt(new \DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
                 }
 
-                $issue->setRegistrationBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionSite->getConstructionManagers()));
+                $issue->setRegistrationBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionManagers));
                 $dayOffset += $this->getRandomNumber() + 1;
                 $issue->setRegisteredAt(new \DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
             }
 
-            $issue->setUploadBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionSite->getConstructionManagers()));
+            $issue->setUploadBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionManagers));
             $dayOffset += $this->getRandomNumber() + 1;
             $issue->setUploadedAt(new \DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
 
@@ -224,6 +239,11 @@ class LoadIssueData extends BaseFixture
                 $file->setIssue($issue);
                 $issue->setImage($file);
                 $issue->getImages()->add($file);
+                $manager->persist($file);
+            }
+
+            if ($issue->getPosition() !== null) {
+                $manager->persist($issue->getPosition());
             }
 
             $manager->persist($issue);

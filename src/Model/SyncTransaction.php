@@ -39,15 +39,20 @@ class SyncTransaction
         $class = \get_class($entity);
         $identifier = $entity->getId();
         if ($identifier === null) {
-            $array = $this->getOrCreateArray($class, $this->newEntities);
+            if (!array_key_exists($class, $this->newEntities)) {
+                $this->newEntities[$class] = [];
+            }
 
-            if (!\in_array($entity, $array, true)) {
-                $array[] = $entity;
+            if (!\in_array($entity, $this->newEntities, true)) {
+                $this->newEntities[$class][] = $entity;
             }
         } else {
-            $array = $this->getOrCreateArray($class, $this->editedEntities);
-            if (!array_key_exists($identifier, $array)) {
-                $array[$identifier] = $entity;
+            if (!array_key_exists($class, $this->editedEntities)) {
+                $this->editedEntities[$class] = [];
+            }
+
+            if (!array_key_exists($identifier, $this->editedEntities[$class])) {
+                $this->editedEntities[$class][$identifier] = $entity;
             }
         }
     }
@@ -60,9 +65,12 @@ class SyncTransaction
         $class = \get_class($entity);
         $identifier = $entity->getId();
         if ($identifier !== null) {
-            $array = $this->getOrCreateArray($class, $this->removedEntities);
-            if (!array_key_exists($identifier, $array)) {
-                $array[$identifier] = $entity;
+            if (!array_key_exists($class, $this->removedEntities)) {
+                $this->removedEntities[$class] = [];
+            }
+
+            if (!array_key_exists($identifier, $this->removedEntities[$identifier])) {
+                $this->removedEntities[$class][$identifier] = $entity;
             }
         }
     }
@@ -94,14 +102,5 @@ class SyncTransaction
                 $manager->remove($removedEntity);
             }
         }
-    }
-
-    private function getOrCreateArray(string $key, array &$array)
-    {
-        if (!array_key_exists($key, $array)) {
-            $array[$key] = [];
-        }
-
-        return $array[$key];
     }
 }

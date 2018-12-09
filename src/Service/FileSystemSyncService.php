@@ -73,27 +73,31 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         $existingDirectories = glob($this->pathService->getConstructionSiteFolderRoot() . \DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
         foreach ($existingDirectories as $directory) {
             $folderName = mb_substr($directory, mb_strrpos($directory, \DIRECTORY_SEPARATOR) + 1);
+
+            $syncTransaction = new SyncTransaction();
             if (!array_key_exists($folderName, $constructionSitesLookup)) {
-                $this->addConstructionSite($directory);
+                $this->addConstructionSite($syncTransaction, $directory);
             } else {
-                $this->syncConstructionSite($constructionSitesLookup[$folderName]);
+                $this->syncConstructionSite($syncTransaction, $constructionSitesLookup[$folderName]);
             }
+
+            $this->commitSyncTransaction($syncTransaction);
         }
     }
 
     /**
+     * @param SyncTransaction $syncTransaction
      * @param string $directory
-     *
-     * @throws \Exception
      */
-    private function addConstructionSite(string $directory)
+    private function addConstructionSite(SyncTransaction $syncTransaction, string $directory)
     {
         $folderName = mb_substr($directory, mb_strrpos($directory, \DIRECTORY_SEPARATOR) + 1);
         $constructionSite = new ConstructionSite();
         $constructionSite->setFolderName($folderName);
         $constructionSite->setName($this->displayNameService->forConstructionSite($folderName));
 
-        $this->syncConstructionSite($constructionSite);
+        $syncTransaction->persist($constructionSite);
+        $this->syncConstructionSite($syncTransaction, $constructionSite);
     }
 
     /**
@@ -230,9 +234,10 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
     }
 
     /**
+     * @param SyncTransaction $syncTransaction
      * @param ConstructionSite $constructionSite
      */
-    private function syncConstructionSite(ConstructionSite $constructionSite)
+    private function syncConstructionSite(SyncTransaction $syncTransaction, ConstructionSite $constructionSite)
     {
         /**
          * conventions:
@@ -242,8 +247,6 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
          * for example, if the file "preview.jpg" already exists, a file "preview_hash872z71237q8w78712837.jpg" is added if it does not exist already.
          * no file other than of type json is ever replaced/removed; only add is allowed.
          */
-        $syncTransaction = new SyncTransaction();
-
         $constructionSiteImages = $this->registry->getRepository(ConstructionSiteImage::class)->findBy(['constructionSite' => $constructionSite->getId()]);
 
         $this->findNewConstructionSiteImages($syncTransaction, $constructionSite, $constructionSiteImages);
@@ -253,8 +256,6 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         $this->chooseMostAppropriateImageForConstructionSite($syncTransaction, $constructionSite, $constructionSiteImages);
 
         $this->syncConstructionSiteMaps($syncTransaction, $constructionSite);
-
-        $this->commitSyncTransaction($syncTransaction);
     }
 
     /**
@@ -266,7 +267,8 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
 
         $cacheInvalidatedEntities = [Map::class => [], MapFile::class => [], ConstructionSite::class => [], ConstructionSiteImage::class => []];
 
-        $transaction->execute($manager,
+        $transaction->execute(
+            $manager,
             function ($entity, $class) use (&$cacheInvalidatedEntities) {
                 if (array_key_exists($class, $cacheInvalidatedEntities)) {
                     $cacheInvalidatedEntities[$class][] = $entity;
@@ -275,6 +277,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
                 return true;
             }
         );
+        $manager->flush();
 
         foreach ($cacheInvalidatedEntities[Map::class] as $cacheInvalidatedEntity) {
             /* @var Map $cacheInvalidatedEntity */
@@ -506,7 +509,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         foreach ($newMapSectors as $newSector) {
             $newSector->setMapFile($mapFile);
             $mapFile->getSectors()->add($newSector);
-            $syncTransaction->persist($mapFile);
+            $syncTransaction->persist($newSector);
         }
     }
 
