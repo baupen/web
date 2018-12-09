@@ -44,18 +44,18 @@ class MapFile extends BaseEntity
     private $map;
 
     /**
-     * @var IssuePosition[]
+     * @var IssuePosition[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="App\Entity\IssuePosition", mappedBy="mapFile")
      */
     private $issuePositions;
 
     /**
-     * @var MapFileSector[]
+     * @var MapSector[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\MapFileSector", mappedBy="mapFile")
+     * @ORM\OneToMany(targetEntity="MapSector", mappedBy="mapFile")
      */
-    private $mapFileSectors;
+    private $sectors;
 
     /**
      * @var Frame|null
@@ -67,13 +67,13 @@ class MapFile extends BaseEntity
     public function __construct()
     {
         $this->issuePositions = new ArrayCollection();
-        $this->mapFileSectors = new ArrayCollection();
+        $this->sectors = new ArrayCollection();
     }
 
     /**
-     * @return IssuePosition[]
+     * @return IssuePosition[]|ArrayCollection
      */
-    public function getIssuePositions(): array
+    public function getIssuePositions()
     {
         return $this->issuePositions;
     }
@@ -124,5 +124,13 @@ class MapFile extends BaseEntity
     public function setSectorFrame(?Frame $sectorFrame): void
     {
         $this->sectorFrame = $sectorFrame;
+    }
+
+    /**
+     * @return MapSector[]|ArrayCollection
+     */
+    public function getSectors()
+    {
+        return $this->sectors;
     }
 }

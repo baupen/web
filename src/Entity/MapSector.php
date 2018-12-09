@@ -23,7 +23,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
-class MapFileSector extends BaseEntity
+class MapSector extends BaseEntity
 {
     use IdTrait;
     use AutomaticEditTrait;
@@ -34,6 +34,13 @@ class MapFileSector extends BaseEntity
      * @ORM\Column(type="text")
      */
     private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text")
+     */
+    private $color;
 
     /**
      * @var MapFile
@@ -95,5 +102,35 @@ class MapFileSector extends BaseEntity
     public function setPoints($points): void
     {
         $this->points = $points;
+    }
+
+    /**
+     * @return string
+     */
+    public function getColor(): string
+    {
+        return $this->color;
+    }
+
+    /**
+     * @param string $color
+     */
+    public function setColor(string $color): void
+    {
+        $this->color = $color;
+    }
+
+    /**
+     * @param MapSector|null $other
+     *
+     * @return bool
+     */
+    public function equals(?self $other)
+    {
+        if ($other === null || $this->getName() !== $other->getName() || $this->getColor() !== $other->getColor()) {
+            return false;
+        }
+
+        return json_encode($this->getPoints()) === json_encode($other->getPoints());
     }
 }

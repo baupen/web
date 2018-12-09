@@ -32,4 +32,18 @@ class Frame
      * @var float
      */
     public $height;
+
+    /**
+     * @param Frame|null $other
+     *
+     * @return bool
+     */
+    public function equals(?self $other)
+    {
+        return $other !== null &&
+            $this->startX === $other->startX &&
+            $this->startY === $other->startY &&
+            $this->width === $other->width &&
+            $this->height === $other->height;
+    }
 }

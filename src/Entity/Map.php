@@ -62,14 +62,14 @@ class Map extends BaseEntity
     /**
      * @var MapFile[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\MapFile", mappedBy="map", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\MapFile", mappedBy="map")
      */
     private $files;
 
     /**
      * @var MapFile
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile")
      */
     private $file;
 

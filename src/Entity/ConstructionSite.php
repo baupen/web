@@ -50,14 +50,14 @@ class ConstructionSite extends BaseEntity
     /**
      * @var ConstructionSiteImage[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\ConstructionSiteImage", mappedBy="constructionSite", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ConstructionSiteImage", mappedBy="constructionSite")
      */
     private $images;
 
     /**
      * @var ConstructionSiteImage|null
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSiteImage", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSiteImage")
      */
     private $image;
 
@@ -72,7 +72,7 @@ class ConstructionSite extends BaseEntity
     /**
      * @var Map[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite")
      * @ORM\OrderBy({"name": "ASC"})
      */
     private $maps;
@@ -80,7 +80,7 @@ class ConstructionSite extends BaseEntity
     /**
      * @var Craftsman[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite")
      */
     private $craftsmen;
 

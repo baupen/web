@@ -225,9 +225,16 @@ class IssueController extends ExternalApiController
         // need to enforce correct guids
         if ($issueModifyRequest->getIssue()->getImage() !== null) {
             $issue->getImage()->setId($issueModifyRequest->getIssue()->getImage()->getId());
+            $em->persist($issue->getImage());
         }
+
+        if ($issue->getPosition() !== null) {
+            $em->persist($issue->getPosition());
+        }
+
         $issue->setId($issueModifyRequest->getIssue()->getMeta()->getId());
-        $this->fastSave($issue);
+        $em->persist($issue);
+        $em->flush();
 
         //construct answer
         return $this->success(new IssueData($issueTransformer->toApi($issue)));
