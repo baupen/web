@@ -537,8 +537,9 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
             }
 
             $mapSector = new MapSector();
-            $mapSector->setIdentifier($item->identifier);
-            $mapSector->setName($item->name);
+            $cleanChars = '\t\n\r\0\x0B\'"';
+            $mapSector->setIdentifier(trim($item->identifier, $cleanChars));
+            $mapSector->setName(trim($item->name, $cleanChars));
             $mapSector->setColor($this->getColorFromMapSectorName($mapSector->getName()));
             $mapSector->setPoints($this->getPoints($item->points));
             $mapSectors[] = $mapSector;

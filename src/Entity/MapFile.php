@@ -118,6 +118,7 @@ class MapFile extends BaseEntity
         if (\is_object($this->sectorFrame) || $this->sectorFrame === null) {
             return $this->sectorFrame;
         }
+
         // doctrine deserializes to associative array instead of object
         return (object)$this->sectorFrame;
     }
