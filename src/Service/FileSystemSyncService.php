@@ -559,9 +559,10 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         // remove all other chars containing no information
         $name = preg_replace("/[\s-&]/", '', $name);
 
-        $wetAreas = ['wc', 'bad'];
-        $livingArea = ['wohn', 'zimmer'];
-        $kitchen = ['küche', 'essen'];
+        $kitchen = ['küche', 'essen', 'kochen'];
+        $wetAreas = ['wc', 'bad', 'klo', 'toilette'];
+        $livingArea = ['wohn', 'zimmer', 'essen', 'schlaf', 'gäste', 'gast'];
+        $storage = ['keller', 'auto', 'garage', 'wasch', 'wirtschaft'];
 
         $checkIfMatch = function (array $needles) use ($name) {
             foreach ($needles as $needle) {
@@ -573,23 +574,28 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
             return false;
         };
 
+        if ($checkIfMatch($kitchen)) {
+            // red because of fire
+            return 'FF0000';
+        }
+
         if ($checkIfMatch($wetAreas)) {
             // blue because of water
-            return '#4F628E';
+            return '#0040FF';
         }
 
         if ($checkIfMatch($livingArea)) {
-            // green because of life
-            return '#55AA55';
+            // green because of nature
+            return '#00FFFF';
         }
 
-        if ($checkIfMatch($kitchen)) {
-            // red because of fire
-            return 'D46A6A';
+        if ($checkIfMatch($storage)) {
+            // grey because its dark there
+            return '#808080';
         }
 
-        // default to grey
-        return '#EFEFEF';
+        // default to black
+        return '#000000';
     }
 
     /**
