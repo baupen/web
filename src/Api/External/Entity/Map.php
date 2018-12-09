@@ -89,22 +89,6 @@ class Map extends BaseEntity
     }
 
     /**
-     * @return string
-     */
-    public function getBuildingID(): string
-    {
-        return $this->buildingID;
-    }
-
-    /**
-     * @param string $buildingID
-     */
-    public function setBuildingID(string $buildingID): void
-    {
-        $this->buildingID = $buildingID;
-    }
-
-    /**
      * @return File|null
      */
     public function getFile(): ?File

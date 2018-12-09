@@ -99,12 +99,13 @@ class ReadControllerTest extends ApiController
 
         $eventDefinition = ["time" => self::TYPE_DATE_TIME, "author" => self::TYPE_STRING];
         $pointDefinition = ["x" => self::TYPE_DOUBLE, "y" => self::TYPE_DOUBLE];
+        $fileDefinition = ["id" => self::TYPE_UUID, "filename" => self::TYPE_STRING];
         $this->assertPropertiesMatch(
             $readResponse->data->changedIssues, [
                 "number" => self::TYPE_INT | self::TYPE_NULLABLE,
                 "isMarked" => self::TYPE_BOOLEAN,
                 "wasAddedWithClient" => self::TYPE_BOOLEAN,
-                "image" => ["id" => self::TYPE_UUID, "filename" => self::TYPE_STRING],
+                "image" => $fileDefinition,
                 "description" => self::TYPE_STRING | self::TYPE_NULLABLE,
                 "craftsman" => self::TYPE_UUID | self::TYPE_NULLABLE,
                 "map" => self::TYPE_UUID,
@@ -114,6 +115,16 @@ class ReadControllerTest extends ApiController
                     "review" => $eventDefinition
                 ],
                 "position" => ["point" => $pointDefinition, "zoomScale" => self::TYPE_DOUBLE, "mapFileId" => self::TYPE_UUID],
+                "meta" => $metaDefinition
+            ]
+        );
+
+        $this->assertPropertiesMatch(
+            $readResponse->data->changedMaps, [
+                "name" => self::TYPE_STRING,
+                "children" => self::TYPE_UUID_ARRAY,
+                "issues" => self::TYPE_UUID_ARRAY,
+                "file" => $fileDefinition,
                 "meta" => $metaDefinition
             ]
         );
