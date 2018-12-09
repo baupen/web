@@ -126,6 +126,7 @@ class ReadControllerTest extends ApiController
                 "issues" => self::TYPE_UUID_ARRAY,
                 "file" => $fileDefinition,
                 "sectors" => ["name" => self::TYPE_STRING, "color" => self::TYPE_STRING, "points" => $pointDefinition],
+                "sectorFrame" => ["startX" => self::TYPE_DOUBLE, "startY" => self::TYPE_DOUBLE, "width" => self::TYPE_DOUBLE, "height" => self::TYPE_DOUBLE],
                 "meta" => $metaDefinition
             ]
         );
