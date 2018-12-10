@@ -243,6 +243,7 @@ y: Double
 
 
 ## `Rectangle`
+The origin is in the top left; the 4 corners would be at `(origin.x, origin.y)`, `(origin.x, origin.y + size.y)`, `(origin.x + size.x, origin.y + size.y)`, `(origin.x + size.x, origin.y)`
 ```
 origin: Vector
 size: Vector
