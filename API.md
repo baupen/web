@@ -235,20 +235,19 @@ invalidAction = 203 // whatever the client is trying to do is impossible, e.g. r
 * hex string, #RRGGBB, capitalized. e.g. `#BB0044`
 
 
-## `Point`
+## `Vector`
 ```
 x: Double
 y: Double
 ```
 
-## `Frame`
-origin is top left
+
+## `Rectangle`
 ```
-startX: Double
-startY: Double
-height: Double
-width: Double
+origin: Vector
+size: Vector
 ```
+
 
 ## `File`
 ```
@@ -307,7 +306,7 @@ trade: String // e.g. "Gipser", "Maler"
 meta: ObjectMeta
 children: [UUID]
 sectors: [Sector]
-sectorFrame: Frame?
+sectorFrame: Rectangle?
 issues: [UUID]
 file: File?
 name: String
@@ -319,7 +318,7 @@ name: String
 ```
 name: String
 color: Color
-points: [Point]
+points: [Vector]
 ```
 
 
@@ -337,12 +336,14 @@ status: Status
 position: Position?
 ```
 
+
 ### `Issue.Position`
 ```
-point: Point
+point: Vector
 zoomScale: Double
 mapFileId: UUID
 ```
+
 
 ### `Issue.Status`
 * status of an issue
@@ -352,6 +353,7 @@ registration: Event? // registration in issue collection
 response: Event? // response from craftsman
 review: Event? // review by supervisor
 ```
+
 
 #### `Issue.Status.Event`
 * details about when an issue's status was changed and by whom
