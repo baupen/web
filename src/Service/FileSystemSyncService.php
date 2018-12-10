@@ -179,7 +179,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
                 foreach ($mapNames as $mapName) {
                     // prefix match
                     if (\mb_strpos($mapName, $prefix) === 0) {
-                        if ($shortestPrefixMatch === null || \mb_strlen($mapName) < $shortestPrefixMatch) {
+                        if ($shortestPrefixMatch === null || \mb_strlen($mapName) < \mb_strlen($shortestPrefixMatch)) {
                             $shortestPrefixMatch = $mapName;
                         }
                     }
