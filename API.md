@@ -235,7 +235,7 @@ invalidAction = 203 // whatever the client is trying to do is impossible, e.g. r
 * hex string, #RRGGBB, capitalized. e.g. `#BB0044`
 
 
-## `Vector`
+## `Point`
 ```
 x: Double
 y: Double
@@ -243,17 +243,18 @@ y: Double
 
 
 ## `Rectangle`
-The origin is in the top left; the 4 corners would be at `(origin.x, origin.y)`, `(origin.x, origin.y + size.y)`, `(origin.x + size.x, origin.y + size.y)`, `(origin.x + size.x, origin.y)`
+The origin is in the top left; the 4 corners would be at `(origin.x, origin.y)`, `(origin.x, origin.y + height)`, `(origin.x + width, origin.y + height)`, `(origin.x + width, origin.y)`
 ```
-origin: Vector
-size: Vector
+origin: Point
+width: Double
+height: Double
 ```
 
 
 ## `File`
 ```
 id: UUID
-filename: string
+filename: String
 ```
 
 
@@ -319,7 +320,7 @@ name: String
 ```
 name: String
 color: Color
-points: [Vector]
+points: [Point]
 ```
 
 
@@ -340,7 +341,7 @@ position: Position?
 
 ### `Issue.Position`
 ```
-point: Vector
+point: Point
 zoomScale: Double
 mapFileId: UUID
 ```
