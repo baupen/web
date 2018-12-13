@@ -132,7 +132,7 @@ class LoadIssueData extends BaseFixture
 
     /**
      * @param $index
-     * @param Collection $collection
+     * @param array $collection
      *
      * @return mixed
      */
@@ -171,6 +171,10 @@ class LoadIssueData extends BaseFixture
      */
     private function add(ObjectManager $manager, array $maps, array $craftsmen, array $constructionManagers, array $issues, array $images, int &$issueNumber, int $setStatus)
     {
+        if (\count($constructionManagers) === 0) {
+            return;
+        }
+
         //use global counters so result of randomization is always the same
         $randomMapCounter = $this->randomMapCounter;
         $randomCraftsmanCounter = $this->randomCraftsmanCounter;

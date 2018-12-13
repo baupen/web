@@ -22,5 +22,21 @@
     "postalCode": 8050,
     "locality": "Zürich",
     "country": "CH"
+  },
+  {
+    "folderName": "2001_Sterne",
+    "name": "Wohnungsblock im Brühl",
+    "streetAddress": "Brühlstrasse 255",
+    "postalCode": 4060,
+    "locality": "Basel",
+    "country": "CH"
+  },
+  {
+    "folderName": "3001_Kinderhaus",
+    "name": "Kinderhaus",
+    "streetAddress": "Am Quai 3",
+    "postalCode": 5012,
+    "locality": "Bern",
+    "country": "CH"
   }
 ]
