@@ -16,7 +16,7 @@ use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Service\Interfaces\ImageServiceInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ConstructionSiteTransformer extends BatchTransformer
 {
@@ -35,7 +35,7 @@ class ConstructionSiteTransformer extends BatchTransformer
      */
     private $user;
 
-    public function __construct(self $constructionSiteTransformer, RouterInterface $router, TokenStorage $tokenStorage)
+    public function __construct(\App\Api\Transformer\Base\ConstructionSiteTransformer $constructionSiteTransformer, RouterInterface $router, TokenStorageInterface $tokenStorage)
     {
         $this->constructionSiteTransformer = $constructionSiteTransformer;
         $this->router = $router;

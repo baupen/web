@@ -11,10 +11,13 @@
 
 namespace App\Controller\Api;
 
+use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Response\Data\ConstructionSitesData;
+use App\Api\Response\Data\EmptyData;
 use App\Api\Transformer\Switch_\ConstructionSiteTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionSite;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -54,5 +57,53 @@ class SwitchController extends ApiController
         $data->setConstructionSites($constructionSiteTransformer->toApiMultiple($constructionSites));
 
         return $this->success($data);
+    }
+
+    /**
+     * @Route("/request_access", name="api_switch_request_access")
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function requestAccessAction(Request $request)
+    {
+        /** @var ConstructionSiteRequest $parsedRequest */
+        if (!parent::parseRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse)) {
+            return $errorResponse;
+        }
+
+        // add to construction site if not already a member
+        $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($parsedRequest->getConstructionSiteId());
+        if (!$constructionSite->getConstructionManagers()->contains($this->getUser())) {
+            $constructionSite->getConstructionManagers()->add($this->getUser());
+            $this->fastSave($constructionSite);
+        }
+
+        return $this->success(new EmptyData());
+    }
+
+    /**
+     * @Route("/remove_access", name="api_switch_remove_access")
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function removeAccessAction(Request $request)
+    {
+        /** @var ConstructionSiteRequest $parsedRequest */
+        if (!parent::parseRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse)) {
+            return $errorResponse;
+        }
+
+        // add to construction site if not already a member
+        $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($parsedRequest->getConstructionSiteId());
+        if ($constructionSite->getConstructionManagers()->contains($this->getUser())) {
+            $constructionSite->getConstructionManagers()->removeElement($this->getUser());
+            $this->fastSave($constructionSite);
+        }
+
+        return $this->success(new EmptyData());
     }
 }

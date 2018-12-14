@@ -42,7 +42,7 @@ class ConstructionSite extends \App\Api\Entity\Base\ConstructionSite
     /**
      * @return bool
      */
-    public function isConstructionManagerOf(): bool
+    public function getIsConstructionManagerOf(): bool
     {
         return $this->isConstructionManagerOf;
     }
