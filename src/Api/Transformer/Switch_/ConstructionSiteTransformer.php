@@ -56,6 +56,8 @@ class ConstructionSiteTransformer extends BatchTransformer
             $constructionSite->setImageMedium($this->router->generate('image_construction_site', ['constructionSite' => $entity->getId(), 'image' => $entity->getImage()->getId(), 'size' => ImageServiceInterface::SIZE_MEDIUM]));
         }
 
+        $constructionSite->setCreatedAt($entity->getCreatedAt());
+        $constructionSite->setSwitchLink($this->router->generate('switch_switch', ['constructionSite' => $entity->getId()]));
         $constructionSite->setAddress($entity->getAddressLines());
         $constructionSite->setIsConstructionManagerOf($entity->getConstructionManagers()->contains($this->user));
 

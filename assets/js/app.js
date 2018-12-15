@@ -14,3 +14,4 @@ require('./apps/Register/bootstrap');
 require('./apps/Share/Craftsman/bootstrap');
 require('./apps/Share/Filter/bootstrap');
 require('./apps/Dashboard/bootstrap');
+require('./apps/Switch/bootstrap');

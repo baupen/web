@@ -21,6 +21,9 @@ build:
 [**travis**](https://travis-ci.org/mangelio/app/settings)  
 add an environment variable called `FONTAWESOME_AUTH_TOKEN`
 
+##### setup environment
+add `PHP_CS_FIXER_IGNORE_ENV=1` to your environment (with `export` or placing it in the `.bashrc`) to allow php cs fixer to run on php 7.3  
+ 
 
 ##### setup PhpStorm
 install the symfony plugin and enable it  
@@ -59,3 +62,4 @@ DATABASE_URL=sqlite:///%kernel.project_dir%/var/persistent/prod/data.sqlite
 `ssh-copy-id -i ~/.ssh/id_rsa.pub username@domain` to add ssh key  
 `cat ~/.ssh/id_rsa.pub` to query the active ssh key  
 `ssh-keygen -t rsa -b 4096 -C "username@domain" && eval $(ssh-agent -s) && ssh-add ~/.ssh/id_rsa` generate a new key & add it to ssh  
+

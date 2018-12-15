@@ -1,47 +1,112 @@
-/* The switch - the box around the slider */
-.switch 
+.switch
+  font-size: 1rem
   position: relative
-  display: inline-block
-  width: 3.6em
-  height: 2em
 
-/* Hide default HTML checkbox */
-.switch input  
-  display: none
+  input
+    position: absolute
+    height: 1px
+    width: 1px
+    background: none
+    border: 0
+    clip: rect(0 0 0 0)
+    clip-path: inset(50%)
+    overflow: hidden
+    padding: 0
 
-/* The slider */
-.slider 
-  position: absolute
-  cursor: pointer
-  top: 0
-  left: 0
-  right: 0
-  bottom: 0
-  background-color: $gray-200
-  -webkit-transition: .4s
-  transition: .4s
+    + label
+      position: relative
+      min-width: calc(calc(2.375rem * .8) * 2)
+      border-radius: calc(2.375rem * .8)
+      height: calc(2.375rem * .8)
+      line-height: calc(2.375rem * .8)
+      display: inline-block
+      cursor: pointer
+      outline: none
+      user-select: none
+      vertical-align: middle
+      text-indent: calc(calc(calc(2.375rem * .8) * 2) + .5rem)
 
-.slider:before
-  position: absolute
-  content: ""
-  height: 1.6em
-  width: 1.6em
-  left: 0.2em
-  bottom: 0.2em
-  background-color: white
-  -webkit-transition: .4s
-  transition: .4s
+      &::before, &::after
+        content: ""
+        position: absolute
+        top: 0
+        left: 0
+        width: calc(calc(2.375rem * .8) * 2)
+        bottom: 0
+        display: block
 
-input:checked + .slider 
-  background-color: $primary
+      &::before
+        right: 0
+        background-color: #dee2e6
+        border-radius: calc(2.375rem * .8)
+        transition: 0.2s all
 
-input:focus + .slider 
-  box-shadow: 0 0 1px $primary
+      &::after
+        top: 2px
+        left: 2px
+        width: calc(calc(2.375rem * .8) - calc(2px * 2))
+        height: calc(calc(2.375rem * .8) - calc(2px * 2))
+        border-radius: 50%
+        background-color: white
+        transition: 0.2s all
 
-input:checked + .slider:before 
-  -webkit-transform: translateX(16em)
-  -ms-transform: translateX(1.6em)
-  transform: translateX(1.6em)
+    &:checked + label
+      &::before
+        background-color: #08d
 
-.switch-wrapper
-  margin-bottom: -0.4em
+      &::after
+        margin-left: calc(2.375rem * .8)
+
+    &:focus + label::before
+      outline: none
+      box-shadow: 0 0 0 0.2rem rgba(0, 136, 221, 0.25)
+
+    &:disabled + label
+      color: #868e96
+      cursor: not-allowed
+
+      &::before
+        background-color: #e9ecef
+
+  &.switch-sm
+    font-size: 0.875rem
+
+    input
+      + label
+        min-width: calc(calc(1.9375rem * .8) * 2)
+        height: calc(1.9375rem * .8)
+        line-height: calc(1.9375rem * .8)
+        text-indent: calc(calc(calc(1.9375rem * .8) * 2) + .5rem)
+
+        &::before
+          width: calc(calc(1.9375rem * .8) * 2)
+
+        &::after
+          width: calc(calc(1.9375rem * .8) - calc(2px * 2))
+          height: calc(calc(1.9375rem * .8) - calc(2px * 2))
+
+      &:checked + label::after
+        margin-left: calc(1.9375rem * .8)
+
+  &.switch-lg
+    font-size: 1.25rem
+
+    input
+      + label
+        min-width: calc(calc(3rem * .8) * 2)
+        height: calc(3rem * .8)
+        line-height: calc(3rem * .8)
+        text-indent: calc(calc(calc(3rem * .8) * 2) + .5rem)
+
+        &::before
+          width: calc(calc(3rem * .8) * 2)
+
+        &::after
+          width: calc(calc(3rem * .8) - calc(2px * 2))
+          height: calc(calc(3rem * .8) - calc(2px * 2))
+
+      &:checked + label::after
+        margin-left: calc(3rem * .8)
+
+  + .switch
+    margin-left: 1rem

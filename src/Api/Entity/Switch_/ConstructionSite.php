@@ -14,6 +14,11 @@ namespace App\Api\Entity\Switch_;
 class ConstructionSite extends \App\Api\Entity\Base\ConstructionSite
 {
     /**
+     * @var \DateTime
+     */
+    private $createdAt;
+
+    /**
      * @var string|null
      */
     private $imageMedium;
@@ -32,6 +37,11 @@ class ConstructionSite extends \App\Api\Entity\Base\ConstructionSite
      * @var bool
      */
     private $isConstructionManagerOf;
+
+    /**
+     * @var string|null
+     */
+    private $switchLink;
 
     /**
      * @return string|null
@@ -95,5 +105,37 @@ class ConstructionSite extends \App\Api\Entity\Base\ConstructionSite
     public function setConstructionManagers(array $constructionSiteManagers): void
     {
         $this->constructionManagers = $constructionSiteManagers;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     */
+    public function setCreatedAt(\DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSwitchLink(): ?string
+    {
+        return $this->switchLink;
+    }
+
+    /**
+     * @param string|null $switchLink
+     */
+    public function setSwitchLink(?string $switchLink): void
+    {
+        $this->switchLink = $switchLink;
     }
 }
