@@ -36,6 +36,11 @@ class Map extends BaseEntity
     private $preventAutomaticEdit;
 
     /**
+     * @var int
+     */
+    private $issueCount;
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -97,5 +102,21 @@ class Map extends BaseEntity
     public function setPreventAutomaticEdit(bool $preventAutomaticEdit): void
     {
         $this->preventAutomaticEdit = $preventAutomaticEdit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIssueCount(): int
+    {
+        return $this->issueCount;
+    }
+
+    /**
+     * @param int $issueCount
+     */
+    public function setIssueCount(int $issueCount): void
+    {
+        $this->issueCount = $issueCount;
     }
 }

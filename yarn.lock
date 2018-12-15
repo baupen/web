@@ -8557,6 +8557,11 @@ vue-async-computed@^3:
   resolved "https://registry.yarnpkg.com/vue-async-computed/-/vue-async-computed-3.5.0.tgz#30657970618389f30cba4d4b52b119bb1b2976aa"
   integrity sha512-QddDtWshkGeORKiONQ7xnz8YoBwLU1ZejmPTdEnVLXVeGthmmdl2uKt9RRMB3NRyXKkUcT6WYKT/YDnNodzF1w==
 
+vue-fragment@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/vue-fragment/-/vue-fragment-1.5.0.tgz#7739463b7680633f2b671aec9f1bfdd9a436da33"
+  integrity sha512-nobmbbOSOx59fm7U00BDz14Yvqitwx7NPQGYDTKg3+dNDGTDCRNy/q2kfr5hV4S0l4fQG0kvC+rbCmENLmHUSA==
+
 vue-functional-data-merge@^2.0.5:
   version "2.0.7"
   resolved "https://registry.yarnpkg.com/vue-functional-data-merge/-/vue-functional-data-merge-2.0.7.tgz#bdee655181eacdcb1f96ce95a4cc14e75313d1da"

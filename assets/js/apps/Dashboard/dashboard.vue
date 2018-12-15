@@ -71,7 +71,6 @@
                 }
             );
 
-            //fill register
             axios.get("/api/configuration").then((response) => {
                 this.constructionSite = response.data.constructionSite;
                 console.log(this.constructionSite);

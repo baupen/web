@@ -30,6 +30,7 @@ class MapTransformer extends BatchTransformer
         $map->setParentId($entity->getParent() !== null ? $entity->getParent()->getId() : null);
         $map->setFileId($entity->getFile() !== null ? $entity->getFile()->getId() : null);
         $map->setPreventAutomaticEdit($entity->getPreventAutomaticEdit());
+        $map->setIssueCount($entity->getIssues()->count());
 
         return $map;
     }

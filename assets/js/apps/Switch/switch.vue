@@ -19,9 +19,9 @@
         <table class="table table-hover table-condensed">
             <thead>
             <tr>
-                <th>Name</th>
-                <th>Adresse</th>
-                <th>erstellt am</th>
+                <th>{{$t("construction_site.name")}}</th>
+                <th>{{$t("construction_site.address")}}</th>
+                <th>{{$t("construction_site.created_at")}}</th>
                 <th></th>
             </tr>
             </thead>
@@ -37,7 +37,7 @@
                                :id="'switch-' + constructionSite.id"
                                :checked="constructionSite.isConstructionManagerOf"
                                @change="toggle(constructionSite)">
-                        <label :for="'switch-' + constructionSite.id">Small switch</label>
+                        <label :for="'switch-' + constructionSite.id"></label>
                     </span>
                 </td>
             </tr>

@@ -13,4 +13,24 @@ namespace App\Api\Entity\Edit;
 
 class MapFile extends \App\Api\Entity\Base\MapFile
 {
+    /**
+     * @var int
+     */
+    private $issueCount;
+
+    /**
+     * @return int
+     */
+    public function getIssueCount(): int
+    {
+        return $this->issueCount;
+    }
+
+    /**
+     * @param int $issueCount
+     */
+    public function setIssueCount(int $issueCount): void
+    {
+        $this->issueCount = $issueCount;
+    }
 }
