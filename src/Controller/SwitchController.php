@@ -28,9 +28,7 @@ class SwitchController extends BaseLoginController
      */
     public function indexAction()
     {
-        $constructionManager = $this->getUser();
-
-        return $this->render('switch/switch.html.twig', ['constructionSites' => $constructionManager->getConstructionSites()]);
+        return $this->render('switch/switch.html.twig');
     }
 
     /**

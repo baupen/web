@@ -44,6 +44,7 @@
     "vue-async-computed": "^3",
     "vue-headful": "^2",
     "vue-i18n": "^8",
+    "vue-masonry": "^0.11.7",
     "vuejs-datepicker": "^1",
     "vuex": "^3"
   },

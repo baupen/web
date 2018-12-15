@@ -11,9 +11,10 @@
 
 namespace App\Api\Transformer\Edit;
 
+use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\MapFile;
 
-class MapFileTransformer
+class MapFileTransformer extends BatchTransformer
 {
     /**
      * @param MapFile $entity
