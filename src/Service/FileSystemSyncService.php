@@ -558,7 +558,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         $name = trim(mb_strtolower($name));
 
         // remove all other chars containing no information
-        $name = preg_replace("/[\s-&]/", '', $name);
+        $name = preg_replace("/[\s\-&]/", '', $name);
 
         $kitchen = ['küche', 'essen', 'kochen'];
         $wetAreas = ['wc', 'bad', 'klo', 'toilette'];

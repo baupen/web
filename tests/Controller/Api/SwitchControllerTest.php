@@ -1,20 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 6/26/18
- * Time: 8:40 PM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Tests\Controller\Api;
 
-
 use App\Api\Request\ConstructionSiteRequest;
-use App\Api\Request\CraftsmenRequest;
 use App\Enum\ApiStatus;
-use App\Service\Interfaces\EmailServiceInterface;
 use App\Tests\Controller\Api\Base\ApiController;
-use App\Tests\Mock\MockEmailService;
 
 class SwitchControllerTest extends ApiController
 {
@@ -26,13 +25,15 @@ class SwitchControllerTest extends ApiController
         $constructionSiteData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($constructionSiteData->data);
-        $this->assertTrue(is_array($constructionSiteData->data->constructionSites));
-        $this->assertTrue(count($constructionSiteData->data->constructionSites) > 0);
+        $this->assertTrue(\is_array($constructionSiteData->data->constructionSites));
+        $this->assertTrue(\count($constructionSiteData->data->constructionSites) > 0);
         foreach ($constructionSiteData->data->constructionSites as $constructionSite) {
             $this->assertNotNull($constructionSite);
-            $this->assertObjectHasAttribute("name", $constructionSite);
-            $this->assertObjectHasAttribute("imageMedium", $constructionSite);
-            $this->assertObjectHasAttribute("isConstructionManagerOf", $constructionSite);
+            $this->assertObjectHasAttribute('name', $constructionSite);
+            $this->assertObjectHasAttribute('imageMedium', $constructionSite);
+            $this->assertObjectHasAttribute('isConstructionManagerOf', $constructionSite);
+            $this->assertObjectHasAttribute('constructionManagers', $constructionSite);
+            $this->assertObjectHasAttribute('address', $constructionSite);
         }
     }
 
@@ -79,13 +80,13 @@ class SwitchControllerTest extends ApiController
         $response = $this->authenticatedGetRequest($constructionSitesUrl);
         $constructionSiteData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
-
         foreach ($constructionSiteData->data->constructionSites as $constructionSite) {
             if ($constructionSite->id === $constructionSiteId) {
-                $this->assertEquals($expectedIsConstructionManagerOf, $constructionSite->isConstructionManagerOf);
+                $this->assertSame($expectedIsConstructionManagerOf, $constructionSite->isConstructionManagerOf);
+
                 return;
             }
         }
-        $this->fail("construction site not found");
+        $this->fail('construction site not found');
     }
 }

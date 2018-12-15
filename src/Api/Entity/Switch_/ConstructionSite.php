@@ -19,6 +19,16 @@ class ConstructionSite extends \App\Api\Entity\Base\ConstructionSite
     private $imageMedium;
 
     /**
+     * @var string[]
+     */
+    private $address;
+
+    /**
+     * @var string[]
+     */
+    private $constructionManagers;
+
+    /**
      * @var bool
      */
     private $isConstructionManagerOf;
@@ -53,5 +63,37 @@ class ConstructionSite extends \App\Api\Entity\Base\ConstructionSite
     public function setIsConstructionManagerOf(bool $isConstructionManagerOf): void
     {
         $this->isConstructionManagerOf = $isConstructionManagerOf;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAddress(): array
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string[] $address
+     */
+    public function setAddress(array $address): void
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getConstructionManagers(): array
+    {
+        return $this->constructionManagers;
+    }
+
+    /**
+     * @param string[] $constructionSiteManagers
+     */
+    public function setConstructionManagers(array $constructionSiteManagers): void
+    {
+        $this->constructionManagers = $constructionSiteManagers;
     }
 }
