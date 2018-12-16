@@ -10,6 +10,33 @@
                 {{$t("edit_maps.actions.add_map_files")}}
             </button>
         </p>
+
+        <div v-if="mapFileViewActive" class="jumbotron">
+            <h2>{{$t("map_file.plural")}}</h2>
+            <p class="text-secondary">{{$t("edit_map_files.help")}}</p>
+            <p class="alert alert-info">{{$t("edit_map_files.drag_files_to_upload")}}</p>
+            <p>
+                <button class="btn btn-primary" @click="addMap">
+                    {{$t("edit_maps.actions.add_map")}}
+                </button>
+                <button class="btn btn-outline-primary" @click="mapFileViewActive = true" v-if="!mapFileViewActive">
+                    {{$t("edit_maps.actions.add_map_files")}}
+                </button>
+            </p>
+            <table v-if="orderedMapFiles.length > 0" class="table table-hover table-sm">
+                <thead>
+                <tr>
+                    <th>{{$t("map.name")}}</th>
+                    <th>{{$t("map_file.created_at")}}</th>
+                    <th>{{$t("map.name")}}</th>
+                    <th class="minimal-width">Anzahl Pendenzen</th>
+                </tr>
+                </thead>
+                <tbody>
+                <map-file-table-row v-for="mapFile in orderedMapFiles" :map-file="mapFile" :ordered-maps="orderedMaps"/>
+                </tbody>
+            </table>
+        </div>
         <table v-if="maps.length > 0" class="table table-hover table-condensed">
             <thead>
             <tr>
@@ -22,12 +49,12 @@
             </tr>
             </thead>
             <tbody>
-            <MapTreeLevel v-for="orderedMap in orderedMaps" :key="orderedMap.id"
-                          :map="orderedMap"
-                          :ordered-maps="orderedMaps"
-                          :map-files="mapFiles"
-                          :indent-size="orderedMap.indentSize"
-                          @removed="markMapForRemoval(orderedMap)"/>
+            <map-table-row v-for="orderedMap in orderedMaps" :key="orderedMap.id"
+                           :map="orderedMap"
+                           :ordered-maps="orderedMaps"
+                           :map-files="mapFiles"
+                           :indent-size="orderedMap.indentSize"
+                           @removed="markMapForRemoval(orderedMap)"/>
             </tbody>
         </table>
         <atom-spinner v-if="isMapsLoading"
@@ -44,12 +71,12 @@
     import bAlert from 'bootstrap-vue/es/components/alert/alert'
     import {AtomSpinner} from 'epic-spinners'
     import notifications from '../mixins/Notifications'
-    import MapTreeLevel from "./components/MapTreeLevel";
+    import MapTableRow from "./components/MapTableRow";
+    import MapFileTableRow from "./components/MapFileTableRow";
     import uuid4 from "uuid/v4"
 
     const lang = document.documentElement.lang.substr(0, 2);
-
-    moment.locale('de');
+    moment.locale(lang);
 
     export default {
         data: function () {
@@ -74,20 +101,21 @@
                 this.setOrderProperties(this.displayMaps, null, 0, 0);
                 return this.displayMaps.sort((m1, m2) => m1.order - m2.order);
             },
+            orderedMapFiles: function () {
+                return this.mapFiles.sort((mf1, mf2) => mf1.filename.localeCompare(mf2.filename));
+            },
             displayMaps: function () {
                 return this.maps.filter(m => this.mapsToRemove.indexOf(m) === -1);
             }
         },
         mixins: [notifications],
         components: {
-            MapTreeLevel,
+            MapTableRow,
+            MapFileTableRow,
             bAlert,
             AtomSpinner
         },
         methods: {
-            formatDateTime: function (dateTime) {
-                return moment(dateTime).locale(this.locale).fromNow();
-            },
             setOrderProperties: function (maps, parentId, order, indent) {
                 const children = maps.filter(m => m.parentId === parentId);
                 children.sort((c1, c2) => c1.name.localeCompare(c2.name));

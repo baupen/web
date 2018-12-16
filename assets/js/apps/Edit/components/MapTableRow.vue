@@ -21,7 +21,7 @@
             <select v-if="selectableMapFiles.length > 1" :disabled="map.automaticEditEnabled" v-model="map.fileId">
                 <option v-for="mapFile in selectableMapFiles" :value="mapFile.id">{{mapFile.filename}}</option>
             </select>
-            <template v-else-if="selectableMapFiles.length === 1">
+            <template v-else>
                 {{selectedMapFileName}}
             </template>
         </td>
@@ -49,7 +49,6 @@
     import bButton from 'bootstrap-vue/es/components/button/button'
 
     export default {
-        name: 'map-tree-level',
         props: {
             map: {
                 type: Object,

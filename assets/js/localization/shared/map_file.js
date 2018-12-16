@@ -1,5 +1,7 @@
 export default {
   de: {
-    name: 'Bauplanversion'
+    name: 'Bauplanversion',
+    plural: 'Bauplanversionen',
+    created_at: 'hinzugefügt am'
   }
 };
