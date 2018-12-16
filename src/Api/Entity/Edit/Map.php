@@ -33,7 +33,7 @@ class Map extends BaseEntity
     /**
      * @var bool
      */
-    private $preventAutomaticEdit;
+    private $automaticEditEnabled;
 
     /**
      * @var int
@@ -91,17 +91,17 @@ class Map extends BaseEntity
     /**
      * @return bool
      */
-    public function isPreventAutomaticEdit(): bool
+    public function isAutomaticEditEnabled(): bool
     {
-        return $this->preventAutomaticEdit;
+        return $this->automaticEditEnabled;
     }
 
     /**
-     * @param bool $preventAutomaticEdit
+     * @param bool $automaticEditEnabled
      */
-    public function setPreventAutomaticEdit(bool $preventAutomaticEdit): void
+    public function setAutomaticEditEnabled(bool $automaticEditEnabled): void
     {
-        $this->preventAutomaticEdit = $preventAutomaticEdit;
+        $this->automaticEditEnabled = $automaticEditEnabled;
     }
 
     /**

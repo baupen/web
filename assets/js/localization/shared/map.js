@@ -4,7 +4,8 @@ export default {
     plural: 'Baupläne',
     open_issues_count: 'Offene Pendenzen',
     reviewed_issues_count: 'Erledigte Pendenzen',
-    next_response_limit: 'Nächste Frist'
+    next_response_limit: 'Nächste Frist',
+    parent: 'Zuordnung'
   },
   it: {
     name: 'Piano di costruzione',

@@ -21,23 +21,23 @@ trait AutomaticEditTrait
     /**
      * @var bool
      *
-     * @ORM\Column(type="text", options={"default": false})
+     * @ORM\Column(type="text", options={"default": true})
      */
-    private $preventAutomaticEdit = false;
+    private $automaticEditEnabled = true;
 
     /**
      * @return bool
      */
-    public function getPreventAutomaticEdit(): bool
+    public function getAutomaticEditEnabled(): bool
     {
-        return $this->preventAutomaticEdit;
+        return $this->automaticEditEnabled;
     }
 
     /**
      * @param bool $preventAutomaticEdit
      */
-    public function setPreventAutomaticEdit(bool $preventAutomaticEdit): void
+    public function setAutomaticEditEnabled(bool $preventAutomaticEdit): void
     {
-        $this->preventAutomaticEdit = $preventAutomaticEdit;
+        $this->automaticEditEnabled = $preventAutomaticEdit;
     }
 }

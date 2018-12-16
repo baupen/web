@@ -323,7 +323,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
     private function chooseMostAppropriateImageForConstructionSite(SyncTransaction $syncTransaction, ConstructionSite $constructionSite, array $constructionSiteImages)
     {
         // refresh current image if needed
-        if (!$constructionSite->getPreventAutomaticEdit()) {
+        if ($constructionSite->getAutomaticEditEnabled()) {
             if ($constructionSite->getImage() !== null) {
                 foreach ($constructionSiteImages as $possibleMatch) {
                     if ($constructionSite->getImage()->getDisplayFilename() === $possibleMatch->getDisplayFilename() &&
@@ -657,7 +657,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
             $key = $map->getName();
             if (!array_key_exists($key, $displayNameToMapLookup)) {
                 $displayNameToMapLookup[$key] = $map;
-            } elseif ($displayNameToMapLookup[$key]->getPreventAutomaticEdit() && !$map->getPreventAutomaticEdit()) {
+            } elseif (!$displayNameToMapLookup[$key]->getAutomaticEditEnabled() && $map->getAutomaticEditEnabled()) {
                 $displayNameToMapLookup[$key] = $map;
             }
         }
