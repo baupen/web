@@ -15,7 +15,8 @@ export default {
     edit_craftsmen: {
       help: 'Aktualisieren Sie die Daten der Handwerker.'
     },
-    set_automatically: 'automatisch festlegen'
+    set_automatically: 'automatisch festlegen',
+    issue_count: 'Anzahl Pendenzen'
   },
   it: {
     actions: {

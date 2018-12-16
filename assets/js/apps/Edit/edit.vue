@@ -11,32 +11,7 @@
             </button>
         </p>
 
-        <div v-if="mapFileViewActive" class="jumbotron">
-            <h2>{{$t("map_file.plural")}}</h2>
-            <p class="text-secondary">{{$t("edit_map_files.help")}}</p>
-            <p class="alert alert-info">{{$t("edit_map_files.drag_files_to_upload")}}</p>
-            <p>
-                <button class="btn btn-primary" @click="addMap">
-                    {{$t("edit_maps.actions.add_map")}}
-                </button>
-                <button class="btn btn-outline-primary" @click="mapFileViewActive = true" v-if="!mapFileViewActive">
-                    {{$t("edit_maps.actions.add_map_files")}}
-                </button>
-            </p>
-            <table v-if="orderedMapFiles.length > 0" class="table table-hover table-sm">
-                <thead>
-                <tr>
-                    <th>{{$t("map.name")}}</th>
-                    <th>{{$t("map_file.created_at")}}</th>
-                    <th>{{$t("map.name")}}</th>
-                    <th class="minimal-width">Anzahl Pendenzen</th>
-                </tr>
-                </thead>
-                <tbody>
-                <map-file-table-row v-for="mapFile in orderedMapFiles" :map-file="mapFile" :ordered-maps="orderedMaps"/>
-                </tbody>
-            </table>
-        </div>
+        <MapFileView v-if="mapFileViewActive" :map-files="mapFiles" :ordered-maps="orderedMaps"/>
         <table v-if="maps.length > 0" class="table table-hover table-condensed">
             <thead>
             <tr>
@@ -44,7 +19,7 @@
                 <th>{{$t("map.parent")}}</th>
                 <th>{{$t("map_file.name")}}</th>
                 <th>{{$t("set_automatically")}}</th>
-                <th class="minimal-width">Anzahl Pendenzen</th>
+                <th class="minimal-width">{{$t('issue_count')}}</th>
                 <th class="minimal-width"></th>
             </tr>
             </thead>
@@ -74,6 +49,7 @@
     import MapTableRow from "./components/MapTableRow";
     import MapFileTableRow from "./components/MapFileTableRow";
     import uuid4 from "uuid/v4"
+    import MapFileView from "./components/MapFileView";
 
     const lang = document.documentElement.lang.substr(0, 2);
     moment.locale(lang);
@@ -101,15 +77,13 @@
                 this.setOrderProperties(this.displayMaps, null, 0, 0);
                 return this.displayMaps.sort((m1, m2) => m1.order - m2.order);
             },
-            orderedMapFiles: function () {
-                return this.mapFiles.sort((mf1, mf2) => mf1.filename.localeCompare(mf2.filename));
-            },
             displayMaps: function () {
                 return this.maps.filter(m => this.mapsToRemove.indexOf(m) === -1);
             }
         },
         mixins: [notifications],
         components: {
+            MapFileView,
             MapTableRow,
             MapFileTableRow,
             bAlert,
