@@ -11,7 +11,10 @@
 
 namespace App\Controller\Api;
 
+use App\Api\Entity\Edit\UpdateMap;
 use App\Api\Request\ConstructionSiteRequest;
+use App\Api\Request\Edit\UpdateMapRequest;
+use App\Api\Response\Data\MapData;
 use App\Api\Response\Data\MapFileData;
 use App\Api\Response\Data\MapFilesData;
 use App\Api\Response\Data\MapsData;
@@ -34,6 +37,8 @@ class EditController extends ApiController
 {
     const INCORRECT_NUMBER_OF_FILES = 'incorrect number of files';
     const MAP_FILE_UPLOAD_FAILED = 'map file could not be uploaded';
+    const MAP_NOT_FOUND = 'map not found';
+    const MAP_FILE_NOT_FOUND = 'file not found';
 
     /**
      * gives the appropriate error code the specified error message.
@@ -134,5 +139,78 @@ class EditController extends ApiController
         $data->setMapFile($mapFileTransformer->toApi($mapFile));
 
         return $this->success($data);
+    }
+
+    /**
+     * @Route("/map", name="api_edit_map", methods={"POST"})
+     *
+     * @param Request $request
+     * @param MapFileTransformer $mapFileTransformer
+     * @param UploadServiceInterface $uploadService
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function mapFPostAction(Request $request, MapTransformer $mapTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var UpdateMapRequest $parsedRequest */
+        if (!$this->parseConstructionSiteRequest($request, UpdateMapRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        $updateMap = $parsedRequest->getMap();
+        $map = new Map();
+        $map->setConstructionSite($constructionSite);
+
+        if (!$this->writeIntoEntity($updateMap, $map, $errorResponse)) {
+            return $errorResponse;
+        }
+
+        $this->fastSave($map);
+
+        //create response
+        $data = new MapData();
+        $data->setMap($mapTransformer->toApi($map));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @param UpdateMap $updateMap
+     * @param Map $entity
+     * @param $errorResponse
+     *
+     * @return bool
+     */
+    private function writeIntoEntity(UpdateMap $updateMap, Map $entity, &$errorResponse)
+    {
+        $entity->setName($updateMap->getName());
+        $entity->setAutomaticEditEnabled($updateMap->getIsAutomaticEditEnabled());
+
+        if ($updateMap->getFileId() !== null) {
+            $file = $this->getDoctrine()->getRepository(MapFile::class)->find($updateMap->getFileId());
+            if ($file === null || $file->getConstructionSite() !== $entity->getConstructionSite()) {
+                $errorResponse = $this->fail(self::MAP_FILE_NOT_FOUND);
+
+                return false;
+            }
+
+            $entity->setFile($file);
+        }
+
+        if ($updateMap->getParentId() !== null) {
+            $parentMap = $this->getDoctrine()->getRepository(Map::class)->find($updateMap->getParentId());
+            if ($parentMap === null || $parentMap->getConstructionSite() !== $entity->getConstructionSite()) {
+                $errorResponse = $this->fail(self::MAP_NOT_FOUND);
+
+                return false;
+            }
+
+            $entity->setParent($parentMap);
+        }
+
+        return true;
     }
 }

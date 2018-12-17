@@ -11,13 +11,8 @@
 
 namespace App\Api\Entity\Edit;
 
-class Map extends \App\Api\Entity\Base\Map
+class UpdateMap
 {
-    /**
-     * @var \DateTime
-     */
-    private $createdAt;
-
     /**
      * @var string
      */
@@ -37,11 +32,6 @@ class Map extends \App\Api\Entity\Base\Map
      * @var bool
      */
     private $isAutomaticEditEnabled;
-
-    /**
-     * @var int
-     */
-    private $issueCount;
 
     /**
      * @return string
@@ -105,37 +95,5 @@ class Map extends \App\Api\Entity\Base\Map
     public function setIsAutomaticEditEnabled(bool $isAutomaticEditEnabled): void
     {
         $this->isAutomaticEditEnabled = $isAutomaticEditEnabled;
-    }
-
-    /**
-     * @return int
-     */
-    public function getIssueCount(): int
-    {
-        return $this->issueCount;
-    }
-
-    /**
-     * @param int $issueCount
-     */
-    public function setIssueCount(int $issueCount): void
-    {
-        $this->issueCount = $issueCount;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt(): \DateTime
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param \DateTime $createdAt
-     */
-    public function setCreatedAt(\DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
     }
 }

@@ -20,6 +20,7 @@ class Map extends BaseEntity
 
     /**
      * @var string
+     *             //TODO: move context out of here
      */
     private $context;
 

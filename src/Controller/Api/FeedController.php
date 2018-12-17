@@ -47,6 +47,8 @@ class FeedController extends ApiController
      * @param Request $request
      * @param FeedTransformer $feedTransformer
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function listAction(Request $request, FeedTransformer $feedTransformer)
