@@ -19,12 +19,6 @@ class Map extends BaseEntity
     private $name;
 
     /**
-     * @var string
-     *             //TODO: move context out of here
-     */
-    private $context;
-
-    /**
      * @return string
      */
     public function isName(): string
@@ -38,21 +32,5 @@ class Map extends BaseEntity
     public function setName(string $name): void
     {
         $this->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContext(): string
-    {
-        return $this->context;
-    }
-
-    /**
-     * @param string $context
-     */
-    public function setContext(string $context): void
-    {
-        $this->context = $context;
     }
 }

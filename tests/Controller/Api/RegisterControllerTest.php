@@ -99,7 +99,6 @@ class RegisterControllerTest extends ApiController
         foreach ($mapData->data->maps as $map) {
             $this->assertNotNull($map);
             $this->assertObjectHasAttribute("name", $map);
-            $this->assertObjectHasAttribute("context", $map);
             $this->assertObjectHasAttribute("children", $map);
         }
     }

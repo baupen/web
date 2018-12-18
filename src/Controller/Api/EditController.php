@@ -187,7 +187,7 @@ class EditController extends ApiController
     private function writeIntoEntity(UpdateMap $updateMap, Map $entity, &$errorResponse)
     {
         $entity->setName($updateMap->getName());
-        $entity->setAutomaticEditEnabled($updateMap->getIsAutomaticEditEnabled());
+        $entity->setIsAutomaticEditEnabled($updateMap->getIsAutomaticEditEnabled());
 
         if ($updateMap->getFileId() !== null) {
             $file = $this->getDoctrine()->getRepository(MapFile::class)->find($updateMap->getFileId());

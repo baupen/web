@@ -16,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 /*
  * allows/disallows application to automatically edit the entity
  */
+
 trait AutomaticEditTrait
 {
     /**
@@ -23,21 +24,21 @@ trait AutomaticEditTrait
      *
      * @ORM\Column(type="text", options={"default": true})
      */
-    private $automaticEditEnabled = true;
+    private $isAutomaticEditEnabled = true;
 
     /**
      * @return bool
      */
-    public function getAutomaticEditEnabled(): bool
+    public function getIsAutomaticEditEnabled(): bool
     {
-        return $this->automaticEditEnabled;
+        return $this->isAutomaticEditEnabled;
     }
 
     /**
      * @param bool $preventAutomaticEdit
      */
-    public function setAutomaticEditEnabled(bool $preventAutomaticEdit): void
+    public function setIsAutomaticEditEnabled(bool $preventAutomaticEdit): void
     {
-        $this->automaticEditEnabled = $preventAutomaticEdit;
+        $this->isAutomaticEditEnabled = $preventAutomaticEdit;
     }
 }
