@@ -65,4 +65,28 @@ class EditControllerTest extends ApiController
             $this->assertObjectHasAttribute('issueCount', $map);
         }
     }
+
+    public function testCraftsmen()
+    {
+        $url = '/api/edit/craftsmen';
+
+        $constructionSite = $this->getSomeConstructionSite();
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+
+        $response = $this->authenticatedPostRequest($url, $constructionSiteRequest);
+        $craftsmenData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($craftsmenData->data);
+        $this->assertTrue(\is_array($craftsmenData->data->craftsmen));
+        $this->assertTrue(\count($craftsmenData->data->craftsmen) > 0);
+        foreach ($craftsmenData->data->craftsmen as $craftsman) {
+            $this->assertNotNull($craftsman);
+            $this->assertObjectHasAttribute('id', $craftsman);
+            $this->assertObjectHasAttribute('contactName', $craftsman);
+            $this->assertObjectHasAttribute('company', $craftsman);
+            $this->assertObjectHasAttribute('email', $craftsman);
+            $this->assertObjectHasAttribute('issueCount', $craftsman);
+        }
+    }
 }
