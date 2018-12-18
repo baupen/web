@@ -14,15 +14,18 @@ namespace App\Controller\Api;
 use App\Api\Entity\Edit\UpdateMap;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\Edit\UpdateMapRequest;
+use App\Api\Response\Data\CraftsmenData;
 use App\Api\Response\Data\EmptyData;
 use App\Api\Response\Data\MapData;
 use App\Api\Response\Data\MapFileData;
 use App\Api\Response\Data\MapFilesData;
 use App\Api\Response\Data\MapsData;
+use App\Api\Transformer\Edit\CraftsmanTransformer;
 use App\Api\Transformer\Edit\MapFileTransformer;
 use App\Api\Transformer\Edit\MapTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionSite;
+use App\Entity\Craftsman;
 use App\Entity\Map;
 use App\Entity\MapFile;
 use App\Service\Interfaces\UploadServiceInterface;
@@ -98,6 +101,30 @@ class EditController extends ApiController
         //create response
         $data = new MapFilesData();
         $data->setMapFiles($mapFileTransformer->toApiMultiple($mapFiles));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/craftsmen", name="api_edit_craftsmen")
+     *
+     * @param Request $request
+     * @param CraftsmanTransformer $craftsmanTransformer
+     *
+     * @return Response
+     */
+    public function craftsmenAction(Request $request, CraftsmanTransformer $craftsmanTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        $craftsmen = $this->getDoctrine()->getRepository(Craftsman::class)->findBy(['constructionSite' => $constructionSite->getId()]);
+
+        //create response
+        $data = new CraftsmenData();
+        $data->setCraftsmen($craftsmanTransformer->toApiMultiple($craftsmen));
 
         return $this->success($data);
     }
