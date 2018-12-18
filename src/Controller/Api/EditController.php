@@ -14,6 +14,7 @@ namespace App\Controller\Api;
 use App\Api\Entity\Edit\UpdateMap;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\Edit\UpdateMapRequest;
+use App\Api\Response\Data\EmptyData;
 use App\Api\Response\Data\MapData;
 use App\Api\Response\Data\MapFileData;
 use App\Api\Response\Data\MapFilesData;
@@ -28,6 +29,7 @@ use App\Service\Interfaces\UploadServiceInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -101,7 +103,7 @@ class EditController extends ApiController
     }
 
     /**
-     * @Route("/map_files/upload", name="api_edit_map_files_upload", methods={"POST"})
+     * @Route("/map_files", name="api_edit_map_file", methods={"POST"})
      *
      * @param Request $request
      * @param MapFileTransformer $mapFileTransformer
@@ -111,7 +113,7 @@ class EditController extends ApiController
      *
      * @return Response
      */
-    public function mapFileUploadAction(Request $request, MapFileTransformer $mapFileTransformer, UploadServiceInterface $uploadService)
+    public function mapFilePostdAction(Request $request, MapFileTransformer $mapFileTransformer, UploadServiceInterface $uploadService)
     {
         /** @var ConstructionSite $constructionSite */
         if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
@@ -145,8 +147,7 @@ class EditController extends ApiController
      * @Route("/map", name="api_edit_map", methods={"POST"})
      *
      * @param Request $request
-     * @param MapFileTransformer $mapFileTransformer
-     * @param UploadServiceInterface $uploadService
+     * @param MapTransformer $mapTransformer
      *
      * @throws \Exception
      *
@@ -164,7 +165,7 @@ class EditController extends ApiController
         $map = new Map();
         $map->setConstructionSite($constructionSite);
 
-        if (!$this->writeIntoEntity($updateMap, $map, $errorResponse)) {
+        if (!$this->writeIntoMapEntity($updateMap, $map, $errorResponse)) {
             return $errorResponse;
         }
 
@@ -178,13 +179,81 @@ class EditController extends ApiController
     }
 
     /**
+     * @Route("/map/{map}", name="api_edit_map", methods={"PUT"})
+     *
+     * @param Request $request
+     * @param Map $map
+     * @param MapTransformer $mapTransformer
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function mapFPutAction(Request $request, Map $map, MapTransformer $mapTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var UpdateMapRequest $parsedRequest */
+        if (!$this->parseConstructionSiteRequest($request, UpdateMapRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        if (!$constructionSite->getMaps()->contains($map)) {
+            throw new NotFoundHttpException();
+        }
+
+        $updateMap = $parsedRequest->getMap();
+
+        if (!$this->writeIntoMapEntity($updateMap, $map, $errorResponse)) {
+            return $errorResponse;
+        }
+
+        $this->fastSave($map);
+
+        //create response
+        $data = new MapData();
+        $data->setMap($mapTransformer->toApi($map));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/map/{map}", name="api_edit_map", methods={"DELETE"})
+     *
+     * @param Request $request
+     * @param Map $map
+     * @param MapTransformer $mapTransformer
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function mapFDeleteAction(Request $request, Map $map, MapTransformer $mapTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseConstructionSiteRequest($request, UpdateMapRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        if (!$constructionSite->getMaps()->contains($map)) {
+            throw new NotFoundHttpException();
+        }
+
+        if ($map->getIssues()->count() === 0) {
+            $this->fastRemove($map);
+        }
+
+        //create response
+        return $this->success(new EmptyData());
+    }
+
+    /**
      * @param UpdateMap $updateMap
      * @param Map $entity
      * @param $errorResponse
      *
      * @return bool
      */
-    private function writeIntoEntity(UpdateMap $updateMap, Map $entity, &$errorResponse)
+    private function writeIntoMapEntity(UpdateMap $updateMap, Map $entity, &$errorResponse)
     {
         $entity->setName($updateMap->getName());
         $entity->setIsAutomaticEditEnabled($updateMap->getIsAutomaticEditEnabled());
