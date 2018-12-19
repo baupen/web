@@ -14,6 +14,7 @@ namespace App\Tests\Controller\Api;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\ApiController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class EditControllerTest extends ApiController
 {
@@ -39,6 +40,39 @@ class EditControllerTest extends ApiController
             $this->assertObjectHasAttribute('mapId', $mapFile);
             $this->assertObjectHasAttribute('issueCount', $mapFile);
         }
+    }
+
+    public function testMapFilePost()
+    {
+        $url = '/api/edit/map_file';
+
+        $filePath = __DIR__ . '/../../Files/sample.pdf';
+        $copyPath = __DIR__ . '/../../Files/sample_2.pdf';
+        $originalName = "sample.pdf";
+        copy($filePath, $copyPath);
+        $file = new UploadedFile(
+            $copyPath,
+            $originalName,
+            'application/pdf'
+        );
+
+        $constructionSite = $this->getSomeConstructionSite();
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+
+        $response = $this->authenticatedPostRequest($url, $constructionSiteRequest, ["some_file" => $file]);
+        $mapFileData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($mapFileData->data);
+        $this->assertNotNull($mapFileData->data->mapFile);
+
+        $mapFile = $mapFileData->data->mapFile;
+        $this->assertObjectHasAttribute('id', $mapFile);
+        $this->assertEquals($originalName, $mapFile->filename);
+        $this->assertNotNull($mapFile->createdAt);
+        $this->assertNull($mapFile->mapId);
+        $this->assertTrue($mapFile->issueCount === 0);
+
     }
 
     public function testMaps()

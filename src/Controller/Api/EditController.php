@@ -130,7 +130,7 @@ class EditController extends ApiController
     }
 
     /**
-     * @Route("/map_files", name="api_edit_map_file", methods={"POST"})
+     * @Route("/map_file", name="api_edit_map_file", methods={"POST"})
      *
      * @param Request $request
      * @param MapFileTransformer $mapFileTransformer
