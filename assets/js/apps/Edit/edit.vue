@@ -7,16 +7,23 @@
                       :size="60"
                       :color="'#ff1d5e'"
         />
-        <map-view v-if="!isMapsLoading"
-                  :map-containers="mapContainers"
-                  :map-file-containers="mapFileContainers"
-                  @add-map="addMap"
-                  @save-map="saveMap(arguments[0])"
-                  @remove-map="removeMap(arguments[0])"
-                  @map-file-dropped="mapFileDropped(arguments[0])"
-                  @upload-map-file="uploadMapFile(arguments[0])"
-                  @save-map-file="saveMapFile(arguments[0])"
-        />
+        <template v-else>
+            <map-view
+                    :map-containers="mapContainers"
+                    :map-file-containers="mapFileContainers"
+                    @map-add="addMap"
+                    @map-save="saveMap(arguments[0])"
+                    @map-remove="removeMap(arguments[0])"
+                    @map-file-dropped="mapFileDropped(arguments[0])"
+                    @map-file-upload="mapFileUpload(arguments[0])"
+                    @map-file-save="mapFileSave(arguments[0])"
+                    @map-file-abort-upload="mapFileAbortUpload(arguments[0])"
+            />
+        </template>
+        <button class="btn btn-primary" :disabled="isMapsLoading" v-if="pendingMapChanges > 0"
+                @click="startProcessMapChanges">
+            {{$t('edit_maps.actions.save_changes', {pendingChangesCount: pendingMapChanges}) }}
+        </button>
     </div>
 </template>
 
@@ -41,7 +48,8 @@
                 craftsmanContainers: [],
                 isMapsLoading: true,
                 isCraftsmenLoading: true,
-                locale: lang
+                locale: lang,
+                actionQueue: []
             }
         },
         mixins: [notifications],
@@ -58,9 +66,10 @@
                         name: this.$t("edit_maps.default_map_name"),
                         parentId: null,
                         fileId: null,
-                        order: 0,
-                        indentSize: 0
-                    }
+                        issueCount: 0
+                    },
+                    order: 0,
+                    indentSize: 0
                 })
             },
             saveMap: function (mapContainer) {
@@ -69,13 +78,18 @@
                 }
             },
             removeMap: function (mapContainer) {
-                mapContainer.pendingChange = 'remove';
-
                 // fix parent ids of children
                 this.mapContainers.filter(m => m.map.parentId === mapContainer.map.id).forEach(container => {
                     container.map.parentId = mapContainer.map.parentId;
                     this.saveMap(container);
                 });
+
+                if (mapContainer.pendingChange !== 'add') {
+                    mapContainer.pendingChange = 'remove';
+                } else {
+                    //directly remove
+                    this.mapContainers = this.mapContainers.filter(mc => mc !== mapContainer);
+                }
             },
             mapFileDropped: function (file) {
                 let mapFile = {
@@ -88,7 +102,7 @@
 
                 const newMapFileContainer = {
                     mapFile: mapFile,
-                    pendingChange: 'upload',
+                    pendingChange: 'upload_check',
                     uploadFile: file,
                     uploadCheck: null,
                     uploadProgress: 0
@@ -96,9 +110,9 @@
                 this.mapFileContainers.push(newMapFileContainer);
 
                 // perform upload check
-                this.performUploadMapFileCheck(newMapFileContainer);
+                this.mapFileUploadCheck(newMapFileContainer);
             },
-            performUploadMapFileCheck: function (mapFileContainer) {
+            mapFileUploadCheck: function (mapFileContainer) {
                 let reader = new FileReader();
 
                 const payload = {
@@ -119,24 +133,33 @@
 
                         // fast forward if possible
                         if (uploadCheck.sameHashConflicts.length === 0 && uploadCheck.fileNameConflict === null) {
-                            this.uploadMapFile(mapFileContainer);
+                            this.mapFileUpload(mapFileContainer);
+                        } else {
+                            mapFileContainer.pendingChange = "confirm_upload";
                         }
                     });
                 };
 
                 reader.readAsArrayBuffer(mapFileContainer.uploadFile);
             },
-            uploadMapFile(mapFileContainer) {
+            mapFileUpload(mapFileContainer) {
+                mapFileContainer.pendingChange = "finish_upload";
+
                 let data = new FormData();
                 data.append("file", mapFileContainer.uploadFile);
-                data.append("constructionSiteId", this.constructionSiteId);
-                data.append("mapFile", {
-                    filename: mapFileContainer.uploadCheck.derivedFileName
-                });
+                data.append("message", JSON.stringify({
+                    constructionSiteId: this.constructionSiteId,
+                    mapFile: {
+                        filename: mapFileContainer.uploadCheck.derivedFileName
+                    }
+                }));
 
                 const config = {
                     onUploadProgress: function (progressEvent) {
                         mapFileContainer.uploadProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    },
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
                     }
                 };
 
@@ -151,8 +174,96 @@
                         mapFileContainer.pendingChange = null;
                     });
             },
-            saveMapFile: function (mapFileContainer) {
+            mapFileSave: function (mapFileContainer) {
                 mapFileContainer.pendingChange = 'update';
+            },
+            mapFileAbortUpload: function (mapFileContainer) {
+                this.mapFileContainers = this.mapFileContainers.filter(mf => mf !== mapFileContainer);
+            },
+            startProcessMapChanges: function () {
+                if (!this.isMapsLoading) {
+                    this.isMapsLoading = true;
+                    this.processMapChanges();
+                } else {
+                    console.log("stopped");
+                }
+            },
+            processMapChanges: function () {
+                if (this.pendingMapAdd.length > 0) {
+                    const mapContainer = this.pendingMapAdd[0];
+                    axios.post("/api/edit/map", {
+                        constructionSiteId: this.constructionSiteId,
+                        map: mapContainer.map
+                    }).then((response) => {
+                        const oldId = mapContainer.map.id;
+                        mapContainer.map = response.data.map;
+                        const newId = mapContainer.map.id;
+
+                        // refreshIds
+                        this.mapFileContainers.filter(mfc => mfc.mapFile.mapId === oldId).forEach(mfc => {
+                            mfc.pendingChange = "update";
+                            mfc.mapFile.mapId = newId
+                        });
+
+                        this.mapContainers.filter(mc => mc.map.parentId === oldId).forEach(mc => {
+                            mc.pendingChange = "update";
+                            mc.map.parentId = newId
+                        });
+
+                        // continue process
+                        mapContainer.pendingChange = null;
+                        this.processMapChanges();
+                    });
+                } else if (this.pendingMapUpdate.length) {
+                    const mapContainer = this.pendingMapUpdate[0];
+                    axios.put("/api/edit/map/" + mapContainer.map.id, {
+                        constructionSiteId: this.constructionSiteId,
+                        map: mapContainer.map
+                    }).then((response) => {
+                        // continue process
+                        mapContainer.pendingChange = null;
+                        this.processMapChanges();
+                    });
+                } else if (this.pendingMapRemove.length) {
+                    const mapContainer = this.pendingMapRemove[0];
+                    axios.delete("/api/edit/map/" + mapContainer.map.id, {
+                        constructionSiteId: this.constructionSiteId,
+                        map: mapContainer.map
+                    }).then((response) => {
+                        // continue process
+                        mapContainer.pendingChange = null;
+                        this.processMapChanges();
+                    });
+                } else if (this.pendingMapFileUpdate.length) {
+                    const mapFileContainer = this.pendingMapFileUpdate[0];
+                    axios.delete("/api/edit/map_file/" + mapFileContainer.mapFile.id, {
+                        constructionSiteId: this.constructionSiteId,
+                        mapFile: mapFileContainer.mapFile
+                    }).then((response) => {
+                        // continue process
+                        mapFileContainer.pendingChange = null;
+                        this.processMapChanges();
+                    });
+                } else {
+                    this.isMapsLoading = false;
+                }
+            }
+        },
+        computed: {
+            pendingMapAdd: function () {
+                return this.mapContainers.filter(mfc => mfc.pendingChange === "add");
+            },
+            pendingMapUpdate: function () {
+                return this.mapContainers.filter(mfc => mfc.pendingChange === "update");
+            },
+            pendingMapRemove: function () {
+                return this.mapContainers.filter(mfc => mfc.pendingChange === "remove");
+            },
+            pendingMapFileUpdate: function () {
+                return this.mapFileContainers.filter(mfc => mfc.pendingChange === "update");
+            },
+            pendingMapChanges: function () {
+                return this.pendingMapAdd.length + this.pendingMapUpdate.length + this.pendingMapRemove.length + this.pendingMapFileUpdate.length;
             }
         },
         mounted() {

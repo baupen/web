@@ -1,7 +1,7 @@
 <template>
     <tr>
         <td class="map-indent" :class="'map-indent-' + indentSize">
-            <input v-if="!map.automaticEditEnabled"
+            <input v-if="!map.isAutomaticEditEnabled"
                    type="text"
                    v-model="map.name"
                    class="form-control form-control-sm"/>
@@ -10,7 +10,7 @@
             </span>
         </td>
         <td>
-            <select v-if="selectableMaps.length > 1" :disabled="map.automaticEditEnabled" v-model="map.parentId">
+            <select v-if="selectableMaps.length > 1" :disabled="map.isAutomaticEditEnabled" v-model="map.parentId">
                 <option v-for="map in selectableMaps" :value="map.id">{{map.name}}</option>
             </select>
             <template v-else>
@@ -18,7 +18,7 @@
             </template>
         </td>
         <td>
-            <select v-if="selectableMapFiles.length > 1" :disabled="map.automaticEditEnabled" v-model="map.fileId">
+            <select v-if="selectableMapFiles.length > 1" :disabled="map.isAutomaticEditEnabled" v-model="map.fileId">
                 <option v-for="mapFile in selectableMapFiles" :value="mapFile.id">{{mapFile.filename}}</option>
             </select>
             <template v-else>
@@ -30,14 +30,14 @@
                 <input type="checkbox"
                        class="switch"
                        :id="'switch-map-' + map.id"
-                       :checked="map.automaticEditEnabled"
+                       :checked="map.isAutomaticEditEnabled"
                        @change="toggleEdit()">
                 <label :for="'switch-map-' + map.id"></label>
             </span>
         </td>
         <td class="text-right">{{map.issueCount}}</td>
         <td>
-            <button class="btn btn-danger" v-if="map.issueCount === 0" @click="$emit('removed')">
+            <button class="btn btn-danger" v-if="map.issueCount === 0" @click="$emit('remove')">
                 <font-awesome-icon :icon="['fal', 'trash']"/>
             </button>
         </td>
@@ -93,7 +93,7 @@
             },
             toggleEdit: function () {
                 const mapData = this.getData(this.map);
-                if (this.map.automaticEditEnabled) {
+                if (this.map.isAutomaticEditEnabled) {
                     if (this.afterEditData !== null) {
                         this.setData(this.map, this.afterEditData);
                     }
@@ -102,7 +102,7 @@
                     this.setData(this.map, this.beforeEditData);
                 }
 
-                this.map.automaticEditEnabled = !this.map.automaticEditEnabled;
+                this.map.isAutomaticEditEnabled = !this.map.isAutomaticEditEnabled;
             }
         },
         computed: {
@@ -149,7 +149,7 @@
                         return;
                     }
 
-                    this.$emit('save-map');
+                    this.$emit('save');
                 },
                 deep: true,
             }

@@ -1,11 +1,16 @@
 <template>
     <div id="edit">
         <p>
-            <button class="btn btn-primary" @click="$emit('add-map')">
+            <button class="btn btn-primary" @click="$emit('map-add')">
                 {{$t("edit_maps.actions.add_map")}}
             </button>
-            <button class="btn btn-outline-primary" @click="mapFileViewActive = true" v-if="!mapFileViewActive">
-                {{$t("edit_maps.actions.add_map_files")}}
+            <button class="btn btn-outline-primary" @click="mapFileViewActive = !mapFileViewActive">
+                <span v-if="!mapFileViewActive">
+                    {{$t("edit_maps.actions.add_map_files")}}
+                </span>
+                <span v-else>
+                    {{$t("edit_maps.actions.hide_map_files")}}
+                </span>
             </button>
         </p>
 
@@ -15,6 +20,7 @@
                 :ordered-map-containers="orderedMapContainers"
                 @file-dropped="$emit('map-file-dropped', arguments[0])"
                 @start-upload="$emit('map-file-upload', arguments[0])"
+                @abort-upload="$emit('map-file-abort-upload', arguments[0])"
                 @save="$emit('map-file-save', arguments[0])"
         />
         <table v-if="mapContainers.length > 0" class="table table-hover table-condensed">

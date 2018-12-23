@@ -22,9 +22,11 @@
             <MapFileTableRow v-for="mapFileContainer in orderedMapFileContainers"
                              :key="mapFileContainer.mapFile.id"
                              :map-file-container="mapFileContainer"
+                             :map-file-containers="mapFileContainers"
                              :ordered-map-containers="orderedMapContainers"
                              @start-upload="$emit('start-upload', mapFileContainer)"
-                             @save="$emit('save', mapFileContainer)"/>
+                             @save="$emit('save', mapFileContainer)"
+                             @abort-upload="$emit('abort-upload', mapFileContainer)"/>
             </tbody>
         </table>
     </div>

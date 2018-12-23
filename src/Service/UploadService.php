@@ -149,7 +149,7 @@ class UploadService implements UploadServiceInterface
             $filename = pathinfo($targetPath, PATHINFO_FILENAME);
 
             $now = new \DateTime();
-            $targetFileName = $filename . '_duplicate_' . $now->format('yyyy-mm-ddTHH:ii') . '.' . $extension;
+            $targetFileName = $filename . '_duplicate_' . $now->format('Y-m-d\TH:i') . '.' . $extension;
 
             $targetPath = $targetFolder . \DIRECTORY_SEPARATOR . $targetFileName;
             if (file_exists($targetPath)) {
