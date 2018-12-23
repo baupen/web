@@ -31,7 +31,7 @@
                        class="switch"
                        :id="'switch-map-' + map.id"
                        :checked="map.automaticEditEnabled"
-                       @change="toggleEdit">
+                       @change="toggleEdit()">
                 <label :for="'switch-map-' + map.id"></label>
             </span>
         </td>
@@ -50,15 +50,15 @@
 
     export default {
         props: {
-            map: {
+            mapContainer: {
                 type: Object,
                 required: true
             },
-            orderedMaps: {
+            orderedMapContainers: {
                 type: Array,
                 required: true
             },
-            mapFiles: {
+            mapFileContainers: {
                 type: Array,
                 required: true
             },
@@ -69,8 +69,9 @@
         },
         data() {
             return {
+                map: this.mapContainer.map,
                 beforeEditData: null,
-                afterEditData: null,
+                afterEditData: null
             }
         },
         components: {
@@ -106,19 +107,19 @@
         },
         computed: {
             selectableMapFiles: function () {
-                return this.mapFiles.filter(m => m.mapId === this.map.id)
+                return this.mapFileContainers.map(mfc => mfc.mapFile).filter(m => m.mapId === this.map.id);
             },
             selectableMaps: function () {
                 // find first map not a child of this.map
                 let skipUntilOrder = 0;
                 let mapFound = false;
-                for (let i = 0; i < this.orderedMaps.length; i++) {
-                    const currentMap = this.orderedMaps[i];
+                for (let i = 0; i < this.orderedMapContainers.length; i++) {
+                    const currentMap = this.orderedMapContainers[i];
                     if (!mapFound) {
-                        if (currentMap === this.map) {
+                        if (currentMap === this.mapContainer) {
                             mapFound = true;
                         }
-                    } else if (currentMap.indentSize <= this.map.indentSize) {
+                    } else if (currentMap.indentSize <= this.mapContainer.indentSize) {
                         break;
                     }
                     skipUntilOrder++;
@@ -126,9 +127,11 @@
 
                 // can choose all maps before & all maps after & including the first map not a child of this.map
                 return [{
-                    id: null,
-                    name: "-"
-                }].concat(this.orderedMaps.filter(m => m.order < this.map.order || m.order >= skipUntilOrder));
+                    map: {
+                        id: null,
+                        name: "-"
+                    }
+                }].concat(this.orderedMapContainers.filter(m => m.order < this.mapContainer.order || m.order >= skipUntilOrder)).map(mc => mc.map);
             },
             selectedMapFileName: function () {
                 const match = this.selectableMapFiles.filter(mf => this.map.fileId === mf.id);
@@ -136,6 +139,19 @@
                     return match[0].filename;
                 }
                 return "-";
+            }
+        },
+        watch: {
+            map: {
+                handler: function (after, before) {
+                    // skip initial assign
+                    if (before === null) {
+                        return;
+                    }
+
+                    this.$emit('save-map');
+                },
+                deep: true,
             }
         },
         mounted() {

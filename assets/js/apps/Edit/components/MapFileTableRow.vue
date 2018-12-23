@@ -1,16 +1,27 @@
 <template>
     <tr>
-        <td>{{mapFile.filename}}</td>
-        <td>{{formatDateTime(mapFile.createdAt)}}</td>
-        <td>
-            <select v-if="selectableMaps.length > 1" :disabled="mapFile.automaticEditEnabled" v-model="mapFile.mapId">
-                <option v-for="map in selectableMaps" :value="map.id">{{map.name}}</option>
-            </select>
-            <template v-else>
-                {{selectedMapName}}
-            </template>
-        </td>
-        <td class="text-right">{{mapFile.issueCount}}</td>
+        <template v-if="mapFileContainer.pendingChange === 'upload'">
+            <td>{{mapFile.filename}}</td>
+            <td>{{formatDateTime(mapFile.createdAt)}}</td>
+            <td>
+                -
+            </td>
+            <td class="text-right">-</td>
+        </template>
+        <template v-else>
+            <td>{{mapFile.filename}}</td>
+            <td>{{formatDateTime(mapFile.createdAt)}}</td>
+            <td>
+                <select v-if="selectableMaps.length > 1" :disabled="mapFile.automaticEditEnabled"
+                        v-model="mapFile.mapId">
+                    <option v-for="map in selectableMaps" :value="map.id">{{map.name}}</option>
+                </select>
+                <template v-else>
+                    {{selectedMapName}}
+                </template>
+            </td>
+            <td class="text-right">{{mapFile.issueCount}}</td>
+        </template>
     </tr>
 </template>
 
@@ -23,11 +34,11 @@
 
     export default {
         props: {
-            mapFile: {
+            mapFileContainer: {
                 type: Object,
                 required: true
             },
-            orderedMaps: {
+            orderedMapContainers: {
                 type: Array,
                 required: true
             }
@@ -36,7 +47,8 @@
             return {
                 beforeEditData: null,
                 afterEditData: null,
-                locale: lang
+                locale: lang,
+                mapFile: this.mapFileContainer.mapFile
             }
         },
         components: {
@@ -71,7 +83,7 @@
         },
         computed: {
             selectableMaps: function () {
-                return this.orderedMaps;
+                return this.orderedMapContainers.filter(m => m.pendingChange !== "remove").map(m => m.map);
             },
             selectedMapName: function () {
                 const match = this.selectableMaps.filter(m => this.mapFile.mapId === m.id);
@@ -79,6 +91,19 @@
                     return match[0].name;
                 }
                 return "-";
+            }
+        },
+        watch: {
+            mapFile: {
+                handler: function (after, before) {
+                    // skip initial assign
+                    if (before === null) {
+                        return;
+                    }
+
+                    this.$emit('save');
+                },
+                deep: true,
             }
         },
         mounted() {

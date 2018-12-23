@@ -9,7 +9,7 @@
         <h2>{{$t("map_file.plural")}}</h2>
         <p class="text-secondary">{{$t("edit_map_files.help")}}</p>
         <p class="alert alert-info">{{$t("edit_map_files.drag_files_to_upload")}}</p>
-        <table v-if="orderedMapFiles.length > 0" class="table table-hover table-sm">
+        <table v-if="mapFileContainers.length > 0" class="table table-hover table-sm">
             <thead>
             <tr>
                 <th>{{$t("map_file.name")}}</th>
@@ -19,7 +19,12 @@
             </tr>
             </thead>
             <tbody>
-            <MapFileTableRow v-for="mapFile in orderedMapFiles" :map-file="mapFile" :ordered-maps="orderedMaps"/>
+            <MapFileTableRow v-for="mapFileContainer in orderedMapFileContainers"
+                             :key="mapFileContainer.id"
+                             :map-file-container="mapFileContainer"
+                             :ordered-map-containers="orderedMapContainers"
+                             @start-upload="$emit('start-upload', mapFileContainer)"
+                             @save="$emit('save', mapFileContainer)"/>
             </tbody>
         </table>
     </div>
@@ -41,11 +46,11 @@
 
     export default {
         props: {
-            mapFiles: {
+            mapFileContainers: {
                 type: Array,
                 required: true
             },
-            orderedMaps: {
+            orderedMapContainers: {
                 type: Array,
                 required: true
             }
@@ -70,34 +75,17 @@
             filesDropped: function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log(e);
+
                 let droppedFiles = e.dataTransfer.files;
-                console.log(droppedFiles);
-                this.dragActive = false;
-
-                var ajaxData = new FormData();
-                droppedFiles.forEach(f => ajaxData.append("file", f));
-
-                $.ajax({
-                    url: $form.attr('action'),
-                    type: 'POST',
-                    data: ajaxData,
-                    dataType: 'json',
-                    complete: function() {
-                        $form.removeClass('is-uploading');
-                    },
-                    success: function(data) {
-
-                    },
-                    error: function() {
-                        // Log the error, show an alert, whatever works for you
-                    }
+                droppedFiles.forEach(df => {
+                    this.$emit('file-dropped', df);
                 });
-            }
+                this.dragActive = false;
+            },
         },
         computed: {
-            orderedMapFiles: function () {
-                return this.mapFiles.sort((mf1, mf2) => mf1.filename.localeCompare(mf2.filename));
+            orderedMapFileContainers: function () {
+                return this.mapFileContainers.sort((mf1, mf2) => mf1.mapFile.filename.localeCompare(mf2.mapFile.filename));
             }
         }
     }

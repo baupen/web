@@ -2,40 +2,20 @@
     <div id="edit">
         <h2>{{$t("map.plural")}}</h2>
         <p class="text-secondary">{{$t("edit_maps.help")}}</p>
-        <p>
-            <button class="btn btn-primary" @click="addMap">
-                {{$t("edit_maps.actions.add_map")}}
-            </button>
-            <button class="btn btn-outline-primary" @click="mapFileViewActive = true" v-if="!mapFileViewActive">
-                {{$t("edit_maps.actions.add_map_files")}}
-            </button>
-        </p>
-
-        <MapFileView v-if="mapFileViewActive" :map-files="mapFiles" :ordered-maps="orderedMaps"/>
-        <table v-if="maps.length > 0" class="table table-hover table-condensed">
-            <thead>
-            <tr>
-                <th>{{$t("map.name")}}</th>
-                <th>{{$t("map.parent")}}</th>
-                <th>{{$t("map_file.name")}}</th>
-                <th>{{$t("set_automatically")}}</th>
-                <th class="minimal-width">{{$t('issue_count')}}</th>
-                <th class="minimal-width"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <map-table-row v-for="orderedMap in orderedMaps" :key="orderedMap.id"
-                           :map="orderedMap"
-                           :ordered-maps="orderedMaps"
-                           :map-files="mapFiles"
-                           :indent-size="orderedMap.indentSize"
-                           @removed="markMapForRemoval(orderedMap)"/>
-            </tbody>
-        </table>
         <atom-spinner v-if="isMapsLoading"
                       :animation-duration="1000"
                       :size="60"
                       :color="'#ff1d5e'"
+        />
+        <map-view v-if="!isMapsLoading"
+                  :map-containers="mapContainers"
+                  :map-file-containers="mapFileContainers"
+                  @add-map="addMap"
+                  @save-map="saveMap(arguments)"
+                  @remove-map="removeMap(arguments)"
+                  @map-file-dropped="mapFileDropped(arguments)"
+                  @upload-map-file="uploadMapFile(arguments)"
+                  @save-map-file="saveMapFile(arguments)"
         />
     </div>
 </template>
@@ -43,13 +23,11 @@
 <script>
     import axios from "axios"
     import moment from "moment";
-    import bAlert from 'bootstrap-vue/es/components/alert/alert'
     import {AtomSpinner} from 'epic-spinners'
     import notifications from '../mixins/Notifications'
-    import MapTableRow from "./components/MapTableRow";
-    import MapFileTableRow from "./components/MapFileTableRow";
     import uuid4 from "uuid/v4"
-    import MapFileView from "./components/MapFileView";
+    import MapView from "./components/MapView";
+    import CryptoJS from 'crypto-js'
 
     const lang = document.documentElement.lang.substr(0, 2);
     moment.locale(lang);
@@ -58,64 +36,123 @@
         data: function () {
             return {
                 constructionSiteId: null,
-                maps: [],
-                mapFiles: [],
-                craftsmen: [],
+                mapContainers: [],
+                mapFileContainers: [],
+                craftsmanContainers: [],
                 isMapsLoading: true,
-                isMapFilesLoading: true,
                 isCraftsmenLoading: true,
-                locale: lang,
-                mapsToRemove: [],
-                mapFileViewActive: false
-            }
-        },
-        computed: {
-            managingConstructionSites: function () {
-                return this.constructionSites.filter(c => c.isConstructionManagerOf);
-            },
-            orderedMaps: function () {
-                this.setOrderProperties(this.displayMaps, null, 0, 0);
-                return this.displayMaps.sort((m1, m2) => m1.order - m2.order);
-            },
-            displayMaps: function () {
-                return this.maps.filter(m => this.mapsToRemove.indexOf(m) === -1);
+                locale: lang
             }
         },
         mixins: [notifications],
         components: {
-            MapFileView,
-            MapTableRow,
-            MapFileTableRow,
-            bAlert,
+            MapView,
             AtomSpinner
         },
         methods: {
-            setOrderProperties: function (maps, parentId, order, indent) {
-                const children = maps.filter(m => m.parentId === parentId);
-                children.sort((c1, c2) => c1.name.localeCompare(c2.name));
-                let maxOrder = order;
-                children.forEach(c => {
-                    c.order = maxOrder;
-                    c.indentSize = indent;
-                    maxOrder = this.setOrderProperties(maps, c.id, maxOrder + 1, indent + 1);
+            addMap: function () {
+                this.mapContainers.push({
+                    pendingChange: 'add',
+                    map: {
+                        id: uuid4(),
+                        name: this.$t("edit_maps.default_map_name"),
+                        parentId: null,
+                        fileId: null,
+                        order: 0,
+                        indentSize: 0
+                    }
+                })
+            },
+            saveMap: function (mapContainer) {
+                if (mapContainer.pendingChange !== 'add') {
+                    mapContainer.pendingChange = 'update';
+                }
+            },
+            removeMap: function (mapContainer) {
+                mapContainer.pendingChange = 'remove';
+
+                // fix parent ids of children
+                this.mapContainers.filter(m => m.map.parentId === mapContainer.map.id).forEach(container => {
+                    container.map.parentId = mapContainer.map.parentId;
+                    this.saveMap(container);
+                });
+            },
+            mapFileDropped: function (file) {
+                let mapFile = {
+                    filename: file.fileName,
+                    issueCount: 0,
+                    createdAt: new Date().toISOString(),
+                    mapId: null,
+                    id: uuidV4()
+                };
+
+                const newMapFileContainer = {
+                    mapFile: mapFile,
+                    pendingChange: 'upload',
+                    uploadFile: file,
+                    uploadCheck: null,
+                    uploadProgress: 0
+                };
+                this.mapFileContainers.push(newMapFileContainer);
+
+                // perform upload check
+                this.performUploadMapFileCheck(newMapFileContainer);
+            },
+            performUploadMapFileCheck: function (mapFileContainer) {
+                let reader = new FileReader();
+
+                reader.onload = function () {
+                    let file = this.result;
+                    let fileWordArray = CryptoJS.lib.WordArray.create(file);
+                    let hash = CryptoJS.SHA256(fileWordArray).toString();
+                    alert("Calculated SHA256:" + hash.toString());
+
+                    axios.post("/api/edit/map_file/check", {
+                        constructionSiteId: this.constructionSiteId,
+                        mapFile: {
+                            hash: hash,
+                            filename: file.fileName
+                        }
+                    }).then((response) => {
+                        const uploadCheck = response.data.uploadFileCheck;
+                        mapFileContainer.uploadCheck = uploadCheck;
+
+                        // fast forward if possible
+                        if (uploadCheck.sameHashConflicts.length === 0 && uploadCheck.fileNameConflict === null) {
+                            this.uploadMapFile(mapFileContainer);
+                        }
+                    });
+                };
+
+                reader.readAsArrayBuffer(mapFileContainer.uploadFile);
+            },
+            uploadMapFile(mapFileContainer) {
+                let data = new FormData();
+                data.append("file", mapFileContainer.uploadFile);
+                data.append("constructionSiteId", this.constructionSiteId);
+                data.append("mapFile", {
+                    filename: mapFileContainer.uploadCheck.derivedFileName
                 });
 
-                return maxOrder;
+                const config = {
+                    onUploadProgress: function (progressEvent) {
+                        mapFileContainer.uploadProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    }
+                };
+
+                axios.post('/api/edit/map_file', data, config)
+                    .then(response => {
+                        mapFileContainer.uploadProgress = 100;
+
+                        const mapFile = response.data.mapFile;
+                        mapFileContainer.mapFile.filename = mapFile.filename;
+                        mapFileContainer.mapFile.createdAt = mapFile.createdAt;
+                        mapFileContainer.mapFile.mapId = mapFile.mapId;
+                        mapFileContainer.pendingChange = null;
+                    });
             },
-            markMapForRemoval: function (map) {
-                this.mapsToRemove.push(map);
-                // fix parent ids of children
-                this.maps.filter(m => m.parentId === map.id).forEach(m => m.parentId = map.parentId);
-            },
-            addMap: function () {
-                this.maps.push({
-                    id: uuid4(),
-                    name: this.$t("edit_maps.default_map_name"),
-                    parentId: null,
-                    fileId: null,
-                    order: 0,
-                    indentSize: 0
-                })
+            saveMapFile: function (mapFileContainer) {
+                mapFileContainer.pendingChange = 'update';
             }
         },
         mounted() {
@@ -135,36 +172,43 @@
             axios.get("/api/configuration").then((response) => {
                 this.constructionSiteId = response.data.constructionSite.id;
 
-
                 axios.post("/api/edit/map_files", {
                     constructionSiteId: this.constructionSiteId
                 }).then((response) => {
-                    this.mapFiles = response.data.mapFiles;
-                    this.isMapFilesLoading = false;
+                    response.data.mapFiles.forEach(mf => {
+                        this.mapFileContainers.push({
+                            mapFile: mf,
+                            pendingChange: null
+                        })
+                    });
 
                     axios.post("/api/edit/maps", {
                         constructionSiteId: this.constructionSiteId
                     }).then((response) => {
-                        let maps = response.data.maps;
-                        maps.forEach(m => {
-                            m.order = 0;
-                            m.indentSize = 0;
+                        response.data.maps.forEach(m => {
+                            this.mapContainers.push({
+                                map: m,
+                                order: 0,
+                                indentSize: 0,
+                                pendingChange: null
+                            })
                         });
-                        this.maps = maps;
+
                         this.isMapsLoading = false;
                     });
                 });
 
-
-                /*
-
                 axios.post("/api/edit/craftsmen", {
                     constructionSiteId: this.constructionSiteId
                 }).then((response) => {
-                    this.craftsmen = response.data.craftsmen;
+                    response.data.craftsmen.forEach(c => {
+                        this.craftsmanContainers.push({
+                            craftsman: c,
+                            pendingChange: null
+                        })
+                    });
                     this.isCraftsmenLoading = false;
                 });
-                */
             });
         },
     }
