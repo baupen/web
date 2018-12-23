@@ -35,6 +35,13 @@ class EnrichMapsData extends BaseFixture
             $map = new Map();
             $map->setName('empty map');
 
+            $map2 = new Map();
+            $map2->setName('child of empty map');
+            $map2->setConstructionSite($constructionSite);
+            $map2->setParent($map);
+            $map->getChildren()->add($map2);
+            $manager->persist($map2);
+
             $map->setConstructionSite($constructionSite);
             $constructionSite->getMaps()->add($map);
             $manager->persist($map);

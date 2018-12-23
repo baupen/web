@@ -252,7 +252,7 @@ class EditControllerTest extends ApiController
             }
 
             //test that map with issues can not be removed
-            if ($testsExecuted[1] && $map->getIssues()->count() > 0) {
+            if (!$testsExecuted[1] && $map->getIssues()->count() > 0) {
                 $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $map->getId(), $updateMapRequest);
                 $this->checkResponse($response, ApiStatus::FAIL, 'map can not be removed as there are issues assigned to it');
 
@@ -262,7 +262,7 @@ class EditControllerTest extends ApiController
             //test that map with children can not be removed
             if (!$testsExecuted[0] && $map->getChildren()->count() > 0 && $map->getIssues()->count() === 0) {
                 $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $map->getId(), $updateMapRequest);
-                $this->checkResponse($response, ApiStatus::FAIL);
+                $this->checkResponse($response, ApiStatus::FAIL, 'map can not be removed as there are children assigned to it');
 
                 $testsExecuted[0] = true;
             }
