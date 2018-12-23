@@ -12,11 +12,13 @@
 namespace App\Tests\Controller\Api;
 
 use App\Api\Entity\Edit\CheckMapFile;
+use App\Api\Entity\Edit\UpdateCraftsman;
 use App\Api\Entity\Edit\UpdateMap;
 use App\Api\Entity\Edit\UpdateMapFile;
 use App\Api\Entity\Edit\UploadMapFile;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\Edit\CheckMapFileRequest;
+use App\Api\Request\Edit\UpdateCraftsmanRequest;
 use App\Api\Request\Edit\UpdateMapFileRequest;
 use App\Api\Request\Edit\UpdateMapRequest;
 use App\Api\Request\Edit\UploadMapFileRequest;
@@ -283,6 +285,128 @@ class EditControllerTest extends ApiController
         $response = $this->authenticatedPostRequest('/api/edit/maps', $constructionSiteRequest);
 
         return \count($this->checkResponse($response, ApiStatus::SUCCESS)->data->maps);
+    }
+
+    public function testCraftsmanAdd()
+    {
+        $addUrl = '/api/edit/craftsman';
+        $availableCraftsmen = $this->countAvailableCraftsmen();
+        $constructionSite = $this->getSomeConstructionSite();
+        $parentCraftsman = $constructionSite->getCraftsmen()[0];
+
+        // do request
+        $updateCraftsman = new UpdateCraftsman();
+        $updateCraftsman->setEmail('craft@man.ch');
+        $updateCraftsman->setCompany('company');
+        $updateCraftsman->setContactName('contact name');
+        $updateCraftsman->setTrade('trade');
+        $updateCraftsmanRequest = new UpdateCraftsmanRequest();
+        $updateCraftsmanRequest->setCraftsman($updateCraftsman);
+        $updateCraftsmanRequest->setConstructionSiteId($constructionSite->getId());
+        $response = $this->authenticatedPostRequest($addUrl, $updateCraftsmanRequest);
+        $craftsmanData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        // ensure craftsman id has been set properly
+        $this->assertNotNull($craftsmanData->data);
+        $this->assertNotNull($craftsmanData->data->craftsman);
+        $craftsman = $craftsmanData->data->craftsman;
+        $this->assertNotNull($craftsman->id);
+
+        $this->assertSame($availableCraftsmen + 1, $this->countAvailableCraftsmen());
+        $this->assertSame($updateCraftsman->getCompany(), $craftsman->company);
+        $this->assertSame($updateCraftsman->getEmail(), $craftsman->email);
+        $this->assertSame($updateCraftsman->getContactName(), $craftsman->contactName);
+        $this->assertSame($updateCraftsman->getTrade(), $craftsman->trade);
+        $this->assertSame(0, $craftsman->issueCount);
+    }
+
+    public function testCraftsmanUpdate()
+    {
+        $editUrl = '/api/edit/craftsman';
+        $availableCraftsmen = $this->countAvailableCraftsmen();
+        $constructionSite = $this->getSomeConstructionSite();
+        $someCraftsman = $constructionSite->getCraftsmen()[0];
+
+        // do request
+        $updateCraftsman = new UpdateCraftsman();
+        $updateCraftsman->setContactName($someCraftsman->getName() . ' new');
+        $updateCraftsman->setCompany($someCraftsman->getCompany() . ' GmbH');
+        $updateCraftsman->setEmail($someCraftsman->getEmail() . '.ch');
+        $updateCraftsman->setTrade('professional ' . $someCraftsman->getTrade());
+        $updateCraftsmanRequest = new UpdateCraftsmanRequest();
+        $updateCraftsmanRequest->setCraftsman($updateCraftsman);
+        $updateCraftsmanRequest->setConstructionSiteId($constructionSite->getId());
+        $response = $this->authenticatedPutRequest($editUrl . '/' . $someCraftsman->getId(), $updateCraftsmanRequest);
+        $craftsmanData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        // ensure craftsman id has been set properly
+        $this->assertNotNull($craftsmanData->data);
+        $this->assertNotNull($craftsmanData->data->craftsman);
+        $craftsman = $craftsmanData->data->craftsman;
+        $this->assertNotNull($craftsman->id);
+
+        $this->assertSame($availableCraftsmen, $this->countAvailableCraftsmen());
+        $this->assertSame($updateCraftsman->getCompany(), $craftsman->company);
+        $this->assertSame($updateCraftsman->getEmail(), $craftsman->email);
+        $this->assertSame($updateCraftsman->getContactName(), $craftsman->contactName);
+        $this->assertSame($updateCraftsman->getTrade(), $craftsman->trade);
+    }
+
+    public function testCraftsmanRemove()
+    {
+        $deleteUrl = '/api/edit/craftsman';
+        $availableCraftsmen = $this->countAvailableCraftsmen();
+        $constructionSite = $this->getSomeConstructionSite();
+        $someCraftsman = $constructionSite->getCraftsmen()[0];
+
+        // add empty craftsman to remove
+        $updateCraftsman = new UpdateCraftsman();
+        $updateCraftsman->setContactName($someCraftsman->getName() . ' new');
+        $updateCraftsman->setCompany($someCraftsman->getCompany() . ' GmbH');
+        $updateCraftsman->setEmail($someCraftsman->getEmail() . '.ch');
+        $updateCraftsman->setTrade('professional ' . $someCraftsman->getTrade());
+        $updateCraftsmanRequest = new UpdateCraftsmanRequest();
+        $updateCraftsmanRequest->setCraftsman($updateCraftsman);
+        $updateCraftsmanRequest->setConstructionSiteId($constructionSite->getId());
+        $response = $this->authenticatedPostRequest($deleteUrl, $updateCraftsmanRequest);
+        $craftsmanData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        // ensure craftsman has really been added
+        $this->assertSame($availableCraftsmen + 1, $this->countAvailableCraftsmen());
+        $craftsmanId = $craftsmanData->data->craftsman->id;
+
+        $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $craftsmanId, $updateCraftsmanRequest);
+        $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertSame($availableCraftsmen, $this->countAvailableCraftsmen());
+
+        $testsExecuted = false;
+        foreach ($constructionSite->getCraftsmen() as $craftsman) {
+            //test that craftsman with issues can not be removed
+            if ($craftsman->getIssues()->count() > 0) {
+                $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $craftsman->getId(), $updateCraftsmanRequest);
+                $this->checkResponse($response, ApiStatus::FAIL, 'craftsman can not be removed as there are issues assigned to it');
+
+                $testsExecuted = true;
+                break;
+            }
+        }
+
+        //fail if not both safety checks could be executed with the testset
+        if (!$testsExecuted) {
+            $this->fail('test set does not cover all needed cases');
+        }
+    }
+
+    private function countAvailableCraftsmen()
+    {
+        $constructionSite = $this->getSomeConstructionSite();
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+
+        $response = $this->authenticatedPostRequest('/api/edit/craftsmen', $constructionSiteRequest);
+
+        return \count($this->checkResponse($response, ApiStatus::SUCCESS)->data->craftsmen);
     }
 
     public function testMaps()
