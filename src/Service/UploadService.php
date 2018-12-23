@@ -16,9 +16,11 @@ use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\MapFile;
 use App\Entity\Traits\FileTrait;
+use App\Model\UploadFileCheckResult;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\UploadServiceInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class UploadService implements UploadServiceInterface
@@ -34,15 +36,22 @@ class UploadService implements UploadServiceInterface
     private $imageService;
 
     /**
+     * @var RegistryInterface
+     */
+    private $doctrine;
+
+    /**
      * UploadService constructor.
      *
      * @param PathServiceInterface $pathService
      * @param ImageServiceInterface $imageService
+     * @param RegistryInterface $registry
      */
-    public function __construct(PathServiceInterface $pathService, ImageServiceInterface $imageService)
+    public function __construct(PathServiceInterface $pathService, ImageServiceInterface $imageService, RegistryInterface $registry)
     {
         $this->pathService = $pathService;
         $this->imageService = $imageService;
+        $this->doctrine = $registry;
     }
 
     /**
@@ -83,11 +92,11 @@ class UploadService implements UploadServiceInterface
      * @param UploadedFile $file
      * @param ConstructionSite $constructionSite
      *
-     * @throws \Exception
-     *
+     * @param string $targetFileName
      * @return MapFile|null
+     * @throws \Exception
      */
-    public function uploadMapFile(UploadedFile $file, ConstructionSite $constructionSite)
+    public function uploadMapFile(UploadedFile $file, ConstructionSite $constructionSite, string $targetFileName)
     {
         //create folder
         $targetFolder = $this->pathService->getFolderForMapFile($constructionSite);
@@ -95,15 +104,8 @@ class UploadService implements UploadServiceInterface
             mkdir($targetFolder, 0777, true);
         }
 
-        //get default file name
-        $targetFileName = $file->getClientOriginalName();
-        if ($targetFileName === null) {
-            $targetFileName = (new \DateTime())->format('Y-m-d H-i-s') . '.pdf';
-        }
-
-        // ensure nothing is overriden
-        $targetFileName = $this->getCollisionProtectedFileName($targetFolder, $targetFileName);
-        if ($targetFileName === null) {
+        $targetPath = $targetFolder . DIRECTORY_SEPARATOR . $targetFileName;
+        if (file_exists($targetPath)) {
             return null;
         }
 
@@ -160,5 +162,42 @@ class UploadService implements UploadServiceInterface
         }
 
         return $targetFileName;
+    }
+
+    /**
+     * @param string $hash
+     * @param string $filename
+     *
+     * @param ConstructionSite $constructionSite
+     * @return UploadFileCheckResult
+     */
+    public function checkUploadMapFile(string $hash, string $filename, ConstructionSite $constructionSite)
+    {
+        $result = new UploadFileCheckResult();
+
+        //check if already exists
+        $existingMapFiles = $this->doctrine->getRepository(MapFile::class)->findBy(["hash" => $hash, "constructionSite" => $constructionSite->getId()]);
+
+        $sameHashMap
+            foreach ($existingMapFiles as $existingMapFile) {
+
+            }
+
+        // ensure nothing is overriden
+        $targetPath = $targetFolder . DIRECTORY_SEPARATOR . $targetFileName;
+        if (file_exists($targetPath)) {
+            $duplicateHash = hash_file("SHA256", $targetPath);
+
+            if ($duplicateHash === $uploadHash) {
+                return UploadServiceInterface::FILE_ALREADY_EXISTS;
+            }
+
+
+        }
+        $targetFileName = $this->getCollisionProtectedFileName($targetFolder, $targetFileName);
+        $file->getRealPath()
+        if ($targetFileName === null) {
+            return null;
+        }
     }
 }
