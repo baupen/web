@@ -12,11 +12,13 @@
 namespace App\Tests\Controller\Api;
 
 use App\Api\Entity\Edit\CheckMapFile;
+use App\Api\Entity\Edit\UpdateMap;
 use App\Api\Entity\Edit\UpdateMapFile;
 use App\Api\Entity\Edit\UploadMapFile;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\Edit\CheckMapFileRequest;
 use App\Api\Request\Edit\UpdateMapFileRequest;
+use App\Api\Request\Edit\UpdateMapRequest;
 use App\Api\Request\Edit\UploadMapFileRequest;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\ApiController;
@@ -152,6 +154,135 @@ class EditControllerTest extends ApiController
 
         // cleanup file
         unlink($copyPath2);
+    }
+
+    public function testMapAdd()
+    {
+        $addUrl = '/api/edit/map';
+        $availableMaps = $this->countAvailableMaps();
+        $constructionSite = $this->getSomeConstructionSite();
+        $parentMap = $constructionSite->getMaps()[0];
+
+        // do request
+        $updateMap = new UpdateMap();
+        $updateMap->setName('new map');
+        $updateMap->setIsAutomaticEditEnabled(false);
+        $updateMap->setParentId($parentMap->getId());
+        $updateMapRequest = new UpdateMapRequest();
+        $updateMapRequest->setMap($updateMap);
+        $updateMapRequest->setConstructionSiteId($constructionSite->getId());
+        $response = $this->authenticatedPostRequest($addUrl, $updateMapRequest);
+        $mapData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        // ensure map id has been set properly
+        $this->assertNotNull($mapData->data);
+        $this->assertNotNull($mapData->data->map);
+        $map = $mapData->data->map;
+        $this->assertNotNull($map->id);
+
+        $this->assertSame($availableMaps + 1, $this->countAvailableMaps());
+        $this->assertSame($updateMap->getName(), $map->name);
+        $this->assertSame($updateMap->getParentId(), $map->parentId);
+        $this->assertSame($updateMap->getFileId(), $map->fileId);
+        $this->assertSame($updateMap->getIsAutomaticEditEnabled(), $map->isAutomaticEditEnabled);
+    }
+
+    public function testMapUpdate()
+    {
+        $editUrl = '/api/edit/map';
+        $availableMaps = $this->countAvailableMaps();
+        $constructionSite = $this->getSomeConstructionSite();
+        $someMap = $constructionSite->getMaps()[0];
+
+        // do request
+        $updateMap = new UpdateMap();
+        $updateMap->setName($someMap->getName() . ' new');
+        $updateMap->setIsAutomaticEditEnabled(true);
+        $updateMap->setParentId(null);
+        $updateMap->setFileId(null);
+        $updateMapRequest = new UpdateMapRequest();
+        $updateMapRequest->setMap($updateMap);
+        $updateMapRequest->setConstructionSiteId($constructionSite->getId());
+        $response = $this->authenticatedPutRequest($editUrl . '/' . $someMap->getId(), $updateMapRequest);
+        $mapData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        // ensure map id has been set properly
+        $this->assertNotNull($mapData->data);
+        $this->assertNotNull($mapData->data->map);
+        $map = $mapData->data->map;
+        $this->assertNotNull($map->id);
+
+        $this->assertSame($availableMaps, $this->countAvailableMaps());
+        $this->assertSame($updateMap->getName(), $map->name);
+        $this->assertSame($updateMap->getParentId(), $map->parentId);
+        $this->assertSame($updateMap->getFileId(), $map->fileId);
+        $this->assertSame($updateMap->getIsAutomaticEditEnabled(), $map->isAutomaticEditEnabled);
+    }
+
+    public function testMapRemove()
+    {
+        $deleteUrl = '/api/edit/map';
+        $availableMaps = $this->countAvailableMaps();
+        $constructionSite = $this->getSomeConstructionSite();
+        $someMap = $constructionSite->getMaps()[0];
+
+        // add empty map to remove
+        $updateMap = new UpdateMap();
+        $updateMap->setName($someMap->getName() . ' new');
+        $updateMap->setIsAutomaticEditEnabled(true);
+        $updateMapRequest = new UpdateMapRequest();
+        $updateMapRequest->setMap($updateMap);
+        $updateMapRequest->setConstructionSiteId($constructionSite->getId());
+        $response = $this->authenticatedPostRequest($deleteUrl, $updateMapRequest);
+        $mapData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        // ensure map has really been added
+        $this->assertSame($availableMaps + 1, $this->countAvailableMaps());
+        $mapId = $mapData->data->map->id;
+
+        $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $mapId, $updateMapRequest);
+        $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertSame($availableMaps, $this->countAvailableMaps());
+
+        $testsExecuted = [false, false];
+        foreach ($constructionSite->getMaps() as $map) {
+            if ($testsExecuted[0] && $testsExecuted[1]) {
+                break;
+            }
+
+            //test that map with issues can not be removed
+            if ($testsExecuted[1] && $map->getIssues()->count() > 0) {
+                $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $map->getId(), $updateMapRequest);
+                $this->checkResponse($response, ApiStatus::FAIL, 'map can not be removed as there are issues assigned to it');
+
+                $testsExecuted[1] = true;
+            }
+
+            //test that map with children can not be removed
+            if (!$testsExecuted[0] && $map->getChildren()->count() > 0 && $map->getIssues()->count() === 0) {
+                $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $map->getId(), $updateMapRequest);
+                $this->checkResponse($response, ApiStatus::FAIL);
+
+                $testsExecuted[0] = true;
+            }
+        }
+
+        //fail if not both safety checks could be executed with the testset
+        if (!$testsExecuted[0] || !$testsExecuted[1]) {
+            $this->fail('test set does not cover all needed cases');
+        }
+    }
+
+    private function countAvailableMaps()
+    {
+        $constructionSite = $this->getSomeConstructionSite();
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+
+        $response = $this->authenticatedPostRequest('/api/edit/maps', $constructionSiteRequest);
+
+        return \count($this->checkResponse($response, ApiStatus::SUCCESS)->data->maps);
     }
 
     public function testMaps()

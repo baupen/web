@@ -47,7 +47,10 @@ class EditController extends ApiController
     const INCORRECT_NUMBER_OF_FILES = 'incorrect number of files';
     const MAP_FILE_UPLOAD_FAILED = 'map file could not be uploaded';
     const MAP_NOT_FOUND = 'map not found';
+    const MAP_FILE_ASSIGNED_TO_DIFFERENT_MAP = 'this map file is already assigned to a different map';
     const MAP_FILE_NOT_FOUND = 'file not found';
+    const MAP_HAS_ISSUES_ASSIGNED = 'map can not be removed as there are issues assigned to it';
+    const MAP_HAS_CHILDREN_ASSIGNED = 'map can not be removed as there are children assigned to it';
 
     /**
      * gives the appropriate error code the specified error message.
@@ -331,9 +334,15 @@ class EditController extends ApiController
             throw new NotFoundHttpException();
         }
 
-        if ($map->getIssues()->count() === 0) {
-            $this->fastRemove($map);
+        if ($map->getIssues()->count() !== 0) {
+            return $this->fail(self::MAP_HAS_ISSUES_ASSIGNED);
         }
+
+        if ($map->getChildren()->count() !== 0) {
+            return $this->fail(self::MAP_HAS_CHILDREN_ASSIGNED);
+        }
+
+        $this->fastRemove($map);
 
         //create response
         return $this->success(new EmptyData());
@@ -359,7 +368,15 @@ class EditController extends ApiController
                 return false;
             }
 
+            if ($file->getMap() !== $entity) {
+                $errorResponse = $this->fail(self::MAP_FILE_ASSIGNED_TO_DIFFERENT_MAP);
+
+                return false;
+            }
+
             $entity->setFile($file);
+        } else {
+            $entity->setFile(null);
         }
 
         if ($updateMap->getParentId() !== null) {
@@ -371,6 +388,8 @@ class EditController extends ApiController
             }
 
             $entity->setParent($parentMap);
+        } else {
+            $entity->setParent(null);
         }
 
         return true;

@@ -63,6 +63,18 @@ class ApiController extends AbstractApiController
 
     /**
      * @param string $url
+     * @param mixed $payload
+     * @param array $files
+     *
+     * @return Response
+     */
+    protected function authenticatedDeleteRequest($url, $payload, $files = [])
+    {
+        return $this->authenticatedRequest($url, 'DELETE', false, $payload, $files);
+    }
+
+    /**
+     * @param string $url
      *
      * @return Response
      */
