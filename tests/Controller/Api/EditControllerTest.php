@@ -12,9 +12,11 @@
 namespace App\Tests\Controller\Api;
 
 use App\Api\Entity\Edit\CheckMapFile;
+use App\Api\Entity\Edit\UpdateMapFile;
 use App\Api\Entity\Edit\UploadMapFile;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\Edit\CheckMapFileRequest;
+use App\Api\Request\Edit\UpdateMapFileRequest;
 use App\Api\Request\Edit\UploadMapFileRequest;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\ApiController;
@@ -44,6 +46,30 @@ class EditControllerTest extends ApiController
             $this->assertObjectHasAttribute('mapId', $mapFile);
             $this->assertObjectHasAttribute('issueCount', $mapFile);
         }
+    }
+
+    public function testMapFileUpdate()
+    {
+        $editUrl = '/api/edit/map_file';
+
+        $constructionSite = $this->getSomeConstructionSite();
+        $mapFile = $constructionSite->getMaps()[0]->getFile();
+        $newMap = $constructionSite->getMaps()[1];
+
+        // do request
+        $updateMapFileRequest = new UpdateMapFileRequest();
+        $updateMapFile = new UpdateMapFile();
+        $updateMapFile->setMapId($newMap->getId());
+        $updateMapFileRequest->setConstructionSiteId($constructionSite->getId());
+        $updateMapFileRequest->setMapFile($updateMapFile);
+
+        $response = $this->authenticatedPutRequest($editUrl . '/' . $mapFile->getId(), $updateMapFileRequest);
+        $mapFileData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        // ensure map id has been set properly
+        $this->assertNotNull($mapFileData->data);
+        $this->assertNotNull($mapFileData->data->mapFile);
+        $this->assertTrue($mapFileData->data->mapFile->mapId === $newMap->getId());
     }
 
     public function testMapFileUpload()

@@ -204,7 +204,7 @@ class EditController extends ApiController
     }
 
     /**
-     * @Route("/map_file/{mapFile}", name="api_edit_map_file", methods={"PUT"})
+     * @Route("/map_file/{mapFile}", name="api_edit_map_file_put", methods={"PUT"})
      *
      * @param Request $request
      * @param MapFile $mapFile
@@ -238,7 +238,7 @@ class EditController extends ApiController
     }
 
     /**
-     * @Route("/map", name="api_edit_map", methods={"POST"})
+     * @Route("/map", name="api_edit_map_post", methods={"POST"})
      *
      * @param Request $request
      * @param MapTransformer $mapTransformer
@@ -273,7 +273,7 @@ class EditController extends ApiController
     }
 
     /**
-     * @Route("/map/{map}", name="api_edit_map", methods={"PUT"})
+     * @Route("/map/{map}", name="api_edit_map_put", methods={"PUT"})
      *
      * @param Request $request
      * @param Map $map
@@ -311,7 +311,7 @@ class EditController extends ApiController
     }
 
     /**
-     * @Route("/map/{map}", name="api_edit_map", methods={"DELETE"})
+     * @Route("/map/{map}", name="api_edit_map_delete", methods={"DELETE"})
      *
      * @param Request $request
      * @param Map $map
