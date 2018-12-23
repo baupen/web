@@ -11,11 +11,11 @@
                   :map-containers="mapContainers"
                   :map-file-containers="mapFileContainers"
                   @add-map="addMap"
-                  @save-map="saveMap(arguments)"
-                  @remove-map="removeMap(arguments)"
-                  @map-file-dropped="mapFileDropped(arguments)"
-                  @upload-map-file="uploadMapFile(arguments)"
-                  @save-map-file="saveMapFile(arguments)"
+                  @save-map="saveMap(arguments[0])"
+                  @remove-map="removeMap(arguments[0])"
+                  @map-file-dropped="mapFileDropped(arguments[0])"
+                  @upload-map-file="uploadMapFile(arguments[0])"
+                  @save-map-file="saveMapFile(arguments[0])"
         />
     </div>
 </template>
@@ -25,7 +25,7 @@
     import moment from "moment";
     import {AtomSpinner} from 'epic-spinners'
     import notifications from '../mixins/Notifications'
-    import uuid4 from "uuid/v4"
+    import uuid from "uuid/v4"
     import MapView from "./components/MapView";
     import CryptoJS from 'crypto-js'
 
@@ -54,7 +54,7 @@
                 this.mapContainers.push({
                     pendingChange: 'add',
                     map: {
-                        id: uuid4(),
+                        id: uuid(),
                         name: this.$t("edit_maps.default_map_name"),
                         parentId: null,
                         fileId: null,
@@ -79,11 +79,11 @@
             },
             mapFileDropped: function (file) {
                 let mapFile = {
-                    filename: file.fileName,
+                    filename: file.name,
                     issueCount: 0,
                     createdAt: new Date().toISOString(),
                     mapId: null,
-                    id: uuidV4()
+                    id: uuid()
                 };
 
                 const newMapFileContainer = {
@@ -101,19 +101,19 @@
             performUploadMapFileCheck: function (mapFileContainer) {
                 let reader = new FileReader();
 
-                reader.onload = function () {
-                    let file = this.result;
-                    let fileWordArray = CryptoJS.lib.WordArray.create(file);
-                    let hash = CryptoJS.SHA256(fileWordArray).toString();
-                    alert("Calculated SHA256:" + hash.toString());
+                const payload = {
+                    constructionSiteId: this.constructionSiteId,
+                    mapFile: {
+                        filename: mapFileContainer.mapFile.filename
+                    }
+                };
 
-                    axios.post("/api/edit/map_file/check", {
-                        constructionSiteId: this.constructionSiteId,
-                        mapFile: {
-                            hash: hash,
-                            filename: file.fileName
-                        }
-                    }).then((response) => {
+                reader.onload = function () {
+                    let fileResult = this.result;
+                    let fileWordArray = CryptoJS.lib.WordArray.create(fileResult);
+                    payload.mapFile.hash = CryptoJS.SHA256(fileWordArray).toString();
+
+                    axios.post("/api/edit/map_file/check", payload).then((response) => {
                         const uploadCheck = response.data.uploadFileCheck;
                         mapFileContainer.uploadCheck = uploadCheck;
 

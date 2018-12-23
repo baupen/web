@@ -20,7 +20,7 @@
             </thead>
             <tbody>
             <MapFileTableRow v-for="mapFileContainer in orderedMapFileContainers"
-                             :key="mapFileContainer.id"
+                             :key="mapFileContainer.mapFile.id"
                              :map-file-container="mapFileContainer"
                              :ordered-map-containers="orderedMapContainers"
                              @start-upload="$emit('start-upload', mapFileContainer)"
@@ -77,9 +77,10 @@
                 e.stopPropagation();
 
                 let droppedFiles = e.dataTransfer.files;
-                droppedFiles.forEach(df => {
-                    this.$emit('file-dropped', df);
-                });
+                for (let i = 0; i < droppedFiles.length; i++) {
+                    this.$emit('file-dropped', droppedFiles[i]);
+                }
+
                 this.dragActive = false;
             },
         },

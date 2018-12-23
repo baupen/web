@@ -13,9 +13,9 @@
                 v-if="mapFileViewActive"
                 :map-file-containers="mapFileContainers"
                 :ordered-map-containers="orderedMapContainers"
-                @file-dropped="$emit('map-file-dropped', arguments)"
-                @start-upload="$emit('map-file-upload', arguments)"
-                @save="$emit('map-file-save', arguments)"
+                @file-dropped="$emit('map-file-dropped', arguments[0])"
+                @start-upload="$emit('map-file-upload', arguments[0])"
+                @save="$emit('map-file-save', arguments[0])"
         />
         <table v-if="mapContainers.length > 0" class="table table-hover table-condensed">
             <thead>
@@ -45,7 +45,6 @@
 <script>
     import moment from "moment";
     import MapTableRow from "./MapTableRow";
-    import uuid4 from "uuid/v4"
     import MapFileView from "./MapFileView";
 
     const lang = document.documentElement.lang.substr(0, 2);
