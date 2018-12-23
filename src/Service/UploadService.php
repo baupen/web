@@ -16,7 +16,7 @@ use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\MapFile;
 use App\Entity\Traits\FileTrait;
-use App\Model\UploadFileCheckResult;
+use App\Model\UploadFileCheck;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\UploadServiceInterface;
@@ -91,10 +91,11 @@ class UploadService implements UploadServiceInterface
     /**
      * @param UploadedFile $file
      * @param ConstructionSite $constructionSite
-     *
      * @param string $targetFileName
-     * @return MapFile|null
+     *
      * @throws \Exception
+     *
+     * @return MapFile|null
      */
     public function uploadMapFile(UploadedFile $file, ConstructionSite $constructionSite, string $targetFileName)
     {
@@ -104,7 +105,7 @@ class UploadService implements UploadServiceInterface
             mkdir($targetFolder, 0777, true);
         }
 
-        $targetPath = $targetFolder . DIRECTORY_SEPARATOR . $targetFileName;
+        $targetPath = $targetFolder . \DIRECTORY_SEPARATOR . $targetFileName;
         if (file_exists($targetPath)) {
             return null;
         }
@@ -136,6 +137,8 @@ class UploadService implements UploadServiceInterface
      * @param string $targetFolder
      * @param string $targetFileName
      *
+     * @throws \Exception
+     *
      * @return null|string
      */
     private function getCollisionProtectedFileName(string $targetFolder, string $targetFileName)
@@ -145,18 +148,11 @@ class UploadService implements UploadServiceInterface
             $extension = pathinfo($targetPath, PATHINFO_EXTENSION);
             $filename = pathinfo($targetPath, PATHINFO_FILENAME);
 
-            // try at most 100 times
-            $successful = false;
-            for ($i = 1; $i < 100; ++$i) {
-                $targetFileName = $filename . $i . '.' . $extension;
-                $targetPath = $targetFolder . \DIRECTORY_SEPARATOR . $targetFileName;
-                if (!is_file($targetPath)) {
-                    $successful = true;
-                    break;
-                }
-            }
+            $now = new \DateTime();
+            $targetFileName = $filename . '_duplicate_' . $now->format('yyyy-mm-ddTHH:ii') . '.' . $extension;
 
-            if (!$successful) {
+            $targetPath = $targetFolder . \DIRECTORY_SEPARATOR . $targetFileName;
+            if (file_exists($targetPath)) {
                 return null;
             }
         }
@@ -167,37 +163,40 @@ class UploadService implements UploadServiceInterface
     /**
      * @param string $hash
      * @param string $filename
-     *
      * @param ConstructionSite $constructionSite
-     * @return UploadFileCheckResult
+     *
+     * @throws \Exception
+     *
+     * @return UploadFileCheck
      */
     public function checkUploadMapFile(string $hash, string $filename, ConstructionSite $constructionSite)
     {
-        $result = new UploadFileCheckResult();
+        $result = new UploadFileCheck();
+        $result->setUploadPossible(true);
+        $result->setDerivedFileName($filename);
 
         //check if already exists
-        $existingMapFiles = $this->doctrine->getRepository(MapFile::class)->findBy(["hash" => $hash, "constructionSite" => $constructionSite->getId()]);
+        $sameHashMapFiles = $this->doctrine->getRepository(MapFile::class)->findBy(['hash' => $hash, 'constructionSite' => $constructionSite->getId()]);
 
-        $sameHashMap
-            foreach ($existingMapFiles as $existingMapFile) {
-
-            }
-
-        // ensure nothing is overriden
-        $targetPath = $targetFolder . DIRECTORY_SEPARATOR . $targetFileName;
-        if (file_exists($targetPath)) {
-            $duplicateHash = hash_file("SHA256", $targetPath);
-
-            if ($duplicateHash === $uploadHash) {
-                return UploadServiceInterface::FILE_ALREADY_EXISTS;
-            }
-
-
+        $sameHash = [];
+        foreach ($sameHashMapFiles as $sameHashMapFile) {
+            $sameHash[] = $sameHashMapFile->getId();
         }
-        $targetFileName = $this->getCollisionProtectedFileName($targetFolder, $targetFileName);
-        $file->getRealPath()
-        if ($targetFileName === null) {
-            return null;
+        $result->setSameHashConflicts($sameHash);
+
+        $sameFilenameMapFile = $this->doctrine->getRepository(MapFile::class)->findOneBy(['filename' => $filename, 'constructionSite' => $constructionSite->getId()]);
+        if ($sameFilenameMapFile !== null) {
+            $result->setFileNameConflict($sameFilenameMapFile->getId());
+
+            $targetFolder = $this->pathService->getFolderForMapFile($constructionSite);
+            $targetFileName = $this->getCollisionProtectedFileName($targetFolder, $filename);
+            if ($targetFileName !== null) {
+                $result->setDerivedFileName($targetFileName);
+            } else {
+                $result->setUploadPossible(false);
+            }
         }
+
+        return $result;
     }
 }

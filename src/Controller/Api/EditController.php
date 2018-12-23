@@ -13,8 +13,12 @@ namespace App\Controller\Api;
 
 use App\Api\Entity\Edit\UpdateMap;
 use App\Api\Request\ConstructionSiteRequest;
+use App\Api\Request\Edit\CheckMapFileRequest;
+use App\Api\Request\Edit\UpdateMapFileRequest;
 use App\Api\Request\Edit\UpdateMapRequest;
+use App\Api\Request\Edit\UploadMapFileRequest;
 use App\Api\Response\Data\CraftsmenData;
+use App\Api\Response\Data\Edit\UploadFileCheckData;
 use App\Api\Response\Data\EmptyData;
 use App\Api\Response\Data\MapData;
 use App\Api\Response\Data\MapFileData;
@@ -130,7 +134,35 @@ class EditController extends ApiController
     }
 
     /**
-     * @Route("/map_file", name="api_edit_map_file", methods={"POST"})
+     * @Route("/map_file/check", name="api_edit_map_file_check", methods={"POST"})
+     *
+     * @param Request $request
+     * @param UploadServiceInterface $uploadService
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function mapFileCheckPostAction(Request $request, UploadServiceInterface $uploadService)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var CheckMapFileRequest $parsedRequest */
+        if (!$this->parseConstructionSiteRequest($request, CheckMapFileRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        $mapFile = $parsedRequest->getMapFile();
+        $checkResult = $uploadService->checkUploadMapFile($mapFile->getHash(), $mapFile->getFilename(), $constructionSite);
+
+        //create response
+        $data = new UploadFileCheckData();
+        $data->setUploadFileCheck($checkResult);
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/map_file", name="api_edit_map_file_post", methods={"POST"})
      *
      * @param Request $request
      * @param MapFileTransformer $mapFileTransformer
@@ -140,10 +172,11 @@ class EditController extends ApiController
      *
      * @return Response
      */
-    public function mapFilePostdAction(Request $request, MapFileTransformer $mapFileTransformer, UploadServiceInterface $uploadService)
+    public function mapFilePostAction(Request $request, MapFileTransformer $mapFileTransformer, UploadServiceInterface $uploadService)
     {
         /** @var ConstructionSite $constructionSite */
-        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+        /** @var UploadMapFileRequest $parsedRequest */
+        if (!$this->parseConstructionSiteRequest($request, UploadMapFileRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
             return $errorResponse;
         }
 
@@ -156,11 +189,45 @@ class EditController extends ApiController
         $file = $request->files->getIterator()->current();
 
         //save file
-        $mapFile = $uploadService->uploadMapFile($file, $constructionSite);
+        $mapFile = $uploadService->uploadMapFile($file, $constructionSite, $parsedRequest->getMapFile()->getFilename());
         if ($mapFile === null) {
             return $this->fail(self::MAP_FILE_UPLOAD_FAILED);
         }
         $mapFile->setConstructionSite($constructionSite);
+        $this->fastSave($mapFile);
+
+        //create response
+        $data = new MapFileData();
+        $data->setMapFile($mapFileTransformer->toApi($mapFile));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/map_file/{mapFile}", name="api_edit_map_file", methods={"PUT"})
+     *
+     * @param Request $request
+     * @param MapFile $mapFile
+     * @param MapFileTransformer $mapFileTransformer
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function mapFilePutAction(Request $request, MapFile $mapFile, MapFileTransformer $mapFileTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var UpdateMapFileRequest $parsedRequest */
+        if (!$this->parseConstructionSiteRequest($request, UpdateMapFileRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        $map = $this->getDoctrine()->getRepository(Map::class)->findOneBy(['constructionSite' => $constructionSite->getId(), 'id' => $parsedRequest->getMapFile()->getMapId()]);
+        if ($map === null) {
+            return $this->fail(self::MAP_NOT_FOUND);
+        }
+
+        $mapFile->setMap($map);
         $this->fastSave($mapFile);
 
         //create response
@@ -180,7 +247,7 @@ class EditController extends ApiController
      *
      * @return Response
      */
-    public function mapFPostAction(Request $request, MapTransformer $mapTransformer)
+    public function mapPostAction(Request $request, MapTransformer $mapTransformer)
     {
         /** @var ConstructionSite $constructionSite */
         /** @var UpdateMapRequest $parsedRequest */
@@ -216,7 +283,7 @@ class EditController extends ApiController
      *
      * @return Response
      */
-    public function mapFPutAction(Request $request, Map $map, MapTransformer $mapTransformer)
+    public function mapPutAction(Request $request, Map $map, MapTransformer $mapTransformer)
     {
         /** @var ConstructionSite $constructionSite */
         /** @var UpdateMapRequest $parsedRequest */
@@ -248,13 +315,12 @@ class EditController extends ApiController
      *
      * @param Request $request
      * @param Map $map
-     * @param MapTransformer $mapTransformer
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function mapFDeleteAction(Request $request, Map $map, MapTransformer $mapTransformer)
+    public function mapDeleteAction(Request $request, Map $map)
     {
         /** @var ConstructionSite $constructionSite */
         if (!$this->parseConstructionSiteRequest($request, UpdateMapRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {

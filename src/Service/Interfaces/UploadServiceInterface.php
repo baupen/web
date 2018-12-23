@@ -15,7 +15,7 @@ use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\MapFile;
-use App\Model\UploadFileCheckResult;
+use App\Model\UploadFileCheck;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 interface UploadServiceInterface
@@ -34,7 +34,7 @@ interface UploadServiceInterface
      * @param string $filename
      * @param ConstructionSite $constructionSite
      *
-     * @return UploadFileCheckResult
+     * @return UploadFileCheck
      */
     public function checkUploadMapFile(string $hash, string $filename, ConstructionSite $constructionSite);
 

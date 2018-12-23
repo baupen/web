@@ -11,8 +11,13 @@
 
 namespace App\Model;
 
-class UploadFileCheckResult
+class UploadFileCheck
 {
+    /**
+     * @var bool
+     */
+    private $uploadPossible;
+
     /**
      * @var string[]
      */
@@ -24,7 +29,7 @@ class UploadFileCheckResult
     private $fileNameConflict;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $derivedFileName;
 
@@ -61,18 +66,34 @@ class UploadFileCheckResult
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDerivedFileName(): string
+    public function getDerivedFileName(): ?string
     {
         return $this->derivedFileName;
     }
 
     /**
-     * @param string $derivedFileName
+     * @param string|null $derivedFileName
      */
-    public function setDerivedFileName(string $derivedFileName): void
+    public function setDerivedFileName(?string $derivedFileName): void
     {
         $this->derivedFileName = $derivedFileName;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUploadPossible(): bool
+    {
+        return $this->uploadPossible;
+    }
+
+    /**
+     * @param bool $uploadPossible
+     */
+    public function setUploadPossible(bool $uploadPossible): void
+    {
+        $this->uploadPossible = $uploadPossible;
     }
 }
