@@ -4,7 +4,7 @@ export default {
       help: 'Ändern Sie die Zuordnung oder die Bauplanversion.',
       default_map_name: 'Neuer Bauplan',
       actions: {
-        add_map: 'Bauplan hinzufigen',
+        add_map: 'Bauplan hinzufügen',
         add_map_files: 'Bauplanversionen hinzufügen',
         hide_map_files: 'Bauplanversionen verstecken',
         save_changes: '{pendingChangesCount} Änderungen speichern'
@@ -23,7 +23,17 @@ export default {
       }
     },
     edit_craftsmen: {
-      help: 'Aktualisieren Sie die Daten der Handwerker.'
+      help: 'Aktualisieren Sie die Daten der Handwerker.',
+      actions: {
+        add_craftsman: 'Handwerker hinzufügen',
+        save_changes: '{pendingChangesCount} Änderungen speichern'
+      },
+      defaults: {
+        contact_name: "",
+        email: "",
+        company: "",
+        trade: ""
+      }
     },
     set_automatically: 'automatisch festlegen',
     issue_count: 'Anzahl Pendenzen'

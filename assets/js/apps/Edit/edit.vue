@@ -24,6 +24,22 @@
                 @click="startProcessMapChanges">
             {{$t('edit_maps.actions.save_changes', {pendingChangesCount: pendingMapChanges}) }}
         </button>
+        <div class="vertical-spacer-big"></div>
+        <h2>{{$t("craftsman.plural")}}</h2>
+        <p class="text-secondary">{{$t("edit_craftsmen.help")}}</p>
+        <atom-spinner v-if="isCraftsmenLoading"
+                      :animation-duration="1000"
+                      :size="60"
+                      :color="'#ff1d5e'"
+        />
+        <template v-else>
+            <craftsman-view
+                    :craftsman-containers="craftsmanContainers"
+                    @craftsman-add="addCraftsman(arguments[0])"
+                    @craftsman-save="saveCraftsman(arguments[0])"
+                    @craftsman-remove="removeCraftsman(arguments[0])"
+            />
+        </template>
     </div>
 </template>
 
@@ -35,6 +51,7 @@
     import uuid from "uuid/v4"
     import MapView from "./components/MapView";
     import CryptoJS from 'crypto-js'
+    import CraftsmanView from "./components/CraftsmanView";
 
     const lang = document.documentElement.lang.substr(0, 2);
     moment.locale(lang);
@@ -54,6 +71,7 @@
         },
         mixins: [notifications],
         components: {
+            CraftsmanView,
             MapView,
             AtomSpinner
         },
@@ -89,6 +107,38 @@
                 } else {
                     //directly remove
                     this.mapContainers = this.mapContainers.filter(mc => mc !== mapContainer);
+                }
+            },
+            addCraftsman: function (afterAddAction) {
+                const newCraftsmanContainer = {
+                    pendingChange: 'add',
+                    craftsman: {
+                        id: uuid(),
+                        contactName: this.$t("edit_craftsmen.defaults.contact_name"),
+                        email: this.$t("edit_craftsmen.defaults.email"),
+                        company: this.$t("edit_craftsmen.defaults.company"),
+                        trade: this.$t("edit_craftsmen.defaults.trade"),
+                        issueCount: 0
+                    }
+                };
+
+                this.craftsmanContainers.push(newCraftsmanContainer);
+
+                this.$nextTick(() => {
+                    afterAddAction(newCraftsmanContainer);
+                });
+            },
+            saveCraftsman: function (craftsmanContainer) {
+                if (craftsmanContainer.pendingChange !== 'add') {
+                    craftsmanContainer.pendingChange = 'update';
+                }
+            },
+            removeCraftsman: function (craftsmanContainer) {
+                if (craftsmanContainer.pendingChange !== 'add') {
+                    craftsmanContainer.pendingChange = 'remove';
+                } else {
+                    //directly remove
+                    this.craftsmanContainers = this.craftsmanContainers.filter(mc => mc !== craftsmanContainer);
                 }
             },
             mapFileDropped: function (file) {
