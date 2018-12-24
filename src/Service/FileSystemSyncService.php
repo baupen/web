@@ -665,7 +665,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
         }
 
         foreach ($mapFiles as $mapFile) {
-            if ($mapFile->getMap() !== null || $mapFile->getId() === null) {
+            if ($mapFile->getMap() !== null || $mapFile->getId() !== null) {
                 continue;
             }
 

@@ -100,7 +100,12 @@
                     this.editCraftsmanContainer = newCraftsmanIndex < this.orderedCraftsmanContainers.length ? this.orderedCraftsmanContainers[newCraftsmanIndex] : null;
                 }
 
-                this.editField = this.editableFields[newEditFieldIndex];
+                if (this.editCraftsmanContainer !== null) {
+                    this.$emit('craftsman-save', this.editCraftsmanContainer);
+                    this.editField = this.editableFields[newEditFieldIndex];
+                } else {
+                    this.editField = null;
+                }
             }
         },
         computed: {
