@@ -51,8 +51,8 @@
                 <template v-if="importActions.length === 0">
                     <p class="alert alert-success">
                         {{$t("import_craftsmen.no_more_changes_detected")}}
-                        <button class="btn btn-link" @click="abortImport">
-                            {{$t("import_craftsmen.actions.abort")}}
+                        <button class="btn btn-link" @click="closeImport">
+                            {{$t("import_craftsmen.actions.close")}}
                         </button>
                     </p>
                 </template>
@@ -138,46 +138,7 @@
         data: function () {
             return {
                 locale: lang,
-                excelContent:
-                    'Bauherrschaft\t\tSvilup Surselva AG, c/o MF Consulting\t\tVia Tschuppina 41, Postfach 41\t7165 Brigels\t\t\t\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Generalunternehmung\t\tBaulink AG\t\tTittwiesenstrasse 27\t7000 Chur\t081 258 20 50\t\tchur@baulink.ch\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Projektleitung\t\tBaulink AG\tJasmin Bärtsch\tTittwiesenstrasse 27\t7000 Chur\t081 258 20 79 \t079 411 51 74\tjba@baulink.ch\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Bauleitung\t\tBaulink AG\tMauro Liesch\tTittwiesenstrasse 27\t7000 Chur\t081 410 01 24\t079 321 71 49\tml@baulink.ch\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Behörden\t\t\t\t\t\t\t\t\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Gemeindeingenieur\t\t\t\t\t\t\t\t\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Ordnungsamt\t\t\t\t\t\t\t\t\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Kanton\t\t\t\t\t\t\t\t\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Elektroversorgung\t\tRepower\tRinaldo Nay\t\t\t081 926 26 26 \t\t\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Hochbauzeichner\t\t\t\t\t\t\t\t\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Projektleitung\t291\tBaulink AG\tJasmin Bärtsch\tTittwiesenstrasse 27\t7000 Chur\t081 258 20 79\t079 411 51 74\tjba@baulink.ch\n' +
-                    'Bauleitung\t291\tBaulink AG\tMauro Liesch\tTittwiesenstrasse 27\t7000 Chur\t081 410 01 24\t079 321 71 49\tml@baulink.ch\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Bauingenieur\t292\tCollenberg Inschigniers S.c.r.l\tCiril Collenberg\tCaplutta\t7148 Lumbrein\t081 931 35 31\t079 228 15 75\tciril@collenberg-ing.ch\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Holzingenieur\t292\tDIAG\tUrs Büchi\t\t\t\t\t\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Elektroingenieur\t293\tScherler AG\tNathan Solèr\tWiesentalstrasse 101\t7000 Chur\t081 354 94 62\t\tNathan.Soler@scherler-ing.ch\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'HLKK\t294\tHesaplan AG (Heizung)\tChristoph Bass\tVia Isla 37\t7151 Schulein\t081 920 01 84\t\tchristoph.bass@hesaplan.ch\n' +
-                    '\t\tCaviezel Klima (Lüftung)\tClaudio Caviezel\tVia Calanda 7\t7013 Domat/Ems\t\t078 638 15 35\tinfo@caviezel-klima.ch\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Sanitäringenieur\t295\tHesaplan AG\tChristoph Bass\tVia Isla 37\t7151 Schulein\t081 920 01 84\t\tchristoph.bass@hesaplan.ch\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Baugrubenaushub\t201\tBeer SA\tSigis Schmed\tVia Sursilvana 29\t7172 Rabius\t081 920 20 26\t079 756 30 32\tsschmed@beersa.ch\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Baumeister\t211\tBeer SA\tSerafin Spescha\tVia Sursilvana 29\t7172 Rabius\t081 920 20 26\t079 610 49 68\t\n' +
-                    '\t\t\t\t\t\t\t\t\n' +
-                    'Zimmermann\t214\tCoray Holzbau AG\tMarcel Monn\tVia Isla 11 - 13\t7130 Ilanz\t081 920 02 04\t079 304 85 01\tmarcel@corayholzbau.ch\n',
+                excelContent: null,
                 activeError: null,
                 dataTable: [],
                 dataTableHeader: [],
@@ -195,8 +156,28 @@
                 this.excelContent = null;
                 this.showExcelContent = true;
             },
+            closeImport: function () {
+                this.abortImport();
+                this.$emit("close");
+            },
             applyImport: function () {
+                let writePropertiesFunc = (container, importAction) => {
+                    container.craftsman.email = importAction.email;
+                    container.craftsman.contactName = importAction.changeSet.contactName;
+                    container.craftsman.company = importAction.changeSet.company;
+                    container.craftsman.trade = importAction.changeSet.trade;
+                };
 
+                this.importActions.forEach(ia => {
+                    if (ia.action === 'add') {
+                        this.$emit('craftsman-add', (newContainer) => writePropertiesFunc(newContainer, ia));
+                    } else if (ia.action === 'update') {
+                        writePropertiesFunc(ia.craftsmanContainer, ia);
+                        this.$emit('craftsman-save', ia.craftsmanContainer);
+                    } else if (ia.action === 'remove') {
+                        this.$emit('craftsman-remove', ia.craftsmanContainer);
+                    }
+                });
             },
             parseExcelContent: function () {
                 this.dataTableHeader = [];
@@ -443,7 +424,7 @@
                 // lookup of existing data
                 let emailLookup = {};
                 this.craftsmanContainers.forEach(cc => {
-                    emailLookup[cc.email] = cc;
+                    emailLookup[cc.craftsman.email] = cc;
                 });
 
                 // get indexes of relevant columns
@@ -479,9 +460,9 @@
 
                         if (Object.prototype.hasOwnProperty.call(emailLookup, email)) {
                             const oldObj = emailLookup[email];
-                            if (oldObj.contactName !== newObj.contactName ||
-                                oldObj.company !== newObj.company ||
-                                oldObj.trade !== newObj.trade) {
+                            if (oldObj.craftsman.contactName !== newObj.contactName ||
+                                oldObj.craftsman.company !== newObj.company ||
+                                oldObj.craftsman.trade !== newObj.trade) {
 
                                 // update if any property different
                                 actions.push({
@@ -492,6 +473,7 @@
                                 });
                             }
                         } else {
+
                             // add if email not knows yet
                             actions.push({
                                 action: "add",
@@ -510,7 +492,7 @@
                             const toBeRemovedObject = emailLookup[email];
 
                             // only propose to remove if it is possible
-                            if (toBeRemovedObject.craftsman.issueCount === 0) {
+                            if (toBeRemovedObject.craftsman.issueCount === 0 && toBeRemovedObject.pendingChange !== "remove") {
                                 actions.push({
                                     action: "remove",
                                     email: email,

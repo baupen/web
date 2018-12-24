@@ -2,7 +2,7 @@
     <div id="edit">
         <h2>{{$t("map.plural")}}</h2>
         <p class="text-secondary">{{$t("edit_maps.help")}}</p>
-        <atom-spinner v-if="isMapsLoading || true"
+        <atom-spinner v-if="isMapsLoading"
                       :animation-duration="1000"
                       :size="60"
                       :color="'#ff1d5e'"

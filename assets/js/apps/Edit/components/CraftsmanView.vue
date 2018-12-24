@@ -15,7 +15,14 @@
             </button>
         </p>
 
-        <import-view :craftsman-containers="craftsmanContainers" v-if="importViewActive"/>
+        <import-view
+                v-if="importViewActive"
+                :craftsman-containers="craftsmanContainers"
+                @craftsman-add="$emit('craftsman-add', arguments[0])"
+                @craftsman-update="$emit('craftsman-update', arguments[0])"
+                @craftsman-remove="$emit('craftsman-remove', arguments[0])"
+                @close="importViewActive = false"
+        />
         <table v-if="orderedCraftsmanContainers.length > 0" class="table table-hover table-condensed">
             <thead>
             <tr>
@@ -76,7 +83,7 @@
                 editCraftsmanContainer: null,
                 editField: null,
                 editableFields: ['email', 'contactName', 'company', 'trade'],
-                importViewActive: true
+                importViewActive: false
             }
         },
         components: {

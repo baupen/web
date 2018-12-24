@@ -61,7 +61,8 @@ export default {
       },
       actions: {
         apply_import: "Ausführen",
-        abort: "Abbrechen"
+        abort: "Abbrechen",
+        close: 'Schliessen'
       }
     },
     set_automatically: 'automatisch festlegen',
