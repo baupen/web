@@ -330,7 +330,7 @@ class EditController extends ApiController
     public function mapDeleteAction(Request $request, Map $map)
     {
         /** @var ConstructionSite $constructionSite */
-        if (!$this->parseConstructionSiteRequest($request, UpdateMapRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
             return $errorResponse;
         }
 
@@ -486,7 +486,7 @@ class EditController extends ApiController
     public function craftsmanDeleteAction(Request $request, Craftsman $craftsman)
     {
         /** @var ConstructionSite $constructionSite */
-        if (!$this->parseConstructionSiteRequest($request, UpdateCraftsmanRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
             return $errorResponse;
         }
 

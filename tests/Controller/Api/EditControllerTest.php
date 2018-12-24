@@ -242,7 +242,9 @@ class EditControllerTest extends ApiController
         $this->assertSame($availableMaps + 1, $this->countAvailableMaps());
         $mapId = $mapData->data->map->id;
 
-        $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $mapId, $updateMapRequest);
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+        $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $mapId, $constructionSiteRequest);
         $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertSame($availableMaps, $this->countAvailableMaps());
@@ -375,7 +377,9 @@ class EditControllerTest extends ApiController
         $this->assertSame($availableCraftsmen + 1, $this->countAvailableCraftsmen());
         $craftsmanId = $craftsmanData->data->craftsman->id;
 
-        $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $craftsmanId, $updateCraftsmanRequest);
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+        $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $craftsmanId, $constructionSiteRequest);
         $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertSame($availableCraftsmen, $this->countAvailableCraftsmen());

@@ -37,7 +37,9 @@
         },
         methods: {
             confirmEdit: function () {
-                this.$emit('input', this.currentValue);
+                if (this.value !== this.currentValue) {
+                    this.$emit('input', this.currentValue);
+                }
                 this.$emit('stop-edit');
             },
             abortEdit: function () {
@@ -45,7 +47,9 @@
                 this.$emit('stop-edit');
             },
             tabbed: function (event) {
-                this.$emit('input', this.currentValue);
+                if (this.value !== this.currentValue) {
+                    this.$emit('input', this.currentValue);
+                }
                 this.$emit(event.shiftKey ? 'backward' : 'forward');
             }
         },

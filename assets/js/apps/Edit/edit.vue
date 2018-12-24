@@ -279,10 +279,12 @@
                 } else if (this.pendingMapRemove.length) {
                     const mapContainer = this.pendingMapRemove[0];
                     axios.delete("/api/edit/map/" + mapContainer.map.id, {
-                        constructionSiteId: this.constructionSiteId
+                        data: {
+                            constructionSiteId: this.constructionSiteId
+                        }
                     }).then((response) => {
                         // continue process
-                        mapContainer.pendingChange = null;
+                        this.mapContainers = this.mapContainers.filter(cc => cc !== mapContainer);
                         this.processMapChanges();
                     });
                 } else if (this.pendingMapFileUpdate.length) {
@@ -312,6 +314,7 @@
                         constructionSiteId: this.constructionSiteId,
                         craftsman: craftsmanContainer.craftsman
                     }).then((response) => {
+                        craftsmanContainer.craftsman.id = response.data.craftsman.id;
 
                         // continue process
                         craftsmanContainer.pendingChange = null;
@@ -330,10 +333,12 @@
                 } else if (this.pendingCraftsmanRemove.length) {
                     const craftsmanContainer = this.pendingCraftsmanRemove[0];
                     axios.delete("/api/edit/craftsman/" + craftsmanContainer.craftsman.id, {
-                        constructionSiteId: this.constructionSiteId
+                        data: {
+                            constructionSiteId: this.constructionSiteId
+                        }
                     }).then((response) => {
                         // continue process
-                        craftsmanContainer.pendingChange = null;
+                        this.craftsmanContainers = this.craftsmanContainers.filter(cc => cc !== craftsmanContainer);
                         this.processCraftsmanChanges();
                     });
                 } else {
