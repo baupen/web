@@ -34,6 +34,7 @@
     "crypto-js": "^3.1.9-1",
     "date-fns": "^1.29",
     "deepmerge": "^2",
+    "eol": "^0.9.1",
     "epic-spinners": "^1",
     "moment": "^2.22.2",
     "open-iconic": "^1",

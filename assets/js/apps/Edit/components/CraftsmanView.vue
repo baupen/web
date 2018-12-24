@@ -1,12 +1,21 @@
 <template>
-    <div id="edit">
+    <div>
         <p>
             <button class="btn btn-primary"
                     @click="$emit('craftsman-add', (newContainer) => startEdit(newContainer, 'contactName'))">
                 {{$t("edit_craftsmen.actions.add_craftsman")}}
             </button>
+            <button class="btn btn-outline-primary" @click="importViewActive = !importViewActive">
+                <span v-if="!importViewActive">
+                    {{$t("edit_craftsmen.actions.show_import")}}
+                </span>
+                <span v-else>
+                    {{$t("edit_craftsmen.actions.hide_import")}}
+                </span>
+            </button>
         </p>
 
+        <import-view :craftsman-containers="craftsmanContainers" v-if="importViewActive" />
         <table v-if="orderedCraftsmanContainers.length > 0" class="table table-hover table-condensed">
             <thead>
             <tr>
@@ -49,6 +58,7 @@
     import MapTableRow from "./MapTableRow";
     import MapFileView from "./MapFileView";
     import TextEditField from "./TextEditField";
+    import ImportView from "./ImportView";
 
     const lang = document.documentElement.lang.substr(0, 2);
     moment.locale(lang);
@@ -65,10 +75,12 @@
                 locale: lang,
                 editCraftsmanContainer: null,
                 editField: null,
-                editableFields: ['contactName', 'email', 'company', 'trade']
+                editableFields: ['contactName', 'email', 'company', 'trade'],
+                importViewActive: false
             }
         },
         components: {
+            ImportView,
             TextEditField,
             MapTableRow
         },

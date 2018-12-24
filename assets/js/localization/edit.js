@@ -26,7 +26,9 @@ export default {
       help: 'Aktualisieren Sie die Daten der Handwerker.',
       actions: {
         add_craftsman: 'Handwerker hinzufügen',
-        save_changes: '{pendingChangesCount} Änderungen speichern'
+        save_changes: '{pendingChangesCount} Änderungen speichern',
+        show_import: 'Aus Excel importieren',
+        hide_import: "Import verstecken"
       },
       defaults: {
         contact_name: '',
@@ -34,6 +36,12 @@ export default {
         company: '',
         trade: ''
       }
+    },
+    import_craftsmen: {
+      title: 'Importieren',
+      help: 'Importieren Sie die Handwerker aus einem Excel',
+      copy_paste_from_excel: 'Markieren Sie alle gewünschten Zellen (inklusive Überschriften) im Excel und drücken Sie Ctrl-C zum kopieren. Fügen Sie die Auswahl dann in das Textfeld unten mit Ctrl-V ein.',
+      copy_paste_area_placeholder: 'Hier Excel Felder hineinkopieren'
     },
     set_automatically: 'automatisch festlegen',
     issue_count: 'Anzahl Pendenzen'

@@ -1,5 +1,5 @@
 <template>
-    <div id="edit">
+    <div>
         <p>
             <button class="btn btn-primary" @click="$emit('map-add')">
                 {{$t("edit_maps.actions.add_map")}}
