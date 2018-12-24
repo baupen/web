@@ -1,13 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 12/3/18
- * Time: 7:34 PM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Tests\Services;
-
 
 use App\Service\DisplayNameService;
 use App\Service\Interfaces\DisplayNameServiceInterface;
@@ -29,7 +31,7 @@ class DisplayNameServiceTest extends TestCase
     public function testForConstructionSite()
     {
         $cases = [
-            "1034_Sun_Park" => "1034 Sun Park"
+            '1034_Sun_Park' => '1034 Sun Park',
         ];
 
         foreach ($cases as $source => $target) {
@@ -40,9 +42,9 @@ class DisplayNameServiceTest extends TestCase
     public function testForConstructionSiteImage()
     {
         $cases = [
-            "image.jpg" => "image",
-            "image.jpg.png" => "image.jpg",
-            "image_hash" . hash("sha256", "my string") . ".jpg" => "image"
+            'image.jpg' => 'image',
+            'image.jpg.png' => 'image.jpg',
+            'image_duplicate_2018-01-01T12_44.jpg' => 'image',
         ];
 
         foreach ($cases as $source => $target) {
@@ -53,11 +55,11 @@ class DisplayNameServiceTest extends TestCase
     public function testForMapFile()
     {
         $cases = [
-            "map.pdf" => "map",
-            "1Obergeschoss.pdf" => "1. Obergeschoss",
-            "Haus2.pdf" => "Haus 2",
-            "1Obergeschoss_links.pdf" => "1. Obergeschoss links",
-            "ObergeschossHausA.pdf" => "Obergeschoss HausA"
+            'map.pdf' => 'map',
+            '1Obergeschoss.pdf' => '1. Obergeschoss',
+            'Haus2.pdf' => 'Haus 2',
+            '1Obergeschoss_links.pdf' => '1. Obergeschoss links',
+            'ObergeschossHausA.pdf' => 'Obergeschoss HausA',
         ];
 
         foreach ($cases as $source => $target) {
@@ -69,31 +71,31 @@ class DisplayNameServiceTest extends TestCase
     {
         $cases = [
             [
-                "map 180916",
-                "map2 180916",
-                "map3 180916"
+                'map 180916',
+                'map2 180916',
+                'map3 180916',
             ],
             [
-                "SAMEGROUP map 180916",
-                "SAMEGROUP map2 180916",
-                "SAMEGROUP map3 180916"
-            ]
+                'SAMEGROUP map 180916',
+                'SAMEGROUP map2 180916',
+                'SAMEGROUP map3 180916',
+            ],
         ];
 
         $expected = [
             [
-                "map",
-                "map2",
-                "map3"
+                'map',
+                'map2',
+                'map3',
             ],
             [
-                "map",
-                "map2",
-                "map3"
-            ]
+                'map',
+                'map2',
+                'map3',
+            ],
         ];
 
-        for ($i = 0; $i < count($cases); $i++) {
+        for ($i = 0; $i < \count($cases); ++$i) {
             $this->assertSame($expected[$i], $this->service->normalizeMapNames($cases[$i]));
         }
     }

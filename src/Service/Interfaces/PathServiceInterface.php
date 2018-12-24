@@ -80,4 +80,9 @@ interface PathServiceInterface
      * @return string
      */
     public function getTransientFolderForReports(ConstructionSite $constructionSite);
+
+    /**
+     * @return string
+     */
+    public function getScriptsRoot();
 }

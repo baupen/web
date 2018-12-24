@@ -66,7 +66,7 @@ abstract class AbstractApiController extends BaseDoctrineController
         if ($content === null) {
             $content = $request->getContent();
         }
-        if (!($content)) {
+        if (!$content) {
             $errorResponse = $this->fail(self::EMPTY_REQUEST);
 
             return false;

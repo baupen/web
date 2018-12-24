@@ -37,5 +37,6 @@ class PublicMapTransformer
     public function writeApiProperties($source, $target)
     {
         $this->mapTransformer->writeApiProperties($source, $target);
+        $target->setContext($source->getContext());
     }
 }

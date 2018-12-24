@@ -24,6 +24,11 @@ class PublicMap extends Map
     private $imageFull;
 
     /**
+     * @var string|null
+     */
+    private $context;
+
+    /**
      * @return null|string
      */
     public function getImageShareView(): ?string
@@ -53,5 +58,21 @@ class PublicMap extends Map
     public function setImageFull(?string $imageFull): void
     {
         $this->imageFull = $imageFull;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getContext(): ?string
+    {
+        return $this->context;
+    }
+
+    /**
+     * @param string|null $context
+     */
+    public function setContext(?string $context): void
+    {
+        $this->context = $context;
     }
 }

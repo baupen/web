@@ -1,7 +1,11 @@
 export default {
   de: {
+    plural: 'Handwerker',
     name: 'Name',
     trade: 'Funktion',
+    contact_name: 'Kontakperson',
+    email: 'E-Mail',
+    company: 'Firma',
     not_responded_issues_count: 'Unbeantwortete Pendenzen',
     not_read_issues_count: 'Ungelesene Pendenzen',
     open_issues_count: 'Offene Pendenzen',

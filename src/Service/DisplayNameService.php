@@ -35,8 +35,8 @@ class DisplayNameService implements DisplayNameServiceInterface
         // strip file ending
         $ending = pathinfo($fileName, PATHINFO_EXTENSION);
 
-        // strip artificial hash
-        if (preg_match('/_hash([A-Fa-f0-9]){64}.' . $ending . '/', $fileName, $matches, PREG_OFFSET_CAPTURE)) {
+        // strip duplicate
+        if (preg_match('/_duplicate_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}_[0-9]{2}.' . $ending . '/', $fileName, $matches, PREG_OFFSET_CAPTURE)) {
             $index = $matches[0][1];
             $output = mb_substr($fileName, 0, $index);
         } else {

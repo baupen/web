@@ -171,7 +171,7 @@ class LoadIssueData extends BaseFixture
      */
     private function add(ObjectManager $manager, array $maps, array $craftsmen, array $constructionManagers, array $issues, array $images, int &$issueNumber, int $setStatus)
     {
-        if (\count($constructionManagers) === 0) {
+        if (\count($constructionManagers) === 0 || \count($maps) === 0 || \count($craftsmen) === 0) {
             return;
         }
 

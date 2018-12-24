@@ -2138,6 +2138,11 @@ crypto-browserify@^3.11.0:
     randombytes "^2.0.0"
     randomfill "^1.0.3"
 
+crypto-js@^3.1.9-1:
+  version "3.1.9-1"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-3.1.9-1.tgz#fda19e761fc077e01ffbfdc6e9fdfc59e8806cd8"
+  integrity sha1-/aGedh/Ad+Af+/3G6f38WeiAbNg=
+
 css-color-names@0.0.4, css-color-names@^0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/css-color-names/-/css-color-names-0.0.4.tgz#808adc2e79cf84738069b646cb20ec27beb629e0"
@@ -2747,6 +2752,11 @@ entities@^1.1.1, entities@~1.1.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.2.tgz#bdfa735299664dfafd34529ed4f8522a275fea56"
   integrity sha512-f2LZMYl1Fzu7YSBKg+RoROelpOaNrcGmE9AZubeDfrCEia483oW4MI4VyFd5VNHIgQ/7qm1I0wUHK1eJnn2y2w==
+
+eol@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/eol/-/eol-0.9.1.tgz#f701912f504074be35c6117a5c4ade49cd547acd"
+  integrity sha512-Ds/TEoZjwggRoz/Q2O7SE3i4Jm66mqTDfmdHdq/7DKVk3bro9Q8h6WdXKdPqFLMoqxrDK5SVRzHVPOS6uuGtrg==
 
 epic-spinners@^1:
   version "1.0.4"
@@ -8556,6 +8566,11 @@ vue-async-computed@^3:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/vue-async-computed/-/vue-async-computed-3.5.0.tgz#30657970618389f30cba4d4b52b119bb1b2976aa"
   integrity sha512-QddDtWshkGeORKiONQ7xnz8YoBwLU1ZejmPTdEnVLXVeGthmmdl2uKt9RRMB3NRyXKkUcT6WYKT/YDnNodzF1w==
+
+vue-fragment@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/vue-fragment/-/vue-fragment-1.5.0.tgz#7739463b7680633f2b671aec9f1bfdd9a436da33"
+  integrity sha512-nobmbbOSOx59fm7U00BDz14Yvqitwx7NPQGYDTKg3+dNDGTDCRNy/q2kfr5hV4S0l4fQG0kvC+rbCmENLmHUSA==
 
 vue-functional-data-merge@^2.0.5:
   version "2.0.7"

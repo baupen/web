@@ -22,6 +22,5 @@ class MapTransformer
     public function writeApiProperties($source, $target)
     {
         $target->setName($source->getName());
-        $target->setContext($source->getContext());
     }
 }

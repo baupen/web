@@ -11,10 +11,13 @@
 
 namespace App\Api\Entity\Edit;
 
-use App\Api\Entity\Base\BaseEntity;
-
-class Map extends BaseEntity
+class Map extends \App\Api\Entity\Base\Map
 {
+    /**
+     * @var \DateTime
+     */
+    private $createdAt;
+
     /**
      * @var string
      */
@@ -33,7 +36,12 @@ class Map extends BaseEntity
     /**
      * @var bool
      */
-    private $preventAutomaticEdit;
+    private $isAutomaticEditEnabled;
+
+    /**
+     * @var int
+     */
+    private $issueCount;
 
     /**
      * @return string
@@ -86,16 +94,48 @@ class Map extends BaseEntity
     /**
      * @return bool
      */
-    public function isPreventAutomaticEdit(): bool
+    public function getIsAutomaticEditEnabled(): bool
     {
-        return $this->preventAutomaticEdit;
+        return $this->isAutomaticEditEnabled;
     }
 
     /**
-     * @param bool $preventAutomaticEdit
+     * @param bool $isAutomaticEditEnabled
      */
-    public function setPreventAutomaticEdit(bool $preventAutomaticEdit): void
+    public function setIsAutomaticEditEnabled(bool $isAutomaticEditEnabled): void
     {
-        $this->preventAutomaticEdit = $preventAutomaticEdit;
+        $this->isAutomaticEditEnabled = $isAutomaticEditEnabled;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIssueCount(): int
+    {
+        return $this->issueCount;
+    }
+
+    /**
+     * @param int $issueCount
+     */
+    public function setIssueCount(int $issueCount): void
+    {
+        $this->issueCount = $issueCount;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     */
+    public function setCreatedAt(\DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
     }
 }

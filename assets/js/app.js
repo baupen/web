@@ -9,6 +9,7 @@ require('./font_awesome_solid');
 
 // include vuejs apps
 require('./apps/Dispatch/bootstrap');
+require('./apps/Edit/bootstrap');
 require('./apps/Foyer/bootstrap');
 require('./apps/Register/bootstrap');
 require('./apps/Share/Craftsman/bootstrap');

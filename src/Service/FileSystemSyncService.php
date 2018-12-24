@@ -243,8 +243,8 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
          * conventions:
          * *.jpgs containing visualizations of the construction site are inside the /images folder
          * pdfs/dwgs containing maps are inside the /maps folder
-         * if a pdf/dwg/jpg file should be added, but one already exists with a different hash, the new file is created as "<original_filename>_hash<hash>.<original_extension>
-         * for example, if the file "preview.jpg" already exists, a file "preview_hash872z71237q8w78712837.jpg" is added if it does not exist already.
+         * if a pdf/dwg/jpg file should be added, but one already exists with a different hash, the new file is created as "<original_filename>_duplicate_<datetime>.<original_extension>
+         * for example, if the file "preview.jpg" already exists, a file "preview__duplicate_2018-01-01T13_55.jpg" is added if it does not exist already.
          * no file other than of type json is ever replaced/removed; only add is allowed.
          */
         $constructionSiteImages = $this->registry->getRepository(ConstructionSiteImage::class)->findBy(['constructionSite' => $constructionSite->getId()]);
@@ -286,7 +286,9 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
 
         foreach ($cacheInvalidatedEntities[MapFile::class] as $cacheInvalidatedEntity) {
             /* @var MapFile $cacheInvalidatedEntity */
-            $this->imageService->warmupCacheForMap($cacheInvalidatedEntity->getMap());
+            if ($cacheInvalidatedEntity->getMap() !== null) {
+                $this->imageService->warmupCacheForMap($cacheInvalidatedEntity->getMap());
+            }
         }
 
         foreach ($cacheInvalidatedEntities[ConstructionSite::class] as $cacheInvalidatedEntity) {
@@ -323,7 +325,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
     private function chooseMostAppropriateImageForConstructionSite(SyncTransaction $syncTransaction, ConstructionSite $constructionSite, array $constructionSiteImages)
     {
         // refresh current image if needed
-        if (!$constructionSite->getPreventAutomaticEdit()) {
+        if ($constructionSite->getIsAutomaticEditEnabled()) {
             if ($constructionSite->getImage() !== null) {
                 foreach ($constructionSiteImages as $possibleMatch) {
                     if ($constructionSite->getImage()->getDisplayFilename() === $possibleMatch->getDisplayFilename() &&
@@ -657,13 +659,13 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
             $key = $map->getName();
             if (!array_key_exists($key, $displayNameToMapLookup)) {
                 $displayNameToMapLookup[$key] = $map;
-            } elseif ($displayNameToMapLookup[$key]->getPreventAutomaticEdit() && !$map->getPreventAutomaticEdit()) {
+            } elseif (!$displayNameToMapLookup[$key]->getIsAutomaticEditEnabled() && $map->getIsAutomaticEditEnabled()) {
                 $displayNameToMapLookup[$key] = $map;
             }
         }
 
         foreach ($mapFiles as $mapFile) {
-            if ($mapFile->getMap() !== null) {
+            if ($mapFile->getMap() !== null || $mapFile->getId() !== null) {
                 continue;
             }
 

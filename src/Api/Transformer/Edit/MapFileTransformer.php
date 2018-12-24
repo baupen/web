@@ -29,6 +29,7 @@ class MapFileTransformer extends BatchTransformer
         $mapFile->setCreatedAt($entity->getCreatedAt());
         $mapFile->setFilename($entity->getFilename());
         $mapFile->setMapId($entity->getMap() ? $entity->getMap()->getId() : null);
+        $mapFile->setIssueCount($entity->getIssuePositions()->count());
 
         return $mapFile;
     }

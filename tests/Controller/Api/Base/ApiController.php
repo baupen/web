@@ -1,13 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 6/26/18
- * Time: 8:11 PM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Tests\Controller\Api\Base;
-
 
 use App\Entity\ConstructionSite;
 use Symfony\Bundle\FrameworkBundle\Client;
@@ -25,12 +27,13 @@ class ApiController extends AbstractApiController
      */
     protected function getAuthenticatedClient()
     {
-        if ($this->authenticatedClient == null) {
+        if ($this->authenticatedClient === null) {
             $this->authenticatedClient = static::createClient([], [
                 'PHP_AUTH_USER' => 'f@mangel.io',
                 'PHP_AUTH_PW' => 'asdf',
             ]);
         }
+
         return $this->authenticatedClient;
     }
 
@@ -38,40 +41,75 @@ class ApiController extends AbstractApiController
      * @param string $url
      * @param mixed $payload
      * @param array $files
+     *
      * @return Response
      */
     protected function authenticatedPostRequest($url, $payload, $files = [])
     {
-        $client = $this->getAuthenticatedClient();
-
-        $client->request(
-            'POST',
-            $url,
-            [],
-            $files,
-            ['CONTENT_TYPE' => 'application/json'],
-            $client->getContainer()->get('serializer')->serialize($payload, 'json')
-        );
-
-        return $client->getResponse();
+        return $this->authenticatedRequest($url, 'POST', false, $payload, $files);
     }
 
     /**
      * @param string $url
+     * @param mixed $payload
+     * @param array $files
+     *
+     * @return Response
+     */
+    protected function authenticatedPutRequest($url, $payload, $files = [])
+    {
+        return $this->authenticatedRequest($url, 'PUT', false, $payload, $files);
+    }
+
+    /**
+     * @param string $url
+     * @param mixed $payload
+     * @param array $files
+     *
+     * @return Response
+     */
+    protected function authenticatedDeleteRequest($url, $payload, $files = [])
+    {
+        return $this->authenticatedRequest($url, 'DELETE', false, $payload, $files);
+    }
+
+    /**
+     * @param string $url
+     *
      * @return Response
      */
     protected function authenticatedGetRequest($url)
     {
+        return $this->authenticatedRequest($url, 'GET', false);
+    }
+
+    /**
+     * @param string $url
+     * @param string $method
+     * @param array|bool $headers
+     * @param null $payload
+     * @param array $files
+     *
+     * @return Response
+     */
+    private function authenticatedRequest(string $url, string $method, $headers, $payload = null, array $files = [])
+    {
         $client = $this->getAuthenticatedClient();
 
+        $headerArray = $headers === false ? [] : ['CONTENT_TYPE' => 'application/json'];
+        $payloadValue = $payload === null ? null : $client->getContainer()->get('serializer')->serialize($payload, 'json');
+
         $client->request(
-            'GET',
-            $url
+            $method,
+            $url,
+            [],
+            $files,
+            $headerArray,
+            $payloadValue
         );
 
         return $client->getResponse();
     }
-
 
     /**
      * @var ConstructionSite
@@ -83,9 +121,10 @@ class ApiController extends AbstractApiController
      */
     protected function getSomeConstructionSite()
     {
-        if ($this->someConstructionSite == null) {
+        if ($this->someConstructionSite === null) {
             $this->someConstructionSite = $this->getAuthenticatedClient()->getContainer()->get('doctrine')->getRepository(ConstructionSite::class)->findOneBy([]);
         }
+
         return $this->someConstructionSite;
     }
 }
