@@ -29,10 +29,10 @@ export default {
         save_changes: '{pendingChangesCount} Änderungen speichern'
       },
       defaults: {
-        contact_name: "",
-        email: "",
-        company: "",
-        trade: ""
+        contact_name: '',
+        email: '',
+        company: '',
+        trade: ''
       }
     },
     set_automatically: 'automatisch festlegen',
