@@ -28,7 +28,7 @@ export default {
         add_craftsman: 'Handwerker hinzufügen',
         save_changes: '{pendingChangesCount} Änderungen speichern',
         show_import: 'Aus Excel importieren',
-        hide_import: "Import verstecken"
+        hide_import: 'Import verstecken'
       },
       defaults: {
         contact_name: '',
@@ -51,17 +51,17 @@ export default {
         email: 'E-Mail',
         company: 'Firma',
         contact_name: 'Kontaktperson',
-        trade: 'Gewerbe / Arbeitsgattung',
+        trade: 'Gewerbe / Arbeitsgattung'
       },
       changes: {
         title: 'Änderung',
         add: 'wird erstellt',
         update: 'wird aktualisiert',
-        remove: 'wird entfernt',
+        remove: 'wird entfernt'
       },
       actions: {
-        apply_import: "Ausführen",
-        abort: "Abbrechen",
+        apply_import: 'Ausführen',
+        abort: 'Abbrechen',
         close: 'Schliessen'
       }
     },
