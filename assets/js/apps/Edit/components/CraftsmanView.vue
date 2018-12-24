@@ -15,12 +15,12 @@
             </button>
         </p>
 
-        <import-view :craftsman-containers="craftsmanContainers" v-if="importViewActive" />
+        <import-view :craftsman-containers="craftsmanContainers" v-if="importViewActive"/>
         <table v-if="orderedCraftsmanContainers.length > 0" class="table table-hover table-condensed">
             <thead>
             <tr>
-                <th>{{$t("craftsman.contact_name")}}</th>
                 <th>{{$t("craftsman.email")}}</th>
+                <th>{{$t("craftsman.contact_name")}}</th>
                 <th>{{$t("craftsman.company")}}</th>
                 <th>{{$t("craftsman.trade")}}</th>
                 <th class="minimal-width">{{$t('issue_count')}}</th>
@@ -75,8 +75,8 @@
                 locale: lang,
                 editCraftsmanContainer: null,
                 editField: null,
-                editableFields: ['contactName', 'email', 'company', 'trade'],
-                importViewActive: false
+                editableFields: ['email', 'contactName', 'company', 'trade'],
+                importViewActive: true
             }
         },
         components: {
