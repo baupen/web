@@ -286,7 +286,9 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
 
         foreach ($cacheInvalidatedEntities[MapFile::class] as $cacheInvalidatedEntity) {
             /* @var MapFile $cacheInvalidatedEntity */
-            $this->imageService->warmupCacheForMap($cacheInvalidatedEntity->getMap());
+            if ($cacheInvalidatedEntity->getMap() !== null) {
+                $this->imageService->warmupCacheForMap($cacheInvalidatedEntity->getMap());
+            }
         }
 
         foreach ($cacheInvalidatedEntities[ConstructionSite::class] as $cacheInvalidatedEntity) {
