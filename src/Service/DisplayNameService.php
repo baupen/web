@@ -119,7 +119,8 @@ class DisplayNameService implements DisplayNameServiceInterface
         foreach ($mapNames as $mapName) {
             $parts = explode(' ', $mapName);
             $mapParts[] = $parts;
-            for ($i = 0; $i < \count($parts); ++$i) {
+            $partCount = \count($parts);
+            for ($i = 0; $i < $partCount; ++$i) {
                 if (!array_key_exists($i, $partsAnalytics)) {
                     $partsAnalytics[$i] = [];
                 }
@@ -134,7 +135,8 @@ class DisplayNameService implements DisplayNameServiceInterface
         }
 
         // remove groups which are always the same
-        for ($i = 0; $i < \count($partsAnalytics); ++$i) {
+        $partAnalyticsCount = \count($partsAnalytics);
+        for ($i = 0; $i < $partAnalyticsCount; ++$i) {
             // only one value; can safely remove because will not contain any useful information
             if (\count($partsAnalytics[$i]) === 1) {
                 // remove from parts list
@@ -146,12 +148,13 @@ class DisplayNameService implements DisplayNameServiceInterface
                 //remove processed entry group
                 unset($partsAnalytics[$i]);
                 $partsAnalytics = array_values($partsAnalytics);
+                --$partAnalyticsCount;
                 --$i;
             }
         }
 
         // remove groups which are very likely date groups
-        for ($i = 0; $i < \count($partsAnalytics); ++$i) {
+        for ($i = 0; $i < $partAnalyticsCount; ++$i) {
             $probablyDateGroup = true;
             foreach ($partsAnalytics[$i] as $element => $counter) {
                 if (!is_numeric($element)) {
@@ -177,6 +180,7 @@ class DisplayNameService implements DisplayNameServiceInterface
                 //remove processed entry group
                 unset($partsAnalytics[$i]);
                 $partsAnalytics = array_values($partsAnalytics);
+                --$partAnalyticsCount;
                 --$i;
             }
         }

@@ -49,7 +49,7 @@ class ImageService implements ImageServiceInterface
     private const MAP_RENDER_NAME = 'render.jpg';
 
     /**
-     * @var string prevents calls to warmup cache from archiving something
+     * @var bool prevents calls to warmup cache from archiving something
      */
     private $preventCacheWarmup;
 
@@ -57,6 +57,7 @@ class ImageService implements ImageServiceInterface
      * ImageService constructor.
      *
      * @param PathServiceInterface $pathService
+     * @param KernelInterface $kernel
      */
     public function __construct(PathServiceInterface $pathService, KernelInterface $kernel)
     {

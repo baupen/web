@@ -30,7 +30,7 @@ interface DisplayNameServiceInterface
     /**
      * @param string[] $mapNames
      *
-     * @return string
+     * @return string[]
      */
     public function normalizeMapNames(array $mapNames);
 

@@ -602,7 +602,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
     }
 
     /**
-     * @param \stdClass $pointsJson
+     * @param \stdClass[] $pointsJson
      *
      * @return Point[]|array
      */

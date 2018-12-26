@@ -27,7 +27,7 @@ class SyncTransaction
     private $newEntities = [];
 
     /**
-     * @var IdTrait[]
+     * @var IdTrait[][]
      */
     private $removedEntities = [];
 
