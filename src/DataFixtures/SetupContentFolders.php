@@ -12,8 +12,8 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
-use App\Service\Interfaces\FileSystemSyncServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Interfaces\SyncServiceInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -32,11 +32,11 @@ class SetupContentFolders extends BaseFixture
     private $serializer;
 
     /**
-     * @var FileSystemSyncServiceInterface
+     * @var SyncServiceInterface
      */
     private $fileSystemSyncService;
 
-    public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer, FileSystemSyncServiceInterface $fileSystemSyncService)
+    public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer, SyncServiceInterface $fileSystemSyncService)
     {
         $this->pathService = $pathService;
         $this->serializer = $serializer;

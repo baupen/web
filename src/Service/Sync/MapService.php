@@ -9,130 +9,42 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service;
+namespace App\Service\Sync;
 
 use App\Entity\ConstructionSite;
-use App\Entity\ConstructionSiteImage;
 use App\Entity\Map;
 use App\Entity\MapFile;
 use App\Entity\MapSector;
-use App\Entity\Traits\FileTrait;
 use App\Model\Frame;
 use App\Model\Point;
 use App\Model\SyncTransaction;
 use App\Service\Interfaces\DisplayNameServiceInterface;
-use App\Service\Interfaces\FileSystemSyncServiceInterface;
-use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use App\Service\Sync\Interfaces\FileServiceInterface;
+use App\Service\Sync\Interfaces\MapServiceInterface;
 
-class FileSystemSyncService implements FileSystemSyncServiceInterface
+class MapService implements MapServiceInterface
 {
-    /**
-     * @var RegistryInterface
-     */
-    private $registry;
-
     /**
      * @var PathServiceInterface
      */
     private $pathService;
 
     /**
-     * @var ImageServiceInterface
-     */
-    private $imageService;
-
-    /**
      * @var DisplayNameServiceInterface
      */
     private $displayNameService;
 
-    public function __construct(RegistryInterface $registry, PathServiceInterface $pathService, ImageServiceInterface $imageService, DisplayNameServiceInterface $displayNameService)
+    /**
+     * @var FileServiceInterface
+     */
+    private $fileService;
+
+    public function __construct(PathServiceInterface $pathService, DisplayNameServiceInterface $displayNameService, FileServiceInterface $fileService)
     {
-        $this->registry = $registry;
         $this->pathService = $pathService;
-        $this->imageService = $imageService;
         $this->displayNameService = $displayNameService;
-    }
-
-    /**
-     * syncs the filesystem with the database, creating/updating construction sites as needed.
-     *
-     * @throws \Exception
-     */
-    public function sync()
-    {
-        $constructionSites = $this->registry->getRepository(ConstructionSite::class)->findAll();
-        /** @var ConstructionSite[] $constructionSitesLookup */
-        $constructionSitesLookup = [];
-        foreach ($constructionSites as $constructionSite) {
-            $constructionSitesLookup[$constructionSite->getFolderName()] = $constructionSite;
-        }
-
-        $existingDirectories = glob($this->pathService->getConstructionSiteFolderRoot() . \DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
-        foreach ($existingDirectories as $directory) {
-            $folderName = mb_substr($directory, mb_strrpos($directory, \DIRECTORY_SEPARATOR) + 1);
-
-            $syncTransaction = new SyncTransaction();
-            if (!array_key_exists($folderName, $constructionSitesLookup)) {
-                $this->addConstructionSite($syncTransaction, $directory);
-            } else {
-                $this->syncConstructionSite($syncTransaction, $constructionSitesLookup[$folderName]);
-            }
-
-            $this->commitSyncTransaction($syncTransaction);
-        }
-    }
-
-    /**
-     * @param SyncTransaction $syncTransaction
-     * @param string $directory
-     */
-    private function addConstructionSite(SyncTransaction $syncTransaction, string $directory)
-    {
-        $folderName = mb_substr($directory, mb_strrpos($directory, \DIRECTORY_SEPARATOR) + 1);
-        $constructionSite = new ConstructionSite();
-        $constructionSite->setFolderName($folderName);
-        $constructionSite->setName($this->displayNameService->forConstructionSite($folderName));
-
-        $syncTransaction->persist($constructionSite);
-        $this->syncConstructionSite($syncTransaction, $constructionSite);
-    }
-
-    /**
-     * @param string $folder
-     * @param string $ending
-     * @param FileTrait[] $knownFiles
-     * @param callable $createNewFile
-     *
-     * @return FileTrait[]
-     */
-    private function getFiles(string $folder, string $ending, array $knownFiles, callable $createNewFile)
-    {
-        $knownFilesLookup = [];
-        foreach ($knownFiles as $knownFile) {
-            $knownFilesLookup[$knownFile->getFilename()] = $knownFile;
-        }
-
-        /** @var FileTrait[] $newFiles */
-        $newFiles = [];
-
-        $folderLength = \mb_strlen($folder);
-        $files = glob($folder . \DIRECTORY_SEPARATOR . '*' . $ending);
-        foreach ($files as $file) {
-            $fileName = mb_substr($file, $folderLength + 1);
-
-            if (!array_key_exists($fileName, $knownFilesLookup)) {
-                /** @var FileTrait $fileTrait */
-                $fileTrait = $createNewFile($file);
-                $fileTrait->setFilename($fileName);
-                $fileTrait->setHash(hash_file('sha256', $file));
-                $newFiles[] = $fileTrait;
-            }
-        }
-
-        return $newFiles;
+        $this->fileService = $fileService;
     }
 
     /**
@@ -237,146 +149,13 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
      * @param SyncTransaction $syncTransaction
      * @param ConstructionSite $constructionSite
      */
-    private function syncConstructionSite(SyncTransaction $syncTransaction, ConstructionSite $constructionSite)
-    {
-        /**
-         * conventions:
-         * *.jpgs containing visualizations of the construction site are inside the /images folder
-         * pdfs/dwgs containing maps are inside the /maps folder
-         * if a pdf/dwg/jpg file should be added, but one already exists with a different hash, the new file is created as "<original_filename>_duplicate_<datetime>.<original_extension>
-         * for example, if the file "preview.jpg" already exists, a file "preview__duplicate_2018-01-01T13_55.jpg" is added if it does not exist already.
-         * no file other than of type json is ever replaced/removed; only add is allowed.
-         */
-        $constructionSiteImages = $this->registry->getRepository(ConstructionSiteImage::class)->findBy(['constructionSite' => $constructionSite->getId()]);
-
-        $this->findNewConstructionSiteImages($syncTransaction, $constructionSite, $constructionSiteImages);
-
-        $this->refreshConstructionSiteImageFileNames($syncTransaction, $constructionSiteImages);
-
-        $this->chooseMostAppropriateImageForConstructionSite($syncTransaction, $constructionSite, $constructionSiteImages);
-
-        $this->syncConstructionSiteMaps($syncTransaction, $constructionSite);
-    }
-
-    /**
-     * @param SyncTransaction $transaction
-     */
-    private function commitSyncTransaction(SyncTransaction $transaction)
-    {
-        $manager = $this->registry->getManager();
-
-        $cacheInvalidatedEntities = [Map::class => [], MapFile::class => [], ConstructionSite::class => [], ConstructionSiteImage::class => []];
-
-        $transaction->execute(
-            $manager,
-            function ($entity, $class) use (&$cacheInvalidatedEntities) {
-                if (array_key_exists($class, $cacheInvalidatedEntities)) {
-                    $cacheInvalidatedEntities[$class][] = $entity;
-                }
-
-                return true;
-            }
-        );
-        $manager->flush();
-
-        foreach ($cacheInvalidatedEntities[Map::class] as $cacheInvalidatedEntity) {
-            /* @var Map $cacheInvalidatedEntity */
-            $this->imageService->warmupCacheForMap($cacheInvalidatedEntity);
-        }
-
-        foreach ($cacheInvalidatedEntities[MapFile::class] as $cacheInvalidatedEntity) {
-            /* @var MapFile $cacheInvalidatedEntity */
-            if ($cacheInvalidatedEntity->getMap() !== null) {
-                $this->imageService->warmupCacheForMap($cacheInvalidatedEntity->getMap());
-            }
-        }
-
-        foreach ($cacheInvalidatedEntities[ConstructionSite::class] as $cacheInvalidatedEntity) {
-            /* @var ConstructionSite $cacheInvalidatedEntity */
-            $this->imageService->warmupCacheForConstructionSite($cacheInvalidatedEntity);
-        }
-
-        foreach ($cacheInvalidatedEntities[ConstructionSiteImage::class] as $cacheInvalidatedEntity) {
-            /* @var ConstructionSiteImage $cacheInvalidatedEntity */
-            $this->imageService->warmupCacheForConstructionSite($cacheInvalidatedEntity->getConstructionSite());
-        }
-    }
-
-    /**
-     * @param SyncTransaction $syncTransaction
-     * @param ConstructionSiteImage[] $constructionSiteImages
-     */
-    private function refreshConstructionSiteImageFileNames(SyncTransaction $syncTransaction, array $constructionSiteImages)
-    {
-        foreach ($constructionSiteImages as $constructionSiteImage) {
-            $newName = $this->displayNameService->forConstructionSiteImage($constructionSiteImage->getFilename());
-            if ($newName !== $constructionSiteImage->getDisplayFilename()) {
-                $constructionSiteImage->setDisplayFilename($newName);
-                $syncTransaction->persist($constructionSiteImage);
-            }
-        }
-    }
-
-    /**
-     * @param SyncTransaction $syncTransaction
-     * @param ConstructionSite $constructionSite
-     * @param ConstructionSiteImage[] $constructionSiteImages
-     */
-    private function chooseMostAppropriateImageForConstructionSite(SyncTransaction $syncTransaction, ConstructionSite $constructionSite, array $constructionSiteImages)
-    {
-        // refresh current image if needed
-        if ($constructionSite->getIsAutomaticEditEnabled()) {
-            if ($constructionSite->getImage() !== null) {
-                foreach ($constructionSiteImages as $possibleMatch) {
-                    if ($constructionSite->getImage()->getDisplayFilename() === $possibleMatch->getDisplayFilename() &&
-                        ($possibleMatch->getCreatedAt() === null || $possibleMatch->getCreatedAt() > $constructionSite->getImage()->getCreatedAt())) {
-                        //replace match & stop
-                        $constructionSite->setImage($possibleMatch);
-                        $syncTransaction->persist($constructionSite);
-                    }
-                }
-            } elseif (\count($constructionSiteImages) > 0) {
-                // set initial image if none
-                $newImage = $constructionSiteImages[0];
-
-                $constructionSite->setImage($newImage);
-                $syncTransaction->persist($constructionSite);
-            }
-        }
-    }
-
-    /**
-     * @param SyncTransaction $syncTransaction
-     * @param ConstructionSite $constructionSite
-     * @param ConstructionSiteImage[] $constructionSiteImages
-     */
-    private function findNewConstructionSiteImages(SyncTransaction $syncTransaction, ConstructionSite $constructionSite, array &$constructionSiteImages)
-    {
-        $constructionSiteImagesDirectory = $this->pathService->getFolderForConstructionSiteImage($constructionSite);
-        /** @var ConstructionSiteImage[] $newConstructionSiteImages */
-        $newConstructionSiteImages = $this->getFiles($constructionSiteImagesDirectory, '.jpg', $constructionSiteImages, function () {
-            return new ConstructionSiteImage();
-        });
-
-        foreach ($newConstructionSiteImages as $newConstructionSiteImage) {
-            $newConstructionSiteImage->setConstructionSite($constructionSite);
-            $constructionSite->getImages()->add($newConstructionSiteImage);
-            $syncTransaction->persist($newConstructionSiteImage);
-            $constructionSiteImages[] = $newConstructionSiteImage;
-        }
-    }
-
-    /**
-     * @param SyncTransaction $syncTransaction
-     * @param ConstructionSite $constructionSite
-     */
-    private function syncConstructionSiteMaps(SyncTransaction $syncTransaction, ConstructionSite $constructionSite)
+    public function syncConstructionSiteMaps(SyncTransaction $syncTransaction, ConstructionSite $constructionSite)
     {
         // get all files from the directory
         /** @var MapFile[] $mapFiles */
-        $mapFiles = $this->registry->getRepository(MapFile::class)->findBy(['constructionSite' => $constructionSite->getId()]);
+        $mapFiles = $constructionSite->getMapFiles()->toArray();
         /** @var Map[] $maps */
-        $maps = $this->registry->getRepository(Map::class)->findBy(['constructionSite' => $constructionSite->getId()]);
+        $maps = $constructionSite->getMaps()->toArray();
 
         $this->findNewMapFiles($syncTransaction, $constructionSite, $mapFiles);
 
@@ -398,7 +177,7 @@ class FileSystemSyncService implements FileSystemSyncServiceInterface
     {
         $mapsDirectory = $this->pathService->getFolderForMapFile($constructionSite);
         /** @var MapFile[] $newMapFiles */
-        $newMapFiles = $this->getFiles($mapsDirectory, '.pdf', $mapFiles, function () {
+        $newMapFiles = $this->fileService->getFiles($mapsDirectory, '.pdf', $mapFiles, function () {
             return new MapFile();
         });
 

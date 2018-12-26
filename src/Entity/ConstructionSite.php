@@ -78,6 +78,13 @@ class ConstructionSite extends BaseEntity
     private $maps;
 
     /**
+     * @var MapFile[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="MapFile", mappedBy="constructionSite")
+     */
+    private $mapFiles;
+
+    /**
      * @var Craftsman[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite")
@@ -93,6 +100,7 @@ class ConstructionSite extends BaseEntity
         $this->maps = new ArrayCollection();
         $this->craftsmen = new ArrayCollection();
         $this->images = new ArrayCollection();
+        $this->mapFiles = new ArrayCollection();
     }
 
     /**
@@ -186,5 +194,13 @@ class ConstructionSite extends BaseEntity
     public function setImage(?ConstructionSiteImage $image): void
     {
         $this->image = $image;
+    }
+
+    /**
+     * @return MapFile[]|ArrayCollection
+     */
+    public function getMapFiles()
+    {
+        return $this->mapFiles;
     }
 }

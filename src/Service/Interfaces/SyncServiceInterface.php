@@ -11,10 +11,19 @@
 
 namespace App\Service\Interfaces;
 
-interface FileSystemSyncServiceInterface
+use App\Entity\ConstructionSite;
+
+interface SyncServiceInterface
 {
     /**
      * syncs the filesystem with the database, creating/updating construction sites as needed.
      */
     public function sync();
+
+    /**
+     * syncs single construction site with the filesystem.
+     *
+     * @param ConstructionSite $constructionSite
+     */
+    public function syncConstructionSite(ConstructionSite $constructionSite);
 }
