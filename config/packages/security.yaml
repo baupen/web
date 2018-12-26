@@ -46,5 +46,6 @@ security:
     - { path: ^/support, role: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/email, role: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/external, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/cron, role: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/, role: ROLE_USER }
 

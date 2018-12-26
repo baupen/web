@@ -29,7 +29,7 @@ trait IdTrait
     private $id;
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getId()
     {

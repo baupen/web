@@ -24,6 +24,26 @@
                 @click="startProcessMapChanges">
             {{$t('edit_maps.actions.save_changes', {pendingChangesCount: pendingMapChanges}) }}
         </button>
+        <div class="vertical-spacer-big"></div>
+        <h2>{{$t("craftsman.plural")}}</h2>
+        <p class="text-secondary">{{$t("edit_craftsmen.help")}}</p>
+        <atom-spinner v-if="isCraftsmenLoading"
+                      :animation-duration="1000"
+                      :size="60"
+                      :color="'#ff1d5e'"
+        />
+        <template v-else>
+            <craftsman-view
+                    :craftsman-containers="craftsmanContainers"
+                    @craftsman-add="addCraftsman(arguments[0])"
+                    @craftsman-save="saveCraftsman(arguments[0])"
+                    @craftsman-remove="removeCraftsman(arguments[0])"
+            />
+        </template>
+        <button class="btn btn-primary" :disabled="isMapsLoading" v-if="pendingCraftsmanChanges > 0"
+                @click="startProcessCraftsmanChanges">
+            {{$t('edit_craftsmen.actions.save_changes', {pendingChangesCount: pendingCraftsmanChanges}) }}
+        </button>
     </div>
 </template>
 
@@ -35,6 +55,7 @@
     import uuid from "uuid/v4"
     import MapView from "./components/MapView";
     import CryptoJS from 'crypto-js'
+    import CraftsmanView from "./components/CraftsmanView";
 
     const lang = document.documentElement.lang.substr(0, 2);
     moment.locale(lang);
@@ -54,6 +75,7 @@
         },
         mixins: [notifications],
         components: {
+            CraftsmanView,
             MapView,
             AtomSpinner
         },
@@ -89,6 +111,38 @@
                 } else {
                     //directly remove
                     this.mapContainers = this.mapContainers.filter(mc => mc !== mapContainer);
+                }
+            },
+            addCraftsman: function (afterAddAction) {
+                const newCraftsmanContainer = {
+                    pendingChange: 'add',
+                    craftsman: {
+                        id: uuid(),
+                        contactName: this.$t("edit_craftsmen.defaults.contact_name"),
+                        email: this.$t("edit_craftsmen.defaults.email"),
+                        company: this.$t("edit_craftsmen.defaults.company"),
+                        trade: this.$t("edit_craftsmen.defaults.trade"),
+                        issueCount: 0
+                    }
+                };
+
+                this.craftsmanContainers.push(newCraftsmanContainer);
+
+                this.$nextTick(() => {
+                    afterAddAction(newCraftsmanContainer);
+                });
+            },
+            saveCraftsman: function (craftsmanContainer) {
+                if (craftsmanContainer.pendingChange !== 'add') {
+                    craftsmanContainer.pendingChange = 'update';
+                }
+            },
+            removeCraftsman: function (craftsmanContainer) {
+                if (craftsmanContainer.pendingChange !== 'add') {
+                    craftsmanContainer.pendingChange = 'remove';
+                } else {
+                    //directly remove
+                    this.craftsmanContainers = this.craftsmanContainers.filter(mc => mc !== craftsmanContainer);
                 }
             },
             mapFileDropped: function (file) {
@@ -184,8 +238,6 @@
                 if (!this.isMapsLoading) {
                     this.isMapsLoading = true;
                     this.processMapChanges();
-                } else {
-                    console.log("stopped");
                 }
             },
             processMapChanges: function () {
@@ -227,11 +279,12 @@
                 } else if (this.pendingMapRemove.length) {
                     const mapContainer = this.pendingMapRemove[0];
                     axios.delete("/api/edit/map/" + mapContainer.map.id, {
-                        constructionSiteId: this.constructionSiteId,
-                        map: mapContainer.map
+                        data: {
+                            constructionSiteId: this.constructionSiteId
+                        }
                     }).then((response) => {
                         // continue process
-                        mapContainer.pendingChange = null;
+                        this.mapContainers = this.mapContainers.filter(cc => cc !== mapContainer);
                         this.processMapChanges();
                     });
                 } else if (this.pendingMapFileUpdate.length) {
@@ -247,6 +300,50 @@
                 } else {
                     this.isMapsLoading = false;
                 }
+            },
+            startProcessCraftsmanChanges: function () {
+                if (!this.isCraftsmenLoading) {
+                    this.isCraftsmenLoading = true;
+                    this.processCraftsmanChanges();
+                }
+            },
+            processCraftsmanChanges: function () {
+                if (this.pendingCraftsmanAdd.length > 0) {
+                    const craftsmanContainer = this.pendingCraftsmanAdd[0];
+                    axios.post("/api/edit/craftsman", {
+                        constructionSiteId: this.constructionSiteId,
+                        craftsman: craftsmanContainer.craftsman
+                    }).then((response) => {
+                        craftsmanContainer.craftsman.id = response.data.craftsman.id;
+
+                        // continue process
+                        craftsmanContainer.pendingChange = null;
+                        this.processCraftsmanChanges();
+                    });
+                } else if (this.pendingCraftsmanUpdate.length) {
+                    const craftsmanContainer = this.pendingCraftsmanUpdate[0];
+                    axios.put("/api/edit/craftsman/" + craftsmanContainer.craftsman.id, {
+                        constructionSiteId: this.constructionSiteId,
+                        craftsman: craftsmanContainer.craftsman
+                    }).then((response) => {
+                        // continue process
+                        craftsmanContainer.pendingChange = null;
+                        this.processCraftsmanChanges();
+                    });
+                } else if (this.pendingCraftsmanRemove.length) {
+                    const craftsmanContainer = this.pendingCraftsmanRemove[0];
+                    axios.delete("/api/edit/craftsman/" + craftsmanContainer.craftsman.id, {
+                        data: {
+                            constructionSiteId: this.constructionSiteId
+                        }
+                    }).then((response) => {
+                        // continue process
+                        this.craftsmanContainers = this.craftsmanContainers.filter(cc => cc !== craftsmanContainer);
+                        this.processCraftsmanChanges();
+                    });
+                } else {
+                    this.isCraftsmenLoading = false;
+                }
             }
         },
         computed: {
@@ -259,11 +356,23 @@
             pendingMapRemove: function () {
                 return this.mapContainers.filter(mfc => mfc.pendingChange === "remove");
             },
+            pendingCraftsmanAdd: function () {
+                return this.craftsmanContainers.filter(mfc => mfc.pendingChange === "add");
+            },
+            pendingCraftsmanUpdate: function () {
+                return this.craftsmanContainers.filter(mfc => mfc.pendingChange === "update");
+            },
+            pendingCraftsmanRemove: function () {
+                return this.craftsmanContainers.filter(mfc => mfc.pendingChange === "remove");
+            },
             pendingMapFileUpdate: function () {
                 return this.mapFileContainers.filter(mfc => mfc.pendingChange === "update");
             },
             pendingMapChanges: function () {
                 return this.pendingMapAdd.length + this.pendingMapUpdate.length + this.pendingMapRemove.length + this.pendingMapFileUpdate.length;
+            },
+            pendingCraftsmanChanges: function () {
+                return this.pendingCraftsmanAdd.length + this.pendingCraftsmanUpdate.length + this.pendingCraftsmanRemove.length;
             }
         },
         mounted() {

@@ -22,6 +22,11 @@ class PathService implements PathServiceInterface
     /**
      * @var string
      */
+    private $scriptsRoot;
+
+    /**
+     * @var string
+     */
     private $folderRoot;
 
     /**
@@ -36,7 +41,8 @@ class PathService implements PathServiceInterface
 
     public function __construct(KernelInterface $kernel)
     {
-        $baseDir = $kernel->getLogDir() . \DIRECTORY_SEPARATOR . '..';
+        $baseDir = realpath($kernel->getLogDir() . \DIRECTORY_SEPARATOR . '..');
+        $this->scriptsRoot = realpath($baseDir . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . 'supporting');
 
         // add test to path to be able to unit test without messing up local dev state
         $environment = $kernel->getEnvironment();
@@ -162,5 +168,13 @@ class PathService implements PathServiceInterface
     public function getTransientFolderRoot()
     {
         return $this->transientFolderRoot;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScriptsRoot()
+    {
+        return $this->scriptsRoot;
     }
 }
