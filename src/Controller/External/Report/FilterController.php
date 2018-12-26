@@ -44,7 +44,12 @@ class FilterController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
+        /** @var ConstructionSite|null $constructionSite */
         $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($filter->getConstructionSite());
+        if ($constructionSite === null) {
+            throw new NotFoundHttpException();
+        }
+
         $reportElements = ReportElements::forCraftsman();
 
         return $this->file(

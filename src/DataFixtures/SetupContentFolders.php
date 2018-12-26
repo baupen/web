@@ -49,6 +49,7 @@ class SetupContentFolders extends BaseFixture
      * @param ObjectManager $manager
      *
      * @throws \BadMethodCallException
+     * @throws \Exception
      */
     public function load(ObjectManager $manager)
     {
@@ -62,13 +63,20 @@ class SetupContentFolders extends BaseFixture
     /**
      * @param $sourceFolder
      * @param $destinationFolder
+     *
+     * @throws \Exception
      */
     private function copyRecursively($sourceFolder, $destinationFolder)
     {
-        $dir = opendir($sourceFolder);
         if (!is_dir($destinationFolder)) {
-            @mkdir($destinationFolder);
+            mkdir($destinationFolder);
         }
+
+        $dir = opendir($sourceFolder);
+        if ($dir === false) {
+            throw new \Exception('failed to open dir ' . $dir);
+        }
+
         while (false !== ($file = readdir($dir))) {
             if (($file !== '.') && ($file !== '..')) {
                 if (is_dir($sourceFolder . '/' . $file)) {
@@ -78,6 +86,7 @@ class SetupContentFolders extends BaseFixture
                 }
             }
         }
+
         closedir($dir);
     }
 
