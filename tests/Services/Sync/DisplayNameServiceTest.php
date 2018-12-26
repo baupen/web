@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Tests\Services;
+namespace App\Tests\Services\Sync;
 
 use App\Service\Sync\DisplayNameService;
 use PHPUnit\Framework\TestCase;
@@ -97,5 +97,69 @@ class DisplayNameServiceTest extends TestCase
         for ($i = 0; $i < \count($cases); ++$i) {
             $this->assertSame($expected[$i], $this->service->normalizeMapNames($cases[$i]));
         }
+    }
+
+    public function testPutIntoTreeStructure_simpleParentWithChildren()
+    {
+        $elementNames = [
+            1 => 'parent',
+            2 => 'parent child1',
+            3 => 'parent child2',
+        ];
+
+        $createNewElement = function () {
+            $this->fail('no parent should be created');
+        };
+
+        $assignChildToParentCallCount = 0;
+        $seenChildIds = [];
+        $assignChildToParent = function ($childId, $parentId) use (&$assignChildToParentCallCount, &$seenChildIds) {
+            $this->assertSame(1, $parentId);
+            $seenChildIds[] = $childId;
+
+            ++$assignChildToParentCallCount;
+        };
+
+        $this->service->putIntoTreeStructure($elementNames, $createNewElement, $assignChildToParent);
+
+        $this->assertSame(2, $assignChildToParentCallCount);
+        $this->assertEquals([2, 3], $seenChildIds, '$canonicalize = true', 0.0, 1, true);
+    }
+
+    public function testPutIntoTreeStructure_parentCreatedOnDemand()
+    {
+        $elementNames = [
+            1 => 'parent',
+            2 => 'parent child 1',
+            3 => 'parent child 2',
+        ];
+
+        $newParentId = 4;
+        $createNewElementCallCount = 0;
+        $createNewElement = function ($name) use (&$createNewElementCallCount, $newParentId) {
+            $this->assertSame($name, 'parent child');
+            ++$createNewElementCallCount;
+
+            return $newParentId;
+        };
+
+        $assignChildToParentCallCount = 0;
+        $seenChildIds = [];
+        $assignChildToParent = function ($childId, $parentId) use (&$assignChildToParentCallCount, $newParentId, &$seenChildIds) {
+            if ($childId === $newParentId) {
+                $this->assertSame(1, $parentId);
+            } else {
+                $this->assertSame($newParentId, $parentId);
+            }
+            $seenChildIds[] = $childId;
+
+            ++$assignChildToParentCallCount;
+        };
+
+        $this->service->putIntoTreeStructure($elementNames, $createNewElement, $assignChildToParent);
+
+        $this->assertSame(3, $assignChildToParentCallCount);
+        $this->assertSame(1, $createNewElementCallCount);
+        $this->assertEquals([2, 3, 4], $seenChildIds, '$canonicalize = true', 0.0, 1, true);
     }
 }

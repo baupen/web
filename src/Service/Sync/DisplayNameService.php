@@ -120,24 +120,25 @@ class DisplayNameService implements DisplayNameServiceInterface
      */
     public function putIntoTreeStructure(array $elementNames, callable $createNewElement, callable $assignChildToParent)
     {
+        // create dictionary for each name to point to the first element with that name
+        $prefixElementIdMap = [];
+        foreach ($elementNames as $id => $name) {
+            if (!array_key_exists($name, $prefixElementIdMap)) {
+                $prefixElementIdMap[$name] = $id;
+            }
+        }
+
         // ensure a map exists for all common prefixes (as a folder)
         $prefixCountMap = $this->createPrefixMap($elementNames);
 
         // ensure an element exists for all common prefixes
         foreach ($prefixCountMap as $prefix => $count) {
             if ($count > 1) {
-                if (!array_key_exists($prefix, $prefixCountMap)) {
+                if (!array_key_exists($prefix, $prefixElementIdMap)) {
                     $newElementId = $createNewElement($prefix);
                     $elementNames[$newElementId] = $prefix;
+                    $prefixElementIdMap[$prefix] = $newElementId;
                 }
-            }
-        }
-
-        // create dictionary for each name to point to the first element with that name
-        $prefixElementIdMap = [];
-        foreach ($elementNames as $id => $name) {
-            if (!array_key_exists($name, $prefixElementIdMap)) {
-                $prefixElementIdMap[$name] = $id;
             }
         }
 
@@ -151,6 +152,7 @@ class DisplayNameService implements DisplayNameServiceInterface
                 // assign to parent if found
                 if (array_key_exists($possibleParentPrefix, $prefixElementIdMap)) {
                     $assignChildToParent($elementKey, $prefixElementIdMap[$possibleParentPrefix]);
+                    break;
                 }
             }
         }
