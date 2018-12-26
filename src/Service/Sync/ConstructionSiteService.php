@@ -14,9 +14,9 @@ namespace App\Service\Sync;
 use App\Entity\ConstructionSite;
 use App\Entity\ConstructionSiteImage;
 use App\Model\SyncTransaction;
-use App\Service\Interfaces\DisplayNameServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Sync\Interfaces\ConstructionSiteServiceInterface;
+use App\Service\Sync\Interfaces\DisplayNameServiceInterface;
 use App\Service\Sync\Interfaces\FileServiceInterface;
 use App\Service\Sync\Interfaces\MapServiceInterface;
 

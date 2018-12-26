@@ -18,8 +18,8 @@ use App\Entity\MapSector;
 use App\Model\Frame;
 use App\Model\Point;
 use App\Model\SyncTransaction;
-use App\Service\Interfaces\DisplayNameServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Sync\Interfaces\DisplayNameServiceInterface;
 use App\Service\Sync\Interfaces\FileServiceInterface;
 use App\Service\Sync\Interfaces\MapServiceInterface;
 

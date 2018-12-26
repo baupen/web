@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service;
+namespace App\Service\Sync;
 
-use App\Service\Interfaces\DisplayNameServiceInterface;
+use App\Service\Sync\Interfaces\DisplayNameServiceInterface;
 
 class DisplayNameService implements DisplayNameServiceInterface
 {

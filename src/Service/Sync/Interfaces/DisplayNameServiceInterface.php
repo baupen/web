@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Interfaces;
+namespace App\Service\Sync\Interfaces;
 
 interface DisplayNameServiceInterface
 {
