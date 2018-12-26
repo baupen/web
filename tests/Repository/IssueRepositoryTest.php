@@ -1,13 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 7/21/18
- * Time: 6:34 PM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Tests\Repository;
-
 
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
@@ -25,6 +27,6 @@ class IssueRepositoryTest extends FixturesTestCase
 
         $filter = new Filter();
         $filter->setConstructionSite($constructionSite->getId());
-        $this->assertSameSize($repo->findBy(["map" => $constructionSite->getMapIds()]), $repo->filter($filter));
+        $this->assertSameSize($repo->findBy(['map' => $constructionSite->getMapIds()]), $repo->filter($filter));
     }
 }

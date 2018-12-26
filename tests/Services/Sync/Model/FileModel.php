@@ -9,12 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Interfaces;
+namespace App\Tests\Services\Sync\Model;
 
-interface FileSystemSyncServiceInterface
+use App\Entity\Traits\FileTrait;
+
+class FileModel
 {
-    /**
-     * syncs the filesystem with the database, creating/updating construction sites as needed.
-     */
-    public function sync();
+    use FileTrait;
 }

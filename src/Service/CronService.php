@@ -12,14 +12,14 @@
 namespace App\Service;
 
 use App\Service\Interfaces\CronServiceInterface;
-use App\Service\Interfaces\FileSystemSyncServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Interfaces\SyncServiceInterface;
 use Psr\Log\LoggerInterface;
 
 class CronService implements CronServiceInterface
 {
     /**
-     * @var FileSystemSyncServiceInterface
+     * @var SyncServiceInterface
      */
     private $fileSystemSyncService;
 
@@ -33,7 +33,7 @@ class CronService implements CronServiceInterface
      */
     private $logger;
 
-    public function __construct(FileSystemSyncServiceInterface $fileSystemSyncService, PathServiceInterface $pathService, LoggerInterface $logger)
+    public function __construct(SyncServiceInterface $fileSystemSyncService, PathServiceInterface $pathService, LoggerInterface $logger)
     {
         $this->fileSystemSyncService = $fileSystemSyncService;
         $this->pathService = $pathService;

@@ -21,6 +21,7 @@ trait IdTrait
 {
     /**
      * @var string|null
+     *                  will be null when not inserted into the db yet
      *
      * @ORM\Id
      * @ORM\Column(name="id", type="guid")
@@ -29,7 +30,7 @@ trait IdTrait
     private $id;
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getId()
     {
@@ -42,5 +43,10 @@ trait IdTrait
     public function setId(string $id): void
     {
         $this->id = $id;
+    }
+
+    public function isPersistedInDatabase()
+    {
+        return $this->id !== null;
     }
 }

@@ -11,10 +11,10 @@
 
 namespace App;
 
-use App\Entity\Traits\IdTrait;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
@@ -24,26 +24,59 @@ class Kernel extends BaseKernel
 
     const CONFIG_EXTS = '.{php,xml,yaml,yml}';
 
+    private $projectDir = null;
+
+    /**
+     * overwrite default implementation because it is much simpler this way.
+     *
+     * @return string|null
+     */
+    public function getProjectDir()
+    {
+        if ($this->projectDir === null) {
+            $this->projectDir = \dirname(__DIR__);
+        }
+
+        return $this->projectDir;
+    }
+
+    /**
+     * @return string
+     */
     public function getCacheDir()
     {
         return $this->getProjectDir() . '/var/cache/' . $this->environment;
     }
 
+    /**
+     * @return string
+     */
     public function getLogDir()
     {
         return $this->getProjectDir() . '/var/log';
     }
 
+    /**
+     * @return \Generator|iterable|\Symfony\Component\HttpKernel\Bundle\BundleInterface[]
+     */
     public function registerBundles()
     {
         $contents = require $this->getProjectDir() . '/config/bundles.php';
         foreach ($contents as $class => $envs) {
             if (isset($envs['all']) || isset($envs[$this->environment])) {
-                yield new $class();
+                /** @var BundleInterface $bundle */
+                $bundle = new $class();
+                yield $bundle;
             }
         }
     }
 
+    /**
+     * @param ContainerBuilder $container
+     * @param LoaderInterface $loader
+     *
+     * @throws \Exception
+     */
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
     {
         $container->setParameter('container.autowiring.strict_mode', true);
@@ -57,6 +90,11 @@ class Kernel extends BaseKernel
         $loader->load($confDir . '/services_' . $this->environment . self::CONFIG_EXTS, 'glob');
     }
 
+    /**
+     * @param RouteCollectionBuilder $routes
+     *
+     * @throws \Symfony\Component\Config\Exception\LoaderLoadException
+     */
     protected function configureRoutes(RouteCollectionBuilder $routes)
     {
         $confDir = $this->getProjectDir() . '/config';
@@ -68,10 +106,4 @@ class Kernel extends BaseKernel
         }
         $routes->import($confDir . '/routes' . self::CONFIG_EXTS, '/', 'glob');
     }
-}
-
-function getIdFilter($element)
-{
-    /* @var IdTrait $element */
-    return $element->getId();
 }

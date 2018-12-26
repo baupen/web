@@ -40,7 +40,6 @@ class IssuePositionTransformer
         }
 
         $position = new \App\Api\External\Entity\IssuePosition();
-
         $point = new Point();
         $point->setX($entity->getPositionX());
         $point->setY($entity->getPositionY());

@@ -93,7 +93,7 @@ class IssueRepository extends EntityRepository
         // due to a bug in doctrine empty arrays are the same as null arrays after persist/retrieve from db
         // therefore handle empty arrays as null arrays in lack of a better solution
         // bugfix will only be included in 3.0 because its a breaking change
-        $unsafeArrays = $filter->getId() !== null;
+        $unsafeArrays = $filter->isPersistedInDatabase();
 
         $queryBuilder->from(Issue::class, 'i');
         $queryBuilder->leftJoin('i.craftsman', 'c');

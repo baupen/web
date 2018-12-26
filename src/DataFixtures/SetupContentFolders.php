@@ -12,8 +12,8 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
-use App\Service\Interfaces\FileSystemSyncServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Interfaces\SyncServiceInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -32,11 +32,11 @@ class SetupContentFolders extends BaseFixture
     private $serializer;
 
     /**
-     * @var FileSystemSyncServiceInterface
+     * @var SyncServiceInterface
      */
     private $fileSystemSyncService;
 
-    public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer, FileSystemSyncServiceInterface $fileSystemSyncService)
+    public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer, SyncServiceInterface $fileSystemSyncService)
     {
         $this->pathService = $pathService;
         $this->serializer = $serializer;
@@ -49,6 +49,7 @@ class SetupContentFolders extends BaseFixture
      * @param ObjectManager $manager
      *
      * @throws \BadMethodCallException
+     * @throws \Exception
      */
     public function load(ObjectManager $manager)
     {
@@ -62,13 +63,20 @@ class SetupContentFolders extends BaseFixture
     /**
      * @param $sourceFolder
      * @param $destinationFolder
+     *
+     * @throws \Exception
      */
     private function copyRecursively($sourceFolder, $destinationFolder)
     {
-        $dir = opendir($sourceFolder);
         if (!is_dir($destinationFolder)) {
-            @mkdir($destinationFolder);
+            mkdir($destinationFolder);
         }
+
+        $dir = opendir($sourceFolder);
+        if ($dir === false) {
+            throw new \Exception('failed to open dir ' . $dir);
+        }
+
         while (false !== ($file = readdir($dir))) {
             if (($file !== '.') && ($file !== '..')) {
                 if (is_dir($sourceFolder . '/' . $file)) {
@@ -78,6 +86,7 @@ class SetupContentFolders extends BaseFixture
                 }
             }
         }
+
         closedir($dir);
     }
 

@@ -29,6 +29,8 @@ class FilterController extends BaseDoctrineController
      *
      * @param $identifier
      *
+     * @throws \Exception
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function shareAction($identifier)

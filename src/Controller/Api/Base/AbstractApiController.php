@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -72,10 +73,10 @@ abstract class AbstractApiController extends BaseDoctrineController
             return false;
         }
 
-        $parsedRequest = $this->get('serializer')->deserialize($content, $targetClass, 'json');
+        $parsedRequest = $this->getSerializer()->deserialize($content, $targetClass, 'json');
 
         // check all properties defined
-        $errors = $this->get('validator')->validate($parsedRequest);
+        $errors = $this->getValidator()->validate($parsedRequest);
         if (\count($errors) > 0) {
             $errorResponse = $this->fail(self::REQUEST_VALIDATION_FAILED);
 
@@ -99,9 +100,7 @@ abstract class AbstractApiController extends BaseDoctrineController
      */
     protected function json($data, int $status = 200, array $headers = [], array $context = []): JsonResponse
     {
-        $serializer = $this->get('serializer');
-
-        $json = $serializer->serialize($data, 'json', array_merge([
+        $json = $this->getSerializer()->serialize($data, 'json', array_merge([
             'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS | JSON_UNESCAPED_UNICODE,
         ], $context));
 
@@ -134,11 +133,11 @@ abstract class AbstractApiController extends BaseDoctrineController
     protected function fail(string $message)
     {
         //shorten request context
-        $requestContext = $this->get('request_stack')->getCurrentRequest()->getContent();
+        $requestContext = $this->getRequestStack()->getCurrentRequest()->getContent();
         if (mb_strlen($requestContext) > 200) {
             $requestContext = mb_substr($requestContext, 0, 200);
         }
-        $this->get('logger')->error('Api fail ' . ': ' . $message . ' for ' . $requestContext);
+        $this->getLogger()->error('Api fail ' . ': ' . $message . ' for ' . $requestContext);
 
         return $this->json(new FailResponse($message, $this->errorMessageToStatusCode($message)), Response::HTTP_BAD_REQUEST);
     }
@@ -153,5 +152,37 @@ abstract class AbstractApiController extends BaseDoctrineController
     protected function success($data)
     {
         return $this->json(new SuccessfulResponse($data));
+    }
+
+    /**
+     * @return SerializerInterface
+     */
+    private function getSerializer()
+    {
+        return $this->get('serializer');
+    }
+
+    /**
+     * @return ValidatorInterface
+     */
+    private function getValidator()
+    {
+        return $this->get('validator');
+    }
+
+    /**
+     * @return LoggerInterface
+     */
+    private function getLogger()
+    {
+        return $this->get('logger');
+    }
+
+    /**
+     * @return RequestStack
+     */
+    private function getRequestStack()
+    {
+        return $this->get('request_stack');
     }
 }

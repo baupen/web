@@ -30,7 +30,8 @@ class ReadControllerTest extends ApiController
     const TYPE_NULLABLE = 128;
 
     /**
-     * tests that only valid, specified properties are returned
+     * tests that only valid, specified properties are returned.
+     *
      * @throws \Exception
      */
     public function testPublicProperties()
@@ -71,63 +72,63 @@ class ReadControllerTest extends ApiController
         $this->assertNull($readResponse->data->changedUser);
         $this->assertNotEmpty($readResponse->data->changedConstructionSites);
 
-        $metaDefinition = ["id" => self::TYPE_UUID, "lastChangeTime" => self::TYPE_DATE_TIME];
+        $metaDefinition = ['id' => self::TYPE_UUID, 'lastChangeTime' => self::TYPE_DATE_TIME];
 
         $this->assertPropertiesMatch($readResponse->data->changedConstructionSites, [
-                "name" => self::TYPE_STRING,
-                "address" => [
-                    "_required" => false,
-                    "streetAddress" => self::TYPE_STRING | self::TYPE_NULLABLE,
-                    "postalCode" => self::TYPE_INT | self::TYPE_NULLABLE,
-                    "locality" => self::TYPE_STRING | self::TYPE_NULLABLE,
-                    "country" => self::TYPE_STRING | self::TYPE_NULLABLE
+                'name' => self::TYPE_STRING,
+                'address' => [
+                    '_required' => false,
+                    'streetAddress' => self::TYPE_STRING | self::TYPE_NULLABLE,
+                    'postalCode' => self::TYPE_INT | self::TYPE_NULLABLE,
+                    'locality' => self::TYPE_STRING | self::TYPE_NULLABLE,
+                    'country' => self::TYPE_STRING | self::TYPE_NULLABLE,
                 ],
-                "maps" => self::TYPE_UUID_ARRAY,
-                "craftsmen" => self::TYPE_UUID_ARRAY,
-                "image" => ["id" => self::TYPE_UUID, "filename" => self::TYPE_STRING],
-                "meta" => $metaDefinition
+                'maps' => self::TYPE_UUID_ARRAY,
+                'craftsmen' => self::TYPE_UUID_ARRAY,
+                'image' => ['id' => self::TYPE_UUID, 'filename' => self::TYPE_STRING],
+                'meta' => $metaDefinition,
             ]
         );
 
         $this->assertPropertiesMatch(
             $readResponse->data->changedCraftsmen, [
-                "name" => self::TYPE_STRING,
-                "trade" => self::TYPE_STRING,
-                "meta" => $metaDefinition
+                'name' => self::TYPE_STRING,
+                'trade' => self::TYPE_STRING,
+                'meta' => $metaDefinition,
             ]
         );
 
-        $eventDefinition = ["time" => self::TYPE_DATE_TIME, "author" => self::TYPE_STRING];
-        $pointDefinition = ["x" => self::TYPE_DOUBLE, "y" => self::TYPE_DOUBLE];
-        $fileDefinition = ["id" => self::TYPE_UUID, "filename" => self::TYPE_STRING];
+        $eventDefinition = ['time' => self::TYPE_DATE_TIME, 'author' => self::TYPE_STRING];
+        $pointDefinition = ['x' => self::TYPE_DOUBLE, 'y' => self::TYPE_DOUBLE];
+        $fileDefinition = ['id' => self::TYPE_UUID, 'filename' => self::TYPE_STRING];
         $this->assertPropertiesMatch(
             $readResponse->data->changedIssues, [
-                "number" => self::TYPE_INT | self::TYPE_NULLABLE,
-                "isMarked" => self::TYPE_BOOLEAN,
-                "wasAddedWithClient" => self::TYPE_BOOLEAN,
-                "image" => $fileDefinition,
-                "description" => self::TYPE_STRING | self::TYPE_NULLABLE,
-                "craftsman" => self::TYPE_UUID | self::TYPE_NULLABLE,
-                "map" => self::TYPE_UUID,
-                "status" => [
-                    "registration" => $eventDefinition,
-                    "response" => $eventDefinition,
-                    "review" => $eventDefinition
+                'number' => self::TYPE_INT | self::TYPE_NULLABLE,
+                'isMarked' => self::TYPE_BOOLEAN,
+                'wasAddedWithClient' => self::TYPE_BOOLEAN,
+                'image' => $fileDefinition,
+                'description' => self::TYPE_STRING | self::TYPE_NULLABLE,
+                'craftsman' => self::TYPE_UUID | self::TYPE_NULLABLE,
+                'map' => self::TYPE_UUID,
+                'status' => [
+                    'registration' => $eventDefinition,
+                    'response' => $eventDefinition,
+                    'review' => $eventDefinition,
                 ],
-                "position" => ["point" => $pointDefinition, "zoomScale" => self::TYPE_DOUBLE, "mapFileId" => self::TYPE_UUID],
-                "meta" => $metaDefinition
+                'position' => ['point' => $pointDefinition, 'zoomScale' => self::TYPE_DOUBLE, 'mapFileId' => self::TYPE_UUID],
+                'meta' => $metaDefinition,
             ]
         );
 
         $this->assertPropertiesMatch(
             $readResponse->data->changedMaps, [
-                "name" => self::TYPE_STRING,
-                "children" => self::TYPE_UUID_ARRAY,
-                "issues" => self::TYPE_UUID_ARRAY,
-                "file" => $fileDefinition,
-                "sectors" => ["name" => self::TYPE_STRING, "color" => self::TYPE_STRING, "points" => $pointDefinition],
-                "sectorFrame" => ["startX" => self::TYPE_DOUBLE, "startY" => self::TYPE_DOUBLE, "width" => self::TYPE_DOUBLE, "height" => self::TYPE_DOUBLE],
-                "meta" => $metaDefinition
+                'name' => self::TYPE_STRING,
+                'children' => self::TYPE_UUID_ARRAY,
+                'issues' => self::TYPE_UUID_ARRAY,
+                'file' => $fileDefinition,
+                'sectors' => ['name' => self::TYPE_STRING, 'color' => self::TYPE_STRING, 'points' => $pointDefinition],
+                'sectorFrame' => ['startX' => self::TYPE_DOUBLE, 'startY' => self::TYPE_DOUBLE, 'width' => self::TYPE_DOUBLE, 'height' => self::TYPE_DOUBLE],
+                'meta' => $metaDefinition,
             ]
         );
 
@@ -139,15 +140,16 @@ class ReadControllerTest extends ApiController
     private function assertPropertiesMatch($object, $expectedProperties)
     {
         $required = false;
-        if (isset($expectedProperties["_required"])) {
-            $required = $expectedProperties["_required"];
-            unset($expectedProperties["_required"]);
+        if (isset($expectedProperties['_required'])) {
+            $required = $expectedProperties['_required'];
+            unset($expectedProperties['_required']);
         }
 
-        if (is_null($object)) {
+        if (null === $object) {
             if ($required) {
-                $this->fail("required object was not set");
+                $this->fail('required object was not set');
             }
+
             return;
         }
 
@@ -156,42 +158,42 @@ class ReadControllerTest extends ApiController
 
         $checkObject = function ($object) use ($expectedProperties, $checkValueType) {
             $properties = get_object_vars($object);
-            $this->assertSameSize($expectedProperties, $properties, implode(", ", array_keys($properties)));
+            $this->assertSameSize($expectedProperties, $properties, implode(', ', array_keys($properties)));
 
             foreach ($expectedProperties as $name => $type) {
-                $this->assertTrue(property_exists($object, $name), "property " . $name . " not found");
+                $this->assertTrue(property_exists($object, $name), 'property ' . $name . ' not found');
 
                 $value = $object->$name;
-                if (is_array($type)) {
+                if (\is_array($type)) {
                     $this->assertPropertiesMatch($value, $type);
                 } else {
                     if ($type & self::TYPE_NULLABLE && $value === null) {
                         // fine!
-                    } else if ($type & self::TYPE_STRING) {
-                        $this->assertTrue(is_string($value));
-                    } else if ($type & self::TYPE_INT) {
-                        $this->assertTrue(is_int($value));
-                    } else if ($type & self::TYPE_BOOLEAN) {
-                        $this->assertTrue(is_bool($value));
-                    } else if ($type & self::TYPE_DOUBLE) {
-                        $this->assertTrue(is_double($value) || is_int($value));
-                    } else if ($type & self::TYPE_UUID) {
-                        $this->assertTrue(is_string($value));
-                        $this->assertTrue(strlen(Uuid::NIL) === strlen($value));
-                    } else if ($type & self::TYPE_DATE_TIME) {
-                        $this->assertTrue(is_string($value));
-                        $this->assertTrue(strlen("2018-12-09T14:22:47+01:00") === strlen($value));
-                    } else if ($type & self::TYPE_UUID_ARRAY) {
-                        $this->assertTrue(is_array($value));
+                    } elseif ($type & self::TYPE_STRING) {
+                        $this->assertTrue(\is_string($value));
+                    } elseif ($type & self::TYPE_INT) {
+                        $this->assertTrue(\is_int($value));
+                    } elseif ($type & self::TYPE_BOOLEAN) {
+                        $this->assertTrue(\is_bool($value));
+                    } elseif ($type & self::TYPE_DOUBLE) {
+                        $this->assertTrue(\is_float($value) || \is_int($value));
+                    } elseif ($type & self::TYPE_UUID) {
+                        $this->assertTrue(\is_string($value));
+                        $this->assertTrue(\mb_strlen(Uuid::NIL) === \mb_strlen($value));
+                    } elseif ($type & self::TYPE_DATE_TIME) {
+                        $this->assertTrue(\is_string($value));
+                        $this->assertTrue(\mb_strlen('2018-12-09T14:22:47+01:00') === \mb_strlen($value));
+                    } elseif ($type & self::TYPE_UUID_ARRAY) {
+                        $this->assertTrue(\is_array($value));
                         foreach ($value as $item) {
-                            $this->assertTrue(strlen(Uuid::NIL) === strlen($item));
+                            $this->assertTrue(\mb_strlen(Uuid::NIL) === \mb_strlen($item));
                         }
                     }
                 }
             }
         };
 
-        if (is_array($object)) {
+        if (\is_array($object)) {
             foreach ($object as $item) {
                 $checkObject($item);
             }
@@ -202,6 +204,7 @@ class ReadControllerTest extends ApiController
 
     /**
      * tests the read method.
+     *
      * @throws \Exception
      */
     public function testRead()

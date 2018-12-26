@@ -1,13 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 6/26/18
- * Time: 8:40 PM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Tests\Controller\Api;
-
 
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\CraftsmenRequest;
@@ -32,17 +34,17 @@ class DispatchControllerTest extends ApiController
         $this->assertNotNull($craftsmanData->data);
         $this->assertNotNull($craftsmanData->data->craftsmen);
 
-        $this->assertTrue(is_array($craftsmanData->data->craftsmen));
+        $this->assertTrue(\is_array($craftsmanData->data->craftsmen));
         foreach ($craftsmanData->data->craftsmen as $craftsman) {
             $this->assertNotNull($craftsman);
-            $this->assertObjectHasAttribute("name", $craftsman);
-            $this->assertObjectHasAttribute("trade", $craftsman);
-            $this->assertObjectHasAttribute("notReadIssuesCount", $craftsman);
-            $this->assertObjectHasAttribute("notRespondedIssuesCount", $craftsman);
-            $this->assertObjectHasAttribute("nextResponseLimit", $craftsman);
-            $this->assertObjectHasAttribute("lastEmailSent", $craftsman);
-            $this->assertObjectHasAttribute("lastOnlineVisit", $craftsman);
-            $this->assertObjectHasAttribute("personalUrl", $craftsman);
+            $this->assertObjectHasAttribute('name', $craftsman);
+            $this->assertObjectHasAttribute('trade', $craftsman);
+            $this->assertObjectHasAttribute('notReadIssuesCount', $craftsman);
+            $this->assertObjectHasAttribute('notRespondedIssuesCount', $craftsman);
+            $this->assertObjectHasAttribute('nextResponseLimit', $craftsman);
+            $this->assertObjectHasAttribute('lastEmailSent', $craftsman);
+            $this->assertObjectHasAttribute('lastOnlineVisit', $craftsman);
+            $this->assertObjectHasAttribute('personalUrl', $craftsman);
         }
     }
 
@@ -63,12 +65,12 @@ class DispatchControllerTest extends ApiController
         $craftsmanData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($craftsmanData->data);
-        $this->assertObjectHasAttribute("successfulIds", $craftsmanData->data);
-        $this->assertObjectHasAttribute("skippedIds", $craftsmanData->data);
-        $this->assertObjectHasAttribute("failedIds", $craftsmanData->data);
+        $this->assertObjectHasAttribute('successfulIds', $craftsmanData->data);
+        $this->assertObjectHasAttribute('skippedIds', $craftsmanData->data);
+        $this->assertObjectHasAttribute('failedIds', $craftsmanData->data);
 
         /** @var MockEmailService $emailService */
         $emailService = $client->getContainer()->get(EmailServiceInterface::class);
-        $this->assertTrue(count($emailService->getReceivers()) > 0);
+        $this->assertTrue(\count($emailService->getReceivers()) > 0);
     }
 }

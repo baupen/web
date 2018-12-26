@@ -36,7 +36,7 @@ interface ImageServiceInterface
      * @param array $issues
      * @param string $size
      *
-     * @return string
+     * @return string|null
      */
     public function generateMapImage(Map $map, array $issues, $size = self::SIZE_THUMBNAIL);
 
@@ -45,7 +45,7 @@ interface ImageServiceInterface
      * @param array $issues
      * @param string $size
      *
-     * @return string
+     * @return string|null
      */
     public function generateMapImageForReport(Map $map, array $issues, $size = self::SIZE_THUMBNAIL);
 
