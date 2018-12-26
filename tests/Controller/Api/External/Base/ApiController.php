@@ -125,6 +125,7 @@ class ApiController extends AbstractApiController
 
     /**
      * @param Map[] $maps
+     *
      * @return Map
      */
     protected function getMapWithFile($maps)
@@ -134,7 +135,8 @@ class ApiController extends AbstractApiController
                 return $map;
             }
         }
-        $this->fail("no map found with a file attached");
+        $this->fail('no map found with a file attached');
+
         return null;
     }
 
@@ -150,11 +152,11 @@ class ApiController extends AbstractApiController
         $this->assertSame($checkIssue->wasAddedWithClient, $issue->getWasAddedWithClient());
         $this->assertSame($checkIssue->isMarked, $issue->getIsMarked());
         if ($issue->getImage() !== null) {
-            $this->assertTrue(property_exists($checkIssue, "image"));
+            $this->assertTrue(property_exists($checkIssue, 'image'));
             $this->assertSame($checkIssue->image->id, $issue->getImage()->getId());
             $this->assertSame($checkIssue->image->filename, $issue->getImage()->getFilename());
         } else {
-            $this->assertTrue(!property_exists($checkIssue, "image") || $checkIssue->image === null);
+            $this->assertTrue(!property_exists($checkIssue, 'image') || $checkIssue->image === null);
         }
         $this->assertSame($checkIssue->description, $issue->getDescription());
         $this->assertSame($checkIssue->map, $issue->getMap());

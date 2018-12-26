@@ -24,6 +24,7 @@ class IssueControllerTest extends ApiController
 {
     /**
      * tests the create issue method.
+     *
      * @throws \Exception
      */
     public function testCreateIssue()
@@ -93,6 +94,7 @@ class IssueControllerTest extends ApiController
 
     /**
      * tests the create issue method.
+     *
      * @throws \Exception
      */
     public function testUpdateIssue()
@@ -142,6 +144,7 @@ class IssueControllerTest extends ApiController
 
     /**
      * tests upload/download functionality.
+     *
      * @throws \Exception
      */
     public function testIssueActions()

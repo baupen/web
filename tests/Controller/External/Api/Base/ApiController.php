@@ -1,13 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 6/26/18
- * Time: 8:11 PM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Tests\Controller\External\Api\Base;
-
 
 use App\Entity\ConstructionSite;
 use App\Tests\Controller\Api\Base\AbstractApiController;
@@ -26,14 +28,16 @@ class ApiController extends AbstractApiController
      */
     protected function getClient()
     {
-        if ($this->client == null) {
+        if ($this->client === null) {
             $this->client = static::createClient();
         }
+
         return $this->client;
     }
 
     /**
      * @param string $url
+     *
      * @return Response
      */
     protected function authenticatedGetRequest($url)
@@ -48,7 +52,6 @@ class ApiController extends AbstractApiController
         return $client->getResponse();
     }
 
-
     /**
      * @var ConstructionSite
      */
@@ -59,9 +62,10 @@ class ApiController extends AbstractApiController
      */
     protected function getSomeConstructionSite()
     {
-        if ($this->someConstructionSite == null) {
+        if ($this->someConstructionSite === null) {
             $this->someConstructionSite = $this->getClient()->getContainer()->get('doctrine')->getRepository(ConstructionSite::class)->findOneBy([]);
         }
+
         return $this->someConstructionSite;
     }
 }

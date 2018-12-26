@@ -1,15 +1,16 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 6/26/18
- * Time: 8:40 PM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Tests\Controller\Api;
 
-
-use App\Api\Entity\Foyer\Issue;
 use App\Api\Entity\Foyer\UpdateIssue;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\IssueIdRequest;
@@ -27,18 +28,18 @@ class FoyerControllerTest extends ApiController
         $this->assertNotNull($issuesData->data);
         $this->assertNotNull($issuesData->data->issues);
 
-        $this->assertTrue(is_array($issuesData->data->issues));
+        $this->assertTrue(\is_array($issuesData->data->issues));
         foreach ($issuesData->data->issues as $issue) {
             $this->assertNotNull($issue);
-            $this->assertObjectHasAttribute("isMarked", $issue);
-            $this->assertObjectHasAttribute("wasAddedWithClient", $issue);
-            $this->assertObjectHasAttribute("description", $issue);
-            $this->assertObjectHasAttribute("imageThumbnail", $issue);
-            $this->assertObjectHasAttribute("imageFull", $issue);
-            $this->assertObjectHasAttribute("craftsmanId", $issue);
-            $this->assertObjectHasAttribute("map", $issue);
-            $this->assertObjectHasAttribute("uploadedAt", $issue);
-            $this->assertObjectHasAttribute("uploadByName", $issue);
+            $this->assertObjectHasAttribute('isMarked', $issue);
+            $this->assertObjectHasAttribute('wasAddedWithClient', $issue);
+            $this->assertObjectHasAttribute('description', $issue);
+            $this->assertObjectHasAttribute('imageThumbnail', $issue);
+            $this->assertObjectHasAttribute('imageFull', $issue);
+            $this->assertObjectHasAttribute('craftsmanId', $issue);
+            $this->assertObjectHasAttribute('map', $issue);
+            $this->assertObjectHasAttribute('uploadedAt', $issue);
+            $this->assertObjectHasAttribute('uploadByName', $issue);
         }
     }
 
@@ -56,11 +57,11 @@ class FoyerControllerTest extends ApiController
         $this->assertNotNull($craftsmanData->data);
         $this->assertNotNull($craftsmanData->data->craftsmen);
 
-        $this->assertTrue(is_array($craftsmanData->data->craftsmen));
+        $this->assertTrue(\is_array($craftsmanData->data->craftsmen));
         foreach ($craftsmanData->data->craftsmen as $craftsman) {
             $this->assertNotNull($craftsman);
-            $this->assertObjectHasAttribute("name", $craftsman);
-            $this->assertObjectHasAttribute("trade", $craftsman);
+            $this->assertObjectHasAttribute('name', $craftsman);
+            $this->assertObjectHasAttribute('trade', $craftsman);
         }
     }
 
@@ -76,6 +77,7 @@ class FoyerControllerTest extends ApiController
         $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
 
         $response = $this->authenticatedPostRequest($url, $constructionSiteRequest);
+
         return $this->checkResponse($response, ApiStatus::SUCCESS);
     }
 
@@ -90,7 +92,7 @@ class FoyerControllerTest extends ApiController
             $issue->setIsMarked(false);
             $issue->setResponseLimit(new \DateTime());
             $issue->setCraftsmanId($craftsman->getId());
-            $issue->setDescription("hello world");
+            $issue->setDescription('hello world');
             $issues[] = $issue;
         }
         $request = new \App\Api\Request\Foyer\UpdateIssuesRequest();
@@ -103,13 +105,13 @@ class FoyerControllerTest extends ApiController
         $this->assertNotNull($issuesData->data);
         $this->assertNotNull($issuesData->data->issues);
 
-        $this->assertTrue(is_array($issuesData->data->issues));
+        $this->assertTrue(\is_array($issuesData->data->issues));
         $this->assertSameSize($issues, $issuesData->data->issues);
         foreach ($issuesData->data->issues as $issue) {
             $this->assertNotNull($issue);
-            $this->assertEquals(false, $issue->isMarked);
-            $this->assertEquals("hello world", $issue->description);
-            $this->assertEquals($craftsman->getId(), $issue->craftsmanId);
+            $this->assertFalse($issue->isMarked);
+            $this->assertSame('hello world', $issue->description);
+            $this->assertSame($craftsman->getId(), $issue->craftsmanId);
         }
     }
 
@@ -132,15 +134,15 @@ class FoyerControllerTest extends ApiController
             'image/jpeg'
         );
 
-        $response = $this->authenticatedPostRequest($url, $request, ["some_key" => $file]);
+        $response = $this->authenticatedPostRequest($url, $request, ['some_key' => $file]);
         $issuesData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($issuesData->data);
         $this->assertNotNull($issuesData->data->issue);
 
-        $this->assertEquals($issuesData->data->issue->id, $apiIssue->id);
-        $this->assertNotEquals($issuesData->data->issue->imageThumbnail, $apiIssue->imageThumbnail);
-        $this->assertNotEquals($issuesData->data->issue->imageFull, $apiIssue->imageFull);
+        $this->assertSame($issuesData->data->issue->id, $apiIssue->id);
+        $this->assertNotSame($issuesData->data->issue->imageThumbnail, $apiIssue->imageThumbnail);
+        $this->assertNotSame($issuesData->data->issue->imageFull, $apiIssue->imageFull);
     }
 
     public function testIssueDelete()
@@ -165,7 +167,7 @@ class FoyerControllerTest extends ApiController
         $this->assertSameSize($ids, $issuesData->data->deletedIssues);
 
         $issues = $this->getIssues();
-        $this->assertTrue(count($issues->data->issues) === 0);
+        $this->assertTrue(\count($issues->data->issues) === 0);
     }
 
     public function testIssueConfirm()
@@ -193,14 +195,14 @@ class FoyerControllerTest extends ApiController
         foreach ($issuesData->data->numberIssues as $numberIssue) {
             $this->assertNotNull($numberIssue);
 
-            $this->assertObjectHasAttribute("number", $numberIssue);
-            $this->assertObjectHasAttribute("id", $numberIssue);
+            $this->assertObjectHasAttribute('number', $numberIssue);
+            $this->assertObjectHasAttribute('id', $numberIssue);
 
             $this->assertNotContains($numberIssue->number, $seenNumbers);
             $seenNumbers[] = $numberIssue->number;
         }
 
         $issues = $this->getIssues();
-        $this->assertTrue(count($issues->data->issues) === 0);
+        $this->assertTrue(\count($issues->data->issues) === 0);
     }
 }

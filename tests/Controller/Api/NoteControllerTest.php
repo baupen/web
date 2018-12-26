@@ -1,26 +1,22 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 6/26/18
- * Time: 8:40 PM
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace App\Tests\Controller\Api;
 
-
-use App\Api\Entity\Foyer\Issue;
 use App\Api\Entity\Note\UpdateNote;
-use App\Api\Entity\Register\UpdateIssue;
 use App\Api\Request\ConstructionSiteRequest;
-use App\Api\Request\IssueIdRequest;
-use App\Api\Request\IssueIdsRequest;
 use App\Api\Request\Note\NoteIdRequest;
 use App\Api\Request\Note\UpdateNoteRequest;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\ApiController;
-use ReflectionClass;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class NoteControllerTest extends ApiController
 {
@@ -31,10 +27,10 @@ class NoteControllerTest extends ApiController
         $this->assertNotNull($mapData->data->notes);
         $this->assertNotEmpty($mapData->data->notes);
         foreach ($mapData->data->notes as $note) {
-            $this->assertObjectHasAttribute("id", $note);
-            $this->assertObjectHasAttribute("content", $note);
-            $this->assertObjectHasAttribute("timestamp", $note);
-            $this->assertObjectHasAttribute("authorName", $note);
+            $this->assertObjectHasAttribute('id', $note);
+            $this->assertObjectHasAttribute('content', $note);
+            $this->assertObjectHasAttribute('timestamp', $note);
+            $this->assertObjectHasAttribute('authorName', $note);
         }
     }
 
@@ -49,7 +45,7 @@ class NoteControllerTest extends ApiController
         $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
 
         $updateNode = new UpdateNote();
-        $updateNode->setContent("my note");
+        $updateNode->setContent('my note');
         $constructionSiteRequest->setNote($updateNode);
         $response = $this->authenticatedPostRequest($url, $constructionSiteRequest);
         $noteData = $this->checkResponse($response, ApiStatus::SUCCESS);
@@ -57,10 +53,8 @@ class NoteControllerTest extends ApiController
         $this->assertNotNull($noteData->data);
         $this->assertNotNull($noteData->data->note);
 
-
         $dataAfter = $this->getNoteList();
-        $this->assertTrue(count($dataBefore->data->notes) + 1 === count($dataAfter->data->notes));
-
+        $this->assertTrue(\count($dataBefore->data->notes) + 1 === \count($dataAfter->data->notes));
     }
 
     public function testNoteUpdate()
@@ -72,7 +66,7 @@ class NoteControllerTest extends ApiController
         $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
 
         $updateNode = new UpdateNote();
-        $updateNode->setContent("my note");
+        $updateNode->setContent('my note');
         $updateNode->setId($this->getNote()->id);
         $constructionSiteRequest->setNote($updateNode);
 
@@ -84,9 +78,8 @@ class NoteControllerTest extends ApiController
         $this->assertNotNull($noteData->data);
         $this->assertNotNull($noteData->data->note);
 
-
         $dataAfter = $this->getNoteList();
-        $this->assertTrue(count($dataBefore->data->notes) === count($dataAfter->data->notes));
+        $this->assertTrue(\count($dataBefore->data->notes) === \count($dataAfter->data->notes));
     }
 
     public function testNoteDelete()
@@ -104,7 +97,7 @@ class NoteControllerTest extends ApiController
         $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $dataAfter = $this->getNoteList();
-        $this->assertTrue(count($dataBefore->data->notes) - 1 === count($dataAfter->data->notes));
+        $this->assertTrue(\count($dataBefore->data->notes) - 1 === \count($dataAfter->data->notes));
     }
 
     private function getNoteList()
@@ -116,6 +109,7 @@ class NoteControllerTest extends ApiController
         $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
 
         $response = $this->authenticatedPostRequest($url, $constructionSiteRequest);
+
         return $this->checkResponse($response, ApiStatus::SUCCESS);
     }
 
@@ -128,7 +122,7 @@ class NoteControllerTest extends ApiController
         $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
 
         $updateNode = new UpdateNote();
-        $updateNode->setContent("my note");
+        $updateNode->setContent('my note');
         $constructionSiteRequest->setNote($updateNode);
         $response = $this->authenticatedPostRequest($url, $constructionSiteRequest);
         $noteData = $this->checkResponse($response, ApiStatus::SUCCESS);
