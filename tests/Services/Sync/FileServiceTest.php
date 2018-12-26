@@ -22,7 +22,7 @@ class FileServiceTest extends TestCase
      */
     private $service;
 
-    private $resourcesFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'Resources';
+    private $resourcesFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'FileServiceResources';
 
     public function __construct(?string $name = null, array $data = [], string $dataName = '')
     {
@@ -30,7 +30,7 @@ class FileServiceTest extends TestCase
         $this->service = new FileService();
     }
 
-    public function testResolvesResourceFolderCorrectly()
+    public function testGetNewFiles_findsAllFiles()
     {
         $newFiles = $this->service->getNewFiles($this->resourcesFolder, 'pdf', [], function () {
             return new FileModel();

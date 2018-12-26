@@ -17,8 +17,6 @@ use App\Entity\MapSector;
 use App\Model\Point;
 use App\Model\SyncTransaction;
 use App\Service\Interfaces\PathServiceInterface;
-use App\Service\Sync\Interfaces\DisplayNameServiceInterface;
-use App\Service\Sync\Interfaces\FileServiceInterface;
 use App\Service\Sync\Interfaces\MapSectorServiceInterface;
 
 class MapSectorService implements MapSectorServiceInterface
@@ -29,20 +27,13 @@ class MapSectorService implements MapSectorServiceInterface
     private $pathService;
 
     /**
-     * @var DisplayNameServiceInterface
+     * MapSectorService constructor.
+     *
+     * @param PathServiceInterface $pathService
      */
-    private $displayNameService;
-
-    /**
-     * @var FileServiceInterface
-     */
-    private $fileService;
-
-    public function __construct(PathServiceInterface $pathService, DisplayNameServiceInterface $displayNameService, FileServiceInterface $fileService)
+    public function __construct(PathServiceInterface $pathService)
     {
         $this->pathService = $pathService;
-        $this->displayNameService = $displayNameService;
-        $this->fileService = $fileService;
     }
 
     /**
@@ -122,7 +113,7 @@ class MapSectorService implements MapSectorServiceInterface
         // remove replaced / not found ones
         foreach ($existingSectorsLookup as $key => $sector) {
             if (!array_key_exists($key, $newSectorsLookup) || !$sector->equals($newSectorsLookup[$key])) {
-                $mapFile->getSectors()->remove($sector);
+                $mapFile->getSectors()->removeElement($sector);
                 $syncTransaction->remove($sector);
             } else {
                 unset($newSectorsLookup[$key]);
@@ -130,7 +121,7 @@ class MapSectorService implements MapSectorServiceInterface
         }
 
         // save changes
-        foreach ($newMapSectors as $newSector) {
+        foreach ($newSectorsLookup as $newSector) {
             $newSector->setMapFile($mapFile);
             $mapFile->getSectors()->add($newSector);
             $syncTransaction->persist($newSector);
@@ -150,7 +141,7 @@ class MapSectorService implements MapSectorServiceInterface
         $name = preg_replace("/[\s\-&]/", '', $name);
 
         $kitchen = ['küche', 'essen', 'kochen'];
-        $wetAreas = ['wc', 'bad', 'klo', 'toilette'];
+        $wetAreas = ['wc', 'bad', 'klo', 'toilette', 'dusch'];
         $livingArea = ['wohn', 'zimmer', 'essen', 'schlaf', 'gäste', 'gast'];
         $storage = ['keller', 'auto', 'garage', 'wasch', 'wirtschaft'];
 
@@ -204,7 +195,7 @@ class MapSectorService implements MapSectorServiceInterface
 
             $point = new Point();
             $point->x = $item->x;
-            $point->y = $item->x;
+            $point->y = $item->y;
             $points[] = $point;
         }
 
