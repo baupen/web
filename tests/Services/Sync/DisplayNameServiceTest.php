@@ -71,13 +71,13 @@ class DisplayNameServiceTest extends TestCase
         $cases = [
             [
                 'map 180916',
-                'map2 180916',
-                'map3 180916',
+                'map2 180816',
+                'map3 181016',
             ],
             [
                 'SAMEGROUP map 180916',
-                'SAMEGROUP map2 180916',
-                'SAMEGROUP map3 180916',
+                'SAMEGROUP map2 180816',
+                'SAMEGROUP map3 181016',
             ],
         ];
 
