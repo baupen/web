@@ -150,7 +150,7 @@ class ConstructionSiteService implements ConstructionSiteServiceInterface
     {
         $constructionSiteImagesDirectory = $this->pathService->getFolderForConstructionSiteImage($constructionSite);
         /** @var ConstructionSiteImage[] $newConstructionSiteImages */
-        $newConstructionSiteImages = $this->fileService->getFiles($constructionSiteImagesDirectory, '.jpg', $constructionSiteImages, function () {
+        $newConstructionSiteImages = $this->fileService->getNewFiles($constructionSiteImagesDirectory, '.jpg', $constructionSiteImages, function () {
             return new ConstructionSiteImage();
         });
 

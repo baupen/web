@@ -23,5 +23,5 @@ interface FileServiceInterface
      *
      * @return FileTrait[]
      */
-    public function getFiles(string $folder, string $ending, array $knownFiles, callable $createNewFile);
+    public function getNewFiles(string $folder, string $ending, array $knownFiles, callable $createNewFile);
 }

@@ -59,6 +59,8 @@ class UploadService implements UploadServiceInterface
      * @param Issue $issue
      * @param string $targetFileName
      *
+     * @throws \Exception
+     *
      * @return IssueImage|null
      */
     public function uploadIssueImage(UploadedFile $file, Issue $issue, string $targetFileName)

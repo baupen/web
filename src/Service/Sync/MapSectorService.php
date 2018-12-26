@@ -59,7 +59,7 @@ class MapSectorService implements MapSectorServiceInterface
             $fileNameWithoutExtension = mb_substr($mapFile->getFilename(), 0, -3);
 
             $mapSectorsJsonPath = $directory . \DIRECTORY_SEPARATOR . $fileNameWithoutExtension . 'sectors.json';
-            $mapSectors = $this->readMapSectors($mapSectorsJsonPath);
+            $mapSectors = $this->parseMapSectors($mapSectorsJsonPath);
 
             $this->applyMapSectors($syncTransaction, $mapFile, $mapSectors);
         }
@@ -70,7 +70,7 @@ class MapSectorService implements MapSectorServiceInterface
      *
      * @return MapSector[]|array
      */
-    private function readMapSectors(string $filePath)
+    private function parseMapSectors(string $filePath)
     {
         if (!file_exists($filePath)) {
             return [];
@@ -129,7 +129,7 @@ class MapSectorService implements MapSectorServiceInterface
             }
         }
 
-        // add new ones
+        // save changes
         foreach ($newMapSectors as $newSector) {
             $newSector->setMapFile($mapFile);
             $mapFile->getSectors()->add($newSector);

@@ -58,28 +58,9 @@ class MapFrameService implements MapFrameServiceInterface
             $fileNameWithoutExtension = mb_substr($mapFile->getFilename(), 0, -3);
 
             $frameJsonPath = $directory . \DIRECTORY_SEPARATOR . $fileNameWithoutExtension . 'sectors.frame.json';
-            $frame = $this->readFrame($frameJsonPath);
+            $frame = $this->parseFrame($frameJsonPath);
             $this->syncFrame($syncTransaction, $mapFile, $frame);
         }
-    }
-
-    /**
-     * @param SyncTransaction $syncTransaction
-     * @param MapFile $mapFile
-     * @param Frame|null $frame
-     */
-    private function syncFrame(SyncTransaction $syncTransaction, MapFile $mapFile, ?Frame $frame)
-    {
-        if ($mapFile->getSectorFrame() === null && $frame === null) {
-            return;
-        }
-
-        if ($mapFile->getSectorFrame() !== null && $frame !== null && !$frame->equals($mapFile->getSectorFrame())) {
-            return;
-        }
-
-        $mapFile->setSectorFrame($frame);
-        $syncTransaction->persist($mapFile);
     }
 
     /**
@@ -87,7 +68,7 @@ class MapFrameService implements MapFrameServiceInterface
      *
      * @return Frame|null
      */
-    private function readFrame(string $filePath)
+    private function parseFrame(string $filePath)
     {
         if (!file_exists($filePath)) {
             return null;
@@ -109,5 +90,24 @@ class MapFrameService implements MapFrameServiceInterface
         $frame->height = $json->lower - $json->upper;
 
         return $frame;
+    }
+
+    /**
+     * @param SyncTransaction $syncTransaction
+     * @param MapFile $mapFile
+     * @param Frame|null $frame
+     */
+    private function syncFrame(SyncTransaction $syncTransaction, MapFile $mapFile, ?Frame $frame)
+    {
+        if ($mapFile->getSectorFrame() === null && $frame === null) {
+            return;
+        }
+
+        if ($mapFile->getSectorFrame() !== null && $frame !== null && !$frame->equals($mapFile->getSectorFrame())) {
+            return;
+        }
+
+        $mapFile->setSectorFrame($frame);
+        $syncTransaction->persist($mapFile);
     }
 }

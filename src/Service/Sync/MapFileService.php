@@ -94,7 +94,7 @@ class MapFileService implements MapFileServiceInterface
     {
         $mapsDirectory = $this->pathService->getFolderForMapFile($constructionSite);
         /** @var MapFile[] $newMapFiles */
-        $newMapFiles = $this->fileService->getFiles($mapsDirectory, '.pdf', $mapFiles, function () {
+        $newMapFiles = $this->fileService->getNewFiles($mapsDirectory, '.pdf', $mapFiles, function () {
             return new MapFile();
         });
 

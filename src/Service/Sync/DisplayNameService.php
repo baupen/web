@@ -91,86 +91,19 @@ class DisplayNameService implements DisplayNameServiceInterface
             return $mapNames;
         }
 
-        // remove any entries occurring always
-        /** @var string[][] $partsAnalytics */
-        $partsAnalytics = [];
-        $mapParts = [];
+        /** @var string[][] $filenameGroupsStatistics */
+        /** @var string[][] $decomposedMapNames */
+        list($filenameGroupsStatistics, $decomposedMapNames) = $this->groupFilenameParts($mapNames);
 
-        // collect stats about file names
-        foreach ($mapNames as $mapName) {
-            $parts = explode(' ', $mapName);
-            $mapParts[] = $parts;
-            $partCount = \count($parts);
-            for ($i = 0; $i < $partCount; ++$i) {
-                if (!array_key_exists($i, $partsAnalytics)) {
-                    $partsAnalytics[$i] = [];
-                }
+        $this->removeIdenticalGroups($filenameGroupsStatistics, $decomposedMapNames);
 
-                $currentPart = $parts[$i];
-                if (!array_key_exists($currentPart, $partsAnalytics[$i])) {
-                    $partsAnalytics[$i][$currentPart] = 1;
-                } else {
-                    ++$partsAnalytics[$i][$currentPart];
-                }
-            }
-        }
-
-        // remove groups which are always the same
-        $partAnalyticsCount = \count($partsAnalytics);
-        for ($i = 0; $i < $partAnalyticsCount; ++$i) {
-            // only one value; can safely remove because will not contain any useful information
-            if (\count($partsAnalytics[$i]) === 1) {
-                // remove from parts list
-                foreach ($mapParts as &$mapPart) {
-                    unset($mapPart[$i]);
-                    $mapPart = array_values($mapPart);
-                }
-
-                //remove processed entry group
-                unset($partsAnalytics[$i]);
-                $partsAnalytics = array_values($partsAnalytics);
-                --$partAnalyticsCount;
-                --$i;
-            }
-        }
-
-        // remove groups which are very likely date groups
-        for ($i = 0; $i < $partAnalyticsCount; ++$i) {
-            $probablyDateGroup = true;
-            foreach ($partsAnalytics[$i] as $element => $counter) {
-                if (!is_numeric($element)) {
-                    $probablyDateGroup = false;
-                    break;
-                }
-
-                $probableYear = mb_substr($element, 0, 2);
-                $currentYear = mb_substr(date('Y'), 2, 2);
-                if ($probableYear < 10 || $probableYear > $currentYear) {
-                    $probablyDateGroup = false;
-                    break;
-                }
-            }
-
-            if ($probablyDateGroup) {
-                // remove from parts list
-                foreach ($mapParts as &$mapPart) {
-                    unset($mapPart[$i]);
-                    $mapPart = array_values($mapPart);
-                }
-
-                //remove processed entry group
-                unset($partsAnalytics[$i]);
-                $partsAnalytics = array_values($partsAnalytics);
-                --$partAnalyticsCount;
-                --$i;
-            }
-        }
+        $this->removeDateGroups($filenameGroupsStatistics, $decomposedMapNames);
 
         $counter = 0;
         $resultingNames = [];
         foreach ($mapNames as $key => $mapName) {
             // join parts back together
-            $newName = implode(' ', $mapParts[$counter++]);
+            $newName = implode(' ', $decomposedMapNames[$counter++]);
 
             $newName = $this->trimWhitespace($newName);
 
@@ -254,6 +187,116 @@ class DisplayNameService implements DisplayNameServiceInterface
         }
 
         return $prefixMap;
+    }
+
+    /**
+     * @param array $names
+     *
+     * @return \string[][],\string[][]
+     */
+    private function groupFilenameParts(array $names)
+    {
+        // remove any entries occurring always
+        /** @var string[][] $filenameGroupCount */
+        $filenameGroupCount = [];
+        $decomposedNames = [];
+
+        // collect stats about file names
+        foreach ($names as $name) {
+            $parts = explode(' ', $name);
+            $decomposedNames[] = $parts;
+            $partCount = \count($parts);
+            for ($i = 0; $i < $partCount; ++$i) {
+                if (!array_key_exists($i, $filenameGroupCount)) {
+                    $filenameGroupCount[$i] = [];
+                }
+
+                $currentPart = $parts[$i];
+                if (!array_key_exists($currentPart, $filenameGroupCount[$i])) {
+                    $filenameGroupCount[$i][$currentPart] = 1;
+                } else {
+                    ++$filenameGroupCount[$i][$currentPart];
+                }
+            }
+        }
+
+        return [$filenameGroupCount, $decomposedNames];
+    }
+
+    /**
+     * @param string[][] $filenameGroupsStatistics
+     * @param string[][] $decomposedNames
+     */
+    private function removeIdenticalGroups(array &$filenameGroupsStatistics, array &$decomposedNames)
+    {
+        // remove groups which are always the same
+        $partAnalyticsCount = \count($filenameGroupsStatistics);
+        for ($i = 0; $i < $partAnalyticsCount; ++$i) {
+            // only one value; can safely remove because will not contain any useful information
+            if (\count($filenameGroupsStatistics[$i]) === 1) {
+                $this->removeGroup($i, $filenameGroupsStatistics, $decomposedNames);
+
+                --$partAnalyticsCount;
+                --$i;
+            }
+        }
+    }
+
+    /**
+     * @param string[][] $filenameGroupsStatistics
+     * @param string[][] $decomposedNames
+     */
+    private function removeDateGroups(array &$filenameGroupsStatistics, array &$decomposedNames)
+    {
+        // remove groups which are always the same
+        $partAnalyticsCount = \count($filenameGroupsStatistics);
+
+        // remove groups which are very likely date groups
+        for ($i = 0; $i < $partAnalyticsCount; ++$i) {
+            $probablyDateGroup = true;
+
+            // ensure all values are of the form 170816
+            foreach ($filenameGroupsStatistics[$i] as $element => $counter) {
+                if (!is_numeric($element)) {
+                    $probablyDateGroup = false;
+                    break;
+                }
+
+                // check that year is probable
+                $probableYear = mb_substr($element, 0, 2);
+                $currentYear = mb_substr(date('Y'), 2, 2);
+                if ($probableYear < 10 || $probableYear > $currentYear) {
+                    $probablyDateGroup = false;
+                    break;
+                }
+            }
+
+            // remove if all values matched
+            if ($probablyDateGroup) {
+                $this->removeGroup($i, $filenameGroupsStatistics, $decomposedNames);
+
+                --$partAnalyticsCount;
+                --$i;
+            }
+        }
+    }
+
+    /**
+     * @param int $index
+     * @param string[][] $filenameGroupsStatistics
+     * @param string[][] $decomposedNames
+     */
+    private function removeGroup(int $index, array &$filenameGroupsStatistics, array &$decomposedNames)
+    {
+        // remove from parts list
+        foreach ($decomposedNames as &$name) {
+            unset($name[$index]);
+            $name = array_values($name);
+        }
+
+        //remove processed entry group
+        unset($filenameGroupsStatistics[$index]);
+        $filenameGroupsStatistics = array_values($filenameGroupsStatistics);
     }
 
     /**
