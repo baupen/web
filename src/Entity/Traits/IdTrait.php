@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
 trait IdTrait
 {
     /**
-     * @var string|null
+     * @var string
      *
      * @ORM\Id
      * @ORM\Column(name="id", type="guid")

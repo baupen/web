@@ -28,23 +28,23 @@ class IssuePosition extends BaseEntity
     use TimeTrait;
 
     /**
-     * @var float|null
+     * @var float
      *
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\Column(type="float")
      */
     private $positionX;
 
     /**
-     * @var float|null
+     * @var float
      *
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\Column(type="float")
      */
     private $positionY;
 
     /**
-     * @var float|null
+     * @var float
      *
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\Column(type="float")
      */
     private $positionZoomScale;
 
@@ -65,7 +65,7 @@ class IssuePosition extends BaseEntity
     /**
      * @return float|null
      */
-    public function getPositionX(): ?float
+    public function getPositionX(): float
     {
         return $this->positionX;
     }
@@ -73,7 +73,7 @@ class IssuePosition extends BaseEntity
     /**
      * @param float|null $positionX
      */
-    public function setPositionX(?float $positionX): void
+    public function setPositionX(float $positionX): void
     {
         $this->positionX = $positionX;
     }
@@ -81,7 +81,7 @@ class IssuePosition extends BaseEntity
     /**
      * @return float|null
      */
-    public function getPositionY(): ?float
+    public function getPositionY(): float
     {
         return $this->positionY;
     }
@@ -89,7 +89,7 @@ class IssuePosition extends BaseEntity
     /**
      * @param float|null $positionY
      */
-    public function setPositionY(?float $positionY): void
+    public function setPositionY(float $positionY): void
     {
         $this->positionY = $positionY;
     }
@@ -97,7 +97,7 @@ class IssuePosition extends BaseEntity
     /**
      * @return float|null
      */
-    public function getPositionZoomScale(): ?float
+    public function getPositionZoomScale(): float
     {
         return $this->positionZoomScale;
     }
@@ -105,7 +105,7 @@ class IssuePosition extends BaseEntity
     /**
      * @param float|null $positionZoomScale
      */
-    public function setPositionZoomScale(?float $positionZoomScale): void
+    public function setPositionZoomScale(float $positionZoomScale): void
     {
         $this->positionZoomScale = $positionZoomScale;
     }
