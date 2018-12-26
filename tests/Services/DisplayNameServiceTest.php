@@ -11,14 +11,13 @@
 
 namespace App\Tests\Services;
 
-use App\Service\DisplayNameService;
-use App\Service\Interfaces\DisplayNameServiceInterface;
+use App\Service\Sync\DisplayNameService;
 use PHPUnit\Framework\TestCase;
 
 class DisplayNameServiceTest extends TestCase
 {
     /**
-     * @var DisplayNameServiceInterface
+     * @var DisplayNameService
      */
     private $service;
 
