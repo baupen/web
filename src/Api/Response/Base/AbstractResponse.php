@@ -18,8 +18,8 @@ class AbstractResponse
      *
      * @param string $apiStatus
      * @param mixed $data
-     * @param null $error
-     * @param null $message
+     * @param string|null $message
+     * @param int|null $error
      */
     public function __construct(string $apiStatus, $data, $message = null, $error = null)
     {
