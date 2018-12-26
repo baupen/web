@@ -155,6 +155,7 @@ class MapService implements MapServiceInterface
             $map->setConstructionSite($constructionSite);
             $constructionSite->getMaps()->add($map);
 
+            $syncTransaction->persist($map);
             $mapLookup[$id++] = $map;
 
             return $id - 1;
