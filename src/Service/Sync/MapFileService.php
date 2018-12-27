@@ -78,7 +78,7 @@ class MapFileService implements MapFileServiceInterface
 
         $this->findNewMapFiles($syncTransaction, $constructionSite, $mapFiles);
 
-        $this->refreshMapFileDisplayFileNames($syncTransaction, $mapFiles);
+        $this->refreshDisplayFileNames($syncTransaction, $mapFiles);
 
         $this->mapSectorService->syncMapSectors($syncTransaction, $constructionSite);
 
@@ -110,7 +110,7 @@ class MapFileService implements MapFileServiceInterface
      * @param SyncTransaction $syncTransaction
      * @param MapFile[] $mapFiles
      */
-    private function refreshMapFileDisplayFileNames(SyncTransaction $syncTransaction, array $mapFiles)
+    private function refreshDisplayFileNames(SyncTransaction $syncTransaction, array $mapFiles)
     {
         $mapNames = [];
         foreach ($mapFiles as $mapFile) {

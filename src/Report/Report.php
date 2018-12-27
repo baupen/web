@@ -108,20 +108,18 @@ class Report
         $columnWidth = $this->pdfSizes->getColumnContentWidth($columnCount);
 
         //construction site description
-        $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
-        $this->pdfDocument->SetY($startY);
+        $this->goToStartOfColumn($startY, $currentColumn, $columnCount);
 
         $this->printH2($name, $columnWidth);
         $this->printP($address, $columnWidth);
 
-        $this->pdfDocument->Ln($this->pdfSizes->getLnHeight() * M_PI);
+        $this->pdfDocument->Ln($this->pdfSizes->getContentSpacerBig());
         $this->printP($elements, $columnWidth, true);
         $maxContentHeight = max($this->pdfDocument->GetY(), $maxContentHeight);
         ++$currentColumn;
 
         //filter used for generation
-        $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
-        $this->pdfDocument->SetY($startY);
+        $this->goToStartOfColumn($startY, $currentColumn, $columnCount);
 
         $this->printH2($filterHeader, $columnWidth);
 
@@ -132,7 +130,19 @@ class Report
         }
 
         //define start of next part
-        $this->pdfDocument->SetY(max($this->pdfDocument->GetY(), $maxContentHeight) + $this->pdfSizes->getContentSpacerBig());
+        $this->pdfDocument->SetY(max($this->pdfDocument->GetY(), $maxContentHeight));
+        $this->endRegion();
+    }
+
+    private function goToStartOfColumn($startY, $currentColumn, $columnCount)
+    {
+        $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
+        $this->pdfDocument->SetY($startY);
+    }
+
+    private function endRegion()
+    {
+        $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
     }
 
     private function printH2($text, $columnWidth = 0, $description = '')
@@ -220,7 +230,7 @@ class Report
         $startY = $this->pdfDocument->GetY();
 
         $printTitle = function () use ($name, $context) {
-            $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
+            $this->endRegion();
             $this->printH2($name, 0, $context);
         };
 

@@ -63,6 +63,7 @@ class FilterController extends ApiController
             return $this->fail(self::INVALID_IDENTIFIER);
         }
 
+        /** @var ConstructionSite $constructionSite */
         $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($filter->getConstructionSite());
 
         $data = new ReadData();

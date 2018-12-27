@@ -110,13 +110,13 @@ class ReportService implements ReportServiceInterface
         IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
         foreach ($orderedMaps as $map) {
             $issues = $issuesPerMap[$map->getId()];
+
             $this->addMap($report, $map, $issues);
             $this->addIssueTable($report, $filter, $issues);
+
             if ($reportElements->getWithImages()) {
                 $this->addIssueImageGrid($report, $issues);
             }
-            //add table with issues
-            //add columns with images
         }
 
         $report->save($filePath);

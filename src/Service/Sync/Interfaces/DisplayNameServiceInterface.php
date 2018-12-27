@@ -45,6 +45,7 @@ interface DisplayNameServiceInterface
      * @param string[] $elementNames as an (int id => string name) structure
      * @param callable $createNewElement called as $addElement(string $name); should return int id of the new element
      * @param callable $assignChildToParent called with $assignParent(string $childId, string $parentId)
+     * @param callable $clearParent called with $clearParent(string $childId)
      */
-    public function putIntoTreeStructure(array $elementNames, callable $createNewElement, callable $assignChildToParent);
+    public function putIntoTreeStructure(array $elementNames, callable $createNewElement, callable $assignChildToParent, callable $clearParent);
 }
