@@ -122,10 +122,20 @@ class DisplayNameServiceTest extends TestCase
             ++$assignChildToParentCallCount;
         };
 
-        $this->service->putIntoTreeStructure($elementNames, $createNewElement, $assignChildToParent);
+        $clearParentCallCount = 0;
+        $seenParentIds = [];
+        $clearParent = function ($childId) use (&$clearParentCallCount, &$seenParentIds) {
+            $seenParentIds[] = $childId;
+
+            ++$clearParentCallCount;
+        };
+
+        $this->service->putIntoTreeStructure($elementNames, $createNewElement, $assignChildToParent, $clearParent);
 
         $this->assertSame(2, $assignChildToParentCallCount);
         $this->assertEquals([2, 3], $seenChildIds, '$canonicalize = true', 0.0, 1, true);
+        $this->assertSame(1, $clearParentCallCount);
+        $this->assertEquals([1], $seenParentIds, '$canonicalize = true', 0.0, 1, true);
     }
 
     public function testPutIntoTreeStructure_parentCreatedOnDemand()
@@ -158,10 +168,20 @@ class DisplayNameServiceTest extends TestCase
             ++$assignChildToParentCallCount;
         };
 
-        $this->service->putIntoTreeStructure($elementNames, $createNewElement, $assignChildToParent);
+        $clearParentCallCount = 0;
+        $seenParentIds = [];
+        $clearParent = function ($childId) use (&$clearParentCallCount, &$seenParentIds) {
+            $seenParentIds[] = $childId;
+
+            ++$clearParentCallCount;
+        };
+
+        $this->service->putIntoTreeStructure($elementNames, $createNewElement, $assignChildToParent, $clearParent);
 
         $this->assertSame(3, $assignChildToParentCallCount);
         $this->assertSame(1, $createNewElementCallCount);
         $this->assertEquals([2, 3, 4], $seenChildIds, '$canonicalize = true', 0.0, 1, true);
+        $this->assertSame(1, $clearParentCallCount);
+        $this->assertEquals([1], $seenParentIds, '$canonicalize = true', 0.0, 1, true);
     }
 }
