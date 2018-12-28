@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Report;
+namespace App\Service\Report;
 
 use App\Helper\ImageHelper;
 
@@ -55,7 +55,7 @@ class Report
     {
         //set typography
         $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
-        $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getTextFontSize());
         $this->pdfDocument->SetLineWidth($this->pdfSizes->getLineWidth());
 
         // set colors
@@ -123,7 +123,7 @@ class Report
 
         $this->printH2($filterHeader, $columnWidth);
 
-        $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getTextFontSize());
         foreach ($filterEntries as $name => $value) {
             $this->pdfDocument->SetX($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
             $this->printHtmlP('<b>' . $name . '</b>: ' . $value);
@@ -147,12 +147,12 @@ class Report
 
     private function printH2($text, $columnWidth = 0, $description = '')
     {
-        $this->pdfDocument->SetFontSize($this->pdfSizes->getBigFontSize());
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getTitleFontSize());
         $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
         $this->pdfDocument->MultiCell($columnWidth, 0, $text, 0, 'L', false, 1);
 
         if (mb_strlen($description) > 0) {
-            $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
+            $this->pdfDocument->SetFontSize($this->pdfSizes->getTextFontSize());
             $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
             $this->pdfDocument->MultiCell($columnWidth, 0, $description, 0, 'L', false, 1);
         }
@@ -162,12 +162,12 @@ class Report
 
     private function printH3($text, $columnWidth = 0, $description = '')
     {
-        $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getTextFontSize());
         $this->pdfDocument->SetFont(...$this->pdfDesign->getEmphasisFontFamily());
         $this->pdfDocument->MultiCell($columnWidth, 0, $text, 0, 'L', false, 1);
 
         if (mb_strlen($description) > 0) {
-            $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
+            $this->pdfDocument->SetFontSize($this->pdfSizes->getTextFontSize());
             $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
             $this->pdfDocument->MultiCell($columnWidth, 0, $description, 0, 'L', false, 1);
         }
@@ -181,7 +181,7 @@ class Report
         } else {
             $this->pdfDocument->SetTextColor(...$this->pdfDesign->getTextColor());
         }
-        $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getTextFontSize());
         $this->pdfDocument->MultiCell($columnWidth, 0, $text, 0, 'L', false, 2);
 
         $this->pdfDocument->SetTextColor(...$this->pdfDesign->getTextColor());
@@ -289,7 +289,7 @@ class Report
 
         //adapt font for table content
         $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
-        $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getTextFontSize());
         $this->pdfDocument->SetFont(...$this->pdfDesign->getEmphasisFontFamily());
 
         //make header upper case
@@ -414,7 +414,7 @@ class Report
     {
         $this->setDefaults();
 
-        $columnWidth = $this->pdfSizes->getColumnContentWidth($columnCount, true);
+        $columnWidth = $this->pdfSizes->getColumnContentWidth($columnCount);
 
         $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
         $cellWidthPadding = $this->pdfSizes->getTableCellPadding()[0] + $this->pdfSizes->getTableCellPadding()[2];
@@ -431,7 +431,7 @@ class Report
             }
 
             //check if image fits on current page
-            if ($this->pdfDocument->GetY() + $rowHeight + $this->pdfSizes->getColumnGutter() > $this->pdfSizes->getContentYEnd()) {
+            if ($this->pdfDocument->GetY() + $rowHeight > $this->pdfSizes->getContentYEnd()) {
                 //force new page
                 $this->pdfDocument->AddPage();
                 $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
@@ -444,12 +444,12 @@ class Report
                 //image
                 $height = $entry['height'];
                 $width = $entry['width'];
-                $xStart = $this->pdfSizes->getColumnStart($currentColumn, $columnCount, true) + (((float)$columnWidth - $width) / 2);
+                $xStart = $this->pdfSizes->getColumnStart($currentColumn, $columnCount) + (((float)$columnWidth - $width) / 2);
                 $this->pdfDocument->Image($entry['imagePath'], $xStart, $startY, $width, $height, '', '', '', '', 300, '', false, false, 1);
 
                 //identification
                 $this->pdfDocument->SetXY($xStart, $startY);
-                $width = mb_strlen((string)$entry['identification']) * $this->pdfSizes->getRegularFontSize() / 5 + $cellWidthPadding;
+                $width = mb_strlen((string)$entry['identification']) * $this->pdfSizes->getTextFontSize() / 5 + $cellWidthPadding;
                 $this->pdfDocument->Cell($width, 0, $entry['identification'], 0, 0, '', true);
                 ++$currentColumn;
             }

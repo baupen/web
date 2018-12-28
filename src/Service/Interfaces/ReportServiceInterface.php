@@ -13,7 +13,7 @@ namespace App\Service\Interfaces;
 
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
-use App\Report\ReportElements;
+use App\Service\Report\ReportElements;
 
 interface ReportServiceInterface
 {

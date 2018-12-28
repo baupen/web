@@ -9,15 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Report;
+namespace App\Service\Report;
 
 class PdfDesign
 {
-    /**
-     * @var string
-     */
-    private $fontFamily = 'opensans';
-
     /**
      * @var int[]
      */
@@ -42,6 +37,11 @@ class PdfDesign
      * @var int[]
      */
     private $lighterBackground = [240, 240, 240];
+
+    /**
+     * @var string
+     */
+    private $fontFamily = 'opensans';
 
     /**
      * @return string[]
@@ -105,13 +105,5 @@ class PdfDesign
     public function getSecondaryTextColor(): array
     {
         return $this->secondaryTextColor;
-    }
-
-    /**
-     * @param int[] $secondaryTextColor
-     */
-    public function setSecondaryTextColor(array $secondaryTextColor): void
-    {
-        $this->secondaryTextColor = $secondaryTextColor;
     }
 }

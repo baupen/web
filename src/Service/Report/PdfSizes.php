@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Report;
+namespace App\Service\Report;
 
 class PdfSizes
 {
@@ -19,34 +19,15 @@ class PdfSizes
     private $pageSize = [210, 297];
 
     /**
-     * @var float
+     * @var float[]
+     *              margins of the page; left, top, right, bottom
      */
-    private $marginSide = 10;
+    private $pageMargins = [10, 6, 10, 6];
 
     /**
      * @var float
      */
-    private $marginVerticalOuter = 6;
-
-    /**
-     * @var float
-     */
-    private $headerSize = 8;
-
-    /**
-     * @var float
-     */
-    private $differentContentMargin = 6;
-
-    /**
-     * @var float
-     */
-    private $footerSize = 4;
-
-    /**
-     * @var float
-     */
-    private $baseFontSizes = 8;
+    private $baseSpacing = 8;
 
     /**
      * @var float
@@ -56,7 +37,7 @@ class PdfSizes
     /**
      * @var float
      */
-    private $gutterSize = 4;
+    private $baseFontSize = 8;
 
     /**
      * @var float
@@ -88,7 +69,7 @@ class PdfSizes
      */
     public function getHeaderYStart(): float
     {
-        return $this->marginVerticalOuter;
+        return $this->pageMargins[1];
     }
 
     /**
@@ -96,7 +77,7 @@ class PdfSizes
      */
     public function getHeaderHeight(): float
     {
-        return $this->headerSize;
+        return $this->getHeaderFontSize();
     }
 
     /**
@@ -104,7 +85,7 @@ class PdfSizes
      */
     public function getContentXStart(): float
     {
-        return $this->marginSide;
+        return $this->pageMargins[0];
     }
 
     /**
@@ -114,7 +95,7 @@ class PdfSizes
      */
     public function getContentXEnd(): float
     {
-        return $this->getPageSizeX() - $this->marginSide;
+        return $this->getPageSizeX() - $this->pageMargins[2];
     }
 
     /**
@@ -130,17 +111,17 @@ class PdfSizes
      */
     public function getContentYStart(): float
     {
-        return $this->getHeaderYStart() + $this->getHeaderHeight() + $this->differentContentMargin;
+        return $this->getHeaderYStart() + $this->getHeaderHeight() + $this->baseSpacing;
     }
 
     /**
-     * the width of the document till the right margin.
+     * the width of the document till the bottom margin.
      *
      * @return float
      */
     public function getContentYEnd()
     {
-        return $this->getPageSizeY() - $this->marginVerticalOuter - $this->footerSize - $this->differentContentMargin;
+        return $this->getPageSizeY() - $this->pageMargins[3] - $this->getFooterFontSize() - $this->baseSpacing;
     }
 
     /**
@@ -158,7 +139,7 @@ class PdfSizes
      */
     public function getFooterYStart(): float
     {
-        return $this->getContentYEnd() + $this->differentContentMargin;
+        return $this->getContentYEnd() + $this->baseSpacing;
     }
 
     /**
@@ -166,32 +147,25 @@ class PdfSizes
      */
     public function getMarginBottom(): float
     {
-        return $this->getPageSizeY() - $this->getFooterYStart() + $this->differentContentMargin;
+        return $this->getPageSizeY() - $this->getFooterYStart() + $this->baseSpacing;
     }
 
     /**
-     * @param bool $compact
-     *
      * @return float
      */
-    public function getColumnGutter($compact = false)
+    public function getColumnGutter()
     {
-        if ($compact) {
-            return $this->gutterSize / 2;
-        }
-
-        return $this->gutterSize;
+        return $this->baseSpacing / $this->scalingFactor;
     }
 
     /**
      * @param $numberOfColumns
-     * @param bool $compact
      *
      * @return float|float
      */
-    public function getColumnContentWidth($numberOfColumns, $compact = false)
+    public function getColumnContentWidth($numberOfColumns)
     {
-        $gutterSpace = ($numberOfColumns - 1) * $this->getColumnGutter($compact);
+        $gutterSpace = ($numberOfColumns - 1) * $this->getColumnGutter();
 
         return (float)($this->getContentXSize() - $gutterSpace) / $numberOfColumns;
     }
@@ -199,30 +173,28 @@ class PdfSizes
     /**
      * @param $currentColumn
      * @param $numberOfColumns
-     * @param bool $compact
      *
      * @return float|float
      */
-    public function getColumnWidth($currentColumn, $numberOfColumns, $compact = false)
+    public function getColumnWidth($currentColumn, $numberOfColumns)
     {
-        $baseWidth = $this->getColumnContentWidth($numberOfColumns, $compact);
+        $baseWidth = $this->getColumnContentWidth($numberOfColumns);
         if ($currentColumn === $numberOfColumns - 1) {
             return $baseWidth;
         }
 
-        return $baseWidth + $this->getColumnGutter($compact);
+        return $baseWidth + $this->getColumnGutter();
     }
 
     /**
      * @param $currentColumn
      * @param $numberOfColumns
-     * @param bool $compact
      *
      * @return float|float
      */
-    public function getColumnStart($currentColumn, $numberOfColumns, $compact = false)
+    public function getColumnStart($currentColumn, $numberOfColumns)
     {
-        return ($this->getColumnWidth($currentColumn - 1, $numberOfColumns, $compact)) * $currentColumn + $this->getContentXStart();
+        return ($this->getColumnWidth($currentColumn - 1, $numberOfColumns)) * $currentColumn + $this->getContentXStart();
     }
 
     /**
@@ -230,7 +202,7 @@ class PdfSizes
      *
      * @return float
      */
-    public function getSmallFontSize()
+    private function getSmallFontSize()
     {
         return $this->getRegularFontSize() / $this->scalingFactor;
     }
@@ -240,9 +212,49 @@ class PdfSizes
      *
      * @return float
      */
-    public function getRegularFontSize()
+    private function getRegularFontSize()
     {
-        return $this->baseFontSizes;
+        return $this->baseFontSize;
+    }
+
+    /**
+     * for text.
+     *
+     * @return float
+     */
+    private function getBigFontSize()
+    {
+        return $this->getRegularFontSize() * $this->scalingFactor;
+    }
+
+    /**
+     * for footers/headers.
+     *
+     * @return float
+     */
+    public function getFooterFontSize()
+    {
+        return $this->getSmallFontSize();
+    }
+
+    /**
+     * for footers/headers.
+     *
+     * @return float
+     */
+    public function getHeaderFontSize()
+    {
+        return $this->getRegularFontSize();
+    }
+
+    /**
+     * for text.
+     *
+     * @return float
+     */
+    public function getTextFontSize()
+    {
+        return $this->getRegularFontSize();
     }
 
     /**
@@ -250,19 +262,9 @@ class PdfSizes
      *
      * @return float
      */
-    public function getBigFontSize()
+    public function getTitleFontSize()
     {
-        return $this->baseFontSizes * $this->scalingFactor;
-    }
-
-    /**
-     * for big headers.
-     *
-     * @return float
-     */
-    public function getLargeFontSize()
-    {
-        return $this->baseFontSizes * ($this->scalingFactor ** 2);
+        return $this->getBigFontSize();
     }
 
     /**
@@ -278,7 +280,7 @@ class PdfSizes
      */
     public function getContentSpacerBig(): float
     {
-        return $this->differentContentMargin;
+        return $this->baseSpacing;
     }
 
     /**
@@ -286,7 +288,7 @@ class PdfSizes
      */
     public function getContentSpacerSmall(): float
     {
-        return (float)$this->differentContentMargin / $this->scalingFactor ** 2;
+        return (float)$this->baseSpacing / $this->scalingFactor ** 2;
     }
 
     /**

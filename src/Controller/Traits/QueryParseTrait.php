@@ -13,7 +13,7 @@ namespace App\Controller\Traits;
 
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
-use App\Report\ReportElements;
+use App\Service\Report\ReportElements;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait QueryParseTrait
