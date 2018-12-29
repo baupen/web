@@ -23,6 +23,7 @@ use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\PdfDefinition;
 use App\Service\Report\Report;
+use App\Service\Report\ReportConfiguration;
 use App\Service\Report\ReportElements;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -79,50 +80,6 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     * @param Filter $filter
-     * @param string $author
-     * @param ReportElements $reportElements
-     * @param Issue[] $issues
-     * @param string $filePath
-     */
-    private function render(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $reportElements, array $issues, string $filePath)
-    {
-        // initialize report
-        $pdfDefinition = new PdfDefinition($constructionSite->getName(), $author, __DIR__ . '/../../public/files/report_logo.png');
-        $report = new Report($pdfDefinition);
-
-        $this->addIntroduction($report, $constructionSite, $filter, $reportElements);
-
-        //add tables
-        if ($reportElements->getTableByCraftsman()) {
-            $this->addTableByCraftsman($report, $filter, $issues);
-        }
-        if ($reportElements->getTableByMap()) {
-            $this->addTableByMap($report, $filter, $issues);
-        }
-        if ($reportElements->getTableByTrade()) {
-            $this->addTableByTrade($report, $filter, $issues);
-        }
-
-        /* @var Map[] $orderedMaps */
-        /* @var Issue[][] $issuesPerMap */
-        IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
-        foreach ($orderedMaps as $map) {
-            $issues = $issuesPerMap[$map->getId()];
-
-            $this->addMap($report, $map, $issues);
-            $this->addIssueTable($report, $filter, $issues);
-
-            if ($reportElements->getWithImages()) {
-                $this->addIssueImageGrid($report, $issues);
-            }
-        }
-
-        $report->save($filePath);
-    }
-
-    /**
      * @param Report $report
      * @param Map $map
      * @param Issue[] $issues
@@ -176,108 +133,7 @@ class ReportService implements ReportServiceInterface
      */
     private function addIntroduction(Report $report, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
     {
-        $filterEntries = [];
-
-        //appends the timings to the status and remembers if it has happend once (important later)
-        $timeSpecified = false;
-        $getDateTimeRange = function ($start = null, $end = null) use (&$timeSpecified) {
-            $timeSpecified |= $start !== null || $end !== null;
-            /** @var \DateTime|null $start */
-            /* @var \DateTime|null $end */
-            if ($start !== null) {
-                if ($end !== null) {
-                    return '(' . $start->format(DateTimeFormatter::DATE_TIME_FORMAT) . ' - ' . $end->format(DateTimeFormatter::DATE_TIME_FORMAT) . ')';
-                }
-
-                return '(' . $this->translator->trans('filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
-            } elseif ($end !== null) {
-                return '(' . $this->translator->trans('filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
-            }
-
-            return '';
-        };
-
-        //creates the status string
-        $getStatus = function ($status, $trans, $start = null, $end = null) use ($getDateTimeRange) {
-            if ($status) {
-                return $trans . ' ' . $getDateTimeRange($start, $end);
-            }
-
-            return $this->translator->trans('filter.not', ['%state%' => $trans], 'report');
-        };
-
-        //collect all set status
-        $statusEntries = [];
-        if ($filter->getRegistrationStatus() !== null) {
-            $trans = $this->translator->trans('status_values.registered', [], 'entity_issue');
-            $statusEntries[] = $getStatus($filter->getRegistrationStatus(), $trans);
-        }
-        if ($filter->getRespondedStatus() !== null) {
-            $trans = $this->translator->trans('status_values.responded', [], 'entity_issue');
-            $statusEntries[] = $getStatus($filter->getRespondedStatus(), $trans, $filter->getRespondedStart(), $filter->getRespondedEnd());
-        }
-        if ($filter->getReviewedStatus() !== null) {
-            $trans = $this->translator->trans('status_values.reviewed', [], 'entity_issue');
-            $statusEntries[] = $getStatus($filter->getReviewedStatus(), $trans, $filter->getReviewedStart(), $filter->getRespondedEnd());
-        }
-
-        //convert all set status to a single string
-        if (\count($statusEntries) === 3 && !$timeSpecified) {
-            //shorten
-            $statusEntry = $this->translator->trans('status_values.all', [], 'entity_issue');
-        } elseif (\count($statusEntries) === 0) {
-            $statusEntry = $this->translator->trans('status_values.none', [], 'entity_issue');
-        } else {
-            $statusEntry = implode(', ', $statusEntries);
-        }
-        $filterEntries[$this->translator->trans('status', [], 'entity_issue')] = $statusEntry;
-
-        //add craftsmen
-        $trades = null;
-        if ($filter->getCraftsmen() !== null) {
-            $entities = $this->doctrine->getRepository(Craftsman::class)->findBy(['id' => $filter->getCraftsmen()]);
-            $names = [];
-            $trades = [];
-            foreach ($entities as $item) {
-                $names[$item->getName()] = 1;
-                $trades[$item->getTrade()] = 1;
-            }
-            $names = array_keys($names);
-            $filterEntries[$this->translator->transChoice('filter.craftsmen', \count($names), [], 'report')] = implode(', ', $names);
-        }
-
-        //add maps
-        if ($filter->getMaps() !== null) {
-            $entities = $this->doctrine->getRepository(Map::class)->findBy(['id' => $filter->getMaps()]);
-            $names = [];
-            foreach ($entities as $item) {
-                $names[] = $item->getName() . ' (' . $item->getContext() . ')';
-            }
-            $filterEntries[$this->translator->transChoice('filter.maps', \count($names), [], 'report')] = implode(', ', $names);
-        }
-
-        //add limit
-        $limitValue = $getDateTimeRange($filter->getResponseLimitStart(), $filter->getResponseLimitEnd());
-        if ($limitValue !== '') {
-            $filterEntries[$this->translator->trans('response_limit', [], 'entity_issue')] = $limitValue;
-        }
-
-        //set other properties
-        //intentionally ignoring isMarked as this is part of the application, not the report
-        if ($filter->getNumber() !== null) {
-            $filterEntries[$this->translator->trans('number', [], 'entity_issue')] = $filter->getNumber();
-        }
-        if ($filter->getTrades() !== null || $trades !== null) {
-            if ($trades === null) {
-                $trades = [];
-            }
-            if ($filter->getTrades() !== null) {
-                foreach ($filter->getTrades() as $trade) {
-                    $trades[$trade] = 1;
-                }
-            }
-            $filterEntries[$this->translator->transChoice('filter.trades', \count($trades), [], 'report')] = implode(', ', array_keys($trades));
-        }
+        $filterEntries = $this->getFilterEntries($filter);
 
         //add list of elements which are part of this report
         $elements = [];
@@ -321,38 +177,37 @@ class ReportService implements ReportServiceInterface
         $tableHeader[] = $this->translator->trans('description', [], 'entity_issue');
         $tableHeader[] = $this->translator->trans('response_limit', [], 'entity_issue');
 
-        if ($showRegistered) {
-            $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('status_values.registered', [], 'entity_issue')], 'report');
-        }
-
-        if ($showResponded) {
-            $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('status_values.responded', [], 'entity_issue')], 'report');
-        }
-
-        if ($showReviewed) {
-            $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('status_values.reviewed', [], 'entity_issue')], 'report');
-        }
-
         $tableContent = [];
         foreach ($issues as $issue) {
             $row = [];
             $row[] = $issue->getNumber();
             $row[] = $issue->getDescription();
             $row[] = ($issue->getResponseLimit() !== null) ? $issue->getResponseLimit()->format(DateTimeFormatter::DATE_FORMAT) : '';
+        }
 
-            if ($showRegistered) {
-                $row[] = $issue->getRegisteredAt() !== null ? $issue->getRegisteredAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getRegistrationBy()->getName() : '';
+        $issueCount = \count($issues);
+        if ($showRegistered) {
+            $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('status_values.registered', [], 'entity_issue')], 'report');
+            for ($i = 0; $i < $issueCount; ++$i) {
+                $issue = $issues[$i];
+                $tableContent[$i][] = $issue->getRegisteredAt() === null ? '' : $issue->getRegisteredAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getRegistrationBy()->getName();
             }
+        }
 
-            if ($showResponded) {
-                $row[] = $issue->getRespondedAt() !== null ? $issue->getRespondedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getResponseBy()->getName() : '';
+        if ($showResponded) {
+            $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('status_values.responded', [], 'entity_issue')], 'report');
+            for ($i = 0; $i < $issueCount; ++$i) {
+                $issue = $issues[$i];
+                $tableContent[$i][] = $issue->getRespondedAt() === null ? '' : $issue->getRespondedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getResponseBy()->getName();
             }
+        }
 
-            if ($showReviewed) {
-                $row[] = $issue->getReviewedAt() !== null ? $issue->getReviewedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getReviewBy()->getName() : '';
+        if ($showReviewed) {
+            $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('status_values.reviewed', [], 'entity_issue')], 'report');
+            for ($i = 0; $i < $issueCount; ++$i) {
+                $issue = $issues[$i];
+                $tableContent[$i][] = $issue->getReviewedAt() === null ? '' : $issue->getReviewedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getReviewBy()->getName();
             }
-
-            $tableContent[] = $row;
         }
 
         $report->addTable($tableHeader, $tableContent);
@@ -493,29 +348,218 @@ class ReportService implements ReportServiceInterface
      * @param ConstructionSite $constructionSite
      * @param Filter $filter
      * @param string $author
-     * @param ReportElements $elements
+     * @param ReportElements $reportElements
      *
      * @throws \Exception
      *
      * @return string
      */
-    public function generateReport(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $elements)
+    public function generateReport(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $reportElements)
     {
         $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
+        $reportConfiguration = new ReportConfiguration($filter);
 
+        //only generate report if it does not already exist
+        $filePath = $this->getFilePath($constructionSite);
+        if (file_exists($filePath) && !$this->disableCache) {
+            return $filePath;
+        }
+
+        // initialize report
+        $footnote = $this->translator->trans('generated', ['%date%' => (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT), '%name%' => $author], 'report');
+        $pdfDefinition = new PdfDefinition($constructionSite->getName(), $footnote, __DIR__ . '/../../public/files/report_logo.png');
+        $report = new Report($pdfDefinition);
+
+        $this->addIntroduction($report, $constructionSite, $filter, $reportElements);
+
+        //add tables
+        if ($reportElements->getTableByCraftsman()) {
+            $this->addTableByCraftsman($report, $filter, $issues);
+        }
+        if ($reportElements->getTableByMap()) {
+            $this->addTableByMap($report, $filter, $issues);
+        }
+        if ($reportElements->getTableByTrade()) {
+            $this->addTableByTrade($report, $filter, $issues);
+        }
+
+        /* @var Map[] $orderedMaps */
+        /* @var Issue[][] $issuesPerMap */
+        IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
+        foreach ($orderedMaps as $map) {
+            $issues = $issuesPerMap[$map->getId()];
+
+            $this->addMap($report, $map, $issues);
+            $this->addIssueTable($report, $filter, $issues);
+
+            if ($reportElements->getWithImages()) {
+                $this->addIssueImageGrid($report, $issues);
+            }
+        }
+
+        $report->save($filePath);
+
+        return $filePath;
+    }
+
+    /**
+     * @param ConstructionSite $constructionSite
+     *
+     * @return string
+     */
+    private function getFilePath(ConstructionSite $constructionSite)
+    {
         //create folder
         $generationTargetFolder = $this->pathService->getTransientFolderForReports($constructionSite);
         if (!file_exists($generationTargetFolder)) {
             mkdir($generationTargetFolder, 0777, true);
         }
 
-        //only generate report if it does not already exist
-        $filePath = $generationTargetFolder . \DIRECTORY_SEPARATOR . uniqid() . '.pdf';
-        if (!file_exists($filePath) || $this->disableCache) {
-            $author = $this->translator->trans('generated', ['%date%' => (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT), '%name%' => $author], 'report');
-            $this->render($constructionSite, $filter, $author, $elements, $issues, $filePath);
+        return $generationTargetFolder . \DIRECTORY_SEPARATOR . uniqid() . '.pdf';
+    }
+
+    /**
+     * @param Filter $filter
+     *
+     * @return array
+     */
+    private function getFilterEntries(Filter $filter): array
+    {
+        $filterEntries = [];
+
+        $statusLabel = $this->translator->trans('status', [], 'entity_issue');
+        $filterEntries[$statusLabel] = $this->getStatusFilterEntry($filter);
+
+        //add craftsmen
+        if ($filter->getCraftsmen() !== null) {
+            $entities = $this->doctrine->getRepository(Craftsman::class)->findBy(['id' => $filter->getCraftsmen()]);
+            $names = [];
+            foreach ($entities as $item) {
+                $names[] = $item->getName();
+            }
+
+            $label = $this->translator->transChoice('filter.craftsmen', \count($names), [], 'report');
+            $filterEntries[$label] = implode(', ', $names);
         }
 
-        return $filePath;
+        //add maps
+        if ($filter->getMaps() !== null) {
+            $entities = $this->doctrine->getRepository(Map::class)->findBy(['id' => $filter->getMaps()]);
+            $names = [];
+            foreach ($entities as $item) {
+                $names[] = $item->getName() . ' (' . $item->getContext() . ')';
+            }
+
+            $label = $this->translator->transChoice('filter.maps', \count($names), [], 'report');
+            $filterEntries[$label] = implode(', ', $names);
+        }
+
+        //add limit
+        if ($filter->getResponseLimitStart() !== null || $filter->getResponseLimitEnd() !== null) {
+            $limitValue = $this->dateTimeRangeToText($filter->getResponseLimitStart(), $filter->getResponseLimitEnd());
+            $label = $this->translator->trans('response_limit', [], 'entity_issue');
+            $filterEntries[$label] = $limitValue;
+        }
+
+        //add number
+        if ($filter->getNumber() !== null) {
+            $label = $this->translator->trans('number', [], 'entity_issue');
+            $filterEntries[$label] = $filter->getNumber();
+        }
+
+        //add trades
+        if ($filter->getTrades() !== null) {
+            $names = [];
+            foreach ($filter->getTrades() as $item) {
+                $names[] = $item;
+            }
+
+            $label = $this->translator->transChoice('filter.trades', \count($names), [], 'report');
+            $filterEntries[$label] = implode(', ', $names);
+        }
+
+        return $filterEntries;
+    }
+
+    /**
+     * @param Filter $filter
+     *
+     * @return string
+     */
+    private function getStatusFilterEntry(Filter $filter): string
+    {
+        // collect all set status
+        $statusEntries = [];
+        if ($filter->getRegistrationStatus() !== null) {
+            $label = $this->translator->trans('status_values.registered', [], 'entity_issue');
+            $statusEntries[] = $this->statusToString($label, $filter->getRegistrationStatus() === false);
+        }
+
+        if ($filter->getRespondedStatus() !== null) {
+            $label = $this->translator->trans('status_values.responded', [], 'entity_issue');
+            $statusEntries[] = $this->statusToString($label, $filter->getRespondedStatus() === false, $filter->getRespondedStart(), $filter->getRespondedEnd());
+        }
+
+        if ($filter->getReviewedStatus() !== null) {
+            $label = $this->translator->trans('status_values.reviewed', [], 'entity_issue');
+            $statusEntries[] = $this->statusToString($label, $filter->getReviewedStatus() === false, $filter->getReviewedStart(), $filter->getRespondedEnd());
+        }
+
+        // try to simplify
+        if (\count($statusEntries) === 0) {
+            return $this->translator->trans('status_values.none', [], 'entity_issue');
+        } elseif (\count($statusEntries) === 3 &&
+            $filter->getRespondedStart() === null && $filter->getRespondedEnd() === null &&
+            $filter->getReviewedStart() === null && $filter->getReviewedEnd() === null) {
+            return $this->translator->trans('status_values.all', [], 'entity_issue');
+        }
+
+        return implode(', ', $statusEntries);
+    }
+
+    /**
+     * @param string $label
+     * @param bool|null $negate
+     * @param \DateTime|null $start
+     * @param \DateTime|null $end
+     *
+     * @return string
+     */
+    private function statusToString(string $label, ?bool $negate, \DateTime $start = null, \DateTime $end = null)
+    {
+        $result = $label;
+
+        if ($start !== null || $end !== null) {
+            $result = $label . ' ' . $this->dateTimeRangeToText($start, $end);
+        }
+
+        if ($negate) {
+            $result = $this->translator->trans('filter.not', ['%state%' => $result], 'report');
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param \DateTime|null $start
+     * @param \DateTime|null $end
+     *
+     * @return string
+     */
+    private function dateTimeRangeToText(\DateTime $start = null, \DateTime $end = null)
+    {
+        /** @var \DateTime|null $start */
+        /* @var \DateTime|null $end */
+        if ($start !== null) {
+            if ($end !== null) {
+                return '(' . $start->format(DateTimeFormatter::DATE_TIME_FORMAT) . ' - ' . $end->format(DateTimeFormatter::DATE_TIME_FORMAT) . ')';
+            }
+
+            return '(' . $this->translator->trans('filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
+        } elseif ($end !== null) {
+            return '(' . $this->translator->trans('filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
+        }
+
+        return '';
     }
 }
