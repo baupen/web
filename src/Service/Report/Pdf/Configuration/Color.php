@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Configuration;
+namespace App\Service\Report\Pdf\Configuration;
 
 class Color
 {

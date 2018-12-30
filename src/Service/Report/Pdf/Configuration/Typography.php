@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Configuration;
+namespace App\Service\Report\Pdf\Configuration;
 
 class Typography
 {
@@ -29,6 +29,11 @@ class Typography
      * @var float
      */
     private $lineWidth = 0.2;
+
+    /**
+     * @var float
+     */
+    private $scalingFactor = 1.6;
 
     /**
      * @return string
@@ -52,5 +57,13 @@ class Typography
     public function getLineWidth(): float
     {
         return $this->lineWidth;
+    }
+
+    /**
+     * @return float
+     */
+    public function getScalingFactor(): float
+    {
+        return $this->scalingFactor;
     }
 }

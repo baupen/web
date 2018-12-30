@@ -14,7 +14,17 @@ namespace App\Service\Report\Pdf\Interfaces;
 interface RegionServiceInterface
 {
     /**
+     * @param DocumentInterface $document
      * @param int $columnCount
+     *
+     * @return PrintServiceInterface
      */
-    public function initializeLayout(int $columnCount);
+    public function startRegion(DocumentInterface $document, int $columnCount = 1);
+
+    /**
+     * @param DocumentInterface $document
+     *
+     * @return PrintServiceInterface
+     */
+    public function startGroup(DocumentInterface $document);
 }

@@ -11,7 +11,7 @@
 
 namespace App\Service\Report\Pdf\Interfaces;
 
-interface InitializationServiceInterface
+interface DocumentServiceInterface
 {
     /**
      * @param string $title
@@ -19,18 +19,11 @@ interface InitializationServiceInterface
      *
      * @return DocumentInterface
      */
-    public function createDocument(string $title, string $author);
-
-    /**
-     * @param DocumentInterface $document
-     *
-     * @return PrintServiceInterface
-     */
-    public function startRegion(DocumentInterface $document);
+    public function create(string $title, string $author);
 
     /**
      * @param DocumentInterface $pdfDocument
      * @param string $savePath
      */
-    public function saveDocument(DocumentInterface $pdfDocument, string $savePath);
+    public function save(DocumentInterface $pdfDocument, string $savePath);
 }

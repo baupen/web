@@ -12,9 +12,10 @@
 namespace App\Service\Report;
 
 use App\Helper\ImageHelper;
+use App\Service\Report\Pdf\Interfaces\DocumentInterface;
 use TCPDF;
 
-class Pdf extends TCPDF
+class Pdf extends TCPDF implements DocumentInterface
 {
     /**
      * @var PdfDefinition
