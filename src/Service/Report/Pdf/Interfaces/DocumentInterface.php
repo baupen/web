@@ -9,8 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report;
+namespace App\Service\Report\Pdf\Interfaces;
 
-class PdfService
+interface DocumentInterface
 {
 }

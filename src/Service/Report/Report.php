@@ -224,7 +224,7 @@ class Report
      * @param null|string $context
      * @param null|string $mapImageFilePath
      */
-    public function addMap(string $name, ?string $context, ?string $mapImageFilePath = null)
+    public function addImage(string $name, ?string $context, ?string $mapImageFilePath = null)
     {
         $this->setDefaults();
         $startY = $this->pdfDocument->GetY();
@@ -238,39 +238,44 @@ class Report
             $printTitle();
         });
 
-        if (file_exists($mapImageFilePath)) {
-            $imgPadding = $this->pdfSizes->getImagePadding();
-            $doubleImgPadding = 2 * $this->pdfSizes->getImagePadding();
+        $imgPadding = $this->pdfSizes->getImagePadding();
+        $doubleImgPadding = 2 * $this->pdfSizes->getImagePadding();
 
-            $maxWidth = $this->pdfSizes->getContentXSize() - $doubleImgPadding;
-            $maxHeight = $this->pdfSizes->getContentYSize() - $headerHeight - $doubleImgPadding;
-            list($width, $height) = ImageHelper::getWidthHeightArguments($mapImageFilePath, $maxWidth, $maxHeight);
+        $maxWidth = $this->pdfSizes->getContentXSize() - $doubleImgPadding;
+        $maxHeight = $this->pdfSizes->getContentYSize() - $headerHeight - $doubleImgPadding;
+        list($width, $height) = ImageHelper::getWidthHeightArguments($mapImageFilePath, $maxWidth, $maxHeight);
 
-            //check if image fits on current page
-            if ($headerHeight + $height + $startY + $this->pdfSizes->getContentSpacerBig() + $doubleImgPadding < $this->pdfSizes->getContentYEnd()) {
-                //add content spacer & continue on same page
-                $this->pdfDocument->SetY($startY + $this->pdfSizes->getContentSpacerSmall(), true, false);
-            } else {
-                //force new page
-                $this->pdfDocument->AddPage();
-                $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
-            }
-
-            //print title
-            $printTitle();
-
-            //print image with surrounding box
-            $startY = $this->pdfDocument->GetY();
-            $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $height + $doubleImgPadding, '', 0, 2, '', true);
-            $this->pdfDocument->SetY($startY);
-            $this->pdfDocument->Image($mapImageFilePath, $this->pdfSizes->getContentXStart() + (((float)$this->pdfSizes->getContentXSize() - $width) / 2), $this->pdfDocument->GetY() + $imgPadding, $width, $height);
-
-            //adapt Y with spacer for next
-            $this->pdfDocument->SetY($startY + $height + $doubleImgPadding + $this->pdfSizes->getContentSpacerBig());
+        //check if image fits on current page
+        if ($headerHeight + $height + $startY + $this->pdfSizes->getContentSpacerBig() + $doubleImgPadding < $this->pdfSizes->getContentYEnd()) {
+            //add content spacer & continue on same page
+            $this->pdfDocument->SetY($startY + $this->pdfSizes->getContentSpacerSmall(), true, false);
         } else {
-            //only print title
-            $this->printH2($name, 0, $context);
+            //force new page
+            $this->pdfDocument->AddPage();
+            $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
         }
+
+        //print title
+        $printTitle();
+
+        //print image with surrounding box
+        $startY = $this->pdfDocument->GetY();
+        $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $height + $doubleImgPadding, '', 0, 2, '', true);
+        $this->pdfDocument->SetY($startY);
+        $this->pdfDocument->Image($mapImageFilePath, $this->pdfSizes->getContentXStart() + (((float)$this->pdfSizes->getContentXSize() - $width) / 2), $this->pdfDocument->GetY() + $imgPadding, $width, $height);
+
+        //adapt Y with spacer for next
+        $this->pdfDocument->SetY($startY + $height + $doubleImgPadding + $this->pdfSizes->getContentSpacerBig());
+    }
+
+    /**
+     * @param string $name
+     * @param null|string $context
+     */
+    public function addHeader(string $name, ?string $context)
+    {
+        $this->setDefaults();
+        $this->printH2($name, 0, $context);
     }
 
     /**
@@ -323,6 +328,13 @@ class Report
         $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
     }
 
+    /**
+     * @param $row
+     * @param $fill
+     * @param $fillBackground
+     *
+     * @return bool
+     */
     private function printRow($row, $fill, $fillBackground)
     {
         //alternative background colors

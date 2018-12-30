@@ -9,22 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Design;
+namespace App\Service\Report\Pdf\Interfaces;
 
-class Typography
+interface RegionServiceInterface
 {
     /**
-     * @var string
+     * @param int $columnCount
      */
-    private $fontFamily = 'opensans';
-
-    /**
-     * @var float
-     */
-    private $baseFontSize = 8;
-
-    /**
-     * @var float
-     */
-    private $lineWidth = 0.2;
+    public function initializeLayout(int $columnCount);
 }

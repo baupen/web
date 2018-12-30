@@ -57,11 +57,6 @@ class ReportService implements ReportServiceInterface
     private $translator;
 
     /**
-     * @var bool
-     */
-    private $disableCache = false;
-
-    /**
      * ReportService constructor.
      *
      * @param ImageServiceInterface $imageService
@@ -87,7 +82,11 @@ class ReportService implements ReportServiceInterface
     private function addMap(Report $report, Map $map, array $issues)
     {
         $mapImage = $this->imageService->generateMapImageForReport($map, $issues, ImageServiceInterface::SIZE_REPORT_MAP);
-        $report->addMap($map->getName(), $map->getContext(), $mapImage);
+        if (file_exists($mapImage)) {
+            $report->addImage($map->getName(), $map->getContext(), $mapImage);
+        } else {
+            $report->addHeader($map->getName(), $map->getContext());
+        }
     }
 
     /**
@@ -146,10 +145,12 @@ class ReportService implements ReportServiceInterface
         if ($reportElements->getTableByTrade()) {
             $elements[] = $this->translator->trans('table.by_trade', [], 'report');
         }
-        $elements[] = $this->translator->trans('issues.detailed', [], 'report');
+
+        $issueDetailsLabel = $this->translator->trans('issues.detailed', [], 'report');
         if ($reportElements->getWithImages()) {
-            $elements[\count($elements) - 1] .= ' ' . $this->translator->trans('issues.with_images', [], 'report');
+            $issueDetailsLabel .= ' ' . $this->translator->trans('issues.with_images', [], 'report');
         }
+        $elements[] = $issueDetailsLabel;
 
         //print
         $report->addIntroduction(
@@ -164,15 +165,11 @@ class ReportService implements ReportServiceInterface
 
     /**
      * @param Report $report
-     * @param Filter $filter
      * @param Issue[] $issues
+     * @param ReportConfiguration $reportConfiguration
      */
-    private function addIssueTable(Report $report, Filter $filter, array $issues)
+    private function addIssueTable(Report $report, array $issues, ReportConfiguration $reportConfiguration)
     {
-        $showRegistered = $filter->getRegistrationStatus() === null || $filter->getRegistrationStatus();
-        $showResponded = $filter->getRespondedStatus() === null || $filter->getRespondedStatus();
-        $showReviewed = $filter->getReviewedStatus() === null || $filter->getReviewedStatus();
-
         $tableHeader[] = '#';
         $tableHeader[] = $this->translator->trans('description', [], 'entity_issue');
         $tableHeader[] = $this->translator->trans('response_limit', [], 'entity_issue');
@@ -183,10 +180,11 @@ class ReportService implements ReportServiceInterface
             $row[] = $issue->getNumber();
             $row[] = $issue->getDescription();
             $row[] = ($issue->getResponseLimit() !== null) ? $issue->getResponseLimit()->format(DateTimeFormatter::DATE_FORMAT) : '';
+            $tableContent[] = $row;
         }
 
         $issueCount = \count($issues);
-        if ($showRegistered) {
+        if ($reportConfiguration->showRegistrationStatus()) {
             $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('status_values.registered', [], 'entity_issue')], 'report');
             for ($i = 0; $i < $issueCount; ++$i) {
                 $issue = $issues[$i];
@@ -194,7 +192,7 @@ class ReportService implements ReportServiceInterface
             }
         }
 
-        if ($showResponded) {
+        if ($reportConfiguration->showRespondedStatus()) {
             $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('status_values.responded', [], 'entity_issue')], 'report');
             for ($i = 0; $i < $issueCount; ++$i) {
                 $issue = $issues[$i];
@@ -202,7 +200,7 @@ class ReportService implements ReportServiceInterface
             }
         }
 
-        if ($showReviewed) {
+        if ($reportConfiguration->showReviewedStatus()) {
             $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('status_values.reviewed', [], 'entity_issue')], 'report');
             for ($i = 0; $i < $issueCount; ++$i) {
                 $issue = $issues[$i];
@@ -214,13 +212,13 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
-     * @param Filter $filter
      * @param array $orderedMaps
      * @param Issue[][] $issuesPerMap
-     * @param $tableContent
-     * @param $tableHeader
+     * @param array $tableContent
+     * @param array $tableHeader
+     * @param ReportConfiguration $configuration
      */
-    private function addAggregatedIssuesInfo(Filter $filter, array $orderedMaps, array $issuesPerMap, array &$tableContent, array &$tableHeader)
+    private function addAggregatedIssuesInfo(array $orderedMaps, array $issuesPerMap, array &$tableContent, array &$tableHeader, ReportConfiguration $configuration)
     {
         //count issue status per map
         $countsPerElement = [];
@@ -239,7 +237,7 @@ class ReportService implements ReportServiceInterface
         }
 
         //add registration count if filter did not exclude
-        if ($filter->getRegistrationStatus() === null || $filter->getRegistrationStatus()) {
+        if ($configuration->showRegistrationStatus()) {
             $tableHeader[] = $this->translator->trans('status_values.registered', [], 'entity_issue');
             foreach ($countsPerElement as $elementId => $count) {
                 $tableContent[$elementId][] = $count[0];
@@ -247,7 +245,7 @@ class ReportService implements ReportServiceInterface
         }
 
         //add response count if filter did not exclude
-        if ($filter->getRespondedStatus() === null || $filter->getRespondedStatus()) {
+        if ($configuration->showRespondedStatus()) {
             $tableHeader[] = $this->translator->trans('status_values.responded', [], 'entity_issue');
             foreach ($countsPerElement as $elementId => $count) {
                 $tableContent[$elementId][] = $count[1];
@@ -255,7 +253,7 @@ class ReportService implements ReportServiceInterface
         }
 
         //add review count if filter did not exclude
-        if ($filter->getReviewedStatus() === null || $filter->getReviewedStatus()) {
+        if ($configuration->showReviewedStatus()) {
             $tableHeader[] = $this->translator->trans('status_values.reviewed', [], 'entity_issue');
             foreach ($countsPerElement as $elementId => $count) {
                 $tableContent[$elementId][] = $count[2];
@@ -265,10 +263,10 @@ class ReportService implements ReportServiceInterface
 
     /**
      * @param Report $report
-     * @param Filter $filter
      * @param Issue[] $issues
+     * @param ReportConfiguration $reportConfiguration
      */
-    private function addTableByMap(Report $report, Filter $filter, array $issues)
+    private function addTableByMap(Report $report, array $issues, ReportConfiguration $reportConfiguration)
     {
         /* @var Map[] $orderedMaps */
         /* @var Issue[][] $issuesPerMap */
@@ -284,7 +282,7 @@ class ReportService implements ReportServiceInterface
         }
 
         //add accumulated info
-        $this->addAggregatedIssuesInfo($filter, $orderedMaps, $issuesPerMap, $tableContent, $tableHeader);
+        $this->addAggregatedIssuesInfo($orderedMaps, $issuesPerMap, $tableContent, $tableHeader, $reportConfiguration);
 
         //write to pdf
         $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_map', [], 'report'));
@@ -292,10 +290,10 @@ class ReportService implements ReportServiceInterface
 
     /**
      * @param Report $report
-     * @param Filter $filter
      * @param Issue[] $issues
+     * @param ReportConfiguration $reportConfiguration
      */
-    private function addTableByCraftsman(Report $report, Filter $filter, array $issues)
+    private function addTableByCraftsman(Report $report, array $issues, ReportConfiguration $reportConfiguration)
     {
         /* @var Craftsman[] $orderedCraftsman */
         /* @var Issue[][] $issuesPerCraftsman */
@@ -311,7 +309,7 @@ class ReportService implements ReportServiceInterface
         }
 
         //add accumulated info
-        $this->addAggregatedIssuesInfo($filter, $orderedCraftsman, $issuesPerCraftsman, $tableContent, $tableHeader);
+        $this->addAggregatedIssuesInfo($orderedCraftsman, $issuesPerCraftsman, $tableContent, $tableHeader, $reportConfiguration);
 
         //write to pdf
         $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_craftsman', [], 'report'));
@@ -319,10 +317,10 @@ class ReportService implements ReportServiceInterface
 
     /**
      * @param Report $report
-     * @param Filter $filter
      * @param Issue[] $issues
+     * @param ReportConfiguration $reportConfiguration
      */
-    private function addTableByTrade(Report $report, Filter $filter, array $issues)
+    private function addTableByTrade(Report $report, array $issues, ReportConfiguration $reportConfiguration)
     {
         /* @var string[] $orderedTrade */
         /* @var Issue[][] $issuesPerTrade */
@@ -338,7 +336,7 @@ class ReportService implements ReportServiceInterface
         }
 
         //add accumulated info
-        $this->addAggregatedIssuesInfo($filter, $orderedTrade, $issuesPerTrade, $tableContent, $tableHeader);
+        $this->addAggregatedIssuesInfo($orderedTrade, $issuesPerTrade, $tableContent, $tableHeader, $reportConfiguration);
 
         //write to pdf
         $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_trade', [], 'report'));
@@ -359,12 +357,6 @@ class ReportService implements ReportServiceInterface
         $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
         $reportConfiguration = new ReportConfiguration($filter);
 
-        //only generate report if it does not already exist
-        $filePath = $this->getFilePath($constructionSite);
-        if (file_exists($filePath) && !$this->disableCache) {
-            return $filePath;
-        }
-
         // initialize report
         $footnote = $this->translator->trans('generated', ['%date%' => (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT), '%name%' => $author], 'report');
         $pdfDefinition = new PdfDefinition($constructionSite->getName(), $footnote, __DIR__ . '/../../public/files/report_logo.png');
@@ -374,13 +366,13 @@ class ReportService implements ReportServiceInterface
 
         //add tables
         if ($reportElements->getTableByCraftsman()) {
-            $this->addTableByCraftsman($report, $filter, $issues);
+            $this->addTableByCraftsman($report, $issues, $reportConfiguration);
         }
         if ($reportElements->getTableByMap()) {
-            $this->addTableByMap($report, $filter, $issues);
+            $this->addTableByMap($report, $issues, $reportConfiguration);
         }
         if ($reportElements->getTableByTrade()) {
-            $this->addTableByTrade($report, $filter, $issues);
+            $this->addTableByTrade($report, $issues, $reportConfiguration);
         }
 
         /* @var Map[] $orderedMaps */
@@ -390,13 +382,14 @@ class ReportService implements ReportServiceInterface
             $issues = $issuesPerMap[$map->getId()];
 
             $this->addMap($report, $map, $issues);
-            $this->addIssueTable($report, $filter, $issues);
+            $this->addIssueTable($report, $issues, $reportConfiguration);
 
             if ($reportElements->getWithImages()) {
                 $this->addIssueImageGrid($report, $issues);
             }
         }
 
+        $filePath = $this->getFilePath($constructionSite);
         $report->save($filePath);
 
         return $filePath;
@@ -404,6 +397,8 @@ class ReportService implements ReportServiceInterface
 
     /**
      * @param ConstructionSite $constructionSite
+     *
+     * @throws \Exception
      *
      * @return string
      */
@@ -415,7 +410,9 @@ class ReportService implements ReportServiceInterface
             mkdir($generationTargetFolder, 0777, true);
         }
 
-        return $generationTargetFolder . \DIRECTORY_SEPARATOR . uniqid() . '.pdf';
+        $date = (new \DateTime())->format('Y-m-dTH_i');
+
+        return $generationTargetFolder . \DIRECTORY_SEPARATOR . $date . '_' . uniqid() . '.pdf';
     }
 
     /**

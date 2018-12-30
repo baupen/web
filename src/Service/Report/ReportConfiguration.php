@@ -20,13 +20,32 @@ class ReportConfiguration
      */
     private $filter;
 
-    /**
-     * ReportConfiguration constructor.
-     *
-     * @param Filter $filter
-     */
     public function __construct(Filter $filter)
     {
         $this->filter = $filter;
+    }
+
+    /**
+     * @return bool
+     */
+    public function showRegistrationStatus()
+    {
+        return $this->filter->getRegistrationStatus() === null || $this->filter->getRegistrationStatus();
+    }
+
+    /**
+     * @return bool
+     */
+    public function showRespondedStatus()
+    {
+        return $this->filter->getRespondedStatus() === null || $this->filter->getRespondedStatus();
+    }
+
+    /**
+     * @return bool
+     */
+    public function showReviewedStatus()
+    {
+        return $this->filter->getReviewedStatus() === null || $this->filter->getReviewedStatus();
     }
 }
