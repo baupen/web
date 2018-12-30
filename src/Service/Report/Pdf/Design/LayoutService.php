@@ -11,10 +11,27 @@
 
 namespace App\Service\Report\Pdf\Design;
 
+use App\Service\Report\Pdf\Configuration\Layout;
 use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
 
 class LayoutService implements LayoutServiceInterface
 {
+    /**
+     * @var Layout
+     */
+    private $layout;
+
+    /**
+     * @var TypographyService
+     */
+    private $typographyService;
+
+    public function __construct(TypographyService $typographyService)
+    {
+        $this->layout = new Layout();
+        $this->typographyService = $typographyService;
+    }
+
     /**
      * the total width of the document.
      *
@@ -22,7 +39,7 @@ class LayoutService implements LayoutServiceInterface
      */
     private function getPageSizeX()
     {
-        return $this->pageSize[0];
+        return $this->layout->getPageSize()[0];
     }
 
     /**
@@ -30,9 +47,9 @@ class LayoutService implements LayoutServiceInterface
      *
      * @return float
      */
-    public function getPageSizeY()
+    public function getPageSizeY(): float
     {
-        return $this->pageSize[1];
+        return $this->layout->getPageSize()[1];
     }
 
     /**
@@ -40,7 +57,7 @@ class LayoutService implements LayoutServiceInterface
      */
     public function getHeaderYStart(): float
     {
-        return $this->pageMargins[1];
+        return $this->layout->getPageMargins()[1];
     }
 
     /**
@@ -48,7 +65,7 @@ class LayoutService implements LayoutServiceInterface
      */
     public function getHeaderHeight(): float
     {
-        return $this->getHeaderFontSize();
+        return $this->typographyService->getHeaderFontSize();
     }
 
     /**
@@ -56,7 +73,7 @@ class LayoutService implements LayoutServiceInterface
      */
     public function getContentXStart(): float
     {
-        return $this->pageMargins[0];
+        return $this->layout->getPageMargins()[0];
     }
 
     /**
@@ -66,13 +83,13 @@ class LayoutService implements LayoutServiceInterface
      */
     public function getContentXEnd(): float
     {
-        return $this->getPageSizeX() - $this->pageMargins[2];
+        return $this->getPageSizeX() - $this->layout->getPageMargins()[2];
     }
 
     /**
      * @return float
      */
-    public function getContentXSize()
+    public function getContentXSize(): float
     {
         return $this->getContentXEnd() - $this->getContentXStart();
     }
@@ -82,7 +99,7 @@ class LayoutService implements LayoutServiceInterface
      */
     public function getContentYStart(): float
     {
-        return $this->getHeaderYStart() + $this->getHeaderHeight() + $this->baseSpacing;
+        return $this->getHeaderYStart() + $this->getHeaderHeight() + $this->layout->getBaseSpacing();
     }
 
     /**
@@ -90,9 +107,9 @@ class LayoutService implements LayoutServiceInterface
      *
      * @return float
      */
-    public function getContentYEnd()
+    public function getContentYEnd(): float
     {
-        return $this->getPageSizeY() - $this->pageMargins[3] - $this->getFooterFontSize() - $this->baseSpacing;
+        return $this->getPageSizeY() - $this->layout->getPageMargins()[3] - $this->typographyService->getFooterFontSize() - $this->layout->getBaseSpacing();
     }
 
     /**
@@ -100,7 +117,7 @@ class LayoutService implements LayoutServiceInterface
      *
      * @return float
      */
-    public function getContentYSize()
+    public function getContentYSize(): float
     {
         return $this->getContentYEnd() - $this->getContentYStart();
     }
@@ -110,7 +127,7 @@ class LayoutService implements LayoutServiceInterface
      */
     public function getFooterYStart(): float
     {
-        return $this->getContentYEnd() + $this->baseSpacing;
+        return $this->getContentYEnd() + $this->layout->getBaseSpacing();
     }
 
     /**
@@ -118,7 +135,7 @@ class LayoutService implements LayoutServiceInterface
      */
     public function getMarginBottom(): float
     {
-        return $this->getPageSizeY() - $this->getFooterYStart() + $this->baseSpacing;
+        return $this->getPageSizeY() - $this->getFooterYStart() + $this->layout->getBaseSpacing();
     }
 
     /**
@@ -126,7 +143,7 @@ class LayoutService implements LayoutServiceInterface
      */
     public function getColumnGutter()
     {
-        return $this->baseSpacing / $this->scalingFactor;
+        return $this->layout->getBaseSpacing() / $this->layout->getScalingFactor();
     }
 
     /**

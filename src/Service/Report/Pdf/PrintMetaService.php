@@ -12,13 +12,12 @@
 namespace App\Service\Report\Pdf;
 
 use App\Helper\ImageHelper;
-use App\Service\Report\CleanPdf;
+use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Report\Document\Interfaces\PrintMetaServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
-use App\Service\Report\Pdf\Interfaces\TcpdfServiceInterface;
-use App\Service\Report\PdfSizes;
 
-class PdfTcpdfService implements TcpdfServiceInterface
+class PrintMetaService implements PrintMetaServiceInterface
 {
     /**
      * @var LayoutServiceInterface
@@ -31,77 +30,52 @@ class PdfTcpdfService implements TcpdfServiceInterface
     private $typographyService;
 
     /**
+     * @var PathServiceInterface
+     */
+    private $pathService;
+
+    /**
      * HeaderFooterServiceInterface constructor.
      *
      * @param LayoutServiceInterface $pdfSizes
      * @param TypographyServiceInterface $typographyService
+     * @param PathServiceInterface $pathService
      */
-    public function __construct(LayoutServiceInterface $pdfSizes, TypographyServiceInterface $typographyService)
+    public function __construct(LayoutServiceInterface $pdfSizes, TypographyServiceInterface $typographyService, PathServiceInterface $pathService)
     {
         $this->layoutService = $pdfSizes;
         $this->typographyService = $typographyService;
+        $this->pathService = $pathService;
     }
 
     /**
-     * @param CleanPdf $pdf
+     * @param Pdf $pdf
      */
-    public function initialize(CleanPdf $pdf)
+    public function initializeLayout(Pdf $pdf)
     {
+        //set margin
         $pdf->SetMargins($this->layoutService->getContentXStart(), $this->layoutService->getContentYStart());
         $pdf->SetAutoPageBreak(true, $this->layoutService->getMarginBottom());
     }
 
     /**
-     * @param CleanPdf $cleanPdf
-     * @param string $title
-     * @param string $author
+     * @param Pdf $pdf
+     * @param string $headerLeft
      */
-    public function setMeta(CleanPdf $cleanPdf, string $title, string $author)
-    {
-        $cleanPdf->SetCreator(PDF_CREATOR);
-        $cleanPdf->SetAuthor($author);
-        $cleanPdf->SetTitle($title);
-    }
-
-    /**
-     * @param CleanPdf $pdf
-     * @param string $title
-     * @param string $logoPath
-     */
-    public function printHeader(CleanPdf $pdf, string $title, string $logoPath)
-    {
-        $this->printTitle($pdf, $title);
-        $this->printLogo($pdf, $logoPath);
-    }
-
-    /**
-     * @param CleanPdf $pdf
-     * @param string $author
-     */
-    public function printFooter(CleanPdf $pdf, string $author)
-    {
-        $this->printAuthor($pdf, $author);
-        $this->printPageNumbers($pdf);
-    }
-
-    /**
-     * @param CleanPdf $pdf
-     * @param string $title
-     */
-    private function printTitle(CleanPdf $pdf, string $title)
+    public function printHeaderLeft(Pdf $pdf, string $headerLeft)
     {
         $pdf->SetXY($this->layoutService->getContentXStart(), $this->layoutService->getHeaderYStart());
 
         $pdf->SetFontSize($this->typographyService->getHeaderFontSize());
         $maxWidth = $this->layoutService->getContentXSize() / 3 * 2;
-        $pdf->Cell($maxWidth, 0, $title, 0, 0, 'L');
+        $pdf->Cell($maxWidth, 0, $headerLeft, 0, 0, 'L');
     }
 
     /**
-     * @param CleanPdf $pdf
+     * @param Pdf $pdf
      * @param string $logoPath
      */
-    private function printLogo(CleanPdf $pdf, string $logoPath)
+    public function printLogo(Pdf $pdf, string $logoPath)
     {
         // calculate optimal size
         $maxHeight = $this->layoutService->getHeaderHeight();
@@ -115,21 +89,21 @@ class PdfTcpdfService implements TcpdfServiceInterface
     }
 
     /**
-     * @param CleanPdf $pdf
-     * @param string $author
+     * @param Pdf $pdf
+     * @param string $footerLeft
      */
-    private function printAuthor(CleanPdf $pdf, string $author)
+    public function printFooterLeft(Pdf $pdf, string $footerLeft)
     {
         $pdf->SetXY($this->layoutService->getContentXStart(), $this->layoutService->getFooterYStart());
 
         $pdf->SetFontSize($this->typographyService->getFooterFontSize());
-        $pdf->Cell($this->layoutService->getContentXSize(), 0, $author, 0, 0, 'L');
+        $pdf->Cell($this->layoutService->getContentXSize(), 0, $footerLeft, 0, 0, 'L');
     }
 
     /**
-     * @param CleanPdf $pdf
+     * @param Pdf $pdf
      */
-    private function printPageNumbers(CleanPdf $pdf)
+    public function printPageNumbers(Pdf $pdf)
     {
         $contentWidthPart = $this->layoutService->getContentXSize() / 8;
         //+6.5 because TCPDF uses a placeholder for the page numbers which is replaced at the end. this leads to incorrect alignment.

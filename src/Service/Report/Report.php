@@ -36,15 +36,6 @@ class Report
         $this->pdfDesign = new PdfDesign();
         $this->pdfDocument = new Pdf($pdfDefinition, $this->pdfSizes);
 
-        //prepare fonts
-        $checkFilePath = K_PATH_FONTS . '/.copied2';
-        if (!file_exists($checkFilePath)) {
-            $sourceFolder = __DIR__ . '/../../assets/fonts/tcpdf';
-            //copy all fonts from the assets to the fonts folder of tcpdf
-            shell_exec('\cp -r ' . $sourceFolder . '/* ' . K_PATH_FONTS);
-            file_put_contents($checkFilePath, time());
-        }
-
         $this->pdfDocument->AddPage();
         $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
 

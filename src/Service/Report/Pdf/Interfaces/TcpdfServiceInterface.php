@@ -11,32 +11,30 @@
 
 namespace App\Service\Report\Pdf\Interfaces;
 
-use App\Service\Report\CleanPdf;
+use App\Service\Report\Pdf\Pdf;
 
 interface TcpdfServiceInterface
 {
     /**
-     * @param CleanPdf $cleanPdf
-     */
-    public function initialize(CleanPdf $cleanPdf);
-
-    /**
-     * @param CleanPdf $pdf
-     * @param string $title
+     * @param Pdf $pdf
+     * @param string $headerLeft
+     * @param string $footerLeft
      * @param string $logoPath
      */
-    public function printHeader(CleanPdf $pdf, string $title, string $logoPath);
+    public function setMeta(Pdf $pdf, string $headerLeft, string $footerLeft, string $logoPath);
 
     /**
-     * @param CleanPdf $pdf
-     * @param string $author
+     * @param Pdf $pdf
      */
-    public function printFooter(CleanPdf $pdf, string $author);
+    public function initialize(Pdf $pdf);
 
     /**
-     * @param CleanPdf $cleanPdf
-     * @param string $title
-     * @param string $author
+     * @param Pdf $pdf
      */
-    public function setMeta(CleanPdf $cleanPdf, string $title, string $author);
+    public function printHeader(Pdf $pdf);
+
+    /**
+     * @param Pdf $pdf
+     */
+    public function printFooter(Pdf $pdf);
 }

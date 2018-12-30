@@ -9,33 +9,18 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report;
+namespace App\Service\Report\Pdf;
 
-use App\Service\Report\Pdf\Interfaces\DocumentInterface;
+use App\Service\Report\Document\Interfaces\DocumentInterface;
 use App\Service\Report\Pdf\Interfaces\TcpdfServiceInterface;
 use TCPDF;
 
-class CleanPdf extends TCPDF implements DocumentInterface
+class Pdf extends TCPDF implements DocumentInterface
 {
     /**
      * @var TcpdfServiceInterface
      */
     private $tcpdfService;
-
-    /**
-     * @var string
-     */
-    private $title;
-
-    /**
-     * @var string
-     */
-    private $author;
-
-    /**
-     * @var string
-     */
-    private $logoPath;
 
     /**
      * CleanPdf constructor.
@@ -47,21 +32,6 @@ class CleanPdf extends TCPDF implements DocumentInterface
         parent::__construct();
 
         $this->tcpdfService = $tcpdfService;
-        $this->tcpdfService->initialize($this);
-    }
-
-    /**
-     * @param string $title
-     * @param string $author
-     * @param string $logoPath
-     */
-    public function setMeta(string $title, string $author, string $logoPath)
-    {
-        $this->title = $title;
-        $this->author = $author;
-        $this->logoPath = $logoPath;
-
-        $this->tcpdfService->setMeta($this, $this->title, $this->author);
     }
 
     /**
@@ -69,7 +39,7 @@ class CleanPdf extends TCPDF implements DocumentInterface
      */
     public function Header()
     {
-        $this->tcpdfService->printHeader($this, $this->title, $this->logoPath);
+        $this->tcpdfService->printHeader($this);
     }
 
     /**
@@ -77,7 +47,7 @@ class CleanPdf extends TCPDF implements DocumentInterface
      */
     public function Footer()
     {
-        $this->tcpdfService->printFooter($this, $this->author);
+        $this->tcpdfService->printFooter($this);
     }
 
     /**
