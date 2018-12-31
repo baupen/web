@@ -359,7 +359,7 @@ class ReportService implements ReportServiceInterface
 
         // initialize report
         $footnote = $this->translator->trans('generated', ['%date%' => (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT), '%name%' => $author], 'report');
-        $pdfDefinition = new PdfDefinition($constructionSite->getName(), $footnote, __DIR__ . '/../../public/files/report_logo.png');
+        $pdfDefinition = new PdfDefinition($constructionSite->getName(), $footnote, __DIR__ . '/../../assets/report/logo.png');
         $report = new Report($pdfDefinition);
 
         $this->addIntroduction($report, $constructionSite, $filter, $reportElements);

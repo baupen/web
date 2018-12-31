@@ -36,6 +36,15 @@ class Report
         $this->pdfDesign = new PdfDesign();
         $this->document = new Pdf($pdfDefinition, $this->pdfSizes);
 
+        //prepare fonts
+        $checkFilePath = K_PATH_FONTS . '/.copied';
+        if (!file_exists($checkFilePath)) {
+            $sourceFolder = __DIR__ . '/../../../assets/report/fonts';
+            //copy all fonts from the assets to the fonts folder of tcpdf
+            shell_exec('\cp -r ' . $sourceFolder . '/* ' . K_PATH_FONTS);
+            file_put_contents($checkFilePath, time());
+        }
+
         $this->document->AddPage();
         $this->document->SetY($this->pdfSizes->getContentYStart());
 
@@ -162,6 +171,7 @@ class Report
             $this->document->SetFont(...$this->pdfDesign->getDefaultFontFamily());
             $this->document->MultiCell($columnWidth, 0, $description, 0, 'L', false, 1);
         }
+
         $this->document->Ln($this->pdfSizes->getLnHeight());
     }
 
