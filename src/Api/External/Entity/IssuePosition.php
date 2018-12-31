@@ -34,7 +34,7 @@ class IssuePosition
      *
      * @Assert\NotBlank()
      */
-    private $mapFileId;
+    private $mapFileID;
 
     /**
      * @return float
@@ -55,17 +55,17 @@ class IssuePosition
     /**
      * @return string
      */
-    public function getMapFileId(): string
+    public function getMapFileID(): string
     {
-        return $this->mapFileId;
+        return $this->mapFileID;
     }
 
     /**
-     * @param string $mapFileId
+     * @param string $mapFileID
      */
-    public function setMapFileId(string $mapFileId): void
+    public function setMapFileID(string $mapFileID): void
     {
-        $this->mapFileId = $mapFileId;
+        $this->mapFileID = $mapFileID;
     }
 
     /**

@@ -253,7 +253,7 @@ width: Double
 ## `File`
 ```
 id: UUID
-filename: string
+filename: String
 ```
 
 
@@ -341,7 +341,7 @@ position: Position?
 ```
 point: Point
 zoomScale: Double
-mapFileId: UUID
+mapFileID: UUID
 ```
 
 ### `Issue.Status`
