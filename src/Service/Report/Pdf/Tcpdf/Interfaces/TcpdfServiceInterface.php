@@ -23,12 +23,12 @@ interface TcpdfServiceInterface
     public function assignWrapper(Pdf $pdf, PdfDocumentInterface $document);
 
     /**
-     * @param PdfDocumentInterface $document
+     * @param Pdf $document
      * @param string $headerLeft
      * @param string $footerLeft
      * @param string $logoPath
      */
-    public function setPageVariables(PdfDocumentInterface $document, string $headerLeft, string $footerLeft, string $logoPath);
+    public function setPageVariables(Pdf $document, string $headerLeft, string $footerLeft, string $logoPath);
 
     /**
      * @param Pdf $pdf

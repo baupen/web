@@ -21,7 +21,7 @@ use App\Helper\IssueHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
-use App\Service\Report\Pdf\Interfaces\DocumentServiceInterface;
+use App\Service\Report\Pdf\Interfaces\PdfDocumentServiceInterface;
 use App\Service\Report\Report;
 use App\Service\Report\ReportConfiguration;
 use App\Service\Report\ReportElements;
@@ -51,7 +51,7 @@ class CleanReportService implements ReportServiceInterface
     private $translator;
 
     /**
-     * @var DocumentServiceInterface
+     * @var PdfDocumentServiceInterface
      */
     private $documentService;
 
@@ -63,7 +63,7 @@ class CleanReportService implements ReportServiceInterface
      * @param TranslatorInterface $translator
      * @param PathServiceInterface $pathService
      */
-    public function __construct(ImageServiceInterface $imageService, RegistryInterface $registry, TranslatorInterface $translator, PathServiceInterface $pathService, DocumentServiceInterface $documentService)
+    public function __construct(ImageServiceInterface $imageService, RegistryInterface $registry, TranslatorInterface $translator, PathServiceInterface $pathService, PdfDocumentServiceInterface $documentService)
     {
         $this->imageService = $imageService;
         $this->doctrine = $registry;

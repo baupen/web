@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Tcpdf\PdfDocumentInterface;
+namespace App\Service\Report\Pdf;
 
 use App\Helper\ImageHelper;
 use App\Service\Interfaces\PathServiceInterface;
-use App\Service\Report\Document\Interfaces\PageLayoutServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
+use App\Service\Report\Pdf\Interfaces\PageLayoutServiceInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
 class PageLayoutService implements PageLayoutServiceInterface

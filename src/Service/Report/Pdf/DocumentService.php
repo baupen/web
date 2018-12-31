@@ -14,9 +14,10 @@ namespace App\Service\Report\Pdf;
 use App\Helper\DateTimeFormatter;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Report\Document\Interfaces\DocumentServiceInterface;
+use App\Service\Report\Document\Interfaces\PrintServiceInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Pdf\Interfaces\PdfDocumentServiceInterface;
 use App\Service\Report\Pdf\Tcpdf\Interfaces\TcpdfServiceInterface;
-use App\Service\Report\Pdf\Tcpdf\Pdf;
 use App\Service\Report\Pdf\Tcpdf\PdfDocument;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -33,9 +34,9 @@ class DocumentService implements DocumentServiceInterface
     private $pathService;
 
     /**
-     * @var TcpdfServiceInterface
+     * @var PdfDocumentServiceInterface
      */
-    private $tcpdfService;
+    private $pdfDocumentService;
 
     /**
      * DocumentService constructor.
@@ -44,11 +45,10 @@ class DocumentService implements DocumentServiceInterface
      * @param PathServiceInterface $pathService
      * @param TcpdfServiceInterface $tcpdfService
      */
-    public function __construct(TranslatorInterface $translator, PathServiceInterface $pathService, TcpdfServiceInterface $tcpdfService)
+    public function __construct(TranslatorInterface $translator, PathServiceInterface $pathService, PdfDocumentServiceInterface $pdfDocumentService)
     {
         $this->translator = $translator;
-        $this->pathService = $pathService;
-        $this->tcpdfService = $tcpdfService;
+        $this->pdfDocumentService = $pdfDocumentService;
     }
 
     /**
@@ -57,31 +57,20 @@ class DocumentService implements DocumentServiceInterface
      *
      * @throws \Exception
      *
-     * @return PdfDocumentInterface
+     * @return PrintServiceInterface
      */
     public function create(string $title, string $author)
     {
-        $pdfDocument = $this->createPdfDocument();
-        $pdfDocument->setMeta($title, $author);
-
-        $footerLeft = $this->translator->trans('generated', ['%date%' => (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT), '%name%' => $author], 'report');
+        $footer = $this->translator->trans('generated', ['%date%' => (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT), '%name%' => $author], 'report');
         $logoPath = $this->pathService->getAssetsRoot() . 'report' . \DIRECTORY_SEPARATOR . 'logo.png';
-        $this->tcpdfService->setPageVariables($pdfDocument, $title, $footerLeft, $logoPath);
+        $document = $this->pdfDocumentService->create($title, $footer, $logoPath);
 
-        return $pdfDocument;
-    }
+        $document->setMeta($title, $author);
 
-    /**
-     * @return PdfDocumentInterface
-     */
-    private function createPdfDocument()
-    {
-        $pdf = new Pdf($this->tcpdfService);
+        $printService = new PrintService();
+        $printService->setDocument($document);
 
-        $wrapper = new PdfDocument($pdf);
-        $this->tcpdfService->assignWrapper($pdf, $wrapper);
-
-        return $wrapper;
+        return $printService;
     }
 
     /**

@@ -13,6 +13,11 @@ namespace App\Service\Report\Pdf\Tcpdf;
 
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
+/**
+ * implements the predictable publish PdfDocumentInterface with the TCPDF library.
+ *
+ * Class PdfDocument
+ */
 class PdfDocument implements PdfDocumentInterface
 {
     /**
@@ -65,7 +70,7 @@ class PdfDocument implements PdfDocumentInterface
         }
 
         $this->pdf->SetFontSize($textSize);
-        $this->pdf->Cell($width, 0, $textSize, 0, 0, $alignRight ? 'R' : 'L');
+        $this->pdf->MultiCell($width, 0, $text, 0, $alignRight ? 'R' : 'L');
     }
 
     /**

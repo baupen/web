@@ -12,10 +12,16 @@
 namespace App\Service\Report\Pdf\Tcpdf;
 
 use App\Service\Interfaces\PathServiceInterface;
-use App\Service\Report\Document\Interfaces\PageLayoutServiceInterface;
+use App\Service\Report\Pdf\Interfaces\PageLayoutServiceInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Pdf\Tcpdf\Interfaces\TcpdfServiceInterface;
 
+/**
+ * Functionality needed by the TCPDF object
+ * To enable dependency injection & testing this is in this service and not in the TCPDF object directly.
+ *
+ * Class TcpdfService
+ */
 class TcpdfService implements TcpdfServiceInterface
 {
     /**
@@ -77,12 +83,12 @@ class TcpdfService implements TcpdfServiceInterface
     }
 
     /**
-     * @param PdfDocumentInterface $document
+     * @param Pdf $document
      * @param string $headerLeft
      * @param string $footerLeft
      * @param string $logoPath
      */
-    public function setPageVariables(PdfDocumentInterface $document, string $headerLeft, string $footerLeft, string $logoPath)
+    public function setPageVariables(Pdf $document, string $headerLeft, string $footerLeft, string $logoPath)
     {
         $this->pdfMetaDictionary[$document->getIdentifier()] = [
             'headerLeft' => $headerLeft,
@@ -96,12 +102,13 @@ class TcpdfService implements TcpdfServiceInterface
      */
     public function printHeader(Pdf $pdf)
     {
-        $document = $this->pdfDocumentDictionary[$pdf->getIdentifier()];
+        $identifier = $pdf->getIdentifier();
+        $document = $this->pdfDocumentDictionary[$identifier];
 
-        $headerLeft = $this->pdfMetaDictionary[$document->getIdentifier()]['headerLeft'];
+        $headerLeft = $this->pdfMetaDictionary[$identifier]['headerLeft'];
         $this->pageLayoutService->printHeaderLeft($document, $headerLeft);
 
-        $logoPath = $this->pdfMetaDictionary[$document->getIdentifier()]['logoPath'];
+        $logoPath = $this->pdfMetaDictionary[$identifier]['logoPath'];
         $this->pageLayoutService->printLogo($document, $logoPath);
     }
 
@@ -112,9 +119,10 @@ class TcpdfService implements TcpdfServiceInterface
      */
     public function printFooter(Pdf $pdf, int $currentPageNumber, int $totalPageNumbers)
     {
-        $document = $this->pdfDocumentDictionary[$pdf->getIdentifier()];
+        $identifier = $pdf->getIdentifier();
+        $document = $this->pdfDocumentDictionary[$identifier];
 
-        $footerLeft = $this->pdfMetaDictionary[$document->getIdentifier()]['footerLeft'];
+        $footerLeft = $this->pdfMetaDictionary[$identifier]['footerLeft'];
         $this->pageLayoutService->printFooterLeft($document, $footerLeft);
 
         $this->pageLayoutService->printPageNumbers($document, $currentPageNumber, $totalPageNumbers);

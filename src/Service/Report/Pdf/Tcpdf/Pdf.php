@@ -14,6 +14,11 @@ namespace App\Service\Report\Pdf\Tcpdf;
 use App\Service\Report\Pdf\Tcpdf\Interfaces\TcpdfServiceInterface;
 use TCPDF;
 
+/**
+ * Overrides functionality of @TCPDF which can't be changed otherwise, and relays them to the @TcpdfService.
+ *
+ * Class Pdf
+ */
 class Pdf extends TCPDF
 {
     /**

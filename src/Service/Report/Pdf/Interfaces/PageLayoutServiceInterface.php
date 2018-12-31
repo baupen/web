@@ -9,9 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document\Interfaces;
-
-use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+namespace App\Service\Report\Pdf\Interfaces;
 
 interface PageLayoutServiceInterface
 {
