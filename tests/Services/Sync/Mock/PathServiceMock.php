@@ -129,4 +129,12 @@ class PathServiceMock implements PathServiceInterface
     {
         return $this->folder;
     }
+
+    /**
+     * @return string
+     */
+    public function getAssetsRoot()
+    {
+        return $this->folder;
+    }
 }
