@@ -11,9 +11,9 @@ Mangel.io makes the issue management on a construction site more pleasing and st
 Developed to fulfil both the requirements of the construction site manager and the craftsman to work together easily and efficiently.
 
 It suggests the following workflow:
- - the manager inspects the construction site, and notices incomplete or broken thinks, and creates an issue for each event
+ - the manager inspects the construction site, and notices incomplete or broken things, and creates an issue for each 
  - the manager returns to his office, reviews the newly created issues, and adds them to the issue register
- - the manager sends an email to all craftsman which have new issues, or have not responded yet to already existing ones
- - the craftsman receives the email, and sees all currently open issues with a special link
- - on the construction site, using the link he can respond to issues, or he had printed the issues in his office and contacts the manager after completion personally
+ - the manager sends an email to all craftsman which have new issues or have not responded yet to issues from the register assigned to them
+ - the craftsman receives the email with a special link which displays all currently open issues to which he is assigned to
+ - on the construction site, using the link, he can respond to issues, or he had printed the issues in his office and contacts the manager after completion personally
  - the manager inspects the issues for which the craftsman already has responded and marks issues as completed which have been resolved
