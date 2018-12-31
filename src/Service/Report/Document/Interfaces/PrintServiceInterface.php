@@ -42,9 +42,4 @@ interface PrintServiceInterface
      * @return DocumentInterface
      */
     public function printImage(array $header, array $content);
-
-    /**
-     * @param int $column
-     */
-    public function goToColumn(int $column);
 }

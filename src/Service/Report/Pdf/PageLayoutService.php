@@ -9,15 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf;
+namespace App\Service\Report\Pdf\Tcpdf\PdfDocumentInterface;
 
 use App\Helper\ImageHelper;
 use App\Service\Interfaces\PathServiceInterface;
-use App\Service\Report\Document\Interfaces\PrintMetaServiceInterface;
+use App\Service\Report\Document\Interfaces\PageLayoutServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
+use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
-class PrintMetaService implements PrintMetaServiceInterface
+class PageLayoutService implements PageLayoutServiceInterface
 {
     /**
      * @var LayoutServiceInterface
@@ -49,33 +50,34 @@ class PrintMetaService implements PrintMetaServiceInterface
     }
 
     /**
-     * @param Pdf $pdf
+     * @param PdfDocumentInterface $pdf
      */
-    public function initializeLayout(Pdf $pdf)
+    public function initializeLayout(PdfDocumentInterface $pdf)
     {
-        //set margin
-        $pdf->SetMargins($this->layoutService->getContentXStart(), $this->layoutService->getContentYStart());
-        $pdf->SetAutoPageBreak(true, $this->layoutService->getMarginBottom());
+        $marginLeft = $this->layoutService->getContentXStart();
+        $marginTop = $this->layoutService->getContentYStart();
+        $marginRight = $this->layoutService->getMarginRight();
+        $marginBottom = $this->layoutService->getMarginBottom();
+        $pdf->setPageMargins($marginLeft, $marginTop, $marginRight, $marginBottom);
     }
 
     /**
-     * @param Pdf $pdf
+     * @param PdfDocumentInterface $pdf
      * @param string $headerLeft
      */
-    public function printHeaderLeft(Pdf $pdf, string $headerLeft)
+    public function printHeaderLeft(PdfDocumentInterface $pdf, string $headerLeft)
     {
-        $pdf->SetXY($this->layoutService->getContentXStart(), $this->layoutService->getHeaderYStart());
-
-        $pdf->SetFontSize($this->typographyService->getHeaderFontSize());
         $maxWidth = $this->layoutService->getContentXSize() / 3 * 2;
-        $pdf->Cell($maxWidth, 0, $headerLeft, 0, 0, 'L');
+
+        $pdf->setCursor($this->layoutService->getContentXStart(), $this->layoutService->getHeaderYStart());
+        $pdf->printText($headerLeft, $this->typographyService->getHeaderFontSize(), $maxWidth);
     }
 
     /**
-     * @param Pdf $pdf
+     * @param PdfDocumentInterface $pdf
      * @param string $logoPath
      */
-    public function printLogo(Pdf $pdf, string $logoPath)
+    public function printLogo(PdfDocumentInterface $pdf, string $logoPath)
     {
         // calculate optimal size
         $maxHeight = $this->layoutService->getHeaderHeight();
@@ -85,33 +87,33 @@ class PrintMetaService implements PrintMetaServiceInterface
         // print
         $startX = $this->layoutService->getContentXEnd() - $width;
         $startY = $this->layoutService->getHeaderYStart();
-        $pdf->Image($logoPath, $startX, $startY, $width, $height, '', '', 'R');
+        $pdf->setCursor($startX, $startY);
+        $pdf->printImage($logoPath, $width, $height);
     }
 
     /**
-     * @param Pdf $pdf
+     * @param PdfDocumentInterface $pdf
      * @param string $footerLeft
      */
-    public function printFooterLeft(Pdf $pdf, string $footerLeft)
+    public function printFooterLeft(PdfDocumentInterface $pdf, string $footerLeft)
     {
-        $pdf->SetXY($this->layoutService->getContentXStart(), $this->layoutService->getFooterYStart());
-
-        $pdf->SetFontSize($this->typographyService->getFooterFontSize());
-        $pdf->Cell($this->layoutService->getContentXSize(), 0, $footerLeft, 0, 0, 'L');
+        $pdf->setCursor($this->layoutService->getContentXStart(), $this->layoutService->getFooterYStart());
+        $pdf->printText($footerLeft, $this->typographyService->getFooterFontSize());
     }
 
     /**
-     * @param Pdf $pdf
+     * @param PdfDocumentInterface $pdf
+     * @param int $currentPageNumber
+     * @param int $totalPageNumbers
      */
-    public function printPageNumbers(Pdf $pdf)
+    public function printPageNumbers(PdfDocumentInterface $pdf, int $currentPageNumber, int $totalPageNumbers)
     {
         $contentWidthPart = $this->layoutService->getContentXSize() / 8;
         //+6.5 because TCPDF uses a placeholder for the page numbers which is replaced at the end. this leads to incorrect alignment.
-        $pdf->SetXY($this->layoutService->getContentXEnd() - $contentWidthPart + 6.5, $this->layoutService->getFooterYStart());
+        $startX = $this->layoutService->getContentXEnd() - $contentWidthPart + 6.5;
+        $startY = $this->layoutService->getFooterYStart();
 
-        $currentPage = $pdf->getAliasNumPage();
-        $totalPages = $pdf->getAliasNbPages();
-        $pdf->SetFontSize($this->typographyService->getFooterFontSize());
-        $pdf->Cell($contentWidthPart, 0, $currentPage . '/' . $totalPages, 0, 0, 'R');
+        $pdf->setCursor($startX, $startY);
+        $pdf->printText($currentPageNumber . '/' . $totalPageNumbers, $this->typographyService->getFooterFontSize(), $contentWidthPart, true);
     }
 }

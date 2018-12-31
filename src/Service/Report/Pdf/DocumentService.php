@@ -13,9 +13,11 @@ namespace App\Service\Report\Pdf;
 
 use App\Helper\DateTimeFormatter;
 use App\Service\Interfaces\PathServiceInterface;
-use App\Service\Report\Document\Interfaces\DocumentInterface;
 use App\Service\Report\Document\Interfaces\DocumentServiceInterface;
-use App\Service\Report\Pdf\Interfaces\TcpdfServiceInterface;
+use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Pdf\Tcpdf\Interfaces\TcpdfServiceInterface;
+use App\Service\Report\Pdf\Tcpdf\Pdf;
+use App\Service\Report\Pdf\Tcpdf\PdfDocument;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DocumentService implements DocumentServiceInterface
@@ -55,25 +57,38 @@ class DocumentService implements DocumentServiceInterface
      *
      * @throws \Exception
      *
-     * @return DocumentInterface
+     * @return PdfDocumentInterface
      */
     public function create(string $title, string $author)
     {
-        $logoPath = $this->pathService->getAssetsRoot() . 'report' . \DIRECTORY_SEPARATOR . 'logo.png';
+        $pdfDocument = $this->createPdfDocument();
+        $pdfDocument->setMeta($title, $author);
+
         $footerLeft = $this->translator->trans('generated', ['%date%' => (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT), '%name%' => $author], 'report');
+        $logoPath = $this->pathService->getAssetsRoot() . 'report' . \DIRECTORY_SEPARATOR . 'logo.png';
+        $this->tcpdfService->setPageVariables($pdfDocument, $title, $footerLeft, $logoPath);
 
-        $pdf = new Pdf($this->tcpdfService);
-        $this->tcpdfService->initialize($pdf);
-        $this->tcpdfService->setMeta($pdf, $title, $footerLeft, $logoPath);
-
-        return $pdf;
+        return $pdfDocument;
     }
 
     /**
-     * @param DocumentInterface $pdfDocument
+     * @return PdfDocumentInterface
+     */
+    private function createPdfDocument()
+    {
+        $pdf = new Pdf($this->tcpdfService);
+
+        $wrapper = new PdfDocument($pdf);
+        $this->tcpdfService->assignWrapper($pdf, $wrapper);
+
+        return $wrapper;
+    }
+
+    /**
+     * @param PdfDocumentInterface $pdfDocument
      * @param string $savePath
      */
-    public function save(DocumentInterface $pdfDocument, string $savePath)
+    public function save(PdfDocumentInterface $pdfDocument, string $savePath)
     {
         // TODO: Implement saveDocument() method.
     }

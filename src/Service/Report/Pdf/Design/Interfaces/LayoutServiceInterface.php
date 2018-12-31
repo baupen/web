@@ -75,4 +75,9 @@ interface LayoutServiceInterface
      * @return float
      */
     public function getMarginBottom(): float;
+
+    /**
+     * @return float
+     */
+    public function getMarginRight(): float;
 }

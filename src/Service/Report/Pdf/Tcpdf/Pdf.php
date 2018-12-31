@@ -9,18 +9,22 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf;
+namespace App\Service\Report\Pdf\Tcpdf;
 
-use App\Service\Report\Document\Interfaces\DocumentInterface;
-use App\Service\Report\Pdf\Interfaces\TcpdfServiceInterface;
+use App\Service\Report\Pdf\Tcpdf\Interfaces\TcpdfServiceInterface;
 use TCPDF;
 
-class Pdf extends TCPDF implements DocumentInterface
+class Pdf extends TCPDF
 {
     /**
      * @var TcpdfServiceInterface
      */
     private $tcpdfService;
+
+    /**
+     * @var string
+     */
+    private $identifier;
 
     /**
      * CleanPdf constructor.
@@ -30,8 +34,8 @@ class Pdf extends TCPDF implements DocumentInterface
     public function __construct(TcpdfServiceInterface $tcpdfService)
     {
         parent::__construct();
-
         $this->tcpdfService = $tcpdfService;
+        $this->identifier = uniqid();
     }
 
     /**
@@ -47,7 +51,7 @@ class Pdf extends TCPDF implements DocumentInterface
      */
     public function Footer()
     {
-        $this->tcpdfService->printFooter($this);
+        $this->tcpdfService->printFooter($this, $this->getAliasNumPage(), $this->getAliasNbPages());
     }
 
     /**
@@ -58,5 +62,13 @@ class Pdf extends TCPDF implements DocumentInterface
     public function Error($msg)
     {
         throw new \Exception($msg);
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentifier(): string
+    {
+        return $this->identifier;
     }
 }

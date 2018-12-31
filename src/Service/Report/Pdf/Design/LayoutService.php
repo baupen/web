@@ -141,6 +141,14 @@ class LayoutService implements LayoutServiceInterface
     /**
      * @return float
      */
+    public function getMarginRight(): float
+    {
+        return $this->getPageSizeX() - $this->getContentXEnd();
+    }
+
+    /**
+     * @return float
+     */
     public function getColumnGutter()
     {
         return $this->layout->getBaseSpacing() / $this->layout->getScalingFactor();

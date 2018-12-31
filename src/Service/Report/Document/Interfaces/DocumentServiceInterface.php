@@ -17,13 +17,7 @@ interface DocumentServiceInterface
      * @param string $title
      * @param string $author
      *
-     * @return DocumentInterface
+     * @return PrintServiceInterface
      */
     public function create(string $title, string $author);
-
-    /**
-     * @param DocumentInterface $pdfDocument
-     * @param string $savePath
-     */
-    public function save(DocumentInterface $pdfDocument, string $savePath);
 }
