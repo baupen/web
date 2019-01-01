@@ -19,7 +19,7 @@ class DownloadFileRequest extends AuthenticatedRequest
     /**
      * @var ObjectMeta|null
      */
-    private $building;
+    private $constructionSite;
 
     /**
      * @var ObjectMeta|null
@@ -34,17 +34,17 @@ class DownloadFileRequest extends AuthenticatedRequest
     /**
      * @return ObjectMeta|null
      */
-    public function getBuilding(): ?ObjectMeta
+    public function getConstructionSite(): ?ObjectMeta
     {
-        return $this->building;
+        return $this->constructionSite;
     }
 
     /**
-     * @param ObjectMeta|null $building
+     * @param ObjectMeta|null $constructionSite
      */
-    public function setBuilding(?ObjectMeta $building): void
+    public function setConstructionSite(?ObjectMeta $constructionSite): void
     {
-        $this->building = $building;
+        $this->constructionSite = $constructionSite;
     }
 
     /**
