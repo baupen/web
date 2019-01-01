@@ -157,7 +157,7 @@ class MapSectorService implements MapSectorServiceInterface
 
         if ($checkIfMatch($kitchen)) {
             // red because of fire
-            return 'FF0000';
+            return '#FF0000';
         }
 
         if ($checkIfMatch($wetAreas)) {
