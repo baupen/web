@@ -149,47 +149,16 @@ class LayoutService implements LayoutServiceInterface
     /**
      * @return float
      */
-    public function getColumnGutter()
+    public function getColumnGutter(): float
     {
         return $this->layout->getBaseSpacing() / $this->layout->getScalingFactor();
     }
 
     /**
-     * @param $numberOfColumns
-     *
-     * @return float|float
+     * @return float
      */
-    public function getColumnContentWidth($numberOfColumns)
+    public function getRegionSpacer(): float
     {
-        $gutterSpace = ($numberOfColumns - 1) * $this->getColumnGutter();
-
-        return (float)($this->getContentXSize() - $gutterSpace) / $numberOfColumns;
-    }
-
-    /**
-     * @param $currentColumn
-     * @param $numberOfColumns
-     *
-     * @return float|float
-     */
-    public function getColumnWidth($currentColumn, $numberOfColumns)
-    {
-        $baseWidth = $this->getColumnContentWidth($numberOfColumns);
-        if ($currentColumn === $numberOfColumns - 1) {
-            return $baseWidth;
-        }
-
-        return $baseWidth + $this->getColumnGutter();
-    }
-
-    /**
-     * @param $currentColumn
-     * @param $numberOfColumns
-     *
-     * @return float|float
-     */
-    public function getColumnStart($currentColumn, $numberOfColumns)
-    {
-        return ($this->getColumnWidth($currentColumn - 1, $numberOfColumns)) * $currentColumn + $this->getContentXStart();
+        return $this->layout->getBaseSpacing() * ($this->layout->getScalingFactor() ** 2);
     }
 }

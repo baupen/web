@@ -9,15 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document\Interfaces;
+namespace App\Service\Report\Document\Layout;
 
-interface DocumentServiceInterface
+use App\Service\Report\Document\PrinterInterface;
+
+interface GroupLayoutInterface extends PrinterInterface
 {
     /**
-     * @param string $title
-     * @param string $author
-     *
-     * @return PrintServiceInterface
+     * will end the columned layout.
      */
-    public function create(string $title, string $author);
+    public function endLayout();
 }

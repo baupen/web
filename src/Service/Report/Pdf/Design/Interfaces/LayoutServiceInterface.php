@@ -80,4 +80,14 @@ interface LayoutServiceInterface
      * @return float
      */
     public function getMarginRight(): float;
+
+    /**
+     * @return float
+     */
+    public function getColumnGutter(): float;
+
+    /**
+     * @return float
+     */
+    public function getRegionSpacer(): float;
 }

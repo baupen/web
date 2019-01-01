@@ -20,6 +20,9 @@ use App\Helper\DateTimeFormatter;
 use App\Helper\IssueHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Report\Document\Interfaces\DocumentServiceInterface;
+use App\Service\Report\Document\Interfaces\IssueReportServiceInterface;
+use App\Service\Report\Document\Interfaces\PrintInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentServiceInterface;
 use App\Service\Report\Report;
 use App\Service\Report\ReportConfiguration;
@@ -50,9 +53,14 @@ class CleanReportService
     private $translator;
 
     /**
-     * @var PdfDocumentServiceInterface
+     * @var DocumentServiceInterface
      */
     private $documentService;
+
+    /**
+     * @var IssueReportServiceInterface
+     */
+    private $issueReport;
 
     /**
      * ReportService constructor.
@@ -62,13 +70,14 @@ class CleanReportService
      * @param TranslatorInterface $translator
      * @param PathServiceInterface $pathService
      */
-    public function __construct(ImageServiceInterface $imageService, RegistryInterface $registry, TranslatorInterface $translator, PathServiceInterface $pathService, PdfDocumentServiceInterface $documentService)
+    public function __construct(ImageServiceInterface $imageService, RegistryInterface $registry, TranslatorInterface $translator, PathServiceInterface $pathService, PdfDocumentServiceInterface $documentService, IssueReportServiceInterface $issueReport)
     {
         $this->imageService = $imageService;
         $this->doctrine = $registry;
         $this->translator = $translator;
         $this->pathService = $pathService;
         $this->documentService = $documentService;
+        $this->issueReport = $issueReport;
     }
 
     /**
@@ -89,7 +98,7 @@ class CleanReportService
         // initialize report
         $document = $this->documentService->create($constructionSite->getName(), $author);
 
-        $this->addIntroduction($report, $constructionSite, $filter, $reportElements);
+        $this->addIntroduction($document, $constructionSite, $filter, $reportElements);
 
         //add tables
         if ($reportElements->getTableByCraftsman()) {
@@ -173,41 +182,26 @@ class CleanReportService
     }
 
     /**
-     * @param Report $report
+     * @param PrintInterface $printService
      * @param ConstructionSite $constructionSite
      * @param Filter $filter
      * @param ReportElements $reportElements
      */
-    private function addIntroduction(Report $report, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
+    private function addIntroduction(PrintInterface $printService, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
     {
         $filterEntries = $this->getFilterEntries($filter);
-
-        //add list of elements which are part of this report
-        $elements = [];
-        if ($reportElements->getTableByCraftsman()) {
-            $elements[] = $this->translator->trans('table.by_craftsman', [], 'report');
-        }
-        if ($reportElements->getTableByMap()) {
-            $elements[] = $this->translator->trans('table.by_map', [], 'report');
-        }
-        if ($reportElements->getTableByTrade()) {
-            $elements[] = $this->translator->trans('table.by_trade', [], 'report');
-        }
-
-        $issueDetailsLabel = $this->translator->trans('issues.detailed', [], 'report');
-        if ($reportElements->getWithImages()) {
-            $issueDetailsLabel .= ' ' . $this->translator->trans('issues.with_images', [], 'report');
-        }
-        $elements[] = $issueDetailsLabel;
+        $reportElements = $this->getReportElements($reportElements);
+        $constructionSiteImage = $this->imageService->getSizeForConstructionSite($constructionSite, ImageServiceInterface::SIZE_REPORT_ISSUE);
+        $constructionSiteAddressLines = implode("\n", $constructionSite->getAddressLines());
 
         //print
-        $report->addIntroduction(
-            $this->imageService->getSizeForConstructionSite($constructionSite, ImageServiceInterface::SIZE_REPORT_ISSUE),
+        $this->issueReport->addIntroduction(
+            $printService,
             $constructionSite->getName(),
-            implode("\n", $constructionSite->getAddressLines()),
-            implode(', ', $elements),
-            $filterEntries,
-            $this->translator->trans('entity.name', [], 'entity_filter')
+            $constructionSiteImage,
+            $constructionSiteAddressLines,
+            $reportElements,
+            $filterEntries
         );
     }
 
@@ -553,5 +547,32 @@ class CleanReportService
         }
 
         return '';
+    }
+
+    /**
+     * @param ReportElements $reportElements
+     * @param array $elements
+     *
+     * @return array
+     */
+    private function getReportElements(ReportElements $reportElements): string
+    {
+        if ($reportElements->getTableByCraftsman()) {
+            $elements[] = $this->translator->trans('table.by_craftsman', [], 'report');
+        }
+        if ($reportElements->getTableByMap()) {
+            $elements[] = $this->translator->trans('table.by_map', [], 'report');
+        }
+        if ($reportElements->getTableByTrade()) {
+            $elements[] = $this->translator->trans('table.by_trade', [], 'report');
+        }
+
+        $issueDetailsLabel = $this->translator->trans('issues.detailed', [], 'report');
+        if ($reportElements->getWithImages()) {
+            $issueDetailsLabel .= ' ' . $this->translator->trans('issues.with_images', [], 'report');
+        }
+        $elements[] = $issueDetailsLabel;
+
+        return implode(', ', $elements);
     }
 }
