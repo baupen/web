@@ -17,8 +17,8 @@ use App\Service\Report\Document\Layout\GroupLayoutInterface;
 use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Document\Layout\ColumnLayout;
+use App\Service\Report\Pdf\Document\Layout\GroupLayout;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Printer;
 
 class Document implements DocumentInterface
 {
@@ -67,6 +67,7 @@ class Document implements DocumentInterface
      */
     public function createGroupLayout()
     {
+        return new GroupLayout($this->printer, $this->document, $this->layoutService->getContentXSize());
     }
 
     /**

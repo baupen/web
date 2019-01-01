@@ -9,9 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document;
+namespace App\Service\Report;
 
-use App\Service\Report\Document\Interfaces\IssueReportServiceInterface;
+use App\Service\Report\Document\DocumentInterface;
+use App\Service\Report\Interfaces\IssueReportServiceInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class IssueReportServiceService implements IssueReportServiceInterface

@@ -12,16 +12,12 @@
 namespace App\Service\Report\Pdf\Document\Layout;
 
 use App\Service\Report\Document\Layout\ColumnLayoutInterface;
+use App\Service\Report\Pdf\Document\Layout\Base\BaseLayout;
+use App\Service\Report\Pdf\Document\Printer;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Printer;
 
-class ColumnLayout implements ColumnLayoutInterface
+class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
 {
-    /**
-     * @var Printer
-     */
-    private $printer;
-
     /**
      * @var PdfDocumentInterface
      */
@@ -88,14 +84,16 @@ class ColumnLayout implements ColumnLayoutInterface
      */
     public function __construct(Printer $printer, PdfDocumentInterface $pdfDocument, int $columnCount, float $columnGutter, float $width)
     {
-        $this->printer = $printer;
+        $gutterSpace = ($columnCount - 1) * $columnGutter;
+        $columnWidth = (float)($width - $gutterSpace) / $columnCount;
+
+        parent::__construct($printer, $columnWidth);
+
         $this->pdfDocument = $pdfDocument;
         $this->columnCount = $columnCount;
         $this->columnGutter = $columnGutter;
-        $this->totalWidth = $width;
-
-        $gutterSpace = ($this->columnCount - 1) * $this->columnGutter;
-        $this->columnWidth = (float)($this->totalWidth - $gutterSpace) / $this->columnCount;
+        $this->totalWidth = $columnWidth;
+        $this->columnWidth = $columnWidth;
 
         $cursor = $pdfDocument->getCursor();
         $this->startPage = $pdfDocument->getPage();
@@ -160,54 +158,5 @@ class ColumnLayout implements ColumnLayoutInterface
         $this->preserveCursorMax();
 
         $this->pdfDocument->setCursor($this->startX, $this->maxY);
-    }
-
-    /**
-     * @param string $title
-     */
-    public function printTitle(string $title)
-    {
-        $this->printer->printTitle($title, $this->columnWidth);
-    }
-
-    /**
-     * @param string $paragraph
-     */
-    public function printParagraph(string $paragraph)
-    {
-        $this->printer->printParagraph($paragraph, $this->columnWidth);
-    }
-
-    /**
-     * @param string[] $keyValues
-     */
-    public function printKeyValueParagraph(array $keyValues)
-    {
-        $this->printer->printKeyValueParagraph($keyValues, $this->columnWidth);
-    }
-
-    /**
-     * @param string $header
-     */
-    public function printRegionHeader(string $header)
-    {
-        $this->printer->printRegionHeader($header, $this->columnWidth);
-    }
-
-    /**
-     * @param string[] $header
-     * @param string[][] $content
-     */
-    public function printTable(array $header, array $content)
-    {
-        $this->printer->printTable($header, $content, $this->columnWidth);
-    }
-
-    /**
-     * @param string $filePath
-     */
-    public function printImage(string $filePath)
-    {
-        $this->printer->printImage($filePath, $this->columnWidth);
     }
 }

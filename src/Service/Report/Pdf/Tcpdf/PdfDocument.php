@@ -120,4 +120,77 @@ class PdfDocument implements PdfDocumentInterface
     {
         $this->pdf->Image($imagePath, '', '', $width, $height, '', '', 'R');
     }
+
+    /**
+     * @param int $page
+     */
+    public function setPage(int $page)
+    {
+        $this->pdf->setPage($page);
+    }
+
+    /**
+     * @param string $text
+     * @param float $textSize
+     * @param float $width
+     * @param bool $alignRight
+     */
+    public function printBoldText(string $text, float $textSize, float $width = null, bool $alignRight = false)
+    {
+        // TODO: Implement printBoldText() method.
+    }
+
+    /**
+     * @param string[] $header
+     * @param string[] $content
+     * @param float|null $width
+     */
+    public function printTable(array $header, array $content, float $width = null)
+    {
+        // TODO: Implement printTable() method.
+    }
+
+    /**
+     * @param \Closure $printClosure
+     *
+     * @return bool
+     */
+    public function provocatesPageBreak(\Closure $printClosure)
+    {
+        // remember current position
+        $this->pdf->startTransaction();
+        $this->pdf->checkPageBreak();
+        $startPage = $this->pdf->getPage();
+
+        // print
+        $printClosure();
+
+        // save position
+        $endPage = $this->pdf->getPage();
+
+        return $endPage > $startPage;
+    }
+
+    /**
+     * returns the active cursor position as an array of [$xCoordinate, $yCoordinate].
+     *
+     * @return int[]
+     */
+    public function getCursor()
+    {
+        return [$this->pdf->GetX(), $this->pdf->GetY()];
+    }
+
+    /**
+     * @return int
+     */
+    public function getPage()
+    {
+        return $this->pdf->PageNo();
+    }
+
+    public function startNewPage()
+    {
+        $this->pdf->AddPage();
+    }
 }

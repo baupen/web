@@ -60,6 +60,20 @@ class Pdf extends TCPDF
     }
 
     /**
+     * adds a new page if needed.
+     *
+     * @param int $h
+     * @param string $y
+     * @param bool $addpage
+     *
+     * @return bool|void
+     */
+    public function checkPageBreak($h = 0, $y = '', $addpage = true)
+    {
+        parent::checkPageBreak($h, $y, $addpage);
+    }
+
+    /**
      * @param $msg
      *
      * @throws \Exception

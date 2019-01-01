@@ -57,6 +57,7 @@ interface PdfDocumentInterface extends ReadOnlyPdfDocumentInterface
     /**
      * @param string[] $header
      * @param string[] $content
+     * @param float|null $width
      */
     public function printTable(array $header, array $content, float $width = null);
 
@@ -71,4 +72,13 @@ interface PdfDocumentInterface extends ReadOnlyPdfDocumentInterface
      * @param string $filePath
      */
     public function save(string $filePath);
+
+    /**
+     * @param \Closure $printClosure
+     *
+     * @return bool
+     */
+    public function provocatesPageBreak(\Closure $printClosure);
+
+    public function startNewPage();
 }

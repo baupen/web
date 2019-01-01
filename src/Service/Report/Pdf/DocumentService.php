@@ -15,6 +15,7 @@ use App\Helper\DateTimeFormatter;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Report\Document\DocumentInterface;
 use App\Service\Report\Document\Interfaces\DocumentServiceInterface;
+use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Document\Document;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
@@ -45,17 +46,24 @@ class DocumentService implements DocumentServiceInterface
     private $typographyService;
 
     /**
+     * @var LayoutServiceInterface
+     */
+    private $layoutService;
+
+    /**
      * DocumentService constructor.
      *
      * @param TranslatorInterface $translator
      * @param PdfDocumentServiceInterface $pdfDocumentService
      * @param TypographyServiceInterface $typographyService
+     * @param LayoutServiceInterface $layoutService
      */
-    public function __construct(TranslatorInterface $translator, PdfDocumentServiceInterface $pdfDocumentService, TypographyServiceInterface $typographyService)
+    public function __construct(TranslatorInterface $translator, PdfDocumentServiceInterface $pdfDocumentService, TypographyServiceInterface $typographyService, LayoutServiceInterface $layoutService)
     {
         $this->translator = $translator;
         $this->pdfDocumentService = $pdfDocumentService;
         $this->typographyService = $typographyService;
+        $this->layoutService = $layoutService;
     }
 
     /**
@@ -74,7 +82,7 @@ class DocumentService implements DocumentServiceInterface
 
         $pdfDocument->setMeta($title, $author);
 
-        return new Document($pdfDocument);
+        return new Document($pdfDocument, $this->layoutService, $this->typographyService);
     }
 
     /**

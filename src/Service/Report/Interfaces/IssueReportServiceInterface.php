@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document\Interfaces;
+namespace App\Service\Report\Interfaces;
 
 use App\Service\Report\Document\DocumentInterface;
 

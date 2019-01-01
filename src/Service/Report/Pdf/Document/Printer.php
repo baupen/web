@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf;
+namespace App\Service\Report\Pdf\Document;
 
 use App\Helper\ImageHelper;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
