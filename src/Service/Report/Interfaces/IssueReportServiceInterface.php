@@ -24,4 +24,14 @@ interface IssueReportServiceInterface
      * @param array $filterEntries
      */
     public function addIntroduction(DocumentInterface $document, string $constructionSiteName, ?string $constructionSiteImage, string $constructionSiteAddressLines, string $reportElements, array $filterEntries);
+
+    /**
+     * @param DocumentInterface $document
+     * @param string $tableDescription
+     * @param string[] $identifierHeader
+     * @param string[] $identifierContent
+     * @param string[] $issuesHeader
+     * @param string[] $issuesContent
+     */
+    public function addAggregatedIssueTable(DocumentInterface $document, string $tableDescription, array $identifierHeader, array $identifierContent, array $issuesHeader, array $issuesContent);
 }

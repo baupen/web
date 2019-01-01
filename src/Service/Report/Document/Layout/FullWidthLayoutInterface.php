@@ -13,6 +13,6 @@ namespace App\Service\Report\Document\Layout;
 
 use App\Service\Report\Document\PrinterInterface;
 
-interface GroupLayoutInterface extends PrinterInterface, LayoutInterface
+interface FullWidthLayoutInterface extends PrinterInterface, LayoutInterface
 {
 }

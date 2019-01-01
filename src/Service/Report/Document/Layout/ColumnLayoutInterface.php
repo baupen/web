@@ -13,7 +13,7 @@ namespace App\Service\Report\Document\Layout;
 
 use App\Service\Report\Document\PrinterInterface;
 
-interface ColumnLayoutInterface extends PrinterInterface
+interface ColumnLayoutInterface extends PrinterInterface, LayoutInterface
 {
     /**
      * ensures the next printed elements are printed in the specified column
@@ -22,9 +22,4 @@ interface ColumnLayoutInterface extends PrinterInterface
      * @param int $column
      */
     public function goToColumn(int $column);
-
-    /**
-     * will end the columned layout.
-     */
-    public function endLayout();
 }

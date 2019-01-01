@@ -14,7 +14,7 @@ namespace App\Service\Report\Pdf;
 use App\Helper\DateTimeFormatter;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Report\Document\DocumentInterface;
-use App\Service\Report\Document\Interfaces\DocumentServiceInterface;
+use App\Service\Report\Document\DocumentServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Document\Document;

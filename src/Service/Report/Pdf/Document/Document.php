@@ -11,13 +11,19 @@
 
 namespace App\Service\Report\Pdf\Document;
 
+use App\Service\Report\Document\Configuration\Table;
+use App\Service\Report\Document\Configuration\TableColumn;
 use App\Service\Report\Document\DocumentInterface;
 use App\Service\Report\Document\Layout\ColumnLayoutInterface;
+use App\Service\Report\Document\Layout\FullWidthLayoutInterface;
 use App\Service\Report\Document\Layout\GroupLayoutInterface;
+use App\Service\Report\Document\Layout\TableLayoutInterface;
 use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Document\Layout\ColumnLayout;
+use App\Service\Report\Pdf\Document\Layout\FullWidthLayout;
 use App\Service\Report\Pdf\Document\Layout\GroupLayout;
+use App\Service\Report\Pdf\Document\Layout\TableLayout;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
 class Document implements DocumentInterface
@@ -80,5 +86,28 @@ class Document implements DocumentInterface
     public function createColumnLayout(int $columnCount)
     {
         return new ColumnLayout($this->printer, $this->document, $columnCount, $this->layoutService->getColumnGutter(), $this->layoutService->getContentXSize());
+    }
+
+    /**
+     * starts a table.
+     *
+     * @param Table $table
+     * @param TableColumn[] $tableColumns
+     *
+     * @return TableLayoutInterface
+     */
+    public function createTableLayout(Table $table, array $tableColumns)
+    {
+        return new TableLayout($this->document, $table, $tableColumns);
+    }
+
+    /**
+     * starts a region with 100% width.
+     *
+     * @return FullWidthLayoutInterface
+     */
+    public function createFullWidthLayout()
+    {
+        return new FullWidthLayout($this->printer, $this->layoutService->getContentXSize());
     }
 }

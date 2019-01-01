@@ -11,11 +11,22 @@
 
 namespace App\Service\Report\Document;
 
+use App\Service\Report\Document\Configuration\Table;
+use App\Service\Report\Document\Configuration\TableColumn;
 use App\Service\Report\Document\Layout\ColumnLayoutInterface;
+use App\Service\Report\Document\Layout\FullWidthLayoutInterface;
 use App\Service\Report\Document\Layout\GroupLayoutInterface;
+use App\Service\Report\Document\Layout\TableLayoutInterface;
 
 interface DocumentInterface
 {
+    /**
+     * starts a region with 100% width.
+     *
+     * @return FullWidthLayoutInterface
+     */
+    public function createFullWidthLayout();
+
     /**
      * will avoid a page break between the next printed elements
      * will add a page break before all elements if they do not fit on the same page
@@ -33,4 +44,14 @@ interface DocumentInterface
      * @return ColumnLayoutInterface
      */
     public function createColumnLayout(int $columnCount);
+
+    /**
+     * starts a table.
+     *
+     * @param Table $table
+     * @param TableColumn[] $tableColumns
+     *
+     * @return TableLayoutInterface
+     */
+    public function createTableLayout(Table $table, array $tableColumns);
 }

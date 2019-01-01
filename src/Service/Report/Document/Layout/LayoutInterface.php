@@ -11,8 +11,10 @@
 
 namespace App\Service\Report\Document\Layout;
 
-use App\Service\Report\Document\PrinterInterface;
-
-interface GroupLayoutInterface extends PrinterInterface, LayoutInterface
+interface LayoutInterface
 {
+    /**
+     * will end the columned layout.
+     */
+    public function endLayout();
 }

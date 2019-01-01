@@ -11,6 +11,8 @@
 
 namespace App\Service\Report;
 
+use App\Service\Report\Document\Configuration\Table;
+use App\Service\Report\Document\Configuration\TableColumn;
 use App\Service\Report\Document\DocumentInterface;
 use App\Service\Report\Interfaces\IssueReportServiceInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -38,26 +40,72 @@ class IssueReportServiceService implements IssueReportServiceInterface
     public function addIntroduction(DocumentInterface $document, string $constructionSiteName, ?string $constructionSiteImage, string $constructionSiteAddressLines, string $reportElements, array $filterEntries)
     {
         //three or two column layout
-        $columnedRegion = $document->createColumnLayout(3);
+        $columnedLayout = $document->createColumnLayout(3);
 
         //image
         if ($constructionSiteImage !== null) {
-            $columnedRegion->printImage($constructionSiteImage);
+            $columnedLayout->printImage($constructionSiteImage);
         }
 
-        $columnedRegion->goToColumn(1);
+        $columnedLayout->goToColumn(1);
 
-        $columnedRegion->printTitle($constructionSiteName);
-        $columnedRegion->printParagraph($constructionSiteAddressLines);
+        $columnedLayout->printTitle($constructionSiteName);
+        $columnedLayout->printParagraph($constructionSiteAddressLines);
 
         $reportElementsTitle = $this->translator->trans('introduction.elements', [], 'report');
-        $columnedRegion->printTitle($reportElementsTitle);
-        $columnedRegion->printParagraph($reportElements);
+        $columnedLayout->printTitle($reportElementsTitle);
+        $columnedLayout->printParagraph($reportElements);
 
-        $columnedRegion->goToColumn(3);
+        $columnedLayout->goToColumn(3);
 
         $filterTitle = $this->translator->trans('entity.name', [], 'entity_filter');
-        $columnedRegion->printTitle($filterTitle);
-        $columnedRegion->printKeyValueParagraph($filterEntries);
+        $columnedLayout->printTitle($filterTitle);
+        $columnedLayout->printKeyValueParagraph($filterEntries);
+    }
+
+    /**
+     * @param DocumentInterface $document
+     * @param string $tableDescription
+     * @param string[] $identifierHeader
+     * @param string[] $identifierContent
+     * @param string[] $issuesHeader
+     * @param string[] $issuesContent
+     */
+    public function addAggregatedIssueTable(DocumentInterface $document, string $tableDescription, array $identifierHeader, array $identifierContent, array $issuesHeader, array $issuesContent)
+    {
+        $fullWidth = $document->createFullWidthLayout();
+        $fullWidth->printTitle($tableDescription);
+        $fullWidth->endLayout();
+
+        // prepare table config
+        $tableConfig = new Table();
+
+        // prepare table column config
+        $tableColumnConfig = [];
+        $normalTableHeaders = \count($identifierHeader);
+        for ($i = 0; $i < $normalTableHeaders; ++$i) {
+            $tableColumnConfig[] = new TableColumn();
+        }
+        $statusTableHeaders = \count($issuesHeader);
+        for ($i = 0; $i < $statusTableHeaders; ++$i) {
+            $tableColumnConfig[] = new TableColumn(TableColumn::SIZING_BY_HEADER);
+        }
+
+        // create table layout
+        $tableLayout = $document->createTableLayout($tableConfig, $tableColumnConfig);
+
+        // print header
+        $tableHeader = array_merge($identifierHeader, $issuesHeader);
+        $tableLayout->printHeader($tableHeader);
+
+        // print content
+        $rowCount = \count($identifierContent);
+        for ($i = 0; $i < $rowCount; ++$i) {
+            $row = array_merge($identifierContent[$i], $issuesContent[$i]);
+            $tableLayout->printRow($row);
+        }
+
+        // flush
+        $tableLayout->endLayout();
     }
 }

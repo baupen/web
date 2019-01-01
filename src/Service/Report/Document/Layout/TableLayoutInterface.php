@@ -11,8 +11,17 @@
 
 namespace App\Service\Report\Document\Layout;
 
-use App\Service\Report\Document\PrinterInterface;
-
-interface GroupLayoutInterface extends PrinterInterface, LayoutInterface
+interface TableLayoutInterface extends LayoutInterface
 {
+    /**
+     * @param string[] $header
+     */
+    public function printHeader(array $header);
+
+    /**
+     * @param string[] $row
+     *
+     * @return mixed
+     */
+    public function printRow(array $row);
 }
