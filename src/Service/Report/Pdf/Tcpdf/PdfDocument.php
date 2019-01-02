@@ -55,18 +55,7 @@ class PdfDocument implements PdfDocumentInterface
         $this->printConfiguration = new PrintConfiguration();
     }
 
-    /**
-     * applies the config if it has changed.
-     */
-    private function ensurePrintConfigurationApplied()
-    {
-        if ($this->printConfigurationHasChanged) {
-            $this->printConfiguration->apply($this->pdf);
-            $this->printConfigurationHasChanged = false;
-        }
-    }
-
-    /**
+    /**x
      * @param float $xCoordinate
      * @param float $yCoordinate
      */
@@ -88,6 +77,17 @@ class PdfDocument implements PdfDocumentInterface
         $border = $this->printConfiguration->getBorder();
 
         $this->pdf->MultiCell($width, 0, $text, $border, $align, $fill);
+    }
+
+    /**
+     * applies the config if it has changed.
+     */
+    private function ensurePrintConfigurationApplied()
+    {
+        if ($this->printConfigurationHasChanged) {
+            $this->printConfiguration->apply($this->pdf);
+            $this->printConfigurationHasChanged = false;
+        }
     }
 
     /**
@@ -155,7 +155,7 @@ class PdfDocument implements PdfDocumentInterface
      *
      * @return bool
      */
-    public function provocatesPageBreak(\Closure $printClosure)
+    public function causesPageBreak(\Closure $printClosure)
     {
         // remember current position
         $this->pdf->startTransaction();

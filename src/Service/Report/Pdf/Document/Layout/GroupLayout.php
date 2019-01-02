@@ -153,7 +153,7 @@ class GroupLayout extends BaseLayout implements GroupLayoutInterface
             }
         };
 
-        if ($this->pdfDocument->provocatesPageBreak($emptyBuffer)) {
+        if ($this->pdfDocument->causesPageBreak($emptyBuffer)) {
             $this->pdfDocument->startNewPage();
         }
 

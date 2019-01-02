@@ -11,8 +11,16 @@
 
 namespace App\Service\Report\Pdf\Interfaces;
 
-interface PdfDocumentInterface extends ReadOnlyPdfDocumentInterface
+use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentCursorInterface;
+use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentPrintInterface;
+
+interface PdfDocumentInterface extends PdfDocumentCursorInterface, PdfDocumentPrintInterface
 {
+    /**
+     * @return string
+     */
+    public function getIdentifier();
+
     /**
      * @param string $title
      * @param string $author
@@ -28,48 +36,7 @@ interface PdfDocumentInterface extends ReadOnlyPdfDocumentInterface
     public function setPageMargins(float $marginLeft, float $marginTop, float $marginRight, float $marginBottom);
 
     /**
-     * @param float $xCoordinate
-     * @param float $yCoordinate
-     */
-    public function setCursor(float $xCoordinate, float $yCoordinate);
-
-    /**
-     * @param int $page
-     */
-    public function setPage(int $page);
-
-    /**
-     * @param array $config
-     * @param bool $restoreDefaults
-     */
-    public function configurePrint(array $config = [], bool $restoreDefaults = true);
-
-    /**
-     * @param string $text
-     */
-    public function printText(string $text, float $width);
-
-    /**
-     * @param string $imagePath
-     * @param float $width
-     * @param float $height
-     */
-    public function printImage(string $imagePath, float $width, float $height);
-
-    /**
      * @param string $filePath
      */
     public function save(string $filePath);
-
-    /**
-     * @param \Closure $printClosure
-     *
-     * @return bool
-     */
-    public function provocatesPageBreak(\Closure $printClosure);
-
-    /**
-     * starts a new page & sets the cursor to the next page.
-     */
-    public function startNewPage();
 }
