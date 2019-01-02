@@ -108,4 +108,45 @@ class IssueReportServiceService implements IssueReportServiceInterface
         // flush
         $tableLayout->endLayout();
     }
+
+    /**
+     * @param DocumentInterface $report
+     * @param string $mapName
+     * @param string $mapContext
+     * @param string|null $mapImage
+     * @param string[] $issuesTableHeader
+     * @param string[][] $issuesTableContent
+     * @param string[] $images
+     */
+    public function addMap(DocumentInterface $report, string $mapName, string $mapContext, ?string $mapImage, array $issuesTableHeader, array $issuesTableContent, array $images)
+    {
+        $groupLayout = $report->createGroupLayout();
+        $groupLayout->printTitle($mapName);
+        $groupLayout->printParagraph($mapContext);
+
+        if ($mapImage !== null) {
+            $groupLayout->printImage($mapImage);
+        }
+        $groupLayout->endLayout();
+
+        // prepare table config
+        $tableConfig = new Table();
+
+        // prepare table column config
+        $tableColumnConfig = [new TableColumn(TableColumn::SIZING_BY_HEADER)];
+        $columns = \count($issuesTableHeader);
+        for ($i = 1; $i < $columns; ++$i) {
+            $tableColumnConfig[] = new TableColumn(TableColumn::SIZING_EXPAND);
+        }
+
+        // print issue table
+        $tableLayout = $report->createTableLayout($tableConfig, $tableColumnConfig);
+        $tableLayout->printHeader($issuesTableHeader);
+        $tableLayout->printRow($issuesTableContent);
+        $tableLayout->endLayout();
+
+        if (\count($images) > 0) {
+            $columnLayout = $report->createColumnLayout(4);
+        }
+    }
 }

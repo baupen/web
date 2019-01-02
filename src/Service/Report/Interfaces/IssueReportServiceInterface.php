@@ -34,4 +34,15 @@ interface IssueReportServiceInterface
      * @param string[] $issuesContent
      */
     public function addAggregatedIssueTable(DocumentInterface $document, string $tableDescription, array $identifierHeader, array $identifierContent, array $issuesHeader, array $issuesContent);
+
+    /**
+     * @param DocumentInterface $report
+     * @param string $mapName
+     * @param string $mapContext
+     * @param string|null $mapImage
+     * @param string[] $issuesTableHeader
+     * @param string[][] $issuesTableContent
+     * @param string[] $images
+     */
+    public function addMap(DocumentInterface $report, string $mapName, string $mapContext, ?string $mapImage, array $issuesTableHeader, array $issuesTableContent, array $images);
 }
