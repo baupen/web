@@ -38,4 +38,11 @@ interface PdfDocumentCursorInterface
      * starts a new page & sets the cursor to the next page.
      */
     public function startNewPage();
+
+    /**
+     * @param string $text
+     *
+     * @return float
+     */
+    public function calculateWidthOfText(string $text);
 }

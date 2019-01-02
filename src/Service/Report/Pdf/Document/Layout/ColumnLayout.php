@@ -31,12 +31,7 @@ class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
     /**
      * @var float
      */
-    private $startY;
-
-    /**
-     * @var float
-     */
-    private $startX;
+    private $startCursor;
 
     /**
      * @var float
@@ -56,22 +51,12 @@ class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
     /**
      * @var int
      */
-    private $startPage;
-
-    /**
-     * @var int
-     */
     private $activeColumn = 0;
 
     /**
      * @var int
      */
-    private $maxPage;
-
-    /**
-     * @var float
-     */
-    private $maxY;
+    private $lowestCursor;
 
     /**
      * ColumnLayout constructor.
@@ -95,13 +80,8 @@ class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
         $this->totalWidth = $columnWidth;
         $this->columnWidth = $columnWidth;
 
-        $cursor = $pdfDocument->getCursor();
-        $this->startPage = $pdfDocument->getPage();
-        $this->startX = $cursor[0];
-        $this->startY = $cursor[1];
-
-        $this->maxPage = $this->startPage;
-        $this->maxY = $this->startY;
+        $this->startCursor = $pdfDocument->getCursor();
+        $this->lowestCursor = $this->startCursor;
     }
 
     /**
@@ -121,8 +101,7 @@ class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
         $this->preserveCursorMax();
 
         // set correct cursor/page
-        $this->pdfDocument->setPage($this->startPage);
-        $this->pdfDocument->setCursor($this->getColumnStart($column), $this->startY);
+        $this->pdfDocument->setCursor($this->startCursor->setX($this->getColumnStart($column)));
 
         // save
         $this->activeColumn = $column;
@@ -133,9 +112,8 @@ class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
      */
     private function preserveCursorMax()
     {
-        $yCoordinate = $this->pdfDocument->getCursor()[1];
-        $this->maxY = max($this->maxY, $yCoordinate);
-        $this->maxPage = max($this->maxPage, $this->pdfDocument->getPage());
+        $currentCursor = $this->pdfDocument->getCursor();
+        $this->lowestCursor = $currentCursor->isLowerThan($this->lowestCursor) ? $currentCursor : $this->lowestCursor;
     }
 
     /**
@@ -147,7 +125,7 @@ class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
     {
         $width = $this->columnWidth + $this->columnGutter;
 
-        return $width * $currentColumn + $this->startX;
+        return $width * $currentColumn + $this->startCursor->getXCoordinate();
     }
 
     /**
@@ -157,7 +135,7 @@ class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
     {
         $this->preserveCursorMax();
 
-        $this->pdfDocument->setCursor($this->startX, $this->maxY);
+        $this->pdfDocument->setCursor($this->lowestCursor->setX($this->startCursor->getXCoordinate()));
     }
 
     /**

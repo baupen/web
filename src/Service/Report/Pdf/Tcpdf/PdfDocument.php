@@ -150,18 +150,9 @@ class PdfDocument implements PdfDocumentInterface
      */
     public function causesPageBreak(\Closure $printClosure)
     {
-        // remember current position
-        $this->pdf->startTransaction();
-        $this->pdf->checkPageBreak();
-        $startPage = $this->pdf->getPage();
+        list($cursorBefore, $cursorAfter) = $this->measureImpact($printClosure);
 
-        // print
-        $printClosure();
-
-        // save position
-        $endPage = $this->pdf->getPage();
-
-        return $endPage > $startPage;
+        return $cursorBefore->getPage() < $cursorAfter->getPage();
     }
 
     /**
@@ -197,5 +188,39 @@ class PdfDocument implements PdfDocumentInterface
         }
 
         $this->printConfiguration->setConfiguration($config);
+    }
+
+    /**
+     * @param string $text
+     *
+     * @return float
+     */
+    public function calculateWidthOfText(string $text)
+    {
+        $pdf = $this->pdf;
+        list($cursorBefore, $cursorAfter) = $this->measureImpact(function () use ($text, $pdf) {
+            $pdf->MultiCell(0, 0, $text, 0, 'L', false, 0);
+        });
+
+        return $cursorAfter->getYCoordinate() - $cursorBefore->getYCoordinate();
+    }
+
+    /**
+     * @param \Closure $printClosure
+     *
+     * @return Cursor[]
+     */
+    private function measureImpact(\Closure $printClosure)
+    {
+        $this->pdf->startTransaction();
+        $this->pdf->checkPageBreak();
+        $cursorBefore = $this->getCursor();
+
+        $printClosure();
+
+        $cursorAfter = $this->getCursor();
+        $this->pdf->rollbackTransaction(true);
+
+        return [$cursorBefore, $cursorBefore];
     }
 }

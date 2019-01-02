@@ -161,4 +161,12 @@ class LayoutService implements LayoutServiceInterface
     {
         return $this->layout->getBaseSpacing() * ($this->layout->getScalingFactor() ** 2);
     }
+
+    /**
+     * @return float
+     */
+    public function getTableColumnGutter(): float
+    {
+        return $this->layout->getBaseSpacing() / ($this->layout->getScalingFactor() ** 2);
+    }
 }

@@ -76,7 +76,7 @@ class TableLayout implements TableLayoutInterface
      */
     public function endLayout()
     {
-        // TODO: Implement endLayout() method.
+        // no specials here
     }
 
     /**
@@ -144,7 +144,7 @@ class TableLayout implements TableLayoutInterface
                     throw new \Exception('sizing mode ' . TableColumn::SIZING_BY_HEADER . ' not supported if no header is printed');
                 }
 
-                $width = $this->calculateWidthOfText($header[$i]);
+                $width = $this->pdfDocument->calculateWidthOfText($header[$i]);
                 $availableWidth -= $width;
                 $widths[$i] = $width;
             } else {
