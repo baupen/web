@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document\Layout;
+namespace App\Service\Report\Document\Interfaces\Layout;
 
-use App\Service\Report\Document\PrinterInterface;
+use App\Service\Report\Document\Interfaces\PrinterInterface;
 
-interface FullWidthLayoutInterface extends PrinterInterface, LayoutInterface
+interface GroupLayoutInterface extends PrinterInterface, LayoutInterface
 {
 }

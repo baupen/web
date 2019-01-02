@@ -9,15 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document;
+namespace App\Service\Report\Pdf\Design\Interfaces;
 
-interface DocumentServiceInterface
+interface ColorServiceInterface
 {
     /**
-     * @param string $title
-     * @param string $author
-     *
-     * @return DocumentInterface
+     * @return int[]
      */
-    public function create(string $title, string $author);
+    public function getTextColor();
+
+    /**
+     * @return int[]
+     */
+    public function getImageOverlayColor();
 }

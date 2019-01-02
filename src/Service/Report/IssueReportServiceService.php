@@ -11,10 +11,11 @@
 
 namespace App\Service\Report;
 
-use App\Service\Report\Document\Configuration\Table;
-use App\Service\Report\Document\Configuration\TableColumn;
-use App\Service\Report\Document\DocumentInterface;
+use App\Service\Report\Document\Interfaces\Configuration\Table;
+use App\Service\Report\Document\Interfaces\Configuration\TableColumn;
+use App\Service\Report\Document\Interfaces\DocumentLayoutInterface;
 use App\Service\Report\Interfaces\IssueReportServiceInterface;
+use App\Service\Report\Pdf\Document\PdfPrinter;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class IssueReportServiceService implements IssueReportServiceInterface
@@ -30,14 +31,14 @@ class IssueReportServiceService implements IssueReportServiceInterface
     }
 
     /**
-     * @param DocumentInterface $document
+     * @param DocumentLayoutInterface $document
      * @param string $constructionSiteName
      * @param string|null $constructionSiteImage
      * @param string $constructionSiteAddressLines
      * @param string $reportElements
      * @param array $filterEntries
      */
-    public function addIntroduction(DocumentInterface $document, string $constructionSiteName, ?string $constructionSiteImage, string $constructionSiteAddressLines, string $reportElements, array $filterEntries)
+    public function addIntroduction(DocumentLayoutInterface $document, string $constructionSiteName, ?string $constructionSiteImage, string $constructionSiteAddressLines, string $reportElements, array $filterEntries)
     {
         //three or two column layout
         $columnedLayout = $document->createColumnLayout(3);
@@ -64,14 +65,14 @@ class IssueReportServiceService implements IssueReportServiceInterface
     }
 
     /**
-     * @param DocumentInterface $document
+     * @param DocumentLayoutInterface $document
      * @param string $tableDescription
      * @param string[] $identifierHeader
      * @param string[] $identifierContent
      * @param string[] $issuesHeader
      * @param string[] $issuesContent
      */
-    public function addAggregatedIssueTable(DocumentInterface $document, string $tableDescription, array $identifierHeader, array $identifierContent, array $issuesHeader, array $issuesContent)
+    public function addAggregatedIssueTable(DocumentLayoutInterface $document, string $tableDescription, array $identifierHeader, array $identifierContent, array $issuesHeader, array $issuesContent)
     {
         $fullWidth = $document->createFullWidthLayout();
         $fullWidth->printTitle($tableDescription);
@@ -110,7 +111,7 @@ class IssueReportServiceService implements IssueReportServiceInterface
     }
 
     /**
-     * @param DocumentInterface $report
+     * @param DocumentLayoutInterface $report
      * @param string $mapName
      * @param string $mapContext
      * @param string|null $mapImage
@@ -118,7 +119,7 @@ class IssueReportServiceService implements IssueReportServiceInterface
      * @param string[][] $issuesTableContent
      * @param string[] $images
      */
-    public function addMap(DocumentInterface $report, string $mapName, string $mapContext, ?string $mapImage, array $issuesTableHeader, array $issuesTableContent, array $images)
+    public function addMap(DocumentLayoutInterface $report, string $mapName, string $mapContext, ?string $mapImage, array $issuesTableHeader, array $issuesTableContent, array $images)
     {
         $groupLayout = $report->createGroupLayout();
         $groupLayout->printTitle($mapName);
@@ -147,6 +148,21 @@ class IssueReportServiceService implements IssueReportServiceInterface
 
         if (\count($images) > 0) {
             $columnLayout = $report->createColumnLayout(4);
+            $columnLayout->setAutoColumn();
+
+            foreach ($images as $image) {
+                $imagePath = $image['imagePath'];
+                $number = $image['number'];
+
+                $columnLayout->printCustom(function ($printer, float $defaultWidth) use ($imagePath, $number) {
+                    if ($printer instanceof PdfPrinter) {
+                        /* @var PdfPrinter $printer */
+                        $printer->printIssueImage($imagePath, $number, $defaultWidth);
+                    } else {
+                        throw new \Exception('unsupported printer');
+                    }
+                });
+            }
         }
     }
 }

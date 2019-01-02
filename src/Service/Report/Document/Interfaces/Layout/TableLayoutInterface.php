@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document\Layout;
+namespace App\Service\Report\Document\Interfaces\Layout;
 
 interface TableLayoutInterface extends LayoutInterface
 {

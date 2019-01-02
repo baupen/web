@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document\Configuration;
+namespace App\Service\Report\Document\Interfaces\Configuration;
 
 class Table
 {

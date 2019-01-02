@@ -9,12 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document\Layout;
+namespace App\Service\Report\Document\Interfaces;
 
-interface LayoutInterface
+interface DocumentServiceInterface
 {
     /**
-     * will end the columned layout.
+     * @param string $title
+     * @param string $author
+     *
+     * @return DocumentLayoutInterface
      */
-    public function endLayout();
+    public function create(string $title, string $author);
 }

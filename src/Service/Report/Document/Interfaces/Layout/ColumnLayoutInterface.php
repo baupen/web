@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document\Layout;
+namespace App\Service\Report\Document\Interfaces\Layout;
 
-use App\Service\Report\Document\PrinterInterface;
+use App\Service\Report\Document\Interfaces\PrinterInterface;
 
 interface ColumnLayoutInterface extends PrinterInterface, LayoutInterface
 {
@@ -22,4 +22,9 @@ interface ColumnLayoutInterface extends PrinterInterface, LayoutInterface
      * @param int $column
      */
     public function goToColumn(int $column);
+
+    /**
+     * when printing something, the column with the least content is chosen automatically.
+     */
+    public function setAutoColumn();
 }

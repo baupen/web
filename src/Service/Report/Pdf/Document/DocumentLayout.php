@@ -11,13 +11,13 @@
 
 namespace App\Service\Report\Pdf\Document;
 
-use App\Service\Report\Document\Configuration\Table;
-use App\Service\Report\Document\Configuration\TableColumn;
-use App\Service\Report\Document\DocumentInterface;
-use App\Service\Report\Document\Layout\ColumnLayoutInterface;
-use App\Service\Report\Document\Layout\FullWidthLayoutInterface;
-use App\Service\Report\Document\Layout\GroupLayoutInterface;
-use App\Service\Report\Document\Layout\TableLayoutInterface;
+use App\Service\Report\Document\Interfaces\Configuration\Table;
+use App\Service\Report\Document\Interfaces\Configuration\TableColumn;
+use App\Service\Report\Document\Interfaces\DocumentLayoutInterface;
+use App\Service\Report\Document\Interfaces\Layout\ColumnLayoutInterface;
+use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
+use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
+use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
 use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Document\Layout\ColumnLayout;
@@ -26,7 +26,7 @@ use App\Service\Report\Pdf\Document\Layout\GroupLayout;
 use App\Service\Report\Pdf\Document\Layout\TableLayout;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
-class Document implements DocumentInterface
+class DocumentLayout implements DocumentLayoutInterface
 {
     /**
      * @var PdfDocumentInterface
@@ -44,7 +44,7 @@ class Document implements DocumentInterface
     private $typographyService;
 
     /**
-     * @var Printer
+     * @var PdfPrinter
      */
     private $printer;
 
@@ -61,7 +61,7 @@ class Document implements DocumentInterface
         $this->layoutService = $layoutService;
         $this->typographyService = $typographyService;
 
-        $this->printer = new Printer($pdfDocument, $this->typographyService);
+        $this->printer = new PdfPrinter($pdfDocument, $this->typographyService);
     }
 
     /**

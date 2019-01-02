@@ -378,7 +378,7 @@ class CleanReportService
             }
 
             $currentIssue['imagePath'] = $imagePath;
-            $currentIssue['identification'] = $issue->getNumber();
+            $currentIssue['number'] = $issue->getNumber();
             $issueImages[] = $currentIssue;
         }
 

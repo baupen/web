@@ -39,27 +39,15 @@ interface PdfDocumentInterface extends ReadOnlyPdfDocumentInterface
     public function setPage(int $page);
 
     /**
-     * @param string $text
-     * @param float $textSize
-     * @param float $width
-     * @param bool $alignRight
+     * @param array $config
+     * @param bool $restoreDefaults
      */
-    public function printText(string $text, float $textSize, float $width = null, bool $alignRight = false);
+    public function configurePrint(array $config = [], bool $restoreDefaults = true);
 
     /**
      * @param string $text
-     * @param float $textSize
-     * @param float $width
-     * @param bool $alignRight
      */
-    public function printBoldText(string $text, float $textSize, float $width = null, bool $alignRight = false);
-
-    /**
-     * @param string[] $header
-     * @param string[] $content
-     * @param float|null $width
-     */
-    public function printTable(array $header, array $content, float $width = null);
+    public function printText(string $text, float $width);
 
     /**
      * @param string $imagePath
@@ -80,5 +68,8 @@ interface PdfDocumentInterface extends ReadOnlyPdfDocumentInterface
      */
     public function provocatesPageBreak(\Closure $printClosure);
 
+    /**
+     * starts a new page & sets the cursor to the next page.
+     */
     public function startNewPage();
 }

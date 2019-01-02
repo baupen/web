@@ -11,9 +11,9 @@
 
 namespace App\Service\Report\Pdf\Document\Layout;
 
-use App\Service\Report\Document\Layout\GroupLayoutInterface;
+use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
 use App\Service\Report\Pdf\Document\Layout\Base\BaseLayout;
-use App\Service\Report\Pdf\Document\Printer;
+use App\Service\Report\Pdf\Document\PdfPrinter;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
 class GroupLayout extends BaseLayout implements GroupLayoutInterface
@@ -61,11 +61,11 @@ class GroupLayout extends BaseLayout implements GroupLayoutInterface
     /**
      * ColumnLayout constructor.
      *
-     * @param Printer $printer
+     * @param PdfPrinter $printer
      * @param PdfDocumentInterface $pdfDocument
      * @param float $width
      */
-    public function __construct(Printer $printer, PdfDocumentInterface $pdfDocument, float $width)
+    public function __construct(PdfPrinter $printer, PdfDocumentInterface $pdfDocument, float $width)
     {
         parent::__construct($printer, $width);
 

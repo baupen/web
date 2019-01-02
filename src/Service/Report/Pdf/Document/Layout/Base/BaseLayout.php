@@ -11,13 +11,13 @@
 
 namespace App\Service\Report\Pdf\Document\Layout\Base;
 
-use App\Service\Report\Document\PrinterInterface;
-use App\Service\Report\Pdf\Document\Printer;
+use App\Service\Report\Document\Interfaces\PrinterInterface;
+use App\Service\Report\Pdf\Document\PdfPrinter;
 
 class BaseLayout implements PrinterInterface
 {
     /**
-     * @var Printer
+     * @var PdfPrinter
      */
     private $printer;
 
@@ -29,10 +29,10 @@ class BaseLayout implements PrinterInterface
     /**
      * BaseLayout constructor.
      *
-     * @param Printer $printer
+     * @param PdfPrinter $printer
      * @param float $defaultWidth
      */
-    public function __construct(Printer $printer, float $defaultWidth)
+    public function __construct(PdfPrinter $printer, float $defaultWidth)
     {
         $this->printer = $printer;
         $this->defaultWidth = $defaultWidth;
@@ -85,5 +85,15 @@ class BaseLayout implements PrinterInterface
     public function printImage(string $filePath)
     {
         $this->printer->printImage($filePath, $this->defaultWidth);
+    }
+
+    /**
+     * will call the closure with the printer as the first and the default width as the second argument.
+     *
+     * @param \Closure $param
+     */
+    public function printCustom(\Closure $param)
+    {
+        $param($this->printer, $this->defaultWidth);
     }
 }

@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document;
+namespace App\Service\Report\Document\Interfaces;
 
-use App\Service\Report\Document\Configuration\Table;
-use App\Service\Report\Document\Configuration\TableColumn;
-use App\Service\Report\Document\Layout\ColumnLayoutInterface;
-use App\Service\Report\Document\Layout\FullWidthLayoutInterface;
-use App\Service\Report\Document\Layout\GroupLayoutInterface;
-use App\Service\Report\Document\Layout\TableLayoutInterface;
+use App\Service\Report\Document\Interfaces\Configuration\Table;
+use App\Service\Report\Document\Interfaces\Configuration\TableColumn;
+use App\Service\Report\Document\Interfaces\Layout\ColumnLayoutInterface;
+use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
+use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
+use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
 
-interface DocumentInterface
+interface DocumentLayoutInterface
 {
     /**
      * starts a region with 100% width.

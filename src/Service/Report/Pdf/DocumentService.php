@@ -13,11 +13,11 @@ namespace App\Service\Report\Pdf;
 
 use App\Helper\DateTimeFormatter;
 use App\Service\Interfaces\PathServiceInterface;
-use App\Service\Report\Document\DocumentInterface;
-use App\Service\Report\Document\DocumentServiceInterface;
+use App\Service\Report\Document\Interfaces\DocumentLayoutInterface;
+use App\Service\Report\Document\Interfaces\DocumentServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
-use App\Service\Report\Pdf\Document\Document;
+use App\Service\Report\Pdf\Document\DocumentLayout;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentServiceInterface;
 use App\Service\Report\Pdf\Tcpdf\PdfDocument;
@@ -72,7 +72,7 @@ class DocumentService implements DocumentServiceInterface
      *
      * @throws \Exception
      *
-     * @return DocumentInterface
+     * @return DocumentLayoutInterface
      */
     public function create(string $title, string $author)
     {
@@ -82,7 +82,7 @@ class DocumentService implements DocumentServiceInterface
 
         $pdfDocument->setMeta($title, $author);
 
-        return new Document($pdfDocument, $this->layoutService, $this->typographyService);
+        return new DocumentLayout($pdfDocument, $this->layoutService, $this->typographyService);
     }
 
     /**

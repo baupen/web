@@ -11,9 +11,9 @@
 
 namespace App\Service\Report\Pdf\Document\Layout;
 
-use App\Service\Report\Document\Layout\ColumnLayoutInterface;
+use App\Service\Report\Document\Interfaces\Layout\ColumnLayoutInterface;
 use App\Service\Report\Pdf\Document\Layout\Base\BaseLayout;
-use App\Service\Report\Pdf\Document\Printer;
+use App\Service\Report\Pdf\Document\PdfPrinter;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
 class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
@@ -76,13 +76,13 @@ class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
     /**
      * ColumnLayout constructor.
      *
-     * @param Printer $printer
+     * @param PdfPrinter $printer
      * @param PdfDocumentInterface $pdfDocument
      * @param int $columnCount
      * @param float $columnGutter
      * @param float $width
      */
-    public function __construct(Printer $printer, PdfDocumentInterface $pdfDocument, int $columnCount, float $columnGutter, float $width)
+    public function __construct(PdfPrinter $printer, PdfDocumentInterface $pdfDocument, int $columnCount, float $columnGutter, float $width)
     {
         $gutterSpace = ($columnCount - 1) * $columnGutter;
         $columnWidth = (float)($width - $gutterSpace) / $columnCount;
@@ -158,5 +158,13 @@ class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
         $this->preserveCursorMax();
 
         $this->pdfDocument->setCursor($this->startX, $this->maxY);
+    }
+
+    /**
+     * when printing something, the column with the least content is chosen automatically.
+     */
+    public function setAutoColumn()
+    {
+        // TODO: Implement setAutoColumn() method.
     }
 }

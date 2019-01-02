@@ -11,9 +11,9 @@
 
 namespace App\Service\Report\Pdf\Document\Layout;
 
-use App\Service\Report\Document\Configuration\Table;
-use App\Service\Report\Document\Configuration\TableColumn;
-use App\Service\Report\Document\Layout\TableLayoutInterface;
+use App\Service\Report\Document\Interfaces\Configuration\Table;
+use App\Service\Report\Document\Interfaces\Configuration\TableColumn;
+use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
 class TableLayout implements TableLayoutInterface
