@@ -26,6 +26,11 @@ class LayoutService implements LayoutServiceInterface
      */
     private $typographyService;
 
+    /**
+     * LayoutService constructor.
+     *
+     * @param TypographyService $typographyService
+     */
     public function __construct(TypographyService $typographyService)
     {
         $this->layout = new Layout();
