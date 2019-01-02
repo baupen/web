@@ -20,8 +20,11 @@ interface TableLayoutInterface extends LayoutInterface
 
     /**
      * @param string[] $row
-     *
-     * @return mixed
      */
     public function printRow(array $row);
+
+    /**
+     * @param string[][] $rows
+     */
+    public function printRows(array $rows);
 }

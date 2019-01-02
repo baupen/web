@@ -89,5 +89,10 @@ interface LayoutServiceInterface
     /**
      * @return float
      */
+    public function getTableColumnGutter(): float;
+
+    /**
+     * @return float
+     */
     public function getRegionSpacer(): float;
 }

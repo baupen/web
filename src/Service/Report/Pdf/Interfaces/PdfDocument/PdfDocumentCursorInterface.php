@@ -11,20 +11,21 @@
 
 namespace App\Service\Report\Pdf\Interfaces\PdfDocument;
 
+use App\Service\Report\Pdf\Cursor;
+
 interface PdfDocumentCursorInterface
 {
     /**
-     * returns the active cursor position as an array of [$xCoordinate, $yCoordinate].
+     * returns the active cursor position as an array of [$xCoordinate, $yCoordinate, $page].
      *
-     * @return int[]
+     * @return Cursor
      */
     public function getCursor();
 
     /**
-     * @param float $xCoordinate
-     * @param float $yCoordinate
+     * @param Cursor $cursor
      */
-    public function setCursor(float $xCoordinate, float $yCoordinate);
+    public function setCursor(Cursor $cursor);
 
     /**
      * @param \Closure $printClosure
@@ -32,16 +33,6 @@ interface PdfDocumentCursorInterface
      * @return bool
      */
     public function causesPageBreak(\Closure $printClosure);
-
-    /**
-     * @return int
-     */
-    public function getPage();
-
-    /**
-     * @param int $page
-     */
-    public function setPage(int $page);
 
     /**
      * starts a new page & sets the cursor to the next page.

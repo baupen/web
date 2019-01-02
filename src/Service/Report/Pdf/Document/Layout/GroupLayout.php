@@ -26,32 +26,7 @@ class GroupLayout extends BaseLayout implements GroupLayoutInterface
     /**
      * @var float
      */
-    private $startY;
-
-    /**
-     * @var float
-     */
-    private $startX;
-
-    /**
-     * @var float
-     */
     private $width;
-
-    /**
-     * @var int
-     */
-    private $startPage;
-
-    /**
-     * @var int
-     */
-    private $maxPage;
-
-    /**
-     * @var float
-     */
-    private $maxY;
 
     /**
      * @var \Closure[]
@@ -71,14 +46,6 @@ class GroupLayout extends BaseLayout implements GroupLayoutInterface
 
         $this->pdfDocument = $pdfDocument;
         $this->width = $width;
-
-        $cursor = $pdfDocument->getCursor();
-        $this->startPage = $pdfDocument->getPage();
-        $this->startX = $cursor[0];
-        $this->startY = $cursor[1];
-
-        $this->maxPage = $this->startPage;
-        $this->maxY = $this->startY;
     }
 
     /**

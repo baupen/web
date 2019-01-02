@@ -11,6 +11,7 @@
 
 namespace App\Service\Report\Pdf\Tcpdf;
 
+use App\Service\Report\Pdf\Cursor;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Pdf\Tcpdf\Configuration\PrintConfiguration;
 
@@ -56,12 +57,12 @@ class PdfDocument implements PdfDocumentInterface
     }
 
     /**x
-     * @param float $xCoordinate
-     * @param float $yCoordinate
+     * @param Cursor $cursor
      */
-    public function setCursor(float $xCoordinate, float $yCoordinate)
+    public function setCursor(Cursor $cursor)
     {
-        $this->pdf->SetXY($xCoordinate, $yCoordinate);
+        $this->pdf->SetXY($cursor->getXCoordinate(), $cursor->getYCoordinate());
+        $this->pdf->setPage($cursor->getPage());
     }
 
     /**
@@ -143,14 +144,6 @@ class PdfDocument implements PdfDocumentInterface
     }
 
     /**
-     * @param int $page
-     */
-    public function setPage(int $page)
-    {
-        $this->pdf->setPage($page);
-    }
-
-    /**
      * @param \Closure $printClosure
      *
      * @return bool
@@ -172,23 +165,13 @@ class PdfDocument implements PdfDocumentInterface
     }
 
     /**
-     * returns the active cursor position as an array of [$xCoordinate, $yCoordinate].
+     * returns the active cursor position.
      *
-     * @return int[]
+     * @return Cursor
      */
     public function getCursor()
     {
-        return [$this->pdf->GetX(), $this->pdf->GetY()];
-    }
-
-    /**
-     * returns the active page number.
-     *
-     * @return int
-     */
-    public function getPage()
-    {
-        return $this->pdf->PageNo();
+        return new Cursor($this->pdf->GetX(), $this->pdf->GetY(), $this->pdf->PageNo());
     }
 
     /**

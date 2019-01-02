@@ -18,6 +18,7 @@ use App\Service\Report\Document\Interfaces\Layout\ColumnLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
+use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Document\Layout\ColumnLayout;
@@ -54,14 +55,15 @@ class DocumentLayout implements DocumentLayoutInterface
      * @param PdfDocumentInterface $pdfDocument
      * @param LayoutServiceInterface $layoutService
      * @param TypographyServiceInterface $typographyService
+     * @param ColorServiceInterface $colorService
      */
-    public function __construct(PdfDocumentInterface $pdfDocument, LayoutServiceInterface $layoutService, TypographyServiceInterface $typographyService)
+    public function __construct(PdfDocumentInterface $pdfDocument, LayoutServiceInterface $layoutService, TypographyServiceInterface $typographyService, ColorServiceInterface $colorService)
     {
         $this->document = $pdfDocument;
         $this->layoutService = $layoutService;
         $this->typographyService = $typographyService;
 
-        $this->printer = new PdfPrinter($pdfDocument, $this->typographyService);
+        $this->printer = new PdfPrinter($pdfDocument, $this->typographyService, $colorService);
     }
 
     /**
@@ -98,7 +100,7 @@ class DocumentLayout implements DocumentLayoutInterface
      */
     public function createTableLayout(Table $table, array $tableColumns)
     {
-        return new TableLayout($this->document, $table, $tableColumns);
+        return new TableLayout($this->document, $this->layoutService->getContentXSize(), $this->layoutService->getTableColumnGutter(), $table, $tableColumns);
     }
 
     /**

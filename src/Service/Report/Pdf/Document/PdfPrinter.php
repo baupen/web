@@ -74,28 +74,13 @@ class PdfPrinter
     }
 
     /**
-     * @param string[] $header
-     * @param string[][] $content
-     * @param float|null $width
-     */
-    public function printTable(array $header, array $content, float $width = null)
-    {
-        $this->document->printTableRow($header, $content, $width);
-    }
-
-    /**
      * @param string $filePath
      * @param float $width
      */
     public function printImage(string $filePath, float $width = null)
     {
-        $cursor = $this->document->getCursor();
-
         list($width, $height) = ImageHelper::getWidthHeightArguments($filePath, $width);
         $this->document->printImage($filePath, $width, $height);
-
-        // put cursor below the image
-        $this->document->setCursor($cursor[0], $cursor[1] + $height);
     }
 
     /**
@@ -111,14 +96,37 @@ class PdfPrinter
     }
 
     /**
+     * @param string $imagePath
+     * @param int $number
+     * @param float $defaultWidth
+     */
+    public function printIssueImage(string $imagePath, int $number, float $defaultWidth)
+    {
+        /* @var PdfDocumentInterface $document */
+        list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $defaultWidth);
+        $this->document->printImage($imagePath, $width, $height);
+        $afterImageCursor = $this->document->getCursor();
+
+        // put cursor to top left corner of image
+        $this->document->setCursor($afterImageCursor[0], $afterImageCursor[1] - $height, $afterImageCursor[2]);
+
+        // print number of issue
+        $this->document->configurePrint(['background' => $this->color->getImageOverlayColor()]);
+        $this->document->printText((string)$number, $this->typography->getTextFontSize());
+
+        // reset cursor to after image
+        $this->document->setCursor(...$afterImageCursor);
+    }
+
+    /**
      * @param string $text
      * @param float $fontSize
      * @param float $width
      */
     private function printText(string $text, float $fontSize, float $width)
     {
-        $this->document->configurePrint();
-        $this->document->printText($text, $fontSize, $width);
+        $this->document->configurePrint(['fontSize' => $fontSize]);
+        $this->document->printText($text, $width);
     }
 
     /**
@@ -128,28 +136,7 @@ class PdfPrinter
      */
     private function printBoldText(string $text, float $fontSize, float $width)
     {
-        $this->document->configurePrint(['bold' => true]);
-        $this->document->printText($text, $fontSize, $width);
-    }
-
-    /**
-     * @param string $imagePath
-     * @param int $number
-     * @param float $defaultWidth
-     */
-    public function printIssueImage(string $imagePath, int $number, float $defaultWidth)
-    {
-        /** @var PdfDocumentInterface $document */
-        $cursor = $this->document->getCursor();
-        list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $defaultWidth);
-        $this->document->printImage($imagePath, $width, $height);
-        $afterImageCursor = $this->document->getCursor();
-
-        $this->document->setCursor($cursor[0], $cursor[1]);
-
-        $this->document->configurePrint(['background' => $this->color->getImageOverlayColor()]);
-        $this->document->printText((string)$number, $this->typography->getTextFontSize());
-
-        $this->document->setCursor(...$afterImageCursor);
+        $this->document->configurePrint(['fontSize' => $fontSize, 'bold' => true]);
+        $this->document->printText($text, $width);
     }
 }
