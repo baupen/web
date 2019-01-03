@@ -253,7 +253,7 @@ width: Double
 ## `File`
 ```
 id: UUID
-filename: string
+filename: String
 ```
 
 
@@ -311,6 +311,7 @@ sectorFrame: Frame?
 issues: [UUID]
 file: File?
 name: String
+constructionSiteID: UUID
 ```
 
 
@@ -341,7 +342,7 @@ position: Position?
 ```
 point: Point
 zoomScale: Double
-mapFileId: UUID
+mapFileID: UUID
 ```
 
 ### `Issue.Status`

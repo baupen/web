@@ -68,7 +68,7 @@ class IssueControllerTest extends ApiController
         $point->setY(0.4);
         $issuePosition->setPoint($point);
         $issuePosition->setZoomScale(0.5);
-        $issuePosition->setMapFileId($map->getFile()->getId());
+        $issuePosition->setMapFileID($map->getFile()->getId());
         $issue->setPosition($issuePosition);
 
         $response = $doRequest($issue);

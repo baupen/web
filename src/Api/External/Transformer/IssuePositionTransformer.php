@@ -46,7 +46,7 @@ class IssuePositionTransformer
         $position->setPoint($point);
 
         $position->setZoomScale($entity->getPositionZoomScale());
-        $position->setMapFileId($entity->getMapFile()->getId());
+        $position->setMapFileID($entity->getMapFile()->getId());
 
         return $position;
     }
@@ -70,7 +70,7 @@ class IssuePositionTransformer
             $existing->setIssue($entity);
         }
 
-        $linkedMapFile = $this->doctrine->getRepository(MapFile::class)->find($position->getMapFileId());
+        $linkedMapFile = $this->doctrine->getRepository(MapFile::class)->find($position->getMapFileID());
         if ($linkedMapFile === null) {
             return null;
         }

@@ -115,7 +115,7 @@ class ReadControllerTest extends ApiController
                     'response' => $eventDefinition,
                     'review' => $eventDefinition,
                 ],
-                'position' => ['point' => $pointDefinition, 'zoomScale' => self::TYPE_DOUBLE, 'mapFileId' => self::TYPE_UUID],
+                'position' => ['point' => $pointDefinition, 'zoomScale' => self::TYPE_DOUBLE, 'mapFileID' => self::TYPE_UUID],
                 'meta' => $metaDefinition,
             ]
         );
@@ -126,6 +126,7 @@ class ReadControllerTest extends ApiController
                 'children' => self::TYPE_UUID_ARRAY,
                 'issues' => self::TYPE_UUID_ARRAY,
                 'file' => $fileDefinition,
+                'constructionSiteID' => self::TYPE_UUID,
                 'sectors' => ['name' => self::TYPE_STRING, 'color' => self::TYPE_STRING, 'points' => $pointDefinition],
                 'sectorFrame' => ['startX' => self::TYPE_DOUBLE, 'startY' => self::TYPE_DOUBLE, 'width' => self::TYPE_DOUBLE, 'height' => self::TYPE_DOUBLE],
                 'meta' => $metaDefinition,

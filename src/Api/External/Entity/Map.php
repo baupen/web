@@ -46,6 +46,11 @@ class Map extends BaseEntity
     private $sectorFrame;
 
     /**
+     * @var string
+     */
+    private $constructionSiteID;
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -139,5 +144,21 @@ class Map extends BaseEntity
     public function setSectorFrame(?Frame $sectorFrame): void
     {
         $this->sectorFrame = $sectorFrame;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConstructionSiteID(): string
+    {
+        return $this->constructionSiteID;
+    }
+
+    /**
+     * @param string $constructionSiteID
+     */
+    public function setConstructionSiteID(string $constructionSiteID): void
+    {
+        $this->constructionSiteID = $constructionSiteID;
     }
 }
