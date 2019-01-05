@@ -50,6 +50,15 @@ class DisplayNameService implements DisplayNameServiceInterface
         // replace _ with space
         $output = str_replace('_', ' ', $output);
 
+        // add points + space after all numbers immediately followed by text
+        while (preg_match('/([0-9]){1,2}[A-Z]([a-z]){2,}/', $output, $matches, PREG_OFFSET_CAPTURE)) {
+            $before = mb_substr($output, 0, $matches[0][1]);
+            $number = $matches[1][0];
+            $after = mb_substr($output, $matches[1][1] + \mb_strlen($number));
+
+            $output = $before . $number . '. ' . $after;
+        }
+
         // add space before all capitals which are followed by at least 2 non-capital (ObergeschossHaus)
         $output = preg_replace('/(?<!^)([A-Z][a-z]{2,})/', ' $0', $output);
 
@@ -58,29 +67,9 @@ class DisplayNameService implements DisplayNameServiceInterface
         $output .= ' ';
         while (preg_match('/([A-Za-z])+([0-9A-Z]){1,3} /', $output, $matches, PREG_OFFSET_CAPTURE)) {
             $before = mb_substr($output, 0, $matches[1][1] + 1);
-            $after = $matches[2][0];
+            $after = mb_substr($output, $matches[2][1]);
 
             $output = $before . ' ' . $after;
-        }
-
-        // add point after all numbers which are before any letters
-        if (preg_match('/[a-zA-Z]/', $output, $matches, PREG_OFFSET_CAPTURE)) {
-            // save to "before" all text which occurs before any letters
-            $index = $matches[0][1];
-            $before = mb_substr($output, 0, $index);
-            $after = mb_substr($output, $index);
-
-            // match single numbers followed by a space (1 Obergeschoss) to add a point
-            $before = ' ' . $before;
-            while (preg_match('/\ ([0-9]){1,2}\ /', $before, $matches, PREG_OFFSET_CAPTURE)) {
-                $lengthPart1 = $matches[1][1] + \mb_strlen($matches[1][0]);
-                $part1 = mb_substr($before, 0, $lengthPart1);
-                $part2 = mb_substr($before, $lengthPart1);
-
-                $before = trim($part1) . '. ' . $part2;
-            }
-
-            $output = $before . $after;
         }
 
         $output = $this->trimWhitespace($output);
