@@ -41,12 +41,6 @@ interface PrinterInterface
     public function printRegionHeader(string $header);
 
     /**
-     * @param string[] $header
-     * @param string[][] $content
-     */
-    public function printTable(array $header, array $content);
-
-    /**
      * @param string $filePath
      */
     public function printImage(string $filePath);

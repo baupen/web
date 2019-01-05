@@ -13,8 +13,8 @@ namespace App\Service\Report\Pdf\Document\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
 use App\Service\Report\Pdf\Document\Layout\Base\BaseLayout;
-use App\Service\Report\Pdf\Document\PdfPrinter;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Pdf\IssueReportPdfConventions;
 
 class GroupLayout extends BaseLayout implements GroupLayoutInterface
 {
@@ -36,11 +36,11 @@ class GroupLayout extends BaseLayout implements GroupLayoutInterface
     /**
      * ColumnLayout constructor.
      *
-     * @param PdfPrinter $printer
+     * @param IssueReportPdfConventions $printer
      * @param PdfDocumentInterface $pdfDocument
      * @param float $width
      */
-    public function __construct(PdfPrinter $printer, PdfDocumentInterface $pdfDocument, float $width)
+    public function __construct(IssueReportPdfConventions $printer, PdfDocumentInterface $pdfDocument, float $width)
     {
         parent::__construct($printer, $width);
 
@@ -85,17 +85,6 @@ class GroupLayout extends BaseLayout implements GroupLayoutInterface
     {
         $this->buffer[] = function () use ($header) {
             parent::printRegionHeader($header);
-        };
-    }
-
-    /**
-     * @param string[] $header
-     * @param string[][] $content
-     */
-    public function printTable(array $header, array $content)
-    {
-        $this->buffer[] = function () use ($header, $content) {
-            parent::printTable($header, $content);
         };
     }
 

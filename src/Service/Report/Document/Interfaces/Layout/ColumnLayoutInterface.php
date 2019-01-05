@@ -25,6 +25,8 @@ interface ColumnLayoutInterface extends PrinterInterface, LayoutInterface
 
     /**
      * when printing something, the column with the least content is chosen automatically.
+     *
+     * @param bool $active
      */
-    public function setAutoColumn();
+    public function setAutoColumn(bool $active);
 }

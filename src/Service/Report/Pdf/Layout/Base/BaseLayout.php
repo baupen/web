@@ -12,12 +12,12 @@
 namespace App\Service\Report\Pdf\Document\Layout\Base;
 
 use App\Service\Report\Document\Interfaces\PrinterInterface;
-use App\Service\Report\Pdf\Document\PdfPrinter;
+use App\Service\Report\Pdf\IssueReportPdfConventions;
 
 class BaseLayout implements PrinterInterface
 {
     /**
-     * @var PdfPrinter
+     * @var IssueReportPdfConventions
      */
     private $printer;
 
@@ -29,10 +29,10 @@ class BaseLayout implements PrinterInterface
     /**
      * BaseLayout constructor.
      *
-     * @param PdfPrinter $printer
+     * @param IssueReportPdfConventions $printer
      * @param float $defaultWidth
      */
-    public function __construct(PdfPrinter $printer, float $defaultWidth)
+    public function __construct(IssueReportPdfConventions $printer, float $defaultWidth)
     {
         $this->printer = $printer;
         $this->defaultWidth = $defaultWidth;
@@ -68,15 +68,6 @@ class BaseLayout implements PrinterInterface
     public function printRegionHeader(string $header)
     {
         $this->printer->printRegionHeader($header, $this->defaultWidth);
-    }
-
-    /**
-     * @param string[] $header
-     * @param string[][] $content
-     */
-    public function printTable(array $header, array $content)
-    {
-        $this->printer->printTable($header, $content, $this->defaultWidth);
     }
 
     /**

@@ -13,17 +13,17 @@ namespace App\Service\Report\Pdf\Document\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
 use App\Service\Report\Pdf\Document\Layout\Base\BaseLayout;
-use App\Service\Report\Pdf\Document\PdfPrinter;
+use App\Service\Report\Pdf\IssueReportPdfConventions;
 
 class FullWidthLayout extends BaseLayout implements FullWidthLayoutInterface
 {
     /**
      * ColumnLayout constructor.
      *
-     * @param PdfPrinter $printer
+     * @param IssueReportPdfConventions $printer
      * @param float $width
      */
-    public function __construct(PdfPrinter $printer, float $width)
+    public function __construct(IssueReportPdfConventions $printer, float $width)
     {
         parent::__construct($printer, $width);
     }

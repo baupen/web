@@ -9,21 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Document;
+namespace App\Service\Report\Pdf;
 
 use App\Helper\ImageHelper;
 use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Design\TypographyService;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Pdf\Interfaces\PdfPrinterInterface;
 
-class PdfPrinter
+class IssueReportPdfConventions
 {
-    /**
-     * @var PdfDocumentInterface
-     */
-    private $document;
-
     /**
      * @var TypographyService
      */
@@ -35,13 +31,17 @@ class PdfPrinter
     private $color;
 
     /**
-     * @param PdfDocumentInterface $pdfDocument
+     * @var PdfPrinterInterface
+     */
+    private $pdfPrinter;
+
+    /**
      * @param TypographyServiceInterface $typographyService
      * @param ColorServiceInterface $colorService
      */
-    public function __construct(PdfDocumentInterface $pdfDocument, TypographyServiceInterface $typographyService, ColorServiceInterface $colorService)
+    public function __construct(TypographyServiceInterface $typographyService, ColorServiceInterface $colorService)
     {
-        $this->document = $pdfDocument;
+        // TODO: set pdf printer as an interface and inject it into layouts to close the circle
         $this->typography = $typographyService;
         $this->color = $colorService;
     }
@@ -79,8 +79,11 @@ class PdfPrinter
      */
     public function printImage(string $filePath, float $width = null)
     {
-        list($width, $height) = ImageHelper::getWidthHeightArguments($filePath, $width);
-        $this->document->printImage($filePath, $width, $height);
+        $this->pdfPrinter->registerPrintable(function ($document) use ($filePath, $width) {
+            /* @var PdfDocumentInterface $document */
+            list($width, $height) = ImageHelper::getWidthHeightArguments($filePath, $width);
+            $document->printImage($filePath, $width, $height);
+        });
     }
 
     /**
@@ -102,20 +105,22 @@ class PdfPrinter
      */
     public function printIssueImage(string $imagePath, int $number, float $defaultWidth)
     {
-        /* @var PdfDocumentInterface $document */
-        list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $defaultWidth);
-        $this->document->printImage($imagePath, $width, $height);
-        $afterImageCursor = $this->document->getCursor();
+        $this->pdfPrinter->registerPrintable(function ($document) use ($imagePath, $number, $defaultWidth) {
+            /* @var PdfDocumentInterface $document */
+            list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $defaultWidth);
+            $document->printImage($imagePath, $width, $height);
+            $afterImageCursor = $document->getCursor();
 
-        // put cursor to top left corner of image
-        $this->document->setCursor($afterImageCursor[0], $afterImageCursor[1] - $height, $afterImageCursor[2]);
+            // put cursor to top left corner of image
+            $document->setCursor($afterImageCursor->setY($afterImageCursor->getYCoordinate() - $height));
 
-        // print number of issue
-        $this->document->configurePrint(['background' => $this->color->getImageOverlayColor()]);
-        $this->document->printText((string)$number, $this->typography->getTextFontSize());
+            // print number of issue
+            $document->configurePrint(['background' => $this->color->getImageOverlayColor()]);
+            $document->printText((string)$number, $this->typography->getTextFontSize());
 
-        // reset cursor to after image
-        $this->document->setCursor(...$afterImageCursor);
+            // reset cursor to after image
+            $document->setCursor(...$afterImageCursor);
+        });
     }
 
     /**
@@ -125,8 +130,11 @@ class PdfPrinter
      */
     private function printText(string $text, float $fontSize, float $width)
     {
-        $this->document->configurePrint(['fontSize' => $fontSize]);
-        $this->document->printText($text, $width);
+        $this->pdfPrinter->registerPrintable(function ($document) use ($text, $fontSize, $width) {
+            /* @var PdfDocumentInterface $document */
+            $document->configurePrint(['fontSize' => $fontSize]);
+            $document->printText($text, $width);
+        });
     }
 
     /**
@@ -136,7 +144,10 @@ class PdfPrinter
      */
     private function printBoldText(string $text, float $fontSize, float $width)
     {
-        $this->document->configurePrint(['fontSize' => $fontSize, 'bold' => true]);
-        $this->document->printText($text, $width);
+        $this->pdfPrinter->registerPrintable(function ($document) use ($text, $fontSize, $width) {
+            /* @var PdfDocumentInterface $document */
+            $document->configurePrint(['fontSize' => $fontSize, 'bold' => true]);
+            $document->printText($text, $width);
+        });
     }
 }

@@ -12,9 +12,10 @@
 namespace App\Service\Report\Pdf\Document\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\ColumnLayoutInterface;
+use App\Service\Report\Pdf\Cursor;
 use App\Service\Report\Pdf\Document\Layout\Base\BaseLayout;
-use App\Service\Report\Pdf\Document\PdfPrinter;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Pdf\IssueReportPdfConventions;
 
 class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
 {
@@ -54,20 +55,20 @@ class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
     private $activeColumn = 0;
 
     /**
-     * @var int
+     * @var Cursor[]
      */
-    private $lowestCursor;
+    private $columnCursors;
 
     /**
      * ColumnLayout constructor.
      *
-     * @param PdfPrinter $printer
+     * @param IssueReportPdfConventions $printer
      * @param PdfDocumentInterface $pdfDocument
      * @param int $columnCount
      * @param float $columnGutter
      * @param float $width
      */
-    public function __construct(PdfPrinter $printer, PdfDocumentInterface $pdfDocument, int $columnCount, float $columnGutter, float $width)
+    public function __construct(IssueReportPdfConventions $printer, PdfDocumentInterface $pdfDocument, int $columnCount, float $columnGutter, float $width)
     {
         $gutterSpace = ($columnCount - 1) * $columnGutter;
         $columnWidth = (float)($width - $gutterSpace) / $columnCount;
@@ -81,7 +82,6 @@ class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
         $this->columnWidth = $columnWidth;
 
         $this->startCursor = $pdfDocument->getCursor();
-        $this->lowestCursor = $this->startCursor;
     }
 
     /**
@@ -98,22 +98,13 @@ class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
             throw new \Exception('column must be smaller than the column count');
         }
 
-        $this->preserveCursorMax();
+        $this->columnCursors[$this->activeColumn] = $this->pdfDocument->getCursor();
 
         // set correct cursor/page
         $this->pdfDocument->setCursor($this->startCursor->setX($this->getColumnStart($column)));
 
         // save
         $this->activeColumn = $column;
-    }
-
-    /**
-     * preserves the max page / y reached by the cursor.
-     */
-    private function preserveCursorMax()
-    {
-        $currentCursor = $this->pdfDocument->getCursor();
-        $this->lowestCursor = $currentCursor->isLowerThan($this->lowestCursor) ? $currentCursor : $this->lowestCursor;
     }
 
     /**
@@ -133,16 +124,21 @@ class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
      */
     public function endLayout()
     {
-        $this->preserveCursorMax();
+        $lowestCursor = $this->startCursor;
+        foreach ($this->columnCursors as $columnCursor) {
+            $lowestCursor = $lowestCursor->isLowerThan($columnCursor) ? $lowestCursor : $columnCursor;
+        }
 
-        $this->pdfDocument->setCursor($this->lowestCursor->setX($this->startCursor->getXCoordinate()));
+        $this->pdfDocument->setCursor($lowestCursor->setX($this->startCursor->getXCoordinate()));
     }
 
     /**
      * when printing something, the column with the least content is chosen automatically.
+     *
+     * @param bool $active
      */
-    public function setAutoColumn()
+    public function setAutoColumn(bool $active)
     {
-        // TODO: Implement setAutoColumn() method.
+        $this->isAutoColumn = $active;
     }
 }

@@ -15,10 +15,10 @@ use App\Service\Report\Document\Interfaces\Configuration\Table;
 use App\Service\Report\Document\Interfaces\Configuration\TableColumn;
 use App\Service\Report\Document\Interfaces\DocumentLayoutInterface;
 use App\Service\Report\Interfaces\IssueReportServiceInterface;
-use App\Service\Report\Pdf\Document\PdfPrinter;
+use App\Service\Report\Pdf\IssueReportPdfConventions;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class IssueReportServiceService implements IssueReportServiceInterface
+class IssueReportService implements IssueReportServiceInterface
 {
     /**
      * @var TranslatorInterface
@@ -148,15 +148,15 @@ class IssueReportServiceService implements IssueReportServiceInterface
 
         if (\count($images) > 0) {
             $columnLayout = $report->createColumnLayout(4);
-            $columnLayout->setAutoColumn();
+            $columnLayout->setAutoColumn(true);
 
             foreach ($images as $image) {
                 $imagePath = $image['imagePath'];
                 $number = $image['number'];
 
                 $columnLayout->printCustom(function ($printer, float $defaultWidth) use ($imagePath, $number) {
-                    if ($printer instanceof PdfPrinter) {
-                        /* @var PdfPrinter $printer */
+                    if ($printer instanceof IssueReportPdfConventions) {
+                        /* @var IssueReportPdfConventions $printer */
                         $printer->printIssueImage($imagePath, $number, $defaultWidth);
                     } else {
                         throw new \Exception('unsupported printer');

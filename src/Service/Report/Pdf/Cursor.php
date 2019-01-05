@@ -85,4 +85,14 @@ class Cursor
     {
         return $other->getPage() < $this->getPage() || $other->getYCoordinate() < $this->getYCoordinate();
     }
+
+    /**
+     * @param float $startY
+     *
+     * @return Cursor
+     */
+    public function setY(float $startY)
+    {
+        return new self($this->getXCoordinate(), $startY, $this->getPage());
+    }
 }

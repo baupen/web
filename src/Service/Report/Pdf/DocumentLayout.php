@@ -26,6 +26,7 @@ use App\Service\Report\Pdf\Document\Layout\FullWidthLayout;
 use App\Service\Report\Pdf\Document\Layout\GroupLayout;
 use App\Service\Report\Pdf\Document\Layout\TableLayout;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Pdf\IssueReportPdfConventions;
 
 class DocumentLayout implements DocumentLayoutInterface
 {
@@ -45,7 +46,7 @@ class DocumentLayout implements DocumentLayoutInterface
     private $typographyService;
 
     /**
-     * @var PdfPrinter
+     * @var IssueReportPdfConventions
      */
     private $printer;
 
@@ -63,7 +64,7 @@ class DocumentLayout implements DocumentLayoutInterface
         $this->layoutService = $layoutService;
         $this->typographyService = $typographyService;
 
-        $this->printer = new PdfPrinter($pdfDocument, $this->typographyService, $colorService);
+        $this->printer = new IssueReportPdfConventions($pdfDocument, $this->typographyService, $colorService);
     }
 
     /**
