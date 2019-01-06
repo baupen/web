@@ -13,10 +13,10 @@ namespace App\Service\Report\Pdf\Tcpdf;
 
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Interfaces\PdfDocumentServiceInterface;
+use App\Service\Report\Pdf\Interfaces\PdfFactoryInterface;
 use App\Service\Report\Pdf\Tcpdf\Interfaces\TcpdfServiceInterface;
 
-class PdfDocumentService implements PdfDocumentServiceInterface
+class PdfFactory implements PdfFactoryInterface
 {
     /**
      * @var TcpdfServiceInterface

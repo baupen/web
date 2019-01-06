@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Document\Layout;
+namespace App\Service\Report\Pdf\Layout;
 
 use App\Service\Report\Document\Interfaces\Configuration\Table;
 use App\Service\Report\Document\Interfaces\Configuration\TableColumn;
@@ -156,8 +156,8 @@ class TableLayout implements TableLayoutInterface
         $expandColumnsCount = \count($expandColumns);
         if ($expandColumnsCount > 0) {
             $expandColumnWidth = $availableWidth / $expandColumnsCount;
-            foreach ($expandColumns as $exoandColumn) {
-                $widths[$exoandColumn] = $expandColumnWidth;
+            foreach ($expandColumns as $expandColumn) {
+                $widths[$expandColumn] = $expandColumnWidth;
             }
         }
     }

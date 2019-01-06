@@ -20,9 +20,8 @@ use App\Helper\DateTimeFormatter;
 use App\Helper\IssueHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
-use App\Service\Report\Document\Interfaces\DocumentServiceInterface;
-use App\Service\Report\Interfaces\IssueReportServiceInterface;
-use App\Service\Report\Pdf\Interfaces\PdfDocumentServiceInterface;
+use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Pdf\Interfaces\PdfFactoryInterface;
 use App\Service\Report\Report;
 use App\Service\Report\ReportConfiguration;
 use App\Service\Report\ReportElements;
@@ -52,33 +51,20 @@ class CleanReportService
     private $translator;
 
     /**
-     * @var DocumentServiceInterface
-     */
-    private $documentService;
-
-    /**
-     * @var IssueReportServiceInterface
-     */
-    private $issueReport;
-
-    /**
      * ReportService constructor.
      *
      * @param ImageServiceInterface $imageService
      * @param RegistryInterface $registry
      * @param TranslatorInterface $translator
      * @param PathServiceInterface $pathService
-     * @param PdfDocumentServiceInterface $documentService
-     * @param IssueReportServiceInterface $issueReport
+     * @param PdfFactoryInterface $documentService
      */
-    public function __construct(ImageServiceInterface $imageService, RegistryInterface $registry, TranslatorInterface $translator, PathServiceInterface $pathService, PdfDocumentServiceInterface $documentService, IssueReportServiceInterface $issueReport)
+    public function __construct(ImageServiceInterface $imageService, RegistryInterface $registry, TranslatorInterface $translator, PathServiceInterface $pathService)
     {
         $this->imageService = $imageService;
         $this->doctrine = $registry;
         $this->translator = $translator;
         $this->pathService = $pathService;
-        $this->documentService = $documentService;
-        $this->issueReport = $issueReport;
     }
 
     /**
@@ -126,6 +112,25 @@ class CleanReportService
         $document->save($filePath);
 
         return $filePath;
+    }
+
+    /**
+     * @param string $title
+     * @param string $author
+     *
+     * @throws \Exception
+     *
+     * @return PdfDocumentInterface
+     */
+    private function createPdfDocument(string $title, string $author)
+    {
+        $footer = $this->translator->trans('generated', ['%date%' => (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT), '%name%' => $author], 'report');
+        $logoPath = $this->pathService->getAssetsRoot() . 'report' . \DIRECTORY_SEPARATOR . 'logo.png';
+        $pdfDocument = $this->pdfDocumentService->create($title, $footer, $logoPath);
+
+        $pdfDocument->setMeta($title, $author);
+
+        return $pdfDocument;
     }
 
     /**

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document\Interfaces\Layout;
+namespace App\Service\Report\Document\Interfaces\Layout\Base;
 
 interface LayoutInterface
 {

@@ -69,8 +69,9 @@ class PageLayoutService implements PageLayoutServiceInterface
     {
         $maxWidth = $this->layoutService->getContentXSize() / 3 * 2;
 
-        $pdf->setCursor($this->layoutService->getContentXStart(), $this->layoutService->getHeaderYStart());
-        $pdf->printText($headerLeft, $this->typographyService->getHeaderFontSize(), $maxWidth);
+        $pdf->setCursor(new Cursor($this->layoutService->getContentXStart(), $this->layoutService->getHeaderYStart(), 0));
+        $pdf->configurePrint(['fontSize' => $this->typographyService->getHeaderFontSize()]);
+        $pdf->printText($headerLeft, $maxWidth);
     }
 
     /**
@@ -87,7 +88,7 @@ class PageLayoutService implements PageLayoutServiceInterface
         // print
         $startX = $this->layoutService->getContentXEnd() - $width;
         $startY = $this->layoutService->getHeaderYStart();
-        $pdf->setCursor($startX, $startY);
+        $pdf->setCursor(new Cursor($startX, $startY, 0));
         $pdf->printImage($logoPath, $width, $height);
     }
 
@@ -97,7 +98,7 @@ class PageLayoutService implements PageLayoutServiceInterface
      */
     public function printFooterLeft(PdfDocumentInterface $pdf, string $footerLeft)
     {
-        $pdf->setCursor($this->layoutService->getContentXStart(), $this->layoutService->getFooterYStart());
+        $pdf->setCursor(new Cursor($this->layoutService->getContentXStart(), $this->layoutService->getFooterYStart(), 0));
         $pdf->printText($footerLeft, $this->typographyService->getFooterFontSize());
     }
 
@@ -113,7 +114,8 @@ class PageLayoutService implements PageLayoutServiceInterface
         $startX = $this->layoutService->getContentXEnd() - $contentWidthPart + 6.5;
         $startY = $this->layoutService->getFooterYStart();
 
-        $pdf->setCursor($startX, $startY);
-        $pdf->printText($currentPageNumber . '/' . $totalPageNumbers, $this->typographyService->getFooterFontSize(), $contentWidthPart, true);
+        $pdf->setCursor(new Cursor($startX, $startY, 0));
+        $pdf->configurePrint(['fontSize' => $this->typographyService->getFooterFontSize(), 'alignment' => 'R']);
+        $pdf->printText($currentPageNumber . '/' . $totalPageNumbers, $contentWidthPart);
     }
 }

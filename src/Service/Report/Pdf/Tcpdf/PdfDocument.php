@@ -221,6 +221,6 @@ class PdfDocument implements PdfDocumentInterface
         $cursorAfter = $this->getCursor();
         $this->pdf->rollbackTransaction(true);
 
-        return [$cursorBefore, $cursorBefore];
+        return [$cursorBefore, $cursorAfter];
     }
 }

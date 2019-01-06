@@ -9,26 +9,25 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Document;
+namespace App\Service\Report\Pdf;
 
 use App\Service\Report\Document\Interfaces\Configuration\Table;
 use App\Service\Report\Document\Interfaces\Configuration\TableColumn;
-use App\Service\Report\Document\Interfaces\DocumentLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\ColumnLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
+use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
 use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
-use App\Service\Report\Pdf\Document\Layout\ColumnLayout;
-use App\Service\Report\Pdf\Document\Layout\FullWidthLayout;
-use App\Service\Report\Pdf\Document\Layout\GroupLayout;
-use App\Service\Report\Pdf\Document\Layout\TableLayout;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Interfaces\PrintableProducerInterface;
+use App\Service\Report\Pdf\Layout\ColumnLayout;
+use App\Service\Report\Pdf\Layout\FullWidthLayout;
+use App\Service\Report\Pdf\Layout\GroupLayout;
+use App\Service\Report\Pdf\Layout\TableLayout;
 
-class DocumentLayout implements DocumentLayoutInterface
+class LayoutFactory implements LayoutFactoryInterface
 {
     /**
      * @var PdfDocumentInterface
@@ -44,11 +43,6 @@ class DocumentLayout implements DocumentLayoutInterface
      * @var TypographyServiceInterface
      */
     private $typographyService;
-
-    /**
-     * @var PrintableProducerInterface
-     */
-    private $printer;
 
     /**
      * Document constructor.
@@ -74,7 +68,7 @@ class DocumentLayout implements DocumentLayoutInterface
      */
     public function createGroupLayout()
     {
-        return new GroupLayout($this->printer, $this->document, $this->layoutService->getContentXSize());
+        return new GroupLayout($this->document, $this->layoutService->getContentXSize());
     }
 
     /**
@@ -86,7 +80,7 @@ class DocumentLayout implements DocumentLayoutInterface
      */
     public function createColumnLayout(int $columnCount)
     {
-        return new ColumnLayout($this->printer, $this->document, $columnCount, $this->layoutService->getColumnGutter(), $this->layoutService->getContentXSize());
+        return new ColumnLayout($this->document, $columnCount, $this->layoutService->getColumnGutter(), $this->layoutService->getContentXSize());
     }
 
     /**
@@ -109,14 +103,6 @@ class DocumentLayout implements DocumentLayoutInterface
      */
     public function createFullWidthLayout()
     {
-        return new FullWidthLayout($this->printer, $this->layoutService->getContentXSize());
-    }
-
-    /**
-     * @param PrintableProducerInterface $printableProducer
-     */
-    public function registerPrinter(PrintableProducerInterface $printableProducer)
-    {
-        $this->printer = $printableProducer;
+        return new FullWidthLayout($this->document, $this->layoutService->getContentXSize());
     }
 }

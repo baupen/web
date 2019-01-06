@@ -11,13 +11,8 @@
 
 namespace App\Service\Report\Pdf\Interfaces;
 
-interface PdfLayoutInterface
+interface CustomPrinterLayoutInterface
 {
-    /**
-     * @return PrintableProducerInterface
-     */
-    public function getPrinterProducer();
-
     /**
      * register a callable which prints to the pdf document
      * The position of the cursor at the time the callable is invoked is decided by the layout

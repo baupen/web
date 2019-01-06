@@ -9,18 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf;
+namespace App\Service\Report\IssueReport;
 
 use App\Helper\ImageHelper;
 use App\Service\Report\IssueReport\Interfaces\BuildingBlocksInterface;
 use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Design\TypographyService;
+use App\Service\Report\Pdf\Interfaces\CustomPrinterLayoutInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Interfaces\PdfLayoutInterface;
-use App\Service\Report\Pdf\Interfaces\PrintableProducerInterface;
 
-class PdfBuildingBlocks implements PrintableProducerInterface, BuildingBlocksInterface
+class PdfBuildingBlocks implements BuildingBlocksInterface
 {
     /**
      * @var TypographyService
@@ -33,28 +32,20 @@ class PdfBuildingBlocks implements PrintableProducerInterface, BuildingBlocksInt
     private $color;
 
     /**
-     * @var PdfLayoutInterface
+     * @var CustomPrinterLayoutInterface
      */
     private $pdfPrinter;
 
     /**
+     * @param CustomPrinterLayoutInterface $customPrinterLayout
      * @param TypographyServiceInterface $typographyService
      * @param ColorServiceInterface $colorService
      */
-    public function __construct(TypographyServiceInterface $typographyService, ColorServiceInterface $colorService)
+    public function __construct(CustomPrinterLayoutInterface $customPrinterLayout, TypographyServiceInterface $typographyService, ColorServiceInterface $colorService)
     {
+        $this->pdfPrinter = $customPrinterLayout;
         $this->typography = $typographyService;
         $this->color = $colorService;
-    }
-
-    /**
-     * sets the printer to be used. Invoked as soon as an instance is passed to a layout.
-     *
-     * @param PdfLayoutInterface $printer
-     */
-    public function setPdfPrinter(PdfLayoutInterface $printer)
-    {
-        $this->pdfPrinter = $printer;
     }
 
     /**

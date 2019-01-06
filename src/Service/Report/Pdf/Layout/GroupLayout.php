@@ -9,14 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Document\Layout;
+namespace App\Service\Report\Pdf\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
+use App\Service\Report\Pdf\Interfaces\CustomPrinterLayoutInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Interfaces\PrintableProducerInterface;
-use App\Service\Report\Pdf\PdfBuildingBlocks;
 
-class GroupLayout implements GroupLayoutInterface
+class GroupLayout implements GroupLayoutInterface, CustomPrinterLayoutInterface
 {
     /**
      * @var PdfDocumentInterface
@@ -36,66 +35,13 @@ class GroupLayout implements GroupLayoutInterface
     /**
      * ColumnLayout constructor.
      *
-     * @param PdfBuildingBlocks $printer
      * @param PdfDocumentInterface $pdfDocument
      * @param float $width
      */
-    public function __construct(PrintableProducerInterface $printer, PdfDocumentInterface $pdfDocument, float $width)
+    public function __construct(PdfDocumentInterface $pdfDocument, float $width)
     {
         $this->pdfDocument = $pdfDocument;
         $this->width = $width;
-
-        $printer->setPdfPrinter($this);
-    }
-
-    /**
-     * @param string $title
-     */
-    public function printTitle(string $title)
-    {
-        $this->buffer[] = function () use ($title) {
-            parent::printTitle($title);
-        };
-    }
-
-    /**
-     * @param string $paragraph
-     */
-    public function printParagraph(string $paragraph)
-    {
-        $this->buffer[] = function () use ($paragraph) {
-            parent::printParagraph($paragraph);
-        };
-    }
-
-    /**
-     * @param string[] $keyValues
-     */
-    public function printKeyValueParagraph(array $keyValues)
-    {
-        $this->buffer[] = function () use ($keyValues) {
-            parent::printKeyValueParagraph($keyValues);
-        };
-    }
-
-    /**
-     * @param string $header
-     */
-    public function printRegionHeader(string $header)
-    {
-        $this->buffer[] = function () use ($header) {
-            parent::printRegionHeader($header);
-        };
-    }
-
-    /**
-     * @param string $filePath
-     */
-    public function printImage(string $filePath)
-    {
-        $this->buffer[] = function () use ($filePath) {
-            parent::printImage($filePath);
-        };
     }
 
     /**
@@ -114,5 +60,22 @@ class GroupLayout implements GroupLayoutInterface
         }
 
         $emptyBuffer();
+    }
+
+    /**
+     * register a callable which prints to the pdf document
+     * The position of the cursor at the time the callable is invoked is decided by the layout
+     * ensure the cursor is below the printed content after the callable is finished to not mess up the layout.
+     *
+     * @param callable $callable takes a PdfDocumentInterface as an argument
+     */
+    public function registerPrintable(callable $callable)
+    {
+        $pdfDocument = $this->pdfDocument;
+        $width = $this->width;
+
+        $this->buffer[] = function () use ($callable, $pdfDocument, $width) {
+            $callable($pdfDocument, $width);
+        };
     }
 }

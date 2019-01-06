@@ -11,7 +11,7 @@
 
 namespace App\Service\Report\Pdf\Interfaces;
 
-interface PdfDocumentServiceInterface
+interface PdfFactoryInterface
 {
     /**
      * @param string $header

@@ -9,23 +9,33 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Document\Layout;
+namespace App\Service\Report\Pdf\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
-use App\Service\Report\Pdf\Document\Layout\Base\BaseLayout;
-use App\Service\Report\Pdf\PdfBuildingBlocks;
+use App\Service\Report\Pdf\Interfaces\CustomPrinterLayoutInterface;
+use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
-class FullWidthLayout extends BaseLayout implements FullWidthLayoutInterface
+class FullWidthLayout implements FullWidthLayoutInterface, CustomPrinterLayoutInterface
 {
+    /**
+     * @var float
+     */
+    private $width;
+
+    /**
+     * @var PdfDocumentInterface
+     */
+    private $pdfDocument;
+
     /**
      * ColumnLayout constructor.
      *
-     * @param PdfBuildingBlocks $printer
      * @param float $width
      */
-    public function __construct(PdfBuildingBlocks $printer, float $width)
+    public function __construct(PdfDocumentInterface $pdfDocument, float $width)
     {
-        parent::__construct($printer, $width);
+        $this->width = $width;
+        $this->pdfDocument = $pdfDocument;
     }
 
     /**
@@ -34,5 +44,17 @@ class FullWidthLayout extends BaseLayout implements FullWidthLayoutInterface
     public function endLayout()
     {
         // no need to act here
+    }
+
+    /**
+     * register a callable which prints to the pdf document
+     * The position of the cursor at the time the callable is invoked is decided by the layout
+     * ensure the cursor is below the printed content after the callable is finished to not mess up the layout.
+     *
+     * @param callable $callable takes a PdfDocumentInterface as an argument
+     */
+    public function registerPrintable(callable $callable)
+    {
+        $callable($this->pdfDocument, $this->width);
     }
 }

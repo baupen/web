@@ -9,12 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report;
+namespace App\Service\Report\IssueReport;
 
 use App\Service\Report\Document\Interfaces\Configuration\Table;
 use App\Service\Report\Document\Interfaces\Configuration\TableColumn;
-use App\Service\Report\Document\Interfaces\DocumentLayoutInterface;
-use App\Service\Report\Interfaces\IssueReportServiceInterface;
+use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
+use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
+use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
+use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\PdfBuildingBlocks;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -25,54 +27,64 @@ class IssueReportService implements IssueReportServiceInterface
      */
     private $translator;
 
+    /**
+     * @var TypographyServiceInterface
+     */
+    private $typographyService;
+
+    /**
+     * @var ColorServiceInterface
+     */
+    private $colorService;
+
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
 
     /**
-     * @param DocumentLayoutInterface $document
+     * @param LayoutFactoryInterface $layoutFactory
      * @param string $constructionSiteName
      * @param string|null $constructionSiteImage
      * @param string $constructionSiteAddressLines
      * @param string $reportElements
      * @param array $filterEntries
      */
-    public function addIntroduction(DocumentLayoutInterface $document, string $constructionSiteName, ?string $constructionSiteImage, string $constructionSiteAddressLines, string $reportElements, array $filterEntries)
+    public function addIntroduction(LayoutFactoryInterface $layoutFactory, string $constructionSiteName, ?string $constructionSiteImage, string $constructionSiteAddressLines, string $reportElements, array $filterEntries)
     {
         //three or two column layout
-        $columnedLayout = $document->createColumnLayout(3);
+        $columnedLayout = $layoutFactory->createColumnLayout(3);
 
         //image
         if ($constructionSiteImage !== null) {
-            $columnedLayout->printImage($constructionSiteImage);
+            $buildingBlocks->printImage($constructionSiteImage);
         }
 
         $columnedLayout->goToColumn(1);
 
-        $columnedLayout->printTitle($constructionSiteName);
-        $columnedLayout->printParagraph($constructionSiteAddressLines);
+        $buildingBlocks->printTitle($constructionSiteName);
+        $buildingBlocks->printParagraph($constructionSiteAddressLines);
 
         $reportElementsTitle = $this->translator->trans('introduction.elements', [], 'report');
-        $columnedLayout->printTitle($reportElementsTitle);
-        $columnedLayout->printParagraph($reportElements);
+        $buildingBlocks->printTitle($reportElementsTitle);
+        $buildingBlocks->printParagraph($reportElements);
 
         $columnedLayout->goToColumn(3);
 
         $filterTitle = $this->translator->trans('entity.name', [], 'entity_filter');
-        $columnedLayout->printTitle($filterTitle);
-        $columnedLayout->printKeyValueParagraph($filterEntries);
+        $buildingBlocks->printTitle($filterTitle);
+        $buildingBlocks->printKeyValueParagraph($filterEntries);
     }
 
     /**
-     * @param DocumentLayoutInterface $document
+     * @param LayoutFactoryInterface $document
      * @param string $tableDescription
      * @param string[] $identifierHeader
      * @param string[] $identifierContent
      * @param string[] $issuesHeader
      * @param string[] $issuesContent
      */
-    public function addAggregatedIssueTable(DocumentLayoutInterface $document, string $tableDescription, array $identifierHeader, array $identifierContent, array $issuesHeader, array $issuesContent)
+    public function addAggregatedIssueTable(LayoutFactoryInterface $document, string $tableDescription, array $identifierHeader, array $identifierContent, array $issuesHeader, array $issuesContent)
     {
         $fullWidth = $document->createFullWidthLayout();
         $fullWidth->printTitle($tableDescription);
@@ -111,7 +123,7 @@ class IssueReportService implements IssueReportServiceInterface
     }
 
     /**
-     * @param DocumentLayoutInterface $report
+     * @param LayoutFactoryInterface $report
      * @param string $mapName
      * @param string $mapContext
      * @param string|null $mapImage
@@ -119,7 +131,7 @@ class IssueReportService implements IssueReportServiceInterface
      * @param string[][] $issuesTableContent
      * @param string[] $images
      */
-    public function addMap(DocumentLayoutInterface $report, string $mapName, string $mapContext, ?string $mapImage, array $issuesTableHeader, array $issuesTableContent, array $images)
+    public function addMap(LayoutFactoryInterface $report, string $mapName, string $mapContext, ?string $mapImage, array $issuesTableHeader, array $issuesTableContent, array $images)
     {
         $groupLayout = $report->createGroupLayout();
         $groupLayout->printTitle($mapName);

@@ -11,6 +11,8 @@
 
 namespace App\Service\Report\Document\Interfaces\Layout;
 
+use App\Service\Report\Document\Interfaces\Layout\Base\LayoutInterface;
+
 interface TableLayoutInterface extends LayoutInterface
 {
     /**
