@@ -12,13 +12,15 @@
 namespace App\Service\Report\Pdf;
 
 use App\Helper\ImageHelper;
+use App\Service\Report\IssueReport\Interfaces\BuildingBlocksInterface;
 use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Design\TypographyService;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Interfaces\PdfPrinterInterface;
+use App\Service\Report\Pdf\Interfaces\PdfLayoutInterface;
+use App\Service\Report\Pdf\Interfaces\PrintableProducerInterface;
 
-class IssueReportPdfConventions
+class PdfBuildingBlocks implements PrintableProducerInterface, BuildingBlocksInterface
 {
     /**
      * @var TypographyService
@@ -31,7 +33,7 @@ class IssueReportPdfConventions
     private $color;
 
     /**
-     * @var PdfPrinterInterface
+     * @var PdfLayoutInterface
      */
     private $pdfPrinter;
 
@@ -41,72 +43,73 @@ class IssueReportPdfConventions
      */
     public function __construct(TypographyServiceInterface $typographyService, ColorServiceInterface $colorService)
     {
-        // TODO: set pdf printer as an interface and inject it into layouts to close the circle
         $this->typography = $typographyService;
         $this->color = $colorService;
     }
 
     /**
-     * @param string $paragraph
-     * @param float $width
+     * sets the printer to be used. Invoked as soon as an instance is passed to a layout.
+     *
+     * @param PdfLayoutInterface $printer
      */
-    public function printParagraph(string $paragraph, float $width = null)
+    public function setPdfPrinter(PdfLayoutInterface $printer)
     {
-        $this->printText($paragraph, $this->typography->getTextFontSize(), $width);
+        $this->pdfPrinter = $printer;
+    }
+
+    /**
+     * @param string $paragraph
+     */
+    public function printParagraph(string $paragraph)
+    {
+        $this->printText($paragraph, $this->typography->getTextFontSize());
     }
 
     /**
      * @param string $title
-     * @param float $width
      */
-    public function printTitle(string $title, float $width = null)
+    public function printTitle(string $title)
     {
-        $this->printBoldText($title, $this->typography->getTextFontSize(), $width);
+        $this->printBoldText($title, $this->typography->getTextFontSize());
     }
 
     /**
      * @param string $header
-     * @param float $width
      */
-    public function printRegionHeader(string $header, float $width = null)
+    public function printRegionHeader(string $header)
     {
-        $this->printBoldText($header, $this->typography->getTitleFontSize(), $width);
+        $this->printBoldText($header, $this->typography->getTitleFontSize());
     }
 
     /**
      * @param string $filePath
-     * @param float $width
      */
-    public function printImage(string $filePath, float $width = null)
+    public function printImage(string $filePath)
     {
-        $this->pdfPrinter->registerPrintable(function ($document) use ($filePath, $width) {
-            /* @var PdfDocumentInterface $document */
-            list($width, $height) = ImageHelper::getWidthHeightArguments($filePath, $width);
+        $this->pdfPrinter->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($filePath) {
+            list($width, $height) = ImageHelper::getWidthHeightArguments($filePath, $defaultWidth);
             $document->printImage($filePath, $width, $height);
         });
     }
 
     /**
      * @param string[] $keyValues
-     * @param float|null $width
      */
-    public function printKeyValueParagraph(array $keyValues, float $width = null)
+    public function printKeyValueParagraph(array $keyValues)
     {
         foreach ($keyValues as $key => $value) {
-            $this->printBoldText($key, $this->typography->getTextFontSize(), $width);
-            $this->printText($value, $this->typography->getTextFontSize(), $width);
+            $this->printBoldText($key, $this->typography->getTextFontSize());
+            $this->printText($value, $this->typography->getTextFontSize());
         }
     }
 
     /**
      * @param string $imagePath
      * @param int $number
-     * @param float $defaultWidth
      */
-    public function printIssueImage(string $imagePath, int $number, float $defaultWidth)
+    public function printIssueImage(string $imagePath, int $number)
     {
-        $this->pdfPrinter->registerPrintable(function ($document) use ($imagePath, $number, $defaultWidth) {
-            /* @var PdfDocumentInterface $document */
+        $this->pdfPrinter->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($imagePath, $number) {
             list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $defaultWidth);
             $document->printImage($imagePath, $width, $height);
             $afterImageCursor = $document->getCursor();
@@ -126,28 +129,36 @@ class IssueReportPdfConventions
     /**
      * @param string $text
      * @param float $fontSize
-     * @param float $width
      */
-    private function printText(string $text, float $fontSize, float $width)
+    private function printText(string $text, float $fontSize)
     {
-        $this->pdfPrinter->registerPrintable(function ($document) use ($text, $fontSize, $width) {
-            /* @var PdfDocumentInterface $document */
+        $this->pdfPrinter->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($text, $fontSize) {
             $document->configurePrint(['fontSize' => $fontSize]);
-            $document->printText($text, $width);
+            $document->printText($text, $defaultWidth);
         });
     }
 
     /**
      * @param string $text
      * @param float $fontSize
-     * @param float $width
      */
-    private function printBoldText(string $text, float $fontSize, float $width)
+    private function printBoldText(string $text, float $fontSize)
     {
-        $this->pdfPrinter->registerPrintable(function ($document) use ($text, $fontSize, $width) {
-            /* @var PdfDocumentInterface $document */
+        $this->pdfPrinter->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($text, $fontSize) {
             $document->configurePrint(['fontSize' => $fontSize, 'bold' => true]);
-            $document->printText($text, $width);
+            $document->printText($text, $defaultWidth);
+        });
+    }
+
+    /**
+     * will call the closure with the printer as the first and the default width as the second argument.
+     *
+     * @param \Closure $param
+     */
+    public function printCustom(\Closure $param)
+    {
+        $this->pdfPrinter->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($param) {
+            $param($document, $defaultWidth);
         });
     }
 }

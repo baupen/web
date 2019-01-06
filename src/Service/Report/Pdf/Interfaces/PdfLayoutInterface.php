@@ -11,11 +11,16 @@
 
 namespace App\Service\Report\Pdf\Interfaces;
 
-interface PdfPrinterInterface
+interface PdfLayoutInterface
 {
     /**
+     * @return PrintableProducerInterface
+     */
+    public function getPrinterProducer();
+
+    /**
      * register a callable which prints to the pdf document
-     * The timing & initial position of the printer is decided by the layout
+     * The position of the cursor at the time the callable is invoked is decided by the layout
      * ensure the cursor is below the printed content after the callable is finished to not mess up the layout.
      *
      * @param callable $callable takes a PdfDocumentInterface as an argument

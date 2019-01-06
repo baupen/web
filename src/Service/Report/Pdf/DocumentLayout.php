@@ -26,7 +26,7 @@ use App\Service\Report\Pdf\Document\Layout\FullWidthLayout;
 use App\Service\Report\Pdf\Document\Layout\GroupLayout;
 use App\Service\Report\Pdf\Document\Layout\TableLayout;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\IssueReportPdfConventions;
+use App\Service\Report\Pdf\Interfaces\PrintableProducerInterface;
 
 class DocumentLayout implements DocumentLayoutInterface
 {
@@ -46,7 +46,7 @@ class DocumentLayout implements DocumentLayoutInterface
     private $typographyService;
 
     /**
-     * @var IssueReportPdfConventions
+     * @var PrintableProducerInterface
      */
     private $printer;
 
@@ -63,8 +63,6 @@ class DocumentLayout implements DocumentLayoutInterface
         $this->document = $pdfDocument;
         $this->layoutService = $layoutService;
         $this->typographyService = $typographyService;
-
-        $this->printer = new IssueReportPdfConventions($pdfDocument, $this->typographyService, $colorService);
     }
 
     /**
@@ -112,5 +110,13 @@ class DocumentLayout implements DocumentLayoutInterface
     public function createFullWidthLayout()
     {
         return new FullWidthLayout($this->printer, $this->layoutService->getContentXSize());
+    }
+
+    /**
+     * @param PrintableProducerInterface $printableProducer
+     */
+    public function registerPrinter(PrintableProducerInterface $printableProducer)
+    {
+        $this->printer = $printableProducer;
     }
 }

@@ -9,82 +9,34 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Document\Layout\Base;
+namespace App\Service\Report\Pdf\Layout\Base;
 
-use App\Service\Report\Document\Interfaces\PrinterInterface;
-use App\Service\Report\Pdf\IssueReportPdfConventions;
+use App\Service\Report\Document\Interfaces\Layout\LayoutInterface;
+use App\Service\Report\Pdf\Interfaces\PdfLayoutInterface;
+use App\Service\Report\Pdf\Interfaces\PrintableProducerInterface;
 
-class BaseLayout implements PrinterInterface
+abstract class BaseLayout implements LayoutInterface, PdfLayoutInterface
 {
     /**
-     * @var IssueReportPdfConventions
+     * @var PrintableProducerInterface
      */
     private $printer;
 
     /**
-     * @var float
-     */
-    private $defaultWidth;
-
-    /**
      * BaseLayout constructor.
      *
-     * @param IssueReportPdfConventions $printer
-     * @param float $defaultWidth
+     * @param PrintableProducerInterface $printableProducer
      */
-    public function __construct(IssueReportPdfConventions $printer, float $defaultWidth)
+    protected function __construct(PrintableProducerInterface $printableProducer)
     {
-        $this->printer = $printer;
-        $this->defaultWidth = $defaultWidth;
+        $this->printer = $printableProducer;
     }
 
     /**
-     * @param string $title
+     * @return PrintableProducerInterface
      */
-    public function printTitle(string $title)
+    public function getPrinterProducer()
     {
-        $this->printer->printTitle($title, $this->defaultWidth);
-    }
-
-    /**
-     * @param string $paragraph
-     */
-    public function printParagraph(string $paragraph)
-    {
-        $this->printer->printParagraph($paragraph, $this->defaultWidth);
-    }
-
-    /**
-     * @param string[] $keyValues
-     */
-    public function printKeyValueParagraph(array $keyValues)
-    {
-        $this->printer->printKeyValueParagraph($keyValues, $this->defaultWidth);
-    }
-
-    /**
-     * @param string $header
-     */
-    public function printRegionHeader(string $header)
-    {
-        $this->printer->printRegionHeader($header, $this->defaultWidth);
-    }
-
-    /**
-     * @param string $filePath
-     */
-    public function printImage(string $filePath)
-    {
-        $this->printer->printImage($filePath, $this->defaultWidth);
-    }
-
-    /**
-     * will call the closure with the printer as the first and the default width as the second argument.
-     *
-     * @param \Closure $param
-     */
-    public function printCustom(\Closure $param)
-    {
-        $param($this->printer, $this->defaultWidth);
+        return $this->printer;
     }
 }

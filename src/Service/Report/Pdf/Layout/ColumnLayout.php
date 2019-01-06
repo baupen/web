@@ -13,9 +13,9 @@ namespace App\Service\Report\Pdf\Document\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\ColumnLayoutInterface;
 use App\Service\Report\Pdf\Cursor;
-use App\Service\Report\Pdf\Document\Layout\Base\BaseLayout;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\IssueReportPdfConventions;
+use App\Service\Report\Pdf\Layout\Base\BaseLayout;
+use App\Service\Report\Pdf\PdfBuildingBlocks;
 
 class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
 {
@@ -62,23 +62,23 @@ class ColumnLayout extends BaseLayout implements ColumnLayoutInterface
     /**
      * ColumnLayout constructor.
      *
-     * @param IssueReportPdfConventions $printer
+     * @param PdfBuildingBlocks $printer
      * @param PdfDocumentInterface $pdfDocument
      * @param int $columnCount
      * @param float $columnGutter
      * @param float $width
      */
-    public function __construct(IssueReportPdfConventions $printer, PdfDocumentInterface $pdfDocument, int $columnCount, float $columnGutter, float $width)
+    public function __construct(PdfBuildingBlocks $printer, PdfDocumentInterface $pdfDocument, int $columnCount, float $columnGutter, float $width)
     {
-        $gutterSpace = ($columnCount - 1) * $columnGutter;
-        $columnWidth = (float)($width - $gutterSpace) / $columnCount;
-
-        parent::__construct($printer, $columnWidth);
+        parent::__construct($printer);
 
         $this->pdfDocument = $pdfDocument;
         $this->columnCount = $columnCount;
         $this->columnGutter = $columnGutter;
-        $this->totalWidth = $columnWidth;
+        $this->totalWidth = $width;
+
+        $gutterSpace = ($columnCount - 1) * $columnGutter;
+        $columnWidth = (float)($width - $gutterSpace) / $columnCount;
         $this->columnWidth = $columnWidth;
 
         $this->startCursor = $pdfDocument->getCursor();

@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document\Interfaces;
+namespace App\Service\Report\IssueReport\Interfaces;
 
-interface PrinterInterface
+interface BuildingBlocksInterface
 {
     /**
      * @param string $title

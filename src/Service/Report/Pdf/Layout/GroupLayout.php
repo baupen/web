@@ -12,11 +12,11 @@
 namespace App\Service\Report\Pdf\Document\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
-use App\Service\Report\Pdf\Document\Layout\Base\BaseLayout;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\IssueReportPdfConventions;
+use App\Service\Report\Pdf\Interfaces\PrintableProducerInterface;
+use App\Service\Report\Pdf\PdfBuildingBlocks;
 
-class GroupLayout extends BaseLayout implements GroupLayoutInterface
+class GroupLayout implements GroupLayoutInterface
 {
     /**
      * @var PdfDocumentInterface
@@ -36,16 +36,16 @@ class GroupLayout extends BaseLayout implements GroupLayoutInterface
     /**
      * ColumnLayout constructor.
      *
-     * @param IssueReportPdfConventions $printer
+     * @param PdfBuildingBlocks $printer
      * @param PdfDocumentInterface $pdfDocument
      * @param float $width
      */
-    public function __construct(IssueReportPdfConventions $printer, PdfDocumentInterface $pdfDocument, float $width)
+    public function __construct(PrintableProducerInterface $printer, PdfDocumentInterface $pdfDocument, float $width)
     {
-        parent::__construct($printer, $width);
-
         $this->pdfDocument = $pdfDocument;
         $this->width = $width;
+
+        $printer->setPdfPrinter($this);
     }
 
     /**

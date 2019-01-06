@@ -17,9 +17,15 @@ use App\Service\Report\Document\Interfaces\Layout\ColumnLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
+use App\Service\Report\Pdf\Interfaces\PrintableProducerInterface;
 
 interface DocumentLayoutInterface
 {
+    /**
+     * @param PrintableProducerInterface $printableProducer
+     */
+    public function registerPrinter(PrintableProducerInterface $printableProducer);
+
     /**
      * starts a region with 100% width.
      *
