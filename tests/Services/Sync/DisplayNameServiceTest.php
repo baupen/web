@@ -55,12 +55,12 @@ class DisplayNameServiceTest extends TestCase
     {
         $cases = [
             'map.pdf' => 'map',
-            '1 1 Obergeschoss_links.pdf' => '1. 1. Obergeschoss links',
             '1Obergeschoss.pdf' => '1. Obergeschoss',
             'Haus2.pdf' => 'Haus 2',
             '1Obergeschoss_links.pdf' => '1. Obergeschoss links',
             'ObergeschossHausA.pdf' => 'Obergeschoss Haus A',
             '1218_502_Obergeschoss_160815.pdf' => '1218 502 Obergeschoss 160815',
+            '1230_Bodenbelagsplan_1ObergeschossHaus1_534_1_180712.pdf' => '1230 Bodenbelagsplan 1. Obergeschoss Haus 1 534 1 180712',
         ];
 
         foreach ($cases as $source => $target) {

@@ -29,15 +29,26 @@ class ChildModel
     private $parent;
 
     /**
+     * @var ChildModel[]
+     */
+    private $children = [];
+
+    /**
      * ChildModel constructor.
      *
      * @param int $id
      * @param string $name
+     * @param self[] $children
      */
-    public function __construct(int $id, string $name)
+    public function __construct(int $id, string $name, array $children = [])
     {
         $this->id = $id;
         $this->name = $name;
+
+        // register parent
+        foreach ($children as $child) {
+            $child->setParent($this);
+        }
     }
 
     /**
@@ -65,10 +76,55 @@ class ChildModel
     }
 
     /**
-     * @param ChildModel|null $parent
+     * @param self|null $parent
      */
     public function setParent(?self $parent): void
     {
+        if ($this->parent !== null) {
+            $this->parent->removeChild($this);
+        }
+
         $this->parent = $parent;
+
+        if ($this->parent !== null) {
+            $this->parent->addChild($this);
+        }
+    }
+
+    /**
+     * @return ChildModel[]
+     */
+    public function getChildren(): array
+    {
+        return $this->children;
+    }
+
+    /**
+     * @param self $self
+     */
+    private function removeChild(self $self)
+    {
+        unset($this->children[$self->getId()]);
+    }
+
+    /**
+     * @param self $self
+     */
+    private function addChild(self $self)
+    {
+        $this->children[$self->getId()] = $self;
+    }
+
+    /**
+     * @return int
+     */
+    public function countChildren()
+    {
+        $count = 0;
+        foreach ($this->children as $child) {
+            $count += $child->countChildren() + 1;
+        }
+
+        return $count;
     }
 }
