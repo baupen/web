@@ -18,6 +18,7 @@ use App\Service\Report\IssueReport\Interfaces\BuildingBlocksInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
 use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
 use App\Service\Report\IssueReport\Model\IntroductionContent;
+use App\Service\Report\IssueReport\Model\MapContent;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class IssueReportService implements IssueReportServiceInterface
@@ -111,21 +112,20 @@ class IssueReportService implements IssueReportServiceInterface
 
     /**
      * @param LayoutFactoryInterface $report
-     * @param string $mapName
-     * @param string $mapContext
-     * @param string|null $mapImage
-     * @param string[] $issuesTableHeader
-     * @param string[][] $issuesTableContent
-     * @param string[] $images
+     * @param BuildingBlocksInterface $buildingBlocks
+     * @param MapContent $mapContent
      */
-    public function addMap(LayoutFactoryInterface $report, string $mapName, string $mapContext, ?string $mapImage, array $issuesTableHeader, array $issuesTableContent, array $images)
+    public function addMap(LayoutFactoryInterface $report, BuildingBlocksInterface $buildingBlocks, MapContent $mapContent)
     {
         $groupLayout = $report->createGroupLayout();
-        $groupLayout->printTitle($mapName);
-        $groupLayout->printParagraph($mapContext);
+        $buildingBlocks->setLayout($groupLayout);
 
+        $buildingBlocks->printTitle($mapContent->getMapName());
+        $buildingBlocks->printParagraph($mapContent->getMapContext());
+
+        $mapImage = $mapContent->getMapImage();
         if ($mapImage !== null) {
-            $groupLayout->printImage($mapImage);
+            $buildingBlocks->printImage($mapImage);
         }
         $groupLayout->endLayout();
 
@@ -134,33 +134,23 @@ class IssueReportService implements IssueReportServiceInterface
 
         // prepare table column config
         $tableColumnConfig = [new TableColumn(TableColumn::SIZING_BY_HEADER)];
-        $columns = \count($issuesTableHeader);
+        $columns = \count($mapContent->getIssuesTableHeader());
         for ($i = 1; $i < $columns; ++$i) {
             $tableColumnConfig[] = new TableColumn(TableColumn::SIZING_EXPAND);
         }
 
         // print issue table
         $tableLayout = $report->createTableLayout($tableConfig, $tableColumnConfig);
-        $tableLayout->printHeader($issuesTableHeader);
-        $tableLayout->printRow($issuesTableContent);
+        $tableLayout->printHeader($mapContent->getIssuesTableHeader());
+        $tableLayout->printRow($mapContent->getIssuesTableContent());
         $tableLayout->endLayout();
 
-        if (\count($images) > 0) {
+        if (\count($mapContent->getIssueImages()) > 0) {
             $columnLayout = $report->createColumnLayout(4);
             $columnLayout->setAutoColumn(true);
 
-            foreach ($images as $image) {
-                $imagePath = $image['imagePath'];
-                $number = $image['number'];
-
-                $columnLayout->printCustom(function ($printer, float $defaultWidth) use ($imagePath, $number) {
-                    if ($printer instanceof PdfBuildingBlocks) {
-                        /* @var PdfBuildingBlocks $printer */
-                        $printer->printIssueImage($imagePath, $number, $defaultWidth);
-                    } else {
-                        throw new \Exception('unsupported printer');
-                    }
-                });
+            foreach ($mapContent->getIssueImages() as $image) {
+                $buildingBlocks->printIssueImage($image->getImagePath(), $image->getNumber());
             }
         }
     }

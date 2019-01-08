@@ -11,7 +11,7 @@
 
 namespace App\Service\Report\IssueReport\Interfaces;
 
-use App\Service\Report\Pdf\Interfaces\PrintableLayoutInterface;
+use App\Service\Report\Document\Interfaces\Layout\Base\PrintableLayoutInterface;
 
 interface BuildingBlocksInterface
 {
@@ -51,4 +51,10 @@ interface BuildingBlocksInterface
      * @param PrintableLayoutInterface $layout
      */
     public function setLayout(PrintableLayoutInterface $layout);
+
+    /**
+     * @param string $imagePath
+     * @param int $number
+     */
+    public function printIssueImage(string $imagePath, int $number);
 }

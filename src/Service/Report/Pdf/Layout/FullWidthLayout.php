@@ -13,9 +13,8 @@ namespace App\Service\Report\Pdf\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Interfaces\PrintableLayoutInterface;
 
-class FullWidthLayout implements FullWidthLayoutInterface, PrintableLayoutInterface
+class FullWidthLayout implements FullWidthLayoutInterface
 {
     /**
      * @var float

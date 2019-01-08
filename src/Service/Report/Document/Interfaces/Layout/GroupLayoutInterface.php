@@ -12,7 +12,7 @@
 namespace App\Service\Report\Document\Interfaces\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\Base\LayoutInterface;
-use App\Service\Report\Pdf\Interfaces\PrintableLayoutInterface;
+use App\Service\Report\Document\Interfaces\Layout\Base\PrintableLayoutInterface;
 
 interface GroupLayoutInterface extends LayoutInterface, PrintableLayoutInterface
 {

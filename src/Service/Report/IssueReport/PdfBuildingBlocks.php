@@ -12,12 +12,12 @@
 namespace App\Service\Report\IssueReport;
 
 use App\Helper\ImageHelper;
+use App\Service\Report\Document\Interfaces\Layout\Base\PrintableLayoutInterface;
 use App\Service\Report\IssueReport\Interfaces\BuildingBlocksInterface;
 use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Design\TypographyService;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Interfaces\PrintableLayoutInterface;
 
 class PdfBuildingBlocks implements BuildingBlocksInterface
 {

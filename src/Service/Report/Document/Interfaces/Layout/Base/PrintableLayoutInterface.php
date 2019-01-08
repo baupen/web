@@ -9,9 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Interfaces;
-
-use App\Service\Report\Document\Interfaces\Layout\Base\LayoutInterface;
+namespace App\Service\Report\Document\Interfaces\Layout\Base;
 
 interface PrintableLayoutInterface extends LayoutInterface
 {

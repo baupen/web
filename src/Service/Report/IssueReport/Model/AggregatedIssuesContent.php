@@ -26,7 +26,7 @@ class AggregatedIssuesContent
     /**
      * @var string[][]
      */
-    private $identifierContent;
+    private $identifierContent = [];
 
     /**
      * @var string[]
@@ -79,11 +79,11 @@ class AggregatedIssuesContent
     }
 
     /**
-     * @param \string[][] $identifierContent
+     * @param \string[] $identifierContent
      */
-    public function setIdentifierContent(array $identifierContent): void
+    public function addIdentifierContent(array $identifierContent): void
     {
-        $this->identifierContent = $identifierContent;
+        $this->identifierContent[] = $identifierContent;
     }
 
     /**

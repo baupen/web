@@ -14,6 +14,7 @@ namespace App\Service\Report\IssueReport\Interfaces;
 use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
 use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
 use App\Service\Report\IssueReport\Model\IntroductionContent;
+use App\Service\Report\IssueReport\Model\MapContent;
 
 interface IssueReportServiceInterface
 {
@@ -33,12 +34,8 @@ interface IssueReportServiceInterface
 
     /**
      * @param LayoutFactoryInterface $report
-     * @param string $mapName
-     * @param string $mapContext
-     * @param string|null $mapImage
-     * @param string[] $issuesTableHeader
-     * @param string[][] $issuesTableContent
-     * @param string[] $images
+     * @param BuildingBlocksInterface $buildingBlocks
+     * @param MapContent $mapContent
      */
-    public function addMap(LayoutFactoryInterface $report, string $mapName, string $mapContext, ?string $mapImage, array $issuesTableHeader, array $issuesTableContent, array $images);
+    public function addMap(LayoutFactoryInterface $report, BuildingBlocksInterface $buildingBlocks, MapContent $mapContent);
 }

@@ -21,13 +21,17 @@ use App\Helper\IssueHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
-use App\Service\Report\IssueReport\IssueReportService;
+use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
 use App\Service\Report\IssueReport\Model\IntroductionContent;
+use App\Service\Report\IssueReport\Model\IssueImage;
+use App\Service\Report\IssueReport\Model\MapContent;
+use App\Service\Report\IssueReport\PdfBuildingBlocks;
+use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
+use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Pdf\Interfaces\PdfFactoryInterface;
 use App\Service\Report\Pdf\LayoutFactory;
-use App\Service\Report\Report;
 use App\Service\Report\ReportConfiguration;
 use App\Service\Report\ReportElements;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -44,6 +48,16 @@ class CleanReportService
      * @var LayoutServiceInterface
      */
     private $layoutService;
+
+    /**
+     * @var TypographyServiceInterface
+     */
+    private $typographyService;
+
+    /**
+     * @var ColorServiceInterface
+     */
+    private $colorService;
 
     /**
      * @var ImageServiceInterface
@@ -74,12 +88,16 @@ class CleanReportService
      * ReportService constructor.
      *
      * @param ImageServiceInterface $imageService
+     * @param LayoutServiceInterface $layoutService
      * @param RegistryInterface $registry
      * @param TranslatorInterface $translator
      * @param PathServiceInterface $pathService
      * @param PdfFactoryInterface $pdfFactory
+     * @param IssueReportServiceInterface $issueReportService
+     * @param TypographyServiceInterface $typographyService
+     * @param ColorServiceInterface $colorService
      */
-    public function __construct(ImageServiceInterface $imageService, LayoutServiceInterface $layoutService, RegistryInterface $registry, TranslatorInterface $translator, PathServiceInterface $pathService, PdfFactoryInterface $pdfFactory, IssueReportServiceInterface $issueReportService)
+    public function __construct(ImageServiceInterface $imageService, LayoutServiceInterface $layoutService, RegistryInterface $registry, TranslatorInterface $translator, PathServiceInterface $pathService, PdfFactoryInterface $pdfFactory, IssueReportServiceInterface $issueReportService, TypographyServiceInterface $typographyService, ColorServiceInterface $colorService)
     {
         $this->imageService = $imageService;
         $this->layoutService = $layoutService;
@@ -88,6 +106,8 @@ class CleanReportService
         $this->pathService = $pathService;
         $this->pdfFactory = $pdfFactory;
         $this->issueReportService = $issueReportService;
+        $this->typographyService = $typographyService;
+        $this->colorService = $colorService;
     }
 
     /**
@@ -105,22 +125,28 @@ class CleanReportService
         $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
         $reportConfiguration = new ReportConfiguration($filter);
 
-        // initialize report
+        // initialize pdf report
         $document = $this->createPdfDocument($constructionSite->getName(), $author);
         $layoutFactory = new LayoutFactory($document, $this->layoutService);
+        $buildingBlocks = new PdfBuildingBlocks($this->typographyService, $this->colorService);
 
+        // add introduction
         $introductionContent = $this->getIntroductionContent($constructionSite, $filter, $reportElements);
-        $this->issueReportService->addIntroduction($layoutFactory, )
+        $this->issueReportService->addIntroduction($layoutFactory, $buildingBlocks, $introductionContent);
 
         //add tables
+        $aggregatedIssues = [];
         if ($reportElements->getTableByCraftsman()) {
-            $this->addTableByCraftsman($document, $issues, $reportConfiguration);
+            $aggregatedIssues[] = $this->aggregateIssuesByCraftsman($issues, $reportConfiguration);
         }
         if ($reportElements->getTableByMap()) {
-            $this->addTableByMap($document, $issues, $reportConfiguration);
+            $aggregatedIssues[] = $this->aggregatedIssuesByMap($issues, $reportConfiguration);
         }
         if ($reportElements->getTableByTrade()) {
-            $this->addTableByTrade($document, $issues, $reportConfiguration);
+            $aggregatedIssues[] = $this->aggregatedIssuesByTrade($issues, $reportConfiguration);
+        }
+        foreach ($aggregatedIssues as $aggregatedIssue) {
+            $this->issueReportService->addAggregatedIssueTable($layoutFactory, $buildingBlocks, $aggregatedIssue);
         }
 
         /* @var Map[] $orderedMaps */
@@ -129,7 +155,8 @@ class CleanReportService
         foreach ($orderedMaps as $map) {
             $issues = $issuesPerMap[$map->getId()];
 
-            $this->addMap($document, $map, $issues, $reportElements, $reportConfiguration);
+            $mapContent = $this->getMapContent($map, $issues, $reportElements, $reportConfiguration);
+            $this->issueReportService->addMap($layoutFactory, $buildingBlocks, $mapContent);
         }
 
         $filePath = $this->getFilePath($constructionSite);
@@ -153,6 +180,7 @@ class CleanReportService
         $pdfDocument = $this->pdfFactory->create($title, $footer, $logoPath);
 
         $pdfDocument->setMeta($title, $author);
+
         return $pdfDocument;
     }
 
@@ -160,6 +188,7 @@ class CleanReportService
      * @param ConstructionSite $constructionSite
      * @param Filter $filter
      * @param ReportElements $reportElements
+     *
      * @return IntroductionContent
      */
     private function getIntroductionContent(ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
@@ -175,104 +204,90 @@ class CleanReportService
     }
 
     /**
-     * @param DocumentInterface $document
      * @param Issue[] $issues
      * @param ReportConfiguration $reportConfiguration
+     *
+     * @return AggregatedIssuesContent
      */
-    private function addTableByCraftsman(DocumentInterface $document, array $issues, ReportConfiguration $reportConfiguration)
+    private function aggregateIssuesByCraftsman(array $issues, ReportConfiguration $reportConfiguration)
     {
-        $tableDescription = $this->translator->trans('table.by_craftsman', [], 'report');
+        $aggregatedIssues = new AggregatedIssuesContent();
+        $aggregatedIssues->setTableDescription($this->translator->trans('table.by_craftsman', [], 'report'));
 
         /* @var Craftsman[] $orderedCraftsman */
         /* @var Issue[][] $issuesPerCraftsman */
         IssueHelper::issuesToOrderedCraftsman($issues, $orderedCraftsman, $issuesPerCraftsman);
 
         //prepare header & content with specific content
-        $tableHeader = [$this->translator->trans('entity.name', [], 'entity_craftsman')];
+        $aggregatedIssues->setIdentifierHeader([$this->translator->trans('entity.name', [], 'entity_craftsman')]);
 
-        //add map name & map context to table
-        $tableContent = [];
+        //add name table
         foreach ($orderedCraftsman as $craftsmanId => $craftsman) {
-            $tableContent[$craftsmanId] = [$craftsman->getName()];
+            $aggregatedIssues->addIdentifierContent([$craftsman->getName()]);
         }
 
-        $this->addAggregatedIssuesTable($document, $reportConfiguration, $orderedCraftsman, $issuesPerCraftsman, $tableDescription, $tableHeader, $tableContent);
+        $aggregatedIssues->setIssuesHeader($this->getAggregatedIssuesTableHeader($reportConfiguration));
+        $aggregatedIssues->setIssuesContent($this->getAggregatedIssuesTableContent($orderedCraftsman, $issuesPerCraftsman, $reportConfiguration));
+
+        return $aggregatedIssues;
     }
 
     /**
-     * @param DocumentInterface $document
      * @param Issue[] $issues
      * @param ReportConfiguration $reportConfiguration
+     *
+     * @return AggregatedIssuesContent
      */
-    private function addTableByMap(DocumentInterface $document, array $issues, ReportConfiguration $reportConfiguration)
+    private function aggregatedIssuesByMap(array $issues, ReportConfiguration $reportConfiguration)
     {
-        $tableDescription = $this->translator->trans('table.by_map', [], 'report');
+        $aggregatedIssues = new AggregatedIssuesContent();
+        $aggregatedIssues->setTableDescription($this->translator->trans('table.by_map', [], 'report'));
 
         /* @var Map[] $orderedMaps */
         /* @var Issue[][] $issuesPerMap */
         IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
 
         //prepare header & content with specific content
-        $tableHeader = [$this->translator->trans('context', [], 'entity_map'), $this->translator->trans('entity.name', [], 'entity_map')];
+        $aggregatedIssues->setIdentifierHeader([$this->translator->trans('context', [], 'entity_map'), $this->translator->trans('entity.name', [], 'entity_map')]);
 
-        //add map name & map context to table
-        $tableContent = [];
+        //add name table
         foreach ($orderedMaps as $mapId => $map) {
-            $tableContent[$mapId] = [$map->getContext(), $map->getName()];
+            $aggregatedIssues->addIdentifierContent([$map->getContext(), $map->getName()]);
         }
 
-        $this->addAggregatedIssuesTable($document, $reportConfiguration, $orderedMaps, $issuesPerMap, $tableDescription, $tableHeader, $tableContent);
+        $aggregatedIssues->setIssuesHeader($this->getAggregatedIssuesTableHeader($reportConfiguration));
+        $aggregatedIssues->setIssuesContent($this->getAggregatedIssuesTableContent($orderedMaps, $issuesPerMap, $reportConfiguration));
+
+        return $aggregatedIssues;
     }
 
     /**
-     * @param DocumentInterface $document
      * @param Issue[] $issues
      * @param ReportConfiguration $reportConfiguration
+     *
+     * @return AggregatedIssuesContent
      */
-    private function addTableByTrade(DocumentInterface $document, array $issues, ReportConfiguration $reportConfiguration)
+    private function aggregatedIssuesByTrade(array $issues, ReportConfiguration $reportConfiguration)
     {
-        $tableDescription = $this->translator->trans('table.by_trade', [], 'report');
+        $aggregatedIssues = new AggregatedIssuesContent();
+        $aggregatedIssues->setTableDescription($this->translator->trans('table.by_trade', [], 'report'));
 
         /* @var string[] $orderedTrade */
         /* @var Issue[][] $issuesPerTrade */
         IssueHelper::issuesToOrderedTrade($issues, $orderedTrade, $issuesPerTrade);
 
         //prepare header & content with specific content
-        $tableHeader = [$this->translator->trans('trade', [], 'entity_craftsman')];
+        $aggregatedIssues->setIdentifierHeader([$this->translator->trans('trade', [], 'entity_craftsman')]);
 
-        //add map name & map context to table
-        $tableContent = [];
+        //add name table
         foreach ($orderedTrade as $trade) {
-            $tableContent[$trade] = [$trade];
+            $aggregatedIssues->addIdentifierContent([$trade]);
         }
 
-        $this->addAggregatedIssuesTable($document, $reportConfiguration, $orderedTrade, $issuesPerTrade, $tableDescription, $tableHeader, $tableContent);
-    }
+        $aggregatedIssues->setIssuesHeader($this->getAggregatedIssuesTableHeader($reportConfiguration));
+        $aggregatedIssues->setIssuesContent($this->getAggregatedIssuesTableContent($orderedTrade, $issuesPerTrade, $reportConfiguration));
 
-    /**
-     * @param DocumentInterface $document
-     * @param ReportConfiguration $reportConfiguration
-     * @param array $elements
-     * @param array $issuesPerElement
-     * @param string $tableDescription
-     * @param array $tableHeader
-     * @param array $tableContent
-     */
-    private function addAggregatedIssuesTable(DocumentInterface $document, ReportConfiguration $reportConfiguration, array $elements, array $issuesPerElement, string $tableDescription, array $tableHeader, array $tableContent): void
-    {
-        //add accumulated info
-        $issuesHeader = $this->getAggregatedIssuesTableHeader($reportConfiguration);
-        $issuesContent = $this->getAggregatedIssuesTableContent($elements, $issuesPerElement, $reportConfiguration);
-
-        //write to pdf
-        $this->issueReport->addAggregatedIssueTable(
-            $document,
-            $tableDescription,
-            $tableHeader,
-            $tableContent,
-            $issuesHeader,
-            $issuesContent
-        );
+        return $aggregatedIssues;
     }
 
     /**
@@ -314,38 +329,38 @@ class CleanReportService
         $tableContent = [];
 
         //count issue status per map
-        $countsPerElement = [];
+        $countPerElements = [];
         foreach ($elements as $index => $element) {
-            $countPerMap = [0, 0, 0];
+            $countPerElement = [0, 0, 0];
             foreach ($issuesPerElement[$index] as $issue) {
                 if ($issue->getStatusCode() >= Issue::REVIEW_STATUS) {
-                    ++$countPerMap[2];
+                    ++$countPerElement[2];
                 } elseif ($issue->getStatusCode() >= Issue::RESPONSE_STATUS) {
-                    ++$countPerMap[1];
+                    ++$countPerElement[1];
                 } else {
-                    ++$countPerMap[0];
+                    ++$countPerElement[0];
                 }
             }
-            $countsPerElement[$index] = $countPerMap;
+            $countPerElements[$index] = $countPerElement;
         }
 
         //add registration count if filter did not exclude
         if ($configuration->showRegistrationStatus()) {
-            foreach ($countsPerElement as $elementId => $count) {
+            foreach ($countPerElements as $elementId => $count) {
                 $tableContent[$elementId][] = $count[0];
             }
         }
 
         //add response count if filter did not exclude
         if ($configuration->showRespondedStatus()) {
-            foreach ($countsPerElement as $elementId => $count) {
+            foreach ($countPerElements as $elementId => $count) {
                 $tableContent[$elementId][] = $count[1];
             }
         }
 
         //add review count if filter did not exclude
         if ($configuration->showReviewedStatus()) {
-            foreach ($countsPerElement as $elementId => $count) {
+            foreach ($countPerElements as $elementId => $count) {
                 $tableContent[$elementId][] = $count[2];
             }
         }
@@ -354,38 +369,33 @@ class CleanReportService
     }
 
     /**
-     * @param DocumentInterface $report
      * @param Map $map
      * @param Issue[] $issues
      * @param ReportElements $elements
      * @param ReportConfiguration $reportConfiguration
+     *
+     * @return MapContent
      */
-    private function addMap(DocumentInterface $report, Map $map, array $issues, ReportElements $elements, ReportConfiguration $reportConfiguration)
+    private function getMapContent(Map $map, array $issues, ReportElements $elements, ReportConfiguration $reportConfiguration)
     {
-        $mapName = $map->getName();
-        $mapContext = $map->getContext();
-        $mapImage = $this->imageService->generateMapImageForReport($map, $issues, ImageServiceInterface::SIZE_REPORT_MAP);
+        $mapContent = new MapContent();
 
-        $issuesTableHeader = $this->getIssuesTableHeader($reportConfiguration);
-        $issuesTableContent = $this->getIssuesTableContent($issues, $reportConfiguration);
+        $mapContent->setMapName($map->getName());
+        $mapContent->setMapContext($map->getContext());
+        $mapContent->setMapImage($this->imageService->generateMapImageForReport($map, $issues, ImageServiceInterface::SIZE_REPORT_MAP));
 
-        $images = $elements->getWithImages() ? $this->getIssueImages($issues) : [];
+        $mapContent->setIssuesTableHeader($this->getIssuesTableHeader($reportConfiguration));
+        $mapContent->setIssuesTableContent($this->getIssuesTableContent($issues, $reportConfiguration));
 
-        $this->issueReport->addMap(
-            $report,
-            $mapName,
-            $mapContext,
-            $mapImage,
-            $issuesTableHeader,
-            $issuesTableContent,
-            $images
-        );
+        $mapContent->setMapImage($elements->getWithImages() ? $this->getIssueImages($issues) : []);
+
+        return $mapContent;
     }
 
     /**
      * @param Issue[] $issues
      *
-     * @return string[][]
+     * @return IssueImage[]
      */
     private function getIssueImages(array $issues)
     {
@@ -398,8 +408,9 @@ class CleanReportService
                 continue;
             }
 
-            $currentIssue['imagePath'] = $imagePath;
-            $currentIssue['number'] = $issue->getNumber();
+            $issueImage = new IssueImage();
+            $issueImage->setImagePath($imagePath);
+            $issueImage->setNumber($issue->getNumber());
             $issueImages[] = $currentIssue;
         }
 
@@ -407,7 +418,6 @@ class CleanReportService
     }
 
     /**
-     * @param Report $report
      * @param Issue[] $issues
      * @param ReportConfiguration $reportConfiguration
      *
