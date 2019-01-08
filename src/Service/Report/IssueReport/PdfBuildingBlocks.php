@@ -16,8 +16,8 @@ use App\Service\Report\IssueReport\Interfaces\BuildingBlocksInterface;
 use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Design\TypographyService;
-use App\Service\Report\Pdf\Interfaces\CustomPrinterLayoutInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Pdf\Interfaces\PrintableLayoutInterface;
 
 class PdfBuildingBlocks implements BuildingBlocksInterface
 {
@@ -32,20 +32,27 @@ class PdfBuildingBlocks implements BuildingBlocksInterface
     private $color;
 
     /**
-     * @var CustomPrinterLayoutInterface
+     * @var PrintableLayoutInterface
      */
-    private $pdfPrinter;
+    private $layout;
 
     /**
-     * @param CustomPrinterLayoutInterface $customPrinterLayout
+     * @param PrintableLayoutInterface $customPrinterLayout
      * @param TypographyServiceInterface $typographyService
      * @param ColorServiceInterface $colorService
      */
-    public function __construct(CustomPrinterLayoutInterface $customPrinterLayout, TypographyServiceInterface $typographyService, ColorServiceInterface $colorService)
+    public function __construct(TypographyServiceInterface $typographyService, ColorServiceInterface $colorService)
     {
-        $this->pdfPrinter = $customPrinterLayout;
         $this->typography = $typographyService;
         $this->color = $colorService;
+    }
+
+    /**
+     * @param PrintableLayoutInterface $layout
+     */
+    public function setLayout(PrintableLayoutInterface $layout)
+    {
+        $this->layout = $layout;
     }
 
     /**
@@ -77,7 +84,7 @@ class PdfBuildingBlocks implements BuildingBlocksInterface
      */
     public function printImage(string $filePath)
     {
-        $this->pdfPrinter->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($filePath) {
+        $this->layout->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($filePath) {
             list($width, $height) = ImageHelper::getWidthHeightArguments($filePath, $defaultWidth);
             $document->printImage($filePath, $width, $height);
         });
@@ -100,7 +107,7 @@ class PdfBuildingBlocks implements BuildingBlocksInterface
      */
     public function printIssueImage(string $imagePath, int $number)
     {
-        $this->pdfPrinter->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($imagePath, $number) {
+        $this->layout->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($imagePath, $number) {
             list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $defaultWidth);
             $document->printImage($imagePath, $width, $height);
             $afterImageCursor = $document->getCursor();
@@ -123,7 +130,7 @@ class PdfBuildingBlocks implements BuildingBlocksInterface
      */
     private function printText(string $text, float $fontSize)
     {
-        $this->pdfPrinter->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($text, $fontSize) {
+        $this->layout->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($text, $fontSize) {
             $document->configurePrint(['fontSize' => $fontSize]);
             $document->printText($text, $defaultWidth);
         });
@@ -135,7 +142,7 @@ class PdfBuildingBlocks implements BuildingBlocksInterface
      */
     private function printBoldText(string $text, float $fontSize)
     {
-        $this->pdfPrinter->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($text, $fontSize) {
+        $this->layout->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($text, $fontSize) {
             $document->configurePrint(['fontSize' => $fontSize, 'bold' => true]);
             $document->printText($text, $defaultWidth);
         });
@@ -148,7 +155,7 @@ class PdfBuildingBlocks implements BuildingBlocksInterface
      */
     public function printCustom(\Closure $param)
     {
-        $this->pdfPrinter->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($param) {
+        $this->layout->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($param) {
             $param($document, $defaultWidth);
         });
     }

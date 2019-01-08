@@ -12,28 +12,24 @@
 namespace App\Service\Report\IssueReport\Interfaces;
 
 use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
+use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
+use App\Service\Report\IssueReport\Model\IntroductionContent;
 
 interface IssueReportServiceInterface
 {
     /**
      * @param LayoutFactoryInterface $layoutFactory
-     * @param string $constructionSiteName
-     * @param string|null $constructionSiteImage
-     * @param string $constructionSiteAddressLines
-     * @param string $reportElements
-     * @param array $filterEntries
+     * @param BuildingBlocksInterface $buildingBlocks
+     * @param IntroductionContent $introductionContent
      */
-    public function addIntroduction(LayoutFactoryInterface $layoutFactory, string $constructionSiteName, ?string $constructionSiteImage, string $constructionSiteAddressLines, string $reportElements, array $filterEntries);
+    public function addIntroduction(LayoutFactoryInterface $layoutFactory, BuildingBlocksInterface $buildingBlocks, IntroductionContent $introductionContent);
 
     /**
-     * @param LayoutFactoryInterface $document
-     * @param string $tableDescription
-     * @param string[] $identifierHeader
-     * @param string[] $identifierContent
-     * @param string[] $issuesHeader
-     * @param string[] $issuesContent
+     * @param LayoutFactoryInterface $layoutFactory
+     * @param BuildingBlocksInterface $buildingBlocks
+     * @param AggregatedIssuesContent $aggregatedIssuesContent
      */
-    public function addAggregatedIssueTable(LayoutFactoryInterface $document, string $tableDescription, array $identifierHeader, array $identifierContent, array $issuesHeader, array $issuesContent);
+    public function addAggregatedIssueTable(LayoutFactoryInterface $layoutFactory, BuildingBlocksInterface $buildingBlocks, AggregatedIssuesContent $aggregatedIssuesContent);
 
     /**
      * @param LayoutFactoryInterface $report

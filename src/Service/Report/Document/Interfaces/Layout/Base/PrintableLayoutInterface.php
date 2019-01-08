@@ -11,14 +11,16 @@
 
 namespace App\Service\Report\Pdf\Interfaces;
 
-interface CustomPrinterLayoutInterface
+use App\Service\Report\Document\Interfaces\Layout\Base\LayoutInterface;
+
+interface PrintableLayoutInterface extends LayoutInterface
 {
     /**
-     * register a callable which prints to the pdf document
+     * register a callable which prints to the document
      * The position of the cursor at the time the callable is invoked is decided by the layout
      * ensure the cursor is below the printed content after the callable is finished to not mess up the layout.
      *
-     * @param callable $callable takes a PdfDocumentInterface as an argument
+     * @param callable $callable the arguments are decided by the layout implementation. At least the documents to print to should be included.
      */
     public function registerPrintable(callable $callable);
 }

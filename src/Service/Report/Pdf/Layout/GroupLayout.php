@@ -12,10 +12,10 @@
 namespace App\Service\Report\Pdf\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
-use App\Service\Report\Pdf\Interfaces\CustomPrinterLayoutInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Pdf\Interfaces\PrintableLayoutInterface;
 
-class GroupLayout implements GroupLayoutInterface, CustomPrinterLayoutInterface
+class GroupLayout implements GroupLayoutInterface, PrintableLayoutInterface
 {
     /**
      * @var PdfDocumentInterface

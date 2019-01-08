@@ -12,8 +12,9 @@
 namespace App\Service\Report\Document\Interfaces\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\Base\LayoutInterface;
+use App\Service\Report\Pdf\Interfaces\PrintableLayoutInterface;
 
-interface ColumnLayoutInterface extends LayoutInterface
+interface ColumnLayoutInterface extends LayoutInterface, PrintableLayoutInterface
 {
     /**
      * ensures the next printed elements are printed in the specified column

@@ -18,9 +18,7 @@ use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
 use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
-use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
-use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Pdf\Layout\ColumnLayout;
 use App\Service\Report\Pdf\Layout\FullWidthLayout;
@@ -40,23 +38,15 @@ class LayoutFactory implements LayoutFactoryInterface
     private $layoutService;
 
     /**
-     * @var TypographyServiceInterface
-     */
-    private $typographyService;
-
-    /**
      * Document constructor.
      *
      * @param PdfDocumentInterface $pdfDocument
      * @param LayoutServiceInterface $layoutService
-     * @param TypographyServiceInterface $typographyService
-     * @param ColorServiceInterface $colorService
      */
-    public function __construct(PdfDocumentInterface $pdfDocument, LayoutServiceInterface $layoutService, TypographyServiceInterface $typographyService, ColorServiceInterface $colorService)
+    public function __construct(PdfDocumentInterface $pdfDocument, LayoutServiceInterface $layoutService)
     {
         $this->document = $pdfDocument;
         $this->layoutService = $layoutService;
-        $this->typographyService = $typographyService;
     }
 
     /**

@@ -20,8 +20,13 @@ use App\Helper\DateTimeFormatter;
 use App\Helper\IssueHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
+use App\Service\Report\IssueReport\IssueReportService;
+use App\Service\Report\IssueReport\Model\IntroductionContent;
+use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Pdf\Interfaces\PdfFactoryInterface;
+use App\Service\Report\Pdf\LayoutFactory;
 use App\Service\Report\Report;
 use App\Service\Report\ReportConfiguration;
 use App\Service\Report\ReportElements;
@@ -34,6 +39,11 @@ class CleanReportService
      * @var PathServiceInterface
      */
     private $pathService;
+
+    /**
+     * @var LayoutServiceInterface
+     */
+    private $layoutService;
 
     /**
      * @var ImageServiceInterface
@@ -51,20 +61,33 @@ class CleanReportService
     private $translator;
 
     /**
+     * @var PdfFactoryInterface
+     */
+    private $pdfFactory;
+
+    /**
+     * @var IssueReportServiceInterface
+     */
+    private $issueReportService;
+
+    /**
      * ReportService constructor.
      *
      * @param ImageServiceInterface $imageService
      * @param RegistryInterface $registry
      * @param TranslatorInterface $translator
      * @param PathServiceInterface $pathService
-     * @param PdfFactoryInterface $documentService
+     * @param PdfFactoryInterface $pdfFactory
      */
-    public function __construct(ImageServiceInterface $imageService, RegistryInterface $registry, TranslatorInterface $translator, PathServiceInterface $pathService)
+    public function __construct(ImageServiceInterface $imageService, LayoutServiceInterface $layoutService, RegistryInterface $registry, TranslatorInterface $translator, PathServiceInterface $pathService, PdfFactoryInterface $pdfFactory, IssueReportServiceInterface $issueReportService)
     {
         $this->imageService = $imageService;
+        $this->layoutService = $layoutService;
         $this->doctrine = $registry;
         $this->translator = $translator;
         $this->pathService = $pathService;
+        $this->pdfFactory = $pdfFactory;
+        $this->issueReportService = $issueReportService;
     }
 
     /**
@@ -83,10 +106,11 @@ class CleanReportService
         $reportConfiguration = new ReportConfiguration($filter);
 
         // initialize report
-        $logoPath = $this->pathService->getAssetsRoot() . \DIRECTORY_SEPARATOR . 'report' . \DIRECTORY_SEPARATOR . 'logo.png';
-        $document = $this->documentService->create($constructionSite->getName(), $author, $logoPath);
+        $document = $this->createPdfDocument($constructionSite->getName(), $author);
+        $layoutFactory = new LayoutFactory($document, $this->layoutService);
 
-        $this->addIntroduction($document, $constructionSite, $filter, $reportElements);
+        $introductionContent = $this->getIntroductionContent($constructionSite, $filter, $reportElements);
+        $this->issueReportService->addIntroduction($layoutFactory, )
 
         //add tables
         if ($reportElements->getTableByCraftsman()) {
@@ -125,36 +149,29 @@ class CleanReportService
     private function createPdfDocument(string $title, string $author)
     {
         $footer = $this->translator->trans('generated', ['%date%' => (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT), '%name%' => $author], 'report');
-        $logoPath = $this->pathService->getAssetsRoot() . 'report' . \DIRECTORY_SEPARATOR . 'logo.png';
-        $pdfDocument = $this->pdfDocumentService->create($title, $footer, $logoPath);
+        $logoPath = $this->pathService->getAssetsRoot() . \DIRECTORY_SEPARATOR . 'report' . \DIRECTORY_SEPARATOR . 'logo.png';
+        $pdfDocument = $this->pdfFactory->create($title, $footer, $logoPath);
 
         $pdfDocument->setMeta($title, $author);
-
         return $pdfDocument;
     }
 
     /**
-     * @param DocumentInterface $document
      * @param ConstructionSite $constructionSite
      * @param Filter $filter
      * @param ReportElements $reportElements
+     * @return IntroductionContent
      */
-    private function addIntroduction(DocumentInterface $document, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
+    private function getIntroductionContent(ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
     {
-        $filterEntries = $this->getFilterEntries($filter);
-        $reportElements = $this->getReportElements($reportElements);
-        $constructionSiteImage = $this->imageService->getSizeForConstructionSite($constructionSite, ImageServiceInterface::SIZE_REPORT_ISSUE);
-        $constructionSiteAddressLines = implode("\n", $constructionSite->getAddressLines());
+        $introductionContent = new IntroductionContent();
+        $introductionContent->setConstructionSiteName($constructionSite->getName());
+        $introductionContent->setConstructionSiteImage($this->imageService->getSizeForConstructionSite($constructionSite, ImageServiceInterface::SIZE_REPORT_ISSUE));
+        $introductionContent->setConstructionSiteAddressLines($constructionSite->getAddressLines());
+        $introductionContent->setFilterEntries($this->getFilterEntries($filter));
+        $introductionContent->setReportElements($this->getReportElements($reportElements));
 
-        //print
-        $this->issueReport->addIntroduction(
-            $document,
-            $constructionSite->getName(),
-            $constructionSiteImage,
-            $constructionSiteAddressLines,
-            $reportElements,
-            $filterEntries
-        );
+        return $introductionContent;
     }
 
     /**
@@ -617,9 +634,9 @@ class CleanReportService
     /**
      * @param ReportElements $reportElements
      *
-     * @return string
+     * @return string[]
      */
-    private function getReportElements(ReportElements $reportElements): string
+    private function getReportElements(ReportElements $reportElements): array
     {
         if ($reportElements->getTableByCraftsman()) {
             $elements[] = $this->translator->trans('table.by_craftsman', [], 'report');
@@ -637,6 +654,6 @@ class CleanReportService
         }
         $elements[] = $issueDetailsLabel;
 
-        return implode(', ', $elements);
+        return $elements;
     }
 }

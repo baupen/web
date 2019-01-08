@@ -13,10 +13,10 @@ namespace App\Service\Report\Pdf\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\ColumnLayoutInterface;
 use App\Service\Report\Pdf\Cursor;
-use App\Service\Report\Pdf\Interfaces\CustomPrinterLayoutInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Pdf\Interfaces\PrintableLayoutInterface;
 
-class ColumnLayout implements ColumnLayoutInterface, CustomPrinterLayoutInterface
+class ColumnLayout implements ColumnLayoutInterface, PrintableLayoutInterface
 {
     /**
      * @var PdfDocumentInterface

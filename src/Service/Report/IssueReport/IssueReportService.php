@@ -14,10 +14,10 @@ namespace App\Service\Report\IssueReport;
 use App\Service\Report\Document\Interfaces\Configuration\Table;
 use App\Service\Report\Document\Interfaces\Configuration\TableColumn;
 use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
+use App\Service\Report\IssueReport\Interfaces\BuildingBlocksInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
-use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
-use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
-use App\Service\Report\Pdf\PdfBuildingBlocks;
+use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
+use App\Service\Report\IssueReport\Model\IntroductionContent;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class IssueReportService implements IssueReportServiceInterface
@@ -27,16 +27,6 @@ class IssueReportService implements IssueReportServiceInterface
      */
     private $translator;
 
-    /**
-     * @var TypographyServiceInterface
-     */
-    private $typographyService;
-
-    /**
-     * @var ColorServiceInterface
-     */
-    private $colorService;
-
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
@@ -44,62 +34,59 @@ class IssueReportService implements IssueReportServiceInterface
 
     /**
      * @param LayoutFactoryInterface $layoutFactory
-     * @param string $constructionSiteName
-     * @param string|null $constructionSiteImage
-     * @param string $constructionSiteAddressLines
-     * @param string $reportElements
-     * @param array $filterEntries
+     * @param BuildingBlocksInterface $buildingBlocks
+     * @param IntroductionContent $introductionContent
      */
-    public function addIntroduction(LayoutFactoryInterface $layoutFactory, string $constructionSiteName, ?string $constructionSiteImage, string $constructionSiteAddressLines, string $reportElements, array $filterEntries)
+    public function addIntroduction(LayoutFactoryInterface $layoutFactory, BuildingBlocksInterface $buildingBlocks, IntroductionContent $introductionContent)
     {
         //three or two column layout
         $columnedLayout = $layoutFactory->createColumnLayout(3);
+        $buildingBlocks->setLayout($columnedLayout);
 
         //image
-        if ($constructionSiteImage !== null) {
-            $buildingBlocks->printImage($constructionSiteImage);
+        if ($introductionContent->getConstructionSiteImage() !== null) {
+            $buildingBlocks->printImage($introductionContent->getConstructionSiteImage());
         }
 
         $columnedLayout->goToColumn(1);
 
-        $buildingBlocks->printTitle($constructionSiteName);
-        $buildingBlocks->printParagraph($constructionSiteAddressLines);
+        $buildingBlocks->printTitle($introductionContent->getConstructionSiteName());
+        $buildingBlocks->printParagraph(implode(', ', $introductionContent->getConstructionSiteAddressLines()));
 
         $reportElementsTitle = $this->translator->trans('introduction.elements', [], 'report');
         $buildingBlocks->printTitle($reportElementsTitle);
-        $buildingBlocks->printParagraph($reportElements);
+        $buildingBlocks->printParagraph(implode(', ', $introductionContent->getReportElements()));
 
         $columnedLayout->goToColumn(3);
 
         $filterTitle = $this->translator->trans('entity.name', [], 'entity_filter');
         $buildingBlocks->printTitle($filterTitle);
-        $buildingBlocks->printKeyValueParagraph($filterEntries);
+        $buildingBlocks->printKeyValueParagraph($introductionContent->getFilterEntries());
     }
 
     /**
      * @param LayoutFactoryInterface $document
-     * @param string $tableDescription
-     * @param string[] $identifierHeader
-     * @param string[] $identifierContent
-     * @param string[] $issuesHeader
-     * @param string[] $issuesContent
+     * @param BuildingBlocksInterface $buildingBlocks
+     * @param AggregatedIssuesContent $aggregatedIssuesContent
      */
-    public function addAggregatedIssueTable(LayoutFactoryInterface $document, string $tableDescription, array $identifierHeader, array $identifierContent, array $issuesHeader, array $issuesContent)
+    public function addAggregatedIssueTable(LayoutFactoryInterface $document, BuildingBlocksInterface $buildingBlocks, AggregatedIssuesContent $aggregatedIssuesContent)
     {
-        $fullWidth = $document->createFullWidthLayout();
-        $fullWidth->printTitle($tableDescription);
-        $fullWidth->endLayout();
+        $layout = $document->createFullWidthLayout();
+        $buildingBlocks->setLayout($layout);
+
+        $buildingBlocks->printTitle($aggregatedIssuesContent->getTableDescription());
+        $layout->endLayout();
 
         // prepare table config
         $tableConfig = new Table();
 
         // prepare table column config
         $tableColumnConfig = [];
-        $normalTableHeaders = \count($identifierHeader);
+        $normalTableHeaders = \count($aggregatedIssuesContent->getIdentifierHeader());
         for ($i = 0; $i < $normalTableHeaders; ++$i) {
             $tableColumnConfig[] = new TableColumn();
         }
-        $statusTableHeaders = \count($issuesHeader);
+        $statusTableHeaders = \count($aggregatedIssuesContent->getIssuesHeader());
         for ($i = 0; $i < $statusTableHeaders; ++$i) {
             $tableColumnConfig[] = new TableColumn(TableColumn::SIZING_BY_HEADER);
         }
@@ -108,13 +95,13 @@ class IssueReportService implements IssueReportServiceInterface
         $tableLayout = $document->createTableLayout($tableConfig, $tableColumnConfig);
 
         // print header
-        $tableHeader = array_merge($identifierHeader, $issuesHeader);
+        $tableHeader = array_merge($aggregatedIssuesContent->getIdentifierHeader(), $aggregatedIssuesContent->getIssuesHeader());
         $tableLayout->printHeader($tableHeader);
 
         // print content
-        $rowCount = \count($identifierContent);
+        $rowCount = \count($aggregatedIssuesContent->getIdentifierContent());
         for ($i = 0; $i < $rowCount; ++$i) {
-            $row = array_merge($identifierContent[$i], $issuesContent[$i]);
+            $row = array_merge($aggregatedIssuesContent->getIdentifierContent()[$i], $aggregatedIssuesContent->getIssuesContent()[$i]);
             $tableLayout->printRow($row);
         }
 
