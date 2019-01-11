@@ -17,6 +17,19 @@
 # Methods
 
 
+## `/trial`
+* creates a new account with some sample data, as a trial, returning the credentials.
+
+##### request:
+empty
+
+##### response:
+```
+username: String
+password: String
+```
+
+
 ## `/login`
 * returned token should be kept alive for as long as possible, even supporting multiple logged in devices
 
