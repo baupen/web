@@ -11,7 +11,7 @@
 
 namespace App\Controller\Api\External;
 
-use App\Api\External\Request\TrialRequest;
+use App\Api\External\Request\Trial\CreateAccountRequest;
 use App\Api\External\Response\Data\TrialData;
 use App\Api\External\Transformer\TrialUserTransformer;
 use App\Controller\Api\External\Base\ExternalApiController;
@@ -28,7 +28,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TrialController extends ExternalApiController
 {
     /**
-     * @Route("", name="api_external_trial", methods={"GET"})
+     * @Route("create_account", name="api_external_trial_create_account", methods={"POST"})
      *
      * @param Request $request
      * @param TrialUserTransformer $trialUserTransformer
@@ -38,12 +38,12 @@ class TrialController extends ExternalApiController
      */
     public function trialAction(Request $request, TrialUserTransformer $trialUserTransformer, TrialServiceInterface $trialService)
     {
-        /** @var TrialRequest $trialRequest */
-        if (!$this->parseRequest($request, TrialRequest::class, $trialRequest, $errorResponse)) {
+        /** @var CreateAccountRequest $createAccountRequest */
+        if (!$this->parseRequest($request, CreateAccountRequest::class, $createAccountRequest, $errorResponse)) {
             return $errorResponse;
         }
 
-        $manager = $trialService->createTrialAccount($trialRequest->getProposedGivenName(), $trialRequest->getProposedFamilyName());
+        $manager = $trialService->createTrialAccount($createAccountRequest->getProposedGivenName(), $createAccountRequest->getProposedFamilyName());
 
         //construct answer
         $user = $trialUserTransformer->toApi($manager);

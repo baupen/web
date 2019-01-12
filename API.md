@@ -17,7 +17,7 @@
 # Methods
 
 
-## `/trial`
+## `/trial/create_account`
 * creates a new account with some sample data, as a trial, returning the credentials.
 
 ##### request:
@@ -25,8 +25,7 @@ empty
 
 ##### response:
 ```
-username: String
-plainPassword: String
+trialUser: TrialUser
 ```
 
 
@@ -275,6 +274,13 @@ filename: String
 ```
 id: UUID
 lastChangeTime: Date
+```
+
+
+## `TrialUser`
+```
+email: String
+plainPassword: String
 ```
 
 

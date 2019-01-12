@@ -14,6 +14,7 @@ namespace App\Service;
 use App\Entity\ConstructionManager;
 use App\Service\Interfaces\TrialServiceInterface;
 use Faker\Factory;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class TrialService implements TrialServiceInterface
@@ -29,15 +30,22 @@ class TrialService implements TrialServiceInterface
     private $faker;
 
     /**
+     * @var RegistryInterface
+     */
+    private $registry;
+
+    /**
      * TrialService constructor.
      *
      * @param RequestStack $requestStack
+     * @param RegistryInterface $registry
      */
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack, RegistryInterface $registry)
     {
         $request = $requestStack->getCurrentRequest();
         $this->baseUrl = $request->getBaseUrl();
         $this->faker = Factory::create($request->getLocale());
+        $this->registry = $registry;
     }
 
     /**
@@ -51,6 +59,10 @@ class TrialService implements TrialServiceInterface
     public function createTrialAccount(?string $proposedGivenName, ?string $proposedFamilyName)
     {
         $constructionManager = $this->createConstructionManager($proposedGivenName, $proposedFamilyName);
+
+        $manager = $this->registry->getManager();
+        $manager->persist($constructionManager);
+        $manager->flush();
 
         return $constructionManager;
     }

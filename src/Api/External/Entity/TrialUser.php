@@ -16,7 +16,7 @@ class TrialUser
     /**
      * @var string
      */
-    private $username;
+    private $email;
 
     /**
      * @var string
@@ -26,17 +26,17 @@ class TrialUser
     /**
      * @return string
      */
-    public function getUsername(): string
+    public function getEmail(): string
     {
-        return $this->username;
+        return $this->email;
     }
 
     /**
-     * @param string $username
+     * @param string $email
      */
-    public function setUsername(string $username): void
+    public function setEmail(string $email): void
     {
-        $this->username = $username;
+        $this->email = $email;
     }
 
     /**

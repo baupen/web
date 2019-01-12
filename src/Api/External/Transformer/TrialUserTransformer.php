@@ -24,7 +24,7 @@ class TrialUserTransformer
     public function toApi(ConstructionManager $constructionManager)
     {
         $user = new TrialUser();
-        $user->setUsername($constructionManager->getEmail());
+        $user->setEmail($constructionManager->getEmail());
         $user->setPlainPassword($constructionManager->getPlainPassword());
 
         return $user;

@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\External\Request;
+namespace App\Api\External\Request\Trial;
 
 use App\Api\Request\Base\AbstractRequest;
 
-class TrialRequest extends AbstractRequest
+class CreateAccountRequest extends AbstractRequest
 {
     /**
      * @var string|null
