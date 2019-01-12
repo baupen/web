@@ -26,7 +26,7 @@ empty
 ##### response:
 ```
 username: String
-password: String
+plainPassword: String
 ```
 
 
