@@ -142,6 +142,7 @@ class IssueReportService implements IssueReportServiceInterface
         // print issue table
         $tableLayout = $report->createTableLayout($tableConfig, $tableColumnConfig);
         $tableLayout->printHeader($mapContent->getIssuesTableHeader());
+        // TODO: needs work; row printing not implemented yet
         $tableLayout->printRow($mapContent->getIssuesTableContent());
         $tableLayout->endLayout();
 

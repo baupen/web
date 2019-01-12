@@ -20,6 +20,8 @@ use App\Helper\DateTimeFormatter;
 use App\Helper\IssueHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
+use App\Service\Report\IssueReport\Interfaces\BuildingBlocksInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
 use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
 use App\Service\Report\IssueReport\Model\IntroductionContent;
@@ -120,15 +122,33 @@ class CleanReportService
      *
      * @return string
      */
-    public function generateReport(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $reportElements)
+    public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $reportElements)
     {
-        $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
-        $reportConfiguration = new ReportConfiguration($filter);
-
         // initialize pdf report
         $document = $this->createPdfDocument($constructionSite->getName(), $author);
         $layoutFactory = new LayoutFactory($document, $this->layoutService);
         $buildingBlocks = new PdfBuildingBlocks($this->typographyService, $this->colorService);
+
+        $this->addReportElements($layoutFactory, $buildingBlocks, $constructionSite, $filter, $reportElements);
+
+        // persist
+        $filePath = $this->getFilePath($constructionSite);
+        $document->save($filePath);
+
+        return $filePath;
+    }
+
+    /**
+     * @param LayoutFactoryInterface $layoutFactory
+     * @param BuildingBlocksInterface $buildingBlocks
+     * @param ConstructionSite $constructionSite
+     * @param Filter $filter
+     * @param ReportElements $reportElements
+     */
+    private function addReportElements(LayoutFactoryInterface $layoutFactory, BuildingBlocksInterface $buildingBlocks, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
+    {
+        $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
+        $reportConfiguration = new ReportConfiguration($filter);
 
         // add introduction
         $introductionContent = $this->getIntroductionContent($constructionSite, $filter, $reportElements);
@@ -158,11 +178,6 @@ class CleanReportService
             $mapContent = $this->getMapContent($map, $issues, $reportElements, $reportConfiguration);
             $this->issueReportService->addMap($layoutFactory, $buildingBlocks, $mapContent);
         }
-
-        $filePath = $this->getFilePath($constructionSite);
-        $document->save($filePath);
-
-        return $filePath;
     }
 
     /**
