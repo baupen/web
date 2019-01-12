@@ -23,5 +23,5 @@ interface TrialServiceInterface
      *
      * @return ConstructionManager
      */
-    public function createTrialAccount(?string $proposedGivenName, ?string $proposedFamilyName);
+    public function createTrialAccount(?string $proposedGivenName = null, ?string $proposedFamilyName = null);
 }
