@@ -73,6 +73,13 @@ class ConstructionManager extends BaseEntity implements UserInterface
     private $locale = 'de';
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private $isTrialAccount = false;
+
+    /**
      * constructor.
      */
     public function __construct()
@@ -195,5 +202,21 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public function setLocale(string $locale): void
     {
         $this->locale = $locale;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsTrialAccount(): bool
+    {
+        return $this->isTrialAccount;
+    }
+
+    /**
+     * @param bool $isTrialAccount
+     */
+    public function setIsTrialAccount(bool $isTrialAccount): void
+    {
+        $this->isTrialAccount = $isTrialAccount;
     }
 }

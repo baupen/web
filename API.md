@@ -17,6 +17,21 @@
 # Methods
 
 
+## `/trial/create_account`
+* creates a new account with sample data.
+
+##### request:
+```
+proposedGivenName: String?
+proposedFamilyName: String?
+```
+
+##### response:
+```
+trialUser: TrialUser
+```
+
+
 ## `/login`
 * returned token should be kept alive for as long as possible, even supporting multiple logged in devices
 
@@ -262,6 +277,13 @@ filename: String
 ```
 id: UUID
 lastChangeTime: Date
+```
+
+
+## `TrialUser`
+```
+username: String
+password: String
 ```
 
 
