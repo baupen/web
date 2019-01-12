@@ -16,7 +16,7 @@ use App\Service\Report\Document\Interfaces\Layout\Base\LayoutInterface;
 interface TableLayoutInterface extends LayoutInterface
 {
     /**
-     * @return ColumnLayoutInterface
+     * @return TableRowLayoutInterface
      */
     public function startNewRow();
 }

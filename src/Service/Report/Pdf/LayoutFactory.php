@@ -76,14 +76,15 @@ class LayoutFactory implements LayoutFactoryInterface
     /**
      * starts a table.
      *
-     * @param Table $table
      * @param ColumnConfiguration[] $tableColumns
+     *
+     * @throws \Exception
      *
      * @return TableLayoutInterface
      */
-    public function createTableLayout(Table $table, array $tableColumns)
+    public function createTableLayout(array $tableColumns)
     {
-        return new TableLayout($this->document, $this->layoutService->getContentXSize(), $this->layoutService->getTableColumnGutter(), $table, $tableColumns);
+        return new TableLayout($this->document, $this->layoutService->getContentXSize(), $this->layoutService->getTableColumnGutter(), $tableColumns);
     }
 
     /**

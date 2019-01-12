@@ -13,12 +13,14 @@ namespace App\Service\Report\IssueReport;
 
 use App\Service\Report\Document\Interfaces\Configuration\ColumnConfiguration;
 use App\Service\Report\Document\Interfaces\Configuration\Table;
+use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
 use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
 use App\Service\Report\IssueReport\Interfaces\BuildingBlocksInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
 use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
 use App\Service\Report\IssueReport\Model\IntroductionContent;
 use App\Service\Report\IssueReport\Model\MapContent;
+use App\Service\Report\Pdf\Layout\TableLayout;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class IssueReportService implements IssueReportServiceInterface
@@ -78,9 +80,6 @@ class IssueReportService implements IssueReportServiceInterface
         $buildingBlocks->printTitle($aggregatedIssuesContent->getTableDescription());
         $layout->endLayout();
 
-        // prepare table config
-        $tableConfig = new Table();
-
         // prepare table column config
         $tableColumnConfig = [];
         $normalTableHeaders = \count($aggregatedIssuesContent->getIdentifierHeader());
@@ -89,25 +88,46 @@ class IssueReportService implements IssueReportServiceInterface
         }
         $statusTableHeaders = \count($aggregatedIssuesContent->getIssuesHeader());
         for ($i = 0; $i < $statusTableHeaders; ++$i) {
-            $tableColumnConfig[] = new ColumnConfiguration(ColumnConfiguration::SIZING_BY_TEXT);
+            $tableColumnConfig[] = new ColumnConfiguration(ColumnConfiguration::SIZING_BY_TEXT, $statusTableHeaders[$i]);
         }
 
-        // create table layout
-        $tableLayout = $document->createTableLayout($tableConfig, $tableColumnConfig);
+        // prepare table layout
+        $tableLayout = $document->createTableLayout($tableColumnConfig);
 
-        // print header
+        // prepare content
         $tableHeader = array_merge($aggregatedIssuesContent->getIdentifierHeader(), $aggregatedIssuesContent->getIssuesHeader());
-        $tableLayout->printHeader($tableHeader);
-
-        // print content
         $rowCount = \count($aggregatedIssuesContent->getIdentifierContent());
+        $tableContent = [];
         for ($i = 0; $i < $rowCount; ++$i) {
-            $row = array_merge($aggregatedIssuesContent->getIdentifierContent()[$i], $aggregatedIssuesContent->getIssuesContent()[$i]);
-            $tableLayout->printRow($row);
+            $tableContent[] = array_merge($aggregatedIssuesContent->getIdentifierContent()[$i], $aggregatedIssuesContent->getIssuesContent()[$i]);
         }
 
-        // flush
+        // print styled table
+        $this->printTable($tableLayout, $buildingBlocks, $tableHeader, $tableContent);
+
+        // terminate layout
         $tableLayout->endLayout();
+    }
+
+    /**
+     * @param TableLayoutInterface $tableLayout
+     * @param BuildingBlocksInterface $buildingBlocks
+     * @param string[] $tableHeader
+     * @param string[][] $tableContent
+     */
+    private function printTable(TableLayoutInterface $tableLayout, BuildingBlocksInterface $buildingBlocks, array $tableHeader, array $tableContent)
+    {
+        $columnLength = \count($tableHeader);
+
+        $row = $tableLayout->startNewRow();
+        $buildingBlocks->setLayout($row);
+
+        for ($i = 0; $i < $columnLength; ++$i) {
+            $row->goToColumn($i);
+            $buildingBlocks->printParagraph($tableHeader[$i]);
+        }
+
+        $row->endLayout();
     }
 
     /**
@@ -128,9 +148,6 @@ class IssueReportService implements IssueReportServiceInterface
             $buildingBlocks->printImage($mapImage);
         }
         $groupLayout->endLayout();
-
-        // prepare table config
-        $tableConfig = new Table();
 
         // prepare table column config
         $tableColumnConfig = [new ColumnConfiguration(ColumnConfiguration::SIZING_BY_TEXT)];
