@@ -12,6 +12,7 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
+use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\SyncServiceInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -36,6 +37,13 @@ class SetupContentFolders extends BaseFixture
      */
     private $fileSystemSyncService;
 
+    /**
+     * SetupContentFolders constructor.
+     *
+     * @param PathServiceInterface $pathService
+     * @param SerializerInterface $serializer
+     * @param SyncServiceInterface $fileSystemSyncService
+     */
     public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer, SyncServiceInterface $fileSystemSyncService)
     {
         $this->pathService = $pathService;
@@ -55,39 +63,9 @@ class SetupContentFolders extends BaseFixture
     {
         $sourceFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'Resources' . \DIRECTORY_SEPARATOR . 'persistent';
         $targetFolder = $this->pathService->getFolderRoot();
-        $this->copyRecursively($sourceFolder, $targetFolder);
+        FileHelper::copyRecursively($sourceFolder, $targetFolder);
 
         $this->fileSystemSyncService->sync();
-    }
-
-    /**
-     * @param $sourceFolder
-     * @param $destinationFolder
-     *
-     * @throws \Exception
-     */
-    private function copyRecursively($sourceFolder, $destinationFolder)
-    {
-        if (!is_dir($destinationFolder)) {
-            mkdir($destinationFolder);
-        }
-
-        $dir = opendir($sourceFolder);
-        if ($dir === false) {
-            throw new \Exception('failed to open dir ' . $dir);
-        }
-
-        while (false !== ($file = readdir($dir))) {
-            if (($file !== '.') && ($file !== '..')) {
-                if (is_dir($sourceFolder . '/' . $file)) {
-                    $this->copyRecursively($sourceFolder . '/' . $file, $destinationFolder . '/' . $file);
-                } else {
-                    copy($sourceFolder . '/' . $file, $destinationFolder . '/' . $file);
-                }
-            }
-        }
-
-        closedir($dir);
     }
 
     public function getOrder()

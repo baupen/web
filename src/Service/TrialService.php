@@ -12,10 +12,15 @@
 namespace App\Service;
 
 use App\Entity\ConstructionManager;
+use App\Entity\ConstructionSite;
+use App\Helper\FileHelper;
+use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Interfaces\SyncServiceInterface;
 use App\Service\Interfaces\TrialServiceInterface;
-use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TrialService implements TrialServiceInterface
 {
@@ -30,22 +35,44 @@ class TrialService implements TrialServiceInterface
     private $faker;
 
     /**
-     * @var ObjectManager
+     * @var RegistryInterface
      */
-    private $manager;
+    private $registry;
+
+    /**
+     * @var PathServiceInterface
+     */
+    private $pathService;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * @var SyncServiceInterface
+     */
+    private $syncService;
 
     /**
      * TrialService constructor.
      *
+     * @param PathServiceInterface $pathService
+     * @param TranslatorInterface $translator
+     * @param SyncServiceInterface $syncService
      * @param RequestStack $requestStack
-     * @param ObjectManager $objectManager
+     * @param RegistryInterface $registry
      */
-    public function __construct(RequestStack $requestStack, ObjectManager $objectManager)
+    public function __construct(PathServiceInterface $pathService, TranslatorInterface $translator, SyncServiceInterface $syncService, RequestStack $requestStack, RegistryInterface $registry)
     {
+        $this->pathService = $pathService;
+        $this->translator = $translator;
+        $this->syncService = $syncService;
+
         $request = $requestStack->getCurrentRequest();
         $this->baseUrl = $request->getHost();
         $this->faker = Factory::create($request->getLocale());
-        $this->manager = $objectManager;
+        $this->registry = $registry;
     }
 
     /**
@@ -54,16 +81,70 @@ class TrialService implements TrialServiceInterface
      * @param string|null $proposedGivenName
      * @param string|null $proposedFamilyName
      *
+     * @throws \Exception
+     *
      * @return ConstructionManager
      */
     public function createTrialAccount(?string $proposedGivenName = null, ?string $proposedFamilyName = null)
     {
         $constructionManager = $this->createConstructionManager($proposedGivenName, $proposedFamilyName);
+        $constructionSite = $this->createConstructionSite($constructionManager);
 
-        $this->manager->persist($constructionManager);
-        $this->manager->flush();
+        $manager = $this->registry->getManager();
+        $manager->persist($constructionManager);
+        $manager->persist($constructionSite);
+        $manager->flush();
+
+        $this->addConstructionSiteContent($constructionSite);
 
         return $constructionManager;
+    }
+
+    /**
+     * @param ConstructionManager $constructionManager
+     *
+     * @return ConstructionSite
+     */
+    private function createConstructionSite(ConstructionManager $constructionManager)
+    {
+        $constructionSite = new ConstructionSite();
+        $constructionSite->setName($this->translator->trans('construction_site.name', ['%name%' => $constructionManager->getName()], 'trial'));
+        $constructionSite->setIsAutomaticEditEnabled(true);
+        $constructionSite->setFolderName($constructionManager->getEmail());
+        $constructionSite->setStreetAddress($this->translator->trans('construction_site.street_address', [], 'trial'));
+        $constructionSite->setLocality($this->translator->trans('construction_site.locality', [], 'trial'));
+        $constructionSite->setPostalCode($this->translator->trans('construction_site.postal_code', [], 'trial'));
+        $constructionSite->setCountry($this->translator->trans('construction_site.country', [], 'trial'));
+
+        $constructionSite->getConstructionManagers()->add($constructionManager);
+        $constructionManager->getConstructionSites()->add($constructionSite);
+
+        return $constructionSite;
+    }
+
+    /**
+     * @param ConstructionSite $constructionSite
+     *
+     * @throws \Exception
+     */
+    private function addConstructionSiteContent(ConstructionSite $constructionSite)
+    {
+        mkdir($this->pathService->getConstructionSiteFolderRoot() . \DIRECTORY_SEPARATOR . $constructionSite->getFolderName());
+
+        $this->copyMapFiles($constructionSite);
+        $this->syncService->syncConstructionSite($constructionSite);
+    }
+
+    /**
+     * @param ConstructionSite $constructionSite
+     *
+     * @throws \Exception
+     */
+    private function copyMapFiles(ConstructionSite $constructionSite)
+    {
+        $sourceFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'Trial' . \DIRECTORY_SEPARATOR . 'Resources' . \DIRECTORY_SEPARATOR . 'maps';
+        $targetFolder = $this->pathService->getFolderForMapFile($constructionSite);
+        FileHelper::copyRecursively($sourceFolder, $targetFolder);
     }
 
     /**

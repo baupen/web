@@ -11,13 +11,16 @@
 
 namespace App\Tests\Services;
 
+use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Interfaces\SyncServiceInterface;
 use App\Service\TrialService;
-use Doctrine\Common\Persistence\ObjectManager;
-use PHPUnit\Framework\TestCase;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class TrialServiceTest extends TestCase
+class TrialServiceTest extends WebTestCase
 {
     /**
      * @var TrialService
@@ -35,6 +38,21 @@ class TrialServiceTest extends TestCase
     {
         parent::__construct($name, $data, $dataName);
 
+        self::bootKernel();
+        $pathService = self::$container->get(PathServiceInterface::class);
+        $translator = self::$container->get(TranslatorInterface::class);
+        $syncService = self::$container->get(SyncServiceInterface::class);
+        $objectManager = self::$container->get(RegistryInterface::class);
+        $requestStack = $this->createRequestStackMock();
+
+        $this->service = new TrialService($pathService, $translator, $syncService, $requestStack, $objectManager);
+    }
+
+    /**
+     * @return \PHPUnit\Framework\MockObject\MockObject|RequestStack
+     */
+    private function createRequestStackMock()
+    {
         $request = $this->createMock(Request::class);
         $request->expects($this->any())->method('getHost')->willReturn('localhost');
         $request->expects($this->any())->method('getLocale')->willReturn('de');
@@ -42,14 +60,13 @@ class TrialServiceTest extends TestCase
         $requestStack = $this->createMock(RequestStack::class);
         $requestStack->expects($this->any())->method('getCurrentRequest')->willReturn($request);
 
-        $objectManager = $this->createMock(ObjectManager::class);
-
-        /* @noinspection PhpParamsInspection */
-        $this->service = new TrialService($requestStack, $objectManager);
+        return $requestStack;
     }
 
     /**
      * check whether the new user has the trial account boolean set.
+     *
+     * @throws \Exception
      */
     public function testCreateTrialAccount_isTrialAccountEnabled()
     {
@@ -59,6 +76,8 @@ class TrialServiceTest extends TestCase
 
     /**
      * check whether the new user has the trial account boolean set.
+     *
+     * @throws \Exception
      */
     public function testCreateTrialAccount_useProposedNames()
     {
@@ -72,6 +91,8 @@ class TrialServiceTest extends TestCase
 
     /**
      * check whether the new user has the trial account boolean set.
+     *
+     * @throws \Exception
      */
     public function testCreateTrialAccount_namesInitialized()
     {
@@ -82,6 +103,8 @@ class TrialServiceTest extends TestCase
 
     /**
      * checks that the new user was provided some content.
+     *
+     * @throws \Exception
      */
     public function testCreateTrialAccount_accountHasMapsAssigned()
     {
