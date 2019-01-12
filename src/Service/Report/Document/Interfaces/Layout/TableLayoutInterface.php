@@ -16,17 +16,7 @@ use App\Service\Report\Document\Interfaces\Layout\Base\LayoutInterface;
 interface TableLayoutInterface extends LayoutInterface
 {
     /**
-     * @param string[] $header
+     * @return ColumnLayoutInterface
      */
-    public function printHeader(array $header);
-
-    /**
-     * @param string[] $row
-     */
-    public function printRow(array $row);
-
-    /**
-     * @param string[][] $rows
-     */
-    public function printRows(array $rows);
+    public function startNewRow();
 }

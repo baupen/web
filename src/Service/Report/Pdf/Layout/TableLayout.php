@@ -11,8 +11,8 @@
 
 namespace App\Service\Report\Pdf\Layout;
 
-use App\Service\Report\Document\Interfaces\Configuration\Table;
-use App\Service\Report\Document\Interfaces\Configuration\TableColumn;
+use App\Service\Report\Document\Interfaces\Configuration\ColumnConfiguration;
+use App\Service\Report\Document\Interfaces\Layout\ColumnLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
@@ -22,16 +22,6 @@ class TableLayout implements TableLayoutInterface
      * @var PdfDocumentInterface
      */
     private $pdfDocument;
-
-    /**
-     * @var Table
-     */
-    private $tableConfiguration;
-
-    /**
-     * @var TableColumn[]
-     */
-    private $tableColumnConfiguration;
 
     /**
      * @var float
@@ -57,18 +47,18 @@ class TableLayout implements TableLayoutInterface
      * @param PdfDocumentInterface $pdfDocument
      * @param float $width
      * @param float $columnGutter
-     * @param Table $tableConfiguration
-     * @param array $tableColumnConfiguration
+     * @param ColumnConfiguration[] $columnConfiguration
+     *
+     * @throws \Exception
      */
-    public function __construct(PdfDocumentInterface $pdfDocument, float $width, float $columnGutter, Table $tableConfiguration, array $tableColumnConfiguration)
+    public function __construct(PdfDocumentInterface $pdfDocument, float $width, float $columnGutter, array $columnConfiguration)
     {
         $this->pdfDocument = $pdfDocument;
         $this->width = $width;
         $this->columnGutter = $columnGutter;
-        $this->tableConfiguration = $tableConfiguration;
-        $this->tableColumnConfiguration = $tableColumnConfiguration;
 
-        $this->columnCount = \count($tableColumnConfiguration);
+        $this->columnCount = \count($columnConfiguration);
+        $this->setColumnWidths($columnConfiguration);
     }
 
     /**
@@ -80,71 +70,29 @@ class TableLayout implements TableLayoutInterface
     }
 
     /**
-     * @param string[] $header
+     * @param ColumnConfiguration[] $columnConfiguration
      *
      * @throws \Exception
      */
-    public function printHeader(array $header)
-    {
-        $this->ensureColumnWidthSet($header);
-        $this->printRowInternal($header);
-    }
-
-    /**
-     * @param string[] $row
-     *
-     * @throws \Exception
-     */
-    public function printRow(array $row)
-    {
-        $this->ensureColumnWidthSet(null);
-        $this->printRowInternal($row);
-    }
-
-    /**
-     * @param string[][] $rows
-     *
-     * @throws \Exception
-     */
-    public function printRows(array $rows)
-    {
-        if (\count($rows) === 0) {
-            return;
-        }
-
-        $this->ensureColumnWidthSet($rows[0]);
-
-        foreach ($rows as $row) {
-            $this->printRowInternal($row);
-        }
-    }
-
-    /**
-     * @param array|null $header
-     *
-     * @throws \Exception
-     */
-    private function ensureColumnWidthSet(array $header = null)
+    private function setColumnWidths(array $columnConfiguration)
     {
         if ($this->columnWidths !== null) {
             return;
         }
 
-        $gutterSpace = (\count($this->tableColumnConfiguration) - 1) * $this->columnGutter;
+        $gutterSpace = (\count($columnConfiguration) - 1) * $this->columnGutter;
         $availableWidth = $this->width - $gutterSpace;
 
         $expandColumns = [];
         $widths = [];
         for ($i = 0; $i < $this->columnCount; ++$i) {
-            $column = $this->tableColumnConfiguration[$i];
-            if ($column->getSizing() === TableColumn::SIZING_EXPAND) {
+            $column = $columnConfiguration[$i];
+            if ($column->getSizing() === ColumnConfiguration::SIZING_EXPAND) {
                 $expandColumns[] = $i;
-            } elseif ($column->getSizing() === TableColumn::SIZING_BY_HEADER) {
-                if ($header === null) {
-                    throw new \Exception('sizing mode ' . TableColumn::SIZING_BY_HEADER . ' not supported if no header is printed');
-                }
+            } elseif ($column->getSizing() === ColumnConfiguration::SIZING_BY_TEXT) {
+                $text = $column->getText();
+                $width = $this->pdfDocument->calculateWidthOfText($text);
 
-                $width = $this->pdfDocument->calculateWidthOfText($header[$i]);
                 $availableWidth -= $width;
                 $widths[$i] = $width;
             } else {
@@ -184,5 +132,13 @@ class TableLayout implements TableLayoutInterface
         }
 
         $this->pdfDocument->setCursor($lowestCursor->setX($cursor->getXCoordinate()));
+    }
+
+    /**
+     * @return ColumnLayoutInterface
+     */
+    public function startNewRow()
+    {
+        return ColumnLayout::createWithPredefinedWidths($this->pdfDocument, $this->columnCount, $this->columnGutter, $this->columnWidths);
     }
 }

@@ -11,8 +11,8 @@
 
 namespace App\Service\Report\IssueReport;
 
+use App\Service\Report\Document\Interfaces\Configuration\ColumnConfiguration;
 use App\Service\Report\Document\Interfaces\Configuration\Table;
-use App\Service\Report\Document\Interfaces\Configuration\TableColumn;
 use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
 use App\Service\Report\IssueReport\Interfaces\BuildingBlocksInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
@@ -85,11 +85,11 @@ class IssueReportService implements IssueReportServiceInterface
         $tableColumnConfig = [];
         $normalTableHeaders = \count($aggregatedIssuesContent->getIdentifierHeader());
         for ($i = 0; $i < $normalTableHeaders; ++$i) {
-            $tableColumnConfig[] = new TableColumn();
+            $tableColumnConfig[] = new ColumnConfiguration();
         }
         $statusTableHeaders = \count($aggregatedIssuesContent->getIssuesHeader());
         for ($i = 0; $i < $statusTableHeaders; ++$i) {
-            $tableColumnConfig[] = new TableColumn(TableColumn::SIZING_BY_HEADER);
+            $tableColumnConfig[] = new ColumnConfiguration(ColumnConfiguration::SIZING_BY_TEXT);
         }
 
         // create table layout
@@ -133,10 +133,10 @@ class IssueReportService implements IssueReportServiceInterface
         $tableConfig = new Table();
 
         // prepare table column config
-        $tableColumnConfig = [new TableColumn(TableColumn::SIZING_BY_HEADER)];
+        $tableColumnConfig = [new ColumnConfiguration(ColumnConfiguration::SIZING_BY_TEXT)];
         $columns = \count($mapContent->getIssuesTableHeader());
         for ($i = 1; $i < $columns; ++$i) {
-            $tableColumnConfig[] = new TableColumn(TableColumn::SIZING_EXPAND);
+            $tableColumnConfig[] = new ColumnConfiguration(ColumnConfiguration::SIZING_EXPAND);
         }
 
         // print issue table

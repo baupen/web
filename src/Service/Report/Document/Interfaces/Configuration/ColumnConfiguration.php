@@ -11,9 +11,9 @@
 
 namespace App\Service\Report\Document\Interfaces\Configuration;
 
-class TableColumn
+class ColumnConfiguration
 {
-    const SIZING_BY_HEADER = 'sizing_by_header';
+    const SIZING_BY_TEXT = 'sizing_by_text';
     const SIZING_EXPAND = 'sizing_expand';
 
     /**
@@ -22,18 +22,33 @@ class TableColumn
     private $sizing;
 
     /**
-     * @param string $sizing
+     * @var string
      */
-    public function __construct(string $sizing = self::SIZING_EXPAND)
+    private $text;
+
+    /**
+     * @param string $sizing
+     * @param string|null $text
+     */
+    public function __construct(string $sizing = self::SIZING_EXPAND, string $text = null)
     {
         $this->sizing = $sizing;
+        $this->text = $text;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getSizing()
     {
         return $this->sizing;
+    }
+
+    /**
+     * @return string
+     */
+    public function getText(): string
+    {
+        return $this->text;
     }
 }

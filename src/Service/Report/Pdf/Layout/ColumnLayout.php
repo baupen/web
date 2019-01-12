@@ -38,9 +38,14 @@ class ColumnLayout implements ColumnLayoutInterface
     private $totalWidth;
 
     /**
-     * @var float
+     * @var float[]
      */
-    private $columnWidth;
+    private $columnStarts;
+
+    /**
+     * @var float[]
+     */
+    private $columnWidths;
 
     /**
      * @var float
@@ -66,23 +71,61 @@ class ColumnLayout implements ColumnLayoutInterface
      * ColumnLayout constructor.
      *
      * @param PdfDocumentInterface $pdfDocument
-     * @param int $columnCount
      * @param float $columnGutter
-     * @param float $width
+     * @param float $totalWidth
+     * @param float[] $widths
      */
-    public function __construct(PdfDocumentInterface $pdfDocument, int $columnCount, float $columnGutter, float $width)
+    private function __construct(PdfDocumentInterface $pdfDocument, float $columnGutter, float $totalWidth, array $widths)
     {
         $this->pdfDocument = $pdfDocument;
-        $this->columnCount = $columnCount;
+        $this->columnCount = \count($widths);
         $this->columnGutter = $columnGutter;
-        $this->totalWidth = $width;
+        $this->totalWidth = $totalWidth;
+        $this->columnWidths = $widths;
 
-        $gutterSpace = ($columnCount - 1) * $columnGutter;
-        $columnWidth = (float)($width - $gutterSpace) / $columnCount;
-        $this->columnWidth = $columnWidth;
-
+        $this->activeColumn = 0;
         $this->startCursor = $pdfDocument->getCursor();
         $this->columnCursors[$this->activeColumn] = $this->startCursor;
+
+        $nextWidth = 0;
+        $currentColumn = 0;
+        do {
+            $this->columnStarts[$currentColumn] = $nextWidth;
+            $nextWidth += $this->columnWidths[$currentColumn] + $this->columnGutter;
+        } while (++$currentColumn < $this->columnCount);
+    }
+
+    /**
+     * @param PdfDocumentInterface $pdfDocument
+     * @param int $columnCount
+     * @param float $columnGutter
+     * @param float $totalWidth
+     *
+     * @return ColumnLayout
+     */
+    public static function createWithAutomaticWidth(PdfDocumentInterface $pdfDocument, int $columnCount, float $columnGutter, float $totalWidth)
+    {
+        $gutterSpace = ($columnCount - 1) * $columnGutter;
+        $columnWidth = (float)($totalWidth - $gutterSpace) / $columnCount;
+        $columnWidths = [];
+        for ($i = 0; $i < $columnCount; ++$i) {
+            $columnWidths[] = $columnWidth;
+        }
+
+        return self::createWithPredefinedWidths($pdfDocument, $columnGutter, $totalWidth, $columnWidths);
+    }
+
+    /**
+     * @param PdfDocumentInterface $pdfDocument
+     * @param float $columnGutter
+     * @param float $totalWidth
+     * @param float[] $widths
+     *
+     * @return ColumnLayout
+     */
+    public static function createWithPredefinedWidths(PdfDocumentInterface $pdfDocument, float $columnGutter, float $totalWidth, array $widths)
+    {
+        return new self($pdfDocument, $columnGutter, $totalWidth, $widths);
     }
 
     /**
@@ -102,22 +145,11 @@ class ColumnLayout implements ColumnLayoutInterface
         $this->columnCursors[$this->activeColumn] = $this->pdfDocument->getCursor();
 
         // set correct cursor/page
-        $this->pdfDocument->setCursor($this->startCursor->setX($this->getColumnStart($column)));
+        $xStart = $this->columnStarts[$column] + $this->startCursor->getXCoordinate();
+        $this->pdfDocument->setCursor($this->startCursor->setX($xStart));
 
         // save
         $this->activeColumn = $column;
-    }
-
-    /**
-     * @param $currentColumn
-     *
-     * @return float|float
-     */
-    public function getColumnStart($currentColumn)
-    {
-        $width = $this->columnWidth + $this->columnGutter;
-
-        return $width * $currentColumn + $this->startCursor->getXCoordinate();
     }
 
     /**
@@ -163,6 +195,6 @@ class ColumnLayout implements ColumnLayoutInterface
             $this->pdfDocument->setCursor($highestCursor);
         }
 
-        $callable($this->pdfDocument, $this->columnWidth);
+        $callable($this->pdfDocument, $this->columnWidths[$this->activeColumn]);
     }
 }

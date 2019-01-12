@@ -11,8 +11,8 @@
 
 namespace App\Service\Report\Pdf;
 
+use App\Service\Report\Document\Interfaces\Configuration\ColumnConfiguration;
 use App\Service\Report\Document\Interfaces\Configuration\Table;
-use App\Service\Report\Document\Interfaces\Configuration\TableColumn;
 use App\Service\Report\Document\Interfaces\Layout\ColumnLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
@@ -70,14 +70,14 @@ class LayoutFactory implements LayoutFactoryInterface
      */
     public function createColumnLayout(int $columnCount)
     {
-        return new ColumnLayout($this->document, $columnCount, $this->layoutService->getColumnGutter(), $this->layoutService->getContentXSize());
+        return ColumnLayout::createWithAutomaticWidth($this->document, $columnCount, $this->layoutService->getColumnGutter(), $this->layoutService->getContentXSize());
     }
 
     /**
      * starts a table.
      *
      * @param Table $table
-     * @param TableColumn[] $tableColumns
+     * @param ColumnConfiguration[] $tableColumns
      *
      * @return TableLayoutInterface
      */
