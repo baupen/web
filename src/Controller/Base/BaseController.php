@@ -12,7 +12,9 @@
 namespace App\Controller\Base;
 
 use App\Entity\ConstructionManager;
+use App\Security\Model\UserToken;
 use App\Security\Voter\Base\BaseVoter;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -20,7 +22,7 @@ class BaseController extends AbstractController
 {
     public static function getSubscribedServices()
     {
-        return parent::getSubscribedServices() + ['kernel' => KernelInterface::class];
+        return parent::getSubscribedServices() + ['kernel' => KernelInterface::class, 'registry' => RegistryInterface::class];
     }
 
     /**
@@ -100,11 +102,28 @@ class BaseController extends AbstractController
     }
 
     /**
+     * @var ConstructionManager[]
+     */
+    private $userCache = [];
+
+    /**
      * @return ConstructionManager
      */
     protected function getUser()
     {
-        return parent::getUser();
+        /** @var UserToken $user */
+        $user = parent::getUser();
+
+        // early return if found in cache
+        if (isset($this->userCache[$user->getUsername()])) {
+            return $this->userCache[$user->getUsername()];
+        }
+
+        // load & cache
+        $constructionManager = $this->get('doctrine')->getRepository('App:ConstructionManager')->findOneBy(['email' => $user->getUsername()]);
+        $this->userCache[$user->getUsername()] = $constructionManager;
+
+        return $constructionManager;
     }
 
     /**
