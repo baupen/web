@@ -18,10 +18,13 @@
 
 
 ## `/trial/create_account`
-* creates a new account with some sample data, as a trial, returning the credentials.
+* creates a new account with sample data.
 
 ##### request:
-empty
+```
+proposedGivenName: String?
+proposedFamilyName: String?
+```
 
 ##### response:
 ```
