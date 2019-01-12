@@ -16,42 +16,42 @@ class TrialUser
     /**
      * @var string
      */
-    private $email;
+    private $username;
 
     /**
      * @var string
      */
-    private $plainPassword;
+    private $password;
 
     /**
      * @return string
      */
-    public function getEmail(): string
+    public function getUsername(): string
     {
-        return $this->email;
+        return $this->username;
     }
 
     /**
-     * @param string $email
+     * @param string $username
      */
-    public function setEmail(string $email): void
+    public function setUsername(string $username): void
     {
-        $this->email = $email;
+        $this->username = $username;
     }
 
     /**
      * @return string
      */
-    public function getPlainPassword(): string
+    public function getPassword(): string
     {
-        return $this->plainPassword;
+        return $this->password;
     }
 
     /**
-     * @param string $plainPassword
+     * @param string $password
      */
-    public function setPlainPassword(string $plainPassword): void
+    public function setPassword(string $password): void
     {
-        $this->plainPassword = $plainPassword;
+        $this->password = $password;
     }
 }

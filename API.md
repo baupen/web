@@ -282,8 +282,8 @@ lastChangeTime: Date
 
 ## `TrialUser`
 ```
-email: String
-plainPassword: String
+username: String
+password: String
 ```
 
 

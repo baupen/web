@@ -28,18 +28,18 @@ class TrialControllerTest extends ApiController
         $trialResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
         $this->assertNotNull($trialResponse->data);
         $this->assertNotNull($trialResponse->data->trialUser);
-        $this->assertNotNull($trialResponse->data->trialUser->email);
-        $this->assertNotNull($trialResponse->data->trialUser->plainPassword);
+        $this->assertNotNull($trialResponse->data->trialUser->username);
+        $this->assertNotNull($trialResponse->data->trialUser->password);
 
-        $email = $trialResponse->data->trialUser->email;
-        $this->assertTrue(\mb_strlen($email) > 8);
-        // ensure email is of the form some_prefix@test.personalurl.ch
-        $this->assertTrue(preg_match('/([a-z_]){5,}@test\..+/', $email) === 1, $email);
+        $username = $trialResponse->data->trialUser->username;
+        $this->assertTrue(mb_strlen($username) > 8);
+        // ensure username is of the form some_prefix@test.personalurl.ch
+        $this->assertTrue(preg_match('/([a-z_]){5,}@test\..+/', $username) === 1, $username);
 
-        $plainPassword = $trialResponse->data->trialUser->plainPassword;
-        $this->assertTrue(\mb_strlen($plainPassword) > 8);
+        $password = $trialResponse->data->trialUser->password;
+        $this->assertTrue(mb_strlen($password) > 8);
 
-        $response = $this->doLoginRequest($client, $email, $plainPassword);
+        $response = $this->doLoginRequest($client, $username, $password);
         $loginResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
         $this->assertNotNull($loginResponse->data->user->givenName);
         $this->assertNotNull($loginResponse->data->user->familyName);
@@ -58,10 +58,10 @@ class TrialControllerTest extends ApiController
         $response = $this->doTrialRequest($client, $givenName, $familyName);
         $trialResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
 
-        $email = $trialResponse->data->trialUser->email;
-        $plainPassword = $trialResponse->data->trialUser->plainPassword;
+        $username = $trialResponse->data->trialUser->username;
+        $password = $trialResponse->data->trialUser->password;
 
-        $response = $this->doLoginRequest($client, $email, $plainPassword);
+        $response = $this->doLoginRequest($client, $username, $password);
         $loginResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
         $this->assertSame($givenName, $loginResponse->data->user->givenName);
         $this->assertNotNull($familyName, $loginResponse->data->user->familyName);
