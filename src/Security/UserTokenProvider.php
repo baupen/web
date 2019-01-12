@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class AuthenticationTokenProvider extends BaseUserProvider
+class UserTokenProvider extends BaseUserProvider
 {
     /**
      * @var RegistryInterface
