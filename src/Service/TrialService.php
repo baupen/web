@@ -43,7 +43,7 @@ class TrialService implements TrialServiceInterface
     public function __construct(RequestStack $requestStack, RegistryInterface $registry)
     {
         $request = $requestStack->getCurrentRequest();
-        $this->baseUrl = $request->getBaseUrl();
+        $this->baseUrl = $request->getHost();
         $this->faker = Factory::create($request->getLocale());
         $this->registry = $registry;
     }
@@ -77,6 +77,7 @@ class TrialService implements TrialServiceInterface
     {
         // create manager
         $constructionManager = new ConstructionManager();
+        $constructionManager->setIsTrialAccount(true);
         $constructionManager->setGivenName($proposedGivenName !== null ? $proposedGivenName : $this->faker->firstNameMale);
         $constructionManager->setFamilyName($proposedFamilyName !== null ? $proposedFamilyName : $this->faker->lastName);
 
@@ -116,20 +117,20 @@ class TrialService implements TrialServiceInterface
             }
 
             // create bigger group
-            $randomString += $this->getRandomChar($normals, $normalsLength);
-            $randomString += $this->getRandomChar($vocals, $vocalsLength);
-            $randomString += $this->getRandomChar($normals, $normalsLength);
+            $randomString .= $this->getRandomChar($normals, $normalsLength);
+            $randomString .= $this->getRandomChar($vocals, $vocalsLength);
+            $randomString .= $this->getRandomChar($normals, $normalsLength);
             $length += 3;
 
             // abort if too big already
-            if ($length < $minimalLength) {
+            if ($length > $minimalLength) {
                 break;
             }
 
             // create smaller group
             $randomString .= $divider;
-            $randomString += $this->getRandomChar($normals, $normalsLength);
-            $randomString += $this->getRandomChar($vocals, $vocalsLength);
+            $randomString .= $this->getRandomChar($normals, $normalsLength);
+            $randomString .= $this->getRandomChar($vocals, $vocalsLength);
             $length += 3;
         } while ($length < $minimalLength);
 
@@ -138,11 +139,11 @@ class TrialService implements TrialServiceInterface
 
     /**
      * @param string $selection
-     * @param $selectionLength
+     * @param int $selectionLength
      *
      * @return bool|string
      */
-    private function getRandomChar(string $selection, $selectionLength)
+    private function getRandomChar(string $selection, int $selectionLength)
     {
         $entry = rand(0, $selectionLength - 1);
 

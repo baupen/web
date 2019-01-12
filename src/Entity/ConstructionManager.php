@@ -77,7 +77,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
      *
      * @ORM\Column(type="boolean", options={"default": false})
      */
-    private $isTrialAccount;
+    private $isTrialAccount = false;
 
     /**
      * constructor.
@@ -207,7 +207,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @return bool
      */
-    public function isTrialAccount(): bool
+    public function getIsTrialAccount(): bool
     {
         return $this->isTrialAccount;
     }

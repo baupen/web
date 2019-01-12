@@ -23,19 +23,19 @@ class TrialData
      */
     public function __construct(TrialUser $user)
     {
-        $this->user = $user;
+        $this->trialUser = $user;
     }
 
     /**
      * @var TrialUser
      */
-    private $user;
+    private $trialUser;
 
     /**
      * @return TrialUser
      */
-    public function getUser(): TrialUser
+    public function getTrialUser(): TrialUser
     {
-        return $this->user;
+        return $this->trialUser;
     }
 }

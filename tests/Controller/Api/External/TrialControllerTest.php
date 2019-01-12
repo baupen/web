@@ -34,7 +34,7 @@ class TrialControllerTest extends ApiController
         $email = $trialResponse->data->trialUser->email;
         $this->assertTrue(\mb_strlen($email) > 8);
         // ensure email is of the form some_prefix@test.personalurl.ch
-        $this->assertTrue(preg_match('/([a-z_]){5,}@test\..+/', $email));
+        $this->assertTrue(preg_match('/([a-z_]){5,}@test\..+/', $email) === 1, $email);
 
         $plainPassword = $trialResponse->data->trialUser->plainPassword;
         $this->assertTrue(\mb_strlen($plainPassword) > 8);

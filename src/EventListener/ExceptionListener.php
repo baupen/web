@@ -13,6 +13,7 @@ namespace App\EventListener;
 
 use App\Api\Response\ErrorResponse;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -30,14 +31,29 @@ class ExceptionListener
      */
     private $logger;
 
-    public function __construct(SerializerInterface $serializer, LoggerInterface $logger)
+    /**
+     * @var bool
+     */
+    private $isTestEnvironment;
+
+    /**
+     * ExceptionListener constructor.
+     *
+     * @param SerializerInterface $serializer
+     * @param LoggerInterface $logger
+     * @param ParameterBagInterface $parameterBag
+     */
+    public function __construct(SerializerInterface $serializer, LoggerInterface $logger, ParameterBagInterface $parameterBag)
     {
         $this->serializer = $serializer;
         $this->logger = $logger;
+        $this->isTestEnvironment = $parameterBag->get('APP_ENV') === 'test';
     }
 
     /**
      * @param GetResponseForExceptionEvent $event
+     *
+     * @throws \Exception
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
@@ -56,6 +72,10 @@ class ExceptionListener
 
         if (\function_exists('dump')) {
             dump($exception);
+        }
+
+        if ($this->isTestEnvironment) {
+            throw $exception;
         }
 
         //construct error response
