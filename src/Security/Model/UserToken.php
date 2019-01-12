@@ -99,7 +99,7 @@ class UserToken implements UserInterface
      */
     public function getUsername()
     {
-        return $this->roles;
+        return $this->username;
     }
 
     /**
