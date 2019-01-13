@@ -18,12 +18,17 @@ use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 class TableRowLayout extends ColumnedLayout implements TableRowLayoutInterface
 {
     /**
+     * @var callable[]
+     */
+    private $buffer;
+
+    /**
      * ColumnLayout constructor.
      *
      * @param PdfDocumentInterface $pdfDocument
-     * @param int $columnCount
      * @param float $columnGutter
      * @param float $totalWidth
+     * @param array $widths
      */
     public function __construct(PdfDocumentInterface $pdfDocument, float $columnGutter, float $totalWidth, array $widths)
     {
@@ -39,7 +44,26 @@ class TableRowLayout extends ColumnedLayout implements TableRowLayoutInterface
      */
     public function registerPrintable(callable $callable)
     {
-        // implement grouping
-        $callable($this->pdfDocument, $this->columnWidths[$this->activeColumn]);
+        $this->buffer[] = function () use ($callable, $pdfDocument, $width) {
+            $callable($pdfDocument, $width);
+        };
+    }
+
+    /**
+     * will end the columned layout.
+     */
+    public function endLayout()
+    {
+        $emptyBuffer = function () {
+            foreach ($this->buffer as $item) {
+                $item();
+            }
+        };
+
+        if ($this->pdfDocument->causesPageBreak($emptyBuffer)) {
+            $this->pdfDocument->startNewPage();
+        }
+
+        $emptyBuffer();
     }
 }

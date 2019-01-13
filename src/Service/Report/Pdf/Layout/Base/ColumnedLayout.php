@@ -30,17 +30,7 @@ class ColumnedLayout implements ColumnedLayoutInterface
     /**
      * @var float
      */
-    private $startCursor;
-
-    /**
-     * @var float
-     */
     private $totalWidth;
-
-    /**
-     * @var float[]
-     */
-    private $columnStarts;
 
     /**
      * @var float[]
@@ -79,14 +69,13 @@ class ColumnedLayout implements ColumnedLayoutInterface
         $this->columnWidths = $widths;
 
         $this->activeColumn = 0;
-        $this->startCursor = $pdfDocument->getCursor();
-        $this->columnCursors[$this->activeColumn] = $this->startCursor;
 
-        $nextWidth = 0;
+        $cursor = $pdfDocument->getCursor();
+        $nextXStart = $cursor->getXCoordinate();
         $currentColumn = 0;
         do {
-            $this->columnStarts[$currentColumn] = $nextWidth;
-            $nextWidth += $this->columnWidths[$currentColumn] + $this->columnGutter;
+            $this->columnCursors[$currentColumn] = $cursor->setX($nextXStart);
+            $nextXStart += $this->columnWidths[$currentColumn] + $this->columnGutter;
         } while (++$currentColumn < $this->columnCount);
     }
 
@@ -104,14 +93,12 @@ class ColumnedLayout implements ColumnedLayoutInterface
             throw new \Exception('column must be smaller than the column count');
         }
 
+        // save current cursor
         $this->columnCursors[$this->activeColumn] = $this->pdfDocument->getCursor();
 
-        // set correct cursor/page
-        $xStart = $this->columnStarts[$column] + $this->startCursor->getXCoordinate();
-        $this->pdfDocument->setCursor($this->startCursor->setX($xStart));
-
-        // save
+        // set new cursor
         $this->activeColumn = $column;
+        $this->pdfDocument->setCursor($this->columnCursors[$this->activeColumn]);
     }
 
     /**
@@ -119,20 +106,23 @@ class ColumnedLayout implements ColumnedLayoutInterface
      */
     public function endLayout()
     {
-        $lowestCursor = $this->startCursor;
-        foreach ($this->columnCursors as $columnCursor) {
-            $lowestCursor = $lowestCursor->isLowerThan($columnCursor) ? $lowestCursor : $columnCursor;
+        $lowestCursor = $this->columnCursors[0];
+        for ($i = 1; $i < $this->columnCount; ++$i) {
+            $other = $this->columnCursors[$i];
+            if ($other->isLowerOnPageThan($lowestCursor)) {
+                $lowestCursor = $other;
+            }
         }
 
-        $this->pdfDocument->setCursor($lowestCursor->setX($this->startCursor->getXCoordinate()));
+        $this->pdfDocument->setCursor($lowestCursor->setX($this->columnCursors[0]->getXCoordinate()));
     }
 
     /**
-     * @return float[]
+     * @return int
      */
-    protected function getColumnWidths(): array
+    protected function getColumnCount(): int
     {
-        return $this->columnWidths;
+        return $this->columnCount;
     }
 
     /**
@@ -149,5 +139,17 @@ class ColumnedLayout implements ColumnedLayoutInterface
     protected function getActiveColumn(): int
     {
         return $this->activeColumn;
+    }
+
+    /**
+     * register a callable which prints to the pdf document
+     * The position of the cursor at the time the callable is invoked is decided by the layout
+     * ensure the cursor is below the printed content after the callable is finished to not mess up the layout.
+     *
+     * @param callable $callable takes a PdfDocumentInterface as first argument and the width as second
+     */
+    protected function registerPrintable(callable $callable)
+    {
+        $callable($this->pdfDocument, $this->columnWidths[$this->activeColumn]);
     }
 }

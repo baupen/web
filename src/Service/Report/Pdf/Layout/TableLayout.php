@@ -12,7 +12,6 @@
 namespace App\Service\Report\Pdf\Layout;
 
 use App\Service\Report\Document\Interfaces\Configuration\ColumnConfiguration;
-use App\Service\Report\Document\Interfaces\Layout\ColumnLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
@@ -26,17 +25,17 @@ class TableLayout implements TableLayoutInterface
     /**
      * @var float
      */
+    private $width;
+
+    /**
+     * @var float
+     */
     private $columnGutter;
 
     /**
      * @var float[]
      */
     private $columnWidths;
-
-    /**
-     * @var float
-     */
-    private $width;
 
     /**
      * @var int
@@ -57,8 +56,8 @@ class TableLayout implements TableLayoutInterface
         $this->width = $width;
         $this->columnGutter = $columnGutter;
 
+        $this->columnWidths = $this->calculateColumnWidths($columnConfiguration);
         $this->columnCount = \count($columnConfiguration);
-        $this->setColumnWidths($columnConfiguration);
     }
 
     /**
@@ -73,13 +72,11 @@ class TableLayout implements TableLayoutInterface
      * @param ColumnConfiguration[] $columnConfiguration
      *
      * @throws \Exception
+     *
+     * @return float[]
      */
-    private function setColumnWidths(array $columnConfiguration)
+    private function calculateColumnWidths(array $columnConfiguration)
     {
-        if ($this->columnWidths !== null) {
-            return;
-        }
-
         $gutterSpace = (\count($columnConfiguration) - 1) * $this->columnGutter;
         $availableWidth = $this->width - $gutterSpace;
 
@@ -108,37 +105,15 @@ class TableLayout implements TableLayoutInterface
                 $widths[$expandColumn] = $expandColumnWidth;
             }
         }
+
+        return $widths;
     }
 
     /**
-     * @param string[] $content
-     */
-    private function printRowInternal(array $content)
-    {
-        $cursor = $this->pdfDocument->getCursor();
-        $lowestCursor = $cursor;
-
-        $startX = $cursor->getXCoordinate();
-        $gutterWidth = $this->columnGutter;
-        for ($i = 0; $i < $this->columnCount; ++$i) {
-            $columnWidth = $this->columnWidths[$i];
-            $this->pdfDocument->printText($content[$i], $columnWidth);
-
-            $currentCursor = $this->pdfDocument->getCursor();
-            $lowestCursor = $currentCursor->isLowerThan($lowestCursor) ? $lowestCursor : $currentCursor;
-
-            $startX += $columnWidth + $gutterWidth;
-            $this->pdfDocument->setCursor($cursor->setX($startX));
-        }
-
-        $this->pdfDocument->setCursor($lowestCursor->setX($cursor->getXCoordinate()));
-    }
-
-    /**
-     * @return ColumnLayoutInterface
+     * @return TableRowLayout
      */
     public function startNewRow()
     {
-        return ColumnLayout::createWithPredefinedWidths($this->pdfDocument, $this->columnCount, $this->columnGutter, $this->columnWidths);
+        return new TableRowLayout($this->pdfDocument, $this->columnGutter, $this->width, $this->columnWidths);
     }
 }

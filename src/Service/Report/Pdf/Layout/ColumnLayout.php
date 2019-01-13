@@ -58,21 +58,32 @@ class ColumnLayout extends ColumnedLayout implements ColumnLayoutInterface
      * ensure the cursor is below the printed content after the callable is finished to not mess up the layout.
      *
      * @param callable $callable takes a PdfDocumentInterface as first argument and the width as second
+     *
+     * @throws \Exception
      */
     public function registerPrintable(callable $callable)
     {
         // set active cursor to highest cursor
         if ($this->isAutoColumn) {
+            // prepare variables
             $columnCursors = $this->getColumnCursors();
-            $highestCursor = $columnCursors[$this->getActiveColumn()];
+            $highestColumn = 0;
+            $highestCursor = $columnCursors[0];
+            $columnCount = $this->getColumnCount();
 
-            foreach ($columnCursors as $columnCursor) {
-                $highestCursor = $columnCursor->isLowerThan($highestCursor) ? $highestCursor : $columnCursor;
+            // get highest cursor
+            for ($i = 1; $i < $columnCount; ++$i) {
+                $otherCursor = $columnCursors[$i];
+
+                if (!$highestCursor->isLowerOnPageThan($otherCursor)) {
+                    $highestColumn = $i;
+                    $highestCursor = $otherCursor;
+                }
             }
 
-            $this->pdfDocument->setCursor($highestCursor);
+            $this->goToColumn($highestColumn);
         }
 
-        $callable($this->pdfDocument, $this->columnWidths[$this->activeColumn]);
+        parent::registerPrintable($callable);
     }
 }
