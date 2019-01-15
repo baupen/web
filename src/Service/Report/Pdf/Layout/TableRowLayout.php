@@ -86,12 +86,14 @@ class TableRowLayout extends ColumnedLayout implements TableRowLayoutInterface
         $startX = $this->getColumnCursors()[0]->getXCoordinate();
 
         $before = $this->pdfDocument->getCursor();
-        $before->setX($startX);
+        $before = $before->setX($startX);
         $after = $this->pdfDocument->cursorAfterwardsIfPrinted($emptyBuffer);
 
         $after->setX($startX + $this->fullWidth);
 
         $callable($this->pdfDocument, $this->fullWidth, $after);
+
+        $this->pdfDocument->setCursor($before);
     }
 
     /**
