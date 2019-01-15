@@ -118,6 +118,14 @@ class ColumnedLayout implements ColumnedLayoutInterface
     }
 
     /**
+     * @return float[]
+     */
+    public function getColumnWidths(): array
+    {
+        return $this->columnWidths;
+    }
+
+    /**
      * @return int
      */
     protected function getColumnCount(): int

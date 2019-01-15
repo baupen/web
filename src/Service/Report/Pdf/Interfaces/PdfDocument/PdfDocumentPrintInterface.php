@@ -20,6 +20,16 @@ interface PdfDocumentPrintInterface
     public function configurePrint(array $config = [], bool $restoreDefaults = true);
 
     /**
+     * @return object
+     */
+    public function getPrintConfiguration();
+
+    /**
+     * @param $printConfiguration
+     */
+    public function setPrintConfiguration($printConfiguration);
+
+    /**
      * @param string $text
      * @param float $width
      */

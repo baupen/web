@@ -35,6 +35,13 @@ interface PdfDocumentCursorInterface
     public function causesPageBreak(\Closure $printClosure);
 
     /**
+     * @param \Closure $printClosure
+     *
+     * @return Cursor
+     */
+    public function cursorAfterwardsIfPrinted(\Closure $printClosure);
+
+    /**
      * starts a new page & sets the cursor to the next page.
      */
     public function startNewPage();

@@ -13,6 +13,7 @@ namespace App\Service\Report\Pdf\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Pdf\Layout\Supporting\PrintBuffer;
 
 class GroupLayout implements GroupLayoutInterface
 {
@@ -27,9 +28,9 @@ class GroupLayout implements GroupLayoutInterface
     private $width;
 
     /**
-     * @var \Closure[]
+     * @var PrintBuffer
      */
-    private $buffer = [];
+    private $printBuffer;
 
     /**
      * ColumnLayout constructor.
@@ -41,6 +42,8 @@ class GroupLayout implements GroupLayoutInterface
     {
         $this->pdfDocument = $pdfDocument;
         $this->width = $width;
+
+        $this->printBuffer = new PrintBuffer($pdfDocument);
     }
 
     /**
@@ -48,11 +51,7 @@ class GroupLayout implements GroupLayoutInterface
      */
     public function endLayout()
     {
-        $emptyBuffer = function () {
-            foreach ($this->buffer as $item) {
-                $item();
-            }
-        };
+        $emptyBuffer = $this->printBuffer->invokePrintablesCallable();
 
         if ($this->pdfDocument->causesPageBreak($emptyBuffer)) {
             $this->pdfDocument->startNewPage();
@@ -70,11 +69,6 @@ class GroupLayout implements GroupLayoutInterface
      */
     public function registerPrintable(callable $callable)
     {
-        $pdfDocument = $this->pdfDocument;
-        $width = $this->width;
-
-        $this->buffer[] = function () use ($callable, $pdfDocument, $width) {
-            $callable($pdfDocument, $width);
-        };
+        $this->printBuffer->bufferPrintable($callable, [$this->width]);
     }
 }

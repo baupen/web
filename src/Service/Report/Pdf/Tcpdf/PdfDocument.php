@@ -223,4 +223,33 @@ class PdfDocument implements PdfDocumentInterface
 
         return [$cursorBefore, $cursorAfter];
     }
+
+    /**
+     * @return object
+     */
+    public function getPrintConfiguration()
+    {
+        return $this->printConfiguration;
+    }
+
+    /**
+     * @param $printConfiguration
+     */
+    public function setPrintConfiguration($printConfiguration)
+    {
+        $this->printConfiguration = $printConfiguration;
+        $this->printConfigurationHasChanged = true;
+    }
+
+    /**
+     * @param \Closure $printClosure
+     *
+     * @return Cursor
+     */
+    public function cursorAfterwardsIfPrinted(\Closure $printClosure)
+    {
+        [, $after] = $this->measureImpact($printClosure);
+
+        return $after;
+    }
 }
