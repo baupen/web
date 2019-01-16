@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Layout;
+namespace App\Service\Report\Pdf\Layout\Base;
 
 use App\Service\Report\Document\Interfaces\Layout\Base\ColumnedLayoutInterface;
 use App\Service\Report\Pdf\Cursor;
