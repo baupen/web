@@ -11,14 +11,17 @@
 
 namespace App\Service\Report\Pdf\Layout;
 
+use App\Service\Report\Document\Interfaces\Layout\Base\PrintTransactionInterface;
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
+use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentTransactionInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Pdf\Layout\Supporting\PrintBuffer;
+use App\Service\Report\Pdf\Layout\Supporting\PrintTransaction;
 
 class GroupLayout implements GroupLayoutInterface
 {
     /**
-     * @var PdfDocumentInterface
+     * @var PdfDocumentTransactionInterface
      */
     private $pdfDocument;
 
@@ -43,21 +46,28 @@ class GroupLayout implements GroupLayoutInterface
         $this->pdfDocument = $pdfDocument;
         $this->width = $width;
 
-        $this->printBuffer = new PrintBuffer($pdfDocument);
+        $this->printBuffer = new PrintBuffer($pdfDocument, $width);
     }
 
     /**
      * will end the columned layout.
+     *
+     * @return PrintTransactionInterface
      */
-    public function endLayout()
+    public function getTransaction()
     {
-        $emptyBuffer = $this->printBuffer->invokePrintablesCallable();
+        $printContent = $this->printBuffer->flushBufferClosure();
+        $transaction = new PrintTransaction($this->pdfDocument, $this->width, $printContent);
 
-        if ($this->pdfDocument->causesPageBreak($emptyBuffer)) {
-            $this->pdfDocument->startNewPage();
+        // start new page if needed
+        [$start, $end] = $transaction->calculatePrintArea();
+        if ($start->getPage() !== $end->getPage()) {
+            $transaction->setOnPreCommit(function (PdfDocumentInterface $pdfDocument) {
+                $pdfDocument->startNewPage();
+            });
         }
 
-        $emptyBuffer();
+        return $transaction;
     }
 
     /**
@@ -69,6 +79,6 @@ class GroupLayout implements GroupLayoutInterface
      */
     public function registerPrintable(callable $callable)
     {
-        $this->printBuffer->bufferPrintable($callable, [$this->width]);
+        $this->printBuffer->addPrintable($callable);
     }
 }

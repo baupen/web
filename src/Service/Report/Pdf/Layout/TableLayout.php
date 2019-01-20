@@ -13,12 +13,15 @@ namespace App\Service\Report\Pdf\Layout;
 
 use App\Service\Report\Document\Interfaces\Configuration\ColumnConfiguration;
 use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
+use App\Service\Report\Document\Interfaces\Layout\TableRowLayoutInterface;
+use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentTransactionInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Pdf\Layout\Supporting\PrintBuffer;
 
 class TableLayout implements TableLayoutInterface
 {
     /**
-     * @var PdfDocumentInterface
+     * @var PdfDocumentTransactionInterface
      */
     private $pdfDocument;
 
@@ -43,6 +46,11 @@ class TableLayout implements TableLayoutInterface
     private $columnCount;
 
     /**
+     * @var PrintBuffer
+     */
+    private $transaction;
+
+    /**
      * @param PdfDocumentInterface $pdfDocument
      * @param float $width
      * @param float $columnGutter
@@ -58,14 +66,24 @@ class TableLayout implements TableLayoutInterface
 
         $this->columnWidths = $this->calculateColumnWidths($columnConfiguration);
         $this->columnCount = \count($columnConfiguration);
+
+        $this->transaction = new PrintBuffer($this->pdfDocument, $width);
     }
 
     /**
      * will end the columned layout.
      */
-    public function endLayout()
+    public function getTransaction()
     {
-        // no specials here
+        return $this->transaction;
+    }
+
+    /**
+     * @return TableRowLayoutInterface
+     */
+    public function startNewRow()
+    {
+        return new TableRowLayout($this->pdfDocument, $this->columnGutter, $this->width, $this->columnWidths);
     }
 
     /**
@@ -107,13 +125,5 @@ class TableLayout implements TableLayoutInterface
         }
 
         return $widths;
-    }
-
-    /**
-     * @return TableRowLayout
-     */
-    public function startNewRow()
-    {
-        return new TableRowLayout($this->pdfDocument, $this->columnGutter, $this->width, $this->columnWidths);
     }
 }

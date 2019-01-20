@@ -28,28 +28,7 @@ interface PdfDocumentCursorInterface
     public function setCursor(Cursor $cursor);
 
     /**
-     * @param \Closure $printClosure
-     *
-     * @return bool
-     */
-    public function causesPageBreak(\Closure $printClosure);
-
-    /**
-     * @param \Closure $printClosure
-     *
-     * @return Cursor
-     */
-    public function cursorAfterwardsIfPrinted(\Closure $printClosure);
-
-    /**
      * starts a new page & sets the cursor to the next page.
      */
     public function startNewPage();
-
-    /**
-     * @param string $text
-     *
-     * @return float
-     */
-    public function calculateWidthOfText(string $text);
 }

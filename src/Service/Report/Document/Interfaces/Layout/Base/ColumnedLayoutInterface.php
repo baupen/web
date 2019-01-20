@@ -19,5 +19,5 @@ interface ColumnedLayoutInterface extends LayoutInterface
      *
      * @param int $column
      */
-    public function goToColumn(int $column);
+    public function setColumn(int $column);
 }

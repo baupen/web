@@ -11,46 +11,19 @@
 
 namespace App\Service\Report\Pdf\Layout\Base;
 
-use App\Service\Report\Document\Interfaces\Layout\Base\ColumnedLayoutInterface;
-use App\Service\Report\Pdf\Cursor;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
-class ColumnedLayout implements ColumnedLayoutInterface
+abstract class ColumnedLayout extends BaseColumnedLayout
 {
     /**
-     * @var PdfDocumentInterface
+     * @var int
      */
-    private $pdfDocument;
+    private $cursorPositionColumn = 0;
 
     /**
      * @var int
      */
-    private $columnCount;
-
-    /**
-     * @var float
-     */
-    private $totalWidth;
-
-    /**
-     * @var float[]
-     */
-    private $columnWidths;
-
-    /**
-     * @var float
-     */
-    private $columnGutter;
-
-    /**
-     * @var int
-     */
-    private $activeColumn = 0;
-
-    /**
-     * @var Cursor[]
-     */
-    private $columnCursors;
+    private $chosenColumn = 0;
 
     /**
      * ColumnLayout constructor.
@@ -62,21 +35,7 @@ class ColumnedLayout implements ColumnedLayoutInterface
      */
     protected function __construct(PdfDocumentInterface $pdfDocument, float $columnGutter, float $totalWidth, array $widths)
     {
-        $this->pdfDocument = $pdfDocument;
-        $this->columnCount = \count($widths);
-        $this->columnGutter = $columnGutter;
-        $this->totalWidth = $totalWidth;
-        $this->columnWidths = $widths;
-
-        $this->activeColumn = 0;
-
-        $cursor = $pdfDocument->getCursor();
-        $nextXStart = $cursor->getXCoordinate();
-        $currentColumn = 0;
-        do {
-            $this->columnCursors[$currentColumn] = $cursor->setX($nextXStart);
-            $nextXStart += $this->columnWidths[$currentColumn] + $this->columnGutter;
-        } while (++$currentColumn < $this->columnCount);
+        parent::__construct($pdfDocument, $columnGutter, $totalWidth, $widths);
     }
 
     /**
@@ -87,66 +46,13 @@ class ColumnedLayout implements ColumnedLayoutInterface
      *
      * @throws \Exception
      */
-    public function goToColumn(int $column)
+    public function setColumn(int $column)
     {
-        if ($column >= $this->columnCount) {
+        if ($column >= $this->getColumnCount()) {
             throw new \Exception('column must be smaller than the column count');
         }
 
-        // save current cursor
-        $this->columnCursors[$this->activeColumn] = $this->pdfDocument->getCursor();
-
-        // set new cursor
-        $this->activeColumn = $column;
-        $this->pdfDocument->setCursor($this->columnCursors[$this->activeColumn]);
-    }
-
-    /**
-     * will end the columned layout.
-     */
-    public function endLayout()
-    {
-        $lowestCursor = $this->columnCursors[0];
-        for ($i = 1; $i < $this->columnCount; ++$i) {
-            $other = $this->columnCursors[$i];
-            if ($other->isLowerOnPageThan($lowestCursor)) {
-                $lowestCursor = $other;
-            }
-        }
-
-        $this->pdfDocument->setCursor($lowestCursor->setX($this->columnCursors[0]->getXCoordinate()));
-    }
-
-    /**
-     * @return float[]
-     */
-    public function getColumnWidths(): array
-    {
-        return $this->columnWidths;
-    }
-
-    /**
-     * @return int
-     */
-    protected function getColumnCount(): int
-    {
-        return $this->columnCount;
-    }
-
-    /**
-     * @return Cursor[]
-     */
-    protected function getColumnCursors(): array
-    {
-        return $this->columnCursors;
-    }
-
-    /**
-     * @return int
-     */
-    protected function getActiveColumn(): int
-    {
-        return $this->activeColumn;
+        $this->chosenColumn = $column;
     }
 
     /**
@@ -155,9 +61,22 @@ class ColumnedLayout implements ColumnedLayoutInterface
      * ensure the cursor is below the printed content after the callable is finished to not mess up the layout.
      *
      * @param callable $callable takes a PdfDocumentInterface as first argument and the width as second
+     *
+     * @throws \Exception
      */
-    protected function registerPrintable(callable $callable)
+    public function registerPrintable(callable $callable)
     {
-        $callable($this->pdfDocument, $this->columnWidths[$this->activeColumn]);
+        $chosenColumn = $this->chosenColumn;
+
+        $setCursor = function () use ($chosenColumn) {
+            if ($this->cursorPositionColumn !== $chosenColumn) {
+                $this->switchColumns($this->cursorPositionColumn, $chosenColumn);
+                $this->cursorPositionColumn = $chosenColumn;
+            }
+
+            return $this->getColumnWidths()[$this->cursorPositionColumn];
+        };
+
+        $this->getPrintBuffer()->addPrintable($callable, $setCursor, $this->getColumnWidths()[$this->chosenColumn]);
     }
 }

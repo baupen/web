@@ -12,17 +12,11 @@
 namespace App\Service\Report\Pdf\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\ColumnLayoutInterface;
-use App\Service\Report\Pdf\Cursor;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Pdf\Layout\Base\ColumnedLayout;
 
 class ColumnLayout extends ColumnedLayout implements ColumnLayoutInterface
 {
-    /**
-     * @var bool
-     */
-    private $isAutoColumn;
-
     /**
      * ColumnLayout constructor.
      *
@@ -41,50 +35,5 @@ class ColumnLayout extends ColumnedLayout implements ColumnLayoutInterface
         }
 
         parent::__construct($pdfDocument, $columnGutter, $totalWidth, $columnWidths);
-    }
-
-    /**
-     * when printing something, the column with the least content is chosen automatically.
-     *
-     * @param bool $active
-     */
-    public function setAutoColumn(bool $active)
-    {
-        $this->isAutoColumn = $active;
-    }
-
-    /**
-     * register a callable which prints to the pdf document
-     * The position of the cursor at the time the callable is invoked is decided by the layout
-     * ensure the cursor is below the printed content after the callable is finished to not mess up the layout.
-     *
-     * @param callable $callable takes a PdfDocumentInterface as first argument and the width as second
-     *
-     * @throws \Exception
-     */
-    public function registerPrintable(callable $callable)
-    {
-        // set active cursor to highest cursor
-        if ($this->isAutoColumn) {
-            // prepare variables
-            $columnCursors = $this->getColumnCursors();
-            $highestColumn = 0;
-            $highestCursor = $columnCursors[0];
-            $columnCount = $this->getColumnCount();
-
-            // get highest cursor
-            for ($i = 1; $i < $columnCount; ++$i) {
-                $otherCursor = $columnCursors[$i];
-
-                if (!$highestCursor->isLowerOnPageThan($otherCursor)) {
-                    $highestColumn = $i;
-                    $highestCursor = $otherCursor;
-                }
-            }
-
-            $this->goToColumn($highestColumn);
-        }
-
-        parent::registerPrintable($callable);
     }
 }

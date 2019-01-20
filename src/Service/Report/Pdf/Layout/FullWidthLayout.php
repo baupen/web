@@ -11,38 +11,41 @@
 
 namespace App\Service\Report\Pdf\Layout;
 
+use App\Service\Report\Document\Interfaces\Layout\Base\PrintTransactionInterface;
 use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Pdf\Layout\Supporting\PrintBuffer;
+use App\Service\Report\Pdf\Layout\Supporting\PrintTransaction;
 
 class FullWidthLayout implements FullWidthLayoutInterface
 {
-    /**
-     * @var float
-     */
-    private $width;
-
     /**
      * @var PdfDocumentInterface
      */
     private $pdfDocument;
 
     /**
+     * @var float
+     */
+    private $width;
+
+    /**
+     * @var PrintBuffer
+     */
+    private $buffer;
+
+    /**
      * ColumnLayout constructor.
      *
+     * @param PdfDocumentInterface $pdfDocument
      * @param float $width
      */
     public function __construct(PdfDocumentInterface $pdfDocument, float $width)
     {
-        $this->width = $width;
         $this->pdfDocument = $pdfDocument;
-    }
+        $this->width = $width;
 
-    /**
-     * will end the columned layout.
-     */
-    public function endLayout()
-    {
-        // no need to act here
+        $this->buffer = new PrintBuffer($pdfDocument, $width);
     }
 
     /**
@@ -54,6 +57,16 @@ class FullWidthLayout implements FullWidthLayoutInterface
      */
     public function registerPrintable(callable $callable)
     {
-        $callable($this->pdfDocument, $this->width);
+        $this->buffer->addPrintable($callable);
+    }
+
+    /**
+     * will end the columned layout.
+     *
+     * @return PrintTransactionInterface
+     */
+    public function getTransaction()
+    {
+        return new PrintTransaction($this->pdfDocument, $this->width, $this->buffer->flushBufferClosure());
     }
 }

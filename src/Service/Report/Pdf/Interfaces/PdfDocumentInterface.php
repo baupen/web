@@ -13,8 +13,9 @@ namespace App\Service\Report\Pdf\Interfaces;
 
 use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentCursorInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentPrintInterface;
+use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentTransactionInterface;
 
-interface PdfDocumentInterface extends PdfDocumentCursorInterface, PdfDocumentPrintInterface
+interface PdfDocumentInterface extends PdfDocumentCursorInterface, PdfDocumentPrintInterface, PdfDocumentTransactionInterface
 {
     /**
      * @return string

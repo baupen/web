@@ -18,7 +18,7 @@ class PrintBuffer
     /**
      * @var callable[]
      */
-    private $buffer;
+    private $printBuffer;
 
     /**
      * @var PdfDocumentInterface
@@ -26,45 +26,54 @@ class PrintBuffer
     private $pdfDocument;
 
     /**
+     * @var float
+     */
+    private $width;
+
+    /**
      * PrintBuffer constructor.
      *
      * @param PdfDocumentInterface $pdfDocument
+     * @param float $width
      */
-    public function __construct(PdfDocumentInterface $pdfDocument)
+    public function __construct(PdfDocumentInterface $pdfDocument, float $width)
     {
         $this->pdfDocument = $pdfDocument;
+        $this->width = $width;
+    }
+
+    /**
+     * @param callable $callable
+     * @param callable $setCursor
+     * @param null $widthOverride
+     */
+    public function addPrintable(callable $callable, callable $setCursor = null, $widthOverride = null)
+    {
+        $pdfDocument = $this->pdfDocument;
+        $width = $widthOverride === null ? $this->width : $widthOverride;
+
+        $printConfig = $pdfDocument->getPrintConfiguration();
+
+        $this->printBuffer[] = function () use ($pdfDocument, $width, $setCursor, $callable, $printConfig) {
+            $pdfDocument->setPrintConfiguration($printConfig);
+
+            if (\is_callable($setCursor)) {
+                $width = $setCursor($pdfDocument);
+            }
+
+            $callable($pdfDocument, $width);
+        };
     }
 
     /**
      * @return \Closure
      */
-    public function invokePrintablesCallable()
+    public function flushBufferClosure(): \Closure
     {
-        $buffer = $this->buffer;
-
-        return function () use ($buffer) {
-            foreach ($buffer as $item) {
+        return function () {
+            foreach ($this->printBuffer as $item) {
                 $item();
             }
-        };
-    }
-
-    /**
-     * @param callable $callable
-     * @param array $callableArgs
-     */
-    public function bufferPrintable(callable $callable, array $callableArgs)
-    {
-        $pdfDocument = $this->pdfDocument;
-
-        $printConfig = $pdfDocument->getPrintConfiguration();
-        $cursor = $pdfDocument->getCursor();
-
-        $this->buffer[] = function () use ($pdfDocument, $callable, $callableArgs, $printConfig, $cursor) {
-            $pdfDocument->setCursor($cursor);
-            $pdfDocument->setPrintConfiguration($printConfig);
-
-            $callable($pdfDocument, ...$callableArgs);
         };
     }
 }

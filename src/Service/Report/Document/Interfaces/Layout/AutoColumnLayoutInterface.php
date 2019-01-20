@@ -9,14 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document\Interfaces\Layout\Base;
+namespace App\Service\Report\Document\Interfaces\Layout;
 
-interface LayoutInterface
+use App\Service\Report\Document\Interfaces\Layout\Base\PrintableLayoutInterface;
+
+interface AutoColumnLayoutInterface extends PrintableLayoutInterface
 {
-    /**
-     * will end the columned layout.
-     *
-     * @return PrintTransactionInterface
-     */
-    public function getTransaction();
 }

@@ -11,7 +11,7 @@
 
 namespace App\Service\Report\Pdf\Interfaces\PdfDocument;
 
-interface PdfDocumentPrintInterface
+interface PdfDocumentPrintInterface extends PdfDocumentCursorInterface
 {
     /**
      * @param array $config

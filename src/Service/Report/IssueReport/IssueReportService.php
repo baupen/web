@@ -51,7 +51,7 @@ class IssueReportService implements IssueReportServiceInterface
             $buildingBlocks->printImage($introductionContent->getConstructionSiteImage());
         }
 
-        $columnedLayout->goToColumn(1);
+        $columnedLayout->setColumn(1);
 
         $buildingBlocks->printTitle($introductionContent->getConstructionSiteName());
         $buildingBlocks->printParagraph(implode(', ', $introductionContent->getConstructionSiteAddressLines()));
@@ -60,7 +60,7 @@ class IssueReportService implements IssueReportServiceInterface
         $buildingBlocks->printTitle($reportElementsTitle);
         $buildingBlocks->printParagraph(implode(', ', $introductionContent->getReportElements()));
 
-        $columnedLayout->goToColumn(3);
+        $columnedLayout->setColumn(3);
 
         $filterTitle = $this->translator->trans('entity.name', [], 'entity_filter');
         $buildingBlocks->printTitle($filterTitle);
@@ -78,7 +78,7 @@ class IssueReportService implements IssueReportServiceInterface
         $buildingBlocks->setLayout($layout);
 
         $buildingBlocks->printTitle($aggregatedIssuesContent->getTableDescription());
-        $layout->endLayout();
+        $layout->getTransaction();
 
         // prepare table column config
         $tableColumnConfig = [];
@@ -106,7 +106,7 @@ class IssueReportService implements IssueReportServiceInterface
         $this->printTable($tableLayout, $buildingBlocks, $tableHeader, $tableContent);
 
         // terminate layout
-        $tableLayout->endLayout();
+        $tableLayout->getTransaction();
     }
 
     /**
@@ -123,11 +123,11 @@ class IssueReportService implements IssueReportServiceInterface
         $buildingBlocks->setLayout($row);
 
         for ($i = 0; $i < $columnLength; ++$i) {
-            $row->goToColumn($i);
+            $row->setColumn($i);
             $buildingBlocks->printParagraph($tableHeader[$i]);
         }
 
-        $row->endLayout();
+        $row->getTransaction();
     }
 
     /**
@@ -147,7 +147,7 @@ class IssueReportService implements IssueReportServiceInterface
         if ($mapImage !== null) {
             $buildingBlocks->printImage($mapImage);
         }
-        $groupLayout->endLayout();
+        $groupLayout->getTransaction();
 
         // prepare table column config
         $tableColumnConfig = [new ColumnConfiguration(ColumnConfiguration::SIZING_BY_TEXT)];
@@ -157,11 +157,11 @@ class IssueReportService implements IssueReportServiceInterface
         }
 
         // print issue table
-        $tableLayout = $report->createTableLayout($tableConfig, $tableColumnConfig);
+        $tableLayout = $report->createTableLayout($tableColumnConfig);
         $tableLayout->printHeader($mapContent->getIssuesTableHeader());
         // TODO: needs work; row printing not implemented yet
         $tableLayout->printRow($mapContent->getIssuesTableContent());
-        $tableLayout->endLayout();
+        $tableLayout->getTransaction();
 
         if (\count($mapContent->getIssueImages()) > 0) {
             $columnLayout = $report->createColumnLayout(4);
