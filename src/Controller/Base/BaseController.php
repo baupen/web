@@ -114,6 +114,10 @@ class BaseController extends AbstractController
         /** @var UserToken $user */
         $user = parent::getUser();
 
+        if ($user === null) {
+            return null;
+        }
+
         // early return if found in cache
         if (isset($this->userCache[$user->getUsername()])) {
             return $this->userCache[$user->getUsername()];

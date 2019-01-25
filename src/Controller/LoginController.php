@@ -42,6 +42,11 @@ class LoginController extends BaseLoginController
      */
     public function indexAction(Request $request)
     {
+        // relink if already logged in
+        if ($this->getUser() !== null) {
+            return $this->redirectToRoute('dashboard');
+        }
+
         $form = $this->createForm(LoginType::class);
         $form->add('login.submit', SubmitType::class, ['translation_domain' => 'login']);
         $this->handleLoginForm(
