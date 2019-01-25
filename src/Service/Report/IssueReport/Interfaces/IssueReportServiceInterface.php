@@ -33,9 +33,9 @@ interface IssueReportServiceInterface
     public function addAggregatedIssueTable(LayoutFactoryInterface $layoutFactory, BuildingBlocksInterface $buildingBlocks, AggregatedIssuesContent $aggregatedIssuesContent);
 
     /**
-     * @param LayoutFactoryInterface $report
+     * @param LayoutFactoryInterface $layoutFactory
      * @param BuildingBlocksInterface $buildingBlocks
      * @param MapContent $mapContent
      */
-    public function addMap(LayoutFactoryInterface $report, BuildingBlocksInterface $buildingBlocks, MapContent $mapContent);
+    public function addMap(LayoutFactoryInterface $layoutFactory, BuildingBlocksInterface $buildingBlocks, MapContent $mapContent);
 }

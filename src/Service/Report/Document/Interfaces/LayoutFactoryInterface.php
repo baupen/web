@@ -12,6 +12,7 @@
 namespace App\Service\Report\Document\Interfaces;
 
 use App\Service\Report\Document\Interfaces\Configuration\ColumnConfiguration;
+use App\Service\Report\Document\Interfaces\Layout\AutoColumnLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\ColumnLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
@@ -43,6 +44,15 @@ interface LayoutFactoryInterface
      * @return ColumnLayoutInterface
      */
     public function createColumnLayout(int $columnCount);
+
+    /**
+     * starts a region with columns and the column is chosen automatically.
+     *
+     * @param int $columnCount
+     *
+     * @return AutoColumnLayoutInterface
+     */
+    public function createAutoColumnLayout(int $columnCount);
 
     /**
      * starts a table.

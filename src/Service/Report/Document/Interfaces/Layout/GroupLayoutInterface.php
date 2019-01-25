@@ -11,9 +11,9 @@
 
 namespace App\Service\Report\Document\Interfaces\Layout;
 
-use App\Service\Report\Document\Interfaces\Layout\Base\LayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\Base\PrintableLayoutInterface;
+use App\Service\Report\Document\Interfaces\Layout\Base\RootLayoutInterface;
 
-interface GroupLayoutInterface extends LayoutInterface, PrintableLayoutInterface
+interface GroupLayoutInterface extends RootLayoutInterface, PrintableLayoutInterface
 {
 }

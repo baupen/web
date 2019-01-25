@@ -13,14 +13,12 @@ namespace App\Service\Report\IssueReport;
 
 use App\Service\Report\Document\Interfaces\Configuration\ColumnConfiguration;
 use App\Service\Report\Document\Interfaces\Configuration\Table;
-use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
 use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
 use App\Service\Report\IssueReport\Interfaces\BuildingBlocksInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
 use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
 use App\Service\Report\IssueReport\Model\IntroductionContent;
 use App\Service\Report\IssueReport\Model\MapContent;
-use App\Service\Report\Pdf\Layout\TableLayout;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class IssueReportService implements IssueReportServiceInterface
@@ -65,20 +63,22 @@ class IssueReportService implements IssueReportServiceInterface
         $filterTitle = $this->translator->trans('entity.name', [], 'entity_filter');
         $buildingBlocks->printTitle($filterTitle);
         $buildingBlocks->printKeyValueParagraph($introductionContent->getFilterEntries());
+
+        $columnedLayout->getTransaction()->commit();
     }
 
     /**
-     * @param LayoutFactoryInterface $document
+     * @param LayoutFactoryInterface $layoutFactory
      * @param BuildingBlocksInterface $buildingBlocks
      * @param AggregatedIssuesContent $aggregatedIssuesContent
      */
-    public function addAggregatedIssueTable(LayoutFactoryInterface $document, BuildingBlocksInterface $buildingBlocks, AggregatedIssuesContent $aggregatedIssuesContent)
+    public function addAggregatedIssueTable(LayoutFactoryInterface $layoutFactory, BuildingBlocksInterface $buildingBlocks, AggregatedIssuesContent $aggregatedIssuesContent)
     {
-        $layout = $document->createFullWidthLayout();
+        $layout = $layoutFactory->createFullWidthLayout();
         $buildingBlocks->setLayout($layout);
 
         $buildingBlocks->printTitle($aggregatedIssuesContent->getTableDescription());
-        $layout->getTransaction();
+        $layout->getTransaction()->commit();
 
         // prepare table column config
         $tableColumnConfig = [];
@@ -91,9 +91,6 @@ class IssueReportService implements IssueReportServiceInterface
             $tableColumnConfig[] = new ColumnConfiguration(ColumnConfiguration::SIZING_BY_TEXT, $statusTableHeaders[$i]);
         }
 
-        // prepare table layout
-        $tableLayout = $document->createTableLayout($tableColumnConfig);
-
         // prepare content
         $tableHeader = array_merge($aggregatedIssuesContent->getIdentifierHeader(), $aggregatedIssuesContent->getIssuesHeader());
         $rowCount = \count($aggregatedIssuesContent->getIdentifierContent());
@@ -103,20 +100,21 @@ class IssueReportService implements IssueReportServiceInterface
         }
 
         // print styled table
-        $this->printTable($tableLayout, $buildingBlocks, $tableHeader, $tableContent);
-
-        // terminate layout
-        $tableLayout->getTransaction();
+        $this->printTable($layoutFactory, $buildingBlocks, $tableColumnConfig, $tableHeader, $tableContent);
     }
 
     /**
-     * @param TableLayoutInterface $tableLayout
+     * @param LayoutFactoryInterface $layoutFactory
      * @param BuildingBlocksInterface $buildingBlocks
+     * @param array $tableColumnConfig
      * @param string[] $tableHeader
      * @param string[][] $tableContent
      */
-    private function printTable(TableLayoutInterface $tableLayout, BuildingBlocksInterface $buildingBlocks, array $tableHeader, array $tableContent)
+    private function printTable(LayoutFactoryInterface $layoutFactory, BuildingBlocksInterface $buildingBlocks, array $tableColumnConfig, array $tableHeader, array $tableContent)
     {
+        // prepare table layout
+        $tableLayout = $layoutFactory->createTableLayout($tableColumnConfig);
+
         $columnLength = \count($tableHeader);
 
         $row = $tableLayout->startNewRow();
@@ -128,16 +126,19 @@ class IssueReportService implements IssueReportServiceInterface
         }
 
         $row->getTransaction();
+
+        // terminate layout
+        $tableLayout->getTransaction()->commit();
     }
 
     /**
-     * @param LayoutFactoryInterface $report
+     * @param LayoutFactoryInterface $layoutFactory
      * @param BuildingBlocksInterface $buildingBlocks
      * @param MapContent $mapContent
      */
-    public function addMap(LayoutFactoryInterface $report, BuildingBlocksInterface $buildingBlocks, MapContent $mapContent)
+    public function addMap(LayoutFactoryInterface $layoutFactory, BuildingBlocksInterface $buildingBlocks, MapContent $mapContent)
     {
-        $groupLayout = $report->createGroupLayout();
+        $groupLayout = $layoutFactory->createGroupLayout();
         $buildingBlocks->setLayout($groupLayout);
 
         $buildingBlocks->printTitle($mapContent->getMapName());
@@ -147,7 +148,7 @@ class IssueReportService implements IssueReportServiceInterface
         if ($mapImage !== null) {
             $buildingBlocks->printImage($mapImage);
         }
-        $groupLayout->getTransaction();
+        $groupLayout->getTransaction()->commit();
 
         // prepare table column config
         $tableColumnConfig = [new ColumnConfiguration(ColumnConfiguration::SIZING_BY_TEXT)];
@@ -156,20 +157,17 @@ class IssueReportService implements IssueReportServiceInterface
             $tableColumnConfig[] = new ColumnConfiguration(ColumnConfiguration::SIZING_EXPAND);
         }
 
-        // print issue table
-        $tableLayout = $report->createTableLayout($tableColumnConfig);
-        $tableLayout->printHeader($mapContent->getIssuesTableHeader());
-        // TODO: needs work; row printing not implemented yet
-        $tableLayout->printRow($mapContent->getIssuesTableContent());
-        $tableLayout->getTransaction();
+        $this->printTable($layoutFactory, $buildingBlocks, $tableColumnConfig, $mapContent->getIssuesTableHeader(), $mapContent->getIssuesTableContent());
 
         if (\count($mapContent->getIssueImages()) > 0) {
-            $columnLayout = $report->createColumnLayout(4);
-            $columnLayout->setAutoColumn(true);
+            $columnLayout = $layoutFactory->createAutoColumnLayout(4);
+            $buildingBlocks->setLayout($columnLayout);
 
             foreach ($mapContent->getIssueImages() as $image) {
                 $buildingBlocks->printIssueImage($image->getImagePath(), $image->getNumber());
             }
+
+            $columnLayout->getTransaction()->commit();
         }
     }
 }

@@ -11,7 +11,7 @@
 
 namespace App\Service\Report\Document\Interfaces\Layout\Base;
 
-interface PrintableLayoutInterface extends LayoutInterface
+interface PrintableLayoutInterface
 {
     /**
      * register a callable which prints to the document

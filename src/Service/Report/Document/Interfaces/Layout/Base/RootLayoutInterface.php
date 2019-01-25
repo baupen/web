@@ -11,10 +11,10 @@
 
 namespace App\Service\Report\Document\Interfaces\Layout\Base;
 
-interface LayoutInterface
+interface RootLayoutInterface
 {
     /**
-     * will end the columned layout.
+     * will produce a transaction with the to-be-printed document.
      *
      * @return PrintTransactionInterface
      */

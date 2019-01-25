@@ -13,7 +13,8 @@ namespace App\Service\Report\Document\Interfaces\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\Base\ColumnedLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\Base\PrintableLayoutInterface;
+use App\Service\Report\Document\Interfaces\Layout\Base\RootLayoutInterface;
 
-interface ColumnLayoutInterface extends ColumnedLayoutInterface, PrintableLayoutInterface
+interface ColumnLayoutInterface extends ColumnedLayoutInterface, RootLayoutInterface, PrintableLayoutInterface
 {
 }

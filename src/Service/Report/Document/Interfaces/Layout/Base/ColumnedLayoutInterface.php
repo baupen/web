@@ -11,7 +11,7 @@
 
 namespace App\Service\Report\Document\Interfaces\Layout\Base;
 
-interface ColumnedLayoutInterface extends LayoutInterface
+interface ColumnedLayoutInterface
 {
     /**
      * ensures the next printed elements are printed in the specified column

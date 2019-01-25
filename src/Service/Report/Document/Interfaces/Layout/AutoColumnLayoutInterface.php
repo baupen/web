@@ -12,7 +12,8 @@
 namespace App\Service\Report\Document\Interfaces\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\Base\PrintableLayoutInterface;
+use App\Service\Report\Document\Interfaces\Layout\Base\RootLayoutInterface;
 
-interface AutoColumnLayoutInterface extends PrintableLayoutInterface
+interface AutoColumnLayoutInterface extends RootLayoutInterface, PrintableLayoutInterface
 {
 }
