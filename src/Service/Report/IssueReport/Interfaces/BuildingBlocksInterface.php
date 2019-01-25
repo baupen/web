@@ -12,6 +12,7 @@
 namespace App\Service\Report\IssueReport\Interfaces;
 
 use App\Service\Report\Document\Interfaces\Layout\Base\PrintableLayoutInterface;
+use App\Service\Report\Pdf\Cursor;
 
 interface BuildingBlocksInterface
 {
@@ -24,13 +25,6 @@ interface BuildingBlocksInterface
      * @param string $paragraph
      */
     public function printParagraph(string $paragraph);
-
-    /**
-     * will call the closure with the printer as the first and the default width as the second argument.
-     *
-     * @param \Closure $param
-     */
-    public function printCustom(\Closure $param);
 
     /**
      * @param string[] $keyValues
@@ -57,4 +51,10 @@ interface BuildingBlocksInterface
      * @param int $number
      */
     public function printIssueImage(string $imagePath, int $number);
+
+    /**
+     * @param Cursor $start
+     * @param Cursor $end
+     */
+    public function drawTableAlternatingBackground(Cursor $start, Cursor $end);
 }

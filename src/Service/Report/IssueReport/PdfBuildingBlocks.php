@@ -14,6 +14,7 @@ namespace App\Service\Report\IssueReport;
 use App\Helper\ImageHelper;
 use App\Service\Report\Document\Interfaces\Layout\Base\PrintableLayoutInterface;
 use App\Service\Report\IssueReport\Interfaces\BuildingBlocksInterface;
+use App\Service\Report\Pdf\Cursor;
 use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Design\TypographyService;
@@ -158,5 +159,14 @@ class PdfBuildingBlocks implements BuildingBlocksInterface
         $this->layout->registerPrintable(function (PdfDocumentPrintInterface $document, float $defaultWidth) use ($param) {
             $param($document, $defaultWidth);
         });
+    }
+
+    /**
+     * @param Cursor $start
+     * @param Cursor $end
+     */
+    public function drawTableAlternatingBackground(Cursor $start, Cursor $end)
+    {
+        //TODO: factor out to Drawer or something
     }
 }

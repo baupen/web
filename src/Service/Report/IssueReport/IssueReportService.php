@@ -13,6 +13,8 @@ namespace App\Service\Report\IssueReport;
 
 use App\Service\Report\Document\Interfaces\Configuration\ColumnConfiguration;
 use App\Service\Report\Document\Interfaces\Configuration\Table;
+use App\Service\Report\Document\Interfaces\Layout\Base\PrintTransactionInterface;
+use App\Service\Report\Document\Interfaces\Layout\TableRowLayoutInterface;
 use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
 use App\Service\Report\IssueReport\Interfaces\BuildingBlocksInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
@@ -115,20 +117,40 @@ class IssueReportService implements IssueReportServiceInterface
         // prepare table layout
         $tableLayout = $layoutFactory->createTableLayout($tableColumnConfig);
 
-        $columnLength = \count($tableHeader);
+        $this->printTableRow($tableLayout->startNewRow(), $buildingBlocks, $tableHeader);
 
-        $row = $tableLayout->startNewRow();
-        $buildingBlocks->setLayout($row);
-
-        for ($i = 0; $i < $columnLength; ++$i) {
-            $row->setColumn($i);
-            $buildingBlocks->printParagraph($tableHeader[$i]);
+        foreach ($tableContent as $row) {
+            $this->printTableRow($tableLayout->startNewRow(), $buildingBlocks, $row);
         }
 
-        $row->getTransaction();
+        $counter = 0;
+        $tableLayout->setOnRowCommit(function (PrintTransactionInterface $printTransaction) use (&$counter, $buildingBlocks) {
+            if ($counter % 2 === 1) {
+                $area = $printTransaction->calculatePrintArea();
+                $buildingBlocks->drawTableAlternatingBackground(...$area);
+            }
+
+            ++$counter;
+        });
 
         // terminate layout
         $tableLayout->getTransaction()->commit();
+    }
+
+    /**
+     * @param TableRowLayoutInterface $row
+     * @param BuildingBlocksInterface $buildingBlocks
+     * @param string[] $rowContent
+     */
+    private function printTableRow(TableRowLayoutInterface $row, BuildingBlocksInterface $buildingBlocks, array $rowContent)
+    {
+        $buildingBlocks->setLayout($row);
+
+        $columnLength = \count($rowContent);
+        for ($i = 0; $i < $columnLength; ++$i) {
+            $row->setColumn($i);
+            $buildingBlocks->printParagraph($rowContent[$i]);
+        }
     }
 
     /**

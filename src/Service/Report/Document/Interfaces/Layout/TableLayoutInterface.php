@@ -19,4 +19,9 @@ interface TableLayoutInterface extends RootLayoutInterface
      * @return TableRowLayoutInterface
      */
     public function startNewRow();
+
+    /**
+     * @param callable $callable
+     */
+    public function setOnRowCommit(callable $callable): void;
 }

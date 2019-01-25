@@ -12,11 +12,12 @@
 namespace App\Service\Report\Pdf\Layout;
 
 use App\Service\Report\Document\Interfaces\Configuration\ColumnConfiguration;
+use App\Service\Report\Document\Interfaces\Layout\Base\PrintTransactionInterface;
 use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\TableRowLayoutInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentTransactionInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Layout\Supporting\PrintBuffer;
+use App\Service\Report\Pdf\Layout\Supporting\PrintTransaction;
 
 class TableLayout implements TableLayoutInterface
 {
@@ -46,9 +47,14 @@ class TableLayout implements TableLayoutInterface
     private $columnCount;
 
     /**
-     * @var PrintBuffer
+     * @var TableRowLayout[]
      */
-    private $transaction;
+    private $rows;
+
+    /**
+     * @var callable
+     */
+    private $onRowCommit;
 
     /**
      * @param PdfDocumentInterface $pdfDocument
@@ -66,16 +72,14 @@ class TableLayout implements TableLayoutInterface
 
         $this->columnWidths = $this->calculateColumnWidths($columnConfiguration);
         $this->columnCount = \count($columnConfiguration);
-
-        $this->transaction = new PrintBuffer($this->pdfDocument, $width);
     }
 
     /**
-     * will end the columned layout.
+     * @param callable $callable
      */
-    public function getTransaction()
+    public function setOnRowCommit(callable $callable): void
     {
-        return $this->transaction;
+        $this->onRowCommit = $callable;
     }
 
     /**
@@ -83,7 +87,30 @@ class TableLayout implements TableLayoutInterface
      */
     public function startNewRow()
     {
-        return new TableRowLayout($this->pdfDocument, $this->columnGutter, $this->width, $this->columnWidths);
+        $layout = new TableRowLayout($this->pdfDocument, $this->columnGutter, $this->width, $this->columnWidths);
+        $this->rows[] = $layout;
+
+        return $layout;
+    }
+
+    /**
+     * will produce a transaction with the to-be-printed document.
+     *
+     * @return PrintTransactionInterface
+     */
+    public function getTransaction()
+    {
+        $flushRows = function () {
+            foreach ($this->rows as $row) {
+                $transaction = $row->getTransaction();
+                if ($this->onRowCommit !== null) {
+                    $this->onRowCommit($transaction);
+                }
+                $transaction->commit();
+            }
+        };
+
+        return new PrintTransaction($this->pdfDocument, $this->width, $flushRows);
     }
 
     /**
