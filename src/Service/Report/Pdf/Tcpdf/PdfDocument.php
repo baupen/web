@@ -13,7 +13,6 @@ namespace App\Service\Report\Pdf\Tcpdf;
 
 use App\Service\Report\Pdf\Cursor;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Tcpdf\Configuration\DrawConfiguration;
 use App\Service\Report\Pdf\Tcpdf\Configuration\PrintConfiguration;
 
 /**
@@ -36,27 +35,17 @@ class PdfDocument implements PdfDocumentInterface
     /**
      * @var PrintConfiguration
      */
-    private $printConfiguration;
+    private $configuration;
 
     /**
      * @var bool
      */
-    private $printConfigurationChanged = true;
+    private $configurationChanged = true;
 
     /**
-     * @var DrawConfiguration
+     * @var float
      */
-    private $drawConfiguration;
-
-    /**
-     * @var bool
-     */
-    private $drawConfigurationChanged = true;
-
-    /**
-     * @var bool
-     */
-    private $appliedConfiguration = null;
+    private $marginBottom = 0;
 
     /**
      * PdfDocument constructor.
@@ -69,7 +58,7 @@ class PdfDocument implements PdfDocumentInterface
         $this->pdf->SetCreator(PDF_CREATOR);
 
         $this->identifier = uniqid();
-        $this->printConfiguration = new PrintConfiguration();
+        $this->configuration = new PrintConfiguration();
     }
 
     /**x
@@ -89,9 +78,9 @@ class PdfDocument implements PdfDocumentInterface
     {
         $this->ensurePrintConfigurationApplied();
 
-        $align = $this->printConfiguration->getAlignment();
-        $fill = $this->printConfiguration->getFill();
-        $border = $this->printConfiguration->getBorder();
+        $align = $this->configuration->getAlignment();
+        $fill = $this->configuration->getFill();
+        $border = $this->configuration->getBorder();
 
         $this->pdf->MultiCell($width, 0, $text, $border, $align, $fill);
     }
@@ -101,13 +90,12 @@ class PdfDocument implements PdfDocumentInterface
      */
     private function ensurePrintConfigurationApplied()
     {
-        if (!$this->printConfigurationChanged && $this->appliedConfiguration === 'print') {
+        if (!$this->configurationChanged) {
             return;
         }
 
-        $this->printConfiguration->apply($this->pdf);
-        $this->printConfigurationChanged = false;
-        $this->appliedConfiguration = 'print';
+        $this->configuration->apply($this->pdf);
+        $this->configurationChanged = false;
     }
 
     /**
@@ -146,6 +134,8 @@ class PdfDocument implements PdfDocumentInterface
     {
         $this->pdf->SetMargins($marginLeft, $marginTop, $marginRight);
         $this->pdf->SetAutoPageBreak(true, $marginBottom);
+
+        $this->marginBottom = $marginBottom;
     }
 
     /**
@@ -157,7 +147,7 @@ class PdfDocument implements PdfDocumentInterface
     {
         $this->ensurePrintConfigurationApplied();
 
-        $align = $this->printConfiguration->getAlignment();
+        $align = $this->configuration->getAlignment();
 
         $this->pdf->Image($imagePath, '', '', $width, $height, '', '', $align);
     }
@@ -198,15 +188,15 @@ class PdfDocument implements PdfDocumentInterface
      *
      * @throws \Exception
      */
-    public function configurePrint(array $config = [], bool $restoreDefaults = true)
+    public function configure(array $config = [], bool $restoreDefaults = true)
     {
-        $this->printConfigurationChanged = true;
+        $this->configurationChanged = true;
 
         if ($restoreDefaults) {
-            $this->printConfiguration = new PrintConfiguration();
+            $this->configuration = new PrintConfiguration();
         }
 
-        $this->printConfiguration->setConfiguration($config);
+        $this->configuration->setConfiguration($config);
     }
 
     /**
@@ -246,18 +236,18 @@ class PdfDocument implements PdfDocumentInterface
     /**
      * @return PrintConfiguration
      */
-    public function getPrintConfiguration()
+    public function getConfiguration()
     {
-        return $this->printConfiguration;
+        return $this->configuration;
     }
 
     /**
      * @param PrintConfiguration $printConfiguration
      */
-    public function setPrintConfiguration(PrintConfiguration $printConfiguration)
+    public function setConfiguration(PrintConfiguration $printConfiguration)
     {
-        $this->printConfiguration = $printConfiguration;
-        $this->printConfigurationChanged = true;
+        $this->configuration = $printConfiguration;
+        $this->configurationChanged = true;
     }
 
     /**
@@ -273,60 +263,43 @@ class PdfDocument implements PdfDocumentInterface
     }
 
     /**
-     * applies the config if it has changed.
-     */
-    private function ensureDrawConfigurationApplied()
-    {
-        if (!$this->drawConfigurationChanged && $this->appliedConfiguration === 'draw') {
-            return;
-        }
-
-        $this->drawConfiguration->apply($this->pdf);
-        $this->drawConfigurationChanged = false;
-        $this->appliedConfiguration = 'draw';
-    }
-
-    /**
-     * @param array $config
-     * @param bool $restoreDefaults
+     * @param Cursor $target
      *
      * @throws \Exception
      */
-    public function configureDraw(array $config = [], bool $restoreDefaults = true)
+    public function drawUntil(Cursor $target)
     {
-        $this->drawConfigurationChanged = true;
+        $start = $this->getCursor();
+        $current = $start;
 
-        if ($restoreDefaults) {
-            $this->drawConfiguration = new DrawConfiguration();
+        // switch cursors if other order than expected
+        if ($current->isLowerOnPageThan($target)) {
+            $current = $target;
+            $target = $start;
         }
 
-        $this->drawConfiguration->setConfiguration($config);
-    }
+        // draws between the two specified cursors
+        $drawBetween = function (Cursor $source, Cursor $target) {
+            $this->setCursor($source);
+            $width = $target->getXCoordinate() - $source->getXCoordinate();
+            $height = $target->getYCoordinate() - $source->getYCoordinate();
+            $this->pdf->Cell($width, $height, '', $this->configuration->getBorder(), 0, '', $this->configuration->getFill());
+        };
 
-    /**
-     * @return DrawConfiguration
-     */
-    public function getDrawConfiguration()
-    {
-        return $this->drawConfiguration;
-    }
+        $this->ensurePrintConfigurationApplied();
 
-    /**
-     * @param DrawConfiguration $drawConfiguration
-     */
-    public function setDrawConfiguration(DrawConfiguration $drawConfiguration)
-    {
-        $this->drawConfiguration = $drawConfiguration;
-    }
+        // draws until the target cursor is reached while respecting page boundaries
+        while ($current->getPage() !== $target->getPage()) {
+            $until = new Cursor($target->getXCoordinate(), $this->pdf->getMaxContentHeight(), $current->getPage());
+            $drawBetween($current, $until);
 
-    /**
-     * @param float $width
-     * @param float $height
-     */
-    public function drawArea(float $width, float $height)
-    {
-        $this->ensureDrawConfigurationApplied();
+            $current = new Cursor($current->getXCoordinate(), $this->pdf->getContentStart(), $current->getPage() + 1);
+        }
 
-        $this->pdf->Cell($width, $height, '', $this->drawConfiguration->getBorder(), 0, '', $this->drawConfiguration->getFill());
+        // pages match;
+        $drawBetween($current, $target);
+
+        // reset cursor
+        $this->setCursor($start);
     }
 }

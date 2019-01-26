@@ -13,15 +13,14 @@ namespace App\Service\Report\Pdf\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
 use App\Service\Report\Document\Transaction\TransactionInterface;
-use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentTransactionInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Layout\Supporting\PrintBuffer;
-use App\Service\Report\Pdf\Layout\Supporting\PrintTransaction;
+use App\Service\Report\Pdf\Transaction\PrintBuffer;
+use App\Service\Report\Pdf\Transaction\PrintTransaction;
 
 class GroupLayout implements GroupLayoutInterface
 {
     /**
-     * @var PdfDocumentTransactionInterface
+     * @var PdfDocumentInterface
      */
     private $pdfDocument;
 
@@ -75,12 +74,12 @@ class GroupLayout implements GroupLayoutInterface
      * creates the transaction and implements the grouping functionality.
      *
      * @param PrintBuffer $printBuffer
-     * @param PdfDocumentTransactionInterface $pdfDocument
+     * @param PdfDocumentInterface $pdfDocument
      * @param float $width
      *
      * @return PrintTransaction
      */
-    private static function createTransaction(PrintBuffer $printBuffer, PdfDocumentTransactionInterface $pdfDocument, float $width)
+    private static function createTransaction(PrintBuffer $printBuffer, PdfDocumentInterface $pdfDocument, float $width)
     {
         $printContent = $printBuffer->flushBufferClosure();
         $transaction = new PrintTransaction($pdfDocument, $width, $printContent);

@@ -74,6 +74,26 @@ class Pdf extends TCPDF
     }
 
     /**
+     * the height to reach after which a new page will begin automatically.
+     *
+     * @return float
+     */
+    public function getMaxContentHeight()
+    {
+        return $this->PageBreakTrigger;
+    }
+
+    /**
+     * the height to reach after which a new page will begin automatically.
+     *
+     * @return float
+     */
+    public function getContentStart()
+    {
+        return $this->tMargin;
+    }
+
+    /**
      * @param $msg
      *
      * @throws \Exception

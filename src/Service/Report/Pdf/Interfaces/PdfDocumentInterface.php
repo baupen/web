@@ -11,12 +11,11 @@
 
 namespace App\Service\Report\Pdf\Interfaces;
 
-use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentCursorInterface;
-use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentDrawInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentPrintInterface;
+use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentStateInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentTransactionInterface;
 
-interface PdfDocumentInterface extends PdfDocumentCursorInterface, PdfDocumentPrintInterface, PdfDocumentTransactionInterface, PdfDocumentDrawInterface
+interface PdfDocumentInterface extends PdfDocumentStateInterface, PdfDocumentPrintInterface, PdfDocumentTransactionInterface
 {
     /**
      * @return string
@@ -36,6 +35,11 @@ interface PdfDocumentInterface extends PdfDocumentCursorInterface, PdfDocumentPr
      * @param float $marginBottom
      */
     public function setPageMargins(float $marginLeft, float $marginTop, float $marginRight, float $marginBottom);
+
+    /**
+     * starts a new page & sets the cursor to the next page.
+     */
+    public function startNewPage();
 
     /**
      * @param string $filePath

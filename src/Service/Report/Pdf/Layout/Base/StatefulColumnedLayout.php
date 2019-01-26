@@ -13,7 +13,7 @@ namespace App\Service\Report\Pdf\Layout\Base;
 
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
-abstract class ColumnedLayout extends BaseColumnedLayout
+abstract class StatefulColumnedLayout extends BaseColumnedLayout
 {
     /**
      * @var int
@@ -68,15 +68,15 @@ abstract class ColumnedLayout extends BaseColumnedLayout
     {
         $chosenColumn = $this->chosenColumn;
 
-        $setCursor = function () use ($chosenColumn) {
+        $prepareArguments = function () use ($chosenColumn) {
             if ($this->cursorPositionColumn !== $chosenColumn) {
                 $this->switchColumns($this->cursorPositionColumn, $chosenColumn);
                 $this->cursorPositionColumn = $chosenColumn;
             }
 
-            return $this->getColumnWidths()[$this->cursorPositionColumn];
+            return [$this->getColumnWidths()[$this->cursorPositionColumn]];
         };
 
-        $this->getPrintBuffer()->addPrintable($callable, $setCursor, $this->getColumnWidths()[$this->chosenColumn]);
+        $this->getPrintBuffer()->addPrintable($callable, $prepareArguments);
     }
 }

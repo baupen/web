@@ -13,9 +13,9 @@ namespace App\Service\Report\IssueReport\Pdf;
 
 use App\Service\Report\Document\Transaction\Base\DrawableTransactionInterface;
 use App\Service\Report\IssueReport\Interfaces\DrawerInterface;
-use App\Service\Report\Pdf\Area;
+use App\Service\Report\Pdf\Cursor;
 use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
-use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentDrawInterface;
+use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
 class Drawer implements DrawerInterface
 {
@@ -33,6 +33,7 @@ class Drawer implements DrawerInterface
      * Drawer constructor.
      *
      * @param DrawableTransactionInterface $drawableTransaction
+     * @param ColorServiceInterface $colorService
      */
     public function __construct(DrawableTransactionInterface $drawableTransaction, ColorServiceInterface $colorService)
     {
@@ -42,9 +43,9 @@ class Drawer implements DrawerInterface
 
     public function drawTableAlternatingBackground()
     {
-        $this->transaction->registerDrawablePrePrint(function (PdfDocumentDrawInterface $document, Area $printArea) {
-            $document->configureDraw(['background_color' => $this->color->getTableAlternatingBackgroundColor()]);
-            $document->drawArea($printArea);
+        $this->transaction->registerDrawablePrePrint(function (PdfDocumentInterface $document, Cursor $end) {
+            $document->configure(['background_color' => $this->color->getTableAlternatingBackgroundColor()]);
+            $document->drawUntil($end);
         });
     }
 }

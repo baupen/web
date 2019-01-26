@@ -11,26 +11,10 @@
 
 namespace App\Service\Report\Pdf\Interfaces\PdfDocument;
 
-use App\Service\Report\Pdf\Tcpdf\Configuration\PrintConfiguration;
+use App\Service\Report\Pdf\Cursor;
 
-interface PdfDocumentPrintInterface extends PdfDocumentCursorInterface
+interface PdfDocumentPrintInterface
 {
-    /**
-     * @param array $config
-     * @param bool $restoreDefaults
-     */
-    public function configurePrint(array $config = [], bool $restoreDefaults = true);
-
-    /**
-     * @return PrintConfiguration
-     */
-    public function getPrintConfiguration();
-
-    /**
-     * @param PrintConfiguration $printConfiguration
-     */
-    public function setPrintConfiguration(PrintConfiguration $printConfiguration);
-
     /**
      * @param string $text
      * @param float $width
@@ -43,4 +27,9 @@ interface PdfDocumentPrintInterface extends PdfDocumentCursorInterface
      * @param float $height
      */
     public function printImage(string $imagePath, float $width, float $height);
+
+    /**
+     * @param Cursor $target
+     */
+    public function drawUntil(Cursor $target);
 }

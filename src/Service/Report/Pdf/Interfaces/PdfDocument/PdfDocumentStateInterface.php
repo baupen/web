@@ -12,8 +12,9 @@
 namespace App\Service\Report\Pdf\Interfaces\PdfDocument;
 
 use App\Service\Report\Pdf\Cursor;
+use App\Service\Report\Pdf\Tcpdf\Configuration\PrintConfiguration;
 
-interface PdfDocumentCursorInterface
+interface PdfDocumentStateInterface
 {
     /**
      * returns the active cursor position as an array of [$xCoordinate, $yCoordinate, $page].
@@ -28,7 +29,18 @@ interface PdfDocumentCursorInterface
     public function setCursor(Cursor $cursor);
 
     /**
-     * starts a new page & sets the cursor to the next page.
+     * @return PrintConfiguration
      */
-    public function startNewPage();
+    public function getConfiguration();
+
+    /**
+     * @param PrintConfiguration $printConfiguration
+     */
+    public function setConfiguration(PrintConfiguration $printConfiguration);
+
+    /**
+     * @param array $config
+     * @param bool $restoreDefaults
+     */
+    public function configure(array $config = [], bool $restoreDefaults = true);
 }

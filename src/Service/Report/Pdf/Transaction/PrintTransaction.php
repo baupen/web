@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Layout\Supporting;
+namespace App\Service\Report\Pdf\Transaction;
 
 use App\Service\Report\Document\Transaction\TransactionInterface;
 use App\Service\Report\Pdf\Cursor;
@@ -31,6 +31,11 @@ class PrintTransaction implements TransactionInterface
      * @var float
      */
     private $width;
+
+    /**
+     * @var Cursor[]
+     */
+    private $printAreaCache;
 
     /**
      * @var PrintBuffer
@@ -68,12 +73,16 @@ class PrintTransaction implements TransactionInterface
      */
     public function calculatePrintArea()
     {
-        $before = $this->pdfDocument->getCursor();
-        $after = $this->pdfDocument->cursorAfterwardsIfPrinted($this->content);
+        if (!$this->printAreaCache) {
+            $before = $this->pdfDocument->getCursor();
+            $after = $this->pdfDocument->cursorAfterwardsIfPrinted($this->content);
 
-        $after->setX($before->getXCoordinate() + $this->width);
+            $after->setX($before->getXCoordinate() + $this->width);
 
-        return [$before, $after];
+            $this->printAreaCache = [$before, $after];
+        }
+
+        return $this->printAreaCache;
     }
 
     /**
@@ -99,7 +108,9 @@ class PrintTransaction implements TransactionInterface
      */
     public function registerDrawablePrePrint(callable $callable)
     {
-        $this->prePrintBuffer->addPrintable($callable);
+        $this->prePrintBuffer->addPrintable($callable, function () {
+            return [$this->calculatePrintArea()[1]];
+        });
     }
 
     /**
@@ -110,6 +121,8 @@ class PrintTransaction implements TransactionInterface
      */
     public function registerDrawablePostPrint(callable $callable)
     {
-        $this->postPrintBuffer->addPrintable($callable);
+        $this->postPrintBuffer->addPrintable($callable, function () {
+            return [$this->calculatePrintArea()[1]];
+        });
     }
 }

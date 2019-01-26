@@ -13,7 +13,7 @@ namespace App\Service\Report\Pdf\Interfaces\PdfDocument;
 
 use App\Service\Report\Pdf\Cursor;
 
-interface PdfDocumentTransactionInterface extends PdfDocumentCursorInterface
+interface PdfDocumentTransactionInterface extends PdfDocumentStateInterface
 {
     /**
      * @param \Closure $printClosure

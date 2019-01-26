@@ -108,7 +108,7 @@ class Printer implements PrinterInterface
             $document->setCursor($afterImageCursor->setY($afterImageCursor->getYCoordinate() - $height));
 
             // print number of issue
-            $document->configurePrint(['background' => $this->color->getImageOverlayColor()]);
+            $document->configure(['background' => $this->color->getImageOverlayColor()]);
             $document->printText((string)$number, $this->typography->getTextFontSize());
 
             // reset cursor to after image
@@ -123,7 +123,7 @@ class Printer implements PrinterInterface
     private function printText(string $text, float $fontSize)
     {
         $this->layout->registerPrintable(function (PdfDocumentPrintInterface $document, float $defaultWidth) use ($text, $fontSize) {
-            $document->configurePrint(['fontSize' => $fontSize]);
+            $document->configure(['fontSize' => $fontSize]);
             $document->printText($text, $defaultWidth);
         });
     }
@@ -135,7 +135,7 @@ class Printer implements PrinterInterface
     private function printBoldText(string $text, float $fontSize)
     {
         $this->layout->registerPrintable(function (PdfDocumentPrintInterface $document, float $defaultWidth) use ($text, $fontSize) {
-            $document->configurePrint(['fontSize' => $fontSize, 'bold' => true]);
+            $document->configure(['fontSize' => $fontSize, 'bold' => true]);
             $document->printText($text, $defaultWidth);
         });
     }

@@ -70,7 +70,7 @@ class PageLayoutService implements PageLayoutServiceInterface
         $maxWidth = $this->layoutService->getContentXSize() / 3 * 2;
 
         $pdf->setCursor(new Cursor($this->layoutService->getContentXStart(), $this->layoutService->getHeaderYStart(), 0));
-        $pdf->configurePrint(['fontSize' => $this->typographyService->getHeaderFontSize()]);
+        $pdf->configure(['fontSize' => $this->typographyService->getHeaderFontSize()]);
         $pdf->printText($headerLeft, $maxWidth);
     }
 
@@ -115,7 +115,7 @@ class PageLayoutService implements PageLayoutServiceInterface
         $startY = $this->layoutService->getFooterYStart();
 
         $pdf->setCursor(new Cursor($startX, $startY, 0));
-        $pdf->configurePrint(['fontSize' => $this->typographyService->getFooterFontSize(), 'alignment' => 'R']);
+        $pdf->configure(['fontSize' => $this->typographyService->getFooterFontSize(), 'alignment' => 'R']);
         $pdf->printText($currentPageNumber . '/' . $totalPageNumbers, $contentWidthPart);
     }
 }

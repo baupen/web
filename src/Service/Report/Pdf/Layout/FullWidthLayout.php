@@ -14,8 +14,8 @@ namespace App\Service\Report\Pdf\Layout;
 use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
 use App\Service\Report\Document\Transaction\TransactionInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Layout\Supporting\PrintBuffer;
-use App\Service\Report\Pdf\Layout\Supporting\PrintTransaction;
+use App\Service\Report\Pdf\Transaction\PrintBuffer;
+use App\Service\Report\Pdf\Transaction\PrintTransaction;
 
 class FullWidthLayout implements FullWidthLayoutInterface
 {

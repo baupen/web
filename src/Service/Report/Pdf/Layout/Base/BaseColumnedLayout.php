@@ -12,15 +12,14 @@
 namespace App\Service\Report\Pdf\Layout\Base;
 
 use App\Service\Report\Pdf\Cursor;
-use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentTransactionInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Layout\Supporting\PrintBuffer;
-use App\Service\Report\Pdf\Layout\Supporting\PrintTransaction;
+use App\Service\Report\Pdf\Transaction\PrintBuffer;
+use App\Service\Report\Pdf\Transaction\PrintTransaction;
 
 abstract class BaseColumnedLayout
 {
     /**
-     * @var PdfDocumentTransactionInterface
+     * @var PdfDocumentInterface
      */
     private $pdfDocument;
 
@@ -139,12 +138,12 @@ abstract class BaseColumnedLayout
 
     /**
      * @param PrintBuffer $printBuffer
-     * @param PdfDocumentTransactionInterface $pdfDocumentTransaction
+     * @param PdfDocumentInterface $pdfDocumentTransaction
      * @param float $width
      *
      * @return PrintTransaction
      */
-    private static function createTransaction(PrintBuffer $printBuffer, PdfDocumentTransactionInterface $pdfDocumentTransaction, float $width)
+    private static function createTransaction(PrintBuffer $printBuffer, PdfDocumentInterface $pdfDocumentTransaction, float $width)
     {
         $printBuffer = PrintBuffer::createFromExisting($printBuffer);
         $printBuffer->addPrintable(function (PdfDocumentInterface $pdfDocument) {

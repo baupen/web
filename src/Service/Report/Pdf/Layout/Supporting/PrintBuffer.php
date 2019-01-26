@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Layout\Supporting;
+namespace App\Service\Report\Pdf\Transaction;
 
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
@@ -44,22 +44,20 @@ class PrintBuffer
 
     /**
      * @param callable $callable
-     * @param callable $setCursor
-     * @param float|null $widthOverride
+     * @param callable $prepareArguments
      */
-    public function prependPrintable(callable $callable, callable $setCursor = null, float $widthOverride = null)
+    public function prependPrintable(callable $callable, callable $prepareArguments = null)
     {
-        $this->printBuffer = array_merge([$this->getPrintBufferEntry($callable, $setCursor, $widthOverride)], $this->printBuffer);
+        $this->printBuffer = array_merge([$this->getPrintBufferEntry($callable, $prepareArguments)], $this->printBuffer);
     }
 
     /**
      * @param callable $callable
-     * @param callable $setCursor
-     * @param float|null $widthOverride
+     * @param callable $prepareArguments
      */
-    public function addPrintable(callable $callable, callable $setCursor = null, float $widthOverride = null)
+    public function addPrintable(callable $callable, callable $prepareArguments = null)
     {
-        $this->printBuffer[] = $this->getPrintBufferEntry($callable, $setCursor, $widthOverride);
+        $this->printBuffer[] = $this->getPrintBufferEntry($callable, $prepareArguments);
     }
 
     /**
@@ -89,26 +87,26 @@ class PrintBuffer
 
     /**
      * @param callable $callable
-     * @param callable $setCursor
-     * @param float|null $widthOverride
+     * @param callable $prepareArguments
      *
      * @return \Closure
      */
-    private function getPrintBufferEntry(callable $callable, callable $setCursor = null, $widthOverride = null)
+    private function getPrintBufferEntry(callable $callable, callable $prepareArguments = null)
     {
         $pdfDocument = $this->pdfDocument;
-        $width = $widthOverride === null ? $this->width : $widthOverride;
 
-        $printConfig = $pdfDocument->getPrintConfiguration();
+        $printConfig = $pdfDocument->getConfiguration();
 
-        return function () use ($pdfDocument, $width, $setCursor, $callable, $printConfig) {
-            $pdfDocument->setPrintConfiguration($printConfig);
+        return function () use ($pdfDocument, $prepareArguments, $callable, $printConfig) {
+            $pdfDocument->setConfiguration($printConfig);
 
-            if (\is_callable($setCursor)) {
-                $width = $setCursor($pdfDocument);
+            if ($prepareArguments !== null) {
+                $arguments = $prepareArguments($pdfDocument);
+            } else {
+                $arguments = [$this->width];
             }
 
-            $callable($pdfDocument, $width);
+            $callable($pdfDocument, ...$arguments);
         };
     }
 }

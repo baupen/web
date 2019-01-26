@@ -55,7 +55,7 @@ class AutoColumnLayout extends BaseColumnedLayout implements AutoColumnLayoutInt
     public function registerPrintable(callable $callable)
     {
         // set active cursor to highest cursor
-        $setCursor = function () {
+        $prepareArguments = function () {
             // prepare variables
             $columnCursors = $this->getColumnCursors();
             $highestColumn = 0;
@@ -77,8 +77,8 @@ class AutoColumnLayout extends BaseColumnedLayout implements AutoColumnLayoutInt
                 $this->activeColumn = $highestColumn;
             }
 
-            return $this->getColumnWidths()[$this->activeColumn];
+            return [$this->getColumnWidths()[$this->activeColumn]];
         };
-        $this->getPrintBuffer()->addPrintable($callable, $setCursor);
+        $this->getPrintBuffer()->addPrintable($callable, $prepareArguments);
     }
 }

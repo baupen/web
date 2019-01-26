@@ -17,7 +17,7 @@ use App\Service\Report\Document\Interfaces\Layout\TableRowLayoutInterface;
 use App\Service\Report\Document\Transaction\TransactionInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentTransactionInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Layout\Supporting\PrintTransaction;
+use App\Service\Report\Pdf\Transaction\PrintTransaction;
 
 class TableLayout implements TableLayoutInterface
 {
@@ -100,11 +100,13 @@ class TableLayout implements TableLayoutInterface
      */
     public function getTransaction()
     {
-        $flushRows = function () {
+        $onRowCommit = $this->onRowCommit;
+
+        $flushRows = function () use ($onRowCommit) {
             foreach ($this->rows as $row) {
                 $transaction = $row->getTransaction();
-                if ($this->onRowCommit !== null) {
-                    $this->onRowCommit($transaction);
+                if ($onRowCommit !== null) {
+                    $onRowCommit($transaction);
                 }
                 $transaction->commit();
             }
