@@ -12,7 +12,6 @@
 namespace App\Service\Report\Pdf\Layout;
 
 use App\Service\Report\Document\Interfaces\Layout\AutoColumnLayoutInterface;
-use App\Service\Report\Pdf\Cursor;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Pdf\Layout\Base\BaseColumnedLayout;
 

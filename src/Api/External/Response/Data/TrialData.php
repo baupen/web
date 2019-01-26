@@ -12,7 +12,6 @@
 namespace App\Api\External\Response\Data;
 
 use App\Api\External\Entity\TrialUser;
-use App\Api\External\Entity\User;
 
 class TrialData
 {

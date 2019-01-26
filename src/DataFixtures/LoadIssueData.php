@@ -20,7 +20,6 @@ use App\Entity\IssueImage;
 use App\Entity\IssuePosition;
 use App\Entity\Map;
 use App\Service\Interfaces\PathServiceInterface;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ObjectManager;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Serializer\SerializerInterface;
