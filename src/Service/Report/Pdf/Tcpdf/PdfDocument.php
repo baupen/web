@@ -67,7 +67,9 @@ class PdfDocument implements PdfDocumentInterface
     public function setCursor(Cursor $cursor)
     {
         $this->pdf->SetXY($cursor->getXCoordinate(), $cursor->getYCoordinate());
-        $this->pdf->setPage($cursor->getPage());
+        if ($cursor->getPage() !== null) {
+            $this->pdf->setPage($cursor->getPage());
+        }
     }
 
     /**

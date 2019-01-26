@@ -20,6 +20,7 @@ use App\Helper\DateTimeFormatter;
 use App\Helper\IssueHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
 use App\Service\Report\IssueReport\Interfaces\PrintFactoryInterface;
@@ -39,7 +40,7 @@ use App\Service\Report\ReportElements;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class CleanReportService
+class CleanReportService implements ReportServiceInterface
 {
     /**
      * @var PathServiceInterface
@@ -380,7 +381,7 @@ class CleanReportService
             }
         }
 
-        return $tableContent;
+        return array_values($tableContent);
     }
 
     /**
@@ -402,7 +403,11 @@ class CleanReportService
         $mapContent->setIssuesTableHeader($this->getIssuesTableHeader($reportConfiguration));
         $mapContent->setIssuesTableContent($this->getIssuesTableContent($issues, $reportConfiguration));
 
-        $mapContent->setMapImage($elements->getWithImages() ? $this->getIssueImages($issues) : []);
+        if ($elements->getWithImages()) {
+            foreach ($this->getIssueImages($issues) as $issueImage) {
+                $mapContent->addIssueImage($issueImage);
+            }
+        }
 
         return $mapContent;
     }
@@ -416,8 +421,6 @@ class CleanReportService
     {
         $issueImages = [];
         foreach ($issues as $issue) {
-            $currentIssue = [];
-
             $imagePath = $this->imageService->getSizeForIssue($issue, ImageServiceInterface::SIZE_REPORT_ISSUE);
             if ($imagePath === null) {
                 continue;
@@ -426,7 +429,7 @@ class CleanReportService
             $issueImage = new IssueImage();
             $issueImage->setImagePath($imagePath);
             $issueImage->setNumber($issue->getNumber());
-            $issueImages[] = $currentIssue;
+            $issueImages[] = $issueImage;
         }
 
         return $issueImages;

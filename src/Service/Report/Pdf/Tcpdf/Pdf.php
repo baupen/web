@@ -56,7 +56,7 @@ class Pdf extends TCPDF
      */
     public function Footer()
     {
-        $this->tcpdfService->printFooter($this, $this->getAliasNumPage(), $this->getAliasNbPages());
+        $this->tcpdfService->printFooter($this, (int)$this->getAliasNumPage(), (int)$this->getAliasNbPages());
     }
 
     /**

@@ -18,7 +18,7 @@ class PrintBuffer
     /**
      * @var callable[]
      */
-    private $printBuffer;
+    private $printBuffer = [];
 
     /**
      * @var PdfDocumentInterface

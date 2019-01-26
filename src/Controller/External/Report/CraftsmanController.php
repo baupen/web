@@ -54,7 +54,7 @@ class CraftsmanController extends BaseDoctrineController
         $reportElements = ReportElements::forCraftsman();
 
         return $this->file(
-            $reportService->generateReport($craftsman->getConstructionSite(), $filter, $craftsman->getName(), $reportElements),
+            $reportService->generatePdfReport($craftsman->getConstructionSite(), $filter, $craftsman->getName(), $reportElements),
             'report.pdf',
             ResponseHeaderBag::DISPOSITION_INLINE
         );

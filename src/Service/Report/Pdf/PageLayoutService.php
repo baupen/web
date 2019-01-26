@@ -59,6 +59,7 @@ class PageLayoutService implements PageLayoutServiceInterface
         $marginRight = $this->layoutService->getMarginRight();
         $marginBottom = $this->layoutService->getMarginBottom();
         $pdf->setPageMargins($marginLeft, $marginTop, $marginRight, $marginBottom);
+        $pdf->startNewPage();
     }
 
     /**
@@ -69,7 +70,7 @@ class PageLayoutService implements PageLayoutServiceInterface
     {
         $maxWidth = $this->layoutService->getContentXSize() / 3 * 2;
 
-        $pdf->setCursor(new Cursor($this->layoutService->getContentXStart(), $this->layoutService->getHeaderYStart(), 0));
+        $pdf->setCursor(new Cursor($this->layoutService->getContentXStart(), $this->layoutService->getHeaderYStart()));
         $pdf->configure(['fontSize' => $this->typographyService->getHeaderFontSize()]);
         $pdf->printText($headerLeft, $maxWidth);
     }
@@ -88,7 +89,7 @@ class PageLayoutService implements PageLayoutServiceInterface
         // print
         $startX = $this->layoutService->getContentXEnd() - $width;
         $startY = $this->layoutService->getHeaderYStart();
-        $pdf->setCursor(new Cursor($startX, $startY, 0));
+        $pdf->setCursor(new Cursor($startX, $startY));
         $pdf->printImage($logoPath, $width, $height);
     }
 
@@ -98,7 +99,7 @@ class PageLayoutService implements PageLayoutServiceInterface
      */
     public function printFooterLeft(PdfDocumentInterface $pdf, string $footerLeft)
     {
-        $pdf->setCursor(new Cursor($this->layoutService->getContentXStart(), $this->layoutService->getFooterYStart(), 0));
+        $pdf->setCursor(new Cursor($this->layoutService->getContentXStart(), $this->layoutService->getFooterYStart()));
         $pdf->printText($footerLeft, $this->typographyService->getFooterFontSize());
     }
 
@@ -114,7 +115,7 @@ class PageLayoutService implements PageLayoutServiceInterface
         $startX = $this->layoutService->getContentXEnd() - $contentWidthPart + 6.5;
         $startY = $this->layoutService->getFooterYStart();
 
-        $pdf->setCursor(new Cursor($startX, $startY, 0));
+        $pdf->setCursor(new Cursor($startX, $startY));
         $pdf->configure(['fontSize' => $this->typographyService->getFooterFontSize(), 'alignment' => 'R']);
         $pdf->printText($currentPageNumber . '/' . $totalPageNumbers, $contentWidthPart);
     }

@@ -115,7 +115,7 @@ class Printer implements PrinterInterface
             $document->printText((string)$number, $this->typography->getTextFontSize());
 
             // reset cursor to after image
-            $document->setCursor(...$afterImageCursor);
+            $document->setCursor($afterImageCursor);
         });
     }
 

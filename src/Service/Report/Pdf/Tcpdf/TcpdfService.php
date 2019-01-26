@@ -52,23 +52,30 @@ class TcpdfService implements TcpdfServiceInterface
     {
         $this->pathService = $pathService;
         $this->pageLayoutService = $pageLayoutService;
-
-        $this->copyFontsIfNeeded();
     }
 
     /**
-     * tcpdf uses an internal font format
-     * we need to copy our prepared resource files to the correct location.
+     * sets the global variables needed for TCPDF.
      */
-    private function copyFontsIfNeeded()
+    public function initializeGlobalVariables()
     {
-        //prepare fonts
-        $checkFilePath = K_PATH_FONTS . '/.copied2';
-        if (!file_exists($checkFilePath)) {
-            $sourceFolder = $this->pathService->getAssetsRoot() . \DIRECTORY_SEPARATOR . 'report' . \DIRECTORY_SEPARATOR . 'fonts';
-            //copy all fonts from the assets to the fonts folder of tcpdf
-            shell_exec('\cp -r ' . $sourceFolder . '/* ' . K_PATH_FONTS);
-            file_put_contents($checkFilePath, time());
+        if (!\defined('K_PATH_FONTS')) {
+            // TCPDF looks at the path this global variable defines
+            \define('K_PATH_FONTS', $this->pathService->getAssetsRoot() . \DIRECTORY_SEPARATOR . 'report' . \DIRECTORY_SEPARATOR . 'fonts' . \DIRECTORY_SEPARATOR);
+        }
+
+        if (!\defined('PDF_FONT_NAME_MAIN')) {
+            // TCPDF chooses this font as the default
+            \define('PDF_FONT_NAME_MAIN', 'opensans');
+        }
+
+        if (!\defined('K_TCPDF_THROW_EXCEPTION_ERROR')) {
+            // TCPDF chooses this font as the default
+            \define('K_TCPDF_THROW_EXCEPTION_ERROR', true);
+        }
+
+        if (!\defined('K_TCPDF_EXTERNAL_CONFIG')) {
+            \define('K_TCPDF_EXTERNAL_CONFIG', true);
         }
     }
 

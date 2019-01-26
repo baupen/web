@@ -66,7 +66,7 @@ class ReportController extends BaseDoctrineController
 
         //generate report
         return $this->file(
-            $reportService->generateReport($constructionSite, $filter, $this->getUser()->getName(), $reportElements),
+            $reportService->generatePdfReport($constructionSite, $filter, $this->getUser()->getName(), $reportElements),
             'report.pdf',
             ResponseHeaderBag::DISPOSITION_INLINE
         );

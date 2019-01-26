@@ -41,4 +41,9 @@ interface TcpdfServiceInterface
      * @param int $totalPageNumbers
      */
     public function printFooter(Pdf $pdf, int $currentPageNumber, int $totalPageNumbers);
+
+    /**
+     * sets the global variables needed for TCPDF.
+     */
+    public function initializeGlobalVariables();
 }

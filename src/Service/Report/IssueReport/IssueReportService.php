@@ -59,7 +59,7 @@ class IssueReportService implements IssueReportServiceInterface
         $printer->printTitle($reportElementsTitle);
         $printer->printParagraph(implode(', ', $introductionContent->getReportElements()));
 
-        $columnedLayout->setColumn(3);
+        $columnedLayout->setColumn(2);
 
         $filterTitle = $this->translator->trans('entity.name', [], 'entity_filter');
         $printer->printTitle($filterTitle);
@@ -83,12 +83,14 @@ class IssueReportService implements IssueReportServiceInterface
 
         // prepare table column config
         $tableColumnConfig = [];
-        $normalTableHeaders = \count($aggregatedIssuesContent->getIdentifierHeader());
-        for ($i = 0; $i < $normalTableHeaders; ++$i) {
+        $normalTableHeadersCount = \count($aggregatedIssuesContent->getIdentifierHeader());
+        for ($i = 0; $i < $normalTableHeadersCount; ++$i) {
             $tableColumnConfig[] = new ColumnConfiguration();
         }
-        $statusTableHeaders = \count($aggregatedIssuesContent->getIssuesHeader());
-        for ($i = 0; $i < $statusTableHeaders; ++$i) {
+
+        $statusTableHeaders = $aggregatedIssuesContent->getIssuesHeader();
+        $statusTableHeadersCount = \count($statusTableHeaders);
+        for ($i = 0; $i < $statusTableHeadersCount; ++$i) {
             $tableColumnConfig[] = new ColumnConfiguration(ColumnConfiguration::SIZING_BY_TEXT, $statusTableHeaders[$i]);
         }
 
@@ -172,7 +174,7 @@ class IssueReportService implements IssueReportServiceInterface
         $groupLayout->getTransaction()->commit();
 
         // prepare table column config
-        $tableColumnConfig = [new ColumnConfiguration(ColumnConfiguration::SIZING_BY_TEXT)];
+        $tableColumnConfig = [new ColumnConfiguration(ColumnConfiguration::SIZING_BY_TEXT, '####')];
         $columns = \count($mapContent->getIssuesTableHeader());
         for ($i = 1; $i < $columns; ++$i) {
             $tableColumnConfig[] = new ColumnConfiguration(ColumnConfiguration::SIZING_EXPAND);

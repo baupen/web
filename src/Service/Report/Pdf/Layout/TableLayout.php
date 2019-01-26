@@ -70,8 +70,8 @@ class TableLayout implements TableLayoutInterface
         $this->width = $width;
         $this->columnGutter = $columnGutter;
 
-        $this->columnWidths = $this->calculateColumnWidths($columnConfiguration);
         $this->columnCount = \count($columnConfiguration);
+        $this->columnWidths = $this->calculateColumnWidths($pdfDocument, $columnConfiguration, $this->width, $this->columnGutter, $this->columnCount);
     }
 
     /**
@@ -116,26 +116,30 @@ class TableLayout implements TableLayoutInterface
     }
 
     /**
+     * @param PdfDocumentInterface $pdfDocument
      * @param ColumnConfiguration[] $columnConfiguration
+     * @param float $width
+     * @param float $columnGutter
+     * @param int $columnCount
      *
      * @throws \Exception
      *
      * @return float[]
      */
-    private function calculateColumnWidths(array $columnConfiguration)
+    private static function calculateColumnWidths(PdfDocumentInterface $pdfDocument, array $columnConfiguration, float $width, float $columnGutter, int $columnCount)
     {
-        $gutterSpace = (\count($columnConfiguration) - 1) * $this->columnGutter;
-        $availableWidth = $this->width - $gutterSpace;
+        $gutterSpace = (\count($columnConfiguration) - 1) * $columnGutter;
+        $availableWidth = $width - $gutterSpace;
 
         $expandColumns = [];
         $widths = [];
-        for ($i = 0; $i < $this->columnCount; ++$i) {
+        for ($i = 0; $i < $columnCount; ++$i) {
             $column = $columnConfiguration[$i];
             if ($column->getSizing() === ColumnConfiguration::SIZING_EXPAND) {
                 $expandColumns[] = $i;
             } elseif ($column->getSizing() === ColumnConfiguration::SIZING_BY_TEXT) {
                 $text = $column->getText();
-                $width = $this->pdfDocument->calculateWidthOfText($text);
+                $width = $pdfDocument->calculateWidthOfText($text);
 
                 $availableWidth -= $width;
                 $widths[$i] = $width;

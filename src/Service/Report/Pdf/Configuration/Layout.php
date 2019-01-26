@@ -16,7 +16,7 @@ class Layout
     /**
      * the total page size; currently A4.
      *
-     * @var float
+     * @var float[]
      */
     private $pageSize = [210, 297];
 
@@ -38,9 +38,9 @@ class Layout
     private $scalingFactor = 1.6;
 
     /**
-     * @return float
+     * @return float[]
      */
-    public function getPageSize(): float
+    public function getPageSize(): array
     {
         return $this->pageSize;
     }

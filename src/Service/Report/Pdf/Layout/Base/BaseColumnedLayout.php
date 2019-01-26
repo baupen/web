@@ -143,7 +143,7 @@ abstract class BaseColumnedLayout
      *
      * @return PrintTransaction
      */
-    private static function createTransaction(PrintBuffer $printBuffer, PdfDocumentInterface $pdfDocumentTransaction, float $width)
+    private function createTransaction(PrintBuffer $printBuffer, PdfDocumentInterface $pdfDocumentTransaction, float $width)
     {
         $printBuffer = PrintBuffer::createFromExisting($printBuffer);
         $printBuffer->addPrintable(function (PdfDocumentInterface $pdfDocument) {

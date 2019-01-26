@@ -47,6 +47,8 @@ class PdfFactory implements PdfFactoryInterface
      */
     public function create(string $header, string $footer, string $logoPath)
     {
+        $this->tcpdfService->initializeGlobalVariables();
+
         $pdf = new Pdf($this->tcpdfService);
         $this->tcpdfService->setPageVariables($pdf, $header, $footer, $logoPath);
 

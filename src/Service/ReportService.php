@@ -20,7 +20,6 @@ use App\Helper\DateTimeFormatter;
 use App\Helper\IssueHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
-use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\PdfDefinition;
 use App\Service\Report\Report;
 use App\Service\Report\ReportConfiguration;
@@ -29,7 +28,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class ReportService implements ReportServiceInterface
+class ReportService
 {
     /**
      * @var PathServiceInterface
