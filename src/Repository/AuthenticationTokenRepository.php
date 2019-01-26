@@ -25,6 +25,7 @@ class AuthenticationTokenRepository extends EntityRepository
      * @param AuthenticatedRequest $authenticatedRequest
      *
      * @throws \Doctrine\ORM\ORMException
+     * @throws \Exception
      *
      * @return \App\Entity\ConstructionManager|null
      */
@@ -39,7 +40,10 @@ class AuthenticationTokenRepository extends EntityRepository
         if ($token !== null) {
             // remember last used date
             $token->setLastUsed();
-            $this->getEntityManager()->flush();
+
+            $manager = $this->getEntityManager();
+            $manager->persist($token);
+            $manager->flush();
 
             // return user
             return $token->getConstructionManager();
