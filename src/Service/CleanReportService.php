@@ -22,12 +22,12 @@ use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
-use App\Service\Report\IssueReport\Interfaces\PrinterInterface;
+use App\Service\Report\IssueReport\Interfaces\PrintFactoryInterface;
 use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
 use App\Service\Report\IssueReport\Model\IntroductionContent;
 use App\Service\Report\IssueReport\Model\IssueImage;
 use App\Service\Report\IssueReport\Model\MapContent;
-use App\Service\Report\IssueReport\PdfBuildingBlocks;
+use App\Service\Report\IssueReport\PrintFactory;
 use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
@@ -127,7 +127,7 @@ class CleanReportService
         // initialize pdf report
         $document = $this->createPdfDocument($constructionSite->getName(), $author);
         $layoutFactory = new LayoutFactory($document, $this->layoutService);
-        $buildingBlocks = new PdfBuildingBlocks($this->typographyService, $this->colorService);
+        $buildingBlocks = new PrintFactory($this->typographyService, $this->colorService);
 
         $this->addReportElements($layoutFactory, $buildingBlocks, $constructionSite, $filter, $reportElements);
 
@@ -140,12 +140,12 @@ class CleanReportService
 
     /**
      * @param LayoutFactoryInterface $layoutFactory
-     * @param PrinterInterface $buildingBlocks
+     * @param PrintFactoryInterface $buildingBlocks
      * @param ConstructionSite $constructionSite
      * @param Filter $filter
      * @param ReportElements $reportElements
      */
-    private function addReportElements(LayoutFactoryInterface $layoutFactory, PrinterInterface $buildingBlocks, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
+    private function addReportElements(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $buildingBlocks, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
     {
         $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
         $reportConfiguration = new ReportConfiguration($filter);

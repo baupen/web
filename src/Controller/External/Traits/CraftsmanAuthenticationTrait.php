@@ -20,7 +20,6 @@ trait CraftsmanAuthenticationTrait
      * @param ManagerRegistry $doctrine
      * @param string $identifier
      * @param $craftsman
-     * @param $errorResponse
      *
      * @return bool
      */

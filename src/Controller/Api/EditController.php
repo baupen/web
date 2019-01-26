@@ -507,7 +507,6 @@ class EditController extends ApiController
     /**
      * @param UpdateCraftsman $updateCraftsman
      * @param Craftsman $entity
-     * @param $errorResponse
      *
      * @return bool
      */

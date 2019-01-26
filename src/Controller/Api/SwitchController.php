@@ -74,6 +74,7 @@ class SwitchController extends ApiController
         }
 
         // add to construction site if not already a member
+        /** @var ConstructionSite $constructionSite */
         $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($parsedRequest->getConstructionSiteId());
         if (!$constructionSite->getConstructionManagers()->contains($this->getUser())) {
             $constructionSite->getConstructionManagers()->add($this->getUser());
@@ -98,6 +99,7 @@ class SwitchController extends ApiController
         }
 
         // add to construction site if not already a member
+        /** @var ConstructionSite $constructionSite */
         $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($parsedRequest->getConstructionSiteId());
         if ($constructionSite->getConstructionManagers()->contains($this->getUser())) {
             $constructionSite->getConstructionManagers()->removeElement($this->getUser());

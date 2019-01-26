@@ -13,7 +13,6 @@ namespace App\Api\Transformer\Register;
 
 use App\Entity\Issue;
 use Symfony\Bridge\Doctrine\RegistryInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class UpdateIssueTransformer
 {
@@ -31,10 +30,9 @@ class UpdateIssueTransformer
      * CraftsmanTransformer constructor.
      *
      * @param \App\Api\Transformer\Foyer\UpdateIssueTransformer $updateIssueTransformer
-     * @param RouterInterface $router
      * @param RegistryInterface $registry
      */
-    public function __construct(\App\Api\Transformer\Foyer\UpdateIssueTransformer $updateIssueTransformer, RouterInterface $router, RegistryInterface $registry)
+    public function __construct(\App\Api\Transformer\Foyer\UpdateIssueTransformer $updateIssueTransformer, RegistryInterface $registry)
     {
         $this->updateIssueTransformer = $updateIssueTransformer;
         $this->doctrine = $registry;

@@ -114,6 +114,9 @@ trait UserTrait
         return $this->registrationDate;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function setRegistrationDate()
     {
         $this->registrationDate = new \DateTime();

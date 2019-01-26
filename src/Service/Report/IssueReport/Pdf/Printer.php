@@ -17,6 +17,7 @@ use App\Service\Report\IssueReport\Interfaces\PrinterInterface;
 use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentPrintInterface;
+use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
 class Printer implements PrinterInterface
 {
@@ -39,6 +40,8 @@ class Printer implements PrinterInterface
      * Printer constructor.
      *
      * @param PrintableLayoutInterface $printableLayout
+     * @param TypographyServiceInterface $typographyService
+     * @param ColorServiceInterface $colorService
      */
     public function __construct(PrintableLayoutInterface $printableLayout, TypographyServiceInterface $typographyService, ColorServiceInterface $colorService)
     {
@@ -99,7 +102,7 @@ class Printer implements PrinterInterface
      */
     public function printIssueImage(string $imagePath, int $number)
     {
-        $this->layout->registerPrintable(function (PdfDocumentPrintInterface $document, float $defaultWidth) use ($imagePath, $number) {
+        $this->layout->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($imagePath, $number) {
             list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $defaultWidth);
             $document->printImage($imagePath, $width, $height);
             $afterImageCursor = $document->getCursor();
@@ -122,7 +125,7 @@ class Printer implements PrinterInterface
      */
     private function printText(string $text, float $fontSize)
     {
-        $this->layout->registerPrintable(function (PdfDocumentPrintInterface $document, float $defaultWidth) use ($text, $fontSize) {
+        $this->layout->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($text, $fontSize) {
             $document->configure(['fontSize' => $fontSize]);
             $document->printText($text, $defaultWidth);
         });
@@ -134,7 +137,7 @@ class Printer implements PrinterInterface
      */
     private function printBoldText(string $text, float $fontSize)
     {
-        $this->layout->registerPrintable(function (PdfDocumentPrintInterface $document, float $defaultWidth) use ($text, $fontSize) {
+        $this->layout->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($text, $fontSize) {
             $document->configure(['fontSize' => $fontSize, 'bold' => true]);
             $document->printText($text, $defaultWidth);
         });

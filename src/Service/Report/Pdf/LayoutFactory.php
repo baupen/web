@@ -12,7 +12,7 @@
 namespace App\Service\Report\Pdf;
 
 use App\Service\Report\Document\Interfaces\Configuration\ColumnConfiguration;
-use App\Service\Report\Document\Interfaces\Configuration\Table;
+use App\Service\Report\Document\Interfaces\Layout\AutoColumnLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\ColumnLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
@@ -20,6 +20,7 @@ use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
 use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
 use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Pdf\Layout\AutoColumnLayout;
 use App\Service\Report\Pdf\Layout\ColumnLayout;
 use App\Service\Report\Pdf\Layout\FullWidthLayout;
 use App\Service\Report\Pdf\Layout\GroupLayout;
@@ -70,7 +71,7 @@ class LayoutFactory implements LayoutFactoryInterface
      */
     public function createColumnLayout(int $columnCount)
     {
-        return ColumnLayout::createWithAutomaticWidth($this->document, $columnCount, $this->layoutService->getColumnGutter(), $this->layoutService->getContentXSize());
+        return new ColumnLayout($this->document, $columnCount, $this->layoutService->getColumnGutter(), $this->layoutService->getContentXSize());
     }
 
     /**
@@ -95,5 +96,17 @@ class LayoutFactory implements LayoutFactoryInterface
     public function createFullWidthLayout()
     {
         return new FullWidthLayout($this->document, $this->layoutService->getContentXSize());
+    }
+
+    /**
+     * starts a region with columns and the column is chosen automatically.
+     *
+     * @param int $columnCount
+     *
+     * @return AutoColumnLayoutInterface
+     */
+    public function createAutoColumnLayout(int $columnCount)
+    {
+        return new AutoColumnLayout($this->document, $columnCount, $this->layoutService->getColumnGutter(), $this->layoutService->getContentXSize());
     }
 }

@@ -29,6 +29,9 @@ class CraftsmanController extends BaseDoctrineController
      *
      * @param $identifier
      *
+     * @throws \Exception
+     * @throws \Exception
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function shareAction($identifier)

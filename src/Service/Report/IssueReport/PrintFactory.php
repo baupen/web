@@ -22,7 +22,7 @@ use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Design\TypographyService;
 
-class PdfBuildingBlocks implements PrintFactoryInterface
+class PrintFactory implements PrintFactoryInterface
 {
     /**
      * @var TypographyService

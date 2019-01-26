@@ -139,6 +139,7 @@ class LoginController extends BaseLoginController
     {
         $arr = [];
 
+        /** @var ConstructionManager $user */
         $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['resetHash' => $resetHash]);
         if ($user !== null) {
             $form = $this->handleForm(

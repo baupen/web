@@ -44,4 +44,12 @@ class ColorService implements ColorServiceInterface
     {
         return $this->color->getBackground();
     }
+
+    /**
+     * @return int[]
+     */
+    public function getTableAlternatingBackgroundColor()
+    {
+        return $this->color->getSecondaryBackground();
+    }
 }

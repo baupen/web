@@ -77,6 +77,9 @@ class DispatchController extends ApiController
      * @param TranslatorInterface $translator
      * @param EmailServiceInterface $emailService
      *
+     * @throws \Exception
+     * @throws \Exception
+     *
      * @return Response
      */
     public function dispatchAction(Request $request, TranslatorInterface $translator, EmailServiceInterface $emailService)
@@ -131,6 +134,8 @@ class DispatchController extends ApiController
      * @param ConstructionSite $constructionSite
      * @param EmailServiceInterface $emailService
      * @param TranslatorInterface $translator
+     *
+     * @throws \Exception
      *
      * @return bool
      */

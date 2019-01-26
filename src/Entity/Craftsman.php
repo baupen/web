@@ -252,7 +252,7 @@ class Craftsman extends BaseEntity
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getEmailIdentifier(): string
     {
@@ -261,6 +261,8 @@ class Craftsman extends BaseEntity
 
     /**
      * sets the email identifier.
+     *
+     * @throws \Exception
      */
     public function setEmailIdentifier(): void
     {

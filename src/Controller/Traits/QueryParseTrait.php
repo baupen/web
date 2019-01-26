@@ -22,6 +22,9 @@ trait QueryParseTrait
      * @param Filter $filter
      * @param ConstructionSite $constructionSite
      * @param array $query
+     *
+     * @throws \Exception
+     * @throws \Exception
      */
     private function setFilterProperties(Filter $filter, ConstructionSite $constructionSite, $query)
     {

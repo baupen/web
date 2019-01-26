@@ -21,6 +21,12 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20190112113629 extends AbstractMigration
 {
+    /**
+     * @param Schema $schema
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Migrations\AbortMigrationException
+     */
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs

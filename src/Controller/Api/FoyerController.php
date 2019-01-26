@@ -358,6 +358,7 @@ class FoyerController extends ApiController
      * @param NumberIssueTransformer $numberIssueTransformer
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Exception
      *
      * @return Response
      */
