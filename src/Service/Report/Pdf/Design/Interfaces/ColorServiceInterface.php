@@ -22,4 +22,9 @@ interface ColorServiceInterface
      * @return int[]
      */
     public function getImageOverlayColor();
+
+    /**
+     * @return int[]
+     */
+    public function getTableAlternatingBackgroundColor();
 }

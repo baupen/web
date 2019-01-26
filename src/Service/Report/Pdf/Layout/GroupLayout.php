@@ -11,8 +11,8 @@
 
 namespace App\Service\Report\Pdf\Layout;
 
-use App\Service\Report\Document\Interfaces\Layout\Base\PrintTransactionInterface;
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
+use App\Service\Report\Document\Transaction\TransactionInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentTransactionInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Pdf\Layout\Supporting\PrintBuffer;
@@ -52,22 +52,11 @@ class GroupLayout implements GroupLayoutInterface
     /**
      * will end the columned layout.
      *
-     * @return PrintTransactionInterface
+     * @return TransactionInterface
      */
     public function getTransaction()
     {
-        $printContent = $this->printBuffer->flushBufferClosure();
-        $transaction = new PrintTransaction($this->pdfDocument, $this->width, $printContent);
-
-        // start new page if needed
-        [$start, $end] = $transaction->calculatePrintArea();
-        if ($start->getPage() !== $end->getPage()) {
-            $transaction->setOnPreCommit(function (PdfDocumentInterface $pdfDocument) {
-                $pdfDocument->startNewPage();
-            });
-        }
-
-        return $transaction;
+        return self::createTransaction($this->printBuffer, $this->pdfDocument, $this->width);
     }
 
     /**
@@ -80,5 +69,37 @@ class GroupLayout implements GroupLayoutInterface
     public function registerPrintable(callable $callable)
     {
         $this->printBuffer->addPrintable($callable);
+    }
+
+    /**
+     * creates the transaction and implements the grouping functionality.
+     *
+     * @param PrintBuffer $printBuffer
+     * @param PdfDocumentTransactionInterface $pdfDocument
+     * @param float $width
+     *
+     * @return PrintTransaction
+     */
+    private static function createTransaction(PrintBuffer $printBuffer, PdfDocumentTransactionInterface $pdfDocument, float $width)
+    {
+        $printContent = $printBuffer->flushBufferClosure();
+        $transaction = new PrintTransaction($pdfDocument, $width, $printContent);
+
+        // ensure not bigger than current page
+        [$start, $end] = $transaction->calculatePrintArea();
+        if ($start->getPage() === $end->getPage()) {
+            return $transaction;
+        }
+
+        // start new page to fulfill grouping requirement
+        // clone the print buffer else unexpected behaviour if reusing the layout
+        $printBuffer = PrintBuffer::createFromExisting($printBuffer);
+        $printBuffer->prependPrintable(function (PdfDocumentInterface $pdfDocument) {
+            $pdfDocument->startNewPage();
+        });
+
+        $printContent = $printBuffer->flushBufferClosure();
+
+        return new PrintTransaction($pdfDocument, $width, $printContent);
     }
 }

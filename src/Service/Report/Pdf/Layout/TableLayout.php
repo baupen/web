@@ -12,9 +12,9 @@
 namespace App\Service\Report\Pdf\Layout;
 
 use App\Service\Report\Document\Interfaces\Configuration\ColumnConfiguration;
-use App\Service\Report\Document\Interfaces\Layout\Base\PrintTransactionInterface;
 use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\TableRowLayoutInterface;
+use App\Service\Report\Document\Transaction\TransactionInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentTransactionInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Pdf\Layout\Supporting\PrintTransaction;
@@ -96,7 +96,7 @@ class TableLayout implements TableLayoutInterface
     /**
      * will produce a transaction with the to-be-printed document.
      *
-     * @return PrintTransactionInterface
+     * @return TransactionInterface
      */
     public function getTransaction()
     {

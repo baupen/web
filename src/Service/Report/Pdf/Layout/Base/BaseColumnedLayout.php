@@ -86,22 +86,7 @@ abstract class BaseColumnedLayout
      */
     public function getTransaction()
     {
-        $transaction = new PrintTransaction($this->pdfDocument, $this->totalWidth, $this->printBuffer->flushBufferClosure());
-
-        $transaction->setOnPostCommit(function () {
-            // go to lowest column after printing stopped
-            $lowestCursor = $this->columnCursors[0];
-            for ($i = 1; $i < $this->columnCount; ++$i) {
-                $other = $this->columnCursors[$i];
-                if ($other->isLowerOnPageThan($lowestCursor)) {
-                    $lowestCursor = $other;
-                }
-            }
-
-            $this->pdfDocument->setCursor($lowestCursor->setX($this->columnCursors[0]->getXCoordinate()));
-        });
-
-        return $transaction;
+        return self::createTransaction($this->printBuffer, $this->pdfDocument, $this->totalWidth);
     }
 
     /**
@@ -140,9 +125,8 @@ abstract class BaseColumnedLayout
      * ensures the next printed elements are printed in the specified column
      * will throw an exception if the column region does not exist.
      *
+     * @param int $currentColumn
      * @param int $nextColumn
-     *
-     * @throws \Exception
      */
     protected function switchColumns(int $currentColumn, int $nextColumn)
     {
@@ -150,7 +134,32 @@ abstract class BaseColumnedLayout
         $this->columnCursors[$currentColumn] = $this->pdfDocument->getCursor();
 
         // set new cursor
-        $this->activeColumn = $nextColumn;
         $this->pdfDocument->setCursor($this->columnCursors[$nextColumn]);
+    }
+
+    /**
+     * @param PrintBuffer $printBuffer
+     * @param PdfDocumentTransactionInterface $pdfDocumentTransaction
+     * @param float $width
+     *
+     * @return PrintTransaction
+     */
+    private static function createTransaction(PrintBuffer $printBuffer, PdfDocumentTransactionInterface $pdfDocumentTransaction, float $width)
+    {
+        $printBuffer = PrintBuffer::createFromExisting($printBuffer);
+        $printBuffer->addPrintable(function (PdfDocumentInterface $pdfDocument) {
+            // go to lowest column after printing stopped
+            $lowestCursor = $this->columnCursors[0];
+            for ($i = 1; $i < $this->columnCount; ++$i) {
+                $other = $this->columnCursors[$i];
+                if ($other->isLowerOnPageThan($lowestCursor)) {
+                    $lowestCursor = $other;
+                }
+            }
+
+            $pdfDocument->setCursor($lowestCursor->setX($this->columnCursors[0]->getXCoordinate()));
+        });
+
+        return new PrintTransaction($pdfDocumentTransaction, $width, $printBuffer->flushBufferClosure());
     }
 }

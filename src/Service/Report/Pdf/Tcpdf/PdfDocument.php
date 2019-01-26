@@ -13,6 +13,7 @@ namespace App\Service\Report\Pdf\Tcpdf;
 
 use App\Service\Report\Pdf\Cursor;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Pdf\Tcpdf\Configuration\DrawConfiguration;
 use App\Service\Report\Pdf\Tcpdf\Configuration\PrintConfiguration;
 
 /**
@@ -40,7 +41,22 @@ class PdfDocument implements PdfDocumentInterface
     /**
      * @var bool
      */
-    private $printConfigurationHasChanged = true;
+    private $printConfigurationChanged = true;
+
+    /**
+     * @var DrawConfiguration
+     */
+    private $drawConfiguration;
+
+    /**
+     * @var bool
+     */
+    private $drawConfigurationChanged = true;
+
+    /**
+     * @var bool
+     */
+    private $appliedConfiguration = null;
 
     /**
      * PdfDocument constructor.
@@ -85,10 +101,13 @@ class PdfDocument implements PdfDocumentInterface
      */
     private function ensurePrintConfigurationApplied()
     {
-        if ($this->printConfigurationHasChanged) {
-            $this->printConfiguration->apply($this->pdf);
-            $this->printConfigurationHasChanged = false;
+        if (!$this->printConfigurationChanged && $this->appliedConfiguration === 'print') {
+            return;
         }
+
+        $this->printConfiguration->apply($this->pdf);
+        $this->printConfigurationChanged = false;
+        $this->appliedConfiguration = 'print';
     }
 
     /**
@@ -181,7 +200,7 @@ class PdfDocument implements PdfDocumentInterface
      */
     public function configurePrint(array $config = [], bool $restoreDefaults = true)
     {
-        $this->printConfigurationHasChanged = true;
+        $this->printConfigurationChanged = true;
 
         if ($restoreDefaults) {
             $this->printConfiguration = new PrintConfiguration();
@@ -225,7 +244,7 @@ class PdfDocument implements PdfDocumentInterface
     }
 
     /**
-     * @return object
+     * @return PrintConfiguration
      */
     public function getPrintConfiguration()
     {
@@ -233,12 +252,12 @@ class PdfDocument implements PdfDocumentInterface
     }
 
     /**
-     * @param $printConfiguration
+     * @param PrintConfiguration $printConfiguration
      */
-    public function setPrintConfiguration($printConfiguration)
+    public function setPrintConfiguration(PrintConfiguration $printConfiguration)
     {
         $this->printConfiguration = $printConfiguration;
-        $this->printConfigurationHasChanged = true;
+        $this->printConfigurationChanged = true;
     }
 
     /**
@@ -251,5 +270,63 @@ class PdfDocument implements PdfDocumentInterface
         [, $after] = $this->measureImpact($printClosure);
 
         return $after;
+    }
+
+    /**
+     * applies the config if it has changed.
+     */
+    private function ensureDrawConfigurationApplied()
+    {
+        if (!$this->drawConfigurationChanged && $this->appliedConfiguration === 'draw') {
+            return;
+        }
+
+        $this->drawConfiguration->apply($this->pdf);
+        $this->drawConfigurationChanged = false;
+        $this->appliedConfiguration = 'draw';
+    }
+
+    /**
+     * @param array $config
+     * @param bool $restoreDefaults
+     *
+     * @throws \Exception
+     */
+    public function configureDraw(array $config = [], bool $restoreDefaults = true)
+    {
+        $this->drawConfigurationChanged = true;
+
+        if ($restoreDefaults) {
+            $this->drawConfiguration = new DrawConfiguration();
+        }
+
+        $this->drawConfiguration->setConfiguration($config);
+    }
+
+    /**
+     * @return DrawConfiguration
+     */
+    public function getDrawConfiguration()
+    {
+        return $this->drawConfiguration;
+    }
+
+    /**
+     * @param DrawConfiguration $drawConfiguration
+     */
+    public function setDrawConfiguration(DrawConfiguration $drawConfiguration)
+    {
+        $this->drawConfiguration = $drawConfiguration;
+    }
+
+    /**
+     * @param float $width
+     * @param float $height
+     */
+    public function drawArea(float $width, float $height)
+    {
+        $this->ensureDrawConfigurationApplied();
+
+        $this->pdf->Cell($width, $height, '', $this->drawConfiguration->getBorder(), 0, '', $this->drawConfiguration->getFill());
     }
 }

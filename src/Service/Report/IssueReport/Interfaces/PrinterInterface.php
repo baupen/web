@@ -11,10 +11,7 @@
 
 namespace App\Service\Report\IssueReport\Interfaces;
 
-use App\Service\Report\Document\Interfaces\Layout\Base\PrintableLayoutInterface;
-use App\Service\Report\Pdf\Cursor;
-
-interface BuildingBlocksInterface
+interface PrinterInterface
 {
     /**
      * @param string $title
@@ -42,19 +39,8 @@ interface BuildingBlocksInterface
     public function printImage(string $filePath);
 
     /**
-     * @param PrintableLayoutInterface $layout
-     */
-    public function setLayout(PrintableLayoutInterface $layout);
-
-    /**
      * @param string $imagePath
      * @param int $number
      */
     public function printIssueImage(string $imagePath, int $number);
-
-    /**
-     * @param Cursor $start
-     * @param Cursor $end
-     */
-    public function drawTableAlternatingBackground(Cursor $start, Cursor $end);
 }

@@ -11,8 +11,8 @@
 
 namespace App\Service\Report\Pdf\Layout;
 
-use App\Service\Report\Document\Interfaces\Layout\Base\PrintTransactionInterface;
 use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
+use App\Service\Report\Document\Transaction\TransactionInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Pdf\Layout\Supporting\PrintBuffer;
 use App\Service\Report\Pdf\Layout\Supporting\PrintTransaction;
@@ -63,7 +63,7 @@ class FullWidthLayout implements FullWidthLayoutInterface
     /**
      * will end the columned layout.
      *
-     * @return PrintTransactionInterface
+     * @return TransactionInterface
      */
     public function getTransaction()
     {

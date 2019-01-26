@@ -11,11 +11,11 @@
 
 namespace App\Service\Report\Pdf\Layout\Supporting;
 
-use App\Service\Report\Document\Interfaces\Layout\Base\PrintTransactionInterface;
+use App\Service\Report\Document\Transaction\TransactionInterface;
 use App\Service\Report\Pdf\Cursor;
-use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentTransactionInterface;
+use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
-class PrintTransaction implements PrintTransactionInterface
+class PrintTransaction implements TransactionInterface
 {
     /**
      * @var \Closure
@@ -23,7 +23,7 @@ class PrintTransaction implements PrintTransactionInterface
     private $content;
 
     /**
-     * @var PdfDocumentTransactionInterface
+     * @var PdfDocumentInterface
      */
     private $pdfDocument;
 
@@ -33,44 +33,31 @@ class PrintTransaction implements PrintTransactionInterface
     private $width;
 
     /**
-     * @var callable
+     * @var PrintBuffer
      */
-    private $onPreCommit;
+    private $prePrintBuffer;
 
     /**
-     * @var callable
+     * @var PrintBuffer
      */
-    private $onPostCommit;
+    private $postPrintBuffer;
 
     /**
      * PrintBuffer constructor.
      *
-     * @param PdfDocumentTransactionInterface $pdfDocument
+     * @param PdfDocumentInterface $pdfDocument
      * @param float $width
      * @param \Closure $content
      */
-    public function __construct(PdfDocumentTransactionInterface $pdfDocument, float $width, \Closure $content)
+    public function __construct(PdfDocumentInterface $pdfDocument, float $width, \Closure $content)
     {
         $this->pdfDocument = $pdfDocument;
         $this->width = $width;
 
         $this->content = $content;
-    }
 
-    /**
-     * @param callable $callable
-     */
-    public function setOnPreCommit(callable $callable): void
-    {
-        $this->onPreCommit = $callable;
-    }
-
-    /**
-     * @param callable $callable
-     */
-    public function setOnPostCommit(callable $callable): void
-    {
-        $this->onPostCommit = $callable;
+        $this->prePrintBuffer = new PrintBuffer($this->pdfDocument, $this->width);
+        $this->postPrintBuffer = new PrintBuffer($this->pdfDocument, $this->width);
     }
 
     /**
@@ -81,10 +68,8 @@ class PrintTransaction implements PrintTransactionInterface
      */
     public function calculatePrintArea()
     {
-        $emptyBuffer = $this->getCommitClosure();
-
         $before = $this->pdfDocument->getCursor();
-        $after = $this->pdfDocument->cursorAfterwardsIfPrinted($emptyBuffer);
+        $after = $this->pdfDocument->cursorAfterwardsIfPrinted($this->content);
 
         $after->setX($before->getXCoordinate() + $this->width);
 
@@ -96,27 +81,35 @@ class PrintTransaction implements PrintTransactionInterface
      */
     public function commit()
     {
-        $this->getCommitClosure()();
+        $prePrint = $this->prePrintBuffer->flushBufferClosure();
+        $prePrint();
+
+        $printBuffer = $this->content;
+        $printBuffer();
+
+        $postPrint = $this->postPrintBuffer->flushBufferClosure();
+        $postPrint();
     }
 
     /**
-     * @return \Closure
+     * register a callable which prints directly to the document before the real print is started.
+     * at the end of the callable, reset the layout to the state before the invocation to ensure the layout works as expected.
+     *
+     * @param callable $callable the arguments are decided by the transaction implementation. At least the document(s) to print to should be included.
      */
-    private function getCommitClosure(): \Closure
+    public function registerDrawablePrePrint(callable $callable)
     {
-        return function () {
-            $preCommit = $this->onPreCommit;
-            if ($preCommit !== null) {
-                $preCommit();
-            }
+        $this->prePrintBuffer->addPrintable($callable);
+    }
 
-            $flushBuffer = $this->content;
-            $flushBuffer();
-
-            $postCommit = $this->onPostCommit;
-            if ($postCommit !== null) {
-                $postCommit();
-            }
-        };
+    /**
+     * register a callable which prints directly to the document after the real print has ended.
+     * at the end of the callable, reset the layout to the state before the invocation to ensure the layout works as expected.
+     *
+     * @param callable $callable the arguments are decided by the transaction implementation. At least the document(s) to print to should be included.
+     */
+    public function registerDrawablePostPrint(callable $callable)
+    {
+        $this->postPrintBuffer->addPrintable($callable);
     }
 }

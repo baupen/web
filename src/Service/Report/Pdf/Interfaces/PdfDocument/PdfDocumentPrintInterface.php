@@ -11,6 +11,8 @@
 
 namespace App\Service\Report\Pdf\Interfaces\PdfDocument;
 
+use App\Service\Report\Pdf\Tcpdf\Configuration\PrintConfiguration;
+
 interface PdfDocumentPrintInterface extends PdfDocumentCursorInterface
 {
     /**
@@ -20,14 +22,14 @@ interface PdfDocumentPrintInterface extends PdfDocumentCursorInterface
     public function configurePrint(array $config = [], bool $restoreDefaults = true);
 
     /**
-     * @return object
+     * @return PrintConfiguration
      */
     public function getPrintConfiguration();
 
     /**
-     * @param $printConfiguration
+     * @param PrintConfiguration $printConfiguration
      */
-    public function setPrintConfiguration($printConfiguration);
+    public function setPrintConfiguration(PrintConfiguration $printConfiguration);
 
     /**
      * @param string $text

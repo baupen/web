@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document\Interfaces\Layout\Base;
+namespace App\Service\Report\Pdf\Interfaces;
 
 use App\Service\Report\Pdf\Cursor;
 
-interface PrintTransactionInterface
+interface PdfPrintTransactionInterface
 {
     /**
      * get the area of the to-be printed area by this transaction
@@ -22,9 +22,4 @@ interface PrintTransactionInterface
      * @return Cursor[]
      */
     public function calculatePrintArea();
-
-    /**
-     * prints the contained components.
-     */
-    public function commit();
 }

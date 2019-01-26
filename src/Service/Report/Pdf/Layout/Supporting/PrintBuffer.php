@@ -45,24 +45,21 @@ class PrintBuffer
     /**
      * @param callable $callable
      * @param callable $setCursor
-     * @param null $widthOverride
+     * @param float|null $widthOverride
      */
-    public function addPrintable(callable $callable, callable $setCursor = null, $widthOverride = null)
+    public function prependPrintable(callable $callable, callable $setCursor = null, float $widthOverride = null)
     {
-        $pdfDocument = $this->pdfDocument;
-        $width = $widthOverride === null ? $this->width : $widthOverride;
+        $this->printBuffer = array_merge([$this->getPrintBufferEntry($callable, $setCursor, $widthOverride)], $this->printBuffer);
+    }
 
-        $printConfig = $pdfDocument->getPrintConfiguration();
-
-        $this->printBuffer[] = function () use ($pdfDocument, $width, $setCursor, $callable, $printConfig) {
-            $pdfDocument->setPrintConfiguration($printConfig);
-
-            if (\is_callable($setCursor)) {
-                $width = $setCursor($pdfDocument);
-            }
-
-            $callable($pdfDocument, $width);
-        };
+    /**
+     * @param callable $callable
+     * @param callable $setCursor
+     * @param float|null $widthOverride
+     */
+    public function addPrintable(callable $callable, callable $setCursor = null, float $widthOverride = null)
+    {
+        $this->printBuffer[] = $this->getPrintBufferEntry($callable, $setCursor, $widthOverride);
     }
 
     /**
@@ -74,6 +71,44 @@ class PrintBuffer
             foreach ($this->printBuffer as $item) {
                 $item();
             }
+        };
+    }
+
+    /**
+     * @param PrintBuffer $buffer
+     *
+     * @return PrintBuffer
+     */
+    public static function createFromExisting(self $buffer)
+    {
+        $newBuffer = new self($buffer->pdfDocument, $buffer->width);
+        $newBuffer->printBuffer = $buffer->printBuffer;
+
+        return $newBuffer;
+    }
+
+    /**
+     * @param callable $callable
+     * @param callable $setCursor
+     * @param float|null $widthOverride
+     *
+     * @return \Closure
+     */
+    private function getPrintBufferEntry(callable $callable, callable $setCursor = null, $widthOverride = null)
+    {
+        $pdfDocument = $this->pdfDocument;
+        $width = $widthOverride === null ? $this->width : $widthOverride;
+
+        $printConfig = $pdfDocument->getPrintConfiguration();
+
+        return function () use ($pdfDocument, $width, $setCursor, $callable, $printConfig) {
+            $pdfDocument->setPrintConfiguration($printConfig);
+
+            if (\is_callable($setCursor)) {
+                $width = $setCursor($pdfDocument);
+            }
+
+            $callable($pdfDocument, $width);
         };
     }
 }

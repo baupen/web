@@ -12,12 +12,11 @@
 namespace App\Service\Report\IssueReport;
 
 use App\Service\Report\Document\Interfaces\Configuration\ColumnConfiguration;
-use App\Service\Report\Document\Interfaces\Configuration\Table;
-use App\Service\Report\Document\Interfaces\Layout\Base\PrintTransactionInterface;
 use App\Service\Report\Document\Interfaces\Layout\TableRowLayoutInterface;
 use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
-use App\Service\Report\IssueReport\Interfaces\BuildingBlocksInterface;
+use App\Service\Report\Document\Transaction\TransactionInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
+use App\Service\Report\IssueReport\Interfaces\PrintFactoryInterface;
 use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
 use App\Service\Report\IssueReport\Model\IntroductionContent;
 use App\Service\Report\IssueReport\Model\MapContent;
@@ -37,49 +36,49 @@ class IssueReportService implements IssueReportServiceInterface
 
     /**
      * @param LayoutFactoryInterface $layoutFactory
-     * @param BuildingBlocksInterface $buildingBlocks
+     * @param PrintFactoryInterface $printFactory
      * @param IntroductionContent $introductionContent
      */
-    public function addIntroduction(LayoutFactoryInterface $layoutFactory, BuildingBlocksInterface $buildingBlocks, IntroductionContent $introductionContent)
+    public function addIntroduction(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, IntroductionContent $introductionContent)
     {
         //three or two column layout
         $columnedLayout = $layoutFactory->createColumnLayout(3);
-        $buildingBlocks->setLayout($columnedLayout);
+        $printer = $printFactory->getPrinter($columnedLayout);
 
         //image
         if ($introductionContent->getConstructionSiteImage() !== null) {
-            $buildingBlocks->printImage($introductionContent->getConstructionSiteImage());
+            $printer->printImage($introductionContent->getConstructionSiteImage());
         }
 
         $columnedLayout->setColumn(1);
 
-        $buildingBlocks->printTitle($introductionContent->getConstructionSiteName());
-        $buildingBlocks->printParagraph(implode(', ', $introductionContent->getConstructionSiteAddressLines()));
+        $printer->printTitle($introductionContent->getConstructionSiteName());
+        $printer->printParagraph(implode(', ', $introductionContent->getConstructionSiteAddressLines()));
 
         $reportElementsTitle = $this->translator->trans('introduction.elements', [], 'report');
-        $buildingBlocks->printTitle($reportElementsTitle);
-        $buildingBlocks->printParagraph(implode(', ', $introductionContent->getReportElements()));
+        $printer->printTitle($reportElementsTitle);
+        $printer->printParagraph(implode(', ', $introductionContent->getReportElements()));
 
         $columnedLayout->setColumn(3);
 
         $filterTitle = $this->translator->trans('entity.name', [], 'entity_filter');
-        $buildingBlocks->printTitle($filterTitle);
-        $buildingBlocks->printKeyValueParagraph($introductionContent->getFilterEntries());
+        $printer->printTitle($filterTitle);
+        $printer->printKeyValueParagraph($introductionContent->getFilterEntries());
 
         $columnedLayout->getTransaction()->commit();
     }
 
     /**
      * @param LayoutFactoryInterface $layoutFactory
-     * @param BuildingBlocksInterface $buildingBlocks
+     * @param PrintFactoryInterface $printFactory
      * @param AggregatedIssuesContent $aggregatedIssuesContent
      */
-    public function addAggregatedIssueTable(LayoutFactoryInterface $layoutFactory, BuildingBlocksInterface $buildingBlocks, AggregatedIssuesContent $aggregatedIssuesContent)
+    public function addAggregatedIssueTable(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, AggregatedIssuesContent $aggregatedIssuesContent)
     {
         $layout = $layoutFactory->createFullWidthLayout();
-        $buildingBlocks->setLayout($layout);
+        $printer = $printFactory->getPrinter($layout);
 
-        $buildingBlocks->printTitle($aggregatedIssuesContent->getTableDescription());
+        $printer->printTitle($aggregatedIssuesContent->getTableDescription());
         $layout->getTransaction()->commit();
 
         // prepare table column config
@@ -102,32 +101,32 @@ class IssueReportService implements IssueReportServiceInterface
         }
 
         // print styled table
-        $this->printTable($layoutFactory, $buildingBlocks, $tableColumnConfig, $tableHeader, $tableContent);
+        $this->printTable($layoutFactory, $printFactory, $tableColumnConfig, $tableHeader, $tableContent);
     }
 
     /**
      * @param LayoutFactoryInterface $layoutFactory
-     * @param BuildingBlocksInterface $buildingBlocks
-     * @param array $tableColumnConfig
+     * @param PrintFactoryInterface $printFactory
+     * @param ColumnConfiguration[] $tableColumnConfig
      * @param string[] $tableHeader
      * @param string[][] $tableContent
      */
-    private function printTable(LayoutFactoryInterface $layoutFactory, BuildingBlocksInterface $buildingBlocks, array $tableColumnConfig, array $tableHeader, array $tableContent)
+    private function printTable(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, array $tableColumnConfig, array $tableHeader, array $tableContent)
     {
         // prepare table layout
         $tableLayout = $layoutFactory->createTableLayout($tableColumnConfig);
 
-        $this->printTableRow($tableLayout->startNewRow(), $buildingBlocks, $tableHeader);
+        $this->printTableRow($tableLayout->startNewRow(), $printFactory, $tableHeader);
 
         foreach ($tableContent as $row) {
-            $this->printTableRow($tableLayout->startNewRow(), $buildingBlocks, $row);
+            $this->printTableRow($tableLayout->startNewRow(), $printFactory, $row);
         }
 
         $counter = 0;
-        $tableLayout->setOnRowCommit(function (PrintTransactionInterface $printTransaction) use (&$counter, $buildingBlocks) {
+        $tableLayout->setOnRowCommit(function (TransactionInterface $printTransaction) use (&$counter, $printFactory) {
             if ($counter % 2 === 1) {
-                $area = $printTransaction->calculatePrintArea();
-                $buildingBlocks->drawTableAlternatingBackground(...$area);
+                $drawer = $printFactory->getDrawer($printTransaction);
+                $drawer->drawTableAlternatingBackground();
             }
 
             ++$counter;
@@ -139,36 +138,36 @@ class IssueReportService implements IssueReportServiceInterface
 
     /**
      * @param TableRowLayoutInterface $row
-     * @param BuildingBlocksInterface $buildingBlocks
+     * @param PrintFactoryInterface $printFactory
      * @param string[] $rowContent
      */
-    private function printTableRow(TableRowLayoutInterface $row, BuildingBlocksInterface $buildingBlocks, array $rowContent)
+    private function printTableRow(TableRowLayoutInterface $row, PrintFactoryInterface $printFactory, array $rowContent)
     {
-        $buildingBlocks->setLayout($row);
+        $printer = $printFactory->getPrinter($row);
 
         $columnLength = \count($rowContent);
         for ($i = 0; $i < $columnLength; ++$i) {
             $row->setColumn($i);
-            $buildingBlocks->printParagraph($rowContent[$i]);
+            $printer->printParagraph($rowContent[$i]);
         }
     }
 
     /**
      * @param LayoutFactoryInterface $layoutFactory
-     * @param BuildingBlocksInterface $buildingBlocks
+     * @param PrintFactoryInterface $printFactory
      * @param MapContent $mapContent
      */
-    public function addMap(LayoutFactoryInterface $layoutFactory, BuildingBlocksInterface $buildingBlocks, MapContent $mapContent)
+    public function addMap(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, MapContent $mapContent)
     {
         $groupLayout = $layoutFactory->createGroupLayout();
-        $buildingBlocks->setLayout($groupLayout);
+        $printer = $printFactory->getPrinter($groupLayout);
 
-        $buildingBlocks->printTitle($mapContent->getMapName());
-        $buildingBlocks->printParagraph($mapContent->getMapContext());
+        $printer->printTitle($mapContent->getMapName());
+        $printer->printParagraph($mapContent->getMapContext());
 
         $mapImage = $mapContent->getMapImage();
         if ($mapImage !== null) {
-            $buildingBlocks->printImage($mapImage);
+            $printer->printImage($mapImage);
         }
         $groupLayout->getTransaction()->commit();
 
@@ -179,14 +178,14 @@ class IssueReportService implements IssueReportServiceInterface
             $tableColumnConfig[] = new ColumnConfiguration(ColumnConfiguration::SIZING_EXPAND);
         }
 
-        $this->printTable($layoutFactory, $buildingBlocks, $tableColumnConfig, $mapContent->getIssuesTableHeader(), $mapContent->getIssuesTableContent());
+        $this->printTable($layoutFactory, $printFactory, $tableColumnConfig, $mapContent->getIssuesTableHeader(), $mapContent->getIssuesTableContent());
 
         if (\count($mapContent->getIssueImages()) > 0) {
             $columnLayout = $layoutFactory->createAutoColumnLayout(4);
-            $buildingBlocks->setLayout($columnLayout);
+            $printer = $printFactory->getPrinter($columnLayout);
 
             foreach ($mapContent->getIssueImages() as $image) {
-                $buildingBlocks->printIssueImage($image->getImagePath(), $image->getNumber());
+                $printer->printIssueImage($image->getImagePath(), $image->getNumber());
             }
 
             $columnLayout->getTransaction()->commit();

@@ -11,16 +11,18 @@
 
 namespace App\Service\Report\IssueReport;
 
-use App\Helper\ImageHelper;
 use App\Service\Report\Document\Interfaces\Layout\Base\PrintableLayoutInterface;
-use App\Service\Report\IssueReport\Interfaces\BuildingBlocksInterface;
-use App\Service\Report\Pdf\Cursor;
+use App\Service\Report\Document\Transaction\Base\DrawableTransactionInterface;
+use App\Service\Report\IssueReport\Interfaces\DrawerInterface;
+use App\Service\Report\IssueReport\Interfaces\PrinterInterface;
+use App\Service\Report\IssueReport\Interfaces\PrintFactoryInterface;
+use App\Service\Report\IssueReport\Pdf\Drawer;
+use App\Service\Report\IssueReport\Pdf\Printer;
 use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Design\TypographyService;
-use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentPrintInterface;
 
-class PdfBuildingBlocks implements BuildingBlocksInterface
+class PdfBuildingBlocks implements PrintFactoryInterface
 {
     /**
      * @var TypographyService
@@ -33,12 +35,6 @@ class PdfBuildingBlocks implements BuildingBlocksInterface
     private $color;
 
     /**
-     * @var PrintableLayoutInterface
-     */
-    private $layout;
-
-    /**
-     * @param PrintableLayoutInterface $customPrinterLayout
      * @param TypographyServiceInterface $typographyService
      * @param ColorServiceInterface $colorService
      */
@@ -49,124 +45,22 @@ class PdfBuildingBlocks implements BuildingBlocksInterface
     }
 
     /**
-     * @param PrintableLayoutInterface $layout
-     */
-    public function setLayout(PrintableLayoutInterface $layout)
-    {
-        $this->layout = $layout;
-    }
-
-    /**
-     * @param string $paragraph
-     */
-    public function printParagraph(string $paragraph)
-    {
-        $this->printText($paragraph, $this->typography->getTextFontSize());
-    }
-
-    /**
-     * @param string $title
-     */
-    public function printTitle(string $title)
-    {
-        $this->printBoldText($title, $this->typography->getTextFontSize());
-    }
-
-    /**
-     * @param string $header
-     */
-    public function printRegionHeader(string $header)
-    {
-        $this->printBoldText($header, $this->typography->getTitleFontSize());
-    }
-
-    /**
-     * @param string $filePath
-     */
-    public function printImage(string $filePath)
-    {
-        $this->layout->registerPrintable(function (PdfDocumentPrintInterface $document, float $defaultWidth) use ($filePath) {
-            list($width, $height) = ImageHelper::getWidthHeightArguments($filePath, $defaultWidth);
-            $document->printImage($filePath, $width, $height);
-        });
-    }
-
-    /**
-     * @param string[] $keyValues
-     */
-    public function printKeyValueParagraph(array $keyValues)
-    {
-        foreach ($keyValues as $key => $value) {
-            $this->printBoldText($key, $this->typography->getTextFontSize());
-            $this->printText($value, $this->typography->getTextFontSize());
-        }
-    }
-
-    /**
-     * @param string $imagePath
-     * @param int $number
-     */
-    public function printIssueImage(string $imagePath, int $number)
-    {
-        $this->layout->registerPrintable(function (PdfDocumentPrintInterface $document, float $defaultWidth) use ($imagePath, $number) {
-            list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $defaultWidth);
-            $document->printImage($imagePath, $width, $height);
-            $afterImageCursor = $document->getCursor();
-
-            // put cursor to top left corner of image
-            $document->setCursor($afterImageCursor->setY($afterImageCursor->getYCoordinate() - $height));
-
-            // print number of issue
-            $document->configurePrint(['background' => $this->color->getImageOverlayColor()]);
-            $document->printText((string)$number, $this->typography->getTextFontSize());
-
-            // reset cursor to after image
-            $document->setCursor(...$afterImageCursor);
-        });
-    }
-
-    /**
-     * @param string $text
-     * @param float $fontSize
-     */
-    private function printText(string $text, float $fontSize)
-    {
-        $this->layout->registerPrintable(function (PdfDocumentPrintInterface $document, float $defaultWidth) use ($text, $fontSize) {
-            $document->configurePrint(['fontSize' => $fontSize]);
-            $document->printText($text, $defaultWidth);
-        });
-    }
-
-    /**
-     * @param string $text
-     * @param float $fontSize
-     */
-    private function printBoldText(string $text, float $fontSize)
-    {
-        $this->layout->registerPrintable(function (PdfDocumentPrintInterface $document, float $defaultWidth) use ($text, $fontSize) {
-            $document->configurePrint(['fontSize' => $fontSize, 'bold' => true]);
-            $document->printText($text, $defaultWidth);
-        });
-    }
-
-    /**
-     * will call the closure with the printer as the first and the default width as the second argument.
+     * @param PrintableLayoutInterface $printableLayout
      *
-     * @param \Closure $param
+     * @return PrinterInterface
      */
-    public function printCustom(\Closure $param)
+    public function getPrinter(PrintableLayoutInterface $printableLayout)
     {
-        $this->layout->registerPrintable(function (PdfDocumentPrintInterface $document, float $defaultWidth) use ($param) {
-            $param($document, $defaultWidth);
-        });
+        return new Printer($printableLayout, $this->typography, $this->color);
     }
 
     /**
-     * @param Cursor $start
-     * @param Cursor $end
+     * @param DrawableTransactionInterface $drawableTransaction
+     *
+     * @return DrawerInterface
      */
-    public function drawTableAlternatingBackground(Cursor $start, Cursor $end)
+    public function getDrawer(DrawableTransactionInterface $drawableTransaction)
     {
-        //TODO: factor out to Drawer or something
+        return new Drawer($drawableTransaction, $this->color);
     }
 }

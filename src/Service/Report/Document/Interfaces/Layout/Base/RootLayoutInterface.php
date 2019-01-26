@@ -11,12 +11,14 @@
 
 namespace App\Service\Report\Document\Interfaces\Layout\Base;
 
+use App\Service\Report\Document\Transaction\TransactionInterface;
+
 interface RootLayoutInterface
 {
     /**
      * will produce a transaction with the to-be-printed document.
      *
-     * @return PrintTransactionInterface
+     * @return TransactionInterface
      */
     public function getTransaction();
 }
