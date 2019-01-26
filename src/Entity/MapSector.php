@@ -138,7 +138,7 @@ class MapSector extends BaseEntity
     }
 
     /**
-     * @param self|null $other
+     * @param MapSector|null $other
      *
      * @return bool
      */

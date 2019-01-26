@@ -73,7 +73,7 @@ class PrintBuffer
     }
 
     /**
-     * @param self $buffer
+     * @param PrintBuffer $buffer
      *
      * @return PrintBuffer
      */
