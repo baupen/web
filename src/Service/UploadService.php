@@ -82,7 +82,7 @@ class UploadService implements UploadServiceInterface
             return null;
         }
 
-        $this->imageService->warmupCacheForIssue($issue);
+        $this->imageService->warmUpCacheForIssue($issue);
 
         $issueImage = new IssueImage();
         $this->writeFileTraitProperties($issueImage, $targetFolder, $targetFileName);
@@ -141,7 +141,7 @@ class UploadService implements UploadServiceInterface
      *
      * @throws \Exception
      *
-     * @return null|string
+     * @return string|null
      */
     private function getCollisionProtectedFileName(string $targetFolder, string $targetFileName)
     {

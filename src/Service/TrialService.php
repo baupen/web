@@ -76,7 +76,7 @@ class TrialService implements TrialServiceInterface
     }
 
     /**
-     * creates a trial account with prefilled data.
+     * creates a trial account with pre-filled data.
      *
      * @param string|null $proposedGivenName
      * @param string|null $proposedFamilyName
@@ -151,6 +151,8 @@ class TrialService implements TrialServiceInterface
      * @param string|null $proposedGivenName
      * @param string|null $proposedFamilyName
      *
+     * @throws \Exception
+     *
      * @return ConstructionManager
      */
     private function createConstructionManager(?string $proposedGivenName, ?string $proposedFamilyName)
@@ -182,11 +184,11 @@ class TrialService implements TrialServiceInterface
     private function generateRandomString(int $minimalLength, string $divider)
     {
         $vocals = 'aeiou';
-        $vocalsLength = \mb_strlen($vocals);
+        $vocalsLength = mb_strlen($vocals);
 
         //skip because ambiguous: ck, jyi
         $normals = 'bdfghklmnpqrstvwxz';
-        $normalsLength = \mb_strlen($normals);
+        $normalsLength = mb_strlen($normals);
 
         $randomString = '';
         $length = 0;

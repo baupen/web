@@ -23,6 +23,8 @@ class LoadConstructionManagerData extends BaseFixture
      * @param ObjectManager $manager
      *
      * @throws \BadMethodCallException
+     * @throws \Exception
+     * @throws \Exception
      */
     public function load(ObjectManager $manager)
     {

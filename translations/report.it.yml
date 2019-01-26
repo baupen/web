@@ -3,9 +3,9 @@ filter:
   later_than: 'dopo il %date%'
   earlier_than: 'prima del %date%'
   not: 'non %state%'
-  trades: 'one: Settore|some: Settori'
-  craftsmen: 'one: Azienda|some: Aziende'
-  maps: 'one: Mappa|some: Mappe'
+  trades: 'Settore|Settori'
+  craftsmen: 'Azienda|Aziende'
+  maps: 'Mappa|Mappe'
 
 table:
   by_map: 'Pendenze sulla mappa'

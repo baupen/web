@@ -27,7 +27,7 @@ use App\Service\Report\ReportConfiguration;
 use App\Service\Report\ReportElements;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ReportService implements ReportServiceInterface
 {
@@ -435,7 +435,7 @@ class ReportService implements ReportServiceInterface
                 $names[] = $item->getName();
             }
 
-            $label = $this->translator->transChoice('filter.craftsmen', \count($names), [], 'report');
+            $label = $this->translator->trans('filter.craftsmen', ['%count%' => \count($names)], 'report');
             $filterEntries[$label] = implode(', ', $names);
         }
 
@@ -447,7 +447,7 @@ class ReportService implements ReportServiceInterface
                 $names[] = $item->getName() . ' (' . $item->getContext() . ')';
             }
 
-            $label = $this->translator->transChoice('filter.maps', \count($names), [], 'report');
+            $label = $this->translator->trans('filter.maps', ['%count%' => \count($names)], 'report');
             $filterEntries[$label] = implode(', ', $names);
         }
 
@@ -471,7 +471,7 @@ class ReportService implements ReportServiceInterface
                 $names[] = $item;
             }
 
-            $label = $this->translator->transChoice('filter.trades', \count($names), [], 'report');
+            $label = $this->translator->trans('filter.trades', ['%count%' => \count($names)], 'report');
             $filterEntries[$label] = implode(', ', $names);
         }
 

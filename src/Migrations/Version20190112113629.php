@@ -203,6 +203,12 @@ final class Version20190112113629 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_9184CE5EBCE08130 ON issue_position (map_file_id)');
     }
 
+    /**
+     * @param Schema $schema
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Migrations\AbortMigrationException
+     */
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs

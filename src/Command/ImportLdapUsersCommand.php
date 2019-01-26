@@ -16,12 +16,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Created by PhpStorm.
- * User: famoser
- * Date: 06/01/2018
- * Time: 19:47.
- */
 class ImportLdapUsersCommand extends Command
 {
     public function __construct()

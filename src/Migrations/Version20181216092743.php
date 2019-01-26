@@ -203,6 +203,12 @@ final class Version20181216092743 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX UNIQ_9184CE5E5E7AA58C ON issue_position (issue_id)');
     }
 
+    /**
+     * @param Schema $schema
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Migrations\AbortMigrationException
+     */
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs

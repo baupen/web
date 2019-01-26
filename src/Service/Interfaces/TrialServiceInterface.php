@@ -16,7 +16,7 @@ use App\Entity\ConstructionManager;
 interface TrialServiceInterface
 {
     /**
-     * creates a trial account with prefilled data.
+     * creates a trial account with pre-filled data.
      *
      * @param string|null $proposedGivenName
      * @param string|null $proposedFamilyName

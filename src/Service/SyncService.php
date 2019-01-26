@@ -124,24 +124,24 @@ class SyncService implements SyncServiceInterface
 
         foreach ($cacheInvalidatedEntities[Map::class] as $cacheInvalidatedEntity) {
             /* @var Map $cacheInvalidatedEntity */
-            $this->imageService->warmupCacheForMap($cacheInvalidatedEntity);
+            $this->imageService->warmUpCacheForMap($cacheInvalidatedEntity);
         }
 
         foreach ($cacheInvalidatedEntities[MapFile::class] as $cacheInvalidatedEntity) {
             /* @var MapFile $cacheInvalidatedEntity */
             if ($cacheInvalidatedEntity->getMap() !== null) {
-                $this->imageService->warmupCacheForMap($cacheInvalidatedEntity->getMap());
+                $this->imageService->warmUpCacheForMap($cacheInvalidatedEntity->getMap());
             }
         }
 
         foreach ($cacheInvalidatedEntities[ConstructionSite::class] as $cacheInvalidatedEntity) {
             /* @var ConstructionSite $cacheInvalidatedEntity */
-            $this->imageService->warmupCacheForConstructionSite($cacheInvalidatedEntity);
+            $this->imageService->warmUpCacheForConstructionSite($cacheInvalidatedEntity);
         }
 
         foreach ($cacheInvalidatedEntities[ConstructionSiteImage::class] as $cacheInvalidatedEntity) {
             /* @var ConstructionSiteImage $cacheInvalidatedEntity */
-            $this->imageService->warmupCacheForConstructionSite($cacheInvalidatedEntity->getConstructionSite());
+            $this->imageService->warmUpCacheForConstructionSite($cacheInvalidatedEntity->getConstructionSite());
         }
     }
 }

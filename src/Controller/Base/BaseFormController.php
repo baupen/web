@@ -13,7 +13,7 @@ namespace App\Controller\Base;
 
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BaseFormController extends BaseDoctrineController
 {

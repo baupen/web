@@ -70,19 +70,19 @@ interface ImageServiceInterface
      *
      * @param Issue $issue
      */
-    public function warmupCacheForIssue(Issue $issue);
+    public function warmUpCacheForIssue(Issue $issue);
 
     /**
      * generates all sizes so the getSize call goes faster once it is really needed.
      *
      * @param ConstructionSite $constructionSite
      */
-    public function warmupCacheForConstructionSite(ConstructionSite $constructionSite);
+    public function warmUpCacheForConstructionSite(ConstructionSite $constructionSite);
 
     /**
      * generates all sizes so the getSize call goes faster once it is really needed.
      *
      * @param Map $map
      */
-    public function warmupCacheForMap(Map $map);
+    public function warmUpCacheForMap(Map $map);
 }

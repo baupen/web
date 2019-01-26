@@ -36,6 +36,8 @@ class ReportController extends BaseDoctrineController
      * @param Request $request
      * @param ReportServiceInterface $reportService
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function reportAction(Request $request, ReportServiceInterface $reportService)

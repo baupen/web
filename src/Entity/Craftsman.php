@@ -279,6 +279,8 @@ class Craftsman extends BaseEntity
 
     /**
      * creates the correct filter for the public issue view.
+     *
+     * @throws \Exception
      */
     public function setShareViewFilter(): Filter
     {
