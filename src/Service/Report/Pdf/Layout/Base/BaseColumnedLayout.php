@@ -13,7 +13,7 @@ namespace App\Service\Report\Pdf\Layout\Base;
 
 use App\Service\Report\Pdf\Cursor;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Transaction\PrintBuffer;
+use App\Service\Report\Pdf\Layout\Supporting\PrintBuffer;
 use App\Service\Report\Pdf\Transaction\PrintTransaction;
 
 abstract class BaseColumnedLayout

@@ -61,7 +61,7 @@ class Kernel extends BaseKernel
      */
     public function registerBundles()
     {
-        $contents = require __DIR__ . '../config/bundles.php';
+        $contents = require __DIR__ . '/../config/bundles.php';
         foreach ($contents as $class => $envs) {
             if (isset($envs['all']) || isset($envs[$this->environment])) {
                 /** @var BundleInterface $bundle */

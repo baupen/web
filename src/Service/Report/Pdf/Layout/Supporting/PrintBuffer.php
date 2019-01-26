@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Transaction;
+namespace App\Service\Report\Pdf\Layout\Supporting;
 
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 
