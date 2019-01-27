@@ -28,18 +28,12 @@ class PdfTest extends TestCase
     private $pdfDocument;
 
     /**
-     * PdfTest constructor.
-     *
-     * @param string|null $name
-     * @param array $data
-     * @param string $dataName
+     * @before
      *
      * @throws \Exception
      */
-    public function __construct(?string $name = null, array $data = [], string $dataName = '')
+    public function setupSomeFixtures()
     {
-        parent::__construct($name, $data, $dataName);
-
         $pdfPageLayout = \Mockery::mock(PdfPageLayoutInterface::class, [
             'initializeLayout' => null,
             'printHeader' => null,
@@ -127,6 +121,50 @@ class PdfTest extends TestCase
         // ensure nothing has changed
         $secondConfiguration = $this->pdfDocument->getConfiguration();
         $this->configurationMatch($originalConfig, $secondConfiguration);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testConfigure_appliesConfiguration()
+    {
+        $originalConfig = $this->pdfDocument->getConfiguration();
+        $fontSize = 1000.0;
+        $appliedConfig = [PrintConfiguration::FONT_SIZE => $fontSize];
+
+        // modify configuration
+        $this->pdfDocument->configure($appliedConfig);
+
+        // ensure font size has changed
+        $secondConfiguration = $this->pdfDocument->getConfiguration();
+        $this->assertSame($fontSize, $secondConfiguration->getFontSize());
+
+        // ensure nothing else has been modified
+        $originalConfig->setConfiguration($appliedConfig);
+        $this->configurationMatch($originalConfig, $secondConfiguration);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testConfigure_ensureDefaultIsNotApplied()
+    {
+        $originalConfig = $this->pdfDocument->getConfiguration();
+        $fontSize = 1000.0;
+        $appliedConfig = [PrintConfiguration::FONT_SIZE => $fontSize];
+        $this->pdfDocument->configure($appliedConfig);
+
+        // modify configuration
+        $this->pdfDocument->configure([], false);
+
+        // ensure font size has changed
+        $secondConfiguration = $this->pdfDocument->getConfiguration();
+        $this->assertSame($fontSize, $secondConfiguration->getFontSize());
+
+        // ensure font size is adapted by default (test if the unit test makes sense)
+        $this->pdfDocument->configure([]);
+        $thirdConfiguration = $this->pdfDocument->getConfiguration();
+        $this->assertNotSame($fontSize, $thirdConfiguration->getFontSize());
     }
 
     private function cursorMatch(Cursor $expected, Cursor $actual)
