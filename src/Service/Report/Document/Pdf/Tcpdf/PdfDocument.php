@@ -336,8 +336,8 @@ class PdfDocument implements PdfDocumentInterface
      */
     public function printFooter()
     {
-        $currentPage = (int)$this->pdf->getAliasNumPage();
-        $totalPages = (int)$this->pdf->getAliasNbPages();
+        $currentPage = $this->pdf->getAliasNumPage();
+        $totalPages = $this->pdf->getAliasNbPages();
 
         $this->pageLayout->printFooter($this, $currentPage, $totalPages);
     }

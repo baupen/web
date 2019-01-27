@@ -28,5 +28,5 @@ interface PdfPageLayoutInterface
      * @param int $currentPage
      * @param int $totalPages
      */
-    public function printFooter(PdfDocumentInterface $pdf, int $currentPage, int $totalPages);
+    public function printFooter(PdfDocumentInterface $pdf, $currentPage, $totalPages);
 }

@@ -82,7 +82,7 @@ class PdfPageLayout implements PdfPageLayoutInterface
      * @param int $currentPage
      * @param int $totalPages
      */
-    public function printFooter(PdfDocumentInterface $pdf, int $currentPage, int $totalPages)
+    public function printFooter(PdfDocumentInterface $pdf, $currentPage, $totalPages)
     {
         $this->printFooterLeft($pdf, $this->content->getGenerationInfoText());
         $this->printPageNumbers($pdf, $currentPage, $totalPages);
@@ -134,7 +134,7 @@ class PdfPageLayout implements PdfPageLayoutInterface
      * @param int $currentPageNumber
      * @param int $totalPageNumbers
      */
-    private function printPageNumbers(PdfDocumentInterface $pdf, int $currentPageNumber, int $totalPageNumbers)
+    private function printPageNumbers(PdfDocumentInterface $pdf, $currentPageNumber, $totalPageNumbers)
     {
         $contentWidthPart = $this->layout->getContentXSize() / 8;
         $startX = $this->layout->getContentXEnd() - $contentWidthPart;
