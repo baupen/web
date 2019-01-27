@@ -61,11 +61,6 @@ class PdfPageLayout implements PdfPageLayoutInterface
         $marginRight = $this->layout->getMarginRight();
         $marginBottom = $this->layout->getMarginBottom();
         $pdf->setPageMargins($marginLeft, $marginTop, $marginRight, $marginBottom);
-
-        if ($pdf->getPdfImplementation() === PdfDocumentInterface::PDF_IMPLEMENTATION_TCPDF) {
-            $pdf->startNewPage();
-        }
-
         $pdf->setMeta($this->content->getTitle(), $this->content->getAuthor());
     }
 

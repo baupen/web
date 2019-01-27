@@ -30,7 +30,7 @@ class ColorService implements ColorServiceInterface
     }
 
     /**
-     * @return int[]
+     * @return string
      */
     public function getTextColor()
     {
@@ -38,7 +38,7 @@ class ColorService implements ColorServiceInterface
     }
 
     /**
-     * @return int[]
+     * @return string
      */
     public function getImageOverlayColor()
     {
@@ -46,7 +46,7 @@ class ColorService implements ColorServiceInterface
     }
 
     /**
-     * @return int[]
+     * @return string
      */
     public function getTableAlternatingBackgroundColor()
     {

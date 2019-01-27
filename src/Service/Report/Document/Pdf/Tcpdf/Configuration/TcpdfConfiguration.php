@@ -27,6 +27,21 @@ class TcpdfConfiguration extends PrintConfiguration
     }
 
     /**
+     * @param PrintConfiguration $configuration
+     *
+     * @throws \Exception
+     *
+     * @return TcpdfConfiguration
+     */
+    public static function createFromExisting(PrintConfiguration $configuration)
+    {
+        $new = new self();
+        $new->setConfiguration($configuration->getConfiguration());
+
+        return $new;
+    }
+
+    /**
      * @return bool
      */
     public function showBorder()

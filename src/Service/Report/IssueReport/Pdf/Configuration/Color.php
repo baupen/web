@@ -14,68 +14,68 @@ namespace App\Service\Report\IssueReport\Pdf\Configuration;
 class Color
 {
     /**
-     * @var int[]
+     * @var string
      */
-    private $textColor = [37, 40, 32];
+    private $textColor = '#252820';
 
     /**
-     * @var int[]
+     * @var string
      */
-    private $secondaryTextColor = [68, 73, 58];
+    private $secondaryTextColor = '#44493a';
 
     /**
      * the color of lines & others.
      *
-     * @var int[]
+     * @var string
      */
-    private $drawColor = [200, 200, 200];
+    private $drawColor = '#c8c8c8';
 
     /**
-     * @var int[]
+     * @var string
      */
-    private $background = [230, 230, 230];
+    private $background = '#e6e6e6';
 
     /**
-     * @var int[]
+     * @var string
      */
-    private $secondaryBackground = [240, 240, 240];
+    private $secondaryBackground = '#f0f0f0';
 
     /**
-     * @return int[]
+     * @return string
      */
-    public function getTextColor(): array
+    public function getTextColor(): string
     {
         return $this->textColor;
     }
 
     /**
-     * @return int[]
+     * @return string
      */
-    public function getSecondaryTextColor(): array
+    public function getSecondaryTextColor(): string
     {
         return $this->secondaryTextColor;
     }
 
     /**
-     * @return int[]
+     * @return string
      */
-    public function getDrawColor(): array
+    public function getDrawColor(): string
     {
         return $this->drawColor;
     }
 
     /**
-     * @return int[]
+     * @return string
      */
-    public function getBackground(): array
+    public function getBackground(): string
     {
         return $this->background;
     }
 
     /**
-     * @return int[]
+     * @return string
      */
-    public function getSecondaryBackground(): array
+    public function getSecondaryBackground(): string
     {
         return $this->secondaryBackground;
     }

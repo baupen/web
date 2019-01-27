@@ -66,6 +66,7 @@ class PdfDocument implements PdfDocumentInterface
         $this->pdf->setWrapper($this);
 
         $this->configure();
+        $this->startNewPage();
 
         $pageLayout->initializeLayout($this);
     }
@@ -250,11 +251,13 @@ class PdfDocument implements PdfDocumentInterface
     }
 
     /**
+     * @throws \Exception
+     *
      * @return PrintConfiguration
      */
     public function getConfiguration()
     {
-        return $this->configuration;
+        return TcpdfConfiguration::createFromExisting($this->configuration);
     }
 
     /**
@@ -264,9 +267,7 @@ class PdfDocument implements PdfDocumentInterface
      */
     public function setConfiguration(PrintConfiguration $printConfiguration)
     {
-        $this->configuration = new TcpdfConfiguration();
-        $this->configuration->setConfiguration($printConfiguration->getConfiguration());
-
+        $this->configuration = TcpdfConfiguration::createFromExisting($printConfiguration);
         $this->configurationChanged = true;
     }
 
