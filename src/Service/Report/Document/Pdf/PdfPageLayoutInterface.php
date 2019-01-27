@@ -24,6 +24,8 @@ interface PdfPageLayoutInterface
     public function printHeader(PdfDocumentInterface $pdf);
 
     /**
+     * the actual passed values for $currentPage and $totalPages may not be integers but placeholders.
+     *
      * @param PdfDocumentInterface $pdf
      * @param int $currentPage
      * @param int $totalPages
