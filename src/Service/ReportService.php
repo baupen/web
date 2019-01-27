@@ -20,6 +20,7 @@ use App\Helper\DateTimeFormatter;
 use App\Helper\IssueHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\PdfDefinition;
 use App\Service\Report\Report;
 use App\Service\Report\ReportConfiguration;
@@ -351,7 +352,7 @@ class ReportService implements ReportServiceInterface
      *
      * @return string
      */
-    public function generateReport(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $reportElements)
+    public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $reportElements)
     {
         $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
         $reportConfiguration = new ReportConfiguration($filter);
