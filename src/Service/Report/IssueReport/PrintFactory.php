@@ -11,7 +11,7 @@
 
 namespace App\Service\Report\IssueReport;
 
-use App\Service\Report\Document\Interfaces\Layout\Base\PrintableLayoutInterface;
+use App\Service\Report\Document\Layout\Base\PrintableLayoutInterface;
 use App\Service\Report\Document\Transaction\Base\DrawableTransactionInterface;
 use App\Service\Report\IssueReport\Interfaces\DrawerInterface;
 use App\Service\Report\IssueReport\Interfaces\PrinterInterface;
@@ -22,7 +22,7 @@ use App\Service\Report\IssueReport\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\IssueReport\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\IssueReport\Pdf\Design\TypographyService;
 use App\Service\Report\IssueReport\Pdf\Drawer;
-use App\Service\Report\IssueReport\Pdf\PageLayout;
+use App\Service\Report\IssueReport\Pdf\PdfPageLayout;
 use App\Service\Report\IssueReport\Pdf\Printer;
 
 class PrintFactory implements PrintFactoryInterface
@@ -56,11 +56,11 @@ class PrintFactory implements PrintFactoryInterface
     /**
      * @param MetaData $pageLayoutContent
      *
-     * @return PageLayout
+     * @return PdfPageLayout
      */
     public function getLayout(MetaData $pageLayoutContent)
     {
-        return new PageLayout($this->layout, $this->typography, $pageLayoutContent);
+        return new PdfPageLayout($this->layout, $this->typography, $pageLayoutContent);
     }
 
     /**

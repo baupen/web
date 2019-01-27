@@ -21,7 +21,11 @@ use App\Helper\IssueHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
-use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
+use App\Service\Report\Document\LayoutFactoryInterface;
+use App\Service\Report\Document\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Document\Pdf\Interfaces\PdfFactoryInterface;
+use App\Service\Report\Document\Pdf\Interfaces\PdfPageLayoutInterface;
+use App\Service\Report\Document\Pdf\LayoutFactory;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
 use App\Service\Report\IssueReport\Interfaces\PrintFactoryInterface;
 use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
@@ -33,10 +37,6 @@ use App\Service\Report\IssueReport\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\IssueReport\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\IssueReport\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\IssueReport\PrintFactory;
-use App\Service\Report\Pdf\Interfaces\PageLayoutInterface;
-use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Pdf\Interfaces\PdfFactoryInterface;
-use App\Service\Report\Pdf\LayoutFactory;
 use App\Service\Report\ReportConfiguration;
 use App\Service\Report\ReportElements;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -187,11 +187,11 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
-     * @param PageLayoutInterface $pageLayout
+     * @param PdfPageLayoutInterface $pageLayout
      *
      * @return PdfDocumentInterface
      */
-    private function createPdfDocument(PageLayoutInterface $pageLayout)
+    private function createPdfDocument(PdfPageLayoutInterface $pageLayout)
     {
         $fontPath = $this->pathService->getAssetsRoot() . \DIRECTORY_SEPARATOR . 'report' . \DIRECTORY_SEPARATOR . 'fonts';
         $this->pdfFactory->configure(['tcpdf' => ['font_path' => $fontPath]]);

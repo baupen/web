@@ -11,9 +11,9 @@
 
 namespace App\Service\Report\IssueReport;
 
-use App\Service\Report\Document\Interfaces\Configuration\ColumnConfiguration;
-use App\Service\Report\Document\Interfaces\Layout\TableRowLayoutInterface;
-use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
+use App\Service\Report\Document\Layout\Configuration\ColumnConfiguration;
+use App\Service\Report\Document\Layout\TableRowLayoutInterface;
+use App\Service\Report\Document\LayoutFactoryInterface;
 use App\Service\Report\Document\Transaction\TransactionInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
 use App\Service\Report\IssueReport\Interfaces\PrintFactoryInterface;

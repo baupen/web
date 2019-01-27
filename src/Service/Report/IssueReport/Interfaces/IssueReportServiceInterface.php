@@ -11,7 +11,7 @@
 
 namespace App\Service\Report\IssueReport\Interfaces;
 
-use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
+use App\Service\Report\Document\LayoutFactoryInterface;
 use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
 use App\Service\Report\IssueReport\Model\IntroductionContent;
 use App\Service\Report\IssueReport\Model\MapContent;
