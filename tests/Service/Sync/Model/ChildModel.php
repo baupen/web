@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Tests\Services\Sync\Model;
+namespace App\Tests\Service\Sync\Model;
 
 class ChildModel
 {

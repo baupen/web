@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Tests\Services\Sync;
+namespace App\Tests\Service\Sync;
 
 use App\Service\Sync\DisplayNameService;
 use PHPUnit\Framework\TestCase;

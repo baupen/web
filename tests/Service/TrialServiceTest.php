@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Tests\Services;
+namespace App\Tests\Service;
 
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\SyncServiceInterface;

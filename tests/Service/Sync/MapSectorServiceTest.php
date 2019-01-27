@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Tests\Services\Sync;
+namespace App\Tests\Service\Sync;
 
 use App\Entity\ConstructionSite;
 use App\Entity\MapFile;
 use App\Model\SyncTransaction;
 use App\Service\Sync\MapSectorService;
-use App\Tests\Services\Sync\Mock\ObjectManagerMock;
-use App\Tests\Services\Sync\Mock\PathServiceMock;
+use App\Tests\Service\Sync\Mock\ObjectManagerMock;
+use App\Tests\Service\Sync\Mock\PathServiceMock;
 use PHPUnit\Framework\TestCase;
 
 class MapSectorServiceTest extends TestCase

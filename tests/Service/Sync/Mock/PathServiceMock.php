@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Tests\Services\Sync\Mock;
+namespace App\Tests\Service\Sync\Mock;
 
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;

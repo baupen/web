@@ -28,7 +28,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class ReportService
+class ReportService implements ReportServiceInterface
 {
     /**
      * @var PathServiceInterface

@@ -20,7 +20,6 @@ use App\Helper\DateTimeFormatter;
 use App\Helper\IssueHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
-use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
 use App\Service\Report\IssueReport\Interfaces\PrintFactoryInterface;
@@ -40,7 +39,7 @@ use App\Service\Report\ReportElements;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class CleanReportService implements ReportServiceInterface
+class CleanReportService
 {
     /**
      * @var PathServiceInterface

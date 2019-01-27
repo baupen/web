@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Tests\Services\Sync;
+namespace App\Tests\Service\Sync;
 
 use App\Service\Sync\FileService;
-use App\Tests\Services\Sync\Model\FileModel;
+use App\Tests\Service\Sync\Model\FileModel;
 use PHPUnit\Framework\TestCase;
 
 class FileServiceTest extends TestCase
