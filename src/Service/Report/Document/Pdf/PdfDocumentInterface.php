@@ -53,13 +53,6 @@ interface PdfDocumentInterface
     /**
      * @param \Closure $printClosure
      *
-     * @return bool
-     */
-    public function causesPageBreak(\Closure $printClosure);
-
-    /**
-     * @param \Closure $printClosure
-     *
      * @return Cursor
      */
     public function cursorAfterwardsIfPrinted(\Closure $printClosure);

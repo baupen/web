@@ -93,7 +93,7 @@ class PdfDocument implements PdfDocumentInterface
         $fill = $this->configuration->isFillEnabled();
         $border = $this->configuration->showBorder();
 
-        $this->pdf->MultiCell($width, 0, $text, $border, $align, $fill);
+        $this->pdf->MultiCell($width, 0, $text, $border, $align, $fill, 0);
     }
 
     /**

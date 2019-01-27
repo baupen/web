@@ -11,15 +11,60 @@
 
 namespace App\Tests\Service\Report\Document\Pdf\Transaction;
 
+use App\Service\Report\Document\Pdf\Cursor;
+use App\Service\Report\Document\Pdf\PdfDocumentInterface;
+use App\Service\Report\Document\Pdf\Transaction\PrintTransaction;
+use App\Tests\Service\Report\Document\Pdf\Mock\PdfDocumentMock;
+use Mockery\Mock;
 use PHPUnit\Framework\TestCase;
 
 class PrintTransactionTest extends TestCase
 {
-    public function testIsLowerOnPage_onlyPageSet_correctResult()
-    {
-        $highCursor = new Cursor(0, 0, 0);
-        $lowCursor = new Cursor(0, 0, 1);
+    /**
+     * @var PdfDocumentInterface
+     */
+    private $pdfDocument;
 
-        $this->ensureHighLow($highCursor, $lowCursor);
+    /**
+     * LayoutFactoryTest constructor.
+     *
+     * @param string|null $name
+     * @param array $data
+     * @param string $dataName
+     */
+    public function __construct(?string $name = null, array $data = [], string $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+
+        $this->pdfDocument = new PdfDocumentMock();
+    }
+
+    public function testCalculatePrintArea_returnsCorrectResult()
+    {
+        // test if print area returns expected cursors with phpunit mocks
+        $start = new Cursor(0, 200, 0);
+        $end = new Cursor(0, 200, 1);
+
+        $pdfDocument = \Mockery::mock(PdfDocumentInterface::class, [
+            'getCursor' => $start,
+            'cursorAfterwardsIfPrinted' => $end,
+        ]);
+        $width = 200;
+        $transaction = new PrintTransaction($pdfDocument, $width, function () { });
+
+        [$before, $after] = $transaction->calculatePrintArea();
+
+        $this->assertNotNull($before);
+        $this->assertNotNull($after);
+
+        $this->cursorMatch($start, $before);
+        $this->cursorMatch($end->setX($end->getXCoordinate() + $width), $after);
+    }
+
+    private function cursorMatch(Cursor $expected, Cursor $actual)
+    {
+        $this->assertSame($expected->getXCoordinate(), $actual->getXCoordinate());
+        $this->assertSame($expected->getYCoordinate(), $actual->getYCoordinate());
+        $this->assertSame($expected->getPage(), $actual->getPage());
     }
 }

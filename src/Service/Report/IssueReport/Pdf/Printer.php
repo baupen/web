@@ -13,6 +13,8 @@ namespace App\Service\Report\IssueReport\Pdf;
 
 use App\Helper\ImageHelper;
 use App\Service\Report\Document\Layout\Base\PrintableLayoutInterface;
+use App\Service\Report\Document\Pdf\Configuration\DrawConfiguration;
+use App\Service\Report\Document\Pdf\Configuration\PrintConfiguration;
 use App\Service\Report\Document\Pdf\PdfDocumentInterface;
 use App\Service\Report\IssueReport\Interfaces\PrinterInterface;
 use App\Service\Report\IssueReport\Pdf\Design\Interfaces\ColorServiceInterface;
@@ -110,7 +112,7 @@ class Printer implements PrinterInterface
             $document->setCursor($afterImageCursor->setY($afterImageCursor->getYCoordinate() - $height));
 
             // print number of issue
-            $document->configure(['background' => $this->color->getImageOverlayColor()]);
+            $document->configure([DrawConfiguration::FILL_COLOR => $this->color->getImageOverlayColor()]);
             $document->printText((string)$number, $this->typography->getTextFontSize());
 
             // reset cursor to after image
@@ -125,7 +127,7 @@ class Printer implements PrinterInterface
     private function printText(string $text, float $fontSize)
     {
         $this->layout->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($text, $fontSize) {
-            $document->configure(['fontSize' => $fontSize]);
+            $document->configure([PrintConfiguration::FONT_SIZE => $fontSize]);
             $document->printText($text, $defaultWidth);
         });
     }
@@ -137,7 +139,7 @@ class Printer implements PrinterInterface
     private function printBoldText(string $text, float $fontSize)
     {
         $this->layout->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($text, $fontSize) {
-            $document->configure(['fontSize' => $fontSize, 'bold' => true]);
+            $document->configure([PrintConfiguration::FONT_SIZE => $fontSize, PrintConfiguration::FONT_WEIGHT => PrintConfiguration::FONT_WEIGHT_BOLD]);
             $document->printText($text, $defaultWidth);
         });
     }

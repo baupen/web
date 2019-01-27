@@ -78,7 +78,7 @@ class PrintTransaction implements TransactionInterface
             $before = $this->pdfDocument->getCursor();
             $after = $this->pdfDocument->cursorAfterwardsIfPrinted($this->content);
 
-            $after->setX($before->getXCoordinate() + $this->width);
+            $after = $after->setX($before->getXCoordinate() + $this->width);
 
             $this->printAreaCache = [$before, $after];
         }

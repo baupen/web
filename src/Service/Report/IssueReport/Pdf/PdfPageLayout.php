@@ -12,6 +12,7 @@
 namespace App\Service\Report\IssueReport\Pdf;
 
 use App\Helper\ImageHelper;
+use App\Service\Report\Document\Pdf\Configuration\PrintConfiguration;
 use App\Service\Report\Document\Pdf\Cursor;
 use App\Service\Report\Document\Pdf\PdfDocumentInterface;
 use App\Service\Report\Document\Pdf\PdfPageLayoutInterface;
@@ -97,7 +98,7 @@ class PdfPageLayout implements PdfPageLayoutInterface
         $maxWidth = $this->layout->getContentXSize() / 3 * 2;
 
         $pdf->setCursor(new Cursor($this->layout->getContentXStart(), $this->layout->getHeaderYStart()));
-        $pdf->configure(['fontSize' => $this->typography->getHeaderFontSize()]);
+        $pdf->configure([PrintConfiguration::FONT_SIZE => $this->typography->getHeaderFontSize()]);
         $pdf->printText($headerLeft, $maxWidth);
     }
 
@@ -147,7 +148,7 @@ class PdfPageLayout implements PdfPageLayoutInterface
         $startY = $this->layout->getFooterYStart();
 
         $pdf->setCursor(new Cursor($startX, $startY));
-        $pdf->configure(['fontSize' => $this->typography->getFooterFontSize(), 'alignment' => 'R']);
+        $pdf->configure([PrintConfiguration::FONT_SIZE => $this->typography->getFooterFontSize(), PrintConfiguration::TEXT_ALIGN => PrintConfiguration::TEXT_ALIGN_RIGHT]);
         $pdf->printText($currentPageNumber . '/' . $totalPageNumbers, $contentWidthPart);
     }
 }

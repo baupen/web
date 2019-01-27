@@ -11,6 +11,7 @@
 
 namespace App\Service\Report\IssueReport\Pdf;
 
+use App\Service\Report\Document\Pdf\Configuration\DrawConfiguration;
 use App\Service\Report\Document\Pdf\Cursor;
 use App\Service\Report\Document\Pdf\PdfDocumentInterface;
 use App\Service\Report\Document\Transaction\Base\DrawableTransactionInterface;
@@ -44,7 +45,7 @@ class Drawer implements DrawerInterface
     public function drawTableAlternatingBackground()
     {
         $this->transaction->registerDrawablePrePrint(function (PdfDocumentInterface $document, Cursor $end) {
-            $document->configure(['background_color' => $this->color->getTableAlternatingBackgroundColor()]);
+            $document->configure([DrawConfiguration::FILL_COLOR => $this->color->getTableAlternatingBackgroundColor()]);
             $document->drawUntil($end);
         });
     }
