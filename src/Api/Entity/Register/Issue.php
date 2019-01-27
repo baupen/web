@@ -123,7 +123,7 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getResponseByName(): ?string
     {
@@ -131,7 +131,7 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     }
 
     /**
-     * @param null|string $responseByName
+     * @param string|null $responseByName
      */
     public function setResponseByName(?string $responseByName): void
     {
@@ -155,7 +155,7 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getReviewByName(): ?string
     {
@@ -163,7 +163,7 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     }
 
     /**
-     * @param null|string $reviewByName
+     * @param string|null $reviewByName
      */
     public function setReviewByName(?string $reviewByName): void
     {

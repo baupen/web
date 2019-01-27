@@ -29,7 +29,7 @@ class PublicMap extends Map
     private $context;
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getImageShareView(): ?string
     {
@@ -37,7 +37,7 @@ class PublicMap extends Map
     }
 
     /**
-     * @param null|string $imageShareView
+     * @param string|null $imageShareView
      */
     public function setImageShareView(?string $imageShareView): void
     {
@@ -45,7 +45,7 @@ class PublicMap extends Map
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getImageFull(): ?string
     {
@@ -53,7 +53,7 @@ class PublicMap extends Map
     }
 
     /**
-     * @param null|string $imageFull
+     * @param string|null $imageFull
      */
     public function setImageFull(?string $imageFull): void
     {

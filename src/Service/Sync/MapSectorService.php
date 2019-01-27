@@ -147,7 +147,7 @@ class MapSectorService implements MapSectorServiceInterface
 
         $checkIfMatch = function (array $needles) use ($name) {
             foreach ($needles as $needle) {
-                if (\mb_strpos($name, $needle) !== false) {
+                if (mb_strpos($name, $needle) !== false) {
                     return true;
                 }
             }

@@ -76,7 +76,7 @@ class Report
     }
 
     /**
-     * @param null|string $headerImage
+     * @param string|null $headerImage
      * @param string $name
      * @param string $address
      * @param string $elements
@@ -222,8 +222,8 @@ class Report
 
     /**
      * @param string $name
-     * @param null|string $context
-     * @param null|string $mapImageFilePath
+     * @param string|null $context
+     * @param string|null $mapImageFilePath
      */
     public function addImage(string $name, ?string $context, ?string $mapImageFilePath = null)
     {
@@ -271,7 +271,7 @@ class Report
 
     /**
      * @param string $name
-     * @param null|string $context
+     * @param string|null $context
      */
     public function addHeader(string $name, ?string $context)
     {

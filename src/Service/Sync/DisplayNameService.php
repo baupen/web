@@ -54,7 +54,7 @@ class DisplayNameService implements DisplayNameServiceInterface
         while (preg_match('/([0-9]){1,2}[A-Z]([a-z]){2,}/', $output, $matches, PREG_OFFSET_CAPTURE)) {
             $before = mb_substr($output, 0, $matches[0][1]);
             $number = $matches[1][0];
-            $after = mb_substr($output, $matches[1][1] + \mb_strlen($number));
+            $after = mb_substr($output, $matches[1][1] + mb_strlen($number));
 
             $output = $before . $number . '. ' . $after;
         }
@@ -185,12 +185,12 @@ class DisplayNameService implements DisplayNameServiceInterface
                     ++$prefixMap[$currentPrefix];
                 }
 
-                $newCutoff = \mb_strripos($currentPrefix, ' ');
+                $newCutoff = mb_strripos($currentPrefix, ' ');
                 if ($newCutoff === false) {
                     break;
                 }
 
-                $currentPrefix = trim(\mb_substr($currentPrefix, 0, $newCutoff));
+                $currentPrefix = trim(mb_substr($currentPrefix, 0, $newCutoff));
             }
         }
 
@@ -260,7 +260,7 @@ class DisplayNameService implements DisplayNameServiceInterface
             $possibleDateGroup = $decomposedName[$lastIndex];
 
             if (is_numeric($possibleDateGroup)) {
-                if (\mb_strlen($possibleDateGroup) === 6) {
+                if (mb_strlen($possibleDateGroup) === 6) {
                     $year = '20' . mb_substr($possibleDateGroup, 0, 2);
                     $month = mb_substr($possibleDateGroup, 2, 2);
                     $day = mb_substr($possibleDateGroup, 4, 2);
@@ -268,7 +268,7 @@ class DisplayNameService implements DisplayNameServiceInterface
                     if (checkdate($month, $day, $year)) {
                         unset($decomposedName[$lastIndex]);
                     }
-                } elseif (\mb_strlen($possibleDateGroup) === 8) {
+                } elseif (mb_strlen($possibleDateGroup) === 8) {
                     $year = mb_substr($possibleDateGroup, 0, 4);
                     $month = mb_substr($possibleDateGroup, 4, 2);
                     $day = mb_substr($possibleDateGroup, 6, 2);

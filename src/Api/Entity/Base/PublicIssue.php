@@ -87,7 +87,7 @@ class PublicIssue extends Issue
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getImageShareView(): ?string
     {
@@ -95,7 +95,7 @@ class PublicIssue extends Issue
     }
 
     /**
-     * @param null|string $imageShareView
+     * @param string|null $imageShareView
      */
     public function setImageShareView(?string $imageShareView): void
     {
@@ -103,7 +103,7 @@ class PublicIssue extends Issue
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getImageFull(): ?string
     {
@@ -111,7 +111,7 @@ class PublicIssue extends Issue
     }
 
     /**
-     * @param null|string $imageFull
+     * @param string|null $imageFull
      */
     public function setImageFull(?string $imageFull): void
     {

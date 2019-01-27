@@ -24,7 +24,7 @@ class UpdateNote
     private $content;
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getId(): ?string
     {
@@ -32,7 +32,7 @@ class UpdateNote
     }
 
     /**
-     * @param null|string $id
+     * @param string|null $id
      */
     public function setId(?string $id): void
     {
