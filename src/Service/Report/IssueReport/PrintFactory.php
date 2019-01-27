@@ -16,11 +16,14 @@ use App\Service\Report\Document\Transaction\Base\DrawableTransactionInterface;
 use App\Service\Report\IssueReport\Interfaces\DrawerInterface;
 use App\Service\Report\IssueReport\Interfaces\PrinterInterface;
 use App\Service\Report\IssueReport\Interfaces\PrintFactoryInterface;
+use App\Service\Report\IssueReport\Model\MetaData;
+use App\Service\Report\IssueReport\Pdf\Design\Interfaces\ColorServiceInterface;
+use App\Service\Report\IssueReport\Pdf\Design\Interfaces\LayoutServiceInterface;
+use App\Service\Report\IssueReport\Pdf\Design\Interfaces\TypographyServiceInterface;
+use App\Service\Report\IssueReport\Pdf\Design\TypographyService;
 use App\Service\Report\IssueReport\Pdf\Drawer;
+use App\Service\Report\IssueReport\Pdf\PageLayout;
 use App\Service\Report\IssueReport\Pdf\Printer;
-use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
-use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
-use App\Service\Report\Pdf\Design\TypographyService;
 
 class PrintFactory implements PrintFactoryInterface
 {
@@ -35,13 +38,29 @@ class PrintFactory implements PrintFactoryInterface
     private $color;
 
     /**
+     * @var LayoutServiceInterface
+     */
+    private $layout;
+
+    /**
      * @param TypographyServiceInterface $typographyService
      * @param ColorServiceInterface $colorService
      */
-    public function __construct(TypographyServiceInterface $typographyService, ColorServiceInterface $colorService)
+    public function __construct(TypographyServiceInterface $typographyService, ColorServiceInterface $colorService, LayoutServiceInterface $layoutService)
     {
         $this->typography = $typographyService;
         $this->color = $colorService;
+        $this->layout = $layoutService;
+    }
+
+    /**
+     * @param MetaData $pageLayoutContent
+     *
+     * @return PageLayout
+     */
+    public function getLayout(MetaData $pageLayoutContent)
+    {
+        return new PageLayout($this->layout, $this->typography, $pageLayoutContent);
     }
 
     /**

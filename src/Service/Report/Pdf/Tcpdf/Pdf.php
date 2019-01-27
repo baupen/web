@@ -11,7 +11,6 @@
 
 namespace App\Service\Report\Pdf\Tcpdf;
 
-use App\Service\Report\Pdf\Tcpdf\Interfaces\TcpdfServiceInterface;
 use TCPDF;
 
 /**
@@ -22,25 +21,30 @@ use TCPDF;
 class Pdf extends TCPDF
 {
     /**
-     * @var TcpdfServiceInterface
-     */
-    private $tcpdfService;
-
-    /**
      * @var string
      */
     private $identifier;
 
     /**
-     * CleanPdf constructor.
-     *
-     * @param TcpdfServiceInterface $tcpdfService
+     * @var PdfDocument
      */
-    public function __construct(TcpdfServiceInterface $tcpdfService)
+    private $wrapper;
+
+    /**
+     * CleanPdf constructor.
+     */
+    public function __construct()
     {
         parent::__construct();
-        $this->tcpdfService = $tcpdfService;
         $this->identifier = uniqid();
+    }
+
+    /**
+     * @param PdfDocument $wrapper
+     */
+    public function setWrapper(PdfDocument $wrapper): void
+    {
+        $this->wrapper = $wrapper;
     }
 
     /**
@@ -48,7 +52,7 @@ class Pdf extends TCPDF
      */
     public function Header()
     {
-        $this->tcpdfService->printHeader($this);
+        $this->wrapper->printHeader();
     }
 
     /**
@@ -56,7 +60,7 @@ class Pdf extends TCPDF
      */
     public function Footer()
     {
-        $this->tcpdfService->printFooter($this, (int)$this->getAliasNumPage(), (int)$this->getAliasNbPages());
+        $this->wrapper->printFooter();
     }
 
     /**
@@ -64,13 +68,13 @@ class Pdf extends TCPDF
      *
      * @param int $h
      * @param string $y
-     * @param bool $addpage
+     * @param bool $addPage
      *
      * @return bool|void
      */
-    public function checkPageBreak($h = 0, $y = '', $addpage = true)
+    public function checkPageBreak($h = 0, $y = '', $addPage = true)
     {
-        parent::checkPageBreak($h, $y, $addpage);
+        parent::checkPageBreak($h, $y, $addPage);
     }
 
     /**

@@ -12,6 +12,7 @@
 namespace App\Service\Report\Pdf\Tcpdf;
 
 use App\Service\Report\Pdf\Cursor;
+use App\Service\Report\Pdf\Interfaces\PageLayoutInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Pdf\Tcpdf\Configuration\PrintConfiguration;
 
@@ -48,17 +49,28 @@ class PdfDocument implements PdfDocumentInterface
     private $marginBottom = 0;
 
     /**
+     * @var PageLayoutInterface
+     */
+    private $pageLayout;
+
+    /**
      * PdfDocument constructor.
      *
      * @param Pdf $pdf
+     * @param PageLayoutInterface $pageLayout
      */
-    public function __construct(Pdf $pdf)
+    public function __construct(Pdf $pdf, PageLayoutInterface $pageLayout)
     {
         $this->pdf = $pdf;
+        $this->pageLayout = $pageLayout;
+
         $this->pdf->SetCreator(PDF_CREATOR);
+        $this->pdf->setWrapper($this);
 
         $this->identifier = uniqid();
         $this->configuration = new PrintConfiguration();
+
+        $pageLayout->initializeLayout($this);
     }
 
     /**x
@@ -303,5 +315,32 @@ class PdfDocument implements PdfDocumentInterface
 
         // reset cursor
         $this->setCursor($start);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPdfImplementation()
+    {
+        return PdfDocumentInterface::PDF_IMPLEMENTATION_TCPDF;
+    }
+
+    /**
+     * prints the header.
+     */
+    public function printHeader()
+    {
+        $this->pageLayout->printHeader($this);
+    }
+
+    /**
+     * prints the footer.
+     */
+    public function printFooter()
+    {
+        $currentPage = (int)$this->pdf->getAliasNumPage();
+        $totalPages = (int)$this->pdf->getAliasNbPages();
+
+        $this->pageLayout->printFooter($this, $currentPage, $totalPages);
     }
 }

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Design\Interfaces;
+namespace App\Service\Report\IssueReport\Pdf\Design\Interfaces;
 
 interface ColorServiceInterface
 {

@@ -14,11 +14,17 @@ namespace App\Service\Report\Pdf\Interfaces;
 interface PdfFactoryInterface
 {
     /**
-     * @param string $header
-     * @param string $footer
-     * @param string $logoPath
+     * configure implementation specific parameters
+     * depending on the implementation, this must be called before the first pdf is created or it won't have the desired effects.
+     *
+     * @param string[][] $configuration
+     */
+    public function configure(array $configuration);
+
+    /**
+     * @param PageLayoutInterface $pageLayout
      *
      * @return PdfDocumentInterface
      */
-    public function create(string $header, string $footer, string $logoPath);
+    public function create(PageLayoutInterface $pageLayout);
 }

@@ -14,8 +14,8 @@ namespace App\Service\Report\IssueReport\Pdf;
 use App\Helper\ImageHelper;
 use App\Service\Report\Document\Interfaces\Layout\Base\PrintableLayoutInterface;
 use App\Service\Report\IssueReport\Interfaces\PrinterInterface;
-use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
-use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
+use App\Service\Report\IssueReport\Pdf\Design\Interfaces\ColorServiceInterface;
+use App\Service\Report\IssueReport\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentPrintInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 

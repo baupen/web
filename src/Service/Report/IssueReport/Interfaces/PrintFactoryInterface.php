@@ -13,9 +13,18 @@ namespace App\Service\Report\IssueReport\Interfaces;
 
 use App\Service\Report\Document\Interfaces\Layout\Base\PrintableLayoutInterface;
 use App\Service\Report\Document\Transaction\Base\DrawableTransactionInterface;
+use App\Service\Report\IssueReport\Model\MetaData;
+use App\Service\Report\Pdf\Interfaces\PageLayoutInterface;
 
 interface PrintFactoryInterface
 {
+    /**
+     * @param MetaData $pageLayoutContent
+     *
+     * @return PageLayoutInterface
+     */
+    public function getLayout(MetaData $pageLayoutContent);
+
     /**
      * @param PrintableLayoutInterface $printableLayout
      *

@@ -9,26 +9,28 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Configuration;
+namespace App\Service\Report\IssueReport\Pdf\Configuration;
 
-class Typography
+class Layout
 {
     /**
-     * font must be available in assets/fonts/tcpdf in the format used by tcpdf.
+     * the total page size; currently A4.
      *
-     * @var string
+     * @var float[]
      */
-    private $fontFamily = 'opensans';
+    private $pageSize = [210, 297];
+
+    /**
+     * margins of the page; left, top, right, bottom.
+     *
+     * @var float[]
+     */
+    private $pageMargins = [10, 6, 10, 6];
 
     /**
      * @var float
      */
-    private $baseFontSize = 8;
-
-    /**
-     * @var float
-     */
-    private $lineWidth = 0.2;
+    private $baseSpacing = 8;
 
     /**
      * @var float
@@ -36,27 +38,27 @@ class Typography
     private $scalingFactor = 1.6;
 
     /**
-     * @return string
+     * @return float[]
      */
-    public function getFontFamily(): string
+    public function getPageSize(): array
     {
-        return $this->fontFamily;
+        return $this->pageSize;
+    }
+
+    /**
+     * @return float[]
+     */
+    public function getPageMargins(): array
+    {
+        return $this->pageMargins;
     }
 
     /**
      * @return float
      */
-    public function getBaseFontSize(): float
+    public function getBaseSpacing(): float
     {
-        return $this->baseFontSize;
-    }
-
-    /**
-     * @return float
-     */
-    public function getLineWidth(): float
-    {
-        return $this->lineWidth;
+        return $this->baseSpacing;
     }
 
     /**

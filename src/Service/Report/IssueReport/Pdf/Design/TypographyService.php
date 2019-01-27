@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Design;
+namespace App\Service\Report\IssueReport\Pdf\Design;
 
-use App\Service\Report\Pdf\Configuration\Typography;
-use App\Service\Report\Pdf\Design\Interfaces\TypographyServiceInterface;
+use App\Service\Report\IssueReport\Pdf\Configuration\Typography;
+use App\Service\Report\IssueReport\Pdf\Design\Interfaces\TypographyServiceInterface;
 
 class TypographyService implements TypographyServiceInterface
 {

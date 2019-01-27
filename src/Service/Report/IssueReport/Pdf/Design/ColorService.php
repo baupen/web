@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Pdf\Design;
+namespace App\Service\Report\IssueReport\Pdf\Design;
 
-use App\Service\Report\Pdf\Configuration\Color;
-use App\Service\Report\Pdf\Design\Interfaces\ColorServiceInterface;
+use App\Service\Report\IssueReport\Pdf\Configuration\Color;
+use App\Service\Report\IssueReport\Pdf\Design\Interfaces\ColorServiceInterface;
 
 class ColorService implements ColorServiceInterface
 {

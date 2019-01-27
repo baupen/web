@@ -11,50 +11,62 @@
 
 namespace App\Service\Report\Pdf\Tcpdf;
 
-use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Report\Pdf\Interfaces\PageLayoutInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Pdf\Interfaces\PdfFactoryInterface;
-use App\Service\Report\Pdf\Tcpdf\Interfaces\TcpdfServiceInterface;
 
 class PdfFactory implements PdfFactoryInterface
 {
     /**
-     * @var TcpdfServiceInterface
+     * @var string[][]
      */
-    private $tcpdfService;
+    private $configuration = ['tcpdf' => []];
 
     /**
-     * @var PathServiceInterface
+     * @param array $configuration
      */
-    private $pathService;
-
-    /**
-     * @param TcpdfServiceInterface $tcpdfService
-     * @param PathServiceInterface $pathService
-     */
-    public function __construct(TcpdfServiceInterface $tcpdfService, PathServiceInterface $pathService)
+    public function configure(array $configuration)
     {
-        $this->tcpdfService = $tcpdfService;
-        $this->pathService = $pathService;
+        $this->configuration = array_merge($this->configuration, $configuration);
     }
 
     /**
-     * @param string $header
-     * @param string $footer
-     * @param string $logoPath
+     * sets globals needed by TCPDF.
+     */
+    private function applyConfiguration()
+    {
+        $tcpdfConfig = $this->configuration['tcpdf'];
+        if (isset($tcpdfConfig['font_path'])) {
+            if (!\defined('K_PATH_FONTS')) {
+                // TCPDF looks at the path this global variable defines
+                \define('K_PATH_FONTS', $tcpdfConfig['font_path'] . \DIRECTORY_SEPARATOR);
+            }
+        }
+
+        if (!\defined('PDF_FONT_NAME_MAIN')) {
+            // TCPDF chooses this font as the default
+            \define('PDF_FONT_NAME_MAIN', 'opensans');
+        }
+
+        if (!\defined('K_TCPDF_THROW_EXCEPTION_ERROR')) {
+            // TCPDF chooses this font as the default
+            \define('K_TCPDF_THROW_EXCEPTION_ERROR', true);
+        }
+
+        if (!\defined('K_TCPDF_EXTERNAL_CONFIG')) {
+            \define('K_TCPDF_EXTERNAL_CONFIG', true);
+        }
+    }
+
+    /**
+     * @param PageLayoutInterface $pageLayout
      *
      * @return PdfDocumentInterface
      */
-    public function create(string $header, string $footer, string $logoPath)
+    public function create(PageLayoutInterface $pageLayout)
     {
-        $this->tcpdfService->initializeGlobalVariables();
+        $this->applyConfiguration();
 
-        $pdf = new Pdf($this->tcpdfService);
-        $this->tcpdfService->setPageVariables($pdf, $header, $footer, $logoPath);
-
-        $wrapper = new PdfDocument($pdf);
-        $this->tcpdfService->assignWrapper($pdf, $wrapper);
-
-        return $wrapper;
+        return new PdfDocument(new Pdf(), $pageLayout);
     }
 }

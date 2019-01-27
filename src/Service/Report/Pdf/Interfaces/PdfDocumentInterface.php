@@ -17,10 +17,17 @@ use App\Service\Report\Pdf\Interfaces\PdfDocument\PdfDocumentTransactionInterfac
 
 interface PdfDocumentInterface extends PdfDocumentStateInterface, PdfDocumentPrintInterface, PdfDocumentTransactionInterface
 {
+    const PDF_IMPLEMENTATION_TCPDF = 'tcpdf';
+
     /**
      * @return string
      */
     public function getIdentifier();
+
+    /**
+     * @return string
+     */
+    public function getPdfImplementation();
 
     /**
      * @param string $title

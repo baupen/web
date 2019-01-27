@@ -18,7 +18,7 @@ use App\Service\Report\Document\Interfaces\Layout\FullWidthLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\GroupLayoutInterface;
 use App\Service\Report\Document\Interfaces\Layout\TableLayoutInterface;
 use App\Service\Report\Document\Interfaces\LayoutFactoryInterface;
-use App\Service\Report\Pdf\Design\Interfaces\LayoutServiceInterface;
+use App\Service\Report\IssueReport\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Pdf\Layout\AutoColumnLayout;
 use App\Service\Report\Pdf\Layout\ColumnLayout;
