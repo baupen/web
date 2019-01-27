@@ -63,11 +63,11 @@ class AutoColumnLayout extends BaseColumnedLayout implements AutoColumnLayoutInt
 
             // get highest cursor
             for ($i = 1; $i < $columnCount; ++$i) {
-                $otherCursor = $columnCursors[$i];
+                $currentCursor = $columnCursors[$i];
 
-                if (!$highestCursor->isLowerOnPageThan($otherCursor)) {
+                if ($highestCursor->isLowerOnPageThan($currentCursor)) {
                     $highestColumn = $i;
-                    $highestCursor = $otherCursor;
+                    $highestCursor = $currentCursor;
                 }
             }
 
@@ -79,5 +79,8 @@ class AutoColumnLayout extends BaseColumnedLayout implements AutoColumnLayoutInt
             return [$this->getColumnWidths()[$this->activeColumn]];
         };
         $this->getPrintBuffer()->addPrintable($callable, $prepareArguments);
+        $this->getPrintBuffer()->addPrintable(function () {
+            $this->setColumnCursorFromDocument($this->activeColumn);
+        });
     }
 }

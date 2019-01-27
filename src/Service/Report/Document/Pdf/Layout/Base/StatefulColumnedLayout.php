@@ -78,5 +78,8 @@ abstract class StatefulColumnedLayout extends BaseColumnedLayout
         };
 
         $this->getPrintBuffer()->addPrintable($callable, $prepareArguments);
+        $this->getPrintBuffer()->addPrintable(function () {
+            $this->setColumnCursorFromDocument($this->cursorPositionColumn);
+        });
     }
 }

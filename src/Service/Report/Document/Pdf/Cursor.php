@@ -83,7 +83,7 @@ class Cursor
      */
     public function isLowerOnPageThan(self $other)
     {
-        return $other->getPage() < $this->getPage() || $other->getYCoordinate() < $this->getYCoordinate();
+        return $other->getPage() < $this->getPage() || ($other->getPage() === $this->getPage() && $other->getYCoordinate() < $this->getYCoordinate());
     }
 
     /**

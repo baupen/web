@@ -79,7 +79,7 @@ class GroupLayout implements GroupLayoutInterface
      *
      * @return PrintTransaction
      */
-    private function createTransaction(PrintBuffer $printBuffer, PdfDocumentInterface $pdfDocument, float $width)
+    private static function createTransaction(PrintBuffer $printBuffer, PdfDocumentInterface $pdfDocument, float $width)
     {
         $printContent = $printBuffer->flushBufferClosure();
         $transaction = new PrintTransaction($pdfDocument, $width, $printContent);

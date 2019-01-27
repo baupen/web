@@ -152,7 +152,15 @@ class PdfDocument implements PdfDocumentInterface
 
         $align = $this->configuration->getAlignment();
 
+        // if image too big for page start a new one
+        $startCursor = $this->getCursor();
+        if ($this->pdf->getMaxContentHeight() < $startCursor->getYCoordinate() + $height) {
+            $this->pdf->startPage();
+            $startCursor = $this->getCursor();
+        }
+
         $this->pdf->Image($imagePath, '', '', $width, $height, '', '', $align);
+        $this->pdf->SetY($startCursor->getYCoordinate() + $height);
     }
 
     /**

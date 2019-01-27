@@ -11,7 +11,9 @@
 
 namespace App\Service\Report\IssueReport\Pdf\Design\Interfaces;
 
-interface LayoutServiceInterface
+use App\Service\Report\Document\Pdf\LayoutFactoryConfigurationInterface;
+
+interface LayoutServiceInterface extends LayoutFactoryConfigurationInterface
 {
     /**
      * the total width of the document.
@@ -41,11 +43,6 @@ interface LayoutServiceInterface
      * @return float
      */
     public function getContentXEnd(): float;
-
-    /**
-     * @return float
-     */
-    public function getContentXSize(): float;
 
     /**
      * @return float
@@ -80,16 +77,6 @@ interface LayoutServiceInterface
      * @return float
      */
     public function getMarginRight(): float;
-
-    /**
-     * @return float
-     */
-    public function getColumnGutter(): float;
-
-    /**
-     * @return float
-     */
-    public function getTableColumnGutter(): float;
 
     /**
      * @return float

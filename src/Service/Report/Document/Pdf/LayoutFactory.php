@@ -23,7 +23,6 @@ use App\Service\Report\Document\Pdf\Layout\ColumnLayout;
 use App\Service\Report\Document\Pdf\Layout\FullWidthLayout;
 use App\Service\Report\Document\Pdf\Layout\GroupLayout;
 use App\Service\Report\Document\Pdf\Layout\TableLayout;
-use App\Service\Report\IssueReport\Pdf\Design\Interfaces\LayoutServiceInterface;
 
 class LayoutFactory implements LayoutFactoryInterface
 {
@@ -33,7 +32,7 @@ class LayoutFactory implements LayoutFactoryInterface
     private $document;
 
     /**
-     * @var LayoutServiceInterface
+     * @var LayoutFactoryConfigurationInterface
      */
     private $layoutService;
 
@@ -41,9 +40,9 @@ class LayoutFactory implements LayoutFactoryInterface
      * Document constructor.
      *
      * @param PdfDocumentInterface $pdfDocument
-     * @param LayoutServiceInterface $layoutService
+     * @param LayoutFactoryConfigurationInterface $layoutService
      */
-    public function __construct(PdfDocumentInterface $pdfDocument, LayoutServiceInterface $layoutService)
+    public function __construct(PdfDocumentInterface $pdfDocument, LayoutFactoryConfigurationInterface $layoutService)
     {
         $this->document = $pdfDocument;
         $this->layoutService = $layoutService;

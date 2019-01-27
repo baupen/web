@@ -85,7 +85,7 @@ abstract class BaseColumnedLayout
      */
     public function getTransaction()
     {
-        return self::createTransaction($this->printBuffer, $this->pdfDocument, $this->totalWidth);
+        return self::createTransaction($this, $this->printBuffer, $this->pdfDocument, $this->totalWidth);
     }
 
     /**
@@ -137,26 +137,37 @@ abstract class BaseColumnedLayout
     }
 
     /**
+     * @param int $column
+     */
+    protected function setColumnCursorFromDocument(int $column)
+    {
+        // save current cursor
+        $this->columnCursors[$column] = $this->pdfDocument->getCursor();
+    }
+
+    /**
+     * @param BaseColumnedLayout $columnedLayout
      * @param PrintBuffer $printBuffer
      * @param PdfDocumentInterface $pdfDocumentTransaction
      * @param float $width
      *
      * @return PrintTransaction
      */
-    private function createTransaction(PrintBuffer $printBuffer, PdfDocumentInterface $pdfDocumentTransaction, float $width)
+    private static function createTransaction(self $columnedLayout, PrintBuffer $printBuffer, PdfDocumentInterface $pdfDocumentTransaction, float $width)
     {
         $printBuffer = PrintBuffer::createFromExisting($printBuffer);
-        $printBuffer->addPrintable(function (PdfDocumentInterface $pdfDocument) {
+
+        $printBuffer->addPrintable(function (PdfDocumentInterface $pdfDocument) use ($columnedLayout) {
             // go to lowest column after printing stopped
-            $lowestCursor = $this->columnCursors[0];
-            for ($i = 1; $i < $this->columnCount; ++$i) {
-                $other = $this->columnCursors[$i];
+            $lowestCursor = $columnedLayout->columnCursors[0];
+            for ($i = 1; $i < $columnedLayout->columnCount; ++$i) {
+                $other = $columnedLayout->columnCursors[$i];
                 if ($other->isLowerOnPageThan($lowestCursor)) {
                     $lowestCursor = $other;
                 }
             }
 
-            $pdfDocument->setCursor($lowestCursor->setX($this->columnCursors[0]->getXCoordinate()));
+            $pdfDocument->setCursor($lowestCursor->setX($columnedLayout->columnCursors[0]->getXCoordinate()));
         });
 
         return new PrintTransaction($pdfDocumentTransaction, $width, $printBuffer->flushBufferClosure());
