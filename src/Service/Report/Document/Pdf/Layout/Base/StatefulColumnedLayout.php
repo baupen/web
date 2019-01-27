@@ -11,7 +11,7 @@
 
 namespace App\Service\Report\Document\Pdf\Layout\Base;
 
-use App\Service\Report\Document\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Document\Pdf\PdfDocumentInterface;
 
 abstract class StatefulColumnedLayout extends BaseColumnedLayout
 {

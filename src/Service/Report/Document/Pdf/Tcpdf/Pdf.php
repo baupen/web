@@ -14,17 +14,12 @@ namespace App\Service\Report\Document\Pdf\Tcpdf;
 use TCPDF;
 
 /**
- * Overrides functionality of @TCPDF which can't be changed otherwise, and relays them to the @TcpdfService.
+ * Overrides functionality of @TCPDF which can't be changed otherwise, and relays them to the @PdfDocument.
  *
  * Class Pdf
  */
 class Pdf extends TCPDF
 {
-    /**
-     * @var string
-     */
-    private $identifier;
-
     /**
      * @var PdfDocument
      */
@@ -36,7 +31,6 @@ class Pdf extends TCPDF
     public function __construct()
     {
         parent::__construct();
-        $this->identifier = uniqid();
     }
 
     /**
@@ -92,7 +86,7 @@ class Pdf extends TCPDF
      *
      * @return float
      */
-    public function getContentStart()
+    public function getMarginTop()
     {
         return $this->tMargin;
     }
@@ -105,13 +99,5 @@ class Pdf extends TCPDF
     public function Error($msg)
     {
         throw new \Exception($msg);
-    }
-
-    /**
-     * @return string
-     */
-    public function getIdentifier(): string
-    {
-        return $this->identifier;
     }
 }

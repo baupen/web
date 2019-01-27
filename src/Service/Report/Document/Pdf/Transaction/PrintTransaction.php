@@ -12,8 +12,8 @@
 namespace App\Service\Report\Document\Pdf\Transaction;
 
 use App\Service\Report\Document\Pdf\Cursor;
-use App\Service\Report\Document\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Document\Pdf\Layout\Supporting\PrintBuffer;
+use App\Service\Report\Document\Pdf\PdfDocumentInterface;
 use App\Service\Report\Document\Transaction\TransactionInterface;
 
 class PrintTransaction implements TransactionInterface

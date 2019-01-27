@@ -13,8 +13,7 @@ namespace App\Service\Report\IssueReport\Pdf;
 
 use App\Helper\ImageHelper;
 use App\Service\Report\Document\Layout\Base\PrintableLayoutInterface;
-use App\Service\Report\Document\Pdf\Interfaces\PdfDocument\PdfDocumentPrintInterface;
-use App\Service\Report\Document\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Document\Pdf\PdfDocumentInterface;
 use App\Service\Report\IssueReport\Interfaces\PrinterInterface;
 use App\Service\Report\IssueReport\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\IssueReport\Pdf\Design\Interfaces\TypographyServiceInterface;
@@ -79,7 +78,7 @@ class Printer implements PrinterInterface
      */
     public function printImage(string $filePath)
     {
-        $this->layout->registerPrintable(function (PdfDocumentPrintInterface $document, float $defaultWidth) use ($filePath) {
+        $this->layout->registerPrintable(function (PdfDocumentInterface $document, float $defaultWidth) use ($filePath) {
             list($width, $height) = ImageHelper::getWidthHeightArguments($filePath, $defaultWidth);
             $document->printImage($filePath, $width, $height);
         });

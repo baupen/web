@@ -12,8 +12,8 @@
 namespace App\Service\Report\Document\Pdf\Layout;
 
 use App\Service\Report\Document\Layout\AutoColumnLayoutInterface;
-use App\Service\Report\Document\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Document\Pdf\Layout\Base\BaseColumnedLayout;
+use App\Service\Report\Document\Pdf\PdfDocumentInterface;
 
 class AutoColumnLayout extends BaseColumnedLayout implements AutoColumnLayoutInterface
 {

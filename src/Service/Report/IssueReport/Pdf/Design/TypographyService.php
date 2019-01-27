@@ -98,4 +98,12 @@ class TypographyService implements TypographyServiceInterface
     {
         return $this->getBigFontSize();
     }
+
+    /**
+     * @return string
+     */
+    public function getFontFamily()
+    {
+        return $this->typography->getFontFamily();
+    }
 }

@@ -22,10 +22,10 @@ use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\Document\LayoutFactoryInterface;
-use App\Service\Report\Document\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Document\Pdf\Interfaces\PdfFactoryInterface;
-use App\Service\Report\Document\Pdf\Interfaces\PdfPageLayoutInterface;
 use App\Service\Report\Document\Pdf\LayoutFactory;
+use App\Service\Report\Document\Pdf\PdfDocumentInterface;
+use App\Service\Report\Document\Pdf\PdfFactoryInterface;
+use App\Service\Report\Document\Pdf\PdfPageLayoutInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
 use App\Service\Report\IssueReport\Interfaces\PrintFactoryInterface;
 use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
@@ -194,7 +194,8 @@ class ReportService implements ReportServiceInterface
     private function createPdfDocument(PdfPageLayoutInterface $pageLayout)
     {
         $fontPath = $this->pathService->getAssetsRoot() . \DIRECTORY_SEPARATOR . 'report' . \DIRECTORY_SEPARATOR . 'fonts';
-        $this->pdfFactory->configure(['tcpdf' => ['font_path' => $fontPath]]);
+        $defaultFontFamily = $this->typographyService->getFontFamily();
+        $this->pdfFactory->configure(['tcpdf' => ['font_path' => $fontPath, 'default_font_family' => $defaultFontFamily]]);
 
         return $this->pdfFactory->create($pageLayout);
     }

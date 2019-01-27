@@ -12,8 +12,8 @@
 namespace App\Service\Report\Document\Pdf\Layout;
 
 use App\Service\Report\Document\Layout\ColumnLayoutInterface;
-use App\Service\Report\Document\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Document\Pdf\Layout\Base\StatefulColumnedLayout;
+use App\Service\Report\Document\Pdf\PdfDocumentInterface;
 
 class ColumnLayout extends StatefulColumnedLayout implements ColumnLayoutInterface
 {

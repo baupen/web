@@ -12,8 +12,8 @@
 namespace App\Service\Report\Document\Pdf\Layout;
 
 use App\Service\Report\Document\Layout\FullWidthLayoutInterface;
-use App\Service\Report\Document\Pdf\Interfaces\PdfDocumentInterface;
 use App\Service\Report\Document\Pdf\Layout\Supporting\PrintBuffer;
+use App\Service\Report\Document\Pdf\PdfDocumentInterface;
 use App\Service\Report\Document\Pdf\Transaction\PrintTransaction;
 use App\Service\Report\Document\Transaction\TransactionInterface;
 

@@ -11,9 +11,9 @@
 
 namespace App\Service\Report\Document\Pdf\Tcpdf;
 
-use App\Service\Report\Document\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Document\Pdf\Interfaces\PdfFactoryInterface;
-use App\Service\Report\Document\Pdf\Interfaces\PdfPageLayoutInterface;
+use App\Service\Report\Document\Pdf\PdfDocumentInterface;
+use App\Service\Report\Document\Pdf\PdfFactoryInterface;
+use App\Service\Report\Document\Pdf\PdfPageLayoutInterface;
 
 class PdfFactory implements PdfFactoryInterface
 {
@@ -43,9 +43,11 @@ class PdfFactory implements PdfFactoryInterface
             }
         }
 
-        if (!\defined('PDF_FONT_NAME_MAIN')) {
-            // TCPDF chooses this font as the default
-            \define('PDF_FONT_NAME_MAIN', 'opensans');
+        if (isset($tcpdfConfig['default_font_family'])) {
+            if (!\defined('PDF_FONT_NAME_MAIN')) {
+                // TCPDF chooses this font as the default
+                \define('PDF_FONT_NAME_MAIN', $tcpdfConfig['default_font_family']);
+            }
         }
 
         if (!\defined('K_TCPDF_THROW_EXCEPTION_ERROR')) {
@@ -60,6 +62,8 @@ class PdfFactory implements PdfFactoryInterface
 
     /**
      * @param PdfPageLayoutInterface $pageLayout
+     *
+     * @throws \Exception
      *
      * @return PdfDocumentInterface
      */

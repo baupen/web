@@ -40,4 +40,9 @@ interface TypographyServiceInterface
      * @return float
      */
     public function getTitleFontSize();
+
+    /**
+     * @return string
+     */
+    public function getFontFamily();
 }

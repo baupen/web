@@ -11,7 +11,7 @@
 
 namespace App\Service\Report\Document\Pdf\Layout\Supporting;
 
-use App\Service\Report\Document\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Document\Pdf\PdfDocumentInterface;
 
 class PrintBuffer
 {

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Document\Pdf\Interfaces;
+namespace App\Service\Report\Document\Pdf;
 
 interface PdfPageLayoutInterface
 {

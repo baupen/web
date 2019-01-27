@@ -13,8 +13,8 @@ namespace App\Service\Report\IssueReport\Pdf;
 
 use App\Helper\ImageHelper;
 use App\Service\Report\Document\Pdf\Cursor;
-use App\Service\Report\Document\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Document\Pdf\Interfaces\PdfPageLayoutInterface;
+use App\Service\Report\Document\Pdf\PdfDocumentInterface;
+use App\Service\Report\Document\Pdf\PdfPageLayoutInterface;
 use App\Service\Report\IssueReport\Model\MetaData;
 use App\Service\Report\IssueReport\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\IssueReport\Pdf\Design\Interfaces\TypographyServiceInterface;

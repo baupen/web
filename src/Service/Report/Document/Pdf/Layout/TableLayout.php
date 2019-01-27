@@ -14,15 +14,14 @@ namespace App\Service\Report\Document\Pdf\Layout;
 use App\Service\Report\Document\Layout\Configuration\ColumnConfiguration;
 use App\Service\Report\Document\Layout\TableLayoutInterface;
 use App\Service\Report\Document\Layout\TableRowLayoutInterface;
-use App\Service\Report\Document\Pdf\Interfaces\PdfDocument\PdfDocumentTransactionInterface;
-use App\Service\Report\Document\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Document\Pdf\PdfDocumentInterface;
 use App\Service\Report\Document\Pdf\Transaction\PrintTransaction;
 use App\Service\Report\Document\Transaction\TransactionInterface;
 
 class TableLayout implements TableLayoutInterface
 {
     /**
-     * @var PdfDocumentTransactionInterface
+     * @var PdfDocumentInterface
      */
     private $pdfDocument;
 

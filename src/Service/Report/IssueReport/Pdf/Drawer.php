@@ -12,7 +12,7 @@
 namespace App\Service\Report\IssueReport\Pdf;
 
 use App\Service\Report\Document\Pdf\Cursor;
-use App\Service\Report\Document\Pdf\Interfaces\PdfDocumentInterface;
+use App\Service\Report\Document\Pdf\PdfDocumentInterface;
 use App\Service\Report\Document\Transaction\Base\DrawableTransactionInterface;
 use App\Service\Report\IssueReport\Interfaces\DrawerInterface;
 use App\Service\Report\IssueReport\Pdf\Design\Interfaces\ColorServiceInterface;

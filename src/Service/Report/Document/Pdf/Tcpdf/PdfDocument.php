@@ -13,8 +13,8 @@ namespace App\Service\Report\Document\Pdf\Tcpdf;
 
 use App\Service\Report\Document\Pdf\Configuration\PrintConfiguration;
 use App\Service\Report\Document\Pdf\Cursor;
-use App\Service\Report\Document\Pdf\Interfaces\PdfDocumentInterface;
-use App\Service\Report\Document\Pdf\Interfaces\PdfPageLayoutInterface;
+use App\Service\Report\Document\Pdf\PdfDocumentInterface;
+use App\Service\Report\Document\Pdf\PdfPageLayoutInterface;
 use App\Service\Report\Document\Pdf\Tcpdf\Configuration\TcpdfConfiguration;
 
 /**
@@ -305,7 +305,7 @@ class PdfDocument implements PdfDocumentInterface
             $until = new Cursor($target->getXCoordinate(), $this->pdf->getMaxContentHeight(), $current->getPage());
             $drawBetween($current, $until);
 
-            $current = new Cursor($current->getXCoordinate(), $this->pdf->getContentStart(), $current->getPage() + 1);
+            $current = new Cursor($current->getXCoordinate(), $this->pdf->getMarginTop(), $current->getPage() + 1);
         }
 
         // pages match;
