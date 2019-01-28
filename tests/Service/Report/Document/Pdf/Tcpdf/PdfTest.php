@@ -28,11 +28,24 @@ class PdfTest extends TestCase
     private $pdfDocument;
 
     /**
-     * @before
-     *
+     * @var string
+     */
+    private static $tempFolder = __DIR__ . '/../../../../../../var/cache/test/temp';
+
+    /**
+     * create the test dir.
+     */
+    public static function setUpBeforeClass()
+    {
+        if (!is_dir(self::$tempFolder)) {
+            mkdir(self::$tempFolder);
+        }
+    }
+
+    /**
      * @throws \Exception
      */
-    public function setupSomeFixtures()
+    public function setUp()
     {
         $pdfPageLayout = \Mockery::mock(PdfPageLayoutInterface::class, [
             'initializeLayout' => null,
@@ -165,6 +178,23 @@ class PdfTest extends TestCase
         $this->pdfDocument->configure([]);
         $thirdConfiguration = $this->pdfDocument->getConfiguration();
         $this->assertNotSame($fontSize, $thirdConfiguration->getFontSize());
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function ignoreTestCursorAfterwardsIfPrinted_doesNotPrint()
+    {
+        $originName = self::$tempFolder . '/temp.pdf';
+        $this->pdfDocument->save($originName);
+
+        $this->pdfDocument->cursorAfterwardsIfPrinted(function () {
+            $this->pdfDocument->printText('hi mom', 20);
+        });
+        $newName = self::$tempFolder . '/temp2.pdf';
+        $this->pdfDocument->save($newName);
+
+        $this->assertFileEquals($originName, $newName);
     }
 
     private function cursorMatch(Cursor $expected, Cursor $actual)
