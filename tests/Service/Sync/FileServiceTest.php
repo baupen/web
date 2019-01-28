@@ -12,6 +12,7 @@
 namespace App\Tests\Service\Sync;
 
 use App\Service\Sync\FileService;
+use App\Tests\Service\Sync\FileServiceResources\PublicFileModel;
 use PHPUnit\Framework\TestCase;
 
 class FileServiceTest extends TestCase
