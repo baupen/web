@@ -12,7 +12,7 @@
 namespace App\Tests\Service\Sync;
 
 use App\Service\Sync\FileService;
-use App\Tests\Service\Sync\FileServiceResources\PublicFileModel;
+use App\Tests\Service\Sync\Model\FileModel;
 use PHPUnit\Framework\TestCase;
 
 class FileServiceTest extends TestCase
@@ -33,14 +33,14 @@ class FileServiceTest extends TestCase
     public function testGetNewFiles_findsAllFiles()
     {
         $newFiles = $this->service->getNewFiles($this->resourcesFolder, 'pdf', [], function () {
-            return new PublicFileModel();
+            return new FileModel();
         });
 
         $this->assertSame(3, \count($newFiles));
-        $this->assertSame(file_get_contents($this->resourcesFolder . \DIRECTORY_SEPARATOR . 'serializedFiles.json'), json_encode($newFiles));
+        $this->assertSame(file_get_contents($this->resourcesFolder . \DIRECTORY_SEPARATOR . 'serializedFiles'), serialize($newFiles));
 
         $again = $this->service->getNewFiles($this->resourcesFolder, 'pdf', $newFiles, function () {
-            return new PublicFileModel();
+            return new FileModel();
         });
         $this->assertSame(0, \count($again));
     }
