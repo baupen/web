@@ -21,11 +21,6 @@ use App\Helper\IssueHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
-use App\Service\Report\Document\LayoutFactoryInterface;
-use App\Service\Report\Document\Pdf\LayoutFactory;
-use App\Service\Report\Document\Pdf\PdfDocumentInterface;
-use App\Service\Report\Document\Pdf\PdfFactoryInterface;
-use App\Service\Report\Document\Pdf\PdfPageLayoutInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
 use App\Service\Report\IssueReport\Interfaces\PrintFactoryInterface;
 use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
@@ -39,6 +34,11 @@ use App\Service\Report\IssueReport\Pdf\Design\Interfaces\TypographyServiceInterf
 use App\Service\Report\IssueReport\PrintFactory;
 use App\Service\Report\ReportConfiguration;
 use App\Service\Report\ReportElements;
+use PdfGenerator\LayoutFactoryInterface;
+use PdfGenerator\Pdf\LayoutFactory;
+use PdfGenerator\Pdf\PdfDocumentInterface;
+use PdfGenerator\Pdf\PdfFactoryInterface;
+use PdfGenerator\Pdf\PdfPageLayoutInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 

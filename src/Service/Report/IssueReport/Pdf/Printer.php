@@ -12,13 +12,13 @@
 namespace App\Service\Report\IssueReport\Pdf;
 
 use App\Helper\ImageHelper;
-use App\Service\Report\Document\Layout\Base\PrintableLayoutInterface;
-use App\Service\Report\Document\Pdf\Configuration\DrawConfiguration;
-use App\Service\Report\Document\Pdf\Configuration\PrintConfiguration;
-use App\Service\Report\Document\Pdf\PdfDocumentInterface;
 use App\Service\Report\IssueReport\Interfaces\PrinterInterface;
 use App\Service\Report\IssueReport\Pdf\Design\Interfaces\ColorServiceInterface;
 use App\Service\Report\IssueReport\Pdf\Design\Interfaces\TypographyServiceInterface;
+use PdfGenerator\Layout\Base\PrintableLayoutInterface;
+use PdfGenerator\Pdf\Configuration\DrawConfiguration;
+use PdfGenerator\Pdf\Configuration\PrintConfiguration;
+use PdfGenerator\Pdf\PdfDocumentInterface;
 
 class Printer implements PrinterInterface
 {

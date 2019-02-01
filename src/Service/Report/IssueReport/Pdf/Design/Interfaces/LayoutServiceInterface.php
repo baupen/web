@@ -11,7 +11,7 @@
 
 namespace App\Service\Report\IssueReport\Pdf\Design\Interfaces;
 
-use App\Service\Report\Document\Pdf\LayoutFactoryConfigurationInterface;
+use PdfGenerator\Pdf\LayoutFactoryConfigurationInterface;
 
 interface LayoutServiceInterface extends LayoutFactoryConfigurationInterface
 {

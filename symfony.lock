@@ -107,6 +107,9 @@
     "egulias/email-validator": {
         "version": "2.1.3"
     },
+    "famoser/pdf-generator": {
+        "version": "v0.1"
+    },
     "friendsofphp/php-cs-fixer": {
         "version": "2.2",
         "recipe": {

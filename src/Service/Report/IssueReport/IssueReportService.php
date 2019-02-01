@@ -11,15 +11,15 @@
 
 namespace App\Service\Report\IssueReport;
 
-use App\Service\Report\Document\Layout\Configuration\ColumnConfiguration;
-use App\Service\Report\Document\Layout\TableRowLayoutInterface;
-use App\Service\Report\Document\LayoutFactoryInterface;
-use App\Service\Report\Document\Transaction\TransactionInterface;
 use App\Service\Report\IssueReport\Interfaces\IssueReportServiceInterface;
 use App\Service\Report\IssueReport\Interfaces\PrintFactoryInterface;
 use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
 use App\Service\Report\IssueReport\Model\IntroductionContent;
 use App\Service\Report\IssueReport\Model\MapContent;
+use PdfGenerator\Layout\Configuration\ColumnConfiguration;
+use PdfGenerator\Layout\TableRowLayoutInterface;
+use PdfGenerator\LayoutFactoryInterface;
+use PdfGenerator\Transaction\TransactionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class IssueReportService implements IssueReportServiceInterface

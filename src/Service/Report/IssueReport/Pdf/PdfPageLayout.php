@@ -12,13 +12,12 @@
 namespace App\Service\Report\IssueReport\Pdf;
 
 use App\Helper\ImageHelper;
-use App\Service\Report\Document\Pdf\Configuration\PrintConfiguration;
-use App\Service\Report\Document\Pdf\Cursor;
-use App\Service\Report\Document\Pdf\PdfDocumentInterface;
-use App\Service\Report\Document\Pdf\PdfPageLayoutInterface;
 use App\Service\Report\IssueReport\Model\MetaData;
 use App\Service\Report\IssueReport\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\IssueReport\Pdf\Design\Interfaces\TypographyServiceInterface;
+use PdfGenerator\Pdf\Configuration\PrintConfiguration;
+use PdfGenerator\Pdf\PdfDocumentInterface;
+use PdfGenerator\Pdf\PdfPageLayoutInterface;
 
 class PdfPageLayout implements PdfPageLayoutInterface
 {
@@ -85,14 +84,24 @@ class PdfPageLayout implements PdfPageLayoutInterface
     }
 
     /**
+     * @param PdfDocumentInterface $pdfDocument
+     * @param float $xCoordinate
+     * @param float $yCoordinate
+     */
+    private function moveCursorTo(PdfDocumentInterface $pdfDocument, float $xCoordinate, float $yCoordinate)
+    {
+        $pdfDocument->setCursor($pdfDocument->getCursor()->setX($xCoordinate)->setY($yCoordinate));
+    }
+
+    /**
      * @param PdfDocumentInterface $pdf
      * @param string $headerLeft
      */
     private function printHeaderLeft(PdfDocumentInterface $pdf, string $headerLeft)
     {
         $maxWidth = $this->layout->getContentXSize() / 3 * 2;
+        $this->moveCursorTo($pdf, $this->layout->getContentXStart(), $this->layout->getHeaderYStart());
 
-        $pdf->setCursor(new Cursor($this->layout->getContentXStart(), $this->layout->getHeaderYStart()));
         $pdf->configure([PrintConfiguration::FONT_SIZE => $this->typography->getHeaderFontSize()]);
         $pdf->printText($headerLeft, $maxWidth);
     }
@@ -109,9 +118,7 @@ class PdfPageLayout implements PdfPageLayoutInterface
         list($width, $height) = ImageHelper::getWidthHeightArguments($logoPath, $maxWidth, $maxHeight);
 
         // print
-        $startX = $this->layout->getContentXEnd() - $width;
-        $startY = $this->layout->getHeaderYStart();
-        $pdf->setCursor(new Cursor($startX, $startY));
+        $this->moveCursorTo($pdf, $this->layout->getContentXEnd() - $width, $this->layout->getHeaderYStart());
         $pdf->printImage($logoPath, $width, $height);
     }
 
@@ -121,7 +128,8 @@ class PdfPageLayout implements PdfPageLayoutInterface
      */
     private function printFooterLeft(PdfDocumentInterface $pdf, string $footerLeft)
     {
-        $pdf->setCursor(new Cursor($this->layout->getContentXStart(), $this->layout->getFooterYStart()));
+        $this->moveCursorTo($pdf, $this->layout->getContentXStart(), $this->layout->getFooterYStart());
+
         $pdf->printText($footerLeft, $this->typography->getFooterFontSize());
     }
 
@@ -133,16 +141,8 @@ class PdfPageLayout implements PdfPageLayoutInterface
     private function printPageNumbers(PdfDocumentInterface $pdf, $currentPageNumber, $totalPageNumbers)
     {
         $contentWidthPart = $this->layout->getContentXSize() / 8;
-        $startX = $this->layout->getContentXEnd() - $contentWidthPart;
+        $this->moveCursorTo($pdf, $this->layout->getContentXEnd() - $contentWidthPart, $this->layout->getFooterYStart());
 
-        if ($pdf->getPdfImplementation() === PdfDocumentInterface::PDF_IMPLEMENTATION_TCPDF) {
-            // TCPDF uses a placeholder for the page numbers which is replaced at the end. this leads to incorrect alignment.
-            $startX += 6.5;
-        }
-
-        $startY = $this->layout->getFooterYStart();
-
-        $pdf->setCursor(new Cursor($startX, $startY));
         $pdf->configure([PrintConfiguration::FONT_SIZE => $this->typography->getFooterFontSize(), PrintConfiguration::TEXT_ALIGN => PrintConfiguration::TEXT_ALIGN_RIGHT]);
         $pdf->printText($currentPageNumber . '/' . $totalPageNumbers, $contentWidthPart);
     }

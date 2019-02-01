@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ef1e129f568b9f4a2f16ec540c3747ff",
+    "content-hash": "fe6f159f25d2e8378eecb3dda3a2040b",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -1498,6 +1498,59 @@
                 "validator"
             ],
             "time": "2018-12-04T22:38:24+00:00"
+        },
+        {
+            "name": "famoser/pdf-generator",
+            "version": "v0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/famoser/pdf-generator.git",
+                "reference": "f8747f1af1ed06a84e8bdecc0ab9c8483dd42b2c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/famoser/pdf-generator/zipball/f8747f1af1ed06a84e8bdecc0ab9c8483dd42b2c",
+                "reference": "f8747f1af1ed06a84e8bdecc0ab9c8483dd42b2c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "brainmaestro/composer-git-hooks": "^2.6",
+                "codacy/coverage": "^1.4",
+                "friendsofphp/php-cs-fixer": "^2.14",
+                "mockery/mockery": "^1.2",
+                "phpunit/phpunit": "^7.5"
+            },
+            "type": "library",
+            "extra": {
+                "hooks": {
+                    "pre-commit": [
+                        "echo committing as $(git config user.name)",
+                        "./vendor/bin/php-cs-fixer fix  --config=.php_cs",
+                        "git update-index --again"
+                    ],
+                    "post-merge": "composer install"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PdfGenerator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Florian Moser",
+                    "email": "products@famoser.ch"
+                }
+            ],
+            "description": "a clean pdf generator without dependencies",
+            "time": "2019-01-28T20:54:13+00:00"
         },
         {
             "name": "fzaninotto/faker",
@@ -8773,13 +8826,13 @@
     "prefer-lowest": false,
     "platform": {
         "php": "^7.2",
+        "ext-gd": "*",
         "ext-iconv": "*",
         "ext-imagick": "*",
+        "ext-json": "*",
         "ext-pdo_sqlite": "*",
         "ext-simplexml": "*",
-        "ext-xml": "*",
-        "ext-gd": "*",
-        "ext-json": "*"
+        "ext-xml": "*"
     },
     "platform-dev": [],
     "platform-overrides": {

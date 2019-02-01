@@ -11,8 +11,6 @@
 
 namespace App\Service\Report\IssueReport;
 
-use App\Service\Report\Document\Layout\Base\PrintableLayoutInterface;
-use App\Service\Report\Document\Transaction\Base\DrawableTransactionInterface;
 use App\Service\Report\IssueReport\Interfaces\DrawerInterface;
 use App\Service\Report\IssueReport\Interfaces\PrinterInterface;
 use App\Service\Report\IssueReport\Interfaces\PrintFactoryInterface;
@@ -24,6 +22,8 @@ use App\Service\Report\IssueReport\Pdf\Design\TypographyService;
 use App\Service\Report\IssueReport\Pdf\Drawer;
 use App\Service\Report\IssueReport\Pdf\PdfPageLayout;
 use App\Service\Report\IssueReport\Pdf\Printer;
+use PdfGenerator\Layout\Base\PrintableLayoutInterface;
+use PdfGenerator\Transaction\Base\DrawableTransactionInterface;
 
 class PrintFactory implements PrintFactoryInterface
 {
