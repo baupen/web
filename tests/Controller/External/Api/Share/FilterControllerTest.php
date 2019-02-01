@@ -28,7 +28,7 @@ class FilterControllerTest extends ApiController
      * @param $relativeLink
      * @param null $payload
      *
-     * @throws ORMException
+     * @throws \Exception
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
