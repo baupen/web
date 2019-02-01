@@ -29,6 +29,7 @@ class CraftsmanControllerTest extends ApiController
      * @param null $payload
      *
      * @throws ORMException
+     * @throws \Exception
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
