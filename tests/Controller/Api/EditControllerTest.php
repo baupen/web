@@ -294,7 +294,6 @@ class EditControllerTest extends ApiController
         $addUrl = '/api/edit/craftsman';
         $availableCraftsmen = $this->countAvailableCraftsmen();
         $constructionSite = $this->getSomeConstructionSite();
-        $parentCraftsman = $constructionSite->getCraftsmen()[0];
 
         // do request
         $updateCraftsman = new UpdateCraftsman();

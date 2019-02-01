@@ -29,6 +29,8 @@ class CraftsmanControllerTest extends ApiController
      * @param null $payload
      *
      * @throws ORMException
+     * @throws \Exception
+     * @throws \Exception
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -41,7 +43,7 @@ class CraftsmanControllerTest extends ApiController
             $this->craftsman = $client->getContainer()->get('doctrine')->getRepository(Craftsman::class)->findOneBy([]);
             if ($this->craftsman->getEmailIdentifier() === null) {
                 $this->craftsman->setEmailIdentifier();
-                $manager = $client->getContainer()->get('doctrine.orm.entity_manager');
+                $manager = $client->getContainer()->get('doctrine.orm.entity_manager.abstract');
                 $manager->flush($this->craftsman);
             }
         }
