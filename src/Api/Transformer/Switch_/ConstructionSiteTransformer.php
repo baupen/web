@@ -14,7 +14,9 @@ namespace App\Api\Transformer\Switch_;
 use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
+use App\Security\Model\UserToken;
 use App\Service\Interfaces\ImageServiceInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -35,11 +37,14 @@ class ConstructionSiteTransformer extends BatchTransformer
      */
     private $user;
 
-    public function __construct(\App\Api\Transformer\Base\ConstructionSiteTransformer $constructionSiteTransformer, RouterInterface $router, TokenStorageInterface $tokenStorage)
+    public function __construct(\App\Api\Transformer\Base\ConstructionSiteTransformer $constructionSiteTransformer, RouterInterface $router, TokenStorageInterface $tokenStorage, RegistryInterface $registry)
     {
         $this->constructionSiteTransformer = $constructionSiteTransformer;
         $this->router = $router;
-        $this->user = $tokenStorage->getToken()->getUser();
+
+        /** @var UserToken $userToken */
+        $userToken = $tokenStorage->getToken()->getUser();
+        $this->user = $registry->getRepository(ConstructionManager::class)->fromUserToken($userToken);
     }
 
     /**

@@ -85,4 +85,9 @@ interface PathServiceInterface
      * @return string
      */
     public function getScriptsRoot();
+
+    /**
+     * @return string
+     */
+    public function getAssetsRoot();
 }

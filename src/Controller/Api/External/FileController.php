@@ -88,10 +88,10 @@ class FileController extends ExternalApiController
                     return $imageService->getSizeForIssue($entity, ImageServiceInterface::SIZE_FULL);
                 }
             );
-        } elseif ($downloadFileRequest->getBuilding() !== null) {
+        } elseif ($downloadFileRequest->getConstructionSite() !== null) {
             return $this->downloadFile(
                 $this->getDoctrine()->getRepository(ConstructionSite::class),
-                $downloadFileRequest->getBuilding(),
+                $downloadFileRequest->getConstructionSite(),
                 function ($entity) use ($constructionManager) {
                     /* @var ConstructionSite $entity */
                     return $entity->getConstructionManagers()->contains($constructionManager);

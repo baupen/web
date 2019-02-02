@@ -34,7 +34,7 @@ class FileService implements FileServiceInterface
         /** @var FileTrait[] $newFiles */
         $newFiles = [];
 
-        $folderLength = \mb_strlen($folder);
+        $folderLength = mb_strlen($folder);
         $files = glob($folder . \DIRECTORY_SEPARATOR . '*' . $ending);
         foreach ($files as $file) {
             $fileName = mb_substr($file, $folderLength + 1);

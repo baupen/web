@@ -13,7 +13,7 @@ namespace App\Controller\Traits;
 
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
-use App\Report\ReportElements;
+use App\Service\Report\ReportElements;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait QueryParseTrait
@@ -22,6 +22,9 @@ trait QueryParseTrait
      * @param Filter $filter
      * @param ConstructionSite $constructionSite
      * @param array $query
+     *
+     * @throws \Exception
+     * @throws \Exception
      */
     private function setFilterProperties(Filter $filter, ConstructionSite $constructionSite, $query)
     {

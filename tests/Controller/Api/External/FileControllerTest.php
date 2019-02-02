@@ -97,7 +97,7 @@ class FileControllerTest extends ApiController
         //test building image download
         $client = static::createClient();
         $doRequest = function (ObjectMeta $objectMeta) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "building":' . $serializer->serialize($objectMeta, 'json') . '}';
+            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "constructionSite":' . $serializer->serialize($objectMeta, 'json') . '}';
             $client->request(
                 'POST',
                 '/api/external/file/download',

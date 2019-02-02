@@ -49,11 +49,21 @@ class AuthenticationToken extends BaseEntity
      */
     private $constructionManager;
 
-    public function __construct(ConstructionManager $constructionManager)
+    /**
+     * @param ConstructionManager $constructionManager
+     *
+     * @throws \Exception
+     *
+     * @return AuthenticationToken
+     */
+    public static function createFor(ConstructionManager $constructionManager)
     {
-        $this->constructionManager = $constructionManager;
-        $this->token = HashHelper::getHash();
-        $this->setLastUsed();
+        $token = new self();
+        $token->constructionManager = $constructionManager;
+        $token->token = HashHelper::getHash();
+        $token->setLastUsed();
+
+        return $token;
     }
 
     /**
@@ -74,6 +84,8 @@ class AuthenticationToken extends BaseEntity
 
     /**
      *  refreshes the last used date to the current datetime.
+     *
+     * @throws \Exception
      */
     public function setLastUsed(): void
     {

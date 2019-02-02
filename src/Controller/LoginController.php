@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/login")
@@ -42,6 +42,11 @@ class LoginController extends BaseLoginController
      */
     public function indexAction(Request $request)
     {
+        // relink if already logged in
+        if ($this->getUser() !== null) {
+            return $this->redirectToRoute('dashboard');
+        }
+
         $form = $this->createForm(LoginType::class);
         $form->add('login.submit', SubmitType::class, ['translation_domain' => 'login']);
         $this->handleLoginForm(
@@ -134,6 +139,7 @@ class LoginController extends BaseLoginController
     {
         $arr = [];
 
+        /** @var ConstructionManager $user */
         $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['resetHash' => $resetHash]);
         if ($user !== null) {
             $form = $this->handleForm(

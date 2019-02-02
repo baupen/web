@@ -18,9 +18,6 @@ use App\Tests\Controller\Api\Base\ApiController;
 
 class RegisterControllerTest extends ApiController
 {
-    /**
-     * @throws \ReflectionException
-     */
     public function testIssuesList()
     {
         $issuesData = $this->getIssues();

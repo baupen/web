@@ -27,6 +27,11 @@ class PathService implements PathServiceInterface
     /**
      * @var string
      */
+    private $assetsRoot;
+
+    /**
+     * @var string
+     */
     private $folderRoot;
 
     /**
@@ -39,19 +44,25 @@ class PathService implements PathServiceInterface
      */
     private $constructionSiteFolderRoot;
 
+    /**
+     * PathService constructor.
+     *
+     * @param KernelInterface $kernel
+     */
     public function __construct(KernelInterface $kernel)
     {
-        $baseDir = realpath($kernel->getLogDir() . \DIRECTORY_SEPARATOR . '..');
-        $this->scriptsRoot = realpath($baseDir . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . 'supporting');
+        $varDir = realpath($kernel->getLogDir() . \DIRECTORY_SEPARATOR . '..');
+        $this->assetsRoot = realpath($varDir . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . 'assets');
+        $this->scriptsRoot = realpath($varDir . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . 'supporting');
 
         // add test to path to be able to unit test without messing up local dev state
         $environment = $kernel->getEnvironment();
         if ($environment === 'test') {
-            $baseDir .= \DIRECTORY_SEPARATOR . $environment;
+            $varDir .= \DIRECTORY_SEPARATOR . $environment;
         }
 
-        $this->folderRoot = $baseDir . \DIRECTORY_SEPARATOR . 'persistent';
-        $this->transientFolderRoot = $baseDir . \DIRECTORY_SEPARATOR . 'transient';
+        $this->folderRoot = $varDir . \DIRECTORY_SEPARATOR . 'persistent';
+        $this->transientFolderRoot = $varDir . \DIRECTORY_SEPARATOR . 'transient';
 
         $this->constructionSiteFolderRoot = $this->folderRoot . \DIRECTORY_SEPARATOR . 'construction_sites';
     }
@@ -176,5 +187,13 @@ class PathService implements PathServiceInterface
     public function getScriptsRoot()
     {
         return $this->scriptsRoot;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAssetsRoot()
+    {
+        return $this->assetsRoot;
     }
 }

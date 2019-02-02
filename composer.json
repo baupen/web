@@ -4,15 +4,16 @@
   "license": "MIT",
   "require": {
     "php": "^7.2",
+    "ext-gd": "*",
     "ext-iconv": "*",
     "ext-imagick": "*",
+    "ext-json": "*",
     "ext-pdo_sqlite": "*",
     "ext-simplexml": "*",
     "ext-xml": "*",
-    "ext-gd": "*",
-    "ext-json": "*",
     "doctrine/doctrine-fixtures-bundle": "^3.0",
     "easycorp/easyadmin-bundle": "^1.17",
+    "famoser/pdf-generator": "^0.1.0",
     "fzaninotto/faker": "^1.7",
     "intervention/image": "^2.4",
     "php-coveralls/php-coveralls": "^2.0",
@@ -41,16 +42,17 @@
     "tecnickcom/tcpdf": "^6.2"
   },
   "require-dev": {
-    "deployer/deployer": "^6.1",
     "codacy/coverage": "^1.4",
+    "deployer/deployer": "^6.1",
     "friendsofphp/php-cs-fixer": "^2.7",
+    "mockery/mockery": "^1.2",
+    "phpunit/phpunit": "^7",
     "symfony/browser-kit": "^4.0",
     "symfony/css-selector": "^4.0",
     "symfony/debug-bundle": "^4.0",
     "symfony/phpunit-bridge": "^4.0",
     "symfony/profiler-pack": "^1.0",
-    "symfony/web-server-bundle": "^4.0",
-    "phpunit/phpunit": "^7"
+    "symfony/web-server-bundle": "^4.0"
   },
   "config": {
     "platform": {

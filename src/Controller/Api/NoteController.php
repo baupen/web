@@ -141,7 +141,6 @@ class NoteController extends ApiController
      * @Route("/delete", name="api_note_delete", methods={"POST"})
      *
      * @param Request $request
-     * @param NoteTransformer $noteTransformer
      *
      * @return Response
      */

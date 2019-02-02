@@ -222,7 +222,7 @@ class IssueController extends ExternalApiController
             $metadata->setIdGenerator(new \Doctrine\ORM\Id\AssignedGenerator());
         }
 
-        // need to enforce correct guids
+        // need to enforce correct guid
         if ($issueModifyRequest->getIssue()->getImage() !== null) {
             $issue->getImage()->setId($issueModifyRequest->getIssue()->getImage()->getId());
             $em->persist($issue->getImage());

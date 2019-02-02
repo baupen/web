@@ -43,7 +43,7 @@ class CraftsmanVoter extends BaseVoter
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        $user = $token->getUser();
+        $user = $this->getUser($token);
 
         if (!$user instanceof ConstructionManager) {
             return false;

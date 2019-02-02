@@ -51,7 +51,7 @@ class ImageService implements ImageServiceInterface
     /**
      * @var bool prevents calls to warmup cache from archiving something
      */
-    private $preventCacheWarmup;
+    private $preventCacheWarmUp;
 
     /**
      * ImageService constructor.
@@ -62,7 +62,9 @@ class ImageService implements ImageServiceInterface
     public function __construct(PathServiceInterface $pathService, KernelInterface $kernel)
     {
         $this->pathService = $pathService;
-        $this->preventCacheWarmup = $kernel->getEnvironment() !== 'prod';
+
+        // improves performance when generating fixtures (done extensively in dev / test environment)
+        $this->preventCacheWarmUp = $kernel->getEnvironment() !== 'prod';
     }
 
     /**
@@ -112,9 +114,9 @@ class ImageService implements ImageServiceInterface
      *
      * @param Issue $issue
      */
-    public function warmupCacheForIssue(Issue $issue)
+    public function warmUpCacheForIssue(Issue $issue)
     {
-        if ($issue->getImage() === null || $this->preventCacheWarmup) {
+        if ($issue->getImage() === null || $this->preventCacheWarmUp) {
             return;
         }
 
@@ -133,9 +135,9 @@ class ImageService implements ImageServiceInterface
      *
      * @param ConstructionSite $constructionSite
      */
-    public function warmupCacheForConstructionSite(ConstructionSite $constructionSite)
+    public function warmUpCacheForConstructionSite(ConstructionSite $constructionSite)
     {
-        if ($constructionSite->getImage() === null || $this->preventCacheWarmup) {
+        if ($constructionSite->getImage() === null || $this->preventCacheWarmUp) {
             return;
         }
 
@@ -154,9 +156,9 @@ class ImageService implements ImageServiceInterface
      *
      * @param Map $map
      */
-    public function warmupCacheForMap(Map $map)
+    public function warmUpCacheForMap(Map $map)
     {
-        if ($map->getFile() === null || $this->preventCacheWarmup) {
+        if ($map->getFile() === null || $this->preventCacheWarmUp) {
             return;
         }
 
@@ -165,7 +167,7 @@ class ImageService implements ImageServiceInterface
         $generationTargetFolder = $this->pathService->getTransientFolderForMapFile($map);
         $this->ensureFolderExists($generationTargetFolder);
 
-        //prerender all sizes
+        //pre-render all sizes
         foreach ($this->validSizes as $validSize) {
             $this->generateMapImageInternal([], $sourceFilePath, $generationTargetFolder, false, $validSize);
         }
@@ -535,7 +537,7 @@ class ImageService implements ImageServiceInterface
     private function getSizeFilename(string $fileName, $size)
     {
         $ending = pathinfo($fileName, PATHINFO_EXTENSION);
-        $filenameWithoutEnding = mb_substr($fileName, 0, -(\mb_strlen($ending) + 1));
+        $filenameWithoutEnding = mb_substr($fileName, 0, -(mb_strlen($ending) + 1));
 
         return $filenameWithoutEnding . '_' . $size . '.' . $ending;
     }

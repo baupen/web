@@ -40,7 +40,7 @@ class Issue extends \App\Api\Entity\Base\PublicIssue
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getReviewedByName(): ?string
     {
@@ -48,7 +48,7 @@ class Issue extends \App\Api\Entity\Base\PublicIssue
     }
 
     /**
-     * @param null|string $reviewedByName
+     * @param string|null $reviewedByName
      */
     public function setReviewedByName(?string $reviewedByName): void
     {

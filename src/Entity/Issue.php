@@ -209,7 +209,7 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getDescription(): ?string
     {
@@ -217,7 +217,7 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @param null|string $description
+     * @param string|null $description
      */
     public function setDescription(?string $description): void
     {

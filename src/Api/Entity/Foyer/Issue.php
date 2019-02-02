@@ -139,7 +139,7 @@ class Issue extends \App\Api\Entity\Base\Issue
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getUploadByName(): ?string
     {
@@ -147,7 +147,7 @@ class Issue extends \App\Api\Entity\Base\Issue
     }
 
     /**
-     * @param null|string $uploadByName
+     * @param string|null $uploadByName
      */
     public function setUploadByName(?string $uploadByName): void
     {
@@ -155,7 +155,7 @@ class Issue extends \App\Api\Entity\Base\Issue
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getImageThumbnail(): ?string
     {
@@ -163,7 +163,7 @@ class Issue extends \App\Api\Entity\Base\Issue
     }
 
     /**
-     * @param null|string $imageThumbnail
+     * @param string|null $imageThumbnail
      */
     public function setImageThumbnail(?string $imageThumbnail): void
     {
@@ -171,7 +171,7 @@ class Issue extends \App\Api\Entity\Base\Issue
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getImageFull(): ?string
     {
@@ -179,7 +179,7 @@ class Issue extends \App\Api\Entity\Base\Issue
     }
 
     /**
-     * @param null|string $imageFull
+     * @param string|null $imageFull
      */
     public function setImageFull(?string $imageFull): void
     {

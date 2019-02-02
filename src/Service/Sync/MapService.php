@@ -64,9 +64,29 @@ class MapService implements MapServiceInterface
         /** @var MapFile[] $mapFiles */
         $mapFiles = $constructionSite->getMapFiles()->toArray();
 
+        $this->refreshDisplayName($syncTransaction, $maps);
+
         $this->assignMapFilesToMaps($syncTransaction, $constructionSite, $mapFiles, $maps);
 
         $this->createTreeStructure($syncTransaction, $constructionSite, $maps);
+    }
+
+    /**
+     * @param SyncTransaction $syncTransaction
+     * @param Map[] $maps
+     */
+    private function refreshDisplayName(SyncTransaction $syncTransaction, array $maps)
+    {
+        foreach ($maps as $map) {
+            if ($map->getFile() !== null) {
+                $newDisplayName = $map->getFile()->getDisplayFilename();
+
+                if ($newDisplayName !== $map->getName()) {
+                    $map->setName($newDisplayName);
+                    $syncTransaction->persist($map);
+                }
+            }
+        }
     }
 
     /**
@@ -82,8 +102,6 @@ class MapService implements MapServiceInterface
         foreach ($maps as $map) {
             $key = $map->getName();
             if (!array_key_exists($key, $displayNameToMapLookup)) {
-                $displayNameToMapLookup[$key] = $map;
-            } elseif (!$displayNameToMapLookup[$key]->getIsAutomaticEditEnabled() && $map->getIsAutomaticEditEnabled()) {
                 $displayNameToMapLookup[$key] = $map;
             }
         }
@@ -138,6 +156,19 @@ class MapService implements MapServiceInterface
             $mapLookup[$id++] = $map;
         }
 
+        $createNewElement = function ($name) use (&$id, &$mapLookup, $syncTransaction, $constructionSite) {
+            $map = new Map();
+            $map->setName($name);
+
+            $map->setConstructionSite($constructionSite);
+            $constructionSite->getMaps()->add($map);
+
+            $syncTransaction->persist($map);
+            $mapLookup[$id] = $map;
+
+            return $id++;
+        };
+
         $assignChildToParent = function ($childId, $parentId) use (&$mapLookup, $syncTransaction) {
             $childMap = $mapLookup[$childId];
             $parentMap = $mapLookup[$parentId];
@@ -148,19 +179,72 @@ class MapService implements MapServiceInterface
             $syncTransaction->persist($childMap);
         };
 
-        $createNewElement = function ($name) use (&$id, &$mapLookup, $syncTransaction, $constructionSite) {
-            $map = new Map();
-            $map->setName($name);
+        $clearParent = function ($childId) use (&$mapLookup, $syncTransaction) {
+            $childMap = $mapLookup[$childId];
+            if ($childMap->getParent() !== null) {
+                $childMap->getParent()->getChildren()->removeElement($childMap);
+                $childMap->setParent(null);
 
-            $map->setConstructionSite($constructionSite);
-            $constructionSite->getMaps()->add($map);
-
-            $syncTransaction->persist($map);
-            $mapLookup[$id++] = $map;
-
-            return $id - 1;
+                $syncTransaction->persist($childMap);
+            }
         };
 
-        $this->displayNameService->putIntoTreeStructure($idNameLookup, $createNewElement, $assignChildToParent);
+        $this->displayNameService->putIntoTreeStructure($idNameLookup, $createNewElement, $assignChildToParent, $clearParent);
+
+        $this->cleanTreeStructure($syncTransaction, $maps);
+    }
+
+    /**
+     * @param SyncTransaction $syncTransaction
+     * @param Map[] $maps
+     */
+    private function cleanTreeStructure(SyncTransaction $syncTransaction, array &$maps)
+    {
+        // remove child from parents which are not children anymore
+        foreach ($maps as $map) {
+            /** @var Map[] $children */
+            $children = $map->getChildren()->toArray();
+            foreach ($children as $child) {
+                if ($child->getParent() !== $map) {
+                    $map->getChildren()->removeElement($map);
+                }
+            }
+        }
+
+        // remove maps without children & issues
+        $mapCount = \count($maps);
+        for ($i = 0; $i < $mapCount; ++$i) {
+            $map = $maps[$i];
+
+            // no children; no issues; no files -> we dont need this map
+            if ($map->getIssues()->count() === 0 && $map->getFiles()->count() === 0) {
+                // if only one children; can remove from hierarchy
+                if ($map->getChildren()->count() === 1) {
+                    /** @var Map $child */
+                    $child = $map->getChildren()->first();
+                    $parent = $map->getParent();
+
+                    $child->setParent($parent);
+                    $parent->getChildren()->add($child);
+                    $syncTransaction->persist($child);
+
+                    $map->getChildren()->removeElement($child);
+                    $map->setParent(null);
+                }
+
+                // if no children can remove
+                if ($map->getChildren()->count() === 0) {
+                    if ($map->getParent() !== null) {
+                        $map->getParent()->getChildren()->removeElement($map);
+                        $map->setParent(null);
+                    }
+
+                    unset($maps[$i]);
+                    $maps = array_values($maps);
+                    --$mapCount;
+                    $syncTransaction->remove($map);
+                }
+            }
+        }
     }
 }

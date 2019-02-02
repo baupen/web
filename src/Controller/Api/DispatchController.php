@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/dispatch")
@@ -76,6 +76,9 @@ class DispatchController extends ApiController
      * @param Request $request
      * @param TranslatorInterface $translator
      * @param EmailServiceInterface $emailService
+     *
+     * @throws \Exception
+     * @throws \Exception
      *
      * @return Response
      */
@@ -132,20 +135,22 @@ class DispatchController extends ApiController
      * @param EmailServiceInterface $emailService
      * @param TranslatorInterface $translator
      *
+     * @throws \Exception
+     *
      * @return bool
      */
     private function sendMail(Craftsman $craftsman, CurrentIssueState $state, ConstructionSite $constructionSite, EmailServiceInterface $emailService, TranslatorInterface $translator)
     {
         // build up base text
         if ($state->getOverdueIssuesCount() > 0) {
-            $subject = $translator->transChoice('email.overdue.subject', $state->getOverdueIssuesCount(), [], 'dispatch');
-            $body = $translator->transChoice('email.overdue.body', $state->getNotRespondedIssuesCount(), [], 'dispatch');
+            $subject = $translator->trans('email.overdue.subject', ['%count%' => $state->getOverdueIssuesCount()], 'dispatch');
+            $body = $translator->trans('email.overdue.body', ['%count%' => $state->getNotRespondedIssuesCount()], 'dispatch');
         } elseif ($state->getNotReadIssuesCount() > 0) {
-            $subject = $translator->transChoice('email.unread.subject', $state->getNotReadIssuesCount(), [], 'dispatch');
-            $body = $translator->transChoice('email.unread.body', $state->getNotRespondedIssuesCount(), [], 'dispatch');
+            $subject = $translator->trans('email.unread.subject', ['%count%' => $state->getNotReadIssuesCount()], 'dispatch');
+            $body = $translator->trans('email.unread.body', ['%count%' => $state->getNotRespondedIssuesCount()], 'dispatch');
         } else {
-            $subject = $translator->transChoice('email.open.subject', $state->getNotRespondedIssuesCount(), [], 'dispatch');
-            $body = $translator->transChoice('email.open.body', $state->getNotRespondedIssuesCount(), [], 'dispatch');
+            $subject = $translator->trans('email.open.subject', ['%count%' => $state->getNotRespondedIssuesCount()], 'dispatch');
+            $body = $translator->trans('email.open.body', ['%count%' => $state->getNotRespondedIssuesCount()], 'dispatch');
         }
 
         //append next limit info
@@ -161,7 +166,7 @@ class DispatchController extends ApiController
         //append closed issues info
         if ($state->getRecentlyReviewedIssuesCount() > 0) {
             $body .= "\n";
-            $body .= $translator->transChoice('email.body_closed_issues_info', $state->getRecentlyReviewedIssuesCount(), [], 'dispatch');
+            $body .= $translator->trans('email.body_closed_issues_info', ['%count%' => $state->getRecentlyReviewedIssuesCount()], 'dispatch');
         }
 
         //append suffix

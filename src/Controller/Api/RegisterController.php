@@ -238,6 +238,9 @@ class RegisterController extends ApiController
      *
      * @param Request $request
      *
+     * @throws \Exception
+     * @throws \Exception
+     *
      * @return Response
      */
     public function linkCreateAction(Request $request)
@@ -249,6 +252,8 @@ class RegisterController extends ApiController
         if (!isset($queryFilter['constructionSiteId'])) {
             throw new NotFoundHttpException();
         }
+
+        /** @var ConstructionSite $constructionSite */
         $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($queryFilter['constructionSiteId']);
         if ($constructionSite === null || !$this->getUser()->getConstructionSites()->contains($constructionSite)) {
             throw new NotFoundHttpException();
@@ -340,6 +345,10 @@ class RegisterController extends ApiController
      *
      * @param Request $request
      * @param IssueTransformer $issueTransformer
+     *
+     * @throws \Exception
+     * @throws \Exception
+     * @throws \Exception
      *
      * @return Response
      */

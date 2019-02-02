@@ -112,7 +112,7 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getDescription(): ?string
     {
@@ -120,7 +120,7 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @param null|string $description
+     * @param string|null $description
      */
     public function setDescription(?string $description): void
     {
@@ -128,7 +128,7 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getCraftsman(): ?string
     {
@@ -136,7 +136,7 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @param null|string $craftsman
+     * @param string|null $craftsman
      */
     public function setCraftsman(?string $craftsman): void
     {

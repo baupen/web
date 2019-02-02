@@ -3,14 +3,14 @@ security:
     strategy: unanimous
 
   encoders:
-    App\Entity\ConstructionManager: bcrypt
+    App\Security\Model\UserToken: bcrypt
 
   role_hierarchy:
     ROLE_ADMIN: ROLE_USER
 
   providers:
-    construction_manager_provider:
-      id: App\Security\ConstructionManagerProvider
+    user_token_provider:
+      id: App\Security\UserTokenProvider
 
   firewalls:
     # disables authentication for assets and the profiler
@@ -21,7 +21,7 @@ security:
     # main firewall for logged in users
     main:
       pattern:   ^/
-      provider: construction_manager_provider
+      provider: user_token_provider
       form_login:
         login_path: login
         check_path: login_check

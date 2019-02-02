@@ -236,7 +236,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @return null|string[]
+     * @return string[]|null
      */
     public function getTrades(): ?array
     {
@@ -244,7 +244,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param null|string[] $trades
+     * @param string[]|null $trades
      */
     public function setTrades(?array $trades): void
     {
@@ -252,7 +252,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @return null|string[]
+     * @return string[]|null
      */
     public function getCraftsmen(): ?array
     {
@@ -260,7 +260,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param null|string[] $craftsmen
+     * @param string[]|null $craftsmen
      */
     public function setCraftsmen(?array $craftsmen): void
     {
@@ -268,7 +268,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @return null|string[]
+     * @return string[]|null
      */
     public function getMaps(): ?array
     {
@@ -276,7 +276,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param null|string[] $maps
+     * @param string[]|null $maps
      */
     public function setMaps(?array $maps): void
     {
@@ -492,7 +492,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getNumberText(): ?string
     {
@@ -500,7 +500,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param null|string $numberText
+     * @param string|null $numberText
      */
     public function setNumberText(?string $numberText): void
     {
@@ -508,7 +508,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @return null|string[]
+     * @return string[]|null
      */
     public function getIssues(): ?array
     {
@@ -516,7 +516,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param null|string[] $issues
+     * @param string[]|null $issues
      */
     public function setIssues(?array $issues): void
     {
@@ -524,7 +524,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getAccessIdentifier(): ?string
     {
@@ -549,6 +549,8 @@ class Filter extends BaseEntity
 
     /**
      * sets a new access identifier for public access.
+     *
+     * @throws \Exception
      */
     public function setAccessIdentifier(): void
     {

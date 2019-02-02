@@ -111,7 +111,7 @@ class MapFile extends BaseEntity
     }
 
     /**
-     * @return Frame|null|object
+     * @return Frame|object|null
      */
     public function getSectorFrame()
     {

@@ -11,9 +11,41 @@
 
 namespace App\Security\Voter\Base;
 
+use App\Entity\ConstructionManager;
+use App\Security\Model\UserToken;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 abstract class BaseVoter extends Voter
 {
     const ANY_ATTRIBUTE = 'any';
+
+    /**
+     * @var RegistryInterface
+     */
+    private $registry;
+
+    /**
+     * BaseVoter constructor.
+     *
+     * @param RegistryInterface $registry
+     */
+    public function __construct(RegistryInterface $registry)
+    {
+        $this->registry = $registry;
+    }
+
+    /**
+     * @param TokenInterface $token
+     *
+     * @return mixed
+     */
+    protected function getUser(TokenInterface $token)
+    {
+        /** @var UserToken $userToken */
+        $userToken = $token->getUser();
+
+        return $this->registry->getRepository(ConstructionManager::class)->fromUserToken($userToken);
+    }
 }

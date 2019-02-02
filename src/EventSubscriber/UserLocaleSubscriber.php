@@ -12,6 +12,8 @@
 namespace App\EventSubscriber;
 
 use App\Entity\ConstructionManager;
+use App\Security\Model\UserToken;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
@@ -23,11 +25,20 @@ use Symfony\Component\Security\Http\SecurityEvents;
  */
 class UserLocaleSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var SessionInterface
+     */
     private $session;
 
-    public function __construct(SessionInterface $session)
+    /**
+     * @var RegistryInterface
+     */
+    private $registry;
+
+    public function __construct(SessionInterface $session, RegistryInterface $registry)
     {
         $this->session = $session;
+        $this->registry = $registry;
     }
 
     /**
@@ -35,8 +46,10 @@ class UserLocaleSubscriber implements EventSubscriberInterface
      */
     public function onInteractiveLogin(InteractiveLoginEvent $event)
     {
-        /** @var ConstructionManager $user */
-        $user = $event->getAuthenticationToken()->getUser();
+        /** @var UserToken $userToken */
+        $userToken = $event->getAuthenticationToken()->getUser();
+        $user = $this->registry->getRepository(ConstructionManager::class)->fromUserToken($userToken);
+
         $this->session->set('_locale', $user->getLocale());
     }
 

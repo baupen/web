@@ -114,6 +114,9 @@ trait UserTrait
         return $this->registrationDate;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function setRegistrationDate()
     {
         $this->registrationDate = new \DateTime();
@@ -343,13 +346,17 @@ trait UserTrait
 
     /**
      * hashes the plainPassword and erases credentials.
+     *
+     * @param bool $preventErase
      */
-    public function setPassword()
+    public function setPassword(bool $preventErase = false)
     {
         $this->password = password_hash($this->getPlainPassword(), PASSWORD_BCRYPT);
         $this->passwordHash = hash('sha256', $this->getPlainPassword());
-        $this->setPlainPassword(null);
-        $this->setRepeatPlainPassword(null);
+
+        if (!$preventErase) {
+            $this->eraseCredentials();
+        }
     }
 
     /**

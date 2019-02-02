@@ -13,7 +13,7 @@ namespace App\Service\Interfaces;
 
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
-use App\Report\ReportElements;
+use App\Service\Report\ReportElements;
 
 interface ReportServiceInterface
 {
@@ -21,9 +21,9 @@ interface ReportServiceInterface
      * @param ConstructionSite $constructionSite
      * @param Filter $filter
      * @param string $author
-     * @param ReportElements $elements
+     * @param ReportElements $reportElements
      *
      * @return string
      */
-    public function generateReport(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $elements);
+    public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $reportElements);
 }

@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Table(name="construction_manager")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Repository\ConstructionManagerRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class ConstructionManager extends BaseEntity implements UserInterface
@@ -73,6 +73,13 @@ class ConstructionManager extends BaseEntity implements UserInterface
     private $locale = 'de';
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private $isTrialAccount = false;
+
+    /**
      * constructor.
      */
     public function __construct()
@@ -81,7 +88,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getGivenName(): ?string
     {
@@ -89,7 +96,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     }
 
     /**
-     * @param null|string $givenName
+     * @param string|null $givenName
      */
     public function setGivenName(?string $givenName): void
     {
@@ -97,7 +104,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getFamilyName(): ?string
     {
@@ -105,7 +112,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     }
 
     /**
-     * @param null|string $familyName
+     * @param string|null $familyName
      */
     public function setFamilyName(?string $familyName): void
     {
@@ -113,7 +120,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getPhone(): ?string
     {
@@ -121,7 +128,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     }
 
     /**
-     * @param null|string $phone
+     * @param string|null $phone
      */
     public function setPhone(?string $phone): void
     {
@@ -195,5 +202,21 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public function setLocale(string $locale): void
     {
         $this->locale = $locale;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsTrialAccount(): bool
+    {
+        return $this->isTrialAccount;
+    }
+
+    /**
+     * @param bool $isTrialAccount
+     */
+    public function setIsTrialAccount(bool $isTrialAccount): void
+    {
+        $this->isTrialAccount = $isTrialAccount;
     }
 }

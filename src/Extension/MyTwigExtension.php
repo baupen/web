@@ -13,8 +13,7 @@ namespace App\Extension;
 
 use App\Enum\BooleanType;
 use App\Helper\DateTimeFormatter;
-use DateTime;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig_Extension;
 use Twig_SimpleFilter;
 
@@ -86,11 +85,11 @@ class MyTwigExtension extends Twig_Extension
     /**
      * translates the day of the week.
      *
-     * @param DateTime $date
+     * @param \DateTime $date
      *
      * @return string
      */
-    private function prependDayName(DateTime $date)
+    private function prependDayName(\DateTime $date)
     {
         return $this->translator->trans('date_time.' . $date->format('D'), [], 'framework');
     }

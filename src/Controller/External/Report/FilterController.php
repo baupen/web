@@ -15,8 +15,8 @@ use App\Controller\Base\BaseDoctrineController;
 use App\Controller\External\Traits\FilterAuthenticationTrait;
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
-use App\Report\ReportElements;
 use App\Service\Interfaces\ReportServiceInterface;
+use App\Service\Report\ReportElements;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -53,7 +53,7 @@ class FilterController extends BaseDoctrineController
         $reportElements = ReportElements::forCraftsman();
 
         return $this->file(
-            $reportService->generateReport($constructionSite, $filter, $filter->getId(), $reportElements),
+            $reportService->generatePdfReport($constructionSite, $filter, $filter->getId(), $reportElements),
             'report.pdf',
             ResponseHeaderBag::DISPOSITION_INLINE
         );

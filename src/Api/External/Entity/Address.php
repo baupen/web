@@ -34,7 +34,7 @@ class Address
     private $country;
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getStreetAddress(): ?string
     {
@@ -42,7 +42,7 @@ class Address
     }
 
     /**
-     * @param null|string $streetAddress
+     * @param string|null $streetAddress
      */
     public function setStreetAddress(?string $streetAddress): void
     {
@@ -66,7 +66,7 @@ class Address
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getLocality(): ?string
     {
@@ -74,7 +74,7 @@ class Address
     }
 
     /**
-     * @param null|string $locality
+     * @param string|null $locality
      */
     public function setLocality(?string $locality): void
     {
@@ -82,7 +82,7 @@ class Address
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getCountry(): ?string
     {
@@ -90,7 +90,7 @@ class Address
     }
 
     /**
-     * @param null|string $country
+     * @param string|null $country
      */
     public function setCountry(?string $country): void
     {

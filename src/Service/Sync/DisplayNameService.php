@@ -50,28 +50,26 @@ class DisplayNameService implements DisplayNameServiceInterface
         // replace _ with space
         $output = str_replace('_', ' ', $output);
 
+        // add points + space after all numbers immediately followed by text
+        while (preg_match('/([0-9]){1,2}[A-Z]([a-z]){2,}/', $output, $matches, PREG_OFFSET_CAPTURE)) {
+            $before = mb_substr($output, 0, $matches[0][1]);
+            $number = $matches[1][0];
+            $after = mb_substr($output, $matches[1][1] + mb_strlen($number));
+
+            $output = $before . $number . '. ' . $after;
+        }
+
         // add space before all capitals which are followed by at least 2 non-capital (ObergeschossHaus)
         $output = preg_replace('/(?<!^)([A-Z][a-z]{2,})/', ' $0', $output);
 
-        // add space before all numbers (Haus2)
-        $output = preg_replace('/(?<!^)([0-9]+)/', ' $0', $output);
+        // add space before all numbers (Haus2 -> Haus 2)
+        // at most two following numbers
+        $output .= ' ';
+        while (preg_match('/([A-Za-z])+([0-9A-Z]){1,3} /', $output, $matches, PREG_OFFSET_CAPTURE)) {
+            $before = mb_substr($output, 0, $matches[1][1] + 1);
+            $after = mb_substr($output, $matches[2][1]);
 
-        // add point after all numbers which are before any letters
-        if (preg_match('/[a-zA-Z]/', $output, $matches, PREG_OFFSET_CAPTURE)) {
-            $index = $matches[0][1];
-            $before = mb_substr($output, 0, $index);
-            $after = mb_substr($output, $index);
-
-            // match single numbers followed by a space (1 Obergeschoss) to add a point
-            if (preg_match('/[0-9]{1}[ ]/', $before, $matches, PREG_OFFSET_CAPTURE)) {
-                foreach ($matches as $match) {
-                    $matchLength = mb_strlen($match[0]);
-                    $index = $match[1];
-                    $before = mb_substr($before, 0, $index - 1) . '. ' . mb_substr($before, $index + $matchLength);
-                }
-            }
-
-            $output = $before . $after;
+            $output = $before . ' ' . $after;
         }
 
         $output = $this->trimWhitespace($output);
@@ -97,7 +95,7 @@ class DisplayNameService implements DisplayNameServiceInterface
 
         $this->removeIdenticalGroups($filenameGroupsStatistics, $decomposedMapNames);
 
-        $this->removeDateGroups($filenameGroupsStatistics, $decomposedMapNames);
+        $this->removeDateGroups($decomposedMapNames);
 
         $counter = 0;
         $resultingNames = [];
@@ -117,8 +115,9 @@ class DisplayNameService implements DisplayNameServiceInterface
      * @param string[] $elementNames as an (int id => string name) structure
      * @param callable $createNewElement called as $addElement(string $name); should return int id of the new element
      * @param callable $assignChildToParent called with $assignParent(string $childId, string $parentId)
+     * @param callable $clearParent called with $clearParent(string $childId)
      */
-    public function putIntoTreeStructure(array $elementNames, callable $createNewElement, callable $assignChildToParent)
+    public function putIntoTreeStructure(array $elementNames, callable $createNewElement, callable $assignChildToParent, callable $clearParent)
     {
         // create dictionary for each name to point to the first element with that name
         $prefixElementIdMap = [];
@@ -145,6 +144,8 @@ class DisplayNameService implements DisplayNameServiceInterface
         // find longest matching prefix & set as parent
         foreach ($elementNames as $elementKey => $elementName) {
             $possibleParentPrefix = $elementName;
+
+            $found = false;
             while (mb_strpos($possibleParentPrefix, ' ') !== false) {
                 // cut off last part of name separated by space
                 $possibleParentPrefix = mb_substr($possibleParentPrefix, 0, mb_strrpos($possibleParentPrefix, ' '));
@@ -152,8 +153,13 @@ class DisplayNameService implements DisplayNameServiceInterface
                 // assign to parent if found
                 if (array_key_exists($possibleParentPrefix, $prefixElementIdMap)) {
                     $assignChildToParent($elementKey, $prefixElementIdMap[$possibleParentPrefix]);
+                    $found = true;
                     break;
                 }
+            }
+
+            if (!$found) {
+                $clearParent($elementKey);
             }
         }
     }
@@ -179,12 +185,12 @@ class DisplayNameService implements DisplayNameServiceInterface
                     ++$prefixMap[$currentPrefix];
                 }
 
-                $newCutoff = \mb_strripos($currentPrefix, ' ');
+                $newCutoff = mb_strripos($currentPrefix, ' ');
                 if ($newCutoff === false) {
                     break;
                 }
 
-                $currentPrefix = trim(\mb_substr($currentPrefix, 0, $newCutoff));
+                $currentPrefix = trim(mb_substr($currentPrefix, 0, $newCutoff));
             }
         }
 
@@ -245,40 +251,32 @@ class DisplayNameService implements DisplayNameServiceInterface
     }
 
     /**
-     * @param string[][] $filenameGroupsStatistics
      * @param string[][] $decomposedNames
      */
-    private function removeDateGroups(array &$filenameGroupsStatistics, array &$decomposedNames)
+    private function removeDateGroups(array &$decomposedNames)
     {
-        // remove groups which are always the same
-        $partAnalyticsCount = \count($filenameGroupsStatistics);
+        foreach ($decomposedNames as &$decomposedName) {
+            $lastIndex = \count($decomposedName) - 1;
+            $possibleDateGroup = $decomposedName[$lastIndex];
 
-        // remove groups which are very likely date groups
-        for ($i = 0; $i < $partAnalyticsCount; ++$i) {
-            $probablyDateGroup = true;
+            if (is_numeric($possibleDateGroup)) {
+                if (mb_strlen($possibleDateGroup) === 6) {
+                    $year = '20' . mb_substr($possibleDateGroup, 0, 2);
+                    $month = mb_substr($possibleDateGroup, 2, 2);
+                    $day = mb_substr($possibleDateGroup, 4, 2);
 
-            // ensure all values are of the form 170816
-            foreach ($filenameGroupsStatistics[$i] as $element => $counter) {
-                if (!is_numeric($element)) {
-                    $probablyDateGroup = false;
-                    break;
+                    if (checkdate($month, $day, $year)) {
+                        unset($decomposedName[$lastIndex]);
+                    }
+                } elseif (mb_strlen($possibleDateGroup) === 8) {
+                    $year = mb_substr($possibleDateGroup, 0, 4);
+                    $month = mb_substr($possibleDateGroup, 4, 2);
+                    $day = mb_substr($possibleDateGroup, 6, 2);
+
+                    if (checkdate($month, $day, $year)) {
+                        unset($decomposedName[$lastIndex]);
+                    }
                 }
-
-                // check that year is probable
-                $probableYear = mb_substr($element, 0, 2);
-                $currentYear = mb_substr(date('Y'), 2, 2);
-                if ($probableYear < 10 || $probableYear > $currentYear) {
-                    $probablyDateGroup = false;
-                    break;
-                }
-            }
-
-            // remove if all values matched
-            if ($probablyDateGroup) {
-                $this->removeGroup($i, $filenameGroupsStatistics, $decomposedNames);
-
-                --$partAnalyticsCount;
-                --$i;
             }
         }
     }
@@ -330,6 +328,6 @@ class DisplayNameService implements DisplayNameServiceInterface
     private function trimWhitespace(string $text)
     {
         // remove multiple whitespaces
-        return preg_replace('/\s+/', ' ', $text);
+        return trim(preg_replace('/\s+/', ' ', $text));
     }
 }

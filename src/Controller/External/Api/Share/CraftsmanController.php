@@ -146,6 +146,9 @@ class CraftsmanController extends ApiController
      * @param Request $request
      * @param $identifier
      *
+     * @throws \Exception
+     * @throws \Exception
+     *
      * @return Response
      */
     public function issueRespondAction(Request $request, $identifier)
@@ -174,6 +177,9 @@ class CraftsmanController extends ApiController
      *
      * @param Request $request
      * @param $identifier
+     *
+     * @throws \Exception
+     * @throws \Exception
      *
      * @return Response
      */

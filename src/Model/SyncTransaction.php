@@ -69,7 +69,7 @@ class SyncTransaction
                 $this->removedEntities[$class] = [];
             }
 
-            if (!array_key_exists($identifier, $this->removedEntities[$identifier])) {
+            if (!array_key_exists($identifier, $this->removedEntities[$class])) {
                 $this->removedEntities[$class][$identifier] = $entity;
             }
         }

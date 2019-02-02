@@ -56,6 +56,8 @@ class LoginController extends ExternalApiController
      * @param Request $request
      * @param UserTransformer $userTransformer
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function loginAction(Request $request, UserTransformer $userTransformer)
@@ -76,7 +78,7 @@ class LoginController extends ExternalApiController
         }
 
         //create auth token
-        $authToken = new AuthenticationToken($constructionManager);
+        $authToken = AuthenticationToken::createFor($constructionManager);
         $this->fastSave($authToken);
 
         //construct answer

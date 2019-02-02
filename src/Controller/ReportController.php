@@ -15,8 +15,8 @@ use App\Controller\Base\BaseDoctrineController;
 use App\Controller\Traits\QueryParseTrait;
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
-use App\Report\ReportElements;
 use App\Service\Interfaces\ReportServiceInterface;
+use App\Service\Report\ReportElements;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -35,6 +35,8 @@ class ReportController extends BaseDoctrineController
      *
      * @param Request $request
      * @param ReportServiceInterface $reportService
+     *
+     * @throws \Exception
      *
      * @return Response
      */
@@ -64,7 +66,7 @@ class ReportController extends BaseDoctrineController
 
         //generate report
         return $this->file(
-            $reportService->generateReport($constructionSite, $filter, $this->getUser()->getName(), $reportElements),
+            $reportService->generatePdfReport($constructionSite, $filter, $this->getUser()->getName(), $reportElements),
             'report.pdf',
             ResponseHeaderBag::DISPOSITION_INLINE
         );
