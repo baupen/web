@@ -115,4 +115,20 @@ class TrialServiceTest extends WebTestCase
             $this->assertNotEmpty($constructionSite->getMaps()->toArray());
         }
     }
+
+    /**
+     * checks that the new user was provided some content.
+     *
+     * @throws \Exception
+     */
+    public function testCreateTrialAccount_accountHasPreviewImagesAssigned()
+    {
+        $constructionManager = $this->service->createTrialAccount();
+        $this->assertNotEmpty($constructionManager->getConstructionSites()->toArray());
+
+        foreach ($constructionManager->getConstructionSites() as $constructionSite) {
+            $this->assertNotEmpty($constructionSite->getMaps()->toArray());
+            $this->assertNotEmpty($constructionSite->getImages()->toArray());
+        }
+    }
 }

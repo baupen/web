@@ -132,6 +132,7 @@ class TrialService implements TrialServiceInterface
         mkdir($this->pathService->getConstructionSiteFolderRoot() . \DIRECTORY_SEPARATOR . $constructionSite->getFolderName());
 
         $this->copyMapFiles($constructionSite);
+        $this->copyConstructionSiteFiles($constructionSite);
         $this->syncService->syncConstructionSite($constructionSite);
     }
 
@@ -144,6 +145,18 @@ class TrialService implements TrialServiceInterface
     {
         $sourceFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'Trial' . \DIRECTORY_SEPARATOR . 'Resources' . \DIRECTORY_SEPARATOR . 'maps';
         $targetFolder = $this->pathService->getFolderForMapFile($constructionSite);
+        FileHelper::copyRecursively($sourceFolder, $targetFolder);
+    }
+
+    /**
+     * @param ConstructionSite $constructionSite
+     *
+     * @throws \Exception
+     */
+    private function copyConstructionSiteFiles(ConstructionSite $constructionSite)
+    {
+        $sourceFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'Trial' . \DIRECTORY_SEPARATOR . 'Resources' . \DIRECTORY_SEPARATOR . 'images';
+        $targetFolder = $this->pathService->getFolderForConstructionSiteImage($constructionSite);
         FileHelper::copyRecursively($sourceFolder, $targetFolder);
     }
 
