@@ -43,7 +43,7 @@ before_install:
 
   # print versions just in case
   - php --version
-  - phpunit --version
+  - /usr/local/bin/phpunit --version
   - node --version
 
 # prepare programming environment
@@ -96,7 +96,7 @@ script:
 
   # backend tests
   - ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
-  - phpunit
+  - /usr/local/bin/phpunit
 
 # report code coverage
 after_script:
