@@ -34,7 +34,7 @@ before_install:
   - nvm install 10.4
 
   # install phpunit
-  - sudo curl --location --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit.phar
+  - sudo curl --location --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-7.phar
   - sudo chmod +x /usr/local/bin/phpunit
 
   # install imagick requirements
@@ -43,7 +43,7 @@ before_install:
 
   # print versions just in case
   - php --version
-  - phpunit --version
+  - /usr/local/bin/phpunit --version
   - node --version
 
 # prepare programming environment
@@ -96,7 +96,7 @@ script:
 
   # backend tests
   - ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
-  - phpunit
+  - /usr/local/bin/phpunit
 
 # report code coverage
 after_script:
