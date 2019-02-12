@@ -7,3 +7,6 @@ services:
   # test.App\Service\MyService: '@App\Service\MyService'
   App\Service\Interfaces\EmailServiceInterface:
     public: true
+
+  App\Service\Interfaces\PathServiceInterface:
+    public: true
