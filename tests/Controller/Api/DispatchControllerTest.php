@@ -20,6 +20,21 @@ use App\Tests\Mock\MockEmailService;
 
 class DispatchControllerTest extends ApiController
 {
+    /**
+     * @var MockEmailService
+     */
+    private $mockEmailService;
+
+    public function __construct(?string $name = null, array $data = [], string $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+
+        self::bootKernel();
+
+        $this->mockEmailService = new MockEmailService();
+        self::$container->set(EmailServiceInterface::class, $this->mockEmailService);
+    }
+
     public function testCraftsmanList()
     {
         $url = '/api/dispatch/craftsman/list';
@@ -52,9 +67,6 @@ class DispatchControllerTest extends ApiController
     {
         $url = '/api/dispatch';
 
-        $client = $this->getAuthenticatedClient();
-        $client->getContainer()->set(EmailServiceInterface::class, new MockEmailService());
-
         $constructionSite = $this->getSomeConstructionSite();
         $craftsman = $constructionSite->getCraftsmen()[0];
         $dispatchRequest = new CraftsmenRequest();
@@ -69,8 +81,6 @@ class DispatchControllerTest extends ApiController
         $this->assertObjectHasAttribute('skippedIds', $craftsmanData->data);
         $this->assertObjectHasAttribute('failedIds', $craftsmanData->data);
 
-        /** @var MockEmailService $emailService */
-        $emailService = $client->getContainer()->get(EmailServiceInterface::class);
-        $this->assertTrue(\count($emailService->getReceivers()) > 0);
+        $this->assertTrue(\count($this->mockEmailService->getReceivers()) > 0);
     }
 }

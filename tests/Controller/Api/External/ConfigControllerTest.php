@@ -11,28 +11,49 @@
 
 namespace App\Tests\Controller\Api\External;
 
-use App\Enum\ApiStatus;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Tests\Controller\Api\External\Base\ApiController;
 use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ConfigControllerTest extends ApiController
 {
+    /**
+     * @var string
+     */
+    private $configFilePath;
+
+    /**
+     * ConfigControllerTest constructor.
+     *
+     * @param string|null $name
+     * @param array $data
+     * @param string $dataName
+     */
+    public function __construct(?string $name = null, array $data = [], string $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+
+        self::bootKernel();
+        $pathService = self::$container->get(PathServiceInterface::class);
+
+        $this->configFilePath = $pathService->getTransientFolderRoot() . \DIRECTORY_SEPARATOR . 'domainOverrides.json';
+    }
+
     /**
      * tests the login functionality.
      */
     public function testDomainOverrides_configExists_returnsConfig()
     {
         $client = static::createClient();
-        $this->createConfigFile($client);
+        $this->createConfigFile();
 
         $response = $this->doConfigRequest($client);
-        $trialResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
-        $this->assertNotNull($trialResponse->data);
-        $this->assertNotNull($trialResponse->data->domainOverrides);
+        $trialResponse = json_decode($response->getContent());
+        $this->assertNotNull($trialResponse->domainOverrides);
 
-        $domainOverrides = $trialResponse->data->domainOverrides;
-        $this->assertIsArray($domainOverrides);
+        $domainOverrides = $trialResponse->domainOverrides;
+        $this->assertTrue(\is_array($domainOverrides));
         $this->assertNotEmpty($domainOverrides);
 
         $entry = $domainOverrides[0];
@@ -40,7 +61,7 @@ class ConfigControllerTest extends ApiController
         $this->assertNotNull($entry->serverUrl);
         $this->assertNotNull($entry->userLoginDomain);
 
-        $this->removeConfigFile($client);
+        $this->removeConfigFile();
     }
 
     /**
@@ -49,18 +70,15 @@ class ConfigControllerTest extends ApiController
     public function testDomainOverrides_configDoesNotExist_returnsNotFound()
     {
         $client = static::createClient();
-        $this->removeConfigFile($client);
+        $this->removeConfigFile();
 
-        $response = $this->doConfigRequest($client);
-        $this->assertSame(404, $response->getStatusCode());
+        $this->expectException(NotFoundHttpException::class);
+        $this->doConfigRequest($client);
     }
 
-    /**
-     * @param Client $client
-     */
-    private function createConfigFile(Client $client)
+    private function createConfigFile()
     {
-        file_put_contents($this->getConfigFilePath($client), '{
+        file_put_contents($this->configFilePath, '{
   "domainOverrides": [
     {
       "userInputDomain":"mangel.io",
@@ -76,28 +94,11 @@ class ConfigControllerTest extends ApiController
 }');
     }
 
-    /**
-     * @param Client $client
-     */
-    private function removeConfigFile(Client $client)
+    private function removeConfigFile()
     {
-        $path = $this->getConfigFilePath($client);
-        if (file_exists($path)) {
-            unlink($path);
+        if (file_exists($this->configFilePath)) {
+            unlink($this->configFilePath);
         }
-    }
-
-    /**
-     * @param Client $client
-     *
-     * @return string
-     */
-    private function getConfigFilePath(Client $client)
-    {
-        /** @var PathServiceInterface $pathService */
-        $pathService = $client->getContainer()->get(PathServiceInterface::class);
-
-        return $pathService->getTransientFolderRoot() . \DIRECTORY_SEPARATOR . 'domainOverrides.json';
     }
 
     /**

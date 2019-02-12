@@ -39,9 +39,6 @@ class ConfigController extends ExternalApiController
             throw new NotFoundHttpException($domainOverridesPath);
         }
 
-        $fileContent = file_get_contents($domainOverridesPath);
-        $content = json_decode($fileContent);
-
-        return $this->success($content);
+        return new Response(file_get_contents($domainOverridesPath));
     }
 }
