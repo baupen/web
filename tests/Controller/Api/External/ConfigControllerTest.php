@@ -58,7 +58,7 @@ class ConfigControllerTest extends ApiController
 
         $entry = $domainOverrides[0];
         $this->assertNotNull($entry->userInputDomain);
-        $this->assertNotNull($entry->serverUrl);
+        $this->assertNotNull($entry->serverURL);
         $this->assertNotNull($entry->userLoginDomain);
 
         $this->removeConfigFile();
@@ -82,12 +82,12 @@ class ConfigControllerTest extends ApiController
   "domainOverrides": [
     {
       "userInputDomain":"mangel.io",
-      "serverUrl":"https://app.mangel.io",
+      "serverURL":"https://app.mangel.io",
       "userLoginDomain":"mangel.io"
     },
     {
       "userInputDomain":"dev.mangel.io",
-      "serverUrl":"https://dev.app.mangel.io",
+      "serverURL":"https://dev.app.mangel.io",
       "userLoginDomain":"mangel.io"
     }
   ]
