@@ -48,22 +48,6 @@ class TrialControllerTest extends ApiController
     /**
      * tests the login functionality.
      */
-    public function testTrialUsernameShort()
-    {
-        $client = static::createClient();
-
-        $this->doTrialRequest($client, null, null);
-        $this->doTrialRequest($client, null, null);
-        $this->doTrialRequest($client, null, null);
-        $this->doTrialRequest($client, null, null);
-        $this->doTrialRequest($client, null, null);
-
-        $this->assertTrue(true);
-    }
-
-    /**
-     * tests the login functionality.
-     */
     public function testRecommendationAccepted()
     {
         $givenName = 'Anna';

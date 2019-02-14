@@ -27,7 +27,7 @@ abstract class AbstractApiController extends FixturesTestCase
     protected function checkResponse(Response $response, $apiStatus, $message = '')
     {
         $content = str_replace("\u003E", '>', $response->getContent());
-        $this->assertFalse(mb_strpos($content, "\u00") > 0, mb_strpos($content, "\u00") . $content);
+        $this->assertFalse(mb_strpos($content, "\u00") > 0, 'invalid char at ' . mb_strpos($content, "\u00") . ' in string ' . $content);
         $this->assertTrue(mb_strpos($response->getContent(), '{"version":1') === 0);
         if (ApiStatus::SUCCESS === $apiStatus) {
             $successful = json_decode($response->getContent());
