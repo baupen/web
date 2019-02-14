@@ -164,7 +164,7 @@ class FoyerController extends ApiController
         //sort entities
         $entities = [];
         foreach ($issues as $guid => $issue) {
-            if (array_key_exists($guid, $entityLookup)) {
+            if (\array_key_exists($guid, $entityLookup)) {
                 $entities[$guid] = $entityLookup[$guid];
             }
         }
@@ -250,7 +250,7 @@ class FoyerController extends ApiController
 
         //write properties to issues
         foreach ($issues as $guid => $issue) {
-            if (array_key_exists($guid, $entities)) {
+            if (\array_key_exists($guid, $entities)) {
                 $entity = $entities[$guid];
                 $res = $updateIssueTransformer->fromApi($issue, $entity, function ($craftsman) use ($constructionSite) {
                     /** @var Craftsman $craftsman */

@@ -39,7 +39,7 @@ class FileService implements FileServiceInterface
         foreach ($files as $file) {
             $fileName = mb_substr($file, $folderLength + 1);
 
-            if (!array_key_exists($fileName, $knownFilesLookup)) {
+            if (!\array_key_exists($fileName, $knownFilesLookup)) {
                 /** @var FileTrait $fileTrait */
                 $fileTrait = $createNewFile($file);
                 $fileTrait->setFilename($fileName);

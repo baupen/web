@@ -112,7 +112,7 @@ class MapSectorService implements MapSectorServiceInterface
 
         // remove replaced / not found ones
         foreach ($existingSectorsLookup as $key => $sector) {
-            if (!array_key_exists($key, $newSectorsLookup) || !$sector->equals($newSectorsLookup[$key])) {
+            if (!\array_key_exists($key, $newSectorsLookup) || !$sector->equals($newSectorsLookup[$key])) {
                 $mapFile->getSectors()->removeElement($sector);
                 $syncTransaction->remove($sector);
             } else {
