@@ -32,9 +32,9 @@ class TrialControllerTest extends ApiController
         $this->assertNotNull($trialResponse->data->trialUser->password);
 
         $username = $trialResponse->data->trialUser->username;
-        $this->assertTrue(mb_strlen($username) > 8);
+        $this->assertTrue(mb_strlen($username) >= 20 && mb_strlen($username) < 25);
         // ensure username is of the form some_prefix@test.personalurl.ch
-        $this->assertTrue(preg_match('/([a-z_]){5,}@test\..+/', $username) === 1, $username);
+        $this->assertStringEndsWith('@test.mangel.io', $username);
 
         $password = $trialResponse->data->trialUser->password;
         $this->assertTrue(mb_strlen($password) > 8);
@@ -43,6 +43,22 @@ class TrialControllerTest extends ApiController
         $loginResponse = $this->checkResponse($response, ApiStatus::SUCCESS);
         $this->assertNotNull($loginResponse->data->user->givenName);
         $this->assertNotNull($loginResponse->data->user->familyName);
+    }
+
+    /**
+     * tests the login functionality.
+     */
+    public function testTrialUsernameShort()
+    {
+        $client = static::createClient();
+
+        $this->doTrialRequest($client, null, null);
+        $this->doTrialRequest($client, null, null);
+        $this->doTrialRequest($client, null, null);
+        $this->doTrialRequest($client, null, null);
+        $this->doTrialRequest($client, null, null);
+
+        $this->assertTrue(true);
     }
 
     /**
