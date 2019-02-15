@@ -100,7 +100,7 @@ abstract class AbstractApiController extends BaseDoctrineController
     protected function json($data, int $status = 200, array $headers = [], array $context = []): JsonResponse
     {
         $json = $this->getSerializer()->serialize($data, 'json', array_merge([
-            'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS | JSON_UNESCAPED_UNICODE,
+            'json_encode_options' => JSON_UNESCAPED_UNICODE,
         ], $context));
 
         return new JsonResponse($json, $status, $headers, true);

@@ -62,7 +62,7 @@ class EnrichConstructionSiteData extends BaseFixture
 
         foreach ($rawConstructionSites as $rawConstructionSite) {
             $key = $rawConstructionSite->getFolderName();
-            if (array_key_exists($key, $constructionSiteLookup)) {
+            if (\array_key_exists($key, $constructionSiteLookup)) {
                 $constructionSite = $constructionSiteLookup[$key];
 
                 // only add managers to already existing construction sites because only those are filled with data

@@ -39,7 +39,7 @@ class SyncTransaction
         $class = \get_class($entity);
         $identifier = $entity->getId();
         if ($identifier === null) {
-            if (!array_key_exists($class, $this->newEntities)) {
+            if (!\array_key_exists($class, $this->newEntities)) {
                 $this->newEntities[$class] = [];
             }
 
@@ -47,11 +47,11 @@ class SyncTransaction
                 $this->newEntities[$class][] = $entity;
             }
         } else {
-            if (!array_key_exists($class, $this->editedEntities)) {
+            if (!\array_key_exists($class, $this->editedEntities)) {
                 $this->editedEntities[$class] = [];
             }
 
-            if (!array_key_exists($identifier, $this->editedEntities[$class])) {
+            if (!\array_key_exists($identifier, $this->editedEntities[$class])) {
                 $this->editedEntities[$class][$identifier] = $entity;
             }
         }
@@ -65,11 +65,11 @@ class SyncTransaction
         $class = \get_class($entity);
         $identifier = $entity->getId();
         if ($identifier !== null) {
-            if (!array_key_exists($class, $this->removedEntities)) {
+            if (!\array_key_exists($class, $this->removedEntities)) {
                 $this->removedEntities[$class] = [];
             }
 
-            if (!array_key_exists($identifier, $this->removedEntities[$class])) {
+            if (!\array_key_exists($identifier, $this->removedEntities[$class])) {
                 $this->removedEntities[$class][$identifier] = $entity;
             }
         }

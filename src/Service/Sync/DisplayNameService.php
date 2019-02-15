@@ -122,7 +122,7 @@ class DisplayNameService implements DisplayNameServiceInterface
         // create dictionary for each name to point to the first element with that name
         $prefixElementIdMap = [];
         foreach ($elementNames as $id => $name) {
-            if (!array_key_exists($name, $prefixElementIdMap)) {
+            if (!\array_key_exists($name, $prefixElementIdMap)) {
                 $prefixElementIdMap[$name] = $id;
             }
         }
@@ -133,7 +133,7 @@ class DisplayNameService implements DisplayNameServiceInterface
         // ensure an element exists for all common prefixes
         foreach ($prefixCountMap as $prefix => $count) {
             if ($count > 1) {
-                if (!array_key_exists($prefix, $prefixElementIdMap)) {
+                if (!\array_key_exists($prefix, $prefixElementIdMap)) {
                     $newElementId = $createNewElement($prefix);
                     $elementNames[$newElementId] = $prefix;
                     $prefixElementIdMap[$prefix] = $newElementId;
@@ -151,7 +151,7 @@ class DisplayNameService implements DisplayNameServiceInterface
                 $possibleParentPrefix = mb_substr($possibleParentPrefix, 0, mb_strrpos($possibleParentPrefix, ' '));
 
                 // assign to parent if found
-                if (array_key_exists($possibleParentPrefix, $prefixElementIdMap)) {
+                if (\array_key_exists($possibleParentPrefix, $prefixElementIdMap)) {
                     $assignChildToParent($elementKey, $prefixElementIdMap[$possibleParentPrefix]);
                     $found = true;
                     break;
@@ -179,7 +179,7 @@ class DisplayNameService implements DisplayNameServiceInterface
             $currentPrefix = $name;
 
             while (true) {
-                if (!array_key_exists($currentPrefix, $prefixMap)) {
+                if (!\array_key_exists($currentPrefix, $prefixMap)) {
                     $prefixMap[$currentPrefix] = 1;
                 } else {
                     ++$prefixMap[$currentPrefix];
@@ -215,12 +215,12 @@ class DisplayNameService implements DisplayNameServiceInterface
             $decomposedNames[] = $parts;
             $partCount = \count($parts);
             for ($i = 0; $i < $partCount; ++$i) {
-                if (!array_key_exists($i, $filenameGroupCount)) {
+                if (!\array_key_exists($i, $filenameGroupCount)) {
                     $filenameGroupCount[$i] = [];
                 }
 
                 $currentPart = $parts[$i];
-                if (!array_key_exists($currentPart, $filenameGroupCount[$i])) {
+                if (!\array_key_exists($currentPart, $filenameGroupCount[$i])) {
                     $filenameGroupCount[$i][$currentPart] = 1;
                 } else {
                     ++$filenameGroupCount[$i][$currentPart];

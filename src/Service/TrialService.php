@@ -25,11 +25,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class TrialService implements TrialServiceInterface
 {
     /**
-     * @var string
-     */
-    private $baseUrl;
-
-    /**
      * @var \Faker\Generator
      */
     private $faker;
@@ -70,7 +65,6 @@ class TrialService implements TrialServiceInterface
         $this->syncService = $syncService;
 
         $request = $requestStack->getCurrentRequest();
-        $this->baseUrl = $request->getHost();
         $this->faker = Factory::create($request->getLocale());
         $this->registry = $registry;
     }
@@ -176,8 +170,22 @@ class TrialService implements TrialServiceInterface
         $constructionManager->setGivenName($proposedGivenName !== null ? $proposedGivenName : $this->faker->firstNameMale);
         $constructionManager->setFamilyName($proposedFamilyName !== null ? $proposedFamilyName : $this->faker->lastName);
 
+        // generate unused email
+        $maxTries = 10;
+        $repository = $this->registry->getRepository(ConstructionManager::class);
+        while (true) {
+            $email = $this->generateRandomString(5, '_') . '@test.mangel.io';
+
+            if ($repository->findOneBy(['email' => $email]) === null) {
+                break;
+            }
+
+            if ($maxTries-- < 0) {
+                throw new \Exception('unable to create new random email');
+            }
+        }
+
         // generate login info
-        $email = $this->generateRandomString(10, '_') . '@test.' . $this->baseUrl;
         $password = $this->generateRandomString(10, '-');
         $constructionManager->setEmail($email);
         $constructionManager->setPlainPassword($password);

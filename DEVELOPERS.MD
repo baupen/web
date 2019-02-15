@@ -11,7 +11,7 @@ You can find the auth token on the [fontawesome account page](https://fontawesom
 
 You need to add this auth token to all CI services too.  
 [**scrutinizer**](https://scrutinizer-ci.com/g/mangelio/app/settings/build-config)
-```
+```yaml
 build:
     dependencies:
         before:
@@ -51,11 +51,28 @@ test error templates inside TwigBundle/views by accessing `/_error/404` and `/_e
 ##### deploy
 server must fulfil requirements of `composer.json` & include ghostscript (`gs`)  
 if you deploy the fist time, while `deploy:composer` is running, set the `.env.local` file in `/shared`, for example like this
-```
+```dotenv
 APP_ENV=prod
 APP_SECRET=NEW_SECRET
 MAILER_URL=smtp://info@example.com:NOT_REAL@smtp.mail.com:465/?encryption=ssl&auth_mode=login
 DATABASE_URL=sqlite:///%kernel.project_dir%/var/persistent/prod/data.sqlite  
+```
+if you deploy to the main installation, create `var/transient/domainOverrides.json` with a content similar than this
+```json
+{
+   "domainOverrides":[
+      {
+         "userInputDomain":"mangel.io",
+         "serverURL":"https://app.mangel.io",
+         "userLoginDomain":"mangel.io"
+      },
+      {
+         "userInputDomain":"dev.mangel.io",
+         "serverURL":"https://dev.app.mangel.io",
+         "userLoginDomain":"mangel.io"
+      }
+   ]
+}
 ```
  
 ##### ssh
