@@ -101,7 +101,7 @@ class MapService implements MapServiceInterface
         $displayNameToMapLookup = [];
         foreach ($maps as $map) {
             $key = $map->getName();
-            if (!array_key_exists($key, $displayNameToMapLookup)) {
+            if (!\array_key_exists($key, $displayNameToMapLookup)) {
                 $displayNameToMapLookup[$key] = $map;
             }
         }
@@ -112,7 +112,7 @@ class MapService implements MapServiceInterface
             }
 
             $key = $mapFile->getDisplayFilename();
-            if (array_key_exists($key, $displayNameToMapLookup)) {
+            if (\array_key_exists($key, $displayNameToMapLookup)) {
                 $targetMap = $displayNameToMapLookup[$key];
 
                 $mapFile->setMap($targetMap);

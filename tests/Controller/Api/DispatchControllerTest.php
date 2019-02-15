@@ -14,9 +14,7 @@ namespace App\Tests\Controller\Api;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\CraftsmenRequest;
 use App\Enum\ApiStatus;
-use App\Service\Interfaces\EmailServiceInterface;
 use App\Tests\Controller\Api\Base\ApiController;
-use App\Tests\Mock\MockEmailService;
 
 class DispatchControllerTest extends ApiController
 {
@@ -52,9 +50,6 @@ class DispatchControllerTest extends ApiController
     {
         $url = '/api/dispatch';
 
-        $client = $this->getAuthenticatedClient();
-        $client->getContainer()->set(EmailServiceInterface::class, new MockEmailService());
-
         $constructionSite = $this->getSomeConstructionSite();
         $craftsman = $constructionSite->getCraftsmen()[0];
         $dispatchRequest = new CraftsmenRequest();
@@ -68,9 +63,5 @@ class DispatchControllerTest extends ApiController
         $this->assertObjectHasAttribute('successfulIds', $craftsmanData->data);
         $this->assertObjectHasAttribute('skippedIds', $craftsmanData->data);
         $this->assertObjectHasAttribute('failedIds', $craftsmanData->data);
-
-        /** @var MockEmailService $emailService */
-        $emailService = $client->getContainer()->get(EmailServiceInterface::class);
-        $this->assertTrue(\count($emailService->getReceivers()) > 0);
     }
 }
