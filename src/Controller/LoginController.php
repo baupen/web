@@ -15,10 +15,12 @@ use App\Controller\Base\BaseLoginController;
 use App\Entity\ConstructionManager;
 use App\Entity\Email;
 use App\Enum\EmailType;
+use App\Form\ConstructionManager\CreateType;
 use App\Form\ConstructionManager\LoginType;
 use App\Form\ConstructionManager\RecoverType;
 use App\Form\ConstructionManager\SetPasswordType;
 use App\Service\Interfaces\EmailServiceInterface;
+use App\Service\UserCreationService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
@@ -66,8 +68,20 @@ class LoginController extends BaseLoginController
      *
      * @return Response
      */
-    public function createAction()
+    public function createAction(Request $request, UserCreationService $userCreationService)
     {
+        $constructionManager = new ConstructionManager();
+        $constructionManager->setEmail($request->query->get('email'));
+
+        $form = $this->createForm(CreateType::class, $constructionManager);
+        $form->add('login.submit', SubmitType::class, ['translation_domain' => 'login']);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!$userCreationService->tryCreateUser($constructionManager->getEmail())) {
+                // display error
+            }
+        }
+
         return $this->render('login/create.html.twig');
     }
 
@@ -169,7 +183,7 @@ class LoginController extends BaseLoginController
 
                     //set new password & save
                     $user->setPassword();
-                    $user->setResetHash();
+                    $user->setAuthenticationHash();
                     $this->fastSave($user);
 
                     //login user & redirect

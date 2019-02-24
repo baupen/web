@@ -45,7 +45,7 @@ trait UserTrait
      *
      * @ORM\Column(type="text")
      */
-    private $resetHash;
+    private $authenticationHash;
 
     /**
      * @var bool
@@ -55,11 +55,11 @@ trait UserTrait
     private $isEnabled = false;
 
     /**
-     * @var int
+     * @var bool
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="boolean")
      */
-    private $authenticationStatus = 0;
+    private $isRegistrationCompleted = false;
 
     /**
      * @var string
@@ -132,25 +132,25 @@ trait UserTrait
     /**
      * @return string
      */
-    public function getResetHash()
+    public function getAuthenticationHash()
     {
-        return $this->resetHash;
+        return $this->authenticationHash;
     }
 
     /**
-     * @return bool
+     * @return string
      */
-    public function isAgbAccepted()
+    public function getAuthenticationSource(): string
     {
-        return $this->agbAccepted;
+        return $this->authenticationSource;
     }
 
     /**
-     * @param bool $agbAccepted
+     * @param string $authenticationSource
      */
-    public function setAgbAccepted($agbAccepted)
+    public function setAuthenticationSource(string $authenticationSource): void
     {
-        $this->agbAccepted = $agbAccepted;
+        $this->authenticationSource = $authenticationSource;
     }
 
     /**
@@ -369,8 +369,16 @@ trait UserTrait
     /**
      * creates a new reset hash.
      */
-    public function setResetHash()
+    public function setAuthenticationHash()
     {
-        $this->resetHash = HashHelper::getHash();
+        $this->authenticationHash = HashHelper::getHash();
+    }
+
+    /**
+     * creates a new reset hash.
+     */
+    public function setRegistrationCompleted()
+    {
+        $this->isRegistrationCompleted = true;
     }
 }

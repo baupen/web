@@ -11,14 +11,6 @@ security:
   providers:
     database_provider:
       id: App\Security\DatabaseProvider
-    ldap_provider:
-      ldap:
-        service: Symfony\Component\Ldap\Ldap
-        base_dn: dc=example,dc=com
-        search_dn: "cn=read-only-admin,dc=example,dc=com"
-        search_password: password
-        default_roles: ROLE_USER
-        uid_key: uid
 
   firewalls:
     # disables authentication for assets and the profiler

@@ -43,7 +43,7 @@ class LoadConstructionManagerData extends BaseFixture
             $appUser->setGivenName($entry[2]);
             $appUser->setFamilyName($entry[3]);
             $appUser->setPassword();
-            $appUser->setResetHash();
+            $appUser->setAuthenticationHash();
             $appUser->setRegistrationDate();
             $manager->persist($appUser);
         }

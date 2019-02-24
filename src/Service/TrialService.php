@@ -190,7 +190,7 @@ class TrialService implements TrialServiceInterface
         $constructionManager->setEmail($email);
         $constructionManager->setPlainPassword($password);
         $constructionManager->setPassword(true);
-        $constructionManager->setResetHash();
+        $constructionManager->setAuthenticationHash();
         $constructionManager->setRegistrationDate();
 
         return $constructionManager;
