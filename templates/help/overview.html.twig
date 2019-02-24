@@ -1,0 +1,21 @@
+{% extends "center_content.html.twig" %}
+
+{% block title %}{{ "overview.title"|trans }}{% endblock %}
+{% block description %}{{ "overview.description"|trans }}{% endblock %}
+
+{% trans_default_domain "help" %}
+
+{% block primary_content %}
+    <h2>Erfassen</h2>
+    <p>Lokalisieren Sie Pendenzen mit unserer iPhone App.</p>
+    <h2>Einpflegen</h2>
+    <p>Bereinigen Sie neu erfasste Pendenzen im Warteraum.</p>
+    <h2>Verwalten</h2>
+    <p>Durchsuchen, ändern und exportieren Sie eingepflegte Pendenzen im Verzeichnis.</p>
+    <h2>Benachrichtigen</h2>
+    <p>Informieren Sie Handwerker über neue Pendenzen.</p>
+    <h2>Warten</h2>
+    <p>Warten Sie auf eine Rückmeldung des Handwerkers.</p>
+    <h2>Abschliessen</h2>
+    <p>Markieren Sie die erledigten Pendenzen als abgeschlossen in der iPhone App.</p>
+{% endblock %}

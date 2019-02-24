@@ -1,0 +1,18 @@
+{% extends "center_form_content.html.twig" %}
+
+{% block title %}{{ "create.title"|trans }}{% endblock %}
+{% block description %}{{ "create.description"|trans }}{% endblock %}
+
+{% trans_default_domain "login" %}
+
+{% block form_content %}
+    <div class="form-wrapper">
+        {{ form(form}) }}
+    </div>
+{% endblock %}
+
+{% block secondary_content %}
+    <p class="small text-secondary">
+        <a href="{{ path("login") }}">{{ "create.back_to_login"|trans }}</a>
+    </p>
+{% endblock %}

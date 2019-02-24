@@ -392,6 +392,9 @@
     "symfony/intl": {
         "version": "v3.4.2"
     },
+    "symfony/ldap": {
+        "version": "v4.2.3"
+    },
     "symfony/monolog-bridge": {
         "version": "v3.4.2"
     },

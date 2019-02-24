@@ -41,3 +41,13 @@ services:
   App\EventListener\ExceptionListener:
     tags:
       - { name: kernel.event_listener, event: kernel.exception }
+
+  Symfony\Component\Ldap\Ldap:
+    arguments: ['@Symfony\Component\Ldap\Adapter\ExtLdap\Adapter']
+  Symfony\Component\Ldap\Adapter\ExtLdap\Adapter:
+    arguments:
+      - host: ldap.forumsys.com
+        port: 389
+        options:
+          protocol_version: 3
+          referrals: false

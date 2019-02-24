@@ -13,6 +13,9 @@
         {{ form_rest(form) }}
         {{ form_end(form) }}
     </div>
+    <p>
+        oder <a href="{{ path("login_create") }}">{{ "create.title"|trans }}</a>
+    </p>
 {% endblock %}
 
 {% block secondary_content %}

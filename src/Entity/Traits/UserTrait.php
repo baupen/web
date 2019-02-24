@@ -52,7 +52,21 @@ trait UserTrait
      *
      * @ORM\Column(type="boolean")
      */
-    private $isEnabled = true;
+    private $isEnabled = false;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="integer")
+     */
+    private $authenticationStatus = 0;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text")
+     */
+    private $authenticationSource;
 
     /**
      * @var \DateTime
@@ -60,13 +74,6 @@ trait UserTrait
      * @ORM\Column(type="datetime")
      */
     private $registrationDate;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean", options={"default": false})
-     */
-    private $agbAccepted = false;
 
     /**
      * @var string

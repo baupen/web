@@ -62,6 +62,16 @@ class LoginController extends BaseLoginController
     }
 
     /**
+     * @Route("/create", name="login_create")
+     *
+     * @return Response
+     */
+    public function createAction()
+    {
+        return $this->render('login/create.html.twig');
+    }
+
+    /**
      * @Route("/recover", name="login_recover")
      *
      * @param Request $request

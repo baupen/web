@@ -1,6 +1,6 @@
 login:
   title: 'Bitte einloggen.'
-  description: 'Benutzen Sie die E-Mail, für die Sie eingeladen wurden.'
+  description: 'Benutzen Sie Ihre Geschäftsmail.'
   submit: 'Einloggen'
   forgot_passwort: 'Haben Sie das Passwort vergessen?'
   errors:
@@ -35,6 +35,13 @@ reset:
   error:
     passwords_do_not_match: 'Die Passwörter stimmen nicht überein.'
     invalid_hash: "Dieser Link ist nicht mehr gültig. Beachten Sie, das jeder Link nur einmal benutzt werden kann."
+
+create:
+  title: 'Account erstellen.'
+  description: 'Lassen Sie uns Ihnen bei der Pendenzenverwaltung helfen.'
+  back_to_login: 'Zurück zum Login.'
+  value_proposition:
+
 
 logout:
   title: 'Logout'

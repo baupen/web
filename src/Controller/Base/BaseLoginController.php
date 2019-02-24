@@ -48,7 +48,7 @@ class BaseLoginController extends BaseFormController
         $session = $request->getSession();
 
         $authErrorKey = Security::AUTHENTICATION_ERROR;
-        // get the error if any (works with forward and redirect -- see below)
+        // get the error if any
         if ($request->attributes->has($authErrorKey)) {
             $error = $request->attributes->get($authErrorKey);
         } elseif ($session !== null && $session->has($authErrorKey)) {
