@@ -11,6 +11,7 @@
 
 namespace App\Service;
 
+use App\DataFixtures\Production\LoadConstructionManagerData;
 use App\Entity\ConstructionManager;
 use App\Service\Interfaces\UserCreationServiceInterface;
 use App\Service\Ldap\LdapLogger;
@@ -147,7 +148,7 @@ class UserCreationService implements UserCreationServiceInterface
 
         $attributeValue = $this->getAttributeStringValue($entry, 'name');
         if (!empty($attributeValue)) {
-            return trim(mb_substr($attributeValue, \mb_strlen($givenName)));
+            return trim(mb_substr($attributeValue, mb_strlen($givenName)));
         }
 
         return '';
@@ -172,7 +173,11 @@ class UserCreationService implements UserCreationServiceInterface
      */
     public function tryAuthenticateConstructionManager(ConstructionManager $constructionManager)
     {
-        if (!empty($this->ldapUrl)) {
+        if ($constructionManager->getAuthenticationSource() === null) {
+            $constructionManager->setAuthenticationSource(empty($this->ldapUrl) ? self::AUTHENTICATION_SOURCE_NONE : self::AUTHENTICATION_SOURCE_LDAP);
+        }
+
+        if ($constructionManager->getAuthenticationSource() === self::AUTHENTICATION_SOURCE_LDAP) {
             $ldapUser = $this->getLdapUser($this->ldapUrl, $constructionManager->getEmail());
             if ($ldapUser === null) {
                 return false;
@@ -184,10 +189,11 @@ class UserCreationService implements UserCreationServiceInterface
             $constructionManager->setPhone($this->parsePhone($ldapUser));
 
             return true;
+        } elseif ($constructionManager->getAuthenticationSource() === self::AUTHENTICATION_SOURCE_NONE || $constructionManager->getAuthenticationSource() === LoadConstructionManagerData::AUTHENTICATION_SOURCE_FIXTURES) {
+            return true;
+        } else {
+            // deny by default
+            return false;
         }
-
-        $constructionManager->setAuthenticationSource(self::AUTHENTICATION_SOURCE_NONE);
-
-        return true;
     }
 }

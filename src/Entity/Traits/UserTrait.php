@@ -140,7 +140,7 @@ trait UserTrait
     /**
      * @return string
      */
-    public function getAuthenticationSource(): string
+    public function getAuthenticationSource(): ?string
     {
         return $this->authenticationSource;
     }
