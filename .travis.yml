@@ -92,7 +92,7 @@ script:
   - composer validate --strict
 
   # backend vulnerability check
-  - ./bin/console security:check --end-point=http://security.sensiolabs.org/check_lock
+  - ./bin/console security:check
 
   # backend tests
   - ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
