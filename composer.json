@@ -19,7 +19,7 @@
     "php-coveralls/php-coveralls": "^2.0",
     "ramsey/uuid": "^3",
     "sensio/framework-extra-bundle": "^5.1",
-    "sensiolabs/security-checker": "^4.0",
+    "sensiolabs/security-checker": "^5.0",
     "spatie/pdf-to-image": "^1.7",
     "symfony/apache-pack": "^1.0",
     "symfony/console": "^4.0",
@@ -88,7 +88,7 @@
     ],
     "auto-scripts": {
       "requirements-checker": "script",
-      "security:check --end-point=http://security.sensiolabs.org/check_lock": "symfony-cmd",
+      "security:check": "symfony-cmd",
       "doctrine:migrations:migrate -q": "symfony-cmd",
       "doctrine:fixtures:load -q": "symfony-cmd"
     },
