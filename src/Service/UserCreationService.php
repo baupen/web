@@ -11,77 +11,183 @@
 
 namespace App\Service;
 
+use App\Entity\ConstructionManager;
+use App\Service\Interfaces\UserCreationServiceInterface;
+use App\Service\Ldap\LdapLogger;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Ldap\Adapter\ExtLdap\Adapter;
+use Symfony\Component\Ldap\Entry;
 use Symfony\Component\Ldap\Ldap;
-use Symfony\Component\Ldap\LdapInterface;
 
-class UserCreationService
+class UserCreationService implements UserCreationServiceInterface
 {
+    const AUTHENTICATION_SOURCE_LDAP = 'ldap';
+    const AUTHENTICATION_SOURCE_NONE = 'none';
+
     /**
-     * @var Ldap
+     * @var string
      */
-    private $ldap;
+    private $ldapUrl;
 
-    public function __construct()
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * UserCreationService constructor.
+     *
+     * @param ParameterBagInterface $parameterBag
+     * @param LoggerInterface $logger
+     */
+    public function __construct(ParameterBagInterface $parameterBag, LoggerInterface $logger)
     {
-        $ldap = new Ldap(new Adapter());
-
-        /*
-         *
-  Symfony\Component\Ldap\Adapter\ExtLdap\Adapter:
-    arguments:
-      - host: ldap.forumsys.com
-        port: 389
-        options:
-          protocol_version: 3
-          referrals: false
-
-
-
-    ldap_provider:
-      ldap:
-        service: Symfony\Component\Ldap\Ldap
-        base_dn: dc=example,dc=com
-        search_dn: "cn=read-only-admin,dc=example,dc=com"
-        search_password: password
-        default_roles: ROLE_USER
-        uid_key: uid
-
-        ldapsearch -w password -h ldap.forumsys.com -D "uid=tesla,dc=example,dc=com" -b "dc=example,dc=com"
-                     */
+        $this->ldapUrl = $parameterBag->get('LDAP_URL');
+        $this->logger = $logger;
     }
 
-    public function tryCreateUser(string $email)
+    /**
+     * queries LDAP and returns true if connection successful and user exists.
+     *
+     * @param string $ldapUrl
+     * @param string $email
+     *
+     * @return Entry
+     */
+    private function getLdapUser(string $ldapUrl, string $email)
     {
-        try {
-            $this->ldap->bind($this->searchDn, $this->searchPassword);
-            $username = $this->ldap->escape($email, '', LdapInterface::ESCAPE_FILTER);
-            $query = str_replace('{username}', $username, $this->defaultSearch);
-            $search = $this->ldap->query($this->baseDn, $query);
-        } catch (ConnectionException $e) {
-            throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username), 0, $e);
+        if (!startsWith('ldap://')) {
+            $this->logger->log(LogLevel::ERROR, 'invalid connection string: must start with ldap://');
+
+            return null;
         }
 
+        $arguments = explode('/', mb_substr($ldapUrl, 7));
+        if (\count($arguments) < 3) {
+            $this->logger->log(LogLevel::ERROR, 'invalid connection string: too few arguments');
+
+            return null;
+        }
+
+        $argumentIndex = 0;
+
+        // resolve LDAP connection
+        $adapter = new Adapter(['connection_string' => 'ldap://' . $arguments[$argumentIndex++]]);
+        $ldap = new LdapLogger(new Ldap($adapter), $this->logger);
+
+        // bind to searchdn if necessary
+        if (\count($arguments) === 4) {
+            [$searchDn, $searchPassword] = explode(':', $arguments[$argumentIndex++]);
+            $ldap->bind($searchDn, $searchPassword);
+        }
+
+        // create query
+        $query = $arguments[$argumentIndex++];
+        if (mb_strpos($query, 'username') !== false) {
+            $query = str_replace($query, 'username', mb_substr($email, 0, mb_strpos($email, '@')));
+        } elseif (mb_strpos($query, 'email')) {
+            $query = str_replace($query, 'email', $email);
+        }
+
+        // prepare query
+        $baseDn = $arguments[$argumentIndex];
+        $search = $ldap->query($baseDn, $query);
+
+        // execute & ensure result returned
+        /** @var Entry[] $entries */
         $entries = $search->execute();
-        $count = \count($entries);
+        $this->logger->log(LogLevel::INFO, 'query has ' . \count($entries) . ' results');
 
-        if (!$count) {
-            throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username));
-        }
+        return \count($entries) > 0 ? $entries[0] : null;
+    }
 
-        if ($count > 1) {
-            throw new UsernameNotFoundException('More than one user found');
-        }
-
-        $entry = $entries[0];
-
-        try {
-            if (null !== $this->uidKey) {
-                $username = $this->getAttributeValue($entry, $this->uidKey);
+    /**
+     * @param Entry $entry
+     * @param string $key
+     *
+     * @return array|mixed|string|null
+     */
+    private function getAttributeStringValue(Entry $entry, string $key)
+    {
+        $attributeValue = $entry->getAttribute($key);
+        if ($attributeValue !== null) {
+            if (\is_array($attributeValue) && \count($attributeValue) > 0) {
+                return trim((string)$attributeValue[0]);
+            } elseif (\is_string($attributeValue)) {
+                return trim($attributeValue);
             }
-        } catch (InvalidArgumentException $e) {
         }
 
-        return false;
+        return '';
+    }
+
+    /**
+     * @param Entry $entry
+     *
+     * @return string|null
+     */
+    private function parseGivenName(Entry $entry)
+    {
+        return $this->getAttributeStringValue($entry, 'givenName');
+    }
+
+    /**
+     * @param Entry $entry
+     *
+     * @return string|null
+     */
+    private function parseFamilyName(Entry $entry, string $givenName)
+    {
+        $attributeValue = $this->getAttributeStringValue($entry, 'familyName');
+        if (!empty($attributeValue)) {
+            return $attributeValue;
+        }
+
+        $attributeValue = $this->getAttributeStringValue($entry, 'name');
+        if (!empty($attributeValue)) {
+            return trim(mb_substr($attributeValue, \mb_strlen($givenName)));
+        }
+
+        return '';
+    }
+
+    /**
+     * @param Entry $entry
+     *
+     * @return string|null
+     */
+    private function parsePhone(Entry $entry)
+    {
+        return $this->getAttributeStringValue($entry, 'phone');
+    }
+
+    /**
+     * @param ConstructionManager $constructionManager
+     *
+     * @throws \Exception
+     *
+     * @return bool
+     */
+    public function tryAuthenticateConstructionManager(ConstructionManager $constructionManager)
+    {
+        if (!empty($this->ldapUrl)) {
+            $ldapUser = $this->getLdapUser($this->ldapUrl, $constructionManager->getEmail());
+            if ($ldapUser === null) {
+                return false;
+            }
+
+            $constructionManager->setAuthenticationSource(self::AUTHENTICATION_SOURCE_LDAP);
+            $constructionManager->setGivenName($this->parseGivenName($ldapUser));
+            $constructionManager->setFamilyName($this->parseFamilyName($ldapUser, $constructionManager->getGivenName()));
+            $constructionManager->setPhone($this->parsePhone($ldapUser));
+
+            return true;
+        }
+
+        $constructionManager->setAuthenticationSource(self::AUTHENTICATION_SOURCE_NONE);
+
+        return true;
     }
 }

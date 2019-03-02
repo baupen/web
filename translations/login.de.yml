@@ -40,7 +40,11 @@ create:
   title: 'Account erstellen.'
   description: 'Lassen Sie uns Ihnen bei der Pendenzenverwaltung helfen.'
   back_to_login: 'Zurück zum Login.'
-  value_proposition:
+  error:
+    email_invalid: 'Mit dieser E-Mail dürfen Sie sich leider nicht registrieren. Benutzen Sie Ihre Geschäftsemail.'
+    already_registered: 'Sie sind bereits registriert. Loggen Sie sich wie gewohnt ein.'
+  success:
+    welcome: 'Sie wurden erfolgreich registriert! Prüfen Sie Ihre E-Mails um den Account zu aktivieren.'
 
 
 logout:

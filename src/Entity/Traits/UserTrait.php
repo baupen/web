@@ -375,10 +375,18 @@ trait UserTrait
     }
 
     /**
-     * creates a new reset hash.
+     * indicates that the user registered successfully.
      */
     public function setRegistrationCompleted()
     {
         $this->isRegistrationCompleted = true;
+    }
+
+    /**
+     * checks if the user has completed the registration.
+     */
+    public function isRegistrationCompleted()
+    {
+        return $this->isRegistrationCompleted;
     }
 }

@@ -66,9 +66,16 @@ class LoginController extends BaseLoginController
     /**
      * @Route("/create", name="login_create")
      *
+     * @param Request $request
+     * @param UserCreationService $userCreationService
+     * @param TranslatorInterface $translator
+     * @param EmailServiceInterface $emailService
+     *
+     * @throws \Exception
+     *
      * @return Response
      */
-    public function createAction(Request $request, UserCreationService $userCreationService)
+    public function createAction(Request $request, UserCreationService $userCreationService, TranslatorInterface $translator, EmailServiceInterface $emailService)
     {
         $constructionManager = new ConstructionManager();
         $constructionManager->setEmail($request->query->get('email'));
@@ -77,10 +84,65 @@ class LoginController extends BaseLoginController
         $form->add('login.submit', SubmitType::class, ['translation_domain' => 'login']);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (!$userCreationService->tryCreateUser($constructionManager->getEmail())) {
-                // display error
+            if (!$userCreationService->tryAuthenticateConstructionManager($constructionManager)) {
+                $this->displayError($translator->trans('create.error.email_invalid', [], 'login'));
+            } else {
+                $this->register($constructionManager, $translator, $emailService);
             }
         }
+
+        return $this->render('login/create.html.twig');
+    }
+
+    /**
+     * @param ConstructionManager $constructionManager
+     * @param TranslatorInterface $translator
+     * @param EmailServiceInterface $emailService
+     *
+     * @throws \Exception
+     */
+    private function register(ConstructionManager $constructionManager, TranslatorInterface $translator, EmailServiceInterface $emailService)
+    {
+        /** @var ConstructionManager $existing */
+        $existing = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
+        if ($existing !== null && $existing->isRegistrationCompleted()) {
+            $this->displaySuccess($translator->trans('create.error.already_registered', [], 'login'));
+
+            return;
+        }
+
+        // prepare account for usage
+        $constructionManager->setRegistrationDate();
+        $constructionManager->setPlainPassword(uniqid('_initial_pw_'));
+        $constructionManager->setAuthenticationHash();
+        $this->fastSave($constructionManager);
+
+        // construct email
+        $email = new Email();
+        $email->setActionText($translator);
+
+        $this->fastSave($email);
+
+        // send email
+        $emailService->sendEmail($email);
+        $this->displaySuccess($translator->trans('create.success.welcome', [], 'login'));
+    }
+
+    /**
+     * @Route("/confirm/{authenticationHash}", name="login_confirm")
+     *
+     * @param Request $request
+     * @param UserCreationService $userCreationService
+     * @param TranslatorInterface $translator
+     * @param EmailServiceInterface $emailService
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function confirmAction(Request $request, UserCreationService $userCreationService, TranslatorInterface $translator, EmailServiceInterface $emailService)
+    {
+        // let user complete registration
 
         return $this->render('login/create.html.twig');
     }
@@ -166,6 +228,11 @@ class LoginController extends BaseLoginController
         /** @var ConstructionManager $user */
         $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['resetHash' => $resetHash]);
         if ($user !== null) {
+            // if registration incomplete; redirect to confirm page
+            if (!$user->isRegistrationCompleted()) {
+                return $this->redirect('login_confirm');
+            }
+
             $form = $this->handleForm(
                 $this->createForm(SetPasswordType::class, $user, ['data_class' => ConstructionManager::class])
                     ->add('reset.submit', SubmitType::class, ['translation_domain' => 'login']),

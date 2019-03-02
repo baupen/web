@@ -88,6 +88,7 @@
                         name: this.$t("edit_maps.default_map_name"),
                         parentId: null,
                         fileId: null,
+                        isAutomaticEditEnabled: false,
                         issueCount: 0
                     },
                     order: 0,
@@ -151,6 +152,7 @@
                     issueCount: 0,
                     createdAt: new Date().toISOString(),
                     mapId: null,
+                    isAutomaticEditEnabled: true,
                     id: uuid()
                 };
 
@@ -176,6 +178,7 @@
                     }
                 };
 
+                const context = this;
                 reader.onload = function () {
                     let fileResult = this.result;
                     let fileWordArray = CryptoJS.lib.WordArray.create(fileResult);
@@ -187,7 +190,9 @@
 
                         // fast forward if possible
                         if (uploadCheck.sameHashConflicts.length === 0 && uploadCheck.fileNameConflict === null) {
-                            this.mapFileUpload(mapFileContainer);
+                            console.log("calling mapFileUpda");
+                            context.mapFileUpload(mapFileContainer);
+                            console.log("called mapFileUpda");
                         } else {
                             mapFileContainer.pendingChange = "confirm_upload";
                         }
@@ -197,7 +202,9 @@
                 reader.readAsArrayBuffer(mapFileContainer.uploadFile);
             },
             mapFileUpload(mapFileContainer) {
+                console.log("arrived");
                 mapFileContainer.pendingChange = "finish_upload";
+                console.log("arrived 2");
 
                 let data = new FormData();
                 data.append("file", mapFileContainer.uploadFile);
@@ -289,7 +296,7 @@
                     });
                 } else if (this.pendingMapFileUpdate.length) {
                     const mapFileContainer = this.pendingMapFileUpdate[0];
-                    axios.delete("/api/edit/map_file/" + mapFileContainer.mapFile.id, {
+                    axios.put("/api/edit/map_file/" + mapFileContainer.mapFile.id, {
                         constructionSiteId: this.constructionSiteId,
                         mapFile: mapFileContainer.mapFile
                     }).then((response) => {
