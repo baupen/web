@@ -352,7 +352,7 @@ class EditController extends ApiController
             $manager->persist($file);
         }
 
-        $manager->persist($map);
+        $manager->remove($map);
         $manager->flush();
 
         //create response
