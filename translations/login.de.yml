@@ -1,6 +1,6 @@
 login:
   title: 'Bitte einloggen.'
-  description: 'Benutzen Sie die E-Mail, für die Sie eingeladen wurden.'
+  description: 'Benutzen Sie Ihre Geschäftsmail.'
   submit: 'Einloggen'
   forgot_passwort: 'Haben Sie das Passwort vergessen?'
   errors:
@@ -35,6 +35,31 @@ reset:
   error:
     passwords_do_not_match: 'Die Passwörter stimmen nicht überein.'
     invalid_hash: "Dieser Link ist nicht mehr gültig. Beachten Sie, das jeder Link nur einmal benutzt werden kann."
+
+create:
+  title: 'Account erstellen.'
+  description: 'Lassen Sie uns Ihnen bei der Pendenzenverwaltung helfen.'
+  back_to_login: 'Zurück zum Login.'
+  error:
+    email_invalid: 'Mit dieser E-Mail dürfen Sie sich leider nicht registrieren. Benutzen Sie Ihre Geschäftsemail.'
+    already_registered: 'Sie sind bereits registriert. Loggen Sie sich wie gewohnt ein.'
+  success:
+    welcome: 'Sie wurden erfolgreich registriert! Prüfen Sie Ihre E-Mails um den Account zu aktivieren.'
+  email:
+    subject: 'Willkommen auf %page%!'
+    body: 'Wir haben Ihren Account erstellt und eingerichtet.'
+    action_text: 'Account aktivieren'
+  fail:
+    welcome_email_not_sent: 'Der E-Mail Versand ist fehlgeschlagen. Dies ist ein interner Fehler, bitte kontaktieren Sie den Support.'
+
+confirm:
+  title: 'Account aktivieren.'
+  description: 'Ihre E-Mail wurde bestätigt.'
+  submit: "aktivieren"
+  success:
+    welcome: 'Ihr Account ist nun fertig eingerichtet.'
+  error:
+    invalid_hash: "Dieser Link ist nicht mehr gültig. Starten Sie die Registrierung neu, oder loggen Sie sich ein wie gewohnt."
 
 logout:
   title: 'Logout'

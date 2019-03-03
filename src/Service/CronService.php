@@ -21,7 +21,7 @@ class CronService implements CronServiceInterface
     /**
      * @var SyncServiceInterface
      */
-    private $fileSystemSyncService;
+    private $syncService;
 
     /**
      * @var PathServiceInterface
@@ -33,9 +33,9 @@ class CronService implements CronServiceInterface
      */
     private $logger;
 
-    public function __construct(SyncServiceInterface $fileSystemSyncService, PathServiceInterface $pathService, LoggerInterface $logger)
+    public function __construct(SyncServiceInterface $syncService, PathServiceInterface $pathService, LoggerInterface $logger)
     {
-        $this->fileSystemSyncService = $fileSystemSyncService;
+        $this->syncService = $syncService;
         $this->pathService = $pathService;
         $this->logger = $logger;
     }
@@ -46,7 +46,7 @@ class CronService implements CronServiceInterface
     public function run()
     {
         $this->callScripts();
-        $this->fileSystemSyncService->sync();
+        $this->syncService->sync();
 
         return true;
     }

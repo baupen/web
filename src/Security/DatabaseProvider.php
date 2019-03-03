@@ -12,13 +12,14 @@
 namespace App\Security;
 
 use App\Entity\ConstructionManager;
-use App\Security\Base\BaseUserProvider;
+use App\Security\Model\UserToken;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class ConstructionManagerProvider extends BaseUserProvider
+class DatabaseProvider implements UserProviderInterface
 {
     /**
      * @var RegistryInterface
@@ -51,7 +52,7 @@ class ConstructionManagerProvider extends BaseUserProvider
      */
     public function refreshUser(UserInterface $user)
     {
-        if (!$user instanceof ConstructionManager) {
+        if (!$user instanceof UserToken) {
             throw new UnsupportedUserException(
                 sprintf('Instances of "%s" are not supported.', \get_class($user))
             );
@@ -74,9 +75,10 @@ class ConstructionManagerProvider extends BaseUserProvider
      */
     public function loadUserByUsername($username)
     {
+        /** @var ConstructionManager $user */
         $user = $this->registry->getRepository('App:ConstructionManager')->findOneBy(['email' => $username]);
         if ($user !== null) {
-            return $user;
+            return new UserToken($user);
         }
 
         throw new UsernameNotFoundException(
@@ -93,6 +95,6 @@ class ConstructionManagerProvider extends BaseUserProvider
      */
     public function supportsClass($class)
     {
-        return $class === ConstructionManager::class;
+        return $class === UserToken::class;
     }
 }

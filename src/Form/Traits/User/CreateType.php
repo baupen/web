@@ -13,10 +13,9 @@ namespace App\Form\Traits\User;
 
 use App\Form\Traits\User\Base\BaseType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class LoginType extends BaseType
+class CreateType extends BaseType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -25,6 +24,5 @@ class LoginType extends BaseType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('email', EmailType::class);
-        $builder->add('password', PasswordType::class);
     }
 }

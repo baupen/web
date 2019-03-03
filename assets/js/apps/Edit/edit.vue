@@ -88,6 +88,7 @@
                         name: this.$t("edit_maps.default_map_name"),
                         parentId: null,
                         fileId: null,
+                        isAutomaticEditEnabled: false,
                         issueCount: 0
                     },
                     order: 0,
@@ -151,6 +152,7 @@
                     issueCount: 0,
                     createdAt: new Date().toISOString(),
                     mapId: null,
+                    isAutomaticEditEnabled: true,
                     id: uuid()
                 };
 
@@ -176,6 +178,7 @@
                     }
                 };
 
+                const context = this;
                 reader.onload = function () {
                     let fileResult = this.result;
                     let fileWordArray = CryptoJS.lib.WordArray.create(fileResult);
@@ -187,7 +190,7 @@
 
                         // fast forward if possible
                         if (uploadCheck.sameHashConflicts.length === 0 && uploadCheck.fileNameConflict === null) {
-                            this.mapFileUpload(mapFileContainer);
+                            context.mapFileUpload(mapFileContainer);
                         } else {
                             mapFileContainer.pendingChange = "confirm_upload";
                         }
@@ -222,6 +225,13 @@
                         mapFileContainer.uploadProgress = 100;
 
                         const mapFile = response.data.mapFile;
+
+                        // replace id
+                        const oldId = mapFileContainer.mapFile.id;
+                        const newId = mapFile.id;
+                        this.mapContainers.filter(c => c.map.fileId === oldId).forEach(c => c.map.fileId = newId);
+
+                        mapFileContainer.mapFile.id = newId;
                         mapFileContainer.mapFile.filename = mapFile.filename;
                         mapFileContainer.mapFile.createdAt = mapFile.createdAt;
                         mapFileContainer.mapFile.mapId = mapFile.mapId;
@@ -266,6 +276,16 @@
                         mapContainer.pendingChange = null;
                         this.processMapChanges();
                     });
+                } else if (this.pendingMapFileUpdate.length) {
+                    const mapFileContainer = this.pendingMapFileUpdate[0];
+                    axios.put("/api/edit/map_file/" + mapFileContainer.mapFile.id, {
+                        constructionSiteId: this.constructionSiteId,
+                        mapFile: mapFileContainer.mapFile
+                    }).then((response) => {
+                        // continue process
+                        mapFileContainer.pendingChange = null;
+                        this.processMapChanges();
+                    });
                 } else if (this.pendingMapUpdate.length) {
                     const mapContainer = this.pendingMapUpdate[0];
                     axios.put("/api/edit/map/" + mapContainer.map.id, {
@@ -285,16 +305,6 @@
                     }).then((response) => {
                         // continue process
                         this.mapContainers = this.mapContainers.filter(cc => cc !== mapContainer);
-                        this.processMapChanges();
-                    });
-                } else if (this.pendingMapFileUpdate.length) {
-                    const mapFileContainer = this.pendingMapFileUpdate[0];
-                    axios.delete("/api/edit/map_file/" + mapFileContainer.mapFile.id, {
-                        constructionSiteId: this.constructionSiteId,
-                        mapFile: mapFileContainer.mapFile
-                    }).then((response) => {
-                        // continue process
-                        mapFileContainer.pendingChange = null;
                         this.processMapChanges();
                     });
                 } else {

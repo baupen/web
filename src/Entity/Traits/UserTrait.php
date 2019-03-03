@@ -45,14 +45,28 @@ trait UserTrait
      *
      * @ORM\Column(type="text")
      */
-    private $resetHash;
+    private $authenticationHash;
 
     /**
      * @var bool
      *
      * @ORM\Column(type="boolean")
      */
-    private $isEnabled = true;
+    private $isEnabled = false;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $isRegistrationCompleted = false;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text")
+     */
+    private $authenticationSource;
 
     /**
      * @var \DateTime
@@ -60,13 +74,6 @@ trait UserTrait
      * @ORM\Column(type="datetime")
      */
     private $registrationDate;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean", options={"default": false})
-     */
-    private $agbAccepted = false;
 
     /**
      * @var string
@@ -125,25 +132,25 @@ trait UserTrait
     /**
      * @return string
      */
-    public function getResetHash()
+    public function getAuthenticationHash()
     {
-        return $this->resetHash;
+        return $this->authenticationHash;
     }
 
     /**
-     * @return bool
+     * @return string
      */
-    public function isAgbAccepted()
+    public function getAuthenticationSource(): ?string
     {
-        return $this->agbAccepted;
+        return $this->authenticationSource;
     }
 
     /**
-     * @param bool $agbAccepted
+     * @param string $authenticationSource
      */
-    public function setAgbAccepted($agbAccepted)
+    public function setAuthenticationSource(string $authenticationSource): void
     {
-        $this->agbAccepted = $agbAccepted;
+        $this->authenticationSource = $authenticationSource;
     }
 
     /**
@@ -362,8 +369,24 @@ trait UserTrait
     /**
      * creates a new reset hash.
      */
-    public function setResetHash()
+    public function setAuthenticationHash()
     {
-        $this->resetHash = HashHelper::getHash();
+        $this->authenticationHash = HashHelper::getHash();
+    }
+
+    /**
+     * indicates that the user registered successfully.
+     */
+    public function setRegistrationCompleted()
+    {
+        $this->isRegistrationCompleted = true;
+    }
+
+    /**
+     * checks if the user has completed the registration.
+     */
+    public function isRegistrationCompleted()
+    {
+        return $this->isRegistrationCompleted;
     }
 }

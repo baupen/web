@@ -3,7 +3,7 @@
         <td class="map-indent" :class="'map-indent-' + indentSize">
             <input v-if="!map.isAutomaticEditEnabled"
                    type="text"
-                   v-model="map.name"
+                   v-model.lazy="map.name"
                    class="form-control form-control-sm"/>
             <span v-else>
                 {{map.name}}
@@ -152,6 +152,18 @@
                     this.$emit('save');
                 },
                 deep: true,
+            },
+            selectableMapFiles: function (after, before) {
+                // assign if before none seleted
+                if (before.length === 0 && after.length === 1) {
+                    this.map.fileId = after[0].id;
+
+                    this.$emit('save');
+                } else if (before.length === 1 && after.length === 0) {
+                    this.map.fileId = null;
+
+                    this.$emit('save');
+                }
             }
         },
         mounted() {
