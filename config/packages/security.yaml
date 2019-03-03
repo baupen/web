@@ -9,8 +9,8 @@ security:
     ROLE_ADMIN: ROLE_USER
 
   providers:
-    user_token_provider:
-      id: App\Security\UserTokenProvider
+    database_provider:
+      id: App\Security\DatabaseProvider
 
   firewalls:
     # disables authentication for assets and the profiler
@@ -21,7 +21,7 @@ security:
     # main firewall for logged in users
     main:
       pattern:   ^/
-      provider: user_token_provider
+      provider: database_provider
       form_login:
         login_path: login
         check_path: login_check

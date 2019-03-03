@@ -68,7 +68,6 @@
         },
         data() {
             return {
-                beforeEditData: null,
                 afterEditData: null,
                 locale: lang,
                 mapFile: this.mapFileContainer.mapFile
@@ -79,27 +78,6 @@
             bButton
         },
         methods: {
-            getData: function (mapFile) {
-                return {
-                    mapId: mapFile.mapId
-                }
-            },
-            setData: function (mapFile, data) {
-                mapFile.mapId = data.mapId;
-            },
-            toggleEdit: function () {
-                const mapData = this.getData(this.mapFile);
-                if (this.mapFile.automaticEditEnabled) {
-                    if (this.afterEditData !== null) {
-                        this.setData(this.mapFile, this.afterEditData);
-                    }
-                } else {
-                    this.afterEditData = mapData;
-                    this.setData(this.mapFile, this.beforeEditData);
-                }
-
-                this.mapFile.automaticEditEnabled = !this.mapFile.automaticEditEnabled;
-            },
             formatDateTime: function (dateTime) {
                 return moment(dateTime).locale(this.locale).fromNow();
             },
@@ -141,9 +119,6 @@
                 },
                 deep: true,
             }
-        },
-        mounted() {
-            this.beforeEditData = this.getData(this.mapFile);
         }
     }
 </script>

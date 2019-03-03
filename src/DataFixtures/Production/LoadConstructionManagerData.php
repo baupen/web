@@ -17,6 +17,8 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class LoadConstructionManagerData extends BaseFixture
 {
+    const AUTHENTICATION_SOURCE_FIXTURES = 'fixtures';
+
     /**
      * Load data fixtures with the passed EntityManager.
      *
@@ -34,7 +36,8 @@ class LoadConstructionManagerData extends BaseFixture
         $user->setGivenName('Florian');
         $user->setFamilyName('Moser');
         $user->setPassword();
-        $user->setResetHash();
+        $user->setAuthenticationSource(self::AUTHENTICATION_SOURCE_FIXTURES);
+        $user->setAuthenticationHash();
         $user->setRegistrationDate();
         $manager->persist($user);
         $manager->flush();

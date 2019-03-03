@@ -12,6 +12,7 @@
 namespace App\Controller\Base;
 
 use App\Entity\Traits\UserTrait;
+use App\Security\Model\UserToken;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,7 +49,7 @@ class BaseLoginController extends BaseFormController
         $session = $request->getSession();
 
         $authErrorKey = Security::AUTHENTICATION_ERROR;
-        // get the error if any (works with forward and redirect -- see below)
+        // get the error if any
         if ($request->attributes->has($authErrorKey)) {
             $error = $request->attributes->get($authErrorKey);
         } elseif ($session !== null && $session->has($authErrorKey)) {
@@ -93,7 +94,7 @@ class BaseLoginController extends BaseFormController
     protected function loginUser(Request $request, UserInterface $user)
     {
         //login programmatically
-        $token = new UsernamePasswordToken($user, $user->getPassword(), 'main', $user->getRoles());
+        $token = new UsernamePasswordToken(new UserToken($user), $user->getPassword(), 'main', $user->getRoles());
         $this->get('security.token_storage')->setToken($token);
 
         $event = new InteractiveLoginEvent($request, $token);
