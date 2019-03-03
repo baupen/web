@@ -23,15 +23,21 @@ use Symfony\Component\Ldap\Entry;
 use Symfony\Component\Ldap\Exception\ConnectionException;
 use Symfony\Component\Ldap\Ldap;
 
-class UserCreationService implements UserCreationServiceInterface
+class UserAuthenticationService implements UserCreationServiceInterface
 {
     const AUTHENTICATION_SOURCE_LDAP = 'ldap';
     const AUTHENTICATION_SOURCE_NONE = 'none';
+    const AUTHENTICATION_SOURCE_VALID_REGISTRATION_EMAILS = 'valid_registration_emails';
 
     /**
      * @var string
      */
     private $ldapUrl;
+
+    /**
+     * @var string
+     */
+    private $validRegistrationEmails;
 
     /**
      * @var LoggerInterface
@@ -47,7 +53,80 @@ class UserCreationService implements UserCreationServiceInterface
     public function __construct(ParameterBagInterface $parameterBag, LoggerInterface $logger)
     {
         $this->ldapUrl = $parameterBag->get('LDAP_URL');
+        $this->validRegistrationEmails = $parameterBag->get('VALID_REGISTRATION_EMAILS');
         $this->logger = $logger;
+    }
+
+    /**
+     * @param ConstructionManager $constructionManager
+     *
+     * @throws \Exception
+     *
+     * @return bool
+     */
+    public function tryAuthenticateConstructionManager(ConstructionManager $constructionManager)
+    {
+        if ($constructionManager->getAuthenticationSource() === null) {
+            if ($this->restrictByValidRegistrationEmail()) {
+                $constructionManager->setAuthenticationSource(self::AUTHENTICATION_SOURCE_VALID_REGISTRATION_EMAILS);
+            } elseif ($this->restrictByLdap()) {
+                $constructionManager->setAuthenticationSource(self::AUTHENTICATION_SOURCE_LDAP);
+            } else {
+                $constructionManager->setAuthenticationSource(self::AUTHENTICATION_SOURCE_NONE);
+            }
+        }
+
+        if ($constructionManager->getAuthenticationSource() === self::AUTHENTICATION_SOURCE_VALID_REGISTRATION_EMAILS) {
+            if (!$this->checkIsValidRegistrationEmails($constructionManager->getEmail())) {
+                return false;
+            }
+
+            return true;
+        }
+
+        if ($constructionManager->getAuthenticationSource() === self::AUTHENTICATION_SOURCE_LDAP) {
+            $ldapUser = $this->getLdapUser($this->ldapUrl, $constructionManager->getEmail());
+            if ($ldapUser === null) {
+                return false;
+            }
+
+            $constructionManager->setAuthenticationSource(self::AUTHENTICATION_SOURCE_LDAP);
+            $constructionManager->setGivenName($this->parseGivenName($ldapUser));
+            $constructionManager->setFamilyName($this->parseFamilyName($ldapUser, $constructionManager->getGivenName()));
+            $constructionManager->setPhone($this->parsePhone($ldapUser));
+
+            return true;
+        }
+
+        $skipValues = [self::AUTHENTICATION_SOURCE_NONE, LoadConstructionManagerData::AUTHENTICATION_SOURCE_FIXTURES, TrialService::AUTHENTICATION_SOURCE_TRIAL];
+
+        return \in_array($constructionManager->getAuthenticationSource(), $skipValues, true);
+    }
+
+    /**
+     * @return bool
+     */
+    private function restrictByValidRegistrationEmail()
+    {
+        return $this->validRegistrationEmails !== 'all';
+    }
+
+    /**
+     * @return bool
+     */
+    private function restrictByLdap()
+    {
+        return $this->ldapUrl !== 'null://localhost';
+    }
+
+    /**
+     * @param string $email
+     *
+     * @return bool
+     */
+    private function checkIsValidRegistrationEmails(string $email)
+    {
+        return \in_array($email, explode(';', $this->validRegistrationEmails), true);
     }
 
     /**
@@ -200,37 +279,5 @@ class UserCreationService implements UserCreationServiceInterface
     private function parsePhone(Entry $entry)
     {
         return $this->getAttributeStringValue($entry, 'phone');
-    }
-
-    /**
-     * @param ConstructionManager $constructionManager
-     *
-     * @throws \Exception
-     *
-     * @return bool
-     */
-    public function tryAuthenticateConstructionManager(ConstructionManager $constructionManager)
-    {
-        if ($constructionManager->getAuthenticationSource() === null) {
-            $constructionManager->setAuthenticationSource($this->ldapUrl === 'null://localhost' ? self::AUTHENTICATION_SOURCE_NONE : self::AUTHENTICATION_SOURCE_LDAP);
-        }
-
-        if ($constructionManager->getAuthenticationSource() === self::AUTHENTICATION_SOURCE_LDAP) {
-            $ldapUser = $this->getLdapUser($this->ldapUrl, $constructionManager->getEmail());
-            if ($ldapUser === null) {
-                return false;
-            }
-
-            $constructionManager->setAuthenticationSource(self::AUTHENTICATION_SOURCE_LDAP);
-            $constructionManager->setGivenName($this->parseGivenName($ldapUser));
-            $constructionManager->setFamilyName($this->parseFamilyName($ldapUser, $constructionManager->getGivenName()));
-            $constructionManager->setPhone($this->parsePhone($ldapUser));
-
-            return true;
-        }
-
-        $skipValues = [self::AUTHENTICATION_SOURCE_NONE, LoadConstructionManagerData::AUTHENTICATION_SOURCE_FIXTURES, TrialService::AUTHENTICATION_SOURCE_TRIAL];
-
-        return \in_array($constructionManager->getAuthenticationSource(), $skipValues, true);
     }
 }

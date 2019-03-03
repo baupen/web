@@ -45,6 +45,10 @@ create:
     already_registered: 'Sie sind bereits registriert. Loggen Sie sich wie gewohnt ein.'
   success:
     welcome: 'Sie wurden erfolgreich registriert! Prüfen Sie Ihre E-Mails um den Account zu aktivieren.'
+  email:
+    subject: 'Willkommen!'
+    body: 'Wir haben Ihren Account erstellt und eingerichtet.'
+    action_text: 'Account aktivieren'
 
 
 logout:

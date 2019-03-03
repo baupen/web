@@ -20,7 +20,7 @@ use App\Form\ConstructionManager\LoginType;
 use App\Form\ConstructionManager\RecoverType;
 use App\Form\ConstructionManager\SetPasswordType;
 use App\Service\Interfaces\EmailServiceInterface;
-use App\Service\UserCreationService;
+use App\Service\UserAuthenticationService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
@@ -67,7 +67,7 @@ class LoginController extends BaseLoginController
      * @Route("/create", name="login_create")
      *
      * @param Request $request
-     * @param UserCreationService $userCreationService
+     * @param UserAuthenticationService $userCreationService
      * @param TranslatorInterface $translator
      * @param EmailServiceInterface $emailService
      *
@@ -75,7 +75,7 @@ class LoginController extends BaseLoginController
      *
      * @return Response
      */
-    public function createAction(Request $request, UserCreationService $userCreationService, TranslatorInterface $translator, EmailServiceInterface $emailService)
+    public function createAction(Request $request, UserAuthenticationService $userCreationService, TranslatorInterface $translator, EmailServiceInterface $emailService)
     {
         $constructionManager = new ConstructionManager();
         $constructionManager->setEmail($request->query->get('email'));
@@ -106,21 +106,24 @@ class LoginController extends BaseLoginController
     {
         /** @var ConstructionManager $existing */
         $existing = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
-        if ($existing !== null && $existing->isRegistrationCompleted()) {
-            $this->displayError($translator->trans('create.error.already_registered', [], 'login'));
+        if ($existing === null) {
+            // prepare account for usage
+            $constructionManager->setRegistrationDate();
+            $constructionManager->setPlainPassword(uniqid('_initial_pw_'));
+            $constructionManager->setPassword();
+            $constructionManager->setAuthenticationHash();
+            $this->fastSave($constructionManager);
+        } else {
+            if ($existing->isRegistrationCompleted()) {
+                $this->displayError($translator->trans('create.error.already_registered', [], 'login'));
 
-            return;
+                return;
+            }
         }
-
-        // prepare account for usage
-        $constructionManager->setRegistrationDate();
-        $constructionManager->setPlainPassword(uniqid('_initial_pw_'));
-        $constructionManager->setAuthenticationHash();
-        $this->fastSave($constructionManager);
 
         // construct email
         $email = new Email();
-        $email->setActionText($translator);
+        $email->setActionText($translator->trans());
 
         $this->fastSave($email);
 
@@ -133,7 +136,7 @@ class LoginController extends BaseLoginController
      * @Route("/confirm/{authenticationHash}", name="login_confirm")
      *
      * @param Request $request
-     * @param UserCreationService $userCreationService
+     * @param UserAuthenticationService $userCreationService
      * @param TranslatorInterface $translator
      * @param EmailServiceInterface $emailService
      *
@@ -141,7 +144,7 @@ class LoginController extends BaseLoginController
      *
      * @return Response
      */
-    public function confirmAction(Request $request, UserCreationService $userCreationService, TranslatorInterface $translator, EmailServiceInterface $emailService)
+    public function confirmAction(Request $request, UserAuthenticationService $userCreationService, TranslatorInterface $translator, EmailServiceInterface $emailService)
     {
         // let user complete registration
 
