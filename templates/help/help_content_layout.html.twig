@@ -1,0 +1,13 @@
+{% extends 'layout_base.html.twig' %}
+
+{% block content %}
+    <section class="center-wrapper">
+        <div class="center-content center-content-big">
+            <div class="center-content-primary shadow">
+                <h1>{{ block("title") }}</h1>
+                {% block help_content %}
+                {% endblock %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

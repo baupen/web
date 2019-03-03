@@ -1,21 +1,27 @@
-{% extends "center_content.html.twig" %}
+{% extends "help/help_content_layout.html.twig" %}
 
 {% block title %}{{ "overview.title"|trans }}{% endblock %}
 {% block description %}{{ "overview.description"|trans }}{% endblock %}
 
 {% trans_default_domain "help" %}
 
-{% block primary_content %}
-    <h2>Erfassen</h2>
-    <p>Lokalisieren Sie Pendenzen mit unserer iPhone App.</p>
-    <h2>Einpflegen</h2>
-    <p>Bereinigen Sie neu erfasste Pendenzen im Warteraum.</p>
-    <h2>Verwalten</h2>
-    <p>Durchsuchen, ändern und exportieren Sie eingepflegte Pendenzen im Verzeichnis.</p>
-    <h2>Benachrichtigen</h2>
-    <p>Informieren Sie Handwerker über neue Pendenzen.</p>
-    <h2>Warten</h2>
-    <p>Warten Sie auf eine Rückmeldung des Handwerkers.</p>
-    <h2>Abschliessen</h2>
-    <p>Markieren Sie die erledigten Pendenzen als abgeschlossen in der iPhone App.</p>
+{% block help_content %}
+    <h2>{{ "overview.create"|trans }}</h2>
+    <p>{{ "overview.create_description"|trans }}</p>
+    <h2>{{ "overview.populate"|trans }}</h2>
+    <p>{{ "overview.populate_description"|trans }}</p>
+    <h2>{{ "overview.manage"|trans }}</h2>
+    <p>{{ "overview.manage_description"|trans }}</p>
+    <h2>{{ "overview.notify"|trans }}</h2>
+    <p>{{ "overview.notify_description"|trans }}</p>
+    <h2>{{ "overview.wait"|trans }}</h2>
+    <p>{{ "overview.wait_description"|trans }}</p>
+    <h2>{{ "overview.inspect"|trans }}</h2>
+    <p>{{ "overview.inspect_description"|trans }}</p>
+
+    <p>
+        <a class="btn btn-primary" href="{{ path("dashboard") }}">
+            {{ "overview.start"|trans }}
+        </a>
+    </p>
 {% endblock %}
