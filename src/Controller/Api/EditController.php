@@ -346,7 +346,14 @@ class EditController extends ApiController
             return $this->fail(self::MAP_HAS_CHILDREN_ASSIGNED);
         }
 
-        $this->fastRemove($map);
+        $manager = $this->getDoctrine()->getManager();
+        foreach ($map->getFiles() as $file) {
+            $file->setMap(null);
+            $manager->persist($file);
+        }
+
+        $manager->persist($map);
+        $manager->flush();
 
         //create response
         return $this->success(new EmptyData());
