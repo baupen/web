@@ -135,6 +135,7 @@ class UserAuthenticationServiceTest extends WebTestCase
      */
     private function getServiceWithoutLdap()
     {
+        self::bootKernel();
         $parameterBag = new ParameterBag(['LDAP_URL' => 'null://localhost', 'VALID_REGISTRATION_EMAILS' => 'all']);
         $logger = self::$container->get(LoggerInterface::class);
 
@@ -146,6 +147,7 @@ class UserAuthenticationServiceTest extends WebTestCase
      */
     private function getServiceWithRegistrationEmail()
     {
+        self::bootKernel();
         //ldapsearch -h ldap.forumsys.com -D "uid=tesla,dc=example,dc=com" -b "dc=example,dc=com" -w password "(uid=training)"
         $parameterBag = new ParameterBag(['LDAP_URL' => 'null://localhost', 'VALID_REGISTRATION_EMAILS' => 'one@example.com;two@example.com']);
         $logger = self::$container->get(LoggerInterface::class);

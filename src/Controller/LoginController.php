@@ -75,7 +75,7 @@ class LoginController extends BaseLoginController
      *
      * @return Response
      */
-    public function createAction(Request $request, UserAuthenticationService $userCreationService, TranslatorInterface $translator, EmailServiceInterface $emailService)
+    public function createAction(Request $request, UserAuthenticationService $userCreationService, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
     {
         $constructionManager = new ConstructionManager();
         $constructionManager->setEmail($request->query->get('email'));
@@ -88,7 +88,7 @@ class LoginController extends BaseLoginController
             if (!$userCreationService->tryAuthenticateConstructionManager($constructionManager)) {
                 $this->displayError($translator->trans('create.error.email_invalid', [], 'login'));
             } else {
-                $this->register($constructionManager, $translator, $emailService);
+                $this->register($request, $constructionManager, $translator, $emailService, $logger);
             }
         }
 
@@ -96,13 +96,15 @@ class LoginController extends BaseLoginController
     }
 
     /**
+     * @param Request $request
      * @param ConstructionManager $constructionManager
      * @param TranslatorInterface $translator
      * @param EmailServiceInterface $emailService
+     * @param LoggerInterface $logger
      *
      * @throws \Exception
      */
-    private function register(ConstructionManager $constructionManager, TranslatorInterface $translator, EmailServiceInterface $emailService)
+    private function register(Request $request, ConstructionManager $constructionManager, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
     {
         /** @var ConstructionManager $existing */
         $existing = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
@@ -114,7 +116,8 @@ class LoginController extends BaseLoginController
             $constructionManager->setAuthenticationHash();
             $this->fastSave($constructionManager);
         } else {
-            if ($existing->isRegistrationCompleted()) {
+            $constructionManager = $existing;
+            if ($constructionManager->isRegistrationCompleted()) {
                 $this->displayError($translator->trans('create.error.already_registered', [], 'login'));
 
                 return;
@@ -123,13 +126,25 @@ class LoginController extends BaseLoginController
 
         // construct email
         $email = new Email();
-        $email->setActionText($translator->trans());
-
+        $email->setEmailType(EmailType::ACTION_EMAIL);
+        $email->setReceiver($constructionManager->getEmail());
+        $email->setSubject($translator->trans('create.email.subject', ['%page%' => $request->getHttpHost()], 'login'));
+        $email->setBody($translator->trans('create.email.body', [], 'login'));
+        $email->setActionText($translator->trans('create.email.action_text', [], 'login'));
+        $email->setActionLink($this->generateUrl('login_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()], UrlGeneratorInterface::ABSOLUTE_URL));
         $this->fastSave($email);
 
         // send email
-        $emailService->sendEmail($email);
-        $this->displaySuccess($translator->trans('create.success.welcome', [], 'login'));
+        if ($emailService->sendEmail($email)) {
+            $email->setSentDateTime(new \DateTime());
+            $this->fastSave($email);
+
+            $logger->info('sent register email to ' . $email->getReceiver());
+            $this->displaySuccess($translator->trans('create.success.welcome', [], 'login'));
+        } else {
+            $logger->error('could not send register email ' . $email->getId());
+            $this->displayError($translator->trans('create.fail.welcome_email_not_sent', [], 'login'));
+        }
     }
 
     /**
@@ -172,6 +187,7 @@ class LoginController extends BaseLoginController
                 /** @var ConstructionManager $constructionManager */
                 $constructionManager = $form->getData();
                 //check if user exists
+                /** @var ConstructionManager $exitingUser */
                 $exitingUser = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
                 if ($exitingUser === null) {
                     $logger->info('could not reset password of unknown user ' . $constructionManager->getEmail());
@@ -181,7 +197,7 @@ class LoginController extends BaseLoginController
                 }
 
                 //create new reset hash
-                $exitingUser->setResetHash();
+                $exitingUser->setAuthenticationHash();
                 $this->fastSave($exitingUser);
 
                 //create email
@@ -191,7 +207,7 @@ class LoginController extends BaseLoginController
                 $email->setSubject($translator->trans('recover.email.reset_password.subject', ['%page%' => $request->getHttpHost()], 'login'));
                 $email->setBody($translator->trans('recover.email.reset_password.message', [], 'login'));
                 $email->setActionText($translator->trans('recover.email.reset_password.action_text', [], 'login'));
-                $email->setActionLink($this->generateUrl('login_reset', ['resetHash' => $exitingUser->getResetHash()], UrlGeneratorInterface::ABSOLUTE_URL));
+                $email->setActionLink($this->generateUrl('login_reset', ['authenticationHash' => $exitingUser->getAuthenticationHash()], UrlGeneratorInterface::ABSOLUTE_URL));
 
                 //save & send
                 $this->fastSave($email);
@@ -217,7 +233,7 @@ class LoginController extends BaseLoginController
     }
 
     /**
-     * @Route("/reset/{resetHash}", name="login_reset")
+     * @Route("/reset/{authenticationHash}", name="login_reset")
      *
      * @param Request $request
      * @param $resetHash
@@ -225,12 +241,12 @@ class LoginController extends BaseLoginController
      *
      * @return Response
      */
-    public function resetAction(Request $request, $resetHash, TranslatorInterface $translator)
+    public function resetAction(Request $request, $authenticationHash, TranslatorInterface $translator)
     {
         $arr = [];
 
         /** @var ConstructionManager $user */
-        $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['resetHash' => $resetHash]);
+        $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['authenticationHash' => $authenticationHash]);
         if ($user !== null) {
             // if registration incomplete; redirect to confirm page
             if (!$user->isRegistrationCompleted()) {

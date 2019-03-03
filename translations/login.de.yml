@@ -46,9 +46,11 @@ create:
   success:
     welcome: 'Sie wurden erfolgreich registriert! Prüfen Sie Ihre E-Mails um den Account zu aktivieren.'
   email:
-    subject: 'Willkommen!'
+    subject: 'Willkommen auf %page%!'
     body: 'Wir haben Ihren Account erstellt und eingerichtet.'
     action_text: 'Account aktivieren'
+  fail:
+    welcome_email_not_sent: 'Der E-Mail Versand ist fehlgeschlagen. Dies ist ein interner Fehler, bitte kontaktieren Sie den Support.'
 
 
 logout:
