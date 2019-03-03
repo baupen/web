@@ -119,10 +119,6 @@
                 },
                 deep: true,
             }
-        },
-        mounted() {
-            console.log(this.mapFile.filename);
-            console.log(this.mapFile);
         }
     }
 </script>
