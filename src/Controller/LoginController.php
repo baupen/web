@@ -83,6 +83,7 @@ class LoginController extends BaseLoginController
         $form = $this->createForm(CreateType::class, $constructionManager);
         $form->add('login.submit', SubmitType::class, ['translation_domain' => 'login']);
 
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if (!$userCreationService->tryAuthenticateConstructionManager($constructionManager)) {
                 $this->displayError($translator->trans('create.error.email_invalid', [], 'login'));
@@ -91,7 +92,7 @@ class LoginController extends BaseLoginController
             }
         }
 
-        return $this->render('login/create.html.twig');
+        return $this->render('login/create.html.twig', ['form' => $form->createView()]);
     }
 
     /**
@@ -106,7 +107,7 @@ class LoginController extends BaseLoginController
         /** @var ConstructionManager $existing */
         $existing = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
         if ($existing !== null && $existing->isRegistrationCompleted()) {
-            $this->displaySuccess($translator->trans('create.error.already_registered', [], 'login'));
+            $this->displayError($translator->trans('create.error.already_registered', [], 'login'));
 
             return;
         }

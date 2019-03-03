@@ -20,6 +20,7 @@ use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Ldap\Adapter\ExtLdap\Adapter;
 use Symfony\Component\Ldap\Entry;
+use Symfony\Component\Ldap\Exception\ConnectionException;
 use Symfony\Component\Ldap\Ldap;
 
 class UserCreationService implements UserCreationServiceInterface
@@ -59,14 +60,14 @@ class UserCreationService implements UserCreationServiceInterface
      */
     private function getLdapUser(string $ldapUrl, string $email)
     {
-        if (!startsWith('ldap://')) {
+        if (mb_strpos($ldapUrl, 'ldap://') !== 0) {
             $this->logger->log(LogLevel::ERROR, 'invalid connection string: must start with ldap://');
 
             return null;
         }
 
         $arguments = explode('/', mb_substr($ldapUrl, 7));
-        if (\count($arguments) < 3) {
+        if (\count($arguments) !== 4) {
             $this->logger->log(LogLevel::ERROR, 'invalid connection string: too few arguments');
 
             return null;
@@ -75,26 +76,35 @@ class UserCreationService implements UserCreationServiceInterface
         $argumentIndex = 0;
 
         // resolve LDAP connection
-        $adapter = new Adapter(['connection_string' => 'ldap://' . $arguments[$argumentIndex++]]);
+        [$host, $port] = explode(':', $arguments[$argumentIndex++]);
+        $adapter = new Adapter(['host' => $host, 'port' => $port, 'debug' => true]);
         $ldap = new LdapLogger(new Ldap($adapter), $this->logger);
 
-        // bind to searchdn if necessary
-        if (\count($arguments) === 4) {
-            [$searchDn, $searchPassword] = explode(':', $arguments[$argumentIndex++]);
-            $ldap->bind($searchDn, $searchPassword);
-        }
+        // bind to searchdn
+        [$searchDn, $searchPassword] = explode(':', $arguments[$argumentIndex++]);
+        $ldap->bind($searchDn, $searchPassword);
+
+        // get base dn
+        $baseDn = $arguments[$argumentIndex++];
 
         // create query
-        $query = $arguments[$argumentIndex++];
+        $query = $arguments[$argumentIndex];
         if (mb_strpos($query, 'username') !== false) {
-            $query = str_replace($query, 'username', mb_substr($email, 0, mb_strpos($email, '@')));
+            $username = mb_substr($email, 0, mb_strpos($email, '@'));
+            $query = str_replace('username', $username, $query);
         } elseif (mb_strpos($query, 'email')) {
-            $query = str_replace($query, 'email', $email);
+            $query = str_replace('email', $email, $query);
         }
 
         // prepare query
-        $baseDn = $arguments[$argumentIndex];
-        $search = $ldap->query($baseDn, $query);
+        try {
+            $search = $ldap->query($baseDn, $query, ['timeout' => 2]);
+        } catch (ConnectionException $exception) {
+            $this->logger->log(LogLevel::ERROR, 'can\'t connection to LDAP server', ['exception' => $exception]);
+
+            return null;
+        }
+        var_dump(2);
 
         // execute & ensure result returned
         /** @var Entry[] $entries */
@@ -102,6 +112,28 @@ class UserCreationService implements UserCreationServiceInterface
         $this->logger->log(LogLevel::INFO, 'query has ' . \count($entries) . ' results');
 
         return \count($entries) > 0 ? $entries[0] : null;
+    }
+
+    private function alterative(string $email)
+    {
+        $ldap = ldap_connect('ldap://192.168.16.33:389');
+
+        ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
+        ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
+        ldap_set_option($ldap, LDAP_OPT_TIMEOUT, 2);
+        ldap_set_option($ldap, LDAP_OPT_NETWORK_TIMEOUT, 2);
+
+        $bind = @ldap_bind($ldap, 'uid=tesla,dc=example,dc=com', 'password');
+
+        if ($bind) {
+            $result = ldap_search($ldap, 'dc=example,dc=com', '(uid=training)');
+            $info = ldap_get_entries($ldap, $result);
+            @ldap_close($ldap);
+
+            return \count($info) > 0;
+        }
+
+        return false;
     }
 
     /**
@@ -178,7 +210,9 @@ class UserCreationService implements UserCreationServiceInterface
         }
 
         if ($constructionManager->getAuthenticationSource() === self::AUTHENTICATION_SOURCE_LDAP) {
+            return $this->alterative($constructionManager->getEmail());
             $ldapUser = $this->getLdapUser($this->ldapUrl, $constructionManager->getEmail());
+            var_dump($ldapUser);
             if ($ldapUser === null) {
                 return false;
             }
@@ -191,9 +225,8 @@ class UserCreationService implements UserCreationServiceInterface
             return true;
         } elseif ($constructionManager->getAuthenticationSource() === self::AUTHENTICATION_SOURCE_NONE || $constructionManager->getAuthenticationSource() === LoadConstructionManagerData::AUTHENTICATION_SOURCE_FIXTURES) {
             return true;
-        } else {
-            // deny by default
-            return false;
         }
+        // deny by default
+        return false;
     }
 }
