@@ -104,7 +104,6 @@ class UserCreationService implements UserCreationServiceInterface
 
             return null;
         }
-        var_dump(2);
 
         // execute & ensure result returned
         /** @var Entry[] $entries */
@@ -114,7 +113,14 @@ class UserCreationService implements UserCreationServiceInterface
         return \count($entries) > 0 ? $entries[0] : null;
     }
 
-    private function alterative(string $email)
+    /**
+     * this is used to test LDAP connection in general.
+     *
+     * @param string $email
+     *
+     * @return bool
+     */
+    private function alternativeLdap(string $email)
     {
         $ldap = ldap_connect('ldap://192.168.16.33:389');
 
@@ -206,13 +212,11 @@ class UserCreationService implements UserCreationServiceInterface
     public function tryAuthenticateConstructionManager(ConstructionManager $constructionManager)
     {
         if ($constructionManager->getAuthenticationSource() === null) {
-            $constructionManager->setAuthenticationSource(empty($this->ldapUrl) ? self::AUTHENTICATION_SOURCE_NONE : self::AUTHENTICATION_SOURCE_LDAP);
+            $constructionManager->setAuthenticationSource($this->ldapUrl === 'null://localhost' ? self::AUTHENTICATION_SOURCE_NONE : self::AUTHENTICATION_SOURCE_LDAP);
         }
 
         if ($constructionManager->getAuthenticationSource() === self::AUTHENTICATION_SOURCE_LDAP) {
-            return $this->alterative($constructionManager->getEmail());
             $ldapUser = $this->getLdapUser($this->ldapUrl, $constructionManager->getEmail());
-            var_dump($ldapUser);
             if ($ldapUser === null) {
                 return false;
             }
@@ -223,10 +227,10 @@ class UserCreationService implements UserCreationServiceInterface
             $constructionManager->setPhone($this->parsePhone($ldapUser));
 
             return true;
-        } elseif ($constructionManager->getAuthenticationSource() === self::AUTHENTICATION_SOURCE_NONE || $constructionManager->getAuthenticationSource() === LoadConstructionManagerData::AUTHENTICATION_SOURCE_FIXTURES) {
-            return true;
         }
-        // deny by default
-        return false;
+
+        $skipValues = [self::AUTHENTICATION_SOURCE_NONE, LoadConstructionManagerData::AUTHENTICATION_SOURCE_FIXTURES, TrialService::AUTHENTICATION_SOURCE_TRIAL];
+
+        return \in_array($constructionManager->getAuthenticationSource(), $skipValues, true);
     }
 }

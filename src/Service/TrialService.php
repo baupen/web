@@ -24,6 +24,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TrialService implements TrialServiceInterface
 {
+    const AUTHENTICATION_SOURCE_TRIAL = 'trial';
+
     /**
      * @var \Faker\Generator
      */
@@ -192,6 +194,7 @@ class TrialService implements TrialServiceInterface
         $constructionManager->setPassword(true);
         $constructionManager->setAuthenticationHash();
         $constructionManager->setRegistrationDate();
+        $constructionManager->setAuthenticationSource(self::AUTHENTICATION_SOURCE_TRIAL);
 
         return $constructionManager;
     }
