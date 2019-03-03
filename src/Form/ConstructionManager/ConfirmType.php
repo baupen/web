@@ -15,7 +15,7 @@ use App\Entity\ConstructionManager;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ActivateType extends \App\Form\Traits\User\SetPasswordType
+class ConfirmType extends \App\Form\Traits\User\SetPasswordType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -23,7 +23,7 @@ class ActivateType extends \App\Form\Traits\User\SetPasswordType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('person', ProfileType::class, ['inherit_data' => true]);
+        $builder->add('profile', ProfileType::class, ['inherit_data' => true]);
 
         parent::buildForm($builder, $options);
     }
@@ -35,6 +35,7 @@ class ActivateType extends \App\Form\Traits\User\SetPasswordType
     {
         $resolver->setDefaults([
             'data_class' => ConstructionManager::class,
+            'block_name' => 'profile',
         ]);
         parent::configureOptions($resolver);
     }

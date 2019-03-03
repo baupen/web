@@ -52,6 +52,14 @@ create:
   fail:
     welcome_email_not_sent: 'Der E-Mail Versand ist fehlgeschlagen. Dies ist ein interner Fehler, bitte kontaktieren Sie den Support.'
 
+confirm:
+  title: 'Account aktivieren.'
+  description: 'Ihre E-Mail wurde bestätigt.'
+  submit: "aktivieren"
+  success:
+    welcome: 'Ihr Account ist nun fertig eingerichtet.'
+  error:
+    invalid_hash: "Dieser Link ist nicht mehr gültig. Starten Sie die Registrierung neu, oder loggen Sie sich ein wie gewohnt."
 
 logout:
   title: 'Logout'

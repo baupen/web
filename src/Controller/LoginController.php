@@ -15,6 +15,7 @@ use App\Controller\Base\BaseLoginController;
 use App\Entity\ConstructionManager;
 use App\Entity\Email;
 use App\Enum\EmailType;
+use App\Form\ConstructionManager\ConfirmType;
 use App\Form\ConstructionManager\CreateType;
 use App\Form\ConstructionManager\LoginType;
 use App\Form\ConstructionManager\RecoverType;
@@ -159,11 +160,57 @@ class LoginController extends BaseLoginController
      *
      * @return Response
      */
-    public function confirmAction(Request $request, UserAuthenticationService $userCreationService, TranslatorInterface $translator, EmailServiceInterface $emailService)
+    public function confirmAction(Request $request, string $authenticationHash, TranslatorInterface $translator)
     {
-        // let user complete registration
+        $arr = [];
 
-        return $this->render('login/create.html.twig');
+        /** @var ConstructionManager $user */
+        $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['authenticationHash' => $authenticationHash]);
+        if ($user === null) {
+            $this->displayError($translator->trans('confirm.error.invalid_hash', [], 'login'));
+
+            return $this->redirectToRoute('login');
+        }
+
+        // relink to password forgot if already registered
+        if ($user->isRegistrationCompleted()) {
+            return $this->redirectToRoute('login_reset', ['authenticationHash' => $authenticationHash]);
+        }
+
+        $form = $this->handleForm(
+            $this->createForm(ConfirmType::class, $user, ['data_class' => ConstructionManager::class])
+                ->add('confirm.submit', SubmitType::class, ['translation_domain' => 'login']),
+            $request,
+            function ($form) use ($user, $translator, $request) {
+                //check for valid password
+                if ($user->getPlainPassword() !== $user->getRepeatPlainPassword()) {
+                    $this->displayError($translator->trans('reset.error.passwords_do_not_match', [], 'login'));
+
+                    return $form;
+                }
+
+                //display success
+                $this->displaySuccess($translator->trans('reset.success.password_set', [], 'login'));
+
+                //set new password & save
+                $user->setPassword();
+                $user->setAuthenticationHash();
+                $this->fastSave($user);
+
+                //login user & redirect
+                $this->loginUser($request, $user);
+
+                return $this->redirectToRoute('help_overview');
+            }
+        );
+
+        if ($form instanceof Response) {
+            return $form;
+        }
+
+        $arr['form'] = $form->createView();
+
+        return $this->render('login/confirm.html.twig', $arr);
     }
 
     /**
@@ -236,7 +283,7 @@ class LoginController extends BaseLoginController
      * @Route("/reset/{authenticationHash}", name="login_reset")
      *
      * @param Request $request
-     * @param $resetHash
+     * @param $authenticationHash
      * @param TranslatorInterface $translator
      *
      * @return Response
@@ -247,49 +294,49 @@ class LoginController extends BaseLoginController
 
         /** @var ConstructionManager $user */
         $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['authenticationHash' => $authenticationHash]);
-        if ($user !== null) {
-            // if registration incomplete; redirect to confirm page
-            if (!$user->isRegistrationCompleted()) {
-                return $this->redirect('login_confirm');
-            }
-
-            $form = $this->handleForm(
-                $this->createForm(SetPasswordType::class, $user, ['data_class' => ConstructionManager::class])
-                    ->add('reset.submit', SubmitType::class, ['translation_domain' => 'login']),
-                $request,
-                function ($form) use ($user, $translator, $request) {
-                    //check for valid password
-                    if ($user->getPlainPassword() !== $user->getRepeatPlainPassword()) {
-                        $this->displayError($translator->trans('reset.error.passwords_do_not_match', [], 'login'));
-
-                        return $form;
-                    }
-
-                    //display success
-                    $this->displaySuccess($translator->trans('reset.success.password_set', [], 'login'));
-
-                    //set new password & save
-                    $user->setPassword();
-                    $user->setAuthenticationHash();
-                    $this->fastSave($user);
-
-                    //login user & redirect
-                    $this->loginUser($request, $user);
-
-                    return $this->redirectToRoute('dashboard');
-                }
-            );
-
-            if ($form instanceof Response) {
-                return $form;
-            }
-
-            $arr['form'] = $form->createView();
-        } else {
+        if ($user === null) {
             $this->displayError($translator->trans('reset.error.invalid_hash', [], 'login'));
 
             return $this->redirectToRoute('login_recover');
         }
+
+        // if registration incomplete; redirect to confirm page
+        if (!$user->isRegistrationCompleted()) {
+            return $this->redirect('login_confirm');
+        }
+
+        $form = $this->handleForm(
+            $this->createForm(SetPasswordType::class, $user, ['data_class' => ConstructionManager::class])
+                ->add('reset.submit', SubmitType::class, ['translation_domain' => 'login']),
+            $request,
+            function ($form) use ($user, $translator, $request) {
+                //check for valid password
+                if ($user->getPlainPassword() !== $user->getRepeatPlainPassword()) {
+                    $this->displayError($translator->trans('reset.error.passwords_do_not_match', [], 'login'));
+
+                    return $form;
+                }
+
+                //display success
+                $this->displaySuccess($translator->trans('reset.success.password_set', [], 'login'));
+
+                //set new password & save
+                $user->setPassword();
+                $user->setAuthenticationHash();
+                $this->fastSave($user);
+
+                //login user & redirect
+                $this->loginUser($request, $user);
+
+                return $this->redirectToRoute('dashboard');
+            }
+        );
+
+        if ($form instanceof Response) {
+            return $form;
+        }
+
+        $arr['form'] = $form->createView();
 
         return $this->render('login/reset.html.twig', $arr);
     }
