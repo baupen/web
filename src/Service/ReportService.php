@@ -18,11 +18,11 @@ use App\Entity\Issue;
 use App\Entity\Map;
 use App\Helper\DateTimeFormatter;
 use App\Helper\IssueHelper;
-use App\Report\PdfDefinition;
-use App\Report\Report;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
+use App\Service\Report\Legacy\PdfDefinition;
+use App\Service\Report\Legacy\Report;
 use App\Service\Report\ReportElements;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -89,7 +89,7 @@ class ReportService implements ReportServiceInterface
     private function render(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $reportElements, array $issues, string $filePath)
     {
         // initialize report
-        $pdfDefinition = new PdfDefinition($constructionSite->getName(), $author, __DIR__ . '/../../public/files/report_logo.png');
+        $pdfDefinition = new PdfDefinition($constructionSite->getName(), $author, __DIR__ . '/../../assets/report/logo.png');
         $report = new Report($pdfDefinition);
 
         $this->addIntroduction($report, $constructionSite, $filter, $reportElements);
@@ -499,7 +499,7 @@ class ReportService implements ReportServiceInterface
      *
      * @return string
      */
-    public function generateReport(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $elements)
+    public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $elements)
     {
         $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
 
