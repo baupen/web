@@ -267,12 +267,14 @@ WHERE cscm.construction_manager_id = :id';
      * @param string[] $allValidIds contains all ids from the db
      * @param string[] $removeIds contains the invalid given (ids -> time)
      * @param string[] $knownIds contains the valid given (id -> time)
+     *
+     * @throws \Exception
      */
     private function filterIds($requestObjectMeta, $dbEntities, &$allValidIds, &$removeIds, &$knownIds)
     {
         $removeIds = [];
         foreach ($requestObjectMeta as $objectMeta) {
-            $removeIds[$objectMeta['id']] = $objectMeta['lastChangeTime'];
+            $removeIds[$objectMeta['id']] = (new \DateTime($objectMeta['lastChangeTime']))->format('Y-m-d H:i:s');
         }
 
         $allValidIds = [];
@@ -319,7 +321,7 @@ WHERE cscm.construction_manager_id = :id';
             $sql .= ') OR ';
         }
 
-        //return buildings unknown to the requester
+        //return entries unknown to the requester
         if (\count($guidTimeDictionary) > 0) {
             $sql .= $tableShort . '.id NOT IN ("' . implode('", "', array_keys($guidTimeDictionary)) . '")';
         } else {
