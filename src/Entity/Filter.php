@@ -406,7 +406,7 @@ class Filter extends BaseEntity
     /**
      * @param \DateTime|null $limitStart
      */
-    public function setLimitStart(?\DateTime $limitStart): void
+    public function setResponseLimitStart(?\DateTime $limitStart): void
     {
         $this->limitStart = $limitStart;
     }
@@ -422,7 +422,7 @@ class Filter extends BaseEntity
     /**
      * @param \DateTime|null $limitEnd
      */
-    public function setLimitEnd(?\DateTime $limitEnd): void
+    public function setResponseLimitEnd(?\DateTime $limitEnd): void
     {
         $this->limitEnd = $limitEnd;
     }
