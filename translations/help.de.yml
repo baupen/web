@@ -1,5 +1,5 @@
 overview:
-  title: 'So funktionierts.'
+  title: 'So funktioniert''s.'
   description: 'Pendenzenmangement in 5 Schritten.'
 
   create: 'Erfassen'
@@ -13,6 +13,6 @@ overview:
   wait: 'Warten'
   wait_description: 'Warten Sie auf eine Rückmeldung des Handwerkers.'
   inspect: 'Abschliessen'
-  inspect_description: 'Markieren Sie die erledigten Pendenzen als abgeschlossen in der iPhone App.'
+  inspect_description: 'Markieren Sie die erledigten Pendenzen als abgeschlossen in der iPhone-App.'
 
   start: 'Zur Anwendung'

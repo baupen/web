@@ -91,7 +91,7 @@
                     <td>
                         <span v-if="editDescription === null || !issue.selected" class="editable"
                               @click.prevent.stop="startEditDescription(issue)">
-                            {{issue.description}}
+                            {{issue.description !== "" ? issue.description : "-"}}
                         </span>
                         <div v-else>
                             <input :ref="'description-' + issue.id" class="form-control" type="text"
