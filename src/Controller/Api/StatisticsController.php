@@ -70,10 +70,10 @@ class StatisticsController extends ApiController
         $filter->setIsMarked(null);
 
         //count overdue issues
-        $filter->setLimitEnd(new \DateTime());
+        $filter->setResponseLimitEnd(new \DateTime());
         $filter->setReviewedStatus(false);
         $overview->setOverdueIssuesCount($issueRepo->filterCount($filter));
-        $filter->setLimitEnd(null);
+        $filter->setResponseLimitEnd(null);
         $filter->setReviewedStatus(null);
 
         //count overdue issues

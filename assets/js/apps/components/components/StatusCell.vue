@@ -34,20 +34,20 @@
             <a href="#" v-if="!expanded" @click.prevent="expanded = true">{{ $t("view.more") }}</a>
             <a href="#" v-if="expanded" @click.prevent="expanded = false">{{ $t("view.less") }}</a>
             <div v-if="expanded">
-                <span v-if="issue.registrationAt !== null">
+                <span v-if="issue.registeredAt != null">
                     <b>{{$t("issue.status_values.registered")}}</b>
-                    {{ formatDateTime(issue.registrationAt) }},
+                    {{ formatDateTime(issue.registeredAt) }},
                     {{ issue.registrationByName }}
                     <br/>
                 </span>
-                <span v-if="issue.respondedAt !== null">
+                <span v-if="issue.respondedAt != null">
                     <b>{{$t("issue.status_values.responded")}}</b>
                     {{ formatDateTime(issue.respondedAt) }},
                     {{ issue.responseByName }}
                     <br/>
                 </span>
 
-                <span v-if="issue.reviewedAt !== null">
+                <span v-if="issue.reviewedAt != null">
                     <b>{{$t("issue.status_values.reviewed")}}</b>
                     {{ formatDateTime(issue.reviewedAt) }},
                     {{ issue.reviewByName }}

@@ -33,7 +33,7 @@ trait QueryParseTrait
             $filter->setIsMarked(true);
         }
         if ($parameterBag->getBoolean('onlyOverLimit')) {
-            $filter->setLimitEnd(new \DateTime());
+            $filter->setResponseLimitEnd(new \DateTime());
         }
         $numberText = $parameterBag->get('numberText');
         if (mb_strlen($numberText) > 0) {

@@ -172,6 +172,16 @@ class IssueRepository extends EntityRepository
             }
         }
 
+        if ($filter->getResponseLimitStart() !== null) {
+            $queryBuilder->andWhere('i.responseLimit >= :response_limit_start');
+            $queryBuilder->setParameter(':response_limit_start', $filter->getResponseLimitStart());
+        }
+
+        if ($filter->getResponseLimitEnd() !== null) {
+            $queryBuilder->andWhere('i.responseLimit <= :response_limit_end');
+            $queryBuilder->setParameter(':response_limit_end', $filter->getResponseLimitEnd());
+        }
+
         if ($filter->getIsMarked() !== null) {
             $queryBuilder->andWhere('i.isMarked = :is_marked');
             $queryBuilder->setParameter('is_marked', $filter->getIsMarked());
