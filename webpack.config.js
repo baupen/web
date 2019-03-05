@@ -1,35 +1,39 @@
-var Encore = require("@symfony/webpack-encore");
+var Encore = require('@symfony/webpack-encore');
 
 Encore
-    // the project directory where all compiled assets will be stored
-    .setOutputPath("public/dist/")
+// the project directory where all compiled assets will be stored
+  .setOutputPath('public/dist/')
 
-    // the public path used by the web server to access the previous directory
-    .setPublicPath("/dist")
+  // the public path used by the web server to access the previous directory
+  .setPublicPath('/dist')
 
-    // will create public/build/app.js and public/build/app.css
-    .addEntry("app", "./assets/js/app.js")
+  // will create public/build/app.js and public/build/app.css
+  .addEntry('app', './assets/js/app.js')
+  .copyFiles({
+    from: './assets/images',
+    to: 'images/[path][name].[ext]'
+  })
 
-    // allow sass/scss files to be processed
-    .enableSassLoader()
+  // allow sass/scss files to be processed
+  .enableSassLoader()
 
-    // allow legacy applications to use $/jQuery as a global variable
-    .autoProvidejQuery()
+  // allow legacy applications to use $/jQuery as a global variable
+  .autoProvidejQuery()
 
-    // enable vue.js loader
-    .enableVueLoader()
+  // enable vue.js loader
+  .enableVueLoader()
 
-    // allow debugging of minified assets
-    .enableSourceMaps(!Encore.isProduction())
+  // allow debugging of minified assets
+  .enableSourceMaps(!Encore.isProduction())
 
-    // empty the outputPath dir before each build
-    .cleanupOutputBeforeBuild()
+  // empty the outputPath dir before each build
+  .cleanupOutputBeforeBuild()
 
-    // create hashed filenames (e.g. app.abc123.css)
-    .enableVersioning(Encore.isProduction())
+  // create hashed filenames (e.g. app.abc123.css)
+  .enableVersioning(Encore.isProduction())
 
-    // disable optimization with runtime chunks
-    .disableSingleRuntimeChunk()
+  // disable optimization with runtime chunks
+  .disableSingleRuntimeChunk()
 ;
 
 // export the final configuration

@@ -1,17 +1,17 @@
 overview:
-  title: 'So funktioniert''s.'
+  title: 'So funktionierts.'
   description: 'Pendenzenmangement in 5 Schritten.'
 
   create: 'Erfassen'
-  create_description: 'Lokalisieren Sie Pendenzen mit unserer iPhone App.'
+  create_description: 'Lokalisieren Sie Pendenzen mit unserer iPad/iPhone App.'
   populate: 'Einpflegen'
   populate_description: 'Bereinigen Sie neu erfasste Pendenzen im Warteraum.'
   manage: 'Verwalten'
   manage_description: 'Durchsuchen, ändern und exportieren Sie eingepflegte Pendenzen im Verzeichnis.'
   notify: 'Benachrichtigen'
   notify_description: 'Informieren Sie Handwerker über neue Pendenzen.'
-  wait: 'Warten'
-  wait_description: 'Warten Sie auf eine Rückmeldung des Handwerkers.'
+  wait: '(Warten...)'
+  wait_description: 'Warten Sie auf eine Rückmeldung des Handwerkers. Dieser kann mit einem personalisierten Link seine Pendenzen abarbeiten und als erledigt markieren.'
   inspect: 'Abschliessen'
   inspect_description: 'Markieren Sie die erledigten Pendenzen als abgeschlossen in der iPhone-App.'
 
