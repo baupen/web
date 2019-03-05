@@ -100,11 +100,9 @@ class CraftsmanController extends ApiController
             return $this->fail(self::INVALID_IDENTIFIER);
         }
 
+        $this->ensureCraftsmanFilterInitialized($craftsman);
+
         $data = new CraftsmanData();
-        if ($craftsman->getShareViewFilter() === null) {
-            $filter = $craftsman->setShareViewFilter();
-            $this->fastSave($filter, $craftsman);
-        }
         $data->setCraftsman($craftsmanTransformer->toApi($craftsman, $identifier));
 
         return $this->success($data);
@@ -116,6 +114,8 @@ class CraftsmanController extends ApiController
      * @param $identifier
      * @param MapTransformer $mapTransformer
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function craftsmanMapsListAction($identifier, MapTransformer $mapTransformer)
@@ -126,6 +126,7 @@ class CraftsmanController extends ApiController
         }
 
         //get all relevant issues
+        $this->ensureCraftsmanFilterInitialized($craftsman);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($craftsman->getShareViewFilter());
 
         /* @var Map[] $orderedMaps */
@@ -210,5 +211,18 @@ class CraftsmanController extends ApiController
         }
 
         return $this->success($data);
+    }
+
+    /**
+     * @param Craftsman $craftsman
+     *
+     * @throws \Exception
+     */
+    private function ensureCraftsmanFilterInitialized(Craftsman $craftsman)
+    {
+        if ($craftsman->getShareViewFilter() === null) {
+            $filter = $craftsman->setShareViewFilter();
+            $this->fastSave($filter, $craftsman);
+        }
     }
 }
