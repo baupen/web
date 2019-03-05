@@ -89,6 +89,8 @@ class CraftsmanController extends ApiController
      * @param $identifier
      * @param CraftsmanTransformer $craftsmanTransformer
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function readAction($identifier, CraftsmanTransformer $craftsmanTransformer)
@@ -99,6 +101,10 @@ class CraftsmanController extends ApiController
         }
 
         $data = new CraftsmanData();
+        if ($craftsman->getShareViewFilter() === null) {
+            $filter = $craftsman->setShareViewFilter();
+            $this->fastSave($filter, $craftsman);
+        }
         $data->setCraftsman($craftsmanTransformer->toApi($craftsman, $identifier));
 
         return $this->success($data);

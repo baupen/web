@@ -428,13 +428,12 @@ class EditController extends ApiController
         $craftsman = new Craftsman();
         $craftsman->setConstructionSite($constructionSite);
         $craftsman->setEmailIdentifier();
-        $filter = $craftsman->setShareViewFilter();
 
         if (!$this->writeIntoCraftsmanEntity($updateCraftsman, $craftsman)) {
             return $errorResponse;
         }
 
-        $this->fastSave($craftsman, $filter);
+        $this->fastSave($craftsman);
 
         //create response
         $data = new CraftsmanData();
