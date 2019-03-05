@@ -87,6 +87,10 @@ class CraftsmanControllerTest extends ApiController
                 $this->assertObjectHasAttribute('description', $issue);
                 $this->assertObjectHasAttribute('imageShareView', $issue);
                 $this->assertObjectHasAttribute('imageFull', $issue);
+                if ($issue->imageShareView !== null || $issue->imageFull !== null) {
+                    $this->assertNotNull($issue->imageShareView);
+                    $this->assertNotNull($issue->imageFull);
+                }
                 $this->assertObjectHasAttribute('responseLimit', $issue);
                 $this->assertObjectHasAttribute('number', $issue);
                 $this->assertObjectHasAttribute('id', $issue);

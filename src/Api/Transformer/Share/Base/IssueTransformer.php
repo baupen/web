@@ -55,7 +55,7 @@ class IssueTransformer
         if ($entity->getImage() !== null) {
             $routeArguments = ['identifier' => $identifier, 'image' => $entity->getImage()->getId(), 'issue' => $entity->getId()];
             $issue->setImageShareView($generateRoute($this->router, $routeArguments + ['size' => ImageServiceInterface::SIZE_SHARE_VIEW]));
-            $issue->setImageShareView($generateRoute($this->router, $routeArguments + ['size' => ImageServiceInterface::SIZE_FULL]));
+            $issue->setImageFull($generateRoute($this->router, $routeArguments + ['size' => ImageServiceInterface::SIZE_FULL]));
         }
 
         return $issue;

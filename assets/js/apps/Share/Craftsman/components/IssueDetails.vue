@@ -56,6 +56,9 @@
             formatDateTime: function (value) {
                 return value === null ? "-" : moment(value).fromNow();
             }
+        },
+        mounted() {
+            console.log(this.issue);
         }
     }
 </script>
