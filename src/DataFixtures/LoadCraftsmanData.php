@@ -64,7 +64,6 @@ class LoadCraftsmanData extends BaseFixture
                 }
                 $manager->persist($craftsman);
                 $manager->flush();
-                $manager->persist($craftsman->setShareViewFilter());
             }
         }
 

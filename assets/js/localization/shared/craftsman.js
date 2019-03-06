@@ -3,7 +3,7 @@ export default {
     plural: 'Handwerker',
     name: 'Name',
     trade: 'Funktion',
-    contact_name: 'Kontakperson',
+    contact_name: 'Kontaktperson',
     email: 'E-Mail',
     company: 'Firma',
     not_responded_issues_count: 'Unbeantwortete Pendenzen',
