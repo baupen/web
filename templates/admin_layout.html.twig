@@ -23,6 +23,11 @@
                 {{ own_macros.nav_item(path("dispatch"), "dispatch.title"|trans({}, "dispatch")) }}
             </ul>
             <ul class="navbar-nav mr-2">
+                <a href="#help" class="nav-link" data-target="#help-modal" data-toggle="modal">
+                    <i class="fal fa-question-circle"></i>
+                </a>
+            </ul>
+            <ul class="navbar-nav mr-2">
                 {{ own_macros.nav_item(path("edit"), "edit.title"|trans({}, "edit")) }}
                 {{ own_macros.nav_item(path("switch"), "switch.title"|trans({}, "switch")) }}
             </ul>
@@ -35,6 +40,20 @@
             </ul>
         </div>
     </nav>
+
+    <!-- help modal -->
+    <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h1>{{ "overview.title"|trans({}, "help") }}</h1>
+                    <p>{{ "overview.description"|trans({}, "help") }}</p>
+                    {% include "help/overview_content.html.twig" %}
+                </div>
+            </div>
+        </div>
+    </div>
 
     <section class="admin-wrapper">
         <h1>{{ block("title") }}</h1>
