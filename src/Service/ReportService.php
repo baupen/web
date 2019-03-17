@@ -499,7 +499,7 @@ class ReportService implements ReportServiceInterface
      *
      * @return string
      */
-    public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $elements)
+    public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, ?string $author, ReportElements $elements)
     {
         $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
 
@@ -512,8 +512,13 @@ class ReportService implements ReportServiceInterface
         //only generate report if it does not already exist
         $filePath = $generationTargetFolder . \DIRECTORY_SEPARATOR . uniqid() . '.pdf';
         if (!file_exists($filePath) || $this->disableCache) {
-            $author = $this->translator->trans('generated', ['%date%' => (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT), '%name%' => $author], 'report');
-            $this->render($constructionSite, $filter, $author, $elements, $issues, $filePath);
+            $formattedDate = (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT);
+            if ($author === null) {
+                $footer = $this->translator->trans('generated', ['%date%' => $formattedDate], 'report');
+            } else {
+                $footer = $this->translator->trans('generated_with_author', ['%date%' => $formattedDate, '%name%' => $author], 'report');
+            }
+            $this->render($constructionSite, $filter, $footer, $elements, $issues, $filePath);
         }
 
         return $filePath;

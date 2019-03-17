@@ -1,4 +1,5 @@
-generated: 'generato da %name% il %date%'
+generated_with_author: 'generato da %name% il %date%'
+generated: 'generato il %date%'
 filter:
   later_than: 'dopo il %date%'
   earlier_than: 'prima del %date%'
