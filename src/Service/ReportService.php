@@ -189,9 +189,9 @@ class ReportService implements ReportServiceInterface
                     return '(' . $start->format(DateTimeFormatter::DATE_TIME_FORMAT) . ' - ' . $end->format(DateTimeFormatter::DATE_TIME_FORMAT) . ')';
                 }
 
-                return '(' . $this->translator->trans('filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
+                return '(' . $this->translator->trans('introduction.filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
             } elseif ($end !== null) {
-                return '(' . $this->translator->trans('filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
+                return '(' . $this->translator->trans('introduction.filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
             }
 
             return '';
@@ -203,7 +203,7 @@ class ReportService implements ReportServiceInterface
                 return $trans . ' ' . $getDateTimeRange($start, $end);
             }
 
-            return $this->translator->trans('filter.not', ['%state%' => $trans], 'report');
+            return $this->translator->trans('introduction.filter.not', ['%state%' => $trans], 'report');
         };
 
         //collect all set status
@@ -243,7 +243,7 @@ class ReportService implements ReportServiceInterface
                 $trades[$item->getTrade()] = 1;
             }
             $names = array_keys($names);
-            $filterEntries[$this->translator->transChoice('filter.craftsmen', \count($names), [], 'report')] = implode(', ', $names);
+            $filterEntries[$this->translator->transChoice('introduction.filter.craftsmen', \count($names), [], 'report')] = implode(', ', $names);
         }
 
         //add maps
@@ -253,7 +253,7 @@ class ReportService implements ReportServiceInterface
             foreach ($entities as $item) {
                 $names[] = $item->getName() . ' (' . $item->getContext() . ')';
             }
-            $filterEntries[$this->translator->transChoice('filter.maps', \count($names), [], 'report')] = implode(', ', $names);
+            $filterEntries[$this->translator->transChoice('introduction.filter.maps', \count($names), [], 'report')] = implode(', ', $names);
         }
 
         //add limit
@@ -276,7 +276,7 @@ class ReportService implements ReportServiceInterface
                     $trades[$trade] = 1;
                 }
             }
-            $filterEntries[$this->translator->transChoice('filter.trades', \count($trades), [], 'report')] = implode(', ', array_keys($trades));
+            $filterEntries[$this->translator->transChoice('introduction.filter.trades', \count($trades), [], 'report')] = implode(', ', array_keys($trades));
         }
 
         //add list of elements which are part of this report
