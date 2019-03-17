@@ -19,6 +19,7 @@ use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionSite;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -42,6 +43,16 @@ class SwitchController extends ApiController
     }
 
     /**
+     * throws an exception if a trial account is used to authenticate.
+     */
+    private function ensureNoTrialAccount()
+    {
+        if ($this->getUser()->getIsTrialAccount()) {
+            throw new AccessDeniedHttpException();
+        }
+    }
+
+    /**
      * @Route("/construction_sites", name="api_switch_constrution_sites")
      *
      * @param ConstructionSiteTransformer $constructionSiteTransformer
@@ -50,6 +61,8 @@ class SwitchController extends ApiController
      */
     public function constructionSitesAction(ConstructionSiteTransformer $constructionSiteTransformer)
     {
+        $this->ensureNoTrialAccount();
+
         $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findAll();
 
         //create response
@@ -68,6 +81,8 @@ class SwitchController extends ApiController
      */
     public function requestAccessAction(Request $request)
     {
+        $this->ensureNoTrialAccount();
+
         /** @var ConstructionSiteRequest $parsedRequest */
         if (!parent::parseRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse)) {
             return $errorResponse;
@@ -93,6 +108,8 @@ class SwitchController extends ApiController
      */
     public function removeAccessAction(Request $request)
     {
+        $this->ensureNoTrialAccount();
+
         /** @var ConstructionSiteRequest $parsedRequest */
         if (!parent::parseRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse)) {
             return $errorResponse;
