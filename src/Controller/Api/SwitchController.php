@@ -27,9 +27,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SwitchController extends ApiController
 {
-    const INCORRECT_NUMBER_OF_FILES = 'incorrect number of files';
-    const MAP_FILE_UPLOAD_FAILED = 'map file could not be uploaded';
-
     /**
      * gives the appropriate error code the specified error message.
      *
@@ -63,7 +60,7 @@ class SwitchController extends ApiController
     {
         $this->ensureNoTrialAccount();
 
-        $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findAll();
+        $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(['isTrialConstructionSite' => false]);
 
         //create response
         $data = new ConstructionSitesData();
@@ -90,7 +87,12 @@ class SwitchController extends ApiController
 
         // add to construction site if not already a member
         /** @var ConstructionSite $constructionSite */
-        $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($parsedRequest->getConstructionSiteId());
+        $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(['isTrialConstructionSite' => false, 'id' => $parsedRequest->getConstructionSiteId()]);
+        if (\count($constructionSites) === 0) {
+            return $this->fail(self::CONSTRUCTION_SITE_NOT_FOUND);
+        }
+
+        $constructionSite = $constructionSites[0];
         if (!$constructionSite->getConstructionManagers()->contains($this->getUser())) {
             $constructionSite->getConstructionManagers()->add($this->getUser());
             $this->fastSave($constructionSite);
@@ -117,7 +119,12 @@ class SwitchController extends ApiController
 
         // add to construction site if not already a member
         /** @var ConstructionSite $constructionSite */
-        $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($parsedRequest->getConstructionSiteId());
+        $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(['isTrialConstructionSite' => false, 'id' => $parsedRequest->getConstructionSiteId()]);
+        if (\count($constructionSites) === 0) {
+            return $this->fail(self::CONSTRUCTION_SITE_NOT_FOUND);
+        }
+
+        $constructionSite = $constructionSites[0];
         if ($constructionSite->getConstructionManagers()->contains($this->getUser())) {
             $constructionSite->getConstructionManagers()->removeElement($this->getUser());
             $this->fastSave($constructionSite);

@@ -92,6 +92,13 @@ class ConstructionSite extends BaseEntity
     private $craftsmen;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private $isTrialConstructionSite = false;
+
+    /**
      * Construction site constructor.
      */
     public function __construct()
@@ -202,5 +209,21 @@ class ConstructionSite extends BaseEntity
     public function getMapFiles()
     {
         return $this->mapFiles;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTrialConstructionSite(): bool
+    {
+        return $this->isTrialConstructionSite;
+    }
+
+    /**
+     * @param bool $isTrialConstructionSite
+     */
+    public function setIsTrialConstructionSite(bool $isTrialConstructionSite): void
+    {
+        $this->isTrialConstructionSite = $isTrialConstructionSite;
     }
 }
