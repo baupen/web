@@ -281,6 +281,7 @@ class RegisterController extends ApiController
                 return $this->fail(self::EMPTY_CONDITIONS_NOT_ALLOWED);
             }
         }
+
         //save
         $this->fastSave($filter);
 
