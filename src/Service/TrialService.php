@@ -130,7 +130,7 @@ class TrialService implements TrialServiceInterface
 
         $this->copyMapFiles($constructionSite);
         $this->copyConstructionSiteFiles($constructionSite);
-        $this->syncService->syncConstructionSite($constructionSite);
+        $this->syncService->syncConstructionSite($constructionSite, true);
     }
 
     /**
