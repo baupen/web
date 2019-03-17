@@ -16,5 +16,8 @@ import { faUserAlt } from '@fortawesome/pro-light-svg-icons/faUserAlt';
 // favorite active
 import { faStar } from '@fortawesome/pro-light-svg-icons/faStar';
 
+// favorite active
+import { faQuestionCircle } from '@fortawesome/pro-light-svg-icons/faQuestionCircle';
+
 // add icons
-library.add(faPencil, faTrash, faTimes, faSort, faUserAlt, faStar);
+library.add(faPencil, faTrash, faTimes, faSort, faUserAlt, faStar, faQuestionCircle);

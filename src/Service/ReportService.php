@@ -189,9 +189,9 @@ class ReportService implements ReportServiceInterface
                     return '(' . $start->format(DateTimeFormatter::DATE_TIME_FORMAT) . ' - ' . $end->format(DateTimeFormatter::DATE_TIME_FORMAT) . ')';
                 }
 
-                return '(' . $this->translator->trans('filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
+                return '(' . $this->translator->trans('introduction.filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
             } elseif ($end !== null) {
-                return '(' . $this->translator->trans('filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
+                return '(' . $this->translator->trans('introduction.filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
             }
 
             return '';
@@ -203,7 +203,7 @@ class ReportService implements ReportServiceInterface
                 return $trans . ' ' . $getDateTimeRange($start, $end);
             }
 
-            return $this->translator->trans('filter.not', ['%state%' => $trans], 'report');
+            return $this->translator->trans('introduction.filter.not', ['%state%' => $trans], 'report');
         };
 
         //collect all set status
@@ -243,7 +243,7 @@ class ReportService implements ReportServiceInterface
                 $trades[$item->getTrade()] = 1;
             }
             $names = array_keys($names);
-            $filterEntries[$this->translator->transChoice('filter.craftsmen', \count($names), [], 'report')] = implode(', ', $names);
+            $filterEntries[$this->translator->transChoice('introduction.filter.craftsmen', \count($names), [], 'report')] = implode(', ', $names);
         }
 
         //add maps
@@ -253,7 +253,7 @@ class ReportService implements ReportServiceInterface
             foreach ($entities as $item) {
                 $names[] = $item->getName() . ' (' . $item->getContext() . ')';
             }
-            $filterEntries[$this->translator->transChoice('filter.maps', \count($names), [], 'report')] = implode(', ', $names);
+            $filterEntries[$this->translator->transChoice('introduction.filter.maps', \count($names), [], 'report')] = implode(', ', $names);
         }
 
         //add limit
@@ -276,7 +276,7 @@ class ReportService implements ReportServiceInterface
                     $trades[$trade] = 1;
                 }
             }
-            $filterEntries[$this->translator->transChoice('filter.trades', \count($trades), [], 'report')] = implode(', ', array_keys($trades));
+            $filterEntries[$this->translator->transChoice('introduction.filter.trades', \count($trades), [], 'report')] = implode(', ', array_keys($trades));
         }
 
         //add list of elements which are part of this report
@@ -499,7 +499,7 @@ class ReportService implements ReportServiceInterface
      *
      * @return string
      */
-    public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $elements)
+    public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, ?string $author, ReportElements $elements)
     {
         $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
 
@@ -512,8 +512,13 @@ class ReportService implements ReportServiceInterface
         //only generate report if it does not already exist
         $filePath = $generationTargetFolder . \DIRECTORY_SEPARATOR . uniqid() . '.pdf';
         if (!file_exists($filePath) || $this->disableCache) {
-            $author = $this->translator->trans('generated', ['%date%' => (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT), '%name%' => $author], 'report');
-            $this->render($constructionSite, $filter, $author, $elements, $issues, $filePath);
+            $formattedDate = (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT);
+            if ($author === null) {
+                $footer = $this->translator->trans('generated', ['%date%' => $formattedDate], 'report');
+            } else {
+                $footer = $this->translator->trans('generated_with_author', ['%date%' => $formattedDate, '%name%' => $author], 'report');
+            }
+            $this->render($constructionSite, $filter, $footer, $elements, $issues, $filePath);
         }
 
         return $filePath;

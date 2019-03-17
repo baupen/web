@@ -1,4 +1,5 @@
-generated: 'generiert von %name% am %date%'
+generated_with_author: 'generiert von %name% am %date%'
+generated: 'generiert am %date%'
 introduction:
   elements: 'Inhalt des Berichtes'
   filter:

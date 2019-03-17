@@ -5,11 +5,14 @@
                       :size="60"
                       :color="'#ff1d5e'"
         />
-        <div v-else>
+        <div v-else-if="showEntries.length > 0">
             <feed-entry v-for="entry in showEntries" :key="entry.id" :entry="entry" />
             <button class="btn btn-outline-secondary" v-if="showEntries.length < feed.entries.length" @click="maxEntries += 10">
                 {{$t("feed.show_more")}}
             </button>
+        </div>
+        <div v-else>
+            <p>{{$t("feed.no_entries_yet")}}</p>
         </div>
     </div>
 </template>

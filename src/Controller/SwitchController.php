@@ -28,6 +28,10 @@ class SwitchController extends BaseLoginController
      */
     public function indexAction()
     {
+        if ($this->getUser()->getIsTrialAccount()) {
+            return $this->redirectToRoute('dashboard');
+        }
+
         return $this->render('switch/switch.html.twig');
     }
 

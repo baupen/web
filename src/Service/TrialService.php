@@ -111,6 +111,7 @@ class TrialService implements TrialServiceInterface
         $constructionSite->setLocality($this->translator->trans('construction_site.locality', [], 'trial'));
         $constructionSite->setPostalCode($this->translator->trans('construction_site.postal_code', [], 'trial'));
         $constructionSite->setCountry($this->translator->trans('construction_site.country', [], 'trial'));
+        $constructionSite->setIsTrialConstructionSite(true);
 
         $constructionSite->getConstructionManagers()->add($constructionManager);
         $constructionManager->getConstructionSites()->add($constructionSite);
@@ -129,7 +130,7 @@ class TrialService implements TrialServiceInterface
 
         $this->copyMapFiles($constructionSite);
         $this->copyConstructionSiteFiles($constructionSite);
-        $this->syncService->syncConstructionSite($constructionSite);
+        $this->syncService->syncConstructionSite($constructionSite, true);
     }
 
     /**

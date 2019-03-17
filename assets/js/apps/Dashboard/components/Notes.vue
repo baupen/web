@@ -15,12 +15,15 @@
                       :size="60"
                       :color="'#ff1d5e'"
         />
-        <div v-else>
+        <div v-else-if="notes.length > 0">
             <hr/>
             <note-entry v-for="entry in notes" :key="entry.id"
                         @save="save(entry)"
                         @remove="remove(entry)"
                         :entry="entry"/>
+        </div>
+        <div v-else>
+            <p class="mt-2">{{$t("notes.no_entries_yet")}}</p>
         </div>
     </div>
 </template>

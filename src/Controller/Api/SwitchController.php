@@ -19,6 +19,7 @@ use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionSite;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -26,9 +27,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SwitchController extends ApiController
 {
-    const INCORRECT_NUMBER_OF_FILES = 'incorrect number of files';
-    const MAP_FILE_UPLOAD_FAILED = 'map file could not be uploaded';
-
     /**
      * gives the appropriate error code the specified error message.
      *
@@ -42,6 +40,16 @@ class SwitchController extends ApiController
     }
 
     /**
+     * throws an exception if a trial account is used to authenticate.
+     */
+    private function ensureNoTrialAccount()
+    {
+        if ($this->getUser()->getIsTrialAccount()) {
+            throw new AccessDeniedHttpException();
+        }
+    }
+
+    /**
      * @Route("/construction_sites", name="api_switch_constrution_sites")
      *
      * @param ConstructionSiteTransformer $constructionSiteTransformer
@@ -50,7 +58,9 @@ class SwitchController extends ApiController
      */
     public function constructionSitesAction(ConstructionSiteTransformer $constructionSiteTransformer)
     {
-        $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findAll();
+        $this->ensureNoTrialAccount();
+
+        $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(['isTrialConstructionSite' => false]);
 
         //create response
         $data = new ConstructionSitesData();
@@ -68,6 +78,8 @@ class SwitchController extends ApiController
      */
     public function requestAccessAction(Request $request)
     {
+        $this->ensureNoTrialAccount();
+
         /** @var ConstructionSiteRequest $parsedRequest */
         if (!parent::parseRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse)) {
             return $errorResponse;
@@ -75,7 +87,12 @@ class SwitchController extends ApiController
 
         // add to construction site if not already a member
         /** @var ConstructionSite $constructionSite */
-        $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($parsedRequest->getConstructionSiteId());
+        $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(['isTrialConstructionSite' => false, 'id' => $parsedRequest->getConstructionSiteId()]);
+        if (\count($constructionSites) === 0) {
+            return $this->fail(self::CONSTRUCTION_SITE_NOT_FOUND);
+        }
+
+        $constructionSite = $constructionSites[0];
         if (!$constructionSite->getConstructionManagers()->contains($this->getUser())) {
             $constructionSite->getConstructionManagers()->add($this->getUser());
             $this->fastSave($constructionSite);
@@ -93,6 +110,8 @@ class SwitchController extends ApiController
      */
     public function removeAccessAction(Request $request)
     {
+        $this->ensureNoTrialAccount();
+
         /** @var ConstructionSiteRequest $parsedRequest */
         if (!parent::parseRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse)) {
             return $errorResponse;
@@ -100,7 +119,12 @@ class SwitchController extends ApiController
 
         // add to construction site if not already a member
         /** @var ConstructionSite $constructionSite */
-        $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($parsedRequest->getConstructionSiteId());
+        $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(['isTrialConstructionSite' => false, 'id' => $parsedRequest->getConstructionSiteId()]);
+        if (\count($constructionSites) === 0) {
+            return $this->fail(self::CONSTRUCTION_SITE_NOT_FOUND);
+        }
+
+        $constructionSite = $constructionSites[0];
         if ($constructionSite->getConstructionManagers()->contains($this->getUser())) {
             $constructionSite->getConstructionManagers()->removeElement($this->getUser());
             $this->fastSave($constructionSite);

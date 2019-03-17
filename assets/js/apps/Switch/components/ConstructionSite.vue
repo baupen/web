@@ -41,9 +41,6 @@
         components: {
             bCard,
             bButton
-        },
-        mounted() {
-            console.log(this.constructionSite);
         }
     }
 </script>

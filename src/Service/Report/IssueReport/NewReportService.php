@@ -123,7 +123,7 @@ class NewReportService
      *
      * @return string
      */
-    public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $reportElements)
+    public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, ?string $author, ReportElements $reportElements)
     {
         // initialize pdf report
         $printFactory = new PrintFactory($this->typographyService, $this->colorService, $this->layoutService);
@@ -206,7 +206,7 @@ class NewReportService
      *
      * @return MetaData
      */
-    private function getMetaData(ConstructionSite $constructionSite, string $author)
+    private function getMetaData(ConstructionSite $constructionSite, ?string $author)
     {
         $pageLayoutContent = new MetaData();
 
@@ -214,7 +214,12 @@ class NewReportService
         $pageLayoutContent->setAuthor($author);
 
         $formattedDateTime = (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT);
-        $pageLayoutContent->setGenerationInfoText($this->translator->trans('generated', ['%date%' => $formattedDateTime, '%name%' => $author], 'report'));
+        if ($author === null) {
+            $generationInfoText = $this->translator->trans('generated', ['%date%' => $formattedDateTime], 'report');
+        } else {
+            $generationInfoText = $this->translator->trans('generated_with_author', ['%date%' => $formattedDateTime, '%name%' => $author], 'report');
+        }
+        $pageLayoutContent->setGenerationInfoText($generationInfoText);
 
         $logoPath = $this->pathService->getAssetsRoot() . \DIRECTORY_SEPARATOR . 'report' . \DIRECTORY_SEPARATOR . 'logo.png';
         $pageLayoutContent->setLogoPath($logoPath);

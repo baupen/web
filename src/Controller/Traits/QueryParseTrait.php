@@ -42,28 +42,32 @@ trait QueryParseTrait
 
         //parse input to array
         //empty arrays are not considered
-        $toArray = function ($input) {
-            return \is_array($input) && \count($input) > 0 ? $input : null;
-        };
+        $flattenIdArray = function ($input) {
+            if (!\is_array($input)) {
+                return [];
+            }
 
-        $issueParameters = new ParameterBag($parameterBag->get('craftsman', []));
-        if ($issueParameters->getBoolean('enabled')) {
-            $filter->setIssues($toArray($issueParameters->get('issues', [])));
-        }
+            $res = [];
+            foreach ($input as $item) {
+                $res[] = $item['id'];
+            }
+
+            return $res;
+        };
 
         $craftsmanParameters = new ParameterBag($parameterBag->get('craftsman', []));
         if ($craftsmanParameters->getBoolean('enabled')) {
-            $filter->setCraftsmen($toArray($craftsmanParameters->get('craftsmen', [])));
+            $filter->setCraftsmen($flattenIdArray($craftsmanParameters->get('craftsmen', [])));
         }
 
         $mapParameters = new ParameterBag($parameterBag->get('map', []));
         if ($mapParameters->getBoolean('enabled')) {
-            $filter->setMaps($toArray($mapParameters->get('maps', [])));
+            $filter->setMaps($flattenIdArray($mapParameters->get('maps', [])));
         }
 
         $tradeParameters = new ParameterBag($parameterBag->get('trade', []));
         if ($tradeParameters->getBoolean('enabled')) {
-            $allowedTrades = $toArray($tradeParameters->get('trades', []));
+            $allowedTrades = $tradeParameters->get('trades', []);
             if (\is_array($allowedTrades)) {
                 $craftsmanIds = [];
                 foreach ($constructionSite->getCraftsmen() as $craftsman) {

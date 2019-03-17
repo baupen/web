@@ -1,18 +1,25 @@
 <template>
     <div id="switch">
-        <h2>{{$t("mine.title")}}</h2>
-        <p class="text-secondary">{{$t("mine.description")}}</p>
-        <atom-spinner v-if="isLoading"
-                      :animation-duration="1000"
-                      :size="60"
-                      :color="'#ff1d5e'"
-        />
+        <template v-if="managingConstructionSites.length > 0">
+            <h2>{{$t("mine.title")}}</h2>
+            <p class="text-secondary">{{$t("mine.description")}}</p>
+            <atom-spinner v-if="isLoading"
+                          :animation-duration="1000"
+                          :size="60"
+                          :color="'#ff1d5e'"
+            />
 
-        <div v-masonry :transition-duration="'0.3s'" :item-selector="'.grid-item'" :gutter="10">
-            <div v-masonry-tile class="grid-item" v-for="constructionSite in managingConstructionSites">
-                <construction-site :construction-site="constructionSite"></construction-site>
+            <div v-masonry :transition-duration="'0.3s'" :item-selector="'.grid-item'" :gutter="10">
+                <div v-masonry-tile class="grid-item" v-for="constructionSite in managingConstructionSites">
+                    <construction-site :construction-site="constructionSite"></construction-site>
+                </div>
             </div>
-        </div>
+        </template>
+        <template v-else>
+            <div class="alert alert-info">
+                {{$t("messages.activate_construction_site")}}
+            </div>
+        </template>
 
         <div class="vertical-spacer-big"></div>
         <h2>{{$t("all.title")}}</h2>
@@ -22,7 +29,7 @@
                 <th>{{$t("construction_site.name")}}</th>
                 <th>{{$t("construction_site.address")}}</th>
                 <th>{{$t("construction_site.created_at")}}</th>
-                <th></th>
+                <th>{{$t("construction_site.activated")}}</th>
             </tr>
             </thead>
             <tbody>
@@ -98,7 +105,9 @@
                         constructionSite.isConstructionManagerOf = true;
                     });
                 }
-                this.$redrawVueMasonry();
+                this.$nextTick(function () {
+                    this.$redrawVueMasonry();
+                });
             },
             formatDateTime: function (dateTime) {
                 return moment(dateTime).locale(this.locale).fromNow();

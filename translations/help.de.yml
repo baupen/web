@@ -4,6 +4,7 @@ overview:
 
   create: 'Erfassen'
   create_description: 'Nimm mit unserer iOS-App Pendenzen auf.'
+  download_ios_app: 'zum App Store'
   populate: 'Einpflegen'
   populate_description: 'Bereinige neu erfasste Pendenzen im Warteraum.'
   manage: 'Verwalten'

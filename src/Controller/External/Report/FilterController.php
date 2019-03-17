@@ -53,7 +53,7 @@ class FilterController extends BaseDoctrineController
         $reportElements = ReportElements::forCraftsman();
 
         return $this->file(
-            $reportService->generatePdfReport($constructionSite, $filter, $filter->getId(), $reportElements),
+            $reportService->generatePdfReport($constructionSite, $filter, null, $reportElements),
             'report.pdf',
             ResponseHeaderBag::DISPOSITION_INLINE
         );

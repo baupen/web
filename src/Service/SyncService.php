@@ -93,18 +93,20 @@ class SyncService implements SyncServiceInterface
      * syncs single construction site with the filesystem.
      *
      * @param ConstructionSite $constructionSite
+     * @param bool $skipCacheWarmup
      */
-    public function syncConstructionSite(ConstructionSite $constructionSite)
+    public function syncConstructionSite(ConstructionSite $constructionSite, bool $skipCacheWarmup = false)
     {
         $syncTransaction = new SyncTransaction();
         $this->constructionSiteService->syncConstructionSite($syncTransaction, $constructionSite);
-        $this->commitSyncTransaction($syncTransaction);
+        $this->commitSyncTransaction($syncTransaction, $skipCacheWarmup);
     }
 
     /**
      * @param SyncTransaction $transaction
+     * @param bool $skipCacheWarmup
      */
-    private function commitSyncTransaction(SyncTransaction $transaction)
+    private function commitSyncTransaction(SyncTransaction $transaction, bool $skipCacheWarmup = false)
     {
         $manager = $this->registry->getManager();
 
@@ -121,6 +123,10 @@ class SyncService implements SyncServiceInterface
             }
         );
         $manager->flush();
+
+        if ($skipCacheWarmup) {
+            return;
+        }
 
         foreach ($cacheInvalidatedEntities[Map::class] as $cacheInvalidatedEntity) {
             /* @var Map $cacheInvalidatedEntity */
