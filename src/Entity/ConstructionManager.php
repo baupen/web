@@ -169,6 +169,10 @@ class ConstructionManager extends BaseEntity implements UserInterface
      */
     public function getRoles()
     {
+        if ($this->getIsTrialAccount()) {
+            return ['ROLE_USER', 'ROLE_TRIAL_ACCOUNT'];
+        }
+
         return ['ROLE_USER'];
     }
 
