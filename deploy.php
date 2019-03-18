@@ -46,8 +46,8 @@ task('deploy:vendors', function () {
 //build yarn stuff & upload
 desc('Bundling locally css/js and then uploading it');
 task('frontend:build', function () {
-    runLocally('git pull');
     runLocally('git checkout {{branch}}');
+    runLocally('git pull');
     runLocally('yarn install');
     runLocally('yarn run encore production');
     runLocally('rsync -azP public/dist {{user}}@{{hostname}}:{{release_path}}/public');
