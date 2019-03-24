@@ -16,6 +16,7 @@ use App\Security\Model\UserToken;
 use App\Security\Voter\Base\BaseVoter;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class BaseController extends AbstractController
@@ -136,5 +137,26 @@ class BaseController extends AbstractController
     protected function ensureAccess($entity)
     {
         $this->denyAccessUnlessGranted(BaseVoter::ANY_ATTRIBUTE, $entity);
+    }
+
+    /**
+     * Renders a view.
+     *
+     * @final
+     *
+     * @param string $view
+     * @param array $parameters
+     * @param Response|null $response
+     *
+     * @return Response
+     */
+    protected function render(string $view, array $parameters = [], Response $response = null): Response
+    {
+        $constructionManager = $this->getUser();
+        if ($constructionManager !== null && $constructionManager->getActiveConstructionSite() !== null) {
+            $parameters = $parameters + ['constructionSiteName' => $constructionManager->getActiveConstructionSite()->getName()];
+        }
+
+        return parent::render($view, $parameters, $response);
     }
 }
