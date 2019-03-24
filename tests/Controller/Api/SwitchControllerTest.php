@@ -32,7 +32,7 @@ class SwitchControllerTest extends ApiController
             $this->assertObjectHasAttribute('name', $constructionSite);
             $this->assertObjectHasAttribute('imageMedium', $constructionSite);
             $this->assertObjectHasAttribute('isConstructionManagerOf', $constructionSite);
-            $this->assertObjectHasAttribute('constructionManagers', $constructionSite);
+            $this->assertObjectHasAttribute('otherConstructionManagers', $constructionSite);
             $this->assertObjectHasAttribute('address', $constructionSite);
             $this->assertObjectHasAttribute('switchLink', $constructionSite);
             $this->assertObjectHasAttribute('createdAt', $constructionSite);
