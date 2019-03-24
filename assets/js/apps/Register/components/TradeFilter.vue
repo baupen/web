@@ -38,7 +38,7 @@
         },
         computed: {
             trades: function () {
-                return Array.from(new Set(this.craftsmen.map(c => c.trade)));
+                return Array.from(new Set(this.craftsmen.map(c => c.trade))).sort((c1, c2) => c1.localeCompare(c2));
             }
         },
         components: {
