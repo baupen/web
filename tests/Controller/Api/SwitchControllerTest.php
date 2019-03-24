@@ -11,6 +11,8 @@
 
 namespace App\Tests\Controller\Api;
 
+use App\Api\Request\_Switch\CreateCheckRequest;
+use App\Api\Request\_Switch\CreateRequest;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\ApiController;
@@ -37,6 +39,59 @@ class SwitchControllerTest extends ApiController
             $this->assertObjectHasAttribute('switchLink', $constructionSite);
             $this->assertObjectHasAttribute('createdAt', $constructionSite);
         }
+    }
+
+    public function testCreateCheck()
+    {
+        $requestAccessUrl = '/api/switch/create/check';
+
+        $request = new CreateCheckRequest();
+        $request->setConstructionSiteName('inexisting');
+        $response = $this->authenticatedPostRequest($requestAccessUrl, $request);
+        $checkData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertFalse($checkData->data->constructionSiteNameTaken);
+
+        $request = new CreateCheckRequest();
+        $request->setConstructionSiteName($this->getExistingConstructionSiteName());
+        $response = $this->authenticatedPostRequest($requestAccessUrl, $request);
+        $checkData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertTrue($checkData->data->constructionSiteNameTaken);
+    }
+
+    public function testCreate()
+    {
+        $requestAccessUrl = '/api/switch/create';
+        $before = \count($this->getExistingConstructionSites());
+
+        $name = 'new name';
+        $streetAddress = 'Baslerstrasse 220';
+        $postalCode = '4123';
+        $locality = 'Allschwil';
+
+        $request = new CreateRequest();
+        $request->setName($name);
+        $request->setStreetAddress($streetAddress);
+        $request->setPostalCode($postalCode);
+        $request->setLocality($locality);
+        $response = $this->authenticatedPostRequest($requestAccessUrl, $request);
+        $this->assertTrue($response->isRedirect());
+
+        $after = $this->getExistingConstructionSites();
+        $this->assertSame($before + 1, \count($after));
+
+        $found = false;
+        foreach ($after as $constructionSite) {
+            if ($constructionSite->name === $name) {
+                $address = implode('', $constructionSite->address);
+                $this->assertContains($streetAddress, $address);
+                $this->assertContains($postalCode, $address);
+                $this->assertContains($locality, $address);
+                $found = true;
+            }
+        }
+        $this->assertTrue($found);
     }
 
     public function testRequestRemoveAccess()
@@ -74,6 +129,19 @@ class SwitchControllerTest extends ApiController
         $request->setConstructionSiteId($constructionSiteId);
         $response = $this->authenticatedPostRequest($requestAccessUrl, $request);
         $this->checkResponse($response, ApiStatus::SUCCESS);
+    }
+
+    private function getExistingConstructionSiteName()
+    {
+        return $this->getExistingConstructionSites()[0]->name;
+    }
+
+    private function getExistingConstructionSites()
+    {
+        $response = $this->authenticatedGetRequest('/api/switch/construction_sites');
+        $constructionSiteData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        return $constructionSiteData->data->constructionSites;
     }
 
     private function checkContainsWithSpecificAccess($constructionSiteId, $expectedIsConstructionManagerOf)

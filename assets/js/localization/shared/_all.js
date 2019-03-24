@@ -9,6 +9,7 @@ import issue from './issue';
 import map from './map';
 import mapFile from './map_file';
 import messages from './messages';
+import validation from './validation';
 import view from './view';
 
 // merge in single object; mapping to the correct property
@@ -20,6 +21,7 @@ const translations = {
   map,
   map_file: mapFile,
   messages,
+  validation,
   view
 };
 let sharedTranslations = {};

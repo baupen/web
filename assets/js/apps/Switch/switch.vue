@@ -13,6 +13,16 @@
                 <div v-masonry-tile class="grid-item" v-for="constructionSite in managingConstructionSites">
                     <construction-site :construction-site="constructionSite"></construction-site>
                 </div>
+                <div class="grid-item" v-if="!createConstructionSiteActive">
+                    <button class="btn btn-primary" @click="createConstructionSite">
+                        {{$t("actions.create_construction_site")}}
+                    </button>
+                </div>
+                <div v-masonry-tile class="grid-item" v-if="createConstructionSiteActive">
+                    <b-card :title="$t('actions.create_construction_site')">
+                    <add-construction-site-form  @submitted="addConstructionSiteSubmitted($event)"></add-construction-site-form>
+                    </b-card>
+                </div>
             </div>
         </template>
         <template v-else>
@@ -63,9 +73,11 @@
     import axios from "axios"
     import moment from "moment";
     import bAlert from 'bootstrap-vue/es/components/alert/alert'
+    import bCard from 'bootstrap-vue/es/components/card/card'
     import {AtomSpinner} from 'epic-spinners'
     import notifications from '../mixins/Notifications'
     import ConstructionSite from './components/ConstructionSite'
+    import AddConstructionSiteForm from "./components/AddConstructionSiteForm";
 
     const lang = document.documentElement.lang.substr(0, 2);
 
@@ -76,7 +88,8 @@
             return {
                 constructionSites: [],
                 isLoading: true,
-                locale: lang
+                locale: lang,
+                createConstructionSiteActive: false
             }
         },
         computed: {
@@ -86,8 +99,10 @@
         },
         mixins: [notifications],
         components: {
+            AddConstructionSiteForm,
             ConstructionSite,
             bAlert,
+            bCard,
             AtomSpinner
         },
         methods: {
@@ -105,6 +120,12 @@
                         constructionSite.isConstructionManagerOf = true;
                     });
                 }
+                this.$nextTick(function () {
+                    this.$redrawVueMasonry();
+                });
+            },
+            createConstructionSite: function() {
+                this.createConstructionSiteActive = true;
                 this.$nextTick(function () {
                     this.$redrawVueMasonry();
                 });
