@@ -43,32 +43,33 @@ trait QueryParseTrait
         //parse input to array
         //empty arrays are not considered
         $flattenIdArray = function ($input) {
-            if (!\is_array($input)) {
-                return [];
-            }
-
-            $res = [];
-            foreach ($input as $item) {
-                $res[] = $item['id'];
-            }
-
-            return $res;
         };
 
         $craftsmanParameters = new ParameterBag($parameterBag->get('craftsman', []));
         if ($craftsmanParameters->getBoolean('enabled')) {
-            $filter->setCraftsmen($flattenIdArray($craftsmanParameters->get('craftsmen', [])));
+            $allowedCraftsmen = $craftsmanParameters->get('craftsmen', []);
+            if (\is_array($allowedCraftsmen) && \count($allowedCraftsmen) > 0) {
+                $craftsmanIds = [];
+                foreach ($allowedCraftsmen as $item) {
+                    $craftsmanIds[] = $item['id'];
+                }
+
+                $filter->setCraftsmen($craftsmanIds);
+            }
         }
 
         $mapParameters = new ParameterBag($parameterBag->get('map', []));
         if ($mapParameters->getBoolean('enabled')) {
-            $filter->setMaps($flattenIdArray($mapParameters->get('maps', [])));
+            $allowedMaps = $craftsmanParameters->get('maps', []);
+            if (\is_array($allowedMaps) && \count($allowedMaps) > 0) {
+                $filter->setMaps($allowedMaps);
+            }
         }
 
         $tradeParameters = new ParameterBag($parameterBag->get('trade', []));
         if ($tradeParameters->getBoolean('enabled')) {
             $allowedTrades = $tradeParameters->get('trades', []);
-            if (\is_array($allowedTrades)) {
+            if (\is_array($allowedTrades) && \count($allowedTrades) > 0) {
                 $craftsmanIds = [];
                 foreach ($constructionSite->getCraftsmen() as $craftsman) {
                     if (\in_array($craftsman->getTrade(), $allowedTrades, true) &&
@@ -103,37 +104,46 @@ trait QueryParseTrait
         //check filtering of status
         $timeParameters = new ParameterBag($parameterBag->get('time', []));
         if ($timeParameters->getBoolean('enabled', false)) {
-            $readParameters = new ParameterBag($timeParameters->get('read', []));
-            if ($readParameters->getBoolean('active')) {
-                $filter->setReadStatus($readParameters->getBoolean('value'));
-            }
+            list($isEnabled, $start, $end) = self::parseTimeFilter($timeParameters, 'registered');
+            $filter->setRegistrationStatus($isEnabled);
+            $filter->setRegistrationStatus($start);
+            $filter->setRegistrationStatus($end);
 
-            //parse input to null or datetime
-            $toDateTime = function ($input) {
-                return $input === null || $input === '' ? null : new \DateTime($input);
-            };
+            list($isEnabled, $start, $end) = self::parseTimeFilter($timeParameters, 'responded');
+            $filter->setRespondedStatus($isEnabled);
+            $filter->setRespondedStart($start);
+            $filter->setRespondedEnd($end);
 
-            $registeredParameters = new ParameterBag($timeParameters->get('registered', []));
-            if ($registeredParameters->getBoolean('active')) {
-                $filter->setRegistrationStatus(true);
-                $filter->setRegistrationStart($toDateTime($registeredParameters->get('start', null)));
-                $filter->setRegistrationEnd($toDateTime($registeredParameters->get('end', null)));
-            }
-
-            $respondedParameters = new ParameterBag($timeParameters->get('responded', []));
-            if ($respondedParameters->getBoolean('active')) {
-                $filter->setRespondedStatus(true);
-                $filter->setRespondedStart($toDateTime($respondedParameters->get('start', null)));
-                $filter->setRespondedEnd($toDateTime($respondedParameters->get('end', null)));
-            }
-
-            $reviewedParameters = new ParameterBag($timeParameters->get('reviewed', []));
-            if ($reviewedParameters->getBoolean('active')) {
-                $filter->setReviewedStatus(true);
-                $filter->setReviewedStart($toDateTime($reviewedParameters->get('start', null)));
-                $filter->setReviewedEnd($toDateTime($reviewedParameters->get('end', null)));
-            }
+            list($isEnabled, $start, $end) = self::parseTimeFilter($timeParameters, 'reviewed');
+            $filter->setReviewedStatus($isEnabled);
+            $filter->setReviewedStart($start);
+            $filter->setReviewedEnd($end);
         }
+    }
+
+    /**
+     * @param ParameterBag $timeParameters
+     * @param string $timeFilterKey
+     *
+     * @return array
+     */
+    private static function parseTimeFilter(ParameterBag $timeParameters, string $timeFilterKey)
+    {
+        $filterParameters = new ParameterBag($timeParameters->get($timeFilterKey, []));
+
+        //parse input to null or datetime
+        $toDateTime = function ($input) {
+            return $input === null || $input === '' ? null : new \DateTime($input);
+        };
+
+        if ($filterParameters->getBoolean('active')) {
+            $start = $toDateTime($filterParameters->get('start', null));
+            $end = $toDateTime($filterParameters->get('end', null));
+
+            return [$start !== null || $end !== null, $start, $end];
+        }
+
+        return [false, null, null];
     }
 
     /**

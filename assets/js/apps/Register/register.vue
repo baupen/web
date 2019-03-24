@@ -220,11 +220,7 @@
                 }
 
                 const timeFilter = this.filter.time;
-                if (timeFilter.enabled && (timeFilter.read.active || timeFilter.registered.active || timeFilter.responded.active || timeFilter.reviewed.active)) {
-                    if (timeFilter.read.active) {
-                        res = res.filter(i => i.isRead === timeFilter.read.active);
-                    }
-
+                if (timeFilter.enabled && (timeFilter.registered.active || timeFilter.responded.active || timeFilter.reviewed.active)) {
                     if (timeFilter.registered.active) {
                         res = this.filterStartEnd(res, timeFilter.registered, "registeredAt");
                     }
