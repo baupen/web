@@ -3,7 +3,7 @@
         <h4 class="clickable" @click="toggleFilter" :class="{'mark' : filter.enabled }">{{$t("issue.craftsman")}}</h4>
 
         <div v-if="filter.enabled">
-            <div v-for="craftsman in craftsmen" v-bind:key="craftsman.id" class="custom-control custom-checkbox">
+            <div v-for="craftsman in sortedCraftsmen" v-bind:key="craftsman.id" class="custom-control custom-checkbox">
                 <input type="checkbox"
                        class="custom-control-input"
                        :id="'craftsman' + craftsman.id  + id"
@@ -41,6 +41,11 @@
         methods: {
             toggleFilter: function () {
                 this.filter.enabled = !this.filter.enabled;
+            }
+        },
+        computed: {
+            sortedCraftsmen: function () {
+                return this.craftsmen.sort((c1, c2) => c1.name.localeCompare(c2.name));
             }
         },
         mounted() {

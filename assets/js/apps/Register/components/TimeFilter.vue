@@ -9,10 +9,6 @@
                 <time-filter-entry :status="filter.registered"/>
             </div>
 
-            <base-checkbox v-model="filter.read.active">
-                {{ $t("issue.status_values.read") }}
-            </base-checkbox>
-
             <base-checkbox v-model="filter.responded.active">
                 {{$t("filter.time_set", {state: $t("issue.status_values.responded")})}}
             </base-checkbox>

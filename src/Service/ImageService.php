@@ -291,7 +291,7 @@ class ImageService implements ImageServiceInterface
     private function renderPdfToImage(string $sourcePdfPath, string $targetFilepath)
     {
         //do first low quality render to get artboxsize
-        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=10 -dUseCropBox -sPageList=1 -o ' . $targetFilepath . ' ' . $sourcePdfPath;
+        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=10 -dUseCropBox -sPageList=1 -o "' . $targetFilepath . '" "' . $sourcePdfPath . '"';
         exec($command);
         if (!is_file($targetFilepath)) {
             return;
@@ -299,7 +299,7 @@ class ImageService implements ImageServiceInterface
 
         //second render with correct image dimensions
         list($width, $height) = ImageHelper::getWidthHeightArguments($targetFilepath, 3840, 2160);
-        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=' . $width . ' -dDEVICEHEIGHTPOINTS=' . $height . ' -dJPEGQ=80 -dUseCropBox -dFitPage -sPageList=1 -o ' . $targetFilepath . ' ' . $sourcePdfPath;
+        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=' . $width . ' -dDEVICEHEIGHTPOINTS=' . $height . ' -dJPEGQ=80 -dUseCropBox -dFitPage -sPageList=1 -o "' . $targetFilepath . '" "' . $sourcePdfPath . '"';
         exec($command);
     }
 
