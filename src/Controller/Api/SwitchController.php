@@ -227,7 +227,7 @@ class SwitchController extends ApiController
     {
         // only keep A-Z, a-z, 0-9
         $folderName = preg_replace('/[^A-Za-z0-9]+/', '-', $userInput);
-        if (\mb_strlen($folderName) > 40) {
+        if (mb_strlen($folderName) > 40) {
             return mb_substr($folderName, 0, 40);
         }
 
