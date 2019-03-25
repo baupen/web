@@ -31,7 +31,7 @@ class ConstructionSite extends \App\Api\Entity\Base\ConstructionSite
     /**
      * @var string[]
      */
-    private $constructionManagers;
+    private $otherConstructionManagers;
 
     /**
      * @var bool
@@ -94,17 +94,17 @@ class ConstructionSite extends \App\Api\Entity\Base\ConstructionSite
     /**
      * @return string[]
      */
-    public function getConstructionManagers(): array
+    public function getOtherConstructionManagers(): array
     {
-        return $this->constructionManagers;
+        return $this->otherConstructionManagers;
     }
 
     /**
      * @param string[] $constructionSiteManagers
      */
-    public function setConstructionManagers(array $constructionSiteManagers): void
+    public function setOtherConstructionManagers(array $constructionSiteManagers): void
     {
-        $this->constructionManagers = $constructionSiteManagers;
+        $this->otherConstructionManagers = $constructionSiteManagers;
     }
 
     /**

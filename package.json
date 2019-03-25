@@ -33,6 +33,7 @@
     "core-js": "^2.5.7",
     "crypto-js": "^3.1.9-1",
     "date-fns": "^1.29",
+    "debounce": "^1.2.0",
     "deepmerge": "^2",
     "eol": "^0.9.1",
     "epic-spinners": "^1",
@@ -50,6 +51,7 @@
     "vue-i18n": "^8",
     "vue-masonry": "^0.11.7",
     "vuejs-datepicker": "^1",
+    "vuelidate": "^0.7.4",
     "vuex": "^3"
   },
   "husky": {

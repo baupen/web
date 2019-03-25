@@ -68,9 +68,11 @@ class ConstructionSiteTransformer extends BatchTransformer
 
         $managers = [];
         foreach ($entity->getConstructionManagers() as $constructionManager) {
-            $managers[] = $constructionManager->getName();
+            if ($constructionManager !== $this->user) {
+                $managers[] = $constructionManager->getName();
+            }
         }
-        $constructionSite->setConstructionManagers($managers);
+        $constructionSite->setOtherConstructionManagers($managers);
 
         return $constructionSite;
     }

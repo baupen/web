@@ -10,7 +10,7 @@
         </p>
         <div slot="footer">
             <small class="text-muted">
-                {{ constructionSite.constructionManagers.join(", ")}}
+                {{ constructionSite.otherConstructionManagers.join(", ")}}
             </small>
         </div>
         <b-button variant="primary" :href="constructionSite.switchLink">

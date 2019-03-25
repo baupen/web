@@ -4,6 +4,8 @@ import VueI18n from 'vue-i18n';
 
 // components
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import Vuelidate from 'vuelidate';
+
 // import ES6 style
 import { VueMasonryPlugin } from 'vue-masonry';
 
@@ -21,6 +23,7 @@ if (document.getElementById('switch') != null) {
   // register plugins
   Vue.use(VueI18n);
   Vue.use(VueMasonryPlugin);
+  Vue.use(Vuelidate);
 
   // register components
   Vue.component('font-awesome-icon', FontAwesomeIcon);
