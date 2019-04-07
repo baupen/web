@@ -31,7 +31,7 @@ class FixturesTestCase extends WebTestCase
     /**
      * @throws \Exception
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $client = static::createClient();
         $application = new Application($client->getKernel());
@@ -50,7 +50,7 @@ class FixturesTestCase extends WebTestCase
     /**
      * @throws \Exception
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $client = static::createClient();
         $application = new Application($client->getKernel());

@@ -26,7 +26,7 @@ export default {
         tables: {
           name: 'Zusammenfassungstabellen',
           table_by_craftsman: 'nach Firma',
-          table_by_trade: 'nach Handwerk',
+          table_by_trade: 'nach Funktion',
           table_by_map: 'nach Karte'
         }
       },

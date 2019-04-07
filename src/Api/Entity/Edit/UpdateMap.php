@@ -29,11 +29,6 @@ class UpdateMap
     private $fileId;
 
     /**
-     * @var bool
-     */
-    private $isAutomaticEditEnabled;
-
-    /**
      * @return string
      */
     public function getName(): string
@@ -79,21 +74,5 @@ class UpdateMap
     public function setFileId(?string $fileId): void
     {
         $this->fileId = $fileId;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getIsAutomaticEditEnabled(): bool
-    {
-        return $this->isAutomaticEditEnabled;
-    }
-
-    /**
-     * @param bool $isAutomaticEditEnabled
-     */
-    public function setIsAutomaticEditEnabled(bool $isAutomaticEditEnabled): void
-    {
-        $this->isAutomaticEditEnabled = $isAutomaticEditEnabled;
     }
 }

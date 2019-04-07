@@ -40,6 +40,7 @@
                 <td v-for="editableField in editableFields" :key="craftsmanContainer.craftsman.id + editableField">
                     <text-edit-field
                             v-model="craftsmanContainer.craftsman[editableField]"
+                            :placeholder="editableFieldPlaceholders[editableField]"
                             :edit-enabled="editCraftsmanContainer === craftsmanContainer && editField === editableField"
                             @start-edit="startEdit(craftsmanContainer, editableField)"
                             @stop-edit="stopEdit"
@@ -83,6 +84,12 @@
                 editCraftsmanContainer: null,
                 editField: null,
                 editableFields: ['email', 'contactName', 'company', 'trade'],
+                editableFieldPlaceholders: {
+                    email: this.$t('edit_craftsmen.placeholders.email'),
+                    contactName: this.$t('edit_craftsmen.placeholders.contact_name'),
+                    company: this.$t('edit_craftsmen.placeholders.company'),
+                    trade: this.$t('edit_craftsmen.placeholders.trade')
+                },
                 importViewActive: false
             }
         },

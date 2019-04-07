@@ -31,7 +31,7 @@
         </td>
         <td>{{formatDateTime(mapFile.createdAt)}}</td>
         <td>
-            <select v-if="selectableMaps.length > 1"
+            <select class="form-control form-control-sm" v-if="selectableMaps.length > 1"
                     :disabled="mapFile.automaticEditEnabled || [null, 'update'].indexOf(mapFileContainer.pendingChange) === false"
                     v-model="mapFile.mapId">
                 <option v-for="map in selectableMaps" :value="map.id">{{map.name}}</option>

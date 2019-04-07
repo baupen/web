@@ -168,7 +168,6 @@ class EditControllerTest extends ApiController
         // do request
         $updateMap = new UpdateMap();
         $updateMap->setName('new map');
-        $updateMap->setIsAutomaticEditEnabled(false);
         $updateMap->setParentId($parentMap->getId());
         $updateMapRequest = new UpdateMapRequest();
         $updateMapRequest->setMap($updateMap);
@@ -186,7 +185,6 @@ class EditControllerTest extends ApiController
         $this->assertSame($updateMap->getName(), $map->name);
         $this->assertSame($updateMap->getParentId(), $map->parentId);
         $this->assertSame($updateMap->getFileId(), $map->fileId);
-        $this->assertSame($updateMap->getIsAutomaticEditEnabled(), $map->isAutomaticEditEnabled);
     }
 
     public function testMapUpdate()
@@ -199,7 +197,6 @@ class EditControllerTest extends ApiController
         // do request
         $updateMap = new UpdateMap();
         $updateMap->setName($someMap->getName() . ' new');
-        $updateMap->setIsAutomaticEditEnabled(true);
         $updateMap->setParentId(null);
         $updateMap->setFileId(null);
         $updateMapRequest = new UpdateMapRequest();
@@ -218,7 +215,6 @@ class EditControllerTest extends ApiController
         $this->assertSame($updateMap->getName(), $map->name);
         $this->assertSame($updateMap->getParentId(), $map->parentId);
         $this->assertSame($updateMap->getFileId(), $map->fileId);
-        $this->assertSame($updateMap->getIsAutomaticEditEnabled(), $map->isAutomaticEditEnabled);
     }
 
     public function testMapRemove()
@@ -231,7 +227,6 @@ class EditControllerTest extends ApiController
         // add empty map to remove
         $updateMap = new UpdateMap();
         $updateMap->setName($someMap->getName() . ' new');
-        $updateMap->setIsAutomaticEditEnabled(true);
         $updateMapRequest = new UpdateMapRequest();
         $updateMapRequest->setMap($updateMap);
         $updateMapRequest->setConstructionSiteId($constructionSite->getId());

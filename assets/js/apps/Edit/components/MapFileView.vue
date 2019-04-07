@@ -80,7 +80,9 @@
 
                 let droppedFiles = e.dataTransfer.files;
                 for (let i = 0; i < droppedFiles.length; i++) {
-                    this.$emit('file-dropped', droppedFiles[i]);
+                    if (droppedFiles[i].name.endsWith(".pdf")) {
+                        this.$emit('file-dropped', droppedFiles[i]);
+                    }
                 }
 
                 this.dragActive = false;

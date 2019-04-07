@@ -4,6 +4,7 @@ export default {
     save_all: 'alle speichern',
     remove: 'entfernen',
     remove_all: 'alle entfernen',
+    remove_selected: 'ausgewählte entfernen',
     abort: 'abbrechen',
     print: 'drucken'
   },

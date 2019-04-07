@@ -4,6 +4,7 @@
             <input type="text"
                    ref="edit"
                    class="form-control form-control-sm"
+                   :placeholder="placeholder"
                    @keyup.enter="confirmEdit"
                    @keyup.esc="abortEdit"
                    @keydown.tab.prevent.stop="tabbed"
@@ -24,6 +25,10 @@
             value: {
                 type: String,
                 required: true
+            },
+            placeholder: {
+                type: String,
+                required: false
             },
             editEnabled: {
                 type: Boolean,

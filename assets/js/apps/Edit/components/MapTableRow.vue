@@ -1,16 +1,13 @@
 <template>
     <tr>
         <td class="map-indent" :class="'map-indent-' + indentSize">
-            <input v-if="!map.isAutomaticEditEnabled"
-                   type="text"
-                   v-model.lazy="map.name"
-                   class="form-control form-control-sm"/>
-            <span v-else>
-                {{map.name}}
-            </span>
+            <input
+                    type="text"
+                    v-model.lazy="map.name"
+                    class="form-control form-control-sm"/>
         </td>
         <td>
-            <select v-if="selectableMaps.length > 1" :disabled="map.isAutomaticEditEnabled" v-model="map.parentId">
+            <select class="form-control form-control-sm" v-if="selectableMaps.length > 1" v-model="map.parentId">
                 <option v-for="map in selectableMaps" :value="map.id">{{map.name}}</option>
             </select>
             <template v-else>
@@ -18,26 +15,16 @@
             </template>
         </td>
         <td>
-            <select v-if="selectableMapFiles.length > 1" :disabled="map.isAutomaticEditEnabled" v-model="map.fileId">
+            <select class="form-control form-control-sm" v-if="selectableMapFiles.length > 1" v-model="map.fileId">
                 <option v-for="mapFile in selectableMapFiles" :value="mapFile.id">{{mapFile.filename}}</option>
             </select>
             <template v-else>
                 {{selectedMapFileName}}
             </template>
         </td>
-        <td>
-            <span class="switch">
-                <input type="checkbox"
-                       class="switch"
-                       :id="'switch-map-' + map.id"
-                       :checked="map.isAutomaticEditEnabled"
-                       @change="toggleEdit()">
-                <label :for="'switch-map-' + map.id"></label>
-            </span>
-        </td>
         <td class="text-right">{{map.issueCount}}</td>
         <td>
-            <button class="btn btn-danger" v-if="map.issueCount === 0" @click="$emit('remove')">
+            <button class="btn btn-danger" v-if="map.issueCount === 0 && !hasChildren" @click="$emit('remove')">
                 <font-awesome-icon :icon="['fal', 'trash']"/>
             </button>
         </td>
@@ -65,6 +52,10 @@
             indentSize: {
                 type: Number,
                 required: true
+            },
+            hasChildren: {
+                type: Boolean,
+                required: true
             }
         },
         data() {
@@ -90,19 +81,6 @@
                 map.name = data.name;
                 map.parentId = data.parentId;
                 map.fileId = data.fileId;
-            },
-            toggleEdit: function () {
-                const mapData = this.getData(this.map);
-                if (this.map.isAutomaticEditEnabled) {
-                    if (this.afterEditData !== null) {
-                        this.setData(this.map, this.afterEditData);
-                    }
-                } else {
-                    this.afterEditData = mapData;
-                    this.setData(this.map, this.beforeEditData);
-                }
-
-                this.map.isAutomaticEditEnabled = !this.map.isAutomaticEditEnabled;
             }
         },
         computed: {

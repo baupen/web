@@ -14,7 +14,7 @@ export default {
       help: 'Ordnen Sie die Bauplanversionen einem Bauplan zu.',
       drag_files_to_upload: 'Ziehen Sie .pdf Dateien in diesen Bereich um diese als neue Bauplanversionen hinzuzufügen',
       performing_upload_check: 'Upload wird geprüft...',
-      identical_content_than: 'Diese Bauplanversion ist identitisch zu {files}.',
+      identical_content_than: 'Der Inhalt dieser Datei ist identitisch zu {files}.',
       identical_name: 'Eine Bauplanversion mit diesem Namen existiert bereits. Die Bauplanversion wird zu {new_name} umbenannt.',
       upload_active: 'wird hochgeladen... ({percentage}%)',
       actions: {
@@ -35,6 +35,12 @@ export default {
         email: '',
         company: '',
         trade: ''
+      },
+      placeholders: {
+        contact_name: 'Max Muster',
+        email: 'max@musterag.ch',
+        company: 'Muster AG',
+        trade: 'Elektriker'
       }
     },
     import_craftsmen: {

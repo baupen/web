@@ -85,9 +85,9 @@ class SwitchControllerTest extends ApiController
         foreach ($after as $constructionSite) {
             if ($constructionSite->name === $name) {
                 $address = implode('', $constructionSite->address);
-                $this->assertContains($streetAddress, $address);
-                $this->assertContains($postalCode, $address);
-                $this->assertContains($locality, $address);
+                $this->assertStringContainsString($streetAddress, $address);
+                $this->assertStringContainsString($postalCode, $address);
+                $this->assertStringContainsString($locality, $address);
                 $found = true;
             }
         }

@@ -29,7 +29,6 @@
                 <th>{{$t("map.name")}}</th>
                 <th>{{$t("map.parent")}}</th>
                 <th>{{$t("map_file.name")}}</th>
-                <th>{{$t("set_automatically")}}</th>
                 <th class="minimal-width">{{$t('issue_count')}}</th>
                 <th class="minimal-width"></th>
             </tr>
@@ -41,6 +40,7 @@
                            :ordered-map-containers="orderedMapContainers"
                            :map-file-containers="mapFileContainers"
                            :indent-size="mapContainer.indentSize"
+                           :has-children="mapContainer.hasChildren"
                            @remove="$emit('map-remove', mapContainer)"
                            @save="$emit('map-save', mapContainer)"/>
             </tbody>
@@ -94,6 +94,7 @@
                 children.forEach(c => {
                     c.order = maxOrder;
                     c.indentSize = indent;
+                    c.hasChildren = mapContainers.filter(m => m.map.parentId === c.map.id).length > 0;
                     maxOrder = this.setOrderProperties(mapContainers, c.map.id, maxOrder + 1, indent + 1);
                 });
 

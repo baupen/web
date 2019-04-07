@@ -16,6 +16,7 @@ use App\Controller\External\Traits\FilterAuthenticationTrait;
 use App\Entity\Filter;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @Route("/f/{identifier}")
@@ -38,6 +39,11 @@ class FilterController extends BaseDoctrineController
         /** @var Filter $filter */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter)) {
             throw new NotFoundHttpException();
+        }
+
+        $now = new \DateTime();
+        if ($filter->getAccessUntil() < $now) {
+            throw new AccessDeniedException();
         }
 
         $filter->setLastAccess(new \DateTime());
