@@ -32,12 +32,6 @@ set('default_stage', 'dev');
 //only keep two releases
 set('keep_releases', 2);
 
-//use php 7.2
-set(
-    'bin/php',
-    '/usr/local/php72/bin/php'
-);
-
 desc('Installing vendors');
 task('deploy:vendors', function () {
     run('cd {{release_path}} && {{bin/composer}} {{composer_options}}', ['timeout' => 400]);
