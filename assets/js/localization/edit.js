@@ -35,6 +35,12 @@ export default {
         email: '',
         company: '',
         trade: ''
+      },
+      placeholders: {
+        contact_name: 'Max Muster',
+        email: 'max@musterag.ch',
+        company: 'Muster AG',
+        trade: 'Elektriker'
       }
     },
     import_craftsmen: {
