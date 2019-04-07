@@ -88,7 +88,6 @@
                         name: this.$t("edit_maps.default_map_name"),
                         parentId: null,
                         fileId: null,
-                        isAutomaticEditEnabled: false,
                         issueCount: 0
                     },
                     order: 0,
@@ -152,7 +151,6 @@
                     issueCount: 0,
                     createdAt: new Date().toISOString(),
                     mapId: null,
-                    isAutomaticEditEnabled: true,
                     id: uuid()
                 };
 

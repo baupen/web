@@ -34,11 +34,6 @@ class Map extends \App\Api\Entity\Base\Map
     private $fileId;
 
     /**
-     * @var bool
-     */
-    private $isAutomaticEditEnabled;
-
-    /**
      * @var int
      */
     private $issueCount;
@@ -89,22 +84,6 @@ class Map extends \App\Api\Entity\Base\Map
     public function setFileId(?string $fileId): void
     {
         $this->fileId = $fileId;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getIsAutomaticEditEnabled(): bool
-    {
-        return $this->isAutomaticEditEnabled;
-    }
-
-    /**
-     * @param bool $isAutomaticEditEnabled
-     */
-    public function setIsAutomaticEditEnabled(bool $isAutomaticEditEnabled): void
-    {
-        $this->isAutomaticEditEnabled = $isAutomaticEditEnabled;
     }
 
     /**
