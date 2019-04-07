@@ -6,7 +6,7 @@ export default {
     },
     search: {
       name: 'Suche',
-      only_marked: 'nur markierte',
+      only_marked: 'nur Favoriten',
       only_over_limit: 'nur mit überschrittener Frist'
     },
     filter: {

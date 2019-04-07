@@ -43,13 +43,17 @@ task('deploy:vendors', function () {
     run('cd {{release_path}} && {{bin/composer}} {{composer_options}}', ['timeout' => 400]);
 });
 
-//build yarn stuff & upload
-desc('Bundling locally css/js and then uploading it');
+desc('Building frontend resources');
 task('frontend:build', function () {
     runLocally('git checkout {{branch}}');
     runLocally('git pull');
     runLocally('yarn install');
     runLocally('yarn run encore production');
+});
+
+//build yarn stuff & upload
+desc('Bundling locally css/js and then uploading it');
+task('frontend:upload', function () {
     runLocally('rsync -azP public/dist {{user}}@{{hostname}}:{{release_path}}/public');
 })->desc('Build frontend assets');
 
@@ -99,12 +103,15 @@ task('deploy', [
     'deploy:vendors'
 ]);
 
+//builds dependencies
+before('deploy', 'frontend:build');
+
 //shows infos to the user
 after('deploy:info', 'deploy:configure');
 
 //add the other tasks
-after('deploy:vendors', 'frontend:build');
-after('frontend:build', 'database:migrate');
+after('deploy:vendors', 'frontend:upload');
+after('frontend:upload', 'database:migrate');
 after('database:migrate', 'database:fixtures');
 after('database:fixtures', 'deploy:cache:clear');
 after('deploy:cache:clear', 'deploy:cache:warmup');
