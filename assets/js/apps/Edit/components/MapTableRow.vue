@@ -10,7 +10,7 @@
             </span>
         </td>
         <td>
-            <select v-if="selectableMaps.length > 1" :disabled="map.isAutomaticEditEnabled" v-model="map.parentId">
+            <select class="form-control form-control-sm" v-if="selectableMaps.length > 1" :disabled="map.isAutomaticEditEnabled" v-model="map.parentId">
                 <option v-for="map in selectableMaps" :value="map.id">{{map.name}}</option>
             </select>
             <template v-else>
@@ -18,7 +18,7 @@
             </template>
         </td>
         <td>
-            <select v-if="selectableMapFiles.length > 1" :disabled="map.isAutomaticEditEnabled" v-model="map.fileId">
+            <select class="form-control form-control-sm" v-if="selectableMapFiles.length > 1" :disabled="map.isAutomaticEditEnabled" v-model="map.fileId">
                 <option v-for="mapFile in selectableMapFiles" :value="mapFile.id">{{mapFile.filename}}</option>
             </select>
             <template v-else>
