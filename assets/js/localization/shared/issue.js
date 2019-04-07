@@ -6,7 +6,7 @@ export default {
     map: 'Karte',
     status: 'Status',
     number: 'Nummer',
-    trade: 'Handwerk',
+    trade: 'Funktion',
     no_response_limit: 'nicht gesetzt',
     no_craftsman: 'nicht gesetzt',
     craftsman_not_found: 'Firma nicht gefunden',
