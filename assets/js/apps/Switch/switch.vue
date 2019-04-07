@@ -13,11 +13,6 @@
                 <div v-masonry-tile class="grid-item" v-for="constructionSite in managingConstructionSites">
                     <construction-site :construction-site="constructionSite"></construction-site>
                 </div>
-                <div class="grid-item" v-if="!createConstructionSiteActive">
-                    <button class="btn btn-primary" @click="createConstructionSite">
-                        {{$t("actions.create_construction_site")}}
-                    </button>
-                </div>
                 <div v-masonry-tile class="grid-item" v-if="createConstructionSiteActive">
                     <b-card :title="$t('actions.create_construction_site')">
                     <add-construction-site-form  @submitted="addConstructionSiteSubmitted($event)"></add-construction-site-form>
@@ -32,7 +27,12 @@
         </template>
 
         <div class="vertical-spacer-big"></div>
-        <h2>{{$t("all.title")}}</h2>
+        <h2 class="mb-3">{{$t("all.title")}}</h2>
+        <div class="mb-2" v-if="!createConstructionSiteActive">
+            <button class="btn btn-primary" @click="createConstructionSite">
+                {{$t("actions.create_construction_site")}}
+            </button>
+        </div>
         <table class="table table-hover table-condensed">
             <thead>
             <tr>

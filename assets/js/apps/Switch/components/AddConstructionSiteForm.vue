@@ -2,7 +2,7 @@
     <div>
         <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" class="form-control" v-model="$v.name.$model" :class="{'is-invalid': $v.name.$dirty && $v.name.$invalid}" id="name" placeholder="Name"  @input="checkIfNameTaken($v.name)" required>
+            <input type="text" v-focus class="form-control" v-model="$v.name.$model" :class="{'is-invalid': $v.name.$dirty && $v.name.$invalid}" id="name" placeholder="Name"  @input="checkIfNameTaken($v.name)" required>
             <div class="invalid-feedback">
                 <span v-if="!$v.name.required">{{$t('validation.required')}}</span>
                 <span v-if="!$v.name.nameNotTaken">{{$t('validation.name_already_taken')}}</span>
@@ -70,6 +70,13 @@
                     this.$v.name.$touch()
                 })
             }, 500)
+        },
+        directives: {
+            focus: {
+                inserted: function (el) {
+                    el.focus()
+                }
+            }
         },
         validations: {
             name: {
