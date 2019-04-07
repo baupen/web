@@ -172,7 +172,7 @@
                 <button class="btn btn-outline-danger"
                         v-bind:disabled="isLoading || issues.filter(i => i.selected).length === 0"
                         v-on:click.prevent="remove()">
-                    {{$t("actions.remove_all")}}
+                    {{$t("actions.remove_selected")}}
                 </button>
             </div>
             <div v-else>
@@ -181,7 +181,7 @@
                 </p>
                 <button class="btn btn-danger"
                         v-on:click.prevent="removeConfirm()">
-                    {{$t("actions.remove_all")}}
+                    {{$t("actions.remove_selected")}}
                 </button>
                 <button class="btn"
                         v-on:click.prevent="abortRemove()">
