@@ -362,7 +362,7 @@
             },
             confirm: function () {
                 this.isLoading = true;
-                let errorIssues = this.issues.filter(c => c.selected && (c.description.length === 0 || c.craftsmanId === null));
+                let errorIssues = this.issues.filter(c => c.selected && (c.craftsmanId === null));
                 if (errorIssues.length > 0) {
                     this.displayWarningFlash(this.$t("messages.danger.confirm_issues_impossible"));
                     errorIssues.forEach(i => i.error = true);
