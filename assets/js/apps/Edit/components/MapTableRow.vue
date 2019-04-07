@@ -24,7 +24,7 @@
         </td>
         <td class="text-right">{{map.issueCount}}</td>
         <td>
-            <button class="btn btn-danger" v-if="map.issueCount === 0" @click="$emit('remove')">
+            <button class="btn btn-danger" v-if="map.issueCount === 0 && !hasChildren" @click="$emit('remove')">
                 <font-awesome-icon :icon="['fal', 'trash']"/>
             </button>
         </td>
@@ -51,6 +51,10 @@
             },
             indentSize: {
                 type: Number,
+                required: true
+            },
+            hasChildren: {
+                type: Boolean,
                 required: true
             }
         },
