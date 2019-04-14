@@ -174,7 +174,7 @@ class Map extends BaseEntity
     public function getNameWithContext()
     {
         $context = $this->getContext();
-        if (\mb_strlen($context) > 0) {
+        if (mb_strlen($context) > 0) {
             $context .= ' > ';
         }
 
