@@ -169,6 +169,19 @@ class Map extends BaseEntity
     }
 
     /**
+     * @return string
+     */
+    public function getNameWithContext()
+    {
+        $context = $this->getContext();
+        if (\mb_strlen($context) > 0) {
+            $context .= ' > ';
+        }
+
+        return $context . $this->getName();
+    }
+
+    /**
      * @return MapFile[]|ArrayCollection
      */
     public function getFiles()
