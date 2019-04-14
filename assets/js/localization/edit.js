@@ -1,16 +1,19 @@
 export default {
   de: {
     edit_maps: {
-      help: 'Ändern Sie die Zuordnung oder die Bauplanversion.',
+      title: 'Baupläne',
+      help: 'Ändern Sie die Struktur der Baupläne.',
       default_map_name: 'Neuer Bauplan',
       actions: {
         add_map: 'Bauplan hinzufügen',
+        reorder: 'neu sortieren',
         add_map_files: 'Bauplanversionen hinzufügen',
         hide_map_files: 'Bauplanversionen verstecken',
         save_changes: '{pendingChangesCount} Änderungen speichern'
       }
     },
     edit_map_files: {
+      title: 'Bauplanversionen',
       help: 'Ordnen Sie die Bauplanversionen einem Bauplan zu.',
       drag_files_to_upload: 'Ziehen Sie .pdf Dateien in diesen Bereich um diese als neue Bauplanversionen hinzuzufügen',
       performing_upload_check: 'Upload wird geprüft...',

@@ -1,6 +1,6 @@
 <template>
     <tr>
-        <td class="map-indent" :class="'map-indent-' + indentSize">
+        <td class="map-indent" :class="'map-indent-' + this.mapContainer.indentSize">
             <input
                     type="text"
                     v-model.lazy="map.name"
@@ -24,7 +24,7 @@
         </td>
         <td class="text-right">{{map.issueCount}}</td>
         <td>
-            <button class="btn btn-danger" v-if="map.issueCount === 0 && !hasChildren" @click="$emit('remove')">
+            <button class="btn btn-danger" v-if="canRemove" @click="$emit('remove')">
                 <font-awesome-icon :icon="['fal', 'trash']"/>
             </button>
         </td>
@@ -41,28 +41,18 @@
                 type: Object,
                 required: true
             },
-            orderedMapContainers: {
+            mapContainers: {
                 type: Array,
                 required: true
             },
             mapFileContainers: {
                 type: Array,
                 required: true
-            },
-            indentSize: {
-                type: Number,
-                required: true
-            },
-            hasChildren: {
-                type: Boolean,
-                required: true
             }
         },
         data() {
             return {
-                map: this.mapContainer.map,
-                beforeEditData: null,
-                afterEditData: null
+                map: this.mapContainer.map
             }
         },
         components: {
@@ -70,46 +60,40 @@
             bButton
         },
         methods: {
-            getData: function (map) {
-                return {
-                    name: map.name,
-                    parentId: map.parentId,
-                    fileId: map.fileId,
+            hasParentId: function (id, parentId) {
+                let currentParentId = this.mapIdToParentId[id];
+
+                while (currentParentId !== null) {
+                    if (currentParentId === parentId) {
+                        return true;
+                    }
+
+                    currentParentId = this.mapIdToParentId[currentParentId];
                 }
-            },
-            setData: function (map, data) {
-                map.name = data.name;
-                map.parentId = data.parentId;
-                map.fileId = data.fileId;
+
+                return false;
             }
         },
         computed: {
             selectableMapFiles: function () {
                 return this.mapFileContainers.map(mfc => mfc.mapFile).filter(m => m.mapId === this.map.id);
             },
-            selectableMaps: function () {
-                // find first map not a child of this.map
-                let skipUntilOrder = 0;
-                let mapFound = false;
-                for (let i = 0; i < this.orderedMapContainers.length; i++) {
-                    const currentMap = this.orderedMapContainers[i];
-                    if (!mapFound) {
-                        if (currentMap === this.mapContainer) {
-                            mapFound = true;
-                        }
-                    } else if (currentMap.indentSize <= this.mapContainer.indentSize) {
-                        break;
-                    }
-                    skipUntilOrder++;
-                }
+            canRemove: function() {
+                return this.map.issueCount === 0 && this.mapContainers.filter(m => m.map.parentId === this.map.id).length === 0;
+            },
+            mapIdToParentId: function() {
+                let parentIdDictionary = [];
+                this.mapContainers.forEach(mc => {
+                    parentIdDictionary[mc.map.id] = mc.map.parentId;
+                });
 
-                // can choose all maps before & all maps after & including the first map not a child of this.map
+                return parentIdDictionary;
+            },
+            selectableMaps: function () {
                 return [{
-                    map: {
-                        id: null,
-                        name: "-"
-                    }
-                }].concat(this.orderedMapContainers.filter(m => m.order < this.mapContainer.order || m.order >= skipUntilOrder)).map(mc => mc.map);
+                    name: "-",
+                    id: null
+                }].concat(this.mapContainers.map(mc => mc.map).filter(m => m.id !== this.mapContainer.map.id && !this.hasParentId(m.id, this.mapContainer.map.id)));
             },
             selectedMapFileName: function () {
                 const match = this.selectableMapFiles.filter(mf => this.map.fileId === mf.id);
@@ -132,7 +116,7 @@
                 deep: true,
             },
             selectableMapFiles: function (after, before) {
-                // assign if before none seleted
+                // assign if before none selected
                 if (before.length === 0 && after.length === 1) {
                     this.map.fileId = after[0].id;
 
@@ -143,9 +127,6 @@
                     this.$emit('save');
                 }
             }
-        },
-        mounted() {
-            this.beforeEditData = this.getData(this.map);
         }
     }
 </script>
