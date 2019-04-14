@@ -75,6 +75,25 @@ class IssueRepository extends EntityRepository
     }
 
     /**
+     * @param Filter $filter
+     *
+     * @return Issue[]
+     */
+    public function filter(Filter $filter)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('i');
+
+        //set conditions from filter
+        $this->applyFilter($qb, $filter);
+
+        /** @var Issue[] $issues */
+        $issues = $qb->getQuery()->getResult();
+
+        return $this->applyFilterAfterwards($filter, $issues);
+    }
+
+    /**
      * apply the filter to the query builder.
      *
      * @param QueryBuilder $queryBuilder
@@ -84,7 +103,7 @@ class IssueRepository extends EntityRepository
     {
         // due to a bug in doctrine empty arrays are the same as null arrays after persist/retrieve from db
         // therefore handle empty arrays as null arrays in lack of a better solution
-        // bugfix will only be included in 3.0 because its a breaking change
+        // bug fix will only be included in 3.0 because it is a breaking change
         $unsafeArrays = $filter->isPersistedInDatabase();
 
         $queryBuilder->from(Issue::class, 'i');
@@ -182,31 +201,56 @@ class IssueRepository extends EntityRepository
 
     /**
      * @param Filter $filter
+     * @param Issue[] $issues
      *
-     * @return Issue[]
+     * @return Issue[]|array
      */
-    public function filter(Filter $filter)
+    private function applyFilterAfterwards(Filter $filter, array $issues)
     {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->select('i');
-
-        //set conditions from filter
-        $this->applyFilter($qb, $filter);
-
-        /** @var Issue[] $issues */
-        $issues = $qb->getQuery()->getResult();
-        if ($filter->getNumberText() === null) {
-            return $issues;
-        }
-
-        //filter by issue number text
-        $res = [];
-        foreach ($issues as $issue) {
-            if (mb_strpos((string)$issue->getNumber(), $filter->getNumberText()) === 0) {
-                $res[] = $issue;
+        if ($filter->getNumberText() !== null) {
+            // filter by issue number text
+            $res = [];
+            foreach ($issues as $issue) {
+                if (mb_strpos((string)$issue->getNumber(), $filter->getNumberText()) === 0) {
+                    $res[] = $issue;
+                }
             }
+
+            $issues = $res;
         }
 
-        return $res;
+        if ($filter->getAnyStatus() !== null) {
+            // count matches of status per issue
+            $matches = [];
+            foreach ($issues as $issue) {
+                $issueId = $issue->getId();
+
+                $matches[$issueId] = 0;
+                if ($filter->getAnyStatus() & Filter::STATUS_REGISTERED) {
+                    $matches[$issueId] += $issue->getRegisteredAt() !== null && $issue->getCraftsman()->getLastOnlineVisit() < $issue->getRegisteredAt() && $issue->getRespondedAt() === null && $issue->getReviewedAt() === null;
+                }
+                if ($filter->getAnyStatus() & Filter::STATUS_READ) {
+                    $matches[$issueId] += $issue->getCraftsman()->getLastOnlineVisit() > $issue->getRegisteredAt() && $issue->getRespondedAt() === null && $issue->getReviewedAt() === null;
+                }
+                if ($filter->getAnyStatus() & Filter::STATUS_RESPONDED) {
+                    $matches[$issueId] += $issue->getRespondedAt() !== null && $issue->getReviewedAt() === null;
+                }
+                if ($filter->getAnyStatus() & Filter::STATUS_REVIEWED) {
+                    $matches[$issueId] += $issue->getReviewedAt() !== null;
+                }
+            }
+
+            // only keep issues with at least one match
+            $res = [];
+            foreach ($issues as $issue) {
+                if ($matches[$issue->getId()] > 0) {
+                    $res[] = $issue;
+                }
+            }
+
+            $issues = $res;
+        }
+
+        return $issues;
     }
 }
