@@ -8,17 +8,37 @@
                       :color="'#ff1d5e'"
         />
         <template v-else>
-            <map-view
-                    :map-containers="mapContainers"
-                    :map-file-containers="mapFileContainers"
-                    @map-add="addMap"
-                    @map-save="saveMap(arguments[0])"
-                    @map-remove="removeMap(arguments[0])"
-                    @map-file-dropped="mapFileDropped(arguments[0])"
-                    @map-file-upload="mapFileUpload(arguments[0])"
-                    @map-file-save="mapFileSave(arguments[0])"
-                    @map-file-abort-upload="mapFileAbortUpload(arguments[0])"
-            />
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+                       aria-controls="nav-home" aria-selected="true">Home</a>
+                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
+                       aria-controls="nav-profile" aria-selected="false">Profile</a>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <map-view
+                            v-if="!mapFileViewActive"
+                            :map-containers="mapContainers"
+                            :map-file-containers="mapFileContainers"
+                            @map-add="addMap"
+                            @map-save="saveMap(arguments[0])"
+                            @map-remove="removeMap(arguments[0])"
+                    />
+                </div>
+                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <map-file-view
+                            v-if="mapFileViewActive"
+                            :map-containers="mapContainers"
+                            :map-file-containers="mapFileContainers"
+                            @file-dropped="mapFileDropped(arguments[0])"
+                            @start-upload="mapFileUpload(arguments[0])"
+                            @abort-upload="mapFileAbortUpload(arguments[0])"
+                            @save="mapFileSave(arguments[0])"
+                    />
+                </div>
+            </div>
         </template>
         <button class="btn btn-primary" :disabled="isMapsLoading" v-if="pendingMapChanges > 0"
                 @click="startProcessMapChanges">
@@ -40,10 +60,6 @@
                     @craftsman-remove="removeCraftsman(arguments[0])"
             />
         </template>
-        <button class="btn btn-primary" :disabled="isMapsLoading" v-if="pendingCraftsmanChanges > 0"
-                @click="startProcessCraftsmanChanges">
-            {{$t('edit_craftsmen.actions.save_changes', {pendingChangesCount: pendingCraftsmanChanges}) }}
-        </button>
     </div>
 </template>
 
@@ -56,6 +72,7 @@
     import MapView from "./components/MapView";
     import CryptoJS from 'crypto-js'
     import CraftsmanView from "./components/CraftsmanView";
+    import MapFileView from "./components/MapFileView";
 
     const lang = document.documentElement.lang.substr(0, 2);
     moment.locale(lang);
@@ -69,20 +86,21 @@
                 craftsmanContainers: [],
                 isMapsLoading: true,
                 isCraftsmenLoading: true,
+                isLoading: false,
                 locale: lang,
                 actionQueue: []
             }
         },
         mixins: [notifications],
         components: {
+            MapFileView,
             CraftsmanView,
             MapView,
             AtomSpinner
         },
         methods: {
             addMap: function () {
-                this.mapContainers.push({
-                    pendingChange: 'add',
+                const mapContainer = {
                     map: {
                         id: uuid(),
                         name: this.$t("edit_maps.default_map_name"),
@@ -92,18 +110,31 @@
                     },
                     order: 0,
                     indentSize: 0
-                })
+                };
+
+                this.mapContainers.push(mapContainer);
+
+                axios.post("/api/edit/map", {
+                    constructionSiteId: this.constructionSiteId,
+                    map: mapContainer.map
+                }).then((response) => {
+                    mapContainer.map = response.data.map;
+                });
+
             },
             saveMap: function (mapContainer) {
-                if (mapContainer.pendingChange !== 'add') {
-                    mapContainer.pendingChange = 'update';
-                }
+                axios.put("/api/edit/map/" + mapContainer.map.id, {
+                    constructionSiteId: this.constructionSiteId,
+                    map: mapContainer.map
+                });
             },
             removeMap: function (mapContainer) {
-                // fix parent ids of children
-                this.mapContainers.filter(m => m.map.parentId === mapContainer.map.id).forEach(container => {
-                    container.map.parentId = mapContainer.map.parentId;
-                    this.saveMap(container);
+                axios.delete("/api/edit/map/" + mapContainer.map.id, {
+                    data: {
+                        constructionSiteId: this.constructionSiteId
+                    }
+                }).then(() => {
+                    this.mapContainers = this.mapContainers.filter(cc => cc !== mapContainer);
                 });
 
                 if (mapContainer.pendingChange !== 'add') {
@@ -114,8 +145,7 @@
                 }
             },
             addCraftsman: function (afterAddAction) {
-                const newCraftsmanContainer = {
-                    pendingChange: 'add',
+                const craftsmanContainer = {
                     craftsman: {
                         id: uuid(),
                         contactName: this.$t("edit_craftsmen.defaults.contact_name"),
@@ -126,24 +156,32 @@
                     }
                 };
 
-                this.craftsmanContainers.push(newCraftsmanContainer);
+                this.craftsmanContainers.unshift(craftsmanContainer);
 
-                this.$nextTick(() => {
-                    afterAddAction(newCraftsmanContainer);
+                axios.post("/api/edit/craftsman", {
+                    constructionSiteId: this.constructionSiteId,
+                    craftsman: craftsmanContainer.craftsman
+                }).then((response) => {
+                    craftsmanContainer.craftsman.id = response.data.craftsman.id;
                 });
+
+                afterAddAction(craftsmanContainer);
             },
             saveCraftsman: function (craftsmanContainer) {
-                if (craftsmanContainer.pendingChange !== 'add') {
-                    craftsmanContainer.pendingChange = 'update';
-                }
+                axios.put("/api/edit/craftsman/" + craftsmanContainer.craftsman.id, {
+                    constructionSiteId: this.constructionSiteId,
+                    craftsman: craftsmanContainer.craftsman
+                });
             },
             removeCraftsman: function (craftsmanContainer) {
-                if (craftsmanContainer.pendingChange !== 'add') {
-                    craftsmanContainer.pendingChange = 'remove';
-                } else {
-                    //directly remove
-                    this.craftsmanContainers = this.craftsmanContainers.filter(mc => mc !== craftsmanContainer);
-                }
+                axios.delete("/api/edit/craftsman/" + craftsmanContainer.craftsman.id, {
+                    data: {
+                        constructionSiteId: this.constructionSiteId
+                    }
+                }).then(() => {
+                    // continue process
+                    this.craftsmanContainers = this.craftsmanContainers.filter(cc => cc !== craftsmanContainer);
+                });
             },
             mapFileDropped: function (file) {
                 let mapFile = {
@@ -237,121 +275,13 @@
                     });
             },
             mapFileSave: function (mapFileContainer) {
-                mapFileContainer.pendingChange = 'update';
+                axios.put("/api/edit/map_file/" + mapFileContainer.mapFile.id, {
+                    constructionSiteId: this.constructionSiteId,
+                    mapFile: mapFileContainer.mapFile
+                });
             },
             mapFileAbortUpload: function (mapFileContainer) {
                 this.mapFileContainers = this.mapFileContainers.filter(mf => mf !== mapFileContainer);
-            },
-            startProcessMapChanges: function () {
-                if (!this.isMapsLoading) {
-                    this.isMapsLoading = true;
-                    this.processMapChanges();
-                }
-            },
-            processMapChanges: function () {
-                if (this.pendingMapAdd.length > 0) {
-                    const mapContainer = this.pendingMapAdd[0];
-                    axios.post("/api/edit/map", {
-                        constructionSiteId: this.constructionSiteId,
-                        map: mapContainer.map
-                    }).then((response) => {
-                        const oldId = mapContainer.map.id;
-                        mapContainer.map = response.data.map;
-                        const newId = mapContainer.map.id;
-
-                        // refreshIds
-                        this.mapFileContainers.filter(mfc => mfc.mapFile.mapId === oldId).forEach(mfc => {
-                            mfc.pendingChange = "update";
-                            mfc.mapFile.mapId = newId
-                        });
-
-                        this.mapContainers.filter(mc => mc.map.parentId === oldId).forEach(mc => {
-                            mc.pendingChange = "update";
-                            mc.map.parentId = newId
-                        });
-
-                        // continue process
-                        mapContainer.pendingChange = null;
-                        this.processMapChanges();
-                    });
-                } else if (this.pendingMapFileUpdate.length) {
-                    const mapFileContainer = this.pendingMapFileUpdate[0];
-                    axios.put("/api/edit/map_file/" + mapFileContainer.mapFile.id, {
-                        constructionSiteId: this.constructionSiteId,
-                        mapFile: mapFileContainer.mapFile
-                    }).then((response) => {
-                        // continue process
-                        mapFileContainer.pendingChange = null;
-                        this.processMapChanges();
-                    });
-                } else if (this.pendingMapUpdate.length) {
-                    const mapContainer = this.pendingMapUpdate[0];
-                    axios.put("/api/edit/map/" + mapContainer.map.id, {
-                        constructionSiteId: this.constructionSiteId,
-                        map: mapContainer.map
-                    }).then((response) => {
-                        // continue process
-                        mapContainer.pendingChange = null;
-                        this.processMapChanges();
-                    });
-                } else if (this.pendingMapRemove.length) {
-                    const mapContainer = this.pendingMapRemove[0];
-                    axios.delete("/api/edit/map/" + mapContainer.map.id, {
-                        data: {
-                            constructionSiteId: this.constructionSiteId
-                        }
-                    }).then((response) => {
-                        // continue process
-                        this.mapContainers = this.mapContainers.filter(cc => cc !== mapContainer);
-                        this.processMapChanges();
-                    });
-                } else {
-                    this.isMapsLoading = false;
-                }
-            },
-            startProcessCraftsmanChanges: function () {
-                if (!this.isCraftsmenLoading) {
-                    this.isCraftsmenLoading = true;
-                    this.processCraftsmanChanges();
-                }
-            },
-            processCraftsmanChanges: function () {
-                if (this.pendingCraftsmanAdd.length > 0) {
-                    const craftsmanContainer = this.pendingCraftsmanAdd[0];
-                    axios.post("/api/edit/craftsman", {
-                        constructionSiteId: this.constructionSiteId,
-                        craftsman: craftsmanContainer.craftsman
-                    }).then((response) => {
-                        craftsmanContainer.craftsman.id = response.data.craftsman.id;
-
-                        // continue process
-                        craftsmanContainer.pendingChange = null;
-                        this.processCraftsmanChanges();
-                    });
-                } else if (this.pendingCraftsmanUpdate.length) {
-                    const craftsmanContainer = this.pendingCraftsmanUpdate[0];
-                    axios.put("/api/edit/craftsman/" + craftsmanContainer.craftsman.id, {
-                        constructionSiteId: this.constructionSiteId,
-                        craftsman: craftsmanContainer.craftsman
-                    }).then((response) => {
-                        // continue process
-                        craftsmanContainer.pendingChange = null;
-                        this.processCraftsmanChanges();
-                    });
-                } else if (this.pendingCraftsmanRemove.length) {
-                    const craftsmanContainer = this.pendingCraftsmanRemove[0];
-                    axios.delete("/api/edit/craftsman/" + craftsmanContainer.craftsman.id, {
-                        data: {
-                            constructionSiteId: this.constructionSiteId
-                        }
-                    }).then((response) => {
-                        // continue process
-                        this.craftsmanContainers = this.craftsmanContainers.filter(cc => cc !== craftsmanContainer);
-                        this.processCraftsmanChanges();
-                    });
-                } else {
-                    this.isCraftsmenLoading = false;
-                }
             }
         },
         computed: {
@@ -381,15 +311,31 @@
             },
             pendingCraftsmanChanges: function () {
                 return this.pendingCraftsmanAdd.length + this.pendingCraftsmanUpdate.length + this.pendingCraftsmanRemove.length;
+            },
+            canChangeTab: function () {
+                return this.pendingMapAdd.length + this.pendingMapUpdate.length + this.pendingMapRemove.length + this.pendingMapFileUpdate.length === 0;
             }
         },
         mounted() {
+            // Add a request interceptor
+            axios.interceptors.request.use(
+                config => {
+                    this.isLoading = true;
+                    return config;
+                },
+                error => {
+                    return Promise.reject(error);
+                }
+            );
+
             // Add a response interceptor
             axios.interceptors.response.use(
                 response => {
+                    this.isLoading = false;
                     return response.data;
                 },
                 error => {
+                    this.isLoading = false;
                     this.displayErrorFlash(this.$t("messages.danger.unrecoverable") + " (" + error.response.data.message + ")");
                     console.log("request failed");
                     console.log(error.response.data);
@@ -405,22 +351,23 @@
                 }).then((response) => {
                     response.data.mapFiles.forEach(mf => {
                         this.mapFileContainers.push({
-                            mapFile: mf,
-                            pendingChange: null
+                            mapFile: mf
                         })
                     });
 
                     axios.post("/api/edit/maps", {
                         constructionSiteId: this.constructionSiteId
                     }).then((response) => {
+                        let mapContainers = [];
                         response.data.maps.forEach(m => {
-                            this.mapContainers.push({
+                            mapContainers.push({
                                 map: m,
                                 order: 0,
-                                indentSize: 0,
-                                pendingChange: null
+                                indentSize: 0
                             })
                         });
+
+                        this.mapContainers = mapContainers;
 
                         this.isMapsLoading = false;
                     });
@@ -431,8 +378,7 @@
                 }).then((response) => {
                     response.data.craftsmen.forEach(c => {
                         this.craftsmanContainers.push({
-                            craftsman: c,
-                            pendingChange: null
+                            craftsman: c
                         })
                     });
                     this.isCraftsmenLoading = false;
