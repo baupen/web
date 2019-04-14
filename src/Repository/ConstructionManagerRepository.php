@@ -31,24 +31,6 @@ class ConstructionManagerRepository extends EntityRepository
     }
 
     /**
-     * @param Filter $filter
-     *
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     *
-     * @return int
-     */
-    public function filterCount(Filter $filter)
-    {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->select('count(i.id)');
-
-        //set conditions from filter
-        $this->applyFilter($qb, $filter);
-
-        return $qb->getQuery()->getSingleScalarResult();
-    }
-
-    /**
      * gets recently changed issues.
      *
      * @param ConstructionSite $constructionSite
@@ -71,6 +53,25 @@ class ConstructionManagerRepository extends EntityRepository
         $queryBuilder->orderBy('i.lastChangedAt', 'DESC');
 
         return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param Filter $filter
+     *
+     * @return Issue[]
+     */
+    public function filter(Filter $filter)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('i');
+
+        //set conditions from filter
+        $this->applyFilter($qb, $filter);
+
+        /** @var Issue[] $issues */
+        $issues = $qb->getQuery()->getResult();
+
+        return $this->applyFilterAfterwards($filter, $issues);
     }
 
     /**
@@ -171,31 +172,56 @@ class ConstructionManagerRepository extends EntityRepository
 
     /**
      * @param Filter $filter
+     * @param Issue[] $issues
      *
-     * @return Issue[]
+     * @return Issue[]|array
      */
-    public function filter(Filter $filter)
+    private function applyFilterAfterwards(Filter $filter, array $issues)
     {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->select('i');
-
-        //set conditions from filter
-        $this->applyFilter($qb, $filter);
-
-        /** @var Issue[] $issues */
-        $issues = $qb->getQuery()->getResult();
-        if ($filter->getNumberText() === null) {
-            return $issues;
-        }
-
-        //filter by issue number text
-        $res = [];
-        foreach ($issues as $issue) {
-            if (mb_strpos((string)$issue->getNumber(), $filter->getNumberText()) === 0) {
-                $res[] = $issue;
+        if ($filter->getNumberText() !== null) {
+            // filter by issue number text
+            $res = [];
+            foreach ($issues as $issue) {
+                if (mb_strpos((string)$issue->getNumber(), $filter->getNumberText()) === 0) {
+                    $res[] = $issue;
+                }
             }
+
+            $issues = $res;
         }
 
-        return $res;
+        if ($filter->getAnyStatus() !== null) {
+            // count matches of status per issue
+            $matches = [];
+            foreach ($issues as $issue) {
+                if ($filter->getAnyStatus() & Filter::STATUS_REGISTERED) {
+                    $matches[$issue->getId()] += $issue->getRegisteredAt() !== null && $issue->getCraftsman()->getLastOnlineVisit() < $issue->getRegisteredAt() && $issue->getRespondedAt() === null && $issue->getReviewedAt() === null;
+                }
+                if ($filter->getAnyStatus() & Filter::STATUS_READ) {
+                    $matches[$issue->getId()] += $issue->getCraftsman()->getLastOnlineVisit() > $issue->getRegisteredAt() && $issue->getRespondedAt() === null && $issue->getReviewedAt() === null;
+                }
+                if ($filter->getAnyStatus() & Filter::STATUS_RESPONDED) {
+                    $matches[$issue->getId()] += $issue->getRespondedAt() !== null && $issue->getReviewedAt() === null;
+                }
+                if ($filter->getAnyStatus() & Filter::STATUS_REVIEWED) {
+                    $matches[$issue->getId()] += $issue->getReviewedAt() !== null;
+                }
+            }
+
+            dump($filter->getAnyStatus());
+            dump($matches);
+
+            // only keep issues with at least one match
+            $res = [];
+            foreach ($issues as $issue) {
+                if ($matches[$issue->getId()] > 0) {
+                    $res[] = $issue;
+                }
+            }
+
+            $issues = $res;
+        }
+
+        return $issues;
     }
 }

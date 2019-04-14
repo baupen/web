@@ -42,19 +42,11 @@ class IssueRepository extends EntityRepository
     /**
      * @param Filter $filter
      *
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     *
      * @return int
      */
     public function filterCount(Filter $filter)
     {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->select('count(i.id)');
-
-        //set conditions from filter
-        $this->applyFilter($qb, $filter);
-
-        return $qb->getQuery()->getSingleScalarResult();
+        return \count($this->filter($filter));
     }
 
     /**
