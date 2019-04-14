@@ -1,16 +1,17 @@
 <template>
     <div class="switch-wrapper">
+        <span class="switch">
+            <input type="checkbox"
+                   class="switch"
+                   :id="'switch-' + id"
+                   true-value="yes"
+                   false-value="no"
+                   v-model="checkboxValue">
+            <label :for="'switch-' + id"></label>
+        </span>
         <label class="col-form-label-sm" :for="id">
             <slot>
             </slot>
-        </label><br/>
-        <label class="switch">
-            <input type="checkbox"
-                   true-value="yes"
-                   false-value="no"
-                   v-model="checkboxValue"
-                   :id="id">
-            <span class="slider"></span>
         </label>
     </div>
 </template>
