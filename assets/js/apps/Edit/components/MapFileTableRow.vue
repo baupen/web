@@ -31,14 +31,9 @@
         </td>
         <td>{{formatDateTime(mapFile.createdAt)}}</td>
         <td>
-            <select class="form-control form-control-sm" v-if="selectableMaps.length > 1"
-                    :disabled="mapFile.automaticEditEnabled || [null, 'update'].indexOf(mapFileContainer.pendingChange) === false"
-                    v-model="mapFile.mapId">
+            <select class="form-control form-control-sm" v-model="mapFile.mapId">
                 <option v-for="map in selectableMaps" :value="map.id">{{map.name}}</option>
             </select>
-            <template v-else>
-                {{selectedMapName}}
-            </template>
         </td>
         <td class="text-right">{{mapFile.issueCount}}</td>
     </tr>
@@ -61,7 +56,7 @@
                 type: Array,
                 required: true
             },
-            orderedMapContainers: {
+            mapContainers: {
                 type: Array,
                 required: true
             }
@@ -85,7 +80,7 @@
         },
         computed: {
             selectableMaps: function () {
-                return this.orderedMapContainers.filter(m => m.pendingChange !== "remove").map(m => m.map);
+                return this.mapContainers.map(m => m.map);
             },
             selectedMapName: function () {
                 const match = this.selectableMaps.filter(m => this.mapFile.mapId === m.id);

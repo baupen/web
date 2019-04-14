@@ -11,39 +11,34 @@
             <nav>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
                     <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
-                       aria-controls="nav-home" aria-selected="true">Home</a>
+                       aria-controls="nav-home" aria-selected="true">{{$t("edit_maps.title")}}</a>
                     <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
-                       aria-controls="nav-profile" aria-selected="false">Profile</a>
+                       aria-controls="nav-profile" aria-selected="false">{{$t("edit_map_files.title")}}</a>
                 </div>
             </nav>
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                    <map-view
-                            v-if="!mapFileViewActive"
-                            :map-containers="mapContainers"
-                            :map-file-containers="mapFileContainers"
-                            @map-add="addMap"
-                            @map-save="saveMap(arguments[0])"
-                            @map-remove="removeMap(arguments[0])"
+                    <map-view class="pt-2"
+                              :map-containers="mapContainers"
+                              :map-file-containers="mapFileContainers"
+                              @map-reorder="reorderMaps"
+                              @map-add="addMap"
+                              @map-save="saveMap(arguments[0])"
+                              @map-remove="removeMap(arguments[0])"
                     />
                 </div>
                 <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                    <map-file-view
-                            v-if="mapFileViewActive"
-                            :map-containers="mapContainers"
-                            :map-file-containers="mapFileContainers"
-                            @file-dropped="mapFileDropped(arguments[0])"
-                            @start-upload="mapFileUpload(arguments[0])"
-                            @abort-upload="mapFileAbortUpload(arguments[0])"
-                            @save="mapFileSave(arguments[0])"
+                    <map-file-view class="pt-2"
+                                   :map-containers="mapContainers"
+                                   :map-file-containers="mapFileContainers"
+                                   @file-dropped="mapFileDropped(arguments[0])"
+                                   @start-upload="mapFileUpload(arguments[0])"
+                                   @abort-upload="mapFileAbortUpload(arguments[0])"
+                                   @save="mapFileSave(arguments[0])"
                     />
                 </div>
             </div>
         </template>
-        <button class="btn btn-primary" :disabled="isMapsLoading" v-if="pendingMapChanges > 0"
-                @click="startProcessMapChanges">
-            {{$t('edit_maps.actions.save_changes', {pendingChangesCount: pendingMapChanges}) }}
-        </button>
         <div class="vertical-spacer-big"></div>
         <h2>{{$t("craftsman.plural")}}</h2>
         <p class="text-secondary">{{$t("edit_craftsmen.help")}}</p>
@@ -62,6 +57,19 @@
         </template>
     </div>
 </template>
+
+<style>
+    .tab-content {
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        padding: 1em;
+    }
+
+    .nav-tabs {
+        margin-bottom: 0;
+    }
+</style>
 
 <script>
     import axios from "axios"
@@ -112,7 +120,7 @@
                     indentSize: 0
                 };
 
-                this.mapContainers.push(mapContainer);
+                this.mapContainers.unshift(mapContainer);
 
                 axios.post("/api/edit/map", {
                     constructionSiteId: this.constructionSiteId,
@@ -120,7 +128,10 @@
                 }).then((response) => {
                     mapContainer.map = response.data.map;
                 });
-
+            },
+            reorderMaps: function () {
+                this.setMapOrderProperties(this.mapContainers, null, 0, 0);
+                this.mapContainers = this.mapContainers.sort((m1, m2) => m1.order - m2.order);
             },
             saveMap: function (mapContainer) {
                 axios.put("/api/edit/map/" + mapContainer.map.id, {
@@ -136,13 +147,6 @@
                 }).then(() => {
                     this.mapContainers = this.mapContainers.filter(cc => cc !== mapContainer);
                 });
-
-                if (mapContainer.pendingChange !== 'add') {
-                    mapContainer.pendingChange = 'remove';
-                } else {
-                    //directly remove
-                    this.mapContainers = this.mapContainers.filter(mc => mc !== mapContainer);
-                }
             },
             addCraftsman: function (afterAddAction) {
                 const craftsmanContainer = {
@@ -199,7 +203,8 @@
                     uploadCheck: null,
                     uploadProgress: 0
                 };
-                this.mapFileContainers.push(newMapFileContainer);
+
+                this.mapFileContainers.unshift(newMapFileContainer);
 
                 // perform upload check
                 this.mapFileUploadCheck(newMapFileContainer);
@@ -282,38 +287,26 @@
             },
             mapFileAbortUpload: function (mapFileContainer) {
                 this.mapFileContainers = this.mapFileContainers.filter(mf => mf !== mapFileContainer);
-            }
-        },
-        computed: {
-            pendingMapAdd: function () {
-                return this.mapContainers.filter(mfc => mfc.pendingChange === "add");
             },
-            pendingMapUpdate: function () {
-                return this.mapContainers.filter(mfc => mfc.pendingChange === "update");
-            },
-            pendingMapRemove: function () {
-                return this.mapContainers.filter(mfc => mfc.pendingChange === "remove");
-            },
-            pendingCraftsmanAdd: function () {
-                return this.craftsmanContainers.filter(mfc => mfc.pendingChange === "add");
-            },
-            pendingCraftsmanUpdate: function () {
-                return this.craftsmanContainers.filter(mfc => mfc.pendingChange === "update");
-            },
-            pendingCraftsmanRemove: function () {
-                return this.craftsmanContainers.filter(mfc => mfc.pendingChange === "remove");
-            },
-            pendingMapFileUpdate: function () {
-                return this.mapFileContainers.filter(mfc => mfc.pendingChange === "update");
-            },
-            pendingMapChanges: function () {
-                return this.pendingMapAdd.length + this.pendingMapUpdate.length + this.pendingMapRemove.length + this.pendingMapFileUpdate.length;
-            },
-            pendingCraftsmanChanges: function () {
-                return this.pendingCraftsmanAdd.length + this.pendingCraftsmanUpdate.length + this.pendingCraftsmanRemove.length;
-            },
-            canChangeTab: function () {
-                return this.pendingMapAdd.length + this.pendingMapUpdate.length + this.pendingMapRemove.length + this.pendingMapFileUpdate.length === 0;
+            setMapOrderProperties: function (mapContainers, parentId, order, indent) {
+                const children = mapContainers.filter(m => m.map.parentId === parentId);
+                children.sort((c1, c2) => c1.map.name.localeCompare(c2.map.name));
+                let maxOrder = order;
+
+                if (children.filter(c => c.indentSize !== indent)) {
+                    children.forEach(c => {
+                        c.order = maxOrder;
+                        c.indentSize = indent;
+                        maxOrder = this.setMapOrderProperties(mapContainers, c.map.id, maxOrder + 1, indent + 1);
+                    });
+                } else {
+                    children.forEach(c => {
+                        this.setMapOrderProperties(mapContainers, c.map.id, maxOrder + 1, indent + 1);
+                    });
+                }
+
+
+                return maxOrder;
             }
         },
         mounted() {
@@ -358,16 +351,15 @@
                     axios.post("/api/edit/maps", {
                         constructionSiteId: this.constructionSiteId
                     }).then((response) => {
-                        let mapContainers = [];
                         response.data.maps.forEach(m => {
-                            mapContainers.push({
+                            this.mapContainers.push({
                                 map: m,
                                 order: 0,
-                                indentSize: 0
+                                indentSize: -1
                             })
                         });
 
-                        this.mapContainers = mapContainers;
+                        this.reorderMaps();
 
                         this.isMapsLoading = false;
                     });
