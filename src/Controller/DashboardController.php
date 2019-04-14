@@ -27,6 +27,10 @@ class DashboardController extends BaseLoginController
      */
     public function indexAction()
     {
+        if ($this->getUser()->getActiveConstructionSite() === null) {
+            return $this->redirectToRoute('switch');
+        }
+
         return $this->render('dashboard/dashboard.html.twig');
     }
 }

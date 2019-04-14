@@ -14,6 +14,7 @@ namespace App\Controller\Api;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\IssueIdsRequest;
 use App\Api\Request\Register\SetStatusRequest;
+use App\Api\Request\Register\UpdateIssuesRequest;
 use App\Api\Response\Data\CraftsmenData;
 use App\Api\Response\Data\IssuesData;
 use App\Api\Response\Data\MapsData;
@@ -111,9 +112,9 @@ class RegisterController extends ApiController
      */
     private function parseRegisterIssuesRequest(Request $request, &$issues, &$entities, &$errorResponse, &$constructionSite)
     {
-        /** @var \App\Api\Request\Register\UpdateIssuesRequest $parsedRequest */
+        /** @var UpdateIssuesRequest $parsedRequest */
         /** @var ConstructionSite $constructionSite */
-        if (!parent::parseConstructionSiteRequest($request, \App\Api\Request\Register\UpdateIssuesRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+        if (!parent::parseConstructionSiteRequest($request, UpdateIssuesRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
             return false;
         }
 

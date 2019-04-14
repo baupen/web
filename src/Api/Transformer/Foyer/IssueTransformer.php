@@ -49,7 +49,7 @@ class IssueTransformer extends BatchTransformer
         $this->issueTransformer->writeApiProperties($entity, $issue);
 
         $issue->setResponseLimit($entity->getResponseLimit());
-        $issue->setMap($entity->getMap()->getName());
+        $issue->setMap($entity->getMap()->getNameWithContext());
         $issue->setIsMarked($entity->getIsMarked());
         $issue->setWasAddedWithClient($entity->getWasAddedWithClient());
         if ($entity->getCraftsman() !== null) {

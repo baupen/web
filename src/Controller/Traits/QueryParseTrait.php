@@ -40,11 +40,6 @@ trait QueryParseTrait
             $filter->setNumberText($numberText);
         }
 
-        //parse input to array
-        //empty arrays are not considered
-        $flattenIdArray = function ($input) {
-        };
-
         $craftsmanParameters = new ParameterBag($parameterBag->get('craftsman', []));
         if ($craftsmanParameters->getBoolean('enabled')) {
             $allowedCraftsmen = $craftsmanParameters->get('craftsmen', []);
@@ -84,40 +79,49 @@ trait QueryParseTrait
         //check for status filters
         $statusParameters = new ParameterBag($parameterBag->get('status', []));
         if ($statusParameters->getBoolean('enabled')) {
-            $registeredStatus = $statusParameters->getBoolean('registered');
-            $readStatus = $statusParameters->getBoolean('read');
-            $respondedStatus = $statusParameters->getBoolean('responded');
-            $reviewedStatus = $statusParameters->getBoolean('reviewed');
+            $anyStatusValue = 0;
 
-            //only active if at least one set
-            if ($registeredStatus || $readStatus || $respondedStatus || $reviewedStatus) {
-                $filter->setReadStatus(false);
-                $filter->setRespondedStatus(false);
-                $filter->setReviewedStatus(false);
+            if ($statusParameters->getBoolean('registered')) {
+                $anyStatusValue = $anyStatusValue | Filter::STATUS_REGISTERED;
+            }
 
-                $filter->setReadStatus($readStatus);
-                $filter->setRespondedStatus($respondedStatus);
-                $filter->setReviewedStatus($reviewedStatus);
+            if ($statusParameters->getBoolean('read')) {
+                $anyStatusValue = $anyStatusValue | Filter::STATUS_READ;
+            }
+
+            if ($statusParameters->getBoolean('responded')) {
+                $anyStatusValue = $anyStatusValue | Filter::STATUS_RESPONDED;
+            }
+
+            if ($statusParameters->getBoolean('reviewed')) {
+                $anyStatusValue = $anyStatusValue | Filter::STATUS_REVIEWED;
+            }
+
+            if ($anyStatusValue > 0) {
+                $filter->setAnyStatus($anyStatusValue);
             }
         }
 
         //check filtering of status
         $timeParameters = new ParameterBag($parameterBag->get('time', []));
         if ($timeParameters->getBoolean('enabled', false)) {
-            list($isEnabled, $start, $end) = self::parseTimeFilter($timeParameters, 'registered');
-            $filter->setRegistrationStatus($isEnabled);
-            $filter->setRegistrationStatus($start);
-            $filter->setRegistrationStatus($end);
+            list($isEnabled1, $start1, $end1) = self::parseTimeFilter($timeParameters, 'registered');
+            list($isEnabled2, $start2, $end2) = self::parseTimeFilter($timeParameters, 'responded');
+            list($isEnabled3, $start3, $end3) = self::parseTimeFilter($timeParameters, 'reviewed');
 
-            list($isEnabled, $start, $end) = self::parseTimeFilter($timeParameters, 'responded');
-            $filter->setRespondedStatus($isEnabled);
-            $filter->setRespondedStart($start);
-            $filter->setRespondedEnd($end);
+            if ($isEnabled1 || $isEnabled2 || $isEnabled3) {
+                $filter->setRegistrationStatus($isEnabled1);
+                $filter->setRegistrationStatus($start1);
+                $filter->setRegistrationStatus($end1);
 
-            list($isEnabled, $start, $end) = self::parseTimeFilter($timeParameters, 'reviewed');
-            $filter->setReviewedStatus($isEnabled);
-            $filter->setReviewedStart($start);
-            $filter->setReviewedEnd($end);
+                $filter->setRespondedStatus($isEnabled2);
+                $filter->setRespondedStart($start2);
+                $filter->setRespondedEnd($end2);
+
+                $filter->setReviewedStatus($isEnabled3);
+                $filter->setReviewedStart($start3);
+                $filter->setReviewedEnd($end3);
+            }
         }
     }
 
