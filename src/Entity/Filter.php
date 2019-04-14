@@ -26,6 +26,11 @@ class Filter extends BaseEntity
 {
     use IdTrait;
 
+    const STATUS_REGISTERED = 1;
+    const STATUS_READ = 2;
+    const STATUS_RESPONDED = 4;
+    const STATUS_REVIEWED = 8;
+
     /**
      * @var string
      *
@@ -74,6 +79,13 @@ class Filter extends BaseEntity
      * @ORM\Column(type="simple_array", nullable=true)
      */
     private $issues = null;
+
+    /**
+     * @var int|null
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $anyStatus = null;
 
     /**
      * @var bool|null
@@ -555,5 +567,21 @@ class Filter extends BaseEntity
     public function setAccessIdentifier(): void
     {
         $this->accessIdentifier = Uuid::uuid4()->toString();
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAnyStatus(): ?int
+    {
+        return $this->anyStatus;
+    }
+
+    /**
+     * @param int|null $anyStatus
+     */
+    public function setAnyStatus(?int $anyStatus): void
+    {
+        $this->anyStatus = $anyStatus;
     }
 }
