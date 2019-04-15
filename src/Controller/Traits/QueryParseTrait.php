@@ -44,12 +44,7 @@ trait QueryParseTrait
         if ($craftsmanParameters->getBoolean('enabled')) {
             $allowedCraftsmen = $craftsmanParameters->get('craftsmen', []);
             if (\is_array($allowedCraftsmen) && \count($allowedCraftsmen) > 0) {
-                $craftsmanIds = [];
-                foreach ($allowedCraftsmen as $item) {
-                    $craftsmanIds[] = $item['id'];
-                }
-
-                $filter->setCraftsmen($craftsmanIds);
+                $filter->setCraftsmen($allowedCraftsmen);
             }
         }
 

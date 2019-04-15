@@ -109,7 +109,8 @@
     import LinkExport from "./components/LinkExport"
     import {AtomSpinner} from 'epic-spinners'
     import notifications from '../mixins/Notifications'
-    
+    import NormalizeFilter from "./mixins/NormalizeFilter";
+
     const lang = document.documentElement.lang.substr(0, 2);
     const datePickerLocale = require('vuejs-datepicker/dist/locale');
     const datePickerTranslation = datePickerLocale[lang];
@@ -176,7 +177,7 @@
                 }
             }
         },
-        mixins: [notifications],
+        mixins: [notifications, NormalizeFilter],
         components: {
             IssueEditTable,
             TimeFilter,
@@ -194,13 +195,14 @@
             filteredIssues: function () {
                 let res = this.issues;
 
-                const statusFilter = this.filter.status;
-                if (statusFilter.enabled && (statusFilter.registered || statusFilter.read || statusFilter.responded || statusFilter.reviewed)) {
+                const filter = this.normalizeFilter(this.filter);
+                const statusFilter = filter.status;
+                if (statusFilter.enabled) {
                     if (!statusFilter.registered) {
-                        res = res.filter(i => i.isRead || i.reviewedAt !== null || i.respondedAt !== null);
+                        res = res.filter(i => i.read || i.reviewedAt !== null || i.respondedAt !== null);
                     }
                     if (!statusFilter.read) {
-                        res = res.filter(i => i.reviewedAt !== null || i.respondedAt !== null || (!i.isRead && i.respondedAt === null && i.reviewedAt === null));
+                        res = res.filter(i => i.reviewedAt !== null || i.respondedAt !== null || (!i.read && i.respondedAt === null && i.reviewedAt === null));
                     }
                     if (!statusFilter.responded) {
                         res = res.filter(i => i.reviewedAt !== null || (i.respondedAt === null && i.reviewedAt === null));
@@ -210,17 +212,17 @@
                     }
                 }
 
-                const numberText = this.filter.numberText;
+                const numberText = filter.numberText;
                 if (numberText.length > 0) {
                     res = res.filter(i => i.number === numberText);
                 }
 
-                if (this.filter.onlyMarked) {
+                if (filter.onlyMarked) {
                     res = res.filter(i => i.isMarked === true);
                 }
 
-                const timeFilter = this.filter.time;
-                if (timeFilter.enabled && (timeFilter.registered.active || timeFilter.responded.active || timeFilter.reviewed.active)) {
+                const timeFilter = filter.time;
+                if (timeFilter.enabled) {
                     if (timeFilter.registered.active) {
                         res = this.filterStartEnd(res, timeFilter.registered, "registeredAt");
                     }
@@ -234,25 +236,23 @@
                     }
                 }
 
-                const craftsmanFilter = this.filter.craftsman;
-                if (craftsmanFilter.enabled && craftsmanFilter.craftsmen.length > 0) {
-                    const ids = craftsmanFilter.craftsmen.map(c => c.id);
-                    res = res.filter(i => ids.indexOf(i.craftsmanId) >= 0);
+                const craftsmanFilter = filter.craftsman;
+                if (craftsmanFilter.enabled) {
+                    res = res.filter(i => craftsmanFilter.craftsmen.indexOf(i.craftsmanId) >= 0);
                 }
 
-                const mapFilter = this.filter.map;
-                if (mapFilter.enabled && mapFilter.maps.length > 0) {
-                    const ids = mapFilter.maps.map(c => c.id);
-                    res = res.filter(i => ids.indexOf(i.mapId) >= 0);
+                const mapFilter = filter.map;
+                if (mapFilter.enabled) {
+                    res = res.filter(i => mapFilter.maps.indexOf(i.mapId) >= 0);
                 }
 
-                const tradeFilter = this.filter.trade;
-                if (tradeFilter.enabled && tradeFilter.trades.length > 0) {
+                const tradeFilter = filter.trade;
+                if (tradeFilter.enabled) {
                     const ids = this.craftsmen.filter(c => tradeFilter.trades.indexOf(c.trade) >= 0).map(c => c.id);
                     res = res.filter(i => ids.indexOf(i.craftsmanId) >= 0);
                 }
 
-                if (this.filter.onlyOverLimit) {
+                if (filter.onlyOverLimit) {
                     const today = (new Date()).toISOString();
                     res = res.filter(i => i.responseLimit < today);
                 }
@@ -314,8 +314,7 @@
                 //deactivating feature till table deselection is made easy
                 if (selectedIssues.length === 0 || true) {
                     this.filter.issue.enabled = false;
-                }
-                else {
+                } else {
                     this.filter.issue.enabled = true;
                     this.filter.issue.issues = selectedIssues.map(i => i.id);
                 }

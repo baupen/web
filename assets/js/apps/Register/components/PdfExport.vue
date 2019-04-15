@@ -63,7 +63,7 @@
         computed: {
             url: function () {
                 let newObj = {};
-                newObj["filter"] = this.normalizeFilter(this.filter);
+                newObj["filter"] = this.minimizeFilter(this.filter);
                 newObj["reportElements"] = this.reportElements;
                 return "/report" + "?" + $.param(newObj);
             }

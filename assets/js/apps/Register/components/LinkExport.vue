@@ -32,6 +32,7 @@
     import notifications from '../../mixins/Notifications'
     import $ from 'jquery'
     import axios from "axios"
+    import NormalizeFilter from "../mixins/NormalizeFilter";
 
     export default {
         props: {
@@ -40,7 +41,7 @@
                 required: true
             }
         },
-        mixins: [notifications],
+        mixins: [notifications, NormalizeFilter],
         data: function () {
             return {
                 id: null,
@@ -58,7 +59,7 @@
                 this.isLoading = true;
 
                 let newObj = {};
-                newObj["filter"] = this.filter;
+                newObj["filter"] = this.minimizeFilter(this.filter);
                 newObj["limit"] = this.linkLimit;
 
                 const url = "/api/register/link/create?" + $.param(newObj);

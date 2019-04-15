@@ -1,49 +1,87 @@
 export default {
   methods: {
     normalizeFilter: function (filter) {
-      let normalized = {};
-      normalized.constructionSiteId = filter.constructionSiteId;
+      let normalized = Object.assign({}, filter);
 
-      if (filter.issue.enabled) {
-        normalized.issue = { enabled: true, issues: filter.issue.issues.map(i => i.id) };
-      }
-      if (filter.status.enabled) {
-        normalized.status = { enabled: true, registered: filter.status.registered, read: filter.status.read, responded: filter.status.responded, reviewed: filter.status.reviewed };
-      }
-      if (filter.craftsman.enabled) {
-        normalized.craftsman = { enabled: true, craftsmen: filter.craftsman.craftsmen.map(i => i.id) };
-      }
-      if (filter.trade.enabled) {
-        normalized.trade = { enabled: true, craftsmen: filter.trade.trades };
-      }
-      if (filter.map.enabled) {
-        normalized.map = { enabled: true, map: filter.map.maps.map(m => m.id) };
-      }
-      if (filter.time.enabled) {
-        const time = filter.time;
-        let nTime = { enabled: true };
+      const issueFilter = filter.issue;
+      normalized.issue = {
+        enabled: issueFilter.enabled && issueFilter.issues.length > 0,
+        issues: issueFilter.issues.map(i => i.id)
+      };
 
-        if (time.read.active) {
-          nTime.read = { active: true };
-        }
-        if (filter.time.registered.active) {
-          nTime.registered = { active: true, start: time.registered.start, end: time.registered.end };
-        }
-        if (filter.time.responded.active) {
-          nTime.responded = { active: true, start: time.responded.start, end: time.responded.end };
-        }
-        if (filter.time.reviewed.active) {
-          nTime.reviewed = { active: true, start: time.reviewed.start, end: time.reviewed.end };
-        }
+      const mapFilter = filter.map;
+      normalized.map = {
+        enabled: mapFilter.enabled && mapFilter.maps.length > 0,
+        maps: mapFilter.maps.map(i => i.id)
+      };
 
-        normalized.time = nTime;
-      }
+      const craftsmanFilter = filter.craftsman;
+      normalized.craftsman = {
+        enabled: craftsmanFilter.enabled && craftsmanFilter.craftsmen.length > 0,
+        craftsmen: craftsmanFilter.craftsmen.map(i => i.id)
+      };
 
-      normalized.onlyMarked = filter.onlyMarked;
-      normalized.onlyOverLimit = filter.onlyOverLimit;
-      normalized.numberText = filter.numberText;
+      const statusFilter = filter.status;
+      normalized.status = Object.assign({}, statusFilter, {
+        enabled: statusFilter.enabled && (statusFilter.registered || statusFilter.read || statusFilter.responded || statusFilter.reviewed)
+      });
+
+      const tradeFilter = filter.trade;
+      normalized.trade = Object.assign({}, tradeFilter, {
+        enabled: tradeFilter.enabled && tradeFilter.trades.length > 0
+      });
+
+      const timeFilter = filter.time;
+      normalized.time = Object.assign({}, timeFilter, {
+        enabled: timeFilter.enabled && (timeFilter.registered.active || timeFilter.responded.active || timeFilter.reviewed.active)
+      });
 
       return normalized;
+    },
+    minimizeFilter: function (filter) {
+      filter = this.normalizeFilter(filter);
+
+      let minimized = {
+        constructionSiteId: filter.constructionSiteId
+      };
+
+      if (filter.onlyMarked) {
+        minimized.onlyMarked = true;
+      }
+
+      if (filter.onlyOverLimit) {
+        minimized.onlyOverLimit = true;
+      }
+
+      if (filter.numberText) {
+        minimized.numberText = filter.numberText;
+      }
+
+      if (filter.issue.enabled) {
+        minimized.issue = filter.issue;
+      }
+
+      if (filter.map.enabled) {
+        minimized.map = filter.map;
+      }
+
+      if (filter.craftsman.enabled) {
+        minimized.craftsman = filter.craftsman;
+      }
+
+      if (filter.status.enabled) {
+        minimized.status = filter.status;
+      }
+
+      if (filter.trade.enabled) {
+        minimized.trade = filter.trade;
+      }
+
+      if (filter.time.enabled) {
+        minimized.time = filter.time;
+      }
+
+      return minimized;
     }
   }
 };
