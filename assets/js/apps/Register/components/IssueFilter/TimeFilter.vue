@@ -29,7 +29,7 @@
 <script>
 
     import TimeFilterEntry from './TimeFilterEntry'
-    import BaseCheckbox from '../../components/Base/BaseCheckbox'
+    import BaseCheckbox from '../../../components/Base/BaseCheckbox'
 
     export default {
         props: {

@@ -2,7 +2,7 @@ export default {
   de: {
     table: {
       no_entries: 'Keine Pendenzen',
-      filter_placeholder: 'Beschreibung suchen...'
+      filter_placeholder: 'Nach Beschreibung/Nummer suchen...'
     },
     search: {
       name: 'Suche',

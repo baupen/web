@@ -46,7 +46,7 @@ class FilterController extends BaseDoctrineController
             throw new AccessDeniedException();
         }
 
-        $filter->setLastAccess(new \DateTime());
+        $filter->setLastAccessNow();
         $this->fastSave($filter);
 
         return $this->render('share/filter.html.twig');

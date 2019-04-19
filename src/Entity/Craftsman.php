@@ -286,11 +286,11 @@ class Craftsman extends BaseEntity
     {
         $filter = new Filter();
         $filter->setConstructionSite($this->getConstructionSite()->getId());
-        $filter->setCraftsmen([$this->getId()]);
-        $filter->setRespondedStatus(false);
-        $filter->setRegistrationStatus(true);
-        $filter->setReviewedStatus(false);
-        $filter->setAccessIdentifier();
+        $filter->filterByCraftsmen([$this->getId()]);
+        $filter->filterByRespondedStatus(false);
+        $filter->filterByRegistrationStatus(true);
+        $filter->filterByReviewedStatus(false);
+        $filter->setPublicAccessIdentifier();
 
         $this->shareViewFilter = $filter;
 

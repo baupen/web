@@ -561,7 +561,7 @@ class NewReportService
                 $names[] = $item->getName();
             }
 
-            $label = $this->translator->trans('filter.craftsmen', ['%count%' => \count($names)], 'report');
+            $label = $this->translator->trans('introduction.filter.craftsmen', ['%count%' => \count($names)], 'report');
             $filterEntries[$label] = implode(', ', $names);
         }
 
@@ -573,7 +573,7 @@ class NewReportService
                 $names[] = $item->getName() . ' (' . $item->getContext() . ')';
             }
 
-            $label = $this->translator->trans('filter.maps', ['%count%' => \count($names)], 'report');
+            $label = $this->translator->trans('introduction.filter.maps', ['%count%' => \count($names)], 'report');
             $filterEntries[$label] = implode(', ', $names);
         }
 
@@ -584,12 +584,6 @@ class NewReportService
             $filterEntries[$label] = $limitValue;
         }
 
-        //add number
-        if ($filter->getNumber() !== null) {
-            $label = $this->translator->trans('number', [], 'entity_issue');
-            $filterEntries[$label] = $filter->getNumber();
-        }
-
         //add trades
         if ($filter->getTrades() !== null) {
             $names = [];
@@ -597,7 +591,7 @@ class NewReportService
                 $names[] = $item;
             }
 
-            $label = $this->translator->trans('filter.trades', ['%count%' => \count($names)], 'report');
+            $label = $this->translator->trans('introduction.filter.trades', ['%count%' => \count($names)], 'report');
             $filterEntries[$label] = implode(', ', $names);
         }
 

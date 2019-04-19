@@ -2,65 +2,17 @@
     <div id="register">
         <div class="row">
             <div class="col-md-2">
-                <h2>{{$t("search.name")}}</h2>
-                <div class="card">
-                    <div class="card-body">
-                        <base-text-input v-model="filter.numberText">
-                            {{$t("issue.number")}}
-                        </base-text-input>
-                        <base-checkbox v-model="filter.onlyMarked">
-                            {{$t("search.only_marked")}}
-                        </base-checkbox>
-                        <base-checkbox v-model="filter.onlyOverLimit">
-                            {{$t("search.only_over_limit")}}
-                        </base-checkbox>
-                    </div>
-                </div>
-
+                <issue-filter
+                        :construction-site-id="constructionSiteId"
+                        :craftsmen="craftsmen"
+                        :maps="maps"
+                        :filter="filter"/>
                 <div class="vertical-spacer-big"></div>
-                <h2>{{$t("filter.name")}}</h2>
-                <div class="card">
-                    <div class="card-body">
-                        <status-filter :filter="filter.status"/>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <atom-spinner v-if="isLoading"
-                                      :animation-duration="1000"
-                                      :size="60"
-                                      :color="'#ff1d5e'"
-                        />
-                        <craftsman-filter v-else :filter="filter.craftsman" :craftsmen="craftsmen"/>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <atom-spinner v-if="isLoading"
-                                      :animation-duration="1000"
-                                      :size="60"
-                                      :color="'#ff1d5e'"
-                        />
-                        <trade-filter v-else :filter="filter.trade" :craftsmen="craftsmen"/>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <atom-spinner v-if="isLoading"
-                                      :animation-duration="1000"
-                                      :size="60"
-                                      :color="'#ff1d5e'"
-                        />
-                        <map-filter v-else :filter="filter.map" :maps="maps"/>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <time-filter :filter="filter.time"/>
-                    </div>
-                </div>
+                <issue-export
+                        :construction-site-id="constructionSiteId"
+                        :filter="filter" />
             </div>
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <atom-spinner
                         v-if="isLoading"
                         :animation-duration="1000"
@@ -76,21 +28,6 @@
                     </issue-edit-table>
                 </div>
             </div>
-            <div class="col-md-2">
-                <h2>{{$t("export.name")}}</h2>
-                <div class="card">
-                    <div class="card-body">
-                        <link-export :filter="filter"/>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <pdf-export :filter="filter"/>
-                    </div>
-                </div>
-
-            </div>
-
         </div>
     </div>
 </template>
@@ -98,18 +35,13 @@
 <script>
     import axios from "axios"
     import IssueEditTable from "../components/IssueEditTable"
-    import TimeFilter from "./components/TimeFilter"
-    import StatusFilter from "./components/StatusFilter"
-    import CraftsmanFilter from "./components/CraftsmanFilter"
-    import TradeFilter from "./components/TradeFilter"
-    import MapFilter from "./components/MapFilter"
-    import BaseTextInput from "../components/Base/BaseTextInput"
-    import BaseCheckbox from "../components/Base/BaseCheckbox"
-    import PdfExport from "./components/PdfExport"
-    import LinkExport from "./components/LinkExport"
+    import PdfExport from "./components/IssueExport/PdfExport"
+    import LinkExport from "./components/IssueExport/LinkExport"
     import {AtomSpinner} from 'epic-spinners'
     import notifications from '../mixins/Notifications'
     import NormalizeFilter from "./mixins/NormalizeFilter";
+    import IssueFilter from "./components/IssueFilter";
+    import IssueExport from "./components/IssueExport";
 
     const lang = document.documentElement.lang.substr(0, 2);
     const datePickerLocale = require('vuejs-datepicker/dist/locale');
@@ -126,11 +58,8 @@
                 maps: [],
                 datePickerLocale: datePickerTranslation,
                 filter: {
-                    constructionSiteId: null,
-                    issue: {
-                        enabled: false,
-                        issues: []
-                    },
+                    onlyMarked: false,
+                    onlyOverLimit: false,
                     status: {
                         enabled: false,
                         registered: false,
@@ -170,32 +99,34 @@
                             start: null,
                             end: null
                         }
-                    },
-                    onlyMarked: false,
-                    onlyOverLimit: false,
-                    numberText: ""
+                    }
                 }
             }
         },
         mixins: [notifications, NormalizeFilter],
         components: {
+            IssueExport,
+            IssueFilter,
             IssueEditTable,
-            TimeFilter,
-            CraftsmanFilter,
-            TradeFilter,
-            MapFilter,
             AtomSpinner,
-            BaseTextInput,
-            BaseCheckbox,
             PdfExport,
-            LinkExport,
-            StatusFilter
+            LinkExport
         },
         computed: {
             filteredIssues: function () {
                 let res = this.issues;
 
                 const filter = this.normalizeFilter(this.filter);
+
+                if (filter.onlyMarked) {
+                    res = res.filter(i => i.isMarked === true);
+                }
+
+                if (filter.onlyOverLimit) {
+                    const today = (new Date()).toISOString();
+                    res = res.filter(i => i.responseLimit < today);
+                }
+
                 const statusFilter = filter.status;
                 if (statusFilter.enabled) {
                     if (!statusFilter.registered) {
@@ -212,13 +143,20 @@
                     }
                 }
 
-                const numberText = filter.numberText;
-                if (numberText.length > 0) {
-                    res = res.filter(i => i.number === numberText);
+                const craftsmanFilter = filter.craftsman;
+                if (craftsmanFilter.enabled) {
+                    res = res.filter(i => craftsmanFilter.craftsmen.indexOf(i.craftsmanId) >= 0);
                 }
 
-                if (filter.onlyMarked) {
-                    res = res.filter(i => i.isMarked === true);
+                const tradeFilter = filter.trade;
+                if (tradeFilter.enabled) {
+                    const ids = this.craftsmen.filter(c => tradeFilter.trades.indexOf(c.trade) >= 0).map(c => c.id);
+                    res = res.filter(i => ids.indexOf(i.craftsmanId) >= 0);
+                }
+
+                const mapFilter = filter.map;
+                if (mapFilter.enabled) {
+                    res = res.filter(i => mapFilter.maps.indexOf(i.mapId) >= 0);
                 }
 
                 const timeFilter = filter.time;
@@ -236,27 +174,6 @@
                     }
                 }
 
-                const craftsmanFilter = filter.craftsman;
-                if (craftsmanFilter.enabled) {
-                    res = res.filter(i => craftsmanFilter.craftsmen.indexOf(i.craftsmanId) >= 0);
-                }
-
-                const mapFilter = filter.map;
-                if (mapFilter.enabled) {
-                    res = res.filter(i => mapFilter.maps.indexOf(i.mapId) >= 0);
-                }
-
-                const tradeFilter = filter.trade;
-                if (tradeFilter.enabled) {
-                    const ids = this.craftsmen.filter(c => tradeFilter.trades.indexOf(c.trade) >= 0).map(c => c.id);
-                    res = res.filter(i => ids.indexOf(i.craftsmanId) >= 0);
-                }
-
-                if (filter.onlyOverLimit) {
-                    const today = (new Date()).toISOString();
-                    res = res.filter(i => i.responseLimit < today);
-                }
-
                 return res;
             }
         },
@@ -272,8 +189,6 @@
                     return issues.filter(i => i[property] >= start);
                 }
                 if (end !== null) {
-                    console.log(end);
-                    console.log(issues[0][property]);
                     return issues.filter(i => i[property] <= end);
                 }
                 return issues;

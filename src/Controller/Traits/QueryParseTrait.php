@@ -30,45 +30,28 @@ trait QueryParseTrait
     {
         $parameterBag = new ParameterBag($query);
         if ($parameterBag->getBoolean('onlyMarked')) {
-            $filter->setIsMarked(true);
+            $filter->filterByIsMarked(true);
         }
         if ($parameterBag->getBoolean('onlyOverLimit')) {
-            $filter->setResponseLimitEnd(new \DateTime());
-        }
-        $numberText = $parameterBag->get('numberText');
-        if (mb_strlen($numberText) > 0) {
-            $filter->setNumberText($numberText);
+            $filter->filterByResponseLimitEnd(new \DateTime());
         }
 
         $craftsmanParameters = new ParameterBag($parameterBag->get('craftsman', []));
         if ($craftsmanParameters->getBoolean('enabled')) {
             $allowedCraftsmen = $craftsmanParameters->get('craftsmen', []);
-            if (\is_array($allowedCraftsmen) && \count($allowedCraftsmen) > 0) {
-                $filter->setCraftsmen($allowedCraftsmen);
-            }
-        }
-
-        $mapParameters = new ParameterBag($parameterBag->get('map', []));
-        if ($mapParameters->getBoolean('enabled')) {
-            $allowedMaps = $craftsmanParameters->get('maps', []);
-            if (\is_array($allowedMaps) && \count($allowedMaps) > 0) {
-                $filter->setMaps($allowedMaps);
-            }
+            $filter->filterByCraftsmen($allowedCraftsmen);
         }
 
         $tradeParameters = new ParameterBag($parameterBag->get('trade', []));
         if ($tradeParameters->getBoolean('enabled')) {
             $allowedTrades = $tradeParameters->get('trades', []);
-            if (\is_array($allowedTrades) && \count($allowedTrades) > 0) {
-                $craftsmanIds = [];
-                foreach ($constructionSite->getCraftsmen() as $craftsman) {
-                    if (\in_array($craftsman->getTrade(), $allowedTrades, true) &&
-                        ($filter->getCraftsmen() === null || \in_array($craftsman->getId(), $filter->getCraftsmen(), true))) {
-                        $craftsmanIds[] = $craftsman->getId();
-                    }
-                }
-                $filter->setCraftsmen($craftsmanIds);
-            }
+            $filter->filterByTrades($allowedTrades);
+        }
+
+        $mapParameters = new ParameterBag($parameterBag->get('map', []));
+        if ($mapParameters->getBoolean('enabled')) {
+            $allowedMaps = $mapParameters->get('maps', []);
+            $filter->filterByMaps($allowedMaps);
         }
 
         //check for status filters
@@ -93,7 +76,7 @@ trait QueryParseTrait
             }
 
             if ($anyStatusValue > 0) {
-                $filter->setAnyStatus($anyStatusValue);
+                $filter->filterByAnyStatus($anyStatusValue);
             }
         }
 
@@ -101,21 +84,18 @@ trait QueryParseTrait
         $timeParameters = new ParameterBag($parameterBag->get('time', []));
         if ($timeParameters->getBoolean('enabled', false)) {
             list($isEnabled1, $start1, $end1) = self::parseTimeFilter($timeParameters, 'registered');
+            if ($isEnabled1) {
+                $filter->filterByRegistrationStatus($isEnabled1, $start1, $end1);
+            }
+
             list($isEnabled2, $start2, $end2) = self::parseTimeFilter($timeParameters, 'responded');
+            if ($isEnabled2) {
+                $filter->filterByRespondedStatus($isEnabled2, $start2, $end2);
+            }
+
             list($isEnabled3, $start3, $end3) = self::parseTimeFilter($timeParameters, 'reviewed');
-
-            if ($isEnabled1 || $isEnabled2 || $isEnabled3) {
-                $filter->setRegistrationStatus($isEnabled1);
-                $filter->setRegistrationStatus($start1);
-                $filter->setRegistrationStatus($end1);
-
-                $filter->setRespondedStatus($isEnabled2);
-                $filter->setRespondedStart($start2);
-                $filter->setRespondedEnd($end2);
-
-                $filter->setReviewedStatus($isEnabled3);
-                $filter->setReviewedStart($start3);
-                $filter->setReviewedEnd($end3);
+            if ($isEnabled3) {
+                $filter->filterByReviewedStatus($isEnabled3, $start3, $end3);
             }
         }
     }

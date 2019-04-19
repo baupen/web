@@ -3,17 +3,10 @@ export default {
     normalizeFilter: function (filter) {
       let normalized = Object.assign({}, filter);
 
-      const issueFilter = filter.issue;
-      normalized.issue = {
-        enabled: issueFilter.enabled && issueFilter.issues.length > 0,
-        issues: issueFilter.issues.map(i => i.id)
-      };
-
-      const mapFilter = filter.map;
-      normalized.map = {
-        enabled: mapFilter.enabled && mapFilter.maps.length > 0,
-        maps: mapFilter.maps.map(i => i.id)
-      };
+      const statusFilter = filter.status;
+      normalized.status = Object.assign({}, statusFilter, {
+        enabled: statusFilter.enabled && (statusFilter.registered || statusFilter.read || statusFilter.responded || statusFilter.reviewed)
+      });
 
       const craftsmanFilter = filter.craftsman;
       normalized.craftsman = {
@@ -21,15 +14,16 @@ export default {
         craftsmen: craftsmanFilter.craftsmen.map(i => i.id)
       };
 
-      const statusFilter = filter.status;
-      normalized.status = Object.assign({}, statusFilter, {
-        enabled: statusFilter.enabled && (statusFilter.registered || statusFilter.read || statusFilter.responded || statusFilter.reviewed)
-      });
-
       const tradeFilter = filter.trade;
       normalized.trade = Object.assign({}, tradeFilter, {
         enabled: tradeFilter.enabled && tradeFilter.trades.length > 0
       });
+
+      const mapFilter = filter.map;
+      normalized.map = {
+        enabled: mapFilter.enabled && mapFilter.maps.length > 0,
+        maps: mapFilter.maps.map(i => i.id)
+      };
 
       const timeFilter = filter.time;
       normalized.time = Object.assign({}, timeFilter, {
@@ -38,11 +32,11 @@ export default {
 
       return normalized;
     },
-    minimizeFilter: function (filter) {
+    minimizeFilter: function (filter, constructionSiteId) {
       filter = this.normalizeFilter(filter);
 
       let minimized = {
-        constructionSiteId: filter.constructionSiteId
+        constructionSiteId: constructionSiteId
       };
 
       if (filter.onlyMarked) {
@@ -53,28 +47,20 @@ export default {
         minimized.onlyOverLimit = true;
       }
 
-      if (filter.numberText) {
-        minimized.numberText = filter.numberText;
-      }
-
-      if (filter.issue.enabled) {
-        minimized.issue = filter.issue;
-      }
-
-      if (filter.map.enabled) {
-        minimized.map = filter.map;
+      if (filter.status.enabled) {
+        minimized.status = filter.status;
       }
 
       if (filter.craftsman.enabled) {
         minimized.craftsman = filter.craftsman;
       }
 
-      if (filter.status.enabled) {
-        minimized.status = filter.status;
-      }
-
       if (filter.trade.enabled) {
         minimized.trade = filter.trade;
+      }
+
+      if (filter.map.enabled) {
+        minimized.map = filter.map;
       }
 
       if (filter.time.enabled) {

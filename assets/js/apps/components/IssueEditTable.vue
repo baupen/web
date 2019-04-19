@@ -286,7 +286,7 @@
                 const order = this.sortOrders[sortKey];
                 let data = this.issues;
                 if (filterKey) {
-                    data = data.filter(issues => issues.description.toLowerCase().indexOf(filterKey) > -1);
+                    data = data.filter(issues => issues.description.toLowerCase().indexOf(filterKey) > -1 || issues.number === filterKey);
                 }
                 if (sortKey) {
                     const statusScore = function (issue) {

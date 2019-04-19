@@ -44,8 +44,8 @@ class FilterControllerTest extends ApiController
             $constructionSite = $doctrine->getRepository(ConstructionSite::class)->findOneBy([]);
             $filter = new Filter();
             $filter->setConstructionSite($constructionSite->getId());
-            $filter->setRegistrationStatus(true);
-            $filter->setAccessIdentifier();
+            $filter->filterByRegistrationStatus(true);
+            $filter->setPublicAccessIdentifier();
 
             $manager->persist($filter);
             $manager->flush();

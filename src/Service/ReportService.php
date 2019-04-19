@@ -82,6 +82,45 @@ class ReportService implements ReportServiceInterface
      * @param ConstructionSite $constructionSite
      * @param Filter $filter
      * @param string $author
+     * @param ReportElements $elements
+     *
+     * @throws \Exception
+     *
+     * @return string
+     */
+    public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, ?string $author, ReportElements $elements)
+    {
+        $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
+
+        dump($issues);
+        dump($filter);
+
+        throw new \Exception();
+        //create folder
+        $generationTargetFolder = $this->pathService->getTransientFolderForReports($constructionSite);
+        if (!file_exists($generationTargetFolder)) {
+            mkdir($generationTargetFolder, 0777, true);
+        }
+
+        //only generate report if it does not already exist
+        $filePath = $generationTargetFolder . \DIRECTORY_SEPARATOR . uniqid() . '.pdf';
+        if (!file_exists($filePath) || $this->disableCache) {
+            $formattedDate = (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT);
+            if ($author === null) {
+                $footer = $this->translator->trans('generated', ['%date%' => $formattedDate], 'report');
+            } else {
+                $footer = $this->translator->trans('generated_with_author', ['%date%' => $formattedDate, '%name%' => $author], 'report');
+            }
+            $this->render($constructionSite, $filter, $footer, $elements, $issues, $filePath);
+        }
+
+        return $filePath;
+    }
+
+    /**
+     * @param ConstructionSite $constructionSite
+     * @param Filter $filter
+     * @param string $author
      * @param ReportElements $reportElements
      * @param Issue[] $issues
      * @param string $filePath
@@ -264,9 +303,6 @@ class ReportService implements ReportServiceInterface
 
         //set other properties
         //intentionally ignoring isMarked as this is part of the application, not the report
-        if ($filter->getNumber() !== null) {
-            $filterEntries[$this->translator->trans('number', [], 'entity_issue')] = $filter->getNumber();
-        }
         if ($filter->getTrades() !== null || $trades !== null) {
             if ($trades === null) {
                 $trades = [];
@@ -487,40 +523,5 @@ class ReportService implements ReportServiceInterface
 
         //write to pdf
         $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_trade', [], 'report'));
-    }
-
-    /**
-     * @param ConstructionSite $constructionSite
-     * @param Filter $filter
-     * @param string $author
-     * @param ReportElements $elements
-     *
-     * @throws \Exception
-     *
-     * @return string
-     */
-    public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, ?string $author, ReportElements $elements)
-    {
-        $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
-
-        //create folder
-        $generationTargetFolder = $this->pathService->getTransientFolderForReports($constructionSite);
-        if (!file_exists($generationTargetFolder)) {
-            mkdir($generationTargetFolder, 0777, true);
-        }
-
-        //only generate report if it does not already exist
-        $filePath = $generationTargetFolder . \DIRECTORY_SEPARATOR . uniqid() . '.pdf';
-        if (!file_exists($filePath) || $this->disableCache) {
-            $formattedDate = (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT);
-            if ($author === null) {
-                $footer = $this->translator->trans('generated', ['%date%' => $formattedDate], 'report');
-            } else {
-                $footer = $this->translator->trans('generated_with_author', ['%date%' => $formattedDate, '%name%' => $author], 'report');
-            }
-            $this->render($constructionSite, $filter, $footer, $elements, $issues, $filePath);
-        }
-
-        return $filePath;
     }
 }

@@ -67,11 +67,11 @@ class CraftsmanController extends BaseDoctrineController
         //get issues to put on map
         $filter = new Filter();
         $filter->setConstructionSite($craftsman->getConstructionSite()->getId());
-        $filter->setCraftsmen([$craftsman->getId()]);
-        $filter->setMaps([$map->getId()]);
-        $filter->setRespondedStatus(false);
-        $filter->setRegistrationStatus(true);
-        $filter->setReviewedStatus(false);
+        $filter->filterByCraftsmen([$craftsman->getId()]);
+        $filter->filterByMaps([$map->getId()]);
+        $filter->filterByRespondedStatus(false);
+        $filter->filterByRegistrationStatus(true);
+        $filter->filterByReviewedStatus(false);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
 
         //generate map & print

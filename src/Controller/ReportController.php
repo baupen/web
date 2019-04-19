@@ -57,7 +57,7 @@ class ReportController extends BaseDoctrineController
         //create filter
         $filter = new Filter();
         $this->setFilterProperties($filter, $constructionSite, $queryFilter);
-        $filter->setRegistrationStatus(true);
+        $filter->filterByRegistrationStatus(true);
         $filter->setConstructionSite($constructionSite->getId());
 
         //create report elements

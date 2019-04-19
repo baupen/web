@@ -46,10 +46,10 @@ class CraftsmanController extends BaseDoctrineController
 
         $filter = new Filter();
         $filter->setConstructionSite($craftsman->getConstructionSite()->getId());
-        $filter->setCraftsmen([$craftsman->getId()]);
-        $filter->setRespondedStatus(false);
-        $filter->setRegistrationStatus(true);
-        $filter->setReviewedStatus(false);
+        $filter->filterByCraftsmen([$craftsman->getId()]);
+        $filter->filterByRespondedStatus(false);
+        $filter->filterByRegistrationStatus(true);
+        $filter->filterByReviewedStatus(false);
 
         $reportElements = ReportElements::forCraftsman();
 

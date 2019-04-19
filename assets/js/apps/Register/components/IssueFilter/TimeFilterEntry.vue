@@ -14,8 +14,8 @@
 </template>
 
 <script>
-    import BaseDateInput from '../../components/Base/BaseDateInput'
-    import BaseSliderCheckbox from "../../components/Base/BaseSliderCheckbox"
+    import BaseDateInput from '../../../components/Base/BaseDateInput'
+    import BaseSliderCheckbox from "../../../components/Base/BaseSliderCheckbox"
 
 
     export default {

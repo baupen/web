@@ -92,6 +92,13 @@ class ConstructionSite extends BaseEntity
     private $craftsmen;
 
     /**
+     * @var Filter[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Filter", mappedBy="constructionSite")
+     */
+    private $filters;
+
+    /**
      * @var bool
      *
      * @ORM\Column(type="boolean", options={"default": false})
@@ -108,6 +115,7 @@ class ConstructionSite extends BaseEntity
         $this->craftsmen = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->mapFiles = new ArrayCollection();
+        $this->filters = new ArrayCollection();
     }
 
     /**
@@ -225,5 +233,13 @@ class ConstructionSite extends BaseEntity
     public function setIsTrialConstructionSite(bool $isTrialConstructionSite): void
     {
         $this->isTrialConstructionSite = $isTrialConstructionSite;
+    }
+
+    /**
+     * @return Filter[]|ArrayCollection
+     */
+    public function getFilters()
+    {
+        return $this->filters;
     }
 }

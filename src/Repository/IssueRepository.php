@@ -175,14 +175,6 @@ class IssueRepository extends EntityRepository
             }
         }
 
-        if ($filter->getReadStatus() !== null) {
-            if ($filter->getReadStatus()) {
-                $queryBuilder->andWhere('i.registeredAt < c.lastOnlineVisit');
-            } else {
-                $queryBuilder->andWhere('i.registeredAt >= c.lastOnlineVisit OR c.lastOnlineVisit IS NULL');
-            }
-        }
-
         if ($filter->getResponseLimitStart() !== null) {
             $queryBuilder->andWhere('i.responseLimit >= :response_limit_start');
             $queryBuilder->setParameter(':response_limit_start', $filter->getResponseLimitStart());
@@ -207,18 +199,6 @@ class IssueRepository extends EntityRepository
      */
     private function applyFilterAfterwards(Filter $filter, array $issues)
     {
-        if ($filter->getNumberText() !== null) {
-            // filter by issue number text
-            $res = [];
-            foreach ($issues as $issue) {
-                if (mb_strpos((string)$issue->getNumber(), $filter->getNumberText()) === 0) {
-                    $res[] = $issue;
-                }
-            }
-
-            $issues = $res;
-        }
-
         if ($filter->getAnyStatus() !== null) {
             // count matches of status per issue
             $matches = [];
@@ -230,7 +210,7 @@ class IssueRepository extends EntityRepository
                     $matches[$issueId] += $issue->getRegisteredAt() !== null && $issue->getCraftsman()->getLastOnlineVisit() < $issue->getRegisteredAt() && $issue->getRespondedAt() === null && $issue->getReviewedAt() === null;
                 }
                 if ($filter->getAnyStatus() & Filter::STATUS_READ) {
-                    $matches[$issueId] += $issue->getCraftsman()->getLastOnlineVisit() > $issue->getRegisteredAt() && $issue->getRespondedAt() === null && $issue->getReviewedAt() === null;
+                    $matches[$issueId] += $issue->getCraftsman()->getLastOnlineVisit() !== null && $issue->getCraftsman()->getLastOnlineVisit() > $issue->getRegisteredAt() && $issue->getRespondedAt() === null && $issue->getReviewedAt() === null;
                 }
                 if ($filter->getAnyStatus() & Filter::STATUS_RESPONDED) {
                     $matches[$issueId] += $issue->getRespondedAt() !== null && $issue->getReviewedAt() === null;

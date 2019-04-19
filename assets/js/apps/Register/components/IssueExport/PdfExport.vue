@@ -34,8 +34,8 @@
 </template>
 
 <script>
-    import BaseCheckbox from '../../components/Base/BaseCheckbox'
-    import NormalizeFilter from '../mixins/NormalizeFilter'
+    import BaseCheckbox from '../../../components/Base/BaseCheckbox'
+    import NormalizeFilter from '../../mixins/NormalizeFilter'
     import $ from 'jquery'
 
     export default {
@@ -44,6 +44,9 @@
             filter: {
                 type: Object,
                 required: true
+            },
+            constructionSiteId: {
+                type: String
             }
         },
         data: function () {
@@ -63,7 +66,7 @@
         computed: {
             url: function () {
                 let newObj = {};
-                newObj["filter"] = this.minimizeFilter(this.filter);
+                newObj["filter"] = this.minimizeFilter(this.filter, this.constructionSiteId);
                 newObj["reportElements"] = this.reportElements;
                 return "/report" + "?" + $.param(newObj);
             }

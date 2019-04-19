@@ -49,36 +49,36 @@ class StatisticsController extends ApiController
         //prepare filter
         $filter = new Filter();
         $filter->setConstructionSite($constructionSite->getId());
-        $filter->setRegistrationStatus(true);
+        $filter->filterByRegistrationStatus(true);
 
         //create response
         $overview = new Overview();
 
         //count new issues
-        $filter->setRegistrationStatus(false);
+        $filter->filterByRegistrationStatus(false);
         $overview->setNewIssuesCount($issueRepo->filterCount($filter));
-        $filter->setRegistrationStatus(null);
+        $filter->filterByRegistrationStatus(null);
 
         //count open issues
-        $filter->setReviewedStatus(false);
+        $filter->filterByReviewedStatus(false);
         $overview->setOpenIssuesCount($issueRepo->filterCount($filter));
-        $filter->setReviewedStatus(null);
+        $filter->filterByReviewedStatus(null);
 
         //count marked issues
-        $filter->setIsMarked(true);
+        $filter->filterByIsMarked(true);
         $overview->setMarkedIssuesCount($issueRepo->filterCount($filter));
-        $filter->setIsMarked(null);
+        $filter->filterByIsMarked(null);
 
         //count overdue issues
-        $filter->setResponseLimitEnd(new \DateTime());
-        $filter->setReviewedStatus(false);
+        $filter->filterByResponseLimitEnd(new \DateTime());
+        $filter->filterByReviewedStatus(false);
         $overview->setOverdueIssuesCount($issueRepo->filterCount($filter));
-        $filter->setResponseLimitEnd(null);
-        $filter->setReviewedStatus(null);
+        $filter->filterByResponseLimitEnd(null);
+        $filter->filterByReviewedStatus(null);
 
         //count overdue issues
-        $filter->setRespondedStatus(true);
-        $filter->setReviewedStatus(false);
+        $filter->filterByRespondedStatus(true);
+        $filter->filterByReviewedStatus(false);
         $overview->setRespondedNotReviewedIssuesCount($issueRepo->filterCount($filter));
 
         //return data
