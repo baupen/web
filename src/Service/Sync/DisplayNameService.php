@@ -92,7 +92,7 @@ class DisplayNameService implements DisplayNameServiceInterface
         }
 
         /** @var string[] $filenameGroupsStatistics */
-        /** @var string[] $decomposedMapNames */
+        /** @var string[][] $decomposedMapNames */
         list($filenameGroupsStatistics, $decomposedMapNames) = $this->groupFilenameParts($mapNames);
 
         $this->removeIdenticalGroups($filenameGroupsStatistics, $decomposedMapNames);
@@ -207,7 +207,7 @@ class DisplayNameService implements DisplayNameServiceInterface
     private function groupFilenameParts(array $names)
     {
         // remove any entries occurring always
-        /** @var string[] $filenameGroupCount */
+        /** @var string[][] $filenameGroupCount */
         $filenameGroupCount = [];
         $decomposedNames = [];
 

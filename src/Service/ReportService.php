@@ -88,9 +88,9 @@ class ReportService implements ReportServiceInterface
      * @param string $author
      * @param ReportElements $elements
      *
+     * @return string
      * @throws Exception
      *
-     * @return string
      */
     public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, ?string $author, ReportElements $elements)
     {
@@ -254,7 +254,7 @@ class ReportService implements ReportServiceInterface
             foreach ($entities as $item) {
                 $names[] = $item->getName();
             }
-            $filterEntries[$this->translator->transChoice('introduction.filter.craftsmen', count($names), [], 'report')] = implode(', ', $names);
+            $filterEntries[$this->translator->trans('introduction.filter.craftsmen', ['%count%' => count($names)], 'report')] = implode(', ', $names);
         }
 
         //add maps
@@ -264,7 +264,7 @@ class ReportService implements ReportServiceInterface
             foreach ($entities as $item) {
                 $names[] = $item->getName() . ' (' . $item->getContext() . ')';
             }
-            $filterEntries[$this->translator->transChoice('introduction.filter.maps', count($names), [], 'report')] = implode(', ', $names);
+            $filterEntries[$this->translator->trans('introduction.filter.maps', ['%count%' => count($names)], 'report')] = implode(', ', $names);
         }
 
         //add limit
@@ -279,7 +279,7 @@ class ReportService implements ReportServiceInterface
             foreach ($filter->getTrades() as $trade) {
                 $names[] = $trade;
             }
-            $filterEntries[$this->translator->transChoice('introduction.filter.trades', count($names), [], 'report')] = implode(', ', $names);
+            $filterEntries[$this->translator->trans('introduction.filter.trades', ['%count%' => count($names)], 'report')] = implode(', ', $names);
         }
 
         // collect set time

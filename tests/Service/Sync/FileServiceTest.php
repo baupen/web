@@ -13,6 +13,8 @@ namespace App\Tests\Service\Sync;
 
 use App\Service\Sync\FileService;
 use App\Tests\Service\Sync\FileServiceResources\PublicFileModel;
+use function count;
+use const DIRECTORY_SEPARATOR;
 use PHPUnit\Framework\TestCase;
 
 class FileServiceTest extends TestCase
@@ -22,7 +24,7 @@ class FileServiceTest extends TestCase
      */
     private $service;
 
-    private $resourcesFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'FileServiceResources';
+    private $resourcesFolder = __DIR__ . DIRECTORY_SEPARATOR . 'FileServiceResources';
 
     public function __construct(?string $name = null, array $data = [], string $dataName = '')
     {
@@ -36,12 +38,12 @@ class FileServiceTest extends TestCase
             return new PublicFileModel();
         });
 
-        $this->assertSame(3, \count($newFiles));
-        $this->assertSame(file_get_contents($this->resourcesFolder . \DIRECTORY_SEPARATOR . 'serializedFiles.json'), json_encode($newFiles));
+        $this->assertSame(3, count($newFiles));
+        $this->assertSame(file_get_contents($this->resourcesFolder . DIRECTORY_SEPARATOR . 'serializedFiles.json'), json_encode($newFiles));
 
         $again = $this->service->getNewFiles($this->resourcesFolder, 'pdf', $newFiles, function () {
             return new PublicFileModel();
         });
-        $this->assertSame(0, \count($again));
+        $this->assertSame(0, count($again));
     }
 }

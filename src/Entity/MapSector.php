@@ -140,11 +140,11 @@ class MapSector extends BaseEntity
     }
 
     /**
-     * @param self|null $other
+     * @param MapSector|null $other
      *
      * @return bool
      */
-    public function equals(?self $other)
+    public function equals(?MapSector $other)
     {
         if ($other === null || $this->getName() !== $other->getName() || $this->getColor() !== $other->getColor()) {
             return false;

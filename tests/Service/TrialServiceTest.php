@@ -14,6 +14,8 @@ namespace App\Tests\Service;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\SyncServiceInterface;
 use App\Service\TrialService;
+use Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,9 +41,13 @@ class TrialServiceTest extends WebTestCase
         parent::__construct($name, $data, $dataName);
 
         self::bootKernel();
+        /** @var PathServiceInterface $pathService */
         $pathService = self::$container->get(PathServiceInterface::class);
+        /** @var TranslatorInterface $translator */
         $translator = self::$container->get(TranslatorInterface::class);
+        /** @var SyncServiceInterface $syncService */
         $syncService = self::$container->get(SyncServiceInterface::class);
+        /** @var RegistryInterface $objectManager */
         $objectManager = self::$container->get(RegistryInterface::class);
         $requestStack = $this->createRequestStackMock();
 
@@ -49,7 +55,7 @@ class TrialServiceTest extends WebTestCase
     }
 
     /**
-     * @return \PHPUnit\Framework\MockObject\MockObject|RequestStack
+     * @return MockObject|RequestStack
      */
     private function createRequestStackMock()
     {
@@ -66,7 +72,7 @@ class TrialServiceTest extends WebTestCase
     /**
      * check whether the new user has the trial account boolean set.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testCreateTrialAccount_isTrialAccountEnabled()
     {
@@ -77,7 +83,7 @@ class TrialServiceTest extends WebTestCase
     /**
      * check whether the new user has the trial account boolean set.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testCreateTrialAccount_useProposedNames()
     {
@@ -92,7 +98,7 @@ class TrialServiceTest extends WebTestCase
     /**
      * check whether the new user has the trial account boolean set.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testCreateTrialAccount_namesInitialized()
     {
@@ -104,7 +110,7 @@ class TrialServiceTest extends WebTestCase
     /**
      * checks that the new user was provided some content.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testCreateTrialAccount_accountHasMapsAssigned()
     {
@@ -119,7 +125,7 @@ class TrialServiceTest extends WebTestCase
     /**
      * checks that the new user was provided some content.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testCreateTrialAccount_accountHasPreviewImagesAssigned()
     {

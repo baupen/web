@@ -16,6 +16,14 @@ use App\Api\External\Entity\ObjectMeta;
 use App\Api\External\Request\ReadRequest;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\External\Base\ApiController;
+use DateInterval;
+use DateTime;
+use Exception;
+use function is_array;
+use function is_bool;
+use function is_float;
+use function is_int;
+use function is_string;
 use Ramsey\Uuid\Uuid;
 
 class ReadControllerTest extends ApiController
@@ -32,7 +40,7 @@ class ReadControllerTest extends ApiController
     /**
      * tests that only valid, specified properties are returned.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testPublicProperties()
     {
@@ -154,10 +162,7 @@ class ReadControllerTest extends ApiController
             return;
         }
 
-        $checkValueType = function ($value, $type) {
-        };
-
-        $checkObject = function ($object) use ($expectedProperties, $checkValueType) {
+        $checkObject = function ($object) use ($expectedProperties) {
             $properties = get_object_vars($object);
             $this->assertSameSize($expectedProperties, $properties, implode(', ', array_keys($properties)));
 
@@ -165,27 +170,27 @@ class ReadControllerTest extends ApiController
                 $this->assertTrue(property_exists($object, $name), 'property ' . $name . ' not found');
 
                 $value = $object->$name;
-                if (\is_array($type)) {
+                if (is_array($type)) {
                     $this->assertPropertiesMatch($value, $type);
                 } else {
                     if ($type & self::TYPE_NULLABLE && $value === null) {
                         // fine!
                     } elseif ($type & self::TYPE_STRING) {
-                        $this->assertTrue(\is_string($value));
+                        $this->assertTrue(is_string($value));
                     } elseif ($type & self::TYPE_INT) {
-                        $this->assertTrue(\is_int($value));
+                        $this->assertTrue(is_int($value));
                     } elseif ($type & self::TYPE_BOOLEAN) {
-                        $this->assertTrue(\is_bool($value));
+                        $this->assertTrue(is_bool($value));
                     } elseif ($type & self::TYPE_DOUBLE) {
-                        $this->assertTrue(\is_float($value) || \is_int($value));
+                        $this->assertTrue(is_float($value) || is_int($value));
                     } elseif ($type & self::TYPE_UUID) {
-                        $this->assertTrue(\is_string($value));
+                        $this->assertTrue(is_string($value));
                         $this->assertTrue(mb_strlen(Uuid::NIL) === mb_strlen($value));
                     } elseif ($type & self::TYPE_DATE_TIME) {
-                        $this->assertTrue(\is_string($value));
+                        $this->assertTrue(is_string($value));
                         $this->assertTrue(mb_strlen('2018-12-09T14:22:47+01:00') === mb_strlen($value));
                     } elseif ($type & self::TYPE_UUID_ARRAY) {
-                        $this->assertTrue(\is_array($value));
+                        $this->assertTrue(is_array($value));
                         foreach ($value as $item) {
                             $this->assertTrue(mb_strlen(Uuid::NIL) === mb_strlen($item));
                         }
@@ -194,7 +199,7 @@ class ReadControllerTest extends ApiController
             }
         };
 
-        if (\is_array($object)) {
+        if (is_array($object)) {
             foreach ($object as $item) {
                 $checkObject($item);
             }
@@ -206,7 +211,7 @@ class ReadControllerTest extends ApiController
     /**
      * tests the read method.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testRead()
     {
@@ -250,7 +255,7 @@ class ReadControllerTest extends ApiController
                 $meta->setId($entity->getMeta()->getId());
                 if ($old-- > 0) {
                     //set to min datetime to force update
-                    $meta->setLastChangeTime(((new \DateTime($entity->getMeta()->getLastChangeTime()))->sub(new \DateInterval('PT1M'))->format("Y-m-d\TH:i:s\Z")));
+                    $meta->setLastChangeTime(((new DateTime($entity->getMeta()->getLastChangeTime()))->sub(new DateInterval('PT1M'))->format("Y-m-d\TH:i:s\Z")));
                 } else {
                     $meta->setLastChangeTime($entity->getMeta()->getLastChangeTime());
                 }
@@ -261,7 +266,7 @@ class ReadControllerTest extends ApiController
                 //create invalid & add
                 $meta = new ObjectMeta();
                 $meta->setId(Uuid::uuid4());
-                $meta->setLastChangeTime((new \DateTime())->setTimestamp(0)->format('c'));
+                $meta->setLastChangeTime((new DateTime())->setTimestamp(0)->format('c'));
                 $metas[] = $meta;
             }
 
