@@ -32,8 +32,8 @@ class StatisticsController extends ApiController
      *
      * @param Request $request
      *
-     * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws \Exception
+     * @throws \Doctrine\ORM\NonUniqueResultException
      *
      * @return Response
      */
@@ -46,37 +46,32 @@ class StatisticsController extends ApiController
 
         $issueRepo = $this->getDoctrine()->getRepository(Issue::class);
 
-        //prepare filter
-        $filter = new Filter();
-        $filter->setConstructionSite($constructionSite);
-        $filter->filterByRegistrationStatus(true);
-
         //create response
         $overview = new Overview();
 
         //count new issues
+        $filter = self::createRegisterFilter($constructionSite);
         $filter->filterByRegistrationStatus(false);
         $overview->setNewIssuesCount($issueRepo->countByFilter($filter));
-        $filter->filterByRegistrationStatus(null);
 
         //count open issues
+        $filter = self::createRegisterFilter($constructionSite);
         $filter->filterByReviewedStatus(false);
         $overview->setOpenIssuesCount($issueRepo->countByFilter($filter));
-        $filter->filterByReviewedStatus(null);
 
         //count marked issues
+        $filter = self::createRegisterFilter($constructionSite);
         $filter->filterByIsMarked(true);
         $overview->setMarkedIssuesCount($issueRepo->countByFilter($filter));
-        $filter->filterByIsMarked(null);
 
         //count overdue issues
+        $filter = self::createRegisterFilter($constructionSite);
         $filter->filterByResponseLimitEnd(new \DateTime());
         $filter->filterByReviewedStatus(false);
         $overview->setOverdueIssuesCount($issueRepo->countByFilter($filter));
-        $filter->filterByResponseLimitEnd(null);
-        $filter->filterByReviewedStatus(null);
 
         //count overdue issues
+        $filter = self::createRegisterFilter($constructionSite);
         $filter->filterByRespondedStatus(true);
         $filter->filterByReviewedStatus(false);
         $overview->setRespondedNotReviewedIssuesCount($issueRepo->countByFilter($filter));
@@ -86,5 +81,19 @@ class StatisticsController extends ApiController
         $overviewData->setOverview($overview);
 
         return $this->success($overviewData);
+    }
+
+    /**
+     * @param ConstructionSite $constructionSite
+     *
+     * @return Filter
+     */
+    private static function createRegisterFilter(ConstructionSite $constructionSite)
+    {
+        $filter = new Filter();
+        $filter->setConstructionSite($constructionSite);
+        $filter->filterByRegistrationStatus(true);
+
+        return $filter;
     }
 }

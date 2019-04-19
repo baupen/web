@@ -88,7 +88,7 @@ class Filter extends BaseEntity
     private $filterByIssues = false;
 
     /**
-     * @var string[]
+     * @var string[]|null
      *
      * @ORM\Column(type="simple_array", nullable=true)
      */
@@ -307,7 +307,7 @@ class Filter extends BaseEntity
      * @param \DateTime|null $registrationStart
      * @param \DateTime|null $registrationEnd
      */
-    public function filterByRegistrationStatus(?bool $registrationStatus, ?\DateTime $registrationStart = null, ?\DateTime $registrationEnd = null): void
+    public function filterByRegistrationStatus(bool $registrationStatus, ?\DateTime $registrationStart = null, ?\DateTime $registrationEnd = null): void
     {
         $this->registrationStatus = $registrationStatus;
         $this->registrationStart = $registrationStart;
@@ -319,7 +319,7 @@ class Filter extends BaseEntity
      * @param \DateTime|null $respondedStart
      * @param \DateTime|null $respondedEnd
      */
-    public function filterByRespondedStatus(?bool $respondedStatus, ?\DateTime $respondedStart = null, ?\DateTime $respondedEnd = null): void
+    public function filterByRespondedStatus(bool $respondedStatus, ?\DateTime $respondedStart = null, ?\DateTime $respondedEnd = null): void
     {
         $this->respondedStatus = $respondedStatus;
         $this->respondedStart = $respondedStart;
@@ -331,7 +331,7 @@ class Filter extends BaseEntity
      * @param \DateTime|null $reviewedStart
      * @param \DateTime|null $reviewedEnd
      */
-    public function filterByReviewedStatus(?bool $respondedStatus, ?\DateTime $reviewedStart = null, ?\DateTime $reviewedEnd = null): void
+    public function filterByReviewedStatus(bool $respondedStatus, ?\DateTime $reviewedStart = null, ?\DateTime $reviewedEnd = null): void
     {
         $this->respondedStatus = $respondedStatus;
         $this->reviewedStart = $reviewedStart;
@@ -401,7 +401,7 @@ class Filter extends BaseEntity
     /**
      * @return string[]
      */
-    public function getCraftsmen(): array
+    public function getCraftsmen(): ?array
     {
         if (!$this->filterByCraftsmen) {
             return null;

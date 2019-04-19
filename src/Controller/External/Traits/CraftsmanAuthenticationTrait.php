@@ -14,6 +14,7 @@ namespace App\Controller\External\Traits;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 
 trait CraftsmanAuthenticationTrait
 {
@@ -36,14 +37,16 @@ trait CraftsmanAuthenticationTrait
     }
 
     /**
-     * @param string $writeAuthenticationToken
+     * @param Request $request
      * @param Craftsman $craftsman
      *
      * @return bool
      */
-    private function checkWriteAuthenticationToken(string $writeAuthenticationToken, Craftsman $craftsman)
+    private function checkWriteAuthenticationToken(Request $request, Craftsman $craftsman)
     {
-        return $craftsman->getWriteAuthorizationToken() === $writeAuthenticationToken;
+        $token = $request->query->get('token');
+
+        return $craftsman->getWriteAuthorizationToken() === $token;
     }
 
     /**

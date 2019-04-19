@@ -29,7 +29,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/c/{identifier}/{writeAuthenticationToken}", defaults={"writeAuthenticationToken"=null})
+ * @Route("/c/{identifier}")
  */
 class CraftsmanController extends ApiController
 {
@@ -85,16 +85,15 @@ class CraftsmanController extends ApiController
     }
 
     /**
-     * @Route("/{writeAuthenticationToken}/read", name="external_api_share_craftsman_read", methods={"GET"})
+     * @Route("/read", name="external_api_share_craftsman_read", methods={"GET"})
      *
+     * @param Request $request
      * @param $identifier
      * @param CraftsmanTransformer $craftsmanTransformer
      *
-     * @throws \Exception
-     *
      * @return Response
      */
-    public function readAction($identifier, CraftsmanTransformer $craftsmanTransformer, $writeAuthenticationToken)
+    public function readAction(Request $request, $identifier, CraftsmanTransformer $craftsmanTransformer)
     {
         /** @var Craftsman $craftsman */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
@@ -102,7 +101,7 @@ class CraftsmanController extends ApiController
         }
 
         $data = new CraftsmanData();
-        $data->setCraftsman($craftsmanTransformer->toApi($craftsman, $identifier, $this->checkWriteAuthenticationToken($writeAuthenticationToken, $craftsman)));
+        $data->setCraftsman($craftsmanTransformer->toApi($craftsman, $identifier, $this->checkWriteAuthenticationToken($request, $craftsman)));
 
         return $this->success($data);
     }
@@ -151,13 +150,12 @@ class CraftsmanController extends ApiController
      *
      * @param Request $request
      * @param $identifier
-     * @param $writeAuthenticationToken
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function issueRespondAction(Request $request, $identifier, $writeAuthenticationToken)
+    public function issueRespondAction(Request $request, $identifier)
     {
         /** @var Craftsman $craftsman */
         /** @var Issue $issue */
@@ -165,7 +163,7 @@ class CraftsmanController extends ApiController
             return $errorResponse;
         }
 
-        if (!$this->checkWriteAuthenticationToken($writeAuthenticationToken, $craftsman)) {
+        if (!$this->checkWriteAuthenticationToken($request, $craftsman)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -187,13 +185,12 @@ class CraftsmanController extends ApiController
      *
      * @param Request $request
      * @param $identifier
-     * @param $writeAuthenticationToken
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function issueRemoveResponseAction(Request $request, $identifier, $writeAuthenticationToken)
+    public function issueRemoveResponseAction(Request $request, $identifier)
     {
         /** @var Craftsman $craftsman */
         /** @var Issue $issue */
@@ -201,7 +198,7 @@ class CraftsmanController extends ApiController
             return $errorResponse;
         }
 
-        if (!$this->checkWriteAuthenticationToken($writeAuthenticationToken, $craftsman)) {
+        if (!$this->checkWriteAuthenticationToken($request, $craftsman)) {
             throw new AccessDeniedHttpException();
         }
 

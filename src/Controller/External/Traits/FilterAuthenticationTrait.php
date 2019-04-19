@@ -27,7 +27,7 @@ trait FilterAuthenticationTrait
     private function parseIdentifierRequest(ManagerRegistry $doctrine, $identifier, &$filter)
     {
         /** @var Craftsman $filter */
-        $filter = $doctrine->getRepository(Filter::class)->findOneBy(['accessIdentifier' => $identifier]);
+        $filter = $doctrine->getRepository(Filter::class)->findOneBy(['publicAccessIdentifier' => $identifier]);
         if ($filter === null) {
             return false;
         }

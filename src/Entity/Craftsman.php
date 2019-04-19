@@ -252,7 +252,7 @@ class Craftsman extends BaseEntity
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getEmailIdentifier(): string
     {
