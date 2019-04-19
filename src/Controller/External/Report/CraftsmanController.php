@@ -14,7 +14,6 @@ namespace App\Controller\External\Report;
 use App\Controller\Base\BaseDoctrineController;
 use App\Controller\External\Traits\CraftsmanAuthenticationTrait;
 use App\Entity\Craftsman;
-use App\Entity\Filter;
 use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\ReportElements;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,13 +43,7 @@ class CraftsmanController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
-        $filter = new Filter();
-        $filter->setConstructionSite($craftsman->getConstructionSite());
-        $filter->filterByCraftsmen([$craftsman->getId()]);
-        $filter->filterByRespondedStatus(false);
-        $filter->filterByRegistrationStatus(true);
-        $filter->filterByReviewedStatus(false);
-
+        $filter = self::createCraftsmanFilter($craftsman);
         $reportElements = ReportElements::forCraftsman();
 
         return $this->file(

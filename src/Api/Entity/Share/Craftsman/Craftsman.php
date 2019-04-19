@@ -19,6 +19,11 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
     private $reportUrl;
 
     /**
+     * @var bool
+     */
+    private $canRespondToIssues;
+
+    /**
      * @var string
      */
     private $readOnlyViewUrl;
@@ -53,5 +58,21 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
     public function setReadOnlyViewUrl(string $readOnlyViewUrl): void
     {
         $this->readOnlyViewUrl = $readOnlyViewUrl;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getCanRespondToIssues(): bool
+    {
+        return $this->canRespondToIssues;
+    }
+
+    /**
+     * @param bool $canRespondToIssues
+     */
+    public function setCanRespondToIssues(bool $canRespondToIssues): void
+    {
+        $this->canRespondToIssues = $canRespondToIssues;
     }
 }

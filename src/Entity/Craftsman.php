@@ -68,13 +68,6 @@ class Craftsman extends BaseEntity
     private $constructionSite;
 
     /**
-     * @var Filter|null
-     *
-     * @ORM\ManyToOne(targetEntity="Filter")
-     */
-    private $shareViewFilter;
-
-    /**
      * @var Issue[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Issue", mappedBy="craftsman")
@@ -101,6 +94,13 @@ class Craftsman extends BaseEntity
      * @ORM\Column(type="text")
      */
     private $emailIdentifier;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text")
+     */
+    private $writeAuthorizationToken;
 
     /**
      * Craftsman constructor.
@@ -260,6 +260,14 @@ class Craftsman extends BaseEntity
     }
 
     /**
+     * @return string
+     */
+    public function getWriteAuthorizationToken(): string
+    {
+        return $this->writeAuthorizationToken;
+    }
+
+    /**
      * sets the email identifier.
      *
      * @throws \Exception
@@ -267,33 +275,6 @@ class Craftsman extends BaseEntity
     public function setEmailIdentifier(): void
     {
         $this->emailIdentifier = Uuid::uuid4()->toString();
-    }
-
-    /**
-     * @return Filter|null
-     */
-    public function getShareViewFilter(): ?Filter
-    {
-        return $this->shareViewFilter;
-    }
-
-    /**
-     * creates the correct filter for the public issue view.
-     *
-     * @throws \Exception
-     */
-    public function setShareViewFilter(): Filter
-    {
-        $filter = new Filter();
-        $filter->setConstructionSite($this->getConstructionSite()->getId());
-        $filter->filterByCraftsmen([$this->getId()]);
-        $filter->filterByRespondedStatus(false);
-        $filter->filterByRegistrationStatus(true);
-        $filter->filterByReviewedStatus(false);
-        $filter->setPublicAccessIdentifier();
-
-        $this->shareViewFilter = $filter;
-
-        return $filter;
+        $this->writeAuthorizationToken = Uuid::uuid4()->toString();
     }
 }

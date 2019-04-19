@@ -68,6 +68,7 @@ class FilterControllerTest extends ApiController
 
     /**
      * @throws ORMException
+     * @throws \Exception
      */
     public function testMapsList()
     {

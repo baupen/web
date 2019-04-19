@@ -14,11 +14,12 @@ namespace App\Controller\External\Share;
 use App\Controller\Base\BaseDoctrineController;
 use App\Controller\External\Traits\CraftsmanAuthenticationTrait;
 use App\Entity\Craftsman;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/c/{identifier}")
+ * @Route("/c/{identifier}/{writeAuthenticationToken}", defaults={"writeAuthenticationToken"=null})
  */
 class CraftsmanController extends BaseDoctrineController
 {
@@ -27,18 +28,22 @@ class CraftsmanController extends BaseDoctrineController
     /**
      * @Route("", name="external_share_craftsman")
      *
-     * @param $identifier
+     * @param string $identifier
+     * @param string $writeAuthenticationToken
      *
-     * @throws \Exception
      * @throws \Exception
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function shareAction($identifier)
+    public function shareAction($identifier, ?string $writeAuthenticationToken)
     {
         /** @var Craftsman $craftsman */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
             throw new NotFoundHttpException();
+        }
+
+        if ($writeAuthenticationToken !== null && !$this->checkWriteAuthenticationToken($writeAuthenticationToken, $craftsman)) {
+            throw new AccessDeniedHttpException();
         }
 
         $craftsman->setLastOnlineVisit(new \DateTime());

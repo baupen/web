@@ -25,10 +25,11 @@ use App\Entity\Map;
 use App\Helper\IssueHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/c/{identifier}")
+ * @Route("/c/{identifier}/{writeAuthenticationToken}", defaults={"writeAuthenticationToken"=null})
  */
 class CraftsmanController extends ApiController
 {
@@ -84,7 +85,7 @@ class CraftsmanController extends ApiController
     }
 
     /**
-     * @Route("/read", name="external_api_share_craftsman_read", methods={"GET"})
+     * @Route("/{writeAuthenticationToken}/read", name="external_api_share_craftsman_read", methods={"GET"})
      *
      * @param $identifier
      * @param CraftsmanTransformer $craftsmanTransformer
@@ -93,17 +94,15 @@ class CraftsmanController extends ApiController
      *
      * @return Response
      */
-    public function readAction($identifier, CraftsmanTransformer $craftsmanTransformer)
+    public function readAction($identifier, CraftsmanTransformer $craftsmanTransformer, $writeAuthenticationToken)
     {
         /** @var Craftsman $craftsman */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
             return $this->fail(self::INVALID_IDENTIFIER);
         }
 
-        $this->ensureCraftsmanFilterInitialized($craftsman);
-
         $data = new CraftsmanData();
-        $data->setCraftsman($craftsmanTransformer->toApi($craftsman, $identifier));
+        $data->setCraftsman($craftsmanTransformer->toApi($craftsman, $identifier, $this->checkWriteAuthenticationToken($writeAuthenticationToken, $craftsman)));
 
         return $this->success($data);
     }
@@ -126,8 +125,8 @@ class CraftsmanController extends ApiController
         }
 
         //get all relevant issues
-        $this->ensureCraftsmanFilterInitialized($craftsman);
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($craftsman->getShareViewFilter());
+        $filter = self::createCraftsmanFilter($craftsman);
+        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
 
         /* @var Map[] $orderedMaps */
         /* @var Issue[][] $issuesPerMap */
@@ -152,18 +151,22 @@ class CraftsmanController extends ApiController
      *
      * @param Request $request
      * @param $identifier
+     * @param $writeAuthenticationToken
      *
-     * @throws \Exception
      * @throws \Exception
      *
      * @return Response
      */
-    public function issueRespondAction(Request $request, $identifier)
+    public function issueRespondAction(Request $request, $identifier, $writeAuthenticationToken)
     {
         /** @var Craftsman $craftsman */
         /** @var Issue $issue */
         if (!$this->parseIssueRequest($request, $identifier, $craftsman, $issue, $errorResponse)) {
             return $errorResponse;
+        }
+
+        if (!$this->checkWriteAuthenticationToken($writeAuthenticationToken, $craftsman)) {
+            throw new AccessDeniedHttpException();
         }
 
         $data = new ProcessingEntitiesData();
@@ -184,18 +187,22 @@ class CraftsmanController extends ApiController
      *
      * @param Request $request
      * @param $identifier
+     * @param $writeAuthenticationToken
      *
-     * @throws \Exception
      * @throws \Exception
      *
      * @return Response
      */
-    public function issueRemoveResponseAction(Request $request, $identifier)
+    public function issueRemoveResponseAction(Request $request, $identifier, $writeAuthenticationToken)
     {
         /** @var Craftsman $craftsman */
         /** @var Issue $issue */
         if (!$this->parseIssueRequest($request, $identifier, $craftsman, $issue, $errorResponse)) {
             return $errorResponse;
+        }
+
+        if (!$this->checkWriteAuthenticationToken($writeAuthenticationToken, $craftsman)) {
+            throw new AccessDeniedHttpException();
         }
 
         $data = new ProcessingEntitiesData();
@@ -211,18 +218,5 @@ class CraftsmanController extends ApiController
         }
 
         return $this->success($data);
-    }
-
-    /**
-     * @param Craftsman $craftsman
-     *
-     * @throws \Exception
-     */
-    private function ensureCraftsmanFilterInitialized(Craftsman $craftsman)
-    {
-        if ($craftsman->getShareViewFilter() === null) {
-            $filter = $craftsman->setShareViewFilter();
-            $this->fastSave($filter, $craftsman);
-        }
     }
 }

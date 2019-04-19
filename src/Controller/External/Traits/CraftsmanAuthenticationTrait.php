@@ -12,6 +12,7 @@
 namespace App\Controller\External\Traits;
 
 use App\Entity\Craftsman;
+use App\Entity\Filter;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 trait CraftsmanAuthenticationTrait
@@ -32,5 +33,34 @@ trait CraftsmanAuthenticationTrait
         }
 
         return true;
+    }
+
+    /**
+     * @param string $writeAuthenticationToken
+     * @param Craftsman $craftsman
+     *
+     * @return bool
+     */
+    private function checkWriteAuthenticationToken(string $writeAuthenticationToken, Craftsman $craftsman)
+    {
+        return $craftsman->getWriteAuthorizationToken() === $writeAuthenticationToken;
+    }
+
+    /**
+     * @param Craftsman $craftsman
+     *
+     * @return Filter
+     */
+    private static function createCraftsmanFilter(Craftsman $craftsman)
+    {
+        $filter = new Filter();
+
+        $filter->setConstructionSite($craftsman->getConstructionSite());
+        $filter->filterByCraftsmen([$craftsman->getId()]);
+        $filter->filterByRespondedStatus(false);
+        $filter->filterByRegistrationStatus(true);
+        $filter->filterByReviewedStatus(false);
+
+        return $filter;
     }
 }
