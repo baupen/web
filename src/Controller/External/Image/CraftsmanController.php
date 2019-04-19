@@ -72,7 +72,7 @@ class CraftsmanController extends BaseDoctrineController
         $filter->filterByRespondedStatus(false);
         $filter->filterByRegistrationStatus(true);
         $filter->filterByReviewedStatus(false);
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
+        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
 
         //generate map & print
         $imagePath = $imageService->generateMapImage($map, $issues, $imageService->ensureValidSize($size));

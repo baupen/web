@@ -73,7 +73,7 @@ class RegisterController extends ApiController
 
         /** @var Issue[] $requestedIssues */
         /** @var \App\Api\Entity\Foyer\Issue[] $issues */
-        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
+        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
         $issues = array_flip($parsedRequest->getIssueIds());
 
         $this->orderEntities($requestedIssues, $issues, $entities);
@@ -130,7 +130,7 @@ class RegisterController extends ApiController
         $filter->setConstructionSite($constructionSite->getId());
         $filter->filterByIssues(array_keys($issues));
 
-        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
+        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
         $this->orderEntities($requestedIssues, $issues, $entities);
 
         return true;
@@ -176,7 +176,7 @@ class RegisterController extends ApiController
         $filter = new Filter();
         $filter->setConstructionSite($constructionSite->getId());
         $filter->filterByRegistrationStatus(true);
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
+        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
 
         //create response
         $data = new IssuesData();

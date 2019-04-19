@@ -58,7 +58,7 @@ class FeedController extends ApiController
             return $errorResponse;
         }
 
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->getContextIssues($constructionSite);
+        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByRecentlyChanged($constructionSite);
         $craftsmen = $constructionSite->getCraftsmen();
 
         $feedEntries = [];

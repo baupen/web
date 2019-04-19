@@ -90,7 +90,7 @@ class ReportService implements ReportServiceInterface
      */
     public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, ?string $author, ReportElements $elements)
     {
-        $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
+        $issues = $this->doctrine->getRepository(Issue::class)->findByFilter($filter);
 
         dump($issues);
         dump($filter);
@@ -296,7 +296,7 @@ class ReportService implements ReportServiceInterface
         }
 
         //add limit
-        $limitValue = $getDateTimeRange($filter->getResponseLimitStart(), $filter->getResponseLimitEnd());
+        $limitValue = $getDateTimeRange($filter->getLimitStart(), $filter->getLimitEnd());
         if ($limitValue !== '') {
             $filterEntries[$this->translator->trans('response_limit', [], 'entity_issue')] = $limitValue;
         }

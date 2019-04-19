@@ -127,7 +127,7 @@ class CraftsmanController extends ApiController
 
         //get all relevant issues
         $this->ensureCraftsmanFilterInitialized($craftsman);
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($craftsman->getShareViewFilter());
+        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($craftsman->getShareViewFilter());
 
         /* @var Map[] $orderedMaps */
         /* @var Issue[][] $issuesPerMap */

@@ -56,30 +56,30 @@ class StatisticsController extends ApiController
 
         //count new issues
         $filter->filterByRegistrationStatus(false);
-        $overview->setNewIssuesCount($issueRepo->filterCount($filter));
+        $overview->setNewIssuesCount($issueRepo->countByFilter($filter));
         $filter->filterByRegistrationStatus(null);
 
         //count open issues
         $filter->filterByReviewedStatus(false);
-        $overview->setOpenIssuesCount($issueRepo->filterCount($filter));
+        $overview->setOpenIssuesCount($issueRepo->countByFilter($filter));
         $filter->filterByReviewedStatus(null);
 
         //count marked issues
         $filter->filterByIsMarked(true);
-        $overview->setMarkedIssuesCount($issueRepo->filterCount($filter));
+        $overview->setMarkedIssuesCount($issueRepo->countByFilter($filter));
         $filter->filterByIsMarked(null);
 
         //count overdue issues
         $filter->filterByResponseLimitEnd(new \DateTime());
         $filter->filterByReviewedStatus(false);
-        $overview->setOverdueIssuesCount($issueRepo->filterCount($filter));
+        $overview->setOverdueIssuesCount($issueRepo->countByFilter($filter));
         $filter->filterByResponseLimitEnd(null);
         $filter->filterByReviewedStatus(null);
 
         //count overdue issues
         $filter->filterByRespondedStatus(true);
         $filter->filterByReviewedStatus(false);
-        $overview->setRespondedNotReviewedIssuesCount($issueRepo->filterCount($filter));
+        $overview->setRespondedNotReviewedIssuesCount($issueRepo->countByFilter($filter));
 
         //return data
         $overviewData = new OverviewData();

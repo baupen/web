@@ -88,7 +88,7 @@ class FilterController extends ApiController
             return $this->fail(self::INVALID_IDENTIFIER);
         }
 
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
+        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
 
         /* @var Map[] $orderedMaps */
         /* @var Issue[][] $issuesPerMap */

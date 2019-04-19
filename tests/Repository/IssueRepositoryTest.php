@@ -27,6 +27,6 @@ class IssueRepositoryTest extends FixturesTestCase
 
         $filter = new Filter();
         $filter->setConstructionSite($constructionSite->getId());
-        $this->assertSameSize($repo->findBy(['map' => $constructionSite->getMapIds()]), $repo->filter($filter));
+        $this->assertSameSize($repo->findBy(['map' => $constructionSite->getMapIds()]), $repo->findByFilter($filter));
     }
 }

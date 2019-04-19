@@ -151,7 +151,7 @@ class NewReportService
      */
     private function addReportElements(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $buildingBlocks, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
     {
-        $issues = $this->doctrine->getRepository(Issue::class)->filter($filter);
+        $issues = $this->doctrine->getRepository(Issue::class)->findByFilter($filter);
         $reportConfiguration = new ReportConfiguration($filter);
 
         // add introduction
@@ -578,8 +578,8 @@ class NewReportService
         }
 
         //add limit
-        if ($filter->getResponseLimitStart() !== null || $filter->getResponseLimitEnd() !== null) {
-            $limitValue = $this->dateTimeRangeToText($filter->getResponseLimitStart(), $filter->getResponseLimitEnd());
+        if ($filter->getLimitStart() !== null || $filter->getLimitEnd() !== null) {
+            $limitValue = $this->dateTimeRangeToText($filter->getLimitStart(), $filter->getLimitEnd());
             $label = $this->translator->trans('response_limit', [], 'entity_issue');
             $filterEntries[$label] = $limitValue;
         }
