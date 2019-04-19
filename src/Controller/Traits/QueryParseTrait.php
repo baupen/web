@@ -112,7 +112,7 @@ trait QueryParseTrait
             return $input === null || $input === '' ? null : new \DateTime($input);
         };
 
-        if ($filterParameters->getBoolean('active')) {
+        if ($filterParameters->getBoolean('enabled')) {
             $start = $toDateTime($filterParameters->get('start', null));
             $end = $toDateTime($filterParameters->get('end', null));
 

@@ -120,15 +120,17 @@ class Report
         ++$currentColumn;
 
         //filter used for generation
-        $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
-        $this->pdfDocument->SetY($startY);
+        if (\count($filterEntries) > 0) {
+            $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
+            $this->pdfDocument->SetY($startY);
 
-        $this->printH2($filterHeader, $columnWidth);
+            $this->printH2($filterHeader, $columnWidth);
 
-        $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
-        foreach ($filterEntries as $name => $value) {
-            $this->pdfDocument->SetX($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
-            $this->printHtmlP('<b>' . $name . '</b>: ' . $value);
+            $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
+            foreach ($filterEntries as $name => $value) {
+                $this->pdfDocument->SetX($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
+                $this->printHtmlP('<b>' . $name . '</b>: ' . $value);
+            }
         }
 
         //define start of next part

@@ -25,49 +25,55 @@ export default {
         maps: mapFilter.maps.map(i => i.id)
       };
 
-      const timeFilter = filter.time;
+      let timeFilter = filter.time;
       normalized.time = Object.assign({}, timeFilter, {
-        enabled: timeFilter.enabled && (timeFilter.registered.active || timeFilter.responded.active || timeFilter.reviewed.active)
+        registered: this.normalizeTimeFilter(timeFilter.registered),
+        responded: this.normalizeTimeFilter(timeFilter.responded),
+        reviewed: this.normalizeTimeFilter(timeFilter.reviewed)
       });
+      timeFilter = normalized.time;
+      normalized.time.enabled = timeFilter.enabled && (timeFilter.registered.enabled || timeFilter.responded.enabled || timeFilter.reviewed.enabled);
 
       return normalized;
+    },
+    normalizeTimeFilter: function (timeFilter) {
+      return Object.assign({}, timeFilter, {
+        enabled: timeFilter.active && (!this.isFalsy(timeFilter.start) || !this.isFalsy(timeFilter.end))
+      });
     },
     minimizeFilter: function (filter, constructionSiteId) {
       filter = this.normalizeFilter(filter);
 
-      let minimized = {
+      return Object.assign({
         constructionSiteId: constructionSiteId
-      };
+      }, this.removeFalsyAndDisabled(filter));
+    },
+    removeFalsyAndDisabled: function (originalObject) {
+      let object = Object.assign({}, originalObject);
+      let disabled = false;
+      Object.keys(object).forEach((key) => {
+        if (key === 'enabled' && !object[key]) {
+          disabled = true;
+        }
 
-      if (filter.onlyMarked) {
-        minimized.onlyMarked = true;
+        if (object[key] && typeof object[key] === 'object') {
+          object[key] = this.removeFalsyAndDisabled(object[key]);
+          if (Object.keys(object[key]).length === 0) {
+            delete object[key];
+          }
+        } else if (this.isFalsy(object[key])) {
+          delete object[key];
+        }
+      });
+
+      if (disabled) {
+        return {};
+      } else {
+        return object;
       }
-
-      if (filter.onlyOverLimit) {
-        minimized.onlyOverLimit = true;
-      }
-
-      if (filter.status.enabled) {
-        minimized.status = filter.status;
-      }
-
-      if (filter.craftsman.enabled) {
-        minimized.craftsman = filter.craftsman;
-      }
-
-      if (filter.trade.enabled) {
-        minimized.trade = filter.trade;
-      }
-
-      if (filter.map.enabled) {
-        minimized.map = filter.map;
-      }
-
-      if (filter.time.enabled) {
-        minimized.time = filter.time;
-      }
-
-      return minimized;
+    },
+    isFalsy: function (value) {
+      return value === false || value === null || value === '';
     }
   }
 };

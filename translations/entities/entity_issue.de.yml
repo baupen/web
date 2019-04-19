@@ -5,6 +5,7 @@ status_values:
   all: 'Alle'
   none: 'Keine'
   registered: 'Offen'
+  read: 'Gelesen'
   responded: 'Beantwortet'
   reviewed: 'Bestätigt'
 

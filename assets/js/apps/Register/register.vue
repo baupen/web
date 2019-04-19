@@ -81,21 +81,21 @@
                     },
                     time: {
                         enabled: false,
-                        read: {
-                            active: false
-                        },
                         registered: {
                             active: false,
+                            enabled: false,
                             start: null,
                             end: null
                         },
                         responded: {
                             active: false,
+                            enabled: false,
                             start: null,
                             end: null
                         },
                         reviewed: {
                             active: false,
+                            enabled: false,
                             start: null,
                             end: null
                         }
@@ -130,10 +130,10 @@
                 const statusFilter = filter.status;
                 if (statusFilter.enabled) {
                     if (!statusFilter.registered) {
-                        res = res.filter(i => i.read || i.reviewedAt !== null || i.respondedAt !== null);
+                        res = res.filter(i => i.isRead || i.reviewedAt !== null || i.respondedAt !== null);
                     }
                     if (!statusFilter.read) {
-                        res = res.filter(i => i.reviewedAt !== null || i.respondedAt !== null || (!i.read && i.respondedAt === null && i.reviewedAt === null));
+                        res = res.filter(i => i.reviewedAt !== null || i.respondedAt !== null || (!i.isRead && i.respondedAt === null && i.reviewedAt === null));
                     }
                     if (!statusFilter.responded) {
                         res = res.filter(i => i.reviewedAt !== null || (i.respondedAt === null && i.reviewedAt === null));
@@ -161,15 +161,15 @@
 
                 const timeFilter = filter.time;
                 if (timeFilter.enabled) {
-                    if (timeFilter.registered.active) {
+                    if (timeFilter.registered.enabled) {
                         res = this.filterStartEnd(res, timeFilter.registered, "registeredAt");
                     }
 
-                    if (timeFilter.responded.active) {
+                    if (timeFilter.responded.enabled) {
                         res = this.filterStartEnd(res, timeFilter.responded, "respondedAt");
                     }
 
-                    if (timeFilter.reviewed.active) {
+                    if (timeFilter.reviewed.enabled) {
                         res = this.filterStartEnd(res, timeFilter.reviewed, "reviewedAt");
                     }
                 }

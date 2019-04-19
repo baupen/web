@@ -92,10 +92,6 @@ class ReportService implements ReportServiceInterface
     {
         $issues = $this->doctrine->getRepository(Issue::class)->findByFilter($filter);
 
-        dump($issues);
-        dump($filter);
-
-        throw new \Exception();
         //create folder
         $generationTargetFolder = $this->pathService->getTransientFolderForReports($constructionSite);
         if (!file_exists($generationTargetFolder)) {
@@ -217,71 +213,43 @@ class ReportService implements ReportServiceInterface
     {
         $filterEntries = [];
 
-        //appends the timings to the status and remembers if it has happend once (important later)
-        $timeSpecified = false;
-        $getDateTimeRange = function ($start = null, $end = null) use (&$timeSpecified) {
-            $timeSpecified |= $start !== null || $end !== null;
-            /** @var \DateTime|null $start */
-            /* @var \DateTime|null $end */
-            if ($start !== null) {
-                if ($end !== null) {
-                    return '(' . $start->format(DateTimeFormatter::DATE_TIME_FORMAT) . ' - ' . $end->format(DateTimeFormatter::DATE_TIME_FORMAT) . ')';
-                }
-
-                return '(' . $this->translator->trans('introduction.filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
-            } elseif ($end !== null) {
-                return '(' . $this->translator->trans('introduction.filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
-            }
-
-            return '';
-        };
-
-        //creates the status string
-        $getStatus = function ($status, $trans, $start = null, $end = null) use ($getDateTimeRange) {
-            if ($status) {
-                return $trans . ' ' . $getDateTimeRange($start, $end);
-            }
-
-            return $this->translator->trans('introduction.filter.not', ['%state%' => $trans], 'report');
-        };
+        /*
+         * intentionally ignoring isMarked as this is part of the application, not the report
+         */
 
         //collect all set status
-        $statusEntries = [];
-        if ($filter->getRegistrationStatus() !== null) {
-            $trans = $this->translator->trans('status_values.registered', [], 'entity_issue');
-            $statusEntries[] = $getStatus($filter->getRegistrationStatus(), $trans);
-        }
-        if ($filter->getRespondedStatus() !== null) {
-            $trans = $this->translator->trans('status_values.responded', [], 'entity_issue');
-            $statusEntries[] = $getStatus($filter->getRespondedStatus(), $trans, $filter->getRespondedStart(), $filter->getRespondedEnd());
-        }
-        if ($filter->getReviewedStatus() !== null) {
-            $trans = $this->translator->trans('status_values.reviewed', [], 'entity_issue');
-            $statusEntries[] = $getStatus($filter->getReviewedStatus(), $trans, $filter->getReviewedStart(), $filter->getRespondedEnd());
-        }
+        if ($filter->getAnyStatus() > 0) {
+            $status = [];
+            if ($filter->getAnyStatus() & Filter::STATUS_REGISTERED) {
+                $status[] = $this->translator->trans('status_values.registered', [], 'entity_issue');
+            }
+            if ($filter->getAnyStatus() & Filter::STATUS_READ) {
+                $status[] = $this->translator->trans('status_values.read', [], 'entity_issue');
+            }
+            if ($filter->getAnyStatus() & Filter::STATUS_RESPONDED) {
+                $status[] = $this->translator->trans('status_values.responded', [], 'entity_issue');
+            }
+            if ($filter->getAnyStatus() & Filter::STATUS_REVIEWED) {
+                $status[] = $this->translator->trans('status_values.reviewed', [], 'entity_issue');
+            }
 
-        //convert all set status to a single string
-        if (\count($statusEntries) === 3 && !$timeSpecified) {
-            //shorten
-            $statusEntry = $this->translator->trans('status_values.all', [], 'entity_issue');
-        } elseif (\count($statusEntries) === 0) {
-            $statusEntry = $this->translator->trans('status_values.none', [], 'entity_issue');
-        } else {
-            $statusEntry = implode(', ', $statusEntries);
+            $key = $this->translator->trans('status', [], 'entity_issue');
+            if (\count($status) === 4) {
+                $allStatus = $this->translator->trans('status_values.all', [], 'entity_issue');
+                $filterEntries[$key] = $allStatus;
+            } else {
+                $or = $this->translator->trans('introduction.filter.or', [], 'report');
+                $filterEntries[$key] = implode(' ' . $or . ' ', $status);
+            }
         }
-        $filterEntries[$this->translator->trans('status', [], 'entity_issue')] = $statusEntry;
 
         //add craftsmen
-        $trades = null;
         if ($filter->getCraftsmen() !== null) {
             $entities = $this->doctrine->getRepository(Craftsman::class)->findBy(['id' => $filter->getCraftsmen()]);
             $names = [];
-            $trades = [];
             foreach ($entities as $item) {
-                $names[$item->getName()] = 1;
-                $trades[$item->getTrade()] = 1;
+                $names[] = $item->getName();
             }
-            $names = array_keys($names);
             $filterEntries[$this->translator->transChoice('introduction.filter.craftsmen', \count($names), [], 'report')] = implode(', ', $names);
         }
 
@@ -296,23 +264,49 @@ class ReportService implements ReportServiceInterface
         }
 
         //add limit
-        $limitValue = $getDateTimeRange($filter->getLimitStart(), $filter->getLimitEnd());
+        $limitValue = $this->getDateTimeString($filter->getLimitStart(), $filter->getLimitEnd());
         if ($limitValue !== '') {
             $filterEntries[$this->translator->trans('response_limit', [], 'entity_issue')] = $limitValue;
         }
 
         //set other properties
-        //intentionally ignoring isMarked as this is part of the application, not the report
-        if ($filter->getTrades() !== null || $trades !== null) {
-            if ($trades === null) {
-                $trades = [];
+        if ($filter->getTrades() !== null) {
+            $names = [];
+            foreach ($filter->getTrades() as $trade) {
+                $names[] = $trade;
             }
-            if ($filter->getTrades() !== null) {
-                foreach ($filter->getTrades() as $trade) {
-                    $trades[$trade] = 1;
-                }
+            $filterEntries[$this->translator->transChoice('introduction.filter.trades', \count($names), [], 'report')] = implode(', ', $names);
+        }
+
+        // collect set time
+        $timeEntries = [];
+        if ($filter->getRegistrationStatus() !== null) {
+            $trans = $this->translator->trans('status_values.registered', [], 'entity_issue');
+            $range = $this->getDateTimeString($filter->getRegistrationStart(), $filter->getRegistrationEnd(), $trans);
+            if ($range !== '') {
+                $timeEntries[] = $range;
             }
-            $filterEntries[$this->translator->transChoice('introduction.filter.trades', \count($trades), [], 'report')] = implode(', ', array_keys($trades));
+        }
+        if ($filter->getRespondedStatus() !== null) {
+            $trans = $this->translator->trans('status_values.responded', [], 'entity_issue');
+            $range = $this->getDateTimeString($filter->getRespondedStart(), $filter->getRespondedEnd(), $trans);
+            if ($range !== '') {
+                $timeEntries[] = $range;
+            }
+        }
+        if ($filter->getReviewedStatus() !== null) {
+            $trans = $this->translator->trans('status_values.reviewed', [], 'entity_issue');
+            $range = $this->getDateTimeString($filter->getReviewedStart(), $filter->getRespondedEnd(), $trans);
+            if ($range !== '') {
+                $timeEntries[] = $range;
+            }
+        }
+
+        if (\count($timeEntries) > 0) {
+            //convert all set time status to a single string
+            $and = $this->translator->trans('introduction.filter.and', [], 'report');
+            $statusEntry = implode(' ' . $and . ' ', $timeEntries);
+            $filterEntries[$this->translator->trans('introduction.filter.time', [], 'report')] = $statusEntry;
         }
 
         //add list of elements which are part of this report
@@ -340,6 +334,34 @@ class ReportService implements ReportServiceInterface
             $filterEntries,
             $this->translator->trans('entity.name', [], 'entity_filter')
         );
+    }
+
+    /**
+     * @param \DateTime|null $start
+     * @param \DateTime|null $end
+     * @param string|null $prefix
+     *
+     * @return string
+     */
+    private function getDateTimeString($start, $end, string $prefix = null): string
+    {
+        if ($start !== null) {
+            if ($end !== null) {
+                $rangeString = $start->format(DateTimeFormatter::DATE_TIME_FORMAT) . ' - ' . $end->format(DateTimeFormatter::DATE_TIME_FORMAT);
+            } else {
+                $rangeString = $this->translator->trans('introduction.filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report');
+            }
+        } elseif ($end !== null) {
+            $rangeString = $this->translator->trans('introduction.filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report');
+        } else {
+            return '';
+        }
+
+        if ($prefix === null) {
+            return $rangeString;
+        }
+
+        return $prefix . ' (' . $rangeString . ')';
     }
 
     /**
