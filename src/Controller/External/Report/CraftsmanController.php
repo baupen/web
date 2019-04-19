@@ -45,7 +45,7 @@ class CraftsmanController extends BaseDoctrineController
         }
 
         $filter = new Filter();
-        $filter->setConstructionSite($craftsman->getConstructionSite()->getId());
+        $filter->setConstructionSite($craftsman->getConstructionSite());
         $filter->filterByCraftsmen([$craftsman->getId()]);
         $filter->filterByRespondedStatus(false);
         $filter->filterByRegistrationStatus(true);

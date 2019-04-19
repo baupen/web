@@ -43,7 +43,7 @@ class FilterControllerTest extends ApiController
             /** @var ConstructionSite $constructionSite */
             $constructionSite = $doctrine->getRepository(ConstructionSite::class)->findOneBy([]);
             $filter = new Filter();
-            $filter->setConstructionSite($constructionSite->getId());
+            $filter->setConstructionSite($constructionSite);
             $filter->filterByRegistrationStatus(true);
             $filter->setPublicAccessIdentifier();
 
@@ -53,7 +53,7 @@ class FilterControllerTest extends ApiController
             $this->filter = $filter;
         }
 
-        $url = '/external/api/share/f/' . $this->filter->getAccessIdentifier() . $relativeLink;
+        $url = '/external/api/share/f/' . $this->filter->getPublicAccessIdentifier() . $relativeLink;
         if ($payload === null) {
             $client->request('GET', $url);
         } else {

@@ -651,7 +651,7 @@ class NewReportService
         }
 
         if ($negate) {
-            $result = $this->translator->trans('filter.not', ['%state%' => $result], 'report');
+            $result = $this->translator->trans('introduction.filter.not', ['%state%' => $result], 'report');
         }
 
         return $result;
@@ -672,9 +672,9 @@ class NewReportService
                 return '(' . $start->format(DateTimeFormatter::DATE_TIME_FORMAT) . ' - ' . $end->format(DateTimeFormatter::DATE_TIME_FORMAT) . ')';
             }
 
-            return '(' . $this->translator->trans('filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
+            return '(' . $this->translator->trans('introduction.filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
         } elseif ($end !== null) {
-            return '(' . $this->translator->trans('filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
+            return '(' . $this->translator->trans('introduction.filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report') . ')';
         }
 
         return '';

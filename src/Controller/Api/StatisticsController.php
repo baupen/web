@@ -48,7 +48,7 @@ class StatisticsController extends ApiController
 
         //prepare filter
         $filter = new Filter();
-        $filter->setConstructionSite($constructionSite->getId());
+        $filter->setConstructionSite($constructionSite);
         $filter->filterByRegistrationStatus(true);
 
         //create response

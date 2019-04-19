@@ -50,7 +50,7 @@ class CraftsmanTransformer
         $this->craftsmanTransformer->writeApiProperties($entity, $craftsman);
 
         $craftsman->setReportUrl($this->router->generate('external_report_craftsman', ['identifier' => $identifier, 'hash' => uniqid()]));
-        $craftsman->setReadOnlyViewUrl($this->router->generate('external_share_filter', ['identifier' => $entity->getShareViewFilter()->getAccessIdentifier()]));
+        $craftsman->setReadOnlyViewUrl($this->router->generate('external_share_filter', ['identifier' => $entity->getShareViewFilter()->getPublicAccessIdentifier()]));
 
         return $craftsman;
     }

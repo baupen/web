@@ -67,7 +67,7 @@ class FoyerController extends ApiController
         //retrieve all issues from the db
         $filter = new Filter();
         $filter->filterByRegistrationStatus(false);
-        $filter->setConstructionSite($constructionSite->getId());
+        $filter->setConstructionSite($constructionSite);
         $filter->filterByIssues($parsedRequest->getIssueIds());
 
         /** @var Issue[] $requestedIssues */
@@ -107,7 +107,7 @@ class FoyerController extends ApiController
         //retrieve all issues from the db
         $filter = new Filter();
         $filter->filterByRegistrationStatus(false);
-        $filter->setConstructionSite($constructionSite->getId());
+        $filter->setConstructionSite($constructionSite);
         $filter->filterByIssues(array_keys($issues));
 
         $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
@@ -199,7 +199,7 @@ class FoyerController extends ApiController
 
         $filter = new Filter();
         $filter->filterByRegistrationStatus(false);
-        $filter->setConstructionSite($constructionSite->getId());
+        $filter->setConstructionSite($constructionSite);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
 
         //create response

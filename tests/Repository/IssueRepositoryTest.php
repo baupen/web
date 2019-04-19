@@ -26,7 +26,7 @@ class IssueRepositoryTest extends FixturesTestCase
         $repo = $doctrine->getRepository(Issue::class);
 
         $filter = new Filter();
-        $filter->setConstructionSite($constructionSite->getId());
+        $filter->setConstructionSite($constructionSite);
         $this->assertSameSize($repo->findBy(['map' => $constructionSite->getMapIds()]), $repo->findByFilter($filter));
     }
 }

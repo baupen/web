@@ -18,7 +18,6 @@ use App\Api\Transformer\Share\Filter\FilterTransformer;
 use App\Api\Transformer\Share\Filter\MapTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Controller\External\Traits\FilterAuthenticationTrait;
-use App\Entity\ConstructionSite;
 use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
@@ -63,8 +62,7 @@ class FilterController extends ApiController
             return $this->fail(self::INVALID_IDENTIFIER);
         }
 
-        /** @var ConstructionSite $constructionSite */
-        $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($filter->getConstructionSite());
+        $constructionSite = $filter->getConstructionSite();
 
         $data = new ReadData();
         $data->setConstructionSite($constructionSiteTransformer->toApi($constructionSite));

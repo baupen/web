@@ -66,7 +66,7 @@ class CraftsmanController extends BaseDoctrineController
 
         //get issues to put on map
         $filter = new Filter();
-        $filter->setConstructionSite($craftsman->getConstructionSite()->getId());
+        $filter->setConstructionSite($craftsman->getConstructionSite());
         $filter->filterByCraftsmen([$craftsman->getId()]);
         $filter->filterByMaps([$map->getId()]);
         $filter->filterByRespondedStatus(false);

@@ -42,7 +42,7 @@ class FilterController extends BaseDoctrineController
         }
 
         $now = new \DateTime();
-        if ($filter->getAccessUntil() !== null && $filter->getAccessUntil() < $now) {
+        if ($filter->getAccessAllowedUntil() !== null && $filter->getAccessAllowedUntil() < $now) {
             throw new AccessDeniedException();
         }
 

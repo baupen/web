@@ -11,7 +11,6 @@
 
 namespace App\Controller\Traits;
 
-use App\Entity\ConstructionSite;
 use App\Entity\Filter;
 use App\Service\Report\ReportElements;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -20,13 +19,11 @@ trait QueryParseTrait
 {
     /**
      * @param Filter $filter
-     * @param ConstructionSite $constructionSite
      * @param array $query
      *
      * @throws \Exception
-     * @throws \Exception
      */
-    private function setFilterProperties(Filter $filter, ConstructionSite $constructionSite, $query)
+    private function setFilterProperties(Filter $filter, $query)
     {
         $parameterBag = new ParameterBag($query);
         if ($parameterBag->getBoolean('onlyMarked')) {

@@ -68,7 +68,7 @@ class RegisterController extends ApiController
         //retrieve all issues from the db
         $filter = new Filter();
         $filter->filterByRegistrationStatus(true);
-        $filter->setConstructionSite($constructionSite->getId());
+        $filter->setConstructionSite($constructionSite);
         $filter->filterByIssues($parsedRequest->getIssueIds());
 
         /** @var Issue[] $requestedIssues */
@@ -127,7 +127,7 @@ class RegisterController extends ApiController
         //retrieve all issues from the db
         $filter = new Filter();
         $filter->filterByRegistrationStatus(true);
-        $filter->setConstructionSite($constructionSite->getId());
+        $filter->setConstructionSite($constructionSite);
         $filter->filterByIssues(array_keys($issues));
 
         $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
@@ -174,7 +174,7 @@ class RegisterController extends ApiController
         }
 
         $filter = new Filter();
-        $filter->setConstructionSite($constructionSite->getId());
+        $filter->setConstructionSite($constructionSite);
         $filter->filterByRegistrationStatus(true);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
 
@@ -262,9 +262,9 @@ class RegisterController extends ApiController
 
         //create filter
         $filter = new Filter();
-        $this->setFilterProperties($filter, $constructionSite, $queryFilter);
+        $this->setFilterProperties($filter, $queryFilter);
         $filter->filterByRegistrationStatus(true);
-        $filter->setConstructionSite($constructionSite->getId());
+        $filter->setConstructionSite($constructionSite);
         $filter->setPublicAccessIdentifier();
 
         //check if limit applies
@@ -280,7 +280,7 @@ class RegisterController extends ApiController
 
         //send response
         $data = new ShareData();
-        $data->setLink($this->generateUrl('external_share_filter', ['identifier' => $filter->getAccessIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL));
+        $data->setLink($this->generateUrl('external_share_filter', ['identifier' => $filter->getPublicAccessIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL));
 
         return $this->success($data);
     }

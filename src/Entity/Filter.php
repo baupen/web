@@ -207,9 +207,9 @@ class Filter extends BaseEntity
     private $limitEnd = null;
 
     /**
-     * @param string $constructionSite
+     * @param ConstructionSite $constructionSite
      */
-    public function setConstructionSite(string $constructionSite): void
+    public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;
     }
