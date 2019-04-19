@@ -6,9 +6,12 @@ introduction:
     later_than: 'nach %date%'
     earlier_than: 'vor %date%'
     not: 'nicht %state%'
+    or: 'oder'
+    and: 'und'
     trades: 'Gewerbe|Gewerbe'
     craftsmen: 'Firma|Firmen'
     maps: 'Karte|Karten'
+    time: 'Zeit'
 
 table:
   by_map: 'Pendenzen nach Karte'

@@ -27,9 +27,8 @@ class CraftsmanController extends BaseDoctrineController
     /**
      * @Route("", name="external_share_craftsman")
      *
-     * @param $identifier
+     * @param string $identifier
      *
-     * @throws \Exception
      * @throws \Exception
      *
      * @return \Symfony\Component\HttpFoundation\Response

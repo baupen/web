@@ -18,7 +18,7 @@
 
 <script>
 
-    import BaseCheckbox from '../../components/Base/BaseCheckbox'
+    import BaseCheckbox from '../../../components/Base/BaseCheckbox'
 
     export default {
         props: {

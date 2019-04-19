@@ -32,11 +32,32 @@ class Filter extends BaseEntity
     const STATUS_REVIEWED = 8;
 
     /**
-     * @var string
+     * @var ConstructionSite
      *
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="filters")
      */
     private $constructionSite;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $publicAccessIdentifier;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $accessAllowedUntil = null;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastAccess = null;
 
     /**
      * @var bool|null
@@ -44,34 +65,6 @@ class Filter extends BaseEntity
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $isMarked = null;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $number = null;
-
-    /**
-     * @var string[]|null
-     *
-     * @ORM\Column(type="simple_array", nullable=true)
-     */
-    private $trades = null;
-
-    /**
-     * @var string[]|null
-     *
-     * @ORM\Column(type="simple_array", nullable=true)
-     */
-    private $craftsmen = null;
-
-    /**
-     * @var string[]|null
-     *
-     * @ORM\Column(type="simple_array", nullable=true)
-     */
-    private $maps = null;
 
     /**
      * @var string[]|null
@@ -86,6 +79,55 @@ class Filter extends BaseEntity
      * @ORM\Column(type="integer", nullable=true)
      */
     private $anyStatus = null;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private $filterByIssues = false;
+
+    /**
+     * @var string[]|null
+     *
+     * @ORM\Column(type="simple_array", nullable=true)
+     */
+    private $craftsmen = null;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private $filterByCraftsmen = false;
+
+    /**
+     * @var string[]|null
+     *
+     * @ORM\Column(type="simple_array", nullable=true)
+     */
+    private $trades = null;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private $filterByTrades = false;
+
+    /**
+     * @var string[]|null
+     *
+     * @ORM\Column(type="simple_array", nullable=true)
+     */
+    private $maps = null;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private $filterByMaps = false;
 
     /**
      * @var bool|null
@@ -107,13 +149,6 @@ class Filter extends BaseEntity
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $registrationEnd = null;
-
-    /**
-     * @var bool|null
-     *
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $readStatus = null;
 
     /**
      * @var bool|null
@@ -172,375 +207,159 @@ class Filter extends BaseEntity
     private $limitEnd = null;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", nullable=true)
+     * @param ConstructionSite $constructionSite
      */
-    private $numberText = null;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $accessIdentifier;
-
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $accessUntil = null;
-
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $lastAccess = null;
-
-    /**
-     * @return string
-     */
-    public function getConstructionSite(): string
-    {
-        return $this->constructionSite;
-    }
-
-    /**
-     * @param string $constructionSite
-     */
-    public function setConstructionSite(string $constructionSite): void
+    public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;
     }
 
     /**
-     * @return bool|null
+     * @param \DateTime|null $accessAllowedUntil
      */
-    public function getIsMarked(): ?bool
+    public function setAccessAllowedUntil(?\DateTime $accessAllowedUntil): void
     {
-        return $this->isMarked;
+        $this->accessAllowedUntil = $accessAllowedUntil;
     }
 
     /**
-     * @param bool|null $isMarked
+     * sets the last access to now.
+     *
+     * @throws \Exception
      */
-    public function setIsMarked(?bool $isMarked): void
+    public function setLastAccessNow(): void
     {
-        $this->isMarked = $isMarked;
+        $this->lastAccess = new \DateTime();
     }
 
     /**
-     * @return int|null
+     * sets a new access identifier for public access.
+     *
+     * @throws \Exception
      */
-    public function getNumber(): ?int
+    public function setPublicAccessIdentifier(): void
     {
-        return $this->number;
-    }
-
-    /**
-     * @param int|null $number
-     */
-    public function setNumber(?int $number): void
-    {
-        $this->number = $number;
-    }
-
-    /**
-     * @return string[]|null
-     */
-    public function getTrades(): ?array
-    {
-        return $this->trades;
-    }
-
-    /**
-     * @param string[]|null $trades
-     */
-    public function setTrades(?array $trades): void
-    {
-        $this->trades = $trades;
-    }
-
-    /**
-     * @return string[]|null
-     */
-    public function getCraftsmen(): ?array
-    {
-        return $this->craftsmen;
-    }
-
-    /**
-     * @param string[]|null $craftsmen
-     */
-    public function setCraftsmen(?array $craftsmen): void
-    {
-        $this->craftsmen = $craftsmen;
-    }
-
-    /**
-     * @return string[]|null
-     */
-    public function getMaps(): ?array
-    {
-        return $this->maps;
-    }
-
-    /**
-     * @param string[]|null $maps
-     */
-    public function setMaps(?array $maps): void
-    {
-        $this->maps = $maps;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getRegistrationStatus(): ?bool
-    {
-        return $this->registrationStatus;
-    }
-
-    /**
-     * @param bool|null $registrationStatus
-     */
-    public function setRegistrationStatus(?bool $registrationStatus): void
-    {
-        $this->registrationStatus = $registrationStatus;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getRespondedStatus(): ?bool
-    {
-        return $this->respondedStatus;
-    }
-
-    /**
-     * @param bool|null $respondedStatus
-     */
-    public function setRespondedStatus(?bool $respondedStatus): void
-    {
-        $this->respondedStatus = $respondedStatus;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getRespondedStart(): ?\DateTime
-    {
-        return $this->respondedStart;
-    }
-
-    /**
-     * @param \DateTime|null $respondedStart
-     */
-    public function setRespondedStart(?\DateTime $respondedStart): void
-    {
-        $this->respondedStart = $respondedStart;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getRespondedEnd(): ?\DateTime
-    {
-        return $this->respondedEnd;
-    }
-
-    /**
-     * @param \DateTime|null $respondedEnd
-     */
-    public function setRespondedEnd(?\DateTime $respondedEnd): void
-    {
-        $this->respondedEnd = $respondedEnd;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getReviewedStatus(): ?bool
-    {
-        return $this->reviewedStatus;
-    }
-
-    /**
-     * @param bool|null $reviewedStatus
-     */
-    public function setReviewedStatus(?bool $reviewedStatus): void
-    {
-        $this->reviewedStatus = $reviewedStatus;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getReviewedStart(): ?\DateTime
-    {
-        return $this->reviewedStart;
-    }
-
-    /**
-     * @param \DateTime|null $reviewedStart
-     */
-    public function setReviewedStart(?\DateTime $reviewedStart): void
-    {
-        $this->reviewedStart = $reviewedStart;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getReviewedEnd(): ?\DateTime
-    {
-        return $this->reviewedEnd;
-    }
-
-    /**
-     * @param \DateTime|null $reviewedEnd
-     */
-    public function setReviewedEnd(?\DateTime $reviewedEnd): void
-    {
-        $this->reviewedEnd = $reviewedEnd;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getResponseLimitStart(): ?\DateTime
-    {
-        return $this->limitStart;
-    }
-
-    /**
-     * @param \DateTime|null $limitStart
-     */
-    public function setResponseLimitStart(?\DateTime $limitStart): void
-    {
-        $this->limitStart = $limitStart;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getResponseLimitEnd(): ?\DateTime
-    {
-        return $this->limitEnd;
-    }
-
-    /**
-     * @param \DateTime|null $limitEnd
-     */
-    public function setResponseLimitEnd(?\DateTime $limitEnd): void
-    {
-        $this->limitEnd = $limitEnd;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getRegistrationStart(): ?\DateTime
-    {
-        return $this->registrationStart;
-    }
-
-    /**
-     * @param \DateTime|null $registrationStart
-     */
-    public function setRegistrationStart(?\DateTime $registrationStart): void
-    {
-        $this->registrationStart = $registrationStart;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getRegistrationEnd(): ?\DateTime
-    {
-        return $this->registrationEnd;
-    }
-
-    /**
-     * @param \DateTime|null $registrationEnd
-     */
-    public function setRegistrationEnd(?\DateTime $registrationEnd): void
-    {
-        $this->registrationEnd = $registrationEnd;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getReadStatus(): ?bool
-    {
-        return $this->readStatus;
-    }
-
-    /**
-     * @param bool|null $readStatus
-     */
-    public function setReadStatus(?bool $readStatus): void
-    {
-        $this->readStatus = $readStatus;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getAccessUntil(): ?\DateTime
-    {
-        return $this->accessUntil;
-    }
-
-    /**
-     * @param \DateTime|null $accessUntil
-     */
-    public function setAccessUntil(?\DateTime $accessUntil): void
-    {
-        $this->accessUntil = $accessUntil;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getNumberText(): ?string
-    {
-        return $this->numberText;
-    }
-
-    /**
-     * @param string|null $numberText
-     */
-    public function setNumberText(?string $numberText): void
-    {
-        $this->numberText = $numberText;
-    }
-
-    /**
-     * @return string[]|null
-     */
-    public function getIssues(): ?array
-    {
-        return $this->issues;
+        $this->publicAccessIdentifier = Uuid::uuid4()->toString();
     }
 
     /**
      * @param string[]|null $issues
      */
-    public function setIssues(?array $issues): void
+    public function filterByIssues(?array $issues): void
     {
         $this->issues = $issues;
+        $this->filterByIssues = true;
+    }
+
+    /**
+     * @param bool $isMarked
+     */
+    public function filterByIsMarked(bool $isMarked): void
+    {
+        $this->isMarked = $isMarked;
+    }
+
+    /**
+     * @param \DateTime|null $limitEnd
+     */
+    public function filterByResponseLimitEnd(?\DateTime $limitEnd): void
+    {
+        $this->limitEnd = $limitEnd;
+    }
+
+    /**
+     * @param int $anyStatus
+     */
+    public function filterByAnyStatus(int $anyStatus): void
+    {
+        $this->anyStatus = $anyStatus;
+    }
+
+    /**
+     * @param string[] $craftsmen
+     */
+    public function filterByCraftsmen(array $craftsmen): void
+    {
+        $this->craftsmen = $craftsmen;
+        $this->filterByCraftsmen = true;
+    }
+
+    /**
+     * @param string[] $trades
+     */
+    public function filterByTrades(array $trades): void
+    {
+        $this->trades = $trades;
+        $this->filterByTrades = true;
+    }
+
+    /**
+     * @param string[] $maps
+     */
+    public function filterByMaps(array $maps): void
+    {
+        $this->maps = $maps;
+        $this->filterByMaps = true;
+    }
+
+    /**
+     * @param bool|null $registrationStatus
+     * @param \DateTime|null $registrationStart
+     * @param \DateTime|null $registrationEnd
+     */
+    public function filterByRegistrationStatus(bool $registrationStatus, ?\DateTime $registrationStart = null, ?\DateTime $registrationEnd = null): void
+    {
+        $this->registrationStatus = $registrationStatus;
+        $this->registrationStart = $registrationStart;
+        $this->registrationEnd = $registrationEnd;
+    }
+
+    /**
+     * @param bool|null $respondedStatus
+     * @param \DateTime|null $respondedStart
+     * @param \DateTime|null $respondedEnd
+     */
+    public function filterByRespondedStatus(bool $respondedStatus, ?\DateTime $respondedStart = null, ?\DateTime $respondedEnd = null): void
+    {
+        $this->respondedStatus = $respondedStatus;
+        $this->respondedStart = $respondedStart;
+        $this->respondedEnd = $respondedEnd;
+    }
+
+    /**
+     * @param bool|null $respondedStatus
+     * @param \DateTime|null $reviewedStart
+     * @param \DateTime|null $reviewedEnd
+     */
+    public function filterByReviewedStatus(bool $respondedStatus, ?\DateTime $reviewedStart = null, ?\DateTime $reviewedEnd = null): void
+    {
+        $this->respondedStatus = $respondedStatus;
+        $this->reviewedStart = $reviewedStart;
+        $this->reviewedEnd = $reviewedEnd;
+    }
+
+    /**
+     * @return ConstructionSite
+     */
+    public function getConstructionSite(): ConstructionSite
+    {
+        return $this->constructionSite;
     }
 
     /**
      * @return string|null
      */
-    public function getAccessIdentifier(): ?string
+    public function getPublicAccessIdentifier(): ?string
     {
-        return $this->accessIdentifier;
+        return $this->publicAccessIdentifier;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getAccessAllowedUntil(): ?\DateTime
+    {
+        return $this->accessAllowedUntil;
     }
 
     /**
@@ -552,21 +371,23 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param \DateTime|null $lastAccess
+     * @return bool|null
      */
-    public function setLastAccess(?\DateTime $lastAccess): void
+    public function getIsMarked(): ?bool
     {
-        $this->lastAccess = $lastAccess;
+        return $this->isMarked;
     }
 
     /**
-     * sets a new access identifier for public access.
-     *
-     * @throws \Exception
+     * @return string[]|null
      */
-    public function setAccessIdentifier(): void
+    public function getIssues(): ?array
     {
-        $this->accessIdentifier = Uuid::uuid4()->toString();
+        if (!$this->filterByIssues) {
+            return null;
+        }
+
+        return self::getValidArray($this->issues);
     }
 
     /**
@@ -578,10 +399,139 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param int|null $anyStatus
+     * @return string[]
      */
-    public function setAnyStatus(?int $anyStatus): void
+    public function getCraftsmen(): ?array
     {
-        $this->anyStatus = $anyStatus;
+        if (!$this->filterByCraftsmen) {
+            return null;
+        }
+
+        return self::getValidArray($this->craftsmen);
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getTrades(): ?array
+    {
+        if (!$this->trades) {
+            return null;
+        }
+
+        return self::getValidArray($this->trades);
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getMaps(): ?array
+    {
+        if (!$this->maps) {
+            return null;
+        }
+
+        return self::getValidArray($this->maps);
+    }
+
+    /**
+     * @param $array
+     *
+     * @return array
+     */
+    private static function getValidArray($array)
+    {
+        // due to a bug in doctrine empty arrays are saved as null in the db
+        // therefore need to handle null arrays as empty arrays
+        // bug fix will only be included in 3.0 because it is a breaking change
+        return \is_array($array) ? $array : [];
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getRegistrationStatus(): ?bool
+    {
+        return $this->registrationStatus;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getRegistrationStart(): ?\DateTime
+    {
+        return $this->registrationStart;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getRegistrationEnd(): ?\DateTime
+    {
+        return $this->registrationEnd;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getRespondedStatus(): ?bool
+    {
+        return $this->respondedStatus;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getRespondedStart(): ?\DateTime
+    {
+        return $this->respondedStart;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getRespondedEnd(): ?\DateTime
+    {
+        return $this->respondedEnd;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getReviewedStatus(): ?bool
+    {
+        return $this->reviewedStatus;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getReviewedStart(): ?\DateTime
+    {
+        return $this->reviewedStart;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getReviewedEnd(): ?\DateTime
+    {
+        return $this->reviewedEnd;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLimitStart(): ?\DateTime
+    {
+        return $this->limitStart;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLimitEnd(): ?\DateTime
+    {
+        return $this->limitEnd;
     }
 }

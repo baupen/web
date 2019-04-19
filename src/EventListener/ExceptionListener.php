@@ -70,12 +70,10 @@ class ExceptionListener
             $exception->getCode()
         );
 
-        if (\function_exists('dump')) {
-            dump($exception);
-        }
-
         if ($this->isTestEnvironment) {
             throw $exception;
+        } elseif (\function_exists('dump')) {
+            dump($exception);
         }
 
         //construct error response

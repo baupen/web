@@ -2,65 +2,17 @@
     <div id="register">
         <div class="row">
             <div class="col-md-2">
-                <h2>{{$t("search.name")}}</h2>
-                <div class="card">
-                    <div class="card-body">
-                        <base-text-input v-model="filter.numberText">
-                            {{$t("issue.number")}}
-                        </base-text-input>
-                        <base-checkbox v-model="filter.onlyMarked">
-                            {{$t("search.only_marked")}}
-                        </base-checkbox>
-                        <base-checkbox v-model="filter.onlyOverLimit">
-                            {{$t("search.only_over_limit")}}
-                        </base-checkbox>
-                    </div>
-                </div>
-
+                <issue-filter
+                        :construction-site-id="constructionSiteId"
+                        :craftsmen="craftsmen"
+                        :maps="maps"
+                        :filter="filter"/>
                 <div class="vertical-spacer-big"></div>
-                <h2>{{$t("filter.name")}}</h2>
-                <div class="card">
-                    <div class="card-body">
-                        <status-filter :filter="filter.status"/>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <atom-spinner v-if="isLoading"
-                                      :animation-duration="1000"
-                                      :size="60"
-                                      :color="'#ff1d5e'"
-                        />
-                        <craftsman-filter v-else :filter="filter.craftsman" :craftsmen="craftsmen"/>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <atom-spinner v-if="isLoading"
-                                      :animation-duration="1000"
-                                      :size="60"
-                                      :color="'#ff1d5e'"
-                        />
-                        <trade-filter v-else :filter="filter.trade" :craftsmen="craftsmen"/>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <atom-spinner v-if="isLoading"
-                                      :animation-duration="1000"
-                                      :size="60"
-                                      :color="'#ff1d5e'"
-                        />
-                        <map-filter v-else :filter="filter.map" :maps="maps"/>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <time-filter :filter="filter.time"/>
-                    </div>
-                </div>
+                <issue-export
+                        :construction-site-id="constructionSiteId"
+                        :filter="filter" />
             </div>
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <atom-spinner
                         v-if="isLoading"
                         :animation-duration="1000"
@@ -76,21 +28,6 @@
                     </issue-edit-table>
                 </div>
             </div>
-            <div class="col-md-2">
-                <h2>{{$t("export.name")}}</h2>
-                <div class="card">
-                    <div class="card-body">
-                        <link-export :filter="filter"/>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <pdf-export :filter="filter"/>
-                    </div>
-                </div>
-
-            </div>
-
         </div>
     </div>
 </template>
@@ -98,18 +35,14 @@
 <script>
     import axios from "axios"
     import IssueEditTable from "../components/IssueEditTable"
-    import TimeFilter from "./components/TimeFilter"
-    import StatusFilter from "./components/StatusFilter"
-    import CraftsmanFilter from "./components/CraftsmanFilter"
-    import TradeFilter from "./components/TradeFilter"
-    import MapFilter from "./components/MapFilter"
-    import BaseTextInput from "../components/Base/BaseTextInput"
-    import BaseCheckbox from "../components/Base/BaseCheckbox"
-    import PdfExport from "./components/PdfExport"
-    import LinkExport from "./components/LinkExport"
+    import PdfExport from "./components/IssueExport/PdfExport"
+    import LinkExport from "./components/IssueExport/LinkExport"
     import {AtomSpinner} from 'epic-spinners'
     import notifications from '../mixins/Notifications'
-    
+    import NormalizeFilter from "./mixins/NormalizeFilter";
+    import IssueFilter from "./components/IssueFilter";
+    import IssueExport from "./components/IssueExport";
+
     const lang = document.documentElement.lang.substr(0, 2);
     const datePickerLocale = require('vuejs-datepicker/dist/locale');
     const datePickerTranslation = datePickerLocale[lang];
@@ -125,11 +58,8 @@
                 maps: [],
                 datePickerLocale: datePickerTranslation,
                 filter: {
-                    constructionSiteId: null,
-                    issue: {
-                        enabled: false,
-                        issues: []
-                    },
+                    onlyMarked: false,
+                    onlyOverLimit: false,
                     status: {
                         enabled: false,
                         registered: false,
@@ -151,51 +81,54 @@
                     },
                     time: {
                         enabled: false,
-                        read: {
-                            active: false
-                        },
                         registered: {
                             active: false,
+                            enabled: false,
                             start: null,
                             end: null
                         },
                         responded: {
                             active: false,
+                            enabled: false,
                             start: null,
                             end: null
                         },
                         reviewed: {
                             active: false,
+                            enabled: false,
                             start: null,
                             end: null
                         }
-                    },
-                    onlyMarked: false,
-                    onlyOverLimit: false,
-                    numberText: ""
+                    }
                 }
             }
         },
-        mixins: [notifications],
+        mixins: [notifications, NormalizeFilter],
         components: {
+            IssueExport,
+            IssueFilter,
             IssueEditTable,
-            TimeFilter,
-            CraftsmanFilter,
-            TradeFilter,
-            MapFilter,
             AtomSpinner,
-            BaseTextInput,
-            BaseCheckbox,
             PdfExport,
-            LinkExport,
-            StatusFilter
+            LinkExport
         },
         computed: {
             filteredIssues: function () {
                 let res = this.issues;
 
-                const statusFilter = this.filter.status;
-                if (statusFilter.enabled && (statusFilter.registered || statusFilter.read || statusFilter.responded || statusFilter.reviewed)) {
+                const filter = this.normalizeFilter(this.filter);
+
+                if (filter.onlyMarked) {
+                    res = res.filter(i => i.isMarked === true);
+                }
+
+                if (filter.onlyOverLimit) {
+                    const today = (new Date()).toISOString();
+                    res = res.filter(i => i.responseLimit < today);
+                }
+
+                const statusFilter = filter.status;
+                if (statusFilter.enabled) {
                     if (!statusFilter.registered) {
                         res = res.filter(i => i.isRead || i.reviewedAt !== null || i.respondedAt !== null);
                     }
@@ -210,51 +143,35 @@
                     }
                 }
 
-                const numberText = this.filter.numberText;
-                if (numberText.length > 0) {
-                    res = res.filter(i => i.number === numberText);
+                const craftsmanFilter = filter.craftsman;
+                if (craftsmanFilter.enabled) {
+                    res = res.filter(i => craftsmanFilter.craftsmen.indexOf(i.craftsmanId) >= 0);
                 }
 
-                if (this.filter.onlyMarked) {
-                    res = res.filter(i => i.isMarked === true);
-                }
-
-                const timeFilter = this.filter.time;
-                if (timeFilter.enabled && (timeFilter.registered.active || timeFilter.responded.active || timeFilter.reviewed.active)) {
-                    if (timeFilter.registered.active) {
-                        res = this.filterStartEnd(res, timeFilter.registered, "registeredAt");
-                    }
-
-                    if (timeFilter.responded.active) {
-                        res = this.filterStartEnd(res, timeFilter.responded, "respondedAt");
-                    }
-
-                    if (timeFilter.reviewed.active) {
-                        res = this.filterStartEnd(res, timeFilter.reviewed, "reviewedAt");
-                    }
-                }
-
-                const craftsmanFilter = this.filter.craftsman;
-                if (craftsmanFilter.enabled && craftsmanFilter.craftsmen.length > 0) {
-                    const ids = craftsmanFilter.craftsmen.map(c => c.id);
-                    res = res.filter(i => ids.indexOf(i.craftsmanId) >= 0);
-                }
-
-                const mapFilter = this.filter.map;
-                if (mapFilter.enabled && mapFilter.maps.length > 0) {
-                    const ids = mapFilter.maps.map(c => c.id);
-                    res = res.filter(i => ids.indexOf(i.mapId) >= 0);
-                }
-
-                const tradeFilter = this.filter.trade;
-                if (tradeFilter.enabled && tradeFilter.trades.length > 0) {
+                const tradeFilter = filter.trade;
+                if (tradeFilter.enabled) {
                     const ids = this.craftsmen.filter(c => tradeFilter.trades.indexOf(c.trade) >= 0).map(c => c.id);
                     res = res.filter(i => ids.indexOf(i.craftsmanId) >= 0);
                 }
 
-                if (this.filter.onlyOverLimit) {
-                    const today = (new Date()).toISOString();
-                    res = res.filter(i => i.responseLimit < today);
+                const mapFilter = filter.map;
+                if (mapFilter.enabled) {
+                    res = res.filter(i => mapFilter.maps.indexOf(i.mapId) >= 0);
+                }
+
+                const timeFilter = filter.time;
+                if (timeFilter.enabled) {
+                    if (timeFilter.registered.enabled) {
+                        res = this.filterStartEnd(res, timeFilter.registered, "registeredAt");
+                    }
+
+                    if (timeFilter.responded.enabled) {
+                        res = this.filterStartEnd(res, timeFilter.responded, "respondedAt");
+                    }
+
+                    if (timeFilter.reviewed.enabled) {
+                        res = this.filterStartEnd(res, timeFilter.reviewed, "reviewedAt");
+                    }
                 }
 
                 return res;
@@ -272,8 +189,6 @@
                     return issues.filter(i => i[property] >= start);
                 }
                 if (end !== null) {
-                    console.log(end);
-                    console.log(issues[0][property]);
                     return issues.filter(i => i[property] <= end);
                 }
                 return issues;
@@ -314,8 +229,7 @@
                 //deactivating feature till table deselection is made easy
                 if (selectedIssues.length === 0 || true) {
                     this.filter.issue.enabled = false;
-                }
-                else {
+                } else {
                     this.filter.issue.enabled = true;
                     this.filter.issue.issues = selectedIssues.map(i => i.id);
                 }

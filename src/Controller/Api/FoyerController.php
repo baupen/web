@@ -66,13 +66,13 @@ class FoyerController extends ApiController
 
         //retrieve all issues from the db
         $filter = new Filter();
-        $filter->setRegistrationStatus(false);
-        $filter->setConstructionSite($constructionSite->getId());
-        $filter->setIssues($parsedRequest->getIssueIds());
+        $filter->filterByRegistrationStatus(false);
+        $filter->setConstructionSite($constructionSite);
+        $filter->filterByIssues($parsedRequest->getIssueIds());
 
         /** @var Issue[] $requestedIssues */
         /** @var \App\Api\Entity\Foyer\Issue[] $issues */
-        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
+        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
 
         //order as requested
         $issues = array_flip($parsedRequest->getIssueIds());
@@ -106,11 +106,11 @@ class FoyerController extends ApiController
 
         //retrieve all issues from the db
         $filter = new Filter();
-        $filter->setRegistrationStatus(false);
-        $filter->setConstructionSite($constructionSite->getId());
-        $filter->setIssues(array_keys($issues));
+        $filter->filterByRegistrationStatus(false);
+        $filter->setConstructionSite($constructionSite);
+        $filter->filterByIssues(array_keys($issues));
 
-        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
+        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
         $this->orderEntities($requestedIssues, $issues, $entities);
 
         return true;
@@ -198,9 +198,9 @@ class FoyerController extends ApiController
         }
 
         $filter = new Filter();
-        $filter->setRegistrationStatus(false);
-        $filter->setConstructionSite($constructionSite->getId());
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
+        $filter->filterByRegistrationStatus(false);
+        $filter->setConstructionSite($constructionSite);
+        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
 
         //create response
         $data = new IssuesData();

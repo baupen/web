@@ -27,20 +27,24 @@
 </template>
 
 <script>
-    import BaseCheckbox from '../../components/Base/BaseCheckbox'
-    import BaseDateInput from '../../components/Base/BaseDateInput'
-    import notifications from '../../mixins/Notifications'
+    import BaseCheckbox from '../../../components/Base/BaseCheckbox'
+    import BaseDateInput from '../../../components/Base/BaseDateInput'
+    import notifications from '../../../mixins/Notifications'
     import $ from 'jquery'
-    import axios from "axios"
+    import axios from "axios/index"
+    import NormalizeFilter from "../../mixins/NormalizeFilter";
 
     export default {
         props: {
             filter: {
                 type: Object,
                 required: true
+            },
+            constructionSiteId: {
+                type: String
             }
         },
-        mixins: [notifications],
+        mixins: [notifications, NormalizeFilter],
         data: function () {
             return {
                 id: null,
@@ -58,7 +62,7 @@
                 this.isLoading = true;
 
                 let newObj = {};
-                newObj["filter"] = this.filter;
+                newObj["filter"] = this.minimizeFilter(this.filter, this.constructionSiteId);
                 newObj["limit"] = this.linkLimit;
 
                 const url = "/api/register/link/create?" + $.param(newObj);

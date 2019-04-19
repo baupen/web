@@ -32,8 +32,8 @@ class StatisticsController extends ApiController
      *
      * @param Request $request
      *
-     * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws \Exception
+     * @throws \Doctrine\ORM\NonUniqueResultException
      *
      * @return Response
      */
@@ -46,45 +46,54 @@ class StatisticsController extends ApiController
 
         $issueRepo = $this->getDoctrine()->getRepository(Issue::class);
 
-        //prepare filter
-        $filter = new Filter();
-        $filter->setConstructionSite($constructionSite->getId());
-        $filter->setRegistrationStatus(true);
-
         //create response
         $overview = new Overview();
 
         //count new issues
-        $filter->setRegistrationStatus(false);
-        $overview->setNewIssuesCount($issueRepo->filterCount($filter));
-        $filter->setRegistrationStatus(null);
+        $filter = self::createRegisterFilter($constructionSite);
+        $filter->filterByRegistrationStatus(false);
+        $overview->setNewIssuesCount($issueRepo->countByFilter($filter));
 
         //count open issues
-        $filter->setReviewedStatus(false);
-        $overview->setOpenIssuesCount($issueRepo->filterCount($filter));
-        $filter->setReviewedStatus(null);
+        $filter = self::createRegisterFilter($constructionSite);
+        $filter->filterByReviewedStatus(false);
+        $overview->setOpenIssuesCount($issueRepo->countByFilter($filter));
 
         //count marked issues
-        $filter->setIsMarked(true);
-        $overview->setMarkedIssuesCount($issueRepo->filterCount($filter));
-        $filter->setIsMarked(null);
+        $filter = self::createRegisterFilter($constructionSite);
+        $filter->filterByIsMarked(true);
+        $overview->setMarkedIssuesCount($issueRepo->countByFilter($filter));
 
         //count overdue issues
-        $filter->setResponseLimitEnd(new \DateTime());
-        $filter->setReviewedStatus(false);
-        $overview->setOverdueIssuesCount($issueRepo->filterCount($filter));
-        $filter->setResponseLimitEnd(null);
-        $filter->setReviewedStatus(null);
+        $filter = self::createRegisterFilter($constructionSite);
+        $filter->filterByResponseLimitEnd(new \DateTime());
+        $filter->filterByReviewedStatus(false);
+        $overview->setOverdueIssuesCount($issueRepo->countByFilter($filter));
 
         //count overdue issues
-        $filter->setRespondedStatus(true);
-        $filter->setReviewedStatus(false);
-        $overview->setRespondedNotReviewedIssuesCount($issueRepo->filterCount($filter));
+        $filter = self::createRegisterFilter($constructionSite);
+        $filter->filterByRespondedStatus(true);
+        $filter->filterByReviewedStatus(false);
+        $overview->setRespondedNotReviewedIssuesCount($issueRepo->countByFilter($filter));
 
         //return data
         $overviewData = new OverviewData();
         $overviewData->setOverview($overview);
 
         return $this->success($overviewData);
+    }
+
+    /**
+     * @param ConstructionSite $constructionSite
+     *
+     * @return Filter
+     */
+    private static function createRegisterFilter(ConstructionSite $constructionSite)
+    {
+        $filter = new Filter();
+        $filter->setConstructionSite($constructionSite);
+        $filter->filterByRegistrationStatus(true);
+
+        return $filter;
     }
 }

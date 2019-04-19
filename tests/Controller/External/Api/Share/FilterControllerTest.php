@@ -43,9 +43,9 @@ class FilterControllerTest extends ApiController
             /** @var ConstructionSite $constructionSite */
             $constructionSite = $doctrine->getRepository(ConstructionSite::class)->findOneBy([]);
             $filter = new Filter();
-            $filter->setConstructionSite($constructionSite->getId());
-            $filter->setRegistrationStatus(true);
-            $filter->setAccessIdentifier();
+            $filter->setConstructionSite($constructionSite);
+            $filter->filterByRegistrationStatus(true);
+            $filter->setPublicAccessIdentifier();
 
             $manager->persist($filter);
             $manager->flush();
@@ -53,7 +53,7 @@ class FilterControllerTest extends ApiController
             $this->filter = $filter;
         }
 
-        $url = '/external/api/share/f/' . $this->filter->getAccessIdentifier() . $relativeLink;
+        $url = '/external/api/share/f/' . $this->filter->getPublicAccessIdentifier() . $relativeLink;
         if ($payload === null) {
             $client->request('GET', $url);
         } else {
@@ -68,6 +68,7 @@ class FilterControllerTest extends ApiController
 
     /**
      * @throws ORMException
+     * @throws \Exception
      */
     public function testMapsList()
     {
@@ -111,6 +112,7 @@ class FilterControllerTest extends ApiController
 
     /**
      * @throws ORMException
+     * @throws \Exception
      */
     public function testRead()
     {

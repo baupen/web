@@ -16,6 +16,7 @@ use App\Entity\Craftsman;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\External\Api\Base\ApiController;
 use Doctrine\ORM\ORMException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class CraftsmanControllerTest extends ApiController
 {
@@ -25,35 +26,45 @@ class CraftsmanControllerTest extends ApiController
     private $craftsman = null;
 
     /**
-     * @param $relativeLink
-     * @param null $payload
+     * @param string $relativeLink
+     * @param string|null $payload
      *
+     * @throws \Exception
      * @throws ORMException
-     * @throws \Exception
-     * @throws \Exception
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    private function authenticatedRequest($relativeLink, $payload = null)
+    private function authenticatedRequest(string $relativeLink, $payload = null)
     {
         $client = $this->getClient();
+        $craftsman = $this->getCraftsman($client);
 
-        if ($this->craftsman === null) {
-            /* @var Craftsman $craftsman */
-            $this->craftsman = $client->getContainer()->get('doctrine')->getRepository(Craftsman::class)->findOneBy([]);
-            if ($this->craftsman->getEmailIdentifier() === null) {
-                $this->craftsman->setEmailIdentifier();
-                $manager = $client->getContainer()->get('doctrine.orm.entity_manager.abstract');
-                $manager->flush($this->craftsman);
-            }
-        }
+        return $this->request($relativeLink, $payload, $craftsman->getWriteAuthorizationToken());
+    }
 
-        $url = '/external/api/share/c/' . $this->craftsman->getEmailIdentifier() . $relativeLink;
+    /**
+     * @param string $relativeLink
+     * @param string|null $authorizationToken
+     * @param string|null $payload
+     *
+     * @throws ORMException
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    private function request(string $relativeLink, $payload = null, $authorizationToken = null)
+    {
+        $client = $this->getClient();
+        $craftsman = $this->getCraftsman($client);
+
+        $parameters = !empty($authorizationToken) ? ['token' => $authorizationToken] : [];
+        $urlSuffix = \count($parameters) > 0 ? '?' . http_build_query($parameters) : '';
+
+        $url = '/external/api/share/c/' . $craftsman->getEmailIdentifier() . $relativeLink;
         if ($payload === null) {
-            $client->request('GET', $url);
+            $client->request('GET', $url . $urlSuffix);
         } else {
             $client->request(
-                'POST', $url, [], [], ['CONTENT_TYPE' => 'application/json'],
+                'POST', $url . $urlSuffix, [], [], ['CONTENT_TYPE' => 'application/json'],
                 $client->getContainer()->get('serializer')->serialize($payload, 'json')
             );
         }
@@ -144,5 +155,51 @@ class CraftsmanControllerTest extends ApiController
         $doRequest('remove_response', true);
 
         $doRequest('respond', false);
+    }
+
+    /**
+     * @throws ORMException
+     */
+    public function testResponseUnauthenticated()
+    {
+        $response = $this->request('/maps/list', null);
+        $mapData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $issue = $mapData->data->maps[0]->issues[0];
+        $request = new IssueRequest();
+        $request->setIssueId($issue->id);
+
+        //execute issue action
+        $doUnauthorizedRequest = function ($action) use ($request) {
+            $this->expectException(AccessDeniedHttpException::class);
+            $this->request('/issue/' . $action, $request);
+        };
+
+        $doUnauthorizedRequest('respond');
+        $doUnauthorizedRequest('remove_response');
+    }
+
+    /**
+     * @param \Symfony\Bundle\FrameworkBundle\Client $client
+     *
+     * @throws ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
+     *
+     * @return Craftsman
+     */
+    private function getCraftsman(\Symfony\Bundle\FrameworkBundle\Client $client): Craftsman
+    {
+        if ($this->craftsman === null) {
+            /* @var Craftsman $craftsman */
+            $this->craftsman = $client->getContainer()->get('doctrine')->getRepository(Craftsman::class)->findOneBy([]);
+            if ($this->craftsman->getEmailIdentifier() === null) {
+                $this->craftsman->setEmailIdentifier();
+                $manager = $client->getContainer()->get('doctrine.orm.entity_manager.abstract');
+                $manager->flush($this->craftsman);
+            }
+        }
+
+        return $this->craftsman;
     }
 }

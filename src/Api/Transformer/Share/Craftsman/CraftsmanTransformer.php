@@ -41,16 +41,18 @@ class CraftsmanTransformer
     /**
      * @param Craftsman $entity
      * @param string $identifier
+     * @param bool $canRespondToIssues
      *
      * @return \App\Api\Entity\Base\Craftsman
      */
-    public function toApi($entity, string $identifier)
+    public function toApi($entity, string $identifier, bool $canRespondToIssues)
     {
         $craftsman = new \App\Api\Entity\Share\Craftsman\Craftsman($entity->getId());
         $this->craftsmanTransformer->writeApiProperties($entity, $craftsman);
 
         $craftsman->setReportUrl($this->router->generate('external_report_craftsman', ['identifier' => $identifier, 'hash' => uniqid()]));
-        $craftsman->setReadOnlyViewUrl($this->router->generate('external_share_filter', ['identifier' => $entity->getShareViewFilter()->getAccessIdentifier()]));
+        $craftsman->setCanRespondToIssues($canRespondToIssues);
+        $craftsman->setReadOnlyViewUrl($this->router->generate('external_share_craftsman', ['identifier' => $entity->getEmailIdentifier()]));
 
         return $craftsman;
     }

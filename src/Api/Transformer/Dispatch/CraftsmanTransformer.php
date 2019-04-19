@@ -54,7 +54,7 @@ class CraftsmanTransformer extends BatchTransformer
 
         $craftsman->setLastEmailSent($entity->getLastEmailSent());
         $craftsman->setLastOnlineVisit($entity->getLastOnlineVisit());
-        $craftsman->setPersonalUrl($this->router->generate('external_share_craftsman', ['identifier' => $entity->getEmailIdentifier()]));
+        $craftsman->setPersonalUrl($this->router->generate('external_share_craftsman', ['identifier' => $entity->getEmailIdentifier(), 'token' => $entity->getWriteAuthorizationToken()]));
 
         $state = new CurrentIssueState($entity, new \DateTime());
         $craftsman->setNotRespondedIssuesCount($state->getNotRespondedIssuesCount());

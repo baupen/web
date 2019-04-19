@@ -15,6 +15,7 @@ use App\Entity\ConstructionSite;
 use App\Entity\Filter;
 use App\Entity\Issue;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 
 class IssueRepository extends EntityRepository
@@ -22,7 +23,7 @@ class IssueRepository extends EntityRepository
     /**
      * @param ConstructionSite $constructionSite
      *
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      *
      * @return int
      */
@@ -44,9 +45,9 @@ class IssueRepository extends EntityRepository
      *
      * @return int
      */
-    public function filterCount(Filter $filter)
+    public function countByFilter(Filter $filter)
     {
-        return \count($this->filter($filter));
+        return \count($this->findByFilter($filter));
     }
 
     /**
@@ -59,7 +60,7 @@ class IssueRepository extends EntityRepository
      *
      * @return Issue[]
      */
-    public function getContextIssues(ConstructionSite $constructionSite, $days = 14)
+    public function findByRecentlyChanged(ConstructionSite $constructionSite, $days = 14)
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
         $queryBuilder->select('i');
@@ -79,55 +80,50 @@ class IssueRepository extends EntityRepository
      *
      * @return Issue[]
      */
-    public function filter(Filter $filter)
+    public function findByFilter(Filter $filter)
     {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->select('i');
-
         //set conditions from filter
-        $this->applyFilter($qb, $filter);
+        $queryBuilder = $this->createQueryBuilderFromFilter($filter);
 
         /** @var Issue[] $issues */
-        $issues = $qb->getQuery()->getResult();
+        $issues = $queryBuilder->getQuery()->getResult();
 
-        return $this->applyFilterAfterwards($filter, $issues);
+        return $this->applyFilterToIssues($filter, $issues);
     }
 
     /**
      * apply the filter to the query builder.
      *
-     * @param QueryBuilder $queryBuilder
      * @param Filter $filter
+     *
+     * @return QueryBuilder
      */
-    private function applyFilter(QueryBuilder $queryBuilder, Filter $filter)
+    private function createQueryBuilderFromFilter(Filter $filter)
     {
-        // due to a bug in doctrine empty arrays are the same as null arrays after persist/retrieve from db
-        // therefore handle empty arrays as null arrays in lack of a better solution
-        // bug fix will only be included in 3.0 because it is a breaking change
-        $unsafeArrays = $filter->isPersistedInDatabase();
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder()
+            ->select('i')
+            ->from(Issue::class, 'i')
+            ->leftJoin('i.craftsman', 'c')
+            ->join('i.map', 'm')
+            ->join('m.constructionSite', 'cs')
+            ->where('cs.id = :constructionSite')
+            ->setParameter(':constructionSite', $filter->getConstructionSite())
+            ->orderBy('i.number', 'ASC')
+            ->orderBy('i.createdAt', 'ASC');
 
-        $queryBuilder->from(Issue::class, 'i');
-        $queryBuilder->leftJoin('i.craftsman', 'c');
-        $queryBuilder->join('i.map', 'm');
-        $queryBuilder->join('m.constructionSite', 'cs');
-        $queryBuilder->where('cs.id = :constructionSite');
-        $queryBuilder->setParameter(':constructionSite', $filter->getConstructionSite());
-        $queryBuilder->orderBy('i.number', 'ASC');
-        $queryBuilder->orderBy('i.createdAt', 'ASC');
-
-        if ($filter->getCraftsmen() !== null && !($unsafeArrays && empty($filter->getCraftsmen()))) {
-            $queryBuilder->andWhere('c.id IN (:craftsmen)');
-            $queryBuilder->setParameter(':craftsmen', $filter->getCraftsmen());
+        if ($filter->getCraftsmen() !== null) {
+            $queryBuilder->andWhere('c.id IN (:craftsmen)')
+                ->setParameter(':craftsmen', $filter->getCraftsmen());
         }
 
-        if ($filter->getMaps() !== null && !($unsafeArrays && empty($filter->getMaps()))) {
-            $queryBuilder->andWhere('m.id IN (:maps)');
-            $queryBuilder->setParameter(':maps', $filter->getMaps());
+        if ($filter->getMaps() !== null) {
+            $queryBuilder->andWhere('m.id IN (:maps)')
+                ->setParameter(':maps', $filter->getMaps());
         }
 
-        if ($filter->getIssues() !== null && !($unsafeArrays && empty($filter->getIssues()))) {
-            $queryBuilder->andWhere('i.id IN (:issues)');
-            $queryBuilder->setParameter(':issues', $filter->getIssues());
+        if ($filter->getIssues() !== null) {
+            $queryBuilder->andWhere('i.id IN (:issues)')
+                ->setParameter(':issues', $filter->getIssues());
         }
 
         $statusToString = function ($condition) {
@@ -137,12 +133,12 @@ class IssueRepository extends EntityRepository
             $queryBuilder->andWhere('i.registeredAt ' . $statusToString($filter->getRegistrationStatus()));
             if ($filter->getRespondedStatus()) {
                 if ($filter->getRegistrationStart() !== null) {
-                    $queryBuilder->andWhere('i.registeredAt >= :registration_end');
-                    $queryBuilder->setParameter(':responded_start', $filter->getRegistrationStart());
+                    $queryBuilder->andWhere('i.registeredAt >= :registration_end')
+                        ->setParameter(':responded_start', $filter->getRegistrationStart());
                 }
                 if ($filter->getRegistrationEnd() !== null) {
-                    $queryBuilder->andWhere('i.registeredAt <= :registration_end');
-                    $queryBuilder->setParameter(':registration_end', $filter->getRegistrationEnd());
+                    $queryBuilder->andWhere('i.registeredAt <= :registration_end')
+                        ->setParameter(':registration_end', $filter->getRegistrationEnd());
                 }
             }
         }
@@ -151,12 +147,12 @@ class IssueRepository extends EntityRepository
             $queryBuilder->andWhere('i.respondedAt ' . $statusToString($filter->getRespondedStatus()));
             if ($filter->getRespondedStatus()) {
                 if ($filter->getRespondedStart() !== null) {
-                    $queryBuilder->andWhere('i.respondedAt >= :responded_start');
-                    $queryBuilder->setParameter(':responded_start', $filter->getRespondedStart());
+                    $queryBuilder->andWhere('i.respondedAt >= :responded_start')
+                        ->setParameter(':responded_start', $filter->getRespondedStart());
                 }
                 if ($filter->getRespondedEnd() !== null) {
-                    $queryBuilder->andWhere('i.respondedAt <= :responded_end');
-                    $queryBuilder->setParameter(':responded_end', $filter->getRespondedEnd());
+                    $queryBuilder->andWhere('i.respondedAt <= :responded_end')
+                        ->setParameter(':responded_end', $filter->getRespondedEnd());
                 }
             }
         }
@@ -165,38 +161,32 @@ class IssueRepository extends EntityRepository
             $queryBuilder->andWhere('i.reviewedAt ' . $statusToString($filter->getReviewedStatus()));
             if ($filter->getReviewedStatus()) {
                 if ($filter->getReviewedStart() !== null) {
-                    $queryBuilder->andWhere('i.reviewedAt >= :reviewed_start');
-                    $queryBuilder->setParameter(':reviewed_start', $filter->getReviewedStart());
+                    $queryBuilder->andWhere('i.reviewedAt >= :reviewed_start')
+                        ->setParameter(':reviewed_start', $filter->getReviewedStart());
                 }
                 if ($filter->getReviewedEnd() !== null) {
-                    $queryBuilder->andWhere('i.reviewedAt <= :reviewed_end');
-                    $queryBuilder->setParameter(':reviewed_end', $filter->getReviewedEnd());
+                    $queryBuilder->andWhere('i.reviewedAt <= :reviewed_end')
+                        ->setParameter(':reviewed_end', $filter->getReviewedEnd());
                 }
             }
         }
 
-        if ($filter->getReadStatus() !== null) {
-            if ($filter->getReadStatus()) {
-                $queryBuilder->andWhere('i.registeredAt < c.lastOnlineVisit');
-            } else {
-                $queryBuilder->andWhere('i.registeredAt >= c.lastOnlineVisit OR c.lastOnlineVisit IS NULL');
-            }
+        if ($filter->getLimitStart() !== null) {
+            $queryBuilder->andWhere('i.responseLimit >= :response_limit_start')
+                ->setParameter(':response_limit_start', $filter->getLimitStart());
         }
 
-        if ($filter->getResponseLimitStart() !== null) {
-            $queryBuilder->andWhere('i.responseLimit >= :response_limit_start');
-            $queryBuilder->setParameter(':response_limit_start', $filter->getResponseLimitStart());
-        }
-
-        if ($filter->getResponseLimitEnd() !== null) {
-            $queryBuilder->andWhere('i.responseLimit <= :response_limit_end');
-            $queryBuilder->setParameter(':response_limit_end', $filter->getResponseLimitEnd());
+        if ($filter->getLimitEnd() !== null) {
+            $queryBuilder->andWhere('i.responseLimit <= :response_limit_end')
+                ->setParameter(':response_limit_end', $filter->getLimitEnd());
         }
 
         if ($filter->getIsMarked() !== null) {
-            $queryBuilder->andWhere('i.isMarked = :is_marked');
-            $queryBuilder->setParameter('is_marked', $filter->getIsMarked());
+            $queryBuilder->andWhere('i.isMarked = :is_marked')
+                ->setParameter('is_marked', $filter->getIsMarked());
         }
+
+        return $queryBuilder;
     }
 
     /**
@@ -205,20 +195,8 @@ class IssueRepository extends EntityRepository
      *
      * @return Issue[]|array
      */
-    private function applyFilterAfterwards(Filter $filter, array $issues)
+    private function applyFilterToIssues(Filter $filter, array $issues)
     {
-        if ($filter->getNumberText() !== null) {
-            // filter by issue number text
-            $res = [];
-            foreach ($issues as $issue) {
-                if (mb_strpos((string)$issue->getNumber(), $filter->getNumberText()) === 0) {
-                    $res[] = $issue;
-                }
-            }
-
-            $issues = $res;
-        }
-
         if ($filter->getAnyStatus() !== null) {
             // count matches of status per issue
             $matches = [];
@@ -230,7 +208,7 @@ class IssueRepository extends EntityRepository
                     $matches[$issueId] += $issue->getRegisteredAt() !== null && $issue->getCraftsman()->getLastOnlineVisit() < $issue->getRegisteredAt() && $issue->getRespondedAt() === null && $issue->getReviewedAt() === null;
                 }
                 if ($filter->getAnyStatus() & Filter::STATUS_READ) {
-                    $matches[$issueId] += $issue->getCraftsman()->getLastOnlineVisit() > $issue->getRegisteredAt() && $issue->getRespondedAt() === null && $issue->getReviewedAt() === null;
+                    $matches[$issueId] += $issue->getCraftsman()->getLastOnlineVisit() !== null && $issue->getCraftsman()->getLastOnlineVisit() > $issue->getRegisteredAt() && $issue->getRespondedAt() === null && $issue->getReviewedAt() === null;
                 }
                 if ($filter->getAnyStatus() & Filter::STATUS_RESPONDED) {
                     $matches[$issueId] += $issue->getRespondedAt() !== null && $issue->getReviewedAt() === null;

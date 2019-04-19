@@ -25,6 +25,7 @@ use App\Entity\Map;
 use App\Helper\IssueHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -86,24 +87,21 @@ class CraftsmanController extends ApiController
     /**
      * @Route("/read", name="external_api_share_craftsman_read", methods={"GET"})
      *
+     * @param Request $request
      * @param $identifier
      * @param CraftsmanTransformer $craftsmanTransformer
      *
-     * @throws \Exception
-     *
      * @return Response
      */
-    public function readAction($identifier, CraftsmanTransformer $craftsmanTransformer)
+    public function readAction(Request $request, $identifier, CraftsmanTransformer $craftsmanTransformer)
     {
         /** @var Craftsman $craftsman */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
             return $this->fail(self::INVALID_IDENTIFIER);
         }
 
-        $this->ensureCraftsmanFilterInitialized($craftsman);
-
         $data = new CraftsmanData();
-        $data->setCraftsman($craftsmanTransformer->toApi($craftsman, $identifier));
+        $data->setCraftsman($craftsmanTransformer->toApi($craftsman, $identifier, $this->checkWriteAuthenticationToken($request, $craftsman)));
 
         return $this->success($data);
     }
@@ -126,8 +124,8 @@ class CraftsmanController extends ApiController
         }
 
         //get all relevant issues
-        $this->ensureCraftsmanFilterInitialized($craftsman);
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($craftsman->getShareViewFilter());
+        $filter = self::createCraftsmanFilter($craftsman);
+        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
 
         /* @var Map[] $orderedMaps */
         /* @var Issue[][] $issuesPerMap */
@@ -154,7 +152,6 @@ class CraftsmanController extends ApiController
      * @param $identifier
      *
      * @throws \Exception
-     * @throws \Exception
      *
      * @return Response
      */
@@ -164,6 +161,10 @@ class CraftsmanController extends ApiController
         /** @var Issue $issue */
         if (!$this->parseIssueRequest($request, $identifier, $craftsman, $issue, $errorResponse)) {
             return $errorResponse;
+        }
+
+        if (!$this->checkWriteAuthenticationToken($request, $craftsman)) {
+            throw new AccessDeniedHttpException();
         }
 
         $data = new ProcessingEntitiesData();
@@ -186,7 +187,6 @@ class CraftsmanController extends ApiController
      * @param $identifier
      *
      * @throws \Exception
-     * @throws \Exception
      *
      * @return Response
      */
@@ -196,6 +196,10 @@ class CraftsmanController extends ApiController
         /** @var Issue $issue */
         if (!$this->parseIssueRequest($request, $identifier, $craftsman, $issue, $errorResponse)) {
             return $errorResponse;
+        }
+
+        if (!$this->checkWriteAuthenticationToken($request, $craftsman)) {
+            throw new AccessDeniedHttpException();
         }
 
         $data = new ProcessingEntitiesData();
@@ -211,18 +215,5 @@ class CraftsmanController extends ApiController
         }
 
         return $this->success($data);
-    }
-
-    /**
-     * @param Craftsman $craftsman
-     *
-     * @throws \Exception
-     */
-    private function ensureCraftsmanFilterInitialized(Craftsman $craftsman)
-    {
-        if ($craftsman->getShareViewFilter() === null) {
-            $filter = $craftsman->setShareViewFilter();
-            $this->fastSave($filter, $craftsman);
-        }
     }
 }

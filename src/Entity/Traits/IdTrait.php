@@ -45,6 +45,9 @@ trait IdTrait
         $this->id = $id;
     }
 
+    /**
+     * @return bool
+     */
     public function isPersistedInDatabase()
     {
         return $this->id !== null;

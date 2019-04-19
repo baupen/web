@@ -67,13 +67,13 @@ class RegisterController extends ApiController
 
         //retrieve all issues from the db
         $filter = new Filter();
-        $filter->setRegistrationStatus(true);
-        $filter->setConstructionSite($constructionSite->getId());
-        $filter->setIssues($parsedRequest->getIssueIds());
+        $filter->filterByRegistrationStatus(true);
+        $filter->setConstructionSite($constructionSite);
+        $filter->filterByIssues($parsedRequest->getIssueIds());
 
         /** @var Issue[] $requestedIssues */
         /** @var \App\Api\Entity\Foyer\Issue[] $issues */
-        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
+        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
         $issues = array_flip($parsedRequest->getIssueIds());
 
         $this->orderEntities($requestedIssues, $issues, $entities);
@@ -126,11 +126,11 @@ class RegisterController extends ApiController
 
         //retrieve all issues from the db
         $filter = new Filter();
-        $filter->setRegistrationStatus(true);
-        $filter->setConstructionSite($constructionSite->getId());
-        $filter->setIssues(array_keys($issues));
+        $filter->filterByRegistrationStatus(true);
+        $filter->setConstructionSite($constructionSite);
+        $filter->filterByIssues(array_keys($issues));
 
-        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
+        $requestedIssues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
         $this->orderEntities($requestedIssues, $issues, $entities);
 
         return true;
@@ -174,9 +174,9 @@ class RegisterController extends ApiController
         }
 
         $filter = new Filter();
-        $filter->setConstructionSite($constructionSite->getId());
-        $filter->setRegistrationStatus(true);
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->filter($filter);
+        $filter->setConstructionSite($constructionSite);
+        $filter->filterByRegistrationStatus(true);
+        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
 
         //create response
         $data = new IssuesData();
@@ -262,25 +262,17 @@ class RegisterController extends ApiController
 
         //create filter
         $filter = new Filter();
-        $this->setFilterProperties($filter, $constructionSite, $queryFilter);
-        $filter->setRegistrationStatus(true);
-        $filter->setConstructionSite($constructionSite->getId());
-        $filter->setAccessIdentifier();
+        $this->setFilterProperties($filter, $queryFilter);
+        $filter->filterByRegistrationStatus(true);
+        $filter->setConstructionSite($constructionSite);
+        $filter->setPublicAccessIdentifier();
 
         //check if limit applies
         $linkParameters = new ParameterBag($queryLimit);
         if ($linkParameters->getBoolean('enabled')) {
             $limit = $linkParameters->get('limit', null);
             $dateLimit = $limit !== null && $limit !== '' ? new \DateTime($limit) : null;
-            $filter->setAccessUntil($dateLimit);
-        }
-
-        //ensure no unsafe filters are saved
-        $nonEmptyArrays = [$filter->getIssues(), $filter->getCraftsmen(), $filter->getMaps()];
-        foreach ($nonEmptyArrays as $nonEmptyArray) {
-            if ($nonEmptyArray !== null && \count($nonEmptyArray) === 0) {
-                return $this->fail(self::EMPTY_CONDITIONS_NOT_ALLOWED);
-            }
+            $filter->setAccessAllowedUntil($dateLimit);
         }
 
         //save
@@ -288,7 +280,7 @@ class RegisterController extends ApiController
 
         //send response
         $data = new ShareData();
-        $data->setLink($this->generateUrl('external_share_filter', ['identifier' => $filter->getAccessIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL));
+        $data->setLink($this->generateUrl('external_share_filter', ['identifier' => $filter->getPublicAccessIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL));
 
         return $this->success($data);
     }
