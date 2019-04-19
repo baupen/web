@@ -24,9 +24,13 @@ use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\Legacy\PdfDefinition;
 use App\Service\Report\Legacy\Report;
 use App\Service\Report\ReportElements;
+use function count;
+use DateTime;
+use const DIRECTORY_SEPARATOR;
+use Exception;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ReportService implements ReportServiceInterface
 {
@@ -84,7 +88,7 @@ class ReportService implements ReportServiceInterface
      * @param string $author
      * @param ReportElements $elements
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return string
      */
@@ -99,9 +103,9 @@ class ReportService implements ReportServiceInterface
         }
 
         //only generate report if it does not already exist
-        $filePath = $generationTargetFolder . \DIRECTORY_SEPARATOR . uniqid() . '.pdf';
+        $filePath = $generationTargetFolder . DIRECTORY_SEPARATOR . uniqid() . '.pdf';
         if (!file_exists($filePath) || $this->disableCache) {
-            $formattedDate = (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT);
+            $formattedDate = (new DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT);
             if ($author === null) {
                 $footer = $this->translator->trans('generated', ['%date%' => $formattedDate], 'report');
             } else {
@@ -191,12 +195,12 @@ class ReportService implements ReportServiceInterface
             $currentRow[] = $currentIssue;
 
             //add row to grid if applicable
-            if (\count($currentRow) === $columnCount) {
+            if (count($currentRow) === $columnCount) {
                 $imageGrid[] = $currentRow;
                 $currentRow = [];
             }
         }
-        if (\count($currentRow) > 0) {
+        if (count($currentRow) > 0) {
             $imageGrid[] = $currentRow;
         }
 
@@ -234,7 +238,7 @@ class ReportService implements ReportServiceInterface
             }
 
             $key = $this->translator->trans('status', [], 'entity_issue');
-            if (\count($status) === 4) {
+            if (count($status) === 4) {
                 $allStatus = $this->translator->trans('status_values.all', [], 'entity_issue');
                 $filterEntries[$key] = $allStatus;
             } else {
@@ -250,7 +254,7 @@ class ReportService implements ReportServiceInterface
             foreach ($entities as $item) {
                 $names[] = $item->getName();
             }
-            $filterEntries[$this->translator->transChoice('introduction.filter.craftsmen', \count($names), [], 'report')] = implode(', ', $names);
+            $filterEntries[$this->translator->transChoice('introduction.filter.craftsmen', count($names), [], 'report')] = implode(', ', $names);
         }
 
         //add maps
@@ -260,7 +264,7 @@ class ReportService implements ReportServiceInterface
             foreach ($entities as $item) {
                 $names[] = $item->getName() . ' (' . $item->getContext() . ')';
             }
-            $filterEntries[$this->translator->transChoice('introduction.filter.maps', \count($names), [], 'report')] = implode(', ', $names);
+            $filterEntries[$this->translator->transChoice('introduction.filter.maps', count($names), [], 'report')] = implode(', ', $names);
         }
 
         //add limit
@@ -275,7 +279,7 @@ class ReportService implements ReportServiceInterface
             foreach ($filter->getTrades() as $trade) {
                 $names[] = $trade;
             }
-            $filterEntries[$this->translator->transChoice('introduction.filter.trades', \count($names), [], 'report')] = implode(', ', $names);
+            $filterEntries[$this->translator->transChoice('introduction.filter.trades', count($names), [], 'report')] = implode(', ', $names);
         }
 
         // collect set time
@@ -302,7 +306,7 @@ class ReportService implements ReportServiceInterface
             }
         }
 
-        if (\count($timeEntries) > 0) {
+        if (count($timeEntries) > 0) {
             //convert all set time status to a single string
             $and = $this->translator->trans('introduction.filter.and', [], 'report');
             $statusEntry = implode(' ' . $and . ' ', $timeEntries);
@@ -322,7 +326,7 @@ class ReportService implements ReportServiceInterface
         }
         $elements[] = $this->translator->trans('issues.detailed', [], 'report');
         if ($reportElements->getWithImages()) {
-            $elements[\count($elements) - 1] .= ' ' . $this->translator->trans('issues.with_images', [], 'report');
+            $elements[count($elements) - 1] .= ' ' . $this->translator->trans('issues.with_images', [], 'report');
         }
 
         //print
@@ -337,8 +341,8 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
-     * @param \DateTime|null $start
-     * @param \DateTime|null $end
+     * @param DateTime|null $start
+     * @param DateTime|null $end
      * @param string|null $prefix
      *
      * @return string

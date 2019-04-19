@@ -11,25 +11,28 @@
 
 namespace App\Api\Entity\Share\Craftsman;
 
-class Issue extends \App\Api\Entity\Base\PublicIssue
+use App\Api\Entity\Base\PublicIssue;
+use DateTime;
+
+class Issue extends PublicIssue
 {
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      */
     private $responseLimit;
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getResponseLimit(): ?\DateTime
+    public function getResponseLimit(): ?DateTime
     {
         return $this->responseLimit;
     }
 
     /**
-     * @param \DateTime|null $responseLimit
+     * @param DateTime|null $responseLimit
      */
-    public function setResponseLimit(?\DateTime $responseLimit): void
+    public function setResponseLimit(?DateTime $responseLimit): void
     {
         $this->responseLimit = $responseLimit;
     }

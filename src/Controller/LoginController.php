@@ -22,7 +22,10 @@ use App\Form\ConstructionManager\RecoverType;
 use App\Form\ConstructionManager\SetPasswordType;
 use App\Service\Interfaces\EmailServiceInterface;
 use App\Service\UserAuthenticationService;
+use DateTime;
+use Exception;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,9 +75,9 @@ class LoginController extends BaseLoginController
      * @param TranslatorInterface $translator
      * @param EmailServiceInterface $emailService
      *
-     * @throws \Exception
-     *
+     * @param LoggerInterface $logger
      * @return Response
+     * @throws Exception
      */
     public function createAction(Request $request, UserAuthenticationService $userCreationService, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
     {
@@ -103,7 +106,7 @@ class LoginController extends BaseLoginController
      * @param EmailServiceInterface $emailService
      * @param LoggerInterface $logger
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function register(Request $request, ConstructionManager $constructionManager, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
     {
@@ -137,7 +140,7 @@ class LoginController extends BaseLoginController
 
         // send email
         if ($emailService->sendEmail($email)) {
-            $email->setSentDateTime(new \DateTime());
+            $email->setSentDateTime(new DateTime());
             $this->fastSave($email);
 
             $logger->info('sent register email to ' . $email->getReceiver());
@@ -152,12 +155,8 @@ class LoginController extends BaseLoginController
      * @Route("/confirm/{authenticationHash}", name="login_confirm")
      *
      * @param Request $request
-     * @param UserAuthenticationService $userCreationService
+     * @param string $authenticationHash
      * @param TranslatorInterface $translator
-     * @param EmailServiceInterface $emailService
-     *
-     * @throws \Exception
-     *
      * @return Response
      */
     public function confirmAction(Request $request, string $authenticationHash, TranslatorInterface $translator)
@@ -259,7 +258,7 @@ class LoginController extends BaseLoginController
                 //save & send
                 $this->fastSave($email);
                 if ($emailService->sendEmail($email)) {
-                    $email->setSentDateTime(new \DateTime());
+                    $email->setSentDateTime(new DateTime());
                     $this->fastSave($email);
 
                     $logger->info('sent password reset email to ' . $email->getReceiver());
@@ -346,7 +345,7 @@ class LoginController extends BaseLoginController
      */
     public function loginCheck()
     {
-        throw new \RuntimeException('You must configure the check path to be handled by the firewall using form_login in your security firewall configuration.');
+        throw new RuntimeException('You must configure the check path to be handled by the firewall using form_login in your security firewall configuration.');
     }
 
     /**
@@ -354,6 +353,6 @@ class LoginController extends BaseLoginController
      */
     public function logoutAction()
     {
-        throw new \RuntimeException('You must configure the logout path to be handled by the firewall using form_login.logout in your security firewall configuration.');
+        throw new RuntimeException('You must configure the logout path to be handled by the firewall using form_login.logout in your security firewall configuration.');
     }
 }

@@ -21,6 +21,8 @@ use App\Api\Transformer\Switch_\ConstructionSiteTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionSite;
 use App\Service\Interfaces\PathServiceInterface;
+use function count;
+use const DIRECTORY_SEPARATOR;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -94,7 +96,7 @@ class SwitchController extends ApiController
         // add to construction site if not already a member
         /** @var ConstructionSite $constructionSite */
         $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(['isTrialConstructionSite' => false, 'id' => $parsedRequest->getConstructionSiteId()]);
-        if (\count($constructionSites) === 0) {
+        if (count($constructionSites) === 0) {
             return $this->fail(self::CONSTRUCTION_SITE_NOT_FOUND);
         }
 
@@ -126,7 +128,7 @@ class SwitchController extends ApiController
         // add to construction site if not already a member
         /** @var ConstructionSite $constructionSite */
         $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(['isTrialConstructionSite' => false, 'id' => $parsedRequest->getConstructionSiteId()]);
-        if (\count($constructionSites) === 0) {
+        if (count($constructionSites) === 0) {
             return $this->fail(self::CONSTRUCTION_SITE_NOT_FOUND);
         }
 
@@ -174,7 +176,7 @@ class SwitchController extends ApiController
         /** @var ConstructionSite $constructionSite */
         $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(['name' => $name]);
 
-        return \count($constructionSites) > 0;
+        return count($constructionSites) > 0;
     }
 
     /**
@@ -245,7 +247,7 @@ class SwitchController extends ApiController
 
         $checkedFolderName = $proposedFolderName;
         $index = 1;
-        while (is_dir($rootPath . \DIRECTORY_SEPARATOR . $checkedFolderName)) {
+        while (is_dir($rootPath . DIRECTORY_SEPARATOR . $checkedFolderName)) {
             $checkedFolderName = $proposedFolderName . $index++;
         }
 

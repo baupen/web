@@ -13,7 +13,10 @@ namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
+use function is_array;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -46,14 +49,14 @@ class Filter extends BaseEntity
     private $publicAccessIdentifier;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $accessAllowedUntil = null;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -137,14 +140,14 @@ class Filter extends BaseEntity
     private $registrationStatus = null;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $registrationStart = null;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -158,14 +161,14 @@ class Filter extends BaseEntity
     private $respondedStatus = null;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $respondedStart = null;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -179,28 +182,28 @@ class Filter extends BaseEntity
     private $reviewedStatus = null;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $reviewedStart = null;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $reviewedEnd = null;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $limitStart = null;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -215,9 +218,9 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param \DateTime|null $accessAllowedUntil
+     * @param DateTime|null $accessAllowedUntil
      */
-    public function setAccessAllowedUntil(?\DateTime $accessAllowedUntil): void
+    public function setAccessAllowedUntil(?DateTime $accessAllowedUntil): void
     {
         $this->accessAllowedUntil = $accessAllowedUntil;
     }
@@ -225,17 +228,17 @@ class Filter extends BaseEntity
     /**
      * sets the last access to now.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function setLastAccessNow(): void
     {
-        $this->lastAccess = new \DateTime();
+        $this->lastAccess = new DateTime();
     }
 
     /**
      * sets a new access identifier for public access.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function setPublicAccessIdentifier(): void
     {
@@ -260,9 +263,9 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param \DateTime|null $limitEnd
+     * @param DateTime|null $limitEnd
      */
-    public function filterByResponseLimitEnd(?\DateTime $limitEnd): void
+    public function filterByResponseLimitEnd(?DateTime $limitEnd): void
     {
         $this->limitEnd = $limitEnd;
     }
@@ -304,10 +307,10 @@ class Filter extends BaseEntity
 
     /**
      * @param bool|null $registrationStatus
-     * @param \DateTime|null $registrationStart
-     * @param \DateTime|null $registrationEnd
+     * @param DateTime|null $registrationStart
+     * @param DateTime|null $registrationEnd
      */
-    public function filterByRegistrationStatus(bool $registrationStatus, ?\DateTime $registrationStart = null, ?\DateTime $registrationEnd = null): void
+    public function filterByRegistrationStatus(bool $registrationStatus, ?DateTime $registrationStart = null, ?DateTime $registrationEnd = null): void
     {
         $this->registrationStatus = $registrationStatus;
         $this->registrationStart = $registrationStart;
@@ -316,10 +319,10 @@ class Filter extends BaseEntity
 
     /**
      * @param bool|null $respondedStatus
-     * @param \DateTime|null $respondedStart
-     * @param \DateTime|null $respondedEnd
+     * @param DateTime|null $respondedStart
+     * @param DateTime|null $respondedEnd
      */
-    public function filterByRespondedStatus(bool $respondedStatus, ?\DateTime $respondedStart = null, ?\DateTime $respondedEnd = null): void
+    public function filterByRespondedStatus(bool $respondedStatus, ?DateTime $respondedStart = null, ?DateTime $respondedEnd = null): void
     {
         $this->respondedStatus = $respondedStatus;
         $this->respondedStart = $respondedStart;
@@ -328,10 +331,10 @@ class Filter extends BaseEntity
 
     /**
      * @param bool|null $respondedStatus
-     * @param \DateTime|null $reviewedStart
-     * @param \DateTime|null $reviewedEnd
+     * @param DateTime|null $reviewedStart
+     * @param DateTime|null $reviewedEnd
      */
-    public function filterByReviewedStatus(bool $respondedStatus, ?\DateTime $reviewedStart = null, ?\DateTime $reviewedEnd = null): void
+    public function filterByReviewedStatus(bool $respondedStatus, ?DateTime $reviewedStart = null, ?DateTime $reviewedEnd = null): void
     {
         $this->respondedStatus = $respondedStatus;
         $this->reviewedStart = $reviewedStart;
@@ -355,17 +358,17 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getAccessAllowedUntil(): ?\DateTime
+    public function getAccessAllowedUntil(): ?DateTime
     {
         return $this->accessAllowedUntil;
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getLastAccess(): ?\DateTime
+    public function getLastAccess(): ?DateTime
     {
         return $this->lastAccess;
     }
@@ -444,7 +447,7 @@ class Filter extends BaseEntity
         // due to a bug in doctrine empty arrays are saved as null in the db
         // therefore need to handle null arrays as empty arrays
         // bug fix will only be included in 3.0 because it is a breaking change
-        return \is_array($array) ? $array : [];
+        return is_array($array) ? $array : [];
     }
 
     /**
@@ -456,17 +459,17 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getRegistrationStart(): ?\DateTime
+    public function getRegistrationStart(): ?DateTime
     {
         return $this->registrationStart;
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getRegistrationEnd(): ?\DateTime
+    public function getRegistrationEnd(): ?DateTime
     {
         return $this->registrationEnd;
     }
@@ -480,17 +483,17 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getRespondedStart(): ?\DateTime
+    public function getRespondedStart(): ?DateTime
     {
         return $this->respondedStart;
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getRespondedEnd(): ?\DateTime
+    public function getRespondedEnd(): ?DateTime
     {
         return $this->respondedEnd;
     }
@@ -504,33 +507,33 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getReviewedStart(): ?\DateTime
+    public function getReviewedStart(): ?DateTime
     {
         return $this->reviewedStart;
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getReviewedEnd(): ?\DateTime
+    public function getReviewedEnd(): ?DateTime
     {
         return $this->reviewedEnd;
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getLimitStart(): ?\DateTime
+    public function getLimitStart(): ?DateTime
     {
         return $this->limitStart;
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getLimitEnd(): ?\DateTime
+    public function getLimitEnd(): ?DateTime
     {
         return $this->limitEnd;
     }

@@ -14,7 +14,9 @@ namespace App\Repository;
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use App\Security\Model\UserToken;
+use DateTime;
 use Doctrine\ORM\EntityRepository;
+use Exception;
 
 class ConstructionManagerRepository extends EntityRepository
 {
@@ -34,7 +36,7 @@ class ConstructionManagerRepository extends EntityRepository
      * @param ConstructionSite $constructionSite
      * @param int $days
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Issue[]
      */
@@ -47,7 +49,7 @@ class ConstructionManagerRepository extends EntityRepository
         $queryBuilder->where('c.constructionSite = :constructionSite');
         $queryBuilder->setParameter(':constructionSite', $constructionSite->getId());
         $queryBuilder->andWhere('i.lastChangedAt > :lastChangedAt');
-        $queryBuilder->setParameter('lastChangedAt', new \DateTime('now -' . $days . ' days'));
+        $queryBuilder->setParameter('lastChangedAt', new DateTime('now -' . $days . ' days'));
         $queryBuilder->orderBy('i.lastChangedAt', 'DESC');
 
         return $queryBuilder->getQuery()->getResult();

@@ -15,7 +15,9 @@ use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AutomaticEditTrait;
 use App\Entity\Traits\IdTrait;
 use App\Model\Point;
+use function count;
 use Doctrine\ORM\Mapping as ORM;
+use function is_object;
 
 /**
  * A map sector can be a specific room or area on the map.
@@ -100,7 +102,7 @@ class MapSector extends BaseEntity
      */
     public function getPoints()
     {
-        if (\count($this->points) === 0 || \is_object($this->points[0])) {
+        if (count($this->points) === 0 || is_object($this->points[0])) {
             return $this->points;
         }
 
@@ -138,7 +140,7 @@ class MapSector extends BaseEntity
     }
 
     /**
-     * @param MapSector|null $other
+     * @param self|null $other
      *
      * @return bool
      */

@@ -11,6 +11,10 @@
 
 namespace App\Feed\Base;
 
+use function count;
+use DateTime;
+use Generator;
+
 class DailyEventRegistration
 {
     /**
@@ -19,16 +23,16 @@ class DailyEventRegistration
     private $counts = [];
 
     /**
-     * @var \DateTime[]
+     * @var DateTime[]
      */
     private $timeNormalization = [];
 
     /**
-     * @param \DateTime $time
+     * @param DateTime $time
      *
      * @return string
      */
-    protected function normalizeTime(\DateTime $time)
+    protected function normalizeTime(DateTime $time)
     {
         return $time->format('Y.m.d');
     }
@@ -54,14 +58,14 @@ class DailyEventRegistration
         //create new receiver
         $this->receivers[] = $receiver;
 
-        return \count($this->receivers) - 1;
+        return count($this->receivers) - 1;
     }
 
     /**
-     * @param \DateTime $time
+     * @param DateTime $time
      * @param mixed $receiver
      */
-    protected function register(\DateTime $time, $receiver)
+    protected function register(DateTime $time, $receiver)
     {
         $timeKey = $this->normalizeTime($time);
         if (!isset($this->counts[$timeKey])) {
@@ -78,7 +82,7 @@ class DailyEventRegistration
     }
 
     /**
-     * @return \Generator
+     * @return Generator
      */
     protected function getRegistrations()
     {

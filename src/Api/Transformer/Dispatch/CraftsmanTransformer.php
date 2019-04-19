@@ -14,6 +14,8 @@ namespace App\Api\Transformer\Dispatch;
 use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\Craftsman;
 use App\Model\Craftsman\CurrentIssueState;
+use DateTime;
+use Exception;
 use Symfony\Component\Routing\RouterInterface;
 
 class CraftsmanTransformer extends BatchTransformer
@@ -43,7 +45,7 @@ class CraftsmanTransformer extends BatchTransformer
     /**
      * @param Craftsman $entity
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return \App\Api\Entity\Dispatch\Craftsman
      */
@@ -56,7 +58,7 @@ class CraftsmanTransformer extends BatchTransformer
         $craftsman->setLastOnlineVisit($entity->getLastOnlineVisit());
         $craftsman->setPersonalUrl($this->router->generate('external_share_craftsman', ['identifier' => $entity->getEmailIdentifier(), 'token' => $entity->getWriteAuthorizationToken()]));
 
-        $state = new CurrentIssueState($entity, new \DateTime());
+        $state = new CurrentIssueState($entity, new DateTime());
         $craftsman->setNotRespondedIssuesCount($state->getNotRespondedIssuesCount());
         $craftsman->setNotReadIssuesCount($state->getNotReadIssuesCount());
         $craftsman->setNextResponseLimit($state->getNextResponseLimit());

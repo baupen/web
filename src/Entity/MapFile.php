@@ -18,6 +18,7 @@ use App\Entity\Traits\TimeTrait;
 use App\Model\Frame;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use function is_object;
 
 /**
  * @ORM\Entity()
@@ -115,7 +116,7 @@ class MapFile extends BaseEntity
      */
     public function getSectorFrame()
     {
-        if (\is_object($this->sectorFrame) || $this->sectorFrame === null) {
+        if (is_object($this->sectorFrame) || $this->sectorFrame === null) {
             return $this->sectorFrame;
         }
 

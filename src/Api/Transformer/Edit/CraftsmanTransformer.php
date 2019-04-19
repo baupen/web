@@ -13,6 +13,7 @@ namespace App\Api\Transformer\Edit;
 
 use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\Craftsman;
+use Exception;
 
 class CraftsmanTransformer extends BatchTransformer
 {
@@ -34,7 +35,7 @@ class CraftsmanTransformer extends BatchTransformer
     /**
      * @param Craftsman $entity
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return \App\Api\Entity\Edit\Craftsman
      */

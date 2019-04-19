@@ -18,6 +18,10 @@ use App\Model\Point;
 use App\Model\SyncTransaction;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Sync\Interfaces\MapSectorServiceInterface;
+use function array_key_exists;
+use const DIRECTORY_SEPARATOR;
+use function is_array;
+use stdClass;
 
 class MapSectorService implements MapSectorServiceInterface
 {
@@ -49,7 +53,7 @@ class MapSectorService implements MapSectorServiceInterface
         foreach ($mapFiles as $mapFile) {
             $fileNameWithoutExtension = mb_substr($mapFile->getFilename(), 0, -3);
 
-            $mapSectorsJsonPath = $directory . \DIRECTORY_SEPARATOR . $fileNameWithoutExtension . 'sectors.json';
+            $mapSectorsJsonPath = $directory . DIRECTORY_SEPARATOR . $fileNameWithoutExtension . 'sectors.json';
             $mapSectors = $this->parseMapSectors($mapSectorsJsonPath);
 
             $this->applyMapSectors($syncTransaction, $mapFile, $mapSectors);
@@ -68,14 +72,14 @@ class MapSectorService implements MapSectorServiceInterface
         }
 
         $json = json_decode(file_get_contents($filePath));
-        if (!property_exists($json, 'floor') || !\is_array($json->floor)) {
+        if (!property_exists($json, 'floor') || !is_array($json->floor)) {
             return [];
         }
 
         /** @var MapSector[] $mapSectors */
         $mapSectors = [];
         foreach ($json->floor as $item) {
-            if (!property_exists($item, 'name') || !property_exists($item, 'points') || !property_exists($item, 'identifier') || !\is_array($item->points)) {
+            if (!property_exists($item, 'name') || !property_exists($item, 'points') || !property_exists($item, 'identifier') || !is_array($item->points)) {
                 continue;
             }
 
@@ -112,7 +116,7 @@ class MapSectorService implements MapSectorServiceInterface
 
         // remove replaced / not found ones
         foreach ($existingSectorsLookup as $key => $sector) {
-            if (!\array_key_exists($key, $newSectorsLookup) || !$sector->equals($newSectorsLookup[$key])) {
+            if (!array_key_exists($key, $newSectorsLookup) || !$sector->equals($newSectorsLookup[$key])) {
                 $mapFile->getSectors()->removeElement($sector);
                 $syncTransaction->remove($sector);
             } else {
@@ -180,7 +184,7 @@ class MapSectorService implements MapSectorServiceInterface
     }
 
     /**
-     * @param \stdClass[] $pointsJson
+     * @param stdClass[] $pointsJson
      *
      * @return Point[]|array
      */

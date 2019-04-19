@@ -21,9 +21,13 @@ use App\Entity\Map;
 use App\Entity\Traits\TimeTrait;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
+use DateTime;
+use const DIRECTORY_SEPARATOR;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
+use Exception;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -49,7 +53,7 @@ class FileController extends ExternalApiController
      * @param ImageServiceInterface $imageService
      *
      * @throws ORMException
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -72,7 +76,7 @@ class FileController extends ExternalApiController
                 },
                 function ($entity) use ($pathService) {
                     /* @var Map $entity */
-                    return  $entity->getFile() ? $pathService->getFolderForMapFile($entity->getConstructionSite()) . \DIRECTORY_SEPARATOR . $entity->getFile()->getFilename() : null;
+                    return  $entity->getFile() ? $pathService->getFolderForMapFile($entity->getConstructionSite()) . DIRECTORY_SEPARATOR . $entity->getFile()->getFilename() : null;
                 }
             );
         } elseif ($downloadFileRequest->getIssue() !== null) {
@@ -113,9 +117,9 @@ class FileController extends ExternalApiController
      * @param callable $verifyAccess
      * @param callable $accessFilePath
      *
-     * @throws \Exception
+     * @throws Exception
      *
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|Response
+     * @return BinaryFileResponse|Response
      */
     private function downloadFile(ObjectRepository $repository, ObjectMeta $objectMeta, callable $verifyAccess, callable $accessFilePath)
     {
@@ -132,7 +136,7 @@ class FileController extends ExternalApiController
             return $this->fail(static::ENTITY_ACCESS_DENIED);
         }
 
-        if ($entity->getLastChangedAt() > new \DateTime($objectMeta->getLastChangeTime())) {
+        if ($entity->getLastChangedAt() > new DateTime($objectMeta->getLastChangeTime())) {
             return $this->fail(static::INVALID_TIMESTAMP);
         }
 

@@ -34,6 +34,7 @@ class LdapLogger implements LdapInterface
      * LdapLogger constructor.
      *
      * @param LdapInterface $adapter
+     * @param LoggerInterface $logger
      */
     public function __construct(LdapInterface $adapter, LoggerInterface $logger)
     {

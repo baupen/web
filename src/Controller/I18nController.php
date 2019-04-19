@@ -12,6 +12,7 @@
 namespace App\Controller;
 
 use App\Controller\Base\BaseLoginController;
+use function in_array;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,7 +30,7 @@ class I18nController extends BaseLoginController
     public function setLocaleAction(Request $request, $locale)
     {
         //only change locale to valid values
-        if (\in_array($locale, ['de', 'it'], true)) {
+        if (in_array($locale, ['de', 'it'], true)) {
             $request->getSession()->set('_locale', $locale);
             $request->setLocale($locale);
             $this->getUser()->setLocale($locale);

@@ -13,9 +13,11 @@ namespace App\Controller\Base;
 
 use App\Entity\Traits\UserTrait;
 use App\Security\Model\UserToken;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -45,7 +47,7 @@ class BaseLoginController extends BaseFormController
      */
     protected function handleLoginForm(Request $request, FormInterface $loginForm, callable $findEntityCallable, $entity)
     {
-        /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
+        /** @var $session Session */
         $session = $request->getSession();
 
         $authErrorKey = Security::AUTHENTICATION_ERROR;
@@ -81,7 +83,7 @@ class BaseLoginController extends BaseFormController
         $loginForm->handleRequest($request);
 
         if ($loginForm->isSubmitted()) {
-            throw new \RuntimeException('You must configure the check path to be handled by the firewall using form_login in your security firewall configuration.');
+            throw new RuntimeException('You must configure the check path to be handled by the firewall using form_login in your security firewall configuration.');
         }
 
         return $loginForm;

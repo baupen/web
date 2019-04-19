@@ -22,9 +22,12 @@ use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Entity\Traits\IdTrait;
+use function count;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,7 +46,7 @@ class ReadController extends ExternalApiController
      * @param TransformerFactory $transformerFactory
      *
      * @throws ORMException
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -57,7 +60,7 @@ class ReadController extends ExternalApiController
 
         //construct read data
         $readData = new ReadData();
-        if ($constructionManager->getLastChangedAt() > new \DateTime($readRequest->getUser()->getLastChangeTime())) {
+        if ($constructionManager->getLastChangedAt() > new DateTime($readRequest->getUser()->getLastChangeTime())) {
             $readData->setChangedUser($transformerFactory->getUserTransformer()->toApi($constructionManager, $readRequest->getAuthenticationToken()));
         }
         $readData->setChangedConstructionSites([]);
@@ -83,6 +86,10 @@ class ReadController extends ExternalApiController
      * @param ReadData $readData
      *
      * @throws ORMException
+     * @throws Exception
+     * @throws Exception
+     * @throws Exception
+     * @throws Exception
      */
     private function processObjectMeta(TransformerFactory $transformerFactory, ReadRequest $readRequest, ConstructionManager $constructionManager, ReadData $readData)
     {
@@ -112,7 +119,7 @@ WHERE cscm.construction_manager_id = :id';
         $readData->setRemovedConstructionSiteIDs(array_keys($removeIds));
 
         //if no access to any buildings do an early return
-        if (\count($allValidIds) === 0) {
+        if (count($allValidIds) === 0) {
             return;
         }
 
@@ -268,13 +275,13 @@ WHERE cscm.construction_manager_id = :id';
      * @param string[] $removeIds contains the invalid given (ids -> time)
      * @param string[] $knownIds contains the valid given (id -> time)
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function filterIds($requestObjectMeta, $dbEntities, &$allValidIds, &$removeIds, &$knownIds)
     {
         $removeIds = [];
         foreach ($requestObjectMeta as $objectMeta) {
-            $removeIds[$objectMeta['id']] = (new \DateTime($objectMeta['lastChangeTime']))->format('Y-m-d H:i:s');
+            $removeIds[$objectMeta['id']] = (new DateTime($objectMeta['lastChangeTime']))->format('Y-m-d H:i:s');
         }
 
         $allValidIds = [];
@@ -301,7 +308,7 @@ WHERE cscm.construction_manager_id = :id';
     {
         $sql .= ' AND (';
         //only return confirmed buildings if they are updated
-        if (\count($guidTimeDictionary) > 0) {
+        if (count($guidTimeDictionary) > 0) {
             $sql .= '(';
 
             //get all where id matches but last change date does not
@@ -322,7 +329,7 @@ WHERE cscm.construction_manager_id = :id';
         }
 
         //return entries unknown to the requester
-        if (\count($guidTimeDictionary) > 0) {
+        if (count($guidTimeDictionary) > 0) {
             $sql .= $tableShort . '.id NOT IN ("' . implode('", "', array_keys($guidTimeDictionary)) . '")';
         } else {
             //allow all

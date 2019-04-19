@@ -36,6 +36,7 @@ use App\Entity\Craftsman;
 use App\Entity\Map;
 use App\Entity\MapFile;
 use App\Service\Interfaces\UploadServiceInterface;
+use Exception;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -146,7 +147,7 @@ class EditController extends ApiController
      * @param Request $request
      * @param UploadServiceInterface $uploadService
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -175,7 +176,7 @@ class EditController extends ApiController
      * @param MapFileTransformer $mapFileTransformer
      * @param UploadServiceInterface $uploadService
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -217,7 +218,7 @@ class EditController extends ApiController
      * @param MapFile $mapFile
      * @param MapFileTransformer $mapFileTransformer
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -250,7 +251,7 @@ class EditController extends ApiController
      * @param Request $request
      * @param MapTransformer $mapTransformer
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -286,7 +287,7 @@ class EditController extends ApiController
      * @param Map $map
      * @param MapTransformer $mapTransformer
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -323,7 +324,7 @@ class EditController extends ApiController
      * @param Request $request
      * @param Map $map
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -411,7 +412,7 @@ class EditController extends ApiController
      * @param Request $request
      * @param CraftsmanTransformer $craftsmanTransformer
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -448,7 +449,7 @@ class EditController extends ApiController
      * @param Craftsman $craftsman
      * @param CraftsmanTransformer $craftsmanTransformer
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -485,7 +486,7 @@ class EditController extends ApiController
      * @param Request $request
      * @param Craftsman $craftsman
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */

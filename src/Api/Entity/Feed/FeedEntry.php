@@ -12,6 +12,7 @@
 namespace App\Api\Entity\Feed;
 
 use App\Api\Entity\Base\Craftsman;
+use DateTime;
 
 class FeedEntry
 {
@@ -40,7 +41,7 @@ class FeedEntry
     private $craftsman;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $timestamp;
 
@@ -82,17 +83,17 @@ class FeedEntry
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getTimestamp(): \DateTime
+    public function getTimestamp(): DateTime
     {
         return $this->timestamp;
     }
 
     /**
-     * @param \DateTime $timestamp
+     * @param DateTime $timestamp
      */
-    public function setTimestamp(\DateTime $timestamp): void
+    public function setTimestamp(DateTime $timestamp): void
     {
         $this->timestamp = $timestamp;
     }

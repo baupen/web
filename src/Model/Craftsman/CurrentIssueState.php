@@ -12,6 +12,7 @@
 namespace App\Model\Craftsman;
 
 use App\Entity\Craftsman;
+use DateTime;
 
 class CurrentIssueState
 {
@@ -36,7 +37,7 @@ class CurrentIssueState
     private $overdueIssuesCount = 0;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      */
     private $nextResponseLimit = null;
 
@@ -106,9 +107,9 @@ class CurrentIssueState
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getNextResponseLimit(): ?\DateTime
+    public function getNextResponseLimit(): ?DateTime
     {
         return $this->nextResponseLimit;
     }

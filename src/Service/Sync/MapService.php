@@ -20,6 +20,8 @@ use App\Service\Sync\Interfaces\DisplayNameServiceInterface;
 use App\Service\Sync\Interfaces\FileServiceInterface;
 use App\Service\Sync\Interfaces\MapFileServiceInterface;
 use App\Service\Sync\Interfaces\MapServiceInterface;
+use function array_key_exists;
+use function count;
 
 class MapService implements MapServiceInterface
 {
@@ -101,7 +103,7 @@ class MapService implements MapServiceInterface
         $displayNameToMapLookup = [];
         foreach ($maps as $map) {
             $key = $map->getName();
-            if (!\array_key_exists($key, $displayNameToMapLookup)) {
+            if (!array_key_exists($key, $displayNameToMapLookup)) {
                 $displayNameToMapLookup[$key] = $map;
             }
         }
@@ -112,7 +114,7 @@ class MapService implements MapServiceInterface
             }
 
             $key = $mapFile->getDisplayFilename();
-            if (\array_key_exists($key, $displayNameToMapLookup)) {
+            if (array_key_exists($key, $displayNameToMapLookup)) {
                 $targetMap = $displayNameToMapLookup[$key];
 
                 $mapFile->setMap($targetMap);
@@ -212,7 +214,7 @@ class MapService implements MapServiceInterface
         }
 
         // remove maps without children & issues
-        $mapCount = \count($maps);
+        $mapCount = count($maps);
         for ($i = 0; $i < $mapCount; ++$i) {
             $map = $maps[$i];
 

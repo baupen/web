@@ -13,6 +13,9 @@ namespace App\Controller\Traits;
 
 use App\Entity\Filter;
 use App\Service\Report\ReportElements;
+use DateTime;
+use Exception;
+use function is_array;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait QueryParseTrait
@@ -21,7 +24,7 @@ trait QueryParseTrait
      * @param Filter $filter
      * @param array $query
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function setFilterProperties(Filter $filter, $query)
     {
@@ -30,7 +33,7 @@ trait QueryParseTrait
             $filter->filterByIsMarked(true);
         }
         if ($parameterBag->getBoolean('onlyOverLimit')) {
-            $filter->filterByResponseLimitEnd(new \DateTime());
+            $filter->filterByResponseLimitEnd(new DateTime());
         }
 
         $craftsmanParameters = new ParameterBag($parameterBag->get('craftsman', []));
@@ -109,7 +112,7 @@ trait QueryParseTrait
 
         //parse input to null or datetime
         $toDateTime = function ($input) {
-            return $input === null || $input === '' ? null : new \DateTime($input);
+            return $input === null || $input === '' ? null : new DateTime($input);
         };
 
         if ($filterParameters->getBoolean('enabled')) {
@@ -133,7 +136,7 @@ trait QueryParseTrait
 
         //parse input to array
         $toArray = function ($input) {
-            return \is_array($input) ? $input : [];
+            return is_array($input) ? $input : [];
         };
         $tableParameters = new ParameterBag($toArray($parameterBag->get('tables', [])));
         $reportElements->setTableByCraftsman($tableParameters->getBoolean('tableByCraftsman', $reportElements->getTableByCraftsman()));

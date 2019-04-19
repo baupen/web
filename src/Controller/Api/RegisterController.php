@@ -11,6 +11,7 @@
 
 namespace App\Controller\Api;
 
+use App\Api\Entity\Register\UpdateIssue;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\IssueIdsRequest;
 use App\Api\Request\Register\SetStatusRequest;
@@ -29,6 +30,9 @@ use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
+use function array_key_exists;
+use DateTime;
+use Exception;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -120,7 +124,7 @@ class RegisterController extends ApiController
 
         $issues = [];
         foreach ($parsedRequest->getUpdateIssues() as $arrayIssue) {
-            $issue = $this->get('serializer')->deserialize(json_encode($arrayIssue), \App\Api\Entity\Register\UpdateIssue::class, 'json');
+            $issue = $this->get('serializer')->deserialize(json_encode($arrayIssue), UpdateIssue::class, 'json');
             $issues[$issue->getId()] = $issue;
         }
 
@@ -138,7 +142,7 @@ class RegisterController extends ApiController
 
     /**
      * @param Issue[] $requestedIssues
-     * @param \App\Api\Entity\Register\UpdateIssue[] $issues
+     * @param UpdateIssue[] $issues
      * @param Issue[] $entities
      */
     private function orderEntities($requestedIssues, $issues, &$entities)
@@ -152,7 +156,7 @@ class RegisterController extends ApiController
         //sort entities
         $entities = [];
         foreach ($issues as $guid => $issue) {
-            if (\array_key_exists($guid, $entityLookup)) {
+            if (array_key_exists($guid, $entityLookup)) {
                 $entities[$guid] = $entityLookup[$guid];
             }
         }
@@ -239,8 +243,8 @@ class RegisterController extends ApiController
      *
      * @param Request $request
      *
-     * @throws \Exception
-     * @throws \Exception
+     * @throws Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -271,7 +275,7 @@ class RegisterController extends ApiController
         $linkParameters = new ParameterBag($queryLimit);
         if ($linkParameters->getBoolean('enabled')) {
             $limit = $linkParameters->get('limit', null);
-            $dateLimit = $limit !== null && $limit !== '' ? new \DateTime($limit) : null;
+            $dateLimit = $limit !== null && $limit !== '' ? new DateTime($limit) : null;
             $filter->setAccessAllowedUntil($dateLimit);
         }
 
@@ -297,7 +301,7 @@ class RegisterController extends ApiController
     public function issueUpdateAction(Request $request, UpdateIssueTransformer $updateIssueTransformer, IssueTransformer $issueTransformer)
     {
         /** @var ConstructionSite $constructionSite */
-        /** @var \App\Api\Entity\Register\UpdateIssue[] $issues */
+        /** @var UpdateIssue[] $issues */
         /** @var Issue[] $entities */
         if (!$this->parseRegisterIssuesRequest($request, $issues, $entities, $errorResponse, $constructionSite)) {
             return $errorResponse;
@@ -305,7 +309,7 @@ class RegisterController extends ApiController
 
         //write properties to issues
         foreach ($issues as $guid => $issue) {
-            if (\array_key_exists($guid, $entities)) {
+            if (array_key_exists($guid, $entities)) {
                 $entity = $entities[$guid];
                 $res = $updateIssueTransformer->fromApi($issue, $entity, function ($craftsman) use ($constructionSite) {
                     /** @var Craftsman $craftsman */
@@ -340,9 +344,9 @@ class RegisterController extends ApiController
      * @param Request $request
      * @param IssueTransformer $issueTransformer
      *
-     * @throws \Exception
-     * @throws \Exception
-     * @throws \Exception
+     * @throws Exception
+     * @throws Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -359,7 +363,7 @@ class RegisterController extends ApiController
         if ($parsedRequest->isRespondedStatusSet()) {
             foreach ($entities as $entity) {
                 if ($entity->getRespondedAt() === null) {
-                    $entity->setRespondedAt(new \DateTime());
+                    $entity->setRespondedAt(new DateTime());
                     $entity->setResponseBy($entity->getCraftsman());
                 }
             }
@@ -376,7 +380,7 @@ class RegisterController extends ApiController
         if ($parsedRequest->isReviewedStatusSet()) {
             foreach ($entities as $entity) {
                 if ($entity->getReviewedAt() === null) {
-                    $entity->setReviewedAt(new \DateTime());
+                    $entity->setReviewedAt(new DateTime());
                     $entity->setReviewBy($this->getUser());
                 }
             }

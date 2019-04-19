@@ -14,6 +14,7 @@ namespace App\Entity;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Enum\EmailType;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -69,14 +70,14 @@ class Email extends BaseEntity
     private $emailType = EmailType::TEXT_EMAIL;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $sentDateTime;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -179,33 +180,33 @@ class Email extends BaseEntity
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getSentDateTime(): ?\DateTime
+    public function getSentDateTime(): ?DateTime
     {
         return $this->sentDateTime;
     }
 
     /**
-     * @param \DateTime $sentDateTime
+     * @param DateTime $sentDateTime
      */
-    public function setSentDateTime(\DateTime $sentDateTime)
+    public function setSentDateTime(DateTime $sentDateTime)
     {
         $this->sentDateTime = $sentDateTime;
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getVisitedDateTime(): ?\DateTime
+    public function getVisitedDateTime(): ?DateTime
     {
         return $this->visitedDateTime;
     }
 
     /**
-     * @param \DateTime $visitedDateTime
+     * @param DateTime $visitedDateTime
      */
-    public function setVisitedDateTime(\DateTime $visitedDateTime)
+    public function setVisitedDateTime(DateTime $visitedDateTime)
     {
         $this->visitedDateTime = $visitedDateTime;
     }

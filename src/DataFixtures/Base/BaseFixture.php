@@ -16,6 +16,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
+use Faker\Generator;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -42,7 +43,7 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
     }
 
     /**
-     * @return \Faker\Generator
+     * @return Generator
      */
     protected function getFaker()
     {

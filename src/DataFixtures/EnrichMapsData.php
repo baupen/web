@@ -14,6 +14,7 @@ namespace App\DataFixtures;
 use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionSite;
 use App\Entity\Map;
+use BadMethodCallException;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class EnrichMapsData extends BaseFixture
@@ -25,7 +26,7 @@ class EnrichMapsData extends BaseFixture
      *
      * @param ObjectManager $manager
      *
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     public function load(ObjectManager $manager)
     {

@@ -12,7 +12,9 @@
 namespace App\Entity\Traits;
 
 use App\Helper\HashHelper;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
 
 trait UserTrait
@@ -69,7 +71,7 @@ trait UserTrait
     private $authenticationSource;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(type="datetime")
      */
@@ -114,7 +116,7 @@ trait UserTrait
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getRegistrationDate()
     {
@@ -122,11 +124,11 @@ trait UserTrait
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function setRegistrationDate()
     {
-        $this->registrationDate = new \DateTime();
+        $this->registrationDate = new DateTime();
     }
 
     /**

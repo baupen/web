@@ -17,6 +17,7 @@ use App\Entity\ConstructionSite;
 use App\Entity\Filter;
 use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\ReportElements;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -36,7 +37,7 @@ class ReportController extends BaseDoctrineController
      * @param Request $request
      * @param ReportServiceInterface $reportService
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */

@@ -12,6 +12,8 @@
 namespace App\EventListener;
 
 use App\Api\Response\ErrorResponse;
+use Exception;
+use function function_exists;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -53,7 +55,7 @@ class ExceptionListener
     /**
      * @param GetResponseForExceptionEvent $event
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
@@ -72,7 +74,7 @@ class ExceptionListener
 
         if ($this->isTestEnvironment) {
             throw $exception;
-        } elseif (\function_exists('dump')) {
+        } elseif (function_exists('dump')) {
             dump($exception);
         }
 

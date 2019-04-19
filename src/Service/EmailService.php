@@ -14,13 +14,16 @@ namespace App\Service;
 use App\Entity\Email;
 use App\Enum\EmailType;
 use App\Service\Interfaces\EmailServiceInterface;
+use Exception;
 use Psr\Log\LoggerInterface;
+use Swift_Mailer;
+use Swift_Message;
 use Twig\Environment;
 
 class EmailService implements EmailServiceInterface
 {
     /**
-     * @var \Swift_Mailer
+     * @var Swift_Mailer
      */
     private $mailer;
 
@@ -47,13 +50,13 @@ class EmailService implements EmailServiceInterface
     /**
      * EmailService constructor.
      *
-     * @param \Swift_Mailer $mailer
+     * @param Swift_Mailer $mailer
      * @param LoggerInterface $logger
      * @param Environment $twig
      * @param string $mailerSender
      * @param string $supportEmail
      */
-    public function __construct(\Swift_Mailer $mailer, LoggerInterface $logger, Environment $twig, string $mailerSender, string $supportEmail)
+    public function __construct(Swift_Mailer $mailer, LoggerInterface $logger, Environment $twig, string $mailerSender, string $supportEmail)
     {
         $this->mailer = $mailer;
         $this->twig = $twig;
@@ -70,7 +73,7 @@ class EmailService implements EmailServiceInterface
      */
     public function sendEmail(Email $email, $options = [])
     {
-        $message = (new \Swift_Message())
+        $message = (new Swift_Message())
             ->setSubject($email->getSubject())
             ->setFrom($this->mailerSender)
             ->setTo($email->getReceiver());
@@ -99,7 +102,7 @@ class EmailService implements EmailServiceInterface
                     ),
                     'text/html'
                 );
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->error('can not render email ' . $email->getId());
 
                 return false;

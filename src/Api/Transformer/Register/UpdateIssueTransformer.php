@@ -11,6 +11,7 @@
 
 namespace App\Api\Transformer\Register;
 
+use App\Api\Entity\Register\UpdateIssue;
 use App\Entity\Issue;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -39,13 +40,13 @@ class UpdateIssueTransformer
     }
 
     /**
-     * @param \App\Api\Entity\Register\UpdateIssue $issue
+     * @param UpdateIssue $issue
      * @param Issue $entity
      * @param callable $validateCraftsman
      *
      * @return bool
      */
-    public function fromApi(\App\Api\Entity\Register\UpdateIssue $issue, Issue $entity, $validateCraftsman)
+    public function fromApi(UpdateIssue $issue, Issue $entity, $validateCraftsman)
     {
         $this->updateIssueTransformer->fromApi($issue, $entity, $validateCraftsman);
 

@@ -12,6 +12,8 @@
 namespace App\Helper;
 
 use App\Entity\Traits\IdTrait;
+use function chr;
+use function count;
 
 class HashHelper
 {
@@ -27,7 +29,7 @@ class HashHelper
         $newHash = '';
         //0-9, A-Z, a-z
         $allowedRanges = [[48, 57], [65, 90], [97, 122]];
-        $rangeCount = \count($allowedRanges);
+        $rangeCount = count($allowedRanges);
         for ($i = 0; $i < static::HASH_LENGTH; ++$i) {
             $rand = mt_rand(20, 160);
             $allowed = false;
@@ -37,7 +39,7 @@ class HashHelper
                 }
             }
             if ($allowed) {
-                $newHash .= \chr($rand);
+                $newHash .= chr($rand);
             } else {
                 --$i;
             }

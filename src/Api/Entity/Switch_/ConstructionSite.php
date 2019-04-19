@@ -11,10 +11,12 @@
 
 namespace App\Api\Entity\Switch_;
 
+use DateTime;
+
 class ConstructionSite extends \App\Api\Entity\Base\ConstructionSite
 {
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $createdAt;
 
@@ -108,17 +110,17 @@ class ConstructionSite extends \App\Api\Entity\Base\ConstructionSite
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param DateTime $createdAt
      */
-    public function setCreatedAt(\DateTime $createdAt): void
+    public function setCreatedAt(DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }

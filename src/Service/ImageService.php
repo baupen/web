@@ -17,6 +17,9 @@ use App\Entity\Map;
 use App\Helper\ImageHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
+use function count;
+use const DIRECTORY_SEPARATOR;
+use function in_array;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class ImageService implements ImageServiceInterface
@@ -81,7 +84,7 @@ class ImageService implements ImageServiceInterface
         }
 
         //setup paths
-        $sourceFilePath = $this->pathService->getFolderForMapFile($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
+        $sourceFilePath = $this->pathService->getFolderForMapFile($map->getConstructionSite()) . DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
         $generationTargetFolder = $this->pathService->getTransientFolderForMapFile($map);
         $this->ensureFolderExists($generationTargetFolder);
 
@@ -102,7 +105,7 @@ class ImageService implements ImageServiceInterface
         }
 
         //setup paths
-        $sourceFilePath = $this->pathService->getFolderForMapFile($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
+        $sourceFilePath = $this->pathService->getFolderForMapFile($map->getConstructionSite()) . DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
         $generationTargetFolder = $this->pathService->getTransientFolderForMapFile($map);
         $this->ensureFolderExists($generationTargetFolder);
 
@@ -163,7 +166,7 @@ class ImageService implements ImageServiceInterface
         }
 
         //setup paths
-        $sourceFilePath = $this->pathService->getFolderForMapFile($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
+        $sourceFilePath = $this->pathService->getFolderForMapFile($map->getConstructionSite()) . DIRECTORY_SEPARATOR . $map->getFile()->getFilename();
         $generationTargetFolder = $this->pathService->getTransientFolderForMapFile($map);
         $this->ensureFolderExists($generationTargetFolder);
 
@@ -180,7 +183,7 @@ class ImageService implements ImageServiceInterface
      */
     public function ensureValidSize($uncheckedSize)
     {
-        return \in_array($uncheckedSize, $this->validSizes, true) ? $uncheckedSize : ImageServiceInterface::SIZE_THUMBNAIL;
+        return in_array($uncheckedSize, $this->validSizes, true) ? $uncheckedSize : ImageServiceInterface::SIZE_THUMBNAIL;
     }
 
     /**
@@ -238,9 +241,9 @@ class ImageService implements ImageServiceInterface
         }
 
         //setup paths
-        $sourceFilePath = $sourceFolder . \DIRECTORY_SEPARATOR . $sourceFileName;
+        $sourceFilePath = $sourceFolder . DIRECTORY_SEPARATOR . $sourceFileName;
         $targetFileName = $this->getSizeFilename($sourceFileName, $size);
-        $targetFilePath = $targetFolder . \DIRECTORY_SEPARATOR . $targetFileName;
+        $targetFilePath = $targetFolder . DIRECTORY_SEPARATOR . $targetFileName;
 
         if (!file_exists($targetFilePath) || $this->disableCache) {
             $this->renderSizeOfImage($sourceFilePath, $targetFilePath, $size);
@@ -473,7 +476,7 @@ class ImageService implements ImageServiceInterface
     private function generateMapImageInternal(array $issues, string $sourceFilePath, string $generationTargetFolder, $forceLandscape, $size)
     {
         //render pdf to image
-        $pdfRenderPath = $generationTargetFolder . \DIRECTORY_SEPARATOR . self::MAP_RENDER_NAME;
+        $pdfRenderPath = $generationTargetFolder . DIRECTORY_SEPARATOR . self::MAP_RENDER_NAME;
         if (!file_exists($pdfRenderPath) || $this->disableCache) {
             $this->renderPdfToImage($sourceFilePath, $pdfRenderPath);
 
@@ -484,7 +487,7 @@ class ImageService implements ImageServiceInterface
         }
 
         // shortcut if no issues to be printed
-        if (\count($issues) > 0) {
+        if (count($issues) > 0) {
             //prepare filename for exact issue combination
             $issueToString = function ($issue) {
                 /* @var Issue $issue */
@@ -493,8 +496,8 @@ class ImageService implements ImageServiceInterface
             $issueHash = hash('sha256', implode(',', array_map($issueToString, $issues)));
 
             //render issue image
-            $issueImagePath = $generationTargetFolder . \DIRECTORY_SEPARATOR . $issueHash . '.jpg';
-            $landscapeIssueImagePath = $generationTargetFolder . \DIRECTORY_SEPARATOR . $issueHash . '_landscape.jpg';
+            $issueImagePath = $generationTargetFolder . DIRECTORY_SEPARATOR . $issueHash . '.jpg';
+            $landscapeIssueImagePath = $generationTargetFolder . DIRECTORY_SEPARATOR . $issueHash . '_landscape.jpg';
             $issueRenderPath = $this->renderIssues($issues, $pdfRenderPath, $issueImagePath, $landscapeIssueImagePath, $forceLandscape);
         } else {
             $issueRenderPath = $pdfRenderPath;
@@ -502,7 +505,7 @@ class ImageService implements ImageServiceInterface
 
         //render size variant
         $fileName = pathinfo($issueRenderPath, PATHINFO_BASENAME);
-        $issueImagePathSize = $generationTargetFolder . \DIRECTORY_SEPARATOR . $this->getSizeFilename($fileName, $size);
+        $issueImagePathSize = $generationTargetFolder . DIRECTORY_SEPARATOR . $this->getSizeFilename($fileName, $size);
         if (!is_file($issueImagePathSize) || $this->disableCache) {
             $this->renderSizeOfImage($issueRenderPath, $issueImagePathSize, $size);
 

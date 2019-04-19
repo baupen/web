@@ -13,6 +13,7 @@ namespace App\Controller\Api\External;
 
 use App\Controller\Api\External\Base\ExternalApiController;
 use App\Service\Interfaces\PathServiceInterface;
+use const DIRECTORY_SEPARATOR;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,7 +34,7 @@ class ConfigController extends ExternalApiController
      */
     public function domainOverridesAction(PathServiceInterface $pathService)
     {
-        $domainOverridesPath = $pathService->getTransientFolderRoot() . \DIRECTORY_SEPARATOR . 'domainOverrides.json';
+        $domainOverridesPath = $pathService->getTransientFolderRoot() . DIRECTORY_SEPARATOR . 'domainOverrides.json';
 
         if (!file_exists($domainOverridesPath)) {
             throw new NotFoundHttpException($domainOverridesPath);

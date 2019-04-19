@@ -13,6 +13,8 @@ namespace App\Service\Sync;
 
 use App\Entity\Traits\FileTrait;
 use App\Service\Sync\Interfaces\FileServiceInterface;
+use function array_key_exists;
+use const DIRECTORY_SEPARATOR;
 
 class FileService implements FileServiceInterface
 {
@@ -35,11 +37,11 @@ class FileService implements FileServiceInterface
         $newFiles = [];
 
         $folderLength = mb_strlen($folder);
-        $files = glob($folder . \DIRECTORY_SEPARATOR . '*' . $ending);
+        $files = glob($folder . DIRECTORY_SEPARATOR . '*' . $ending);
         foreach ($files as $file) {
             $fileName = mb_substr($file, $folderLength + 1);
 
-            if (!\array_key_exists($fileName, $knownFilesLookup)) {
+            if (!array_key_exists($fileName, $knownFilesLookup)) {
                 /** @var FileTrait $fileTrait */
                 $fileTrait = $createNewFile($file);
                 $fileTrait->setFilename($fileName);

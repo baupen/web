@@ -15,6 +15,9 @@ use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Service\Interfaces\PathServiceInterface;
+use function array_key_exists;
+use BadMethodCallException;
+use const DIRECTORY_SEPARATOR;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -43,7 +46,7 @@ class EnrichConstructionSiteData extends BaseFixture
      *
      * @param ObjectManager $manager
      *
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     public function load(ObjectManager $manager)
     {
@@ -56,13 +59,13 @@ class EnrichConstructionSiteData extends BaseFixture
             $constructionSiteLookup[$constructionSite->getFolderName()] = $constructionSite;
         }
 
-        $json = file_get_contents(__DIR__ . \DIRECTORY_SEPARATOR . 'Resources' . \DIRECTORY_SEPARATOR . 'construction_sites.json');
+        $json = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'construction_sites.json');
         /** @var ConstructionSite[] $rawConstructionSites */
         $rawConstructionSites = $this->serializer->deserialize($json, ConstructionSite::class . '[]', 'json');
 
         foreach ($rawConstructionSites as $rawConstructionSite) {
             $key = $rawConstructionSite->getFolderName();
-            if (\array_key_exists($key, $constructionSiteLookup)) {
+            if (array_key_exists($key, $constructionSiteLookup)) {
                 $constructionSite = $constructionSiteLookup[$key];
 
                 // only add managers to already existing construction sites because only those are filled with data
