@@ -16,7 +16,6 @@ use App\Service\Interfaces\PathServiceInterface;
 use BadMethodCallException;
 use const DIRECTORY_SEPARATOR;
 use Doctrine\Common\Persistence\ObjectManager;
-use function in_array;
 
 class ClearContentFolders extends BaseFixture
 {
@@ -58,12 +57,12 @@ class ClearContentFolders extends BaseFixture
             return true;
         }
 
-        if (!is_dir($dir) && !in_array(basename($dir), $exceptions, true)) {
+        if (!is_dir($dir) && !\in_array(basename($dir), $exceptions, true)) {
             return unlink($dir);
         }
 
         foreach (scandir($dir) as $item) {
-            if ($item === '.' || $item === '..' || in_array($item, $exceptions, true)) {
+            if ($item === '.' || $item === '..' || \in_array($item, $exceptions, true)) {
                 continue;
             }
 

@@ -15,7 +15,6 @@ use App\Api\Response\FailResponse;
 use App\Api\Response\SuccessfulResponse;
 use App\Controller\Base\BaseDoctrineController;
 use App\Service\Interfaces\ImageServiceInterface;
-use function count;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -77,7 +76,7 @@ abstract class AbstractApiController extends BaseDoctrineController
 
         // check all properties defined
         $errors = $this->getValidator()->validate($parsedRequest);
-        if (count($errors) > 0) {
+        if (\count($errors) > 0) {
             $errorResponse = $this->fail(self::REQUEST_VALIDATION_FAILED);
 
             return false;

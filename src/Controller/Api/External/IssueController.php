@@ -23,7 +23,6 @@ use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\Map;
 use App\Service\Interfaces\UploadServiceInterface;
-use function count;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Id\AssignedGenerator;
@@ -199,10 +198,10 @@ class IssueController extends ExternalApiController
         }
 
         //ensure correct number of files
-        if ($newImageExpected && count($request->files->all()) !== 1) {
+        if ($newImageExpected && \count($request->files->all()) !== 1) {
             return $this->fail(static::ISSUE_NO_FILE_TO_UPLOAD);
         }
-        if (!$newImageExpected && count($request->files->all()) !== 0) {
+        if (!$newImageExpected && \count($request->files->all()) !== 0) {
             return $this->fail(static::ISSUE_NO_FILE_UPLOAD_EXPECTED);
         }
 

@@ -50,7 +50,7 @@ class IssueRepository extends EntityRepository
      */
     public function countByFilter(Filter $filter)
     {
-        return count($this->findByFilter($filter));
+        return \count($this->findByFilter($filter));
     }
 
     /**

@@ -11,7 +11,6 @@
 
 namespace App;
 
-use function dirname;
 use Exception;
 use Generator;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
@@ -38,7 +37,7 @@ class Kernel extends BaseKernel
     public function getProjectDir()
     {
         if ($this->projectDir === null) {
-            $this->projectDir = dirname(__DIR__);
+            $this->projectDir = \dirname(__DIR__);
         }
 
         return $this->projectDir;

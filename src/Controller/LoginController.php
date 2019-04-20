@@ -74,10 +74,11 @@ class LoginController extends BaseLoginController
      * @param UserAuthenticationService $userCreationService
      * @param TranslatorInterface $translator
      * @param EmailServiceInterface $emailService
-     *
      * @param LoggerInterface $logger
-     * @return Response
+     *
      * @throws Exception
+     *
+     * @return Response
      */
     public function createAction(Request $request, UserAuthenticationService $userCreationService, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
     {
@@ -157,6 +158,7 @@ class LoginController extends BaseLoginController
      * @param Request $request
      * @param string $authenticationHash
      * @param TranslatorInterface $translator
+     *
      * @return Response
      */
     public function confirmAction(Request $request, string $authenticationHash, TranslatorInterface $translator)

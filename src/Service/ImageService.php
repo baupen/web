@@ -17,9 +17,7 @@ use App\Entity\Map;
 use App\Helper\ImageHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
-use function count;
 use const DIRECTORY_SEPARATOR;
-use function in_array;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class ImageService implements ImageServiceInterface
@@ -183,7 +181,7 @@ class ImageService implements ImageServiceInterface
      */
     public function ensureValidSize($uncheckedSize)
     {
-        return in_array($uncheckedSize, $this->validSizes, true) ? $uncheckedSize : ImageServiceInterface::SIZE_THUMBNAIL;
+        return \in_array($uncheckedSize, $this->validSizes, true) ? $uncheckedSize : ImageServiceInterface::SIZE_THUMBNAIL;
     }
 
     /**
@@ -487,7 +485,7 @@ class ImageService implements ImageServiceInterface
         }
 
         // shortcut if no issues to be printed
-        if (count($issues) > 0) {
+        if (\count($issues) > 0) {
             //prepare filename for exact issue combination
             $issueToString = function ($issue) {
                 /* @var Issue $issue */

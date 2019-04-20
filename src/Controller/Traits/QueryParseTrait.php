@@ -15,7 +15,6 @@ use App\Entity\Filter;
 use App\Service\Report\ReportElements;
 use DateTime;
 use Exception;
-use function is_array;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait QueryParseTrait
@@ -136,7 +135,7 @@ trait QueryParseTrait
 
         //parse input to array
         $toArray = function ($input) {
-            return is_array($input) ? $input : [];
+            return \is_array($input) ? $input : [];
         };
         $tableParameters = new ParameterBag($toArray($parameterBag->get('tables', [])));
         $reportElements->setTableByCraftsman($tableParameters->getBoolean('tableByCraftsman', $reportElements->getTableByCraftsman()));

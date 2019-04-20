@@ -130,7 +130,7 @@ class Map extends BaseEntity
     /**
      * @param Map|null $parent
      */
-    public function setParent(?Map $parent): void
+    public function setParent(?self $parent): void
     {
         $this->parent = $parent;
     }

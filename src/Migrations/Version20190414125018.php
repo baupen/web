@@ -29,6 +29,7 @@ final class Version20190414125018 extends AbstractMigration
 
     /**
      * @param Schema $schema
+     *
      * @throws DBALException
      */
     public function up(Schema $schema): void
@@ -209,6 +210,7 @@ final class Version20190414125018 extends AbstractMigration
 
     /**
      * @param Schema $schema
+     *
      * @throws DBALException
      */
     public function down(Schema $schema): void

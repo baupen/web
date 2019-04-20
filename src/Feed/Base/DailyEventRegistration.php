@@ -11,7 +11,6 @@
 
 namespace App\Feed\Base;
 
-use function count;
 use DateTime;
 use Generator;
 
@@ -58,7 +57,7 @@ class DailyEventRegistration
         //create new receiver
         $this->receivers[] = $receiver;
 
-        return count($this->receivers) - 1;
+        return \count($this->receivers) - 1;
     }
 
     /**

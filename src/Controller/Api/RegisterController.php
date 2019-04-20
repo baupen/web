@@ -30,7 +30,6 @@ use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
-use function array_key_exists;
 use DateTime;
 use Exception;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -156,7 +155,7 @@ class RegisterController extends ApiController
         //sort entities
         $entities = [];
         foreach ($issues as $guid => $issue) {
-            if (array_key_exists($guid, $entityLookup)) {
+            if (\array_key_exists($guid, $entityLookup)) {
                 $entities[$guid] = $entityLookup[$guid];
             }
         }
@@ -309,7 +308,7 @@ class RegisterController extends ApiController
 
         //write properties to issues
         foreach ($issues as $guid => $issue) {
-            if (array_key_exists($guid, $entities)) {
+            if (\array_key_exists($guid, $entities)) {
                 $entity = $entities[$guid];
                 $res = $updateIssueTransformer->fromApi($issue, $entity, function ($craftsman) use ($constructionSite) {
                     /** @var Craftsman $craftsman */

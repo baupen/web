@@ -20,7 +20,6 @@ use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\SyncServiceInterface;
 use App\Service\Sync\Interfaces\ConstructionSiteServiceInterface;
-use function array_key_exists;
 use const DIRECTORY_SEPARATOR;
 use Exception;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -82,7 +81,7 @@ class SyncService implements SyncServiceInterface
             $folderName = mb_substr($directory, mb_strrpos($directory, DIRECTORY_SEPARATOR) + 1);
 
             $syncTransaction = new SyncTransaction();
-            if (!array_key_exists($folderName, $constructionSitesLookup)) {
+            if (!\array_key_exists($folderName, $constructionSitesLookup)) {
                 $this->constructionSiteService->addConstructionSite($syncTransaction, $directory);
             } else {
                 $this->constructionSiteService->syncConstructionSite($syncTransaction, $constructionSitesLookup[$folderName]);
@@ -118,7 +117,7 @@ class SyncService implements SyncServiceInterface
         $transaction->execute(
             $manager,
             function ($entity, $class) use (&$cacheInvalidatedEntities) {
-                if (array_key_exists($class, $cacheInvalidatedEntities)) {
+                if (\array_key_exists($class, $cacheInvalidatedEntities)) {
                     $cacheInvalidatedEntities[$class][] = $entity;
                 }
 

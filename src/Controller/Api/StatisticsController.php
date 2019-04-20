@@ -34,8 +34,9 @@ class StatisticsController extends ApiController
      *
      * @param Request $request
      *
-     * @return Response
      * @throws Exception
+     *
+     * @return Response
      */
     public function issuesOverviewAction(Request $request)
     {

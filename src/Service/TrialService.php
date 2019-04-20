@@ -80,9 +80,9 @@ class TrialService implements TrialServiceInterface
      * @param string|null $proposedGivenName
      * @param string|null $proposedFamilyName
      *
-     * @return ConstructionManager
      * @throws Exception
      *
+     * @return ConstructionManager
      */
     public function createTrialAccount(?string $proposedGivenName = null, ?string $proposedFamilyName = null)
     {
@@ -164,9 +164,9 @@ class TrialService implements TrialServiceInterface
      * @param string|null $proposedGivenName
      * @param string|null $proposedFamilyName
      *
-     * @return ConstructionManager
      * @throws Exception
      *
+     * @return ConstructionManager
      */
     private function createConstructionManager(?string $proposedGivenName, ?string $proposedFamilyName)
     {

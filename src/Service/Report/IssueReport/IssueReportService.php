@@ -16,7 +16,6 @@ use App\Service\Report\IssueReport\Interfaces\PrintFactoryInterface;
 use App\Service\Report\IssueReport\Model\AggregatedIssuesContent;
 use App\Service\Report\IssueReport\Model\IntroductionContent;
 use App\Service\Report\IssueReport\Model\MapContent;
-use function count;
 use PdfGenerator\Layout\Configuration\ColumnConfiguration;
 use PdfGenerator\Layout\TableRowLayoutInterface;
 use PdfGenerator\LayoutFactoryInterface;
@@ -89,20 +88,20 @@ class IssueReportService implements IssueReportServiceInterface
 
         // prepare table column config
         $tableColumnConfig = [];
-        $normalTableHeadersCount = count($aggregatedIssuesContent->getIdentifierHeader());
+        $normalTableHeadersCount = \count($aggregatedIssuesContent->getIdentifierHeader());
         for ($i = 0; $i < $normalTableHeadersCount; ++$i) {
             $tableColumnConfig[] = new ColumnConfiguration();
         }
 
         $statusTableHeaders = $aggregatedIssuesContent->getIssuesHeader();
-        $statusTableHeadersCount = count($statusTableHeaders);
+        $statusTableHeadersCount = \count($statusTableHeaders);
         for ($i = 0; $i < $statusTableHeadersCount; ++$i) {
             $tableColumnConfig[] = new ColumnConfiguration(ColumnConfiguration::SIZING_BY_TEXT, $statusTableHeaders[$i]);
         }
 
         // prepare content
         $tableHeader = array_merge($aggregatedIssuesContent->getIdentifierHeader(), $aggregatedIssuesContent->getIssuesHeader());
-        $rowCount = count($aggregatedIssuesContent->getIdentifierContent());
+        $rowCount = \count($aggregatedIssuesContent->getIdentifierContent());
         $tableContent = [];
         for ($i = 0; $i < $rowCount; ++$i) {
             $tableContent[] = array_merge($aggregatedIssuesContent->getIdentifierContent()[$i], $aggregatedIssuesContent->getIssuesContent()[$i]);
@@ -153,7 +152,7 @@ class IssueReportService implements IssueReportServiceInterface
     {
         $printer = $printFactory->getPrinter($row);
 
-        $columnLength = count($rowContent);
+        $columnLength = \count($rowContent);
         for ($i = 0; $i < $columnLength; ++$i) {
             $row->setColumn($i);
             $printer->printParagraph($rowContent[$i]);
@@ -181,14 +180,14 @@ class IssueReportService implements IssueReportServiceInterface
 
         // prepare table column config
         $tableColumnConfig = [new ColumnConfiguration(ColumnConfiguration::SIZING_BY_TEXT, '####')];
-        $columns = count($mapContent->getIssuesTableHeader());
+        $columns = \count($mapContent->getIssuesTableHeader());
         for ($i = 1; $i < $columns; ++$i) {
             $tableColumnConfig[] = new ColumnConfiguration(ColumnConfiguration::SIZING_EXPAND);
         }
 
         $this->printTable($layoutFactory, $printFactory, $tableColumnConfig, $mapContent->getIssuesTableHeader(), $mapContent->getIssuesTableContent());
 
-        if (count($mapContent->getIssueImages()) > 0) {
+        if (\count($mapContent->getIssueImages()) > 0) {
             $columnLayout = $layoutFactory->createAutoColumnLayout(4);
             $printer = $printFactory->getPrinter($columnLayout);
 

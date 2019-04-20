@@ -16,7 +16,6 @@ use App\Entity\Traits\IdTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
-use function is_array;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -447,7 +446,7 @@ class Filter extends BaseEntity
         // due to a bug in doctrine empty arrays are saved as null in the db
         // therefore need to handle null arrays as empty arrays
         // bug fix will only be included in 3.0 because it is a breaking change
-        return is_array($array) ? $array : [];
+        return \is_array($array) ? $array : [];
     }
 
     /**

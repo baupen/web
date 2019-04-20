@@ -12,10 +12,7 @@
 namespace App\Model;
 
 use App\Entity\Traits\IdTrait;
-use function array_key_exists;
 use Doctrine\Common\Persistence\ObjectManager;
-use function get_class;
-use function in_array;
 
 class SyncTransaction
 {
@@ -39,22 +36,22 @@ class SyncTransaction
      */
     public function persist($entity)
     {
-        $class = get_class($entity);
+        $class = \get_class($entity);
         $identifier = $entity->getId();
         if ($identifier === null) {
-            if (!array_key_exists($class, $this->newEntities)) {
+            if (!\array_key_exists($class, $this->newEntities)) {
                 $this->newEntities[$class] = [];
             }
 
-            if (!in_array($entity, $this->newEntities, true)) {
+            if (!\in_array($entity, $this->newEntities, true)) {
                 $this->newEntities[$class][] = $entity;
             }
         } else {
-            if (!array_key_exists($class, $this->editedEntities)) {
+            if (!\array_key_exists($class, $this->editedEntities)) {
                 $this->editedEntities[$class] = [];
             }
 
-            if (!array_key_exists($identifier, $this->editedEntities[$class])) {
+            if (!\array_key_exists($identifier, $this->editedEntities[$class])) {
                 $this->editedEntities[$class][$identifier] = $entity;
             }
         }
@@ -65,14 +62,14 @@ class SyncTransaction
      */
     public function remove($entity)
     {
-        $class = get_class($entity);
+        $class = \get_class($entity);
         $identifier = $entity->getId();
         if ($identifier !== null) {
-            if (!array_key_exists($class, $this->removedEntities)) {
+            if (!\array_key_exists($class, $this->removedEntities)) {
                 $this->removedEntities[$class] = [];
             }
 
-            if (!array_key_exists($identifier, $this->removedEntities[$class])) {
+            if (!\array_key_exists($identifier, $this->removedEntities[$class])) {
                 $this->removedEntities[$class][$identifier] = $entity;
             }
         }

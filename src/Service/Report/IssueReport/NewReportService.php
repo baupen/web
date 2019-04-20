@@ -571,7 +571,7 @@ class NewReportService
             }
 
             $key = $this->translator->trans('status', [], 'entity_issue');
-            if (count($status) === 4) {
+            if (\count($status) === 4) {
                 $allStatus = $this->translator->trans('status_values.all', [], 'entity_issue');
                 $filterEntries[$key] = $allStatus;
             } else {
@@ -588,7 +588,7 @@ class NewReportService
                 $names[] = $item->getName();
             }
 
-            $label = $this->translator->trans('introduction.filter.craftsmen', ['%count%' => count($names)], 'report');
+            $label = $this->translator->trans('introduction.filter.craftsmen', ['%count%' => \count($names)], 'report');
             $filterEntries[$label] = implode(', ', $names);
         }
 
@@ -600,7 +600,7 @@ class NewReportService
                 $names[] = $item->getName() . ' (' . $item->getContext() . ')';
             }
 
-            $label = $this->translator->trans('introduction.filter.maps', ['%count%' => count($names)], 'report');
+            $label = $this->translator->trans('introduction.filter.maps', ['%count%' => \count($names)], 'report');
             $filterEntries[$label] = implode(', ', $names);
         }
 
@@ -618,7 +618,7 @@ class NewReportService
                 $names[] = $item;
             }
 
-            $label = $this->translator->trans('introduction.filter.trades', ['%count%' => count($names)], 'report');
+            $label = $this->translator->trans('introduction.filter.trades', ['%count%' => \count($names)], 'report');
             $filterEntries[$label] = implode(', ', $names);
         }
 
@@ -646,7 +646,7 @@ class NewReportService
             }
         }
 
-        if (count($timeEntries) > 0) {
+        if (\count($timeEntries) > 0) {
             //convert all set time status to a single string
             $and = $this->translator->trans('introduction.filter.and', [], 'report');
             $statusEntry = implode(' ' . $and . ' ', $timeEntries);

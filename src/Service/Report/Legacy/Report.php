@@ -12,7 +12,6 @@
 namespace App\Service\Report\Legacy;
 
 use App\Helper\ImageHelper;
-use function count;
 
 class Report
 {
@@ -121,7 +120,7 @@ class Report
         ++$currentColumn;
 
         //filter used for generation
-        if (count($filterEntries) > 0) {
+        if (\count($filterEntries) > 0) {
             $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
             $this->pdfDocument->SetY($startY);
 
@@ -319,7 +318,7 @@ class Report
     private function printRow($row, $fill, $fillBackground)
     {
         //alternative background colors
-        $columnCount = count($row);
+        $columnCount = \count($row);
 
         //put columns
         $maxContentHeight = 0;

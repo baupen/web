@@ -13,7 +13,6 @@ namespace App\Security;
 
 use App\Entity\ConstructionManager;
 use App\Security\Model\UserToken;
-use function get_class;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -55,7 +54,7 @@ class DatabaseProvider implements UserProviderInterface
     {
         if (!$user instanceof UserToken) {
             throw new UnsupportedUserException(
-                sprintf('Instances of "%s" are not supported.', get_class($user))
+                sprintf('Instances of "%s" are not supported.', \get_class($user))
             );
         }
 

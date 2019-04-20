@@ -20,9 +20,7 @@ use App\Entity\IssueImage;
 use App\Entity\IssuePosition;
 use App\Entity\Map;
 use App\Service\Interfaces\PathServiceInterface;
-use function assert;
 use BadMethodCallException;
-use function count;
 use DateTime;
 use const DIRECTORY_SEPARATOR;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -86,8 +84,8 @@ class LoadIssueData extends BaseFixture
             foreach ($issues as $issue) {
                 if ($counter % 8 > 0) {
                     // each 8th issue has an optional position
-                    $x = $this->xOrientationArray[$counter % count($this->xOrientationArray)];
-                    $y = $this->yOrientationArray[$counter % count($this->yOrientationArray)];
+                    $x = $this->xOrientationArray[$counter % \count($this->xOrientationArray)];
+                    $y = $this->yOrientationArray[$counter % \count($this->yOrientationArray)];
                     $position = new IssuePosition();
                     if ($counter % 3 === 0) {
                         $position->setPositionX($y);
@@ -96,7 +94,7 @@ class LoadIssueData extends BaseFixture
                         $position->setPositionX($x);
                         $position->setPositionY($y);
                     }
-                    $position->setPositionZoomScale($this->scaleArray[$counter % count($this->scaleArray)]);
+                    $position->setPositionZoomScale($this->scaleArray[$counter % \count($this->scaleArray)]);
                     $issue->setPosition($position);
                     $position->setIssue($issue);
                 }
@@ -143,7 +141,7 @@ class LoadIssueData extends BaseFixture
      */
     private function getRandomEntry(&$index, array $collection)
     {
-        $index = ($index + 1) % count($collection);
+        $index = ($index + 1) % \count($collection);
 
         return $collection[$index];
     }
@@ -176,7 +174,7 @@ class LoadIssueData extends BaseFixture
      */
     private function add(ObjectManager $manager, array $maps, array $craftsmen, array $constructionManagers, array $issues, array $images, int &$issueNumber, int $setStatus)
     {
-        if (count($constructionManagers) === 0 || count($maps) === 0 || count($craftsmen) === 0) {
+        if (\count($constructionManagers) === 0 || \count($maps) === 0 || \count($craftsmen) === 0) {
             return;
         }
 
@@ -195,7 +193,7 @@ class LoadIssueData extends BaseFixture
                 //if no status is set leave craftsman null sometime
                 $issue->setCraftsman($this->getRandomEntry($randomCraftsmanCounter, $craftsmen));
             } else {
-                assert($issue->getCraftsman() === null);
+                \assert($issue->getCraftsman() === null);
             }
 
             $dayOffset = 0;
@@ -229,7 +227,7 @@ class LoadIssueData extends BaseFixture
 
             if ($this->getRandomNumber() > 3) {
                 // add image to issue
-                $sourceImage = $images[$issueNumber * $this->getRandomNumber() % count($images)];
+                $sourceImage = $images[$issueNumber * $this->getRandomNumber() % \count($images)];
                 $targetFolder = $this->pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
 
                 // ensure target folder exists

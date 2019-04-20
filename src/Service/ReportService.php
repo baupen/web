@@ -88,9 +88,9 @@ class ReportService implements ReportServiceInterface
      * @param string $author
      * @param ReportElements $elements
      *
-     * @return string
      * @throws Exception
      *
+     * @return string
      */
     public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, ?string $author, ReportElements $elements)
     {
@@ -195,12 +195,12 @@ class ReportService implements ReportServiceInterface
             $currentRow[] = $currentIssue;
 
             //add row to grid if applicable
-            if (count($currentRow) === $columnCount) {
+            if (\count($currentRow) === $columnCount) {
                 $imageGrid[] = $currentRow;
                 $currentRow = [];
             }
         }
-        if (count($currentRow) > 0) {
+        if (\count($currentRow) > 0) {
             $imageGrid[] = $currentRow;
         }
 
@@ -238,7 +238,7 @@ class ReportService implements ReportServiceInterface
             }
 
             $key = $this->translator->trans('status', [], 'entity_issue');
-            if (count($status) === 4) {
+            if (\count($status) === 4) {
                 $allStatus = $this->translator->trans('status_values.all', [], 'entity_issue');
                 $filterEntries[$key] = $allStatus;
             } else {
@@ -254,7 +254,7 @@ class ReportService implements ReportServiceInterface
             foreach ($entities as $item) {
                 $names[] = $item->getName();
             }
-            $filterEntries[$this->translator->trans('introduction.filter.craftsmen', ['%count%' => count($names)], 'report')] = implode(', ', $names);
+            $filterEntries[$this->translator->trans('introduction.filter.craftsmen', ['%count%' => \count($names)], 'report')] = implode(', ', $names);
         }
 
         //add maps
@@ -264,7 +264,7 @@ class ReportService implements ReportServiceInterface
             foreach ($entities as $item) {
                 $names[] = $item->getName() . ' (' . $item->getContext() . ')';
             }
-            $filterEntries[$this->translator->trans('introduction.filter.maps', ['%count%' => count($names)], 'report')] = implode(', ', $names);
+            $filterEntries[$this->translator->trans('introduction.filter.maps', ['%count%' => \count($names)], 'report')] = implode(', ', $names);
         }
 
         //add limit
@@ -279,7 +279,7 @@ class ReportService implements ReportServiceInterface
             foreach ($filter->getTrades() as $trade) {
                 $names[] = $trade;
             }
-            $filterEntries[$this->translator->trans('introduction.filter.trades', ['%count%' => count($names)], 'report')] = implode(', ', $names);
+            $filterEntries[$this->translator->trans('introduction.filter.trades', ['%count%' => \count($names)], 'report')] = implode(', ', $names);
         }
 
         // collect set time
@@ -306,7 +306,7 @@ class ReportService implements ReportServiceInterface
             }
         }
 
-        if (count($timeEntries) > 0) {
+        if (\count($timeEntries) > 0) {
             //convert all set time status to a single string
             $and = $this->translator->trans('introduction.filter.and', [], 'report');
             $statusEntry = implode(' ' . $and . ' ', $timeEntries);
@@ -326,7 +326,7 @@ class ReportService implements ReportServiceInterface
         }
         $elements[] = $this->translator->trans('issues.detailed', [], 'report');
         if ($reportElements->getWithImages()) {
-            $elements[count($elements) - 1] .= ' ' . $this->translator->trans('issues.with_images', [], 'report');
+            $elements[\count($elements) - 1] .= ' ' . $this->translator->trans('issues.with_images', [], 'report');
         }
 
         //print

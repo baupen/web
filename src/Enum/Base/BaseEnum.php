@@ -11,7 +11,6 @@
 
 namespace App\Enum\Base;
 
-use function get_class;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -66,7 +65,7 @@ abstract class BaseEnum
     {
         $res = [];
         try {
-            $reflection = new ReflectionClass(get_class($this));
+            $reflection = new ReflectionClass(\get_class($this));
             $choices = $reflection->getConstants();
 
             foreach ($choices as $name => $value) {
@@ -92,7 +91,7 @@ abstract class BaseEnum
     private function getTranslationForValueInternal($enumValue, TranslatorInterface $translator)
     {
         try {
-            $reflection = new ReflectionClass(get_class($this));
+            $reflection = new ReflectionClass(\get_class($this));
             $choices = $reflection->getConstants();
 
             foreach ($choices as $name => $value) {

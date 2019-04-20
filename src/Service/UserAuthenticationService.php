@@ -15,11 +15,7 @@ use App\DataFixtures\Production\LoadConstructionManagerData;
 use App\Entity\ConstructionManager;
 use App\Service\Interfaces\UserCreationServiceInterface;
 use App\Service\Ldap\LdapLogger;
-use function count;
 use Exception;
-use function in_array;
-use function is_array;
-use function is_string;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -105,7 +101,7 @@ class UserAuthenticationService implements UserCreationServiceInterface
 
         $skipValues = [self::AUTHENTICATION_SOURCE_NONE, LoadConstructionManagerData::AUTHENTICATION_SOURCE_FIXTURES, TrialService::AUTHENTICATION_SOURCE_TRIAL];
 
-        return in_array($constructionManager->getAuthenticationSource(), $skipValues, true);
+        return \in_array($constructionManager->getAuthenticationSource(), $skipValues, true);
     }
 
     /**
@@ -131,7 +127,7 @@ class UserAuthenticationService implements UserCreationServiceInterface
      */
     private function checkIsValidRegistrationEmails(string $email)
     {
-        return in_array($email, explode(';', $this->validRegistrationEmails), true);
+        return \in_array($email, explode(';', $this->validRegistrationEmails), true);
     }
 
     /**
@@ -151,7 +147,7 @@ class UserAuthenticationService implements UserCreationServiceInterface
         }
 
         $arguments = explode('/', mb_substr($ldapUrl, 7));
-        if (count($arguments) !== 4) {
+        if (\count($arguments) !== 4) {
             $this->logger->log(LogLevel::ERROR, 'invalid connection string: too few arguments');
 
             return null;
@@ -192,9 +188,9 @@ class UserAuthenticationService implements UserCreationServiceInterface
         // execute & ensure result returned
         /** @var Entry[] $entries */
         $entries = $search->execute();
-        $this->logger->log(LogLevel::INFO, 'query has ' . count($entries) . ' results');
+        $this->logger->log(LogLevel::INFO, 'query has ' . \count($entries) . ' results');
 
-        return count($entries) > 0 ? $entries[0] : null;
+        return \count($entries) > 0 ? $entries[0] : null;
     }
 
     /**
@@ -220,7 +216,7 @@ class UserAuthenticationService implements UserCreationServiceInterface
             $info = ldap_get_entries($ldap, $result);
             @ldap_close($ldap);
 
-            return count($info) > 0;
+            return \count($info) > 0;
         }
 
         return false;
@@ -236,9 +232,9 @@ class UserAuthenticationService implements UserCreationServiceInterface
     {
         $attributeValue = $entry->getAttribute($key);
         if ($attributeValue !== null) {
-            if (is_array($attributeValue) && count($attributeValue) > 0) {
+            if (\is_array($attributeValue) && \count($attributeValue) > 0) {
                 return trim((string)$attributeValue[0]);
-            } elseif (is_string($attributeValue)) {
+            } elseif (\is_string($attributeValue)) {
                 return trim($attributeValue);
             }
         }
@@ -258,8 +254,8 @@ class UserAuthenticationService implements UserCreationServiceInterface
 
     /**
      * @param Entry $entry
-     *
      * @param string $givenName
+     *
      * @return string|null
      */
     private function parseFamilyName(Entry $entry, string $givenName)

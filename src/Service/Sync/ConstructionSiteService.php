@@ -19,7 +19,6 @@ use App\Service\Sync\Interfaces\ConstructionSiteServiceInterface;
 use App\Service\Sync\Interfaces\DisplayNameServiceInterface;
 use App\Service\Sync\Interfaces\FileServiceInterface;
 use App\Service\Sync\Interfaces\MapServiceInterface;
-use function count;
 use const DIRECTORY_SEPARATOR;
 
 class ConstructionSiteService implements ConstructionSiteServiceInterface
@@ -133,7 +132,7 @@ class ConstructionSiteService implements ConstructionSiteServiceInterface
                         $syncTransaction->persist($constructionSite);
                     }
                 }
-            } elseif (count($constructionSiteImages) > 0) {
+            } elseif (\count($constructionSiteImages) > 0) {
                 // set initial image if none
                 $newImage = $constructionSiteImages[0];
 

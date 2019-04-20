@@ -12,7 +12,6 @@
 namespace App\Service\Sync;
 
 use App\Service\Sync\Interfaces\DisplayNameServiceInterface;
-use function array_key_exists;
 use function count;
 
 class DisplayNameService implements DisplayNameServiceInterface
@@ -87,7 +86,7 @@ class DisplayNameService implements DisplayNameServiceInterface
     public function normalizeMapNames(array $mapNames)
     {
         //skip normalization if too few map names
-        if (count($mapNames) < 3) {
+        if (\count($mapNames) < 3) {
             return $mapNames;
         }
 
@@ -124,7 +123,7 @@ class DisplayNameService implements DisplayNameServiceInterface
         // create dictionary for each name to point to the first element with that name
         $prefixElementIdMap = [];
         foreach ($elementNames as $id => $name) {
-            if (!array_key_exists($name, $prefixElementIdMap)) {
+            if (!\array_key_exists($name, $prefixElementIdMap)) {
                 $prefixElementIdMap[$name] = $id;
             }
         }
@@ -135,7 +134,7 @@ class DisplayNameService implements DisplayNameServiceInterface
         // ensure an element exists for all common prefixes
         foreach ($prefixCountMap as $prefix => $count) {
             if ($count > 1) {
-                if (!array_key_exists($prefix, $prefixElementIdMap)) {
+                if (!\array_key_exists($prefix, $prefixElementIdMap)) {
                     $newElementId = $createNewElement($prefix);
                     $elementNames[$newElementId] = $prefix;
                     $prefixElementIdMap[$prefix] = $newElementId;
@@ -153,7 +152,7 @@ class DisplayNameService implements DisplayNameServiceInterface
                 $possibleParentPrefix = mb_substr($possibleParentPrefix, 0, mb_strrpos($possibleParentPrefix, ' '));
 
                 // assign to parent if found
-                if (array_key_exists($possibleParentPrefix, $prefixElementIdMap)) {
+                if (\array_key_exists($possibleParentPrefix, $prefixElementIdMap)) {
                     $assignChildToParent($elementKey, $prefixElementIdMap[$possibleParentPrefix]);
                     $found = true;
                     break;
@@ -181,7 +180,7 @@ class DisplayNameService implements DisplayNameServiceInterface
             $currentPrefix = $name;
 
             while (true) {
-                if (!array_key_exists($currentPrefix, $prefixMap)) {
+                if (!\array_key_exists($currentPrefix, $prefixMap)) {
                     $prefixMap[$currentPrefix] = 1;
                 } else {
                     ++$prefixMap[$currentPrefix];
@@ -215,14 +214,14 @@ class DisplayNameService implements DisplayNameServiceInterface
         foreach ($names as $name) {
             $parts = explode(' ', $name);
             $decomposedNames[] = $parts;
-            $partCount = count($parts);
+            $partCount = \count($parts);
             for ($i = 0; $i < $partCount; ++$i) {
-                if (!array_key_exists($i, $filenameGroupCount)) {
+                if (!\array_key_exists($i, $filenameGroupCount)) {
                     $filenameGroupCount[$i] = [];
                 }
 
                 $currentPart = $parts[$i];
-                if (!array_key_exists($currentPart, $filenameGroupCount[$i])) {
+                if (!\array_key_exists($currentPart, $filenameGroupCount[$i])) {
                     $filenameGroupCount[$i][$currentPart] = 1;
                 } else {
                     ++$filenameGroupCount[$i][$currentPart];
@@ -240,10 +239,10 @@ class DisplayNameService implements DisplayNameServiceInterface
     private function removeIdenticalGroups(array &$filenameGroupsStatistics, array &$decomposedNames)
     {
         // remove groups which are always the same
-        $partAnalyticsCount = count($filenameGroupsStatistics);
+        $partAnalyticsCount = \count($filenameGroupsStatistics);
         for ($i = 0; $i < $partAnalyticsCount; ++$i) {
             // only one value; can safely remove because will not contain any useful information
-            if (count($filenameGroupsStatistics[$i]) === 1) {
+            if (\count($filenameGroupsStatistics[$i]) === 1) {
                 $this->removeGroup($i, $filenameGroupsStatistics, $decomposedNames);
 
                 --$partAnalyticsCount;
@@ -258,7 +257,7 @@ class DisplayNameService implements DisplayNameServiceInterface
     private function removeDateGroups(array &$decomposedNames)
     {
         foreach ($decomposedNames as &$decomposedName) {
-            $lastIndex = count($decomposedName) - 1;
+            $lastIndex = \count($decomposedName) - 1;
             $possibleDateGroup = $decomposedName[$lastIndex];
 
             if (is_numeric($possibleDateGroup)) {
