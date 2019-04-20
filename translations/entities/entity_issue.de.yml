@@ -1,15 +1,13 @@
-entity:
- name: 'Pendenz'
-
 status_values:
-  all: 'Alle'
-  none: 'Keine'
-  registered: 'Offen'
-  read: 'Gelesen'
-  responded: 'Beantwortet'
-  reviewed: 'Bestätigt'
-
-number: 'Nummer'
-status: 'Status'
-response_limit: 'Frist'
-description: 'Beschreibung'
+  all: Alle
+  none: Keine
+  registered: Offen
+  read: Gelesen
+  responded: Beantwortet
+  reviewed: Bestätigt
+number: Nummer
+status: Status
+response_limit: Frist
+description: Beschreibung
+entity:
+  name: Pendenz

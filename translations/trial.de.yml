@@ -1,6 +1,6 @@
 construction_site:
   name: '%name%’s Baustelle'
-  country: 'Schweiz'
+  country: Schweiz
   street_address: 'Am Bergweg 12'
-  locality: 'Teerwil'
+  locality: Teerwil
   postal_code: '4157'

@@ -1,21 +1,14 @@
 craftsman:
   title: '? offene Pendenzen'
   description: 'von '
-
 filter:
-  title: 'Pendenzenüberblick'
-  description: 'Pendenzenüberblick'
-
+  title: Pendenzenüberblick
+  description: Pendenzenüberblick
 email:
-  # is appended to all subjects
   subject_appendix: ' auf der Baustelle %construction_site_name%'
-
-  # is put into the message body if applicable after the usual body
   body_limit_info: 'Die nächste ablaufende Frist ist am %limit%. Wir sind zuversichtlich, dass die davon betroffenen Pendenzen bis dann behoben sind.'
   body_closed_issues_info: 'one: Seit Ihrem letzten Besuch wurden %count% Pendenzen als erledigt markiert. Wir danken für Ihre Mitarbeit!|some: Seit Ihrem letzten Besuch wurde eine %count% Pendenzen als erledigt markiert. Wir danken für Ihre Mitarbeit!'
-
   action_text: 'Pendenzen ansehen'
-
   unread:
     subject: 'one: Eine ungelesene Pendenz|some: %count% ungelesene Pendenzen'
     body: 'one: Sie haben eine neue offene Pendenz.|some: Sie haben noch %count% offene Pendenzen.'

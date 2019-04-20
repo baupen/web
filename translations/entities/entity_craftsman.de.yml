@@ -1,5 +1,3 @@
-#name
 entity:
- name: 'ausführende Firma'
-
-trade: 'Gewerbe'
+  name: 'ausführende Firma'
+trade: Gewerbe

@@ -1,17 +1,11 @@
 dispatch:
   title: 'Handwerker informieren'
   description: 'Informieren Sie Handwerker über neue Pendenzen mit einer personalisierten E-Mail'
-
 email:
-  # is appended to all subjects
   subject_appendix: ' auf der Baustelle %construction_site_name%'
-
-  # is put into the message body if applicable after the usual body
   body_limit_info: 'Die nächste ablaufende Frist ist am %limit%. Wir sind zuversichtlich, dass die davon betroffenen Pendenzen bis dann behoben sind.'
   body_closed_issues_info: 'Seit Ihrem letzten Besuch wurden %count% Pendenzen als erledigt markiert. Wir danken für Ihre Mitarbeit!|Seit Ihrem letzten Besuch wurde eine %count% Pendenzen als erledigt markiert. Wir danken für Ihre Mitarbeit!'
-
   action_text: 'Pendenzen ansehen'
-
   unread:
     subject: 'Eine ungelesene Pendenz|%count% ungelesene Pendenzen'
     body: 'Sie haben eine neue offene Pendenz.|Sie haben noch %count% offene Pendenzen.'

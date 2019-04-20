@@ -1,5 +1,3 @@
-#name
 entity:
- name: 'impresa esecutiva'
-
-trade: 'settore'
+  name: Pendenza
+trade: settore

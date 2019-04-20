@@ -1,17 +1,11 @@
 dispatch:
   title: 'Informare gli operai'
   description: 'Informate gli operai di nuove pendenze tramite un’e-mail personalizzata'
-
 email:
-  # is appended to all subjects
   subject_appendix: ' al cantiere %construction_site_name%'
-
-  # is put into the message body if applicable after the usual body
   body_limit_info: 'Il prossimo termine scade il %limit%. Siamo fiduciosi che entro allora le pendenze interessate saranno risolte.'
   body_closed_issues_info: 'Dall’ultima visita %count% pendenze sono state contrassegnate come risolte. Ringraziamo per la collaborazione!|Dall’ultima visita %count% pendenza è stata contrassegnata come risolta. Ringraziamo per la collaborazione!'
-
   action_text: 'Visualizzare le pendenze'
-
   unread:
     subject: 'Una pendenza non letta|%count% pendenze non lette'
     body: 'Una nuova pendenza aperta.|Ci sono ancora %count% pendenze aperte.'

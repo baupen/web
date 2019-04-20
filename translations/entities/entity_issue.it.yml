@@ -1,14 +1,12 @@
-entity:
- name: 'Pendenza'
-
 status_values:
-  all: 'Tutte'
-  none: 'Nessuna'
-  registered: 'Aperte'
-  responded: 'Risposte'
-  reviewed: 'Confermate'
-
-number: 'Numero'
-status: 'Stato'
-response_limit: 'Termine'
-description: 'Descrizione'
+  all: Tutte
+  none: Nessuna
+  registered: Aperte
+  responded: Risposte
+  reviewed: Confermate
+number: Numero
+status: Stato
+response_limit: Termine
+description: Descrizione
+entity:
+  name: Pendenza

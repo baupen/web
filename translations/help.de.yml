@@ -1,19 +1,17 @@
 overview:
   title: 'So funktioniert''s.'
   description: 'Pendenzmangement in 6 Schritten.'
-
-  create: 'Erfassen'
+  create: Erfassen
   create_description: 'Nimm mit unserer iOS-App Pendenzen auf.'
   download_ios_app: 'zum App Store'
-  populate: 'Einpflegen'
+  populate: Einpflegen
   populate_description: 'Bereinige neu erfasste Pendenzen im Warteraum.'
-  manage: 'Verwalten'
+  manage: Verwalten
   manage_description: 'Durchsuche, ändere und exportiere eingepflegte Pendenzen im Verzeichnis.'
-  notify: 'Benachrichtigen'
+  notify: Benachrichtigen
   notify_description: 'Informiere Handwerker über neue Pendenzen.'
-  wait: 'Rückmeldung'
+  wait: Rückmeldung
   wait_description: 'Erhalte von den Handwerkern eine Antwort. Diese können mit einem persönlichen Link ihre Pendenzen abarbeiten und als erledigt markieren.'
-  inspect: 'Abschliessen'
+  inspect: Abschliessen
   inspect_description: 'Markiere in der iOS-App die erledigten Pendenzen als abgeschlossen.'
-
   start: 'Zur Anwendung'
