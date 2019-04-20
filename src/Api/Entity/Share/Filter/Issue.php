@@ -11,10 +11,13 @@
 
 namespace App\Api\Entity\Share\Filter;
 
-class Issue extends \App\Api\Entity\Base\PublicIssue
+use App\Api\Entity\Base\PublicIssue;
+use DateTime;
+
+class Issue extends PublicIssue
 {
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      */
     private $reviewedAt;
 
@@ -24,17 +27,17 @@ class Issue extends \App\Api\Entity\Base\PublicIssue
     private $reviewedByName;
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getReviewedAt(): ?\DateTime
+    public function getReviewedAt(): ?DateTime
     {
         return $this->reviewedAt;
     }
 
     /**
-     * @param \DateTime|null $reviewedAt
+     * @param DateTime|null $reviewedAt
      */
-    public function setReviewedAt(?\DateTime $reviewedAt): void
+    public function setReviewedAt(?DateTime $reviewedAt): void
     {
         $this->reviewedAt = $reviewedAt;
     }

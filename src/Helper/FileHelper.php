@@ -11,13 +11,15 @@
 
 namespace App\Helper;
 
+use Exception;
+
 class FileHelper
 {
     /**
      * @param $sourceFolder
      * @param $destinationFolder
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public static function copyRecursively($sourceFolder, $destinationFolder)
     {
@@ -27,7 +29,7 @@ class FileHelper
 
         $dir = opendir($sourceFolder);
         if ($dir === false) {
-            throw new \Exception('failed to open dir ' . $dir);
+            throw new Exception('failed to open dir ' . $dir);
         }
 
         while (false !== ($file = readdir($dir))) {

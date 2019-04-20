@@ -11,6 +11,7 @@
 
 namespace App\Api\Transformer\Foyer;
 
+use App\Api\Entity\Foyer\NumberIssue;
 use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\Issue;
 
@@ -19,11 +20,11 @@ class NumberIssueTransformer extends BatchTransformer
     /**
      * @param Issue $entity
      *
-     * @return \App\Api\Entity\Foyer\NumberIssue
+     * @return NumberIssue
      */
     public function toApi($entity)
     {
-        $issue = new \App\Api\Entity\Foyer\NumberIssue($entity->getId());
+        $issue = new NumberIssue($entity->getId());
         $issue->setNumber($entity->getNumber());
 
         return $issue;

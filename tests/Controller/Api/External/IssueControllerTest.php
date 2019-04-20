@@ -19,13 +19,15 @@ use App\Api\External\Entity\Point;
 use App\Controller\Api\External\IssueController;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\External\Base\ApiController;
+use DateTime;
+use Exception;
 
 class IssueControllerTest extends ApiController
 {
     /**
      * tests the create issue method.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testCreateIssue()
     {
@@ -59,7 +61,7 @@ class IssueControllerTest extends ApiController
 
         $meta = new ObjectMeta();
         $meta->setId($this->getNewGuid());
-        $meta->setLastChangeTime((new \DateTime())->format('c'));
+        $meta->setLastChangeTime((new DateTime())->format('c'));
         $issue->setMeta($meta);
 
         $issuePosition = new IssuePosition();
@@ -95,7 +97,7 @@ class IssueControllerTest extends ApiController
     /**
      * tests the create issue method.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testUpdateIssue()
     {
@@ -145,14 +147,13 @@ class IssueControllerTest extends ApiController
     /**
      * tests upload/download functionality.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testIssueActions()
     {
         $client = static::createClient();
         $user = $this->getAuthenticatedUser($client);
-        $serializer = $client->getContainer()->get('serializer');
-        $doRequest = function ($issueId, $action) use ($client, $user, $serializer) {
+        $doRequest = function ($issueId, $action) use ($client, $user) {
             $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issueID":"' . $issueId . '"}';
             $client->request(
                 'POST',
@@ -175,7 +176,6 @@ class IssueControllerTest extends ApiController
         //check response issue updated
         $issue->setIsMarked(!$issue->getIsMarked());
         $this->verifyIssue($issueResponse->data->issue, $issue);
-        $issue = $serializer->deserialize(json_encode($issueResponse->data->issue), Issue::class, 'json');
 
         /* @var Issue[] $newIssues */
         /* @var Issue[] $registeredIssues */

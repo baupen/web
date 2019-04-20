@@ -14,6 +14,7 @@ namespace App\Entity;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -58,14 +59,14 @@ class Issue extends BaseEntity
     private $description;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $responseLimit;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(type="datetime")
      */
@@ -79,7 +80,7 @@ class Issue extends BaseEntity
     private $uploadBy;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -93,7 +94,7 @@ class Issue extends BaseEntity
     private $registrationBy;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -107,7 +108,7 @@ class Issue extends BaseEntity
     private $responseBy;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -225,33 +226,33 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getResponseLimit(): ?\DateTime
+    public function getResponseLimit(): ?DateTime
     {
         return $this->responseLimit;
     }
 
     /**
-     * @param \DateTime|null $responseLimit
+     * @param DateTime|null $responseLimit
      */
-    public function setResponseLimit(?\DateTime $responseLimit): void
+    public function setResponseLimit(?DateTime $responseLimit): void
     {
         $this->responseLimit = $responseLimit;
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getUploadedAt(): \DateTime
+    public function getUploadedAt(): DateTime
     {
         return $this->uploadedAt;
     }
 
     /**
-     * @param \DateTime $uploadedAt
+     * @param DateTime $uploadedAt
      */
-    public function setUploadedAt(\DateTime $uploadedAt): void
+    public function setUploadedAt(DateTime $uploadedAt): void
     {
         $this->uploadedAt = $uploadedAt;
     }
@@ -273,17 +274,17 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getRegisteredAt(): ?\DateTime
+    public function getRegisteredAt(): ?DateTime
     {
         return $this->registeredAt;
     }
 
     /**
-     * @param \DateTime|null $registeredAt
+     * @param DateTime|null $registeredAt
      */
-    public function setRegisteredAt(?\DateTime $registeredAt): void
+    public function setRegisteredAt(?DateTime $registeredAt): void
     {
         $this->registeredAt = $registeredAt;
     }
@@ -305,17 +306,17 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getRespondedAt(): ?\DateTime
+    public function getRespondedAt(): ?DateTime
     {
         return $this->respondedAt;
     }
 
     /**
-     * @param \DateTime|null $respondedAt
+     * @param DateTime|null $respondedAt
      */
-    public function setRespondedAt(?\DateTime $respondedAt): void
+    public function setRespondedAt(?DateTime $respondedAt): void
     {
         $this->respondedAt = $respondedAt;
     }
@@ -337,17 +338,17 @@ class Issue extends BaseEntity
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getReviewedAt(): ?\DateTime
+    public function getReviewedAt(): ?DateTime
     {
         return $this->reviewedAt;
     }
 
     /**
-     * @param \DateTime|null $reviewedAt
+     * @param DateTime|null $reviewedAt
      */
-    public function setReviewedAt(?\DateTime $reviewedAt): void
+    public function setReviewedAt(?DateTime $reviewedAt): void
     {
         $this->reviewedAt = $reviewedAt;
     }

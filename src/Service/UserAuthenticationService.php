@@ -15,6 +15,7 @@ use App\DataFixtures\Production\LoadConstructionManagerData;
 use App\Entity\ConstructionManager;
 use App\Service\Interfaces\UserCreationServiceInterface;
 use App\Service\Ldap\LdapLogger;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -60,7 +61,7 @@ class UserAuthenticationService implements UserCreationServiceInterface
     /**
      * @param ConstructionManager $constructionManager
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return bool
      */
@@ -253,6 +254,7 @@ class UserAuthenticationService implements UserCreationServiceInterface
 
     /**
      * @param Entry $entry
+     * @param string $givenName
      *
      * @return string|null
      */

@@ -12,6 +12,7 @@
 namespace App\Api\External\Transformer;
 
 use App\Api\External\Entity\Point;
+use App\Entity\Issue;
 use App\Entity\IssuePosition;
 use App\Entity\MapFile;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -51,7 +52,7 @@ class IssuePositionTransformer
         return $position;
     }
 
-    public function fromApi(?\App\Api\External\Entity\IssuePosition $position, \App\Entity\Issue $entity)
+    public function fromApi(?\App\Api\External\Entity\IssuePosition $position, Issue $entity)
     {
         $existing = $entity->getPosition();
 

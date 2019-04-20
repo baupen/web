@@ -34,7 +34,7 @@ class MapContent
     private $issuesTableHeader;
 
     /**
-     * @var string[][]
+     * @var string[]
      */
     private $issuesTableContent;
 
@@ -108,7 +108,7 @@ class MapContent
     }
 
     /**
-     * @return \string[][]
+     * @return string[]
      */
     public function getIssuesTableContent(): array
     {
@@ -116,7 +116,7 @@ class MapContent
     }
 
     /**
-     * @param \string[][] $issuesTableContent
+     * @param string[] $issuesTableContent
      */
     public function setIssuesTableContent(array $issuesTableContent): void
     {

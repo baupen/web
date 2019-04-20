@@ -20,6 +20,8 @@ use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\SyncServiceInterface;
 use App\Service\Sync\Interfaces\ConstructionSiteServiceInterface;
+use const DIRECTORY_SEPARATOR;
+use Exception;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class SyncService implements SyncServiceInterface
@@ -63,7 +65,7 @@ class SyncService implements SyncServiceInterface
     /**
      * syncs the filesystem with the database, creating/updating construction sites as needed.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function sync()
     {
@@ -74,9 +76,9 @@ class SyncService implements SyncServiceInterface
             $constructionSitesLookup[$constructionSite->getFolderName()] = $constructionSite;
         }
 
-        $existingDirectories = glob($this->pathService->getConstructionSiteFolderRoot() . \DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
+        $existingDirectories = glob($this->pathService->getConstructionSiteFolderRoot() . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
         foreach ($existingDirectories as $directory) {
-            $folderName = mb_substr($directory, mb_strrpos($directory, \DIRECTORY_SEPARATOR) + 1);
+            $folderName = mb_substr($directory, mb_strrpos($directory, DIRECTORY_SEPARATOR) + 1);
 
             $syncTransaction = new SyncTransaction();
             if (!\array_key_exists($folderName, $constructionSitesLookup)) {

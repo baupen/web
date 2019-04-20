@@ -22,9 +22,11 @@ use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Entity\Traits\IdTrait;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,7 +45,7 @@ class ReadController extends ExternalApiController
      * @param TransformerFactory $transformerFactory
      *
      * @throws ORMException
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -57,7 +59,7 @@ class ReadController extends ExternalApiController
 
         //construct read data
         $readData = new ReadData();
-        if ($constructionManager->getLastChangedAt() > new \DateTime($readRequest->getUser()->getLastChangeTime())) {
+        if ($constructionManager->getLastChangedAt() > new DateTime($readRequest->getUser()->getLastChangeTime())) {
             $readData->setChangedUser($transformerFactory->getUserTransformer()->toApi($constructionManager, $readRequest->getAuthenticationToken()));
         }
         $readData->setChangedConstructionSites([]);
@@ -83,6 +85,10 @@ class ReadController extends ExternalApiController
      * @param ReadData $readData
      *
      * @throws ORMException
+     * @throws Exception
+     * @throws Exception
+     * @throws Exception
+     * @throws Exception
      */
     private function processObjectMeta(TransformerFactory $transformerFactory, ReadRequest $readRequest, ConstructionManager $constructionManager, ReadData $readData)
     {
@@ -268,13 +274,13 @@ WHERE cscm.construction_manager_id = :id';
      * @param string[] $removeIds contains the invalid given (ids -> time)
      * @param string[] $knownIds contains the valid given (id -> time)
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function filterIds($requestObjectMeta, $dbEntities, &$allValidIds, &$removeIds, &$knownIds)
     {
         $removeIds = [];
         foreach ($requestObjectMeta as $objectMeta) {
-            $removeIds[$objectMeta['id']] = (new \DateTime($objectMeta['lastChangeTime']))->format('Y-m-d H:i:s');
+            $removeIds[$objectMeta['id']] = (new DateTime($objectMeta['lastChangeTime']))->format('Y-m-d H:i:s');
         }
 
         $allValidIds = [];

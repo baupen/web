@@ -18,6 +18,8 @@ use App\Model\Point;
 use App\Model\SyncTransaction;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Sync\Interfaces\MapSectorServiceInterface;
+use const DIRECTORY_SEPARATOR;
+use stdClass;
 
 class MapSectorService implements MapSectorServiceInterface
 {
@@ -49,7 +51,7 @@ class MapSectorService implements MapSectorServiceInterface
         foreach ($mapFiles as $mapFile) {
             $fileNameWithoutExtension = mb_substr($mapFile->getFilename(), 0, -3);
 
-            $mapSectorsJsonPath = $directory . \DIRECTORY_SEPARATOR . $fileNameWithoutExtension . 'sectors.json';
+            $mapSectorsJsonPath = $directory . DIRECTORY_SEPARATOR . $fileNameWithoutExtension . 'sectors.json';
             $mapSectors = $this->parseMapSectors($mapSectorsJsonPath);
 
             $this->applyMapSectors($syncTransaction, $mapFile, $mapSectors);
@@ -180,7 +182,7 @@ class MapSectorService implements MapSectorServiceInterface
     }
 
     /**
-     * @param \stdClass[] $pointsJson
+     * @param stdClass[] $pointsJson
      *
      * @return Point[]|array
      */

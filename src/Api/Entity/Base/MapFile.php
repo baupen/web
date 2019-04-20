@@ -11,10 +11,12 @@
 
 namespace App\Api\Entity\Base;
 
+use DateTime;
+
 class MapFile extends BaseEntity
 {
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $createdAt;
 
@@ -29,17 +31,17 @@ class MapFile extends BaseEntity
     private $mapId;
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param DateTime $createdAt
      */
-    public function setCreatedAt(\DateTime $createdAt): void
+    public function setCreatedAt(DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }

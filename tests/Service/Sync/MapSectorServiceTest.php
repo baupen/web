@@ -17,6 +17,8 @@ use App\Model\SyncTransaction;
 use App\Service\Sync\MapSectorService;
 use App\Tests\Service\Sync\Mock\ObjectManagerMock;
 use App\Tests\Service\Sync\Mock\PathServiceMock;
+use function count;
+use const DIRECTORY_SEPARATOR;
 use PHPUnit\Framework\TestCase;
 
 class MapSectorServiceTest extends TestCase
@@ -26,7 +28,7 @@ class MapSectorServiceTest extends TestCase
      */
     private $service;
 
-    private $resourcesFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'MapSectorServiceResources';
+    private $resourcesFolder = __DIR__ . DIRECTORY_SEPARATOR . 'MapSectorServiceResources';
 
     public function __construct(?string $name = null, array $data = [], string $dataName = '')
     {
@@ -43,12 +45,12 @@ class MapSectorServiceTest extends TestCase
         $this->service->syncMapSectors($transaction, $constructionSite);
 
         $sectors = $constructionSite->getMapFiles()[0]->getSectors();
-        $this->assertSame(2, \count($sectors));
+        $this->assertSame(2, count($sectors));
 
         $sector1 = $sectors[0];
         $this->assertSame('id_1', $sector1->getIdentifier());
         $this->assertSame('Dusche1', $sector1->getName());
-        $this->assertSame(3, \count($sector1->getPoints()));
+        $this->assertSame(3, count($sector1->getPoints()));
 
         $point1 = $sector1->getPoints()[1];
         $this->assertSame(0.8, $point1->x);

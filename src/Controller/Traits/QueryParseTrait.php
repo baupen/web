@@ -13,6 +13,8 @@ namespace App\Controller\Traits;
 
 use App\Entity\Filter;
 use App\Service\Report\ReportElements;
+use DateTime;
+use Exception;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait QueryParseTrait
@@ -21,7 +23,7 @@ trait QueryParseTrait
      * @param Filter $filter
      * @param array $query
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function setFilterProperties(Filter $filter, $query)
     {
@@ -30,7 +32,7 @@ trait QueryParseTrait
             $filter->filterByIsMarked(true);
         }
         if ($parameterBag->getBoolean('onlyOverLimit')) {
-            $filter->filterByResponseLimitEnd(new \DateTime());
+            $filter->filterByResponseLimitEnd(new DateTime());
         }
 
         $craftsmanParameters = new ParameterBag($parameterBag->get('craftsman', []));
@@ -109,7 +111,7 @@ trait QueryParseTrait
 
         //parse input to null or datetime
         $toDateTime = function ($input) {
-            return $input === null || $input === '' ? null : new \DateTime($input);
+            return $input === null || $input === '' ? null : new DateTime($input);
         };
 
         if ($filterParameters->getBoolean('enabled')) {

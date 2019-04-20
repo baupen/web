@@ -21,6 +21,7 @@ use App\Api\Transformer\Switch_\ConstructionSiteTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionSite;
 use App\Service\Interfaces\PathServiceInterface;
+use const DIRECTORY_SEPARATOR;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -245,7 +246,7 @@ class SwitchController extends ApiController
 
         $checkedFolderName = $proposedFolderName;
         $index = 1;
-        while (is_dir($rootPath . \DIRECTORY_SEPARATOR . $checkedFolderName)) {
+        while (is_dir($rootPath . DIRECTORY_SEPARATOR . $checkedFolderName)) {
             $checkedFolderName = $proposedFolderName . $index++;
         }
 

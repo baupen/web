@@ -13,7 +13,9 @@ namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionManager;
+use BadMethodCallException;
 use Doctrine\Common\Persistence\ObjectManager;
+use Exception;
 
 class LoadConstructionManagerData extends BaseFixture
 {
@@ -24,8 +26,8 @@ class LoadConstructionManagerData extends BaseFixture
      *
      * @param ObjectManager $manager
      *
-     * @throws \BadMethodCallException
-     * @throws \Exception
+     * @throws BadMethodCallException
+     * @throws Exception
      */
     public function load(ObjectManager $manager)
     {
@@ -44,7 +46,7 @@ class LoadConstructionManagerData extends BaseFixture
             $appUser->setFamilyName($entry[3]);
             $appUser->setPassword();
             $appUser->setAuthenticationHash();
-            $appUser->setAuthenticationSource(\App\DataFixtures\Production\LoadConstructionManagerData::AUTHENTICATION_SOURCE_FIXTURES);
+            $appUser->setAuthenticationSource(Production\LoadConstructionManagerData::AUTHENTICATION_SOURCE_FIXTURES);
             $appUser->setRegistrationDate();
             $manager->persist($appUser);
         }

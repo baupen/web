@@ -15,6 +15,7 @@ use App\Api\External\Request\Base\AuthenticatedRequest;
 use App\Controller\Api\Base\AbstractApiController;
 use App\Entity\AuthenticationToken;
 use App\Entity\ConstructionManager;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\HttpFoundation\Request;
 
 class ExternalApiController extends AbstractApiController
@@ -31,7 +32,7 @@ class ExternalApiController extends AbstractApiController
      * @param $errorResponse
      * @param $constructionManager
      *
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      *
      * @return bool
      */

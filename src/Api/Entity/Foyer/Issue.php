@@ -11,6 +11,8 @@
 
 namespace App\Api\Entity\Foyer;
 
+use DateTime;
+
 class Issue extends \App\Api\Entity\Base\Issue
 {
     /**
@@ -34,7 +36,7 @@ class Issue extends \App\Api\Entity\Base\Issue
     private $map;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      */
     private $uploadedAt;
 
@@ -54,7 +56,7 @@ class Issue extends \App\Api\Entity\Base\Issue
     private $imageFull;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      */
     private $responseLimit;
 
@@ -123,17 +125,17 @@ class Issue extends \App\Api\Entity\Base\Issue
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getUploadedAt(): ?\DateTime
+    public function getUploadedAt(): ?DateTime
     {
         return $this->uploadedAt;
     }
 
     /**
-     * @param \DateTime|null $uploadedAt
+     * @param DateTime|null $uploadedAt
      */
-    public function setUploadedAt(?\DateTime $uploadedAt): void
+    public function setUploadedAt(?DateTime $uploadedAt): void
     {
         $this->uploadedAt = $uploadedAt;
     }
@@ -187,17 +189,17 @@ class Issue extends \App\Api\Entity\Base\Issue
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getResponseLimit(): ?\DateTime
+    public function getResponseLimit(): ?DateTime
     {
         return $this->responseLimit;
     }
 
     /**
-     * @param \DateTime|null $responseLimit
+     * @param DateTime|null $responseLimit
      */
-    public function setResponseLimit(?\DateTime $responseLimit): void
+    public function setResponseLimit(?DateTime $responseLimit): void
     {
         $this->responseLimit = $responseLimit;
     }

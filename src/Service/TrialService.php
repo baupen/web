@@ -17,7 +17,10 @@ use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\SyncServiceInterface;
 use App\Service\Interfaces\TrialServiceInterface;
+use const DIRECTORY_SEPARATOR;
+use Exception;
 use Faker\Factory;
+use Faker\Generator;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -27,7 +30,7 @@ class TrialService implements TrialServiceInterface
     const AUTHENTICATION_SOURCE_TRIAL = 'trial';
 
     /**
-     * @var \Faker\Generator
+     * @var Generator
      */
     private $faker;
 
@@ -77,7 +80,7 @@ class TrialService implements TrialServiceInterface
      * @param string|null $proposedGivenName
      * @param string|null $proposedFamilyName
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return ConstructionManager
      */
@@ -122,11 +125,11 @@ class TrialService implements TrialServiceInterface
     /**
      * @param ConstructionSite $constructionSite
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function addConstructionSiteContent(ConstructionSite $constructionSite)
     {
-        mkdir($this->pathService->getConstructionSiteFolderRoot() . \DIRECTORY_SEPARATOR . $constructionSite->getFolderName());
+        mkdir($this->pathService->getConstructionSiteFolderRoot() . DIRECTORY_SEPARATOR . $constructionSite->getFolderName());
 
         $this->copyMapFiles($constructionSite);
         $this->copyConstructionSiteFiles($constructionSite);
@@ -136,11 +139,11 @@ class TrialService implements TrialServiceInterface
     /**
      * @param ConstructionSite $constructionSite
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function copyMapFiles(ConstructionSite $constructionSite)
     {
-        $sourceFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'Trial' . \DIRECTORY_SEPARATOR . 'Resources' . \DIRECTORY_SEPARATOR . 'maps';
+        $sourceFolder = __DIR__ . DIRECTORY_SEPARATOR . 'Trial' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'maps';
         $targetFolder = $this->pathService->getFolderForMapFile($constructionSite);
         FileHelper::copyRecursively($sourceFolder, $targetFolder);
     }
@@ -148,11 +151,11 @@ class TrialService implements TrialServiceInterface
     /**
      * @param ConstructionSite $constructionSite
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function copyConstructionSiteFiles(ConstructionSite $constructionSite)
     {
-        $sourceFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'Trial' . \DIRECTORY_SEPARATOR . 'Resources' . \DIRECTORY_SEPARATOR . 'images';
+        $sourceFolder = __DIR__ . DIRECTORY_SEPARATOR . 'Trial' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'images';
         $targetFolder = $this->pathService->getFolderForConstructionSiteImage($constructionSite);
         FileHelper::copyRecursively($sourceFolder, $targetFolder);
     }
@@ -161,7 +164,7 @@ class TrialService implements TrialServiceInterface
      * @param string|null $proposedGivenName
      * @param string|null $proposedFamilyName
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return ConstructionManager
      */
@@ -176,17 +179,13 @@ class TrialService implements TrialServiceInterface
         // generate unused email
         $maxTries = 10;
         $repository = $this->registry->getRepository(ConstructionManager::class);
-        while (true) {
+        do {
             $email = $this->generateRandomString(5, '_') . '@test.mangel.io';
 
-            if ($repository->findOneBy(['email' => $email]) === null) {
-                break;
-            }
-
             if ($maxTries-- < 0) {
-                throw new \Exception('unable to create new random email');
+                throw new Exception('unable to create new random email');
             }
-        }
+        } while ($repository->findOneBy(['email' => $email]) !== null);
 
         // generate login info
         $password = $this->generateRandomString(10, '-');

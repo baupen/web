@@ -13,7 +13,9 @@ namespace App\DataFixtures\Production;
 
 use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionManager;
+use BadMethodCallException;
 use Doctrine\Common\Persistence\ObjectManager;
+use Exception;
 
 class LoadConstructionManagerData extends BaseFixture
 {
@@ -24,9 +26,9 @@ class LoadConstructionManagerData extends BaseFixture
      *
      * @param ObjectManager $manager
      *
-     * @throws \BadMethodCallException
-     * @throws \Exception
-     * @throws \Exception
+     * @throws BadMethodCallException
+     * @throws Exception
+     * @throws Exception
      */
     public function load(ObjectManager $manager)
     {

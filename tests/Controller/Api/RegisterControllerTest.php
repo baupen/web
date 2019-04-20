@@ -13,8 +13,13 @@ namespace App\Tests\Controller\Api;
 
 use App\Api\Entity\Register\UpdateIssue;
 use App\Api\Request\ConstructionSiteRequest;
+use App\Api\Request\Register\SetStatusRequest;
+use App\Api\Request\Register\UpdateIssuesRequest;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\ApiController;
+use function count;
+use DateTime;
+use function is_array;
 
 class RegisterControllerTest extends ApiController
 {
@@ -25,7 +30,7 @@ class RegisterControllerTest extends ApiController
         $this->assertNotNull($issuesData->data);
         $this->assertNotNull($issuesData->data->issues);
 
-        $this->assertTrue(\is_array($issuesData->data->issues));
+        $this->assertTrue(is_array($issuesData->data->issues));
         $once = [false, false, false, false];
         $onceProperties = ['respondedAt', 'responseByName', 'reviewedAt', 'reviewByName'];
         foreach ($issuesData->data->issues as $issue) {
@@ -43,7 +48,7 @@ class RegisterControllerTest extends ApiController
             $this->assertObjectHasAttribute('registrationByName', $issue);
             $this->assertObjectHasAttribute('registeredAt', $issue);
 
-            for ($i = 0; $i < \count($onceProperties); ++$i) {
+            for ($i = 0; $i < count($onceProperties); ++$i) {
                 $once[$i] = $once[$i] || property_exists($issue, $onceProperties[$i]);
             }
         }
@@ -67,7 +72,7 @@ class RegisterControllerTest extends ApiController
         $this->assertNotNull($craftsmanData->data);
         $this->assertNotNull($craftsmanData->data->craftsmen);
 
-        $this->assertTrue(\is_array($craftsmanData->data->craftsmen));
+        $this->assertTrue(is_array($craftsmanData->data->craftsmen));
         foreach ($craftsmanData->data->craftsmen as $craftsman) {
             $this->assertNotNull($craftsman);
             $this->assertObjectHasAttribute('name', $craftsman);
@@ -89,7 +94,7 @@ class RegisterControllerTest extends ApiController
         $this->assertNotNull($mapData->data);
         $this->assertNotNull($mapData->data->maps);
 
-        $this->assertTrue(\is_array($mapData->data->maps));
+        $this->assertTrue(is_array($mapData->data->maps));
         foreach ($mapData->data->maps as $map) {
             $this->assertNotNull($map);
             $this->assertObjectHasAttribute('name', $map);
@@ -120,14 +125,14 @@ class RegisterControllerTest extends ApiController
         $craftsman = $this->getSomeConstructionSite()->getCraftsmen()[0];
         $issues = [];
         foreach ($this->getIssues()->data->issues as $apiIssue) {
-            $issue = new UpdateIssue($apiIssue->id);
-            $issue->setIsMarked(false);
-            $issue->setResponseLimit(new \DateTime());
-            $issue->setCraftsmanId($craftsman->getId());
-            $issue->setDescription('hello world');
-            $issues[] = $issue;
+            $updateIssue = new UpdateIssue($apiIssue->id);
+            $updateIssue->setIsMarked(false);
+            $updateIssue->setResponseLimit(new DateTime());
+            $updateIssue->setCraftsmanId($craftsman->getId());
+            $updateIssue->setDescription('hello world');
+            $issues[] = $updateIssue;
         }
-        $request = new \App\Api\Request\Register\UpdateIssuesRequest();
+        $request = new UpdateIssuesRequest();
         $request->setUpdateIssues($issues);
         $request->setConstructionSiteId($this->getSomeConstructionSite()->getId());
 
@@ -137,7 +142,7 @@ class RegisterControllerTest extends ApiController
         $this->assertNotNull($issuesData->data);
         $this->assertNotNull($issuesData->data->issues);
 
-        $this->assertTrue(\is_array($issuesData->data->issues));
+        $this->assertTrue(is_array($issuesData->data->issues));
         $this->assertSameSize($issues, $issuesData->data->issues);
         foreach ($issuesData->data->issues as $issue) {
             $this->assertNotNull($issue);
@@ -155,7 +160,7 @@ class RegisterControllerTest extends ApiController
         foreach ($this->getIssues()->data->issues as $apiIssue) {
             $issuesIds[] = $apiIssue->id;
         }
-        $request = new \App\Api\Request\Register\SetStatusRequest();
+        $request = new SetStatusRequest();
         $request->setIssueIds($issuesIds);
         $request->setRespondedStatusSet(true);
         $request->setReviewedStatusSet(false);
@@ -167,7 +172,7 @@ class RegisterControllerTest extends ApiController
         $this->assertNotNull($issuesData->data);
         $this->assertNotNull($issuesData->data->issues);
 
-        $this->assertTrue(\is_array($issuesData->data->issues));
+        $this->assertTrue(is_array($issuesData->data->issues));
         $this->assertSameSize($issuesIds, $issuesData->data->issues);
         foreach ($issuesData->data->issues as $issue) {
             $this->assertNotNull($issue);
@@ -183,7 +188,7 @@ class RegisterControllerTest extends ApiController
         $response = $this->authenticatedPostRequest($url, $request);
         $issuesData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
-        $this->assertTrue(\is_array($issuesData->data->issues));
+        $this->assertTrue(is_array($issuesData->data->issues));
         $this->assertSameSize($issuesIds, $issuesData->data->issues);
         foreach ($issuesData->data->issues as $issue) {
             $this->assertNotNull($issue);

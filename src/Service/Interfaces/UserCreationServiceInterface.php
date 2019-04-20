@@ -12,13 +12,14 @@
 namespace App\Service\Interfaces;
 
 use App\Entity\ConstructionManager;
+use Exception;
 
 interface UserCreationServiceInterface
 {
     /**
      * @param ConstructionManager $constructionManager
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return ConstructionManager|bool
      */

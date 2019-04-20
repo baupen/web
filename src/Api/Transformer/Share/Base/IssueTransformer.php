@@ -12,6 +12,7 @@
 namespace App\Api\Transformer\Share\Base;
 
 use App\Api\Entity\Base\PublicIssue;
+use App\Api\Transformer\Base\PublicIssueTransformer;
 use App\Entity\Issue;
 use App\Service\Interfaces\ImageServiceInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -19,7 +20,7 @@ use Symfony\Component\Routing\RouterInterface;
 class IssueTransformer
 {
     /**
-     * @var \App\Api\Transformer\Base\PublicIssueTransformer
+     * @var PublicIssueTransformer
      */
     private $issueTransformer;
 
@@ -31,10 +32,10 @@ class IssueTransformer
     /**
      * CraftsmanTransformer constructor.
      *
-     * @param \App\Api\Transformer\Base\PublicIssueTransformer $issueTransformer
+     * @param PublicIssueTransformer $issueTransformer
      * @param RouterInterface $router
      */
-    public function __construct(\App\Api\Transformer\Base\PublicIssueTransformer $issueTransformer, RouterInterface $router)
+    public function __construct(PublicIssueTransformer $issueTransformer, RouterInterface $router)
     {
         $this->issueTransformer = $issueTransformer;
         $this->router = $router;

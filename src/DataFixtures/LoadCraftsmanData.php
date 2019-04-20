@@ -15,7 +15,10 @@ use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
+use BadMethodCallException;
+use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
+use Exception;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class LoadCraftsmanData extends BaseFixture
@@ -37,8 +40,8 @@ class LoadCraftsmanData extends BaseFixture
      *
      * @param ObjectManager $manager
      *
-     * @throws \BadMethodCallException
-     * @throws \Exception
+     * @throws BadMethodCallException
+     * @throws Exception
      */
     public function load(ObjectManager $manager)
     {
@@ -59,8 +62,8 @@ class LoadCraftsmanData extends BaseFixture
                 $craftsman->setConstructionSite($constructionSite);
                 $craftsman->setEmailIdentifier();
                 if ($counter++ % 3 === 0) {
-                    $craftsman->setLastOnlineVisit(new \DateTime());
-                    $craftsman->setLastEmailSent(new \DateTime());
+                    $craftsman->setLastOnlineVisit(new DateTime());
+                    $craftsman->setLastEmailSent(new DateTime());
                 }
                 $manager->persist($craftsman);
                 $manager->flush();

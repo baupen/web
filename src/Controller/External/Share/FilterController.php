@@ -14,6 +14,9 @@ namespace App\Controller\External\Share;
 use App\Controller\Base\BaseDoctrineController;
 use App\Controller\External\Traits\FilterAuthenticationTrait;
 use App\Entity\Filter;
+use DateTime;
+use Exception;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -30,9 +33,9 @@ class FilterController extends BaseDoctrineController
      *
      * @param $identifier
      *
-     * @throws \Exception
+     * @throws Exception
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function shareAction($identifier)
     {
@@ -41,7 +44,7 @@ class FilterController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
-        $now = new \DateTime();
+        $now = new DateTime();
         if ($filter->getAccessAllowedUntil() !== null && $filter->getAccessAllowedUntil() < $now) {
             throw new AccessDeniedException();
         }

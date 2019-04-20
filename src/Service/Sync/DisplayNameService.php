@@ -12,6 +12,7 @@
 namespace App\Service\Sync;
 
 use App\Service\Sync\Interfaces\DisplayNameServiceInterface;
+use function count;
 
 class DisplayNameService implements DisplayNameServiceInterface
 {
@@ -89,7 +90,7 @@ class DisplayNameService implements DisplayNameServiceInterface
             return $mapNames;
         }
 
-        /** @var string[][] $filenameGroupsStatistics */
+        /** @var string[] $filenameGroupsStatistics */
         /** @var string[][] $decomposedMapNames */
         list($filenameGroupsStatistics, $decomposedMapNames) = $this->groupFilenameParts($mapNames);
 
@@ -200,7 +201,7 @@ class DisplayNameService implements DisplayNameServiceInterface
     /**
      * @param array $names
      *
-     * @return \string[][],\string[][]
+     * @return string[],\string[][]
      */
     private function groupFilenameParts(array $names)
     {
@@ -232,8 +233,8 @@ class DisplayNameService implements DisplayNameServiceInterface
     }
 
     /**
-     * @param string[][] $filenameGroupsStatistics
-     * @param string[][] $decomposedNames
+     * @param string[] $filenameGroupsStatistics
+     * @param string[] $decomposedNames
      */
     private function removeIdenticalGroups(array &$filenameGroupsStatistics, array &$decomposedNames)
     {
@@ -251,7 +252,7 @@ class DisplayNameService implements DisplayNameServiceInterface
     }
 
     /**
-     * @param string[][] $decomposedNames
+     * @param string[] $decomposedNames
      */
     private function removeDateGroups(array &$decomposedNames)
     {
@@ -283,8 +284,8 @@ class DisplayNameService implements DisplayNameServiceInterface
 
     /**
      * @param int $index
-     * @param string[][] $filenameGroupsStatistics
-     * @param string[][] $decomposedNames
+     * @param string[] $filenameGroupsStatistics
+     * @param string[] $decomposedNames
      */
     private function removeGroup(int $index, array &$filenameGroupsStatistics, array &$decomposedNames)
     {

@@ -15,7 +15,10 @@ use App\Entity\ConstructionSite;
 use App\Entity\Filter;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\External\Api\Base\ApiController;
-use Doctrine\ORM\ORMException;
+use function count;
+use Exception;
+use function is_array;
+use Symfony\Component\HttpFoundation\Response;
 
 class FilterControllerTest extends ApiController
 {
@@ -28,9 +31,9 @@ class FilterControllerTest extends ApiController
      * @param $relativeLink
      * @param null $payload
      *
-     * @throws \Exception
+     * @throws Exception
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     private function authenticatedRequest($relativeLink, $payload = null)
     {
@@ -67,8 +70,7 @@ class FilterControllerTest extends ApiController
     }
 
     /**
-     * @throws ORMException
-     * @throws \Exception
+     * @throws Exception
      */
     public function testMapsList()
     {
@@ -78,7 +80,7 @@ class FilterControllerTest extends ApiController
         $this->assertNotNull($mapData->data);
         $this->assertNotNull($mapData->data->maps);
 
-        $this->assertTrue(\is_array($mapData->data->maps));
+        $this->assertTrue(is_array($mapData->data->maps));
         $onceProperties = ['reviewedAt', 'reviewedByName'];
         $once = [false, false];
         foreach ($mapData->data->maps as $map) {
@@ -88,7 +90,7 @@ class FilterControllerTest extends ApiController
             $this->assertObjectHasAttribute('imageShareView', $map);
             $this->assertObjectHasAttribute('imageFull', $map);
 
-            $this->assertTrue(\is_array($map->issues));
+            $this->assertTrue(is_array($map->issues));
             foreach ($map->issues as $issue) {
                 $this->assertObjectHasAttribute('registeredAt', $issue);
                 $this->assertObjectHasAttribute('registrationByName', $issue);
@@ -99,7 +101,7 @@ class FilterControllerTest extends ApiController
                 $this->assertObjectHasAttribute('number', $issue);
                 $this->assertObjectHasAttribute('id', $issue);
 
-                for ($i = 0; $i < \count($onceProperties); ++$i) {
+                for ($i = 0; $i < count($onceProperties); ++$i) {
                     $once[$i] = $once[$i] || property_exists($issue, $onceProperties[$i]);
                 }
             }
@@ -111,8 +113,7 @@ class FilterControllerTest extends ApiController
     }
 
     /**
-     * @throws ORMException
-     * @throws \Exception
+     * @throws Exception
      */
     public function testRead()
     {

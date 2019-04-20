@@ -23,6 +23,8 @@ use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Helper\IssueHelper;
+use DateTime;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -112,7 +114,7 @@ class CraftsmanController extends ApiController
      * @param $identifier
      * @param MapTransformer $mapTransformer
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -151,7 +153,7 @@ class CraftsmanController extends ApiController
      * @param Request $request
      * @param $identifier
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -169,7 +171,7 @@ class CraftsmanController extends ApiController
 
         $data = new ProcessingEntitiesData();
         if ($issue->getRespondedAt() === null) {
-            $issue->setRespondedAt(new \DateTime());
+            $issue->setRespondedAt(new DateTime());
             $issue->setResponseBy($craftsman);
             $this->fastSave($issue);
             $data->addSuccessfulId($issue->getId());
@@ -186,7 +188,7 @@ class CraftsmanController extends ApiController
      * @param Request $request
      * @param $identifier
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -205,7 +207,7 @@ class CraftsmanController extends ApiController
         $data = new ProcessingEntitiesData();
         if ($issue->getRespondedAt() === null) {
             $data->addSkippedId($issue->getId());
-        } elseif ($issue->getRespondedAt() < new \DateTime('now -5 hours')) {
+        } elseif ($issue->getRespondedAt() < new DateTime('now -5 hours')) {
             return $this->fail(self::TIMEOUT_EXCEEDED);
         } else {
             $issue->setRespondedAt(null);

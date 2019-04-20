@@ -24,6 +24,8 @@ use App\Api\Request\Edit\UpdateMapRequest;
 use App\Api\Request\Edit\UploadMapFileRequest;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\ApiController;
+use function count;
+use function is_array;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class EditControllerTest extends ApiController
@@ -40,8 +42,8 @@ class EditControllerTest extends ApiController
         $mapFilesData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($mapFilesData->data);
-        $this->assertTrue(\is_array($mapFilesData->data->mapFiles));
-        $this->assertTrue(\count($mapFilesData->data->mapFiles) > 0);
+        $this->assertTrue(is_array($mapFilesData->data->mapFiles));
+        $this->assertTrue(count($mapFilesData->data->mapFiles) > 0);
         foreach ($mapFilesData->data->mapFiles as $mapFile) {
             $this->assertNotNull($mapFile);
             $this->assertObjectHasAttribute('id', $mapFile);
@@ -145,7 +147,7 @@ class EditControllerTest extends ApiController
         $uploadFileCheck = $uploadFileCheckData->data->uploadFileCheck;
         $this->assertTrue($uploadFileCheck->uploadPossible);
         $this->assertNotEmpty($uploadFileCheck->sameHashConflicts);
-        $this->assertTrue(\count($uploadFileCheck->sameHashConflicts) === 1 && $uploadFileCheck->sameHashConflicts[0] === $mapFile->id);
+        $this->assertTrue(count($uploadFileCheck->sameHashConflicts) === 1 && $uploadFileCheck->sameHashConflicts[0] === $mapFile->id);
         $this->assertNotNull($uploadFileCheck->fileNameConflict);
         $this->assertTrue($uploadFileCheck->fileNameConflict === $mapFile->id);
         $this->assertNotSame($originalName, $uploadFileCheck->derivedFileName);
@@ -281,7 +283,7 @@ class EditControllerTest extends ApiController
 
         $response = $this->authenticatedPostRequest('/api/edit/maps', $constructionSiteRequest);
 
-        return \count($this->checkResponse($response, ApiStatus::SUCCESS)->data->maps);
+        return count($this->checkResponse($response, ApiStatus::SUCCESS)->data->maps);
     }
 
     public function testCraftsmanAdd()
@@ -404,7 +406,7 @@ class EditControllerTest extends ApiController
 
         $response = $this->authenticatedPostRequest('/api/edit/craftsmen', $constructionSiteRequest);
 
-        return \count($this->checkResponse($response, ApiStatus::SUCCESS)->data->craftsmen);
+        return count($this->checkResponse($response, ApiStatus::SUCCESS)->data->craftsmen);
     }
 
     public function testMaps()
@@ -419,8 +421,8 @@ class EditControllerTest extends ApiController
         $mapData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($mapData->data);
-        $this->assertTrue(\is_array($mapData->data->maps));
-        $this->assertTrue(\count($mapData->data->maps) > 0);
+        $this->assertTrue(is_array($mapData->data->maps));
+        $this->assertTrue(count($mapData->data->maps) > 0);
         foreach ($mapData->data->maps as $map) {
             $this->assertNotNull($map);
             $this->assertObjectHasAttribute('id', $map);
@@ -444,8 +446,8 @@ class EditControllerTest extends ApiController
         $craftsmenData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($craftsmenData->data);
-        $this->assertTrue(\is_array($craftsmenData->data->craftsmen));
-        $this->assertTrue(\count($craftsmenData->data->craftsmen) > 0);
+        $this->assertTrue(is_array($craftsmenData->data->craftsmen));
+        $this->assertTrue(count($craftsmenData->data->craftsmen) > 0);
         foreach ($craftsmenData->data->craftsmen as $craftsman) {
             $this->assertNotNull($craftsman);
             $this->assertObjectHasAttribute('id', $craftsman);

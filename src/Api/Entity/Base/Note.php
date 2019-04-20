@@ -11,6 +11,8 @@
 
 namespace App\Api\Entity\Base;
 
+use DateTime;
+
 class Note extends BaseEntity
 {
     /**
@@ -19,7 +21,7 @@ class Note extends BaseEntity
     private $content;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $timestamp;
 
@@ -50,17 +52,17 @@ class Note extends BaseEntity
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getTimestamp(): \DateTime
+    public function getTimestamp(): DateTime
     {
         return $this->timestamp;
     }
 
     /**
-     * @param \DateTime $timestamp
+     * @param DateTime $timestamp
      */
-    public function setTimestamp(\DateTime $timestamp): void
+    public function setTimestamp(DateTime $timestamp): void
     {
         $this->timestamp = $timestamp;
     }

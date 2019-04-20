@@ -20,7 +20,11 @@ use App\Entity\IssueImage;
 use App\Entity\IssuePosition;
 use App\Entity\Map;
 use App\Service\Interfaces\PathServiceInterface;
+use BadMethodCallException;
+use DateTime;
+use const DIRECTORY_SEPARATOR;
 use Doctrine\Common\Persistence\ObjectManager;
+use Exception;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -61,13 +65,13 @@ class LoadIssueData extends BaseFixture
      *
      * @param ObjectManager $manager
      *
-     * @throws \BadMethodCallException
-     * @throws \Exception
+     * @throws BadMethodCallException
+     * @throws Exception
      */
     public function load(ObjectManager $manager)
     {
         $issuesJson = file_get_contents(__DIR__ . '/Resources/issues.json');
-        $images = glob(__DIR__ . \DIRECTORY_SEPARATOR . 'Resources' . \DIRECTORY_SEPARATOR . 'issue_images' . \DIRECTORY_SEPARATOR . '*.*');
+        $images = glob(__DIR__ . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'issue_images' . DIRECTORY_SEPARATOR . '*.*');
 
         $getFreshIssueSet = function ($counter) use ($issuesJson) {
             /** @var Issue[] $issues */
@@ -166,7 +170,7 @@ class LoadIssueData extends BaseFixture
      * @param int $issueNumber
      * @param int $setStatus
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function add(ObjectManager $manager, array $maps, array $craftsmen, array $constructionManagers, array $issues, array $images, int &$issueNumber, int $setStatus)
     {
@@ -199,26 +203,26 @@ class LoadIssueData extends BaseFixture
                 if ($setStatus & self::REVIEW_SET) {
                     $issue->setReviewBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionManagers));
                     $dayOffset = $this->getRandomNumber();
-                    $issue->setReviewedAt(new \DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
+                    $issue->setReviewedAt(new DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
                 }
 
                 if ($setStatus & self::RESPONSE_SET) {
                     $issue->setResponseBy($issue->getCraftsman());
                     $dayOffset += $this->getRandomNumber() + 1;
-                    $issue->setRespondedAt(new \DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
+                    $issue->setRespondedAt(new DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
                 }
 
                 $issue->setRegistrationBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionManagers));
                 $dayOffset += $this->getRandomNumber() + 1;
-                $issue->setRegisteredAt(new \DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
+                $issue->setRegisteredAt(new DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
             }
 
             $issue->setUploadBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionManagers));
             $dayOffset += $this->getRandomNumber() + 1;
-            $issue->setUploadedAt(new \DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
+            $issue->setUploadedAt(new DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
 
             if ($this->getRandomNumber() > 7) {
-                $issue->setResponseLimit(new \DateTime(($this->getRandomNumber()) . ' days'));
+                $issue->setResponseLimit(new DateTime(($this->getRandomNumber()) . ' days'));
             }
 
             if ($this->getRandomNumber() > 3) {
@@ -234,7 +238,7 @@ class LoadIssueData extends BaseFixture
                 // create new filename
                 $extension = pathinfo($sourceImage, PATHINFO_EXTENSION);
                 $fileName = Uuid::uuid4()->toString() . '.' . $extension;
-                $targetPath = $targetFolder . \DIRECTORY_SEPARATOR . $fileName;
+                $targetPath = $targetFolder . DIRECTORY_SEPARATOR . $fileName;
 
                 //copy file to target folder
                 copy($sourceImage, $targetPath);

@@ -23,8 +23,13 @@ use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\Map;
 use App\Service\Interfaces\UploadServiceInterface;
+use DateTime;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Id\AssignedGenerator;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\ORMException;
+use Exception;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -85,7 +90,7 @@ class IssueController extends ExternalApiController
      * @param UploadServiceInterface $uploadService
      *
      * @throws ORMException
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -102,7 +107,7 @@ class IssueController extends ExternalApiController
      * @param UploadServiceInterface $uploadService
      *
      * @throws ORMException
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -118,7 +123,7 @@ class IssueController extends ExternalApiController
      * @param $mode
      *
      * @throws ORMException
-     * @throws \Exception
+     * @throws Exception
      *
      * @return JsonResponse|Response
      */
@@ -147,13 +152,13 @@ class IssueController extends ExternalApiController
             $entity = $existing;
             $newImageExpected &= $issueModifyRequest->getIssue()->getImage() !== null && ($existing->getImage() === null || $issueModifyRequest->getIssue()->getImage()->getId() !== $existing->getImage()->getId());
         } else {
-            throw new \InvalidArgumentException('mode must be create or update');
+            throw new InvalidArgumentException('mode must be create or update');
         }
 
         //transform to entity
         $issue = $issueTransformer->fromApi($issueModifyRequest->getIssue(), $entity);
         $issue->setUploadBy($constructionManager);
-        $issue->setUploadedAt(new \DateTime());
+        $issue->setUploadedAt(new DateTime());
 
         //get map & check access
         /** @var Map $map */
@@ -218,8 +223,8 @@ class IssueController extends ExternalApiController
         //deactivate guid generator so we can use the ids the client has sent us
         foreach ([Issue::class, IssueImage::class] as $class) {
             $metadata = $em->getClassMetadata($class);
-            $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
-            $metadata->setIdGenerator(new \Doctrine\ORM\Id\AssignedGenerator());
+            $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
+            $metadata->setIdGenerator(new AssignedGenerator());
         }
 
         // need to enforce correct guid
@@ -306,7 +311,7 @@ class IssueController extends ExternalApiController
                 /** @var Issue $issue */
                 /* @var ConstructionManager $constructionManager */
                 if ($issue->getRegisteredAt() !== null && $issue->getReviewedAt() === null) {
-                    $issue->setReviewedAt(new \DateTime());
+                    $issue->setReviewedAt(new DateTime());
                     $issue->setReviewBy($constructionManager);
                     $this->fastSave($issue);
 

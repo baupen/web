@@ -18,6 +18,8 @@ use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
 use App\Entity\Issue;
+use DateTime;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,8 +34,7 @@ class StatisticsController extends ApiController
      *
      * @param Request $request
      *
-     * @throws \Exception
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws Exception
      *
      * @return Response
      */
@@ -66,7 +67,7 @@ class StatisticsController extends ApiController
 
         //count overdue issues
         $filter = self::createRegisterFilter($constructionSite);
-        $filter->filterByResponseLimitEnd(new \DateTime());
+        $filter->filterByResponseLimitEnd(new DateTime());
         $filter->filterByReviewedStatus(false);
         $overview->setOverdueIssuesCount($issueRepo->countByFilter($filter));
 

@@ -11,7 +11,10 @@
 
 namespace App;
 
+use Exception;
+use Generator;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\Config\Exception\LoaderLoadException;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
@@ -57,7 +60,7 @@ class Kernel extends BaseKernel
     }
 
     /**
-     * @return \Generator|iterable|\Symfony\Component\HttpKernel\Bundle\BundleInterface[]
+     * @return Generator|iterable|BundleInterface[]
      */
     public function registerBundles()
     {
@@ -75,7 +78,7 @@ class Kernel extends BaseKernel
      * @param ContainerBuilder $container
      * @param LoaderInterface $loader
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
     {
@@ -93,7 +96,7 @@ class Kernel extends BaseKernel
     /**
      * @param RouteCollectionBuilder $routes
      *
-     * @throws \Symfony\Component\Config\Exception\LoaderLoadException
+     * @throws LoaderLoadException
      */
     protected function configureRoutes(RouteCollectionBuilder $routes)
     {

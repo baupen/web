@@ -13,6 +13,7 @@ namespace App\Tests\Service\Sync;
 
 use App\Service\Sync\DisplayNameService;
 use App\Tests\Service\Sync\Model\ChildModel;
+use function count;
 use PHPUnit\Framework\TestCase;
 
 class DisplayNameService_PutIntoTreeStructure extends TestCase
@@ -127,12 +128,12 @@ class DisplayNameService_PutIntoTreeStructure extends TestCase
     private function assertExpectedStructureCreated(array $testCase, array $expectedResult)
     {
         // calculate expected calls
-        $expectedClearParentCallCount = \count($expectedResult);
+        $expectedClearParentCallCount = count($expectedResult);
         $expectedAssignChildToParentCall = 0;
         foreach ($expectedResult as $item) {
             $expectedAssignChildToParentCall += $item->countChildren();
         }
-        $expectedResultElements = $expectedAssignChildToParentCall + \count($expectedResult);
+        $expectedResultElements = $expectedAssignChildToParentCall + count($expectedResult);
         $testCaseElements = 0;
         foreach ($testCase as $item) {
             $testCaseElements += $item->countChildren() + 1;
@@ -215,12 +216,12 @@ class DisplayNameService_PutIntoTreeStructure extends TestCase
      */
     private function assertStructureMatches(array $expectedResult, array $actualResult, array $fullExpected = [], array $fullActual = [])
     {
-        if (\count($fullExpected) === 0 && \count($fullActual) === 0) {
+        if (count($fullExpected) === 0 && count($fullActual) === 0) {
             $fullExpected = $expectedResult;
             $fullActual = $actualResult;
         }
 
-        $this->assertSame(\count($expectedResult), \count($actualResult), $this->dumpStructures($fullExpected, $fullActual));
+        $this->assertSame(count($expectedResult), count($actualResult), $this->dumpStructures($fullExpected, $fullActual));
 
         /** @var ChildModel[] $lookup */
         $lookup = [];

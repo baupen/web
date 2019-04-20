@@ -11,6 +11,8 @@
 
 namespace App\Api\Entity\Dispatch;
 
+use DateTime;
+
 class Craftsman extends \App\Api\Entity\Base\Craftsman
 {
     /**
@@ -24,17 +26,17 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
     private $notRespondedIssuesCount;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      */
     private $nextResponseLimit;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      */
     private $lastEmailSent;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      */
     private $lastOnlineVisit;
 
@@ -76,49 +78,49 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getNextResponseLimit(): ?\DateTime
+    public function getNextResponseLimit(): ?DateTime
     {
         return $this->nextResponseLimit;
     }
 
     /**
-     * @param \DateTime|null $nextResponseLimit
+     * @param DateTime|null $nextResponseLimit
      */
-    public function setNextResponseLimit(?\DateTime $nextResponseLimit): void
+    public function setNextResponseLimit(?DateTime $nextResponseLimit): void
     {
         $this->nextResponseLimit = $nextResponseLimit;
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getLastEmailSent(): ?\DateTime
+    public function getLastEmailSent(): ?DateTime
     {
         return $this->lastEmailSent;
     }
 
     /**
-     * @param \DateTime|null $lastEmailSent
+     * @param DateTime|null $lastEmailSent
      */
-    public function setLastEmailSent(?\DateTime $lastEmailSent): void
+    public function setLastEmailSent(?DateTime $lastEmailSent): void
     {
         $this->lastEmailSent = $lastEmailSent;
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getLastOnlineVisit(): ?\DateTime
+    public function getLastOnlineVisit(): ?DateTime
     {
         return $this->lastOnlineVisit;
     }
 
     /**
-     * @param \DateTime|null $lastOnlineVisit
+     * @param DateTime|null $lastOnlineVisit
      */
-    public function setLastOnlineVisit(?\DateTime $lastOnlineVisit): void
+    public function setLastOnlineVisit(?DateTime $lastOnlineVisit): void
     {
         $this->lastOnlineVisit = $lastOnlineVisit;
     }

@@ -76,9 +76,9 @@ class ChildModel
     }
 
     /**
-     * @param self|null $parent
+     * @param ChildModel|null $parent
      */
-    public function setParent(?self $parent): void
+    public function setParent(?ChildModel $parent): void
     {
         if ($this->parent !== null) {
             $this->parent->removeChild($this);
@@ -100,17 +100,17 @@ class ChildModel
     }
 
     /**
-     * @param self $self
+     * @param ChildModel $self
      */
-    private function removeChild(self $self)
+    private function removeChild(ChildModel $self)
     {
         unset($this->children[$self->getId()]);
     }
 
     /**
-     * @param self $self
+     * @param ChildModel $self
      */
-    private function addChild(self $self)
+    private function addChild(ChildModel $self)
     {
         $this->children[$self->getId()] = $self;
     }

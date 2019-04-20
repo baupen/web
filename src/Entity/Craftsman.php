@@ -15,8 +15,10 @@ use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -75,14 +77,14 @@ class Craftsman extends BaseEntity
     private $issues;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $lastEmailSent;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -207,39 +209,39 @@ class Craftsman extends BaseEntity
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getLastEmailSent(): ?\DateTime
+    public function getLastEmailSent(): ?DateTime
     {
         return $this->lastEmailSent;
     }
 
     /**
-     * @param \DateTime|null $lastEmailSent
+     * @param DateTime|null $lastEmailSent
      */
-    public function setLastEmailSent(?\DateTime $lastEmailSent): void
+    public function setLastEmailSent(?DateTime $lastEmailSent): void
     {
         $this->lastEmailSent = $lastEmailSent;
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getLastOnlineVisit(): ?\DateTime
+    public function getLastOnlineVisit(): ?DateTime
     {
         return $this->lastOnlineVisit;
     }
 
     /**
-     * @param \DateTime|null $lastOnlineVisit
+     * @param DateTime|null $lastOnlineVisit
      */
-    public function setLastOnlineVisit(?\DateTime $lastOnlineVisit): void
+    public function setLastOnlineVisit(?DateTime $lastOnlineVisit): void
     {
         $this->lastOnlineVisit = $lastOnlineVisit;
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
     public function getLastAction()
     {
@@ -270,7 +272,7 @@ class Craftsman extends BaseEntity
     /**
      * sets the email identifier.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function setEmailIdentifier(): void
     {

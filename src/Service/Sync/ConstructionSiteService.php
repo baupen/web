@@ -19,6 +19,7 @@ use App\Service\Sync\Interfaces\ConstructionSiteServiceInterface;
 use App\Service\Sync\Interfaces\DisplayNameServiceInterface;
 use App\Service\Sync\Interfaces\FileServiceInterface;
 use App\Service\Sync\Interfaces\MapServiceInterface;
+use const DIRECTORY_SEPARATOR;
 
 class ConstructionSiteService implements ConstructionSiteServiceInterface
 {
@@ -64,7 +65,7 @@ class ConstructionSiteService implements ConstructionSiteServiceInterface
      */
     public function addConstructionSite(SyncTransaction $syncTransaction, string $directory)
     {
-        $folderName = mb_substr($directory, mb_strrpos($directory, \DIRECTORY_SEPARATOR) + 1);
+        $folderName = mb_substr($directory, mb_strrpos($directory, DIRECTORY_SEPARATOR) + 1);
         $constructionSite = new ConstructionSite();
         $constructionSite->setFolderName($folderName);
         $constructionSite->setName($this->displayNameService->forConstructionSite($folderName));

@@ -13,13 +13,14 @@ namespace App\Api\Transformer\Edit;
 
 use App\Api\External\Transformer\Base\BatchTransformer;
 use App\Entity\MapFile;
+use Exception;
 
 class MapFileTransformer extends BatchTransformer
 {
     /**
      * @param MapFile $entity
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return \App\Api\Entity\Edit\MapFile
      */

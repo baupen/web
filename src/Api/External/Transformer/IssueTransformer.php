@@ -49,9 +49,9 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * @param \App\Api\External\Entity\Issue $issue
-     * @param \App\Entity\Issue $entity
+     * @param Issue $entity
      *
-     * @return \App\Entity\Issue
+     * @return Issue
      */
     public function fromApi(\App\Api\External\Entity\Issue $issue, Issue $entity)
     {

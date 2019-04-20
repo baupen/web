@@ -17,6 +17,7 @@ use App\Api\Request\Note\NoteIdRequest;
 use App\Api\Request\Note\UpdateNoteRequest;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\ApiController;
+use function count;
 
 class NoteControllerTest extends ApiController
 {
@@ -54,7 +55,7 @@ class NoteControllerTest extends ApiController
         $this->assertNotNull($noteData->data->note);
 
         $dataAfter = $this->getNoteList();
-        $this->assertTrue(\count($dataBefore->data->notes) + 1 === \count($dataAfter->data->notes));
+        $this->assertTrue(count($dataBefore->data->notes) + 1 === count($dataAfter->data->notes));
     }
 
     public function testNoteUpdate()
@@ -79,7 +80,7 @@ class NoteControllerTest extends ApiController
         $this->assertNotNull($noteData->data->note);
 
         $dataAfter = $this->getNoteList();
-        $this->assertTrue(\count($dataBefore->data->notes) === \count($dataAfter->data->notes));
+        $this->assertTrue(count($dataBefore->data->notes) === count($dataAfter->data->notes));
     }
 
     public function testNoteDelete()
@@ -97,7 +98,7 @@ class NoteControllerTest extends ApiController
         $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $dataAfter = $this->getNoteList();
-        $this->assertTrue(\count($dataBefore->data->notes) - 1 === \count($dataAfter->data->notes));
+        $this->assertTrue(count($dataBefore->data->notes) - 1 === count($dataAfter->data->notes));
     }
 
     private function getNoteList()

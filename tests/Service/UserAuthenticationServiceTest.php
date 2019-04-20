@@ -13,6 +13,7 @@ namespace App\Tests\Service;
 
 use App\Entity\ConstructionManager;
 use App\Service\UserAuthenticationService;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
@@ -36,7 +37,7 @@ class UserAuthenticationServiceTest extends WebTestCase
     /**
      * check whether the new user has the trial account boolean set.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function ignored_testCreateTrialAccount_ldapEnabled_authenticatesValidEmail()
     {
@@ -53,7 +54,7 @@ class UserAuthenticationServiceTest extends WebTestCase
     /**
      * check whether the new user has the trial account boolean set.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function ignored_testCreateTrialAccount_ldapEnabled_deniesInvalidEmail()
     {
@@ -70,7 +71,7 @@ class UserAuthenticationServiceTest extends WebTestCase
     /**
      * check whether the new user has the trial account boolean set.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testCreateTrialAccount_noRestrictions_acceptsAll()
     {
@@ -87,7 +88,7 @@ class UserAuthenticationServiceTest extends WebTestCase
     /**
      * check whether the new user has the trial account boolean set.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testCreateTrialAccount_specificValidRegistrationEmails_acceptsValid()
     {
@@ -104,7 +105,7 @@ class UserAuthenticationServiceTest extends WebTestCase
     /**
      * check whether the new user has the trial account boolean set.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testCreateTrialAccount_specificValidRegistrationEmails_deniesInvalid()
     {
@@ -125,6 +126,7 @@ class UserAuthenticationServiceTest extends WebTestCase
     {
         //ldapsearch -h ldap.forumsys.com -D "uid=tesla,dc=example,dc=com" -b "dc=example,dc=com" -w password "(uid=training)"
         $parameterBag = new ParameterBag(['LDAP_URL' => 'ldap://192.168.16.33:389/uid=tesla,dc=example,dc=com:password/dc=example,dc=com/(uid={username})', 'VALID_REGISTRATION_EMAILS' => 'all']);
+        /** @var LoggerInterface $logger */
         $logger = self::$container->get(LoggerInterface::class);
 
         return new UserAuthenticationService($parameterBag, $logger);
@@ -137,6 +139,7 @@ class UserAuthenticationServiceTest extends WebTestCase
     {
         self::bootKernel();
         $parameterBag = new ParameterBag(['LDAP_URL' => 'null://localhost', 'VALID_REGISTRATION_EMAILS' => 'all']);
+        /** @var LoggerInterface $logger */
         $logger = self::$container->get(LoggerInterface::class);
 
         return new UserAuthenticationService($parameterBag, $logger);
@@ -150,6 +153,7 @@ class UserAuthenticationServiceTest extends WebTestCase
         self::bootKernel();
         //ldapsearch -h ldap.forumsys.com -D "uid=tesla,dc=example,dc=com" -b "dc=example,dc=com" -w password "(uid=training)"
         $parameterBag = new ParameterBag(['LDAP_URL' => 'null://localhost', 'VALID_REGISTRATION_EMAILS' => 'one@example.com;two@example.com']);
+        /** @var LoggerInterface $logger */
         $logger = self::$container->get(LoggerInterface::class);
 
         return new UserAuthenticationService($parameterBag, $logger);

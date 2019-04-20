@@ -17,6 +17,7 @@ use App\Api\External\Transformer\UserTransformer;
 use App\Controller\Api\External\Base\ExternalApiController;
 use App\Entity\AuthenticationToken;
 use App\Entity\ConstructionManager;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -56,7 +57,7 @@ class LoginController extends ExternalApiController
      * @param Request $request
      * @param UserTransformer $userTransformer
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */

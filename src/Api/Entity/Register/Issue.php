@@ -11,6 +11,8 @@
 
 namespace App\Api\Entity\Register;
 
+use DateTime;
+
 class Issue extends \App\Api\Entity\Foyer\Issue
 {
     /**
@@ -19,7 +21,7 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     private $number;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $registeredAt;
 
@@ -29,7 +31,7 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     private $registrationByName;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      */
     private $respondedAt;
 
@@ -39,7 +41,7 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     private $responseByName;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      */
     private $reviewedAt;
 
@@ -75,17 +77,17 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getRegisteredAt(): \DateTime
+    public function getRegisteredAt(): DateTime
     {
         return $this->registeredAt;
     }
 
     /**
-     * @param \DateTime $registeredAt
+     * @param DateTime $registeredAt
      */
-    public function setRegisteredAt(\DateTime $registeredAt): void
+    public function setRegisteredAt(DateTime $registeredAt): void
     {
         $this->registeredAt = $registeredAt;
     }
@@ -107,17 +109,17 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getRespondedAt(): ?\DateTime
+    public function getRespondedAt(): ?DateTime
     {
         return $this->respondedAt;
     }
 
     /**
-     * @param \DateTime|null $respondedAt
+     * @param DateTime|null $respondedAt
      */
-    public function setRespondedAt(?\DateTime $respondedAt): void
+    public function setRespondedAt(?DateTime $respondedAt): void
     {
         $this->respondedAt = $respondedAt;
     }
@@ -139,17 +141,17 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getReviewedAt(): ?\DateTime
+    public function getReviewedAt(): ?DateTime
     {
         return $this->reviewedAt;
     }
 
     /**
-     * @param \DateTime|null $reviewedAt
+     * @param DateTime|null $reviewedAt
      */
-    public function setReviewedAt(?\DateTime $reviewedAt): void
+    public function setReviewedAt(?DateTime $reviewedAt): void
     {
         $this->reviewedAt = $reviewedAt;
     }
