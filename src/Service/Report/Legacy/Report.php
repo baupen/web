@@ -51,37 +51,13 @@ class Report
         $this->setDefaults();
     }
 
-    private function setDefaults()
-    {
-        //set typography
-        $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
-        $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
-        $this->pdfDocument->SetLineWidth($this->pdfSizes->getLineWidth());
-
-        // set colors
-        $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
-        $this->pdfDocument->SetDrawColor(...$this->pdfDesign->getDarkBackground());
-        $this->pdfDocument->SetTextColor(...$this->pdfDesign->getTextColor());
-
-        //set layout
-        $this->pdfDocument->SetLeftMargin($this->pdfSizes->getContentXStart());
-        $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getDefaultCellPadding());
-
-        //set position
-        $this->pdfDocument->SetX($this->pdfSizes->getContentXStart());
-        if ($this->pdfDocument->GetY() > $this->pdfSizes->getContentYEnd()) {
-            $this->pdfDocument->AddPage();
-            $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
-        }
-    }
-
     /**
      * @param string|null $headerImage
-     * @param string $name
-     * @param string $address
-     * @param string $elements
-     * @param string[] $filterEntries
-     * @param string $filterHeader
+     * @param string      $name
+     * @param string      $address
+     * @param string      $elements
+     * @param string[]    $filterEntries
+     * @param string      $filterHeader
      */
     public function addIntroduction(?string $headerImage, string $name, string $address, string $elements, array $filterEntries, string $filterHeader)
     {
@@ -135,6 +111,194 @@ class Report
 
         //define start of next part
         $this->pdfDocument->SetY(max($this->pdfDocument->GetY(), $maxContentHeight) + $this->pdfSizes->getContentSpacerBig());
+    }
+
+    /**
+     * @param string $targetFilePath
+     */
+    public function save($targetFilePath)
+    {
+        $this->pdfDocument->Output($targetFilePath, 'F');
+    }
+
+    /**
+     * @param string      $name
+     * @param string|null $context
+     * @param string|null $mapImageFilePath
+     */
+    public function addMap(string $name, ?string $context, ?string $mapImageFilePath = null)
+    {
+        $this->setDefaults();
+        $startY = $this->pdfDocument->GetY();
+
+        $printTitle = function () use ($name, $context) {
+            $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
+            $this->printH2($name, 0, $context);
+        };
+
+        $headerHeight = $this->getHeightOf(function () use ($printTitle) {
+            $printTitle();
+        });
+
+        if (file_exists($mapImageFilePath)) {
+            $imgPadding = $this->pdfSizes->getImagePadding();
+            $doubleImgPadding = 2 * $this->pdfSizes->getImagePadding();
+
+            $maxWidth = $this->pdfSizes->getContentXSize() - $doubleImgPadding;
+            $maxHeight = $this->pdfSizes->getContentYSize() - $headerHeight - $doubleImgPadding;
+            list($width, $height) = ImageHelper::getWidthHeightArguments($mapImageFilePath, $maxWidth, $maxHeight);
+
+            //check if image fits on current page
+            if ($headerHeight + $height + $startY + $this->pdfSizes->getContentSpacerBig() + $doubleImgPadding < $this->pdfSizes->getContentYEnd()) {
+                //add content spacer & continue on same page
+                $this->pdfDocument->SetY($startY + $this->pdfSizes->getContentSpacerSmall(), true, false);
+            } else {
+                //force new page
+                $this->pdfDocument->AddPage();
+                $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
+            }
+
+            //print title
+            $printTitle();
+
+            //print image with surrounding box
+            $startY = $this->pdfDocument->GetY();
+            $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $height + $doubleImgPadding, '', 0, 2, '', true);
+            $this->pdfDocument->SetY($startY);
+            $this->pdfDocument->Image($mapImageFilePath, $this->pdfSizes->getContentXStart() + (((float) $this->pdfSizes->getContentXSize() - $width) / 2), $this->pdfDocument->GetY() + $imgPadding, $width, $height);
+
+            //adapt Y with spacer for next
+            $this->pdfDocument->SetY($startY + $height + $doubleImgPadding + $this->pdfSizes->getContentSpacerBig());
+        } else {
+            //only print title
+            $this->printH2($name, 0, $context);
+        }
+    }
+
+    /**
+     * @param $tableHead
+     * @param $tableContent
+     * @param string|null $tableTitle
+     */
+    public function addTable($tableHead, $tableContent, $tableTitle = null)
+    {
+        $this->setDefaults();
+
+        //print table header
+        if ($tableTitle !== null) {
+            $this->printH3($tableTitle, $this->pdfSizes->getContentXSize());
+        }
+
+        //adapt font for table content
+        $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
+        $this->pdfDocument->SetFont(...$this->pdfDesign->getEmphasisFontFamily());
+
+        //make header upper case
+        $row = [];
+        foreach ($tableHead as $item) {
+            $row[] = mb_strtoupper($item, 'UTF-8');
+        }
+
+        //print header
+        $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
+        $maxTries = 3;
+        while (!$this->printRow($row, true, $this->pdfDesign->getLightBackground()) && $maxTries > 0) {
+            //simply retry to print row if it did not work
+            --$maxTries;
+        }
+
+        //print content
+        $currentRow = 0;
+        $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
+        $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
+        foreach ($tableContent as $row) {
+            $maxTries = 3;
+            while (!$this->printRow($row, $currentRow % 2 === 1, $this->pdfDesign->getLighterBackground()) && $maxTries > 0) {
+                //simply retry to print row if it did not work
+                --$maxTries;
+            }
+            ++$currentRow;
+        }
+
+        //define start of next part
+        $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
+    }
+
+    /**
+     * @param array $imageGrid   each grid entry must define an imagePath & identification
+     * @param int   $columnCount
+     */
+    public function addImageGrid(array $imageGrid, int $columnCount)
+    {
+        $this->setDefaults();
+
+        $columnWidth = $this->pdfSizes->getColumnContentWidth($columnCount, true);
+
+        $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
+        $cellWidthPadding = $this->pdfSizes->getTableCellPadding()[0] + $this->pdfSizes->getTableCellPadding()[2];
+        foreach ($imageGrid as $row) {
+            //get row height & calculate the other sizes
+            $rowHeight = 0;
+            foreach ($row as &$entry) {
+                $imagePath = $entry['imagePath'];
+
+                list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $columnWidth, $columnWidth);
+                $rowHeight = max($rowHeight, $height);
+                $entry['width'] = $width;
+                $entry['height'] = $height;
+            }
+
+            //check if image fits on current page
+            if ($this->pdfDocument->GetY() + $rowHeight + $this->pdfSizes->getColumnGutter() > $this->pdfSizes->getContentYEnd()) {
+                //force new page
+                $this->pdfDocument->AddPage();
+                $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
+            }
+            $startY = $this->pdfDocument->GetY();
+
+            //print images
+            $currentColumn = 0;
+            foreach ($row as &$entry) {
+                //image
+                $height = $entry['height'];
+                $width = $entry['width'];
+                $xStart = $this->pdfSizes->getColumnStart($currentColumn, $columnCount, true) + (((float) $columnWidth - $width) / 2);
+                $this->pdfDocument->Image($entry['imagePath'], $xStart, $startY, $width, $height, '', '', '', '', 300, '', false, false, 1);
+
+                //identification
+                $this->pdfDocument->SetXY($xStart, $startY);
+                $width = mb_strlen((string) $entry['identification']) * $this->pdfSizes->getRegularFontSize() / 5 + $cellWidthPadding;
+                $this->pdfDocument->Cell($width, 0, $entry['identification'], 0, 0, '', true);
+                ++$currentColumn;
+            }
+
+            $this->pdfDocument->SetY($startY + $rowHeight + $this->pdfSizes->getColumnGutter());
+        }
+    }
+
+    private function setDefaults()
+    {
+        //set typography
+        $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
+        $this->pdfDocument->SetLineWidth($this->pdfSizes->getLineWidth());
+
+        // set colors
+        $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
+        $this->pdfDocument->SetDrawColor(...$this->pdfDesign->getDarkBackground());
+        $this->pdfDocument->SetTextColor(...$this->pdfDesign->getTextColor());
+
+        //set layout
+        $this->pdfDocument->SetLeftMargin($this->pdfSizes->getContentXStart());
+        $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getDefaultCellPadding());
+
+        //set position
+        $this->pdfDocument->SetX($this->pdfSizes->getContentXStart());
+        if ($this->pdfDocument->GetY() > $this->pdfSizes->getContentYEnd()) {
+            $this->pdfDocument->AddPage();
+            $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
+        }
     }
 
     private function printH2($text, $columnWidth = 0, $description = '')
@@ -201,118 +365,6 @@ class Report
         $pageAdapt = $this->pdfSizes->getContentYSize() * ($endPage - $startPage);
 
         return $endY - $startY + $pageAdapt;
-    }
-
-    /**
-     * @param string $targetFilePath
-     */
-    public function save($targetFilePath)
-    {
-        $this->pdfDocument->Output($targetFilePath, 'F');
-    }
-
-    /**
-     * @param string $name
-     * @param string|null $context
-     * @param string|null $mapImageFilePath
-     */
-    public function addMap(string $name, ?string $context, ?string $mapImageFilePath = null)
-    {
-        $this->setDefaults();
-        $startY = $this->pdfDocument->GetY();
-
-        $printTitle = function () use ($name, $context) {
-            $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
-            $this->printH2($name, 0, $context);
-        };
-
-        $headerHeight = $this->getHeightOf(function () use ($printTitle) {
-            $printTitle();
-        });
-
-        if (file_exists($mapImageFilePath)) {
-            $imgPadding = $this->pdfSizes->getImagePadding();
-            $doubleImgPadding = 2 * $this->pdfSizes->getImagePadding();
-
-            $maxWidth = $this->pdfSizes->getContentXSize() - $doubleImgPadding;
-            $maxHeight = $this->pdfSizes->getContentYSize() - $headerHeight - $doubleImgPadding;
-            list($width, $height) = ImageHelper::getWidthHeightArguments($mapImageFilePath, $maxWidth, $maxHeight);
-
-            //check if image fits on current page
-            if ($headerHeight + $height + $startY + $this->pdfSizes->getContentSpacerBig() + $doubleImgPadding < $this->pdfSizes->getContentYEnd()) {
-                //add content spacer & continue on same page
-                $this->pdfDocument->SetY($startY + $this->pdfSizes->getContentSpacerSmall(), true, false);
-            } else {
-                //force new page
-                $this->pdfDocument->AddPage();
-                $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
-            }
-
-            //print title
-            $printTitle();
-
-            //print image with surrounding box
-            $startY = $this->pdfDocument->GetY();
-            $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $height + $doubleImgPadding, '', 0, 2, '', true);
-            $this->pdfDocument->SetY($startY);
-            $this->pdfDocument->Image($mapImageFilePath, $this->pdfSizes->getContentXStart() + (((float)$this->pdfSizes->getContentXSize() - $width) / 2), $this->pdfDocument->GetY() + $imgPadding, $width, $height);
-
-            //adapt Y with spacer for next
-            $this->pdfDocument->SetY($startY + $height + $doubleImgPadding + $this->pdfSizes->getContentSpacerBig());
-        } else {
-            //only print title
-            $this->printH2($name, 0, $context);
-        }
-    }
-
-    /**
-     * @param $tableHead
-     * @param $tableContent
-     * @param string|null $tableTitle
-     */
-    public function addTable($tableHead, $tableContent, $tableTitle = null)
-    {
-        $this->setDefaults();
-
-        //print table header
-        if ($tableTitle !== null) {
-            $this->printH3($tableTitle, $this->pdfSizes->getContentXSize());
-        }
-
-        //adapt font for table content
-        $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
-        $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
-        $this->pdfDocument->SetFont(...$this->pdfDesign->getEmphasisFontFamily());
-
-        //make header upper case
-        $row = [];
-        foreach ($tableHead as $item) {
-            $row[] = mb_strtoupper($item, 'UTF-8');
-        }
-
-        //print header
-        $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
-        $maxTries = 3;
-        while (!$this->printRow($row, true, $this->pdfDesign->getLightBackground()) && $maxTries > 0) {
-            //simply retry to print row if it did not work
-            --$maxTries;
-        }
-
-        //print content
-        $currentRow = 0;
-        $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
-        $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
-        foreach ($tableContent as $row) {
-            $maxTries = 3;
-            while (!$this->printRow($row, $currentRow % 2 === 1, $this->pdfDesign->getLighterBackground()) && $maxTries > 0) {
-                //simply retry to print row if it did not work
-                --$maxTries;
-            }
-            ++$currentRow;
-        }
-
-        //define start of next part
-        $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
     }
 
     private function printRow($row, $fill, $fillBackground)
@@ -396,57 +448,5 @@ class Report
         $this->pdfDocument->SetY($maxContentHeight + $this->pdfSizes->getLineWidth());
 
         return true;
-    }
-
-    /**
-     * @param array $imageGrid each grid entry must define an imagePath & identification
-     * @param int $columnCount
-     */
-    public function addImageGrid(array $imageGrid, int $columnCount)
-    {
-        $this->setDefaults();
-
-        $columnWidth = $this->pdfSizes->getColumnContentWidth($columnCount, true);
-
-        $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
-        $cellWidthPadding = $this->pdfSizes->getTableCellPadding()[0] + $this->pdfSizes->getTableCellPadding()[2];
-        foreach ($imageGrid as $row) {
-            //get row height & calculate the other sizes
-            $rowHeight = 0;
-            foreach ($row as &$entry) {
-                $imagePath = $entry['imagePath'];
-
-                list($width, $height) = ImageHelper::getWidthHeightArguments($imagePath, $columnWidth, $columnWidth);
-                $rowHeight = max($rowHeight, $height);
-                $entry['width'] = $width;
-                $entry['height'] = $height;
-            }
-
-            //check if image fits on current page
-            if ($this->pdfDocument->GetY() + $rowHeight + $this->pdfSizes->getColumnGutter() > $this->pdfSizes->getContentYEnd()) {
-                //force new page
-                $this->pdfDocument->AddPage();
-                $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
-            }
-            $startY = $this->pdfDocument->GetY();
-
-            //print images
-            $currentColumn = 0;
-            foreach ($row as &$entry) {
-                //image
-                $height = $entry['height'];
-                $width = $entry['width'];
-                $xStart = $this->pdfSizes->getColumnStart($currentColumn, $columnCount, true) + (((float)$columnWidth - $width) / 2);
-                $this->pdfDocument->Image($entry['imagePath'], $xStart, $startY, $width, $height, '', '', '', '', 300, '', false, false, 1);
-
-                //identification
-                $this->pdfDocument->SetXY($xStart, $startY);
-                $width = mb_strlen((string)$entry['identification']) * $this->pdfSizes->getRegularFontSize() / 5 + $cellWidthPadding;
-                $this->pdfDocument->Cell($width, 0, $entry['identification'], 0, 0, '', true);
-                ++$currentColumn;
-            }
-
-            $this->pdfDocument->SetY($startY + $rowHeight + $this->pdfSizes->getColumnGutter());
-        }
     }
 }

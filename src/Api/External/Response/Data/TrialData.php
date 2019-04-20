@@ -16,6 +16,11 @@ use App\Api\External\Entity\TrialUser;
 class TrialData
 {
     /**
+     * @var TrialUser
+     */
+    private $trialUser;
+
+    /**
      * LoginData constructor.
      *
      * @param TrialUser $user
@@ -24,11 +29,6 @@ class TrialData
     {
         $this->trialUser = $user;
     }
-
-    /**
-     * @var TrialUser
-     */
-    private $trialUser;
 
     /**
      * @return TrialUser

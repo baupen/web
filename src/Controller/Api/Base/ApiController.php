@@ -26,7 +26,7 @@ abstract class ApiController extends AbstractApiController
 
     /**
      * @param Request $request
-     * @param string $targetClass
+     * @param string  $targetClass
      * @param $parsedRequest
      * @param $errorResponse
      * @param $constructionSite

@@ -32,7 +32,7 @@ class PublicMapTransformer
     }
 
     /**
-     * @param Map $source
+     * @param Map       $source
      * @param PublicMap $target
      */
     public function writeApiProperties($source, $target)

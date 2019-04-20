@@ -19,7 +19,7 @@ class ConfirmType extends \App\Form\Traits\User\SetPasswordType
 {
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

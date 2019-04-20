@@ -16,6 +16,11 @@ use App\Api\External\Entity\Issue;
 class IssueData
 {
     /**
+     * @var Issue
+     */
+    private $issue;
+
+    /**
      * LoginData constructor.
      *
      * @param Issue $issue
@@ -24,11 +29,6 @@ class IssueData
     {
         $this->issue = $issue;
     }
-
-    /**
-     * @var Issue
-     */
-    private $issue;
 
     /**
      * @return Issue

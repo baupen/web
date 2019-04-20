@@ -14,12 +14,32 @@ namespace App\Api\Response\Base;
 class AbstractResponse
 {
     /**
+     * @var string
+     */
+    private $status;
+
+    /**
+     * @var mixed
+     */
+    private $data;
+
+    /**
+     * @var string
+     */
+    private $message;
+
+    /**
+     * @var int|null
+     */
+    private $error;
+
+    /**
      * AbstractResponse constructor.
      *
-     * @param string $apiStatus
-     * @param mixed $data
+     * @param string      $apiStatus
+     * @param mixed       $data
      * @param string|null $message
-     * @param int|null $error
+     * @param int|null    $error
      */
     public function __construct(string $apiStatus, $data, $message = null, $error = null)
     {
@@ -38,11 +58,6 @@ class AbstractResponse
     }
 
     /**
-     * @var string
-     */
-    private $status;
-
-    /**
      * @return string
      */
     public function getStatus(): string
@@ -51,27 +66,12 @@ class AbstractResponse
     }
 
     /**
-     * @var mixed
-     */
-    private $data;
-
-    /**
      * @return mixed
      */
     public function getData()
     {
         return $this->data;
     }
-
-    /**
-     * @var string
-     */
-    private $message;
-
-    /**
-     * @var int|null
-     */
-    private $error;
 
     /**
      * @return string

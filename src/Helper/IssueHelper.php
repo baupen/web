@@ -99,8 +99,8 @@ class IssueHelper
      * @param array $issues
      * @param $orderedElements
      * @param $issuesPerElement
-     * @param callable $elementProperty the element we want to use for ordering
-     * @param callable $orderProperty the property of the element we want to use for the order
+     * @param callable $elementProperty    the element we want to use for ordering
+     * @param callable $orderProperty      the property of the element we want to use for the order
      * @param callable $identifierProperty the unique identifier for the element we use for ordering
      */
     private static function issuesToOrderedElements(array $issues, &$orderedElements, &$issuesPerElement, $elementProperty, $orderProperty, $identifierProperty)

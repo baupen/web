@@ -18,12 +18,12 @@ interface ConstructionSiteServiceInterface
 {
     /**
      * @param SyncTransaction $syncTransaction
-     * @param string $directory
+     * @param string          $directory
      */
     public function addConstructionSite(SyncTransaction $syncTransaction, string $directory);
 
     /**
-     * @param SyncTransaction $syncTransaction
+     * @param SyncTransaction  $syncTransaction
      * @param ConstructionSite $constructionSite
      */
     public function syncConstructionSite(SyncTransaction $syncTransaction, ConstructionSite $constructionSite);

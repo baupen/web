@@ -16,7 +16,7 @@ use App\Entity\Craftsman;
 class CraftsmanTransformer
 {
     /**
-     * @param Craftsman $source
+     * @param Craftsman                      $source
      * @param \App\Api\Entity\Base\Craftsman $target
      */
     public function writeApiProperties($source, $target)

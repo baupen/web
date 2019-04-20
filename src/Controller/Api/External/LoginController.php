@@ -33,28 +33,9 @@ class LoginController extends ExternalApiController
     const WRONG_PASSWORD = 'wrong password';
 
     /**
-     * gives the appropriate error code the specified error message.
-     *
-     * @param string $message
-     *
-     * @return int
-     */
-    protected function errorMessageToStatusCode($message)
-    {
-        switch ($message) {
-            case static::UNKNOWN_USERNAME:
-                return 100;
-            case static::WRONG_PASSWORD:
-                return 101;
-        }
-
-        return parent::errorMessageToStatusCode($message);
-    }
-
-    /**
      * @Route("", name="api_external_login", methods={"POST"})
      *
-     * @param Request $request
+     * @param Request         $request
      * @param UserTransformer $userTransformer
      *
      * @throws Exception
@@ -87,5 +68,24 @@ class LoginController extends ExternalApiController
         $loginData = new LoginData($user);
 
         return $this->success($loginData);
+    }
+
+    /**
+     * gives the appropriate error code the specified error message.
+     *
+     * @param string $message
+     *
+     * @return int
+     */
+    protected function errorMessageToStatusCode($message)
+    {
+        switch ($message) {
+            case static::UNKNOWN_USERNAME:
+                return 100;
+            case static::WRONG_PASSWORD:
+                return 101;
+        }
+
+        return parent::errorMessageToStatusCode($message);
     }
 }

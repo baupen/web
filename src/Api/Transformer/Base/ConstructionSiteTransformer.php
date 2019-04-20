@@ -32,7 +32,7 @@ class ConstructionSiteTransformer
     }
 
     /**
-     * @param ConstructionSite $source
+     * @param ConstructionSite                      $source
      * @param \App\Api\Entity\Base\ConstructionSite $target
      */
     public function writeApiProperties($source, $target)

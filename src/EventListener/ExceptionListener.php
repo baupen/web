@@ -40,8 +40,8 @@ class ExceptionListener
     /**
      * ExceptionListener constructor.
      *
-     * @param SerializerInterface $serializer
-     * @param LoggerInterface $logger
+     * @param SerializerInterface   $serializer
+     * @param LoggerInterface       $logger
      * @param ParameterBagInterface $parameterBag
      */
     public function __construct(SerializerInterface $serializer, LoggerInterface $logger, ParameterBagInterface $parameterBag)
@@ -73,7 +73,8 @@ class ExceptionListener
 
         if ($this->isTestEnvironment) {
             throw $exception;
-        } elseif (\function_exists('dump')) {
+        }
+        if (\function_exists('dump')) {
             dump($exception);
         }
 

@@ -42,51 +42,6 @@ class CraftsmanController extends ApiController
     const TIMEOUT_EXCEEDED = "timeout exceeded; can't change response anymore";
 
     /**
-     * gives the appropriate error code the specified error message.
-     *
-     * @param string $message
-     *
-     * @return int
-     */
-    protected function errorMessageToStatusCode($message)
-    {
-        return parent::errorMessageToStatusCode($message);
-    }
-
-    /**
-     * @param Request $request
-     * @param $identifier
-     * @param Craftsman $craftsman
-     * @param $issue
-     * @param $errorResponse
-     *
-     * @return bool
-     */
-    private function parseIssueRequest(Request $request, $identifier, &$craftsman, &$issue, &$errorResponse)
-    {
-        /** @var Craftsman $craftsman */
-        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
-            $errorResponse = $this->fail(self::INVALID_IDENTIFIER);
-
-            return false;
-        }
-
-        /** @var IssueRequest $parsedRequest */
-        if (!parent::parseRequest($request, IssueRequest::class, $parsedRequest, $errorResponse)) {
-            return false;
-        }
-
-        $issue = $this->getDoctrine()->getRepository(Issue::class)->find($parsedRequest->getIssueId());
-        if ($issue === null || $issue->getCraftsman() !== $craftsman) {
-            $errorResponse = $this->fail(self::INVALID_ISSUE);
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * @Route("/read", name="external_api_share_craftsman_read", methods={"GET"})
      *
      * @param Request $request
@@ -217,5 +172,50 @@ class CraftsmanController extends ApiController
         }
 
         return $this->success($data);
+    }
+
+    /**
+     * gives the appropriate error code the specified error message.
+     *
+     * @param string $message
+     *
+     * @return int
+     */
+    protected function errorMessageToStatusCode($message)
+    {
+        return parent::errorMessageToStatusCode($message);
+    }
+
+    /**
+     * @param Request $request
+     * @param $identifier
+     * @param Craftsman $craftsman
+     * @param $issue
+     * @param $errorResponse
+     *
+     * @return bool
+     */
+    private function parseIssueRequest(Request $request, $identifier, &$craftsman, &$issue, &$errorResponse)
+    {
+        /** @var Craftsman $craftsman */
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
+            $errorResponse = $this->fail(self::INVALID_IDENTIFIER);
+
+            return false;
+        }
+
+        /** @var IssueRequest $parsedRequest */
+        if (!parent::parseRequest($request, IssueRequest::class, $parsedRequest, $errorResponse)) {
+            return false;
+        }
+
+        $issue = $this->getDoctrine()->getRepository(Issue::class)->find($parsedRequest->getIssueId());
+        if ($issue === null || $issue->getCraftsman() !== $craftsman) {
+            $errorResponse = $this->fail(self::INVALID_ISSUE);
+
+            return false;
+        }
+
+        return true;
     }
 }

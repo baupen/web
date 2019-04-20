@@ -35,10 +35,10 @@ class SupportController extends BaseFormController
     /**
      * @Route("", name="support")
      *
-     * @param Request $request
+     * @param Request               $request
      * @param EmailServiceInterface $emailService
-     * @param TranslatorInterface $translator
-     * @param LoggerInterface $logger
+     * @param TranslatorInterface   $translator
+     * @param LoggerInterface       $logger
      *
      * @return Response
      */
@@ -46,13 +46,14 @@ class SupportController extends BaseFormController
     {
         $createForm = function () {
             return $this->createForm(SupportType::class)
-                ->add('support.submit', SubmitType::class, ['translation_domain' => 'support']);
+                ->add('support.submit', SubmitType::class, ['translation_domain' => 'support'])
+            ;
         };
         $form = $this->handleForm(
             $createForm(),
             $request,
             function ($form) use ($request, $emailService, $translator, $logger, $createForm) {
-                /* @var FormInterface $form */
+                /** @var FormInterface $form */
                 $name = $form->getData()['name'];
                 $email = $form->getData()['email'];
                 $message = $form->getData()['message'];

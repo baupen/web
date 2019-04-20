@@ -30,6 +30,11 @@ class Issue extends BaseEntity
     use IdTrait;
     use TimeTrait;
 
+    const UPLOAD_STATUS = 1;
+    const REGISTRATION_STATUS = 2;
+    const RESPONSE_STATUS = 4;
+    const REVIEW_STATUS = 8;
+
     /**
      * @var int|null
      *
@@ -400,11 +405,6 @@ class Issue extends BaseEntity
     {
         $this->map = $map;
     }
-
-    const UPLOAD_STATUS = 1;
-    const REGISTRATION_STATUS = 2;
-    const RESPONSE_STATUS = 4;
-    const REVIEW_STATUS = 8;
 
     /**
      * returns a unique code for all possible status.

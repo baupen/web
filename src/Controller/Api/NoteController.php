@@ -34,15 +34,10 @@ class NoteController extends ApiController
     const ISSUE_NOT_FOUND = 'not found';
     const ISSUE_EDIT_NOT_ALLOWED = 'not allowed to edit issue';
 
-    private function canEditNote(Note $note)
-    {
-        return $note->getCreatedBy() === $this->getUser();
-    }
-
     /**
      * @Route("/list", name="api_note_list", methods={"POST"})
      *
-     * @param Request $request
+     * @param Request         $request
      * @param NoteTransformer $noteTransformer
      *
      * @return Response
@@ -73,49 +68,9 @@ class NoteController extends ApiController
     }
 
     /**
-     * create or update a note entity.
-     *
-     * @param Request $request
-     * @param NoteTransformer $noteTransformer
-     *
-     * @return JsonResponse
-     */
-    private function executeUpdateNoteRequest(Request $request, NoteTransformer $noteTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        /** @var UpdateNoteRequest $parsedRequest */
-        if (!$this->parseConstructionSiteRequest($request, UpdateNoteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        if ($parsedRequest->getNote()->getId() !== null) {
-            $entity = $this->getDoctrine()->getRepository(Note::class)->findOneBy(['id' => $parsedRequest->getNote()->getId(), 'constructionSite' => $constructionSite->getId()]);
-            if ($entity === null) {
-                return $this->fail(self::ISSUE_NOT_FOUND);
-            } elseif ($entity->getCreatedBy() !== $this->getUser()) {
-                return $this->fail(self::ISSUE_EDIT_NOT_ALLOWED);
-            }
-        } else {
-            $entity = new Note();
-            $entity->setCreatedBy($this->getUser());
-            $entity->setConstructionSite($constructionSite);
-        }
-
-        $entity->setContent($parsedRequest->getNote()->getContent());
-        $this->fastSave($entity);
-
-        $noteData = new NoteData();
-        $noteData->setNote($noteTransformer->toApi($entity, function ($issue) {
-            return $this->canEditNote($issue);
-        }));
-
-        return $this->success($noteData);
-    }
-
-    /**
      * @Route("/create", name="api_note_create", methods={"POST"})
      *
-     * @param Request $request
+     * @param Request         $request
      * @param NoteTransformer $noteTransformer
      *
      * @return Response
@@ -128,7 +83,7 @@ class NoteController extends ApiController
     /**
      * @Route("/update", name="api_note_update", methods={"POST"})
      *
-     * @param Request $request
+     * @param Request         $request
      * @param NoteTransformer $noteTransformer
      *
      * @return Response
@@ -157,7 +112,8 @@ class NoteController extends ApiController
         $entity = $this->getDoctrine()->getRepository(Note::class)->findOneBy(['id' => $parsedRequest->getNoteId(), 'constructionSite' => $constructionSite->getId()]);
         if ($entity === null) {
             return $this->fail(self::ISSUE_NOT_FOUND);
-        } elseif ($entity->getCreatedBy() !== $this->getUser()) {
+        }
+        if ($entity->getCreatedBy() !== $this->getUser()) {
             return $this->fail(self::ISSUE_EDIT_NOT_ALLOWED);
         }
 
@@ -165,5 +121,51 @@ class NoteController extends ApiController
         $this->fastRemove($entity);
 
         return $this->success(new EmptyData());
+    }
+
+    private function canEditNote(Note $note)
+    {
+        return $note->getCreatedBy() === $this->getUser();
+    }
+
+    /**
+     * create or update a note entity.
+     *
+     * @param Request         $request
+     * @param NoteTransformer $noteTransformer
+     *
+     * @return JsonResponse
+     */
+    private function executeUpdateNoteRequest(Request $request, NoteTransformer $noteTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var UpdateNoteRequest $parsedRequest */
+        if (!$this->parseConstructionSiteRequest($request, UpdateNoteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        if ($parsedRequest->getNote()->getId() !== null) {
+            $entity = $this->getDoctrine()->getRepository(Note::class)->findOneBy(['id' => $parsedRequest->getNote()->getId(), 'constructionSite' => $constructionSite->getId()]);
+            if ($entity === null) {
+                return $this->fail(self::ISSUE_NOT_FOUND);
+            }
+            if ($entity->getCreatedBy() !== $this->getUser()) {
+                return $this->fail(self::ISSUE_EDIT_NOT_ALLOWED);
+            }
+        } else {
+            $entity = new Note();
+            $entity->setCreatedBy($this->getUser());
+            $entity->setConstructionSite($constructionSite);
+        }
+
+        $entity->setContent($parsedRequest->getNote()->getContent());
+        $this->fastSave($entity);
+
+        $noteData = new NoteData();
+        $noteData->setNote($noteTransformer->toApi($entity, function ($issue) {
+            return $this->canEditNote($issue);
+        }));
+
+        return $this->success($noteData);
     }
 }

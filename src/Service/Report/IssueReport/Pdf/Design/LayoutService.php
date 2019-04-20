@@ -42,16 +42,6 @@ class LayoutService implements LayoutServiceInterface
      *
      * @return float
      */
-    private function getPageSizeX()
-    {
-        return $this->layout->getPageSize()[0];
-    }
-
-    /**
-     * the total width of the document.
-     *
-     * @return float
-     */
     public function getPageSizeY(): float
     {
         return $this->layout->getPageSize()[1];
@@ -173,5 +163,15 @@ class LayoutService implements LayoutServiceInterface
     public function getTableColumnGutter(): float
     {
         return $this->layout->getBaseSpacing() / ($this->layout->getScalingFactor() ** 2);
+    }
+
+    /**
+     * the total width of the document.
+     *
+     * @return float
+     */
+    private function getPageSizeX()
+    {
+        return $this->layout->getPageSize()[0];
     }
 }

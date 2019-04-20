@@ -45,9 +45,9 @@ class FilterController extends BaseDoctrineController
      * @Route("/map/{map}/{file}/{hash}/{size}", name="external_image_filter_map")
      *
      * @param $identifier
-     * @param Map $map
-     * @param MapFile $file
-     * @param string $size
+     * @param Map                   $map
+     * @param MapFile               $file
+     * @param string                $size
      * @param ImageServiceInterface $imageService
      *
      * @return Response
@@ -78,9 +78,9 @@ class FilterController extends BaseDoctrineController
      * @Route("/issue/{issue}/{image}/{size}", name="external_image_filter_issue")
      *
      * @param $identifier
-     * @param Issue $issue
-     * @param IssueImage $image
-     * @param string $size
+     * @param Issue                 $issue
+     * @param IssueImage            $image
+     * @param string                $size
      * @param ImageServiceInterface $imageService
      *
      * @return Response

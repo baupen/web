@@ -38,16 +38,16 @@ class BaseLoginController extends BaseFormController
     }
 
     /**
-     * @param Request $request
+     * @param Request       $request
      * @param FormInterface $loginForm
-     * @param callable $findEntityCallable
-     * @param UserTrait $entity
+     * @param callable      $findEntityCallable
+     * @param UserTrait     $entity
      *
      * @return FormInterface
      */
     protected function handleLoginForm(Request $request, FormInterface $loginForm, callable $findEntityCallable, $entity)
     {
-        /** @var $session Session */
+        /** @var Session $session */
         $session = $request->getSession();
 
         $authErrorKey = Security::AUTHENTICATION_ERROR;
@@ -90,7 +90,7 @@ class BaseLoginController extends BaseFormController
     }
 
     /**
-     * @param Request $request
+     * @param Request       $request
      * @param UserInterface $user
      */
     protected function loginUser(Request $request, UserInterface $user)

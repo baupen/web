@@ -41,8 +41,8 @@ class IssueReportService implements IssueReportServiceInterface
 
     /**
      * @param LayoutFactoryInterface $layoutFactory
-     * @param PrintFactoryInterface $printFactory
-     * @param IntroductionContent $introductionContent
+     * @param PrintFactoryInterface  $printFactory
+     * @param IntroductionContent    $introductionContent
      */
     public function addIntroduction(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, IntroductionContent $introductionContent)
     {
@@ -74,8 +74,8 @@ class IssueReportService implements IssueReportServiceInterface
     }
 
     /**
-     * @param LayoutFactoryInterface $layoutFactory
-     * @param PrintFactoryInterface $printFactory
+     * @param LayoutFactoryInterface  $layoutFactory
+     * @param PrintFactoryInterface   $printFactory
      * @param AggregatedIssuesContent $aggregatedIssuesContent
      */
     public function addAggregatedIssueTable(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, AggregatedIssuesContent $aggregatedIssuesContent)
@@ -113,56 +113,8 @@ class IssueReportService implements IssueReportServiceInterface
 
     /**
      * @param LayoutFactoryInterface $layoutFactory
-     * @param PrintFactoryInterface $printFactory
-     * @param ColumnConfiguration[] $tableColumnConfig
-     * @param string[] $tableHeader
-     * @param string[][] $tableContent
-     */
-    private function printTable(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, array $tableColumnConfig, array $tableHeader, array $tableContent)
-    {
-        // prepare table layout
-        $tableLayout = $layoutFactory->createTableLayout($tableColumnConfig);
-
-        $this->printTableRow($tableLayout->startNewRow(), $printFactory, $tableHeader);
-
-        foreach ($tableContent as $row) {
-            $this->printTableRow($tableLayout->startNewRow(), $printFactory, $row);
-        }
-
-        $counter = 0;
-        $tableLayout->setOnRowCommit(function (TransactionInterface $printTransaction) use (&$counter, $printFactory) {
-            if ($counter % 2 === 1) {
-                $drawer = $printFactory->getDrawer($printTransaction);
-                $drawer->drawTableAlternatingBackground();
-            }
-
-            ++$counter;
-        });
-
-        // terminate layout
-        $tableLayout->getTransaction()->commit();
-    }
-
-    /**
-     * @param TableRowLayoutInterface $row
-     * @param PrintFactoryInterface $printFactory
-     * @param string[] $rowContent
-     */
-    private function printTableRow(TableRowLayoutInterface $row, PrintFactoryInterface $printFactory, array $rowContent)
-    {
-        $printer = $printFactory->getPrinter($row);
-
-        $columnLength = \count($rowContent);
-        for ($i = 0; $i < $columnLength; ++$i) {
-            $row->setColumn($i);
-            $printer->printParagraph($rowContent[$i]);
-        }
-    }
-
-    /**
-     * @param LayoutFactoryInterface $layoutFactory
-     * @param PrintFactoryInterface $printFactory
-     * @param MapContent $mapContent
+     * @param PrintFactoryInterface  $printFactory
+     * @param MapContent             $mapContent
      */
     public function addMap(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, MapContent $mapContent)
     {
@@ -196,6 +148,54 @@ class IssueReportService implements IssueReportServiceInterface
             }
 
             $columnLayout->getTransaction()->commit();
+        }
+    }
+
+    /**
+     * @param LayoutFactoryInterface $layoutFactory
+     * @param PrintFactoryInterface  $printFactory
+     * @param ColumnConfiguration[]  $tableColumnConfig
+     * @param string[]               $tableHeader
+     * @param string[][]             $tableContent
+     */
+    private function printTable(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, array $tableColumnConfig, array $tableHeader, array $tableContent)
+    {
+        // prepare table layout
+        $tableLayout = $layoutFactory->createTableLayout($tableColumnConfig);
+
+        $this->printTableRow($tableLayout->startNewRow(), $printFactory, $tableHeader);
+
+        foreach ($tableContent as $row) {
+            $this->printTableRow($tableLayout->startNewRow(), $printFactory, $row);
+        }
+
+        $counter = 0;
+        $tableLayout->setOnRowCommit(function (TransactionInterface $printTransaction) use (&$counter, $printFactory) {
+            if ($counter % 2 === 1) {
+                $drawer = $printFactory->getDrawer($printTransaction);
+                $drawer->drawTableAlternatingBackground();
+            }
+
+            ++$counter;
+        });
+
+        // terminate layout
+        $tableLayout->getTransaction()->commit();
+    }
+
+    /**
+     * @param TableRowLayoutInterface $row
+     * @param PrintFactoryInterface   $printFactory
+     * @param string[]                $rowContent
+     */
+    private function printTableRow(TableRowLayoutInterface $row, PrintFactoryInterface $printFactory, array $rowContent)
+    {
+        $printer = $printFactory->getPrinter($row);
+
+        $columnLength = \count($rowContent);
+        for ($i = 0; $i < $columnLength; ++$i) {
+            $row->setColumn($i);
+            $printer->printParagraph($rowContent[$i]);
         }
     }
 }

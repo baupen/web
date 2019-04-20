@@ -21,17 +21,14 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class BaseController extends AbstractController
 {
+    /**
+     * @var ConstructionManager[]
+     */
+    private $userCache = [];
+
     public static function getSubscribedServices()
     {
         return parent::getSubscribedServices() + ['kernel' => KernelInterface::class, 'registry' => RegistryInterface::class];
-    }
-
-    /**
-     * @return KernelInterface
-     */
-    private function getKernel()
-    {
-        return $this->get('kernel');
     }
 
     /**
@@ -90,24 +87,6 @@ class BaseController extends AbstractController
     }
 
     /**
-     * @param $type
-     * @param $message
-     * @param string $link
-     */
-    private function displayFlash($type, $message, $link = null)
-    {
-        if ($link !== null) {
-            $message = '<a href="' . $link . '">' . $message . '</a>';
-        }
-        $this->get('session')->getFlashBag()->set($type, $message);
-    }
-
-    /**
-     * @var ConstructionManager[]
-     */
-    private $userCache = [];
-
-    /**
      * @return ConstructionManager
      */
     protected function getUser()
@@ -144,8 +123,8 @@ class BaseController extends AbstractController
      *
      * @final
      *
-     * @param string $view
-     * @param array $parameters
+     * @param string        $view
+     * @param array         $parameters
      * @param Response|null $response
      *
      * @return Response
@@ -158,5 +137,26 @@ class BaseController extends AbstractController
         }
 
         return parent::render($view, $parameters, $response);
+    }
+
+    /**
+     * @return KernelInterface
+     */
+    private function getKernel()
+    {
+        return $this->get('kernel');
+    }
+
+    /**
+     * @param $type
+     * @param $message
+     * @param string $link
+     */
+    private function displayFlash($type, $message, $link = null)
+    {
+        if ($link !== null) {
+            $message = '<a href="' . $link . '">' . $message . '</a>';
+        }
+        $this->get('session')->getFlashBag()->set($type, $message);
     }
 }

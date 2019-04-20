@@ -84,18 +84,6 @@ class MyTwigExtension extends AbstractExtension
     }
 
     /**
-     * translates the day of the week.
-     *
-     * @param DateTime $date
-     *
-     * @return string
-     */
-    private function prependDayName(DateTime $date)
-    {
-        return $this->translator->trans('date_time.' . $date->format('D'), [], 'framework');
-    }
-
-    /**
      * @param $value
      *
      * @return string
@@ -107,5 +95,17 @@ class MyTwigExtension extends AbstractExtension
         }
 
         return BooleanType::getTranslationForValue(BooleanType::NO, $this->translator);
+    }
+
+    /**
+     * translates the day of the week.
+     *
+     * @param DateTime $date
+     *
+     * @return string
+     */
+    private function prependDayName(DateTime $date)
+    {
+        return $this->translator->trans('date_time.' . $date->format('D'), [], 'framework');
     }
 }

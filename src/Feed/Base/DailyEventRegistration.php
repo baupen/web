@@ -27,6 +27,11 @@ class DailyEventRegistration
     private $timeNormalization = [];
 
     /**
+     * @var mixed[]
+     */
+    private $receivers = [];
+
+    /**
      * @param DateTime $time
      *
      * @return string
@@ -35,11 +40,6 @@ class DailyEventRegistration
     {
         return $time->format('Y.m.d');
     }
-
-    /**
-     * @var mixed[]
-     */
-    private $receivers = [];
 
     /**
      * @param $receiver
@@ -62,7 +62,7 @@ class DailyEventRegistration
 
     /**
      * @param DateTime $time
-     * @param mixed $receiver
+     * @param mixed    $receiver
      */
     protected function register(DateTime $time, $receiver)
     {

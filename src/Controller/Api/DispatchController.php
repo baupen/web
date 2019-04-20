@@ -40,21 +40,9 @@ class DispatchController extends ApiController
     const INVALID_CRAFTSMAN = 'invalid craftsman';
 
     /**
-     * gives the appropriate error code the specified error message.
-     *
-     * @param string $message
-     *
-     * @return int
-     */
-    protected function errorMessageToStatusCode($message)
-    {
-        return parent::errorMessageToStatusCode($message);
-    }
-
-    /**
      * @Route("/craftsman/list", name="api_dispatch_craftsman_list", methods={"POST"})
      *
-     * @param Request $request
+     * @param Request              $request
      * @param CraftsmanTransformer $craftsmanTransformer
      *
      * @return Response
@@ -75,8 +63,8 @@ class DispatchController extends ApiController
     /**
      * @Route("", name="api_dispatch", methods={"POST"})
      *
-     * @param Request $request
-     * @param TranslatorInterface $translator
+     * @param Request               $request
+     * @param TranslatorInterface   $translator
      * @param EmailServiceInterface $emailService
      *
      * @throws Exception
@@ -131,11 +119,23 @@ class DispatchController extends ApiController
     }
 
     /**
-     * @param Craftsman $craftsman
-     * @param CurrentIssueState $state
-     * @param ConstructionSite $constructionSite
+     * gives the appropriate error code the specified error message.
+     *
+     * @param string $message
+     *
+     * @return int
+     */
+    protected function errorMessageToStatusCode($message)
+    {
+        return parent::errorMessageToStatusCode($message);
+    }
+
+    /**
+     * @param Craftsman             $craftsman
+     * @param CurrentIssueState     $state
+     * @param ConstructionSite      $constructionSite
      * @param EmailServiceInterface $emailService
-     * @param TranslatorInterface $translator
+     * @param TranslatorInterface   $translator
      *
      * @throws Exception
      *

@@ -50,11 +50,11 @@ class EmailService implements EmailServiceInterface
     /**
      * EmailService constructor.
      *
-     * @param Swift_Mailer $mailer
+     * @param Swift_Mailer    $mailer
      * @param LoggerInterface $logger
-     * @param Environment $twig
-     * @param string $mailerSender
-     * @param string $supportEmail
+     * @param Environment     $twig
+     * @param string          $mailerSender
+     * @param string          $supportEmail
      */
     public function __construct(Swift_Mailer $mailer, LoggerInterface $logger, Environment $twig, string $mailerSender, string $supportEmail)
     {
@@ -66,7 +66,7 @@ class EmailService implements EmailServiceInterface
     }
 
     /**
-     * @param Email $email
+     * @param Email    $email
      * @param string[] $options
      *
      * @return bool
@@ -76,7 +76,8 @@ class EmailService implements EmailServiceInterface
         $message = (new Swift_Message())
             ->setSubject($email->getSubject())
             ->setFrom($this->mailerSender)
-            ->setTo($email->getReceiver());
+            ->setTo($email->getReceiver())
+        ;
 
         //set reply to
         if (isset($options['reply_to'])) {

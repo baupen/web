@@ -77,7 +77,7 @@ class SyncTransaction
 
     /**
      * @param ObjectManager $manager
-     * @param callable $canPersist taking an IdEntity as arg
+     * @param callable      $canPersist taking an IdEntity as arg
      */
     public function execute(ObjectManager $manager, callable $canPersist)
     {

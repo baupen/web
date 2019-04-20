@@ -34,9 +34,8 @@ class DisplayNameService implements DisplayNameServiceInterface
     public function forConstructionSiteImage(string $imageName)
     {
         $output = $this->trimEnding($imageName);
-        $output = $this->trimWhitespace($output);
 
-        return $output;
+        return $this->trimWhitespace($output);
     }
 
     /**
@@ -73,9 +72,7 @@ class DisplayNameService implements DisplayNameServiceInterface
             $output = $before . ' ' . $after;
         }
 
-        $output = $this->trimWhitespace($output);
-
-        return $output;
+        return $this->trimWhitespace($output);
     }
 
     /**
@@ -113,10 +110,10 @@ class DisplayNameService implements DisplayNameServiceInterface
     }
 
     /**
-     * @param string[] $elementNames as an (int id => string name) structure
-     * @param callable $createNewElement called as $addElement(string $name); should return int id of the new element
+     * @param string[] $elementNames        as an (int id => string name) structure
+     * @param callable $createNewElement    called as $addElement(string $name); should return int id of the new element
      * @param callable $assignChildToParent called with $assignParent(string $childId, string $parentId)
-     * @param callable $clearParent called with $clearParent(string $childId)
+     * @param callable $clearParent         called with $clearParent(string $childId)
      */
     public function putIntoTreeStructure(array $elementNames, callable $createNewElement, callable $assignChildToParent, callable $clearParent)
     {
@@ -283,7 +280,7 @@ class DisplayNameService implements DisplayNameServiceInterface
     }
 
     /**
-     * @param int $index
+     * @param int      $index
      * @param string[] $filenameGroupsStatistics
      * @param string[] $decomposedNames
      */

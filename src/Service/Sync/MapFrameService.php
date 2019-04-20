@@ -46,7 +46,7 @@ class MapFrameService implements MapFrameServiceInterface
     }
 
     /**
-     * @param SyncTransaction $syncTransaction
+     * @param SyncTransaction  $syncTransaction
      * @param ConstructionSite $constructionSite
      */
     public function syncMapFrames(SyncTransaction $syncTransaction, ConstructionSite $constructionSite)
@@ -95,8 +95,8 @@ class MapFrameService implements MapFrameServiceInterface
 
     /**
      * @param SyncTransaction $syncTransaction
-     * @param MapFile $mapFile
-     * @param Frame|null $frame
+     * @param MapFile         $mapFile
+     * @param Frame|null      $frame
      */
     private function syncFrame(SyncTransaction $syncTransaction, MapFile $mapFile, ?Frame $frame)
     {

@@ -41,7 +41,7 @@ class ReadController extends ExternalApiController
     /**
      * @Route("", name="api_external_read", methods={"POST"})
      *
-     * @param Request $request
+     * @param Request            $request
      * @param TransformerFactory $transformerFactory
      *
      * @throws ORMException
@@ -79,10 +79,10 @@ class ReadController extends ExternalApiController
     }
 
     /**
-     * @param TransformerFactory $transformerFactory
-     * @param ReadRequest $readRequest
+     * @param TransformerFactory  $transformerFactory
+     * @param ReadRequest         $readRequest
      * @param ConstructionManager $constructionManager
-     * @param ReadData $readData
+     * @param ReadData            $readData
      *
      * @throws ORMException
      * @throws Exception
@@ -269,10 +269,10 @@ WHERE cscm.construction_manager_id = :id';
      * break down id structure to some helper structures.
      *
      * @param ObjectMeta[] $requestObjectMeta the given ids
-     * @param IdTrait[] $dbEntities
-     * @param string[] $allValidIds contains all ids from the db
-     * @param string[] $removeIds contains the invalid given (ids -> time)
-     * @param string[] $knownIds contains the valid given (id -> time)
+     * @param IdTrait[]    $dbEntities
+     * @param string[]     $allValidIds       contains all ids from the db
+     * @param string[]     $removeIds         contains the invalid given (ids -> time)
+     * @param string[]     $knownIds          contains the valid given (id -> time)
      *
      * @throws Exception
      */

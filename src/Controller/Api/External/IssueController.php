@@ -62,6 +62,153 @@ class IssueController extends ExternalApiController
     const ISSUE_NO_FILE_UPLOAD_EXPECTED = 'a file was uploaded, but not specified in the issue';
 
     /**
+     * @Route("/create", name="api_external_issue_create", methods={"POST"})
+     *
+     * @param Request                $request
+     * @param IssueTransformer       $issueTransformer
+     * @param UploadServiceInterface $uploadService
+     *
+     * @throws ORMException
+     * @throws Exception
+     *
+     * @return Response
+     */
+    public function issueCreateAction(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService)
+    {
+        return $this->processIssueModifyRequest($request, $issueTransformer, $uploadService, 'create');
+    }
+
+    /**
+     * @Route("/update", name="api_external_issue_update", methods={"POST"})
+     *
+     * @param Request                $request
+     * @param IssueTransformer       $issueTransformer
+     * @param UploadServiceInterface $uploadService
+     *
+     * @throws ORMException
+     * @throws Exception
+     *
+     * @return Response
+     */
+    public function issueUpdateAction(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService)
+    {
+        return $this->processIssueModifyRequest($request, $issueTransformer, $uploadService, 'update');
+    }
+
+    /**
+     * @Route("/delete", name="api_external_issue_delete", methods={"POST"})
+     *
+     * @param Request          $request
+     * @param IssueTransformer $issueTransformer
+     *
+     * @throws ORMException
+     *
+     * @return Response
+     */
+    public function issueDeleteAction(Request $request, IssueTransformer $issueTransformer)
+    {
+        return $this->processIssueActionRequest(
+            $request, $issueTransformer, function ($issue) {
+                /** @var Issue $issue */
+                if ($issue->getRegisteredAt() === null) {
+                    $this->fastRemove($issue);
+
+                    return $this->success(new EmptyData());
+                }
+
+                return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
+            }
+        );
+    }
+
+    /**
+     * @Route("/mark", name="api_external_issue_mark", methods={"POST"})
+     *
+     * @param Request          $request
+     * @param IssueTransformer $issueTransformer
+     *
+     * @throws ORMException
+     *
+     * @return Response
+     */
+    public function issueMarkAction(Request $request, IssueTransformer $issueTransformer)
+    {
+        return $this->processIssueActionRequest(
+            $request, $issueTransformer, function ($issue) {
+                /* @var Issue $issue */
+                $issue->setIsMarked(!$issue->getIsMarked());
+                $this->fastSave($issue);
+
+                return true;
+            }
+        );
+    }
+
+    /**
+     * @Route("/review", name="api_external_issue_review", methods={"POST"})
+     *
+     * @param Request          $request
+     * @param IssueTransformer $issueTransformer
+     *
+     * @throws ORMException
+     *
+     * @return Response
+     */
+    public function issueReviewAction(Request $request, IssueTransformer $issueTransformer)
+    {
+        return $this->processIssueActionRequest(
+            $request, $issueTransformer, function ($issue, $constructionManager) {
+                /** @var Issue $issue */
+                /* @var ConstructionManager $constructionManager */
+                if ($issue->getRegisteredAt() !== null && $issue->getReviewedAt() === null) {
+                    $issue->setReviewedAt(new DateTime());
+                    $issue->setReviewBy($constructionManager);
+                    $this->fastSave($issue);
+
+                    return true;
+                }
+
+                return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
+            }
+        );
+    }
+
+    /**
+     * @Route("/revert", name="api_external_issue_revert", methods={"POST"})
+     *
+     * @param Request          $request
+     * @param IssueTransformer $issueTransformer
+     *
+     * @throws ORMException
+     *
+     * @return Response
+     */
+    public function issueRevertAction(Request $request, IssueTransformer $issueTransformer)
+    {
+        return $this->processIssueActionRequest(
+            $request, $issueTransformer, function ($issue) {
+                /** @var Issue $issue */
+                if ($issue->getRegisteredAt() !== null) {
+                    if ($issue->getReviewedAt() !== null) {
+                        $issue->setReviewedAt(null);
+                        $issue->setReviewBy(null);
+                    } elseif ($issue->getRespondedAt() !== null) {
+                        $issue->setRespondedAt(null);
+                        $issue->setResponseBy(null);
+                    } else {
+                        return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
+                    }
+                    $this->fastSave($issue);
+
+                    return true;
+                }
+
+                return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
+            }
+        );
+    }
+
+    /**
      * gives the appropriate error code the specified error message.
      *
      * @param string $message
@@ -83,42 +230,8 @@ class IssueController extends ExternalApiController
     }
 
     /**
-     * @Route("/create", name="api_external_issue_create", methods={"POST"})
-     *
-     * @param Request $request
-     * @param IssueTransformer $issueTransformer
-     * @param UploadServiceInterface $uploadService
-     *
-     * @throws ORMException
-     * @throws Exception
-     *
-     * @return Response
-     */
-    public function issueCreateAction(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService)
-    {
-        return $this->processIssueModifyRequest($request, $issueTransformer, $uploadService, 'create');
-    }
-
-    /**
-     * @Route("/update", name="api_external_issue_update", methods={"POST"})
-     *
-     * @param Request $request
-     * @param IssueTransformer $issueTransformer
-     * @param UploadServiceInterface $uploadService
-     *
-     * @throws ORMException
-     * @throws Exception
-     *
-     * @return Response
-     */
-    public function issueUpdateAction(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService)
-    {
-        return $this->processIssueModifyRequest($request, $issueTransformer, $uploadService, 'update');
-    }
-
-    /**
-     * @param Request $request
-     * @param IssueTransformer $issueTransformer
+     * @param Request                $request
+     * @param IssueTransformer       $issueTransformer
      * @param UploadServiceInterface $uploadService
      * @param $mode
      *
@@ -174,7 +287,8 @@ class IssueController extends ExternalApiController
         //check position validity
         if ($issue->getPosition() === null && $issueModifyRequest->getIssue()->getPosition() !== null) {
             return $this->fail(static::ISSUE_POSITION_INVALID);
-        } elseif ($issue->getPosition() !== null && !$issue->getMap()->getFiles()->contains($issue->getPosition()->getMapFile())) {
+        }
+        if ($issue->getPosition() !== null && !$issue->getMap()->getFiles()->contains($issue->getPosition()->getMapFile())) {
             return $this->fail(static::ISSUE_POSITION_INVALID);
         }
 
@@ -246,120 +360,7 @@ class IssueController extends ExternalApiController
     }
 
     /**
-     * @Route("/delete", name="api_external_issue_delete", methods={"POST"})
-     *
-     * @param Request $request
-     * @param IssueTransformer $issueTransformer
-     *
-     * @throws ORMException
-     *
-     * @return Response
-     */
-    public function issueDeleteAction(Request $request, IssueTransformer $issueTransformer)
-    {
-        return $this->processIssueActionRequest(
-            $request, $issueTransformer, function ($issue) {
-                /** @var Issue $issue */
-                if ($issue->getRegisteredAt() === null) {
-                    $this->fastRemove($issue);
-
-                    return $this->success(new EmptyData());
-                }
-
-                return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
-            }
-        );
-    }
-
-    /**
-     * @Route("/mark", name="api_external_issue_mark", methods={"POST"})
-     *
-     * @param Request $request
-     * @param IssueTransformer $issueTransformer
-     *
-     * @throws ORMException
-     *
-     * @return Response
-     */
-    public function issueMarkAction(Request $request, IssueTransformer $issueTransformer)
-    {
-        return $this->processIssueActionRequest(
-            $request, $issueTransformer, function ($issue) {
-                /* @var Issue $issue */
-                $issue->setIsMarked(!$issue->getIsMarked());
-                $this->fastSave($issue);
-
-                return true;
-            }
-        );
-    }
-
-    /**
-     * @Route("/review", name="api_external_issue_review", methods={"POST"})
-     *
-     * @param Request $request
-     * @param IssueTransformer $issueTransformer
-     *
-     * @throws ORMException
-     *
-     * @return Response
-     */
-    public function issueReviewAction(Request $request, IssueTransformer $issueTransformer)
-    {
-        return $this->processIssueActionRequest(
-            $request, $issueTransformer, function ($issue, $constructionManager) {
-                /** @var Issue $issue */
-                /* @var ConstructionManager $constructionManager */
-                if ($issue->getRegisteredAt() !== null && $issue->getReviewedAt() === null) {
-                    $issue->setReviewedAt(new DateTime());
-                    $issue->setReviewBy($constructionManager);
-                    $this->fastSave($issue);
-
-                    return true;
-                }
-
-                return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
-            }
-        );
-    }
-
-    /**
-     * @Route("/revert", name="api_external_issue_revert", methods={"POST"})
-     *
-     * @param Request $request
-     * @param IssueTransformer $issueTransformer
-     *
-     * @throws ORMException
-     *
-     * @return Response
-     */
-    public function issueRevertAction(Request $request, IssueTransformer $issueTransformer)
-    {
-        return $this->processIssueActionRequest(
-            $request, $issueTransformer, function ($issue) {
-                /** @var Issue $issue */
-                if ($issue->getRegisteredAt() !== null) {
-                    if ($issue->getReviewedAt() !== null) {
-                        $issue->setReviewedAt(null);
-                        $issue->setReviewBy(null);
-                    } elseif ($issue->getRespondedAt() !== null) {
-                        $issue->setRespondedAt(null);
-                        $issue->setResponseBy(null);
-                    } else {
-                        return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
-                    }
-                    $this->fastSave($issue);
-
-                    return true;
-                }
-
-                return $this->fail(static::ISSUE_ACTION_NOT_ALLOWED);
-            }
-        );
-    }
-
-    /**
-     * @param Request $request
+     * @param Request          $request
      * @param IssueTransformer $issueTransformer
      * @param $action
      *

@@ -51,6 +51,246 @@ class RegisterController extends ApiController
     const EMPTY_CONDITIONS_NOT_ALLOWED = 'empty conditions not allowed';
 
     /**
+     * @Route("/issue/list", name="api_register_issues_list", methods={"POST"})
+     *
+     * @param Request          $request
+     * @param IssueTransformer $issueTransformer
+     *
+     * @return Response
+     */
+    public function issueListAction(Request $request, IssueTransformer $issueTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $constructionSiteRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        $filter = new Filter();
+        $filter->setConstructionSite($constructionSite);
+        $filter->filterByRegistrationStatus(true);
+        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
+
+        //create response
+        $data = new IssuesData();
+        $data->setIssues($issueTransformer->toApiMultiple($issues));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/craftsman/list", name="api_register_craftsman_list", methods={"POST"})
+     *
+     * @param Request              $request
+     * @param CraftsmanTransformer $craftsmanTransformer
+     *
+     * @return Response
+     */
+    public function craftsmanListAction(Request $request, CraftsmanTransformer $craftsmanTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $constructionSiteRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        $data = new CraftsmenData();
+        $data->setCraftsmen($craftsmanTransformer->toApiMultiple($constructionSite->getCraftsmen()->toArray()));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/map/list", name="api_register_map_list", methods={"POST"})
+     *
+     * @param Request        $request
+     * @param MapTransformer $mapTransformer
+     *
+     * @return Response
+     */
+    public function mapAction(Request $request, MapTransformer $mapTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $constructionSiteRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        $topLevelMaps = [];
+        foreach ($constructionSite->getMaps() as $map) {
+            if ($map->getParent() === null) {
+                $topLevelMaps[] = $map;
+            }
+        }
+
+        $data = new MapsData();
+        $data->setMaps($mapTransformer->toApiMultiple($topLevelMaps));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/link/create", name="api_register_link_create", methods={"GET"})
+     *
+     * @param Request $request
+     *
+     * @throws Exception
+     * @throws Exception
+     *
+     * @return Response
+     */
+    public function linkCreateAction(Request $request)
+    {
+        $queryFilter = $request->query->get('filter', []);
+        $queryLimit = $request->query->get('limit', []);
+
+        //get construction site
+        if (!isset($queryFilter['constructionSiteId'])) {
+            throw new NotFoundHttpException();
+        }
+
+        /** @var ConstructionSite $constructionSite */
+        $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($queryFilter['constructionSiteId']);
+        if ($constructionSite === null || !$this->getUser()->getConstructionSites()->contains($constructionSite)) {
+            throw new NotFoundHttpException();
+        }
+
+        //create filter
+        $filter = new Filter();
+        $this->setFilterProperties($filter, $queryFilter);
+        $filter->filterByRegistrationStatus(true);
+        $filter->setConstructionSite($constructionSite);
+        $filter->setPublicAccessIdentifier();
+
+        //check if limit applies
+        $linkParameters = new ParameterBag($queryLimit);
+        if ($linkParameters->getBoolean('enabled')) {
+            $limit = $linkParameters->get('limit', null);
+            $dateLimit = $limit !== null && $limit !== '' ? new DateTime($limit) : null;
+            $filter->setAccessAllowedUntil($dateLimit);
+        }
+
+        //save
+        $this->fastSave($filter);
+
+        //send response
+        $data = new ShareData();
+        $data->setLink($this->generateUrl('external_share_filter', ['identifier' => $filter->getPublicAccessIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/issue/update", name="api_register_issue_update", methods={"POST"})
+     *
+     * @param Request                $request
+     * @param UpdateIssueTransformer $updateIssueTransformer
+     * @param IssueTransformer       $issueTransformer
+     *
+     * @return Response
+     */
+    public function issueUpdateAction(Request $request, UpdateIssueTransformer $updateIssueTransformer, IssueTransformer $issueTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var UpdateIssue[] $issues */
+        /** @var Issue[] $entities */
+        if (!$this->parseRegisterIssuesRequest($request, $issues, $entities, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        //write properties to issues
+        foreach ($issues as $guid => $issue) {
+            if (\array_key_exists($guid, $entities)) {
+                $entity = $entities[$guid];
+                $res = $updateIssueTransformer->fromApi($issue, $entity, function ($craftsman) use ($constructionSite) {
+                    /** @var Craftsman $craftsman */
+                    if ($craftsman === null) {
+                        return $this->fail(self::CRAFTSMAN_NOT_FOUND);
+                    }
+                    if ($craftsman->getConstructionSite() !== $constructionSite) {
+                        return $this->fail(self::INVALID_CRAFTSMAN);
+                    }
+
+                    return true;
+                });
+                if ($res !== true) {
+                    /* @var Response $res */
+                    return $res;
+                }
+            }
+        }
+
+        $this->fastSave(...array_values($entities));
+
+        //create response
+        $data = new IssuesData();
+        $data->setIssues($issueTransformer->toApiMultiple($entities));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/issue/status", name="api_register_issue_status", methods={"POST"})
+     *
+     * @param Request          $request
+     * @param IssueTransformer $issueTransformer
+     *
+     * @throws Exception
+     * @throws Exception
+     * @throws Exception
+     *
+     * @return Response
+     */
+    public function issueStatusAction(Request $request, IssueTransformer $issueTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var Issue[] $entities */
+        /** @var SetStatusRequest $parsedRequest */
+        if (!$this->parseSetStatusRequest($request, $entities, $errorResponse, $constructionSite, $parsedRequest)) {
+            return $errorResponse;
+        }
+
+        //correct responded status
+        if ($parsedRequest->isRespondedStatusSet()) {
+            foreach ($entities as $entity) {
+                if ($entity->getRespondedAt() === null) {
+                    $entity->setRespondedAt(new DateTime());
+                    $entity->setResponseBy($entity->getCraftsman());
+                }
+            }
+        } else {
+            foreach ($entities as $entity) {
+                if ($entity->getRespondedAt() !== null) {
+                    $entity->setRespondedAt(null);
+                    $entity->setResponseBy(null);
+                }
+            }
+        }
+
+        //correct reviewed status
+        if ($parsedRequest->isReviewedStatusSet()) {
+            foreach ($entities as $entity) {
+                if ($entity->getReviewedAt() === null) {
+                    $entity->setReviewedAt(new DateTime());
+                    $entity->setReviewBy($this->getUser());
+                }
+            }
+        } else {
+            foreach ($entities as $entity) {
+                if ($entity->getReviewedAt() !== null) {
+                    $entity->setReviewedAt(null);
+                    $entity->setReviewBy(null);
+                }
+            }
+        }
+
+        $this->fastSave(...array_values($entities));
+
+        //create response
+        $data = new IssuesData();
+        $data->setIssues($issueTransformer->toApiMultiple($entities));
+
+        return $this->success($data);
+    }
+
+    /**
      * @param Request $request
      * @param $entities
      * @param $errorResponse
@@ -140,9 +380,9 @@ class RegisterController extends ApiController
     }
 
     /**
-     * @param Issue[] $requestedIssues
+     * @param Issue[]       $requestedIssues
      * @param UpdateIssue[] $issues
-     * @param Issue[] $entities
+     * @param Issue[]       $entities
      */
     private function orderEntities($requestedIssues, $issues, &$entities)
     {
@@ -159,245 +399,5 @@ class RegisterController extends ApiController
                 $entities[$guid] = $entityLookup[$guid];
             }
         }
-    }
-
-    /**
-     * @Route("/issue/list", name="api_register_issues_list", methods={"POST"})
-     *
-     * @param Request $request
-     * @param IssueTransformer $issueTransformer
-     *
-     * @return Response
-     */
-    public function issueListAction(Request $request, IssueTransformer $issueTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $constructionSiteRequest, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        $filter = new Filter();
-        $filter->setConstructionSite($constructionSite);
-        $filter->filterByRegistrationStatus(true);
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
-
-        //create response
-        $data = new IssuesData();
-        $data->setIssues($issueTransformer->toApiMultiple($issues));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/craftsman/list", name="api_register_craftsman_list", methods={"POST"})
-     *
-     * @param Request $request
-     * @param CraftsmanTransformer $craftsmanTransformer
-     *
-     * @return Response
-     */
-    public function craftsmanListAction(Request $request, CraftsmanTransformer $craftsmanTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $constructionSiteRequest, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        $data = new CraftsmenData();
-        $data->setCraftsmen($craftsmanTransformer->toApiMultiple($constructionSite->getCraftsmen()->toArray()));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/map/list", name="api_register_map_list", methods={"POST"})
-     *
-     * @param Request $request
-     * @param MapTransformer $mapTransformer
-     *
-     * @return Response
-     */
-    public function mapAction(Request $request, MapTransformer $mapTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $constructionSiteRequest, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        $topLevelMaps = [];
-        foreach ($constructionSite->getMaps() as $map) {
-            if ($map->getParent() === null) {
-                $topLevelMaps[] = $map;
-            }
-        }
-
-        $data = new MapsData();
-        $data->setMaps($mapTransformer->toApiMultiple($topLevelMaps));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/link/create", name="api_register_link_create", methods={"GET"})
-     *
-     * @param Request $request
-     *
-     * @throws Exception
-     * @throws Exception
-     *
-     * @return Response
-     */
-    public function linkCreateAction(Request $request)
-    {
-        $queryFilter = $request->query->get('filter', []);
-        $queryLimit = $request->query->get('limit', []);
-
-        //get construction site
-        if (!isset($queryFilter['constructionSiteId'])) {
-            throw new NotFoundHttpException();
-        }
-
-        /** @var ConstructionSite $constructionSite */
-        $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($queryFilter['constructionSiteId']);
-        if ($constructionSite === null || !$this->getUser()->getConstructionSites()->contains($constructionSite)) {
-            throw new NotFoundHttpException();
-        }
-
-        //create filter
-        $filter = new Filter();
-        $this->setFilterProperties($filter, $queryFilter);
-        $filter->filterByRegistrationStatus(true);
-        $filter->setConstructionSite($constructionSite);
-        $filter->setPublicAccessIdentifier();
-
-        //check if limit applies
-        $linkParameters = new ParameterBag($queryLimit);
-        if ($linkParameters->getBoolean('enabled')) {
-            $limit = $linkParameters->get('limit', null);
-            $dateLimit = $limit !== null && $limit !== '' ? new DateTime($limit) : null;
-            $filter->setAccessAllowedUntil($dateLimit);
-        }
-
-        //save
-        $this->fastSave($filter);
-
-        //send response
-        $data = new ShareData();
-        $data->setLink($this->generateUrl('external_share_filter', ['identifier' => $filter->getPublicAccessIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/issue/update", name="api_register_issue_update", methods={"POST"})
-     *
-     * @param Request $request
-     * @param UpdateIssueTransformer $updateIssueTransformer
-     * @param IssueTransformer $issueTransformer
-     *
-     * @return Response
-     */
-    public function issueUpdateAction(Request $request, UpdateIssueTransformer $updateIssueTransformer, IssueTransformer $issueTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        /** @var UpdateIssue[] $issues */
-        /** @var Issue[] $entities */
-        if (!$this->parseRegisterIssuesRequest($request, $issues, $entities, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        //write properties to issues
-        foreach ($issues as $guid => $issue) {
-            if (\array_key_exists($guid, $entities)) {
-                $entity = $entities[$guid];
-                $res = $updateIssueTransformer->fromApi($issue, $entity, function ($craftsman) use ($constructionSite) {
-                    /** @var Craftsman $craftsman */
-                    if ($craftsman === null) {
-                        return $this->fail(self::CRAFTSMAN_NOT_FOUND);
-                    }
-                    if ($craftsman->getConstructionSite() !== $constructionSite) {
-                        return $this->fail(self::INVALID_CRAFTSMAN);
-                    }
-
-                    return true;
-                });
-                if ($res !== true) {
-                    /* @var Response $res */
-                    return $res;
-                }
-            }
-        }
-
-        $this->fastSave(...array_values($entities));
-
-        //create response
-        $data = new IssuesData();
-        $data->setIssues($issueTransformer->toApiMultiple($entities));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/issue/status", name="api_register_issue_status", methods={"POST"})
-     *
-     * @param Request $request
-     * @param IssueTransformer $issueTransformer
-     *
-     * @throws Exception
-     * @throws Exception
-     * @throws Exception
-     *
-     * @return Response
-     */
-    public function issueStatusAction(Request $request, IssueTransformer $issueTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        /** @var Issue[] $entities */
-        /** @var SetStatusRequest $parsedRequest */
-        if (!$this->parseSetStatusRequest($request, $entities, $errorResponse, $constructionSite, $parsedRequest)) {
-            return $errorResponse;
-        }
-
-        //correct responded status
-        if ($parsedRequest->isRespondedStatusSet()) {
-            foreach ($entities as $entity) {
-                if ($entity->getRespondedAt() === null) {
-                    $entity->setRespondedAt(new DateTime());
-                    $entity->setResponseBy($entity->getCraftsman());
-                }
-            }
-        } else {
-            foreach ($entities as $entity) {
-                if ($entity->getRespondedAt() !== null) {
-                    $entity->setRespondedAt(null);
-                    $entity->setResponseBy(null);
-                }
-            }
-        }
-
-        //correct reviewed status
-        if ($parsedRequest->isReviewedStatusSet()) {
-            foreach ($entities as $entity) {
-                if ($entity->getReviewedAt() === null) {
-                    $entity->setReviewedAt(new DateTime());
-                    $entity->setReviewBy($this->getUser());
-                }
-            }
-        } else {
-            foreach ($entities as $entity) {
-                if ($entity->getReviewedAt() !== null) {
-                    $entity->setReviewedAt(null);
-                    $entity->setReviewBy(null);
-                }
-            }
-        }
-
-        $this->fastSave(...array_values($entities));
-
-        //create response
-        $data = new IssuesData();
-        $data->setIssues($issueTransformer->toApiMultiple($entities));
-
-        return $this->success($data);
     }
 }

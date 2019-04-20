@@ -27,7 +27,7 @@ class Kernel extends BaseKernel
 
     const CONFIG_EXTS = '.{php,xml,yaml,yml}';
 
-    private $projectDir = null;
+    private $projectDir;
 
     /**
      * overwrite default implementation because it is much simpler this way.
@@ -76,7 +76,7 @@ class Kernel extends BaseKernel
 
     /**
      * @param ContainerBuilder $container
-     * @param LoaderInterface $loader
+     * @param LoaderInterface  $loader
      *
      * @throws Exception
      */

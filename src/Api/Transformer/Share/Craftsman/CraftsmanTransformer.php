@@ -30,7 +30,7 @@ class CraftsmanTransformer
      * CraftsmanTransformer constructor.
      *
      * @param \App\Api\Transformer\Base\CraftsmanTransformer $craftsmanTransformer
-     * @param RouterInterface $router
+     * @param RouterInterface                                $router
      */
     public function __construct(\App\Api\Transformer\Base\CraftsmanTransformer $craftsmanTransformer, RouterInterface $router)
     {
@@ -40,8 +40,8 @@ class CraftsmanTransformer
 
     /**
      * @param Craftsman $entity
-     * @param string $identifier
-     * @param bool $canRespondToIssues
+     * @param string    $identifier
+     * @param bool      $canRespondToIssues
      *
      * @return \App\Api\Entity\Base\Craftsman
      */

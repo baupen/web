@@ -35,28 +35,6 @@ class SwitchController extends ApiController
     const CONSTRUCTION_SITE_NAME_TAKEN = 'This construction site name is already taken';
 
     /**
-     * gives the appropriate error code the specified error message.
-     *
-     * @param string $message
-     *
-     * @return int
-     */
-    protected function errorMessageToStatusCode($message)
-    {
-        return parent::errorMessageToStatusCode($message);
-    }
-
-    /**
-     * throws an exception if a trial account is used to authenticate.
-     */
-    private function ensureNoTrialAccount()
-    {
-        if ($this->getUser()->getIsTrialAccount()) {
-            throw new AccessDeniedHttpException();
-        }
-    }
-
-    /**
      * @Route("/construction_sites", name="api_switch_constrution_sites")
      *
      * @param ConstructionSiteTransformer $constructionSiteTransformer
@@ -166,22 +144,9 @@ class SwitchController extends ApiController
     }
 
     /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    private function checkIfConstructionSiteExists(string $name)
-    {
-        /** @var ConstructionSite $constructionSite */
-        $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(['name' => $name]);
-
-        return \count($constructionSites) > 0;
-    }
-
-    /**
      * @Route("/create", name="api_switch_create")
      *
-     * @param Request $request
+     * @param Request              $request
      * @param PathServiceInterface $pathService
      *
      * @return Response
@@ -220,6 +185,41 @@ class SwitchController extends ApiController
     }
 
     /**
+     * gives the appropriate error code the specified error message.
+     *
+     * @param string $message
+     *
+     * @return int
+     */
+    protected function errorMessageToStatusCode($message)
+    {
+        return parent::errorMessageToStatusCode($message);
+    }
+
+    /**
+     * throws an exception if a trial account is used to authenticate.
+     */
+    private function ensureNoTrialAccount()
+    {
+        if ($this->getUser()->getIsTrialAccount()) {
+            throw new AccessDeniedHttpException();
+        }
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    private function checkIfConstructionSiteExists(string $name)
+    {
+        /** @var ConstructionSite $constructionSite */
+        $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(['name' => $name]);
+
+        return \count($constructionSites) > 0;
+    }
+
+    /**
      * @param string $userInput
      *
      * @return string
@@ -236,7 +236,7 @@ class SwitchController extends ApiController
     }
 
     /**
-     * @param ConstructionSite $constructionSite
+     * @param ConstructionSite     $constructionSite
      * @param PathServiceInterface $pathService
      */
     private function setFolderName(ConstructionSite $constructionSite, PathServiceInterface $pathService)

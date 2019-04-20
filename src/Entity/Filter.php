@@ -52,35 +52,35 @@ class Filter extends BaseEntity
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $accessAllowedUntil = null;
+    private $accessAllowedUntil;
 
     /**
      * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $lastAccess = null;
+    private $lastAccess;
 
     /**
      * @var bool|null
      *
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $isMarked = null;
+    private $isMarked;
 
     /**
      * @var string[]|null
      *
      * @ORM\Column(type="simple_array", nullable=true)
      */
-    private $issues = null;
+    private $issues;
 
     /**
      * @var int|null
      *
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $anyStatus = null;
+    private $anyStatus;
 
     /**
      * @var bool
@@ -94,7 +94,7 @@ class Filter extends BaseEntity
      *
      * @ORM\Column(type="simple_array", nullable=true)
      */
-    private $craftsmen = null;
+    private $craftsmen;
 
     /**
      * @var bool
@@ -108,7 +108,7 @@ class Filter extends BaseEntity
      *
      * @ORM\Column(type="simple_array", nullable=true)
      */
-    private $trades = null;
+    private $trades;
 
     /**
      * @var bool
@@ -122,7 +122,7 @@ class Filter extends BaseEntity
      *
      * @ORM\Column(type="simple_array", nullable=true)
      */
-    private $maps = null;
+    private $maps;
 
     /**
      * @var bool
@@ -136,77 +136,77 @@ class Filter extends BaseEntity
      *
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $registrationStatus = null;
+    private $registrationStatus;
 
     /**
      * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $registrationStart = null;
+    private $registrationStart;
 
     /**
      * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $registrationEnd = null;
+    private $registrationEnd;
 
     /**
      * @var bool|null
      *
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $respondedStatus = null;
+    private $respondedStatus;
 
     /**
      * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $respondedStart = null;
+    private $respondedStart;
 
     /**
      * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $respondedEnd = null;
+    private $respondedEnd;
 
     /**
      * @var bool|null
      *
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $reviewedStatus = null;
+    private $reviewedStatus;
 
     /**
      * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $reviewedStart = null;
+    private $reviewedStart;
 
     /**
      * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $reviewedEnd = null;
+    private $reviewedEnd;
 
     /**
      * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $limitStart = null;
+    private $limitStart;
 
     /**
      * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $limitEnd = null;
+    private $limitEnd;
 
     /**
      * @param ConstructionSite $constructionSite
@@ -305,7 +305,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param bool|null $registrationStatus
+     * @param bool|null     $registrationStatus
      * @param DateTime|null $registrationStart
      * @param DateTime|null $registrationEnd
      */
@@ -317,7 +317,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param bool|null $respondedStatus
+     * @param bool|null     $respondedStatus
      * @param DateTime|null $respondedStart
      * @param DateTime|null $respondedEnd
      */
@@ -329,7 +329,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param bool|null $respondedStatus
+     * @param bool|null     $respondedStatus
      * @param DateTime|null $reviewedStart
      * @param DateTime|null $reviewedEnd
      */
@@ -437,19 +437,6 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param $array
-     *
-     * @return array
-     */
-    private static function getValidArray($array)
-    {
-        // due to a bug in doctrine empty arrays are saved as null in the db
-        // therefore need to handle null arrays as empty arrays
-        // bug fix will only be included in 3.0 because it is a breaking change
-        return \is_array($array) ? $array : [];
-    }
-
-    /**
      * @return bool|null
      */
     public function getRegistrationStatus(): ?bool
@@ -535,5 +522,18 @@ class Filter extends BaseEntity
     public function getLimitEnd(): ?DateTime
     {
         return $this->limitEnd;
+    }
+
+    /**
+     * @param $array
+     *
+     * @return array
+     */
+    private static function getValidArray($array)
+    {
+        // due to a bug in doctrine empty arrays are saved as null in the db
+        // therefore need to handle null arrays as empty arrays
+        // bug fix will only be included in 3.0 because it is a breaking change
+        return \is_array($array) ? $array : [];
     }
 }

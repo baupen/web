@@ -44,9 +44,14 @@ class ClearContentFolders extends BaseFixture
         $this->deleteDirectoryContents($this->pathService->getFolderRoot(), true, ['data.sqlite', 'data.sqlite-journal', '.gitkeep']);
     }
 
+    public function getOrder()
+    {
+        return static::ORDER;
+    }
+
     /**
      * @param $dir
-     * @param bool $isRoot
+     * @param bool  $isRoot
      * @param array $exceptions
      *
      * @return bool
@@ -76,10 +81,5 @@ class ClearContentFolders extends BaseFixture
         }
 
         return true;
-    }
-
-    public function getOrder()
-    {
-        return static::ORDER;
     }
 }

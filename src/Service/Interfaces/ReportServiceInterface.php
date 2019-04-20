@@ -19,9 +19,9 @@ interface ReportServiceInterface
 {
     /**
      * @param ConstructionSite $constructionSite
-     * @param Filter $filter
-     * @param string $author
-     * @param ReportElements $reportElements
+     * @param Filter           $filter
+     * @param string           $author
+     * @param ReportElements   $reportElements
      *
      * @return string
      */

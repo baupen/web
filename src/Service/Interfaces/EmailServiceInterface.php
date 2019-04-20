@@ -16,7 +16,7 @@ use App\Entity\Email;
 interface EmailServiceInterface
 {
     /**
-     * @param Email $email
+     * @param Email    $email
      * @param string[] $options
      *
      * @return bool

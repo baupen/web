@@ -39,9 +39,9 @@ class PdfPageLayout implements PdfPageLayoutInterface
     /**
      * Printer constructor.
      *
-     * @param LayoutServiceInterface $layoutService
+     * @param LayoutServiceInterface     $layoutService
      * @param TypographyServiceInterface $typographyService
-     * @param MetaData $content
+     * @param MetaData                   $content
      */
     public function __construct(LayoutServiceInterface $layoutService, TypographyServiceInterface $typographyService, MetaData $content)
     {
@@ -74,8 +74,8 @@ class PdfPageLayout implements PdfPageLayoutInterface
 
     /**
      * @param PdfDocumentInterface $pdf
-     * @param int $currentPage
-     * @param int $totalPages
+     * @param int                  $currentPage
+     * @param int                  $totalPages
      */
     public function printFooter(PdfDocumentInterface $pdf, $currentPage, $totalPages)
     {
@@ -85,8 +85,8 @@ class PdfPageLayout implements PdfPageLayoutInterface
 
     /**
      * @param PdfDocumentInterface $pdfDocument
-     * @param float $xCoordinate
-     * @param float $yCoordinate
+     * @param float                $xCoordinate
+     * @param float                $yCoordinate
      */
     private function moveCursorTo(PdfDocumentInterface $pdfDocument, float $xCoordinate, float $yCoordinate)
     {
@@ -95,7 +95,7 @@ class PdfPageLayout implements PdfPageLayoutInterface
 
     /**
      * @param PdfDocumentInterface $pdf
-     * @param string $headerLeft
+     * @param string               $headerLeft
      */
     private function printHeaderLeft(PdfDocumentInterface $pdf, string $headerLeft)
     {
@@ -108,7 +108,7 @@ class PdfPageLayout implements PdfPageLayoutInterface
 
     /**
      * @param PdfDocumentInterface $pdf
-     * @param string $logoPath
+     * @param string               $logoPath
      */
     private function printLogo(PdfDocumentInterface $pdf, string $logoPath)
     {
@@ -124,7 +124,7 @@ class PdfPageLayout implements PdfPageLayoutInterface
 
     /**
      * @param PdfDocumentInterface $pdf
-     * @param string $footerLeft
+     * @param string               $footerLeft
      */
     private function printFooterLeft(PdfDocumentInterface $pdf, string $footerLeft)
     {
@@ -135,8 +135,8 @@ class PdfPageLayout implements PdfPageLayoutInterface
 
     /**
      * @param PdfDocumentInterface $pdf
-     * @param int $currentPageNumber
-     * @param int $totalPageNumbers
+     * @param int                  $currentPageNumber
+     * @param int                  $totalPageNumbers
      */
     private function printPageNumbers(PdfDocumentInterface $pdf, $currentPageNumber, $totalPageNumbers)
     {

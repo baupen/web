@@ -301,16 +301,6 @@ trait UserTrait
     }
 
     /**
-     * get the user identifier.
-     *
-     * @return string
-     */
-    protected function getUserIdentifier()
-    {
-        return $this->email;
-    }
-
-    /**
      * Removes sensitive data from the user.
      *
      * This is important if, at any given point, sensitive information like
@@ -320,27 +310,6 @@ trait UserTrait
     {
         $this->setPlainPassword(null);
         $this->setRepeatPlainPassword(null);
-    }
-
-    /**
-     * check if two users are equal.
-     *
-     * @param UserTrait $user
-     *
-     * @return bool
-     */
-    protected function isEqualToUser($user)
-    {
-        /* @var UserTrait $user */
-        if ($this->getUsername() !== $user->getUsername()) {
-            return false;
-        }
-
-        if ($this->getPassword() !== $user->getPassword()) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -390,5 +359,36 @@ trait UserTrait
     public function isRegistrationCompleted()
     {
         return $this->isRegistrationCompleted;
+    }
+
+    /**
+     * get the user identifier.
+     *
+     * @return string
+     */
+    protected function getUserIdentifier()
+    {
+        return $this->email;
+    }
+
+    /**
+     * check if two users are equal.
+     *
+     * @param UserTrait $user
+     *
+     * @return bool
+     */
+    protected function isEqualToUser($user)
+    {
+        /** @var UserTrait $user */
+        if ($this->getUsername() !== $user->getUsername()) {
+            return false;
+        }
+
+        if ($this->getPassword() !== $user->getPassword()) {
+            return false;
+        }
+
+        return true;
     }
 }

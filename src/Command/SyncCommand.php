@@ -43,17 +43,18 @@ class SyncCommand extends Command
         $this
             ->setName('app:sync')
             ->setDescription('Syncs the filesystem with the database.')
-            ->setHelp(<<<EOF
+            ->setHelp(<<<'EOF'
 The <info>%command.name%</info> command detects new files and creates appropriate entries in the database.
 EOF
-            );
+            )
+        ;
     }
 
     /**
      * @see Command
      * @see SecurityChecker
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int

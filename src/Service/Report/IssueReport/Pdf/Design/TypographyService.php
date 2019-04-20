@@ -34,36 +34,6 @@ class TypographyService implements TypographyServiceInterface
      *
      * @return float
      */
-    private function getSmallFontSize()
-    {
-        return $this->getRegularFontSize() / $this->typography->getScalingFactor();
-    }
-
-    /**
-     * for text.
-     *
-     * @return float
-     */
-    private function getRegularFontSize()
-    {
-        return $this->typography->getBaseFontSize();
-    }
-
-    /**
-     * for text.
-     *
-     * @return float
-     */
-    private function getBigFontSize()
-    {
-        return $this->getRegularFontSize() * $this->typography->getScalingFactor();
-    }
-
-    /**
-     * for footers/headers.
-     *
-     * @return float
-     */
     public function getFooterFontSize()
     {
         return $this->getSmallFontSize();
@@ -105,5 +75,35 @@ class TypographyService implements TypographyServiceInterface
     public function getFontFamily()
     {
         return $this->typography->getFontFamily();
+    }
+
+    /**
+     * for footers/headers.
+     *
+     * @return float
+     */
+    private function getSmallFontSize()
+    {
+        return $this->getRegularFontSize() / $this->typography->getScalingFactor();
+    }
+
+    /**
+     * for text.
+     *
+     * @return float
+     */
+    private function getRegularFontSize()
+    {
+        return $this->typography->getBaseFontSize();
+    }
+
+    /**
+     * for text.
+     *
+     * @return float
+     */
+    private function getBigFontSize()
+    {
+        return $this->getRegularFontSize() * $this->typography->getScalingFactor();
     }
 }
