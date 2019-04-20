@@ -1,9 +1,14 @@
 # Developers
 useful tips for development and its environment.
 
-## Useful commands
+## Setup
 
-##### setup fortawesome registry
+How your local environment needs to be prepared to start developing.
+
+### Environment
+
+##### fortawesome
+
 to be able to download the fortawesome pro fonts, you need to setup the registry. You can do so by executing  
 `npm config set "@fortawesome:registry" https://npm.fontawesome.com/`  
 `npm config set "//npm.fontawesome.com/:_authToken" AUTH_TOKEN`  
@@ -21,34 +26,43 @@ build:
 [**travis**](https://travis-ci.org/mangelio/app/settings)  
 add an environment variable called `FONTAWESOME_AUTH_TOKEN`
 
-##### setup environment
+##### PhpCsFixer
 add `PHP_CS_FIXER_IGNORE_ENV=1` to your environment (with `export` or placing it in the `.bashrc`) to allow php cs fixer to run on php 7.3  
- 
 
-##### setup PhpStorm
+##### PhpStorm
 install the symfony plugin and enable it  
 install the editorconfig plugin and enable it  
 enable ESLint  
 
-##### symfony-cmd
-`php bin/console server:run` to start the symfony server  
-`doctrine:migrations:diff` to generate the migration class  
-`doctrine:migrations:migrate` to execute all migrations  
-`doctrine:fixtures:load` to load fixtures
+#### Lokalise
+create a read-only api token under `https://lokalise.co/profile/#apitokens`.
+add to .bashrc
+```
+export LOKALISE_TOKEN = <token>
+```
 
-##### cmd
+#### Project
+
 `composer install` to install backend dependencies  
 `yarn install && yarn encore dev` to install & build frontend dependencies  
 `phpunit` to execute the unit tests  
 `vendor/bin/php-cs-fixer fix` to fix code style issues  
 `dep deploy` to deploy  
 
-##### develop
+## Develop
+
+`php bin/console server:run` to start the symfony server  
+`doctrine:migrations:diff` to generate the migration class  
+`doctrine:migrations:migrate` to execute all migrations  
+`doctrine:fixtures:load` to load fixtures
+
 login with `f@mangel.io`, `asdf`  
 `yarn encode dev-server` starts the frontend dev server  
 test error templates inside TwigBundle/views by accessing `/_error/404` and `/_error/500`
 
-##### deploy
+
+## Deploy
+
 server must fulfil requirements of `composer.json` & include ghostscript (`gs`)  
 if you deploy the fist time, while `deploy:composer` is running, set the `.env.local` file in `/shared`, for example like this
 ```dotenv
@@ -57,6 +71,7 @@ APP_SECRET=NEW_SECRET
 MAILER_URL=smtp://info@example.com:NOT_REAL@smtp.mail.com:465/?encryption=ssl&auth_mode=login
 DATABASE_URL=sqlite:///%kernel.project_dir%/var/persistent/prod/data.sqlite  
 ```
+
 if you deploy to the main installation, create `var/transient/domainOverrides.json` with a content similar than this
 ```json
 {
