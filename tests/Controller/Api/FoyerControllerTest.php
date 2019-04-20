@@ -13,10 +13,14 @@ namespace App\Tests\Controller\Api;
 
 use App\Api\Entity\Foyer\UpdateIssue;
 use App\Api\Request\ConstructionSiteRequest;
+use App\Api\Request\Foyer\UpdateIssuesRequest;
 use App\Api\Request\IssueIdRequest;
 use App\Api\Request\IssueIdsRequest;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\ApiController;
+use function count;
+use DateTime;
+use function is_array;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FoyerControllerTest extends ApiController
@@ -28,7 +32,7 @@ class FoyerControllerTest extends ApiController
         $this->assertNotNull($issuesData->data);
         $this->assertNotNull($issuesData->data->issues);
 
-        $this->assertTrue(\is_array($issuesData->data->issues));
+        $this->assertTrue(is_array($issuesData->data->issues));
         foreach ($issuesData->data->issues as $issue) {
             $this->assertNotNull($issue);
             $this->assertObjectHasAttribute('isMarked', $issue);
@@ -57,7 +61,7 @@ class FoyerControllerTest extends ApiController
         $this->assertNotNull($craftsmanData->data);
         $this->assertNotNull($craftsmanData->data->craftsmen);
 
-        $this->assertTrue(\is_array($craftsmanData->data->craftsmen));
+        $this->assertTrue(is_array($craftsmanData->data->craftsmen));
         foreach ($craftsmanData->data->craftsmen as $craftsman) {
             $this->assertNotNull($craftsman);
             $this->assertObjectHasAttribute('name', $craftsman);
@@ -88,14 +92,14 @@ class FoyerControllerTest extends ApiController
         $craftsman = $this->getSomeConstructionSite()->getCraftsmen()[0];
         $issues = [];
         foreach ($this->getIssues()->data->issues as $apiIssue) {
-            $issue = new UpdateIssue($apiIssue->id);
-            $issue->setIsMarked(false);
-            $issue->setResponseLimit(new \DateTime());
-            $issue->setCraftsmanId($craftsman->getId());
-            $issue->setDescription('hello world');
-            $issues[] = $issue;
+            $updateIssue = new UpdateIssue($apiIssue->id);
+            $updateIssue->setIsMarked(false);
+            $updateIssue->setResponseLimit(new DateTime());
+            $updateIssue->setCraftsmanId($craftsman->getId());
+            $updateIssue->setDescription('hello world');
+            $issues[] = $updateIssue;
         }
-        $request = new \App\Api\Request\Foyer\UpdateIssuesRequest();
+        $request = new UpdateIssuesRequest();
         $request->setUpdateIssues($issues);
         $request->setConstructionSiteId($this->getSomeConstructionSite()->getId());
 
@@ -105,7 +109,7 @@ class FoyerControllerTest extends ApiController
         $this->assertNotNull($issuesData->data);
         $this->assertNotNull($issuesData->data->issues);
 
-        $this->assertTrue(\is_array($issuesData->data->issues));
+        $this->assertTrue(is_array($issuesData->data->issues));
         $this->assertSameSize($issues, $issuesData->data->issues);
         foreach ($issuesData->data->issues as $issue) {
             $this->assertNotNull($issue);
@@ -167,7 +171,7 @@ class FoyerControllerTest extends ApiController
         $this->assertSameSize($ids, $issuesData->data->deletedIssues);
 
         $issues = $this->getIssues();
-        $this->assertTrue(\count($issues->data->issues) === 0);
+        $this->assertTrue(count($issues->data->issues) === 0);
     }
 
     public function testIssueConfirm()
@@ -203,6 +207,6 @@ class FoyerControllerTest extends ApiController
         }
 
         $issues = $this->getIssues();
-        $this->assertTrue(\count($issues->data->issues) === 0);
+        $this->assertTrue(count($issues->data->issues) === 0);
     }
 }

@@ -11,7 +11,9 @@
 
 namespace App\Controller\Api;
 
+use App\Api\Entity\Foyer\UpdateIssue;
 use App\Api\Request\ConstructionSiteRequest;
+use App\Api\Request\Foyer\UpdateIssuesRequest;
 use App\Api\Request\IssueIdRequest;
 use App\Api\Request\IssueIdsRequest;
 use App\Api\Response\Data\CraftsmenData;
@@ -30,6 +32,9 @@ use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Service\Interfaces\UploadServiceInterface;
+use DateTime;
+use Doctrine\ORM\NonUniqueResultException;
+use Exception;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -92,15 +97,15 @@ class FoyerController extends ApiController
      */
     private function parseFoyerIssuesRequest(Request $request, &$issues, &$entities, &$errorResponse, &$constructionSite)
     {
-        /** @var \App\Api\Request\Foyer\UpdateIssuesRequest $parsedRequest */
+        /** @var UpdateIssuesRequest $parsedRequest */
         /** @var ConstructionSite $constructionSite */
-        if (!parent::parseConstructionSiteRequest($request, \App\Api\Request\Foyer\UpdateIssuesRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+        if (!parent::parseConstructionSiteRequest($request, UpdateIssuesRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
             return false;
         }
 
         $issues = [];
         foreach ($parsedRequest->getUpdateIssues() as $arrayIssue) {
-            $issue = $this->get('serializer')->deserialize(json_encode($arrayIssue), \App\Api\Entity\Foyer\UpdateIssue::class, 'json');
+            $issue = $this->get('serializer')->deserialize(json_encode($arrayIssue), UpdateIssue::class, 'json');
             $issues[$issue->getId()] = $issue;
         }
 
@@ -242,7 +247,7 @@ class FoyerController extends ApiController
     public function issueUpdateAction(Request $request, UpdateIssueTransformer $updateIssueTransformer, IssueTransformer $issueTransformer)
     {
         /** @var ConstructionSite $constructionSite */
-        /** @var \App\Api\Entity\Foyer\UpdateIssue[] $issues */
+        /** @var UpdateIssue[] $issues */
         /** @var Issue[] $entities */
         if (!$this->parseFoyerIssuesRequest($request, $issues, $entities, $errorResponse, $constructionSite)) {
             return $errorResponse;
@@ -286,7 +291,7 @@ class FoyerController extends ApiController
      * @param IssueTransformer $issueTransformer
      * @param UploadServiceInterface $uploadService
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -357,8 +362,8 @@ class FoyerController extends ApiController
      * @param Request $request
      * @param NumberIssueTransformer $numberIssueTransformer
      *
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     * @throws \Exception
+     * @throws NonUniqueResultException
+     * @throws Exception
      *
      * @return Response
      */
@@ -375,7 +380,7 @@ class FoyerController extends ApiController
         $highestNumber = $this->getDoctrine()->getRepository(Issue::class)->getHighestNumber($constructionSite);
         foreach ($entities as $entity) {
             $entity->setNumber(++$highestNumber);
-            $entity->setRegisteredAt(new \DateTime());
+            $entity->setRegisteredAt(new DateTime());
             $entity->setRegistrationBy($this->getUser());
         }
 

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -26,6 +27,11 @@ final class Version20190419093333 extends AbstractMigration
         return '';
     }
 
+    /**
+     * @param Schema $schema
+     *
+     * @throws DBALException
+     */
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
@@ -202,6 +208,11 @@ final class Version20190419093333 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_9184CE5EBCE08130 ON issue_position (map_file_id)');
     }
 
+    /**
+     * @param Schema $schema
+     *
+     * @throws DBALException
+     */
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs

@@ -13,8 +13,11 @@ namespace App\Repository;
 
 use App\Api\External\Request\Base\AuthenticatedRequest;
 use App\Entity\AuthenticationToken;
+use App\Entity\ConstructionManager;
 use App\Helper\HashHelper;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\ORMException;
+use Exception;
 
 class AuthenticationTokenRepository extends EntityRepository
 {
@@ -24,10 +27,10 @@ class AuthenticationTokenRepository extends EntityRepository
      *
      * @param AuthenticatedRequest $authenticatedRequest
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Exception
+     * @throws ORMException
+     * @throws Exception
      *
-     * @return \App\Entity\ConstructionManager|null
+     * @return ConstructionManager|null
      */
     public function getConstructionManager(AuthenticatedRequest $authenticatedRequest)
     {

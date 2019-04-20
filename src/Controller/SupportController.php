@@ -13,8 +13,10 @@ namespace App\Controller;
 
 use App\Controller\Base\BaseFormController;
 use App\Entity\Email;
+use App\Enum\EmailType;
 use App\Form\SupportType;
 use App\Service\Interfaces\EmailServiceInterface;
+use DateTime;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
@@ -57,7 +59,7 @@ class SupportController extends BaseFormController
 
                 //create email
                 $entity = new Email();
-                $entity->setEmailType(\App\Enum\EmailType::PLAIN_EMAIL);
+                $entity->setEmailType(EmailType::PLAIN_EMAIL);
                 $entity->setReceiver($this->getParameter('SUPPORT_EMAIL'));
                 $entity->setSubject($translator->trans('support.email.subject', ['%page%' => $request->getHttpHost()], 'support'));
                 $entity->setBody($translator->trans('support.email.body', ['%name%' => $name, '%email%' => $email, '%message%' => $message], 'support'));
@@ -65,7 +67,7 @@ class SupportController extends BaseFormController
                 //save & send
                 $this->fastSave($entity);
                 if ($emailService->sendEmail($entity, ['reply_to' => $email])) {
-                    $entity->setSentDateTime(new \DateTime());
+                    $entity->setSentDateTime(new DateTime());
                     $this->fastSave($entity);
 
                     $logger->info('sent support email from ' . $email . ' to ' . $entity->getReceiver());

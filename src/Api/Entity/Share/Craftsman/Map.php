@@ -11,7 +11,9 @@
 
 namespace App\Api\Entity\Share\Craftsman;
 
-class Map extends \App\Api\Entity\Base\PublicMap
+use App\Api\Entity\Base\PublicMap;
+
+class Map extends PublicMap
 {
     /**
      * @var Issue[]

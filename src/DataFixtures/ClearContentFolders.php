@@ -13,6 +13,8 @@ namespace App\DataFixtures;
 
 use App\DataFixtures\Base\BaseFixture;
 use App\Service\Interfaces\PathServiceInterface;
+use BadMethodCallException;
+use const DIRECTORY_SEPARATOR;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class ClearContentFolders extends BaseFixture
@@ -34,7 +36,7 @@ class ClearContentFolders extends BaseFixture
      *
      * @param ObjectManager $manager
      *
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     public function load(ObjectManager $manager)
     {
@@ -64,7 +66,7 @@ class ClearContentFolders extends BaseFixture
                 continue;
             }
 
-            if (!$this->deleteDirectoryContents($dir . \DIRECTORY_SEPARATOR . $item)) {
+            if (!$this->deleteDirectoryContents($dir . DIRECTORY_SEPARATOR . $item)) {
                 return false;
             }
         }

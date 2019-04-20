@@ -14,6 +14,7 @@ namespace App\Tests\Controller\Api\External;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\External\Base\ApiController;
 use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Component\HttpFoundation\Response;
 
 class TrialControllerTest extends ApiController
 {
@@ -72,7 +73,7 @@ class TrialControllerTest extends ApiController
      * @param $username
      * @param $password
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     private function doLoginRequest(Client $client, $username, $password)
     {
@@ -93,7 +94,7 @@ class TrialControllerTest extends ApiController
      * @param string|null $givenName
      * @param string|null $familyName
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     private function doTrialRequest(Client $client, ?string $givenName, ?string $familyName)
     {

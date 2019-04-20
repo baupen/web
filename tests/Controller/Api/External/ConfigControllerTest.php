@@ -13,7 +13,10 @@ namespace App\Tests\Controller\Api\External;
 
 use App\Service\Interfaces\PathServiceInterface;
 use App\Tests\Controller\Api\External\Base\ApiController;
+use const DIRECTORY_SEPARATOR;
+use function is_array;
 use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ConfigControllerTest extends ApiController
@@ -37,7 +40,7 @@ class ConfigControllerTest extends ApiController
         self::bootKernel();
         $pathService = self::$container->get(PathServiceInterface::class);
 
-        $this->configFilePath = $pathService->getTransientFolderRoot() . \DIRECTORY_SEPARATOR . 'domainOverrides.json';
+        $this->configFilePath = $pathService->getTransientFolderRoot() . DIRECTORY_SEPARATOR . 'domainOverrides.json';
     }
 
     /**
@@ -53,7 +56,7 @@ class ConfigControllerTest extends ApiController
         $this->assertNotNull($trialResponse->domainOverrides);
 
         $domainOverrides = $trialResponse->domainOverrides;
-        $this->assertTrue(\is_array($domainOverrides));
+        $this->assertTrue(is_array($domainOverrides));
         $this->assertNotEmpty($domainOverrides);
 
         $entry = $domainOverrides[0];
@@ -104,7 +107,7 @@ class ConfigControllerTest extends ApiController
     /**
      * @param Client $client
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     private function doConfigRequest(Client $client)
     {

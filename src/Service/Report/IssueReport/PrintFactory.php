@@ -45,6 +45,7 @@ class PrintFactory implements PrintFactoryInterface
     /**
      * @param TypographyServiceInterface $typographyService
      * @param ColorServiceInterface $colorService
+     * @param LayoutServiceInterface $layoutService
      */
     public function __construct(TypographyServiceInterface $typographyService, ColorServiceInterface $colorService, LayoutServiceInterface $layoutService)
     {

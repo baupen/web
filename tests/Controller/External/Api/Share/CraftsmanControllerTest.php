@@ -15,7 +15,13 @@ use App\Api\Request\Share\Craftsman\IssueRequest;
 use App\Entity\Craftsman;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\External\Api\Base\ApiController;
+use function count;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Exception;
+use function is_array;
+use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class CraftsmanControllerTest extends ApiController
@@ -29,10 +35,10 @@ class CraftsmanControllerTest extends ApiController
      * @param string $relativeLink
      * @param string|null $payload
      *
-     * @throws \Exception
+     * @throws Exception
      * @throws ORMException
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     private function authenticatedRequest(string $relativeLink, $payload = null)
     {
@@ -49,7 +55,7 @@ class CraftsmanControllerTest extends ApiController
      *
      * @throws ORMException
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     private function request(string $relativeLink, $payload = null, $authorizationToken = null)
     {
@@ -57,7 +63,7 @@ class CraftsmanControllerTest extends ApiController
         $craftsman = $this->getCraftsman($client);
 
         $parameters = !empty($authorizationToken) ? ['token' => $authorizationToken] : [];
-        $urlSuffix = \count($parameters) > 0 ? '?' . http_build_query($parameters) : '';
+        $urlSuffix = count($parameters) > 0 ? '?' . http_build_query($parameters) : '';
 
         $url = '/external/api/share/c/' . $craftsman->getEmailIdentifier() . $relativeLink;
         if ($payload === null) {
@@ -83,7 +89,7 @@ class CraftsmanControllerTest extends ApiController
         $this->assertNotNull($mapData->data);
         $this->assertNotNull($mapData->data->maps);
 
-        $this->assertTrue(\is_array($mapData->data->maps));
+        $this->assertTrue(is_array($mapData->data->maps));
         foreach ($mapData->data->maps as $map) {
             $this->assertNotNull($map);
             $this->assertObjectHasAttribute('name', $map);
@@ -91,7 +97,7 @@ class CraftsmanControllerTest extends ApiController
             $this->assertObjectHasAttribute('imageShareView', $map);
             $this->assertObjectHasAttribute('imageFull', $map);
 
-            $this->assertTrue(\is_array($map->issues));
+            $this->assertTrue(is_array($map->issues));
             foreach ($map->issues as $issue) {
                 $this->assertObjectHasAttribute('registeredAt', $issue);
                 $this->assertObjectHasAttribute('registrationByName', $issue);
@@ -141,9 +147,9 @@ class CraftsmanControllerTest extends ApiController
             $response = $this->authenticatedRequest('/issue/' . $action, $request);
             $mapData = $this->checkResponse($response, ApiStatus::SUCCESS);
             if ($skipped) {
-                $this->assertTrue(\count($mapData->data->skippedIds) === 1);
+                $this->assertTrue(count($mapData->data->skippedIds) === 1);
             } else {
-                $this->assertTrue(\count($mapData->data->successfulIds) === 1);
+                $this->assertTrue(count($mapData->data->successfulIds) === 1);
             }
         };
 
@@ -180,15 +186,15 @@ class CraftsmanControllerTest extends ApiController
     }
 
     /**
-     * @param \Symfony\Bundle\FrameworkBundle\Client $client
+     * @param Client $client
      *
      * @throws ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Exception
+     * @throws OptimisticLockException
+     * @throws Exception
      *
      * @return Craftsman
      */
-    private function getCraftsman(\Symfony\Bundle\FrameworkBundle\Client $client): Craftsman
+    private function getCraftsman(Client $client): Craftsman
     {
         if ($this->craftsman === null) {
             /* @var Craftsman $craftsman */

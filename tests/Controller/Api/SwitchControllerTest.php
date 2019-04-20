@@ -16,6 +16,8 @@ use App\Api\Request\_Switch\CreateRequest;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\ApiController;
+use function count;
+use function is_array;
 
 class SwitchControllerTest extends ApiController
 {
@@ -27,8 +29,8 @@ class SwitchControllerTest extends ApiController
         $constructionSiteData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($constructionSiteData->data);
-        $this->assertTrue(\is_array($constructionSiteData->data->constructionSites));
-        $this->assertTrue(\count($constructionSiteData->data->constructionSites) > 0);
+        $this->assertTrue(is_array($constructionSiteData->data->constructionSites));
+        $this->assertTrue(count($constructionSiteData->data->constructionSites) > 0);
         foreach ($constructionSiteData->data->constructionSites as $constructionSite) {
             $this->assertNotNull($constructionSite);
             $this->assertObjectHasAttribute('name', $constructionSite);
@@ -63,7 +65,7 @@ class SwitchControllerTest extends ApiController
     public function testCreate()
     {
         $requestAccessUrl = '/api/switch/create';
-        $before = \count($this->getExistingConstructionSites());
+        $before = count($this->getExistingConstructionSites());
 
         $name = 'new name';
         $streetAddress = 'Baslerstrasse 220';
@@ -79,7 +81,7 @@ class SwitchControllerTest extends ApiController
         $this->assertTrue($response->isRedirect());
 
         $after = $this->getExistingConstructionSites();
-        $this->assertSame($before + 1, \count($after));
+        $this->assertSame($before + 1, count($after));
 
         $found = false;
         foreach ($after as $constructionSite) {

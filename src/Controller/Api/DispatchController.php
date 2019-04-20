@@ -24,6 +24,8 @@ use App\Enum\EmailType;
 use App\Helper\DateTimeFormatter;
 use App\Model\Craftsman\CurrentIssueState;
 use App\Service\Interfaces\EmailServiceInterface;
+use DateTime;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -77,8 +79,8 @@ class DispatchController extends ApiController
      * @param TranslatorInterface $translator
      * @param EmailServiceInterface $emailService
      *
-     * @throws \Exception
-     * @throws \Exception
+     * @throws Exception
+     * @throws Exception
      *
      * @return Response
      */
@@ -103,7 +105,7 @@ class DispatchController extends ApiController
             $craftsmen[] = $craftsman;
         }
 
-        $now = new \DateTime();
+        $now = new DateTime();
         $dispatchData = new ProcessingEntitiesData();
         foreach ($craftsmen as $craftsman) {
             //count event occurrences
@@ -117,7 +119,7 @@ class DispatchController extends ApiController
 
             //send mail & remember if it worked
             if ($this->sendMail($craftsman, $state, $constructionSite, $emailService, $translator)) {
-                $craftsman->setLastEmailSent(new \DateTime());
+                $craftsman->setLastEmailSent(new DateTime());
                 $this->fastSave($craftsman);
                 $dispatchData->addSuccessfulId($craftsman->getId());
             } else {
@@ -135,7 +137,7 @@ class DispatchController extends ApiController
      * @param EmailServiceInterface $emailService
      * @param TranslatorInterface $translator
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return bool
      */
@@ -183,7 +185,7 @@ class DispatchController extends ApiController
         $this->fastSave($email);
 
         if ($emailService->sendEmail($email)) {
-            $email->setSentDateTime(new \DateTime());
+            $email->setSentDateTime(new DateTime());
             $this->fastSave($email);
 
             return true;

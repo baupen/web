@@ -21,6 +21,7 @@ class IssueRepositoryTest extends FixturesTestCase
     public function testFilter()
     {
         $doctrine = $this->getDoctrine();
+        /** @var ConstructionSite $constructionSite */
         $constructionSite = $doctrine->getRepository(ConstructionSite::class)->findOneBy([]);
 
         $repo = $doctrine->getRepository(Issue::class);

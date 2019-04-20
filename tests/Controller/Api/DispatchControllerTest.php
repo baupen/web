@@ -15,6 +15,7 @@ use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\CraftsmenRequest;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\ApiController;
+use function is_array;
 
 class DispatchControllerTest extends ApiController
 {
@@ -32,7 +33,7 @@ class DispatchControllerTest extends ApiController
         $this->assertNotNull($craftsmanData->data);
         $this->assertNotNull($craftsmanData->data->craftsmen);
 
-        $this->assertTrue(\is_array($craftsmanData->data->craftsmen));
+        $this->assertTrue(is_array($craftsmanData->data->craftsmen));
         foreach ($craftsmanData->data->craftsmen as $craftsman) {
             $this->assertNotNull($craftsman);
             $this->assertObjectHasAttribute('name', $craftsman);

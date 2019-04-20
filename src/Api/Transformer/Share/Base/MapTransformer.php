@@ -12,6 +12,7 @@
 namespace App\Api\Transformer\Share\Base;
 
 use App\Api\Entity\Base\PublicMap;
+use App\Api\Transformer\Base\PublicMapTransformer;
 use App\Entity\Map;
 use App\Entity\Traits\IdTrait;
 use App\Service\Interfaces\ImageServiceInterface;
@@ -20,7 +21,7 @@ use Symfony\Component\Routing\RouterInterface;
 class MapTransformer
 {
     /**
-     * @var \App\Api\Transformer\Base\PublicMapTransformer
+     * @var PublicMapTransformer
      */
     private $mapTransformer;
 
@@ -37,11 +38,11 @@ class MapTransformer
     /**
      * CraftsmanTransformer constructor.
      *
-     * @param \App\Api\Transformer\Base\PublicMapTransformer $mapTransformer
+     * @param PublicMapTransformer $mapTransformer
      * @param IssueTransformer $issueTransformer
      * @param RouterInterface $router
      */
-    public function __construct(\App\Api\Transformer\Base\PublicMapTransformer $mapTransformer, IssueTransformer $issueTransformer, RouterInterface $router)
+    public function __construct(PublicMapTransformer $mapTransformer, IssueTransformer $issueTransformer, RouterInterface $router)
     {
         $this->mapTransformer = $mapTransformer;
         $this->issueTransformer = $issueTransformer;

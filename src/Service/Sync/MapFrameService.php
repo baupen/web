@@ -19,6 +19,7 @@ use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Sync\Interfaces\DisplayNameServiceInterface;
 use App\Service\Sync\Interfaces\FileServiceInterface;
 use App\Service\Sync\Interfaces\MapFrameServiceInterface;
+use const DIRECTORY_SEPARATOR;
 
 class MapFrameService implements MapFrameServiceInterface
 {
@@ -57,7 +58,7 @@ class MapFrameService implements MapFrameServiceInterface
         foreach ($mapFiles as $mapFile) {
             $fileNameWithoutExtension = mb_substr($mapFile->getFilename(), 0, -3);
 
-            $frameJsonPath = $directory . \DIRECTORY_SEPARATOR . $fileNameWithoutExtension . 'sectors.frame.json';
+            $frameJsonPath = $directory . DIRECTORY_SEPARATOR . $fileNameWithoutExtension . 'sectors.frame.json';
             $frame = $this->parseFrame($frameJsonPath);
             $this->syncFrame($syncTransaction, $mapFile, $frame);
         }

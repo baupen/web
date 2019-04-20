@@ -14,6 +14,7 @@ namespace App\Service;
 use App\Service\Interfaces\CronServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\SyncServiceInterface;
+use const DIRECTORY_SEPARATOR;
 use Psr\Log\LoggerInterface;
 
 class CronService implements CronServiceInterface
@@ -58,9 +59,9 @@ class CronService implements CronServiceInterface
     {
         $scriptsRoot = $this->pathService->getScriptsRoot();
         $constructionSiteRoot = $this->pathService->getConstructionSiteFolderRoot();
-        $dirs = glob($scriptsRoot . \DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
+        $dirs = glob($scriptsRoot . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
         foreach ($dirs as $dir) {
-            $possibleScriptName = $dir . \DIRECTORY_SEPARATOR . 'runner.py';
+            $possibleScriptName = $dir . DIRECTORY_SEPARATOR . 'runner.py';
             if (file_exists($possibleScriptName)) {
                 $command = $possibleScriptName . ' -d ' . $constructionSiteRoot;
                 exec($possibleScriptName . ' -d ' . $constructionSiteRoot, $output, $exitCode);

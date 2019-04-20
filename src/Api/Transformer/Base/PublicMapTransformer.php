@@ -11,6 +11,7 @@
 
 namespace App\Api\Transformer\Base;
 
+use App\Api\Entity\Base\PublicMap;
 use App\Entity\Map;
 
 class PublicMapTransformer
@@ -32,7 +33,7 @@ class PublicMapTransformer
 
     /**
      * @param Map $source
-     * @param \App\Api\Entity\Base\PublicMap $target
+     * @param PublicMap $target
      */
     public function writeApiProperties($source, $target)
     {

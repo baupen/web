@@ -32,6 +32,10 @@ use App\Service\Report\IssueReport\Pdf\Design\Interfaces\LayoutServiceInterface;
 use App\Service\Report\IssueReport\Pdf\Design\Interfaces\TypographyServiceInterface;
 use App\Service\Report\ReportConfiguration;
 use App\Service\Report\ReportElements;
+use function count;
+use DateTime;
+use const DIRECTORY_SEPARATOR;
+use Exception;
 use PdfGenerator\LayoutFactoryInterface;
 use PdfGenerator\Pdf\LayoutFactory;
 use PdfGenerator\Pdf\PdfDocumentInterface;
@@ -119,7 +123,7 @@ class NewReportService
      * @param string $author
      * @param ReportElements $reportElements
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return string
      */
@@ -191,7 +195,7 @@ class NewReportService
      */
     private function createPdfDocument(PdfPageLayoutInterface $pageLayout)
     {
-        $fontPath = $this->pathService->getAssetsRoot() . \DIRECTORY_SEPARATOR . 'report' . \DIRECTORY_SEPARATOR . 'fonts';
+        $fontPath = $this->pathService->getAssetsRoot() . DIRECTORY_SEPARATOR . 'report' . DIRECTORY_SEPARATOR . 'fonts';
         $defaultFontFamily = $this->typographyService->getFontFamily();
         $this->pdfFactory->configure(['tcpdf' => ['font_path' => $fontPath, 'default_font_family' => $defaultFontFamily]]);
 
@@ -202,7 +206,7 @@ class NewReportService
      * @param ConstructionSite $constructionSite
      * @param string $author
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return MetaData
      */
@@ -213,7 +217,7 @@ class NewReportService
         $pageLayoutContent->setTitle($constructionSite->getName());
         $pageLayoutContent->setAuthor($author);
 
-        $formattedDateTime = (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT);
+        $formattedDateTime = (new DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT);
         if ($author === null) {
             $generationInfoText = $this->translator->trans('generated', ['%date%' => $formattedDateTime], 'report');
         } else {
@@ -221,7 +225,7 @@ class NewReportService
         }
         $pageLayoutContent->setGenerationInfoText($generationInfoText);
 
-        $logoPath = $this->pathService->getAssetsRoot() . \DIRECTORY_SEPARATOR . 'report' . \DIRECTORY_SEPARATOR . 'logo.png';
+        $logoPath = $this->pathService->getAssetsRoot() . DIRECTORY_SEPARATOR . 'report' . DIRECTORY_SEPARATOR . 'logo.png';
         $pageLayoutContent->setLogoPath($logoPath);
 
         return $pageLayoutContent;
@@ -524,7 +528,7 @@ class NewReportService
     /**
      * @param ConstructionSite $constructionSite
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return string
      */
@@ -536,9 +540,9 @@ class NewReportService
             mkdir($generationTargetFolder, 0777, true);
         }
 
-        $date = (new \DateTime())->format('Y-m-dTH_i');
+        $date = (new DateTime())->format('Y-m-dTH_i');
 
-        return $generationTargetFolder . \DIRECTORY_SEPARATOR . $date . '_' . uniqid() . '.pdf';
+        return $generationTargetFolder . DIRECTORY_SEPARATOR . $date . '_' . uniqid() . '.pdf';
     }
 
     /**
@@ -549,8 +553,6 @@ class NewReportService
     private function getFilterEntries(Filter $filter): array
     {
         $filterEntries = [];
-
-        $statusLabel = $this->translator->trans('status', [], 'entity_issue');
 
         //add anyStatus
         if ($filter->getAnyStatus() > 0) {
@@ -655,8 +657,8 @@ class NewReportService
     }
 
     /**
-     * @param \DateTime|null $start
-     * @param \DateTime|null $end
+     * @param DateTime|null $start
+     * @param DateTime|null $end
      * @param string|null $prefix
      *
      * @return string

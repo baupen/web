@@ -11,6 +11,7 @@
 
 namespace App\Api\Transformer\Base;
 
+use App\Api\Entity\Base\PublicIssue;
 use App\Entity\Issue;
 
 class PublicIssueTransformer
@@ -32,7 +33,7 @@ class PublicIssueTransformer
 
     /**
      * @param Issue $source
-     * @param \App\Api\Entity\Base\PublicIssue $target
+     * @param PublicIssue $target
      */
     public function writeApiProperties($source, $target)
     {

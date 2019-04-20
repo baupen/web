@@ -11,10 +11,12 @@
 
 namespace App\Api\Entity\Base;
 
+use DateTime;
+
 class PublicIssue extends Issue
 {
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $registeredAt;
 
@@ -39,17 +41,17 @@ class PublicIssue extends Issue
     private $imageFull;
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getRegisteredAt(): \DateTime
+    public function getRegisteredAt(): DateTime
     {
         return $this->registeredAt;
     }
 
     /**
-     * @param \DateTime $registeredAt
+     * @param DateTime $registeredAt
      */
-    public function setRegisteredAt(\DateTime $registeredAt): void
+    public function setRegisteredAt(DateTime $registeredAt): void
     {
         $this->registeredAt = $registeredAt;
     }

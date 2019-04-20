@@ -15,7 +15,9 @@ use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use App\Helper\HashHelper;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 
 /**
  * An Email is a sent email to the specified receivers.
@@ -36,7 +38,7 @@ class AuthenticationToken extends BaseEntity
     private $token;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(type="datetime")
      */
@@ -52,7 +54,7 @@ class AuthenticationToken extends BaseEntity
     /**
      * @param ConstructionManager $constructionManager
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return AuthenticationToken
      */
@@ -75,9 +77,9 @@ class AuthenticationToken extends BaseEntity
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getLastUsed(): \DateTime
+    public function getLastUsed(): DateTime
     {
         return $this->lastUsed;
     }
@@ -85,11 +87,11 @@ class AuthenticationToken extends BaseEntity
     /**
      *  refreshes the last used date to the current datetime.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function setLastUsed(): void
     {
-        $this->lastUsed = new \DateTime();
+        $this->lastUsed = new DateTime();
     }
 
     /**

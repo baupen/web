@@ -21,6 +21,7 @@ use App\Api\Transformer\Base\NoteTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionSite;
 use App\Entity\Note;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -77,7 +78,7 @@ class NoteController extends ApiController
      * @param Request $request
      * @param NoteTransformer $noteTransformer
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     private function executeUpdateNoteRequest(Request $request, NoteTransformer $noteTransformer)
     {

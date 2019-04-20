@@ -11,10 +11,12 @@
 
 namespace App\Api\Entity\Edit;
 
+use DateTime;
+
 class Map extends \App\Api\Entity\Base\Map
 {
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $createdAt;
 
@@ -103,17 +105,17 @@ class Map extends \App\Api\Entity\Base\Map
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param DateTime $createdAt
      */
-    public function setCreatedAt(\DateTime $createdAt): void
+    public function setCreatedAt(DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }

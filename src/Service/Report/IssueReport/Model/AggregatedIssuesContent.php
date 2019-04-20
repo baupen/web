@@ -24,7 +24,7 @@ class AggregatedIssuesContent
     private $identifierHeader;
 
     /**
-     * @var string[][]
+     * @var string[]
      */
     private $identifierContent = [];
 
@@ -34,7 +34,7 @@ class AggregatedIssuesContent
     private $issuesHeader;
 
     /**
-     * @var string[][]
+     * @var string[]
      */
     private $issuesContent;
 
@@ -71,7 +71,7 @@ class AggregatedIssuesContent
     }
 
     /**
-     * @return \string[][]
+     * @return string[]
      */
     public function getIdentifierContent(): array
     {
@@ -79,7 +79,7 @@ class AggregatedIssuesContent
     }
 
     /**
-     * @param \string[] $identifierContent
+     * @param string[] $identifierContent
      */
     public function addIdentifierContent(array $identifierContent): void
     {
@@ -103,7 +103,7 @@ class AggregatedIssuesContent
     }
 
     /**
-     * @return \string[][]
+     * @return string[]
      */
     public function getIssuesContent(): array
     {
@@ -111,7 +111,7 @@ class AggregatedIssuesContent
     }
 
     /**
-     * @param \string[][] $issuesContent
+     * @param string[] $issuesContent
      */
     public function setIssuesContent(array $issuesContent): void
     {

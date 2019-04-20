@@ -11,6 +11,7 @@
 
 namespace App\Tests\Controller\Base;
 
+use Exception;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -29,7 +30,7 @@ class FixturesTestCase extends WebTestCase
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public static function setUpBeforeClass(): void
     {
@@ -48,7 +49,7 @@ class FixturesTestCase extends WebTestCase
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected function setUp(): void
     {

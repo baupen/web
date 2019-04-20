@@ -13,11 +13,12 @@ namespace App\Extension;
 
 use App\Enum\BooleanType;
 use App\Helper\DateTimeFormatter;
+use DateTime;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Twig_Extension;
-use Twig_SimpleFilter;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
-class MyTwigExtension extends Twig_Extension
+class MyTwigExtension extends AbstractExtension
 {
     private $translator;
 
@@ -37,10 +38,10 @@ class MyTwigExtension extends Twig_Extension
     public function getFilters()
     {
         return [
-            new Twig_SimpleFilter('dateFormat', [$this, 'dateFormatFilter']),
-            new Twig_SimpleFilter('dateTimeFormat', [$this, 'dateTimeFormatFilter']),
-            new Twig_SimpleFilter('booleanFormat', [$this, 'booleanFilter']),
-            new Twig_SimpleFilter('camelCaseToUnderscore', [$this, 'camelCaseToUnderscoreFilter']),
+            new TwigFilter('dateFormat', [$this, 'dateFormatFilter']),
+            new TwigFilter('dateTimeFormat', [$this, 'dateTimeFormatFilter']),
+            new TwigFilter('booleanFormat', [$this, 'booleanFilter']),
+            new TwigFilter('camelCaseToUnderscore', [$this, 'camelCaseToUnderscoreFilter']),
         ];
     }
 
@@ -55,13 +56,13 @@ class MyTwigExtension extends Twig_Extension
     }
 
     /**
-     * @param \DateTime|null $date
+     * @param DateTime|null $date
      *
      * @return string
      */
     public function dateFormatFilter($date)
     {
-        if ($date instanceof \DateTime) {
+        if ($date instanceof DateTime) {
             return $this->prependDayName($date) . ', ' . $date->format(DateTimeFormatter::DATE_FORMAT);
         }
 
@@ -69,13 +70,13 @@ class MyTwigExtension extends Twig_Extension
     }
 
     /**
-     * @param \DateTime|null $date
+     * @param DateTime|null $date
      *
      * @return string
      */
     public function dateTimeFormatFilter($date)
     {
-        if ($date instanceof \DateTime) {
+        if ($date instanceof DateTime) {
             return $this->prependDayName($date) . ', ' . $date->format(DateTimeFormatter::DATE_TIME_FORMAT);
         }
 
@@ -85,11 +86,11 @@ class MyTwigExtension extends Twig_Extension
     /**
      * translates the day of the week.
      *
-     * @param \DateTime $date
+     * @param DateTime $date
      *
      * @return string
      */
-    private function prependDayName(\DateTime $date)
+    private function prependDayName(DateTime $date)
     {
         return $this->translator->trans('date_time.' . $date->format('D'), [], 'framework');
     }

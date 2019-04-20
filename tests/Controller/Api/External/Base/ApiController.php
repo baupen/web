@@ -20,7 +20,11 @@ use App\Api\External\Request\ReadRequest;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\AbstractApiController;
 use App\Tests\Controller\ServerData;
+use function count;
+use DateTime;
+use Exception;
 use Ramsey\Uuid\Uuid;
+use stdClass;
 use Symfony\Bundle\FrameworkBundle\Client;
 
 class ApiController extends AbstractApiController
@@ -30,7 +34,7 @@ class ApiController extends AbstractApiController
      *
      * @param Client $client
      *
-     * @return \stdClass
+     * @return stdClass
      */
     protected function getAuthenticatedUser(Client $client)
     {
@@ -55,7 +59,7 @@ class ApiController extends AbstractApiController
      * @param Client $client
      * @param $authenticatedUser
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return ServerData
      */
@@ -82,7 +86,7 @@ class ApiController extends AbstractApiController
 
         $userMeta = new ObjectMeta();
         $userMeta->setId($authenticatedUser->meta->id);
-        $userMeta->setLastChangeTime((new \DateTime())->setTimestamp(0)->format('c'));
+        $userMeta->setLastChangeTime((new DateTime())->setTimestamp(0)->format('c'));
         $readRequest->setUser($userMeta);
 
         $readRequest->setConstructionSites([]);
@@ -96,10 +100,10 @@ class ApiController extends AbstractApiController
         $this->assertNotNull($readResponse->data);
         $this->assertNotNull($readResponse->data->changedUser);
         $this->assertNotNull($readResponse->data->changedConstructionSites);
-        $this->assertTrue(\count($readResponse->data->changedConstructionSites) > 0);
-        $this->assertTrue(\count($readResponse->data->changedCraftsmen) > 0);
-        $this->assertTrue(\count($readResponse->data->changedMaps) > 0);
-        $this->assertTrue(\count($readResponse->data->changedIssues) > 0);
+        $this->assertTrue(count($readResponse->data->changedConstructionSites) > 0);
+        $this->assertTrue(count($readResponse->data->changedCraftsmen) > 0);
+        $this->assertTrue(count($readResponse->data->changedMaps) > 0);
+        $this->assertTrue(count($readResponse->data->changedIssues) > 0);
 
         $constructionSites = [];
         foreach ($readResponse->data->changedConstructionSites as $stdClass) {
@@ -183,7 +187,7 @@ class ApiController extends AbstractApiController
     /**
      * generates a new guid (database id).
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return mixed|null|string|string[]
      */

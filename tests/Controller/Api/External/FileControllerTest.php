@@ -16,6 +16,7 @@ use App\Api\External\Entity\Issue;
 use App\Api\External\Entity\ObjectMeta;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\External\Base\ApiController;
+use Exception;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -25,7 +26,7 @@ class FileControllerTest extends ApiController
     /**
      * tests upload/download functionality.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testFileUploadDownload()
     {

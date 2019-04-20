@@ -15,6 +15,8 @@ use App\DataFixtures\Base\BaseFixture;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Service\Interfaces\PathServiceInterface;
+use BadMethodCallException;
+use const DIRECTORY_SEPARATOR;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -43,7 +45,7 @@ class EnrichConstructionSiteData extends BaseFixture
      *
      * @param ObjectManager $manager
      *
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     public function load(ObjectManager $manager)
     {
@@ -56,7 +58,7 @@ class EnrichConstructionSiteData extends BaseFixture
             $constructionSiteLookup[$constructionSite->getFolderName()] = $constructionSite;
         }
 
-        $json = file_get_contents(__DIR__ . \DIRECTORY_SEPARATOR . 'Resources' . \DIRECTORY_SEPARATOR . 'construction_sites.json');
+        $json = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'construction_sites.json');
         /** @var ConstructionSite[] $rawConstructionSites */
         $rawConstructionSites = $this->serializer->deserialize($json, ConstructionSite::class . '[]', 'json');
 

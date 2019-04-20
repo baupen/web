@@ -15,6 +15,7 @@ use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Service\Interfaces\PathServiceInterface;
+use const DIRECTORY_SEPARATOR;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class PathService implements PathServiceInterface
@@ -51,20 +52,20 @@ class PathService implements PathServiceInterface
      */
     public function __construct(KernelInterface $kernel)
     {
-        $varDir = realpath($kernel->getLogDir() . \DIRECTORY_SEPARATOR . '..');
-        $this->assetsRoot = realpath($varDir . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . 'assets');
-        $this->scriptsRoot = realpath($varDir . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . 'supporting');
+        $varDir = realpath($kernel->getLogDir() . DIRECTORY_SEPARATOR . '..');
+        $this->assetsRoot = realpath($varDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'assets');
+        $this->scriptsRoot = realpath($varDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'supporting');
 
         // add test to path to be able to unit test without messing up local dev state
         $environment = $kernel->getEnvironment();
         if ($environment === 'test') {
-            $varDir .= \DIRECTORY_SEPARATOR . $environment;
+            $varDir .= DIRECTORY_SEPARATOR . $environment;
         }
 
-        $this->folderRoot = $varDir . \DIRECTORY_SEPARATOR . 'persistent';
-        $this->transientFolderRoot = $varDir . \DIRECTORY_SEPARATOR . 'transient';
+        $this->folderRoot = $varDir . DIRECTORY_SEPARATOR . 'persistent';
+        $this->transientFolderRoot = $varDir . DIRECTORY_SEPARATOR . 'transient';
 
-        $this->constructionSiteFolderRoot = $this->folderRoot . \DIRECTORY_SEPARATOR . 'construction_sites';
+        $this->constructionSiteFolderRoot = $this->folderRoot . DIRECTORY_SEPARATOR . 'construction_sites';
     }
 
     /**
@@ -74,7 +75,7 @@ class PathService implements PathServiceInterface
      */
     private function getFolderForConstructionSite(ConstructionSite $constructionSite)
     {
-        return $this->getConstructionSiteFolderRoot() . \DIRECTORY_SEPARATOR . $constructionSite->getFolderName();
+        return $this->getConstructionSiteFolderRoot() . DIRECTORY_SEPARATOR . $constructionSite->getFolderName();
     }
 
     /**
@@ -84,7 +85,7 @@ class PathService implements PathServiceInterface
      */
     public function getFolderForConstructionSiteImage(ConstructionSite $constructionSite)
     {
-        return $this->getFolderForConstructionSite($constructionSite) . \DIRECTORY_SEPARATOR . 'images';
+        return $this->getFolderForConstructionSite($constructionSite) . DIRECTORY_SEPARATOR . 'images';
     }
 
     /**
@@ -94,7 +95,7 @@ class PathService implements PathServiceInterface
      */
     public function getFolderForMapFile(ConstructionSite $constructionSite)
     {
-        return $this->getFolderForConstructionSite($constructionSite) . \DIRECTORY_SEPARATOR . 'maps';
+        return $this->getFolderForConstructionSite($constructionSite) . DIRECTORY_SEPARATOR . 'maps';
     }
 
     /**
@@ -104,7 +105,7 @@ class PathService implements PathServiceInterface
      */
     public function getFolderForIssueImage(ConstructionSite $constructionSite)
     {
-        return $this->getFolderForConstructionSite($constructionSite) . \DIRECTORY_SEPARATOR . 'issues';
+        return $this->getFolderForConstructionSite($constructionSite) . DIRECTORY_SEPARATOR . 'issues';
     }
 
     /**
@@ -114,7 +115,7 @@ class PathService implements PathServiceInterface
      */
     private function getTransientFolderForConstructionSite(ConstructionSite $constructionSite)
     {
-        return $this->getTransientFolderRoot() . \DIRECTORY_SEPARATOR . 'construction_sites' . \DIRECTORY_SEPARATOR . $constructionSite->getFolderName();
+        return $this->getTransientFolderRoot() . DIRECTORY_SEPARATOR . 'construction_sites' . DIRECTORY_SEPARATOR . $constructionSite->getFolderName();
     }
 
     /**
@@ -124,7 +125,7 @@ class PathService implements PathServiceInterface
      */
     public function getTransientFolderForConstructionSiteImage(ConstructionSite $constructionSite)
     {
-        return $this->getTransientFolderForConstructionSite($constructionSite) . \DIRECTORY_SEPARATOR . 'images';
+        return $this->getTransientFolderForConstructionSite($constructionSite) . DIRECTORY_SEPARATOR . 'images';
     }
 
     /**
@@ -134,7 +135,7 @@ class PathService implements PathServiceInterface
      */
     public function getTransientFolderForMapFile(Map $map)
     {
-        return $this->getTransientFolderForConstructionSite($map->getConstructionSite()) . \DIRECTORY_SEPARATOR . 'maps' . \DIRECTORY_SEPARATOR . $map->getId();
+        return $this->getTransientFolderForConstructionSite($map->getConstructionSite()) . DIRECTORY_SEPARATOR . 'maps' . DIRECTORY_SEPARATOR . $map->getId();
     }
 
     /**
@@ -144,7 +145,7 @@ class PathService implements PathServiceInterface
      */
     public function getTransientFolderForIssueImage(Issue $issue)
     {
-        return $this->getTransientFolderForConstructionSite($issue->getMap()->getConstructionSite()) . \DIRECTORY_SEPARATOR . 'issues' . \DIRECTORY_SEPARATOR . $issue->getId();
+        return $this->getTransientFolderForConstructionSite($issue->getMap()->getConstructionSite()) . DIRECTORY_SEPARATOR . 'issues' . DIRECTORY_SEPARATOR . $issue->getId();
     }
 
     /**
@@ -154,7 +155,7 @@ class PathService implements PathServiceInterface
      */
     public function getTransientFolderForReports(ConstructionSite $constructionSite)
     {
-        return $this->getTransientFolderForConstructionSite($constructionSite) . \DIRECTORY_SEPARATOR . 'reports';
+        return $this->getTransientFolderForConstructionSite($constructionSite) . DIRECTORY_SEPARATOR . 'reports';
     }
 
     /**

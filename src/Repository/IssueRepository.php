@@ -14,9 +14,12 @@ namespace App\Repository;
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
 use App\Entity\Issue;
+use function count;
+use DateTime;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 
 class IssueRepository extends EntityRepository
 {
@@ -56,7 +59,7 @@ class IssueRepository extends EntityRepository
      * @param ConstructionSite $constructionSite
      * @param int $days
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Issue[]
      */
@@ -69,7 +72,7 @@ class IssueRepository extends EntityRepository
         $queryBuilder->where('c.constructionSite = :constructionSite');
         $queryBuilder->setParameter(':constructionSite', $constructionSite->getId());
         $queryBuilder->andWhere('i.lastChangedAt > :lastChangedAt');
-        $queryBuilder->setParameter('lastChangedAt', new \DateTime('now -' . $days . ' days'));
+        $queryBuilder->setParameter('lastChangedAt', new DateTime('now -' . $days . ' days'));
         $queryBuilder->orderBy('i.lastChangedAt', 'DESC');
 
         return $queryBuilder->getQuery()->getResult();

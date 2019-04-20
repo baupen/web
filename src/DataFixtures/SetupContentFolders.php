@@ -15,7 +15,10 @@ use App\DataFixtures\Base\BaseFixture;
 use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\SyncServiceInterface;
+use BadMethodCallException;
+use const DIRECTORY_SEPARATOR;
 use Doctrine\Common\Persistence\ObjectManager;
+use Exception;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class SetupContentFolders extends BaseFixture
@@ -56,12 +59,12 @@ class SetupContentFolders extends BaseFixture
      *
      * @param ObjectManager $manager
      *
-     * @throws \BadMethodCallException
-     * @throws \Exception
+     * @throws BadMethodCallException
+     * @throws Exception
      */
     public function load(ObjectManager $manager)
     {
-        $sourceFolder = __DIR__ . \DIRECTORY_SEPARATOR . 'Resources' . \DIRECTORY_SEPARATOR . 'persistent';
+        $sourceFolder = __DIR__ . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'persistent';
         $targetFolder = $this->pathService->getFolderRoot();
         FileHelper::copyRecursively($sourceFolder, $targetFolder);
 
