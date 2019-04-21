@@ -68,16 +68,6 @@ class PdfSizes
      *
      * @return float
      */
-    private function getPageSizeX()
-    {
-        return $this->pageSize[0];
-    }
-
-    /**
-     * the total width of the document.
-     *
-     * @return float
-     */
     public function getPageSizeY()
     {
         return $this->pageSize[1];
@@ -193,7 +183,7 @@ class PdfSizes
     {
         $gutterSpace = ($numberOfColumns - 1) * $this->getColumnGutter($compact);
 
-        return (float)($this->getContentXSize() - $gutterSpace) / $numberOfColumns;
+        return (float) ($this->getContentXSize() - $gutterSpace) / $numberOfColumns;
     }
 
     /**
@@ -286,7 +276,7 @@ class PdfSizes
      */
     public function getContentSpacerSmall(): float
     {
-        return (float)$this->differentContentMargin / $this->scalingFactor ** 2;
+        return (float) $this->differentContentMargin / $this->scalingFactor ** 2;
     }
 
     /**
@@ -319,5 +309,15 @@ class PdfSizes
     public function getLineWidth(): float
     {
         return $this->lineWidth;
+    }
+
+    /**
+     * the total width of the document.
+     *
+     * @return float
+     */
+    private function getPageSizeX()
+    {
+        return $this->pageSize[0];
     }
 }

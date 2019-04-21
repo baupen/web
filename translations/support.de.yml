@@ -6,11 +6,7 @@ support:
   submit: 'Nachricht übermitteln'
   email:
     subject: 'Supportanfrage erhalten: %page%'
-    body: >
-      Name: %name%
-      Email: %email%
-
-      Nachricht: %message%
+    body: "Name: %name% Email: %email%\nNachricht: %message%\n"
   success:
     email_sent: 'Wir haben Ihre Nachricht empfangen.'
   fail:

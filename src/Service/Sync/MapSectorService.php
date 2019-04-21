@@ -39,7 +39,7 @@ class MapSectorService implements MapSectorServiceInterface
     }
 
     /**
-     * @param SyncTransaction $syncTransaction
+     * @param SyncTransaction  $syncTransaction
      * @param ConstructionSite $constructionSite
      */
     public function syncMapSectors(SyncTransaction $syncTransaction, ConstructionSite $constructionSite)
@@ -95,8 +95,8 @@ class MapSectorService implements MapSectorServiceInterface
 
     /**
      * @param SyncTransaction $syncTransaction
-     * @param MapFile $mapFile
-     * @param MapSector[] $newMapSectors
+     * @param MapFile         $mapFile
+     * @param MapSector[]     $newMapSectors
      */
     private function applyMapSectors(SyncTransaction $syncTransaction, MapFile $mapFile, array $newMapSectors)
     {
@@ -140,7 +140,7 @@ class MapSectorService implements MapSectorServiceInterface
         $name = trim(mb_strtolower($name));
 
         // remove all other chars containing no information
-        $name = preg_replace("/[\s\-&]/", '', $name);
+        $name = preg_replace('/[\\s\\-&]/', '', $name);
 
         $kitchen = ['küche', 'essen', 'kochen'];
         $wetAreas = ['wc', 'bad', 'klo', 'toilette', 'dusch'];

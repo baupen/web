@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
-    /* @var ContainerInterface $container */
+    /** @var ContainerInterface $container */
     private $container;
 
     public function setContainer(ContainerInterface $container = null)
@@ -54,8 +54,8 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
      * create random instances.
      *
      * @param ObjectManager $manager
-     * @param callable $loader
-     * @param int $count
+     * @param callable      $loader
+     * @param int           $count
      *
      * @return array
      */

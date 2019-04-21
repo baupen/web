@@ -68,10 +68,10 @@ class ReportService implements ReportServiceInterface
      * ReportService constructor.
      *
      * @param ImageServiceInterface $imageService
-     * @param RegistryInterface $registry
-     * @param SerializerInterface $serializer
-     * @param TranslatorInterface $translator
-     * @param PathServiceInterface $pathService
+     * @param RegistryInterface     $registry
+     * @param SerializerInterface   $serializer
+     * @param TranslatorInterface   $translator
+     * @param PathServiceInterface  $pathService
      */
     public function __construct(ImageServiceInterface $imageService, RegistryInterface $registry, SerializerInterface $serializer, TranslatorInterface $translator, PathServiceInterface $pathService)
     {
@@ -84,9 +84,9 @@ class ReportService implements ReportServiceInterface
 
     /**
      * @param ConstructionSite $constructionSite
-     * @param Filter $filter
-     * @param string $author
-     * @param ReportElements $elements
+     * @param Filter           $filter
+     * @param string           $author
+     * @param ReportElements   $elements
      *
      * @throws Exception
      *
@@ -119,11 +119,11 @@ class ReportService implements ReportServiceInterface
 
     /**
      * @param ConstructionSite $constructionSite
-     * @param Filter $filter
-     * @param string $author
-     * @param ReportElements $reportElements
-     * @param Issue[] $issues
-     * @param string $filePath
+     * @param Filter           $filter
+     * @param string           $author
+     * @param ReportElements   $reportElements
+     * @param Issue[]          $issues
+     * @param string           $filePath
      */
     private function render(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $reportElements, array $issues, string $filePath)
     {
@@ -162,8 +162,8 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
-     * @param Report $report
-     * @param Map $map
+     * @param Report  $report
+     * @param Map     $map
      * @param Issue[] $issues
      */
     private function addMap(Report $report, Map $map, array $issues)
@@ -173,7 +173,7 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
-     * @param Report $report
+     * @param Report  $report
      * @param Issue[] $issues
      */
     private function addIssueImageGrid(Report $report, array $issues)
@@ -208,10 +208,10 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
-     * @param Report $report
+     * @param Report           $report
      * @param ConstructionSite $constructionSite
-     * @param Filter $filter
-     * @param ReportElements $reportElements
+     * @param Filter           $filter
+     * @param ReportElements   $reportElements
      */
     private function addIntroduction(Report $report, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
     {
@@ -343,7 +343,7 @@ class ReportService implements ReportServiceInterface
     /**
      * @param DateTime|null $start
      * @param DateTime|null $end
-     * @param string|null $prefix
+     * @param string|null   $prefix
      *
      * @return string
      */
@@ -369,8 +369,8 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
-     * @param Report $report
-     * @param Filter $filter
+     * @param Report  $report
+     * @param Filter  $filter
      * @param Issue[] $issues
      */
     private function addIssueTable(Report $report, Filter $filter, array $issues)
@@ -421,8 +421,8 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
-     * @param Filter $filter
-     * @param array $orderedMaps
+     * @param Filter    $filter
+     * @param array     $orderedMaps
      * @param Issue[][] $issuesPerMap
      * @param $tableContent
      * @param $tableHeader
@@ -471,8 +471,8 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
-     * @param Report $report
-     * @param Filter $filter
+     * @param Report  $report
+     * @param Filter  $filter
      * @param Issue[] $issues
      */
     private function addTableByMap(Report $report, Filter $filter, array $issues)
@@ -498,8 +498,8 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
-     * @param Report $report
-     * @param Filter $filter
+     * @param Report  $report
+     * @param Filter  $filter
      * @param Issue[] $issues
      */
     private function addTableByCraftsman(Report $report, Filter $filter, array $issues)
@@ -525,8 +525,8 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
-     * @param Report $report
-     * @param Filter $filter
+     * @param Report  $report
+     * @param Filter  $filter
      * @param Issue[] $issues
      */
     private function addTableByTrade(Report $report, Filter $filter, array $issues)

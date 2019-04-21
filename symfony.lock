@@ -1,4 +1,7 @@
 {
+    "brainmaestro/composer-git-hooks": {
+        "version": "v2.6.1"
+    },
     "codacy/coverage": {
         "version": "1.4.1"
     },

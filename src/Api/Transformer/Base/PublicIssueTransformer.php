@@ -32,7 +32,7 @@ class PublicIssueTransformer
     }
 
     /**
-     * @param Issue $source
+     * @param Issue       $source
      * @param PublicIssue $target
      */
     public function writeApiProperties($source, $target)

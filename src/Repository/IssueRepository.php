@@ -57,7 +57,7 @@ class IssueRepository extends EntityRepository
      * gets recently changed issues.
      *
      * @param ConstructionSite $constructionSite
-     * @param int $days
+     * @param int              $days
      *
      * @throws Exception
      *
@@ -112,21 +112,25 @@ class IssueRepository extends EntityRepository
             ->where('cs.id = :constructionSite')
             ->setParameter(':constructionSite', $filter->getConstructionSite())
             ->orderBy('i.number', 'ASC')
-            ->orderBy('i.createdAt', 'ASC');
+            ->orderBy('i.createdAt', 'ASC')
+        ;
 
         if ($filter->getCraftsmen() !== null) {
             $queryBuilder->andWhere('c.id IN (:craftsmen)')
-                ->setParameter(':craftsmen', $filter->getCraftsmen());
+                ->setParameter(':craftsmen', $filter->getCraftsmen())
+            ;
         }
 
         if ($filter->getMaps() !== null) {
             $queryBuilder->andWhere('m.id IN (:maps)')
-                ->setParameter(':maps', $filter->getMaps());
+                ->setParameter(':maps', $filter->getMaps())
+            ;
         }
 
         if ($filter->getIssues() !== null) {
             $queryBuilder->andWhere('i.id IN (:issues)')
-                ->setParameter(':issues', $filter->getIssues());
+                ->setParameter(':issues', $filter->getIssues())
+            ;
         }
 
         $statusToString = function ($condition) {
@@ -137,11 +141,13 @@ class IssueRepository extends EntityRepository
             if ($filter->getRespondedStatus()) {
                 if ($filter->getRegistrationStart() !== null) {
                     $queryBuilder->andWhere('i.registeredAt >= :registration_end')
-                        ->setParameter(':responded_start', $filter->getRegistrationStart());
+                        ->setParameter(':responded_start', $filter->getRegistrationStart())
+                    ;
                 }
                 if ($filter->getRegistrationEnd() !== null) {
                     $queryBuilder->andWhere('i.registeredAt <= :registration_end')
-                        ->setParameter(':registration_end', $filter->getRegistrationEnd());
+                        ->setParameter(':registration_end', $filter->getRegistrationEnd())
+                    ;
                 }
             }
         }
@@ -151,11 +157,13 @@ class IssueRepository extends EntityRepository
             if ($filter->getRespondedStatus()) {
                 if ($filter->getRespondedStart() !== null) {
                     $queryBuilder->andWhere('i.respondedAt >= :responded_start')
-                        ->setParameter(':responded_start', $filter->getRespondedStart());
+                        ->setParameter(':responded_start', $filter->getRespondedStart())
+                    ;
                 }
                 if ($filter->getRespondedEnd() !== null) {
                     $queryBuilder->andWhere('i.respondedAt <= :responded_end')
-                        ->setParameter(':responded_end', $filter->getRespondedEnd());
+                        ->setParameter(':responded_end', $filter->getRespondedEnd())
+                    ;
                 }
             }
         }
@@ -165,35 +173,40 @@ class IssueRepository extends EntityRepository
             if ($filter->getReviewedStatus()) {
                 if ($filter->getReviewedStart() !== null) {
                     $queryBuilder->andWhere('i.reviewedAt >= :reviewed_start')
-                        ->setParameter(':reviewed_start', $filter->getReviewedStart());
+                        ->setParameter(':reviewed_start', $filter->getReviewedStart())
+                    ;
                 }
                 if ($filter->getReviewedEnd() !== null) {
                     $queryBuilder->andWhere('i.reviewedAt <= :reviewed_end')
-                        ->setParameter(':reviewed_end', $filter->getReviewedEnd());
+                        ->setParameter(':reviewed_end', $filter->getReviewedEnd())
+                    ;
                 }
             }
         }
 
         if ($filter->getLimitStart() !== null) {
             $queryBuilder->andWhere('i.responseLimit >= :response_limit_start')
-                ->setParameter(':response_limit_start', $filter->getLimitStart());
+                ->setParameter(':response_limit_start', $filter->getLimitStart())
+            ;
         }
 
         if ($filter->getLimitEnd() !== null) {
             $queryBuilder->andWhere('i.responseLimit <= :response_limit_end')
-                ->setParameter(':response_limit_end', $filter->getLimitEnd());
+                ->setParameter(':response_limit_end', $filter->getLimitEnd())
+            ;
         }
 
         if ($filter->getIsMarked() !== null) {
             $queryBuilder->andWhere('i.isMarked = :is_marked')
-                ->setParameter('is_marked', $filter->getIsMarked());
+                ->setParameter('is_marked', $filter->getIsMarked())
+            ;
         }
 
         return $queryBuilder;
     }
 
     /**
-     * @param Filter $filter
+     * @param Filter  $filter
      * @param Issue[] $issues
      *
      * @return Issue[]|array

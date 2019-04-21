@@ -33,6 +33,10 @@ class LoadIssueData extends BaseFixture
     const ORDER = EnrichConstructionSiteData::ORDER + LoadConstructionManagerData::ORDER + LoadCraftsmanData::ORDER + ClearContentFolders::ORDER + 1;
     const MULTIPLICATION_FACTOR = 3;
 
+    const REGISTRATION_SET = 1;
+    const RESPONSE_SET = 2;
+    const REVIEW_SET = 4;
+
     /**
      * @var SerializerInterface
      */
@@ -43,22 +47,24 @@ class LoadIssueData extends BaseFixture
      */
     private $pathService;
 
-    public function __construct(SerializerInterface $serializer, PathServiceInterface $pathService)
-    {
-        $this->serializer = $serializer;
-        $this->pathService = $pathService;
-    }
-
-    const REGISTRATION_SET = 1;
-    const RESPONSE_SET = 2;
-    const REVIEW_SET = 4;
-
     /**
      * @var array to generate random positions/scales; length 11/7/5 which are all prime
      */
     private $xOrientationArray = [0.12, 0.26, 0.31, 0.36, 0.45, 0.56, 0.57, 0.63, 0.74, 0.78, 0.85];
     private $yOrientationArray = [0.21, 0.34, 0.44, 0.51, 0.67, 0.79, 0.89];
     private $scaleArray = [0.2, 0.6, 0.78, 0.89, 1];
+
+    private $currentExponent = 7;
+
+    private $randomMapCounter = 0;
+    private $randomCraftsmanCounter = 0;
+    private $randomConstructionManagerCounter = 0;
+
+    public function __construct(SerializerInterface $serializer, PathServiceInterface $pathService)
+    {
+        $this->serializer = $serializer;
+        $this->pathService = $pathService;
+    }
 
     /**
      * Load data fixtures with the passed EntityManager.
@@ -134,6 +140,14 @@ class LoadIssueData extends BaseFixture
     }
 
     /**
+     * @return int
+     */
+    public function getOrder()
+    {
+        return static::ORDER;
+    }
+
+    /**
      * @param $index
      * @param array $collection
      *
@@ -154,21 +168,15 @@ class LoadIssueData extends BaseFixture
         return (7 ** ($this->currentExponent++ % 17)) % 17;
     }
 
-    private $currentExponent = 7;
-
-    private $randomMapCounter = 0;
-    private $randomCraftsmanCounter = 0;
-    private $randomConstructionManagerCounter = 0;
-
     /**
-     * @param ObjectManager $manager
-     * @param Map[] $maps
-     * @param Craftsman[] $craftsmen
+     * @param ObjectManager         $manager
+     * @param Map[]                 $maps
+     * @param Craftsman[]           $craftsmen
      * @param ConstructionManager[] $constructionManagers
-     * @param Issue[] $issues
-     * @param string[] $images
-     * @param int $issueNumber
-     * @param int $setStatus
+     * @param Issue[]               $issues
+     * @param string[]              $images
+     * @param int                   $issueNumber
+     * @param int                   $setStatus
      *
      * @throws Exception
      */
@@ -265,13 +273,5 @@ class LoadIssueData extends BaseFixture
         $this->randomMapCounter = $randomMapCounter;
         $this->randomCraftsmanCounter = $randomCraftsmanCounter;
         $this->randomConstructionManagerCounter = $randomConstructionManagerCounter;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOrder()
-    {
-        return static::ORDER;
     }
 }

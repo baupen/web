@@ -58,10 +58,10 @@ class TrialService implements TrialServiceInterface
      * TrialService constructor.
      *
      * @param PathServiceInterface $pathService
-     * @param TranslatorInterface $translator
+     * @param TranslatorInterface  $translator
      * @param SyncServiceInterface $syncService
-     * @param RequestStack $requestStack
-     * @param RegistryInterface $registry
+     * @param RequestStack         $requestStack
+     * @param RegistryInterface    $registry
      */
     public function __construct(PathServiceInterface $pathService, TranslatorInterface $translator, SyncServiceInterface $syncService, RequestStack $requestStack, RegistryInterface $registry)
     {
@@ -200,7 +200,7 @@ class TrialService implements TrialServiceInterface
     }
 
     /**
-     * @param int $minimalLength
+     * @param int    $minimalLength
      * @param string $divider
      *
      * @return bool|string
@@ -245,7 +245,7 @@ class TrialService implements TrialServiceInterface
 
     /**
      * @param string $selection
-     * @param int $selectionLength
+     * @param int    $selectionLength
      *
      * @return bool|string
      */

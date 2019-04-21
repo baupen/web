@@ -22,6 +22,10 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class ImageService implements ImageServiceInterface
 {
+    /**
+     * the name of the image rendered from the map pdf.
+     */
+    private const MAP_RENDER_NAME = 'render.jpg';
     // TODO: unit test to detect if all enums in here
     /**
      * @var array
@@ -45,11 +49,6 @@ class ImageService implements ImageServiceInterface
     private $disableCache = false;
 
     /**
-     * the name of the image rendered from the map pdf.
-     */
-    private const MAP_RENDER_NAME = 'render.jpg';
-
-    /**
      * @var bool prevents calls to warmup cache from archiving something
      */
     private $preventCacheWarmUp;
@@ -58,7 +57,7 @@ class ImageService implements ImageServiceInterface
      * ImageService constructor.
      *
      * @param PathServiceInterface $pathService
-     * @param KernelInterface $kernel
+     * @param KernelInterface      $kernel
      */
     public function __construct(PathServiceInterface $pathService, KernelInterface $kernel)
     {
@@ -69,9 +68,9 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
-     * @param Map $map
+     * @param Map     $map
      * @param Issue[] $issues
-     * @param string $size
+     * @param string  $size
      *
      * @return string|null
      */
@@ -90,8 +89,8 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
-     * @param Map $map
-     * @param array $issues
+     * @param Map    $map
+     * @param array  $issues
      * @param string $size
      *
      * @return string|null
@@ -185,7 +184,7 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
-     * @param Issue $issue
+     * @param Issue  $issue
      * @param string $size
      *
      * @return string|null
@@ -206,7 +205,7 @@ class ImageService implements ImageServiceInterface
 
     /**
      * @param ConstructionSite $constructionSite
-     * @param string $size
+     * @param string           $size
      *
      * @return string|null
      */
@@ -226,8 +225,8 @@ class ImageService implements ImageServiceInterface
 
     /**
      * @param string|null $sourceFileName
-     * @param string $sourceFolder
-     * @param string $targetFolder
+     * @param string      $sourceFolder
+     * @param string      $targetFolder
      * @param $size
      *
      * @return string
@@ -306,7 +305,7 @@ class ImageService implements ImageServiceInterface
 
     /**
      * @param Issue $issue
-     * @param bool $rotated
+     * @param bool  $rotated
      * @param $image
      */
     private function drawIssue(Issue $issue, bool $rotated, &$image)
@@ -336,7 +335,7 @@ class ImageService implements ImageServiceInterface
             $circleColor = $this->createColor($image, 201, 151, 0);
         }
 
-        $this->drawCircleWithText($yCoordinate, $xCoordinate, $circleColor, (string)$issue->getNumber(), $image);
+        $this->drawCircleWithText($yCoordinate, $xCoordinate, $circleColor, (string) $issue->getNumber(), $image);
     }
 
     /**
@@ -373,18 +372,18 @@ class ImageService implements ImageServiceInterface
 
         //draw white base ellipse before the colored one
         $white = $this->createColor($image, 255, 255, 255);
-        imagefilledellipse($image, (int)$xPosition, (int)$yPosition, (int)($diameter + 2), (int)($diameter + 2), $white);
-        imagefilledellipse($image, (int)$xPosition, (int)$yPosition, (int)$diameter, (int)$diameter, $circleColor);
+        imagefilledellipse($image, (int) $xPosition, (int) $yPosition, (int) ($diameter + 2), (int) ($diameter + 2), $white);
+        imagefilledellipse($image, (int) $xPosition, (int) $yPosition, (int) $diameter, (int) $diameter, $circleColor);
 
         //draw text
-        imagettftext($image, $fontSize, 0, (int)($xPosition - ($textWidth / 2)), (int)($yPosition + ($textHeight / 2)), $white, $font, $text);
+        imagettftext($image, $fontSize, 0, (int) ($xPosition - ($textWidth / 2)), (int) ($yPosition + ($textHeight / 2)), $white, $font, $text);
     }
 
     /**
      * @param resource $image
-     * @param int $red
-     * @param int $green
-     * @param int $blue
+     * @param int      $red
+     * @param int      $green
+     * @param int      $blue
      *
      * @return int
      */
@@ -411,10 +410,10 @@ class ImageService implements ImageServiceInterface
      * render issues on image if it does not already exist.
      *
      * @param Issue[] $issues
-     * @param string $pdfRenderPath
-     * @param string $issueImagePath
-     * @param string $landscapeIssueImagePath
-     * @param bool $forceLandscape
+     * @param string  $pdfRenderPath
+     * @param string  $issueImagePath
+     * @param string  $landscapeIssueImagePath
+     * @param bool    $forceLandscape
      *
      * @return string
      */
@@ -464,10 +463,10 @@ class ImageService implements ImageServiceInterface
 
     /**
      * @param Issue[] $issues
-     * @param string $sourceFilePath
-     * @param string $generationTargetFolder
-     * @param bool $forceLandscape
-     * @param string $size
+     * @param string  $sourceFilePath
+     * @param string  $generationTargetFolder
+     * @param bool    $forceLandscape
+     * @param string  $size
      *
      * @return string|null
      */
@@ -546,8 +545,8 @@ class ImageService implements ImageServiceInterface
     /**
      * @param string $sourcePath
      * @param string $targetPath
-     * @param int $maxWidth
-     * @param int $maxHeight
+     * @param int    $maxWidth
+     * @param int    $maxHeight
      *
      * @return bool
      */

@@ -33,6 +33,22 @@ abstract class AbstractApiController extends BaseDoctrineController
     const UNKNOWN_STATUS_CODE = 1;
 
     /**
+     * inject the needed services.
+     *
+     * @return array
+     */
+    public static function getSubscribedServices()
+    {
+        return parent::getSubscribedServices() + [
+            'logger' => LoggerInterface::class,
+            'serializer' => SerializerInterface::class,
+            'validator' => ValidatorInterface::class,
+            'request_stack' => RequestStack::class,
+            ImageServiceInterface::class => ImageServiceInterface::class,
+        ];
+    }
+
+    /**
      * gives the appropriate error code the specified error message.
      *
      * @param string $message
@@ -52,9 +68,9 @@ abstract class AbstractApiController extends BaseDoctrineController
     }
 
     /**
-     * @param Request $request
-     * @param string $targetClass
-     * @param mixed|null $parsedRequest
+     * @param Request       $request
+     * @param string        $targetClass
+     * @param mixed|null    $parsedRequest
      * @param Response|null $errorResponse
      *
      * @return bool
@@ -91,7 +107,7 @@ abstract class AbstractApiController extends BaseDoctrineController
      * @final
      *
      * @param $data
-     * @param int $status
+     * @param int   $status
      * @param array $headers
      * @param array $context
      *
@@ -104,22 +120,6 @@ abstract class AbstractApiController extends BaseDoctrineController
         ], $context));
 
         return new JsonResponse($json, $status, $headers, true);
-    }
-
-    /**
-     * inject the needed services.
-     *
-     * @return array
-     */
-    public static function getSubscribedServices()
-    {
-        return parent::getSubscribedServices() + [
-                'logger' => LoggerInterface::class,
-                'serializer' => SerializerInterface::class,
-                'validator' => ValidatorInterface::class,
-                'request_stack' => RequestStack::class,
-                ImageServiceInterface::class => ImageServiceInterface::class,
-            ];
     }
 
     /**

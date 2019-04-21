@@ -31,7 +31,7 @@ class MapTransformer
      * CraftsmanTransformer constructor.
      *
      * @param \App\Api\Transformer\Share\Base\MapTransformer $mapTransformer
-     * @param IssueTransformer $issueTransformer
+     * @param IssueTransformer                               $issueTransformer
      */
     public function __construct(\App\Api\Transformer\Share\Base\MapTransformer $mapTransformer, IssueTransformer $issueTransformer)
     {
@@ -40,8 +40,8 @@ class MapTransformer
     }
 
     /**
-     * @param Map $entity
-     * @param string $identifier
+     * @param Map     $entity
+     * @param string  $identifier
      * @param Issue[] $issues
      *
      * @return \App\Api\Entity\Share\Filter\Map

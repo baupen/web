@@ -44,7 +44,7 @@ class SetupContentFolders extends BaseFixture
      * SetupContentFolders constructor.
      *
      * @param PathServiceInterface $pathService
-     * @param SerializerInterface $serializer
+     * @param SerializerInterface  $serializer
      * @param SyncServiceInterface $fileSystemSyncService
      */
     public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer, SyncServiceInterface $fileSystemSyncService)

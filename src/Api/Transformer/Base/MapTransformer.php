@@ -16,7 +16,7 @@ use App\Entity\Map;
 class MapTransformer
 {
     /**
-     * @param Map $source
+     * @param Map                      $source
      * @param \App\Api\Entity\Base\Map $target
      */
     public function writeApiProperties($source, $target)

@@ -24,7 +24,7 @@ interface SyncServiceInterface
      * syncs single construction site with the filesystem.
      *
      * @param ConstructionSite $constructionSite
-     * @param bool $skipCacheWarmup
+     * @param bool             $skipCacheWarmup
      */
     public function syncConstructionSite(ConstructionSite $constructionSite, bool $skipCacheWarmup = false);
 }

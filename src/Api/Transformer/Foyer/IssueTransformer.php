@@ -32,7 +32,7 @@ class IssueTransformer extends BatchTransformer
      * CraftsmanTransformer constructor.
      *
      * @param \App\Api\Transformer\Base\IssueTransformer $issueTransformer
-     * @param RouterInterface $router
+     * @param RouterInterface                            $router
      */
     public function __construct(\App\Api\Transformer\Base\IssueTransformer $issueTransformer, RouterInterface $router)
     {
@@ -41,7 +41,7 @@ class IssueTransformer extends BatchTransformer
     }
 
     /**
-     * @param Issue $entity
+     * @param Issue                       $entity
      * @param \App\Api\Entity\Foyer\Issue $issue
      */
     public function writeApiProperties(Issue $entity, \App\Api\Entity\Foyer\Issue $issue)
@@ -79,7 +79,7 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * @param \App\Api\Entity\Foyer\Issue $issue
-     * @param Issue $entity
+     * @param Issue                       $entity
      */
     public function fromApi(\App\Api\Entity\Foyer\Issue $issue, Issue $entity)
     {

@@ -35,23 +35,11 @@ class FilterController extends ApiController
     const INVALID_IDENTIFIER = 'invalid identifier';
 
     /**
-     * gives the appropriate error code the specified error message.
-     *
-     * @param string $message
-     *
-     * @return int
-     */
-    protected function errorMessageToStatusCode($message)
-    {
-        return parent::errorMessageToStatusCode($message);
-    }
-
-    /**
      * @Route("/read", name="external_api_share_filter_read", methods={"GET"})
      *
      * @param $identifier
      * @param ConstructionSiteTransformer $constructionSiteTransformer
-     * @param FilterTransformer $filterTransformer
+     * @param FilterTransformer           $filterTransformer
      *
      * @return Response
      */
@@ -104,5 +92,17 @@ class FilterController extends ApiController
         $data->setMaps($apiMaps);
 
         return $this->success($data);
+    }
+
+    /**
+     * gives the appropriate error code the specified error message.
+     *
+     * @param string $message
+     *
+     * @return int
+     */
+    protected function errorMessageToStatusCode($message)
+    {
+        return parent::errorMessageToStatusCode($message);
     }
 }

@@ -18,10 +18,10 @@ use const DIRECTORY_SEPARATOR;
 class FileService implements FileServiceInterface
 {
     /**
-     * @param string $folder
-     * @param string $ending
+     * @param string      $folder
+     * @param string      $ending
      * @param FileTrait[] $knownFiles
-     * @param callable $createNewFile
+     * @param callable    $createNewFile
      *
      * @return FileTrait[]
      */

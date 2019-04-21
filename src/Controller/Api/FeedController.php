@@ -45,7 +45,7 @@ class FeedController extends ApiController
     /**
      * @Route("/list", name="api_feed_list", methods={"POST"})
      *
-     * @param Request $request
+     * @param Request         $request
      * @param FeedTransformer $feedTransformer
      *
      * @throws Exception

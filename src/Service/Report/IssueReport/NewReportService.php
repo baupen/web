@@ -94,15 +94,15 @@ class NewReportService
     /**
      * ReportService constructor.
      *
-     * @param ImageServiceInterface $imageService
-     * @param LayoutServiceInterface $layoutService
-     * @param RegistryInterface $registry
-     * @param TranslatorInterface $translator
-     * @param PathServiceInterface $pathService
-     * @param PdfFactoryInterface $pdfFactory
+     * @param ImageServiceInterface       $imageService
+     * @param LayoutServiceInterface      $layoutService
+     * @param RegistryInterface           $registry
+     * @param TranslatorInterface         $translator
+     * @param PathServiceInterface        $pathService
+     * @param PdfFactoryInterface         $pdfFactory
      * @param IssueReportServiceInterface $issueReportService
-     * @param TypographyServiceInterface $typographyService
-     * @param ColorServiceInterface $colorService
+     * @param TypographyServiceInterface  $typographyService
+     * @param ColorServiceInterface       $colorService
      */
     public function __construct(ImageServiceInterface $imageService, LayoutServiceInterface $layoutService, RegistryInterface $registry, TranslatorInterface $translator, PathServiceInterface $pathService, PdfFactoryInterface $pdfFactory, IssueReportServiceInterface $issueReportService, TypographyServiceInterface $typographyService, ColorServiceInterface $colorService)
     {
@@ -119,9 +119,9 @@ class NewReportService
 
     /**
      * @param ConstructionSite $constructionSite
-     * @param Filter $filter
-     * @param string $author
-     * @param ReportElements $reportElements
+     * @param Filter           $filter
+     * @param string           $author
+     * @param ReportElements   $reportElements
      *
      * @throws Exception
      *
@@ -148,10 +148,10 @@ class NewReportService
 
     /**
      * @param LayoutFactoryInterface $layoutFactory
-     * @param PrintFactoryInterface $buildingBlocks
-     * @param ConstructionSite $constructionSite
-     * @param Filter $filter
-     * @param ReportElements $reportElements
+     * @param PrintFactoryInterface  $buildingBlocks
+     * @param ConstructionSite       $constructionSite
+     * @param Filter                 $filter
+     * @param ReportElements         $reportElements
      */
     private function addReportElements(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $buildingBlocks, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
     {
@@ -204,7 +204,7 @@ class NewReportService
 
     /**
      * @param ConstructionSite $constructionSite
-     * @param string $author
+     * @param string           $author
      *
      * @throws Exception
      *
@@ -233,8 +233,8 @@ class NewReportService
 
     /**
      * @param ConstructionSite $constructionSite
-     * @param Filter $filter
-     * @param ReportElements $reportElements
+     * @param Filter           $filter
+     * @param ReportElements   $reportElements
      *
      * @return IntroductionContent
      */
@@ -251,7 +251,7 @@ class NewReportService
     }
 
     /**
-     * @param Issue[] $issues
+     * @param Issue[]             $issues
      * @param ReportConfiguration $reportConfiguration
      *
      * @return AggregatedIssuesContent
@@ -280,7 +280,7 @@ class NewReportService
     }
 
     /**
-     * @param Issue[] $issues
+     * @param Issue[]             $issues
      * @param ReportConfiguration $reportConfiguration
      *
      * @return AggregatedIssuesContent
@@ -309,7 +309,7 @@ class NewReportService
     }
 
     /**
-     * @param Issue[] $issues
+     * @param Issue[]             $issues
      * @param ReportConfiguration $reportConfiguration
      *
      * @return AggregatedIssuesContent
@@ -365,8 +365,8 @@ class NewReportService
     }
 
     /**
-     * @param array $elements
-     * @param Issue[][] $issuesPerElement
+     * @param array               $elements
+     * @param Issue[][]           $issuesPerElement
      * @param ReportConfiguration $configuration
      *
      * @return string[][]
@@ -416,9 +416,9 @@ class NewReportService
     }
 
     /**
-     * @param Map $map
-     * @param Issue[] $issues
-     * @param ReportElements $elements
+     * @param Map                 $map
+     * @param Issue[]             $issues
+     * @param ReportElements      $elements
      * @param ReportConfiguration $reportConfiguration
      *
      * @return MapContent
@@ -467,7 +467,7 @@ class NewReportService
     }
 
     /**
-     * @param Issue[] $issues
+     * @param Issue[]             $issues
      * @param ReportConfiguration $reportConfiguration
      *
      * @return string[][]
@@ -659,7 +659,7 @@ class NewReportService
     /**
      * @param DateTime|null $start
      * @param DateTime|null $end
-     * @param string|null $prefix
+     * @param string|null   $prefix
      *
      * @return string
      */

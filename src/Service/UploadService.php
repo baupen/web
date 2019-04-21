@@ -46,9 +46,9 @@ class UploadService implements UploadServiceInterface
     /**
      * UploadService constructor.
      *
-     * @param PathServiceInterface $pathService
+     * @param PathServiceInterface  $pathService
      * @param ImageServiceInterface $imageService
-     * @param RegistryInterface $registry
+     * @param RegistryInterface     $registry
      */
     public function __construct(PathServiceInterface $pathService, ImageServiceInterface $imageService, RegistryInterface $registry)
     {
@@ -59,8 +59,8 @@ class UploadService implements UploadServiceInterface
 
     /**
      * @param UploadedFile $file
-     * @param Issue $issue
-     * @param string $targetFileName
+     * @param Issue        $issue
+     * @param string       $targetFileName
      *
      * @throws Exception
      *
@@ -94,9 +94,9 @@ class UploadService implements UploadServiceInterface
     }
 
     /**
-     * @param UploadedFile $file
+     * @param UploadedFile     $file
      * @param ConstructionSite $constructionSite
-     * @param string $targetFileName
+     * @param string           $targetFileName
      *
      * @throws Exception
      *
@@ -127,47 +127,8 @@ class UploadService implements UploadServiceInterface
     }
 
     /**
-     * @param FileTrait $entity
-     * @param string $targetFolder
-     * @param string $targetFileName
-     */
-    private function writeFileTraitProperties($entity, string $targetFolder, string $targetFileName)
-    {
-        $entity->setFilename($targetFileName);
-        $entity->setHash(hash_file('sha256', $targetFolder . DIRECTORY_SEPARATOR . $targetFileName));
-        $entity->setDisplayFilename($targetFileName);
-    }
-
-    /**
-     * @param string $targetFolder
-     * @param string $targetFileName
-     *
-     * @throws Exception
-     *
-     * @return string|null
-     */
-    private function getCollisionProtectedFileName(string $targetFolder, string $targetFileName)
-    {
-        $targetPath = $targetFolder . DIRECTORY_SEPARATOR . $targetFileName;
-        if (is_file($targetPath)) {
-            $extension = pathinfo($targetPath, PATHINFO_EXTENSION);
-            $filename = pathinfo($targetPath, PATHINFO_FILENAME);
-
-            $now = new DateTime();
-            $targetFileName = $filename . '_duplicate_' . $now->format('Y-m-d\TH:i') . '.' . $extension;
-
-            $targetPath = $targetFolder . DIRECTORY_SEPARATOR . $targetFileName;
-            if (file_exists($targetPath)) {
-                return null;
-            }
-        }
-
-        return $targetFileName;
-    }
-
-    /**
-     * @param string $hash
-     * @param string $filename
+     * @param string           $hash
+     * @param string           $filename
      * @param ConstructionSite $constructionSite
      *
      * @throws Exception
@@ -203,5 +164,44 @@ class UploadService implements UploadServiceInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @param FileTrait $entity
+     * @param string    $targetFolder
+     * @param string    $targetFileName
+     */
+    private function writeFileTraitProperties($entity, string $targetFolder, string $targetFileName)
+    {
+        $entity->setFilename($targetFileName);
+        $entity->setHash(hash_file('sha256', $targetFolder . DIRECTORY_SEPARATOR . $targetFileName));
+        $entity->setDisplayFilename($targetFileName);
+    }
+
+    /**
+     * @param string $targetFolder
+     * @param string $targetFileName
+     *
+     * @throws Exception
+     *
+     * @return string|null
+     */
+    private function getCollisionProtectedFileName(string $targetFolder, string $targetFileName)
+    {
+        $targetPath = $targetFolder . DIRECTORY_SEPARATOR . $targetFileName;
+        if (is_file($targetPath)) {
+            $extension = pathinfo($targetPath, PATHINFO_EXTENSION);
+            $filename = pathinfo($targetPath, PATHINFO_FILENAME);
+
+            $now = new DateTime();
+            $targetFileName = $filename . '_duplicate_' . $now->format('Y-m-d\TH:i') . '.' . $extension;
+
+            $targetPath = $targetFolder . DIRECTORY_SEPARATOR . $targetFileName;
+            if (file_exists($targetPath)) {
+                return null;
+            }
+        }
+
+        return $targetFileName;
     }
 }

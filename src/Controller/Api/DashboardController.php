@@ -26,21 +26,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class DashboardController extends ApiController
 {
     /**
-     * gives the appropriate error code the specified error message.
-     *
-     * @param string $message
-     *
-     * @return int
-     */
-    protected function errorMessageToStatusCode($message)
-    {
-        return parent::errorMessageToStatusCode($message);
-    }
-
-    /**
      * @Route("/constructionSite", name="api_dashboard_construction_site", methods={"POST"})
      *
-     * @param Request $request
+     * @param Request                     $request
      * @param ConstructionSiteTransformer $constructionSiteTransformer
      *
      * @return Response
@@ -56,5 +44,17 @@ class DashboardController extends ApiController
         $data->setConstructionSite($constructionSiteTransformer->toApi($constructionSite));
 
         return $this->success($data);
+    }
+
+    /**
+     * gives the appropriate error code the specified error message.
+     *
+     * @param string $message
+     *
+     * @return int
+     */
+    protected function errorMessageToStatusCode($message)
+    {
+        return parent::errorMessageToStatusCode($message);
     }
 }

@@ -31,17 +31,18 @@ class ImportLdapUsersCommand extends Command
         $this
             ->setName('app:sync:ldap')
             ->setDescription('Syncs the LDAP users with the database accounts.')
-            ->setHelp(<<<EOF
+            ->setHelp(<<<'EOF'
 The <info>%command.name%</info> command detects new files and creates appropriate entries in the database.
 EOF
-            );
+            )
+        ;
     }
 
     /**
      * @see Command
      * @see SecurityChecker
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int

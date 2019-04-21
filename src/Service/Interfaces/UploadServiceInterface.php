@@ -22,16 +22,16 @@ interface UploadServiceInterface
 {
     /**
      * @param UploadedFile $file
-     * @param Issue $issue
-     * @param string $targetFileName
+     * @param Issue        $issue
+     * @param string       $targetFileName
      *
      * @return IssueImage|null
      */
     public function uploadIssueImage(UploadedFile $file, Issue $issue, string $targetFileName);
 
     /**
-     * @param string $hash
-     * @param string $filename
+     * @param string           $hash
+     * @param string           $filename
      * @param ConstructionSite $constructionSite
      *
      * @return UploadFileCheck
@@ -39,9 +39,9 @@ interface UploadServiceInterface
     public function checkUploadMapFile(string $hash, string $filename, ConstructionSite $constructionSite);
 
     /**
-     * @param UploadedFile $file
+     * @param UploadedFile     $file
      * @param ConstructionSite $constructionSite
-     * @param string $targetFileName
+     * @param string           $targetFileName
      *
      * @return MapFile|null
      */

@@ -16,10 +16,10 @@ use App\Entity\Traits\FileTrait;
 interface FileServiceInterface
 {
     /**
-     * @param string $folder
-     * @param string $ending
+     * @param string      $folder
+     * @param string      $ending
      * @param FileTrait[] $knownFiles
-     * @param callable $createNewFile
+     * @param callable    $createNewFile
      *
      * @return FileTrait[]
      */

@@ -16,6 +16,11 @@ use App\Api\External\Entity\User;
 class LoginData
 {
     /**
+     * @var User
+     */
+    private $user;
+
+    /**
      * LoginData constructor.
      *
      * @param User $user
@@ -24,11 +29,6 @@ class LoginData
     {
         $this->user = $user;
     }
-
-    /**
-     * @var User
-     */
-    private $user;
 
     /**
      * @return User

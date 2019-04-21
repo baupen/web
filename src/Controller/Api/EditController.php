@@ -58,21 +58,9 @@ class EditController extends ApiController
     const MAP_HAS_CHILDREN_ASSIGNED = 'map can not be removed as there are children assigned to it';
 
     /**
-     * gives the appropriate error code the specified error message.
-     *
-     * @param string $message
-     *
-     * @return int
-     */
-    protected function errorMessageToStatusCode($message)
-    {
-        return parent::errorMessageToStatusCode($message);
-    }
-
-    /**
      * @Route("/maps", name="api_edit_maps")
      *
-     * @param Request $request
+     * @param Request        $request
      * @param MapTransformer $mapFileTransformer
      *
      * @return Response
@@ -96,7 +84,7 @@ class EditController extends ApiController
     /**
      * @Route("/map_files", name="api_edit_map_files")
      *
-     * @param Request $request
+     * @param Request            $request
      * @param MapFileTransformer $mapFileTransformer
      *
      * @return Response
@@ -120,7 +108,7 @@ class EditController extends ApiController
     /**
      * @Route("/craftsmen", name="api_edit_craftsmen")
      *
-     * @param Request $request
+     * @param Request              $request
      * @param CraftsmanTransformer $craftsmanTransformer
      *
      * @return Response
@@ -144,7 +132,7 @@ class EditController extends ApiController
     /**
      * @Route("/map_file/check", name="api_edit_map_file_check", methods={"POST"})
      *
-     * @param Request $request
+     * @param Request                $request
      * @param UploadServiceInterface $uploadService
      *
      * @throws Exception
@@ -172,8 +160,8 @@ class EditController extends ApiController
     /**
      * @Route("/map_file", name="api_edit_map_file_post", methods={"POST"})
      *
-     * @param Request $request
-     * @param MapFileTransformer $mapFileTransformer
+     * @param Request                $request
+     * @param MapFileTransformer     $mapFileTransformer
      * @param UploadServiceInterface $uploadService
      *
      * @throws Exception
@@ -214,8 +202,8 @@ class EditController extends ApiController
     /**
      * @Route("/map_file/{mapFile}", name="api_edit_map_file_put", methods={"PUT"})
      *
-     * @param Request $request
-     * @param MapFile $mapFile
+     * @param Request            $request
+     * @param MapFile            $mapFile
      * @param MapFileTransformer $mapFileTransformer
      *
      * @throws Exception
@@ -248,7 +236,7 @@ class EditController extends ApiController
     /**
      * @Route("/map", name="api_edit_map_post", methods={"POST"})
      *
-     * @param Request $request
+     * @param Request        $request
      * @param MapTransformer $mapTransformer
      *
      * @throws Exception
@@ -283,8 +271,8 @@ class EditController extends ApiController
     /**
      * @Route("/map/{map}", name="api_edit_map_put", methods={"PUT"})
      *
-     * @param Request $request
-     * @param Map $map
+     * @param Request        $request
+     * @param Map            $map
      * @param MapTransformer $mapTransformer
      *
      * @throws Exception
@@ -322,7 +310,7 @@ class EditController extends ApiController
      * @Route("/map/{map}", name="api_edit_map_delete", methods={"DELETE"})
      *
      * @param Request $request
-     * @param Map $map
+     * @param Map     $map
      *
      * @throws Exception
      *
@@ -361,8 +349,125 @@ class EditController extends ApiController
     }
 
     /**
+     * @Route("/craftsman", name="api_edit_craftsman_post", methods={"POST"})
+     *
+     * @param Request              $request
+     * @param CraftsmanTransformer $craftsmanTransformer
+     *
+     * @throws Exception
+     *
+     * @return Response
+     */
+    public function craftsmanPostAction(Request $request, CraftsmanTransformer $craftsmanTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var UpdateCraftsmanRequest $parsedRequest */
+        if (!$this->parseConstructionSiteRequest($request, UpdateCraftsmanRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        $updateCraftsman = $parsedRequest->getCraftsman();
+        $craftsman = new Craftsman();
+        $craftsman->setConstructionSite($constructionSite);
+        $craftsman->setEmailIdentifier();
+
+        if (!$this->writeIntoCraftsmanEntity($updateCraftsman, $craftsman)) {
+            return $errorResponse;
+        }
+
+        $this->fastSave($craftsman);
+
+        //create response
+        $data = new CraftsmanData();
+        $data->setCraftsman($craftsmanTransformer->toApi($craftsman));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/craftsman/{craftsman}", name="api_edit_craftsman_put", methods={"PUT"})
+     *
+     * @param Request              $request
+     * @param Craftsman            $craftsman
+     * @param CraftsmanTransformer $craftsmanTransformer
+     *
+     * @throws Exception
+     *
+     * @return Response
+     */
+    public function craftsmanPutAction(Request $request, Craftsman $craftsman, CraftsmanTransformer $craftsmanTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var UpdateCraftsmanRequest $parsedRequest */
+        if (!$this->parseConstructionSiteRequest($request, UpdateCraftsmanRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        if (!$constructionSite->getCraftsmen()->contains($craftsman)) {
+            throw new NotFoundHttpException();
+        }
+
+        $updateCraftsman = $parsedRequest->getCraftsman();
+
+        if (!$this->writeIntoCraftsmanEntity($updateCraftsman, $craftsman)) {
+            return $errorResponse;
+        }
+
+        $this->fastSave($craftsman);
+
+        //create response
+        $data = new CraftsmanData();
+        $data->setCraftsman($craftsmanTransformer->toApi($craftsman));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/craftsman/{craftsman}", name="api_edit_craftsman_delete", methods={"DELETE"})
+     *
+     * @param Request   $request
+     * @param Craftsman $craftsman
+     *
+     * @throws Exception
+     *
+     * @return Response
+     */
+    public function craftsmanDeleteAction(Request $request, Craftsman $craftsman)
+    {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        if (!$constructionSite->getCraftsmen()->contains($craftsman)) {
+            throw new NotFoundHttpException();
+        }
+
+        if ($craftsman->getIssues()->count() !== 0) {
+            return $this->fail(self::CRAFTSMAN_HAS_ISSUES_ASSIGNED);
+        }
+
+        $this->fastRemove($craftsman);
+
+        //create response
+        return $this->success(new EmptyData());
+    }
+
+    /**
+     * gives the appropriate error code the specified error message.
+     *
+     * @param string $message
+     *
+     * @return int
+     */
+    protected function errorMessageToStatusCode($message)
+    {
+        return parent::errorMessageToStatusCode($message);
+    }
+
+    /**
      * @param UpdateMap $updateMap
-     * @param Map $entity
+     * @param Map       $entity
      * @param $errorResponse
      *
      * @return bool
@@ -407,113 +512,8 @@ class EditController extends ApiController
     }
 
     /**
-     * @Route("/craftsman", name="api_edit_craftsman_post", methods={"POST"})
-     *
-     * @param Request $request
-     * @param CraftsmanTransformer $craftsmanTransformer
-     *
-     * @throws Exception
-     *
-     * @return Response
-     */
-    public function craftsmanPostAction(Request $request, CraftsmanTransformer $craftsmanTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        /** @var UpdateCraftsmanRequest $parsedRequest */
-        if (!$this->parseConstructionSiteRequest($request, UpdateCraftsmanRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        $updateCraftsman = $parsedRequest->getCraftsman();
-        $craftsman = new Craftsman();
-        $craftsman->setConstructionSite($constructionSite);
-        $craftsman->setEmailIdentifier();
-
-        if (!$this->writeIntoCraftsmanEntity($updateCraftsman, $craftsman)) {
-            return $errorResponse;
-        }
-
-        $this->fastSave($craftsman);
-
-        //create response
-        $data = new CraftsmanData();
-        $data->setCraftsman($craftsmanTransformer->toApi($craftsman));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/craftsman/{craftsman}", name="api_edit_craftsman_put", methods={"PUT"})
-     *
-     * @param Request $request
-     * @param Craftsman $craftsman
-     * @param CraftsmanTransformer $craftsmanTransformer
-     *
-     * @throws Exception
-     *
-     * @return Response
-     */
-    public function craftsmanPutAction(Request $request, Craftsman $craftsman, CraftsmanTransformer $craftsmanTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        /** @var UpdateCraftsmanRequest $parsedRequest */
-        if (!$this->parseConstructionSiteRequest($request, UpdateCraftsmanRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        if (!$constructionSite->getCraftsmen()->contains($craftsman)) {
-            throw new NotFoundHttpException();
-        }
-
-        $updateCraftsman = $parsedRequest->getCraftsman();
-
-        if (!$this->writeIntoCraftsmanEntity($updateCraftsman, $craftsman)) {
-            return $errorResponse;
-        }
-
-        $this->fastSave($craftsman);
-
-        //create response
-        $data = new CraftsmanData();
-        $data->setCraftsman($craftsmanTransformer->toApi($craftsman));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/craftsman/{craftsman}", name="api_edit_craftsman_delete", methods={"DELETE"})
-     *
-     * @param Request $request
-     * @param Craftsman $craftsman
-     *
-     * @throws Exception
-     *
-     * @return Response
-     */
-    public function craftsmanDeleteAction(Request $request, Craftsman $craftsman)
-    {
-        /** @var ConstructionSite $constructionSite */
-        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        if (!$constructionSite->getCraftsmen()->contains($craftsman)) {
-            throw new NotFoundHttpException();
-        }
-
-        if ($craftsman->getIssues()->count() !== 0) {
-            return $this->fail(self::CRAFTSMAN_HAS_ISSUES_ASSIGNED);
-        }
-
-        $this->fastRemove($craftsman);
-
-        //create response
-        return $this->success(new EmptyData());
-    }
-
-    /**
      * @param UpdateCraftsman $updateCraftsman
-     * @param Craftsman $entity
+     * @param Craftsman       $entity
      *
      * @return bool
      */

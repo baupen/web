@@ -70,11 +70,11 @@ class LoginController extends BaseLoginController
     /**
      * @Route("/create", name="login_create")
      *
-     * @param Request $request
+     * @param Request                   $request
      * @param UserAuthenticationService $userCreationService
-     * @param TranslatorInterface $translator
-     * @param EmailServiceInterface $emailService
-     * @param LoggerInterface $logger
+     * @param TranslatorInterface       $translator
+     * @param EmailServiceInterface     $emailService
+     * @param LoggerInterface           $logger
      *
      * @throws Exception
      *
@@ -101,62 +101,10 @@ class LoginController extends BaseLoginController
     }
 
     /**
-     * @param Request $request
-     * @param ConstructionManager $constructionManager
-     * @param TranslatorInterface $translator
-     * @param EmailServiceInterface $emailService
-     * @param LoggerInterface $logger
-     *
-     * @throws Exception
-     */
-    private function register(Request $request, ConstructionManager $constructionManager, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
-    {
-        /** @var ConstructionManager $existing */
-        $existing = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
-        if ($existing === null) {
-            // prepare account for usage
-            $constructionManager->setRegistrationDate();
-            $constructionManager->setPlainPassword(uniqid('_initial_pw_'));
-            $constructionManager->setPassword();
-            $constructionManager->setAuthenticationHash();
-            $this->fastSave($constructionManager);
-        } else {
-            $constructionManager = $existing;
-            if ($constructionManager->isRegistrationCompleted()) {
-                $this->displayError($translator->trans('create.error.already_registered', [], 'login'));
-
-                return;
-            }
-        }
-
-        // construct email
-        $email = new Email();
-        $email->setEmailType(EmailType::ACTION_EMAIL);
-        $email->setReceiver($constructionManager->getEmail());
-        $email->setSubject($translator->trans('create.email.subject', ['%page%' => $request->getHttpHost()], 'login'));
-        $email->setBody($translator->trans('create.email.body', [], 'login'));
-        $email->setActionText($translator->trans('create.email.action_text', [], 'login'));
-        $email->setActionLink($this->generateUrl('login_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()], UrlGeneratorInterface::ABSOLUTE_URL));
-        $this->fastSave($email);
-
-        // send email
-        if ($emailService->sendEmail($email)) {
-            $email->setSentDateTime(new DateTime());
-            $this->fastSave($email);
-
-            $logger->info('sent register email to ' . $email->getReceiver());
-            $this->displaySuccess($translator->trans('create.success.welcome', [], 'login'));
-        } else {
-            $logger->error('could not send register email ' . $email->getId());
-            $this->displayError($translator->trans('create.fail.welcome_email_not_sent', [], 'login'));
-        }
-    }
-
-    /**
      * @Route("/confirm/{authenticationHash}", name="login_confirm")
      *
-     * @param Request $request
-     * @param string $authenticationHash
+     * @param Request             $request
+     * @param string              $authenticationHash
      * @param TranslatorInterface $translator
      *
      * @return Response
@@ -217,10 +165,10 @@ class LoginController extends BaseLoginController
     /**
      * @Route("/recover", name="login_recover")
      *
-     * @param Request $request
+     * @param Request               $request
      * @param EmailServiceInterface $emailService
-     * @param TranslatorInterface $translator
-     * @param LoggerInterface $logger
+     * @param TranslatorInterface   $translator
+     * @param LoggerInterface       $logger
      *
      * @return Response
      */
@@ -231,7 +179,7 @@ class LoginController extends BaseLoginController
                 ->add('recover.submit', SubmitType::class, ['translation_domain' => 'login']),
             $request,
             function ($form) use ($emailService, $translator, $logger, $request) {
-                /* @var FormInterface $form */
+                /** @var FormInterface $form */
                 /** @var ConstructionManager $constructionManager */
                 $constructionManager = $form->getData();
                 //check if user exists
@@ -356,5 +304,57 @@ class LoginController extends BaseLoginController
     public function logoutAction()
     {
         throw new RuntimeException('You must configure the logout path to be handled by the firewall using form_login.logout in your security firewall configuration.');
+    }
+
+    /**
+     * @param Request               $request
+     * @param ConstructionManager   $constructionManager
+     * @param TranslatorInterface   $translator
+     * @param EmailServiceInterface $emailService
+     * @param LoggerInterface       $logger
+     *
+     * @throws Exception
+     */
+    private function register(Request $request, ConstructionManager $constructionManager, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
+    {
+        /** @var ConstructionManager $existing */
+        $existing = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
+        if ($existing === null) {
+            // prepare account for usage
+            $constructionManager->setRegistrationDate();
+            $constructionManager->setPlainPassword(uniqid('_initial_pw_'));
+            $constructionManager->setPassword();
+            $constructionManager->setAuthenticationHash();
+            $this->fastSave($constructionManager);
+        } else {
+            $constructionManager = $existing;
+            if ($constructionManager->isRegistrationCompleted()) {
+                $this->displayError($translator->trans('create.error.already_registered', [], 'login'));
+
+                return;
+            }
+        }
+
+        // construct email
+        $email = new Email();
+        $email->setEmailType(EmailType::ACTION_EMAIL);
+        $email->setReceiver($constructionManager->getEmail());
+        $email->setSubject($translator->trans('create.email.subject', ['%page%' => $request->getHttpHost()], 'login'));
+        $email->setBody($translator->trans('create.email.body', [], 'login'));
+        $email->setActionText($translator->trans('create.email.action_text', [], 'login'));
+        $email->setActionLink($this->generateUrl('login_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()], UrlGeneratorInterface::ABSOLUTE_URL));
+        $this->fastSave($email);
+
+        // send email
+        if ($emailService->sendEmail($email)) {
+            $email->setSentDateTime(new DateTime());
+            $this->fastSave($email);
+
+            $logger->info('sent register email to ' . $email->getReceiver());
+            $this->displaySuccess($translator->trans('create.success.welcome', [], 'login'));
+        } else {
+            $logger->error('could not send register email ' . $email->getId());
+            $this->displayError($translator->trans('create.fail.welcome_email_not_sent', [], 'login'));
+        }
     }
 }

@@ -48,8 +48,8 @@ class FileController extends ExternalApiController
     /**
      * @Route("/download", name="api_external_file_download", methods={"POST"})
      *
-     * @param Request $request
-     * @param PathServiceInterface $pathService
+     * @param Request               $request
+     * @param PathServiceInterface  $pathService
      * @param ImageServiceInterface $imageService
      *
      * @throws ORMException
@@ -113,9 +113,9 @@ class FileController extends ExternalApiController
 
     /**
      * @param ObjectRepository $repository
-     * @param ObjectMeta $objectMeta
-     * @param callable $verifyAccess
-     * @param callable $accessFilePath
+     * @param ObjectMeta       $objectMeta
+     * @param callable         $verifyAccess
+     * @param callable         $accessFilePath
      *
      * @throws Exception
      *

@@ -57,7 +57,7 @@ install:
   - npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_AUTH_TOKEN
   
   # install dependencies
-  - composer install
+  - composer install --no-scripts
   - yarn install
   - chmod +x ./bin/console
 

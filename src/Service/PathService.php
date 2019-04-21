@@ -73,16 +73,6 @@ class PathService implements PathServiceInterface
      *
      * @return string
      */
-    private function getFolderForConstructionSite(ConstructionSite $constructionSite)
-    {
-        return $this->getConstructionSiteFolderRoot() . DIRECTORY_SEPARATOR . $constructionSite->getFolderName();
-    }
-
-    /**
-     * @param ConstructionSite $constructionSite
-     *
-     * @return string
-     */
     public function getFolderForConstructionSiteImage(ConstructionSite $constructionSite)
     {
         return $this->getFolderForConstructionSite($constructionSite) . DIRECTORY_SEPARATOR . 'images';
@@ -106,16 +96,6 @@ class PathService implements PathServiceInterface
     public function getFolderForIssueImage(ConstructionSite $constructionSite)
     {
         return $this->getFolderForConstructionSite($constructionSite) . DIRECTORY_SEPARATOR . 'issues';
-    }
-
-    /**
-     * @param ConstructionSite $constructionSite
-     *
-     * @return string
-     */
-    private function getTransientFolderForConstructionSite(ConstructionSite $constructionSite)
-    {
-        return $this->getTransientFolderRoot() . DIRECTORY_SEPARATOR . 'construction_sites' . DIRECTORY_SEPARATOR . $constructionSite->getFolderName();
     }
 
     /**
@@ -196,5 +176,25 @@ class PathService implements PathServiceInterface
     public function getAssetsRoot()
     {
         return $this->assetsRoot;
+    }
+
+    /**
+     * @param ConstructionSite $constructionSite
+     *
+     * @return string
+     */
+    private function getFolderForConstructionSite(ConstructionSite $constructionSite)
+    {
+        return $this->getConstructionSiteFolderRoot() . DIRECTORY_SEPARATOR . $constructionSite->getFolderName();
+    }
+
+    /**
+     * @param ConstructionSite $constructionSite
+     *
+     * @return string
+     */
+    private function getTransientFolderForConstructionSite(ConstructionSite $constructionSite)
+    {
+        return $this->getTransientFolderRoot() . DIRECTORY_SEPARATOR . 'construction_sites' . DIRECTORY_SEPARATOR . $constructionSite->getFolderName();
     }
 }

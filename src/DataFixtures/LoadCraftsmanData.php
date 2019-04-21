@@ -73,6 +73,11 @@ class LoadCraftsmanData extends BaseFixture
         $manager->flush();
     }
 
+    public function getOrder()
+    {
+        return static::ORDER + 1;
+    }
+
     /**
      * @param ObjectManager $manager
      *
@@ -91,10 +96,5 @@ class LoadCraftsmanData extends BaseFixture
         }
 
         return $craftsmen;
-    }
-
-    public function getOrder()
-    {
-        return static::ORDER + 1;
     }
 }

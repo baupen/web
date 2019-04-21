@@ -17,7 +17,7 @@ use App\Model\SyncTransaction;
 interface MapSectorServiceInterface
 {
     /**
-     * @param SyncTransaction $syncTransaction
+     * @param SyncTransaction  $syncTransaction
      * @param ConstructionSite $constructionSite
      */
     public function syncMapSectors(SyncTransaction $syncTransaction, ConstructionSite $constructionSite);

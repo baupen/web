@@ -34,7 +34,7 @@ class ConstructionManagerRepository extends EntityRepository
      * gets recently changed issues.
      *
      * @param ConstructionSite $constructionSite
-     * @param int $days
+     * @param int              $days
      *
      * @throws Exception
      *

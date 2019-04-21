@@ -1,7 +1,7 @@
 index:
   title: 'Fehler %status_code%'
   description: 'Questa pagina non può essere visualizzata.'
-  404: 'Questa pagina non è stata trovata.'
+  '404': 'Questa pagina non è stata trovata.'
   contact_support: 'Contattateci per ulteriore supporto: '
-  500: 'C’è stato un errore nell´esecuzione della richiesta.'
-  back: 'indietro'
+  '500': 'C’è stato un errore nell´esecuzione della richiesta.'
+  back: indietro

@@ -52,7 +52,7 @@ class MapService implements MapServiceInterface
     }
 
     /**
-     * @param SyncTransaction $syncTransaction
+     * @param SyncTransaction  $syncTransaction
      * @param ConstructionSite $constructionSite
      */
     public function syncConstructionSiteMaps(SyncTransaction $syncTransaction, ConstructionSite $constructionSite)
@@ -73,7 +73,7 @@ class MapService implements MapServiceInterface
 
     /**
      * @param SyncTransaction $syncTransaction
-     * @param Map[] $maps
+     * @param Map[]           $maps
      */
     private function refreshDisplayName(SyncTransaction $syncTransaction, array $maps)
     {
@@ -90,10 +90,10 @@ class MapService implements MapServiceInterface
     }
 
     /**
-     * @param SyncTransaction $syncTransaction
+     * @param SyncTransaction  $syncTransaction
      * @param ConstructionSite $constructionSite
-     * @param MapFile[] $mapFiles
-     * @param Map[] $maps
+     * @param MapFile[]        $mapFiles
+     * @param Map[]            $maps
      */
     private function assignMapFilesToMaps(SyncTransaction $syncTransaction, ConstructionSite $constructionSite, array $mapFiles, array &$maps)
     {
@@ -141,9 +141,9 @@ class MapService implements MapServiceInterface
     }
 
     /**
-     * @param SyncTransaction $syncTransaction
+     * @param SyncTransaction  $syncTransaction
      * @param ConstructionSite $constructionSite
-     * @param Map[] $maps
+     * @param Map[]            $maps
      */
     private function createTreeStructure(SyncTransaction $syncTransaction, ConstructionSite $constructionSite, array &$maps)
     {
@@ -196,7 +196,7 @@ class MapService implements MapServiceInterface
 
     /**
      * @param SyncTransaction $syncTransaction
-     * @param Map[] $maps
+     * @param Map[]           $maps
      */
     private function cleanTreeStructure(SyncTransaction $syncTransaction, array &$maps)
     {

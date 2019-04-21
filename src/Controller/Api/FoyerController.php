@@ -54,6 +54,224 @@ class FoyerController extends ApiController
     const ISSUE_NOT_FOUND = 'issue not found';
 
     /**
+     * @Route("/issue/list", name="api_foyer_issues_list", methods={"POST"})
+     *
+     * @param Request          $request
+     * @param IssueTransformer $issueTransformer
+     *
+     * @return Response
+     */
+    public function issueListAction(Request $request, IssueTransformer $issueTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $constructionSiteRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        $filter = new Filter();
+        $filter->filterByRegistrationStatus(false);
+        $filter->setConstructionSite($constructionSite);
+        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
+
+        //create response
+        $data = new IssuesData();
+        $data->setIssues($issueTransformer->toApiMultiple($issues));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/craftsman/list", name="api_foyer_craftsman_list", methods={"POST"})
+     *
+     * @param Request              $request
+     * @param CraftsmanTransformer $craftsmanTransformer
+     *
+     * @return Response
+     */
+    public function craftsmanListAction(Request $request, CraftsmanTransformer $craftsmanTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $constructionSiteRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        $data = new CraftsmenData();
+        $data->setCraftsmen($craftsmanTransformer->toApiMultiple($constructionSite->getCraftsmen()->toArray()));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/issue/update", name="api_foyer_issue_update", methods={"POST"})
+     *
+     * @param Request                $request
+     * @param UpdateIssueTransformer $updateIssueTransformer
+     * @param IssueTransformer       $issueTransformer
+     *
+     * @return Response
+     */
+    public function issueUpdateAction(Request $request, UpdateIssueTransformer $updateIssueTransformer, IssueTransformer $issueTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var UpdateIssue[] $issues */
+        /** @var Issue[] $entities */
+        if (!$this->parseFoyerIssuesRequest($request, $issues, $entities, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        //write properties to issues
+        foreach ($issues as $guid => $issue) {
+            if (\array_key_exists($guid, $entities)) {
+                $entity = $entities[$guid];
+                $res = $updateIssueTransformer->fromApi($issue, $entity, function ($craftsman) use ($constructionSite) {
+                    /** @var Craftsman $craftsman */
+                    if ($craftsman === null) {
+                        return $this->fail(self::CRAFTSMAN_NOT_FOUND);
+                    }
+                    if ($craftsman->getConstructionSite() !== $constructionSite) {
+                        return $this->fail(self::INVALID_CRAFTSMAN);
+                    }
+
+                    return true;
+                });
+                if ($res !== true) {
+                    /* @var Response $res */
+                    return $res;
+                }
+            }
+        }
+
+        $this->fastSave(...array_values($entities));
+
+        //create response
+        $data = new IssuesData();
+        $data->setIssues($issueTransformer->toApiMultiple($entities));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/issue/image", name="api_foyer_issue_image", methods={"POST"})
+     *
+     * @param Request                $request
+     * @param IssueTransformer       $issueTransformer
+     * @param UploadServiceInterface $uploadService
+     *
+     * @throws Exception
+     *
+     * @return Response
+     */
+    public function issueImageAction(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /* @var IssueIdRequest $issueRequest */
+        /** @var Issue $entity */
+        if (!$this->parseIssueRequest($request, $entity, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        //check if file is here
+        if ($request->files->count() !== 1) {
+            return $this->fail(self::INCORRECT_NUMBER_OF_FILES);
+        }
+
+        /** @var UploadedFile $file */
+        $file = $request->files->getIterator()->current();
+
+        //set new filename to avoid caching issues
+        $targetFileName = Uuid::uuid4()->toString() . '.' . $file->guessExtension();
+
+        //save file
+        $issueImage = $uploadService->uploadIssueImage($file, $entity, $targetFileName);
+        if ($issueImage === null) {
+            return $this->fail(self::FILE_UPLOAD_FAILED);
+        }
+
+        $issueImage->setIssue($entity);
+        $entity->getImages()->add($issueImage);
+        $entity->setImage($issueImage);
+        $this->fastSave($issueImage, $entity);
+
+        //create response
+        $data = new IssueData();
+        $data->setIssue($issueTransformer->toApi($entity));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/issue/delete", name="api_foyer_issue_delete", methods={"POST"})
+     *
+     * @param Request               $request
+     * @param BaseEntityTransformer $baseEntityTransformer
+     *
+     * @return Response
+     */
+    public function issueDeleteAction(Request $request, BaseEntityTransformer $baseEntityTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseIssuesRequest($request, $entities, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        $data = new DeletedIssueData();
+        $data->setDeletedIssues($baseEntityTransformer->toApiMultiple($entities));
+
+        $this->fastRemove(...array_values($entities));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/issue/confirm", name="api_foyer_issue_confirm", methods={"POST"})
+     *
+     * @param Request                $request
+     * @param NumberIssueTransformer $numberIssueTransformer
+     *
+     * @throws NonUniqueResultException
+     * @throws Exception
+     *
+     * @return Response
+     */
+    public function issueConfirmAction(Request $request, NumberIssueTransformer $numberIssueTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var Issue[] $entities */
+        if (!$this->parseIssuesRequest($request, $entities, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        //set number & register event
+        //note that this is unsafe to race conditions, and will crash because of db enforced constraints
+        $highestNumber = $this->getDoctrine()->getRepository(Issue::class)->getHighestNumber($constructionSite);
+        foreach ($entities as $entity) {
+            $entity->setNumber(++$highestNumber);
+            $entity->setRegisteredAt(new DateTime());
+            $entity->setRegistrationBy($this->getUser());
+        }
+
+        $this->fastSave(...array_values($entities));
+
+        //stats to client
+        $data = new NumberIssueData();
+        $data->setNumberIssues($numberIssueTransformer->toApiMultiple($entities));
+
+        return $this->success($data);
+    }
+
+    /**
+     * gives the appropriate error code the specified error message.
+     *
+     * @param string $message
+     *
+     * @return int
+     */
+    protected function errorMessageToStatusCode($message)
+    {
+        return parent::errorMessageToStatusCode($message);
+    }
+
+    /**
      * @param Request $request
      * @param $entities
      * @param $errorResponse
@@ -154,9 +372,9 @@ class FoyerController extends ApiController
     }
 
     /**
-     * @param Issue[] $requestedIssues
+     * @param Issue[]                       $requestedIssues
      * @param \App\Api\Entity\Foyer\Issue[] $issues
-     * @param Issue[] $entities
+     * @param Issue[]                       $entities
      */
     private function orderEntities($requestedIssues, $issues, &$entities)
     {
@@ -173,223 +391,5 @@ class FoyerController extends ApiController
                 $entities[$guid] = $entityLookup[$guid];
             }
         }
-    }
-
-    /**
-     * gives the appropriate error code the specified error message.
-     *
-     * @param string $message
-     *
-     * @return int
-     */
-    protected function errorMessageToStatusCode($message)
-    {
-        return parent::errorMessageToStatusCode($message);
-    }
-
-    /**
-     * @Route("/issue/list", name="api_foyer_issues_list", methods={"POST"})
-     *
-     * @param Request $request
-     * @param IssueTransformer $issueTransformer
-     *
-     * @return Response
-     */
-    public function issueListAction(Request $request, IssueTransformer $issueTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $constructionSiteRequest, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        $filter = new Filter();
-        $filter->filterByRegistrationStatus(false);
-        $filter->setConstructionSite($constructionSite);
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
-
-        //create response
-        $data = new IssuesData();
-        $data->setIssues($issueTransformer->toApiMultiple($issues));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/craftsman/list", name="api_foyer_craftsman_list", methods={"POST"})
-     *
-     * @param Request $request
-     * @param CraftsmanTransformer $craftsmanTransformer
-     *
-     * @return Response
-     */
-    public function craftsmanListAction(Request $request, CraftsmanTransformer $craftsmanTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $constructionSiteRequest, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        $data = new CraftsmenData();
-        $data->setCraftsmen($craftsmanTransformer->toApiMultiple($constructionSite->getCraftsmen()->toArray()));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/issue/update", name="api_foyer_issue_update", methods={"POST"})
-     *
-     * @param Request $request
-     * @param UpdateIssueTransformer $updateIssueTransformer
-     * @param IssueTransformer $issueTransformer
-     *
-     * @return Response
-     */
-    public function issueUpdateAction(Request $request, UpdateIssueTransformer $updateIssueTransformer, IssueTransformer $issueTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        /** @var UpdateIssue[] $issues */
-        /** @var Issue[] $entities */
-        if (!$this->parseFoyerIssuesRequest($request, $issues, $entities, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        //write properties to issues
-        foreach ($issues as $guid => $issue) {
-            if (\array_key_exists($guid, $entities)) {
-                $entity = $entities[$guid];
-                $res = $updateIssueTransformer->fromApi($issue, $entity, function ($craftsman) use ($constructionSite) {
-                    /** @var Craftsman $craftsman */
-                    if ($craftsman === null) {
-                        return $this->fail(self::CRAFTSMAN_NOT_FOUND);
-                    }
-                    if ($craftsman->getConstructionSite() !== $constructionSite) {
-                        return $this->fail(self::INVALID_CRAFTSMAN);
-                    }
-
-                    return true;
-                });
-                if ($res !== true) {
-                    /* @var Response $res */
-                    return $res;
-                }
-            }
-        }
-
-        $this->fastSave(...array_values($entities));
-
-        //create response
-        $data = new IssuesData();
-        $data->setIssues($issueTransformer->toApiMultiple($entities));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/issue/image", name="api_foyer_issue_image", methods={"POST"})
-     *
-     * @param Request $request
-     * @param IssueTransformer $issueTransformer
-     * @param UploadServiceInterface $uploadService
-     *
-     * @throws Exception
-     *
-     * @return Response
-     */
-    public function issueImageAction(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService)
-    {
-        /** @var ConstructionSite $constructionSite */
-        /* @var IssueIdRequest $issueRequest */
-        /** @var Issue $entity */
-        if (!$this->parseIssueRequest($request, $entity, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        //check if file is here
-        if ($request->files->count() !== 1) {
-            return $this->fail(self::INCORRECT_NUMBER_OF_FILES);
-        }
-
-        /** @var UploadedFile $file */
-        $file = $request->files->getIterator()->current();
-
-        //set new filename to avoid caching issues
-        $targetFileName = Uuid::uuid4()->toString() . '.' . $file->guessExtension();
-
-        //save file
-        $issueImage = $uploadService->uploadIssueImage($file, $entity, $targetFileName);
-        if ($issueImage === null) {
-            return $this->fail(self::FILE_UPLOAD_FAILED);
-        }
-
-        $issueImage->setIssue($entity);
-        $entity->getImages()->add($issueImage);
-        $entity->setImage($issueImage);
-        $this->fastSave($issueImage, $entity);
-
-        //create response
-        $data = new IssueData();
-        $data->setIssue($issueTransformer->toApi($entity));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/issue/delete", name="api_foyer_issue_delete", methods={"POST"})
-     *
-     * @param Request $request
-     * @param BaseEntityTransformer $baseEntityTransformer
-     *
-     * @return Response
-     */
-    public function issueDeleteAction(Request $request, BaseEntityTransformer $baseEntityTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        if (!$this->parseIssuesRequest($request, $entities, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        $data = new DeletedIssueData();
-        $data->setDeletedIssues($baseEntityTransformer->toApiMultiple($entities));
-
-        $this->fastRemove(...array_values($entities));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/issue/confirm", name="api_foyer_issue_confirm", methods={"POST"})
-     *
-     * @param Request $request
-     * @param NumberIssueTransformer $numberIssueTransformer
-     *
-     * @throws NonUniqueResultException
-     * @throws Exception
-     *
-     * @return Response
-     */
-    public function issueConfirmAction(Request $request, NumberIssueTransformer $numberIssueTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        /** @var Issue[] $entities */
-        if (!$this->parseIssuesRequest($request, $entities, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        //set number & register event
-        //note that this is unsafe to race conditions, and will crash because of db enforced constraints
-        $highestNumber = $this->getDoctrine()->getRepository(Issue::class)->getHighestNumber($constructionSite);
-        foreach ($entities as $entity) {
-            $entity->setNumber(++$highestNumber);
-            $entity->setRegisteredAt(new DateTime());
-            $entity->setRegistrationBy($this->getUser());
-        }
-
-        $this->fastSave(...array_values($entities));
-
-        //stats to client
-        $data = new NumberIssueData();
-        $data->setNumberIssues($numberIssueTransformer->toApiMultiple($entities));
-
-        return $this->success($data);
     }
 }

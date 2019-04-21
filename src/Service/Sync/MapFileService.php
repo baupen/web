@@ -51,11 +51,11 @@ class MapFileService implements MapFileServiceInterface
     /**
      * MapFileService constructor.
      *
-     * @param PathServiceInterface $pathService
+     * @param PathServiceInterface        $pathService
      * @param DisplayNameServiceInterface $displayNameService
-     * @param FileServiceInterface $fileService
-     * @param MapSectorServiceInterface $mapSectorService
-     * @param MapFrameServiceInterface $mapFrameService
+     * @param FileServiceInterface        $fileService
+     * @param MapSectorServiceInterface   $mapSectorService
+     * @param MapFrameServiceInterface    $mapFrameService
      */
     public function __construct(PathServiceInterface $pathService, DisplayNameServiceInterface $displayNameService, FileServiceInterface $fileService, MapSectorServiceInterface $mapSectorService, MapFrameServiceInterface $mapFrameService)
     {
@@ -67,7 +67,7 @@ class MapFileService implements MapFileServiceInterface
     }
 
     /**
-     * @param SyncTransaction $syncTransaction
+     * @param SyncTransaction  $syncTransaction
      * @param ConstructionSite $constructionSite
      */
     public function syncMapFiles(SyncTransaction $syncTransaction, ConstructionSite $constructionSite)
@@ -86,9 +86,9 @@ class MapFileService implements MapFileServiceInterface
     }
 
     /**
-     * @param SyncTransaction $syncTransaction
+     * @param SyncTransaction  $syncTransaction
      * @param ConstructionSite $constructionSite
-     * @param MapFile[] $mapFiles
+     * @param MapFile[]        $mapFiles
      */
     private function findNewMapFiles(SyncTransaction $syncTransaction, ConstructionSite $constructionSite, array &$mapFiles)
     {
@@ -108,7 +108,7 @@ class MapFileService implements MapFileServiceInterface
 
     /**
      * @param SyncTransaction $syncTransaction
-     * @param MapFile[] $mapFiles
+     * @param MapFile[]       $mapFiles
      */
     private function refreshDisplayFileNames(SyncTransaction $syncTransaction, array $mapFiles)
     {

@@ -1,4 +1,3 @@
-entity:
- name: Karte
-
 context: Ort
+entity:
+  name: Karte

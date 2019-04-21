@@ -40,7 +40,7 @@ interface PrinterInterface
 
     /**
      * @param string $imagePath
-     * @param int $number
+     * @param int    $number
      */
     public function printIssueImage(string $imagePath, int $number);
 }

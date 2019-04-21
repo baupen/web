@@ -49,7 +49,7 @@ class UserAuthenticationService implements UserCreationServiceInterface
      * UserCreationService constructor.
      *
      * @param ParameterBagInterface $parameterBag
-     * @param LoggerInterface $logger
+     * @param LoggerInterface       $logger
      */
     public function __construct(ParameterBagInterface $parameterBag, LoggerInterface $logger)
     {
@@ -223,7 +223,7 @@ class UserAuthenticationService implements UserCreationServiceInterface
     }
 
     /**
-     * @param Entry $entry
+     * @param Entry  $entry
      * @param string $key
      *
      * @return array|mixed|string|null
@@ -233,8 +233,9 @@ class UserAuthenticationService implements UserCreationServiceInterface
         $attributeValue = $entry->getAttribute($key);
         if ($attributeValue !== null) {
             if (\is_array($attributeValue) && \count($attributeValue) > 0) {
-                return trim((string)$attributeValue[0]);
-            } elseif (\is_string($attributeValue)) {
+                return trim((string) $attributeValue[0]);
+            }
+            if (\is_string($attributeValue)) {
                 return trim($attributeValue);
             }
         }
@@ -253,7 +254,7 @@ class UserAuthenticationService implements UserCreationServiceInterface
     }
 
     /**
-     * @param Entry $entry
+     * @param Entry  $entry
      * @param string $givenName
      *
      * @return string|null

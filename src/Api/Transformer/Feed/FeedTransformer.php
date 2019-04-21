@@ -30,7 +30,7 @@ class FeedTransformer
 
     /**
      * @param FeedEntry $entity
-     * @param string $type
+     * @param string    $type
      *
      * @return \App\Api\Entity\Feed\FeedEntry
      */

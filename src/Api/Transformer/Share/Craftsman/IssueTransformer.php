@@ -32,7 +32,7 @@ class IssueTransformer
     }
 
     /**
-     * @param Issue $entity
+     * @param Issue  $entity
      * @param string $identifier
      *
      * @return \App\Api\Entity\Share\Craftsman\Issue

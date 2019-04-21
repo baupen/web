@@ -1,12 +1,10 @@
-#name
 trait:
- name: Benutzer
-
-email: Email
+  name: Benutzer
+email: E-Mail
 password: Passwort
 plain_password: Passwort
-repeat_plain_password: Passwort wiederholen
+repeat_plain_password: 'Passwort wiederholen'
 given_name: Vorname
 family_name: Nachname
-phone: Telefonnummer (für die Handwerker)
+phone: 'Telefonnummer (für die Handwerker)'
 profile: Profil

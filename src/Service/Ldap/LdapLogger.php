@@ -33,7 +33,7 @@ class LdapLogger implements LdapInterface
     /**
      * LdapLogger constructor.
      *
-     * @param LdapInterface $adapter
+     * @param LdapInterface   $adapter
      * @param LoggerInterface $logger
      */
     public function __construct(LdapInterface $adapter, LoggerInterface $logger)
@@ -57,7 +57,7 @@ class LdapLogger implements LdapInterface
      *
      * @param string $subject
      * @param string $ignore
-     * @param int $flags
+     * @param int    $flags
      *
      * @return string
      */
@@ -69,7 +69,7 @@ class LdapLogger implements LdapInterface
     /**
      * Return a connection bound to the ldap.
      *
-     * @param string $dn A LDAP dn
+     * @param string $dn       A LDAP dn
      * @param string $password A password
      *
      * @throws ConnectionException if dn / password could not be bound
@@ -86,7 +86,7 @@ class LdapLogger implements LdapInterface
      *
      * @param string $dn
      * @param string $query
-     * @param array $options
+     * @param array  $options
      *
      * @return QueryInterface
      */

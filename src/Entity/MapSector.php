@@ -107,7 +107,7 @@ class MapSector extends BaseEntity
         // doctrine deserializes to associative array instead of object
         $res = [];
         foreach ($this->points as $point) {
-            $res[] = (object)$point;
+            $res[] = (object) $point;
         }
 
         return $res;

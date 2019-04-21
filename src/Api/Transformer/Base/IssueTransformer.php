@@ -16,7 +16,7 @@ use App\Entity\Issue;
 class IssueTransformer
 {
     /**
-     * @param Issue $source
+     * @param Issue                      $source
      * @param \App\Api\Entity\Base\Issue $target
      */
     public function writeApiProperties($source, $target)
@@ -26,7 +26,7 @@ class IssueTransformer
 
     /**
      * @param \App\Api\Entity\Base\Issue $source
-     * @param Issue $target
+     * @param Issue                      $target
      */
     public function writeEntityProperties($source, $target)
     {

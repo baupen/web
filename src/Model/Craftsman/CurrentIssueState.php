@@ -39,7 +39,7 @@ class CurrentIssueState
     /**
      * @var DateTime|null
      */
-    private $nextResponseLimit = null;
+    private $nextResponseLimit;
 
     /**
      * CurrentIssueState constructor.

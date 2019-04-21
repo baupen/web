@@ -120,7 +120,7 @@ class MapFile extends BaseEntity
         }
 
         // doctrine deserializes to associative array instead of object
-        return (object)$this->sectorFrame;
+        return (object) $this->sectorFrame;
     }
 
     /**

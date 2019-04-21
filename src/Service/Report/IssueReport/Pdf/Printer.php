@@ -40,9 +40,9 @@ class Printer implements PrinterInterface
     /**
      * Printer constructor.
      *
-     * @param PrintableLayoutInterface $printableLayout
+     * @param PrintableLayoutInterface   $printableLayout
      * @param TypographyServiceInterface $typographyService
-     * @param ColorServiceInterface $colorService
+     * @param ColorServiceInterface      $colorService
      */
     public function __construct(PrintableLayoutInterface $printableLayout, TypographyServiceInterface $typographyService, ColorServiceInterface $colorService)
     {
@@ -99,7 +99,7 @@ class Printer implements PrinterInterface
 
     /**
      * @param string $imagePath
-     * @param int $number
+     * @param int    $number
      */
     public function printIssueImage(string $imagePath, int $number)
     {
@@ -113,7 +113,7 @@ class Printer implements PrinterInterface
 
             // print number of issue
             $document->configure([DrawConfiguration::FILL_COLOR => $this->color->getImageOverlayColor()]);
-            $document->printText((string)$number, $this->typography->getTextFontSize());
+            $document->printText((string) $number, $this->typography->getTextFontSize());
 
             // reset cursor to after image
             $document->setCursor($afterImageCursor);
@@ -122,7 +122,7 @@ class Printer implements PrinterInterface
 
     /**
      * @param string $text
-     * @param float $fontSize
+     * @param float  $fontSize
      */
     private function printText(string $text, float $fontSize)
     {
@@ -134,7 +134,7 @@ class Printer implements PrinterInterface
 
     /**
      * @param string $text
-     * @param float $fontSize
+     * @param float  $fontSize
      */
     private function printBoldText(string $text, float $fontSize)
     {
