@@ -89,6 +89,11 @@ if you deploy to the main installation, create `var/transient/domainOverrides.js
    ]
 }
 ```
+
+if you need to backup the files to another server, you only need to sent the `/var/persistent` folder. 
+```
+rsync -azP ~/www/app.mangel.io/production/shared/var/persistent/ user@IP:~/backup/
+```
  
 ##### ssh
 `ssh-copy-id -i ~/.ssh/id_rsa.pub username@domain` to add ssh key  
