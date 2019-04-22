@@ -106,3 +106,5 @@ yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 yum-config-manager --enable remi-php72
 yum install php72 php72-php-fpm php72-php-opcache php72-php-xml php72-php-gd php72-php-mbstring php72-php-json php72-php-iconv php72-php-imagick php72-php-pdo_sqlite php72-php-simplexml php72-php-ldap
 ```
+
+use `certbot` to manage lets encrypt certificates.
