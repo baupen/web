@@ -1,5 +1,21 @@
 <template>
     <div id="edit">
+        <h2>{{$t("edit_construction_site.title")}}</h2>
+        <p class="text-secondary">{{$t("edit_construction_site.help")}}</p>
+        <atom-spinner v-if="isConstructionSiteLoading"
+                      :animation-duration="1000"
+                      :size="60"
+                      :color="'#ff1d5e'"
+        />
+
+        <construction-site-edit
+                v-else
+                :construction-site="constructionSite"
+                @save="saveConstructionSite"
+                @upload-image="saveConstructionSiteImage(arguments[0])"
+        />
+
+        <div class="vertical-spacer-big"></div>
         <h2>{{$t("map.plural")}}</h2>
         <p class="text-secondary">{{$t("edit_maps.help")}}</p>
         <atom-spinner v-if="isMapsLoading"
@@ -7,38 +23,18 @@
                       :size="60"
                       :color="'#ff1d5e'"
         />
-        <template v-else>
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
-                       aria-controls="nav-home" aria-selected="true">{{$t("edit_maps.title")}}</a>
-                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
-                       aria-controls="nav-profile" aria-selected="false">{{$t("edit_map_files.title")}}</a>
-                </div>
-            </nav>
-            <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                    <map-view class="pt-2"
-                              :map-containers="mapContainers"
-                              :map-file-containers="mapFileContainers"
-                              @map-reorder="reorderMaps"
-                              @map-add="addMap"
-                              @map-save="saveMap(arguments[0])"
-                              @map-remove="removeMap(arguments[0])"
-                    />
-                </div>
-                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                    <map-file-view class="pt-2"
-                                   :map-containers="mapContainers"
-                                   :map-file-containers="mapFileContainers"
-                                   @file-dropped="mapFileDropped(arguments[0])"
-                                   @start-upload="mapFileUpload(arguments[0])"
-                                   @abort-upload="mapFileAbortUpload(arguments[0])"
-                                   @save="mapFileSave(arguments[0])"
-                    />
-                </div>
-            </div>
-        </template>
+        <map-edit
+                :map-containers="mapContainers"
+                :map-file-containers="mapFileContainers"
+                @maps-reorder="reorderMaps"
+                @map-add="addMap"
+                @map-save="saveMap(arguments[0])"
+                @map-remove="removeMap(arguments[0])"
+                @map-file-dropped="mapFileDropped(arguments[0])"
+                @map-file-start-upload="mapFileUpload(arguments[0])"
+                @map-file-abort-upload="mapFileAbortUpload(arguments[0])"
+                @map-file-save="mapFileSave(arguments[0])"
+        />
         <div class="vertical-spacer-big"></div>
         <h2>{{$t("craftsman.plural")}}</h2>
         <p class="text-secondary">{{$t("edit_craftsmen.help")}}</p>
@@ -47,29 +43,14 @@
                       :size="60"
                       :color="'#ff1d5e'"
         />
-        <template v-else>
-            <craftsman-view
-                    :craftsman-containers="craftsmanContainers"
-                    @craftsman-add="addCraftsman(arguments[0])"
-                    @craftsman-save="saveCraftsman(arguments[0])"
-                    @craftsman-remove="removeCraftsman(arguments[0])"
-            />
-        </template>
+        <craftsman-view v-else
+                        :craftsman-containers="craftsmanContainers"
+                        @craftsman-add="addCraftsman(arguments[0])"
+                        @craftsman-save="saveCraftsman(arguments[0])"
+                        @craftsman-remove="removeCraftsman(arguments[0])"
+        />
     </div>
 </template>
-
-<style>
-    .tab-content {
-        border-left: 1px solid #ddd;
-        border-right: 1px solid #ddd;
-        border-bottom: 1px solid #ddd;
-        padding: 1em;
-    }
-
-    .nav-tabs {
-        margin-bottom: 0;
-    }
-</style>
 
 <script>
     import axios from "axios"
@@ -77,10 +58,10 @@
     import {AtomSpinner} from 'epic-spinners'
     import notifications from '../mixins/Notifications'
     import uuid from "uuid/v4"
-    import MapView from "./components/MapView";
     import CryptoJS from 'crypto-js'
     import CraftsmanView from "./components/CraftsmanView";
-    import MapFileView from "./components/MapFileView";
+    import MapEdit from "./components/MapEdit";
+    import ConstructionSiteEdit from "./components/ConstructionSiteEdit";
 
     const lang = document.documentElement.lang.substr(0, 2);
     moment.locale(lang);
@@ -89,9 +70,11 @@
         data: function () {
             return {
                 constructionSiteId: null,
+                constructionSite: null,
                 mapContainers: [],
                 mapFileContainers: [],
                 craftsmanContainers: [],
+                isConstructionSiteLoading: true,
                 isMapsLoading: true,
                 isCraftsmenLoading: true,
                 isLoading: false,
@@ -101,12 +84,40 @@
         },
         mixins: [notifications],
         components: {
-            MapFileView,
+            ConstructionSiteEdit,
+            MapEdit,
             CraftsmanView,
-            MapView,
             AtomSpinner
         },
         methods: {
+            saveConstructionSite: function () {
+                axios.put("/api/edit/construction_site/save", {
+                    constructionSiteId: this.constructionSiteId,
+                    constructionSite: {
+                        streetAddress: this.constructionSite.streetAddress,
+                        postalCode: this.constructionSite.postalCode,
+                        locality: this.constructionSite.locality
+                    }
+                });
+            },
+            saveConstructionSiteImage: function (uploadFile) {
+                let data = new FormData();
+                data.append("file", uploadFile);
+                data.append("message", JSON.stringify({
+                    constructionSiteId: this.constructionSiteId
+                }));
+
+                const config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                };
+
+                axios.post('/api/edit/construction_site/image', data, config)
+                    .then(_ => {
+                        this.loadConstructionSite();
+                    });
+            },
             addMap: function () {
                 const mapContainer = {
                     map: {
@@ -307,6 +318,14 @@
 
 
                 return maxOrder;
+            },
+            loadConstructionSite: function () {
+                axios.post("/api/edit/construction_site", {
+                    constructionSiteId: this.constructionSiteId
+                }).then((response) => {
+                    this.constructionSite = response.data.constructionSite;
+                    this.isConstructionSiteLoading = false;
+                });
             }
         },
         mounted() {
@@ -336,8 +355,11 @@
                 }
             );
 
+
             axios.get("/api/configuration").then((response) => {
                 this.constructionSiteId = response.data.constructionSite.id;
+
+                this.loadConstructionSite();
 
                 axios.post("/api/edit/map_files", {
                     constructionSiteId: this.constructionSiteId

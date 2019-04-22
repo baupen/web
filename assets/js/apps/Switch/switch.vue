@@ -36,7 +36,7 @@
         <table class="table table-hover table-condensed">
             <thead>
             <tr>
-                <th>{{$t("construction_site.name")}}</th>
+                <th>{{$t("construction_site._name")}}</th>
                 <th>{{$t("construction_site.address")}}</th>
                 <th>{{$t("construction_site.created_at")}}</th>
                 <th>{{$t("construction_site.activated")}}</th>

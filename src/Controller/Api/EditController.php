@@ -615,7 +615,6 @@ class EditController extends ApiController
      */
     private function writeIntoConstructionSiteEntity(UpdateConstructionSite $updateConstructionSite, ConstructionSite $entity)
     {
-        $entity->setName($updateConstructionSite->getName());
         $entity->setStreetAddress($updateConstructionSite->getStreetAddress());
         $entity->setPostalCode($updateConstructionSite->getPostalCode());
         $entity->setLocality($updateConstructionSite->getLocality());

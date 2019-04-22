@@ -66,7 +66,6 @@ class EditControllerTest extends ApiController
         // update properties
         $updateConstructionSiteRequest = new UpdateConstructionSiteRequest();
         $updateConstructionSite = new UpdateConstructionSite();
-        $updateConstructionSite->setName("newName");
         $updateConstructionSite->setLocality("Basel");
         $updateConstructionSite->setPostalCode(4060);
         $updateConstructionSite->setStreetAddress("Ochsengasse 160");
@@ -92,7 +91,6 @@ class EditControllerTest extends ApiController
         // check new image & properties were applied
         $newConstructionSite = $this->getConstructionSite($constructionSite->getId());
 
-        $this->assertEquals($updateConstructionSite->getName(), $newConstructionSite->name);
         $this->assertEquals($updateConstructionSite->getStreetAddress(), $newConstructionSite->streetAddress);
         $this->assertEquals($updateConstructionSite->getPostalCode(), $newConstructionSite->postalCode);
         $this->assertEquals($updateConstructionSite->getLocality(), $newConstructionSite->locality);
