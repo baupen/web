@@ -12,7 +12,7 @@ import Edit from './edit';
 // messages
 import Messages from '../../localization/edit';
 import mergeMessages from '../../localization/shared/_all';
-import Vuelidate from "vuelidate";
+import Vuelidate from 'vuelidate';
 
 Vue.config.productionTip = false;
 
