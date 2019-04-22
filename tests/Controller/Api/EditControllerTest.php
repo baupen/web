@@ -12,16 +12,19 @@
 namespace App\Tests\Controller\Api;
 
 use App\Api\Entity\Edit\CheckMapFile;
+use App\Api\Entity\Edit\UpdateConstructionSite;
 use App\Api\Entity\Edit\UpdateCraftsman;
 use App\Api\Entity\Edit\UpdateMap;
 use App\Api\Entity\Edit\UpdateMapFile;
 use App\Api\Entity\Edit\UploadMapFile;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\Edit\CheckMapFileRequest;
+use App\Api\Request\Edit\UpdateConstructionSiteRequest;
 use App\Api\Request\Edit\UpdateCraftsmanRequest;
 use App\Api\Request\Edit\UpdateMapFileRequest;
 use App\Api\Request\Edit\UpdateMapRequest;
 use App\Api\Request\Edit\UploadMapFileRequest;
+use App\Entity\ConstructionSite;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\ApiController;
 use function count;
@@ -30,6 +33,70 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class EditControllerTest extends ApiController
 {
+    public function testConstructionSite()
+    {
+        $url = '/api/edit/construction_site';
+
+        $constructionSite = $this->getSomeConstructionSite();
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+
+        $response = $this->authenticatedPostRequest($url, $constructionSiteRequest);
+        $constructionSiteData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($constructionSiteData->data);
+        $this->assertNotNull($constructionSiteData->data->constructionSite);
+
+        $constructionSite = $constructionSiteData->data->constructionSite;
+        $this->assertObjectHasAttribute('id', $constructionSite);
+        $this->assertObjectHasAttribute('postalCode', $constructionSite);
+        $this->assertObjectHasAttribute('streetAddress', $constructionSite);
+        $this->assertObjectHasAttribute('locality', $constructionSite);
+        $this->assertObjectHasAttribute('imageMedium', $constructionSite);
+    }
+
+    public function testConstructionSiteSave()
+    {
+        $saveUrl = '/api/edit/construction_site/save';
+        $imageUrl = '/api/edit/construction_site/image';
+
+        $constructionSite = $this->getSomeConstructionSite();
+        $originalConstructionSite = $this->getConstructionSite($constructionSite->getId());
+
+        // update properties
+        $updateConstructionSiteRequest = new UpdateConstructionSiteRequest();
+        $updateConstructionSite = new UpdateConstructionSite();
+        $updateConstructionSite->setLocality("Basel");
+        $updateConstructionSite->setPostalCode(4060);
+        $updateConstructionSite->setStreetAddress("Ochsengasse 160");
+        $updateConstructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+        $updateConstructionSiteRequest->setConstructionSite($updateConstructionSite);
+
+        $response = $this->authenticatedPutRequest($saveUrl, $updateConstructionSiteRequest);
+        $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        // update image
+        $filePath = __DIR__ . '/../../Files/sample.jpg';
+        $copyPath = __DIR__ . '/../../Files/sample_2.jpg';
+        copy($filePath, $copyPath);
+
+        // properties needed
+        $originalName = 'sample.jpg';
+        $uploadFile = new UploadedFile($copyPath, $originalName, 'image/jpeg');
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+        $response = $this->authenticatedPostRequest($imageUrl, $constructionSiteRequest, ['some_file' => $uploadFile]);
+        $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        // check new image & properties were applied
+        $newConstructionSite = $this->getConstructionSite($constructionSite->getId());
+
+        $this->assertEquals($updateConstructionSite->getStreetAddress(), $newConstructionSite->streetAddress);
+        $this->assertEquals($updateConstructionSite->getPostalCode(), $newConstructionSite->postalCode);
+        $this->assertEquals($updateConstructionSite->getLocality(), $newConstructionSite->locality);
+        $this->assertNotEquals($originalConstructionSite->imageMedium, $newConstructionSite->imageMedium);
+    }
+
     public function testMapFiles()
     {
         $url = '/api/edit/map_files';
@@ -456,5 +523,23 @@ class EditControllerTest extends ApiController
             $this->assertObjectHasAttribute('email', $craftsman);
             $this->assertObjectHasAttribute('issueCount', $craftsman);
         }
+    }
+
+    /**
+     * @param string $constructionSiteId
+     * @return \stdClass
+     */
+    private function getConstructionSite(string $constructionSiteId)
+    {
+        $getUrl = '/api/edit/construction_site';
+
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSiteId);
+
+        $response = $this->authenticatedPostRequest($getUrl, $constructionSiteRequest);
+        $constructionSiteData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $newConstructionSite = $constructionSiteData->data->constructionSite;
+        return $newConstructionSite;
     }
 }

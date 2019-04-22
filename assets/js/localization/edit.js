@@ -12,6 +12,14 @@ export default {
         save_changes: '{pendingChangesCount} Änderungen speichern'
       }
     },
+    edit_construction_site: {
+      title: 'Baustelle',
+      help: 'Ändern Sie Adresse & Titelbild.',
+      drag_files_to_upload: 'Ziehen Sie ein .jpg oder .png Bild in diesen Bereich um dieses als neues Titelbild zu setzen.',
+      actions: {
+        save: 'Änderungen speichern'
+      }
+    },
     edit_map_files: {
       title: 'Bauplanversionen',
       help: 'Ordnen Sie die Bauplanversionen einem Bauplan zu.',

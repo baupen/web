@@ -5,7 +5,7 @@
             <button class="btn btn-primary" @click="$emit('map-add')">
                 {{$t("edit_maps.actions.add_map")}}
             </button>
-            <button class="btn btn-outline-secondary" @click="$emit('map-reorder')">
+            <button class="btn btn-outline-secondary" @click="$emit('maps-reorder')">
                 {{$t("edit_maps.actions.reorder")}}
             </button>
         </p>

@@ -11,14 +11,17 @@
 
 namespace App\Controller\Api;
 
+use App\Api\Entity\Edit\UpdateConstructionSite;
 use App\Api\Entity\Edit\UpdateCraftsman;
 use App\Api\Entity\Edit\UpdateMap;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\Edit\CheckMapFileRequest;
+use App\Api\Request\Edit\UpdateConstructionSiteRequest;
 use App\Api\Request\Edit\UpdateCraftsmanRequest;
 use App\Api\Request\Edit\UpdateMapFileRequest;
 use App\Api\Request\Edit\UpdateMapRequest;
 use App\Api\Request\Edit\UploadMapFileRequest;
+use App\Api\Response\Data\ConstructionSiteData;
 use App\Api\Response\Data\CraftsmanData;
 use App\Api\Response\Data\CraftsmenData;
 use App\Api\Response\Data\Edit\UploadFileCheckData;
@@ -27,6 +30,7 @@ use App\Api\Response\Data\MapData;
 use App\Api\Response\Data\MapFileData;
 use App\Api\Response\Data\MapFilesData;
 use App\Api\Response\Data\MapsData;
+use App\Api\Transformer\Edit\ConstructionSiteTransformer;
 use App\Api\Transformer\Edit\CraftsmanTransformer;
 use App\Api\Transformer\Edit\MapFileTransformer;
 use App\Api\Transformer\Edit\MapTransformer;
@@ -50,6 +54,7 @@ class EditController extends ApiController
 {
     const INCORRECT_NUMBER_OF_FILES = 'incorrect number of files';
     const MAP_FILE_UPLOAD_FAILED = 'map file could not be uploaded';
+    const CONSTRUCTION_SITE_IMAGE_UPLOAD_FAILED = 'construction site image could not be uploaded';
     const MAP_NOT_FOUND = 'map not found';
     const MAP_FILE_ASSIGNED_TO_DIFFERENT_MAP = 'this map file is already assigned to a different map';
     const MAP_FILE_NOT_FOUND = 'file not found';
@@ -101,6 +106,28 @@ class EditController extends ApiController
         //create response
         $data = new MapFilesData();
         $data->setMapFiles($mapFileTransformer->toApiMultiple($mapFiles));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/construction_site", name="api_edit_construction_site")
+     *
+     * @param Request                     $request
+     * @param ConstructionSiteTransformer $constructionSiteTransformer
+     *
+     * @return Response
+     */
+    public function constructionSiteAction(Request $request, ConstructionSiteTransformer $constructionSiteTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        //create response
+        $data = new ConstructionSiteData();
+        $data->setConstructionSite($constructionSiteTransformer->toApi($constructionSite));
 
         return $this->success($data);
     }
@@ -200,6 +227,47 @@ class EditController extends ApiController
     }
 
     /**
+     * @Route("/construction_site/image", name="api_edit_construction_site_image", methods={"POST"})
+     *
+     * @param Request                $request
+     * @param MapFileTransformer     $mapFileTransformer
+     * @param UploadServiceInterface $uploadService
+     *
+     * @throws Exception
+     *
+     * @return Response
+     */
+    public function constructionSiteImageAction(Request $request, MapFileTransformer $mapFileTransformer, UploadServiceInterface $uploadService)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var ConstructionSiteRequest $parsedRequest */
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        //check if file is here
+        if ($request->files->count() !== 1) {
+            return $this->fail(self::INCORRECT_NUMBER_OF_FILES);
+        }
+
+        /** @var UploadedFile $file */
+        $file = $request->files->getIterator()->current();
+
+        //save file
+        $constructionSiteImage = $uploadService->uploadConstructionSiteImage($file, $constructionSite, $file->getClientOriginalName());
+        if ($constructionSiteImage === null) {
+            return $this->fail(self::CONSTRUCTION_SITE_IMAGE_UPLOAD_FAILED);
+        }
+        $constructionSiteImage->setConstructionSite($constructionSite);
+        $constructionSite->getImages()->add($constructionSiteImage);
+        $constructionSite->setImage($constructionSiteImage);
+        $this->fastSave($constructionSite, $constructionSiteImage);
+
+        //create response
+        return $this->success();
+    }
+
+    /**
      * @Route("/map_file/{mapFile}", name="api_edit_map_file_put", methods={"PUT"})
      *
      * @param Request            $request
@@ -266,6 +334,34 @@ class EditController extends ApiController
         $data->setMap($mapTransformer->toApi($map));
 
         return $this->success($data);
+    }
+
+    /**
+     * @Route("/construction_site/save", name="api_edit_construction_site_save", methods={"PUT"})
+     *
+     * @param Request $request
+     *
+     * @throws Exception
+     *
+     * @return Response
+     */
+    public function constructionSiteSaveAction(Request $request)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var UpdateConstructionSiteRequest $parsedRequest */
+        if (!$this->parseConstructionSiteRequest($request, UpdateConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        $updateConstructionSite = $parsedRequest->getConstructionSite();
+        if (!$this->writeIntoConstructionSiteEntity($updateConstructionSite, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        $this->fastSave($constructionSite);
+
+        //create response
+        return $this->success();
     }
 
     /**
@@ -507,6 +603,21 @@ class EditController extends ApiController
         } else {
             $entity->setParent(null);
         }
+
+        return true;
+    }
+
+    /**
+     * @param UpdateConstructionSite $updateConstructionSite
+     * @param ConstructionSite       $entity
+     *
+     * @return bool
+     */
+    private function writeIntoConstructionSiteEntity(UpdateConstructionSite $updateConstructionSite, ConstructionSite $entity)
+    {
+        $entity->setStreetAddress($updateConstructionSite->getStreetAddress());
+        $entity->setPostalCode($updateConstructionSite->getPostalCode());
+        $entity->setLocality($updateConstructionSite->getLocality());
 
         return true;
     }
