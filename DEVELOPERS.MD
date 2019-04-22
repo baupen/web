@@ -57,7 +57,7 @@ export LOKALISE_TOKEN = <token>
 `doctrine:fixtures:load` to load fixtures
 
 login with `f@mangel.io`, `asdf`  
-`yarn encode dev-server` starts the frontend dev server  
+`yarn encode dev-server --port 9000` starts the frontend dev server  
 test error templates inside TwigBundle/views by accessing `/_error/404` and `/_error/500`
 
 

@@ -12,6 +12,7 @@
 namespace App\Service\Interfaces;
 
 use App\Entity\ConstructionSite;
+use App\Entity\ConstructionSiteImage;
 use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\MapFile;
@@ -46,4 +47,13 @@ interface UploadServiceInterface
      * @return MapFile|null
      */
     public function uploadMapFile(UploadedFile $file, ConstructionSite $constructionSite, string $targetFileName);
+
+    /**
+     * @param UploadedFile     $file
+     * @param ConstructionSite $constructionSite
+     * @param string           $targetFileName
+     *
+     * @return ConstructionSiteImage|null
+     */
+    public function uploadConstructionSiteImage(UploadedFile $file, ConstructionSite $constructionSite, string $targetFileName);
 }

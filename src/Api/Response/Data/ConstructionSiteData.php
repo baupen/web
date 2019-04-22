@@ -11,7 +11,7 @@
 
 namespace App\Api\Response\Data;
 
-use App\Api\Entity\Dashboard\ConstructionSite;
+use App\Api\Entity\Base\ConstructionSite;
 
 class ConstructionSiteData
 {

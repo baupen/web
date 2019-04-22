@@ -12,6 +12,7 @@
 namespace App\Service;
 
 use App\Entity\ConstructionSite;
+use App\Entity\ConstructionSiteImage;
 use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\MapFile;
@@ -68,27 +69,13 @@ class UploadService implements UploadServiceInterface
      */
     public function uploadIssueImage(UploadedFile $file, Issue $issue, string $targetFileName)
     {
-        //create folder
         $targetFolder = $this->pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
-        if (!file_exists($targetFolder)) {
-            mkdir($targetFolder, 0777, true);
-        }
-
-        //ensure nothing is overridden
-        $targetFileName = $this->getCollisionProtectedFileName($targetFolder, $targetFileName);
-        if ($targetFileName === null) {
-            return null;
-        }
-
-        //move file
-        if (!$file->move($targetFolder, $targetFileName)) {
+        $issueImage = new IssueImage();
+        if (!$this->uploadFile($file, $targetFolder, $targetFileName, $issueImage)) {
             return null;
         }
 
         $this->imageService->warmUpCacheForIssue($issue);
-
-        $issueImage = new IssueImage();
-        $this->writeFileTraitProperties($issueImage, $targetFolder, $targetFileName);
 
         return $issueImage;
     }
@@ -104,24 +91,33 @@ class UploadService implements UploadServiceInterface
      */
     public function uploadMapFile(UploadedFile $file, ConstructionSite $constructionSite, string $targetFileName)
     {
-        //create folder
         $targetFolder = $this->pathService->getFolderForMapFile($constructionSite);
-        if (!file_exists($targetFolder)) {
-            mkdir($targetFolder, 0777, true);
-        }
-
-        $targetPath = $targetFolder . DIRECTORY_SEPARATOR . $targetFileName;
-        if (file_exists($targetPath)) {
-            return null;
-        }
-
-        //move file
-        if (!$file->move($targetFolder, $targetFileName)) {
-            return null;
-        }
-
         $mapFile = new MapFile();
-        $this->writeFileTraitProperties($mapFile, $targetFolder, $targetFileName);
+        if (!$this->uploadFile($file, $targetFolder, $targetFileName, $mapFile)) {
+            return null;
+        }
+
+        return $mapFile;
+    }
+
+    /**
+     * @param UploadedFile     $file
+     * @param ConstructionSite $constructionSite
+     * @param string           $targetFileName
+     *
+     * @throws Exception
+     *
+     * @return ConstructionSiteImage|null
+     */
+    public function uploadConstructionSiteImage(UploadedFile $file, ConstructionSite $constructionSite, string $targetFileName)
+    {
+        $targetFolder = $this->pathService->getFolderForConstructionSiteImage($constructionSite);
+        $mapFile = new ConstructionSiteImage();
+        if (!$this->uploadFile($file, $targetFolder, $targetFileName, $mapFile)) {
+            return null;
+        }
+
+        $this->imageService->warmUpCacheForConstructionSite($constructionSite);
 
         return $mapFile;
     }
@@ -164,6 +160,35 @@ class UploadService implements UploadServiceInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @param UploadedFile $file
+     * @param string       $targetFolder
+     * @param string       $targetFileName
+     * @param FileTrait    $entity
+     *
+     * @return bool
+     */
+    private function uploadFile(UploadedFile $file, string $targetFolder, string $targetFileName, $entity): bool
+    {
+        if (!file_exists($targetFolder)) {
+            mkdir($targetFolder, 0777, true);
+        }
+
+        $targetPath = $targetFolder . DIRECTORY_SEPARATOR . $targetFileName;
+        if (file_exists($targetPath)) {
+            return false;
+        }
+
+        //move file
+        if (!$file->move($targetFolder, $targetFileName)) {
+            return false;
+        }
+
+        $this->writeFileTraitProperties($entity, $targetFolder, $targetFileName);
+
+        return true;
     }
 
     /**

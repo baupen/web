@@ -11,6 +11,7 @@
 
 namespace App\Controller\Api\Base;
 
+use App\Api\Response\Data\EmptyData;
 use App\Api\Response\FailResponse;
 use App\Api\Response\SuccessfulResponse;
 use App\Controller\Base\BaseDoctrineController;
@@ -148,8 +149,12 @@ abstract class AbstractApiController extends BaseDoctrineController
      *
      * @return JsonResponse
      */
-    protected function success($data)
+    protected function success($data = null)
     {
+        if ($data === null) {
+            $data = new EmptyData();
+        }
+
         return $this->json(new SuccessfulResponse($data));
     }
 
