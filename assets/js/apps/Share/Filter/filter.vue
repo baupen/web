@@ -37,7 +37,7 @@
                         <table class="table table-hover">
                             <thead>
                             <tr>
-                                <th>{{ $t("map.name")}}</th>
+                                <th>{{ $t("map._name")}}</th>
                                 <th>{{ $t("map.open_issues_count")}}</th>
                                 <th>{{ $t("map.reviewed_issues_count")}}</th>
                             </tr>

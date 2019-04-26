@@ -13,7 +13,7 @@
             <tr>
                 <th>{{$t("map_file.name")}}</th>
                 <th>{{$t("map_file.created_at")}}</th>
-                <th>{{$t("map.name")}}</th>
+                <th>{{$t("map._name")}}</th>
                 <th class="minimal-width">{{$t('issue_count')}}</th>
             </tr>
             </thead>

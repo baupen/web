@@ -16,7 +16,7 @@
         />
 
         <div class="vertical-spacer-big"></div>
-        <h2>{{$t("map.plural")}}</h2>
+        <h2>{{$t("map._plural")}}</h2>
         <p class="text-secondary">{{$t("edit_maps.help")}}</p>
         <atom-spinner v-if="isMapsLoading"
                       :animation-duration="1000"
@@ -36,7 +36,7 @@
                 @map-file-save="mapFileSave(arguments[0])"
         />
         <div class="vertical-spacer-big"></div>
-        <h2>{{$t("craftsman.plural")}}</h2>
+        <h2>{{$t("craftsman._plural")}}</h2>
         <p class="text-secondary">{{$t("edit_craftsmen.help")}}</p>
         <atom-spinner v-if="isCraftsmenLoading"
                       :animation-duration="1000"
