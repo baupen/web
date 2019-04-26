@@ -1,6 +1,6 @@
 const fs = require('fs');
+const dashboardDe = require('./dashboard.de');
 
-import dashboardDe from './dashboard.de';
 
 parseJsObjectToJson(dashboardDe);
 
