@@ -1,46 +1,48 @@
 const fs = require('fs');
 
-
-fs.readdir(".", {}, function (err, files) {
+fs.readdir(".", {}, function (err, filenames) {
   if (err) {
     throw new Error("failed to read directory");
   }
-  console.log("found " + files.length + " files");
+  console.log("found " + filenames.length + " files");
 
-  files.filter(f => f !== "migrate.js").forEach(file => {
-    parseModuleExportToJsObject(file);
+  filenames.filter(f => f !== "migrate.js").forEach(filename => {
+    parseModuleExportToJsObject(filename);
   })
 });
 
-function parseModuleExportToJsObject(file) {
-  fs.readFile(file, "utf8", function (err, content) {
+function parseModuleExportToJsObject(filename) {
+  fs.readFile(filename, "utf8", function (err, content) {
     if (err) {
-      throw new Error("failed to load file");
+      throw new Error("failed to load file " + filename);
     }
-    console.log("read " + file);
+    console.log("read " + filename);
 
     let newContent = content.substring(content.indexOf("{"));
 
-    fs.writeFile(file, newContent, 'utf8', function (err) {
+    const newFilename = filename.replace(".js", ".raw.js");
+    fs.writeFile(newFilename, newContent, 'utf8', function (err) {
       if (err) {
         throw new Error("writing to file failed");
       }
 
-      console.log("converted " + file + " to js object");
-      parseJsObjectToJson(file);
+      console.log("converted " + filename + " to js object");
+      parseJsObjectToJson(newFilename);
     })
   });
 }
 
 
-function parseJsObjectToJson(file) {
-  const obj = require("./" + file);
-  console.log("read " + file + " as js object");
-  fs.writeFile("dashboard.de.json", JSON.stringify(obj, null, 2), (err) => {
+function parseJsObjectToJson(filename) {
+  const obj = require("./" + filename);
+  console.log("read " + filename + " as js object");
+
+  const newFilename = filename.replace(".raw.js", ".json");
+  fs.writeFile(newFilename, JSON.stringify(obj, null, 2), (err) => {
     if (err) {
       throw new Error("writing json to file failed");
     }
 
-    console.log("converted " + file + " to json");
+    console.log("converted " + filename + " to json");
   });
 }
