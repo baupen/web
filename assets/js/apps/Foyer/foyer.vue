@@ -3,10 +3,10 @@
         <div v-if="issues.length > 0" class="selectable-table">
             <div v-if="lightbox.enabled" class="lightbox" @click="closeLightbox()">
                 <div class="lightbox-content">
-                    <img :src="lightbox.issue.imageFull"/>
-                    <div class="file-upload-field">
-                        <input class="form-control" @click.stop="" type="file" @change="processFile($event)"/>
-                    </div>
+                    <img class="img-fluid preview-image" :src="lightbox.issue.imageFull"/>
+                </div>
+                <div class="file-upload-field">
+                    <input @click.stop="" type="file" @change="processFile($event)"/>
                 </div>
                 <font-awesome-icon class="lightbox-close" :icon="['fal', 'times']"/>
             </div>
