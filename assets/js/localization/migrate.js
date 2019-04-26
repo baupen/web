@@ -1,5 +1,4 @@
 const fs = require('fs');
-const dashboardDe = require('./dashboard.de');
 
 fs.readdir(".", {}, function (err, filenames) {
   if (err) {
@@ -8,42 +7,52 @@ fs.readdir(".", {}, function (err, filenames) {
   console.log("found " + filenames.length + " files");
 
   filenames.filter(f => f !== "migrate.js" && f.endsWith(".js")).forEach(filename => {
-    parseModuleExportToJsObject(filename);
+    parseModuleExportToJsonObject(filename);
   })
 });
 
-function parseModuleExportToJsObject(filename) {
+function parseModuleExportToJsonObject(filename) {
   fs.readFile(filename, "utf8", function (err, content) {
     if (err) {
       throw new Error("failed to load file " + filename);
     }
     console.log("read " + filename);
 
-    let newContent = content.substring(content.indexOf("{"));
+    let newContent = removeModuleExport(content);
+    newContent = correctJsonKeys(newContent);
 
-    const newFilename = filename.replace(".js", ".raw.js");
+    const newFilename = filename.replace(".js", ".json");
     fs.writeFile(newFilename, newContent, 'utf8', function (err) {
       if (err) {
         throw new Error("writing to file failed");
       }
 
-      console.log("converted " + filename + " to js object");
-      parseJsObjectToJson(newFilename);
+      console.log("converted " + filename + " to json object");
     })
   });
 }
 
+function removeModuleExport(content) {
+  return content.substring(content.indexOf("{"));
+}
 
-function parseJsObjectToJson(filename) {
-  const obj = require("./" + filename);
-  console.log("read " + filename + " as js object");
+function correctJsonKeys(content) {
+  let result = [];
+  for (const line in content.split("\n")) {
+    const parts = line.split(":");
 
-  const newFilename = filename.replace(".raw.js", ".json");
-  fs.writeFile(newFilename, JSON.stringify(obj, null, 2), (err) => {
-    if (err) {
-      throw new Error("writing json to file failed");
+    if (parts.length === 1) {
+      result.push(parts[0]);
+    } else {
+      const key = '"' + parts[0].trim() + '"';
+
+      let noQuotes = parts.splice(0, 1).join(":").trim();
+      noQuotes = noQuotes.substring(1, noQuotes.length - 2);
+      const value = '"' + noQuotes + '"';
+
+      result.push(key + ":" + value);
     }
+  }
 
-    console.log("converted " + filename + " to json");
-  });
+  return result.join("\n");
 }
