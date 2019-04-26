@@ -1,83 +1,83 @@
 {
   "actions": {
-    "save": "speichern",
-    "save_all": "alle speichern",
+    "abort": "abbrechen",
+    "print": "drucken",
     "remove": "entfernen",
     "remove_all": "alle entfernen",
     "remove_selected": "ausgewählte entfernen",
-    "abort": "abbrechen",
-    "print": "drucken"
+    "save": "speichern",
+    "save_all": "alle speichern"
   },
   "construction_site": {
     "_name": "Baustelle",
-    "name": "Name",
     "address": "Adresse",
-    "street_address": "Strasse / Nr.",
+    "created_at": "erstellt am",
     "locality": "Ort",
+    "name": "Name",
     "postal_code": "PLZ",
-    "created_at": "erstellt am"
+    "street_address": "Strasse \/ Nr."
   },
   "craftsman": {
     "_plural": "Handwerker",
-    "name": "Name",
-    "trade": "Funktion",
+    "company": "Firma",
     "contact_name": "Kontaktperson",
     "email": "E-Mail",
-    "company": "Firma",
-    "not_responded_issues_count": "Unbeantwortete Pendenzen",
-    "not_read_issues_count": "Ungelesene Pendenzen",
-    "open_issues_count": "Offene Pendenzen",
-    "next_response_limit": "Nächste Frist",
     "last_email_sent": "Letzte versandte E-Mail",
-    "last_online_visit": "Letzter Webseitenbesuch"
+    "last_online_visit": "Letzter Webseitenbesuch",
+    "name": "Name",
+    "next_response_limit": "Nächste Frist",
+    "not_read_issues_count": "Ungelesene Pendenzen",
+    "not_responded_issues_count": "Unbeantwortete Pendenzen",
+    "open_issues_count": "Offene Pendenzen",
+    "trade": "Funktion"
   },
   "issue": {
-    "description": "Beschreibung",
     "craftsman": "Firma",
-    "response_limit": "Frist",
-    "map": "Karte",
-    "status": "Status",
-    "number": "Nummer",
-    "trade": "Funktion",
-    "no_response_limit": "nicht gesetzt",
-    "no_craftsman": "nicht gesetzt",
     "craftsman_not_found": "Firma nicht gefunden",
+    "description": "Beschreibung",
+    "map": "Karte",
+    "no_craftsman": "nicht gesetzt",
+    "no_response_limit": "nicht gesetzt",
+    "number": "Nummer",
+    "response_limit": "Frist",
+    "status": "Status",
     "status_values": {
       "read": "gelesen",
       "registered": "registriert",
       "responded": "beantwortet",
       "reviewed": "geschlossen"
-    }
+    },
+    "trade": "Funktion"
+  },
+  "map_file": {
+    "_name": "Bauplanversion",
+    "_plural": "Bauplanversionen",
+    "created_at": "hinzugefügt am",
+    "name": "Name"
   },
   "map": {
     "_name": "Bauplan",
     "_plural": "Baupläne",
     "name": "Name",
-    "open_issues_count": "Offene Pendenzen",
-    "reviewed_issues_count": "Erledigte Pendenzen",
     "next_response_limit": "Nächste Frist",
-    "parent": "Zuordnung"
-  },
-  "map_file": {
-    "_name": "Bauplanversion",
-    "_plural": "Bauplanversionen",
-    "name": "Name",
-    "created_at": "hinzugefügt am"
+    "open_issues_count": "Offene Pendenzen",
+    "parent": "Zuordnung",
+    "reviewed_issues_count": "Erledigte Pendenzen"
   },
   "messages": {
+    "danger": {
+      "unrecoverable": "Es ist ein Fehler aufgetreten. Laden Sie die Seite neu, und versuchen Sie es erneut."
+    },
     "success": {
       "removed_entries": "Erfolgreich entfernt.",
       "saved_changes": "Änderungen gespeichert."
-    },
-    "danger": {
-      "unrecoverable": "Es ist ein Fehler aufgetreten. Laden Sie die Seite neu, und versuchen Sie es erneut."
     }
   },
   "validation": {
     "required": "Dieses Feld kann nicht leer gelassen werden."
   },
   "view": {
-    "more": "mehr",
-    "less": "weniger"
+    "less": "weniger",
+    "more": "mehr"
   }
 }

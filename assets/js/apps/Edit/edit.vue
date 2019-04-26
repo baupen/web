@@ -163,10 +163,10 @@
                 const craftsmanContainer = {
                     craftsman: {
                         id: uuid(),
-                        contactName: this.$t("edit_craftsmen.defaults.contact_name"),
-                        email: this.$t("edit_craftsmen.defaults.email"),
-                        company: this.$t("edit_craftsmen.defaults.company"),
-                        trade: this.$t("edit_craftsmen.defaults.trade"),
+                        contactName: null,
+                        email: null,
+                        company: null,
+                        trade: null,
                         issueCount: 0
                     }
                 };

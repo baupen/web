@@ -1,58 +1,58 @@
 {
   "actions": {
-    "save": "salva",
-    "save_all": "salva tutto",
+    "abort": "annulla",
+    "print": "stampa",
     "remove": "rimuovi",
     "remove_all": "rimuovi tutto",
-    "abort": "annulla",
-    "print": "stampa"
+    "save": "salva",
+    "save_all": "salva tutto"
   },
   "craftsman": {
-    "name": "Nome",
-    "trade": "Settore",
-    "not_responded_issues_count": "Pendenze non risposte",
-    "not_read_issues_count": "Pendenze non lette",
-    "open_issues_count": "Pendenze aperte",
-    "next_response_limit": "Prossimo termine",
     "last_email_sent": "Ultima email inviata",
-    "last_online_visit": "Ultima visita alla pagina"
+    "last_online_visit": "Ultima visita alla pagina",
+    "name": "Nome",
+    "next_response_limit": "Prossimo termine",
+    "not_read_issues_count": "Pendenze non lette",
+    "not_responded_issues_count": "Pendenze non risposte",
+    "open_issues_count": "Pendenze aperte",
+    "trade": "Settore"
   },
   "issue": {
-    "description": "Descrizione",
     "craftsman": "Impresa",
-    "response_limit": "Scadenza",
-    "map": "Mappa",
-    "status": "Stato",
-    "number": "Numero",
-    "trade": "Settore",
-    "no_response_limit": "non specificato",
-    "no_craftsman": "non specificato",
     "craftsman_not_found": "Impresa non trovata",
+    "description": "Descrizione",
+    "map": "Mappa",
+    "no_craftsman": "non specificato",
+    "no_response_limit": "non specificato",
+    "number": "Numero",
+    "response_limit": "Scadenza",
+    "status": "Stato",
     "status_values": {
       "read": "letto",
       "registered": "registrato",
       "responded": "risposto",
       "reviewed": "chiuso"
-    }
+    },
+    "trade": "Settore"
   },
   "map": {
     "_name": "Piano di costruzione",
     "name": "Nome",
+    "next_response_limit": "Prossimo limite",
     "open_issues_count": "Pendenze aperte",
-    "reviewed_issues_count": "Pendenze risolte",
-    "next_response_limit": "Prossimo limite"
+    "reviewed_issues_count": "Pendenze risolte"
   },
   "messages": {
+    "danger": {
+      "unrecoverable": "Si è verificato un errore. Ricaricare la pagina e tentare nuovamente."
+    },
     "success": {
       "removed_entries": "Rimosso con successo.",
       "saved_changes": "Modifiche salvate."
-    },
-    "danger": {
-      "unrecoverable": "Si è verificato un errore. Ricaricare la pagina e tentare nuovamente."
     }
   },
   "view": {
-    "more": "di più",
-    "less": "meno"
+    "less": "meno",
+    "more": "di più"
   }
 }
