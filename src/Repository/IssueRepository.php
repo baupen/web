@@ -120,6 +120,11 @@ class IssueRepository extends EntityRepository
                 ->setParameter(':craftsmen', $filter->getCraftsmen())
             ;
         }
+        if ($filter->getTrades() !== null) {
+            $queryBuilder->andWhere('c.trade IN (:trades)')
+                ->setParameter(':trades', $filter->getTrades())
+            ;
+        }
 
         if ($filter->getMaps() !== null) {
             $queryBuilder->andWhere('m.id IN (:maps)')

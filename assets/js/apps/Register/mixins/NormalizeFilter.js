@@ -16,7 +16,8 @@ export default {
 
       const tradeFilter = filter.trade;
       normalized.trade = Object.assign({}, tradeFilter, {
-        enabled: tradeFilter.enabled && tradeFilter.trades.length > 0
+        enabled: tradeFilter.enabled && tradeFilter.trades.length > 0,
+        trades: tradeFilter.trades.map(t => t)
       });
 
       const mapFilter = filter.map;
@@ -34,6 +35,9 @@ export default {
       timeFilter = normalized.time;
       normalized.time.enabled = timeFilter.enabled && (timeFilter.registered.enabled || timeFilter.responded.enabled || timeFilter.reviewed.enabled);
 
+      console.log(filter);
+      console.log(this.removeFalsyAndDisabled(filter));
+
       return normalized;
     },
     normalizeTimeFilter: function (timeFilter) {
@@ -45,7 +49,7 @@ export default {
       filter = this.normalizeFilter(filter);
 
       return Object.assign({
-        constructionSiteId: constructionSiteId
+        constructionSiteId: constructionSiteId,
       }, this.removeFalsyAndDisabled(filter));
     },
     removeFalsyAndDisabled: function (originalObject) {
@@ -56,13 +60,13 @@ export default {
           disabled = true;
         }
 
-        if (object[key] && typeof object[key] === 'object') {
+        if (!object[key] || this.isFalsy(object[key])) {
+          delete object[key];
+        } else if (!Array.isArray(object[key]) && typeof object[key] === 'object') {
           object[key] = this.removeFalsyAndDisabled(object[key]);
           if (Object.keys(object[key]).length === 0) {
             delete object[key];
           }
-        } else if (this.isFalsy(object[key])) {
-          delete object[key];
         }
       });
 
