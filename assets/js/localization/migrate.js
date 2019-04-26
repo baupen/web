@@ -6,7 +6,7 @@ fs.readdir(".", {}, function (err, filenames) {
   }
   console.log("found " + filenames.length + " files");
 
-  filenames.filter(f => f !== "migrate.js" && filename.endsWith(".js")).forEach(filename => {
+  filenames.filter(f => f !== "migrate.js" && f.endsWith(".js")).forEach(filename => {
     parseModuleExportToJsObject(filename);
   })
 });
