@@ -10,8 +10,6 @@ import { Plugin } from 'vue-fragment';
 import Edit from './edit';
 
 // messages
-import Messages from '../../localization/edit';
-import mergeMessages from '../../localization/shared/_all';
 import Vuelidate from 'vuelidate';
 
 Vue.config.productionTip = false;
@@ -29,7 +27,7 @@ if (document.getElementById('edit') != null) {
   // initialize messages
   const i18n = new VueI18n({
     locale: document.documentElement.lang.substr(0, 2),
-    messages: mergeMessages(Messages)
+    messages: {}
   });
 
   // boot app

@@ -3,18 +3,25 @@ import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
 // components
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import Vuelidate from 'vuelidate';
 
 // import ES6 style
-import { VueMasonryPlugin } from 'vue-masonry';
+import {VueMasonryPlugin} from 'vue-masonry';
 
 // app
 import Switch from './switch';
 
 // messages
-import Messages from '../../localization/switch';
-import mergeMessages from '../../localization/shared/_all';
+var sharedDe = require('../../localization/shared.de');
+var sharedIt = require('../../localization/shared.it');
+var switchDe = require('../../localization/switch.de');
+var switchIt = require('../../localization/switch.it');
+
+var translation = {
+  de: Object.assign({}, sharedDe, switchDe),
+  it: Object.assign({}, sharedIt, switchIt)
+};
 
 Vue.config.productionTip = false;
 
@@ -31,7 +38,7 @@ if (document.getElementById('switch') != null) {
   // initialize messages
   const i18n = new VueI18n({
     locale: document.documentElement.lang.substr(0, 2),
-    messages: mergeMessages(Messages)
+    messages: translation
   });
 
   // boot app
@@ -40,6 +47,6 @@ if (document.getElementById('switch') != null) {
     i18n,
     el: '#switch',
     template: '<SwitchApp/>',
-    components: { SwitchApp: Switch }
+    components: {SwitchApp: Switch}
   });
 }

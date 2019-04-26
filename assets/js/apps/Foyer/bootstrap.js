@@ -9,8 +9,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import Foyer from './foyer';
 
 // messages
-import Messages from '../../localization/foyer';
-import mergeMessages from '../../localization/shared/_all';
 Vue.config.productionTip = false;
 
 // initialize app if html element is found
@@ -24,7 +22,7 @@ if (document.getElementById('foyer') != null) {
   // initialize messages
   const i18n = new VueI18n({
     locale: document.documentElement.lang.substr(0, 2),
-    messages: mergeMessages(Messages)
+    messages: {}
   });
 
   // boot app

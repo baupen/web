@@ -10,9 +10,6 @@ import VueHeadful from 'vue-headful';
 import Craftsman from './craftsman';
 
 // messages
-import Messages from '../../../localization/share/craftsman';
-import mergeMessages from '../../../localization/shared/_all';
-
 Vue.config.productionTip = false;
 
 // initialize app if html element is found
@@ -27,7 +24,7 @@ if (document.getElementById('share-craftsman') != null) {
   // initialize messages
   const i18n = new VueI18n({
     locale: document.documentElement.lang.substr(0, 2),
-    messages: mergeMessages(Messages)
+    messages: {}
   });
 
   // boot app

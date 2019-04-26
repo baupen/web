@@ -9,9 +9,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import Dashboard from './dashboard';
 
 // messages
-import Messages from '../../localization/dashboard';
-import mergeMessages from '../../localization/shared/_all';
-
 Vue.config.productionTip = false;
 
 // initialize app if html element is found
@@ -25,7 +22,7 @@ if (document.getElementById('dashboard') != null) {
   // initialize messages
   const i18n = new VueI18n({
     locale: document.documentElement.lang.substr(0, 2),
-    messages: mergeMessages(Messages)
+    messages: {}
   });
 
   // boot app

@@ -9,9 +9,6 @@ import vueHeadful from 'vue-headful';
 import Dispatch from './dispatch';
 
 // messages
-import Messages from '../../localization/dispatch';
-import mergeMessages from '../../localization/shared/_all';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 Vue.config.productionTip = false;
 
 // initialize app if html element is found
@@ -26,7 +23,7 @@ if (document.getElementById('dispatch') != null) {
   // initialize messages
   const i18n = new VueI18n({
     locale: document.documentElement.lang.substr(0, 2),
-    messages: mergeMessages(Messages)
+    messages: {}
   });
 
   // boot app
