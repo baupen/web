@@ -68,6 +68,8 @@
   "scripts": {
     "lint": "eslint assets/js",
     "flow": "flow check",
-    "postinstall": "node ./node_modules/husky/lib/installer/bin install"
+    "postinstall": "node ./node_modules/husky/lib/installer/bin install",
+    "translations": "lokalise --token=$LOKALISE_TOKEN export 564588455cc2e87e98fb44.15262570 --type json --unzip_to assets/js/localization --use_original 1 --no_language_folders 1 --indentation 2sp --export_empty skip --plural_format symfony --placeholder_format icu"
+
   }
 }
