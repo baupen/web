@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <lightbox :open="lightbox.enabled" :imageSrc="lightbox.imageFull" @close="lightbox.enabled = false"/>
         <vue-headful :title="$t('issues_overview')" :description="description"/>
 
@@ -29,27 +28,34 @@
                         :color="'#ff1d5e'"
                 />
                 <div v-else>
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>{{ $t("map.name")}}</th>
-                            <th>{{ $t("map.open_issues_count")}}</th>
-                            <th>{{ $t("map.reviewed_issues_count")}}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <map-row v-for="map in maps" v-bind:key="map.id" :map="map" class="clickable"
-                                 @clicked-row="scrollTo('map-' + map.id)"/>
-                        </tbody>
-                    </table>
-                    <div class="map-content">
-                        <div class="container">
-                            <MapDetails v-for="map in maps" v-bind:key="map.id" :ref="'map-' + map.id"
-                                        :map="map"
-                                        @open-lightbox="openLightbox(arguments[0])"
-                            />
+                    <template v-if="maps.length === 0">
+                        <span class="alert alert-info">
+                            {{$t("no_issues")}}
+                        </span>
+                    </template>
+                    <template v-else>
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>{{ $t("map.name")}}</th>
+                                <th>{{ $t("map.open_issues_count")}}</th>
+                                <th>{{ $t("map.reviewed_issues_count")}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <map-row v-for="map in maps" v-bind:key="map.id" :map="map" class="clickable"
+                                     @clicked-row="scrollTo('map-' + map.id)"/>
+                            </tbody>
+                        </table>
+                        <div class="map-content">
+                            <div class="container">
+                                <MapDetails v-for="map in maps" v-bind:key="map.id" :ref="'map-' + map.id"
+                                            :map="map"
+                                            @open-lightbox="openLightbox(arguments[0])"
+                                />
+                            </div>
                         </div>
-                    </div>
+                    </template>
                 </div>
             </div>
         </section>

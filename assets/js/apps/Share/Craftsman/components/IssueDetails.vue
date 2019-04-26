@@ -13,7 +13,7 @@
                     {{ formatDateTime(issue.responseLimit) }}
                 </small>
             </p>
-            <template>
+            <template v-if="canModify">
                 <button v-if="!issueHasResponse" @click.prevent="$emit('send-response', issue)"
                         class="btn btn-outline-success">
                     {{$t("actions.send_response")}}
@@ -40,6 +40,10 @@
         props: {
             issue: {
                 type: Object,
+                required: true
+            },
+            canModify: {
+                type: Boolean,
                 required: true
             },
             issueHasResponse: {

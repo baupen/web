@@ -133,29 +133,8 @@ class ReportService implements ReportServiceInterface
 
         $this->addIntroduction($report, $constructionSite, $filter, $reportElements);
 
-        //add tables
-        if ($reportElements->getTableByCraftsman()) {
-            $this->addTableByCraftsman($report, $filter, $issues);
-        }
-        if ($reportElements->getTableByMap()) {
-            $this->addTableByMap($report, $filter, $issues);
-        }
-        if ($reportElements->getTableByTrade()) {
-            $this->addTableByTrade($report, $filter, $issues);
-        }
-
-        /* @var Map[] $orderedMaps */
-        /* @var Issue[][] $issuesPerMap */
-        IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
-        foreach ($orderedMaps as $map) {
-            $issues = $issuesPerMap[$map->getId()];
-            $this->addMap($report, $map, $issues);
-            $this->addIssueTable($report, $filter, $issues);
-            if ($reportElements->getWithImages()) {
-                $this->addIssueImageGrid($report, $issues);
-            }
-            //add table with issues
-            //add columns with images
+        if (\count($issues) > 0) {
+            $this->addIssueContent($filter, $reportElements, $issues, $report);
         }
 
         $report->save($filePath);
@@ -549,5 +528,37 @@ class ReportService implements ReportServiceInterface
 
         //write to pdf
         $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_trade', [], 'report'));
+    }
+
+    /**
+     * @param Filter         $filter
+     * @param ReportElements $reportElements
+     * @param array          $issues
+     * @param Report         $report
+     */
+    private function addIssueContent(Filter $filter, ReportElements $reportElements, array $issues, Report $report): void
+    {
+        // add tables
+        if ($reportElements->getTableByCraftsman()) {
+            $this->addTableByCraftsman($report, $filter, $issues);
+        }
+        if ($reportElements->getTableByMap()) {
+            $this->addTableByMap($report, $filter, $issues);
+        }
+        if ($reportElements->getTableByTrade()) {
+            $this->addTableByTrade($report, $filter, $issues);
+        }
+
+        /* @var Map[] $orderedMaps */
+        /* @var Issue[][] $issuesPerMap */
+        IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
+        foreach ($orderedMaps as $map) {
+            $issues = $issuesPerMap[$map->getId()];
+            $this->addMap($report, $map, $issues);
+            $this->addIssueTable($report, $filter, $issues);
+            if ($reportElements->getWithImages()) {
+                $this->addIssueImageGrid($report, $issues);
+            }
+        }
     }
 }

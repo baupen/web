@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex">
-        <construction-site-edit-image class="edit-column mr-4" :construction-site="constructionSite"
+        <construction-site-edit-image class="edit-column mr-4 background-coloured" :construction-site="constructionSite"
                                       @file-dropped="$emit('upload-image', arguments[0])"/>
         <construction-site-edit-form class="edit-column" :construction-site="constructionSite"
                                        @save="$emit('save')"/>
@@ -9,8 +9,11 @@
 
 <style scoped>
     .edit-column {
-        max-width: 30em;
-        min-height: 20em;
+        width: 30em;
+    }
+
+    .background-coloured {
+        background-color: #efefef;
     }
 </style>
 

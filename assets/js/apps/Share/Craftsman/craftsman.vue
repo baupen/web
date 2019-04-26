@@ -51,7 +51,9 @@
                     <div class="map-content">
                         <div class="container">
                             <MapDetails v-for="map in maps" v-bind:key="map.id" :ref="'map-' + map.id"
-                                        :map="map" :issues-with-response="issuesWithResponse"
+                                        :map="map"
+                                        :issues-with-response="issuesWithResponse"
+                                        :can-modify="canModify"
                                         @open-lightbox="openLightbox(arguments[0])"
                                         @issue-send-response="sendResponse(arguments[0])"
                                         @issue-remove-response="removeResponse(arguments[0])"
@@ -80,6 +82,7 @@
                 isLoading: true,
                 issuesWithResponse: [],
                 identifier: null,
+                canModify: false,
                 maps: [],
                 lightbox: {
                     enabled: false,
@@ -149,8 +152,23 @@
                     return Promise.reject(error);
                 }
             );
+
             let url = window.location.href.split("/");
-            this.identifier = url[6];
+            let authentication = url[6].split("?");
+            this.identifier = authentication[0];
+
+            // this is optional
+            if (authentication.length > 1) {
+                this.canModify = true;
+                let token = "?" + authentication[1];
+                axios.interceptors.request.use(
+                    request => {
+                        request.url += token;
+                        return request;
+                    }
+                );
+            }
+
 
             axios.get("/external/api/share/c/" + this.identifier + "/read").then((response) => {
                 this.craftsman = response.data.craftsman;

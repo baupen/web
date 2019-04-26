@@ -3,10 +3,10 @@
         <div v-if="issues.length > 0" class="selectable-table">
             <div v-if="lightbox.enabled" class="lightbox" @click="closeLightbox()">
                 <div class="lightbox-content">
-                    <img :src="lightbox.issue.imageFull"/>
-                    <div class="file-upload-field">
-                        <input class="form-control" @click.stop="" type="file" @change="processFile($event)"/>
-                    </div>
+                    <img class="img-fluid preview-image" :src="lightbox.issue.imageFull"/>
+                </div>
+                <div class="file-upload-field">
+                    <input @click.stop="" type="file" @change="processFile($event)"/>
                 </div>
                 <font-awesome-icon class="lightbox-close" :icon="['fal', 'times']"/>
             </div>
@@ -19,13 +19,7 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th class="minimal-width">
-                        <input title="check" type="checkbox"
-                               v-bind:indeterminate.prop="indeterminate"
-                               v-bind:checked="selected"
-                               v-on:click.prevent="selectAll()"/>
-                    </th>
-
+                    <th v-if="someIssuesHaveNumbers" class="minimal-width"></th>
                     <th class="sortable" @click="sortBy('isMarked')" :class="{ active: 'isMarked' === sortKey }">
 
                         <font-awesome-icon v-if="sortKey === 'isMarked'"
@@ -77,16 +71,15 @@
                 <tr v-for="issue in sortedIssues" v-on:click.prevent="selectIssue(issue)"
                     class="selectable"
                     v-bind:class="{ 'table-active': !onDelete && issue.selected && !issue.error, 'table-success': issue.number > 0, 'table-danger': onDelete && issue.selected, 'table-warning':  issue.error}">
-                    <td class="minimal-width">
+                    <td v-if="someIssuesHaveNumbers" class="minimal-width">
                         <span v-if="issue.number">#{{issue.number}}</span>
-                        <input v-else title="check" type="checkbox" v-model="issue.selected"/>
                     </td>
                     <td class="minimal-width clickable" @click.prevent.stop="markIssue(issue)">
                         <font-awesome-icon v-if="issue.isMarked" :icon="['fas', 'star']"/>
                         <font-awesome-icon v-else :icon="['fal', 'star']"/>
                     </td>
                     <td class="minimal-width">
-                        <img class="lightbox-thumbnail" @click="openLightbox(issue)" :src="issue.imageThumbnail">
+                        <img class="lightbox-thumbnail" @click.prevent.stop="openLightbox(issue)" :src="issue.imageThumbnail">
                     </td>
                     <td>
                         <span v-if="editDescription === null || !issue.selected" class="editable"
@@ -99,7 +92,7 @@
                                    @click.prevent.stop="" @keyup.enter.prevent.stop="saveDescription"
                                    @keyup.escape.prevent.stop="abortDescription"/>
 
-                            <button class="btn btn-secondary" @click="saveDescription">{{$t("actions.save")}}</button>
+                            <button class="btn btn-secondary" @click.prevent.stop="saveDescription">{{$t("actions.save")}}</button>
                         </div>
                     </td>
                     <td>
@@ -135,7 +128,7 @@
                                     <span>{{selectedCraftsman.name}}</span>
                                 </div>
                             </template>
-                            <button class="btn btn-secondary" @click="saveCraftsman">{{$t("actions.save")}}</button>
+                            <button class="btn btn-secondary" @click.prevent.stop="saveCraftsman">{{$t("actions.save")}}</button>
                         </div>
                     </td>
                     <td>
@@ -147,8 +140,8 @@
                             <datepicker :lang="datePickerLang" format="dd.MM.yyyy" :ref="'response-limit-' + issue.id"
                                         v-model="editResponseLimit">
                             </datepicker>
-                            <button class="btn btn-secondary" @click="saveResponseLimit">{{$t("actions.save")}}</button>
-                            <button class="btn btn-secondary" @click="removeResponseLimit">{{$t("actions.remove")}}
+                            <button class="btn btn-secondary" @click.prevent.stop="saveResponseLimit">{{$t("actions.save")}}</button>
+                            <button class="btn btn-secondary" @click.prevent.stop="removeResponseLimit">{{$t("actions.remove")}}
                             </button>
                         </div>
                     </td>
@@ -165,13 +158,18 @@
             </table>
             <div v-if="!onDelete">
                 <button class="btn btn-primary"
-                        v-bind:disabled="isLoading || issues.filter(i => i.selected).length === 0"
-                        v-on:click.prevent="confirm()">
-                    {{$t("actions.confirm_issues")}}
+                        v-if="!isLoading && issues.filter(i => i.selected).length === 0"
+                        @click.prevent="confirm()">
+                    {{$t("actions.confirm_all_issues")}}
+                </button>
+                <button class="btn btn-primary"
+                        v-if="!isLoading && issues.filter(i => i.selected).length > 0"
+                        @click.prevent="confirm()">
+                    {{$tc("actions.confirm_specific_issues", issues.filter(i => i.selected).length) }}
                 </button>
                 <button class="btn btn-outline-danger"
-                        v-bind:disabled="isLoading || issues.filter(i => i.selected).length === 0"
-                        v-on:click.prevent="remove()">
+                        v-if="!isLoading && issues.filter(i => i.selected).length > 0"
+                        @click.prevent="remove()">
                     {{$t("actions.remove_selected")}}
                 </button>
             </div>
@@ -361,6 +359,10 @@
                 this.save();
             },
             confirm: function () {
+                if (this.issues.filter(i => i.selected).length === 0) {
+                    this.selectAll();
+                }
+
                 this.isLoading = true;
                 let errorIssues = this.issues.filter(c => c.selected && (c.craftsmanId === null));
                 if (errorIssues.length > 0) {
@@ -468,7 +470,7 @@
                 return moment(value).locale(document.documentElement.lang.substr(0, 2)).fromNow();
             },
             selectAll: function () {
-                let newVal = !(this.indeterminate || this.selected);
+                let newVal = !this.allSelected;
                 this.issues.forEach(c => c.selected = newVal);
             },
             sortBy: function (key) {
@@ -501,10 +503,13 @@
             }
         },
         computed: {
-            indeterminate: function () {
-                return !this.selected && this.issues.filter(c => c.selected).length > 0;
+            someIssuesHaveNumbers: function () {
+                return this.issues.filter(i => i.number).length > 0;
             },
-            selected: function () {
+            someSelected: function () {
+                return this.issues.filter(c => c.selected).length > 0;
+            },
+            allSelected: function () {
                 return this.issues.filter(c => !c.selected).length === 0;
             },
             craftsmenByTrade: function () {

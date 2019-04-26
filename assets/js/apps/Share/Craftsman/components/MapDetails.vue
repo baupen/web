@@ -8,7 +8,9 @@
                      @click.prevent="$emit('open-lightbox', imageFull)">
             </div>
             <issue-details v-for="issue in map.issues" v-bind:key="issue.id"
-                           :issue="issue" :issue-has-response="issuesWithResponse.indexOf(issue) >= 0"
+                           :issue="issue"
+                           :issue-has-response="issuesWithResponse.indexOf(issue) >= 0"
+                           :can-modify="canModify"
                            @open-lightbox="$emit('open-lightbox', arguments[0])"
                            @send-response="$emit('issue-send-response', arguments[0])"
                            @remove-response="$emit('issue-remove-response', arguments[0])"
@@ -24,6 +26,10 @@
         props: {
             map: {
                 type: Object,
+                required: true
+            },
+            canModify: {
+                type: Boolean,
                 required: true
             },
             issuesWithResponse: {
