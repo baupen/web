@@ -35,9 +35,6 @@ export default {
       timeFilter = normalized.time;
       normalized.time.enabled = timeFilter.enabled && (timeFilter.registered.enabled || timeFilter.responded.enabled || timeFilter.reviewed.enabled);
 
-      console.log(filter);
-      console.log(this.removeFalsyAndDisabled(filter));
-
       return normalized;
     },
     normalizeTimeFilter: function (timeFilter) {
@@ -49,7 +46,7 @@ export default {
       filter = this.normalizeFilter(filter);
 
       return Object.assign({
-        constructionSiteId: constructionSiteId,
+        constructionSiteId: constructionSiteId
       }, this.removeFalsyAndDisabled(filter));
     },
     removeFalsyAndDisabled: function (originalObject) {
