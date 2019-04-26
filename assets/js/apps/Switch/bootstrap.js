@@ -13,14 +13,16 @@ import {VueMasonryPlugin} from 'vue-masonry';
 import Switch from './switch';
 
 // messages
-var sharedDe = require('../../localization/shared.de');
-var sharedIt = require('../../localization/shared.it');
-var switchDe = require('../../localization/switch.de');
-var switchIt = require('../../localization/switch.it');
+import merge from 'deepmerge';
 
-var translation = {
-  de: Object.assign({}, sharedDe, switchDe),
-  it: Object.assign({}, sharedIt, switchIt)
+const sharedDe = require('../../localization/shared.de');
+const sharedIt = require('../../localization/shared.it');
+const customDe = require('../../localization/switch.de');
+const customIt = require('../../localization/switch.it');
+
+const translations = {
+  de: merge(sharedDe, customDe),
+  it: merge(sharedIt, customIt)
 };
 
 Vue.config.productionTip = false;
@@ -38,7 +40,7 @@ if (document.getElementById('switch') != null) {
   // initialize messages
   const i18n = new VueI18n({
     locale: document.documentElement.lang.substr(0, 2),
-    messages: translation
+    messages: translations
   });
 
   // boot app

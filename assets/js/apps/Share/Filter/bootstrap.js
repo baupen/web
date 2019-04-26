@@ -3,13 +3,25 @@ import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
 // components
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import VueHeadful from 'vue-headful';
 
 // app
 import Filter from './filter';
 
 // messages
+import merge from 'deepmerge';
+
+const sharedDe = require('../../../localization/shared.de');
+const sharedIt = require('../../../localization/shared.it');
+const customDe = require('../../../localization/share/filter.de');
+const customIt = require('../../../localization/share/filter.it');
+
+const translations = {
+  de: merge(sharedDe, customDe),
+  it: merge(sharedIt, customIt)
+};
+
 Vue.config.productionTip = false;
 
 // initialize app if html element is found
@@ -24,7 +36,7 @@ if (document.getElementById('share-public') != null) {
   // initialize messages
   const i18n = new VueI18n({
     locale: document.documentElement.lang.substr(0, 2),
-    messages: {}
+    messages: translations
   });
 
   // boot app
@@ -33,6 +45,6 @@ if (document.getElementById('share-public') != null) {
     i18n,
     el: '#share-public',
     template: '<MyFilter/>',
-    components: { MyFilter: Filter }
+    components: {MyFilter: Filter}
   });
 }

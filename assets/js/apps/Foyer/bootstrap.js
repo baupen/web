@@ -3,12 +3,23 @@ import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
 // components
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 // app
 import Foyer from './foyer';
+import merge from "deepmerge";
 
 // messages
+const sharedDe = require('../../localization/shared.de');
+const sharedIt = require('../../localization/shared.it');
+const customDe = require('../../localization/foyer.de');
+const customIt = require('../../localization/foyer.it');
+
+const translations = {
+  de: merge(sharedDe, customDe),
+  it: merge(sharedIt, customIt)
+};
+
 Vue.config.productionTip = false;
 
 // initialize app if html element is found
@@ -22,7 +33,7 @@ if (document.getElementById('foyer') != null) {
   // initialize messages
   const i18n = new VueI18n({
     locale: document.documentElement.lang.substr(0, 2),
-    messages: {}
+    messages: translations
   });
 
   // boot app
@@ -31,6 +42,6 @@ if (document.getElementById('foyer') != null) {
     i18n,
     el: '#foyer',
     template: '<Foyer/>',
-    components: { Foyer }
+    components: {Foyer}
   });
 }
