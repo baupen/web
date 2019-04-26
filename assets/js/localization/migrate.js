@@ -19,10 +19,9 @@ function parseModuleExportToJsObject(file) {
     }
     console.log("read " + file);
 
-    console.log(content);
     let newContent = content.substring(content.indexOf("{"));
 
-    fs.writeFile(file, newContent, function (err) {
+    fs.writeFile(file, newContent, 'utf8', function (err) {
       if (err) {
         throw new Error("writing to file failed");
       }
