@@ -107,7 +107,7 @@ AddDefaultCharset utf-8
 
 # Force client-side SSL redirection.
 <IfModule mod_headers.c>
-    Header always set Strict-Transport-Security "max-age=16070400; includeSubDomains"
+    Header always set Strict-Transport-Security "max-age=16070400; includeSubDomains; preload"
 </IfModule>
 
 
