@@ -1,0 +1,22 @@
+{
+  "actions": {
+    "create_construction_site": "Neue Baustelle erfassen",
+    "switch": "Zur Baustelle"
+  },
+  "all": {
+    "title": "Alle erfassten Baustellen"
+  },
+  "construction_site": {
+    "activated": "aktiviert"
+  },
+  "messages": {
+    "activate_construction_site": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen."
+  },
+  "mine": {
+    "description": "Diese Baustellen werden auch in der App angezeigt",
+    "title": "Meine Baustellen"
+  },
+  "validation": {
+    "name_already_taken": "Dieser Name ist bereits vergeben."
+  }
+}

@@ -93,7 +93,8 @@
       "vendor/bin/requirements-checker",
       "php bin/console security:check",
       "php bin/console doctrine:migrations:migrate -q",
-      "php bin/console doctrine:fixtures:load -q","lokalise --token=$LOKALISE_TOKEN export 893141675cbb100cd751c1.44777843 --type yml --unzip_to translations --use_original 1 --no_language_folders 1 --indentation 2sp --export_empty skip"
+      "php bin/console doctrine:fixtures:load -q",
+      "lokalise --token=$LOKALISE_TOKEN export 893141675cbb100cd751c1.44777843 --type yml --unzip_to translations --use_original 1 --no_language_folders 1 --indentation 2sp --export_empty skip --plural_format symfony --placeholder_format symfony"
     ],
     "pre-install-cmd": "@configure-environment",
     "post-install-cmd": "@prepare-environment",

@@ -1,0 +1,32 @@
+{
+  "dialog": {
+    "add_to_register": "Jetzt zum Verzeichnis hinzufügen",
+    "new_issues_in_foyer": "Eine neue Pendenz | {count} neue Pendenzen"
+  },
+  "feed": {
+    "entries": {
+      "overdue_limit": "{craftsman} hat die Frist vom {limit} bei {count} Pendenzen überschritten.",
+      "response_received": "{craftsman} hat eine Pendenz beantwortet. | {craftsman} hat {count} Pendenzen beantwortet.",
+      "visited_webpage": "{craftsman} hat die Pendenzen angeschaut."
+    },
+    "name": "Feed",
+    "no_entries_yet": "Keine Aktivitäten auf der Baustelle zur Zeit. Fügen Sie Pendenzen hinzu, damit hier etwas angezeigt wird.",
+    "show_more": "Mehr anzeigen"
+  },
+  "notes": {
+    "actions": {
+      "add_new": "Neu erfassen"
+    },
+    "name": "Notizen",
+    "no_entries_yet": "Noch keine Notizen. Notieren Sie sich hier, was Sie ungern vergessen möchten."
+  },
+  "register": {
+    "name": "Pendenzen",
+    "status_actions": {
+      "marked": "Markiert",
+      "open": "Offen",
+      "overdue": "Frist überschritten",
+      "to_inspect": "Zur Inspektion"
+    }
+  }
+}

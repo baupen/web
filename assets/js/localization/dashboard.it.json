@@ -1,0 +1,30 @@
+{
+  "dialog": {
+    "add_to_register": "Aggiungere al registro",
+    "new_issues_in_foyer": "Una nuova pendenza | {count} nuove pendenze"
+  },
+  "feed": {
+    "entries": {
+      "overdue_limit": "{craftsman} ha superato il termine di {count} pendenze di {limit}.",
+      "response_received": "{craftsman} ha risposto ad una pendenza. | {craftsman} ha risposto a {count} pendenze.",
+      "visited_webpage": "{craftsman} ha visualizzato le pendenze."
+    },
+    "name": "Feed",
+    "show_more": "Mostrare di più"
+  },
+  "notes": {
+    "actions": {
+      "add_new": "Aggiungi"
+    },
+    "name": "Note"
+  },
+  "register": {
+    "name": "Pendenze",
+    "status_actions": {
+      "marked": "Contrassegnate",
+      "open": "Aperte",
+      "overdue": "Termine superato",
+      "to_inspect": "Da ispezionare"
+    }
+  }
+}

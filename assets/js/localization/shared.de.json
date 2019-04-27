@@ -1,0 +1,83 @@
+{
+  "actions": {
+    "abort": "abbrechen",
+    "print": "drucken",
+    "remove": "entfernen",
+    "remove_all": "alle entfernen",
+    "remove_selected": "ausgewählte entfernen",
+    "save": "speichern",
+    "save_all": "alle speichern"
+  },
+  "construction_site": {
+    "_name": "Baustelle",
+    "address": "Adresse",
+    "created_at": "erstellt am",
+    "locality": "Ort",
+    "name": "Name",
+    "postal_code": "PLZ",
+    "street_address": "Strasse \/ Nr."
+  },
+  "craftsman": {
+    "_plural": "Handwerker",
+    "company": "Firma",
+    "contact_name": "Kontaktperson",
+    "email": "E-Mail",
+    "last_email_sent": "Letzte versandte E-Mail",
+    "last_online_visit": "Letzter Webseitenbesuch",
+    "name": "Name",
+    "next_response_limit": "Nächste Frist",
+    "not_read_issues_count": "Ungelesene Pendenzen",
+    "not_responded_issues_count": "Unbeantwortete Pendenzen",
+    "open_issues_count": "Offene Pendenzen",
+    "trade": "Funktion"
+  },
+  "issue": {
+    "craftsman": "Firma",
+    "craftsman_not_found": "Firma nicht gefunden",
+    "description": "Beschreibung",
+    "map": "Karte",
+    "no_craftsman": "nicht gesetzt",
+    "no_response_limit": "nicht gesetzt",
+    "number": "Nummer",
+    "response_limit": "Frist",
+    "status": "Status",
+    "status_values": {
+      "read": "gelesen",
+      "registered": "registriert",
+      "responded": "beantwortet",
+      "reviewed": "geschlossen"
+    },
+    "trade": "Funktion"
+  },
+  "map_file": {
+    "_name": "Bauplanversion",
+    "_plural": "Bauplanversionen",
+    "created_at": "hinzugefügt am",
+    "name": "Name"
+  },
+  "map": {
+    "_name": "Bauplan",
+    "_plural": "Baupläne",
+    "name": "Name",
+    "next_response_limit": "Nächste Frist",
+    "open_issues_count": "Offene Pendenzen",
+    "parent": "Zuordnung",
+    "reviewed_issues_count": "Erledigte Pendenzen"
+  },
+  "messages": {
+    "danger": {
+      "unrecoverable": "Es ist ein Fehler aufgetreten. Laden Sie die Seite neu, und versuchen Sie es erneut."
+    },
+    "success": {
+      "removed_entries": "Erfolgreich entfernt.",
+      "saved_changes": "Änderungen gespeichert."
+    }
+  },
+  "validation": {
+    "required": "Dieses Feld kann nicht leer gelassen werden."
+  },
+  "view": {
+    "less": "weniger",
+    "more": "mehr"
+  }
+}

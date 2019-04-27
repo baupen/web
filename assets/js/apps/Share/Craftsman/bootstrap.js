@@ -8,10 +8,18 @@ import VueHeadful from 'vue-headful';
 
 // app
 import Craftsman from './craftsman';
+import merge from 'deepmerge';
 
 // messages
-import Messages from '../../../localization/share/craftsman';
-import mergeMessages from '../../../localization/shared/_all';
+const sharedDe = require('../../../localization/shared.de');
+const sharedIt = require('../../../localization/shared.it');
+const customDe = require('../../../localization/share/craftsman.de');
+const customIt = require('../../../localization/share/craftsman.it');
+
+const translations = {
+  de: merge(sharedDe, customDe),
+  it: merge(sharedIt, customIt)
+};
 
 Vue.config.productionTip = false;
 
@@ -27,7 +35,7 @@ if (document.getElementById('share-craftsman') != null) {
   // initialize messages
   const i18n = new VueI18n({
     locale: document.documentElement.lang.substr(0, 2),
-    messages: mergeMessages(Messages)
+    messages: translations
   });
 
   // boot app

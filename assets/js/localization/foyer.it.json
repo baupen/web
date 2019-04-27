@@ -1,0 +1,20 @@
+{
+  "actions": {
+    "confirm_issues": "Aggiungere pendenze al registro"
+  },
+  "dialog": {
+    "cant_undo_remove": "Sicuri di voler eliminare le pendenze marcate in rosso? Questa azione è irreversibile."
+  },
+  "messages": {
+    "danger": {
+      "confirm_issues_impossible": "Per favore specificare per tutte le pendenze almeno la descrizione e l’operaio."
+    },
+    "success": {
+      "added_to_register": "Aggiunto al registro."
+    }
+  },
+  "table": {
+    "filter_placeholder": "Cerca descrizione...",
+    "no_entries": "Nessuna nuova pendenza"
+  }
+}

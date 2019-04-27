@@ -15,7 +15,7 @@
             <tr>
                 <th>{{$t("map.name")}}</th>
                 <th>{{$t("map.parent")}}</th>
-                <th>{{$t("map_file.name")}}</th>
+                <th>{{$t("map_file._name")}}</th>
                 <th class="minimal-width">{{$t('issue_count')}}</th>
                 <th class="minimal-width"></th>
             </tr>

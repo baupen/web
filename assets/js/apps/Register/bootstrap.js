@@ -7,10 +7,19 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 // app
 import Register from './register';
+import merge from 'deepmerge';
 
 // messages
-import Messages from '../../localization/register';
-import mergeMessages from '../../localization/shared/_all';
+const sharedDe = require('../../localization/shared.de');
+const sharedIt = require('../../localization/shared.it');
+const customDe = require('../../localization/register.de');
+const customIt = require('../../localization/register.it');
+
+const translations = {
+  de: merge(sharedDe, customDe),
+  it: merge(sharedIt, customIt)
+};
+
 Vue.config.productionTip = false;
 
 // initialize app if html element is found
@@ -24,7 +33,7 @@ if (document.getElementById('register') != null) {
   // initialize messages
   const i18n = new VueI18n({
     locale: document.documentElement.lang.substr(0, 2),
-    messages: mergeMessages(Messages)
+    messages: translations
   });
 
   // boot app

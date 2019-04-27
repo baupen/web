@@ -9,8 +9,18 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import Dashboard from './dashboard';
 
 // messages
-import Messages from '../../localization/dashboard';
-import mergeMessages from '../../localization/shared/_all';
+import merge from 'deepmerge';
+
+// messages
+const sharedDe = require('../../localization/shared.de');
+const sharedIt = require('../../localization/shared.it');
+const customDe = require('../../localization/dashboard.de');
+const customIt = require('../../localization/dashboard.it');
+
+const translations = {
+  de: merge(sharedDe, customDe),
+  it: merge(sharedIt, customIt)
+};
 
 Vue.config.productionTip = false;
 
@@ -25,7 +35,7 @@ if (document.getElementById('dashboard') != null) {
   // initialize messages
   const i18n = new VueI18n({
     locale: document.documentElement.lang.substr(0, 2),
-    messages: mergeMessages(Messages)
+    messages: translations
   });
 
   // boot app

@@ -10,8 +10,18 @@ import VueHeadful from 'vue-headful';
 import Filter from './filter';
 
 // messages
-import Messages from '../../../localization/share/filter';
-import mergeMessages from '../../../localization/shared/_all';
+import merge from 'deepmerge';
+
+const sharedDe = require('../../../localization/shared.de');
+const sharedIt = require('../../../localization/shared.it');
+const customDe = require('../../../localization/share/filter.de');
+const customIt = require('../../../localization/share/filter.it');
+
+const translations = {
+  de: merge(sharedDe, customDe),
+  it: merge(sharedIt, customIt)
+};
+
 Vue.config.productionTip = false;
 
 // initialize app if html element is found
@@ -26,7 +36,7 @@ if (document.getElementById('share-public') != null) {
   // initialize messages
   const i18n = new VueI18n({
     locale: document.documentElement.lang.substr(0, 2),
-    messages: mergeMessages(Messages)
+    messages: translations
   });
 
   // boot app

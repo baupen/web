@@ -9,10 +9,20 @@ import { Plugin } from 'vue-fragment';
 // app
 import Edit from './edit';
 
-// messages
-import Messages from '../../localization/edit';
-import mergeMessages from '../../localization/shared/_all';
+import merge from 'deepmerge';
+
 import Vuelidate from 'vuelidate';
+
+// messages
+const sharedDe = require('../../localization/shared.de');
+const sharedIt = require('../../localization/shared.it');
+const customDe = require('../../localization/edit.de');
+const customIt = require('../../localization/edit.it');
+
+const translations = {
+  de: merge(sharedDe, customDe),
+  it: merge(sharedIt, customIt)
+};
 
 Vue.config.productionTip = false;
 
@@ -29,7 +39,7 @@ if (document.getElementById('edit') != null) {
   // initialize messages
   const i18n = new VueI18n({
     locale: document.documentElement.lang.substr(0, 2),
-    messages: mergeMessages(Messages)
+    messages: translations
   });
 
   // boot app

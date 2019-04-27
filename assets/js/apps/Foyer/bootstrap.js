@@ -7,10 +7,19 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 // app
 import Foyer from './foyer';
+import merge from 'deepmerge';
 
 // messages
-import Messages from '../../localization/foyer';
-import mergeMessages from '../../localization/shared/_all';
+const sharedDe = require('../../localization/shared.de');
+const sharedIt = require('../../localization/shared.it');
+const customDe = require('../../localization/foyer.de');
+const customIt = require('../../localization/foyer.it');
+
+const translations = {
+  de: merge(sharedDe, customDe),
+  it: merge(sharedIt, customIt)
+};
+
 Vue.config.productionTip = false;
 
 // initialize app if html element is found
@@ -24,7 +33,7 @@ if (document.getElementById('foyer') != null) {
   // initialize messages
   const i18n = new VueI18n({
     locale: document.documentElement.lang.substr(0, 2),
-    messages: mergeMessages(Messages)
+    messages: translations
   });
 
   // boot app

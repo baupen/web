@@ -1,0 +1,13 @@
+{
+  "actions": {
+    "read_only_view": "Link protetto da scrittura",
+    "remove_response": "annullare",
+    "send_response": "marcare come risolta"
+  },
+  "dialog": {
+    "thanks": "Grazie!"
+  },
+  "loading_open_issues": "? pendenze aperte",
+  "of_craftsman": "da {craftsman}",
+  "open_issues_header": "Nessuna pendenza aperta | Una pendenza aperta | {count} pendenze aperte"
+}

@@ -1,0 +1,13 @@
+{
+  "actions": {
+    "read_only_view": "Schreibgeschützter Link",
+    "remove_response": "rückgängig",
+    "send_response": "als erledigt markieren"
+  },
+  "dialog": {
+    "thanks": "Wir sagen Danke!"
+  },
+  "loading_open_issues": "? offene Pendenzen",
+  "of_craftsman": "von {craftsman} ",
+  "open_issues_header": "Keine offenen Pendenzen | Eine offene Pendenz | {count} offene Pendenzen"
+}

@@ -38,7 +38,7 @@ enable ESLint
 create a read-only api token under `https://lokalise.co/profile/#apitokens`.
 add to .bashrc
 ```
-export LOKALISE_TOKEN = <token>
+export LOKALISE_TOKEN=<token>
 ```
 
 #### Project
