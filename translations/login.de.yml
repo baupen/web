@@ -7,6 +7,7 @@ login:
     login_failed: 'Login fehlgeschlagen.'
     email_not_found: 'Diese E-Mail wurde nicht gefunden.'
     password_wrong: 'Das Passwort ist nicht korrekt.'
+    account_disabled: 'Dieser Account ist deaktiviert.'
 recover:
   title: 'Passwort zurücksetzen.'
   description: 'Wir senden Ihnen eine Nachricht an Ihre E-Mail.'

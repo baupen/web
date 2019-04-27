@@ -11,6 +11,7 @@
 
 namespace App\Controller\Base;
 
+use App\Entity\ConstructionManager;
 use App\Entity\Traits\UserTrait;
 use App\Security\Model\UserToken;
 use RuntimeException;
@@ -19,8 +20,8 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Exception\DisabledException;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -65,15 +66,19 @@ class BaseLoginController extends BaseFormController
         $lastUsername = ($session === null) ? '' : $session->get(Security::LAST_USERNAME);
 
         if ($error !== null) {
-            if ($lastUsername !== null) {
-                $constructionManager = $findEntityCallable($lastUsername);
-                if ($constructionManager !== null) {
-                    $this->displayError($this->getTranslator()->trans('login.errors.password_wrong', [], 'login'));
-                } else {
-                    $this->displayError($this->getTranslator()->trans('login.errors.email_not_found', [], 'login'));
-                }
+            if ($error instanceof DisabledException) {
+                $this->displayError($this->getTranslator()->trans('login.errors.account_disabled', [], 'login'));
             } else {
-                $this->displayError($this->getTranslator()->trans('login.errors.login_failed', [], 'login'));
+                if ($lastUsername !== null) {
+                    $constructionManager = $findEntityCallable($lastUsername);
+                    if ($constructionManager !== null) {
+                        $this->displayError($this->getTranslator()->trans('login.errors.password_wrong', [], 'login'));
+                    } else {
+                        $this->displayError($this->getTranslator()->trans('login.errors.email_not_found', [], 'login'));
+                    }
+                } else {
+                    $this->displayError($this->getTranslator()->trans('login.errors.login_failed', [], 'login'));
+                }
             }
         }
 
@@ -90,10 +95,10 @@ class BaseLoginController extends BaseFormController
     }
 
     /**
-     * @param Request       $request
-     * @param UserInterface $user
+     * @param Request             $request
+     * @param ConstructionManager $user
      */
-    protected function loginUser(Request $request, UserInterface $user)
+    protected function loginUser(Request $request, ConstructionManager $user)
     {
         //login programmatically
         $token = new UsernamePasswordToken(new UserToken($user), $user->getPassword(), 'main', $user->getRoles());

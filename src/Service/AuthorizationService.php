@@ -33,7 +33,7 @@ class AuthorizationService implements AuthorizationServiceInterface
     private $logger;
 
     /**
-     * @var \stdClass[]|null
+     * @var string[][]|null
      */
     private $userDataCache;
 
@@ -78,7 +78,7 @@ class AuthorizationService implements AuthorizationServiceInterface
         if ($this->authorizationMethod === self::AUTHORIZATION_METHOD_WHITELIST) {
             $emailLookup = $this->getAllWhitelistedEmailLookup();
 
-            return array_key_exists($email, $emailLookup);
+            return \array_key_exists($email, $emailLookup);
         }
 
         throw new \Exception('invalid authorization method configured: ' . $this->authorizationMethod);
@@ -91,22 +91,22 @@ class AuthorizationService implements AuthorizationServiceInterface
     {
         $userData = $this->getAllUserData();
 
-        if (!array_key_exists($constructionManager->getEmail(), $userData)) {
+        if (!\array_key_exists($constructionManager->getEmail(), $userData)) {
             return;
         }
 
         $defaultValues = $userData[$constructionManager->getEmail()];
 
-        if (property_exists($defaultValues, 'givenName')) {
-            $constructionManager->setGivenName($defaultValues->givenName);
+        if (array_key_exists('givenName', $defaultValues)) {
+            $constructionManager->setGivenName($defaultValues['givenName']);
         }
 
-        if (property_exists($defaultValues, 'familyName')) {
-            $constructionManager->setFamilyName($defaultValues->familyName);
+        if (array_key_exists('familyName', $defaultValues)) {
+            $constructionManager->setFamilyName($defaultValues['familyName']);
         }
 
-        if (property_exists($defaultValues, 'phone')) {
-            $constructionManager->setPhone($defaultValues->phone);
+        if (array_key_exists('phone', $defaultValues)) {
+            $constructionManager->setPhone($defaultValues['phone']);
         }
     }
 
@@ -119,7 +119,7 @@ class AuthorizationService implements AuthorizationServiceInterface
     }
 
     /**
-     * @return \stdClass[]
+     * @return string[][]
      */
     private function getAllUserData()
     {
@@ -130,13 +130,13 @@ class AuthorizationService implements AuthorizationServiceInterface
         $this->userDataCache = [];
 
         $userDataRoot = $this->getAuthorizationRoot() . \DIRECTORY_SEPARATOR . 'user_data';
-        foreach (glob($userDataRoot . '/*.json') as $userDataFile) {
+        foreach (glob($userDataRoot . \DIRECTORY_SEPARATOR . '*.json') as $userDataFile) {
             $json = file_get_contents($userDataFile);
 
-            $entries = json_decode($json);
+            $entries = json_decode($json, true);
             foreach ($entries as $entry) {
-                if (property_exists($entry, 'email')) {
-                    $this->userDataCache[$entry->email] = $entry;
+                if (array_key_exists('email', $entry)) {
+                    $this->userDataCache[$entry['email']] = $entry;
                 }
             }
         }
@@ -156,7 +156,7 @@ class AuthorizationService implements AuthorizationServiceInterface
         $this->emailLookupCache = [];
 
         $whitelistRoot = $this->getAuthorizationRoot() . \DIRECTORY_SEPARATOR . 'whitelists';
-        foreach (glob($whitelistRoot . '/*.txt') as $whitelistFile) {
+        foreach (glob($whitelistRoot . \DIRECTORY_SEPARATOR . '*.txt') as $whitelistFile) {
             $whitelist = file_get_contents($whitelistFile);
             $lines = explode("\n", $whitelist);
             foreach ($lines as $line) {
