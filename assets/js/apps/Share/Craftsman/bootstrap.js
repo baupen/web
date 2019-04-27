@@ -8,7 +8,7 @@ import VueHeadful from 'vue-headful';
 
 // app
 import Craftsman from './craftsman';
-import merge from "deepmerge";
+import merge from 'deepmerge';
 
 // messages
 const sharedDe = require('../../../localization/shared.de');

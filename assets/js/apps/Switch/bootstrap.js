@@ -3,11 +3,11 @@ import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
 // components
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import Vuelidate from 'vuelidate';
 
 // import ES6 style
-import {VueMasonryPlugin} from 'vue-masonry';
+import { VueMasonryPlugin } from 'vue-masonry';
 
 // app
 import Switch from './switch';
@@ -49,6 +49,6 @@ if (document.getElementById('switch') != null) {
     i18n,
     el: '#switch',
     template: '<SwitchApp/>',
-    components: {SwitchApp: Switch}
+    components: { SwitchApp: Switch }
   });
 }

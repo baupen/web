@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import Dashboard from './dashboard';
 
 // messages
-import merge from "deepmerge";
+import merge from 'deepmerge';
 
 // messages
 const sharedDe = require('../../localization/shared.de');

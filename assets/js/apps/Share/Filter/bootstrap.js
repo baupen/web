@@ -3,7 +3,7 @@ import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
 // components
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import VueHeadful from 'vue-headful';
 
 // app
@@ -45,6 +45,6 @@ if (document.getElementById('share-public') != null) {
     i18n,
     el: '#share-public',
     template: '<MyFilter/>',
-    components: {MyFilter: Filter}
+    components: { MyFilter: Filter }
   });
 }

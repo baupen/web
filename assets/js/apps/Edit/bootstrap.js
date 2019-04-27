@@ -9,7 +9,9 @@ import { Plugin } from 'vue-fragment';
 // app
 import Edit from './edit';
 
-import merge from "deepmerge";
+import merge from 'deepmerge';
+
+import Vuelidate from 'vuelidate';
 
 // messages
 const sharedDe = require('../../localization/shared.de');
@@ -21,8 +23,6 @@ const translations = {
   de: merge(sharedDe, customDe),
   it: merge(sharedIt, customIt)
 };
-
-import Vuelidate from 'vuelidate';
 
 Vue.config.productionTip = false;
 

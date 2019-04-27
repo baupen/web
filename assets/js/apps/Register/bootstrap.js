@@ -3,11 +3,11 @@ import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
 // components
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 // app
 import Register from './register';
-import merge from "deepmerge";
+import merge from 'deepmerge';
 
 // messages
 const sharedDe = require('../../localization/shared.de');
@@ -42,6 +42,6 @@ if (document.getElementById('register') != null) {
     i18n,
     el: '#register',
     template: '<Register/>',
-    components: {Register}
+    components: { Register }
   });
 }

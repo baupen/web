@@ -4,13 +4,13 @@ import VueI18n from 'vue-i18n';
 
 // components
 import vueHeadful from 'vue-headful';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 // app
 import Dispatch from './dispatch';
 
 // messages
-import merge from "deepmerge";
+import merge from 'deepmerge';
 
 // messages
 const sharedDe = require('../../localization/shared.de');
@@ -46,6 +46,6 @@ if (document.getElementById('dispatch') != null) {
     i18n,
     el: '#dispatch',
     template: '<Dispatch/>',
-    components: {Dispatch}
+    components: { Dispatch }
   });
 }
