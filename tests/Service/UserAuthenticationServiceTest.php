@@ -12,7 +12,7 @@
 namespace App\Tests\Service;
 
 use App\Entity\ConstructionManager;
-use App\Service\UserAuthenticationService;
+use App\Service\AuthorizationService;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -48,7 +48,7 @@ class UserAuthenticationServiceTest extends WebTestCase
         $result = $service->tryAuthenticateConstructionManager($constructionManager);
 
         $this->assertTrue($result);
-        $this->assertSame(UserAuthenticationService::AUTHENTICATION_SOURCE_LDAP, $constructionManager->getAuthenticationSource());
+        $this->assertSame(AuthorizationService::AUTHENTICATION_SOURCE_LDAP, $constructionManager->getAuthenticationSource());
     }
 
     /**
@@ -82,7 +82,7 @@ class UserAuthenticationServiceTest extends WebTestCase
         $result = $service->tryAuthenticateConstructionManager($constructionManager);
 
         $this->assertTrue($result);
-        $this->assertSame(UserAuthenticationService::AUTHENTICATION_SOURCE_NONE, $constructionManager->getAuthenticationSource());
+        $this->assertSame(AuthorizationService::AUTHENTICATION_SOURCE_NONE, $constructionManager->getAuthenticationSource());
     }
 
     /**
@@ -99,7 +99,7 @@ class UserAuthenticationServiceTest extends WebTestCase
         $result = $service->tryAuthenticateConstructionManager($constructionManager);
 
         $this->assertTrue($result);
-        $this->assertSame(UserAuthenticationService::AUTHENTICATION_SOURCE_VALID_REGISTRATION_EMAILS, $constructionManager->getAuthenticationSource());
+        $this->assertSame(AuthorizationService::AUTHENTICATION_SOURCE_VALID_REGISTRATION_EMAILS, $constructionManager->getAuthenticationSource());
     }
 
     /**
@@ -116,11 +116,11 @@ class UserAuthenticationServiceTest extends WebTestCase
         $result = $service->tryAuthenticateConstructionManager($constructionManager);
 
         $this->assertFalse($result);
-        $this->assertSame(UserAuthenticationService::AUTHENTICATION_SOURCE_VALID_REGISTRATION_EMAILS, $constructionManager->getAuthenticationSource());
+        $this->assertSame(AuthorizationService::AUTHENTICATION_SOURCE_VALID_REGISTRATION_EMAILS, $constructionManager->getAuthenticationSource());
     }
 
     /**
-     * @return UserAuthenticationService
+     * @return AuthorizationService
      */
     private function getServiceWithLdap()
     {
@@ -129,11 +129,11 @@ class UserAuthenticationServiceTest extends WebTestCase
         /** @var LoggerInterface $logger */
         $logger = self::$container->get(LoggerInterface::class);
 
-        return new UserAuthenticationService($parameterBag, $logger);
+        return new AuthorizationService($parameterBag, $logger);
     }
 
     /**
-     * @return UserAuthenticationService
+     * @return AuthorizationService
      */
     private function getServiceWithoutLdap()
     {
@@ -142,11 +142,11 @@ class UserAuthenticationServiceTest extends WebTestCase
         /** @var LoggerInterface $logger */
         $logger = self::$container->get(LoggerInterface::class);
 
-        return new UserAuthenticationService($parameterBag, $logger);
+        return new AuthorizationService($parameterBag, $logger);
     }
 
     /**
-     * @return UserAuthenticationService
+     * @return AuthorizationService
      */
     private function getServiceWithRegistrationEmail()
     {
@@ -156,6 +156,6 @@ class UserAuthenticationServiceTest extends WebTestCase
         /** @var LoggerInterface $logger */
         $logger = self::$container->get(LoggerInterface::class);
 
-        return new UserAuthenticationService($parameterBag, $logger);
+        return new AuthorizationService($parameterBag, $logger);
     }
 }

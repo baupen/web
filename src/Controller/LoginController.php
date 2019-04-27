@@ -20,8 +20,8 @@ use App\Form\ConstructionManager\CreateType;
 use App\Form\ConstructionManager\LoginType;
 use App\Form\ConstructionManager\RecoverType;
 use App\Form\ConstructionManager\SetPasswordType;
+use App\Service\AuthorizationService;
 use App\Service\Interfaces\EmailServiceInterface;
-use App\Service\UserAuthenticationService;
 use DateTime;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -70,17 +70,17 @@ class LoginController extends BaseLoginController
     /**
      * @Route("/create", name="login_create")
      *
-     * @param Request                   $request
-     * @param UserAuthenticationService $userCreationService
-     * @param TranslatorInterface       $translator
-     * @param EmailServiceInterface     $emailService
-     * @param LoggerInterface           $logger
+     * @param Request               $request
+     * @param AuthorizationService  $userCreationService
+     * @param TranslatorInterface   $translator
+     * @param EmailServiceInterface $emailService
+     * @param LoggerInterface       $logger
      *
-     * @throws Exception
+     *@throws Exception
      *
      * @return Response
      */
-    public function createAction(Request $request, UserAuthenticationService $userCreationService, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
+    public function createAction(Request $request, AuthorizationService $userCreationService, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
     {
         $constructionManager = new ConstructionManager();
         $constructionManager->setEmail($request->query->get('email'));

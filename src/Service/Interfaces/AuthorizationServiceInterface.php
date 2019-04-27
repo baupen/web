@@ -12,16 +12,18 @@
 namespace App\Service\Interfaces;
 
 use App\Entity\ConstructionManager;
-use Exception;
 
-interface UserCreationServiceInterface
+interface AuthorizationServiceInterface
 {
     /**
-     * @param ConstructionManager $constructionManager
+     * @param string $email
      *
-     * @throws Exception
-     *
-     * @return ConstructionManager|bool
+     * @return bool
      */
-    public function tryAuthenticateConstructionManager(ConstructionManager $constructionManager);
+    public function checkIfAuthorized(string $email);
+
+    /**
+     * @param ConstructionManager $constructionManager
+     */
+    public function tryFillDefaultValues(ConstructionManager $constructionManager);
 }
