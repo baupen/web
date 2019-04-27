@@ -90,26 +90,7 @@ if you deploy to the main installation, create `var/transient/domainOverrides.js
 }
 ```
 
-if you need to backup the files to another server, you only need to sent the `/var/persistent` folder. 
-```
-rsync -azP ~/www/app.mangel.io/production/shared/var/persistent/ user@IP:~/backup/
-```
- 
-##### ssh
+### setup ssh
 `ssh-copy-id -i ~/.ssh/id_rsa.pub username@domain` to add ssh key  
 `cat ~/.ssh/id_rsa.pub` to query the active ssh key  
 `ssh-keygen -t rsa -b 4096 -C "username@domain" && eval $(ssh-agent -s) && ssh-add ~/.ssh/id_rsa` generate a new key & add it to ssh  
-
-
-##### CentOS
-if you need to prepare a CentOS server for the project, these commands may be useful
-```
-yum update
-yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-yum install yum-utils
-yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
-yum-config-manager --enable remi-php72
-yum install php72 php72-php-fpm php72-php-opcache php72-php-xml php72-php-gd php72-php-mbstring php72-php-json php72-php-iconv php72-php-imagick php72-php-pdo_sqlite php72-php-simplexml php72-php-ldap
-```
-
-use `certbot` to manage lets encrypt certificates.
