@@ -11,10 +11,16 @@
 
 namespace App\Security\Model;
 
+use App\Entity\ConstructionManager;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserToken implements UserInterface
 {
+    /**
+     * @var bool
+     */
+    private $isEnabled;
+
     /**
      * @var (Role|string)[]
      */
@@ -38,10 +44,11 @@ class UserToken implements UserInterface
     /**
      * UserToken constructor.
      *
-     * @param UserInterface $user
+     * @param ConstructionManager $user
      */
-    public function __construct(UserInterface $user)
+    public function __construct(ConstructionManager $user)
     {
+        $this->isEnabled = $user->getIsEnabled();
         $this->roles = $user->getRoles();
         $this->password = $user->getPassword();
         $this->salt = $user->getSalt();
@@ -110,6 +117,14 @@ class UserToken implements UserInterface
      */
     public function eraseCredentials()
     {
-        // no credentials here; hence do not need to clear
+        // no plain credentials here; hence do not need to clear
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsEnabled(): bool
+    {
+        return $this->isEnabled;
     }
 }

@@ -20,8 +20,8 @@ use App\Form\ConstructionManager\CreateType;
 use App\Form\ConstructionManager\LoginType;
 use App\Form\ConstructionManager\RecoverType;
 use App\Form\ConstructionManager\SetPasswordType;
+use App\Service\Interfaces\AuthorizationServiceInterface;
 use App\Service\Interfaces\EmailServiceInterface;
-use App\Service\UserAuthenticationService;
 use DateTime;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -70,17 +70,17 @@ class LoginController extends BaseLoginController
     /**
      * @Route("/create", name="login_create")
      *
-     * @param Request                   $request
-     * @param UserAuthenticationService $userCreationService
-     * @param TranslatorInterface       $translator
-     * @param EmailServiceInterface     $emailService
-     * @param LoggerInterface           $logger
+     * @param Request                       $request
+     * @param AuthorizationServiceInterface $authorizationService
+     * @param TranslatorInterface           $translator
+     * @param EmailServiceInterface         $emailService
+     * @param LoggerInterface               $logger
      *
      * @throws Exception
      *
      * @return Response
      */
-    public function createAction(Request $request, UserAuthenticationService $userCreationService, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
+    public function createAction(Request $request, AuthorizationServiceInterface $authorizationService, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
     {
         $constructionManager = new ConstructionManager();
         $constructionManager->setEmail($request->query->get('email'));
@@ -90,10 +90,10 @@ class LoginController extends BaseLoginController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if (!$userCreationService->tryAuthenticateConstructionManager($constructionManager)) {
+            if (!$authorizationService->checkIfAuthorized($constructionManager)) {
                 $this->displayError($translator->trans('create.error.email_invalid', [], 'login'));
             } else {
-                $this->register($request, $constructionManager, $translator, $emailService, $logger);
+                $this->register($request, $constructionManager, $authorizationService, $translator, $emailService, $logger);
             }
         }
 
@@ -307,15 +307,16 @@ class LoginController extends BaseLoginController
     }
 
     /**
-     * @param Request               $request
-     * @param ConstructionManager   $constructionManager
-     * @param TranslatorInterface   $translator
-     * @param EmailServiceInterface $emailService
-     * @param LoggerInterface       $logger
+     * @param Request                       $request
+     * @param ConstructionManager           $constructionManager
+     * @param AuthorizationServiceInterface $authorizationService
+     * @param TranslatorInterface           $translator
+     * @param EmailServiceInterface         $emailService
+     * @param LoggerInterface               $logger
      *
      * @throws Exception
      */
-    private function register(Request $request, ConstructionManager $constructionManager, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
+    private function register(Request $request, ConstructionManager $constructionManager, AuthorizationServiceInterface $authorizationService, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
     {
         /** @var ConstructionManager $existing */
         $existing = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
@@ -325,6 +326,10 @@ class LoginController extends BaseLoginController
             $constructionManager->setPlainPassword(uniqid('_initial_pw_'));
             $constructionManager->setPassword();
             $constructionManager->setAuthenticationHash();
+            $constructionManager->setIsEnabled(true);
+
+            $authorizationService->tryFillDefaultValues($constructionManager);
+
             $this->fastSave($constructionManager);
         } else {
             $constructionManager = $existing;

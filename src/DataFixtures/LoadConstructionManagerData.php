@@ -44,6 +44,7 @@ class LoadConstructionManagerData extends BaseFixture
             $appUser->setPlainPassword($entry[1]);
             $appUser->setGivenName($entry[2]);
             $appUser->setFamilyName($entry[3]);
+            $appUser->setIsEnabled(true);
             $appUser->setPassword();
             $appUser->setAuthenticationHash();
             $appUser->setAuthenticationSource(Production\LoadConstructionManagerData::AUTHENTICATION_SOURCE_FIXTURES);
