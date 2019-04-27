@@ -326,6 +326,7 @@ class LoginController extends BaseLoginController
             $constructionManager->setPlainPassword(uniqid('_initial_pw_'));
             $constructionManager->setPassword();
             $constructionManager->setAuthenticationHash();
+            $constructionManager->setIsEnabled(true);
 
             $authorizationService->tryFillDefaultValues($constructionManager);
 
