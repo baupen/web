@@ -68,16 +68,20 @@ class RefreshAuthorizationCommand extends Command
     {
         $entityManager = $this->registry->getEntityManager();
 
+        $changes = 0;
+
         $managers = $this->registry->getRepository(ConstructionManager::class)->findAll();
         foreach ($managers as $manager) {
             $newIsEnabled = $this->authorizationService->checkIfAuthorized($manager->getEmail());
             if ($newIsEnabled !== $manager->isEnabled()) {
                 $manager->setIsEnabled($newIsEnabled);
                 $entityManager->persist($manager);
+                ++$changes;
             }
         }
 
         $entityManager->flush();
+        $output->writeln('persisted ' . $changes . ' changes');
 
         return 0;
     }
