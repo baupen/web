@@ -97,15 +97,15 @@ class AuthorizationService implements AuthorizationServiceInterface
 
         $defaultValues = $userData[$constructionManager->getEmail()];
 
-        if (array_key_exists('givenName', $defaultValues)) {
+        if (\array_key_exists('givenName', $defaultValues)) {
             $constructionManager->setGivenName($defaultValues['givenName']);
         }
 
-        if (array_key_exists('familyName', $defaultValues)) {
+        if (\array_key_exists('familyName', $defaultValues)) {
             $constructionManager->setFamilyName($defaultValues['familyName']);
         }
 
-        if (array_key_exists('phone', $defaultValues)) {
+        if (\array_key_exists('phone', $defaultValues)) {
             $constructionManager->setPhone($defaultValues['phone']);
         }
     }
@@ -135,7 +135,7 @@ class AuthorizationService implements AuthorizationServiceInterface
 
             $entries = json_decode($json, true);
             foreach ($entries as $entry) {
-                if (array_key_exists('email', $entry)) {
+                if (\array_key_exists('email', $entry)) {
                     $this->userDataCache[$entry['email']] = $entry;
                 }
             }
