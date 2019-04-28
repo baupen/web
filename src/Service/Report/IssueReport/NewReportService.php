@@ -667,12 +667,12 @@ class NewReportService
     {
         if ($start !== null) {
             if ($end !== null) {
-                $rangeString = $start->format(DateTimeFormatter::DATE_TIME_FORMAT) . ' - ' . $end->format(DateTimeFormatter::DATE_TIME_FORMAT);
+                $rangeString = $start->format(DateTimeFormatter::DATE_FORMAT) . ' - ' . $end->format(DateTimeFormatter::DATE_FORMAT);
             } else {
-                $rangeString = $this->translator->trans('introduction.filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report');
+                $rangeString = $this->translator->trans('introduction.filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_FORMAT)], 'report');
             }
         } elseif ($end !== null) {
-            $rangeString = $this->translator->trans('introduction.filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report');
+            $rangeString = $this->translator->trans('introduction.filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_FORMAT)], 'report');
         } else {
             return '';
         }
