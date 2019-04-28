@@ -329,13 +329,13 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param bool|null     $respondedStatus
+     * @param bool|null     $reviewedStatus
      * @param DateTime|null $reviewedStart
      * @param DateTime|null $reviewedEnd
      */
-    public function filterByReviewedStatus(bool $respondedStatus, ?DateTime $reviewedStart = null, ?DateTime $reviewedEnd = null): void
+    public function filterByReviewedStatus(bool $reviewedStatus, ?DateTime $reviewedStart = null, ?DateTime $reviewedEnd = null): void
     {
-        $this->respondedStatus = $respondedStatus;
+        $this->reviewedStatus = $reviewedStatus;
         $this->reviewedStart = $reviewedStart;
         $this->reviewedEnd = $reviewedEnd;
     }
