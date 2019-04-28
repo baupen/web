@@ -23,6 +23,10 @@
 
     {% endblock %}
 
+
+    <link rel="preload" href="{{ asset('dist/app.css') }}" as="style">
+    <link rel="preload" href="{{ asset('dist/app.js') }}" as="script">
+
     <link rel="stylesheet" type="text/css" href="{{ asset('dist/app.css') }}"/>
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
     <meta name="description" content="{{ description }}">

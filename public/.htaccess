@@ -107,7 +107,10 @@ AddDefaultCharset utf-8
 
 # Force client-side SSL redirection.
 <IfModule mod_headers.c>
-    Header always set Strict-Transport-Security "max-age=16070400; includeSubDomains"
+    # 31536000 to activate for one year
+    # includeSubDomains to transitive include subdomains
+    # preload to include in chrome
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 </IfModule>
 
 
@@ -123,7 +126,7 @@ AddDefaultCharset utf-8
 
 # Protect website against clickjacking.
 <IfModule mod_headers.c>
-
+    # prevent the page to be framed by others. also enforced by the CSP header (frame-ancestors falls back to 'none')
     Header set X-Frame-Options "DENY"
 
     # `mod_headers` cannot match based on the content-type, however,
@@ -160,11 +163,22 @@ AddDefaultCharset utf-8
 # Mitigate the risk of cross-site scripting and other content-injection
 # attacks.
 <IfModule mod_headers.c>
+    # if the Content-Security-Policy header causes problems, change it to
+    # Content-Security-Policy-Report-Only: ; report-uri https://endpoint.com;
+    # to receive a report of the violations
 
-
-    Header set Content-Security-Policy "default-src 'none'; base-uri 'self'; object-src 'self'; connect-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; form-action 'self'; frame-ancestors 'none'"
-    Header set X-Content-Security-Policy "default-src 'none'; base-uri 'self'; object-src 'self'; connect-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; form-action 'self'; frame-ancestors 'none'"
-    Header set X--WebKit-CSP "default-src 'none'; base-uri 'self'; object-src 'self'; connect-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; form-action 'self'; frame-ancestors 'none'"
+    # block-all-mixed-content prevents http requests in http site
+    # default-src none prevents access to unspecified fetch directives
+    # base-uri self ensures the <base> element is set to the current url
+    # connect-self restrics notably <a>, XMLHttpRequest
+    # script-src 'self' 'unsafe-eval' 'unsafe-inline' is needed to get vueJS to run with the current config. this can be changed later
+    # style-src 'self' 'unsafe-inline' is needed because some styles are set directly by vuejs
+    # font-src 'self'; to load fonts from same domain
+    # img-src 'self' data:; to load images from same domain and allow from data attributes
+    # form-action 'self'; to submit forms only to same domain
+    Header set Content-Security-Policy "block-all-mixed-content; default-src 'none'; base-uri 'self'; object-src 'self'; connect-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; form-action 'self'"
+    Header set X-Content-Security-Policy "block-all-mixed-content; default-src 'none'; base-uri 'self'; object-src 'self'; connect-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; form-action 'self'"
+    Header set X--WebKit-CSP "block-all-mixed-content; default-src 'none'; base-uri 'self'; object-src 'self'; connect-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; form-action 'self'"
 
     # `mod_headers` cannot match based on the content-type, however,
     # the `Content-Security-Policy` response header should be send
@@ -257,25 +271,23 @@ ServerSignature Off
 
 </IfModule>
 
-# Prevent intermediate caches or proxies from modifying the website's content.
-# disables `mod_pagespeed`!
-# https://developers.google.com/speed/pagespeed/module/configuration#notransform
 <IfModule mod_headers.c>
+    # no-transform to prevent caches/proxies from transforming data
+    # private is set by symfony whenever someone is logged in
     Header merge Cache-Control "no-transform"
 </IfModule>
 
 
-# Remove `ETags` as resources are sent with far-future expires headers.
+# remove ETags from files as resources are sent with far-future expires headers.
+FileETag None
 
-# `FileETag None` doesn't work in all cases.
 <IfModule mod_headers.c>
+    # Remove ETags header as the FileETag None command does not work always
     Header unset ETag
 </IfModule>
 
-FileETag None
 
 # Serve resources with far-future expires headers.
-
 <IfModule mod_expires.c>
 
     ExpiresActive on
@@ -340,3 +352,17 @@ FileETag None
     ExpiresByType text/x-cross-domain-policy            "access plus 1 week"
 
 </IfModule>
+
+# consider including the Sec-Metadata header if code serverside written that processes this correctly
+
+# consider using Cache-Control as an alternative to Expires
+
+# if messed up cache, can send Clear-Site-Data: "*" header to clean cache
+
+# consider activating client hints Accept-CH: DPR, Width, Viewport-Width, Device-Memory to potentially optimize resources better
+# DPR is the device picture ratio
+# Width is the actual rendered width of an image in CSS pixels
+# Viewport-Width is the viewport width
+# Device-Memory is the main-memory size of the device in Gb
+# consider sending Accept-CH-Lifetime: 86400 to specify how long the client should send the hints
+# when responding, include Content-DPR with the DPR value from the client to not mess with its layout mechanics
