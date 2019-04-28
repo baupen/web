@@ -64,13 +64,6 @@ trait UserTrait
     private $isRegistrationCompleted = false;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(type="text")
-     */
-    private $authenticationSource;
-
-    /**
      * @var DateTime
      *
      * @ORM\Column(type="datetime")
@@ -137,22 +130,6 @@ trait UserTrait
     public function getAuthenticationHash()
     {
         return $this->authenticationHash;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAuthenticationSource(): ?string
-    {
-        return $this->authenticationSource;
-    }
-
-    /**
-     * @param string $authenticationSource
-     */
-    public function setAuthenticationSource(string $authenticationSource): void
-    {
-        $this->authenticationSource = $authenticationSource;
     }
 
     /**

@@ -90,10 +90,13 @@ class LoginController extends BaseLoginController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if (!$authorizationService->checkIfAuthorized($constructionManager)) {
+            if (!$authorizationService->checkIfAuthorized($constructionManager->getEmail())) {
                 $this->displayError($translator->trans('create.error.email_invalid', [], 'login'));
             } else {
-                $this->register($request, $constructionManager, $authorizationService, $translator, $emailService, $logger);
+                $response = $this->register($request, $constructionManager, $authorizationService, $translator, $emailService, $logger);
+                if ($response instanceof Response) {
+                    return $response;
+                }
             }
         }
 
@@ -143,6 +146,7 @@ class LoginController extends BaseLoginController
 
                 //set new password & save
                 $user->setPassword();
+                $user->setRegistrationCompleted();
                 $user->setAuthenticationHash();
                 $this->fastSave($user);
 
@@ -315,6 +319,8 @@ class LoginController extends BaseLoginController
      * @param LoggerInterface               $logger
      *
      * @throws Exception
+     *
+     * @return bool|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     private function register(Request $request, ConstructionManager $constructionManager, AuthorizationServiceInterface $authorizationService, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
     {
@@ -336,7 +342,7 @@ class LoginController extends BaseLoginController
             if ($constructionManager->isRegistrationCompleted()) {
                 $this->displayError($translator->trans('create.error.already_registered', [], 'login'));
 
-                return;
+                return $this->redirectToRoute('login');
             }
         }
 
@@ -356,10 +362,12 @@ class LoginController extends BaseLoginController
             $this->fastSave($email);
 
             $logger->info('sent register email to ' . $email->getReceiver());
-            $this->displaySuccess($translator->trans('create.success.welcome', [], 'login'));
-        } else {
-            $logger->error('could not send register email ' . $email->getId());
-            $this->displayError($translator->trans('create.fail.welcome_email_not_sent', [], 'login'));
+
+            return $this->render('login/create_successful.html.twig');
         }
+        $logger->error('could not send register email ' . $email->getId());
+        $this->displayError($translator->trans('create.fail.welcome_email_not_sent', [], 'login'));
+
+        return false;
     }
 }

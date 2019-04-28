@@ -108,7 +108,6 @@ class TrialService implements TrialServiceInterface
     {
         $constructionSite = new ConstructionSite();
         $constructionSite->setName($this->translator->trans('construction_site.name', ['%name%' => $constructionManager->getName()], 'trial'));
-        $constructionSite->setIsAutomaticEditEnabled(true);
         $constructionSite->setFolderName($constructionManager->getEmail());
         $constructionSite->setStreetAddress($this->translator->trans('construction_site.street_address', [], 'trial'));
         $constructionSite->setLocality($this->translator->trans('construction_site.locality', [], 'trial'));
@@ -194,7 +193,6 @@ class TrialService implements TrialServiceInterface
         $constructionManager->setPassword(true);
         $constructionManager->setAuthenticationHash();
         $constructionManager->setRegistrationDate();
-        $constructionManager->setAuthenticationSource(self::AUTHENTICATION_SOURCE_TRIAL);
 
         return $constructionManager;
     }
