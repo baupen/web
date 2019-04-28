@@ -10,12 +10,6 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th class="minimal-width">
-                        <input title="check" type="checkbox"
-                               v-bind:indeterminate.prop="indeterminate"
-                               v-bind:checked="selected"
-                               v-on:click.prevent="selectAll()"/>
-                    </th>
                     <th class="sortable" @click="sortBy('name')" :class="{ active: 'name' === sortKey }">
                         {{ $t("craftsman.name")}}
                         <font-awesome-icon v-if="sortKey === 'name'"
@@ -81,9 +75,6 @@
                 <tbody>
                 <tr v-for="craftsman in sortedCraftsmen" v-on:click.prevent="craftsman.selected = !craftsman.selected"
                     v-bind:class="{ 'table-active': craftsman.selected   }">
-                    <td class="minimal-width">
-                        <input title="check" type="checkbox" v-model="craftsman.selected"/>
-                    </td>
                     <td>
                         {{ craftsman.name }}
                     </td>
@@ -114,8 +105,11 @@
 
                 </tbody>
             </table>
-            <button class="btn btn-primary" v-bind:disabled="isLoading" v-on:click.prevent="sendEmails()">
-                {{$t("actions.send_emails")}}
+            <button v-if="selectedCraftsmen.length === 0" class="btn btn-primary" :disabled="isLoading" v-on:click.prevent="sendEmails()">
+                {{$t("actions.send_emails_to_all")}}
+            </button>
+            <button v-else class="btn btn-primary" :disabled="isLoading" @click.prevent="sendEmails()">
+                {{$t("actions.send_emails_to_selected")}}
             </button>
         </div>
         <div v-else-if="!isLoading">
@@ -146,10 +140,12 @@
         mixins: [notifications],
         methods: {
             sendEmails: function () {
+                const recipients = this.selectedCraftsmen.length === 0 ? this.craftsmen : this.selectedCraftsmen;
+
                 this.isLoading = true;
                 axios.post("/api/dispatch", {
                     "constructionSiteId": this.constructionSiteId,
-                    "craftsmanIds": this.craftsmen.filter(c => c.selected).map(c => c.id)
+                    "craftsmanIds": recipients.map(c => c.id)
                 }).then((response) => {
                     this.isLoading = false;
                     this.craftsmen.filter(c => c.selected).forEach(c => {
@@ -186,11 +182,8 @@
             }
         },
         computed: {
-            indeterminate: function () {
-                return !this.selected && this.craftsmen.filter(c => c.selected).length > 0;
-            },
-            selected: function () {
-                return this.craftsmen.filter(c => !c.selected).length === 0;
+            selectedCraftsmen: function () {
+                return this.craftsmen.filter(c => c.selected);
             },
             sortedCraftsmen: function () {
                 const sortKey = this.sortKey;

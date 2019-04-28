@@ -143,10 +143,10 @@ class IssueRepository extends EntityRepository
         };
         if ($filter->getRegistrationStatus() !== null) {
             $queryBuilder->andWhere('i.registeredAt ' . $statusToString($filter->getRegistrationStatus()));
-            if ($filter->getRespondedStatus()) {
+            if ($filter->getRegistrationStatus()) {
                 if ($filter->getRegistrationStart() !== null) {
-                    $queryBuilder->andWhere('i.registeredAt >= :registration_end')
-                        ->setParameter(':responded_start', $filter->getRegistrationStart())
+                    $queryBuilder->andWhere('i.registeredAt >= :registration_start')
+                        ->setParameter(':registration_start', $filter->getRegistrationStart())
                     ;
                 }
                 if ($filter->getRegistrationEnd() !== null) {

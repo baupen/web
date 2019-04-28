@@ -133,6 +133,28 @@ class CraftsmanControllerTest extends ApiController
     /**
      * @throws ORMException
      */
+    public function testResponseUnauthenticated()
+    {
+        $response = $this->request('/maps/list', null);
+        $mapData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $issue = $mapData->data->maps[0]->issues[0];
+        $request = new IssueRequest();
+        $request->setIssueId($issue->id);
+
+        //execute issue action
+        $doUnauthorizedRequest = function ($action) use ($request) {
+            $this->expectException(AccessDeniedHttpException::class);
+            $this->request('/issue/' . $action, $request);
+        };
+
+        $doUnauthorizedRequest('respond');
+        $doUnauthorizedRequest('remove_response');
+    }
+
+    /**
+     * @throws ORMException
+     */
     public function testRespond()
     {
         $response = $this->authenticatedRequest('/maps/list');
@@ -161,28 +183,6 @@ class CraftsmanControllerTest extends ApiController
         $doRequest('remove_response', true);
 
         $doRequest('respond', false);
-    }
-
-    /**
-     * @throws ORMException
-     */
-    public function testResponseUnauthenticated()
-    {
-        $response = $this->request('/maps/list', null);
-        $mapData = $this->checkResponse($response, ApiStatus::SUCCESS);
-
-        $issue = $mapData->data->maps[0]->issues[0];
-        $request = new IssueRequest();
-        $request->setIssueId($issue->id);
-
-        //execute issue action
-        $doUnauthorizedRequest = function ($action) use ($request) {
-            $this->expectException(AccessDeniedHttpException::class);
-            $this->request('/issue/' . $action, $request);
-        };
-
-        $doUnauthorizedRequest('respond');
-        $doUnauthorizedRequest('remove_response');
     }
 
     /**

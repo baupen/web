@@ -38,7 +38,6 @@ class LoadConstructionManagerData extends BaseFixture
         $user->setGivenName('Florian');
         $user->setFamilyName('Moser');
         $user->setPassword();
-        $user->setAuthenticationSource(self::AUTHENTICATION_SOURCE_FIXTURES);
         $user->setAuthenticationHash();
         $user->setRegistrationDate();
         $manager->persist($user);

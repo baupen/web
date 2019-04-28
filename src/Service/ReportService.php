@@ -247,7 +247,7 @@ class ReportService implements ReportServiceInterface
         }
 
         //add limit
-        $limitValue = $this->getDateTimeString($filter->getLimitStart(), $filter->getLimitEnd());
+        $limitValue = $this->getDateString($filter->getLimitStart(), $filter->getLimitEnd());
         if ($limitValue !== '') {
             $filterEntries[$this->translator->trans('response_limit', [], 'entity_issue')] = $limitValue;
         }
@@ -265,21 +265,21 @@ class ReportService implements ReportServiceInterface
         $timeEntries = [];
         if ($filter->getRegistrationStatus() !== null) {
             $trans = $this->translator->trans('status_values.registered', [], 'entity_issue');
-            $range = $this->getDateTimeString($filter->getRegistrationStart(), $filter->getRegistrationEnd(), $trans);
+            $range = $this->getDateString($filter->getRegistrationStart(), $filter->getRegistrationEnd(), $trans);
             if ($range !== '') {
                 $timeEntries[] = $range;
             }
         }
         if ($filter->getRespondedStatus() !== null) {
             $trans = $this->translator->trans('status_values.responded', [], 'entity_issue');
-            $range = $this->getDateTimeString($filter->getRespondedStart(), $filter->getRespondedEnd(), $trans);
+            $range = $this->getDateString($filter->getRespondedStart(), $filter->getRespondedEnd(), $trans);
             if ($range !== '') {
                 $timeEntries[] = $range;
             }
         }
         if ($filter->getReviewedStatus() !== null) {
             $trans = $this->translator->trans('status_values.reviewed', [], 'entity_issue');
-            $range = $this->getDateTimeString($filter->getReviewedStart(), $filter->getRespondedEnd(), $trans);
+            $range = $this->getDateString($filter->getReviewedStart(), $filter->getRespondedEnd(), $trans);
             if ($range !== '') {
                 $timeEntries[] = $range;
             }
@@ -326,16 +326,16 @@ class ReportService implements ReportServiceInterface
      *
      * @return string
      */
-    private function getDateTimeString($start, $end, string $prefix = null): string
+    private function getDateString($start, $end, string $prefix = null): string
     {
         if ($start !== null) {
             if ($end !== null) {
-                $rangeString = $start->format(DateTimeFormatter::DATE_TIME_FORMAT) . ' - ' . $end->format(DateTimeFormatter::DATE_TIME_FORMAT);
+                $rangeString = $start->format(DateTimeFormatter::DATE_FORMAT) . ' - ' . $end->format(DateTimeFormatter::DATE_FORMAT);
             } else {
-                $rangeString = $this->translator->trans('introduction.filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report');
+                $rangeString = $this->translator->trans('introduction.filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_FORMAT)], 'report');
             }
         } elseif ($end !== null) {
-            $rangeString = $this->translator->trans('introduction.filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_TIME_FORMAT)], 'report');
+            $rangeString = $this->translator->trans('introduction.filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_FORMAT)], 'report');
         } else {
             return '';
         }
