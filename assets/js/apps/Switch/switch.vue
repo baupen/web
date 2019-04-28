@@ -1,6 +1,6 @@
 <template>
     <div id="switch">
-        <template v-if="managingConstructionSites.length > 0">
+        <template v-if="managingConstructionSites.length > 0 || createConstructionSiteActive">
             <h2>{{$t("mine.title")}}</h2>
             <p class="text-secondary">{{$t("mine.description")}}</p>
             <atom-spinner v-if="isLoading"
