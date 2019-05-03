@@ -331,7 +331,7 @@ sectorFrame: Frame?
 file: File?
 name: String
 constructionSiteID: UUID
-parentID: UUID // either another map or a construction site
+parentID: UUID? // null if top-level (parent is construction site)
 ```
 
 
