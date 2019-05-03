@@ -302,8 +302,6 @@ meta: ObjectMeta
 name: String
 address: Address
 image: File?
-maps: [UUID]
-craftsmen: [UUID]
 ```
 
 
@@ -321,19 +319,19 @@ country: String?
 meta: ObjectMeta
 name: String
 trade: String // e.g. "Gipser", "Maler"
+constructionSiteID: UUID
 ```
 
 
 ## `Map`
 ```
 meta: ObjectMeta
-children: [UUID]
 sectors: [Sector]
 sectorFrame: Frame?
-issues: [UUID]
 file: File?
 name: String
 constructionSiteID: UUID
+parentID: UUID // either another map or a construction site
 ```
 
 
@@ -354,8 +352,8 @@ isMarked: Bool
 wasAddedWithClient: Bool // "abnahmemodus"
 image: File?
 description: String?
-craftsman: UUID?
-map: UUID // only really used before registration
+craftsmanID: UUID?
+mapID: UUID
 status: Status
 position: Position?
 ```
