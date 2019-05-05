@@ -225,6 +225,9 @@ class IssueRepository extends EntityRepository
                 $issueId = $issue->getId();
 
                 $matches[$issueId] = 0;
+                if ($filter->getAnyStatus() & Filter::STATUS_NEW) {
+                    $matches[$issueId] += $issue->getRegisteredAt() === null;
+                }
                 if ($filter->getAnyStatus() & Filter::STATUS_REGISTERED) {
                     $matches[$issueId] += $issue->getRegisteredAt() !== null && $issue->getCraftsman()->getLastOnlineVisit() < $issue->getRegisteredAt() && $issue->getRespondedAt() === null && $issue->getReviewedAt() === null;
                 }
