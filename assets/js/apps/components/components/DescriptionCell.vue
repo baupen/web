@@ -8,7 +8,7 @@
     </span>
     <div v-else class="editable" @click.exact.prevent.stop="$emit('edit-start')">
         <span>
-            {{ issue.description }}
+            {{ displayDescription }}
         </span>
     </div>
 </template>
@@ -51,6 +51,12 @@
                     let input = this.$refs.description;
                     input.focus();
                 });
+            }
+        },
+        computed: {
+            displayDescription: function () {
+                const value = this.issue.description;
+                return value.length > 0 ? value : "-"
             }
         }
     }

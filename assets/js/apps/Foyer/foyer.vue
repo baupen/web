@@ -68,9 +68,13 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="issue in sortedIssues" v-on:click.prevent="selectIssue(issue)"
+                <tr v-for="issue in sortedIssues"
+                    @click.ctrl.exact="issueCtrlClicked(issue)"
+                    @click.meta.exact="issueCtrlClicked(issue)"
+                    @click.exact="issueClicked(issue)"
+                    @click.shift.exact.prevent.stop="issueShiftClicked(issue)"
                     class="selectable"
-                    v-bind:class="{ 'table-active': !onDelete && issue.selected && !issue.error, 'table-success': issue.number > 0, 'table-danger': onDelete && issue.selected, 'table-warning':  issue.error}">
+                    :class="tableRowClass(issue)">
                     <td v-if="someIssuesHaveNumbers" class="minimal-width">
                         <span v-if="issue.number">#{{issue.number}}</span>
                     </td>
@@ -141,14 +145,13 @@
                                         v-model="editResponseLimit">
                             </datepicker>
                             <button class="btn btn-secondary" @click.prevent.stop="saveResponseLimit">{{$t("actions.save")}}</button>
-                            <button class="btn btn-secondary" @click.prevent.stop="removeResponseLimit">{{$t("actions.remove")}}
-                            </button>
+                            <button class="btn btn-secondary" @click.prevent.stop="removeResponseLimit">{{$t("actions.remove")}}</button>
                         </div>
                     </td>
                     <td>
                         {{issue.map}}
                     </td>
-                    <td class="minimal-width" :class="{'bg-primary text-white': issue.wasAddedWithClient}">
+                    <td class="minimal-width">
                         {{issue.uploadByName}} <br/>
                         <span class="small">{{ formatDateTime(issue.uploadedAt)}}</span>
                     </td>
@@ -193,6 +196,21 @@
     </div>
 </template>
 
+<style>
+    .added-with-client {
+        background-color: #e6e6f9!important;
+    }
+
+    .added-with-client:hover {
+        background-color: #d3d3e7 !important;
+    }
+
+    .added-with-client-selected,
+    .added-with-client-selected:hover {
+        background-color: #c6c6d9!important;
+    }
+</style>
+
 <script>
     import axios from "axios"
     import moment from "moment";
@@ -223,6 +241,9 @@
                     enabled: false,
                     issue: null
                 },
+                selectState: {
+                    lastSelectedIssue: null
+                },
                 onDelete: false
             }
         },
@@ -235,6 +256,54 @@
             }
         },
         methods: {
+            afterIssueSelectionChanged: function() {
+                if (this.selectedIssuesLength === 0) {
+                    this.abortDescription();
+                    this.abortResponseLimit();
+                    this.abortCraftsman();
+                }
+            },
+            issueClicked: function (issue) {
+                if (issue.selected && this.selectedIssuesLength === 1) {
+                    issue.selected = false;
+                    this.selectState.lastSelectedIssue = null;
+                    this.afterIssueSelectionChanged();
+                    return;
+                }
+
+                //reset selection
+                this.issues.forEach(i => i.selected = false);
+
+                // select new
+                this.selectState.lastSelectedIssue = issue;
+                issue.selected = true;
+            },
+            issueCtrlClicked: function (issue) {
+                issue.selected = !issue.selected;
+
+                //remove all selections
+                document.getSelection().removeAllRanges();
+
+                this.afterIssueSelectionChanged();
+            },
+            issueShiftClicked: function (issue) {
+                //if none selected; select the one pressed
+                if (this.selectState.lastSelectedIssue === null) {
+                    this.issueClicked(issue);
+                    return;
+                }
+
+                //remove all selections
+                document.getSelection().removeAllRanges();
+
+                //mark the others in the range
+                const index1 = this.sortedIssues.indexOf(this.selectState.lastSelectedIssue);
+                const index2 = this.sortedIssues.indexOf(issue);
+
+                for (let i = Math.min(index1, index2); i <= Math.max(index1, index2); i++) {
+                    this.sortedIssues[i].selected = true;
+                }
+            },
             processFile: function (event) {
                 let data = new FormData();
                 data.append('message', JSON.stringify({
@@ -345,14 +414,6 @@
                 this.issues.filter(i => i.selected).forEach(i => i.craftsmanId = this.selectedCraftsman.id);
                 this.abortCraftsman();
                 this.save();
-            },
-            selectIssue: function (issue) {
-                issue.selected = !issue.selected;
-                if (this.issues.filter(i => i.selected).length === 0) {
-                    this.abortDescription();
-                    this.abortResponseLimit();
-                    this.abortCraftsman();
-                }
             },
             markIssue: function (issue) {
                 issue.isMarked = !issue.isMarked;
@@ -500,9 +561,34 @@
                         i.craftsmanTrade = craftsman.trade;
                     })
                 }
+            },
+            tableRowClass: function (issue) {
+                if (issue.number) {
+                    return 'table-success';
+                }
+                if (issue.error) {
+                    return 'table-warning';
+                }
+                if (this.onDelete && issue.selected) {
+                    return 'table-danger';
+                }
+                if (issue.wasAddedWithClient) {
+                    if (issue.selected) {
+                        return "added-with-client-selected"
+                    } else {
+                        return "added-with-client"
+                    }
+                }
+                if (issue.selected) {
+                    return 'table-active'
+                }
+                return null;
             }
         },
         computed: {
+            selectedIssuesLength: function() {
+                return this.issues.filter(i => i.selected).length
+            },
             someIssuesHaveNumbers: function () {
                 return this.issues.filter(i => i.number).length > 0;
             },

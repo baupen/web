@@ -41,6 +41,7 @@ class IssueTransformer extends BatchTransformer
         $issue = new \App\Api\Entity\Register\Issue($entity->getId());
         $this->issueTransformer->writeApiProperties($entity, $issue);
 
+        $issue->setWasAddedWithClient($entity->getWasAddedWithClient());
         $issue->setNumber($entity->getNumber());
         $issue->setRegisteredAt($entity->getRegisteredAt());
         $issue->setRegistrationByName($entity->getRegistrationBy()->getName());

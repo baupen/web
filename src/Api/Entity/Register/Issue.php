@@ -56,6 +56,11 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     private $isRead;
 
     /**
+     * @var bool
+     */
+    private $wasAddedWithClient;
+
+    /**
      * @var string
      */
     private $mapId;
@@ -202,5 +207,21 @@ class Issue extends \App\Api\Entity\Foyer\Issue
     public function setMapId(string $mapId): void
     {
         $this->mapId = $mapId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getWasAddedWithClient(): bool
+    {
+        return $this->wasAddedWithClient;
+    }
+
+    /**
+     * @param bool $wasAddedWithClient
+     */
+    public function setWasAddedWithClient(bool $wasAddedWithClient): void
+    {
+        $this->wasAddedWithClient = $wasAddedWithClient;
     }
 }

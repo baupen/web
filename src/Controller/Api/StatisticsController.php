@@ -52,7 +52,7 @@ class StatisticsController extends ApiController
 
         //count new issues
         $filter = self::createRegisterFilter($constructionSite);
-        $filter->filterByAnyStatus(Filter::STATUS_REGISTERED);
+        $filter->filterByRegistrationStatus(false);
         $overview->setNewIssuesCount($issueRepo->countByFilter($filter));
 
         //count open issues

@@ -124,6 +124,7 @@
     import MapTableRow from "./MapTableRow";
     import TextEditField from "./TextEditField";
     import eol from 'eol'
+    import uuid from "uuid/v4"
 
     const lang = document.documentElement.lang.substr(0, 2);
     moment.locale(lang);
@@ -170,12 +171,20 @@
 
                 this.importActions.forEach(ia => {
                     if (ia.action === 'add') {
-                        this.$emit('craftsman-add', (newContainer) => writePropertiesFunc(newContainer, ia));
+                        let newContainer = {
+                            new: true,
+                            craftsman: {
+                                id: uuid(),
+                                issueCount: 0
+                            }
+                        };
+                        writePropertiesFunc(newContainer, ia);
+                        this.$emit('save', newContainer);
                     } else if (ia.action === 'update') {
                         writePropertiesFunc(ia.craftsmanContainer, ia);
-                        this.$emit('craftsman-save', ia.craftsmanContainer);
+                        this.$emit('save', ia.craftsmanContainer);
                     } else if (ia.action === 'remove') {
-                        this.$emit('craftsman-remove', ia.craftsmanContainer);
+                        this.$emit('remove', ia.craftsmanContainer);
                     }
                 });
             },

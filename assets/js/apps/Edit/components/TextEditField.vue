@@ -13,7 +13,7 @@
         </span>
         <div v-else class="editable" @click="$emit('start-edit')">
             <span>
-                {{ value }}
+                {{ valueWithDefault }}
             </span>
         </div>
     </div>
@@ -56,6 +56,14 @@
                     this.$emit('input', this.currentValue);
                 }
                 this.$emit(event.shiftKey ? 'backward' : 'forward');
+            }
+        },
+        computed: {
+            valueWithDefault: function () {
+                if (this.value.trim().length === 0) {
+                    return "-";
+                }
+                return this.value;
             }
         },
         watch: {

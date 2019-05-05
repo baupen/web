@@ -22,7 +22,7 @@
                 <div v-else>
                     <issue-edit-table :craftsmen="craftsmen"
                                       :issues="filteredIssues"
-                                      @selection-changed="issueSelectionChanged(arguments[0])"
+                                      :initial-text-filter="initialTextFilterIssueEditTable"
                                       @update-issues="updateIssues"
                                       @update-status="updateStatus">
                     </issue-edit-table>
@@ -57,6 +57,7 @@
                 trade: [],
                 maps: [],
                 datePickerLocale: datePickerTranslation,
+                initialTextFilterIssueEditTable: "",
                 filter: {
                     onlyMarked: false,
                     onlyOverLimit: false,
@@ -224,15 +225,6 @@
                     match.reviewedAt = c.reviewedAt;
                     match.reviewByName = c.reviewByName;
                 });
-            },
-            issueSelectionChanged: function (selectedIssues) {
-                //deactivating feature till table deselection is made easy
-                if (selectedIssues.length === 0 || true) {
-                    this.filter.issue.enabled = false;
-                } else {
-                    this.filter.issue.enabled = true;
-                    this.filter.issue.issues = selectedIssues.map(i => i.id);
-                }
             }
         },
         mounted() {
@@ -251,6 +243,28 @@
 
             const url = new URL(window.location.href);
 
+            if (url.searchParams.has("issue")) {
+                this.initialTextFilterIssueEditTable = url.searchParams.get("issue");
+                this.filter.status.enabled = false;
+            }
+
+            if (url.searchParams.has("view")) {
+                //set filter default values
+                if (url.searchParams.get("view") === "overdue") {
+                    this.filter.onlyOverLimit = true;
+                } else if (url.searchParams.get("view") === "marked") {
+                    this.filter.onlyMarked = true;
+                } else if (url.searchParams.get("view") === "open") {
+                    this.filter.status.enabled = true;
+                    this.filter.status.registered = true;
+                    this.filter.status.read = true;
+                    this.filter.status.responded = true;
+                } else if (url.searchParams.get("view") === "to_inspect") {
+                    this.filter.status.enabled = true;
+                    this.filter.status.responded = true;
+                }
+            }
+
             //fill register
             axios.get("/api/configuration").then((response) => {
                 this.constructionSiteId = response.data.constructionSite.id;
@@ -261,11 +275,6 @@
                 }).then((response) => {
                     this.issues = response.data.issues;
                     this.isLoading = false;
-
-                    if (url.searchParams.has("issue")) {
-                        this.filter.status.enabled = false;
-                        this.filter.numberText = url.searchParams.get("issue");
-                    }
                 });
 
                 axios.post("/api/register/craftsman/list", {
@@ -287,23 +296,6 @@
                     this.maps = response.data.maps;
                 });
             });
-
-            if (url.searchParams.has("view")) {
-                //set filter default values
-                if (url.searchParams.get("view") === "overdue") {
-                    this.filter.onlyOverLimit = true;
-                } else if (url.searchParams.get("view") === "marked") {
-                    this.filter.onlyMarked = true;
-                } else if (url.searchParams.get("view") === "open") {
-                    this.filter.status.enabled = true;
-                    this.filter.status.registered = true;
-                    this.filter.status.read = true;
-                    this.filter.status.responded = true;
-                } else if (url.searchParams.get("view") === "to_inspect") {
-                    this.filter.status.enabled = true;
-                    this.filter.status.responded = true;
-                }
-            }
         }
     }
 

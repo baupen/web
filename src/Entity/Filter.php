@@ -28,6 +28,7 @@ class Filter extends BaseEntity
 {
     use IdTrait;
 
+    const STATUS_NEW = 0;
     const STATUS_REGISTERED = 1;
     const STATUS_READ = 2;
     const STATUS_RESPONDED = 4;
@@ -522,6 +523,18 @@ class Filter extends BaseEntity
     public function getLimitEnd(): ?DateTime
     {
         return $this->limitEnd;
+    }
+
+    /**
+     * @throws Exception
+     *
+     * @return bool
+     */
+    public function isValid()
+    {
+        $now = new \DateTime();
+
+        return $this->getAccessAllowedUntil() === null || $this->getAccessAllowedUntil() > $now;
     }
 
     /**

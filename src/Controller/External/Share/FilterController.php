@@ -14,12 +14,10 @@ namespace App\Controller\External\Share;
 use App\Controller\Base\BaseDoctrineController;
 use App\Controller\External\Traits\FilterAuthenticationTrait;
 use App\Entity\Filter;
-use DateTime;
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @Route("/f/{identifier}")
@@ -44,9 +42,8 @@ class FilterController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
-        $now = new DateTime();
-        if ($filter->getAccessAllowedUntil() !== null && $filter->getAccessAllowedUntil() < $now) {
-            throw new AccessDeniedException();
+        if (!$filter->isValid()) {
+            return $this->render('share/invalid.html.twig');
         }
 
         $filter->setLastAccessNow();

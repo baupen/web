@@ -54,7 +54,7 @@
                     @click.exact="issueClicked(issue)"
                     @click.shift.exact.prevent.stop="issueShiftClicked(issue)"
                     class="selectable"
-                    v-bind:class="{ 'table-active': selectedIssues.indexOf(issue) >= 0 }">
+                    :class="rowClass(issue)">
 
                     <td class="minimal-width">
                         {{issue.number}}
@@ -121,6 +121,22 @@
     </div>
 </template>
 
+
+<style>
+    .added-with-client {
+        background-color: #e6e6f9!important;
+    }
+
+    .added-with-client:hover {
+        background-color: #d3d3e7 !important;
+    }
+
+    .added-with-client-selected,
+    .added-with-client-selected:hover {
+        background-color: #c6c6d9!important;
+    }
+</style>
+
 <script>
     import CraftsmanCell from './components/CraftsmanCell'
     import DescriptionCell from './components/DescriptionCell'
@@ -144,6 +160,11 @@
             issues: {
                 type: Array,
                 required: true
+            },
+            initialTextFilter: {
+                type: String,
+                required: false,
+                default: ""
             }
         },
         data: function () {
@@ -183,6 +204,11 @@
         },
         methods: {
             issueClicked: function (issue) {
+                if (this.selectedIssues.length === 1 && this.selectedIssues[0] === issue) {
+                    this.selectedIssues = [];
+                    return;
+                }
+
                 //reset selection
                 this.lastSelectedIssue = issue;
                 this.selectedIssues = [issue];
@@ -218,6 +244,12 @@
                 if (index1 >= 0 && index2 >= 0) {
                     this.selectedIssues = this.issues.slice(Math.min(index1, index2), Math.max(index1, index2) + 1);
                 }
+            },
+            rowClass: function(issue) {
+                if (issue.wasAddedWithClient) {
+                    return "added-with-client" + (this.selectedIssues.indexOf(issue) >= 0 ? "-selected" : "");
+                }
+                return this.selectedIssues.indexOf(issue) >= 0 ? "table-active" : "";
             },
             cellEditStart: function (cell, issue) {
                 //select issue if not done already
@@ -329,6 +361,9 @@
                 this.craftsmen.forEach(c => res[c.id] = c);
                 return res;
             }
+        },
+        mounted() {
+            this.textFilter = this.initialTextFilter;
         }
     }
 
