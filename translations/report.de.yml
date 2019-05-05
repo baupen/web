@@ -7,14 +7,14 @@ introduction:
     not: 'nicht %state%'
     or: oder
     and: und
-    trades: Gewerbe|Gewerbe
+    trades: Funktion|Funktionen
     craftsmen: Firma|Firmen
     maps: Karte|Karten
     time: Zeit
 table:
   by_map: 'Pendenzen nach Karte'
   by_craftsman: 'Pendenzen nach ausführender Firma'
-  by_trade: 'Pendenzen nach Handwerk'
+  by_trade: 'Pendenzen nach Funktion'
   in_state_since: '%status% seit'
 issues:
   detailed: 'Pendenzendetails nach Karte'
