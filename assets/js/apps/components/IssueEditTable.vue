@@ -160,6 +160,11 @@
             issues: {
                 type: Array,
                 required: true
+            },
+            initialTextFilter: {
+                type: String,
+                required: false,
+                default: ""
             }
         },
         data: function () {
@@ -356,6 +361,9 @@
                 this.craftsmen.forEach(c => res[c.id] = c);
                 return res;
             }
+        },
+        mounted() {
+            this.textFilter = this.initialTextFilter;
         }
     }
 
