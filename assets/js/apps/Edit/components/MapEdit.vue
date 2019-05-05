@@ -9,24 +9,25 @@
             </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+            <div class="tab-pane fade show active" ref="mapView" id="nav-home" role="tabpanel"
+                 aria-labelledby="nav-home-tab">
                 <map-view class="pt-2"
                           :map-containers="mapContainers"
                           :map-file-containers="mapFileContainers"
-                          @maps-reorder="$emit('maps-reorder')"
-                          @map-add="$emit('map-add', arguments[0])"
-                          @map-save="$emit('map-save', arguments[0])"
-                          @map-remove="$emit('map-remove', arguments[0])"
+                          @maps-reorder="emitIfTabActive(0, 'maps-reorder')"
+                          @map-add="emitIfTabActive(0, 'map-add', arguments[0])"
+                          @map-save="emitIfTabActive(0, 'map-save', arguments[0])"
+                          @map-remove="emitIfTabActive(0, 'map-remove', arguments[0])"
                 />
             </div>
             <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                 <map-file-view class="pt-2"
                                :map-containers="mapContainers"
                                :map-file-containers="mapFileContainers"
-                               @file-dropped="$emit('map-file-dropped', arguments[0])"
-                               @start-upload="$emit('map-file-upload', arguments[0])"
-                               @abort-upload="$emit('map-file-abort-upload', arguments[0])"
-                               @save="$emit('map-file-save', arguments[0])"
+                               @file-dropped="emitIfTabActive(1, 'map-file-dropped', arguments[0])"
+                               @start-upload="emitIfTabActive(1, 'map-file-start-upload', arguments[0])"
+                               @abort-upload="emitIfTabActive(1, 'map-file-abort-upload', arguments[0])"
+                               @save="emitIfTabActive(1, 'map-file-save', arguments[0])"
                 />
             </div>
         </div>
@@ -68,6 +69,17 @@
         components: {
             MapFileView,
             MapView
+        },
+        methods: {
+            emitIfTabActive(tabIndex, eventName, argument) {
+                if (this.$refs.mapView.classList.contains("active")) {
+                    if (tabIndex === 0) {
+                        this.$emit(eventName, argument);
+                    }
+                } else if (tabIndex === 1) {
+                    this.$emit(eventName, argument);
+                }
+            }
         }
     }
 
