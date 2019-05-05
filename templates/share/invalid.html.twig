@@ -1,0 +1,14 @@
+{% extends 'center_content.html.twig' %}
+
+{% block title %}{{ "invalid.title"|trans }}{% endblock %}
+{% block description %}{{ "invalid.description"|trans }}{% endblock %}
+
+{% trans_default_domain "share" %}
+
+{% block primary_content %}
+    {% block additional_error_info %}
+        <p class="text-secondary">{{ "invalid.description"|trans }}</p>
+    {% endblock %}
+
+    <div class="error-image image-invalid-link-error"></div>
+{% endblock %}

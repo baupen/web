@@ -525,6 +525,18 @@ class Filter extends BaseEntity
     }
 
     /**
+     * @throws Exception
+     *
+     * @return bool
+     */
+    public function isValid()
+    {
+        $now = new \DateTime();
+
+        return $this->getAccessAllowedUntil() === null || $this->getAccessAllowedUntil() > $now;
+    }
+
+    /**
      * @param $array
      *
      * @return array

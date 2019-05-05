@@ -11,7 +11,6 @@
 
 namespace App\Controller\External\Traits;
 
-use App\Entity\Craftsman;
 use App\Entity\Filter;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -22,11 +21,13 @@ trait FilterAuthenticationTrait
      * @param $identifier
      * @param $filter
      *
+     * @throws \Exception
+     *
      * @return bool
      */
     private function parseIdentifierRequest(ManagerRegistry $doctrine, $identifier, &$filter)
     {
-        /** @var Craftsman $filter */
+        /** @var Filter $filter */
         $filter = $doctrine->getRepository(Filter::class)->findOneBy(['publicAccessIdentifier' => $identifier]);
         if ($filter === null) {
             return false;

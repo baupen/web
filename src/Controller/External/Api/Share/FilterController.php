@@ -41,12 +41,14 @@ class FilterController extends ApiController
      * @param ConstructionSiteTransformer $constructionSiteTransformer
      * @param FilterTransformer           $filterTransformer
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function readAction($identifier, ConstructionSiteTransformer $constructionSiteTransformer, FilterTransformer $filterTransformer)
     {
         /** @var Filter $filter */
-        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter)) {
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter) || !$filter->isValid()) {
             return $this->fail(self::INVALID_IDENTIFIER);
         }
 
@@ -65,12 +67,14 @@ class FilterController extends ApiController
      * @param $identifier
      * @param MapTransformer $mapTransformer
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function mapsListAction($identifier, MapTransformer $mapTransformer)
     {
         /** @var Filter $filter */
-        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter)) {
+        if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $filter) || !$filter->isValid()) {
             return $this->fail(self::INVALID_IDENTIFIER);
         }
 
