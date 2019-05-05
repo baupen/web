@@ -45,9 +45,9 @@
         />
         <craftsman-view v-else
                         :craftsman-containers="craftsmanContainers"
-                        @craftsman-add="addCraftsman(arguments[0])"
-                        @craftsman-save="saveCraftsman(arguments[0])"
-                        @craftsman-remove="removeCraftsman(arguments[0])"
+                        @add="craftsmanContainers.push(arguments[0])"
+                        @save="saveCraftsman(arguments[0])"
+                        @remove="removeCraftsman(arguments[0])"
         />
     </div>
 </template>
@@ -159,36 +159,28 @@
                     this.mapContainers = this.mapContainers.filter(cc => cc !== mapContainer);
                 });
             },
-            addCraftsman: function (afterAddAction) {
-                const craftsmanContainer = {
-                    craftsman: {
-                        id: uuid(),
-                        contactName: null,
-                        email: null,
-                        company: null,
-                        trade: null,
-                        issueCount: 0
-                    }
-                };
-
-                this.craftsmanContainers.unshift(craftsmanContainer);
-
-                axios.post("/api/edit/craftsman", {
-                    constructionSiteId: this.constructionSiteId,
-                    craftsman: craftsmanContainer.craftsman
-                }).then((response) => {
-                    craftsmanContainer.craftsman.id = response.data.craftsman.id;
-                });
-
-                afterAddAction(craftsmanContainer);
-            },
             saveCraftsman: function (craftsmanContainer) {
-                axios.put("/api/edit/craftsman/" + craftsmanContainer.craftsman.id, {
-                    constructionSiteId: this.constructionSiteId,
-                    craftsman: craftsmanContainer.craftsman
-                });
+                if (craftsmanContainer.new) {
+                    axios.post("/api/edit/craftsman", {
+                        constructionSiteId: this.constructionSiteId,
+                        craftsman: craftsmanContainer.craftsman
+                    }).then((response) => {
+                        craftsmanContainer.craftsman.id = response.data.craftsman.id;
+                        craftsmanContainer.new = false;
+                    });
+                } else {
+                    axios.put("/api/edit/craftsman/" + craftsmanContainer.craftsman.id, {
+                        constructionSiteId: this.constructionSiteId,
+                        craftsman: craftsmanContainer.craftsman
+                    });
+                }
             },
             removeCraftsman: function (craftsmanContainer) {
+                if (craftsmanContainer.new) {
+                    this.craftsmanContainers = this.craftsmanContainers.filter(cc => cc !== craftsmanContainer);
+                    return;
+                }
+
                 axios.delete("/api/edit/craftsman/" + craftsmanContainer.craftsman.id, {
                     data: {
                         constructionSiteId: this.constructionSiteId
@@ -392,6 +384,7 @@
                 }).then((response) => {
                     response.data.craftsmen.forEach(c => {
                         this.craftsmanContainers.push({
+                            new: false,
                             craftsman: c
                         })
                     });
