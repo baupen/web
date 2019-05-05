@@ -32,6 +32,9 @@
             <button class="btn btn-primary" @click="createConstructionSite">
                 {{$t("actions.create_construction_site")}}
             </button>
+            <button class="btn btn-primary" @click="redraw">
+                redraw
+            </button>
         </div>
         <table class="table table-hover table-condensed">
             <thead>
@@ -106,6 +109,13 @@
             AtomSpinner
         },
         methods: {
+            redraw: function() {
+                window.setTimeout(() => {
+                    this.$nextTick(function () {
+                        this.$redrawVueMasonry();
+                    });
+                }, 100);
+            },
             toggle: function (constructionSite) {
                 if (constructionSite.isConstructionManagerOf) {
                     axios.post("/api/switch/remove_access", {
@@ -120,15 +130,11 @@
                         constructionSite.isConstructionManagerOf = true;
                     });
                 }
-                this.$nextTick(function () {
-                    this.$redrawVueMasonry();
-                });
+                this.redraw();
             },
             createConstructionSite: function() {
                 this.createConstructionSiteActive = true;
-                this.$nextTick(function () {
-                    this.$redrawVueMasonry();
-                });
+                this.redraw();
             },
             formatDateTime: function (dateTime) {
                 return moment(dateTime).locale(this.locale).fromNow();
