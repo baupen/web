@@ -22,7 +22,6 @@
                 <div v-else>
                     <issue-edit-table :craftsmen="craftsmen"
                                       :issues="filteredIssues"
-                                      @selection-changed="issueSelectionChanged(arguments[0])"
                                       @update-issues="updateIssues"
                                       @update-status="updateStatus">
                     </issue-edit-table>
@@ -224,15 +223,6 @@
                     match.reviewedAt = c.reviewedAt;
                     match.reviewByName = c.reviewByName;
                 });
-            },
-            issueSelectionChanged: function (selectedIssues) {
-                //deactivating feature till table deselection is made easy
-                if (selectedIssues.length === 0 || true) {
-                    this.filter.issue.enabled = false;
-                } else {
-                    this.filter.issue.enabled = true;
-                    this.filter.issue.issues = selectedIssues.map(i => i.id);
-                }
             }
         },
         mounted() {
