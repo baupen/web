@@ -59,9 +59,9 @@
     "parent": "Zuordnung"
   },
   "map_file": {
-    "_name": "Bauplanversion",
-    "_plural": "Bauplanversionen",
-    "name": "Name",
+    "_name": "PDF",
+    "_plural": "PDF",
+    "name": "Dateiname",
     "created_at": "hinzugefügt am"
   },
   "messages": {

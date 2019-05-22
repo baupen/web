@@ -6,8 +6,6 @@
     "actions": {
       "add_map": "Bauplan hinzufügen",
       "reorder": "neu sortieren",
-      "add_map_files": "Bauplanversionen hinzufügen",
-      "hide_map_files": "Bauplanversionen verstecken",
       "save_changes": "{pendingChangesCount} Änderungen speichern"
     }
   },
@@ -20,12 +18,12 @@
     }
   },
   "edit_map_files": {
-    "title": "Bauplanversionen",
-    "help": "Ordnen Sie die Bauplanversionen einem Bauplan zu.",
-    "drag_files_to_upload": "Ziehen Sie .pdf Dateien in diesen Bereich um diese als neue Bauplanversionen hinzuzufügen",
+    "title": "PDF",
+    "help": "Ordnen Sie die PDFs einem Bauplan zu.",
+    "drag_files_to_upload": "Ziehen Sie .pdf Dateien in diesen Bereich um diese als Baupläne zu nutzen.",
     "performing_upload_check": "Upload wird geprüft...",
     "identical_content_than": "Der Inhalt dieser Datei ist identisch zu {files}.",
-    "identical_name": "Eine Bauplanversion mit diesem Namen existiert bereits. Die Bauplanversion wird zu {new_name} umbenannt.",
+    "identical_name": "Ein PDF mit diesem Namen existiert bereits. Das PDF wird zu {new_name} umbenannt.",
     "upload_active": "wird hochgeladen... ({percentage}%)",
     "actions": {
       "abort_upload": "Hochladen abbrechen",
