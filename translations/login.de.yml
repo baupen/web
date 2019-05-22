@@ -36,7 +36,7 @@ reset:
     invalid_hash: 'Dieser Link ist nicht mehr gültig. Beachten Sie, das jeder Link nur einmal benutzt werden kann.'
 create:
   title: 'Account erstellen.'
-  description: 'Lassen Sie uns Ihnen bei der Pendenzenverwaltung helfen.'
+  description: 'Lassen Sie uns Ihnen bei der Pendenzverwaltung helfen.'
   back_to_login: 'Zurück zum Login.'
   error:
     email_invalid: 'Mit dieser E-Mail dürfen Sie sich leider nicht registrieren. Benutzen Sie Ihre Geschäftsemail.'
@@ -56,6 +56,6 @@ confirm:
   success:
     welcome: 'Ihr Account ist nun fertig eingerichtet.'
   error:
-    invalid_hash: 'Dieser Link ist nicht mehr gültig. Starten Sie die Registrierung neu, oder loggen Sie sich ein wie gewohnt.'
+    invalid_hash: 'Dieser Link ist nicht mehr gültig. Starten Sie die Registrierung neu oder loggen Sie sich ein wie gewohnt.'
 logout:
   title: Logout

@@ -32,9 +32,6 @@
             <button class="btn btn-primary" @click="createConstructionSite">
                 {{$t("actions.create_construction_site")}}
             </button>
-            <button class="btn btn-primary" @click="redraw">
-                redraw
-            </button>
         </div>
         <table class="table table-hover table-condensed">
             <thead>

@@ -1,9 +1,10 @@
 status_values:
   all: Tutte
   none: Nessuna
-  registered: Aperte
+  registered: Aperto
+  read: Letto
   responded: Risposte
-  reviewed: Confermate
+  reviewed: Confermato
 number: Numero
 status: Stato
 response_limit: Termine

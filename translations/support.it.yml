@@ -6,8 +6,8 @@ support:
   submit: 'Inviare messaggio'
   email:
     subject: 'Richiesta di supporto ricevuta: %page%'
-    body: "Name: %name% Email: %email%\nNachricht: %message%\n"
+    body: "Nome: %name% Email: %email%\nMessaggio: %message%"
   success:
     email_sent: 'Abbiamo ricevuto il vostro messaggio.'
   fail:
-    email_not_sent: 'Il vostro messaggio non ha potuto essere inviato.'
+    email_not_sent: 'Il vostro messaggio non è potuto essere inviato.'

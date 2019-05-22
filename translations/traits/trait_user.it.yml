@@ -4,3 +4,7 @@ email: E-mail
 password: Password
 plain_password: Password
 repeat_plain_password: 'Ripetere la password'
+given_name: Nome
+family_name: Cognome
+phone: 'Numero di telefono (per gli operai)'
+profile: Profilo

@@ -4,11 +4,6 @@ craftsman:
 filter:
   title: Pendenzenüberblick
   description: Pendenzenüberblick
-
-invalid:
-  title: "Ungültig"
-  description: "Dieser Link ist abgelaufen."
-
 email:
   subject_appendix: ' auf der Baustelle %construction_site_name%'
   body_limit_info: 'Die nächste ablaufende Frist ist am %limit%. Wir sind zuversichtlich, dass die davon betroffenen Pendenzen bis dann behoben sind.'

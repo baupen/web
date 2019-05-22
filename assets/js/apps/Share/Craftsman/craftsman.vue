@@ -17,7 +17,7 @@
                         <div class="btn-group-vertical">
                             <a v-if="craftsman !== null" :href="craftsman.reportUrl" target="_blank"
                                class="btn btn-outline-primary btn-lg">{{$t("actions.print")}}</a> <br/>
-                            <a v-if="craftsman !== null" :href="craftsman.readOnlyViewUrl" target="_blank"
+                            <a v-if="craftsman !== null && canModify" :href="craftsman.readOnlyViewUrl" target="_blank"
                                class="btn btn-outline-primary btn">{{$t("actions.read_only_view")}}</a>
                         </div>
                     </div>
