@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/mangelio/web.svg?branch=master)](https://travis-ci.org/mangelio/web)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mangelio/web/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/mangelio/web/?branch=master)
 [![codecov](https://codecov.io/gh/mangelio/web/branch/master/graph/badge.svg)](https://codecov.io/gh/mangelio/web) 
-
+[![translated using lokalise](https://img.shields.io/badge/translations-lokalise.co-%23249BEE.svg)](https://lokalise.co) 
 
 ## About
 Mangel.io makes the issue management on a construction site more pleasing and straight-forward. 
