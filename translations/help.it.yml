@@ -1,0 +1,17 @@
+overview:
+  title: 'Funziona così.'
+  description: 'Gestione delle pendenze in 6 passaggi.'
+  create: Registrare
+  create_description: 'Registra le pendenze con la nostra app iOS.'
+  download_ios_app: 'all''App Store'
+  populate: Inserire
+  populate_description: 'Ripulire le nuove pendenze nella casella d''attesa.'
+  manage: Gestire
+  manage_description: 'Cercare, modificare ed esportare le pendenze inserite nell''elenco.'
+  notify: Notificare
+  notify_description: 'Informare gli artigiani sulle nuove tendenze.'
+  wait: Riscontro
+  wait_description: 'Ottieni una risposta dagli artigiani. Questi possono lavorare sulle loro pendenze con un collegamento personale e contrassegnarli come completati.'
+  inspect: Concludere
+  inspect_description: 'Contrassegnare le pendenze eseguite come completate nell''app iOS.'
+  start: 'Per l''uso'

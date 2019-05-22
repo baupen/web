@@ -7,8 +7,8 @@ date_time:
   Sat: Sa
   Sun: Do
 error:
-  form_validation_failed: 'L’elaborazione dei dati non è avvenuta correttamente. Tutti i campi necessari sono stati riempiti correttamente?'
+  form_validation_failed: 'L’elaborazione dei dati non può essere completata. Sono stati riempiti correttamente tutti i campi necessari?'
 outdated:
-  your_browser_is_outdated: 'Ihr Browser wird nicht unterstützt!'
-  update_to_view_correctly: 'Bitte aktualisieren Sie Ihren Browser, um diese Webseite korrekt benutzen zu können.'
-  update_now: 'Browser jetzt aktualisieren '
+  your_browser_is_outdated: 'Il tuo browser non è supportato!'
+  update_to_view_correctly: 'Si prega di aggiornare il proprio browser per poter utilizzare questo sito Web correttamente.'
+  update_now: 'Attualizzare il Browser'

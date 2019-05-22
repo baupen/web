@@ -1,5 +1,5 @@
 index:
-  title: 'Fehler %status_code%'
+  title: 'Errore %status_code%'
   description: 'Questa pagina non può essere visualizzata.'
   '404': 'Questa pagina non è stata trovata.'
   contact_support: 'Contattateci per ulteriore supporto: '

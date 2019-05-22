@@ -1,7 +1,7 @@
 status_values:
   all: Alle
   none: Keine
-  registered: Registriert
+  registered: Offen
   read: Gelesen
   responded: Beantwortet
   reviewed: Bestätigt

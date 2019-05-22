@@ -1,39 +1,39 @@
 {
-  "export": {
-    "link": {
-      "generate": "creare",
-      "name": "Link",
-      "valid_till": "valevole fino",
-      "with_limit": "Con data di scadenza"
-    },
-    "name": "Esporta",
-    "pdf": {
-      "generate": "generare",
-      "name": "PDF",
-      "tables": {
-        "name": "Tabelle riassuntive",
-        "table_by_craftsman": "per impresa",
-        "table_by_map": "per carte",
-        "table_by_trade": "per operaio"
-      },
-      "with_images": "con immagini"
-    }
-  },
-  "filter": {
-    "earlier_than": "prima di",
-    "later_than": "dopo di",
-    "name": "Filtro",
-    "status_set": "Stato fissato",
-    "time": "Ora",
-    "time_set": "{state} alle"
+  "table": {
+    "no_entries": "Nessuna pendenza",
+    "filter_placeholder": "Cerca descrizione..."
   },
   "search": {
     "name": "Ricerca",
     "only_marked": "solo marcate",
     "only_over_limit": "solo oltre il termine"
   },
-  "table": {
-    "filter_placeholder": "Cerca descrizione...",
-    "no_entries": "Nessuna pendenza"
+  "filter": {
+    "name": "Filtro",
+    "later_than": "dopo di",
+    "earlier_than": "prima di",
+    "status_set": "Stato fissato",
+    "time": "Ora",
+    "time_set": "{state} alle"
+  },
+  "export": {
+    "name": "Esporta",
+    "pdf": {
+      "name": "PDF",
+      "with_images": "con immagini",
+      "generate": "generare",
+      "tables": {
+        "name": "Tabelle riassuntive",
+        "table_by_craftsman": "per impresa",
+        "table_by_trade": "per operaio",
+        "table_by_map": "per carte"
+      }
+    },
+    "link": {
+      "name": "Link",
+      "with_limit": "Con data di scadenza",
+      "valid_till": "valevole fino",
+      "generate": "creare"
+    }
   }
 }

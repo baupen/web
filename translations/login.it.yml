@@ -1,39 +1,61 @@
 login:
   title: 'Per favore effettuare il login.'
-  description: 'Utilizzare l’e-mail, con la quale siete stati invitati.'
+  description: 'Utilizzi la sua E-mail aziendale.'
   submit: 'Effettuare il login'
   forgot_passwort: 'Password dimenticata?'
   errors:
     login_failed: 'Login fallito.'
-    email_not_found: 'Questa e-mail non è stata trovata.'
+    email_not_found: 'Questa E-mail non è stata trovata.'
     password_wrong: 'La password non è corretta.'
+    account_disabled: 'Questo account è disattivato'
 recover:
   title: 'Reimpostare la password.'
-  description: 'Manderemo una notifica alla vostra e-mail.'
+  description: 'Manderemo una notifica alla vostra E-mail.'
   submit: 'Inviare notifica'
   forgot_email: 'E-mail dimenticata o altri problemi?'
   remembered_login: 'Tentare nuovamente il login?'
   back_to_login: 'Tornare al login.'
   success:
-    email_sent: 'Vi è appena stata inviata una e-mail.'
+    email_sent: 'Le abbiamo appena inviato una E-mail.'
   fail:
-    email_not_sent: 'L’invio dell’e-mail è fallito. Questo è un errore interno, preghiamo di contattare il supporto tecnico.'
-    email_not_found: 'Questa e-mail non è stata trovata nel nostro sistema.'
+    email_not_sent: 'L’invio dell’E-mail è fallito. Questo è un errore interno, la preghiamo di contattare il supporto tecnico.'
+    email_not_found: 'Questa E-mail non è stata trovata nel nostro sistema.'
   email:
     reset_password:
       subject: 'Reimpostare la password su %page%'
       message: 'Utilizzare il seguente link per reimpostare la password:'
-      action_text: 'Reimposta la password'
+      action_text: 'Reimposta ora la password'
 reset:
   title: Bentornati!
-  description: 'Impostare la nuova password.'
+  description: 'Imposti la sua nuova password.'
   submit: 'Imposta password'
   success:
     password_set: 'La nuova password è stata impostata con successo.'
   error:
-    passwords_do_not_match: 'Le password non corrispondono'
-    invalid_hash: 'Questo link non è più valido. N.B.: ogni link può essere utilizzato solamente una volta.'
+    passwords_do_not_match: 'Le password non corrispondono.'
+    invalid_hash: 'Questo link non è più valido. Si noti che ogni link può essere utilizzato solamente una volta.'
 create:
+  title: 'Creare un account.'
+  description: 'Lasciate aiutarvi con l''amministrazione della pendenza.'
   back_to_login: 'Tornare al login.'
+  error:
+    email_invalid: 'Purtroppo non è possibile registrarsi con questa E-mail. Usi la sua E-mail aziendale.'
+    already_registered: 'Sei già registrato. Effettuate il login come di consueto.'
+  success:
+    welcome: 'Sei stato registrato con successo! Controlla le tue E-mail per attivare l''account.'
+  email:
+    subject: 'Benvenuti su %page%!'
+    body: 'Abbiamo creato e configurato il vostro account.'
+    action_text: 'Attivare l''account'
+  fail:
+    welcome_email_not_sent: 'L’invio dell’E-mail è fallito. Questo è un errore interno, la preghiamo di contattare il supporto tecnico.'
+confirm:
+  title: 'Attivare l''account.'
+  description: 'La vostra E-mail è stata confermata.'
+  submit: attivare
+  success:
+    welcome: 'Il vostro account è ora impostato.'
+  error:
+    invalid_hash: 'Questo link non è più valido. Riavviare la registrazione o accedere come di consueto.'
 logout:
   title: Logout

@@ -1,19 +1,22 @@
 generated_with_author: 'generato da %name% il %date%'
 introduction:
-  elements: 'Inhalt des Berichtes'
+  elements: 'Contenuto del rapporto'
   filter:
     later_than: 'dopo il %date%'
     earlier_than: 'prima del %date%'
     not: 'non %state%'
+    or: oppure
+    and: e
     trades: Settore|Settori
     craftsmen: Azienda|Aziende
     maps: Mappa|Mappe
+    time: Tempo
 table:
-  by_map: 'Pendenze sulla mappa'
+  by_map: 'Pendenze per mappa'
   by_craftsman: 'Pendenze per azienda esecutiva'
   by_trade: 'Pendenze per settore'
   in_state_since: 'da %status%'
 issues:
-  detailed: 'Dettagli delle pendenze sulla mappa'
+  detailed: 'Dettagli delle pendenze per mappa'
   with_images: 'con immagini'
 generated: 'generato il %date%'

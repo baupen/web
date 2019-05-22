@@ -1,58 +1,83 @@
 {
   "actions": {
-    "abort": "annulla",
-    "print": "stampa",
+    "save": "salva",
+    "save_all": "salva tutto",
     "remove": "rimuovi",
     "remove_all": "rimuovi tutto",
-    "save": "salva",
-    "save_all": "salva tutto"
+    "remove_selected": "rimuovi selezionati",
+    "abort": "annulla",
+    "print": "stampa"
+  },
+  "construction_site": {
+    "_name": "Cantiere",
+    "name": "Nome",
+    "address": "Indirizzo",
+    "street_address": "Via \/ no.",
+    "locality": "Luogo",
+    "postal_code": "CAP",
+    "created_at": "creato il"
   },
   "craftsman": {
-    "last_email_sent": "Ultima email inviata",
-    "last_online_visit": "Ultima visita alla pagina",
+    "_plural": "Operai",
     "name": "Nome",
-    "next_response_limit": "Prossimo termine",
-    "not_read_issues_count": "Pendenze non lette",
+    "trade": "Settore",
+    "contact_name": "Persona di contatto",
+    "email": "E-mail",
+    "company": "Impresa",
     "not_responded_issues_count": "Pendenze non risposte",
+    "not_read_issues_count": "Pendenze non lette",
     "open_issues_count": "Pendenze aperte",
-    "trade": "Settore"
+    "next_response_limit": "Prossimo termine",
+    "last_email_sent": "Ultima email inviata",
+    "last_online_visit": "Ultima visita alla pagina"
   },
   "issue": {
-    "craftsman": "Impresa",
-    "craftsman_not_found": "Impresa non trovata",
     "description": "Descrizione",
-    "map": "Mappa",
-    "no_craftsman": "non specificato",
-    "no_response_limit": "non specificato",
-    "number": "Numero",
+    "craftsman": "Impresa",
     "response_limit": "Scadenza",
+    "map": "Mappa",
     "status": "Stato",
+    "number": "Numero",
+    "trade": "Settore",
+    "no_response_limit": "non specificato",
+    "no_craftsman": "non specificato",
+    "craftsman_not_found": "Impresa non trovata",
     "status_values": {
       "read": "letto",
       "registered": "registrato",
       "responded": "risposto",
       "reviewed": "chiuso"
-    },
-    "trade": "Settore"
+    }
   },
   "map": {
     "_name": "Piano di costruzione",
+    "_plural": "Piani di costruzione",
     "name": "Nome",
-    "next_response_limit": "Prossimo limite",
     "open_issues_count": "Pendenze aperte",
-    "reviewed_issues_count": "Pendenze risolte"
+    "reviewed_issues_count": "Pendenze risolte",
+    "next_response_limit": "Prossimo limite",
+    "parent": "Attribuzione"
+  },
+  "map_file": {
+    "_name": "Versione del cantiere",
+    "_plural": "Versioni del cantiere",
+    "name": "Nome",
+    "created_at": "aggiunto il"
   },
   "messages": {
-    "danger": {
-      "unrecoverable": "Si è verificato un errore. Ricaricare la pagina e tentare nuovamente."
-    },
     "success": {
       "removed_entries": "Rimosso con successo.",
       "saved_changes": "Modifiche salvate."
+    },
+    "danger": {
+      "unrecoverable": "Si è verificato un errore. Ricaricare la pagina e tentare nuovamente."
     }
   },
+  "validation": {
+    "required": "Questo campo non può essere lasciato vuoto"
+  },
   "view": {
-    "less": "meno",
-    "more": "di più"
+    "more": "di più",
+    "less": "meno"
   }
 }
