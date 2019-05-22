@@ -55,7 +55,7 @@
         },
         computed: {
             displayDescription: function () {
-                const value = this.issue.description;
+                const value = this.issue.description.trim();
                 return value.length > 0 ? value : "-"
             }
         }
