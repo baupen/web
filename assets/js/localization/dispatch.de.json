@@ -4,7 +4,9 @@
     "filter_placeholder": "Handwerker\/Funktion suchen..."
   },
   "actions": {
-    "send_emails": "Emails versenden"
+    "send_emails": "Emails versenden",
+    "send_emails_to_all": "Emails an alle versenden",
+    "send_emails_to_selected": "Emails an ausgewählte versenden"
   },
   "messages": {
     "emails_sent": "Emails versandt",
