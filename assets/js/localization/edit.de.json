@@ -6,6 +6,8 @@
     "actions": {
       "add_map": "Bauplan hinzufügen",
       "reorder": "neu sortieren",
+      "add_map_files": "Bauplanversionen hinzufügen",
+      "hide_map_files": "Bauplanversionen verstecken",
       "save_changes": "{pendingChangesCount} Änderungen speichern"
     }
   },
