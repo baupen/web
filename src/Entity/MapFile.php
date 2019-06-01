@@ -115,18 +115,17 @@ class MapFile extends BaseEntity
      */
     public function getSectorFrame()
     {
-        if (\is_object($this->sectorFrame) || $this->sectorFrame === null) {
-            return $this->sectorFrame;
+        if ($this->sectorFrame !== null && !$this->sectorFrame instanceof Frame) {
+            $this->sectorFrame = Frame::createFromStdClass($this->sectorFrame);
         }
 
-        // doctrine deserializes to associative array instead of object
-        return (object) $this->sectorFrame;
+        return $this->sectorFrame;
     }
 
     /**
      * @param Frame|null $sectorFrame
      */
-    public function setSectorFrame(?Frame $sectorFrame): void
+    public function setSectorFrame($sectorFrame): void
     {
         $this->sectorFrame = $sectorFrame;
     }

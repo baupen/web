@@ -100,23 +100,26 @@ class MapSector extends BaseEntity
      */
     public function getPoints()
     {
-        if (\count($this->points) === 0 || \is_object($this->points[0])) {
+        if (\count($this->points) === 0) {
             return $this->points;
         }
 
-        // doctrine deserializes to associative array instead of object
-        $res = [];
-        foreach ($this->points as $point) {
-            $res[] = (object) $point;
+        if (!$this->points[0] instanceof Point) {
+            $oldPoints = $this->points;
+
+            $this->points = [];
+            foreach ($oldPoints as $oldPoint) {
+                $this->points[] = Point::createFromStdClass($oldPoint);
+            }
         }
 
-        return $res;
+        return $this->points;
     }
 
     /**
      * @param Point[]|array $points
      */
-    public function setPoints($points): void
+    public function setPoints(array $points): void
     {
         $this->points = $points;
     }

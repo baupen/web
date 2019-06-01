@@ -34,6 +34,30 @@ class Frame
     public $height;
 
     /**
+     * @param Frame|array|\stdClass|null $source
+     *
+     * @return Frame|null
+     */
+    public static function createFromStdClass($source)
+    {
+        if (\is_array($source)) {
+            if (\count($source) !== 4) {
+                return null;
+            }
+
+            $source = (object) $source;
+        }
+
+        $frame = new self();
+        $frame->height = $source->height;
+        $frame->width = $source->width;
+        $frame->startX = $source->startX;
+        $frame->startY = $source->startY;
+
+        return $frame;
+    }
+
+    /**
      * @param Frame|null $other
      *
      * @return bool

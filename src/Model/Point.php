@@ -22,4 +22,26 @@ class Point
      * @var float
      */
     public $y;
+
+    /**
+     * @param Point|array|\stdClass|null $source
+     *
+     * @return Point|null
+     */
+    public static function createFromStdClass($source)
+    {
+        if (\is_array($source)) {
+            if (\count($source) !== 2) {
+                return null;
+            }
+
+            $source = (object) $source;
+        }
+
+        $frame = new self();
+        $frame->x = $source->x;
+        $frame->y = $source->y;
+
+        return $frame;
+    }
 }

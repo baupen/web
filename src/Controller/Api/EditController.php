@@ -45,6 +45,7 @@ use App\Entity\Craftsman;
 use App\Entity\Map;
 use App\Entity\MapFile;
 use App\Entity\MapSector;
+use App\Model\Frame;
 use App\Service\Interfaces\UploadServiceInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -69,14 +70,14 @@ class EditController extends ApiController
     const MAP_HAS_CHILDREN_ASSIGNED = 'map can not be removed as there are children assigned to it';
 
     /**
-     * @Route("/map_file/{mapFile}/sector_frame", name="api_edit_map_file_sector_frame", methods={"GET"})
+     * @Route("/map_file/{mapFile}/sector_frame", name="api_edit_map_file_sector_frame")
      *
      * @param Request $request
      * @param MapFile $mapFile
      *
      * @return Response
      */
-    public function mapFileFrameAction(Request $request, MapFile $mapFile)
+    public function mapFileSectorFrameAction(Request $request, MapFile $mapFile)
     {
         /** @var ConstructionSite $constructionSite */
         if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
@@ -95,14 +96,14 @@ class EditController extends ApiController
     }
 
     /**
-     * @Route("/map_file/{mapFile}/frame", name="api_edit_map_file_sector_frame", methods={"POST"})
+     * @Route("/map_file/{mapFile}/sector_frame/save", name="api_edit_map_file_sector_frame_save", methods={"POST"})
      *
      * @param Request $request
      * @param MapFile $mapFile
      *
      * @return Response
      */
-    public function mapFileFramePostAction(Request $request, MapFile $mapFile)
+    public function mapFileSectorFramePostAction(Request $request, MapFile $mapFile)
     {
         /** @var ConstructionSite $constructionSite */
         /** @var UpdateSectorFrameRequest $parsedRequest */
@@ -123,7 +124,7 @@ class EditController extends ApiController
     }
 
     /**
-     * @Route("/map_file/{mapFile}/map_sectors", name="api_edit_map_map_sectors", methods={"GET"})
+     * @Route("/map_file/{mapFile}/map_sectors", name="api_edit_map_map_sectors")
      *
      * @param Request              $request
      * @param MapFile              $mapFile
@@ -131,7 +132,7 @@ class EditController extends ApiController
      *
      * @return Response
      */
-    public function mapFileSectorAction(Request $request, MapFile $mapFile, MapSectorTransformer $mapSectorTransformer)
+    public function mapFileMapSectorsAction(Request $request, MapFile $mapFile, MapSectorTransformer $mapSectorTransformer)
     {
         /** @var ConstructionSite $constructionSite */
         if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
@@ -143,7 +144,7 @@ class EditController extends ApiController
             $this->createAccessDeniedException();
         }
 
-        $mapSectors = $mapSectorTransformer->toApiMultiple($mapFile->getSectors());
+        $mapSectors = $mapSectorTransformer->toApiMultiple($mapFile->getSectors()->toArray());
         $data = new MapSectorsData();
         $data->setMapSectors($mapSectors);
 
@@ -151,14 +152,14 @@ class EditController extends ApiController
     }
 
     /**
-     * @Route("/map_file/{mapFile}/map_sectors", name="api_edit_map_map_sectors", methods={"POST"})
+     * @Route("/map_file/{mapFile}/map_sectors/save", name="api_edit_map_map_sectors_save", methods={"POST"})
      *
      * @param Request $request
      * @param MapFile $mapFile
      *
      * @return Response
      */
-    public function mapFileSectorPostAction(Request $request, MapFile $mapFile)
+    public function mapFileMapSectorsPostAction(Request $request, MapFile $mapFile)
     {
         /** @var ConstructionSite $constructionSite */
         /** @var UpdateMapSectorsRequest $parsedRequest */
@@ -179,9 +180,14 @@ class EditController extends ApiController
             $newSector->setIsAutomaticEditEnabled(false);
             $newSector->setMapFile($mapFile);
             $newSector->setIdentifier('manual_' . \count($newSectors));
-            $newSector->setName($updateMapSector->getName());
-            $newSector->setColor($updateMapSector->getColor());
-            $newSector->setPoints($updateMapSector->getPoints());
+            $newSector->setName($updateMapSector['name']);
+            $newSector->setColor($updateMapSector['color']);
+
+            $points = [];
+            foreach ($updateMapSector['points'] as $sentPoint) {
+                $points[] = (object) $sentPoint;
+            }
+            $newSector->setPoints($points);
 
             $newSectors[] = $newSector;
         }

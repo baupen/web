@@ -16,6 +16,7 @@ use App\Api\Entity\Edit\UpdateConstructionSite;
 use App\Api\Entity\Edit\UpdateCraftsman;
 use App\Api\Entity\Edit\UpdateMap;
 use App\Api\Entity\Edit\UpdateMapFile;
+use App\Api\Entity\Edit\UpdateMapSector;
 use App\Api\Entity\Edit\UploadMapFile;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\Edit\CheckMapFileRequest;
@@ -23,9 +24,13 @@ use App\Api\Request\Edit\UpdateConstructionSiteRequest;
 use App\Api\Request\Edit\UpdateCraftsmanRequest;
 use App\Api\Request\Edit\UpdateMapFileRequest;
 use App\Api\Request\Edit\UpdateMapRequest;
+use App\Api\Request\Edit\UpdateMapSectorsRequest;
+use App\Api\Request\Edit\UpdateSectorFrameRequest;
 use App\Api\Request\Edit\UploadMapFileRequest;
 use App\Entity\ConstructionSite;
 use App\Enum\ApiStatus;
+use App\Model\Frame;
+use App\Model\Point;
 use App\Tests\Controller\Api\Base\ApiController;
 use function count;
 use function is_array;
@@ -95,6 +100,84 @@ class EditControllerTest extends ApiController
         $this->assertEquals($updateConstructionSite->getPostalCode(), $newConstructionSite->postalCode);
         $this->assertEquals($updateConstructionSite->getLocality(), $newConstructionSite->locality);
         $this->assertNotEquals($originalConstructionSite->imageMedium, $newConstructionSite->imageMedium);
+    }
+
+    public function testMapFileSectorFrame()
+    {
+        $constructionSite = $this->getSomeConstructionSite();
+        $someMapFile = $constructionSite->getMaps()[0]->getFile();
+
+        $getUrl = '/api/edit/map_file/' . $someMapFile->getId() . '/sector_frame';
+        $postUrl = '/api/edit/map_file/' . $someMapFile->getId() . '/sector_frame/save';
+
+        // update properties
+        $updateSectorFrameRequest = new UpdateSectorFrameRequest();
+        $expectedFrame = new Frame();
+        $expectedFrame->height = 0.9;
+        $expectedFrame->width = 0.8;
+        $expectedFrame->startX = 0.7;
+        $expectedFrame->startY = 0.6;
+        $updateSectorFrameRequest->setSectorFrame($expectedFrame);
+        $updateSectorFrameRequest->setConstructionSiteId($constructionSite->getId());
+
+        $response = $this->authenticatedPostRequest($postUrl, $updateSectorFrameRequest);
+        $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+        $getResponse = $this->authenticatedPostRequest($getUrl, $constructionSiteRequest);
+
+        $frameData = $this->checkResponse($getResponse, ApiStatus::SUCCESS);
+
+        $actualFrame = $frameData->data->sectorFrame;
+
+        $this->assertEquals($expectedFrame->height, $actualFrame->height);
+        $this->assertEquals($expectedFrame->width, $actualFrame->width);
+        $this->assertEquals($expectedFrame->startX, $actualFrame->startX);
+        $this->assertEquals($expectedFrame->startY, $actualFrame->startY);
+    }
+
+    public function testMapFileMapSectors()
+    {
+        $constructionSite = $this->getSomeConstructionSite();
+        $someMapFile = $constructionSite->getMaps()[0]->getFile();
+
+        $getUrl = '/api/edit/map_file/' . $someMapFile->getId() . '/map_sectors';
+        $postUrl = '/api/edit/map_file/' . $someMapFile->getId() . '/map_sectors/save';
+
+        // update properties
+        $updateSectorFrameRequest = new UpdateMapSectorsRequest();
+        $expectedPoint = new Point();
+        $expectedPoint->x = 0.42;
+        $expectedPoint->y = 0.55;
+        $expectedMapSector = new UpdateMapSector();
+        $expectedMapSector->setColor("#444444");
+        $expectedMapSector->setPoints([$expectedPoint]);
+        $expectedMapSector->setName("section");
+        $updateSectorFrameRequest->setUpdateMapSectors([$expectedMapSector]);
+        $updateSectorFrameRequest->setConstructionSiteId($constructionSite->getId());
+
+        $response = $this->authenticatedPostRequest($postUrl, $updateSectorFrameRequest);
+        $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+        $getResponse = $this->authenticatedPostRequest($getUrl, $constructionSiteRequest);
+
+        $frameData = $this->checkResponse($getResponse, ApiStatus::SUCCESS);
+
+        $actualMapSectors = $frameData->data->mapSectors;
+        $this->assertCount(1, $actualMapSectors);
+
+        $actualMapSector  = $actualMapSectors[0];
+
+        $this->assertEquals($expectedMapSector->getColor(), $actualMapSector->color);
+        $this->assertEquals($expectedMapSector->getName(), $actualMapSector->name);
+        $this->assertSameSize($expectedMapSector->getPoints(), $actualMapSector->points);
+
+        $actualPoint = $actualMapSector->points[0];
+        $this->assertEquals($expectedPoint->x, $actualPoint->x);
+        $this->assertEquals($expectedPoint->y, $actualPoint->y);
     }
 
     public function testMapFiles()
