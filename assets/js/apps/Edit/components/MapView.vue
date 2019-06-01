@@ -16,6 +16,7 @@
                 <th>{{$t("map.name")}}</th>
                 <th>{{$t("map.parent")}}</th>
                 <th>{{$t("map_file._name")}}</th>
+                <th class="minimal-width"></th>
                 <th class="minimal-width">{{$t('issue_count')}}</th>
                 <th class="minimal-width"></th>
             </tr>
@@ -27,7 +28,8 @@
                            :map-containers="mapContainers"
                            :map-file-containers="mapFileContainers"
                            @remove="$emit('map-remove', mapContainer)"
-                           @save="$emit('map-save', mapContainer)"/>
+                           @save="$emit('map-save', mapContainer)"
+                           @draw="$emit('map-draw', mapContainer)"/>
             </tbody>
         </table>
     </div>

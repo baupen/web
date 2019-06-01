@@ -18,6 +18,7 @@
                           @map-add="emitIfTabActive(0, 'map-add', arguments[0])"
                           @map-save="emitIfTabActive(0, 'map-save', arguments[0])"
                           @map-remove="emitIfTabActive(0, 'map-remove', arguments[0])"
+                          @map-draw="$emit('map-draw', arguments[0])"
                 />
             </div>
             <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">

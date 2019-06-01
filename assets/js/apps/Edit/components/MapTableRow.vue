@@ -22,6 +22,11 @@
                 {{selectedMapFileName}}
             </template>
         </td>
+        <td>
+            <button class="btn btn-outline-info" v-if="mapFileSelected" @click="$emit('draw')">
+                <font-awesome-icon :icon="['fal', 'draw-circle']"/>
+            </button>
+        </td>
         <td class="text-right">{{map.issueCount}}</td>
         <td>
             <button class="btn btn-danger" v-if="canRemove" @click="$emit('remove')">
@@ -101,6 +106,9 @@
                     return match[0].filename;
                 }
                 return "-";
+            },
+            mapFileSelected: function () {
+                return this.selectableMapFiles.filter(mf => this.map.fileId === mf.id).length > 0;
             }
         },
         watch: {

@@ -30,6 +30,7 @@
                 @map-add="addMap"
                 @map-save="saveMap(arguments[0])"
                 @map-remove="removeMap(arguments[0])"
+                @map-draw="openMapModal(arguments[0])"
                 @map-file-dropped="mapFileDropped(arguments[0])"
                 @map-file-start-upload="mapFileUpload(arguments[0])"
                 @map-file-abort-upload="mapFileAbortUpload(arguments[0])"
@@ -49,8 +50,32 @@
                         @save="saveCraftsman(arguments[0])"
                         @remove="removeCraftsman(arguments[0])"
         />
+
+
+        <b-modal ref="my-modal" hide-footer title="Using Component Methods" size="full">
+            <div class="d-block text-center">
+                <h3>Hello From My Modal!</h3>
+            </div>
+            <button class="btn btn-info mt-3" @click="hideMapModal">Close Me</button>
+        </b-modal>
     </div>
 </template>
+
+<style>
+    @media (min-width: 992px) {
+        .modal-full {
+            max-width: unset !important;
+            margin: 2em;
+        }
+    }
+
+    @media (min-width: 576px) {
+        .modal-full {
+            max-width: unset !important;
+
+        }
+    }
+</style>
 
 <script>
     import axios from "axios"
@@ -62,6 +87,7 @@
     import CraftsmanView from "./components/CraftsmanView";
     import MapEdit from "./components/MapEdit";
     import ConstructionSiteEdit from "./components/ConstructionSiteEdit";
+    import BModal from "bootstrap-vue/src/components/modal/modal";
 
     const lang = document.documentElement.lang.substr(0, 2);
     moment.locale(lang);
@@ -87,7 +113,8 @@
             ConstructionSiteEdit,
             MapEdit,
             CraftsmanView,
-            AtomSpinner
+            AtomSpinner,
+            BModal
         },
         methods: {
             saveConstructionSite: function () {
@@ -117,6 +144,12 @@
                     .then(_ => {
                         this.loadConstructionSite();
                     });
+            },
+            openMapModal: function (mapContainer) {
+                this.$refs['my-modal'].show()
+            },
+            hideMapModal: function () {
+                this.$refs['my-modal'].hide()
             },
             addMap: function () {
                 const mapContainer = {
