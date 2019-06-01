@@ -26,7 +26,7 @@ class ImageService implements ImageServiceInterface
      * the name of the image rendered from the map pdf.
      */
     private const MAP_RENDER_NAME = 'render.jpg';
-    // TODO: unit test to detect if all enums in here
+
     /**
      * @var array
      */

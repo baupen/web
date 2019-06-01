@@ -20,10 +20,14 @@ use App\Api\Request\Edit\UpdateConstructionSiteRequest;
 use App\Api\Request\Edit\UpdateCraftsmanRequest;
 use App\Api\Request\Edit\UpdateMapFileRequest;
 use App\Api\Request\Edit\UpdateMapRequest;
+use App\Api\Request\Edit\UpdateMapSectorsRequest;
+use App\Api\Request\Edit\UpdateSectorFrameRequest;
 use App\Api\Request\Edit\UploadMapFileRequest;
 use App\Api\Response\Data\ConstructionSiteData;
 use App\Api\Response\Data\CraftsmanData;
 use App\Api\Response\Data\CraftsmenData;
+use App\Api\Response\Data\Edit\MapSectorsData;
+use App\Api\Response\Data\Edit\SectorFrameData;
 use App\Api\Response\Data\Edit\UploadFileCheckData;
 use App\Api\Response\Data\EmptyData;
 use App\Api\Response\Data\MapData;
@@ -33,12 +37,14 @@ use App\Api\Response\Data\MapsData;
 use App\Api\Transformer\Edit\ConstructionSiteTransformer;
 use App\Api\Transformer\Edit\CraftsmanTransformer;
 use App\Api\Transformer\Edit\MapFileTransformer;
+use App\Api\Transformer\Edit\MapSectorTransformer;
 use App\Api\Transformer\Edit\MapTransformer;
 use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Map;
 use App\Entity\MapFile;
+use App\Entity\MapSector;
 use App\Service\Interfaces\UploadServiceInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -61,6 +67,129 @@ class EditController extends ApiController
     const MAP_HAS_ISSUES_ASSIGNED = 'map can not be removed as there are issues assigned to it';
     const CRAFTSMAN_HAS_ISSUES_ASSIGNED = 'craftsman can not be removed as there are issues assigned to it';
     const MAP_HAS_CHILDREN_ASSIGNED = 'map can not be removed as there are children assigned to it';
+
+    /**
+     * @Route("/map_file/{mapFile}/sector_frame", name="api_edit_map_file_sector_frame", methods={"GET"})
+     *
+     * @param Request $request
+     * @param MapFile $mapFile
+     *
+     * @return Response
+     */
+    public function mapFileFrameAction(Request $request, MapFile $mapFile)
+    {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        // deny access if file not from construction site
+        if ($constructionSite !== $mapFile->getConstructionSite()) {
+            $this->createAccessDeniedException();
+        }
+
+        $data = new SectorFrameData();
+        $data->setSectorFrame($mapFile->getSectorFrame());
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/map_file/{mapFile}/frame", name="api_edit_map_file_sector_frame", methods={"POST"})
+     *
+     * @param Request $request
+     * @param MapFile $mapFile
+     *
+     * @return Response
+     */
+    public function mapFileFramePostAction(Request $request, MapFile $mapFile)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var UpdateSectorFrameRequest $parsedRequest */
+        if (!$this->parseConstructionSiteRequest($request, UpdateSectorFrameRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        // deny access if file not from construction site
+        if ($constructionSite !== $mapFile->getConstructionSite()) {
+            $this->createAccessDeniedException();
+        }
+
+        // save new sector frame
+        $mapFile->setSectorFrame($parsedRequest->getSectorFrame());
+        $this->fastSave($mapFile);
+
+        return $this->success();
+    }
+
+    /**
+     * @Route("/map_file/{mapFile}/map_sectors", name="api_edit_map_map_sectors", methods={"GET"})
+     *
+     * @param Request              $request
+     * @param MapFile              $mapFile
+     * @param MapSectorTransformer $mapSectorTransformer
+     *
+     * @return Response
+     */
+    public function mapFileSectorAction(Request $request, MapFile $mapFile, MapSectorTransformer $mapSectorTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        // deny access if file not from construction site
+        if ($constructionSite !== $mapFile->getConstructionSite()) {
+            $this->createAccessDeniedException();
+        }
+
+        $mapSectors = $mapSectorTransformer->toApiMultiple($mapFile->getSectors());
+        $data = new MapSectorsData();
+        $data->setMapSectors($mapSectors);
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/map_file/{mapFile}/map_sectors", name="api_edit_map_map_sectors", methods={"POST"})
+     *
+     * @param Request $request
+     * @param MapFile $mapFile
+     *
+     * @return Response
+     */
+    public function mapFileSectorPostAction(Request $request, MapFile $mapFile)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var UpdateMapSectorsRequest $parsedRequest */
+        if (!$this->parseConstructionSiteRequest($request, UpdateMapSectorsRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        // deny access if file not from construction site
+        if ($constructionSite !== $mapFile->getConstructionSite()) {
+            $this->createAccessDeniedException();
+        }
+
+        $this->fastRemove(...$mapFile->getSectors()->toArray());
+
+        $newSectors = [];
+        foreach ($parsedRequest->getUpdateMapSectors() as $updateMapSector) {
+            $newSector = new MapSector();
+            $newSector->setIsAutomaticEditEnabled(false);
+            $newSector->setMapFile($mapFile);
+            $newSector->setIdentifier('manual_' . \count($newSectors));
+            $newSector->setName($updateMapSector->getName());
+            $newSector->setColor($updateMapSector->getColor());
+            $newSector->setPoints($updateMapSector->getPoints());
+
+            $newSectors[] = $newSector;
+        }
+
+        $this->fastSave(...$newSectors);
+
+        return $this->success();
+    }
 
     /**
      * @Route("/maps", name="api_edit_maps")
@@ -230,14 +359,13 @@ class EditController extends ApiController
      * @Route("/construction_site/image", name="api_edit_construction_site_image", methods={"POST"})
      *
      * @param Request                $request
-     * @param MapFileTransformer     $mapFileTransformer
      * @param UploadServiceInterface $uploadService
      *
      * @throws Exception
      *
      * @return Response
      */
-    public function constructionSiteImageAction(Request $request, MapFileTransformer $mapFileTransformer, UploadServiceInterface $uploadService)
+    public function constructionSiteImageAction(Request $request, UploadServiceInterface $uploadService)
     {
         /** @var ConstructionSite $constructionSite */
         /** @var ConstructionSiteRequest $parsedRequest */
@@ -586,6 +714,10 @@ class EditController extends ApiController
                 return false;
             }
 
+            if ($entity->getFile() !== null) {
+                $this->copySectorInformation($entity->getFile(), $file);
+            }
+
             $entity->setFile($file);
         } else {
             $entity->setFile(null);
@@ -636,5 +768,32 @@ class EditController extends ApiController
         $entity->setTrade($updateCraftsman->getTrade());
 
         return true;
+    }
+
+    /**
+     * @param MapFile $source
+     * @param $target
+     */
+    private function copySectorInformation(MapFile $source, MapFile $target): void
+    {
+        // transfer sector frame
+        if ($target->getSectorFrame() === null) {
+            $target->setSectorFrame($source->getSectorFrame());
+        }
+
+        // transfer sectors
+        if (\count($target->getSectors()) === 0) {
+            foreach ($source->getSectors() as $sector) {
+                $newSector = new MapSector();
+                $newSector->setPoints($sector->getPoints());
+                $newSector->setColor($sector->getColor());
+                $newSector->setName($sector->getName());
+                $newSector->setIdentifier($sector->getIdentifier());
+                $newSector->setMapFile($target);
+                $newSector->setIsAutomaticEditEnabled(false);
+
+                $target->getSectors()->add($newSector);
+            }
+        }
     }
 }
