@@ -43,7 +43,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="constructionSite in constructionSites">
+            <tr v-for="constructionSite in orderedConstructionSites">
                 <td>{{constructionSite.name}}</td>
                 <td>{{constructionSite.address.join(", ")}}</td>
                 <td>{{formatDateTime(constructionSite.createdAt)}}</td>
@@ -95,6 +95,9 @@
         computed: {
             managingConstructionSites: function () {
                 return this.constructionSites.filter(c => c.isConstructionManagerOf);
+            },
+            orderedConstructionSites: function() {
+                return this.constructionSites.sort((a, b) => (a.name > b.name) ? 1 : -1);
             }
         },
         mixins: [notifications],
