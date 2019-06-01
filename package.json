@@ -31,6 +31,7 @@
     "bootstrap-multiselect": "^0.9",
     "bootstrap-vue": "^2.0.0-rc.11",
     "core-js": "^2.5.7",
+    "cropperjs": "^1.5.1",
     "crypto-js": "^3.1.9-1",
     "date-fns": "^1.29",
     "debounce": "^1.2.0",

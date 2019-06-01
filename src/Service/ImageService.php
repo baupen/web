@@ -568,6 +568,10 @@ class ImageService implements ImageServiceInterface
      */
     private function getSizeFilename(string $fileName, $size)
     {
+        if ($size === ImageServiceInterface::SIZE_ORIGINAL) {
+            return $fileName;
+        }
+
         $ending = pathinfo($fileName, PATHINFO_EXTENSION);
         $filenameWithoutEnding = mb_substr($fileName, 0, -(mb_strlen($ending) + 1));
 

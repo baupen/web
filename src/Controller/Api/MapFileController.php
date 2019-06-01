@@ -37,14 +37,14 @@ class MapFileController extends BaseController
     {
         $this->denyAccessUnlessGranted(BaseVoter::ANY_ATTRIBUTE, $mapFile);
 
-        $size = $request->query->get('size', ImageServiceInterface::SIZE_FULL);
+        $size = $request->query->get('size', ImageServiceInterface::SIZE_ORIGINAL);
         $filePath = $imageService->getMapFileImage($mapFile, $size);
 
         return $this->file($filePath);
     }
 
     /**
-     * @Route("/{mapFile}/image/sector_frame", name="api_map_file_image")
+     * @Route("/{mapFile}/image/sector_frame", name="api_map_file_image_sector_frame")
      *
      * @param Request               $request
      * @param MapFile               $mapFile
@@ -56,7 +56,7 @@ class MapFileController extends BaseController
     {
         $this->denyAccessUnlessGranted(BaseVoter::ANY_ATTRIBUTE, $mapFile);
 
-        $size = $request->query->get('size', ImageServiceInterface::SIZE_FULL);
+        $size = $request->query->get('size', ImageServiceInterface::SIZE_ORIGINAL);
         $filePath = $imageService->getMapFileSectorFrameImage($mapFile, $size);
 
         return $this->file($filePath);

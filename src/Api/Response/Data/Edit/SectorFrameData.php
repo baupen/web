@@ -16,22 +16,22 @@ use App\Model\Frame;
 class SectorFrameData
 {
     /**
-     * @var Frame
+     * @var Frame|null
      */
     private $sectorFrame;
 
     /**
-     * @return Frame
+     * @return Frame|null
      */
-    public function getSectorFrame(): Frame
+    public function getSectorFrame(): ?Frame
     {
         return $this->sectorFrame;
     }
 
     /**
-     * @param Frame $sectorFrame
+     * @param Frame|null $sectorFrame
      */
-    public function setSectorFrame(Frame $sectorFrame): void
+    public function setSectorFrame(?Frame $sectorFrame): void
     {
         $this->sectorFrame = $sectorFrame;
     }

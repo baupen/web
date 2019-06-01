@@ -20,6 +20,7 @@ interface ImageServiceInterface
 {
     const SIZE_THUMBNAIL = 'thumbnail';
     const SIZE_FULL = 'full';
+    const SIZE_ORIGINAL = 'original';
     const SIZE_SHARE_VIEW = 'share_view';
     const SIZE_REPORT_ISSUE = 'report_issue';
     const SIZE_MEDIUM = 'medium';

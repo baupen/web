@@ -52,28 +52,17 @@
         />
 
 
-        <b-modal ref="my-modal" hide-footer title="Using Component Methods" size="full">
-            <div class="d-block text-center">
-                <h3>Hello From My Modal!</h3>
-            </div>
-            <button class="btn btn-info mt-3" @click="hideMapModal">Close Me</button>
+        <b-modal ref="my-modal" hide-footer hide-header size="full" :scrollable="true">
+            <draw-sectors v-if="selectedMapFile !== null" :construction-site-id="constructionSiteId"
+                          :map-file="selectedMapFile"/>
         </b-modal>
     </div>
 </template>
 
 <style>
-    @media (min-width: 992px) {
-        .modal-full {
-            max-width: unset !important;
-            margin: 2em;
-        }
-    }
-
-    @media (min-width: 576px) {
-        .modal-full {
-            max-width: unset !important;
-
-        }
+    .modal-full {
+        max-width: unset !important;
+        margin: 2em;
     }
 </style>
 
@@ -88,6 +77,7 @@
     import MapEdit from "./components/MapEdit";
     import ConstructionSiteEdit from "./components/ConstructionSiteEdit";
     import BModal from "bootstrap-vue/src/components/modal/modal";
+    import DrawSectors from "./components/Draw";
 
     const lang = document.documentElement.lang.substr(0, 2);
     moment.locale(lang);
@@ -105,11 +95,13 @@
                 isCraftsmenLoading: true,
                 isLoading: false,
                 locale: lang,
-                actionQueue: []
+                actionQueue: [],
+                selectedMapFile: null
             }
         },
         mixins: [notifications],
         components: {
+            DrawSectors,
             ConstructionSiteEdit,
             MapEdit,
             CraftsmanView,
@@ -146,6 +138,7 @@
                     });
             },
             openMapModal: function (mapContainer) {
+                this.selectedMapFile = this.mapFileContainers.map(mfc => mfc.mapFile).filter(m => m.id === mapContainer.map.fileId)[0];
                 this.$refs['my-modal'].show()
             },
             hideMapModal: function () {
@@ -379,7 +372,6 @@
                     return Promise.reject(error);
                 }
             );
-
 
             axios.get("/api/configuration").then((response) => {
                 this.constructionSiteId = response.data.constructionSite.id;
