@@ -14,7 +14,9 @@ namespace App\Service;
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use App\Entity\Map;
+use App\Entity\MapFile;
 use App\Helper\ImageHelper;
+use App\Model\Frame;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use const DIRECTORY_SEPARATOR;
@@ -107,6 +109,54 @@ class ImageService implements ImageServiceInterface
         $this->ensureFolderExists($generationTargetFolder);
 
         return $this->generateMapImageInternal($issues, $sourceFilePath, $generationTargetFolder, true, $size);
+    }
+
+    /**
+     * @param MapFile $mapFile
+     * @param string  $size
+     *
+     * @return string|null
+     */
+    public function getMapFileImage(MapFile $mapFile, $size = self::SIZE_FULL)
+    {
+        //setup paths
+        $sourceFilePath = $this->pathService->getFolderForMapFile($mapFile->getConstructionSite()) . DIRECTORY_SEPARATOR . $mapFile->getFilename();
+        $generationTargetFolder = $this->pathService->getTransientFolderForMapFile($mapFile->getMap());
+        $this->ensureFolderExists($generationTargetFolder);
+
+        $pdfRenderPath = $this->getRenderedPdfPath($sourceFilePath, $generationTargetFolder);
+        if (!$pdfRenderPath) {
+            return null;
+        }
+
+        return $this->renderSizeVariant($pdfRenderPath, $size);
+    }
+
+    /**
+     * @param MapFile $mapFile
+     * @param string  $size
+     *
+     * @return string|null
+     */
+    public function getMapFileSectorFrameImage(MapFile $mapFile, $size = self::SIZE_FULL)
+    {
+        //setup paths
+        $sourceFilePath = $this->pathService->getFolderForMapFile($mapFile->getConstructionSite()) . DIRECTORY_SEPARATOR . $mapFile->getFilename();
+        $generationTargetFolder = $this->pathService->getTransientFolderForMapFile($mapFile->getMap());
+        $this->ensureFolderExists($generationTargetFolder);
+
+        $pdfRenderPath = $this->getRenderedPdfPath($sourceFilePath, $generationTargetFolder);
+        if (!$pdfRenderPath) {
+            return null;
+        }
+
+        $targetPath = $generationTargetFolder . DIRECTORY_SEPARATOR . 'sector_frame.jpg';
+        $croppedImagePath = $this->cropImage($pdfRenderPath, $targetPath, $mapFile->getSectorFrame());
+        if (!$croppedImagePath) {
+            return null;
+        }
+
+        return $this->renderSizeVariant($croppedImagePath, $size);
     }
 
     /**
@@ -473,17 +523,11 @@ class ImageService implements ImageServiceInterface
     private function generateMapImageInternal(array $issues, string $sourceFilePath, string $generationTargetFolder, $forceLandscape, $size)
     {
         //render pdf to image
-        $pdfRenderPath = $generationTargetFolder . DIRECTORY_SEPARATOR . self::MAP_RENDER_NAME;
-        if (!file_exists($pdfRenderPath) || $this->disableCache) {
-            $this->renderPdfToImage($sourceFilePath, $pdfRenderPath);
-
-            //abort if creation failed
-            if (!file_exists($pdfRenderPath)) {
-                return null;
-            }
+        $pdfRenderPath = $this->getRenderedPdfPath($sourceFilePath, $generationTargetFolder);
+        if (!$pdfRenderPath) {
+            return null;
         }
 
-        // shortcut if no issues to be printed
         if (\count($issues) > 0) {
             //prepare filename for exact issue combination
             $issueToString = function ($issue) {
@@ -497,23 +541,11 @@ class ImageService implements ImageServiceInterface
             $landscapeIssueImagePath = $generationTargetFolder . DIRECTORY_SEPARATOR . $issueHash . '_landscape.jpg';
             $issueRenderPath = $this->renderIssues($issues, $pdfRenderPath, $issueImagePath, $landscapeIssueImagePath, $forceLandscape);
         } else {
+            // shortcut if no issues to be printed
             $issueRenderPath = $pdfRenderPath;
         }
 
-        //render size variant
-        $fileName = pathinfo($issueRenderPath, PATHINFO_BASENAME);
-        $issueImagePathSize = $generationTargetFolder . DIRECTORY_SEPARATOR . $this->getSizeFilename($fileName, $size);
-        if (!is_file($issueImagePathSize) || $this->disableCache) {
-            $this->renderSizeOfImage($issueRenderPath, $issueImagePathSize, $size);
-
-            //abort if creation failed
-            if (!is_file($issueImagePathSize)) {
-                return null;
-            }
-        }
-
-        //return the path of the rendered file
-        return $issueImagePathSize;
+        return $this->renderSizeVariant($issueRenderPath, $size);
     }
 
     /**
@@ -574,5 +606,92 @@ class ImageService implements ImageServiceInterface
         }
 
         return true;
+    }
+
+    /**
+     * @param string $sourceFilePath
+     * @param string $generationTargetFolder
+     *
+     * @return bool|string
+     */
+    private function getRenderedPdfPath(string $sourceFilePath, string $generationTargetFolder)
+    {
+        $pdfRenderPath = $generationTargetFolder . DIRECTORY_SEPARATOR . self::MAP_RENDER_NAME;
+        if (!file_exists($pdfRenderPath) || $this->disableCache) {
+            $this->renderPdfToImage($sourceFilePath, $pdfRenderPath);
+
+            //abort if creation failed
+            if (!file_exists($pdfRenderPath)) {
+                return false;
+            }
+        }
+
+        return $pdfRenderPath;
+    }
+
+    /**
+     * @param string $sourcePath
+     * @param string $targetPath
+     * @param Frame  $frame
+     *
+     * @return bool
+     */
+    private function cropImage(string $sourcePath, string $targetPath, Frame $frame)
+    {
+        $ending = pathinfo($sourcePath, PATHINFO_EXTENSION);
+
+        $imageSizes = getimagesize($sourcePath);
+        $realWidth = $imageSizes[0];
+        $realHeight = $imageSizes[1];
+
+        $args = [
+            'x' => $frame->startX * $realWidth,
+            'y' => $frame->startY * $realHeight,
+            'width' => $frame->width * $realWidth,
+            'height' => $frame->height * $realHeight,
+        ];
+
+        if ($ending === 'jpg' || $ending === 'jpeg') {
+            $image = imagecreatefromjpeg($sourcePath);
+            imagecrop($image, $args);
+            imagejpeg($image, $targetPath, 90);
+        } elseif ($ending === 'png') {
+            $image = imagecreatefrompng($sourcePath);
+            imagecrop($image, $args);
+            imagepng($image, $targetPath, 90);
+        } elseif ($ending === 'gif') {
+            $image = imagecreatefromgif($sourcePath);
+            imagecrop($image, $args);
+            imagegif($image, $targetPath);
+        } else {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $targetPath
+     * @param string $targetSize
+     *
+     * @return string|null
+     */
+    private function renderSizeVariant(string $targetPath, string $targetSize)
+    {
+        $fileName = pathinfo($targetPath, PATHINFO_BASENAME);
+        $directory = pathinfo($targetPath, PATHINFO_DIRNAME);
+
+        $targetPathWithSize = $directory . DIRECTORY_SEPARATOR . $this->getSizeFilename($fileName, $targetSize);
+        if (!is_file($targetPathWithSize) || $this->disableCache) {
+            $this->renderSizeOfImage($targetPath, $targetPathWithSize, $targetSize);
+
+            //abort if creation failed
+            if (!is_file($targetPathWithSize)) {
+                return null;
+            }
+        }
+
+        //return the path of the rendered file
+        return $targetPathWithSize;
     }
 }

@@ -14,6 +14,7 @@ namespace App\Service\Interfaces;
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use App\Entity\Map;
+use App\Entity\MapFile;
 
 interface ImageServiceInterface
 {
@@ -48,6 +49,22 @@ interface ImageServiceInterface
      * @return string|null
      */
     public function generateMapImageForReport(Map $map, array $issues, $size = self::SIZE_THUMBNAIL);
+
+    /**
+     * @param MapFile $mapFile
+     * @param string  $size
+     *
+     * @return string|null
+     */
+    public function getMapFileImage(MapFile $mapFile, $size = self::SIZE_FULL);
+
+    /**
+     * @param MapFile $mapFile
+     * @param string  $size
+     *
+     * @return string|null
+     */
+    public function getMapFileSectorFrameImage(MapFile $mapFile, $size = self::SIZE_FULL);
 
     /**
      * @param Issue  $issue
