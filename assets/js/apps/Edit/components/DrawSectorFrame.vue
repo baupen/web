@@ -1,11 +1,10 @@
 <template>
     <div>
-        <h1>Grundriss umranden</h1>
-        <p>Grundriss umrangen, um einfacher Bereiche einzuzeichnen (ohne Materialinformationen o. Ä.)</p>
-        <img ref="image" class="no-overflow" :src="'/api/map_file/' + this.mapFile.id + '/image'" alt="map file image">
+        <h1>{{$t("draw.sector_frame.draw_outline")}}</h1>
+        <p>{{$t("draw.sector_frame.draw_outline_description")}}</p>
+        <img ref="image" class="no-overflow" :src="'/api/map_file/' + this.mapFile.id + '/image'" alt="">
 
-        <button class="btn btn-primary mt-3 float-right" @click="updateFrame">weiter</button>
-        <button class="btn btn-primary mt-3 float-right" @click="reset">rtese</button>
+        <button class="btn btn-primary mt-3 float-right" @click="updateFrame">{{$t("draw.actions.continue")}}</button>
     </div>
 </template>
 
@@ -36,6 +35,10 @@
         },
         methods: {
             reset: function() {
+                if (this.frame === null) {
+                    return;
+                }
+
                 const imageData = this.cropper.getImageData();
 
                 const imageHeight = imageData.naturalHeight;

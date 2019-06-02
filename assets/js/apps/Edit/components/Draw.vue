@@ -11,7 +11,11 @@
             <draw-sector-frame :map-file="mapFile" :frame="frame" @save-frame="saveFrame(arguments[0])" />
         </template>
         <template v-else>
-
+            <draw-sectors :map-file="mapFile" :sectors="sectors"
+                          @draw-outline="view = 'sector-frame'"
+                          @close="$emit('close')"
+                          @save="saveSectors(arguments[0])"
+            />
         </template>
     </div>
 </template>
@@ -25,6 +29,7 @@
     import axios from "axios"
     import AtomSpinner from "epic-spinners/src/components/lib/AtomSpinner";
     import DrawSectorFrame from "./DrawSectorFrame";
+    import DrawSectors from "./DrawSectors";
 
     const lang = document.documentElement.lang.substr(0, 2);
     moment.locale(lang);
@@ -48,6 +53,7 @@
             }
         },
         components: {
+            DrawSectors,
             DrawSectorFrame,
             AtomSpinner
         },
@@ -61,6 +67,14 @@
                 axios.post(this.baseUrl  + "/sector_frame/save", {
                     constructionSiteId: this.constructionSiteId,
                     sectorFrame: frame
+                }).then((response) => {
+                    this.view = 'sectors'
+                });
+            },
+            saveSectors: function (sectors) {
+                axios.post(this.baseUrl  + "/map_sectors/save", {
+                    constructionSiteId: this.constructionSiteId,
+                    mapSectors: sectors
                 }).then((response) => {
                     this.view = 'sectors'
                 });

@@ -47,6 +47,20 @@
       "trade": "Elektriker"
     }
   },
+  "draw": {
+    "sector_frame": {
+      "draw_outline": "Grundriss umranden",
+      "draw_outline_description": "Grundriss umranden, um einfacher Bereiche einzuzeichnen (ohne Materialinformationen o. Ä.)"
+    },
+    "sectors": {
+      "create_sectors": "Bereiche erfassen",
+      "create_sectors_description": "Einzelne Wohnungen/Bereiche einzeichnen für einfache Navigation in der App."
+    },
+    "actions": {
+      "continue": "weiter",
+      "close": "schliessen"
+    }
+  },
   "import_craftsmen": {
     "title": "Importieren",
     "help": "Importieren Sie die Handwerker aus einem Excel",

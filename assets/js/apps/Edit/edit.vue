@@ -53,8 +53,11 @@
 
 
         <b-modal ref="my-modal" hide-footer hide-header size="full" :scrollable="true">
-            <draw-sectors v-if="selectedMapFile !== null" :construction-site-id="constructionSiteId"
-                          :map-file="selectedMapFile"/>
+            <draw-sectors v-if="selectedMapFile !== null"
+                          :construction-site-id="constructionSiteId"
+                          :map-file="selectedMapFile"
+                          @close="hideMapModal"
+            />
         </b-modal>
     </div>
 </template>

@@ -150,8 +150,7 @@ class ImageService implements ImageServiceInterface
             return null;
         }
 
-        $targetPath = $generationTargetFolder . DIRECTORY_SEPARATOR . 'sector_frame.jpg';
-        $croppedImagePath = $this->cropImage($pdfRenderPath, $targetPath, $mapFile->getSectorFrame());
+        $croppedImagePath = $this->renderCropVariant($pdfRenderPath, $mapFile->getSectorFrame());
         if (!$croppedImagePath) {
             return null;
         }
@@ -579,6 +578,23 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
+     * adds frame infos to filename.
+     *
+     * @param string $fileName
+     * @param Frame  $frame
+     *
+     * @return string
+     */
+    private function getFrameFilename(string $fileName, Frame $frame)
+    {
+        $pseudoHash = ($frame->height + $frame->width + $frame->startY + $frame->startX) * $frame->height * $frame->width * $frame->startY * $frame->startX;
+        $ending = pathinfo($fileName, PATHINFO_EXTENSION);
+        $filenameWithoutEnding = mb_substr($fileName, 0, -(mb_strlen($ending) + 1));
+
+        return $filenameWithoutEnding . '_' . $pseudoHash . '.' . $ending;
+    }
+
+    /**
      * @param string $sourcePath
      * @param string $targetPath
      * @param int    $maxWidth
@@ -634,17 +650,17 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
-     * @param string $sourcePath
      * @param string $targetPath
+     * @param string $targetPathWithCrop
      * @param Frame  $frame
      *
      * @return bool
      */
-    private function cropImage(string $sourcePath, string $targetPath, Frame $frame)
+    private function cropImage(string $targetPath, string $targetPathWithCrop, Frame $frame)
     {
-        $ending = pathinfo($sourcePath, PATHINFO_EXTENSION);
+        $ending = pathinfo($targetPath, PATHINFO_EXTENSION);
 
-        $imageSizes = getimagesize($sourcePath);
+        $imageSizes = getimagesize($targetPath);
         $realWidth = $imageSizes[0];
         $realHeight = $imageSizes[1];
 
@@ -656,22 +672,47 @@ class ImageService implements ImageServiceInterface
         ];
 
         if ($ending === 'jpg' || $ending === 'jpeg') {
-            $image = imagecreatefromjpeg($sourcePath);
+            $image = imagecreatefromjpeg($targetPath);
             imagecrop($image, $args);
-            imagejpeg($image, $targetPath, 90);
+            imagejpeg($image, $targetPathWithCrop, 90);
         } elseif ($ending === 'png') {
-            $image = imagecreatefrompng($sourcePath);
+            $image = imagecreatefrompng($targetPath);
             imagecrop($image, $args);
-            imagepng($image, $targetPath, 90);
+            imagepng($image, $targetPathWithCrop, 90);
         } elseif ($ending === 'gif') {
-            $image = imagecreatefromgif($sourcePath);
+            $image = imagecreatefromgif($targetPath);
             imagecrop($image, $args);
-            imagegif($image, $targetPath);
+            imagegif($image, $targetPathWithCrop);
         } else {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * @param string $targetPath
+     * @param Frame  $targetCrop
+     *
+     * @return string|null
+     */
+    private function renderCropVariant(string $targetPath, Frame $targetCrop)
+    {
+        $fileName = pathinfo($targetPath, PATHINFO_BASENAME);
+        $directory = pathinfo($targetPath, PATHINFO_DIRNAME);
+
+        $targetPathWithCrop = $directory . DIRECTORY_SEPARATOR . $this->getFrameFilename($fileName, $targetCrop);
+        if (!is_file($targetPathWithCrop) || $this->disableCache) {
+            $this->cropImage($targetPath, $targetPathWithCrop, $targetCrop);
+
+            //abort if creation failed
+            if (!is_file($targetPathWithCrop)) {
+                return null;
+            }
+        }
+
+        //return the path of the rendered file
+        return $targetPathWithCrop;
     }
 
     /**
