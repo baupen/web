@@ -7,8 +7,8 @@
                     :color="'#ff1d5e'"
             />
         </template>
-        <template v-else-if="view === 'frame'">
-            <draw-sector-frame :map-file="mapFile" :frame="frame" />
+        <template v-else-if="view === 'sector-frame'">
+            <draw-sector-frame :map-file="mapFile" :frame="frame" @save-frame="saveFrame(arguments[0])" />
         </template>
         <template v-else>
 
@@ -57,7 +57,14 @@
             }
         },
         methods: {
-
+            saveFrame: function (frame) {
+                axios.post(this.baseUrl  + "/sector_frame/save", {
+                    constructionSiteId: this.constructionSiteId,
+                    sectorFrame: frame
+                }).then((response) => {
+                    this.view = 'sectors'
+                });
+            }
         },
         mounted() {
             axios.post(this.baseUrl  + "/sector_frame", {
@@ -70,7 +77,7 @@
                 }).then((response) => {
                     this.sectors = response.data.mapSectors;
 
-                    this.view = this.frame !== null ? "sectors" : "frame";
+                    this.view = this.frame !== null ? "sectors" : "sector-frame";
                 });
             });
         }
