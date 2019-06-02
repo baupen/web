@@ -1,7 +1,7 @@
 // include styling
 require('../sass/app.sass');
 
-// prepare js environement
+// prepare js environment
 require('./legacy');
 require('./bootstrap_vanilla');
 require('./font_awesome_light');
