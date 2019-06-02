@@ -73,8 +73,12 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="craftsman in sortedCraftsmen" v-on:click.prevent="craftsman.selected = !craftsman.selected"
-                    v-bind:class="{ 'table-active': craftsman.selected   }">
+                <tr v-for="craftsman in sortedCraftsmen"
+                    @click.ctrl.exact="rowCtrlClicked(craftsman)"
+                    @click.meta.exact="rowCtrlClicked(craftsman)"
+                    @click.exact="rowClicked(craftsman)"
+                    @click.shift.exact.prevent.stop="rowShiftClicked(craftsman)"
+                    :class="rowClass(craftsman)">
                     <td>
                         {{ craftsman.name }}
                     </td>
@@ -129,6 +133,8 @@
             ["name", "trade", "notReadIssuesCount", "notRespondedIssuesCount", "nextResponseLimit", "lastEmailSent", "lastOnlineVisit"].forEach(e => sortOrders[e] = 1);
             return {
                 craftsmen: [],
+                selectedCraftsmen: [],
+                lastSelectedCraftsman: null,
                 isLoading: true,
                 constructionSiteId: null,
                 sortKey: "name",
@@ -139,6 +145,45 @@
         },
         mixins: [notifications],
         methods: {
+            rowClicked: function (craftsman) {
+                if (this.selectedCraftsmen.length === 1 && this.selectedCraftsmen[0] === craftsman) {
+                    this.selectedCraftsmen = [];
+                    return;
+                }
+
+                //reset selection
+                this.lastSelectedCraftsman = craftsman;
+                this.selectedCraftsmen = [craftsman];
+            },
+            rowCtrlClicked: function (craftsman) {
+                if (this.selectedCraftsmen.indexOf(craftsman) >= 0) {
+                    this.selectedCraftsmen = this.selectedCraftsmen.filter(i => i !== craftsman);
+                } else {
+                    this.selectedCraftsmen.push(craftsman);
+                }
+
+                //remove all selections
+                document.getSelection().removeAllRanges();
+            },
+            rowShiftClicked: function (craftsman) {
+                //if none selected; select the one pressed
+                if (this.lastSelectedCraftsman === null) {
+                    this.rowClicked(craftsman);
+                    return;
+                }
+
+                //remove all selections
+                document.getSelection().removeAllRanges();
+
+                //check indexes
+                const index1 = this.craftsmen.indexOf(this.lastSelectedCraftsman);
+                const index2 = this.craftsmen.indexOf(craftsman);
+
+                //mark if both are valid
+                if (index1 >= 0 && index2 >= 0) {
+                    this.selectedCraftsmen = this.craftsmen.slice(Math.min(index1, index2), Math.max(index1, index2) + 1);
+                }
+            },
             sendEmails: function () {
                 const recipients = this.selectedCraftsmen.length === 0 ? this.craftsmen : this.selectedCraftsmen;
 
@@ -148,12 +193,13 @@
                     "craftsmanIds": recipients.map(c => c.id)
                 }).then((response) => {
                     this.isLoading = false;
-                    this.craftsmen.filter(c => c.selected).forEach(c => {
+                    this.selectedCraftsmen.forEach(c => {
                         if (response.data.successfulIds.includes(c.id)) {
                             c.lastEmailSent = (new Date()).toISOString();
                         }
-                        c.selected = false;
                     });
+
+                    this.selectedCraftsmen = [];
 
                     this.displayInfoFlash(this.$t("messages.emails_sent"));
 
@@ -169,22 +215,18 @@
                 }
                 return moment(value).locale(document.documentElement.lang.substr(0, 2)).fromNow();
             },
-            selectAll: function () {
-                let newVal = !(this.indeterminate || this.selected);
-                this.craftsmen.forEach(c => c.selected = newVal);
-            },
             sortBy: function (key) {
                 if (this.sortKey === key) {
                     this.sortOrders[key] *= -1;
                 } else {
                     this.sortKey = key;
                 }
+            },
+            rowClass: function(craftsman) {
+                return this.selectedCraftsmen.indexOf(craftsman) >= 0 ? "table-active" : "";
             }
         },
         computed: {
-            selectedCraftsmen: function () {
-                return this.craftsmen.filter(c => c.selected);
-            },
             sortedCraftsmen: function () {
                 const sortKey = this.sortKey;
                 const filterKey = this.textFilter && this.textFilter.toLowerCase();
@@ -240,7 +282,6 @@
                 axios.post("/api/dispatch/craftsman/list", {
                     "constructionSiteId": this.constructionSiteId
                 }).then((response) => {
-                    response.data.craftsmen.forEach(a => a.selected = false);
                     this.craftsmen = response.data.craftsmen;
                     this.isLoading = false;
                 });
