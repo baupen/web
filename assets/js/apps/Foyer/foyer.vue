@@ -83,7 +83,8 @@
                         <font-awesome-icon v-else :icon="['fal', 'star']"/>
                     </td>
                     <td class="minimal-width">
-                        <img class="lightbox-thumbnail" @click.prevent.stop="openLightbox(issue)" :src="issue.imageThumbnail">
+                        <img class="lightbox-thumbnail" @click.prevent.stop="openLightbox(issue)"
+                             :src="issue.imageThumbnail">
                     </td>
                     <td>
                         <span v-if="editDescription === null || !issue.selected" class="editable"
@@ -96,7 +97,9 @@
                                    @click.prevent.stop="" @keyup.enter.prevent.stop="saveDescription"
                                    @keyup.escape.prevent.stop="abortDescription"/>
 
-                            <button class="btn btn-secondary" @click.prevent.stop="saveDescription">{{$t("actions.save")}}</button>
+                            <button class="btn btn-secondary" @click.prevent.stop="saveDescription">
+                                {{$t("actions.save")}}
+                            </button>
                         </div>
                     </td>
                     <td>
@@ -132,7 +135,9 @@
                                     <span>{{selectedCraftsman.name}}</span>
                                 </div>
                             </template>
-                            <button class="btn btn-secondary" @click.prevent.stop="saveCraftsman">{{$t("actions.save")}}</button>
+                            <button class="btn btn-secondary" @click.prevent.stop="saveCraftsman">
+                                {{$t("actions.save")}}
+                            </button>
                         </div>
                     </td>
                     <td>
@@ -144,8 +149,12 @@
                             <datepicker :lang="datePickerLang" format="dd.MM.yyyy" :ref="'response-limit-' + issue.id"
                                         v-model="editResponseLimit">
                             </datepicker>
-                            <button class="btn btn-secondary" @click.prevent.stop="saveResponseLimit">{{$t("actions.save")}}</button>
-                            <button class="btn btn-secondary" @click.prevent.stop="removeResponseLimit">{{$t("actions.remove")}}</button>
+                            <button class="btn btn-secondary" @click.prevent.stop="saveResponseLimit">
+                                {{$t("actions.save")}}
+                            </button>
+                            <button class="btn btn-secondary" @click.prevent.stop="removeResponseLimit">
+                                {{$t("actions.remove")}}
+                            </button>
                         </div>
                     </td>
                     <td>
@@ -198,7 +207,7 @@
 
 <style>
     .added-with-client {
-        background-color: #e6e6f9!important;
+        background-color: #e6e6f9 !important;
     }
 
     .added-with-client:hover {
@@ -207,7 +216,7 @@
 
     .added-with-client-selected,
     .added-with-client-selected:hover {
-        background-color: #c6c6d9!important;
+        background-color: #c6c6d9 !important;
     }
 </style>
 
@@ -256,18 +265,16 @@
             }
         },
         methods: {
-            afterIssueSelectionChanged: function() {
-                if (this.selectedIssuesLength === 0) {
-                    this.abortDescription();
-                    this.abortResponseLimit();
-                    this.abortCraftsman();
-                }
+            resetEdit: function () {
+                this.abortDescription();
+                this.abortResponseLimit();
+                this.abortCraftsman();
             },
             issueClicked: function (issue) {
                 if (issue.selected && this.selectedIssuesLength === 1) {
                     issue.selected = false;
                     this.selectState.lastSelectedIssue = null;
-                    this.afterIssueSelectionChanged();
+                    this.resetEdit();
                     return;
                 }
 
@@ -277,6 +284,7 @@
                 // select new
                 this.selectState.lastSelectedIssue = issue;
                 issue.selected = true;
+                this.resetEdit();
             },
             issueCtrlClicked: function (issue) {
                 issue.selected = !issue.selected;
@@ -284,7 +292,9 @@
                 //remove all selections
                 document.getSelection().removeAllRanges();
 
-                this.afterIssueSelectionChanged();
+                if (this.selectedIssuesLength === 0) {
+                    this.resetEdit();
+                }
             },
             issueShiftClicked: function (issue) {
                 //if none selected; select the one pressed
@@ -326,7 +336,7 @@
             },
             startEditDescription: function (issue) {
                 if (!issue.selected) {
-                    issue.selected = true;
+                    this.issueClicked(issue);
                 }
                 this.editDescription = issue.description;
 
@@ -345,7 +355,7 @@
             },
             startEditResponseLimit: function (issue) {
                 if (!issue.selected) {
-                    issue.selected = true;
+                    this.issueClicked(issue);
                 }
                 this.lastSelectedIssue = issue;
                 if (issue.responseLimit !== null) {
@@ -386,7 +396,7 @@
             },
             startEditCraftsman: function (issue) {
                 if (!issue.selected) {
-                    issue.selected = true;
+                    this.issueClicked(issue);
                 }
 
                 if (issue.craftsmanId in this.craftsmanById) {
@@ -586,7 +596,7 @@
             }
         },
         computed: {
-            selectedIssuesLength: function() {
+            selectedIssuesLength: function () {
                 return this.issues.filter(i => i.selected).length
             },
             someIssuesHaveNumbers: function () {
