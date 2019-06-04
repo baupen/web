@@ -286,13 +286,31 @@ class EditController extends ApiController
             return $errorResponse;
         }
 
-        $map = $this->getDoctrine()->getRepository(Map::class)->findOneBy(['constructionSite' => $constructionSite->getId(), 'id' => $parsedRequest->getMapFile()->getMapId()]);
-        if ($map === null) {
+        /** @var Map $newMap */
+        $newMap = $this->getDoctrine()->getRepository(Map::class)->findOneBy(['constructionSite' => $constructionSite->getId(), 'id' => $parsedRequest->getMapFile()->getMapId()]);
+        if ($newMap === null) {
             return $this->fail(self::MAP_NOT_FOUND);
         }
 
-        $mapFile->setMap($map);
-        $this->fastSave($mapFile);
+        // unassign previous map
+        $previousMap = $mapFile->getMap();
+        if ($previousMap !== null) {
+            $previousMap->setFile(null);
+            $previousMap->getFiles()->removeElement($mapFile);
+
+            if ($previousMap->getFiles()->count() > 0) {
+                $previousMap->setFile($previousMap->getFiles()->first());
+            }
+
+            $this->fastSave($previousMap, $mapFile);
+        }
+
+        $mapFile->setMap($newMap);
+        $newMap->getFiles()->add($mapFile);
+        if ($newMap->getFiles()->count() === 1) {
+            $newMap->setFile($mapFile);
+        }
+        $this->fastSave($mapFile, $newMap);
 
         //create response
         $data = new MapFileData();

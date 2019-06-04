@@ -100,6 +100,11 @@
                 if (match.length === 1) {
                     return match[0].filename;
                 }
+
+                if (this.selectableMapFiles.length > 0)  {
+                    return this.selectableMapFiles[0].filename;
+                }
+
                 return "-";
             }
         },
