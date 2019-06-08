@@ -37,7 +37,7 @@ class FilterControllerTest extends ApiController
      */
     private function authenticatedRequest($relativeLink, $payload = null)
     {
-        $client = $this->getClient();
+        $client = $this->getExternalClient();
 
         if ($this->filter === null) {
             $doctrine = $client->getContainer()->get('doctrine');

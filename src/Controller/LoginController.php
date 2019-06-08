@@ -54,7 +54,7 @@ class LoginController extends BaseLoginController
         }
 
         $form = $this->createForm(LoginType::class);
-        $form->add('login.submit', SubmitType::class, ['translation_domain' => 'login']);
+        $form->add('submit', SubmitType::class, ['translation_domain' => 'login']);
         $this->handleLoginForm(
             $request,
             $form,
@@ -86,7 +86,7 @@ class LoginController extends BaseLoginController
         $constructionManager->setEmail($request->query->get('email'));
 
         $form = $this->createForm(CreateType::class, $constructionManager);
-        $form->add('login.submit', SubmitType::class, ['translation_domain' => 'login']);
+        $form->add('submit', SubmitType::class, ['translation_domain' => 'login']);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -131,7 +131,7 @@ class LoginController extends BaseLoginController
 
         $form = $this->handleForm(
             $this->createForm(ConfirmType::class, $user, ['data_class' => ConstructionManager::class])
-                ->add('confirm.submit', SubmitType::class, ['translation_domain' => 'login']),
+                ->add('submit', SubmitType::class, ['translation_domain' => 'login']),
             $request,
             function ($form) use ($user, $translator, $request) {
                 //check for valid password
@@ -180,7 +180,7 @@ class LoginController extends BaseLoginController
     {
         $form = $this->handleForm(
             $this->createForm(RecoverType::class)
-                ->add('recover.submit', SubmitType::class, ['translation_domain' => 'login']),
+                ->add('submit', SubmitType::class, ['translation_domain' => 'login']),
             $request,
             function ($form) use ($emailService, $translator, $logger, $request) {
                 /** @var FormInterface $form */
@@ -260,7 +260,7 @@ class LoginController extends BaseLoginController
 
         $form = $this->handleForm(
             $this->createForm(SetPasswordType::class, $user, ['data_class' => ConstructionManager::class])
-                ->add('reset.submit', SubmitType::class, ['translation_domain' => 'login']),
+                ->add('submit', SubmitType::class, ['translation_domain' => 'login']),
             $request,
             function ($form) use ($user, $translator, $request) {
                 //check for valid password
