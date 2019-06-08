@@ -11,6 +11,9 @@
         <ini name="error_reporting" value="-1"/>
         <env name="APP_ENV" value="test"/>
         <env name="SHELL_VERBOSITY" value="-1"/>
+
+        <!-- this ensures deprecations inside dependencies do not fail the build -->
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak" />
     </php>
 
     <testsuites>
