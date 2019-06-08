@@ -617,8 +617,18 @@ class EditController extends ApiController
                 return false;
             }
 
-            $entity->setParent($parentMap);
+            if ($parentMap !== $entity->getParent()) {
+                $entity->setParent($parentMap);
+
+                // marks parents as changed to ensure the API works as expected
+                $this->fastSave($entity->getParent(), $parentMap);
+            }
         } else {
+            if ($entity->getParent() !== null) {
+                // marks parents as changed to ensure the API works as expected
+                $this->fastSave($entity->getParent());
+            }
+
             $entity->setParent(null);
         }
 
