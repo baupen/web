@@ -14,10 +14,10 @@ namespace App\Controller\Base;
 use App\Entity\ConstructionManager;
 use App\Security\Model\UserToken;
 use App\Security\Voter\Base\BaseVoter;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class BaseController extends AbstractController
 {
@@ -28,26 +28,7 @@ class BaseController extends AbstractController
 
     public static function getSubscribedServices()
     {
-        return parent::getSubscribedServices() + ['kernel' => KernelInterface::class, 'registry' => RegistryInterface::class];
-    }
-
-    /**
-     * get the parameter.
-     *
-     * remove this method as soon as possible
-     * here because of missing getParameter call in AbstractController, should be back in release 4.1
-     * clean up involves:
-     *  remove this method
-     *  remove getSubscribedServices override
-     *  remove file config/packages/parameters.yml
-     *
-     * @param string $name
-     *
-     * @return mixed
-     */
-    protected function getParameter(string $name)
-    {
-        return $this->getKernel()->getContainer()->getParameter($name);
+        return parent::getSubscribedServices() + ['session' => '?' . SessionInterface::class, 'doctrine' => '?' . ManagerRegistry::class];
     }
 
     /**
@@ -137,14 +118,6 @@ class BaseController extends AbstractController
         }
 
         return parent::render($view, $parameters, $response);
-    }
-
-    /**
-     * @return KernelInterface
-     */
-    private function getKernel()
-    {
-        return $this->get('kernel');
     }
 
     /**

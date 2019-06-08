@@ -42,7 +42,7 @@ class CraftsmanControllerTest extends ApiController
      */
     private function authenticatedRequest(string $relativeLink, $payload = null)
     {
-        $client = $this->getClient();
+        $client = $this->getExternalClient();
         $craftsman = $this->getCraftsman($client);
 
         return $this->request($relativeLink, $payload, $craftsman->getWriteAuthorizationToken());
@@ -59,7 +59,7 @@ class CraftsmanControllerTest extends ApiController
      */
     private function request(string $relativeLink, $payload = null, $authorizationToken = null)
     {
-        $client = $this->getClient();
+        $client = $this->getExternalClient();
         $craftsman = $this->getCraftsman($client);
 
         $parameters = !empty($authorizationToken) ? ['token' => $authorizationToken] : [];
