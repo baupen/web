@@ -17,7 +17,7 @@
     "show_more": "Mehr anzeigen",
     "no_entries_yet": "Keine Aktivitäten auf der Baustelle zurzeit. Fügen Sie Pendenzen hinzu, damit hier etwas angezeigt wird.",
     "entries": {
-      "response_received": "{craftsman} hat eine Pendenz beantwortet. | {craftsman} hat {count} Pendenzen beantwortet.",
+      "response_received": "{craftsman} hat eine Pendenz erledigt. | {craftsman} hat {count} Pendenzen erledigt.",
       "visited_webpage": "{craftsman} hat die Pendenzen angeschaut.",
       "overdue_limit": "{craftsman} hat die Frist vom {limit} bei {count} Pendenzen überschritten."
     }

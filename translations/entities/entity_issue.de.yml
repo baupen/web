@@ -3,7 +3,7 @@ status_values:
   none: Keine
   registered: Offen
   read: Gelesen
-  responded: Beantwortet
+  responded: Erledigt
   reviewed: Bestätigt
 number: Nummer
 status: Status

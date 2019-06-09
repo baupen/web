@@ -24,7 +24,7 @@
     "contact_name": "Kontaktperson",
     "email": "E-Mail",
     "company": "Unternehmer",
-    "not_responded_issues_count": "Unbeantwortete Pendenzen",
+    "not_responded_issues_count": "Nicht erledigte Pendenzen",
     "not_read_issues_count": "Ungelesene Pendenzen",
     "open_issues_count": "Offene Pendenzen",
     "next_response_limit": "Nächste Frist",
@@ -45,7 +45,7 @@
     "status_values": {
       "read": "gelesen",
       "registered": "registriert",
-      "responded": "beantwortet",
+      "responded": "erledigt",
       "reviewed": "geschlossen"
     }
   },
@@ -54,7 +54,7 @@
     "_plural": "Baupläne",
     "name": "Name",
     "open_issues_count": "Offene Pendenzen",
-    "reviewed_issues_count": "Erledigte Pendenzen",
+    "reviewed_issues_count": "Bestätigte Pendenzen",
     "next_response_limit": "Nächste Frist",
     "parent": "Zuordnung"
   },
