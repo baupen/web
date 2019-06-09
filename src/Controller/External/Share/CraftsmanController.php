@@ -16,6 +16,7 @@ use App\Controller\External\Traits\CraftsmanAuthenticationTrait;
 use App\Entity\Craftsman;
 use DateTime;
 use Exception;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,21 +31,24 @@ class CraftsmanController extends BaseDoctrineController
     /**
      * @Route("", name="external_share_craftsman")
      *
-     * @param string $identifier
+     * @param Request $request
+     * @param string  $identifier
      *
      * @throws Exception
      *
      * @return Response
      */
-    public function shareAction($identifier)
+    public function shareAction(Request $request, $identifier)
     {
         /** @var Craftsman $craftsman */
         if (!$this->parseIdentifierRequest($this->getDoctrine(), $identifier, $craftsman)) {
             throw new NotFoundHttpException();
         }
 
-        $craftsman->setLastOnlineVisit(new DateTime());
-        $this->fastSave($craftsman);
+        if (!$request->query->get('do-not-track')) {
+            $craftsman->setLastOnlineVisit(new DateTime());
+            $this->fastSave($craftsman);
+        }
 
         return $this->render('share/craftsman.html.twig');
     }
