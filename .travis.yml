@@ -30,7 +30,7 @@ before_install:
 
   # install git, libmagickwand-dev (for imagick extension) & use node 10.4
   - sudo apt-get update
-  - sudo apt-get install -y gnupg git libmagickwand-dev php-pear
+  - sudo apt-get install -y gnupg git libmagickwand-dev php-pear gs
   - nvm install 10.4
 
   # install phpunit
