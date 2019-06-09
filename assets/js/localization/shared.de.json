@@ -18,13 +18,13 @@
     "created_at": "erstellt am"
   },
   "craftsman": {
-    "_plural": "Handwerker",
+    "_plural": "Unternehmer",
     "name": "Name",
     "trade": "Funktion",
     "contact_name": "Kontaktperson",
     "email": "E-Mail",
-    "company": "Firma",
-    "not_responded_issues_count": "Unbeantwortete Pendenzen",
+    "company": "Unternehmer",
+    "not_responded_issues_count": "Nicht erledigte Pendenzen",
     "not_read_issues_count": "Ungelesene Pendenzen",
     "open_issues_count": "Offene Pendenzen",
     "next_response_limit": "Nächste Frist",
@@ -33,19 +33,19 @@
   },
   "issue": {
     "description": "Beschreibung",
-    "craftsman": "Firma",
+    "craftsman": "Unternehmer",
     "response_limit": "Frist",
-    "map": "Karte",
+    "map": "Bauplan",
     "status": "Status",
     "number": "Nummer",
     "trade": "Funktion",
     "no_response_limit": "nicht gesetzt",
     "no_craftsman": "nicht gesetzt",
-    "craftsman_not_found": "Firma nicht gefunden",
+    "craftsman_not_found": "Unternehmer nicht gefunden",
     "status_values": {
       "read": "gelesen",
       "registered": "registriert",
-      "responded": "beantwortet",
+      "responded": "erledigt",
       "reviewed": "geschlossen"
     }
   },
@@ -54,7 +54,7 @@
     "_plural": "Baupläne",
     "name": "Name",
     "open_issues_count": "Offene Pendenzen",
-    "reviewed_issues_count": "Erledigte Pendenzen",
+    "reviewed_issues_count": "Bestätigte Pendenzen",
     "next_response_limit": "Nächste Frist",
     "parent": "Zuordnung"
   },

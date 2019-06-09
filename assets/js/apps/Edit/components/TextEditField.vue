@@ -37,31 +37,35 @@
         },
         data: function () {
             return {
-                currentValue: null
+                currentValue: null,
+                lastSavedValue: null
             }
         },
         methods: {
             confirmEdit: function () {
-                if (this.value !== this.currentValue) {
-                    this.$emit('input', this.currentValue);
-                }
+                this.saveChanges();
                 this.$emit('stop-edit');
+            },
+            saveChanges: function () {
+                if (this.lastSavedValue !== this.currentValue) {
+                    this.lastSavedValue = this.currentValue;
+                    this.$emit('input', this.lastSavedValue);
+                }
             },
             abortEdit: function () {
                 this.currentValue = this.value;
+                this.saveChanges();
                 this.$emit('stop-edit');
             },
             tabbed: function (event) {
-                if (this.value !== this.currentValue) {
-                    this.$emit('input', this.currentValue);
-                }
+                this.saveChanges();
                 this.$emit(event.shiftKey ? 'backward' : 'forward');
             }
         },
         computed: {
             valueWithDefault: function () {
                 if (this.value.trim().length === 0) {
-                    return "-";
+                    return "---";
                 }
                 return this.value;
             }
@@ -70,17 +74,20 @@
             value: function () {
                 this.currentValue = this.value;
             },
-            editEnabled: function () {
-                if (this.editEnabled) {
+            editEnabled: function (newValue) {
+                if (newValue) {
                     //focus input on next tick
                     this.$nextTick(() => {
                         this.$refs.edit.focus();
                     });
+                } else {
+                    this.saveChanges();
                 }
             }
         },
         mounted() {
             this.currentValue = this.value;
+            this.lastSavedValue = this.value;
         }
     }
 </script>

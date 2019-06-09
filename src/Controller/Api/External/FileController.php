@@ -20,12 +20,11 @@ use App\Entity\Issue;
 use App\Entity\Map;
 use App\Entity\Traits\TimeTrait;
 use App\Service\Interfaces\ImageServiceInterface;
-use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Interfaces\MapFileServiceInterface;
+use App\Service\MapFileService;
 use DateTime;
-use const DIRECTORY_SEPARATOR;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\ORMException;
 use Exception;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,16 +47,15 @@ class FileController extends ExternalApiController
     /**
      * @Route("/download", name="api_external_file_download", methods={"POST"})
      *
-     * @param Request               $request
-     * @param PathServiceInterface  $pathService
-     * @param ImageServiceInterface $imageService
+     * @param Request                 $request
+     * @param ImageServiceInterface   $imageService
+     * @param MapFileServiceInterface $mapFileService
      *
-     * @throws ORMException
-     * @throws Exception
+     * @throws \Exception
      *
      * @return Response
      */
-    public function fileDownloadAction(Request $request, PathServiceInterface $pathService, ImageServiceInterface $imageService)
+    public function fileDownloadAction(Request $request, ImageServiceInterface $imageService, MapFileServiceInterface $mapFileService)
     {
         /** @var DownloadFileRequest $downloadFileRequest */
         /** @var ConstructionManager $constructionManager */
@@ -74,9 +72,9 @@ class FileController extends ExternalApiController
                     /* @var Map $entity */
                     return $entity->getConstructionSite()->getConstructionManagers()->contains($constructionManager);
                 },
-                function ($entity) use ($pathService) {
+                function ($entity) use ($mapFileService) {
                     /* @var Map $entity */
-                    return  $entity->getFile() ? $pathService->getFolderForMapFile($entity->getConstructionSite()) . DIRECTORY_SEPARATOR . $entity->getFile()->getFilename() : null;
+                    return $mapFileService->getForMobileDevice($entity);
                 }
             );
         } elseif ($downloadFileRequest->getIssue() !== null) {

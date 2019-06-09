@@ -17,6 +17,7 @@ use App\Api\Response\Data\CraftsmenData;
 use App\Api\Response\Data\ProcessingEntitiesData;
 use App\Api\Transformer\Dispatch\CraftsmanTransformer;
 use App\Controller\Api\Base\ApiController;
+use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Email;
@@ -106,7 +107,7 @@ class DispatchController extends ApiController
             }
 
             //send mail & remember if it worked
-            if ($this->sendMail($craftsman, $state, $constructionSite, $emailService, $translator)) {
+            if ($this->sendMail($this->getUser(), $craftsman, $state, $emailService, $translator)) {
                 $craftsman->setLastEmailSent(new DateTime());
                 $this->fastSave($craftsman);
                 $dispatchData->addSuccessfulId($craftsman->getId());
@@ -131,9 +132,9 @@ class DispatchController extends ApiController
     }
 
     /**
+     * @param ConstructionManager   $constructionManager
      * @param Craftsman             $craftsman
      * @param CurrentIssueState     $state
-     * @param ConstructionSite      $constructionSite
      * @param EmailServiceInterface $emailService
      * @param TranslatorInterface   $translator
      *
@@ -141,7 +142,7 @@ class DispatchController extends ApiController
      *
      * @return bool
      */
-    private function sendMail(Craftsman $craftsman, CurrentIssueState $state, ConstructionSite $constructionSite, EmailServiceInterface $emailService, TranslatorInterface $translator)
+    private function sendMail(ConstructionManager $constructionManager, Craftsman $craftsman, CurrentIssueState $state, EmailServiceInterface $emailService, TranslatorInterface $translator)
     {
         // build up base text
         if ($state->getOverdueIssuesCount() > 0) {
@@ -165,18 +166,13 @@ class DispatchController extends ApiController
             );
         }
 
-        //append closed issues info
-        if ($state->getRecentlyReviewedIssuesCount() > 0) {
-            $body .= "\n";
-            $body .= $translator->trans('email.body_closed_issues_info', ['%count%' => $state->getRecentlyReviewedIssuesCount()], 'dispatch');
-        }
-
         //append suffix
-        $subject .= $translator->trans('email.subject_appendix', ['%construction_site_name%' => $constructionSite->getName()], 'dispatch');
+        $subject .= $translator->trans('email.subject_appendix', ['%construction_site_name%' => $craftsman->getConstructionSite()->getName()], 'dispatch');
 
         //send email
         $email = new Email();
         $email->setEmailType(EmailType::ACTION_EMAIL);
+        $email->setSender($constructionManager->getName(), $constructionManager->getEmail());
         $email->setReceiver($craftsman->getEmail());
         $email->setSubject($subject);
         $email->setBody($body);
@@ -184,7 +180,7 @@ class DispatchController extends ApiController
         $email->setActionLink($this->generateUrl('external_share_craftsman', ['identifier' => $craftsman->getEmailIdentifier(), 'token' => $craftsman->getWriteAuthorizationToken()], UrlGeneratorInterface::ABSOLUTE_URL));
         $this->fastSave($email);
 
-        if ($emailService->sendEmail($email)) {
+        if ($emailService->sendEmail($email, ['reply_to' => $constructionManager->getEmail()])) {
             $email->setSentDateTime(new DateTime());
             $this->fastSave($email);
 

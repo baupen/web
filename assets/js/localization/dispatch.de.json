@@ -1,15 +1,15 @@
 {
   "table": {
-    "no_entries": "Keine Handwerker erfasst",
-    "filter_placeholder": "Handwerker\/Funktion suchen..."
+    "no_entries": "Keine Unternehmer erfasst",
+    "filter_placeholder": "Unternehmer\/Funktion suchen..."
   },
   "actions": {
-    "send_emails": "Emails versenden",
-    "send_emails_to_all": "Emails an alle versenden",
-    "send_emails_to_selected": "Emails an ausgewählte versenden"
+    "send_emails": "E-Mails versenden",
+    "send_emails_to_all": "E-Mails an alle versenden",
+    "send_emails_to_selected": "E-Mails an ausgewählte versenden"
   },
   "messages": {
-    "emails_sent": "Emails versandt",
-    "skipped_emails": "{count} Handwerker wurden beim Versand übersprungen, da diese keine offenen Pendenzen (mehr) haben."
+    "emails_sent": "E-Mails versandt",
+    "skipped_emails": "{count} Unternehmer wurden beim Versand übersprungen, da diese keine offenen Pendenzen (mehr) haben."
   }
 }

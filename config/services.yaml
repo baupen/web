@@ -41,3 +41,8 @@ services:
   App\EventListener\ExceptionListener:
     tags:
       - { name: kernel.event_listener, event: kernel.exception }
+
+  twig.extension.text:
+      class: Twig_Extensions_Extension_Text
+      tags:
+      - { name: twig.extension }

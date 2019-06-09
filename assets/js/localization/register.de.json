@@ -24,9 +24,9 @@
       "generate": "generieren",
       "tables": {
         "name": "Zusammenfassungstabellen",
-        "table_by_craftsman": "nach Firma",
+        "table_by_craftsman": "nach Unternehmer",
         "table_by_trade": "nach Funktion",
-        "table_by_map": "nach Karte"
+        "table_by_map": "nach Bauplan"
       }
     },
     "link": {

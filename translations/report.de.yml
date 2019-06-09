@@ -8,15 +8,15 @@ introduction:
     or: oder
     and: und
     trades: Gewerbe|Gewerbe
-    craftsmen: Firma|Firmen
-    maps: Karte|Karten
+    craftsmen: Unternehmer
+    maps: Bauplan|Baupläne
     time: Zeit
 table:
-  by_map: 'Pendenzen nach Karte'
-  by_craftsman: 'Pendenzen nach ausführender Firma'
+  by_map: 'Pendenzen nach Bauplan'
+  by_craftsman: 'Pendenzen nach Unternehmer'
   by_trade: 'Pendenzen nach Handwerk'
   in_state_since: '%status% seit'
 issues:
-  detailed: 'Pendenzendetails nach Karte'
+  detailed: 'Pendenzendetails nach Bauplan'
   with_images: 'mit Bildern'
 generated: 'generiert am %date%'

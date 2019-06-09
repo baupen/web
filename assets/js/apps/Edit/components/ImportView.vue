@@ -84,7 +84,7 @@
                                     {{$t('import_craftsmen.changes.remove')}}
                                 </span>
                             </td>
-                            <td>{{importAction.email}}</td>
+                            <td>{{importAction.changeSet.email}}</td>
                             <template v-if="importAction.changeSet !== null">
                                 <td>{{importAction.changeSet.contactName}}</td>
                                 <td>{{importAction.changeSet.company}}</td>
@@ -163,7 +163,7 @@
             },
             applyImport: function () {
                 let writePropertiesFunc = (container, importAction) => {
-                    container.craftsman.email = importAction.email;
+                    container.craftsman.email = importAction.changeSet.email;
                     container.craftsman.contactName = importAction.changeSet.contactName;
                     container.craftsman.company = importAction.changeSet.company;
                     container.craftsman.trade = importAction.changeSet.trade;
@@ -187,6 +187,7 @@
                         this.$emit('remove', ia.craftsmanContainer);
                     }
                 });
+                this.$emit("close");
             },
             parseExcelContent: function () {
                 this.dataTableHeader = [];
@@ -397,7 +398,7 @@
                 return withoutNumbers.length / content.length * diff;
             },
             isTrade: function (content, header = null) {
-                if (header !== null && this.anyInText(header, ["handwerk", "funktion", "gewerbe", "arbeitsgattung"])) {
+                if (header !== null && this.anyInText(header, ["handwerk", "funktion", "gewerbe", "arbeitsgattung", "unternehmer"])) {
                     return 1;
                 }
 
@@ -417,6 +418,9 @@
 
                 const diff = (tradeMatches.length - companyMatches) / (withoutNumbers.length - companyMatches);
                 return withoutNumbers.length / content.length * diff;
+            },
+            craftsmanIdentifier: function (email, trade) {
+                return email + "_" + trade;
             }
         },
         computed: {
@@ -431,9 +435,10 @@
                 }
 
                 // lookup of existing data
-                let emailLookup = {};
+                let oldDataLookup = {};
                 this.craftsmanContainers.forEach(cc => {
-                    emailLookup[cc.craftsman.email] = cc;
+                    let lookupKey = this.craftsmanIdentifier(cc.craftsman.email, cc.craftsman.trade);
+                    oldDataLookup[lookupKey] = cc;
                 });
 
                 // get indexes of relevant columns
@@ -450,43 +455,45 @@
                 let newDataLookup = {};
                 this.dataTable.forEach(row => {
                     let email = row[rowsWithWritableValues[0]];
+                    let trade = row[rowsWithWritableValues[3]];
                     if (email !== null && email.length > 0) {
-                        newDataLookup[email] = {
+                        let lookupKey = this.craftsmanIdentifier(email, trade);
+                        newDataLookup[lookupKey] = {
+                            email: email,
                             contactName: row[rowsWithWritableValues[1]],
                             company: row[rowsWithWritableValues[2]],
-                            trade: row[rowsWithWritableValues[3]]
+                            trade: trade
                         }
                     }
                 });
 
                 // create add/update actions
                 let actions = [];
-                let emailsFound = [];
-                for (const email in newDataLookup) {
-                    if (Object.prototype.hasOwnProperty.call(newDataLookup, email)) {
-                        emailsFound.push(email);
-                        const newObj = newDataLookup[email];
+                let keysFound = [];
+                for (const key in newDataLookup) {
+                    if (Object.prototype.hasOwnProperty.call(newDataLookup, key)) {
+                        keysFound.push(key);
+                        const newObj = newDataLookup[key];
 
-                        if (Object.prototype.hasOwnProperty.call(emailLookup, email)) {
-                            const oldObj = emailLookup[email];
-                            if (oldObj.craftsman.contactName !== newObj.contactName ||
+                        if (Object.prototype.hasOwnProperty.call(oldDataLookup, key)) {
+                            const oldObj = oldDataLookup[key];
+                            if (oldObj.craftsman.email !== newObj.email ||
+                                oldObj.craftsman.contactName !== newObj.contactName ||
                                 oldObj.craftsman.company !== newObj.company ||
                                 oldObj.craftsman.trade !== newObj.trade) {
 
                                 // update if any property different
                                 actions.push({
                                     action: "update",
-                                    email: email,
                                     craftsmanContainer: oldObj,
                                     changeSet: newObj
                                 });
                             }
                         } else {
 
-                            // add if email not knows yet
+                            // add if combination not knows yet
                             actions.push({
                                 action: "add",
-                                email: email,
                                 craftsmanContainer: null,
                                 changeSet: newObj
                             });
@@ -495,16 +502,15 @@
                 }
 
                 // create remove actions
-                for (const email in emailLookup) {
-                    if (Object.prototype.hasOwnProperty.call(emailLookup, email)) {
-                        if (emailsFound.indexOf(email) === -1) {
-                            const toBeRemovedObject = emailLookup[email];
+                for (const key in oldDataLookup) {
+                    if (Object.prototype.hasOwnProperty.call(oldDataLookup, key)) {
+                        if (keysFound.indexOf(key) === -1) {
+                            const toBeRemovedObject = oldDataLookup[key];
 
                             // only propose to remove if it is possible
                             if (toBeRemovedObject.craftsman.issueCount === 0 && toBeRemovedObject.pendingChange !== "remove") {
                                 actions.push({
                                     action: "remove",
-                                    email: email,
                                     craftsmanContainer: toBeRemovedObject,
                                     changeSet: null
                                 });

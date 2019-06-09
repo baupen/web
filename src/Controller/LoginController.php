@@ -203,6 +203,7 @@ class LoginController extends BaseLoginController
                 //create email
                 $email = new Email();
                 $email->setEmailType(EmailType::ACTION_EMAIL);
+                $email->setSystemSender();
                 $email->setReceiver($exitingUser->getEmail());
                 $email->setSubject($translator->trans('recover.email.reset_password.subject', ['%page%' => $request->getHttpHost()], 'login'));
                 $email->setBody($translator->trans('recover.email.reset_password.message', [], 'login'));
@@ -349,6 +350,7 @@ class LoginController extends BaseLoginController
         // construct email
         $email = new Email();
         $email->setEmailType(EmailType::ACTION_EMAIL);
+        $email->setSystemSender();
         $email->setReceiver($constructionManager->getEmail());
         $email->setSubject($translator->trans('create.email.subject', ['%page%' => $request->getHttpHost()], 'login'));
         $email->setBody($translator->trans('create.email.body', [], 'login'));
