@@ -280,7 +280,9 @@ WHERE cscm.construction_manager_id = :id';
     {
         $removeIds = [];
         foreach ($requestObjectMeta as $objectMeta) {
-            $removeIds[$objectMeta['id']] = (new DateTime($objectMeta['lastChangeTime']))->format('Y-m-d H:i:s');
+            $dateTime = new DateTime($objectMeta['lastChangeTime']);
+            $dateTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            $removeIds[$objectMeta['id']] = $dateTime->format('Y-m-d H:i:s');
         }
 
         $allValidIds = [];
