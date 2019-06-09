@@ -1,6 +1,6 @@
 dispatch:
-  title: 'Handwerker informieren'
-  description: 'Informieren Sie Handwerker über neue Pendenzen mit einer personalisierten E-Mail'
+  title: 'Unternehmer informieren'
+  description: 'Informieren Sie Unternehmer über neue Pendenzen mit einer personalisierten E-Mail'
 email:
   subject_appendix: ' auf der Baustelle %construction_site_name%'
   body_limit_info: 'Die nächste ablaufende Frist ist am %limit%. Wir sind zuversichtlich, dass die davon betroffenen Pendenzen bis dann behoben sind.'

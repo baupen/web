@@ -398,7 +398,7 @@
                 return withoutNumbers.length / content.length * diff;
             },
             isTrade: function (content, header = null) {
-                if (header !== null && this.anyInText(header, ["handwerk", "funktion", "gewerbe", "arbeitsgattung"])) {
+                if (header !== null && this.anyInText(header, ["handwerk", "funktion", "gewerbe", "arbeitsgattung", "unternehmer"])) {
                     return 1;
                 }
 

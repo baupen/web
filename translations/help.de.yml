@@ -9,9 +9,9 @@ overview:
   manage: Verwalten
   manage_description: 'Durchsuche, ändere und exportiere eingepflegte Pendenzen im Verzeichnis.'
   notify: Benachrichtigen
-  notify_description: 'Informiere Handwerker über neue Pendenzen.'
+  notify_description: 'Informiere Unternehmer über neue Pendenzen.'
   wait: Rückmeldung
-  wait_description: 'Erhalte von den Handwerkern eine Antwort. Diese können mit einem persönlichen Link ihre Pendenzen abarbeiten und als erledigt markieren.'
+  wait_description: 'Erhalte von den Unternehmern eine Antwort. Diese können mit einem persönlichen Link ihre Pendenzen abarbeiten und als erledigt markieren.'
   inspect: Abschliessen
   inspect_description: 'Markiere in der iOS-App die erledigten Pendenzen als abgeschlossen.'
   start: 'Zur Anwendung'

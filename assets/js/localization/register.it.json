@@ -25,7 +25,7 @@
       "tables": {
         "name": "Tabelle riassuntive",
         "table_by_craftsman": "per impresa",
-        "table_by_trade": "per operaio",
+        "table_by_trade": "per funzione",
         "table_by_map": "per carte"
       }
     },
