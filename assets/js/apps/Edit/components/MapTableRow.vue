@@ -4,10 +4,11 @@
             <input
                     type="text"
                     v-model.lazy="map.name"
+                    :placeholder="$t('map.name')"
                     class="form-control form-control-sm"/>
         </td>
         <td>
-            <select class="form-control form-control-sm" v-model="map.parentId">
+            <select class="form-control form-control-sm" v-if="selectableMaps.length > 1" v-model="map.parentId">
                 <option v-for="map in selectableMaps" :value="map.id">{{map.name}}</option>
             </select>
         </td>

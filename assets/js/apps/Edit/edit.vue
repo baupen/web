@@ -122,7 +122,7 @@
                 const mapContainer = {
                     map: {
                         id: uuid(),
-                        name: this.$t("edit_maps.default_map_name"),
+                        name: "",
                         parentId: null,
                         fileId: null,
                         issueCount: 0
