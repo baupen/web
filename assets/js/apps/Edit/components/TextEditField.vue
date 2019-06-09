@@ -65,7 +65,7 @@
         computed: {
             valueWithDefault: function () {
                 if (this.value.trim().length === 0) {
-                    return "-";
+                    return "---";
                 }
                 return this.value;
             }
