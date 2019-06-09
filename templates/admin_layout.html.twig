@@ -9,7 +9,7 @@
 
 {% block content %}
     <nav class="navbar navbar-dark bg-dark navbar-expand">
-        <a class="navbar-brand" href="{{ path("index") }}">{{ constructionSiteName }}</a>
+        <a class="navbar-brand" href="{{ path("index") }}">{{ constructionSiteName|truncate(20, true) }}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavbar"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
