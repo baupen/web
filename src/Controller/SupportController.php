@@ -61,6 +61,7 @@ class SupportController extends BaseFormController
                 //create email
                 $entity = new Email();
                 $entity->setEmailType(EmailType::PLAIN_EMAIL);
+                $entity->setSystemSender();
                 $entity->setReceiver($this->getParameter('SUPPORT_EMAIL'));
                 $entity->setSubject($translator->trans('support.email.subject', ['%page%' => $request->getHttpHost()], 'support'));
                 $entity->setBody($translator->trans('support.email.body', ['%name%' => $name, '%email%' => $email, '%message%' => $message], 'support'));

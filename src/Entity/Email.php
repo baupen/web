@@ -27,6 +27,22 @@ class Email extends BaseEntity
 {
     use IdTrait;
 
+    const SENDER_SYSTEM = 'system';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $senderName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $senderEmail;
+
     /**
      * @var string
      *
@@ -82,6 +98,41 @@ class Email extends BaseEntity
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $visitedDateTime;
+
+    /**
+     * @return string
+     */
+    public function getSenderName(): string
+    {
+        return $this->senderName;
+    }
+
+    /**
+     * @param string $senderName
+     * @param string $senderEmail
+     */
+    public function setSender(string $senderName, string $senderEmail): void
+    {
+        $this->senderName = $senderName;
+        $this->senderEmail = $senderEmail;
+    }
+
+    /**
+     * indicates that the email was sent by the system.
+     */
+    public function setSystemSender(): void
+    {
+        $this->senderName = self::SENDER_SYSTEM;
+        $this->senderEmail = self::SENDER_SYSTEM;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSenderEmail(): string
+    {
+        return $this->senderEmail;
+    }
 
     /**
      * @return string
