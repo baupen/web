@@ -584,6 +584,8 @@ class EditController extends ApiController
      * @param Map       $entity
      * @param $errorResponse
      *
+     * @throws Exception
+     *
      * @return bool
      */
     private function writeIntoMapEntity(UpdateMap $updateMap, Map $entity, &$errorResponse)
@@ -610,23 +612,28 @@ class EditController extends ApiController
         }
 
         if ($updateMap->getParentId() !== null) {
-            $parentMap = $this->getDoctrine()->getRepository(Map::class)->find($updateMap->getParentId());
-            if ($parentMap === null || $parentMap->getConstructionSite() !== $entity->getConstructionSite()) {
+            $newParent = $this->getDoctrine()->getRepository(Map::class)->find($updateMap->getParentId());
+            if ($newParent === null || $newParent->getConstructionSite() !== $entity->getConstructionSite()) {
                 $errorResponse = $this->fail(self::MAP_NOT_FOUND);
 
                 return false;
             }
 
-            if ($parentMap !== $entity->getParent()) {
-                $entity->setParent($parentMap);
-
+            if ($newParent !== $entity->getParent()) {
                 // marks parents as changed to ensure the API works as expected
-                $this->fastSave($entity->getParent(), $parentMap);
+                $oldParent = $entity->getParent();
+                $oldParent->preUpdateTime();
+                $newParent->preUpdateTime();
+                $this->fastSave($oldParent, $newParent);
+
+                $entity->setParent($newParent);
             }
         } else {
             if ($entity->getParent() !== null) {
                 // marks parents as changed to ensure the API works as expected
-                $this->fastSave($entity->getParent());
+                $oldParent = $entity->getParent();
+                $oldParent->preUpdateTime();
+                $this->fastSave($oldParent);
             }
 
             $entity->setParent(null);
