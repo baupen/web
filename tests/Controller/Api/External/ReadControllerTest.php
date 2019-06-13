@@ -255,7 +255,7 @@ class ReadControllerTest extends ApiController
                 $meta->setId($entity->getMeta()->getId());
                 if ($old-- > 0) {
                     //set to min datetime to force update
-                    $meta->setLastChangeTime(((new DateTime($entity->getMeta()->getLastChangeTime()))->sub(new DateInterval('PT1M'))->format("Y-m-d\TH:i:s\Z")));
+                    $meta->setLastChangeTime(((new DateTime($entity->getMeta()->getLastChangeTime()))->sub(new DateInterval('PT1M'))->format("c")));
                 } else {
                     $meta->setLastChangeTime($entity->getMeta()->getLastChangeTime());
                 }
@@ -305,10 +305,10 @@ class ReadControllerTest extends ApiController
 
         $this->assertNotNull($readResponse->data);
         $this->assertNull($readResponse->data->changedUser);
-        $this->assertCount(1, $readResponse->data->changedConstructionSites);
-        $this->assertCount(1, $readResponse->data->changedCraftsmen);
-        $this->assertCount(1, $readResponse->data->changedMaps);
-        $this->assertCount(1, $readResponse->data->changedIssues);
+        $this->assertCount(2, $readResponse->data->changedConstructionSites);
+        $this->assertCount(2, $readResponse->data->changedCraftsmen);
+        $this->assertCount(2, $readResponse->data->changedMaps);
+        $this->assertCount(2, $readResponse->data->changedIssues);
         $this->assertCount(1, $readResponse->data->removedConstructionSiteIDs);
         $this->assertCount(1, $readResponse->data->removedCraftsmanIDs);
         $this->assertCount(1, $readResponse->data->removedMapIDs);
