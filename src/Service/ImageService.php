@@ -18,6 +18,7 @@ use App\Helper\ImageHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use const DIRECTORY_SEPARATOR;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class ImageService implements ImageServiceInterface
@@ -36,6 +37,11 @@ class ImageService implements ImageServiceInterface
      * @var PathServiceInterface
      */
     private $pathService;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * @var int the bubble size as an abstract unit
@@ -59,9 +65,10 @@ class ImageService implements ImageServiceInterface
      * @param PathServiceInterface $pathService
      * @param KernelInterface      $kernel
      */
-    public function __construct(PathServiceInterface $pathService, KernelInterface $kernel)
+    public function __construct(PathServiceInterface $pathService, KernelInterface $kernel, LoggerInterface $logger)
     {
         $this->pathService = $pathService;
+        $this->logger = $logger;
 
         // improves performance when generating fixtures (done extensively in dev / test environment)
         $this->preventCacheWarmUp = $kernel->getEnvironment() !== 'prod';
@@ -570,7 +577,9 @@ class ImageService implements ImageServiceInterface
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
             imagegif($newImage, $targetPath);
         } else {
-            return false;
+            $this->logger->warning('cannot resize image with ending ' . $ending);
+            // can not resize; but at least create the file
+            copy($sourcePath, $targetPath);
         }
 
         return true;
