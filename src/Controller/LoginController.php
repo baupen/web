@@ -256,7 +256,7 @@ class LoginController extends BaseLoginController
 
         // if registration incomplete; redirect to confirm page
         if (!$user->isRegistrationCompleted()) {
-            return $this->redirect('login_confirm');
+            return $this->redirectToRoute('login_confirm', ['authenticationHash' => $authenticationHash]);
         }
 
         $form = $this->handleForm(

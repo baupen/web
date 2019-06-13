@@ -255,7 +255,7 @@ class ReadControllerTest extends ApiController
                 $meta->setId($entity->getMeta()->getId());
                 if ($old-- > 0) {
                     //set to min datetime to force update
-                    $meta->setLastChangeTime(((new DateTime($entity->getMeta()->getLastChangeTime()))->sub(new DateInterval('PT1M'))->format("Y-m-d\TH:i:s\Z")));
+                    $meta->setLastChangeTime(((new DateTime($entity->getMeta()->getLastChangeTime()))->sub(new DateInterval('PT1M'))->format("c")));
                 } else {
                     $meta->setLastChangeTime($entity->getMeta()->getLastChangeTime());
                 }

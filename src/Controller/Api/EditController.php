@@ -621,10 +621,17 @@ class EditController extends ApiController
 
             if ($newParent !== $entity->getParent()) {
                 // marks parents as changed to ensure the API works as expected
+
+                if ($newParent !== null) {
+                    $newParent->preUpdateTime();
+                    $this->fastSave($newParent);
+                }
+
                 $oldParent = $entity->getParent();
-                $oldParent->preUpdateTime();
-                $newParent->preUpdateTime();
-                $this->fastSave($oldParent, $newParent);
+                if ($oldParent !== null) {
+                    $oldParent->preUpdateTime();
+                    $this->fastSave($oldParent);
+                }
 
                 $entity->setParent($newParent);
             }
@@ -632,8 +639,10 @@ class EditController extends ApiController
             if ($entity->getParent() !== null) {
                 // marks parents as changed to ensure the API works as expected
                 $oldParent = $entity->getParent();
-                $oldParent->preUpdateTime();
-                $this->fastSave($oldParent);
+                if ($oldParent !== null) {
+                    $oldParent->preUpdateTime();
+                    $this->fastSave($oldParent);
+                }
             }
 
             $entity->setParent(null);
