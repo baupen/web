@@ -305,10 +305,10 @@ class ReadControllerTest extends ApiController
 
         $this->assertNotNull($readResponse->data);
         $this->assertNull($readResponse->data->changedUser);
-        $this->assertCount(2, $readResponse->data->changedConstructionSites);
-        $this->assertCount(2, $readResponse->data->changedCraftsmen);
-        $this->assertCount(2, $readResponse->data->changedMaps);
-        $this->assertCount(2, $readResponse->data->changedIssues);
+        $this->assertCount(1, $readResponse->data->changedConstructionSites);
+        $this->assertCount(1, $readResponse->data->changedCraftsmen);
+        $this->assertCount(1, $readResponse->data->changedMaps);
+        $this->assertCount(1, $readResponse->data->changedIssues);
         $this->assertCount(1, $readResponse->data->removedConstructionSiteIDs);
         $this->assertCount(1, $readResponse->data->removedCraftsmanIDs);
         $this->assertCount(1, $readResponse->data->removedMapIDs);
