@@ -64,6 +64,7 @@ class ImageService implements ImageServiceInterface
      *
      * @param PathServiceInterface $pathService
      * @param KernelInterface      $kernel
+     * @param LoggerInterface      $logger
      */
     public function __construct(PathServiceInterface $pathService, KernelInterface $kernel, LoggerInterface $logger)
     {
