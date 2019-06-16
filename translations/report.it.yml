@@ -8,12 +8,12 @@ introduction:
     or: oppure
     and: e
     trades: Settore|Settori
-    craftsmen: Azienda|Aziende
+    craftsmen: Operaio|Operai
     maps: Mappa|Mappe
     time: Tempo
 table:
   by_map: 'Pendenze per mappa'
-  by_craftsman: 'Pendenze per azienda esecutiva'
+  by_craftsman: 'Pendenze per operaio'
   by_trade: 'Pendenze per settore'
   in_state_since: 'da %status%'
 issues:

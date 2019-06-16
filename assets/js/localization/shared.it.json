@@ -23,7 +23,7 @@
     "trade": "Settore",
     "contact_name": "Persona di contatto",
     "email": "E-mail",
-    "company": "Impresa",
+    "company": "Operaio",
     "not_responded_issues_count": "Pendenze non risposte",
     "not_read_issues_count": "Pendenze non lette",
     "open_issues_count": "Pendenze aperte",
@@ -33,7 +33,7 @@
   },
   "issue": {
     "description": "Descrizione",
-    "craftsman": "Impresa",
+    "craftsman": "Operaio",
     "response_limit": "Scadenza",
     "map": "Mappa",
     "status": "Stato",
@@ -41,7 +41,7 @@
     "trade": "Settore",
     "no_response_limit": "non specificato",
     "no_craftsman": "non specificato",
-    "craftsman_not_found": "Impresa non trovata",
+    "craftsman_not_found": "Operaio non trovato",
     "status_values": {
       "read": "letto",
       "registered": "registrato",
@@ -59,8 +59,8 @@
     "parent": "Attribuzione"
   },
   "map_file": {
-    "_name": "Versione del cantiere",
-    "_plural": "Versioni del cantiere",
+    "_name": "PDF",
+    "_plural": "PDF",
     "name": "Nome",
     "created_at": "aggiunto il"
   },

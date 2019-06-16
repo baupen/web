@@ -9,9 +9,9 @@ overview:
   manage: Gestire
   manage_description: 'Cercare, modificare ed esportare le pendenze inserite nell''elenco.'
   notify: Notificare
-  notify_description: 'Informare gli artigiani sulle nuove tendenze.'
+  notify_description: 'Informare gli operai sulle nuove tendenze.'
   wait: Riscontro
-  wait_description: 'Ottieni una risposta dagli artigiani. Questi possono lavorare sulle loro pendenze con un collegamento personale e contrassegnarli come completati.'
+  wait_description: 'Ottieni una risposta dagli operai. Questi possono lavorare sulle loro pendenze con un collegamento personale e contrassegnarli come completati.'
   inspect: Concludere
   inspect_description: 'Contrassegnare le pendenze eseguite come completate nell''app iOS.'
   start: 'Per l''uso'

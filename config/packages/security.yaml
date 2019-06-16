@@ -3,7 +3,7 @@ security:
     strategy: unanimous
 
   encoders:
-    App\Security\Model\UserToken: bcrypt
+    App\Security\Model\UserToken: native
 
   role_hierarchy:
     ROLE_ADMIN: ROLE_USER

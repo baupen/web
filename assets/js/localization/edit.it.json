@@ -20,12 +20,12 @@
     }
   },
   "edit_map_files": {
-    "title": "Versioni di progetto di costruzione",
-    "help": "Ordina le differenti versioni di progetto di costruzione per un progetto.",
+    "title": "PDF",
+    "help": "Ordina le PDF per un progetto.",
     "drag_files_to_upload": "Trascina i file .pdf in quest'area per aggiungerli come nuovi progetti di costruzione",
     "performing_upload_check": "Caricamento in corso di verifica...",
     "identical_content_than": "Il contenuto di questo file è identico a {files}.",
-    "identical_name": "Una versione di progetto di costruzione con questo nome esiste già. Il nome della versione del progetto di costruzione sarà modificato in {new_name}.",
+    "identical_name": "Una PDF con questo nome esiste già. Il nome della PDF sarà modificato in {new_name}.",
     "upload_active": "viene caricato... ({percentage}%)",
     "actions": {
       "abort_upload": "Annulla caricamento",
@@ -59,7 +59,7 @@
     "no_more_changes_detected": "Non sono state rilevate ulteriori modifiche. È ora possibile chiudere l'importazione.",
     "content_types": {
       "email": "E-mail",
-      "company": "Impresa",
+      "company": "Operaio",
       "contact_name": "Persona di contatto",
       "trade": "Professione \/ Impiego"
     },
