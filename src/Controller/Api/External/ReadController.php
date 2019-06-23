@@ -139,10 +139,13 @@ WHERE cscm.construction_manager_id = :id';
             $retrieveConstructionSiteIds[] = $object->getId();
         }
 
+        /*
+         * BUG 272: always return all construction sites.
+         * if the issue in the app is fixed, then replace it again with the old statement:
+         * $manager->getRepository(ConstructionSite::class)->findBy(['id' => $retrieveConstructionSiteIds])
+         */
         $readData->setChangedConstructionSites(
-            $transformerFactory->getBuildingTransformer()->toApiMultiple(
-                $manager->getRepository(ConstructionSite::class)->findBy(['id' => $retrieveConstructionSiteIds])
-            )
+            $transformerFactory->getBuildingTransformer()->toApiMultiple($constructionManager->getConstructionSites())
         );
         $validConstructionSiteIds = $allValidIds;
 
