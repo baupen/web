@@ -145,7 +145,7 @@ WHERE cscm.construction_manager_id = :id';
          * $manager->getRepository(ConstructionSite::class)->findBy(['id' => $retrieveConstructionSiteIds])
          */
         $readData->setChangedConstructionSites(
-            $transformerFactory->getBuildingTransformer()->toApiMultiple($constructionManager->getConstructionSites())
+            $transformerFactory->getBuildingTransformer()->toApiMultiple($constructionManager->getConstructionSites()->toArray())
         );
         $validConstructionSiteIds = $allValidIds;
 
