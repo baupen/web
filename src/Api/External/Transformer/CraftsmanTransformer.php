@@ -36,6 +36,7 @@ class CraftsmanTransformer extends BatchTransformer
         $craftsman = new \App\Api\External\Entity\Craftsman();
         $craftsman->setName($entity->getName());
         $craftsman->setTrade($entity->getTrade());
+        $craftsman->setConstructionSiteID($entity->getConstructionSite()->getId());
 
         $craftsman->setMeta($this->objectMetaTransformer->toApi($entity));
 

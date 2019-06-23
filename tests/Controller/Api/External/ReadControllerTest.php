@@ -102,6 +102,7 @@ class ReadControllerTest extends ApiController
             $readResponse->data->changedCraftsmen, [
                 'name' => self::TYPE_STRING,
                 'trade' => self::TYPE_STRING,
+                'constructionSiteID' => self::TYPE_UUID,
                 'meta' => $metaDefinition,
             ]
         );
@@ -135,6 +136,7 @@ class ReadControllerTest extends ApiController
                 'issues' => self::TYPE_UUID_ARRAY,
                 'file' => $fileDefinition,
                 'constructionSiteID' => self::TYPE_UUID,
+                'parentID' => self::TYPE_NULLABLE,
                 'sectors' => ['name' => self::TYPE_STRING, 'color' => self::TYPE_STRING, 'points' => $pointDefinition],
                 'sectorFrame' => ['startX' => self::TYPE_DOUBLE, 'startY' => self::TYPE_DOUBLE, 'width' => self::TYPE_DOUBLE, 'height' => self::TYPE_DOUBLE],
                 'meta' => $metaDefinition,

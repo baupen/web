@@ -26,6 +26,11 @@ class Craftsman extends BaseEntity
     private $trade;
 
     /**
+     * @var string
+     */
+    private $constructionSiteID;
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -55,5 +60,21 @@ class Craftsman extends BaseEntity
     public function setTrade(string $trade): void
     {
         $this->trade = $trade;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConstructionSiteID(): string
+    {
+        return $this->constructionSiteID;
+    }
+
+    /**
+     * @param string $constructionSiteID
+     */
+    public function setConstructionSiteID(string $constructionSiteID): void
+    {
+        $this->constructionSiteID = $constructionSiteID;
     }
 }
