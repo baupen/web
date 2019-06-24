@@ -320,6 +320,7 @@ country: String?
 ```
 meta: ObjectMeta
 name: String
+constructionSiteID: UUID
 trade: String // e.g. "Gipser", "Maler"
 ```
 
@@ -334,6 +335,7 @@ issues: [UUID]
 file: File?
 name: String
 constructionSiteID: UUID
+parentID: UUID?
 ```
 
 
