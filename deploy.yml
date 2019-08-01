@@ -1,0 +1,24 @@
+prepare:
+  - composer install --verbose --prefer-dist --no-interaction --no-dev --optimize-autoloader --no-scripts
+  - yarn install
+  - yarn run encore production
+  - rm -rf node_modules
+
+shared:
+  - var/persistent
+  - var/transient
+  - var/log
+  - .env
+
+writable:
+  - var
+
+install:
+  - php bin/console cache:clear -n
+
+migration:
+  - php bin/console doctrine:migrations:migrate -n
+
+rollback_migration:
+  - cd $ROLLBACK_TARGET_PATH && export MIGRATE_TO=$(php bin/console doctrine:migrations:latest)
+  - cd $ROLLBACK_SOURCE_PATH && php bin/console doctrine:migrations:migrate $MIGRATE_TO -n
