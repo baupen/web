@@ -11,7 +11,7 @@ writable:
   - var
 
 env:
-  - .env
+  - .env.local
 
 warump:
   - php bin/console cache:clear -n
