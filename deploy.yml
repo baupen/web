@@ -1,4 +1,4 @@
-prepare:
+release:
   - composer install --verbose --prefer-dist --no-interaction --no-dev --optimize-autoloader --no-scripts
   - yarn install
   - yarn run encore production
@@ -6,19 +6,24 @@ prepare:
 
 shared:
   - var/persistent
-  - var/transient
-  - var/log
-  - .env
 
 writable:
   - var
 
-install:
+env:
+  - .env
+
+warump:
   - php bin/console cache:clear -n
+  - cp -r $PREVIOUS_RELEASE_PATH/var/transient var/transient
 
 migration:
   - php bin/console doctrine:migrations:migrate -n
 
 rollback_migration:
-  - cd $ROLLBACK_TARGET_PATH && export MIGRATE_TO=$(php bin/console doctrine:migrations:latest)
-  - cd $ROLLBACK_SOURCE_PATH && php bin/console doctrine:migrations:migrate $MIGRATE_TO -n
+  - cd $PREVIOUS_RELEASE_PATH && export MIGRATE_TO=$(php bin/console doctrine:migrations:latest)
+  - php bin/console doctrine:migrations:migrate $MIGRATE_TO -n
+
+fixtures:
+  - composer install --no-interaction --optimize-autoloader --no-scripts
+  - php bin/console doctrine:fixtures:load -n
