@@ -38,7 +38,7 @@ the application supports to authorize users:
 additionally, if a user registers, and authorization was successful, 
 his personal information is pre-filled using the file `var/transient/user_data.json`.
 The correct entry is identified using the email, and then all properties which match `ConstructionManager` properties 
-are prefilled from the entry if they are defined. The file hence my looks like this:
+are prefilled from the entry if they are defined. The file hence may look like this:
 
 ```json
 {
@@ -62,7 +62,7 @@ sudo pip3 install ldapdomaindump
 investigate how LDAP is setup by dumping the entries:
 
 ```bash
-python3.4 -m ldapdomaindump -u dombh\\mangeltest -p UserPend1029 -o /var/www/pendenzen/supporting/ --no-html --no-grep 192.168.16.33
+python3.4 -m ldapdomaindump -u domain\\user -p ldap_user -o /var/www/pendenzen/supporting/ --no-html --no-grep 199.199.199.199
 ```
 
 then write a script to extract LDAP emails; some example code: 
