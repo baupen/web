@@ -47,6 +47,7 @@
     "brainmaestro/composer-git-hooks": "^2.6",
     "codacy/coverage": "^1.4",
     "deployer/deployer": "^6.1",
+    "famoser/agnes": "^2.0",
     "friendsofphp/php-cs-fixer": "^2.7",
     "mockery/mockery": "^1.2",
     "phpunit/phpunit": "^7",
