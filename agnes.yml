@@ -6,12 +6,12 @@ agnes:
     path: .build
 
 application:
-  repository: famoser/agnes
+  repository: mangelio/app
 
   shared_folders:
     - var/persistent
 
-  editable_files:
+  files:
     - path: .env.local
       required: true
     - path: var/transient/domainOverrides.json
@@ -36,22 +36,6 @@ application:
     rollback:
       - cd $PREVIOUS_RELEASE_PATH && export MIGRATE_TO=$(php bin/console doctrine:migrations:latest)
       - php bin/console doctrine:migrations:migrate $MIGRATE_TO -n
-
-    fixtures:
-      - composer install --no-interaction --optimize-autoloader --no-scripts
-      - php bin/console doctrine:fixtures:load -n
-
-
-servers:
-  local:
-    connection:
-      type: local
-      # type: ssh
-      # destination: '%env(SERVER_DESTINATION)%'
-    path: .release
-    keep_releases: 2
-    environments:
-      agnes.ch: [production, education, staging, dev]
 
 policies:
   strategy: unanimous # all matching policies must be valid
@@ -80,16 +64,3 @@ policies:
     - type: whitelist
       filter:
         stages: [dev]
-
-events:
-  deploy:
-    before:
-      - filter:
-          environment: [staging]
-        command: copy_shared
-        arguments: { source: production }
-
-    after:
-      - filter:
-          environment: [dev]
-        command: fixtures
