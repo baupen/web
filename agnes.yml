@@ -1,12 +1,12 @@
 agnes:
   github_api_token: '%env(GITHUB_API_TOKEN)%'
-  build:
+  build_target:
     connection:
       type: local
     path: .build
 
 application:
-  repository: mangelio/app
+  repository: mangelio/web
 
   shared_folders:
     - var/persistent
