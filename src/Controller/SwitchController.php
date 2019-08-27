@@ -29,6 +29,9 @@ class SwitchController extends BaseLoginController
     public function indexAction()
     {
         if ($this->getUser()->getIsTrialAccount()) {
+            // resolve #283
+            $this->ensureActiveConstructionSiteSet();
+
             return $this->redirectToRoute('dashboard');
         }
 
@@ -52,5 +55,15 @@ class SwitchController extends BaseLoginController
         $this->fastSave($user);
 
         return $this->redirectToRoute('dashboard');
+    }
+
+    private function ensureActiveConstructionSiteSet(): void
+    {
+        $constructionManager = $this->getUser();
+
+        if ($constructionManager->getActiveConstructionSite() === null) {
+            $constructionManager->setActiveConstructionSite($constructionManager->getConstructionSites()->first());
+            $this->fastSave($constructionManager);
+        }
     }
 }

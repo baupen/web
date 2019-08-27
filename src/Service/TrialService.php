@@ -89,6 +89,8 @@ class TrialService implements TrialServiceInterface
         $constructionManager = $this->createConstructionManager($proposedGivenName, $proposedFamilyName);
         $constructionSite = $this->createConstructionSite($constructionManager);
 
+        $constructionManager->setActiveConstructionSite($constructionSite);
+
         $manager = $this->registry->getManager();
         $manager->persist($constructionManager);
         $manager->persist($constructionSite);
