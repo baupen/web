@@ -37,4 +37,5 @@ Encore
 ;
 
 // export the final configuration
+console.log(Encore.getWebpackConfig());
 module.exports = Encore.getWebpackConfig();
