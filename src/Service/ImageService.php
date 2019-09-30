@@ -52,7 +52,7 @@ class ImageService implements ImageServiceInterface
     /**
      * @var bool if the cache should be disabled
      */
-    private $disableCache = true;
+    private $disableCache = false;
 
     /**
      * @var bool prevents calls to warmup cache from archiving something
