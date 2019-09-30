@@ -16,6 +16,6 @@ import 'core-js/es6/set';
 
 const $ = require('jquery');
 var compatibleBrowser = typeof Object['__defineSetter__'] === 'function';
-if (!compatibleBrowser || true) {
+if (!compatibleBrowser) {
   $('#outdated').addClass('active');
 }
