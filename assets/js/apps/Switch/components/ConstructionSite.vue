@@ -10,7 +10,7 @@
         </p>
         <div slot="footer">
             <small class="text-muted">
-                {{ constructionSite.otherConstructionManagers.join(", ")}}
+                {{ involvedConstructionManagers }}
             </small>
         </div>
         <b-button variant="primary" :href="constructionSite.switchLink">
@@ -41,6 +41,12 @@
         components: {
             bCard,
             bButton
-        }
+        },
+      computed: {
+          involvedConstructionManagers: function () {
+            var involvedConstructionManagers =  [this.$t("construction_manager.me")].concat(this.constructionSite.otherConstructionManagers);
+            return involvedConstructionManagers.join(", ");
+          }
+      }
     }
 </script>

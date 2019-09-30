@@ -16,6 +16,9 @@
   "validation": {
     "name_already_taken": "Dieser Name ist bereits vergeben."
   },
+  "construction_manager": {
+    "me": "Ich"
+  },
   "construction_site": {
     "activated": "aktiviert"
   }

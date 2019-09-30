@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta lang="{{ app.request.locale }}">
 
-    <!-- fav icons -->	
+    <!-- fav icons -->
 	<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
 	<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
 	<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
@@ -34,10 +34,11 @@
 </head>
 <body>
 
-<div id="outdated">
+<div class="alert alert-warning" id="outdated">
     <h6>{{ "outdated.your_browser_is_outdated"|trans({}, "framework") }}</h6>
-    <p>{{ "outdated.update_to_view_correctly"|trans({}, "framework") }} <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">{{ "outdated.update_now"|trans({}, "framework") }}</a></p>
-    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+    <p>{{ "outdated.update_to_view_correctly"|trans({}, "framework") }}
+        <a target="_blank" href="http://outdatedbrowser.com/">{{ "outdated.update_now"|trans({}, "framework") }}</a>
+    </p>
 </div>
 
 {% set flashes = app.session.flashbag.all() %}
