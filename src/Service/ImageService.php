@@ -47,12 +47,12 @@ class ImageService implements ImageServiceInterface
      * @var int the bubble size as an abstract unit
      *          the higher the number the smaller the resulting bubble
      */
-    private $bubbleScale = 500;
+    private $bubbleScale = 1000;
 
     /**
      * @var bool if the cache should be disabled
      */
-    private $disableCache = false;
+    private $disableCache = true;
 
     /**
      * @var bool prevents calls to warmup cache from archiving something
