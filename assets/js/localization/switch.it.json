@@ -16,6 +16,9 @@
   "validation": {
     "name_already_taken": "Questo è già stato assegnato."
   },
+  "construction_manager": {
+    "me": "Io"
+  },
   "construction_site": {
     "activated": "attivato"
   }
