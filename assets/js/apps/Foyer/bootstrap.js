@@ -27,7 +27,7 @@ Vue.config.productionTip = false;
 if (document.getElementById('foyer') != null) {
   // register plugins
   Vue.use(VueI18n);
-  Vue.use(BootstrapVue)
+  Vue.use(BootstrapVue);
 
   // register components
   Vue.component('font-awesome-icon', FontAwesomeIcon);

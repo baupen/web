@@ -1,7 +1,7 @@
 // vuejs & plugins
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
-import BootstrapVue from 'bootstrap-vue'
+import BootstrapVue from 'bootstrap-vue';
 
 // components
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
