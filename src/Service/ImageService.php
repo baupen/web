@@ -52,7 +52,7 @@ class ImageService implements ImageServiceInterface
     /**
      * @var bool if the cache should be disabled
      */
-    private $disableCache = true;
+    private $disableCache = false;
 
     /**
      * @var bool prevents calls to warmup cache from archiving something
@@ -469,7 +469,7 @@ class ImageService implements ImageServiceInterface
                 /* @var Issue $issue */
                 return $issue->getId() . $issue->getStatusCode() . $issue->getLastChangedAt()->format('c');
             };
-            $issueHash = hash('sha256', implode(',', array_map($issueToString, $issues)));
+            $issueHash = hash('sha256', 'v1' . implode(',', array_map($issueToString, $issues)));
 
             //render issue image
             $issueImagePath = $generationTargetFolder . DIRECTORY_SEPARATOR . $issueHash . '.jpg';
