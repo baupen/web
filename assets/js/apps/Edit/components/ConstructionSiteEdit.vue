@@ -18,7 +18,6 @@
 </style>
 
 <script>
-    import bButton from 'bootstrap-vue/es/components/button/button'
     import {required} from 'vuelidate/lib/validators'
     import axios from 'axios';
     import debounce from 'debounce';

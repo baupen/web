@@ -39,8 +39,6 @@
 </style>
 
 <script>
-    import bCard from 'bootstrap-vue/es/components/card/card'
-    import bButton from 'bootstrap-vue/es/components/button/button'
     import MapFileTableRow from "./MapFileTableRow";
 
     const lang = document.documentElement.lang.substr(0, 2);
@@ -63,9 +61,7 @@
             }
         },
         components: {
-            MapFileTableRow,
-            bCard,
-            bButton
+            MapFileTableRow
         },
         methods: {
             dragEventOccurred: function (e, newDragActiveState) {

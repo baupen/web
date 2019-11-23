@@ -40,8 +40,6 @@
 </template>
 
 <script>
-    import bCard from 'bootstrap-vue/es/components/card/card'
-    import bButton from 'bootstrap-vue/es/components/button/button'
     import moment from "moment";
 
     const lang = document.documentElement.lang.substr(0, 2);
@@ -67,10 +65,6 @@
                 locale: lang,
                 mapFile: this.mapFileContainer.mapFile
             }
-        },
-        components: {
-            bCard,
-            bButton
         },
         methods: {
             formatDateTime: function (dateTime) {

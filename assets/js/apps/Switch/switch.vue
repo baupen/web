@@ -72,8 +72,6 @@
 <script>
     import axios from "axios"
     import moment from "moment";
-    import bAlert from 'bootstrap-vue/es/components/alert/alert'
-    import bCard from 'bootstrap-vue/es/components/card/card'
     import {AtomSpinner} from 'epic-spinners'
     import notifications from '../mixins/Notifications'
     import ConstructionSite from './components/ConstructionSite'
@@ -104,8 +102,6 @@
         components: {
             AddConstructionSiteForm,
             ConstructionSite,
-            bAlert,
-            bCard,
             AtomSpinner
         },
         methods: {

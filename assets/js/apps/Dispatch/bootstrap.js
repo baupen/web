@@ -1,6 +1,7 @@
 // vuejs & plugins
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
+import BootstrapVue from 'bootstrap-vue';
 
 // components
 import vueHeadful from 'vue-headful';
@@ -29,6 +30,7 @@ Vue.config.productionTip = false;
 if (document.getElementById('dispatch') != null) {
   // register plugins
   Vue.use(VueI18n);
+  Vue.use(BootstrapVue);
 
   // register components
   Vue.component('vue-headful', vueHeadful);

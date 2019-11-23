@@ -30,9 +30,6 @@
 </template>
 
 <script>
-    import bCard from 'bootstrap-vue/es/components/card/card'
-    import bButton from 'bootstrap-vue/es/components/button/button'
-
     export default {
         props: {
             mapContainer: {
@@ -52,10 +49,6 @@
             return {
                 map: this.mapContainer.map
             }
-        },
-        components: {
-            bCard,
-            bButton
         },
         methods: {
             hasParentId: function (id, parentId) {
