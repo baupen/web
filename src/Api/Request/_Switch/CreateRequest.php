@@ -33,65 +33,41 @@ class CreateRequest
      */
     private $locality;
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
     public function getStreetAddress(): string
     {
         return $this->streetAddress;
     }
 
-    /**
-     * @param string $streetAddress
-     */
     public function setStreetAddress(string $streetAddress): void
     {
         $this->streetAddress = $streetAddress;
     }
 
-    /**
-     * @return string
-     */
     public function getPostalCode(): string
     {
         return $this->postalCode;
     }
 
-    /**
-     * @param string $postalCode
-     */
     public function setPostalCode(string $postalCode): void
     {
         $this->postalCode = $postalCode;
     }
 
-    /**
-     * @return string
-     */
     public function getLocality(): string
     {
         return $this->locality;
     }
 
-    /**
-     * @param string $locality
-     */
     public function setLocality(string $locality): void
     {
         $this->locality = $locality;

@@ -22,17 +22,11 @@ class CreateCheckRequest
      */
     private $constructionSiteName;
 
-    /**
-     * @return string
-     */
     public function getConstructionSiteName(): string
     {
         return $this->constructionSiteName;
     }
 
-    /**
-     * @param string $constructionSiteName
-     */
     public function setConstructionSiteName(string $constructionSiteName): void
     {
         $this->constructionSiteName = $constructionSiteName;

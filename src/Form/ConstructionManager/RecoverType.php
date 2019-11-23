@@ -16,9 +16,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RecoverType extends \App\Form\Traits\User\RecoverType
 {
-    /**
-     * @param OptionsResolver $resolver
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([

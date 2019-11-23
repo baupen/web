@@ -23,17 +23,11 @@ class ConstructionSiteRequest extends AbstractRequest
      */
     private $constructionSiteId;
 
-    /**
-     * @return string
-     */
     public function getConstructionSiteId(): string
     {
         return $this->constructionSiteId;
     }
 
-    /**
-     * @param string $constructionSiteId
-     */
     public function setConstructionSiteId(string $constructionSiteId): void
     {
         $this->constructionSiteId = $constructionSiteId;

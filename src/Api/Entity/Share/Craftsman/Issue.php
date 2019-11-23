@@ -21,17 +21,11 @@ class Issue extends PublicIssue
      */
     private $responseLimit;
 
-    /**
-     * @return DateTime|null
-     */
     public function getResponseLimit(): ?DateTime
     {
         return $this->responseLimit;
     }
 
-    /**
-     * @param DateTime|null $responseLimit
-     */
     public function setResponseLimit(?DateTime $responseLimit): void
     {
         $this->responseLimit = $responseLimit;

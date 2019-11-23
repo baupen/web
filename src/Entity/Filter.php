@@ -209,17 +209,11 @@ class Filter extends BaseEntity
      */
     private $limitEnd;
 
-    /**
-     * @param ConstructionSite $constructionSite
-     */
     public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;
     }
 
-    /**
-     * @param DateTime|null $accessAllowedUntil
-     */
     public function setAccessAllowedUntil(?DateTime $accessAllowedUntil): void
     {
         $this->accessAllowedUntil = $accessAllowedUntil;
@@ -254,25 +248,16 @@ class Filter extends BaseEntity
         $this->filterByIssues = true;
     }
 
-    /**
-     * @param bool $isMarked
-     */
     public function filterByIsMarked(bool $isMarked): void
     {
         $this->isMarked = $isMarked;
     }
 
-    /**
-     * @param DateTime|null $limitEnd
-     */
     public function filterByResponseLimitEnd(?DateTime $limitEnd): void
     {
         $this->limitEnd = $limitEnd;
     }
 
-    /**
-     * @param int $anyStatus
-     */
     public function filterByAnyStatus(int $anyStatus): void
     {
         $this->anyStatus = $anyStatus;
@@ -306,9 +291,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param bool|null     $registrationStatus
-     * @param DateTime|null $registrationStart
-     * @param DateTime|null $registrationEnd
+     * @param bool|null $registrationStatus
      */
     public function filterByRegistrationStatus(bool $registrationStatus, ?DateTime $registrationStart = null, ?DateTime $registrationEnd = null): void
     {
@@ -318,9 +301,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param bool|null     $respondedStatus
-     * @param DateTime|null $respondedStart
-     * @param DateTime|null $respondedEnd
+     * @param bool|null $respondedStatus
      */
     public function filterByRespondedStatus(bool $respondedStatus, ?DateTime $respondedStart = null, ?DateTime $respondedEnd = null): void
     {
@@ -330,9 +311,7 @@ class Filter extends BaseEntity
     }
 
     /**
-     * @param bool|null     $reviewedStatus
-     * @param DateTime|null $reviewedStart
-     * @param DateTime|null $reviewedEnd
+     * @param bool|null $reviewedStatus
      */
     public function filterByReviewedStatus(bool $reviewedStatus, ?DateTime $reviewedStart = null, ?DateTime $reviewedEnd = null): void
     {
@@ -341,41 +320,26 @@ class Filter extends BaseEntity
         $this->reviewedEnd = $reviewedEnd;
     }
 
-    /**
-     * @return ConstructionSite
-     */
     public function getConstructionSite(): ConstructionSite
     {
         return $this->constructionSite;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPublicAccessIdentifier(): ?string
     {
         return $this->publicAccessIdentifier;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getAccessAllowedUntil(): ?DateTime
     {
         return $this->accessAllowedUntil;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getLastAccess(): ?DateTime
     {
         return $this->lastAccess;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getIsMarked(): ?bool
     {
         return $this->isMarked;
@@ -393,9 +357,6 @@ class Filter extends BaseEntity
         return self::getValidArray($this->issues);
     }
 
-    /**
-     * @return int|null
-     */
     public function getAnyStatus(): ?int
     {
         return $this->anyStatus;
@@ -437,89 +398,56 @@ class Filter extends BaseEntity
         return self::getValidArray($this->maps);
     }
 
-    /**
-     * @return bool|null
-     */
     public function getRegistrationStatus(): ?bool
     {
         return $this->registrationStatus;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getRegistrationStart(): ?DateTime
     {
         return $this->registrationStart;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getRegistrationEnd(): ?DateTime
     {
         return $this->registrationEnd;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getRespondedStatus(): ?bool
     {
         return $this->respondedStatus;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getRespondedStart(): ?DateTime
     {
         return $this->respondedStart;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getRespondedEnd(): ?DateTime
     {
         return $this->respondedEnd;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getReviewedStatus(): ?bool
     {
         return $this->reviewedStatus;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getReviewedStart(): ?DateTime
     {
         return $this->reviewedStart;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getReviewedEnd(): ?DateTime
     {
         return $this->reviewedEnd;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getLimitStart(): ?DateTime
     {
         return $this->limitStart;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getLimitEnd(): ?DateTime
     {
         return $this->limitEnd;

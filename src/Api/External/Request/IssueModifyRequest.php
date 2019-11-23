@@ -24,9 +24,6 @@ class IssueModifyRequest extends AuthenticatedRequest
      */
     private $issue;
 
-    /**
-     * @return Issue
-     */
     public function getIssue(): Issue
     {
         return $this->issue;

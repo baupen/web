@@ -110,33 +110,21 @@ class IssuePosition extends BaseEntity
         $this->positionZoomScale = $positionZoomScale;
     }
 
-    /**
-     * @return Issue
-     */
     public function getIssue(): Issue
     {
         return $this->issue;
     }
 
-    /**
-     * @param Issue $issue
-     */
     public function setIssue(Issue $issue): void
     {
         $this->issue = $issue;
     }
 
-    /**
-     * @return MapFile
-     */
     public function getMapFile(): MapFile
     {
         return $this->mapFile;
     }
 
-    /**
-     * @param MapFile $mapFile
-     */
     public function setMapFile(MapFile $mapFile): void
     {
         $this->mapFile = $mapFile;

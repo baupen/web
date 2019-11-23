@@ -20,17 +20,11 @@ class OverviewData
      */
     private $overview;
 
-    /**
-     * @return Overview
-     */
     public function getOverview(): Overview
     {
         return $this->overview;
     }
 
-    /**
-     * @param Overview $overview
-     */
     public function setOverview(Overview $overview): void
     {
         $this->overview = $overview;

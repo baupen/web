@@ -49,49 +49,31 @@ class UploadFileCheck
         $this->sameHashConflicts = $sameHashConflicts;
     }
 
-    /**
-     * @return string|null
-     */
     public function getFileNameConflict(): ?string
     {
         return $this->fileNameConflict;
     }
 
-    /**
-     * @param string|null $fileNameConflict
-     */
     public function setFileNameConflict(?string $fileNameConflict): void
     {
         $this->fileNameConflict = $fileNameConflict;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDerivedFileName(): ?string
     {
         return $this->derivedFileName;
     }
 
-    /**
-     * @param string|null $derivedFileName
-     */
     public function setDerivedFileName(?string $derivedFileName): void
     {
         $this->derivedFileName = $derivedFileName;
     }
 
-    /**
-     * @return bool
-     */
     public function isUploadPossible(): bool
     {
         return $this->uploadPossible;
     }
 
-    /**
-     * @param bool $uploadPossible
-     */
     public function setUploadPossible(bool $uploadPossible): void
     {
         $this->uploadPossible = $uploadPossible;

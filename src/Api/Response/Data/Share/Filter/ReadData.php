@@ -26,33 +26,21 @@ class ReadData
      */
     private $filter;
 
-    /**
-     * @return ConstructionSite
-     */
     public function getConstructionSite(): ConstructionSite
     {
         return $this->constructionSite;
     }
 
-    /**
-     * @param ConstructionSite $constructionSite
-     */
     public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;
     }
 
-    /**
-     * @return Filter
-     */
     public function getFilter(): Filter
     {
         return $this->filter;
     }
 
-    /**
-     * @param Filter $filter
-     */
     public function setFilter(Filter $filter): void
     {
         $this->filter = $filter;

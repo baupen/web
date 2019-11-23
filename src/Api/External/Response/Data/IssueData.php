@@ -22,17 +22,12 @@ class IssueData
 
     /**
      * LoginData constructor.
-     *
-     * @param Issue $issue
      */
     public function __construct(Issue $issue)
     {
         $this->issue = $issue;
     }
 
-    /**
-     * @return Issue
-     */
     public function getIssue(): Issue
     {
         return $this->issue;

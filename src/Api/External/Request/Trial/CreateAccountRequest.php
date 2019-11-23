@@ -25,33 +25,21 @@ class CreateAccountRequest extends AbstractRequest
      */
     private $proposedFamilyName;
 
-    /**
-     * @return string|null
-     */
     public function getProposedGivenName(): ?string
     {
         return $this->proposedGivenName;
     }
 
-    /**
-     * @param string|null $proposedGivenName
-     */
     public function setProposedGivenName(?string $proposedGivenName): void
     {
         $this->proposedGivenName = $proposedGivenName;
     }
 
-    /**
-     * @return string|null
-     */
     public function getProposedFamilyName(): ?string
     {
         return $this->proposedFamilyName;
     }
 
-    /**
-     * @param string|null $proposedFamilyName
-     */
     public function setProposedFamilyName(?string $proposedFamilyName): void
     {
         $this->proposedFamilyName = $proposedFamilyName;

@@ -21,17 +21,11 @@ class UpdateConstructionSiteRequest extends ConstructionSiteRequest
      */
     private $constructionSite;
 
-    /**
-     * @return UpdateConstructionSite
-     */
     public function getConstructionSite(): UpdateConstructionSite
     {
         return $this->constructionSite;
     }
 
-    /**
-     * @param UpdateConstructionSite $constructionSite
-     */
     public function setConstructionSite(UpdateConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;

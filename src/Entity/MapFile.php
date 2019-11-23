@@ -78,33 +78,21 @@ class MapFile extends BaseEntity
         return $this->issuePositions;
     }
 
-    /**
-     * @return ConstructionSite
-     */
     public function getConstructionSite(): ConstructionSite
     {
         return $this->constructionSite;
     }
 
-    /**
-     * @param ConstructionSite $constructionSite
-     */
     public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;
     }
 
-    /**
-     * @return Map|null
-     */
     public function getMap(): ?Map
     {
         return $this->map;
     }
 
-    /**
-     * @param Map|null $map
-     */
     public function setMap(?Map $map): void
     {
         $this->map = $map;
@@ -123,9 +111,6 @@ class MapFile extends BaseEntity
         return (object) $this->sectorFrame;
     }
 
-    /**
-     * @param Frame|null $sectorFrame
-     */
     public function setSectorFrame(?Frame $sectorFrame): void
     {
         $this->sectorFrame = $sectorFrame;

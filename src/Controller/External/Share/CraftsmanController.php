@@ -31,8 +31,7 @@ class CraftsmanController extends BaseDoctrineController
     /**
      * @Route("", name="external_share_craftsman")
      *
-     * @param Request $request
-     * @param string  $identifier
+     * @param string $identifier
      *
      * @throws Exception
      *

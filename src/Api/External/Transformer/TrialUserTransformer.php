@@ -17,8 +17,6 @@ use App\Entity\ConstructionManager;
 class TrialUserTransformer
 {
     /**
-     * @param ConstructionManager $constructionManager
-     *
      * @return TrialUser
      */
     public function toApi(ConstructionManager $constructionManager)

@@ -24,8 +24,6 @@ use Exception;
 class IssueRepository extends EntityRepository
 {
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @throws NonUniqueResultException
      *
      * @return int
@@ -44,8 +42,6 @@ class IssueRepository extends EntityRepository
     }
 
     /**
-     * @param Filter $filter
-     *
      * @return int
      */
     public function countByFilter(Filter $filter)
@@ -56,8 +52,7 @@ class IssueRepository extends EntityRepository
     /**
      * gets recently changed issues.
      *
-     * @param ConstructionSite $constructionSite
-     * @param int              $days
+     * @param int $days
      *
      * @throws Exception
      *
@@ -79,8 +74,6 @@ class IssueRepository extends EntityRepository
     }
 
     /**
-     * @param Filter $filter
-     *
      * @return Issue[]
      */
     public function findByFilter(Filter $filter)
@@ -96,8 +89,6 @@ class IssueRepository extends EntityRepository
 
     /**
      * apply the filter to the query builder.
-     *
-     * @param Filter $filter
      *
      * @return QueryBuilder
      */
@@ -211,7 +202,6 @@ class IssueRepository extends EntityRepository
     }
 
     /**
-     * @param Filter  $filter
      * @param Issue[] $issues
      *
      * @return Issue[]|array

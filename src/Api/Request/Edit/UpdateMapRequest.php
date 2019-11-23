@@ -21,17 +21,11 @@ class UpdateMapRequest extends ConstructionSiteRequest
      */
     private $map;
 
-    /**
-     * @return UpdateMap
-     */
     public function getMap(): UpdateMap
     {
         return $this->map;
     }
 
-    /**
-     * @param UpdateMap $map
-     */
     public function setMap(UpdateMap $map): void
     {
         $this->map = $map;

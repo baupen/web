@@ -118,33 +118,21 @@ class ConstructionSite extends BaseEntity
         $this->filters = new ArrayCollection();
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
     public function getFolderName(): string
     {
         return $this->folderName;
     }
 
-    /**
-     * @param string $folderName
-     */
     public function setFolderName(string $folderName): void
     {
         $this->folderName = $folderName;
@@ -195,17 +183,11 @@ class ConstructionSite extends BaseEntity
         return $this->images;
     }
 
-    /**
-     * @return ConstructionSiteImage|null
-     */
     public function getImage(): ?ConstructionSiteImage
     {
         return $this->image;
     }
 
-    /**
-     * @param ConstructionSiteImage|null $image
-     */
     public function setImage(?ConstructionSiteImage $image): void
     {
         $this->image = $image;
@@ -219,17 +201,11 @@ class ConstructionSite extends BaseEntity
         return $this->mapFiles;
     }
 
-    /**
-     * @return bool
-     */
     public function isTrialConstructionSite(): bool
     {
         return $this->isTrialConstructionSite;
     }
 
-    /**
-     * @param bool $isTrialConstructionSite
-     */
     public function setIsTrialConstructionSite(bool $isTrialConstructionSite): void
     {
         $this->isTrialConstructionSite = $isTrialConstructionSite;

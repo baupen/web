@@ -21,17 +21,11 @@ class CheckMapFileRequest extends ConstructionSiteRequest
      */
     private $mapFile;
 
-    /**
-     * @return CheckMapFile
-     */
     public function getMapFile(): CheckMapFile
     {
         return $this->mapFile;
     }
 
-    /**
-     * @param CheckMapFile $mapFile
-     */
     public function setMapFile(CheckMapFile $mapFile): void
     {
         $this->mapFile = $mapFile;

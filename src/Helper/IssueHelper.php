@@ -96,7 +96,6 @@ class IssueHelper
     }
 
     /**
-     * @param array $issues
      * @param $orderedElements
      * @param $issuesPerElement
      * @param callable $elementProperty    the element we want to use for ordering

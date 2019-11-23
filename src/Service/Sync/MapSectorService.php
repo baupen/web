@@ -30,18 +30,12 @@ class MapSectorService implements MapSectorServiceInterface
 
     /**
      * MapSectorService constructor.
-     *
-     * @param PathServiceInterface $pathService
      */
     public function __construct(PathServiceInterface $pathService)
     {
         $this->pathService = $pathService;
     }
 
-    /**
-     * @param SyncTransaction  $syncTransaction
-     * @param ConstructionSite $constructionSite
-     */
     public function syncMapSectors(SyncTransaction $syncTransaction, ConstructionSite $constructionSite)
     {
         /** @var MapFile[] $mapFiles */
@@ -59,8 +53,6 @@ class MapSectorService implements MapSectorServiceInterface
     }
 
     /**
-     * @param string $filePath
-     *
      * @return MapSector[]|array
      */
     private function parseMapSectors(string $filePath)
@@ -94,9 +86,7 @@ class MapSectorService implements MapSectorServiceInterface
     }
 
     /**
-     * @param SyncTransaction $syncTransaction
-     * @param MapFile         $mapFile
-     * @param MapSector[]     $newMapSectors
+     * @param MapSector[] $newMapSectors
      */
     private function applyMapSectors(SyncTransaction $syncTransaction, MapFile $mapFile, array $newMapSectors)
     {
@@ -131,8 +121,6 @@ class MapSectorService implements MapSectorServiceInterface
     }
 
     /**
-     * @param string $name
-     *
      * @return string
      */
     private function getColorFromMapSectorName(string $name)

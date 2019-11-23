@@ -33,9 +33,6 @@ class RefreshAuthorizationCommand extends Command
 
     /**
      * ImportLdapUsersCommand constructor.
-     *
-     * @param RegistryInterface             $registry
-     * @param AuthorizationServiceInterface $authorizationService
      */
     public function __construct(RegistryInterface $registry, AuthorizationServiceInterface $authorizationService)
     {
@@ -57,9 +54,6 @@ class RefreshAuthorizationCommand extends Command
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
      * @throws ORMException
      *
      * @return int

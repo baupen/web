@@ -32,9 +32,6 @@ class Drawer implements DrawerInterface
 
     /**
      * Drawer constructor.
-     *
-     * @param DrawableTransactionInterface $drawableTransaction
-     * @param ColorServiceInterface        $colorService
      */
     public function __construct(DrawableTransactionInterface $drawableTransaction, ColorServiceInterface $colorService)
     {

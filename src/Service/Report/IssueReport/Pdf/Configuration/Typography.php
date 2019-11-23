@@ -35,33 +35,21 @@ class Typography
      */
     private $scalingFactor = 1.6;
 
-    /**
-     * @return string
-     */
     public function getFontFamily(): string
     {
         return $this->fontFamily;
     }
 
-    /**
-     * @return float
-     */
     public function getBaseFontSize(): float
     {
         return $this->baseFontSize;
     }
 
-    /**
-     * @return float
-     */
     public function getLineWidth(): float
     {
         return $this->lineWidth;
     }
 
-    /**
-     * @return float
-     */
     public function getScalingFactor(): float
     {
         return $this->scalingFactor;

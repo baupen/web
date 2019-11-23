@@ -23,17 +23,11 @@ class NoteIdRequest extends ConstructionSiteRequest
      */
     private $noteId;
 
-    /**
-     * @return string
-     */
     public function getNoteId(): string
     {
         return $this->noteId;
     }
 
-    /**
-     * @param string $noteId
-     */
     public function setNoteId(string $noteId): void
     {
         $this->noteId = $noteId;

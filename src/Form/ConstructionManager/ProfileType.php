@@ -19,10 +19,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProfileType extends BaseType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('givenName', TextType::class);
@@ -30,9 +26,6 @@ class ProfileType extends BaseType
         $builder->add('phone', TextType::class);
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([

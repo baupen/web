@@ -52,12 +52,7 @@ class Report
     }
 
     /**
-     * @param string|null $headerImage
-     * @param string      $name
-     * @param string      $address
-     * @param string      $elements
-     * @param string[]    $filterEntries
-     * @param string      $filterHeader
+     * @param string[] $filterEntries
      */
     public function addIntroduction(?string $headerImage, string $name, string $address, string $elements, array $filterEntries, string $filterHeader)
     {
@@ -121,11 +116,6 @@ class Report
         $this->pdfDocument->Output($targetFilePath, 'F');
     }
 
-    /**
-     * @param string      $name
-     * @param string|null $context
-     * @param string|null $mapImageFilePath
-     */
     public function addMap(string $name, ?string $context, ?string $mapImageFilePath = null)
     {
         $this->setDefaults();
@@ -226,8 +216,7 @@ class Report
     }
 
     /**
-     * @param array $imageGrid   each grid entry must define an imagePath & identification
-     * @param int   $columnCount
+     * @param array $imageGrid each grid entry must define an imagePath & identification
      */
     public function addImageGrid(array $imageGrid, int $columnCount)
     {

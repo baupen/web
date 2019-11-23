@@ -20,8 +20,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 trait QueryParseTrait
 {
     /**
-     * @param Filter $filter
-     * @param array  $query
+     * @param array $query
      *
      * @throws Exception
      */
@@ -100,9 +99,6 @@ trait QueryParseTrait
     }
 
     /**
-     * @param ParameterBag $timeParameters
-     * @param string       $timeFilterKey
-     *
      * @return array
      */
     private static function parseTimeFilter(ParameterBag $timeParameters, string $timeFilterKey)
@@ -125,8 +121,7 @@ trait QueryParseTrait
     }
 
     /**
-     * @param ReportElements $reportElements
-     * @param array          $query
+     * @param array $query
      */
     private function setReportElements(ReportElements $reportElements, $query)
     {

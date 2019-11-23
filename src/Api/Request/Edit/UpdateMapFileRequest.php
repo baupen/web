@@ -21,17 +21,11 @@ class UpdateMapFileRequest extends ConstructionSiteRequest
      */
     private $mapFile;
 
-    /**
-     * @return UpdateMapFile
-     */
     public function getMapFile(): UpdateMapFile
     {
         return $this->mapFile;
     }
 
-    /**
-     * @param UpdateMapFile $mapFile
-     */
     public function setMapFile(UpdateMapFile $mapFile): void
     {
         $this->mapFile = $mapFile;

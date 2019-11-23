@@ -23,8 +23,6 @@ class ConstructionSiteTransformer extends BatchTransformer
 
     /**
      * CraftsmanTransformer constructor.
-     *
-     * @param \App\Api\Transformer\Base\ConstructionSiteTransformer $constructionSiteTransformer
      */
     public function __construct(\App\Api\Transformer\Base\ConstructionSiteTransformer $constructionSiteTransformer)
     {

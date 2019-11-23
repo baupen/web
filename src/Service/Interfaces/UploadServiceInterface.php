@@ -22,37 +22,21 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 interface UploadServiceInterface
 {
     /**
-     * @param UploadedFile $file
-     * @param Issue        $issue
-     * @param string       $targetFileName
-     *
      * @return IssueImage|null
      */
     public function uploadIssueImage(UploadedFile $file, Issue $issue, string $targetFileName);
 
     /**
-     * @param string           $hash
-     * @param string           $filename
-     * @param ConstructionSite $constructionSite
-     *
      * @return UploadFileCheck
      */
     public function checkUploadMapFile(string $hash, string $filename, ConstructionSite $constructionSite);
 
     /**
-     * @param UploadedFile     $file
-     * @param ConstructionSite $constructionSite
-     * @param string           $targetFileName
-     *
      * @return MapFile|null
      */
     public function uploadMapFile(UploadedFile $file, ConstructionSite $constructionSite, string $targetFileName);
 
     /**
-     * @param UploadedFile     $file
-     * @param ConstructionSite $constructionSite
-     * @param string           $targetFileName
-     *
      * @return ConstructionSiteImage|null
      */
     public function uploadConstructionSiteImage(UploadedFile $file, ConstructionSite $constructionSite, string $targetFileName);

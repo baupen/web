@@ -18,24 +18,9 @@ use PdfGenerator\LayoutFactoryInterface;
 
 interface IssueReportServiceInterface
 {
-    /**
-     * @param LayoutFactoryInterface $layoutFactory
-     * @param PrintFactoryInterface  $printFactory
-     * @param IntroductionContent    $introductionContent
-     */
     public function addIntroduction(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, IntroductionContent $introductionContent);
 
-    /**
-     * @param LayoutFactoryInterface  $layoutFactory
-     * @param PrintFactoryInterface   $printFactory
-     * @param AggregatedIssuesContent $aggregatedIssuesContent
-     */
     public function addAggregatedIssueTable(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, AggregatedIssuesContent $aggregatedIssuesContent);
 
-    /**
-     * @param LayoutFactoryInterface $layoutFactory
-     * @param PrintFactoryInterface  $printFactory
-     * @param MapContent             $mapContent
-     */
     public function addMap(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, MapContent $mapContent);
 }

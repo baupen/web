@@ -37,8 +37,6 @@ class SwitchController extends ApiController
     /**
      * @Route("/construction_sites", name="api_switch_constrution_sites")
      *
-     * @param ConstructionSiteTransformer $constructionSiteTransformer
-     *
      * @return Response
      */
     public function constructionSitesAction(ConstructionSiteTransformer $constructionSiteTransformer)
@@ -56,8 +54,6 @@ class SwitchController extends ApiController
 
     /**
      * @Route("/request_access", name="api_switch_request_access")
-     *
-     * @param Request $request
      *
      * @return Response
      */
@@ -89,8 +85,6 @@ class SwitchController extends ApiController
     /**
      * @Route("/remove_access", name="api_switch_remove_access")
      *
-     * @param Request $request
-     *
      * @return Response
      */
     public function removeAccessAction(Request $request)
@@ -121,8 +115,6 @@ class SwitchController extends ApiController
     /**
      * @Route("/create/check", name="api_switch_create/check")
      *
-     * @param Request $request
-     *
      * @return Response
      */
     public function createCheckAction(Request $request)
@@ -145,9 +137,6 @@ class SwitchController extends ApiController
 
     /**
      * @Route("/create", name="api_switch_create")
-     *
-     * @param Request              $request
-     * @param PathServiceInterface $pathService
      *
      * @return Response
      */
@@ -207,8 +196,6 @@ class SwitchController extends ApiController
     }
 
     /**
-     * @param string $name
-     *
      * @return bool
      */
     private function checkIfConstructionSiteExists(string $name)
@@ -220,8 +207,6 @@ class SwitchController extends ApiController
     }
 
     /**
-     * @param string $userInput
-     *
      * @return string
      */
     private function sanitizeFolderName(string $userInput)
@@ -235,10 +220,6 @@ class SwitchController extends ApiController
         return $folderName;
     }
 
-    /**
-     * @param ConstructionSite     $constructionSite
-     * @param PathServiceInterface $pathService
-     */
     private function setFolderName(ConstructionSite $constructionSite, PathServiceInterface $pathService)
     {
         $proposedFolderName = $this->sanitizeFolderName($constructionSite->getName());

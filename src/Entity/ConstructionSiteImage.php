@@ -34,17 +34,11 @@ class ConstructionSiteImage extends BaseEntity
      */
     private $constructionSite;
 
-    /**
-     * @return ConstructionSite
-     */
     public function getConstructionSite(): ConstructionSite
     {
         return $this->constructionSite;
     }
 
-    /**
-     * @param ConstructionSite $constructionSite
-     */
     public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;

@@ -112,81 +112,51 @@ class Craftsman extends BaseEntity
         $this->issues = new ArrayCollection();
     }
 
-    /**
-     * @return string
-     */
     public function getContactName(): string
     {
         return $this->contactName;
     }
 
-    /**
-     * @param string $contactName
-     */
     public function setContactName(string $contactName): void
     {
         $this->contactName = $contactName;
     }
 
-    /**
-     * @return string
-     */
     public function getCompany(): string
     {
         return $this->company;
     }
 
-    /**
-     * @param string $company
-     */
     public function setCompany(string $company): void
     {
         $this->company = $company;
     }
 
-    /**
-     * @return string
-     */
     public function getTrade(): string
     {
         return $this->trade;
     }
 
-    /**
-     * @param string $trade
-     */
     public function setTrade(string $trade): void
     {
         $this->trade = $trade;
     }
 
-    /**
-     * @return string
-     */
     public function getEmail(): string
     {
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     */
     public function setEmail(string $email): void
     {
         $this->email = $email;
     }
 
-    /**
-     * @return ConstructionSite
-     */
     public function getConstructionSite(): ConstructionSite
     {
         return $this->constructionSite;
     }
 
-    /**
-     * @param ConstructionSite $constructionSite
-     */
     public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;
@@ -200,41 +170,26 @@ class Craftsman extends BaseEntity
         return $this->issues;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->getCompany() . ' (' . $this->getContactName() . ')';
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getLastEmailSent(): ?DateTime
     {
         return $this->lastEmailSent;
     }
 
-    /**
-     * @param DateTime|null $lastEmailSent
-     */
     public function setLastEmailSent(?DateTime $lastEmailSent): void
     {
         $this->lastEmailSent = $lastEmailSent;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getLastOnlineVisit(): ?DateTime
     {
         return $this->lastOnlineVisit;
     }
 
-    /**
-     * @param DateTime|null $lastOnlineVisit
-     */
     public function setLastOnlineVisit(?DateTime $lastOnlineVisit): void
     {
         $this->lastOnlineVisit = $lastOnlineVisit;
@@ -253,17 +208,11 @@ class Craftsman extends BaseEntity
         return $lastAction;
     }
 
-    /**
-     * @return string
-     */
     public function getEmailIdentifier(): string
     {
         return $this->emailIdentifier;
     }
 
-    /**
-     * @return string
-     */
     public function getWriteAuthorizationToken(): string
     {
         return $this->writeAuthorizationToken;

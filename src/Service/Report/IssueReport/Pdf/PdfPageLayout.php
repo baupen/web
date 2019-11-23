@@ -38,10 +38,6 @@ class PdfPageLayout implements PdfPageLayoutInterface
 
     /**
      * Printer constructor.
-     *
-     * @param LayoutServiceInterface     $layoutService
-     * @param TypographyServiceInterface $typographyService
-     * @param MetaData                   $content
      */
     public function __construct(LayoutServiceInterface $layoutService, TypographyServiceInterface $typographyService, MetaData $content)
     {
@@ -50,9 +46,6 @@ class PdfPageLayout implements PdfPageLayoutInterface
         $this->content = $content;
     }
 
-    /**
-     * @param PdfDocumentInterface $pdf
-     */
     public function initializeLayout(PdfDocumentInterface $pdf)
     {
         $marginLeft = $this->layout->getContentXStart();
@@ -63,9 +56,6 @@ class PdfPageLayout implements PdfPageLayoutInterface
         $pdf->setMeta($this->content->getTitle(), $this->content->getAuthor());
     }
 
-    /**
-     * @param PdfDocumentInterface $pdf
-     */
     public function printHeader(PdfDocumentInterface $pdf)
     {
         $this->printHeaderLeft($pdf, $this->content->getTitle());
@@ -73,9 +63,8 @@ class PdfPageLayout implements PdfPageLayoutInterface
     }
 
     /**
-     * @param PdfDocumentInterface $pdf
-     * @param int                  $currentPage
-     * @param int                  $totalPages
+     * @param int $currentPage
+     * @param int $totalPages
      */
     public function printFooter(PdfDocumentInterface $pdf, $currentPage, $totalPages)
     {
@@ -83,20 +72,11 @@ class PdfPageLayout implements PdfPageLayoutInterface
         $this->printPageNumbers($pdf, $currentPage, $totalPages);
     }
 
-    /**
-     * @param PdfDocumentInterface $pdfDocument
-     * @param float                $xCoordinate
-     * @param float                $yCoordinate
-     */
     private function moveCursorTo(PdfDocumentInterface $pdfDocument, float $xCoordinate, float $yCoordinate)
     {
         $pdfDocument->setCursor($pdfDocument->getCursor()->setX($xCoordinate)->setY($yCoordinate));
     }
 
-    /**
-     * @param PdfDocumentInterface $pdf
-     * @param string               $headerLeft
-     */
     private function printHeaderLeft(PdfDocumentInterface $pdf, string $headerLeft)
     {
         $maxWidth = $this->layout->getContentXSize() / 3 * 2;
@@ -106,10 +86,6 @@ class PdfPageLayout implements PdfPageLayoutInterface
         $pdf->printText($headerLeft, $maxWidth);
     }
 
-    /**
-     * @param PdfDocumentInterface $pdf
-     * @param string               $logoPath
-     */
     private function printLogo(PdfDocumentInterface $pdf, string $logoPath)
     {
         // calculate optimal size
@@ -122,10 +98,6 @@ class PdfPageLayout implements PdfPageLayoutInterface
         $pdf->printImage($logoPath, $width, $height);
     }
 
-    /**
-     * @param PdfDocumentInterface $pdf
-     * @param string               $footerLeft
-     */
     private function printFooterLeft(PdfDocumentInterface $pdf, string $footerLeft)
     {
         $this->moveCursorTo($pdf, $this->layout->getContentXStart(), $this->layout->getFooterYStart());
@@ -134,9 +106,8 @@ class PdfPageLayout implements PdfPageLayoutInterface
     }
 
     /**
-     * @param PdfDocumentInterface $pdf
-     * @param int                  $currentPageNumber
-     * @param int                  $totalPageNumbers
+     * @param int $currentPageNumber
+     * @param int $totalPageNumbers
      */
     private function printPageNumbers(PdfDocumentInterface $pdf, $currentPageNumber, $totalPageNumbers)
     {

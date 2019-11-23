@@ -21,7 +21,6 @@ class I18nController extends BaseLoginController
     /**
      * @Route("/set_locale/{locale}", name="set_locale")
      *
-     * @param Request $request
      * @param $locale
      *
      * @return Response

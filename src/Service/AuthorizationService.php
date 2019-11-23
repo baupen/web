@@ -49,10 +49,6 @@ class AuthorizationService implements AuthorizationServiceInterface
 
     /**
      * AuthorizationService constructor.
-     *
-     * @param PathServiceInterface  $pathService
-     * @param LoggerInterface       $logger
-     * @param ParameterBagInterface $parameterBag
      */
     public function __construct(PathServiceInterface $pathService, LoggerInterface $logger, ParameterBagInterface $parameterBag)
     {
@@ -63,8 +59,6 @@ class AuthorizationService implements AuthorizationServiceInterface
     }
 
     /**
-     * @param string $email
-     *
      * @throws \Exception
      *
      * @return bool
@@ -84,9 +78,6 @@ class AuthorizationService implements AuthorizationServiceInterface
         throw new \Exception('invalid authorization method configured: ' . $this->authorizationMethod);
     }
 
-    /**
-     * @param ConstructionManager $constructionManager
-     */
     public function tryFillDefaultValues(ConstructionManager $constructionManager)
     {
         $userData = $this->getAllUserData();

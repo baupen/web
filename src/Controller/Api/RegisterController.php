@@ -53,9 +53,6 @@ class RegisterController extends ApiController
     /**
      * @Route("/issue/list", name="api_register_issues_list", methods={"POST"})
      *
-     * @param Request          $request
-     * @param IssueTransformer $issueTransformer
-     *
      * @return Response
      */
     public function issueListAction(Request $request, IssueTransformer $issueTransformer)
@@ -80,9 +77,6 @@ class RegisterController extends ApiController
     /**
      * @Route("/craftsman/list", name="api_register_craftsman_list", methods={"POST"})
      *
-     * @param Request              $request
-     * @param CraftsmanTransformer $craftsmanTransformer
-     *
      * @return Response
      */
     public function craftsmanListAction(Request $request, CraftsmanTransformer $craftsmanTransformer)
@@ -100,9 +94,6 @@ class RegisterController extends ApiController
 
     /**
      * @Route("/map/list", name="api_register_map_list", methods={"POST"})
-     *
-     * @param Request        $request
-     * @param MapTransformer $mapTransformer
      *
      * @return Response
      */
@@ -128,8 +119,6 @@ class RegisterController extends ApiController
 
     /**
      * @Route("/link/create", name="api_register_link_create", methods={"GET"})
-     *
-     * @param Request $request
      *
      * @throws Exception
      * @throws Exception
@@ -180,10 +169,6 @@ class RegisterController extends ApiController
     /**
      * @Route("/issue/update", name="api_register_issue_update", methods={"POST"})
      *
-     * @param Request                $request
-     * @param UpdateIssueTransformer $updateIssueTransformer
-     * @param IssueTransformer       $issueTransformer
-     *
      * @return Response
      */
     public function issueUpdateAction(Request $request, UpdateIssueTransformer $updateIssueTransformer, IssueTransformer $issueTransformer)
@@ -228,9 +213,6 @@ class RegisterController extends ApiController
 
     /**
      * @Route("/issue/status", name="api_register_issue_status", methods={"POST"})
-     *
-     * @param Request          $request
-     * @param IssueTransformer $issueTransformer
      *
      * @throws Exception
      * @throws Exception
@@ -291,7 +273,6 @@ class RegisterController extends ApiController
     }
 
     /**
-     * @param Request $request
      * @param $entities
      * @param $errorResponse
      * @param $constructionSite
@@ -325,7 +306,6 @@ class RegisterController extends ApiController
     }
 
     /**
-     * @param Request $request
      * @param $entities
      * @param $errorResponse
      * @param $constructionSite
@@ -345,7 +325,6 @@ class RegisterController extends ApiController
     }
 
     /**
-     * @param Request $request
      * @param $issues
      * @param $entities
      * @param $errorResponse

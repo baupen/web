@@ -21,17 +21,11 @@ class UpdateNoteRequest extends ConstructionSiteRequest
      */
     private $note;
 
-    /**
-     * @return UpdateNote
-     */
     public function getNote(): UpdateNote
     {
         return $this->note;
     }
 
-    /**
-     * @param UpdateNote $note
-     */
     public function setNote(UpdateNote $note): void
     {
         $this->note = $note;

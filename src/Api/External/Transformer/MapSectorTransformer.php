@@ -23,8 +23,6 @@ class MapSectorTransformer extends BatchTransformer
 
     /**
      * MapSectorTransformer constructor.
-     *
-     * @param PointTransformer $pointTransformer
      */
     public function __construct(PointTransformer $pointTransformer)
     {

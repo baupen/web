@@ -30,9 +30,6 @@ class UpdateIssueTransformer
 
     /**
      * CraftsmanTransformer constructor.
-     *
-     * @param \App\Api\Transformer\Base\IssueTransformer $issueTransformer
-     * @param RegistryInterface                          $registry
      */
     public function __construct(\App\Api\Transformer\Base\IssueTransformer $issueTransformer, RegistryInterface $registry)
     {
@@ -41,9 +38,7 @@ class UpdateIssueTransformer
     }
 
     /**
-     * @param UpdateIssue $issue
-     * @param Issue       $entity
-     * @param callable    $validateCraftsman
+     * @param callable $validateCraftsman
      *
      * @return bool
      */

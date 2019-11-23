@@ -20,17 +20,11 @@ class MapData
      */
     private $map;
 
-    /**
-     * @return Map
-     */
     public function getMap(): Map
     {
         return $this->map;
     }
 
-    /**
-     * @param Map $map
-     */
     public function setMap(Map $map): void
     {
         $this->map = $map;

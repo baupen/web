@@ -28,22 +28,16 @@ interface PathServiceInterface
     public function getConstructionSiteFolderRoot();
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     public function getFolderForConstructionSiteImage(ConstructionSite $constructionSite);
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     public function getFolderForMapFile(ConstructionSite $constructionSite);
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     public function getFolderForIssueImage(ConstructionSite $constructionSite);
@@ -54,29 +48,21 @@ interface PathServiceInterface
     public function getTransientFolderRoot();
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     public function getTransientFolderForConstructionSiteImage(ConstructionSite $constructionSite);
 
     /**
-     * @param Map $map
-     *
      * @return string
      */
     public function getTransientFolderForMapFile(Map $map);
 
     /**
-     * @param Issue $issue
-     *
      * @return string
      */
     public function getTransientFolderForIssueImage(Issue $issue);
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     public function getTransientFolderForReports(ConstructionSite $constructionSite);

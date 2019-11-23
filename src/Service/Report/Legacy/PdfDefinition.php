@@ -30,10 +30,6 @@ class PdfDefinition
 
     /**
      * PdfDefinition constructor.
-     *
-     * @param string $title
-     * @param string $author
-     * @param string $logoPath
      */
     public function __construct(string $title, string $author, string $logoPath)
     {
@@ -42,25 +38,16 @@ class PdfDefinition
         $this->logoPath = $logoPath;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @return string
-     */
     public function getAuthor(): string
     {
         return $this->author;
     }
 
-    /**
-     * @return string
-     */
     public function getLogoPath(): string
     {
         return $this->logoPath;

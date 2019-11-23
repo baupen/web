@@ -50,73 +50,46 @@ class FeedEntry
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * @param string $type
-     */
     public function setType(string $type): void
     {
         $this->type = $type;
     }
 
-    /**
-     * @return int|null
-     */
     public function getCount(): ?int
     {
         return $this->count;
     }
 
-    /**
-     * @param int|null $count
-     */
     public function setCount(?int $count): void
     {
         $this->count = $count;
     }
 
-    /**
-     * @return DateTime
-     */
     public function getTimestamp(): DateTime
     {
         return $this->timestamp;
     }
 
-    /**
-     * @param DateTime $timestamp
-     */
     public function setTimestamp(DateTime $timestamp): void
     {
         $this->timestamp = $timestamp;
     }
 
-    /**
-     * @return Craftsman
-     */
     public function getCraftsman(): Craftsman
     {
         return $this->craftsman;
     }
 
-    /**
-     * @param Craftsman $craftsman
-     */
     public function setCraftsman(Craftsman $craftsman): void
     {
         $this->craftsman = $craftsman;
     }
 
-    /**
-     * @return string
-     */
     public function getId(): string
     {
         return $this->id;

@@ -25,8 +25,7 @@ abstract class ApiController extends AbstractApiController
     const ACCESS_DENIED = 'access denied';
 
     /**
-     * @param Request $request
-     * @param string  $targetClass
+     * @param string $targetClass
      * @param $parsedRequest
      * @param $errorResponse
      * @param $constructionSite

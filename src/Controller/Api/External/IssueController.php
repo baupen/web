@@ -64,10 +64,6 @@ class IssueController extends ExternalApiController
     /**
      * @Route("/create", name="api_external_issue_create", methods={"POST"})
      *
-     * @param Request                $request
-     * @param IssueTransformer       $issueTransformer
-     * @param UploadServiceInterface $uploadService
-     *
      * @throws ORMException
      * @throws Exception
      *
@@ -81,10 +77,6 @@ class IssueController extends ExternalApiController
     /**
      * @Route("/update", name="api_external_issue_update", methods={"POST"})
      *
-     * @param Request                $request
-     * @param IssueTransformer       $issueTransformer
-     * @param UploadServiceInterface $uploadService
-     *
      * @throws ORMException
      * @throws Exception
      *
@@ -97,9 +89,6 @@ class IssueController extends ExternalApiController
 
     /**
      * @Route("/delete", name="api_external_issue_delete", methods={"POST"})
-     *
-     * @param Request          $request
-     * @param IssueTransformer $issueTransformer
      *
      * @throws ORMException
      *
@@ -124,9 +113,6 @@ class IssueController extends ExternalApiController
     /**
      * @Route("/mark", name="api_external_issue_mark", methods={"POST"})
      *
-     * @param Request          $request
-     * @param IssueTransformer $issueTransformer
-     *
      * @throws ORMException
      *
      * @return Response
@@ -146,9 +132,6 @@ class IssueController extends ExternalApiController
 
     /**
      * @Route("/review", name="api_external_issue_review", methods={"POST"})
-     *
-     * @param Request          $request
-     * @param IssueTransformer $issueTransformer
      *
      * @throws ORMException
      *
@@ -175,9 +158,6 @@ class IssueController extends ExternalApiController
 
     /**
      * @Route("/revert", name="api_external_issue_revert", methods={"POST"})
-     *
-     * @param Request          $request
-     * @param IssueTransformer $issueTransformer
      *
      * @throws ORMException
      *
@@ -230,9 +210,6 @@ class IssueController extends ExternalApiController
     }
 
     /**
-     * @param Request                $request
-     * @param IssueTransformer       $issueTransformer
-     * @param UploadServiceInterface $uploadService
      * @param $mode
      *
      * @throws ORMException
@@ -360,8 +337,6 @@ class IssueController extends ExternalApiController
     }
 
     /**
-     * @param Request          $request
-     * @param IssueTransformer $issueTransformer
      * @param $action
      *
      * @throws ORMException

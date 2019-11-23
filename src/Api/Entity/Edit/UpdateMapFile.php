@@ -18,17 +18,11 @@ class UpdateMapFile
      */
     private $mapId;
 
-    /**
-     * @return string|null
-     */
     public function getMapId(): ?string
     {
         return $this->mapId;
     }
 
-    /**
-     * @param string|null $mapId
-     */
     public function setMapId(?string $mapId): void
     {
         $this->mapId = $mapId;

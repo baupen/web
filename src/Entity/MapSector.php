@@ -63,33 +63,21 @@ class MapSector extends BaseEntity
      */
     private $identifier;
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return MapFile
-     */
     public function getMapFile(): MapFile
     {
         return $this->mapFile;
     }
 
-    /**
-     * @param MapFile $mapFile
-     */
     public function setMapFile(MapFile $mapFile): void
     {
         $this->mapFile = $mapFile;
@@ -121,17 +109,11 @@ class MapSector extends BaseEntity
         $this->points = $points;
     }
 
-    /**
-     * @return string
-     */
     public function getColor(): string
     {
         return $this->color;
     }
 
-    /**
-     * @param string $color
-     */
     public function setColor(string $color): void
     {
         $this->color = $color;
@@ -151,17 +133,11 @@ class MapSector extends BaseEntity
         return json_encode($this->getPoints()) === json_encode($other->getPoints());
     }
 
-    /**
-     * @return string
-     */
     public function getIdentifier(): string
     {
         return $this->identifier;
     }
 
-    /**
-     * @param string $identifier
-     */
     public function setIdentifier(string $identifier): void
     {
         $this->identifier = $identifier;

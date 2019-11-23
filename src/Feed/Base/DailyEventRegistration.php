@@ -32,8 +32,6 @@ class DailyEventRegistration
     private $receivers = [];
 
     /**
-     * @param DateTime $time
-     *
      * @return string
      */
     protected function normalizeTime(DateTime $time)
@@ -61,8 +59,7 @@ class DailyEventRegistration
     }
 
     /**
-     * @param DateTime $time
-     * @param mixed    $receiver
+     * @param mixed $receiver
      */
     protected function register(DateTime $time, $receiver)
     {

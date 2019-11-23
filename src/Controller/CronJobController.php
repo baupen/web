@@ -37,7 +37,6 @@ class CronJobController extends BaseDoctrineController
      * @Route("/half-hourly/{secret}", name="cron_daily")
      *
      * @param $secret
-     * @param CronServiceInterface $cronService
      *
      * @return Response
      */

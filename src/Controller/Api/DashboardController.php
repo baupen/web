@@ -28,9 +28,6 @@ class DashboardController extends ApiController
     /**
      * @Route("/constructionSite", name="api_dashboard_construction_site", methods={"POST"})
      *
-     * @param Request                     $request
-     * @param ConstructionSiteTransformer $constructionSiteTransformer
-     *
      * @return Response
      */
     public function constructionSiteAction(Request $request, ConstructionSiteTransformer $constructionSiteTransformer)

@@ -34,9 +34,6 @@ class ReportController extends BaseDoctrineController
     /**
      * @Route("", name="report")
      *
-     * @param Request                $request
-     * @param ReportServiceInterface $reportService
-     *
      * @throws Exception
      *
      * @return Response

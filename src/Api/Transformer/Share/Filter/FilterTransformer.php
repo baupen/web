@@ -23,8 +23,6 @@ class FilterTransformer
 
     /**
      * CraftsmanTransformer constructor.
-     *
-     * @param RouterInterface $router
      */
     public function __construct(RouterInterface $router)
     {
@@ -32,8 +30,6 @@ class FilterTransformer
     }
 
     /**
-     * @param string $identifier
-     *
      * @return Filter
      */
     public function toApi(string $identifier)

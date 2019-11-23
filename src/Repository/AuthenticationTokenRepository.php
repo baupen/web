@@ -25,8 +25,6 @@ class AuthenticationTokenRepository extends EntityRepository
      * get the construction manager assigned to that authentication token
      * returns null if the token is invalid or not found.
      *
-     * @param AuthenticatedRequest $authenticatedRequest
-     *
      * @throws ORMException
      * @throws Exception
      *

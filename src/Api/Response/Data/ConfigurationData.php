@@ -20,17 +20,11 @@ class ConfigurationData
      */
     private $constructionSite;
 
-    /**
-     * @return BaseEntity
-     */
     public function getConstructionSite(): BaseEntity
     {
         return $this->constructionSite;
     }
 
-    /**
-     * @param BaseEntity $constructionSite
-     */
     public function setConstructionSite(BaseEntity $constructionSite): void
     {
         $this->constructionSite = $constructionSite;

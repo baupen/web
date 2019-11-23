@@ -40,10 +40,7 @@ class ImageController extends BaseDoctrineController
     /**
      * @Route("/issue/{issue}/{image}/{size}", name="image_issue")
      *
-     * @param Issue                 $issue
-     * @param IssueImage            $image
-     * @param string                $size
-     * @param ImageServiceInterface $imageService
+     * @param string $size
      *
      * @return Response
      */
@@ -57,10 +54,7 @@ class ImageController extends BaseDoctrineController
     /**
      * @Route("/constructionSite/{constructionSite}/{image}/{size}", name="image_construction_site")
      *
-     * @param ConstructionSite      $constructionSite
-     * @param ConstructionSiteImage $image
-     * @param string                $size
-     * @param ImageServiceInterface $imageService
+     * @param string $size
      *
      * @return Response
      */

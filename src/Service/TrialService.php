@@ -56,12 +56,6 @@ class TrialService implements TrialServiceInterface
 
     /**
      * TrialService constructor.
-     *
-     * @param PathServiceInterface $pathService
-     * @param TranslatorInterface  $translator
-     * @param SyncServiceInterface $syncService
-     * @param RequestStack         $requestStack
-     * @param RegistryInterface    $registry
      */
     public function __construct(PathServiceInterface $pathService, TranslatorInterface $translator, SyncServiceInterface $syncService, RequestStack $requestStack, RegistryInterface $registry)
     {
@@ -76,9 +70,6 @@ class TrialService implements TrialServiceInterface
 
     /**
      * creates a trial account with pre-filled data.
-     *
-     * @param string|null $proposedGivenName
-     * @param string|null $proposedFamilyName
      *
      * @throws Exception
      *
@@ -102,8 +93,6 @@ class TrialService implements TrialServiceInterface
     }
 
     /**
-     * @param ConstructionManager $constructionManager
-     *
      * @return ConstructionSite
      */
     private function createConstructionSite(ConstructionManager $constructionManager)
@@ -124,8 +113,6 @@ class TrialService implements TrialServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @throws Exception
      */
     private function addConstructionSiteContent(ConstructionSite $constructionSite)
@@ -138,8 +125,6 @@ class TrialService implements TrialServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @throws Exception
      */
     private function copyMapFiles(ConstructionSite $constructionSite)
@@ -150,8 +135,6 @@ class TrialService implements TrialServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @throws Exception
      */
     private function copyConstructionSiteFiles(ConstructionSite $constructionSite)
@@ -162,9 +145,6 @@ class TrialService implements TrialServiceInterface
     }
 
     /**
-     * @param string|null $proposedGivenName
-     * @param string|null $proposedFamilyName
-     *
      * @throws Exception
      *
      * @return ConstructionManager
@@ -200,9 +180,6 @@ class TrialService implements TrialServiceInterface
     }
 
     /**
-     * @param int    $minimalLength
-     * @param string $divider
-     *
      * @return bool|string
      */
     private function generateRandomString(int $minimalLength, string $divider)
@@ -244,9 +221,6 @@ class TrialService implements TrialServiceInterface
     }
 
     /**
-     * @param string $selection
-     * @param int    $selectionLength
-     *
      * @return bool|string
      */
     private function getRandomChar(string $selection, int $selectionLength)

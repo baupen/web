@@ -69,8 +69,6 @@ class LoadIssueData extends BaseFixture
     /**
      * Load data fixtures with the passed EntityManager.
      *
-     * @param ObjectManager $manager
-     *
      * @throws BadMethodCallException
      * @throws Exception
      */
@@ -149,7 +147,6 @@ class LoadIssueData extends BaseFixture
 
     /**
      * @param $index
-     * @param array $collection
      *
      * @return mixed
      */
@@ -169,14 +166,11 @@ class LoadIssueData extends BaseFixture
     }
 
     /**
-     * @param ObjectManager         $manager
      * @param Map[]                 $maps
      * @param Craftsman[]           $craftsmen
      * @param ConstructionManager[] $constructionManagers
      * @param Issue[]               $issues
      * @param string[]              $images
-     * @param int                   $issueNumber
-     * @param int                   $setStatus
      *
      * @throws Exception
      */

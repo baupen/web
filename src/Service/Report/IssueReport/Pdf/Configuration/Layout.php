@@ -53,17 +53,11 @@ class Layout
         return $this->pageMargins;
     }
 
-    /**
-     * @return float
-     */
     public function getBaseSpacing(): float
     {
         return $this->baseSpacing;
     }
 
-    /**
-     * @return float
-     */
     public function getScalingFactor(): float
     {
         return $this->scalingFactor;

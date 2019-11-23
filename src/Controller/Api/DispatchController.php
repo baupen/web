@@ -43,9 +43,6 @@ class DispatchController extends ApiController
     /**
      * @Route("/craftsman/list", name="api_dispatch_craftsman_list", methods={"POST"})
      *
-     * @param Request              $request
-     * @param CraftsmanTransformer $craftsmanTransformer
-     *
      * @return Response
      */
     public function listAction(Request $request, CraftsmanTransformer $craftsmanTransformer)
@@ -63,10 +60,6 @@ class DispatchController extends ApiController
 
     /**
      * @Route("", name="api_dispatch", methods={"POST"})
-     *
-     * @param Request               $request
-     * @param TranslatorInterface   $translator
-     * @param EmailServiceInterface $emailService
      *
      * @throws Exception
      * @throws Exception
@@ -132,12 +125,6 @@ class DispatchController extends ApiController
     }
 
     /**
-     * @param ConstructionManager   $constructionManager
-     * @param Craftsman             $craftsman
-     * @param CurrentIssueState     $state
-     * @param EmailServiceInterface $emailService
-     * @param TranslatorInterface   $translator
-     *
      * @throws Exception
      *
      * @return bool

@@ -20,17 +20,11 @@ class UploadFileCheckData
      */
     private $uploadFileCheck;
 
-    /**
-     * @return UploadFileCheck
-     */
     public function getUploadFileCheck(): UploadFileCheck
     {
         return $this->uploadFileCheck;
     }
 
-    /**
-     * @param UploadFileCheck $uploadFileCheck
-     */
     public function setUploadFileCheck(UploadFileCheck $uploadFileCheck): void
     {
         $this->uploadFileCheck = $uploadFileCheck;

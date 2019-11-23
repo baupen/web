@@ -37,10 +37,6 @@ class MapTransformer
 
     /**
      * CraftsmanTransformer constructor.
-     *
-     * @param PublicMapTransformer $mapTransformer
-     * @param IssueTransformer     $issueTransformer
-     * @param RouterInterface      $router
      */
     public function __construct(PublicMapTransformer $mapTransformer, IssueTransformer $issueTransformer, RouterInterface $router)
     {
@@ -52,9 +48,7 @@ class MapTransformer
     /**
      * @param Map       $entity
      * @param PublicMap $map
-     * @param string    $identifier
      * @param IdTrait[] $issues
-     * @param callable  $generateRoute
      *
      * @return PublicMap
      */

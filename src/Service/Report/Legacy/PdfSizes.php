@@ -73,25 +73,16 @@ class PdfSizes
         return $this->pageSize[1];
     }
 
-    /**
-     * @return float
-     */
     public function getHeaderYStart(): float
     {
         return $this->marginVerticalOuter;
     }
 
-    /**
-     * @return float
-     */
     public function getHeaderHeight(): float
     {
         return $this->headerSize;
     }
 
-    /**
-     * @return float
-     */
     public function getContentXStart(): float
     {
         return $this->marginSide;
@@ -99,8 +90,6 @@ class PdfSizes
 
     /**
      * the width of the document till the right margin.
-     *
-     * @return float
      */
     public function getContentXEnd(): float
     {
@@ -115,9 +104,6 @@ class PdfSizes
         return $this->getContentXEnd() - $this->getContentXStart();
     }
 
-    /**
-     * @return float
-     */
     public function getContentYStart(): float
     {
         return $this->getHeaderYStart() + $this->getHeaderHeight() + $this->differentContentMargin;
@@ -143,17 +129,11 @@ class PdfSizes
         return $this->getContentYEnd() - $this->getContentYStart();
     }
 
-    /**
-     * @return float
-     */
     public function getFooterYStart(): float
     {
         return $this->getContentYEnd() + $this->differentContentMargin;
     }
 
-    /**
-     * @return float
-     */
     public function getMarginBottom(): float
     {
         return $this->getPageSizeY() - $this->getFooterYStart() + $this->differentContentMargin;
@@ -263,17 +243,11 @@ class PdfSizes
         return $this->scalingFactor;
     }
 
-    /**
-     * @return float
-     */
     public function getContentSpacerBig(): float
     {
         return $this->differentContentMargin;
     }
 
-    /**
-     * @return float
-     */
     public function getContentSpacerSmall(): float
     {
         return (float) $this->differentContentMargin / $this->scalingFactor ** 2;
@@ -295,17 +269,11 @@ class PdfSizes
         return [$this->scalingFactor, 1, $this->scalingFactor, 1];
     }
 
-    /**
-     * @return float
-     */
     public function getImagePadding(): float
     {
         return $this->getContentSpacerSmall() / 4;
     }
 
-    /**
-     * @return float
-     */
     public function getLineWidth(): float
     {
         return $this->lineWidth;

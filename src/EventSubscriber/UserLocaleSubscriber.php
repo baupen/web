@@ -41,9 +41,6 @@ class UserLocaleSubscriber implements EventSubscriberInterface
         $this->registry = $registry;
     }
 
-    /**
-     * @param InteractiveLoginEvent $event
-     */
     public function onInteractiveLogin(InteractiveLoginEvent $event)
     {
         /** @var UserToken $userToken */

@@ -42,8 +42,6 @@ class LoginController extends BaseLoginController
     /**
      * @Route("", name="login")
      *
-     * @param Request $request
-     *
      * @return Response
      */
     public function indexAction(Request $request)
@@ -69,12 +67,6 @@ class LoginController extends BaseLoginController
 
     /**
      * @Route("/create", name="login_create")
-     *
-     * @param Request                       $request
-     * @param AuthorizationServiceInterface $authorizationService
-     * @param TranslatorInterface           $translator
-     * @param EmailServiceInterface         $emailService
-     * @param LoggerInterface               $logger
      *
      * @throws Exception
      *
@@ -105,10 +97,6 @@ class LoginController extends BaseLoginController
 
     /**
      * @Route("/confirm/{authenticationHash}", name="login_confirm")
-     *
-     * @param Request             $request
-     * @param string              $authenticationHash
-     * @param TranslatorInterface $translator
      *
      * @return Response
      */
@@ -168,11 +156,6 @@ class LoginController extends BaseLoginController
 
     /**
      * @Route("/recover", name="login_recover")
-     *
-     * @param Request               $request
-     * @param EmailServiceInterface $emailService
-     * @param TranslatorInterface   $translator
-     * @param LoggerInterface       $logger
      *
      * @return Response
      */
@@ -236,9 +219,7 @@ class LoginController extends BaseLoginController
     /**
      * @Route("/reset/{authenticationHash}", name="login_reset")
      *
-     * @param Request $request
      * @param $authenticationHash
-     * @param TranslatorInterface $translator
      *
      * @return Response
      */
@@ -312,13 +293,6 @@ class LoginController extends BaseLoginController
     }
 
     /**
-     * @param Request                       $request
-     * @param ConstructionManager           $constructionManager
-     * @param AuthorizationServiceInterface $authorizationService
-     * @param TranslatorInterface           $translator
-     * @param EmailServiceInterface         $emailService
-     * @param LoggerInterface               $logger
-     *
      * @throws Exception
      *
      * @return bool|\Symfony\Component\HttpFoundation\RedirectResponse|Response

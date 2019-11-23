@@ -40,33 +40,21 @@ class ConstructionSite extends BaseEntity
      */
     private $craftsmen;
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return Address|null
-     */
     public function getAddress(): ?Address
     {
         return $this->address;
     }
 
-    /**
-     * @param Address|null $address
-     */
     public function setAddress(?Address $address): void
     {
         $this->address = $address;
@@ -104,17 +92,11 @@ class ConstructionSite extends BaseEntity
         $this->craftsmen = $craftsmen;
     }
 
-    /**
-     * @return File|null
-     */
     public function getImage(): ?File
     {
         return $this->image;
     }
 
-    /**
-     * @param File|null $image
-     */
     public function setImage(?File $image): void
     {
         $this->image = $image;

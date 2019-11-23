@@ -20,17 +20,11 @@ class MapFileData
      */
     private $mapFile;
 
-    /**
-     * @return MapFile
-     */
     public function getMapFile(): MapFile
     {
         return $this->mapFile;
     }
 
-    /**
-     * @param MapFile $mapFile
-     */
     public function setMapFile(MapFile $mapFile): void
     {
         $this->mapFile = $mapFile;

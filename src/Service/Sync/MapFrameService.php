@@ -45,10 +45,6 @@ class MapFrameService implements MapFrameServiceInterface
         $this->fileService = $fileService;
     }
 
-    /**
-     * @param SyncTransaction  $syncTransaction
-     * @param ConstructionSite $constructionSite
-     */
     public function syncMapFrames(SyncTransaction $syncTransaction, ConstructionSite $constructionSite)
     {
         /** @var MapFile[] $mapFiles */
@@ -65,8 +61,6 @@ class MapFrameService implements MapFrameServiceInterface
     }
 
     /**
-     * @param string $filePath
-     *
      * @return Frame|null
      */
     private function parseFrame(string $filePath)
@@ -93,11 +87,6 @@ class MapFrameService implements MapFrameServiceInterface
         return $frame;
     }
 
-    /**
-     * @param SyncTransaction $syncTransaction
-     * @param MapFile         $mapFile
-     * @param Frame|null      $frame
-     */
     private function syncFrame(SyncTransaction $syncTransaction, MapFile $mapFile, ?Frame $frame)
     {
         if ($mapFile->getSectorFrame() === null && $frame === null) {

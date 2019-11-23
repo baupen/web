@@ -30,49 +30,31 @@ class MapFile extends BaseEntity
      */
     private $mapId;
 
-    /**
-     * @return DateTime
-     */
     public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
-    /**
-     * @param DateTime $createdAt
-     */
     public function setCreatedAt(DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
-    /**
-     * @return string
-     */
     public function getFilename(): string
     {
         return $this->filename;
     }
 
-    /**
-     * @param string $filename
-     */
     public function setFilename(string $filename): void
     {
         $this->filename = $filename;
     }
 
-    /**
-     * @return string|null
-     */
     public function getMapId(): ?string
     {
         return $this->mapId;
     }
 
-    /**
-     * @param string|null $mapId
-     */
     public function setMapId(?string $mapId): void
     {
         $this->mapId = $mapId;

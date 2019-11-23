@@ -24,8 +24,6 @@ class MapFileService implements MapFileServiceInterface
 
     /**
      * PdfOptimizationService constructor.
-     *
-     * @param PathServiceInterface $pathService
      */
     public function __construct(PathServiceInterface $pathService)
     {
@@ -33,8 +31,6 @@ class MapFileService implements MapFileServiceInterface
     }
 
     /**
-     * @param Map $entity
-     *
      * @return string|null
      */
     public function getForMobileDevice(Map $entity)
@@ -49,9 +45,6 @@ class MapFileService implements MapFileServiceInterface
     }
 
     /**
-     * @param Map    $map
-     * @param string $sourceFilePath
-     *
      * @return string|null
      */
     private function renderForMobileDevice(Map $map, string $sourceFilePath)

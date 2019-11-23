@@ -38,33 +38,21 @@ class IntroductionContent
      */
     private $filterEntries;
 
-    /**
-     * @return string
-     */
     public function getConstructionSiteName(): string
     {
         return $this->constructionSiteName;
     }
 
-    /**
-     * @param string $constructionSiteName
-     */
     public function setConstructionSiteName(string $constructionSiteName): void
     {
         $this->constructionSiteName = $constructionSiteName;
     }
 
-    /**
-     * @return string
-     */
     public function getConstructionSiteImage(): string
     {
         return $this->constructionSiteImage;
     }
 
-    /**
-     * @param string $constructionSiteImage
-     */
     public function setConstructionSiteImage(string $constructionSiteImage): void
     {
         $this->constructionSiteImage = $constructionSiteImage;

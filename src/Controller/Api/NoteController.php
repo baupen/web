@@ -37,9 +37,6 @@ class NoteController extends ApiController
     /**
      * @Route("/list", name="api_note_list", methods={"POST"})
      *
-     * @param Request         $request
-     * @param NoteTransformer $noteTransformer
-     *
      * @return Response
      */
     public function listAction(Request $request, NoteTransformer $noteTransformer)
@@ -70,9 +67,6 @@ class NoteController extends ApiController
     /**
      * @Route("/create", name="api_note_create", methods={"POST"})
      *
-     * @param Request         $request
-     * @param NoteTransformer $noteTransformer
-     *
      * @return Response
      */
     public function createAction(Request $request, NoteTransformer $noteTransformer)
@@ -83,9 +77,6 @@ class NoteController extends ApiController
     /**
      * @Route("/update", name="api_note_update", methods={"POST"})
      *
-     * @param Request         $request
-     * @param NoteTransformer $noteTransformer
-     *
      * @return Response
      */
     public function updateAction(Request $request, NoteTransformer $noteTransformer)
@@ -95,8 +86,6 @@ class NoteController extends ApiController
 
     /**
      * @Route("/delete", name="api_note_delete", methods={"POST"})
-     *
-     * @param Request $request
      *
      * @return Response
      */
@@ -130,9 +119,6 @@ class NoteController extends ApiController
 
     /**
      * create or update a note entity.
-     *
-     * @param Request         $request
-     * @param NoteTransformer $noteTransformer
      *
      * @return JsonResponse
      */

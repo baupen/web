@@ -18,17 +18,11 @@ class FeedData
     /** @var Feed */
     private $feed;
 
-    /**
-     * @return Feed
-     */
     public function getFeed(): Feed
     {
         return $this->feed;
     }
 
-    /**
-     * @param Feed $feed
-     */
     public function setFeed(Feed $feed): void
     {
         $this->feed = $feed;

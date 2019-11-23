@@ -34,17 +34,11 @@ class IssueImage extends BaseEntity
      */
     private $issue;
 
-    /**
-     * @return Issue
-     */
     public function getIssue(): Issue
     {
         return $this->issue;
     }
 
-    /**
-     * @param Issue $issue
-     */
     public function setIssue(Issue $issue): void
     {
         $this->issue = $issue;

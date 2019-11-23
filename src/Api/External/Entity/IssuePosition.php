@@ -36,49 +36,31 @@ class IssuePosition
      */
     private $mapFileID;
 
-    /**
-     * @return float
-     */
     public function getZoomScale(): float
     {
         return $this->zoomScale;
     }
 
-    /**
-     * @param float $zoomScale
-     */
     public function setZoomScale(float $zoomScale): void
     {
         $this->zoomScale = $zoomScale;
     }
 
-    /**
-     * @return string
-     */
     public function getMapFileID(): string
     {
         return $this->mapFileID;
     }
 
-    /**
-     * @param string $mapFileID
-     */
     public function setMapFileID(string $mapFileID): void
     {
         $this->mapFileID = $mapFileID;
     }
 
-    /**
-     * @return Point
-     */
     public function getPoint(): Point
     {
         return $this->point;
     }
 
-    /**
-     * @param Point $point
-     */
     public function setPoint(Point $point): void
     {
         $this->point = $point;

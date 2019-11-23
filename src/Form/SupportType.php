@@ -20,10 +20,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SupportType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name', TextType::class);
@@ -31,9 +27,6 @@ class SupportType extends AbstractType
         $builder->add('message', TextareaType::class);
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([

@@ -43,65 +43,41 @@ class ReportElements
         return $elem;
     }
 
-    /**
-     * @return bool
-     */
     public function getTableByTrade(): bool
     {
         return $this->tableByTrade;
     }
 
-    /**
-     * @param bool $tableByTrade
-     */
     public function setTableByTrade(bool $tableByTrade): void
     {
         $this->tableByTrade = $tableByTrade;
     }
 
-    /**
-     * @return bool
-     */
     public function getTableByCraftsman(): bool
     {
         return $this->tableByCraftsman;
     }
 
-    /**
-     * @param bool $tableByCraftsman
-     */
     public function setTableByCraftsman(bool $tableByCraftsman): void
     {
         $this->tableByCraftsman = $tableByCraftsman;
     }
 
-    /**
-     * @return bool
-     */
     public function getTableByMap(): bool
     {
         return $this->tableByMap;
     }
 
-    /**
-     * @param bool $tableByMap
-     */
     public function setTableByMap(bool $tableByMap): void
     {
         $this->tableByMap = $tableByMap;
     }
 
-    /**
-     * @return bool
-     */
     public function getWithImages(): bool
     {
         return $this->withImages;
     }
 
-    /**
-     * @param bool $withImages
-     */
     public function setWithImages(bool $withImages): void
     {
         $this->withImages = $withImages;

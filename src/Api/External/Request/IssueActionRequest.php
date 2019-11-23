@@ -23,17 +23,11 @@ class IssueActionRequest extends AuthenticatedRequest
      */
     private $issueID;
 
-    /**
-     * @return string
-     */
     public function getIssueID(): string
     {
         return $this->issueID;
     }
 
-    /**
-     * @param string $issueID
-     */
     public function setIssueID(string $issueID): void
     {
         $this->issueID = $issueID;

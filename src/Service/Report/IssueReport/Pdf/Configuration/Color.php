@@ -40,41 +40,26 @@ class Color
      */
     private $secondaryBackground = '#f0f0f0';
 
-    /**
-     * @return string
-     */
     public function getTextColor(): string
     {
         return $this->textColor;
     }
 
-    /**
-     * @return string
-     */
     public function getSecondaryTextColor(): string
     {
         return $this->secondaryTextColor;
     }
 
-    /**
-     * @return string
-     */
     public function getDrawColor(): string
     {
         return $this->drawColor;
     }
 
-    /**
-     * @return string
-     */
     public function getBackground(): string
     {
         return $this->background;
     }
 
-    /**
-     * @return string
-     */
     public function getSecondaryBackground(): string
     {
         return $this->secondaryBackground;

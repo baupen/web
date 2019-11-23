@@ -30,9 +30,6 @@ class ConstructionSiteTransformer extends BatchTransformer
 
     /**
      * CraftsmanTransformer constructor.
-     *
-     * @param \App\Api\Transformer\Base\ConstructionSiteTransformer $constructionSiteTransformer
-     * @param RouterInterface                                       $router
      */
     public function __construct(\App\Api\Transformer\Base\ConstructionSiteTransformer $constructionSiteTransformer, RouterInterface $router)
     {
@@ -40,10 +37,6 @@ class ConstructionSiteTransformer extends BatchTransformer
         $this->router = $router;
     }
 
-    /**
-     * @param ConstructionSite                           $entity
-     * @param \App\Api\Entity\Dashboard\ConstructionSite $constructionSite
-     */
     public function writeApiProperties(ConstructionSite $entity, \App\Api\Entity\Dashboard\ConstructionSite $constructionSite)
     {
         $this->constructionSiteTransformer->writeApiProperties($entity, $constructionSite);

@@ -43,8 +43,6 @@ class UserToken implements UserInterface
 
     /**
      * UserToken constructor.
-     *
-     * @param ConstructionManager $user
      */
     public function __construct(ConstructionManager $user)
     {
@@ -120,9 +118,6 @@ class UserToken implements UserInterface
         // no plain credentials here; hence do not need to clear
     }
 
-    /**
-     * @return bool
-     */
     public function getIsEnabled(): bool
     {
         return $this->isEnabled;

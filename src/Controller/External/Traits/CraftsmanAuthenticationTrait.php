@@ -19,8 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 trait CraftsmanAuthenticationTrait
 {
     /**
-     * @param ManagerRegistry $doctrine
-     * @param string          $identifier
+     * @param string $identifier
      * @param $craftsman
      *
      * @return bool
@@ -37,9 +36,6 @@ trait CraftsmanAuthenticationTrait
     }
 
     /**
-     * @param Request   $request
-     * @param Craftsman $craftsman
-     *
      * @return bool
      */
     private function checkWriteAuthenticationToken(Request $request, Craftsman $craftsman)
@@ -50,8 +46,6 @@ trait CraftsmanAuthenticationTrait
     }
 
     /**
-     * @param Craftsman $craftsman
-     *
      * @return Filter
      */
     private static function createCraftsmanFilter(Craftsman $craftsman)

@@ -42,10 +42,6 @@ class SetupContentFolders extends BaseFixture
 
     /**
      * SetupContentFolders constructor.
-     *
-     * @param PathServiceInterface $pathService
-     * @param SerializerInterface  $serializer
-     * @param SyncServiceInterface $fileSystemSyncService
      */
     public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer, SyncServiceInterface $fileSystemSyncService)
     {
@@ -56,8 +52,6 @@ class SetupContentFolders extends BaseFixture
 
     /**
      * Load data fixtures with the passed EntityManager.
-     *
-     * @param ObjectManager $manager
      *
      * @throws BadMethodCallException
      * @throws Exception

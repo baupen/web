@@ -23,8 +23,6 @@ class IssueTransformer
 
     /**
      * CraftsmanTransformer constructor.
-     *
-     * @param \App\Api\Transformer\Share\Base\IssueTransformer $issueTransformer
      */
     public function __construct(\App\Api\Transformer\Share\Base\IssueTransformer $issueTransformer)
     {
@@ -32,8 +30,7 @@ class IssueTransformer
     }
 
     /**
-     * @param Issue  $entity
-     * @param string $identifier
+     * @param Issue $entity
      *
      * @return \App\Api\Entity\Share\Craftsman\Issue
      */

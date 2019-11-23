@@ -26,17 +26,11 @@ trait AutomaticEditTrait
      */
     private $isAutomaticEditEnabled = true;
 
-    /**
-     * @return bool
-     */
     public function getIsAutomaticEditEnabled(): bool
     {
         return $this->isAutomaticEditEnabled;
     }
 
-    /**
-     * @param bool $preventAutomaticEdit
-     */
     public function setIsAutomaticEditEnabled(bool $preventAutomaticEdit): void
     {
         $this->isAutomaticEditEnabled = $preventAutomaticEdit;

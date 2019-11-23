@@ -22,17 +22,11 @@ class IssueRequest
      */
     private $issueId;
 
-    /**
-     * @return string
-     */
     public function getIssueId(): string
     {
         return $this->issueId;
     }
 
-    /**
-     * @param string $issueId
-     */
     public function setIssueId(string $issueId): void
     {
         $this->issueId = $issueId;

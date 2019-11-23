@@ -52,7 +52,7 @@ class ImageService implements ImageServiceInterface
     /**
      * @var bool if the cache should be disabled
      */
-    private $disableCache = false;
+    private $disableCache = true;
 
     /**
      * @var bool prevents calls to warmup cache from archiving something
@@ -61,10 +61,6 @@ class ImageService implements ImageServiceInterface
 
     /**
      * ImageService constructor.
-     *
-     * @param PathServiceInterface $pathService
-     * @param KernelInterface      $kernel
-     * @param LoggerInterface      $logger
      */
     public function __construct(PathServiceInterface $pathService, KernelInterface $kernel, LoggerInterface $logger)
     {
@@ -76,7 +72,6 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
-     * @param Map     $map
      * @param Issue[] $issues
      * @param string  $size
      *
@@ -97,8 +92,6 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
-     * @param Map    $map
-     * @param array  $issues
      * @param string $size
      *
      * @return string|null
@@ -119,8 +112,6 @@ class ImageService implements ImageServiceInterface
 
     /**
      * generates all sizes so the getSize call goes faster once it is really needed.
-     *
-     * @param Issue $issue
      */
     public function warmUpCacheForIssue(Issue $issue)
     {
@@ -140,8 +131,6 @@ class ImageService implements ImageServiceInterface
 
     /**
      * generates all sizes so the getSize call goes faster once it is really needed.
-     *
-     * @param ConstructionSite $constructionSite
      */
     public function warmUpCacheForConstructionSite(ConstructionSite $constructionSite)
     {
@@ -161,8 +150,6 @@ class ImageService implements ImageServiceInterface
 
     /**
      * generates all sizes so the getSize call goes faster once it is really needed.
-     *
-     * @param Map $map
      */
     public function warmUpCacheForMap(Map $map)
     {
@@ -192,7 +179,6 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
-     * @param Issue  $issue
      * @param string $size
      *
      * @return string|null
@@ -212,8 +198,7 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     * @param string           $size
+     * @param string $size
      *
      * @return string|null
      */
@@ -232,9 +217,6 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
-     * @param string|null $sourceFileName
-     * @param string      $sourceFolder
-     * @param string      $targetFolder
      * @param $size
      *
      * @return string
@@ -263,8 +245,6 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
-     * @param string $sourceFilePath
-     * @param string $targetFilePath
      * @param string $size
      */
     private function renderSizeOfImage(string $sourceFilePath, string $targetFilePath, $size = ImageServiceInterface::SIZE_THUMBNAIL)
@@ -278,8 +258,6 @@ class ImageService implements ImageServiceInterface
                 $this->resizeImage($sourceFilePath, $targetFilePath, 450, 600);
                 break;
             case ImageServiceInterface::SIZE_REPORT_ISSUE:
-                $this->resizeImage($sourceFilePath, $targetFilePath, 600, 600);
-                break;
             case ImageServiceInterface::SIZE_MEDIUM:
                 $this->resizeImage($sourceFilePath, $targetFilePath, 600, 600);
                 break;
@@ -292,10 +270,6 @@ class ImageService implements ImageServiceInterface
         }
     }
 
-    /**
-     * @param string $sourcePdfPath
-     * @param string $targetFilepath
-     */
     private function renderPdfToImage(string $sourcePdfPath, string $targetFilepath)
     {
         //do first low quality render to get artboxsize
@@ -312,8 +286,6 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
-     * @param Issue $issue
-     * @param bool  $rotated
      * @param $image
      */
     private function drawIssue(Issue $issue, bool $rotated, &$image)
@@ -343,7 +315,7 @@ class ImageService implements ImageServiceInterface
             $circleColor = $this->createColor($image, 201, 151, 0);
         }
 
-        $this->drawCircleWithText($yCoordinate, $xCoordinate, $circleColor, (string) $issue->getNumber(), $image);
+        $this->drawRectangleWithText($yCoordinate, $xCoordinate, $circleColor, (string) $issue->getNumber(), $image);
     }
 
     /**
@@ -353,7 +325,7 @@ class ImageService implements ImageServiceInterface
      * @param $text
      * @param $image
      */
-    private function drawCircleWithText($yPosition, $xPosition, $circleColor, $text, &$image)
+    private function drawRectangleWithText($yPosition, $xPosition, $circleColor, $text, &$image)
     {
         //get sizes
         $xSize = imagesx($image);
@@ -375,16 +347,17 @@ class ImageService implements ImageServiceInterface
         $textWidth = $testTextWidth * $scalingFactor;
         $textHeight = $testTextHeight * $scalingFactor;
 
-        //calculate diameter around text
-        $diameter = $targetTextDimension * 1.6; //*1.6 to have 0.3 at each circle end
-
         //draw white base ellipse before the colored one
         $white = $this->createColor($image, 255, 255, 255);
-        imagefilledellipse($image, (int) $xPosition, (int) $yPosition, (int) ($diameter + 2), (int) ($diameter + 2), $white);
-        imagefilledellipse($image, (int) $xPosition, (int) $yPosition, (int) $diameter, (int) $diameter, $circleColor);
+        $padding = $textHeight * 0.3;
+        $halfHeight = $textHeight / 2;
+        $textStart = $xPosition - ($textWidth / 2);
+        $textEnd = $xPosition + ($textWidth / 2);
+        imagerectangle($image, (int) ($textStart - $padding - 1), (int) ($yPosition - $halfHeight - $padding - 1), (int) ($textEnd + $padding + 1), (int) ($yPosition + $halfHeight + $padding + 1), $white);
+        imagefilledrectangle($image, (int) ($textStart - $padding), (int) ($yPosition - $padding - $halfHeight), (int) ($textEnd + $padding), (int) ($yPosition + $halfHeight + $padding), $circleColor);
 
         //draw text
-        imagettftext($image, $fontSize, 0, (int) ($xPosition - ($textWidth / 2)), (int) ($yPosition + ($textHeight / 2)), $white, $font, $text);
+        imagettftext($image, $fontSize, 0, (int) ($textStart), (int) ($yPosition + $halfHeight), $white, $font, $text);
     }
 
     /**
@@ -471,8 +444,6 @@ class ImageService implements ImageServiceInterface
 
     /**
      * @param Issue[] $issues
-     * @param string  $sourceFilePath
-     * @param string  $generationTargetFolder
      * @param bool    $forceLandscape
      * @param string  $size
      *
@@ -524,9 +495,6 @@ class ImageService implements ImageServiceInterface
         return $issueImagePathSize;
     }
 
-    /**
-     * @param string $folderName
-     */
     private function ensureFolderExists(string $folderName)
     {
         if (!is_dir($folderName)) {
@@ -537,7 +505,6 @@ class ImageService implements ImageServiceInterface
     /**
      * adds sizing infos to filename.
      *
-     * @param string $fileName
      * @param string $size
      *
      * @return string
@@ -551,11 +518,6 @@ class ImageService implements ImageServiceInterface
     }
 
     /**
-     * @param string $sourcePath
-     * @param string $targetPath
-     * @param int    $maxWidth
-     * @param int    $maxHeight
-     *
      * @return bool
      */
     private function resizeImage(string $sourcePath, string $targetPath, int $maxWidth, int $maxHeight)

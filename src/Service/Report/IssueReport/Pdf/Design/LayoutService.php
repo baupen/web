@@ -28,8 +28,6 @@ class LayoutService implements LayoutServiceInterface
 
     /**
      * LayoutService constructor.
-     *
-     * @param TypographyService $typographyService
      */
     public function __construct(TypographyService $typographyService)
     {
@@ -39,33 +37,22 @@ class LayoutService implements LayoutServiceInterface
 
     /**
      * the total width of the document.
-     *
-     * @return float
      */
     public function getPageSizeY(): float
     {
         return $this->layout->getPageSize()[1];
     }
 
-    /**
-     * @return float
-     */
     public function getHeaderYStart(): float
     {
         return $this->layout->getPageMargins()[1];
     }
 
-    /**
-     * @return float
-     */
     public function getHeaderHeight(): float
     {
         return $this->typographyService->getHeaderFontSize();
     }
 
-    /**
-     * @return float
-     */
     public function getContentXStart(): float
     {
         return $this->layout->getPageMargins()[0];
@@ -73,25 +60,17 @@ class LayoutService implements LayoutServiceInterface
 
     /**
      * the width of the document till the right margin.
-     *
-     * @return float
      */
     public function getContentXEnd(): float
     {
         return $this->getPageSizeX() - $this->layout->getPageMargins()[2];
     }
 
-    /**
-     * @return float
-     */
     public function getContentXSize(): float
     {
         return $this->getContentXEnd() - $this->getContentXStart();
     }
 
-    /**
-     * @return float
-     */
     public function getContentYStart(): float
     {
         return $this->getHeaderYStart() + $this->getHeaderHeight() + $this->layout->getBaseSpacing();
@@ -99,8 +78,6 @@ class LayoutService implements LayoutServiceInterface
 
     /**
      * the width of the document till the bottom margin.
-     *
-     * @return float
      */
     public function getContentYEnd(): float
     {
@@ -109,57 +86,37 @@ class LayoutService implements LayoutServiceInterface
 
     /**
      * the width of the content of the document.
-     *
-     * @return float
      */
     public function getContentYSize(): float
     {
         return $this->getContentYEnd() - $this->getContentYStart();
     }
 
-    /**
-     * @return float
-     */
     public function getFooterYStart(): float
     {
         return $this->getContentYEnd() + $this->layout->getBaseSpacing();
     }
 
-    /**
-     * @return float
-     */
     public function getMarginBottom(): float
     {
         return $this->getPageSizeY() - $this->getFooterYStart() + $this->layout->getBaseSpacing();
     }
 
-    /**
-     * @return float
-     */
     public function getMarginRight(): float
     {
         return $this->getPageSizeX() - $this->getContentXEnd();
     }
 
-    /**
-     * @return float
-     */
     public function getColumnGutter(): float
     {
         return $this->layout->getBaseSpacing() / $this->layout->getScalingFactor();
     }
 
-    /**
-     * @return float
-     */
     public function getRegionSpacer(): float
     {
         return $this->layout->getBaseSpacing() * ($this->layout->getScalingFactor() ** 2);
     }
 
-    /**
-     * @return float
-     */
     public function getTableColumnGutter(): float
     {
         return $this->layout->getBaseSpacing() / ($this->layout->getScalingFactor() ** 2);

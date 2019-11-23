@@ -17,10 +17,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class SetPasswordType extends BaseType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('plainPassword', PasswordType::class);

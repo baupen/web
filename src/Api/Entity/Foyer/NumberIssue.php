@@ -20,17 +20,11 @@ class NumberIssue extends BaseEntity
      */
     private $number;
 
-    /**
-     * @return int
-     */
     public function getNumber(): int
     {
         return $this->number;
     }
 
-    /**
-     * @param int $number
-     */
     public function setNumber(int $number): void
     {
         $this->number = $number;

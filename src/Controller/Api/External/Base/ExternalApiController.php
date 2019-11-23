@@ -26,8 +26,7 @@ class ExternalApiController extends AbstractApiController
     const AUTHENTICATION_TOKEN_INVALID = 'authentication token invalid';
 
     /**
-     * @param Request $request
-     * @param string  $targetClass
+     * @param string $targetClass
      * @param $authenticatedRequest
      * @param $errorResponse
      * @param $constructionManager
