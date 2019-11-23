@@ -52,8 +52,6 @@ class AuthenticationToken extends BaseEntity
     private $constructionManager;
 
     /**
-     * @param ConstructionManager $constructionManager
-     *
      * @throws Exception
      *
      * @return AuthenticationToken
@@ -68,17 +66,11 @@ class AuthenticationToken extends BaseEntity
         return $token;
     }
 
-    /**
-     * @return string
-     */
     public function getToken(): string
     {
         return $this->token;
     }
 
-    /**
-     * @return DateTime
-     */
     public function getLastUsed(): DateTime
     {
         return $this->lastUsed;
@@ -94,9 +86,6 @@ class AuthenticationToken extends BaseEntity
         $this->lastUsed = new DateTime();
     }
 
-    /**
-     * @return ConstructionManager
-     */
     public function getConstructionManager(): ConstructionManager
     {
         return $this->constructionManager;

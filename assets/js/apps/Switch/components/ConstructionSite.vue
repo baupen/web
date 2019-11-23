@@ -28,19 +28,12 @@
 </style>
 
 <script>
-    import bCard from 'bootstrap-vue/es/components/card/card'
-    import bButton from 'bootstrap-vue/es/components/button/button'
-
     export default {
         props: {
             constructionSite: {
                 type: Object,
                 required: true
             }
-        },
-        components: {
-            bCard,
-            bButton
         },
       computed: {
           involvedConstructionManagers: function () {

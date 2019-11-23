@@ -28,7 +28,6 @@
 <script>
     import axios from "axios"
     import moment from "moment";
-    import bAlert from 'bootstrap-vue/es/components/alert/alert'
     import {AtomSpinner} from 'epic-spinners'
     import notifications from '../mixins/Notifications'
     import Feed from "./components/Feed";
@@ -53,7 +52,6 @@
             Overview,
             Notes,
             Feed,
-            bAlert,
             AtomSpinner
         },
         computed: {},

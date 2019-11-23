@@ -93,16 +93,6 @@ class NewReportService
 
     /**
      * ReportService constructor.
-     *
-     * @param ImageServiceInterface       $imageService
-     * @param LayoutServiceInterface      $layoutService
-     * @param RegistryInterface           $registry
-     * @param TranslatorInterface         $translator
-     * @param PathServiceInterface        $pathService
-     * @param PdfFactoryInterface         $pdfFactory
-     * @param IssueReportServiceInterface $issueReportService
-     * @param TypographyServiceInterface  $typographyService
-     * @param ColorServiceInterface       $colorService
      */
     public function __construct(ImageServiceInterface $imageService, LayoutServiceInterface $layoutService, RegistryInterface $registry, TranslatorInterface $translator, PathServiceInterface $pathService, PdfFactoryInterface $pdfFactory, IssueReportServiceInterface $issueReportService, TypographyServiceInterface $typographyService, ColorServiceInterface $colorService)
     {
@@ -118,10 +108,7 @@ class NewReportService
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     * @param Filter           $filter
-     * @param string           $author
-     * @param ReportElements   $reportElements
+     * @param string $author
      *
      * @throws Exception
      *
@@ -146,13 +133,6 @@ class NewReportService
         return $filePath;
     }
 
-    /**
-     * @param LayoutFactoryInterface $layoutFactory
-     * @param PrintFactoryInterface  $buildingBlocks
-     * @param ConstructionSite       $constructionSite
-     * @param Filter                 $filter
-     * @param ReportElements         $reportElements
-     */
     private function addReportElements(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $buildingBlocks, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
     {
         $issues = $this->doctrine->getRepository(Issue::class)->findByFilter($filter);
@@ -189,8 +169,6 @@ class NewReportService
     }
 
     /**
-     * @param PdfPageLayoutInterface $pageLayout
-     *
      * @return PdfDocumentInterface
      */
     private function createPdfDocument(PdfPageLayoutInterface $pageLayout)
@@ -203,8 +181,7 @@ class NewReportService
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     * @param string           $author
+     * @param string $author
      *
      * @throws Exception
      *
@@ -232,10 +209,6 @@ class NewReportService
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     * @param Filter           $filter
-     * @param ReportElements   $reportElements
-     *
      * @return IntroductionContent
      */
     private function getIntroductionContent(ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
@@ -251,8 +224,7 @@ class NewReportService
     }
 
     /**
-     * @param Issue[]             $issues
-     * @param ReportConfiguration $reportConfiguration
+     * @param Issue[] $issues
      *
      * @return AggregatedIssuesContent
      */
@@ -280,8 +252,7 @@ class NewReportService
     }
 
     /**
-     * @param Issue[]             $issues
-     * @param ReportConfiguration $reportConfiguration
+     * @param Issue[] $issues
      *
      * @return AggregatedIssuesContent
      */
@@ -309,8 +280,7 @@ class NewReportService
     }
 
     /**
-     * @param Issue[]             $issues
-     * @param ReportConfiguration $reportConfiguration
+     * @param Issue[] $issues
      *
      * @return AggregatedIssuesContent
      */
@@ -338,8 +308,6 @@ class NewReportService
     }
 
     /**
-     * @param ReportConfiguration $configuration
-     *
      * @return string[]
      */
     private function getAggregatedIssuesTableHeader(ReportConfiguration $configuration)
@@ -365,9 +333,7 @@ class NewReportService
     }
 
     /**
-     * @param array               $elements
-     * @param Issue[][]           $issuesPerElement
-     * @param ReportConfiguration $configuration
+     * @param Issue[][] $issuesPerElement
      *
      * @return string[][]
      */
@@ -416,10 +382,7 @@ class NewReportService
     }
 
     /**
-     * @param Map                 $map
-     * @param Issue[]             $issues
-     * @param ReportElements      $elements
-     * @param ReportConfiguration $reportConfiguration
+     * @param Issue[] $issues
      *
      * @return MapContent
      */
@@ -467,8 +430,7 @@ class NewReportService
     }
 
     /**
-     * @param Issue[]             $issues
-     * @param ReportConfiguration $reportConfiguration
+     * @param Issue[] $issues
      *
      * @return string[][]
      */
@@ -500,8 +462,6 @@ class NewReportService
     }
 
     /**
-     * @param ReportConfiguration $reportConfiguration
-     *
      * @return array
      */
     private function getIssuesTableHeader(ReportConfiguration $reportConfiguration)
@@ -526,8 +486,6 @@ class NewReportService
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @throws Exception
      *
      * @return string
@@ -545,11 +503,6 @@ class NewReportService
         return $generationTargetFolder . DIRECTORY_SEPARATOR . $date . '_' . uniqid() . '.pdf';
     }
 
-    /**
-     * @param Filter $filter
-     *
-     * @return array
-     */
     private function getFilterEntries(Filter $filter): array
     {
         $filterEntries = [];
@@ -659,9 +612,6 @@ class NewReportService
     /**
      * @param DateTime|null $start
      * @param DateTime|null $end
-     * @param string|null   $prefix
-     *
-     * @return string
      */
     private function dateTimeRangeToText($start, $end, string $prefix = null): string
     {
@@ -685,8 +635,6 @@ class NewReportService
     }
 
     /**
-     * @param ReportElements $reportElements
-     *
      * @return string[]
      */
     private function getReportElements(ReportElements $reportElements): array

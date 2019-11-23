@@ -32,8 +32,6 @@ class StatisticsController extends ApiController
     /**
      * @Route("/issues/overview", name="api_statistics_overview", methods={"POST"})
      *
-     * @param Request $request
-     *
      * @throws Exception
      *
      * @return Response
@@ -85,8 +83,6 @@ class StatisticsController extends ApiController
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return Filter
      */
     private static function createRegisterFilter(ConstructionSite $constructionSite)

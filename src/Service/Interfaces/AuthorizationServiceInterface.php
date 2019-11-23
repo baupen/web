@@ -16,14 +16,9 @@ use App\Entity\ConstructionManager;
 interface AuthorizationServiceInterface
 {
     /**
-     * @param string $email
-     *
      * @return bool
      */
     public function checkIfAuthorized(string $email);
 
-    /**
-     * @param ConstructionManager $constructionManager
-     */
     public function tryFillDefaultValues(ConstructionManager $constructionManager);
 }

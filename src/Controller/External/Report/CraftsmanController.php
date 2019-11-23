@@ -32,7 +32,6 @@ class CraftsmanController extends BaseDoctrineController
      * @Route("/{hash}", name="external_report_craftsman")
      *
      * @param $identifier
-     * @param ReportServiceInterface $reportService
      *
      * @return Response
      */

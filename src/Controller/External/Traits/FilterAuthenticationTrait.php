@@ -17,7 +17,6 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 trait FilterAuthenticationTrait
 {
     /**
-     * @param ManagerRegistry $doctrine
      * @param $identifier
      * @param $filter
      *

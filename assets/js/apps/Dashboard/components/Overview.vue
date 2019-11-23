@@ -26,8 +26,6 @@
 </template>
 
 <script>
-    import bCardGroup from 'bootstrap-vue/es/components/card/card-group'
-    import bAlert from 'bootstrap-vue/es/components/alert/alert'
     import NumberTile from "./NumberTile";
     import axios from 'axios'
     import {AtomSpinner} from 'epic-spinners'
@@ -47,10 +45,8 @@
             constructionSiteId: String
         },
         components: {
-            bCardGroup,
             NumberTile,
-            AtomSpinner,
-            bAlert
+            AtomSpinner
         },
         mounted() {
             axios.post("/api/dashboard/constructionSite", {

@@ -23,17 +23,11 @@ class BaseEntity
      */
     private $meta;
 
-    /**
-     * @return ObjectMeta
-     */
     public function getMeta(): ObjectMeta
     {
         return $this->meta;
     }
 
-    /**
-     * @param ObjectMeta $meta
-     */
     public function setMeta(ObjectMeta $meta): void
     {
         $this->meta = $meta;

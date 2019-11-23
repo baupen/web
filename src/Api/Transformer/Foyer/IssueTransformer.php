@@ -30,9 +30,6 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * CraftsmanTransformer constructor.
-     *
-     * @param \App\Api\Transformer\Base\IssueTransformer $issueTransformer
-     * @param RouterInterface                            $router
      */
     public function __construct(\App\Api\Transformer\Base\IssueTransformer $issueTransformer, RouterInterface $router)
     {
@@ -40,10 +37,6 @@ class IssueTransformer extends BatchTransformer
         $this->router = $router;
     }
 
-    /**
-     * @param Issue                       $entity
-     * @param \App\Api\Entity\Foyer\Issue $issue
-     */
     public function writeApiProperties(Issue $entity, \App\Api\Entity\Foyer\Issue $issue)
     {
         $this->issueTransformer->writeApiProperties($entity, $issue);
@@ -77,10 +70,6 @@ class IssueTransformer extends BatchTransformer
         return $issue;
     }
 
-    /**
-     * @param \App\Api\Entity\Foyer\Issue $issue
-     * @param Issue                       $entity
-     */
     public function fromApi(\App\Api\Entity\Foyer\Issue $issue, Issue $entity)
     {
         $entity->setIsMarked($issue->getIsMarked());

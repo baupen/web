@@ -29,49 +29,31 @@ class UpdateConstructionSite
      */
     private $locality;
 
-    /**
-     * @return string
-     */
     public function getStreetAddress(): string
     {
         return $this->streetAddress;
     }
 
-    /**
-     * @param string $streetAddress
-     */
     public function setStreetAddress(string $streetAddress): void
     {
         $this->streetAddress = $streetAddress;
     }
 
-    /**
-     * @return int
-     */
     public function getPostalCode(): int
     {
         return $this->postalCode;
     }
 
-    /**
-     * @param int $postalCode
-     */
     public function setPostalCode(int $postalCode): void
     {
         $this->postalCode = $postalCode;
     }
 
-    /**
-     * @return string
-     */
     public function getLocality(): string
     {
         return $this->locality;
     }
 
-    /**
-     * @param string $locality
-     */
     public function setLocality(string $locality): void
     {
         $this->locality = $locality;

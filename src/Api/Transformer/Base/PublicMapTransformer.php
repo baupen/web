@@ -23,8 +23,6 @@ class PublicMapTransformer
 
     /**
      * PublicIssueTransformer constructor.
-     *
-     * @param MapTransformer $mapTransformer
      */
     public function __construct(MapTransformer $mapTransformer)
     {

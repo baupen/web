@@ -28,8 +28,6 @@ class ConfigController extends ExternalApiController
     /**
      * @Route("/domain_overrides", name="api_external_config_domain_overrides", methods={"GET"})
      *
-     * @param PathServiceInterface $pathService
-     *
      * @return Response
      */
     public function domainOverridesAction(PathServiceInterface $pathService)

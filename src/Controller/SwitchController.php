@@ -41,8 +41,6 @@ class SwitchController extends BaseLoginController
     /**
      * @Route("/{constructionSite}", name="switch_switch")
      *
-     * @param ConstructionSite $constructionSite
-     *
      * @return Response
      */
     public function switchAction(ConstructionSite $constructionSite)

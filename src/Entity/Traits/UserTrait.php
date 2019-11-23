@@ -256,8 +256,6 @@ trait UserTrait
 
     /**
      * hashes the plainPassword and erases credentials.
-     *
-     * @param bool $preventErase
      */
     public function setPassword(bool $preventErase = false)
     {

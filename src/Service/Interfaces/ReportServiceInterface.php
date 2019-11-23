@@ -18,10 +18,7 @@ use App\Service\Report\ReportElements;
 interface ReportServiceInterface
 {
     /**
-     * @param ConstructionSite $constructionSite
-     * @param Filter           $filter
-     * @param string           $author
-     * @param ReportElements   $reportElements
+     * @param string $author
      *
      * @return string
      */

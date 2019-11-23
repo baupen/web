@@ -8,8 +8,6 @@
 </template>
 
 <script>
-    import bCard from 'bootstrap-vue/es/components/card/card'
-
     export default {
         props: {
             number: {
@@ -24,9 +22,6 @@
                 type: String,
                 required: true
             }
-        },
-        components: {
-            bCard
         }
     }
 </script>

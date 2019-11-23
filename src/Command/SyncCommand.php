@@ -26,8 +26,6 @@ class SyncCommand extends Command
 
     /**
      * CronJobCommand constructor.
-     *
-     * @param SyncServiceInterface $syncService
      */
     public function __construct(SyncServiceInterface $syncService)
     {
@@ -53,9 +51,6 @@ EOF
     /**
      * @see Command
      * @see SecurityChecker
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
      * @return int
      */

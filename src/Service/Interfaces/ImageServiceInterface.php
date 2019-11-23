@@ -32,8 +32,6 @@ interface ImageServiceInterface
     public function ensureValidSize($uncheckedSize);
 
     /**
-     * @param Map    $map
-     * @param array  $issues
      * @param string $size
      *
      * @return string|null
@@ -41,8 +39,6 @@ interface ImageServiceInterface
     public function generateMapImage(Map $map, array $issues, $size = self::SIZE_THUMBNAIL);
 
     /**
-     * @param Map    $map
-     * @param array  $issues
      * @param string $size
      *
      * @return string|null
@@ -50,7 +46,6 @@ interface ImageServiceInterface
     public function generateMapImageForReport(Map $map, array $issues, $size = self::SIZE_THUMBNAIL);
 
     /**
-     * @param Issue  $issue
      * @param string $size
      *
      * @return string|null
@@ -58,8 +53,7 @@ interface ImageServiceInterface
     public function getSizeForIssue(Issue $issue, $size = self::SIZE_THUMBNAIL);
 
     /**
-     * @param ConstructionSite $constructionSite
-     * @param string           $size
+     * @param string $size
      *
      * @return string|null
      */
@@ -67,22 +61,16 @@ interface ImageServiceInterface
 
     /**
      * generates all sizes so the getSize call goes faster once it is really needed.
-     *
-     * @param Issue $issue
      */
     public function warmUpCacheForIssue(Issue $issue);
 
     /**
      * generates all sizes so the getSize call goes faster once it is really needed.
-     *
-     * @param ConstructionSite $constructionSite
      */
     public function warmUpCacheForConstructionSite(ConstructionSite $constructionSite);
 
     /**
      * generates all sizes so the getSize call goes faster once it is really needed.
-     *
-     * @param Map $map
      */
     public function warmUpCacheForMap(Map $map);
 }

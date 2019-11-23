@@ -18,17 +18,11 @@ class UploadMapFile
      */
     private $filename;
 
-    /**
-     * @return string|null
-     */
     public function getFilename(): ?string
     {
         return $this->filename;
     }
 
-    /**
-     * @param string|null $filename
-     */
     public function setFilename(?string $filename): void
     {
         $this->filename = $filename;

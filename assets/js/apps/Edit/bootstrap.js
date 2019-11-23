@@ -1,6 +1,7 @@
 // vuejs & plugins
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
+import BootstrapVue from 'bootstrap-vue';
 
 // components
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -31,6 +32,7 @@ if (document.getElementById('edit') != null) {
   // register plugins
   Vue.use(VueI18n);
   Vue.use(Plugin);
+  Vue.use(BootstrapVue);
   Vue.use(Vuelidate);
 
   // register components

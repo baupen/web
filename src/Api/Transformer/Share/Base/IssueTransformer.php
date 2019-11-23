@@ -31,9 +31,6 @@ class IssueTransformer
 
     /**
      * CraftsmanTransformer constructor.
-     *
-     * @param PublicIssueTransformer $issueTransformer
-     * @param RouterInterface        $router
      */
     public function __construct(PublicIssueTransformer $issueTransformer, RouterInterface $router)
     {
@@ -45,7 +42,6 @@ class IssueTransformer
      * @param Issue       $entity
      * @param PublicIssue $issue
      * @param string      $identifier
-     * @param callable    $generateRoute
      *
      * @return PublicIssue
      */

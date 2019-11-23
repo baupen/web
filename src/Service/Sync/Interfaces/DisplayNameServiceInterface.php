@@ -14,15 +14,11 @@ namespace App\Service\Sync\Interfaces;
 interface DisplayNameServiceInterface
 {
     /**
-     * @param string $filename
-     *
      * @return string
      */
     public function forConstructionSiteImage(string $filename);
 
     /**
-     * @param string $mapName
-     *
      * @return string
      */
     public function forMapFile(string $mapName);
@@ -35,8 +31,6 @@ interface DisplayNameServiceInterface
     public function normalizeMapNames(array $mapNames);
 
     /**
-     * @param string $folderName
-     *
      * @return string
      */
     public function forConstructionSite(string $folderName);

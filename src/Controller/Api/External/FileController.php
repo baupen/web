@@ -21,7 +21,6 @@ use App\Entity\Map;
 use App\Entity\Traits\TimeTrait;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\MapFileServiceInterface;
-use App\Service\MapFileService;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityRepository;
@@ -46,10 +45,6 @@ class FileController extends ExternalApiController
 
     /**
      * @Route("/download", name="api_external_file_download", methods={"POST"})
-     *
-     * @param Request                 $request
-     * @param ImageServiceInterface   $imageService
-     * @param MapFileServiceInterface $mapFileService
      *
      * @throws \Exception
      *
@@ -110,11 +105,6 @@ class FileController extends ExternalApiController
     }
 
     /**
-     * @param ObjectRepository $repository
-     * @param ObjectMeta       $objectMeta
-     * @param callable         $verifyAccess
-     * @param callable         $accessFilePath
-     *
      * @throws Exception
      *
      * @return BinaryFileResponse|Response

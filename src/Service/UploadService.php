@@ -46,10 +46,6 @@ class UploadService implements UploadServiceInterface
 
     /**
      * UploadService constructor.
-     *
-     * @param PathServiceInterface  $pathService
-     * @param ImageServiceInterface $imageService
-     * @param RegistryInterface     $registry
      */
     public function __construct(PathServiceInterface $pathService, ImageServiceInterface $imageService, RegistryInterface $registry)
     {
@@ -59,10 +55,6 @@ class UploadService implements UploadServiceInterface
     }
 
     /**
-     * @param UploadedFile $file
-     * @param Issue        $issue
-     * @param string       $targetFileName
-     *
      * @throws Exception
      *
      * @return IssueImage|null
@@ -81,10 +73,6 @@ class UploadService implements UploadServiceInterface
     }
 
     /**
-     * @param UploadedFile     $file
-     * @param ConstructionSite $constructionSite
-     * @param string           $targetFileName
-     *
      * @throws Exception
      *
      * @return MapFile|null
@@ -101,10 +89,6 @@ class UploadService implements UploadServiceInterface
     }
 
     /**
-     * @param UploadedFile     $file
-     * @param ConstructionSite $constructionSite
-     * @param string           $targetFileName
-     *
      * @throws Exception
      *
      * @return ConstructionSiteImage|null
@@ -123,10 +107,6 @@ class UploadService implements UploadServiceInterface
     }
 
     /**
-     * @param string           $hash
-     * @param string           $filename
-     * @param ConstructionSite $constructionSite
-     *
      * @throws Exception
      *
      * @return UploadFileCheck
@@ -163,12 +143,7 @@ class UploadService implements UploadServiceInterface
     }
 
     /**
-     * @param UploadedFile $file
-     * @param string       $targetFolder
-     * @param string       $targetFileName
-     * @param FileTrait    $entity
-     *
-     * @return bool
+     * @param FileTrait $entity
      */
     private function uploadFile(UploadedFile $file, string $targetFolder, string $targetFileName, $entity): bool
     {
@@ -193,8 +168,6 @@ class UploadService implements UploadServiceInterface
 
     /**
      * @param FileTrait $entity
-     * @param string    $targetFolder
-     * @param string    $targetFileName
      */
     private function writeFileTraitProperties($entity, string $targetFolder, string $targetFileName)
     {
@@ -204,9 +177,6 @@ class UploadService implements UploadServiceInterface
     }
 
     /**
-     * @param string $targetFolder
-     * @param string $targetFileName
-     *
      * @throws Exception
      *
      * @return string|null

@@ -24,8 +24,6 @@ class CraftsmanTransformer extends BatchTransformer
 
     /**
      * CraftsmanTransformer constructor.
-     *
-     * @param \App\Api\Transformer\Base\CraftsmanTransformer $craftsmanTransformer
      */
     public function __construct(\App\Api\Transformer\Base\CraftsmanTransformer $craftsmanTransformer)
     {

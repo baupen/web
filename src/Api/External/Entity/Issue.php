@@ -63,145 +63,91 @@ class Issue extends BaseEntity
      */
     private $position;
 
-    /**
-     * @return int|null
-     */
     public function getNumber(): ?int
     {
         return $this->number;
     }
 
-    /**
-     * @param int|null $number
-     */
     public function setNumber(?int $number): void
     {
         $this->number = $number;
     }
 
-    /**
-     * @return bool
-     */
     public function getIsMarked(): bool
     {
         return $this->isMarked;
     }
 
-    /**
-     * @param bool $isMarked
-     */
     public function setIsMarked(bool $isMarked): void
     {
         $this->isMarked = $isMarked;
     }
 
-    /**
-     * @return bool
-     */
     public function getWasAddedWithClient(): bool
     {
         return $this->wasAddedWithClient;
     }
 
-    /**
-     * @param bool $wasAddedWithClient
-     */
     public function setWasAddedWithClient(bool $wasAddedWithClient): void
     {
         $this->wasAddedWithClient = $wasAddedWithClient;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string|null $description
-     */
     public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCraftsman(): ?string
     {
         return $this->craftsman;
     }
 
-    /**
-     * @param string|null $craftsman
-     */
     public function setCraftsman(?string $craftsman): void
     {
         $this->craftsman = $craftsman;
     }
 
-    /**
-     * @return IssueStatus
-     */
     public function getStatus(): IssueStatus
     {
         return $this->status;
     }
 
-    /**
-     * @param IssueStatus $status
-     */
     public function setStatus(IssueStatus $status): void
     {
         $this->status = $status;
     }
 
-    /**
-     * @return IssuePosition|null
-     */
     public function getPosition(): ?IssuePosition
     {
         return $this->position;
     }
 
-    /**
-     * @param IssuePosition|null $position
-     */
     public function setPosition(?IssuePosition $position): void
     {
         $this->position = $position;
     }
 
-    /**
-     * @return string
-     */
     public function getMap(): string
     {
         return $this->map;
     }
 
-    /**
-     * @param string $map
-     */
     public function setMap(string $map): void
     {
         $this->map = $map;
     }
 
-    /**
-     * @return File|null
-     */
     public function getImage(): ?File
     {
         return $this->image;
     }
 
-    /**
-     * @param File|null $image
-     */
     public function setImage(?File $image): void
     {
         $this->image = $image;

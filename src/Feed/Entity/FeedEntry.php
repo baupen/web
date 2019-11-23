@@ -31,49 +31,31 @@ class FeedEntry
      */
     private $count;
 
-    /**
-     * @return DateTime
-     */
     public function getTimestamp(): DateTime
     {
         return $this->timestamp;
     }
 
-    /**
-     * @param DateTime $timestamp
-     */
     public function setTimestamp(DateTime $timestamp): void
     {
         $this->timestamp = $timestamp;
     }
 
-    /**
-     * @return Craftsman|null
-     */
     public function getCraftsman(): ?Craftsman
     {
         return $this->craftsman;
     }
 
-    /**
-     * @param Craftsman|null $craftsman
-     */
     public function setCraftsman(?Craftsman $craftsman): void
     {
         $this->craftsman = $craftsman;
     }
 
-    /**
-     * @return int|null
-     */
     public function getCount(): ?int
     {
         return $this->count;
     }
 
-    /**
-     * @param int|null $count
-     */
     public function setCount(?int $count): void
     {
         $this->count = $count;

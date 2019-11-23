@@ -22,8 +22,6 @@ class ConstructionManagerChecker implements UserCheckerInterface
 
     /**
      * Checks the user account before authentication.
-     *
-     * @param UserInterface $user
      */
     public function checkPreAuth(UserInterface $user)
     {
@@ -41,8 +39,6 @@ class ConstructionManagerChecker implements UserCheckerInterface
 
     /**
      * Checks the user account after authentication.
-     *
-     * @param UserInterface $user
      */
     public function checkPostAuth(UserInterface $user)
     {

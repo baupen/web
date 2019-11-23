@@ -35,9 +35,6 @@ class LoginController extends ExternalApiController
     /**
      * @Route("", name="api_external_login", methods={"POST"})
      *
-     * @param Request         $request
-     * @param UserTransformer $userTransformer
-     *
      * @throws Exception
      *
      * @return Response

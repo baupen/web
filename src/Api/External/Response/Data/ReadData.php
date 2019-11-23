@@ -192,17 +192,11 @@ class ReadData
         $this->removedIssueIDs = $removedIssueIDs;
     }
 
-    /**
-     * @return User|null
-     */
     public function getChangedUser(): ?User
     {
         return $this->changedUser;
     }
 
-    /**
-     * @param User $changedUser
-     */
     public function setChangedUser(User $changedUser): void
     {
         $this->changedUser = $changedUser;

@@ -17,10 +17,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ConfirmType extends \App\Form\Traits\User\SetPasswordType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('profile', ProfileType::class, ['inherit_data' => true]);
@@ -28,9 +24,6 @@ class ConfirmType extends \App\Form\Traits\User\SetPasswordType
         parent::buildForm($builder, $options);
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([

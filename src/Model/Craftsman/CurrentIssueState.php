@@ -44,7 +44,6 @@ class CurrentIssueState
     /**
      * CurrentIssueState constructor.
      *
-     * @param Craftsman $craftsman
      * @param $referenceTime
      */
     public function __construct(Craftsman $craftsman, $referenceTime)
@@ -74,41 +73,26 @@ class CurrentIssueState
         }
     }
 
-    /**
-     * @return int
-     */
     public function getNotReadIssuesCount(): int
     {
         return $this->notReadIssuesCount;
     }
 
-    /**
-     * @return int
-     */
     public function getRecentlyReviewedIssuesCount(): int
     {
         return $this->recentlyReviewedIssuesCount;
     }
 
-    /**
-     * @return int
-     */
     public function getNotRespondedIssuesCount(): int
     {
         return $this->notRespondedIssuesCount;
     }
 
-    /**
-     * @return int
-     */
     public function getOverdueIssuesCount(): int
     {
         return $this->overdueIssuesCount;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getNextResponseLimit(): ?DateTime
     {
         return $this->nextResponseLimit;

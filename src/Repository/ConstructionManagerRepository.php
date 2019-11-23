@@ -21,8 +21,6 @@ use Exception;
 class ConstructionManagerRepository extends EntityRepository
 {
     /**
-     * @param UserToken $token
-     *
      * @return object|null
      */
     public function fromUserToken(UserToken $token)
@@ -33,8 +31,7 @@ class ConstructionManagerRepository extends EntityRepository
     /**
      * gets recently changed issues.
      *
-     * @param ConstructionSite $constructionSite
-     * @param int              $days
+     * @param int $days
      *
      * @throws Exception
      *

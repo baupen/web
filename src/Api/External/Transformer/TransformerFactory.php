@@ -40,12 +40,6 @@ class TransformerFactory
 
     /**
      * TransformerFactory constructor.
-     *
-     * @param ConstructionSiteTransformer $buildingTransformer
-     * @param CraftsmanTransformer        $craftsmanTransformer
-     * @param MapTransformer              $mapTransformer
-     * @param IssueTransformer            $issueTransformer
-     * @param UserTransformer             $userTransformer
      */
     public function __construct(ConstructionSiteTransformer $buildingTransformer, CraftsmanTransformer $craftsmanTransformer, MapTransformer $mapTransformer, IssueTransformer $issueTransformer, UserTransformer $userTransformer)
     {
@@ -56,41 +50,26 @@ class TransformerFactory
         $this->userTransformer = $userTransformer;
     }
 
-    /**
-     * @return ConstructionSiteTransformer
-     */
     public function getBuildingTransformer(): ConstructionSiteTransformer
     {
         return $this->buildingTransformer;
     }
 
-    /**
-     * @return CraftsmanTransformer
-     */
     public function getCraftsmanTransformer(): CraftsmanTransformer
     {
         return $this->craftsmanTransformer;
     }
 
-    /**
-     * @return MapTransformer
-     */
     public function getMapTransformer(): MapTransformer
     {
         return $this->mapTransformer;
     }
 
-    /**
-     * @return IssueTransformer
-     */
     public function getIssueTransformer(): IssueTransformer
     {
         return $this->issueTransformer;
     }
 
-    /**
-     * @return UserTransformer
-     */
     public function getUserTransformer(): UserTransformer
     {
         return $this->userTransformer;

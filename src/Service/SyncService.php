@@ -48,11 +48,6 @@ class SyncService implements SyncServiceInterface
 
     /**
      * FileSystemSyncService constructor.
-     *
-     * @param RegistryInterface                $registry
-     * @param PathServiceInterface             $pathService
-     * @param ImageServiceInterface            $imageService
-     * @param ConstructionSiteServiceInterface $constructionSiteService
      */
     public function __construct(RegistryInterface $registry, PathServiceInterface $pathService, ImageServiceInterface $imageService, ConstructionSiteServiceInterface $constructionSiteService)
     {
@@ -93,9 +88,6 @@ class SyncService implements SyncServiceInterface
 
     /**
      * syncs single construction site with the filesystem.
-     *
-     * @param ConstructionSite $constructionSite
-     * @param bool             $skipCacheWarmup
      */
     public function syncConstructionSite(ConstructionSite $constructionSite, bool $skipCacheWarmup = false)
     {
@@ -104,10 +96,6 @@ class SyncService implements SyncServiceInterface
         $this->commitSyncTransaction($syncTransaction, $skipCacheWarmup);
     }
 
-    /**
-     * @param SyncTransaction $transaction
-     * @param bool            $skipCacheWarmup
-     */
     private function commitSyncTransaction(SyncTransaction $transaction, bool $skipCacheWarmup = false)
     {
         $manager = $this->registry->getManager();

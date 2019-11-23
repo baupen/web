@@ -38,8 +38,6 @@ class FilterController extends ApiController
      * @Route("/read", name="external_api_share_filter_read", methods={"GET"})
      *
      * @param $identifier
-     * @param ConstructionSiteTransformer $constructionSiteTransformer
-     * @param FilterTransformer           $filterTransformer
      *
      * @throws \Exception
      *
@@ -65,7 +63,6 @@ class FilterController extends ApiController
      * @Route("/maps/list", name="external_api_share_filter_maps_list", methods={"GET"})
      *
      * @param $identifier
-     * @param MapTransformer $mapTransformer
      *
      * @throws \Exception
      *

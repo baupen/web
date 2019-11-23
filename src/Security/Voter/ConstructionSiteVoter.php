@@ -37,7 +37,6 @@ class ConstructionSiteVoter extends BaseVoter
      *
      * @param string           $attribute
      * @param ConstructionSite $subject
-     * @param TokenInterface   $token
      *
      * @return bool
      */

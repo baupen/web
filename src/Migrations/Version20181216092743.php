@@ -23,8 +23,6 @@ use Doctrine\Migrations\AbstractMigration;
 final class Version20181216092743 extends AbstractMigration
 {
     /**
-     * @param Schema $schema
-     *
      * @throws DBALException
      */
     public function up(Schema $schema): void
@@ -204,8 +202,6 @@ final class Version20181216092743 extends AbstractMigration
     }
 
     /**
-     * @param Schema $schema
-     *
      * @throws DBALException
      */
     public function down(Schema $schema): void

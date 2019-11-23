@@ -38,17 +38,11 @@ class AggregatedIssuesContent
      */
     private $issuesContent;
 
-    /**
-     * @return string
-     */
     public function getTableDescription(): string
     {
         return $this->tableDescription;
     }
 
-    /**
-     * @param string $tableDescription
-     */
     public function setTableDescription(string $tableDescription): void
     {
         $this->tableDescription = $tableDescription;

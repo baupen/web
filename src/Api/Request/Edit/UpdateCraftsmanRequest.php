@@ -21,17 +21,11 @@ class UpdateCraftsmanRequest extends ConstructionSiteRequest
      */
     private $craftsman;
 
-    /**
-     * @return UpdateCraftsman
-     */
     public function getCraftsman(): UpdateCraftsman
     {
         return $this->craftsman;
     }
 
-    /**
-     * @param UpdateCraftsman $craftsman
-     */
     public function setCraftsman(UpdateCraftsman $craftsman): void
     {
         $this->craftsman = $craftsman;

@@ -28,49 +28,31 @@ class UpdateMap
      */
     private $fileId;
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string|null
-     */
     public function getParentId(): ?string
     {
         return $this->parentId;
     }
 
-    /**
-     * @param string|null $parentId
-     */
     public function setParentId(?string $parentId): void
     {
         $this->parentId = $parentId;
     }
 
-    /**
-     * @return string|null
-     */
     public function getFileId(): ?string
     {
         return $this->fileId;
     }
 
-    /**
-     * @param string|null $fileId
-     */
     public function setFileId(?string $fileId): void
     {
         $this->fileId = $fileId;

@@ -42,11 +42,6 @@ class PrintFactory implements PrintFactoryInterface
      */
     private $layout;
 
-    /**
-     * @param TypographyServiceInterface $typographyService
-     * @param ColorServiceInterface      $colorService
-     * @param LayoutServiceInterface     $layoutService
-     */
     public function __construct(TypographyServiceInterface $typographyService, ColorServiceInterface $colorService, LayoutServiceInterface $layoutService)
     {
         $this->typography = $typographyService;
@@ -55,8 +50,6 @@ class PrintFactory implements PrintFactoryInterface
     }
 
     /**
-     * @param MetaData $pageLayoutContent
-     *
      * @return PdfPageLayout
      */
     public function getLayout(MetaData $pageLayoutContent)
@@ -65,8 +58,6 @@ class PrintFactory implements PrintFactoryInterface
     }
 
     /**
-     * @param PrintableLayoutInterface $printableLayout
-     *
      * @return PrinterInterface
      */
     public function getPrinter(PrintableLayoutInterface $printableLayout)
@@ -75,8 +66,6 @@ class PrintFactory implements PrintFactoryInterface
     }
 
     /**
-     * @param DrawableTransactionInterface $drawableTransaction
-     *
      * @return DrawerInterface
      */
     public function getDrawer(DrawableTransactionInterface $drawableTransaction)

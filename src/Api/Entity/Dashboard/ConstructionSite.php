@@ -18,17 +18,11 @@ class ConstructionSite extends \App\Api\Entity\Base\ConstructionSite
      */
     private $imageMedium;
 
-    /**
-     * @return string|null
-     */
     public function getImageMedium(): ?string
     {
         return $this->imageMedium;
     }
 
-    /**
-     * @param string|null $imageFull
-     */
     public function setImageMedium(?string $imageFull): void
     {
         $this->imageMedium = $imageFull;

@@ -28,9 +28,6 @@ class ProcessingEntitiesData
      */
     private $skippedIds = [];
 
-    /**
-     * @param string $id
-     */
     public function addSuccessfulId(string $id)
     {
         $this->successfulIds[] = $id;
@@ -44,9 +41,6 @@ class ProcessingEntitiesData
         return $this->successfulIds;
     }
 
-    /**
-     * @param string $id
-     */
     public function addFailedId(string $id)
     {
         $this->failedIds[] = $id;
@@ -60,9 +54,6 @@ class ProcessingEntitiesData
         return $this->failedIds;
     }
 
-    /**
-     * @param string $id
-     */
     public function addSkippedId(string $id)
     {
         $this->skippedIds[] = $id;

@@ -20,17 +20,11 @@ class NoteData
      */
     private $note;
 
-    /**
-     * @return Note
-     */
     public function getNote(): Note
     {
         return $this->note;
     }
 
-    /**
-     * @param Note $note
-     */
     public function setNote(Note $note): void
     {
         $this->note = $note;

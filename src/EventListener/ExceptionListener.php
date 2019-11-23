@@ -39,10 +39,6 @@ class ExceptionListener
 
     /**
      * ExceptionListener constructor.
-     *
-     * @param SerializerInterface   $serializer
-     * @param LoggerInterface       $logger
-     * @param ParameterBagInterface $parameterBag
      */
     public function __construct(SerializerInterface $serializer, LoggerInterface $logger, ParameterBagInterface $parameterBag)
     {
@@ -52,8 +48,6 @@ class ExceptionListener
     }
 
     /**
-     * @param GetResponseForExceptionEvent $event
-     *
      * @throws Exception
      */
     public function onKernelException(GetResponseForExceptionEvent $event)

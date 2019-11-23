@@ -28,8 +28,6 @@ abstract class BaseVoter extends Voter
 
     /**
      * BaseVoter constructor.
-     *
-     * @param RegistryInterface $registry
      */
     public function __construct(RegistryInterface $registry)
     {
@@ -37,8 +35,6 @@ abstract class BaseVoter extends Voter
     }
 
     /**
-     * @param TokenInterface $token
-     *
      * @return mixed
      */
     protected function getUser(TokenInterface $token)

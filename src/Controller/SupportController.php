@@ -35,11 +35,6 @@ class SupportController extends BaseFormController
     /**
      * @Route("", name="support")
      *
-     * @param Request               $request
-     * @param EmailServiceInterface $emailService
-     * @param TranslatorInterface   $translator
-     * @param LoggerInterface       $logger
-     *
      * @return Response
      */
     public function supportAction(Request $request, EmailServiceInterface $emailService, TranslatorInterface $translator, LoggerInterface $logger)

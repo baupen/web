@@ -52,17 +52,11 @@ class ReadRequest extends AuthenticatedRequest
      */
     private $issues;
 
-    /**
-     * @return ObjectMeta
-     */
     public function getUser(): ObjectMeta
     {
         return $this->user;
     }
 
-    /**
-     * @param ObjectMeta $user
-     */
     public function setUser(ObjectMeta $user): void
     {
         $this->user = $user;

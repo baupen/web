@@ -69,7 +69,6 @@ abstract class AbstractApiController extends BaseDoctrineController
     }
 
     /**
-     * @param Request       $request
      * @param string        $targetClass
      * @param mixed|null    $parsedRequest
      * @param Response|null $errorResponse
@@ -108,11 +107,6 @@ abstract class AbstractApiController extends BaseDoctrineController
      * @final
      *
      * @param $data
-     * @param int   $status
-     * @param array $headers
-     * @param array $context
-     *
-     * @return JsonResponse
      */
     protected function json($data, int $status = 200, array $headers = [], array $context = []): JsonResponse
     {
@@ -125,8 +119,6 @@ abstract class AbstractApiController extends BaseDoctrineController
 
     /**
      * if request failed (client error).
-     *
-     * @param string $message
      *
      * @return JsonResponse
      */

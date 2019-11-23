@@ -24,8 +24,6 @@ class LoadConstructionManagerData extends BaseFixture
     /**
      * Load data fixtures with the passed EntityManager.
      *
-     * @param ObjectManager $manager
-     *
      * @throws BadMethodCallException
      * @throws Exception
      */

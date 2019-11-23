@@ -28,8 +28,6 @@ class DatabaseProvider implements UserProviderInterface
 
     /**
      * AdminUserProvider constructor.
-     *
-     * @param RegistryInterface $registry
      */
     public function __construct(RegistryInterface $registry)
     {
@@ -44,8 +42,6 @@ class DatabaseProvider implements UserProviderInterface
      * object can just be merged into some internal array of users / identity
      * map.
      *
-     * @param UserInterface $user
-     *
      * @throws UnsupportedUserException if the account is not supported
      *
      * @return UserInterface
@@ -53,9 +49,7 @@ class DatabaseProvider implements UserProviderInterface
     public function refreshUser(UserInterface $user)
     {
         if (!$user instanceof UserToken) {
-            throw new UnsupportedUserException(
-                sprintf('Instances of "%s" are not supported.', \get_class($user))
-            );
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
         return $this->loadUserByUsername($user->getUsername());
@@ -81,9 +75,7 @@ class DatabaseProvider implements UserProviderInterface
             return new UserToken($user);
         }
 
-        throw new UsernameNotFoundException(
-            sprintf('Username "%s" does not exist in CustomerUserProvider.', $username)
-        );
+        throw new UsernameNotFoundException(sprintf('Username "%s" does not exist in CustomerUserProvider.', $username));
     }
 
     /**

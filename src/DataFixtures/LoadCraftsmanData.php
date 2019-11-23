@@ -38,8 +38,6 @@ class LoadCraftsmanData extends BaseFixture
     /**
      * Load data fixtures with the passed EntityManager.
      *
-     * @param ObjectManager $manager
-     *
      * @throws BadMethodCallException
      * @throws Exception
      */
@@ -79,8 +77,6 @@ class LoadCraftsmanData extends BaseFixture
     }
 
     /**
-     * @param ObjectManager $manager
-     *
      * @return array
      */
     private function getConstructionSiteCraftsmen(ObjectManager $manager)

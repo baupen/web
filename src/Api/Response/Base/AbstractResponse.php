@@ -36,7 +36,6 @@ class AbstractResponse
     /**
      * AbstractResponse constructor.
      *
-     * @param string      $apiStatus
      * @param mixed       $data
      * @param string|null $message
      * @param int|null    $error
@@ -49,17 +48,11 @@ class AbstractResponse
         $this->message = $message;
     }
 
-    /**
-     * @return int
-     */
     public function getVersion(): int
     {
         return 1;
     }
 
-    /**
-     * @return string
-     */
     public function getStatus(): string
     {
         return $this->status;

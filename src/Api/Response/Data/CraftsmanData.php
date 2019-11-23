@@ -20,17 +20,11 @@ class CraftsmanData
      */
     private $craftsman;
 
-    /**
-     * @return Craftsman
-     */
     public function getCraftsman(): Craftsman
     {
         return $this->craftsman;
     }
 
-    /**
-     * @param Craftsman $craftsman
-     */
     public function setCraftsman(Craftsman $craftsman): void
     {
         $this->craftsman = $craftsman;

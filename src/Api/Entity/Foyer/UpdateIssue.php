@@ -30,49 +30,31 @@ class UpdateIssue extends \App\Api\Entity\Base\Issue
      */
     private $responseLimit;
 
-    /**
-     * @return bool
-     */
     public function getIsMarked(): bool
     {
         return $this->isMarked;
     }
 
-    /**
-     * @param bool $isMarked
-     */
     public function setIsMarked(bool $isMarked): void
     {
         $this->isMarked = $isMarked;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCraftsmanId(): ?string
     {
         return $this->craftsmanId;
     }
 
-    /**
-     * @param string|null $craftsmanId
-     */
     public function setCraftsmanId(?string $craftsmanId): void
     {
         $this->craftsmanId = $craftsmanId;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getResponseLimit(): ?DateTime
     {
         return $this->responseLimit;
     }
 
-    /**
-     * @param DateTime|null $responseLimit
-     */
     public function setResponseLimit(?DateTime $responseLimit): void
     {
         $this->responseLimit = $responseLimit;

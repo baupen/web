@@ -24,8 +24,6 @@ abstract class BaseAuthenticator
 
     /**
      * process the user, setting $authenticationStatus and $isEnabled as appropriate.
-     *
-     * @param UserTrait $trait
      */
     public function authenticate(UserTrait $trait)
     {

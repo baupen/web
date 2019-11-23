@@ -43,49 +43,31 @@ class MapContent
      */
     private $issueImages = [];
 
-    /**
-     * @return string
-     */
     public function getMapName(): string
     {
         return $this->mapName;
     }
 
-    /**
-     * @param string $mapName
-     */
     public function setMapName(string $mapName): void
     {
         $this->mapName = $mapName;
     }
 
-    /**
-     * @return string
-     */
     public function getMapContext(): string
     {
         return $this->mapContext;
     }
 
-    /**
-     * @param string $mapContext
-     */
     public function setMapContext(string $mapContext): void
     {
         $this->mapContext = $mapContext;
     }
 
-    /**
-     * @return string|null
-     */
     public function getMapImage(): ?string
     {
         return $this->mapImage;
     }
 
-    /**
-     * @param string|null $mapImage
-     */
     public function setMapImage(?string $mapImage): void
     {
         $this->mapImage = $mapImage;
@@ -123,9 +105,6 @@ class MapContent
         $this->issuesTableContent = $issuesTableContent;
     }
 
-    /**
-     * @param IssueImage $issueImage
-     */
     public function addIssueImage(IssueImage $issueImage)
     {
         $this->issueImages[] = $issueImage;

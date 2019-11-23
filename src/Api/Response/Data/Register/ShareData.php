@@ -18,17 +18,11 @@ class ShareData
      */
     private $link;
 
-    /**
-     * @return string
-     */
     public function getLink(): string
     {
         return $this->link;
     }
 
-    /**
-     * @param string $link
-     */
     public function setLink(string $link): void
     {
         $this->link = $link;

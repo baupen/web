@@ -17,69 +17,37 @@ interface LayoutServiceInterface extends LayoutFactoryConfigurationInterface
 {
     /**
      * the total width of the document.
-     *
-     * @return float
      */
     public function getPageSizeY(): float;
 
-    /**
-     * @return float
-     */
     public function getHeaderYStart(): float;
 
-    /**
-     * @return float
-     */
     public function getHeaderHeight(): float;
 
-    /**
-     * @return float
-     */
     public function getContentXStart(): float;
 
     /**
      * the width of the document till the right margin.
-     *
-     * @return float
      */
     public function getContentXEnd(): float;
 
-    /**
-     * @return float
-     */
     public function getContentYStart(): float;
 
     /**
      * the width of the document till the bottom margin.
-     *
-     * @return float
      */
     public function getContentYEnd(): float;
 
     /**
      * the width of the content of the document.
-     *
-     * @return float
      */
     public function getContentYSize(): float;
 
-    /**
-     * @return float
-     */
     public function getFooterYStart(): float;
 
-    /**
-     * @return float
-     */
     public function getMarginBottom(): float;
 
-    /**
-     * @return float
-     */
     public function getMarginRight(): float;
 
-    /**
-     * @return float
-     */
     public function getRegionSpacer(): float;
 }

@@ -99,18 +99,11 @@ class Email extends BaseEntity
      */
     private $visitedDateTime;
 
-    /**
-     * @return string
-     */
     public function getSenderName(): string
     {
         return $this->senderName;
     }
 
-    /**
-     * @param string $senderName
-     * @param string $senderEmail
-     */
     public function setSender(string $senderName, string $senderEmail): void
     {
         $this->senderName = $senderName;
@@ -126,57 +119,36 @@ class Email extends BaseEntity
         $this->senderEmail = self::SENDER_SYSTEM;
     }
 
-    /**
-     * @return string
-     */
     public function getSenderEmail(): string
     {
         return $this->senderEmail;
     }
 
-    /**
-     * @return string
-     */
     public function getReceiver(): string
     {
         return $this->receiver;
     }
 
-    /**
-     * @param string $receiver
-     */
     public function setReceiver(string $receiver)
     {
         $this->receiver = $receiver;
     }
 
-    /**
-     * @return string
-     */
     public function getSubject(): string
     {
         return $this->subject;
     }
 
-    /**
-     * @param string $subject
-     */
     public function setSubject(string $subject)
     {
         $this->subject = $subject;
     }
 
-    /**
-     * @return int
-     */
     public function getEmailType(): int
     {
         return $this->emailType;
     }
 
-    /**
-     * @param int $emailType
-     */
     public function setEmailType(int $emailType)
     {
         $this->emailType = $emailType;
@@ -190,73 +162,46 @@ class Email extends BaseEntity
         return $this->body;
     }
 
-    /**
-     * @param string $body
-     */
     public function setBody(string $body)
     {
         $this->body = $body;
     }
 
-    /**
-     * @return string|null
-     */
     public function getActionText(): ?string
     {
         return $this->actionText;
     }
 
-    /**
-     * @param string $actionText
-     */
     public function setActionText(string $actionText)
     {
         $this->actionText = $actionText;
     }
 
-    /**
-     * @return string|null
-     */
     public function getActionLink(): ?string
     {
         return $this->actionLink;
     }
 
-    /**
-     * @param string $actionLink
-     */
     public function setActionLink(string $actionLink)
     {
         $this->actionLink = $actionLink;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getSentDateTime(): ?DateTime
     {
         return $this->sentDateTime;
     }
 
-    /**
-     * @param DateTime $sentDateTime
-     */
     public function setSentDateTime(DateTime $sentDateTime)
     {
         $this->sentDateTime = $sentDateTime;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getVisitedDateTime(): ?DateTime
     {
         return $this->visitedDateTime;
     }
 
-    /**
-     * @param DateTime $visitedDateTime
-     */
     public function setVisitedDateTime(DateTime $visitedDateTime)
     {
         $this->visitedDateTime = $visitedDateTime;

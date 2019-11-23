@@ -87,33 +87,21 @@ class Map extends BaseEntity
         $this->issues = new ArrayCollection();
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return ConstructionSite
-     */
     public function getConstructionSite(): ConstructionSite
     {
         return $this->constructionSite;
     }
 
-    /**
-     * @param ConstructionSite $constructionSite
-     */
     public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;
@@ -189,17 +177,11 @@ class Map extends BaseEntity
         return $this->files;
     }
 
-    /**
-     * @return MapFile|null
-     */
     public function getFile(): ?MapFile
     {
         return $this->file;
     }
 
-    /**
-     * @param MapFile|null $file
-     */
     public function setFile(?MapFile $file): void
     {
         $this->file = $file;

@@ -21,10 +21,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 trait ImageDownloadTrait
 {
     /**
-     * @param Issue                 $issue
-     * @param IssueImage            $image
-     * @param string                $size
-     * @param ImageServiceInterface $imageService
+     * @param string $size
      *
      * @return string
      */
@@ -43,10 +40,7 @@ trait ImageDownloadTrait
     }
 
     /**
-     * @param ConstructionSite      $constructionSite
-     * @param ConstructionSiteImage $image
-     * @param string                $size
-     * @param ImageServiceInterface $imageService
+     * @param string $size
      *
      * @return string
      */

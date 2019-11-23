@@ -33,7 +33,6 @@ class FilterController extends BaseDoctrineController
      * @Route("/{hash}", name="external_report_filter")
      *
      * @param $identifier
-     * @param ReportServiceInterface $reportService
      *
      * @return Response
      */

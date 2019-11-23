@@ -17,8 +17,6 @@ use function count;
 class DisplayNameService implements DisplayNameServiceInterface
 {
     /**
-     * @param string $folderName
-     *
      * @return string
      */
     public function forConstructionSite(string $folderName)
@@ -27,8 +25,6 @@ class DisplayNameService implements DisplayNameServiceInterface
     }
 
     /**
-     * @param string $imageName
-     *
      * @return string
      */
     public function forConstructionSiteImage(string $imageName)
@@ -39,8 +35,6 @@ class DisplayNameService implements DisplayNameServiceInterface
     }
 
     /**
-     * @param string $mapName
-     *
      * @return string
      */
     public function forMapFile(string $mapName)
@@ -196,8 +190,6 @@ class DisplayNameService implements DisplayNameServiceInterface
     }
 
     /**
-     * @param array $names
-     *
      * @return string[],\string[][]
      */
     private function groupFilenameParts(array $names)
@@ -280,7 +272,6 @@ class DisplayNameService implements DisplayNameServiceInterface
     }
 
     /**
-     * @param int      $index
      * @param string[] $filenameGroupsStatistics
      * @param string[] $decomposedNames
      */
@@ -298,8 +289,6 @@ class DisplayNameService implements DisplayNameServiceInterface
     }
 
     /**
-     * @param string $fileName
-     *
      * @return string
      */
     private function trimEnding(string $fileName)
@@ -319,8 +308,6 @@ class DisplayNameService implements DisplayNameServiceInterface
     }
 
     /**
-     * @param string $text
-     *
      * @return string
      */
     private function trimWhitespace(string $text)

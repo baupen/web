@@ -65,9 +65,6 @@ class EditController extends ApiController
     /**
      * @Route("/maps", name="api_edit_maps")
      *
-     * @param Request        $request
-     * @param MapTransformer $mapFileTransformer
-     *
      * @return Response
      */
     public function mapsAction(Request $request, MapTransformer $mapFileTransformer)
@@ -88,9 +85,6 @@ class EditController extends ApiController
 
     /**
      * @Route("/map_files", name="api_edit_map_files")
-     *
-     * @param Request            $request
-     * @param MapFileTransformer $mapFileTransformer
      *
      * @return Response
      */
@@ -113,9 +107,6 @@ class EditController extends ApiController
     /**
      * @Route("/construction_site", name="api_edit_construction_site")
      *
-     * @param Request                     $request
-     * @param ConstructionSiteTransformer $constructionSiteTransformer
-     *
      * @return Response
      */
     public function constructionSiteAction(Request $request, ConstructionSiteTransformer $constructionSiteTransformer)
@@ -134,9 +125,6 @@ class EditController extends ApiController
 
     /**
      * @Route("/craftsmen", name="api_edit_craftsmen")
-     *
-     * @param Request              $request
-     * @param CraftsmanTransformer $craftsmanTransformer
      *
      * @return Response
      */
@@ -158,9 +146,6 @@ class EditController extends ApiController
 
     /**
      * @Route("/map_file/check", name="api_edit_map_file_check", methods={"POST"})
-     *
-     * @param Request                $request
-     * @param UploadServiceInterface $uploadService
      *
      * @throws Exception
      *
@@ -186,10 +171,6 @@ class EditController extends ApiController
 
     /**
      * @Route("/map_file", name="api_edit_map_file_post", methods={"POST"})
-     *
-     * @param Request                $request
-     * @param MapFileTransformer     $mapFileTransformer
-     * @param UploadServiceInterface $uploadService
      *
      * @throws Exception
      *
@@ -229,10 +210,6 @@ class EditController extends ApiController
     /**
      * @Route("/construction_site/image", name="api_edit_construction_site_image", methods={"POST"})
      *
-     * @param Request                $request
-     * @param MapFileTransformer     $mapFileTransformer
-     * @param UploadServiceInterface $uploadService
-     *
      * @throws Exception
      *
      * @return Response
@@ -269,10 +246,6 @@ class EditController extends ApiController
 
     /**
      * @Route("/map_file/{mapFile}", name="api_edit_map_file_put", methods={"PUT"})
-     *
-     * @param Request            $request
-     * @param MapFile            $mapFile
-     * @param MapFileTransformer $mapFileTransformer
      *
      * @throws Exception
      *
@@ -322,9 +295,6 @@ class EditController extends ApiController
     /**
      * @Route("/map", name="api_edit_map_post", methods={"POST"})
      *
-     * @param Request        $request
-     * @param MapTransformer $mapTransformer
-     *
      * @throws Exception
      *
      * @return Response
@@ -357,8 +327,6 @@ class EditController extends ApiController
     /**
      * @Route("/construction_site/save", name="api_edit_construction_site_save", methods={"PUT"})
      *
-     * @param Request $request
-     *
      * @throws Exception
      *
      * @return Response
@@ -384,10 +352,6 @@ class EditController extends ApiController
 
     /**
      * @Route("/map/{map}", name="api_edit_map_put", methods={"PUT"})
-     *
-     * @param Request        $request
-     * @param Map            $map
-     * @param MapTransformer $mapTransformer
      *
      * @throws Exception
      *
@@ -422,9 +386,6 @@ class EditController extends ApiController
 
     /**
      * @Route("/map/{map}", name="api_edit_map_delete", methods={"DELETE"})
-     *
-     * @param Request $request
-     * @param Map     $map
      *
      * @throws Exception
      *
@@ -465,9 +426,6 @@ class EditController extends ApiController
     /**
      * @Route("/craftsman", name="api_edit_craftsman_post", methods={"POST"})
      *
-     * @param Request              $request
-     * @param CraftsmanTransformer $craftsmanTransformer
-     *
      * @throws Exception
      *
      * @return Response
@@ -500,10 +458,6 @@ class EditController extends ApiController
 
     /**
      * @Route("/craftsman/{craftsman}", name="api_edit_craftsman_put", methods={"PUT"})
-     *
-     * @param Request              $request
-     * @param Craftsman            $craftsman
-     * @param CraftsmanTransformer $craftsmanTransformer
      *
      * @throws Exception
      *
@@ -538,9 +492,6 @@ class EditController extends ApiController
 
     /**
      * @Route("/craftsman/{craftsman}", name="api_edit_craftsman_delete", methods={"DELETE"})
-     *
-     * @param Request   $request
-     * @param Craftsman $craftsman
      *
      * @throws Exception
      *
@@ -580,8 +531,6 @@ class EditController extends ApiController
     }
 
     /**
-     * @param UpdateMap $updateMap
-     * @param Map       $entity
      * @param $errorResponse
      *
      * @throws Exception
@@ -652,9 +601,6 @@ class EditController extends ApiController
     }
 
     /**
-     * @param UpdateConstructionSite $updateConstructionSite
-     * @param ConstructionSite       $entity
-     *
      * @return bool
      */
     private function writeIntoConstructionSiteEntity(UpdateConstructionSite $updateConstructionSite, ConstructionSite $entity)
@@ -667,9 +613,6 @@ class EditController extends ApiController
     }
 
     /**
-     * @param UpdateCraftsman $updateCraftsman
-     * @param Craftsman       $entity
-     *
      * @return bool
      */
     private function writeIntoCraftsmanEntity(UpdateCraftsman $updateCraftsman, Craftsman $entity)

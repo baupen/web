@@ -23,8 +23,6 @@ class PublicIssueTransformer
 
     /**
      * PublicIssueTransformer constructor.
-     *
-     * @param IssueTransformer $issueTransformer
      */
     public function __construct(IssueTransformer $issueTransformer)
     {

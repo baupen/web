@@ -13,14 +13,8 @@ namespace App\Service\Report\IssueReport\Interfaces;
 
 interface PrinterInterface
 {
-    /**
-     * @param string $title
-     */
     public function printTitle(string $title);
 
-    /**
-     * @param string $paragraph
-     */
     public function printParagraph(string $paragraph);
 
     /**
@@ -28,19 +22,9 @@ interface PrinterInterface
      */
     public function printKeyValueParagraph(array $keyValues);
 
-    /**
-     * @param string $header
-     */
     public function printRegionHeader(string $header);
 
-    /**
-     * @param string $filePath
-     */
     public function printImage(string $filePath);
 
-    /**
-     * @param string $imagePath
-     * @param int    $number
-     */
     public function printIssueImage(string $imagePath, int $number);
 }

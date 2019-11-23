@@ -25,33 +25,21 @@ class SetStatusRequest extends IssueIdsRequest
      */
     private $reviewedStatusSet;
 
-    /**
-     * @return bool
-     */
     public function isRespondedStatusSet(): bool
     {
         return $this->respondedStatusSet;
     }
 
-    /**
-     * @param bool $respondedStatusSet
-     */
     public function setRespondedStatusSet(bool $respondedStatusSet): void
     {
         $this->respondedStatusSet = $respondedStatusSet;
     }
 
-    /**
-     * @return bool
-     */
     public function isReviewedStatusSet(): bool
     {
         return $this->reviewedStatusSet;
     }
 
-    /**
-     * @param bool $reviewedStatusSet
-     */
     public function setReviewedStatusSet(bool $reviewedStatusSet): void
     {
         $this->reviewedStatusSet = $reviewedStatusSet;

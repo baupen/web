@@ -16,9 +16,6 @@ use App\Entity\Note;
 class NoteTransformer
 {
     /**
-     * @param Note     $entity
-     * @param callable $canEditCallable
-     *
      * @return \App\Api\Entity\Base\Note
      */
     public function toApi(Note $entity, callable $canEditCallable)
@@ -34,10 +31,6 @@ class NoteTransformer
         return $note;
     }
 
-    /**
-     * @param \App\Api\Entity\Base\Note $note
-     * @param Note                      $entity
-     */
     public function fromApi(\App\Api\Entity\Base\Note $note, Note $entity)
     {
         $entity->setContent($note->getContent());

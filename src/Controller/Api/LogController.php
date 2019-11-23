@@ -27,9 +27,6 @@ class LogController extends ApiController
     /**
      * @Route("/error", name="api_log_error", methods={"POST"})
      *
-     * @param Request         $request
-     * @param LoggerInterface $logger
-     *
      * @return Response
      */
     public function errorAction(Request $request, LoggerInterface $logger)

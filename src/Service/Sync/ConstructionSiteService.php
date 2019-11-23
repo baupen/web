@@ -45,11 +45,6 @@ class ConstructionSiteService implements ConstructionSiteServiceInterface
 
     /**
      * ConstructionSiteService constructor.
-     *
-     * @param PathServiceInterface        $pathService
-     * @param DisplayNameServiceInterface $displayNameService
-     * @param MapServiceInterface         $mapSyncService
-     * @param FileServiceInterface        $fileService
      */
     public function __construct(PathServiceInterface $pathService, DisplayNameServiceInterface $displayNameService, MapServiceInterface $mapSyncService, FileServiceInterface $fileService)
     {
@@ -59,10 +54,6 @@ class ConstructionSiteService implements ConstructionSiteServiceInterface
         $this->fileService = $fileService;
     }
 
-    /**
-     * @param SyncTransaction $syncTransaction
-     * @param string          $directory
-     */
     public function addConstructionSite(SyncTransaction $syncTransaction, string $directory)
     {
         $folderName = mb_substr($directory, mb_strrpos($directory, DIRECTORY_SEPARATOR) + 1);
@@ -74,10 +65,6 @@ class ConstructionSiteService implements ConstructionSiteServiceInterface
         $this->syncConstructionSite($syncTransaction, $constructionSite);
     }
 
-    /**
-     * @param SyncTransaction  $syncTransaction
-     * @param ConstructionSite $constructionSite
-     */
     public function syncConstructionSite(SyncTransaction $syncTransaction, ConstructionSite $constructionSite)
     {
         /**
@@ -100,7 +87,6 @@ class ConstructionSiteService implements ConstructionSiteServiceInterface
     }
 
     /**
-     * @param SyncTransaction         $syncTransaction
      * @param ConstructionSiteImage[] $constructionSiteImages
      */
     private function refreshConstructionSiteImageFileNames(SyncTransaction $syncTransaction, array $constructionSiteImages)
@@ -115,8 +101,6 @@ class ConstructionSiteService implements ConstructionSiteServiceInterface
     }
 
     /**
-     * @param SyncTransaction         $syncTransaction
-     * @param ConstructionSite        $constructionSite
      * @param ConstructionSiteImage[] $constructionSiteImages
      */
     private function chooseMostAppropriateImageForConstructionSite(SyncTransaction $syncTransaction, ConstructionSite $constructionSite, array $constructionSiteImages)
@@ -143,8 +127,6 @@ class ConstructionSiteService implements ConstructionSiteServiceInterface
     }
 
     /**
-     * @param SyncTransaction         $syncTransaction
-     * @param ConstructionSite        $constructionSite
      * @param ConstructionSiteImage[] $constructionSiteImages
      */
     private function findNewConstructionSiteImages(SyncTransaction $syncTransaction, ConstructionSite $constructionSite, array &$constructionSiteImages)

@@ -47,8 +47,6 @@ class PathService implements PathServiceInterface
 
     /**
      * PathService constructor.
-     *
-     * @param KernelInterface $kernel
      */
     public function __construct(KernelInterface $kernel)
     {
@@ -69,8 +67,6 @@ class PathService implements PathServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     public function getFolderForConstructionSiteImage(ConstructionSite $constructionSite)
@@ -79,8 +75,6 @@ class PathService implements PathServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     public function getFolderForMapFile(ConstructionSite $constructionSite)
@@ -89,8 +83,6 @@ class PathService implements PathServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     public function getFolderForIssueImage(ConstructionSite $constructionSite)
@@ -99,8 +91,6 @@ class PathService implements PathServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     public function getTransientFolderForConstructionSiteImage(ConstructionSite $constructionSite)
@@ -109,8 +99,6 @@ class PathService implements PathServiceInterface
     }
 
     /**
-     * @param Map $map
-     *
      * @return string
      */
     public function getTransientFolderForMapFile(Map $map)
@@ -119,8 +107,6 @@ class PathService implements PathServiceInterface
     }
 
     /**
-     * @param Issue $issue
-     *
      * @return string
      */
     public function getTransientFolderForIssueImage(Issue $issue)
@@ -129,8 +115,6 @@ class PathService implements PathServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     public function getTransientFolderForReports(ConstructionSite $constructionSite)
@@ -179,8 +163,6 @@ class PathService implements PathServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     private function getFolderForConstructionSite(ConstructionSite $constructionSite)
@@ -189,8 +171,6 @@ class PathService implements PathServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     private function getTransientFolderForConstructionSite(ConstructionSite $constructionSite)

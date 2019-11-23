@@ -48,49 +48,31 @@ class Note extends BaseEntity
      */
     private $constructionSite;
 
-    /**
-     * @return string
-     */
     public function getContent(): string
     {
         return $this->content;
     }
 
-    /**
-     * @param string $content
-     */
     public function setContent(string $content): void
     {
         $this->content = $content;
     }
 
-    /**
-     * @return ConstructionManager
-     */
     public function getCreatedBy(): ConstructionManager
     {
         return $this->createdBy;
     }
 
-    /**
-     * @param ConstructionManager $createdBy
-     */
     public function setCreatedBy(ConstructionManager $createdBy): void
     {
         $this->createdBy = $createdBy;
     }
 
-    /**
-     * @return ConstructionSite
-     */
     public function getConstructionSite(): ConstructionSite
     {
         return $this->constructionSite;
     }
 
-    /**
-     * @param ConstructionSite $constructionSite
-     */
     public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;

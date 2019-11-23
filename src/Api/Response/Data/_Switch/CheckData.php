@@ -18,17 +18,11 @@ class CheckData
      */
     private $constructionSiteNameTaken;
 
-    /**
-     * @return bool
-     */
     public function isConstructionSiteNameTaken(): bool
     {
         return $this->constructionSiteNameTaken;
     }
 
-    /**
-     * @param bool $constructionSiteNameTaken
-     */
     public function setConstructionSiteNameTaken(bool $constructionSiteNameTaken): void
     {
         $this->constructionSiteNameTaken = $constructionSiteNameTaken;

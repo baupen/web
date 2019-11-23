@@ -31,19 +31,12 @@ class IssueReportService implements IssueReportServiceInterface
 
     /**
      * IssueReportService constructor.
-     *
-     * @param TranslatorInterface $translator
      */
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
 
-    /**
-     * @param LayoutFactoryInterface $layoutFactory
-     * @param PrintFactoryInterface  $printFactory
-     * @param IntroductionContent    $introductionContent
-     */
     public function addIntroduction(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, IntroductionContent $introductionContent)
     {
         //three or two column layout
@@ -73,11 +66,6 @@ class IssueReportService implements IssueReportServiceInterface
         $columnedLayout->getTransaction()->commit();
     }
 
-    /**
-     * @param LayoutFactoryInterface  $layoutFactory
-     * @param PrintFactoryInterface   $printFactory
-     * @param AggregatedIssuesContent $aggregatedIssuesContent
-     */
     public function addAggregatedIssueTable(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, AggregatedIssuesContent $aggregatedIssuesContent)
     {
         $layout = $layoutFactory->createFullWidthLayout();
@@ -111,11 +99,6 @@ class IssueReportService implements IssueReportServiceInterface
         $this->printTable($layoutFactory, $printFactory, $tableColumnConfig, $tableHeader, $tableContent);
     }
 
-    /**
-     * @param LayoutFactoryInterface $layoutFactory
-     * @param PrintFactoryInterface  $printFactory
-     * @param MapContent             $mapContent
-     */
     public function addMap(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, MapContent $mapContent)
     {
         $groupLayout = $layoutFactory->createGroupLayout();
@@ -152,11 +135,9 @@ class IssueReportService implements IssueReportServiceInterface
     }
 
     /**
-     * @param LayoutFactoryInterface $layoutFactory
-     * @param PrintFactoryInterface  $printFactory
-     * @param ColumnConfiguration[]  $tableColumnConfig
-     * @param string[]               $tableHeader
-     * @param string[][]             $tableContent
+     * @param ColumnConfiguration[] $tableColumnConfig
+     * @param string[]              $tableHeader
+     * @param string[][]            $tableContent
      */
     private function printTable(LayoutFactoryInterface $layoutFactory, PrintFactoryInterface $printFactory, array $tableColumnConfig, array $tableHeader, array $tableContent)
     {
@@ -184,9 +165,7 @@ class IssueReportService implements IssueReportServiceInterface
     }
 
     /**
-     * @param TableRowLayoutInterface $row
-     * @param PrintFactoryInterface   $printFactory
-     * @param string[]                $rowContent
+     * @param string[] $rowContent
      */
     private function printTableRow(TableRowLayoutInterface $row, PrintFactoryInterface $printFactory, array $rowContent)
     {

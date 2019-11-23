@@ -27,9 +27,6 @@ class UserTransformer
     }
 
     /**
-     * @param ConstructionManager $constructionManager
-     * @param string              $authenticationToken
-     *
      * @return User
      */
     public function toApi(ConstructionManager $constructionManager, string $authenticationToken)

@@ -46,10 +46,7 @@ class CraftsmanController extends BaseDoctrineController
      * @Route("/map/{map}/{file}/{hash}/{size}", name="external_image_craftsman_map")
      *
      * @param $identifier
-     * @param Map     $map
-     * @param MapFile $file
      * @param $size
-     * @param ImageServiceInterface $imageService
      *
      * @return Response
      */
@@ -87,10 +84,7 @@ class CraftsmanController extends BaseDoctrineController
      * @Route("/issue/{issue}/{image}/{size}", name="external_image_craftsman_issue")
      *
      * @param $identifier
-     * @param Issue      $issue
-     * @param IssueImage $image
      * @param $size
-     * @param ImageServiceInterface $imageService
      *
      * @return Response
      */

@@ -1,6 +1,7 @@
 // vuejs & plugins
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
+import BootstrapVue from 'bootstrap-vue';
 
 // components
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -27,6 +28,7 @@ Vue.config.productionTip = false;
 if (document.getElementById('share-craftsman') != null) {
   // share plugins
   Vue.use(VueI18n);
+  Vue.use(BootstrapVue);
 
   // share components
   Vue.component('font-awesome-icon', FontAwesomeIcon);

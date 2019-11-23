@@ -16,8 +16,6 @@ use App\Entity\Map;
 interface MapFileServiceInterface
 {
     /**
-     * @param Map $entity
-     *
      * @return string|null
      */
     public function getForMobileDevice(Map $entity);

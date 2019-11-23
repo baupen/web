@@ -39,10 +39,7 @@ class BaseLoginController extends BaseFormController
     }
 
     /**
-     * @param Request       $request
-     * @param FormInterface $loginForm
-     * @param callable      $findEntityCallable
-     * @param UserTrait     $entity
+     * @param UserTrait $entity
      *
      * @return FormInterface
      */
@@ -94,10 +91,6 @@ class BaseLoginController extends BaseFormController
         return $loginForm;
     }
 
-    /**
-     * @param Request             $request
-     * @param ConstructionManager $user
-     */
     protected function loginUser(Request $request, ConstructionManager $user)
     {
         //login programmatically

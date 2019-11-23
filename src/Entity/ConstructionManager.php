@@ -87,49 +87,31 @@ class ConstructionManager extends BaseEntity implements UserInterface
         $this->constructionSites = new ArrayCollection();
     }
 
-    /**
-     * @return string|null
-     */
     public function getGivenName(): ?string
     {
         return $this->givenName;
     }
 
-    /**
-     * @param string|null $givenName
-     */
     public function setGivenName(?string $givenName): void
     {
         $this->givenName = $givenName;
     }
 
-    /**
-     * @return string|null
-     */
     public function getFamilyName(): ?string
     {
         return $this->familyName;
     }
 
-    /**
-     * @param string|null $familyName
-     */
     public function setFamilyName(?string $familyName): void
     {
         $this->familyName = $familyName;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPhone(): ?string
     {
         return $this->phone;
     }
 
-    /**
-     * @param string|null $phone
-     */
     public function setPhone(?string $phone): void
     {
         $this->phone = $phone;
@@ -176,49 +158,31 @@ class ConstructionManager extends BaseEntity implements UserInterface
         return ['ROLE_USER'];
     }
 
-    /**
-     * @return ConstructionSite|null
-     */
     public function getActiveConstructionSite(): ?ConstructionSite
     {
         return $this->activeConstructionSite;
     }
 
-    /**
-     * @param ConstructionSite|null $activeConstructionSite
-     */
     public function setActiveConstructionSite(?ConstructionSite $activeConstructionSite): void
     {
         $this->activeConstructionSite = $activeConstructionSite;
     }
 
-    /**
-     * @return string
-     */
     public function getLocale(): string
     {
         return $this->locale;
     }
 
-    /**
-     * @param string $locale
-     */
     public function setLocale(string $locale): void
     {
         $this->locale = $locale;
     }
 
-    /**
-     * @return bool
-     */
     public function getIsTrialAccount(): bool
     {
         return $this->isTrialAccount;
     }
 
-    /**
-     * @param bool $isTrialAccount
-     */
     public function setIsTrialAccount(bool $isTrialAccount): void
     {
         $this->isTrialAccount = $isTrialAccount;

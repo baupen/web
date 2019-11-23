@@ -31,9 +31,6 @@ class AuthenticatedRequest extends AbstractRequest
         return $this->authenticationToken;
     }
 
-    /**
-     * @param string $authenticationToken
-     */
     public function setAuthenticationToken(string $authenticationToken): void
     {
         $this->authenticationToken = $authenticationToken;

@@ -53,9 +53,8 @@ abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, C
     /**
      * create random instances.
      *
-     * @param ObjectManager $manager
-     * @param callable      $loader
-     * @param int           $count
+     * @param callable $loader
+     * @param int      $count
      *
      * @return array
      */

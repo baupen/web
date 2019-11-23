@@ -35,65 +35,41 @@ class Note extends BaseEntity
      */
     private $canEdit;
 
-    /**
-     * @return string
-     */
     public function getContent(): string
     {
         return $this->content;
     }
 
-    /**
-     * @param string $content
-     */
     public function setContent(string $content): void
     {
         $this->content = $content;
     }
 
-    /**
-     * @return DateTime
-     */
     public function getTimestamp(): DateTime
     {
         return $this->timestamp;
     }
 
-    /**
-     * @param DateTime $timestamp
-     */
     public function setTimestamp(DateTime $timestamp): void
     {
         $this->timestamp = $timestamp;
     }
 
-    /**
-     * @return string
-     */
     public function getAuthorName(): string
     {
         return $this->authorName;
     }
 
-    /**
-     * @param string $authorName
-     */
     public function setAuthorName(string $authorName): void
     {
         $this->authorName = $authorName;
     }
 
-    /**
-     * @return bool
-     */
     public function getCanEdit(): bool
     {
         return $this->canEdit;
     }
 
-    /**
-     * @param bool $canEdit
-     */
     public function setCanEdit(bool $canEdit): void
     {
         $this->canEdit = $canEdit;

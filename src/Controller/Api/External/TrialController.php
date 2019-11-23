@@ -30,10 +30,6 @@ class TrialController extends ExternalApiController
     /**
      * @Route("/create_account", name="api_external_trial_create_account", methods={"POST"})
      *
-     * @param Request               $request
-     * @param TrialUserTransformer  $trialUserTransformer
-     * @param TrialServiceInterface $trialService
-     *
      * @return Response
      */
     public function trialAction(Request $request, TrialUserTransformer $trialUserTransformer, TrialServiceInterface $trialService)

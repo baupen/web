@@ -55,17 +55,11 @@ class Map extends BaseEntity
      */
     private $parentID;
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
@@ -103,17 +97,11 @@ class Map extends BaseEntity
         $this->issues = $issues;
     }
 
-    /**
-     * @return File|null
-     */
     public function getFile(): ?File
     {
         return $this->file;
     }
 
-    /**
-     * @param File|null $file
-     */
     public function setFile(?File $file): void
     {
         $this->file = $file;
@@ -135,49 +123,31 @@ class Map extends BaseEntity
         $this->sectors = $sectors;
     }
 
-    /**
-     * @return Frame|null
-     */
     public function getSectorFrame(): ?Frame
     {
         return $this->sectorFrame;
     }
 
-    /**
-     * @param Frame|null $sectorFrame
-     */
     public function setSectorFrame(?Frame $sectorFrame): void
     {
         $this->sectorFrame = $sectorFrame;
     }
 
-    /**
-     * @return string
-     */
     public function getConstructionSiteID(): string
     {
         return $this->constructionSiteID;
     }
 
-    /**
-     * @param string $constructionSiteID
-     */
     public function setConstructionSiteID(string $constructionSiteID): void
     {
         $this->constructionSiteID = $constructionSiteID;
     }
 
-    /**
-     * @return string|null
-     */
     public function getParentID(): ?string
     {
         return $this->parentID;
     }
 
-    /**
-     * @param string|null $parentID
-     */
     public function setParentID(?string $parentID): void
     {
         $this->parentID = $parentID;

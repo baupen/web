@@ -40,81 +40,51 @@ class PublicIssue extends Issue
      */
     private $imageFull;
 
-    /**
-     * @return DateTime
-     */
     public function getRegisteredAt(): DateTime
     {
         return $this->registeredAt;
     }
 
-    /**
-     * @param DateTime $registeredAt
-     */
     public function setRegisteredAt(DateTime $registeredAt): void
     {
         $this->registeredAt = $registeredAt;
     }
 
-    /**
-     * @return string
-     */
     public function getRegistrationByName(): string
     {
         return $this->registrationByName;
     }
 
-    /**
-     * @param string $registrationByName
-     */
     public function setRegistrationByName(string $registrationByName): void
     {
         $this->registrationByName = $registrationByName;
     }
 
-    /**
-     * @return int
-     */
     public function getNumber(): int
     {
         return $this->number;
     }
 
-    /**
-     * @param int $number
-     */
     public function setNumber(int $number): void
     {
         $this->number = $number;
     }
 
-    /**
-     * @return string|null
-     */
     public function getImageShareView(): ?string
     {
         return $this->imageShareView;
     }
 
-    /**
-     * @param string|null $imageShareView
-     */
     public function setImageShareView(?string $imageShareView): void
     {
         $this->imageShareView = $imageShareView;
     }
 
-    /**
-     * @return string|null
-     */
     public function getImageFull(): ?string
     {
         return $this->imageFull;
     }
 
-    /**
-     * @param string|null $imageFull
-     */
     public function setImageFull(?string $imageFull): void
     {
         $this->imageFull = $imageFull;

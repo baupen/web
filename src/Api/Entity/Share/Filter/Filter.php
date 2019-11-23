@@ -18,17 +18,11 @@ class Filter
      */
     private $reportUrl;
 
-    /**
-     * @return string
-     */
     public function getReportUrl(): string
     {
         return $this->reportUrl;
     }
 
-    /**
-     * @param string $reportUrl
-     */
     public function setReportUrl(string $reportUrl): void
     {
         $this->reportUrl = $reportUrl;

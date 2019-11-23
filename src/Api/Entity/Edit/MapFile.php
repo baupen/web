@@ -18,17 +18,11 @@ class MapFile extends \App\Api\Entity\Base\MapFile
      */
     private $issueCount;
 
-    /**
-     * @return int
-     */
     public function getIssueCount(): int
     {
         return $this->issueCount;
     }
 
-    /**
-     * @param int $issueCount
-     */
     public function setIssueCount(int $issueCount): void
     {
         $this->issueCount = $issueCount;

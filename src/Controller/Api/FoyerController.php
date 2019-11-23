@@ -56,9 +56,6 @@ class FoyerController extends ApiController
     /**
      * @Route("/issue/list", name="api_foyer_issues_list", methods={"POST"})
      *
-     * @param Request          $request
-     * @param IssueTransformer $issueTransformer
-     *
      * @return Response
      */
     public function issueListAction(Request $request, IssueTransformer $issueTransformer)
@@ -83,9 +80,6 @@ class FoyerController extends ApiController
     /**
      * @Route("/craftsman/list", name="api_foyer_craftsman_list", methods={"POST"})
      *
-     * @param Request              $request
-     * @param CraftsmanTransformer $craftsmanTransformer
-     *
      * @return Response
      */
     public function craftsmanListAction(Request $request, CraftsmanTransformer $craftsmanTransformer)
@@ -103,10 +97,6 @@ class FoyerController extends ApiController
 
     /**
      * @Route("/issue/update", name="api_foyer_issue_update", methods={"POST"})
-     *
-     * @param Request                $request
-     * @param UpdateIssueTransformer $updateIssueTransformer
-     * @param IssueTransformer       $issueTransformer
      *
      * @return Response
      */
@@ -153,10 +143,6 @@ class FoyerController extends ApiController
     /**
      * @Route("/issue/image", name="api_foyer_issue_image", methods={"POST"})
      *
-     * @param Request                $request
-     * @param IssueTransformer       $issueTransformer
-     * @param UploadServiceInterface $uploadService
-     *
      * @throws Exception
      *
      * @return Response
@@ -202,9 +188,6 @@ class FoyerController extends ApiController
     /**
      * @Route("/issue/delete", name="api_foyer_issue_delete", methods={"POST"})
      *
-     * @param Request               $request
-     * @param BaseEntityTransformer $baseEntityTransformer
-     *
      * @return Response
      */
     public function issueDeleteAction(Request $request, BaseEntityTransformer $baseEntityTransformer)
@@ -224,9 +207,6 @@ class FoyerController extends ApiController
 
     /**
      * @Route("/issue/confirm", name="api_foyer_issue_confirm", methods={"POST"})
-     *
-     * @param Request                $request
-     * @param NumberIssueTransformer $numberIssueTransformer
      *
      * @throws NonUniqueResultException
      * @throws Exception
@@ -272,7 +252,6 @@ class FoyerController extends ApiController
     }
 
     /**
-     * @param Request $request
      * @param $entities
      * @param $errorResponse
      * @param $constructionSite
@@ -305,7 +284,6 @@ class FoyerController extends ApiController
     }
 
     /**
-     * @param Request $request
      * @param $issues
      * @param $entities
      * @param $errorResponse
@@ -340,7 +318,6 @@ class FoyerController extends ApiController
     }
 
     /**
-     * @param Request $request
      * @param $entity
      * @param $errorResponse
      * @param $constructionSite

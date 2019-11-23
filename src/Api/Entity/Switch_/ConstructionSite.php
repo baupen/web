@@ -45,33 +45,21 @@ class ConstructionSite extends \App\Api\Entity\Base\ConstructionSite
      */
     private $switchLink;
 
-    /**
-     * @return string|null
-     */
     public function getImageMedium(): ?string
     {
         return $this->imageMedium;
     }
 
-    /**
-     * @param string|null $imageMedium
-     */
     public function setImageMedium(?string $imageMedium): void
     {
         $this->imageMedium = $imageMedium;
     }
 
-    /**
-     * @return bool
-     */
     public function getIsConstructionManagerOf(): bool
     {
         return $this->isConstructionManagerOf;
     }
 
-    /**
-     * @param bool $isConstructionManagerOf
-     */
     public function setIsConstructionManagerOf(bool $isConstructionManagerOf): void
     {
         $this->isConstructionManagerOf = $isConstructionManagerOf;
@@ -109,33 +97,21 @@ class ConstructionSite extends \App\Api\Entity\Base\ConstructionSite
         $this->otherConstructionManagers = $constructionSiteManagers;
     }
 
-    /**
-     * @return DateTime
-     */
     public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
-    /**
-     * @param DateTime $createdAt
-     */
     public function setCreatedAt(DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSwitchLink(): ?string
     {
         return $this->switchLink;
     }
 
-    /**
-     * @param string|null $switchLink
-     */
     public function setSwitchLink(?string $switchLink): void
     {
         $this->switchLink = $switchLink;

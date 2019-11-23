@@ -103,12 +103,6 @@ class BaseController extends AbstractController
      * Renders a view.
      *
      * @final
-     *
-     * @param string        $view
-     * @param array         $parameters
-     * @param Response|null $response
-     *
-     * @return Response
      */
     protected function render(string $view, array $parameters = [], Response $response = null): Response
     {

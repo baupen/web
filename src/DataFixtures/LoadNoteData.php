@@ -35,8 +35,6 @@ class LoadNoteData extends BaseFixture
     /**
      * Load data fixtures with the passed EntityManager.
      *
-     * @param ObjectManager $manager
-     *
      * @throws BadMethodCallException
      */
     public function load(ObjectManager $manager)

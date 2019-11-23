@@ -19,22 +19,16 @@ use PdfGenerator\Transaction\Base\DrawableTransactionInterface;
 interface PrintFactoryInterface
 {
     /**
-     * @param MetaData $pageLayoutContent
-     *
      * @return PdfPageLayoutInterface
      */
     public function getLayout(MetaData $pageLayoutContent);
 
     /**
-     * @param PrintableLayoutInterface $printableLayout
-     *
      * @return PrinterInterface
      */
     public function getPrinter(PrintableLayoutInterface $printableLayout);
 
     /**
-     * @param DrawableTransactionInterface $drawableTransaction
-     *
      * @return DrawerInterface
      */
     public function getDrawer(DrawableTransactionInterface $drawableTransaction);

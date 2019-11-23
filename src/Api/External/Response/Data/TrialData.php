@@ -22,17 +22,12 @@ class TrialData
 
     /**
      * LoginData constructor.
-     *
-     * @param TrialUser $user
      */
     public function __construct(TrialUser $user)
     {
         $this->trialUser = $user;
     }
 
-    /**
-     * @return TrialUser
-     */
     public function getTrialUser(): TrialUser
     {
         return $this->trialUser;

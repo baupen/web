@@ -41,9 +41,6 @@ class ReadController extends ExternalApiController
     /**
      * @Route("", name="api_external_read", methods={"POST"})
      *
-     * @param Request            $request
-     * @param TransformerFactory $transformerFactory
-     *
      * @throws ORMException
      * @throws Exception
      *
@@ -79,11 +76,6 @@ class ReadController extends ExternalApiController
     }
 
     /**
-     * @param TransformerFactory  $transformerFactory
-     * @param ReadRequest         $readRequest
-     * @param ConstructionManager $constructionManager
-     * @param ReadData            $readData
-     *
      * @throws ORMException
      * @throws Exception
      * @throws Exception

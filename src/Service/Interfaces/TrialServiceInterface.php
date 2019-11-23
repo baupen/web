@@ -18,9 +18,6 @@ interface TrialServiceInterface
     /**
      * creates a trial account with pre-filled data.
      *
-     * @param string|null $proposedGivenName
-     * @param string|null $proposedFamilyName
-     *
      * @return ConstructionManager
      */
     public function createTrialAccount(?string $proposedGivenName = null, ?string $proposedFamilyName = null);

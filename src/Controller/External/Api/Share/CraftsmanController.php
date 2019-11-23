@@ -44,9 +44,7 @@ class CraftsmanController extends ApiController
     /**
      * @Route("/read", name="external_api_share_craftsman_read", methods={"GET"})
      *
-     * @param Request $request
      * @param $identifier
-     * @param CraftsmanTransformer $craftsmanTransformer
      *
      * @return Response
      */
@@ -67,7 +65,6 @@ class CraftsmanController extends ApiController
      * @Route("/maps/list", name="external_api_share_craftsman_maps_list", methods={"GET"})
      *
      * @param $identifier
-     * @param MapTransformer $mapTransformer
      *
      * @throws Exception
      *
@@ -105,7 +102,6 @@ class CraftsmanController extends ApiController
     /**
      * @Route("/issue/respond", name="external_api_share_craftsman_issue_respond", methods={"POST"})
      *
-     * @param Request $request
      * @param $identifier
      *
      * @throws Exception
@@ -140,7 +136,6 @@ class CraftsmanController extends ApiController
     /**
      * @Route("/issue/remove_response", name="external_api_share_craftsman_issue_remove_response", methods={"POST"})
      *
-     * @param Request $request
      * @param $identifier
      *
      * @throws Exception
@@ -187,7 +182,6 @@ class CraftsmanController extends ApiController
     }
 
     /**
-     * @param Request $request
      * @param $identifier
      * @param Craftsman $craftsman
      * @param $issue

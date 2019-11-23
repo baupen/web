@@ -26,33 +26,21 @@ class Issue extends PublicIssue
      */
     private $reviewedByName;
 
-    /**
-     * @return DateTime|null
-     */
     public function getReviewedAt(): ?DateTime
     {
         return $this->reviewedAt;
     }
 
-    /**
-     * @param DateTime|null $reviewedAt
-     */
     public function setReviewedAt(?DateTime $reviewedAt): void
     {
         $this->reviewedAt = $reviewedAt;
     }
 
-    /**
-     * @return string|null
-     */
     public function getReviewedByName(): ?string
     {
         return $this->reviewedByName;
     }
 
-    /**
-     * @param string|null $reviewedByName
-     */
     public function setReviewedByName(?string $reviewedByName): void
     {
         $this->reviewedByName = $reviewedByName;

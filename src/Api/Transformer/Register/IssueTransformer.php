@@ -23,8 +23,6 @@ class IssueTransformer extends BatchTransformer
 
     /**
      * CraftsmanTransformer constructor.
-     *
-     * @param \App\Api\Transformer\Foyer\IssueTransformer $issueTransformer
      */
     public function __construct(\App\Api\Transformer\Foyer\IssueTransformer $issueTransformer)
     {
