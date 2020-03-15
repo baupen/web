@@ -40,12 +40,11 @@
     "symfony/serializer": "^4.4",
     "symfony/swiftmailer-bundle": "^3.1",
     "symfony/translation": "^4.4",
-    "symfony/webpack-encore-pack": "^1.0",
+    "symfony/webpack-encore-bundle": "^1.7",
     "tecnickcom/tcpdf": "^6.2"
   },
   "require-dev": {
     "brainmaestro/composer-git-hooks": "^2.6",
-    "codacy/coverage": "^1.4",
     "deployer/deployer": "^6.1",
     "famoser/agnes": "^2.0",
     "friendsofphp/php-cs-fixer": "^2.7",
