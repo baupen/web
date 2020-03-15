@@ -19,7 +19,7 @@ services:
     exclude: '../src/{Entity,Migrations,Tests}'
 
   App\Service\EmailService:
-    arguments: ["@mailer", "@logger","@twig","%env(MAILER_SENDER)%", "%env(SUPPORT_EMAIL)%"]
+    arguments: ["@mailer", "@swiftmailer.mailer.default.transport.real", "@logger","@twig","%env(MAILER_SENDER)%", "%env(SUPPORT_EMAIL)%", '%env(MAILER_SSL_VALIDATION)%']
 
   App\Service\ImageService:
     public: true

@@ -38,6 +38,11 @@ class EmailService implements EmailServiceInterface
     private $supportEmail;
 
     /**
+     * @var string
+     */
+    private $sslValidation;
+
+    /**
      * @var Environment
      */
     private $twig;
@@ -48,15 +53,22 @@ class EmailService implements EmailServiceInterface
     private $logger;
 
     /**
+     * @var \Swift_Transport
+     */
+    private $transport;
+
+    /**
      * EmailService constructor.
      */
-    public function __construct(Swift_Mailer $mailer, LoggerInterface $logger, Environment $twig, string $mailerSender, string $supportEmail)
+    public function __construct(Swift_Mailer $mailer, \Swift_Transport $transport, LoggerInterface $logger, Environment $twig, string $mailerSender, string $supportEmail, string $sslValidation)
     {
         $this->mailer = $mailer;
+        $this->transport = $transport;
         $this->twig = $twig;
         $this->logger = $logger;
         $this->mailerSender = $mailerSender;
         $this->supportEmail = $supportEmail;
+        $this->sslValidation = $sslValidation;
     }
 
     /**
@@ -110,6 +122,12 @@ class EmailService implements EmailServiceInterface
 
                 return false;
             }
+        }
+
+        if ($this->sslValidation === 'disabled' && $this->transport instanceof \Swift_Transport_EsmtpTransport) {
+            $this->transport->setStreamOptions([
+                'ssl' => ['allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false],
+            ]);
         }
 
         //send message & check if at least one receiver was reached
