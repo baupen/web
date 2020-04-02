@@ -25,6 +25,7 @@ use App\Entity\Traits\IdTrait;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -115,15 +116,7 @@ WHERE cscm.construction_manager_id = :id';
         }
 
         //get updated / new buildings
-        $sql = 'SELECT DISTINCT s.id FROM construction_site s WHERE s.id IN ("' . implode('", "', $allValidIds) . '")';
-        $parameters = [];
-        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 's');
-
-        //execute query for updated
-        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
-        $query->setParameters($parameters);
-        /** @var IdTrait[] $updatedConstructionSites */
-        $updatedConstructionSites = $query->getResult();
+        $updatedConstructionSites = $this->getUpdatedInQuery('SELECT DISTINCT s.id FROM construction_site s WHERE s.id', $allValidIds, $knownIds, $resultSetMapping, $incompleteManager);
 
         //collect ids to retrieve
         $retrieveConstructionSiteIds = [];
@@ -145,25 +138,14 @@ WHERE cscm.construction_manager_id = :id';
         $resultSetMapping->addFieldResult('c', 'id', 'id');
 
         //get allowed craftsman ids
-        $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.construction_site_id IN ("' . implode('", "', $validConstructionSiteIds) . '")';
-        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
-        /** @var IdTrait[] $validCraftsmen */
-        $validCraftsmen = $query->getResult();
+        $validCraftsmen = $this->executeIdInQuery('SELECT DISTINCT c.id FROM craftsman c WHERE c.construction_site_id', $validConstructionSiteIds, $resultSetMapping, $incompleteManager);
         $this->filterIds($readRequest->getCraftsmen(), $validCraftsmen, $allValidIds, $removeIds, $knownIds);
 
         //set the removed/invalid craftsmen
         $readData->setRemovedCraftsmanIDs(array_keys($removeIds));
 
         //get updated / new craftsmen
-        $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.id IN ("' . implode('", "', $allValidIds) . '")';
-        $parameters = [];
-        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 'c');
-
-        //execute query for updated
-        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
-        $query->setParameters($parameters);
-        /** @var IdTrait[] $updatedCraftsmen */
-        $updatedCraftsmen = $query->getResult();
+        $updatedCraftsmen = $this->getUpdatedInQuery('SELECT DISTINCT c.id FROM craftsman c WHERE c.id', $allValidIds, $knownIds, $resultSetMapping, $incompleteManager);
 
         //collect ids to retrieve
         $retrieveCraftsmanIds = [];
@@ -184,25 +166,14 @@ WHERE cscm.construction_manager_id = :id';
         $resultSetMapping->addFieldResult('m', 'id', 'id');
 
         //get allowed craftsman ids
-        $sql = 'SELECT DISTINCT m.id FROM map m WHERE m.construction_site_id IN ("' . implode('", "', $validConstructionSiteIds) . '")';
-        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
-        /** @var IdTrait[] $validMaps */
-        $validMaps = $query->getResult();
+        $validMaps = $this->executeIdInQuery('SELECT DISTINCT m.id FROM map m WHERE m.construction_site_id', $validConstructionSiteIds, $resultSetMapping, $incompleteManager);
         $this->filterIds($readRequest->getMaps(), $validMaps, $allValidIds, $removeIds, $knownIds);
 
         //set the removed/invalid maps
         $readData->setRemovedMapIDs(array_keys($removeIds));
 
         //get updated / new maps
-        $sql = 'SELECT DISTINCT m.id FROM map m WHERE m.id IN ("' . implode('", "', $allValidIds) . '")';
-        $parameters = [];
-        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 'm');
-
-        //execute query for updated
-        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
-        $query->setParameters($parameters);
-        /** @var IdTrait[] $updatedMaps */
-        $updatedMaps = $query->getResult();
+        $updatedMaps = $this->getUpdatedInQuery('SELECT DISTINCT m.id FROM map m WHERE m.id', $allValidIds, $knownIds, $resultSetMapping, $incompleteManager);
 
         //collect ids to retrieve
         $retrieveMapIds = [];
@@ -223,26 +194,15 @@ WHERE cscm.construction_manager_id = :id';
         $resultSetMapping->addRootEntityFromClassMetadata(Issue::class, 'i');
         $resultSetMapping->addFieldResult('i', 'id', 'id');
 
-        //get allowed craftsman ids
-        $sql = 'SELECT DISTINCT i.id FROM issue i WHERE i.map_id IN ("' . implode('", "', $validMapIds) . '")';
-        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
-        /** @var IdTrait[] $validIssues */
-        $validIssues = $query->getResult();
+        //get allowed issue ids
+        $validIssues = $this->executeIdInQuery('SELECT DISTINCT i.id FROM issue i WHERE i.map_id', $validMapIds, $resultSetMapping, $incompleteManager);
         $this->filterIds($readRequest->getIssues(), $validIssues, $allValidIds, $removeIds, $knownIds);
 
         //set the removed/invalid issues
         $readData->setRemovedIssueIDs(array_keys($removeIds));
 
         //get updated / new issues
-        $sql = 'SELECT DISTINCT i.id FROM issue i WHERE i.id IN ("' . implode('", "', $allValidIds) . '")';
-        $parameters = [];
-        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 'i');
-
-        //execute query for updated
-        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
-        $query->setParameters($parameters);
-        /** @var IdTrait[] $updatedIssues */
-        $updatedIssues = $query->getResult();
+        $updatedIssues = $this->getUpdatedInQuery('SELECT DISTINCT i.id FROM issue i WHERE i.id', $allValidIds, $knownIds, $resultSetMapping, $incompleteManager);
 
         //collect ids to retrieve
         $retrieveIssueIds = [];
@@ -330,5 +290,38 @@ WHERE cscm.construction_manager_id = :id';
         }
 
         $sql .= ')';
+    }
+
+    /**
+     * @param $ids
+     *
+     * @return IdTrait[]
+     */
+    private function executeIdInQuery(string $query, $ids, ResultSetMapping $resultSetMapping, EntityManager $incompleteManager)
+    {
+        $sql = $query . ' IN ("' . implode('", "', $ids) . '")';
+        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
+        /* @var IdTrait[] $validCraftsmen */
+        return $query->getResult();
+    }
+
+    /**
+     * @param $allValidIds
+     * @param $knownIds
+     *
+     * @return IdTrait[]
+     */
+    private function getUpdatedInQuery(string $sql, $allValidIds, $knownIds, ResultSetMappingBuilder $resultSetMapping, EntityManager $incompleteManager)
+    {
+        $sql = $sql . ' IN ("' . implode('", "', $allValidIds) . '")';
+        $parameters = [];
+        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 'c');
+
+        //execute query for updated
+        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
+        $query->setParameters($parameters);
+
+        /* @var IdTrait[] $updatedCraftsmen */
+        return $query->getResult();
     }
 }
