@@ -232,7 +232,7 @@ WHERE cscm.construction_manager_id = :id';
      *
      * @return IdTrait[]
      */
-    private function executeIdInQuery(string $baseQuery, $ids, ResultSetMapping $resultSetMapping, EntityManager $incompleteManager)
+    private function executeIdInQuery(string $baseQuery, array $ids, ResultSetMapping $resultSetMapping, EntityManager $incompleteManager)
     {
         $chuncks = array_chunk($ids, self::MAX_VARIABLE_NUMBER);
         $result = [];
@@ -252,7 +252,7 @@ WHERE cscm.construction_manager_id = :id';
      *
      * @return IdTrait[]
      */
-    private function getUpdated(string $baseQuery, $tableShort, $allValidIds, $knownIds, ResultSetMappingBuilder $resultSetMapping, EntityManager $incompleteManager)
+    private function getUpdated(string $baseQuery, string $tableShort, array $allValidIds, array $knownIds, ResultSetMappingBuilder $resultSetMapping, EntityManager $incompleteManager)
     {
         $result = [];
         $existing = [];
