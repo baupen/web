@@ -44,8 +44,8 @@ class ReadController extends ExternalApiController
     /**
      * @Route("", name="api_external_read", methods={"POST"})
      *
-     * @throws Exception
      * @throws ORMException
+     * @throws Exception
      *
      * @return Response
      */
@@ -122,7 +122,7 @@ WHERE cscm.construction_manager_id = :id';
 
         $readData->setChangedConstructionSites(
             $transformerFactory->getBuildingTransformer()->toApiMultiple(
-                $manager->getRepository(ConstructionSite::class)->findBy(['id' => $retrieveConstructionSiteIds])
+                $this->findById($manager, ConstructionSite::class, $retrieveConstructionSiteIds)
             )
         );
         $validConstructionSiteIds = $allValidIds;
@@ -145,7 +145,7 @@ WHERE cscm.construction_manager_id = :id';
 
         $readData->setChangedCraftsmen(
             $transformerFactory->getCraftsmanTransformer()->toApiMultiple(
-                $manager->getRepository(Craftsman::class)->findBy(['id' => $retrieveCraftsmanIds])
+                $this->findById($manager, Craftsman::class, $retrieveCraftsmanIds)
             )
         );
 
@@ -167,7 +167,7 @@ WHERE cscm.construction_manager_id = :id';
 
         $readData->setChangedMaps(
             $transformerFactory->getMapTransformer()->toApiMultiple(
-                $manager->getRepository(Map::class)->findBy(['id' => $retrieveMapIds])
+                $this->findById($manager, Map::class, $retrieveMapIds)
             )
         );
         $validMapIds = $allValidIds;
@@ -190,9 +190,24 @@ WHERE cscm.construction_manager_id = :id';
 
         $readData->setChangedIssues(
             $transformerFactory->getIssueTransformer()->toApiMultiple(
-                $manager->getRepository(Issue::class)->findBy(['id' => $retrieveIssueIds])
+                $this->findById($manager, Issue::class, $retrieveIssueIds)
             )
         );
+    }
+
+    /**
+     * @return ConstructionSite[]|Craftsman[]|Issue[]|Map[]|array|object[]
+     */
+    private function findById(EntityManager $manager, string $class, array $ids)
+    {
+        $chunks = array_chunk($ids, self::MAX_VARIABLE_NUMBER);
+        $result = [];
+        foreach ($chunks as $chunk) {
+            $currentResult = $manager->getRepository($class)->findBy(['id' => $chunk]);
+            $result = array_merge($currentResult, $result);
+        }
+
+        return $result;
     }
 
     /**
