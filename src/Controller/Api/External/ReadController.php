@@ -39,13 +39,13 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ReadController extends ExternalApiController
 {
-    const MAX_VARIABLE_NUMBER = 900;
+    const MAX_VARIABLE_NUMBER = 200;
 
     /**
      * @Route("", name="api_external_read", methods={"POST"})
      *
-     * @throws ORMException
      * @throws Exception
+     * @throws ORMException
      *
      * @return Response
      */
