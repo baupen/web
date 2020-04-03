@@ -25,6 +25,7 @@ use App\Entity\Traits\IdTrait;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,11 +39,13 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ReadController extends ExternalApiController
 {
+    const MAX_VARIABLE_NUMBER = 200;
+
     /**
      * @Route("", name="api_external_read", methods={"POST"})
      *
-     * @throws ORMException
      * @throws Exception
+     * @throws ORMException
      *
      * @return Response
      */
@@ -115,25 +118,11 @@ WHERE cscm.construction_manager_id = :id';
         }
 
         //get updated / new buildings
-        $sql = 'SELECT DISTINCT s.id FROM construction_site s WHERE s.id IN ("' . implode('", "', $allValidIds) . '")';
-        $parameters = [];
-        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 's');
-
-        //execute query for updated
-        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
-        $query->setParameters($parameters);
-        /** @var IdTrait[] $updatedConstructionSites */
-        $updatedConstructionSites = $query->getResult();
-
-        //collect ids to retrieve
-        $retrieveConstructionSiteIds = [];
-        foreach ($updatedConstructionSites as $object) {
-            $retrieveConstructionSiteIds[] = $object->getId();
-        }
+        $retrieveConstructionSiteIds = $this->getUpdated('SELECT DISTINCT s.id FROM construction_site s WHERE', 's', $allValidIds, $knownIds, $resultSetMapping, $incompleteManager);
 
         $readData->setChangedConstructionSites(
             $transformerFactory->getBuildingTransformer()->toApiMultiple(
-                $manager->getRepository(ConstructionSite::class)->findBy(['id' => $retrieveConstructionSiteIds])
+                $this->findById($manager, ConstructionSite::class, $retrieveConstructionSiteIds)
             )
         );
         $validConstructionSiteIds = $allValidIds;
@@ -145,35 +134,18 @@ WHERE cscm.construction_manager_id = :id';
         $resultSetMapping->addFieldResult('c', 'id', 'id');
 
         //get allowed craftsman ids
-        $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.construction_site_id IN ("' . implode('", "', $validConstructionSiteIds) . '")';
-        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
-        /** @var IdTrait[] $validCraftsmen */
-        $validCraftsmen = $query->getResult();
+        $validCraftsmen = $this->executeIdInQuery('SELECT DISTINCT c.id FROM craftsman c WHERE c.construction_site_id', $validConstructionSiteIds, $resultSetMapping, $incompleteManager);
         $this->filterIds($readRequest->getCraftsmen(), $validCraftsmen, $allValidIds, $removeIds, $knownIds);
 
         //set the removed/invalid craftsmen
         $readData->setRemovedCraftsmanIDs(array_keys($removeIds));
 
         //get updated / new craftsmen
-        $sql = 'SELECT DISTINCT c.id FROM craftsman c WHERE c.id IN ("' . implode('", "', $allValidIds) . '")';
-        $parameters = [];
-        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 'c');
-
-        //execute query for updated
-        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
-        $query->setParameters($parameters);
-        /** @var IdTrait[] $updatedCraftsmen */
-        $updatedCraftsmen = $query->getResult();
-
-        //collect ids to retrieve
-        $retrieveCraftsmanIds = [];
-        foreach ($updatedCraftsmen as $object) {
-            $retrieveCraftsmanIds[] = $object->getId();
-        }
+        $retrieveCraftsmanIds = $this->getUpdated('SELECT DISTINCT c.id FROM craftsman c WHERE', 'c', $allValidIds, $knownIds, $resultSetMapping, $incompleteManager);
 
         $readData->setChangedCraftsmen(
             $transformerFactory->getCraftsmanTransformer()->toApiMultiple(
-                $manager->getRepository(Craftsman::class)->findBy(['id' => $retrieveCraftsmanIds])
+                $this->findById($manager, Craftsman::class, $retrieveCraftsmanIds)
             )
         );
 
@@ -184,35 +156,18 @@ WHERE cscm.construction_manager_id = :id';
         $resultSetMapping->addFieldResult('m', 'id', 'id');
 
         //get allowed craftsman ids
-        $sql = 'SELECT DISTINCT m.id FROM map m WHERE m.construction_site_id IN ("' . implode('", "', $validConstructionSiteIds) . '")';
-        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
-        /** @var IdTrait[] $validMaps */
-        $validMaps = $query->getResult();
+        $validMaps = $this->executeIdInQuery('SELECT DISTINCT m.id FROM map m WHERE m.construction_site_id', $validConstructionSiteIds, $resultSetMapping, $incompleteManager);
         $this->filterIds($readRequest->getMaps(), $validMaps, $allValidIds, $removeIds, $knownIds);
 
         //set the removed/invalid maps
         $readData->setRemovedMapIDs(array_keys($removeIds));
 
         //get updated / new maps
-        $sql = 'SELECT DISTINCT m.id FROM map m WHERE m.id IN ("' . implode('", "', $allValidIds) . '")';
-        $parameters = [];
-        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 'm');
-
-        //execute query for updated
-        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
-        $query->setParameters($parameters);
-        /** @var IdTrait[] $updatedMaps */
-        $updatedMaps = $query->getResult();
-
-        //collect ids to retrieve
-        $retrieveMapIds = [];
-        foreach ($updatedMaps as $object) {
-            $retrieveMapIds[] = $object->getId();
-        }
+        $retrieveMapIds = $this->getUpdated('SELECT DISTINCT m.id FROM map m WHERE', 'm', $allValidIds, $knownIds, $resultSetMapping, $incompleteManager);
 
         $readData->setChangedMaps(
             $transformerFactory->getMapTransformer()->toApiMultiple(
-                $manager->getRepository(Map::class)->findBy(['id' => $retrieveMapIds])
+                $this->findById($manager, Map::class, $retrieveMapIds)
             )
         );
         $validMapIds = $allValidIds;
@@ -223,38 +178,36 @@ WHERE cscm.construction_manager_id = :id';
         $resultSetMapping->addRootEntityFromClassMetadata(Issue::class, 'i');
         $resultSetMapping->addFieldResult('i', 'id', 'id');
 
-        //get allowed craftsman ids
-        $sql = 'SELECT DISTINCT i.id FROM issue i WHERE i.map_id IN ("' . implode('", "', $validMapIds) . '")';
-        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
-        /** @var IdTrait[] $validIssues */
-        $validIssues = $query->getResult();
+        //get allowed issue ids
+        $validIssues = $this->executeIdInQuery('SELECT DISTINCT i.id FROM issue i WHERE i.map_id', $validMapIds, $resultSetMapping, $incompleteManager);
         $this->filterIds($readRequest->getIssues(), $validIssues, $allValidIds, $removeIds, $knownIds);
 
         //set the removed/invalid issues
         $readData->setRemovedIssueIDs(array_keys($removeIds));
 
         //get updated / new issues
-        $sql = 'SELECT DISTINCT i.id FROM issue i WHERE i.id IN ("' . implode('", "', $allValidIds) . '")';
-        $parameters = [];
-        $this->addUpdateUnknownConditions($parameters, $sql, $knownIds, 'i');
-
-        //execute query for updated
-        $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
-        $query->setParameters($parameters);
-        /** @var IdTrait[] $updatedIssues */
-        $updatedIssues = $query->getResult();
-
-        //collect ids to retrieve
-        $retrieveIssueIds = [];
-        foreach ($updatedIssues as $object) {
-            $retrieveIssueIds[] = $object->getId();
-        }
+        $retrieveIssueIds = $this->getUpdated('SELECT DISTINCT i.id FROM issue i WHERE ', 'i', $allValidIds, $knownIds, $resultSetMapping, $incompleteManager);
 
         $readData->setChangedIssues(
             $transformerFactory->getIssueTransformer()->toApiMultiple(
-                $manager->getRepository(Issue::class)->findBy(['id' => $retrieveIssueIds])
+                $this->findById($manager, Issue::class, $retrieveIssueIds)
             )
         );
+    }
+
+    /**
+     * @return ConstructionSite[]|Craftsman[]|Issue[]|Map[]|array|object[]
+     */
+    private function findById(EntityManager $manager, string $class, array $ids)
+    {
+        $chunks = array_chunk($ids, self::MAX_VARIABLE_NUMBER);
+        $result = [];
+        foreach ($chunks as $chunk) {
+            $currentResult = $manager->getRepository($class)->findBy(['id' => $chunk]);
+            $result = array_merge($currentResult, $result);
+        }
+
+        return $result;
     }
 
     /**
@@ -290,45 +243,73 @@ WHERE cscm.construction_manager_id = :id';
     }
 
     /**
-     * append to query the add/update condition.
+     * @param $ids
      *
-     * @param $parameters
-     * @param $sql
-     * @param $guidTimeDictionary
-     * @param $tableShort
+     * @return IdTrait[]
      */
-    private function addUpdateUnknownConditions(&$parameters, &$sql, $guidTimeDictionary, $tableShort)
+    private function executeIdInQuery(string $baseQuery, array $ids, ResultSetMapping $resultSetMapping, EntityManager $incompleteManager)
     {
-        $sql .= ' AND (';
-        //only return confirmed buildings if they are updated
-        if (\count($guidTimeDictionary) > 0) {
-            $sql .= '(';
+        $chuncks = array_chunk($ids, self::MAX_VARIABLE_NUMBER);
+        $result = [];
+        foreach ($chuncks as $chunck) {
+            $sql = $baseQuery . ' IN ("' . implode('", "', $chunck) . '")';
+            $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
+            $result = array_merge($result, $query->getResult());
+        }
 
-            //get all where id matches but last change date does not
-            $whereCondition = '';
+        return $result;
+    }
+
+    /**
+     * @param $allValidIds
+     * @param $knownIds
+     * @param mixed $tableShort
+     *
+     * @return IdTrait[]
+     */
+    private function getUpdated(string $baseQuery, string $tableShort, array $allValidIds, array $knownIds, ResultSetMappingBuilder $resultSetMapping, EntityManager $incompleteManager)
+    {
+        $result = [];
+        $existing = [];
+        foreach ($allValidIds as $validId) {
+            if (isset($knownIds[$validId])) {
+                $existing[$validId] = $knownIds[$validId];
+            } else {
+                $result[] = $validId;
+            }
+        }
+
+        $chunks = array_chunk($existing, self::MAX_VARIABLE_NUMBER / 2, true);
+        /** @var IdTrait[] $existingResult */
+        $existingResult = [];
+        foreach ($chunks as $chunk) {
+            //only return entries if they are updated
             $parameters = [];
             $counter = 0;
-            foreach (array_keys($guidTimeDictionary) as $confirmedBuildingId) {
-                if (mb_strlen($whereCondition) > 0) {
-                    $whereCondition .= ' OR ';
-                }
-                $whereCondition .= '(' . $tableShort . '.id == "' . $confirmedBuildingId . '" AND ' . $tableShort . '.last_changed_at > :time_' . $counter . ')';
-                $parameters['time_' . $counter] = $guidTimeDictionary[$confirmedBuildingId];
+            $sqlEntries = [];
+            foreach (array_keys($chunk) as $guid) {
+                // id matches but last change date is bigger
+                $sqlEntries[] = '(' . $tableShort . '.id == :guid_' . $counter . ' AND ' . $tableShort . '.last_changed_at > :time_' . $counter . ')';
+                $parameters['time_' . $counter] = $knownIds[$guid];
+                $parameters['guid_' . $counter] = $guid;
 
                 ++$counter;
             }
-            $sql .= $whereCondition;
-            $sql .= ') OR ';
+
+            $sql = $baseQuery . ' ' . implode(' OR ', $sqlEntries);
+
+            //execute query for updated
+            $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
+            $query->setParameters($parameters);
+
+            /** @var IdTrait[] $updatedCraftsmen */
+            $existingResult = array_merge($existingResult, $query->getResult());
         }
 
-        //return entries unknown to the requester
-        if (\count($guidTimeDictionary) > 0) {
-            $sql .= $tableShort . '.id NOT IN ("' . implode('", "', array_keys($guidTimeDictionary)) . '")';
-        } else {
-            //allow all
-            $sql .= '1 = 1';
+        foreach ($existingResult as $entry) {
+            $result[] = $entry->getId();
         }
 
-        $sql .= ')';
+        return $result;
     }
 }
