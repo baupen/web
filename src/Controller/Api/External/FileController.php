@@ -21,7 +21,6 @@ use App\Entity\Map;
 use App\Entity\Traits\TimeTrait;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\MapFileServiceInterface;
-use DateTime;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityRepository;
 use Exception;
@@ -122,10 +121,6 @@ class FileController extends ExternalApiController
 
         if (!$verifyAccess($entity)) {
             return $this->fail(static::ENTITY_ACCESS_DENIED);
-        }
-
-        if ($entity->getLastChangedAt() > new DateTime($objectMeta->getLastChangeTime())) {
-            return $this->fail(static::INVALID_TIMESTAMP);
         }
 
         $filePath = $accessFilePath($entity);
