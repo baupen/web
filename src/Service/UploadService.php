@@ -57,19 +57,23 @@ class UploadService implements UploadServiceInterface
     /**
      * @throws Exception
      *
-     * @return IssueImage|null
+     * @return bool
      */
     public function uploadIssueImage(UploadedFile $file, Issue $issue, string $targetFileName)
     {
         $targetFolder = $this->pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
         $issueImage = new IssueImage();
         if (!$this->uploadFile($file, $targetFolder, $targetFileName, $issueImage)) {
-            return null;
+            return false;
         }
+
+        $issueImage->setIssue($issue);
+        $issue->getImages()->add($issueImage);
+        $issue->setImage($issueImage);
 
         $this->imageService->warmUpCacheForIssue($issue);
 
-        return $issueImage;
+        return true;
     }
 
     /**
@@ -91,19 +95,23 @@ class UploadService implements UploadServiceInterface
     /**
      * @throws Exception
      *
-     * @return ConstructionSiteImage|null
+     * @return bool
      */
     public function uploadConstructionSiteImage(UploadedFile $file, ConstructionSite $constructionSite, string $targetFileName)
     {
         $targetFolder = $this->pathService->getFolderForConstructionSiteImage($constructionSite);
-        $mapFile = new ConstructionSiteImage();
-        if (!$this->uploadFile($file, $targetFolder, $targetFileName, $mapFile)) {
-            return null;
+        $constructionSiteImage = new ConstructionSiteImage();
+        if (!$this->uploadFile($file, $targetFolder, $targetFileName, $constructionSiteImage)) {
+            return false;
         }
+
+        $constructionSiteImage->setConstructionSite($constructionSite);
+        $constructionSite->getImages()->add($constructionSiteImage);
+        $constructionSite->setImage($constructionSiteImage);
 
         $this->imageService->warmUpCacheForConstructionSite($constructionSite);
 
-        return $mapFile;
+        return true;
     }
 
     /**
