@@ -298,14 +298,10 @@ class IssueController extends ExternalApiController
 
         //check if file is here
         foreach ($request->files->all() as $file) {
-            $issueImage = $uploadService->uploadIssueImage($file, $issue, $issueModifyRequest->getIssue()->getImage()->getFilename());
-            if ($issueImage === null) {
+            $result = $uploadService->uploadIssueImage($file, $issue, $issueModifyRequest->getIssue()->getImage()->getFilename());
+            if (!$result) {
                 return $this->fail(self::ISSUE_FILE_UPLOAD_FAILED);
             }
-
-            $issueImage->setIssue($issue);
-            $issue->getImages()->add($issueImage);
-            $issue->setImage($issueImage);
         }
 
         /** @var EntityManager $em */

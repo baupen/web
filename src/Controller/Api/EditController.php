@@ -231,14 +231,11 @@ class EditController extends ApiController
         $file = $request->files->getIterator()->current();
 
         //save file
-        $constructionSiteImage = $uploadService->uploadConstructionSiteImage($file, $constructionSite, $file->getClientOriginalName());
-        if ($constructionSiteImage === null) {
+        $result = $uploadService->uploadConstructionSiteImage($file, $constructionSite, $file->getClientOriginalName());
+        if (!$result) {
             return $this->fail(self::CONSTRUCTION_SITE_IMAGE_UPLOAD_FAILED);
         }
-        $constructionSiteImage->setConstructionSite($constructionSite);
-        $constructionSite->getImages()->add($constructionSiteImage);
-        $constructionSite->setImage($constructionSiteImage);
-        $this->fastSave($constructionSite, $constructionSiteImage);
+        $this->fastSave($constructionSite, $constructionSite->getImage());
 
         //create response
         return $this->success();
