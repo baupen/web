@@ -5,9 +5,6 @@
     "clue/stream-filter": {
         "version": "v1.4.1"
     },
-    "codacy/coverage": {
-        "version": "1.4.1"
-    },
     "composer/ca-bundle": {
         "version": "1.1.0"
     },
@@ -130,9 +127,6 @@
     },
     "fzaninotto/faker": {
         "version": "v1.7.1"
-    },
-    "gitonomy/gitlib": {
-        "version": "v1.0.2"
     },
     "guzzlehttp/guzzle": {
         "version": "6.3.0"
@@ -608,14 +602,24 @@
             "ref": "c72d107d077f1654428edaed69415d0228c1aefe"
         }
     },
-    "symfony/webpack-encore-pack": {
-        "version": "1.0",
+    "symfony/webpack-encore-bundle": {
+        "version": "1.6",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "1.0",
-            "ref": "a2f276eff6e95ca94be135d2d3e5c1247c6f8807"
-        }
+            "version": "1.6",
+            "ref": "69e1d805ad95964088bd510c05995e87dc391564"
+        },
+        "files": [
+            "assets/css/app.css",
+            "assets/js/app.js",
+            "config/packages/assets.yaml",
+            "config/packages/prod/webpack_encore.yaml",
+            "config/packages/test/webpack_encore.yaml",
+            "config/packages/webpack_encore.yaml",
+            "package.json",
+            "webpack.config.js"
+        ]
     },
     "symfony/yaml": {
         "version": "v3.4.2"

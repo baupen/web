@@ -15,7 +15,8 @@
                 </div>
                 <div v-masonry-tile class="grid-item" v-if="createConstructionSiteActive">
                     <b-card :title="$t('actions.create_construction_site')">
-                    <add-construction-site-form  @submitted="addConstructionSiteSubmitted($event)"></add-construction-site-form>
+                        <add-construction-site-form
+                                @submitted="addConstructionSiteSubmitted($event)"></add-construction-site-form>
                     </b-card>
                 </div>
             </div>
@@ -26,28 +27,29 @@
             </div>
         </template>
 
-        <div class="vertical-spacer-big"></div>
-        <h2 class="mb-3">{{$t("all.title")}}</h2>
-        <div class="mb-2" v-if="!createConstructionSiteActive">
-            <button class="btn btn-primary" @click="createConstructionSite">
-                {{$t("actions.create_construction_site")}}
-            </button>
-        </div>
-        <table class="table table-hover table-condensed">
-            <thead>
-            <tr>
-                <th>{{$t("construction_site._name")}}</th>
-                <th>{{$t("construction_site.address")}}</th>
-                <th>{{$t("construction_site.created_at")}}</th>
-                <th>{{$t("construction_site.activated")}}</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="constructionSite in orderedConstructionSites">
-                <td>{{constructionSite.name}}</td>
-                <td>{{constructionSite.address.join(", ")}}</td>
-                <td>{{formatDateTime(constructionSite.createdAt)}}</td>
-                <td>
+        <template v-if="canEditAssigment">
+            <div class="vertical-spacer-big"></div>
+            <h2 class="mb-3">{{$t("all.title")}}</h2>
+            <div class="mb-2" v-if="!createConstructionSiteActive">
+                <button class="btn btn-primary" @click="createConstructionSite">
+                    {{$t("actions.create_construction_site")}}
+                </button>
+            </div>
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>{{$t("construction_site._name")}}</th>
+                    <th>{{$t("construction_site.address")}}</th>
+                    <th>{{$t("construction_site.created_at")}}</th>
+                    <th>{{$t("construction_site.activated")}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="constructionSite in orderedConstructionSites">
+                    <td>{{constructionSite.name}}</td>
+                    <td>{{constructionSite.address.join(", ")}}</td>
+                    <td>{{formatDateTime(constructionSite.createdAt)}}</td>
+                    <td>
                     <span class="switch">
                         <input type="checkbox"
                                class="switch"
@@ -56,10 +58,11 @@
                                @change="toggle(constructionSite)">
                         <label :for="'switch-' + constructionSite.id"></label>
                     </span>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </template>
     </div>
 </template>
 
@@ -86,6 +89,7 @@
             return {
                 constructionSites: [],
                 isLoading: true,
+                canEditAssigment: false,
                 locale: lang,
                 createConstructionSiteActive: false
             }
@@ -94,7 +98,7 @@
             managingConstructionSites: function () {
                 return this.constructionSites.filter(c => c.isConstructionManagerOf);
             },
-            orderedConstructionSites: function() {
+            orderedConstructionSites: function () {
                 return this.constructionSites.sort((a, b) => (a.name > b.name) ? 1 : -1);
             }
         },
@@ -105,7 +109,7 @@
             AtomSpinner
         },
         methods: {
-            redraw: function() {
+            redraw: function () {
                 window.setTimeout(() => {
                     this.$nextTick(function () {
                         this.$redrawVueMasonry();
@@ -128,7 +132,7 @@
                 }
                 this.redraw();
             },
-            createConstructionSite: function() {
+            createConstructionSite: function () {
                 this.createConstructionSiteActive = true;
                 this.redraw();
             },
@@ -151,10 +155,15 @@
             );
 
             //fill register
-            axios.get("/api/switch/construction_sites").then((response) => {
-                this.constructionSites = response.data.constructionSites;
-                this.isLoading = false;
+            axios.get("/api/switch/permissions").then((response) => {
+                this.canEditAssigment = response.data.canEditAssignment;
+                //fill register
+                axios.get("/api/switch/construction_sites").then((response) => {
+                    this.constructionSites = response.data.constructionSites;
+                    this.isLoading = false;
+                });
             });
+
         },
     }
 

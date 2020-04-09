@@ -15,6 +15,7 @@ use App\Api\Request\_Switch\CreateCheckRequest;
 use App\Api\Request\_Switch\CreateRequest;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Response\Data\_Switch\CheckData;
+use App\Api\Response\Data\_Switch\PermissionsData;
 use App\Api\Response\Data\ConstructionSitesData;
 use App\Api\Response\Data\EmptyData;
 use App\Api\Transformer\Switch_\ConstructionSiteTransformer;
@@ -41,9 +42,11 @@ class SwitchController extends ApiController
      */
     public function constructionSitesAction(ConstructionSiteTransformer $constructionSiteTransformer)
     {
-        $this->ensureNoTrialAccount();
-
-        $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(['isTrialConstructionSite' => false]);
+        if ($this->canEditAssignment()) {
+            $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(['isTrialConstructionSite' => false]);
+        } else {
+            $constructionSites = $this->getUser()->getConstructionSites()->toArray();
+        }
 
         //create response
         $data = new ConstructionSitesData();
@@ -53,13 +56,27 @@ class SwitchController extends ApiController
     }
 
     /**
+     * @Route("/permissions", name="api_switch_permissions")
+     *
+     * @return Response
+     */
+    public function permissionsAction()
+    {
+        // response
+        $checkData = new PermissionsData();
+        $checkData->setCanEditAssignment($this->canEditAssignment());
+
+        return $this->success($checkData);
+    }
+
+    /**
      * @Route("/request_access", name="api_switch_request_access")
      *
      * @return Response
      */
     public function requestAccessAction(Request $request)
     {
-        $this->ensureNoTrialAccount();
+        $this->ensureCanEditAssignment();
 
         /** @var ConstructionSiteRequest $parsedRequest */
         if (!parent::parseRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse)) {
@@ -89,7 +106,7 @@ class SwitchController extends ApiController
      */
     public function removeAccessAction(Request $request)
     {
-        $this->ensureNoTrialAccount();
+        $this->ensureCanEditAssignment();
 
         /** @var ConstructionSiteRequest $parsedRequest */
         if (!parent::parseRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse)) {
@@ -119,7 +136,7 @@ class SwitchController extends ApiController
      */
     public function createCheckAction(Request $request)
     {
-        $this->ensureNoTrialAccount();
+        $this->ensureCanEditAssignment();
 
         /** @var CreateCheckRequest $parsedRequest */
         if (!parent::parseRequest($request, CreateCheckRequest::class, $parsedRequest, $errorResponse)) {
@@ -142,7 +159,7 @@ class SwitchController extends ApiController
      */
     public function createAction(Request $request, PathServiceInterface $pathService)
     {
-        $this->ensureNoTrialAccount();
+        $this->ensureCanEditAssignment();
 
         /** @var CreateRequest $parsedRequest */
         if (!parent::parseRequest($request, CreateRequest::class, $parsedRequest, $errorResponse)) {
@@ -185,12 +202,17 @@ class SwitchController extends ApiController
         return parent::errorMessageToStatusCode($message);
     }
 
+    private function canEditAssignment()
+    {
+        return !$this->getUser()->getIsExternalAccount() && !$this->getUser()->getIsTrialAccount();
+    }
+
     /**
      * throws an exception if a trial account is used to authenticate.
      */
-    private function ensureNoTrialAccount()
+    private function ensureCanEditAssignment()
     {
-        if ($this->getUser()->getIsTrialAccount()) {
+        if (!$this->canEditAssignment()) {
             throw new AccessDeniedHttpException();
         }
     }
