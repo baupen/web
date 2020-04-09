@@ -49,6 +49,21 @@
                         @save="saveCraftsman(arguments[0])"
                         @remove="removeCraftsman(arguments[0])"
         />
+
+
+        <div class="vertical-spacer-big"></div>
+        <h2>{{$t("edit_external_construction_managers.title")}}</h2>
+        <p class="text-secondary">{{$t("edit_external_construction_managers.help")}}</p>
+        <atom-spinner v-if="isExternalConstructionManagerLoading"
+                      :animation-duration="1000"
+                      :size="60"
+                      :color="'#ff1d5e'"
+        />
+        <external-construction-manager-view v-else
+                        :external-construction-managers="externalConstructionManagers"
+                        @add="addExternalConstructionManager(arguments[0])"
+                        @remove="removeExternalConstructionManager(arguments[0])"
+        />
     </div>
 </template>
 
@@ -62,6 +77,7 @@
     import CraftsmanView from "./components/CraftsmanView";
     import MapEdit from "./components/MapEdit";
     import ConstructionSiteEdit from "./components/ConstructionSiteEdit";
+    import ExternalConstructionManagerView from "./components/ExternalConstructionManagerView";
 
     const lang = document.documentElement.lang.substr(0, 2);
     moment.locale(lang);
@@ -79,11 +95,14 @@
                 isCraftsmenLoading: true,
                 isLoading: false,
                 locale: lang,
-                actionQueue: []
+                actionQueue: [],
+                externalConstructionManagers: [],
+                isExternalConstructionManagerLoading: true,
             }
         },
         mixins: [notifications],
         components: {
+            ExternalConstructionManagerView,
             ConstructionSiteEdit,
             MapEdit,
             CraftsmanView,
@@ -188,6 +207,23 @@
                 }).then(() => {
                     // continue process
                     this.craftsmanContainers = this.craftsmanContainers.filter(cc => cc !== craftsmanContainer);
+                });
+            },
+            addExternalConstructionManager: function (constructionManager) {
+                axios.post("/api/edit/external_construction_manager", {
+                    constructionSiteId: this.constructionSiteId,
+                    constructionManager: constructionManager
+                }).then((response) => {
+                    constructionManager.id = response.data.constructionManager.id;
+                });
+            },
+            removeExternalConstructionManager: function (constructionManager) {
+                axios.delete("/api/edit/external_construction_manager/" + constructionManager.id, {
+                    data: {
+                        constructionSiteId: this.constructionSiteId
+                    }
+                }).then(() => {
+                    this.externalConstructionManagers = this.externalConstructionManagers.filter(cc => cc !== constructionManager);
                 });
             },
             mapFileDropped: function (file) {
@@ -389,6 +425,14 @@
                         })
                     });
                     this.isCraftsmenLoading = false;
+                });
+
+
+                axios.post("/api/edit/external_construction_managers", {
+                    constructionSiteId: this.constructionSiteId
+                }).then((response) => {
+                    this.externalConstructionManagers = response.data.externalConstructionManagers;
+                    this.isExternalConstructionManagerLoading = false;
                 });
             });
         },

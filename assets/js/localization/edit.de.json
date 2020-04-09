@@ -75,6 +75,10 @@
       "close": "Schliessen"
     }
   },
+  "edit_external_construction_managers": {
+    "title": "Externe Mitarbeiter",
+    "help": "Gewähren Sie externen Mitarbeitern Zugriff auf diese Baustelle."
+  },
   "set_automatically": "automatisch festlegen",
   "issue_count": "Anzahl Pendenzen"
 }

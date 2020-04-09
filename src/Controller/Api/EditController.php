@@ -18,9 +18,12 @@ use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\Edit\CheckMapFileRequest;
 use App\Api\Request\Edit\UpdateConstructionSiteRequest;
 use App\Api\Request\Edit\UpdateCraftsmanRequest;
+use App\Api\Request\Edit\UpdateExternalConstructionManagerRequest;
 use App\Api\Request\Edit\UpdateMapFileRequest;
 use App\Api\Request\Edit\UpdateMapRequest;
 use App\Api\Request\Edit\UploadMapFileRequest;
+use App\Api\Response\Data\ConstructionManagerData;
+use App\Api\Response\Data\ConstructionManagersData;
 use App\Api\Response\Data\ConstructionSiteData;
 use App\Api\Response\Data\CraftsmanData;
 use App\Api\Response\Data\CraftsmenData;
@@ -30,11 +33,13 @@ use App\Api\Response\Data\MapData;
 use App\Api\Response\Data\MapFileData;
 use App\Api\Response\Data\MapFilesData;
 use App\Api\Response\Data\MapsData;
+use App\Api\Transformer\Edit\ConstructionManagerTransformer;
 use App\Api\Transformer\Edit\ConstructionSiteTransformer;
 use App\Api\Transformer\Edit\CraftsmanTransformer;
 use App\Api\Transformer\Edit\MapFileTransformer;
 use App\Api\Transformer\Edit\MapTransformer;
 use App\Controller\Api\Base\ApiController;
+use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Map;
@@ -61,6 +66,7 @@ class EditController extends ApiController
     const MAP_HAS_ISSUES_ASSIGNED = 'map can not be removed as there are issues assigned to it';
     const CRAFTSMAN_HAS_ISSUES_ASSIGNED = 'craftsman can not be removed as there are issues assigned to it';
     const MAP_HAS_CHILDREN_ASSIGNED = 'map can not be removed as there are children assigned to it';
+    const ONLY_EXTERNAL_CONSTRUCTION_MANAGERS_CAN_BE_REMOVED = 'only external construction managers can be removed';
 
     /**
      * @Route("/maps", name="api_edit_maps")
@@ -510,6 +516,93 @@ class EditController extends ApiController
         }
 
         $this->fastRemove($craftsman);
+
+        //create response
+        return $this->success(new EmptyData());
+    }
+
+    /**
+     * @Route("/external_construction_managers", name="api_edit_external_construction_managers")
+     *
+     * @return Response
+     */
+    public function externalConstructionManagersAction(Request $request, ConstructionManagerTransformer $constructionManagerTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        $externalConstructionManagers = [];
+        foreach ($constructionSite->getConstructionManagers() as $constructionManager) {
+            if ($constructionManager->getIsExternalAccount()) {
+                $externalConstructionManagers[] = $constructionManager;
+            }
+        }
+
+        //create response
+        $data = new ConstructionManagersData();
+        $data->setConstructionManagers($constructionManagerTransformer->toApiMultiple($externalConstructionManagers));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/external_construction_manager", name="api_edit_external_construction_manager_post", methods={"POST"})
+     *
+     * @throws Exception
+     *
+     * @return Response
+     */
+    public function externalConstructionManagerPostAction(Request $request, ConstructionManagerTransformer $craftsmanTransformer)
+    {
+        /** @var ConstructionSite $constructionSite */
+        /** @var UpdateExternalConstructionManagerRequest $parsedRequest */
+        if (!$this->parseConstructionSiteRequest($request, UpdateExternalConstructionManagerRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        $externalConstructionManager = $parsedRequest->getExternalConstructionManager();
+        $constructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $externalConstructionManager->getEmail()]);
+        if ($constructionManager === null) {
+            $constructionManager = new ConstructionManager();
+            $constructionManager->setEmail($externalConstructionManager->getEmail());
+        }
+
+        $constructionManager->getConstructionSites()->add($constructionSite);
+        $this->fastSave($constructionManager);
+
+        //create response
+        $data = new ConstructionManagerData();
+        $data->setConstructionManager($craftsmanTransformer->toApi($constructionManager));
+
+        return $this->success($data);
+    }
+
+    /**
+     * @Route("/external_construction_manager/{constructionManager}", name="api_edit_external_construction_manager_delete", methods={"DELETE"})
+     *
+     * @throws Exception
+     *
+     * @return Response
+     */
+    public function externalConstructionManagerDeleteAction(Request $request, ConstructionManager $constructionManager)
+    {
+        /** @var ConstructionSite $constructionSite */
+        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
+            return $errorResponse;
+        }
+
+        if (!$constructionSite->getConstructionManagers()->contains($constructionManager)) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$constructionManager->getIsExternalAccount()) {
+            return $this->fail(self::ONLY_EXTERNAL_CONSTRUCTION_MANAGERS_CAN_BE_REMOVED);
+        }
+
+        $constructionManager->getConstructionSites()->remove($constructionSite);
+        $this->fastSave($constructionManager);
 
         //create response
         return $this->success(new EmptyData());
