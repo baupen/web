@@ -1,3 +1,11 @@
 edit:
   title: 'Baustelle einrichten'
   description: 'Unternehmer & Baupläne organisieren'
+  external_construction_manager:
+    welcome_email:
+      subject: 'Willkommen auf %page%!'
+      body: 'Sie wurden auf %page% registriert, damit Sie die Baustelle %construction_site_name% verwalten können.'
+      action_text: 'Account aktivieren'
+    new_construction_site_email:
+      subject: 'Neue Baustelle auf %page% freigeschaltet'
+      body: 'Sie wurden auf %page% der Baustelle %construction_site_name% hinzugefügt.'

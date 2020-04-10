@@ -119,7 +119,7 @@ class LoginController extends BaseLoginController
 
         $form = $this->handleForm(
             $this->createForm(ConfirmType::class, $user, ['data_class' => ConstructionManager::class])
-                ->add('submit', SubmitType::class, ['translation_domain' => 'login']),
+                ->add('submit', SubmitType::class, ['translation_domain' => 'login', 'label' => 'login.submit']),
             $request,
             function ($form) use ($user, $translator, $request) {
                 //check for valid password

@@ -349,13 +349,13 @@
                                     {{ "mail_wrong_displayed"|trans }}
                                 </a>
 
-                                {% if show_support_info %}
+                                {% if show_support_info is defined and show_support_info %}
                                     <br>
                                     {{ "questions"|trans }}
                                     <a href="mailto:{{ support_email }}">{{ support_email }}</a>
                                 {% endif %}
 
-                                {% if show_sender_info %}
+                                {% if show_sender_info is defined and show_sender_info %}
                                     <br>
                                     {{ "sent_by"|trans }}
                                     <a href="mailto:{{ sender_email }}">{{ sender_name }}</a>

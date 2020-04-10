@@ -2,7 +2,7 @@
     <div>
         <div class="form-inline">
             <div class="form-group">
-                <input type="email" v-model="newEmail" :placeholder="$t('edit_external_construction_managers.placeholders.email')" class="form-control">
+                <input :class="{'is-invalid': newEmailInvalid}" id="email" type="email" v-model="newEmail" :placeholder="$t('edit_external_construction_managers.placeholders.email')" class="form-control">
             </div>
             <button type="submit" @click="addConstructionManager" class="btn btn-primary">{{$t("edit_external_construction_managers.actions.add")}}</button>
         </div>
@@ -50,7 +50,7 @@
             return {
                 locale: lang,
                 newEmail: "",
-                initialOrderedConstructionManagers: [],
+                newEmailInvalid: false
             }
         },
         components: {
@@ -60,26 +60,25 @@
         },
         methods: {
             addConstructionManager: function () {
+                if (this.newEmail.length < 2 || this.externalConstructionManager.filter(cm => cm.email === this.newEmail).length > 0) {
+                    this.newEmailInvalid = true;
+                    return;
+                }
+                this.newEmailInvalid = false;
+
                 const constructionManager = {
                     id: uuid(),
                     email: this.newEmail,
                 };
 
-                this.initialOrderedConstructionManagers.unshift(constructionManager);
                 this.$emit('add', constructionManager);
                 this.newEmail = "";
             },
         },
         computed: {
             orderedConstructionManagers: function () {
-                const initialIds = new Set(this.externalConstructionManagers.map(c => c.id));
-                return this.initialOrderedConstructionManagers.filter(entry => initialIds.has(entry.id));
+                return this.externalConstructionManagers.sort((mf1, mf2) => mf1.email.localeCompare(mf2.email));
             }
-        },
-        mounted() {
-            this.initialOrderedConstructionManagers = this.externalConstructionManagers
-                .filter(m => m.pendingChange !== "remove")
-                .sort((mf1, mf2) => mf1.email.localeCompare(mf2.email));
         }
     }
 

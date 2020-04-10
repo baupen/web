@@ -42,15 +42,21 @@ use App\Controller\Api\Base\ApiController;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
+use App\Entity\Email;
 use App\Entity\Map;
 use App\Entity\MapFile;
+use App\Enum\EmailType;
+use App\Service\Interfaces\EmailServiceInterface;
 use App\Service\Interfaces\UploadServiceInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/edit")
@@ -66,7 +72,11 @@ class EditController extends ApiController
     const MAP_HAS_ISSUES_ASSIGNED = 'map can not be removed as there are issues assigned to it';
     const CRAFTSMAN_HAS_ISSUES_ASSIGNED = 'craftsman can not be removed as there are issues assigned to it';
     const MAP_HAS_CHILDREN_ASSIGNED = 'map can not be removed as there are children assigned to it';
+    const ONLY_EXTERNAL_CONSTRUCTION_MANAGERS_CAN_BE_ADDED = 'only external construction managers can be added';
+    const EXTERNAL_CONSTRUCTION_MANAGER_ALREADY_ADDED = 'external construction managers has already been added';
+    const EXTERNAL_CONSTRUCTION_MANAGER_NOT_ADDED = 'external construction managers ist not part of this construction site';
     const ONLY_EXTERNAL_CONSTRUCTION_MANAGERS_CAN_BE_REMOVED = 'only external construction managers can be removed';
+    const EXTERNAL_CONSTRUCTION_MANAGER_NOTIFY_EMAIL_FAILED = 'failed to send the notification email to the external construction manager';
 
     /**
      * @Route("/maps", name="api_edit_maps")
@@ -554,7 +564,7 @@ class EditController extends ApiController
      *
      * @return Response
      */
-    public function externalConstructionManagerPostAction(Request $request, ConstructionManagerTransformer $craftsmanTransformer)
+    public function externalConstructionManagerPostAction(Request $request, ConstructionManagerTransformer $craftsmanTransformer, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
     {
         /** @var ConstructionSite $constructionSite */
         /** @var UpdateExternalConstructionManagerRequest $parsedRequest */
@@ -563,8 +573,10 @@ class EditController extends ApiController
         }
 
         $externalConstructionManager = $parsedRequest->getExternalConstructionManager();
+        /** @var ConstructionManager $constructionManager */
         $constructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $externalConstructionManager->getEmail()]);
-        if ($constructionManager === null) {
+        $new = $constructionManager === null;
+        if ($new) {
             $constructionManager = new ConstructionManager();
             $constructionManager->setEmail($externalConstructionManager->getEmail());
             $constructionManager->setIsExternalAccount(true);
@@ -579,11 +591,45 @@ class EditController extends ApiController
             if (\count($names) > 1) {
                 $constructionManager->setFamilyName($names[\count($names) - 1]);
             }
+        } elseif (!$constructionManager->getIsExternalAccount()) {
+            return $this->fail(self::ONLY_EXTERNAL_CONSTRUCTION_MANAGERS_CAN_BE_ADDED);
+        } elseif ($constructionManager->getConstructionSites()->contains($constructionSite)) {
+            return $this->fail(self::EXTERNAL_CONSTRUCTION_MANAGER_ALREADY_ADDED);
         }
 
         $constructionSite->getConstructionManagers()->add($constructionManager);
         $constructionManager->getConstructionSites()->add($constructionSite);
         $this->fastSave($constructionManager, $constructionSite);
+
+        // construct email
+        $email = new Email();
+        $email->setSystemSender();
+        $email->setReceiver($constructionManager->getEmail());
+        if ($new) {
+            $email->setEmailType(EmailType::ACTION_EMAIL);
+            $email->setSubject($translator->trans('edit.external_construction_manager.welcome_email.subject', ['%page%' => $request->getHttpHost()], 'edit'));
+            $email->setBody($translator->trans('edit.external_construction_manager.welcome_email.body', ['%construction_site_name%' => $constructionSite->getName(), '%page%' => $request->getHttpHost()], 'edit'));
+            $email->setActionText($translator->trans('edit.external_construction_manager.welcome_email.action_text', [], 'edit'));
+            $email->setActionLink($this->generateUrl('login_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()], UrlGeneratorInterface::ABSOLUTE_URL));
+        } else {
+            $email->setEmailType(EmailType::TEXT_EMAIL);
+            $email->setSubject($translator->trans('edit.external_construction_manager.new_construction_site_email.subject', ['%page%' => $request->getHttpHost()], 'edit'));
+            $email->setBody($translator->trans('edit.external_construction_manager.new_construction_site_email.body', ['%construction_site_name%' => $constructionSite->getName(), '%page%' => $request->getHttpHost()], 'edit'));
+        }
+        $this->fastSave($email);
+
+        // send email
+        if (!$emailService->sendEmail($email)) {
+            $logger->error('could not send register email ' . $email->getId());
+            $this->displayError($translator->trans('create.fail.welcome_email_not_sent', [], 'login'));
+
+            return $this->fail(self::EXTERNAL_CONSTRUCTION_MANAGER_NOTIFY_EMAIL_FAILED);
+        }
+
+        $email->setSentDateTime(new \DateTime());
+        $this->fastSave($email);
+
+        $logger->info('sent welcome email to ' . $email->getReceiver());
 
         //create response
         $data = new ConstructionManagerData();
@@ -612,6 +658,10 @@ class EditController extends ApiController
 
         if (!$constructionManager->getIsExternalAccount()) {
             return $this->fail(self::ONLY_EXTERNAL_CONSTRUCTION_MANAGERS_CAN_BE_REMOVED);
+        }
+
+        if (!$constructionManager->getConstructionSites()->contains($constructionSite)) {
+            return $this->fail(self::EXTERNAL_CONSTRUCTION_MANAGER_NOT_ADDED);
         }
 
         $constructionManager->getConstructionSites()->removeElement($constructionSite);
