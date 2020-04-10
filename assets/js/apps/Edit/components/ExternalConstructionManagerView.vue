@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="form-inline">
+        <div class="form-inline mb-3">
             <div class="form-group">
                 <input :class="{'is-invalid': newEmailInvalid}" id="email" type="email" v-model="newEmail" :placeholder="$t('edit_external_construction_managers.placeholders.email')" class="form-control">
             </div>
