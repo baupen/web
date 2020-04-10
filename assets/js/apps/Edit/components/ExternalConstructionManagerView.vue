@@ -60,7 +60,7 @@
         },
         methods: {
             addConstructionManager: function () {
-                if (this.newEmail.length < 2 || this.externalConstructionManager.filter(cm => cm.email === this.newEmail).length > 0) {
+                if (this.newEmail.length < 2 || this.externalConstructionManagers.filter(cm => cm.email === this.newEmail).length > 0) {
                     this.newEmailInvalid = true;
                     return;
                 }

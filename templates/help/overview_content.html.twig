@@ -9,6 +9,9 @@
     </p>
     <img class="img-fluid" src="{{ asset('dist/images/1_erfassen.gif') }}"
          alt="{{ "overview.create_description"|trans }}">
+    <p class="text-secondary mt-2">
+        {{ "overview.app_login"|trans({'%website%': app.request.httpHost}) }}
+    </p>
     <h2>{{ "overview.populate"|trans }}</h2>
     <p>{{ "overview.populate_description"|trans }}</p>
     <img class="img-fluid" src="{{ asset('dist/images/2_einpflegen.gif') }}"

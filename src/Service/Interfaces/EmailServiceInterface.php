@@ -21,4 +21,9 @@ interface EmailServiceInterface
      * @return bool
      */
     public function sendEmail(Email $email, $options = []);
+
+    /**
+     * @return string
+     */
+    public function renderEmail(Email $email);
 }
