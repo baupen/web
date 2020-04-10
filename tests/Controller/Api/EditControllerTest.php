@@ -483,8 +483,8 @@ class EditControllerTest extends ApiController
         $externalConstructionManagerData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($externalConstructionManagerData->data);
-        $this->assertNotNull($externalConstructionManagerData->data->externalConstructionManager);
-        $externalConstructionManager = $externalConstructionManagerData->data->externalConstructionManager;
+        $this->assertNotNull($externalConstructionManagerData->data->constructionManager);
+        $externalConstructionManager = $externalConstructionManagerData->data->constructionManager;
         $this->assertNotNull($externalConstructionManager->id);
         $externalConstructionManagerId = $externalConstructionManager->id;
 
@@ -498,10 +498,10 @@ class EditControllerTest extends ApiController
         $externalConstructionManagerData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($externalConstructionManagerData->data);
-        $this->assertTrue(is_array($externalConstructionManagerData->data->externalConstructionManagers));
-        $externalConstructionManagerCount = count($externalConstructionManagerData->data->externalConstructionManagers) ;
+        $this->assertTrue(is_array($externalConstructionManagerData->data->constructionManagers));
+        $externalConstructionManagerCount = count($externalConstructionManagerData->data->constructionManagers) ;
         $this->assertTrue($externalConstructionManagerCount > 0);
-        foreach ($externalConstructionManagerData->data->externalConstructionManagers as $externalConstructionManager) {
+        foreach ($externalConstructionManagerData->data->constructionManagers as $externalConstructionManager) {
             $this->assertNotNull($externalConstructionManager);
             $this->assertObjectHasAttribute('id', $externalConstructionManager);
             $this->assertObjectHasAttribute('email', $externalConstructionManager);
@@ -518,8 +518,8 @@ class EditControllerTest extends ApiController
         $externalConstructionManagerData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertNotNull($externalConstructionManagerData->data);
-        $this->assertTrue(is_array($externalConstructionManagerData->data->externalConstructionManagers));
-        $newExternalConstructionManagerCount = count($externalConstructionManagerData->data->externalConstructionManagers) ;
+        $this->assertTrue(is_array($externalConstructionManagerData->data->constructionManagers));
+        $newExternalConstructionManagerCount = count($externalConstructionManagerData->data->constructionManagers) ;
         $this->assertTrue($newExternalConstructionManagerCount + 1 == $externalConstructionManagerCount);
 
     }

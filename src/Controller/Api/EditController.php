@@ -567,10 +567,23 @@ class EditController extends ApiController
         if ($constructionManager === null) {
             $constructionManager = new ConstructionManager();
             $constructionManager->setEmail($externalConstructionManager->getEmail());
+            $constructionManager->setIsExternalAccount(true);
+            $constructionManager->register();
+
+            // try to derive name
+            $firstPart = explode('@', $constructionManager->getEmail())[0];
+            $names = explode('.', $firstPart);
+            if (\count($names) > 0) {
+                $constructionManager->setGivenName($names[0]);
+            }
+            if (\count($names) > 1) {
+                $constructionManager->setFamilyName($names[\count($names) - 1]);
+            }
         }
 
+        $constructionSite->getConstructionManagers()->add($constructionManager);
         $constructionManager->getConstructionSites()->add($constructionSite);
-        $this->fastSave($constructionManager);
+        $this->fastSave($constructionManager, $constructionSite);
 
         //create response
         $data = new ConstructionManagerData();
@@ -601,8 +614,9 @@ class EditController extends ApiController
             return $this->fail(self::ONLY_EXTERNAL_CONSTRUCTION_MANAGERS_CAN_BE_REMOVED);
         }
 
-        $constructionManager->getConstructionSites()->remove($constructionSite);
-        $this->fastSave($constructionManager);
+        $constructionManager->getConstructionSites()->removeElement($constructionSite);
+        $constructionSite->getConstructionManagers()->removeElement($constructionManager);
+        $this->fastSave($constructionManager, $constructionSite);
 
         //create response
         return $this->success(new EmptyData());

@@ -82,7 +82,7 @@ class LoginController extends BaseLoginController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if (!$authorizationService->checkIfAuthorized($constructionManager->getEmail())) {
+            if (!$authorizationService->checkIfAuthorized($constructionManager)) {
                 $this->displayError($translator->trans('create.error.email_invalid', [], 'login'));
             } else {
                 $response = $this->register($request, $constructionManager, $authorizationService, $translator, $emailService, $logger);
@@ -303,12 +303,7 @@ class LoginController extends BaseLoginController
         $existing = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
         if ($existing === null) {
             // prepare account for usage
-            $constructionManager->setRegistrationDate();
-            $constructionManager->setPlainPassword(uniqid('_initial_pw_'));
-            $constructionManager->setPassword();
-            $constructionManager->setAuthenticationHash();
-            $constructionManager->setIsEnabled(true);
-
+            $constructionManager->register();
             $authorizationService->tryFillDefaultValues($constructionManager);
 
             $this->fastSave($constructionManager);

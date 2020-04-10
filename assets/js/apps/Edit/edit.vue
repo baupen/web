@@ -431,7 +431,7 @@
                 axios.post("/api/edit/external_construction_managers", {
                     constructionSiteId: this.constructionSiteId
                 }).then((response) => {
-                    this.externalConstructionManagers = response.data.externalConstructionManagers;
+                    this.externalConstructionManagers = response.data.constructionManagers;
                     this.isExternalConstructionManagerLoading = false;
                 });
             });
