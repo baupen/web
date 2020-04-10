@@ -2,9 +2,9 @@
     <div>
         <div class="form-inline">
             <div class="form-group">
-                <input type="email" v-model="newEmail" :placeholder="$t('construction_manager.email')" class="form-control">
+                <input type="email" v-model="newEmail" :placeholder="$t('edit_external_construction_managers.placeholders.email')" class="form-control">
             </div>
-            <button type="submit" @click="addConstructionManager" class="btn btn-primary"> {{$t("edit_external_construction_managers.actions.add")}}</button>
+            <button type="submit" @click="addConstructionManager" class="btn btn-primary">{{$t("edit_external_construction_managers.actions.add")}}</button>
         </div>
 
         <table v-if="orderedConstructionManagers.length > 0" class="table table-hover table-condensed">

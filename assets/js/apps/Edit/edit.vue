@@ -210,9 +210,10 @@
                 });
             },
             addExternalConstructionManager: function (constructionManager) {
+                this.externalConstructionManagers.push(constructionManager);
                 axios.post("/api/edit/external_construction_manager", {
                     constructionSiteId: this.constructionSiteId,
-                    constructionManager: constructionManager
+                    externalConstructionManager: constructionManager
                 }).then((response) => {
                     constructionManager.id = response.data.constructionManager.id;
                 });
