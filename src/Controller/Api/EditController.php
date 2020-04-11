@@ -586,10 +586,10 @@ class EditController extends ApiController
             $firstPart = explode('@', $constructionManager->getEmail())[0];
             $names = explode('.', $firstPart);
             if (\count($names) > 0) {
-                $constructionManager->setGivenName($names[0]);
+                $constructionManager->setGivenName(ucfirst($names[0]));
             }
             if (\count($names) > 1) {
-                $constructionManager->setFamilyName($names[\count($names) - 1]);
+                $constructionManager->setFamilyName(ucfirst($names[\count($names) - 1]));
             }
         } elseif (!$constructionManager->getIsExternalAccount()) {
             return $this->fail(self::ONLY_EXTERNAL_CONSTRUCTION_MANAGERS_CAN_BE_ADDED);
