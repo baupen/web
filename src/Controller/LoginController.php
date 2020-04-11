@@ -356,7 +356,7 @@ class LoginController extends BaseLoginController
         $email->setSubject($translator->trans('confirm.app_email.subject', [], 'login'));
         $email->setBody($translator->trans('confirm.app_email.body', ['%website%' => $request->getHttpHost()], 'login'));
         $email->setActionText($translator->trans('confirm.app_email.action_text', [], 'login'));
-        $email->setActionLink('mangel.io://login?username=' . $user->getEmail() . '&domain=' . $request->getHttpHost());
+        $email->setActionLink('mangel.io://login?username=' . urlencode($user->getEmail()) . '&domain=' . urlencode($request->getHttpHost()));
 
         $this->fastSave($email);
 
