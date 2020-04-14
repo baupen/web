@@ -82,7 +82,7 @@ class LoginController extends BaseLoginController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if (!$authorizationService->checkIfAuthorized($constructionManager->getEmail())) {
+            if (!$authorizationService->checkIfAuthorized($constructionManager)) {
                 $this->displayError($translator->trans('create.error.email_invalid', [], 'login'));
             } else {
                 $response = $this->register($request, $constructionManager, $authorizationService, $translator, $emailService, $logger);
@@ -100,7 +100,7 @@ class LoginController extends BaseLoginController
      *
      * @return Response
      */
-    public function confirmAction(Request $request, string $authenticationHash, TranslatorInterface $translator)
+    public function confirmAction(Request $request, string $authenticationHash, TranslatorInterface $translator, EmailServiceInterface $emailService)
     {
         $arr = [];
 
@@ -119,9 +119,9 @@ class LoginController extends BaseLoginController
 
         $form = $this->handleForm(
             $this->createForm(ConfirmType::class, $user, ['data_class' => ConstructionManager::class])
-                ->add('submit', SubmitType::class, ['translation_domain' => 'login']),
+                ->add('submit', SubmitType::class, ['translation_domain' => 'login', 'label' => 'login.submit']),
             $request,
-            function ($form) use ($user, $translator, $request) {
+            function ($form) use ($user, $translator, $request, $emailService) {
                 //check for valid password
                 if ($user->getPlainPassword() !== $user->getRepeatPlainPassword()) {
                     $this->displayError($translator->trans('reset.error.passwords_do_not_match', [], 'login'));
@@ -140,6 +140,10 @@ class LoginController extends BaseLoginController
 
                 //login user & redirect
                 $this->loginUser($request, $user);
+
+                if ($user->getIsExternalAccount()) {
+                    $this->sendAppEMail($request, $user, $translator, $emailService);
+                }
 
                 return $this->redirectToRoute('help_overview');
             }
@@ -303,12 +307,7 @@ class LoginController extends BaseLoginController
         $existing = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
         if ($existing === null) {
             // prepare account for usage
-            $constructionManager->setRegistrationDate();
-            $constructionManager->setPlainPassword(uniqid('_initial_pw_'));
-            $constructionManager->setPassword();
-            $constructionManager->setAuthenticationHash();
-            $constructionManager->setIsEnabled(true);
-
+            $constructionManager->register();
             $authorizationService->tryFillDefaultValues($constructionManager);
 
             $this->fastSave($constructionManager);
@@ -345,5 +344,26 @@ class LoginController extends BaseLoginController
         $this->displayError($translator->trans('create.fail.welcome_email_not_sent', [], 'login'));
 
         return false;
+    }
+
+    private function sendAppEMail(Request $request, ConstructionManager $user, TranslatorInterface $translator, EmailServiceInterface $emailService)
+    {
+        $email = new Email();
+        $email->setSystemSender();
+        $email->setReceiver($user->getEmail());
+
+        $email->setEmailType(EmailType::ACTION_EMAIL);
+        $email->setSubject($translator->trans('confirm.app_email.subject', [], 'login'));
+        $email->setBody($translator->trans('confirm.app_email.body', ['%website%' => $request->getHttpHost()], 'login'));
+        $email->setActionText($translator->trans('confirm.app_email.action_text', [], 'login'));
+        $email->setActionLink('mangel.io://login?username=' . urlencode($user->getEmail()) . '&domain=' . urlencode($request->getHttpHost()));
+
+        $this->fastSave($email);
+
+        // send email
+        if ($emailService->sendEmail($email)) {
+            $email->setSentDateTime(new \DateTime());
+            $this->fastSave($email);
+        }
     }
 }

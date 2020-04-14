@@ -14,6 +14,7 @@ namespace App\Tests\Controller\Api;
 use App\Api\Entity\Edit\CheckMapFile;
 use App\Api\Entity\Edit\UpdateConstructionSite;
 use App\Api\Entity\Edit\UpdateCraftsman;
+use App\Api\Entity\Edit\UpdateExternalConstructionManager;
 use App\Api\Entity\Edit\UpdateMap;
 use App\Api\Entity\Edit\UpdateMapFile;
 use App\Api\Entity\Edit\UploadMapFile;
@@ -21,6 +22,7 @@ use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\Edit\CheckMapFileRequest;
 use App\Api\Request\Edit\UpdateConstructionSiteRequest;
 use App\Api\Request\Edit\UpdateCraftsmanRequest;
+use App\Api\Request\Edit\UpdateExternalConstructionManagerRequest;
 use App\Api\Request\Edit\UpdateMapFileRequest;
 use App\Api\Request\Edit\UpdateMapRequest;
 use App\Api\Request\Edit\UploadMapFileRequest;
@@ -463,6 +465,63 @@ class EditControllerTest extends ApiController
         if (!$testsExecuted) {
             $this->fail('test set does not cover all needed cases');
         }
+    }
+
+    public function testExternalConstructionManagers()
+    {
+        // add
+        $addUrl = '/api/edit/external_construction_manager';
+        $testEmail = 'craft@man.ch';
+        $constructionSite = $this->getSomeConstructionSite();
+
+        $updateExternalConstructionManager = new UpdateExternalConstructionManager();
+        $updateExternalConstructionManager->setEmail('craft@man.ch');
+        $updateCraftsmanRequest = new UpdateExternalConstructionManagerRequest();
+        $updateCraftsmanRequest->setExternalConstructionManager($updateExternalConstructionManager);
+        $updateCraftsmanRequest->setConstructionSiteId($constructionSite->getId());
+        $response = $this->authenticatedPostRequest($addUrl, $updateCraftsmanRequest);
+        $externalConstructionManagerData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($externalConstructionManagerData->data);
+        $this->assertNotNull($externalConstructionManagerData->data->constructionManager);
+        $externalConstructionManager = $externalConstructionManagerData->data->constructionManager;
+        $this->assertNotNull($externalConstructionManager->id);
+        $externalConstructionManagerId = $externalConstructionManager->id;
+
+        // view
+        $viewUrl = '/api/edit/external_construction_managers';
+        $constructionSite = $this->getSomeConstructionSite();
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+
+        $response = $this->authenticatedPostRequest($viewUrl, $constructionSiteRequest);
+        $externalConstructionManagerData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($externalConstructionManagerData->data);
+        $this->assertTrue(is_array($externalConstructionManagerData->data->constructionManagers));
+        $externalConstructionManagerCount = count($externalConstructionManagerData->data->constructionManagers) ;
+        $this->assertTrue($externalConstructionManagerCount > 0);
+        foreach ($externalConstructionManagerData->data->constructionManagers as $externalConstructionManager) {
+            $this->assertNotNull($externalConstructionManager);
+            $this->assertObjectHasAttribute('id', $externalConstructionManager);
+            $this->assertObjectHasAttribute('email', $externalConstructionManager);
+        }
+
+        // delete
+        $constructionSiteRequest = new ConstructionSiteRequest();
+        $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
+        $response = $this->authenticatedDeleteRequest($addUrl . '/' . $externalConstructionManagerId, $constructionSiteRequest);
+        $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        // check really deleted
+        $response = $this->authenticatedPostRequest($viewUrl, $constructionSiteRequest);
+        $externalConstructionManagerData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($externalConstructionManagerData->data);
+        $this->assertTrue(is_array($externalConstructionManagerData->data->constructionManagers));
+        $newExternalConstructionManagerCount = count($externalConstructionManagerData->data->constructionManagers) ;
+        $this->assertTrue($newExternalConstructionManagerCount + 1 == $externalConstructionManagerCount);
+
     }
 
     private function countAvailableCraftsmen()

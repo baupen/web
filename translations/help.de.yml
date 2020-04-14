@@ -15,3 +15,5 @@ overview:
   inspect: Abschliessen
   inspect_description: 'Markiere in der iOS-App die erledigten Pendenzen als abgeschlossen.'
   start: 'Zur Anwendung'
+  send_app_links: 'E-Mail mit Login Informationen zusenden'
+  app_login: 'Beim Login in der App, gib %website% als Webseite ein.'

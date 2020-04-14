@@ -63,16 +63,20 @@ class AuthorizationService implements AuthorizationServiceInterface
      *
      * @return bool
      */
-    public function checkIfAuthorized(string $email)
+    public function checkIfAuthorized(ConstructionManager $constructionManager)
     {
         if ($this->authorizationMethod === self::AUTHORIZATION_METHOD_NONE) {
+            return true;
+        }
+
+        if ($constructionManager->getIsExternalAccount() || $constructionManager->getIsTrialAccount()) {
             return true;
         }
 
         if ($this->authorizationMethod === self::AUTHORIZATION_METHOD_WHITELIST) {
             $emailLookup = $this->getAllWhitelistedEmailLookup();
 
-            return \array_key_exists($email, $emailLookup);
+            return \array_key_exists($constructionManager->getEmail(), $emailLookup);
         }
 
         throw new \Exception('invalid authorization method configured: ' . $this->authorizationMethod);

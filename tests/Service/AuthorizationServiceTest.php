@@ -6,6 +6,7 @@ namespace App\Tests\Service;
 
 use App\Entity\ConstructionManager;
 use App\Service\AuthorizationService;
+use App\Service\Interfaces\AuthorizationServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -52,11 +53,8 @@ class AuthorizationServiceTest extends WebTestCase
         // arrange
         $service = $this->getAuthorizationService("none");
 
-        // act
-        $isAuthorized = $service->checkIfAuthorized("something@nonreal.ch");
-
-        // assert
-        $this->assertTrue($isAuthorized);
+        // act & assert
+        $this->assertAuthorized($service, "something@nonreal.ch");
     }
 
     /**
@@ -69,7 +67,9 @@ class AuthorizationServiceTest extends WebTestCase
 
         // act
         $this->expectException(\Exception::class);
-        $service->checkIfAuthorized("something@nonreal.ch");
+        $constructionManager = new ConstructionManager();
+        $constructionManager->setEmail("something@nonreal.ch");
+        $service->checkIfAuthorized($constructionManager);
     }
 
     /**
@@ -80,17 +80,24 @@ class AuthorizationServiceTest extends WebTestCase
         // arrange
         $service = $this->getAuthorizationService("whitelist");
 
-        // act
-        $isAuthorized = $service->checkIfAuthorized("info@mangel.io");
-        $isAuthorized1 = $service->checkIfAuthorized("info2@mangel.io");
-        $isAuthorized2 = $service->checkIfAuthorized("info3@mangel.io");
-        $isAuthorized3 = $service->checkIfAuthorized("info4@mangel.io");
+        // act & assert
+        $this->assertAuthorized($service, "info@mangel.io");
+        $this->assertAuthorized($service, "info2@mangel.io");
+        $this->assertAuthorized($service, "info3@mangel.io");
+        $this->assertNotAuthorized($service, "info4@mangel.io");
 
-        // assert
-        $this->assertTrue($isAuthorized);
-        $this->assertTrue($isAuthorized1);
-        $this->assertTrue($isAuthorized2);
-        $this->assertFalse($isAuthorized3);
+        $constructionManager = new ConstructionManager();
+        $constructionManager->setEmail("invalid@invalid.com");
+
+        // check trial accounts
+        $constructionManager->setIsTrialAccount(true);
+        $this->assertTrue($service->checkIfAuthorized($constructionManager));
+        $constructionManager->setIsTrialAccount(false);
+
+        // check external accounts
+        $constructionManager->setIsExternalAccount(true);
+        $this->assertTrue($service->checkIfAuthorized($constructionManager));
+        $constructionManager->setIsExternalAccount(false);
     }
 
     /**
@@ -116,6 +123,29 @@ class AuthorizationServiceTest extends WebTestCase
         $this->assertConstructionManager($infoConstructionManager, "info", "mangel.io", "42");
         $this->assertConstructionManager($info2ConstructionManager, "info2");
         $this->assertConstructionManager($unknownConstructionManager);
+    }
+
+    private function assertAuthorized(AuthorizationServiceInterface $authorizationService, string $email)
+    {
+        return $this->assertAuthorization($authorizationService, $email, true);
+    }
+
+    private function assertNotAuthorized(AuthorizationServiceInterface $authorizationService, string $email)
+    {
+        return $this->assertAuthorization($authorizationService, $email, false);
+    }
+
+    private function assertAuthorization(AuthorizationServiceInterface $authorizationService, string $email, bool $expected)
+    {
+        $constructionManager = new ConstructionManager();
+        $constructionManager->setEmail($email);
+        $isAuthorized = $authorizationService->checkIfAuthorized($constructionManager);
+
+        if ($expected) {
+            $this->assertTrue($isAuthorized);
+        } else {
+            $this->assertFalse($isAuthorized);
+        }
     }
 
     /**

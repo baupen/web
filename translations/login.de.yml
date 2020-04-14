@@ -55,6 +55,13 @@ confirm:
   submit: aktivieren
   success:
     welcome: 'Ihr Account ist nun fertig eingerichtet.'
+  app_email:
+    subject: 'Loggen Sie sich in die App ein'
+    body: |
+      Willkommen! Um alle Funktionen nutzen zu können...
+      1. laden Sie sich die mangel.io App vom iOS Store herunter
+      2. loggen Sie sich mit Benutzername, Passwort und der Webseite %website% ein
+    action_text: 'App login link'
   error:
     invalid_hash: 'Dieser Link ist nicht mehr gültig. Starten Sie die Registrierung neu oder loggen Sie sich ein wie gewohnt.'
 logout:

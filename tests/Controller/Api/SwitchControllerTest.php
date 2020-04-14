@@ -43,6 +43,17 @@ class SwitchControllerTest extends ApiController
         }
     }
 
+    public function testPermissions()
+    {
+        $url = '/api/switch/permissions';
+
+        $response = $this->authenticatedGetRequest($url);
+        $constructionSiteData = $this->checkResponse($response, ApiStatus::SUCCESS);
+
+        $this->assertNotNull($constructionSiteData->data);
+        $this->assertTrue($constructionSiteData->data->canEditAssignment);
+    }
+
     public function testCreateCheck()
     {
         $requestAccessUrl = '/api/switch/create/check';
