@@ -14,7 +14,6 @@ namespace App\Repository;
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
 use App\Entity\Issue;
-use function count;
 use DateTime;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -78,7 +77,6 @@ class IssueRepository extends EntityRepository
      */
     public function findByFilter(Filter $filter)
     {
-        //set conditions from filter
         $queryBuilder = $this->createQueryBuilderFromFilter($filter);
 
         /** @var Issue[] $issues */
@@ -96,8 +94,12 @@ class IssueRepository extends EntityRepository
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder()
             ->select('i')
+            ->addSelect('p')
+            ->addSelect('m')
+            ->addSelect('c')
             ->from(Issue::class, 'i')
             ->leftJoin('i.craftsman', 'c')
+            ->leftJoin('i.position', 'p')
             ->join('i.map', 'm')
             ->join('m.constructionSite', 'cs')
             ->where('cs.id = :constructionSite')
