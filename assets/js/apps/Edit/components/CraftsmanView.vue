@@ -89,7 +89,8 @@
                         email: "",
                         company: "",
                         trade: "",
-                        issueCount: 0
+                        issueCount: 0,
+                        canRemove: true
                     }
                 };
 

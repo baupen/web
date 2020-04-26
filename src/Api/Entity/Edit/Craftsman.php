@@ -33,6 +33,11 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
      */
     private $issueCount;
 
+    /**
+     * @var bool
+     */
+    private $canRemove;
+
     public function getContactName(): string
     {
         return $this->contactName;
@@ -71,5 +76,15 @@ class Craftsman extends \App\Api\Entity\Base\Craftsman
     public function setIssueCount(int $issueCount): void
     {
         $this->issueCount = $issueCount;
+    }
+
+    public function getCanRemove(): bool
+    {
+        return $this->canRemove;
+    }
+
+    public function setCanRemove(bool $canRemove): void
+    {
+        $this->canRemove = $canRemove;
     }
 }
