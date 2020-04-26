@@ -30,6 +30,7 @@ use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
+use App\Entity\Map;
 use DateTime;
 use Exception;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -104,12 +105,7 @@ class RegisterController extends ApiController
             return $errorResponse;
         }
 
-        $topLevelMaps = [];
-        foreach ($constructionSite->getMaps() as $map) {
-            if ($map->getParent() === null) {
-                $topLevelMaps[] = $map;
-            }
-        }
+        $topLevelMaps = $this->getDoctrine()->getRepository(Map::class)->findTopLevelMaps($constructionSite);
 
         $data = new MapsData();
         $data->setMaps($mapTransformer->toApiMultiple($topLevelMaps));

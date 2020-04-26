@@ -134,10 +134,10 @@
                         res = res.filter(i => i.isRead || i.reviewedAt !== null || i.respondedAt !== null);
                     }
                     if (!statusFilter.read) {
-                        res = res.filter(i => i.reviewedAt !== null || i.respondedAt !== null || (!i.isRead && i.respondedAt === null && i.reviewedAt === null));
+                        res = res.filter(i => i.reviewedAt !== null || i.respondedAt !== null || (!i.isRead));
                     }
                     if (!statusFilter.responded) {
-                        res = res.filter(i => i.reviewedAt !== null || (i.respondedAt === null && i.reviewedAt === null));
+                        res = res.filter(i => i.reviewedAt !== null || (i.respondedAt === null));
                     }
                     if (!statusFilter.reviewed) {
                         res = res.filter(i => i.reviewedAt === null);
