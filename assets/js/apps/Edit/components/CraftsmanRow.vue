@@ -13,7 +13,7 @@
         </td>
         <td>{{craftsmanContainer.craftsman.issueCount}}</td>
         <td>
-            <button class="btn btn-danger" v-if="craftsmanContainer.craftsman.issueCount === 0"
+            <button class="btn btn-danger" v-if="craftsmanContainer.craftsman.canRemove"
                     @click="$emit('remove', craftsmanContainer)">
                 <font-awesome-icon :icon="['fal', 'trash']"/>
             </button>

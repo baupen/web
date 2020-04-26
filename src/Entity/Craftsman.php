@@ -77,6 +77,13 @@ class Craftsman extends BaseEntity
     private $issues;
 
     /**
+     * @var Issue[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Issue", mappedBy="responseBy")
+     */
+    private $respondedIssues;
+
+    /**
      * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
@@ -110,6 +117,7 @@ class Craftsman extends BaseEntity
     public function __construct()
     {
         $this->issues = new ArrayCollection();
+        $this->respondedIssues = new ArrayCollection();
     }
 
     public function getContactName(): string
@@ -170,6 +178,14 @@ class Craftsman extends BaseEntity
         return $this->issues;
     }
 
+    /**
+     * @return Issue[]|ArrayCollection
+     */
+    public function getRespondedIssues()
+    {
+        return $this->respondedIssues;
+    }
+
     public function getName(): string
     {
         return $this->getCompany() . ' (' . $this->getContactName() . ')';
@@ -227,5 +243,10 @@ class Craftsman extends BaseEntity
     {
         $this->emailIdentifier = Uuid::uuid4()->toString();
         $this->writeAuthorizationToken = Uuid::uuid4()->toString();
+    }
+
+    public function canRemove()
+    {
+        return $this->issues->count() === 0 && $this->respondedIssues->count() === 0;
     }
 }

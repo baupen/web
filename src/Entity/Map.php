@@ -22,7 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
  * An Email is a sent email to the specified receivers.
  *
  * @ORM\Table(name="map")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Repository\MapRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class Map extends BaseEntity

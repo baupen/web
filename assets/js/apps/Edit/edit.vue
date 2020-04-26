@@ -61,8 +61,10 @@
         />
         <external-construction-manager-view v-else
                         :external-construction-managers="externalConstructionManagers"
+                        :loading="isExternalConstructionManagerAdding"
                         @add="addExternalConstructionManager(arguments[0])"
                         @remove="removeExternalConstructionManager(arguments[0])"
+
         />
     </div>
 </template>
@@ -98,6 +100,7 @@
                 actionQueue: [],
                 externalConstructionManagers: [],
                 isExternalConstructionManagerLoading: true,
+                isExternalConstructionManagerAdding: false
             }
         },
         mixins: [notifications],
@@ -210,12 +213,14 @@
                 });
             },
             addExternalConstructionManager: function (constructionManager) {
+                this.isExternalConstructionManagerAdding = true;
                 axios.post("/api/edit/external_construction_manager", {
                     constructionSiteId: this.constructionSiteId,
                     externalConstructionManager: constructionManager
                 }).then((response) => {
                     constructionManager.id = response.data.constructionManager.id;
                     this.externalConstructionManagers.push(constructionManager);
+                    this.isExternalConstructionManagerAdding = false;
                 });
             },
             removeExternalConstructionManager: function (constructionManager) {

@@ -108,7 +108,7 @@ class Issue extends BaseEntity
     /**
      * @var Craftsman|null
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="respondedIssues")
      */
     private $responseBy;
 

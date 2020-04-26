@@ -46,6 +46,7 @@ class CraftsmanTransformer extends BatchTransformer
         $craftsman->setContactName($entity->getContactName());
         $craftsman->setEmail($entity->getEmail());
         $craftsman->setIssueCount($entity->getIssues()->count());
+        $craftsman->setCanRemove($entity->canRemove());
 
         return $craftsman;
     }
