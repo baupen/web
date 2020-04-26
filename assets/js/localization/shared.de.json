@@ -17,6 +17,9 @@
     "postal_code": "PLZ",
     "created_at": "erstellt am"
   },
+  "construction_manager": {
+    "email": "E-Mail"
+  },
   "craftsman": {
     "_plural": "Unternehmer",
     "name": "Name",

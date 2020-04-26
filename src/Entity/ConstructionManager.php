@@ -80,6 +80,13 @@ class ConstructionManager extends BaseEntity implements UserInterface
     private $isTrialAccount = false;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private $isExternalAccount = false;
+
+    /**
      * constructor.
      */
     public function __construct()
@@ -186,5 +193,27 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public function setIsTrialAccount(bool $isTrialAccount): void
     {
         $this->isTrialAccount = $isTrialAccount;
+    }
+
+    public function getIsExternalAccount(): bool
+    {
+        return $this->isExternalAccount;
+    }
+
+    public function setIsExternalAccount(bool $isExternalAccount): void
+    {
+        $this->isExternalAccount = $isExternalAccount;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function register()
+    {
+        $this->setRegistrationDate();
+        $this->setPlainPassword(uniqid('_initial_pw_'));
+        $this->setPassword();
+        $this->setAuthenticationHash();
+        $this->setIsEnabled(true);
     }
 }

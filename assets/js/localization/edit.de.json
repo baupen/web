@@ -75,6 +75,16 @@
       "close": "Schliessen"
     }
   },
+  "edit_external_construction_managers": {
+    "title": "Externe Mitarbeiter",
+    "help": "Gewähren Sie externen Mitarbeitern Zugriff auf diese Baustelle damit diese auch Pendenzen erfassen und verwalten können.",
+    "placeholders": {
+      "email": "max@musterag.ch"
+    },
+    "actions": {
+      "add": "Hinzufügen & informieren per E-Mail"
+    }
+  },
   "set_automatically": "automatisch festlegen",
   "issue_count": "Anzahl Pendenzen"
 }
