@@ -521,7 +521,7 @@ class EditController extends ApiController
             throw new NotFoundHttpException();
         }
 
-        if ($craftsman->canRemove()) {
+        if (!$craftsman->canRemove()) {
             return $this->fail(self::CRAFTSMAN_HAS_ISSUES_ASSIGNED);
         }
 
