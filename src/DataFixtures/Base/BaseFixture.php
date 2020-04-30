@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class BaseFixture extends Fixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
-    /** @var ContainerInterface $container */
+    /** @var ContainerInterface */
     private $container;
 
     public function setContainer(ContainerInterface $container = null)
