@@ -26,6 +26,7 @@
                                       @update-issues="updateIssues"
                                       @update-status="updateStatus">
                     </issue-edit-table>
+                    <b-pagination :per-page="100" v-model="currentPage" :total-rows="allFilteredIssues.length"></b-pagination>
                 </div>
             </div>
         </div>
@@ -50,6 +51,7 @@
     export default {
         data: function () {
             return {
+                currentPage: 1,
                 constructionSiteId: null,
                 issues: [],
                 isLoading: true,
@@ -114,7 +116,17 @@
             LinkExport
         },
         computed: {
-            filteredIssues: function () {
+            filteredIssues: function() {
+                let currentPage = this.currentPage;
+
+                const paginatedStart = (currentPage-1)*100;
+                if (this.allFilteredIssues.length < paginatedStart) {
+                    currentPage = 0;
+                }
+
+                return this.allFilteredIssues.slice((currentPage-1)*100, (currentPage)*100);
+            },
+            allFilteredIssues: function () {
                 let res = this.issues;
 
                 const filter = this.normalizeFilter(this.filter);
