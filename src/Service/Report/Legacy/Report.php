@@ -169,8 +169,9 @@ class Report
      * @param $tableHead
      * @param $tableContent
      * @param string|null $tableTitle
+     * @param mixed|null  $firstColumnSize
      */
-    public function addTable($tableHead, $tableContent, $tableTitle = null)
+    public function addTable($tableHead, $tableContent, $tableTitle = null, $firstColumnSize = null)
     {
         $this->setDefaults();
 
@@ -193,7 +194,7 @@ class Report
         //print header
         $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
         $maxTries = 3;
-        while (!$this->printRow($row, true, $this->pdfDesign->getLightBackground()) && $maxTries > 0) {
+        while (!$this->printRow($row, true, $this->pdfDesign->getLightBackground(), $firstColumnSize) && $maxTries > 0) {
             //simply retry to print row if it did not work
             --$maxTries;
         }
@@ -204,7 +205,7 @@ class Report
         $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
         foreach ($tableContent as $row) {
             $maxTries = 3;
-            while (!$this->printRow($row, $currentRow % 2 === 1, $this->pdfDesign->getLighterBackground()) && $maxTries > 0) {
+            while (!$this->printRow($row, $currentRow % 2 === 1, $this->pdfDesign->getLighterBackground(), $firstColumnSize) && $maxTries > 0) {
                 //simply retry to print row if it did not work
                 --$maxTries;
             }
@@ -356,7 +357,7 @@ class Report
         return $endY - $startY + $pageAdapt;
     }
 
-    private function printRow($row, $fill, $fillBackground)
+    private function printRow($row, $fill, $fillBackground, $firstColumnSize = null)
     {
         //alternative background colors
         $columnCount = \count($row);
@@ -368,8 +369,8 @@ class Report
         $startY = $this->pdfDocument->GetY();
         $startPage = $this->pdfDocument->getPage();
         foreach ($row as $item) {
-            $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount), $startY);
-            $currentWidth = $this->pdfSizes->getColumnWidth($currentColumn, $columnCount);
+            $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount, $firstColumnSize), $startY);
+            $currentWidth = $this->pdfSizes->getColumnWidth($currentColumn, $columnCount, $firstColumnSize);
 
             //draw cell content
             $this->pdfDocument->MultiCell($currentWidth, $maxContentHeight - $startY, $item, 0, 'L', $fill, 1);
@@ -381,13 +382,13 @@ class Report
                 //row did not fit on current page; start over on new page
                 //print over started row
                 $this->pdfDocument->setPage($startPage);
-                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount), $startY);
+                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount), $startY, $firstColumnSize);
                 $this->pdfDocument->SetCellPadding(0);
                 $this->pdfDocument->SetFillColor(...$this->pdfDesign->getWhiteBackground());
                 $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $this->pdfSizes->getContentYEnd() - $startY, '', 0, 0, '', true);
 
                 //go to new page
-                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount), $this->pdfSizes->getContentYStart());
+                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount), $this->pdfSizes->getContentYStart(), $firstColumnSize);
                 $this->pdfDocument->setPage($startPage + 1);
 
                 //print over started row
@@ -400,7 +401,7 @@ class Report
                 $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $lineX, $this->pdfSizes->getContentXEnd(), $lineX);
 
                 //set position to start new row
-                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount) + $this->pdfSizes->getLineWidth(), $lineX);
+                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount) + $this->pdfSizes->getLineWidth(), $lineX, $firstColumnSize);
 
                 //reset colors
                 $this->pdfDocument->SetFillColor(...$fillBackground);
@@ -416,7 +417,7 @@ class Report
 
                 //redraw fill if needed
                 if ($fill) {
-                    $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount), $maxContentHeight);
+                    $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount), $maxContentHeight, $firstColumnSize);
                     $this->pdfDocument->SetCellPadding(0);
                     $this->pdfDocument->Cell($fullWidth, $diff, '', 0, 0, '', $fill);
                     $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());

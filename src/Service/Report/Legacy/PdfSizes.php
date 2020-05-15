@@ -155,13 +155,18 @@ class PdfSizes
 
     /**
      * @param $numberOfColumns
-     * @param bool $compact
+     * @param bool       $compact
+     * @param mixed|null $firstColumnSize
      *
      * @return float|float
      */
-    public function getColumnContentWidth($numberOfColumns, $compact = false)
+    public function getColumnContentWidth($numberOfColumns, $firstColumnSize = null)
     {
-        $gutterSpace = ($numberOfColumns - 1) * $this->getColumnGutter($compact);
+        $gutterSpace = ($numberOfColumns - 1) * $this->getColumnGutter();
+
+        if ($firstColumnSize !== null) {
+            return (float) ($this->getContentXSize() - $gutterSpace - $firstColumnSize) / ($numberOfColumns - 1);
+        }
 
         return (float) ($this->getContentXSize() - $gutterSpace) / $numberOfColumns;
     }
@@ -169,30 +174,41 @@ class PdfSizes
     /**
      * @param $currentColumn
      * @param $numberOfColumns
-     * @param bool $compact
+     * @param bool       $compact
+     * @param mixed|null $firstColumnSize
      *
      * @return float|float
      */
-    public function getColumnWidth($currentColumn, $numberOfColumns, $compact = false)
+    public function getColumnWidth($currentColumn, $numberOfColumns, $firstColumnSize = null)
     {
-        $baseWidth = $this->getColumnContentWidth($numberOfColumns, $compact);
-        if ($currentColumn === $numberOfColumns - 1) {
-            return $baseWidth;
+        if ($firstColumnSize !== null && $currentColumn === 0) {
+            return $firstColumnSize;
         }
 
-        return $baseWidth + $this->getColumnGutter($compact);
+        $baseWidth = $this->getColumnContentWidth($numberOfColumns, $firstColumnSize);
+
+        return $baseWidth + $this->getColumnGutter();
     }
 
     /**
      * @param $currentColumn
      * @param $numberOfColumns
-     * @param bool $compact
+     * @param bool       $compact
+     * @param mixed|null $firstColumnSize
      *
      * @return float|float
      */
-    public function getColumnStart($currentColumn, $numberOfColumns, $compact = false)
+    public function getColumnStart($currentColumn, $numberOfColumns, $firstColumnSize = null)
     {
-        return ($this->getColumnWidth($currentColumn - 1, $numberOfColumns, $compact)) * $currentColumn + $this->getContentXStart();
+        if ($currentColumn === 0) {
+            return $this->getContentXStart();
+        }
+
+        if ($firstColumnSize !== null) {
+            return ($this->getColumnWidth($currentColumn - 1, $numberOfColumns, $firstColumnSize)) * ($currentColumn - 1) + $firstColumnSize + $this->getContentXStart();
+        }
+
+        return ($this->getColumnWidth($currentColumn - 1, $numberOfColumns)) * $currentColumn + $this->getContentXStart();
     }
 
     /**

@@ -47,7 +47,7 @@ class ImageService implements ImageServiceInterface
      * @var int the bubble size as an abstract unit
      *          the higher the number the smaller the resulting bubble
      */
-    private $bubbleScale = 1000;
+    private $bubbleScale = 800;
 
     /**
      * @var bool if the cache should be disabled
@@ -327,11 +327,13 @@ class ImageService implements ImageServiceInterface
      */
     private function drawRectangleWithText($yPosition, $xPosition, $circleColor, $text, &$image)
     {
+        $textFactor = mb_strlen($text) / 2.6;
+
         //get sizes
         $xSize = imagesx($image);
         $ySize = imagesy($image);
         $imageSize = $xSize * $ySize;
-        $targetTextDimension = sqrt($imageSize / ($this->bubbleScale * M_PI));
+        $targetTextDimension = sqrt($imageSize / ($this->bubbleScale * M_PI)) * $textFactor;
 
         //get text dimensions
         $font = __DIR__ . '/../../assets/fonts/OpenSans-Bold.ttf';
@@ -469,7 +471,7 @@ class ImageService implements ImageServiceInterface
                 /* @var Issue $issue */
                 return $issue->getId() . $issue->getStatusCode() . $issue->getLastChangedAt()->format('c');
             };
-            $issueHash = hash('sha256', 'v1' . implode(',', array_map($issueToString, $issues)));
+            $issueHash = hash('sha256', 'v1' . implode(',', array_map($issueToString, $issues)) . $this->bubbleScale);
 
             //render issue image
             $issueImagePath = $generationTargetFolder . DIRECTORY_SEPARATOR . $issueHash . '.jpg';

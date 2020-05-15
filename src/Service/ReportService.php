@@ -331,6 +331,7 @@ class ReportService implements ReportServiceInterface
         $showReviewed = $filter->getReviewedStatus() === null || $filter->getReviewedStatus();
 
         $tableHeader[] = '#';
+        $tableHeader[] = $this->translator->trans('entity.name', [], 'entity_craftsman');
         $tableHeader[] = $this->translator->trans('description', [], 'entity_issue');
         $tableHeader[] = $this->translator->trans('response_limit', [], 'entity_issue');
 
@@ -350,6 +351,7 @@ class ReportService implements ReportServiceInterface
         foreach ($issues as $issue) {
             $row = [];
             $row[] = $issue->getNumber();
+            $row[] = $issue->getCraftsman()->getCompany() . "\n" . $issue->getCraftsman()->getTrade();
             $row[] = $issue->getDescription();
             $row[] = ($issue->getResponseLimit() !== null) ? $issue->getResponseLimit()->format(DateTimeFormatter::DATE_FORMAT) : '';
 
@@ -368,7 +370,7 @@ class ReportService implements ReportServiceInterface
             $tableContent[] = $row;
         }
 
-        $report->addTable($tableHeader, $tableContent);
+        $report->addTable($tableHeader, $tableContent, null, 10);
     }
 
     /**
