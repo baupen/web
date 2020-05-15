@@ -327,7 +327,7 @@ class ImageService implements ImageServiceInterface
      */
     private function drawRectangleWithText($yPosition, $xPosition, $circleColor, $text, &$image)
     {
-        $textFactor = \mb_strlen($text) / 2.6;
+        $textFactor = mb_strlen($text) / 2.6;
 
         //get sizes
         $xSize = imagesx($image);
