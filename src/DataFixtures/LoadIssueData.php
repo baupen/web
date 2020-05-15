@@ -31,7 +31,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class LoadIssueData extends BaseFixture
 {
     const ORDER = EnrichConstructionSiteData::ORDER + LoadConstructionManagerData::ORDER + LoadCraftsmanData::ORDER + ClearContentFolders::ORDER + 1;
-    const MULTIPLICATION_FACTOR = 3;
+    const MULTIPLICATION_FACTOR = 30;
 
     const REGISTRATION_SET = 1;
     const RESPONSE_SET = 2;

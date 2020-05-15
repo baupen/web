@@ -41,7 +41,6 @@
         mounted() {
             //get unique id of component for id attribute
             this.id = this._uid;
-            console.log(this.maps);
         }
     }
 </script>
