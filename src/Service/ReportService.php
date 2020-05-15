@@ -368,7 +368,7 @@ class ReportService implements ReportServiceInterface
             $tableContent[] = $row;
         }
 
-        $report->addTable($tableHeader, $tableContent);
+        $report->addTable($tableHeader, $tableContent, null, 10);
     }
 
     /**
