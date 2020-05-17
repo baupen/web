@@ -2,7 +2,7 @@ language: php
 sudo: false
 
 node_js:
-  - "lts/12"
+  - 12
 
 cache:
   directories:
