@@ -284,6 +284,10 @@
                 this.editIssue = issue;
             },
             cellEditConfirm: function (cell, issue, args = null) {
+                if (this.selectedIssues.length === 0) {
+                  this.selectedIssues.push(issue);
+                }
+                
                 if (cell === "status") {
                     this.$emit('update-status', this.selectedIssues, args[0], args[1]);
                 }
