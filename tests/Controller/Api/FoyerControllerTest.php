@@ -94,6 +94,7 @@ class FoyerControllerTest extends ApiController
         foreach ($this->getIssues()->data->issues as $apiIssue) {
             $updateIssue = new UpdateIssue($apiIssue->id);
             $updateIssue->setIsMarked(false);
+            $updateIssue->setWasAddedWithClient(false);
             $updateIssue->setResponseLimit(new DateTime());
             $updateIssue->setCraftsmanId($craftsman->getId());
             $updateIssue->setDescription('hello world');
@@ -114,6 +115,7 @@ class FoyerControllerTest extends ApiController
         foreach ($issuesData->data->issues as $issue) {
             $this->assertNotNull($issue);
             $this->assertFalse($issue->isMarked);
+            $this->assertFalse($issue->wasAddedWithClient);
             $this->assertSame('hello world', $issue->description);
             $this->assertSame($craftsman->getId(), $issue->craftsmanId);
         }
