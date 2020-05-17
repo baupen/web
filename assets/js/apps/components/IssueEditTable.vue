@@ -64,10 +64,18 @@
                         {{issue.number}}
                     </td>
                     <td class="minimal-width">
-                        <marked-cell @toggle-mark="toggleMark(issue)" :issue="issue"/>
+                        <marked-cell
+                                @edit-confirm="cellEditConfirm('isMarked', issue)"
+                                @edit-start="cellEditStart('isMarked', issue)"
+                                :issue="issue"
+                        />
                     </td>
                     <td class="minimal-width">
-                        <was-added-with-client-cell @toggle-was-added-with-client="toggleWasAddedWithClient(issue)" :issue="issue"/>
+                        <was-added-with-client-cell
+                                @edit-confirm="cellEditConfirm('wasAddedWithClient', issue)"
+                                @edit-start="cellEditStart('wasAddedWithClient', issue)"
+                                :issue="issue"
+                        />
                     </td>
                     <td class="minimal-width">
                         <img class="lightbox-thumbnail" @click.prevent.stop="openLightbox(issue.imageFull)"
