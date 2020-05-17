@@ -21,6 +21,11 @@ class UpdateIssue extends \App\Api\Entity\Base\Issue
     private $isMarked;
 
     /**
+     * @var bool
+     */
+    private $wasAddedWithClient;
+
+    /**
      * @var string|null
      */
     private $craftsmanId;
@@ -58,5 +63,15 @@ class UpdateIssue extends \App\Api\Entity\Base\Issue
     public function setResponseLimit(?DateTime $responseLimit): void
     {
         $this->responseLimit = $responseLimit;
+    }
+
+    public function getWasAddedWithClient(): bool
+    {
+        return $this->wasAddedWithClient;
+    }
+
+    public function setWasAddedWithClient(bool $wasAddedWithClient): void
+    {
+        $this->wasAddedWithClient = $wasAddedWithClient;
     }
 }

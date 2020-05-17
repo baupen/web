@@ -44,6 +44,7 @@ class UpdateIssueTransformer
      */
     public function fromApi(UpdateIssue $issue, Issue $entity, $validateCraftsman)
     {
+        $entity->setWasAddedWithClient($issue->getWasAddedWithClient());
         $entity->setIsMarked($issue->getIsMarked());
         $entity->setResponseLimit($issue->getResponseLimit());
 
