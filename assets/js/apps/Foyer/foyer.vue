@@ -27,6 +27,13 @@
                         <font-awesome-icon v-else :icon="['fal', 'sort']"/>
                     </th>
 
+                    <th class="sortable" @click="sortBy('wasAddedWithClient')" :class="{ active: 'wasAddedWithClient' === sortKey }">
+
+                        <font-awesome-icon v-if="sortKey === 'wasAddedWithClient'"
+                                           :icon="sortOrders['wasAddedWithClient'] > 0 ? 'sort-up' : 'sort-down'"/>
+                        <font-awesome-icon v-else :icon="['fal', 'sort']"/>
+                    </th>
+
                     <th></th>
 
                     <th class="sortable" @click="sortBy('description')" :class="{ active: 'description' === sortKey }">
@@ -81,6 +88,10 @@
                     <td class="minimal-width clickable" @click.prevent.stop="markIssue(issue)">
                         <font-awesome-icon v-if="issue.isMarked" :icon="['fas', 'star']"/>
                         <font-awesome-icon v-else :icon="['fal', 'star']"/>
+                    </td>
+                    <td class="minimal-width clickable" @click.prevent.stop="toggleWasAddedWithClient(issue)">
+                        <font-awesome-icon v-if="issue.wasAddedWithClient" :icon="['fas', 'user-check']"/>
+                        <font-awesome-icon v-else :icon="['fal', 'user-check']"/>
                     </td>
                     <td class="minimal-width">
                         <img class="lightbox-thumbnail" @click.prevent.stop="openLightbox(issue)"
@@ -230,7 +241,7 @@
     export default {
         data: function () {
             const sortOrders = {};
-            ["isMarked", "description", "craftsman", "responseLimit", "map", "uploadByName"].forEach(e => sortOrders[e] = 1);
+            ["isMarked", "wasAddedWithClient", "description", "craftsman", "responseLimit", "map", "uploadByName"].forEach(e => sortOrders[e] = 1);
             return {
                 datePickerLang: document.documentElement.lang.substr(0, 2) === "de" ? de : it,
                 issues: [],
@@ -238,7 +249,7 @@
                 trades: [],
                 isLoading: true,
                 constructionSiteId: null,
-                sortKey: "isMarked",
+                sortKey: null,
                 sortOrders: sortOrders,
                 textFilter: null,
                 editDescription: null,
@@ -426,7 +437,19 @@
                 this.save();
             },
             markIssue: function (issue) {
-                issue.isMarked = !issue.isMarked;
+                if (this.issues.filter(i => i.selected).length === 0) {
+                    issue.selected = true;
+                }
+                const newValue = !issue.isMarked;
+                this.issues.filter(i => i.selected).forEach(i => i.isMarked = newValue);
+                this.save();
+            },
+            toggleWasAddedWithClient: function (issue) {
+                if (this.issues.filter(i => i.selected).length === 0) {
+                    issue.selected = true;
+                }
+                const newValue = !issue.wasAddedWithClient;
+                this.issues.filter(i => i.selected).forEach(i => i.wasAddedWithClient = newValue);
                 this.save();
             },
             confirm: function () {
@@ -495,6 +518,8 @@
                     response.data.issues.forEach(c => {
                         let match = activeIssues.filter(i => i.id === c.id);
                         if (match.length === 1) {
+                            match[0].isMarked = c.isMarked;
+                            match[0].wasAddedWithClient = c.wasAddedWithClient;
                             match[0].description = c.description;
                             match[0].craftsmanId = c.craftsmanId;
                             match[0].responseLimit = c.responseLimit;
@@ -619,12 +644,12 @@
             sortedIssues: function () {
                 const sortKey = this.sortKey;
                 const filterKey = this.textFilter && this.textFilter.toLowerCase();
-                const order = this.sortOrders[sortKey];
                 let data = this.issues;
                 if (filterKey) {
                     data = data.filter(issues => issues.description.toLowerCase().indexOf(filterKey) > -1);
                 }
                 if (sortKey) {
+                    const order = this.sortOrders[sortKey];
                     data = data.sort((a, b) => {
                         if (sortKey === 'craftsman') {
                             a = this.craftsmanTrade(a) + this.craftsmanName(a);
@@ -635,7 +660,7 @@
                         }
 
                         let currentOrder = order;
-                        if (sortKey === 'isMarked') {
+                        if (sortKey === 'isMarked' || sortKey === 'wasAddedWithClient') {
                             currentOrder *= -1;
                         }
                         return (a === b ? 0 : a > b ? 1 : -1) * currentOrder;

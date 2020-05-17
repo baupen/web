@@ -17,6 +17,10 @@
                     </sortable-header>
                     <sortable-header @do-sort="sortBy('isMarked')"
                                      :sort-state="sortKey === 'isMarked' ? sortOrders[sortKey] : 0"/>
+
+                    <sortable-header @do-sort="sortBy('wasAddedWithClient')"
+                                     :sort-state="sortKey === 'wasAddedWithClient' ? sortOrders[sortKey] : 0"/>
+
                     <th></th>
 
                     <sortable-header @do-sort="sortBy('description')"
@@ -60,7 +64,18 @@
                         {{issue.number}}
                     </td>
                     <td class="minimal-width">
-                        <marked-cell @toggle-mark="toggleMark(issue)" :issue="issue"/>
+                        <marked-cell
+                                @edit-confirm="cellEditConfirm('isMarked', issue)"
+                                @edit-start="cellEditStart('isMarked', issue)"
+                                :issue="issue"
+                        />
+                    </td>
+                    <td class="minimal-width">
+                        <was-added-with-client-cell
+                                @edit-confirm="cellEditConfirm('wasAddedWithClient', issue)"
+                                @edit-start="cellEditStart('wasAddedWithClient', issue)"
+                                :issue="issue"
+                        />
                     </td>
                     <td class="minimal-width">
                         <img class="lightbox-thumbnail" @click.prevent.stop="openLightbox(issue.imageFull)"
@@ -146,6 +161,7 @@
     import StatusCell from './components/StatusCell'
     import Lightbox from './Lightbox'
     import MarkedCell from "./components/MarkedCell";
+    import WasAddedWithClientCell from "./components/WasAddedWithClientCell";
 
     Array.prototype.unique = function () {
         return Array.from(new Set(this));
@@ -169,7 +185,7 @@
         },
         data: function () {
             const sortOrders = {};
-            ["number", "isMarked", "description", "craftsmanId", "responseLimit", "map", "status"].forEach(e => sortOrders[e] = 1);
+            ["number", "wasAddedWithClient", "isMarked", "description", "craftsmanId", "responseLimit", "map", "status"].forEach(e => sortOrders[e] = 1);
             return {
                 sortKey: "number",
                 sortOrders: sortOrders,
@@ -193,6 +209,7 @@
             }
         },
         components: {
+            WasAddedWithClientCell,
             MarkedCell,
             ResponseLimitCell,
             CraftsmanCell,
@@ -287,6 +304,10 @@
                 issue.isMarked = !issue.isMarked;
                 this.$emit('update-issues', [issue]);
             },
+            toggleWasAddedWithClient: function (issue) {
+                issue.wasAddedWithClient = !issue.wasAddedWithClient;
+                this.$emit('update-issues', [issue]);
+            },
             openLightbox: function (url) {
                 this.lightbox.enabled = true;
                 this.lightbox.imageFull = url;
@@ -348,7 +369,7 @@
                         }
 
                         let currentOrder = order;
-                        if (sortKey === 'isMarked') {
+                        if (sortKey === 'isMarked' || sortKey === 'wasAddedWithClient') {
                             currentOrder *= -1;
                         }
                         return (a === b ? 0 : a > b ? 1 : -1) * currentOrder;
