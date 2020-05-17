@@ -43,7 +43,9 @@ if (document.getElementById('foyer') != null) {
   new Vue({
     i18n,
     el: '#foyer',
-    template: '<Foyer/>',
-    components: { Foyer }
+    components: { Foyer },
+    render (h) {
+      return h('Foyer');
+    }
   });
 }

@@ -50,7 +50,9 @@ if (document.getElementById('switch') != null) {
   new Vue({
     i18n,
     el: '#switch',
-    template: '<SwitchApp/>',
-    components: { SwitchApp: Switch }
+    components: { Switch },
+    render (h) {
+      return h('Switch');
+    }
   });
 }

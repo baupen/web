@@ -43,7 +43,9 @@ if (document.getElementById('register') != null) {
   new Vue({
     i18n,
     el: '#register',
-    template: '<Register/>',
-    components: { Register }
+    components: { Register },
+    render (h) {
+      return h('Register');
+    }
   });
 }

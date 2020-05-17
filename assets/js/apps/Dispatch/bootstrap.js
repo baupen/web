@@ -47,7 +47,9 @@ if (document.getElementById('dispatch') != null) {
   new Vue({
     i18n,
     el: '#dispatch',
-    template: '<Dispatch/>',
-    components: { Dispatch }
+    components: { Dispatch },
+    render (h) {
+      return h('Dispatch');
+    }
   });
 }

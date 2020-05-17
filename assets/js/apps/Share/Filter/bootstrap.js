@@ -46,7 +46,9 @@ if (document.getElementById('share-public') != null) {
   new Vue({
     i18n,
     el: '#share-public',
-    template: '<MyFilter/>',
-    components: { MyFilter: Filter }
+    components: { FilterApp: Filter },
+    render (h) {
+      return h('FilterApp');
+    }
   });
 }

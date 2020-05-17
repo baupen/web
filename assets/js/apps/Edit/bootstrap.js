@@ -49,7 +49,9 @@ if (document.getElementById('edit') != null) {
   new Vue({
     i18n,
     el: '#edit',
-    template: '<EditApp/>',
-    components: { EditApp: Edit }
+    components: { Edit },
+    render (h) {
+      return h('Edit');
+    }
   });
 }
