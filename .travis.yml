@@ -2,7 +2,7 @@ language: php
 sudo: false
 
 node_js:
-  - "lts/10"
+  - "lts/12"
 
 cache:
   directories:
@@ -55,7 +55,7 @@ install:
   # configure fontawesome
   - npm config set "@fortawesome:registry" https://npm.fontawesome.com/
   - npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_AUTH_TOKEN
-  
+
   # install dependencies
   - composer install --no-scripts
   - yarn install
