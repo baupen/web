@@ -8,7 +8,8 @@ cache:
   directories:
     - $HOME/.composer/cache/files
     - $HOME/symfony-bridge/.phpunit
-    - $HOME/.sonar/cache
+    - node_modules
+    - vendor
 
 env:
   global:
@@ -31,7 +32,7 @@ before_install:
   # install git, libmagickwand-dev (for imagick extension) & use node 10.4
   - sudo apt-get update
   - sudo apt-get install -y gnupg git libmagickwand-dev php-pear ghostscript
-  - nvm install 10.4
+  - nvm install v12
 
   # install phpunit
   - sudo curl --location --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-7.phar

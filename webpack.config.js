@@ -1,4 +1,4 @@
-var Encore = require('@symfony/webpack-encore');
+const Encore = require('@symfony/webpack-encore');
 
 Encore
 // the project directory where all compiled assets will be stored
@@ -17,11 +17,19 @@ Encore
   // allow sass/scss files to be processed
   .enableSassLoader()
 
+  // auto prefix css for more browser support
+  .enablePostCssLoader()
+
+  .configureBabel(() => {}, {
+    useBuiltIns: 'usage',
+    corejs: 3
+  })
+
   // allow legacy applications to use $/jQuery as a global variable
   .autoProvidejQuery()
 
   // enable vue.js loader
-  .enableVueLoader()
+  .enableVueLoader(() => {}, { runtimeCompilerBuild: false })
 
   // allow debugging of minified assets
   .enableSourceMaps(!Encore.isProduction())

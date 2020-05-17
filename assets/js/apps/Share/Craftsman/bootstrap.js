@@ -45,7 +45,9 @@ if (document.getElementById('share-craftsman') != null) {
   new Vue({
     i18n,
     el: '#share-craftsman',
-    template: '<Craftsman/>',
-    components: { Craftsman }
+    components: { Craftsman },
+    render (h) {
+      return h('Craftsman');
+    }
   });
 }

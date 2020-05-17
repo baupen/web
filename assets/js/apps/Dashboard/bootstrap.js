@@ -45,7 +45,9 @@ if (document.getElementById('dashboard') != null) {
   new Vue({
     i18n,
     el: '#dashboard',
-    template: '<Dashboard/>',
-    components: { Dashboard }
+    components: { Dashboard },
+    render (h) {
+      return h('Dashboard');
+    }
   });
 }
