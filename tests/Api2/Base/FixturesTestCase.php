@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Tests\Controller\Base;
+namespace App\Tests\Api2\Base;
 
 use Exception;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -32,13 +32,14 @@ class FixturesTestCase extends WebTestCase
     /**
      * @throws Exception
      */
-    public static function reset(): void
+    public static function setUpBeforeClass(): void
     {
         $client = static::createClient();
         $application = new Application($client->getKernel());
         $application->setAutoExit(false);
 
         $commands = [
+            'doctrine:migrations:migrate -q',
             'doctrine:fixtures:load -n -q',
         ];
 
