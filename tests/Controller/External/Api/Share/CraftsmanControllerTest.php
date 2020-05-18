@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Tests\Controller\Api\Share;
+namespace App\Tests\Controller\External\Api\Share;
 
 use App\Api\Request\Share\Craftsman\IssueRequest;
 use App\Entity\Craftsman;
