@@ -26,7 +26,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class CraftsmanControllerTest extends ApiController
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::reset();
     }

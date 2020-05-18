@@ -16,7 +16,7 @@ use App\Tests\Controller\Api\Base\ApiController;
 
 class ConfigurationControllerTest extends ApiController
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::reset();
     }

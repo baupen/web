@@ -30,6 +30,8 @@ class FileControllerTest extends ApiController
      */
     public function testFileUploadDownload()
     {
+        self::reset();
+
         $client = static::createClient();
         $user = $this->getAuthenticatedUser($client);
         $serializer = $client->getContainer()->get('serializer');
