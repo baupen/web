@@ -20,7 +20,7 @@ class ConfigurationControllerTest extends ApiController
     {
         self::reset();
     }
-    
+
     public function testConfiguration()
     {
         $url = '/api/configuration';
