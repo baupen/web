@@ -22,11 +22,17 @@ Encore
 
   .configureBabel(() => {}, {
     useBuiltIns: 'usage',
-    corejs: 3
+    corejs: 3,
+    includeNodeModules: ['vue-masonry']
   })
 
   // allow legacy applications to use $/jQuery as a global variable
   .autoProvidejQuery()
+
+  /*
+  .enableTypeScriptLoader()
+  .enableForkedTypeScriptTypesChecking()
+  */
 
   // enable vue.js loader
   .enableVueLoader(() => {}, { runtimeCompilerBuild: false })
@@ -45,4 +51,4 @@ Encore
 ;
 
 // export the final configuration
-module.exports = Encore.getWebpackConfig();
+module.exports = Encore.getWebpackConfig()
