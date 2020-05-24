@@ -2,7 +2,7 @@ language: php
 sudo: false
 
 node_js:
-  - "lts/10"
+  - "lts/12"
 
 cache:
   directories:
@@ -34,17 +34,12 @@ before_install:
   - sudo apt-get install -y gnupg git libmagickwand-dev php-pear ghostscript
   - nvm install v12
 
-  # install phpunit
-  - sudo curl --location --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-7.phar
-  - sudo chmod +x /usr/local/bin/phpunit
-
   # install imagick requirements
   - printf "\n" | sudo pecl install imagick-3.4.3
   - echo "extension=imagick.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
   # print versions just in case
   - php --version
-  - /usr/local/bin/phpunit --version
   - node --version
 
 # prepare programming environment
@@ -97,7 +92,7 @@ script:
 
   # backend tests
   - ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
-  - /usr/local/bin/phpunit
+  - ./vendor/bin/phpunit
 
 # report code coverage
 after_script:
