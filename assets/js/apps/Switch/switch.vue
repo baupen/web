@@ -9,17 +9,21 @@
                           :color="'#ff1d5e'"
             />
 
-            <div v-masonry :transition-duration="'0.3s'" :item-selector="'.grid-item'" :gutter="10">
-                <div v-masonry-tile class="grid-item" v-for="constructionSite in managingConstructionSites">
+            <masonry
+                    :cols="{default: 4, 1400: 3, 1000: 2, 600: 1}"
+                    :gutter="{default: '30px', 1000: '15px'}"
+            >
+                <div class="grid-item" v-for="constructionSite in managingConstructionSites">
                     <construction-site :construction-site="constructionSite"></construction-site>
                 </div>
-                <div v-masonry-tile class="grid-item" v-if="createConstructionSiteActive">
+                <div class="grid-item" v-if="createConstructionSiteActive">
                     <b-card :title="$t('actions.create_construction_site')">
                         <add-construction-site-form
                                 @submitted="addConstructionSiteSubmitted($event)"></add-construction-site-form>
                     </b-card>
                 </div>
-            </div>
+            </masonry>
+
         </template>
         <template v-else>
             <div class="alert alert-info">

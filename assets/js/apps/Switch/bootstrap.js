@@ -6,9 +6,7 @@ import BootstrapVue from 'bootstrap-vue';
 // components
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import Vuelidate from 'vuelidate';
-
-// import ES6 style
-import { VueMasonryPlugin } from 'vue-masonry';
+import VueMasonry from 'vue-masonry-css'
 
 // app
 import Switch from './switch';
@@ -33,7 +31,7 @@ if (document.getElementById('switch') != null) {
   // register plugins
   Vue.use(VueI18n);
   Vue.use(BootstrapVue);
-  Vue.use(VueMasonryPlugin);
+  Vue.use(VueMasonry);
   Vue.use(Vuelidate);
 
   // register components
