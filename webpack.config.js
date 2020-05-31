@@ -23,7 +23,7 @@ Encore
   .configureBabel(() => {}, {
     useBuiltIns: 'usage',
     corejs: 3,
-    includeNodeModules: ['vue-masonry']
+    includeNodeModules: ['epic-spinners', 'moment']
   })
 
   // allow legacy applications to use $/jQuery as a global variable
