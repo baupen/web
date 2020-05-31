@@ -6,7 +6,7 @@ import BootstrapVue from 'bootstrap-vue';
 // components
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import Vuelidate from 'vuelidate';
-import VueMasonry from 'vue-masonry-css'
+import VueMasonry from 'vue-masonry-css';
 
 // app
 import Switch from './switch';
