@@ -1,3 +1,4 @@
+
 <template>
     <div>
         <h4 class="clickable" @click="toggleFilter" :class="{'mark' : filter.enabled }">{{$t("issue.map")}}</h4>

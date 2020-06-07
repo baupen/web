@@ -4,7 +4,9 @@
             <input type="checkbox"
                    class="custom-control-input"
                    :id="'map' + map.id + id"
-                   v-model="filter.maps" :value="map">
+                   v-model="filter.maps" :value="map"
+                   @change="onMapSelect(map)"
+            >
             <label class="custom-control-label" :for="'map' + map.id + id">
                 {{ map.name }}
             </label>
@@ -33,6 +35,37 @@
         data: function () {
             return {
                 id: null
+            }
+        },
+        methods: {
+            onMapSelect: function (map) {
+                if (this.filter.maps.includes(map)) {
+                    if (!this.someChildContained(map.children)) {
+                        this.addAllWithChildren(map.children);
+                    }
+                } else {
+                  if (this.everyChildContained(map.children)) {
+                    this.removeAllWithChildren(map.children);
+                  }
+                }
+            },
+            addAllWithChildren: function(maps) {
+              maps.forEach(m =>  {
+                this.filter.maps.push(m);
+                this.addAllWithChildren(m.children);
+              });
+            },
+            removeAllWithChildren: function(maps) {
+              maps.forEach(m =>  {
+                this.filter.maps.splice(this.filter.maps.indexOf(m), 1);
+                this.removeAllWithChildren(m.children);
+              });
+            },
+            someChildContained: function(maps) {
+                return maps.some(m =>  this.filter.maps.includes(m) || this.someChildContained(m.children));
+            },
+            everyChildContained: function(maps) {
+                return maps.every(m =>  this.filter.maps.includes(m) && this.everyChildContained(m.children));
             }
         },
         components: {
