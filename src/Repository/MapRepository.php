@@ -37,6 +37,6 @@ class MapRepository extends EntityRepository
             }
         }
 
-        return $maps;
+        return $topLevelMaps;
     }
 }
