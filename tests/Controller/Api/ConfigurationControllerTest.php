@@ -16,6 +16,11 @@ use App\Tests\Controller\Api\Base\ApiController;
 
 class ConfigurationControllerTest extends ApiController
 {
+    public static function setUpBeforeClass(): void
+    {
+        self::reset();
+    }
+
     public function testConfiguration()
     {
         $url = '/api/configuration';

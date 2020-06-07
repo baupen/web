@@ -101,6 +101,8 @@ class IssueControllerTest extends ApiController
      */
     public function testUpdateIssue()
     {
+        self::reset();
+        
         $client = static::createClient();
         $user = $this->getAuthenticatedUser($client);
         $serializer = $client->getContainer()->get('serializer');

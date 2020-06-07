@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Tests\Controller\Api\Share;
+namespace App\Tests\Controller\External\Api\Share;
 
 use App\Api\Request\Share\Craftsman\IssueRequest;
 use App\Entity\Craftsman;
@@ -26,6 +26,11 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class CraftsmanControllerTest extends ApiController
 {
+    public static function setUpBeforeClass(): void
+    {
+        self::reset();
+    }
+
     /**
      * @var Craftsman|null
      */
