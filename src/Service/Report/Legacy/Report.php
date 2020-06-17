@@ -368,6 +368,7 @@ class Report
         $fullWidth = 0;
         $startY = $this->pdfDocument->GetY();
         $startPage = $this->pdfDocument->getPage();
+        $this->pdfDocument->startTransaction();
         foreach ($row as $item) {
             $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount, $firstColumnSize), $startY);
             $currentWidth = $this->pdfSizes->getColumnWidth($currentColumn, $columnCount, $firstColumnSize);
@@ -377,35 +378,14 @@ class Report
 
             //if new page started; remove from old page and retry on new page
             if ($this->pdfDocument->getPage() > $startPage) {
-                $newHeight = $this->pdfDocument->GetY();
+                $this->pdfDocument->rollbackTransaction(true);
 
-                //row did not fit on current page; start over on new page
-                //print over started row
-                $this->pdfDocument->setPage($startPage);
-                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount), $startY, $firstColumnSize);
-                $this->pdfDocument->SetCellPadding(0);
-                $this->pdfDocument->SetFillColor(...$this->pdfDesign->getWhiteBackground());
-                $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $this->pdfSizes->getContentYEnd() - $startY, '', 0, 0, '', true);
+                $this->pdfDocument->AddPage();
 
-                //go to new page
-                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount), $this->pdfSizes->getContentYStart(), $firstColumnSize);
-                $this->pdfDocument->setPage($startPage + 1);
-
-                //print over started row
-                if ($fill) {
-                    $this->pdfDocument->SetFillColor(...$fillBackground);
-                }
-                $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $newHeight - $this->pdfSizes->getContentYStart(), '', 0, 0, '', true);
-                //draw line
                 $lineX = $this->pdfSizes->getContentYStart();
                 $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $lineX, $this->pdfSizes->getContentXEnd(), $lineX);
 
-                //set position to start new row
-                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount) + $this->pdfSizes->getLineWidth(), $lineX, $firstColumnSize);
-
-                //reset colors
-                $this->pdfDocument->SetFillColor(...$fillBackground);
-                $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
+                $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount) + $this->pdfSizes->getLineWidth(), $lineX);
 
                 return false;
             }
@@ -436,6 +416,8 @@ class Report
         //draw finishing line & set position for new row
         $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $maxContentHeight, $this->pdfSizes->getContentXEnd(), $maxContentHeight);
         $this->pdfDocument->SetY($maxContentHeight + $this->pdfSizes->getLineWidth());
+
+        $this->pdfDocument->commitTransaction();
 
         return true;
     }
