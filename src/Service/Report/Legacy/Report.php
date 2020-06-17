@@ -223,7 +223,7 @@ class Report
     {
         $this->setDefaults();
 
-        $columnWidth = $this->pdfSizes->getColumnContentWidth($columnCount, true);
+        $columnWidth = $this->pdfSizes->getColumnContentWidth($columnCount);
 
         $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
         $cellWidthPadding = $this->pdfSizes->getTableCellPadding()[0] + $this->pdfSizes->getTableCellPadding()[2];
@@ -253,7 +253,7 @@ class Report
                 //image
                 $height = $entry['height'];
                 $width = $entry['width'];
-                $xStart = $this->pdfSizes->getColumnStart($currentColumn, $columnCount, true) + (((float) $columnWidth - $width) / 2);
+                $xStart = $this->pdfSizes->getColumnStart($currentColumn, $columnCount);
                 $this->pdfDocument->Image($entry['imagePath'], $xStart, $startY, $width, $height, '', '', '', '', 300, '', false, false, 1);
 
                 //identification
