@@ -87,6 +87,14 @@ class ReportService implements ReportServiceInterface
     {
         $issues = $this->doctrine->getRepository(Issue::class)->findByFilter($filter);
 
+        // 1 second by 10 issues seems reasonable
+        $executionTime = max(ini_get('max_execution_time'), \count($issues) / 10);
+        ini_set('max_execution_time', $executionTime);
+
+        // 200 kb per issue seems reasonable
+        $memoryLimitMbs = max(256, 0.2 * \count($issues));
+        ini_set('memory_limit', $memoryLimitMbs . 'M');
+
         //create folder
         $generationTargetFolder = $this->pathService->getTransientFolderForReports($constructionSite);
         if (!file_exists($generationTargetFolder)) {
