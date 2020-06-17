@@ -31,9 +31,6 @@ class DashboardController extends BaseLoginController
             return $this->redirectToRoute('switch');
         }
 
-        $limit = ini_get('memory_limit');
-        dump($limit);
-
         return $this->render('dashboard/dashboard.html.twig');
     }
 }
