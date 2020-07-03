@@ -75,7 +75,11 @@
     "lint": "eslint assets/js",
     "flow": "flow check",
     "postinstall": "node ./node_modules/husky/lib/installer/bin install",
-    "download-translations": "lokalise --token=$LOKALISE_TOKEN export 564588455cc2e87e98fb44.15262570 --type json --unzip_to assets/js/localization --use_original 1 --no_language_folders 1 --indentation 2sp --export_empty skip --plural_format symfony --placeholder_format icu"
+    "download-translations": "lokalise --token=$LOKALISE_TOKEN export 564588455cc2e87e98fb44.15262570 --type json --unzip_to assets/js/localization --use_original 1 --no_language_folders 1 --indentation 2sp --export_empty skip --plural_format symfony --placeholder_format icu",
+    "dev-server": "encore dev-server --pfx=$HOME/.symfony/certs/default.p12 --https --port 8080 --disable-host-check",
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production --progress"
   },
   "browserslist": [
     "defaults"
