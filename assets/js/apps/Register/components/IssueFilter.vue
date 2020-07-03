@@ -9,6 +9,9 @@
                 <base-checkbox v-model="filter.onlyOverLimit">
                     {{$t("search.only_over_limit")}}
                 </base-checkbox>
+                <base-checkbox v-model="filter.onlyWasAddedWithClient">
+                    {{$t("search.only_was_added_with_client")}}
+                </base-checkbox>
             </div>
         </div>
         <div class="card">

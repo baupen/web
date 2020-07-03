@@ -70,6 +70,13 @@ class Filter extends BaseEntity
     private $isMarked;
 
     /**
+     * @var bool|null
+     *
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $wasAddedWithClient;
+
+    /**
      * @var string[]|null
      *
      * @ORM\Column(type="simple_array", nullable=true)
@@ -253,6 +260,11 @@ class Filter extends BaseEntity
         $this->isMarked = $isMarked;
     }
 
+    public function filterByWasAddedWithClient(bool $wasAddedWithClient): void
+    {
+        $this->wasAddedWithClient = $wasAddedWithClient;
+    }
+
     public function filterByResponseLimitEnd(?DateTime $limitEnd): void
     {
         $this->limitEnd = $limitEnd;
@@ -343,6 +355,11 @@ class Filter extends BaseEntity
     public function getIsMarked(): ?bool
     {
         return $this->isMarked;
+    }
+
+    public function getWasAddedWithClient(): ?bool
+    {
+        return $this->wasAddedWithClient;
     }
 
     /**

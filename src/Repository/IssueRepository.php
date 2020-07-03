@@ -200,6 +200,12 @@ class IssueRepository extends EntityRepository
             ;
         }
 
+        if ($filter->getWasAddedWithClient() !== null) {
+            $queryBuilder->andWhere('i.wasAddedWithClient = :was_added_with_client')
+                ->setParameter('was_added_with_client', $filter->getWasAddedWithClient())
+            ;
+        }
+
         return $queryBuilder;
     }
 

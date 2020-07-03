@@ -22,7 +22,7 @@
                 <div v-else>
                     <issue-edit-table :craftsmen="craftsmen"
                                       :issues="filteredIssues"
-                                      :initial-text-filter="initialTextFilterIssueEditTable"
+                                      :filter="filter"
                                       @update-issues="updateIssues"
                                       @update-status="updateStatus">
                     </issue-edit-table>
@@ -63,6 +63,8 @@
                 filter: {
                     onlyMarked: false,
                     onlyOverLimit: false,
+                    onlyWasAddedWithClient: false,
+                    onlyWithText: "",
                     status: {
                         enabled: false,
                         registered: false,
@@ -135,6 +137,10 @@
                     res = res.filter(i => i.isMarked === true);
                 }
 
+                if (filter.onlyWasAddedWithClient) {
+                    res = res.filter(i => i.wasAddedWithClient === true);
+                }
+
                 if (filter.onlyOverLimit) {
                     const today = (new Date()).toISOString();
                     res = res.filter(i => i.responseLimit < today);
@@ -185,6 +191,16 @@
                     if (timeFilter.reviewed.enabled) {
                         res = this.filterStartEnd(res, timeFilter.reviewed, "reviewedAt");
                     }
+                }
+
+                if (filter.onlyWithText) {
+                  if (isNaN(filter.onlyWithText)) {
+                    const lowercaseText = filter.onlyWithText.toLowerCase()
+                    res = res.filter(i => i.description.toLowerCase().includes(lowercaseText));
+                  } else {
+                    console.log("looking for " + filter.onlyWithText)
+                    res = res.filter(i => i.number === filter.onlyWithText);
+                  }
                 }
 
                 return res;
