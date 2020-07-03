@@ -33,6 +33,9 @@ trait QueryParseTrait
         if ($parameterBag->getBoolean('onlyOverLimit')) {
             $filter->filterByResponseLimitEnd(new DateTime());
         }
+        if ($parameterBag->getBoolean('onlyWasAddedWithClient')) {
+            $filter->filterByWasAddedWithClient(true);
+        }
 
         $craftsmanParameters = new ParameterBag($parameterBag->get('craftsman', []));
         if ($craftsmanParameters->getBoolean('enabled')) {
