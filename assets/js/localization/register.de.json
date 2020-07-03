@@ -6,7 +6,8 @@
   "search": {
     "name": "Suche",
     "only_marked": "nur Favoriten",
-    "only_over_limit": "nur mit überschrittener Frist"
+    "only_over_limit": "nur mit überschrittener Frist",
+    "only_was_added_with_client": "nur Abnahmependenzen"
   },
   "filter": {
     "name": "Filter",

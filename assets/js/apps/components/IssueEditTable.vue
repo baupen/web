@@ -4,7 +4,7 @@
         <div class="selectable-table">
             <div class="filter-field">
                 <div class="form-group">
-                    <input class="form-control" id="filter" type="text" v-model="textFilter"
+                    <input class="form-control" id="filter" type="text" v-model="filter.onlyWithText"
                            :placeholder="$t('table.filter_placeholder')"/>
                 </div>
             </div>
@@ -177,10 +177,9 @@
                 type: Array,
                 required: true
             },
-            initialTextFilter: {
-                type: String,
-                required: false,
-                default: ""
+            filter: {
+                type: Object,
+                required: true
             }
         },
         data: function () {
@@ -189,7 +188,6 @@
             return {
                 sortKey: "number",
                 sortOrders: sortOrders,
-                textFilter: null,
 
                 editIssue: null,
                 selectedIssues: [],
@@ -287,7 +285,7 @@
                 if (this.selectedIssues.length === 0) {
                   this.selectedIssues.push(issue);
                 }
-                
+
                 if (cell === "status") {
                     this.$emit('update-status', this.selectedIssues, args[0], args[1]);
                 }
@@ -339,12 +337,8 @@
             },
             sortedIssues: function () {
                 const sortKey = this.sortKey;
-                const filterKey = this.textFilter && this.textFilter.toLowerCase();
                 const order = this.sortOrders[sortKey];
                 let data = this.issues;
-                if (filterKey) {
-                    data = data.filter(issues => issues.description.toLowerCase().indexOf(filterKey) > -1 || issues.number === filterKey);
-                }
                 if (sortKey) {
                     const statusScore = function (issue) {
                         return 1 * issue.isRead + (2 * (issue.respondedAt !== null)) + (4 * (issue.reviewedAt !== null));
@@ -386,9 +380,6 @@
                 this.craftsmen.forEach(c => res[c.id] = c);
                 return res;
             }
-        },
-        mounted() {
-            this.textFilter = this.initialTextFilter;
         }
     }
 
