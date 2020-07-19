@@ -203,6 +203,9 @@
                   }
                 }
 
+                console.log(res);
+                console.log(timeFilter);
+
                 return res;
             }
         },
@@ -333,7 +336,6 @@
     .filter-property-wrapper {
         margin-bottom: 1em;
         margin-top: 0.2em;
-        margin-left: 1.5rem;
         padding: 0.5rem 1rem;
         background-color: #efefef;
     }
