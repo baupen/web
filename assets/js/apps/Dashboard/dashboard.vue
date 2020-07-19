@@ -86,17 +86,3 @@
     }
 
 </script>
-
-<style>
-    .filter-property-wrapper {
-        margin-bottom: 1em;
-        margin-top: 0.2em;
-        margin-left: 1.5rem;
-        padding: 0.5rem 1rem;
-        background-color: #efefef;
-    }
-
-    input[type=date].form-control-sm {
-        padding-right: 0;
-    }
-</style>

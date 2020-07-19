@@ -1,22 +1,21 @@
 <template>
     <div class="row">
-        <div class="col-md-6">
-            <base-date-input v-model="status.start">
+        <div class="col-md-6">            
+            <base-date-time-input v-model="status.start">
                 {{$t("filter.later_than")}}
-            </base-date-input>
+            </base-date-time-input>
         </div>
         <div class="col-md-6">
-            <base-date-input v-model="status.end">
+            <base-date-time-input v-model="status.end">
                 {{$t("filter.earlier_than")}}
-            </base-date-input>
+            </base-date-time-input>
         </div>
     </div>
 </template>
 
 <script>
-    import BaseDateInput from '../../../components/Base/BaseDateInput'
+    import BaseDateTimeInput from '../../../components/Base/BaseDateTimeInput'
     import BaseSliderCheckbox from "../../../components/Base/BaseSliderCheckbox"
-
 
     export default {
         props: {
@@ -27,7 +26,7 @@
         },
         components: {
             BaseSliderCheckbox,
-            BaseDateInput
+            BaseDateTimeInput
         }
     }
 </script>
