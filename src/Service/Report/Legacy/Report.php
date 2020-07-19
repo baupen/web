@@ -118,6 +118,8 @@ class Report
 
     public function addMap(string $name, ?string $context, ?string $mapImageFilePath = null)
     {
+        $this->pdfDocument->startPage();
+
         $this->setDefaults();
         $startY = $this->pdfDocument->GetY();
 
