@@ -78,7 +78,7 @@ script:
   - ./node_modules/.bin/eslint assets/js
 
   # frontend vulnerability check
-  - yarn audit --groups dependencies
+  # - yarn audit --groups dependencies # deactived because old yarn version in CI
 
     # backend lint
   - '[[ "$TRAVIS_PHP_VERSION" == "nightly" ]] || ./vendor/bin/php-cs-fixer fix --diff --dry-run -v'
