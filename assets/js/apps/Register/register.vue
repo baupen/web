@@ -23,6 +23,7 @@
                     <issue-edit-table :craftsmen="craftsmen"
                                       :issues="filteredIssues"
                                       :filter="filter"
+                                      :all-filtered-issues-length="allFilteredIssues.length"
                                       @update-issues="updateIssues"
                                       @update-status="updateStatus">
                     </issue-edit-table>

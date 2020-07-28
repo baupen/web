@@ -12,7 +12,7 @@
                     </div>
                 </div>
                 <div class="col-3">
-                    <p class="text-right mb-0 mt-4 text-secondary">{{issues.length}} {{$t("search.issues")}}</p>
+                    <p class="text-right mb-0 mt-4 text-secondary">{{allFilteredIssuesLength}} {{$t("search.issues")}}</p>
                 </div>
             </div>
             <table class="table table-hover">
@@ -182,6 +182,10 @@
             },
             issues: {
                 type: Array,
+                required: true
+            },
+            allFilteredIssuesLength: {
+                type: Number,
                 required: true
             },
             filter: {
