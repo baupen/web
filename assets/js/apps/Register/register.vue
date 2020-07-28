@@ -218,10 +218,10 @@
                 const start = startEnd.start;
                 const end = startEnd.end;
                 if (start !== null) {
-                    return issues.filter(i => i[property] >= start);
+                    issues = issues.filter(i => i[property] >= start);
                 }
                 if (end !== null) {
-                    return issues.filter(i => i[property] <= end);
+                    issues = issues.filter(i => i[property] <= end);
                 }
                 return issues;
             },
