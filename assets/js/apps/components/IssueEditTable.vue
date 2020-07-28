@@ -2,10 +2,17 @@
     <div>
         <lightbox :open="lightbox.enabled" :imageSrc="lightbox.imageFull" @close="lightbox.enabled = false"/>
         <div class="selectable-table">
-            <div class="filter-field">
-                <div class="form-group">
-                    <input class="form-control" id="filter" type="text" v-model="filter.onlyWithText"
-                           :placeholder="$t('table.filter_placeholder')"/>
+            <div class="row">
+                <div class="col-9">
+                    <div class="filter-field">
+                        <div class="form-group">
+                            <input class="form-control" id="filter" type="text" v-model="filter.onlyWithText"
+                                   :placeholder="$t('table.filter_placeholder')"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <p class="text-right mb-0 mt-4 text-secondary">{{issues.length}} {{$t("search.issues")}}</p>
                 </div>
             </div>
             <table class="table table-hover">
