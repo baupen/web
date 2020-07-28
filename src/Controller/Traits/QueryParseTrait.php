@@ -37,21 +37,29 @@ trait QueryParseTrait
             $filter->filterByWasAddedWithClient(true);
         }
 
+        $toArray = function ($value) {
+            if (\is_array($value)) {
+                return $value;
+            }
+
+            return [];
+        };
+
         $craftsmanParameters = new ParameterBag($parameterBag->get('craftsman', []));
         if ($craftsmanParameters->getBoolean('enabled')) {
-            $allowedCraftsmen = $craftsmanParameters->get('craftsmen', []);
+            $allowedCraftsmen = $toArray($craftsmanParameters->get('craftsmen', []));
             $filter->filterByCraftsmen($allowedCraftsmen);
         }
 
         $tradeParameters = new ParameterBag($parameterBag->get('trade', []));
         if ($tradeParameters->getBoolean('enabled')) {
-            $allowedTrades = $tradeParameters->get('trades', []);
+            $allowedTrades = $toArray($tradeParameters->get('trades', []));
             $filter->filterByTrades($allowedTrades);
         }
 
         $mapParameters = new ParameterBag($parameterBag->get('map', []));
         if ($mapParameters->getBoolean('enabled')) {
-            $allowedMaps = $mapParameters->get('maps', []);
+            $allowedMaps = $toArray($mapParameters->get('maps', []));
             $filter->filterByMaps($allowedMaps);
         }
 
