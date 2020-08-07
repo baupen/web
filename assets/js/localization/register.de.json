@@ -5,6 +5,7 @@
   },
   "search": {
     "name": "Suche",
+    "issues": "Pendenzen",
     "only_marked": "nur Favoriten",
     "only_over_limit": "nur mit überschrittener Frist",
     "only_was_added_with_client": "nur Abnahmependenzen"

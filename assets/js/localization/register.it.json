@@ -5,6 +5,7 @@
   },
   "search": {
     "name": "Ricerca",
+    "issues": "Pendenze",
     "only_marked": "solo marcate",
     "only_over_limit": "solo oltre il termine",
     "only_was_added_with_client": "solo accettazione"

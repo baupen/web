@@ -88,7 +88,7 @@ class ReportService implements ReportServiceInterface
         $issues = $this->doctrine->getRepository(Issue::class)->findByFilter($filter);
 
         // 1 second by 2 issues seems reasonable
-        $executionTime = max(ini_get('max_execution_time'), \count($issues) / 2);
+        $executionTime = max(120, max(ini_get('max_execution_time'), \count($issues) / 2));
         ini_set('max_execution_time', $executionTime);
 
         // 200 kb per issue seems reasonable
