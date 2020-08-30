@@ -12,12 +12,11 @@ cache:
 matrix:
   fast_finish: true
   include:
-    # target version
-    - php: 7.2
-      env:
-        - COVERAGE=true
     # next target version
     - php: 7.4
+      env:
+        - COVERAGE=true
+    - php: nightly
 
 before_install:
   # install imagick
