@@ -1,5 +1,10 @@
 # Developers
-useful tips for development and its environment.
+
+This project uses the symfony framework for its php backend, the VueJS framework for its JavaScript frontend, and ApiPlatform for its API.
+
+## Backend
+
+The following bundles are installed
 
 ## Setup
 
@@ -25,14 +30,6 @@ build:
 ```
 [**travis**](https://travis-ci.org/mangelio/app/settings)  
 add an environment variable called `FONTAWESOME_AUTH_TOKEN`
-
-##### PhpCsFixer
-add `PHP_CS_FIXER_IGNORE_ENV=1` to your environment (with `export` or placing it in the `.bashrc`) to allow php cs fixer to run on php 7.3  
-
-##### PhpStorm
-install the symfony plugin and enable it  
-install the editorconfig plugin and enable it  
-enable ESLint  
 
 #### Lokalise
 create a read-only api token under `https://lokalise.co/profile/#apitokens`.
