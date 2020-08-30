@@ -136,11 +136,6 @@ class IssueControllerTest extends ApiController
         $checkIssue = $issueResponse->data->issue;
         //fully check issue
         $this->verifyIssue($checkIssue, $issue);
-
-        //check with non-existing
-        $issue->getMeta()->setId($this->getNewGuid());
-        $response = $doRequest($issue);
-        $this->checkResponse($response, ApiStatus::FAIL, IssueController::ISSUE_NOT_FOUND);
     }
 
     /**

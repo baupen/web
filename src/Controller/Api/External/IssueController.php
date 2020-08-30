@@ -29,6 +29,7 @@ use Doctrine\ORM\Id\AssignedGenerator;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\ORMException;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,27 +64,27 @@ class IssueController extends ExternalApiController
     /**
      * @Route("/create", name="api_external_issue_create", methods={"POST"})
      *
-     * @throws ORMException
      * @throws Exception
+     * @throws ORMException
      *
      * @return Response
      */
-    public function issueCreateAction(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService)
+    public function issueCreateAction(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService, LoggerInterface $logger)
     {
-        return $this->processIssueModifyRequest($request, $issueTransformer, $uploadService, 'create');
+        return $this->processIssueModifyRequest($request, $issueTransformer, $uploadService, $logger, 'create');
     }
 
     /**
      * @Route("/update", name="api_external_issue_update", methods={"POST"})
      *
-     * @throws ORMException
      * @throws Exception
+     * @throws ORMException
      *
      * @return Response
      */
-    public function issueUpdateAction(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService)
+    public function issueUpdateAction(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService, LoggerInterface $logger)
     {
-        return $this->processIssueModifyRequest($request, $issueTransformer, $uploadService, 'update');
+        return $this->processIssueModifyRequest($request, $issueTransformer, $uploadService, $logger, 'update');
     }
 
     /**
@@ -210,13 +211,14 @@ class IssueController extends ExternalApiController
 
     /**
      * @param $mode
+     * @param mixed $expectedMode
      *
-     * @throws ORMException
      * @throws Exception
+     * @throws ORMException
      *
      * @return JsonResponse|Response
      */
-    private function processIssueModifyRequest(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService, $mode)
+    private function processIssueModifyRequest(Request $request, IssueTransformer $issueTransformer, UploadServiceInterface $uploadService, LoggerInterface $logger, $expectedMode)
     {
         /** @var IssueModifyRequest $issueModifyRequest */
         /** @var ConstructionManager $constructionManager */
@@ -225,23 +227,18 @@ class IssueController extends ExternalApiController
         }
 
         $newImageExpected = $issueModifyRequest->getIssue()->getImage() !== null;
-        if ($mode === 'create') {
-            //ensure GUID not in use already
-            $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
-            if ($existing !== null) {
-                $mode = 'update';
-            }
-        }
-
-        $entity = new Issue();
-        if ($mode === 'update') {
-            //ensure issue exists
-            $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
-            if ($existing === null) {
-                return $this->fail(static::ISSUE_NOT_FOUND);
-            }
+        $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
+        if ($existing !== null) {
             $entity = $existing;
-            $newImageExpected &= $issueModifyRequest->getIssue()->getImage() !== null && ($existing->getImage() === null || $issueModifyRequest->getIssue()->getImage()->getId() !== $existing->getImage()->getId());
+            $newImageExpected &= ($existing->getImage() === null || $issueModifyRequest->getIssue()->getImage()->getId() !== $existing->getImage()->getId());
+            if ($expectedMode === 'create') {
+                $logger->error('attempted to create issue with guid ' . $entity->getId() . ' but already exists.');
+            }
+        } else {
+            $entity = new Issue();
+            if ($expectedMode === 'update') {
+                $logger->error('attempted to update issue with guid ' . $issueModifyRequest->getIssue()->getMeta()->getId() . ' but not created yet');
+            }
         }
 
         //transform to entity
