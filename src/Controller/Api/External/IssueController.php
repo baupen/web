@@ -29,7 +29,6 @@ use Doctrine\ORM\Id\AssignedGenerator;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\ORMException;
 use Exception;
-use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -230,10 +229,12 @@ class IssueController extends ExternalApiController
             //ensure GUID not in use already
             $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
             if ($existing !== null) {
-                return $this->fail(static::ISSUE_GUID_ALREADY_IN_USE);
+                $mode = 'update';
             }
-            $entity = new Issue();
-        } elseif ($mode === 'update') {
+        }
+
+        $entity = new Issue();
+        if ($mode === 'update') {
             //ensure issue exists
             $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
             if ($existing === null) {
@@ -241,8 +242,6 @@ class IssueController extends ExternalApiController
             }
             $entity = $existing;
             $newImageExpected &= $issueModifyRequest->getIssue()->getImage() !== null && ($existing->getImage() === null || $issueModifyRequest->getIssue()->getImage()->getId() !== $existing->getImage()->getId());
-        } else {
-            throw new InvalidArgumentException('mode must be create or update');
         }
 
         //transform to entity
