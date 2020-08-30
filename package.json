@@ -1,6 +1,19 @@
 {
     "dependencies": {
-        "vue": "^2.5"
+        "@fortawesome/fontawesome-pro": "^5",
+        "@fortawesome/fontawesome-svg-core": "^1",
+        "@fortawesome/pro-light-svg-icons": "^5",
+        "@fortawesome/pro-regular-svg-icons": "^5",
+        "@fortawesome/pro-solid-svg-icons": "^5",
+        "@fortawesome/vue-fontawesome": "^0.1",
+        "axios": "^0.20",
+        "bootstrap": "^4",
+        "epic-spinners": "^1",
+        "moment": "^2.22.2",
+        "vue": "^2.5",
+        "vue-flatpickr-component": "^8.1.5",
+        "vue-i18n": "^8",
+        "vue-masonry-css": "^1.0.3",
     },
     "devDependencies": {
         "@symfony/webpack-encore": "^0.30.0",
@@ -31,5 +44,8 @@
         "download-translations": "lokalise --token=$LOKALISE_TOKEN export 564588455cc2e87e98fb44.15262570 --type json --unzip_to assets/js/localization --use_original 1 --no_language_folders 1 --indentation 2sp --export_empty skip --plural_format symfony --placeholder_format icu",
         "lint": "eslint assets/js; stylelint assets/css",
         "lint-fix": "eslint --fix assets/js; stylelint --fix assets/css"
-    }
+    },
+    "browserslist": [
+        "defaults"
+    ]
 }
