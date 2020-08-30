@@ -27,7 +27,7 @@ class ApiController extends AbstractApiController
      */
     protected function getAuthenticatedClient()
     {
-        if ($this->authenticatedClient === null) {
+        if (null === $this->authenticatedClient) {
             $this->authenticatedClient = static::createClient([], [
                 'PHP_AUTH_USER' => 'f@mangel.io',
                 'PHP_AUTH_PW' => 'asdf',
@@ -39,8 +39,8 @@ class ApiController extends AbstractApiController
 
     /**
      * @param string $url
-     * @param mixed $payload
-     * @param array $files
+     * @param mixed  $payload
+     * @param array  $files
      *
      * @return Response
      */
@@ -51,8 +51,8 @@ class ApiController extends AbstractApiController
 
     /**
      * @param string $url
-     * @param mixed $payload
-     * @param array $files
+     * @param mixed  $payload
+     * @param array  $files
      *
      * @return Response
      */
@@ -63,8 +63,8 @@ class ApiController extends AbstractApiController
 
     /**
      * @param string $url
-     * @param mixed $payload
-     * @param array $files
+     * @param mixed  $payload
+     * @param array  $files
      *
      * @return Response
      */
@@ -84,11 +84,8 @@ class ApiController extends AbstractApiController
     }
 
     /**
-     * @param string $url
-     * @param string $method
      * @param array|bool $headers
-     * @param null $payload
-     * @param array $files
+     * @param null       $payload
      *
      * @return Response
      */
@@ -96,8 +93,8 @@ class ApiController extends AbstractApiController
     {
         $client = $this->getAuthenticatedClient();
 
-        $headerArray = $headers === false ? [] : ['CONTENT_TYPE' => 'application/json'];
-        $payloadValue = $payload === null ? null : $client->getContainer()->get('serializer')->serialize($payload, 'json');
+        $headerArray = false === $headers ? [] : ['CONTENT_TYPE' => 'application/json'];
+        $payloadValue = null === $payload ? null : $client->getContainer()->get('serializer')->serialize($payload, 'json');
 
         $client->request(
             $method,
@@ -121,7 +118,7 @@ class ApiController extends AbstractApiController
      */
     protected function getSomeConstructionSite()
     {
-        if ($this->someConstructionSite === null) {
+        if (null === $this->someConstructionSite) {
             $this->someConstructionSite = $this->getAuthenticatedClient()->getContainer()->get('doctrine')->getRepository(ConstructionSite::class)->findOneBy([]);
         }
 

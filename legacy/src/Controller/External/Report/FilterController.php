@@ -45,7 +45,7 @@ class FilterController extends BaseDoctrineController
 
         /** @var ConstructionSite|null $constructionSite */
         $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($filter->getConstructionSite());
-        if ($constructionSite === null) {
+        if (null === $constructionSite) {
             throw new NotFoundHttpException();
         }
 

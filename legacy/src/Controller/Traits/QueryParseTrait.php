@@ -118,14 +118,14 @@ trait QueryParseTrait
 
         //parse input to null or datetime
         $toDateTime = function ($input) {
-            return $input === null || $input === '' ? null : new DateTime($input);
+            return null === $input || '' === $input ? null : new DateTime($input);
         };
 
         if ($filterParameters->getBoolean('enabled')) {
             $start = $toDateTime($filterParameters->get('start', null));
             $end = $toDateTime($filterParameters->get('end', null));
 
-            return [$start !== null || $end !== null, $start, $end];
+            return [null !== $start || null !== $end, $start, $end];
         }
 
         return [false, null, null];

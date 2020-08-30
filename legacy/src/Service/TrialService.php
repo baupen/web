@@ -117,7 +117,7 @@ class TrialService implements TrialServiceInterface
      */
     private function addConstructionSiteContent(ConstructionSite $constructionSite)
     {
-        mkdir($this->pathService->getConstructionSiteFolderRoot() . DIRECTORY_SEPARATOR . $constructionSite->getFolderName());
+        mkdir($this->pathService->getConstructionSiteFolderRoot().DIRECTORY_SEPARATOR.$constructionSite->getFolderName());
 
         $this->copyMapFiles($constructionSite);
         $this->copyConstructionSiteFiles($constructionSite);
@@ -129,7 +129,7 @@ class TrialService implements TrialServiceInterface
      */
     private function copyMapFiles(ConstructionSite $constructionSite)
     {
-        $sourceFolder = __DIR__ . DIRECTORY_SEPARATOR . 'Trial' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'maps';
+        $sourceFolder = __DIR__.DIRECTORY_SEPARATOR.'Trial'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'maps';
         $targetFolder = $this->pathService->getFolderForMapFile($constructionSite);
         FileHelper::copyRecursively($sourceFolder, $targetFolder);
     }
@@ -139,7 +139,7 @@ class TrialService implements TrialServiceInterface
      */
     private function copyConstructionSiteFiles(ConstructionSite $constructionSite)
     {
-        $sourceFolder = __DIR__ . DIRECTORY_SEPARATOR . 'Trial' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'images';
+        $sourceFolder = __DIR__.DIRECTORY_SEPARATOR.'Trial'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'images';
         $targetFolder = $this->pathService->getFolderForConstructionSiteImage($constructionSite);
         FileHelper::copyRecursively($sourceFolder, $targetFolder);
     }
@@ -154,19 +154,19 @@ class TrialService implements TrialServiceInterface
         // create manager
         $constructionManager = new ConstructionManager();
         $constructionManager->setIsTrialAccount(true);
-        $constructionManager->setGivenName($proposedGivenName !== null ? $proposedGivenName : $this->faker->firstNameMale);
-        $constructionManager->setFamilyName($proposedFamilyName !== null ? $proposedFamilyName : $this->faker->lastName);
+        $constructionManager->setGivenName(null !== $proposedGivenName ? $proposedGivenName : $this->faker->firstNameMale);
+        $constructionManager->setFamilyName(null !== $proposedFamilyName ? $proposedFamilyName : $this->faker->lastName);
 
         // generate unused email
         $maxTries = 10;
         $repository = $this->registry->getRepository(ConstructionManager::class);
         do {
-            $email = $this->generateRandomString(5, '_') . '@test.mangel.io';
+            $email = $this->generateRandomString(5, '_').'@test.mangel.io';
 
             if ($maxTries-- < 0) {
                 throw new Exception('unable to create new random email');
             }
-        } while ($repository->findOneBy(['email' => $email]) !== null);
+        } while (null !== $repository->findOneBy(['email' => $email]));
 
         // generate login info
         $password = $this->generateRandomString(10, '-');

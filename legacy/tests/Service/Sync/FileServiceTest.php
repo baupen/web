@@ -24,7 +24,7 @@ class FileServiceTest extends TestCase
      */
     private $service;
 
-    private $resourcesFolder = __DIR__ . DIRECTORY_SEPARATOR . 'FileServiceResources';
+    private $resourcesFolder = __DIR__.DIRECTORY_SEPARATOR.'FileServiceResources';
 
     public function __construct(?string $name = null, array $data = [], string $dataName = '')
     {
@@ -39,7 +39,7 @@ class FileServiceTest extends TestCase
         });
 
         $this->assertSame(3, count($newFiles));
-        $this->assertSame(file_get_contents($this->resourcesFolder . DIRECTORY_SEPARATOR . 'serializedFiles.json'), json_encode($newFiles));
+        $this->assertSame(file_get_contents($this->resourcesFolder.DIRECTORY_SEPARATOR.'serializedFiles.json'), json_encode($newFiles));
 
         $again = $this->service->getNewFiles($this->resourcesFolder, 'pdf', $newFiles, function () {
             return new PublicFileModel();

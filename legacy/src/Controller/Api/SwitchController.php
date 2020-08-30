@@ -86,7 +86,7 @@ class SwitchController extends ApiController
         // add to construction site if not already a member
         /** @var ConstructionSite $constructionSite */
         $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(['isTrialConstructionSite' => false, 'id' => $parsedRequest->getConstructionSiteId()]);
-        if (\count($constructionSites) === 0) {
+        if (0 === \count($constructionSites)) {
             return $this->fail(self::CONSTRUCTION_SITE_NOT_FOUND);
         }
 
@@ -116,7 +116,7 @@ class SwitchController extends ApiController
         // add to construction site if not already a member
         /** @var ConstructionSite $constructionSite */
         $constructionSites = $this->getDoctrine()->getRepository(ConstructionSite::class)->findBy(['isTrialConstructionSite' => false, 'id' => $parsedRequest->getConstructionSiteId()]);
-        if (\count($constructionSites) === 0) {
+        if (0 === \count($constructionSites)) {
             return $this->fail(self::CONSTRUCTION_SITE_NOT_FOUND);
         }
 
@@ -249,8 +249,8 @@ class SwitchController extends ApiController
 
         $checkedFolderName = $proposedFolderName;
         $index = 1;
-        while (is_dir($rootPath . DIRECTORY_SEPARATOR . $checkedFolderName)) {
-            $checkedFolderName = $proposedFolderName . $index++;
+        while (is_dir($rootPath.DIRECTORY_SEPARATOR.$checkedFolderName)) {
+            $checkedFolderName = $proposedFolderName.$index++;
         }
 
         $constructionSite->setFolderName($checkedFolderName);

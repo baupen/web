@@ -479,7 +479,7 @@ class Filter extends BaseEntity
     {
         $now = new \DateTime();
 
-        return $this->getAccessAllowedUntil() === null || $this->getAccessAllowedUntil() > $now;
+        return null === $this->getAccessAllowedUntil() || $this->getAccessAllowedUntil() > $now;
     }
 
     /**

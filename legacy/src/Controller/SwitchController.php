@@ -59,7 +59,7 @@ class SwitchController extends BaseLoginController
     {
         $constructionManager = $this->getUser();
 
-        if ($constructionManager->getActiveConstructionSite() === null) {
+        if (null === $constructionManager->getActiveConstructionSite()) {
             $constructionManager->setActiveConstructionSite($constructionManager->getConstructionSites()->first());
             $this->fastSave($constructionManager);
         }

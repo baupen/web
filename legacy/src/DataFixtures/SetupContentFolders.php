@@ -58,7 +58,7 @@ class SetupContentFolders extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $sourceFolder = __DIR__ . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'persistent';
+        $sourceFolder = __DIR__.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'persistent';
         $targetFolder = $this->pathService->getFolderRoot();
         FileHelper::copyRecursively($sourceFolder, $targetFolder);
 

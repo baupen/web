@@ -73,7 +73,7 @@ class MapService implements MapServiceInterface
     private function refreshDisplayName(SyncTransaction $syncTransaction, array $maps)
     {
         foreach ($maps as $map) {
-            if ($map->getFile() !== null) {
+            if (null !== $map->getFile()) {
                 $newDisplayName = $map->getFile()->getDisplayFilename();
 
                 if ($newDisplayName !== $map->getName()) {
@@ -100,7 +100,7 @@ class MapService implements MapServiceInterface
         }
 
         foreach ($mapFiles as $mapFile) {
-            if ($mapFile->getMap() !== null || $mapFile->isPersistedInDatabase()) {
+            if (null !== $mapFile->getMap() || $mapFile->isPersistedInDatabase()) {
                 continue;
             }
 
@@ -172,7 +172,7 @@ class MapService implements MapServiceInterface
 
         $clearParent = function ($childId) use (&$mapLookup, $syncTransaction) {
             $childMap = $mapLookup[$childId];
-            if ($childMap->getParent() !== null) {
+            if (null !== $childMap->getParent()) {
                 $childMap->getParent()->getChildren()->removeElement($childMap);
                 $childMap->setParent(null);
 
@@ -207,9 +207,9 @@ class MapService implements MapServiceInterface
             $map = $maps[$i];
 
             // no children; no issues; no files -> we dont need this map
-            if ($map->getIssues()->count() === 0 && $map->getFiles()->count() === 0) {
+            if (0 === $map->getIssues()->count() && 0 === $map->getFiles()->count()) {
                 // if only one children; can remove from hierarchy
-                if ($map->getChildren()->count() === 1) {
+                if (1 === $map->getChildren()->count()) {
                     /** @var Map $child */
                     $child = $map->getChildren()->first();
                     $parent = $map->getParent();
@@ -223,8 +223,8 @@ class MapService implements MapServiceInterface
                 }
 
                 // if no children can remove
-                if ($map->getChildren()->count() === 0) {
-                    if ($map->getParent() !== null) {
+                if (0 === $map->getChildren()->count()) {
+                    if (null !== $map->getParent()) {
                         $map->getParent()->getChildren()->removeElement($map);
                         $map->setParent(null);
                     }

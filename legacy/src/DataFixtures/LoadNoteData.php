@@ -39,10 +39,10 @@ class LoadNoteData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $json = file_get_contents(__DIR__ . '/Resources/notes.json');
+        $json = file_get_contents(__DIR__.'/Resources/notes.json');
 
         $getFreshNoteSet = function () use ($json) {
-            return $this->serializer->deserialize($json, Note::class . '[]', 'json');
+            return $this->serializer->deserialize($json, Note::class.'[]', 'json');
         };
 
         $constructionSites = $manager->getRepository(ConstructionSite::class)->findAll();

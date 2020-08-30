@@ -43,23 +43,23 @@ class LoadCraftsmanData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $json = file_get_contents(__DIR__ . '/Resources/craftsmen.json');
+        $json = file_get_contents(__DIR__.'/Resources/craftsmen.json');
         $counter = 0;
 
         $constructionSites = $manager->getRepository(ConstructionSite::class)->findAll();
         foreach ($constructionSites as $constructionSite) {
             /** @var Craftsman[] $craftsmen */
             $craftsmen = [];
-            foreach ($this->serializer->deserialize($json, Craftsman::class . '[]', 'json') as $craftsman) {
+            foreach ($this->serializer->deserialize($json, Craftsman::class.'[]', 'json') as $craftsman) {
                 /* @var Craftsman $craftsman */
-                $craftsman->setEmail($craftsman->getEmail() . '.example.com');
+                $craftsman->setEmail($craftsman->getEmail().'.example.com');
                 $craftsmen[] = $craftsman;
             }
             $craftsmen = array_merge($craftsmen, $this->getConstructionSiteCraftsmen($manager));
             foreach ($craftsmen as $craftsman) {
                 $craftsman->setConstructionSite($constructionSite);
                 $craftsman->setEmailIdentifier();
-                if ($counter++ % 3 === 0) {
+                if (0 === $counter++ % 3) {
                     $craftsman->setLastOnlineVisit(new DateTime());
                     $craftsman->setLastEmailSent(new DateTime());
                 }

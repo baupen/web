@@ -57,7 +57,7 @@ class MapTransformer
         $this->mapTransformer->writeApiProperties($entity, $map);
 
         //add images
-        if ($entity->getFile() !== null) {
+        if (null !== $entity->getFile()) {
             //generate hash from ids of issues
             $hashContent = implode(',', array_map(function ($issue) {
                 /* @var IdTrait $issue */

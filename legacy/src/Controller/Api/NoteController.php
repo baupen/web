@@ -99,7 +99,7 @@ class NoteController extends ApiController
 
         //get note object
         $entity = $this->getDoctrine()->getRepository(Note::class)->findOneBy(['id' => $parsedRequest->getNoteId(), 'constructionSite' => $constructionSite->getId()]);
-        if ($entity === null) {
+        if (null === $entity) {
             return $this->fail(self::ISSUE_NOT_FOUND);
         }
         if ($entity->getCreatedBy() !== $this->getUser()) {
@@ -130,9 +130,9 @@ class NoteController extends ApiController
             return $errorResponse;
         }
 
-        if ($parsedRequest->getNote()->getId() !== null) {
+        if (null !== $parsedRequest->getNote()->getId()) {
             $entity = $this->getDoctrine()->getRepository(Note::class)->findOneBy(['id' => $parsedRequest->getNote()->getId(), 'constructionSite' => $constructionSite->getId()]);
-            if ($entity === null) {
+            if (null === $entity) {
                 return $this->fail(self::ISSUE_NOT_FOUND);
             }
             if ($entity->getCreatedBy() !== $this->getUser()) {

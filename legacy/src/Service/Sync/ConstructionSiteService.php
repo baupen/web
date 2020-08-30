@@ -107,10 +107,10 @@ class ConstructionSiteService implements ConstructionSiteServiceInterface
     {
         // refresh current image if needed
         if ($constructionSite->getIsAutomaticEditEnabled()) {
-            if ($constructionSite->getImage() !== null) {
+            if (null !== $constructionSite->getImage()) {
                 foreach ($constructionSiteImages as $possibleMatch) {
                     if ($constructionSite->getImage()->getDisplayFilename() === $possibleMatch->getDisplayFilename() &&
-                        ($possibleMatch->getCreatedAt() === null || $possibleMatch->getCreatedAt() > $constructionSite->getImage()->getCreatedAt())) {
+                        (null === $possibleMatch->getCreatedAt() || $possibleMatch->getCreatedAt() > $constructionSite->getImage()->getCreatedAt())) {
                         //replace match & stop
                         $constructionSite->setImage($possibleMatch);
                         $syncTransaction->persist($constructionSite);

@@ -164,7 +164,7 @@ class PdfSizes
     {
         $gutterSpace = ($numberOfColumns - 1) * $this->getColumnGutter();
 
-        if ($firstColumnSize !== null) {
+        if (null !== $firstColumnSize) {
             return (float) ($this->getContentXSize() - $gutterSpace - $firstColumnSize) / ($numberOfColumns - 1);
         }
 
@@ -181,7 +181,7 @@ class PdfSizes
      */
     public function getColumnWidth($currentColumn, $numberOfColumns, $firstColumnSize = null)
     {
-        if ($firstColumnSize !== null && $currentColumn === 0) {
+        if (null !== $firstColumnSize && 0 === $currentColumn) {
             return $firstColumnSize;
         }
 
@@ -200,11 +200,11 @@ class PdfSizes
      */
     public function getColumnStart($currentColumn, $numberOfColumns, $firstColumnSize = null)
     {
-        if ($currentColumn === 0) {
+        if (0 === $currentColumn) {
             return $this->getContentXStart();
         }
 
-        if ($firstColumnSize !== null) {
+        if (null !== $firstColumnSize) {
             return ($this->getColumnWidth($currentColumn - 1, $numberOfColumns, $firstColumnSize)) * ($currentColumn - 1) + $firstColumnSize + $this->getContentXStart();
         }
 

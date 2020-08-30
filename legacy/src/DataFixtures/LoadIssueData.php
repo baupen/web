@@ -74,12 +74,12 @@ class LoadIssueData extends BaseFixture
      */
     public function load(ObjectManager $manager)
     {
-        $issuesJson = file_get_contents(__DIR__ . '/Resources/issues.json');
-        $images = glob(__DIR__ . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'issue_images' . DIRECTORY_SEPARATOR . '*.*');
+        $issuesJson = file_get_contents(__DIR__.'/Resources/issues.json');
+        $images = glob(__DIR__.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'issue_images'.DIRECTORY_SEPARATOR.'*.*');
 
         $getFreshIssueSet = function ($counter) use ($issuesJson) {
             /** @var Issue[] $issues */
-            $issues = $this->serializer->deserialize($issuesJson, Issue::class . '[]', 'json');
+            $issues = $this->serializer->deserialize($issuesJson, Issue::class.'[]', 'json');
 
             //permute
             shuffle($issues);
@@ -91,7 +91,7 @@ class LoadIssueData extends BaseFixture
                     $x = $this->xOrientationArray[$counter % \count($this->xOrientationArray)];
                     $y = $this->yOrientationArray[$counter % \count($this->yOrientationArray)];
                     $position = new IssuePosition();
-                    if ($counter % 3 === 0) {
+                    if (0 === $counter % 3) {
                         $position->setPositionX($y);
                         $position->setPositionY($x);
                     } else {
@@ -115,7 +115,7 @@ class LoadIssueData extends BaseFixture
             $craftsmen = $constructionSite->getCraftsmen()->toArray();
             $maps = [];
             foreach ($constructionSite->getMaps() as $map) {
-                if ($map->getFile() !== null) {
+                if (null !== $map->getFile()) {
                     $maps[] = $map;
                 }
             }
@@ -176,7 +176,7 @@ class LoadIssueData extends BaseFixture
      */
     private function add(ObjectManager $manager, array $maps, array $craftsmen, array $constructionManagers, array $issues, array $images, int &$issueNumber, int $setStatus)
     {
-        if (\count($constructionManagers) === 0 || \count($maps) === 0 || \count($craftsmen) === 0) {
+        if (0 === \count($constructionManagers) || 0 === \count($maps) || 0 === \count($craftsmen)) {
             return;
         }
 
@@ -187,15 +187,15 @@ class LoadIssueData extends BaseFixture
 
         foreach ($issues as $issue) {
             $issue->setMap($this->getRandomEntry($randomMapCounter, $maps));
-            if ($issue->getPosition() !== null) {
+            if (null !== $issue->getPosition()) {
                 $issue->getPosition()->setMapFile($issue->getMap()->getFile());
             }
 
-            if ($setStatus !== 0 || $this->getRandomNumber() > 7) {
+            if (0 !== $setStatus || $this->getRandomNumber() > 7) {
                 //if no status is set leave craftsman null sometime
                 $issue->setCraftsman($this->getRandomEntry($randomCraftsmanCounter, $craftsmen));
             } else {
-                \assert($issue->getCraftsman() === null);
+                \assert(null === $issue->getCraftsman());
             }
 
             $dayOffset = 0;
@@ -205,26 +205,26 @@ class LoadIssueData extends BaseFixture
                 if ($setStatus & self::REVIEW_SET) {
                     $issue->setReviewBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionManagers));
                     $dayOffset = $this->getRandomNumber();
-                    $issue->setReviewedAt(new DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
+                    $issue->setReviewedAt(new DateTime('-'.($dayOffset).' days -'.$this->getRandomNumber().' hours'));
                 }
 
                 if ($setStatus & self::RESPONSE_SET) {
                     $issue->setResponseBy($issue->getCraftsman());
                     $dayOffset += $this->getRandomNumber() + 1;
-                    $issue->setRespondedAt(new DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
+                    $issue->setRespondedAt(new DateTime('-'.($dayOffset).' days -'.$this->getRandomNumber().' hours'));
                 }
 
                 $issue->setRegistrationBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionManagers));
                 $dayOffset += $this->getRandomNumber() + 1;
-                $issue->setRegisteredAt(new DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
+                $issue->setRegisteredAt(new DateTime('-'.($dayOffset).' days -'.$this->getRandomNumber().' hours'));
             }
 
             $issue->setUploadBy($this->getRandomEntry($randomConstructionManagerCounter, $constructionManagers));
             $dayOffset += $this->getRandomNumber() + 1;
-            $issue->setUploadedAt(new DateTime('-' . ($dayOffset) . ' days -' . $this->getRandomNumber() . ' hours'));
+            $issue->setUploadedAt(new DateTime('-'.($dayOffset).' days -'.$this->getRandomNumber().' hours'));
 
             if ($this->getRandomNumber() > 7) {
-                $issue->setResponseLimit(new DateTime(($this->getRandomNumber()) . ' days'));
+                $issue->setResponseLimit(new DateTime(($this->getRandomNumber()).' days'));
             }
 
             if ($this->getRandomNumber() > 3) {
@@ -239,8 +239,8 @@ class LoadIssueData extends BaseFixture
 
                 // create new filename
                 $extension = pathinfo($sourceImage, PATHINFO_EXTENSION);
-                $fileName = Uuid::uuid4()->toString() . '.' . $extension;
-                $targetPath = $targetFolder . DIRECTORY_SEPARATOR . $fileName;
+                $fileName = Uuid::uuid4()->toString().'.'.$extension;
+                $targetPath = $targetFolder.DIRECTORY_SEPARATOR.$fileName;
 
                 //copy file to target folder
                 copy($sourceImage, $targetPath);
@@ -256,7 +256,7 @@ class LoadIssueData extends BaseFixture
                 $manager->persist($file);
             }
 
-            if ($issue->getPosition() !== null) {
+            if (null !== $issue->getPosition()) {
                 $manager->persist($issue->getPosition());
             }
 

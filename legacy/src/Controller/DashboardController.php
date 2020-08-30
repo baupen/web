@@ -27,7 +27,7 @@ class DashboardController extends BaseLoginController
      */
     public function indexAction()
     {
-        if ($this->getUser()->getActiveConstructionSite() === null) {
+        if (null === $this->getUser()->getActiveConstructionSite()) {
             return $this->redirectToRoute('switch');
         }
 

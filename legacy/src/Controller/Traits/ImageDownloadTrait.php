@@ -32,7 +32,7 @@ trait ImageDownloadTrait
         }
 
         $filePath = $imageService->getSizeForIssue($issue, $imageService->ensureValidSize($size));
-        if ($filePath === null) {
+        if (null === $filePath) {
             throw new NotFoundHttpException();
         }
 
@@ -51,7 +51,7 @@ trait ImageDownloadTrait
         }
 
         $filePath = $imageService->getSizeForConstructionSite($constructionSite, $imageService->ensureValidSize($size));
-        if ($filePath === null) {
+        if (null === $filePath) {
             throw new NotFoundHttpException();
         }
 

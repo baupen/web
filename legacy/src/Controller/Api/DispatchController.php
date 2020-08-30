@@ -94,7 +94,7 @@ class DispatchController extends ApiController
             $state = new CurrentIssueState($craftsman, $now);
 
             //only send emails if there are issues
-            if ($state->getNotRespondedIssuesCount() === 0) {
+            if (0 === $state->getNotRespondedIssuesCount()) {
                 $dispatchData->addSkippedId($craftsman->getId());
                 continue;
             }
@@ -144,7 +144,7 @@ class DispatchController extends ApiController
         }
 
         //append next limit info
-        if ($state->getOverdueIssuesCount() === 0 && $state->getNextResponseLimit() !== null) {
+        if (0 === $state->getOverdueIssuesCount() && null !== $state->getNextResponseLimit()) {
             $body .= "\n";
             $body .= $translator->trans(
                 'email.body_limit_info',

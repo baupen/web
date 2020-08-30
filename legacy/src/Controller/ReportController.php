@@ -48,7 +48,7 @@ class ReportController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
         $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($queryFilter['constructionSiteId']);
-        if ($constructionSite === null || !$this->getUser()->getConstructionSites()->contains($constructionSite)) {
+        if (null === $constructionSite || !$this->getUser()->getConstructionSites()->contains($constructionSite)) {
             throw new NotFoundHttpException();
         }
 

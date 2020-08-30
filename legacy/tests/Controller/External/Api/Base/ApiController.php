@@ -28,7 +28,7 @@ class ApiController extends AbstractApiController
      */
     protected function getExternalClient()
     {
-        if ($this->client === null) {
+        if (null === $this->client) {
             $this->client = static::createClient();
         }
 
@@ -62,7 +62,7 @@ class ApiController extends AbstractApiController
      */
     protected function getSomeConstructionSite()
     {
-        if ($this->someConstructionSite === null) {
+        if (null === $this->someConstructionSite) {
             $this->someConstructionSite = $this->getExternalClient()->getContainer()->get('doctrine')->getRepository(ConstructionSite::class)->findOneBy([]);
         }
 

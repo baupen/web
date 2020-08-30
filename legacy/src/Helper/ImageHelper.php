@@ -31,13 +31,13 @@ class ImageHelper
         $realWidth = $imageSizes[0];
         $realHeight = $imageSizes[1];
 
-        if ($maxWidth === null && $maxHeight === null) {
+        if (null === $maxWidth && null === $maxHeight) {
             $scale = 1;
         } else {
             //get ratios
-            $fallbackRatio = $maxHeight === null ? $maxWidth / $realWidth : $maxHeight / $realHeight;
-            $widthRatio = $maxWidth !== null ? $maxWidth / $realWidth : $fallbackRatio;
-            $heightRatio = $maxHeight !== null ? $maxHeight / $realWidth : $fallbackRatio;
+            $fallbackRatio = null === $maxHeight ? $maxWidth / $realWidth : $maxHeight / $realHeight;
+            $widthRatio = null !== $maxWidth ? $maxWidth / $realWidth : $fallbackRatio;
+            $heightRatio = null !== $maxHeight ? $maxHeight / $realWidth : $fallbackRatio;
 
             if ($widthRatio < 1 && $heightRatio < 1) {
                 //image bigger than box

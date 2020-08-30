@@ -54,9 +54,9 @@ class MapTransformer extends BatchTransformer
         $map = new \App\Api\External\Entity\Map();
         $map->setName($entity->getName());
         $map->setFile($this->fileTransformer->toApi($entity->getFile()));
-        $map->setSectors($entity->getFile() !== null ? $this->mapSectorTransformer->toApiMultiple($entity->getFile()->getSectors()->toArray()) : []);
-        $map->setSectorFrame($entity->getFile() !== null ? $this->frameTransformer->toApi($entity->getFile()->getSectorFrame()) : null);
-        $map->setParentID($entity->getParent() !== null ? $entity->getParent()->getId() : null);
+        $map->setSectors(null !== $entity->getFile() ? $this->mapSectorTransformer->toApiMultiple($entity->getFile()->getSectors()->toArray()) : []);
+        $map->setSectorFrame(null !== $entity->getFile() ? $this->frameTransformer->toApi($entity->getFile()->getSectorFrame()) : null);
+        $map->setParentID(null !== $entity->getParent() ? $entity->getParent()->getId() : null);
         $map->setConstructionSiteID($entity->getConstructionSite()->getId());
 
         $issueIds = [];

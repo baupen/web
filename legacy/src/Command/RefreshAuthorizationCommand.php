@@ -75,7 +75,7 @@ class RefreshAuthorizationCommand extends Command
         }
 
         $entityManager->flush();
-        $output->writeln('persisted ' . $changes . ' changes');
+        $output->writeln('persisted '.$changes.' changes');
 
         return 0;
     }

@@ -36,8 +36,6 @@ class ChildModel
     /**
      * ChildModel constructor.
      *
-     * @param int $id
-     * @param string $name
      * @param self[] $children
      */
     public function __construct(int $id, string $name, array $children = [])
@@ -51,17 +49,11 @@ class ChildModel
         }
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
@@ -75,18 +67,15 @@ class ChildModel
         return $this->parent;
     }
 
-    /**
-     * @param ChildModel|null $parent
-     */
     public function setParent(?ChildModel $parent): void
     {
-        if ($this->parent !== null) {
+        if (null !== $this->parent) {
             $this->parent->removeChild($this);
         }
 
         $this->parent = $parent;
 
-        if ($this->parent !== null) {
+        if (null !== $this->parent) {
             $this->parent->addChild($this);
         }
     }
@@ -99,17 +88,11 @@ class ChildModel
         return $this->children;
     }
 
-    /**
-     * @param ChildModel $self
-     */
     private function removeChild(ChildModel $self)
     {
         unset($this->children[$self->getId()]);
     }
 
-    /**
-     * @param ChildModel $self
-     */
     private function addChild(ChildModel $self)
     {
         $this->children[$self->getId()] = $self;

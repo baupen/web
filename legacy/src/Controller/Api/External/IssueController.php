@@ -99,7 +99,7 @@ class IssueController extends ExternalApiController
         return $this->processIssueActionRequest(
             $request, $issueTransformer, function ($issue) {
                 /** @var Issue $issue */
-                if ($issue->getRegisteredAt() === null) {
+                if (null === $issue->getRegisteredAt()) {
                     $this->fastRemove($issue);
 
                     return $this->success(new EmptyData());
@@ -143,7 +143,7 @@ class IssueController extends ExternalApiController
             $request, $issueTransformer, function ($issue, $constructionManager) {
                 /** @var Issue $issue */
                 /* @var ConstructionManager $constructionManager */
-                if ($issue->getRegisteredAt() !== null && $issue->getReviewedAt() === null) {
+                if (null !== $issue->getRegisteredAt() && null === $issue->getReviewedAt()) {
                     $issue->setReviewedAt(new DateTime());
                     $issue->setReviewBy($constructionManager);
                     $this->fastSave($issue);
@@ -168,11 +168,11 @@ class IssueController extends ExternalApiController
         return $this->processIssueActionRequest(
             $request, $issueTransformer, function ($issue) {
                 /** @var Issue $issue */
-                if ($issue->getRegisteredAt() !== null) {
-                    if ($issue->getReviewedAt() !== null) {
+                if (null !== $issue->getRegisteredAt()) {
+                    if (null !== $issue->getReviewedAt()) {
                         $issue->setReviewedAt(null);
                         $issue->setReviewBy(null);
-                    } elseif ($issue->getRespondedAt() !== null) {
+                    } elseif (null !== $issue->getRespondedAt()) {
                         $issue->setRespondedAt(null);
                         $issue->setResponseBy(null);
                     } else {
@@ -225,22 +225,22 @@ class IssueController extends ExternalApiController
             return $errorResponse;
         }
 
-        $newImageExpected = $issueModifyRequest->getIssue()->getImage() !== null;
-        if ($mode === 'create') {
+        $newImageExpected = null !== $issueModifyRequest->getIssue()->getImage();
+        if ('create' === $mode) {
             //ensure GUID not in use already
             $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
-            if ($existing !== null) {
+            if (null !== $existing) {
                 return $this->fail(static::ISSUE_GUID_ALREADY_IN_USE);
             }
             $entity = new Issue();
-        } elseif ($mode === 'update') {
+        } elseif ('update' === $mode) {
             //ensure issue exists
             $existing = $this->getDoctrine()->getRepository(Issue::class)->find($issueModifyRequest->getIssue()->getMeta()->getId());
-            if ($existing === null) {
+            if (null === $existing) {
                 return $this->fail(static::ISSUE_NOT_FOUND);
             }
             $entity = $existing;
-            $newImageExpected &= $issueModifyRequest->getIssue()->getImage() !== null && ($existing->getImage() === null || $issueModifyRequest->getIssue()->getImage()->getId() !== $existing->getImage()->getId());
+            $newImageExpected &= null !== $issueModifyRequest->getIssue()->getImage() && (null === $existing->getImage() || $issueModifyRequest->getIssue()->getImage()->getId() !== $existing->getImage()->getId());
         } else {
             throw new InvalidArgumentException('mode must be create or update');
         }
@@ -253,7 +253,7 @@ class IssueController extends ExternalApiController
         //get map & check access
         /** @var Map $map */
         $map = $this->getDoctrine()->getRepository(Map::class)->findOneBy(['id' => $issueModifyRequest->getIssue()->getMap()]);
-        if ($map === null) {
+        if (null === $map) {
             return $this->fail(static::MAP_NOT_FOUND);
         }
         if (!$map->getConstructionSite()->getConstructionManagers()->contains($constructionManager)) {
@@ -262,18 +262,18 @@ class IssueController extends ExternalApiController
         $issue->setMap($map);
 
         //check position validity
-        if ($issue->getPosition() === null && $issueModifyRequest->getIssue()->getPosition() !== null) {
+        if (null === $issue->getPosition() && null !== $issueModifyRequest->getIssue()->getPosition()) {
             return $this->fail(static::ISSUE_POSITION_INVALID);
         }
-        if ($issue->getPosition() !== null && !$issue->getMap()->getFiles()->contains($issue->getPosition()->getMapFile())) {
+        if (null !== $issue->getPosition() && !$issue->getMap()->getFiles()->contains($issue->getPosition()->getMapFile())) {
             return $this->fail(static::ISSUE_POSITION_INVALID);
         }
 
         //get craftsmen & check access
-        if ($issueModifyRequest->getIssue()->getCraftsman() !== null) {
+        if (null !== $issueModifyRequest->getIssue()->getCraftsman()) {
             /** @var Craftsman $craftsman */
             $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['id' => $issueModifyRequest->getIssue()->getCraftsman()]);
-            if ($craftsman === null) {
+            if (null === $craftsman) {
                 return $this->fail(static::CRAFTSMAN_NOT_FOUND);
             }
             if (!$craftsman->getConstructionSite()->getConstructionManagers()->contains($constructionManager)) {
@@ -283,16 +283,16 @@ class IssueController extends ExternalApiController
         }
 
         //ensure craftsman & map on same construction site
-        if ($issue->getMap() !== null && $issue->getCraftsman() !== null &&
+        if (null !== $issue->getMap() && null !== $issue->getCraftsman() &&
             $issue->getMap()->getConstructionSite()->getId() !== $issue->getCraftsman()->getConstructionSite()->getId()) {
             return $this->fail(static::MAP_CRAFTSMAN_NOT_ON_SAME_CONSTRUCTION_SITE);
         }
 
         //ensure correct number of files
-        if ($newImageExpected && \count($request->files->all()) !== 1) {
+        if ($newImageExpected && 1 !== \count($request->files->all())) {
             return $this->fail(static::ISSUE_NO_FILE_TO_UPLOAD);
         }
-        if (!$newImageExpected && \count($request->files->all()) !== 0) {
+        if (!$newImageExpected && 0 !== \count($request->files->all())) {
             return $this->fail(static::ISSUE_NO_FILE_UPLOAD_EXPECTED);
         }
 
@@ -315,12 +315,12 @@ class IssueController extends ExternalApiController
         }
 
         // need to enforce correct guid
-        if ($issueModifyRequest->getIssue()->getImage() !== null) {
+        if (null !== $issueModifyRequest->getIssue()->getImage()) {
             $issue->getImage()->setId($issueModifyRequest->getIssue()->getImage()->getId());
             $em->persist($issue->getImage());
         }
 
-        if ($issue->getPosition() !== null) {
+        if (null !== $issue->getPosition()) {
             $em->persist($issue->getPosition());
         }
 
@@ -350,7 +350,7 @@ class IssueController extends ExternalApiController
         //get issue
         /** @var Issue $issue */
         $issue = $this->getDoctrine()->getRepository(Issue::class)->find($issueActionRequest->getIssueID());
-        if ($issue === null) {
+        if (null === $issue) {
             return $this->fail(static::ISSUE_NOT_FOUND);
         }
         //ensure we are allowed to access this issue

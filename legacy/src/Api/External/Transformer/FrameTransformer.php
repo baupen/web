@@ -22,7 +22,7 @@ class FrameTransformer
      */
     public function toApi($model)
     {
-        if ($model === null) {
+        if (null === $model) {
             return null;
         }
 

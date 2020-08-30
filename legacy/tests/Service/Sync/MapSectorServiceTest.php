@@ -28,7 +28,7 @@ class MapSectorServiceTest extends TestCase
      */
     private $service;
 
-    private $resourcesFolder = __DIR__ . DIRECTORY_SEPARATOR . 'MapSectorServiceResources';
+    private $resourcesFolder = __DIR__.DIRECTORY_SEPARATOR.'MapSectorServiceResources';
 
     public function __construct(?string $name = null, array $data = [], string $dataName = '')
     {
@@ -71,8 +71,6 @@ class MapSectorServiceTest extends TestCase
     }
 
     /**
-     * @param string $mapFileName
-     *
      * @return ConstructionSite
      */
     private function createConstructionSite(string $mapFileName)

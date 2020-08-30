@@ -71,7 +71,7 @@ class DatabaseProvider implements UserProviderInterface
     {
         /** @var ConstructionManager $user */
         $user = $this->registry->getRepository('App:ConstructionManager')->findOneBy(['email' => $username]);
-        if ($user !== null) {
+        if (null !== $user) {
             return new UserToken($user);
         }
 
@@ -87,6 +87,6 @@ class DatabaseProvider implements UserProviderInterface
      */
     public function supportsClass($class)
     {
-        return $class === UserToken::class;
+        return UserToken::class === $class;
     }
 }

@@ -45,7 +45,7 @@ class MapSectorService implements MapSectorServiceInterface
         foreach ($mapFiles as $mapFile) {
             $fileNameWithoutExtension = mb_substr($mapFile->getFilename(), 0, -3);
 
-            $mapSectorsJsonPath = $directory . DIRECTORY_SEPARATOR . $fileNameWithoutExtension . 'sectors.json';
+            $mapSectorsJsonPath = $directory.DIRECTORY_SEPARATOR.$fileNameWithoutExtension.'sectors.json';
             $mapSectors = $this->parseMapSectors($mapSectorsJsonPath);
 
             $this->applyMapSectors($syncTransaction, $mapFile, $mapSectors);
@@ -137,7 +137,7 @@ class MapSectorService implements MapSectorServiceInterface
 
         $checkIfMatch = function (array $needles) use ($name) {
             foreach ($needles as $needle) {
-                if (mb_strpos($name, $needle) !== false) {
+                if (false !== mb_strpos($name, $needle)) {
                     return true;
                 }
             }

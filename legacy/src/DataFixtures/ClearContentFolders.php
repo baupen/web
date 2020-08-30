@@ -65,11 +65,11 @@ class ClearContentFolders extends BaseFixture
         }
 
         foreach (scandir($dir) as $item) {
-            if ($item === '.' || $item === '..' || \in_array($item, $exceptions, true)) {
+            if ('.' === $item || '..' === $item || \in_array($item, $exceptions, true)) {
                 continue;
             }
 
-            if (!$this->deleteDirectoryContents($dir . DIRECTORY_SEPARATOR . $item)) {
+            if (!$this->deleteDirectoryContents($dir.DIRECTORY_SEPARATOR.$item)) {
                 return false;
             }
         }

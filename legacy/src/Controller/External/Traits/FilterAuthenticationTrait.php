@@ -28,7 +28,7 @@ trait FilterAuthenticationTrait
     {
         /** @var Filter $filter */
         $filter = $doctrine->getRepository(Filter::class)->findOneBy(['publicAccessIdentifier' => $identifier]);
-        if ($filter === null) {
+        if (null === $filter) {
             return false;
         }
 

@@ -31,10 +31,6 @@ class TrialServiceTest extends WebTestCase
 
     /**
      * TrialServiceTest constructor.
-     *
-     * @param string|null $name
-     * @param array $data
-     * @param string $dataName
      */
     public function __construct(?string $name = null, array $data = [], string $dataName = '')
     {

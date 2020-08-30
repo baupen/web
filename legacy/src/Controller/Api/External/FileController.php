@@ -58,7 +58,7 @@ class FileController extends ExternalApiController
         }
 
         //get file
-        if ($downloadFileRequest->getMap() !== null) {
+        if (null !== $downloadFileRequest->getMap()) {
             return $this->downloadFile(
                 $this->getDoctrine()->getRepository(Map::class),
                 $downloadFileRequest->getMap(),
@@ -71,7 +71,7 @@ class FileController extends ExternalApiController
                     return $mapFileService->getForMobileDevice($entity);
                 }
             );
-        } elseif ($downloadFileRequest->getIssue() !== null) {
+        } elseif (null !== $downloadFileRequest->getIssue()) {
             return $this->downloadFile(
                 $this->getDoctrine()->getRepository(Issue::class),
                 $downloadFileRequest->getIssue(),
@@ -84,7 +84,7 @@ class FileController extends ExternalApiController
                     return $imageService->getSizeForIssue($entity, ImageServiceInterface::SIZE_FULL);
                 }
             );
-        } elseif ($downloadFileRequest->getConstructionSite() !== null) {
+        } elseif (null !== $downloadFileRequest->getConstructionSite()) {
             return $this->downloadFile(
                 $this->getDoctrine()->getRepository(ConstructionSite::class),
                 $downloadFileRequest->getConstructionSite(),
@@ -115,7 +115,7 @@ class FileController extends ExternalApiController
         $entity = $repository->find($objectMeta->getId());
 
         /** @var TimeTrait|null $entity */
-        if ($entity === null) {
+        if (null === $entity) {
             return $this->fail(static::ENTITY_NOT_FOUND);
         }
 
@@ -124,7 +124,7 @@ class FileController extends ExternalApiController
         }
 
         $filePath = $accessFilePath($entity);
-        if ($filePath === null) {
+        if (null === $filePath) {
             return $this->fail(static::ENTITY_NO_DOWNLOADABLE_FILE);
         }
 

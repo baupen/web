@@ -88,7 +88,7 @@ class MapSector extends BaseEntity
      */
     public function getPoints()
     {
-        if (\count($this->points) === 0 || \is_object($this->points[0])) {
+        if (0 === \count($this->points) || \is_object($this->points[0])) {
             return $this->points;
         }
 
@@ -126,7 +126,7 @@ class MapSector extends BaseEntity
      */
     public function equals(?self $other)
     {
-        if ($other === null || $this->getName() !== $other->getName() || $this->getColor() !== $other->getColor()) {
+        if (null === $other || $this->getName() !== $other->getName() || $this->getColor() !== $other->getColor()) {
             return false;
         }
 

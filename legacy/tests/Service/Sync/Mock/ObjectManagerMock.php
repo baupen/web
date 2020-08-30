@@ -24,7 +24,7 @@ class ObjectManagerMock implements ObjectManager
      * This is just a convenient shortcut for getRepository($className)->find($id).
      *
      * @param string $className the class name of the object to find
-     * @param mixed $id the identity of the object to find
+     * @param mixed  $id        the identity of the object to find
      *
      * @return object|null the found object
      */

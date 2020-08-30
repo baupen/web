@@ -45,7 +45,7 @@ class ExternalApiController extends AbstractApiController
         //check auth token
         /** @var ConstructionManager $constructionManager */
         $constructionManager = $this->getDoctrine()->getRepository(AuthenticationToken::class)->getConstructionManager($authenticatedRequest);
-        if ($constructionManager === null) {
+        if (null === $constructionManager) {
             $errorResponse = $this->fail(self::AUTHENTICATION_TOKEN_INVALID, false);
 
             return false;

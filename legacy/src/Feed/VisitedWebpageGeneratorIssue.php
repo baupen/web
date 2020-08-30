@@ -27,7 +27,7 @@ class VisitedWebpageGeneratorIssue implements CraftsmanFeedEntryGenerator
         //create feed entries
         $res = [];
         foreach ($craftsmen as $craftsman) {
-            if ($craftsman->getLastOnlineVisit() !== null) {
+            if (null !== $craftsman->getLastOnlineVisit()) {
                 $feedEntry = new FeedEntry();
                 $feedEntry->setTimestamp($craftsman->getLastOnlineVisit());
                 $feedEntry->setCraftsman($craftsman);

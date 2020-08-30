@@ -79,7 +79,7 @@ abstract class AbstractApiController extends BaseDoctrineController
     {
         //check if empty request, handle multipart correctly
         $content = $request->request->get('message');
-        if ($content === null) {
+        if (null === $content) {
             $content = $request->getContent();
         }
         if (!$content) {
@@ -131,7 +131,7 @@ abstract class AbstractApiController extends BaseDoctrineController
         }
 
         if ($logError) {
-            $this->getLogger()->error('Api fail ' . ': ' . $message . ' for ' . $requestContext);
+            $this->getLogger()->error('Api fail '.': '.$message.' for '.$requestContext);
         }
 
         return $this->json(new FailResponse($message, $this->errorMessageToStatusCode($message)), Response::HTTP_BAD_REQUEST);
@@ -146,7 +146,7 @@ abstract class AbstractApiController extends BaseDoctrineController
      */
     protected function success($data = null)
     {
-        if ($data === null) {
+        if (null === $data) {
             $data = new EmptyData();
         }
 

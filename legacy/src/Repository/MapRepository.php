@@ -32,7 +32,7 @@ class MapRepository extends EntityRepository
 
         $topLevelMaps = [];
         foreach ($maps as $map) {
-            if ($map->getParent() === null) {
+            if (null === $map->getParent()) {
                 $topLevelMaps[] = $map;
             }
         }

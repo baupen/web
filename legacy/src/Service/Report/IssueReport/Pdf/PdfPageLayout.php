@@ -115,6 +115,6 @@ class PdfPageLayout implements PdfPageLayoutInterface
         $this->moveCursorTo($pdf, $this->layout->getContentXEnd() - $contentWidthPart, $this->layout->getFooterYStart());
 
         $pdf->configure([PrintConfiguration::FONT_SIZE => $this->typography->getFooterFontSize(), PrintConfiguration::TEXT_ALIGN => PrintConfiguration::TEXT_ALIGN_RIGHT]);
-        $pdf->printText($currentPageNumber . '/' . $totalPageNumbers, $contentWidthPart);
+        $pdf->printText($currentPageNumber.'/'.$totalPageNumbers, $contentWidthPart);
     }
 }

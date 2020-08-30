@@ -30,7 +30,7 @@ class ReportConfiguration
      */
     public function showRegistrationStatus()
     {
-        return $this->filter->getRegistrationStatus() === null || $this->filter->getRegistrationStatus();
+        return null === $this->filter->getRegistrationStatus() || $this->filter->getRegistrationStatus();
     }
 
     /**
@@ -38,7 +38,7 @@ class ReportConfiguration
      */
     public function showRespondedStatus()
     {
-        return $this->filter->getRespondedStatus() === null || $this->filter->getRespondedStatus();
+        return null === $this->filter->getRespondedStatus() || $this->filter->getRespondedStatus();
     }
 
     /**
@@ -46,6 +46,6 @@ class ReportConfiguration
      */
     public function showReviewedStatus()
     {
-        return $this->filter->getReviewedStatus() === null || $this->filter->getReviewedStatus();
+        return null === $this->filter->getReviewedStatus() || $this->filter->getReviewedStatus();
     }
 }

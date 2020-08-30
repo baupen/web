@@ -38,7 +38,7 @@ class SyncTransaction
     {
         $class = \get_class($entity);
         $identifier = $entity->getId();
-        if ($identifier === null) {
+        if (null === $identifier) {
             if (!\array_key_exists($class, $this->newEntities)) {
                 $this->newEntities[$class] = [];
             }
@@ -64,7 +64,7 @@ class SyncTransaction
     {
         $class = \get_class($entity);
         $identifier = $entity->getId();
-        if ($identifier !== null) {
+        if (null !== $identifier) {
             if (!\array_key_exists($class, $this->removedEntities)) {
                 $this->removedEntities[$class] = [];
             }

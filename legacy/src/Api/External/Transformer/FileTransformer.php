@@ -24,7 +24,7 @@ class FileTransformer
      */
     public function toApi($entity)
     {
-        if ($entity === null) {
+        if (null === $entity) {
             return null;
         }
 

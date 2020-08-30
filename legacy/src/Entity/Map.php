@@ -144,13 +144,13 @@ class Map extends BaseEntity
      */
     public function getContext()
     {
-        if ($this->getParent() !== null) {
+        if (null !== $this->getParent()) {
             $parentContext = $this->getParent()->getContext();
-            if ($parentContext !== '') {
+            if ('' !== $parentContext) {
                 $parentContext .= ' > ';
             }
 
-            return $parentContext . $this->getParent()->getName();
+            return $parentContext.$this->getParent()->getName();
         }
 
         return '';
@@ -166,7 +166,7 @@ class Map extends BaseEntity
             $context .= ' > ';
         }
 
-        return $context . $this->getName();
+        return $context.$this->getName();
     }
 
     /**

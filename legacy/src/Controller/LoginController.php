@@ -47,7 +47,7 @@ class LoginController extends BaseLoginController
     public function indexAction(Request $request)
     {
         // relink if already logged in
-        if ($this->getUser() !== null) {
+        if (null !== $this->getUser()) {
             return $this->redirectToRoute('dashboard');
         }
 
@@ -106,7 +106,7 @@ class LoginController extends BaseLoginController
 
         /** @var ConstructionManager $user */
         $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['authenticationHash' => $authenticationHash]);
-        if ($user === null) {
+        if (null === $user) {
             $this->displayError($translator->trans('confirm.error.invalid_hash', [], 'login'));
 
             return $this->redirectToRoute('login');
@@ -176,8 +176,8 @@ class LoginController extends BaseLoginController
                 //check if user exists
                 /** @var ConstructionManager $exitingUser */
                 $exitingUser = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
-                if ($exitingUser === null) {
-                    $logger->info('could not reset password of unknown user ' . $constructionManager->getEmail());
+                if (null === $exitingUser) {
+                    $logger->info('could not reset password of unknown user '.$constructionManager->getEmail());
                     $this->displayError($translator->trans('recover.fail.email_not_found', [], 'login'));
 
                     return $form;
@@ -203,10 +203,10 @@ class LoginController extends BaseLoginController
                     $email->setSentDateTime(new DateTime());
                     $this->fastSave($email);
 
-                    $logger->info('sent password reset email to ' . $email->getReceiver());
+                    $logger->info('sent password reset email to '.$email->getReceiver());
                     $this->displaySuccess($translator->trans('recover.success.email_sent', [], 'login'));
                 } else {
-                    $logger->error('could not send password reset email ' . $email->getId());
+                    $logger->error('could not send password reset email '.$email->getId());
                     $this->displayError($translator->trans('recover.fail.email_not_sent', [], 'login'));
                 }
 
@@ -233,7 +233,7 @@ class LoginController extends BaseLoginController
 
         /** @var ConstructionManager $user */
         $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['authenticationHash' => $authenticationHash]);
-        if ($user === null) {
+        if (null === $user) {
             $this->displayError($translator->trans('reset.error.invalid_hash', [], 'login'));
 
             return $this->redirectToRoute('login_recover');
@@ -305,7 +305,7 @@ class LoginController extends BaseLoginController
     {
         /** @var ConstructionManager $existing */
         $existing = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
-        if ($existing === null) {
+        if (null === $existing) {
             // prepare account for usage
             $constructionManager->register();
             $authorizationService->tryFillDefaultValues($constructionManager);
@@ -336,11 +336,11 @@ class LoginController extends BaseLoginController
             $email->setSentDateTime(new DateTime());
             $this->fastSave($email);
 
-            $logger->info('sent register email to ' . $email->getReceiver());
+            $logger->info('sent register email to '.$email->getReceiver());
 
             return $this->render('login/create_successful.html.twig');
         }
-        $logger->error('could not send register email ' . $email->getId());
+        $logger->error('could not send register email '.$email->getId());
         $this->displayError($translator->trans('create.fail.welcome_email_not_sent', [], 'login'));
 
         return false;
@@ -356,7 +356,7 @@ class LoginController extends BaseLoginController
         $email->setSubject($translator->trans('confirm.app_email.subject', [], 'login'));
         $email->setBody($translator->trans('confirm.app_email.body', ['%website%' => $request->getHttpHost()], 'login'));
         $email->setActionText($translator->trans('confirm.app_email.action_text', [], 'login'));
-        $email->setActionLink('mangel.io://login?username=' . urlencode($user->getEmail()) . '&domain=' . urlencode($request->getHttpHost()));
+        $email->setActionLink('mangel.io://login?username='.urlencode($user->getEmail()).'&domain='.urlencode($request->getHttpHost()));
 
         $this->fastSave($email);
 

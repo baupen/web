@@ -103,7 +103,7 @@ class MapFile extends BaseEntity
      */
     public function getSectorFrame()
     {
-        if (\is_object($this->sectorFrame) || $this->sectorFrame === null) {
+        if (\is_object($this->sectorFrame) || null === $this->sectorFrame) {
             return $this->sectorFrame;
         }
 

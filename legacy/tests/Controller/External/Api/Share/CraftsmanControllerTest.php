@@ -37,7 +37,6 @@ class CraftsmanControllerTest extends ApiController
     private $craftsman = null;
 
     /**
-     * @param string $relativeLink
      * @param string|null $payload
      *
      * @throws Exception
@@ -54,7 +53,6 @@ class CraftsmanControllerTest extends ApiController
     }
 
     /**
-     * @param string $relativeLink
      * @param string|null $authorizationToken
      * @param string|null $payload
      *
@@ -68,14 +66,14 @@ class CraftsmanControllerTest extends ApiController
         $craftsman = $this->getCraftsman($client);
 
         $parameters = !empty($authorizationToken) ? ['token' => $authorizationToken] : [];
-        $urlSuffix = count($parameters) > 0 ? '?' . http_build_query($parameters) : '';
+        $urlSuffix = count($parameters) > 0 ? '?'.http_build_query($parameters) : '';
 
-        $url = '/external/api/share/c/' . $craftsman->getEmailIdentifier() . $relativeLink;
-        if ($payload === null) {
-            $client->request('GET', $url . $urlSuffix);
+        $url = '/external/api/share/c/'.$craftsman->getEmailIdentifier().$relativeLink;
+        if (null === $payload) {
+            $client->request('GET', $url.$urlSuffix);
         } else {
             $client->request(
-                'POST', $url . $urlSuffix, [], [], ['CONTENT_TYPE' => 'application/json'],
+                'POST', $url.$urlSuffix, [], [], ['CONTENT_TYPE' => 'application/json'],
                 $client->getContainer()->get('serializer')->serialize($payload, 'json')
             );
         }
@@ -109,7 +107,7 @@ class CraftsmanControllerTest extends ApiController
                 $this->assertObjectHasAttribute('description', $issue);
                 $this->assertObjectHasAttribute('imageShareView', $issue);
                 $this->assertObjectHasAttribute('imageFull', $issue);
-                if ($issue->imageShareView !== null || $issue->imageFull !== null) {
+                if (null !== $issue->imageShareView || null !== $issue->imageFull) {
                     $this->assertNotNull($issue->imageShareView);
                     $this->assertNotNull($issue->imageFull);
                 }
@@ -150,7 +148,7 @@ class CraftsmanControllerTest extends ApiController
         //execute issue action
         $doUnauthorizedRequest = function ($action) use ($request) {
             $this->expectException(AccessDeniedHttpException::class);
-            $this->request('/issue/' . $action, $request);
+            $this->request('/issue/'.$action, $request);
         };
 
         $doUnauthorizedRequest('respond');
@@ -171,12 +169,12 @@ class CraftsmanControllerTest extends ApiController
 
         //execute issue action; indicate whether request was successful or skipped
         $doRequest = function ($action, $skipped) use ($request) {
-            $response = $this->authenticatedRequest('/issue/' . $action, $request);
+            $response = $this->authenticatedRequest('/issue/'.$action, $request);
             $mapData = $this->checkResponse($response, ApiStatus::SUCCESS);
             if ($skipped) {
-                $this->assertTrue(count($mapData->data->skippedIds) === 1);
+                $this->assertTrue(1 === count($mapData->data->skippedIds));
             } else {
-                $this->assertTrue(count($mapData->data->successfulIds) === 1);
+                $this->assertTrue(1 === count($mapData->data->successfulIds));
             }
         };
 
@@ -191,20 +189,16 @@ class CraftsmanControllerTest extends ApiController
     }
 
     /**
-     * @param Client $client
-     *
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws Exception
-     *
-     * @return Craftsman
      */
     private function getCraftsman(Client $client): Craftsman
     {
-        if ($this->craftsman === null) {
+        if (null === $this->craftsman) {
             /* @var Craftsman $craftsman */
             $this->craftsman = $client->getContainer()->get('doctrine')->getRepository(Craftsman::class)->findOneBy([]);
-            if ($this->craftsman->getEmailIdentifier() === null) {
+            if (null === $this->craftsman->getEmailIdentifier()) {
                 $this->craftsman->setEmailIdentifier();
                 $manager = $client->getContainer()->get('doctrine.orm.entity_manager.abstract');
                 $manager->flush($this->craftsman);

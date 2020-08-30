@@ -173,7 +173,7 @@ class NewReportService
      */
     private function createPdfDocument(PdfPageLayoutInterface $pageLayout)
     {
-        $fontPath = $this->pathService->getAssetsRoot() . DIRECTORY_SEPARATOR . 'report' . DIRECTORY_SEPARATOR . 'fonts';
+        $fontPath = $this->pathService->getAssetsRoot().DIRECTORY_SEPARATOR.'report'.DIRECTORY_SEPARATOR.'fonts';
         $defaultFontFamily = $this->typographyService->getFontFamily();
         $this->pdfFactory->configure(['tcpdf' => ['font_path' => $fontPath, 'default_font_family' => $defaultFontFamily]]);
 
@@ -195,14 +195,14 @@ class NewReportService
         $pageLayoutContent->setAuthor($author);
 
         $formattedDateTime = (new DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT);
-        if ($author === null) {
+        if (null === $author) {
             $generationInfoText = $this->translator->trans('generated', ['%date%' => $formattedDateTime], 'report');
         } else {
             $generationInfoText = $this->translator->trans('generated_with_author', ['%date%' => $formattedDateTime, '%name%' => $author], 'report');
         }
         $pageLayoutContent->setGenerationInfoText($generationInfoText);
 
-        $logoPath = $this->pathService->getAssetsRoot() . DIRECTORY_SEPARATOR . 'report' . DIRECTORY_SEPARATOR . 'logo.png';
+        $logoPath = $this->pathService->getAssetsRoot().DIRECTORY_SEPARATOR.'report'.DIRECTORY_SEPARATOR.'logo.png';
         $pageLayoutContent->setLogoPath($logoPath);
 
         return $pageLayoutContent;
@@ -416,7 +416,7 @@ class NewReportService
         $issueImages = [];
         foreach ($issues as $issue) {
             $imagePath = $this->imageService->getSizeForIssue($issue, ImageServiceInterface::SIZE_REPORT_ISSUE);
-            if ($imagePath === null) {
+            if (null === $imagePath) {
                 continue;
             }
 
@@ -441,18 +441,18 @@ class NewReportService
             $row = [];
             $row[] = $issue->getNumber();
             $row[] = $issue->getDescription();
-            $row[] = ($issue->getResponseLimit() !== null) ? $issue->getResponseLimit()->format(DateTimeFormatter::DATE_FORMAT) : '';
+            $row[] = (null !== $issue->getResponseLimit()) ? $issue->getResponseLimit()->format(DateTimeFormatter::DATE_FORMAT) : '';
 
             if ($reportConfiguration->showRegistrationStatus()) {
-                $row[] = $issue->getRegisteredAt() === null ? '' : $issue->getRegisteredAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getRegistrationBy()->getName();
+                $row[] = null === $issue->getRegisteredAt() ? '' : $issue->getRegisteredAt()->format(DateTimeFormatter::DATE_FORMAT)."\n".$issue->getRegistrationBy()->getName();
             }
 
             if ($reportConfiguration->showRespondedStatus()) {
-                $row[] = $issue->getRespondedAt() === null ? '' : $issue->getRespondedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getResponseBy()->getName();
+                $row[] = null === $issue->getRespondedAt() ? '' : $issue->getRespondedAt()->format(DateTimeFormatter::DATE_FORMAT)."\n".$issue->getResponseBy()->getName();
             }
 
             if ($reportConfiguration->showReviewedStatus()) {
-                $row[] = $issue->getReviewedAt() === null ? '' : $issue->getReviewedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getReviewBy()->getName();
+                $row[] = null === $issue->getReviewedAt() ? '' : $issue->getReviewedAt()->format(DateTimeFormatter::DATE_FORMAT)."\n".$issue->getReviewBy()->getName();
             }
 
             $tableContent[] = $row;
@@ -500,7 +500,7 @@ class NewReportService
 
         $date = (new DateTime())->format('Y-m-dTH_i');
 
-        return $generationTargetFolder . DIRECTORY_SEPARATOR . $date . '_' . uniqid() . '.pdf';
+        return $generationTargetFolder.DIRECTORY_SEPARATOR.$date.'_'.uniqid().'.pdf';
     }
 
     private function getFilterEntries(Filter $filter): array
@@ -524,17 +524,17 @@ class NewReportService
             }
 
             $key = $this->translator->trans('status', [], 'entity_issue');
-            if (\count($status) === 4) {
+            if (4 === \count($status)) {
                 $allStatus = $this->translator->trans('status_values.all', [], 'entity_issue');
                 $filterEntries[$key] = $allStatus;
             } else {
                 $or = $this->translator->trans('introduction.filter.or', [], 'report');
-                $filterEntries[$key] = implode(' ' . $or . ' ', $status);
+                $filterEntries[$key] = implode(' '.$or.' ', $status);
             }
         }
 
         //add craftsmen
-        if ($filter->getCraftsmen() !== null) {
+        if (null !== $filter->getCraftsmen()) {
             $entities = $this->doctrine->getRepository(Craftsman::class)->findBy(['id' => $filter->getCraftsmen()]);
             $names = [];
             foreach ($entities as $item) {
@@ -546,11 +546,11 @@ class NewReportService
         }
 
         //add maps
-        if ($filter->getMaps() !== null) {
+        if (null !== $filter->getMaps()) {
             $entities = $this->doctrine->getRepository(Map::class)->findBy(['id' => $filter->getMaps()]);
             $names = [];
             foreach ($entities as $item) {
-                $names[] = $item->getName() . ' (' . $item->getContext() . ')';
+                $names[] = $item->getName().' ('.$item->getContext().')';
             }
 
             $label = $this->translator->trans('introduction.filter.maps', ['%count%' => \count($names)], 'report');
@@ -558,14 +558,14 @@ class NewReportService
         }
 
         //add limit
-        if ($filter->getLimitStart() !== null || $filter->getLimitEnd() !== null) {
+        if (null !== $filter->getLimitStart() || null !== $filter->getLimitEnd()) {
             $limitValue = $this->dateTimeRangeToText($filter->getLimitStart(), $filter->getLimitEnd());
             $label = $this->translator->trans('response_limit', [], 'entity_issue');
             $filterEntries[$label] = $limitValue;
         }
 
         //add trades
-        if ($filter->getTrades() !== null) {
+        if (null !== $filter->getTrades()) {
             $names = [];
             foreach ($filter->getTrades() as $item) {
                 $names[] = $item;
@@ -577,24 +577,24 @@ class NewReportService
 
         // collect set time
         $timeEntries = [];
-        if ($filter->getRegistrationStatus() !== null) {
+        if (null !== $filter->getRegistrationStatus()) {
             $trans = $this->translator->trans('status_values.registered', [], 'entity_issue');
             $range = $this->dateTimeRangeToText($filter->getRegistrationStart(), $filter->getRegistrationEnd(), $trans);
-            if ($range !== '') {
+            if ('' !== $range) {
                 $timeEntries[] = $range;
             }
         }
-        if ($filter->getRespondedStatus() !== null) {
+        if (null !== $filter->getRespondedStatus()) {
             $trans = $this->translator->trans('status_values.responded', [], 'entity_issue');
             $range = $this->dateTimeRangeToText($filter->getRespondedStart(), $filter->getRespondedEnd(), $trans);
-            if ($range !== '') {
+            if ('' !== $range) {
                 $timeEntries[] = $range;
             }
         }
-        if ($filter->getReviewedStatus() !== null) {
+        if (null !== $filter->getReviewedStatus()) {
             $trans = $this->translator->trans('status_values.reviewed', [], 'entity_issue');
             $range = $this->dateTimeRangeToText($filter->getReviewedStart(), $filter->getRespondedEnd(), $trans);
-            if ($range !== '') {
+            if ('' !== $range) {
                 $timeEntries[] = $range;
             }
         }
@@ -602,7 +602,7 @@ class NewReportService
         if (\count($timeEntries) > 0) {
             //convert all set time status to a single string
             $and = $this->translator->trans('introduction.filter.and', [], 'report');
-            $statusEntry = implode(' ' . $and . ' ', $timeEntries);
+            $statusEntry = implode(' '.$and.' ', $timeEntries);
             $filterEntries[$this->translator->trans('introduction.filter.time', [], 'report')] = $statusEntry;
         }
 
@@ -615,23 +615,23 @@ class NewReportService
      */
     private function dateTimeRangeToText($start, $end, string $prefix = null): string
     {
-        if ($start !== null) {
-            if ($end !== null) {
-                $rangeString = $start->format(DateTimeFormatter::DATE_FORMAT) . ' - ' . $end->format(DateTimeFormatter::DATE_FORMAT);
+        if (null !== $start) {
+            if (null !== $end) {
+                $rangeString = $start->format(DateTimeFormatter::DATE_FORMAT).' - '.$end->format(DateTimeFormatter::DATE_FORMAT);
             } else {
                 $rangeString = $this->translator->trans('introduction.filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_FORMAT)], 'report');
             }
-        } elseif ($end !== null) {
+        } elseif (null !== $end) {
             $rangeString = $this->translator->trans('introduction.filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_FORMAT)], 'report');
         } else {
             return '';
         }
 
-        if ($prefix === null) {
+        if (null === $prefix) {
             return $rangeString;
         }
 
-        return $prefix . ' (' . $rangeString . ')';
+        return $prefix.' ('.$rangeString.')';
     }
 
     /**
@@ -651,7 +651,7 @@ class NewReportService
 
         $issueDetailsLabel = $this->translator->trans('issues.detailed', [], 'report');
         if ($reportElements->getWithImages()) {
-            $issueDetailsLabel .= ' ' . $this->translator->trans('issues.with_images', [], 'report');
+            $issueDetailsLabel .= ' '.$this->translator->trans('issues.with_images', [], 'report');
         }
         $elements[] = $issueDetailsLabel;
 

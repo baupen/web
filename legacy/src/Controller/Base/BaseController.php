@@ -28,7 +28,7 @@ class BaseController extends AbstractController
 
     public static function getSubscribedServices()
     {
-        return parent::getSubscribedServices() + ['session' => '?' . SessionInterface::class, 'doctrine' => '?' . ManagerRegistry::class];
+        return parent::getSubscribedServices() + ['session' => '?'.SessionInterface::class, 'doctrine' => '?'.ManagerRegistry::class];
     }
 
     /**
@@ -75,7 +75,7 @@ class BaseController extends AbstractController
         /** @var UserToken $user */
         $user = parent::getUser();
 
-        if ($user === null) {
+        if (null === $user) {
             return null;
         }
 
@@ -107,7 +107,7 @@ class BaseController extends AbstractController
     protected function render(string $view, array $parameters = [], Response $response = null): Response
     {
         $constructionManager = $this->getUser();
-        if ($constructionManager !== null && $constructionManager->getActiveConstructionSite() !== null) {
+        if (null !== $constructionManager && null !== $constructionManager->getActiveConstructionSite()) {
             $parameters = $parameters + ['constructionSiteName' => $constructionManager->getActiveConstructionSite()->getName()];
         }
 
@@ -121,8 +121,8 @@ class BaseController extends AbstractController
      */
     private function displayFlash($type, $message, $link = null)
     {
-        if ($link !== null) {
-            $message = '<a href="' . $link . '">' . $message . '</a>';
+        if (null !== $link) {
+            $message = '<a href="'.$link.'">'.$message.'</a>';
         }
         $this->get('session')->getFlashBag()->set($type, $message);
     }

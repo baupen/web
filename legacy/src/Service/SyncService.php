@@ -71,7 +71,7 @@ class SyncService implements SyncServiceInterface
             $constructionSitesLookup[$constructionSite->getFolderName()] = $constructionSite;
         }
 
-        $existingDirectories = glob($this->pathService->getConstructionSiteFolderRoot() . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
+        $existingDirectories = glob($this->pathService->getConstructionSiteFolderRoot().DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR);
         foreach ($existingDirectories as $directory) {
             $folderName = mb_substr($directory, mb_strrpos($directory, DIRECTORY_SEPARATOR) + 1);
 
@@ -125,7 +125,7 @@ class SyncService implements SyncServiceInterface
 
         foreach ($cacheInvalidatedEntities[MapFile::class] as $cacheInvalidatedEntity) {
             /** @var MapFile $cacheInvalidatedEntity */
-            if ($cacheInvalidatedEntity->getMap() !== null) {
+            if (null !== $cacheInvalidatedEntity->getMap()) {
                 $this->imageService->warmUpCacheForMap($cacheInvalidatedEntity->getMap());
             }
         }

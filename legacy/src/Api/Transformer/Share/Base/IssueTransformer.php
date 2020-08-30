@@ -49,7 +49,7 @@ class IssueTransformer
     {
         $this->issueTransformer->writeApiProperties($entity, $issue);
 
-        if ($entity->getImage() !== null) {
+        if (null !== $entity->getImage()) {
             $routeArguments = ['identifier' => $identifier, 'image' => $entity->getImage()->getId(), 'issue' => $entity->getId()];
             $issue->setImageShareView($generateRoute($this->router, $routeArguments + ['size' => ImageServiceInterface::SIZE_SHARE_VIEW]));
             $issue->setImageFull($generateRoute($this->router, $routeArguments + ['size' => ImageServiceInterface::SIZE_FULL]));

@@ -44,7 +44,7 @@ class ExceptionListener
     {
         $this->serializer = $serializer;
         $this->logger = $logger;
-        $this->isTestEnvironment = $parameterBag->get('APP_ENV') === 'test';
+        $this->isTestEnvironment = 'test' === $parameterBag->get('APP_ENV');
     }
 
     /**
@@ -53,7 +53,7 @@ class ExceptionListener
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         //catch only api errors
-        if (mb_strpos($event->getRequest()->getPathInfo(), '/api') !== 0 && mb_strpos($event->getRequest()->getPathInfo(), '/external/api') !== 0) {
+        if (0 !== mb_strpos($event->getRequest()->getPathInfo(), '/api') && 0 !== mb_strpos($event->getRequest()->getPathInfo(), '/external/api')) {
             return;
         }
 
@@ -77,7 +77,7 @@ class ExceptionListener
         $json = $this->serializer->serialize($errorObj, 'json');
         $response = new JsonResponse($json, Response::HTTP_INTERNAL_SERVER_ERROR, [], true);
 
-        $this->logger->error('api error: ' . $exception->getMessage() . ' at ' . $exception->getFile() . ' line ' . $exception->getLine() . $exception->getTraceAsString() . " for \n" . $event->getRequest()->getContent());
+        $this->logger->error('api error: '.$exception->getMessage().' at '.$exception->getFile().' line '.$exception->getLine().$exception->getTraceAsString()." for \n".$event->getRequest()->getContent());
 
         // sends the modified response object to the event
         $event->setResponse($response);

@@ -69,7 +69,6 @@ class TrialControllerTest extends ApiController
     }
 
     /**
-     * @param Client $client
      * @param $username
      * @param $password
      *
@@ -83,30 +82,26 @@ class TrialControllerTest extends ApiController
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            '{"username":"' . $username . '", "passwordHash":"' . hash('sha256', $password) . '"}'
+            '{"username":"'.$username.'", "passwordHash":"'.hash('sha256', $password).'"}'
         );
 
         return $client->getResponse();
     }
 
     /**
-     * @param Client $client
-     * @param string|null $givenName
-     * @param string|null $familyName
-     *
      * @return Response
      */
     private function doTrialRequest(Client $client, ?string $givenName, ?string $familyName)
     {
-        $givenNamePayload = $givenName === null ? 'null' : '"' . $givenName . '"';
-        $familyNamePayload = $familyName === null ? 'null' : '"' . $familyName . '"';
+        $givenNamePayload = null === $givenName ? 'null' : '"'.$givenName.'"';
+        $familyNamePayload = null === $familyName ? 'null' : '"'.$familyName.'"';
         $client->request(
             'POST',
             '/api/external/trial/create_account',
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            '{"proposedGivenName":' . $givenNamePayload . ', "proposedFamilyName":' . $familyNamePayload . '}'
+            '{"proposedGivenName":'.$givenNamePayload.', "proposedFamilyName":'.$familyNamePayload.'}'
         );
 
         return $client->getResponse();

@@ -188,7 +188,7 @@ class Craftsman extends BaseEntity
 
     public function getName(): string
     {
-        return $this->getCompany() . ' (' . $this->getContactName() . ')';
+        return $this->getCompany().' ('.$this->getContactName().')';
     }
 
     public function getLastEmailSent(): ?DateTime
@@ -217,7 +217,7 @@ class Craftsman extends BaseEntity
     public function getLastAction()
     {
         $lastAction = $this->getLastOnlineVisit();
-        if ($lastAction === null || $lastAction < $this->getLastEmailSent()) {
+        if (null === $lastAction || $lastAction < $this->getLastEmailSent()) {
             return $this->getLastEmailSent();
         }
 
@@ -247,6 +247,6 @@ class Craftsman extends BaseEntity
 
     public function canRemove()
     {
-        return $this->issues->count() === 0 && $this->respondedIssues->count() === 0;
+        return 0 === $this->issues->count() && 0 === $this->respondedIssues->count();
     }
 }

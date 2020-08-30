@@ -18,7 +18,6 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class AbstractApiController extends FixturesTestCase
 {
     /**
-     * @param Response $response
      * @param $apiStatus
      * @param string $message
      *
@@ -27,8 +26,8 @@ abstract class AbstractApiController extends FixturesTestCase
     protected function checkResponse(Response $response, $apiStatus, $message = '')
     {
         $content = str_replace("\u003E", '>', $response->getContent());
-        $this->assertFalse(mb_strpos($content, "\u00") > 0, 'invalid char at ' . mb_strpos($content, "\u00") . ' in string ' . $content);
-        $this->assertTrue(mb_strpos($response->getContent(), '{"version":1') === 0);
+        $this->assertFalse(mb_strpos($content, "\u00") > 0, 'invalid char at '.mb_strpos($content, "\u00").' in string '.$content);
+        $this->assertTrue(0 === mb_strpos($response->getContent(), '{"version":1'));
         if (ApiStatus::SUCCESS === $apiStatus) {
             $successful = json_decode($response->getContent());
             $this->assertSame($apiStatus, $successful->status, $response->getContent());

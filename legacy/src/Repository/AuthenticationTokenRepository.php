@@ -32,13 +32,13 @@ class AuthenticationTokenRepository extends EntityRepository
      */
     public function getConstructionManager(AuthenticatedRequest $authenticatedRequest)
     {
-        if ($authenticatedRequest === null || mb_strlen($authenticatedRequest->getAuthenticationToken()) !== HashHelper::HASH_LENGTH) {
+        if (null === $authenticatedRequest || HashHelper::HASH_LENGTH !== mb_strlen($authenticatedRequest->getAuthenticationToken())) {
             return null;
         }
 
         /** @var AuthenticationToken $token */
         $token = $this->findOneBy(['token' => $authenticatedRequest->getAuthenticationToken()]);
-        if ($token !== null) {
+        if (null !== $token) {
             // remember last used date
             $token->setLastUsed();
 

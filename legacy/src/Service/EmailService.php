@@ -93,23 +93,23 @@ class EmailService implements EmailServiceInterface
 
         //construct plain body
         $bodyText = $email->getBody();
-        if ($email->getActionLink() !== null) {
-            $bodyText .= "\n\n" . $email->getActionText() . ': ' . $email->getActionLink();
+        if (null !== $email->getActionLink()) {
+            $bodyText .= "\n\n".$email->getActionText().': '.$email->getActionLink();
         }
         $message->setBody($bodyText, 'text/plain');
 
         //construct html body if applicable
-        if ($email->getEmailType() !== EmailType::PLAIN_EMAIL) {
+        if (EmailType::PLAIN_EMAIL !== $email->getEmailType()) {
             try {
                 $message->addPart($this->renderEmail($email), 'text/html');
             } catch (Exception $e) {
-                $this->logger->error('can not render email ' . $email->getId());
+                $this->logger->error('can not render email '.$email->getId());
 
                 return false;
             }
         }
 
-        if ($this->sslValidation === 'disabled' && $this->transport instanceof \Swift_Transport_EsmtpTransport) {
+        if ('disabled' === $this->sslValidation && $this->transport instanceof \Swift_Transport_EsmtpTransport) {
             $this->transport->setStreamOptions([
                 'ssl' => ['allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false],
             ]);
@@ -131,9 +131,9 @@ class EmailService implements EmailServiceInterface
             'show_sender_info' => false,
         ];
 
-        if ($email->getSenderName() === Email::SENDER_SYSTEM) {
+        if (Email::SENDER_SYSTEM === $email->getSenderName()) {
             $arguments['show_support_info'] = true;
-        } elseif ($email->getSenderName() !== null && $email->getSenderEmail() !== null) {
+        } elseif (null !== $email->getSenderName() && null !== $email->getSenderEmail()) {
             $arguments['show_sender_info'] = true;
             $arguments['sender_name'] = $email->getSenderName();
             $arguments['sender_email'] = $email->getSenderEmail();

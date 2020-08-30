@@ -196,7 +196,7 @@ class DisplayNameService_PutIntoTreeStructure extends TestCase
         // actual result should be of the same form as the expected result; hence remove all elements which have a non-null parent
         $actualResult = [];
         foreach ($testCase as $item) {
-            if ($item->getParent() === null) {
+            if (null === $item->getParent()) {
                 $actualResult[] = $item;
             }
         }
@@ -216,7 +216,7 @@ class DisplayNameService_PutIntoTreeStructure extends TestCase
      */
     private function assertStructureMatches(array $expectedResult, array $actualResult, array $fullExpected = [], array $fullActual = [])
     {
-        if (count($fullExpected) === 0 && count($fullActual) === 0) {
+        if (0 === count($fullExpected) && 0 === count($fullActual)) {
             $fullExpected = $expectedResult;
             $fullActual = $actualResult;
         }
@@ -238,7 +238,7 @@ class DisplayNameService_PutIntoTreeStructure extends TestCase
 
             $this->assertSame($expected->getName(), $actual->getName(), $failMessage);
             $this->assertSame($expected->countChildren(), $actual->countChildren(), $failMessage);
-            if ($expected->getParent() === null) {
+            if (null === $expected->getParent()) {
                 $this->assertNull($actual->getParent(), $failMessage);
             } else {
                 $this->assertNotNull($actual->getParent(), $failMessage);
@@ -250,8 +250,8 @@ class DisplayNameService_PutIntoTreeStructure extends TestCase
     }
 
     /**
-     * @param ChildModel $markExpected
-     * @param ChildModel $markActual
+     * @param ChildModel   $markExpected
+     * @param ChildModel   $markActual
      * @param ChildModel[] $expectedList
      * @param ChildModel[] $actualList
      *
@@ -269,9 +269,8 @@ class DisplayNameService_PutIntoTreeStructure extends TestCase
     }
 
     /**
-     * @param ChildModel $mark
+     * @param ChildModel   $mark
      * @param ChildModel[] $structure
-     * @param int $indentation
      *
      * @return string
      */
@@ -281,7 +280,7 @@ class DisplayNameService_PutIntoTreeStructure extends TestCase
         $prefix = str_repeat("\t", $indentation);
         foreach ($structure as $item) {
             $marker = $mark === $item ? '>' : '';
-            $dump .= $prefix . $marker . $item->getId() . ': ' . $item->getName() . "\n";
+            $dump .= $prefix.$marker.$item->getId().': '.$item->getName()."\n";
             $dump .= $this->dumpStructure($item->getChildren(), $mark, $indentation + 1);
         }
 

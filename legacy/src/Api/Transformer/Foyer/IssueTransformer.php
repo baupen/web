@@ -45,13 +45,13 @@ class IssueTransformer extends BatchTransformer
         $issue->setMap($entity->getMap()->getNameWithContext());
         $issue->setIsMarked($entity->getIsMarked());
         $issue->setWasAddedWithClient($entity->getWasAddedWithClient());
-        if ($entity->getCraftsman() !== null) {
+        if (null !== $entity->getCraftsman()) {
             $issue->setCraftsmanId($entity->getCraftsman()->getId());
         }
         $issue->setUploadedAt($entity->getUploadedAt());
         $issue->setUploadByName($entity->getUploadBy()->getName());
 
-        if ($entity->getImage() !== null) {
+        if (null !== $entity->getImage()) {
             $issue->setImageThumbnail($this->router->generate('image_issue', ['issue' => $entity->getId(), 'image' => $entity->getImage()->getId(), 'size' => ImageServiceInterface::SIZE_THUMBNAIL]));
             $issue->setImageFull($this->router->generate('image_issue', ['issue' => $entity->getId(), 'image' => $entity->getImage()->getId(), 'size' => ImageServiceInterface::SIZE_FULL]));
         }

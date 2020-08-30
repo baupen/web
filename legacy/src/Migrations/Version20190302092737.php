@@ -33,7 +33,7 @@ final class Version20190302092737 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP INDEX IDX_DFC5717E4994A532');
         $this->addSql('CREATE TEMPORARY TABLE __temp__construction_site_image AS SELECT id, construction_site_id, created_at, last_changed_at, filename, display_filename, hash FROM construction_site_image');
@@ -212,7 +212,7 @@ final class Version20190302092737 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP INDEX IDX_B54C4ADDA69C9147');
         $this->addSql('CREATE TEMPORARY TABLE __temp__authentication_token AS SELECT id, construction_manager_id, token, last_used, created_at, last_changed_at FROM authentication_token');

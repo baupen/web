@@ -56,9 +56,9 @@ class EnrichConstructionSiteData extends BaseFixture
             $constructionSiteLookup[$constructionSite->getFolderName()] = $constructionSite;
         }
 
-        $json = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'construction_sites.json');
+        $json = file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'construction_sites.json');
         /** @var ConstructionSite[] $rawConstructionSites */
-        $rawConstructionSites = $this->serializer->deserialize($json, ConstructionSite::class . '[]', 'json');
+        $rawConstructionSites = $this->serializer->deserialize($json, ConstructionSite::class.'[]', 'json');
 
         foreach ($rawConstructionSites as $rawConstructionSite) {
             $key = $rawConstructionSite->getFolderName();

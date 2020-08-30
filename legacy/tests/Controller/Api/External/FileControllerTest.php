@@ -36,7 +36,7 @@ class FileControllerTest extends ApiController
         $user = $this->getAuthenticatedUser($client);
         $serializer = $client->getContainer()->get('serializer');
         $doRequest = function ($issue, UploadedFile $file) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($issue, 'json') . '}';
+            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "issue":'.$serializer->serialize($issue, 'json').'}';
             $client->request(
                 'POST',
                 '/api/external/issue/update',
@@ -58,8 +58,8 @@ class FileControllerTest extends ApiController
         $this->categorizeIssues($serverData->getIssues(), $newIssues, $registeredIssues, $respondedIssues, $reviewedIssues);
         $issue = $newIssues[0];
 
-        $filePath = __DIR__ . '/../../../Files/sample.jpg';
-        $copyPath = __DIR__ . '/../../../Files/sample_2.jpg';
+        $filePath = __DIR__.'/../../../Files/sample.jpg';
+        $copyPath = __DIR__.'/../../../Files/sample_2.jpg';
         copy($filePath, $copyPath);
 
         $file = new UploadedFile(
@@ -68,7 +68,7 @@ class FileControllerTest extends ApiController
             'image/jpeg'
         );
         $issueImage = new File();
-        $issueImage->setFilename(Uuid::uuid4()->toString() . '.jpg');
+        $issueImage->setFilename(Uuid::uuid4()->toString().'.jpg');
         $issueImage->setId(Uuid::uuid4()->toString());
         $issue->setImage($issueImage);
         $response = $doRequest($issue, $file);
@@ -81,7 +81,7 @@ class FileControllerTest extends ApiController
 
         $client = static::createClient();
         $doRequest = function (ObjectMeta $objectMeta) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($objectMeta, 'json') . '}';
+            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "issue":'.$serializer->serialize($objectMeta, 'json').'}';
             $client->request(
                 'POST',
                 '/api/external/file/download',
@@ -100,7 +100,7 @@ class FileControllerTest extends ApiController
         //test building image download
         $client = static::createClient();
         $doRequest = function (ObjectMeta $objectMeta) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "constructionSite":' . $serializer->serialize($objectMeta, 'json') . '}';
+            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "constructionSite":'.$serializer->serialize($objectMeta, 'json').'}';
             $client->request(
                 'POST',
                 '/api/external/file/download',
@@ -115,12 +115,12 @@ class FileControllerTest extends ApiController
 
         $imageBuilding = null;
         foreach ($serverData->getConstructionSites() as $building) {
-            if ($building->getImage() !== null) {
+            if (null !== $building->getImage()) {
                 $imageBuilding = $building;
                 break;
             }
         }
-        if ($imageBuilding !== null) {
+        if (null !== $imageBuilding) {
             $response = $doRequest($imageBuilding->getMeta());
             $this->assertInstanceOf(BinaryFileResponse::class, $response, $response->getContent());
         }
@@ -128,7 +128,7 @@ class FileControllerTest extends ApiController
         //test map download
         $client = static::createClient();
         $doRequest = function (ObjectMeta $objectMeta) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "map":' . $serializer->serialize($objectMeta, 'json') . '}';
+            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "map":'.$serializer->serialize($objectMeta, 'json').'}';
             $client->request(
                 'POST',
                 '/api/external/file/download',
@@ -143,12 +143,12 @@ class FileControllerTest extends ApiController
 
         $imageMap = null;
         foreach ($serverData->getMaps() as $map) {
-            if ($map->getFile() !== null) {
+            if (null !== $map->getFile()) {
                 $imageMap = $map;
                 break;
             }
         }
-        if ($imageMap !== null) {
+        if (null !== $imageMap) {
             $response = $doRequest($imageMap->getMeta());
             $this->assertInstanceOf(BinaryFileResponse::class, $response, $response->getContent());
         }

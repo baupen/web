@@ -64,7 +64,7 @@ class FilterController extends BaseDoctrineController
         $filter->filterByMaps([$map->getId()]);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->findByFilter($filter);
         $imagePath = $imageService->generateMapImage($map, $issues, $imageService->ensureValidSize($size));
-        if ($imagePath === null) {
+        if (null === $imagePath) {
             throw new NotFoundHttpException();
         }
 

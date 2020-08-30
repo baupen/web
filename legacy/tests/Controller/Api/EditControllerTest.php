@@ -26,7 +26,6 @@ use App\Api\Request\Edit\UpdateExternalConstructionManagerRequest;
 use App\Api\Request\Edit\UpdateMapFileRequest;
 use App\Api\Request\Edit\UpdateMapRequest;
 use App\Api\Request\Edit\UploadMapFileRequest;
-use App\Entity\ConstructionSite;
 use App\Enum\ApiStatus;
 use App\Tests\Controller\Api\Base\ApiController;
 use function count;
@@ -68,9 +67,9 @@ class EditControllerTest extends ApiController
         // update properties
         $updateConstructionSiteRequest = new UpdateConstructionSiteRequest();
         $updateConstructionSite = new UpdateConstructionSite();
-        $updateConstructionSite->setLocality("Basel");
+        $updateConstructionSite->setLocality('Basel');
         $updateConstructionSite->setPostalCode(4060);
-        $updateConstructionSite->setStreetAddress("Ochsengasse 160");
+        $updateConstructionSite->setStreetAddress('Ochsengasse 160');
         $updateConstructionSiteRequest->setConstructionSiteId($constructionSite->getId());
         $updateConstructionSiteRequest->setConstructionSite($updateConstructionSite);
 
@@ -78,8 +77,8 @@ class EditControllerTest extends ApiController
         $this->checkResponse($response, ApiStatus::SUCCESS);
 
         // update image
-        $filePath = __DIR__ . '/../../Files/sample.jpg';
-        $copyPath = __DIR__ . '/../../Files/sample_2.jpg';
+        $filePath = __DIR__.'/../../Files/sample.jpg';
+        $copyPath = __DIR__.'/../../Files/sample_2.jpg';
         copy($filePath, $copyPath);
 
         // properties needed
@@ -138,7 +137,7 @@ class EditControllerTest extends ApiController
         $updateMapFileRequest->setConstructionSiteId($constructionSite->getId());
         $updateMapFileRequest->setMapFile($updateMapFile);
 
-        $response = $this->authenticatedPutRequest($editUrl . '/' . $mapFile->getId(), $updateMapFileRequest);
+        $response = $this->authenticatedPutRequest($editUrl.'/'.$mapFile->getId(), $updateMapFileRequest);
         $mapFileData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         // ensure map id has been set properly
@@ -153,10 +152,10 @@ class EditControllerTest extends ApiController
         $checkUrl = '/api/edit/map_file/check';
 
         // prepare sample file2
-        $filePath = __DIR__ . '/../../Files/sample.pdf';
-        $copyPath = __DIR__ . '/../../Files/sample_2.pdf';
+        $filePath = __DIR__.'/../../Files/sample.pdf';
+        $copyPath = __DIR__.'/../../Files/sample_2.pdf';
         copy($filePath, $copyPath);
-        $copyPath2 = __DIR__ . '/../../Files/sample_3.pdf';
+        $copyPath2 = __DIR__.'/../../Files/sample_3.pdf';
         copy($filePath, $copyPath2);
 
         // properties needed
@@ -204,7 +203,7 @@ class EditControllerTest extends ApiController
         $this->assertSame($originalName, $mapFile->filename);
         $this->assertNotNull($mapFile->createdAt);
         $this->assertNull($mapFile->mapId);
-        $this->assertTrue($mapFile->issueCount === 0);
+        $this->assertTrue(0 === $mapFile->issueCount);
 
         // third request; expect exact file like this at server
         $response = $this->authenticatedPostRequest($checkUrl, $checkMapFileRequest);
@@ -216,7 +215,7 @@ class EditControllerTest extends ApiController
         $uploadFileCheck = $uploadFileCheckData->data->uploadFileCheck;
         $this->assertTrue($uploadFileCheck->uploadPossible);
         $this->assertNotEmpty($uploadFileCheck->sameHashConflicts);
-        $this->assertTrue(count($uploadFileCheck->sameHashConflicts) === 1 && $uploadFileCheck->sameHashConflicts[0] === $mapFile->id);
+        $this->assertTrue(1 === count($uploadFileCheck->sameHashConflicts) && $uploadFileCheck->sameHashConflicts[0] === $mapFile->id);
         $this->assertNotNull($uploadFileCheck->fileNameConflict);
         $this->assertTrue($uploadFileCheck->fileNameConflict === $mapFile->id);
         $this->assertNotSame($originalName, $uploadFileCheck->derivedFileName);
@@ -267,13 +266,13 @@ class EditControllerTest extends ApiController
 
         // do request
         $updateMap = new UpdateMap();
-        $updateMap->setName($someMap->getName() . ' new');
+        $updateMap->setName($someMap->getName().' new');
         $updateMap->setParentId(null);
         $updateMap->setFileId(null);
         $updateMapRequest = new UpdateMapRequest();
         $updateMapRequest->setMap($updateMap);
         $updateMapRequest->setConstructionSiteId($constructionSite->getId());
-        $response = $this->authenticatedPutRequest($editUrl . '/' . $someMap->getId(), $updateMapRequest);
+        $response = $this->authenticatedPutRequest($editUrl.'/'.$someMap->getId(), $updateMapRequest);
         $mapData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         // ensure map id has been set properly
@@ -297,7 +296,7 @@ class EditControllerTest extends ApiController
 
         // add empty map to remove
         $updateMap = new UpdateMap();
-        $updateMap->setName($someMap->getName() . ' new');
+        $updateMap->setName($someMap->getName().' new');
         $updateMapRequest = new UpdateMapRequest();
         $updateMapRequest->setMap($updateMap);
         $updateMapRequest->setConstructionSiteId($constructionSite->getId());
@@ -310,7 +309,7 @@ class EditControllerTest extends ApiController
 
         $constructionSiteRequest = new ConstructionSiteRequest();
         $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
-        $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $mapId, $constructionSiteRequest);
+        $response = $this->authenticatedDeleteRequest($deleteUrl.'/'.$mapId, $constructionSiteRequest);
         $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertSame($availableMaps, $this->countAvailableMaps());
@@ -323,15 +322,15 @@ class EditControllerTest extends ApiController
 
             //test that map with issues can not be removed
             if (!$testsExecuted[1] && $map->getIssues()->count() > 0) {
-                $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $map->getId(), $updateMapRequest);
+                $response = $this->authenticatedDeleteRequest($deleteUrl.'/'.$map->getId(), $updateMapRequest);
                 $this->checkResponse($response, ApiStatus::FAIL, 'map can not be removed as there are issues assigned to it');
 
                 $testsExecuted[1] = true;
             }
 
             //test that map with children can not be removed
-            if (!$testsExecuted[0] && $map->getChildren()->count() > 0 && $map->getIssues()->count() === 0) {
-                $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $map->getId(), $updateMapRequest);
+            if (!$testsExecuted[0] && $map->getChildren()->count() > 0 && 0 === $map->getIssues()->count()) {
+                $response = $this->authenticatedDeleteRequest($deleteUrl.'/'.$map->getId(), $updateMapRequest);
                 $this->checkResponse($response, ApiStatus::FAIL, 'map can not be removed as there are children assigned to it');
 
                 $testsExecuted[0] = true;
@@ -396,14 +395,14 @@ class EditControllerTest extends ApiController
 
         // do request
         $updateCraftsman = new UpdateCraftsman();
-        $updateCraftsman->setContactName($someCraftsman->getName() . ' new');
-        $updateCraftsman->setCompany($someCraftsman->getCompany() . ' GmbH');
-        $updateCraftsman->setEmail($someCraftsman->getEmail() . '.ch');
-        $updateCraftsman->setTrade('professional ' . $someCraftsman->getTrade());
+        $updateCraftsman->setContactName($someCraftsman->getName().' new');
+        $updateCraftsman->setCompany($someCraftsman->getCompany().' GmbH');
+        $updateCraftsman->setEmail($someCraftsman->getEmail().'.ch');
+        $updateCraftsman->setTrade('professional '.$someCraftsman->getTrade());
         $updateCraftsmanRequest = new UpdateCraftsmanRequest();
         $updateCraftsmanRequest->setCraftsman($updateCraftsman);
         $updateCraftsmanRequest->setConstructionSiteId($constructionSite->getId());
-        $response = $this->authenticatedPutRequest($editUrl . '/' . $someCraftsman->getId(), $updateCraftsmanRequest);
+        $response = $this->authenticatedPutRequest($editUrl.'/'.$someCraftsman->getId(), $updateCraftsmanRequest);
         $craftsmanData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         // ensure craftsman id has been set properly
@@ -428,10 +427,10 @@ class EditControllerTest extends ApiController
 
         // add empty craftsman to remove
         $updateCraftsman = new UpdateCraftsman();
-        $updateCraftsman->setContactName($someCraftsman->getName() . ' new');
-        $updateCraftsman->setCompany($someCraftsman->getCompany() . ' GmbH');
-        $updateCraftsman->setEmail($someCraftsman->getEmail() . '.ch');
-        $updateCraftsman->setTrade('professional ' . $someCraftsman->getTrade());
+        $updateCraftsman->setContactName($someCraftsman->getName().' new');
+        $updateCraftsman->setCompany($someCraftsman->getCompany().' GmbH');
+        $updateCraftsman->setEmail($someCraftsman->getEmail().'.ch');
+        $updateCraftsman->setTrade('professional '.$someCraftsman->getTrade());
         $updateCraftsmanRequest = new UpdateCraftsmanRequest();
         $updateCraftsmanRequest->setCraftsman($updateCraftsman);
         $updateCraftsmanRequest->setConstructionSiteId($constructionSite->getId());
@@ -444,7 +443,7 @@ class EditControllerTest extends ApiController
 
         $constructionSiteRequest = new ConstructionSiteRequest();
         $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
-        $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $craftsmanId, $constructionSiteRequest);
+        $response = $this->authenticatedDeleteRequest($deleteUrl.'/'.$craftsmanId, $constructionSiteRequest);
         $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $this->assertSame($availableCraftsmen, $this->countAvailableCraftsmen());
@@ -453,7 +452,7 @@ class EditControllerTest extends ApiController
         foreach ($constructionSite->getCraftsmen() as $craftsman) {
             //test that craftsman with issues can not be removed
             if ($craftsman->getIssues()->count() > 0) {
-                $response = $this->authenticatedDeleteRequest($deleteUrl . '/' . $craftsman->getId(), $updateCraftsmanRequest);
+                $response = $this->authenticatedDeleteRequest($deleteUrl.'/'.$craftsman->getId(), $updateCraftsmanRequest);
                 $this->checkResponse($response, ApiStatus::FAIL, 'craftsman can not be removed as there are issues assigned to it');
 
                 $testsExecuted = true;
@@ -499,7 +498,7 @@ class EditControllerTest extends ApiController
 
         $this->assertNotNull($externalConstructionManagerData->data);
         $this->assertTrue(is_array($externalConstructionManagerData->data->constructionManagers));
-        $externalConstructionManagerCount = count($externalConstructionManagerData->data->constructionManagers) ;
+        $externalConstructionManagerCount = count($externalConstructionManagerData->data->constructionManagers);
         $this->assertTrue($externalConstructionManagerCount > 0);
         foreach ($externalConstructionManagerData->data->constructionManagers as $externalConstructionManager) {
             $this->assertNotNull($externalConstructionManager);
@@ -510,7 +509,7 @@ class EditControllerTest extends ApiController
         // delete
         $constructionSiteRequest = new ConstructionSiteRequest();
         $constructionSiteRequest->setConstructionSiteId($constructionSite->getId());
-        $response = $this->authenticatedDeleteRequest($addUrl . '/' . $externalConstructionManagerId, $constructionSiteRequest);
+        $response = $this->authenticatedDeleteRequest($addUrl.'/'.$externalConstructionManagerId, $constructionSiteRequest);
         $this->checkResponse($response, ApiStatus::SUCCESS);
 
         // check really deleted
@@ -519,9 +518,8 @@ class EditControllerTest extends ApiController
 
         $this->assertNotNull($externalConstructionManagerData->data);
         $this->assertTrue(is_array($externalConstructionManagerData->data->constructionManagers));
-        $newExternalConstructionManagerCount = count($externalConstructionManagerData->data->constructionManagers) ;
+        $newExternalConstructionManagerCount = count($externalConstructionManagerData->data->constructionManagers);
         $this->assertTrue($newExternalConstructionManagerCount + 1 == $externalConstructionManagerCount);
-
     }
 
     private function countAvailableCraftsmen()
@@ -585,7 +583,6 @@ class EditControllerTest extends ApiController
     }
 
     /**
-     * @param string $constructionSiteId
      * @return \stdClass
      */
     private function getConstructionSite(string $constructionSiteId)
@@ -599,6 +596,7 @@ class EditControllerTest extends ApiController
         $constructionSiteData = $this->checkResponse($response, ApiStatus::SUCCESS);
 
         $newConstructionSite = $constructionSiteData->data->constructionSite;
+
         return $newConstructionSite;
     }
 }

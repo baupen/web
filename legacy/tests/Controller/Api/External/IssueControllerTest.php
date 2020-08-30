@@ -35,7 +35,7 @@ class IssueControllerTest extends ApiController
         $user = $this->getAuthenticatedUser($client);
         $serializer = $client->getContainer()->get('serializer');
         $doRequest = function (Issue $issue) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($issue, 'json') . '}';
+            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "issue":'.$serializer->serialize($issue, 'json').'}';
             $client->request(
                 'POST',
                 '/api/external/issue/create',
@@ -102,12 +102,12 @@ class IssueControllerTest extends ApiController
     public function testUpdateIssue()
     {
         self::reset();
-        
+
         $client = static::createClient();
         $user = $this->getAuthenticatedUser($client);
         $serializer = $client->getContainer()->get('serializer');
         $doRequest = function (Issue $issue) use ($client, $user, $serializer) {
-            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issue":' . $serializer->serialize($issue, 'json') . '}';
+            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "issue":'.$serializer->serialize($issue, 'json').'}';
             $client->request(
                 'POST',
                 '/api/external/issue/update',
@@ -156,10 +156,10 @@ class IssueControllerTest extends ApiController
         $client = static::createClient();
         $user = $this->getAuthenticatedUser($client);
         $doRequest = function ($issueId, $action) use ($client, $user) {
-            $json = '{"authenticationToken":"' . $user->authenticationToken . '", "issueID":"' . $issueId . '"}';
+            $json = '{"authenticationToken":"'.$user->authenticationToken.'", "issueID":"'.$issueId.'"}';
             $client->request(
                 'POST',
-                '/api/external/issue/' . $action,
+                '/api/external/issue/'.$action,
                 [],
                 [],
                 ['CONTENT_TYPE' => 'application/json'],

@@ -76,19 +76,19 @@ class IssueTransformer extends BatchTransformer
         $issue->setPosition($this->issuePositionTransformer->toApi($entity->getPosition()));
 
         $issueStatus = new IssueStatus();
-        if ($entity->getRegisteredAt() !== null) {
+        if (null !== $entity->getRegisteredAt()) {
             $issueStatusEvent = new IssueStatusEvent();
             $issueStatusEvent->setAuthor($entity->getRegistrationBy()->getName());
             $issueStatusEvent->setTime($entity->getRegisteredAt()->format('c'));
             $issueStatus->setRegistration($issueStatusEvent);
         }
-        if ($entity->getRespondedAt() !== null) {
+        if (null !== $entity->getRespondedAt()) {
             $issueStatusEvent = new IssueStatusEvent();
             $issueStatusEvent->setAuthor($entity->getResponseBy()->getName());
             $issueStatusEvent->setTime($entity->getRespondedAt()->format('c'));
             $issueStatus->setResponse($issueStatusEvent);
         }
-        if ($entity->getReviewedAt() !== null) {
+        if (null !== $entity->getReviewedAt()) {
             $issueStatusEvent = new IssueStatusEvent();
             $issueStatusEvent->setAuthor($entity->getReviewBy()->getName());
             $issueStatusEvent->setTime($entity->getReviewedAt()->format('c'));
@@ -97,7 +97,7 @@ class IssueTransformer extends BatchTransformer
         $issue->setStatus($issueStatus);
 
         $issue->setMap($entity->getMap()->getId());
-        if ($entity->getCraftsman() !== null) {
+        if (null !== $entity->getCraftsman()) {
             $issue->setCraftsman($entity->getCraftsman()->getId());
         }
 

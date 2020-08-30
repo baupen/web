@@ -67,11 +67,11 @@ class SupportController extends BaseFormController
                     $entity->setSentDateTime(new DateTime());
                     $this->fastSave($entity);
 
-                    $logger->info('sent support email from ' . $email . ' to ' . $entity->getReceiver());
+                    $logger->info('sent support email from '.$email.' to '.$entity->getReceiver());
                     $this->displaySuccess($translator->trans('support.success.email_sent', [], 'support'));
                     $form = $createForm();
                 } else {
-                    $logger->error('could not send support email ' . $entity->getId());
+                    $logger->error('could not send support email '.$entity->getId());
                     $this->displaySuccess($translator->trans('support.fail.email_not_sent', [], 'support'));
                 }
 

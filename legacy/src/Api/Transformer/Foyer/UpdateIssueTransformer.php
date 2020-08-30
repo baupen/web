@@ -49,10 +49,10 @@ class UpdateIssueTransformer
         $entity->setResponseLimit($issue->getResponseLimit());
 
         //get craftsman
-        if ($issue->getCraftsmanId() !== null) {
+        if (null !== $issue->getCraftsmanId()) {
             $craftsman = $this->doctrine->getRepository(Craftsman::class)->find($issue->getCraftsmanId());
             $res = $validateCraftsman($craftsman, $entity);
-            if ($res !== true) {
+            if (true !== $res) {
                 return $res;
             }
             $entity->setCraftsman($craftsman);

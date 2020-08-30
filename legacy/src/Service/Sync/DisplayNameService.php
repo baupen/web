@@ -50,7 +50,7 @@ class DisplayNameService implements DisplayNameServiceInterface
             $number = $matches[1][0];
             $after = mb_substr($output, $matches[1][1] + mb_strlen($number));
 
-            $output = $before . $number . '. ' . $after;
+            $output = $before.$number.'. '.$after;
         }
 
         // add space before all capitals which are followed by at least 2 non-capital (ObergeschossHaus)
@@ -63,7 +63,7 @@ class DisplayNameService implements DisplayNameServiceInterface
             $before = mb_substr($output, 0, $matches[1][1] + 1);
             $after = mb_substr($output, $matches[2][1]);
 
-            $output = $before . ' ' . $after;
+            $output = $before.' '.$after;
         }
 
         return $this->trimWhitespace($output);
@@ -138,7 +138,7 @@ class DisplayNameService implements DisplayNameServiceInterface
             $possibleParentPrefix = $elementName;
 
             $found = false;
-            while (mb_strpos($possibleParentPrefix, ' ') !== false) {
+            while (false !== mb_strpos($possibleParentPrefix, ' ')) {
                 // cut off last part of name separated by space
                 $possibleParentPrefix = mb_substr($possibleParentPrefix, 0, mb_strrpos($possibleParentPrefix, ' '));
 
@@ -178,7 +178,7 @@ class DisplayNameService implements DisplayNameServiceInterface
                 }
 
                 $newCutoff = mb_strripos($currentPrefix, ' ');
-                if ($newCutoff === false) {
+                if (false === $newCutoff) {
                     break;
                 }
 
@@ -231,7 +231,7 @@ class DisplayNameService implements DisplayNameServiceInterface
         $partAnalyticsCount = \count($filenameGroupsStatistics);
         for ($i = 0; $i < $partAnalyticsCount; ++$i) {
             // only one value; can safely remove because will not contain any useful information
-            if (\count($filenameGroupsStatistics[$i]) === 1) {
+            if (1 === \count($filenameGroupsStatistics[$i])) {
                 $this->removeGroup($i, $filenameGroupsStatistics, $decomposedNames);
 
                 --$partAnalyticsCount;
@@ -250,15 +250,15 @@ class DisplayNameService implements DisplayNameServiceInterface
             $possibleDateGroup = $decomposedName[$lastIndex];
 
             if (is_numeric($possibleDateGroup)) {
-                if (mb_strlen($possibleDateGroup) === 6) {
-                    $year = '20' . mb_substr($possibleDateGroup, 0, 2);
+                if (6 === mb_strlen($possibleDateGroup)) {
+                    $year = '20'.mb_substr($possibleDateGroup, 0, 2);
                     $month = mb_substr($possibleDateGroup, 2, 2);
                     $day = mb_substr($possibleDateGroup, 4, 2);
 
                     if (checkdate($month, $day, $year)) {
                         unset($decomposedName[$lastIndex]);
                     }
-                } elseif (mb_strlen($possibleDateGroup) === 8) {
+                } elseif (8 === mb_strlen($possibleDateGroup)) {
                     $year = mb_substr($possibleDateGroup, 0, 4);
                     $month = mb_substr($possibleDateGroup, 4, 2);
                     $day = mb_substr($possibleDateGroup, 6, 2);
@@ -297,7 +297,7 @@ class DisplayNameService implements DisplayNameServiceInterface
         $ending = pathinfo($fileName, PATHINFO_EXTENSION);
 
         // strip duplicate
-        if (preg_match('/_duplicate_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}_[0-9]{2}.' . $ending . '/', $fileName, $matches, PREG_OFFSET_CAPTURE)) {
+        if (preg_match('/_duplicate_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}_[0-9]{2}.'.$ending.'/', $fileName, $matches, PREG_OFFSET_CAPTURE)) {
             $index = $matches[0][1];
             $output = mb_substr($fileName, 0, $index);
         } else {

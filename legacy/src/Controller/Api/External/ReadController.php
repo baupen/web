@@ -113,7 +113,7 @@ WHERE cscm.construction_manager_id = :id';
         $readData->setRemovedConstructionSiteIDs(array_keys($removeIds));
 
         //if no access to any buildings do an early return
-        if (\count($allValidIds) === 0) {
+        if (0 === \count($allValidIds)) {
             return;
         }
 
@@ -252,7 +252,7 @@ WHERE cscm.construction_manager_id = :id';
         $chuncks = array_chunk($ids, self::MAX_VARIABLE_NUMBER);
         $result = [];
         foreach ($chuncks as $chunck) {
-            $sql = $baseQuery . ' IN ("' . implode('", "', $chunck) . '")';
+            $sql = $baseQuery.' IN ("'.implode('", "', $chunck).'")';
             $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);
             $result = array_merge($result, $query->getResult());
         }
@@ -289,14 +289,14 @@ WHERE cscm.construction_manager_id = :id';
             $sqlEntries = [];
             foreach (array_keys($chunk) as $guid) {
                 // id matches but last change date is bigger
-                $sqlEntries[] = '(' . $tableShort . '.id == :guid_' . $counter . ' AND ' . $tableShort . '.last_changed_at > :time_' . $counter . ')';
-                $parameters['time_' . $counter] = $knownIds[$guid];
-                $parameters['guid_' . $counter] = $guid;
+                $sqlEntries[] = '('.$tableShort.'.id == :guid_'.$counter.' AND '.$tableShort.'.last_changed_at > :time_'.$counter.')';
+                $parameters['time_'.$counter] = $knownIds[$guid];
+                $parameters['guid_'.$counter] = $guid;
 
                 ++$counter;
             }
 
-            $sql = $baseQuery . ' ' . implode(' OR ', $sqlEntries);
+            $sql = $baseQuery.' '.implode(' OR ', $sqlEntries);
 
             //execute query for updated
             $query = $incompleteManager->createNativeQuery($sql, $resultSetMapping);

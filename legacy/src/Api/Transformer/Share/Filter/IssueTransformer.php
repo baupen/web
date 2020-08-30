@@ -42,7 +42,7 @@ class IssueTransformer
             return $router->generate('external_image_filter_issue', $arguments);
         });
 
-        if ($entity->getReviewedAt() !== null) {
+        if (null !== $entity->getReviewedAt()) {
             $issue->setReviewedAt($entity->getReviewedAt());
             $issue->setReviewedByName($entity->getReviewBy()->getName());
         }

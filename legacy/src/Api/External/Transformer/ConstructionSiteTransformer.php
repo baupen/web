@@ -46,7 +46,7 @@ class ConstructionSiteTransformer extends BatchTransformer
 
         $childrenIds = [];
         foreach ($entity->getMaps() as $child) {
-            if ($child->getParent() === null) {
+            if (null === $child->getParent()) {
                 $childrenIds[] = $child->getId();
             }
         }

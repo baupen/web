@@ -133,7 +133,7 @@ class RegisterController extends ApiController
 
         /** @var ConstructionSite $constructionSite */
         $constructionSite = $this->getDoctrine()->getRepository(ConstructionSite::class)->find($queryFilter['constructionSiteId']);
-        if ($constructionSite === null || !$this->getUser()->getConstructionSites()->contains($constructionSite)) {
+        if (null === $constructionSite || !$this->getUser()->getConstructionSites()->contains($constructionSite)) {
             throw new NotFoundHttpException();
         }
 
@@ -148,7 +148,7 @@ class RegisterController extends ApiController
         $linkParameters = new ParameterBag($queryLimit);
         if ($linkParameters->getBoolean('enabled')) {
             $limit = $linkParameters->get('limit', null);
-            $dateLimit = $limit !== null && $limit !== '' ? new DateTime($limit) : null;
+            $dateLimit = null !== $limit && '' !== $limit ? new DateTime($limit) : null;
             $filter->setAccessAllowedUntil($dateLimit);
         }
 
@@ -182,7 +182,7 @@ class RegisterController extends ApiController
                 $entity = $entities[$guid];
                 $res = $updateIssueTransformer->fromApi($issue, $entity, function ($craftsman) use ($constructionSite) {
                     /** @var Craftsman $craftsman */
-                    if ($craftsman === null) {
+                    if (null === $craftsman) {
                         return $this->fail(self::CRAFTSMAN_NOT_FOUND);
                     }
                     if ($craftsman->getConstructionSite() !== $constructionSite) {
@@ -191,7 +191,7 @@ class RegisterController extends ApiController
 
                     return true;
                 });
-                if ($res !== true) {
+                if (true !== $res) {
                     /* @var Response $res */
                     return $res;
                 }
@@ -228,14 +228,14 @@ class RegisterController extends ApiController
         //correct responded status
         if ($parsedRequest->isRespondedStatusSet()) {
             foreach ($entities as $entity) {
-                if ($entity->getRespondedAt() === null) {
+                if (null === $entity->getRespondedAt()) {
                     $entity->setRespondedAt(new DateTime());
                     $entity->setResponseBy($entity->getCraftsman());
                 }
             }
         } else {
             foreach ($entities as $entity) {
-                if ($entity->getRespondedAt() !== null) {
+                if (null !== $entity->getRespondedAt()) {
                     $entity->setRespondedAt(null);
                     $entity->setResponseBy(null);
                 }
@@ -245,14 +245,14 @@ class RegisterController extends ApiController
         //correct reviewed status
         if ($parsedRequest->isReviewedStatusSet()) {
             foreach ($entities as $entity) {
-                if ($entity->getReviewedAt() === null) {
+                if (null === $entity->getReviewedAt()) {
                     $entity->setReviewedAt(new DateTime());
                     $entity->setReviewBy($this->getUser());
                 }
             }
         } else {
             foreach ($entities as $entity) {
-                if ($entity->getReviewedAt() !== null) {
+                if (null !== $entity->getReviewedAt()) {
                     $entity->setReviewedAt(null);
                     $entity->setReviewBy(null);
                 }

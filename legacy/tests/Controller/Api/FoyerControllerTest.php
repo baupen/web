@@ -131,8 +131,8 @@ class FoyerControllerTest extends ApiController
         $request->setIssueId($apiIssue->id);
         $request->setConstructionSiteId($this->getSomeConstructionSite()->getId());
 
-        $filePath = __DIR__ . '/../../Files/sample.jpg';
-        $copyPath = __DIR__ . '/../../Files/sample_2.jpg';
+        $filePath = __DIR__.'/../../Files/sample.jpg';
+        $copyPath = __DIR__.'/../../Files/sample_2.jpg';
         copy($filePath, $copyPath);
         $file = new UploadedFile(
             $copyPath,
@@ -173,7 +173,7 @@ class FoyerControllerTest extends ApiController
         $this->assertSameSize($ids, $issuesData->data->deletedIssues);
 
         $issues = $this->getIssues();
-        $this->assertTrue(count($issues->data->issues) === 0);
+        $this->assertTrue(0 === count($issues->data->issues));
     }
 
     public function testIssueConfirm()
@@ -209,6 +209,6 @@ class FoyerControllerTest extends ApiController
         }
 
         $issues = $this->getIssues();
-        $this->assertTrue(count($issues->data->issues) === 0);
+        $this->assertTrue(0 === count($issues->data->issues));
     }
 }

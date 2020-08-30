@@ -50,23 +50,23 @@ class CurrentIssueState
     {
         $lastAction = $craftsman->getLastAction();
         foreach ($craftsman->getIssues() as $issue) {
-            if ($issue->getRegisteredAt() !== null && $issue->getRespondedAt() === null) {
-                if ($issue->getReviewedAt() === null) {
+            if (null !== $issue->getRegisteredAt() && null === $issue->getRespondedAt()) {
+                if (null === $issue->getReviewedAt()) {
                     ++$this->notRespondedIssuesCount;
-                    if ($lastAction === null || $issue->getRegisteredAt() > $lastAction) {
+                    if (null === $lastAction || $issue->getRegisteredAt() > $lastAction) {
                         ++$this->notReadIssuesCount;
                     }
 
-                    if ($issue->getResponseLimit() !== null) {
+                    if (null !== $issue->getResponseLimit()) {
                         if ($issue->getResponseLimit() < $referenceTime) {
                             ++$this->overdueIssuesCount;
                         }
 
-                        if ($this->nextResponseLimit === null || $issue->getResponseLimit() < $this->nextResponseLimit) {
+                        if (null === $this->nextResponseLimit || $issue->getResponseLimit() < $this->nextResponseLimit) {
                             $this->nextResponseLimit = $issue->getResponseLimit();
                         }
                     }
-                } elseif ($lastAction === null || $issue->getReviewedAt() > $lastAction) {
+                } elseif (null === $lastAction || $issue->getReviewedAt() > $lastAction) {
                     ++$this->recentlyReviewedIssuesCount;
                 }
             }

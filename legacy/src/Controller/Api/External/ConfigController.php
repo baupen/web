@@ -32,7 +32,7 @@ class ConfigController extends ExternalApiController
      */
     public function domainOverridesAction(PathServiceInterface $pathService)
     {
-        $domainOverridesPath = $pathService->getTransientFolderRoot() . DIRECTORY_SEPARATOR . 'domainOverrides.json';
+        $domainOverridesPath = $pathService->getTransientFolderRoot().DIRECTORY_SEPARATOR.'domainOverrides.json';
 
         if (!file_exists($domainOverridesPath)) {
             throw new NotFoundHttpException($domainOverridesPath);

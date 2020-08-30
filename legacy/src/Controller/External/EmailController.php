@@ -32,7 +32,7 @@ class EmailController extends BaseController
     public function emailAction($identifier, EmailServiceInterface $emailService)
     {
         $email = $this->getDoctrine()->getRepository('App:Email')->findOneBy(['id' => $identifier]);
-        if ($email === null) {
+        if (null === $email) {
             throw new NotFoundHttpException();
         }
 

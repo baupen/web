@@ -169,13 +169,13 @@ class ReadControllerTest extends ApiController
             $this->assertSameSize($expectedProperties, $properties, implode(', ', array_keys($properties)));
 
             foreach ($expectedProperties as $name => $type) {
-                $this->assertTrue(property_exists($object, $name), 'property ' . $name . ' not found');
+                $this->assertTrue(property_exists($object, $name), 'property '.$name.' not found');
 
                 $value = $object->$name;
                 if (is_array($type)) {
                     $this->assertPropertiesMatch($value, $type);
                 } else {
-                    if ($type & self::TYPE_NULLABLE && $value === null) {
+                    if ($type & self::TYPE_NULLABLE && null === $value) {
                         // fine!
                     } elseif ($type & self::TYPE_STRING) {
                         $this->assertTrue(is_string($value));
@@ -257,7 +257,7 @@ class ReadControllerTest extends ApiController
                 $meta->setId($entity->getMeta()->getId());
                 if ($old-- > 0) {
                     //set to min datetime to force update
-                    $meta->setLastChangeTime(((new DateTime($entity->getMeta()->getLastChangeTime()))->sub(new DateInterval('PT1M'))->format("c")));
+                    $meta->setLastChangeTime(((new DateTime($entity->getMeta()->getLastChangeTime()))->sub(new DateInterval('PT1M'))->format('c')));
                 } else {
                     $meta->setLastChangeTime($entity->getMeta()->getLastChangeTime());
                 }

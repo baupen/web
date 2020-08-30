@@ -44,7 +44,7 @@ class IssueReportService implements IssueReportServiceInterface
         $printer = $printFactory->getPrinter($columnedLayout);
 
         //image
-        if ($introductionContent->getConstructionSiteImage() !== null) {
+        if (null !== $introductionContent->getConstructionSiteImage()) {
             $printer->printImage($introductionContent->getConstructionSiteImage());
         }
 
@@ -108,7 +108,7 @@ class IssueReportService implements IssueReportServiceInterface
         $printer->printParagraph($mapContent->getMapContext());
 
         $mapImage = $mapContent->getMapImage();
-        if ($mapImage !== null) {
+        if (null !== $mapImage) {
             $printer->printImage($mapImage);
         }
         $groupLayout->getTransaction()->commit();
@@ -152,7 +152,7 @@ class IssueReportService implements IssueReportServiceInterface
 
         $counter = 0;
         $tableLayout->setOnRowCommit(function (TransactionInterface $printTransaction) use (&$counter, $printFactory) {
-            if ($counter % 2 === 1) {
+            if (1 === $counter % 2) {
                 $drawer = $printFactory->getDrawer($printTransaction);
                 $drawer->drawTableAlternatingBackground();
             }

@@ -44,18 +44,18 @@ class IssueTransformer extends BatchTransformer
         $issue->setRegisteredAt($entity->getRegisteredAt());
         $issue->setRegistrationByName($entity->getRegistrationBy()->getName());
 
-        if ($entity->getRespondedAt() !== null) {
+        if (null !== $entity->getRespondedAt()) {
             $issue->setRespondedAt($entity->getRespondedAt());
             $issue->setResponseByName($entity->getResponseBy()->getName());
         }
 
-        if ($entity->getReviewedAt() !== null) {
+        if (null !== $entity->getReviewedAt()) {
             $issue->setReviewedAt($entity->getReviewedAt());
             $issue->setReviewByName($entity->getReviewBy()->getName());
         }
 
         $lastVisit = $entity->getCraftsman()->getLastOnlineVisit();
-        $issue->setIsRead($lastVisit !== null && $lastVisit > $entity->getRegisteredAt());
+        $issue->setIsRead(null !== $lastVisit && $lastVisit > $entity->getRegisteredAt());
         $issue->setMapId($entity->getMap()->getId());
 
         return $issue;

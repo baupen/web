@@ -28,16 +28,16 @@ class FileHelper
         }
 
         $dir = opendir($sourceFolder);
-        if ($dir === false) {
-            throw new Exception('failed to open dir ' . $dir);
+        if (false === $dir) {
+            throw new Exception('failed to open dir '.$dir);
         }
 
         while (false !== ($file = readdir($dir))) {
-            if (($file !== '.') && ($file !== '..')) {
-                if (is_dir($sourceFolder . '/' . $file)) {
-                    self::copyRecursively($sourceFolder . '/' . $file, $destinationFolder . '/' . $file);
+            if (('.' !== $file) && ('..' !== $file)) {
+                if (is_dir($sourceFolder.'/'.$file)) {
+                    self::copyRecursively($sourceFolder.'/'.$file, $destinationFolder.'/'.$file);
                 } else {
-                    copy($sourceFolder . '/' . $file, $destinationFolder . '/' . $file);
+                    copy($sourceFolder.'/'.$file, $destinationFolder.'/'.$file);
                 }
             }
         }

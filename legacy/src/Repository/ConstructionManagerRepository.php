@@ -46,7 +46,7 @@ class ConstructionManagerRepository extends EntityRepository
         $queryBuilder->where('c.constructionSite = :constructionSite');
         $queryBuilder->setParameter(':constructionSite', $constructionSite->getId());
         $queryBuilder->andWhere('i.lastChangedAt > :lastChangedAt');
-        $queryBuilder->setParameter('lastChangedAt', new DateTime('now -' . $days . ' days'));
+        $queryBuilder->setParameter('lastChangedAt', new DateTime('now -'.$days.' days'));
         $queryBuilder->orderBy('i.lastChangedAt', 'DESC');
 
         return $queryBuilder->getQuery()->getResult();

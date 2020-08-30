@@ -135,12 +135,12 @@ class UploadService implements UploadServiceInterface
         $result->setSameHashConflicts($sameHash);
 
         $sameFilenameMapFile = $this->doctrine->getRepository(MapFile::class)->findOneBy(['filename' => $filename, 'constructionSite' => $constructionSite->getId()]);
-        if ($sameFilenameMapFile !== null) {
+        if (null !== $sameFilenameMapFile) {
             $result->setFileNameConflict($sameFilenameMapFile->getId());
 
             $targetFolder = $this->pathService->getFolderForMapFile($constructionSite);
             $targetFileName = $this->getCollisionProtectedFileName($targetFolder, $filename);
-            if ($targetFileName !== null) {
+            if (null !== $targetFileName) {
                 $result->setDerivedFileName($targetFileName);
             } else {
                 $result->setUploadPossible(false);
@@ -159,7 +159,7 @@ class UploadService implements UploadServiceInterface
             mkdir($targetFolder, 0777, true);
         }
 
-        $targetPath = $targetFolder . DIRECTORY_SEPARATOR . $targetFileName;
+        $targetPath = $targetFolder.DIRECTORY_SEPARATOR.$targetFileName;
         if (file_exists($targetPath)) {
             return false;
         }
@@ -180,7 +180,7 @@ class UploadService implements UploadServiceInterface
     private function writeFileTraitProperties($entity, string $targetFolder, string $targetFileName)
     {
         $entity->setFilename($targetFileName);
-        $entity->setHash(hash_file('sha256', $targetFolder . DIRECTORY_SEPARATOR . $targetFileName));
+        $entity->setHash(hash_file('sha256', $targetFolder.DIRECTORY_SEPARATOR.$targetFileName));
         $entity->setDisplayFilename($targetFileName);
     }
 
@@ -191,15 +191,15 @@ class UploadService implements UploadServiceInterface
      */
     private function getCollisionProtectedFileName(string $targetFolder, string $targetFileName)
     {
-        $targetPath = $targetFolder . DIRECTORY_SEPARATOR . $targetFileName;
+        $targetPath = $targetFolder.DIRECTORY_SEPARATOR.$targetFileName;
         if (is_file($targetPath)) {
             $extension = pathinfo($targetPath, PATHINFO_EXTENSION);
             $filename = pathinfo($targetPath, PATHINFO_FILENAME);
 
             $now = new DateTime();
-            $targetFileName = $filename . '_duplicate_' . $now->format('Y-m-d\TH:i') . '.' . $extension;
+            $targetFileName = $filename.'_duplicate_'.$now->format('Y-m-d\TH:i').'.'.$extension;
 
-            $targetPath = $targetFolder . DIRECTORY_SEPARATOR . $targetFileName;
+            $targetPath = $targetFolder.DIRECTORY_SEPARATOR.$targetFileName;
             if (file_exists($targetPath)) {
                 return null;
             }

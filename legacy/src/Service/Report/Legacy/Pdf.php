@@ -79,7 +79,7 @@ class Pdf extends TCPDF
         //set page numbers
         //+10 because TCPDF uses a placeholder for the page numbers which is replaced at the end. this leads to incorrect alignment.
         $this->SetXY($this->pdfSizes->getContentXEnd() - $contentWidthPart + 6.5, $this->pdfSizes->getFooterYStart());
-        $this->Cell($contentWidthPart, 0, $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, 0, 'R');
+        $this->Cell($contentWidthPart, 0, $this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, 0, 'R');
     }
 
     /**

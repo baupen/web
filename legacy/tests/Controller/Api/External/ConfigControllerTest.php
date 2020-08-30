@@ -28,10 +28,6 @@ class ConfigControllerTest extends ApiController
 
     /**
      * ConfigControllerTest constructor.
-     *
-     * @param string|null $name
-     * @param array $data
-     * @param string $dataName
      */
     public function __construct(?string $name = null, array $data = [], string $dataName = '')
     {
@@ -40,7 +36,7 @@ class ConfigControllerTest extends ApiController
         self::bootKernel();
         $pathService = self::$container->get(PathServiceInterface::class);
 
-        $this->configFilePath = $pathService->getTransientFolderRoot() . DIRECTORY_SEPARATOR . 'domainOverrides.json';
+        $this->configFilePath = $pathService->getTransientFolderRoot().DIRECTORY_SEPARATOR.'domainOverrides.json';
     }
 
     /**
@@ -105,8 +101,6 @@ class ConfigControllerTest extends ApiController
     }
 
     /**
-     * @param Client $client
-     *
      * @return Response
      */
     private function doConfigRequest(Client $client)

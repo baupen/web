@@ -40,7 +40,7 @@ class Frame
      */
     public function equals($other)
     {
-        return $other !== null &&
+        return null !== $other &&
             $this->startX === $other->startX &&
             $this->startY === $other->startY &&
             $this->width === $other->width &&

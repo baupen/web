@@ -45,8 +45,6 @@ class PathServiceMock implements PathServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     public function getFolderForConstructionSiteImage(ConstructionSite $constructionSite)
@@ -55,8 +53,6 @@ class PathServiceMock implements PathServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     public function getFolderForMapFile(ConstructionSite $constructionSite)
@@ -65,8 +61,6 @@ class PathServiceMock implements PathServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     public function getFolderForIssueImage(ConstructionSite $constructionSite)
@@ -83,8 +77,6 @@ class PathServiceMock implements PathServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     public function getTransientFolderForConstructionSiteImage(ConstructionSite $constructionSite)
@@ -93,8 +85,6 @@ class PathServiceMock implements PathServiceInterface
     }
 
     /**
-     * @param Map $map
-     *
      * @return string
      */
     public function getTransientFolderForMapFile(Map $map)
@@ -103,8 +93,6 @@ class PathServiceMock implements PathServiceInterface
     }
 
     /**
-     * @param Issue $issue
-     *
      * @return string
      */
     public function getTransientFolderForIssueImage(Issue $issue)
@@ -113,8 +101,6 @@ class PathServiceMock implements PathServiceInterface
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     *
      * @return string
      */
     public function getTransientFolderForReports(ConstructionSite $constructionSite)

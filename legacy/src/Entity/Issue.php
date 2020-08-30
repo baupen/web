@@ -324,13 +324,13 @@ class Issue extends BaseEntity
     public function getStatusCode()
     {
         $res = self::UPLOAD_STATUS;
-        if ($this->getRegisteredAt() !== null) {
+        if (null !== $this->getRegisteredAt()) {
             $res = $res | self::REGISTRATION_STATUS;
         }
-        if ($this->getRespondedAt() !== null) {
+        if (null !== $this->getRespondedAt()) {
             $res = $res | self::RESPONSE_STATUS;
         }
-        if ($this->getReviewedAt() !== null) {
+        if (null !== $this->getReviewedAt()) {
             $res = $res | self::REVIEW_STATUS;
         }
 

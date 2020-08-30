@@ -121,7 +121,7 @@ class CraftsmanController extends ApiController
         }
 
         $data = new ProcessingEntitiesData();
-        if ($issue->getRespondedAt() === null) {
+        if (null === $issue->getRespondedAt()) {
             $issue->setRespondedAt(new DateTime());
             $issue->setResponseBy($craftsman);
             $this->fastSave($issue);
@@ -155,7 +155,7 @@ class CraftsmanController extends ApiController
         }
 
         $data = new ProcessingEntitiesData();
-        if ($issue->getRespondedAt() === null) {
+        if (null === $issue->getRespondedAt()) {
             $data->addSkippedId($issue->getId());
         } elseif ($issue->getRespondedAt() < new DateTime('now -5 hours')) {
             return $this->fail(self::TIMEOUT_EXCEEDED);
@@ -204,7 +204,7 @@ class CraftsmanController extends ApiController
         }
 
         $issue = $this->getDoctrine()->getRepository(Issue::class)->find($parsedRequest->getIssueId());
-        if ($issue === null || $issue->getCraftsman() !== $craftsman) {
+        if (null === $issue || $issue->getCraftsman() !== $craftsman) {
             $errorResponse = $this->fail(self::INVALID_ISSUE);
 
             return false;

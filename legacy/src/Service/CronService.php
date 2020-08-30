@@ -59,13 +59,13 @@ class CronService implements CronServiceInterface
     {
         $scriptsRoot = $this->pathService->getScriptsRoot();
         $constructionSiteRoot = $this->pathService->getConstructionSiteFolderRoot();
-        $dirs = glob($scriptsRoot . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
+        $dirs = glob($scriptsRoot.DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR);
         foreach ($dirs as $dir) {
-            $possibleScriptName = $dir . DIRECTORY_SEPARATOR . 'runner.py';
+            $possibleScriptName = $dir.DIRECTORY_SEPARATOR.'runner.py';
             if (file_exists($possibleScriptName)) {
-                $command = $possibleScriptName . ' -d ' . $constructionSiteRoot;
-                exec($possibleScriptName . ' -d ' . $constructionSiteRoot, $output, $exitCode);
-                $this->logger->info('command ' . $command . ' terminated with exit code ' . $exitCode, ['full_output' => $output]);
+                $command = $possibleScriptName.' -d '.$constructionSiteRoot;
+                exec($possibleScriptName.' -d '.$constructionSiteRoot, $output, $exitCode);
+                $this->logger->info('command '.$command.' terminated with exit code '.$exitCode, ['full_output' => $output]);
             }
         }
     }

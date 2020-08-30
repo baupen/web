@@ -32,8 +32,6 @@ class ApiController extends AbstractApiController
     /**
      * gets an authenticated user.
      *
-     * @param Client $client
-     *
      * @return stdClass
      */
     protected function getAuthenticatedUser(Client $client)
@@ -44,7 +42,7 @@ class ApiController extends AbstractApiController
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            '{"username":"f@mangel.io", "passwordHash":"' . hash('sha256', 'asdf') . '"}'
+            '{"username":"f@mangel.io", "passwordHash":"'.hash('sha256', 'asdf').'"}'
         );
 
         $json = $client->getResponse()->getContent();
@@ -56,7 +54,6 @@ class ApiController extends AbstractApiController
     /**
      * get the state of the server.
      *
-     * @param Client $client
      * @param $authenticatedUser
      *
      * @throws Exception
@@ -135,7 +132,7 @@ class ApiController extends AbstractApiController
     protected function getMapWithFile($maps)
     {
         foreach ($maps as $map) {
-            if ($map->getFile() !== null) {
+            if (null !== $map->getFile()) {
                 return $map;
             }
         }
@@ -148,19 +145,18 @@ class ApiController extends AbstractApiController
      * checks if the issue is of the expected form.
      *
      * @param $checkIssue
-     * @param Issue $issue
      */
     protected function verifyIssue($checkIssue, Issue $issue)
     {
         //check properties
         $this->assertSame($checkIssue->wasAddedWithClient, $issue->getWasAddedWithClient());
         $this->assertSame($checkIssue->isMarked, $issue->getIsMarked());
-        if ($issue->getImage() !== null) {
+        if (null !== $issue->getImage()) {
             $this->assertTrue(property_exists($checkIssue, 'image'));
             $this->assertSame($checkIssue->image->id, $issue->getImage()->getId());
             $this->assertSame($checkIssue->image->filename, $issue->getImage()->getFilename());
         } else {
-            $this->assertTrue(!property_exists($checkIssue, 'image') || $checkIssue->image === null);
+            $this->assertTrue(!property_exists($checkIssue, 'image') || null === $checkIssue->image);
         }
         $this->assertSame($checkIssue->description, $issue->getDescription());
         $this->assertSame($checkIssue->map, $issue->getMap());
@@ -175,7 +171,7 @@ class ApiController extends AbstractApiController
             $this->assertNotNull($checkIssue->position->point);
             $this->assertSame($checkIssue->position->point->x, $issue->getPosition()->getPoint()->getX());
             $this->assertSame($checkIssue->position->point->y, $issue->getPosition()->getPoint()->getY());
-            $this->assertSame((float)$checkIssue->position->zoomScale, $issue->getPosition()->getZoomScale());
+            $this->assertSame((float) $checkIssue->position->zoomScale, $issue->getPosition()->getZoomScale());
         } else {
             $this->assertNull($checkIssue->position);
         }
@@ -189,7 +185,7 @@ class ApiController extends AbstractApiController
      *
      * @throws Exception
      *
-     * @return mixed|null|string|string[]
+     * @return mixed|string|string[]|null
      */
     protected function getNewGuid()
     {

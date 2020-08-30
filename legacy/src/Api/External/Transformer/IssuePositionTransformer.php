@@ -36,7 +36,7 @@ class IssuePositionTransformer
      */
     public function toApi($entity)
     {
-        if ($entity === null) {
+        if (null === $entity) {
             return null;
         }
 
@@ -56,9 +56,9 @@ class IssuePositionTransformer
     {
         $existing = $entity->getPosition();
 
-        if ($position === null) {
+        if (null === $position) {
             // remove existing if needed
-            if ($existing !== null) {
+            if (null !== $existing) {
                 $manager = $this->doctrine->getManager();
                 $manager->remove($existing);
                 $manager->flush();
@@ -66,13 +66,13 @@ class IssuePositionTransformer
 
             return null;
         }
-        if ($existing === null) {
+        if (null === $existing) {
             $existing = new IssuePosition();
             $existing->setIssue($entity);
         }
 
         $linkedMapFile = $this->doctrine->getRepository(MapFile::class)->find($position->getMapFileID());
-        if ($linkedMapFile === null) {
+        if (null === $linkedMapFile) {
             return null;
         }
 

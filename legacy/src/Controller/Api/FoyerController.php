@@ -115,7 +115,7 @@ class FoyerController extends ApiController
                 $entity = $entities[$guid];
                 $res = $updateIssueTransformer->fromApi($issue, $entity, function ($craftsman) use ($constructionSite) {
                     /** @var Craftsman $craftsman */
-                    if ($craftsman === null) {
+                    if (null === $craftsman) {
                         return $this->fail(self::CRAFTSMAN_NOT_FOUND);
                     }
                     if ($craftsman->getConstructionSite() !== $constructionSite) {
@@ -124,7 +124,7 @@ class FoyerController extends ApiController
 
                     return true;
                 });
-                if ($res !== true) {
+                if (true !== $res) {
                     /* @var Response $res */
                     return $res;
                 }
@@ -157,7 +157,7 @@ class FoyerController extends ApiController
         }
 
         //check if file is here
-        if ($request->files->count() !== 1) {
+        if (1 !== $request->files->count()) {
             return $this->fail(self::INCORRECT_NUMBER_OF_FILES);
         }
 
@@ -165,7 +165,7 @@ class FoyerController extends ApiController
         $file = $request->files->getIterator()->current();
 
         //set new filename to avoid caching issues
-        $targetFileName = Uuid::uuid4()->toString() . '.' . $file->guessExtension();
+        $targetFileName = Uuid::uuid4()->toString().'.'.$file->guessExtension();
 
         //save file
         $result = $uploadService->uploadIssueImage($file, $entity, $targetFileName);
@@ -330,7 +330,7 @@ class FoyerController extends ApiController
         //get issue & ensure its on this construction site
         /** @var Issue $entity */
         $entity = $this->getDoctrine()->getRepository(Issue::class)->find($parsedRequest->getIssueId());
-        if ($entity === null || $entity->getRegisteredAt() !== null) {
+        if (null === $entity || null !== $entity->getRegisteredAt()) {
             $errorResponse = $this->fail(self::ISSUE_NOT_FOUND);
 
             return false;

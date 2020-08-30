@@ -201,7 +201,7 @@ class EditController extends ApiController
         }
 
         //check if file is here
-        if ($request->files->count() !== 1) {
+        if (1 !== $request->files->count()) {
             return $this->fail(self::INCORRECT_NUMBER_OF_FILES);
         }
 
@@ -210,7 +210,7 @@ class EditController extends ApiController
 
         //save file
         $mapFile = $uploadService->uploadMapFile($file, $constructionSite, $parsedRequest->getMapFile()->getFilename());
-        if ($mapFile === null) {
+        if (null === $mapFile) {
             return $this->fail(self::MAP_FILE_UPLOAD_FAILED);
         }
         $mapFile->setConstructionSite($constructionSite);
@@ -239,7 +239,7 @@ class EditController extends ApiController
         }
 
         //check if file is here
-        if ($request->files->count() !== 1) {
+        if (1 !== $request->files->count()) {
             return $this->fail(self::INCORRECT_NUMBER_OF_FILES);
         }
 
@@ -274,13 +274,13 @@ class EditController extends ApiController
 
         /** @var Map $newMap */
         $newMap = $this->getDoctrine()->getRepository(Map::class)->findOneBy(['constructionSite' => $constructionSite->getId(), 'id' => $parsedRequest->getMapFile()->getMapId()]);
-        if ($newMap === null) {
+        if (null === $newMap) {
             return $this->fail(self::MAP_NOT_FOUND);
         }
 
         // unassign previous map
         $previousMap = $mapFile->getMap();
-        if ($previousMap !== null) {
+        if (null !== $previousMap) {
             $previousMap->setFile(null);
             $previousMap->getFiles()->removeElement($mapFile);
 
@@ -293,7 +293,7 @@ class EditController extends ApiController
 
         $mapFile->setMap($newMap);
         $newMap->getFiles()->add($mapFile);
-        if ($newMap->getFiles()->count() === 1) {
+        if (1 === $newMap->getFiles()->count()) {
             $newMap->setFile($mapFile);
         }
         $this->fastSave($mapFile, $newMap);
@@ -415,11 +415,11 @@ class EditController extends ApiController
             throw new NotFoundHttpException();
         }
 
-        if ($map->getIssues()->count() !== 0) {
+        if (0 !== $map->getIssues()->count()) {
             return $this->fail(self::MAP_HAS_ISSUES_ASSIGNED);
         }
 
-        if ($map->getChildren()->count() !== 0) {
+        if (0 !== $map->getChildren()->count()) {
             return $this->fail(self::MAP_HAS_CHILDREN_ASSIGNED);
         }
 
@@ -575,7 +575,7 @@ class EditController extends ApiController
         $externalConstructionManager = $parsedRequest->getExternalConstructionManager();
         /** @var ConstructionManager $constructionManager */
         $constructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $externalConstructionManager->getEmail()]);
-        $new = $constructionManager === null;
+        $new = null === $constructionManager;
         if ($new) {
             $constructionManager = new ConstructionManager();
             $constructionManager->setEmail($externalConstructionManager->getEmail());
@@ -620,7 +620,7 @@ class EditController extends ApiController
 
         // send email
         if (!$emailService->sendEmail($email)) {
-            $logger->error('could not send register email ' . $email->getId());
+            $logger->error('could not send register email '.$email->getId());
             $this->displayError($translator->trans('create.fail.welcome_email_not_sent', [], 'login'));
 
             return $this->fail(self::EXTERNAL_CONSTRUCTION_MANAGER_NOTIFY_EMAIL_FAILED);
@@ -629,7 +629,7 @@ class EditController extends ApiController
         $email->setSentDateTime(new \DateTime());
         $this->fastSave($email);
 
-        $logger->info('sent welcome email to ' . $email->getReceiver());
+        $logger->info('sent welcome email to '.$email->getReceiver());
 
         //create response
         $data = new ConstructionManagerData();
@@ -695,9 +695,9 @@ class EditController extends ApiController
     {
         $entity->setName($updateMap->getName());
 
-        if ($updateMap->getFileId() !== null) {
+        if (null !== $updateMap->getFileId()) {
             $file = $this->getDoctrine()->getRepository(MapFile::class)->find($updateMap->getFileId());
-            if ($file === null || $file->getConstructionSite() !== $entity->getConstructionSite()) {
+            if (null === $file || $file->getConstructionSite() !== $entity->getConstructionSite()) {
                 $errorResponse = $this->fail(self::MAP_FILE_NOT_FOUND);
 
                 return false;
@@ -714,9 +714,9 @@ class EditController extends ApiController
             $entity->setFile(null);
         }
 
-        if ($updateMap->getParentId() !== null) {
+        if (null !== $updateMap->getParentId()) {
             $newParent = $this->getDoctrine()->getRepository(Map::class)->find($updateMap->getParentId());
-            if ($newParent === null || $newParent->getConstructionSite() !== $entity->getConstructionSite()) {
+            if (null === $newParent || $newParent->getConstructionSite() !== $entity->getConstructionSite()) {
                 $errorResponse = $this->fail(self::MAP_NOT_FOUND);
 
                 return false;
@@ -725,13 +725,13 @@ class EditController extends ApiController
             if ($newParent !== $entity->getParent()) {
                 // marks parents as changed to ensure the API works as expected
 
-                if ($newParent !== null) {
+                if (null !== $newParent) {
                     $newParent->preUpdateTime();
                     $this->fastSave($newParent);
                 }
 
                 $oldParent = $entity->getParent();
-                if ($oldParent !== null) {
+                if (null !== $oldParent) {
                     $oldParent->preUpdateTime();
                     $this->fastSave($oldParent);
                 }
@@ -739,10 +739,10 @@ class EditController extends ApiController
                 $entity->setParent($newParent);
             }
         } else {
-            if ($entity->getParent() !== null) {
+            if (null !== $entity->getParent()) {
                 // marks parents as changed to ensure the API works as expected
                 $oldParent = $entity->getParent();
-                if ($oldParent !== null) {
+                if (null !== $oldParent) {
                     $oldParent->preUpdateTime();
                     $this->fastSave($oldParent);
                 }

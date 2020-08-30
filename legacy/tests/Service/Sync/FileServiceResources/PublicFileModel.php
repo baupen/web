@@ -28,33 +28,21 @@ class PublicFileModel
      */
     public $hash;
 
-    /**
-     * @param string $filename
-     */
     public function setFilename(string $filename): void
     {
         $this->filename = $filename;
     }
 
-    /**
-     * @param string $displayFilename
-     */
     public function setDisplayFilename(string $displayFilename): void
     {
         $this->displayFilename = $displayFilename;
     }
 
-    /**
-     * @param string $hash
-     */
     public function setHash(string $hash): void
     {
         $this->hash = $hash;
     }
 
-    /**
-     * @return string
-     */
     public function getFilename(): string
     {
         return $this->filename;

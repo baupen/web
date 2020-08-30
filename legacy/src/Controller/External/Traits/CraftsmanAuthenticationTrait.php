@@ -28,7 +28,7 @@ trait CraftsmanAuthenticationTrait
     {
         /** @var Craftsman $craftsman */
         $craftsman = $doctrine->getRepository(Craftsman::class)->findOneBy(['emailIdentifier' => $identifier]);
-        if ($craftsman === null) {
+        if (null === $craftsman) {
             return false;
         }
 

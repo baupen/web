@@ -37,11 +37,11 @@ class Report
         $this->pdfDocument = new Pdf($pdfDefinition, $this->pdfSizes);
 
         //prepare fonts
-        $checkFilePath = K_PATH_FONTS . '/.copied2';
+        $checkFilePath = K_PATH_FONTS.'/.copied2';
         if (!file_exists($checkFilePath)) {
-            $sourceFolder = __DIR__ . '/../../../../assets/report/fonts';
+            $sourceFolder = __DIR__.'/../../../../assets/report/fonts';
             //copy all fonts from the assets to the fonts folder of tcpdf
-            shell_exec('\cp -r ' . $sourceFolder . '/* ' . K_PATH_FONTS);
+            shell_exec('\cp -r '.$sourceFolder.'/* '.K_PATH_FONTS);
             file_put_contents($checkFilePath, time());
         }
 
@@ -100,7 +100,7 @@ class Report
             $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
             foreach ($filterEntries as $name => $value) {
                 $this->pdfDocument->SetX($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
-                $this->printHtmlP('<b>' . $name . '</b>: ' . $value);
+                $this->printHtmlP('<b>'.$name.'</b>: '.$value);
             }
         }
 
@@ -178,7 +178,7 @@ class Report
         $this->setDefaults();
 
         //print table header
-        if ($tableTitle !== null) {
+        if (null !== $tableTitle) {
             $this->printH3($tableTitle, $this->pdfSizes->getContentXSize());
         }
 
@@ -207,7 +207,7 @@ class Report
         $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
         foreach ($tableContent as $row) {
             $maxTries = 3;
-            while (!$this->printRow($row, $currentRow % 2 === 1, $this->pdfDesign->getLighterBackground(), $firstColumnSize) && $maxTries > 0) {
+            while (!$this->printRow($row, 1 === $currentRow % 2, $this->pdfDesign->getLighterBackground(), $firstColumnSize) && $maxTries > 0) {
                 //simply retry to print row if it did not work
                 --$maxTries;
             }
@@ -393,7 +393,7 @@ class Report
             }
 
             //if row is higher now than before; draw background from preceding columns
-            if ($maxContentHeight !== 0 && $this->pdfDocument->GetY() > $maxContentHeight) {
+            if (0 !== $maxContentHeight && $this->pdfDocument->GetY() > $maxContentHeight) {
                 $diff = $this->pdfDocument->GetY() - $maxContentHeight;
                 $newMaxHeight = $this->pdfDocument->GetY();
 

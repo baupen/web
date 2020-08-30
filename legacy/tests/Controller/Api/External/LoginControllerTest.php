@@ -30,7 +30,7 @@ class LoginControllerTest extends ApiController
                 [],
                 [],
                 ['CONTENT_TYPE' => 'application/json'],
-                '{"username":"' . $username . '", "passwordHash":"' . hash('sha256', $password) . '"}'
+                '{"username":"'.$username.'", "passwordHash":"'.hash('sha256', $password).'"}'
             );
 
             return $client->getResponse();

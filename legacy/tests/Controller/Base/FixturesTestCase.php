@@ -21,9 +21,6 @@ class FixturesTestCase extends WebTestCase
 {
     protected static $application;
 
-    /**
-     * @return RegistryInterface
-     */
     protected function getDoctrine(): RegistryInterface
     {
         return $this->doctrine;

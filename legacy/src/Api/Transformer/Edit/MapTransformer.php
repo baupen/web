@@ -29,8 +29,8 @@ class MapTransformer extends BatchTransformer
         $map = new \App\Api\Entity\Edit\Map($entity->getId());
         $map->setName($entity->getName());
         $map->setCreatedAt($entity->getCreatedAt());
-        $map->setParentId($entity->getParent() !== null ? $entity->getParent()->getId() : null);
-        $map->setFileId($entity->getFile() !== null ? $entity->getFile()->getId() : null);
+        $map->setParentId(null !== $entity->getParent() ? $entity->getParent()->getId() : null);
+        $map->setFileId(null !== $entity->getFile() ? $entity->getFile()->getId() : null);
         $map->setIssueCount($entity->getIssues()->count());
 
         return $map;

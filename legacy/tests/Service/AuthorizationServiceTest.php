@@ -1,8 +1,15 @@
 <?php
 
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Tests\Service;
-
 
 use App\Entity\ConstructionManager;
 use App\Service\AuthorizationService;
@@ -16,10 +23,6 @@ class AuthorizationServiceTest extends WebTestCase
 {
     /**
      * TrialServiceTest constructor.
-     *
-     * @param string|null $name
-     * @param array $data
-     * @param string $dataName
      */
     public function __construct(?string $name = null, array $data = [], string $dataName = '')
     {
@@ -27,19 +30,17 @@ class AuthorizationServiceTest extends WebTestCase
     }
 
     /**
-     * @param string $authorizationMethod
      * @return AuthorizationService
      */
-    private function getAuthorizationService(string $authorizationMethod = "none")
+    private function getAuthorizationService(string $authorizationMethod = 'none')
     {
         self::bootKernel();
         /** @var LoggerInterface $logger */
         $logger = self::$container->get(LoggerInterface::class);
 
         $pathService = $this->createMock(PathServiceInterface::class);
-        $pathService->expects($this->any())->method('getTransientFolderRoot')->willReturn(__DIR__ . DIRECTORY_SEPARATOR . "Authorization");
+        $pathService->expects($this->any())->method('getTransientFolderRoot')->willReturn(__DIR__.DIRECTORY_SEPARATOR.'Authorization');
         /** @var PathServiceInterface $pathService */
-
         $parameterBag = new ParameterBag(['AUTHORIZATION_METHOD' => $authorizationMethod]);
 
         return new AuthorizationService($pathService, $logger, $parameterBag);
@@ -51,10 +52,10 @@ class AuthorizationServiceTest extends WebTestCase
     public function testCheckIfAuthorized_withMethodNone_authorizesAll()
     {
         // arrange
-        $service = $this->getAuthorizationService("none");
+        $service = $this->getAuthorizationService('none');
 
         // act & assert
-        $this->assertAuthorized($service, "something@nonreal.ch");
+        $this->assertAuthorized($service, 'something@nonreal.ch');
     }
 
     /**
@@ -63,12 +64,12 @@ class AuthorizationServiceTest extends WebTestCase
     public function testCheckIfAuthorized_withMethodInvalid_throwsException()
     {
         // arrange
-        $service = $this->getAuthorizationService("invalid");
+        $service = $this->getAuthorizationService('invalid');
 
         // act
         $this->expectException(\Exception::class);
         $constructionManager = new ConstructionManager();
-        $constructionManager->setEmail("something@nonreal.ch");
+        $constructionManager->setEmail('something@nonreal.ch');
         $service->checkIfAuthorized($constructionManager);
     }
 
@@ -78,16 +79,16 @@ class AuthorizationServiceTest extends WebTestCase
     public function testCheckIfAuthorized_withMethodWhitelist_authorizesWhitelistOnly()
     {
         // arrange
-        $service = $this->getAuthorizationService("whitelist");
+        $service = $this->getAuthorizationService('whitelist');
 
         // act & assert
-        $this->assertAuthorized($service, "info@mangel.io");
-        $this->assertAuthorized($service, "info2@mangel.io");
-        $this->assertAuthorized($service, "info3@mangel.io");
-        $this->assertNotAuthorized($service, "info4@mangel.io");
+        $this->assertAuthorized($service, 'info@mangel.io');
+        $this->assertAuthorized($service, 'info2@mangel.io');
+        $this->assertAuthorized($service, 'info3@mangel.io');
+        $this->assertNotAuthorized($service, 'info4@mangel.io');
 
         $constructionManager = new ConstructionManager();
-        $constructionManager->setEmail("invalid@invalid.com");
+        $constructionManager->setEmail('invalid@invalid.com');
 
         // check trial accounts
         $constructionManager->setIsTrialAccount(true);
@@ -108,11 +109,11 @@ class AuthorizationServiceTest extends WebTestCase
         // arrange
         $service = $this->getAuthorizationService();
         $infoConstructionManager = new ConstructionManager();
-        $infoConstructionManager->setEmail("info@mangel.io");
+        $infoConstructionManager->setEmail('info@mangel.io');
         $info2ConstructionManager = new ConstructionManager();
-        $info2ConstructionManager->setEmail("info2@mangel.io");
+        $info2ConstructionManager->setEmail('info2@mangel.io');
         $unknownConstructionManager = new ConstructionManager();
-        $unknownConstructionManager->setEmail("unknown");
+        $unknownConstructionManager->setEmail('unknown');
 
         // act
         $service->tryFillDefaultValues($infoConstructionManager);
@@ -120,8 +121,8 @@ class AuthorizationServiceTest extends WebTestCase
         $service->tryFillDefaultValues($unknownConstructionManager);
 
         // assert
-        $this->assertConstructionManager($infoConstructionManager, "info", "mangel.io", "42");
-        $this->assertConstructionManager($info2ConstructionManager, "info2");
+        $this->assertConstructionManager($infoConstructionManager, 'info', 'mangel.io', '42');
+        $this->assertConstructionManager($info2ConstructionManager, 'info2');
         $this->assertConstructionManager($unknownConstructionManager);
     }
 
@@ -148,12 +149,6 @@ class AuthorizationServiceTest extends WebTestCase
         }
     }
 
-    /**
-     * @param ConstructionManager $constructionManager
-     * @param string|null $givenName
-     * @param string|null $familyName
-     * @param string|null $phone
-     */
     private function assertConstructionManager(ConstructionManager $constructionManager, ?string $givenName = null, ?string $familyName = null, ?string $phone = null)
     {
         $this->assertEquals($givenName, $constructionManager->getGivenName());

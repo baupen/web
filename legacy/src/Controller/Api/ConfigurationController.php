@@ -32,8 +32,8 @@ class ConfigurationController extends ApiController
     public function configurationAction()
     {
         //ge tor set the active construction site
-        if ($this->getUser()->getActiveConstructionSite() === null || !$this->getUser()->getActiveConstructionSite()->getConstructionManagers()->contains($this->getUser())) {
-            if ($this->getUser()->getConstructionSites()->count() === 0) {
+        if (null === $this->getUser()->getActiveConstructionSite() || !$this->getUser()->getActiveConstructionSite()->getConstructionManagers()->contains($this->getUser())) {
+            if (0 === $this->getUser()->getConstructionSites()->count()) {
                 return $this->fail(self::NO_ACCESSIBLE_CONSTRUCTION_SITE);
             }
             $this->getUser()->setActiveConstructionSite($this->getUser()->getConstructionSites()->get(0));

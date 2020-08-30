@@ -65,7 +65,7 @@ class AuthorizationService implements AuthorizationServiceInterface
      */
     public function checkIfAuthorized(ConstructionManager $constructionManager)
     {
-        if ($this->authorizationMethod === self::AUTHORIZATION_METHOD_NONE) {
+        if (self::AUTHORIZATION_METHOD_NONE === $this->authorizationMethod) {
             return true;
         }
 
@@ -73,13 +73,13 @@ class AuthorizationService implements AuthorizationServiceInterface
             return true;
         }
 
-        if ($this->authorizationMethod === self::AUTHORIZATION_METHOD_WHITELIST) {
+        if (self::AUTHORIZATION_METHOD_WHITELIST === $this->authorizationMethod) {
             $emailLookup = $this->getAllWhitelistedEmailLookup();
 
             return \array_key_exists($constructionManager->getEmail(), $emailLookup);
         }
 
-        throw new \Exception('invalid authorization method configured: ' . $this->authorizationMethod);
+        throw new \Exception('invalid authorization method configured: '.$this->authorizationMethod);
     }
 
     public function tryFillDefaultValues(ConstructionManager $constructionManager)
@@ -110,7 +110,7 @@ class AuthorizationService implements AuthorizationServiceInterface
      */
     private function getAuthorizationRoot()
     {
-        return $this->pathService->getTransientFolderRoot() . \DIRECTORY_SEPARATOR . 'authorization';
+        return $this->pathService->getTransientFolderRoot().\DIRECTORY_SEPARATOR.'authorization';
     }
 
     /**
@@ -118,14 +118,14 @@ class AuthorizationService implements AuthorizationServiceInterface
      */
     private function getAllUserData()
     {
-        if ($this->userDataCache !== null) {
+        if (null !== $this->userDataCache) {
             return $this->userDataCache;
         }
 
         $this->userDataCache = [];
 
-        $userDataRoot = $this->getAuthorizationRoot() . \DIRECTORY_SEPARATOR . 'user_data';
-        foreach (glob($userDataRoot . \DIRECTORY_SEPARATOR . '*.json') as $userDataFile) {
+        $userDataRoot = $this->getAuthorizationRoot().\DIRECTORY_SEPARATOR.'user_data';
+        foreach (glob($userDataRoot.\DIRECTORY_SEPARATOR.'*.json') as $userDataFile) {
             $json = file_get_contents($userDataFile);
 
             $entries = json_decode($json, true);
@@ -144,19 +144,19 @@ class AuthorizationService implements AuthorizationServiceInterface
      */
     private function getAllWhitelistedEmailLookup()
     {
-        if ($this->emailLookupCache !== null) {
+        if (null !== $this->emailLookupCache) {
             return $this->emailLookupCache;
         }
 
         $this->emailLookupCache = [];
 
-        $whitelistRoot = $this->getAuthorizationRoot() . \DIRECTORY_SEPARATOR . 'whitelists';
-        foreach (glob($whitelistRoot . \DIRECTORY_SEPARATOR . '*.txt') as $whitelistFile) {
+        $whitelistRoot = $this->getAuthorizationRoot().\DIRECTORY_SEPARATOR.'whitelists';
+        foreach (glob($whitelistRoot.\DIRECTORY_SEPARATOR.'*.txt') as $whitelistFile) {
             $whitelist = file_get_contents($whitelistFile);
             $lines = explode("\n", $whitelist);
             foreach ($lines as $line) {
                 $cleanedLine = trim($line);
-                if ($cleanedLine !== '') {
+                if ('' !== $cleanedLine) {
                     $this->emailLookupCache[$cleanedLine] = true;
                 }
             }

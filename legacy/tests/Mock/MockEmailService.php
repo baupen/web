@@ -22,7 +22,6 @@ class MockEmailService implements EmailServiceInterface
     private $receivers = [];
 
     /**
-     * @param Email $email
      * @param string[] $options
      *
      * @return bool

@@ -35,11 +35,11 @@ class MapFileService implements MapFileServiceInterface
      */
     public function getForMobileDevice(Map $entity)
     {
-        if ($entity->getFile() === null) {
+        if (null === $entity->getFile()) {
             return null;
         }
 
-        $originalFilePath = $this->pathService->getFolderForMapFile($entity->getConstructionSite()) . \DIRECTORY_SEPARATOR . $entity->getFile()->getFilename();
+        $originalFilePath = $this->pathService->getFolderForMapFile($entity->getConstructionSite()).\DIRECTORY_SEPARATOR.$entity->getFile()->getFilename();
 
         return $this->renderForMobileDevice($entity, $originalFilePath);
     }
@@ -59,10 +59,10 @@ class MapFileService implements MapFileServiceInterface
         $extension = pathinfo($sourceFileName, PATHINFO_EXTENSION);
         $filenameWithoutEnding = mb_substr($sourceFileName, 0, -(mb_strlen($extension) + 1));
 
-        $targetFilePath = $targetFolder . \DIRECTORY_SEPARATOR . $filenameWithoutEnding . '_outlines.' . $extension;
+        $targetFilePath = $targetFolder.\DIRECTORY_SEPARATOR.$filenameWithoutEnding.'_outlines.'.$extension;
 
         if (!is_file($targetFilePath)) {
-            $command = ' gs -dNoOutputFonts -sDEVICE=pdfwrite -o "' . $targetFilePath . '" "' . $sourceFilePath . '"';
+            $command = ' gs -dNoOutputFonts -sDEVICE=pdfwrite -o "'.$targetFilePath.'" "'.$sourceFilePath.'"';
             exec($command);
             if (!is_file($targetFilePath)) {
                 return null;

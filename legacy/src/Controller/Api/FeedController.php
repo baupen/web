@@ -66,7 +66,7 @@ class FeedController extends ApiController
         foreach ($issueFeedEntryGenerators as $key => $generator) {
             foreach ($generator->getFeedEntries($issues) as $entry) {
                 $api = $feedTransformer->toApi($entry, $key);
-                $feedEntries[$entry->getTimestamp()->format('c') . $counter++] = $api;
+                $feedEntries[$entry->getTimestamp()->format('c').$counter++] = $api;
             }
         }
 
@@ -75,7 +75,7 @@ class FeedController extends ApiController
         foreach ($craftsmanFeedEntryGenerators as $key => $generator) {
             foreach ($generator->getFeedEntries($craftsmen) as $entry) {
                 $api = $feedTransformer->toApi($entry, $key);
-                $feedEntries[$entry->getTimestamp()->format('c') . $counter++] = $api;
+                $feedEntries[$entry->getTimestamp()->format('c').$counter++] = $api;
             }
         }
 

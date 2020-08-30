@@ -51,7 +51,7 @@ class ConstructionSiteTransformer
         $constructionSite->setLocality($entity->getLocality());
         $constructionSite->setCountry($entity->getCountry());
 
-        if ($entity->getImage() !== null) {
+        if (null !== $entity->getImage()) {
             $constructionSite->setImageMedium($this->router->generate('image_construction_site', ['constructionSite' => $entity->getId(), 'image' => $entity->getImage()->getId(), 'size' => ImageServiceInterface::SIZE_MEDIUM]));
         }
 

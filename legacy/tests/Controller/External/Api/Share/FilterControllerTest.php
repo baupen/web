@@ -39,7 +39,7 @@ class FilterControllerTest extends ApiController
     {
         $client = $this->getExternalClient();
 
-        if ($this->filter === null) {
+        if (null === $this->filter) {
             $doctrine = $client->getContainer()->get('doctrine');
             $manager = $doctrine->getManager();
 
@@ -56,8 +56,8 @@ class FilterControllerTest extends ApiController
             $this->filter = $filter;
         }
 
-        $url = '/external/api/share/f/' . $this->filter->getPublicAccessIdentifier() . $relativeLink;
-        if ($payload === null) {
+        $url = '/external/api/share/f/'.$this->filter->getPublicAccessIdentifier().$relativeLink;
+        if (null === $payload) {
             $client->request('GET', $url);
         } else {
             $client->request(

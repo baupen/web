@@ -52,7 +52,7 @@ class BaseLoginController extends BaseFormController
         // get the error if any
         if ($request->attributes->has($authErrorKey)) {
             $error = $request->attributes->get($authErrorKey);
-        } elseif ($session !== null && $session->has($authErrorKey)) {
+        } elseif (null !== $session && $session->has($authErrorKey)) {
             $error = $session->get($authErrorKey);
             $session->remove($authErrorKey);
         } else {
@@ -60,15 +60,15 @@ class BaseLoginController extends BaseFormController
         }
 
         // last username entered by the user
-        $lastUsername = ($session === null) ? '' : $session->get(Security::LAST_USERNAME);
+        $lastUsername = (null === $session) ? '' : $session->get(Security::LAST_USERNAME);
 
-        if ($error !== null) {
+        if (null !== $error) {
             if ($error instanceof DisabledException) {
                 $this->displayError($this->getTranslator()->trans('login.errors.account_disabled', [], 'login'));
             } else {
-                if ($lastUsername !== null) {
+                if (null !== $lastUsername) {
                     $constructionManager = $findEntityCallable($lastUsername);
-                    if ($constructionManager !== null) {
+                    if (null !== $constructionManager) {
                         $this->displayError($this->getTranslator()->trans('login.errors.password_wrong', [], 'login'));
                     } else {
                         $this->displayError($this->getTranslator()->trans('login.errors.email_not_found', [], 'login'));
