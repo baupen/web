@@ -1,3 +1,9 @@
+# IDE
+.idea
+
+# agnes
+.build
+.config
 
 ###> symfony/framework-bundle ###
 /.env.local
@@ -9,7 +15,6 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
-.idea
 
 ###> symfony/webpack-encore-bundle ###
 /node_modules/

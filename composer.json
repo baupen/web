@@ -26,7 +26,9 @@
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {
+        "brainmaestro/composer-git-hooks": "^2.8",
         "doctrine/doctrine-fixtures-bundle": "^3.3",
+        "famoser/agnes": "^4.0",
         "friendsofphp/php-cs-fixer": "^2.16",
         "sensiolabs/security-checker": "^6.0",
         "symfony/debug-bundle": "^5.1",
@@ -71,11 +73,20 @@
             "requirements-checker": "script",
             "security-checker security:check": "script"
         },
+        "prepare-environment": [
+            "touch .env.local",
+            "vendor/bin/cghooks update",
+            "php bin/console doctrine:migrations:migrate  --allow-no-migration --no-interaction",
+            "php bin/console doctrine:fixtures:load --no-interaction"
+        ],
+        "download-translations": "lokalise --token=$LOKALISE_TOKEN export 893141675cbb100cd751c1.44777843 --type yml --unzip_to translations --use_original 1 --no_language_folders 1 --indentation 2sp --export_empty skip --plural_format symfony --placeholder_format symfony",
         "post-install-cmd": [
-            "@auto-scripts"
+            "@auto-scripts",
+            "@prepare-environment"
         ],
         "post-update-cmd": [
-            "@auto-scripts"
+            "@auto-scripts",
+            "@prepare-environment"
         ]
     },
     "conflict": {
@@ -85,6 +96,14 @@
         "symfony": {
             "allow-contrib": false,
             "require": "5.1.*"
+        },
+        "hooks": {
+            "pre-commit": [
+              "echo committing as $(git config user.name)",
+              "./vendor/bin/php-cs-fixer fix",
+              "git update-index --again"
+            ],
+            "post-merge": "composer install"
         }
     }
 }
