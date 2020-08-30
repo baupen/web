@@ -5,7 +5,7 @@
 This project uses the symfony framework for its php backend, the VueJS framework for its JavaScript frontend, and ApiPlatform for its API.
 
 backend:
-- `symfony/sceleton`, `orm`, `translations`, `logging`, `dotenv`, `mailer`, `form`, `requirements-checker` and `templates`. For pdfs, `tecnickcom/tcpdf` is used, which will be replaced by `famoser/pdf-generator` in the future.
+- `symfony/sceleton`, `orm`, `translations`, `logging`, `dotenv`, `mailer`, `form`, `requirements-checker`, `templates` and `api`. For pdfs, `tecnickcom/tcpdf` is used, which will be replaced by `famoser/pdf-generator` in the future.
 - dev dependencies include `encore`, `orm-fixtures`, `cs-fixer`, `security-checker`, `debug`, `simple-phpunit`, `brainmaestro/composer-git-hooks`.
 - for deployment, `famoser/agnes` is used.
 
