@@ -26,7 +26,7 @@ before_install:
 
   # backend
   - if [[ $COVERAGE == false ]]; then phpenv config-rm xdebug.ini; fi
-  - composer validate
+  - php vendor/bin/requirements-checker
   - php --version
 
   # frontend
@@ -49,16 +49,24 @@ before_script:
 
 # execute tests
 script:
-  # backend
-  - php vendor/bin/requirements-checker
+  # backend dependency checks
+  - composer validate
   - php bin/console security:check
+
+  # backend linters
   - if [[ "$COVERAGE" == true ]]; then ./vendor/bin/php-cs-fixer fix --diff --dry-run -v; fi
   - php bin/console lint:yaml config
   - php bin/console lint:twig templates
+
+  # backend tests
   - php bin/phpunit
 
-  # frontend
+  # frontend dependency checks
+  - yarn check
   - yarn audit --groups dependencies
+
+  # frontend linters
+  - yarn run lint
 
 after_script:
   # scrutinizer reporting

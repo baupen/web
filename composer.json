@@ -57,7 +57,7 @@
             "*": "dist"
         },
         "platform": {
-          "php": "7.4"
+            "php": "7.4"
         },
         "sort-packages": true
     },
@@ -113,9 +113,10 @@
         },
         "hooks": {
             "pre-commit": [
-              "echo committing as $(git config user.name)",
-              "./vendor/bin/php-cs-fixer fix",
-              "git update-index --again"
+                "echo committing as $(git config user.name)",
+                "./vendor/bin/php-cs-fixer fix",
+                "yarn run lint-fix",
+                "git update-index --again"
             ],
             "post-merge": "composer install"
         }
