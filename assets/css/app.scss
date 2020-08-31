@@ -1,0 +1,11 @@
+$border-radius: 0;
+$primary: #343477;
+
+@import '~bootstrap/scss/bootstrap';
+@import '~bootstrap-vue/src/index';
+@import '~noty/src/noty';
+@import '~noty/src/themes/bootstrap-v4';
+
+body {
+  color: #efefef;
+}

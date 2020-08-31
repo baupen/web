@@ -1,12 +1,32 @@
-/*
- * Welcome to your app's main JavaScript file!
- *
- * We recommend including the built version of this JavaScript file
- * (and its CSS file) in your base layout (base.html.twig).
- */
+import '../css/app.scss';
+import './vuejs';
 
-// any CSS you import will output into a single css file (app.css in this case)
-import '../css/app.css';
+const $ = require('jquery');
+require('bootstrap');
+require('typeface-open-sans');
 
-// Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
-// import $ from 'jquery';
+// attach jquery to window
+window.$ = $;
+
+// register some basic usability functionality
+$(document)
+  .ready(() => {
+    // give instant feedback on form submission
+    $('form')
+      .on('submit', () => {
+        const $form = $(this);
+        const $buttons = $('.btn', $form);
+        if (!$buttons.hasClass('no-disable')) {
+          $buttons.addClass('disabled');
+        }
+      });
+
+    $('[data-toggle="popover"]')
+      .popover();
+
+    // force reload on user browser button navigation
+    $(window)
+      .on('popstate', () => {
+        window.location.reload(true);
+      });
+  });
