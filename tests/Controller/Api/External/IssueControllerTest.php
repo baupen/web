@@ -83,9 +83,6 @@ class IssueControllerTest extends ApiController
         //fully check issue
         $this->verifyIssue($checkIssue, $issue);
 
-        $response = $doRequest($issue);
-        $this->checkResponse($response, ApiStatus::FAIL, IssueController::ISSUE_GUID_ALREADY_IN_USE);
-
         //check issue without position
         $issue->setPosition(null);
         $issue->getMeta()->setId($this->getNewGuid());
@@ -102,7 +99,7 @@ class IssueControllerTest extends ApiController
     public function testUpdateIssue()
     {
         self::reset();
-        
+
         $client = static::createClient();
         $user = $this->getAuthenticatedUser($client);
         $serializer = $client->getContainer()->get('serializer');
@@ -139,11 +136,6 @@ class IssueControllerTest extends ApiController
         $checkIssue = $issueResponse->data->issue;
         //fully check issue
         $this->verifyIssue($checkIssue, $issue);
-
-        //check with non-existing
-        $issue->getMeta()->setId($this->getNewGuid());
-        $response = $doRequest($issue);
-        $this->checkResponse($response, ApiStatus::FAIL, IssueController::ISSUE_NOT_FOUND);
     }
 
     /**
