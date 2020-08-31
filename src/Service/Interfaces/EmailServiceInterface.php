@@ -20,7 +20,7 @@ interface EmailServiceInterface
      *
      * @return bool
      */
-    public function sendEmail(Email $email, $options = []);
+    public function sendEmail(Email $email);
 
     /**
      * @return string

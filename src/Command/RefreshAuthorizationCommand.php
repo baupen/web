@@ -13,8 +13,7 @@ namespace App\Command;
 
 use App\Entity\ConstructionManager;
 use App\Service\Interfaces\AuthorizationServiceInterface;
-use Doctrine\ORM\ORMException;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RefreshAuthorizationCommand extends Command
 {
     /**
-     * @var RegistryInterface
+     * @var ManagerRegistry
      */
     private $registry;
 
@@ -34,7 +33,7 @@ class RefreshAuthorizationCommand extends Command
     /**
      * ImportLdapUsersCommand constructor.
      */
-    public function __construct(RegistryInterface $registry, AuthorizationServiceInterface $authorizationService)
+    public function __construct(ManagerRegistry $registry, AuthorizationServiceInterface $authorizationService)
     {
         parent::__construct();
 
@@ -54,13 +53,11 @@ class RefreshAuthorizationCommand extends Command
     }
 
     /**
-     * @throws ORMException
-     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $entityManager = $this->registry->getEntityManager();
+        $entityManager = $this->registry->getManager();
 
         $changes = 0;
 

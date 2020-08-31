@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Report\Legacy;
+namespace App\Service\Report;
 
 class ReportElements
 {

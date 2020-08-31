@@ -99,27 +99,18 @@ class Email extends BaseEntity
      */
     private $visitedDateTime;
 
-    public function getSenderName(): string
-    {
-        return $this->senderName;
-    }
-
     public function setSender(string $senderName, string $senderEmail): void
     {
         $this->senderName = $senderName;
         $this->senderEmail = $senderEmail;
     }
 
-    /**
-     * indicates that the email was sent by the system.
-     */
-    public function setSystemSender(): void
+    public function getSenderName(): ?string
     {
-        $this->senderName = self::SENDER_SYSTEM;
-        $this->senderEmail = self::SENDER_SYSTEM;
+        return $this->senderName;
     }
 
-    public function getSenderEmail(): string
+    public function getSenderEmail(): ?string
     {
         return $this->senderEmail;
     }

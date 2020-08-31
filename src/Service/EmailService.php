@@ -29,17 +29,7 @@ class EmailService implements EmailServiceInterface
     /**
      * @var string
      */
-    private $mailerSender;
-
-    /**
-     * @var string
-     */
-    private $supportEmail;
-
-    /**
-     * @var string
-     */
-    private $sslValidation;
+    private $mailerFromEmail;
 
     /**
      * @var Environment
@@ -54,13 +44,12 @@ class EmailService implements EmailServiceInterface
     /**
      * EmailService constructor.
      */
-    public function __construct(MailerInterface $mailer, LoggerInterface $logger, Environment $twig, string $mailerSender, string $supportEmail)
+    public function __construct(MailerInterface $mailer, LoggerInterface $logger, Environment $twig, string $mailerFromEmail)
     {
         $this->mailer = $mailer;
         $this->twig = $twig;
         $this->logger = $logger;
-        $this->mailerSender = $mailerSender;
-        $this->supportEmail = $supportEmail;
+        $this->mailerFromEmail = $mailerFromEmail;
     }
 
     /**
@@ -68,18 +57,18 @@ class EmailService implements EmailServiceInterface
      *
      * @return bool
      */
-    public function sendEmail(Email $email, $options = [])
+    public function sendEmail(Email $email)
     {
         $message = (new \Symfony\Component\Mime\Email())
             ->subject($email->getSubject())
-            ->from($this->mailerSender)
+            ->from($this->mailerFromEmail)
             ->to($email->getReceiver());
 
         //set reply to
-        if (isset($options['reply_to'])) {
-            $message->addReplyTo($options['reply_to']);
+        if ($email->getSenderEmail()) {
+            $message->addReplyTo($email->getSenderEmail());
         } else {
-            $message->addReplyTo($this->supportEmail);
+            $message->addReplyTo($this->mailerFromEmail);
         }
 
         //construct plain body

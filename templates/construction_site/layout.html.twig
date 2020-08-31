@@ -4,7 +4,8 @@
     </li>
 {% endmacro %}
 
-{% extends 'layout_base.html.twig' %}
+{% extends 'base.html.twig' %}
+{% trans_default_domain "construction_site" %}
 {% import _self as own_macros %}
 
 {% block content %}
@@ -31,7 +32,7 @@
                 </a>
             </ul>
             <ul class="navbar-nav mr-2">
-                {{ own_macros.nav_item(path("edit"), "edit.title"|trans({}, "edit")) }}
+                {{ own_macros.nav_item(path("construction_site_edit"), "edit.title"|trans({}, "edit")) }}
                 {% if "ROLE_TRIAL_ACCOUNT" not in app.user.roles %}
                     {{ own_macros.nav_item(path("switch"), "switch.title"|trans({}, "switch")) }}
                 {% endif %}
