@@ -4,7 +4,7 @@
 	From: Allschwil, Switzerland
 
 /* SITE */
-	Last big update: 2018/01/04
+	Last big update: 2020/09/01
 	Language: Deutsch
 	Doctype: HTML5
 	IDE: PhpStorm, Symfony plugin, Notepad++, FileZilla, Illustrator

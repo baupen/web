@@ -5,6 +5,9 @@
 .build
 .config
 
+# testing
+clover.xml
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php

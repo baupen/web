@@ -17,33 +17,26 @@ The previous setup also relied on:
 
 frontend; previous setup relied upon:
 
+likely still used:
 ```
     "bootstrap-select": "^1",
     "bootstrap-vue": "^2.14",
-    "core-js": "^3.6.5",
     "crypto-js": "^3.1.9-1",
-    "date-fns": "^1.29",
     "debounce": "^1.2.0",
     "deepmerge": "^2",
     "eol": "^0.9.1",
-    "epic-spinners": "^1",
+```
+
+likely not used anymore:
+```
     "lodash": "^4.17.13",
-    "moment": "^2.22.2",
     "open-iconic": "^1",
     "open-sans-fontface": "^1",
     "popper.js": "^1.12",
-    "promise-polyfill": "^8.1.0",
-    "stylelint-config-standard": "^18.2.0",
     "uuid": "^3.3.2",
-    "vue": "^2.5",
     "vue-async-computed": "^3",
-    "vue-flatpickr-component": "^8.1.5",
     "vue-fragment": "^1.5.0",
     "vue-headful": "^2",
-    "vue-i18n": "^8",
-    "vue-masonry-css": "^1.0.3",
-    "vuejs-datepicker": "^1",
-    "vuelidate": "^0.7.4",
 ```
 
 ## Developing
