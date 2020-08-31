@@ -8,17 +8,17 @@ dispatch:
   email:
     subject_appendix: ' al cantiere %construction_site_name%'
     body_limit_info: 'Il prossimo termine scade il %limit%. Siamo fiduciosi che entro allora le pendenze interessate saranno risolte.'
-    body_closed_issues_info: 'Dalla sua ultima visita %count% pendenze sono state contrassegnate come risolte. La ringraziamo per la collaborazione!|Dall’ultima visita %count% pendenze sono state contrassegnate come risolte. La ringraziamo per la collaborazione!'
+    body_closed_issues_info: 'one: Dall’ultima visita %count% pendenze sono state contrassegnate come risolte. Ringraziamo per la collaborazione!|some: Dall’ultima visita %count% pendenza è stata contrassegnata come risolta. Ringraziamo per la collaborazione!'
     action_text: 'Visualizzare le pendenze'
     unread:
-      subject: 'Una pendenza non letta|%count% pendenze non lette'
-      body: 'Lei ha una nuova pendenza aperta.|Ci sono ancora %count% pendenze aperte.'
+      subject: 'one: Una pendenza non letta|some: %count% pendenze non lette'
+      body: 'one: Una nuova pendenza aperta.|some: Ci sono ancora %count% pendenze aperte.'
     open:
-      subject: 'Una pendenza aperta|%count% pendenze aperte'
-      body: 'Lei ha ancora una pendenza aperta.|Lei ha ancora %count% pendenze aperte.'
+      subject: 'one: Una pendenza aperta|some: %count% pendenze aperte'
+      body: 'one: C’è ancora una pendenza aperta.|some: Ci sono ancora %count% pendenze aperte.'
     overdue:
-      subject: 'Il termine per una pendenza è scaduto|Il termine per %count% pendenze è scaduto'
-      body: 'Purtroppo il termine fissato per la correzione di una pendenza è stato oltrepassato. La preghiamo di risolverla il prima possibile.|Purtroppo il termine fissato per la correzione di %count% pendenze è stato oltrepassato. La preghiamo di risolverle il prima possibile.'
+      subject: 'one: Il termine per una pendenza è scaduto|some: Il termine per %count% pendenze è scaduto'
+      body: 'one: Purtroppo il termine fissato per la correzione di una pendenza è stato oltrepassato. Preghiamo di risolverla il prima possibile.|some: Purtroppo il termine fissato per la correzione di %count% pendenze è stato oltrepassato. Preghiamo di risolverle il prima possibile.'
 
 edit:
   title: 'Allestimento del cantiere'
