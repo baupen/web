@@ -13,7 +13,7 @@
         "vue": "^2.5",
         "vue-flatpickr-component": "^8.1.5",
         "vue-i18n": "^8",
-        "vue-masonry-css": "^1.0.3",
+        "vue-masonry-css": "^1.0.3"
     },
     "devDependencies": {
         "@symfony/webpack-encore": "^0.30.0",
@@ -23,9 +23,9 @@
         "eslint-config-airbnb-base": "^14.2.0",
         "eslint-plugin-import": "^2.22.0",
         "eslint-plugin-vue": "next",
-        "node-sass": "^4.14.1",
         "postcss-loader": "^3.0.0",
         "regenerator-runtime": "^0.13.2",
+        "sass": "^1.26.10",
         "sass-loader": "^8.0.0",
         "stylelint": "^13.6.1",
         "stylelint-config-sass-guidelines": "^7.0.0",

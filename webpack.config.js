@@ -60,7 +60,9 @@ Encore
     })
 
     // enables Sass/SCSS support
-    .enableSassLoader()
+    .enableSassLoader(options => {
+        options.implementation = require('sass');
+    })
     .enableVueLoader(() => {}, { runtimeCompilerBuild: false })
     .autoProvidejQuery()
 
