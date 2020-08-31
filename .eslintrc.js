@@ -5,7 +5,7 @@ module.exports = {
   },
   extends: [
     'plugin:vue/recommended',
-    'airbnb-base',
+    'standard',
   ],
   parserOptions: {
     ecmaVersion: 12,

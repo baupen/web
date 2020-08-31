@@ -1,30 +1,28 @@
 <template>
   <div>
     <atom-spinner
-        v-if="spin"
-        :animation-duration="1000"
-        :size="60"
-        color="#ff1d5e"
+      v-if="spin"
+      :animation-duration="1000"
+      :size="60"
+      color="#ff1d5e"
     />
 
-    <slot v-else>
-    </slot>
+    <slot v-else />
   </div>
-
 </template>
 
 <script>
-import { AtomSpinner } from 'epic-spinners';
+import { AtomSpinner } from 'epic-spinners'
 
 export default {
   components: {
-    AtomSpinner,
+    AtomSpinner
   },
   props: {
     spin: {
       type: Boolean,
-      required: true,
-    },
-  },
-};
+      required: true
+    }
+  }
+}
 </script>
