@@ -16,7 +16,6 @@ use App\Api\Entity\Edit\UpdateCraftsman;
 use App\Api\Entity\Edit\UpdateMap;
 use App\Api\Request\ConstructionSiteRequest;
 use App\Api\Request\Edit\CheckMapFileRequest;
-use App\Api\Request\Edit\UpdateConstructionSiteRequest;
 use App\Api\Request\Edit\UpdateCraftsmanRequest;
 use App\Api\Request\Edit\UpdateExternalConstructionManagerRequest;
 use App\Api\Request\Edit\UpdateMapFileRequest;
@@ -24,17 +23,12 @@ use App\Api\Request\Edit\UpdateMapRequest;
 use App\Api\Request\Edit\UploadMapFileRequest;
 use App\Api\Response\Data\ConstructionManagerData;
 use App\Api\Response\Data\ConstructionManagersData;
-use App\Api\Response\Data\ConstructionSiteData;
 use App\Api\Response\Data\CraftsmanData;
-use App\Api\Response\Data\CraftsmenData;
 use App\Api\Response\Data\Edit\UploadFileCheckData;
 use App\Api\Response\Data\EmptyData;
 use App\Api\Response\Data\MapData;
 use App\Api\Response\Data\MapFileData;
-use App\Api\Response\Data\MapFilesData;
-use App\Api\Response\Data\MapsData;
 use App\Api\Transformer\Edit\ConstructionManagerTransformer;
-use App\Api\Transformer\Edit\ConstructionSiteTransformer;
 use App\Api\Transformer\Edit\CraftsmanTransformer;
 use App\Api\Transformer\Edit\MapFileTransformer;
 use App\Api\Transformer\Edit\MapTransformer;
@@ -77,88 +71,6 @@ class EditController extends ApiController
     const EXTERNAL_CONSTRUCTION_MANAGER_NOT_ADDED = 'external construction managers ist not part of this construction site';
     const ONLY_EXTERNAL_CONSTRUCTION_MANAGERS_CAN_BE_REMOVED = 'only external construction managers can be removed';
     const EXTERNAL_CONSTRUCTION_MANAGER_NOTIFY_EMAIL_FAILED = 'failed to send the notification email to the external construction manager';
-
-    /**
-     * @Route("/maps", name="api_edit_maps")
-     *
-     * @return Response
-     */
-    public function mapsAction(Request $request, MapTransformer $mapFileTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        $mapFiles = $this->getDoctrine()->getRepository(Map::class)->findBy(['constructionSite' => $constructionSite->getId()]);
-
-        //create response
-        $data = new MapsData();
-        $data->setMaps($mapFileTransformer->toApiMultiple($mapFiles));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/map_files", name="api_edit_map_files")
-     *
-     * @return Response
-     */
-    public function mapFilesAction(Request $request, MapFileTransformer $mapFileTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        $mapFiles = $this->getDoctrine()->getRepository(MapFile::class)->findBy(['constructionSite' => $constructionSite->getId()]);
-
-        //create response
-        $data = new MapFilesData();
-        $data->setMapFiles($mapFileTransformer->toApiMultiple($mapFiles));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/construction_site", name="api_edit_construction_site")
-     *
-     * @return Response
-     */
-    public function constructionSiteAction(Request $request, ConstructionSiteTransformer $constructionSiteTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        //create response
-        $data = new ConstructionSiteData();
-        $data->setConstructionSite($constructionSiteTransformer->toApi($constructionSite));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/craftsmen", name="api_edit_craftsmen")
-     *
-     * @return Response
-     */
-    public function craftsmenAction(Request $request, CraftsmanTransformer $craftsmanTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        if (!$this->parseConstructionSiteRequest($request, ConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        $craftsmen = $this->getDoctrine()->getRepository(Craftsman::class)->findBy(['constructionSite' => $constructionSite->getId()]);
-
-        //create response
-        $data = new CraftsmenData();
-        $data->setCraftsmen($craftsmanTransformer->toApiMultiple($craftsmen));
-
-        return $this->success($data);
-    }
 
     /**
      * @Route("/map_file/check", name="api_edit_map_file_check", methods={"POST"})
@@ -323,66 +235,6 @@ class EditController extends ApiController
         $updateMap = $parsedRequest->getMap();
         $map = new Map();
         $map->setConstructionSite($constructionSite);
-
-        if (!$this->writeIntoMapEntity($updateMap, $map, $errorResponse)) {
-            return $errorResponse;
-        }
-
-        $this->fastSave($map);
-
-        //create response
-        $data = new MapData();
-        $data->setMap($mapTransformer->toApi($map));
-
-        return $this->success($data);
-    }
-
-    /**
-     * @Route("/construction_site/save", name="api_edit_construction_site_save", methods={"PUT"})
-     *
-     * @throws Exception
-     *
-     * @return Response
-     */
-    public function constructionSiteSaveAction(Request $request)
-    {
-        /** @var ConstructionSite $constructionSite */
-        /** @var UpdateConstructionSiteRequest $parsedRequest */
-        if (!$this->parseConstructionSiteRequest($request, UpdateConstructionSiteRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        $updateConstructionSite = $parsedRequest->getConstructionSite();
-        if (!$this->writeIntoConstructionSiteEntity($updateConstructionSite, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        $this->fastSave($constructionSite);
-
-        //create response
-        return $this->success();
-    }
-
-    /**
-     * @Route("/map/{map}", name="api_edit_map_put", methods={"PUT"})
-     *
-     * @throws Exception
-     *
-     * @return Response
-     */
-    public function mapPutAction(Request $request, Map $map, MapTransformer $mapTransformer)
-    {
-        /** @var ConstructionSite $constructionSite */
-        /** @var UpdateMapRequest $parsedRequest */
-        if (!$this->parseConstructionSiteRequest($request, UpdateMapRequest::class, $parsedRequest, $errorResponse, $constructionSite)) {
-            return $errorResponse;
-        }
-
-        if (!$constructionSite->getMaps()->contains($map)) {
-            throw new NotFoundHttpException();
-        }
-
-        $updateMap = $parsedRequest->getMap();
 
         if (!$this->writeIntoMapEntity($updateMap, $map, $errorResponse)) {
             return $errorResponse;
