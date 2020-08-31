@@ -60,7 +60,7 @@ confirm:
     body: |
       Willkommen! Um alle Funktionen nutzen zu können...
       1. laden Sie sich die mangel.io App vom iOS Store herunter
-      2. loggen Sie sich mit Benutzername, Passwort und der Webseite %website% ein
+      2. loggen Sie sich mit Benutzername, Passwort auf der Webseite %website% ein
     action_text: 'App login link'
   error:
     invalid_hash: 'Dieser Link ist nicht mehr gültig. Starten Sie die Registrierung neu oder loggen Sie sich ein wie gewohnt.'

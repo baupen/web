@@ -1,0 +1,45 @@
+dashboard:
+  title: Dashboard
+  description: 'Überblick über Ihre Baustelle'
+
+dispatch:
+  title: 'Unternehmer informieren'
+  description: 'Informieren Sie Unternehmer über neue Pendenzen mit einer personalisierten E-Mail'
+  email:
+    subject_appendix: ' auf der Baustelle %construction_site_name%'
+    body_limit_info: 'Die nächste ablaufende Frist ist am %limit%. Wir sind zuversichtlich, dass die davon betroffenen Pendenzen bis dann behoben sind.'
+    body_closed_issues_info: 'Seit Ihrem letzten Besuch wurden %count% Pendenzen als erledigt markiert. Wir danken für Ihre Mitarbeit!|Seit Ihrem letzten Besuch wurde eine %count% Pendenzen als erledigt markiert. Wir danken für Ihre Mitarbeit!'
+    action_text: 'Pendenzen ansehen'
+    unread:
+      subject: 'Eine ungelesene Pendenz|%count% ungelesene Pendenzen'
+      body: 'Sie haben eine neue offene Pendenz.|Sie haben noch %count% offene Pendenzen.'
+    open:
+      subject: 'Eine offene Pendenz|%count% offene Pendenzen'
+      body: 'Sie haben noch eine offene Pendenz.|Sie haben noch %count% offene Pendenzen.'
+    overdue:
+      subject: 'Frist einer Pendenz abgelaufen|Frist von %count% Pendenzen abgelaufen'
+      body: 'Leider wurde bei einer Pendenz die zur Behebung gesetzte Frist überschritten. Wir bitten Sie, diese schnellstmöglich zu erledigen.|Leider wurden bei %count% Pendenzen die zur Behebung gesetzte Frist überschritten. Wir bitten Sie, diese schnellstmöglich zu erledigen.'
+
+edit:
+  title: 'Baustelle einrichten'
+  description: 'Unternehmer & Baupläne organisieren'
+  external_construction_manager:
+    welcome_email:
+      subject: 'Willkommen auf %page%!'
+      body: 'Sie wurden auf %page% registriert, damit Sie die Baustelle %construction_site_name% verwalten können.'
+      action_text: 'Account aktivieren'
+    new_construction_site_email:
+      subject: 'Neue Baustelle auf %page% freigeschaltet'
+      body: 'Sie wurden auf %page% der Baustelle %construction_site_name% hinzugefügt.'
+
+foyer:
+  title: 'Pendenzen einpflegen'
+  description: 'Fügen Sie die neuen Pendenzen zum Verzeichnis hinzu.'
+
+register:
+  title: Pendenzenverzeichnis
+  description: 'Ihre eingepflegten Pendenzen'
+
+switch:
+  title: 'Baustelle auswählen'
+  description: 'Baustelle auswählen, die Sie verwalten möchten'
