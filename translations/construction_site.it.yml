@@ -31,7 +31,3 @@ foyer:
 register:
   title: 'Elenco delle pendenze'
   description: 'Le vostre pendenze inserite'
-
-switch:
-  title: 'Selezionare il cantiere'
-  description: 'Selezionare il cantiere che si vuole gestire'

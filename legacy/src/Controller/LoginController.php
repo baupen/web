@@ -281,33 +281,17 @@ class LoginController extends BaseLoginController
     }
 
     /**
-     * @Route("/login_check", name="login_check")
-     */
-    public function loginCheck()
-    {
-        throw new RuntimeException('You must configure the check path to be handled by the firewall using form_login in your security firewall configuration.');
-    }
-
-    /**
-     * @Route("/logout", name="login_logout")
-     */
-    public function logoutAction()
-    {
-        throw new RuntimeException('You must configure the logout path to be handled by the firewall using form_login.logout in your security firewall configuration.');
-    }
-
-    /**
-     * @throws Exception
-     *
      * @return bool|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     *
+     * @throws Exception
      */
-    private function register(Request $request, ConstructionManager $constructionManager, AuthorizationServiceInterface $authorizationService, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
+    private function sendInvitation(Request $request, ConstructionManager $constructionManager, AuthorizationServiceInterface $authorizationService, TranslatorInterface $translator, EmailServiceInterface $emailService, LoggerInterface $logger)
     {
         /** @var ConstructionManager $existing */
         $existing = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
         if (null === $existing) {
             // prepare account for usage
-            $constructionManager->register();
+            $constructionManager->initialize();
             $authorizationService->tryFillDefaultValues($constructionManager);
 
             $this->fastSave($constructionManager);
@@ -323,7 +307,6 @@ class LoginController extends BaseLoginController
         // construct email
         $email = new Email();
         $email->setEmailType(EmailType::ACTION_EMAIL);
-        $email->setSystemSender();
         $email->setReceiver($constructionManager->getEmail());
         $email->setSubject($translator->trans('create.email.subject', ['%page%' => $request->getHttpHost()], 'login'));
         $email->setBody($translator->trans('create.email.body', [], 'login'));
@@ -349,7 +332,6 @@ class LoginController extends BaseLoginController
     private function sendAppEMail(Request $request, ConstructionManager $user, TranslatorInterface $translator, EmailServiceInterface $emailService)
     {
         $email = new Email();
-        $email->setSystemSender();
         $email->setReceiver($user->getEmail());
 
         $email->setEmailType(EmailType::ACTION_EMAIL);
@@ -365,5 +347,21 @@ class LoginController extends BaseLoginController
             $email->setSentDateTime(new \DateTime());
             $this->fastSave($email);
         }
+    }
+
+    /**
+     * @Route("/login_check", name="login_check")
+     */
+    public function loginCheck()
+    {
+        throw new RuntimeException('You must configure the check path to be handled by the firewall using form_login in your security firewall configuration.');
+    }
+
+    /**
+     * @Route("/logout", name="login_logout")
+     */
+    public function logoutAction()
+    {
+        throw new RuntimeException('You must configure the logout path to be handled by the firewall using form_login.logout in your security firewall configuration.');
     }
 }

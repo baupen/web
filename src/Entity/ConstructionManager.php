@@ -208,7 +208,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @throws \Exception
      */
-    public function register()
+    public function initialize()
     {
         $this->setRegistrationDate();
         $this->setPlainPassword(uniqid('_initial_pw_'));

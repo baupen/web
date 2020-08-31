@@ -39,7 +39,3 @@ foyer:
 register:
   title: Pendenzenverzeichnis
   description: 'Ihre eingepflegten Pendenzen'
-
-switch:
-  title: 'Baustelle auswählen'
-  description: 'Baustelle auswählen, die Sie verwalten möchten'

@@ -11,15 +11,19 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Controller\Base\BaseFormController;
+use App\Security\LoginFormAuthenticator;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-class SecurityController extends AbstractController
+class SecurityController extends BaseFormController
 {
     /**
-     * @Route("/login", name="app_login")
+     * @Route("/login", name="login")
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -36,7 +40,22 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/logout", name="app_logout")
+     * @Route("/register", name="register")
+     */
+    private function loginUser(UserInterface $user, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler, Request $request)
+    {
+        // after validating the user and saving them to the database
+        // authenticate the user and use onAuthenticationSuccess on the authenticator
+        return $guardHandler->authenticateUserAndHandleSuccess(
+            $user,          // the User object you just created
+            $request,
+            $authenticator, // authenticator whose onAuthenticationSuccess you want to use
+            'main'          // the name of your firewall in security.yaml
+        );
+    }
+
+    /**
+     * @Route("/logout", name="logout")
      */
     public function logout()
     {
