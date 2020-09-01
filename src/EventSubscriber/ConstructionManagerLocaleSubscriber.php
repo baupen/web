@@ -12,42 +12,36 @@
 namespace App\EventSubscriber;
 
 use App\Entity\ConstructionManager;
-use App\Security\Model\UserToken;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\Event\SwitchUserEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 
 /**
  * Stores the locale of the user in the session after the
  * login. This can be used by the LocaleSubscriber afterwards.
  */
-class UserLocaleSubscriber implements EventSubscriberInterface
+class ConstructionManagerLocaleSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var SessionInterface
-     */
-    private $session;
-
-    /**
-     * @var RegistryInterface
-     */
-    private $registry;
-
-    public function __construct(SessionInterface $session, RegistryInterface $registry)
-    {
-        $this->session = $session;
-        $this->registry = $registry;
-    }
-
     public function onInteractiveLogin(InteractiveLoginEvent $event)
     {
-        /** @var UserToken $userToken */
-        $userToken = $event->getAuthenticationToken()->getUser();
-        $user = $this->registry->getRepository(ConstructionManager::class)->fromUserToken($userToken);
+        $this->setLocaleFromUser($event->getRequest(), $event->getAuthenticationToken()->getUser());
+    }
 
-        $this->session->set('_locale', $user->getLocale());
+    public function onSwitchUser(SwitchUserEvent $event)
+    {
+        $this->setLocaleFromUser($event->getRequest(), $event->getTargetUser());
+    }
+
+    private function setLocaleFromUser(Request $request, UserInterface $user)
+    {
+        if ($request->hasSession() && ($session = $request->getSession())) {
+            if ($user instanceof ConstructionManager) {
+                $session->set('_locale', $user->getLocale());
+            }
+        }
     }
 
     /**
@@ -70,6 +64,9 @@ class UserLocaleSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return [SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'];
+        return [
+            SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin',
+            SecurityEvents::SWITCH_USER => 'onSwitchUser',
+        ];
     }
 }
