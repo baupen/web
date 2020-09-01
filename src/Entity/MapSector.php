@@ -14,7 +14,7 @@ namespace App\Entity;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AutomaticEditTrait;
 use App\Entity\Traits\IdTrait;
-use App\Model\Point;
+use App\Service\Upload\Point;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

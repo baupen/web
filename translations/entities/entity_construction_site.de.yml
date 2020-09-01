@@ -1,4 +1,4 @@
-construction_site:
+example:
   name: '%name%’s Baustelle'
   country: Schweiz
   street_address: 'Am Bergweg 12'

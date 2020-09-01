@@ -14,14 +14,16 @@ namespace App\Service;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Helper\FileHelper;
+use App\Helper\RandomHelper;
 use App\Service\Interfaces\PathServiceInterface;
-use App\Service\Interfaces\SyncServiceInterface;
 use App\Service\Interfaces\TrialServiceInterface;
+use App\Service\Interfaces\UploadServiceInterface;
 use const DIRECTORY_SEPARATOR;
+use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Faker\Factory;
 use Faker\Generator;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -35,7 +37,7 @@ class TrialService implements TrialServiceInterface
     private $faker;
 
     /**
-     * @var RegistryInterface
+     * @var ManagerRegistry
      */
     private $registry;
 
@@ -45,23 +47,23 @@ class TrialService implements TrialServiceInterface
     private $pathService;
 
     /**
+     * @var UploadServiceInterface
+     */
+    private $uploadService;
+
+    /**
      * @var TranslatorInterface
      */
     private $translator;
 
     /**
-     * @var SyncServiceInterface
-     */
-    private $syncService;
-
-    /**
      * TrialService constructor.
      */
-    public function __construct(PathServiceInterface $pathService, TranslatorInterface $translator, SyncServiceInterface $syncService, RequestStack $requestStack, RegistryInterface $registry)
+    public function __construct(PathServiceInterface $pathService, TranslatorInterface $translator, RequestStack $requestStack, ManagerRegistry $registry, UploadServiceInterface $uploadService)
     {
         $this->pathService = $pathService;
         $this->translator = $translator;
-        $this->syncService = $syncService;
+        $this->uploadService = $uploadService;
 
         $request = $requestStack->getCurrentRequest();
         $this->faker = Factory::create($request->getLocale());
@@ -71,9 +73,9 @@ class TrialService implements TrialServiceInterface
     /**
      * creates a trial account with pre-filled data.
      *
-     * @throws Exception
-     *
      * @return ConstructionManager
+     *
+     * @throws Exception
      */
     public function createTrialAccount(?string $proposedGivenName = null, ?string $proposedFamilyName = null)
     {
@@ -98,12 +100,12 @@ class TrialService implements TrialServiceInterface
     private function createConstructionSite(ConstructionManager $constructionManager)
     {
         $constructionSite = new ConstructionSite();
-        $constructionSite->setName($this->translator->trans('construction_site.name', ['%name%' => $constructionManager->getName()], 'trial'));
+        $constructionSite->setName($this->translator->trans('example.name', ['%name%' => $constructionManager->getName()], 'entity_construction_site'));
         $constructionSite->setFolderName($constructionManager->getEmail());
-        $constructionSite->setStreetAddress($this->translator->trans('construction_site.street_address', [], 'trial'));
-        $constructionSite->setLocality($this->translator->trans('construction_site.locality', [], 'trial'));
-        $constructionSite->setPostalCode($this->translator->trans('construction_site.postal_code', [], 'trial'));
-        $constructionSite->setCountry($this->translator->trans('construction_site.country', [], 'trial'));
+        $constructionSite->setStreetAddress($this->translator->trans('example.street_address', [], 'entity_construction_site'));
+        $constructionSite->setLocality($this->translator->trans('example.locality', [], 'entity_construction_site'));
+        $constructionSite->setPostalCode($this->translator->trans('example.postal_code', [], 'entity_construction_site'));
+        $constructionSite->setCountry($this->translator->trans('example.country', [], 'entity_construction_site'));
         $constructionSite->setIsTrialConstructionSite(true);
 
         $constructionSite->getConstructionManagers()->add($constructionManager);
@@ -121,6 +123,7 @@ class TrialService implements TrialServiceInterface
 
         $this->copyMapFiles($constructionSite);
         $this->copyConstructionSiteFiles($constructionSite);
+
         $this->syncService->syncConstructionSite($constructionSite, true);
     }
 
@@ -129,7 +132,7 @@ class TrialService implements TrialServiceInterface
      */
     private function copyMapFiles(ConstructionSite $constructionSite)
     {
-        $sourceFolder = __DIR__.DIRECTORY_SEPARATOR.'Trial'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'maps';
+        $sourceFolder = $this->getSimpleConstrictionSiteSamplePath().DIRECTORY_SEPARATOR.'maps';
         $targetFolder = $this->pathService->getFolderForMapFile($constructionSite);
         FileHelper::copyRecursively($sourceFolder, $targetFolder);
     }
@@ -139,15 +142,24 @@ class TrialService implements TrialServiceInterface
      */
     private function copyConstructionSiteFiles(ConstructionSite $constructionSite)
     {
-        $sourceFolder = __DIR__.DIRECTORY_SEPARATOR.'Trial'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'images';
+        $imagePath = $this->getSimpleConstrictionSiteSamplePath().DIRECTORY_SEPARATOR.'preview.jpg';
+        $file = new File($imagePath);
+
+        $this->uploadService->uploadConstructionSiteImage();
+
         $targetFolder = $this->pathService->getFolderForConstructionSiteImage($constructionSite);
-        FileHelper::copyRecursively($sourceFolder, $targetFolder);
+        FileHelper::copySingle($imagePath, $targetFolder);
+    }
+
+    private function getSimpleConstrictionSiteSamplePath(): string
+    {
+        return $this->pathService->getAssetsRoot().DIRECTORY_SEPARATOR.'construction_sites'.DIRECTORY_SEPARATOR.'Simple';
     }
 
     /**
-     * @throws Exception
-     *
      * @return ConstructionManager
+     *
+     * @throws Exception
      */
     private function createConstructionManager(?string $proposedGivenName, ?string $proposedFamilyName)
     {
@@ -161,7 +173,7 @@ class TrialService implements TrialServiceInterface
         $maxTries = 10;
         $repository = $this->registry->getRepository(ConstructionManager::class);
         do {
-            $email = $this->generateRandomString(5, '_').'@test.mangel.io';
+            $email = RandomHelper::generateHumanReadableRandom(5, '_').'@test.mangel.io';
 
             if ($maxTries-- < 0) {
                 throw new Exception('unable to create new random email');
@@ -169,7 +181,7 @@ class TrialService implements TrialServiceInterface
         } while (null !== $repository->findOneBy(['email' => $email]));
 
         // generate login info
-        $password = $this->generateRandomString(10, '-');
+        $password = RandomHelper::generateHumanReadableRandom(10, '-');
         $constructionManager->setEmail($email);
         $constructionManager->setPlainPassword($password);
         $constructionManager->setPassword(true);
@@ -177,56 +189,5 @@ class TrialService implements TrialServiceInterface
         $constructionManager->setRegistrationDate();
 
         return $constructionManager;
-    }
-
-    /**
-     * @return bool|string
-     */
-    private function generateRandomString(int $minimalLength, string $divider)
-    {
-        $vocals = 'aeiou';
-        $vocalsLength = mb_strlen($vocals);
-
-        //skip because ambiguous: ck, jyi
-        $normals = 'bdfghklmnpqrstvwxz';
-        $normalsLength = mb_strlen($normals);
-
-        $randomString = '';
-        $length = 0;
-        do {
-            if ($length > 0) {
-                $randomString .= $divider;
-                ++$length;
-            }
-
-            // create bigger group
-            $randomString .= $this->getRandomChar($normals, $normalsLength);
-            $randomString .= $this->getRandomChar($vocals, $vocalsLength);
-            $randomString .= $this->getRandomChar($normals, $normalsLength);
-            $length += 3;
-
-            // abort if too big already
-            if ($length > $minimalLength) {
-                break;
-            }
-
-            // create smaller group
-            $randomString .= $divider;
-            $randomString .= $this->getRandomChar($normals, $normalsLength);
-            $randomString .= $this->getRandomChar($vocals, $vocalsLength);
-            $length += 3;
-        } while ($length < $minimalLength);
-
-        return $randomString;
-    }
-
-    /**
-     * @return bool|string
-     */
-    private function getRandomChar(string $selection, int $selectionLength)
-    {
-        $entry = rand(0, $selectionLength - 1);
-
-        return mb_substr($selection, $entry, 1);
     }
 }

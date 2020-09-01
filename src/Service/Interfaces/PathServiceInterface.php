@@ -12,8 +12,9 @@
 namespace App\Service\Interfaces;
 
 use App\Entity\ConstructionSite;
-use App\Entity\Issue;
-use App\Entity\Map;
+use App\Entity\ConstructionSiteImage;
+use App\Entity\IssueImage;
+use App\Entity\MapFile;
 
 interface PathServiceInterface
 {
@@ -30,17 +31,17 @@ interface PathServiceInterface
     /**
      * @return string
      */
-    public function getFolderForConstructionSiteImage(ConstructionSite $constructionSite);
+    public function getFolderForConstructionSiteImage(ConstructionSiteImage $constructionSiteImage);
 
     /**
      * @return string
      */
-    public function getFolderForMapFile(ConstructionSite $constructionSite);
+    public function getFolderForMapFile(MapFile $mapFile);
 
     /**
      * @return string
      */
-    public function getFolderForIssueImage(ConstructionSite $constructionSite);
+    public function getFolderForIssueImage(IssueImage $issueImage);
 
     /**
      * @return string
@@ -50,27 +51,22 @@ interface PathServiceInterface
     /**
      * @return string
      */
-    public function getTransientFolderForConstructionSiteImage(ConstructionSite $constructionSite);
+    public function getTransientFolderForConstructionSiteImage(ConstructionSiteImage $constructionSiteImage);
 
     /**
      * @return string
      */
-    public function getTransientFolderForMapFile(Map $map);
+    public function getTransientFolderForMapFile(MapFile $mapFile);
 
     /**
      * @return string
      */
-    public function getTransientFolderForIssueImage(Issue $issue);
+    public function getTransientFolderForIssueImage(IssueImage $issueImage);
 
     /**
      * @return string
      */
     public function getTransientFolderForReports(ConstructionSite $constructionSite);
-
-    /**
-     * @return string
-     */
-    public function getScriptsRoot();
 
     /**
      * @return string

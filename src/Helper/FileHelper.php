@@ -44,4 +44,16 @@ class FileHelper
 
         closedir($dir);
     }
+
+    public static function copySingle($sourcePath, $destinationFolder)
+    {
+        if (!is_dir($destinationFolder)) {
+            mkdir($destinationFolder);
+        }
+
+        $fileName = basename($sourcePath);
+        $destinationFile = $destinationFolder.DIRECTORY_SEPARATOR.$fileName;
+
+        copy($sourcePath, $destinationFile);
+    }
 }

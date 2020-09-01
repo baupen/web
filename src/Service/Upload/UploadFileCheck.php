@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Model;
+namespace App\Service\Upload;
 
 class UploadFileCheck
 {

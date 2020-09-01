@@ -16,7 +16,7 @@ use App\Entity\ConstructionSiteImage;
 use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\MapFile;
-use App\Model\UploadFileCheck;
+use App\Service\Upload\UploadFileCheck;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 interface UploadServiceInterface

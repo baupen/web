@@ -15,7 +15,7 @@ use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\FileTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
-use App\Model\Frame;
+use App\Service\Upload\Frame;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 

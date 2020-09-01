@@ -14,8 +14,7 @@ namespace App\Helper;
 class ImageHelper
 {
     /**
-     * gives back the width and height to be used
-     * be aware that if passed 0 tcpdf expands to fill the.
+     * gives back the width and height to be used.
      *
      * @param $imgPath
      * @param $maxWidth

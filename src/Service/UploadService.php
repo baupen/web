@@ -17,14 +17,15 @@ use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\MapFile;
 use App\Entity\Traits\FileTrait;
-use App\Model\UploadFileCheck;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\UploadServiceInterface;
+use App\Service\Upload\UploadFileCheck;
 use DateTime;
 use const DIRECTORY_SEPARATOR;
+use Doctrine\Persistence\ManagerRegistry;
 use Exception;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class UploadService implements UploadServiceInterface
@@ -35,24 +36,19 @@ class UploadService implements UploadServiceInterface
     private $pathService;
 
     /**
+     * @var Filesystem
+     */
+    private $fileSystem;
+
+    /**
      * @var ImageServiceInterface
      */
     private $imageService;
 
     /**
-     * @var RegistryInterface
+     * @var ManagerRegistry
      */
     private $doctrine;
-
-    /**
-     * UploadService constructor.
-     */
-    public function __construct(PathServiceInterface $pathService, ImageServiceInterface $imageService, RegistryInterface $registry)
-    {
-        $this->pathService = $pathService;
-        $this->imageService = $imageService;
-        $this->doctrine = $registry;
-    }
 
     /**
      * @throws Exception
@@ -71,7 +67,7 @@ class UploadService implements UploadServiceInterface
         $issue->getImages()->add($issueImage);
         $issue->setImage($issueImage);
 
-        $this->imageService->warmUpCacheForIssue($issue);
+        $this->imageService->warmUpCacheForIssueImage($issue);
 
         return true;
     }
@@ -109,7 +105,7 @@ class UploadService implements UploadServiceInterface
         $constructionSite->getImages()->add($constructionSiteImage);
         $constructionSite->setImage($constructionSiteImage);
 
-        $this->imageService->warmUpCacheForConstructionSite($constructionSite);
+        $this->imageService->warmUpCacheForConstructionSiteImage($constructionSite);
 
         return true;
     }
@@ -182,6 +178,36 @@ class UploadService implements UploadServiceInterface
         $entity->setFilename($targetFileName);
         $entity->setHash(hash_file('sha256', $targetFolder.DIRECTORY_SEPARATOR.$targetFileName));
         $entity->setDisplayFilename($targetFileName);
+    }
+
+    private function createIssueImageFromAsset(string $sourcePath, Issue $issue)
+    {
+        $targetFolder = $this->pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
+        $displayName = basename($sourcePath);
+        $uniqueTargetName = $this->getCollisionProtectedFileName($targetFolder, $displayName);
+        $this->fileSystem->copy($sourcePath, $targetFolder.DIRECTORY_SEPARATOR.$uniqueTargetName);
+
+        $issueImage = new IssueImage();
+        $issueImage->setIssue($issue);
+        $issue->getImages()->add($issueImage);
+        $issue->setImage($issueImage);
+
+        $issueImage->setFilename($uniqueTargetName);
+        $issueImage->setHash(hash_file('sha256', $targetFolder.DIRECTORY_SEPARATOR.$uniqueTargetName));
+        $issueImage->setDisplayFilename($uniqueTargetName);
+
+        $this->imageService->warmUpCacheForIssueImage($issue);
+
+        return $issueImage;
+    }
+
+    private function setIssueImage(Issue $issue, string $targetFileName)
+    {
+        if (!$this->uploadFile($file, $targetFolder, $targetFileName, $issueImage)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

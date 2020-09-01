@@ -138,7 +138,7 @@ class ReportService implements ReportServiceInterface
      */
     private function addMap(Report $report, Map $map, array $issues)
     {
-        $mapImage = $this->imageService->generateMapImageForReport($map, $issues, ImageServiceInterface::SIZE_REPORT_MAP);
+        $mapImage = $this->imageService->renderMapFileWithIssues($map->getFile(), $issues, ImageServiceInterface::SIZE_REPORT_MAP);
         $report->addMap($map->getName(), $map->getContext(), $mapImage);
     }
 
@@ -154,7 +154,7 @@ class ReportService implements ReportServiceInterface
         foreach ($issues as $issue) {
             $currentIssue = [];
 
-            $imagePath = $this->imageService->getSizeForIssue($issue, ImageServiceInterface::SIZE_REPORT_ISSUE);
+            $imagePath = $this->imageService->resizeIssueImage($issue, ImageServiceInterface::SIZE_PREVIEW);
             if (null === $imagePath) {
                 continue;
             }
@@ -294,7 +294,7 @@ class ReportService implements ReportServiceInterface
 
         //print
         $report->addIntroduction(
-            $this->imageService->getSizeForConstructionSite($constructionSite, ImageServiceInterface::SIZE_REPORT_ISSUE),
+            $this->imageService->resizeConstructionSiteImage($constructionSite, ImageServiceInterface::SIZE_REPORT_ISSUE),
             $constructionSite->getName(),
             implode("\n", $constructionSite->getAddressLines()),
             implode(', ', $elements),

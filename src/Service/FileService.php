@@ -12,10 +12,12 @@
 namespace App\Service;
 
 use App\Entity\Map;
-use App\Service\Interfaces\MapFileServiceInterface;
+use App\Entity\MapFile;
+use App\Entity\Traits\FileTrait;
+use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;
 
-class MapFileService implements MapFileServiceInterface
+class FileService
 {
     /**
      * @var PathServiceInterface
@@ -33,8 +35,18 @@ class MapFileService implements MapFileServiceInterface
     /**
      * @return string|null
      */
-    public function getForMobileDevice(Map $entity)
+    public function setMapFile(string $sourceFilePath, string $displayFileName, Map $map)
     {
+        // copy file without collisions
+        $fileName = basename($filePath);
+
+        $mapFile = new MapFile();
+        $mapFile->setFilename($fileName);
+        $mapFile->setHash(hash_file('sha256', $filePath));
+
+        $targetFolder = $this->pathService->getFolderForMapFile($map->getConstructionSite());
+        FileHelper::copySingle($sourceFilePath, $targetFolder.DIRECTORY_SEPARATOR.$targetFileName);
+
         if (null === $entity->getFile()) {
             return null;
         }
@@ -42,6 +54,13 @@ class MapFileService implements MapFileServiceInterface
         $originalFilePath = $this->pathService->getFolderForMapFile($entity->getConstructionSite()).\DIRECTORY_SEPARATOR.$entity->getFile()->getFilename();
 
         return $this->renderForMobileDevice($entity, $originalFilePath);
+    }
+
+    /**
+     * @param FileTrait $fileTrait
+     */
+    private function writeFromFile(string $filePath, $fileTrait)
+    {
     }
 
     /**
