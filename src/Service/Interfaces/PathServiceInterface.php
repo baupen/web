@@ -47,4 +47,6 @@ interface PathServiceInterface
     public function getTransientFolderForIssueImage(IssueImage $issueImage): string;
 
     public function getTransientFolderForReports(ConstructionSite $constructionSite): string;
+
+    public function getSampleConstructionSite(string $name);
 }

@@ -17,13 +17,13 @@ use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\Map;
 use App\Entity\MapFile;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 
 interface UploadServiceInterface
 {
-    public function uploadConstructionSiteImage(UploadedFile $file, ConstructionSite $constructionSite): ?ConstructionSiteImage;
+    public function uploadConstructionSiteImage(File $file, ConstructionSite $constructionSite): ?ConstructionSiteImage;
 
-    public function uploadMapFile(UploadedFile $file, Map $map): ?MapFile;
+    public function uploadMapFile(File $file, Map $map): ?MapFile;
 
-    public function uploadIssueImage(UploadedFile $file, Issue $issue): ?IssueImage;
+    public function uploadIssueImage(File $file, Issue $issue): ?IssueImage;
 }

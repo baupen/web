@@ -11,9 +11,10 @@
 
 namespace App\Service;
 
+use App\DataFixtures\Model\AssetFile;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
-use App\Helper\FileHelper;
+use App\Entity\Map;
 use App\Helper\RandomHelper;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\TrialServiceInterface;
@@ -23,7 +24,6 @@ use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Faker\Factory;
 use Faker\Generator;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -95,68 +95,6 @@ class TrialService implements TrialServiceInterface
     }
 
     /**
-     * @return ConstructionSite
-     */
-    private function createConstructionSite(ConstructionManager $constructionManager)
-    {
-        $constructionSite = new ConstructionSite();
-        $constructionSite->setName($this->translator->trans('example.name', ['%name%' => $constructionManager->getName()], 'entity_construction_site'));
-        $constructionSite->setFolderName($constructionManager->getEmail());
-        $constructionSite->setStreetAddress($this->translator->trans('example.street_address', [], 'entity_construction_site'));
-        $constructionSite->setLocality($this->translator->trans('example.locality', [], 'entity_construction_site'));
-        $constructionSite->setPostalCode($this->translator->trans('example.postal_code', [], 'entity_construction_site'));
-        $constructionSite->setCountry($this->translator->trans('example.country', [], 'entity_construction_site'));
-        $constructionSite->setIsTrialConstructionSite(true);
-
-        $constructionSite->getConstructionManagers()->add($constructionManager);
-        $constructionManager->getConstructionSites()->add($constructionSite);
-
-        return $constructionSite;
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function addConstructionSiteContent(ConstructionSite $constructionSite)
-    {
-        mkdir($this->pathService->getConstructionSiteFolderRoot().DIRECTORY_SEPARATOR.$constructionSite->getFolderName());
-
-        $this->copyMapFiles($constructionSite);
-        $this->copyConstructionSiteFiles($constructionSite);
-
-        $this->syncService->syncConstructionSite($constructionSite, true);
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function copyMapFiles(ConstructionSite $constructionSite)
-    {
-        $sourceFolder = $this->getSimpleConstrictionSiteSamplePath().DIRECTORY_SEPARATOR.'maps';
-        $targetFolder = $this->pathService->getFolderForMapFiles($constructionSite);
-        FileHelper::copyRecursively($sourceFolder, $targetFolder);
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function copyConstructionSiteFiles(ConstructionSite $constructionSite)
-    {
-        $imagePath = $this->getSimpleConstrictionSiteSamplePath().DIRECTORY_SEPARATOR.'preview.jpg';
-        $file = new File($imagePath);
-
-        $this->uploadService->uploadConstructionSiteImage();
-
-        $targetFolder = $this->pathService->getFolderForConstructionSiteImages($constructionSite);
-        FileHelper::copySingle($imagePath, $targetFolder);
-    }
-
-    private function getSimpleConstrictionSiteSamplePath(): string
-    {
-        return $this->pathService->getAssetsRoot().DIRECTORY_SEPARATOR.'construction_sites'.DIRECTORY_SEPARATOR.'Simple';
-    }
-
-    /**
      * @return ConstructionManager
      *
      * @throws Exception
@@ -189,5 +127,48 @@ class TrialService implements TrialServiceInterface
         $constructionManager->setRegistrationDate();
 
         return $constructionManager;
+    }
+
+    /**
+     * @return ConstructionSite
+     */
+    private function createConstructionSite(ConstructionManager $constructionManager)
+    {
+        $constructionSite = new ConstructionSite();
+        $constructionSite->setName($this->translator->trans('example.name', ['%name%' => $constructionManager->getName()], 'entity_construction_site'));
+        $constructionSite->setFolderName($constructionManager->getEmail());
+        $constructionSite->setStreetAddress($this->translator->trans('example.street_address', [], 'entity_construction_site'));
+        $constructionSite->setLocality($this->translator->trans('example.locality', [], 'entity_construction_site'));
+        $constructionSite->setPostalCode($this->translator->trans('example.postal_code', [], 'entity_construction_site'));
+        $constructionSite->setCountry($this->translator->trans('example.country', [], 'entity_construction_site'));
+        $constructionSite->setIsTrialConstructionSite(true);
+
+        $constructionSite->getConstructionManagers()->add($constructionManager);
+        $constructionManager->getConstructionSites()->add($constructionSite);
+
+        return $constructionSite;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function addConstructionSiteContent(ConstructionSite $constructionSite)
+    {
+        $samplePath = $this->pathService->getSampleConstructionSite('Simple');
+        foreach (glob($samplePath.DIRECTORY_SEPARATOR.'maps'.DIRECTORY_SEPARATOR.'*.pdf') as $mapFile) {
+            $assetFile = new AssetFile($mapFile);
+            $map = new Map();
+            $map->setConstructionSite($constructionSite);
+            $fileName = pathinfo($mapFile, PATHINFO_FILENAME);
+            $map->setName($fileName);
+
+            $this->uploadService->uploadMapFile($assetFile, $map);
+        }
+
+        foreach (glob($samplePath.DIRECTORY_SEPARATOR.'*.jpg') as $imageFile) {
+            $assetFile = new AssetFile($imageFile);
+
+            $this->uploadService->uploadConstructionSiteImage($assetFile, $constructionSite);
+        }
     }
 }

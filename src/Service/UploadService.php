@@ -25,7 +25,7 @@ use App\Service\Interfaces\UploadServiceInterface;
 use DateTime;
 use const DIRECTORY_SEPARATOR;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 
 class UploadService implements UploadServiceInterface
 {
@@ -48,7 +48,7 @@ class UploadService implements UploadServiceInterface
         $this->doctrine = $doctrine;
     }
 
-    public function uploadConstructionSiteImage(UploadedFile $file, ConstructionSite $constructionSite): ?ConstructionSiteImage
+    public function uploadConstructionSiteImage(File $file, ConstructionSite $constructionSite): ?ConstructionSiteImage
     {
         $targetFolder = $this->pathService->getFolderForConstructionSiteImages($constructionSite);
         $constructionSiteImage = new ConstructionSiteImage();
@@ -64,7 +64,7 @@ class UploadService implements UploadServiceInterface
         return $constructionSiteImage;
     }
 
-    public function uploadMapFile(UploadedFile $file, Map $map): ?MapFile
+    public function uploadMapFile(File $file, Map $map): ?MapFile
     {
         $targetFolder = $this->pathService->getFolderForMapFiles($map->getConstructionSite());
         $mapFile = new MapFile();
@@ -80,7 +80,7 @@ class UploadService implements UploadServiceInterface
         return $mapFile;
     }
 
-    public function uploadIssueImage(UploadedFile $file, Issue $issue): ?IssueImage
+    public function uploadIssueImage(File $file, Issue $issue): ?IssueImage
     {
         $targetFolder = $this->pathService->getFolderForIssueImages($issue->getMap()->getConstructionSite());
         $issueImage = new IssueImage();
@@ -99,7 +99,7 @@ class UploadService implements UploadServiceInterface
     /**
      * @param FileTrait $entity
      */
-    private function uploadFile(UploadedFile $file, string $targetFolder, $entity): bool
+    private function uploadFile(File $file, string $targetFolder, $entity): bool
     {
         FileHelper::ensureFolderExists($targetFolder);
         $targetFileName = $this->getSanitizedUniqueFileName($targetFolder, $file->getClientOriginalName());

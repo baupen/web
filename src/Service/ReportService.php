@@ -154,7 +154,7 @@ class ReportService implements ReportServiceInterface
         foreach ($issues as $issue) {
             $currentIssue = [];
 
-            $imagePath = $this->imageService->resizeIssueImage($issue, ImageServiceInterface::SIZE_PREVIEW);
+            $imagePath = $this->imageService->resizeIssueImage($issue->getImage(), ImageServiceInterface::SIZE_PREVIEW);
             if (null === $imagePath) {
                 continue;
             }
@@ -294,7 +294,7 @@ class ReportService implements ReportServiceInterface
 
         //print
         $report->addIntroduction(
-            $this->imageService->resizeConstructionSiteImage($constructionSite, ImageServiceInterface::SIZE_REPORT_ISSUE),
+            $this->imageService->resizeConstructionSiteImage($constructionSite->getImage(), ImageServiceInterface::SIZE_PREVIEW),
             $constructionSite->getName(),
             implode("\n", $constructionSite->getAddressLines()),
             implode(', ', $elements),
