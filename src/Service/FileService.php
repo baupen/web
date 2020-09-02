@@ -16,6 +16,7 @@ use App\Entity\MapFile;
 use App\Entity\Traits\FileTrait;
 use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;
+use Symfony\Component\HttpFoundation\File\File;
 
 class FileService
 {
@@ -35,7 +36,7 @@ class FileService
     /**
      * @return string|null
      */
-    public function setMapFile(string $sourceFilePath, string $displayFileName, Map $map)
+    public function uploadMapFile(File $file, string $displayFileName, Map $map)
     {
         // copy file without collisions
         $fileName = basename($filePath);

@@ -30,13 +30,6 @@ trait FileTrait
      *
      * @ORM\Column(type="text")
      */
-    private $displayFilename;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text")
-     */
     private $hash;
 
     public function getFilename(): string
@@ -57,18 +50,5 @@ trait FileTrait
     public function setHash(string $hash): void
     {
         $this->hash = $hash;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDisplayFilename(): ?string
-    {
-        return $this->displayFilename;
-    }
-
-    public function setDisplayFilename(string $displayFilename): void
-    {
-        $this->displayFilename = $displayFilename;
     }
 }

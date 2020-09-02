@@ -105,4 +105,9 @@ class PathService implements PathServiceInterface
     {
         return $this->transientFolderRoot.DIRECTORY_SEPARATOR.'construction_sites'.DIRECTORY_SEPARATOR.$constructionSite->getFolderName();
     }
+
+    public function getTransientFolderForAuthorization(): string
+    {
+        return $this->transientFolderRoot.DIRECTORY_SEPARATOR.'authorization';
+    }
 }

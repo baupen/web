@@ -13,21 +13,12 @@ namespace App\Repository;
 
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;
-use App\Security\Model\UserToken;
 use DateTime;
 use Doctrine\ORM\EntityRepository;
 use Exception;
 
 class ConstructionManagerRepository extends EntityRepository
 {
-    /**
-     * @return object|null
-     */
-    public function fromUserToken(UserToken $token)
-    {
-        return $this->findOneBy(['email' => $token->getUsername()]);
-    }
-
     /**
      * gets recently changed issues.
      *

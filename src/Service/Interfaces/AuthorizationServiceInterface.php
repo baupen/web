@@ -18,7 +18,7 @@ interface AuthorizationServiceInterface
     /**
      * @return bool
      */
-    public function checkIfAuthorized(ConstructionManager $constructionManager);
+    public function setIsEnabled(ConstructionManager $constructionManager);
 
-    public function tryFillDefaultValues(ConstructionManager $constructionManager);
+    public function setDefaultValues(ConstructionManager $constructionManager);
 }

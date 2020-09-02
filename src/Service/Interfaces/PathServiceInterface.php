@@ -32,13 +32,13 @@ use App\Entity\MapFile;
  */
 interface PathServiceInterface
 {
-    public function getFolderForConstructionSiteImages(ConstructionSite $constructionSiteImage): string;
+    public function getFolderForConstructionSiteImages(ConstructionSite $constructionSite): string;
 
-    public function getFolderForMapFiles(ConstructionSite $mapFile): string;
+    public function getFolderForMapFiles(ConstructionSite $constructionSite): string;
 
-    public function getFolderForIssueImages(ConstructionSite $issueImage): string;
+    public function getFolderForIssueImages(ConstructionSite $constructionSite): string;
 
-    public function getTransientFolderRoot(): string;
+    public function getTransientFolderForAuthorization(): string;
 
     public function getTransientFolderForConstructionSiteImages(ConstructionSiteImage $constructionSiteImage): string;
 
