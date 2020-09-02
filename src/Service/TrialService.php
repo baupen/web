@@ -133,7 +133,7 @@ class TrialService implements TrialServiceInterface
     private function copyMapFiles(ConstructionSite $constructionSite)
     {
         $sourceFolder = $this->getSimpleConstrictionSiteSamplePath().DIRECTORY_SEPARATOR.'maps';
-        $targetFolder = $this->pathService->getFolderForMapFile($constructionSite);
+        $targetFolder = $this->pathService->getFolderForMapFiles($constructionSite);
         FileHelper::copyRecursively($sourceFolder, $targetFolder);
     }
 
@@ -147,7 +147,7 @@ class TrialService implements TrialServiceInterface
 
         $this->uploadService->uploadConstructionSiteImage();
 
-        $targetFolder = $this->pathService->getFolderForConstructionSiteImage($constructionSite);
+        $targetFolder = $this->pathService->getFolderForConstructionSiteImages($constructionSite);
         FileHelper::copySingle($imagePath, $targetFolder);
     }
 

@@ -16,3 +16,8 @@ It suggests the following workflow:
  - the craftsman receives the email with a special link which displays all currently open issues to which he is assigned to
  - on the construction site, using the link, he can respond to issues, or he had printed the issues in his office and contacts the manager after completion personally
  - the manager inspects the issues for which the craftsman already has responded and marks issues as completed which have been resolved
+
+todo:
+    refactor image service to render image jpg only once, then add bubbles on low resolutions
+    do not cache maps with rendered issues anymore
+    then finish refactoring trail service & and any other service

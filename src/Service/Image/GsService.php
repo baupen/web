@@ -20,18 +20,24 @@ use App\Helper\ImageHelper;
  */
 class GsService
 {
-    public function renderPdfToImage(string $sourcePdfPath, string $targetFilepath)
+    public function renderPdfToImage(string $sourcePdfPath, string $targetFilePath)
     {
         //do first low quality render to get artboxsize
-        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=1 -dUseCropBox -sPageList=1 -o "'.$targetFilepath.'" "'.$sourcePdfPath.'"';
+        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=1 -dUseCropBox -sPageList=1 -o "'.$targetFilePath.'" "'.$sourcePdfPath.'"';
         exec($command);
-        if (!is_file($targetFilepath)) {
+        if (!is_file($targetFilePath)) {
             return;
         }
 
         //second render with correct image dimensions
-        list($width, $height) = ImageHelper::getWidthHeightArguments($targetFilepath, 3840, 2160);
-        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS='.$width.' -dDEVICEHEIGHTPOINTS='.$height.' -dJPEGQ=80 -dUseCropBox -dFitPage -sPageList=1 -o "'.$targetFilepath.'" "'.$sourcePdfPath.'"';
+        list($width, $height) = ImageHelper::getWidthHeightArguments($targetFilePath, 3840, 2160);
+        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS='.$width.' -dDEVICEHEIGHTPOINTS='.$height.' -dJPEGQ=80 -dUseCropBox -dFitPage -sPageList=1 -o "'.$targetFilePath.'" "'.$sourcePdfPath.'"';
+        exec($command);
+    }
+
+    public function renderPdfWithoutOutlineFonts(string $sourcePdfPath, string $targetFilePath)
+    {
+        $command = ' gs -dNoOutputFonts -sDEVICE=pdfwrite -o "'.$targetFilePath.'" "'.$sourcePdfPath.'"';
         exec($command);
     }
 }

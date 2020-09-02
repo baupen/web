@@ -44,14 +44,14 @@ class FileService
         $mapFile->setFilename($fileName);
         $mapFile->setHash(hash_file('sha256', $filePath));
 
-        $targetFolder = $this->pathService->getFolderForMapFile($map->getConstructionSite());
+        $targetFolder = $this->pathService->getFolderForMapFiles($map->getConstructionSite());
         FileHelper::copySingle($sourceFilePath, $targetFolder.DIRECTORY_SEPARATOR.$targetFileName);
 
         if (null === $entity->getFile()) {
             return null;
         }
 
-        $originalFilePath = $this->pathService->getFolderForMapFile($entity->getConstructionSite()).\DIRECTORY_SEPARATOR.$entity->getFile()->getFilename();
+        $originalFilePath = $this->pathService->getFolderForMapFiles($entity->getConstructionSite()).\DIRECTORY_SEPARATOR.$entity->getFile()->getFilename();
 
         return $this->renderForMobileDevice($entity, $originalFilePath);
     }
@@ -61,34 +61,5 @@ class FileService
      */
     private function writeFromFile(string $filePath, $fileTrait)
     {
-    }
-
-    /**
-     * @return string|null
-     */
-    private function renderForMobileDevice(Map $map, string $sourceFilePath)
-    {
-        $targetFolder = $this->pathService->getTransientFolderForMapFile($map);
-
-        if (!is_dir($targetFolder)) {
-            mkdir($targetFolder, 0777, true);
-        }
-
-        $sourceFileName = pathinfo($sourceFilePath, PATHINFO_BASENAME);
-        $extension = pathinfo($sourceFileName, PATHINFO_EXTENSION);
-        $filenameWithoutEnding = mb_substr($sourceFileName, 0, -(mb_strlen($extension) + 1));
-
-        $targetFilePath = $targetFolder.\DIRECTORY_SEPARATOR.$filenameWithoutEnding.'_outlines.'.$extension;
-
-        if (!is_file($targetFilePath)) {
-            // performance on iOS greatly improves with no output fonts
-            $command = ' gs -dNoOutputFonts -sDEVICE=pdfwrite -o "'.$targetFilePath.'" "'.$sourceFilePath.'"';
-            exec($command);
-            if (!is_file($targetFilePath)) {
-                return null;
-            }
-        }
-
-        return $targetFilePath;
     }
 }

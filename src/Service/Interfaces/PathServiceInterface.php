@@ -16,60 +16,35 @@ use App\Entity\ConstructionSiteImage;
 use App\Entity\IssueImage;
 use App\Entity\MapFile;
 
+/**
+ * exposes paths.
+ *
+ * "normal" folders are where the persistent data is stored.
+ * this files are backed up regularly, and must contain all relevant data for the construction site
+ *
+ * "transient" folders are where the cached files are located.
+ * this files may be removed at any moment, hence never assume the folders there exist or are filled.
+ *
+ * when uploading data, place them in the "normal" folders, then store information to the database.
+ * afterwards, warm up the cache in the transient folders
+ *
+ * Interface PathServiceInterface
+ */
 interface PathServiceInterface
 {
-    /**
-     * @return string
-     */
-    public function getFolderRoot();
+    public function getFolderForConstructionSiteImages(ConstructionSite $constructionSiteImage): string;
 
-    /**
-     * @return string
-     */
-    public function getConstructionSiteFolderRoot();
+    public function getFolderForMapFiles(ConstructionSite $mapFile): string;
 
-    /**
-     * @return string
-     */
-    public function getFolderForConstructionSiteImage(ConstructionSiteImage $constructionSiteImage);
+    public function getFolderForIssueImages(ConstructionSite $issueImage): string;
 
-    /**
-     * @return string
-     */
-    public function getFolderForMapFile(MapFile $mapFile);
+    public function getTransientFolderRoot(): string;
 
-    /**
-     * @return string
-     */
-    public function getFolderForIssueImage(IssueImage $issueImage);
+    public function getTransientFolderForConstructionSiteImages(ConstructionSiteImage $constructionSiteImage): string;
 
-    /**
-     * @return string
-     */
-    public function getTransientFolderRoot();
+    public function getTransientFolderForMapFile(MapFile $mapFile): string;
 
-    /**
-     * @return string
-     */
-    public function getTransientFolderForConstructionSiteImage(ConstructionSiteImage $constructionSiteImage);
+    public function getTransientFolderForIssueImage(IssueImage $issueImage): string;
 
-    /**
-     * @return string
-     */
-    public function getTransientFolderForMapFile(MapFile $mapFile);
-
-    /**
-     * @return string
-     */
-    public function getTransientFolderForIssueImage(IssueImage $issueImage);
-
-    /**
-     * @return string
-     */
-    public function getTransientFolderForReports(ConstructionSite $constructionSite);
-
-    /**
-     * @return string
-     */
-    public function getAssetsRoot();
+    public function getTransientFolderForReports(ConstructionSite $constructionSite): string;
 }

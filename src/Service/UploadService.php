@@ -57,7 +57,7 @@ class UploadService implements UploadServiceInterface
      */
     public function uploadIssueImage(UploadedFile $file, Issue $issue, string $targetFileName)
     {
-        $targetFolder = $this->pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
+        $targetFolder = $this->pathService->getFolderForIssueImages($issue->getMap()->getConstructionSite());
         $issueImage = new IssueImage();
         if (!$this->uploadFile($file, $targetFolder, $targetFileName, $issueImage)) {
             return false;
@@ -79,7 +79,7 @@ class UploadService implements UploadServiceInterface
      */
     public function uploadMapFile(UploadedFile $file, ConstructionSite $constructionSite, string $targetFileName)
     {
-        $targetFolder = $this->pathService->getFolderForMapFile($constructionSite);
+        $targetFolder = $this->pathService->getFolderForMapFiles($constructionSite);
         $mapFile = new MapFile();
         if (!$this->uploadFile($file, $targetFolder, $targetFileName, $mapFile)) {
             return null;
@@ -95,7 +95,7 @@ class UploadService implements UploadServiceInterface
      */
     public function uploadConstructionSiteImage(UploadedFile $file, ConstructionSite $constructionSite, string $targetFileName)
     {
-        $targetFolder = $this->pathService->getFolderForConstructionSiteImage($constructionSite);
+        $targetFolder = $this->pathService->getFolderForConstructionSiteImages($constructionSite);
         $constructionSiteImage = new ConstructionSiteImage();
         if (!$this->uploadFile($file, $targetFolder, $targetFileName, $constructionSiteImage)) {
             return false;
@@ -134,7 +134,7 @@ class UploadService implements UploadServiceInterface
         if (null !== $sameFilenameMapFile) {
             $result->setFileNameConflict($sameFilenameMapFile->getId());
 
-            $targetFolder = $this->pathService->getFolderForMapFile($constructionSite);
+            $targetFolder = $this->pathService->getFolderForMapFiles($constructionSite);
             $targetFileName = $this->getCollisionProtectedFileName($targetFolder, $filename);
             if (null !== $targetFileName) {
                 $result->setDerivedFileName($targetFileName);
@@ -182,7 +182,7 @@ class UploadService implements UploadServiceInterface
 
     private function createIssueImageFromAsset(string $sourcePath, Issue $issue)
     {
-        $targetFolder = $this->pathService->getFolderForIssueImage($issue->getMap()->getConstructionSite());
+        $targetFolder = $this->pathService->getFolderForIssueImages($issue->getMap()->getConstructionSite());
         $displayName = basename($sourcePath);
         $uniqueTargetName = $this->getCollisionProtectedFileName($targetFolder, $displayName);
         $this->fileSystem->copy($sourcePath, $targetFolder.DIRECTORY_SEPARATOR.$uniqueTargetName);

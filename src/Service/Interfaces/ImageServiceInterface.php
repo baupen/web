@@ -29,32 +29,34 @@ interface ImageServiceInterface
     // A4 at 300 PPI
     const SIZE_REPORT_MAP = 'report_map';
 
-    /**
-     * @return bool
-     */
-    public function isValidSize(string $uncheckedSize);
+    // all valid sizes
+    const VALID_SIZES = [self::SIZE_THUMBNAIL, self::SIZE_PREVIEW, self::SIZE_REPORT_MAP];
 
     public function resizeIssueImage(IssueImage $issueImage, string $size = self::SIZE_THUMBNAIL): ?string;
 
     public function resizeConstructionSiteImage(ConstructionSiteImage $constructionSiteImage, string $size = self::SIZE_THUMBNAIL): ?string;
 
-    /**
-     * @param Issue[] $issues
-     */
-    public function renderMapFileWithIssues(MapFile $mapFile, array $issues, string $size = self::SIZE_THUMBNAIL): ?string;
+    public function renderMapFileToJpg(MapFile $mapFile, string $size = self::SIZE_THUMBNAIL): ?string;
 
     /**
-     * generates all sizes so the getSize call goes faster once it is really needed.
+     * @param Issue[] $issues
+     *
+     * @return resource
+     */
+    public function renderMapFileWithIssues(MapFile $mapFile, array $issues, string $size = self::SIZE_THUMBNAIL);
+
+    /**
+     * warums up cache so all operations involving this issue image complete faster.
      */
     public function warmUpCacheForIssueImage(IssueImage $issueImage);
 
     /**
-     * generates all sizes so the getSize call goes faster once it is really needed.
+     * warums up cache so all operations involving this construction site image image complete faster.
      */
     public function warmUpCacheForConstructionSiteImage(ConstructionSiteImage $constructionSiteImage);
 
     /**
-     * generates all sizes so the getSize call goes faster once it is really needed.
+     * warums up cache so all operations involving this map file complete faster.
      */
     public function warmUpCacheForMapFile(MapFile $mapFile);
 }

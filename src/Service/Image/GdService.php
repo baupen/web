@@ -109,6 +109,8 @@ class GdService
     }
 
     /**
+     * create a color using the palette of the image.
+     *
      * @param resource $image
      * @param int      $red
      * @param int      $green

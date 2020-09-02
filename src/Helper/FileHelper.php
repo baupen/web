@@ -45,6 +45,13 @@ class FileHelper
         closedir($dir);
     }
 
+    public static function ensureFolderExists(string $folderName)
+    {
+        if (!is_dir($folderName)) {
+            mkdir($folderName, 0777, true);
+        }
+    }
+
     public static function copySingle($sourcePath, $destinationFolder)
     {
         if (!is_dir($destinationFolder)) {
