@@ -23,7 +23,7 @@ Encore
    * Each entry will result in one JavaScript file (e.g. app.js)
    * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
    */
-  .addStyleEntry('email', './assets/sass/email.sass')
+  .addStyleEntry('email', './assets/css/email.scss')
   .addEntry('app', './assets/js/app.js')
   .copyFiles({
     from: './assets/images',
@@ -70,5 +70,9 @@ Encore
   // uncomment to get integrity="..." attributes on your script & link tags
   // requires WebpackEncoreBundle 1.4 or higher
   .enableIntegrityHashes(Encore.isProduction())
+
+  .configureDevServerOptions(options => {
+    options.writeToDisk = true
+  })
 
 module.exports = Encore.getWebpackConfig()

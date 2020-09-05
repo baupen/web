@@ -32,9 +32,9 @@
             {{ "mail_wrong_displayed"|trans }}
         </a>
 
-        {% if email.sender_name is not null %}
+        {% if email.senderName is not null %}
             {{ "sent_by"|trans }}
-            <a href="mailto:{{ email.sender_email }}">{{ email.sender_name }}</a>
+            <a href="mailto:{{ email.senderEmail }}">{{ email.senderName }}</a>
         {% else %}
             <br>
             {{ "questions"|trans }}

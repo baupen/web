@@ -2,7 +2,7 @@
 {# ensure encore server writes to disk in dev-server mode #}
 {# then redifine css source to use encore output in public/build #}
 {# remove css compile task from precommit hook in composer.json #}
-{% apply inline_css(source('@css/email.css')) %}
+{% apply inline_css(source('@build/email.css')) %}
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
     <html xmlns="https://www.w3.org/1999/xhtml">
     <head>
@@ -18,7 +18,7 @@
             <!-- The class, align, and <center> tag center the container -->
             <td class="float-center" align="center" valign="top">
                 <center>
-                    {% include "email/newsletter_content.html.twig" with {'logo_src': email.image('@images/logo.png')} %}
+                    {% include "email/content.html.twig" with {'logo_src': email.image('@images/logo.png')} %}
                 </center>
             </td>
         </tr>

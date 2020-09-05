@@ -100,20 +100,6 @@ class EmailService implements EmailServiceInterface
      */
     public function renderEmail(Email $email)
     {
-        $arguments = [
-            'email' => $email,
-            'show_support_info' => false,
-            'show_sender_info' => false,
-        ];
-
-        if (Email::SENDER_SYSTEM === $email->getSenderName()) {
-            $arguments['show_support_info'] = true;
-        } elseif (null !== $email->getSenderName() && null !== $email->getSenderEmail()) {
-            $arguments['show_sender_info'] = true;
-            $arguments['sender_name'] = $email->getSenderName();
-            $arguments['sender_email'] = $email->getSenderEmail();
-        }
-
-        return $this->twig->render('email/email.html.twig', $arguments);
+        return $this->twig->render('email/content.html.twig', ['email' => $email]);
     }
 }
