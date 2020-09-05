@@ -71,6 +71,27 @@ class Issue extends BaseEntity
     private $responseLimit;
 
     /**
+     * @var float|null
+     *
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $positionX;
+
+    /**
+     * @var float|null
+     *
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $positionY;
+
+    /**
+     * @var float|null
+     *
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $positionZoomScale;
+
+    /**
      * @var DateTime
      *
      * @ORM\Column(type="datetime")
@@ -127,13 +148,6 @@ class Issue extends BaseEntity
     private $reviewBy;
 
     /**
-     * @var IssuePosition|null
-     *
-     * @ORM\OneToOne(targetEntity="App\Entity\IssuePosition", mappedBy="issue")
-     */
-    private $position;
-
-    /**
      * @var IssueImage[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="App\Entity\IssueImage", mappedBy="issue")
@@ -160,6 +174,20 @@ class Issue extends BaseEntity
      * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="issues")
      */
     private $map;
+
+    /**
+     * @var MapFile|null
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="issues")
+     */
+    private $mapFile;
+
+    /**
+     * @var ConstructionSite
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="issues")
+     */
+    private $constructionSite;
 
     public function __construct()
     {
@@ -355,13 +383,23 @@ class Issue extends BaseEntity
         $this->image = $image;
     }
 
-    public function getPosition(): ?IssuePosition
+    public function getConstructionSite(): ConstructionSite
     {
-        return $this->position;
+        return $this->constructionSite;
     }
 
-    public function setPosition(?IssuePosition $position): void
+    public function setConstructionSite(ConstructionSite $constructionSite): void
     {
-        $this->position = $position;
+        $this->constructionSite = $constructionSite;
+    }
+
+    public function getMapFile(): ?MapFile
+    {
+        return $this->mapFile;
+    }
+
+    public function setMapFile(?MapFile $mapFile): void
+    {
+        $this->mapFile = $mapFile;
     }
 }

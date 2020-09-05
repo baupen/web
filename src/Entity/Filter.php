@@ -16,7 +16,6 @@ use App\Entity\Traits\IdTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
-use Ramsey\Uuid\Uuid;
 
 /**
  * A Filter is used to share a selection of issues.

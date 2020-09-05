@@ -1,5 +1,8 @@
 language: php
 
+services:
+  - mysql
+
 cache:
   directories:
     # backend
@@ -26,7 +29,6 @@ before_install:
 
   # backend
   - if [[ $COVERAGE == false ]]; then phpenv config-rm xdebug.ini; fi
-  - php vendor/bin/requirements-checker
   - php --version
 
   # frontend
@@ -47,6 +49,9 @@ before_script:
   # frontend
   - yarn encore production
 
+  # backend
+  - php vendor/bin/requirements-checker # check travis image supports symfony application
+
 # execute tests
 script:
   # backend dependency checks
@@ -59,6 +64,9 @@ script:
   - php bin/console lint:twig templates
 
   # backend tests
+  - cp .env.travis .env.local
+  - php bin/console doctrine:database:create --no-interaction
+  - php bin/console doctrine:migrations:migrate --no-interaction
   - php bin/phpunit
 
   # frontend dependency checks

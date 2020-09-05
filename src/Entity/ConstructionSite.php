@@ -92,6 +92,13 @@ class ConstructionSite extends BaseEntity
     private $craftsmen;
 
     /**
+     * @var Issue[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="constructionSite")
+     */
+    private $issues;
+
+    /**
      * @var Filter[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Filter", mappedBy="constructionSite")
@@ -115,6 +122,7 @@ class ConstructionSite extends BaseEntity
         $this->craftsmen = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->mapFiles = new ArrayCollection();
+        $this->issues = new ArrayCollection();
         $this->filters = new ArrayCollection();
     }
 
@@ -217,5 +225,13 @@ class ConstructionSite extends BaseEntity
     public function getFilters()
     {
         return $this->filters;
+    }
+
+    /**
+     * @return Issue[]|ArrayCollection
+     */
+    public function getIssues()
+    {
+        return $this->issues;
     }
 }

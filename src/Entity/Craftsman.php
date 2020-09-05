@@ -19,7 +19,6 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
-use Ramsey\Uuid\Uuid;
 
 /**
  * a craftsman receives information about open issues, and answers them.

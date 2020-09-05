@@ -35,13 +35,15 @@
         "symfony/serializer": "5.1.*",
         "symfony/translation": "5.1.*",
         "symfony/twig-bundle": "5.1.*",
+        "symfony/uid": "5.1.*",
         "symfony/validator": "5.1.*",
         "symfony/yaml": "5.1.*",
         "tecnickcom/tcpdf": "^6.3",
         "twig/cssinliner-extra": "^3.0",
         "twig/extra-bundle": "^3.0",
         "twig/inky-extra": "^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.0",
+        "ext-pdo": "*"
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.8",
@@ -96,6 +98,7 @@
         "prepare-environment": [
             "touch .env.local",
             "vendor/bin/cghooks update",
+            "php bin/console doctrine:database:create --if-not-exists --no-interaction",
             "php bin/console doctrine:migrations:migrate  --allow-no-migration --no-interaction",
             "php bin/console doctrine:fixtures:load --no-interaction"
         ],

@@ -226,16 +226,4 @@ class ConstructionManager extends BaseEntity implements UserInterface
     {
         $this->isExternalAccount = $isExternalAccount;
     }
-
-    /**
-     * @throws \Exception
-     */
-    public function initialize()
-    {
-        $this->setRegistrationDate();
-        $this->setPlainPassword(uniqid('_initial_pw_'));
-        $this->setPassword();
-        $this->setAuthenticationHash();
-        $this->setIsEnabled(true);
-    }
 }
