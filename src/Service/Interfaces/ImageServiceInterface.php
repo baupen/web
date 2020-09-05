@@ -44,19 +44,4 @@ interface ImageServiceInterface
      * @return resource
      */
     public function renderMapFileWithIssues(MapFile $mapFile, array $issues, string $size = self::SIZE_THUMBNAIL);
-
-    /**
-     * warums up cache so all operations involving this issue image complete faster.
-     */
-    public function warmUpCacheForIssueImage(IssueImage $issueImage);
-
-    /**
-     * warums up cache so all operations involving this construction site image image complete faster.
-     */
-    public function warmUpCacheForConstructionSiteImage(ConstructionSiteImage $constructionSiteImage);
-
-    /**
-     * warums up cache so all operations involving this map file complete faster.
-     */
-    public function warmUpCacheForMapFile(MapFile $mapFile);
 }

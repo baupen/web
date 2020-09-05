@@ -122,9 +122,6 @@ class TrialService implements TrialServiceInterface
         $password = RandomHelper::generateHumanReadableRandom(10, '-');
         $constructionManager->setEmail($email);
         $constructionManager->setPlainPassword($password);
-        $constructionManager->setPassword(true);
-        $constructionManager->setAuthenticationHash();
-        $constructionManager->setRegistrationDate();
 
         return $constructionManager;
     }
