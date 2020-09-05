@@ -13,11 +13,15 @@ namespace App\Security\Voter;
 
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
-use App\Security\Voter\Base\BaseVoter;
+use App\Entity\Craftsman;
+use App\Entity\Map;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class ConstructionSiteVoter extends BaseVoter
+class MapVoter
 {
+    const MAP_VIEW = 'map_view';
+    const MAP_MODIFY = 'map_modify';
+
     /**
      * Determines if the attribute and subject are supported by this voter.
      *
@@ -28,26 +32,42 @@ class ConstructionSiteVoter extends BaseVoter
      */
     protected function supports($attribute, $subject)
     {
-        return $subject instanceof ConstructionSite;
+        // if the attribute isn't one we support, return false
+        if (!in_array($attribute, [self::MAP_VIEW, self::MAP_MODIFY])) {
+            return false;
+        }
+
+        return $subject instanceof Map;
     }
 
     /**
      * Perform a single access check operation on a given attribute, subject and token.
      * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
      *
-     * @param string           $attribute
-     * @param ConstructionSite $subject
+     * @param string $attribute
+     * @param Map    $subject
      *
      * @return bool
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        $user = $this->getUser($token);
+        $user = $token->getUser();
 
-        if (!$user instanceof ConstructionManager) {
-            return false;
+        if ($user instanceof ConstructionManager) {
+            switch ($attribute) {
+                case self::MAP_VIEW:
+                case self::MAP_MODIFY:
+                    return $subject->getConstructionSite()->getConstructionManagers()->contains($user);
+            }
+        } elseif ($user instanceof Craftsman) {
+            switch ($attribute) {
+                case self::MAP_VIEW:
+                    return $user->getConstructionSite() === $subject;
+                case self::MAP_MODIFY:
+                    return false;
+            }
         }
 
-        return $subject->getConstructionManagers()->contains($user);
+        throw new \LogicException('Attribute '.$attribute.' unknown!');
     }
 }
