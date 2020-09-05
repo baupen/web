@@ -23,7 +23,7 @@ final class Version20200905103513 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'setup tables for version 2.0';
     }
 
     public function up(Schema $schema): void
