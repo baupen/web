@@ -1,0 +1,45 @@
+{% apply inky_to_html %}
+    <spacer size="20"></spacer>
+    <center>
+        <img class="logo" src="{{ logo_src }}" alt="Logo">
+    </center>
+    <spacer size="10"></spacer>
+    <container>
+        <row>
+            <column small="12" large="12">
+                <p>{{ email.body|nl2br }}</p>
+                <spacer size="8"></spacer>
+                {% if email.actionLink != null %}
+                <p>
+                    <a href="{{ email.actionLink }}" target="_blank">
+                        {{ email.actionText }}
+                    </a>
+                </p>
+            </column>
+        </row>
+    </container>
+    <spacer size="10"></spacer>
+    <p class="text-center">
+        {{ "generated"|trans }}
+    </p>
+    <spacer size="10"></spacer>
+
+    <p class="text-center">
+        <a href="{{ app.request.getSchemeAndHttpHost() }}">{{ app.request.getSchemeAndHttpHost() }}</a>
+
+        <br>
+        <a href="{{ absolute_url(path("external_email", {"identifier" : email.id })) }}">
+            {{ "mail_wrong_displayed"|trans }}
+        </a>
+
+        {% if email.sender_name is not null %}
+            {{ "sent_by"|trans }}
+            <a href="mailto:{{ email.sender_email }}">{{ email.sender_name }}</a>
+        {% else %}
+            <br>
+            {{ "questions"|trans }}
+            <a href="mailto:{{ support_email }}">{{ support_email }}</a>
+        {% endif %}
+    </p>
+    </td>
+{% endapply %}

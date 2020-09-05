@@ -1,0 +1,13 @@
+$primary-color: #009fe3;
+$body-background: #f3f3f3;
+
+$body-font-family: 'Source Sans Pro', helvetica, arial, sans-serif !default;
+
+$column-padding-bottom: 0;
+$container-background: #fff;
+$callout-border: 0;
+$callout-padding: 20px 0 10px 0;
+$global-width: 650px;
+$paragraph-margin-bottom: 0;
+
+@import '~foundation-emails/scss/foundation-emails.scss'
