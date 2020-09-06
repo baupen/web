@@ -61,6 +61,11 @@ class PathService implements PathServiceInterface
         $this->constructionSiteFolderRoot = $this->folderRoot.DIRECTORY_SEPARATOR.'construction_sites';
     }
 
+    public function getRootFolderOfConstructionSites(): string
+    {
+        return $this->constructionSiteFolderRoot;
+    }
+
     public function getFolderForConstructionSiteImages(ConstructionSite $constructionSite): string
     {
         return $this->getFolderForConstructionSite($constructionSite).DIRECTORY_SEPARATOR.'images';
@@ -111,8 +116,8 @@ class PathService implements PathServiceInterface
         return $this->transientFolderRoot.DIRECTORY_SEPARATOR.'authorization';
     }
 
-    public function getSampleConstructionSite(string $name)
+    public function getSampleConstructionSite(string $name): string
     {
-        return $this->assetsRoot.DIRECTORY_SEPARATOR.'samples'.DIRECTORY_SEPARATOR.'construction_sites'.DIRECTORY_SEPARATOR.$name;
+        return $this->assetsRoot.DIRECTORY_SEPARATOR.'samples'.DIRECTORY_SEPARATOR.$name;
     }
 }

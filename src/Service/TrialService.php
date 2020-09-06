@@ -11,31 +11,19 @@
 
 namespace App\Service;
 
-use App\DataFixtures\Model\AssetFile;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
-use App\Entity\Map;
 use App\Helper\RandomHelper;
 use App\Service\Interfaces\PathServiceInterface;
+use App\Service\Interfaces\StorageServiceInterface;
 use App\Service\Interfaces\TrialServiceInterface;
-use App\Service\Interfaces\UploadServiceInterface;
-use const DIRECTORY_SEPARATOR;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
-use Faker\Factory;
-use Faker\Generator;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TrialService implements TrialServiceInterface
 {
-    const AUTHENTICATION_SOURCE_TRIAL = 'trial';
-
-    /**
-     * @var Generator
-     */
-    private $faker;
-
     /**
      * @var ManagerRegistry
      */
@@ -47,7 +35,7 @@ class TrialService implements TrialServiceInterface
     private $pathService;
 
     /**
-     * @var UploadServiceInterface
+     * @var StorageServiceInterface
      */
     private $uploadService;
 
@@ -59,14 +47,13 @@ class TrialService implements TrialServiceInterface
     /**
      * TrialService constructor.
      */
-    public function __construct(PathServiceInterface $pathService, TranslatorInterface $translator, RequestStack $requestStack, ManagerRegistry $registry, UploadServiceInterface $uploadService)
+    public function __construct(PathServiceInterface $pathService, TranslatorInterface $translator, RequestStack $requestStack, ManagerRegistry $registry, StorageServiceInterface $uploadService)
     {
         $this->pathService = $pathService;
         $this->translator = $translator;
         $this->uploadService = $uploadService;
 
         $request = $requestStack->getCurrentRequest();
-        $this->faker = Factory::create($request->getLocale());
         $this->registry = $registry;
     }
 
@@ -121,7 +108,7 @@ class TrialService implements TrialServiceInterface
         // generate login info
         $password = RandomHelper::generateHumanReadableRandom(10, '-');
         $constructionManager->setEmail($email);
-        $constructionManager->setPlainPassword($password);
+        $constructionManager->setPasswordFromPlain($password);
 
         return $constructionManager;
     }
@@ -144,28 +131,5 @@ class TrialService implements TrialServiceInterface
         $constructionManager->getConstructionSites()->add($constructionSite);
 
         return $constructionSite;
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function addConstructionSiteContent(ConstructionSite $constructionSite)
-    {
-        $samplePath = $this->pathService->getSampleConstructionSite('Simple');
-        foreach (glob($samplePath.DIRECTORY_SEPARATOR.'maps'.DIRECTORY_SEPARATOR.'*.pdf') as $mapFile) {
-            $assetFile = new AssetFile($mapFile);
-            $map = new Map();
-            $map->setConstructionSite($constructionSite);
-            $fileName = pathinfo($mapFile, PATHINFO_FILENAME);
-            $map->setName($fileName);
-
-            $this->uploadService->uploadMapFile($assetFile, $map);
-        }
-
-        foreach (glob($samplePath.DIRECTORY_SEPARATOR.'*.jpg') as $imageFile) {
-            $assetFile = new AssetFile($imageFile);
-
-            $this->uploadService->uploadConstructionSiteImage($assetFile, $constructionSite);
-        }
     }
 }

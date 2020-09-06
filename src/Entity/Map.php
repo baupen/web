@@ -12,8 +12,8 @@
 namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
-use App\Entity\Traits\AutomaticEditTrait;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -29,7 +29,7 @@ class Map extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
-    use AutomaticEditTrait;
+    use SoftDeleteTrait;
 
     /**
      * @var string
@@ -62,7 +62,7 @@ class Map extends BaseEntity
     /**
      * @var MapFile[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\MapFile", mappedBy="map")
+     * @ORM\OneToMany(targetEntity="App\Entity\MapFile", mappedBy="map", cascade={"persist"})
      */
     private $files;
 

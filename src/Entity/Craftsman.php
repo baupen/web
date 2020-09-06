@@ -14,11 +14,12 @@ namespace App\Entity;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * a craftsman receives information about open issues, and answers them.
@@ -32,6 +33,7 @@ class Craftsman extends BaseEntity
     use IdTrait;
     use TimeTrait;
     use AddressTrait;
+    use SoftDeleteTrait;
 
     /**
      * @var string
@@ -234,14 +236,12 @@ class Craftsman extends BaseEntity
     }
 
     /**
-     * sets the email identifier.
-     *
-     * @throws Exception
+     * @ORM\PrePersist()
      */
-    public function setEmailIdentifier(): void
+    public function prePersistCraftsman(): void
     {
-        $this->emailIdentifier = Uuid::uuid4()->toString();
-        $this->writeAuthorizationToken = Uuid::uuid4()->toString();
+        $this->emailIdentifier = Uuid::v4();
+        $this->writeAuthorizationToken = Uuid::v4();
     }
 
     public function canRemove()

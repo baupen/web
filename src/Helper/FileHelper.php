@@ -11,40 +11,8 @@
 
 namespace App\Helper;
 
-use Exception;
-
 class FileHelper
 {
-    /**
-     * @param $sourceFolder
-     * @param $destinationFolder
-     *
-     * @throws Exception
-     */
-    public static function copyRecursively($sourceFolder, $destinationFolder)
-    {
-        if (!is_dir($destinationFolder)) {
-            mkdir($destinationFolder);
-        }
-
-        $dir = opendir($sourceFolder);
-        if (false === $dir) {
-            throw new Exception('failed to open dir '.$dir);
-        }
-
-        while (false !== ($file = readdir($dir))) {
-            if (('.' !== $file) && ('..' !== $file)) {
-                if (is_dir($sourceFolder.'/'.$file)) {
-                    self::copyRecursively($sourceFolder.'/'.$file, $destinationFolder.'/'.$file);
-                } else {
-                    copy($sourceFolder.'/'.$file, $destinationFolder.'/'.$file);
-                }
-            }
-        }
-
-        closedir($dir);
-    }
-
     public static function ensureFolderExists(string $folderName)
     {
         if (!is_dir($folderName)) {
@@ -52,15 +20,10 @@ class FileHelper
         }
     }
 
-    public static function copySingle($sourcePath, $destinationFolder)
+    public static function sanitizeFileName(string $fileName)
     {
-        if (!is_dir($destinationFolder)) {
-            mkdir($destinationFolder);
-        }
+        $noUmlautFileName = str_replace(['ä', 'ö', 'ü', 'Ä', 'Ö', 'Ü'], ['ae', 'oe', 'ue', 'Ae', 'Oe', 'Ue'], $fileName);
 
-        $fileName = basename($sourcePath);
-        $destinationFile = $destinationFolder.DIRECTORY_SEPARATOR.$fileName;
-
-        copy($sourcePath, $destinationFile);
+        return preg_replace('/[^A-Za-z0-9]+/', '_', $noUmlautFileName);
     }
 }

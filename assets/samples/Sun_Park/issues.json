@@ -1,0 +1,16 @@
+[
+  {
+    "description": "Steckdose eingedrückt"
+  },
+  {
+    "description": "nachbessern"
+  },
+  {
+    "description": "nicht fertig",
+    "isMarked": true,
+    "wasAddedWithClient": true
+  },
+  {
+    "description": "Verdichtung schliessen"
+  }
+]

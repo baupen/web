@@ -11,7 +11,6 @@
 
 namespace App\Service;
 
-use App\Entity\Base\BaseEntity;
 use App\Entity\ConstructionSite;
 use App\Entity\ConstructionSiteImage;
 use App\Entity\Issue;
@@ -21,13 +20,12 @@ use App\Entity\MapFile;
 use App\Entity\Traits\FileTrait;
 use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;
-use App\Service\Interfaces\UploadServiceInterface;
+use App\Service\Interfaces\StorageServiceInterface;
 use DateTime;
 use const DIRECTORY_SEPARATOR;
-use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class UploadService implements UploadServiceInterface
+class StorageService implements StorageServiceInterface
 {
     /**
      * @var PathServiceInterface
@@ -35,20 +33,30 @@ class UploadService implements UploadServiceInterface
     private $pathService;
 
     /**
-     * @var ManagerRegistry
-     */
-    private $doctrine;
-
-    /**
      * UploadService constructor.
      */
-    public function __construct(PathServiceInterface $pathService, ManagerRegistry $doctrine)
+    public function __construct(PathServiceInterface $pathService)
     {
         $this->pathService = $pathService;
-        $this->doctrine = $doctrine;
     }
 
-    public function uploadConstructionSiteImage(File $file, ConstructionSite $constructionSite): ?ConstructionSiteImage
+    public function setNewFolderName(ConstructionSite $constructionSite)
+    {
+        $rootFolder = $this->pathService->getRootFolderOfConstructionSites();
+        $sanitizedFolderName = FileHelper::sanitizeFileName($constructionSite->getName());
+
+        $counter = 0;
+        do {
+            $uniqueFolderName = $sanitizedFolderName;
+            if ($counter++ > 0) {
+                $uniqueFolderName .= $counter;
+            }
+        } while (is_dir($rootFolder.DIRECTORY_SEPARATOR.$uniqueFolderName));
+
+        $constructionSite->setFolderName($uniqueFolderName);
+    }
+
+    public function uploadConstructionSiteImage(UploadedFile $file, ConstructionSite $constructionSite): ?ConstructionSiteImage
     {
         $targetFolder = $this->pathService->getFolderForConstructionSiteImages($constructionSite);
         $constructionSiteImage = new ConstructionSiteImage();
@@ -59,12 +67,11 @@ class UploadService implements UploadServiceInterface
         $constructionSiteImage->setConstructionSite($constructionSite);
         $constructionSite->getImages()->add($constructionSiteImage);
         $constructionSite->setImage($constructionSiteImage);
-        $this->persist($constructionSiteImage);
 
         return $constructionSiteImage;
     }
 
-    public function uploadMapFile(File $file, Map $map): ?MapFile
+    public function uploadMapFile(UploadedFile $file, Map $map): ?MapFile
     {
         $targetFolder = $this->pathService->getFolderForMapFiles($map->getConstructionSite());
         $mapFile = new MapFile();
@@ -75,12 +82,11 @@ class UploadService implements UploadServiceInterface
         $mapFile->setMap($map);
         $map->getFiles()->add($mapFile);
         $map->setFile($mapFile);
-        $this->persist($mapFile);
 
         return $mapFile;
     }
 
-    public function uploadIssueImage(File $file, Issue $issue): ?IssueImage
+    public function uploadIssueImage(UploadedFile $file, Issue $issue): ?IssueImage
     {
         $targetFolder = $this->pathService->getFolderForIssueImages($issue->getMap()->getConstructionSite());
         $issueImage = new IssueImage();
@@ -91,7 +97,6 @@ class UploadService implements UploadServiceInterface
         $issueImage->setIssue($issue);
         $issue->getImages()->add($issueImage);
         $issue->setImage($issueImage);
-        $this->persist($issueImage);
 
         return $issueImage;
     }
@@ -99,7 +104,7 @@ class UploadService implements UploadServiceInterface
     /**
      * @param FileTrait $entity
      */
-    private function uploadFile(File $file, string $targetFolder, $entity): bool
+    private function uploadFile(UploadedFile $file, string $targetFolder, $entity): bool
     {
         FileHelper::ensureFolderExists($targetFolder);
         $targetFileName = $this->getSanitizedUniqueFileName($targetFolder, $file->getClientOriginalName());
@@ -118,24 +123,26 @@ class UploadService implements UploadServiceInterface
 
     private function getSanitizedUniqueFileName(string $targetFolder, string $targetFileName): string
     {
-        $sanitizedFileName = preg_replace('/[^a-z0-9]+/', '-', strtolower($targetFileName));
+        $fileName = pathinfo($targetFileName, PATHINFO_FILENAME);
+        $extension = pathinfo($targetFileName, PATHINFO_EXTENSION);
+
+        $sanitizedFileName = FileHelper::sanitizeFileName($fileName).'.'.$extension;
         $targetPath = $targetFolder.DIRECTORY_SEPARATOR.$sanitizedFileName;
         if (!is_file($targetPath)) {
             return $sanitizedFileName;
         }
 
-        $extension = pathinfo($targetPath, PATHINFO_EXTENSION);
-        $filename = pathinfo($targetPath, PATHINFO_FILENAME);
-
         $now = new DateTime();
+        $counter = 0;
+        do {
+            $prefix = $sanitizedFileName.'_duplicate_'.$now->format('Y-m-d\THi');
+            if ($counter++ > 0) {
+                $prefix .= '_'.$counter;
+            }
+            $uniqueFileName = $prefix.'.'.$extension;
+            $uniqueTargetPath = $targetFolder.DIRECTORY_SEPARATOR.$uniqueFileName;
+        } while (file_exists($uniqueTargetPath));
 
-        return $filename.'_duplicate_'.$now->format('Y-m-d\THi').'.'.$extension;
-    }
-
-    private function persist(BaseEntity $entity): void
-    {
-        $manager = $this->doctrine->getManager();
-        $manager->persist($entity);
-        $manager->flush();
+        return $uniqueFileName;
     }
 }

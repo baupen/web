@@ -12,10 +12,16 @@
 namespace App\DataFixtures\Model;
 
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class AssetFile extends File
+class AssetFile extends UploadedFile
 {
+    public function __construct(string $path)
+    {
+        $originalName = pathinfo($path, PATHINFO_BASENAME);
+        parent::__construct($path, $originalName);
+    }
+
     public function move(string $directory, string $name = null)
     {
         $target = $this->getTargetFile($directory, $name);

@@ -32,6 +32,8 @@ use App\Entity\MapFile;
  */
 interface PathServiceInterface
 {
+    public function getRootFolderOfConstructionSites(): string;
+
     public function getFolderForConstructionSiteImages(ConstructionSite $constructionSite): string;
 
     public function getFolderForMapFiles(ConstructionSite $constructionSite): string;
@@ -48,5 +50,5 @@ interface PathServiceInterface
 
     public function getTransientFolderForReports(ConstructionSite $constructionSite): string;
 
-    public function getSampleConstructionSite(string $name);
+    public function getSampleConstructionSite(string $name): string;
 }
