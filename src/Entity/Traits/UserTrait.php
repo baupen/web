@@ -48,13 +48,6 @@ trait UserTrait
     private $isEnabled = false;
 
     /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean")
-     */
-    private $isRegistrationCompleted = false;
-
-    /**
      * @return string
      */
     public function getEmail()
@@ -104,6 +97,11 @@ trait UserTrait
     public function canLogin()
     {
         return $this->isEnabled;
+    }
+
+    public function getAuthenticationHash(): ?string
+    {
+        return $this->authenticationHash;
     }
 
     /**
@@ -176,19 +174,11 @@ trait UserTrait
     }
 
     /**
-     * indicates that the user registered successfully.
-     */
-    public function setRegistrationCompleted()
-    {
-        $this->isRegistrationCompleted = true;
-    }
-
-    /**
      * checks if the user has completed the registration.
      */
-    public function isRegistrationCompleted()
+    public function getRegistrationCompleted()
     {
-        return $this->isRegistrationCompleted;
+        return null !== $this->password;
     }
 
     /**

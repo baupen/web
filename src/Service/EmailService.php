@@ -11,87 +11,49 @@
 
 namespace App\Service;
 
+use App\Entity\ConstructionManager;
 use App\Entity\Email;
 use App\Enum\EmailType;
+use App\Service\Email\SendService;
 use App\Service\Interfaces\EmailServiceInterface;
+use Doctrine\Persistence\ObjectManager;
 use Exception;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 class EmailService implements EmailServiceInterface
 {
     /**
-     * @var MailerInterface
+     * @var TranslatorInterface
      */
-    private $mailer;
+    private $translator;
 
     /**
-     * @var string
+     * @var RequestStack
      */
-    private $mailerFromEmail;
+    private $request;
+
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $urlGenerator;
+
+    /**
+     * @var ObjectManager
+     */
+    private $manager;
+
+    /**
+     * @var SendService
+     */
+    private $sendService;
 
     /**
      * @var Environment
      */
     private $twig;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * EmailService constructor.
-     */
-    public function __construct(MailerInterface $mailer, LoggerInterface $logger, Environment $twig, string $mailerFromEmail)
-    {
-        $this->mailer = $mailer;
-        $this->twig = $twig;
-        $this->logger = $logger;
-        $this->mailerFromEmail = $mailerFromEmail;
-    }
-
-    /**
-     * @param string[] $options
-     *
-     * @return bool
-     */
-    public function sendEmail(Email $email)
-    {
-        $message = (new \Symfony\Component\Mime\Email())
-            ->subject($email->getSubject())
-            ->from($this->mailerFromEmail)
-            ->to($email->getReceiver());
-
-        //set reply to
-        if ($email->getSenderEmail()) {
-            $message->addReplyTo($email->getSenderEmail());
-        } else {
-            $message->addReplyTo($this->mailerFromEmail);
-        }
-
-        //construct plain body
-        $bodyText = $email->getBody();
-        if (null !== $email->getActionLink()) {
-            $bodyText .= "\n\n".$email->getActionText().': '.$email->getActionLink();
-        }
-        $message->text($bodyText, 'text/plain');
-
-        //construct html body if applicable
-        if (EmailType::PLAIN_EMAIL !== $email->getEmailType()) {
-            try {
-                $message->html($this->renderEmail($email), 'text/html');
-            } catch (Exception $e) {
-                $this->logger->error('can not render email '.$email->getId());
-
-                return false;
-            }
-        }
-
-        //send message & check if at least one receiver was reached
-        return $this->mailer->send($message) > 0;
-    }
 
     /**
      * {@inheritdoc}
@@ -101,5 +63,36 @@ class EmailService implements EmailServiceInterface
     public function renderEmail(Email $email)
     {
         return $this->twig->render('email/content.html.twig', ['email' => $email]);
+    }
+
+    /**
+     * @return false
+     *
+     * @throws Exception
+     */
+    public function sendRegisterConfirm(ConstructionManager $constructionManager)
+    {
+        $constructionManager->generateAuthenticationHash();
+
+        // construct email
+        $email = new Email();
+        $email->setEmailType(EmailType::ACTION_EMAIL);
+        $email->setReceiver($constructionManager->getEmail());
+        $email->setSubject($this->translator->trans('create.email.subject', ['%page%' => $this->request->getCurrentRequest()->getHttpHost()], 'login'));
+        $email->setBody($this->translator->trans('create.email.body', [], 'login'));
+        $email->setActionText($this->translator->trans('create.email.action_text', [], 'login'));
+        $email->setActionLink($this->urlGenerator->generate('register_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()], UrlGeneratorInterface::ABSOLUTE_URL));
+
+        // send
+        $html = $this->renderEmail($email);
+        if ($this->sendService->sendEmail($email, $html)) {
+            $email->confirmSent();
+
+            $this->manager->persist($constructionManager);
+            $this->manager->persist($email);
+            $this->manager->flush();
+        }
+
+        return false;
     }
 }

@@ -73,6 +73,8 @@ class AuthorizationService implements AuthorizationServiceInterface
             } else {
                 $constructionManager->setIsEnabled(false);
             }
+
+            return true;
         }
 
         throw new \Exception('invalid authorization method configured: '.$this->authorizationMethod);

@@ -8,6 +8,39 @@ login:
     email_not_found: 'Diese E-Mail wurde nicht gefunden.'
     password_wrong: 'Das Passwort ist nicht korrekt.'
     account_disabled: 'Dieser Account ist deaktiviert.'
+
+register:
+  title: 'Account erstellen.'
+  description: 'Lassen Sie uns Ihnen bei der Pendenzverwaltung helfen.'
+  back_to_login: 'Zurück zum Login.'
+  error:
+    email_invalid: 'Mit dieser E-Mail dürfen Sie sich leider nicht registrieren. Benutzen Sie Ihre Geschäftsemail.'
+    already_registered: 'Sie sind bereits registriert. Loggen Sie sich wie gewohnt ein.'
+  success:
+    welcome: 'Sie wurden erfolgreich registriert! Prüfen Sie Ihre E-Mails um den Account zu aktivieren.'
+  email:
+    subject: 'Willkommen auf %page%!'
+    body: 'Wir haben Ihren Account erstellt und eingerichtet.'
+    action_text: 'Account aktivieren'
+  fail:
+    welcome_email_not_sent: 'Der E-Mail Versand ist fehlgeschlagen. Dies ist ein interner Fehler, bitte kontaktieren Sie den Support.'
+
+register_confirm:
+  title: 'Account aktivieren.'
+  description: 'Ihre E-Mail wurde bestätigt.'
+  submit: aktivieren
+  success:
+    welcome: 'Ihr Account ist nun fertig eingerichtet.'
+  app_email:
+    subject: 'Loggen Sie sich in die App ein'
+    body: |
+      Willkommen! Um alle Funktionen nutzen zu können...
+      1. laden Sie sich die mangel.io App vom iOS Store herunter
+      2. loggen Sie sich mit Benutzername, Passwort auf der Webseite %website% ein
+    action_text: 'App login link'
+  error:
+    invalid_hash: 'Dieser Link ist nicht mehr gültig. Starten Sie die Registrierung neu oder loggen Sie sich ein wie gewohnt.'
+
 recover:
   title: 'Passwort zurücksetzen.'
   description: 'Wir senden Ihnen eine Nachricht an Ihre E-Mail.'
@@ -25,7 +58,8 @@ recover:
       subject: 'Passwort zurücksetzen auf %page%'
       message: 'Benutzen Sie den folgenden Link um das Passwort zurückzusetzen:'
       action_text: 'Jetzt Passwort zurücksetzen'
-reset:
+
+recover_confirm:
   title: 'Willkommen zurück!'
   description: 'Setzen Sie Ihr neues Passwort.'
   submit: 'Passwort setzen'
@@ -34,35 +68,6 @@ reset:
   error:
     passwords_do_not_match: 'Die Passwörter stimmen nicht überein.'
     invalid_hash: 'Dieser Link ist nicht mehr gültig. Beachten Sie, das jeder Link nur einmal benutzt werden kann.'
-create:
-  title: 'Account erstellen.'
-  description: 'Lassen Sie uns Ihnen bei der Pendenzverwaltung helfen.'
-  back_to_login: 'Zurück zum Login.'
-  error:
-    email_invalid: 'Mit dieser E-Mail dürfen Sie sich leider nicht registrieren. Benutzen Sie Ihre Geschäftsemail.'
-    already_registered: 'Sie sind bereits registriert. Loggen Sie sich wie gewohnt ein.'
-  success:
-    welcome: 'Sie wurden erfolgreich registriert! Prüfen Sie Ihre E-Mails um den Account zu aktivieren.'
-  email:
-    subject: 'Willkommen auf %page%!'
-    body: 'Wir haben Ihren Account erstellt und eingerichtet.'
-    action_text: 'Account aktivieren'
-  fail:
-    welcome_email_not_sent: 'Der E-Mail Versand ist fehlgeschlagen. Dies ist ein interner Fehler, bitte kontaktieren Sie den Support.'
-confirm:
-  title: 'Account aktivieren.'
-  description: 'Ihre E-Mail wurde bestätigt.'
-  submit: aktivieren
-  success:
-    welcome: 'Ihr Account ist nun fertig eingerichtet.'
-  app_email:
-    subject: 'Loggen Sie sich in die App ein'
-    body: |
-      Willkommen! Um alle Funktionen nutzen zu können...
-      1. laden Sie sich die mangel.io App vom iOS Store herunter
-      2. loggen Sie sich mit Benutzername, Passwort auf der Webseite %website% ein
-    action_text: 'App login link'
-  error:
-    invalid_hash: 'Dieser Link ist nicht mehr gültig. Starten Sie die Registrierung neu oder loggen Sie sich ein wie gewohnt.'
+
 logout:
   title: Logout

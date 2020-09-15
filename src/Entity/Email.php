@@ -145,9 +145,6 @@ class Email extends BaseEntity
         $this->emailType = $emailType;
     }
 
-    /**
-     * @return string
-     */
     public function getBody()
     {
         return $this->body;
@@ -183,11 +180,6 @@ class Email extends BaseEntity
         return $this->sentDateTime;
     }
 
-    public function setSentDateTime(DateTime $sentDateTime)
-    {
-        $this->sentDateTime = $sentDateTime;
-    }
-
     public function getVisitedDateTime(): ?DateTime
     {
         return $this->visitedDateTime;
@@ -196,5 +188,10 @@ class Email extends BaseEntity
     public function setVisitedDateTime(DateTime $visitedDateTime)
     {
         $this->visitedDateTime = $visitedDateTime;
+    }
+
+    public function confirmSent()
+    {
+        $this->sentDateTime = new \DateTime();
     }
 }
