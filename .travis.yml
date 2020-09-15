@@ -37,7 +37,7 @@ before_install:
 
 install:
   # backend
-  - composer install
+  - composer install --no-scripts
 
   # frontend
   - npm config set "@fortawesome:registry" https://npm.fontawesome.com/
