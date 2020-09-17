@@ -21,7 +21,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -80,17 +79,14 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function getCredentials(Request $request)
     {
-        $credentials = [
-            'email' => $request->request->get('email'),
+        $email = $request->request->get('email');
+        $request->getSession()->set(Security::LAST_USERNAME, $email);
+
+        return [
+            'email' => $email,
             'password' => $request->request->get('password'),
             'csrf_token' => $request->request->get('_csrf_token'),
         ];
-        $request->getSession()->set(
-            Security::LAST_USERNAME,
-            $credentials['email']
-        );
-
-        return $credentials;
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
@@ -100,16 +96,12 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
             throw new InvalidCsrfTokenException();
         }
 
-        $user = $this->entityManager->getRepository(ConstructionManager::class)->findOneBy(['email' => $credentials['email']]);
-
-        if (!$user) {
-            // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Email could not be found.');
-        }
-
-        return $user;
+        return $this->entityManager->getRepository(ConstructionManager::class)->findOneBy(['email' => $credentials['email']]);
     }
 
+    /**
+     * @param ConstructionManager $user
+     */
     public function checkCredentials($credentials, UserInterface $user)
     {
         if (null === $user->getPassword()) {
@@ -126,10 +118,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        if ($exception instanceof UserWithoutPasswordAuthenticationException) {
-            $this->emailService->sendRegisterConfirm($exception->getUser());
-        }
-
         if ($request->hasSession()) {
             $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
         }

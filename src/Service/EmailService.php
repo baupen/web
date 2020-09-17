@@ -70,7 +70,7 @@ class EmailService implements EmailServiceInterface
      *
      * @throws Exception
      */
-    public function sendRegisterConfirm(ConstructionManager $constructionManager)
+    public function sendRegisterConfirmLink(ConstructionManager $constructionManager)
     {
         $constructionManager->generateAuthenticationHash();
 
@@ -83,14 +83,62 @@ class EmailService implements EmailServiceInterface
         $email->setActionText($this->translator->trans('create.email.action_text', [], 'login'));
         $email->setActionLink($this->urlGenerator->generate('register_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()], UrlGeneratorInterface::ABSOLUTE_URL));
 
-        // send
+        if ($this->sendEmail($email)) {
+            $this->manager->persist($constructionManager);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private function sendEmail(Email $email)
+    {
         $html = $this->renderEmail($email);
         if ($this->sendService->sendEmail($email, $html)) {
             $email->confirmSent();
 
-            $this->manager->persist($constructionManager);
             $this->manager->persist($email);
             $this->manager->flush();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function sendAppInvitation(ConstructionManager $constructionManager)
+    {
+        $request = $this->request->getCurrentRequest();
+
+        $email = new Email();
+        $email->setReceiver($constructionManager->getEmail());
+
+        $email->setEmailType(EmailType::ACTION_EMAIL);
+        $email->setSubject($this->translator->trans('confirm.app_email.subject', [], 'login'));
+        $email->setBody($this->translator->trans('confirm.app_email.body', ['%website%' => $request], 'login'));
+        $email->setActionText($this->translator->trans('confirm.app_email.action_text', [], 'login'));
+        $email->setActionLink('mangel.io://login?username='.urlencode($constructionManager->getEmail()).'&domain='.urlencode($request->getHttpHost()));
+
+        return $this->sendEmail($email);
+    }
+
+    public function sendRecoverConfirmLink(ConstructionManager $constructionManager)
+    {
+        $constructionManager->generateAuthenticationHash();
+
+        $email = new Email();
+        $email->setEmailType(EmailType::ACTION_EMAIL);
+        $email->setReceiver($constructionManager->getEmail());
+        $email->setSubject($this->translator->trans('recover.email.reset_password.subject', ['%page%' => $this->request->getCurrentRequest()->getHttpHost()], 'login'));
+        $email->setBody($this->translator->trans('recover.email.reset_password.message', [], 'login'));
+        $email->setActionText($this->translator->trans('recover.email.reset_password.action_text', [], 'login'));
+        $email->setActionLink($this->urlGenerator->generate('recover_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()], UrlGeneratorInterface::ABSOLUTE_URL));
+
+        if ($this->sendEmail($email)) {
+            $this->manager->persist($constructionManager);
+
+            return true;
         }
 
         return false;

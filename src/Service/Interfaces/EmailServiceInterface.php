@@ -19,7 +19,12 @@ interface EmailServiceInterface
     /**
      * @return bool
      */
-    public function sendRegisterConfirm(ConstructionManager $constructionManager);
+    public function sendRegisterConfirmLink(ConstructionManager $constructionManager);
+
+    /**
+     * @return bool
+     */
+    public function sendAppInvitation(ConstructionManager $constructionManager);
 
     /**
      * @return string

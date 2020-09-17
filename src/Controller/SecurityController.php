@@ -13,9 +13,11 @@ namespace App\Controller;
 
 use App\Controller\Base\BaseFormController;
 use App\Entity\ConstructionManager;
-use App\Entity\Email;
-use App\Enum\EmailType;
-use App\Form\RegisterType;
+use App\Form\ConstructionManager\RegisterConfirmType;
+use App\Form\UserTrait\EmailType;
+use App\Form\UserTrait\LoginType;
+use App\Form\UserTrait\SetPasswordType;
+use App\Security\Exceptions\UserWithoutPasswordAuthenticationException;
 use App\Security\LoginFormAuthenticator;
 use App\Service\Interfaces\AuthorizationServiceInterface;
 use App\Service\Interfaces\EmailServiceInterface;
@@ -25,7 +27,9 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\DisabledException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -36,18 +40,35 @@ class SecurityController extends BaseFormController
     /**
      * @Route("/login", name="login")
      */
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils, EmailServiceInterface $emailService, LoggerInterface $logger): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+        if ($this->getUser()) {
+            return $this->redirectToRoute('index');
+        }
 
-        // get the login error if there is one
+        // show last auth error
         $error = $authenticationUtils->getLastAuthenticationError();
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
+        if ($error instanceof DisabledException) {
+            $this->displayError($this->getTranslator()->trans('login.errors.account_disabled', [], 'security'));
+        } elseif ($error instanceof BadCredentialsException) {
+            $this->displayError($this->getTranslator()->trans('login.errors.password_wrong', [], 'security'));
+        } elseif ($error instanceof UsernameNotFoundException) {
+            $this->displayError($this->getTranslator()->trans('login.errors.email_not_found', [], 'security'));
+        } elseif ($error instanceof UserWithoutPasswordAuthenticationException) {
+            $this->displayError($this->getTranslator()->trans('login.errors.registration_not_completed', [], 'security'));
+            $emailService->sendRegisterConfirmLink($error->getUser());
+        } elseif (null !== $error) {
+            $this->displayError($this->getTranslator()->trans('login.errors.login_failed', [], 'security'));
+            $logger->error('login failed', ['exception' => $error]);
+        }
 
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+        $constructionManager = new ConstructionManager();
+        $constructionManager->setEmail($authenticationUtils->getLastUsername());
+
+        $form = $this->createForm(LoginType::class, $constructionManager);
+        $form->add('submit', SubmitType::class, ['translation_domain' => 'security']);
+
+        return $this->render('security/login.html.twig', ['form' => $form->createView()]);
     }
 
     /**
@@ -60,21 +81,21 @@ class SecurityController extends BaseFormController
         $constructionManager = new ConstructionManager();
         $constructionManager->setEmail($request->query->get('email'));
 
-        $form = $this->createForm(RegisterType::class, $constructionManager);
-        $form->add('submit', SubmitType::class, ['translation_domain' => 'login']);
+        $form = $this->createForm(EmailType::class, $constructionManager);
+        $form->add('submit', SubmitType::class, ['translation_domain' => 'security']);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $authorizationService->setIsEnabled($constructionManager);
 
             if (!$constructionManager->getIsEnabled()) {
-                $this->displayError($translator->trans('create.error.email_invalid', [], 'login'));
+                $this->displayError($translator->trans('create.error.email_invalid', [], 'security'));
             } else {
                 /** @var ConstructionManager $existing */
                 $existing = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
 
                 if (null !== $existing && $existing->getRegistrationCompleted()) {
-                    $this->displayError($translator->trans('create.error.already_registered', [], 'login'));
+                    $this->displayError($translator->trans('create.error.already_registered', [], 'security'));
 
                     return $this->redirectToRoute('login');
                 }
@@ -83,7 +104,7 @@ class SecurityController extends BaseFormController
                     $constructionManager = $existing;
                 }
 
-                if ($emailService->sendRegisterConfirm($constructionManager)) {
+                if ($emailService->sendRegisterConfirmLink($constructionManager)) {
                     $this->displayError($translator->trans('register.success.welcome', [], 'security'));
                 } else {
                     $this->displayError($translator->trans('register.fail.welcome_email_not_sent', [], 'security'));
@@ -101,62 +122,27 @@ class SecurityController extends BaseFormController
      *
      * @return Response
      */
-    public function registerConfirmAction(Request $request, string $authenticationHash, TranslatorInterface $translator, EmailServiceInterface $emailService)
+    public function registerConfirmAction(Request $request, string $authenticationHash, TranslatorInterface $translator, EmailServiceInterface $emailService, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
     {
-        $arr = [];
-
-        /** @var ConstructionManager $user */
-        $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['authenticationHash' => $authenticationHash]);
-        if (null === $user) {
-            $this->displayError($translator->trans('confirm.error.invalid_hash', [], 'login'));
-
+        if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $constructionManager)) {
             return $this->redirectToRoute('login');
         }
 
-        // relink to password forgot if already registered
-        if ($user->isRegistrationCompleted()) {
-            return $this->redirectToRoute('login_reset', ['authenticationHash' => $authenticationHash]);
+        $form = $this->createForm(RegisterConfirmType::class, $constructionManager);
+        $form->add('submit', SubmitType::class, ['translation_domain' => 'security']);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form, $constructionManager, $translator)) {
+            $constructionManager->generateAuthenticationHash();
+            $this->fastSave($constructionManager);
+
+            $this->loginUser($constructionManager, $authenticator, $guardHandler, $request);
+            $emailService->sendAppInvitation($constructionManager);
+
+            return $this->redirectToRoute('welcome');
         }
 
-        $form = $this->handleForm(
-            $this->createForm(ConfirmType::class, $user, ['data_class' => ConstructionManager::class])
-                ->add('submit', SubmitType::class, ['translation_domain' => 'login', 'label' => 'login.submit']),
-            $request,
-            function ($form) use ($user, $translator, $request, $emailService) {
-                //check for valid password
-                if ($user->getPlainPassword() !== $user->getRepeatPlainPassword()) {
-                    $this->displayError($translator->trans('reset.error.passwords_do_not_match', [], 'login'));
-
-                    return $form;
-                }
-
-                //display success
-                $this->displaySuccess($translator->trans('reset.success.password_set', [], 'login'));
-
-                //set new password & save
-                $user->setPassword();
-                $user->setRegistrationCompleted();
-                $user->setAuthenticationHash();
-                $this->fastSave($user);
-
-                //login user & redirect
-                $this->loginUser($request, $user);
-
-                if ($user->getIsExternalAccount()) {
-                    $this->sendAppEMail($request, $user, $translator, $emailService);
-                }
-
-                return $this->redirectToRoute('help_overview');
-            }
-        );
-
-        if ($form instanceof Response) {
-            return $form;
-        }
-
-        $arr['form'] = $form->createView();
-
-        return $this->render('login/confirm.html.twig', $arr);
+        return $this->render('security/register_confirm.html.twig', ['form' => $form->createView()]);
     }
 
     /**
@@ -166,59 +152,29 @@ class SecurityController extends BaseFormController
      */
     public function recoverAction(Request $request, EmailServiceInterface $emailService, TranslatorInterface $translator, LoggerInterface $logger)
     {
-        $form = $this->handleForm(
-            $this->createForm(RecoverType::class)
-                ->add('submit', SubmitType::class, ['translation_domain' => 'login']),
-            $request,
-            function ($form) use ($emailService, $translator, $logger, $request) {
-                /** @var FormInterface $form */
-                /** @var ConstructionManager $constructionManager */
-                $constructionManager = $form->getData();
-                //check if user exists
-                /** @var ConstructionManager $exitingUser */
-                $exitingUser = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
-                if (null === $exitingUser) {
-                    $logger->info('could not reset password of unknown user '.$constructionManager->getEmail());
-                    $this->displayError($translator->trans('recover.fail.email_not_found', [], 'login'));
+        $constructionManager = new ConstructionManager();
+        $form = $this->createForm(EmailType::class, $constructionManager);
+        $form->add('submit', SubmitType::class, ['translation_domain' => 'security']);
 
-                    return $form;
-                }
-
-                //create new reset hash
-                $exitingUser->setAuthenticationHash();
-                $this->fastSave($exitingUser);
-
-                //create email
-                $email = new Email();
-                $email->setEmailType(EmailType::ACTION_EMAIL);
-                $email->setSystemSender();
-                $email->setReceiver($exitingUser->getEmail());
-                $email->setSubject($translator->trans('recover.email.reset_password.subject', ['%page%' => $request->getHttpHost()], 'login'));
-                $email->setBody($translator->trans('recover.email.reset_password.message', [], 'login'));
-                $email->setActionText($translator->trans('recover.email.reset_password.action_text', [], 'login'));
-                $email->setActionLink($this->generateUrl('login_reset', ['authenticationHash' => $exitingUser->getAuthenticationHash()], UrlGeneratorInterface::ABSOLUTE_URL));
-
-                //save & send
-                $this->fastSave($email);
-                if ($emailService->sendEmail($email)) {
-                    $email->setSentDateTime(new DateTime());
-                    $this->fastSave($email);
-
-                    $logger->info('sent password reset email to '.$email->getReceiver());
-                    $this->displaySuccess($translator->trans('recover.success.email_sent', [], 'login'));
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var ConstructionManager $existingConstructionManager */
+            $existingConstructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
+            if (null === $existingConstructionManager) {
+                $logger->info('could not reset password of unknown user '.$constructionManager->getEmail());
+                $this->displayError($translator->trans('recover.fail.email_not_found', [], 'security'));
+            } else {
+                if ($emailService->sendRegisterConfirmLink($existingConstructionManager)) {
+                    $logger->info('sent password reset email to '.$constructionManager->getEmail());
+                    $this->displaySuccess($translator->trans('recover.success.email_sent', [], 'security'));
                 } else {
-                    $logger->error('could not send password reset email '.$email->getId());
-                    $this->displayError($translator->trans('recover.fail.email_not_sent', [], 'login'));
+                    $logger->error('could not send password reset email '.$constructionManager->getEmail());
+                    $this->displayError($translator->trans('recover.fail.email_not_sent', [], 'security'));
                 }
-
-                return $form;
             }
-        );
+        }
 
-        $arr = [];
-        $arr['form'] = $form->createView();
-
-        return $this->render('login/recover.html.twig', ['form' => $form->createView()]);
+        return $this->render('security/recover.html.twig', ['form' => $form->createView()]);
     }
 
     /**
@@ -228,77 +184,55 @@ class SecurityController extends BaseFormController
      *
      * @return Response
      */
-    public function resetAction(Request $request, $authenticationHash, TranslatorInterface $translator)
+    public function recoverConfirmAction(Request $request, $authenticationHash, TranslatorInterface $translator, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
     {
-        $arr = [];
-
-        /** @var ConstructionManager $user */
-        $user = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['authenticationHash' => $authenticationHash]);
-        if (null === $user) {
-            $this->displayError($translator->trans('reset.error.invalid_hash', [], 'login'));
-
-            return $this->redirectToRoute('login_recover');
+        if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $constructionManager)) {
+            return $this->redirectToRoute('login');
         }
 
-        // if registration incomplete; redirect to confirm page
-        if (!$user->isRegistrationCompleted()) {
-            return $this->redirectToRoute('login_confirm', ['authenticationHash' => $authenticationHash]);
+        $form = $this->createForm(SetPasswordType::class, $constructionManager);
+        $form->add('submit', SubmitType::class, ['translation_domain' => 'security']);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form, $constructionManager, $translator)) {
+            $constructionManager->generateAuthenticationHash();
+            $this->fastSave($constructionManager);
+
+            $this->loginUser($constructionManager, $authenticator, $guardHandler, $request);
+
+            return $this->redirectToRoute('index');
         }
 
-        $form = $this->handleForm(
-            $this->createForm(SetPasswordType::class, $user, ['data_class' => ConstructionManager::class])
-                ->add('submit', SubmitType::class, ['translation_domain' => 'login']),
-            $request,
-            function ($form) use ($user, $translator, $request) {
-                //check for valid password
-                if ($user->getPlainPassword() !== $user->getRepeatPlainPassword()) {
-                    $this->displayError($translator->trans('reset.error.passwords_do_not_match', [], 'login'));
-
-                    return $form;
-                }
-
-                //display success
-                $this->displaySuccess($translator->trans('reset.success.password_set', [], 'login'));
-
-                //set new password & save
-                $user->setPassword();
-                $user->setAuthenticationHash();
-                $this->fastSave($user);
-
-                //login user & redirect
-                $this->loginUser($request, $user);
-
-                return $this->redirectToRoute('dashboard');
-            }
-        );
-
-        if ($form instanceof Response) {
-            return $form;
-        }
-
-        $arr['form'] = $form->createView();
-
-        return $this->render('login/reset.html.twig', $arr);
+        return $this->render('security/recover_confirm.html.twig', ['form' => $form->createView()]);
     }
 
-    private function sendAppEMail(Request $request, ConstructionManager $user, TranslatorInterface $translator, EmailServiceInterface $emailService)
+    private function getConstructionManagerFromAuthenticationHash(string $authenticationHash, TranslatorInterface $translator, ConstructionManager &$constructionManager = null)
     {
-        $email = new Email();
-        $email->setReceiver($user->getEmail());
+        /** @var ConstructionManager $constructionManager */
+        $constructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['authenticationHash' => $authenticationHash]);
+        if (null === $constructionManager) {
+            $this->displayError($translator->trans('confirm.error.invalid_hash', [], 'security'));
 
-        $email->setEmailType(EmailType::ACTION_EMAIL);
-        $email->setSubject($translator->trans('confirm.app_email.subject', [], 'login'));
-        $email->setBody($translator->trans('confirm.app_email.body', ['%website%' => $request->getHttpHost()], 'login'));
-        $email->setActionText($translator->trans('confirm.app_email.action_text', [], 'login'));
-        $email->setActionLink('mangel.io://login?username='.urlencode($user->getEmail()).'&domain='.urlencode($request->getHttpHost()));
-
-        $this->fastSave($email);
-
-        // send email
-        if ($emailService->sendEmail($email)) {
-            $email->setSentDateTime(new \DateTime());
-            $this->fastSave($email);
+            return false;
         }
+
+        return true;
+    }
+
+    private function applySetPasswordType(FormInterface $form, ConstructionManager $constructionManager, TranslatorInterface $translator)
+    {
+        $plainPassword = $form->get('plainPassword');
+        $repeatPlainPassword = $form->get('repeatPlainPassword');
+
+        if ($plainPassword !== $repeatPlainPassword) {
+            $this->displayError($translator->trans('reset.error.passwords_do_not_match', [], 'security'));
+
+            return false;
+        }
+
+        $constructionManager->setPasswordFromPlain($plainPassword);
+
+        return true;
     }
 
     private function loginUser(UserInterface $user, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler, Request $request)
