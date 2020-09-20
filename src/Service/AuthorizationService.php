@@ -14,8 +14,6 @@ namespace App\Service;
 use App\Entity\ConstructionManager;
 use App\Service\Interfaces\AuthorizationServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class AuthorizationService implements AuthorizationServiceInterface
 {
@@ -26,11 +24,6 @@ class AuthorizationService implements AuthorizationServiceInterface
      * @var PathServiceInterface
      */
     private $pathService;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
 
     /**
      * @var string[][]|null
@@ -50,47 +43,46 @@ class AuthorizationService implements AuthorizationServiceInterface
     /**
      * AuthorizationService constructor.
      */
-    public function __construct(PathServiceInterface $pathService, LoggerInterface $logger, ParameterBagInterface $parameterBag)
+    public function __construct(PathServiceInterface $pathService, string $authorizationMethod)
     {
         $this->pathService = $pathService;
-        $this->logger = $logger;
-
-        $this->authorizationMethod = $parameterBag->get('AUTHORIZATION_METHOD');
+        $this->authorizationMethod = $authorizationMethod;
     }
 
     /**
-     * @throws \Exception
-     *
      * @return bool
+     *
+     * @throws \Exception
      */
-    public function checkIfAuthorized(ConstructionManager $constructionManager)
+    public function setIsEnabled(ConstructionManager $constructionManager)
     {
-        if ($this->authorizationMethod === self::AUTHORIZATION_METHOD_NONE) {
+        if (self::AUTHORIZATION_METHOD_NONE === $this->authorizationMethod) {
             return true;
         }
 
-        if ($constructionManager->getIsExternalAccount() || $constructionManager->getIsTrialAccount()) {
+        if (self::AUTHORIZATION_METHOD_WHITELIST === $this->authorizationMethod) {
+            $onWhitelist = $this->isEmailOnWhitelist($constructionManager->getEmail());
+            $otherwiseAuthorized = $constructionManager->getIsExternalAccount() || $constructionManager->getIsTrialAccount();
+
+            if ($onWhitelist) {
+                $constructionManager->setIsExternalAccount(false);
+                $constructionManager->setIsTrialAccount(false);
+                $constructionManager->setIsEnabled(true);
+            } elseif ($otherwiseAuthorized) {
+                $constructionManager->setIsEnabled(true);
+            } else {
+                $constructionManager->setIsEnabled(false);
+            }
+
             return true;
         }
 
-        if ($this->authorizationMethod === self::AUTHORIZATION_METHOD_WHITELIST) {
-            $emailLookup = $this->getAllWhitelistedEmailLookup();
-
-            return \array_key_exists($constructionManager->getEmail(), $emailLookup);
-        }
-
-        throw new \Exception('invalid authorization method configured: ' . $this->authorizationMethod);
+        throw new \Exception('invalid authorization method configured: '.$this->authorizationMethod);
     }
 
-    public function tryFillDefaultValues(ConstructionManager $constructionManager)
+    public function setDefaultValues(ConstructionManager $constructionManager)
     {
-        $userData = $this->getAllUserData();
-
-        if (!\array_key_exists($constructionManager->getEmail(), $userData)) {
-            return;
-        }
-
-        $defaultValues = $userData[$constructionManager->getEmail()];
+        $defaultValues = $this->getDefaultUserData($constructionManager->getEmail());
 
         if (\array_key_exists('givenName', $defaultValues)) {
             $constructionManager->setGivenName($defaultValues['givenName']);
@@ -106,62 +98,51 @@ class AuthorizationService implements AuthorizationServiceInterface
     }
 
     /**
-     * @return string
-     */
-    private function getAuthorizationRoot()
-    {
-        return $this->pathService->getTransientFolderRoot() . \DIRECTORY_SEPARATOR . 'authorization';
-    }
-
-    /**
-     * @return string[][]
-     */
-    private function getAllUserData()
-    {
-        if ($this->userDataCache !== null) {
-            return $this->userDataCache;
-        }
-
-        $this->userDataCache = [];
-
-        $userDataRoot = $this->getAuthorizationRoot() . \DIRECTORY_SEPARATOR . 'user_data';
-        foreach (glob($userDataRoot . \DIRECTORY_SEPARATOR . '*.json') as $userDataFile) {
-            $json = file_get_contents($userDataFile);
-
-            $entries = json_decode($json, true);
-            foreach ($entries as $entry) {
-                if (\array_key_exists('email', $entry)) {
-                    $this->userDataCache[$entry['email']] = $entry;
-                }
-            }
-        }
-
-        return $this->userDataCache;
-    }
-
-    /**
      * @return string[]
      */
-    private function getAllWhitelistedEmailLookup()
+    private function getDefaultUserData(string $email): array
     {
-        if ($this->emailLookupCache !== null) {
-            return $this->emailLookupCache;
-        }
+        if (null == $this->userDataCache) {
+            $this->userDataCache = [];
 
-        $this->emailLookupCache = [];
+            $userDataRoot = $this->pathService->getTransientFolderForAuthorization().\DIRECTORY_SEPARATOR.'user_data';
+            foreach (glob($userDataRoot.\DIRECTORY_SEPARATOR.'*.json') as $userDataFile) {
+                $json = file_get_contents($userDataFile);
 
-        $whitelistRoot = $this->getAuthorizationRoot() . \DIRECTORY_SEPARATOR . 'whitelists';
-        foreach (glob($whitelistRoot . \DIRECTORY_SEPARATOR . '*.txt') as $whitelistFile) {
-            $whitelist = file_get_contents($whitelistFile);
-            $lines = explode("\n", $whitelist);
-            foreach ($lines as $line) {
-                $cleanedLine = trim($line);
-                if ($cleanedLine !== '') {
-                    $this->emailLookupCache[$cleanedLine] = true;
+                $entries = json_decode($json, true);
+                foreach ($entries as $entry) {
+                    if (\array_key_exists('email', $entry)) {
+                        $this->userDataCache[$entry['email']] = $entry;
+                    }
                 }
             }
         }
 
-        return $this->emailLookupCache;
+        if (!\array_key_exists($email, $this->userDataCache)) {
+            return [];
+        }
+
+        return $this->userDataCache[$email];
+    }
+
+    private function isEmailOnWhitelist(string $email)
+    {
+        if (null == $this->emailLookupCache) {
+            $this->emailLookupCache = [];
+
+            $whitelistRoot = $this->pathService->getTransientFolderForAuthorization().\DIRECTORY_SEPARATOR.'whitelists';
+            foreach (glob($whitelistRoot.\DIRECTORY_SEPARATOR.'*.txt') as $whitelistFile) {
+                $whitelist = file_get_contents($whitelistFile);
+                $lines = explode("\n", $whitelist);
+                foreach ($lines as $line) {
+                    $cleanedLine = trim($line);
+                    if ('' !== $cleanedLine) {
+                        $this->emailLookupCache[$cleanedLine] = true;
+                    }
+                }
+            }
+        }
+
+        return \array_key_exists($email, $this->emailLookupCache);
     }
 }

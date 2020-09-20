@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta lang="{{ app.request.locale }}">
+    <base href="/" target="_self">
+
+    <!-- fav icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ asset('safari-pinned-tab.svg') }}" color="#2c353f">
+    <meta name="msapplication-TileColor" content="#f3f3f3">
+    <meta name="theme-color" content="#ffffff">
+
+    {% set title = block('title')|raw %}
+    {% set description = block('description')|raw %}
+    <title>{{ title }}</title>
+    <meta name="description" content="{{ description }}">
+
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+</head>
+<body>
+
+{% set flashes = app.session.flashbag.all() %}
+{% if flashes|length > 0 %}
+    <div class="flash-wrapper">
+        {% for type, messages in flashes %}
+            {% for message in messages %}
+                <div class="col-12 alert alert-{{ type }} alert-dismissible fade show" role="alert">
+                    <div class="container text-center">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% block content %}
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+</body>
+</html>

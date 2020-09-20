@@ -66,7 +66,7 @@ class IssueRepository extends EntityRepository
         $queryBuilder->where('c.constructionSite = :constructionSite');
         $queryBuilder->setParameter(':constructionSite', $constructionSite->getId());
         $queryBuilder->andWhere('i.lastChangedAt > :lastChangedAt');
-        $queryBuilder->setParameter('lastChangedAt', new DateTime('now -' . $days . ' days'));
+        $queryBuilder->setParameter('lastChangedAt', new DateTime('now -'.$days.' days'));
         $queryBuilder->orderBy('i.lastChangedAt', 'DESC');
 
         return $queryBuilder->getQuery()->getResult();
@@ -108,41 +108,41 @@ class IssueRepository extends EntityRepository
             ->orderBy('i.createdAt', 'ASC')
         ;
 
-        if ($filter->getCraftsmen() !== null) {
+        if (null !== $filter->getCraftsmen()) {
             $queryBuilder->andWhere('c.id IN (:craftsmen)')
                 ->setParameter(':craftsmen', $filter->getCraftsmen())
             ;
         }
-        if ($filter->getTrades() !== null) {
+        if (null !== $filter->getTrades()) {
             $queryBuilder->andWhere('c.trade IN (:trades)')
                 ->setParameter(':trades', $filter->getTrades())
             ;
         }
 
-        if ($filter->getMaps() !== null) {
+        if (null !== $filter->getMaps()) {
             $queryBuilder->andWhere('m.id IN (:maps)')
                 ->setParameter(':maps', $filter->getMaps())
             ;
         }
 
-        if ($filter->getIssues() !== null) {
+        if (null !== $filter->getIssues()) {
             $queryBuilder->andWhere('i.id IN (:issues)')
                 ->setParameter(':issues', $filter->getIssues())
             ;
         }
 
         $statusToString = function ($condition) {
-            return 'IS ' . ($condition ? 'NOT ' : '') . 'NULL';
+            return 'IS '.($condition ? 'NOT ' : '').'NULL';
         };
-        if ($filter->getRegistrationStatus() !== null) {
-            $queryBuilder->andWhere('i.registeredAt ' . $statusToString($filter->getRegistrationStatus()));
+        if (null !== $filter->getRegistrationStatus()) {
+            $queryBuilder->andWhere('i.registeredAt '.$statusToString($filter->getRegistrationStatus()));
             if ($filter->getRegistrationStatus()) {
-                if ($filter->getRegistrationStart() !== null) {
+                if (null !== $filter->getRegistrationStart()) {
                     $queryBuilder->andWhere('i.registeredAt >= :registration_start')
                         ->setParameter(':registration_start', $filter->getRegistrationStart())
                     ;
                 }
-                if ($filter->getRegistrationEnd() !== null) {
+                if (null !== $filter->getRegistrationEnd()) {
                     $queryBuilder->andWhere('i.registeredAt <= :registration_end')
                         ->setParameter(':registration_end', $filter->getRegistrationEnd())
                     ;
@@ -150,15 +150,15 @@ class IssueRepository extends EntityRepository
             }
         }
 
-        if ($filter->getRespondedStatus() !== null) {
-            $queryBuilder->andWhere('i.respondedAt ' . $statusToString($filter->getRespondedStatus()));
+        if (null !== $filter->getRespondedStatus()) {
+            $queryBuilder->andWhere('i.respondedAt '.$statusToString($filter->getRespondedStatus()));
             if ($filter->getRespondedStatus()) {
-                if ($filter->getRespondedStart() !== null) {
+                if (null !== $filter->getRespondedStart()) {
                     $queryBuilder->andWhere('i.respondedAt >= :responded_start')
                         ->setParameter(':responded_start', $filter->getRespondedStart())
                     ;
                 }
-                if ($filter->getRespondedEnd() !== null) {
+                if (null !== $filter->getRespondedEnd()) {
                     $queryBuilder->andWhere('i.respondedAt <= :responded_end')
                         ->setParameter(':responded_end', $filter->getRespondedEnd())
                     ;
@@ -166,15 +166,15 @@ class IssueRepository extends EntityRepository
             }
         }
 
-        if ($filter->getReviewedStatus() !== null) {
-            $queryBuilder->andWhere('i.reviewedAt ' . $statusToString($filter->getReviewedStatus()));
+        if (null !== $filter->getReviewedStatus()) {
+            $queryBuilder->andWhere('i.reviewedAt '.$statusToString($filter->getReviewedStatus()));
             if ($filter->getReviewedStatus()) {
-                if ($filter->getReviewedStart() !== null) {
+                if (null !== $filter->getReviewedStart()) {
                     $queryBuilder->andWhere('i.reviewedAt >= :reviewed_start')
                         ->setParameter(':reviewed_start', $filter->getReviewedStart())
                     ;
                 }
-                if ($filter->getReviewedEnd() !== null) {
+                if (null !== $filter->getReviewedEnd()) {
                     $queryBuilder->andWhere('i.reviewedAt <= :reviewed_end')
                         ->setParameter(':reviewed_end', $filter->getReviewedEnd())
                     ;
@@ -182,25 +182,25 @@ class IssueRepository extends EntityRepository
             }
         }
 
-        if ($filter->getLimitStart() !== null) {
+        if (null !== $filter->getLimitStart()) {
             $queryBuilder->andWhere('i.responseLimit >= :response_limit_start')
                 ->setParameter(':response_limit_start', $filter->getLimitStart())
             ;
         }
 
-        if ($filter->getLimitEnd() !== null) {
+        if (null !== $filter->getLimitEnd()) {
             $queryBuilder->andWhere('i.responseLimit <= :response_limit_end')
                 ->setParameter(':response_limit_end', $filter->getLimitEnd())
             ;
         }
 
-        if ($filter->getIsMarked() !== null) {
+        if (null !== $filter->getIsMarked()) {
             $queryBuilder->andWhere('i.isMarked = :is_marked')
                 ->setParameter('is_marked', $filter->getIsMarked())
             ;
         }
 
-        if ($filter->getWasAddedWithClient() !== null) {
+        if (null !== $filter->getWasAddedWithClient()) {
             $queryBuilder->andWhere('i.wasAddedWithClient = :was_added_with_client')
                 ->setParameter('was_added_with_client', $filter->getWasAddedWithClient())
             ;
@@ -216,7 +216,7 @@ class IssueRepository extends EntityRepository
      */
     private function applyFilterToIssues(Filter $filter, array $issues)
     {
-        if ($filter->getAnyStatus() !== null) {
+        if (null !== $filter->getAnyStatus()) {
             // count matches of status per issue
             $matches = [];
             foreach ($issues as $issue) {
@@ -224,19 +224,19 @@ class IssueRepository extends EntityRepository
 
                 $matches[$issueId] = 0;
                 if ($filter->getAnyStatus() & Filter::STATUS_NEW) {
-                    $matches[$issueId] += $issue->getRegisteredAt() === null;
+                    $matches[$issueId] += null === $issue->getRegisteredAt();
                 }
                 if ($filter->getAnyStatus() & Filter::STATUS_REGISTERED) {
-                    $matches[$issueId] += $issue->getRegisteredAt() !== null && $issue->getCraftsman()->getLastOnlineVisit() < $issue->getRegisteredAt() && $issue->getRespondedAt() === null && $issue->getReviewedAt() === null;
+                    $matches[$issueId] += null !== $issue->getRegisteredAt() && $issue->getCraftsman()->getLastOnlineVisit() < $issue->getRegisteredAt() && null === $issue->getRespondedAt() && null === $issue->getReviewedAt();
                 }
                 if ($filter->getAnyStatus() & Filter::STATUS_READ) {
-                    $matches[$issueId] += $issue->getCraftsman()->getLastOnlineVisit() !== null && $issue->getCraftsman()->getLastOnlineVisit() > $issue->getRegisteredAt() && $issue->getRespondedAt() === null && $issue->getReviewedAt() === null;
+                    $matches[$issueId] += null !== $issue->getCraftsman()->getLastOnlineVisit() && $issue->getCraftsman()->getLastOnlineVisit() > $issue->getRegisteredAt() && null === $issue->getRespondedAt() && null === $issue->getReviewedAt();
                 }
                 if ($filter->getAnyStatus() & Filter::STATUS_RESPONDED) {
-                    $matches[$issueId] += $issue->getRespondedAt() !== null && $issue->getReviewedAt() === null;
+                    $matches[$issueId] += null !== $issue->getRespondedAt() && null === $issue->getReviewedAt();
                 }
                 if ($filter->getAnyStatus() & Filter::STATUS_REVIEWED) {
-                    $matches[$issueId] += $issue->getReviewedAt() !== null;
+                    $matches[$issueId] += null !== $issue->getReviewedAt();
                 }
             }
 

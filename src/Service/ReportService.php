@@ -21,14 +21,13 @@ use App\Helper\IssueHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
-use App\Service\Report\Legacy\PdfDefinition;
-use App\Service\Report\Legacy\Report;
+use App\Service\Report\PdfDefinition;
+use App\Service\Report\Report;
 use App\Service\Report\ReportElements;
-use function count;
 use DateTime;
 use const DIRECTORY_SEPARATOR;
+use Doctrine\Persistence\ManagerRegistry;
 use Exception;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -45,7 +44,7 @@ class ReportService implements ReportServiceInterface
     private $imageService;
 
     /**
-     * @var RegistryInterface
+     * @var ManagerRegistry
      */
     private $doctrine;
 
@@ -67,7 +66,7 @@ class ReportService implements ReportServiceInterface
     /**
      * ReportService constructor.
      */
-    public function __construct(ImageServiceInterface $imageService, RegistryInterface $registry, SerializerInterface $serializer, TranslatorInterface $translator, PathServiceInterface $pathService)
+    public function __construct(ImageServiceInterface $imageService, ManagerRegistry $registry, SerializerInterface $serializer, TranslatorInterface $translator, PathServiceInterface $pathService)
     {
         $this->imageService = $imageService;
         $this->doctrine = $registry;
@@ -93,7 +92,7 @@ class ReportService implements ReportServiceInterface
 
         // 200 kb per issue seems reasonable
         $memoryLimitMbs = max(256, 0.2 * \count($issues));
-        ini_set('memory_limit', $memoryLimitMbs . 'M');
+        ini_set('memory_limit', $memoryLimitMbs.'M');
 
         //create folder
         $generationTargetFolder = $this->pathService->getTransientFolderForReports($constructionSite);
@@ -102,10 +101,10 @@ class ReportService implements ReportServiceInterface
         }
 
         //only generate report if it does not already exist
-        $filePath = $generationTargetFolder . DIRECTORY_SEPARATOR . uniqid() . '.pdf';
+        $filePath = $generationTargetFolder.DIRECTORY_SEPARATOR.uniqid().'.pdf';
         if (!file_exists($filePath) || $this->disableCache) {
             $formattedDate = (new DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT);
-            if ($author === null) {
+            if (null === $author) {
                 $footer = $this->translator->trans('generated', ['%date%' => $formattedDate], 'report');
             } else {
                 $footer = $this->translator->trans('generated_with_author', ['%date%' => $formattedDate, '%name%' => $author], 'report');
@@ -122,7 +121,7 @@ class ReportService implements ReportServiceInterface
     private function render(ConstructionSite $constructionSite, Filter $filter, string $author, ReportElements $reportElements, array $issues, string $filePath)
     {
         // initialize report
-        $pdfDefinition = new PdfDefinition($constructionSite->getName(), $author, __DIR__ . '/../../assets/report/logo.png');
+        $pdfDefinition = new PdfDefinition($constructionSite->getName(), $author, __DIR__.'/../../assets/report/logo.png');
         $report = new Report($pdfDefinition);
 
         $this->addIntroduction($report, $constructionSite, $filter, $reportElements);
@@ -139,7 +138,7 @@ class ReportService implements ReportServiceInterface
      */
     private function addMap(Report $report, Map $map, array $issues)
     {
-        $mapImage = $this->imageService->generateMapImageForReport($map, $issues, ImageServiceInterface::SIZE_REPORT_MAP);
+        $mapImage = $this->imageService->renderMapFileWithIssues($map->getFile(), $issues, ImageServiceInterface::SIZE_REPORT_MAP);
         $report->addMap($map->getName(), $map->getContext(), $mapImage);
     }
 
@@ -155,8 +154,8 @@ class ReportService implements ReportServiceInterface
         foreach ($issues as $issue) {
             $currentIssue = [];
 
-            $imagePath = $this->imageService->getSizeForIssue($issue, ImageServiceInterface::SIZE_REPORT_ISSUE);
-            if ($imagePath === null) {
+            $imagePath = $this->imageService->resizeIssueImage($issue->getImage(), ImageServiceInterface::SIZE_PREVIEW);
+            if (null === $imagePath) {
                 continue;
             }
 
@@ -202,17 +201,17 @@ class ReportService implements ReportServiceInterface
             }
 
             $key = $this->translator->trans('status', [], 'entity_issue');
-            if (\count($status) === 4) {
+            if (4 === \count($status)) {
                 $allStatus = $this->translator->trans('status_values.all', [], 'entity_issue');
                 $filterEntries[$key] = $allStatus;
             } else {
                 $or = $this->translator->trans('introduction.filter.or', [], 'report');
-                $filterEntries[$key] = implode(' ' . $or . ' ', $status);
+                $filterEntries[$key] = implode(' '.$or.' ', $status);
             }
         }
 
         //add craftsmen
-        if ($filter->getCraftsmen() !== null) {
+        if (null !== $filter->getCraftsmen()) {
             $entities = $this->doctrine->getRepository(Craftsman::class)->findBy(['id' => $filter->getCraftsmen()]);
             $names = [];
             foreach ($entities as $item) {
@@ -222,23 +221,23 @@ class ReportService implements ReportServiceInterface
         }
 
         //add maps
-        if ($filter->getMaps() !== null) {
+        if (null !== $filter->getMaps()) {
             $entities = $this->doctrine->getRepository(Map::class)->findBy(['id' => $filter->getMaps()]);
             $names = [];
             foreach ($entities as $item) {
-                $names[] = $item->getName() . ' (' . $item->getContext() . ')';
+                $names[] = $item->getName().' ('.$item->getContext().')';
             }
             $filterEntries[$this->translator->trans('introduction.filter.maps', ['%count%' => \count($names)], 'report')] = implode(', ', $names);
         }
 
         //add limit
         $limitValue = $this->getDateString($filter->getLimitStart(), $filter->getLimitEnd());
-        if ($limitValue !== '') {
+        if ('' !== $limitValue) {
             $filterEntries[$this->translator->trans('response_limit', [], 'entity_issue')] = $limitValue;
         }
 
         //set other properties
-        if ($filter->getTrades() !== null) {
+        if (null !== $filter->getTrades()) {
             $names = [];
             foreach ($filter->getTrades() as $trade) {
                 $names[] = $trade;
@@ -248,24 +247,24 @@ class ReportService implements ReportServiceInterface
 
         // collect set time
         $timeEntries = [];
-        if ($filter->getRegistrationStatus() !== null) {
+        if (null !== $filter->getRegistrationStatus()) {
             $trans = $this->translator->trans('status_values.registered', [], 'entity_issue');
             $range = $this->getDateString($filter->getRegistrationStart(), $filter->getRegistrationEnd(), $trans);
-            if ($range !== '') {
+            if ('' !== $range) {
                 $timeEntries[] = $range;
             }
         }
-        if ($filter->getRespondedStatus() !== null) {
+        if (null !== $filter->getRespondedStatus()) {
             $trans = $this->translator->trans('status_values.responded', [], 'entity_issue');
             $range = $this->getDateString($filter->getRespondedStart(), $filter->getRespondedEnd(), $trans);
-            if ($range !== '') {
+            if ('' !== $range) {
                 $timeEntries[] = $range;
             }
         }
-        if ($filter->getReviewedStatus() !== null) {
+        if (null !== $filter->getReviewedStatus()) {
             $trans = $this->translator->trans('status_values.reviewed', [], 'entity_issue');
             $range = $this->getDateString($filter->getReviewedStart(), $filter->getRespondedEnd(), $trans);
-            if ($range !== '') {
+            if ('' !== $range) {
                 $timeEntries[] = $range;
             }
         }
@@ -273,7 +272,7 @@ class ReportService implements ReportServiceInterface
         if (\count($timeEntries) > 0) {
             //convert all set time status to a single string
             $and = $this->translator->trans('introduction.filter.and', [], 'report');
-            $statusEntry = implode(' ' . $and . ' ', $timeEntries);
+            $statusEntry = implode(' '.$and.' ', $timeEntries);
             $filterEntries[$this->translator->trans('introduction.filter.time', [], 'report')] = $statusEntry;
         }
 
@@ -290,12 +289,12 @@ class ReportService implements ReportServiceInterface
         }
         $elements[] = $this->translator->trans('issues.detailed', [], 'report');
         if ($reportElements->getWithImages()) {
-            $elements[\count($elements) - 1] .= ' ' . $this->translator->trans('issues.with_images', [], 'report');
+            $elements[\count($elements) - 1] .= ' '.$this->translator->trans('issues.with_images', [], 'report');
         }
 
         //print
         $report->addIntroduction(
-            $this->imageService->getSizeForConstructionSite($constructionSite, ImageServiceInterface::SIZE_REPORT_ISSUE),
+            $this->imageService->resizeConstructionSiteImage($constructionSite->getImage(), ImageServiceInterface::SIZE_PREVIEW),
             $constructionSite->getName(),
             implode("\n", $constructionSite->getAddressLines()),
             implode(', ', $elements),
@@ -310,23 +309,23 @@ class ReportService implements ReportServiceInterface
      */
     private function getDateString($start, $end, string $prefix = null): string
     {
-        if ($start !== null) {
-            if ($end !== null) {
-                $rangeString = $start->format(DateTimeFormatter::DATE_FORMAT) . ' - ' . $end->format(DateTimeFormatter::DATE_FORMAT);
+        if (null !== $start) {
+            if (null !== $end) {
+                $rangeString = $start->format(DateTimeFormatter::DATE_FORMAT).' - '.$end->format(DateTimeFormatter::DATE_FORMAT);
             } else {
                 $rangeString = $this->translator->trans('introduction.filter.later_than', ['%date%' => $start->format(DateTimeFormatter::DATE_FORMAT)], 'report');
             }
-        } elseif ($end !== null) {
+        } elseif (null !== $end) {
             $rangeString = $this->translator->trans('introduction.filter.earlier_than', ['%date%' => $end->format(DateTimeFormatter::DATE_FORMAT)], 'report');
         } else {
             return '';
         }
 
-        if ($prefix === null) {
+        if (null === $prefix) {
             return $rangeString;
         }
 
-        return $prefix . ' (' . $rangeString . ')';
+        return $prefix.' ('.$rangeString.')';
     }
 
     /**
@@ -334,9 +333,9 @@ class ReportService implements ReportServiceInterface
      */
     private function addIssueTable(Report $report, Filter $filter, array $issues)
     {
-        $showRegistered = $filter->getRegistrationStatus() === null || $filter->getRegistrationStatus();
-        $showResponded = $filter->getRespondedStatus() === null || $filter->getRespondedStatus();
-        $showReviewed = $filter->getReviewedStatus() === null || $filter->getReviewedStatus();
+        $showRegistered = null === $filter->getRegistrationStatus() || $filter->getRegistrationStatus();
+        $showResponded = null === $filter->getRespondedStatus() || $filter->getRespondedStatus();
+        $showReviewed = null === $filter->getReviewedStatus() || $filter->getReviewedStatus();
 
         $tableHeader[] = '#';
         $tableHeader[] = $this->translator->trans('entity.name', [], 'entity_craftsman');
@@ -359,20 +358,20 @@ class ReportService implements ReportServiceInterface
         foreach ($issues as $issue) {
             $row = [];
             $row[] = $issue->getNumber();
-            $row[] = $issue->getCraftsman()->getCompany() . "\n" . $issue->getCraftsman()->getTrade();
+            $row[] = $issue->getCraftsman()->getCompany()."\n".$issue->getCraftsman()->getTrade();
             $row[] = $issue->getDescription();
-            $row[] = ($issue->getResponseLimit() !== null) ? $issue->getResponseLimit()->format(DateTimeFormatter::DATE_FORMAT) : '';
+            $row[] = (null !== $issue->getResponseLimit()) ? $issue->getResponseLimit()->format(DateTimeFormatter::DATE_FORMAT) : '';
 
             if ($showRegistered) {
-                $row[] = $issue->getRegisteredAt() !== null ? $issue->getRegisteredAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getRegistrationBy()->getName() : '';
+                $row[] = null !== $issue->getRegisteredAt() ? $issue->getRegisteredAt()->format(DateTimeFormatter::DATE_FORMAT)."\n".$issue->getRegistrationBy()->getName() : '';
             }
 
             if ($showResponded) {
-                $row[] = $issue->getRespondedAt() !== null ? $issue->getRespondedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getResponseBy()->getName() : '';
+                $row[] = null !== $issue->getRespondedAt() ? $issue->getRespondedAt()->format(DateTimeFormatter::DATE_FORMAT)."\n".$issue->getResponseBy()->getName() : '';
             }
 
             if ($showReviewed) {
-                $row[] = $issue->getReviewedAt() !== null ? $issue->getReviewedAt()->format(DateTimeFormatter::DATE_FORMAT) . "\n" . $issue->getReviewBy()->getName() : '';
+                $row[] = null !== $issue->getReviewedAt() ? $issue->getReviewedAt()->format(DateTimeFormatter::DATE_FORMAT)."\n".$issue->getReviewBy()->getName() : '';
             }
 
             $tableContent[] = $row;
@@ -405,7 +404,7 @@ class ReportService implements ReportServiceInterface
         }
 
         //add registration count if filter did not exclude
-        if ($filter->getRegistrationStatus() === null || $filter->getRegistrationStatus()) {
+        if (null === $filter->getRegistrationStatus() || $filter->getRegistrationStatus()) {
             $tableHeader[] = $this->translator->trans('status_values.registered', [], 'entity_issue');
             foreach ($countsPerElement as $elementId => $count) {
                 $tableContent[$elementId][] = $count[0];
@@ -413,7 +412,7 @@ class ReportService implements ReportServiceInterface
         }
 
         //add response count if filter did not exclude
-        if ($filter->getRespondedStatus() === null || $filter->getRespondedStatus()) {
+        if (null === $filter->getRespondedStatus() || $filter->getRespondedStatus()) {
             $tableHeader[] = $this->translator->trans('status_values.responded', [], 'entity_issue');
             foreach ($countsPerElement as $elementId => $count) {
                 $tableContent[$elementId][] = $count[1];
@@ -421,7 +420,7 @@ class ReportService implements ReportServiceInterface
         }
 
         //add review count if filter did not exclude
-        if ($filter->getReviewedStatus() === null || $filter->getReviewedStatus()) {
+        if (null === $filter->getReviewedStatus() || $filter->getReviewedStatus()) {
             $tableHeader[] = $this->translator->trans('status_values.reviewed', [], 'entity_issue');
             foreach ($countsPerElement as $elementId => $count) {
                 $tableContent[$elementId][] = $count[2];

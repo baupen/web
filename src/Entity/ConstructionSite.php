@@ -13,8 +13,8 @@ namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AddressTrait;
-use App\Entity\Traits\AutomaticEditTrait;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -31,7 +31,7 @@ class ConstructionSite extends BaseEntity
     use IdTrait;
     use TimeTrait;
     use AddressTrait;
-    use AutomaticEditTrait;
+    use SoftDeleteTrait;
 
     /**
      * @var string
@@ -50,7 +50,7 @@ class ConstructionSite extends BaseEntity
     /**
      * @var ConstructionSiteImage[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\ConstructionSiteImage", mappedBy="constructionSite")
+     * @ORM\OneToMany(targetEntity="App\Entity\ConstructionSiteImage", mappedBy="constructionSite", cascade={"persist"})
      */
     private $images;
 
@@ -72,24 +72,24 @@ class ConstructionSite extends BaseEntity
     /**
      * @var Map[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite")
+     * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite", cascade={"persist"})
      * @ORM\OrderBy({"name": "ASC"})
      */
     private $maps;
 
     /**
-     * @var MapFile[]|ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="MapFile", mappedBy="constructionSite")
-     */
-    private $mapFiles;
-
-    /**
      * @var Craftsman[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite")
+     * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite", cascade={"persist"})
      */
     private $craftsmen;
+
+    /**
+     * @var Issue[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="constructionSite", cascade={"persist"})
+     */
+    private $issues;
 
     /**
      * @var Filter[]|ArrayCollection
@@ -114,7 +114,7 @@ class ConstructionSite extends BaseEntity
         $this->maps = new ArrayCollection();
         $this->craftsmen = new ArrayCollection();
         $this->images = new ArrayCollection();
-        $this->mapFiles = new ArrayCollection();
+        $this->issues = new ArrayCollection();
         $this->filters = new ArrayCollection();
     }
 
@@ -131,11 +131,6 @@ class ConstructionSite extends BaseEntity
     public function getFolderName(): string
     {
         return $this->folderName;
-    }
-
-    public function setFolderName(string $folderName): void
-    {
-        $this->folderName = $folderName;
     }
 
     /**
@@ -193,14 +188,6 @@ class ConstructionSite extends BaseEntity
         $this->image = $image;
     }
 
-    /**
-     * @return MapFile[]|ArrayCollection
-     */
-    public function getMapFiles()
-    {
-        return $this->mapFiles;
-    }
-
     public function isTrialConstructionSite(): bool
     {
         return $this->isTrialConstructionSite;
@@ -217,5 +204,18 @@ class ConstructionSite extends BaseEntity
     public function getFilters()
     {
         return $this->filters;
+    }
+
+    /**
+     * @return Issue[]|ArrayCollection
+     */
+    public function getIssues()
+    {
+        return $this->issues;
+    }
+
+    public function setFolderName(string $uniqueFolderName): void
+    {
+        $this->folderName = $uniqueFolderName;
     }
 }

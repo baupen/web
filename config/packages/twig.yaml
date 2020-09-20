@@ -1,8 +1,5 @@
 twig:
-  paths: ['%kernel.project_dir%/templates']
-  debug: '%kernel.debug%'
-  strict_variables: '%kernel.debug%'
-  form_themes:
-    ['bundles/TwigBridge/Form/form_layout.html.twig']
-  globals:
-    support_email: '%env(SUPPORT_EMAIL)%'
+    default_path: '%kernel.project_dir%/templates'
+    paths:
+        # point this wherever your css files live
+        '%kernel.project_dir%/public/build': build

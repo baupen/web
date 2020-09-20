@@ -11,16 +11,20 @@
 
 namespace App\Service\Interfaces;
 
+use App\Entity\ConstructionManager;
 use App\Entity\Email;
 
 interface EmailServiceInterface
 {
     /**
-     * @param string[] $options
-     *
      * @return bool
      */
-    public function sendEmail(Email $email, $options = []);
+    public function sendRegisterConfirmLink(ConstructionManager $constructionManager);
+
+    /**
+     * @return bool
+     */
+    public function sendAppInvitation(ConstructionManager $constructionManager);
 
     /**
      * @return string

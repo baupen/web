@@ -12,19 +12,15 @@
 namespace App\Service;
 
 use App\Entity\ConstructionSite;
-use App\Entity\Issue;
-use App\Entity\Map;
+use App\Entity\ConstructionSiteImage;
+use App\Entity\IssueImage;
+use App\Entity\MapFile;
 use App\Service\Interfaces\PathServiceInterface;
 use const DIRECTORY_SEPARATOR;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class PathService implements PathServiceInterface
 {
-    /**
-     * @var string
-     */
-    private $scriptsRoot;
-
     /**
      * @var string
      */
@@ -50,131 +46,78 @@ class PathService implements PathServiceInterface
      */
     public function __construct(KernelInterface $kernel)
     {
-        $varDir = realpath($kernel->getLogDir() . DIRECTORY_SEPARATOR . '..');
-        $this->assetsRoot = realpath($varDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'assets');
-        $this->scriptsRoot = realpath($varDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'supporting');
+        $this->assetsRoot = realpath($kernel->getProjectDir().DIRECTORY_SEPARATOR.'assets');
 
         // add test to path to be able to unit test without messing up local dev state
         $environment = $kernel->getEnvironment();
-        if ($environment === 'test') {
-            $varDir .= DIRECTORY_SEPARATOR . $environment;
+        $varDir = $kernel->getProjectDir().DIRECTORY_SEPARATOR.'var';
+        if ('test' === $environment) {
+            $varDir .= DIRECTORY_SEPARATOR.$environment;
         }
 
-        $this->folderRoot = $varDir . DIRECTORY_SEPARATOR . 'persistent';
-        $this->transientFolderRoot = $varDir . DIRECTORY_SEPARATOR . 'transient';
+        $this->folderRoot = $varDir.DIRECTORY_SEPARATOR.'persistent';
+        $this->transientFolderRoot = $varDir.DIRECTORY_SEPARATOR.'transient';
 
-        $this->constructionSiteFolderRoot = $this->folderRoot . DIRECTORY_SEPARATOR . 'construction_sites';
+        $this->constructionSiteFolderRoot = $this->folderRoot.DIRECTORY_SEPARATOR.'construction_sites';
     }
 
-    /**
-     * @return string
-     */
-    public function getFolderForConstructionSiteImage(ConstructionSite $constructionSite)
-    {
-        return $this->getFolderForConstructionSite($constructionSite) . DIRECTORY_SEPARATOR . 'images';
-    }
-
-    /**
-     * @return string
-     */
-    public function getFolderForMapFile(ConstructionSite $constructionSite)
-    {
-        return $this->getFolderForConstructionSite($constructionSite) . DIRECTORY_SEPARATOR . 'maps';
-    }
-
-    /**
-     * @return string
-     */
-    public function getFolderForIssueImage(ConstructionSite $constructionSite)
-    {
-        return $this->getFolderForConstructionSite($constructionSite) . DIRECTORY_SEPARATOR . 'issues';
-    }
-
-    /**
-     * @return string
-     */
-    public function getTransientFolderForConstructionSiteImage(ConstructionSite $constructionSite)
-    {
-        return $this->getTransientFolderForConstructionSite($constructionSite) . DIRECTORY_SEPARATOR . 'images';
-    }
-
-    /**
-     * @return string
-     */
-    public function getTransientFolderForMapFile(Map $map)
-    {
-        return $this->getTransientFolderForConstructionSite($map->getConstructionSite()) . DIRECTORY_SEPARATOR . 'maps' . DIRECTORY_SEPARATOR . $map->getId();
-    }
-
-    /**
-     * @return string
-     */
-    public function getTransientFolderForIssueImage(Issue $issue)
-    {
-        return $this->getTransientFolderForConstructionSite($issue->getMap()->getConstructionSite()) . DIRECTORY_SEPARATOR . 'issues' . DIRECTORY_SEPARATOR . $issue->getId();
-    }
-
-    /**
-     * @return string
-     */
-    public function getTransientFolderForReports(ConstructionSite $constructionSite)
-    {
-        return $this->getTransientFolderForConstructionSite($constructionSite) . DIRECTORY_SEPARATOR . 'reports';
-    }
-
-    /**
-     * @return string
-     */
-    public function getFolderRoot()
-    {
-        return $this->folderRoot;
-    }
-
-    /**
-     * @return string
-     */
-    public function getConstructionSiteFolderRoot()
+    public function getRootFolderOfConstructionSites(): string
     {
         return $this->constructionSiteFolderRoot;
     }
 
-    /**
-     * @return string
-     */
-    public function getTransientFolderRoot()
+    public function getFolderForConstructionSiteImages(ConstructionSite $constructionSite): string
     {
-        return $this->transientFolderRoot;
+        return $this->getFolderForConstructionSite($constructionSite).DIRECTORY_SEPARATOR.'images';
     }
 
-    /**
-     * @return string
-     */
-    public function getScriptsRoot()
+    public function getFolderForMapFiles(ConstructionSite $constructionSite): string
     {
-        return $this->scriptsRoot;
+        return $this->getFolderForConstructionSite($constructionSite).DIRECTORY_SEPARATOR.'map_files';
     }
 
-    /**
-     * @return string
-     */
-    public function getAssetsRoot()
+    public function getFolderForIssueImages(ConstructionSite $constructionSite): string
     {
-        return $this->assetsRoot;
+        return $this->getFolderForConstructionSite($constructionSite).DIRECTORY_SEPARATOR.'issues';
     }
 
-    /**
-     * @return string
-     */
-    private function getFolderForConstructionSite(ConstructionSite $constructionSite)
+    public function getTransientFolderForConstructionSiteImages(ConstructionSiteImage $constructionSiteImage): string
     {
-        return $this->getConstructionSiteFolderRoot() . DIRECTORY_SEPARATOR . $constructionSite->getFolderName();
+        return $this->getTransientFolderForConstructionSite($constructionSiteImage->getConstructionSite()).DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.$constructionSiteImage->getFilename();
     }
 
-    /**
-     * @return string
-     */
-    private function getTransientFolderForConstructionSite(ConstructionSite $constructionSite)
+    public function getTransientFolderForMapFile(MapFile $mapFile): string
     {
-        return $this->getTransientFolderRoot() . DIRECTORY_SEPARATOR . 'construction_sites' . DIRECTORY_SEPARATOR . $constructionSite->getFolderName();
+        return $this->getTransientFolderForConstructionSite($mapFile->getConstructionSite()).DIRECTORY_SEPARATOR.'map_files'.DIRECTORY_SEPARATOR.$mapFile->getFilename();
+    }
+
+    public function getTransientFolderForIssueImage(IssueImage $issueImage): string
+    {
+        return $this->getTransientFolderForConstructionSite($issueImage->getIssue()->getMap()->getConstructionSite()).DIRECTORY_SEPARATOR.'issues'.DIRECTORY_SEPARATOR.$issueImage->getFilename();
+    }
+
+    public function getTransientFolderForReports(ConstructionSite $constructionSite): string
+    {
+        return $this->getTransientFolderForConstructionSite($constructionSite).DIRECTORY_SEPARATOR.'reports';
+    }
+
+    private function getFolderForConstructionSite(ConstructionSite $constructionSite): string
+    {
+        return $this->constructionSiteFolderRoot.DIRECTORY_SEPARATOR.$constructionSite->getFolderName();
+    }
+
+    private function getTransientFolderForConstructionSite(ConstructionSite $constructionSite): string
+    {
+        return $this->transientFolderRoot.DIRECTORY_SEPARATOR.'construction_sites'.DIRECTORY_SEPARATOR.$constructionSite->getFolderName();
+    }
+
+    public function getTransientFolderForAuthorization(): string
+    {
+        return $this->transientFolderRoot.DIRECTORY_SEPARATOR.'authorization';
+    }
+
+    public function getSampleConstructionSite(string $name): string
+    {
+        return $this->assetsRoot.DIRECTORY_SEPARATOR.'samples'.DIRECTORY_SEPARATOR.$name;
     }
 }

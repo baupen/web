@@ -1,0 +1,17 @@
+[
+  {
+    "description": "Favorit",
+    "isMarked": true,
+    "wasAddedWithClient": false
+  },
+  {
+    "description": "Abnahmemodus",
+    "isMarked": false,
+    "wasAddedWithClient": false
+  },
+  {
+    "description": "Normal",
+    "isMarked": false,
+    "wasAddedWithClient": false
+  }
+]

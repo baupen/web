@@ -11,12 +11,12 @@
 
 namespace App\Service\Interfaces;
 
-use App\Entity\Map;
+use App\Entity\MapFile;
 
 interface MapFileServiceInterface
 {
     /**
-     * @return string|null
+     * @return string
      */
-    public function getForMobileDevice(Map $entity);
+    public function renderForMobileDevice(MapFile $mapFile);
 }

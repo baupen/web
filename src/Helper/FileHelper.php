@@ -11,37 +11,19 @@
 
 namespace App\Helper;
 
-use Exception;
-
 class FileHelper
 {
-    /**
-     * @param $sourceFolder
-     * @param $destinationFolder
-     *
-     * @throws Exception
-     */
-    public static function copyRecursively($sourceFolder, $destinationFolder)
+    public static function ensureFolderExists(string $folderName)
     {
-        if (!is_dir($destinationFolder)) {
-            mkdir($destinationFolder);
+        if (!is_dir($folderName)) {
+            mkdir($folderName, 0777, true);
         }
+    }
 
-        $dir = opendir($sourceFolder);
-        if ($dir === false) {
-            throw new Exception('failed to open dir ' . $dir);
-        }
+    public static function sanitizeFileName(string $fileName)
+    {
+        $noUmlautFileName = str_replace(['ä', 'ö', 'ü', 'Ä', 'Ö', 'Ü'], ['ae', 'oe', 'ue', 'Ae', 'Oe', 'Ue'], $fileName);
 
-        while (false !== ($file = readdir($dir))) {
-            if (($file !== '.') && ($file !== '..')) {
-                if (is_dir($sourceFolder . '/' . $file)) {
-                    self::copyRecursively($sourceFolder . '/' . $file, $destinationFolder . '/' . $file);
-                } else {
-                    copy($sourceFolder . '/' . $file, $destinationFolder . '/' . $file);
-                }
-            }
-        }
-
-        closedir($dir);
+        return preg_replace('/[^A-Za-z0-9]+/', '_', $noUmlautFileName);
     }
 }

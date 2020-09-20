@@ -34,7 +34,7 @@ class IssueHelper
             },
             function ($map) {
                 /* @var Map $map */
-                return $map->getName() . $map->getContext();
+                return $map->getName().$map->getContext();
             },
             function ($map) {
                 /* @var Map $map */

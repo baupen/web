@@ -11,113 +11,49 @@
 
 namespace App\Service;
 
+use App\Entity\ConstructionManager;
 use App\Entity\Email;
 use App\Enum\EmailType;
+use App\Service\Email\SendService;
 use App\Service\Interfaces\EmailServiceInterface;
+use Doctrine\Persistence\ObjectManager;
 use Exception;
-use Psr\Log\LoggerInterface;
-use Swift_Mailer;
-use Swift_Message;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 class EmailService implements EmailServiceInterface
 {
     /**
-     * @var Swift_Mailer
+     * @var TranslatorInterface
      */
-    private $mailer;
+    private $translator;
 
     /**
-     * @var string
+     * @var RequestStack
      */
-    private $mailerSender;
+    private $request;
 
     /**
-     * @var string
+     * @var UrlGeneratorInterface
      */
-    private $supportEmail;
+    private $urlGenerator;
 
     /**
-     * @var string
+     * @var ObjectManager
      */
-    private $sslValidation;
+    private $manager;
+
+    /**
+     * @var SendService
+     */
+    private $sendService;
 
     /**
      * @var Environment
      */
     private $twig;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var \Swift_Transport
-     */
-    private $transport;
-
-    /**
-     * EmailService constructor.
-     */
-    public function __construct(Swift_Mailer $mailer, \Swift_Transport $transport, LoggerInterface $logger, Environment $twig, string $mailerSender, string $supportEmail, string $sslValidation)
-    {
-        $this->mailer = $mailer;
-        $this->transport = $transport;
-        $this->twig = $twig;
-        $this->logger = $logger;
-        $this->mailerSender = $mailerSender;
-        $this->supportEmail = $supportEmail;
-        $this->sslValidation = $sslValidation;
-    }
-
-    /**
-     * @param string[] $options
-     *
-     * @return bool
-     */
-    public function sendEmail(Email $email, $options = [])
-    {
-        $message = (new Swift_Message())
-            ->setSubject($email->getSubject())
-            ->setFrom($this->mailerSender)
-            ->setTo($email->getReceiver())
-        ;
-
-        //set reply to
-        if (isset($options['reply_to'])) {
-            $message->setReplyTo($options['reply_to']);
-        } else {
-            $message->setReplyTo($this->supportEmail);
-        }
-
-        //construct plain body
-        $bodyText = $email->getBody();
-        if ($email->getActionLink() !== null) {
-            $bodyText .= "\n\n" . $email->getActionText() . ': ' . $email->getActionLink();
-        }
-        $message->setBody($bodyText, 'text/plain');
-
-        //construct html body if applicable
-        if ($email->getEmailType() !== EmailType::PLAIN_EMAIL) {
-            try {
-                $message->addPart($this->renderEmail($email), 'text/html');
-            } catch (Exception $e) {
-                $this->logger->error('can not render email ' . $email->getId());
-
-                return false;
-            }
-        }
-
-        if ($this->sslValidation === 'disabled' && $this->transport instanceof \Swift_Transport_EsmtpTransport) {
-            $this->transport->setStreamOptions([
-                'ssl' => ['allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false],
-            ]);
-        }
-
-        //send message & check if at least one receiver was reached
-        return $this->mailer->send($message) > 0;
-    }
 
     /**
      * {@inheritdoc}
@@ -126,19 +62,85 @@ class EmailService implements EmailServiceInterface
      */
     public function renderEmail(Email $email)
     {
-        $arguments = ['email' => $email,
-            'show_support_info' => false,
-            'show_sender_info' => false,
-        ];
+        return $this->twig->render('email/content.html.twig', ['email' => $email]);
+    }
 
-        if ($email->getSenderName() === Email::SENDER_SYSTEM) {
-            $arguments['show_support_info'] = true;
-        } elseif ($email->getSenderName() !== null && $email->getSenderEmail() !== null) {
-            $arguments['show_sender_info'] = true;
-            $arguments['sender_name'] = $email->getSenderName();
-            $arguments['sender_email'] = $email->getSenderEmail();
+    /**
+     * @return false
+     *
+     * @throws Exception
+     */
+    public function sendRegisterConfirmLink(ConstructionManager $constructionManager)
+    {
+        $constructionManager->generateAuthenticationHash();
+
+        // construct email
+        $email = new Email();
+        $email->setEmailType(EmailType::ACTION_EMAIL);
+        $email->setReceiver($constructionManager->getEmail());
+        $email->setSubject($this->translator->trans('create.email.subject', ['%page%' => $this->request->getCurrentRequest()->getHttpHost()], 'login'));
+        $email->setBody($this->translator->trans('create.email.body', [], 'login'));
+        $email->setActionText($this->translator->trans('create.email.action_text', [], 'login'));
+        $email->setActionLink($this->urlGenerator->generate('register_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()], UrlGeneratorInterface::ABSOLUTE_URL));
+
+        if ($this->sendEmail($email)) {
+            $this->manager->persist($constructionManager);
+
+            return true;
         }
 
-        return $this->twig->render('email/email.html.twig', $arguments);
+        return false;
+    }
+
+    private function sendEmail(Email $email)
+    {
+        $html = $this->renderEmail($email);
+        if ($this->sendService->sendEmail($email, $html)) {
+            $email->confirmSent();
+
+            $this->manager->persist($email);
+            $this->manager->flush();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function sendAppInvitation(ConstructionManager $constructionManager)
+    {
+        $request = $this->request->getCurrentRequest();
+
+        $email = new Email();
+        $email->setReceiver($constructionManager->getEmail());
+
+        $email->setEmailType(EmailType::ACTION_EMAIL);
+        $email->setSubject($this->translator->trans('confirm.app_email.subject', [], 'login'));
+        $email->setBody($this->translator->trans('confirm.app_email.body', ['%website%' => $request], 'login'));
+        $email->setActionText($this->translator->trans('confirm.app_email.action_text', [], 'login'));
+        $email->setActionLink('mangel.io://login?username='.urlencode($constructionManager->getEmail()).'&domain='.urlencode($request->getHttpHost()));
+
+        return $this->sendEmail($email);
+    }
+
+    public function sendRecoverConfirmLink(ConstructionManager $constructionManager)
+    {
+        $constructionManager->generateAuthenticationHash();
+
+        $email = new Email();
+        $email->setEmailType(EmailType::ACTION_EMAIL);
+        $email->setReceiver($constructionManager->getEmail());
+        $email->setSubject($this->translator->trans('recover.email.reset_password.subject', ['%page%' => $this->request->getCurrentRequest()->getHttpHost()], 'login'));
+        $email->setBody($this->translator->trans('recover.email.reset_password.message', [], 'login'));
+        $email->setActionText($this->translator->trans('recover.email.reset_password.action_text', [], 'login'));
+        $email->setActionLink($this->urlGenerator->generate('recover_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()], UrlGeneratorInterface::ABSOLUTE_URL));
+
+        if ($this->sendEmail($email)) {
+            $this->manager->persist($constructionManager);
+
+            return true;
+        }
+
+        return false;
     }
 }

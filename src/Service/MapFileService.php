@@ -11,7 +11,9 @@
 
 namespace App\Service;
 
-use App\Entity\Map;
+use App\Entity\MapFile;
+use App\Helper\FileHelper;
+use App\Service\Image\GsService;
 use App\Service\Interfaces\MapFileServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 
@@ -21,6 +23,11 @@ class MapFileService implements MapFileServiceInterface
      * @var PathServiceInterface
      */
     private $pathService;
+
+    /**
+     * @var GsService
+     */
+    private $gsService;
 
     /**
      * PdfOptimizationService constructor.
@@ -33,42 +40,23 @@ class MapFileService implements MapFileServiceInterface
     /**
      * @return string|null
      */
-    public function getForMobileDevice(Map $entity)
+    public function renderForMobileDevice(MapFile $mapFile)
     {
-        if ($entity->getFile() === null) {
-            return null;
+        $sourceFilePath = $this->pathService->getFolderForMapFiles($mapFile->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
+
+        $targetFolder = $this->pathService->getTransientFolderForMapFile($mapFile);
+        $fileName = pathinfo($sourceFilePath, PATHINFO_FILENAME);
+        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+        $targetFileName = $fileName.'_outlines_'.$extension;
+        $targetFilePath = $targetFolder.DIRECTORY_SEPARATOR.$targetFileName;
+
+        if (is_file($targetFilePath)) {
+            return $targetFilePath;
         }
 
-        $originalFilePath = $this->pathService->getFolderForMapFile($entity->getConstructionSite()) . \DIRECTORY_SEPARATOR . $entity->getFile()->getFilename();
+        FileHelper::ensureFolderExists($targetFolder);
+        $this->gsService->renderPdfWithoutOutlineFonts($sourceFilePath, $targetFilePath);
 
-        return $this->renderForMobileDevice($entity, $originalFilePath);
-    }
-
-    /**
-     * @return string|null
-     */
-    private function renderForMobileDevice(Map $map, string $sourceFilePath)
-    {
-        $targetFolder = $this->pathService->getTransientFolderForMapFile($map);
-
-        if (!is_dir($targetFolder)) {
-            mkdir($targetFolder, 0777, true);
-        }
-
-        $sourceFileName = pathinfo($sourceFilePath, PATHINFO_BASENAME);
-        $extension = pathinfo($sourceFileName, PATHINFO_EXTENSION);
-        $filenameWithoutEnding = mb_substr($sourceFileName, 0, -(mb_strlen($extension) + 1));
-
-        $targetFilePath = $targetFolder . \DIRECTORY_SEPARATOR . $filenameWithoutEnding . '_outlines.' . $extension;
-
-        if (!is_file($targetFilePath)) {
-            $command = ' gs -dNoOutputFonts -sDEVICE=pdfwrite -o "' . $targetFilePath . '" "' . $sourceFilePath . '"';
-            exec($command);
-            if (!is_file($targetFilePath)) {
-                return null;
-            }
-        }
-
-        return $targetFilePath;
+        return is_file($targetFilePath) ? $targetFilePath : $sourceFilePath;
     }
 }

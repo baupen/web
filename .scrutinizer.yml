@@ -16,4 +16,3 @@ checks:
 
 filter:
     paths: ["src/*"]
-    excluded_paths: ["src/Migrations/*"]

@@ -1,0 +1,74 @@
+{% macro nav_item(link, text, secondary = false) %}
+    <li class="nav-item {% if secondary %} font-weight-light {% endif %}{% if app.request.pathInfo == link %}active{% endif %}">
+        <a class="nav-link" href="{{ link }}">{{ text }}</a>
+    </li>
+{% endmacro %}
+
+{% extends 'base.html.twig' %}
+{% trans_default_domain "construction_site" %}
+{% import _self as own_macros %}
+
+{% block content %}
+    <nav class="navbar navbar-dark bg-dark navbar-expand">
+        <a class="navbar-brand" href="{{ path("index") }}">{{ constructionSiteName|truncate(20, true) }}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavbar"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav mr-auto">
+                {{ own_macros.nav_item(path("dashboard"), "dashboard.title"|trans({}, "dashboard")) }}
+                {{ own_macros.nav_item(path("foyer"), "foyer.title"|trans({}, "foyer")) }}
+                {{ own_macros.nav_item(path("register"), "register.title"|trans({}, "register")) }}
+                {{ own_macros.nav_item(path("dispatch"), "dispatch.title"|trans({}, "dispatch")) }}
+            </ul>
+            <ul class="navbar-nav mr-2">
+                <a href="mailto:{{ support_email }}" class="nav-link">
+                    <i class="fal fa-envelope-open"></i>
+                </a>
+                <a href="#help" class="nav-link" data-target="#help-modal" data-toggle="modal">
+                    <i class="fal fa-question-circle"></i>
+                </a>
+            </ul>
+            <ul class="navbar-nav mr-2">
+                {{ own_macros.nav_item(path("construction_site_edit"), "edit.title"|trans({}, "edit")) }}
+                {% if "ROLE_TRIAL_ACCOUNT" not in app.user.roles %}
+                    {{ own_macros.nav_item(path("switch"), "switch.title"|trans({}, "switch")) }}
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav mr-2">
+                {{ own_macros.nav_item(path("set_locale", {"locale": "de", "return_to": app.request.requestUri}), "locale.de"|trans({}, "i18n"), app.request.locale != "de") }}
+                {{ own_macros.nav_item(path("set_locale", {"locale": "it", "return_to": app.request.requestUri}), "locale.it"|trans({}, "i18n"), app.request.locale != "it") }}
+            </ul>
+            <ul class="navbar-nav">
+                {{ own_macros.nav_item(path("login_logout"), "logout.title"|trans({}, "login")) }}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- help modal -->
+    <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h1>{{ "overview.title"|trans({}, "help") }}</h1>
+                    <p>{{ "overview.description"|trans({}, "help") }}</p>
+                    {% include "help/overview_content.html.twig" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="admin-wrapper">
+        <h1>{{ block("title") }}</h1>
+        <p class="text-secondary">{{ block("description") }}</p>
+        <div class="admin-content">
+            {% block admin_content %}
+
+            {% endblock %}
+        </div>
+    </section>
+
+{% endblock %}

@@ -1,54 +1,78 @@
-const Encore = require('@symfony/webpack-encore');
+var Encore = require('@symfony/webpack-encore')
+
+// Manually configure the runtime environment if not already configured yet by the "encore" command.
+// It's useful when you use tools that rely on webpack.config.js file.
+if (!Encore.isRuntimeEnvironmentConfigured()) {
+  Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev')
+}
 
 Encore
-// the project directory where all compiled assets will be stored
-  .setOutputPath('public/dist/')
+  // directory where compiled assets will be stored
+  .setOutputPath('public/build/')
+  // public path used by the web server to access the output path
+  .setPublicPath('/build')
+  // only needed for CDN's or sub-directory deploy
+  // .setManifestKeyPrefix('build/')
 
-  // the public path used by the web server to access the previous directory
-  .setPublicPath('/dist')
-
-  // will create public/build/app.js and public/build/app.css
+  /*
+   * ENTRY CONFIG
+   *
+   * Add 1 entry for each "page" of your app
+   * (including one that's included on every page - e.g. "app")
+   *
+   * Each entry will result in one JavaScript file (e.g. app.js)
+   * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
+   */
+  .addStyleEntry('email', './assets/css/email.scss')
   .addEntry('app', './assets/js/app.js')
   .copyFiles({
     from: './assets/images',
     to: 'images/[path][name].[ext]'
   })
 
-  // allow sass/scss files to be processed
-  .enableSassLoader()
+  // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
+  .splitEntryChunks()
+
+  // will require an extra script tag for runtime.js
+  // but, you probably want this, unless you're building a single-page app
+  .enableSingleRuntimeChunk()
+
+  /*
+   * FEATURE CONFIG
+   *
+   * Enable & configure other features below. For a full
+   * list of features, see:
+   * https://symfony.com/doc/current/frontend.html#adding-more-features
+   */
+  .cleanupOutputBeforeBuild()
+  .enableBuildNotifications()
+  .enableSourceMaps(!Encore.isProduction())
+  // enables hashed filenames (e.g. app.abc123.css)
+  .enableVersioning(Encore.isProduction())
 
   // auto prefix css for more browser support
   .enablePostCssLoader()
 
+  // enables @babel/preset-env polyfills
   .configureBabel(() => {}, {
     useBuiltIns: 'usage',
     corejs: 3,
     includeNodeModules: ['epic-spinners', 'moment']
   })
 
-  // allow legacy applications to use $/jQuery as a global variable
+  // enables Sass/SCSS support
+  .enableSassLoader(options => {
+    options.implementation = require('sass')
+  })
+  .enableVueLoader(() => {}, { runtimeCompilerBuild: false })
   .autoProvidejQuery()
 
-  /*
-  .enableTypeScriptLoader()
-  .enableForkedTypeScriptTypesChecking()
-  */
+  // uncomment to get integrity="..." attributes on your script & link tags
+  // requires WebpackEncoreBundle 1.4 or higher
+  .enableIntegrityHashes(Encore.isProduction())
 
-  // enable vue.js loader
-  .enableVueLoader(() => {}, { runtimeCompilerBuild: false })
+  .configureDevServerOptions(options => {
+    options.writeToDisk = true
+  })
 
-  // allow debugging of minified assets
-  .enableSourceMaps(!Encore.isProduction())
-
-  // empty the outputPath dir before each build
-  .cleanupOutputBeforeBuild()
-
-  // create hashed filenames (e.g. app.abc123.css)
-  .enableVersioning(Encore.isProduction())
-
-  // disable optimization with runtime chunks
-  .disableSingleRuntimeChunk()
-;
-
-// export the final configuration
 module.exports = Encore.getWebpackConfig()

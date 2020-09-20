@@ -30,6 +30,15 @@ class ConstructionManager extends BaseEntity implements UserInterface
     use TimeTrait;
     use UserTrait;
 
+    // can use any features & impersonate users
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+
+    // can use any features
+    const ROLE_CONSTRUCTION_MANAGER = 'ROLE_CONSTRUCTION_MANAGER';
+
+    // can not see other construction sites
+    const ROLE_ASSIGNED_CONSTRUCTION_MANAGER = 'ROLE_ASSIGNED_CONSTRUCTION_MANAGER';
+
     /**
      * @var string|null
      *
@@ -77,10 +86,19 @@ class ConstructionManager extends BaseEntity implements UserInterface
      *
      * @ORM\Column(type="boolean", options={"default": false})
      */
+    private $isAdminAccount = false;
+
+    /**
+     * @var bool
+     *           added itself using a trial account offering like in the app to a specific construction site
+     *
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
     private $isTrialAccount = false;
 
     /**
      * @var bool
+     *           added by other construction managers to specific construction sites
      *
      * @ORM\Column(type="boolean", options={"default": false})
      */
@@ -137,7 +155,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
      */
     public function getName()
     {
-        return $this->getGivenName() . ' ' . $this->getFamilyName();
+        return $this->getGivenName().' '.$this->getFamilyName();
     }
 
     /**
@@ -158,11 +176,15 @@ class ConstructionManager extends BaseEntity implements UserInterface
      */
     public function getRoles()
     {
-        if ($this->getIsTrialAccount()) {
-            return ['ROLE_USER', 'ROLE_TRIAL_ACCOUNT'];
+        if ($this->isAdminAccount) {
+            return [self::ROLE_ADMIN];
         }
 
-        return ['ROLE_USER'];
+        if (!$this->getIsTrialAccount() && !$this->getIsExternalAccount()) {
+            return [self::ROLE_CONSTRUCTION_MANAGER];
+        }
+
+        return [self::ROLE_ASSIGNED_CONSTRUCTION_MANAGER];
     }
 
     public function getActiveConstructionSite(): ?ConstructionSite
@@ -203,17 +225,5 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public function setIsExternalAccount(bool $isExternalAccount): void
     {
         $this->isExternalAccount = $isExternalAccount;
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function register()
-    {
-        $this->setRegistrationDate();
-        $this->setPlainPassword(uniqid('_initial_pw_'));
-        $this->setPassword();
-        $this->setAuthenticationHash();
-        $this->setIsEnabled(true);
     }
 }

@@ -76,9 +76,6 @@
       "unrecoverable": "Es ist ein Fehler aufgetreten. Laden Sie die Seite neu und versuchen Sie es erneut."
     }
   },
-  "validation": {
-    "required": "Dieses Feld kann nicht leer gelassen werden."
-  },
   "view": {
     "more": "mehr",
     "less": "weniger"

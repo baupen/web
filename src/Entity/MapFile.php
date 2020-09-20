@@ -15,7 +15,6 @@ use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\FileTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
-use App\Model\Frame;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -44,38 +43,15 @@ class MapFile extends BaseEntity
     private $map;
 
     /**
-     * @var IssuePosition[]|ArrayCollection
+     * @var Issue[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\IssuePosition", mappedBy="mapFile")
+     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="mapFile")
      */
-    private $issuePositions;
-
-    /**
-     * @var MapSector[]
-     *
-     * @ORM\OneToMany(targetEntity="MapSector", mappedBy="mapFile")
-     */
-    private $sectors;
-
-    /**
-     * @var Frame|null
-     *
-     * @ORM\Column(type="json", nullable=true)
-     */
-    private $sectorFrame;
+    private $issues;
 
     public function __construct()
     {
-        $this->issuePositions = new ArrayCollection();
-        $this->sectors = new ArrayCollection();
-    }
-
-    /**
-     * @return IssuePosition[]|ArrayCollection
-     */
-    public function getIssuePositions()
-    {
-        return $this->issuePositions;
+        $this->issues = new ArrayCollection();
     }
 
     public function getConstructionSite(): ConstructionSite
@@ -99,28 +75,10 @@ class MapFile extends BaseEntity
     }
 
     /**
-     * @return Frame|object|null
+     * @return Issue[]|ArrayCollection
      */
-    public function getSectorFrame()
+    public function getIssues()
     {
-        if (\is_object($this->sectorFrame) || $this->sectorFrame === null) {
-            return $this->sectorFrame;
-        }
-
-        // doctrine deserializes to associative array instead of object
-        return (object) $this->sectorFrame;
-    }
-
-    public function setSectorFrame(?Frame $sectorFrame): void
-    {
-        $this->sectorFrame = $sectorFrame;
-    }
-
-    /**
-     * @return MapSector[]|ArrayCollection
-     */
-    public function getSectors()
-    {
-        return $this->sectors;
+        return $this->issues;
     }
 }

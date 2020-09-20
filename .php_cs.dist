@@ -10,21 +10,15 @@ file that was distributed with this source code.
 COMMENT;
 
 $finder = PhpCsFixer\Finder::create()
-    ->in('src');
+    ->in(__DIR__)
+    ->exclude('var')
+;
 
 return PhpCsFixer\Config::create()
-    ->setRiskyAllowed(true)
     ->setRules([
-        '@PhpCsFixer' => true,
-        '@PhpCsFixer:risky' => true,
         '@Symfony' => true,
-        '@Symfony:risky' => true,
+        'array_syntax' => ['syntax' => 'short'],
         'header_comment' => ['header' => $fileHeaderComment, 'separate' => 'both'],
-        'concat_space' => ['spacing' => 'one'],
-        'mb_str_functions' => true,
-        'yoda_style' =>  false,
-        'single_line_comment_style' => false
     ])
     ->setFinder($finder)
-    ->setCacheFile(__DIR__.'/var/.php_cs.cache')
 ;

@@ -18,25 +18,27 @@ if (!isset($_SERVER['HTTP_HOST'])) {
 if (!in_array(@$_SERVER['REMOTE_ADDR'], [
     '127.0.0.1',
     '::1',
-], true)) {
+])) {
     header('HTTP/1.0 403 Forbidden');
     exit('This script is only accessible from localhost.');
 }
 
-if (file_exists($autoloader = __DIR__ . '/../../../autoload.php')) {
+if (file_exists($autoloader = __DIR__.'/../../../autoload.php')) {
     require_once $autoloader;
-} elseif (file_exists($autoloader = __DIR__ . '/../vendor/autoload.php')) {
+} elseif (file_exists($autoloader = __DIR__.'/../vendor/autoload.php')) {
     require_once $autoloader;
 } else {
     throw new \RuntimeException('Unable to find the Composer autoloader.');
 }
 
-$symfonyRequirements = new SymfonyRequirements(dirname(dirname(realpath($autoloader))));
+$symfonyVersion = class_exists('\Symfony\Component\HttpKernel\Kernel') ? \Symfony\Component\HttpKernel\Kernel::VERSION : null;
+
+$symfonyRequirements = new SymfonyRequirements(dirname(dirname(realpath($autoloader))), $symfonyVersion);
 
 $majorProblems = $symfonyRequirements->getFailedRequirements();
 $minorProblems = $symfonyRequirements->getFailedRecommendations();
-$hasMajorProblems = (bool)count($majorProblems);
-$hasMinorProblems = (bool)count($minorProblems);
+$hasMajorProblems = (bool) count($majorProblems);
+$hasMinorProblems = (bool) count($minorProblems);
 
 ?>
 <!DOCTYPE html>
@@ -277,7 +279,7 @@ $hasMinorProblems = (bool)count($minorProblems);
             }
             .sf-reset ul a,
             .sf-reset ul a:hover {
-                background: url(../images/blue-arrow.png) no-repeat right 6px;
+                background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAICAYAAAAx8TU7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAFdJREFUeNpiYACBjjOhDEiACSggCKTLgXQ5TJARqhIkcReIKxgqTGYxwvV0nDEGkmeAOIwJySiQ4HsgvseIpGo3ELsCtZ9lRDIvDCiwhwHJPEFkJwEEGACq6hdnax8y1AAAAABJRU5ErkJggg==) no-repeat right 7px;
                 padding-right: 10px;
             }
             .sf-reset ul, ol {
@@ -370,7 +372,7 @@ $hasMinorProblems = (bool)count($minorProblems);
                     <div class="symfony-block-content">
                         <h1 class="title">Configuration Checker</h1>
                         <p>
-                            This script analyzes your system to check whether is
+                            This script analyzes your system to check whether it is
                             ready to run Symfony applications.
                         </p>
 
@@ -417,7 +419,7 @@ $hasMinorProblems = (bool)count($minorProblems);
 
                         <ul class="symfony-install-continue">
                             <?php if ($hasMajorProblems || $hasMinorProblems): ?>
-                                <li><a href="check.php">Re-check configuration</a></li>
+                                <li><strong>Refresh the page to re-check configuration</strong></li>
                             <?php endif; ?>
                         </ul>
                     </div>

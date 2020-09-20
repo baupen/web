@@ -12,22 +12,30 @@
 namespace App\Security\Voter;
 
 use App\Entity\ConstructionManager;
+use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
-use App\Security\Voter\Base\BaseVoter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class CraftsmanVoter extends BaseVoter
+class CraftsmanVoter
 {
+    const CRAFTSMAN_VIEW = 'craftsman_view';
+    const CRAFTSMAN_MODIFY = 'craftsman_modify';
+
     /**
      * Determines if the attribute and subject are supported by this voter.
      *
-     * @param string    $attribute An attribute
-     * @param Craftsman $subject   The subject to secure, e.g. an object the user wants to access or any other PHP type
+     * @param string           $attribute An attribute
+     * @param ConstructionSite $subject   The subject to secure, e.g. an object the user wants to access or any other PHP type
      *
      * @return bool True if the attribute and subject are supported, false otherwise
      */
     protected function supports($attribute, $subject)
     {
+        // if the attribute isn't one we support, return false
+        if (!in_array($attribute, [self::CRAFTSMAN_VIEW, self::CRAFTSMAN_MODIFY])) {
+            return false;
+        }
+
         return $subject instanceof Craftsman;
     }
 
@@ -42,12 +50,23 @@ class CraftsmanVoter extends BaseVoter
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        $user = $this->getUser($token);
+        $user = $token->getUser();
 
-        if (!$user instanceof ConstructionManager) {
-            return false;
+        if ($user instanceof ConstructionManager) {
+            switch ($attribute) {
+                case self::CRAFTSMAN_VIEW:
+                case self::CRAFTSMAN_MODIFY:
+                    return $subject->getConstructionSite()->getConstructionManagers()->contains($user);
+            }
+        } elseif ($user instanceof Craftsman) {
+            switch ($attribute) {
+                case self::CRAFTSMAN_VIEW:
+                    return $user === $subject;
+                case self::CRAFTSMAN_MODIFY:
+                    return false;
+            }
         }
 
-        return $subject->getConstructionSite()->getConstructionManagers()->contains($user);
+        throw new \LogicException('Attribute '.$attribute.' unknown!');
     }
 }

@@ -1,18 +1,32 @@
-// include styling
-require('../sass/app.sass');
+import '../css/app.scss'
+import './vuejs'
 
-// prepare js environment
-require('./legacy');
-require('./bootstrap_vanilla');
-require('./font_awesome_light');
-require('./font_awesome_solid');
+const $ = require('jquery')
+require('bootstrap')
+require('typeface-open-sans')
 
-// include vuejs apps
-require('./apps/Dispatch/bootstrap');
-require('./apps/Edit/bootstrap');
-require('./apps/Foyer/bootstrap');
-require('./apps/Register/bootstrap');
-require('./apps/Share/Craftsman/bootstrap');
-require('./apps/Share/Filter/bootstrap');
-require('./apps/Dashboard/bootstrap');
-require('./apps/Switch/bootstrap');
+// attach jquery to window
+window.$ = $
+
+// register some basic usability functionality
+$(document)
+  .ready(() => {
+    // give instant feedback on form submission
+    $('form')
+      .on('submit', () => {
+        const $form = $(this)
+        const $buttons = $('.btn', $form)
+        if (!$buttons.hasClass('no-disable')) {
+          $buttons.addClass('disabled')
+        }
+      })
+
+    $('[data-toggle="popover"]')
+      .popover()
+
+    // force reload on user browser button navigation
+    $(window)
+      .on('popstate', () => {
+        window.location.reload(true)
+      })
+  })

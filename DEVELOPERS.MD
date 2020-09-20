@@ -1,15 +1,75 @@
 # Developers
-useful tips for development and its environment.
 
-## Setup
+## About the setup
 
-How your local environment needs to be prepared to start developing.
+This project uses the symfony framework for its php backend, the VueJS framework for its JavaScript frontend, and ApiPlatform for its API.
 
-### Environment
+backend:
+- `symfony/sceleton`, `orm`, `translations`, `logging`, `dotenv`, `mailer`, `form`, `requirements-checker`, `templates` and `api`. For pdfs, `tecnickcom/tcpdf` is used, which will be replaced by `famoser/pdf-generator` in the future.
+- dev dependencies include `encore`, `orm-fixtures`, `cs-fixer`, `security-checker`, `debug`, `simple-phpunit`, `brainmaestro/composer-git-hooks`.
+- for deployment, `famoser/agnes` is used.
 
-##### fortawesome
+The previous setup also relied on:
+- `fzaninotto/faker` for sample data
+- `spatie/pdf-to-image` (unsure if ever used)
+- `ramsey/uuid`(can probably be replaced by native php)
+- `intervention/image` for resizing images
 
-to be able to download the fortawesome pro fonts, you need to setup the registry. You can do so by executing  
+frontend; previous setup relied upon:
+
+likely still used:
+```
+    "bootstrap-select": "^1",
+    "bootstrap-vue": "^2.14",
+    "crypto-js": "^3.1.9-1",
+    "debounce": "^1.2.0",
+    "deepmerge": "^2",
+    "eol": "^0.9.1",
+```
+
+likely not used anymore:
+```
+    "lodash": "^4.17.13",
+    "open-iconic": "^1",
+    "open-sans-fontface": "^1",
+    "popper.js": "^1.12",
+    "uuid": "^3.3.2",
+    "vue-async-computed": "^3",
+    "vue-fragment": "^1.5.0",
+    "vue-headful": "^2",
+```
+
+## Developing
+
+setup:
+- `composer install` to install backend dependencies  
+- `yarn install` to install frontend dependencies  
+
+developing:
+- `symfony start` to start the symfony server  
+- `yarn run dev-server` to start the frontend server
+- visit `localhost:8000` and login with `f@mangel.io`, `asdf`  
+- test error templates inside TwigBundle/views by accessing `/_error/404` and `/_error/500`
+
+clean up:
+- `vendor/bin/php-cs-fixer fix` to autoformat code
+- `bin/phpunit` to execute tests
+
+database commands:
+- `doctrine:migrations:diff` to generate a new migration class  
+- `doctrine:migrations:migrate` to execute all migrations  
+- `doctrine:fixtures:load` to load fixtures
+
+deployment:
+- `vendor/bin/agnes release` to create a new release
+- `vendor/bin/agnes deploy` to deploy a release or commitish  
+
+## Troubleshooting
+
+### fortawesome
+
+to be able to execute `yarn install`, you need to download the fortawesome pro fonts. 
+For this, you need to setup its registry. You can do so by executing  
 `npm config set "@fortawesome:registry" https://npm.fontawesome.com/`  
 `npm config set "//npm.fontawesome.com/:_authToken" AUTH_TOKEN`  
 You can find the auth token on the [fontawesome account page](https://fontawesome.com/account)
@@ -26,50 +86,26 @@ build:
 [**travis**](https://travis-ci.org/mangelio/app/settings)  
 add an environment variable called `FONTAWESOME_AUTH_TOKEN`
 
-##### PhpCsFixer
-add `PHP_CS_FIXER_IGNORE_ENV=1` to your environment (with `export` or placing it in the `.bashrc`) to allow php cs fixer to run on php 7.3  
+### Lokalise
 
-##### PhpStorm
-install the symfony plugin and enable it  
-install the editorconfig plugin and enable it  
-enable ESLint  
+To be able to download translations, you need a lokalise API key.
 
-#### Lokalise
 create a read-only api token under `https://lokalise.co/profile/#apitokens`.
 add to .bashrc
 ```
 export LOKALISE_TOKEN=<token>
 ```
 
-#### Project
-
-`composer install` to install backend dependencies  
-`yarn install && yarn encore dev` to install & build frontend dependencies  
-`phpunit` to execute the unit tests  
-`vendor/bin/php-cs-fixer fix` to fix code style issues  
-`dep deploy` to deploy  
-
-## Develop
-
-`php bin/console server:run` to start the symfony server  
-`doctrine:migrations:diff` to generate the migration class  
-`doctrine:migrations:migrate` to execute all migrations  
-`doctrine:fixtures:load` to load fixtures
-
-login with `f@mangel.io`, `asdf`  
-`yarn encode dev-server --port 9000` starts the frontend dev server  
-test error templates inside TwigBundle/views by accessing `/_error/404` and `/_error/500`
-
-
-## Deploy
+### Deployment
 
 server must fulfil requirements of `composer.json` & include ghostscript (`gs`)  
-if you deploy the fist time, while `deploy:composer` is running, set the `.env.local` file in `/shared`, for example like this
+
+a sample prod `.env.local` could look like this:
+
 ```dotenv
 APP_ENV=prod
 APP_SECRET=NEW_SECRET
 MAILER_URL=smtp://info@example.com:NOT_REAL@smtp.mail.com:465/?encryption=ssl&auth_mode=login
-DATABASE_URL=sqlite:///%kernel.project_dir%/var/persistent/prod/data.sqlite  
 ```
 
 if you deploy to the main installation, create `var/transient/domainOverrides.json` with a content similar than this
@@ -90,7 +126,8 @@ if you deploy to the main installation, create `var/transient/domainOverrides.js
 }
 ```
 
-### setup ssh
+### Setup ssh
+
 `ssh-copy-id -i ~/.ssh/id_rsa.pub username@domain` to add ssh key  
 `cat ~/.ssh/id_rsa.pub` to query the active ssh key  
 `ssh-keygen -t rsa -b 4096 -C "username@domain" && eval $(ssh-agent -s) && ssh-add ~/.ssh/id_rsa` generate a new key & add it to ssh  

@@ -13,6 +13,7 @@ namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -29,6 +30,7 @@ class Issue extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
+    use SoftDeleteTrait;
 
     const UPLOAD_STATUS = 1;
     const REGISTRATION_STATUS = 2;
@@ -47,14 +49,14 @@ class Issue extends BaseEntity
      *
      * @ORM\Column(type="boolean")
      */
-    private $isMarked;
+    private $isMarked = false;
 
     /**
      * @var bool
      *
      * @ORM\Column(type="boolean")
      */
-    private $wasAddedWithClient;
+    private $wasAddedWithClient = false;
 
     /**
      * @var string|null
@@ -69,6 +71,27 @@ class Issue extends BaseEntity
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $responseLimit;
+
+    /**
+     * @var float|null
+     *
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $positionX;
+
+    /**
+     * @var float|null
+     *
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $positionY;
+
+    /**
+     * @var float|null
+     *
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $positionZoomScale;
 
     /**
      * @var DateTime
@@ -127,16 +150,9 @@ class Issue extends BaseEntity
     private $reviewBy;
 
     /**
-     * @var IssuePosition|null
-     *
-     * @ORM\OneToOne(targetEntity="App\Entity\IssuePosition", mappedBy="issue")
-     */
-    private $position;
-
-    /**
      * @var IssueImage[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\IssueImage", mappedBy="issue")
+     * @ORM\OneToMany(targetEntity="App\Entity\IssueImage", mappedBy="issue", cascade={"persist"})
      */
     private $images;
 
@@ -160,6 +176,20 @@ class Issue extends BaseEntity
      * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="issues")
      */
     private $map;
+
+    /**
+     * @var MapFile|null
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="issues")
+     */
+    private $mapFile;
+
+    /**
+     * @var ConstructionSite
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="issues")
+     */
+    private $constructionSite;
 
     public function __construct()
     {
@@ -221,19 +251,15 @@ class Issue extends BaseEntity
         return $this->uploadedAt;
     }
 
-    public function setUploadedAt(DateTime $uploadedAt): void
-    {
-        $this->uploadedAt = $uploadedAt;
-    }
-
     public function getUploadBy(): ConstructionManager
     {
         return $this->uploadBy;
     }
 
-    public function setUploadBy(ConstructionManager $uploadBy): void
+    public function uploadedEvent(ConstructionManager $constructionManager)
     {
-        $this->uploadBy = $uploadBy;
+        $this->uploadBy = $constructionManager;
+        $this->uploadedAt = new \DateTime();
     }
 
     public function getRegisteredAt(): ?DateTime
@@ -241,19 +267,15 @@ class Issue extends BaseEntity
         return $this->registeredAt;
     }
 
-    public function setRegisteredAt(?DateTime $registeredAt): void
-    {
-        $this->registeredAt = $registeredAt;
-    }
-
     public function getRegistrationBy(): ?ConstructionManager
     {
         return $this->registrationBy;
     }
 
-    public function setRegistrationBy(?ConstructionManager $registrationBy): void
+    public function registerEvent(ConstructionManager $constructionManager)
     {
-        $this->registrationBy = $registrationBy;
+        $this->registrationBy = $constructionManager;
+        $this->registeredAt = new \DateTime();
     }
 
     public function getRespondedAt(): ?DateTime
@@ -261,19 +283,15 @@ class Issue extends BaseEntity
         return $this->respondedAt;
     }
 
-    public function setRespondedAt(?DateTime $respondedAt): void
-    {
-        $this->respondedAt = $respondedAt;
-    }
-
     public function getResponseBy(): ?Craftsman
     {
         return $this->responseBy;
     }
 
-    public function setResponseBy(?Craftsman $responseBy): void
+    public function responseEvent(Craftsman $craftsman)
     {
-        $this->responseBy = $responseBy;
+        $this->responseBy = $craftsman;
+        $this->respondedAt = new \DateTime();
     }
 
     public function getReviewedAt(): ?DateTime
@@ -281,19 +299,15 @@ class Issue extends BaseEntity
         return $this->reviewedAt;
     }
 
-    public function setReviewedAt(?DateTime $reviewedAt): void
-    {
-        $this->reviewedAt = $reviewedAt;
-    }
-
     public function getReviewBy(): ?ConstructionManager
     {
         return $this->reviewBy;
     }
 
-    public function setReviewBy(?ConstructionManager $reviewBy): void
+    public function reviewEvent(ConstructionManager $constructionManager)
     {
-        $this->reviewBy = $reviewBy;
+        $this->reviewBy = $constructionManager;
+        $this->reviewedAt = new \DateTime();
     }
 
     public function getCraftsman(): ?Craftsman
@@ -324,13 +338,13 @@ class Issue extends BaseEntity
     public function getStatusCode()
     {
         $res = self::UPLOAD_STATUS;
-        if ($this->getRegisteredAt() !== null) {
+        if (null !== $this->getRegisteredAt()) {
             $res = $res | self::REGISTRATION_STATUS;
         }
-        if ($this->getRespondedAt() !== null) {
+        if (null !== $this->getRespondedAt()) {
             $res = $res | self::RESPONSE_STATUS;
         }
-        if ($this->getReviewedAt() !== null) {
+        if (null !== $this->getReviewedAt()) {
             $res = $res | self::REVIEW_STATUS;
         }
 
@@ -355,13 +369,23 @@ class Issue extends BaseEntity
         $this->image = $image;
     }
 
-    public function getPosition(): ?IssuePosition
+    public function getConstructionSite(): ConstructionSite
     {
-        return $this->position;
+        return $this->constructionSite;
     }
 
-    public function setPosition(?IssuePosition $position): void
+    public function setConstructionSite(ConstructionSite $constructionSite): void
     {
-        $this->position = $position;
+        $this->constructionSite = $constructionSite;
+    }
+
+    public function getMapFile(): ?MapFile
+    {
+        return $this->mapFile;
+    }
+
+    public function setMapFile(?MapFile $mapFile): void
+    {
+        $this->mapFile = $mapFile;
     }
 }

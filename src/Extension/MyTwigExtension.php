@@ -15,6 +15,7 @@ use App\Enum\BooleanType;
 use App\Helper\DateTimeFormatter;
 use DateTime;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
@@ -39,6 +40,7 @@ class MyTwigExtension extends AbstractExtension
             new TwigFilter('dateTimeFormat', [$this, 'dateTimeFormatFilter']),
             new TwigFilter('booleanFormat', [$this, 'booleanFilter']),
             new TwigFilter('camelCaseToUnderscore', [$this, 'camelCaseToUnderscoreFilter']),
+            new TwigFilter('truncate', [$this, 'truncateFilter'], ['needs_environment' => true]),
         ];
     }
 
@@ -60,7 +62,7 @@ class MyTwigExtension extends AbstractExtension
     public function dateFormatFilter($date)
     {
         if ($date instanceof DateTime) {
-            return $this->prependDayName($date) . ', ' . $date->format(DateTimeFormatter::DATE_FORMAT);
+            return $this->prependDayName($date).', '.$date->format(DateTimeFormatter::DATE_FORMAT);
         }
 
         return '-';
@@ -74,7 +76,7 @@ class MyTwigExtension extends AbstractExtension
     public function dateTimeFormatFilter($date)
     {
         if ($date instanceof DateTime) {
-            return $this->prependDayName($date) . ', ' . $date->format(DateTimeFormatter::DATE_TIME_FORMAT);
+            return $this->prependDayName($date).', '.$date->format(DateTimeFormatter::DATE_TIME_FORMAT);
         }
 
         return '-';
@@ -95,12 +97,33 @@ class MyTwigExtension extends AbstractExtension
     }
 
     /**
+     * @source https://github.com/twigphp/Twig-extensions/blob/master/src/TextExtension.php
+     */
+    public function truncateFilter(Environment $env, $value, $length = 30, $preserve = false, $separator = '...')
+    {
+        if (mb_strlen($value, $env->getCharset()) > $length) {
+            if ($preserve) {
+                // If breakpoint is on the last word, return the value without separator.
+                if (false === ($breakpoint = mb_strpos($value, ' ', $length, $env->getCharset()))) {
+                    return $value;
+                }
+
+                $length = $breakpoint;
+            }
+
+            return rtrim(mb_substr($value, 0, $length, $env->getCharset())).$separator;
+        }
+
+        return $value;
+    }
+
+    /**
      * translates the day of the week.
      *
      * @return string
      */
     private function prependDayName(DateTime $date)
     {
-        return $this->translator->trans('date_time.' . $date->format('D'), [], 'framework');
+        return $this->translator->trans('date_time.'.$date->format('D'), [], 'framework');
     }
 }

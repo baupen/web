@@ -11,66 +11,37 @@
 
 namespace App\Service\Interfaces;
 
-use App\Entity\ConstructionSite;
+use App\Entity\ConstructionSiteImage;
 use App\Entity\Issue;
-use App\Entity\Map;
+use App\Entity\IssueImage;
+use App\Entity\MapFile;
 
 interface ImageServiceInterface
 {
+    // to show in list; small but able to see contours
     const SIZE_THUMBNAIL = 'thumbnail';
-    const SIZE_FULL = 'full';
-    const SIZE_SHARE_VIEW = 'share_view';
-    const SIZE_REPORT_ISSUE = 'report_issue';
-    const SIZE_MEDIUM = 'medium';
+
+    // show in list where image is primary asset
+    // 4 side by side on A4 at 300 PPI
+    const SIZE_PREVIEW = 'preview';
+
+    // size of map in report
+    // A4 at 300 PPI
     const SIZE_REPORT_MAP = 'report_map';
 
+    // all valid sizes
+    const VALID_SIZES = [self::SIZE_THUMBNAIL, self::SIZE_PREVIEW, self::SIZE_REPORT_MAP];
+
+    public function resizeIssueImage(IssueImage $issueImage, string $size = self::SIZE_THUMBNAIL): ?string;
+
+    public function resizeConstructionSiteImage(ConstructionSiteImage $constructionSiteImage, string $size = self::SIZE_THUMBNAIL): ?string;
+
+    public function renderMapFileToJpg(MapFile $mapFile, string $size = self::SIZE_THUMBNAIL): ?string;
+
     /**
-     * @param string $uncheckedSize
+     * @param Issue[] $issues
      *
-     * @return string
+     * @return resource
      */
-    public function ensureValidSize($uncheckedSize);
-
-    /**
-     * @param string $size
-     *
-     * @return string|null
-     */
-    public function generateMapImage(Map $map, array $issues, $size = self::SIZE_THUMBNAIL);
-
-    /**
-     * @param string $size
-     *
-     * @return string|null
-     */
-    public function generateMapImageForReport(Map $map, array $issues, $size = self::SIZE_THUMBNAIL);
-
-    /**
-     * @param string $size
-     *
-     * @return string|null
-     */
-    public function getSizeForIssue(Issue $issue, $size = self::SIZE_THUMBNAIL);
-
-    /**
-     * @param string $size
-     *
-     * @return string|null
-     */
-    public function getSizeForConstructionSite(ConstructionSite $constructionSite, $size = self::SIZE_THUMBNAIL);
-
-    /**
-     * generates all sizes so the getSize call goes faster once it is really needed.
-     */
-    public function warmUpCacheForIssue(Issue $issue);
-
-    /**
-     * generates all sizes so the getSize call goes faster once it is really needed.
-     */
-    public function warmUpCacheForConstructionSite(ConstructionSite $constructionSite);
-
-    /**
-     * generates all sizes so the getSize call goes faster once it is really needed.
-     */
-    public function warmUpCacheForMap(Map $map);
+    public function renderMapFileWithIssues(MapFile $mapFile, array $issues, string $size = self::SIZE_THUMBNAIL);
 }

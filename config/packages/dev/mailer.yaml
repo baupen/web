@@ -1,0 +1,4 @@
+framework:
+  mailer:
+    envelope:
+      recipients: ['git@famoser.ch']

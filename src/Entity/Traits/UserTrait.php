@@ -12,9 +12,7 @@
 namespace App\Entity\Traits;
 
 use App\Helper\HashHelper;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
 
 trait UserTrait
@@ -22,30 +20,23 @@ trait UserTrait
     /**
      * @var string
      *
-     * @ORM\Column(type="text", unique=true)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\NotBlank()
      * @Assert\Email()
      */
     private $email;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $password;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(type="text")
-     */
-    private $passwordHash;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $authenticationHash;
 
@@ -55,26 +46,6 @@ trait UserTrait
      * @ORM\Column(type="boolean")
      */
     private $isEnabled = false;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean")
-     */
-    private $isRegistrationCompleted = false;
-
-    /**
-     * @var DateTime
-     *
-     * @ORM\Column(type="datetime")
-     */
-    private $registrationDate;
-
-    /**
-     * @var string
-     */
-    private $plainPassword;
-    private $repeatPlainPassword;
 
     /**
      * @return string
@@ -109,67 +80,13 @@ trait UserTrait
     }
 
     /**
-     * @return DateTime
-     */
-    public function getRegistrationDate()
-    {
-        return $this->registrationDate;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function setRegistrationDate()
-    {
-        $this->registrationDate = new DateTime();
-    }
-
-    /**
      * @return string
      */
-    public function getAuthenticationHash()
+    public function generateAuthenticationHash()
     {
+        $this->authenticationHash = HashHelper::getHash();
+
         return $this->authenticationHash;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPlainPassword()
-    {
-        return $this->plainPassword;
-    }
-
-    /**
-     * @param string $plainPassword
-     *
-     * @return static
-     */
-    public function setPlainPassword($plainPassword)
-    {
-        $this->plainPassword = $plainPassword;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRepeatPlainPassword()
-    {
-        return $this->repeatPlainPassword;
-    }
-
-    /**
-     * @param string $plainPassword
-     *
-     * @return static
-     */
-    public function setRepeatPlainPassword($plainPassword)
-    {
-        $this->repeatPlainPassword = $plainPassword;
-
-        return $this;
     }
 
     /**
@@ -180,6 +97,11 @@ trait UserTrait
     public function canLogin()
     {
         return $this->isEnabled;
+    }
+
+    public function getAuthenticationHash(): ?string
+    {
+        return $this->authenticationHash;
     }
 
     /**
@@ -193,16 +115,6 @@ trait UserTrait
     public function getPassword()
     {
         return $this->password;
-    }
-
-    /**
-     * sha256 hash of the password.
-     *
-     * @return string
-     */
-    public function getPasswordHash()
-    {
-        return $this->passwordHash;
     }
 
     /**
@@ -240,8 +152,7 @@ trait UserTrait
      */
     public function eraseCredentials()
     {
-        $this->setPlainPassword(null);
-        $this->setRepeatPlainPassword(null);
+        // nothing to do
     }
 
     /**
@@ -257,38 +168,17 @@ trait UserTrait
     /**
      * hashes the plainPassword and erases credentials.
      */
-    public function setPassword(bool $preventErase = false)
+    public function setPasswordFromPlain(string $plainPassword)
     {
-        $this->password = password_hash($this->getPlainPassword(), PASSWORD_BCRYPT);
-        $this->passwordHash = hash('sha256', $this->getPlainPassword());
-
-        if (!$preventErase) {
-            $this->eraseCredentials();
-        }
-    }
-
-    /**
-     * creates a new reset hash.
-     */
-    public function setAuthenticationHash()
-    {
-        $this->authenticationHash = HashHelper::getHash();
-    }
-
-    /**
-     * indicates that the user registered successfully.
-     */
-    public function setRegistrationCompleted()
-    {
-        $this->isRegistrationCompleted = true;
+        $this->password = password_hash($plainPassword, PASSWORD_BCRYPT);
     }
 
     /**
      * checks if the user has completed the registration.
      */
-    public function isRegistrationCompleted()
+    public function getRegistrationCompleted()
     {
-        return $this->isRegistrationCompleted;
+        return null !== $this->password;
     }
 
     /**
