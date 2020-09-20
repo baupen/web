@@ -20,7 +20,7 @@ trait UserTrait
     /**
      * @var string
      *
-     * @ORM\Column(type="text", unique=true)
+     * @ORM\Column(type="text", length=255, unique=true)
      * @Assert\NotBlank()
      * @Assert\Email()
      */
