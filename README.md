@@ -26,7 +26,7 @@ The target of the release is to make the project ready for big construction site
 As this requires a reimplementation of the API, various architectural challenges are tackled at the same time to make it worth while.  
 
 The next version will feature:
-- [x] considerably less cache usage (around 300% less than before)
+- [x] considerably less cache usage (around 70% less than before)
 - [x] use of `ApiPlatform` (instead of manually written API nodes)
 - [x] removed next gen pdf generation as it will not be ready for some time
 - [x] removed `SyncService` to reduce complexity & much faster testing
