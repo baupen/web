@@ -19,7 +19,6 @@ matrix:
     - php: 7.4
       env:
         - COVERAGE=true
-    - php: nightly
 
 before_install:
   # install imagick
