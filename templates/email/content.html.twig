@@ -10,11 +10,12 @@
                 <p>{{ email.body|nl2br }}</p>
                 <spacer size="8"></spacer>
                 {% if email.actionLink != null %}
-                <p>
-                    <a href="{{ email.actionLink }}" target="_blank">
-                        {{ email.actionText }}
-                    </a>
-                </p>
+                    <p>
+                        <a href="{{ email.actionLink }}" target="_blank">
+                            {{ email.actionText }}
+                        </a>
+                    </p>
+                {% endif %}
             </column>
         </row>
     </container>
