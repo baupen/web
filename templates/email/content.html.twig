@@ -1,3 +1,5 @@
+{% trans_default_domain "email" %}
+
 {% apply inky_to_html %}
     <spacer size="20"></spacer>
     <center>
@@ -7,12 +9,12 @@
     <container>
         <row>
             <column small="12" large="12">
-                <p>{{ email.body|nl2br }}</p>
+                <p>{{ body|nl2br }}</p>
                 <spacer size="8"></spacer>
-                {% if email.actionLink != null %}
+                {% if action_link is defined %}
                     <p>
-                        <a href="{{ email.actionLink }}" target="_blank">
-                            {{ email.actionText }}
+                        <a href="{{ action_link }}" target="_blank">
+                            {{ action_text }}
                         </a>
                     </p>
                 {% endif %}
@@ -29,17 +31,17 @@
         <a href="{{ app.request.getSchemeAndHttpHost() }}">{{ app.request.getSchemeAndHttpHost() }}</a>
 
         <br>
-        <a href="{{ absolute_url(path("external_email", {"identifier" : email.id })) }}">
+        <a href="{{ absolute_url(path("email", {"identifier" : identifier })) }}">
             {{ "mail_wrong_displayed"|trans }}
         </a>
 
-        {% if email.senderName is not null %}
+        {% if sender_email is defined %}
             {{ "sent_by"|trans }}
-            <a href="mailto:{{ email.senderEmail }}">{{ email.senderName }}</a>
+            <a href="mailto:{{ sender_email }}">{{ sender_name }}</a>
         {% else %}
             <br>
             {{ "questions"|trans }}
-            <a href="mailto:{{ support_email }}">{{ support_email }}</a>
+            <a href="mailto:{{ env_support_email }}">{{ env_support_email }}</a>
         {% endif %}
     </p>
     </td>

@@ -11,12 +11,13 @@
 
 namespace App\Form\UserTrait;
 
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class EmailType extends AbstractUserTraitType
+class OnlyEmailType extends AbstractUserTraitType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('email', \Symfony\Component\Form\Extension\Core\Type\EmailType::class);
+        $builder->add('email', EmailType::class);
     }
 }

@@ -4,6 +4,7 @@ twig:
     paths:
         # point this wherever your css files live
         '%kernel.project_dir%/public/build': build
+        '%kernel.project_dir%/public/build/images': images
 
     globals:
         env_support_email: '%env(SUPPORT_EMAIL)%'

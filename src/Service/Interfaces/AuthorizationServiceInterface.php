@@ -15,10 +15,7 @@ use App\Entity\ConstructionManager;
 
 interface AuthorizationServiceInterface
 {
-    /**
-     * @return bool
-     */
-    public function setIsEnabled(ConstructionManager $constructionManager);
+    public function setIsEnabled(ConstructionManager $constructionManager): bool;
 
     public function setDefaultValues(ConstructionManager $constructionManager);
 }

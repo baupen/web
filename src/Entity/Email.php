@@ -16,6 +16,7 @@ use App\Entity\Traits\IdTrait;
 use App\Enum\EmailType;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\UuidV4;
 
 /**
  * An Email is a sent email to the specified receivers.
@@ -27,7 +28,12 @@ class Email extends BaseEntity
 {
     use IdTrait;
 
-    const SENDER_SYSTEM = 'system';
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="guid")
+     */
+    private $identifier;
 
     /**
      * @var string
@@ -98,6 +104,11 @@ class Email extends BaseEntity
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $visitedDateTime;
+
+    public function generateIdentifier()
+    {
+        $this->identifier = UuidV4::v4();
+    }
 
     public function setSender(string $senderName, string $senderEmail): void
     {
@@ -193,5 +204,10 @@ class Email extends BaseEntity
     public function confirmSent()
     {
         $this->sentDateTime = new \DateTime();
+    }
+
+    public function getIdentifier(): string
+    {
+        return $this->identifier;
     }
 }

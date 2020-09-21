@@ -209,4 +209,9 @@ class ConstructionManager extends BaseEntity implements UserInterface
     {
         $this->isExternalAccount = $isExternalAccount;
     }
+
+    public function __toString()
+    {
+        return 'hi';
+    }
 }
