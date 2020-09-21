@@ -1,3 +1,10 @@
+{% macro nav_item(link, text, secondary = false) %}
+    <li class="nav-item {% if secondary %} font-weight-light {% endif %}{% if app.request.pathInfo == link %}active{% endif %}">
+        <a class="nav-link" href="{{ link }}">{{ text }}</a>
+    </li>
+{% endmacro %}
+{% import _self as own_macros %}
+
 {% extends "base.html.twig" %}
 
 {% block title %}{{ "index.title"|trans }}{% endblock %}
@@ -6,6 +13,45 @@
 {% trans_default_domain "index" %}
 
 {% block content %}
+    <nav class="navbar navbar-dark bg-dark navbar-expand">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavbar"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav mr-2">
+                <a href="mailto:{{ env_support_email }}" class="nav-link">
+                    <i class="fal fa-envelope-open"></i>
+                </a>
+                <a href="#help-modal" class="nav-link" data-target="#help-modal" data-toggle="modal">
+                    <i class="fal fa-question-circle"></i>
+                </a>
+            </ul>
+            <ul class="navbar-nav mr-2">
+                {{ own_macros.nav_item(path("set_locale", {"locale": "de", "return_to": app.request.requestUri}), "de", app.request.locale != "de") }}
+                {{ own_macros.nav_item(path("set_locale", {"locale": "it", "return_to": app.request.requestUri}), "it", app.request.locale != "it") }}
+            </ul>
+            <ul class="navbar-nav">
+                {{ own_macros.nav_item(path("logout"), "logout.title"|trans({}, "security")) }}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- help modal -->
+    <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h1>{{ "overview.title"|trans({}, "help") }}</h1>
+                    <p>{{ "overview.description"|trans({}, "help") }}</p>
+                    {% include "help/overview.html.twig" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container-fluid">
         <div id="index">
 

@@ -66,7 +66,7 @@ class SecurityController extends BaseFormController
         $constructionManager->setEmail($authenticationUtils->getLastUsername());
 
         $form = $this->createForm(LoginType::class, $constructionManager);
-        $form->add('submit', SubmitType::class, ['translation_domain' => 'security']);
+        $form->add('submit', SubmitType::class, ['translation_domain' => 'security', 'label' => 'login.submit']);
 
         return $this->render('security/login.html.twig', ['form' => $form->createView()]);
     }

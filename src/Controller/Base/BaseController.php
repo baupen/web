@@ -11,11 +11,20 @@
 
 namespace App\Controller\Base;
 
+use App\Entity\ConstructionManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class BaseController extends AbstractController
 {
+    /**
+     * @return ConstructionManager|null
+     */
+    protected function getUser()
+    {
+        return parent::getUser();
+    }
+
     public static function getSubscribedServices()
     {
         return parent::getSubscribedServices() + ['session' => '?'.SessionInterface::class];

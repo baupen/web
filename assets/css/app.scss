@@ -6,6 +6,34 @@ $primary: #343477;
 @import '~noty/src/noty';
 @import '~noty/src/themes/bootstrap-v4';
 
+html,
 body {
-  color: #efefef;
+  height: 100%;
+}
+
+//center layout for messages & easy forms
+.center-wrapper {
+  align-items: center;
+  background: $gray-100;
+  display: flex;
+  min-height: 100%;
+}
+
+.center-content {
+  margin: 40px auto;
+  max-width: 540px;
+  width: 100%;
+}
+
+.center-content-primary {
+  background: $white;
+  padding: 2rem 2rem 1rem;
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.center-content-secondary {
+  padding: 1rem 2rem;
 }
