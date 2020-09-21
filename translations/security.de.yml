@@ -33,14 +33,20 @@ register_confirm:
   success:
     welcome: 'Ihr Account ist nun fertig eingerichtet.'
   app_email:
-    subject: 'Loggen Sie sich in die App ein'
+    subject: 'Laden Sie mangel.io App herunter um Pendenzen zu erfassen.'
     body: |
-      Willkommen! Um alle Funktionen nutzen zu können...
-      1. laden Sie sich die mangel.io App vom iOS Store herunter
+      Willkommen!
+
+      Um alle Funktionen nutzen zu können, laden Sie sich die mangel.io App
+      vom iOS Store herunter
       2. loggen Sie sich mit Benutzername, Passwort auf der Webseite %website% ein
     action_text: 'App login link'
   error:
     invalid_hash: 'Dieser Link ist nicht mehr gültig. Starten Sie die Registrierung neu oder loggen Sie sich ein wie gewohnt.'
+
+register_confirmed:
+  title: 'Willkommen'
+  description: 'Ein kurzer Überblick, wie die Anwendung funktioniert.'
 
 recover:
   title: 'Passwort zurücksetzen.'
@@ -69,6 +75,8 @@ recover_confirm:
   error:
     passwords_do_not_match: 'Die Passwörter stimmen nicht überein.'
     invalid_hash: 'Dieser Link ist nicht mehr gültig. Beachten Sie, das jeder Link nur einmal benutzt werden kann.'
+    password_too_short: 'Das Password ist zu kurz. Bitte mindestens 8 Zeichen angeben.'
 
 logout:
   title: Logout
+

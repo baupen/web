@@ -16,7 +16,7 @@ use App\Form\UserTrait\SetPasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RegisterConfirmType extends EditProfileType
+class RegisterConfirmType extends AbstractConstructionManagerType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

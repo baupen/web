@@ -2,7 +2,7 @@
 
 {% block content %}
     <section class="center-wrapper">
-        <div class="center-content">
+        <div class="center-content {% if wide is defined %}wide{% endif %}">
             <div class="center-content-primary shadow">
                 <h1>{{ block("title") }}</h1>
 

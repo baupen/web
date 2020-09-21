@@ -130,17 +130,18 @@ class SecurityController extends BaseFormController
         }
 
         $form = $this->createForm(RegisterConfirmType::class, $constructionManager);
-        $form->add('submit', SubmitType::class, ['translation_domain' => 'security']);
+        $form->add('submit', SubmitType::class, ['translation_domain' => 'security', 'label' => 'register_confirm.submit']);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form, $constructionManager, $translator)) {
+        if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form->get('password'), $constructionManager, $translator)) {
             $constructionManager->generateAuthenticationHash();
             $this->fastSave($constructionManager);
 
             $this->loginUser($constructionManager, $authenticator, $guardHandler, $request);
+            $this->displaySuccess($translator->trans('register_confirm.success.welcome', [], 'security'));
             $emailService->sendAppInvitation($constructionManager);
 
-            return $this->redirectToRoute('welcome');
+            return $this->render('security/register_confirmed.html.twig');
         }
 
         return $this->render('security/register_confirm.html.twig', ['form' => $form->createView()]);
@@ -212,7 +213,7 @@ class SecurityController extends BaseFormController
         /** @var ConstructionManager $constructionManager */
         $constructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['authenticationHash' => $authenticationHash]);
         if (null === $constructionManager) {
-            $this->displayError($translator->trans('confirm.error.invalid_hash', [], 'security'));
+            $this->displayError($translator->trans('recover_confirm.error.invalid_hash', [], 'security'));
 
             return false;
         }
@@ -222,11 +223,17 @@ class SecurityController extends BaseFormController
 
     private function applySetPasswordType(FormInterface $form, ConstructionManager $constructionManager, TranslatorInterface $translator)
     {
-        $plainPassword = $form->get('plainPassword');
-        $repeatPlainPassword = $form->get('repeatPlainPassword');
+        $plainPassword = $form->get('plainPassword')->getData();
+        $repeatPlainPassword = $form->get('repeatPlainPassword')->getData();
+
+        if (strlen($plainPassword) < 8) {
+            $this->displayError($translator->trans('recover_confirm.error.password_too_short', [], 'security'));
+
+            return false;
+        }
 
         if ($plainPassword !== $repeatPlainPassword) {
-            $this->displayError($translator->trans('reset.error.passwords_do_not_match', [], 'security'));
+            $this->displayError($translator->trans('recover_confirm.error.passwords_do_not_match', [], 'security'));
 
             return false;
         }

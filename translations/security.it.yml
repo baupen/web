@@ -61,6 +61,7 @@ recover_confirm:
   error:
     passwords_do_not_match: 'Le password non corrispondono.'
     invalid_hash: 'Questo link non è più valido. Si noti che ogni link può essere utilizzato solamente una volta.'
+    password_too_short: 'La password è troppo corta. Si prega di inserire almeno 8 caratteri.'
 
 logout:
   title: Logout
