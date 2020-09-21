@@ -68,13 +68,6 @@ class ConstructionManager extends BaseEntity implements UserInterface
     private $constructionSites;
 
     /**
-     * @var ConstructionSite|null
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite")
-     */
-    private $activeConstructionSite;
-
-    /**
      * @var string
      *
      * @ORM\Column(type="text", options={"default": "de"})
@@ -185,16 +178,6 @@ class ConstructionManager extends BaseEntity implements UserInterface
         }
 
         return [self::ROLE_ASSIGNED_CONSTRUCTION_MANAGER];
-    }
-
-    public function getActiveConstructionSite(): ?ConstructionSite
-    {
-        return $this->activeConstructionSite;
-    }
-
-    public function setActiveConstructionSite(?ConstructionSite $activeConstructionSite): void
-    {
-        $this->activeConstructionSite = $activeConstructionSite;
     }
 
     public function getLocale(): string
