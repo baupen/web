@@ -31,7 +31,7 @@ The next version will feature:
 - [x] removed next gen pdf generation as it will not be ready for some time
 - [x] removed `SyncService` to reduce complexity & much faster testing
 - [x] removed `Notes` to reduce complexity (users did not use it)
-- [x] refactored services for clean code (easier to use abstractions, clear code flow)
+- [x] refactored services for clean code (easier to use abstractions, clear code flow). missing: ImageHelper, getWidthAndHeight 
 - [ ] use of `famoser/agnes` for deployment (faster, more scalable deployments)
 - [ ] reimplementation of the login flow to ease boarding users
 - [ ] reimplementation of the UI to use new API
