@@ -156,7 +156,7 @@ class SecurityController extends BaseFormController
     {
         $constructionManager = new ConstructionManager();
         $form = $this->createForm(OnlyEmailType::class, $constructionManager);
-        $form->add('submit', SubmitType::class, ['translation_domain' => 'security']);
+        $form->add('submit', SubmitType::class, ['translation_domain' => 'security', 'label' => 'recover.submit']);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -165,14 +165,12 @@ class SecurityController extends BaseFormController
             if (null === $existingConstructionManager) {
                 $logger->info('could not reset password of unknown user '.$constructionManager->getEmail());
                 $this->displayError($translator->trans('recover.fail.email_not_found', [], 'security'));
+            } elseif ($emailService->sendRecoverConfirmLink($existingConstructionManager)) {
+                $logger->info('sent password reset email to '.$constructionManager->getEmail());
+                $this->displaySuccess($translator->trans('recover.success.email_sent', [], 'security'));
             } else {
-                if ($emailService->sendRecoverConfirmLink($existingConstructionManager)) {
-                    $logger->info('sent password reset email to '.$constructionManager->getEmail());
-                    $this->displaySuccess($translator->trans('recover.success.email_sent', [], 'security'));
-                } else {
-                    $logger->error('could not send password reset email '.$constructionManager->getEmail());
-                    $this->displayError($translator->trans('recover.fail.email_not_sent', [], 'security'));
-                }
+                $logger->error('could not send password reset email '.$constructionManager->getEmail());
+                $this->displayError($translator->trans('recover.fail.email_not_sent', [], 'security'));
             }
         }
 
@@ -199,6 +197,9 @@ class SecurityController extends BaseFormController
         if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form, $constructionManager, $translator)) {
             $constructionManager->generateAuthenticationHash();
             $this->fastSave($constructionManager);
+
+            $message = $translator->trans('recover_confirm.success.password_set', [], 'security');
+            $this->displaySuccess($message);
 
             $this->loginUser($constructionManager, $authenticator, $guardHandler, $request);
 
