@@ -1,4 +1,4 @@
-{% extends "security/base.html.twig" %}
+{% extends "help/_base.html.twig" %}
 
 {% block title %}{{ "register_confirmed.title"|trans }}{% endblock %}
 {% block description %}{{ "register_confirmed.description"|trans }}{% endblock %}
@@ -7,8 +7,8 @@
 
 {% trans_default_domain "security" %}
 
-{% block form_content %}
-    {% include 'help/overview.html.twig' %}
+{% block help_content %}
+    {% include 'help/articles/overview.html.twig' %}
 
     <hr class="mt-5">
     <p class="mt-5 mb-5 text-center">

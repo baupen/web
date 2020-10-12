@@ -5,7 +5,7 @@
 {% endmacro %}
 {% import _self as own_macros %}
 
-{% extends "base.html.twig" %}
+{% extends "_base.html.twig" %}
 
 {% block title %}{{ "index.title"|trans }}{% endblock %}
 {% block description %}{{ "index.description"|trans }}{% endblock %}
@@ -46,7 +46,7 @@
                 <div class="modal-body">
                     <h1>{{ "overview.title"|trans({}, "help") }}</h1>
                     <p>{{ "overview.description"|trans({}, "help") }}</p>
-                    {% include "help/overview.html.twig" %}
+                    {% include "help/articles/overview.html.twig" %}
                 </div>
             </div>
         </div>

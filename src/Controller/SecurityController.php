@@ -142,7 +142,7 @@ class SecurityController extends BaseFormController
             $this->displaySuccess($translator->trans('register_confirm.success.welcome', [], 'security'));
             $emailService->sendAppInvitation($constructionManager);
 
-            return $this->render('security/register_confirmed.html.twig');
+            return $this->redirectToRoute('help_welcome');
         }
 
         return $this->render('security/register_confirm.html.twig', ['form' => $form->createView()]);
