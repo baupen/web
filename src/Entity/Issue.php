@@ -388,4 +388,19 @@ class Issue extends BaseEntity
     {
         $this->mapFile = $mapFile;
     }
+
+    public function getPositionX(): ?float
+    {
+        return $this->positionX;
+    }
+
+    public function getPositionY(): ?float
+    {
+        return $this->positionY;
+    }
+
+    public function getPositionZoomScale(): ?float
+    {
+        return $this->positionZoomScale;
+    }
 }

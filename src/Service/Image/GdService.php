@@ -77,26 +77,39 @@ class GdService
         imagettftext($image, $fontSize, 0, (int) ($textStart), (int) ($yPosition + $halfHeight), $white, $font, $text);
     }
 
-    /**
-     * @return bool
-     */
-    public function resizeImage(string $sourcePath, string $targetPath, int $maxWidth, int $maxHeight)
+    public function resizeImage(string $sourcePath, string $targetPath, int $maxWidth, int $maxHeight): bool
     {
         list($width, $height) = ImageHelper::fitInBoundingBox($sourcePath, $maxWidth, $maxHeight, false);
         $ending = pathinfo($sourcePath, PATHINFO_EXTENSION);
 
         //resize & save
         $newImage = imagecreatetruecolor($width, $height);
+        if (!$newImage) {
+            return false;
+        }
+
         if ('jpg' === $ending || 'jpeg' === $ending) {
             $originalImage = imagecreatefromjpeg($sourcePath);
+            if (!$originalImage) {
+                return false;
+            }
+
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
             imagejpeg($newImage, $targetPath, 90);
         } elseif ('png' === $ending) {
             $originalImage = imagecreatefrompng($sourcePath);
+            if (!$originalImage) {
+                return false;
+            }
+
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
             imagepng($newImage, $targetPath, 9);
         } elseif ('gif' === $ending) {
             $originalImage = imagecreatefromgif($sourcePath);
+            if (!$originalImage) {
+                return false;
+            }
+
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
             imagegif($newImage, $targetPath);
         } else {

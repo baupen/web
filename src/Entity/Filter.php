@@ -16,6 +16,7 @@ use App\Entity\Traits\IdTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * A Filter is used to share a selection of issues.
@@ -242,7 +243,7 @@ class Filter extends BaseEntity
      */
     public function setPublicAccessIdentifier(): void
     {
-        $this->publicAccessIdentifier = Uuid::uuid4()->toString();
+        $this->publicAccessIdentifier = Uuid::v4();
     }
 
     /**

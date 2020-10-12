@@ -16,7 +16,6 @@ use App\Entity\Email;
 use App\Service\Interfaces\EmailServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -82,11 +81,6 @@ class EmailService implements EmailServiceInterface
         $this->supportEmail = $supportEmail;
     }
 
-    /**
-     * @return false
-     *
-     * @throws Exception
-     */
     public function sendRegisterConfirmLink(ConstructionManager $constructionManager): bool
     {
         $entity = Email::create(Email::TYPE_REGISTER_CONFIRM, $constructionManager);
