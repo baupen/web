@@ -18,45 +18,30 @@
             <td class="float-center" align="center" valign="top">
                 <center>
                     {% apply inky_to_html %}
-                    <spacer size="20"></spacer>
-                    <center>
-                        <img class="logo" src="{{ email.image('@images/logo.png') }}" alt="Logo">
-                    </center>
-                    <spacer size="20"></spacer>
-                    <container>
-                        <row class="bg-white">
-                            <columns small="12" large="12">
-                                <spacer size="20"></spacer>
-                                {% block body %}
+                        <spacer size="20"></spacer>
+                        <center>
+                            <img class="logo" src="{{ email.image('@images/logo.png') }}" alt="Logo">
+                        </center>
+                        <spacer size="20"></spacer>
+                        <container>
+                            <row class="bg-white">
+                                <columns small="12" large="12">
+                                    <spacer size="20"></spacer>
+                                    {% block body %}
 
-                                {% endblock %}
-                            </columns>
-                        </row>
-                        <row class="secondary-content">
-                            <columns small="12" large="12">
-                                <spacer size="20"></spacer>
+                                    {% endblock %}
+                                </columns>
+                            </row>
+                            <row class="secondary-content">
+                                <columns small="12" large="12">
+                                    <spacer size="20"></spacer>
 
-                                <p class="text-center">
-                                    {{ "generated"|trans }}
-                                    <br>
-                                    <a href="{{ absolute_url(path("email", {"identifier" : identifier })) }}">
-                                        {{ "mail_wrong_displayed"|trans }}
-                                    </a>
-                                    <br>
-                                    {% if sender_email is defined %}
-                                        {{ "sent_by"|trans }}
-                                        <a href="mailto:{{ sender_email }}">{{ sender_name }}</a>
-                                    {% else %}
-                                        {{ "questions"|trans }}
-                                        <a href="mailto:{{ env_support_email }}">{{ env_support_email }}</a>
-                                    {% endif %}
-                                </p>
-
-                                <p class="text-center">
-                                </p>
-                            </columns>
-                        </row>
-                    </container>
+                                    <p class="text-center">
+                                        {% include "email/_email_meta_content.html.twig" %}
+                                    </p>
+                                </columns>
+                            </row>
+                        </container>
                     {% endapply %}
                 </center>
             </td>

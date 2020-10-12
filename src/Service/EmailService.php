@@ -13,7 +13,6 @@ namespace App\Service;
 
 use App\Entity\ConstructionManager;
 use App\Entity\Email;
-use App\Enum\EmailType;
 use App\Service\Interfaces\EmailServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
@@ -90,7 +89,7 @@ class EmailService implements EmailServiceInterface
      */
     public function sendRegisterConfirmLink(ConstructionManager $constructionManager): bool
     {
-        $entity = Email::create(EmailType::REGISTER_CONFIRM, $constructionManager);
+        $entity = Email::create(Email::TYPE_REGISTER_CONFIRM, $constructionManager);
         $subject = $this->translator->trans('register_confirm.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
         $message = (new TemplatedEmail())
@@ -107,7 +106,7 @@ class EmailService implements EmailServiceInterface
 
     public function sendRecoverConfirmLink(ConstructionManager $constructionManager): bool
     {
-        $entity = Email::create(EmailType::RECOVER_CONFIRM, $constructionManager);
+        $entity = Email::create(Email::TYPE_RECOVER_CONFIRM, $constructionManager);
         $subject = $this->translator->trans('recover_confirm.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
         $message = (new TemplatedEmail())
@@ -124,7 +123,7 @@ class EmailService implements EmailServiceInterface
 
     public function sendAppInvitation(ConstructionManager $constructionManager): bool
     {
-        $entity = Email::create(EmailType::APP_INVITATION, $constructionManager);
+        $entity = Email::create(Email::TYPE_APP_INVITATION, $constructionManager);
         $subject = $this->translator->trans('app_invitation.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
         $message = (new TemplatedEmail())
@@ -132,8 +131,8 @@ class EmailService implements EmailServiceInterface
             ->from($this->mailerFromEmail)
             ->to($constructionManager->getEmail())
             ->replyTo($this->mailerFromEmail)
-            ->textTemplate('email/send_app_invitation.txt.twig')
-            ->htmlTemplate('email/send_app_invitation.html.twig')
+            ->textTemplate('email/app_invitation.txt.twig')
+            ->htmlTemplate('email/app_invitation.html.twig')
             ->context($entity->getContext());
 
         return $this->sendAndStoreEMail($message, $entity);

@@ -13,7 +13,6 @@ namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
-use App\Enum\EmailType;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\UuidV4;
@@ -28,6 +27,10 @@ class Email extends BaseEntity
 {
     use IdTrait;
 
+    const TYPE_REGISTER_CONFIRM = 1;
+    const TYPE_RECOVER_CONFIRM = 2;
+    const TYPE_APP_INVITATION = 3;
+
     /**
      * @var string
      *
@@ -40,7 +43,7 @@ class Email extends BaseEntity
      *
      * @ORM\Column(type="integer")
      */
-    private $emailType = EmailType::REGISTER_CONFIRM;
+    private $type;
 
     /**
      * @var DateTime
@@ -68,7 +71,7 @@ class Email extends BaseEntity
         $email = new Email();
 
         $email->identifier = UuidV4::v4();
-        $email->emailType = $emailType;
+        $email->type = $emailType;
         $email->sentBy = $sentBy;
         $email->sentDateTime = new \DateTime();
 
@@ -85,9 +88,9 @@ class Email extends BaseEntity
         return $this->identifier;
     }
 
-    public function getEmailType(): int
+    public function getType(): int
     {
-        return $this->emailType;
+        return $this->type;
     }
 
     public function getSentDateTime(): DateTime
@@ -107,6 +110,6 @@ class Email extends BaseEntity
 
     public function getContext(): array
     {
-        return ['sentBy' => $this->sentBy, 'identifier' => $this->identifier];
+        return ['sentBy' => $this->sentBy, 'identifier' => $this->identifier, 'emailType' => $this->type];
     }
 }

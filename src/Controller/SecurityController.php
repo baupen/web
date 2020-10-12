@@ -105,13 +105,14 @@ class SecurityController extends BaseFormController
                     $constructionManager = $existing;
                 }
 
+                $constructionManager->generateAuthenticationHash();
+                $this->fastSave($constructionManager);
+
                 if ($emailService->sendRegisterConfirmLink($constructionManager)) {
                     $this->displaySuccess($translator->trans('register.success.welcome', [], 'security'));
                 } else {
                     $this->displayError($translator->trans('register.fail.welcome_email_not_sent', [], 'security'));
                 }
-
-                $this->fastSave($constructionManager);
             }
         }
 
@@ -165,12 +166,8 @@ class SecurityController extends BaseFormController
             if (null === $existingConstructionManager) {
                 $logger->info('could not reset password of unknown user '.$constructionManager->getEmail());
                 $this->displayError($translator->trans('recover.fail.email_not_found', [], 'security'));
-            } elseif ($emailService->sendRecoverConfirmLink($existingConstructionManager)) {
-                $logger->info('sent password reset email to '.$constructionManager->getEmail());
-                $this->displaySuccess($translator->trans('recover.success.email_sent', [], 'security'));
             } else {
-                $logger->error('could not send password reset email '.$constructionManager->getEmail());
-                $this->displayError($translator->trans('recover.fail.email_not_sent', [], 'security'));
+                $this->sendAuthenticationLink($existingConstructionManager, $emailService, $logger, $translator);
             }
         }
 
@@ -262,5 +259,19 @@ class SecurityController extends BaseFormController
     public function logout()
     {
         throw new LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+    }
+
+    private function sendAuthenticationLink(ConstructionManager $existingConstructionManager, EmailServiceInterface $emailService, LoggerInterface $logger, TranslatorInterface $translator): void
+    {
+        $existingConstructionManager->generateAuthenticationHash();
+        $this->fastSave($existingConstructionManager);
+
+        if ($emailService->sendRecoverConfirmLink($existingConstructionManager)) {
+            $logger->info('sent password reset email to '.$existingConstructionManager->getEmail());
+            $this->displaySuccess($translator->trans('recover.success.email_sent', [], 'security'));
+        } else {
+            $logger->error('could not send password reset email '.$existingConstructionManager->getEmail());
+            $this->displayError($translator->trans('recover.fail.email_not_sent', [], 'security'));
+        }
     }
 }

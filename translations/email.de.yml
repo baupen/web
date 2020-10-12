@@ -1,7 +1,7 @@
 generated: 'Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht darauf.'
-questions: 'Bei Fragen werden Sie sich an '
+questions: 'Bei Fragen wenden Sie sich an'
 mail_wrong_displayed: 'Diese E-Mail wird nicht richtig dargestellt? Bitte klicken Sie hier.'
-sent_by: 'Versand der E-Mail durch '
+sent_by: 'Versand der E-Mail durch'
 
 register_confirm:
   subject: 'Willkommen auf %page%!'
@@ -19,3 +19,7 @@ recover_confirm:
   subject: 'Passwort zurücksetzen auf %page%'
   message: 'Wir haben eine Anfrage erhalten, um Ihr Passwort auf %page% zurückzusetzen. Nutzen Sie den Link unten, um dies nun zu tun.'
   confirm_link: 'Passwort zurücksetzen'
+
+view_online:
+  title: 'E-Mail lesen'
+  description: 'E-Mail im Originallayout lesen.'
