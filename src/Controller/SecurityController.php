@@ -188,7 +188,7 @@ class SecurityController extends BaseFormController
         }
 
         $form = $this->createForm(SetPasswordType::class, $constructionManager);
-        $form->add('submit', SubmitType::class, ['translation_domain' => 'security']);
+        $form->add('submit', SubmitType::class, ['translation_domain' => 'security', 'label' => 'recover_confirm.submit']);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form, $constructionManager, $translator)) {
@@ -204,6 +204,14 @@ class SecurityController extends BaseFormController
         }
 
         return $this->render('security/recover_confirm.html.twig', ['form' => $form->createView()]);
+    }
+
+    /**
+     * @Route("/logout", name="logout")
+     */
+    public function logout()
+    {
+        throw new LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
     private function getConstructionManagerFromAuthenticationHash(string $authenticationHash, TranslatorInterface $translator, ConstructionManager &$constructionManager = null)
@@ -251,14 +259,6 @@ class SecurityController extends BaseFormController
             $authenticator, // authenticator whose onAuthenticationSuccess you want to use
             'main'          // the name of your firewall in security.yaml
         );
-    }
-
-    /**
-     * @Route("/logout", name="logout")
-     */
-    public function logout()
-    {
-        throw new LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
     private function sendAuthenticationLink(ConstructionManager $existingConstructionManager, EmailServiceInterface $emailService, LoggerInterface $logger, TranslatorInterface $translator): void
