@@ -139,7 +139,7 @@ class EmailService implements EmailServiceInterface
 
         //construct html body if applicable
         if (EmailType::PLAIN_EMAIL !== $email->getEmailType()) {
-            $message->htmlTemplate('email/email_template.html.twig');
+            $message->htmlTemplate('email/content.html.twig');
         }
 
         $email->generateIdentifier();
