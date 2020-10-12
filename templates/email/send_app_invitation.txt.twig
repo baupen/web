@@ -1,0 +1,11 @@
+{% extends "email/_base.txt.twig" %}
+
+{% trans_default_domain "email" %}
+
+{% block body %}
+1. {{ "app_invitation.download_to_use_functionality"|trans({"%page%": app.request.httpHost})  }}
+{{ "app_invitation.ios_store"|trans }}: https://apps.apple.com/ch/app/mangel-io/id1414077195
+
+2. {{ "app_invitation.authenticate"|trans({"%page%": app.request.httpHost})  }}
+{{ "app_invitation.ios_login_link"|trans }}: {{ sentBy|iOSLoginLink }}
+{% endblock %}

@@ -12,6 +12,7 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             $mailerFromEmail: '%env(MAILER_FROM_EMAIL)%'
+            $supportEmail: '%env(SUPPORT_EMAIL)%'
             $authorizationMethod: '%env(AUTHORIZATION_METHOD)%'
             $environment: '%kernel.environment%'
             $publicDir: '%kernel.project_dir%/public'

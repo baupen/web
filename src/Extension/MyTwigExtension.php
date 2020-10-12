@@ -11,9 +11,11 @@
 
 namespace App\Extension;
 
+use App\Entity\ConstructionManager;
 use App\Enum\BooleanType;
 use App\Helper\DateTimeFormatter;
 use DateTime;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
@@ -22,10 +24,12 @@ use Twig\TwigFilter;
 class MyTwigExtension extends AbstractExtension
 {
     private $translator;
+    private $request;
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, RequestStack $requestStack)
     {
         $this->translator = $translator;
+        $this->request = $requestStack->getCurrentRequest();
     }
 
     /**
@@ -41,25 +45,27 @@ class MyTwigExtension extends AbstractExtension
             new TwigFilter('booleanFormat', [$this, 'booleanFilter']),
             new TwigFilter('camelCaseToUnderscore', [$this, 'camelCaseToUnderscoreFilter']),
             new TwigFilter('truncate', [$this, 'truncateFilter'], ['needs_environment' => true]),
+            new TwigFilter('iOSLoginLink', [$this, 'iOSLoginLinkFilter']),
         ];
     }
 
-    /**
-     * @param string $propertyName
-     *
-     * @return string
-     */
-    public function camelCaseToUnderscoreFilter($propertyName)
+    public function iOSLoginLinkFilter(ConstructionManager $constructionManager): string
+    {
+        $username = 'username='.urlencode($constructionManager->getEmail());
+        $domain = $this->request ? 'domain='.urlencode($this->request->getHttpHost()) : null;
+
+        $arguments = array_filter([$username, $domain]);
+        $url = implode('&', $arguments);
+
+        return 'mangel.io://login?'.$url;
+    }
+
+    public function camelCaseToUnderscoreFilter(string $propertyName): string
     {
         return mb_strtolower(preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $propertyName));
     }
 
-    /**
-     * @param DateTime|null $date
-     *
-     * @return string
-     */
-    public function dateFormatFilter($date)
+    public function dateFormatFilter(?\DateTime $date): string
     {
         if ($date instanceof DateTime) {
             return $this->prependDayName($date).', '.$date->format(DateTimeFormatter::DATE_FORMAT);
@@ -68,12 +74,7 @@ class MyTwigExtension extends AbstractExtension
         return '-';
     }
 
-    /**
-     * @param DateTime|null $date
-     *
-     * @return string
-     */
-    public function dateTimeFormatFilter($date)
+    public function dateTimeFormatFilter(?\DateTime $date): string
     {
         if ($date instanceof DateTime) {
             return $this->prependDayName($date).', '.$date->format(DateTimeFormatter::DATE_TIME_FORMAT);
@@ -82,12 +83,7 @@ class MyTwigExtension extends AbstractExtension
         return '-';
     }
 
-    /**
-     * @param $value
-     *
-     * @return string
-     */
-    public function booleanFilter($value)
+    public function booleanFilter(bool $value): string
     {
         if ($value) {
             return BooleanType::getTranslationForValue(BooleanType::YES, $this->translator);
@@ -117,12 +113,7 @@ class MyTwigExtension extends AbstractExtension
         return $value;
     }
 
-    /**
-     * translates the day of the week.
-     *
-     * @return string
-     */
-    private function prependDayName(DateTime $date)
+    private function prependDayName(DateTime $date): string
     {
         return $this->translator->trans('date_time.'.$date->format('D'), [], 'framework');
     }

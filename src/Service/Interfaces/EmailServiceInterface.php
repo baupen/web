@@ -12,7 +12,6 @@
 namespace App\Service\Interfaces;
 
 use App\Entity\ConstructionManager;
-use App\Entity\Email;
 
 interface EmailServiceInterface
 {
@@ -21,6 +20,4 @@ interface EmailServiceInterface
     public function sendAppInvitation(ConstructionManager $constructionManager): bool;
 
     public function sendRecoverConfirmLink(ConstructionManager $constructionManager): bool;
-
-    public function getTemplateContext(Email $email): array;
 }

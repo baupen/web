@@ -15,7 +15,7 @@ use App\Enum\Base\BaseEnum;
 
 class EmailType extends BaseEnum
 {
-    const TEXT_EMAIL = 1;
-    const PLAIN_EMAIL = 2;
-    const ACTION_EMAIL = 3;
+    const REGISTER_CONFIRM = 1;
+    const RECOVER_CONFIRM = 2;
+    const APP_INVITATION = 3;
 }

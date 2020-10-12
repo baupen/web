@@ -1,0 +1,13 @@
+{% extends "email/_base.html.twig" %}
+
+{% trans_default_domain "email" %}
+
+{% block body %}
+    <p>{{ "recover_confirm.message"|trans({"%page%": app.request.httpHost}) }}</p>
+    <spacer size="15"></spacer>
+    <center>
+        <button href="{{ absolute_url(url('recover_confirm', {'authenticationHash': sentBy.authenticationHash})) }}">
+            {{ "recover_confirm.confirm_link"|trans }}
+        </button>
+    </center>
+{% endblock %}
