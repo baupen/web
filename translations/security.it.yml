@@ -18,10 +18,6 @@ register:
     already_registered: 'Sei già registrato. Effettuate il login come di consueto.'
   success:
     welcome: 'Sei stato registrato con successo! Controlla le tue E-mail per attivare l''account.'
-  email:
-    subject: 'Benvenuti su %page%!'
-    body: 'Abbiamo creato e configurato il vostro account.'
-    action_text: 'Attivare l''account'
   fail:
     welcome_email_not_sent: 'L’invio dell’E-mail è fallito. Questo è un errore interno, la preghiamo di contattare il supporto tecnico.'
 
@@ -46,11 +42,6 @@ recover:
   fail:
     email_not_sent: 'L’invio dell’E-mail è fallito. Questo è un errore interno, la preghiamo di contattare il supporto tecnico.'
     email_not_found: 'Questa E-mail non è stata trovata nel nostro sistema.'
-  email:
-    reset_password:
-      subject: 'Reimpostare la password su %page%'
-      message: 'Utilizzare il seguente link per reimpostare la password:'
-      action_text: 'Reimposta ora la password'
 
 recover_confirm:
   title: Bentornati!
