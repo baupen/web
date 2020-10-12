@@ -13,15 +13,16 @@ namespace App\Service;
 
 use App\Entity\ConstructionManager;
 use App\Entity\Email;
-use App\Enum\EmailType;
-use App\Service\Email\SendService;
 use App\Service\Interfaces\EmailServiceInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
-use Exception;
+use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Twig\Environment;
 
 class EmailService implements EmailServiceInterface
 {
@@ -29,6 +30,11 @@ class EmailService implements EmailServiceInterface
      * @var TranslatorInterface
      */
     private $translator;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * @var RequestStack
@@ -46,101 +52,104 @@ class EmailService implements EmailServiceInterface
     private $manager;
 
     /**
-     * @var SendService
+     * @var MailerInterface
      */
-    private $sendService;
+    private $mailer;
 
     /**
-     * @var Environment
+     * @var string
      */
-    private $twig;
+    private $mailerFromEmail;
 
     /**
-     * {@inheritdoc}
-     *
-     * @throws Exception
+     * @var string
      */
-    public function renderEmail(Email $email)
+    private $supportEmail;
+
+    /**
+     * EmailService constructor.
+     */
+    public function __construct(TranslatorInterface $translator, LoggerInterface $logger, RequestStack $request, UrlGeneratorInterface $urlGenerator, ManagerRegistry $registry, MailerInterface $mailer, string $mailerFromEmail, string $supportEmail)
     {
-        return $this->twig->render('email/content.html.twig', ['email' => $email]);
+        $this->translator = $translator;
+        $this->logger = $logger;
+        $this->request = $request;
+        $this->urlGenerator = $urlGenerator;
+        $this->manager = $registry->getManager();
+        $this->mailer = $mailer;
+        $this->mailerFromEmail = $mailerFromEmail;
+        $this->supportEmail = $supportEmail;
     }
 
-    /**
-     * @return false
-     *
-     * @throws Exception
-     */
-    public function sendRegisterConfirmLink(ConstructionManager $constructionManager)
+    public function sendRegisterConfirmLink(ConstructionManager $constructionManager): bool
     {
-        $constructionManager->generateAuthenticationHash();
+        $entity = Email::create(Email::TYPE_REGISTER_CONFIRM, $constructionManager);
+        $subject = $this->translator->trans('register_confirm.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
-        // construct email
-        $email = new Email();
-        $email->setEmailType(EmailType::ACTION_EMAIL);
-        $email->setReceiver($constructionManager->getEmail());
-        $email->setSubject($this->translator->trans('create.email.subject', ['%page%' => $this->request->getCurrentRequest()->getHttpHost()], 'login'));
-        $email->setBody($this->translator->trans('create.email.body', [], 'login'));
-        $email->setActionText($this->translator->trans('create.email.action_text', [], 'login'));
-        $email->setActionLink($this->urlGenerator->generate('register_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()], UrlGeneratorInterface::ABSOLUTE_URL));
+        $message = (new TemplatedEmail())
+            ->subject($subject)
+            ->from($this->mailerFromEmail)
+            ->to($constructionManager->getEmail())
+            ->replyTo($this->mailerFromEmail)
+            ->textTemplate('email/register_confirm.txt.twig')
+            ->htmlTemplate('email/register_confirm.html.twig')
+            ->context($entity->getContext());
 
-        if ($this->sendEmail($email)) {
-            $this->manager->persist($constructionManager);
-
-            return true;
-        }
-
-        return false;
+        return $this->sendAndStoreEMail($message, $entity);
     }
 
-    private function sendEmail(Email $email)
+    public function sendRecoverConfirmLink(ConstructionManager $constructionManager): bool
     {
-        $html = $this->renderEmail($email);
-        if ($this->sendService->sendEmail($email, $html)) {
-            $email->confirmSent();
+        $entity = Email::create(Email::TYPE_RECOVER_CONFIRM, $constructionManager);
+        $subject = $this->translator->trans('recover_confirm.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
-            $this->manager->persist($email);
+        $message = (new TemplatedEmail())
+            ->subject($subject)
+            ->from($this->mailerFromEmail)
+            ->to($constructionManager->getEmail())
+            ->replyTo($this->mailerFromEmail)
+            ->textTemplate('email/recover_confirm.txt.twig')
+            ->htmlTemplate('email/recover_confirm.html.twig')
+            ->context($entity->getContext());
+
+        return $this->sendAndStoreEMail($message, $entity);
+    }
+
+    public function sendAppInvitation(ConstructionManager $constructionManager): bool
+    {
+        $entity = Email::create(Email::TYPE_APP_INVITATION, $constructionManager);
+        $subject = $this->translator->trans('app_invitation.subject', ['%page%' => $this->getCurrentPage()], 'email');
+
+        $message = (new TemplatedEmail())
+            ->subject($subject)
+            ->from($this->mailerFromEmail)
+            ->to($constructionManager->getEmail())
+            ->replyTo($this->mailerFromEmail)
+            ->textTemplate('email/app_invitation.txt.twig')
+            ->htmlTemplate('email/app_invitation.html.twig')
+            ->context($entity->getContext());
+
+        return $this->sendAndStoreEMail($message, $entity);
+    }
+
+    private function getCurrentPage()
+    {
+        return $this->request->getCurrentRequest() ? $this->request->getCurrentRequest()->getHttpHost() : 'localhost';
+    }
+
+    private function sendAndStoreEMail(TemplatedEmail $email, Email $entity): bool
+    {
+        try {
+            $this->mailer->send($email);
+
+            $this->manager->persist($entity);
             $this->manager->flush();
 
             return true;
+        } catch (TransportExceptionInterface $exception) {
+            $this->logger->error('email send failed', ['exception' => $exception, 'email' => $entity]);
+
+            return false;
         }
-
-        return false;
-    }
-
-    public function sendAppInvitation(ConstructionManager $constructionManager)
-    {
-        $request = $this->request->getCurrentRequest();
-
-        $email = new Email();
-        $email->setReceiver($constructionManager->getEmail());
-
-        $email->setEmailType(EmailType::ACTION_EMAIL);
-        $email->setSubject($this->translator->trans('confirm.app_email.subject', [], 'login'));
-        $email->setBody($this->translator->trans('confirm.app_email.body', ['%website%' => $request], 'login'));
-        $email->setActionText($this->translator->trans('confirm.app_email.action_text', [], 'login'));
-        $email->setActionLink('mangel.io://login?username='.urlencode($constructionManager->getEmail()).'&domain='.urlencode($request->getHttpHost()));
-
-        return $this->sendEmail($email);
-    }
-
-    public function sendRecoverConfirmLink(ConstructionManager $constructionManager)
-    {
-        $constructionManager->generateAuthenticationHash();
-
-        $email = new Email();
-        $email->setEmailType(EmailType::ACTION_EMAIL);
-        $email->setReceiver($constructionManager->getEmail());
-        $email->setSubject($this->translator->trans('recover.email.reset_password.subject', ['%page%' => $this->request->getCurrentRequest()->getHttpHost()], 'login'));
-        $email->setBody($this->translator->trans('recover.email.reset_password.message', [], 'login'));
-        $email->setActionText($this->translator->trans('recover.email.reset_password.action_text', [], 'login'));
-        $email->setActionLink($this->urlGenerator->generate('recover_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()], UrlGeneratorInterface::ABSOLUTE_URL));
-
-        if ($this->sendEmail($email)) {
-            $this->manager->persist($constructionManager);
-
-            return true;
-        }
-
-        return false;
     }
 }

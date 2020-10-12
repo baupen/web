@@ -16,17 +16,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/welcome")
+ * @Route("/help")
  */
-class WelcomeController extends BaseController
+class HelpController extends BaseController
 {
     /**
-     * @Route("/welcome", name="welcome")
+     * @Route("/welcome", name="help_welcome")
      *
      * @return Response
      */
-    public function indexAction()
+    public function welcomeAction()
     {
-        return $this->render('welcome/index.html.twig');
+        return $this->render('help/welcome.html.twig');
     }
 }

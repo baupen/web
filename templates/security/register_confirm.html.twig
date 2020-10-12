@@ -1,0 +1,12 @@
+{% extends "security/_base.html.twig" %}
+
+{% block title %}{{ "register_confirm.title"|trans }}{% endblock %}
+{% block description %}{{ "register_confirm.description"|trans }}{% endblock %}
+
+{% trans_default_domain "security" %}
+
+{% block form_content %}
+    <div class="form-wrapper">
+        {{ form(form) }}
+    </div>
+{% endblock %}

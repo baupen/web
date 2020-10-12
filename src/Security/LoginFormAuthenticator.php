@@ -79,24 +79,33 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function getCredentials(Request $request)
     {
-        $email = $request->request->get('email');
+        $formContent = $request->request->all('login');
+
+        $email = $formContent['email'];
         $request->getSession()->set(Security::LAST_USERNAME, $email);
 
-        return [
-            'email' => $email,
-            'password' => $request->request->get('password'),
-            'csrf_token' => $request->request->get('_csrf_token'),
-        ];
+        $keysWhitelist = ['email', 'password', '_token'];
+
+        return array_intersect_key($formContent, array_flip($keysWhitelist));
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $token = new CsrfToken('authenticate', $credentials['csrf_token']);
+        $token = new CsrfToken('login', $credentials['_token']);
         if (!$this->csrfTokenManager->isTokenValid($token)) {
             throw new InvalidCsrfTokenException();
         }
 
-        return $this->entityManager->getRepository(ConstructionManager::class)->findOneBy(['email' => $credentials['email']]);
+        if (!$credentials['email']) {
+            return null;
+        }
+
+        $constructionManagerRepository = $this->entityManager->getRepository(ConstructionManager::class);
+        $constructionManager = $constructionManagerRepository->findOneBy(['email' => $credentials['email']]);
+
+        dump($constructionManager);
+
+        return $constructionManager;
     }
 
     /**

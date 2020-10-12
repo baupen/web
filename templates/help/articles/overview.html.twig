@@ -1,0 +1,35 @@
+{% trans_default_domain "help" %}
+
+<article class="help">
+    <h2 class="mt-4">{{ "overview.create"|trans }}</h2>
+    <p>{{ "overview.create_description"|trans }}
+        <a href="https://itunes.apple.com/app/id1414077195" target="_blank">
+            {{ "overview.download_ios_app"|trans }}
+        </a>
+    </p>
+    <img class="img-fluid" src="{{ asset('build/images/help/1_erfassen.gif') }}"
+         alt="{{ "overview.create_description"|trans }}">
+    <p class="text-secondary mt-2">
+        {{ "overview.app_login"|trans({'%website%': app.request.httpHost}) }}
+    </p>
+    <h2 class="mt-5">{{ "overview.populate"|trans }}</h2>
+    <p>{{ "overview.populate_description"|trans }}</p>
+    <img class="img-fluid" src="{{ asset('build/images/help/2_einpflegen.gif') }}"
+         alt="{{ "overview.populate_description"|trans }}">
+    <h2 class="mt-5">{{ "overview.manage"|trans }}</h2>
+    <p>{{ "overview.manage_description"|trans }}</p>
+    <img class="img-fluid" src="{{ asset('build/images/help/3_verwalten.gif') }}"
+         alt="{{ "overview.manage_description"|trans }}">
+    <h2 class="mt-5">{{ "overview.notify"|trans }}</h2>
+    <p>{{ "overview.notify_description"|trans }}</p>
+    <img class="img-fluid" src="{{ asset('build/images/help/4_benachrichtigen.gif') }}"
+         alt="{{ "overview.notify_description"|trans }}">
+    <h2 class="mt-5">{{ "overview.wait"|trans }}</h2>
+    <p>{{ "overview.wait_description"|trans }}</p>
+    <img class="img-fluid" src="{{ asset('build/images/help/5_rueckmeldung.gif') }}"
+         alt="{{ "overview.wait_description"|trans }}">
+    <h2 class="mt-5">{{ "overview.inspect"|trans }}</h2>
+    <p>{{ "overview.inspect_description"|trans }}</p>
+    <img class="img-fluid" src="{{ asset('build/images/help/6_abschliessen.gif') }}"
+         alt="{{ "overview.inspect_description"|trans }}">
+</article>

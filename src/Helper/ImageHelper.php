@@ -16,55 +16,27 @@ class ImageHelper
     /**
      * gives back the width and height to be used.
      *
-     * @param $imgPath
-     * @param $maxWidth
-     * @param $maxHeight
-     * @param bool $expand
-     *
-     * @return array
+     * @return int[]
      */
-    public static function getWidthHeightArguments($imgPath, int $maxWidth = null, int $maxHeight = null, $expand = true)
+    public static function fitInBoundingBox(string $imgPath, int $boxWidth, int $boxHeight, bool $expand = true): array
     {
         //get image sizes
         $imageSizes = getimagesize($imgPath);
-        $realWidth = $imageSizes[0];
-        $realHeight = $imageSizes[1];
+        $imageWidth = $imageSizes[0];
+        $imageHeight = $imageSizes[1];
 
-        if (null === $maxWidth && null === $maxHeight) {
-            $scale = 1;
-        } else {
-            //get ratios
-            $fallbackRatio = null === $maxHeight ? $maxWidth / $realWidth : $maxHeight / $realHeight;
-            $widthRatio = null !== $maxWidth ? $maxWidth / $realWidth : $fallbackRatio;
-            $heightRatio = null !== $maxHeight ? $maxHeight / $realWidth : $fallbackRatio;
+        //get ratios
+        $widthRatio = (float) $boxWidth / $imageWidth;
+        $heightRatio = (float) $boxHeight / $imageHeight;
+        $ratio = $widthRatio < $heightRatio ? $widthRatio : $heightRatio;
 
-            if ($widthRatio < 1 && $heightRatio < 1) {
-                //image bigger than box
-                if ($widthRatio < $heightRatio) {
-                    $scale = $widthRatio;
-                } else {
-                    $scale = $heightRatio;
-                }
-            } elseif ($widthRatio > 1 && $heightRatio > 1) {
-                //image smaller than box
-                if ($widthRatio > $heightRatio) {
-                    $scale = $widthRatio;
-                } else {
-                    $scale = $heightRatio;
-                }
-            } else {
-                if ($widthRatio < 1) {
-                    $scale = $widthRatio;
-                } else {
-                    $scale = $heightRatio;
-                }
-            }
-
-            if (!$expand && $scale > 1) {
-                $scale = 1;
-            }
+        if (!$expand) {
+            $ratio = min(1, $ratio);
         }
 
-        return [$realWidth * $scale, $realHeight * $scale];
+        $newWidth = $imageWidth * $ratio;
+        $newHeight = $imageHeight * $ratio;
+
+        return [(int) $newWidth, (int) $newHeight];
     }
 }

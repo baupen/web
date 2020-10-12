@@ -1,0 +1,21 @@
+{% extends "email/_base.html.twig" %}
+
+{% trans_default_domain "email" %}
+
+{% block body %}
+    <h2>1.</h2>
+    <p>{{ "app_invitation.download_to_use_functionality"|trans({"%page%": app.request.httpHost})  }}</p>
+    <center>
+        <button href="https://apps.apple.com/ch/app/mangel-io/id1414077195">
+            {{ "app_invitation.ios_store"|trans }}
+        </button>
+    </center>
+
+    <h2>2.</h2>
+    <p>{{ "app_invitation.authenticate"|trans({"%page%": app.request.httpHost})  }}</p>
+    <center>
+        <button href="{{ sentBy|iOSLoginLink }}">
+            {{ "app_invitation.ios_login_link"|trans }}
+        </button>
+    </center>
+{% endblock %}

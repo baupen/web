@@ -31,18 +31,24 @@ The next version will feature:
 - [x] removed next gen pdf generation as it will not be ready for some time
 - [x] removed `SyncService` to reduce complexity & much faster testing
 - [x] removed `Notes` to reduce complexity (users did not use it)
-- [x] refactored services for clean code (easier to use abstractions, clear code flow). missing: ImageHelper, getWidthAndHeight 
+- [x] refactored services for clean code (easier to use abstractions, clear code flow). 
 - [ ] use of `famoser/agnes` for deployment (faster, more scalable deployments)
 - [ ] reimplementation of the login flow to ease boarding users
 - [ ] reimplementation of the UI to use new API
 
 Besides, some bigger maintenance tasks are completed:
 - [x] migrate to symfony 5 (from 4)
+- [x] migrate to VueJS 3 (from 2)
 - [x] migrate to `symfony/mailer` (from swiftmailer)
 
 Additionally, the environment changes:
 - [x] update to php 7,4 (from 7.2)
 - [x] use mysql (from sqlite)
+
+For the user, the following changes:
+- [x] fewer bugs / enhanced stability through improved code quality & less complexity
+- [x] improved email templates reduce time needed to understand content
+- [x] a new registration flow makes it easier for new users to get started
 
 Migration guide 1.0 to 2.0:
 - Migrate sqlite to mysql

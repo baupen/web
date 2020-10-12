@@ -1,18 +1,15 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        users:
+        construction_managers:
             entity:
                 # the class of the entity that represents users
-                class: 'App\Entity\User'
+                class: 'App\Entity\ConstructionManager'
                 # the property to query by - e.g. username, email, etc
                 property: 'email'
 
     encoders:
-        App\Entity\User:
-            # Use native password encoder
-            # This value auto-selects the best possible hashing algorithm
-            # (i.e. Sodium when available).
+        App\Entity\ConstructionManager:
             algorithm: auto
 
     role_hierarchy:
@@ -26,7 +23,7 @@ security:
         main:
             anonymous: true
             lazy: true
-            provider: users
+            provider: construction_managers
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
@@ -52,7 +49,8 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/share, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/support, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/recover, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/email, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, role: ROLE_CONSTRUCTION_MANAGER }

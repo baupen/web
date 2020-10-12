@@ -1,0 +1,13 @@
+{% extends "email/_base.html.twig" %}
+
+{% trans_default_domain "email" %}
+
+{% block body %}
+    <p>{{ "register_confirm.message"|trans({"%page%": app.request.httpHost})  }}</p>
+    <spacer size="15"></spacer>
+    <center>
+        <button href="{{ absolute_url(url('register_confirm', {'authenticationHash': sentBy.authenticationHash})) }}">
+            {{ "register_confirm.activate_link"|trans }}
+        </button>
+    </center>
+{% endblock %}

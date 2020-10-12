@@ -33,7 +33,7 @@ class AssetFile extends UploadedFile
             throw new FileException(sprintf('Could not copy the file "%s" to "%s" (%s).', $this->getPathname(), $target, strip_tags($error)));
         }
 
-        @chmod($target, 0666 & ~umask());
+        chmod($target, 0666 & ~umask());
 
         return $target;
     }

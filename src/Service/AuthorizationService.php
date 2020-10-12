@@ -50,13 +50,13 @@ class AuthorizationService implements AuthorizationServiceInterface
     }
 
     /**
-     * @return bool
-     *
      * @throws \Exception
      */
-    public function setIsEnabled(ConstructionManager $constructionManager)
+    public function setIsEnabled(ConstructionManager $constructionManager): bool
     {
         if (self::AUTHORIZATION_METHOD_NONE === $this->authorizationMethod) {
+            $constructionManager->setIsEnabled(true);
+
             return true;
         }
 
@@ -68,13 +68,17 @@ class AuthorizationService implements AuthorizationServiceInterface
                 $constructionManager->setIsExternalAccount(false);
                 $constructionManager->setIsTrialAccount(false);
                 $constructionManager->setIsEnabled(true);
+
+                return true;
             } elseif ($otherwiseAuthorized) {
                 $constructionManager->setIsEnabled(true);
+
+                return true;
             } else {
                 $constructionManager->setIsEnabled(false);
-            }
 
-            return true;
+                return false;
+            }
         }
 
         throw new \Exception('invalid authorization method configured: '.$this->authorizationMethod);

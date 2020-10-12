@@ -1,0 +1,17 @@
+{% extends "help/_base.html.twig" %}
+
+{% block title %}{{ "register_confirmed.title"|trans }}{% endblock %}
+{% block description %}{{ "register_confirmed.description"|trans }}{% endblock %}
+
+{% set wide = true %}
+
+{% trans_default_domain "security" %}
+
+{% block help_content %}
+    {% include 'help/articles/overview.html.twig' %}
+
+    <hr class="mt-5">
+    <p class="mt-5 mb-5 text-center">
+        <a class="btn btn-primary btn" href="{{ path("index") }}">{{ "index.title"|trans({}, "index") }}</a>
+    </p>
+{% endblock %}

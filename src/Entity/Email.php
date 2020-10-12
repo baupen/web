@@ -13,9 +13,9 @@ namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
-use App\Enum\EmailType;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\UuidV4;
 
 /**
  * An Email is a sent email to the specified receivers.
@@ -27,171 +27,89 @@ class Email extends BaseEntity
 {
     use IdTrait;
 
-    const SENDER_SYSTEM = 'system';
+    const TYPE_REGISTER_CONFIRM = 1;
+    const TYPE_RECOVER_CONFIRM = 2;
+    const TYPE_APP_INVITATION = 3;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="guid")
      */
-    private $senderName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $senderEmail;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text")
-     */
-    private $receiver;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text")
-     */
-    private $subject;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text")
-     */
-    private $body;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $actionText;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $actionLink;
+    private $identifier;
 
     /**
      * @var int
      *
      * @ORM\Column(type="integer")
      */
-    private $emailType = EmailType::TEXT_EMAIL;
+    private $type;
 
     /**
      * @var DateTime
      *
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
     private $sentDateTime;
 
     /**
-     * @var DateTime
+     * @var ConstructionManager
+     *
+     * @ORM\ManyToOne (targetEntity="App\Entity\ConstructionManager")
+     */
+    private $sentBy;
+
+    /**
+     * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $visitedDateTime;
+    private $readAt;
 
-    public function setSender(string $senderName, string $senderEmail): void
+    public static function create(int $emailType, ConstructionManager $sentBy)
     {
-        $this->senderName = $senderName;
-        $this->senderEmail = $senderEmail;
+        $email = new Email();
+
+        $email->identifier = UuidV4::v4();
+        $email->type = $emailType;
+        $email->sentBy = $sentBy;
+        $email->sentDateTime = new \DateTime();
+
+        return $email;
     }
 
-    public function getSenderName(): ?string
+    public function markRead()
     {
-        return $this->senderName;
+        $this->readAt = new \DateTime();
     }
 
-    public function getSenderEmail(): ?string
+    public function getIdentifier(): string
     {
-        return $this->senderEmail;
+        return $this->identifier;
     }
 
-    public function getReceiver(): string
+    public function getType(): int
     {
-        return $this->receiver;
+        return $this->type;
     }
 
-    public function setReceiver(string $receiver)
-    {
-        $this->receiver = $receiver;
-    }
-
-    public function getSubject(): string
-    {
-        return $this->subject;
-    }
-
-    public function setSubject(string $subject)
-    {
-        $this->subject = $subject;
-    }
-
-    public function getEmailType(): int
-    {
-        return $this->emailType;
-    }
-
-    public function setEmailType(int $emailType)
-    {
-        $this->emailType = $emailType;
-    }
-
-    public function getBody()
-    {
-        return $this->body;
-    }
-
-    public function setBody(string $body)
-    {
-        $this->body = $body;
-    }
-
-    public function getActionText(): ?string
-    {
-        return $this->actionText;
-    }
-
-    public function setActionText(string $actionText)
-    {
-        $this->actionText = $actionText;
-    }
-
-    public function getActionLink(): ?string
-    {
-        return $this->actionLink;
-    }
-
-    public function setActionLink(string $actionLink)
-    {
-        $this->actionLink = $actionLink;
-    }
-
-    public function getSentDateTime(): ?DateTime
+    public function getSentDateTime(): DateTime
     {
         return $this->sentDateTime;
     }
 
-    public function getVisitedDateTime(): ?DateTime
+    public function getSentBy(): ConstructionManager
     {
-        return $this->visitedDateTime;
+        return $this->sentBy;
     }
 
-    public function setVisitedDateTime(DateTime $visitedDateTime)
+    public function getReadAt(): ?DateTime
     {
-        $this->visitedDateTime = $visitedDateTime;
+        return $this->readAt;
     }
 
-    public function confirmSent()
+    public function getContext(): array
     {
-        $this->sentDateTime = new \DateTime();
+        return ['sentBy' => $this->sentBy, 'identifier' => $this->identifier, 'emailType' => $this->type];
     }
 }

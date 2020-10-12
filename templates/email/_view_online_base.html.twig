@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain "email" %}
+
+{% block title %}{{ "view_online.title"|trans }}{% endblock %}
+{% block description %}{{ "view_online.description"|trans }}{% endblock %}
+
+{% block content %}
+    <section class="center-wrapper">
+        <div class="center-content wide">
+            <div class="center-content-primary shadow">
+                {% apply inky_to_html %}
+                    {% if emailType == 1 %}
+                        {{ block("body", 'email/register_confirm.html.twig') }}
+                    {% elseif emailType == 2 %}
+                        {{ block("body", 'email/recover_confirm.html.twig') }}
+                    {% elseif emailType == 3 %}
+                        {{ block("body", 'email/app_invitation.html.twig') }}
+                    {% endif %}
+                {% endapply %}
+            </div>
+            <div class="center-content-secondary">
+                <p class="text-center text-secondary">
+                    {% include "email/_email_meta_content.html.twig" %}
+                </p>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('app') }}
+    {{ encore_entry_link_tags('email') }}
+{% endblock %}
