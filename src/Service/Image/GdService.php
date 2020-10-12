@@ -82,7 +82,7 @@ class GdService
      */
     public function resizeImage(string $sourcePath, string $targetPath, int $maxWidth, int $maxHeight)
     {
-        list($width, $height) = ImageHelper::getWidthHeightArguments($sourcePath, $maxWidth, $maxHeight, false);
+        list($width, $height) = ImageHelper::fitInBoundingBox($sourcePath, $maxWidth, $maxHeight, false);
         $ending = pathinfo($sourcePath, PATHINFO_EXTENSION);
 
         //resize & save

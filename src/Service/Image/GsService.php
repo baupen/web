@@ -30,7 +30,7 @@ class GsService
         }
 
         //second render with correct image dimensions
-        list($width, $height) = ImageHelper::getWidthHeightArguments($targetFilePath, 3840, 2160);
+        list($width, $height) = ImageHelper::fitInBoundingBox($targetFilePath, 3840, 2160);
         $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS='.$width.' -dDEVICEHEIGHTPOINTS='.$height.' -dJPEGQ=80 -dUseCropBox -dFitPage -sPageList=1 -o "'.$targetFilePath.'" "'.$sourcePdfPath.'"';
         exec($command);
     }
