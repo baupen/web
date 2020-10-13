@@ -11,6 +11,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
@@ -20,6 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
+ * @ApiResource
  * @ORM\Entity(repositoryClass="App\Repository\ConstructionManagerRepository")
  * @ORM\HasLifecycleCallbacks
  */
