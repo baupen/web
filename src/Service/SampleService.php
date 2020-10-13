@@ -22,6 +22,7 @@ use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\SampleServiceInterface;
 use App\Service\Interfaces\StorageServiceInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class SampleService implements SampleServiceInterface
@@ -42,13 +43,19 @@ class SampleService implements SampleServiceInterface
     private $uploadService;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * SampleService constructor.
      */
-    public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer, StorageServiceInterface $uploadService)
+    public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer, StorageServiceInterface $uploadService, LoggerInterface $logger)
     {
         $this->pathService = $pathService;
         $this->serializer = $serializer;
         $this->uploadService = $uploadService;
+        $this->logger = $logger;
     }
 
     public function createSampleConstructionSite(string $sampleName, ConstructionManager $constructionManager): ConstructionSite
@@ -176,7 +183,7 @@ class SampleService implements SampleServiceInterface
             $expectedIssueImageFileName = FileHelper::sanitizeFileName($issue->getDescription());
             $issueImagePath = $path.DIRECTORY_SEPARATOR.'issue_images'.DIRECTORY_SEPARATOR.$expectedIssueImageFileName.'.jpg';
             if (!file_exists($issueImagePath)) {
-                dump($issueImagePath.' does not exist');
+                $this->logger->error($issueImagePath.' does not exist');
                 continue;
             }
 

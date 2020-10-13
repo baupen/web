@@ -101,11 +101,8 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         }
 
         $constructionManagerRepository = $this->entityManager->getRepository(ConstructionManager::class);
-        $constructionManager = $constructionManagerRepository->findOneBy(['email' => $credentials['email']]);
 
-        dump($constructionManager);
-
-        return $constructionManager;
+        return $constructionManagerRepository->findOneBy(['email' => $credentials['email']]);
     }
 
     /**

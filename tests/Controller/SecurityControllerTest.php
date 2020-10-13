@@ -12,30 +12,86 @@
 namespace App\Tests\Controller;
 
 use App\Entity\ConstructionManager;
+use App\Tests\Traits\AssertAuthenticationTrait;
+use App\Tests\Traits\AssertEmailTrait;
 use Doctrine\Persistence\ManagerRegistry;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\DomCrawler\Crawler;
 
 class SecurityControllerTest extends WebTestCase
 {
     use FixturesTrait;
+    use AssertEmailTrait;
+    use AssertAuthenticationTrait;
 
     public function testCanRegister()
     {
         $client = $this->createClient();
-
         $this->loadFixtures();
 
-        $this->register($client, 'f@mangel.io');
-        $this->assertStringContainsString('erfolgreich', $client->getResponse()->getContent());
+        $email = 'f@mangel.io';
+        $password = 'asdf1234';
 
-        $this->confirmRegister($client, 'f@mangel.io');
-        $this->assertStringContainsString('eingerichtet', $client->getResponse()->getContent());
+        $this->assertNotAuthenticated($client);
+        $this->register($client, $email);
+        $this->assertNotAuthenticated($client);
+
+        $this->registerConfirm($client, $email, $password);
+        $this->assertAuthenticated($client);
+
+        $this->logout($client);
+        $this->assertNotAuthenticated($client);
+
+        $this->login($client, $email, $password);
+        $this->assertAuthenticated($client);
+
+        $this->logout($client);
+        $this->assertNotAuthenticated($client);
+
+        $this->recover($client, $email);
+        $this->assertNotAuthenticated($client);
+
+        $this->recoverConfirm($client, $email, $password);
+        $this->assertAuthenticated($client);
     }
 
-    private function confirmRegister(KernelBrowser $client, string $email)
+    private function login(KernelBrowser $client, string $email, string $password): void
+    {
+        $crawler = $client->request('GET', '/login');
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('login_submit')->form();
+        $form['login[email]'] = $email;
+        $form['login[password]'] = $password;
+
+        $client->submit($form);
+        $this->assertResponseRedirects();
+    }
+
+    private function logout(KernelBrowser $client): void
+    {
+        $client->request('GET', '/logout');
+        $this->assertResponseRedirects();
+    }
+
+    private function register(KernelBrowser $client, string $email): void
+    {
+        $crawler = $client->request('GET', '/register');
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('only_email_submit')->form();
+        $form['only_email[email]'] = $email;
+
+        $client->submit($form);
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('erfolgreich', $client->getResponse()->getContent()); // alert to user
+
+        $authenticationHash = $this->getAuthenticationHash($email);
+        $this->assertSingleEmailSentWithBodyContains($authenticationHash);
+    }
+
+    private function registerConfirm(KernelBrowser $client, string $email, string $password): void
     {
         $authenticationHash = $this->getAuthenticationHash($email);
 
@@ -46,28 +102,47 @@ class SecurityControllerTest extends WebTestCase
         $form['register_confirm[profile][givenName]'] = 'Florian';
         $form['register_confirm[profile][familyName]'] = 'Moser';
         $form['register_confirm[profile][phone]'] = '0781234567';
-        $form['register_confirm[password][plainPassword]'] = 'asdf1234';
-        $form['register_confirm[password][repeatPlainPassword]'] = 'asdf1234';
+        $form['register_confirm[password][plainPassword]'] = $password;
+        $form['register_confirm[password][repeatPlainPassword]'] = $password;
         $client->submit($form);
+        $this->assertSingleEmailSentWithBodyContains('https://apps.apple.com/ch/app/mangel-io/id1414077195'); // iOS download link
 
         $this->assertResponseRedirects('/help/welcome');
-        $crawler = $client->followRedirect();
-        $this->assertResponseIsSuccessful();
-
-        return $crawler;
+        $client->followRedirect();
+        $this->assertStringContainsString('eingerichtet', $client->getResponse()->getContent()); // alert to user
     }
 
-    private function register(KernelBrowser $client, string $email): Crawler
+    private function recover(KernelBrowser $client, string $email): void
     {
-        $crawler = $client->request('GET', '/register');
+        $crawler = $client->request('GET', '/recover');
         $this->assertResponseIsSuccessful();
 
         $form = $crawler->selectButton('only_email_submit')->form();
         $form['only_email[email]'] = $email;
-        $crawler = $client->submit($form);
+
+        $client->submit($form);
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('versandt', $client->getResponse()->getContent()); // alert to user
+
+        $authenticationHash = $this->getAuthenticationHash($email);
+        $this->assertSingleEmailSentWithBodyContains($authenticationHash);
+    }
+
+    private function recoverConfirm(KernelBrowser $client, string $email, string $password): void
+    {
+        $authenticationHash = $this->getAuthenticationHash($email);
+
+        $crawler = $client->request('GET', '/recover/confirm/'.$authenticationHash);
         $this->assertResponseIsSuccessful();
 
-        return $crawler;
+        $form = $crawler->selectButton('set_password_submit')->form();
+        $form['set_password[plainPassword]'] = $password;
+        $form['set_password[repeatPlainPassword]'] = $password;
+        $client->submit($form);
+
+        $this->assertResponseRedirects();
+        $client->followRedirect();
+        $this->assertStringContainsString('gesetzt', $client->getResponse()->getContent()); // alert to user
     }
 
     private function getAuthenticationHash(string $email)
