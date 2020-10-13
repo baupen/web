@@ -11,6 +11,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
@@ -47,6 +48,7 @@ class Map extends BaseEntity
     /**
      * @var Map|null
      *
+     * @ApiProperty(readableLink=false, writableLink=false)
      * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="children")
      */
     private $parent;

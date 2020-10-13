@@ -13,6 +13,7 @@ namespace App\Entity\Traits;
 
 use App\Helper\HashHelper;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 trait UserTrait
@@ -20,6 +21,7 @@ trait UserTrait
     /**
      * @var string
      *
+     * @Groups({"read", "self:write"})
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\NotBlank()
      * @Assert\Email()

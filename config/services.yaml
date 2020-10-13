@@ -36,3 +36,8 @@ services:
     # ApiPlatform services
     App\Api\DataPersister\CacheServiceDataPersister:
         decorates: 'api_platform.doctrine.orm.data_persister'
+
+    App\Api\Serializer\ConstructionManagerNormalizer:
+        arguments: [ '@security.token_storage' ]
+        tags:
+            - { name: 'serializer.normalizer', priority: 64 }
