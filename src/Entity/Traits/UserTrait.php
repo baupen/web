@@ -200,7 +200,6 @@ trait UserTrait
      */
     protected function isEqualToUser($user)
     {
-        /** @var UserTrait $user */
         if ($this->getUsername() !== $user->getUsername()) {
             return false;
         }

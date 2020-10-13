@@ -18,7 +18,9 @@ use App\Entity\Traits\TimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity()
+ * A issue image is the image taken in connection with the issue.
+ *
+ * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
 class IssueImage extends BaseEntity
@@ -30,7 +32,7 @@ class IssueImage extends BaseEntity
     /**
      * @var Issue
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Issue", inversedBy="images")
+     * @ORM\OneToOne(targetEntity="App\Entity\Issue", inversedBy="image")
      */
     private $issue;
 

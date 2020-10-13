@@ -28,11 +28,11 @@ class Filter extends BaseEntity
 {
     use IdTrait;
 
-    const STATUS_NEW = 0;
-    const STATUS_REGISTERED = 1;
-    const STATUS_READ = 2;
-    const STATUS_RESPONDED = 4;
-    const STATUS_REVIEWED = 8;
+    public const STATUS_NEW = 0;
+    public const STATUS_REGISTERED = 1;
+    public const STATUS_READ = 2;
+    public const STATUS_RESPONDED = 4;
+    public const STATUS_REVIEWED = 8;
 
     /**
      * @var ConstructionSite

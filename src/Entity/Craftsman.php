@@ -24,8 +24,7 @@ use Symfony\Component\Uid\Uuid;
 /**
  * a craftsman receives information about open issues, and answers them.
  *
- * @ORM\Table(name="craftsman")
- * @ORM\Entity()
+ * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
 class Craftsman extends BaseEntity

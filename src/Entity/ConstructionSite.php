@@ -22,7 +22,6 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * a construction site is the place the construction manager & the craftsmen work together.
  *
- * @ORM\Table(name="construction_site")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
@@ -48,16 +47,9 @@ class ConstructionSite extends BaseEntity
     private $folderName;
 
     /**
-     * @var ConstructionSiteImage[]|ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\ConstructionSiteImage", mappedBy="constructionSite", cascade={"persist"})
-     */
-    private $images;
-
-    /**
      * @var ConstructionSiteImage|null
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSiteImage")
+     * @ORM\OneToOne(targetEntity="App\Entity\ConstructionSiteImage", mappedBy="constructionSite")
      */
     private $image;
 
@@ -113,7 +105,6 @@ class ConstructionSite extends BaseEntity
         $this->constructionManagers = new ArrayCollection();
         $this->maps = new ArrayCollection();
         $this->craftsmen = new ArrayCollection();
-        $this->images = new ArrayCollection();
         $this->issues = new ArrayCollection();
         $this->filters = new ArrayCollection();
     }
@@ -150,32 +141,11 @@ class ConstructionSite extends BaseEntity
     }
 
     /**
-     * @return string[]
-     */
-    public function getMapIds()
-    {
-        $ids = [];
-        foreach ($this->getMaps() as $map) {
-            $ids[] = $map->getId();
-        }
-
-        return $ids;
-    }
-
-    /**
      * @return Craftsman[]|ArrayCollection
      */
     public function getCraftsmen()
     {
         return $this->craftsmen;
-    }
-
-    /**
-     * @return ConstructionSiteImage[]|ArrayCollection
-     */
-    public function getImages()
-    {
-        return $this->images;
     }
 
     public function getImage(): ?ConstructionSiteImage

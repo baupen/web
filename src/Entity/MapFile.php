@@ -19,7 +19,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity()
+ * A MapFile is the actual .pdf file connected to a logical map.
+ *
+ * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
 class MapFile extends BaseEntity

@@ -20,7 +20,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Table(name="construction_manager")
  * @ORM\Entity(repositoryClass="App\Repository\ConstructionManagerRepository")
  * @ORM\HasLifecycleCallbacks
  */
@@ -31,13 +30,13 @@ class ConstructionManager extends BaseEntity implements UserInterface
     use UserTrait;
 
     // can use any features & impersonate users
-    const ROLE_ADMIN = 'ROLE_ADMIN';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
 
     // can use any features
-    const ROLE_CONSTRUCTION_MANAGER = 'ROLE_CONSTRUCTION_MANAGER';
+    public const ROLE_CONSTRUCTION_MANAGER = 'ROLE_CONSTRUCTION_MANAGER';
 
     // can not see other construction sites
-    const ROLE_ASSIGNED_CONSTRUCTION_MANAGER = 'ROLE_ASSIGNED_CONSTRUCTION_MANAGER';
+    public const ROLE_ASSIGNED_CONSTRUCTION_MANAGER = 'ROLE_ASSIGNED_CONSTRUCTION_MANAGER';
 
     /**
      * @var string|null

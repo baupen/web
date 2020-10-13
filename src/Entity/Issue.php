@@ -16,13 +16,11 @@ use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * An issue is something created by the construction manager to inform the craftsman of it.
  *
- * @ORM\Table(name="issue")
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks
  */
@@ -32,10 +30,10 @@ class Issue extends BaseEntity
     use TimeTrait;
     use SoftDeleteTrait;
 
-    const UPLOAD_STATUS = 1;
-    const REGISTRATION_STATUS = 2;
-    const RESPONSE_STATUS = 4;
-    const REVIEW_STATUS = 8;
+    public const UPLOAD_STATUS = 1;
+    public const REGISTRATION_STATUS = 2;
+    public const RESPONSE_STATUS = 4;
+    public const REVIEW_STATUS = 8;
 
     /**
      * @var int|null
@@ -150,16 +148,9 @@ class Issue extends BaseEntity
     private $reviewBy;
 
     /**
-     * @var IssueImage[]|ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\IssueImage", mappedBy="issue", cascade={"persist"})
-     */
-    private $images;
-
-    /**
      * @var IssueImage|null
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\IssueImage")
+     * @ORM\OneToOne(targetEntity="App\Entity\IssueImage", mappedBy="issue")
      */
     private $image;
 
@@ -190,11 +181,6 @@ class Issue extends BaseEntity
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="issues")
      */
     private $constructionSite;
-
-    public function __construct()
-    {
-        $this->images = new ArrayCollection();
-    }
 
     public function getNumber(): ?int
     {
@@ -349,14 +335,6 @@ class Issue extends BaseEntity
         }
 
         return $res;
-    }
-
-    /**
-     * @return IssueImage[]|ArrayCollection
-     */
-    public function getImages()
-    {
-        return $this->images;
     }
 
     public function getImage(): ?IssueImage

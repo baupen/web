@@ -19,9 +19,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * An Email is a sent email to the specified receivers.
+ * An Map is a logical plan of some part of the construction site.
  *
- * @ORM\Table(name="map")
  * @ORM\Entity(repositoryClass="App\Repository\MapRepository")
  * @ORM\HasLifecycleCallbacks
  */
