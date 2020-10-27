@@ -49,7 +49,7 @@ class ConstructionSite extends BaseEntity
     /**
      * @var ConstructionSiteImage|null
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\ConstructionSiteImage", mappedBy="constructionSite")
+     * @ORM\OneToOne(targetEntity="App\Entity\ConstructionSiteImage", mappedBy="constructionSite", cascade={"persist"})
      */
     private $image;
 

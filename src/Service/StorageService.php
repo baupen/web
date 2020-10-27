@@ -65,7 +65,6 @@ class StorageService implements StorageServiceInterface
         }
 
         $constructionSiteImage->setConstructionSite($constructionSite);
-        $constructionSite->getImages()->add($constructionSiteImage);
         $constructionSite->setImage($constructionSiteImage);
 
         return $constructionSiteImage;
@@ -95,7 +94,6 @@ class StorageService implements StorageServiceInterface
         }
 
         $issueImage->setIssue($issue);
-        $issue->getImages()->add($issueImage);
         $issue->setImage($issueImage);
 
         return $issueImage;

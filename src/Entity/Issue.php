@@ -150,7 +150,7 @@ class Issue extends BaseEntity
     /**
      * @var IssueImage|null
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\IssueImage", mappedBy="issue")
+     * @ORM\OneToOne(targetEntity="App\Entity\IssueImage", mappedBy="issue", cascade={"persist"})
      */
     private $image;
 
