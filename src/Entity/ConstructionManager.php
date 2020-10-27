@@ -25,7 +25,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *     collectionOperations={"get"},
  *     itemOperations={"get"},
- *     normalizationContext={"groups"={"read"}}
+ *     normalizationContext={"groups"={"construction-manager-read"}}
  * )
  * @ORM\Entity(repositoryClass="App\Repository\ConstructionManagerRepository")
  * @ORM\HasLifecycleCallbacks
@@ -48,7 +48,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @var string|null
      *
-     * @Groups({"read"})
+     * @Groups({"construction-manager-read"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $givenName;
@@ -56,7 +56,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @var string|null
      *
-     * @Groups({"read"})
+     * @Groups({"construction-manager-read"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $familyName;
@@ -64,7 +64,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @var string|null
      *
-     * @Groups({"read"})
+     * @Groups({"construction-manager-read"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $phone;

@@ -12,6 +12,7 @@
 namespace App\Entity\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /*
@@ -23,6 +24,7 @@ trait AddressTrait
     /**
      * @var string
      *
+     * @Groups({"construction-site-read"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $streetAddress;
@@ -30,6 +32,7 @@ trait AddressTrait
     /**
      * @var int
      *
+     * @Groups({"construction-site-read"})
      * @ORM\Column(type="integer", nullable=true)
      */
     private $postalCode;
@@ -37,6 +40,7 @@ trait AddressTrait
     /**
      * @var string
      *
+     * @Groups({"construction-site-read"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $locality;

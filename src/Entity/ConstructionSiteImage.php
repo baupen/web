@@ -11,6 +11,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\FileTrait;
 use App\Entity\Traits\IdTrait;
@@ -18,6 +19,11 @@ use App\Entity\Traits\TimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ApiResource(subresourceOperations={
+ *     "api_construction_sites_construction_site_images_get_subresource"={
+ *         "method"="GET"
+ *     }
+ * })
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
@@ -30,7 +36,7 @@ class ConstructionSiteImage extends BaseEntity
     /**
      * @var ConstructionSite
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="image")
+     * @ORM\OneToOne(targetEntity="App\Entity\ConstructionSite", mappedBy="image")
      */
     private $constructionSite;
 
