@@ -23,6 +23,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
+ *     collectionOperations={"get"},
+ *     itemOperations={"get"},
  *     normalizationContext={"groups"={"read"}}
  * )
  * @ORM\Entity(repositoryClass="App\Repository\ConstructionManagerRepository")
@@ -46,7 +48,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @var string|null
      *
-     * @Groups({"read", "self:write"})
+     * @Groups({"read"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $givenName;
@@ -54,7 +56,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @var string|null
      *
-     * @Groups({"read", "self:write"})
+     * @Groups({"read"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $familyName;
@@ -62,7 +64,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @var string|null
      *
-     * @Groups({"read", "self:write"})
+     * @Groups({"read"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $phone;

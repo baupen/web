@@ -21,7 +21,7 @@ trait UserTrait
     /**
      * @var string
      *
-     * @Groups({"read", "self:write"})
+     * @Groups({"read"})
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\NotBlank()
      * @Assert\Email()
