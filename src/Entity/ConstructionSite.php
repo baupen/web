@@ -12,7 +12,6 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;
@@ -26,13 +25,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * a construction site is the place the construction manager & the craftsmen work together.
  *
  * @ApiResource(
- *     collectionOperations={"get"},
+ *     collectionOperations={"get", "post"},
  *     itemOperations={"get"},
- *     subresourceOperations={
- *          "construction_site_images_get_subresource"={
- *              "path"="/construction_site/{id}/image"
- *          }
- *     },
  *     normalizationContext={"groups"={"construction-site-read"}}
  * )
  *
@@ -64,7 +58,6 @@ class ConstructionSite extends BaseEntity
     /**
      * @var ConstructionSiteImage|null
      *
-     * @ApiSubresource
      * @Groups({"construction-site-read"})
      * @ORM\OneToOne(targetEntity="App\Entity\ConstructionSiteImage", inversedBy="constructionSite", cascade={"persist"})
      */

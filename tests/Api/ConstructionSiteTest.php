@@ -12,7 +12,8 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\ConstructionManager;
+use App\Entity\ConstructionSite;
+use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\DataFixtures\TestUserFixtures;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
@@ -28,35 +29,41 @@ class ConstructionSiteTest extends ApiTestCase
     public function testInvalidMethods()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestUserFixtures::class]);
-        $testUser = $this->loginApiTestUser($client);
+        $this->loadFixtures([TestUserFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiTestUser($client);
 
-        $this->assertApiOperationUnsupported($client, '/api/construction_managers', 'POST');
-        $this->assertApiOperationUnsupported($client, '/api/construction_managers/'.$testUser->getId(), 'DELETE', 'PUT', 'PATCH');
+        $testConstructionSite = $this->getTestConstructionSite();
+        $this->assertApiOperationUnsupported($client, '/api/construction_sites/'.$testConstructionSite->getId(), 'DELETE', 'PUT', 'PATCH');
+    }
+
+    private function getTestConstructionSite(): ConstructionSite
+    {
+        $constructionSiteRepository = static::$container->get(ManagerRegistry::class)->getRepository(ConstructionSite::class);
+
+        return $constructionSiteRepository->findOneByName(TestConstructionSiteFixtures::TEST_CONSTRUCTION_SITE_NAME);
     }
 
     public function testValidMethodsNeedAuthentication()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestUserFixtures::class]);
+        $this->loadFixtures([TestUserFixtures::class, TestConstructionSiteFixtures::class]);
 
-        $this->assertApiOperationNotAuthorized($client, '/api/construction_managers', 'GET');
+        $this->assertApiOperationNotAuthorized($client, '/api/construction_sites', 'GET', 'POST');
 
-        $userRepository = static::$container->get(ManagerRegistry::class)->getRepository(ConstructionManager::class);
-        $testUser = $userRepository->findOneByEmail(TestUserFixtures::TEST_EMAIL);
-        $this->assertApiOperationNotAuthorized($client, '/api/construction_managers/'.$testUser->getId(), 'GET');
+        $testConstructionSite = $this->getTestConstructionSite();
+        $this->assertApiOperationNotAuthorized($client, '/api/construction_sites/'.$testConstructionSite->getId(), 'GET');
     }
 
     public function testGet()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestUserFixtures::class]);
+        $this->loadFixtures([TestUserFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiTestUser($client);
 
-        $response = $client->request('GET', '/api/construction_managers', [
+        $response = $client->request('GET', '/api/construction_sites', [
             'headers' => ['Content-Type' => 'application/json'],
         ]);
         $this->assertResponseIsSuccessful();
-        $this->assertContainsOnlyListedFields($response, 'givenName', 'familyName', 'email', 'phone');
+        $this->assertContainsOnlyListedFields($response, 'name', 'streetAddress', 'postalCode', 'locality', 'image');
     }
 }

@@ -19,11 +19,7 @@ use App\Entity\Traits\TimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource(subresourceOperations={
- *     "api_construction_sites_construction_site_images_get_subresource"={
- *         "method"="GET"
- *     }
- * })
+ * @ApiResource()
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
