@@ -41,25 +41,9 @@ class StorageServiceDataPersister implements ContextAwareDataPersisterInterface
 
     public function persist($data, array $context = [])
     {
-        if (($context['collection_operation_name'] ?? null) === 'post') {
-            $this->storageService->setNewFolderName($data);
-        }
+        $this->storageService->setNewFolderName($data);
 
-        /** @var ConstructionSite $result */
-        $result = $this->decorated->persist($data, $context);
-
-        // upload image
-        if ($this->request->files->count() > 0) {
-            $file = $this->request->files[0];
-            $image = $this->storageService->uploadConstructionSiteImage($file, $result);
-
-            $manager = $this->doctrine->getManager();
-            $manager->persist($image);
-            $manager->persist($result);
-            $manager->flush();
-        }
-
-        return $result;
+        return $this->decorated->persist($data, $context);
     }
 
     public function remove($data, array $context = [])

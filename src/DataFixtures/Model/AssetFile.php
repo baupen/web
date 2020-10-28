@@ -11,6 +11,7 @@
 
 namespace App\DataFixtures\Model;
 
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AssetFile extends UploadedFile
@@ -23,5 +24,23 @@ class AssetFile extends UploadedFile
         copy($path, $newPath);
 
         parent::__construct($newPath, $originalName);
+    }
+
+    public function move(string $directory, string $name = null)
+    {
+        $target = $this->getTargetFile($directory, $name);
+
+        set_error_handler(function ($type, $msg) use (&$error) {
+            $error = $msg;
+        });
+        $renamed = copy($this->getPathname(), $target);
+        restore_error_handler();
+        if (!$renamed) {
+            throw new FileException(sprintf('Could not copy the file "%s" to "%s" (%s).', $this->getPathname(), $target, strip_tags($error)));
+        }
+
+        chmod($target, 0666 & ~umask());
+
+        return $target;
     }
 }
