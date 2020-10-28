@@ -79,6 +79,39 @@ trait AssertApiTrait
 
                 $this->assertArraySubset($actualFields, $whitelist);
             }
+
+            return;
         }
+
+        $this->fail('only collections support this assertion.');
+    }
+
+    private function assertApiFileDownloadUrl(Client $client, Response $response, string $fileDownloadUrl)
+    {
+        $content = $response->getContent();
+        $hydraPayload = json_decode($content, true);
+
+        if ('hydra:Collection' === $hydraPayload['@type']) {
+            foreach ($hydraPayload['hydra:member'] as $member) {
+                $url = $member[$fileDownloadUrl] ?? null;
+                if (!$url) {
+                    continue;
+                }
+
+                $response = $client->request('GET', $url);
+                $this->assertResponseStatusCodeSame(StatusCode::HTTP_OK);
+                $this->assertStringStartsWith('inline', $response->getHeaders()['content-disposition'][0]);
+
+                return $url;
+            }
+
+            $this->fail('no member has a the property '.$fileDownloadUrl.' set, hence can not assert this url is valid.');
+
+            return null;
+        }
+
+        $this->fail('only collections support this assertion.');
+
+        return null;
     }
 }

@@ -41,7 +41,12 @@ class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInte
         $testUser = $userRepository->findOneBy(['email' => TestUserFixtures::TEST_EMAIL]);
 
         $constructionSite = $this->sampleService->createSampleConstructionSite(self::TEST_CONSTRUCTION_SITE_NAME, $testUser);
+
+        $constructionSite->getConstructionManagers()->add($testUser);
+        $testUser->getConstructionSites()->add($constructionSite);
+
         $manager->persist($constructionSite);
+        $manager->persist($testUser);
         $manager->flush();
     }
 

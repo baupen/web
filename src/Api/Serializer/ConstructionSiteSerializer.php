@@ -42,7 +42,7 @@ class ConstructionSiteSerializer implements NormalizerInterface
                 'constructionSiteImage' => $object->getImage()->getId(),
             ]);
 
-            $data['image_url'] = $url;
+            $data['imageUrl'] = $url;
         }
 
         return $data;

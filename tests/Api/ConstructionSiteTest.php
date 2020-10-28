@@ -65,7 +65,8 @@ class ConstructionSiteTest extends ApiTestCase
         ]);
 
         $this->assertResponseIsSuccessful();
-        $this->assertContainsOnlyListedFields($response, 'name', 'streetAddress', 'postalCode', 'locality', 'image_url');
+        $this->assertContainsOnlyListedFields($response, 'name', 'streetAddress', 'postalCode', 'locality', 'imageUrl');
+        $this->assertApiFileDownloadUrl($client, $response, 'imageUrl');
     }
 
     public function testPost()
