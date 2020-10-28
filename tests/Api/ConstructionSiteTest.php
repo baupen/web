@@ -12,6 +12,8 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
+use App\DataFixtures\Model\AssetFile;
 use App\Entity\ConstructionSite;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\DataFixtures\TestUserFixtures;
@@ -19,6 +21,7 @@ use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
 use Doctrine\Persistence\ManagerRegistry;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
+use Symfony\Component\HttpFoundation\Response as StatusCode;
 
 class ConstructionSiteTest extends ApiTestCase
 {
@@ -66,7 +69,7 @@ class ConstructionSiteTest extends ApiTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertContainsOnlyListedFields($response, 'name', 'streetAddress', 'postalCode', 'locality', 'imageUrl');
-        $this->assertApiFileDownloadUrl($client, $response, 'imageUrl');
+        $this->assertApiFileUrlIsDownloadable($client, $response, 'imageUrl');
     }
 
     public function testPost()
@@ -84,5 +87,32 @@ class ConstructionSiteTest extends ApiTestCase
 
         $this->assertApiPostFieldsRequired($client, '/api/construction_sites', $sample);
         $this->assertApiPostFieldsPersisted($client, '/api/construction_sites', $sample);
+    }
+
+    public function testPostImage()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestUserFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiTestUser($client);
+
+        $testConstructionSite = $this->getTestConstructionSite();
+
+        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/preview_2.jpg');
+        $this->assertApiPostUploadFile($client, '/api/construction_sites/'.$testConstructionSite->getId().'/image', $uploadedFile);
+    }
+
+    private function assertApiPostUploadFile(Client $client, string $url, AssetFile $file)
+    {
+        $response = $client->getKernelBrowser()->request('POST', $url,
+            ['headers' => ['Content-Type' => 'application/json']],
+            ['file' => $file]
+        );
+
+        $this->assertResponseStatusCodeSame(StatusCode::HTTP_OK);
+
+        $content = $response->text();
+        $hydraPayload = json_decode($content, true);
+
+        dump($hydraPayload);
     }
 }

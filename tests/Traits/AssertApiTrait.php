@@ -27,7 +27,7 @@ trait AssertApiTrait
         $this->assertResponseStatusCodeSameForUrls(StatusCode::HTTP_UNAUTHORIZED, $client, $url, ...$methods);
     }
 
-    private function assertApiPostFieldsRequired(Client $client, string $url, $payload)
+    private function assertApiPostFieldsRequired(Client $client, string $url, array $payload)
     {
         foreach ($payload as $key => $value) {
             $actualPayload = $payload;
@@ -42,7 +42,7 @@ trait AssertApiTrait
         }
     }
 
-    private function assertApiPostFieldsPersisted(Client $client, string $url, $payload)
+    private function assertApiPostFieldsPersisted(Client $client, string $url, array $payload)
     {
         $client->request('POST', $url, [
             'headers' => ['Content-Type' => 'application/json'],
@@ -86,14 +86,14 @@ trait AssertApiTrait
         $this->fail('only collections support this assertion.');
     }
 
-    private function assertApiFileDownloadUrl(Client $client, Response $response, string $fileDownloadUrl)
+    private function assertApiFileUrlIsDownloadable(Client $client, Response $response, string $fileUrlProperty): ?string
     {
         $content = $response->getContent();
         $hydraPayload = json_decode($content, true);
 
         if ('hydra:Collection' === $hydraPayload['@type']) {
             foreach ($hydraPayload['hydra:member'] as $member) {
-                $url = $member[$fileDownloadUrl] ?? null;
+                $url = $member[$fileUrlProperty] ?? null;
                 if (!$url) {
                     continue;
                 }
@@ -105,7 +105,7 @@ trait AssertApiTrait
                 return $url;
             }
 
-            $this->fail('no member has a the property '.$fileDownloadUrl.' set, hence can not assert this url is valid.');
+            $this->fail('no member has a the property '.$fileUrlProperty.' set, hence can not assert this url is valid.');
 
             return null;
         }
