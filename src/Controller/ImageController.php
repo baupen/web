@@ -16,11 +16,15 @@ use App\Entity\ConstructionSite;
 use App\Entity\ConstructionSiteImage;
 use App\Security\Voter\ConstructionSiteVoter;
 use App\Service\Interfaces\ImageServiceInterface;
+use App\Service\Interfaces\StorageServiceInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class ImageController extends BaseDoctrineController
 {
@@ -52,5 +56,29 @@ class ImageController extends BaseDoctrineController
         );
 
         return $response;
+    }
+
+    /**
+     * @Route("/construction_sites/{constructionSite}/image", name="post_construction_site_image", methods={"POST"})
+     *
+     * @return Response
+     */
+    public function postConstructionSiteImageAction(Request $request, ConstructionSite $constructionSite, StorageServiceInterface $storageService, SerializerInterface $serializer)
+    {
+        $this->denyAccessUnlessGranted(ConstructionSiteVoter::CONSTRUCTION_SITE_MODIFY, $constructionSite);
+        if (1 !== $request->files->count()) {
+            throw new BadRequestException();
+        }
+
+        if ($constructionSite->getImage()) {
+            $this->fastRemove($constructionSite->getImage());
+        }
+
+        $files = $request->files->all();
+        $file = $files[array_key_first($files)];
+        $constructionSiteImage = $storageService->uploadConstructionSiteImage($file, $constructionSite);
+        $this->fastSave($constructionSite, $constructionSiteImage);
+
+        return new Response($constructionSiteImage->getId());
     }
 }
