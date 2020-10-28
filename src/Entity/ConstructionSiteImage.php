@@ -11,7 +11,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\FileTrait;
 use App\Entity\Traits\IdTrait;
@@ -19,7 +18,6 @@ use App\Entity\Traits\TimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */

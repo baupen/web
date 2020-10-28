@@ -14,16 +14,22 @@ namespace App\Api\DataPersister;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\ConstructionSite;
 use App\Service\Interfaces\StorageServiceInterface;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class StorageServiceDataPersister implements ContextAwareDataPersisterInterface
 {
     private $decorated;
     private $storageService;
+    private $doctrine;
+    private $request;
 
-    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, StorageServiceInterface $storageService)
+    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, StorageServiceInterface $storageService, ManagerRegistry $registry, RequestStack $requestStack)
     {
         $this->decorated = $decoratedDataPersister;
         $this->storageService = $storageService;
+        $this->doctrine = $registry;
+        $this->request = $requestStack->getCurrentRequest();
     }
 
     public function supports($data, array $context = []): bool
@@ -35,9 +41,25 @@ class StorageServiceDataPersister implements ContextAwareDataPersisterInterface
 
     public function persist($data, array $context = [])
     {
-        $this->storageService->setNewFolderName($data);
+        if (($context['collection_operation_name'] ?? null) === 'post') {
+            $this->storageService->setNewFolderName($data);
+        }
 
-        return $this->decorated->persist($data, $context);
+        /** @var ConstructionSite $result */
+        $result = $this->decorated->persist($data, $context);
+
+        // upload image
+        if ($this->request->files->count() > 0) {
+            $file = $this->request->files[0];
+            $image = $this->storageService->uploadConstructionSiteImage($file, $result);
+
+            $manager = $this->doctrine->getManager();
+            $manager->persist($image);
+            $manager->persist($result);
+            $manager->flush();
+        }
+
+        return $result;
     }
 
     public function remove($data, array $context = [])

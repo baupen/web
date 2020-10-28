@@ -60,7 +60,6 @@ class ConstructionSite extends BaseEntity
     /**
      * @var ConstructionSiteImage|null
      *
-     * @Groups({"construction-site-read"})
      * @ORM\OneToOne(targetEntity="App\Entity\ConstructionSiteImage", inversedBy="constructionSite", cascade={"persist"})
      */
     private $image;

@@ -63,8 +63,9 @@ class ConstructionSiteTest extends ApiTestCase
         $response = $client->request('GET', '/api/construction_sites', [
             'headers' => ['Content-Type' => 'application/json'],
         ]);
+
         $this->assertResponseIsSuccessful();
-        $this->assertContainsOnlyListedFields($response, 'name', 'streetAddress', 'postalCode', 'locality', 'image');
+        $this->assertContainsOnlyListedFields($response, 'name', 'streetAddress', 'postalCode', 'locality', 'image_url');
     }
 
     public function testPost()
