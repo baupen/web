@@ -16,8 +16,9 @@ use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Map;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class MapVoter
+class MapVoter extends Voter
 {
     const MAP_VIEW = 'map_view';
     const MAP_MODIFY = 'map_modify';

@@ -15,8 +15,9 @@ use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class ConstructionSiteVoter
+class ConstructionSiteVoter extends Voter
 {
     const CONSTRUCTION_SITE_ADD_SELF = 'construction_site_add_self';
     const CONSTRUCTION_SITE_VIEW = 'construction_site_view';

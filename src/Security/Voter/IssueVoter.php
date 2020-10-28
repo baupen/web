@@ -15,8 +15,9 @@ use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class IssueVoter
+class IssueVoter extends Voter
 {
     const ISSUE_VIEW = 'issue_view';
     const ISSUE_MODIFY = 'issue_modify';

@@ -33,7 +33,7 @@ class MapFile extends BaseEntity
     /**
      * @var ConstructionSite
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="mapFiles")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite")
      */
     private $constructionSite;
 

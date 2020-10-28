@@ -15,8 +15,9 @@ use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class CraftsmanVoter
+class CraftsmanVoter extends Voter
 {
     const CRAFTSMAN_VIEW = 'craftsman_view';
     const CRAFTSMAN_MODIFY = 'craftsman_modify';
