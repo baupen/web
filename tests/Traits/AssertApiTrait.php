@@ -13,17 +13,44 @@ namespace App\Tests\Traits;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Response;
+use Symfony\Component\HttpFoundation\Response as StatusCode;
 
 trait AssertApiTrait
 {
     private function assertApiOperationUnsupported(Client $client, string $url, string ...$methods)
     {
-        $this->assertResponseStatusCodeSameForUrls(405, $client, $url, ...$methods);
+        $this->assertResponseStatusCodeSameForUrls(StatusCode::HTTP_METHOD_NOT_ALLOWED, $client, $url, ...$methods);
     }
 
     private function assertApiOperationNotAuthorized(Client $client, string $url, string ...$methods)
     {
-        $this->assertResponseStatusCodeSameForUrls(401, $client, $url, ...$methods);
+        $this->assertResponseStatusCodeSameForUrls(StatusCode::HTTP_UNAUTHORIZED, $client, $url, ...$methods);
+    }
+
+    private function assertApiPostFieldsRequired(Client $client, string $url, $payload)
+    {
+        foreach ($payload as $key => $value) {
+            $actualPayload = $payload;
+            unset($actualPayload[$key]);
+
+            $client->request('POST', $url, [
+                'headers' => ['Content-Type' => 'application/json'],
+                'json' => $actualPayload,
+            ]);
+
+            $this->assertResponseStatusCodeSame(StatusCode::HTTP_BAD_REQUEST);
+        }
+    }
+
+    private function assertApiPostFieldsPersisted(Client $client, string $url, $payload)
+    {
+        $client->request('POST', $url, [
+            'headers' => ['Content-Type' => 'application/json'],
+            'json' => $payload,
+        ]);
+
+        $this->assertResponseStatusCodeSame(StatusCode::HTTP_CREATED);
+        $this->assertJsonContains($payload);
     }
 
     private function assertResponseStatusCodeSameForUrls(int $expectedCode, Client $client, string $url, string ...$methods)

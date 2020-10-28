@@ -66,4 +66,21 @@ class ConstructionSiteTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertContainsOnlyListedFields($response, 'name', 'streetAddress', 'postalCode', 'locality', 'image');
     }
+
+    public function testPost()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestUserFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiTestUser($client);
+
+        $sample = [
+            'name' => 'New',
+            'streetAddress' => 'Some Address',
+            'postalCode' => 4123,
+            'locality' => 'Allschwil',
+        ];
+
+        $this->assertApiPostFieldsRequired($client, '/api/construction_sites', $sample);
+        $this->assertApiPostFieldsPersisted($client, '/api/construction_sites', $sample);
+    }
 }

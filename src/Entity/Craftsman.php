@@ -12,7 +12,6 @@
 namespace App\Entity;
 
 use App\Entity\Base\BaseEntity;
-use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
@@ -31,7 +30,6 @@ class Craftsman extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
-    use AddressTrait;
     use SoftDeleteTrait;
 
     /**

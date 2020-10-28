@@ -24,125 +24,76 @@ trait AddressTrait
     /**
      * @var string
      *
+     * @Assert\NotBlank
      * @Groups({"construction-site-read"})
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text")
      */
     private $streetAddress;
 
     /**
      * @var int
      *
+     * @Assert\NotBlank
      * @Groups({"construction-site-read"})
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer")
      */
     private $postalCode;
 
     /**
      * @var string
      *
+     * @Assert\NotBlank
      * @Groups({"construction-site-read"})
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text")
      */
     private $locality;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text")
      * @Assert\Country()
      */
     private $country = 'CH';
 
-    /**
-     * Get street.
-     *
-     * @return string
-     */
-    public function getStreetAddress()
+    public function getStreetAddress(): string
     {
         return $this->streetAddress;
     }
 
-    /**
-     * Set street.
-     *
-     * @param string $streetAddress
-     *
-     * @return static
-     */
-    public function setStreetAddress($streetAddress)
+    public function setStreetAddress(string $streetAddress): void
     {
         $this->streetAddress = $streetAddress;
-
-        return $this;
     }
 
-    /**
-     * Get postalCode.
-     *
-     * @return int
-     */
-    public function getPostalCode()
+    public function getPostalCode(): int
     {
         return $this->postalCode;
     }
 
-    /**
-     * Set postalCode.
-     *
-     * @param int $postalCode
-     *
-     * @return static
-     */
-    public function setPostalCode($postalCode)
+    public function setPostalCode(int $postalCode): void
     {
         $this->postalCode = $postalCode;
-
-        return $this;
     }
 
-    /**
-     * Get addressRegion.
-     *
-     * @return string
-     */
-    public function getLocality()
+    public function getLocality(): string
     {
         return $this->locality;
     }
 
-    /**
-     * Set addressRegion.
-     *
-     * @param string $locality
-     *
-     * @return static
-     */
-    public function setLocality($locality)
+    public function setLocality(string $locality): void
     {
         $this->locality = $locality;
-
-        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCountry()
+    public function getCountry(): string
     {
         return $this->country;
     }
 
-    /**
-     * @param string $country
-     *
-     * @return static
-     */
-    public function setCountry($country)
+    public function setCountry(string $country): void
     {
         $this->country = $country;
-
-        return $this;
     }
 
     /**

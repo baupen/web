@@ -22,16 +22,17 @@ class CacheServiceDataPersister implements ContextAwareDataPersisterInterface
     private $decorated;
     private $cache;
 
-    public function __construct(ContextAwareDataPersisterInterface $decorated, CacheServiceInterface $cache)
+    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, CacheServiceInterface $cache)
     {
-        $this->decorated = $decorated;
+        $this->decorated = $decoratedDataPersister;
         $this->cache = $cache;
     }
 
     public function supports($data, array $context = []): bool
     {
-        return $this->decorated->supports($data, $context) &&
-            ($context['collection_operation_name'] ?? null) === 'post';
+        return ($data instanceof ConstructionSiteImage || $data instanceof IssueImage || $data instanceof MapFile) &&
+            ($context['collection_operation_name'] ?? null) === 'post' &&
+            $this->decorated->supports($data, $context);
     }
 
     public function persist($data, array $context = [])
@@ -45,7 +46,7 @@ class CacheServiceDataPersister implements ContextAwareDataPersisterInterface
         } elseif ($data instanceof MapFile) {
             $this->cache->warmUpCacheForMapFile($data);
         } else {
-            throw new \Exception('Unsupported type: '.gettype($data));
+            throw new \Exception('Unsupported class: '.get_class($data));
         }
 
         return $result;

@@ -20,6 +20,7 @@ use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * a construction site is the place the construction manager & the craftsmen work together.
@@ -43,6 +44,7 @@ class ConstructionSite extends BaseEntity
     /**
      * @var string
      *
+     * @Assert\NotBlank
      * @Groups({"construction-site-read"})
      * @ORM\Column(type="text")
      */

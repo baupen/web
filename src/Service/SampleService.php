@@ -40,7 +40,7 @@ class SampleService implements SampleServiceInterface
     /**
      * @var StorageServiceInterface
      */
-    private $uploadService;
+    private $storageService;
 
     /**
      * @var LoggerInterface
@@ -50,11 +50,11 @@ class SampleService implements SampleServiceInterface
     /**
      * SampleService constructor.
      */
-    public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer, StorageServiceInterface $uploadService, LoggerInterface $logger)
+    public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer, StorageServiceInterface $storageService, LoggerInterface $logger)
     {
         $this->pathService = $pathService;
         $this->serializer = $serializer;
-        $this->uploadService = $uploadService;
+        $this->storageService = $storageService;
         $this->logger = $logger;
     }
 
@@ -67,13 +67,13 @@ class SampleService implements SampleServiceInterface
         $constructionSiteJson = file_get_contents($constructionSiteJsonPath);
         /** @var ConstructionSite $constructionSite */
         $constructionSite = $this->serializer->deserialize($constructionSiteJson, ConstructionSite::class, 'json');
-        $this->uploadService->setNewFolderName($constructionSite);
+        $this->storageService->setNewFolderName($constructionSite);
 
         // add construction site image
         $constructionSiteImagePath = $samplePath.DIRECTORY_SEPARATOR.'preview.jpg';
         if (file_exists($constructionSiteImagePath)) {
             $assetFile = new AssetFile($constructionSiteImagePath);
-            $this->uploadService->uploadConstructionSiteImage($assetFile, $constructionSite);
+            $this->storageService->uploadConstructionSiteImage($assetFile, $constructionSite);
         }
 
         // add content
@@ -133,7 +133,7 @@ class SampleService implements SampleServiceInterface
 
             // add map file
             $assetFile = new AssetFile($mapFilePath);
-            $this->uploadService->uploadMapFile($assetFile, $map);
+            $this->storageService->uploadMapFile($assetFile, $map);
         }
     }
 
@@ -189,7 +189,7 @@ class SampleService implements SampleServiceInterface
 
             // add issue image
             $assetFile = new AssetFile($issueImagePath);
-            $this->uploadService->uploadIssueImage($assetFile, $issue);
+            $this->storageService->uploadIssueImage($assetFile, $issue);
         }
     }
 }
