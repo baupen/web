@@ -37,14 +37,9 @@ trait AssertApiTrait
         }
     }
 
-    private function assertApiPostWriteProtected(Client $client, string $url, array $validPayload, array $writeProtectedFields)
+    private function getIriFromItem($item)
     {
-        foreach ($writeProtectedFields as $key => $value) {
-            $actualPayload = $validPayload;
-            $actualPayload[$key] = $value;
-
-            $this->assertApiPostResponseCodeSame(StatusCode::HTTP_BAD_REQUEST, $client, $url, $actualPayload);
-        }
+        return static::$container->get('api_platform.iri_converter')->getIriFromItem($item);
     }
 
     private function assertApiPostPayloadPersisted(Client $client, string $url, array $payload)

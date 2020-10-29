@@ -68,6 +68,7 @@ class ConstructionSiteTest extends ApiTestCase
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
+        $constructionManagerIri = $this->getIriFromItem($constructionManager);
 
         $sample = [
             'name' => 'New',
@@ -81,7 +82,7 @@ class ConstructionSiteTest extends ApiTestCase
 
         $newConstructionSite = json_decode($response->getContent(), true);
         $this->assertResponseIsSuccessful();
-        $this->assertContains('/api/construction_managers/'.$constructionManager->getId(), $newConstructionSite['constructionManagers']);
+        $this->assertContains($constructionManagerIri, $newConstructionSite['constructionManagers']);
 
         $this->loginApiConstructionManagerExternal($client);
         $this->assertApiGetResponseCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id']);

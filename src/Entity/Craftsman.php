@@ -11,6 +11,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Api\Filters\RequiredSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
@@ -18,10 +21,24 @@ use App\Entity\Traits\TimeTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 /**
  * a craftsman receives information about open issues, and answers them.
+ *
+ * @ApiResource(
+ *     collectionOperations={
+ *      "get",
+ *      "post" = {"security_post_denormalize" = "is_granted('CRAFTSMAN_CREATE', object)"}
+ *      },
+ *     itemOperations={
+ *      "get" = {"security" = "is_granted('CRAFTSMAN_VIEW', object)"}
+ *     },
+ *     normalizationContext={"groups"={"craftsman-read"}},
+ *     denormalizationContext={"groups"={"craftsman-write"}}
+ * )
+ * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  *
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
@@ -35,6 +52,7 @@ class Craftsman extends BaseEntity
     /**
      * @var string
      *
+     * @Groups({"craftsman-read", "craftsman-write"})
      * @ORM\Column(type="text")
      */
     private $contactName;
@@ -42,6 +60,7 @@ class Craftsman extends BaseEntity
     /**
      * @var string
      *
+     * @Groups({"craftsman-read", "craftsman-write"})
      * @ORM\Column(type="text")
      */
     private $company;
@@ -49,6 +68,7 @@ class Craftsman extends BaseEntity
     /**
      * @var string
      *
+     * @Groups({"craftsman-read", "craftsman-write"})
      * @ORM\Column(type="text")
      */
     private $trade;
@@ -56,6 +76,7 @@ class Craftsman extends BaseEntity
     /**
      * @var string
      *
+     * @Groups({"craftsman-read", "craftsman-write"})
      * @ORM\Column(type="text")
      */
     private $email;
