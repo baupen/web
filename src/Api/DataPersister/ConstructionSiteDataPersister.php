@@ -14,34 +14,36 @@ namespace App\Api\DataPersister;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\ConstructionSite;
 use App\Service\Interfaces\StorageServiceInterface;
-use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Security;
 
-class StorageServiceDataPersister implements ContextAwareDataPersisterInterface
+class ConstructionSiteDataPersister implements ContextAwareDataPersisterInterface
 {
     private $decorated;
     private $storageService;
-    private $doctrine;
-    private $request;
+    private $user;
 
-    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, StorageServiceInterface $storageService, ManagerRegistry $registry, RequestStack $requestStack)
+    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, StorageServiceInterface $storageService, Security $security)
     {
         $this->decorated = $decoratedDataPersister;
         $this->storageService = $storageService;
-        $this->doctrine = $registry;
-        $this->request = $requestStack->getCurrentRequest();
+        $this->user = $security->getUser();
     }
 
     public function supports($data, array $context = []): bool
     {
         return $data instanceof ConstructionSite &&
-            ($context['collection_operation_name'] ?? null) === 'post' &&
             $this->decorated->supports($data, $context);
     }
 
+    /**
+     * @param ConstructionSite $data
+     */
     public function persist($data, array $context = [])
     {
-        $this->storageService->setNewFolderName($data);
+        if (($context['collection_operation_name'] ?? null) === 'post') {
+            $this->storageService->setNewFolderName($data);
+            $data->getConstructionManagers()->add($this->user);
+        }
 
         return $this->decorated->persist($data, $context);
     }

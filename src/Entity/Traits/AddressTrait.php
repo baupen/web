@@ -25,7 +25,7 @@ trait AddressTrait
      * @var string
      *
      * @Assert\NotBlank
-     * @Groups({"construction-site-read"})
+     * @Groups({"construction-site-read", "construction-site-write"})
      * @ORM\Column(type="text")
      */
     private $streetAddress;
@@ -34,7 +34,7 @@ trait AddressTrait
      * @var int
      *
      * @Assert\NotBlank
-     * @Groups({"construction-site-read"})
+     * @Groups({"construction-site-read", "construction-site-write"})
      * @ORM\Column(type="integer")
      */
     private $postalCode;
@@ -43,7 +43,7 @@ trait AddressTrait
      * @var string
      *
      * @Assert\NotBlank
-     * @Groups({"construction-site-read"})
+     * @Groups({"construction-site-read", "construction-site-write"})
      * @ORM\Column(type="text")
      */
     private $locality;

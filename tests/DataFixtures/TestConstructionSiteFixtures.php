@@ -12,6 +12,7 @@
 namespace App\Tests\DataFixtures;
 
 use App\Entity\ConstructionManager;
+use App\Entity\ConstructionSite;
 use App\Service\Interfaces\SampleServiceInterface;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -24,7 +25,7 @@ class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInte
      */
     private $sampleService;
 
-    public const ORDER = TestUserFixtures::ORDER + 1;
+    public const ORDER = TestConstructionManagerFixtures::ORDER + 1;
     public const TEST_CONSTRUCTION_SITE_NAME = SampleServiceInterface::TEST;
 
     /**
@@ -38,12 +39,9 @@ class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInte
     public function load(ObjectManager $manager)
     {
         $userRepository = $manager->getRepository(ConstructionManager::class);
-        $testUser = $userRepository->findOneBy(['email' => TestUserFixtures::TEST_EMAIL]);
+        $testUser = $userRepository->findOneBy(['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
 
-        $constructionSite = $this->sampleService->createSampleConstructionSite(self::TEST_CONSTRUCTION_SITE_NAME, $testUser);
-
-        $constructionSite->getConstructionManagers()->add($testUser);
-        $testUser->getConstructionSites()->add($constructionSite);
+        $constructionSite = $this->createAndAssignSampleConstructionSite($testUser);
 
         $manager->persist($constructionSite);
         $manager->persist($testUser);
@@ -53,5 +51,15 @@ class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInte
     public function getOrder()
     {
         return self::ORDER;
+    }
+
+    private function createAndAssignSampleConstructionSite(?ConstructionManager $testUser): ConstructionSite
+    {
+        $constructionSite = $this->sampleService->createSampleConstructionSite(self::TEST_CONSTRUCTION_SITE_NAME, $testUser);
+
+        $constructionSite->getConstructionManagers()->add($testUser);
+        $testUser->getConstructionSites()->add($constructionSite);
+
+        return $constructionSite;
     }
 }

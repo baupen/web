@@ -12,8 +12,8 @@
 namespace App\Tests\Controller;
 
 use App\DataFixtures\Model\AssetFile;
+use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
-use App\Tests\DataFixtures\TestUserFixtures;
 use App\Tests\Traits\AssertAuthenticationTrait;
 use App\Tests\Traits\AssertEmailTrait;
 use App\Tests\Traits\AuthenticationTrait;
@@ -34,8 +34,8 @@ class ImageControllerTest extends WebTestCase
     public function testPostImage()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestUserFixtures::class, TestConstructionSiteFixtures::class]);
-        $this->loginTestUser($client);
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginConstructionManager($client);
 
         $testConstructionSite = $this->getTestConstructionSite();
         $oldGuid = $testConstructionSite->getImage()->getId();

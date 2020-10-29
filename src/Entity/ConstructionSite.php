@@ -26,9 +26,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  * a construction site is the place the construction manager & the craftsmen work together.
  *
  * @ApiResource(
- *     collectionOperations={"get", "post"},
- *     itemOperations={"get"},
- *     normalizationContext={"groups"={"construction-site-read"}}
+ *     collectionOperations={
+ *      "get",
+ *      "post" = {"security_post_denormalize" = "is_granted('CONSTRUCTION_SITE_CREATE', object)"}
+ *      },
+ *     itemOperations={
+ *      "get" = {"security" = "is_granted('CONSTRUCTION_SITE_VIEW', object)"}
+ *     },
+ *     normalizationContext={"groups"={"construction-site-read"}},
+ *     denormalizationContext={"groups"={"construction-site-write"}}
  * )
  *
  * @ORM\Entity
@@ -45,7 +51,7 @@ class ConstructionSite extends BaseEntity
      * @var string
      *
      * @Assert\NotBlank
-     * @Groups({"construction-site-read"})
+     * @Groups({"construction-site-read", "construction-site-write"})
      * @ORM\Column(type="text")
      */
     private $name;
@@ -67,6 +73,7 @@ class ConstructionSite extends BaseEntity
     /**
      * @var ConstructionManager[]|ArrayCollection
      *
+     * @Groups({"construction-site-read"})
      * @ORM\ManyToMany(targetEntity="ConstructionManager", inversedBy="constructionSites")
      * @ORM\JoinTable(name="construction_site_construction_manager")
      */

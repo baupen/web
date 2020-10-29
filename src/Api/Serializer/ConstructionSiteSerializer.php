@@ -36,7 +36,7 @@ class ConstructionSiteSerializer implements NormalizerInterface
     {
         $data = $this->decorated->normalize($object, $format, $context);
 
-        if ($object instanceof ConstructionSite && null !== $object->getImage()) {
+        if (null !== $object->getImage()) {
             $url = $this->urlGenerator->generate('construction_site_image', [
                 'constructionSite' => $object->getId(),
                 'constructionSiteImage' => $object->getImage()->getId(),

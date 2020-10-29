@@ -16,15 +16,19 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class TestUserFixtures extends Fixture implements OrderedFixtureInterface
+class TestConstructionManagerFixtures extends Fixture implements OrderedFixtureInterface
 {
     public const ORDER = 0;
-    public const TEST_EMAIL = 'test@mangel.io';
+    public const CONSTRUCTION_MANAGER_EMAIL = 'test@mangel.io';
+    public const CONSTRUCTION_MANAGER_TRIAL_EMAIL = 'trial@mangel.io';
+    public const CONSTRUCTION_MANAGER_EXTERNAL_EMAIL = 'external@mangel.io';
 
     public function load(ObjectManager $manager)
     {
         $entries = [
-            [self::TEST_EMAIL, 'asdf', 'GivenName', 'FamilyName'],
+            [self::CONSTRUCTION_MANAGER_EMAIL, 'asdf', 'GivenName', 'FamilyName'],
+            [self::CONSTRUCTION_MANAGER_TRIAL_EMAIL, 'asdf', 'GivenName', 'FamilyName', true],
+            [self::CONSTRUCTION_MANAGER_EXTERNAL_EMAIL, 'asdf', 'GivenName', 'FamilyName', false, true],
         ];
 
         foreach ($entries as $entry) {
@@ -33,6 +37,8 @@ class TestUserFixtures extends Fixture implements OrderedFixtureInterface
             $constructionManager->setPasswordFromPlain($entry[1]);
             $constructionManager->setGivenName($entry[2]);
             $constructionManager->setFamilyName($entry[3]);
+            $constructionManager->setIsTrialAccount($entry[4] ?? false);
+            $constructionManager->setIsExternalAccount($entry[5] ?? false);
             $constructionManager->setIsEnabled(true);
             $manager->persist($constructionManager);
         }

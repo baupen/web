@@ -19,9 +19,9 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class ConstructionSiteVoter extends Voter
 {
-    const CONSTRUCTION_SITE_ADD_SELF = 'construction_site_add_self';
-    const CONSTRUCTION_SITE_VIEW = 'construction_site_view';
-    const CONSTRUCTION_SITE_MODIFY = 'construction_site_modify';
+    const CONSTRUCTION_SITE_CREATE = 'CONSTRUCTION_SITE_CREATE';
+    const CONSTRUCTION_SITE_VIEW = 'CONSTRUCTION_SITE_VIEW';
+    const CONSTRUCTION_SITE_MODIFY = 'CONSTRUCTION_SITE_MODIFY';
 
     /**
      * Determines if the attribute and subject are supported by this voter.
@@ -34,7 +34,7 @@ class ConstructionSiteVoter extends Voter
     protected function supports($attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (!in_array($attribute, [self::CONSTRUCTION_SITE_ADD_SELF, self::CONSTRUCTION_SITE_VIEW, self::CONSTRUCTION_SITE_MODIFY])) {
+        if (!in_array($attribute, [self::CONSTRUCTION_SITE_CREATE, self::CONSTRUCTION_SITE_VIEW, self::CONSTRUCTION_SITE_MODIFY])) {
             return false;
         }
 
@@ -55,19 +55,21 @@ class ConstructionSiteVoter extends Voter
         $user = $token->getUser();
 
         if ($user instanceof ConstructionManager) {
-            switch ($attribute) {
-                case self::CONSTRUCTION_SITE_VIEW:
-                case self::CONSTRUCTION_SITE_MODIFY:
+            if ($user->getIsTrialAccount() || $user->getIsExternalAccount()) {
+                return $subject->getConstructionManagers()->contains($user);
+            } else {
+                if (self::CONSTRUCTION_SITE_MODIFY === $attribute) {
                     return $subject->getConstructionManagers()->contains($user);
-                case self::CONSTRUCTION_SITE_ADD_SELF:
-                    return !$user->getIsTrialAccount() && !$user->getIsExternalAccount();
+                }
+
+                return true;
             }
         } elseif ($user instanceof Craftsman) {
             switch ($attribute) {
                 case self::CONSTRUCTION_SITE_VIEW:
                     return $user->getConstructionSite() === $subject;
                 case self::CONSTRUCTION_SITE_MODIFY:
-                case self::CONSTRUCTION_SITE_ADD_SELF:
+                case self::CONSTRUCTION_SITE_CREATE:
                     return false;
             }
         }
