@@ -22,6 +22,6 @@ class AssetFile extends UploadedFile
         $newPath = $path.'.tmp';
         copy($path, $newPath);
 
-        parent::__construct($newPath, $originalName);
+        parent::__construct($newPath, $originalName, null, null, true);
     }
 }
