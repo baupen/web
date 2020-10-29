@@ -77,7 +77,6 @@ class ConstructionSiteTest extends ApiTestCase
         ];
 
         $this->assertApiPostPayloadMinimal($client, '/api/construction_sites', $sample);
-        //TODO: check can not write some fields $this->assertApiPostWriteProtected($client, '/api/construction_sites', $sample, $writeProtected);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/construction_sites', $sample);
 
         $newConstructionSite = json_decode($response->getContent(), true);
