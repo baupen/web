@@ -17,7 +17,6 @@ use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Entity\Map;
-use App\Entity\MapFile;
 use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\SampleServiceInterface;
@@ -171,13 +170,9 @@ class SampleService implements SampleServiceInterface
             $issue->setMap($map);
             $map->getIssues()->add($issue);
 
-            if (isset($issueRelation['map_map_file'])) {
-                $mapMapFileIndex = $issueRelation['map_map_file'];
-                /** @var MapFile $mapFile */
-                $mapFile = $issue->getMap()->getFiles()->get($mapMapFileIndex);
-                $issue->setMapFile($mapFile);
-                $mapFile->getIssues()->add($issue);
-            }
+            $mapFile = $issue->getMap()->getFile();
+            $issue->setMapFile($mapFile);
+            $mapFile->getIssues()->add($issue);
 
             // check if corresponding issue image exist
             $expectedIssueImageFileName = FileHelper::sanitizeFileName($issue->getDescription());

@@ -357,6 +357,11 @@ class Issue extends BaseEntity
         $this->constructionSite = $constructionSite;
     }
 
+    public function isConstructionSiteSet(): bool
+    {
+        return null !== $this->constructionSite;
+    }
+
     public function getMapFile(): ?MapFile
     {
         return $this->mapFile;

@@ -58,7 +58,7 @@ class IssueVoter extends Voter
             switch ($attribute) {
                 case self::ISSUE_VIEW:
                 case self::ISSUE_MODIFY:
-                    return $subject->getConstructionSite()->getConstructionManagers()->contains($user);
+                    return $subject->isConstructionSiteSet() && $subject->getConstructionSite()->getConstructionManagers()->contains($user);
             }
         } elseif ($user instanceof Issue) {
             switch ($attribute) {

@@ -1,22 +1,18 @@
 [
   {
     "craftsman": 0,
-    "map": 1,
-    "map_map_file": 0
+    "map": 1
   },
   {
     "craftsman": 0,
-    "map": 1,
-    "map_map_file": 0
+    "map": 1
   },
   {
     "craftsman": 0,
-    "map": 1,
-    "map_map_file": 0
+    "map": 1
   },
   {
     "craftsman": 1,
-    "map": 2,
-    "map_map_file": 0
+    "map": 2
   }
 ]

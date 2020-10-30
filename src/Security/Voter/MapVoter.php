@@ -58,7 +58,7 @@ class MapVoter extends Voter
             switch ($attribute) {
                 case self::MAP_VIEW:
                 case self::MAP_MODIFY:
-                    return $subject->getConstructionSite()->getConstructionManagers()->contains($user);
+                    return $subject->isConstructionSiteSet() && $subject->getConstructionSite()->getConstructionManagers()->contains($user);
             }
         } elseif ($user instanceof Craftsman) {
             switch ($attribute) {

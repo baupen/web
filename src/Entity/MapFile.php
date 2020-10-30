@@ -11,16 +11,26 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Api\Filters\RequiredSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\FileTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * A MapFile is the actual .pdf file connected to a logical map.
  *
+ * @ApiResource(
+ *     collectionOperations={"get"},
+ *     itemOperations={"get"},
+ *     normalizationContext={"groups"={"map-file-read"}}
+ * )
+ * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
@@ -40,7 +50,7 @@ class MapFile extends BaseEntity
     /**
      * @var Map|null
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="files")
+     * @ORM\OneToOne(targetEntity="App\Entity\Map", mappedBy="file")
      */
     private $map;
 
@@ -82,5 +92,21 @@ class MapFile extends BaseEntity
     public function getIssues()
     {
         return $this->issues;
+    }
+
+    /**
+     * @Groups({"map-file-read"})
+     */
+    public function getFilename(): string
+    {
+        return $this->filename;
+    }
+
+    /**
+     * @Groups({"map-file-read"})
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
     }
 }

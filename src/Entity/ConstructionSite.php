@@ -213,6 +213,15 @@ class ConstructionSite extends BaseEntity
     /**
      * @Groups({"construction-site-read"})
      */
+    public function getImageUrl(): ?string
+    {
+        // will be overwritten by serializer of API
+        return null;
+    }
+
+    /**
+     * @Groups({"construction-site-read"})
+     */
     public function getIsDeleted(): bool
     {
         return null !== $this->deletedAt;

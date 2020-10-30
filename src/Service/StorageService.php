@@ -79,7 +79,7 @@ class StorageService implements StorageServiceInterface
         }
 
         $mapFile->setMap($map);
-        $map->getFiles()->add($mapFile);
+        $mapFile->setConstructionSite($map->getConstructionSite());
         $map->setFile($mapFile);
 
         return $mapFile;
