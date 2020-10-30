@@ -53,10 +53,7 @@ class ConstructionManagerTest extends ApiTestCase
         $this->loadFixtures([TestConstructionManagerFixtures::class]);
         $this->loginApiConstructionManager($client);
 
-        $response = $client->request('GET', '/api/construction_managers', [
-            'headers' => ['Content-Type' => 'application/json'],
-        ]);
-        $this->assertResponseIsSuccessful();
+        $response = $this->assertApiGetOk($client, '/api/construction_managers');
         $this->assertContainsOnlyListedFields($response, 'givenName', 'familyName', 'email', 'phone');
     }
 }

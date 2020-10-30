@@ -19,21 +19,28 @@ trait AssertApiTrait
 {
     private function assertApiOperationUnsupported(Client $client, string $url, string ...$methods)
     {
-        $this->assertApiResponseStatusCodeSame(StatusCode::HTTP_METHOD_NOT_ALLOWED, $client, $url, ...$methods);
+        $this->assertApiResponseStatusCodeSameForMethods(StatusCode::HTTP_METHOD_NOT_ALLOWED, $client, $url, ...$methods);
     }
 
     private function assertApiOperationNotAuthorized(Client $client, string $url, string ...$methods)
     {
-        $this->assertApiResponseStatusCodeSame(StatusCode::HTTP_UNAUTHORIZED, $client, $url, ...$methods);
+        $this->assertApiResponseStatusCodeSameForMethods(StatusCode::HTTP_UNAUTHORIZED, $client, $url, ...$methods);
     }
 
-    private function assertApiPostPayloadMinimal(Client $client, string $url, array $payload)
+    private function assertApiPostPayloadMinimal(Client $client, string $url, array $payload, array $accessControlPayload = [])
     {
         foreach ($payload as $key => $value) {
-            $actualPayload = $payload;
+            $actualPayload = array_merge($payload, $accessControlPayload);
             unset($actualPayload[$key]);
 
-            $this->assertApiPostResponseCodeSame(StatusCode::HTTP_BAD_REQUEST, $client, $url, $actualPayload);
+            $this->assertApiPostResponseStatusCodeSame(StatusCode::HTTP_BAD_REQUEST, $client, $url, $actualPayload);
+        }
+
+        foreach ($accessControlPayload as $key => $value) {
+            $actualPayload = array_merge($payload, $accessControlPayload);
+            unset($actualPayload[$key]);
+
+            $this->assertApiPostResponseStatusCodeSame(StatusCode::HTTP_FORBIDDEN, $client, $url, $actualPayload);
         }
     }
 
@@ -42,42 +49,80 @@ trait AssertApiTrait
         return static::$container->get('api_platform.iri_converter')->getIriFromItem($item);
     }
 
-    private function assertApiPostPayloadPersisted(Client $client, string $url, array $payload)
+    private function assertApiPostPayloadPersisted(Client $client, string $url, array $payload, array $additionalPayload = [])
     {
-        $response = $this->assertApiPostResponseCodeSame(StatusCode::HTTP_CREATED, $client, $url, $payload);
+        $actualPayload = array_merge($payload, $additionalPayload);
+        $response = $this->assertApiPostResponseStatusCodeSame(StatusCode::HTTP_CREATED, $client, $url, $actualPayload);
         $this->assertJsonContains($payload);
 
         return $response;
     }
 
-    private function assertApiResponseStatusCodeSame(int $expectedCode, Client $client, string $url, string ...$methods)
+    private function assertApiPatchPayloadPersisted(Client $client, string $url, array $payload)
+    {
+        $response = $this->assertApiPatchOk($client, $url, $payload);
+        $this->assertJsonContains($payload);
+
+        return $response;
+    }
+
+    private function assertApiResponseStatusCodeSameForMethods(int $expectedCode, Client $client, string $url, string ...$methods)
     {
         foreach ($methods as $method) {
-            $client->request($method, $url, [
-                'headers' => ['Content-Type' => 'application/json'],
-            ]);
-
-            $this->assertResponseStatusCodeSame($expectedCode);
+            $this->assertApiResponseStatusCodeSame($method, $expectedCode, $client, $url);
         }
     }
 
-    private function assertApiGetResponseCodeSame(int $expectedCode, Client $client, string $url)
+    private function assertApiGetOk(Client $client, string $url)
     {
-        $client->request('GET', $url, [
-            'headers' => ['Content-Type' => 'application/json'],
-        ]);
-
-        $this->assertResponseStatusCodeSame($expectedCode);
-
-        return $client->getResponse();
+        return $this->assertApiGetResponseStatusCodeSame(StatusCode::HTTP_OK, $client, $url);
     }
 
-    private function assertApiPostResponseCodeSame(int $expectedCode, Client $client, string $url, array $payload)
+    private function assertApiPatchOk(Client $client, string $url, array $payload)
     {
-        $client->request('POST', $url, [
-            'headers' => ['Content-Type' => 'application/json'],
-            'json' => $payload,
-        ]);
+        return $this->assertApiPatchResponseStatusCodeSame(StatusCode::HTTP_OK, $client, $url, $payload);
+    }
+
+    private function assertApiDeleteOk(Client $client, string $url)
+    {
+        return $this->assertApiDeleteResponseStatusCodeSame(StatusCode::HTTP_NO_CONTENT, $client, $url);
+    }
+
+    private function assertApiGetResponseStatusCodeSame(int $expectedCode, Client $client, string $url)
+    {
+        return $this->assertApiResponseStatusCodeSame('GET', $expectedCode, $client, $url);
+    }
+
+    private function assertApiPostResponseStatusCodeSame(int $expectedCode, Client $client, string $url, array $payload)
+    {
+        return $this->assertApiResponseStatusCodeSame('POST', $expectedCode, $client, $url, $payload);
+    }
+
+    private function assertApiPatchResponseStatusCodeSame(int $expectedCode, Client $client, string $url, array $payload)
+    {
+        return $this->assertApiResponseStatusCodeSame('PATCH', $expectedCode, $client, $url, $payload);
+    }
+
+    private function assertApiDeleteResponseStatusCodeSame(int $expectedCode, Client $client, string $url)
+    {
+        return $this->assertApiResponseStatusCodeSame('DELETE', $expectedCode, $client, $url);
+    }
+
+    private function assertApiResponseStatusCodeSame(string $method, int $expectedCode, Client $client, string $url, array $payload = null)
+    {
+        $body = [];
+        if ($payload) {
+            $body['json'] = $payload;
+
+            $contentType = 'application/json';
+            if ('PATCH' === $method) {
+                $contentType = 'application/merge-patch+json';
+            }
+
+            $body['headers'] = ['Content-Type' => $contentType];
+        }
+
+        $client->request($method, $url, $body);
 
         $this->assertResponseStatusCodeSame($expectedCode);
 
@@ -118,8 +163,7 @@ trait AssertApiTrait
                     continue;
                 }
 
-                $response = $client->request('GET', $url);
-                $this->assertResponseStatusCodeSame(StatusCode::HTTP_OK);
+                $response = $this->assertApiGetOk($client, $url);
                 $this->assertStringStartsWith('inline', $response->getHeaders()['content-disposition'][0]);
 
                 return $url;

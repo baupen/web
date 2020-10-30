@@ -20,8 +20,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class MapVoter extends Voter
 {
-    const MAP_VIEW = 'map_view';
-    const MAP_MODIFY = 'map_modify';
+    const MAP_VIEW = 'MAP_VIEW';
+    const MAP_MODIFY = 'MAP_MODIFY';
 
     /**
      * Determines if the attribute and subject are supported by this voter.

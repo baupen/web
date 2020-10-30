@@ -23,6 +23,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * a craftsman receives information about open issues, and answers them.
@@ -30,10 +31,12 @@ use Symfony\Component\Uid\Uuid;
  * @ApiResource(
  *     collectionOperations={
  *      "get",
- *      "post" = {"security_post_denormalize" = "is_granted('CRAFTSMAN_CREATE', object)"}
+ *      "post" = {"security_post_denormalize" = "is_granted('CRAFTSMAN_MODIFY', object)", "denormalization_context"={"groups"={"craftsman-create", "craftsman-write"}}}
  *      },
  *     itemOperations={
- *      "get" = {"security" = "is_granted('CRAFTSMAN_VIEW', object)"}
+ *      "get" = {"security" = "is_granted('CRAFTSMAN_VIEW', object)"},
+ *      "patch" = {"security" = "is_granted('CRAFTSMAN_MODIFY', object)"},
+ *      "delete" = {"security" = "is_granted('CRAFTSMAN_MODIFY', object)"},
  *     },
  *     normalizationContext={"groups"={"craftsman-read"}},
  *     denormalizationContext={"groups"={"craftsman-write"}}
@@ -52,6 +55,7 @@ class Craftsman extends BaseEntity
     /**
      * @var string
      *
+     * @Assert\NotBlank
      * @Groups({"craftsman-read", "craftsman-write"})
      * @ORM\Column(type="text")
      */
@@ -60,6 +64,7 @@ class Craftsman extends BaseEntity
     /**
      * @var string
      *
+     * @Assert\NotBlank
      * @Groups({"craftsman-read", "craftsman-write"})
      * @ORM\Column(type="text")
      */
@@ -68,6 +73,7 @@ class Craftsman extends BaseEntity
     /**
      * @var string
      *
+     * @Assert\NotBlank
      * @Groups({"craftsman-read", "craftsman-write"})
      * @ORM\Column(type="text")
      */
@@ -76,6 +82,7 @@ class Craftsman extends BaseEntity
     /**
      * @var string
      *
+     * @Assert\NotBlank
      * @Groups({"craftsman-read", "craftsman-write"})
      * @ORM\Column(type="text")
      */
@@ -84,6 +91,8 @@ class Craftsman extends BaseEntity
     /**
      * @var ConstructionSite
      *
+     * @Assert\NotBlank
+     * @Groups({"craftsman-create"})
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="craftsmen")
      */
     private $constructionSite;
@@ -177,6 +186,11 @@ class Craftsman extends BaseEntity
     public function setEmail(string $email): void
     {
         $this->email = $email;
+    }
+
+    public function isConstructionSiteSet(): bool
+    {
+        return null !== $this->constructionSite;
     }
 
     public function getConstructionSite(): ConstructionSite

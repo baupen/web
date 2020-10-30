@@ -19,8 +19,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class CraftsmanVoter extends Voter
 {
-    const CRAFTSMAN_VIEW = 'craftsman_view';
-    const CRAFTSMAN_MODIFY = 'craftsman_modify';
+    const CRAFTSMAN_VIEW = 'CRAFTSMAN_VIEW';
+    const CRAFTSMAN_MODIFY = 'CRAFTSMAN_MODIFY';
 
     /**
      * Determines if the attribute and subject are supported by this voter.
@@ -57,7 +57,7 @@ class CraftsmanVoter extends Voter
             switch ($attribute) {
                 case self::CRAFTSMAN_VIEW:
                 case self::CRAFTSMAN_MODIFY:
-                    return $subject->getConstructionSite()->getConstructionManagers()->contains($user);
+                    return $subject->isConstructionSiteSet() && $subject->getConstructionSite()->getConstructionManagers()->contains($user);
             }
         } elseif ($user instanceof Craftsman) {
             switch ($attribute) {

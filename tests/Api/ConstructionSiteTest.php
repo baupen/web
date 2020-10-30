@@ -54,11 +54,7 @@ class ConstructionSiteTest extends ApiTestCase
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
-        $response = $client->request('GET', '/api/construction_sites', [
-            'headers' => ['Content-Type' => 'application/json'],
-        ]);
-
-        $this->assertResponseIsSuccessful();
+        $response = $this->assertApiGetOk($client, '/api/construction_sites');
         $this->assertContainsOnlyListedFields($response, 'name', 'streetAddress', 'postalCode', 'locality', 'imageUrl', 'constructionManagers');
         $this->assertApiFileUrlIsDownloadable($client, $response, 'imageUrl');
     }
@@ -85,11 +81,11 @@ class ConstructionSiteTest extends ApiTestCase
         $this->assertContains($constructionManagerIri, $newConstructionSite['constructionManagers']);
 
         $this->loginApiConstructionManagerExternal($client);
-        $this->assertApiGetResponseCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id']);
-        $this->assertApiPostResponseCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/construction_sites', $sample);
+        $this->assertApiGetResponseStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id']);
+        $this->assertApiPostResponseStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/construction_sites', $sample);
 
         $this->loginApiConstructionManagerTrial($client);
-        $this->assertApiGetResponseCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id']);
-        $this->assertApiPostResponseCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/construction_sites', $sample);
+        $this->assertApiGetResponseStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id']);
+        $this->assertApiPostResponseStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/construction_sites', $sample);
     }
 }

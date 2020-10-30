@@ -19,9 +19,9 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class IssueVoter extends Voter
 {
-    const ISSUE_VIEW = 'issue_view';
-    const ISSUE_MODIFY = 'issue_modify';
-    const ISSUE_RESPOND = 'issue_respond';
+    const ISSUE_VIEW = 'ISSUE_VIEW';
+    const ISSUE_MODIFY = 'ISSUE_MODIFY';
+    const ISSUE_RESPOND = 'ISSUE_RESPOND';
 
     /**
      * Determines if the attribute and subject are supported by this voter.
