@@ -55,8 +55,8 @@ class ConstructionSiteTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $response = $this->assertApiGetOk($client, '/api/construction_sites');
-        $this->assertContainsOnlyListedFields($response, 'name', 'streetAddress', 'postalCode', 'locality', 'imageUrl', 'constructionManagers');
-        $this->assertApiFileUrlIsDownloadable($client, $response, 'imageUrl');
+        $this->assertApiResponseFieldSubset($response, 'name', 'streetAddress', 'postalCode', 'locality', 'imageUrl', 'constructionManagers');
+        $this->assertApiResponseFileIsDownloadable($client, $response, 'imageUrl');
     }
 
     public function testPost()
@@ -81,11 +81,11 @@ class ConstructionSiteTest extends ApiTestCase
         $this->assertContains($constructionManagerIri, $newConstructionSite['constructionManagers']);
 
         $this->loginApiConstructionManagerExternal($client);
-        $this->assertApiGetResponseStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id']);
-        $this->assertApiPostResponseStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/construction_sites', $sample);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id']);
+        $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/construction_sites', $sample);
 
         $this->loginApiConstructionManagerTrial($client);
-        $this->assertApiGetResponseStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id']);
-        $this->assertApiPostResponseStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/construction_sites', $sample);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id']);
+        $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/construction_sites', $sample);
     }
 }

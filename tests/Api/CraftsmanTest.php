@@ -12,7 +12,6 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
 use App\Entity\ConstructionSite;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
@@ -49,11 +48,11 @@ class CraftsmanTest extends ApiTestCase
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
-        $this->assertApiGetResponseStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen');
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen');
 
         $constructionSite = $this->getTestConstructionSite();
-        $response = $this->assertApiGetResponseStatusCodeSame(Response::HTTP_OK, $client, '/api/craftsmen?constructionSite='.$constructionSite->getId());
-        $this->assertContainsOnlyListedFields($response, 'email', 'contactName', 'company', 'trade');
+        $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/craftsmen?constructionSite='.$constructionSite->getId());
+        $this->assertApiResponseFieldSubset($response, 'email', 'contactName', 'company', 'trade');
     }
 
     public function testPostPatchAndDelete()
@@ -91,39 +90,5 @@ class CraftsmanTest extends ApiTestCase
 
         $this->assertApiDeleteOk($client, $craftsmanId);
         $this->assertApiCollectionHasNoItemWithId($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $craftsmanId);
-    }
-
-    private function assertApiCollectionContainsItem(Client $client, string $url, \ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Response $itemResponse)
-    {
-        $item = json_decode($itemResponse->getContent(), true);
-        unset($item['@context']);
-
-        $collectionResponse = $this->assertApiGetOk($client, $url);
-        $collection = json_decode($collectionResponse->getContent(), true);
-        foreach ($collection['hydra:member'] as $entry) {
-            if ($entry == $item) {
-                $this->assertTrue($entry == $item);
-
-                return;
-            }
-        }
-
-        $this->fail('item '.$itemResponse->getContent().' not found in collection '.$collectionResponse->getContent());
-    }
-
-    private function assertApiCollectionHasNoItemWithId(Client $client, string $url, string $id)
-    {
-        $collectionResponse = $this->assertApiGetOk($client, $url);
-        $collection = json_decode($collectionResponse->getContent(), true);
-
-        foreach ($collection['hydra:member'] as $entry) {
-            if ($entry['@id'] == $id) {
-                $this->fail('id '.$id.' found in '.$collectionResponse->getContent());
-
-                return;
-            }
-        }
-
-        $this->assertTrue(true);
     }
 }

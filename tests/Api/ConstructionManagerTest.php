@@ -54,6 +54,6 @@ class ConstructionManagerTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $response = $this->assertApiGetOk($client, '/api/construction_managers');
-        $this->assertContainsOnlyListedFields($response, 'givenName', 'familyName', 'email', 'phone');
+        $this->assertApiResponseFieldSubset($response, 'givenName', 'familyName', 'email', 'phone');
     }
 }

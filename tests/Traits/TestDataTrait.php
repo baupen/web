@@ -17,6 +17,11 @@ use Doctrine\Persistence\ManagerRegistry;
 
 trait TestDataTrait
 {
+    private function getIriFromItem($item)
+    {
+        return static::$container->get('api_platform.iri_converter')->getIriFromItem($item);
+    }
+
     private function getTestConstructionSite(): ConstructionSite
     {
         /** @var ManagerRegistry $registry */
