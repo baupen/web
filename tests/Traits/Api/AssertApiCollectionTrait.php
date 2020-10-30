@@ -20,17 +20,19 @@ trait AssertApiCollectionTrait
     {
         $item = json_decode($itemResponse->getContent(), true);
         unset($item['@context']);
+        unset($item['lastChangedAt']);
 
-        $this->assertApiCollectionContains($client, $url, $item);
+        $this->assertApiCollectionContains($client, $url, $item, 'lastChangedAt');
     }
 
     private function assertApiCollectionContainsResponseItemDeleted(Client $client, string $url, Response $itemResponse)
     {
         $item = json_decode($itemResponse->getContent(), true);
         unset($item['@context']);
+        unset($item['lastChangedAt']);
         $item['isDeleted'] = true;
 
-        $this->assertApiCollectionContains($client, $url, $item);
+        $this->assertApiCollectionContains($client, $url, $item, 'lastChangedAt');
     }
 
     private function assertApiCollectionContainsIri(Client $client, string $url, string $iri)
@@ -65,13 +67,14 @@ trait AssertApiCollectionTrait
         $this->assertTrue(true);
     }
 
-    private function assertApiCollectionContains(Client $client, string $url, array $item)
+    private function assertApiCollectionContains(Client $client, string $url, array $item, string ...$excludedFields)
     {
         $collectionResponse = $this->assertApiGetOk($client, $url);
         $collection = json_decode($collectionResponse->getContent(), true);
         foreach ($collection['hydra:member'] as $entry) {
-            if ($entry == $item) {
-                $this->assertTrue($entry == $item);
+            $compareEntry = array_diff_key($entry, array_flip($excludedFields)); // remove excluded keys
+            if ($compareEntry == $item) {
+                $this->assertTrue($compareEntry == $item);
 
                 return;
             }

@@ -282,4 +282,20 @@ class Craftsman extends BaseEntity
     {
         return 0 === $this->issues->count() && 0 === $this->respondedIssues->count();
     }
+
+    /**
+     * @Groups({"craftsman-read"})
+     */
+    public function getIsDeleted(): bool
+    {
+        return null !== $this->deletedAt;
+    }
+
+    /**
+     * @Groups({"craftsman-read"})
+     */
+    public function getLastChangedAt(): \DateTime
+    {
+        return $this->lastChangedAt;
+    }
 }

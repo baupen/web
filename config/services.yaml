@@ -41,7 +41,3 @@ services:
     'App\Api\Serializer\ConstructionSiteSerializer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
 
-    App\Api\Serializer\ConstructionManagerNormalizer:
-        arguments: [ '@security.token_storage' ]
-        tags:
-            - { name: 'serializer.normalizer', priority: 64 }

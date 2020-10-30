@@ -55,7 +55,7 @@ class ConstructionSiteTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $response = $this->assertApiGetOk($client, '/api/construction_sites');
-        $this->assertApiResponseFieldSubset($response, 'name', 'streetAddress', 'postalCode', 'locality', 'imageUrl', 'constructionManagers', 'isDeleted');
+        $this->assertApiResponseFieldSubset($response, 'name', 'streetAddress', 'postalCode', 'locality', 'imageUrl', 'constructionManagers', 'isDeleted', 'lastChangedAt');
         $this->assertApiResponseFileIsDownloadable($client, $response, 'imageUrl');
     }
 

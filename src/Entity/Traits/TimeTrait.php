@@ -11,6 +11,8 @@
 
 namespace App\Entity\Traits;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
@@ -31,6 +33,7 @@ trait TimeTrait
     /**
      * @var DateTime
      *
+     * @ApiFilter(DateFilter::class)
      * @ORM\Column(type="datetime")
      */
     private $lastChangedAt;

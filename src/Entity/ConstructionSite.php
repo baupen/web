@@ -209,4 +209,20 @@ class ConstructionSite extends BaseEntity
     {
         $this->folderName = $uniqueFolderName;
     }
+
+    /**
+     * @Groups({"construction-site-read"})
+     */
+    public function getIsDeleted(): bool
+    {
+        return null !== $this->deletedAt;
+    }
+
+    /**
+     * @Groups({"construction-site-read"})
+     */
+    public function getLastChangedAt(): \DateTime
+    {
+        return $this->lastChangedAt;
+    }
 }

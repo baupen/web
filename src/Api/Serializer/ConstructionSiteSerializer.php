@@ -32,6 +32,9 @@ class ConstructionSiteSerializer implements NormalizerInterface
             $this->decorated->supportsNormalization($data, $format);
     }
 
+    /**
+     * @param ConstructionSite $object
+     */
     public function normalize($object, string $format = null, array $context = [])
     {
         $data = $this->decorated->normalize($object, $format, $context);

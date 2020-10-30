@@ -13,7 +13,6 @@ namespace App\Entity\Traits;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 /*
  * automatically keeps track of creation time & last change time
@@ -31,14 +30,6 @@ trait SoftDeleteTrait
     public function getDeletedAt(): ?DateTime
     {
         return $this->deletedAt;
-    }
-
-    /**
-     * @Groups({"construction-site-read", "craftsman-read"})
-     */
-    public function getIsDeleted(): bool
-    {
-        return null !== $this->deletedAt;
     }
 
     /**
