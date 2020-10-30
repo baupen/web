@@ -13,6 +13,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredSearchFilter;
 use App\Entity\Base\BaseEntity;
@@ -44,6 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
+ * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
  *
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks

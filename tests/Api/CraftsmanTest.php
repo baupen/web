@@ -13,6 +13,7 @@ namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\ConstructionSite;
+use App\Helper\DateTimeFormatter;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertApiTrait;
@@ -98,8 +99,6 @@ class CraftsmanTest extends ApiTestCase
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen');
-
         $constructionSite = $this->getTestConstructionSite();
         $craftsman = $constructionSite->getCraftsmen()[0];
         $this->assertFalse($craftsman->getIsDeleted(), 'ensure craftsman is not deleted, else the following tests will fail');
@@ -110,21 +109,22 @@ class CraftsmanTest extends ApiTestCase
         $this->assertApiCollectionNotContainsIri($client, '/api/craftsmen?constructionSite='.$constructionSite->getId().'&isDeleted=true', $craftsmanIri);
     }
 
-    public function testChangedAtFilter()
+    public function testLastChangedAtFilter()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen');
-
         $constructionSite = $this->getTestConstructionSite();
         $craftsman = $constructionSite->getCraftsmen()[0];
-        $this->assertFalse($craftsman->getIsDeleted(), 'ensure craftsman is not deleted, else the following tests will fail');
-
         $craftsmanIri = $this->getIriFromItem($craftsman);
-        $this->assertApiCollectionContainsIri($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $craftsmanIri);
-        $this->assertApiCollectionContainsIri($client, '/api/craftsmen?constructionSite='.$constructionSite->getId().'&isDeleted=false', $craftsmanIri);
-        $this->assertApiCollectionNotContainsIri($client, '/api/craftsmen?constructionSite='.$constructionSite->getId().'&isDeleted=true', $craftsmanIri);
+
+        $tomorrow = new \DateTime('tomorrow');
+        $dateTimeString = DateTimeFormatter::toStringUTCTimezone($tomorrow); // like 2020-10-30T23:00:00.000000Z
+        $this->assertApiCollectionNotContainsIri($client, '/api/craftsmen?constructionSite='.$constructionSite->getId().'&lastChangedAt[after]='.$dateTimeString, $craftsmanIri);
+
+        $lastChangedAt = $craftsman->getLastChangedAt();
+        $dateTimeString = DateTimeFormatter::toStringUTCTimezone($lastChangedAt); // like 2020-10-30T23:00:00.000000Z
+        $this->assertApiCollectionContainsIri($client, '/api/craftsmen?constructionSite='.$constructionSite->getId().'&lastChangedAt[after]='.$dateTimeString, $craftsmanIri);
     }
 }

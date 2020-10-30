@@ -52,10 +52,10 @@ trait AssertApiOperationsTrait
             $body['headers'] = ['Content-Type' => $contentType];
         }
 
-        $client->request($method, $url, $body);
+        $response = $client->request($method, $url, $body);
 
         $this->assertResponseStatusCodeSame($expectedCode);
 
-        return $client->getResponse();
+        return $response;
     }
 }
