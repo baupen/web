@@ -33,6 +33,38 @@ trait AssertApiCollectionTrait
         $this->assertApiCollectionContains($client, $url, $item);
     }
 
+    private function assertApiCollectionContainsIri(Client $client, string $url, string $iri)
+    {
+        $collectionResponse = $this->assertApiGetOk($client, $url);
+        $collection = json_decode($collectionResponse->getContent(), true);
+
+        foreach ($collection['hydra:member'] as $entry) {
+            if ($entry['@id'] == $iri) {
+                $this->assertTrue(true);
+
+                return;
+            }
+        }
+
+        $this->fail('iri '.$iri.' not found in '.$collectionResponse->getContent());
+    }
+
+    private function assertApiCollectionNotContainsIri(Client $client, string $url, string $iri)
+    {
+        $collectionResponse = $this->assertApiGetOk($client, $url);
+        $collection = json_decode($collectionResponse->getContent(), true);
+
+        foreach ($collection['hydra:member'] as $entry) {
+            if ($entry['@id'] == $iri) {
+                $this->fail('iri '.$iri.' found in '.$collectionResponse->getContent());
+
+                return;
+            }
+        }
+
+        $this->assertTrue(true);
+    }
+
     private function assertApiCollectionContains(Client $client, string $url, array $item)
     {
         $collectionResponse = $this->assertApiGetOk($client, $url);

@@ -28,7 +28,6 @@ class IsDeletedFilter extends AbstractContextAwareFilter
         }
 
         $value = $this->normalizeValue($value);
-        dump($value);
         if ($value) {
             $queryBuilder->andWhere('o.deletedAt IS NOT NULL');
         } else {
