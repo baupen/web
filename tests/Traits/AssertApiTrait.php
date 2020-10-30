@@ -27,6 +27,11 @@ trait AssertApiTrait
         $this->assertApiResponseStatusCodeSameForMethods(StatusCode::HTTP_UNAUTHORIZED, $client, $url, ...$methods);
     }
 
+    private function assertApiOperationForbidden(Client $client, string $url, string ...$methods)
+    {
+        $this->assertApiResponseStatusCodeSameForMethods(StatusCode::HTTP_FORBIDDEN, $client, $url, ...$methods);
+    }
+
     private function assertApiPostPayloadMinimal(Client $client, string $url, array $payload, array $accessControlPayload = [])
     {
         foreach ($payload as $key => $value) {

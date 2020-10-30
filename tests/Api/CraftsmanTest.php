@@ -35,12 +35,12 @@ class CraftsmanTest extends ApiTestCase
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiOperationNotAuthorized($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), 'GET');
+        $this->assertApiOperationNotAuthorized($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
+        $this->assertApiOperationNotAuthorized($client, '/api/craftsmen/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
 
-        // $testConstructionSite = $this->getTestConstructionSite();
-        // $this->assertApiOperationNotAuthorized($client, '/api/craftsmen/'.$testConstructionSite->getId(), 'GET', 'DELETE', 'PUT', 'PATCH');
-
-        // TODO: test for POST, 'GET' 'DELETE', 'PUT', 'PATCH'
+        $this->loginApiConstructionManagerExternal($client);
+        $this->assertApiOperationForbidden($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
+        $this->assertApiOperationForbidden($client, '/api/craftsmen/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
     }
 
     public function testGet()
