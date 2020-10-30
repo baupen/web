@@ -13,6 +13,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
@@ -42,6 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     denormalizationContext={"groups"={"craftsman-write"}}
  * )
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
+ * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  *
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks

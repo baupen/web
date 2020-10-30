@@ -13,10 +13,13 @@ namespace App\Api\DataPersister;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\ConstructionSite;
+use App\Entity\Craftsman;
+use App\Entity\Map;
+use App\Entity\Traits\SoftDeleteTrait;
 use App\Service\Interfaces\StorageServiceInterface;
 use Symfony\Component\Security\Core\Security;
 
-class ConstructionSiteDataPersister implements ContextAwareDataPersisterInterface
+class SoftDeleteDataPersister implements ContextAwareDataPersisterInterface
 {
     private $decorated;
     private $storageService;
@@ -31,25 +34,20 @@ class ConstructionSiteDataPersister implements ContextAwareDataPersisterInterfac
 
     public function supports($data, array $context = []): bool
     {
-        return $data instanceof ConstructionSite &&
-            $this->decorated->supports($data, $context);
+        return ($data instanceof ConstructionSite || $data instanceof Craftsman || $data instanceof Map || $data instanceof Craftsman)
+            && $this->decorated->supports($data, $context);
     }
 
     /**
-     * @param ConstructionSite $data
+     * @param SoftDeleteTrait $data
      */
     public function persist($data, array $context = [])
     {
-        if (($context['collection_operation_name'] ?? null) === 'post') {
-            $this->storageService->setNewFolderName($data);
-            $data->getConstructionManagers()->add($this->user);
-        }
-
         return $this->decorated->persist($data, $context);
     }
 
     /**
-     * @param ConstructionSite $data
+     * @param SoftDeleteTrait $data
      */
     public function remove($data, array $context = [])
     {

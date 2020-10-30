@@ -11,7 +11,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Api\Filters\IsDeletedFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;
@@ -36,6 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     normalizationContext={"groups"={"construction-site-read"}},
  *     denormalizationContext={"groups"={"construction-site-write"}}
  * )
+ * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  *
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks

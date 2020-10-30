@@ -52,7 +52,7 @@ class CraftsmanTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/craftsmen?constructionSite='.$constructionSite->getId());
-        $this->assertApiResponseFieldSubset($response, 'email', 'contactName', 'company', 'trade');
+        $this->assertApiResponseFieldSubset($response, 'email', 'contactName', 'company', 'trade', 'isDeleted');
     }
 
     public function testPostPatchAndDelete()
@@ -76,7 +76,7 @@ class CraftsmanTest extends ApiTestCase
 
         $this->assertApiPostPayloadMinimal($client, '/api/craftsmen', $sample, $affiliation);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/craftsmen', $sample, $affiliation);
-        $this->assertApiCollectionContainsItem($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $response);
 
         $update = [
             'contactName' => 'Peter Woodly',
@@ -86,9 +86,9 @@ class CraftsmanTest extends ApiTestCase
         ];
         $craftsmanId = json_decode($response->getContent(), true)['@id'];
         $response = $this->assertApiPatchPayloadPersisted($client, $craftsmanId, $update);
-        $this->assertApiCollectionContainsItem($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $response);
 
         $this->assertApiDeleteOk($client, $craftsmanId);
-        $this->assertApiCollectionHasNoItemWithId($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $craftsmanId);
+        $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $response);
     }
 }

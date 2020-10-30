@@ -55,7 +55,7 @@ class ConstructionSiteTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $response = $this->assertApiGetOk($client, '/api/construction_sites');
-        $this->assertApiResponseFieldSubset($response, 'name', 'streetAddress', 'postalCode', 'locality', 'imageUrl', 'constructionManagers');
+        $this->assertApiResponseFieldSubset($response, 'name', 'streetAddress', 'postalCode', 'locality', 'imageUrl', 'constructionManagers', 'isDeleted');
         $this->assertApiResponseFileIsDownloadable($client, $response, 'imageUrl');
     }
 
@@ -77,8 +77,8 @@ class ConstructionSiteTest extends ApiTestCase
         $response = $this->assertApiPostPayloadPersisted($client, '/api/construction_sites', $sample);
 
         $newConstructionSite = json_decode($response->getContent(), true);
-        $this->assertResponseIsSuccessful();
         $this->assertContains($constructionManagerIri, $newConstructionSite['constructionManagers']);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/construction_sites', $response);
 
         $this->loginApiConstructionManagerExternal($client);
         $this->assertApiGetStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id']);

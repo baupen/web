@@ -36,6 +36,8 @@ services:
     # ApiPlatform services
     App\Api\DataPersister\ConstructionSiteDataPersister:
         bind: { $decoratedDataPersister: '@api_platform.doctrine.orm.data_persister' }
+    App\Api\DataPersister\SoftDeleteDataPersister:
+        bind: { $decoratedDataPersister: '@api_platform.doctrine.orm.data_persister' }
     'App\Api\Serializer\ConstructionSiteSerializer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
 
