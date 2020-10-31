@@ -40,7 +40,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "patch" = {"security" = "is_granted('CRAFTSMAN_MODIFY', object)"},
  *      "delete" = {"security" = "is_granted('CRAFTSMAN_MODIFY', object)"},
  *     },
- *     normalizationContext={"groups"={"craftsman-read"}},
+ *     normalizationContext={"groups"={"craftsman-read"}, "skip_null_values"=false},
  *     denormalizationContext={"groups"={"craftsman-write"}}
  * )
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})

@@ -21,35 +21,35 @@ use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
-class ImageControllerTest extends WebTestCase
+class FileControllerTest extends WebTestCase
 {
     use FixturesTrait;
     use AuthenticationTrait;
     use TestDataTrait;
     use AssertFileTrait;
 
-    public function testConstructionSiteImage()
+    public function testMapFile()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginConstructionManager($client);
 
         $testConstructionSite = $this->getTestConstructionSite();
-        $oldGuid = $testConstructionSite->getImage()->getId();
+        $map = $testConstructionSite->getMaps()[0];
+        $oldGuid = $map->getFile()->getId();
 
-        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/preview_2.jpg');
-        $baseUrl = '/construction_sites/'.$testConstructionSite->getId().'/image';
+        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/map_files/2OG_2.pdf');
+        $baseUrl = '/maps/'.$map->getId().'/file';
         $newGuid = $this->assertPostUploadFile($client, $baseUrl, $uploadedFile);
 
         $this->assertNotEquals($oldGuid, $newGuid);
-        $this->assertEquals($testConstructionSite->getImage()->getId(), $newGuid);
+        $this->assertEquals($map->getFile()->getId(), $newGuid);
 
-        $imageUrl = $baseUrl.'/'.$newGuid;
-        $this->assertFileIsDownloadable($client, $imageUrl);
-        $this->assertFileIsDownloadable($client, $imageUrl.'/thumbnail');
-        $this->assertFileIsDownloadable($client, $imageUrl.'/preview');
-        $this->assertFileIsDownloadable($client, $imageUrl.'/full');
+        $fileUrl = $baseUrl.'/'.$newGuid;
+        $this->assertFileIsDownloadable($client, $fileUrl, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        $this->assertFileIsDownloadable($client, $fileUrl.'/ios', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
     }
 
     private function assertPostUploadFile(KernelBrowser $client, string $url, AssetFile $file)

@@ -138,7 +138,7 @@ class ReportService implements ReportServiceInterface
      */
     private function addMap(Report $report, Map $map, array $issues)
     {
-        $mapImage = $this->imageService->renderMapFileWithIssues($map->getFile(), $issues, ImageServiceInterface::SIZE_REPORT_MAP);
+        $mapImage = $this->imageService->renderMapFileWithIssues($map->getFile(), $issues, ImageServiceInterface::SIZE_FULL);
         $report->addMap($map->getName(), $map->getContext(), $mapImage);
     }
 

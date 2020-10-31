@@ -25,12 +25,12 @@ interface ImageServiceInterface
     // 4 side by side on A4 at 300 PPI
     const SIZE_PREVIEW = 'preview';
 
-    // size of map in report
-    // A4 at 300 PPI
-    const SIZE_REPORT_MAP = 'report_map';
+    // where image is only asset
+    // like map in report (A4 at 300 PPI)
+    const SIZE_FULL = 'full';
 
     // all valid sizes
-    const VALID_SIZES = [self::SIZE_THUMBNAIL, self::SIZE_PREVIEW, self::SIZE_REPORT_MAP];
+    const VALID_SIZES = [self::SIZE_THUMBNAIL, self::SIZE_PREVIEW, self::SIZE_FULL];
 
     public function resizeIssueImage(IssueImage $issueImage, string $size = self::SIZE_THUMBNAIL): ?string;
 

@@ -136,7 +136,7 @@ class ImageService implements ImageServiceInterface
             case ImageServiceInterface::SIZE_PREVIEW:
                 $this->gdService->resizeImage($sourcePath, $targetFilePath, 600, 877);
                 break;
-            case ImageServiceInterface::SIZE_REPORT_MAP:
+            case ImageServiceInterface::SIZE_FULL:
                 $this->gdService->resizeImage($sourcePath, $targetFilePath, 2480, 3508);
                 break;
         }

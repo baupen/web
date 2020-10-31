@@ -13,6 +13,7 @@ namespace App\Tests\Traits\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 trait AssertApiResponseTrait
 {
@@ -38,7 +39,7 @@ trait AssertApiResponseTrait
         $this->fail('only collections support this assertion.');
     }
 
-    private function assertApiResponseFileIsDownloadable(Client $client, Response $response, string $fileUrlProperty): ?string
+    private function assertApiResponseFileIsDownloadable(Client $client, Response $response, string $fileUrlProperty, string $mode = ResponseHeaderBag::DISPOSITION_INLINE): ?string
     {
         $content = $response->getContent();
         $hydraPayload = json_decode($content, true);
@@ -51,7 +52,7 @@ trait AssertApiResponseTrait
                 }
 
                 $response = $this->assertApiGetOk($client, $url);
-                $this->assertStringStartsWith('inline', $response->getHeaders()['content-disposition'][0]);
+                $this->assertStringStartsWith($mode, $response->getHeaders()['content-disposition'][0]);
 
                 return $url;
             }

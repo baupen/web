@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "patch" = {"security" = "is_granted('MAP_MODIFY', object)"},
  *      "delete" = {"security" = "is_granted('MAP_MODIFY', object)"},
  *     },
- *     normalizationContext={"groups"={"map-read"}},
+ *     normalizationContext={"groups"={"map-read"}, "skip_null_values"=false},
  *     denormalizationContext={"groups"={"map-write"}}
  * )
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
@@ -93,7 +93,7 @@ class Map extends BaseEntity
      * @var MapFile|null
      *
      * @Groups({"map-read", "map-write"})
-     * @ORM\OneToOne(targetEntity="App\Entity\MapFile", inversedBy="map", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="map", cascade={"persist"})
      */
     private $file;
 

@@ -12,7 +12,6 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\ConstructionSite;
 use App\Helper\DateTimeFormatter;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
@@ -21,6 +20,7 @@ use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\TestDataTrait;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class MapTest extends ApiTestCase
 {
@@ -54,6 +54,7 @@ class MapTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
         $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/maps?constructionSite='.$constructionSite->getId());
         $this->assertApiResponseFieldSubset($response, 'name', 'parent', 'file', 'fileUrl', 'isDeleted', 'lastChangedAt');
+        $this->assertApiResponseFileIsDownloadable($client, $response, 'fileUrl', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
     }
 
     public function testPostPatchAndDelete()
@@ -63,27 +64,40 @@ class MapTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
-        $constructionSiteId = $this->findIriBy(ConstructionSite::class, ['id' => $constructionSite->getId()]);
+        $constructionSiteId = $this->getIriFromItem($constructionSite);
         $affiliation = [
             'constructionSite' => $constructionSiteId,
         ];
+
+        $parent = $constructionSite->getMaps()[0];
+        $parentId = $this->getIriFromItem($parent);
+
+        $file = $constructionSite->getMapFiles()[0];
+        $fileId = $this->getIriFromItem($file);
 
         $sample = [
             'name' => 'OG 2',
         ];
 
+        $optionalProperties = [
+            'parent' => $parentId,
+            'file' => $fileId,
+        ];
+
         $this->assertApiPostPayloadMinimal($client, '/api/maps', $sample, $affiliation);
-        $response = $this->assertApiPostPayloadPersisted($client, '/api/maps', $sample, $affiliation);
+        $response = $this->assertApiPostPayloadPersisted($client, '/api/maps', array_merge($sample, $optionalProperties), $affiliation);
         $this->assertApiCollectionContainsResponseItem($client, '/api/maps?constructionSite='.$constructionSite->getId(), $response);
 
         $update = [
             'name' => 'OG 3',
+            'parent' => null,
+            'file' => null,
         ];
-        $craftsmanId = json_decode($response->getContent(), true)['@id'];
-        $response = $this->assertApiPatchPayloadPersisted($client, $craftsmanId, $update);
+        $mapId = json_decode($response->getContent(), true)['@id'];
+        $response = $this->assertApiPatchPayloadPersisted($client, $mapId, $update);
         $this->assertApiCollectionContainsResponseItem($client, '/api/maps?constructionSite='.$constructionSite->getId(), $response);
 
-        $this->assertApiDeleteOk($client, $craftsmanId);
+        $this->assertApiDeleteOk($client, $mapId);
         $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/maps?constructionSite='.$constructionSite->getId(), $response);
     }
 

@@ -29,7 +29,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ImageController extends BaseDoctrineController
 {
     /**
-     * @Route("/construction_site/{constructionSite}/image/{constructionSiteImage}/{size}", name="construction_site_image", defaults={"size"="thumbnail"}, methods={"GET"})
+     * @Route("/construction_sites/{constructionSite}/image/{constructionSiteImage}/{size}", name="construction_site_image", defaults={"size"="thumbnail"}, methods={"GET"})
      *
      * @return Response
      */

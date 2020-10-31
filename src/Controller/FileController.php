@@ -30,20 +30,24 @@ use Symfony\Component\Routing\Annotation\Route;
 class FileController extends BaseDoctrineController
 {
     /**
-     * @Route("/map/{map}/file/{mapFile}/{variant}", name="map_file", defaults={"variant"="origin"}, methods={"GET"})
+     * @Route("/maps/{map}/file/{mapFile}/{variant}", name="map_file", defaults={"variant"="origin"}, methods={"GET"})
      *
      * @return Response
      */
     public function getMapFileAction(Map $map, MapFile $mapFile, string $variant, PathServiceInterface $pathService, MapFileService $mapFileService)
     {
         $this->denyAccessUnlessGranted(MapVoter::MAP_VIEW, $map);
-        if ($mapFile->getMap() !== $map) {
+        if ($map->getFile() !== $mapFile) {
             throw new NotFoundHttpException();
         }
 
-        $path = $pathService->getFolderForMapFiles($mapFile->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
-        if ('iOS' === $variant) {
+        $sanitizedVariant = strtolower($variant);
+        if ('ios' === $sanitizedVariant) {
             $path = $mapFileService->renderForMobileDevice($mapFile);
+        } elseif ('origin' === $sanitizedVariant) {
+            $path = $pathService->getFolderForMapFiles($mapFile->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
+        } else {
+            throw new NotFoundHttpException();
         }
 
         $response = new BinaryFileResponse($path);
@@ -56,7 +60,7 @@ class FileController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/map/{map}/file", name="post_map_file", methods={"POST"})
+     * @Route("/maps/{map}/file", name="post_map_file", methods={"POST"})
      *
      * @return Response
      */

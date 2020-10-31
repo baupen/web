@@ -12,7 +12,6 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\ConstructionSite;
 use App\Helper\DateTimeFormatter;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
@@ -63,7 +62,7 @@ class CraftsmanTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
-        $constructionSiteId = $this->findIriBy(ConstructionSite::class, ['id' => $constructionSite->getId()]);
+        $constructionSiteId = $this->getIriFromItem($constructionSite);
         $affiliation = [
             'constructionSite' => $constructionSiteId,
         ];

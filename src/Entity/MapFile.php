@@ -43,16 +43,16 @@ class MapFile extends BaseEntity
     /**
      * @var ConstructionSite
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="mapFiles")
      */
     private $constructionSite;
 
     /**
-     * @var Map|null
+     * @var Map[]|ArrayCollection
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\Map", mappedBy="file")
+     * @ORM\OneToMany(targetEntity="App\Entity\Map", mappedBy="file")
      */
-    private $map;
+    private $maps;
 
     /**
      * @var Issue[]|ArrayCollection
@@ -63,6 +63,7 @@ class MapFile extends BaseEntity
 
     public function __construct()
     {
+        $this->maps = new ArrayCollection();
         $this->issues = new ArrayCollection();
     }
 
@@ -74,16 +75,6 @@ class MapFile extends BaseEntity
     public function setConstructionSite(ConstructionSite $constructionSite): void
     {
         $this->constructionSite = $constructionSite;
-    }
-
-    public function getMap(): ?Map
-    {
-        return $this->map;
-    }
-
-    public function setMap(?Map $map): void
-    {
-        $this->map = $map;
     }
 
     /**
@@ -108,5 +99,13 @@ class MapFile extends BaseEntity
     public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return Map[]|ArrayCollection
+     */
+    public function getMaps()
+    {
+        return $this->maps;
     }
 }

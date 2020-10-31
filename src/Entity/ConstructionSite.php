@@ -35,7 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     itemOperations={
  *      "get" = {"security" = "is_granted('CONSTRUCTION_SITE_VIEW', object)"}
  *     },
- *     normalizationContext={"groups"={"construction-site-read"}},
+ *     normalizationContext={"groups"={"construction-site-read"}, "skip_null_values"=false},
  *     denormalizationContext={"groups"={"construction-site-write"}}
  * )
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
@@ -91,6 +91,14 @@ class ConstructionSite extends BaseEntity
     private $maps;
 
     /**
+     * @var MapFile[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="MapFile", mappedBy="constructionSite", cascade={"persist"})
+     * @ORM\OrderBy({"filename": "ASC"})
+     */
+    private $mapFiles;
+
+    /**
      * @var Craftsman[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite", cascade={"persist"})
@@ -125,6 +133,7 @@ class ConstructionSite extends BaseEntity
     {
         $this->constructionManagers = new ArrayCollection();
         $this->maps = new ArrayCollection();
+        $this->mapFiles = new ArrayCollection();
         $this->craftsmen = new ArrayCollection();
         $this->issues = new ArrayCollection();
         $this->filters = new ArrayCollection();
@@ -159,6 +168,14 @@ class ConstructionSite extends BaseEntity
     public function getMaps()
     {
         return $this->maps;
+    }
+
+    /**
+     * @return MapFile[]|ArrayCollection
+     */
+    public function getMapFiles()
+    {
+        return $this->mapFiles;
     }
 
     /**
