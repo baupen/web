@@ -12,41 +12,46 @@
 namespace App\Api\DataPersister;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
-use App\Entity\Craftsman;
-use App\Entity\Map;
-use App\Entity\Traits\SoftDeleteTrait;
+use App\Entity\Issue;
+use App\Repository\IssueRepository;
 use App\Service\Interfaces\StorageServiceInterface;
-use Symfony\Component\Security\Core\Security;
+use Doctrine\Persistence\ManagerRegistry;
 
-class SoftDeleteDataPersister implements ContextAwareDataPersisterInterface
+class IssueDataPersister implements ContextAwareDataPersisterInterface
 {
     private $decorated;
     private $storageService;
-    private $user;
+    private $doctrine;
 
-    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, StorageServiceInterface $storageService, Security $security)
+    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, StorageServiceInterface $storageService, ManagerRegistry $registry)
     {
         $this->decorated = $decoratedDataPersister;
         $this->storageService = $storageService;
-        $this->user = $security->getUser();
+        $this->doctrine = $registry;
     }
 
     public function supports($data, array $context = []): bool
     {
-        return ($data instanceof Craftsman || $data instanceof Map)
-            && $this->decorated->supports($data, $context);
+        return $data instanceof Issue &&
+            $this->decorated->supports($data, $context);
     }
 
     /**
-     * @param SoftDeleteTrait $data
+     * @param Issue $data
      */
     public function persist($data, array $context = [])
     {
+        if (($context['collection_operation_name'] ?? null) === 'post') {
+            /** @var IssueRepository $repository */
+            $repository = $this->doctrine->getRepository(IssueRepository::class);
+            $repository->setHighestNumber($data);
+        }
+
         return $this->decorated->persist($data, $context);
     }
 
     /**
-     * @param SoftDeleteTrait $data
+     * @param Issue $data
      */
     public function remove($data, array $context = [])
     {

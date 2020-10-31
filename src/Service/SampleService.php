@@ -151,11 +151,13 @@ class SampleService implements SampleServiceInterface
         $issueRelations = json_decode($issueRelationsJson, true);
         for ($i = 0; $i < count($issues); ++$i) {
             $issue = $issues[$i];
+            $issue->setNumber($i + 1);
+            $issue->setCreatedAt(new \DateTime());
+            $issue->setCreatedBy($constructionManager);
+
             $issueRelation = $issueRelations[$i];
             $issue->setConstructionSite($constructionSite);
             $constructionSite->getIssues()->add($issue);
-
-            $issue->uploadedEvent($constructionManager);
 
             // add relations
             $craftsmanIndex = $issueRelation['craftsman'];

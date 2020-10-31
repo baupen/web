@@ -93,7 +93,7 @@ class Map extends BaseEntity
      * @var MapFile|null
      *
      * @Groups({"map-read", "map-write"})
-     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="map", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="maps", cascade={"persist"})
      */
     private $file;
 

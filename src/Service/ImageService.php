@@ -159,10 +159,9 @@ class ImageService implements ImageServiceInterface
 
         //draw the issues on the map
         foreach ($issues as $issue) {
-            if (null !== $issue->getPosition()) {
-                $position = $issue->getPosition();
-                $yCoordinate = $position->getPositionX() * $ySize;
-                $xCoordinate = $position->getPositionY() * $xSize;
+            if (null !== $issue->getPositionX()) {
+                $yCoordinate = $issue->getPositionX() * $ySize;
+                $xCoordinate = $issue->getPositionY() * $xSize;
                 $circleColor = null !== $issue->getReviewedAt() ? 'green' : 'orange';
                 $this->gdService->drawRectangleWithText($yCoordinate, $xCoordinate, $circleColor, (string) $issue->getNumber(), $image);
             }

@@ -16,28 +16,21 @@ use App\Entity\Filter;
 use App\Entity\Issue;
 use DateTime;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
 
 class IssueRepository extends EntityRepository
 {
-    /**
-     * @throws NonUniqueResultException
-     *
-     * @return int
-     */
-    public function getHighestNumber(ConstructionSite $constructionSite)
+    public function setHighestNumber(Issue $issue)
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('i.number')->from(Issue::class, 'i');
-        $qb->join('i.map', 'm');
-        $qb->where('m.constructionSite = :constructionSite');
-        $qb->setParameter(':constructionSite', $constructionSite);
+        $qb->where('i.constructionSite = :constructionSite');
+        $qb->setParameter(':constructionSite', $issue->getConstructionSite());
         $qb->orderBy('i.number', 'DESC');
         $qb->setMaxResults(1);
 
-        return $qb->getQuery()->getSingleScalarResult();
+        $issue->setNumber($qb->getQuery()->getSingleScalarResult() + 1);
     }
 
     /**

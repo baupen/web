@@ -31,6 +31,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     normalizationContext={"groups"={"map-file-read"}}
  * )
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
+ *
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */

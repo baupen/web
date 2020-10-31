@@ -11,15 +11,40 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use App\Api\Filters\IsDeletedFilter;
+use App\Api\Filters\RequiredSearchFilter;
 use App\Entity\Base\BaseEntity;
+use App\Entity\Issue\IssuePositionTrait;
+use App\Entity\Issue\IssueStatusTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
-use App\Entity\Traits\TimeTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * An issue is something created by the construction manager to inform the craftsman of it.
+ *
+ * @ApiResource(
+ *     collectionOperations={
+ *      "get",
+ *      "post" = {"security_post_denormalize" = "is_granted('ISSUE_MODIFY', object)", "denormalization_context"={"groups"={"issue-create", "issue-write"}}}
+ *      },
+ *     itemOperations={
+ *      "get" = {"security" = "is_granted('ISSUE_VIEW', object)"},
+ *      "patch" = {"security" = "is_granted('ISSUE_MODIFY', object)"},
+ *      "delete" = {"security" = "is_granted('ISSUE_MODIFY', object)"},
+ *     },
+ *     normalizationContext={"groups"={"issue-read"}, "skip_null_values"=false},
+ *     denormalizationContext={"groups"={"issue-write"}}
+ * )
+ * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
+ * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
+ * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
  *
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks
@@ -27,8 +52,10 @@ use Doctrine\ORM\Mapping as ORM;
 class Issue extends BaseEntity
 {
     use IdTrait;
-    use TimeTrait;
     use SoftDeleteTrait;
+
+    use IssuePositionTrait;
+    use IssueStatusTrait;
 
     public const UPLOAD_STATUS = 1;
     public const REGISTRATION_STATUS = 2;
@@ -36,15 +63,18 @@ class Issue extends BaseEntity
     public const REVIEW_STATUS = 8;
 
     /**
-     * @var int|null
+     * @var int
      *
-     * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"issue-read"})
+     * @ORM\Column(type="integer")
      */
     private $number;
 
     /**
      * @var bool
      *
+     * @Assert\NotBlank
+     * @Groups({"issue-read", "issue-write"})
      * @ORM\Column(type="boolean")
      */
     private $isMarked = false;
@@ -52,6 +82,8 @@ class Issue extends BaseEntity
     /**
      * @var bool
      *
+     * @Assert\NotBlank
+     * @Groups({"issue-read", "issue-write"})
      * @ORM\Column(type="boolean")
      */
     private $wasAddedWithClient = false;
@@ -59,6 +91,8 @@ class Issue extends BaseEntity
     /**
      * @var string|null
      *
+     * @Assert\NotBlank(groups={"after-register"})
+     * @Groups({"issue-read", "issue-write"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
@@ -66,86 +100,17 @@ class Issue extends BaseEntity
     /**
      * @var DateTime|null
      *
+     * @Groups({"issue-read", "issue-write"})
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $responseLimit;
-
-    /**
-     * @var float|null
-     *
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $positionX;
-
-    /**
-     * @var float|null
-     *
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $positionY;
-
-    /**
-     * @var float|null
-     *
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $positionZoomScale;
 
     /**
      * @var DateTime
      *
      * @ORM\Column(type="datetime")
      */
-    private $uploadedAt;
-
-    /**
-     * @var ConstructionManager
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
-     */
-    private $uploadBy;
-
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $registeredAt;
-
-    /**
-     * @var ConstructionManager|null
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
-     */
-    private $registrationBy;
-
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $respondedAt;
-
-    /**
-     * @var Craftsman|null
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="respondedIssues")
-     */
-    private $responseBy;
-
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $reviewedAt;
-
-    /**
-     * @var ConstructionManager|null
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
-     */
-    private $reviewBy;
+    private $lastChangedAt;
 
     /**
      * @var IssueImage|null
@@ -157,6 +122,7 @@ class Issue extends BaseEntity
     /**
      * @var Craftsman|null
      *
+     * @Groups({"issue-read", "issue-write"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="issues")
      */
     private $craftsman;
@@ -164,6 +130,7 @@ class Issue extends BaseEntity
     /**
      * @var Map
      *
+     * @Groups({"issue-read", "issue-create"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="issues")
      */
     private $map;
@@ -171,6 +138,7 @@ class Issue extends BaseEntity
     /**
      * @var MapFile|null
      *
+     * @Groups({"issue-read", "issue-create"})
      * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="issues")
      */
     private $mapFile;
@@ -178,9 +146,19 @@ class Issue extends BaseEntity
     /**
      * @var ConstructionSite
      *
+     * @Groups({"issue-read", "issue-create"})
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="issues")
      */
     private $constructionSite;
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function prePersistTime()
+    {
+        $this->lastChangedAt = new DateTime();
+    }
 
     public function getNumber(): ?int
     {
@@ -232,70 +210,6 @@ class Issue extends BaseEntity
         $this->responseLimit = $responseLimit;
     }
 
-    public function getUploadedAt(): DateTime
-    {
-        return $this->uploadedAt;
-    }
-
-    public function getUploadBy(): ConstructionManager
-    {
-        return $this->uploadBy;
-    }
-
-    public function uploadedEvent(ConstructionManager $constructionManager)
-    {
-        $this->uploadBy = $constructionManager;
-        $this->uploadedAt = new \DateTime();
-    }
-
-    public function getRegisteredAt(): ?DateTime
-    {
-        return $this->registeredAt;
-    }
-
-    public function getRegistrationBy(): ?ConstructionManager
-    {
-        return $this->registrationBy;
-    }
-
-    public function registerEvent(ConstructionManager $constructionManager)
-    {
-        $this->registrationBy = $constructionManager;
-        $this->registeredAt = new \DateTime();
-    }
-
-    public function getRespondedAt(): ?DateTime
-    {
-        return $this->respondedAt;
-    }
-
-    public function getResponseBy(): ?Craftsman
-    {
-        return $this->responseBy;
-    }
-
-    public function responseEvent(Craftsman $craftsman)
-    {
-        $this->responseBy = $craftsman;
-        $this->respondedAt = new \DateTime();
-    }
-
-    public function getReviewedAt(): ?DateTime
-    {
-        return $this->reviewedAt;
-    }
-
-    public function getReviewBy(): ?ConstructionManager
-    {
-        return $this->reviewBy;
-    }
-
-    public function reviewEvent(ConstructionManager $constructionManager)
-    {
-        $this->reviewBy = $constructionManager;
-        $this->reviewedAt = new \DateTime();
-    }
-
     public function getCraftsman(): ?Craftsman
     {
         return $this->craftsman;
@@ -314,27 +228,6 @@ class Issue extends BaseEntity
     public function setMap(Map $map): void
     {
         $this->map = $map;
-    }
-
-    /**
-     * returns a unique code for all possible status.
-     *
-     * @return int
-     */
-    public function getStatusCode()
-    {
-        $res = self::UPLOAD_STATUS;
-        if (null !== $this->getRegisteredAt()) {
-            $res = $res | self::REGISTRATION_STATUS;
-        }
-        if (null !== $this->getRespondedAt()) {
-            $res = $res | self::RESPONSE_STATUS;
-        }
-        if (null !== $this->getReviewedAt()) {
-            $res = $res | self::REVIEW_STATUS;
-        }
-
-        return $res;
     }
 
     public function getImage(): ?IssueImage
@@ -372,18 +265,40 @@ class Issue extends BaseEntity
         $this->mapFile = $mapFile;
     }
 
-    public function getPositionX(): ?float
+    /**
+     * returns a unique code for all possible status.
+     *
+     * @return int
+     */
+    public function getStatusCode()
     {
-        return $this->positionX;
+        $res = self::UPLOAD_STATUS;
+        if (null !== $this->getRegisteredAt()) {
+            $res = $res | self::REGISTRATION_STATUS;
+        }
+        if (null !== $this->getRespondedAt()) {
+            $res = $res | self::RESPONSE_STATUS;
+        }
+        if (null !== $this->getReviewedAt()) {
+            $res = $res | self::REVIEW_STATUS;
+        }
+
+        return $res;
     }
 
-    public function getPositionY(): ?float
+    /**
+     * @Groups({"issue-read"})
+     */
+    public function getIsDeleted(): bool
     {
-        return $this->positionY;
+        return null !== $this->deletedAt;
     }
 
-    public function getPositionZoomScale(): ?float
+    /**
+     * @Groups({"issue-read"})
+     */
+    public function getLastChangedAt(): \DateTime
     {
-        return $this->positionZoomScale;
+        return $this->lastChangedAt;
     }
 }
