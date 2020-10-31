@@ -50,6 +50,7 @@ class FileControllerTest extends WebTestCase
         $fileUrl = $baseUrl.'/'.$newGuid;
         $this->assertFileIsDownloadable($client, $fileUrl, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
         $this->assertFileIsDownloadable($client, $fileUrl.'/ios', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        $this->assertFileNotFound($client, $fileUrl.'/null');
     }
 
     private function assertPostUploadFile(KernelBrowser $client, string $url, AssetFile $file)

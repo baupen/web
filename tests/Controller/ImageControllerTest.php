@@ -50,6 +50,7 @@ class ImageControllerTest extends WebTestCase
         $this->assertFileIsDownloadable($client, $imageUrl.'/thumbnail');
         $this->assertFileIsDownloadable($client, $imageUrl.'/preview');
         $this->assertFileIsDownloadable($client, $imageUrl.'/full');
+        $this->assertFileNotFound($client, $imageUrl.'/null');
     }
 
     private function assertPostUploadFile(KernelBrowser $client, string $url, AssetFile $file)

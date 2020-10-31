@@ -12,6 +12,7 @@
 namespace App\Tests\Traits;
 
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 trait AssertFileTrait
@@ -22,5 +23,11 @@ trait AssertFileTrait
         $this->assertResponseIsSuccessful();
 
         $this->assertStringStartsWith($mode, $client->getResponse()->headers->get('content-disposition'));
+    }
+
+    private function assertFileNotFound(KernelBrowser $client, string $url)
+    {
+        $client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 }
