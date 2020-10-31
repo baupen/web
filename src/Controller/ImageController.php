@@ -94,7 +94,7 @@ class ImageController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/construction_sites/{issue}/image", name="post_issue_image", methods={"POST"})
+     * @Route("/issues/{issue}/image", name="post_issue_image", methods={"POST"})
      *
      * @return Response
      */

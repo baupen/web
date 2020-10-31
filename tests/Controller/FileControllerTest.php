@@ -48,8 +48,8 @@ class FileControllerTest extends WebTestCase
         $this->assertEquals($map->getFile()->getId(), $newGuid);
 
         $fileUrl = $baseUrl.'/'.$newGuid;
-        $this->assertFileIsDownloadable($client, $fileUrl, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
-        $this->assertFileIsDownloadable($client, $fileUrl.'/ios', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        $this->assertGetFile($client, $fileUrl, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        $this->assertGetFile($client, $fileUrl.'/ios', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
         $this->assertFileNotFound($client, $fileUrl.'/null');
     }
 

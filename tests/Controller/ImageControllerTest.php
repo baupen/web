@@ -20,7 +20,6 @@ use App\Tests\Traits\TestDataTrait;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpFoundation\Response as StatusCode;
 
 class ImageControllerTest extends WebTestCase
 {
@@ -36,29 +35,48 @@ class ImageControllerTest extends WebTestCase
         $this->loginConstructionManager($client);
 
         $testConstructionSite = $this->getTestConstructionSite();
-        $oldGuid = $testConstructionSite->getImage()->getId();
+        $image = $testConstructionSite->getImage();
+        $oldGuid = $image->getId();
 
         $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/preview_2.jpg');
         $baseUrl = '/construction_sites/'.$testConstructionSite->getId().'/image';
-        $newGuid = $this->assertPostUploadFile($client, $baseUrl, $uploadedFile);
+        $newGuid = $this->assertPostFile($client, $baseUrl, $uploadedFile);
 
+        $image = $testConstructionSite->getImage();
         $this->assertNotEquals($oldGuid, $newGuid);
-        $this->assertEquals($testConstructionSite->getImage()->getId(), $newGuid);
+        $this->assertEquals($image->getId(), $newGuid);
 
         $imageUrl = $baseUrl.'/'.$newGuid;
-        $this->assertFileIsDownloadable($client, $imageUrl);
-        $this->assertFileIsDownloadable($client, $imageUrl.'/thumbnail');
-        $this->assertFileIsDownloadable($client, $imageUrl.'/preview');
-        $this->assertFileIsDownloadable($client, $imageUrl.'/full');
-        $this->assertFileNotFound($client, $imageUrl.'/null');
+        $this->assertImageDownloads($client, $imageUrl);
     }
 
-    private function assertPostUploadFile(KernelBrowser $client, string $url, AssetFile $file)
+    public function testIssueImage()
     {
-        $client->request('POST', $url, [], ['file' => $file]);
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginConstructionManager($client);
 
-        $this->assertResponseStatusCodeSame(StatusCode::HTTP_OK);
+        $testConstructionSite = $this->getTestConstructionSite();
+        $issue = $testConstructionSite->getIssues()[0];
+        $oldGuid = $issue->getImage()->getId();
 
-        return $client->getResponse()->getContent();
+        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/issue_images/nachbessern_2.jpg');
+        $baseUrl = '/issues/'.$issue->getId().'/image';
+        $newGuid = $this->assertPostFile($client, $baseUrl, $uploadedFile);
+
+        $this->assertNotEquals($oldGuid, $newGuid);
+        $this->assertEquals($issue->getImage()->getId(), $newGuid);
+
+        $imageUrl = $baseUrl.'/'.$newGuid;
+        $this->assertImageDownloads($client, $imageUrl);
+    }
+
+    private function assertImageDownloads(KernelBrowser $client, string $imageUrl): void
+    {
+        $this->assertGetFile($client, $imageUrl);
+        $this->assertGetFile($client, $imageUrl.'/thumbnail');
+        $this->assertGetFile($client, $imageUrl.'/preview');
+        $this->assertGetFile($client, $imageUrl.'/full');
+        $this->assertFileNotFound($client, $imageUrl.'/null');
     }
 }
