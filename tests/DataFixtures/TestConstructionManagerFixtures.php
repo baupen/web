@@ -20,6 +20,7 @@ class TestConstructionManagerFixtures extends Fixture implements OrderedFixtureI
 {
     public const ORDER = 0;
     public const CONSTRUCTION_MANAGER_EMAIL = 'test@mangel.io';
+    public const CONSTRUCTION_MANAGER_2_EMAIL = 'test2@mangel.io';
     public const CONSTRUCTION_MANAGER_TRIAL_EMAIL = 'trial@mangel.io';
     public const CONSTRUCTION_MANAGER_EXTERNAL_EMAIL = 'external@mangel.io';
 
@@ -27,6 +28,7 @@ class TestConstructionManagerFixtures extends Fixture implements OrderedFixtureI
     {
         $entries = [
             [self::CONSTRUCTION_MANAGER_EMAIL, 'asdf', 'GivenName', 'FamilyName'],
+            [self::CONSTRUCTION_MANAGER_2_EMAIL, 'asdf', 'GivenName', 'FamilyName'],
             [self::CONSTRUCTION_MANAGER_TRIAL_EMAIL, 'asdf', 'GivenName', 'FamilyName', true],
             [self::CONSTRUCTION_MANAGER_EXTERNAL_EMAIL, 'asdf', 'GivenName', 'FamilyName', false, true],
         ];

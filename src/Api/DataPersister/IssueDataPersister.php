@@ -13,7 +13,6 @@ namespace App\Api\DataPersister;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\Issue;
-use App\Repository\IssueRepository;
 use App\Service\Interfaces\StorageServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -42,8 +41,7 @@ class IssueDataPersister implements ContextAwareDataPersisterInterface
     public function persist($data, array $context = [])
     {
         if (($context['collection_operation_name'] ?? null) === 'post') {
-            /** @var IssueRepository $repository */
-            $repository = $this->doctrine->getRepository(IssueRepository::class);
+            $repository = $this->doctrine->getRepository(Issue::class);
             $repository->setHighestNumber($data);
         }
 

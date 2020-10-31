@@ -62,38 +62,78 @@ class IssueTest extends ApiTestCase
         $this->assertApiResponseFileIsDownloadable($client, $response, 'imageUrl');
     }
 
-    public function skipTestPostPatchAndDelete()
+    public function testPostPatchAndDelete()
     {
-        // TODO: continue
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-        $this->loginApiConstructionManager($client);
+        $constructionManager = $this->loginApiConstructionManager($client);
+        $constructionManagerId = $this->getIriFromItem($constructionManager);
 
         $constructionSite = $this->getTestConstructionSite();
         $constructionSiteId = $this->getIriFromItem($constructionSite);
-        $map = $constructionSite->getMaps()[0];
-        $mapId = $this->getIriFromItem($map);
         $affiliation = [
             'constructionSite' => $constructionSiteId,
-            'map' => $mapId,
         ];
 
+        $map = $constructionSite->getMaps()[0];
+        $mapId = $this->getIriFromItem($map);
         $sample = [
-            'wasAddedByClient' => true,
-            'isMarked' => true,
+            'map' => $mapId,
+
+            'createdBy' => $constructionManagerId,
+            'createdAt' => (new \DateTime())->format('c'),
         ];
 
+        $mapFileId = $this->getIriFromItem($map->getFile());
+        $craftsman = $this->getTestConstructionSite()->getCraftsmen()[0];
+        $craftsmanId = $this->getIriFromItem($craftsman);
         $optionalProperties = [
+            'mapFile' => $mapFileId,
+            'craftsman' => $craftsmanId,
+
             'description' => 'hello world',
+            'wasAddedWithClient' => true,
+            'isMarked' => true,
+            'responseLimit' => (new \DateTime('today'))->format('c'),
+
+            'positionX' => 0.5,
+            'positionY' => 0.6,
+            'positionZoomScale' => 0.7,
+
+            'registeredAt' => (new \DateTime('today + 1 day'))->format('c'),
+            'registrationBy' => $constructionManagerId,
+            'respondedAt' => (new \DateTime('today + 2 day'))->format('c'),
+            'responseBy' => $craftsmanId,
+            'reviewedAt' => (new \DateTime('today + 3 day'))->format('c'),
+            'reviewBy' => $constructionManagerId,
         ];
 
         $this->assertApiPostPayloadMinimal($client, '/api/issues', $sample, $affiliation);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', array_merge($sample, $optionalProperties), $affiliation);
         $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite='.$constructionSite->getId(), $response);
 
+        $otherCraftsman = $this->getTestConstructionSite()->getCraftsmen()[1];
+        $otherCraftsmanId = $this->getIriFromItem($otherCraftsman);
+        $otherConstructionManager = $this->getTestConstructionSite()->getConstructionManagers()[1];
+        $otherConstructionManagerId = $this->getIriFromItem($otherConstructionManager);
         $update = [
-            'wasAddedByClient' => false,
+            'craftsman' => $otherCraftsmanId,
+
+            'description' => 'hello world 2',
+            'wasAddedWithClient' => false,
             'isMarked' => false,
+            'responseLimit' => (new \DateTime('yesterday'))->format('c'),
+
+            'positionX' => 0.6,
+            'positionY' => 0.7,
+            'positionZoomScale' => 0.8,
+
+            'registeredAt' => (new \DateTime('yesterday + 1 day'))->format('c'),
+            'registrationBy' => $otherConstructionManagerId,
+            'respondedAt' => (new \DateTime('yesterday + 2 day'))->format('c'),
+            'responseBy' => $otherCraftsmanId,
+            'reviewedAt' => (new \DateTime('yesterday + 3 day'))->format('c'),
+            'reviewBy' => $otherConstructionManagerId,
         ];
         $issueId = json_decode($response->getContent(), true)['@id'];
         $response = $this->assertApiPatchPayloadPersisted($client, $issueId, $update);

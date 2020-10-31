@@ -38,13 +38,20 @@ class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInte
 
     public function load(ObjectManager $manager)
     {
-        $userRepository = $manager->getRepository(ConstructionManager::class);
-        $testUser = $userRepository->findOneBy(['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
+        $constructionManagerRepository = $manager->getRepository(ConstructionManager::class);
 
-        $constructionSite = $this->createAndAssignSampleConstructionSite($testUser);
-
+        /** @var ConstructionManager $constructionManager */
+        $constructionManager = $constructionManagerRepository->findOneBy(['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
+        $constructionSite = $this->createAndAssignSampleConstructionSite($constructionManager);
         $manager->persist($constructionSite);
-        $manager->persist($testUser);
+        $manager->persist($constructionManager);
+
+        /** @var ConstructionManager $constructionManager2 */
+        $constructionManager2 = $constructionManagerRepository->findOneBy(['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_2_EMAIL]);
+        $constructionSite->getConstructionManagers()->add($constructionManager2);
+        $constructionManager2->getConstructionSites()->add($constructionSite);
+        $manager->persist($constructionManager2);
+
         $manager->flush();
     }
 

@@ -73,7 +73,6 @@ class Issue extends BaseEntity
     /**
      * @var bool
      *
-     * @Assert\NotBlank
      * @Groups({"issue-read", "issue-write"})
      * @ORM\Column(type="boolean")
      */
@@ -82,7 +81,6 @@ class Issue extends BaseEntity
     /**
      * @var bool
      *
-     * @Assert\NotBlank
      * @Groups({"issue-read", "issue-write"})
      * @ORM\Column(type="boolean")
      */

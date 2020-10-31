@@ -41,6 +41,11 @@ services:
     App\Api\DataPersister\SoftDeleteDataPersister:
         bind: { $decoratedDataPersister: '@api_platform.doctrine.orm.data_persister' }
 
+    App\Api\Serializer\IssueDenormalizer:
+        arguments: [ '@security.token_storage' ]
+        tags:
+            - { name: 'serializer.normalizer', priority: 64 }
+
     'App\Api\Serializer\ConstructionSiteSerializer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
     'App\Api\Serializer\MapSerializer':

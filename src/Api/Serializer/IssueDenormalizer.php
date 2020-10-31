@@ -11,6 +11,7 @@
 
 namespace App\Api\Serializer;
 
+use App\Entity\ConstructionManager;
 use App\Entity\Issue;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
@@ -45,11 +46,14 @@ final class IssueDenormalizer implements ContextAwareDenormalizerInterface, Deno
      */
     public function denormalize($data, string $type, string $format = null, array $context = [])
     {
-        var_dump($data);
-        $context['groups'][] = 'can_retrieve_book';
+        $constructionManager = $this->tokenStorage->getToken()->getUser();
+
+        if ($constructionManager instanceof ConstructionManager) {
+            $context['groups'][] = 'can_retrieve_book';
+        }
 
         $context[self::ALREADY_CALLED] = true;
 
-        return $this->denormalizer->denormalize($object, $type, $format, $context);
+        return $this->denormalizer->denormalize($data, $type, $format, $context);
     }
 }
