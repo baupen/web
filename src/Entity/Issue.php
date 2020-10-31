@@ -122,6 +122,7 @@ class Issue extends BaseEntity
     /**
      * @var Craftsman|null
      *
+     * @Assert\NotBlank(groups={"after-register"})
      * @Groups({"issue-read", "issue-write"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="issues")
      */
@@ -130,6 +131,7 @@ class Issue extends BaseEntity
     /**
      * @var Map
      *
+     * @Assert\NotBlank()
      * @Groups({"issue-read", "issue-create"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="issues")
      */
@@ -138,6 +140,7 @@ class Issue extends BaseEntity
     /**
      * @var MapFile|null
      *
+     * @Assert\NotBlank(groups={"position"})
      * @Groups({"issue-read", "issue-create"})
      * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="issues")
      */
@@ -146,7 +149,8 @@ class Issue extends BaseEntity
     /**
      * @var ConstructionSite
      *
-     * @Groups({"issue-read", "issue-create"})
+     * @Assert\NotBlank()
+     * @Groups({"issue-create"})
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="issues")
      */
     private $constructionSite;

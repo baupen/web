@@ -41,6 +41,7 @@ trait IssueStatusTrait
     /**
      * @var DateTime|null
      *
+     * @Assert\NotBlank(groups={"after-register"})
      * @Groups({"issue-read", "issue-write"})
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -49,6 +50,7 @@ trait IssueStatusTrait
     /**
      * @var ConstructionManager|null
      *
+     * @Assert\NotBlank(groups={"after-register"})
      * @Groups({"issue-read", "issue-write"})
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
      */

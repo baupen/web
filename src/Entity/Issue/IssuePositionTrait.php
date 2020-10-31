@@ -13,12 +13,14 @@ namespace App\Entity\Issue;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 trait IssuePositionTrait
 {
     /**
      * @var float|null
      *
+     * @Assert\NotBlank(groups={"position"})
      * @Groups({"issue-read", "issue-write"})
      * @ORM\Column(type="float", nullable=true)
      */
@@ -27,6 +29,7 @@ trait IssuePositionTrait
     /**
      * @var float|null
      *
+     * @Assert\NotBlank(groups={"position"})
      * @Groups({"issue-read", "issue-write"})
      * @ORM\Column(type="float", nullable=true)
      */
@@ -35,6 +38,7 @@ trait IssuePositionTrait
     /**
      * @var float|null
      *
+     * @Assert\NotBlank(groups={"position"})
      * @Groups({"issue-read", "issue-write"})
      * @ORM\Column(type="float", nullable=true)
      */
