@@ -27,6 +27,7 @@ class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInte
 
     public const ORDER = TestConstructionManagerFixtures::ORDER + 1;
     public const TEST_CONSTRUCTION_SITE_NAME = SampleServiceInterface::TEST;
+    public const EMPTY_CONSTRUCTION_SITE_NAME = 'empty';
 
     /**
      * TestConstructionSiteFixtures constructor.
@@ -52,6 +53,9 @@ class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInte
         $constructionManager2->getConstructionSites()->add($constructionSite);
         $manager->persist($constructionManager2);
 
+        $constructionSite = $this->createEmptyConstructionSite();
+        $manager->persist($constructionSite);
+
         $manager->flush();
     }
 
@@ -66,6 +70,19 @@ class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInte
 
         $constructionSite->getConstructionManagers()->add($testUser);
         $testUser->getConstructionSites()->add($constructionSite);
+
+        return $constructionSite;
+    }
+
+    private function createEmptyConstructionSite(): ConstructionSite
+    {
+        $constructionSite = new ConstructionSite();
+        $constructionSite->setName(self::EMPTY_CONSTRUCTION_SITE_NAME);
+        $constructionSite->setFolderName(self::EMPTY_CONSTRUCTION_SITE_NAME);
+        $constructionSite->setStreetAddress('Street');
+        $constructionSite->setPostalCode(4123);
+        $constructionSite->setLocality('Allschwil');
+        $constructionSite->setCountry('CH');
 
         return $constructionSite;
     }

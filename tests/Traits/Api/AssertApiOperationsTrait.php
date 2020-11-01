@@ -41,7 +41,7 @@ trait AssertApiOperationsTrait
     private function assertApiStatusCodeSame(string $method, int $expectedCode, Client $client, string $url, array $payload = null)
     {
         $body = [];
-        if ($payload) {
+        if (is_array($payload)) {
             $body['json'] = $payload;
 
             $contentType = 'application/json';

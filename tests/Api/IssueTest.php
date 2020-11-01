@@ -111,11 +111,25 @@ class IssueTest extends ApiTestCase
         $this->assertApiPostPayloadMinimal($client, '/api/issues', $sample, $affiliation);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', array_merge($sample, $optionalProperties), $affiliation);
         $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite='.$constructionSite->getId(), $response);
+        $issueId = json_decode($response->getContent(), true)['@id'];
+
+        $otherMap = $this->getTestConstructionSite()->getMaps()[1];
+        $otherMapId = $this->getIriFromItem($otherMap);
+        $otherConstructionManager = $this->getTestConstructionSite()->getConstructionManagers()[1];
+        $otherConstructionManagerId = $this->getIriFromItem($otherConstructionManager);
+
+        $emptyConstructionSite = $this->getEmptyConstructionSite();
+        $emptyConstructionSiteId = $this->getIriFromItem($emptyConstructionSite);
+        $writeProtected = [
+            'constructionSite' => $emptyConstructionSiteId,
+            'map' => $otherMapId,
+            'createdAt' => (new \DateTime('tomorrow'))->format('c'),
+            'createdBy' => $otherConstructionManagerId,
+        ];
+        $this->assertApiPatchPayloadIgnored($client, $issueId, $writeProtected);
 
         $otherCraftsman = $this->getTestConstructionSite()->getCraftsmen()[1];
         $otherCraftsmanId = $this->getIriFromItem($otherCraftsman);
-        $otherConstructionManager = $this->getTestConstructionSite()->getConstructionManagers()[1];
-        $otherConstructionManagerId = $this->getIriFromItem($otherConstructionManager);
         $update = [
             'craftsman' => $otherCraftsmanId,
 
@@ -135,7 +149,6 @@ class IssueTest extends ApiTestCase
             'reviewedAt' => (new \DateTime('yesterday + 3 day'))->format('c'),
             'reviewBy' => $otherConstructionManagerId,
         ];
-        $issueId = json_decode($response->getContent(), true)['@id'];
         $response = $this->assertApiPatchPayloadPersisted($client, $issueId, $update);
         $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite='.$constructionSite->getId(), $response);
 
@@ -180,7 +193,7 @@ class IssueTest extends ApiTestCase
 
     public function testDataConsistency()
     {
-        // after create, can not longer remove map, constructionSite, createdAt, createdBy
+        // after create, can not longer set map, constructionSite, createdAt, createdBy
         // after register, must have set most important fields and can not reverse this
     }
 }

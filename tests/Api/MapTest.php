@@ -87,13 +87,20 @@ class MapTest extends ApiTestCase
         $this->assertApiPostPayloadMinimal($client, '/api/maps', $sample, $affiliation);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/maps', array_merge($sample, $optionalProperties), $affiliation);
         $this->assertApiCollectionContainsResponseItem($client, '/api/maps?constructionSite='.$constructionSite->getId(), $response);
+        $mapId = json_decode($response->getContent(), true)['@id'];
+
+        $emptyConstructionSite = $this->getEmptyConstructionSite();
+        $emptyConstructionSiteId = $this->getIriFromItem($emptyConstructionSite);
+        $writeProtected = [
+            'constructionSite' => $emptyConstructionSiteId,
+        ];
+        $this->assertApiPatchPayloadIgnored($client, $mapId, $writeProtected);
 
         $update = [
             'name' => 'OG 3',
             'parent' => null,
             'file' => null,
         ];
-        $mapId = json_decode($response->getContent(), true)['@id'];
         $response = $this->assertApiPatchPayloadPersisted($client, $mapId, $update);
         $this->assertApiCollectionContainsResponseItem($client, '/api/maps?constructionSite='.$constructionSite->getId(), $response);
 

@@ -77,6 +77,14 @@ class CraftsmanTest extends ApiTestCase
         $this->assertApiPostPayloadMinimal($client, '/api/craftsmen', $sample, $affiliation);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/craftsmen', $sample, $affiliation);
         $this->assertApiCollectionContainsResponseItem($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $response);
+        $craftsmanId = json_decode($response->getContent(), true)['@id'];
+
+        $emptyConstructionSite = $this->getEmptyConstructionSite();
+        $emptyConstructionSiteId = $this->getIriFromItem($emptyConstructionSite);
+        $writeProtected = [
+            'constructionSite' => $emptyConstructionSiteId,
+        ];
+        $this->assertApiPatchPayloadIgnored($client, $craftsmanId, $writeProtected);
 
         $update = [
             'contactName' => 'Peter Woodly',
@@ -84,7 +92,6 @@ class CraftsmanTest extends ApiTestCase
             'trade' => 'wood & more',
             'email' => 'new@wood.ch',
         ];
-        $craftsmanId = json_decode($response->getContent(), true)['@id'];
         $response = $this->assertApiPatchPayloadPersisted($client, $craftsmanId, $update);
         $this->assertApiCollectionContainsResponseItem($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $response);
 

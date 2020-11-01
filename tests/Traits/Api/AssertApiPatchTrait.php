@@ -24,6 +24,18 @@ trait AssertApiPatchTrait
         return $response;
     }
 
+    private function assertApiPatchPayloadIgnored(Client $client, string $url, array $payload)
+    {
+        $noChangeResponse = $this->assertApiPatchOk($client, $url, []);
+        $json = json_decode($noChangeResponse->getContent(), true);
+
+        foreach ($payload as $key => $value) {
+            $actualPayload = [$key => $value];
+            $response = $this->assertApiPatchOk($client, $url, $actualPayload);
+            $this->assertJsonContains($json);
+        }
+    }
+
     private function assertApiPatchOk(Client $client, string $url, array $payload)
     {
         return $this->assertApiPatchStatusCodeSame(StatusCode::HTTP_OK, $client, $url, $payload);
