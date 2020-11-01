@@ -177,4 +177,10 @@ class IssueTest extends ApiTestCase
         $dateTimeString = DateTimeFormatter::toStringUTCTimezone($lastChangedAt); // like 2020-10-30T23:00:00.000000Z
         $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&lastChangedAt[after]='.$dateTimeString, $issueIri);
     }
+
+    public function testDataConsistency()
+    {
+        // after create, can not longer remove map, constructionSite, createdAt, createdBy
+        // after register, must have set most important fields and can not reverse this
+    }
 }
