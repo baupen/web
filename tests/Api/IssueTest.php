@@ -220,9 +220,4 @@ class IssueTest extends ApiTestCase
         $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $positionSample, $basePayload);
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $positionSample, $basePayload);
     }
-
-    public function testDataConsistencyAfterRegistration()
-    {
-        $this->assertTrue(true);
-    }
 }
