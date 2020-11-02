@@ -12,7 +12,6 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
-use App\Helper\DateTimeFormatter;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertApiTrait;
@@ -126,12 +125,6 @@ class CraftsmanTest extends ApiTestCase
         $craftsman = $constructionSite->getCraftsmen()[0];
         $craftsmanIri = $this->getIriFromItem($craftsman);
 
-        $tomorrow = new \DateTime('tomorrow');
-        $dateTimeString = DateTimeFormatter::toStringUTCTimezone($tomorrow); // like 2020-10-30T23:00:00.000000Z
-        $this->assertApiCollectionNotContainsIri($client, '/api/craftsmen?constructionSite='.$constructionSite->getId().'&lastChangedAt[after]='.$dateTimeString, $craftsmanIri);
-
-        $lastChangedAt = $craftsman->getLastChangedAt();
-        $dateTimeString = DateTimeFormatter::toStringUTCTimezone($lastChangedAt); // like 2020-10-30T23:00:00.000000Z
-        $this->assertApiCollectionContainsIri($client, '/api/craftsmen?constructionSite='.$constructionSite->getId().'&lastChangedAt[after]='.$dateTimeString, $craftsmanIri);
+        $this->assertApiCollectionFilterDateTime($client, '/api/craftsmen?constructionSite='.$constructionSite->getId().'&', $craftsmanIri, 'lastChangedAt', $craftsman->getLastChangedAt());
     }
 }

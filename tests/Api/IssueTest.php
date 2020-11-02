@@ -13,7 +13,6 @@ namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\ConstructionManager;
-use App\Helper\DateTimeFormatter;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertApiTrait;
@@ -184,13 +183,7 @@ class IssueTest extends ApiTestCase
         $issue = $constructionSite->getIssues()[0];
         $issueIri = $this->getIriFromItem($issue);
 
-        $tomorrow = new \DateTime('tomorrow');
-        $dateTimeString = DateTimeFormatter::toStringUTCTimezone($tomorrow); // like 2020-10-30T23:00:00.000000Z
-        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&lastChangedAt[after]='.$dateTimeString, $issueIri);
-
-        $lastChangedAt = $issue->getLastChangedAt();
-        $dateTimeString = DateTimeFormatter::toStringUTCTimezone($lastChangedAt); // like 2020-10-30T23:00:00.000000Z
-        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&lastChangedAt[after]='.$dateTimeString, $issueIri);
+        $this->assertApiCollectionFilterDateTime($client, '/api/issues?constructionSite='.$constructionSite->getId().'&', $issueIri, 'lastChangedAt', $issue->getLastChangedAt());
     }
 
     public function testPositionMustBeFullySetOrNotAtAll()

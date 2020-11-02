@@ -13,7 +13,11 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredSearchFilter;
 use App\Entity\Base\BaseEntity;
@@ -44,7 +48,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
- * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
+ * @ApiFilter(DateFilter::class, properties={"lastChangedAt", "createdAt", "registeredAt", "respondedAt", "reviewedAt", "responseLimit"})
+ * @ApiFilter(BooleanFilter::class, properties={"isMarked", "wasAddedWithClient"})
+ * @ApiFilter(NumericFilter::class, properties={"number"})
+ * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "map": "exact", "description": "partial"})
+ *
+ * @ApiFilter(OrderFilter::class, properties={"lastChangedAt": "ASC"})
  *
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks

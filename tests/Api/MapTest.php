@@ -12,7 +12,6 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
-use App\Helper\DateTimeFormatter;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertApiTrait;
@@ -135,12 +134,6 @@ class MapTest extends ApiTestCase
         $map = $constructionSite->getMaps()[0];
         $mapIri = $this->getIriFromItem($map);
 
-        $tomorrow = new \DateTime('tomorrow');
-        $dateTimeString = DateTimeFormatter::toStringUTCTimezone($tomorrow); // like 2020-10-30T23:00:00.000000Z
-        $this->assertApiCollectionNotContainsIri($client, '/api/maps?constructionSite='.$constructionSite->getId().'&lastChangedAt[after]='.$dateTimeString, $mapIri);
-
-        $lastChangedAt = $map->getLastChangedAt();
-        $dateTimeString = DateTimeFormatter::toStringUTCTimezone($lastChangedAt); // like 2020-10-30T23:00:00.000000Z
-        $this->assertApiCollectionContainsIri($client, '/api/maps?constructionSite='.$constructionSite->getId().'&lastChangedAt[after]='.$dateTimeString, $mapIri);
+        $this->assertApiCollectionFilterDateTime($client, '/api/maps?constructionSite='.$constructionSite->getId().'&', $mapIri, 'lastChangedAt', $map->getLastChangedAt());
     }
 }

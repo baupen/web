@@ -11,6 +11,7 @@
 
 namespace App\Tests\Traits;
 
+use App\Tests\Traits\Api\AssertApiCollectionFilterTrait;
 use App\Tests\Traits\Api\AssertApiCollectionTrait;
 use App\Tests\Traits\Api\AssertApiDeleteTrait;
 use App\Tests\Traits\Api\AssertApiGetTrait;
@@ -22,6 +23,7 @@ use App\Tests\Traits\Api\AssertApiResponseTrait;
 trait AssertApiTrait
 {
     use AssertApiCollectionTrait;
+    use AssertApiCollectionFilterTrait;
     use AssertApiOperationsTrait;
     use AssertApiResponseTrait;
 

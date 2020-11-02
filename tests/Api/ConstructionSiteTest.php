@@ -88,4 +88,16 @@ class ConstructionSiteTest extends ApiTestCase
         $this->assertApiGetStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id']);
         $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/construction_sites', $sample);
     }
+
+    public function testLastChangedAtFilter()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $constructionSiteIri = $this->getIriFromItem($constructionSite);
+
+        $this->assertApiCollectionFilterDateTime($client, '/api/construction_sites?', $constructionSiteIri, 'lastChangedAt', $constructionSite->getLastChangedAt());
+    }
 }
