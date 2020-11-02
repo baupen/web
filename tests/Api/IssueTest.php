@@ -12,6 +12,7 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use App\Entity\ConstructionManager;
 use App\Helper\DateTimeFormatter;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
@@ -197,27 +198,70 @@ class IssueTest extends ApiTestCase
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
-        $constructionManagerId = $this->getIriFromItem($constructionManager);
 
+        $basePayload = $this->getMinimalPostPayload($constructionManager);
+
+        $payload = [
+            'positionX' => 0.5,
+            'positionY' => 0.6,
+            'positionZoomScale' => 0.7,
+        ];
+
+        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
+        $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
+    }
+
+    public function testStatusMustBeFullySetOrNotAtAll()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $constructionManager = $this->loginApiConstructionManager($client);
+        $constructionManagerId = $this->getIriFromItem($constructionManager);
+        $basePayload = $this->getMinimalPostPayload($constructionManager);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $craftsman = $constructionSite->getCraftsmen()[0];
+        $craftsmanId = $this->getIriFromItem($craftsman);
+
+        $payload = [
+            'registrationBy' => $constructionManagerId,
+            'registeredAt' => (new \DateTime('today'))->format('c'),
+        ];
+
+        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
+        $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
+
+        $payload = [
+            'responseBy' => $craftsmanId,
+            'respondedAt' => (new \DateTime('today'))->format('c'),
+        ];
+
+        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
+        $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
+
+        $payload = [
+            'reviewBy' => $constructionManagerId,
+            'reviewedAt' => (new \DateTime('today'))->format('c'),
+        ];
+
+        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
+        $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
+    }
+
+    private function getMinimalPostPayload(ConstructionManager $constructionManager)
+    {
+        $constructionManagerId = $this->getIriFromItem($constructionManager);
         $constructionSite = $this->getTestConstructionSite();
         $constructionSiteId = $this->getIriFromItem($constructionSite);
         $map = $constructionSite->getMaps()[0];
         $mapId = $this->getIriFromItem($map);
 
-        $basePayload = [
+        return [
             'constructionSite' => $constructionSiteId,
             'map' => $mapId,
 
             'createdBy' => $constructionManagerId,
             'createdAt' => (new \DateTime())->format('c'),
         ];
-
-        $positionSample = [
-            'positionX' => 0.5,
-            'positionY' => 0.6,
-            'positionZoomScale' => 0.7,
-        ];
-        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $positionSample, $basePayload);
-        $this->assertApiPostPayloadPersisted($client, '/api/issues', $positionSample, $basePayload);
     }
 }

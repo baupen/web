@@ -17,6 +17,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 trait IssueStatusTrait
 {
@@ -87,6 +88,24 @@ trait IssueStatusTrait
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
      */
     private $reviewBy;
+
+    /**
+     * @Assert\Callback
+     */
+    public function validateStatus(ExecutionContextInterface $context)
+    {
+        if ((null === $this->registeredAt) !== (null === $this->registrationBy)) {
+            $context->buildViolation('registeredAt and registrationBy must both be set or both null.')->addViolation();
+        }
+
+        if ((null === $this->respondedAt) !== (null === $this->responseBy)) {
+            $context->buildViolation('respondedAt and responseBy must both be set or both null.')->addViolation();
+        }
+
+        if ((null === $this->reviewedAt) !== (null === $this->reviewBy)) {
+            $context->buildViolation('reviewedAt and reviewBy must both be set or both null.')->addViolation();
+        }
+    }
 
     public function getCreatedAt(): DateTime
     {
