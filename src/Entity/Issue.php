@@ -41,7 +41,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *      "delete" = {"security" = "is_granted('ISSUE_MODIFY', object)"},
  *     },
  *     normalizationContext={"groups"={"issue-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"issue-write"}}
+ *     denormalizationContext={"groups"={"issue-write"}},
+ *     attributes={"pagination_enabled"=true}
  * )
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})

@@ -27,14 +27,13 @@ As this requires a reimplementation of the API, various architectural challenges
 
 The next version will feature:
 - [x] considerably less cache usage (around 70% less than before)
-- [x] use of `ApiPlatform` (instead of manually written API nodes)
-- [x] removed next gen pdf generation as it will not be ready for some time
-- [x] removed `SyncService` to reduce complexity & much faster testing
-- [x] removed `Notes` to reduce complexity (users did not use it)
-- [x] refactored services for clean code (easier to use abstractions, clear code flow). 
-- [ ] use of `famoser/agnes` for deployment (faster, more scalable deployments)
-- [ ] reimplementation of the login flow to ease boarding users
-- [ ] reimplementation of the UI to use new API
+- [x] more stable API scaling to many more issues (10x more than before estimated)
+- [x] removed `Notes` (no one used it)
+- [x] reimplementation of the login flow to ease boarding users
+- [ ] ease authentication in App with a QR code
+- [ ] dashboard features graph with issue progress
+- [ ] foyer & register table of issues supports more issues & allows edit of more properties
+- [ ] edit view is simplified
 
 Besides, some bigger maintenance tasks are completed:
 - [x] migrate to symfony 5 (from 4)
@@ -49,6 +48,26 @@ For the user, the following changes:
 - [x] fewer bugs / enhanced stability through improved code quality & less complexity
 - [x] improved email templates reduce time needed to understand content
 - [x] a new registration flow makes it easier for new users to get started
+
+Implementation progress:
+- [x] analyse architectural issues with current implementation (too large cache, nonstandard API)
+- [x] remove unused functionality (Notes)
+- [x] remove `SyncService` to reduce complexity & much faster testing
+- [x] remove next gen pdf generation as it will not be ready for some time
+- [x] refactor services for clean code (easier to use abstractions, clear code flow). 
+- [x] reimplement the login flow to ease boarding users
+- [x] `ApiPlatform` setup
+- [x] use `ApiPlatform` instead of custom API for easier maintenance
+- [ ] allow access to the API from the app and craftsman views (header token)
+- [ ] use of `famoser/agnes` for deployment (faster, more scalable deployments)
+- [ ] migrate sqlite to mysql
+- [ ] new vueJS setup
+- [ ] reimplement switch UI
+- [ ] reimplement dashboard UI with App QR code, graph of recent issues 
+- [ ] reimplement craftsman UI 
+- [ ] reimplement foyer UI with scalable table
+- [ ] reimplement register UI with same table as foyer
+- [ ] reimplement edit UI with easier map edit
 
 Migration guide 1.0 to 2.0:
 - Migrate sqlite to mysql
