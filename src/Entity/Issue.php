@@ -36,7 +36,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     collectionOperations={
  *      "get",
- *      "post" = {"security_post_denormalize" = "is_granted('ISSUE_MODIFY', object)", "denormalization_context"={"groups"={"issue-create", "issue-write"}}}
+ *      "post" = {"security_post_denormalize" = "is_granted('ISSUE_MODIFY', object)", "denormalization_context"={"groups"={"issue-create", "issue-write"}}},
+ *      "get_report"={
+ *          "method"="GET",
+ *          "path"="/issues/report",
+ *          "pagination_enabled"=false
+ *      }
  *      },
  *     itemOperations={
  *      "get" = {"security" = "is_granted('ISSUE_VIEW', object)"},

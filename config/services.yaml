@@ -41,6 +41,10 @@ services:
     App\Api\DataPersister\SoftDeleteDataPersister:
         bind: { $decoratedDataPersister: '@api_platform.doctrine.orm.data_persister' }
 
+    App\Api\DataProvider\IssueReportDataProvider:
+        bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
+
+
     App\Api\Serializer\IssueDenormalizer:
         arguments: [ '@security.token_storage' ]
         tags:
