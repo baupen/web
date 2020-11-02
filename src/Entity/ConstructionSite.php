@@ -36,7 +36,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "get" = {"security" = "is_granted('CONSTRUCTION_SITE_VIEW', object)"}
  *     },
  *     normalizationContext={"groups"={"construction-site-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"construction-site-write"}}
+ *     denormalizationContext={"groups"={"construction-site-write"}},
+ *     attributes={"pagination_enabled"=false}
  * )
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  *

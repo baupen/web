@@ -28,7 +28,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *     collectionOperations={"get"},
  *     itemOperations={"get"},
- *     normalizationContext={"groups"={"map-file-read"}}
+ *     normalizationContext={"groups"={"map-file-read"}},
+ *     attributes={"pagination_enabled"=false}
  * )
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  *

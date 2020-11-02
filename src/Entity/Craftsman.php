@@ -41,7 +41,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "delete" = {"security" = "is_granted('CRAFTSMAN_MODIFY', object)"},
  *     },
  *     normalizationContext={"groups"={"craftsman-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"craftsman-write"}}
+ *     denormalizationContext={"groups"={"craftsman-write"}},
+ *     attributes={"pagination_enabled"=false}
  * )
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})

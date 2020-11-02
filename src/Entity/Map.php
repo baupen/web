@@ -40,7 +40,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "delete" = {"security" = "is_granted('MAP_MODIFY', object)"},
  *     },
  *     normalizationContext={"groups"={"map-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"map-write"}}
+ *     denormalizationContext={"groups"={"map-write"}},
+ *     attributes={"pagination_enabled"=false}
  * )
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})

@@ -25,7 +25,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *     collectionOperations={"get"},
  *     itemOperations={"get"},
- *     normalizationContext={"groups"={"construction-manager-read"}, "skip_null_values"=false}
+ *     normalizationContext={"groups"={"construction-manager-read"}, "skip_null_values"=false},
+ *     attributes={"pagination_enabled"=false}
  * )
  * @ORM\Entity(repositoryClass="App\Repository\ConstructionManagerRepository")
  * @ORM\HasLifecycleCallbacks
