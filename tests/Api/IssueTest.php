@@ -257,4 +257,59 @@ class IssueTest extends ApiTestCase
             'createdAt' => (new \DateTime())->format('c'),
         ];
     }
+
+    public function testAllFilters()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $constructionManager = $this->loginApiConstructionManager($client);
+        $constructionManagerId = $this->getIriFromItem($constructionManager);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $constructionSiteId = $this->getIriFromItem($constructionSite);
+        $map = $constructionSite->getMaps()[0];
+        $mapId = $this->getIriFromItem($map);
+        $craftsman = $this->getTestConstructionSite()->getCraftsmen()[0];
+        $craftsmanId = $this->getIriFromItem($craftsman);
+        $sample = [
+            'constructionSite' => $constructionSiteId,
+            'map' => $mapId,
+            'craftsman' => $craftsmanId,
+
+            'description' => 'hello world',
+            'wasAddedWithClient' => true,
+            'isMarked' => true,
+            'responseLimit' => (new \DateTime('today'))->format('c'),
+
+            'createdBy' => $constructionManagerId,
+            'createdAt' => (new \DateTime())->format('c'),
+            'registeredAt' => (new \DateTime('today + 1 day'))->format('c'),
+            'registrationBy' => $constructionManagerId,
+            'respondedAt' => (new \DateTime('today + 2 day'))->format('c'),
+            'responseBy' => $craftsmanId,
+            'reviewedAt' => (new \DateTime('today + 3 day'))->format('c'),
+            'reviewBy' => $constructionManagerId,
+        ];
+
+        $response = $this->assertApiPostStatusCodeSame(Response::HTTP_CREATED, $client, '/api/issues', $sample);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite='.$constructionSite->getId(), $response);
+        $issueIri = json_decode($response->getContent(), true)['@id'];
+
+        $collectionUrlPrefix = '/api/issues?constructionSite='.$constructionSite->getId().'&';
+
+        $dateTimeProperties = ['createdAt', 'registeredAt', 'respondedAt', 'reviewedAt', 'responseLimit'];
+        foreach ($dateTimeProperties as $dateTimeProperty) {
+            $this->assertApiCollectionFilterDateTime($client, $collectionUrlPrefix, $issueIri, $dateTimeProperty, new \DateTime($sample[$dateTimeProperty]));
+        }
+
+        $boolProperties = ['wasAddedWithClient', 'isMarked'];
+        foreach ($boolProperties as $boolProperty) {
+            $this->assertApiCollectionFilterBoolean($client, $collectionUrlPrefix, $issueIri, $boolProperty, $sample[$boolProperty]);
+        }
+
+        $this->assertApiCollectionFilterSearchPartial($client, $collectionUrlPrefix, $issueIri, 'description', $sample['description']);
+
+        $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $issueIri, 'map', $sample['map']);
+        $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $issueIri, 'craftsman', $sample['craftsman']);
+    }
 }
