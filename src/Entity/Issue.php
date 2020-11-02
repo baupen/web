@@ -25,6 +25,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * An issue is something created by the construction manager to inform the craftsman of it.
@@ -160,6 +161,21 @@ class Issue extends BaseEntity
     public function prePersistTime()
     {
         $this->lastChangedAt = new DateTime();
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validatePosition(ExecutionContextInterface $context)
+    {
+        $nullCount = 0;
+        $nullCount += (null === $this->getPositionX()) ? 1 : 0;
+        $nullCount += (null === $this->getPositionY()) ? 1 : 0;
+        $nullCount += (null === $this->getPositionZoomScale()) ? 1 : 0;
+
+        if (0 !== $nullCount && 3 !== $nullCount) {
+            $context->buildViolation('Position properties must be all null or all not null!')->addViolation();
+        }
     }
 
     public function getNumber(): ?int

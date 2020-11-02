@@ -73,7 +73,7 @@ class ConstructionSiteTest extends ApiTestCase
             'locality' => 'Allschwil',
         ];
 
-        $this->assertApiPostPayloadMinimal($client, '/api/construction_sites', $sample);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/construction_sites', $sample);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/construction_sites', $sample);
 
         $newConstructionSite = json_decode($response->getContent(), true);

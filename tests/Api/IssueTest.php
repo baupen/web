@@ -108,7 +108,8 @@ class IssueTest extends ApiTestCase
             'reviewBy' => $constructionManagerId,
         ];
 
-        $this->assertApiPostPayloadMinimal($client, '/api/issues', $sample, $affiliation);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $sample, $affiliation);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/issues', $affiliation, $sample);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', array_merge($sample, $optionalProperties), $affiliation);
         $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite='.$constructionSite->getId(), $response);
         $issueId = json_decode($response->getContent(), true)['@id'];
@@ -191,9 +192,37 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&lastChangedAt[after]='.$dateTimeString, $issueIri);
     }
 
-    public function testDataConsistency()
+    public function testPositionMustBeFullySetOrNotAtAll()
     {
-        // after create, can not longer set map, constructionSite, createdAt, createdBy
-        // after register, must have set most important fields and can not reverse this
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $constructionManager = $this->loginApiConstructionManager($client);
+        $constructionManagerId = $this->getIriFromItem($constructionManager);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $constructionSiteId = $this->getIriFromItem($constructionSite);
+        $map = $constructionSite->getMaps()[0];
+        $mapId = $this->getIriFromItem($map);
+
+        $basePayload = [
+            'constructionSite' => $constructionSiteId,
+            'map' => $mapId,
+
+            'createdBy' => $constructionManagerId,
+            'createdAt' => (new \DateTime())->format('c'),
+        ];
+
+        $positionSample = [
+            'positionX' => 0.5,
+            'positionY' => 0.6,
+            'positionZoomScale' => 0.7,
+        ];
+        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $positionSample, $basePayload);
+        $this->assertApiPostPayloadPersisted($client, '/api/issues', $positionSample, $basePayload);
+    }
+
+    public function testDataConsistencyAfterRegistration()
+    {
+        $this->assertTrue(true);
     }
 }

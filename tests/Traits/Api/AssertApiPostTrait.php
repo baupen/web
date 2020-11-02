@@ -21,20 +21,13 @@ trait AssertApiPostTrait
         return $this->assertApiStatusCodeSame('POST', $expectedCode, $client, $url, $payload);
     }
 
-    private function assertApiPostPayloadMinimal(Client $client, string $url, array $payload, array $accessControlPayload = [])
+    private function assertApiPostPayloadMinimal(int $expectedCode, Client $client, string $url, array $payload, array $includeAlways = [])
     {
         foreach ($payload as $key => $value) {
-            $actualPayload = array_merge($payload, $accessControlPayload);
+            $actualPayload = array_merge($payload, $includeAlways);
             unset($actualPayload[$key]);
 
-            $this->assertApiPostStatusCodeSame(StatusCode::HTTP_BAD_REQUEST, $client, $url, $actualPayload);
-        }
-
-        foreach ($accessControlPayload as $key => $value) {
-            $actualPayload = array_merge($payload, $accessControlPayload);
-            unset($actualPayload[$key]);
-
-            $this->assertApiPostStatusCodeSame(StatusCode::HTTP_FORBIDDEN, $client, $url, $actualPayload);
+            $this->assertApiPostStatusCodeSame($expectedCode, $client, $url, $actualPayload);
         }
     }
 
