@@ -21,7 +21,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterface
 {
-    const ORDER = 0;
+    public const ORDER = 0;
 
     /**
      * @var SampleServiceInterface

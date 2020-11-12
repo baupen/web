@@ -17,8 +17,8 @@ use App\Service\Interfaces\PathServiceInterface;
 
 class AuthorizationService implements AuthorizationServiceInterface
 {
-    const AUTHORIZATION_METHOD_NONE = 'none';
-    const AUTHORIZATION_METHOD_WHITELIST = 'whitelist';
+    public const AUTHORIZATION_METHOD_NONE = 'none';
+    public const AUTHORIZATION_METHOD_WHITELIST = 'whitelist';
 
     /**
      * @var PathServiceInterface

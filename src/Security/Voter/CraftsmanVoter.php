@@ -19,8 +19,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class CraftsmanVoter extends Voter
 {
-    const CRAFTSMAN_VIEW = 'CRAFTSMAN_VIEW';
-    const CRAFTSMAN_MODIFY = 'CRAFTSMAN_MODIFY';
+    public const CRAFTSMAN_VIEW = 'CRAFTSMAN_VIEW';
+    public const CRAFTSMAN_MODIFY = 'CRAFTSMAN_MODIFY';
 
     /**
      * Determines if the attribute and subject are supported by this voter.

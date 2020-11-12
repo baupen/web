@@ -13,15 +13,16 @@ namespace App\Security\Voter;
 
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
+use App\Entity\Craftsman;
 use App\Entity\Issue;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class IssueVoter extends Voter
 {
-    const ISSUE_VIEW = 'ISSUE_VIEW';
-    const ISSUE_MODIFY = 'ISSUE_MODIFY';
-    const ISSUE_RESPOND = 'ISSUE_RESPOND';
+    public const ISSUE_VIEW = 'ISSUE_VIEW';
+    public const ISSUE_MODIFY = 'ISSUE_MODIFY';
+    public const ISSUE_RESPOND = 'ISSUE_RESPOND';
 
     /**
      * Determines if the attribute and subject are supported by this voter.
@@ -60,7 +61,7 @@ class IssueVoter extends Voter
                 case self::ISSUE_MODIFY:
                     return $subject->isConstructionSiteSet() && $subject->getConstructionSite()->getConstructionManagers()->contains($user);
             }
-        } elseif ($user instanceof Issue) {
+        } elseif ($user instanceof Craftsman) {
             switch ($attribute) {
                 case self::ISSUE_VIEW:
                 case self::ISSUE_RESPOND:

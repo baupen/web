@@ -19,9 +19,9 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class ConstructionSiteVoter extends Voter
 {
-    const CONSTRUCTION_SITE_CREATE = 'CONSTRUCTION_SITE_CREATE';
-    const CONSTRUCTION_SITE_VIEW = 'CONSTRUCTION_SITE_VIEW';
-    const CONSTRUCTION_SITE_MODIFY = 'CONSTRUCTION_SITE_MODIFY';
+    public const CONSTRUCTION_SITE_CREATE = 'CONSTRUCTION_SITE_CREATE';
+    public const CONSTRUCTION_SITE_VIEW = 'CONSTRUCTION_SITE_VIEW';
+    public const CONSTRUCTION_SITE_MODIFY = 'CONSTRUCTION_SITE_MODIFY';
 
     /**
      * Determines if the attribute and subject are supported by this voter.

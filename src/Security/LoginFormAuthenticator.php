@@ -36,7 +36,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     use TargetPathTrait;
 
     public const LOGIN_ROUTE = 'login';
-    const PASSWORD_UNSET = 'password_unset';
+    public const PASSWORD_UNSET = 'password_unset';
 
     /**
      * @var EntityManagerInterface
