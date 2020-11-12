@@ -28,7 +28,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     normalizationContext={"groups"={"construction-manager-read"}, "skip_null_values"=false},
  *     attributes={"pagination_enabled"=false}
  * )
- * @ORM\Entity(repositoryClass="App\Repository\ConstructionManagerRepository")
+ * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
 class ConstructionManager extends BaseEntity implements UserInterface

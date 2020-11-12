@@ -47,7 +47,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
  *
- * @ORM\Entity(repositoryClass="App\Repository\MapRepository")
+ * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
 class Map extends BaseEntity
