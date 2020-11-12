@@ -173,6 +173,35 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&isDeleted=true', $issueIri);
     }
 
+    public function testStateFilter()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $constructionManager = $this->loginApiConstructionManager($client);
+        $constructionManagerId = $this->getIriFromItem($constructionManager);
+        $basePayload = $this->getMinimalPostPayload($constructionManager);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $craftsman = $constructionSite->getCraftsmen()[0];
+        $craftsmanId = $this->getIriFromItem($craftsman);
+        $time = (new \DateTime('today'))->format('c');
+
+        $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', [], $basePayload);
+        $issueId = json_decode($response->getContent(), true)['@id'];
+
+        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=1', $issueId);
+        $this->assertApiPatchOk($client, $issueId, ['registrationBy' => $constructionManagerId, 'registeredAt' => $time]);
+        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=1', $issueId);
+
+        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=4', $issueId);
+        $this->assertApiPatchOk($client, $issueId, ['responseBy' => $craftsmanId, 'respondedAt' => $time]);
+        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=4', $issueId);
+
+        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=8', $issueId);
+        $this->assertApiPatchOk($client, $issueId, ['reviewBy' => $constructionManagerId, 'reviewedAt' => $time]);
+        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=8', $issueId);
+    }
+
     public function testLastChangedAtFilter()
     {
         $client = $this->createClient();
@@ -215,28 +244,17 @@ class IssueTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
         $craftsman = $constructionSite->getCraftsmen()[0];
         $craftsmanId = $this->getIriFromItem($craftsman);
+        $time = (new \DateTime('today'))->format('c');
 
-        $payload = [
-            'registrationBy' => $constructionManagerId,
-            'registeredAt' => (new \DateTime('today'))->format('c'),
-        ];
-
+        $payload = ['registrationBy' => $constructionManagerId, 'registeredAt' => $time];
         $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
 
-        $payload = [
-            'responseBy' => $craftsmanId,
-            'respondedAt' => (new \DateTime('today'))->format('c'),
-        ];
-
+        $payload = ['responseBy' => $craftsmanId, 'respondedAt' => $time];
         $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
 
-        $payload = [
-            'reviewBy' => $constructionManagerId,
-            'reviewedAt' => (new \DateTime('today'))->format('c'),
-        ];
-
+        $payload = ['reviewBy' => $constructionManagerId, 'reviewedAt' => $time];
         $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
     }
@@ -289,6 +307,8 @@ class IssueTest extends ApiTestCase
             'responseBy' => $craftsmanId,
             'reviewedAt' => (new \DateTime('today + 3 day'))->format('c'),
             'reviewBy' => $constructionManagerId,
+
+            'state' => 1,
         ];
 
         $response = $this->assertApiPostStatusCodeSame(Response::HTTP_CREATED, $client, '/api/issues', $sample);

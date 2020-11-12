@@ -20,6 +20,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredSearchFilter;
+use App\Api\Filters\StateFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Issue\IssuePositionTrait;
 use App\Entity\Issue\IssueStatusTrait;
@@ -57,6 +58,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(BooleanFilter::class, properties={"isMarked", "wasAddedWithClient"})
  * @ApiFilter(NumericFilter::class, properties={"number"})
  * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "map": "exact", "description": "partial"})
+ * @ApiFilter(StateFilter::class, properties={"state"})
  *
  * @ApiFilter(OrderFilter::class, properties={"lastChangedAt": "ASC"})
  *
@@ -71,10 +73,11 @@ class Issue extends BaseEntity
     use IssuePositionTrait;
     use IssueStatusTrait;
 
-    public const UPLOAD_STATUS = 1;
-    public const REGISTRATION_STATUS = 2;
-    public const RESPONSE_STATUS = 4;
-    public const REVIEW_STATUS = 8;
+    public const STATE_CREATED = 0;
+    public const STATE_REGISTERED = 1;
+    public const STATE_SEEN = 2;
+    public const STATE_RESPONDED = 4;
+    public const STATE_REVIEWED = 8;
 
     /**
      * @var int

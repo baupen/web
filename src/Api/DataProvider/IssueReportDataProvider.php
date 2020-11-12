@@ -54,7 +54,7 @@ class IssueReportDataProvider implements ContextAwareCollectionDataProviderInter
         $context[self::ALREADY_CALLED] = true;
         $context['pagination_enabled'] = false;
 
-        // use data in $context["filter"] to find out restrictions
+        // use data in $context["filters"] to find out restrictions
         // create report service which does not need more in interface
         $collection = $this->decoratedCollectionDataProvider->getCollection($resourceClass, $operationName, $context);
 

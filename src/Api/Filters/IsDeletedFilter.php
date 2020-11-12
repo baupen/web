@@ -28,6 +28,10 @@ class IsDeletedFilter extends AbstractContextAwareFilter
         }
 
         $value = $this->normalizeValue($value);
+        if (null === $value) {
+            return;
+        }
+
         $alias = $queryBuilder->getRootAliases()[0];
         if ($value) {
             $queryBuilder->andWhere($alias.'.deletedAt IS NOT NULL');
