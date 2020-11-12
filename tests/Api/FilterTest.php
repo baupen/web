@@ -80,7 +80,7 @@ class FilterTest extends ApiTestCase
         $this->assertApiOperationForbidden($client, '/api/filters/'.$filterId.'/issues', 'GET');
     }
 
-    public function ignoreTestGetIssues()
+    public function testGetIssues()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -94,7 +94,7 @@ class FilterTest extends ApiTestCase
 
         $sample = ['isMarked' => $issue->getIsMarked()];
         $filterId = $this->postFilter($client, $sample, $affiliation);
-        $this->assertApiCollectionContainsIri($client, '/api/filters/'.$filterId.'/issues', $issueIri);
+        $this->assertApiCollectionContainsIri($client, $filterId.'/issues', $issueIri);
 
         $sample = ['isMarked' => !$issue->getIsMarked()];
         $filterId = $this->postFilter($client, $sample, $affiliation);

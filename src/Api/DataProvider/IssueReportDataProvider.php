@@ -15,6 +15,7 @@ use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\Entity\Issue;
 use App\Service\Interfaces\ReportServiceInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class IssueReportDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
@@ -58,6 +59,6 @@ class IssueReportDataProvider implements ContextAwareCollectionDataProviderInter
         // create report service which does not need more in interface
         $collection = $this->decoratedCollectionDataProvider->getCollection($resourceClass, $operationName, $context);
 
-        return $collection;
+        return new BinaryFileResponse('file');
     }
 }

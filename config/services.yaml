@@ -43,7 +43,8 @@ services:
 
     App\Api\DataProvider\IssueReportDataProvider:
         bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
-
+    App\Api\DataProvider\FilterIssueDataProvider:
+        bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider', $decoratedItemDataProvider: '@api_platform.item_data_provider'  }
 
     App\Api\Serializer\IssueDenormalizer:
         arguments: [ '@security.token_storage' ]

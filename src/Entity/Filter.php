@@ -27,11 +27,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "post" = {"security_post_denormalize" = "is_granted('FILTER_CREATE', object)", "denormalization_context"={"groups"={"filter-create"}}}
  *      },
  *     itemOperations={
+ *      "get" = {"security" = "is_granted('FILTER_VIEW', object)"},
  *      "get_issues"={
  *          "method"="GET",
- *          "security"="is_granted('FILTER_VIEW')",
  *          "path"="/filters/{id}/issues",
- *          "normalization_context"={"groups"={"issue-read"}, "skip_null_values"=false},
+ *          "security" = "is_granted('FILTER_VIEW', object)",
+ *          "normalization_context"={"groups"={"filer-read", "issue-read"}, "skip_null_values"=false},
  *      }
  *     }
  * )
@@ -46,7 +47,7 @@ class Filter extends BaseEntity
     /**
      * @var DateTime|null
      *
-     * @Groups({"filter-create"})
+     * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $accessAllowedUntil;
@@ -61,7 +62,7 @@ class Filter extends BaseEntity
     /**
      * @var bool|null
      *
-     * @Groups({"filter-create"})
+     * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $isMarked;
@@ -69,11 +70,18 @@ class Filter extends BaseEntity
     /**
      * @var ConstructionSite
      *
-     * @Groups({"filter-create"})
+     * @Groups({"filter-read", "filter-create"})
      * @Assert\NotBlank()
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="filters")
      */
     private $constructionSite;
+
+    /**
+     * @var Issue[]
+     *
+     * @Groups({"filter-read"})
+     */
+    private $issues = [];
 
     public function getAccessAllowedUntil(): ?DateTime
     {
@@ -118,5 +126,21 @@ class Filter extends BaseEntity
     public function isConstructionSiteSet(): bool
     {
         return null !== $this->constructionSite;
+    }
+
+    /**
+     * @return Issue[]
+     */
+    public function getIssues(): array
+    {
+        return $this->issues;
+    }
+
+    /**
+     * @param Issue[] $issues
+     */
+    public function setIssues(array $issues): void
+    {
+        $this->issues = $issues;
     }
 }
