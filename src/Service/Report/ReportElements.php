@@ -33,6 +33,28 @@ class ReportElements
      */
     private $withImages = true;
 
+    public static function fromRequest(array $parameters)
+    {
+        $self = new self();
+
+        $self->tableByTrade = static::getValue($parameters, 'table_by_trade', false);
+        $self->tableByTrade = static::getValue($parameters, 'table_by_craftsman', false);
+        $self->tableByTrade = static::getValue($parameters, 'table_by_map', true);
+        $self->tableByTrade = static::getValue($parameters, 'with_images', true);
+
+        return $self;
+    }
+
+    private static function getValue(array $parameters, string $config, bool $default)
+    {
+        $key = 'report['.$config.']';
+        if (!isset($parameters[$key])) {
+            return $default;
+        }
+
+        return (bool) $parameters[$key];
+    }
+
     /**
      * @return static
      */

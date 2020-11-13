@@ -26,6 +26,7 @@ use App\Service\Report\Report;
 use App\Service\Report\ReportElements;
 use DateTime;
 use const DIRECTORY_SEPARATOR;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -76,22 +77,19 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
-     * @param string $author
+     * @param ConstructionSite $constructionSite
+     * @param Filter           $filter
      *
      * @throws Exception
-     *
-     * @return string
      */
-    public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, ?string $author, ReportElements $elements)
+    public function generatePdfReport(Paginator $issuesPaginator, array $filters, ReportElements $reportElements, ?string $author = null): string
     {
-        $issues = $this->doctrine->getRepository(Issue::class)->findByFilter($filter);
-
         // 1 second by 2 issues seems reasonable
-        $executionTime = max(120, max(ini_get('max_execution_time'), \count($issues) / 2));
+        $executionTime = max(120, max(ini_get('max_execution_time'), \count($issuesPaginator) / 2));
         ini_set('max_execution_time', $executionTime);
 
         // 200 kb per issue seems reasonable
-        $memoryLimitMbs = max(256, 0.2 * \count($issues));
+        $memoryLimitMbs = max(256, 0.2 * \count($issuesPaginator));
         ini_set('memory_limit', $memoryLimitMbs.'M');
 
         //create folder
@@ -109,7 +107,7 @@ class ReportService implements ReportServiceInterface
             } else {
                 $footer = $this->translator->trans('generated_with_author', ['%date%' => $formattedDate, '%name%' => $author], 'report');
             }
-            $this->render($constructionSite, $filter, $footer, $elements, $issues, $filePath);
+            $this->render($constructionSite, $filter, $footer, $reportElements, $issuesPaginator, $filePath);
         }
 
         return $filePath;

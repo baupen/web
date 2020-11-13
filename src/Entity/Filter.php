@@ -27,13 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "post" = {"security_post_denormalize" = "is_granted('FILTER_CREATE', object)", "denormalization_context"={"groups"={"filter-create"}}}
  *      },
  *     itemOperations={
- *      "get" = {"security" = "is_granted('FILTER_VIEW', object)"},
- *      "get_issues"={
- *          "method"="GET",
- *          "path"="/filters/{id}/issues",
- *          "security" = "is_granted('FILTER_VIEW', object)",
- *          "normalization_context"={"groups"={"filer-read", "issue-read"}, "skip_null_values"=false},
- *      }
+ *      "get" = {"security" = "is_granted('FILTER_VIEW', object)"}
  *     }
  * )
  *

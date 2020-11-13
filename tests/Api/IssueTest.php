@@ -333,7 +333,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $issueIri, 'craftsman', $sample['craftsman']);
     }
 
-    public function ignoredTestDownloadReport()
+    public function skipTestDownloadReport()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
