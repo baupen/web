@@ -59,12 +59,16 @@ class FilterTest extends ApiTestCase
         $this->assertApiPostPayloadPersisted($client, '/api/filters', [], $affiliation);
     }
 
-    public function skipTestGetIssues()
+    public function testGetIssues()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
+        $this->markTestIncomplete(
+            'Auth token not implemented yet.'
+        );
+        /*
         $constructionSite = $this->getTestConstructionSite();
         $issue = $constructionSite->getIssues()[0];
         $issueIri = $this->getIriFromItem($issue);
@@ -80,14 +84,19 @@ class FilterTest extends ApiTestCase
         $filterId = $this->postFilter($client, $sample, $affiliation);
         $client->setDefaultOptions(['headers' => ['x-authenticate-filter' => $filterId]]);
         $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSiteId, $issueIri);
+        */
     }
 
-    public function ignoreTestAccessAllowedUntilEnforced()
+    public function testAccessAllowedUntilEnforced()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
+        $this->markTestIncomplete(
+            'Auth token not implemented yet.'
+        );
+        /*
         $constructionSite = $this->getTestConstructionSite();
         $constructionSiteId = $this->getIriFromItem($constructionSite);
         $affiliation = ['constructionSite' => $constructionSiteId];
@@ -102,6 +111,7 @@ class FilterTest extends ApiTestCase
         $sample = ['accessAllowedUntil' => (new \DateTime('yesterday'))->format('c')];
         $filterId = $this->postFilter($client, $sample, $affiliation);
         $this->assertApiOperationForbidden($client, '/api/issues?filter='.$filterId, 'GET');
+        */
     }
 
     private function postFilter(Client $client, array $payload, array $additionalPayload): string

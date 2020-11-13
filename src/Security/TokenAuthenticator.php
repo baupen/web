@@ -64,12 +64,28 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
         $token = $this->em->getRepository(AuthenticationToken::class)
             ->findOneBy(['token' => $credentials]);
 
-        if (null !== $token) {
-            $token->setLastUsed();
-            $this->em->persist($token);
-            $this->em->flush();
+        if (null === $token) {
+            return null;
+        }
 
+        if (null !== $token->getAccessAllowedBefore() && $token->getAccessAllowedBefore() < new \DateTime()) {
+            return null;
+        }
+
+        $token->setLastUsedAt();
+        $this->em->persist($token);
+        $this->em->flush();
+
+        if (null !== $token->getConstructionManager()) {
             return $token->getConstructionManager();
+        }
+
+        if ($token->getCraftsman()) {
+            return TokenUser::createForCraftsman($token->getCraftsman());
+        }
+
+        if ($token->getFilter()) {
+            return TokenUser::createForFilter($token->getFilter());
         }
 
         return null;
