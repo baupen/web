@@ -79,7 +79,7 @@ class ImageService implements ImageServiceInterface
      * @param Issue[] $issues
      * @param string  $size
      */
-    public function renderMapFileWithIssues(MapFile $mapFile, array $issues, string $filePath, $size = self::SIZE_THUMBNAIL): bool
+    public function renderMapFileWithIssues(MapFile $mapFile, array $issues, string $targetFilePath, $size = self::SIZE_THUMBNAIL): bool
     {
         $mapFileJpgPath = $this->renderMapFileToJpg($mapFile, $size);
         if (null === $mapFileJpgPath) {
@@ -89,7 +89,7 @@ class ImageService implements ImageServiceInterface
         // render issues on image
         $image = imagecreatefromjpeg($mapFileJpgPath);
         $this->drawIssuesOnJpg($image, $issues);
-        imagejpeg($image, $filePath);
+        imagejpeg($image, $targetFilePath);
 
         return true;
     }
@@ -110,12 +110,7 @@ class ImageService implements ImageServiceInterface
         return $this->renderSizeFor($renderedPdf, $targetFolder, $size);
     }
 
-    /**
-     * @param $size
-     *
-     * @return string
-     */
-    private function renderSizeFor(string $sourcePath, string $targetFolder, $size)
+    private function renderSizeFor(string $sourcePath, string $targetFolder, int $size): ?string
     {
         //setup paths
         $ending = pathinfo($sourcePath, PATHINFO_EXTENSION);
@@ -153,7 +148,7 @@ class ImageService implements ImageServiceInterface
     /**
      * @param Issue[] $issues
      */
-    private function drawIssuesOnJpg(&$image, array $issues)
+    private function drawIssuesOnJpg(&$image, array $issues): void
     {
         $xSize = imagesx($image);
         $ySize = imagesy($image);
@@ -167,16 +162,16 @@ class ImageService implements ImageServiceInterface
                 $this->gdService->drawRectangleWithText($yCoordinate, $xCoordinate, $circleColor, (string) $issue->getNumber(), $image);
             }
         }
-
-        return $image;
     }
 
-    private function renderPdfToJpg(string $sourcePath, string $targetFolder)
+    private function renderPdfToJpg(string $sourcePath, string $targetFolder): ?string
     {
         $pdfRenderPath = $targetFolder.DIRECTORY_SEPARATOR.self::PDF_RENDER_NAME;
         if (!file_exists($pdfRenderPath)) {
             FileHelper::ensureFolderExists($targetFolder);
-            $this->gsService->renderPdfToImage($sourcePath, $pdfRenderPath);
+            if (!$this->gsService->renderPdfToImage($sourcePath, $pdfRenderPath)) {
+                return null;
+            }
 
             //abort if creation failed
             if (!file_exists($pdfRenderPath)) {
@@ -184,6 +179,6 @@ class ImageService implements ImageServiceInterface
             }
         }
 
-        return $pdfRenderPath;
+        return file_exists($pdfRenderPath) ? $pdfRenderPath : null;
     }
 }

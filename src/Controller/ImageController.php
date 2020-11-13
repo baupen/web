@@ -69,6 +69,10 @@ class ImageController extends BaseDoctrineController
         $files = $request->files->all();
         $file = $files[array_key_first($files)];
         $constructionSiteImage = $storageService->uploadConstructionSiteImage($file, $constructionSite);
+        if (null === $constructionSiteImage) {
+            throw new BadRequestException();
+        }
+
         $this->fastSave($constructionSite, $constructionSiteImage);
         $cacheService->warmUpCacheForConstructionSiteImage($constructionSiteImage);
 
@@ -112,6 +116,10 @@ class ImageController extends BaseDoctrineController
         $files = $request->files->all();
         $file = $files[array_key_first($files)];
         $issueImage = $storageService->uploadIssueImage($file, $issue);
+        if (null === $issueImage) {
+            throw new BadRequestException();
+        }
+
         $this->fastSave($issue, $issueImage);
         $cacheService->warmUpCacheForIssueImage($issueImage);
 

@@ -173,10 +173,6 @@ class Filter extends BaseEntity
      */
     private $issues = [];
 
-    public static function createFromQuery(ConstructionSite $constructionSite, array $filters)
-    {
-    }
-
     public function getAccessAllowedUntil(): ?DateTime
     {
         return $this->accessAllowedUntil;

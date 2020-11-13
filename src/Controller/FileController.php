@@ -42,12 +42,17 @@ class FileController extends BaseDoctrineController
         }
 
         $sanitizedVariant = strtolower($variant);
-        if ('ios' === $sanitizedVariant) {
-            $path = $mapFileService->renderForMobileDevice($mapFile);
-        } elseif ('origin' === $sanitizedVariant) {
-            $path = $pathService->getFolderForMapFiles($mapFile->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
-        } else {
+        if (!in_array($variant, ['ios', 'origin'])) {
             throw new NotFoundHttpException();
+        }
+
+        $path = $pathService->getFolderForMapFiles($mapFile->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
+
+        if ('ios' === $sanitizedVariant) {
+            $optimized = $mapFileService->renderForMobileDevice($mapFile);
+            if (null !== $optimized) {
+                $path = $optimized;
+            }
         }
 
         $response = new BinaryFileResponse($path);
@@ -74,6 +79,10 @@ class FileController extends BaseDoctrineController
         $files = $request->files->all();
         $file = $files[array_key_first($files)];
         $mapFile = $storageService->uploadMapFile($file, $map);
+        if (null === $mapFile) {
+            throw new BadRequestException();
+        }
+
         $this->fastSave($map, $mapFile);
         $cacheService->warmUpCacheForMapFile($mapFile);
 

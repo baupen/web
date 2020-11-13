@@ -38,10 +38,7 @@ class MapFileService implements MapFileServiceInterface
         $this->gsService = $gsService;
     }
 
-    /**
-     * @return string|null
-     */
-    public function renderForMobileDevice(MapFile $mapFile)
+    public function renderForMobileDevice(MapFile $mapFile): ?string
     {
         $sourceFilePath = $this->pathService->getFolderForMapFiles($mapFile->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
 
@@ -56,7 +53,9 @@ class MapFileService implements MapFileServiceInterface
         }
 
         FileHelper::ensureFolderExists($targetFolder);
-        $this->gsService->renderPdfWithoutOutlineFonts($sourceFilePath, $targetFilePath);
+        if (!$this->gsService->renderPdfWithoutOutlineFonts($sourceFilePath, $targetFilePath)) {
+            return null;
+        }
 
         return is_file($targetFilePath) ? $targetFilePath : $sourceFilePath;
     }
