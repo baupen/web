@@ -33,7 +33,7 @@ The next version will feature:
 - [ ] ease authentication in App with a QR code
 - [ ] dashboard features graph with issue progress
 - [ ] foyer & register table of issues supports more issues & allows edit of more properties
-- [ ] edit view is simplified
+- [ ] edit view simplified
 
 Besides, some bigger maintenance tasks are completed:
 - [x] migrate to symfony 5 (from 4)
@@ -49,29 +49,38 @@ For the user, the following changes:
 - [x] improved email templates reduce time needed to understand content
 - [x] a new registration flow makes it easier for new users to get started
 
-Implementation progress:
+Milestone 1 (Refactor services):
 - [x] analyse architectural issues with current implementation (too large cache, nonstandard API)
 - [x] remove unused functionality (Notes)
 - [x] remove `SyncService` to reduce complexity & much faster testing
 - [x] remove next gen pdf generation as it will not be ready for some time
 - [x] refactor services for clean code (easier to use abstractions, clear code flow). 
 - [x] reimplement the login flow to ease boarding users
-- [x] `ApiPlatform` setup
-- [x] use `ApiPlatform` instead of custom API for easier maintenance
-- [ ] allow access to the API from the app and craftsman views (header token)
-- [ ] use of `famoser/agnes` for deployment (faster, more scalable deployments)
-- [ ] migrate sqlite to mysql
-- [ ] new vueJS setup
-- [ ] reimplement switch UI
-- [ ] reimplement dashboard UI with App QR code, graph of recent issues 
-- [ ] reimplement craftsman UI 
-- [ ] reimplement foyer UI with scalable table
-- [ ] reimplement register UI with same table as foyer
-- [ ] reimplement edit UI with easier map edit
-- [ ] reimplement filter create
-- [ ] reimplement filter on report
 
-Migration guide 1.0 to 2.0:
-- Migrate sqlite to mysql
-- Remove cache folder
-- Regenerate cache with `app:cache:initialize` command
+Milestone 2 (API):
+- [x] setup `ApiPlatform`
+- [ ] simplify entities & improve naming
+- [x] add nodes for construction sites
+- [x] add nodes for craftsmen
+- [x] add nodes for maps
+- [x] add nodes for issues
+- [x] add report
+- [ ] allow access to the API with tokens for constructionManager (iOS), craftsman & filter; like X-AUTHENTICATE-CONSTRUCTION-MANAGER
+
+Milestone 3 (Operations):
+- [ ] use `famoser/agnes` for deployments
+- [ ] new vueJS setup
+- [ ] add login QR token for app
+
+Milestone 4 (UI)
+- [ ] implement switch UI
+- [ ] implement dashboard UI
+- [ ] implement craftsman UI 
+- [ ] implement foyer UI with scalable table
+- [ ] implement register UI with same table as foyer
+- [ ] implement edit UI with easier map edit
+- [ ] add graph of recent issues to dashboard
+
+Milestone 5 (Migration & performance)
+- [ ] write migration from sqlite to mysql
+- [ ] test `app:cache:initialize` command
