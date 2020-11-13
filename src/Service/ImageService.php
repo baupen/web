@@ -110,7 +110,7 @@ class ImageService implements ImageServiceInterface
         return $this->renderSizeFor($renderedPdf, $targetFolder, $size);
     }
 
-    private function renderSizeFor(string $sourcePath, string $targetFolder, int $size): ?string
+    private function renderSizeFor(string $sourcePath, string $targetFolder, string $size): ?string
     {
         //setup paths
         $ending = pathinfo($sourcePath, PATHINFO_EXTENSION);
