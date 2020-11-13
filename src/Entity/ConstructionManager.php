@@ -11,6 +11,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
@@ -18,10 +19,16 @@ use App\Entity\Traits\UserTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Table(name="construction_manager")
- * @ORM\Entity(repositoryClass="App\Repository\ConstructionManagerRepository")
+ * @ApiResource(
+ *     collectionOperations={"get"},
+ *     itemOperations={"get"},
+ *     normalizationContext={"groups"={"construction-manager-read"}, "skip_null_values"=false},
+ *     attributes={"pagination_enabled"=false}
+ * )
+ * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
 class ConstructionManager extends BaseEntity implements UserInterface
@@ -31,17 +38,18 @@ class ConstructionManager extends BaseEntity implements UserInterface
     use UserTrait;
 
     // can use any features & impersonate users
-    const ROLE_ADMIN = 'ROLE_ADMIN';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
 
     // can use any features
-    const ROLE_CONSTRUCTION_MANAGER = 'ROLE_CONSTRUCTION_MANAGER';
+    public const ROLE_CONSTRUCTION_MANAGER = 'ROLE_CONSTRUCTION_MANAGER';
 
     // can not see other construction sites
-    const ROLE_ASSIGNED_CONSTRUCTION_MANAGER = 'ROLE_ASSIGNED_CONSTRUCTION_MANAGER';
+    public const ROLE_ASSIGNED_CONSTRUCTION_MANAGER = 'ROLE_ASSIGNED_CONSTRUCTION_MANAGER';
 
     /**
      * @var string|null
      *
+     * @Groups({"construction-manager-read"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $givenName;
@@ -49,6 +57,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @var string|null
      *
+     * @Groups({"construction-manager-read"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $familyName;
@@ -56,6 +65,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @var string|null
      *
+     * @Groups({"construction-manager-read"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $phone;

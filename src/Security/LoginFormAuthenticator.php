@@ -17,6 +17,7 @@ use App\Service\Interfaces\EmailServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -35,7 +36,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     use TargetPathTrait;
 
     public const LOGIN_ROUTE = 'login';
-    const PASSWORD_UNSET = 'password_unset';
+    public const PASSWORD_UNSET = 'password_unset';
 
     /**
      * @var EntityManagerInterface
@@ -117,11 +118,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
     }
 
-    /**
-     * Override to change what happens after a bad username/password is submitted.
-     *
-     * @return RedirectResponse
-     */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
         if ($request->hasSession()) {
@@ -140,6 +136,17 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         }
 
         return new RedirectResponse($this->urlGenerator->generate('index'));
+    }
+
+    public function start(Request $request, AuthenticationException $authException = null)
+    {
+        if (0 === strpos($request->getPathInfo(), '/api/')) {
+            return new Response('Unauthorized', Response::HTTP_UNAUTHORIZED);
+        }
+
+        $url = $this->getLoginUrl();
+
+        return new RedirectResponse($url);
     }
 
     protected function getLoginUrl()

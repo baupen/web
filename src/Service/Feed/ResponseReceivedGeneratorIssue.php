@@ -27,8 +27,8 @@ class ResponseReceivedGeneratorIssue extends DailyEventRegistration implements I
     {
         //register events
         foreach ($issues as $issue) {
-            if (null !== $issue->getRespondedAt()) {
-                $this->register($issue->getRespondedAt(), $issue->getResponseBy());
+            if (null !== $issue->getResolvedAt()) {
+                $this->register($issue->getResolvedAt(), $issue->getResolvedBy());
             }
         }
 

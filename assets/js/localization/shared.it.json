@@ -45,8 +45,8 @@
     "status_values": {
       "read": "letto",
       "registered": "registrato",
-      "responded": "risposto",
-      "reviewed": "chiuso"
+      "resolved": "risposto",
+      "closed": "chiuso"
     }
   },
   "map": {
@@ -54,7 +54,7 @@
     "_plural": "Piani di costruzione",
     "name": "Nome",
     "open_issues_count": "Pendenze aperte",
-    "reviewed_issues_count": "Pendenze risolte",
+    "closed_issues_count": "Pendenze risolte",
     "next_response_limit": "Prossimo limite",
     "parent": "Attribuzione"
   },

@@ -1,7 +1,7 @@
 {
   "table": {
     "no_entries": "Keine Unternehmer erfasst",
-    "filter_placeholder": "Unternehmer\/Funktion suchen..."
+    "filter_placeholder": "Unternehmer\/Gewerk suchen..."
   },
   "actions": {
     "send_emails": "E-Mails versenden",

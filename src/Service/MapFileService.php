@@ -30,11 +30,12 @@ class MapFileService implements MapFileServiceInterface
     private $gsService;
 
     /**
-     * PdfOptimizationService constructor.
+     * MapFileService constructor.
      */
-    public function __construct(PathServiceInterface $pathService)
+    public function __construct(PathServiceInterface $pathService, GsService $gsService)
     {
         $this->pathService = $pathService;
+        $this->gsService = $gsService;
     }
 
     /**

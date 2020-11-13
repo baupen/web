@@ -16,11 +16,12 @@ use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Map;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class MapVoter
+class MapVoter extends Voter
 {
-    const MAP_VIEW = 'map_view';
-    const MAP_MODIFY = 'map_modify';
+    public const MAP_VIEW = 'MAP_VIEW';
+    public const MAP_MODIFY = 'MAP_MODIFY';
 
     /**
      * Determines if the attribute and subject are supported by this voter.
@@ -57,7 +58,7 @@ class MapVoter
             switch ($attribute) {
                 case self::MAP_VIEW:
                 case self::MAP_MODIFY:
-                    return $subject->getConstructionSite()->getConstructionManagers()->contains($user);
+                    return $subject->isConstructionSiteSet() && $subject->getConstructionSite()->getConstructionManagers()->contains($user);
             }
         } elseif ($user instanceof Craftsman) {
             switch ($attribute) {

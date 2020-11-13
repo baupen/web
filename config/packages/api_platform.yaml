@@ -5,3 +5,17 @@ api_platform:
         json: ['application/merge-patch+json']
     swagger:
         versions: [3]
+        api_keys:
+            - { name: 'X-AUTHENTICATION-CONSTRUCTION-MANAGER', type: 'header' }
+    collection:
+        pagination:
+            items_per_page: 100
+            client_items_per_page: true
+
+    version: '0.1.0'
+    show_webby: false
+
+    # to debug nodes directly
+    enable_re_doc: false
+    enable_swagger_ui: false
+

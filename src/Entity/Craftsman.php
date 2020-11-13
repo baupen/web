@@ -11,33 +11,57 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use App\Api\Filters\IsDeletedFilter;
+use App\Api\Filters\RequiredSearchFilter;
 use App\Entity\Base\BaseEntity;
-use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * a craftsman receives information about open issues, and answers them.
  *
- * @ORM\Table(name="craftsman")
- * @ORM\Entity()
+ * @ApiResource(
+ *     collectionOperations={
+ *      "get",
+ *      "post" = {"security_post_denormalize" = "is_granted('CRAFTSMAN_MODIFY', object)", "denormalization_context"={"groups"={"craftsman-create", "craftsman-write"}}}
+ *      },
+ *     itemOperations={
+ *      "get" = {"security" = "is_granted('CRAFTSMAN_VIEW', object)"},
+ *      "patch" = {"security" = "is_granted('CRAFTSMAN_MODIFY', object)"},
+ *      "delete" = {"security" = "is_granted('CRAFTSMAN_MODIFY', object)"},
+ *     },
+ *     normalizationContext={"groups"={"craftsman-read"}, "skip_null_values"=false},
+ *     denormalizationContext={"groups"={"craftsman-write"}},
+ *     attributes={"pagination_enabled"=false}
+ * )
+ * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
+ * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
+ * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
+ *
+ * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
 class Craftsman extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
-    use AddressTrait;
     use SoftDeleteTrait;
 
     /**
      * @var string
      *
+     * @Assert\NotBlank
+     * @Groups({"craftsman-read", "craftsman-write"})
      * @ORM\Column(type="text")
      */
     private $contactName;
@@ -45,6 +69,8 @@ class Craftsman extends BaseEntity
     /**
      * @var string
      *
+     * @Assert\NotBlank
+     * @Groups({"craftsman-read", "craftsman-write"})
      * @ORM\Column(type="text")
      */
     private $company;
@@ -52,6 +78,8 @@ class Craftsman extends BaseEntity
     /**
      * @var string
      *
+     * @Assert\NotBlank
+     * @Groups({"craftsman-read", "craftsman-write"})
      * @ORM\Column(type="text")
      */
     private $trade;
@@ -59,6 +87,8 @@ class Craftsman extends BaseEntity
     /**
      * @var string
      *
+     * @Assert\NotBlank
+     * @Groups({"craftsman-read", "craftsman-write"})
      * @ORM\Column(type="text")
      */
     private $email;
@@ -66,6 +96,8 @@ class Craftsman extends BaseEntity
     /**
      * @var ConstructionSite
      *
+     * @Assert\NotBlank
+     * @Groups({"craftsman-create"})
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="craftsmen")
      */
     private $constructionSite;
@@ -161,6 +193,11 @@ class Craftsman extends BaseEntity
         $this->email = $email;
     }
 
+    public function isConstructionSiteSet(): bool
+    {
+        return null !== $this->constructionSite;
+    }
+
     public function getConstructionSite(): ConstructionSite
     {
         return $this->constructionSite;
@@ -247,5 +284,21 @@ class Craftsman extends BaseEntity
     public function canRemove()
     {
         return 0 === $this->issues->count() && 0 === $this->respondedIssues->count();
+    }
+
+    /**
+     * @Groups({"craftsman-read"})
+     */
+    public function getIsDeleted(): bool
+    {
+        return null !== $this->deletedAt;
+    }
+
+    /**
+     * @Groups({"craftsman-read"})
+     */
+    public function getLastChangedAt(): \DateTime
+    {
+        return $this->lastChangedAt;
     }
 }

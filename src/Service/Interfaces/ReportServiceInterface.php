@@ -11,16 +11,11 @@
 
 namespace App\Service\Interfaces;
 
-use App\Entity\ConstructionSite;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
 use App\Entity\Filter;
 use App\Service\Report\ReportElements;
 
 interface ReportServiceInterface
 {
-    /**
-     * @param string $author
-     *
-     * @return string
-     */
-    public function generatePdfReport(ConstructionSite $constructionSite, Filter $filter, ?string $author, ReportElements $reportElements);
+    public function generatePdfReport(Paginator $paginator, Filter $filter, ReportElements $reportElements, ?string $author = null): string;
 }

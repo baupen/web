@@ -19,18 +19,18 @@ use App\Entity\MapFile;
 interface ImageServiceInterface
 {
     // to show in list; small but able to see contours
-    const SIZE_THUMBNAIL = 'thumbnail';
+    public const SIZE_THUMBNAIL = 'thumbnail';
 
     // show in list where image is primary asset
     // 4 side by side on A4 at 300 PPI
-    const SIZE_PREVIEW = 'preview';
+    public const SIZE_PREVIEW = 'preview';
 
-    // size of map in report
-    // A4 at 300 PPI
-    const SIZE_REPORT_MAP = 'report_map';
+    // where image is only asset
+    // like map in report (A4 at 300 PPI)
+    public const SIZE_FULL = 'full';
 
     // all valid sizes
-    const VALID_SIZES = [self::SIZE_THUMBNAIL, self::SIZE_PREVIEW, self::SIZE_REPORT_MAP];
+    public const VALID_SIZES = [self::SIZE_THUMBNAIL, self::SIZE_PREVIEW, self::SIZE_FULL];
 
     public function resizeIssueImage(IssueImage $issueImage, string $size = self::SIZE_THUMBNAIL): ?string;
 
@@ -40,8 +40,6 @@ interface ImageServiceInterface
 
     /**
      * @param Issue[] $issues
-     *
-     * @return resource
      */
-    public function renderMapFileWithIssues(MapFile $mapFile, array $issues, string $size = self::SIZE_THUMBNAIL);
+    public function renderMapFileWithIssues(MapFile $mapFile, array $issues, string $filePath, string $size = self::SIZE_THUMBNAIL): bool;
 }

@@ -65,7 +65,6 @@ class StorageService implements StorageServiceInterface
         }
 
         $constructionSiteImage->setConstructionSite($constructionSite);
-        $constructionSite->getImages()->add($constructionSiteImage);
         $constructionSite->setImage($constructionSiteImage);
 
         return $constructionSiteImage;
@@ -79,8 +78,8 @@ class StorageService implements StorageServiceInterface
             return null;
         }
 
-        $mapFile->setMap($map);
-        $map->getFiles()->add($mapFile);
+        $mapFile->getMaps()->add($map);
+        $mapFile->setConstructionSite($map->getConstructionSite());
         $map->setFile($mapFile);
 
         return $mapFile;
@@ -95,7 +94,6 @@ class StorageService implements StorageServiceInterface
         }
 
         $issueImage->setIssue($issue);
-        $issue->getImages()->add($issueImage);
         $issue->setImage($issueImage);
 
         return $issueImage;

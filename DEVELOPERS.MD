@@ -15,7 +15,7 @@ The previous setup also relied on:
 - `ramsey/uuid`(can probably be replaced by native php)
 - `intervention/image` for resizing images
 
-frontend; previous setup relied upon:
+frontend; previously relied upon:
 
 likely still used:
 ```
@@ -125,6 +125,14 @@ if you deploy to the main installation, create `var/transient/domainOverrides.js
    ]
 }
 ```
+
+### Setup mysql
+
+- `mysql -u root` to login as root
+- `CREATE USER 'symfony'@'localhost' IDENTIFIED BY 'password';` to create `symfony` user with password `password`.
+- `GRANT ALL PRIVILEGES ON *.* TO 'symfony'@'localhost';` to allow `symfony` use to create databases
+- `FLUSH PRIVILEGES;` to reload privileges
+- `quit` to exit 
 
 ### Setup ssh
 

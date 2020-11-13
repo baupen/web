@@ -23,7 +23,7 @@
   "craftsman": {
     "_plural": "Unternehmer",
     "name": "Name",
-    "trade": "Funktion",
+    "trade": "Gewerk",
     "contact_name": "Kontaktperson",
     "email": "E-Mail",
     "company": "Unternehmer",
@@ -41,15 +41,15 @@
     "map": "Bauplan",
     "status": "Status",
     "number": "Nummer",
-    "trade": "Funktion",
+    "trade": "Gewerk",
     "no_response_limit": "nicht gesetzt",
     "no_craftsman": "nicht gesetzt",
     "craftsman_not_found": "Unternehmer nicht gefunden",
-    "status_values": {
+    "state_values": {
       "read": "gelesen",
       "registered": "registriert",
-      "responded": "erledigt",
-      "reviewed": "geschlossen"
+      "resolved": "erledigt",
+      "closed": "geschlossen"
     }
   },
   "map": {
@@ -57,7 +57,7 @@
     "_plural": "Baupläne",
     "name": "Name",
     "open_issues_count": "Offene Pendenzen",
-    "reviewed_issues_count": "Bestätigte Pendenzen",
+    "closed_issues_count": "Geschlossene Pendenzen",
     "next_response_limit": "Nächste Frist",
     "parent": "Zuordnung"
   },

@@ -11,11 +11,11 @@ Developed to fulfil both the requirements of the construction site manager and t
 
 It suggests the following workflow:
  - the manager inspects the construction site, and notices incomplete or broken things, and creates an issue for each 
- - the manager returns to his office, reviews the newly created issues, and adds them to the issue register
+ - the manager returns to his office and registers the newly created issues (adds supplemental information & adds them to the issue register)
  - the manager sends an email to all craftsman which have new issues or have not responded yet to issues from the register assigned to them
  - the craftsman receives the email with a special link which displays all currently open issues to which he is assigned to
- - on the construction site, using the link, he can respond to issues, or he had printed the issues in his office and contacts the manager after completion personally
- - the manager inspects the issues for which the craftsman already has responded and marks issues as completed which have been resolved
+ - on the construction site, using the link, he can resolve issues, or he had printed the issues in his office and contacts the manager after completion personally
+ - the manager inspects the issues which the craftsman has resolved, and closes those which are completed to satisfaction
 
 ## Notice
 
@@ -27,14 +27,13 @@ As this requires a reimplementation of the API, various architectural challenges
 
 The next version will feature:
 - [x] considerably less cache usage (around 70% less than before)
-- [x] use of `ApiPlatform` (instead of manually written API nodes)
-- [x] removed next gen pdf generation as it will not be ready for some time
-- [x] removed `SyncService` to reduce complexity & much faster testing
-- [x] removed `Notes` to reduce complexity (users did not use it)
-- [x] refactored services for clean code (easier to use abstractions, clear code flow). 
-- [ ] use of `famoser/agnes` for deployment (faster, more scalable deployments)
-- [ ] reimplementation of the login flow to ease boarding users
-- [ ] reimplementation of the UI to use new API
+- [x] more stable API scaling to many more issues (10x more than before estimated)
+- [x] removed `Notes` (no one used it)
+- [x] reimplementation of the login flow to ease boarding users
+- [ ] ease authentication in App with a QR code
+- [ ] dashboard features graph with issue progress
+- [ ] foyer & register table of issues supports more issues & allows edit of more properties
+- [ ] edit view simplified
 
 Besides, some bigger maintenance tasks are completed:
 - [x] migrate to symfony 5 (from 4)
@@ -50,7 +49,41 @@ For the user, the following changes:
 - [x] improved email templates reduce time needed to understand content
 - [x] a new registration flow makes it easier for new users to get started
 
-Migration guide 1.0 to 2.0:
-- Migrate sqlite to mysql
-- Remove cache folder
-- Regenerate cache with `app:cache:initialize` command
+Milestone 1 (Refactor services):
+- [x] analyse architectural issues with current implementation (too large cache, nonstandard API)
+- [x] remove unused functionality (Notes)
+- [x] remove `SyncService` to reduce complexity & much faster testing
+- [x] remove next gen pdf generation as it will not be ready for some time
+- [x] refactor services for clean code (easier to use abstractions, clear code flow). 
+- [x] reimplement the login flow to ease boarding users
+
+Milestone 2 (API):
+- [x] setup `ApiPlatform`
+- [x] simplify entities & improve naming
+- [x] add nodes for construction sites
+- [x] add nodes for craftsmen
+- [x] add nodes for maps
+- [x] add nodes for issues
+- [x] add report
+- [ ] allow access to the API with tokens for constructionManager (iOS), craftsman & filter; like X-AUTHENTICATE-CONSTRUCTION-MANAGER
+
+Milestone 3 (Operations):
+- [ ] use `famoser/agnes` for deployments
+- [ ] new vueJS setup
+- [ ] add login QR token for app
+
+Milestone 4 (UI)
+- [ ] implement switch UI
+- [ ] implement dashboard UI
+- [ ] implement craftsman UI 
+- [ ] implement foyer UI with scalable table
+- [ ] implement register UI with same table as foyer
+- [ ] implement edit UI with easier map edit
+- [ ] finalize filter in API
+- [ ] implement craftsman view
+- [ ] implement filter view
+- [ ] add graph of recent issues to dashboard
+
+Milestone 5 (Migration & performance)
+- [ ] write migration from sqlite to mysql
+- [ ] test `app:cache:initialize` command

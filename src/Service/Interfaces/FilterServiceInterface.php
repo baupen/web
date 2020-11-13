@@ -9,13 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Enum;
+namespace App\Service\Interfaces;
 
-use App\Enum\Base\BaseEnum;
+use App\Entity\Filter;
 
-class UploadFileCheckStatus extends BaseEnum
+interface FilterServiceInterface
 {
-    const OK = 1;
-    const FILE_ALREADY_EXISTS = 2;
-    const HASH_CONFLICTS_FOUND = 3;
+    public function createFromQuery(array $filters): Filter;
 }

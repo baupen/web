@@ -22,7 +22,7 @@ use Exception;
 /**
  * An Email is a sent email to the specified receivers.
  *
- * @ORM\Entity(repositoryClass="App\Repository\AuthenticationTokenRepository")
+ * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
 class AuthenticationToken extends BaseEntity

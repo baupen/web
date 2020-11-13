@@ -27,9 +27,9 @@ class Email extends BaseEntity
 {
     use IdTrait;
 
-    const TYPE_REGISTER_CONFIRM = 1;
-    const TYPE_RECOVER_CONFIRM = 2;
-    const TYPE_APP_INVITATION = 3;
+    public const TYPE_REGISTER_CONFIRM = 1;
+    public const TYPE_RECOVER_CONFIRM = 2;
+    public const TYPE_APP_INVITATION = 3;
 
     /**
      * @var string

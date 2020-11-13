@@ -1,6 +1,7 @@
 generated_with_author: 'generiert von %name% am %date%'
 introduction:
   elements: 'Inhalt des Berichtes'
+  paginator: '%start% - %end% von %total%'
   filter:
     later_than: 'nach %date%'
     earlier_than: 'vor %date%'

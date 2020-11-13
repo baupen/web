@@ -11,6 +11,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use App\Api\Filters\IsDeletedFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;
@@ -18,11 +22,27 @@ use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * a construction site is the place the construction manager & the craftsmen work together.
  *
- * @ORM\Table(name="construction_site")
+ * @ApiResource(
+ *     collectionOperations={
+ *      "get",
+ *      "post" = {"security_post_denormalize" = "is_granted('CONSTRUCTION_SITE_CREATE', object)"}
+ *      },
+ *     itemOperations={
+ *      "get" = {"security" = "is_granted('CONSTRUCTION_SITE_VIEW', object)"}
+ *     },
+ *     normalizationContext={"groups"={"construction-site-read"}, "skip_null_values"=false},
+ *     denormalizationContext={"groups"={"construction-site-write"}},
+ *     attributes={"pagination_enabled"=false}
+ * )
+ * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
+ * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
+ *
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
@@ -36,6 +56,8 @@ class ConstructionSite extends BaseEntity
     /**
      * @var string
      *
+     * @Assert\NotBlank
+     * @Groups({"construction-site-read", "construction-site-write"})
      * @ORM\Column(type="text")
      */
     private $name;
@@ -48,22 +70,16 @@ class ConstructionSite extends BaseEntity
     private $folderName;
 
     /**
-     * @var ConstructionSiteImage[]|ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\ConstructionSiteImage", mappedBy="constructionSite", cascade={"persist"})
-     */
-    private $images;
-
-    /**
      * @var ConstructionSiteImage|null
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSiteImage")
+     * @ORM\OneToOne(targetEntity="App\Entity\ConstructionSiteImage", inversedBy="constructionSite", cascade={"persist"})
      */
     private $image;
 
     /**
      * @var ConstructionManager[]|ArrayCollection
      *
+     * @Groups({"construction-site-read"})
      * @ORM\ManyToMany(targetEntity="ConstructionManager", inversedBy="constructionSites")
      * @ORM\JoinTable(name="construction_site_construction_manager")
      */
@@ -76,6 +92,14 @@ class ConstructionSite extends BaseEntity
      * @ORM\OrderBy({"name": "ASC"})
      */
     private $maps;
+
+    /**
+     * @var MapFile[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="MapFile", mappedBy="constructionSite", cascade={"persist"})
+     * @ORM\OrderBy({"filename": "ASC"})
+     */
+    private $mapFiles;
 
     /**
      * @var Craftsman[]|ArrayCollection
@@ -112,8 +136,8 @@ class ConstructionSite extends BaseEntity
     {
         $this->constructionManagers = new ArrayCollection();
         $this->maps = new ArrayCollection();
+        $this->mapFiles = new ArrayCollection();
         $this->craftsmen = new ArrayCollection();
-        $this->images = new ArrayCollection();
         $this->issues = new ArrayCollection();
         $this->filters = new ArrayCollection();
     }
@@ -150,16 +174,11 @@ class ConstructionSite extends BaseEntity
     }
 
     /**
-     * @return string[]
+     * @return MapFile[]|ArrayCollection
      */
-    public function getMapIds()
+    public function getMapFiles()
     {
-        $ids = [];
-        foreach ($this->getMaps() as $map) {
-            $ids[] = $map->getId();
-        }
-
-        return $ids;
+        return $this->mapFiles;
     }
 
     /**
@@ -168,14 +187,6 @@ class ConstructionSite extends BaseEntity
     public function getCraftsmen()
     {
         return $this->craftsmen;
-    }
-
-    /**
-     * @return ConstructionSiteImage[]|ArrayCollection
-     */
-    public function getImages()
-    {
-        return $this->images;
     }
 
     public function getImage(): ?ConstructionSiteImage
@@ -217,5 +228,30 @@ class ConstructionSite extends BaseEntity
     public function setFolderName(string $uniqueFolderName): void
     {
         $this->folderName = $uniqueFolderName;
+    }
+
+    /**
+     * @Groups({"construction-site-read"})
+     */
+    public function getImageUrl(): ?string
+    {
+        // will be overwritten by serializer of API
+        return null;
+    }
+
+    /**
+     * @Groups({"construction-site-read"})
+     */
+    public function getIsDeleted(): bool
+    {
+        return null !== $this->deletedAt;
+    }
+
+    /**
+     * @Groups({"construction-site-read"})
+     */
+    public function getLastChangedAt(): \DateTime
+    {
+        return $this->lastChangedAt;
     }
 }

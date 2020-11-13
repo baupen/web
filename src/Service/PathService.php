@@ -52,7 +52,7 @@ class PathService implements PathServiceInterface
         $environment = $kernel->getEnvironment();
         $varDir = $kernel->getProjectDir().DIRECTORY_SEPARATOR.'var';
         if ('test' === $environment) {
-            $varDir .= DIRECTORY_SEPARATOR.$environment;
+            $varDir .= DIRECTORY_SEPARATOR.'testing';
         }
 
         $this->folderRoot = $varDir.DIRECTORY_SEPARATOR.'persistent';

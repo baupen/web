@@ -79,18 +79,19 @@ class ImageService implements ImageServiceInterface
      * @param Issue[] $issues
      * @param string  $size
      */
-    public function renderMapFileWithIssues(MapFile $mapFile, array $issues, $size = self::SIZE_THUMBNAIL)
+    public function renderMapFileWithIssues(MapFile $mapFile, array $issues, string $filePath, $size = self::SIZE_THUMBNAIL): bool
     {
         $mapFileJpgPath = $this->renderMapFileToJpg($mapFile, $size);
         if (null === $mapFileJpgPath) {
-            return null;
+            return false;
         }
 
         // render issues on image
         $image = imagecreatefromjpeg($mapFileJpgPath);
         $this->drawIssuesOnJpg($image, $issues);
+        imagejpeg($image, $filePath);
 
-        return $image;
+        return true;
     }
 
     public function renderMapFileToJpg(MapFile $mapFile, string $size = self::SIZE_THUMBNAIL): ?string
@@ -136,7 +137,7 @@ class ImageService implements ImageServiceInterface
             case ImageServiceInterface::SIZE_PREVIEW:
                 $this->gdService->resizeImage($sourcePath, $targetFilePath, 600, 877);
                 break;
-            case ImageServiceInterface::SIZE_REPORT_MAP:
+            case ImageServiceInterface::SIZE_FULL:
                 $this->gdService->resizeImage($sourcePath, $targetFilePath, 2480, 3508);
                 break;
         }
@@ -159,11 +160,10 @@ class ImageService implements ImageServiceInterface
 
         //draw the issues on the map
         foreach ($issues as $issue) {
-            if (null !== $issue->getPosition()) {
-                $position = $issue->getPosition();
-                $yCoordinate = $position->getPositionX() * $ySize;
-                $xCoordinate = $position->getPositionY() * $xSize;
-                $circleColor = null !== $issue->getReviewedAt() ? 'green' : 'orange';
+            if (null !== $issue->getPositionX()) {
+                $yCoordinate = $issue->getPositionX() * $ySize;
+                $xCoordinate = $issue->getPositionY() * $xSize;
+                $circleColor = null !== $issue->getClosedAt() ? 'green' : 'orange';
                 $this->gdService->drawRectangleWithText($yCoordinate, $xCoordinate, $circleColor, (string) $issue->getNumber(), $image);
             }
         }

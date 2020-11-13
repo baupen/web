@@ -31,6 +31,15 @@ class CacheService implements CacheServiceInterface
     private $mapFileService;
 
     /**
+     * CacheService constructor.
+     */
+    public function __construct(ImageServiceInterface $imageService, MapFileServiceInterface $mapFileService)
+    {
+        $this->imageService = $imageService;
+        $this->mapFileService = $mapFileService;
+    }
+
+    /**
      * generates all sizes so the getSize call goes faster once it is really needed.
      */
     public function warmUpCacheForIssueImage(IssueImage $issueImage)

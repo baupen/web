@@ -1,13 +1,14 @@
-status_values:
+state_values:
   all: Alle
   none: Keine
+  created: Erstellt
   registered: Offen
-  read: Gelesen
-  responded: Erledigt
-  reviewed: Bestätigt
+  seen: Gesehen
+  resolved: Erledigt
+  closed: Geschlossen
 number: Nummer
 status: Status
-response_limit: Frist
+deadline: Frist
 description: Beschreibung
 entity:
   name: Pendenz
