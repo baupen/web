@@ -54,7 +54,7 @@ class IssueTest extends ApiTestCase
         $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issues?constructionSite='.$constructionSite->getId());
         $fields = ['number', 'description', 'deadline', 'wasAddedWithClient', 'isMarked', 'isDeleted', 'lastChangedAt'];
         $relationFields = ['craftsman', 'map', 'mapFile', 'imageUrl'];
-        $statusFields = ['createdAt', 'createdBy', 'registeredAt', 'registrationBy', 'respondedAt', 'responseBy', 'reviewedAt', 'reviewBy'];
+        $statusFields = ['createdAt', 'createdBy', 'registeredAt', 'registeredBy', 'resolvedAt', 'resolvedBy', 'closedAt', 'closedBy'];
         $positionFields = ['positionX', 'positionY', 'positionZoomScale'];
         $allFields = array_merge($fields, $relationFields, $statusFields, $positionFields);
 
@@ -101,11 +101,11 @@ class IssueTest extends ApiTestCase
             'positionZoomScale' => 0.7,
 
             'registeredAt' => (new \DateTime('today + 1 day'))->format('c'),
-            'registrationBy' => $constructionManagerId,
-            'respondedAt' => (new \DateTime('today + 2 day'))->format('c'),
-            'responseBy' => $craftsmanId,
-            'reviewedAt' => (new \DateTime('today + 3 day'))->format('c'),
-            'reviewBy' => $constructionManagerId,
+            'registeredBy' => $constructionManagerId,
+            'resolvedAt' => (new \DateTime('today + 2 day'))->format('c'),
+            'resolvedBy' => $craftsmanId,
+            'closedAt' => (new \DateTime('today + 3 day'))->format('c'),
+            'closedBy' => $constructionManagerId,
         ];
 
         $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $sample, $affiliation);
@@ -144,11 +144,11 @@ class IssueTest extends ApiTestCase
             'positionZoomScale' => 0.8,
 
             'registeredAt' => (new \DateTime('yesterday + 1 day'))->format('c'),
-            'registrationBy' => $otherConstructionManagerId,
-            'respondedAt' => (new \DateTime('yesterday + 2 day'))->format('c'),
-            'responseBy' => $otherCraftsmanId,
-            'reviewedAt' => (new \DateTime('yesterday + 3 day'))->format('c'),
-            'reviewBy' => $otherConstructionManagerId,
+            'registeredBy' => $otherConstructionManagerId,
+            'resolvedAt' => (new \DateTime('yesterday + 2 day'))->format('c'),
+            'resolvedBy' => $otherCraftsmanId,
+            'closedAt' => (new \DateTime('yesterday + 3 day'))->format('c'),
+            'closedBy' => $otherConstructionManagerId,
         ];
         $response = $this->assertApiPatchPayloadPersisted($client, $issueId, $update);
         $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite='.$constructionSite->getId(), $response);
@@ -190,15 +190,15 @@ class IssueTest extends ApiTestCase
         $issueId = json_decode($response->getContent(), true)['@id'];
 
         $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=1', $issueId);
-        $this->assertApiPatchOk($client, $issueId, ['registrationBy' => $constructionManagerId, 'registeredAt' => $time]);
+        $this->assertApiPatchOk($client, $issueId, ['registeredBy' => $constructionManagerId, 'registeredAt' => $time]);
         $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=1', $issueId);
 
         $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=4', $issueId);
-        $this->assertApiPatchOk($client, $issueId, ['responseBy' => $craftsmanId, 'respondedAt' => $time]);
+        $this->assertApiPatchOk($client, $issueId, ['resolvedBy' => $craftsmanId, 'resolvedAt' => $time]);
         $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=4', $issueId);
 
         $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=8', $issueId);
-        $this->assertApiPatchOk($client, $issueId, ['reviewBy' => $constructionManagerId, 'reviewedAt' => $time]);
+        $this->assertApiPatchOk($client, $issueId, ['closedBy' => $constructionManagerId, 'closedAt' => $time]);
         $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=8', $issueId);
     }
 
@@ -246,15 +246,15 @@ class IssueTest extends ApiTestCase
         $craftsmanId = $this->getIriFromItem($craftsman);
         $time = (new \DateTime('today'))->format('c');
 
-        $payload = ['registrationBy' => $constructionManagerId, 'registeredAt' => $time];
+        $payload = ['registeredBy' => $constructionManagerId, 'registeredAt' => $time];
         $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
 
-        $payload = ['responseBy' => $craftsmanId, 'respondedAt' => $time];
+        $payload = ['resolvedBy' => $craftsmanId, 'resolvedAt' => $time];
         $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
 
-        $payload = ['reviewBy' => $constructionManagerId, 'reviewedAt' => $time];
+        $payload = ['closedBy' => $constructionManagerId, 'closedAt' => $time];
         $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
     }
@@ -302,11 +302,11 @@ class IssueTest extends ApiTestCase
             'createdBy' => $constructionManagerId,
             'createdAt' => (new \DateTime())->format('c'),
             'registeredAt' => (new \DateTime('today + 1 day'))->format('c'),
-            'registrationBy' => $constructionManagerId,
-            'respondedAt' => (new \DateTime('today + 2 day'))->format('c'),
-            'responseBy' => $craftsmanId,
-            'reviewedAt' => (new \DateTime('today + 3 day'))->format('c'),
-            'reviewBy' => $constructionManagerId,
+            'registeredBy' => $constructionManagerId,
+            'resolvedAt' => (new \DateTime('today + 2 day'))->format('c'),
+            'resolvedBy' => $craftsmanId,
+            'closedAt' => (new \DateTime('today + 3 day'))->format('c'),
+            'closedBy' => $constructionManagerId,
 
             'state' => 1,
         ];
@@ -317,7 +317,7 @@ class IssueTest extends ApiTestCase
 
         $collectionUrlPrefix = '/api/issues?constructionSite='.$constructionSite->getId().'&';
 
-        $dateTimeProperties = ['createdAt', 'registeredAt', 'respondedAt', 'reviewedAt', 'deadline'];
+        $dateTimeProperties = ['createdAt', 'registeredAt', 'resolvedAt', 'closedAt', 'deadline'];
         foreach ($dateTimeProperties as $dateTimeProperty) {
             $this->assertApiCollectionFilterDateTime($client, $collectionUrlPrefix, $issueIri, $dateTimeProperty, new \DateTime($sample[$dateTimeProperty]));
         }

@@ -45,11 +45,11 @@
     "no_response_limit": "nicht gesetzt",
     "no_craftsman": "nicht gesetzt",
     "craftsman_not_found": "Unternehmer nicht gefunden",
-    "status_values": {
+    "state_values": {
       "read": "gelesen",
       "registered": "registriert",
-      "responded": "erledigt",
-      "reviewed": "geschlossen"
+      "resolved": "erledigt",
+      "closed": "geschlossen"
     }
   },
   "map": {
@@ -57,7 +57,7 @@
     "_plural": "Baupläne",
     "name": "Name",
     "open_issues_count": "Offene Pendenzen",
-    "reviewed_issues_count": "Bestätigte Pendenzen",
+    "closed_issues_count": "Geschlossene Pendenzen",
     "next_response_limit": "Nächste Frist",
     "parent": "Zuordnung"
   },

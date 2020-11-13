@@ -91,7 +91,7 @@ class Filter extends BaseEntity
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $respondedAtAfter;
+    private $resolvedAtAfter;
 
     /**
      * @var DateTime|null
@@ -99,7 +99,7 @@ class Filter extends BaseEntity
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $respondedAtBefore;
+    private $resolvedAtBefore;
 
     /**
      * @var DateTime|null
@@ -107,7 +107,7 @@ class Filter extends BaseEntity
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $reviewedAtAfter;
+    private $closedAtAfter;
 
     /**
      * @var DateTime|null
@@ -115,7 +115,7 @@ class Filter extends BaseEntity
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $reviewedAtBefore;
+    private $closedAtBefore;
 
     /**
      * @var DateTime|null
@@ -237,44 +237,44 @@ class Filter extends BaseEntity
         $this->registeredAtBefore = $registeredAtBefore;
     }
 
-    public function getRespondedAtAfter(): ?DateTime
+    public function getResolvedAtAfter(): ?DateTime
     {
-        return $this->respondedAtAfter;
+        return $this->resolvedAtAfter;
     }
 
-    public function setRespondedAtAfter(?DateTime $respondedAtAfter): void
+    public function setResolvedAtAfter(?DateTime $resolvedAtAfter): void
     {
-        $this->respondedAtAfter = $respondedAtAfter;
+        $this->resolvedAtAfter = $resolvedAtAfter;
     }
 
-    public function getRespondedAtBefore(): ?DateTime
+    public function getResolvedAtBefore(): ?DateTime
     {
-        return $this->respondedAtBefore;
+        return $this->resolvedAtBefore;
     }
 
-    public function setRespondedAtBefore(?DateTime $respondedAtBefore): void
+    public function setResolvedAtBefore(?DateTime $resolvedAtBefore): void
     {
-        $this->respondedAtBefore = $respondedAtBefore;
+        $this->resolvedAtBefore = $resolvedAtBefore;
     }
 
-    public function getReviewedAtAfter(): ?DateTime
+    public function getClosedAtAfter(): ?DateTime
     {
-        return $this->reviewedAtAfter;
+        return $this->closedAtAfter;
     }
 
-    public function setReviewedAtAfter(?DateTime $reviewedAtAfter): void
+    public function setClosedAtAfter(?DateTime $closedAtAfter): void
     {
-        $this->reviewedAtAfter = $reviewedAtAfter;
+        $this->closedAtAfter = $closedAtAfter;
     }
 
-    public function getReviewedAtBefore(): ?DateTime
+    public function getClosedAtBefore(): ?DateTime
     {
-        return $this->reviewedAtBefore;
+        return $this->closedAtBefore;
     }
 
-    public function setReviewedAtBefore(?DateTime $reviewedAtBefore): void
+    public function setClosedAtBefore(?DateTime $closedAtBefore): void
     {
-        $this->reviewedAtBefore = $reviewedAtBefore;
+        $this->closedAtBefore = $closedAtBefore;
     }
 
     public function getDeadlineAtBefore(): ?DateTime

@@ -53,7 +53,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
- * @ApiFilter(DateFilter::class, properties={"lastChangedAt", "createdAt", "registeredAt", "respondedAt", "reviewedAt", "deadline"})
+ * @ApiFilter(DateFilter::class, properties={"lastChangedAt", "createdAt", "registeredAt", "resolvedAt", "closedAt", "deadline"})
  * @ApiFilter(BooleanFilter::class, properties={"isMarked", "wasAddedWithClient"})
  * @ApiFilter(NumericFilter::class, properties={"number"})
  * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "map": "exact", "description": "partial"})
@@ -75,8 +75,8 @@ class Issue extends BaseEntity
     public const STATE_CREATED = 0;
     public const STATE_REGISTERED = 1;
     public const STATE_SEEN = 2;
-    public const STATE_RESPONDED = 4;
-    public const STATE_REVIEWED = 8;
+    public const STATE_RESOLVED = 4;
+    public const STATE_CLOSED = 8;
 
     /**
      * @var int

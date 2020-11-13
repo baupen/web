@@ -44,24 +44,24 @@ class StateFilter extends AbstractContextAwareFilter
             $queryBuilder->where($alias.'.registeredAt < '.$craftsmanAlias.'.lastOnlineVisit');
         }
 
-        if ($value & Issue::STATE_RESPONDED) {
-            $queryBuilder->andWhere($alias.'.respondedAt IS NOT NULL');
+        if ($value & Issue::STATE_RESOLVED) {
+            $queryBuilder->andWhere($alias.'.resolvedAt IS NOT NULL');
         }
 
-        if ($value & Issue::STATE_REVIEWED) {
-            $queryBuilder->andWhere($alias.'.reviewedAt IS NOT NULL');
+        if ($value & Issue::STATE_CLOSED) {
+            $queryBuilder->andWhere($alias.'.closedAt IS NOT NULL');
         }
     }
 
     private function normalizeValue($value)
     {
         $intValue = (int) $value;
-        if (Issue::STATE_CREATED <= $intValue && $intValue <= Issue::STATE_REVIEWED) {
+        if (Issue::STATE_CREATED <= $intValue && $intValue <= Issue::STATE_CLOSED) {
             return $intValue;
         }
 
         $this->getLogger()->notice('Invalid filter ignored', [
-            'exception' => new InvalidArgumentException(sprintf('Invalid value for '.self::STATE_PROPERTY_NAME.', expected in range '.Issue::STATE_CREATED.' - '.Issue::STATE_REVIEWED)),
+            'exception' => new InvalidArgumentException(sprintf('Invalid value for '.self::STATE_PROPERTY_NAME.', expected in range '.Issue::STATE_CREATED.' - '.Issue::STATE_CLOSED)),
         ]);
 
         return null;
@@ -75,7 +75,7 @@ class StateFilter extends AbstractContextAwareFilter
                 'property' => 'state',
                 'required' => false,
                 'swagger' => [
-                    'description' => 'Filter depending on state(s) of entry. Combine Created = 0, Registered = 1, Read = 2, Responded = 4 and Reviewed = 8.',
+                    'description' => 'Filter depending on state(s) of entry. Combine Created = 0, Registered = 1, Read = 2, Resolved = 4 and Closed = 8.',
                     'name' => 'state',
                     'type' => 'integer',
                 ],

@@ -55,7 +55,7 @@ trait IssueStatusTrait
      * @Groups({"issue-read", "issue-write"})
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
      */
-    private $registrationBy;
+    private $registeredBy;
 
     /**
      * @var DateTime|null
@@ -63,7 +63,7 @@ trait IssueStatusTrait
      * @Groups({"issue-read", "issue-write", "issue-craftsman-write"})
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $respondedAt;
+    private $resolvedAt;
 
     /**
      * @var Craftsman|null
@@ -71,7 +71,7 @@ trait IssueStatusTrait
      * @Groups({"issue-read", "issue-write", "issue-craftsman-write"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="respondedIssues")
      */
-    private $responseBy;
+    private $resolvedBy;
 
     /**
      * @var DateTime|null
@@ -79,7 +79,7 @@ trait IssueStatusTrait
      * @Groups({"issue-read", "issue-write"})
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $reviewedAt;
+    private $closedAt;
 
     /**
      * @var ConstructionManager|null
@@ -87,23 +87,23 @@ trait IssueStatusTrait
      * @Groups({"issue-read", "issue-write"})
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
      */
-    private $reviewBy;
+    private $closedBy;
 
     /**
      * @Assert\Callback
      */
     public function validateStatus(ExecutionContextInterface $context)
     {
-        if ((null === $this->registeredAt) !== (null === $this->registrationBy)) {
-            $context->buildViolation('registeredAt and registrationBy must both be set or both null.')->addViolation();
+        if ((null === $this->registeredAt) !== (null === $this->registeredBy)) {
+            $context->buildViolation('registeredAt and registeredBy must both be set or both null.')->addViolation();
         }
 
-        if ((null === $this->respondedAt) !== (null === $this->responseBy)) {
-            $context->buildViolation('respondedAt and responseBy must both be set or both null.')->addViolation();
+        if ((null === $this->resolvedAt) !== (null === $this->resolvedBy)) {
+            $context->buildViolation('resolvedAt and resolvedBy must both be set or both null.')->addViolation();
         }
 
-        if ((null === $this->reviewedAt) !== (null === $this->reviewBy)) {
-            $context->buildViolation('reviewedAt and reviewBy must both be set or both null.')->addViolation();
+        if ((null === $this->closedAt) !== (null === $this->closedBy)) {
+            $context->buildViolation('closedAt and closedBy must both be set or both null.')->addViolation();
         }
     }
 
@@ -137,53 +137,53 @@ trait IssueStatusTrait
         $this->registeredAt = $registeredAt;
     }
 
-    public function getRegistrationBy(): ?ConstructionManager
+    public function getRegisteredBy(): ?ConstructionManager
     {
-        return $this->registrationBy;
+        return $this->registeredBy;
     }
 
-    public function setRegistrationBy(?ConstructionManager $registrationBy): void
+    public function setRegisteredBy(?ConstructionManager $registeredBy): void
     {
-        $this->registrationBy = $registrationBy;
+        $this->registeredBy = $registeredBy;
     }
 
-    public function getRespondedAt(): ?DateTime
+    public function getResolvedAt(): ?DateTime
     {
-        return $this->respondedAt;
+        return $this->resolvedAt;
     }
 
-    public function setRespondedAt(?DateTime $respondedAt): void
+    public function setResolvedAt(?DateTime $resolvedAt): void
     {
-        $this->respondedAt = $respondedAt;
+        $this->resolvedAt = $resolvedAt;
     }
 
-    public function getResponseBy(): ?Craftsman
+    public function getResolvedBy(): ?Craftsman
     {
-        return $this->responseBy;
+        return $this->resolvedBy;
     }
 
-    public function setResponseBy(?Craftsman $responseBy): void
+    public function setResolvedBy(?Craftsman $resolvedBy): void
     {
-        $this->responseBy = $responseBy;
+        $this->resolvedBy = $resolvedBy;
     }
 
-    public function getReviewedAt(): ?DateTime
+    public function getClosedAt(): ?DateTime
     {
-        return $this->reviewedAt;
+        return $this->closedAt;
     }
 
-    public function setReviewedAt(?DateTime $reviewedAt): void
+    public function setClosedAt(?DateTime $closedAt): void
     {
-        $this->reviewedAt = $reviewedAt;
+        $this->closedAt = $closedAt;
     }
 
-    public function getReviewBy(): ?ConstructionManager
+    public function getClosedBy(): ?ConstructionManager
     {
-        return $this->reviewBy;
+        return $this->closedBy;
     }
 
-    public function setReviewBy(?ConstructionManager $reviewBy): void
+    public function setClosedBy(?ConstructionManager $closedBy): void
     {
-        $this->reviewBy = $reviewBy;
+        $this->closedBy = $closedBy;
     }
 }

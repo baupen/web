@@ -4,8 +4,8 @@ state_values:
   created: Erstellt
   registered: Offen
   seen: Gesehen
-  responded: Erledigt
-  reviewed: Bestätigt
+  resolved: Erledigt
+  closed: Geschlossen
 number: Nummer
 status: Status
 deadline: Frist

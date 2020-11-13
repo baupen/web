@@ -163,7 +163,7 @@ class ImageService implements ImageServiceInterface
             if (null !== $issue->getPositionX()) {
                 $yCoordinate = $issue->getPositionX() * $ySize;
                 $xCoordinate = $issue->getPositionY() * $xSize;
-                $circleColor = null !== $issue->getReviewedAt() ? 'green' : 'orange';
+                $circleColor = null !== $issue->getClosedAt() ? 'green' : 'orange';
                 $this->gdService->drawRectangleWithText($yCoordinate, $xCoordinate, $circleColor, (string) $issue->getNumber(), $image);
             }
         }

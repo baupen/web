@@ -4,8 +4,8 @@ state_values:
   created: Creato
   registered: Aperto
   seen: Letto
-  responded: Risposte
-  reviewed: Confermato
+  resolved: Risposte
+  closed: Confermato
 number: Numero
 status: Stato
 deadline: Scadenza
