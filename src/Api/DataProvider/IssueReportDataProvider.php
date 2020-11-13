@@ -15,13 +15,13 @@ use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\Entity\ConstructionManager;
 use App\Entity\Issue;
+use App\Service\Interfaces\FilterServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\ReportElements;
-use Doctrine\ORM\Tools\Pagination\Paginator;
-use Doctrine\Persistence\ManagerRegistry;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Intl\Exception\NotImplementedException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -48,22 +48,22 @@ class IssueReportDataProvider implements ContextAwareCollectionDataProviderInter
     private $request;
 
     /**
-     * @var ManagerRegistry
+     * @var FilterServiceInterface
      */
-    private $registry;
+    private $filterService;
 
     private const ALREADY_CALLED = 'ISSUE_REPORT_DATA_PROVIDER_ALREADY_CALLED';
 
     /**
      * IssueReportDataProvider constructor.
      */
-    public function __construct(ContextAwareCollectionDataProviderInterface $decoratedCollectionDataProvider, ReportServiceInterface $reportService, TokenStorageInterface $tokenStorage, RequestStack $requestStack, ManagerRegistry $registry)
+    public function __construct(ContextAwareCollectionDataProviderInterface $decoratedCollectionDataProvider, ReportServiceInterface $reportService, TokenStorageInterface $tokenStorage, RequestStack $requestStack, FilterServiceInterface $filterService)
     {
         $this->decoratedCollectionDataProvider = $decoratedCollectionDataProvider;
         $this->reportService = $reportService;
         $this->tokenStorage = $tokenStorage;
         $this->request = $requestStack->getCurrentRequest();
-        $this->registry = $registry;
+        $this->filterService = $filterService;
     }
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
@@ -80,7 +80,7 @@ class IssueReportDataProvider implements ContextAwareCollectionDataProviderInter
     {
         $context[self::ALREADY_CALLED] = true;
 
-        /** @var Paginator $collection */
+        /** @var \ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator $collection */
         $collection = $this->decoratedCollectionDataProvider->getCollection($resourceClass, $operationName, $context);
 
         $reportElements = ReportElements::fromRequest($this->request->query->all());
@@ -92,8 +92,16 @@ class IssueReportDataProvider implements ContextAwareCollectionDataProviderInter
             throw new NotImplementedException('tokens not implemented');
         }
 
-        $filePath = $this->reportService->generatePdfReport($collection, $context['filters'], $reportElements, $name);
+        $filter = $this->filterService->createFromQuery($context['filters']);
+        $filePath = $this->reportService->generatePdfReport($collection, $filter, $reportElements, $name);
 
-        return new BinaryFileResponse($filePath);
+        $response = new BinaryFileResponse($filePath);
+
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'report.pdf'
+        );
+
+        return $response;
     }
 }

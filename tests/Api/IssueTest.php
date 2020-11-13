@@ -52,7 +52,7 @@ class IssueTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issues?constructionSite='.$constructionSite->getId());
-        $fields = ['number', 'description', 'responseLimit', 'wasAddedWithClient', 'isMarked', 'isDeleted', 'lastChangedAt'];
+        $fields = ['number', 'description', 'deadline', 'wasAddedWithClient', 'isMarked', 'isDeleted', 'lastChangedAt'];
         $relationFields = ['craftsman', 'map', 'mapFile', 'imageUrl'];
         $statusFields = ['createdAt', 'createdBy', 'registeredAt', 'registrationBy', 'respondedAt', 'responseBy', 'reviewedAt', 'reviewBy'];
         $positionFields = ['positionX', 'positionY', 'positionZoomScale'];
@@ -94,7 +94,7 @@ class IssueTest extends ApiTestCase
             'description' => 'hello world',
             'wasAddedWithClient' => true,
             'isMarked' => true,
-            'responseLimit' => (new \DateTime('today'))->format('c'),
+            'deadline' => (new \DateTime('today'))->format('c'),
 
             'positionX' => 0.5,
             'positionY' => 0.6,
@@ -137,7 +137,7 @@ class IssueTest extends ApiTestCase
             'description' => 'hello world 2',
             'wasAddedWithClient' => false,
             'isMarked' => false,
-            'responseLimit' => (new \DateTime('yesterday'))->format('c'),
+            'deadline' => (new \DateTime('yesterday'))->format('c'),
 
             'positionX' => 0.6,
             'positionY' => 0.7,
@@ -297,7 +297,7 @@ class IssueTest extends ApiTestCase
             'description' => 'hello world',
             'wasAddedWithClient' => true,
             'isMarked' => true,
-            'responseLimit' => (new \DateTime('today'))->format('c'),
+            'deadline' => (new \DateTime('today'))->format('c'),
 
             'createdBy' => $constructionManagerId,
             'createdAt' => (new \DateTime())->format('c'),
@@ -317,7 +317,7 @@ class IssueTest extends ApiTestCase
 
         $collectionUrlPrefix = '/api/issues?constructionSite='.$constructionSite->getId().'&';
 
-        $dateTimeProperties = ['createdAt', 'registeredAt', 'respondedAt', 'reviewedAt', 'responseLimit'];
+        $dateTimeProperties = ['createdAt', 'registeredAt', 'respondedAt', 'reviewedAt', 'deadline'];
         foreach ($dateTimeProperties as $dateTimeProperty) {
             $this->assertApiCollectionFilterDateTime($client, $collectionUrlPrefix, $issueIri, $dateTimeProperty, new \DateTime($sample[$dateTimeProperty]));
         }
@@ -333,7 +333,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $issueIri, 'craftsman', $sample['craftsman']);
     }
 
-    public function skipTestDownloadReport()
+    public function testDownloadReport()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);

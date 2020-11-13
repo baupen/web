@@ -79,18 +79,19 @@ class ImageService implements ImageServiceInterface
      * @param Issue[] $issues
      * @param string  $size
      */
-    public function renderMapFileWithIssues(MapFile $mapFile, array $issues, $size = self::SIZE_THUMBNAIL)
+    public function renderMapFileWithIssues(MapFile $mapFile, array $issues, string $filePath, $size = self::SIZE_THUMBNAIL): bool
     {
         $mapFileJpgPath = $this->renderMapFileToJpg($mapFile, $size);
         if (null === $mapFileJpgPath) {
-            return null;
+            return false;
         }
 
         // render issues on image
         $image = imagecreatefromjpeg($mapFileJpgPath);
         $this->drawIssuesOnJpg($image, $issues);
+        imagejpeg($image, $filePath);
 
-        return $image;
+        return true;
     }
 
     public function renderMapFileToJpg(MapFile $mapFile, string $size = self::SIZE_THUMBNAIL): ?string

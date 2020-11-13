@@ -30,16 +30,16 @@ class Report
      */
     private $pdfDesign;
 
-    public function __construct(PdfDefinition $pdfDefinition)
+    public function __construct(PdfDefinition $pdfDefinition, string $reportAssetDir)
     {
         $this->pdfSizes = new PdfSizes();
         $this->pdfDesign = new PdfDesign();
         $this->pdfDocument = new Pdf($pdfDefinition, $this->pdfSizes);
 
         //prepare fonts
-        $checkFilePath = K_PATH_FONTS.'/.copied2';
+        $checkFilePath = K_PATH_FONTS.'/.copied';
         if (!file_exists($checkFilePath)) {
-            $sourceFolder = __DIR__.'/../../../../assets/report/fonts';
+            $sourceFolder = $reportAssetDir.'/fonts';
             //copy all fonts from the assets to the fonts folder of tcpdf
             shell_exec('\cp -r '.$sourceFolder.'/* '.K_PATH_FONTS);
             file_put_contents($checkFilePath, time());
@@ -54,7 +54,7 @@ class Report
     /**
      * @param string[] $filterEntries
      */
-    public function addIntroduction(?string $headerImage, string $name, string $address, string $elements, array $filterEntries, string $filterHeader)
+    public function addIntroduction(?string $headerImage, string $name, string $address, string $elements, array $filterEntries, ?string $paginatorString, string $filterHeader)
     {
         $startY = $this->pdfDocument->GetY();
         $maxContentHeight = $startY;
@@ -91,7 +91,7 @@ class Report
         ++$currentColumn;
 
         //filter used for generation
-        if (\count($filterEntries) > 0) {
+        if (\count($filterEntries) > 0 || null !== $paginatorString) {
             $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
             $this->pdfDocument->SetY($startY);
 
@@ -102,21 +102,28 @@ class Report
                 $this->pdfDocument->SetX($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
                 $this->printHtmlP('<b>'.$name.'</b>: '.$value);
             }
+
+            if (null !== $paginatorString) {
+                $this->pdfDocument->SetX($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
+                $this->printHtmlP('<i>'.$paginatorString.'</i>');
+            }
         }
 
         //define start of next part
         $this->pdfDocument->SetY(max($this->pdfDocument->GetY(), $maxContentHeight) + $this->pdfSizes->getContentSpacerBig());
     }
 
-    /**
-     * @param string $targetFilePath
-     */
-    public function save($targetFilePath)
+    public function save(string $targetFilePath)
     {
         $this->pdfDocument->Output($targetFilePath, 'F');
     }
 
-    public function addMap(string $name, ?string $context, ?string $mapImageFilePath = null)
+    public function stream(): string
+    {
+        return $this->pdfDocument->Output($dest = 'S');
+    }
+
+    public function addMap(string $name, ?string $context, ?string $mapImageFilePath)
     {
         $this->pdfDocument->startPage();
 
@@ -139,16 +146,6 @@ class Report
             $maxWidth = $this->pdfSizes->getContentXSize() - $doubleImgPadding;
             $maxHeight = $this->pdfSizes->getContentYSize() - $headerHeight - $doubleImgPadding;
             list($width, $height) = ImageHelper::fitInBoundingBox($mapImageFilePath, $maxWidth, $maxHeight);
-
-            //check if image fits on current page
-            if ($headerHeight + $height + $startY + $this->pdfSizes->getContentSpacerBig() + $doubleImgPadding < $this->pdfSizes->getContentYEnd()) {
-                //add content spacer & continue on same page
-                $this->pdfDocument->SetY($startY + $this->pdfSizes->getContentSpacerSmall(), true, false);
-            } else {
-                //force new page
-                $this->pdfDocument->AddPage();
-                $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
-            }
 
             //print title
             $printTitle();

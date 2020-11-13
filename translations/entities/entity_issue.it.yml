@@ -1,13 +1,14 @@
-status_values:
+state_values:
   all: Tutte
   none: Nessuna
+  created: Creato
   registered: Aperto
-  read: Letto
+  seen: Letto
   responded: Risposte
   reviewed: Confermato
 number: Numero
 status: Stato
-response_limit: Termine
+deadline: Scadenza
 description: Descrizione
 entity:
   name: Pendenza

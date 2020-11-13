@@ -11,11 +11,9 @@
 
 namespace App\Service\Interfaces;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
 use App\Entity\Filter;
-use App\Service\Report\ReportElements;
 
-interface ReportServiceInterface
+interface FilterServiceInterface
 {
-    public function generatePdfReport(Paginator $paginator, Filter $filter, ReportElements $reportElements, ?string $author = null): string;
+    public function createFromQuery(array $filters): Filter;
 }

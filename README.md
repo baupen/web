@@ -68,6 +68,8 @@ Implementation progress:
 - [ ] reimplement foyer UI with scalable table
 - [ ] reimplement register UI with same table as foyer
 - [ ] reimplement edit UI with easier map edit
+- [ ] reimplement filter create
+- [ ] reimplement filter on report
 
 Migration guide 1.0 to 2.0:
 - Migrate sqlite to mysql

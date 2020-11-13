@@ -16,6 +16,7 @@ services:
             $authorizationMethod: '%env(AUTHORIZATION_METHOD)%'
             $environment: '%kernel.environment%'
             $publicDir: '%kernel.project_dir%/public'
+            $reportAssetDir: '%kernel.project_dir%/assets/report'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

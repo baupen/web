@@ -40,8 +40,6 @@ interface ImageServiceInterface
 
     /**
      * @param Issue[] $issues
-     *
-     * @return resource
      */
-    public function renderMapFileWithIssues(MapFile $mapFile, array $issues, string $size = self::SIZE_THUMBNAIL);
+    public function renderMapFileWithIssues(MapFile $mapFile, array $issues, string $filePath, string $size = self::SIZE_THUMBNAIL): bool;
 }

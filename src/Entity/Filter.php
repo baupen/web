@@ -62,6 +62,102 @@ class Filter extends BaseEntity
     private $isMarked;
 
     /**
+     * @var int|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $state;
+
+    /**
+     * @var DateTime|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $registeredAtAfter;
+
+    /**
+     * @var DateTime|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $registeredAtBefore;
+
+    /**
+     * @var DateTime|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $respondedAtAfter;
+
+    /**
+     * @var DateTime|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $respondedAtBefore;
+
+    /**
+     * @var DateTime|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $reviewedAtAfter;
+
+    /**
+     * @var DateTime|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $reviewedAtBefore;
+
+    /**
+     * @var DateTime|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $deadlineAtBefore;
+
+    /**
+     * @var DateTime|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $deadlineAtAfter;
+
+    /**
+     * @var string[]|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="simple_array", nullable=true)
+     */
+    private $craftsmanIds;
+
+    /**
+     * @var string[]|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="simple_array", nullable=true)
+     */
+    private $craftsmanTrades;
+
+    /**
+     * @var string[]|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="simple_array", nullable=true)
+     */
+    private $mapIds;
+
+    /**
      * @var ConstructionSite
      *
      * @Groups({"filter-read", "filter-create"})
@@ -76,6 +172,10 @@ class Filter extends BaseEntity
      * @Groups({"filter-read"})
      */
     private $issues = [];
+
+    public static function createFromQuery(ConstructionSite $constructionSite, array $filters)
+    {
+    }
 
     public function getAccessAllowedUntil(): ?DateTime
     {
@@ -105,6 +205,144 @@ class Filter extends BaseEntity
     public function setIsMarked(?bool $isMarked): void
     {
         $this->isMarked = $isMarked;
+    }
+
+    public function getState(): ?int
+    {
+        return $this->state;
+    }
+
+    public function setState(?int $state): void
+    {
+        $this->state = $state;
+    }
+
+    public function getRegisteredAtAfter(): ?DateTime
+    {
+        return $this->registeredAtAfter;
+    }
+
+    public function setRegisteredAtAfter(?DateTime $registeredAtAfter): void
+    {
+        $this->registeredAtAfter = $registeredAtAfter;
+    }
+
+    public function getRegisteredAtBefore(): ?DateTime
+    {
+        return $this->registeredAtBefore;
+    }
+
+    public function setRegisteredAtBefore(?DateTime $registeredAtBefore): void
+    {
+        $this->registeredAtBefore = $registeredAtBefore;
+    }
+
+    public function getRespondedAtAfter(): ?DateTime
+    {
+        return $this->respondedAtAfter;
+    }
+
+    public function setRespondedAtAfter(?DateTime $respondedAtAfter): void
+    {
+        $this->respondedAtAfter = $respondedAtAfter;
+    }
+
+    public function getRespondedAtBefore(): ?DateTime
+    {
+        return $this->respondedAtBefore;
+    }
+
+    public function setRespondedAtBefore(?DateTime $respondedAtBefore): void
+    {
+        $this->respondedAtBefore = $respondedAtBefore;
+    }
+
+    public function getReviewedAtAfter(): ?DateTime
+    {
+        return $this->reviewedAtAfter;
+    }
+
+    public function setReviewedAtAfter(?DateTime $reviewedAtAfter): void
+    {
+        $this->reviewedAtAfter = $reviewedAtAfter;
+    }
+
+    public function getReviewedAtBefore(): ?DateTime
+    {
+        return $this->reviewedAtBefore;
+    }
+
+    public function setReviewedAtBefore(?DateTime $reviewedAtBefore): void
+    {
+        $this->reviewedAtBefore = $reviewedAtBefore;
+    }
+
+    public function getDeadlineAtBefore(): ?DateTime
+    {
+        return $this->deadlineAtBefore;
+    }
+
+    public function setDeadlineAtBefore(?DateTime $deadlineAtBefore): void
+    {
+        $this->deadlineAtBefore = $deadlineAtBefore;
+    }
+
+    public function getDeadlineAtAfter(): ?DateTime
+    {
+        return $this->deadlineAtAfter;
+    }
+
+    public function setDeadlineAtAfter(?DateTime $deadlineAtAfter): void
+    {
+        $this->deadlineAtAfter = $deadlineAtAfter;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getCraftsmanIds(): ?array
+    {
+        return $this->craftsmanIds;
+    }
+
+    /**
+     * @param string[]|null $craftsmanIds
+     */
+    public function setCraftsmanIds(?array $craftsmanIds): void
+    {
+        $this->craftsmanIds = $craftsmanIds;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getCraftsmanTrades(): ?array
+    {
+        return $this->craftsmanTrades;
+    }
+
+    /**
+     * @param string[]|null $craftsmanTrades
+     */
+    public function setCraftsmanTrades(?array $craftsmanTrades): void
+    {
+        $this->craftsmanTrades = $craftsmanTrades;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getMapIds(): ?array
+    {
+        return $this->mapIds;
+    }
+
+    /**
+     * @param string[]|null $mapIds
+     */
+    public function setMapIds(?array $mapIds): void
+    {
+        $this->mapIds = $mapIds;
     }
 
     public function getConstructionSite(): ConstructionSite

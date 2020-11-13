@@ -1,0 +1,12 @@
+let /report to return file
+let /report to return report
+
+add ApiToken:
+	allow constructionManager to authenticate
+	X-AUTHENTICATE-CONSTRUCTION-MANAGER: 
+	X-AUTHENTICATE-TOKEN: 
+
+	same for filter, craftsman
+
+	test filter can only access allowed, not too old
+	test craftsman can only access own issues, construction site

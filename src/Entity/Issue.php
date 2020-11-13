@@ -53,7 +53,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
- * @ApiFilter(DateFilter::class, properties={"lastChangedAt", "createdAt", "registeredAt", "respondedAt", "reviewedAt", "responseLimit"})
+ * @ApiFilter(DateFilter::class, properties={"lastChangedAt", "createdAt", "registeredAt", "respondedAt", "reviewedAt", "deadline"})
  * @ApiFilter(BooleanFilter::class, properties={"isMarked", "wasAddedWithClient"})
  * @ApiFilter(NumericFilter::class, properties={"number"})
  * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "map": "exact", "description": "partial"})
@@ -117,7 +117,7 @@ class Issue extends BaseEntity
      * @Groups({"issue-read", "issue-write"})
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $responseLimit;
+    private $deadline;
 
     /**
      * @var DateTime
@@ -218,14 +218,14 @@ class Issue extends BaseEntity
         $this->description = $description;
     }
 
-    public function getResponseLimit(): ?DateTime
+    public function getDeadline(): ?DateTime
     {
-        return $this->responseLimit;
+        return $this->deadline;
     }
 
-    public function setResponseLimit(?DateTime $responseLimit): void
+    public function setDeadline(?DateTime $deadline): void
     {
-        $this->responseLimit = $responseLimit;
+        $this->deadline = $deadline;
     }
 
     public function getCraftsman(): ?Craftsman
@@ -281,27 +281,6 @@ class Issue extends BaseEntity
     public function setMapFile(?MapFile $mapFile): void
     {
         $this->mapFile = $mapFile;
-    }
-
-    /**
-     * returns a unique code for all possible status.
-     *
-     * @return int
-     */
-    public function getStatusCode()
-    {
-        $res = self::UPLOAD_STATUS;
-        if (null !== $this->getRegisteredAt()) {
-            $res = $res | self::REGISTRATION_STATUS;
-        }
-        if (null !== $this->getRespondedAt()) {
-            $res = $res | self::RESPONSE_STATUS;
-        }
-        if (null !== $this->getReviewedAt()) {
-            $res = $res | self::REVIEW_STATUS;
-        }
-
-        return $res;
     }
 
     /**
