@@ -59,26 +59,7 @@ class FilterTest extends ApiTestCase
         $this->assertApiPostPayloadPersisted($client, '/api/filters', [], $affiliation);
     }
 
-    public function ignoreTestAccessAllowedUntilEnforced()
-    {
-        $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-        $this->loginApiConstructionManager($client);
-
-        $constructionSite = $this->getTestConstructionSite();
-        $constructionSiteId = $this->getIriFromItem($constructionSite);
-        $affiliation = ['constructionSite' => $constructionSiteId];
-
-        $sample = ['accessAllowedUntil' => (new \DateTime('tomorrow'))->format('c')];
-        $filterId = $this->postFilter($client, $sample, $affiliation);
-        $this->assertApiGetOk($client, '/api/issues?filter='.$filterId);
-
-        $sample = ['accessAllowedUntil' => (new \DateTime('yesterday'))->format('c')];
-        $filterId = $this->postFilter($client, $sample, $affiliation);
-        $this->assertApiOperationForbidden($client, '/api/issues?filter='.$filterId, 'GET');
-    }
-
-    public function ignoreTestGetIssues()
+    public function skipTestGetIssues()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -92,11 +73,35 @@ class FilterTest extends ApiTestCase
 
         $sample = ['isMarked' => $issue->getIsMarked()];
         $filterId = $this->postFilter($client, $sample, $affiliation);
-        $this->assertApiCollectionContainsIri($client, '/api/issues?filter='.$filterId, $issueIri);
+        $client->setDefaultOptions(['headers' => ['x-authenticate-filter' => $filterId]]);
+        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSiteId, $issueIri);
 
         $sample = ['isMarked' => !$issue->getIsMarked()];
         $filterId = $this->postFilter($client, $sample, $affiliation);
-        $this->assertApiCollectionNotContainsIri($client, '/api/issues?filter='.$filterId, $issueIri);
+        $client->setDefaultOptions(['headers' => ['x-authenticate-filter' => $filterId]]);
+        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSiteId, $issueIri);
+    }
+
+    public function ignoreTestAccessAllowedUntilEnforced()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $constructionSiteId = $this->getIriFromItem($constructionSite);
+        $affiliation = ['constructionSite' => $constructionSiteId];
+
+        $sample = ['accessAllowedUntil' => (new \DateTime('tomorrow'))->format('c')];
+        $filterId = $this->postFilter($client, $sample, $affiliation);
+        $client->setDefaultOptions([
+            'headers' => ['x-authenticate-filter' => $filterId],
+        ]);
+        $this->assertApiGetOk($client, '/api/issues?constructionSite='.$constructionSiteId);
+
+        $sample = ['accessAllowedUntil' => (new \DateTime('yesterday'))->format('c')];
+        $filterId = $this->postFilter($client, $sample, $affiliation);
+        $this->assertApiOperationForbidden($client, '/api/issues?filter='.$filterId, 'GET');
     }
 
     private function postFilter(Client $client, array $payload, array $additionalPayload): string
