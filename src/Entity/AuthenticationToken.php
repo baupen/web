@@ -11,6 +11,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
@@ -18,10 +19,21 @@ use App\Helper\HashHelper;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * An Email is a sent email to the specified receivers.
+ * An authentication token can be used to authenticate over the API.
  *
+ * @ApiResource(
+ *     collectionOperations={
+ *      "post" = {"security_post_denormalize" = "is_granted('AUTHENTICATION_TOKEN_CREATE', object)", "denormalization_context"={"groups"={"authentication-token-create"}}}
+ *      },
+ *     itemOperations={
+ *      "get" = {"security" = "is_granted('AUTHENTICATION_TOKEN_VIEW', object)"}
+ *     },
+ *     normalizationContext={"groups"={"authentication-token-read"}, "skip_null_values"=false},
+ *     denormalizationContext={"groups"={"authentication-token-write"}}
+ * )
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
@@ -42,28 +54,49 @@ class AuthenticationToken extends BaseEntity
      *
      * @ORM\Column(type="datetime")
      */
-    private $lastUsed;
+    private $lastUsedAt;
+
+    /**
+     * @var DateTime
+     *
+     * @Groups({"authentication-token-create"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $accessAllowedBefore;
 
     /**
      * @var ConstructionManager
      *
+     * @Groups({"authentication-token-create"})
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
      */
     private $constructionManager;
 
     /**
-     * @throws Exception
+     * @var Filter
      *
-     * @return AuthenticationToken
+     * @Groups({"authentication-token-create"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Filter")
      */
-    public static function createFor(ConstructionManager $constructionManager)
-    {
-        $token = new self();
-        $token->constructionManager = $constructionManager;
-        $token->token = HashHelper::getHash();
-        $token->setLastUsed();
+    private $filter;
 
-        return $token;
+    /**
+     * @var Craftsman
+     *
+     * @Groups({"authentication-token-create"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman")
+     */
+    private $craftsman;
+
+    /**
+     * @ORM\PrePersist()
+     *
+     * @throws Exception
+     * @throws Exception
+     */
+    public function prePersistTime()
+    {
+        $this->token = HashHelper::getHash();
     }
 
     public function getToken(): string
@@ -71,23 +104,58 @@ class AuthenticationToken extends BaseEntity
         return $this->token;
     }
 
-    public function getLastUsed(): DateTime
+    public function setToken(string $token): void
     {
-        return $this->lastUsed;
+        $this->token = $token;
     }
 
-    /**
-     *  refreshes the last used date to the current datetime.
-     *
-     * @throws Exception
-     */
-    public function setLastUsed(): void
+    public function getLastUsedAt(): DateTime
     {
-        $this->lastUsed = new DateTime();
+        return $this->lastUsedAt;
+    }
+
+    public function setLastUsedAt(): void
+    {
+        $this->lastUsedAt = new \DateTime();
+    }
+
+    public function getAccessAllowedBefore(): DateTime
+    {
+        return $this->accessAllowedBefore;
+    }
+
+    public function setAccessAllowedBefore(DateTime $accessAllowedBefore): void
+    {
+        $this->accessAllowedBefore = $accessAllowedBefore;
     }
 
     public function getConstructionManager(): ConstructionManager
     {
         return $this->constructionManager;
+    }
+
+    public function setConstructionManager(ConstructionManager $constructionManager): void
+    {
+        $this->constructionManager = $constructionManager;
+    }
+
+    public function getFilter(): Filter
+    {
+        return $this->filter;
+    }
+
+    public function setFilter(Filter $filter): void
+    {
+        $this->filter = $filter;
+    }
+
+    public function getCraftsman(): Craftsman
+    {
+        return $this->craftsman;
+    }
+
+    public function setCraftsman(Craftsman $craftsman): void
+    {
+        $this->craftsman = $craftsman;
     }
 }

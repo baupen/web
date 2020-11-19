@@ -112,7 +112,8 @@ class SampleService implements SampleServiceInterface
         /** @var Map[] $maps */
         $maps = $this->serializer->deserialize($mapsJson, Map::class.'[]', 'json');
         $mapRelations = json_decode($mapRelationsJson, true);
-        for ($i = 0; $i < count($maps); ++$i) {
+        $mapCount = count($maps);
+        for ($i = 0; $i < $mapCount; ++$i) {
             $map = $maps[$i];
             $mapParent = $mapRelations[$i];
             $map->setConstructionSite($constructionSite);
@@ -149,7 +150,8 @@ class SampleService implements SampleServiceInterface
         /** @var Issue[] $issues */
         $issues = $this->serializer->deserialize($issuesJson, Issue::class.'[]', 'json');
         $issueRelations = json_decode($issueRelationsJson, true);
-        for ($i = 0; $i < count($issues); ++$i) {
+        $issueCount = count($issues);
+        for ($i = 0; $i < $issueCount; ++$i) {
             $issue = $issues[$i];
             $issue->setNumber($i + 1);
             $issue->setCreatedAt(new \DateTime());
@@ -175,6 +177,11 @@ class SampleService implements SampleServiceInterface
             $mapFile = $issue->getMap()->getFile();
             $issue->setMapFile($mapFile);
             $mapFile->getIssues()->add($issue);
+
+            // no description = no issue image
+            if (null === $issue->getDescription()) {
+                continue;
+            }
 
             // check if corresponding issue image exist
             $expectedIssueImageFileName = FileHelper::sanitizeFileName($issue->getDescription());

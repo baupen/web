@@ -15,8 +15,5 @@ use App\Entity\MapFile;
 
 interface MapFileServiceInterface
 {
-    /**
-     * @return string
-     */
-    public function renderForMobileDevice(MapFile $mapFile);
+    public function renderForMobileDevice(MapFile $mapFile): ?string;
 }

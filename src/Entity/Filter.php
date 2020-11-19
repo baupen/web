@@ -39,21 +39,6 @@ class Filter extends BaseEntity
     use IdTrait;
 
     /**
-     * @var DateTime|null
-     *
-     * @Groups({"filter-read", "filter-create"})
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $accessAllowedUntil;
-
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $lastAccess;
-
-    /**
      * @var bool|null
      *
      * @Groups({"filter-read", "filter-create"})
@@ -172,30 +157,6 @@ class Filter extends BaseEntity
      * @Groups({"filter-read"})
      */
     private $issues = [];
-
-    public static function createFromQuery(ConstructionSite $constructionSite, array $filters)
-    {
-    }
-
-    public function getAccessAllowedUntil(): ?DateTime
-    {
-        return $this->accessAllowedUntil;
-    }
-
-    public function setAccessAllowedUntil(?DateTime $accessAllowedUntil): void
-    {
-        $this->accessAllowedUntil = $accessAllowedUntil;
-    }
-
-    public function getLastAccess(): ?DateTime
-    {
-        return $this->lastAccess;
-    }
-
-    public function setLastAccess(?DateTime $lastAccess): void
-    {
-        $this->lastAccess = $lastAccess;
-    }
 
     public function getIsMarked(): ?bool
     {

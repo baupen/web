@@ -12,13 +12,12 @@
 namespace App\Service\Interfaces;
 
 use App\Entity\ConstructionManager;
+use App\Entity\ConstructionSite;
 
 interface TrialServiceInterface
 {
     /**
-     * creates a trial account with pre-filled data.
-     *
-     * @return ConstructionManager
+     * creates a trial construction site.
      */
-    public function createTrialAccount(?string $proposedGivenName = null, ?string $proposedFamilyName = null);
+    public function createTrialConstructionSite(ConstructionManager $constructionManager): ConstructionSite;
 }

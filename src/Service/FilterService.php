@@ -37,6 +37,10 @@ class FilterService implements FilterServiceInterface
         $constructionSiteRepo = $this->manager->getRepository(ConstructionSite::class);
         $constructionSite = $constructionSiteRepo->find($constructionSiteId);
 
+        if (null === $constructionSite) {
+            throw new \InvalidArgumentException('The filter must have a valid construction site set.');
+        }
+
         $filter = new Filter();
         $filter->setConstructionSite($constructionSite);
 

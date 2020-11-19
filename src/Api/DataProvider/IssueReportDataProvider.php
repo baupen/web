@@ -18,8 +18,8 @@ use App\Entity\Issue;
 use App\Service\Interfaces\FilterServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\ReportElements;
-use Psr\Http\Message\RequestInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Intl\Exception\NotImplementedException;
@@ -43,7 +43,7 @@ class IssueReportDataProvider implements ContextAwareCollectionDataProviderInter
     private $tokenStorage;
 
     /**
-     * @var RequestInterface
+     * @var Request
      */
     private $request;
 

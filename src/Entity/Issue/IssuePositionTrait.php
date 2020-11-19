@@ -55,7 +55,7 @@ trait IssuePositionTrait
         $nullCount += (null === $this->getPositionY()) ? 1 : 0;
         $nullCount += (null === $this->getPositionZoomScale()) ? 1 : 0;
 
-        if (0 !== $nullCount && 3 !== $nullCount) {
+        if ($nullCount > 0 && $nullCount < 3) {
             $context->buildViolation('Position properties must be all null or all not null!')->addViolation();
         }
     }
