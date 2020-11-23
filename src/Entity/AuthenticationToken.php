@@ -18,6 +18,7 @@ use App\Entity\Traits\TimeTrait;
 use App\Helper\HashHelper;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -38,10 +39,12 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
-class AuthenticationToken extends BaseEntity
+class AuthenticationToken extends BaseEntity implements UserInterface
 {
     use IdTrait;
     use TimeTrait;
+
+    public const ROLE_API_USER = 'ROLE_API_USER';
 
     /**
      * @var string
@@ -173,5 +176,29 @@ class AuthenticationToken extends BaseEntity
     public function setCraftsman(Craftsman $craftsman): void
     {
         $this->craftsman = $craftsman;
+    }
+
+    public function getRoles()
+    {
+        return [self::ROLE_API_USER];
+    }
+
+    public function getPassword()
+    {
+        return null;
+    }
+
+    public function getSalt()
+    {
+        return null;
+    }
+
+    public function getUsername()
+    {
+        return $this->token;
+    }
+
+    public function eraseCredentials()
+    {
     }
 }

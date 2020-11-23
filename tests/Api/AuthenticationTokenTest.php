@@ -40,7 +40,6 @@ class AuthenticationTokenTest extends ApiTestCase
 
         $this->loginApiConstructionManagerExternal($client);
         $this->assertApiOperationForbidden($client, '/api/authentication_tokens', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/authentication_tokens/'.$someId, 'GET');
     }
 
     public function testPost()
@@ -69,7 +68,7 @@ class AuthenticationTokenTest extends ApiTestCase
         $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', []);
     }
 
-    public function testConstructionManagerToken()
+    public function testTokenAuthentication()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
@@ -83,5 +82,24 @@ class AuthenticationTokenTest extends ApiTestCase
         $this->assertApiTokenRequestNotSuccessful($client, 'some invalid token', 'POST', '/api/authentication_tokens', $constructionManagerPayload);
         $this->assertApiTokenRequestSuccessful($client, $token, 'POST', '/api/authentication_tokens', $constructionManagerPayload);
         $this->assertApiTokenRequestNotSuccessful($client, 'another invalid token', 'POST', '/api/authentication_tokens', $constructionManagerPayload);
+    }
+
+    public function testFilterToken()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
+        $constructionManager = $this->loginApiConstructionManager($client);
+
+        $constructionSite = $constructionManager->getConstructionSites()[0];
+        $filter = $constructionSite->getFilters()[0];
+
+        $this->markTestIncomplete('need to enforce filter in data provider');
+
+        $filterPayload = ['filter' => $this->getIriFromItem($filter)];
+        $response = $this->assertApiPostPayloadPersisted($client, '/api/authentication_tokens', [], $filterPayload);
+        $token = json_decode($response->getContent(), true)['token'];
+
+        $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/issues?constructionSite=someid');
+        $this->assertApiTokenRequestSuccessful($client, $token, 'GET', '/api/issues?constructionSite='.$constructionSite->getId());
     }
 }

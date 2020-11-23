@@ -44,7 +44,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public const ROLE_CONSTRUCTION_MANAGER = 'ROLE_CONSTRUCTION_MANAGER';
 
     // can not see other construction sites
-    public const ROLE_ASSIGNED_CONSTRUCTION_MANAGER = 'ROLE_ASSIGNED_CONSTRUCTION_MANAGER';
+    public const ROLE_EXTERNAL_CONSTRUCTION_MANAGER = 'ROLE_EXTERNAL_CONSTRUCTION_MANAGER';
 
     /**
      * @var string|null
@@ -187,7 +187,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
             return [self::ROLE_CONSTRUCTION_MANAGER];
         }
 
-        return [self::ROLE_ASSIGNED_CONSTRUCTION_MANAGER];
+        return [self::ROLE_EXTERNAL_CONSTRUCTION_MANAGER];
     }
 
     public function getLocale(): string

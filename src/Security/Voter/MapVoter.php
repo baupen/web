@@ -11,14 +11,13 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Map;
-use App\Security\TokenUser;
+use App\Security\Voter\Base\BaseVoter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class MapVoter extends Voter
+class MapVoter extends BaseVoter
 {
     public const MAP_VIEW = 'MAP_VIEW';
     public const MAP_MODIFY = 'MAP_MODIFY';
@@ -52,16 +51,11 @@ class MapVoter extends Voter
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        $user = $token->getUser();
-
-        if ($user instanceof ConstructionManager) {
-            switch ($attribute) {
-                case self::MAP_VIEW:
-                case self::MAP_MODIFY:
-                    return $subject->isConstructionSiteSet() && $subject->getConstructionSite()->getConstructionManagers()->contains($user);
-            }
-        } elseif ($user instanceof TokenUser) {
-            return self::MAP_VIEW === $attribute && $user->getConstructionSite() === $subject->getConstructionSite();
+        $constructionManager = $this->tryGetConstructionManager($token);
+        if (null !== $constructionManager) {
+            return in_array($attribute, [self::MAP_VIEW, self::MAP_MODIFY]) &&
+                $subject->isConstructionSiteSet() &&
+                $subject->getConstructionSite()->getConstructionManagers()->contains($constructionManager);
         }
 
         throw new \LogicException('Attribute '.$attribute.' unknown!');

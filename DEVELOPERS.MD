@@ -39,6 +39,9 @@ likely not used anymore:
     "vue-headful": "^2",
 ```
 
+technical dept:
+- [ ] symfony will replace its authentication system, see here: https://symfony.com/doc/current/security/experimental_authenticators.html
+
 ## Developing
 
 setup:
@@ -143,4 +146,3 @@ if you deploy to the main installation, create `var/transient/domainOverrides.js
 ## Testing with PHPStorm
 
 You need to configure PHPStorm to use the `symfony/phpunit-bridge` as phpunit implementation. See here: https://stackoverrun.com/de/q/13027505
-

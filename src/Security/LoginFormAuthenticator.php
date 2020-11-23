@@ -101,16 +101,21 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
             return null;
         }
 
-        $constructionManagerRepository = $this->entityManager->getRepository(ConstructionManager::class);
+        $user = $userProvider->loadUserByUsername($credentials['email']);
 
-        return $constructionManagerRepository->findOneBy(['email' => $credentials['email']]);
+        if (!$user instanceof ConstructionManager) {
+            return null;
+        }
+
+        return $user;
     }
 
-    /**
-     * @param ConstructionManager $user
-     */
     public function checkCredentials($credentials, UserInterface $user)
     {
+        if (!$user instanceof ConstructionManager) {
+            throw new AuthenticationException();
+        }
+
         if (null === $user->getPassword()) {
             throw new UserWithoutPasswordAuthenticationException($user);
         }

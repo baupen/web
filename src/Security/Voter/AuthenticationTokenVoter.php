@@ -12,12 +12,12 @@
 namespace App\Security\Voter;
 
 use App\Entity\AuthenticationToken;
-use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
+use App\Security\Voter\Base\BaseVoter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class AuthenticationTokenVoter extends Voter
+class AuthenticationTokenVoter extends BaseVoter
 {
     public const AUTHENTICATION_TOKEN_CREATE = 'AUTHENTICATION_TOKEN_CREATE';
     public const AUTHENTICATION_TOKEN_VIEW = 'AUTHENTICATION_TOKEN_VIEW';
@@ -51,22 +51,19 @@ class AuthenticationTokenVoter extends Voter
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        $user = $token->getUser();
-
-        if (!$user instanceof ConstructionManager) {
-            return false;
-        }
+        $constructionManager = $this->tryGetConstructionManager($token);
 
         if ($subject->getConstructionManager()) {
-            return $user === $subject->getConstructionManager();
+            return $constructionManager === $subject->getConstructionManager();
         }
 
+        $constructionSites = $constructionManager->getConstructionSites();
         if ($subject->getCraftsman()) {
-            return $user->getConstructionSites()->contains($subject->getCraftsman()->getConstructionSite());
+            return $constructionSites->contains($subject->getCraftsman()->getConstructionSite());
         }
 
         if ($subject->getFilter()) {
-            return $user->getConstructionSites()->contains($subject->getFilter()->getConstructionSite());
+            return $constructionSites->contains($subject->getFilter()->getConstructionSite());
         }
 
         return false;

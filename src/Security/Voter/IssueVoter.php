@@ -11,14 +11,13 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;
-use App\Security\TokenUser;
+use App\Security\Voter\Base\BaseVoter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class IssueVoter extends Voter
+class IssueVoter extends BaseVoter
 {
     public const ISSUE_VIEW = 'ISSUE_VIEW';
     public const ISSUE_MODIFY = 'ISSUE_MODIFY';
@@ -53,20 +52,11 @@ class IssueVoter extends Voter
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        $user = $token->getUser();
-
-        if ($user instanceof ConstructionManager) {
-            switch ($attribute) {
-                case self::ISSUE_VIEW:
-                case self::ISSUE_MODIFY:
-                    return $subject->isConstructionSiteSet() && $subject->getConstructionSite()->getConstructionManagers()->contains($user);
-            }
-        } elseif ($user instanceof TokenUser) {
-            if (null !== $user->getCraftsman()) {
-                return in_array($attribute, [self::ISSUE_VIEW, self::ISSUE_RESPOND]) && $user->getCraftsman() === $user->getCraftsman();
-            } else {
-                return self::ISSUE_VIEW === $attribute && $user->getConstructionSite() === $subject->getConstructionSite();
-            }
+        $constructionManager = $this->tryGetConstructionManager($token);
+        if (null !== $constructionManager) {
+            return in_array($attribute, [self::ISSUE_VIEW, self::ISSUE_MODIFY]) &&
+                $subject->isConstructionSiteSet() &&
+                $subject->getConstructionSite()->getConstructionManagers()->contains($constructionManager);
         }
 
         throw new \LogicException('Attribute '.$attribute.' unknown!');

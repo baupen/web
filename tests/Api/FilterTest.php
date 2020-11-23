@@ -15,6 +15,7 @@ use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
+use App\Tests\DataFixtures\TestFilterFixtures;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\TestDataTrait;
@@ -31,7 +32,7 @@ class FilterTest extends ApiTestCase
     public function testValidMethodsNeedAuthentication()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
         $this->assertApiOperationNotAuthorized($client, '/api/filters', 'POST');
@@ -40,7 +41,7 @@ class FilterTest extends ApiTestCase
 
         $this->loginApiConstructionManagerExternal($client);
         $this->assertApiOperationForbidden($client, '/api/filters', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/filters/'.$someId, 'GET');
+        $this->assertApiOperationForbidden($client, '/api/filters/'.$constructionSite->getFilters()[0]->getId(), 'GET');
     }
 
     public function testPost()

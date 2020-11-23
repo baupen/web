@@ -34,7 +34,11 @@ trait AssertApiOperationsTrait
     private function assertApiOperationsStatusCodeSame(int $expectedCode, Client $client, string $url, string ...$methods)
     {
         foreach ($methods as $method) {
-            $this->assertApiStatusCodeSame($method, $expectedCode, $client, $url);
+            if ('GET' === $method) {
+                $this->assertApiStatusCodeSame($method, $expectedCode, $client, $url);
+            } else {
+                $this->assertApiStatusCodeSame($method, $expectedCode, $client, $url, []);
+            }
         }
     }
 
