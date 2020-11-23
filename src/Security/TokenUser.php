@@ -11,6 +11,7 @@
 
 namespace App\Security;
 
+use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -20,12 +21,12 @@ class TokenUser implements UserInterface
     public const ROLE_API_USER = 'ROLE_API_USER';
 
     /**
-     * @var Craftsman
+     * @var Craftsman|null
      */
     private $craftsman;
 
     /**
-     * @var Filter
+     * @var Filter|null
      */
     private $filter;
 
@@ -43,6 +44,25 @@ class TokenUser implements UserInterface
         $self->filter = $filter;
 
         return $self;
+    }
+
+    public function getConstructionSite(): ConstructionSite
+    {
+        if (null !== $this->craftsman) {
+            return $this->craftsman->getConstructionSite();
+        } else {
+            return $this->filter->getConstructionSite();
+        }
+    }
+
+    public function getCraftsman(): Craftsman
+    {
+        return $this->craftsman;
+    }
+
+    public function getFilter(): Filter
+    {
+        return $this->filter;
     }
 
     public function getRoles()

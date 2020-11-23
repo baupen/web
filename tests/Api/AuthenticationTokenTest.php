@@ -14,6 +14,7 @@ namespace App\Tests\Api;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
+use App\Tests\DataFixtures\TestFilterFixtures;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\TestDataTrait;
@@ -45,30 +46,25 @@ class AuthenticationTokenTest extends ApiTestCase
     public function testPost()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-        $this->loginApiConstructionManager($client);
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
+        $constructionManager = $this->loginApiConstructionManager($client);
 
-        $this->markTestIncomplete(
-            'Auth token needs to be implemented yet.'
-        );
-
-        /*
-        $constructionSite = $this->getTestConstructionSite();
+        $constructionSite = $constructionManager->getConstructionSites()[0];
         $craftsman = $constructionSite->getCraftsmen()[0];
         $filter = $constructionSite->getFilters()[0];
 
-        $constructionSitePayload = ['constructionSite' => $this->getIriFromItem($constructionSite)];
+        $constructionManagerPayload = ['constructionManager' => $this->getIriFromItem($constructionManager)];
         $craftsmanPayload = ['craftsman' => $this->getIriFromItem($craftsman)];
         $filterPayload = ['filter' => $this->getIriFromItem($filter)];
 
-        $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', $constructionSitePayload + $craftsmanPayload);
-        $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', $constructionSitePayload + $filterPayload);
-        $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', $craftsmanPayload + $filterPayload);
-        $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', $constructionSitePayload + $craftsmanPayload + $filterPayload);
-
-        $this->assertApiPostPayloadPersisted($client, '/api/authentication_tokens', [], $constructionSitePayload);
+        $this->assertApiPostPayloadPersisted($client, '/api/authentication_tokens', [], $constructionManagerPayload);
         $this->assertApiPostPayloadPersisted($client, '/api/authentication_tokens', [], $craftsmanPayload);
         $this->assertApiPostPayloadPersisted($client, '/api/authentication_tokens', [], $filterPayload);
-         */
+
+        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/authentication_tokens', $constructionManagerPayload + $craftsmanPayload);
+        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/authentication_tokens', $constructionManagerPayload + $filterPayload);
+        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/authentication_tokens', $craftsmanPayload + $filterPayload);
+        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/authentication_tokens', $constructionManagerPayload + $craftsmanPayload + $filterPayload);
+        $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', []);
     }
 }

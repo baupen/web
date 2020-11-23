@@ -13,8 +13,8 @@ namespace App\Security\Voter;
 
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
-use App\Entity\Craftsman;
 use App\Entity\Issue;
+use App\Security\TokenUser;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -61,13 +61,11 @@ class IssueVoter extends Voter
                 case self::ISSUE_MODIFY:
                     return $subject->isConstructionSiteSet() && $subject->getConstructionSite()->getConstructionManagers()->contains($user);
             }
-        } elseif ($user instanceof Craftsman) {
-            switch ($attribute) {
-                case self::ISSUE_VIEW:
-                case self::ISSUE_RESPOND:
-                    return $user === $subject->getCraftsman();
-                case self::ISSUE_MODIFY:
-                    return false;
+        } elseif ($user instanceof TokenUser) {
+            if (null !== $user->getCraftsman()) {
+                return in_array($attribute, [self::ISSUE_VIEW, self::ISSUE_RESPOND]) && $user->getCraftsman() === $user->getCraftsman();
+            } else {
+                return self::ISSUE_VIEW === $attribute && $user->getConstructionSite() === $subject->getConstructionSite();
             }
         }
 

@@ -13,7 +13,7 @@ namespace App\Security\Voter;
 
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
-use App\Entity\Craftsman;
+use App\Security\TokenUser;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -64,14 +64,8 @@ class ConstructionSiteVoter extends Voter
 
                 return true;
             }
-        } elseif ($user instanceof Craftsman) {
-            switch ($attribute) {
-                case self::CONSTRUCTION_SITE_VIEW:
-                    return $user->getConstructionSite() === $subject;
-                case self::CONSTRUCTION_SITE_MODIFY:
-                case self::CONSTRUCTION_SITE_CREATE:
-                    return false;
-            }
+        } elseif ($user instanceof TokenUser) {
+            return self::CONSTRUCTION_SITE_VIEW === $attribute && $user->getConstructionSite() === $subject;
         }
 
         throw new \LogicException('Attribute '.$attribute.' unknown!');

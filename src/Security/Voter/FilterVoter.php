@@ -14,6 +14,7 @@ namespace App\Security\Voter;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
+use App\Security\TokenUser;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -59,10 +60,8 @@ class FilterVoter extends Voter
                 case self::FILTER_CREATE:
                     return $subject->isConstructionSiteSet() && $subject->getConstructionSite()->getConstructionManagers()->contains($user);
             }
-        }
-
-        if (self::FILTER_VIEW === $attribute) {
-            return null === $subject->getAccessAllowedUntil() || $subject->getAccessAllowedUntil() > new \DateTime();
+        } elseif ($user instanceof TokenUser) {
+            return self::FILTER_VIEW === $attribute && $user->getFilter() === $subject;
         }
 
         return false;

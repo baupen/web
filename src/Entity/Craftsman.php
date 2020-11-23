@@ -24,7 +24,6 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -129,20 +128,6 @@ class Craftsman extends BaseEntity
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $lastOnlineVisit;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text")
-     */
-    private $emailIdentifier;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text")
-     */
-    private $writeAuthorizationToken;
 
     /**
      * Craftsman constructor.
@@ -260,30 +245,6 @@ class Craftsman extends BaseEntity
         }
 
         return $lastAction;
-    }
-
-    public function getEmailIdentifier(): string
-    {
-        return $this->emailIdentifier;
-    }
-
-    public function getWriteAuthorizationToken(): string
-    {
-        return $this->writeAuthorizationToken;
-    }
-
-    /**
-     * @ORM\PrePersist()
-     */
-    public function prePersistCraftsman(): void
-    {
-        $this->emailIdentifier = Uuid::v4();
-        $this->writeAuthorizationToken = Uuid::v4();
-    }
-
-    public function canRemove()
-    {
-        return 0 === $this->issues->count() && 0 === $this->respondedIssues->count();
     }
 
     /**

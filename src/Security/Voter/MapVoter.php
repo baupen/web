@@ -13,8 +13,8 @@ namespace App\Security\Voter;
 
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
-use App\Entity\Craftsman;
 use App\Entity\Map;
+use App\Security\TokenUser;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -60,13 +60,8 @@ class MapVoter extends Voter
                 case self::MAP_MODIFY:
                     return $subject->isConstructionSiteSet() && $subject->getConstructionSite()->getConstructionManagers()->contains($user);
             }
-        } elseif ($user instanceof Craftsman) {
-            switch ($attribute) {
-                case self::MAP_VIEW:
-                    return $user->getConstructionSite() === $subject;
-                case self::MAP_MODIFY:
-                    return false;
-            }
+        } elseif ($user instanceof TokenUser) {
+            return self::MAP_VIEW === $attribute && $user->getConstructionSite() === $subject->getConstructionSite();
         }
 
         throw new \LogicException('Attribute '.$attribute.' unknown!');

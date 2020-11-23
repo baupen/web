@@ -11,17 +11,16 @@
 
 namespace App\Security\Voter;
 
+use App\Entity\AuthenticationToken;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
-use App\Entity\Craftsman;
-use App\Security\TokenUser;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class CraftsmanVoter extends Voter
+class AuthenticationTokenVoter extends Voter
 {
-    public const CRAFTSMAN_VIEW = 'CRAFTSMAN_VIEW';
-    public const CRAFTSMAN_MODIFY = 'CRAFTSMAN_MODIFY';
+    public const AUTHENTICATION_TOKEN_CREATE = 'AUTHENTICATION_TOKEN_CREATE';
+    public const AUTHENTICATION_TOKEN_VIEW = 'AUTHENTICATION_TOKEN_VIEW';
 
     /**
      * Determines if the attribute and subject are supported by this voter.
@@ -34,19 +33,19 @@ class CraftsmanVoter extends Voter
     protected function supports($attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (!in_array($attribute, [self::CRAFTSMAN_VIEW, self::CRAFTSMAN_MODIFY])) {
+        if (!in_array($attribute, [self::AUTHENTICATION_TOKEN_CREATE, self::AUTHENTICATION_TOKEN_VIEW])) {
             return false;
         }
 
-        return $subject instanceof Craftsman;
+        return $subject instanceof AuthenticationToken;
     }
 
     /**
      * Perform a single access check operation on a given attribute, subject and token.
      * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
      *
-     * @param string    $attribute
-     * @param Craftsman $subject
+     * @param string              $attribute
+     * @param AuthenticationToken $subject
      *
      * @return bool
      */
@@ -54,16 +53,22 @@ class CraftsmanVoter extends Voter
     {
         $user = $token->getUser();
 
-        if ($user instanceof ConstructionManager) {
-            switch ($attribute) {
-                case self::CRAFTSMAN_VIEW:
-                case self::CRAFTSMAN_MODIFY:
-                    return $subject->isConstructionSiteSet() && $subject->getConstructionSite()->getConstructionManagers()->contains($user);
-            }
-        } elseif ($user instanceof TokenUser) {
-            return self::CRAFTSMAN_VIEW === $attribute && $user->getCraftsman() === $subject;
+        if (!$user instanceof ConstructionManager) {
+            return false;
         }
 
-        throw new \LogicException('Attribute '.$attribute.' unknown!');
+        if ($subject->getConstructionManager()) {
+            return $user === $subject->getConstructionManager();
+        }
+
+        if ($subject->getCraftsman()) {
+            return $user->getConstructionSites()->contains($subject->getCraftsman()->getConstructionSite());
+        }
+
+        if ($subject->getFilter()) {
+            return $user->getConstructionSites()->contains($subject->getFilter()->getConstructionSite());
+        }
+
+        return false;
     }
 }
