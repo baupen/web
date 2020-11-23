@@ -11,10 +11,11 @@
 
 namespace App\Api\DataProvider;
 
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
 use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
-use App\Entity\ConstructionManager;
 use App\Entity\Issue;
+use App\Security\TokenTrait;
 use App\Service\Interfaces\FilterServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\ReportElements;
@@ -22,11 +23,13 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Intl\Exception\NotImplementedException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class IssueReportDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
+    use TokenTrait;
+
     /**
      * @var ContextAwareCollectionDataProviderInterface
      */
@@ -80,20 +83,15 @@ class IssueReportDataProvider implements ContextAwareCollectionDataProviderInter
     {
         $context[self::ALREADY_CALLED] = true;
 
-        /** @var \ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator $collection */
+        /** @var Paginator $collection */
         $collection = $this->decoratedCollectionDataProvider->getCollection($resourceClass, $operationName, $context);
 
         $reportElements = ReportElements::fromRequest($this->request->query->all());
 
-        $user = $this->tokenStorage->getToken()->getUser();
-        if ($user instanceof ConstructionManager) {
-            $name = $user->getName();
-        } else {
-            throw new NotImplementedException('tokens not implemented');
-        }
+        $author = $this->getAuthor($this->tokenStorage->getToken());
 
         $filter = $this->filterService->createFromQuery($context['filters']);
-        $filePath = $this->reportService->generatePdfReport($collection, $filter, $reportElements, $name);
+        $filePath = $this->reportService->generatePdfReport($collection, $filter, $reportElements, $author);
 
         $response = new BinaryFileResponse($filePath);
 
@@ -103,5 +101,16 @@ class IssueReportDataProvider implements ContextAwareCollectionDataProviderInter
         );
 
         return $response;
+    }
+
+    private function getAuthor(TokenInterface $token): ?string
+    {
+        if ($user = $this->tryGetConstructionManager($token)) {
+            return $user->getName();
+        } elseif ($craftsman = $this->tryGetCraftsman($token)) {
+            return $craftsman->getContactName();
+        } else {
+            return null;
+        }
     }
 }

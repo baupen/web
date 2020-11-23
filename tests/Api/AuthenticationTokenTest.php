@@ -20,6 +20,7 @@ use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\TestDataTrait;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class AuthenticationTokenTest extends ApiTestCase
 {
@@ -68,7 +69,7 @@ class AuthenticationTokenTest extends ApiTestCase
         $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', []);
     }
 
-    public function testTokenAuthentication()
+    public function testGetAndPost()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
@@ -137,5 +138,45 @@ class AuthenticationTokenTest extends ApiTestCase
                 }
             }
         }
+    }
+
+    public function testFileAndImageDownload()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
+
+        $testConstructionSite = $this->getTestConstructionSite();
+        $constructionManager = $testConstructionSite->getConstructionManagers()[0];
+
+        $craftsman = $testConstructionSite->getCraftsmen()[0];
+        $filter = $testConstructionSite->getFilters()[0];
+
+        $constructionManagerToken = $this->createApiTokenFor($constructionManager);
+        $craftsmanToken = $this->createApiTokenFor($craftsman);
+        $filterToken = $this->createApiTokenFor($filter);
+
+        $this->setApiTokenDefaultHeader($client, $constructionManagerToken);
+
+        $response = $this->assertApiGetOk($client, '/api/construction_sites');
+        $this->assertApiResponseFileIsDownloadable($client, $response, 'imageUrl');
+
+        foreach ([$constructionManagerToken, $craftsmanToken, $filterToken] as $token) {
+            $this->setApiTokenDefaultHeader($client, $token);
+
+            $response = $this->assertApiGetOk($client, '/api/maps?constructionSite='.$testConstructionSite->getId());
+            $this->assertApiResponseFileIsDownloadable($client, $response, 'fileUrl', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        }
+
+        foreach ([$constructionManagerToken, $filterToken] as $token) {
+            $this->setApiTokenDefaultHeader($client, $token);
+
+            $response = $this->assertApiGetOk($client, '/api/issues?constructionSite='.$testConstructionSite->getId());
+            $this->assertApiResponseFileIsDownloadable($client, $response, 'imageUrl');
+        }
+
+        $this->setApiTokenDefaultHeader($client, $craftsmanToken);
+
+        $response = $this->assertApiGetOk($client, '/api/issues?constructionSite='.$testConstructionSite->getId().'&craftsman='.$craftsman->getId());
+        $this->assertApiResponseFileIsDownloadable($client, $response, 'imageUrl');
     }
 }

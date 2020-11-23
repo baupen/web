@@ -33,6 +33,11 @@ trait AssertApiTokenTrait
         return $response;
     }
 
+    private function setApiTokenDefaultHeader(Client $client, string $token)
+    {
+        $client->setDefaultOptions(['headers' => ['X-AUTH-TOKEN' => $token]]);
+    }
+
     private function requestWithApiToken(Client $client, string $token, string $method, string $url, array $payload = null)
     {
         $body = ['headers' => ['X-AUTH-TOKEN' => $token]];
