@@ -13,18 +13,12 @@ namespace App\Tests\DataFixtures;
 
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
-use App\Service\Interfaces\SampleServiceInterface;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
 class TestFilterFixtures extends Fixture implements OrderedFixtureInterface
 {
-    /**
-     * @var SampleServiceInterface
-     */
-    private $sampleService;
-
     public const ORDER = TestConstructionSiteFixtures::ORDER + 1;
 
     public function load(ObjectManager $manager)

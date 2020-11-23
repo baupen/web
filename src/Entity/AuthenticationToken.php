@@ -135,7 +135,7 @@ class AuthenticationToken extends BaseEntity implements UserInterface
 
     public function setLastUsedAt(): void
     {
-        $this->lastUsedAt = new \DateTime();
+        $this->lastUsedAt = new DateTime();
     }
 
     public function getAccessAllowedBefore(): ?DateTime

@@ -58,6 +58,6 @@ class FilterVoter extends BaseVoter
                 $subject->getConstructionSite()->getConstructionManagers()->contains($constructionManager);
         }
 
-        return false;
+        throw new \LogicException('Unknown user in token '.get_class($token));
     }
 }

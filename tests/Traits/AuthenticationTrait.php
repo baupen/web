@@ -12,13 +12,55 @@
 namespace App\Tests\Traits;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
+use App\Entity\AuthenticationToken;
+use App\Entity\Base\BaseEntity;
 use App\Entity\ConstructionManager;
+use App\Entity\ConstructionSite;
+use App\Entity\Craftsman;
+use App\Entity\Filter;
+use App\Entity\Map;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 trait AuthenticationTrait
 {
+    private function createApiTokenFor(BaseEntity $item): string
+    {
+        $authenticationToken = new AuthenticationToken();
+        if ($item instanceof ConstructionManager) {
+            $authenticationToken->setConstructionManager($item);
+        } elseif ($item instanceof Craftsman) {
+            $authenticationToken->setCraftsman($item);
+        } elseif ($item instanceof Filter) {
+            $authenticationToken->setFilter($item);
+        } else {
+            throw new \InvalidArgumentException('cannot create token for '.get_class($item));
+        }
+
+        /** @var ObjectManager $manager */
+        $manager = self::$container->get(ManagerRegistry::class)->getManager();
+        $manager->persist($authenticationToken);
+        $manager->flush();
+
+        return $authenticationToken->getToken();
+    }
+
+    private function addMap(ConstructionSite $constructionSite, string $name = 'empty'): Map
+    {
+        $map = new Map();
+        $map->setConstructionSite($constructionSite);
+        $map->setName($name);
+
+        /** @var ObjectManager $manager */
+        $manager = self::$container->get(ManagerRegistry::class)->getManager();
+        $manager->persist($map);
+        $manager->flush();
+
+        return $map;
+    }
+
     private function loginApiConstructionManagerExternal(Client $client): ConstructionManager
     {
         return $this->loginUser($client->getKernelBrowser(), TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EXTERNAL_EMAIL);

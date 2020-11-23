@@ -72,34 +72,22 @@ class AuthenticationTokenTest extends ApiTestCase
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
-        $constructionManager = $this->loginApiConstructionManager($client);
+        $constructionSite = $this->getTestConstructionSite();
+        $emptyConstructionSite = $this->getEmptyConstructionSite();
 
-        $constructionManagerPayload = ['constructionManager' => $this->getIriFromItem($constructionManager)];
-        $response = $this->assertApiPostPayloadPersisted($client, '/api/authentication_tokens', [], $constructionManagerPayload);
-        $token = json_decode($response->getContent(), true)['token'];
+        $map = $constructionSite->getMaps()[0];
+        $otherMap = $this->addMap($emptyConstructionSite);
 
-        $constructionManagerPayload = ['constructionManager' => $this->getIriFromItem($constructionManager)];
-        $this->assertApiTokenRequestNotSuccessful($client, 'some invalid token', 'POST', '/api/authentication_tokens', $constructionManagerPayload);
-        $this->assertApiTokenRequestSuccessful($client, $token, 'POST', '/api/authentication_tokens', $constructionManagerPayload);
-        $this->assertApiTokenRequestNotSuccessful($client, 'another invalid token', 'POST', '/api/authentication_tokens', $constructionManagerPayload);
-    }
+        $tokens = [
+            $this->createApiTokenFor($constructionSite->getConstructionManagers()[0]),
+            $this->createApiTokenFor($constructionSite->getCraftsmen()[0]),
+            $this->createApiTokenFor($constructionSite->getFilters()[0]),
+        ];
 
-    public function testFilterToken()
-    {
-        $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
-        $constructionManager = $this->loginApiConstructionManager($client);
-
-        $constructionSite = $constructionManager->getConstructionSites()[0];
-        $filter = $constructionSite->getFilters()[0];
-
-        $this->markTestIncomplete('need to enforce filter in data provider');
-
-        $filterPayload = ['filter' => $this->getIriFromItem($filter)];
-        $response = $this->assertApiPostPayloadPersisted($client, '/api/authentication_tokens', [], $filterPayload);
-        $token = json_decode($response->getContent(), true)['token'];
-
-        $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/issues?constructionSite=someid');
-        $this->assertApiTokenRequestSuccessful($client, $token, 'GET', '/api/issues?constructionSite='.$constructionSite->getId());
+        foreach ($tokens as $token) {
+            $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/maps/someid');
+            $this->assertApiTokenRequestSuccessful($client, $token, 'GET', '/api/maps/'.$map->getId());
+            $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/maps/'.$otherMap->getId());
+        }
     }
 }

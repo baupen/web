@@ -64,6 +64,6 @@ class ConstructionSiteVoter extends BaseVoter
             }
         }
 
-        throw new \LogicException('Attribute '.$attribute.' unknown!');
+        throw new \LogicException('Unknown user in token '.get_class($token));
     }
 }

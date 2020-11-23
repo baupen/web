@@ -52,6 +52,9 @@ class AuthenticationTokenVoter extends BaseVoter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $constructionManager = $this->tryGetConstructionManager($token);
+        if (null === $constructionManager) {
+            return false;
+        }
 
         if ($subject->getConstructionManager()) {
             return $constructionManager === $subject->getConstructionManager();
@@ -66,6 +69,6 @@ class AuthenticationTokenVoter extends BaseVoter
             return $constructionSites->contains($subject->getFilter()->getConstructionSite());
         }
 
-        return false;
+        throw new \LogicException('Unknown payload in AuthToken; cannot check validity');
     }
 }

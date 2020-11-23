@@ -13,6 +13,8 @@ namespace App\Security\Voter\Base;
 
 use App\Entity\AuthenticationToken;
 use App\Entity\ConstructionManager;
+use App\Entity\Craftsman;
+use App\Entity\Filter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -27,6 +29,26 @@ abstract class BaseVoter extends Voter
 
         if ($user instanceof AuthenticationToken) {
             return $user->getConstructionManager();
+        }
+
+        return null;
+    }
+
+    protected function tryGetCraftsman(TokenInterface $token): ?Craftsman
+    {
+        $user = $token->getUser();
+        if ($user instanceof AuthenticationToken) {
+            return $user->getCraftsman();
+        }
+
+        return null;
+    }
+
+    protected function tryGetFilter(TokenInterface $token): ?Filter
+    {
+        $user = $token->getUser();
+        if ($user instanceof AuthenticationToken) {
+            return $user->getFilter();
         }
 
         return null;

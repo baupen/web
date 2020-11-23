@@ -263,6 +263,10 @@ class Filter extends BaseEntity
      */
     public function getCraftsmanIds(): ?array
     {
+        if (empty($this->craftsmanIds)) {
+            return null;
+        }
+
         return $this->craftsmanIds;
     }
 
@@ -279,6 +283,10 @@ class Filter extends BaseEntity
      */
     public function getCraftsmanTrades(): ?array
     {
+        if (empty($this->craftsmanTrades)) {
+            return null;
+        }
+
         return $this->craftsmanTrades;
     }
 
@@ -295,6 +303,10 @@ class Filter extends BaseEntity
      */
     public function getMapIds(): ?array
     {
+        if (empty($this->mapIds)) {
+            return null;
+        }
+
         return $this->mapIds;
     }
 

@@ -58,6 +58,19 @@ class MapVoter extends BaseVoter
                 $subject->getConstructionSite()->getConstructionManagers()->contains($constructionManager);
         }
 
-        throw new \LogicException('Attribute '.$attribute.' unknown!');
+        $craftsman = $this->tryGetCraftsman($token);
+        if (null !== $craftsman) {
+            return self::MAP_VIEW === $attribute &&
+                $craftsman->getConstructionSite() === $subject->getConstructionSite();
+        }
+
+        $filter = $this->tryGetFilter($token);
+        if (null !== $filter) {
+            return self::MAP_VIEW === $attribute &&
+                $filter->getConstructionSite() === $subject->getConstructionSite() &&
+                (null === $filter->getMapIds() || in_array($subject->getId(), $filter->getMapIds()));
+        }
+
+        throw new \LogicException('Unknown user in token '.get_class($token));
     }
 }
