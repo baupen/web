@@ -90,8 +90,9 @@ class AuthenticationTokenTest extends ApiTestCase
         foreach ($tokens as $token) {
             $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/construction_sites/someid');
             $this->assertApiTokenRequestSuccessful($client, $token, 'GET', '/api/construction_sites/'.$constructionSite->getId());
-            if ($token !== $tokens[0]) { // construction managers can access all construction sites
+            if ($token !== $tokens[0]) { // construction managers can access all / post construction sites
                 $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/construction_sites/'.$otherConstructionSite->getId());
+                $this->assertApiTokenRequestNotSuccessful($client, $token, 'POST', '/api/construction_sites');
             }
         }
 
@@ -99,12 +100,18 @@ class AuthenticationTokenTest extends ApiTestCase
             $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/craftsmen/someid');
             $this->assertApiTokenRequestSuccessful($client, $token, 'GET', '/api/craftsmen/'.$craftsman->getId());
             $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/craftsmen/'.$otherCraftsman->getId());
+            if ($token !== $tokens[0]) { // construction managers can create craftsman
+                $this->assertApiTokenRequestNotSuccessful($client, $token, 'POST', '/api/craftsmen');
+            }
         }
 
         foreach ($tokens as $token) {
             $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/maps/someid');
             $this->assertApiTokenRequestSuccessful($client, $token, 'GET', '/api/maps/'.$map->getId());
             $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/maps/'.$otherMap->getId());
+            if ($token !== $tokens[0]) { // construction managers can create craftsman
+                $this->assertApiTokenRequestNotSuccessful($client, $token, 'POST', '/api/maps');
+            }
         }
     }
 }
