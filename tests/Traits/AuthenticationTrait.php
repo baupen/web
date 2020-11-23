@@ -61,6 +61,23 @@ trait AuthenticationTrait
         return $map;
     }
 
+    private function addCraftsman(ConstructionSite $constructionSite, string $name = 'craft'): Craftsman
+    {
+        $craftsman = new Craftsman();
+        $craftsman->setConstructionSite($constructionSite);
+        $craftsman->setContactName($name);
+        $craftsman->setEmail($name.'@ch.ch');
+        $craftsman->setCompany($name.' AG');
+        $craftsman->setTrade($name);
+
+        /** @var ObjectManager $manager */
+        $manager = self::$container->get(ManagerRegistry::class)->getManager();
+        $manager->persist($craftsman);
+        $manager->flush();
+
+        return $craftsman;
+    }
+
     private function loginApiConstructionManagerExternal(Client $client): ConstructionManager
     {
         return $this->loginUser($client->getKernelBrowser(), TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EXTERNAL_EMAIL);

@@ -18,6 +18,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredSearchFilter;
 use App\Entity\Base\BaseEntity;
+use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
@@ -50,7 +51,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
-class Map extends BaseEntity
+class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
     use TimeTrait;

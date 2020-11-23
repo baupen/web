@@ -73,16 +73,33 @@ class AuthenticationTokenTest extends ApiTestCase
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
         $constructionSite = $this->getTestConstructionSite();
-        $emptyConstructionSite = $this->getEmptyConstructionSite();
+        $otherConstructionSite = $this->getEmptyConstructionSite();
 
         $map = $constructionSite->getMaps()[0];
-        $otherMap = $this->addMap($emptyConstructionSite);
+        $otherMap = $this->addMap($otherConstructionSite);
+
+        $craftsman = $constructionSite->getCraftsmen()[0];
+        $otherCraftsman = $this->addCraftsman($otherConstructionSite);
 
         $tokens = [
             $this->createApiTokenFor($constructionSite->getConstructionManagers()[0]),
             $this->createApiTokenFor($constructionSite->getCraftsmen()[0]),
             $this->createApiTokenFor($constructionSite->getFilters()[0]),
         ];
+
+        foreach ($tokens as $token) {
+            $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/construction_sites/someid');
+            $this->assertApiTokenRequestSuccessful($client, $token, 'GET', '/api/construction_sites/'.$constructionSite->getId());
+            if ($token !== $tokens[0]) { // construction managers can access all construction sites
+                $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/construction_sites/'.$otherConstructionSite->getId());
+            }
+        }
+
+        foreach ($tokens as $token) {
+            $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/craftsmen/someid');
+            $this->assertApiTokenRequestSuccessful($client, $token, 'GET', '/api/craftsmen/'.$craftsman->getId());
+            $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/craftsmen/'.$otherCraftsman->getId());
+        }
 
         foreach ($tokens as $token) {
             $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/maps/someid');

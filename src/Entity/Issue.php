@@ -22,6 +22,7 @@ use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredSearchFilter;
 use App\Api\Filters\StateFilter;
 use App\Entity\Base\BaseEntity;
+use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Issue\IssuePositionTrait;
 use App\Entity\Issue\IssueStatusTrait;
 use App\Entity\Traits\IdTrait;
@@ -64,7 +65,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Issue extends BaseEntity
+class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
     use SoftDeleteTrait;

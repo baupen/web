@@ -16,6 +16,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use App\Api\Filters\IsDeletedFilter;
 use App\Entity\Base\BaseEntity;
+use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\AddressTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
@@ -46,7 +47,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
-class ConstructionSite extends BaseEntity
+class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
     use TimeTrait;
@@ -253,5 +254,15 @@ class ConstructionSite extends BaseEntity
     public function getLastChangedAt(): \DateTime
     {
         return $this->lastChangedAt;
+    }
+
+    public function isConstructionSiteSet(): bool
+    {
+        return true;
+    }
+
+    public function getConstructionSite(): ConstructionSite
+    {
+        return $this;
     }
 }

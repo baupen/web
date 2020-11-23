@@ -69,6 +69,6 @@ class AuthenticationTokenVoter extends BaseVoter
             return $constructionSites->contains($subject->getFilter()->getConstructionSite());
         }
 
-        throw new \LogicException('Unknown payload in AuthToken; cannot check validity');
+        return false;
     }
 }
