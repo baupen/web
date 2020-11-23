@@ -15,7 +15,6 @@ use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 abstract class ConstructionSiteOwnedEntityVoter extends ConstructionSiteRelatedEntityVoter
 {
@@ -32,7 +31,7 @@ abstract class ConstructionSiteOwnedEntityVoter extends ConstructionSiteRelatedE
      */
     protected function isCraftsmanRelated(Craftsman $craftsman, $subject)
     {
-        return $craftsman->isConstructionSiteSet() && $craftsman->getConstructionSite() === $subject;
+        return $craftsman->isConstructionSiteSet() && $craftsman->getConstructionSite() === $subject->getConstructionSite();
     }
 
     /**
@@ -40,7 +39,7 @@ abstract class ConstructionSiteOwnedEntityVoter extends ConstructionSiteRelatedE
      */
     protected function isFilterRelated(Filter $filter, $subject)
     {
-        return $filter->isConstructionSiteSet() && $filter->getConstructionSite() === $subject;
+        return $filter->isConstructionSiteSet() && $filter->getConstructionSite() === $subject->getConstructionSite();
     }
 
     /**

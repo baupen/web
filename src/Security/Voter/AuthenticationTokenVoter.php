@@ -13,12 +13,14 @@ namespace App\Security\Voter;
 
 use App\Entity\AuthenticationToken;
 use App\Entity\ConstructionSite;
-use App\Security\Voter\Base\BaseVoter;
+use App\Security\TokenTrait;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class AuthenticationTokenVoter extends BaseVoter
+class AuthenticationTokenVoter extends Voter
 {
+    use TokenTrait;
+
     public const AUTHENTICATION_TOKEN_CREATE = 'AUTHENTICATION_TOKEN_CREATE';
     public const AUTHENTICATION_TOKEN_VIEW = 'AUTHENTICATION_TOKEN_VIEW';
 

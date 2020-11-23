@@ -112,7 +112,8 @@ abstract class ConstructionSiteRelatedEntityVoter extends Voter
         $filter = $this->tryGetFilter($token);
         if (null !== $filter) {
             return in_array($attribute, $this->getFilterAccessibleAttributes()) &&
-                $this->isFilterRelated($filter, $subject);
+                $this->isFilterRelated($filter, $subject) &&
+                $this->isIncludedInFilter($filter, $attribute, $subject);
         }
 
         throw new \LogicException('Unknown user in token '.get_class($token));

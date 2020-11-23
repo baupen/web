@@ -14,7 +14,6 @@ namespace App\Security\Voter;
 use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Security\Voter\Base\ConstructionSiteOwnedEntityVoter;
-use Symfony\Component\Intl\Exception\NotImplementedException;
 
 class IssueVoter extends ConstructionSiteOwnedEntityVoter
 {
@@ -42,8 +41,13 @@ class IssueVoter extends ConstructionSiteOwnedEntityVoter
         return array_merge($this->getReadOnlyAttributes(), [self::ISSUE_RESPOND]);
     }
 
+    /**
+     * @param Issue $subject
+     */
     protected function isIncludedInFilter(Filter $filter, $attribute, $subject): bool
     {
-        throw new NotImplementedException('need to filter issue by filter');
+        return (null === $filter->getCraftsmanIds() || in_array($subject->getCraftsman()->getId(), $filter->getCraftsmanIds())) &&
+            (null === $filter->getCraftsmanTrades() || in_array($subject->getCraftsman()->getTrade(), $filter->getCraftsmanTrades())) &&
+            (null === $filter->getMapIds() || in_array($subject->getMap()->getId(), $filter->getMapIds()));
     }
 }

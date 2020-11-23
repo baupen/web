@@ -114,7 +114,6 @@ class AuthenticationTokenTest extends ApiTestCase
             $apiUrl = '/api/'.$url;
             $own = $payload[0];
             $other = $payload[1];
-            var_dump($apiUrl);
 
             foreach ($tokens as $token) {
                 $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', $apiUrl.'/invalid_id');
