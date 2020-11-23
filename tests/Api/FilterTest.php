@@ -12,7 +12,6 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\DataFixtures\TestFilterFixtures;
@@ -58,69 +57,5 @@ class FilterTest extends ApiTestCase
 
         $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/filters', $affiliation);
         $this->assertApiPostPayloadPersisted($client, '/api/filters', [], $affiliation);
-    }
-
-    public function testGetIssues()
-    {
-        $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-        $this->loginApiConstructionManager($client);
-
-        $this->markTestIncomplete(
-            'Auth token not implemented yet.'
-        );
-        /*
-        $constructionSite = $this->getTestConstructionSite();
-        $issue = $constructionSite->getIssues()[0];
-        $issueIri = $this->getIriFromItem($issue);
-        $constructionSiteId = $this->getIriFromItem($constructionSite);
-        $affiliation = ['constructionSite' => $constructionSiteId];
-
-        $sample = ['isMarked' => $issue->getIsMarked()];
-        $filterId = $this->postFilter($client, $sample, $affiliation);
-        $client->setDefaultOptions(['headers' => ['x-authenticate-filter' => $filterId]]);
-        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSiteId, $issueIri);
-
-        $sample = ['isMarked' => !$issue->getIsMarked()];
-        $filterId = $this->postFilter($client, $sample, $affiliation);
-        $client->setDefaultOptions(['headers' => ['x-authenticate-filter' => $filterId]]);
-        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSiteId, $issueIri);
-        */
-    }
-
-    public function testAccessAllowedUntilEnforced()
-    {
-        $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-        $this->loginApiConstructionManager($client);
-
-        $this->markTestIncomplete(
-            'Auth token not implemented yet.'
-        );
-        /*
-        $constructionSite = $this->getTestConstructionSite();
-        $constructionSiteId = $this->getIriFromItem($constructionSite);
-        $affiliation = ['constructionSite' => $constructionSiteId];
-
-        $sample = ['accessAllowedUntil' => (new \DateTime('tomorrow'))->format('c')];
-        $filterId = $this->postFilter($client, $sample, $affiliation);
-        $client->setDefaultOptions([
-            'headers' => ['x-authenticate-filter' => $filterId],
-        ]);
-        $this->assertApiGetOk($client, '/api/issues?constructionSite='.$constructionSiteId);
-
-        $sample = ['accessAllowedUntil' => (new \DateTime('yesterday'))->format('c')];
-        $filterId = $this->postFilter($client, $sample, $affiliation);
-        $this->assertApiOperationForbidden($client, '/api/issues?filter='.$filterId, 'GET');
-        */
-    }
-
-    private function postFilter(Client $client, array $payload, array $additionalPayload): string
-    {
-        $response = $this->assertApiPostPayloadPersisted($client, '/api/filters', $payload, $additionalPayload);
-
-        $iri = json_decode($response->getContent(), true)['@id'];
-
-        return substr($iri, strrpos($iri, '/') + 1);
     }
 }
