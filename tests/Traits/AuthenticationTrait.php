@@ -15,11 +15,8 @@ use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
 use App\Entity\AuthenticationToken;
 use App\Entity\Base\BaseEntity;
 use App\Entity\ConstructionManager;
-use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
-use App\Entity\Issue;
-use App\Entity\Map;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
@@ -43,54 +40,6 @@ trait AuthenticationTrait
         $this->saveEntity($authenticationToken);
 
         return $authenticationToken->getToken();
-    }
-
-    private function addMap(ConstructionSite $constructionSite, string $name = 'empty'): Map
-    {
-        $map = new Map();
-        $map->setConstructionSite($constructionSite);
-        $map->setName($name);
-
-        $this->saveEntity($map);
-
-        return $map;
-    }
-
-    private function addCraftsman(ConstructionSite $constructionSite, string $name = 'craft'): Craftsman
-    {
-        $craftsman = new Craftsman();
-        $craftsman->setConstructionSite($constructionSite);
-        $craftsman->setContactName($name);
-        $craftsman->setEmail($name.'@ch.ch');
-        $craftsman->setCompany($name.' AG');
-        $craftsman->setTrade($name);
-
-        $this->saveEntity($craftsman);
-
-        return $craftsman;
-    }
-
-    private function addIssue(ConstructionSite $constructionSite, ConstructionManager $manager): Issue
-    {
-        $issue = new Issue();
-        $issue->setConstructionSite($constructionSite);
-        $issue->setNumber(999);
-        $issue->setCreatedAt(new \DateTime());
-        $issue->setCreatedBy($manager);
-
-        $this->saveEntity($issue);
-
-        return $issue;
-    }
-
-    private function addFilter(ConstructionSite $constructionSite): Filter
-    {
-        $filter = new Filter();
-        $filter->setConstructionSite($constructionSite);
-
-        $this->saveEntity($filter);
-
-        return $filter;
     }
 
     private function loginApiConstructionManagerExternal(Client $client): ConstructionManager

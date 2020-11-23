@@ -11,7 +11,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
@@ -24,10 +26,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ApiResource(
  *     collectionOperations={"get"},
- *     itemOperations={"get"},
+ *     itemOperations={"get" = {"security" = "is_granted('CONSTRUCTION_MANAGER_VIEW', object)"}},
  *     normalizationContext={"groups"={"construction-manager-read"}, "skip_null_values"=false},
  *     attributes={"pagination_enabled"=false}
  * )
+ * @ApiFilter(SearchFilter::class, properties={"constructionSite": "exact"})
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */

@@ -11,10 +11,8 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
-use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Security\Voter\Base\ConstructionSiteOwnedEntityVoter;
 
 class CraftsmanVoter extends ConstructionSiteOwnedEntityVoter
@@ -22,27 +20,17 @@ class CraftsmanVoter extends ConstructionSiteOwnedEntityVoter
     public const CRAFTSMAN_VIEW = 'CRAFTSMAN_VIEW';
     public const CRAFTSMAN_MODIFY = 'CRAFTSMAN_MODIFY';
 
-    protected function isExpectedConstructionSiteOwnedEntityInstance(ConstructionSiteOwnedEntityInterface $constructionSiteOwnedEntity): bool
+    protected function isInstanceOf($entity): bool
     {
-        return $constructionSiteOwnedEntity instanceof Craftsman;
+        return $entity instanceof Craftsman;
     }
 
-    protected function getAttributes(): array
-    {
-        return [self::CRAFTSMAN_VIEW, self::CRAFTSMAN_MODIFY];
-    }
-
-    protected function getConstructionManagerAccessibleAttributes(ConstructionManager $manager): array
+    protected function getAllAttributes(): array
     {
         return [self::CRAFTSMAN_VIEW, self::CRAFTSMAN_MODIFY];
     }
 
-    protected function getCraftsmanAccessibleAttributes(Craftsman $craftsman): array
-    {
-        return [self::CRAFTSMAN_VIEW];
-    }
-
-    protected function getFilterAccessibleAttributes(Filter $filter): array
+    protected function getReadOnlyAttributes(): array
     {
         return [self::CRAFTSMAN_VIEW];
     }

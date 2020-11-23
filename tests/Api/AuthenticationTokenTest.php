@@ -77,6 +77,7 @@ class AuthenticationTokenTest extends ApiTestCase
         $otherConstructionSite = $this->getEmptyConstructionSite();
 
         $constructionManager = $constructionSite->getConstructionManagers()[0];
+        $otherConstructionManager = $this->addConstructionManager($otherConstructionSite);
 
         $craftsman = $constructionSite->getCraftsmen()[0];
         $otherCraftsman = $this->addCraftsman($otherConstructionSite);
@@ -97,6 +98,7 @@ class AuthenticationTokenTest extends ApiTestCase
         ];
 
         $payloads = [
+            'construction_managers' => [$constructionManager, $otherConstructionManager],
             'construction_sites' => [$constructionSite, $otherConstructionSite],
             'craftsmen' => [$craftsman, $otherCraftsman],
             'filters' => [$filter, $otherFilter],
@@ -104,8 +106,9 @@ class AuthenticationTokenTest extends ApiTestCase
             'maps' => [$map, $otherMap],
         ];
 
-        $payloadsManagerCanAccessOther = ['construction_sites'];
+        $payloadsManagerCanAccessOther = ['construction_sites', 'construction_managers'];
         $craftsmanCannotAccess = ['filters'];
+        $noPost = ['construction_managers'];
 
         foreach ($payloads as $url => $payload) {
             $apiUrl = '/api/'.$url;
@@ -130,7 +133,7 @@ class AuthenticationTokenTest extends ApiTestCase
                     $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', $apiUrl.'/'.$other->getId());
                 }
 
-                if (!$isConstructionManagerToken) {
+                if (!$isConstructionManagerToken && !in_array($url, $noPost)) {
                     $this->assertApiTokenRequestNotSuccessful($client, $token, 'POST', $url);
                 }
             }

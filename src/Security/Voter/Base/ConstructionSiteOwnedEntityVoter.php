@@ -15,25 +15,33 @@ use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
-use App\Security\TokenTrait;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-abstract class ConstructionSiteOwnedEntityVoter extends Voter
+abstract class ConstructionSiteOwnedEntityVoter extends ConstructionSiteRelatedEntityVoter
 {
-    use TokenTrait;
+    /**
+     * @param ConstructionSiteOwnedEntityInterface $subject
+     */
+    protected function isConstructionManagerRelated(ConstructionManager $constructionManager, $subject)
+    {
+        return $subject->isConstructionSiteSet() && $constructionManager->getConstructionSites()->contains($subject->getConstructionSite());
+    }
 
-    abstract protected function isExpectedConstructionSiteOwnedEntityInstance(ConstructionSiteOwnedEntityInterface $constructionSiteOwnedEntity): bool;
+    /**
+     * @param ConstructionSiteOwnedEntityInterface $subject
+     */
+    protected function isCraftsmanRelated(Craftsman $craftsman, $subject)
+    {
+        return $craftsman->isConstructionSiteSet() && $craftsman->getConstructionSite() === $subject;
+    }
 
-    abstract protected function getAttributes(): array;
-
-    abstract protected function getConstructionManagerAccessibleAttributes(ConstructionManager $manager): array;
-
-    abstract protected function getCraftsmanAccessibleAttributes(Craftsman $craftsman): array;
-
-    abstract protected function getFilterAccessibleAttributes(Filter $filter): array;
-
-    abstract protected function isIncludedInFilter(Filter $filter, $attribute, $subject): bool;
+    /**
+     * @param ConstructionSiteOwnedEntityInterface $subject
+     */
+    protected function isFilterRelated(Filter $filter, $subject)
+    {
+        return $filter->isConstructionSiteSet() && $filter->getConstructionSite() === $subject;
+    }
 
     /**
      * Determines if the attribute and subject are supported by this voter.
@@ -45,45 +53,12 @@ abstract class ConstructionSiteOwnedEntityVoter extends Voter
      */
     protected function supports($attribute, $subject)
     {
-        // if the attribute isn't one we support, return false
-        if (!in_array($attribute, $this->getAttributes())) {
-            return false;
+        $support = parent::supports($attribute, $subject);
+
+        if ($support && !$subject instanceof ConstructionSiteOwnedEntityInterface) {
+            throw new \Exception('Must implement ConstructionSiteOwnedEntityInterface to use this voter.');
         }
 
-        return $subject instanceof ConstructionSiteOwnedEntityInterface && $this->isExpectedConstructionSiteOwnedEntityInstance($subject);
-    }
-
-    /**
-     * Perform a single access check operation on a given attribute, subject and token.
-     * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
-     *
-     * @param string                               $attribute
-     * @param ConstructionSiteOwnedEntityInterface $subject
-     *
-     * @return bool
-     */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
-    {
-        $constructionManager = $this->tryGetConstructionManager($token);
-        if (null !== $constructionManager) {
-            return in_array($attribute, $this->getConstructionManagerAccessibleAttributes($constructionManager)) &&
-                $subject->isConstructionSiteSet() &&
-                $subject->getConstructionSite()->getConstructionManagers()->contains($constructionManager);
-        }
-
-        $craftsman = $this->tryGetCraftsman($token);
-        if (null !== $craftsman) {
-            return in_array($attribute, $this->getCraftsmanAccessibleAttributes($craftsman)) &&
-                $craftsman->getConstructionSite() === $subject->getConstructionSite();
-        }
-
-        $filter = $this->tryGetFilter($token);
-        if (null !== $filter) {
-            return in_array($attribute, $this->getFilterAccessibleAttributes($filter)) &&
-                $filter->getConstructionSite() === $subject->getConstructionSite() &&
-                $this->isIncludedInFilter($filter, $attribute, $subject);
-        }
-
-        throw new \LogicException('Unknown user in token '.get_class($token));
+        return $support;
     }
 }

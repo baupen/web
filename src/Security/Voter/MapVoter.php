@@ -11,10 +11,7 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\ConstructionManager;
-use App\Entity\Craftsman;
 use App\Entity\Filter;
-use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Map;
 use App\Security\Voter\Base\ConstructionSiteOwnedEntityVoter;
 
@@ -23,27 +20,17 @@ class MapVoter extends ConstructionSiteOwnedEntityVoter
     public const MAP_VIEW = 'MAP_VIEW';
     public const MAP_MODIFY = 'MAP_MODIFY';
 
-    protected function isExpectedConstructionSiteOwnedEntityInstance(ConstructionSiteOwnedEntityInterface $constructionSiteOwnedEntity): bool
+    protected function isInstanceOf($entity): bool
     {
-        return $constructionSiteOwnedEntity instanceof Map;
+        return $entity instanceof Map;
     }
 
-    protected function getAttributes(): array
-    {
-        return [self::MAP_VIEW, self::MAP_MODIFY];
-    }
-
-    protected function getConstructionManagerAccessibleAttributes(ConstructionManager $manager): array
+    protected function getAllAttributes(): array
     {
         return [self::MAP_VIEW, self::MAP_MODIFY];
     }
 
-    protected function getCraftsmanAccessibleAttributes(Craftsman $craftsman): array
-    {
-        return [self::MAP_VIEW];
-    }
-
-    protected function getFilterAccessibleAttributes(Filter $filter): array
+    protected function getReadOnlyAttributes(): array
     {
         return [self::MAP_VIEW];
     }

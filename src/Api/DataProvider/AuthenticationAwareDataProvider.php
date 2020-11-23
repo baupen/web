@@ -64,47 +64,50 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 
         $token = $this->tokenStorage->getToken();
 
-        $existingFilter = isset($context['filter']) ? $context['filter'] : [];
-        if ($constructionManager = $this->tryGetConstructionManager($token)) {
-            $context['filter'] = $this->applyConstructionManagerToQuery($constructionManager, $resourceClass, $existingFilter);
+        $existingFilter = isset($context['filters']) ? $context['filters'] : [];
+        $validQuery = false;
+        if (($constructionManager = $this->tryGetConstructionManager($token))) {
+            $validQuery = $this->isConstructionManagerQueryValid($constructionManager, $resourceClass, $existingFilter);
         } elseif ($craftsman = $this->tryGetCraftsman($token)) {
-            $context['filter'] = $this->applyCraftsmanToQuery($craftsman, $resourceClass, $existingFilter);
+            $validQuery = $this->isCraftsmanQueryValid($craftsman, $resourceClass, $existingFilter);
         } elseif ($filter = $this->tryGetFilter($token)) {
-            $context['filter'] = $this->applyFilterToQuery($filter, $resourceClass, $existingFilter);
-        } else {
+            $validQuery = $this->isFilterQueryValid($filter, $resourceClass, $existingFilter);
+        }
+
+        if (!$validQuery) {
             throw new BadRequestException();
         }
 
         return $this->decoratedCollectionDataProvider->getCollection($resourceClass, $operationName, $context);
     }
 
-    private function applyConstructionManagerToQuery(ConstructionManager $manager, string $resourceClass, array $query)
+    private function isConstructionManagerQueryValid(ConstructionManager $manager, string $resourceClass, array $query)
     {
-        if (ConstructionSite::class === $resourceClass) {
-            return $query;
+        if (ConstructionSite::class === $resourceClass || ConstructionManager::class) {
+            return true;
         }
 
         if (!isset($query['constructionSite'])) {
-            throw new BadRequestException();
+            return false;
         }
 
         foreach ($manager->getConstructionSites() as $constructionSite) {
             if ($constructionSite->getId() === $query['constructionSite']) {
-                return $query;
+                return true;
             }
         }
 
-        throw new BadRequestException();
+        return false;
     }
 
-    private function applyCraftsmanToQuery(Craftsman $craftsman, string $resourceClass, array $query)
+    private function isCraftsmanQueryValid(Craftsman $craftsman, string $resourceClass, array $query)
     {
         $constructionSiteFilterValid = $this->searchFilterValid($query, 'constructionSite', $craftsman->getConstructionSite()->getId());
         if (!$constructionSiteFilterValid) {
-            throw new BadRequestException();
+            return false;
         }
 
-        if (Map::class === $resourceClass) {
+        if (Map::class === $resourceClass || ConstructionManager::class === $resourceClass) {
             return true;
         }
 
@@ -115,11 +118,15 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         throw new BadRequestException();
     }
 
-    private function applyFilterToQuery(Filter $filter, string $resourceClass, array $query)
+    private function isFilterQueryValid(Filter $filter, string $resourceClass, array $query)
     {
         $constructionSiteFilterValid = $this->searchFilterValid($query, 'constructionSite', $filter->getConstructionSite()->getId());
         if (!$constructionSiteFilterValid) {
-            throw new BadRequestException();
+            return false;
+        }
+
+        if (ConstructionManager::class === $resourceClass) {
+            return true;
         }
 
         if (Map::class === $resourceClass) {
@@ -137,7 +144,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
                 $this->searchFilterValid($query, 'craftsman.trade', $filter->getCraftsmanTrades());
         }
 
-        throw new BadRequestException();
+        return false;
     }
 
     private function searchFilterValid(array $query, string $property, $restriction)
