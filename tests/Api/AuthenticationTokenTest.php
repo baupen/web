@@ -72,45 +72,67 @@ class AuthenticationTokenTest extends ApiTestCase
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
+
         $constructionSite = $this->getTestConstructionSite();
         $otherConstructionSite = $this->getEmptyConstructionSite();
 
-        $map = $constructionSite->getMaps()[0];
-        $otherMap = $this->addMap($otherConstructionSite);
+        $constructionManager = $constructionSite->getConstructionManagers()[0];
 
         $craftsman = $constructionSite->getCraftsmen()[0];
         $otherCraftsman = $this->addCraftsman($otherConstructionSite);
 
+        $filter = $constructionSite->getFilters()[0];
+        $otherFilter = $this->addFilter($otherConstructionSite);
+
+        $issue = $constructionSite->getIssues()[0];
+        $otherIssue = $this->addIssue($otherConstructionSite, $constructionManager);
+
+        $map = $constructionSite->getMaps()[0];
+        $otherMap = $this->addMap($otherConstructionSite);
+
         $tokens = [
-            $this->createApiTokenFor($constructionSite->getConstructionManagers()[0]),
-            $this->createApiTokenFor($constructionSite->getCraftsmen()[0]),
-            $this->createApiTokenFor($constructionSite->getFilters()[0]),
+            $this->createApiTokenFor($constructionManager),
+            $this->createApiTokenFor($craftsman),
+            $this->createApiTokenFor($filter),
         ];
 
-        foreach ($tokens as $token) {
-            $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/construction_sites/someid');
-            $this->assertApiTokenRequestSuccessful($client, $token, 'GET', '/api/construction_sites/'.$constructionSite->getId());
-            if ($token !== $tokens[0]) { // construction managers can access all / post construction sites
-                $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/construction_sites/'.$otherConstructionSite->getId());
-                $this->assertApiTokenRequestNotSuccessful($client, $token, 'POST', '/api/construction_sites');
-            }
-        }
+        $payloads = [
+            'construction_sites' => [$constructionSite, $otherConstructionSite],
+            'craftsmen' => [$craftsman, $otherCraftsman],
+            'filters' => [$filter, $otherFilter],
+            'issues' => [$issue, $otherIssue],
+            'maps' => [$map, $otherMap],
+        ];
 
-        foreach ($tokens as $token) {
-            $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/craftsmen/someid');
-            $this->assertApiTokenRequestSuccessful($client, $token, 'GET', '/api/craftsmen/'.$craftsman->getId());
-            $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/craftsmen/'.$otherCraftsman->getId());
-            if ($token !== $tokens[0]) { // construction managers can create craftsman
-                $this->assertApiTokenRequestNotSuccessful($client, $token, 'POST', '/api/craftsmen');
-            }
-        }
+        $payloadsManagerCanAccessOther = ['construction_sites'];
+        $craftsmanCannotAccess = ['filters'];
 
-        foreach ($tokens as $token) {
-            $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/maps/someid');
-            $this->assertApiTokenRequestSuccessful($client, $token, 'GET', '/api/maps/'.$map->getId());
-            $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', '/api/maps/'.$otherMap->getId());
-            if ($token !== $tokens[0]) { // construction managers can create craftsman
-                $this->assertApiTokenRequestNotSuccessful($client, $token, 'POST', '/api/maps');
+        foreach ($payloads as $url => $payload) {
+            $apiUrl = '/api/'.$url;
+            $own = $payload[0];
+            $other = $payload[1];
+            var_dump($apiUrl);
+
+            foreach ($tokens as $token) {
+                $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', $apiUrl.'/invalid_id');
+
+                $isCraftsmanToken = $token === $tokens[1];
+                if (in_array($url, $craftsmanCannotAccess) && $isCraftsmanToken) {
+                    $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', $apiUrl.'/'.$own->getId());
+                } else {
+                    $this->assertApiTokenRequestSuccessful($client, $token, 'GET', $apiUrl.'/'.$own->getId());
+                }
+
+                $isConstructionManagerToken = $token === $tokens[0];
+                if ($isConstructionManagerToken && in_array($url, $payloadsManagerCanAccessOther)) {
+                    $this->assertApiTokenRequestSuccessful($client, $token, 'GET', $apiUrl.'/'.$other->getId());
+                } else {
+                    $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', $apiUrl.'/'.$other->getId());
+                }
+
+                if (!$isConstructionManagerToken) {
+                    $this->assertApiTokenRequestNotSuccessful($client, $token, 'POST', $url);
+                }
             }
         }
     }

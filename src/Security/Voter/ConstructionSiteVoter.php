@@ -59,18 +59,17 @@ class ConstructionSiteVoter extends ConstructionSiteOwnedEntityVoter
      * Perform a single access check operation on a given attribute, subject and token.
      * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
      *
-     * @param string                               $attribute
-     * @param ConstructionSiteOwnedEntityInterface $subject
+     * @param string           $attribute
+     * @param ConstructionSite $subject
      *
      * @return bool
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        // can only create if full user (not trial, not external)
-        if (self::CONSTRUCTION_SITE_CREATE === $attribute) {
-            $constructionManager = $this->tryGetConstructionManager($token);
-
-            return null !== $constructionManager && !$constructionManager->getIsExternalAccount() && !$constructionManager->getIsTrialAccount();
+        $constructionManager = $this->tryGetConstructionManager($token);
+        $isLimitedAccount = $constructionManager ? $constructionManager->getIsExternalAccount() || $constructionManager->getIsTrialAccount() : true;
+        if (!$isLimitedAccount && in_array($attribute, [self::CONSTRUCTION_SITE_CREATE, self::CONSTRUCTION_SITE_VIEW])) {
+            return true;
         }
 
         return parent::voteOnAttribute($attribute, $subject, $token);

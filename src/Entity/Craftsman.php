@@ -14,6 +14,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredSearchFilter;
 use App\Entity\Base\BaseEntity;
@@ -44,6 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     denormalizationContext={"groups"={"craftsman-write"}},
  *     attributes={"pagination_enabled"=false}
  * )
+ * @ApiFilter(SearchFilter::class, properties={"id": "exact", "trade": "exact"})
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
@@ -112,9 +114,9 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     /**
      * @var Issue[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Issue", mappedBy="responseBy")
+     * @ORM\OneToMany(targetEntity="Issue", mappedBy="resolvedBy")
      */
-    private $respondedIssues;
+    private $resolvedIssues;
 
     /**
      * @var DateTime|null
@@ -136,7 +138,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     public function __construct()
     {
         $this->issues = new ArrayCollection();
-        $this->respondedIssues = new ArrayCollection();
+        $this->resolvedIssues = new ArrayCollection();
     }
 
     public function getContactName(): string
@@ -205,9 +207,9 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     /**
      * @return Issue[]|ArrayCollection
      */
-    public function getRespondedIssues()
+    public function getResolvedIssues()
     {
-        return $this->respondedIssues;
+        return $this->resolvedIssues;
     }
 
     public function getName(): string

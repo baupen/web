@@ -6,7 +6,7 @@ api_platform:
     swagger:
         versions: [3]
         api_keys:
-            - { name: 'X-AUTHENTICATION-CONSTRUCTION-MANAGER', type: 'header' }
+            - { name: 'X-AUTH-TOKEN', type: 'header' }
     collection:
         pagination:
             items_per_page: 100
@@ -16,6 +16,6 @@ api_platform:
     show_webby: false
 
     # to debug nodes directly
-    enable_re_doc: false
-    enable_swagger_ui: false
+    # enable_re_doc: false
+    # enable_swagger_ui: false
 

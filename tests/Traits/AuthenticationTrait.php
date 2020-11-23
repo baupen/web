@@ -18,6 +18,7 @@ use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
+use App\Entity\Issue;
 use App\Entity\Map;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use Doctrine\Persistence\ManagerRegistry;
@@ -39,10 +40,7 @@ trait AuthenticationTrait
             throw new \InvalidArgumentException('cannot create token for '.get_class($item));
         }
 
-        /** @var ObjectManager $manager */
-        $manager = self::$container->get(ManagerRegistry::class)->getManager();
-        $manager->persist($authenticationToken);
-        $manager->flush();
+        $this->saveEntity($authenticationToken);
 
         return $authenticationToken->getToken();
     }
@@ -53,10 +51,7 @@ trait AuthenticationTrait
         $map->setConstructionSite($constructionSite);
         $map->setName($name);
 
-        /** @var ObjectManager $manager */
-        $manager = self::$container->get(ManagerRegistry::class)->getManager();
-        $manager->persist($map);
-        $manager->flush();
+        $this->saveEntity($map);
 
         return $map;
     }
@@ -70,12 +65,32 @@ trait AuthenticationTrait
         $craftsman->setCompany($name.' AG');
         $craftsman->setTrade($name);
 
-        /** @var ObjectManager $manager */
-        $manager = self::$container->get(ManagerRegistry::class)->getManager();
-        $manager->persist($craftsman);
-        $manager->flush();
+        $this->saveEntity($craftsman);
 
         return $craftsman;
+    }
+
+    private function addIssue(ConstructionSite $constructionSite, ConstructionManager $manager): Issue
+    {
+        $issue = new Issue();
+        $issue->setConstructionSite($constructionSite);
+        $issue->setNumber(999);
+        $issue->setCreatedAt(new \DateTime());
+        $issue->setCreatedBy($manager);
+
+        $this->saveEntity($issue);
+
+        return $issue;
+    }
+
+    private function addFilter(ConstructionSite $constructionSite): Filter
+    {
+        $filter = new Filter();
+        $filter->setConstructionSite($constructionSite);
+
+        $this->saveEntity($filter);
+
+        return $filter;
     }
 
     private function loginApiConstructionManagerExternal(Client $client): ConstructionManager
@@ -112,5 +127,13 @@ trait AuthenticationTrait
         $client->loginUser($testUser);
 
         return $testUser;
+    }
+
+    private function saveEntity(BaseEntity $entity): void
+    {
+        /** @var ObjectManager $manager */
+        $manager = self::$container->get(ManagerRegistry::class)->getManager();
+        $manager->persist($entity);
+        $manager->flush();
     }
 }

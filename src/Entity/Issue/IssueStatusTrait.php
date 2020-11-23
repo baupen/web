@@ -69,7 +69,7 @@ trait IssueStatusTrait
      * @var Craftsman|null
      *
      * @Groups({"issue-read", "issue-write", "issue-craftsman-write"})
-     * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="respondedIssues")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="resolvedIssues")
      */
     private $resolvedBy;
 

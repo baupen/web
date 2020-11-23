@@ -9,16 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Security\Voter\Base;
+namespace App\Security;
 
 use App\Entity\AuthenticationToken;
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-abstract class BaseVoter extends Voter
+trait TokenTrait
 {
     protected function tryGetConstructionManager(TokenInterface $token): ?ConstructionManager
     {

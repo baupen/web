@@ -15,11 +15,14 @@ use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
+use App\Security\TokenTrait;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-abstract class ConstructionSiteOwnedEntityVoter extends BaseVoter
+abstract class ConstructionSiteOwnedEntityVoter extends Voter
 {
+    use TokenTrait;
+
     abstract protected function isExpectedConstructionSiteOwnedEntityInstance(ConstructionSiteOwnedEntityInterface $constructionSiteOwnedEntity): bool;
 
     abstract protected function getAttributes(): array;
