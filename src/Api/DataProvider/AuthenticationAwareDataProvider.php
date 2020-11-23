@@ -102,12 +102,16 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 
     private function isCraftsmanQueryValid(Craftsman $craftsman, string $resourceClass, array $query)
     {
+        if (ConstructionManager::class === $resourceClass) {
+            return $this->searchFilterValid($query, 'constructionSites.id', $craftsman->getConstructionSite()->getId());
+        }
+
         $constructionSiteFilterValid = $this->searchFilterValid($query, 'constructionSite', $craftsman->getConstructionSite()->getId());
         if (!$constructionSiteFilterValid) {
             return false;
         }
 
-        if (Map::class === $resourceClass || ConstructionManager::class === $resourceClass) {
+        if (Map::class === $resourceClass) {
             return true;
         }
 
@@ -120,13 +124,13 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 
     private function isFilterQueryValid(Filter $filter, string $resourceClass, array $query)
     {
+        if (ConstructionManager::class === $resourceClass) {
+            return $this->searchFilterValid($query, 'constructionSites.id', $filter->getConstructionSite()->getId());
+        }
+
         $constructionSiteFilterValid = $this->searchFilterValid($query, 'constructionSite', $filter->getConstructionSite()->getId());
         if (!$constructionSiteFilterValid) {
             return false;
-        }
-
-        if (ConstructionManager::class === $resourceClass) {
-            return true;
         }
 
         if (Map::class === $resourceClass) {

@@ -136,4 +136,27 @@ class MapTest extends ApiTestCase
 
         $this->assertApiCollectionFilterDateTime($client, '/api/maps?constructionSite='.$constructionSite->getId().'&', $mapIri, 'lastChangedAt', $map->getLastChangedAt());
     }
+
+    public function testIdFilters()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $constructionSiteId = $this->getIriFromItem($constructionSite);
+
+        $sample = [
+            'constructionSite' => $constructionSiteId,
+            'name' => 'OG 3',
+        ];
+
+        $response = $this->assertApiPostStatusCodeSame(Response::HTTP_CREATED, $client, '/api/maps', $sample);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/maps?constructionSite='.$constructionSite->getId(), $response);
+        $mapIri = json_decode($response->getContent(), true)['@id'];
+
+        $collectionUrlPrefix = '/api/maps?constructionSite='.$constructionSite->getId().'&';
+
+        $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $mapIri, 'id', $mapIri);
+    }
 }

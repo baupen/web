@@ -30,7 +30,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     normalizationContext={"groups"={"construction-manager-read"}, "skip_null_values"=false},
  *     attributes={"pagination_enabled"=false}
  * )
- * @ApiFilter(SearchFilter::class, properties={"constructionSite": "exact"})
+ * @ApiFilter(SearchFilter::class, properties={"constructionSites.id": "exact"})
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */

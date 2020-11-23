@@ -331,6 +331,7 @@ class IssueTest extends ApiTestCase
 
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $issueIri, 'map', $sample['map']);
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $issueIri, 'craftsman', $sample['craftsman']);
+        $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $issueIri, 'craftsman.trade', $craftsman->getTrade());
     }
 
     public function testDownloadReport()
