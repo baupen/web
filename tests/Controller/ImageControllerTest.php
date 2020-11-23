@@ -38,16 +38,16 @@ class ImageControllerTest extends WebTestCase
         $image = $testConstructionSite->getImage();
         $oldGuid = $image->getId();
 
-        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/preview_2.jpg');
+        $filename = 'preview_2.jpg';
+        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/'.$filename);
         $baseUrl = '/construction_sites/'.$testConstructionSite->getId().'/image';
-        $newGuid = $this->assertPostFile($client, $baseUrl, $uploadedFile);
+        $url = $this->assertPostFile($client, $baseUrl, $uploadedFile);
 
         $image = $testConstructionSite->getImage();
-        $this->assertNotEquals($oldGuid, $newGuid);
-        $this->assertEquals($image->getId(), $newGuid);
+        $this->assertStringNotContainsString($oldGuid, $url);
+        $this->assertStringContainsString($image->getId(), $url);
 
-        $imageUrl = $baseUrl.'/'.$newGuid;
-        $this->assertImageDownloads($client, $imageUrl);
+        $this->assertImageDownloads($client, $url);
     }
 
     public function testIssueImage()
@@ -60,23 +60,23 @@ class ImageControllerTest extends WebTestCase
         $issue = $testConstructionSite->getIssues()[0];
         $oldGuid = $issue->getImage()->getId();
 
-        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/issue_images/nachbessern_2.jpg');
+        $filename = 'nachbessern_2.jpg';
+        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/issue_images/'.$filename);
         $baseUrl = '/issues/'.$issue->getId().'/image';
-        $newGuid = $this->assertPostFile($client, $baseUrl, $uploadedFile);
+        $url = $this->assertPostFile($client, $baseUrl, $uploadedFile);
 
-        $this->assertNotEquals($oldGuid, $newGuid);
-        $this->assertEquals($issue->getImage()->getId(), $newGuid);
+        $this->assertStringNotContainsString($oldGuid, $url);
+        $this->assertStringContainsString($issue->getImage()->getId(), $url);
 
-        $imageUrl = $baseUrl.'/'.$newGuid;
-        $this->assertImageDownloads($client, $imageUrl);
+        $this->assertImageDownloads($client, $url);
     }
 
     private function assertImageDownloads(KernelBrowser $client, string $imageUrl): void
     {
         $this->assertGetFile($client, $imageUrl);
-        $this->assertGetFile($client, $imageUrl.'/thumbnail');
-        $this->assertGetFile($client, $imageUrl.'/preview');
-        $this->assertGetFile($client, $imageUrl.'/full');
-        $this->assertFileNotFound($client, $imageUrl.'/null');
+        $this->assertGetFile($client, $imageUrl.'?size=thumbnail');
+        $this->assertGetFile($client, $imageUrl.'?size=preview');
+        $this->assertGetFile($client, $imageUrl.'?size=full');
+        $this->assertFileNotFound($client, $imageUrl.'?size=null');
     }
 }

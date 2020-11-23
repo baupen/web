@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/construction_site/{construction_site}")
+ * @Route("/construction_sites/{construction_site}")
  */
 class ConstructionSiteController extends BaseController
 {

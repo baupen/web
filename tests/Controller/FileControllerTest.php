@@ -40,17 +40,17 @@ class FileControllerTest extends WebTestCase
         $map = $testConstructionSite->getMaps()[0];
         $oldGuid = $map->getFile()->getId();
 
-        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/map_files/2OG_2.pdf');
+        $filename = '2OG_2.pdf';
+        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/map_files/'.$filename);
         $baseUrl = '/maps/'.$map->getId().'/file';
-        $newGuid = $this->assertPostUploadFile($client, $baseUrl, $uploadedFile);
+        $url = $this->assertPostUploadFile($client, $baseUrl, $uploadedFile);
 
-        $this->assertNotEquals($oldGuid, $newGuid);
-        $this->assertEquals($map->getFile()->getId(), $newGuid);
+        $this->assertStringNotContainsString($oldGuid, $url);
+        $this->assertStringContainsString($map->getFile()->getId(), $url);
 
-        $fileUrl = $baseUrl.'/'.$newGuid;
-        $this->assertGetFile($client, $fileUrl, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
-        $this->assertGetFile($client, $fileUrl.'/ios', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
-        $this->assertFileNotFound($client, $fileUrl.'/null');
+        $this->assertGetFile($client, $url, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        $this->assertGetFile($client, $url.'?variant=ios', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        $this->assertFileNotFound($client, $url.'?variant=undefined');
     }
 
     private function assertPostUploadFile(KernelBrowser $client, string $url, AssetFile $file)

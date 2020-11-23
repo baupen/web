@@ -33,17 +33,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class ImageController extends BaseDoctrineController
 {
     /**
-     * @Route("/construction_sites/{constructionSite}/image/{constructionSiteImage}/{size}", name="construction_site_image", defaults={"size"="thumbnail"}, methods={"GET"})
+     * @Route("/construction_sites/{constructionSite}/image/{constructionSiteImage}/{filename}", name="construction_site_image", methods={"GET"})
      *
      * @return Response
      */
-    public function getConstructionSiteImageAction(ConstructionSite $constructionSite, ConstructionSiteImage $constructionSiteImage, string $size, ImageServiceInterface $imageService)
+    public function getConstructionSiteImageAction(Request $request, ConstructionSite $constructionSite, ConstructionSiteImage $constructionSiteImage, string $filename, ImageServiceInterface $imageService)
     {
         $this->denyAccessUnlessGranted(ConstructionSiteVoter::CONSTRUCTION_SITE_VIEW, $constructionSite);
-        if ($constructionSite->getImage() !== $constructionSiteImage) {
+        if ($constructionSite->getImage() !== $constructionSiteImage || $constructionSiteImage->getFilename() !== $filename) {
             throw new NotFoundHttpException();
         }
 
+        $size = $request->query->get('size', 'thumbnail');
         $this->assertValidSize($size);
         $path = $imageService->resizeConstructionSiteImage($constructionSiteImage, $size);
 
@@ -76,21 +77,24 @@ class ImageController extends BaseDoctrineController
         $this->fastSave($constructionSite, $constructionSiteImage);
         $cacheService->warmUpCacheForConstructionSiteImage($constructionSiteImage);
 
-        return new Response($constructionSiteImage->getId());
+        $url = $this->generateUrl('construction_site_image', ['constructionSite' => $constructionSite->getId(), 'constructionSiteImage' => $constructionSiteImage->getId(), 'filename' => $constructionSiteImage->getFilename()]);
+
+        return new Response($url);
     }
 
     /**
-     * @Route("/issues/{issue}/image/{issueImage}/{size}", name="issue_image", defaults={"size"="thumbnail"}, methods={"GET"})
+     * @Route("/issues/{issue}/image/{issueImage}/{filename}", name="issue_image", methods={"GET"})
      *
      * @return Response
      */
-    public function getIssueImageAction(Issue $issue, IssueImage $issueImage, string $size, ImageServiceInterface $imageService)
+    public function getIssueImageAction(Request $request, Issue $issue, IssueImage $issueImage, string $filename, ImageServiceInterface $imageService)
     {
         $this->denyAccessUnlessGranted(IssueVoter::ISSUE_VIEW, $issue);
-        if ($issue->getImage() !== $issueImage) {
+        if ($issue->getImage() !== $issueImage || $issueImage->getFilename() !== $filename) {
             throw new NotFoundHttpException();
         }
 
+        $size = $request->query->get('size', 'thumbnail');
         $this->assertValidSize($size);
         $path = $imageService->resizeIssueImage($issueImage, $size);
 
@@ -123,7 +127,9 @@ class ImageController extends BaseDoctrineController
         $this->fastSave($issue, $issueImage);
         $cacheService->warmUpCacheForIssueImage($issueImage);
 
-        return new Response($issueImage->getId());
+        $url = $this->generateUrl('issue_image', ['issue' => $issue->getId(), 'issueImage' => $issueImage->getId(), 'filename' => $issueImage->getFilename()]);
+
+        return new Response($url);
     }
 
     private function assertValidSize(string $size): void

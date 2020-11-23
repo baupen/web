@@ -30,19 +30,19 @@ use Symfony\Component\Routing\Annotation\Route;
 class FileController extends BaseDoctrineController
 {
     /**
-     * @Route("/maps/{map}/file/{mapFile}/{variant}", name="map_file", defaults={"variant"="origin"}, methods={"GET"})
+     * @Route("/maps/{map}/file/{mapFile}/{filename}", name="map_file", methods={"GET"})
      *
      * @return Response
      */
-    public function getMapFileAction(Map $map, MapFile $mapFile, string $variant, PathServiceInterface $pathService, MapFileService $mapFileService)
+    public function getMapFileAction(Request $request, Map $map, MapFile $mapFile, string $filename, PathServiceInterface $pathService, MapFileService $mapFileService)
     {
         $this->denyAccessUnlessGranted(MapVoter::MAP_VIEW, $map);
-        if ($map->getFile() !== $mapFile) {
+        if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
             throw new NotFoundHttpException();
         }
 
-        $sanitizedVariant = strtolower($variant);
-        if (!in_array($variant, ['ios', 'origin'])) {
+        $sanitizedVariant = strtolower($request->query->get('variant', ''));
+        if ('' !== $sanitizedVariant && 'ios' !== $sanitizedVariant) {
             throw new NotFoundHttpException();
         }
 
@@ -86,6 +86,8 @@ class FileController extends BaseDoctrineController
         $this->fastSave($map, $mapFile);
         $cacheService->warmUpCacheForMapFile($mapFile);
 
-        return new Response($mapFile->getId());
+        $url = $this->generateUrl('map_file', ['map' => $map->getId(), 'mapFile' => $mapFile->getId(), 'filename' => $mapFile->getFilename()]);
+
+        return new Response($url);
     }
 }
