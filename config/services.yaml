@@ -42,12 +42,13 @@ services:
     App\Api\DataPersister\SoftDeleteDataPersister:
         bind: { $decoratedDataPersister: '@api_platform.doctrine.orm.data_persister' }
 
+    # higher priority consume those with lower priority
     App\Api\DataProvider\IssueReportDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
-    App\Api\DataProvider\IssueDataProvider:
+    App\Api\DataProvider\AuthenticationAwareDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 2 } ]
-        bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider'  }
+        bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
 
     App\Api\Serializer\IssueDenormalizer:
         arguments: [ '@security.token_storage' ]

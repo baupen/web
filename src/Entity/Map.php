@@ -15,6 +15,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredSearchFilter;
 use App\Entity\Base\BaseEntity;
@@ -44,6 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     denormalizationContext={"groups"={"map-write"}},
  *     attributes={"pagination_enabled"=false}
  * )
+ * @ApiFilter(SearchFilter::class, properties={"id": "exact"})
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
