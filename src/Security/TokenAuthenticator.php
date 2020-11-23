@@ -65,11 +65,11 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
             ->findOneBy(['token' => $credentials]);
 
         if (null === $token) {
-            return null;
+            throw new AuthenticationException();
         }
 
         if (null !== $token->getAccessAllowedBefore() && $token->getAccessAllowedBefore() < new \DateTime()) {
-            return null;
+            throw new AuthenticationException();
         }
 
         $token->setLastUsedAt();
@@ -88,7 +88,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
             return TokenUser::createForFilter($token->getFilter());
         }
 
-        return null;
+        throw new AuthenticationException();
     }
 
     public function checkCredentials($credentials, UserInterface $user)

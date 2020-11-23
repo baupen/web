@@ -46,6 +46,7 @@ class AuthenticationToken extends BaseEntity
     /**
      * @var string
      *
+     * @Groups({"authentication-token-read"})
      * @ORM\Column(type="text")
      */
     private $token;
@@ -58,7 +59,7 @@ class AuthenticationToken extends BaseEntity
     private $lastUsedAt;
 
     /**
-     * @var DateTime
+     * @var DateTime|null
      *
      * @Groups({"authentication-token-create"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -134,12 +135,12 @@ class AuthenticationToken extends BaseEntity
         $this->lastUsedAt = new \DateTime();
     }
 
-    public function getAccessAllowedBefore(): DateTime
+    public function getAccessAllowedBefore(): ?DateTime
     {
         return $this->accessAllowedBefore;
     }
 
-    public function setAccessAllowedBefore(DateTime $accessAllowedBefore): void
+    public function setAccessAllowedBefore(?DateTime $accessAllowedBefore): void
     {
         $this->accessAllowedBefore = $accessAllowedBefore;
     }

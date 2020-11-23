@@ -19,6 +19,7 @@ use App\Tests\Traits\Api\AssertApiOperationsTrait;
 use App\Tests\Traits\Api\AssertApiPatchTrait;
 use App\Tests\Traits\Api\AssertApiPostTrait;
 use App\Tests\Traits\Api\AssertApiResponseTrait;
+use App\Tests\Traits\Api\AssertApiTokenTrait;
 
 trait AssertApiTrait
 {
@@ -31,4 +32,6 @@ trait AssertApiTrait
     use AssertApiPostTrait;
     use AssertApiPatchTrait;
     use AssertApiDeleteTrait;
+
+    use AssertApiTokenTrait;
 }

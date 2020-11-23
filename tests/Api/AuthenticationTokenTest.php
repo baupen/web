@@ -59,12 +59,29 @@ class AuthenticationTokenTest extends ApiTestCase
 
         $this->assertApiPostPayloadPersisted($client, '/api/authentication_tokens', [], $constructionManagerPayload);
         $this->assertApiPostPayloadPersisted($client, '/api/authentication_tokens', [], $craftsmanPayload);
-        $this->assertApiPostPayloadPersisted($client, '/api/authentication_tokens', [], $filterPayload);
+        $response = $this->assertApiPostPayloadPersisted($client, '/api/authentication_tokens', [], $filterPayload);
+        $this->assertApiResponseFieldSubset($response, 'token');
 
         $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/authentication_tokens', $constructionManagerPayload + $craftsmanPayload);
         $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/authentication_tokens', $constructionManagerPayload + $filterPayload);
         $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/authentication_tokens', $craftsmanPayload + $filterPayload);
         $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/authentication_tokens', $constructionManagerPayload + $craftsmanPayload + $filterPayload);
         $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', []);
+    }
+
+    public function testConstructionManagerToken()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
+        $constructionManager = $this->loginApiConstructionManager($client);
+
+        $constructionManagerPayload = ['constructionManager' => $this->getIriFromItem($constructionManager)];
+        $response = $this->assertApiPostPayloadPersisted($client, '/api/authentication_tokens', [], $constructionManagerPayload);
+        $token = json_decode($response->getContent(), true)['token'];
+
+        $constructionManagerPayload = ['constructionManager' => $this->getIriFromItem($constructionManager)];
+        $this->assertApiTokenRequestNotSuccessful($client, 'some invalid token', 'POST', '/api/authentication_tokens', $constructionManagerPayload);
+        $this->assertApiTokenRequestSuccessful($client, $token, 'POST', '/api/authentication_tokens', $constructionManagerPayload);
+        $this->assertApiTokenRequestNotSuccessful($client, 'another invalid token', 'POST', '/api/authentication_tokens', $constructionManagerPayload);
     }
 }
