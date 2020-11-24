@@ -22,6 +22,8 @@ use App\Entity\Issue;
 use App\Entity\Map;
 use App\Security\TokenTrait;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
@@ -66,115 +68,130 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         $token = $this->tokenStorage->getToken();
 
         $existingFilter = isset($context['filters']) ? $context['filters'] : [];
-        $validQuery = false;
         if (($constructionManager = $this->tryGetConstructionManager($token))) {
-            $validQuery = $this->isConstructionManagerQueryValid($constructionManager, $resourceClass, $existingFilter);
+            $this->ensureConstructionManagerQueryValid($constructionManager, $resourceClass, $existingFilter);
         } elseif ($craftsman = $this->tryGetCraftsman($token)) {
-            $validQuery = $this->isCraftsmanQueryValid($craftsman, $resourceClass, $existingFilter);
+            $this->ensureCraftsmanQueryValid($craftsman, $resourceClass, $existingFilter);
         } elseif ($filter = $this->tryGetFilter($token)) {
-            $validQuery = $this->isFilterQueryValid($filter, $resourceClass, $existingFilter);
-        }
-
-        if (!$validQuery) {
-            throw new BadRequestException();
+            $this->ensureFilterQueryValid($filter, $resourceClass, $existingFilter);
+        } else {
+            throw new HttpException(Response::HTTP_FORBIDDEN);
         }
 
         return $this->decoratedCollectionDataProvider->getCollection($resourceClass, $operationName, $context);
     }
 
-    private function isConstructionManagerQueryValid(ConstructionManager $manager, string $resourceClass, array $query)
+    private function ensureConstructionManagerQueryValid(ConstructionManager $manager, string $resourceClass, array $query): void
     {
         if (ConstructionSite::class === $resourceClass || ConstructionManager::class) {
-            return true;
+            return;
         }
 
         if (!isset($query['constructionSite'])) {
-            return false;
+            throw new BadRequestException('constructionSite filter missing.');
         }
 
         foreach ($manager->getConstructionSites() as $constructionSite) {
             if ($constructionSite->getId() === $query['constructionSite']) {
-                return true;
+                return;
             }
         }
 
-        return false;
+        throw new BadRequestException('You are not allowed to query a construction site you are not part of.');
     }
 
-    private function isCraftsmanQueryValid(Craftsman $craftsman, string $resourceClass, array $query)
+    private function ensureCraftsmanQueryValid(Craftsman $craftsman, string $resourceClass, array $query): void
     {
         if (ConstructionManager::class === $resourceClass) {
-            return $this->searchFilterValid($query, 'constructionSites.id', $craftsman->getConstructionSite()->getId());
+            $this->ensureSearchFilterValid($query, 'constructionSites.id', $craftsman->getConstructionSite()->getId());
+
+            return;
         }
 
-        $constructionSiteFilterValid = $this->searchFilterValid($query, 'constructionSite', $craftsman->getConstructionSite()->getId());
-        if (!$constructionSiteFilterValid) {
-            return false;
-        }
+        $this->ensureSearchFilterValid($query, 'constructionSite', $craftsman->getConstructionSite()->getId());
 
         if (Map::class === $resourceClass) {
-            return true;
+            return;
         }
 
         if (Issue::class === $resourceClass) {
-            return $this->searchFilterValid($query, 'craftsman', [$craftsman->getId()]) &&
-                $this->isDeletedFilterValid($query, 'isDeleted', false);
+            $this->ensureSearchFilterValid($query, 'craftsman', [$craftsman->getId()]);
+            $this->ensureDeletedFilterValid($query, 'isDeleted', false);
+
+            return;
         }
 
-        throw new BadRequestException();
+        throw new BadRequestException('You are not allowed to query this resource');
     }
 
-    private function isFilterQueryValid(Filter $filter, string $resourceClass, array $query)
+    private function ensureFilterQueryValid(Filter $filter, string $resourceClass, array $query): void
     {
         if (ConstructionManager::class === $resourceClass) {
-            return $this->searchFilterValid($query, 'constructionSites.id', $filter->getConstructionSite()->getId());
+            $this->ensureSearchFilterValid($query, 'constructionSites.id', $filter->getConstructionSite()->getId());
+
+            return;
         }
 
-        $constructionSiteFilterValid = $this->searchFilterValid($query, 'constructionSite', $filter->getConstructionSite()->getId());
-        if (!$constructionSiteFilterValid) {
-            return false;
-        }
+        $this->ensureSearchFilterValid($query, 'constructionSite', $filter->getConstructionSite()->getId());
 
         if (Map::class === $resourceClass) {
-            return $this->searchFilterValid($query, 'id', $filter->getMapIds());
+            $this->ensureSearchFilterValid($query, 'id', $filter->getMapIds());
+
+            return;
         }
 
         if (Craftsman::class === $resourceClass) {
-            return $this->searchFilterValid($query, 'id', $filter->getCraftsmanIds()) &&
-                $this->searchFilterValid($query, 'trade', $filter->getCraftsmanTrades());
+            $this->ensureSearchFilterValid($query, 'id', $filter->getCraftsmanIds());
+            $this->ensureSearchFilterValid($query, 'trade', $filter->getCraftsmanTrades());
+
+            return;
         }
 
         if (Issue::class === $resourceClass) {
-            return $this->searchFilterValid($query, 'map', $filter->getMapIds()) &&
-                $this->searchFilterValid($query, 'craftsman', $filter->getCraftsmanIds()) &&
-                $this->searchFilterValid($query, 'craftsman.trade', $filter->getCraftsmanTrades());
+            $this->ensureSearchFilterValid($query, 'map', $filter->getMapIds());
+            $this->ensureSearchFilterValid($query, 'craftsman', $filter->getCraftsmanIds());
+            $this->ensureSearchFilterValid($query, 'craftsman.trade', $filter->getCraftsmanTrades());
+
+            return;
         }
 
-        return false;
+        throw new BadRequestException('You are not allowed to query this resource');
     }
 
-    private function searchFilterValid(array $query, string $property, $restriction)
+    private function ensureSearchFilterValid(array $query, string $property, $restriction): void
     {
         if (null === $restriction) {
-            return true;
+            return;
         }
 
         if (is_array($restriction)) {
             $singleFilterValid = isset($query[$property]) && in_array($query[$property], $restriction);
             $multipleFilterValid = isset($query[$property.'[]']) && empty(array_diff($restriction, $query[$property.'[]']));
 
-            return $singleFilterValid || $multipleFilterValid;
+            if ($singleFilterValid || $multipleFilterValid) {
+                return;
+            }
+
+            throw new BadRequestException($property.' filter missing or value no one of '.implode(', ', $restriction).'.');
         }
 
-        return isset($query[$property]) && $query[$property] === $restriction;
+        if (isset($query[$property]) && $query[$property] === $restriction) {
+            return;
+        }
+
+        throw new BadRequestException($property.' filter missing or value not equal to '.$restriction.'.');
     }
 
-    private function isDeletedFilterValid(array $query, string $property, ?bool $expectedValue)
+    private function ensureDeletedFilterValid(array $query, string $property, ?bool $expectedValue): void
     {
         if (null === $expectedValue) {
-            return true;
+            return;
         }
 
-        return isset($query[$property]) && IsDeletedFilter::normalizeValue($query[$property]) === $expectedValue;
+        if (isset($query[$property]) && IsDeletedFilter::normalizeValue($query[$property]) === $expectedValue) {
+            return;
+        }
+
+        throw new BadRequestException($property.' filter missing or value not equal to '.$expectedValue.'.');
     }
 }
