@@ -92,11 +92,9 @@ class AuthenticationTokenTest extends ApiTestCase
         $map = $constructionSite->getMaps()[0];
         $otherMap = $this->addMap($otherConstructionSite);
 
-        $tokens = [
-            $this->createApiTokenFor($constructionManager),
-            $this->createApiTokenFor($craftsman),
-            $this->createApiTokenFor($filter),
-        ];
+        $constructionManagerToken = $this->createApiTokenFor($constructionManager);
+        $craftsmanToken = $this->createApiTokenFor($craftsman);
+        $filterToken = $this->createApiTokenFor($filter);
 
         $payloads = [
             'construction_managers' => [$constructionManager, $otherConstructionManager],
@@ -107,36 +105,51 @@ class AuthenticationTokenTest extends ApiTestCase
             'maps' => [$map, $otherMap],
         ];
 
-        $payloadsManagerCanAccessOther = ['construction_sites', 'construction_managers'];
-        $craftsmanCannotAccess = ['filters'];
         $noPost = ['construction_managers'];
+        $noPatch = ['construction_sites', 'construction_managers', 'filters'];
+        $noDelete = ['construction_sites', 'construction_managers', 'filters'];
 
         foreach ($payloads as $url => $payload) {
             $apiUrl = '/api/'.$url;
             $own = $payload[0];
             $other = $payload[1];
 
-            foreach ($tokens as $token) {
-                $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', $apiUrl.'/invalid_id');
+            $sameConstructionSiteId = $apiUrl.'/'.$own->getId();
+            $otherConstructionSiteId = $apiUrl.'/'.$other->getId();
 
-                $isCraftsmanToken = $token === $tokens[1];
-                if (in_array($url, $craftsmanCannotAccess) && $isCraftsmanToken) {
-                    $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', $apiUrl.'/'.$own->getId());
-                } else {
-                    $this->assertApiTokenRequestSuccessful($client, $token, 'GET', $apiUrl.'/'.$own->getId());
-                }
+            $this->assertApiTokenRequestSuccessful($client, $constructionManagerToken, 'GET', $sameConstructionSiteId);
+            if (in_array($url, ['construction_sites', 'construction_managers'])) {
+                $this->assertApiTokenRequestSuccessful($client, $constructionManagerToken, 'GET', $otherConstructionSiteId);
+            } else {
+                $this->assertApiTokenRequestForbidden($client, $constructionManagerToken, 'GET', $otherConstructionSiteId);
+            }
 
-                $isConstructionManagerToken = $token === $tokens[0];
-                if ($isConstructionManagerToken && in_array($url, $payloadsManagerCanAccessOther)) {
-                    $this->assertApiTokenRequestSuccessful($client, $token, 'GET', $apiUrl.'/'.$other->getId());
-                } else {
-                    $this->assertApiTokenRequestNotSuccessful($client, $token, 'GET', $apiUrl.'/'.$other->getId());
-                }
+            if (in_array($url, ['filters'])) {
+                $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'GET', $sameConstructionSiteId);
+            } else {
+                $this->assertApiTokenRequestSuccessful($client, $craftsmanToken, 'GET', $sameConstructionSiteId);
+            }
+            $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'GET', $otherConstructionSiteId);
+            if (!in_array($url, $noPost)) {
+                $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'POST', $apiUrl, []);
+            }
+            if ('issues' !== $url && !in_array($url, $noPatch)) {
+                $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'PATCH', $sameConstructionSiteId, []);
+            }
+            if (!in_array($url, $noDelete)) {
+                $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'DELETE', $sameConstructionSiteId, []);
+            }
 
-                if (!$isConstructionManagerToken && !in_array($url, $noPost)) {
-                    $this->assertApiTokenRequestNotSuccessful($client, $token, 'POST', $url);
-                    // TODO: do PATCH, DELETE
-                }
+            $this->assertApiTokenRequestSuccessful($client, $filterToken, 'GET', $sameConstructionSiteId);
+            $this->assertApiTokenRequestForbidden($client, $filterToken, 'GET', $otherConstructionSiteId);
+            if (!in_array($url, $noPost)) {
+                $this->assertApiTokenRequestForbidden($client, $filterToken, 'POST', $apiUrl, []);
+            }
+            if (!in_array($url, $noPatch)) {
+                $this->assertApiTokenRequestForbidden($client, $filterToken, 'PATCH', $sameConstructionSiteId, []);
+            }
+            if (!in_array($url, $noDelete)) {
+                $this->assertApiTokenRequestForbidden($client, $filterToken, 'DELETE', $sameConstructionSiteId, []);
             }
         }
     }

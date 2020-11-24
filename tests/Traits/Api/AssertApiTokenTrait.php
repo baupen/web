@@ -12,6 +12,7 @@
 namespace App\Tests\Traits\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
+use Symfony\Component\HttpFoundation\Response;
 
 trait AssertApiTokenTrait
 {
@@ -24,11 +25,11 @@ trait AssertApiTokenTrait
         return $response;
     }
 
-    private function assertApiTokenRequestNotSuccessful(Client $client, string $token, string $method, string $url, array $payload = null)
+    private function assertApiTokenRequestForbidden(Client $client, string $token, string $method, string $url, array $payload = null)
     {
         $response = $this->requestWithApiToken($client, $token, $method, $url, $payload);
 
-        $this->assertFalse($response->getStatusCode() >= 200 && $response->getStatusCode() < 300);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
 
         return $response;
     }
