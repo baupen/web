@@ -67,6 +67,20 @@ class AuthenticationTokenTest extends ApiTestCase
         $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/authentication_tokens', $craftsmanPayload + $filterPayload);
         $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/authentication_tokens', $constructionManagerPayload + $craftsmanPayload + $filterPayload);
         $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', []);
+
+        $otherConstructionSite = $this->getEmptyConstructionSite();
+        $otherConstructionManager = $this->addConstructionManager($otherConstructionSite);
+        $otherCraftsman = $this->addCraftsman($otherConstructionSite);
+        $otherFilter = $this->addFilter($otherConstructionSite);
+
+        $forbiddenPayload = ['constructionManager' => $this->getIriFromItem($otherConstructionManager)];
+        $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', $forbiddenPayload);
+
+        $forbiddenPayload = ['craftsman' => $this->getIriFromItem($otherCraftsman)];
+        $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', $forbiddenPayload);
+
+        $forbiddenPayload = ['filter' => $this->getIriFromItem($otherFilter)];
+        $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', $forbiddenPayload);
     }
 
     public function testGetAndPost()
