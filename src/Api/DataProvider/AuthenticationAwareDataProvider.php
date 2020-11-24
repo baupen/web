@@ -83,7 +83,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 
     private function ensureConstructionManagerQueryValid(ConstructionManager $manager, string $resourceClass, array $query): void
     {
-        if (ConstructionSite::class === $resourceClass || ConstructionManager::class) {
+        if (ConstructionSite::class === $resourceClass || ConstructionManager::class === $resourceClass) {
             return;
         }
 
