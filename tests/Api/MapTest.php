@@ -108,6 +108,30 @@ class MapTest extends ApiTestCase
         $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/maps?constructionSite='.$constructionSite->getId(), $response);
     }
 
+    public function testRelationsOnSameConstructionSite()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getTestConstructionSite();
+
+        $basePayload = [
+            'constructionSite' => $this->getIriFromItem($constructionSite),
+            'name' => 'some name',
+        ];
+
+        $otherConstructionSite = $this->getEmptyConstructionSite();
+        $mapFile = $this->addMapFile($otherConstructionSite);
+
+        $payload = [
+            'file' => $this->getIriFromItem($mapFile),
+        ];
+
+        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/maps', array_merge($basePayload, $payload));
+        $this->assertApiPostPayloadPersisted($client, '/api/maps', [], $basePayload);
+    }
+
     public function testIsDeletedFilter()
     {
         $client = $this->createClient();
