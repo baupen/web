@@ -47,7 +47,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *      },
  *     itemOperations={
  *      "get" = {"security" = "is_granted('ISSUE_VIEW', object)"},
- *      "patch" = {"security" = "is_granted('ISSUE_MODIFY', object) or is_granted('ISSUE_RESPOND', object)"},
+ *      "patch" = {"security" = "is_granted('ISSUE_MODIFY', object) or is_granted('ISSUE_RESPOND', object)", "security_post_denormalize" = "is_granted('ISSUE_MODIFY', object) or is_granted('ISSUE_RESPOND', object)"},
  *      "delete" = {"security" = "is_granted('ISSUE_MODIFY', object)"},
  *     },
  *     denormalizationContext={"groups"={}},

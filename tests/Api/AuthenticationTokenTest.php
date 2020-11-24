@@ -215,6 +215,8 @@ class AuthenticationTokenTest extends ApiTestCase
 
         $testConstructionSite = $this->getTestConstructionSite();
         $craftsman = $testConstructionSite->getCraftsmen()[0];
+        $otherCraftsman = $testConstructionSite->getCraftsmen()[1];
+        $otherCraftsmanIri = $this->getIriFromItem($otherCraftsman);
         $craftsmanIri = $this->getIriFromItem($craftsman);
         $craftsmanToken = $this->createApiTokenFor($craftsman);
 
@@ -225,6 +227,12 @@ class AuthenticationTokenTest extends ApiTestCase
 
         $otherConstructionManager = $this->getTestConstructionSite()->getConstructionManagers()[1];
         $otherConstructionManagerId = $this->getIriFromItem($otherConstructionManager);
+
+        $forbiddenUpdate = [
+            'resolvedAt' => (new \DateTime('yesterday + 2 day'))->format('c'),
+            'resolvedBy' => $otherCraftsmanIri,
+        ];
+        $this->assertApiPatchStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $issueIri, $forbiddenUpdate);
 
         $update = [
             'resolvedAt' => (new \DateTime('yesterday + 2 day'))->format('c'),

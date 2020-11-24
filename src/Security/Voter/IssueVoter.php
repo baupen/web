@@ -14,6 +14,7 @@ namespace App\Security\Voter;
 use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Security\Voter\Base\ConstructionSiteOwnedEntityVoter;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class IssueVoter extends ConstructionSiteOwnedEntityVoter
 {
@@ -49,5 +50,24 @@ class IssueVoter extends ConstructionSiteOwnedEntityVoter
         return (null === $filter->getCraftsmanIds() || in_array($subject->getCraftsman()->getId(), $filter->getCraftsmanIds())) &&
             (null === $filter->getCraftsmanTrades() || in_array($subject->getCraftsman()->getTrade(), $filter->getCraftsmanTrades())) &&
             (null === $filter->getMapIds() || in_array($subject->getMap()->getId(), $filter->getMapIds()));
+    }
+
+    /**
+     * Perform a single access check operation on a given attribute, subject and token.
+     * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
+     *
+     * @param string $attribute
+     * @param Issue  $subject
+     *
+     * @return bool
+     */
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    {
+        $craftsman = $this->tryGetCraftsman($token);
+        if (null !== $craftsman && self::ISSUE_RESPOND === $attribute) {
+            return $subject->getCraftsman() === $craftsman && ($subject->getResolvedBy() === $craftsman || null === $subject->getResolvedBy());
+        }
+
+        return parent::voteOnAttribute($attribute, $subject, $token);
     }
 }
