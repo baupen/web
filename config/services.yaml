@@ -50,10 +50,9 @@ services:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 2 } ]
         bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
 
-    App\Api\Serializer\IssueDenormalizer:
-        arguments: [ '@security.token_storage' ]
-        tags:
-            - { name: 'serializer.normalizer', priority: 64 }
+    App\Api\Serializer\IssueContextBuilder:
+        decorates: 'api_platform.serializer.context_builder'
+        arguments: [ '@App\Api\Serializer\IssueContextBuilder.inner' ]
 
     'App\Api\Serializer\ConstructionSiteSerializer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }

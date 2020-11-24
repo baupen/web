@@ -28,7 +28,7 @@ class IssueVoter extends ConstructionSiteOwnedEntityVoter
 
     protected function getAllAttributes(): array
     {
-        return [self::ISSUE_VIEW, self::ISSUE_RESPOND, self::ISSUE_MODIFY];
+        return [self::ISSUE_VIEW, self::ISSUE_MODIFY, self::ISSUE_RESPOND];
     }
 
     protected function getReadOnlyAttributes(): array

@@ -27,8 +27,15 @@ class IsDeletedFilter extends AbstractContextAwareFilter
             return;
         }
 
-        $value = $this->normalizeValue($value);
+        $value = self::normalizeValue($value);
         if (null === $value) {
+            $this->getLogger()->notice('Invalid filter ignored', [
+                'exception' => new InvalidArgumentException(sprintf('Invalid value for '.self::IS_DELETED_PROPERTY_NAME.', expected one of ( "%s" )',
+                    self::IS_DELETED_PROPERTY_NAME,
+                    implode('" | "', ['true', 'false', '1', '0'])
+                )),
+            ]);
+
             return;
         }
 
@@ -40,7 +47,7 @@ class IsDeletedFilter extends AbstractContextAwareFilter
         }
     }
 
-    private function normalizeValue($value)
+    public static function normalizeValue($value)
     {
         if (\in_array($value, [true, 'true', '1'], true)) {
             return true;
@@ -49,15 +56,6 @@ class IsDeletedFilter extends AbstractContextAwareFilter
         if (\in_array($value, [false, 'false', '0'], true)) {
             return false;
         }
-
-        $this->getLogger()->notice('Invalid filter ignored', [
-            'exception' => new InvalidArgumentException(sprintf('Invalid value for '.self::IS_DELETED_PROPERTY_NAME.', expected one of ( "%s" )', self::IS_DELETED_PROPERTY_NAME, implode('" | "', [
-                'true',
-                'false',
-                '1',
-                '0',
-            ]))),
-        ]);
 
         return null;
     }

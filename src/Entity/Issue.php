@@ -46,11 +46,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      },
  *     itemOperations={
  *      "get" = {"security" = "is_granted('ISSUE_VIEW', object)"},
- *      "patch" = {"security" = "is_granted('ISSUE_MODIFY', object)"},
+ *      "patch" = {"security" = "is_granted('ISSUE_MODIFY', object) or is_granted('ISSUE_RESPOND', object)"},
  *      "delete" = {"security" = "is_granted('ISSUE_MODIFY', object)"},
  *     },
- *     normalizationContext={"groups"={"issue-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"issue-write"}}
+ *     denormalizationContext={"groups"={}},
+ *     normalizationContext={"groups"={"issue-read"}, "skip_null_values"=false}
  * )
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})

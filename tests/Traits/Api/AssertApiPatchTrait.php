@@ -29,9 +29,13 @@ trait AssertApiPatchTrait
         $noChangeResponse = $this->assertApiPatchOk($client, $url, []);
         $json = json_decode($noChangeResponse->getContent(), true);
 
+        if (isset($json['lastChangedAt'])) {
+            unset($json['lastChangedAt']);
+        }
+
         foreach ($payload as $key => $value) {
             $actualPayload = [$key => $value];
-            $response = $this->assertApiPatchOk($client, $url, $actualPayload);
+            $this->assertApiPatchOk($client, $url, $actualPayload);
             $this->assertJsonContains($json);
         }
     }

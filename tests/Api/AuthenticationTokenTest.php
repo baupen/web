@@ -135,6 +135,7 @@ class AuthenticationTokenTest extends ApiTestCase
 
                 if (!$isConstructionManagerToken && !in_array($url, $noPost)) {
                     $this->assertApiTokenRequestNotSuccessful($client, $token, 'POST', $url);
+                    // TODO: do PATCH, DELETE
                 }
             }
         }
@@ -176,7 +177,54 @@ class AuthenticationTokenTest extends ApiTestCase
 
         $this->setApiTokenDefaultHeader($client, $craftsmanToken);
 
-        $response = $this->assertApiGetOk($client, '/api/issues?constructionSite='.$testConstructionSite->getId().'&craftsman='.$craftsman->getId());
+        $response = $this->assertApiGetOk($client, '/api/issues?constructionSite='.$testConstructionSite->getId().'&craftsman='.$craftsman->getId().'&isDeleted=false');
         $this->assertApiResponseFileIsDownloadable($client, $response, 'imageUrl');
+    }
+
+    public function testCraftsmanEdit()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
+
+        $testConstructionSite = $this->getTestConstructionSite();
+        $craftsman = $testConstructionSite->getCraftsmen()[0];
+        $craftsmanIri = $this->getIriFromItem($craftsman);
+        $craftsmanToken = $this->createApiTokenFor($craftsman);
+
+        $this->setApiTokenDefaultHeader($client, $craftsmanToken);
+
+        $issue = $craftsman->getIssues()[0];
+        $issueIri = $this->getIriFromItem($issue);
+
+        $otherConstructionManager = $this->getTestConstructionSite()->getConstructionManagers()[1];
+        $otherConstructionManagerId = $this->getIriFromItem($otherConstructionManager);
+
+        $update = [
+            'resolvedAt' => (new \DateTime('yesterday + 2 day'))->format('c'),
+            'resolvedBy' => $craftsmanIri,
+        ];
+        $response = $this->assertApiPatchPayloadPersisted($client, $issueIri, $update);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite='.$testConstructionSite->getId().'&craftsman='.$craftsman->getId().'&isDeleted=false', $response);
+
+        $writeProtected = [
+            'createdAt' => (new \DateTime('tomorrow'))->format('c'),
+            'createdBy' => $otherConstructionManagerId,
+
+            'description' => 'hello world 2',
+            'wasAddedWithClient' => true,
+            'isMarked' => true,
+            'deadline' => (new \DateTime('yesterday'))->format('c'),
+
+            'positionX' => 0.6,
+            'positionY' => 0.7,
+            'positionZoomScale' => 0.8,
+
+            'registeredAt' => (new \DateTime('yesterday + 1 day'))->format('c'),
+            'registeredBy' => $otherConstructionManagerId,
+
+            'closedAt' => (new \DateTime('yesterday + 3 day'))->format('c'),
+            'closedBy' => $otherConstructionManagerId,
+        ];
+        $this->assertApiPatchPayloadIgnored($client, $issueIri, $writeProtected);
     }
 }
