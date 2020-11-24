@@ -152,6 +152,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
             $this->ensureSearchFilterValid($query, 'craftsman', $filter->getCraftsmanIds());
             $this->ensureSearchFilterValid($query, 'craftsman.trade', $filter->getCraftsmanTrades());
 
+            // TODO: Fully implement filter properties #350
             return;
         }
 

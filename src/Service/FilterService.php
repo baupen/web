@@ -44,7 +44,7 @@ class FilterService implements FilterServiceInterface
         $filter = new Filter();
         $filter->setConstructionSite($constructionSite);
 
-        // TODO: add the other properties of the filter
+        // TODO: Fully implement filter properties #350
 
         return $filter;
     }
