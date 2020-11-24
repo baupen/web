@@ -17,6 +17,7 @@ use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
+use App\Entity\MapFile;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -90,6 +91,18 @@ trait TestDataTrait
         $this->saveEntity($map);
 
         return $map;
+    }
+
+    private function addMapFile(ConstructionSite $constructionSite): MapFile
+    {
+        $mapFile = new MapFile();
+        $mapFile->setConstructionSite($constructionSite);
+        $mapFile->setFilename('invalid.pdf');
+        $mapFile->setHash('some invalid hash');
+
+        $this->saveEntity($mapFile);
+
+        return $mapFile;
     }
 
     private function addIssue(ConstructionSite $constructionSite, ConstructionManager $manager): Issue

@@ -233,6 +233,29 @@ class IssueTest extends ApiTestCase
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
     }
 
+    public function testRelationsOnSameConstructionSite()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $constructionManager = $this->loginApiConstructionManager($client);
+
+        $basePayload = $this->getMinimalPostPayload($constructionManager);
+
+        $otherConstructionSite = $this->getEmptyConstructionSite();
+        $map = $this->addMap($otherConstructionSite);
+        $mapFile = $this->addMapFile($otherConstructionSite);
+        $craftsman = $this->addCraftsman($otherConstructionSite);
+
+        $payload = [
+            'map' => $this->getIriFromItem($map),
+            'mapFile' => $this->getIriFromItem($mapFile),
+            'craftsman' => $this->getIriFromItem($craftsman),
+        ];
+
+        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
+        $this->assertApiPostPayloadPersisted($client, '/api/issues', [], $basePayload);
+    }
+
     public function testStatusMustBeFullySetOrNotAtAll()
     {
         $client = $this->createClient();

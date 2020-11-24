@@ -31,6 +31,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * An issue is something created by the construction manager to inform the craftsman of it.
@@ -126,6 +127,24 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @ORM\Column(type="datetime")
      */
     private $lastChangedAt;
+
+    /**
+     * @Assert\Callback
+     */
+    public function validateRelations(ExecutionContextInterface $context)
+    {
+        if (null !== $this->craftsman && $this->craftsman->getConstructionSite() !== $this->constructionSite) {
+            $context->buildViolation('Craftsman does not belong to construction site')->addViolation();
+        }
+
+        if (null !== $this->map && $this->map->getConstructionSite() !== $this->constructionSite) {
+            $context->buildViolation('Map does not belong to construction site')->addViolation();
+        }
+
+        if (null !== $this->mapFile && $this->mapFile->getConstructionSite() !== $this->constructionSite) {
+            $context->buildViolation('MapFile does not belong to construction site')->addViolation();
+        }
+    }
 
     /**
      * @var IssueImage|null
