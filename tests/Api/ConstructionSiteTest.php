@@ -42,10 +42,13 @@ class ConstructionSiteTest extends ApiTestCase
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
 
-        $this->assertApiOperationNotAuthorized($client, '/api/construction_sites', 'GET', 'POST');
-
         $testConstructionSite = $this->getTestConstructionSite();
+        $this->assertApiOperationNotAuthorized($client, '/api/construction_sites', 'GET', 'POST');
         $this->assertApiOperationNotAuthorized($client, '/api/construction_sites/'.$testConstructionSite->getId(), 'GET');
+
+        $this->loginApiConstructionManagerExternal($client);
+        $this->assertApiOperationForbidden($client, '/api/construction_sites', 'POST');
+        $this->assertApiOperationForbidden($client, '/api/construction_sites/'.$testConstructionSite->getId(), 'GET');
     }
 
     public function testGet()

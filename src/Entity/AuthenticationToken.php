@@ -18,8 +18,10 @@ use App\Entity\Traits\TimeTrait;
 use App\Helper\HashHelper;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * An authentication token can be used to authenticate over the API.
@@ -37,27 +39,30 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
-class AuthenticationToken extends BaseEntity
+class AuthenticationToken extends BaseEntity implements UserInterface
 {
     use IdTrait;
     use TimeTrait;
 
+    public const ROLE_API_USER = 'ROLE_API_USER';
+
     /**
      * @var string
      *
+     * @Groups({"authentication-token-read"})
      * @ORM\Column(type="text")
      */
     private $token;
 
     /**
-     * @var DateTime
+     * @var DateTime|null
      *
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $lastUsedAt;
 
     /**
-     * @var DateTime
+     * @var DateTime|null
      *
      * @Groups({"authentication-token-create"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -65,7 +70,7 @@ class AuthenticationToken extends BaseEntity
     private $accessAllowedBefore;
 
     /**
-     * @var ConstructionManager
+     * @var ConstructionManager|null
      *
      * @Groups({"authentication-token-create"})
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
@@ -73,7 +78,7 @@ class AuthenticationToken extends BaseEntity
     private $constructionManager;
 
     /**
-     * @var Filter
+     * @var Filter|null
      *
      * @Groups({"authentication-token-create"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Filter")
@@ -81,7 +86,7 @@ class AuthenticationToken extends BaseEntity
     private $filter;
 
     /**
-     * @var Craftsman
+     * @var Craftsman|null
      *
      * @Groups({"authentication-token-create"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman")
@@ -90,13 +95,27 @@ class AuthenticationToken extends BaseEntity
 
     /**
      * @ORM\PrePersist()
-     *
-     * @throws Exception
-     * @throws Exception
      */
-    public function prePersistTime()
+    public function prePersistToken()
     {
         $this->token = HashHelper::getHash();
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function exactlyOnePayload(ExecutionContextInterface $context)
+    {
+        $setFields = 0;
+        $setFields += $this->getConstructionManager() ? 1 : 0;
+        $setFields += $this->getCraftsman() ? 1 : 0;
+        $setFields += $this->getFilter() ? 1 : 0;
+
+        if (1 !== $setFields) {
+            $context->buildViolation('Exactly one of constructionManager, craftsman or filter must be set.')
+                ->atPath('constructionManager')
+                ->addViolation();
+        }
     }
 
     public function getToken(): string
@@ -116,20 +135,20 @@ class AuthenticationToken extends BaseEntity
 
     public function setLastUsedAt(): void
     {
-        $this->lastUsedAt = new \DateTime();
+        $this->lastUsedAt = new DateTime();
     }
 
-    public function getAccessAllowedBefore(): DateTime
+    public function getAccessAllowedBefore(): ?DateTime
     {
         return $this->accessAllowedBefore;
     }
 
-    public function setAccessAllowedBefore(DateTime $accessAllowedBefore): void
+    public function setAccessAllowedBefore(?DateTime $accessAllowedBefore): void
     {
         $this->accessAllowedBefore = $accessAllowedBefore;
     }
 
-    public function getConstructionManager(): ConstructionManager
+    public function getConstructionManager(): ?ConstructionManager
     {
         return $this->constructionManager;
     }
@@ -139,7 +158,7 @@ class AuthenticationToken extends BaseEntity
         $this->constructionManager = $constructionManager;
     }
 
-    public function getFilter(): Filter
+    public function getFilter(): ?Filter
     {
         return $this->filter;
     }
@@ -149,7 +168,7 @@ class AuthenticationToken extends BaseEntity
         $this->filter = $filter;
     }
 
-    public function getCraftsman(): Craftsman
+    public function getCraftsman(): ?Craftsman
     {
         return $this->craftsman;
     }
@@ -157,5 +176,29 @@ class AuthenticationToken extends BaseEntity
     public function setCraftsman(Craftsman $craftsman): void
     {
         $this->craftsman = $craftsman;
+    }
+
+    public function getRoles()
+    {
+        return [self::ROLE_API_USER];
+    }
+
+    public function getPassword()
+    {
+        return null;
+    }
+
+    public function getSalt()
+    {
+        return null;
+    }
+
+    public function getUsername()
+    {
+        return $this->token;
+    }
+
+    public function eraseCredentials()
+    {
     }
 }

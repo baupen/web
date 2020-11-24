@@ -1,12 +1,17 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
+        chain_provider:
+            chain:
+                providers: [construction_managers, api_tokens]
         construction_managers:
             entity:
-                # the class of the entity that represents users
                 class: 'App\Entity\ConstructionManager'
-                # the property to query by - e.g. username, email, etc
                 property: 'email'
+        api_tokens:
+            entity:
+                class: 'App\Entity\AuthenticationToken'
+                property: 'token'
 
     encoders:
         App\Entity\ConstructionManager:
@@ -14,7 +19,10 @@ security:
 
     role_hierarchy:
         ROLE_ADMIN: [ROLE_CONSTRUCTION_MANAGER, ROLE_ALLOWED_TO_SWITCH]
-        ROLE_CONSTRUCTION_MANAGER: ROLE_ASSIGNED_CONSTRUCTION_MANAGER
+        ROLE_CONSTRUCTION_MANAGER: [ROLE_CONSTRUCTION_SITE_MEMBER, ROLE_USER]
+        ROLE_EXTERNAL_CONSTRUCTION_MANAGER: [ROLE_CONSTRUCTION_SITE_MEMBER, ROLE_USER]
+        ROLE_CONSTRUCTION_SITE_MEMBER: [ROLE_API_USER]
+        ROLE_API_USER: [ROLE_FILE_DOWNLOAD]
 
     firewalls:
         dev:
@@ -23,7 +31,7 @@ security:
         main:
             anonymous: true
             lazy: true
-            provider: construction_managers
+            provider: chain_provider
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
@@ -53,4 +61,18 @@ security:
         - { path: ^/recover, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/email, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/help, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        - { path: '^/construction_sites/[a-zA-Z0-9\-]{36}/image/[a-zA-Z0-9\-]{36}/.+', role: ROLE_FILE_DOWNLOAD }
+        - { path: '^/issues/[a-zA-Z0-9\-]{36}/image/[a-zA-Z0-9\-]{36}/.+', role: ROLE_FILE_DOWNLOAD }
+        - { path: '^/maps/[a-zA-Z0-9\-]{36}/file/[a-zA-Z0-9\-]{36}/.+', role: ROLE_FILE_DOWNLOAD }
+
+        - { path: ^/api, role: ROLE_API_USER }
+
+        - { path: ^/set_locale, role: ROLE_USER }
+
+        - { path: ^/construction_sites, role: ROLE_CONSTRUCTION_SITE_MEMBER }
+        - { path: ^/maps, role: ROLE_CONSTRUCTION_SITE_MEMBER }
+        - { path: ^/issues, role: ROLE_CONSTRUCTION_SITE_MEMBER }
+
         - { path: ^/, role: ROLE_CONSTRUCTION_MANAGER }

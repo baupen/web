@@ -11,7 +11,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
@@ -24,10 +26,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ApiResource(
  *     collectionOperations={"get"},
- *     itemOperations={"get"},
+ *     itemOperations={"get" = {"security" = "is_granted('CONSTRUCTION_MANAGER_VIEW', object)"}},
  *     normalizationContext={"groups"={"construction-manager-read"}, "skip_null_values"=false},
  *     attributes={"pagination_enabled"=false}
  * )
+ * @ApiFilter(SearchFilter::class, properties={"constructionSites.id": "exact"})
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
@@ -44,7 +47,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public const ROLE_CONSTRUCTION_MANAGER = 'ROLE_CONSTRUCTION_MANAGER';
 
     // can not see other construction sites
-    public const ROLE_ASSIGNED_CONSTRUCTION_MANAGER = 'ROLE_ASSIGNED_CONSTRUCTION_MANAGER';
+    public const ROLE_EXTERNAL_CONSTRUCTION_MANAGER = 'ROLE_EXTERNAL_CONSTRUCTION_MANAGER';
 
     /**
      * @var string|null
@@ -187,7 +190,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
             return [self::ROLE_CONSTRUCTION_MANAGER];
         }
 
-        return [self::ROLE_ASSIGNED_CONSTRUCTION_MANAGER];
+        return [self::ROLE_EXTERNAL_CONSTRUCTION_MANAGER];
     }
 
     public function getLocale(): string

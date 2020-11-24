@@ -12,13 +12,36 @@
 namespace App\Tests\Traits;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
+use App\Entity\AuthenticationToken;
+use App\Entity\Base\BaseEntity;
 use App\Entity\ConstructionManager;
+use App\Entity\Craftsman;
+use App\Entity\Filter;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 trait AuthenticationTrait
 {
+    private function createApiTokenFor(BaseEntity $item): string
+    {
+        $authenticationToken = new AuthenticationToken();
+        if ($item instanceof ConstructionManager) {
+            $authenticationToken->setConstructionManager($item);
+        } elseif ($item instanceof Craftsman) {
+            $authenticationToken->setCraftsman($item);
+        } elseif ($item instanceof Filter) {
+            $authenticationToken->setFilter($item);
+        } else {
+            throw new \InvalidArgumentException('cannot create token for '.get_class($item));
+        }
+
+        $this->saveEntity($authenticationToken);
+
+        return $authenticationToken->getToken();
+    }
+
     private function loginApiConstructionManagerExternal(Client $client): ConstructionManager
     {
         return $this->loginUser($client->getKernelBrowser(), TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EXTERNAL_EMAIL);
@@ -53,5 +76,13 @@ trait AuthenticationTrait
         $client->loginUser($testUser);
 
         return $testUser;
+    }
+
+    private function saveEntity(BaseEntity $entity): void
+    {
+        /** @var ObjectManager $manager */
+        $manager = self::$container->get(ManagerRegistry::class)->getManager();
+        $manager->persist($entity);
+        $manager->flush();
     }
 }

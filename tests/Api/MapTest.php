@@ -38,8 +38,8 @@ class MapTest extends ApiTestCase
         $this->assertApiOperationNotAuthorized($client, '/api/maps/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
 
         $this->loginApiConstructionManagerExternal($client);
-        $this->assertApiOperationForbidden($client, '/api/maps?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/maps/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
+        $this->assertApiOperationForbidden($client, '/api/maps', 'POST');
+        $this->assertApiOperationForbidden($client, '/api/maps/'.$constructionSite->getMaps()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }
 
     public function testGet()
@@ -108,6 +108,30 @@ class MapTest extends ApiTestCase
         $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/maps?constructionSite='.$constructionSite->getId(), $response);
     }
 
+    public function testRelationsOnSameConstructionSite()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getTestConstructionSite();
+
+        $basePayload = [
+            'constructionSite' => $this->getIriFromItem($constructionSite),
+            'name' => 'some name',
+        ];
+
+        $otherConstructionSite = $this->getEmptyConstructionSite();
+        $mapFile = $this->addMapFile($otherConstructionSite);
+
+        $payload = [
+            'file' => $this->getIriFromItem($mapFile),
+        ];
+
+        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/maps', array_merge($basePayload, $payload));
+        $this->assertApiPostPayloadPersisted($client, '/api/maps', [], $basePayload);
+    }
+
     public function testIsDeletedFilter()
     {
         $client = $this->createClient();
@@ -135,5 +159,28 @@ class MapTest extends ApiTestCase
         $mapIri = $this->getIriFromItem($map);
 
         $this->assertApiCollectionFilterDateTime($client, '/api/maps?constructionSite='.$constructionSite->getId().'&', $mapIri, 'lastChangedAt', $map->getLastChangedAt());
+    }
+
+    public function testIdFilters()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $constructionSiteId = $this->getIriFromItem($constructionSite);
+
+        $sample = [
+            'constructionSite' => $constructionSiteId,
+            'name' => 'OG 3',
+        ];
+
+        $response = $this->assertApiPostStatusCodeSame(Response::HTTP_CREATED, $client, '/api/maps', $sample);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/maps?constructionSite='.$constructionSite->getId(), $response);
+        $mapIri = json_decode($response->getContent(), true)['@id'];
+
+        $collectionUrlPrefix = '/api/maps?constructionSite='.$constructionSite->getId().'&';
+
+        $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $mapIri, 'id', $mapIri);
     }
 }

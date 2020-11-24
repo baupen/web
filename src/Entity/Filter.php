@@ -13,6 +13,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Base\BaseEntity;
+use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -34,7 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Filter extends BaseEntity
+class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
 
@@ -263,6 +264,10 @@ class Filter extends BaseEntity
      */
     public function getCraftsmanIds(): ?array
     {
+        if (empty($this->craftsmanIds)) {
+            return null;
+        }
+
         return $this->craftsmanIds;
     }
 
@@ -279,6 +284,10 @@ class Filter extends BaseEntity
      */
     public function getCraftsmanTrades(): ?array
     {
+        if (empty($this->craftsmanTrades)) {
+            return null;
+        }
+
         return $this->craftsmanTrades;
     }
 
@@ -295,6 +304,10 @@ class Filter extends BaseEntity
      */
     public function getMapIds(): ?array
     {
+        if (empty($this->mapIds)) {
+            return null;
+        }
+
         return $this->mapIds;
     }
 

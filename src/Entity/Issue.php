@@ -22,6 +22,7 @@ use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredSearchFilter;
 use App\Api\Filters\StateFilter;
 use App\Entity\Base\BaseEntity;
+use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Issue\IssuePositionTrait;
 use App\Entity\Issue\IssueStatusTrait;
 use App\Entity\Traits\IdTrait;
@@ -30,6 +31,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * An issue is something created by the construction manager to inform the craftsman of it.
@@ -45,18 +47,18 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      },
  *     itemOperations={
  *      "get" = {"security" = "is_granted('ISSUE_VIEW', object)"},
- *      "patch" = {"security" = "is_granted('ISSUE_MODIFY', object)"},
+ *      "patch" = {"security" = "is_granted('ISSUE_MODIFY', object) or is_granted('ISSUE_RESPOND', object)", "security_post_denormalize" = "is_granted('ISSUE_MODIFY', object) or is_granted('ISSUE_RESPOND', object)"},
  *      "delete" = {"security" = "is_granted('ISSUE_MODIFY', object)"},
  *     },
- *     normalizationContext={"groups"={"issue-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"issue-write"}}
+ *     denormalizationContext={"groups"={}},
+ *     normalizationContext={"groups"={"issue-read"}, "skip_null_values"=false}
  * )
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt", "createdAt", "registeredAt", "resolvedAt", "closedAt", "deadline"})
  * @ApiFilter(BooleanFilter::class, properties={"isMarked", "wasAddedWithClient"})
  * @ApiFilter(NumericFilter::class, properties={"number"})
- * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "map": "exact", "description": "partial"})
+ * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "craftsman.trade": "exact", "map": "exact", "description": "partial"})
  * @ApiFilter(StateFilter::class, properties={"state"})
  *
  * @ApiFilter(OrderFilter::class, properties={"lastChangedAt": "ASC"})
@@ -64,7 +66,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Issue extends BaseEntity
+class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
     use SoftDeleteTrait;
@@ -125,6 +127,24 @@ class Issue extends BaseEntity
      * @ORM\Column(type="datetime")
      */
     private $lastChangedAt;
+
+    /**
+     * @Assert\Callback
+     */
+    public function validateRelations(ExecutionContextInterface $context)
+    {
+        if (null !== $this->craftsman && $this->craftsman->getConstructionSite() !== $this->constructionSite) {
+            $context->buildViolation('Craftsman does not belong to construction site')->addViolation();
+        }
+
+        if (null !== $this->map && $this->map->getConstructionSite() !== $this->constructionSite) {
+            $context->buildViolation('Map does not belong to construction site')->addViolation();
+        }
+
+        if (null !== $this->mapFile && $this->mapFile->getConstructionSite() !== $this->constructionSite) {
+            $context->buildViolation('MapFile does not belong to construction site')->addViolation();
+        }
+    }
 
     /**
      * @var IssueImage|null

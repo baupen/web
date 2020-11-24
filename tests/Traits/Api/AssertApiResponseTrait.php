@@ -32,11 +32,14 @@ trait AssertApiResponseTrait
 
                 $this->assertArraySubset($actualFields, $whitelist);
             }
+        } else {
+            $whitelist = array_merge(['@context'], $whitelist);
+            sort($whitelist);
 
-            return;
+            $actualFields = array_keys($hydraPayload);
+            sort($actualFields);
+            $this->assertArraySubset($actualFields, $whitelist);
         }
-
-        $this->fail('only collections support this assertion.');
     }
 
     private function assertApiResponseFileIsDownloadable(Client $client, Response $response, string $fileUrlProperty, string $mode = ResponseHeaderBag::DISPOSITION_INLINE): ?string

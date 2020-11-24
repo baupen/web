@@ -43,6 +43,7 @@ class IssueSerializer implements NormalizerInterface
             $url = $this->urlGenerator->generate('issue_image', [
                 'issue' => $object->getId(),
                 'issueImage' => $object->getImage()->getId(),
+                'filename' => $object->getImage()->getFilename(),
             ]);
 
             $data['imageUrl'] = $url;

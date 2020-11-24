@@ -60,43 +60,29 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
             return null;
         }
 
-        // if a User is returned, checkCredentials() is called
-        $token = $this->em->getRepository(AuthenticationToken::class)
-            ->findOneBy(['token' => $credentials]);
+        $user = $userProvider->loadUserByUsername($credentials);
 
-        if (null === $token) {
+        if (!$user instanceof AuthenticationToken) {
             return null;
         }
 
-        if (null !== $token->getAccessAllowedBefore() && $token->getAccessAllowedBefore() < new \DateTime()) {
-            return null;
-        }
-
-        $token->setLastUsedAt();
-        $this->em->persist($token);
+        $user->setLastUsedAt();
+        $this->em->persist($user);
         $this->em->flush();
 
-        if (null !== $token->getConstructionManager()) {
-            return $token->getConstructionManager();
-        }
-
-        if ($token->getCraftsman()) {
-            return TokenUser::createForCraftsman($token->getCraftsman());
-        }
-
-        if ($token->getFilter()) {
-            return TokenUser::createForFilter($token->getFilter());
-        }
-
-        return null;
+        return $user;
     }
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        // Check credentials - e.g. make sure the password is valid.
-        // In case of an API token, no credential check is needed.
+        if (!$user instanceof AuthenticationToken) {
+            throw new AuthenticationException();
+        }
 
-        // Return `true` to cause authentication success
+        if (null !== $user->getAccessAllowedBefore() && $user->getAccessAllowedBefore() < new \DateTime()) {
+            throw new AuthenticationException();
+        }
+
         return true;
     }
 

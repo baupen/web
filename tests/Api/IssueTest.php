@@ -38,8 +38,8 @@ class IssueTest extends ApiTestCase
         $this->assertApiOperationNotAuthorized($client, '/api/issues/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
 
         $this->loginApiConstructionManagerExternal($client);
-        $this->assertApiOperationForbidden($client, '/api/issues?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/issues/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
+        $this->assertApiOperationForbidden($client, '/api/issues', 'POST');
+        $this->assertApiOperationForbidden($client, '/api/issues/'.$constructionSite->getIssues()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }
 
     public function testGet()
@@ -233,6 +233,29 @@ class IssueTest extends ApiTestCase
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
     }
 
+    public function testRelationsOnSameConstructionSite()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $constructionManager = $this->loginApiConstructionManager($client);
+
+        $basePayload = $this->getMinimalPostPayload($constructionManager);
+
+        $otherConstructionSite = $this->getEmptyConstructionSite();
+        $map = $this->addMap($otherConstructionSite);
+        $mapFile = $this->addMapFile($otherConstructionSite);
+        $craftsman = $this->addCraftsman($otherConstructionSite);
+
+        $payload = [
+            'map' => $this->getIriFromItem($map),
+            'mapFile' => $this->getIriFromItem($mapFile),
+            'craftsman' => $this->getIriFromItem($craftsman),
+        ];
+
+        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
+        $this->assertApiPostPayloadPersisted($client, '/api/issues', [], $basePayload);
+    }
+
     public function testStatusMustBeFullySetOrNotAtAll()
     {
         $client = $this->createClient();
@@ -331,6 +354,7 @@ class IssueTest extends ApiTestCase
 
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $issueIri, 'map', $sample['map']);
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $issueIri, 'craftsman', $sample['craftsman']);
+        $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $issueIri, 'craftsman.trade', $craftsman->getTrade());
     }
 
     public function testDownloadReport()

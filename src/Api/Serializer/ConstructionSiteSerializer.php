@@ -43,6 +43,7 @@ class ConstructionSiteSerializer implements NormalizerInterface
             $url = $this->urlGenerator->generate('construction_site_image', [
                 'constructionSite' => $object->getId(),
                 'constructionSiteImage' => $object->getImage()->getId(),
+                'filename' => $object->getImage()->getFilename(),
             ]);
 
             $data['imageUrl'] = $url;

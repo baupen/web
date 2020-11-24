@@ -37,8 +37,8 @@ class CraftsmanTest extends ApiTestCase
         $this->assertApiOperationNotAuthorized($client, '/api/craftsmen/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
 
         $this->loginApiConstructionManagerExternal($client);
-        $this->assertApiOperationForbidden($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/craftsmen/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
+        $this->assertApiOperationForbidden($client, '/api/craftsmen', 'POST');
+        $this->assertApiOperationForbidden($client, '/api/craftsmen/'.$constructionSite->getCraftsmen()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }
 
     public function testGet()
@@ -126,5 +126,32 @@ class CraftsmanTest extends ApiTestCase
         $craftsmanIri = $this->getIriFromItem($craftsman);
 
         $this->assertApiCollectionFilterDateTime($client, '/api/craftsmen?constructionSite='.$constructionSite->getId().'&', $craftsmanIri, 'lastChangedAt', $craftsman->getLastChangedAt());
+    }
+
+    public function testAllFilters()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $constructionSiteId = $this->getIriFromItem($constructionSite);
+
+        $sample = [
+            'constructionSite' => $constructionSiteId,
+            'contactName' => 'Alex Woodly',
+            'company' => 'Wood AG',
+            'trade' => 'wood',
+            'email' => 'new@craftsman.ch',
+        ];
+
+        $response = $this->assertApiPostStatusCodeSame(Response::HTTP_CREATED, $client, '/api/craftsmen', $sample);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $response);
+        $craftsmanIri = json_decode($response->getContent(), true)['@id'];
+
+        $collectionUrlPrefix = '/api/craftsmen?constructionSite='.$constructionSite->getId().'&';
+
+        $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $craftsmanIri, 'id', $craftsmanIri);
+        $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $craftsmanIri, 'trade', $sample['trade']);
     }
 }

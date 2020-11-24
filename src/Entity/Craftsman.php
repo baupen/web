@@ -14,9 +14,11 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredSearchFilter;
 use App\Entity\Base\BaseEntity;
+use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
@@ -24,7 +26,6 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -44,6 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     denormalizationContext={"groups"={"craftsman-write"}},
  *     attributes={"pagination_enabled"=false}
  * )
+ * @ApiFilter(SearchFilter::class, properties={"id": "exact", "trade": "exact"})
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
@@ -51,7 +53,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
-class Craftsman extends BaseEntity
+class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
     use TimeTrait;
@@ -112,9 +114,9 @@ class Craftsman extends BaseEntity
     /**
      * @var Issue[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Issue", mappedBy="responseBy")
+     * @ORM\OneToMany(targetEntity="Issue", mappedBy="resolvedBy")
      */
-    private $respondedIssues;
+    private $resolvedIssues;
 
     /**
      * @var DateTime|null
@@ -131,26 +133,12 @@ class Craftsman extends BaseEntity
     private $lastOnlineVisit;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(type="text")
-     */
-    private $emailIdentifier;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text")
-     */
-    private $writeAuthorizationToken;
-
-    /**
      * Craftsman constructor.
      */
     public function __construct()
     {
         $this->issues = new ArrayCollection();
-        $this->respondedIssues = new ArrayCollection();
+        $this->resolvedIssues = new ArrayCollection();
     }
 
     public function getContactName(): string
@@ -219,9 +207,9 @@ class Craftsman extends BaseEntity
     /**
      * @return Issue[]|ArrayCollection
      */
-    public function getRespondedIssues()
+    public function getResolvedIssues()
     {
-        return $this->respondedIssues;
+        return $this->resolvedIssues;
     }
 
     public function getName(): string
@@ -260,30 +248,6 @@ class Craftsman extends BaseEntity
         }
 
         return $lastAction;
-    }
-
-    public function getEmailIdentifier(): string
-    {
-        return $this->emailIdentifier;
-    }
-
-    public function getWriteAuthorizationToken(): string
-    {
-        return $this->writeAuthorizationToken;
-    }
-
-    /**
-     * @ORM\PrePersist()
-     */
-    public function prePersistCraftsman(): void
-    {
-        $this->emailIdentifier = Uuid::v4();
-        $this->writeAuthorizationToken = Uuid::v4();
-    }
-
-    public function canRemove()
-    {
-        return 0 === $this->issues->count() && 0 === $this->respondedIssues->count();
     }
 
     /**

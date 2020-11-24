@@ -15,9 +15,11 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredSearchFilter;
 use App\Entity\Base\BaseEntity;
+use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
@@ -25,6 +27,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * An Map is a logical plan of some part of the construction site.
@@ -43,6 +46,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     denormalizationContext={"groups"={"map-write"}},
  *     attributes={"pagination_enabled"=false}
  * )
+ * @ApiFilter(SearchFilter::class, properties={"id": "exact"})
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
@@ -50,7 +54,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
-class Map extends BaseEntity
+class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
     use TimeTrait;
@@ -104,6 +108,16 @@ class Map extends BaseEntity
      * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="map")
      */
     private $issues;
+
+    /**
+     * @Assert\Callback
+     */
+    public function validateRelations(ExecutionContextInterface $context)
+    {
+        if (null !== $this->file && $this->file->getConstructionSite() !== $this->constructionSite) {
+            $context->buildViolation('File does not belong to construction site')->addViolation();
+        }
+    }
 
     public function __construct()
     {

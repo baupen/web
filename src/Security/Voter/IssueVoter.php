@@ -11,35 +11,47 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\ConstructionManager;
-use App\Entity\ConstructionSite;
-use App\Entity\Craftsman;
+use App\Entity\Filter;
 use App\Entity\Issue;
+use App\Security\Voter\Base\ConstructionSiteOwnedEntityVoter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class IssueVoter extends Voter
+class IssueVoter extends ConstructionSiteOwnedEntityVoter
 {
     public const ISSUE_VIEW = 'ISSUE_VIEW';
     public const ISSUE_MODIFY = 'ISSUE_MODIFY';
     public const ISSUE_RESPOND = 'ISSUE_RESPOND';
 
-    /**
-     * Determines if the attribute and subject are supported by this voter.
-     *
-     * @param string           $attribute An attribute
-     * @param ConstructionSite $subject   The subject to secure, e.g. an object the user wants to access or any other PHP type
-     *
-     * @return bool True if the attribute and subject are supported, false otherwise
-     */
-    protected function supports($attribute, $subject)
+    protected function isInstanceOf($entity): bool
     {
-        // if the attribute isn't one we support, return false
-        if (!in_array($attribute, [self::ISSUE_VIEW, self::ISSUE_MODIFY])) {
-            return false;
-        }
+        return $entity instanceof Issue;
+    }
 
-        return $subject instanceof Issue;
+    protected function getAllAttributes(): array
+    {
+        return [self::ISSUE_VIEW, self::ISSUE_MODIFY, self::ISSUE_RESPOND];
+    }
+
+    protected function getReadOnlyAttributes(): array
+    {
+        return [self::ISSUE_VIEW];
+    }
+
+    protected function getCraftsmanAccessibleAttributes(): array
+    {
+        return array_merge($this->getReadOnlyAttributes(), [self::ISSUE_RESPOND]);
+    }
+
+    /**
+     * @param Issue $subject
+     */
+    protected function isIncludedInFilter(Filter $filter, $attribute, $subject): bool
+    {
+        return (null === $filter->getCraftsmanIds() || in_array($subject->getCraftsman()->getId(), $filter->getCraftsmanIds())) &&
+            (null === $filter->getCraftsmanTrades() || in_array($subject->getCraftsman()->getTrade(), $filter->getCraftsmanTrades())) &&
+            (null === $filter->getMapIds() || in_array($subject->getMap()->getId(), $filter->getMapIds()));
+
+        // TODO: Fully implement filter properties #350
     }
 
     /**
@@ -53,24 +65,11 @@ class IssueVoter extends Voter
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        $user = $token->getUser();
-
-        if ($user instanceof ConstructionManager) {
-            switch ($attribute) {
-                case self::ISSUE_VIEW:
-                case self::ISSUE_MODIFY:
-                    return $subject->isConstructionSiteSet() && $subject->getConstructionSite()->getConstructionManagers()->contains($user);
-            }
-        } elseif ($user instanceof Craftsman) {
-            switch ($attribute) {
-                case self::ISSUE_VIEW:
-                case self::ISSUE_RESPOND:
-                    return $user === $subject->getCraftsman();
-                case self::ISSUE_MODIFY:
-                    return false;
-            }
+        $craftsman = $this->tryGetCraftsman($token);
+        if (null !== $craftsman && self::ISSUE_RESPOND === $attribute) {
+            return $subject->getCraftsman() === $craftsman && ($subject->getResolvedBy() === $craftsman || null === $subject->getResolvedBy());
         }
 
-        throw new \LogicException('Attribute '.$attribute.' unknown!');
+        return parent::voteOnAttribute($attribute, $subject, $token);
     }
 }

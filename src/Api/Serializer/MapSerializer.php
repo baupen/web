@@ -43,6 +43,7 @@ class MapSerializer implements NormalizerInterface
             $url = $this->urlGenerator->generate('map_file', [
                 'map' => $object->getId(),
                 'mapFile' => $object->getFile()->getId(),
+                'filename' => $object->getFile()->getFilename(),
             ]);
 
             $data['fileUrl'] = $url;
