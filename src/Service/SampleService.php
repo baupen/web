@@ -148,7 +148,7 @@ class SampleService implements SampleServiceInterface
         $issuesJson = file_get_contents($issuesJsonPath);
         $issueRelationsJson = file_get_contents($issueRelationsJsonPath);
         /** @var Issue[] $issues */
-        $issues = $this->serializer->deserialize($issuesJson, Issue::class.'[]', 'json');
+        $issues = $this->serializer->deserialize($issuesJson, Issue::class.'[]', 'json', ['groups' => ['issue-write', 'issue-create']]);
         $issueRelations = json_decode($issueRelationsJson, true);
         $issueCount = count($issues);
         for ($i = 0; $i < $issueCount; ++$i) {
