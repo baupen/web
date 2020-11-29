@@ -1,5 +1,5 @@
-import { createApp, h } from 'vue'
-import { createI18n, useI18n } from 'vue-i18n'
+import { createApp } from 'vue'
+import { createI18n } from 'vue-i18n'
 import moment from 'moment'
 
 import VueFlatPickr from 'vue-flatpickr-component'
@@ -19,11 +19,11 @@ import {
   faQuestionCircle,
   faEnvelopeOpen
 } from '@fortawesome/pro-light-svg-icons'
-import { faStar as faStartSolid } from '@fortawesome/pro-solid-svg-icons/faStar'
+import { faStar as faStarSolid } from '@fortawesome/pro-solid-svg-icons/faStar'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 
-import de from './localization/shared.de.json'
-import it from './localization/shared.it.json'
+import de from './localization/de.json'
+import it from './localization/it.json'
 
 import Switch from './vue/Switch.vue'
 import Spinner from './vue/components/Spinner.vue'
@@ -41,8 +41,7 @@ FontawesomeLibrary.add(
   faStar,
   faQuestionCircle,
   faEnvelopeOpen,
-
-  faStartSolid
+  faStarSolid
 )
 
 // configure moment
@@ -51,16 +50,13 @@ moment.locale('de')
 // configure i18n
 const i18n = createI18n({
   locale,
-  messages: {
-    de,
-    it
-  }
+  messages: { de, it }
 })
 
 // configure vue
 const vue = createApp(Switch)
 
-vue.config.productionTip = false
+// vue.config.productionTip = false
 vue.use(i18n)
 vue.use(VueFlatPickr)
 vue.component('FontAwesomeIcon', FontAwesomeIcon)

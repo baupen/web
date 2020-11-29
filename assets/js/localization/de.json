@@ -4,7 +4,7 @@
     "mine_help": "Diese Baustellen werden auch in der App angezeigt.",
     "all": "Alle erfassten Baustellen",
     "actions": {
-      "create_construction_site": "Neue Baustelle erfassen",
+      "create_construction_site": "Neue Baustelle erfassen"
     },
     "messages": {
       "info": {

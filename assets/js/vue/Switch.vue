@@ -1,6 +1,7 @@
 <template>
   <div id="switch">
     <p>Hi</p>
+    <p>{{ $t("switch.mine") }}</p>
     <spinner :spin="true" />
   </div>
 </template>
