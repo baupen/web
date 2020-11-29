@@ -1,25 +1,27 @@
 {
-  "mine": {
-    "title": "Meine Baustellen",
-    "description": "Diese Baustellen werden auch in der App angezeigt"
+  "construction_site_add": {
+    "messages": {
+      "error": {
+        "name_already_taken": "Dieser Name ist bereits vergeben."
+      }
+    }
   },
-  "all": {
-    "title": "Alle erfassten Baustellen"
+  "construction_sites_preview": {
+    "actions": {
+      "enter": "Zur Baustelle"
+    }
   },
-  "actions": {
-    "switch": "Zur Baustelle",
-    "create_construction_site": "Neue Baustelle erfassen"
-  },
-  "messages": {
-    "activate_construction_site": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen."
-  },
-  "validation": {
-    "name_already_taken": "Dieser Name ist bereits vergeben."
-  },
-  "construction_manager": {
-    "me": "Ich"
-  },
-  "construction_site": {
-    "activated": "aktiviert"
+  "switch": {
+    "mine": "Meine Baustellen",
+    "mine_help": "Diese Baustellen werden auch in der App angezeigt.",
+    "all": "Alle erfassten Baustellen",
+    "actions": {
+      "create_construction_site": "Neue Baustelle erfassen"
+    },
+    "messages": {
+      "info": {
+        "activate_construction_site": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen."
+      }
+    }
   }
 }

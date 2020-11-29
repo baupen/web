@@ -74,7 +74,5 @@
       "abort": "Annullare",
       "close": "Chiudere"
     }
-  },
-  "set_automatically": "imposta automaticamente",
-  "issue_count": "Numero pendenze"
+  }
 }

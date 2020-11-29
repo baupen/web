@@ -84,7 +84,5 @@
     "actions": {
       "add": "Hinzufügen & informieren per E-Mail"
     }
-  },
-  "set_automatically": "automatisch festlegen",
-  "issue_count": "Anzahl Pendenzen"
+  }
 }

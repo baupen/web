@@ -1,4 +1,6 @@
 {
-  "issues_overview": "Pendenzenüberblick",
-  "no_issues": "Keine Pendenzen verfügbar"
+  "view_filter": {
+    "issues_overview": "Pendenzenüberblick",
+    "no_issues": "Keine Pendenzen verfügbar"
+  }
 }

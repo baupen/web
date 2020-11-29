@@ -8,7 +8,7 @@
       "marked": "Markiert"
     }
   },
-  "dialog": {
+  "new_issues_dialog": {
     "new_issues_in_foyer": "Eine neue Pendenz | {count} neue Pendenzen",
     "add_to_register": "Jetzt zum Verzeichnis hinzufügen"
   },
@@ -20,13 +20,6 @@
       "response_received": "{craftsman} hat eine Pendenz erledigt. | {craftsman} hat {count} Pendenzen erledigt.",
       "visited_webpage": "{craftsman} hat die Pendenzen angeschaut.",
       "overdue_limit": "{craftsman} hat die Frist vom {limit} bei {count} Pendenzen überschritten."
-    }
-  },
-  "notes": {
-    "name": "Notizen",
-    "no_entries_yet": "Noch keine Notizen. Notieren Sie sich hier, was Sie ungern vergessen möchten.",
-    "actions": {
-      "add_new": "Neu erfassen"
     }
   }
 }
