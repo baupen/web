@@ -1,17 +1,18 @@
 <template>
   <div id="switch">
-    <spinner :spin="true"/>
+    <p>Hi</p>
+    <spinner :spin="true" />
   </div>
 </template>
 
 <script>
 
 export default {
-  data() {
+  data () {
     return {
-      isLoading: true,
-    };
-  },
-};
+      isLoading: true
+    }
+  }
+}
 
 </script>

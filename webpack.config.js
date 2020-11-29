@@ -57,7 +57,7 @@ Encore
   .configureBabel(() => {}, {
     useBuiltIns: 'usage',
     corejs: 3,
-    includeNodeModules: ['epic-spinners', 'moment']
+    includeNodeModules: ['moment']
   })
 
   // enables Sass/SCSS support
@@ -65,6 +65,7 @@ Encore
     options.implementation = require('sass')
   })
   .enableVueLoader(() => {}, { runtimeCompilerBuild: false })
+  // .enableVueLoader()
   .autoProvidejQuery()
 
   // uncomment to get integrity="..." attributes on your script & link tags

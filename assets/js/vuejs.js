@@ -1,6 +1,5 @@
-import Vue from 'vue'
-import VueI18n from 'vue-i18n'
-import BootstrapVue from 'bootstrap-vue'
+import { createApp, h } from 'vue'
+import { createI18n, useI18n } from 'vue-i18n'
 import moment from 'moment'
 
 import VueFlatPickr from 'vue-flatpickr-component'
@@ -22,10 +21,6 @@ import {
 } from '@fortawesome/pro-light-svg-icons'
 import { faStar as faStartSolid } from '@fortawesome/pro-solid-svg-icons/faStar'
 import '@fortawesome/fontawesome-svg-core/styles.css'
-
-import { setInteractionMode, ValidationProvider, configure } from 'vee-validate'
-import validateIt from 'vee-validate/dist/locale/it.json'
-import validateDe from 'vee-validate/dist/locale/de.json'
 
 import de from './localization/shared.de.json'
 import it from './localization/shared.it.json'
@@ -54,50 +49,24 @@ FontawesomeLibrary.add(
 moment.locale('de')
 
 // configure i18n
-const i18n = new VueI18n({
+const i18n = createI18n({
   locale,
   messages: {
-    de: {
-      validations: validateDe,
-      ...de
-    },
-    it: {
-      validations: validateIt,
-      ...it
-    }
-  }
-})
-
-// configure vee-validate
-setInteractionMode('eager') // validate lazily first time, then aggressive
-configure({
-  // this will be used to generate messages.
-  defaultMessage: (field, values) => {
-    // eslint-disable-next-line no-param-reassign,no-underscore-dangle
-    values._field_ = i18n.t(`fields.${field}`)
-    // eslint-disable-next-line no-param-reassign,no-underscore-dangle
-    return i18n.t(`validations.messages.${values._rule_}`, values)
+    de,
+    it
   }
 })
 
 // configure vue
-Vue.config.productionTip = false
-Vue.use(VueI18n)
-Vue.use(BootstrapVue)
-Vue.use(VueFlatPickr)
-Vue.component('FontAwesomeIcon', FontAwesomeIcon)
-Vue.component('ValidationProvider', ValidationProvider)
-Vue.component('Spinner', Spinner)
+const vue = createApp(Switch)
+
+vue.config.productionTip = false
+vue.use(i18n)
+vue.use(VueFlatPickr)
+vue.component('FontAwesomeIcon', FontAwesomeIcon)
+vue.component('Spinner', Spinner)
 
 // boot apps
 if (document.getElementById('switch') != null) {
-  // eslint-disable-next-line no-new
-  new Vue({
-    i18n,
-    el: '#switch',
-    components: { App: Switch },
-    render (h) {
-      return h('App')
-    }
-  })
+  vue.mount('#switch')
 }
