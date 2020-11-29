@@ -22,8 +22,6 @@ data:
       required: true
     - path: assets/report/logo.png
       required: true
-    - path: var/transient/domainOverrides.json
-      required: false
     - path: var/transient/authorization/whitelists/developers.txt
       required: false
 

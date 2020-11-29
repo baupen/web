@@ -39,6 +39,7 @@
     "symfony/twig-bundle": "5.1.*",
     "symfony/uid": "5.1.*",
     "symfony/validator": "5.1.*",
+    "symfony/webpack-encore-bundle": "^1.7",
     "symfony/yaml": "5.1.*",
     "tecnickcom/tcpdf": "^6.3",
     "twig/cssinliner-extra": "^3.0",
@@ -61,8 +62,7 @@
     "symfony/phpunit-bridge": "^5.1",
     "symfony/stopwatch": "^5.1",
     "symfony/var-dumper": "^5.1",
-    "symfony/web-profiler-bundle": "^5.1",
-    "symfony/webpack-encore-bundle": "^1.7"
+    "symfony/web-profiler-bundle": "^5.1"
   },
   "config": {
     "optimize-autoloader": true,
