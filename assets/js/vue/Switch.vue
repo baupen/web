@@ -1,17 +1,19 @@
 <template>
   <div id="switch">
-    <spinner :spin="true"/>
+    <p>Hi</p>
+    <p>{{ $t("switch.mine") }}</p>
+    <spinner :spin="true" />
   </div>
 </template>
 
 <script>
 
 export default {
-  data() {
+  data () {
     return {
-      isLoading: true,
-    };
-  },
-};
+      isLoading: true
+    }
+  }
+}
 
 </script>

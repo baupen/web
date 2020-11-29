@@ -69,7 +69,6 @@ script:
   - php vendor/bin/phpunit
 
   # frontend dependency checks
-  - yarn check
   - yarn audit --groups dependencies
 
   # frontend linters

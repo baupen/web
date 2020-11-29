@@ -65,11 +65,11 @@ Milestone 2 (API):
 - [x] add nodes for maps
 - [x] add nodes for issues
 - [x] add report
-- [ ] allow access to the API with tokens for constructionManager (iOS), craftsman & filter; like X-AUTHENTICATE-CONSTRUCTION-MANAGER
+- [x] allow access to the API with tokens for constructionManager (iOS), craftsman & filter with `X-AUTHENTICATE`
 
 Milestone 3 (Operations):
+- [x] new vueJS setup
 - [ ] use `famoser/agnes` for deployments
-- [ ] new vueJS setup
 - [ ] add login QR token for app
 
 Milestone 4 (UI)

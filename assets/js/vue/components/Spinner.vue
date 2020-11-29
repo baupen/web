@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { AtomSpinner } from 'epic-spinners'
+import AtomSpinner from './Spinner/AtomSpinner'
 
 export default {
   components: {

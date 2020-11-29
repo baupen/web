@@ -1,0 +1,265 @@
+{
+  "switch": {
+    "mine": "Meine Baustellen",
+    "mine_help": "Diese Baustellen werden auch in der App angezeigt.",
+    "all": "Alle erfassten Baustellen",
+    "actions": {
+      "create_construction_site": "Neue Baustelle erfassen"
+    },
+    "messages": {
+      "info": {
+        "activate_construction_site": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen."
+      }
+    }
+  },
+  "construction_sites_preview": {
+    "actions": {
+      "enter": "Zur Baustelle"
+    }
+  },
+  "dashboard": {
+    "name": "Pendenzen",
+    "messages": {
+      "info": {
+        "new_issues_in_foyer": "Eine neue Pendenz | {count} neue Pendenzen"
+      }
+    },
+    "actions": {
+      "add_to_register": "Jetzt zum Verzeichnis hinzufügen"
+    }
+  },
+  "feed": {
+    "name": "Feed",
+    "show_more": "Mehr anzeigen",
+    "no_entries_yet": "Keine Aktivitäten auf der Baustelle. Fügen Sie Pendenzen hinzu, damit hier etwas angezeigt wird.",
+    "entries": {
+      "response_received": "{craftsman} hat eine Pendenz erledigt. | {craftsman} hat {count} Pendenzen erledigt.",
+      "visited_webpage": "{craftsman} hat die Pendenzen angeschaut.",
+      "overdue_limit": "{craftsman} hat die Frist vom {limit} bei {count} Pendenzen überschritten."
+    }
+  },
+  "foyer": {
+    "actions": {
+      "confirm_specific_issues": "Pendenz ins Verzeichnis aufnehmen | {count} Pendenzen ins Verzeichnis aufnehmen",
+      "confirm_all_issues": "Alle Pendenzen ins Verzeichnis aufnehmen",
+      "confirm_issues": "Pendenzen im Verzeichnis hinzufügen"
+    },
+    "dialog": {
+      "danger": {
+        "confirm_remove": "Wollen Sie die rot markierten Pendenzen wirklich entfernen? Sie können diesen Schritt nicht rückgängig machen."
+      }
+    },
+    "messages": {
+      "success": {
+        "added_to_register": "Zum Verzeichnis hinzugefügt."
+      },
+      "danger": {
+        "confirm_issues_impossible": "Bitte geben Sie bei allen Pendenzen mindestens die Beschreibung und den Unternehmer an."
+      }
+    }
+  },
+  "dispatch": {
+    "table": {
+      "no_entries": "Keine Unternehmer erfasst",
+      "filter_placeholder": "Unternehmer\/Gewerk suchen..."
+    },
+    "actions": {
+      "send_emails": "E-Mails versenden",
+      "send_emails_to_all": "E-Mails an alle versenden",
+      "send_emails_to_selected": "E-Mails an ausgewählte versenden"
+    },
+    "messages": {
+      "emails_sent": "E-Mails versandt",
+      "skipped_emails": "{count} Unternehmer wurden beim Versand übersprungen, da diese keine offenen Pendenzen (mehr) haben."
+    }
+  },
+  "view_resolve": {
+    "loading_open_issues": "? offene Pendenzen",
+    "open_issues_header": "Keine offenen Pendenzen | Eine offene Pendenz | {count} offene Pendenzen",
+    "of_craftsman": "von {craftsman} ",
+    "dialog": {
+      "success": {
+        "thanks": "Alle Pendenzen erledigt. Wir sagen Danke!"
+      }
+    },
+    "actions": {
+      "read_only_view": "Schreibgeschützter Link",
+      "send_response": "als erledigt markieren",
+      "remove_response": "rückgängig"
+    }
+  },
+  "view_filtered": {
+    "issues_overview": "Pendenzenüberblick",
+    "no_issues": "Keine Pendenzen verfügbar"
+  },
+  "construction_site_edit": {
+    "description": "Ändern Sie Adresse & Titelbild.",
+    "drag_files_to_upload": "Ziehen Sie ein .jpg oder .png Bild in diesen Bereich um dieses als neues Titelbild zu setzen.",
+    "actions": {
+      "save": "Änderungen speichern"
+    },
+    "messages": {
+      "error": {
+        "name_already_taken": "Dieser Name ist bereits vergeben."
+      }
+    }
+  },
+  "construction_managers_edit": {
+    "help": "Gewähren Sie anderen Bauleitern Zugriff auf diese Baustelle damit diese auch Pendenzen erfassen und verwalten können.",
+    "actions": {
+      "add": "Hinzufügen & informieren per E-Mail"
+    }
+  },
+  "maps_edit": {
+    "description": "Ändern Sie die Struktur der Baupläne.",
+    "default_map_name": "Neuer Bauplan",
+    "drag_files_to_upload": "Ziehen Sie .pdf Dateien in diesen Bereich um diese als Baupläne zu nutzen.",
+    "actions": {
+      "add_map": "Bauplan hinzufügen",
+      "reorder": "neu sortieren",
+      "add_map_files": "Bauplanversionen hinzufügen",
+      "hide_map_files": "Bauplanversionen verstecken",
+      "save_changes": "{pendingChangesCount} Änderungen speichern"
+    },
+    "messages": {
+      "uploading": "wird hochgeladen... ({percentage}%)"
+    }
+  },
+  "craftsmen_edit": {
+    "help": "Aktualisieren Sie die Daten der Unternehmer.",
+    "actions": {
+      "add_craftsman": "Unternehmer hinzufügen",
+      "download_excel_template": "Excel Vorlage herunterladen",
+      "import_from_excel": "Aus Excel importieren"
+    }
+  },
+  "issues_edit": {
+    "no_entries": "Keine Pendenzen",
+    "filter": {
+      "name": "Filter",
+      "only_marked": "nur Favoriten",
+      "only_over_limit": "nur mit überschrittener Frist",
+      "only_was_added_with_client": "nur Abnahmependenzen",
+      "moment": {
+        "later_than": "später als",
+        "earlier_than": "früher als",
+        "status_set": "Status gesetzt",
+        "time": "Zeit",
+        "time_set": "{state} am"
+      }
+    },
+    "export": {
+      "name": "Export",
+      "pdf": {
+        "name": "PDF",
+        "with_images": "mit Fotos",
+        "generate": "generieren",
+        "tables": {
+          "name": "Zusammenfassungstabellen",
+          "table_by_craftsman": "nach Unternehmer",
+          "table_by_trade": "nach Gewerk",
+          "table_by_map": "nach Bauplan"
+        }
+      },
+      "link": {
+        "name": "Link",
+        "with_limit": "Mit Ablaufdatum",
+        "valid_till": "gültig bis",
+        "generate": "erstellen"
+      }
+    }
+  },
+  "construction_manager": {
+    "_name": "Bauleiter",
+    "_plural": "Bauleiter",
+    "email": "E-Mail",
+    "_placeholders": {
+      "email": "max@musterag.ch"
+    }
+  },
+  "construction_site": {
+    "_name": "Baustelle",
+    "name": "Name",
+    "address": "Adresse",
+    "street_address": "Strasse \/ Nr.",
+    "locality": "Ort",
+    "postal_code": "PLZ",
+    "created_at": "erstellt am"
+  },
+  "craftsman": {
+    "_name": "Unternehmer",
+    "_plural": "Unternehmer",
+    "_placeholders": {
+      "contact_name": "Max Muster",
+      "email": "max@musterag.ch",
+      "company": "Muster AG",
+      "trade": "Elektriker"
+    },
+    "name": "Name",
+    "trade": "Gewerk",
+    "contact_name": "Kontaktperson",
+    "email": "E-Mail",
+    "company": "Unternehmer",
+    "not_responded_issues_count": "Nicht erledigte Pendenzen",
+    "not_read_issues_count": "Ungelesene Pendenzen",
+    "open_issues_count": "Offene Pendenzen",
+    "next_response_limit": "Nächste Frist",
+    "last_email_sent": "Letzte versandte E-Mail",
+    "last_online_visit": "Letzter Webseitenbesuch"
+  },
+  "map": {
+    "_name": "Bauplan",
+    "_plural": "Baupläne",
+    "name": "Name",
+    "open_issues_count": "Offene Pendenzen",
+    "closed_issues_count": "Geschlossene Pendenzen",
+    "next_response_limit": "Nächste Frist",
+    "parent": "Zuordnung"
+  },
+  "issue": {
+    "_name": "Pendenz",
+    "_plural": "Pendenzen",
+    "description": "Beschreibung",
+    "response_limit": "Frist",
+    "map": "Bauplan",
+    "status": "Status",
+    "number": "Nummer",
+    "trade": "Gewerk",
+    "created": "erstellt",
+    "registered": "registriert",
+    "resolved": "erledigt",
+    "closed": "geschlossen",
+    "state_context": {
+      "open": "offen",
+      "read": "gelesen",
+      "overdue": "Frist überschritten",
+      "to_inspect": "zur Inspektion",
+      "marked": "markiert"
+    }
+  },
+  "actions": {
+    "save": "speichern",
+    "save_all": "alle speichern",
+    "remove": "entfernen",
+    "remove_all": "alle entfernen",
+    "remove_selected": "ausgewählte entfernen",
+    "abort": "abbrechen",
+    "print": "drucken"
+  },
+  "messages": {
+    "success": {
+      "removed_entries": "Erfolgreich entfernt.",
+      "saved_changes": "Änderungen gespeichert."
+    },
+    "danger": {
+      "unrecoverable": "Es ist ein Fehler aufgetreten. Laden Sie die Seite neu und versuchen Sie es erneut."
+    }
+  },
+  "validation": {
+    "required": "Bitte Feld ausfüllen"
+  },
+  "view": {
+    "more": "mehr",
+    "less": "weniger"
+  }
+}
