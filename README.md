@@ -69,7 +69,7 @@ Milestone 2 (API):
 
 Milestone 3 (Operations):
 - [x] new vueJS setup
-- [ ] use `famoser/agnes` for deployments
+- [x] use `famoser/agnes` for deployments
 - [ ] add login QR token for app
 
 Milestone 4 (UI)
