@@ -51,7 +51,7 @@ install:
   # configure fontawesome
   - npm config set "@fortawesome:registry" https://npm.fontawesome.com/
   - npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_AUTH_TOKEN
-  
+
   # install dependencies
   - composer install --no-scripts
   - yarn install
@@ -85,7 +85,6 @@ script:
   - ./bin/console lint:yaml config
   - ./bin/console lint:yaml translations
   - ./bin/console lint:twig templates
-  - composer validate --strict
 
   # backend vulnerability check
   - ./bin/console security:check

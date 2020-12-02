@@ -199,13 +199,9 @@
                     const lowercaseText = filter.onlyWithText.toLowerCase()
                     res = res.filter(i => i.description.toLowerCase().includes(lowercaseText));
                   } else {
-                    console.log("looking for " + filter.onlyWithText)
                     res = res.filter(i => i.number === filter.onlyWithText);
                   }
                 }
-
-                console.log(res);
-                console.log(timeFilter);
 
                 return res;
             }
@@ -249,7 +245,7 @@
             writeProperties: function (newIssues) {
                 newIssues.forEach(c => {
                     let match = this.issues.filter(i => i.id === c.id)[0];
-                    match.craftmanId = c.craftsmanId;
+                    match.craftsmanId = c.craftsmanId;
                     match.description = c.description;
                     match.reponseLimit = c.reponseLimit;
                     match.respondedAt = c.respondedAt;
