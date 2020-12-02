@@ -249,7 +249,7 @@
             writeProperties: function (newIssues) {
                 newIssues.forEach(c => {
                     let match = this.issues.filter(i => i.id === c.id)[0];
-                    match.craftmanId = c.craftsmanId;
+                    match.craftsmanId = c.craftsmanId;
                     match.description = c.description;
                     match.reponseLimit = c.reponseLimit;
                     match.respondedAt = c.respondedAt;
