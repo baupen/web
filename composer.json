@@ -12,6 +12,7 @@
     "ext-pdo_sqlite": "*",
     "ext-simplexml": "*",
     "ext-xml": "*",
+    "composer/package-versions-deprecated": "1.11.99.1",
     "doctrine/doctrine-fixtures-bundle": "^3.0",
     "doctrine/doctrine-migrations-bundle": "^2.0",
     "easycorp/easyadmin-bundle": "^1.17",
