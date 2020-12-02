@@ -293,17 +293,17 @@
                 this.editIssue = issue;
             },
             cellEditConfirm: function (cell, issue, args = null) {
-                if (this.selectedIssues.length === 0) {
+                if (!(this.selectedIssues.indexOf(issue) >= 0)) {
                   this.selectedIssues.push(issue);
                 }
 
                 if (cell === "status") {
-                    this.$emit('update-status', this.selectedIssues, args[0], args[1]);
+                    this.$emit('update-status', [...this.selectedIssues], args[0], args[1]);
                 }
                 else {
                     //set property to all selected cells & save
                     this.selectedIssues.filter(i => i !== issue).forEach(i => i[cell] = issue[cell]);
-                    this.$emit('update-issues', this.selectedIssues);
+                    this.$emit('update-issues', [...this.selectedIssues]);
                 }
 
                 this.cellEditAbort(cell);
@@ -312,6 +312,7 @@
                 //disable edit
                 this.editEnabled[cell] = false;
                 this.editIssue = null;
+                this.selectedIssues = [];
             },
             toggleMark: function (issue) {
                 issue.isMarked = !issue.isMarked;
