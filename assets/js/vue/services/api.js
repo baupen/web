@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Noty from 'noty'
 
 axios.interceptors.response.use(
   response => {
