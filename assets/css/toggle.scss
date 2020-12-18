@@ -30,20 +30,12 @@ $toggle-default-size: 1.5rem;
 // Mixin for Default Switch Styles
 // Variables: $size, $margin, $color, $bg, $active-bg, $font-size
 @mixin toggle-mixin($size: $toggle-default-size) {
-  border: none;
+  border: 0;
   border-radius: $size;
   height: $size;
   padding: 0;
   position: relative;
   width: $size * 2;
-
-  &:focus,
-  &.focus {
-    &,
-    &.active {
-      outline: none;
-    }
-  }
 
   > .handle {
     background: #fff;
@@ -70,6 +62,14 @@ $toggle-default-size: 1.5rem;
 
     &::after {
       opacity: 1;
+    }
+  }
+
+  &:focus,
+  &.focus {
+    &,
+    &.active {
+      outline: none;
     }
   }
 
