@@ -12,6 +12,7 @@
 namespace App\Controller;
 
 use App\Controller\Base\BaseController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -25,7 +26,7 @@ class IndexController extends BaseController
      *
      * @return Response
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         return $this->render('index.html.twig');
     }

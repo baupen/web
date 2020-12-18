@@ -21,11 +21,9 @@ class I18nController extends BaseDoctrineController
     /**
      * @Route("/set_locale/{locale}", name="set_locale")
      *
-     * @param $locale
-     *
      * @return Response
      */
-    public function setLocaleAction(Request $request, $locale)
+    public function setLocaleAction(Request $request, string $locale)
     {
         //only change locale to valid values
         if (\in_array($locale, ['de', 'it'], true)) {

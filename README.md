@@ -70,7 +70,6 @@ Milestone 2 (API):
 Milestone 3 (Operations):
 - [x] new vueJS setup
 - [x] use `famoser/agnes` for deployments
-- [ ] add login QR token for app
 
 Milestone 4 (UI)
 - [ ] implement switch UI
@@ -82,8 +81,10 @@ Milestone 4 (UI)
 - [ ] finalize filter in API
 - [ ] implement craftsman view
 - [ ] implement filter view
+- [ ] add login QR token for app
 - [ ] add graph of recent issues to dashboard
 
 Milestone 5 (Migration & performance)
 - [ ] write migration from sqlite to mysql
 - [ ] test `app:cache:initialize` command
+- [ ] implement copy environment with mysql database
