@@ -1,11 +1,11 @@
 <template>
   <div>
     <masonry
-        :cols="{default: 4, 1800: 6, 992: 2}"
+        :cols="{default: 6, 2400: 5, 2100: 4, 1800: 3, 1200: 2, 600: 1}"
         :gutter="{default: '10px'}"
         class="mt-2">
       <div class="grid-item" v-for="constructionSite in constructionSites" :key="constructionSite['@id']">
-        <construction-site-card :construction-site="constructionSite" :construction-managers="constructionManagers" />
+        <construction-site-card class="mb-2" :construction-site="constructionSite" :construction-managers="constructionManagers" />
       </div>
     </masonry>
   </div>

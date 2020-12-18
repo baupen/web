@@ -43,21 +43,28 @@ class ApiControllerTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
 
         $constructionManager = $constructionSite->getConstructionManagers()[0];
+        $constructionManagerIri = $this->getIriFromItem($constructionManager);
         $constructionManagerToken = $this->createApiTokenFor($constructionManager);
 
         $craftsman = $constructionSite->getCraftsmen()[0];
+        $craftsmanIri = $this->getIriFromItem($craftsman);
         $craftsmanToken = $this->createApiTokenFor($craftsman);
 
         $filter = $constructionSite->getFilters()[0];
+        $filterIri = $this->getIriFromItem($filter);
         $filterToken = $this->createApiTokenFor($filter);
 
+        $jsonUrlEscape = function (string $value) {
+            return str_replace('/', '\\/', $value);
+        };
+
         $response = $this->assertApiTokenRequestSuccessful($client, $constructionManagerToken, 'GET', '/api/me');
-        $this->assertStringContainsString($constructionManager->getId(), $response->getContent());
+        $this->assertStringContainsString($jsonUrlEscape($constructionManagerIri), $response->getContent());
 
         $response = $this->assertApiTokenRequestSuccessful($client, $craftsmanToken, 'GET', '/api/me');
-        $this->assertStringContainsString($craftsman->getId(), $response->getContent());
+        $this->assertStringContainsString($jsonUrlEscape($craftsmanIri), $response->getContent());
 
         $response = $this->assertApiTokenRequestSuccessful($client, $filterToken, 'GET', '/api/me');
-        $this->assertStringContainsString($filter->getId(), $response->getContent());
+        $this->assertStringContainsString($jsonUrlEscape($filterIri), $response->getContent());
     }
 }

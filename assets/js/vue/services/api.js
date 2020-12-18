@@ -29,6 +29,16 @@ const api = {
       }
     )
   },
+  loadMe (instance) {
+    axios.get('/api/me')
+      .then(response => {
+        for (const prop in response.data) {
+          if (Object.prototype.hasOwnProperty.call(response.data, prop)) {
+            instance[prop] = response.data[prop]
+          }
+        }
+      })
+  },
   loadConstructionSites (instance) {
     axios.get('/api/construction_sites')
       .then(response => {
