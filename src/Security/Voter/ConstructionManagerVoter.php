@@ -22,8 +22,6 @@ class ConstructionManagerVoter extends ConstructionSiteRelatedEntityVoter
 
     /**
      * @param ConstructionManager $subject
-     *
-     * @return ConstructionManager
      */
     protected function isConstructionManagerRelated(ConstructionManager $constructionManager, $subject)
     {
