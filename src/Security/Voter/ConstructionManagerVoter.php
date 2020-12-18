@@ -54,23 +54,17 @@ class ConstructionManagerVoter extends ConstructionSiteRelatedEntityVoter
         return [self::CONSTRUCTION_MANAGER_VIEW];
     }
 
-    protected function getConstructionManagerAttributes(): array
+    protected function getReadOnlyAttributes(): array
     {
         return [self::CONSTRUCTION_MANAGER_VIEW];
     }
 
-    protected function getCraftsmanAccessibleAttributes(): array
+    protected function getUnrelatedConstructionManagerAttributes(bool $isLimitedAccount): array
     {
-        return [self::CONSTRUCTION_MANAGER_VIEW];
-    }
+        if ($isLimitedAccount) {
+            return [];
+        }
 
-    protected function getFilterAccessibleAttributes(): array
-    {
-        return [self::CONSTRUCTION_MANAGER_VIEW];
-    }
-
-    protected function getConstructionManagerAttributesWhichAreConstructionSiteIndependent(): array
-    {
         return [self::CONSTRUCTION_MANAGER_VIEW];
     }
 }

@@ -18,11 +18,12 @@
         <td>{{ constructionSite.name }}</td>
         <td>{{ formatConstructionSiteAddress(constructionSite).join(", ") }}</td>
         <td>
-          <human-readable-date-time :value="constructionSite.createdAt" />
+          <human-readable-date-time :value="constructionSite.createdAt"/>
         </td>
         <td>
-          <button type="button" class="btn btn-toggle" :class="{'active': this.ownsConstructionSite(constructionSite)}" @click="toggleOwnConstructionSite" data-toggle="button" aria-pressed="true"
-                  autocomplete="off">
+          <button type="button" class="btn btn-toggle" aria-pressed="true"
+                  :class="{'active': this.ownsConstructionSite(constructionSite)}"
+                  @click="toggleOwnConstructionSite">
             <div class="handle"></div>
           </button>
         </td>

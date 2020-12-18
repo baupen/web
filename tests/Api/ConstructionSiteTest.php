@@ -34,7 +34,7 @@ class ConstructionSiteTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $testConstructionSite = $this->getTestConstructionSite();
-        $this->assertApiOperationUnsupported($client, '/api/construction_sites/'.$testConstructionSite->getId(), 'DELETE', 'PUT', 'PATCH');
+        $this->assertApiOperationUnsupported($client, '/api/construction_sites/'.$testConstructionSite->getId(), 'DELETE', 'PUT');
     }
 
     public function testValidMethodsNeedAuthentication()
@@ -62,7 +62,7 @@ class ConstructionSiteTest extends ApiTestCase
         $this->assertApiResponseFileIsDownloadable($client, $response, 'imageUrl');
     }
 
-    public function testPost()
+    public function testPostAndPatch()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -83,13 +83,36 @@ class ConstructionSiteTest extends ApiTestCase
         $this->assertContains($constructionManagerIri, $newConstructionSite['constructionManagers']);
         $this->assertApiCollectionContainsResponseItem($client, '/api/construction_sites', $response);
 
-        $this->loginApiConstructionManagerExternal($client);
+        $externalConstructionManager = $this->loginApiConstructionManagerExternal($client);
         $this->assertApiGetStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id']);
         $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/construction_sites', $sample);
+        $this->assertApiPatchStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id'], $sample);
+
+        $trialConstructionManager = $this->loginApiConstructionManagerTrial($client);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id']);
+        $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/construction_sites', $sample);
+        $this->assertApiPatchStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id'], $sample);
+
+        $patch = [
+            'name' => 'New 2',
+            'streetAddress' => 'New Address',
+            'postalCode' => 1234,
+            'locality' => 'Teerwil',
+            'constructionManagers' => [
+                $this->getIriFromItem($externalConstructionManager),
+                $this->getIriFromItem($trialConstructionManager),
+            ],
+        ];
+        $this->loginApiConstructionManager($client);
+        $this->assertApiPatchStatusCodeSame(Response::HTTP_OK, $client, $newConstructionSite['@id'], $patch);
+
+        $this->loginApiConstructionManagerExternal($client);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, $newConstructionSite['@id']);
+        $this->assertApiPatchStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id'], $sample);
 
         $this->loginApiConstructionManagerTrial($client);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id']);
-        $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/construction_sites', $sample);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, $newConstructionSite['@id']);
+        $this->assertApiPatchStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionSite['@id'], $sample);
     }
 
     public function testLastChangedAtFilter()

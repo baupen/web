@@ -37,7 +37,7 @@ class IssueVoter extends ConstructionSiteOwnedEntityVoter
         return [self::ISSUE_VIEW];
     }
 
-    protected function getCraftsmanAccessibleAttributes(): array
+    protected function getRelatedCraftsmanAccessibleAttributes(): array
     {
         return array_merge($this->getReadOnlyAttributes(), [self::ISSUE_RESPOND]);
     }

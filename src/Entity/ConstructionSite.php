@@ -35,7 +35,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "post" = {"security_post_denormalize" = "is_granted('CONSTRUCTION_SITE_CREATE', object)"}
  *      },
  *     itemOperations={
- *      "get" = {"security" = "is_granted('CONSTRUCTION_SITE_VIEW', object)"}
+ *      "get" = {"security" = "is_granted('CONSTRUCTION_SITE_VIEW', object)"},
+ *      "patch" = {"security" = "is_granted('CONSTRUCTION_SITE_MODIFY', object)"}
  *     },
  *     normalizationContext={"groups"={"construction-site-read"}, "skip_null_values"=false},
  *     denormalizationContext={"groups"={"construction-site-write"}},
@@ -80,7 +81,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     /**
      * @var ConstructionManager[]|ArrayCollection
      *
-     * @Groups({"construction-site-read"})
+     * @Groups({"construction-site-read", "construction-site-write"})
      * @ORM\ManyToMany(targetEntity="ConstructionManager", inversedBy="constructionSites")
      * @ORM\JoinTable(name="construction_site_construction_manager")
      */
@@ -164,6 +165,26 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     public function getConstructionManagers()
     {
         return $this->constructionManagers;
+    }
+
+    public function addConstructionManager(ConstructionManager $constructionManager): self
+    {
+        if (!$this->constructionManagers->contains($constructionManager)) {
+            $this->constructionManagers[] = $constructionManager;
+            $constructionManager->getConstructionSites()->add($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConstructionManager(ConstructionManager $constructionManager): self
+    {
+        if ($this->constructionManagers->contains($constructionManager)) {
+            $this->constructionManagers->removeElement($constructionManager);
+            $constructionManager->getConstructionSites()->removeElement($this);
+        }
+
+        return $this;
     }
 
     /**

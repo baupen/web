@@ -120,7 +120,7 @@ $toggle-default-size: 1.5rem;
     @include toggle-mixin($size: 2.5rem);
   }
 
-  &.sm {
+  &.btn-sm {
     @include toggle-mixin($size: 1rem);
   }
 }
