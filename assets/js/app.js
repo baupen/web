@@ -26,6 +26,9 @@ $(document)
     $('[data-toggle="popover"]')
       .popover()
 
+    $('[data-toggle="tooltip"]')
+      .tooltip()
+
     // force reload on user browser button navigation
     $(window)
       .on('popstate', () => {

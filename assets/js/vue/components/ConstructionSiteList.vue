@@ -4,8 +4,9 @@
       <thead>
       <tr>
         <th class="w-minimal"></th>
-        <th>{{$t('construction_site.name')}}</th>
-        <th>{{$t('construction_site.address')}}</th>
+        <th>{{ $t('construction_site.name') }}</th>
+        <th>{{ $t('construction_site.address') }}</th>
+        <th>{{ $t('construction_site.created_at') }}</th>
         <th class="w-minimal"></th>
       </tr>
       </thead>
@@ -14,10 +15,14 @@
         <td>
           <img :src="constructionSite.imageUrl" :alt="'thumbnail of ' + constructionSite.name">
         </td>
-        <td>{{constructionSite.name}}</td>
+        <td>{{ constructionSite.name }}</td>
         <td>{{ formatConstructionSiteAddress(constructionSite).join(", ") }}</td>
         <td>
-          <button type="button" class="btn btn-toggle active" data-toggle="button" aria-pressed="true" autocomplete="off">
+          <human-readable-date-time :value="constructionSite.createdAt" />
+        </td>
+        <td>
+          <button type="button" class="btn btn-toggle" :class="{'active': this.ownsConstructionSite(constructionSite)}" @click="toggleOwnConstructionSite" data-toggle="button" aria-pressed="true"
+                  autocomplete="off">
             <div class="handle"></div>
           </button>
         </td>
@@ -29,12 +34,14 @@
 
 <script>
 
-import { constructionSiteFormatter } from '../services/formatters'
+import {constructionSiteFormatter} from '../services/formatters'
 import Masonry from './ConstructionSitePreviews/Masonry'
 import ConstructionSiteCard from "./ConstructionSitePreviews/ConstructionSiteCard";
+import HumanReadableDateTime from "./Shared/HumanReadableDateTime";
 
 export default {
   components: {
+    HumanReadableDateTime,
     ConstructionSiteCard,
     Masonry
   },
@@ -42,11 +49,21 @@ export default {
     constructionSites: {
       type: Array,
       required: true
+    },
+    constructionManagerIri: {
+      type: String,
+      required: true
     }
   },
   methods: {
     formatConstructionSiteAddress: function (constructionSite) {
       return constructionSiteFormatter.address(constructionSite);
+    },
+    ownsConstructionSite: function (constructionSite) {
+      return constructionSite.constructionManagers.includes(this.constructionManagerIri);
+    },
+    toggleOwnConstructionSite: function (constructionSite) {
+      console.log("toggle");
     }
   }
 }

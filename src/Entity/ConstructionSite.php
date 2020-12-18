@@ -256,6 +256,14 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
         return $this->lastChangedAt;
     }
 
+    /**
+     * @Groups({"construction-site-read"})
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
     public function isConstructionSiteSet(): bool
     {
         return true;

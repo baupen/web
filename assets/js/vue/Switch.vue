@@ -17,7 +17,7 @@
     <h2>{{ $t("switch.all") }}</h2>
     <p>{{ $t("switch.all_help") }}</p>
     <spinner :spin="isLoading">
-      <construction-site-list :construction-sites="constructionSiteList"/>
+      <construction-site-list :construction-sites="constructionSiteList" :construction-manager-iri="constructionManagerIri"/>
     </spinner>
   </div>
 </template>
