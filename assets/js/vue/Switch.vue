@@ -26,6 +26,7 @@ export default {
     }
   },
   mounted() {
+    api.setupErrorNotifications(this);
     api.loadConstructionSites(this);
     api.loadConstructionManagers(this);
   }

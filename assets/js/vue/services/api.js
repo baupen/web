@@ -1,48 +1,44 @@
 import axios from 'axios'
 import Noty from 'noty'
 
-axios.interceptors.response.use(
-  response => {
-    return response
-  },
-  error => {
-    if (error.response) {
-      new Noty({
-        text: this.$t('messages.danger.request_failed') + ' (' + error.response.data.status + ': ' + error.response.data.detail + ')',
-        theme: 'bootstrap-v4',
-        type: 'error'
-      }).show()
-    } else {
-      new Noty({
-        text: this.$t('messages.danger.request_failed') + ' (' + error + ')',
-        theme: 'bootstrap-v4',
-        type: 'error'
-      }).show()
-    }
-
-    console.log('request failed')
-    console.log(error.response.data)
-    return Promise.reject(error)
-  }
-)
-
 const api = {
+  setupErrorNotifications (instance) {
+    axios.interceptors.response.use(
+      response => {
+        return response
+      },
+      error => {
+        let errorText = error
+        if (error.response) {
+          const response = error.response
+          if (response.data) {
+            const data = response.data
+            errorText = data['hydra:title'] + ': ' + data['hydra:description']
+          } else {
+            errorText = response.status + ': ' + response.statusText
+          }
+        }
+
+        new Noty({
+          text: instance.$t('messages.danger.request_failed') + ' (' + errorText + ')',
+          theme: 'bootstrap-v4',
+          type: 'error'
+        }).show()
+
+        return Promise.reject(error)
+      }
+    )
+  },
   loadConstructionSites (instance) {
     axios.get('/api/construction_sites')
       .then(response => {
         instance.constructionSites = response.data['hydra:member']
-      })
-      .catch(e => {
-        instance.errors.push(e)
       })
   },
   loadConstructionManagers (instance) {
     axios.get('/api/construction_managers')
       .then(response => {
         instance.constructionManagers = response.data['hydra:member']
-      })
-      .catch(e => {
-        instance.errors.push(e)
       })
   }
 }
