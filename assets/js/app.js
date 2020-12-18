@@ -1,6 +1,8 @@
 import '../css/app.scss'
 import './vuejs'
 
+import { dom } from '@fortawesome/fontawesome-svg-core'
+
 const $ = require('jquery')
 require('bootstrap')
 require('typeface-open-sans')
@@ -29,4 +31,6 @@ $(document)
       .on('popstate', () => {
         window.location.reload(true)
       })
+
+    dom.watch()
   })

@@ -4,17 +4,13 @@
     "mine_help": "Diese Baustellen werden auch in der App angezeigt.",
     "all": "Alle erfassten Baustellen",
     "actions": {
-      "create_construction_site": "Neue Baustelle erfassen"
+      "create_construction_site": "Neue Baustelle erfassen",
+      "enter_construction_site": "Zur Baustelle"
     },
     "messages": {
       "info": {
         "activate_construction_site": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen."
       }
-    }
-  },
-  "construction_sites_preview": {
-    "actions": {
-      "enter": "Zur Baustelle"
     }
   },
   "dashboard": {
@@ -252,7 +248,8 @@
       "saved_changes": "Änderungen gespeichert."
     },
     "danger": {
-      "unrecoverable": "Es ist ein Fehler aufgetreten. Laden Sie die Seite neu und versuchen Sie es erneut."
+      "unrecoverable": "Es ist ein Fehler aufgetreten. Laden Sie die Seite neu und versuchen Sie es erneut.",
+      "request_failed": "Der Webanfrage ist fehlgeschlagen."
     }
   },
   "validation": {

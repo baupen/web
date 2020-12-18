@@ -4,17 +4,13 @@
     "mine_help": "Questi cantieri verranno mostrati anche nell'App.",
     "all": "Tutti i cantieri registrati",
     "actions": {
-      "create_construction_site": "Creare nuovo cantiere"
+      "create_construction_site": "Creare nuovo cantiere",
+      "enter_construction_site": "Al cantiere"
     },
     "messages": {
       "info": {
         "activate_construction_site": "Attivare un cantiere dall'elenco sottostante per accedervi."
       }
-    }
-  },
-  "construction_sites_preview": {
-    "actions": {
-      "enter": "Al cantiere"
     }
   },
   "dashboard": {

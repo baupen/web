@@ -1,10 +1,3 @@
-{% macro nav_item(link, text, secondary = false) %}
-    <li class="nav-item {% if secondary %} font-weight-light {% endif %}{% if app.request.pathInfo == link %}active{% endif %}">
-        <a class="nav-link" href="{{ link }}">{{ text }}</a>
-    </li>
-{% endmacro %}
-{% import _self as own_macros %}
-
 {% extends "_base.html.twig" %}
 
 {% block title %}{{ "index.title"|trans }}{% endblock %}
@@ -13,30 +6,41 @@
 {% trans_default_domain "index" %}
 
 {% block content %}
-    <nav class="navbar navbar-dark bg-dark navbar-expand">
+    <nav class="navbar navbar-light bg-light navbar-expand">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavbar"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="mainNavbar">
-            <ul class="navbar-nav mr-2">
+            <ul class="navbar-nav ml-auto">
                 <a href="mailto:{{ env_support_email }}" class="nav-link">
                     <i class="fal fa-envelope-open"></i>
                 </a>
                 <a href="#help-modal" class="nav-link" data-target="#help-modal" data-toggle="modal">
                     <i class="fal fa-question-circle"></i>
                 </a>
-            </ul>
-            <ul class="navbar-nav mr-2">
-                {{ own_macros.nav_item(path("set_locale", {"locale": "de", "return_to": app.request.requestUri}), "de", app.request.locale != "de") }}
-                {{ own_macros.nav_item(path("set_locale", {"locale": "it", "return_to": app.request.requestUri}), "it", app.request.locale != "it") }}
-            </ul>
-            <ul class="navbar-nav">
-                {{ own_macros.nav_item(path("logout"), "logout.title"|trans({}, "security")) }}
+                {% if app.request.locale != "de" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path("set_locale", {"locale": "de", "return_to": app.request.requestUri}) }}">de</a>
+                    </li>
+                {% endif %}
+                {% if app.request.locale != "it" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path("set_locale", {"locale": "it", "return_to": app.request.requestUri}) }}">it</a>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path("logout") }}">{{ "logout.title"|trans({}, "security") }}</a>
+                </li>
             </ul>
         </div>
     </nav>
+
+    <div class="container-fluid pt-3">
+        <div id="switch">
+        </div>
+    </div>
 
     <!-- help modal -->
     <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label"
@@ -44,16 +48,11 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h1>{{ "overview.title"|trans({}, "help") }}</h1>
+                    <h2>{{ "overview.title"|trans({}, "help") }}</h2>
                     <p>{{ "overview.description"|trans({}, "help") }}</p>
                     {% include "help/articles/overview.html.twig" %}
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="container-fluid">
-        <div id="switch">
         </div>
     </div>
 {% endblock %}

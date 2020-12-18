@@ -1,18 +1,33 @@
 <template>
   <div id="switch">
-    <p>Hi</p>
-    <p>{{ $t("switch.mine") }}</p>
-    <spinner :spin="true" />
+    <h1>{{ $t("switch.mine") }}</h1>
+    <p>{{ $t("switch.mine_help") }}</p>
+    <spinner :spin="isLoading">
+      <construction-site-cards :construction-sites="constructionSites" :construction-managers="constructionManagers" />
+    </spinner>
   </div>
 </template>
 
 <script>
+import { api } from './services/api';
+import ConstructionSiteCards from "./components/ConstructionSiteCards";
 
 export default {
-  data () {
+  components: {ConstructionSiteCards},
+  data() {
     return {
-      isLoading: true
+      constructionSites: null,
+      constructionManagers: null
     }
+  },
+  computed: {
+    isLoading: function () {
+      return this.constructionSites === null || this.constructionManagers === null;
+    }
+  },
+  mounted() {
+    api.loadConstructionSites(this);
+    api.loadConstructionManagers(this);
   }
 }
 
