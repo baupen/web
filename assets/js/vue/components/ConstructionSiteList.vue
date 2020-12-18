@@ -23,7 +23,7 @@
         <td>
           <button type="button" class="btn btn-toggle" aria-pressed="true"
                   :class="{'active': this.ownsConstructionSite(constructionSite)}"
-                  @click="toggleOwnConstructionSite">
+                  @click="toggleOwnConstructionSite(constructionSite)">
             <div class="handle"></div>
           </button>
         </td>
@@ -41,6 +41,7 @@ import ConstructionSiteCard from "./ConstructionSitePreviews/ConstructionSiteCar
 import HumanReadableDateTime from "./Shared/HumanReadableDateTime";
 
 export default {
+  emits: ['add-self', 'remove-self'],
   components: {
     HumanReadableDateTime,
     ConstructionSiteCard,
@@ -64,7 +65,11 @@ export default {
       return constructionSite.constructionManagers.includes(this.constructionManagerIri);
     },
     toggleOwnConstructionSite: function (constructionSite) {
-      console.log("toggle");
+      if (!this.ownsConstructionSite(constructionSite)) {
+        this.$emit('add-self', constructionSite)
+      } else {
+        this.$emit('remove-self', constructionSite);
+      }
     }
   }
 }

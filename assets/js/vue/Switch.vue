@@ -17,7 +17,10 @@
     <h2>{{ $t("switch.all") }}</h2>
     <p>{{ $t("switch.all_help") }}</p>
     <spinner :spin="isLoading">
-      <construction-site-list :construction-sites="constructionSiteList" :construction-manager-iri="constructionManagerIri"/>
+      <construction-site-list @remove-self="removeSelfFromConstructionSite"
+                              @add-self="addSelfToConstructionSite"
+                              :construction-sites="constructionSiteList"
+                              :construction-manager-iri="constructionManagerIri"/>
     </spinner>
   </div>
 </template>
@@ -45,6 +48,21 @@ export default {
     },
     constructionSiteList: function () {
       return this.constructionSites.filter(constructionSite => !constructionSite.isDeleted)
+    },
+  },
+  methods: {
+    removeSelfFromConstructionSite: function (constructionSite) {
+      let constructionManagersWithoutSelf = constructionSite.constructionManagers.filter(cm => cm !== this.constructionManagerIri);
+      api.patch(constructionSite, {
+        "constructionManagers": constructionManagersWithoutSelf
+      });
+    },
+    addSelfToConstructionSite: function (constructionSite) {
+      let constructionManagers = constructionSite.constructionManagers.filter(cm => cm !== this.constructionManagerIri);
+      constructionManagers.push(this.constructionManagerIri);
+      api.patch(constructionSite, {
+        "constructionManagers": constructionManagers
+      });
     }
   },
   mounted() {
