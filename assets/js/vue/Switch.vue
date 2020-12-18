@@ -1,19 +1,34 @@
 <template>
   <div id="switch">
-    <h1>{{ $t("switch.mine") }}</h1>
-    <p>{{ $t("switch.mine_help") }}</p>
+    <div class="mb-5">
+      <h1>{{ $t("switch.mine") }}</h1>
+      <p>{{ $t("switch.mine_help") }}</p>
+
+      <spinner :spin="isLoading">
+        <construction-site-previews v-if="memberOfConstructionSites.length > 0"
+                                    :construction-sites="memberOfConstructionSites"
+                                    :construction-managers="constructionManagers"/>
+
+        <div class="alert alert-info" v-else>
+          {{ $t('switch.messages.info.activate_construction_site') }}
+        </div>
+      </spinner>
+    </div>
+    <h2>{{ $t("switch.all") }}</h2>
+    <p>{{ $t("switch.all_help") }}</p>
     <spinner :spin="isLoading">
-      <construction-site-cards :construction-sites="memberOfConstructionSites" :construction-managers="constructionManagers" />
+      <construction-site-list :construction-sites="constructionSiteList"/>
     </spinner>
   </div>
 </template>
 
 <script>
-import { api } from './services/api';
-import ConstructionSiteCards from "./components/ConstructionSiteCards";
+import {api} from './services/api';
+import ConstructionSitePreviews from "./components/ConstructionSitePreviews";
+import ConstructionSiteList from "./components/ConstructionSiteList";
 
 export default {
-  components: {ConstructionSiteCards},
+  components: {ConstructionSiteList, ConstructionSitePreviews},
   data() {
     return {
       constructionManagerIri: null,
@@ -25,8 +40,11 @@ export default {
     isLoading: function () {
       return this.constructionSites === null || this.constructionManagers === null || this.constructionManagerIri === null;
     },
-    memberOfConstructionSites: function() {
-      return this.constructionSites.filter(constructionSite => constructionSite.constructionManagers.includes(this.constructionManagerIri))
+    memberOfConstructionSites: function () {
+      return this.constructionSiteList.filter(constructionSite => constructionSite.constructionManagers.includes(this.constructionManagerIri))
+    },
+    constructionSiteList: function () {
+      return this.constructionSites.filter(constructionSite => !constructionSite.isDeleted)
     }
   },
   mounted() {

@@ -4,6 +4,7 @@ $primary: #343477;
 @import '~bootstrap/scss/bootstrap';
 @import '~noty/src/noty';
 @import '~noty/src/themes/bootstrap-v4';
+@import 'toggle';
 
 html,
 body {
@@ -43,6 +44,11 @@ body {
 
 .col-form-label {
   font-weight: bold;
+}
+
+.w-minimal {
+  white-space: nowrap;
+  width: 1%;
 }
 
 .pre {

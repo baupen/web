@@ -3,6 +3,7 @@
     "mine": "Meine Baustellen",
     "mine_help": "Diese Baustellen werden auch in der App angezeigt.",
     "all": "Alle erfassten Baustellen",
+    "all_help": "Aktivieren Sie Baustellen um auf diese zuzugreifen.",
     "actions": {
       "create_construction_site": "Neue Baustelle erfassen",
       "enter_construction_site": "Zur Baustelle"

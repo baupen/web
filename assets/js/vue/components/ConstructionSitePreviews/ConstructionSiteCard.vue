@@ -20,6 +20,8 @@
 
 <script>
 
+import { constructionSiteFormatter } from '../../services/formatters'
+
 export default {
   props: {
     constructionSite: {
@@ -38,17 +40,7 @@ export default {
           .map(manager => manager.givenName + " " + manager.familyName);
     },
     address: function () {
-      let address = [];
-      if (this.constructionSite.streetAddress) {
-        address.push(this.constructionSite.streetAddress);
-      }
-
-      const plzAndPlace = this.constructionSite.postalCode + " " + this.constructionSite.locality;
-      if (plzAndPlace.trim()) {
-        address.push(plzAndPlace.trim());
-      }
-
-      return address;
+      return constructionSiteFormatter.address(this.constructionSite)
     },
     constructionSiteDashboardHref: function () {
       return this.constructionSite['@id'].replace("/api", "") + "/dashboard";

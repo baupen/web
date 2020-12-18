@@ -3,6 +3,7 @@
     "mine": "I miei cantieri",
     "mine_help": "Questi cantieri verranno mostrati anche nell'App.",
     "all": "Tutti i cantieri registrati",
+    "all_help": "Attivare cantiere per accedervi.",
     "actions": {
       "create_construction_site": "Creare nuovo cantiere",
       "enter_construction_site": "Al cantiere"
