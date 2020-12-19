@@ -17,6 +17,13 @@
     <h2>{{ $t("switch.all") }}</h2>
     <p>{{ $t("switch.all_help") }}</p>
     <spinner :spin="isLoading">
+      <button @click="show = !show" class="btn btn-primary">{{ $t('switch.actions.create_construction_site') }}</button>
+      <transition name="fade">
+        <modal v-if="show" @hide="show = false" :title="$t('switch.actions.create_construction_site')">
+          <construction-site-add :construction-sites="constructionSiteList" @save="postConstructionSite"/>
+        </modal>
+      </transition>
+
       <construction-site-list @remove-self="removeSelfFromConstructionSite"
                               @add-self="addSelfToConstructionSite"
                               :construction-sites="constructionSiteList"
@@ -29,14 +36,17 @@
 import {api} from './services/api';
 import ConstructionSitePreviews from "./components/ConstructionSitePreviews";
 import ConstructionSiteList from "./components/ConstructionSiteList";
+import Modal from "./components/Shared/Modal";
+import ConstructionSiteAdd from "./components/ConstructionSiteAdd";
 
 export default {
-  components: {ConstructionSiteList, ConstructionSitePreviews},
+  components: {ConstructionSiteAdd, Modal, ConstructionSiteList, ConstructionSitePreviews},
   data() {
     return {
       constructionManagerIri: null,
       constructionSites: null,
-      constructionManagers: null
+      constructionManagers: null,
+      show: false
     }
   },
   computed: {
@@ -51,6 +61,11 @@ export default {
     },
   },
   methods: {
+    postConstructionSite: function (constructionSite) {
+      this.show = false
+      constructionSite.constructionManagers = [this.constructionManagerIri];
+      api.post('/api/construction_sites', constructionSite, this.constructionSites);
+    },
     removeSelfFromConstructionSite: function (constructionSite) {
       let constructionManagersWithoutSelf = constructionSite.constructionManagers.filter(cm => cm !== this.constructionManagerIri);
       api.patch(constructionSite, {
@@ -74,3 +89,16 @@ export default {
 }
 
 </script>
+
+<style scoped="true">
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+</style>

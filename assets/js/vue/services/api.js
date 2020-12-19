@@ -61,6 +61,12 @@ const api = {
       .then(response => {
         this._writeAllProperties(response.data, instance)
       })
+  },
+  post: function (collectionUrl, post, collection) {
+    axios.post(collectionUrl, post)
+      .then(response => {
+        collection.push(response.data)
+      })
   }
 }
 

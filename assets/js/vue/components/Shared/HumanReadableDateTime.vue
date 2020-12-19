@@ -1,9 +1,7 @@
 <template>
-  <div>
-    <span ref="value" data-toggle="tooltip"  :title="momentDateTime.format('LLL')">
+    <span ref="value" data-toggle="tooltip" :title="momentDateTime.format('LLL')">
       {{ momentDateTime.fromNow() }}
     </span>
-  </div>
 </template>
 
 <script>

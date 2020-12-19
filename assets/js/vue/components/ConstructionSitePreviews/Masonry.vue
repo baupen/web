@@ -1,5 +1,8 @@
-
 <script>
+/**
+ * from https://github.com/paulcollett/vue-masonry-css
+ * MIT license, but heavily adapted
+ */
 
 import { h } from 'vue'
 

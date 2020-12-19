@@ -80,7 +80,6 @@ class ConstructionSiteTest extends ApiTestCase
         $response = $this->assertApiPostPayloadPersisted($client, '/api/construction_sites', $sample);
 
         $newConstructionSite = json_decode($response->getContent(), true);
-        $this->assertContains($constructionManagerIri, $newConstructionSite['constructionManagers']);
         $this->assertApiCollectionContainsResponseItem($client, '/api/construction_sites', $response);
 
         $externalConstructionManager = $this->loginApiConstructionManagerExternal($client);

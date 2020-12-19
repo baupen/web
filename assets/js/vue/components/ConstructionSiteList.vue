@@ -13,7 +13,7 @@
       <tbody>
       <tr v-for="constructionSite in constructionSites" :key="constructionSite['@id']">
         <td>
-          <img :src="constructionSite.imageUrl" :alt="'thumbnail of ' + constructionSite.name">
+          <img v-if="constructionSite.imageUrl" :src="constructionSite.imageUrl" :alt="'thumbnail of ' + constructionSite.name">
         </td>
         <td>{{ constructionSite.name }}</td>
         <td>{{ formatConstructionSiteAddress(constructionSite).join(", ") }}</td>

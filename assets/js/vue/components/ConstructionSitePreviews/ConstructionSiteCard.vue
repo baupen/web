@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <img class="card-img-top" :src="constructionSite.imageUrl + '?size=preview'" :alt="'image of ' + constructionSite.name">
+    <img class="card-img-top" v-if="constructionSite.imageUrl" :src="constructionSite.imageUrl + '?size=preview'" :alt="'image of ' + constructionSite.name">
     <div class="card-body">
       <h2>{{ constructionSite.name }}</h2>
       <p>
