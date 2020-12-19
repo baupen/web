@@ -42,7 +42,6 @@ class ConstructionSiteDataPersister implements ContextAwareDataPersisterInterfac
     {
         if (($context['collection_operation_name'] ?? null) === 'post') {
             $this->storageService->setNewFolderName($data);
-            $data->getConstructionManagers()->add($this->user);
         }
 
         return $this->decorated->persist($data, $context);

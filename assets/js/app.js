@@ -1,6 +1,8 @@
 import '../css/app.scss'
 import './vuejs'
 
+import { dom } from '@fortawesome/fontawesome-svg-core'
+
 const $ = require('jquery')
 require('bootstrap')
 require('typeface-open-sans')
@@ -24,9 +26,14 @@ $(document)
     $('[data-toggle="popover"]')
       .popover()
 
+    $('[data-toggle="tooltip"]')
+      .tooltip()
+
     // force reload on user browser button navigation
     $(window)
       .on('popstate', () => {
         window.location.reload(true)
       })
+
+    dom.watch()
   })

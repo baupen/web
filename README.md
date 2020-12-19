@@ -72,7 +72,7 @@ Milestone 3 (Operations):
 - [x] use `famoser/agnes` for deployments
 
 Milestone 4 (UI)
-- [ ] implement switch UI
+- [x] implement switch UI
 - [ ] implement dashboard UI
 - [ ] implement craftsman UI 
 - [ ] implement foyer UI with scalable table
@@ -83,6 +83,7 @@ Milestone 4 (UI)
 - [ ] implement filter view
 - [ ] add login QR token for app
 - [ ] add graph of recent issues to dashboard
+- [ ] finishing touches with 0, many & many deleted elements
 
 Milestone 5 (Migration & performance)
 - [ ] write migration from sqlite to mysql

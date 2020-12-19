@@ -30,7 +30,7 @@
 <script>
 /**
  * Source: https://github.com/epicmaxco/epic-spinners/blob/master/src/components/lib/AtomSpinner.vue
- *
+ * MIT licensed
  */
 export default {
   props: {

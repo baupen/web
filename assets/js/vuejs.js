@@ -45,7 +45,7 @@ FontawesomeLibrary.add(
 )
 
 // configure moment
-moment.locale('de')
+moment.locale(locale)
 
 // configure i18n
 const i18n = createI18n({

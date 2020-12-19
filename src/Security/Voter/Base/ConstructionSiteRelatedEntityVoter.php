@@ -38,22 +38,22 @@ abstract class ConstructionSiteRelatedEntityVoter extends Voter
         return [];
     }
 
-    protected function getConstructionManagerAttributes(): array
+    protected function getRelatedConstructionManagerAttributes(bool $isLimitedAccount): array
     {
         return $this->getAllAttributes();
     }
 
-    protected function getConstructionManagerAttributesWhichAreConstructionSiteIndependent(): array
+    protected function getUnrelatedConstructionManagerAttributes(bool $isLimitedAccount): array
     {
         return [];
     }
 
-    protected function getCraftsmanAccessibleAttributes(): array
+    protected function getRelatedCraftsmanAccessibleAttributes(): array
     {
         return $this->getReadOnlyAttributes();
     }
 
-    protected function getFilterAccessibleAttributes(): array
+    protected function getRelatedFilterAccessibleAttributes(): array
     {
         return $this->getReadOnlyAttributes();
     }
@@ -94,24 +94,24 @@ abstract class ConstructionSiteRelatedEntityVoter extends Voter
     {
         $constructionManager = $this->tryGetConstructionManager($token);
         if (null !== $constructionManager) {
-            $isLimitedAccount = $constructionManager ? $constructionManager->getIsExternalAccount() || $constructionManager->getIsTrialAccount() : true;
-            if (!$isLimitedAccount && in_array($attribute, $this->getConstructionManagerAttributesWhichAreConstructionSiteIndependent())) {
+            $isConstructionManagerRelatedWithSubject = $this->isConstructionManagerRelated($constructionManager, $subject);
+            $isLimitedAccount = $constructionManager->getIsExternalAccount() || $constructionManager->getIsTrialAccount();
+            if ($isConstructionManagerRelatedWithSubject && in_array($attribute, $this->getRelatedConstructionManagerAttributes($isLimitedAccount))) {
                 return true;
             }
 
-            return in_array($attribute, $this->getConstructionManagerAttributes()) &&
-                $this->isConstructionManagerRelated($constructionManager, $subject);
+            return in_array($attribute, $this->getUnrelatedConstructionManagerAttributes($isLimitedAccount));
         }
 
         $craftsman = $this->tryGetCraftsman($token);
         if (null !== $craftsman) {
-            return in_array($attribute, $this->getCraftsmanAccessibleAttributes()) &&
+            return in_array($attribute, $this->getRelatedCraftsmanAccessibleAttributes()) &&
                 $this->isCraftsmanRelated($craftsman, $subject);
         }
 
         $filter = $this->tryGetFilter($token);
         if (null !== $filter) {
-            return in_array($attribute, $this->getFilterAccessibleAttributes()) &&
+            return in_array($attribute, $this->getRelatedFilterAccessibleAttributes()) &&
                 $this->isFilterRelated($filter, $subject) &&
                 $this->isIncludedInFilter($filter, $attribute, $subject);
         }

@@ -1,0 +1,126 @@
+// Colors
+$brand-primary: $primary;
+$gray: $gray-800;
+$gray-light: $gray-500;
+$gray-lighter: $gray-300;
+
+// Button Colors
+$btn-default-color: $gray;
+$btn-default-bg: $gray-lighter;
+
+// Toggle Sizes
+$toggle-default-size: 1.5rem;
+
+// Mixin for Switch Colors
+// Variables: $color, $bg, $active-bg
+@mixin toggle-color($color: $btn-default-color, $bg: $btn-default-bg, $active-bg: $brand-primary) {
+  background: $bg;
+  color: $color;
+
+  &::before,
+  &::after {
+    color: $color;
+  }
+
+  &.active {
+    background-color: $active-bg;
+  }
+}
+
+// Mixin for Default Switch Styles
+// Variables: $size, $margin, $color, $bg, $active-bg, $font-size
+@mixin toggle-mixin($size: $toggle-default-size) {
+  border: 0;
+  border-radius: $size;
+  height: $size;
+  padding: 0;
+  position: relative;
+  width: $size * 2;
+
+  > .handle {
+    background: #fff;
+    border-radius: $size * 0.75;
+    height: $size * 0.75;
+    left: ($size * 0.25) / 2;
+    position: absolute;
+    top: ($size * 0.25) / 2;
+    transition: left 0.25s;
+    width: $size * 0.75;
+  }
+
+  &.active {
+    transition: background-color 0.25s;
+
+    > .handle {
+      left: $size + (($size * 0.25) / 2);
+      transition: left 0.25s;
+    }
+
+    &::before {
+      opacity: 0.5;
+    }
+
+    &::after {
+      opacity: 1;
+    }
+  }
+
+  &:focus,
+  &.focus {
+    &,
+    &.active {
+      outline: none;
+    }
+  }
+
+  &.btn-sm {
+    &::before,
+    &::after {
+      color: #fff;
+      left: $size * 0.275;
+      letter-spacing: 0.75px;
+      line-height: $size;
+      width: $size * 1.55;
+    }
+
+    &::before {
+      text-align: right;
+    }
+
+    &::after {
+      opacity: 0;
+      text-align: left;
+    }
+
+    &.active {
+      &::before {
+        opacity: 0;
+      }
+
+      &::after {
+        opacity: 1;
+      }
+    }
+  }
+
+  &.btn-xs {
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
+}
+
+// Apply Mixin to different sizes & colors
+.btn-toggle {
+  @include toggle-mixin;
+  @include toggle-color;
+
+  &.btn-lg {
+    @include toggle-mixin($size: 2.5rem);
+  }
+
+  &.btn-sm {
+    @include toggle-mixin($size: 1rem);
+  }
+}
