@@ -49,17 +49,17 @@ export default {
       default: false
     }
   },
-  watch: {
-    isValid: function () {
-      this.emitValid();
-    }
-  },
   computed: {
     sizeClassName: function () {
       return (this.size !== 0) ? 'col-md-' + this.size : '';
     },
     isValid: function () {
       return !this.required || !!this.localModelValue;
+    }
+  },
+  watch: {
+    isValid: function () {
+      this.emitValid();
     }
   },
   methods: {
