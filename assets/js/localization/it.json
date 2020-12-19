@@ -253,7 +253,7 @@
     }
   },
   "validation": {
-    "required": "Questo campo non può essere lasciato vuoto"
+    "required": "Questo campo non può essere lasciato vuoto."
   },
   "view": {
     "more": "di più",

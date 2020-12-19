@@ -1,37 +1,26 @@
 <template>
-  <form ref="form" @submit.prevent="">
-    <div class="form-group">
-      <label for="name">Name</label>
-      <input type="text" class="form-control" id="name" v-model="constructionSite.name" required>
-    </div>
-
-    <div class="form-group">
-      <label for="streetAddress">StreetAddress</label>
-      <input type="text" class="form-control" id="streetAddress" v-model="constructionSite.streetAddress" required>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group col-md-4">
-        <label for="postalCode">PostalCode *</label>
-        <input type="number" class="form-control" id="postalCode" v-model.number="constructionSite.postalCode" required>
-      </div>
-      <div class="form-group col-md-8">
-        <label for="locality">Locality *</label>
-        <input type="text" class="form-control" id="locality" v-model="constructionSite.locality" required>
-      </div>
-    </div>
-
-    <button type="submit" @click="save" class="btn btn-primary">{{ $t("switch.actions.create_construction_site") }}</button>
-  </form>
+  <div>
+    <button-with-modal :title="$t('switch.actions.create_construction_site')" :can-confirm="canConfirm" @confirm="confirm">
+      <construction-site-edit v-model="constructionSite" @valid="canConfirm = arguments[0]" :construction-sites="constructionSites"/>
+    </button-with-modal>
+  </div>
 </template>
 
 <script>
 
+import ConstructionSiteEdit from "./Form/ConstructionSiteEdit";
+import ButtonWithModal from "./Shared/ButtonWithModal";
+
+const defaultConstructionSite = {}
+
 export default {
-  emits: ['save'],
+  components: {ButtonWithModal, ConstructionSiteEdit},
+  emits: ['add'],
   data() {
     return {
-      constructionSite: {}
+      constructionSite: Object.assign({}, defaultConstructionSite),
+      show: false,
+      canConfirm: true
     }
   },
   props: {
@@ -41,10 +30,9 @@ export default {
     }
   },
   methods: {
-    save: function () {
-      if (this.$refs.form.reportValidity()) {
-        this.$emit('save', this.constructionSite)
-      }
+    confirm: function () {
+      this.$emit('add', this.constructionSite)
+      this.constructionSite = Object.assign({}, defaultConstructionSite)
     }
   }
 }

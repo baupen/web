@@ -17,12 +17,7 @@
     <h2>{{ $t("switch.all") }}</h2>
     <p>{{ $t("switch.all_help") }}</p>
     <spinner :spin="isLoading">
-      <button @click="show = !show" class="btn btn-primary">{{ $t('switch.actions.create_construction_site') }}</button>
-      <transition name="fade">
-        <modal v-if="show" @hide="show = false" :title="$t('switch.actions.create_construction_site')">
-          <construction-site-add :construction-sites="constructionSiteList" @save="postConstructionSite"/>
-        </modal>
-      </transition>
+      <construction-site-add class="mb-2" :construction-sites="constructionSiteList" @add="postConstructionSite"/>
 
       <construction-site-list @remove-self="removeSelfFromConstructionSite"
                               @add-self="addSelfToConstructionSite"
@@ -89,16 +84,3 @@ export default {
 }
 
 </script>
-
-<style scoped="true">
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-</style>
