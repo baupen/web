@@ -1,7 +1,7 @@
 <template>
   <div>
     <button-with-modal :title="$t('switch.actions.create_construction_site')" :can-confirm="canConfirm" @confirm="confirm">
-      <construction-site-edit v-model="constructionSite" @valid="canConfirm = arguments[0]" :construction-sites="constructionSites"/>
+      <construction-site-edit v-model="constructionSite" @valid="canConfirm = $event" :construction-sites="constructionSites"/>
     </button-with-modal>
   </div>
 </template>

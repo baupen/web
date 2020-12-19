@@ -5,9 +5,9 @@
            @blur="dirty = true"
            :type="type" :required="required"
            v-model="localModelValue"
-           @input="update($event.target.value)">
+           @input="emitUpdate">
     <div class="invalid-feedback" v-if="dirty && !isValid">
-      <span v-if="required">{{$t('validation.required')}}<br/></span>
+      <span v-if="required && !this.localModelValue">{{$t('validation.required')}}<br/></span>
     </div>
   </div>
 </template>
@@ -49,25 +49,25 @@ export default {
       default: false
     }
   },
+  watch: {
+    isValid: function () {
+      this.emitValid();
+    }
+  },
   computed: {
     sizeClassName: function () {
       return (this.size !== 0) ? 'col-md-' + this.size : '';
     },
     isValid: function () {
-      if (this.required && !this.localModelValue) {
-        return false;
-      }
-
-      return true;
+      return !this.required || !!this.localModelValue;
     }
   },
   methods: {
-    update(value) {
-      if (this.type === 'number') {
-        value = parseInt(value);
-      }
-
-      this.$emit('update:modelValue', value)
+    emitUpdate() {
+      this.$emit('update:modelValue', this.localModelValue)
+    },
+    emitValid() {
+      this.$emit('valid', this.isValid)
     }
   },
   mounted() {
@@ -76,6 +76,7 @@ export default {
     }
 
     this.localModelValue = this.modelValue;
+    this.emitValid();
   }
 }
 </script>
