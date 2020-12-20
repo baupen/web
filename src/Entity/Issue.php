@@ -85,9 +85,9 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public const STATE_CREATED = 0;
     public const STATE_REGISTERED = 1;
     public const STATE_SEEN = 2;
-    public const STATE_OVERDUE = 4;
-    public const STATE_RESOLVED = 8;
-    public const STATE_CLOSED = 16;
+    // public const STATE_OVERDUE = 4; -> this should be added
+    public const STATE_RESOLVED = 4;
+    public const STATE_CLOSED = 8;
 
     /**
      * @var int
