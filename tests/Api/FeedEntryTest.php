@@ -34,7 +34,7 @@ class FeedEntryTest extends ApiTestCase
         $testUser = $this->loginApiConstructionManager($client);
 
         $this->assertApiOperationUnsupported($client, '/api/feed_entries', 'POST');
-        $this->assertApiOperationUnsupported($client, '/api/feed_entries/'.$testUser->getId(), 'DELETE', 'PUT', 'PATCH');
+        $this->assertApiOperationNotFound($client, '/api/feed_entries/'.$testUser->getId(), 'DELETE', 'PUT', 'PATCH');
     }
 
     public function testGet()

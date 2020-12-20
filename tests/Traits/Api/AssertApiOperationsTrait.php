@@ -21,6 +21,11 @@ trait AssertApiOperationsTrait
         $this->assertApiOperationsStatusCodeSame(StatusCode::HTTP_METHOD_NOT_ALLOWED, $client, $url, ...$methods);
     }
 
+    private function assertApiOperationNotFound(Client $client, string $url, string ...$methods)
+    {
+        $this->assertApiOperationsStatusCodeSame(StatusCode::HTTP_NOT_FOUND, $client, $url, ...$methods);
+    }
+
     private function assertApiOperationNotAuthorized(Client $client, string $url, string ...$methods)
     {
         $this->assertApiOperationsStatusCodeSame(StatusCode::HTTP_UNAUTHORIZED, $client, $url, ...$methods);
