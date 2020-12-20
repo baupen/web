@@ -90,31 +90,26 @@ final class SwaggerDecorator implements NormalizerInterface
         $summary = [
             'type' => 'object',
             'description' => 'Quick count of relevant issue categories.',
-            'required' => ['date', 'subject', 'type', 'count'],
+            'required' => ['openCount', 'overdueCount', 'resolvedCount', 'closedCount'],
             'properties' => [
-                'date' => ['type' => 'string', 'format' => 'date'],
-                'subject' => ['type' => 'string', 'format' => 'iri-reference'],
-                'type' => ['type' => 'integer'],
-                'count' => ['type' => 'integer'],
+                'openCount' => ['type' => 'integer'],
+                'overdueCount' => ['type' => 'integer'],
+                'resolvedCount' => ['type' => 'integer'],
+                'closedCount' => ['type' => 'integer'],
             ],
         ];
-        $feedEntrySchemaName = 'FeedEntry';
-        $docs['components']['schemas'][$feedEntrySchemaName] = $feedEntry;
+        $summarySchemaName = 'Summary';
+        $docs['components']['schemas'][$summarySchemaName] = $summary;
 
-        $feedEntryArrayContent = [
+        $summaryEntryArrayContent = [
             'application/json' => [
                 'schema' => [
-                    'type' => 'array',
-                    'items' => [
-                        '$ref' => '#/components/schemas/'.$feedEntrySchemaName,
-                    ],
+                    '$ref' => '#/components/schemas/'.$summarySchemaName,
                 ],
             ],
         ];
-        $docs['paths']['/api/issues/feed_entries']['get']['responses']['200']['content'] = $feedEntryArrayContent;
-        $docs['paths']['/api/issues/feed_entries']['get']['responses']['200']['description'] = 'Issue feed';
-        $docs['paths']['/api/craftsmen/feed_entries']['get']['responses']['200']['content'] = $feedEntryArrayContent;
-        $docs['paths']['/api/craftsmen/feed_entries']['get']['responses']['200']['description'] = 'Craftsman feed';
+        $docs['paths']['/api/issues/summary']['get']['responses']['200']['content'] = $summaryEntryArrayContent;
+        $docs['paths']['/api/issues/summary']['get']['responses']['200']['description'] = 'Issue summary';
     }
 
     private function createRequiredPathParameter(string $name)

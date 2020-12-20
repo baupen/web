@@ -48,7 +48,6 @@ class IssueSummaryDataProvider extends NoPaginationDataProvider
         $summary->setOverdueCount($this->countOverdueIssues($rootAlias, clone $queryBuilder));
         $summary->setResolvedCount($this->countResolvedIssues($rootAlias, clone $queryBuilder));
         $summary->setClosedCount($this->countClosedIssues($rootAlias, clone $queryBuilder));
-        $summary->setClosedCount($this->countResult($rootAlias, clone $queryBuilder));
 
         $json = $this->serializer->serialize($summary, 'json');
 
