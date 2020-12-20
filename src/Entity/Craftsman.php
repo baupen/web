@@ -34,7 +34,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     collectionOperations={
  *      "get",
- *      "post" = {"security_post_denormalize" = "is_granted('CRAFTSMAN_MODIFY', object)", "denormalization_context"={"groups"={"craftsman-create", "craftsman-write"}}}
+ *      "post" = {"security_post_denormalize" = "is_granted('CRAFTSMAN_MODIFY', object)", "denormalization_context"={"groups"={"craftsman-create", "craftsman-write"}}},
+ *      "get_feed"={
+ *          "method"="GET",
+ *          "path"="/craftsmen/feed"
+ *      }
  *      },
  *     itemOperations={
  *      "get" = {"security" = "is_granted('CRAFTSMAN_VIEW', object)"},

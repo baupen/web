@@ -43,6 +43,14 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *      "get_report"={
  *          "method"="GET",
  *          "path"="/issues/report"
+ *      },
+ *      "get_summary"={
+ *          "method"="GET",
+ *          "path"="/issues/summary"
+ *      },
+ *      "get_feed"={
+ *          "method"="GET",
+ *          "path"="/issues/feed"
  *      }
  *      },
  *     itemOperations={

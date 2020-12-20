@@ -11,41 +11,62 @@
 
 namespace App\Api\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Api\Filters\UnmappedConstructionSiteFilter;
-use App\Entity\Craftsman;
-use DateTime;
-use Symfony\Component\Serializer\Annotation\Groups;
-
-/**
- * @ApiResource(
- *     collectionOperations={"get"},
- *     itemOperations={},
- *     normalizationContext={"groups"={"feed-entry-read"}, "skip_null_values"=false}
- * )
- * @ApiFilter(UnmappedConstructionSiteFilter::class)
- */
 class FeedEntry
 {
-    /**
-     * @var DateTime
-     *
-     * @Groups({"feed-entry-read"})
-     */
-    private $timestamp;
+    public const TYPE_CONSTRUCTION_MANAGER_REGISTERED = 1;
+    public const TYPE_CRAFTSMAN_RESOLVED = 2;
+    public const TYPE_CONSTRUCTION_MANAGER_CLOSED = 3;
+
+    public const TYPE_CRAFTSMAN_VISITED_WEBPAGE = 10;
 
     /**
-     * @var Craftsman
-     *
-     * @Groups({"feed-entry-read"})
+     * @var string
      */
-    private $craftsman;
+    private $date;
+
+    /**
+     * @var string
+     */
+    private $subjectId;
 
     /**
      * @var int
-     *
-     * @Groups({"feed-entry-read"})
+     */
+    private $type;
+
+    /**
+     * @var int
      */
     private $count;
+
+    /**
+     * FeedEntry constructor.
+     */
+    public function __construct(string $date, string $subjectId, int $type, int $count)
+    {
+        $this->date = $date;
+        $this->subjectId = $subjectId;
+        $this->type = $type;
+        $this->count = $count;
+    }
+
+    public function getDate(): string
+    {
+        return $this->date;
+    }
+
+    public function getSubjectId(): string
+    {
+        return $this->subjectId;
+    }
+
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    public function getCount(): int
+    {
+        return $this->count;
+    }
 }
