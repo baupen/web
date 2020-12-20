@@ -26,13 +26,95 @@ final class SwaggerDecorator implements NormalizerInterface
     {
         $docs = $this->decorated->normalize($object, $format, $context);
 
-        $pdfContent = $this->getPdfContent();
-        $docs['paths']['/api/issues/report']['get']['responses']['200']['content'] = $pdfContent;
-        $docs['paths']['/api/issues/report']['get']['responses']['200']['description'] = 'Issue pdf report';
-
+        $this->setReportResponse($docs);
+        $this->setFeedEntryResponses($docs);
+        $this->setSummaryResponse($docs);
         // $docs = $this->addFilePaths($docs);
 
         return $docs;
+    }
+
+    public function supportsNormalization($data, $format = null)
+    {
+        return $this->decorated->supportsNormalization($data, $format);
+    }
+
+    private function setReportResponse(array &$docs)
+    {
+        $pdfContent = [
+            'application/pdf' => [
+                'schema' => [
+                    'type' => 'string',
+                    'format' => 'binary',
+                ],
+            ],
+        ];
+        $docs['paths']['/api/issues/report']['get']['responses']['200']['content'] = $pdfContent;
+        $docs['paths']['/api/issues/report']['get']['responses']['200']['description'] = 'Issue pdf report';
+    }
+
+    private function setFeedEntryResponses(array &$docs)
+    {
+        $feedEntry = [
+            'type' => 'object',
+            'description' => 'Some action which happened on the construction site.',
+            'required' => ['date', 'subject', 'type', 'count'],
+            'properties' => [
+                'date' => ['type' => 'string', 'format' => 'date'],
+                'subject' => ['type' => 'string', 'format' => 'iri-reference'],
+                'type' => ['type' => 'integer'],
+                'count' => ['type' => 'integer'],
+            ],
+        ];
+        $feedEntrySchemaName = 'FeedEntry';
+        $docs['components']['schemas'][$feedEntrySchemaName] = $feedEntry;
+
+        $feedEntryArrayContent = [
+            'application/json' => [
+                'schema' => [
+                    'type' => 'array',
+                    'items' => [
+                        '$ref' => '#/components/schemas/'.$feedEntrySchemaName,
+                    ],
+                ],
+            ],
+        ];
+        $docs['paths']['/api/issues/feed_entries']['get']['responses']['200']['content'] = $feedEntryArrayContent;
+        $docs['paths']['/api/issues/feed_entries']['get']['responses']['200']['description'] = 'Issue feed';
+        $docs['paths']['/api/craftsmen/feed_entries']['get']['responses']['200']['content'] = $feedEntryArrayContent;
+        $docs['paths']['/api/craftsmen/feed_entries']['get']['responses']['200']['description'] = 'Craftsman feed';
+    }
+
+    private function setSummaryResponse(array &$docs)
+    {
+        $summary = [
+            'type' => 'object',
+            'description' => 'Quick count of relevant issue categories.',
+            'required' => ['date', 'subject', 'type', 'count'],
+            'properties' => [
+                'date' => ['type' => 'string', 'format' => 'date'],
+                'subject' => ['type' => 'string', 'format' => 'iri-reference'],
+                'type' => ['type' => 'integer'],
+                'count' => ['type' => 'integer'],
+            ],
+        ];
+        $feedEntrySchemaName = 'FeedEntry';
+        $docs['components']['schemas'][$feedEntrySchemaName] = $feedEntry;
+
+        $feedEntryArrayContent = [
+            'application/json' => [
+                'schema' => [
+                    'type' => 'array',
+                    'items' => [
+                        '$ref' => '#/components/schemas/'.$feedEntrySchemaName,
+                    ],
+                ],
+            ],
+        ];
+        $docs['paths']['/api/issues/feed_entries']['get']['responses']['200']['content'] = $feedEntryArrayContent;
+        $docs['paths']['/api/issues/feed_entries']['get']['responses']['200']['description'] = 'Issue feed';
+        $docs['paths']['/api/craftsmen/feed_entries']['get']['responses']['200']['content'] = $feedEntryArrayContent;
+        $docs['paths']['/api/craftsmen/feed_entries']['get']['responses']['200']['description'] = 'Craftsman feed';
     }
 
     private function createRequiredPathParameter(string $name)
@@ -47,64 +129,23 @@ final class SwaggerDecorator implements NormalizerInterface
         ];
     }
 
-    public function supportsNormalization($data, $format = null)
-    {
-        return $this->decorated->supportsNormalization($data, $format);
-    }
-
     /**
      * @return \array[][]
      */
     private function getImageContent(): array
     {
-        $binarySchema = $this->getBinarySchema();
+        $supportedImageTypes = ['image/jpeg', 'image/gif', 'image/png'];
+        $imageContents = [];
+        foreach ($supportedImageTypes as $supportedImageType) {
+            $imageContents[$supportedImageType] = [
+                'schema' => [
+                    'type' => 'string',
+                    'format' => 'binary',
+                ],
+            ];
+        }
 
-        $imageJpegContent = [
-            'image/jpeg' => [
-                $binarySchema,
-            ],
-        ];
-        $imageGifContent = [
-            'image/gif' => [
-                $binarySchema,
-            ],
-        ];
-        $imagePngContent = [
-            'image/png' => [
-                $binarySchema,
-            ],
-        ];
-
-        return $imageJpegContent + $imageGifContent + $imagePngContent;
-    }
-
-    /**
-     * @return \array[][]
-     */
-    private function getPdfContent(): array
-    {
-        $binarySchema = $this->getBinarySchema();
-
-        return [
-            'application/pdf' => [
-                $binarySchema,
-            ],
-        ];
-    }
-
-    /**
-     * @return \string[][]
-     */
-    private function getBinarySchema(): array
-    {
-        $binarySchema = [
-            'schema' => [
-                'type' => 'string',
-                'format' => 'binary',
-            ],
-        ];
-
-        return $binarySchema;
+        return $imageContents;
     }
 
     private function addFilePaths(?float $docs): ?float

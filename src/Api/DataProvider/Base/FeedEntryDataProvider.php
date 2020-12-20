@@ -44,7 +44,7 @@ abstract class FeedEntryDataProvider extends NoPaginationDataProvider
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
     {
-        return $this->getResourceClass() === $resourceClass && 'get_feed' === $operationName;
+        return $this->getResourceClass() === $resourceClass && 'get_feed_entries' === $operationName;
     }
 
     public function getCollection(string $resourceClass, string $operationName = null, array $context = [])

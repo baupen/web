@@ -48,9 +48,9 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *          "method"="GET",
  *          "path"="/issues/summary"
  *      },
- *      "get_feed"={
+ *      "get_feed_entries"={
  *          "method"="GET",
- *          "path"="/issues/feed"
+ *          "path"="/issues/feed_entries"
  *      }
  *      },
  *     itemOperations={
@@ -85,8 +85,9 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public const STATE_CREATED = 0;
     public const STATE_REGISTERED = 1;
     public const STATE_SEEN = 2;
-    public const STATE_RESOLVED = 4;
-    public const STATE_CLOSED = 8;
+    public const STATE_OVERDUE = 4;
+    public const STATE_RESOLVED = 8;
+    public const STATE_CLOSED = 16;
 
     /**
      * @var int

@@ -27,7 +27,7 @@ class FeedEntry
     /**
      * @var string
      */
-    private $subjectId;
+    private $subject;
 
     /**
      * @var int
@@ -45,7 +45,7 @@ class FeedEntry
     public function __construct(string $date, string $subjectId, int $type, int $count)
     {
         $this->date = $date;
-        $this->subjectId = $subjectId;
+        $this->subject = $subjectId;
         $this->type = $type;
         $this->count = $count;
     }
@@ -55,9 +55,9 @@ class FeedEntry
         return $this->date;
     }
 
-    public function getSubjectId(): string
+    public function getSubject(): string
     {
-        return $this->subjectId;
+        return $this->subject;
     }
 
     public function getType(): int

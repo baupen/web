@@ -384,6 +384,6 @@ class IssueTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiGetOk($client, '/api/issues/feed?constructionSite='.$constructionSite->getId());
+        $this->assertApiGetOk($client, '/api/issues/feed_entries?constructionSite='.$constructionSite->getId());
     }
 }
