@@ -85,7 +85,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public const STATE_CREATED = 0;
     public const STATE_REGISTERED = 1;
     public const STATE_SEEN = 2;
-    // public const STATE_OVERDUE = 4; -> this should be added
+    // public const STATE_OVERDUE = 4; -> this should be added #359
     public const STATE_RESOLVED = 4;
     public const STATE_CLOSED = 8;
 
@@ -149,10 +149,6 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         if (null !== $this->map && $this->map->getConstructionSite() !== $this->constructionSite) {
             $context->buildViolation('Map does not belong to construction site')->addViolation();
         }
-
-        if (null !== $this->mapFile && $this->mapFile->getConstructionSite() !== $this->constructionSite) {
-            $context->buildViolation('MapFile does not belong to construction site')->addViolation();
-        }
     }
 
     /**
@@ -179,15 +175,6 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="issues")
      */
     private $map;
-
-    /**
-     * @var MapFile|null
-     *
-     * @Assert\NotBlank(groups={"position"})
-     * @Groups({"issue-read", "issue-create"})
-     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="issues")
-     */
-    private $mapFile;
 
     /**
      * @var ConstructionSite
@@ -300,16 +287,6 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public function isConstructionSiteSet(): bool
     {
         return null !== $this->constructionSite;
-    }
-
-    public function getMapFile(): ?MapFile
-    {
-        return $this->mapFile;
-    }
-
-    public function setMapFile(?MapFile $mapFile): void
-    {
-        $this->mapFile = $mapFile;
     }
 
     /**

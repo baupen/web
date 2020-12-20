@@ -53,7 +53,7 @@ class IssueTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
         $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issues?constructionSite='.$constructionSite->getId());
         $fields = ['number', 'description', 'deadline', 'wasAddedWithClient', 'isMarked', 'isDeleted', 'lastChangedAt'];
-        $relationFields = ['craftsman', 'map', 'mapFile', 'imageUrl'];
+        $relationFields = ['craftsman', 'map', 'imageUrl'];
         $statusFields = ['createdAt', 'createdBy', 'registeredAt', 'registeredBy', 'resolvedAt', 'resolvedBy', 'closedAt', 'closedBy'];
         $positionFields = ['positionX', 'positionY', 'positionZoomScale'];
         $allFields = array_merge($fields, $relationFields, $statusFields, $positionFields);
@@ -84,11 +84,9 @@ class IssueTest extends ApiTestCase
             'createdAt' => (new \DateTime())->format('c'),
         ];
 
-        $mapFileId = $this->getIriFromItem($map->getFile());
         $craftsman = $this->getTestConstructionSite()->getCraftsmen()[0];
         $craftsmanId = $this->getIriFromItem($craftsman);
         $optionalProperties = [
-            'mapFile' => $mapFileId,
             'craftsman' => $craftsmanId,
 
             'description' => 'hello world',
@@ -243,16 +241,10 @@ class IssueTest extends ApiTestCase
 
         $otherConstructionSite = $this->getEmptyConstructionSite();
         $map = $this->addMap($otherConstructionSite);
-        $mapFile = $this->addMapFile($otherConstructionSite);
         $craftsman = $this->addCraftsman($otherConstructionSite);
 
-        $payload = [
-            'map' => $this->getIriFromItem($map),
-            'mapFile' => $this->getIriFromItem($mapFile),
-            'craftsman' => $this->getIriFromItem($craftsman),
-        ];
-
-        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
+        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues', array_merge($basePayload, ['map' => $this->getIriFromItem($map)]));
+        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues', array_merge($basePayload, ['craftsman' => $this->getIriFromItem($craftsman)]));
         $this->assertApiPostPayloadPersisted($client, '/api/issues', [], $basePayload);
     }
 
