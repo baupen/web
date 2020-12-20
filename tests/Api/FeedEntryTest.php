@@ -37,14 +37,6 @@ class FeedEntryTest extends ApiTestCase
         $this->assertApiOperationUnsupported($client, '/api/feed_entries/'.$testUser->getId(), 'DELETE', 'PUT', 'PATCH');
     }
 
-    public function testValidMethodsNeedAuthentication()
-    {
-        $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-
-        $this->assertApiOperationNotAuthorized($client, '/api/feed_entries', 'GET');
-    }
-
     public function testGet()
     {
         $client = $this->createClient();

@@ -11,7 +11,9 @@
 
 namespace App\Api\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Api\Filters\UnmappedConstructionSiteFilter;
 use App\Entity\Craftsman;
 use DateTime;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -19,8 +21,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ApiResource(
  *     collectionOperations={"get"},
- *     itemOperations={"get"}
+ *     itemOperations={},
+ *     normalizationContext={"groups"={"feed-entry-read"}, "skip_null_values"=false}
  * )
+ * @ApiFilter(UnmappedConstructionSiteFilter::class)
  */
 class FeedEntry
 {
