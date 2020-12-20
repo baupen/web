@@ -42,13 +42,15 @@ services:
     App\Api\DataPersister\SoftDeleteDataPersister:
         bind: { $decoratedDataPersister: '@api_platform.doctrine.orm.data_persister' }
 
-    # higher priority consume those with lower priority
+    # higher priority are called first
+    App\Api\DataProvider\AuthenticationAwareDataProvider:
+        tags: [ { name: 'api_platform.collection_data_provider', priority: 4 } ]
+        bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
     App\Api\DataProvider\IssueReportDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
-    App\Api\DataProvider\AuthenticationAwareDataProvider:
-        tags: [ { name: 'api_platform.collection_data_provider', priority: 2 } ]
-        bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
+    App\Api\DataProvider\FeedEntryDataProvider:
+        tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
 
     App\Api\Serializer\IssueContextBuilder:
         decorates: 'api_platform.serializer.context_builder'
