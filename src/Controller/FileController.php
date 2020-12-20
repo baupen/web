@@ -21,6 +21,8 @@ use App\Service\Interfaces\StorageServiceInterface;
 use App\Service\MapFileService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -72,12 +74,8 @@ class FileController extends BaseDoctrineController
     public function postMapFile(Request $request, Map $map, StorageServiceInterface $storageService, CacheServiceInterface $cacheService)
     {
         $this->denyAccessUnlessGranted(MapVoter::MAP_MODIFY, $map);
-        if (1 !== $request->files->count()) {
-            throw new BadRequestException();
-        }
+        $file = $this->getPdf($request->files);
 
-        $files = $request->files->all();
-        $file = $files[array_key_first($files)];
         $mapFile = $storageService->uploadMapFile($file, $map);
         if (null === $mapFile) {
             throw new BadRequestException();
@@ -89,5 +87,23 @@ class FileController extends BaseDoctrineController
         $url = $this->generateUrl('map_file', ['map' => $map->getId(), 'mapFile' => $mapFile->getId(), 'filename' => $mapFile->getFilename()]);
 
         return new Response($url, Response::HTTP_CREATED);
+    }
+
+    private function getPdf(FileBag $fileBag): UploadedFile
+    {
+        if ($fileBag->has('file')) {
+            $candidate = $fileBag->get('file');
+        } elseif (1 === $fileBag->count()) {
+            $files = $fileBag->all();
+            $candidate = $files[array_key_first($files)];
+        } else {
+            throw new BadRequestException();
+        }
+
+        if (!in_array($candidate->getMimeType(), ['application/pdf'])) {
+            throw new BadRequestException();
+        }
+
+        return $candidate;
     }
 }

@@ -29,7 +29,7 @@ final class SwaggerDecorator implements NormalizerInterface
         $this->setReportResponse($docs);
         $this->setFeedEntryResponses($docs);
         $this->setSummaryResponse($docs);
-        // $docs = $this->addFilePaths($docs);
+        $this->addFilePaths($docs);
 
         return $docs;
     }
@@ -49,13 +49,19 @@ final class SwaggerDecorator implements NormalizerInterface
                 ],
             ],
         ];
-        $docs['paths']['/api/issues/report']['get']['responses']['200']['content'] = $pdfContent;
-        $docs['paths']['/api/issues/report']['get']['responses']['200']['description'] = 'Issue pdf report';
+
+        $docs['paths']['/api/issues/report']['get']['responses'] = [
+            '200' => [
+                'description' => 'Issue pdf report',
+                'content' => $pdfContent,
+            ],
+        ];
     }
 
     private function setFeedEntryResponses(array &$docs)
     {
-        $feedEntry = [
+        $feedEntrySchemaName = 'FeedEntry';
+        $docs['components']['schemas'][$feedEntrySchemaName] = [
             'type' => 'object',
             'description' => 'Some action which happened on the construction site.',
             'required' => ['date', 'subject', 'type', 'count'],
@@ -66,8 +72,6 @@ final class SwaggerDecorator implements NormalizerInterface
                 'count' => ['type' => 'integer'],
             ],
         ];
-        $feedEntrySchemaName = 'FeedEntry';
-        $docs['components']['schemas'][$feedEntrySchemaName] = $feedEntry;
 
         $feedEntryArrayContent = [
             'application/json' => [
@@ -79,15 +83,26 @@ final class SwaggerDecorator implements NormalizerInterface
                 ],
             ],
         ];
-        $docs['paths']['/api/issues/feed_entries']['get']['responses']['200']['content'] = $feedEntryArrayContent;
-        $docs['paths']['/api/issues/feed_entries']['get']['responses']['200']['description'] = 'Issue feed';
-        $docs['paths']['/api/craftsmen/feed_entries']['get']['responses']['200']['content'] = $feedEntryArrayContent;
-        $docs['paths']['/api/craftsmen/feed_entries']['get']['responses']['200']['description'] = 'Craftsman feed';
+
+        $docs['paths']['/api/issues/feed_entries']['get']['responses'] = [
+            '200' => [
+                'description' => 'Issue feed',
+                'content' => $feedEntryArrayContent,
+            ],
+        ];
+
+        $docs['paths']['/api/craftsmen/feed_entries']['get']['responses'] = [
+            '200' => [
+                'description' => 'Craftsman feed',
+                'content' => $feedEntryArrayContent,
+            ],
+        ];
     }
 
     private function setSummaryResponse(array &$docs)
     {
-        $summary = [
+        $summarySchemaName = 'Summary';
+        $docs['components']['schemas'][$summarySchemaName] = [
             'type' => 'object',
             'description' => 'Quick count of relevant issue categories.',
             'required' => ['openCount', 'overdueCount', 'resolvedCount', 'closedCount'],
@@ -98,21 +113,22 @@ final class SwaggerDecorator implements NormalizerInterface
                 'closedCount' => ['type' => 'integer'],
             ],
         ];
-        $summarySchemaName = 'Summary';
-        $docs['components']['schemas'][$summarySchemaName] = $summary;
 
-        $summaryEntryArrayContent = [
-            'application/json' => [
-                'schema' => [
-                    '$ref' => '#/components/schemas/'.$summarySchemaName,
+        $docs['paths']['/api/issues/summary']['get']['responses'] = [
+            '200' => [
+                'description' => 'Issue summary',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            '$ref' => '#/components/schemas/'.$summarySchemaName,
+                        ],
+                    ],
                 ],
             ],
         ];
-        $docs['paths']['/api/issues/summary']['get']['responses']['200']['content'] = $summaryEntryArrayContent;
-        $docs['paths']['/api/issues/summary']['get']['responses']['200']['description'] = 'Issue summary';
     }
 
-    private function createRequiredPathParameter(string $name)
+    private function createRequiredPathParameter(string $name): array
     {
         return [
             'name' => $name,
@@ -124,41 +140,67 @@ final class SwaggerDecorator implements NormalizerInterface
         ];
     }
 
-    /**
-     * @return \array[][]
-     */
-    private function getImageContent(): array
+    private function addFilePaths(array &$docs)
     {
-        $supportedImageTypes = ['image/jpeg', 'image/gif', 'image/png'];
-        $imageContents = [];
-        foreach ($supportedImageTypes as $supportedImageType) {
-            $imageContents[$supportedImageType] = [
-                'schema' => [
+        $path = '/issues/{issue}/image';
+        $pathParameters = [
+            $this->createRequiredPathParameter('issue'),
+        ];
+
+        $imageSchemaName = 'Image';
+        $docs['components']['schemas'][$imageSchemaName] = [
+            'type' => 'object',
+            'description' => 'Image (.jpg, .gif, .png).',
+            'properties' => [
+                'image' => [
                     'type' => 'string',
                     'format' => 'binary',
                 ],
-            ];
-        }
-
-        return $imageContents;
-    }
-
-    private function addFilePaths(?float $docs): ?float
-    {
-        $path = '/maps/{map}/file/{mapFile}/{filename}';
-        $imageContent = $this->getImageContent();
-        $pathParameters = [
-            $this->createRequiredPathParameter('map'),
-            $this->createRequiredPathParameter('filename'),
+            ],
+            'required' => ['image'],
         ];
 
-        $docs['paths'][$path]['post']['parameters'] = $pathParameters;
-        $docs['paths'][$path]['post']['requestBody']['content'] = $imageContent;
-        $docs['paths'][$path]['post']['requestBody']['description'] = 'The file to upload and assign to the map';
-        $docs['paths'][$path]['post']['responses']['201']['description'] = 'File uploaded';
-        $docs['paths'][$path]['post']['responses']['201']['content']['text/html']['schema'] = [
-            'type' => 'string',
-            'format' => 'binary',
+        $docs['paths'][$path] = [
+            'post' => [
+                'tags' => ['File'],
+                'parameters' => $pathParameters,
+                'requestBody' => [
+                    'description' => 'The image to upload and assign to the issue',
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'description' => 'Image (.jpg, .gif, .png).',
+                                'properties' => [
+                                    'image' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                ],
+                                'required' => ['image'],
+                            ],
+                            'encoding' => [
+                                'image' => [
+                                    'contentType' => ['image/jpeg', 'image/gif', 'image/png'],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'responses' => [
+                    '201' => [
+                        'description' => 'File uploaded',
+                        'content' => [
+                            'text/html' => [
+                                'schema' => [
+                                    'type' => 'string',
+                                    'format' => 'uri',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         return $docs;

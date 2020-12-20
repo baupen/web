@@ -24,6 +24,8 @@ use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\StorageServiceInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -59,17 +61,14 @@ class ImageController extends BaseDoctrineController
     public function postConstructionSiteImageAction(Request $request, ConstructionSite $constructionSite, StorageServiceInterface $storageService, CacheServiceInterface $cacheService)
     {
         $this->denyAccessUnlessGranted(ConstructionSiteVoter::CONSTRUCTION_SITE_MODIFY, $constructionSite);
-        if (1 !== $request->files->count()) {
-            throw new BadRequestException();
-        }
+
+        $image = $this->getImage($request->files);
 
         if ($constructionSite->getImage()) {
             $this->fastRemove($constructionSite->getImage());
         }
 
-        $files = $request->files->all();
-        $file = $files[array_key_first($files)];
-        $constructionSiteImage = $storageService->uploadConstructionSiteImage($file, $constructionSite);
+        $constructionSiteImage = $storageService->uploadConstructionSiteImage($image, $constructionSite);
         if (null === $constructionSiteImage) {
             throw new BadRequestException();
         }
@@ -109,17 +108,14 @@ class ImageController extends BaseDoctrineController
     public function postIssueImageAction(Request $request, Issue $issue, StorageServiceInterface $storageService, CacheServiceInterface $cacheService)
     {
         $this->denyAccessUnlessGranted(IssueVoter::ISSUE_MODIFY, $issue);
-        if (1 !== $request->files->count()) {
-            throw new BadRequestException();
-        }
+
+        $image = $this->getImage($request->files);
 
         if ($issue->getImage()) {
             $this->fastRemove($issue->getImage());
         }
 
-        $files = $request->files->all();
-        $file = $files[array_key_first($files)];
-        $issueImage = $storageService->uploadIssueImage($file, $issue);
+        $issueImage = $storageService->uploadIssueImage($image, $issue);
         if (null === $issueImage) {
             throw new BadRequestException();
         }
@@ -156,5 +152,23 @@ class ImageController extends BaseDoctrineController
         );
 
         return $response;
+    }
+
+    private function getImage(FileBag $fileBag): UploadedFile
+    {
+        if ($fileBag->has('image')) {
+            $candidate = $fileBag->get('image');
+        } elseif (1 === $fileBag->count()) {
+            $files = $fileBag->all();
+            $candidate = $files[array_key_first($files)];
+        } else {
+            throw new BadRequestException();
+        }
+
+        if (!in_array($candidate->getMimeType(), ['image/jpeg', 'image/gif', 'image/png'])) {
+            throw new BadRequestException();
+        }
+
+        return $candidate;
     }
 }

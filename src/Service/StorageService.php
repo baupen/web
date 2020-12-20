@@ -133,7 +133,7 @@ class StorageService implements StorageServiceInterface
         $now = new DateTime();
         $counter = 0;
         do {
-            $prefix = $sanitizedFileName.'_duplicate_'.$now->format('Y-m-d\THi');
+            $prefix = $sanitizedFileName.'_duplicate_'.$now->format('Y-m-d\THis');
             if ($counter++ > 0) {
                 $prefix .= '_'.$counter;
             }
