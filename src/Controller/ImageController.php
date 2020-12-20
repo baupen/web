@@ -79,7 +79,7 @@ class ImageController extends BaseDoctrineController
 
         $url = $this->generateUrl('construction_site_image', ['constructionSite' => $constructionSite->getId(), 'constructionSiteImage' => $constructionSiteImage->getId(), 'filename' => $constructionSiteImage->getFilename()]);
 
-        return new Response($url);
+        return new Response($url, Response::HTTP_CREATED);
     }
 
     /**
@@ -129,7 +129,7 @@ class ImageController extends BaseDoctrineController
 
         $url = $this->generateUrl('issue_image', ['issue' => $issue->getId(), 'issueImage' => $issueImage->getId(), 'filename' => $issueImage->getFilename()]);
 
-        return new Response($url);
+        return new Response($url, Response::HTTP_CREATED);
     }
 
     private function assertValidSize(string $size): void

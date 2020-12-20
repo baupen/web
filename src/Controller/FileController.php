@@ -88,6 +88,6 @@ class FileController extends BaseDoctrineController
 
         $url = $this->generateUrl('map_file', ['map' => $map->getId(), 'mapFile' => $mapFile->getId(), 'filename' => $mapFile->getFilename()]);
 
-        return new Response($url);
+        return new Response($url, Response::HTTP_CREATED);
     }
 }
