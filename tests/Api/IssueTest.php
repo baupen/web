@@ -376,4 +376,14 @@ class IssueTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
         $this->assertApiGetOk($client, '/api/issues/summary?constructionSite='.$constructionSite->getId());
     }
+
+    public function testFeed()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $this->assertApiGetOk($client, '/api/issues/feed?constructionSite='.$constructionSite->getId());
+    }
 }

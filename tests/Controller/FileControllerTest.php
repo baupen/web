@@ -57,7 +57,7 @@ class FileControllerTest extends WebTestCase
     {
         $client->request('POST', $url, [], ['file' => $file]);
 
-        $this->assertResponseStatusCodeSame(StatusCode::HTTP_OK);
+        $this->assertResponseStatusCodeSame(StatusCode::HTTP_CREATED);
 
         return $client->getResponse()->getContent();
     }
