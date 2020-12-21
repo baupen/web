@@ -108,7 +108,6 @@ final class SwaggerDecorator implements NormalizerInterface
             'required' => ['openCount', 'overdueCount', 'resolvedCount', 'closedCount'],
             'properties' => [
                 'openCount' => ['type' => 'integer'],
-                'overdueCount' => ['type' => 'integer'],
                 'resolvedCount' => ['type' => 'integer'],
                 'closedCount' => ['type' => 'integer'],
             ],
