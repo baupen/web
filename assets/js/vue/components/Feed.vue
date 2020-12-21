@@ -1,7 +1,10 @@
 <template>
-  <div>
-    <div v-for="entry in orderedEntries">
-      {{entry}}
+  <div class="card">
+    <div class="card-body">
+      <div v-for="(entry, index) in orderedEntries">
+        <hr v-if="index !== 0" />
+        <feed-entry :entry="entry" :construction-managers="constructionManagers" :craftsmen="craftsmen" />
+      </div>
     </div>
   </div>
 </template>
@@ -12,7 +15,10 @@ import SummaryCard from './IssuesSummary/SummaryCard'
 import FeedEntry from './Feed/FeedEntry'
 
 export default {
-  components: { FeedEntry, SummaryCard },
+  components: {
+    FeedEntry,
+    SummaryCard
+  },
   props: {
     entries: {
       type: Array,
@@ -29,7 +35,7 @@ export default {
   },
   computed: {
     orderedEntries: function () {
-      return this.entries.sort((a, b) => a.date.localeCompare(b.date))
+      return this.entries.sort((a, b) => b.date.localeCompare(a.date))
     }
   }
 }
