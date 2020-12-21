@@ -95,8 +95,13 @@ const api = {
     const queryString = '?constructionSite=' + this._getIdFromIri(constructionSite)
     return this._getItem('/api/craftsmen/feed_entries' + queryString)
   },
-  getIssuesFeedEntries: function (constructionSite) {
-    const queryString = '?constructionSite=' + this._getIdFromIri(constructionSite)
+  getIssuesFeedEntries: function (constructionSite, weeksInThePast = 0) {
+    let queryString = '?constructionSite=' + this._getIdFromIri(constructionSite)
+    const week = 7 * 24 * 60 * 60 * 1000
+    const lastChangedBefore = new Date(Date.now() - week * weeksInThePast)
+    queryString += '&lastChangedAt[before]=' + lastChangedBefore.toISOString()
+    const lastChangedAfter = new Date(Date.now() - week * (weeksInThePast + 1))
+    queryString += '&lastChangedAt[after]=' + lastChangedAfter.toISOString()
     return this._getItem('/api/issues/feed_entries' + queryString)
   },
   patch: function (instance, patch) {

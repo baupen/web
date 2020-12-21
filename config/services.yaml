@@ -62,8 +62,12 @@ services:
             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
     App\Api\DataProvider\IssueFeedEntryDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
+        arguments:
+            $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
     App\Api\DataProvider\CraftsmanFeedEntryDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
+        arguments:
+            $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
 
     App\Api\Serializer\IssueContextBuilder:
         decorates: 'api_platform.serializer.context_builder'
