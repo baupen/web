@@ -50,7 +50,7 @@ scripts:
 
   fixtures:
     hook: after_deploy
-    instance_filter: '*:*:dev'
+    instance_filter: '*:*:none'
     script:
       - wget -O composer.phar https://getcomposer.org/composer-stable.phar && chmod +x composer.phar && ./composer.phar install --optimize-autoloader --no-scripts
       - php bin/console --env=dev doctrine:fixtures:load -q
