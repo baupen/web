@@ -1,18 +1,18 @@
 <template>
   <div>
-    <img class="img-fluid" v-if="constructionSite.imageUrl" :src="constructionSite.imageUrl + '?size=preview'" :alt="'image of ' + constructionSite.name">
-    <div class="mt-2">
-      <h2>{{ constructionSite.name }}</h2>
-      <p>
-        <span class="pre">{{ address.join("\n") }}</span>
-      </p>
-    </div>
+    <img class="img-fluid shadow" v-if="constructionSite.imageUrl" :src="constructionSite.imageUrl + '?size=preview'"
+         :alt="'image of ' + constructionSite.name">
+    <h4 class="mt-3">{{ constructionSite.name }}</h4>
+    <p>
+      <span class="pre">{{ address.join("\n") }}</span>
+    </p>
+    <hr/>
   </div>
 </template>
 
 <script>
 
-import { constructionSiteFormatter } from '../services/formatters'
+import {constructionSiteFormatter} from '../services/formatters'
 
 export default {
   props: {

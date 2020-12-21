@@ -77,9 +77,9 @@ export default {
   },
   mounted() {
     api.setupErrorNotifications(this);
-    api.loadMe(this);
-    api.loadConstructionSites(this);
-    api.loadConstructionManagers(this);
+    api.getMe(this);
+    api.getConstructionSites(this);
+    api.getConstructionManagers(this);
   }
 }
 

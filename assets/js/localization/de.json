@@ -222,11 +222,12 @@
     "status": "Status",
     "number": "Nummer",
     "trade": "Gewerk",
-    "created": "erstellt",
-    "registered": "registriert",
-    "resolved": "erledigt",
-    "closed": "geschlossen",
-    "state_context": {
+    "state": {
+      "created": "erstellt",
+      "registered": "registriert",
+      "resolved": "erledigt",
+      "closed": "geschlossen",
+
       "open": "offen",
       "read": "gelesen",
       "overdue": "Frist überschritten",

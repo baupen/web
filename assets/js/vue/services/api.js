@@ -38,32 +38,50 @@ const api = {
       }
     }
   },
-  loadMe: function (instance) {
+  _getConstructionSiteIriFromLocation: function () {
+    const urlArray = window.location.pathname.split('/')
+    urlArray.splice(3)
+    return '/api' + urlArray.join('/')
+  },
+  _getIdFromIri: function (object) {
+    const iri = object['@id']
+    return iri.substr(iri.lastIndexOf('/') + 1)
+  },
+  getMe: function (instance) {
     axios.get('/api/me')
       .then(response => {
         this._writeAllProperties(response.data, instance)
       })
   },
-  loadConstructionSite: function (instance) {
-    const urlArray = window.location.pathname.split('/')
-    urlArray.splice(3)
-    const constructionSiteUrl = '/api' + urlArray.join('/')
-
-    axios.get(constructionSiteUrl)
-      .then(response => {
-        instance.constructionSite = response.data
-      })
+  getConstructionSite: function (instance) {
+    const constructionSiteUrl = this._getConstructionSiteIriFromLocation()
+    return new Promise(
+      function (resolve) {
+        axios.get(constructionSiteUrl)
+          .then(response => {
+            instance.constructionSite = response.data
+            resolve()
+          })
+      }
+    )
   },
-  loadConstructionSites: function (instance) {
+  getConstructionSites: function (instance) {
     axios.get('/api/construction_sites')
       .then(response => {
         instance.constructionSites = response.data['hydra:member']
       })
   },
-  loadConstructionManagers: function (instance) {
+  getConstructionManagers: function (instance) {
     axios.get('/api/construction_managers')
       .then(response => {
         instance.constructionManagers = response.data['hydra:member']
+      })
+  },
+  getIssuesSummary: function (instance, constructionSite) {
+    const queryString = '?constructionSite=' + this._getIdFromIri(constructionSite)
+    axios.get('/api/issues/summary' + queryString)
+      .then(response => {
+        instance.issuesSummary = response.data
       })
   },
   patch: function (instance, patch) {

@@ -222,11 +222,12 @@
     "number": "Numero",
     "trade": "Settore",
     "no_response_limit": "non specificato",
-    "created": "creato",
-    "registered": "registrato",
-    "resolved": "risposto",
-    "closed": "chiuso",
-    "state_context": {
+    "state": {
+      "created": "creato",
+      "registered": "registrato",
+      "resolved": "risposto",
+      "closed": "chiuso",
+
       "open": "aperte",
       "read": "letto",
       "overdue": "Termine superato",
