@@ -35,9 +35,6 @@ export default {
   },
   computed: {
     orderedEntries: function () {
-      return this.entries.concat(this.entries)
-        .concat(this.entries)
-        .concat(this.entries)
       return this.entries.sort((a, b) => b.date.localeCompare(a.date))
     }
   }

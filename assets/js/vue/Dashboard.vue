@@ -11,7 +11,7 @@
           <issues-summary :summary="issuesSummary" />
         </spinner>
         <spinner :spin="feedLoading">
-          <feed class="mt-4 shadow" :entries="feedEntries" :construction-managers="constructionManagers" :craftsmen="craftsmen" />
+          <feed v-if="feedEntries.length > 0" class="mt-4 shadow" :entries="feedEntries" :construction-managers="constructionManagers" :craftsmen="craftsmen" />
         </spinner>
       </div>
     </div>
