@@ -263,6 +263,8 @@
   },
   "view": {
     "more": "mehr",
-    "less": "weniger"
+    "less": "weniger",
+    "today": "heute",
+    "yesterday": "gestern"
   }
 }

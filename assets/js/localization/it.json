@@ -260,6 +260,8 @@
   },
   "view": {
     "more": "di più",
-    "less": "meno"
+    "less": "meno",
+    "today": "oggi",
+    "yesterday": "ieri"
   }
 }
