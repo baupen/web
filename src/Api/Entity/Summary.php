@@ -21,11 +21,6 @@ class Summary
     /**
      * @var int
      */
-    private $overdueCount;
-
-    /**
-     * @var int
-     */
     private $resolvedCount;
 
     /**
@@ -41,16 +36,6 @@ class Summary
     public function setOpenCount(int $openCount): void
     {
         $this->openCount = $openCount;
-    }
-
-    public function getOverdueCount(): int
-    {
-        return $this->overdueCount;
-    }
-
-    public function setOverdueCount(int $overdueCount): void
-    {
-        $this->overdueCount = $overdueCount;
     }
 
     public function getResolvedCount(): int
