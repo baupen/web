@@ -73,7 +73,7 @@ Milestone 3 (Operations):
 
 Milestone 4 (UI)
 - [x] implement switch UI
-- [ ] implement dashboard UI
+- [x] implement dashboard UI
 - [ ] implement craftsman UI 
 - [ ] implement foyer UI with scalable table
 - [ ] implement register UI with same table as foyer
