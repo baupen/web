@@ -39,6 +39,10 @@ class FeedEntryAggregator
         $iri = $this->iriConverter->getIriFromItem($subject);
         $dateTimeString = $dateTime->format('Y-m-d');
 
+        if (!isset($this->aggregator[$dateTimeString][$iri][$action])) {
+            $this->aggregator[$dateTimeString][$iri][$action] = 0;
+        }
+
         ++$this->aggregator[$dateTimeString][$iri][$action];
     }
 
