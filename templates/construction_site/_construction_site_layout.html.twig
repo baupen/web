@@ -25,8 +25,8 @@
             <ul class="navbar-nav">
                 {{ own_macros.nav_item(path("construction_site_dashboard", {"constructionSite": constructionSite.id}), "dashboard.title"|trans({}, "construction_site")) }}
                 {{ own_macros.nav_item(path("construction_site_foyer", {"constructionSite": constructionSite.id}), "foyer.title"|trans({}, "construction_site")) }}
-                {{ own_macros.nav_item(path("construction_site_register", {"constructionSite": constructionSite.id}), "register.title"|trans({}, "construction_site")) }}
                 {{ own_macros.nav_item(path("construction_site_dispatch", {"constructionSite": constructionSite.id}), "dispatch.title"|trans({}, "construction_site")) }}
+                {{ own_macros.nav_item(path("construction_site_register", {"constructionSite": constructionSite.id}), "register.title"|trans({}, "construction_site")) }}
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
