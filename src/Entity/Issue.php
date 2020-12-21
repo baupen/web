@@ -82,6 +82,17 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     use IssuePositionTrait;
     use IssueStatusTrait;
 
+    /**
+     * An Issue goes through the following states from the point of view of the user:
+     * - new (created, but not registered yet)
+     * - open (registered, but not resolved or closed)
+     * - resolved (resolved, but not closed)
+     * - closed (closed).
+     *
+     * The following states are also interesting determines the following states:
+     * - seen (opened < last visit of craftsman)
+     * - overdue (deadline > resolved or (deadline > now && resolved == null))
+     */
     public const STATE_CREATED = 0;
     public const STATE_REGISTERED = 1;
     public const STATE_SEEN = 2;
