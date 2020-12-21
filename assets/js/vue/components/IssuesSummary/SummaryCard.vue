@@ -12,7 +12,7 @@
 export default {
   props: {
     number: {
-      type: Object,
+      type: Number,
       required: true
     },
     description: {

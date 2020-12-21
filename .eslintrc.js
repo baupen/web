@@ -1,19 +1,20 @@
 module.exports = {
   env: {
     browser: true,
-    es2020: true,
+    es2020: true
   },
   extends: [
     'plugin:vue/recommended',
-    'standard',
+    'standard'
   ],
   parserOptions: {
     ecmaVersion: 12,
-    sourceType: 'module',
+    sourceType: 'module'
   },
   plugins: [
-    'vue',
+    'vue'
   ],
   rules: {
-  },
-};
+    'vue/order-in-components': 'off'
+  }
+}

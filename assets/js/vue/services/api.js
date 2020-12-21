@@ -2,7 +2,7 @@ import axios from 'axios'
 import Noty from 'noty'
 
 const api = {
-  setupErrorNotifications: function (instance) {
+  setupErrorNotifications: function (translator) {
     axios.interceptors.response.use(
       response => {
         return response
@@ -22,7 +22,7 @@ const api = {
         }
 
         new Noty({
-          text: instance.$t('messages.danger.request_failed') + ' (' + errorText + ')',
+          text: translator('messages.danger.request_failed') + ' (' + errorText + ')',
           theme: 'bootstrap-v4',
           type: 'error'
         }).show()
@@ -43,58 +43,83 @@ const api = {
     urlArray.splice(3)
     return '/api' + urlArray.join('/')
   },
+  _getConstructionSiteQuery: function (constructionSite) {
+    return 'constructionSite=' + this._getIdFromIri(constructionSite)
+  },
   _getIdFromIri: function (object) {
     const iri = object['@id']
     return iri.substr(iri.lastIndexOf('/') + 1)
   },
-  getMe: function (instance) {
-    axios.get('/api/me')
-      .then(response => {
-        this._writeAllProperties(response.data, instance)
-      })
-  },
-  getConstructionSite: function (instance) {
-    const constructionSiteUrl = this._getConstructionSiteIriFromLocation()
+  _getHydraCollection: function (url) {
     return new Promise(
-      function (resolve) {
-        axios.get(constructionSiteUrl)
+      (resolve) => {
+        axios.get(url)
           .then(response => {
-            instance.constructionSite = response.data
+            resolve(response.data['hydra:member'])
+          })
+      }
+    )
+  },
+  _getItem: function (url) {
+    return new Promise(
+      (resolve) => {
+        axios.get(url)
+          .then(response => {
+            resolve(response.data)
+          })
+      }
+    )
+  },
+  getMe: function () {
+    return this._getItem('/api/me')
+  },
+  getConstructionSite: function () {
+    const constructionSiteUrl = this._getConstructionSiteIriFromLocation()
+    return this._getItem(constructionSiteUrl)
+  },
+  getConstructionManagers: function () {
+    return this._getHydraCollection('/api/construction_managers')
+  },
+  getConstructionSites: function () {
+    return this._getHydraCollection('/api/construction_sites')
+  },
+  getCraftsmen: function (constructionSite) {
+    const constructionSiteQuery = this._getConstructionSiteQuery(constructionSite)
+    return this._getHydraCollection('/api/craftsmen?' + constructionSiteQuery)
+  },
+  getIssuesSummary: function (constructionSite) {
+    const constructionSiteQuery = this._getConstructionSiteQuery(constructionSite)
+    return this._getItem('/api/issues/summary?' + constructionSiteQuery)
+  },
+  getCraftsmenFeedEntries: function (constructionSite) {
+    const queryString = '?constructionSite=' + this._getIdFromIri(constructionSite)
+    return this._getItem('/api/craftsmen/feed_entries' + queryString)
+  },
+  getIssuesFeedEntries: function (constructionSite) {
+    const queryString = '?constructionSite=' + this._getIdFromIri(constructionSite)
+    return this._getItem('/api/issues/feed_entries' + queryString)
+  },
+  patch: function (instance, patch) {
+    return new Promise(
+      (resolve) => {
+        axios.patch(instance['@id'], patch, { headers: { 'Content-Type': 'application/merge-patch+json' } })
+          .then(response => {
+            this._writeAllProperties(response.data, instance)
             resolve()
           })
       }
     )
   },
-  getConstructionSites: function (instance) {
-    axios.get('/api/construction_sites')
-      .then(response => {
-        instance.constructionSites = response.data['hydra:member']
-      })
-  },
-  getConstructionManagers: function (instance) {
-    axios.get('/api/construction_managers')
-      .then(response => {
-        instance.constructionManagers = response.data['hydra:member']
-      })
-  },
-  getIssuesSummary: function (instance, constructionSite) {
-    const queryString = '?constructionSite=' + this._getIdFromIri(constructionSite)
-    axios.get('/api/issues/summary' + queryString)
-      .then(response => {
-        instance.issuesSummary = response.data
-      })
-  },
-  patch: function (instance, patch) {
-    axios.patch(instance['@id'], patch, { headers: { 'Content-Type': 'application/merge-patch+json' } })
-      .then(response => {
-        this._writeAllProperties(response.data, instance)
-      })
-  },
   post: function (collectionUrl, post, collection) {
-    axios.post(collectionUrl, post)
-      .then(response => {
-        collection.push(response.data)
-      })
+    return new Promise(
+      (resolve) => {
+        axios.post(collectionUrl, post)
+          .then(response => {
+            collection.push(response.data)
+            resolve()
+          })
+      }
+    )
   }
 }
 

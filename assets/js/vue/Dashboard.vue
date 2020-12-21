@@ -8,7 +8,10 @@
       </div>
       <div class="col-md-auto min-width-600">
         <spinner :spin="issuesSummaryLoading">
-        <issues-summary :summary="issuesSummary" />
+          <issues-summary :summary="issuesSummary" />
+        </spinner>
+        <spinner :spin="feedLoading">
+          <feed :entries="feedEntries" :construction-managers="constructionManagers" :craftsmen="craftsmen" />
         </spinner>
       </div>
     </div>
@@ -16,47 +19,70 @@
 </template>
 
 <script>
-import {api} from './services/api';
-import ConstructionSitePreviews from "./components/ConstructionSitePreviews";
-import ConstructionSiteList from "./components/ConstructionSiteList";
-import Modal from "./components/Shared/Modal";
-import ConstructionSiteAdd from "./components/ConstructionSiteAdd";
-import ConstructionSiteSummary from "./components/ConstructionSiteSummary";
-import IssuesSummary from "./components/IssuesSummary";
+import { api } from './services/api'
+import ConstructionSiteSummary from './components/ConstructionSiteSummary'
+import IssuesSummary from './components/IssuesSummary'
+import Feed from './components/Feed'
 
 export default {
   components: {
+    Feed,
     IssuesSummary,
-    ConstructionSiteSummary, ConstructionSiteAdd, Modal, ConstructionSiteList, ConstructionSitePreviews},
-  data() {
+    ConstructionSiteSummary
+  },
+  data () {
     return {
       constructionManagerIri: null,
       constructionSite: null,
+      constructionManagers: null,
+      craftsmen: null,
       issuesSummary: null,
-      show: false
+      feedEntries: null
     }
   },
   computed: {
     constructionSiteSummaryLoading: function () {
-      return this.constructionSite === null;
+      return this.constructionSite === null
     },
     issuesSummaryLoading: function () {
-      return this.issuesSummary === null;
+      return this.issuesSummary === null
+    },
+    feedLoading: function () {
+      return this.feedEntries === null || this.constructionManagers === null || this.craftsmen === null
     }
   },
-  mounted() {
-    api.setupErrorNotifications(this);
-    api.getMe(this);
-    api.getConstructionSite(this).then(_ => {
-      api.getIssuesSummary(this, this.constructionSite)
-    });
+  mounted () {
+    api.setupErrorNotifications(this.$t)
+    api.getMe()
+      .then(me => this.constructionManagerIri = me.constructionManagerIri)
+    api.getConstructionManagers()
+      .then(constructionManagers => this.constructionManagers = constructionManagers);
+    api.getConstructionSite()
+      .then(constructionSite => {
+        this.constructionSite = constructionSite
+
+        api.getCraftsmen(this.constructionSite)
+          .then(craftsmen => this.craftsmen = craftsmen)
+
+        api.getIssuesSummary(this.constructionSite)
+          .then(issuesSummary => this.issuesSummary = issuesSummary)
+
+        api.getIssuesFeedEntries(this.constructionSite)
+          .then(issuesFeedEntries => {
+            this.feedEntries = issuesFeedEntries.concat(this.feedEntries ?? [])
+          })
+        api.getCraftsmenFeedEntries(this.constructionSite)
+          .then(craftsmenFeedEntries => {
+            this.feedEntries = craftsmenFeedEntries.concat(this.feedEntries ?? [])
+          })
+      })
   }
 }
 
 </script>
 
 <style scoped="true">
-  .min-width-600 {
-    min-width: 800px;
-  }
+.min-width-600 {
+  min-width: 600px;
+}
 </style>

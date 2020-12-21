@@ -45,7 +45,6 @@ class IssueSummaryDataProvider extends NoPaginationDataProvider
 
         $summary = new Summary();
         $summary->setOpenCount($this->countOpenIssues($rootAlias, clone $queryBuilder));
-        $summary->setOverdueCount($this->countOverdueIssues($rootAlias, clone $queryBuilder));
         $summary->setResolvedCount($this->countResolvedIssues($rootAlias, clone $queryBuilder));
         $summary->setClosedCount($this->countClosedIssues($rootAlias, clone $queryBuilder));
 
@@ -59,17 +58,6 @@ class IssueSummaryDataProvider extends NoPaginationDataProvider
         $builder->andWhere($rootAlias.'.registeredAt IS NOT NULL')
             ->andWhere($rootAlias.'.resolvedAt IS NULL')
             ->andWhere($rootAlias.'.closedAt IS NULL');
-
-        return $this->countResult($rootAlias, $builder);
-    }
-
-    private function countOverdueIssues(string $rootAlias, QueryBuilder $builder)
-    {
-        $builder->andWhere($rootAlias.'.registeredAt IS NOT NULL')
-            ->andWhere($rootAlias.'.resolvedAt IS NULL')
-            ->andWhere($rootAlias.'.closedAt IS NULL')
-            ->andWhere($rootAlias.'.deadline IS NOT NULL')
-            ->andWhere($rootAlias.'.deadline > '.$rootAlias.'.resolvedAt');
 
         return $this->countResult($rootAlias, $builder);
     }
