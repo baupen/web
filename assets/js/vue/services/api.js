@@ -44,6 +44,16 @@ const api = {
         this._writeAllProperties(response.data, instance)
       })
   },
+  loadConstructionSite: function (instance) {
+    const urlArray = window.location.pathname.split('/')
+    urlArray.splice(3)
+    const constructionSiteUrl = '/api' + urlArray.join('/')
+
+    axios.get(constructionSiteUrl)
+      .then(response => {
+        instance.constructionSite = response.data
+      })
+  },
   loadConstructionSites: function (instance) {
     axios.get('/api/construction_sites')
       .then(response => {
