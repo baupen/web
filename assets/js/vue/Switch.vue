@@ -5,11 +5,16 @@
       <p>{{ $t("switch.mine_help") }}</p>
 
       <spinner :spin="isLoading">
-        <construction-site-previews v-if="memberOfConstructionSites.length > 0"
-                                    :construction-sites="memberOfConstructionSites"
-                                    :construction-managers="constructionManagers"/>
+        <construction-site-previews
+          v-if="memberOfConstructionSites.length > 0"
+          :construction-sites="memberOfConstructionSites"
+          :construction-managers="constructionManagers"
+        />
 
-        <div class="alert alert-info" v-else>
+        <div
+          v-else
+          class="alert alert-info"
+        >
           {{ $t('switch.messages.info.activate_construction_site') }}
         </div>
       </spinner>
@@ -17,69 +22,74 @@
     <h2>{{ $t("switch.all") }}</h2>
     <p>{{ $t("switch.all_help") }}</p>
     <spinner :spin="isLoading">
-      <construction-site-add class="mb-2" :construction-sites="constructionSiteList" @add="postConstructionSite"/>
+      <construction-site-add
+        class="mb-2"
+        :construction-sites="constructionSiteList"
+        @add="postConstructionSite"
+      />
 
-      <construction-site-list @remove-self="removeSelfFromConstructionSite"
-                              @add-self="addSelfToConstructionSite"
-                              :construction-sites="constructionSiteList"
-                              :construction-manager-iri="constructionManagerIri"/>
+      <construction-site-list
+        :construction-sites="constructionSiteList"
+        :construction-manager-iri="constructionManagerIri"
+        @remove-self="removeSelfFromConstructionSite"
+        @add-self="addSelfToConstructionSite"
+      />
     </spinner>
   </div>
 </template>
 
 <script>
-import {api} from './services/api';
-import ConstructionSitePreviews from "./components/ConstructionSitePreviews";
-import ConstructionSiteList from "./components/ConstructionSiteList";
-import Modal from "./components/Shared/Modal";
-import ConstructionSiteAdd from "./components/ConstructionSiteAdd";
+import { api } from './services/api'
+import ConstructionSitePreviews from './components/ConstructionSitePreviews'
+import ConstructionSiteList from './components/ConstructionSiteList'
+import Modal from './components/Shared/Modal'
+import ConstructionSiteAdd from './components/ConstructionSiteAdd'
 
 export default {
-  components: {ConstructionSiteAdd, Modal, ConstructionSiteList, ConstructionSitePreviews},
-  data() {
+  components: { ConstructionSiteAdd, Modal, ConstructionSiteList, ConstructionSitePreviews },
+  data () {
     return {
       constructionManagerIri: null,
       constructionSites: null,
-      constructionManagers: null,
-      show: false
+      constructionManagers: null
     }
   },
   computed: {
     isLoading: function () {
-      return this.constructionSites === null || this.constructionManagers === null || this.constructionManagerIri === null;
+      return this.constructionSites === null || this.constructionManagers === null || this.constructionManagerIri === null
     },
     memberOfConstructionSites: function () {
       return this.constructionSiteList.filter(constructionSite => constructionSite.constructionManagers.includes(this.constructionManagerIri))
     },
     constructionSiteList: function () {
       return this.constructionSites.filter(constructionSite => !constructionSite.isDeleted)
-    },
+    }
   },
   methods: {
     postConstructionSite: function (constructionSite) {
       this.show = false
-      constructionSite.constructionManagers = [this.constructionManagerIri];
-      api.post('/api/construction_sites', constructionSite, this.constructionSites);
+      constructionSite.constructionManagers = [this.constructionManagerIri]
+      api.post('/api/construction_sites', constructionSite, this.constructionSites)
     },
     removeSelfFromConstructionSite: function (constructionSite) {
-      let constructionManagersWithoutSelf = constructionSite.constructionManagers.filter(cm => cm !== this.constructionManagerIri);
+      const constructionManagersWithoutSelf = constructionSite.constructionManagers.filter(cm => cm !== this.constructionManagerIri)
       api.patch(constructionSite, {
-        "constructionManagers": constructionManagersWithoutSelf
-      });
+        constructionManagers: constructionManagersWithoutSelf
+      })
     },
     addSelfToConstructionSite: function (constructionSite) {
-      let constructionManagers = constructionSite.constructionManagers.filter(cm => cm !== this.constructionManagerIri);
-      constructionManagers.push(this.constructionManagerIri);
+      const constructionManagers = constructionSite.constructionManagers.filter(cm => cm !== this.constructionManagerIri)
+      constructionManagers.push(this.constructionManagerIri)
       api.patch(constructionSite, {
-        "constructionManagers": constructionManagers
-      });
+        constructionManagers: constructionManagers
+      })
     }
   },
-  mounted() {
-    api.setupErrorNotifications(this);
-    api.loadMe(this);
-    api.loadConstructionSites(this);
-    api.loadConstructionManagers(this);
+  mounted () {
+    api.setupErrorNotifications(this.$t)
+    api.getMe().then(me => this.constructionManagerIri = me.constructionManagerIri);
+    api.getConstructionSites().then(constructionSites => this.constructionSites = constructionSites)
+    api.getConstructionManagers().then(constructionManagers => this.constructionManagers = constructionManagers)
   }
 }
 

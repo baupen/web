@@ -52,7 +52,7 @@ class MapTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/maps?constructionSite='.$constructionSite->getId());
-        $this->assertApiResponseFieldSubset($response, 'name', 'parent', 'file', 'fileUrl', 'isDeleted', 'lastChangedAt');
+        $this->assertApiResponseFieldSubset($response, 'name', 'parent', 'fileUrl', 'isDeleted', 'lastChangedAt');
         $this->assertApiResponseFileIsDownloadable($client, $response, 'fileUrl', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
     }
 
@@ -71,16 +71,12 @@ class MapTest extends ApiTestCase
         $parent = $constructionSite->getMaps()[0];
         $parentId = $this->getIriFromItem($parent);
 
-        $file = $constructionSite->getMapFiles()[0];
-        $fileId = $this->getIriFromItem($file);
-
         $sample = [
             'name' => 'OG 2',
         ];
 
         $optionalProperties = [
             'parent' => $parentId,
-            'file' => $fileId,
         ];
 
         $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/maps', $sample, $affiliation);
@@ -99,37 +95,12 @@ class MapTest extends ApiTestCase
         $update = [
             'name' => 'OG 3',
             'parent' => null,
-            'file' => null,
         ];
         $response = $this->assertApiPatchPayloadPersisted($client, $mapId, $update);
         $this->assertApiCollectionContainsResponseItem($client, '/api/maps?constructionSite='.$constructionSite->getId(), $response);
 
         $this->assertApiDeleteOk($client, $mapId);
         $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/maps?constructionSite='.$constructionSite->getId(), $response);
-    }
-
-    public function testRelationsOnSameConstructionSite()
-    {
-        $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-        $this->loginApiConstructionManager($client);
-
-        $constructionSite = $this->getTestConstructionSite();
-
-        $basePayload = [
-            'constructionSite' => $this->getIriFromItem($constructionSite),
-            'name' => 'some name',
-        ];
-
-        $otherConstructionSite = $this->getEmptyConstructionSite();
-        $mapFile = $this->addMapFile($otherConstructionSite);
-
-        $payload = [
-            'file' => $this->getIriFromItem($mapFile),
-        ];
-
-        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/maps', array_merge($basePayload, $payload));
-        $this->assertApiPostPayloadPersisted($client, '/api/maps', [], $basePayload);
     }
 
     public function testIsDeletedFilter()

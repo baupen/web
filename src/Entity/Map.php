@@ -27,7 +27,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * An Map is a logical plan of some part of the construction site.
@@ -97,7 +96,6 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     /**
      * @var MapFile|null
      *
-     * @Groups({"map-read", "map-write"})
      * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="maps", cascade={"persist"})
      */
     private $file;
@@ -108,16 +106,6 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="map")
      */
     private $issues;
-
-    /**
-     * @Assert\Callback
-     */
-    public function validateRelations(ExecutionContextInterface $context)
-    {
-        if (null !== $this->file && $this->file->getConstructionSite() !== $this->constructionSite) {
-            $context->buildViolation('File does not belong to construction site')->addViolation();
-        }
-    }
 
     public function __construct()
     {

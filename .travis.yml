@@ -59,7 +59,7 @@ script:
 
   # backend linters
   - if [[ "$COVERAGE" == true ]]; then ./vendor/bin/php-cs-fixer fix --diff --dry-run -v; fi
-  - php bin/console lint:yaml config
+  - php bin/console lint:yaml config --parse-tags
   - php bin/console lint:twig templates
 
   # backend tests

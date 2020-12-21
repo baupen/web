@@ -154,4 +154,14 @@ class CraftsmanTest extends ApiTestCase
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $craftsmanIri, 'id', $craftsmanIri);
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $craftsmanIri, 'trade', $sample['trade']);
     }
+
+    public function testFeed()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $this->assertApiGetOk($client, '/api/craftsmen/feed_entries?constructionSite='.$constructionSite->getId());
+    }
 }

@@ -174,10 +174,6 @@ class SampleService implements SampleServiceInterface
             $issue->setMap($map);
             $map->getIssues()->add($issue);
 
-            $mapFile = $issue->getMap()->getFile();
-            $issue->setMapFile($mapFile);
-            $mapFile->getIssues()->add($issue);
-
             // no description = no issue image
             if (null === $issue->getDescription()) {
                 continue;

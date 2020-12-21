@@ -7,7 +7,7 @@
            v-model="localModelValue"
            @input="emitUpdate">
     <div class="invalid-feedback" v-if="dirty && !isValid">
-      <span v-if="required && !this.localModelValue">{{$t('validation.required')}}<br/></span>
+      <span v-if="required && !localModelValue">{{$t('validation.required')}}<br/></span>
     </div>
   </div>
 </template>
@@ -80,3 +80,9 @@ export default {
   }
 }
 </script>
+
+<style scoped="true">
+  input:required {
+    box-shadow: none;
+  }
+</style>

@@ -26,6 +26,7 @@ import de from './localization/de.json'
 import it from './localization/it.json'
 
 import Switch from './vue/Switch.vue'
+import Dashboard from './vue/Dashboard.vue'
 import Spinner from './vue/components/Spinner.vue'
 
 // settings
@@ -54,15 +55,25 @@ const i18n = createI18n({
 })
 
 // configure vue
-const vue = createApp(Switch)
 
-// vue.config.productionTip = false
-vue.use(i18n)
-vue.use(VueFlatPickr)
-vue.component('FontAwesomeIcon', FontAwesomeIcon)
-vue.component('Spinner', Spinner)
+function createVue (app) {
+  const vue = createApp(app)
+
+  vue.config.productionTip = false
+  vue.use(i18n)
+  vue.use(VueFlatPickr)
+  vue.component('FontAwesomeIcon', FontAwesomeIcon)
+  vue.component('Spinner', Spinner)
+
+  return vue
+}
 
 // boot apps
 if (document.getElementById('switch') != null) {
-  vue.mount('#switch')
+  createVue(Switch).mount('#switch')
+}
+
+// boot apps
+if (document.getElementById('dashboard') != null) {
+  createVue(Dashboard).mount('#dashboard')
 }

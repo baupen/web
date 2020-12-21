@@ -1,0 +1,62 @@
+{% extends "_base.html.twig" %}
+
+{% block layout %}
+    <nav class="navbar navbar-light bg-light-gray navbar-expand">
+        {% block navigation_primary_brand %}
+
+        {% endblock %}
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavbar"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav ml-auto">
+                {% if app.request.requestUri != "/" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path("index") }}">{{ "index.title"|trans({}, "index") }}</a>
+                    </li>
+                {% endif %}
+                <a href="mailto:{{ env_support_email }}" class="nav-link">
+                    <i class="fal fa-envelope-open"></i>
+                </a>
+                <a href="#help-modal" class="nav-link" data-target="#help-modal" data-toggle="modal">
+                    <i class="fal fa-question-circle"></i>
+                </a>
+                {% if app.request.locale != "de" %}
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="{{ path("set_locale", {"locale": "de", "return_to": app.request.requestUri}) }}">de</a>
+                    </li>
+                {% endif %}
+                {% if app.request.locale != "it" %}
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="{{ path("set_locale", {"locale": "it", "return_to": app.request.requestUri}) }}">it</a>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path("logout") }}">{{ "logout.title"|trans({}, "security") }}</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    {% block navbar_content %}
+
+    {% endblock %}
+
+    <!-- help modal -->
+    <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h2>{{ "overview.title"|trans({}, "help") }}</h2>
+                    <p>{{ "overview.description"|trans({}, "help") }}</p>
+                    {% include "help/articles/overview.html.twig" %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

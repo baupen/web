@@ -19,6 +19,10 @@
     "messages": {
       "info": {
         "new_issues_in_foyer": "Eine neue Pendenz | {count} neue Pendenzen"
+      },
+      "warning": {
+        "overdue_limit": "{craftsman} hat die Frist vom {limit} bei {count} Pendenzen überschritten.",
+        "unread": "{craftsman} hat {count} ungelesene Pendenzen."
       }
     },
     "actions": {
@@ -30,9 +34,10 @@
     "show_more": "Mehr anzeigen",
     "no_entries_yet": "Keine Aktivitäten auf der Baustelle. Fügen Sie Pendenzen hinzu, damit hier etwas angezeigt wird.",
     "entries": {
-      "response_received": "{craftsman} hat eine Pendenz erledigt. | {craftsman} hat {count} Pendenzen erledigt.",
-      "visited_webpage": "{craftsman} hat die Pendenzen angeschaut.",
-      "overdue_limit": "{craftsman} hat die Frist vom {limit} bei {count} Pendenzen überschritten."
+      "construction_manager_registered": "{constructionManager} hat eine Pendenz registriert. | {constructionManager} hat {count} Pendenzen registriert.",
+      "craftsman_resolved": "{craftsman} hat eine Pendenz erledigt. | {craftsman} hat {count} Pendenzen erledigt.",
+      "construction_manager_closed": "{constructionManager} hat eine Pendenz geschlossen. | {constructionManager} hat {count} Pendenzen geschlossen.",
+      "craftsman_visited_webpage": "{craftsman} hat die Pendenzen angeschaut."
     }
   },
   "foyer": {
@@ -222,11 +227,11 @@
     "status": "Status",
     "number": "Nummer",
     "trade": "Gewerk",
-    "created": "erstellt",
-    "registered": "registriert",
-    "resolved": "erledigt",
-    "closed": "geschlossen",
-    "state_context": {
+    "state": {
+      "created": "erstellt",
+      "registered": "registriert",
+      "resolved": "erledigt",
+      "closed": "geschlossen",
       "open": "offen",
       "read": "gelesen",
       "overdue": "Frist überschritten",
@@ -258,6 +263,8 @@
   },
   "view": {
     "more": "mehr",
-    "less": "weniger"
+    "less": "weniger",
+    "today": "heute",
+    "yesterday": "gestern"
   }
 }

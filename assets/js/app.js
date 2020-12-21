@@ -4,11 +4,9 @@ import './vuejs'
 import { dom } from '@fortawesome/fontawesome-svg-core'
 
 const $ = require('jquery')
+window.$ = $
 require('bootstrap')
 require('typeface-open-sans')
-
-// attach jquery to window
-window.$ = $
 
 // register some basic usability functionality
 $(document)
