@@ -12,11 +12,12 @@
 namespace App\Controller;
 
 use App\Controller\Base\BaseController;
+use App\Entity\ConstructionSite;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/construction_sites/{construction_site}")
+ * @Route("/construction_sites/{constructionSite}")
  */
 class ConstructionSiteController extends BaseController
 {
@@ -25,9 +26,9 @@ class ConstructionSiteController extends BaseController
      *
      * @return Response
      */
-    public function dashboardAction()
+    public function dashboardAction(ConstructionSite $constructionSite)
     {
-        return $this->render('construction_site/dashboard.html.twig');
+        return $this->render('construction_site/dashboard.html.twig', ['constructionSite' => $constructionSite]);
     }
 
     /**
@@ -35,9 +36,9 @@ class ConstructionSiteController extends BaseController
      *
      * @return Response
      */
-    public function foyerAction()
+    public function foyerAction(ConstructionSite $constructionSite)
     {
-        return $this->render('construction_site/foyer.html.twig');
+        return $this->render('construction_site/foyer.html.twig', ['constructionSite' => $constructionSite]);
     }
 
     /**
@@ -45,19 +46,9 @@ class ConstructionSiteController extends BaseController
      *
      * @return Response
      */
-    public function registerAction()
+    public function registerAction(ConstructionSite $constructionSite)
     {
-        return $this->render('construction_site/register.html.twig');
-    }
-
-    /**
-     * @Route("/edit", name="construction_site_edit")
-     *
-     * @return Response
-     */
-    public function editAction()
-    {
-        return $this->render('construction_site/edit.html.twig');
+        return $this->render('construction_site/register.html.twig', ['constructionSite' => $constructionSite]);
     }
 
     /**
@@ -65,8 +56,18 @@ class ConstructionSiteController extends BaseController
      *
      * @return Response
      */
-    public function dispatchAction()
+    public function dispatchAction(ConstructionSite $constructionSite)
     {
-        return $this->render('construction_site/dispatch.html.twig');
+        return $this->render('construction_site/dispatch.html.twig', ['constructionSite' => $constructionSite]);
+    }
+
+    /**
+     * @Route("/edit", name="construction_site_edit")
+     *
+     * @return Response
+     */
+    public function editAction(ConstructionSite $constructionSite)
+    {
+        return $this->render('construction_site/edit.html.twig', ['constructionSite' => $constructionSite]);
     }
 }

@@ -3,6 +3,7 @@ $border-radius-lg: 0;
 $border-radius-sm: 0;
 $modal-backdrop-opacity: 0.3;
 $primary: #343477;
+$primary-200: #eaecef;
 
 @import '~bootstrap/scss/bootstrap';
 @import '~noty/src/noty';
@@ -56,4 +57,8 @@ body {
 
 .pre {
   white-space: pre;
+}
+
+.bg-light-gray {
+  background: $primary-200;
 }

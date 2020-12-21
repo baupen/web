@@ -1,0 +1,46 @@
+{% extends "_navbar_layout.html.twig" %}
+
+{% macro nav_item(link, text) %}
+    <li class="nav-item {% if app.request.pathInfo == link %}active{% endif %}">
+        <a class="nav-link" href="{{ link }}">{{ text }}</a>
+    </li>
+{% endmacro %}
+{% import _self as own_macros %}
+
+{% block navigation_primary_brand %}
+    <a class="navbar-brand pl-2"
+       href="{{ path("construction_site_dashboard", {"constructionSite": constructionSite.id}) }}">
+        {{ constructionSite.name }}
+    </a>
+{% endblock %}
+
+{% block navbar_content %}
+    <nav class="navbar navbar-light bg-light border-bottom navbar-expand">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#constructionSiteNavbar"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="constructionSiteNavbar">
+            <ul class="navbar-nav">
+                {{ own_macros.nav_item(path("construction_site_dashboard", {"constructionSite": constructionSite.id}), "dashboard.title"|trans({}, "construction_site")) }}
+                {{ own_macros.nav_item(path("construction_site_foyer", {"constructionSite": constructionSite.id}), "foyer.title"|trans({}, "construction_site")) }}
+                {{ own_macros.nav_item(path("construction_site_register", {"constructionSite": constructionSite.id}), "register.title"|trans({}, "construction_site")) }}
+                {{ own_macros.nav_item(path("construction_site_dispatch", {"constructionSite": constructionSite.id}), "dispatch.title"|trans({}, "construction_site")) }}
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="{{ path("construction_site_edit", {"constructionSite": constructionSite.id}) }}">{{ "edit.title"|trans({}, "construction_site") }}</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid p-4">
+        <p class="lead text-secondary">{{ block("description") }}</p>
+
+        <div id="{{ application_name }}">
+        </div>
+    </div>
+{% endblock %}
