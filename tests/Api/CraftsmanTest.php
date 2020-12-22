@@ -164,4 +164,14 @@ class CraftsmanTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
         $this->assertApiGetOk($client, '/api/craftsmen/feed_entries?constructionSite='.$constructionSite->getId());
     }
+
+    public function testStatistics()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $this->assertApiGetOk($client, '/api/craftsmen/statistics?constructionSite='.$constructionSite->getId());
+    }
 }
