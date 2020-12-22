@@ -12,6 +12,11 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
+use App\Entity\ConstructionManager;
+use App\Entity\ConstructionSite;
+use App\Entity\Craftsman;
+use App\Entity\Issue;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertApiTrait;
@@ -172,6 +177,88 @@ class CraftsmanTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiGetOk($client, '/api/craftsmen/statistics?constructionSite='.$constructionSite->getId());
+        $constructionManager = $constructionSite->getConstructionManagers()[0];
+        $craftsman = $constructionSite->getCraftsmen()[0];
+
+        $yesterday = new \DateTime('yesterday');
+        $today = new \DateTime('today');
+        $tomorrow = new \DateTime('tomorrow');
+
+        foreach ([$yesterday, $today, $tomorrow] as $item) {
+            $deadlineIssue = $this->createRegisteredIssueForCraftsman($constructionSite, $constructionManager, $craftsman);
+            $deadlineIssue->setDeadline($item);
+            $this->saveEntity($deadlineIssue);
+
+            $resolvedIssue = $this->createRegisteredIssueForCraftsman($constructionSite, $constructionManager, $craftsman);
+            $resolvedIssue->setResolvedAt($item);
+            $resolvedIssue->setResolvedBy($craftsman);
+            $this->saveEntity($resolvedIssue);
+
+            $closedIssue = $this->createRegisteredIssueForCraftsman($constructionSite, $constructionManager, $craftsman);
+            $closedIssue->setClosedAt($item);
+            $closedIssue->setClosedBy($constructionManager);
+            $this->saveEntity($closedIssue);
+        }
+
+        $statistics = $this->getStatisticForCraftsman($client, $craftsman);
+
+        $this->assertEquals(3, $statistics['issueOpenCount']);
+        $this->assertEquals(3, $statistics['issueUnreadCount']);
+        $this->assertEquals(2, $statistics['issueOverdueCount']);
+        $this->assertEquals(3, $statistics['issueClosedCount']);
+
+        $this->assertEquals(null, $statistics['lastEmailReceived']);
+        $this->assertEquals(null, $statistics['lastVisitOnline']);
+
+        $this->assertEquals($yesterday->format('c'), $statistics['nextDeadline']);
+        $this->assertEquals($tomorrow->format('c'), $statistics['lastIssueResolved']);
+
+        $craftsman = $this->getTestConstructionSite()->getCraftsmen()[0];
+        $craftsman->setLastEmailReceived($today);
+        $craftsman->setLastVisitOnline($tomorrow);
+        $this->saveEntity($craftsman);
+
+        $statistics = $this->getStatisticForCraftsman($client, $craftsman);
+        $this->assertEquals($today->format('c'), $statistics['lastEmailReceived']);
+        $this->assertEquals($tomorrow->format('c'), $statistics['lastVisitOnline']);
+        $this->assertEquals(0, $statistics['issueUnreadCount']);
+    }
+
+    private function createRegisteredIssueForCraftsman(ConstructionSite $constructionSite, ConstructionManager $constructionManager, Craftsman $craftsman): Issue
+    {
+        $issue = new Issue();
+
+        $issue->setConstructionSite($constructionSite);
+        $issue->setNumber(0);
+
+        $issue->setCreatedAt(new \DateTime());
+        $issue->setCreatedBy($constructionManager);
+
+        $issue->setRegisteredAt(new \DateTime());
+        $issue->setRegisteredBy($constructionManager);
+
+        $issue->setCraftsman($craftsman);
+
+        return $issue;
+    }
+
+    /**
+     * @param ConstructionSite $constructionSite
+     * @param $craftsmanIri
+     */
+    private function getStatisticForCraftsman(Client $client, Craftsman $craftsman): array
+    {
+        $craftsmanIri = $this->getIriFromItem($craftsman);
+
+        $response = $this->assertApiGetOk($client, '/api/craftsmen/statistics?constructionSite='.$craftsman->getConstructionSite()->getId());
+        $craftsmenStatistics = json_decode($response->getContent(), true);
+        $statistics = [];
+        foreach ($craftsmenStatistics as $craftsmenStatistic) {
+            if ($craftsmenStatistic['craftsman'] === $craftsmanIri) {
+                $statistics = $craftsmenStatistic;
+            }
+        }
+
+        return $statistics;
     }
 }

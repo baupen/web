@@ -16,6 +16,9 @@ use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\Api\Entity\CraftsmanStatistics;
 use App\Entity\Craftsman;
+use App\Entity\Issue;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -37,16 +40,22 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
      */
     private $serializer;
 
+    /**
+     * @var ManagerRegistry
+     */
+    private $manager;
+
     private const ALREADY_CALLED = 'CRAFTSMAN_STATISTICS_DATA_PROVIDER_ALREADY_CALLED';
 
     /**
      * CraftsmanStatisticsDataProvider constructor.
      */
-    public function __construct(ContextAwareCollectionDataProviderInterface $decoratedCollectionDataProvider, IriConverterInterface $iriConverter, SerializerInterface $serializer)
+    public function __construct(ContextAwareCollectionDataProviderInterface $decoratedCollectionDataProvider, IriConverterInterface $iriConverter, SerializerInterface $serializer, ManagerRegistry $manager)
     {
         $this->decoratedCollectionDataProvider = $decoratedCollectionDataProvider;
         $this->iriConverter = $iriConverter;
         $this->serializer = $serializer;
+        $this->manager = $manager;
     }
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
@@ -80,16 +89,181 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
      */
     private function createStatistics(array $craftsmen): array
     {
-        $statistics = [];
+        $statisticsDictionary = [];
         foreach ($craftsmen as $craftsman) {
             $statistic = new CraftsmanStatistics();
 
             $iri = $this->iriConverter->getIriFromItem($craftsman);
             $statistic->setCraftsman($iri);
 
-            $statistics[] = $statistic;
+            $statisticsDictionary[$craftsman->getId()] = $statistic;
         }
 
-        return $statistics;
+        $this->countOpenIssues($craftsmen, $statisticsDictionary);
+        $this->countClosedIssues($craftsmen, $statisticsDictionary);
+        $this->countUnreadIssues($craftsmen, $statisticsDictionary);
+        $this->countOverdueIssues($craftsmen, $statisticsDictionary);
+        $this->findNextDeadline($craftsmen, $statisticsDictionary);
+        $this->findLastIssueResolved($craftsmen, $statisticsDictionary);
+        $this->findLastActivity($craftsmen, $statisticsDictionary);
+
+        return array_values($statisticsDictionary);
+    }
+
+    private function countOpenIssues(array $craftsmen, array $statisticsDictionary)
+    {
+        $queryBuilder = $this->getOpenCraftsmanIssuesQueryBuilder('i', $craftsmen);
+
+        $this->groupByCraftsmanAndEvaluate(
+            $queryBuilder, $statisticsDictionary, 'COUNT(i)',
+            function (CraftsmanStatistics $statistics, $value) {
+                $statistics->setIssueOpenCount($value);
+            }
+        );
+    }
+
+    private function countClosedIssues(array $craftsmen, array $statisticsDictionary)
+    {
+        $queryBuilder = $this->getCraftsmanIssuesQueryBuilder('i', $craftsmen)
+            ->andWhere('i.closedAt IS NOT NULL');
+
+        $this->groupByCraftsmanAndEvaluate(
+            $queryBuilder, $statisticsDictionary, 'COUNT(i)',
+            function (CraftsmanStatistics $statistics, $value) {
+                $statistics->setIssueClosedCount($value);
+            }
+        );
+    }
+
+    /**
+     * @param Craftsman[]           $craftsmen
+     * @param CraftsmanStatistics[] $statisticsDictionary
+     */
+    private function countUnreadIssues(array $craftsmen, array $statisticsDictionary)
+    {
+        $queryBuilder = $this->getOpenCraftsmanIssuesQueryBuilder('i', $craftsmen)
+            ->join('i.craftsman', 'c')
+            ->andWhere('i.registeredAt > c.lastVisitOnline OR c.lastVisitOnline IS NULL');
+
+        $this->groupByCraftsmanAndEvaluate(
+            $queryBuilder, $statisticsDictionary, 'COUNT(i)',
+            function (CraftsmanStatistics $statistics, $value) {
+                $statistics->setIssueUnreadCount($value);
+            }
+        );
+    }
+
+    /**
+     * @param Craftsman[]           $craftsmen
+     * @param CraftsmanStatistics[] $statisticsDictionary
+     */
+    private function countOverdueIssues(array $craftsmen, array $statisticsDictionary)
+    {
+        $queryBuilder = $this->getOpenCraftsmanIssuesQueryBuilder('i', $craftsmen)
+            ->andWhere('i.deadline IS NOT NULL')
+            ->andWhere('i.deadline < :now')
+            ->setParameter(':now', new \DateTime());
+
+        $this->groupByCraftsmanAndEvaluate(
+            $queryBuilder, $statisticsDictionary, 'COUNT(i)',
+            function (CraftsmanStatistics $statistics, $value) {
+                $statistics->setIssueOverdueCount($value);
+            }
+        );
+    }
+
+    /**
+     * @param Craftsman[]           $craftsmen
+     * @param CraftsmanStatistics[] $statisticsDictionary
+     */
+    private function findNextDeadline(array $craftsmen, array $statisticsDictionary)
+    {
+        $queryBuilder = $this->getOpenCraftsmanIssuesQueryBuilder('i', $craftsmen)
+            ->andWhere('i.deadline IS NOT NULL');
+
+        $this->groupByCraftsmanAndEvaluate(
+            $queryBuilder, $statisticsDictionary, 'MIN(i.deadline)',
+            function (CraftsmanStatistics $statistics, $value) {
+                $statistics->setNextDeadline(new \DateTime($value));
+            }
+        );
+    }
+
+    /**
+     * @param Craftsman[]           $craftsmen
+     * @param CraftsmanStatistics[] $statisticsDictionary
+     */
+    private function findLastIssueResolved(array $craftsmen, array $statisticsDictionary)
+    {
+        $queryBuilder = $this->getCraftsmanIssuesQueryBuilder('i', $craftsmen);
+
+        $this->groupByCraftsmanAndEvaluate(
+            $queryBuilder, $statisticsDictionary, 'MAX(i.resolvedAt)',
+            function (CraftsmanStatistics $statistics, $value) {
+                $statistics->setLastIssueResolved(new \DateTime($value));
+            }
+        );
+    }
+
+    private function getCraftsmanIssuesQueryBuilder(string $rootAlias, array $craftsmen)
+    {
+        $craftsmanIds = $this->getCraftsmanIds($craftsmen);
+
+        $issueRepository = $this->manager->getRepository(Issue::class);
+
+        return $issueRepository->createQueryBuilder($rootAlias)
+            ->andWhere($rootAlias.'.deletedAt IS NULL')
+            ->andWhere($rootAlias.'.registeredAt IS NOT NULL')
+            ->andWhere($rootAlias.'.craftsman IN (:craftsmanIds)')
+            ->setParameter(':craftsmanIds', $craftsmanIds);
+    }
+
+    private function getOpenCraftsmanIssuesQueryBuilder(string $rootAlias, array $craftsmen)
+    {
+        return $this->getCraftsmanIssuesQueryBuilder($rootAlias, $craftsmen)
+            ->andWhere($rootAlias.'.resolvedAt IS NULL')
+            ->andWhere($rootAlias.'.closedAt IS NULL');
+    }
+
+    private function groupByCraftsmanAndEvaluate(QueryBuilder $queryBuilder, array $statisticsDictionary, string $selectExpression, \Closure $processResult)
+    {
+        $rootAlias = $queryBuilder->getRootAliases()[0];
+        $queryBuilder->groupBy($rootAlias.'.craftsman')
+            ->select('identity('.$rootAlias.'.craftsman)')
+            ->addSelect($selectExpression);
+
+        $nextDeadlineResult = $queryBuilder->getQuery()->getResult();
+
+        foreach ($nextDeadlineResult as $entry) {
+            list($craftsmanId, $value) = array_values($entry);
+            $processResult($statisticsDictionary[$craftsmanId], $value);
+        }
+    }
+
+    /**
+     * @param Craftsman[]           $craftsmen
+     * @param CraftsmanStatistics[] $statisticsDictionary
+     */
+    private function findLastActivity(array $craftsmen, array $statisticsDictionary)
+    {
+        foreach ($craftsmen as $craftsman) {
+            $statisticsDictionary[$craftsman->getId()]->setLastEmailReceived($craftsman->getLastEmailReceived());
+            $statisticsDictionary[$craftsman->getId()]->setLastVisitOnline($craftsman->getLastVisitOnline());
+        }
+    }
+
+    /**
+     * @param Craftsman[] $craftsmen
+     *
+     * @return string[]
+     */
+    private function getCraftsmanIds(array $craftsmen): array
+    {
+        $craftsmanIds = [];
+        foreach ($craftsmen as $craftsman) {
+            $craftsmanIds[] = $craftsman->getId();
+        }
+
+        return $craftsmanIds;
     }
 }

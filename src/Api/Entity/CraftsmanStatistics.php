@@ -39,7 +39,7 @@ class CraftsmanStatistics
     public $issueClosedCount = 0;
 
     /**
-     * @var string|null
+     * @var \DateTime|null
      */
     public $nextDeadline;
 
@@ -108,12 +108,12 @@ class CraftsmanStatistics
         $this->issueClosedCount = $issueClosedCount;
     }
 
-    public function getNextDeadline(): ?string
+    public function getNextDeadline(): ?\DateTime
     {
         return $this->nextDeadline;
     }
 
-    public function setNextDeadline(?string $nextDeadline): void
+    public function setNextDeadline(?\DateTime $nextDeadline): void
     {
         $this->nextDeadline = $nextDeadline;
     }
