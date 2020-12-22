@@ -9,15 +9,15 @@
 export default {
   props: {
     value: {
-      type: Object,
+      type: Number,
       required: true
     },
     tooltipTitle: {
-      type: Object,
+      type: String,
       required: true
     },
     colorIfNonzero: {
-      type: Object,
+      type: String,
       required: true
     }
   },

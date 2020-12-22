@@ -2,14 +2,13 @@
   <table class="table table-striped-2 table-hover border">
     <thead>
     <tr class="bg-light">
-      <th></th>
+      <th class="w-minimal"></th>
       <th colspan="3">{{ $t('craftsman._name') }}</th>
       <th class="border-left" colspan="2">{{ $t('issue._plural') }}</th>
       <th class="border-left" colspan="3">{{ $t('dispatch.craftsmen_table.last_activity') }}</th>
     </tr>
     <tr class="text-secondary">
-      <th>
-      </th>
+      <th class="w-minimal"></th>
       <th>{{ $t('craftsman.company') }}</th>
       <th>{{ $t('craftsman.contact_name') }}</th>
       <th>{{ $t('craftsman.trade') }}</th>
@@ -24,8 +23,8 @@
     </thead>
     <tbody>
     <tr v-for="cws in orderedCraftsmenWithStatistics">
-      <td>
-        <checkbox v-model="selectedCraftsmen" :value="cws.craftsman" :id="'craftsman2-'+cws.craftsman['@id']" />
+      <td class="w-minimal">
+        <checkbox v-model="selectedCraftsmen" :value="cws.craftsman" :id="'craftsman2-'+cws.craftsman['@id']"/>
       </td>
       <td>{{ cws.craftsman.company }}</td>
       <td>{{ cws.craftsman.contactName }}</td>
@@ -80,7 +79,10 @@ export default {
     orderedCraftsmenWithStatistics: function () {
       const statisticsLookup = {};
       this.statistics.forEach(statistics => statisticsLookup[statistics["craftsman"]] = statistics)
-      const craftsmanWithStatistics = this.craftsmen.map(craftsman => ({ craftsman, statistics: statisticsLookup[craftsman['@id']]}));
+      const craftsmanWithStatistics = this.craftsmen.map(craftsman => ({
+        craftsman,
+        statistics: statisticsLookup[craftsman['@id']]
+      }));
       return craftsmanWithStatistics.sort((a, b) => a.craftsman.company.localeCompare(b.craftsman.company))
     }
   },
@@ -94,5 +96,9 @@ export default {
 <style scoped="true">
 .table-striped-2 tbody tr:nth-of-type(2n) {
   background-color: rgba(0, 0, 0, 0.05);
+}
+
+.custom-checkbox {
+  margin-right: -0.5em;
 }
 </style>
