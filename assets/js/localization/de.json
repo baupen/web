@@ -61,9 +61,10 @@
     }
   },
   "dispatch": {
-    "table": {
+    "craftsmen_table": {
       "no_entries": "Keine Unternehmer erfasst",
-      "filter_placeholder": "Unternehmer\/Gewerk suchen..."
+      "filter_placeholder": "Unternehmer\/Gewerk suchen...",
+      "last_activity": "Letzte Aktivität"
     },
     "actions": {
       "send_emails": "E-Mails versenden",
@@ -205,9 +206,10 @@
     "not_responded_issues_count": "Nicht erledigte Pendenzen",
     "not_read_issues_count": "Ungelesene Pendenzen",
     "open_issues_count": "Offene Pendenzen",
-    "next_response_limit": "Nächste Frist",
-    "last_email_sent": "Letzte versandte E-Mail",
-    "last_online_visit": "Letzter Webseitenbesuch"
+    "next_deadline": "Nächste Frist",
+    "received_email": "E-Mail empfangen",
+    "visited_webpage": "Webseite besucht",
+    "resolved_issue": "Pendenz erledigt"
   },
   "map": {
     "_name": "Bauplan",
@@ -215,7 +217,6 @@
     "name": "Name",
     "open_issues_count": "Offene Pendenzen",
     "closed_issues_count": "Geschlossene Pendenzen",
-    "next_response_limit": "Nächste Frist",
     "parent": "Zuordnung"
   },
   "issue": {
@@ -234,6 +235,7 @@
       "closed": "geschlossen",
       "open": "offen",
       "read": "gelesen",
+      "unread": "ungelesen",
       "overdue": "Frist überschritten",
       "to_inspect": "zur Inspektion",
       "marked": "markiert"
@@ -265,6 +267,7 @@
     "more": "mehr",
     "less": "weniger",
     "today": "heute",
-    "yesterday": "gestern"
+    "yesterday": "gestern",
+    "count": "Anzahl"
   }
 }

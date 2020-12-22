@@ -46,6 +46,16 @@ const api = {
   _getConstructionSiteQuery: function (constructionSite) {
     return 'constructionSite=' + this._getIdFromIri(constructionSite)
   },
+  _getQueryString: function (query) {
+    const queryList = []
+    for (const entry in query) {
+      if (Object.prototype.hasOwnProperty.call(query, entry)) {
+        queryList.push(entry + '=' + query[entry])
+      }
+    }
+
+    return queryList.join('&')
+  },
   _getIdFromIri: function (object) {
     const iri = object['@id']
     return iri.substr(iri.lastIndexOf('/') + 1)
@@ -83,9 +93,15 @@ const api = {
   getConstructionSites: function () {
     return this._getHydraCollection('/api/construction_sites')
   },
-  getCraftsmen: function (constructionSite) {
-    const constructionSiteQuery = this._getConstructionSiteQuery(constructionSite)
-    return this._getHydraCollection('/api/craftsmen?' + constructionSiteQuery)
+  getCraftsmen: function (constructionSite, query = {}) {
+    let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&' + this._getQueryString(query)
+    return this._getHydraCollection('/api/craftsmen?' + queryString)
+  },
+  getCraftsmenStatistics: function (constructionSite, query = {}) {
+    let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&' + this._getQueryString(query)
+    return this._getItem('/api/craftsmen/statistics?' + queryString)
   },
   getIssuesSummary: function (constructionSite) {
     let queryString = this._getConstructionSiteQuery(constructionSite)

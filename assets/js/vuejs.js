@@ -27,6 +27,7 @@ import it from './localization/it.json'
 
 import Switch from './vue/Switch.vue'
 import Dashboard from './vue/Dashboard.vue'
+import Dispatch from './vue/Dispatch'
 import Spinner from './vue/components/Spinner.vue'
 
 // settings
@@ -76,4 +77,9 @@ if (document.getElementById('switch') != null) {
 // boot apps
 if (document.getElementById('dashboard') != null) {
   createVue(Dashboard).mount('#dashboard')
+}
+
+// boot apps
+if (document.getElementById('dispatch') != null) {
+  createVue(Dispatch).mount('#dispatch')
 }

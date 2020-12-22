@@ -202,7 +202,7 @@
     "not_responded_issues_count": "Pendenze non risposte",
     "not_read_issues_count": "Pendenze non lette",
     "open_issues_count": "Pendenze aperte",
-    "next_response_limit": "Prossimo termine",
+    "next_deadline": "Prossimo termine",
     "last_email_sent": "Ultima email inviata",
     "last_online_visit": "Ultima visita alla pagina"
   },
@@ -212,7 +212,6 @@
     "name": "Nome",
     "open_issues_count": "Pendenze aperte",
     "closed_issues_count": "Pendenze risolte",
-    "next_response_limit": "Prossimo limite",
     "parent": "Attribuzione"
   },
   "issue": {
@@ -232,6 +231,7 @@
 
       "open": "aperte",
       "read": "letto",
+      "unread": "non letto",
       "overdue": "Termine superato",
       "to_inspect": "da ispezionare",
       "marked": "contrassegnate"
