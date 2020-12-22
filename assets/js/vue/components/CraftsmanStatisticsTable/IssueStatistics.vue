@@ -1,23 +1,17 @@
 <template>
   <span>
-    <span ref="value1" data-toggle="tooltip" :title="$t('issue.state.open')">
-      {{ statistics.issueOpenCount }}
-    </span> /
-    <span ref="value2" data-toggle="tooltip" :title="$t('issue.state.unread')">
-      {{ statistics.issueUnreadCount }}
-    </span> /
-    <span ref="value3" data-toggle="tooltip" :title="$t('issue.state.overdue')">
-      {{ statistics.issueOverdueCount }}
-    </span> /
-    <span ref="value4" data-toggle="tooltip" :title="$t('issue.state.closed')">
-      {{ statistics.issueClosedCount }}
-    </span>
+    <number-with-tooltip :value="statistics.openIssueCount" :tooltip-title="$t('issue.state.open')" /> /
+    <number-with-tooltip :value="statistics.issueUnreadCount" :tooltip-title="$t('issue.state.unread')" /> /
+    <number-with-tooltip :value="statistics.issueOverdueCount" :tooltip-title="$t('issue.state.overdue')" /> /
+    <number-with-tooltip :value="statistics.issueClosedCount" :tooltip-title="$t('issue.state.closed')" />
   </span>
 </template>
 
 <script>
 
+import NumberWithTooltip from "./NumberWithTooltip";
 export default {
+  components: {NumberWithTooltip},
   props: {
     statistics: {
       type: Object,
