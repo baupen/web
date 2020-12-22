@@ -64,7 +64,10 @@
     "craftsmen_table": {
       "no_entries": "Keine Unternehmer erfasst",
       "filter_placeholder": "Unternehmer\/Gewerk suchen...",
-      "last_activity": "Letzte Aktivität"
+      "last_activity": "Letzte Aktivität",
+      "with_open_issues": "mit offenen Pendenzen",
+      "with_unread_issues": "mit ungelesenen Pendenzen",
+      "with_overdue_issues": "mit überfälligen Pendenzen"
     },
     "actions": {
       "send_emails": "E-Mails versenden",

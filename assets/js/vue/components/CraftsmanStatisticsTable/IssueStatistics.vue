@@ -17,12 +17,6 @@ export default {
       type: Object,
       required: true
     }
-  },
-  mounted() {
-    $(this.$refs.value1).tooltip();
-    $(this.$refs.value2).tooltip();
-    $(this.$refs.value3).tooltip();
-    $(this.$refs.value4).tooltip();
   }
 }
 </script>

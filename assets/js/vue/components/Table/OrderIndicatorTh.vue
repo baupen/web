@@ -57,8 +57,6 @@ export default {
         payload = {property: this.property, asc: true}
       }
 
-      console.log(payload)
-
       this.$emit('order', payload)
     }
   }

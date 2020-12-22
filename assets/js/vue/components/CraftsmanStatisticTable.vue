@@ -1,56 +1,81 @@
 <template>
-  <table class="table table-striped-2 table-hover border">
-    <thead>
-    <tr class="bg-light">
-      <th class="w-minimal"></th>
-      <th colspan="3">{{ $t('craftsman._name') }}</th>
-      <th class="border-left" colspan="2">{{ $t('issue._plural') }}</th>
-      <th class="border-left" colspan="3">{{ $t('dispatch.craftsmen_table.last_activity') }}</th>
-    </tr>
-    <tr class="text-secondary">
-      <th class="w-minimal"></th>
-      <order-indicator-th property="company" :order-by="orderBy" @order="orderBy = $event">
-        {{ $t('craftsman.company') }}
-      </order-indicator-th>
-      <th>{{ $t('craftsman.contact_name') }}</th>
-      <th>{{ $t('craftsman.trade') }}</th>
+  <div>
+    <table class="table table-striped-2 table-hover border">
+      <thead>
+      <tr class="bg-light">
+        <th class="w-minimal"></th>
+        <th colspan="3">{{ $t('craftsman._name') }}</th>
+        <th class="border-left" colspan="2">{{ $t('issue._plural') }}</th>
+        <th class="border-left" colspan="3">{{ $t('dispatch.craftsmen_table.last_activity') }}</th>
+      </tr>
+      <tr class="text-secondary">
+        <th class="w-minimal"></th>
+        <order-indicator-th property="company" :order-by="orderBy" @order="orderBy = $event">
+          {{ $t('craftsman.company') }}
+        </order-indicator-th>
+        <th>{{ $t('craftsman.contact_name') }}</th>
+        <th>{{ $t('craftsman.trade') }}</th>
 
-      <th class="border-left">{{ $t('view.count') }}</th>
-      <th>{{ $t('craftsman.next_deadline') }}</th>
+        <th class="border-left">{{ $t('view.count') }}</th>
+        <th>{{ $t('craftsman.next_deadline') }}</th>
 
-      <th class="border-left">{{ $t('craftsman.received_email') }}</th>
-      <th>{{ $t('craftsman.visited_webpage') }}</th>
-      <th>{{ $t('craftsman.resolved_issue') }}</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr v-for="cws in orderedCraftsmenWithStatistics">
-      <td class="w-minimal">
-        <checkbox v-model="selectedCraftsmen" :value="cws.craftsman" :id="'craftsman2-'+cws.craftsman['@id']"/>
-      </td>
-      <td>{{ cws.craftsman.company }}</td>
-      <td>{{ cws.craftsman.contactName }}</td>
-      <td>{{ cws.craftsman.trade }}</td>
+        <th class="border-left">{{ $t('craftsman.received_email') }}</th>
+        <th>{{ $t('craftsman.visited_webpage') }}</th>
+        <th>{{ $t('craftsman.resolved_issue') }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="cws in orderedCraftsmenWithStatistics">
+        <td class="w-minimal">
+          <checkbox v-model="selectedCraftsmen" :value="cws.craftsman" :id="'craftsman-'+cws.craftsman['@id']"/>
+        </td>
+        <td>{{ cws.craftsman.company }}</td>
+        <td>{{ cws.craftsman.contactName }}</td>
+        <td>{{ cws.craftsman.trade }}</td>
 
-      <td class="border-left">
-        <issue-statistics :statistics="cws.statistics"/>
-      </td>
-      <td>
-        <human-readable-date :value="cws.statistics.next_deadline"/>
-      </td>
+        <td class="border-left">
+          <issue-statistics :statistics="cws.statistics"/>
+        </td>
+        <td>
+          <human-readable-date :value="cws.statistics.next_deadline"/>
+        </td>
 
-      <td class="border-left">
-        <human-readable-date :value="cws.statistics.last_email_received"/>
-      </td>
-      <td>
-        <human-readable-date-time :value="cws.statistics.last_visit_online"/>
-      </td>
-      <td>
-        <human-readable-date-time :value="cws.statistics.last_issue_resolved"/>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+        <td class="border-left">
+          <human-readable-date :value="cws.statistics.last_email_received"/>
+        </td>
+        <td>
+          <human-readable-date-time :value="cws.statistics.last_visit_online"/>
+        </td>
+        <td>
+          <human-readable-date-time :value="cws.statistics.last_issue_resolved"/>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div>
+      <div v-if="craftsmenWithIssuesUnread.length" class="form-check form-check-inline">
+        <raw-checkbox :id="'issues-open-craftsmen'"
+                      :checked="arraysAreEqual(craftsmenWithIssuesOpen, selectedCraftsmen)"
+                      @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOpen)">
+          {{ $t('dispatch.craftsmen_table.with_open_issues') }}
+        </raw-checkbox>
+      </div>
+      <div v-if="craftsmenWithIssuesUnread.length" class="ml-4 form-check form-check-inline">
+        <raw-checkbox :id="'issues-unread-craftsmen'"
+                      :checked="arraysAreEqual(craftsmenWithIssuesUnread, selectedCraftsmen)"
+                      @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesUnread)">
+          {{ $t('dispatch.craftsmen_table.with_unread_issues') }}
+        </raw-checkbox>
+      </div>
+      <div v-if="craftsmenWithIssuesOverdue.length" class="ml-4 form-check form-check-inline">
+        <raw-checkbox :id="'issues-overdue-craftsmen'"
+                      :checked="arraysAreEqual(craftsmenWithIssuesOverdue, selectedCraftsmen)"
+                      @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOverdue)">
+          {{ $t('dispatch.craftsmen_table.with_overdue_issues') }}
+        </raw-checkbox>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -60,11 +85,12 @@ import HumanReadableDate from "./Shared/HumanReadableDate";
 import HumanReadableDateTime from "./Shared/HumanReadableDateTime";
 import Checkbox from "./Form/Checkbox";
 import OrderIndicatorTh from "./Table/OrderIndicatorTh";
+import RawCheckbox from "./Form/RawCheckbox";
 
 const defaultOrderBy = {property: 'company', asc: true}
 
 export default {
-  components: {OrderIndicatorTh, HumanReadableDateTime, HumanReadableDate, IssueStatistics, Checkbox},
+  components: {RawCheckbox, OrderIndicatorTh, HumanReadableDateTime, HumanReadableDate, IssueStatistics, Checkbox},
   data() {
     return {
       orderBy: null,
@@ -95,12 +121,51 @@ export default {
         return craftsmanWithStatistics.sort((a, b) => b.craftsman[orderBy.property].localeCompare(a.craftsman[orderBy.property]))
       }
       return craftsmanWithStatistics.sort((a, b) => a.craftsman[orderBy.property].localeCompare(b.craftsman[orderBy.property]))
+    },
+    craftsmenWithIssuesOpenSelected: function () {
+      return this.arraysAreEqual(this.craftsmenWithIssuesOpen, this.selectedCraftsmen)
+    },
+    craftsmenWithIssuesOpen: function () {
+      return this.orderedCraftsmenWithStatistics.filter(cws => cws.statistics.issueOpenCount > 0).map(cws => cws.craftsman);
+    },
+    craftsmenWithIssuesUnreadSelected: function () {
+      return this.arraysAreEqual(this.craftsmenWithIssuesUnread, this.selectedCraftsmen)
+    },
+    craftsmenWithIssuesUnread: function () {
+      return this.orderedCraftsmenWithStatistics.filter(cws => cws.statistics.issueUnreadCount > 0).map(cws => cws.craftsman);
+    },
+    craftsmenWithIssuesOverdue: function () {
+      return this.orderedCraftsmenWithStatistics.filter(cws => cws.statistics.issueOverdueCount > 0).map(cws => cws.craftsman);
     }
   },
   methods: {
     setOrderBy(property, order) {
       this.orderBy = {property, order}
     },
+    toggleSelectedCraftsmen(toggleArray) {
+      if (this.arraysAreEqual(toggleArray, this.selectedCraftsmen)) {
+        this.selectedCraftsmen = [];
+      } else {
+        this.selectedCraftsmen = [...toggleArray];
+      }
+    },
+    arraysAreEqual(array1, array2) {
+      if (array1.length !== array2.length) {
+        return false;
+      }
+
+      // sorry, CompSci degree
+      const arr1 = array1.concat().sort();
+      const arr2 = array2.concat().sort();
+
+      for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) {
+          return false;
+        }
+      }
+
+      return true;
+    }
   },
   mounted() {
     this.selectedCraftsmen = [this.craftsmen[0]]
