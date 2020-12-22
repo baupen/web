@@ -1,6 +1,6 @@
 <template>
-  <span class="badge" ref="value" data-toggle="tooltip" :title="tooltipTitle">
-    {{ value > 0 ? value : "-" }}
+  <span :class="'badge ' + badgeTheme" ref="value" data-toggle="tooltip" :title="tooltipTitle">
+    {{ value }}
   </span>
 </template>
 
@@ -15,6 +15,15 @@ export default {
     tooltipTitle: {
       type: Object,
       required: true
+    },
+    colorIfNonzero: {
+      type: Object,
+      required: true
+    }
+  },
+  computed: {
+    badgeTheme: function (){
+      return this.value ? 'badge-'+this.colorIfNonzero : ''
     }
   },
   mounted() {
