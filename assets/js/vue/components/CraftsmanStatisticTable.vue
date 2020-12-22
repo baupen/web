@@ -9,7 +9,9 @@
     </tr>
     <tr class="text-secondary">
       <th class="w-minimal"></th>
-      <th>{{ $t('craftsman.company') }}</th>
+      <order-indicator-th property="company" :order-by="orderBy" @order="orderBy = $event">
+        {{ $t('craftsman.company') }}
+      </order-indicator-th>
       <th>{{ $t('craftsman.contact_name') }}</th>
       <th>{{ $t('craftsman.trade') }}</th>
 
@@ -57,11 +59,15 @@ import IssueStatistics from "./CraftsmanStatisticsTable/IssueStatistics";
 import HumanReadableDate from "./Shared/HumanReadableDate";
 import HumanReadableDateTime from "./Shared/HumanReadableDateTime";
 import Checkbox from "./Form/Checkbox";
+import OrderIndicatorTh from "./Table/OrderIndicatorTh";
+
+const defaultOrderBy = {property: 'company', asc: true}
 
 export default {
-  components: {HumanReadableDateTime, HumanReadableDate, IssueStatistics, Checkbox},
+  components: {OrderIndicatorTh, HumanReadableDateTime, HumanReadableDate, IssueStatistics, Checkbox},
   data() {
     return {
+      orderBy: null,
       selectedCraftsmen: [],
     }
   },
@@ -83,8 +89,18 @@ export default {
         craftsman,
         statistics: statisticsLookup[craftsman['@id']]
       }));
-      return craftsmanWithStatistics.sort((a, b) => a.craftsman.company.localeCompare(b.craftsman.company))
+
+      const orderBy = this.orderBy ?? defaultOrderBy;
+      if (!orderBy.asc) {
+        return craftsmanWithStatistics.sort((a, b) => b.craftsman[orderBy.property].localeCompare(a.craftsman[orderBy.property]))
+      }
+      return craftsmanWithStatistics.sort((a, b) => a.craftsman[orderBy.property].localeCompare(b.craftsman[orderBy.property]))
     }
+  },
+  methods: {
+    setOrderBy(property, order) {
+      this.orderBy = {property, order}
+    },
   },
   mounted() {
     this.selectedCraftsmen = [this.craftsmen[0]]

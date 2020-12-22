@@ -1,10 +1,10 @@
 dashboard:
   title: Dashboard
-  description: 'Überblick über Ihre Baustelle'
+  description: 'Überblick über Ihre Baustelle.'
 
 dispatch:
   title: 'Unternehmer informieren'
-  description: 'Informieren Sie Unternehmer über neue Pendenzen mit einer personalisierten E-Mail'
+  description: 'Überblick über Unternehmer & Versand personalisierter E-Mail.'
   email:
     subject_appendix: ' auf der Baustelle %construction_site_name%'
     body_limit_info: 'Die nächste ablaufende Frist ist am %limit%. Wir sind zuversichtlich, dass die davon betroffenen Pendenzen bis dann behoben sind.'
@@ -22,7 +22,7 @@ dispatch:
 
 edit:
   title: 'Baustelle einrichten'
-  description: 'Unternehmer & Baupläne organisieren'
+  description: 'Verwalten von Bauplänen, Unternehmern und Bauleitern.'
   external_construction_manager:
     welcome_email:
       subject: 'Willkommen auf %page%!'
@@ -34,8 +34,8 @@ edit:
 
 foyer:
   title: 'Pendenzen einpflegen'
-  description: 'Fügen Sie die neuen Pendenzen zum Verzeichnis hinzu.'
+  description: 'Einpflegen von Pendenzen.'
 
 register:
   title: Pendenzenverzeichnis
-  description: 'Ihre eingepflegten Pendenzen'
+  description: 'Durchsuchen und Exportieren von eingepflegten Pendenzen.'
