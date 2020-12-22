@@ -38,6 +38,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "get_feed_entries"={
  *          "method"="GET",
  *          "path"="/craftsmen/feed_entries"
+ *      },
+ *      "get_statistics"={
+ *          "method"="GET",
+ *          "path"="/craftsmen/statistics"
  *      }
  *      },
  *     itemOperations={
@@ -127,14 +131,14 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $lastEmailSent;
+    private $lastEmailReceived;
 
     /**
      * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $lastOnlineVisit;
+    private $lastVisitOnline;
 
     /**
      * Craftsman constructor.
@@ -221,24 +225,24 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
         return $this->getCompany().' ('.$this->getContactName().')';
     }
 
-    public function getLastEmailSent(): ?DateTime
+    public function getLastEmailReceived(): ?DateTime
     {
-        return $this->lastEmailSent;
+        return $this->lastEmailReceived;
     }
 
-    public function setLastEmailSent(?DateTime $lastEmailSent): void
+    public function setLastEmailReceived(?DateTime $lastEmailReceived): void
     {
-        $this->lastEmailSent = $lastEmailSent;
+        $this->lastEmailReceived = $lastEmailReceived;
     }
 
-    public function getLastOnlineVisit(): ?DateTime
+    public function getLastVisitOnline(): ?DateTime
     {
-        return $this->lastOnlineVisit;
+        return $this->lastVisitOnline;
     }
 
-    public function setLastOnlineVisit(?DateTime $lastOnlineVisit): void
+    public function setLastVisitOnline(?DateTime $lastVisitOnline): void
     {
-        $this->lastOnlineVisit = $lastOnlineVisit;
+        $this->lastVisitOnline = $lastVisitOnline;
     }
 
     /**
@@ -246,9 +250,9 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
      */
     public function getLastAction()
     {
-        $lastAction = $this->getLastOnlineVisit();
-        if (null === $lastAction || $lastAction < $this->getLastEmailSent()) {
-            return $this->getLastEmailSent();
+        $lastAction = $this->getLastVisitOnline();
+        if (null === $lastAction || $lastAction < $this->getLastEmailReceived()) {
+            return $this->getLastEmailReceived();
         }
 
         return $lastAction;

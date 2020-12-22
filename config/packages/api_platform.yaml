@@ -16,6 +16,6 @@ api_platform:
     show_webby: false
 
     # to debug nodes directly
-    # enable_re_doc: false
-    # enable_swagger_ui: false
+    enable_re_doc: false
+    enable_swagger_ui: false
 

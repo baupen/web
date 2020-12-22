@@ -14,6 +14,7 @@ namespace App\Security;
 namespace App\Security;
 
 use App\Entity\AuthenticationToken;
+use App\Entity\Craftsman;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,6 +65,11 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
 
         if (!$user instanceof AuthenticationToken) {
             return null;
+        }
+
+        if (($craftsman = $user->getCraftsman()) instanceof Craftsman) {
+            $craftsman->setLastVisitOnline(new \DateTime());
+            $this->em->persist($craftsman);
         }
 
         $user->setLastUsedAt();

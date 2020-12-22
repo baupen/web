@@ -53,7 +53,7 @@ services:
     App\Api\DataProvider\IssueReportDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
-    App\Api\DataProvider\CraftsmanStatisticDataProvider:
+    App\Api\DataProvider\CraftsmanStatisticsDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
     App\Api\DataProvider\IssueSummaryDataProvider:

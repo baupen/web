@@ -101,8 +101,8 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
         $issue->setRegisteredBy($constructionManager);
         $issue->setResolvedAt(new \DateTime('today 06:00'));
         $issue->setResolvedBy($craftsman);
-        $craftsman->setLastOnlineVisit(new \DateTime('today 05:55'));
-        $craftsman->setLastEmailSent(new \DateTime('yesterday 16:15'));
+        $craftsman->setLastVisitOnline(new \DateTime('today 05:55'));
+        $craftsman->setLastEmailReceived(new \DateTime('yesterday 16:15'));
         $manager->persist($issue);
         $manager->persist($craftsman);
 

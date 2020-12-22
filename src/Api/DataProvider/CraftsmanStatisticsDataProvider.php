@@ -11,19 +11,26 @@
 
 namespace App\Api\DataProvider;
 
+use ApiPlatform\Core\Api\IriConverterInterface;
 use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
+use App\Api\Entity\CraftsmanStatistics;
 use App\Entity\Craftsman;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class CraftsmanStatisticDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
+class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
     /**
      * @var ContextAwareCollectionDataProviderInterface
      */
     private $decoratedCollectionDataProvider;
+
+    /**
+     * @var IriConverterInterface
+     */
+    private $iriConverter;
 
     /**
      * @var SerializerInterface
@@ -32,9 +39,13 @@ class CraftsmanStatisticDataProvider implements ContextAwareCollectionDataProvid
 
     private const ALREADY_CALLED = 'CRAFTSMAN_STATISTICS_DATA_PROVIDER_ALREADY_CALLED';
 
-    public function __construct(ContextAwareCollectionDataProviderInterface $decoratedCollectionDataProvider, SerializerInterface $serializer)
+    /**
+     * CraftsmanStatisticsDataProvider constructor.
+     */
+    public function __construct(ContextAwareCollectionDataProviderInterface $decoratedCollectionDataProvider, IriConverterInterface $iriConverter, SerializerInterface $serializer)
     {
         $this->decoratedCollectionDataProvider = $decoratedCollectionDataProvider;
+        $this->iriConverter = $iriConverter;
         $this->serializer = $serializer;
     }
 
@@ -62,8 +73,23 @@ class CraftsmanStatisticDataProvider implements ContextAwareCollectionDataProvid
         return new JsonResponse($json, Response::HTTP_OK, [], true);
     }
 
+    /**
+     * @param Craftsman[] $craftsmen
+     *
+     * @return CraftsmanStatistics[]
+     */
     private function createStatistics(array $craftsmen): array
     {
-        return [];
+        $statistics = [];
+        foreach ($craftsmen as $craftsman) {
+            $statistic = new CraftsmanStatistics();
+
+            $iri = $this->iriConverter->getIriFromItem($craftsman);
+            $statistic->setCraftsman($iri);
+
+            $statistics[] = $statistic;
+        }
+
+        return $statistics;
     }
 }
