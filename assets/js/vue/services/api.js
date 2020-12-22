@@ -88,8 +88,9 @@ const api = {
     return this._getHydraCollection('/api/craftsmen?' + constructionSiteQuery)
   },
   getIssuesSummary: function (constructionSite) {
-    const constructionSiteQuery = this._getConstructionSiteQuery(constructionSite)
-    return this._getItem('/api/issues/summary?' + constructionSiteQuery)
+    let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&isDeleted=false'
+    return this._getItem('/api/issues/summary?' + queryString)
   },
   getCraftsmenFeedEntries: function (constructionSite) {
     const queryString = '?constructionSite=' + this._getIdFromIri(constructionSite)
