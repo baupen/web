@@ -20,7 +20,7 @@
 export default {
   props: {
     statistics: {
-      type: String,
+      type: Object,
       required: true
     }
   },

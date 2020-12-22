@@ -73,9 +73,6 @@ export default {
       const statisticsLookup = {};
       this.statistics.forEach(s => statisticsLookup[s["craftsman"]] = s)
       const craftsmanWithStatistics = this.craftsmen.map(c => Object.assign({statistics: statisticsLookup[c['@id']]}, c));
-      console.log(statisticsLookup)
-      console.log(this.craftsmen)
-      console.log(craftsmanWithStatistics)
       return craftsmanWithStatistics.sort((a,b) => a.company.localeCompare(b.company))
     }
   },

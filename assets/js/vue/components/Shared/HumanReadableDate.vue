@@ -1,10 +1,8 @@
 <template>
-    <span v-if="value === null">
-      -
-    </span>
-    <span v-else ref="value" data-toggle="tooltip" :title="momentDateTime.format('LL')">
-      {{fromNowDayGranularity}}
-    </span>
+  <span v-if="value" ref="value" data-toggle="tooltip" :title="momentDateTime.format('LL')">
+    {{ fromNowDayGranularity }}
+  </span>
+  <span v-else>-</span>
 </template>
 
 <script>
@@ -15,7 +13,7 @@ export default {
   props: {
     value: {
       type: String,
-      required: true
+      default: null
     }
   },
   computed: {
@@ -35,7 +33,7 @@ export default {
     }
   },
   mounted() {
-    if (this.value !== null) {
+    if (this.value) {
       $(this.$refs.value).tooltip();
     }
   }
