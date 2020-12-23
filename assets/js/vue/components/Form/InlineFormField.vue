@@ -1,20 +1,20 @@
 <template>
-  <div :class="'form-group ' + classNames">
-    <div :class="{'col-md-auto': inline}">
-      <label :class="{'pt-2': inline}" :for="id">{{ label }} <span v-if="required" class="text-danger">*</span></label>
+  <div class="form-group row">
+    <label :for="id" :class="'col-form-label col-sm-' + labelSize">
+      {{ label }}
+      <required-indicator v-if="required" />
+    </label>
+    <div :class="'col-form-label col-sm-' + (12-labelSize)">
+      <slot></slot>
     </div>
-    <input-with-feedback :id="id" :class="{'col': inline}" :type="type" :required="required" :focus="focus"
-                         v-model="localModelValue"
-                         @input="emitUpdate" @valid="$emit('valid', $event)" />
-    <slot></slot>
   </div>
 </template>
 
 <script>
 
-import InputWithFeedback from "./InputWithFeedback";
+import RequiredIndicator from "./RequiredIndicator";
 export default {
-  components: {InputWithFeedback},
+  components: {RequiredIndicator},
   emits: ['update:modelValue', 'valid'],
   data() {
     return {
@@ -31,26 +31,14 @@ export default {
       type: String,
       required: true
     },
-    inline: {
-      type: Boolean,
-      required: false
-    },
-    type: {
-      type: String,
-      default: "text"
-    },
-    size: {
+    labelSize: {
       type: Number,
-      default: 0
+      default: 2
     },
     required: {
       type: Boolean,
-      default: true
-    },
-    focus: {
-      type: Boolean,
       default: false
-    }
+    },
   },
   computed: {
     classNames: function () {
@@ -77,9 +65,3 @@ export default {
   }
 }
 </script>
-
-<style scoped="true">
-input:required {
-  box-shadow: none;
-}
-</style>

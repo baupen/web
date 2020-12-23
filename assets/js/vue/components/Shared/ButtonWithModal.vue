@@ -8,7 +8,7 @@
         </template>
         <template v-slot:modal-footer>
           <button type="submit" :disabled="!canConfirm" @click="confirm" class="btn btn-primary">
-            {{ title }}
+            {{ confirmTitle ?? title }}
           </button>
         </template>
       </modal>
@@ -32,6 +32,10 @@ export default {
     title: {
       type: String,
       required: true
+    },
+    confirmTitle: {
+      type: String,
+      default: null
     },
     canConfirm: {
       type: Boolean,
