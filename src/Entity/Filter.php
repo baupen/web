@@ -15,6 +15,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\TimeTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -38,6 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
+    use TimeTrait;
 
     /**
      * @var bool|null

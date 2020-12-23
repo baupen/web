@@ -104,6 +104,15 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     private $email;
 
     /**
+     * @var string[]
+     *
+     * @Assert\NotBlank
+     * @Groups({"craftsman-read", "craftsman-write"})
+     * @ORM\Column(type="simple_array")
+     */
+    private $emailCCs;
+
+    /**
      * @var ConstructionSite
      *
      * @Assert\NotBlank
@@ -187,6 +196,22 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     public function setEmail(string $email): void
     {
         $this->email = $email;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getEmailCCs(): array
+    {
+        return $this->emailCCs;
+    }
+
+    /**
+     * @param string[] $emailCCs
+     */
+    public function setEmailCCs(array $emailCCs): void
+    {
+        $this->emailCCs = $emailCCs;
     }
 
     public function isConstructionSiteSet(): bool
