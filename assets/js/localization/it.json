@@ -63,9 +63,7 @@
       "filter_placeholder": "Cercare operaio\/funzione..."
     },
     "actions": {
-      "send_emails": "Inviare email",
-      "send_emails_to_all": "Invia E-mail a tutti",
-      "send_emails_to_selected": "Invia E-mail a selezionati"
+      "send_emails": "Inviare"
     },
     "messages": {
       "emails_sent": "Email inviate",

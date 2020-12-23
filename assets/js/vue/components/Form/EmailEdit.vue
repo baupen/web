@@ -1,35 +1,28 @@
 <template>
   <div>
-    <text-edit id="name" :label="$t('construction_site.name')"
-               v-model="modelValue.name"
+    <inline-form-field id="subject" :label="$t('email.subject')" :required="true">
+      <textarea-with-feedback id="subject"
+                              v-model="modelValue.subject"
+                              @input="emitUpdate"
+                              @valid="validProperties.subject = $event"
+                              :focus="true" :inline="true" />
+    </inline-form-field>
+
+    <textarea-edit id="body"
+               v-model="modelValue.body"
                @input="emitUpdate"
-               @valid="validProperties.name = $event"
-               :focus="true" />
-
-    <text-edit id="streetAddress" :label="$t('construction_site.street_address')"
-               v-model="modelValue.streetAddress"
-               @input="emitUpdate"
-               @valid="validProperties.streetAddress = $event"/>
-
-    <div class="form-row">
-      <text-edit id="postalCode" :label="$t('construction_site.postal_code')" :size="4" type="number"
-                 v-model.number="modelValue.postalCode"
-                 @input="emitUpdate"
-                 @valid="validProperties.postalCode = $event"/>
-
-      <text-edit id="locality" :label="$t('construction_site.locality')" :size="8"
-                 v-model="modelValue.locality"
-                 @input="emitUpdate"
-                 @valid="validProperties.locality = $event"/>
-    </div>
+               @valid="validProperties.body = $event"/>
   </div>
 </template>
 
 <script>
 import TextEdit from "./TextEdit";
+import TextareaEdit from "./TextareaEdit";
+import TextareaWithFeedback from "./TextareaWithFeedback";
+import InlineFormField from "./InlineFormField";
 
 export default {
-  components: {TextEdit},
+  components: {InlineFormField, TextareaWithFeedback, TextareaEdit, TextEdit},
   emits: ['update:modelValue', 'valid'],
   data() {
     return {
@@ -43,10 +36,6 @@ export default {
   props: {
     modelValue: {
       type: Object
-    },
-    constructionSites: {
-      type: Array,
-      required: true
     }
   },
   watch: {
@@ -64,10 +53,8 @@ export default {
   },
   computed: {
     isValid: function () {
-      return this.validProperties.name &&
-          this.validProperties.streetAddress &&
-          this.validProperties.postalCode &&
-          this.validProperties.locality;
+      return this.validProperties.subject &&
+          this.validProperties.body;
     }
   },
   mounted() {

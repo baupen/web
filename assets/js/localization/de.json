@@ -71,9 +71,8 @@
       "with_overdue_issues": "mit überfälligen Pendenzen"
     },
     "actions": {
-      "send_emails": "E-Mails versenden",
-      "send_emails_to_all": "E-Mails an alle versenden",
-      "send_emails_to_selected": "E-Mails an ausgewählte versenden"
+      "compose_email": "E-Mail verfassen",
+      "send_email": "Senden"
     },
     "messages": {
       "emails_sent": "E-Mails versandt",
