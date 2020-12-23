@@ -29,60 +29,6 @@ class AuthenticationTokenTest extends ApiTestCase
     use AuthenticationTrait;
     use TestDataTrait;
 
-    public function testValidMethodsNeedAuthentication()
-    {
-        $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-
-        $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiOperationNotAuthorized($client, '/api/authentication_tokens', 'POST');
-        $someId = $constructionSite->getId();
-        $this->assertApiOperationNotAuthorized($client, '/api/authentication_tokens/'.$someId, 'GET');
-
-        $this->loginApiConstructionManagerExternal($client);
-        $this->assertApiOperationForbidden($client, '/api/authentication_tokens', 'POST');
-    }
-
-    public function testPost()
-    {
-        $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
-        $constructionManager = $this->loginApiConstructionManager($client);
-
-        $constructionSite = $constructionManager->getConstructionSites()[0];
-        $craftsman = $constructionSite->getCraftsmen()[0];
-        $filter = $constructionSite->getFilters()[0];
-
-        $constructionManagerPayload = ['constructionManager' => $this->getIriFromItem($constructionManager)];
-        $craftsmanPayload = ['craftsman' => $this->getIriFromItem($craftsman)];
-        $filterPayload = ['filter' => $this->getIriFromItem($filter)];
-
-        $this->assertApiPostPayloadPersisted($client, '/api/authentication_tokens', [], $constructionManagerPayload);
-        $this->assertApiPostPayloadPersisted($client, '/api/authentication_tokens', [], $craftsmanPayload);
-        $response = $this->assertApiPostPayloadPersisted($client, '/api/authentication_tokens', [], $filterPayload);
-        $this->assertApiResponseFieldSubset($response, 'token');
-
-        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/authentication_tokens', $constructionManagerPayload + $craftsmanPayload);
-        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/authentication_tokens', $constructionManagerPayload + $filterPayload);
-        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/authentication_tokens', $craftsmanPayload + $filterPayload);
-        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/authentication_tokens', $constructionManagerPayload + $craftsmanPayload + $filterPayload);
-        $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', []);
-
-        $otherConstructionSite = $this->getEmptyConstructionSite();
-        $otherConstructionManager = $this->addConstructionManager($otherConstructionSite);
-        $otherCraftsman = $this->addCraftsman($otherConstructionSite);
-        $otherFilter = $this->addFilter($otherConstructionSite);
-
-        $forbiddenPayload = ['constructionManager' => $this->getIriFromItem($otherConstructionManager)];
-        $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', $forbiddenPayload);
-
-        $forbiddenPayload = ['craftsman' => $this->getIriFromItem($otherCraftsman)];
-        $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', $forbiddenPayload);
-
-        $forbiddenPayload = ['filter' => $this->getIriFromItem($otherFilter)];
-        $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/authentication_tokens', $forbiddenPayload);
-    }
-
     public function testCannotAccessOrModifyExceptExceptions()
     {
         $client = $this->createClient();

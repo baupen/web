@@ -84,7 +84,7 @@ trait UserTrait
     /**
      * @return string
      */
-    public function generateAuthenticationHash()
+    public function setAuthenticationHash()
     {
         $this->authenticationHash = HashHelper::getHash();
 
@@ -181,16 +181,6 @@ trait UserTrait
     public function getRegistrationCompleted()
     {
         return null !== $this->password;
-    }
-
-    /**
-     * get the user identifier.
-     *
-     * @return string
-     */
-    protected function getUserIdentifier()
-    {
-        return $this->email;
     }
 
     /**

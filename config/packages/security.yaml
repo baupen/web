@@ -9,9 +9,7 @@ security:
                 class: 'App\Entity\ConstructionManager'
                 property: 'email'
         api_tokens:
-            entity:
-                class: 'App\Entity\AuthenticationToken'
-                property: 'token'
+            id: App\Security\AuthenticationTokenUserProvider
 
     encoders:
         App\Entity\ConstructionManager:

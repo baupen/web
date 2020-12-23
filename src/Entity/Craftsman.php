@@ -19,6 +19,7 @@ use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
+use App\Entity\Traits\AuthenticationTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
@@ -65,6 +66,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
 {
     use IdTrait;
     use TimeTrait;
+    use AuthenticationTrait;
     use SoftDeleteTrait;
 
     /**

@@ -11,7 +11,6 @@
 
 namespace App\Security;
 
-use App\Entity\AuthenticationToken;
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Filter;

@@ -11,8 +11,6 @@
 
 namespace App\Helper;
 
-use App\Entity\Traits\IdTrait;
-
 class HashHelper
 {
     const HASH_LENGTH = 20;
@@ -44,52 +42,5 @@ class HashHelper
         }
 
         return $newHash;
-    }
-
-    /**
-     * creates a hash from the entities using the guid.
-     *
-     * @param $entities
-     *
-     * @return string
-     */
-    public static function hashEntities($entities)
-    {
-        return hash('sha256',
-            implode(
-                ',',
-                array_map(
-                    function ($issue) {
-                        /* @var IdTrait $issue */
-                        return $issue->getId();
-                    },
-                    $entities)
-            )
-        );
-    }
-
-    /**
-     * creates a hash from a 2d arrays of entities using the guid.
-     *
-     * @param IdTrait[][] $entities
-     *
-     * @return string
-     */
-    public static function hash2dEntities($entities)
-    {
-        $res = [];
-        foreach ($entities as $innerEntities) {
-            $res[] = implode(
-                ',',
-                array_map(
-                    function ($issue) {
-                        /* @var IdTrait $issue */
-                        return $issue->getId();
-                    },
-                    $innerEntities)
-            );
-        }
-
-        return hash('sha256', implode(',', $res));
     }
 }

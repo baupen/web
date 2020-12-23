@@ -36,12 +36,12 @@ trait AssertApiTokenTrait
 
     private function setApiTokenDefaultHeader(Client $client, string $token)
     {
-        $client->setDefaultOptions(['headers' => ['X-AUTH-TOKEN' => $token]]);
+        $client->setDefaultOptions(['headers' => ['X-AUTHENTICATION' => $token]]);
     }
 
     private function requestWithApiToken(Client $client, string $token, string $method, string $url, array $payload = null)
     {
-        $body = ['headers' => ['X-AUTH-TOKEN' => $token]];
+        $body = ['headers' => ['X-AUTHENTICATION' => $token]];
         if (is_array($payload)) {
             $body['json'] = $payload;
 
