@@ -3,6 +3,8 @@
     <spinner :spin="craftsmenStatisticsLoading">
       <craftsman-statistic-table :craftsmen="craftsmen" :statistics="craftsmenStatistics"
                                  @selected="this.selectedCraftsmen = $event"/>
+
+      <email-send :craftsmen="selectedCraftsmen" />
     </spinner>
   </div>
 </template>
@@ -13,9 +15,11 @@ import ConstructionSiteSummary from './components/ConstructionSiteSummary'
 import IssuesSummary from './components/IssuesSummary'
 import Feed from './components/Feed'
 import CraftsmanStatisticTable from "./components/CraftsmanStatisticTable";
+import EmailSend from "./components/EmailSend";
 
 export default {
   components: {
+    EmailSend,
     CraftsmanStatisticTable,
     Feed,
     IssuesSummary,
