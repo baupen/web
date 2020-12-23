@@ -20,13 +20,11 @@ class ConstructionSiteDataPersister implements ContextAwareDataPersisterInterfac
 {
     private $decorated;
     private $storageService;
-    private $user;
 
     public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, StorageServiceInterface $storageService, Security $security)
     {
         $this->decorated = $decoratedDataPersister;
         $this->storageService = $storageService;
-        $this->user = $security->getUser();
     }
 
     public function supports($data, array $context = []): bool

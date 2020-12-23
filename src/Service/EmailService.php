@@ -12,6 +12,7 @@
 namespace App\Service;
 
 use App\Entity\ConstructionManager;
+use App\Entity\Craftsman;
 use App\Entity\Email;
 use App\Service\Interfaces\EmailServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -124,6 +125,19 @@ class EmailService implements EmailServiceInterface
         return $this->sendAndStoreEMail($message, $entity);
     }
 
+    public function sendCraftsmanIssueReminder(ConstructionManager $constructionManager, Craftsman $craftsman, string $subject, string $body, bool $constructionManagerInBCC): bool
+    {
+        $entity = Email::create(Email::TYPE_CRAFTSMAN_ISSUE_REMINDER, $constructionManager, $body);
+
+        $message = $this->createTemplatedEmailToCraftsman($constructionManager, $craftsman, $constructionManagerInBCC)
+            ->subject($subject)
+            ->textTemplate('email/craftsman_issue_reminder.txt.twig')
+            ->htmlTemplate('email/craftsman_issue_reminder.html.twig')
+            ->context($entity->getContext());
+
+        return $this->sendAndStoreEMail($message, $entity);
+    }
+
     private function createTemplatedEmailToConstructionManager(ConstructionManager $constructionManager): TemplatedEmail
     {
         $templatedEmail = new TemplatedEmail();
@@ -131,6 +145,24 @@ class EmailService implements EmailServiceInterface
         $templatedEmail->from($this->mailerFromEmail)
             ->to(new Address($constructionManager->getEmail(), $constructionManager->getName()))
             ->replyTo($this->mailerFromEmail);
+
+        return $templatedEmail;
+    }
+
+    private function createTemplatedEmailToCraftsman(ConstructionManager $constructionManager, Craftsman $craftsman, bool $constructionManagerInBCC): TemplatedEmail
+    {
+        $templatedEmail = new TemplatedEmail();
+
+        $constructionManagerAddress = new Address($constructionManager->getEmail(), $constructionManager->getName());
+        $templatedEmail->from($this->mailerFromEmail)
+            ->to(new Address($craftsman->getEmail(), $craftsman->getContactName()))
+            ->cc($craftsman->getEmailCCs())
+            ->returnPath($constructionManagerAddress)
+            ->replyTo($constructionManagerAddress);
+
+        if ($constructionManagerInBCC) {
+            $templatedEmail->bcc($constructionManagerAddress);
+        }
 
         return $templatedEmail;
     }
