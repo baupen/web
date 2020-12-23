@@ -11,12 +11,12 @@
 export default {
   emits: ['clicked'],
   props: {
-    checked: {
-      type: Boolean,
-      required: true
-    },
     id: {
       type: String,
+      required: true
+    },
+    checked: {
+      type: Boolean,
       required: true
     }
   }

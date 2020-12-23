@@ -11,13 +11,11 @@
 
 <script>
 
-import SummaryCard from './IssuesSummary/SummaryCard'
-import FeedEntry from './Feed/FeedEntry'
+import FeedEntry from './FeedEntry'
 
 export default {
   components: {
     FeedEntry,
-    SummaryCard
   },
   props: {
     entries: {

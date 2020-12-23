@@ -4,50 +4,47 @@
       <h1>{{ $t("switch.mine") }}</h1>
       <p>{{ $t("switch.mine_help") }}</p>
 
-      <spinner :spin="isLoading">
-        <construction-site-previews
-          v-if="memberOfConstructionSites.length > 0"
-          :construction-sites="memberOfConstructionSites"
-          :construction-managers="constructionManagers"
+      <loading-indicator :spin="isLoading">
+        <construction-site-masonry
+            v-if="memberOfConstructionSites.length > 0"
+            :construction-sites="memberOfConstructionSites"
+            :construction-managers="constructionManagers"
         />
 
-        <div
-          v-else
-          class="alert alert-info"
-        >
+        <div v-else class="alert alert-info">
           {{ $t('switch.messages.info.activate_construction_site') }}
         </div>
-      </spinner>
+      </loading-indicator>
     </div>
     <h2>{{ $t("switch.all") }}</h2>
     <p>{{ $t("switch.all_help") }}</p>
-    <spinner :spin="isLoading">
-      <construction-site-add
-        class="mb-2"
-        :construction-sites="constructionSiteList"
-        @add="postConstructionSite"
+    <loading-indicator :spin="isLoading">
+      <add-construction-site-button
+          class="mb-2"
+          :construction-sites="constructionSiteList"
+          @add="postConstructionSite"
       />
 
-      <construction-site-list
-        :construction-sites="constructionSiteList"
-        :construction-manager-iri="constructionManagerIri"
-        @remove-self="removeSelfFromConstructionSite"
-        @add-self="addSelfToConstructionSite"
+      <construction-site-table
+          :construction-sites="constructionSiteList"
+          :construction-manager-iri="constructionManagerIri"
+          @remove-self="removeSelfFromConstructionSite"
+          @add-self="addSelfToConstructionSite"
       />
-    </spinner>
+    </loading-indicator>
   </div>
 </template>
 
 <script>
-import { api } from './services/api'
-import ConstructionSitePreviews from './components/ConstructionSitePreviews'
-import ConstructionSiteList from './components/ConstructionSiteList'
-import Modal from './components/Shared/Modal'
-import ConstructionSiteAdd from './components/ConstructionSiteAdd'
+import {api} from './services/api'
+import AddConstructionSiteButton from "./components/AddConstructionSiteButton";
+import ConstructionSiteTable from "./components/ConstructionSiteTable";
+import ConstructionSiteMasonry from "./components/ConstructionSiteMasonry";
+import LoadingIndicator from "./components/View/LoadingIndicator";
 
 export default {
-  components: { ConstructionSiteAdd, Modal, ConstructionSiteList, ConstructionSitePreviews },
-  data () {
+  components: {LoadingIndicator, ConstructionSiteMasonry, ConstructionSiteTable, AddConstructionSiteButton},
+  data() {
     return {
       constructionManagerIri: null,
       constructionSites: null,
@@ -85,7 +82,7 @@ export default {
       })
     }
   },
-  mounted () {
+  mounted() {
     api.setupErrorNotifications(this.$t)
     api.getMe().then(me => this.constructionManagerIri = me.constructionManagerIri);
     api.getConstructionSites().then(constructionSites => this.constructionSites = constructionSites)

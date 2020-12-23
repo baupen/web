@@ -244,6 +244,10 @@
       "marked": "markiert"
     }
   },
+  "email": {
+    "to": "An",
+    "subject": "Betreff"
+  },
   "actions": {
     "save": "speichern",
     "save_all": "alle speichern",

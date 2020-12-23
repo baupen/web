@@ -1,7 +1,7 @@
 <template>
   <div class="card text-center">
     <div class="card-body">
-      <h3>{{ number }}</h3>
+      <h3>{{ title }}</h3>
       <p class="card-text">{{ description }}</p>
     </div>
   </div>
@@ -11,8 +11,8 @@
 
 export default {
   props: {
-    number: {
-      type: Number,
+    title: {
+      type: String,
       required: true
     },
     description: {
@@ -21,5 +21,4 @@ export default {
     }
   },
 }
-
 </script>

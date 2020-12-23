@@ -1,28 +1,28 @@
 <template>
   <div id="dispatch">
-    <spinner :spin="craftsmenStatisticsLoading">
-      <craftsman-statistic-table :craftsmen="craftsmen" :statistics="craftsmenStatistics"
+    <loading-indicator :spin="craftsmenStatisticsLoading">
+      <craftsman-table :craftsmen="craftsmen" :statistics="craftsmenStatistics"
                                  @selected="this.selectedCraftsmen = $event"/>
 
-      <email-send :craftsmen="selectedCraftsmen" />
-    </spinner>
+      <compose-email-button :craftsmen="selectedCraftsmen" />
+    </loading-indicator>
   </div>
 </template>
 
 <script>
 import {api} from './services/api'
 import ConstructionSiteSummary from './components/ConstructionSiteSummary'
-import IssuesSummary from './components/IssuesSummary'
 import Feed from './components/Feed'
-import CraftsmanStatisticTable from "./components/CraftsmanStatisticTable";
-import EmailSend from "./components/EmailSend";
+import CraftsmanTable from "./components/CraftsmanTable";
+import ComposeEmailButton from "./components/ComposeEmailButton";
+import LoadingIndicator from "./components/View/LoadingIndicator";
 
 export default {
   components: {
-    EmailSend,
-    CraftsmanStatisticTable,
+    LoadingIndicator,
+    ComposeEmailButton,
+    CraftsmanTable,
     Feed,
-    IssuesSummary,
     ConstructionSiteSummary
   },
   data() {

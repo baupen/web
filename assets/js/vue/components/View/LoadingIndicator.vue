@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import AtomSpinner from './Spinner/AtomSpinner'
+import AtomSpinner from './Base/AtomSpinner'
 
 export default {
   components: {

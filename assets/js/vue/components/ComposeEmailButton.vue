@@ -1,18 +1,18 @@
 <template>
   <div>
-    <button-with-modal :title="$t('dispatch.actions.compose_email')" :confirm-title="$t('dispatch.actions.send_email')" :can-confirm="canConfirm" @confirm="confirm">
+    <button-with-modal-confirm modal-size="lg" :title="$t('dispatch.actions.compose_email')" :confirm-title="$t('dispatch.actions.send_email')" :can-confirm="canConfirm" @confirm="confirm">
       <email-edit v-model="email" @valid="canConfirm = $event" />
-    </button-with-modal>
+    </button-with-modal-confirm>
   </div>
 </template>
 
 <script>
 
-import ButtonWithModal from "./Shared/ButtonWithModal";
-import EmailEdit from "./Form/EmailEdit";
+import EmailEdit from "./Edit/EmailEdit";
+import ButtonWithModalConfirm from "./Behaviour/ButtonWithModalConfirm";
 
 export default {
-  components: {EmailEdit, ButtonWithModal},
+  components: {ButtonWithModalConfirm, EmailEdit},
   emits: ['send'],
   data() {
     return {

@@ -36,9 +36,9 @@
 <script>
 
 import {constructionSiteFormatter} from '../services/formatters'
-import Masonry from './ConstructionSitePreviews/Masonry'
-import ConstructionSiteCard from "./ConstructionSitePreviews/ConstructionSiteCard";
-import HumanReadableDateTime from "./Shared/HumanReadableDateTime";
+import Masonry from './Behaviour/Masonry'
+import ConstructionSiteCard from "./ConstructionSiteCard";
+import HumanReadableDateTime from "./View/HumanReadableDateTime";
 
 export default {
   emits: ['add-self', 'remove-self'],

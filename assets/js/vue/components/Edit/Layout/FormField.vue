@@ -1,20 +1,16 @@
 <template>
-  <div class="form-group row">
-    <label :for="id" :class="'col-form-label col-sm-' + labelSize">
+  <div class="form-group">
+    <label v-if="label" :for="forId">
       {{ label }}
-      <required-indicator v-if="required" />
+      <span v-if="required" class="text-danger">*</span>
     </label>
-    <div :class="'col-form-label col-sm-' + (12-labelSize)">
-      <slot></slot>
-    </div>
+    <slot></slot>
   </div>
 </template>
 
 <script>
 
-import RequiredIndicator from "./RequiredIndicator";
 export default {
-  components: {RequiredIndicator},
   emits: ['update:modelValue', 'valid'],
   data() {
     return {
@@ -23,21 +19,16 @@ export default {
   },
   props: {
     modelValue: null,
-    id: {
+    forId: {
       type: String,
       required: true
     },
     label: {
       type: String,
-      required: true
-    },
-    labelSize: {
-      type: Number,
-      default: 2
     },
     required: {
       type: Boolean,
-      default: false
+      default: true
     },
   },
   computed: {

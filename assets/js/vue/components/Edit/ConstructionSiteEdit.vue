@@ -1,19 +1,19 @@
 <template>
   <div>
-    <text-edit id="name" :label="$t('construction_site.name')"
+    <text-edit id="name" :label="$t('construction_site.name')" :focus="true"
                v-model="modelValue.name"
                @input="emitUpdate"
-               @valid="validProperties.name = $event"
-               :focus="true">
+               @valid="validProperties.name = $event">
       <div>
-          <p v-if="similarConstructionSiteNames.length > 0" class="text-primary">
+        <p v-if="similarConstructionSiteNames.length > 0" class="text-primary">
           <small>
-            {{$t('switch.similar_already_existing_construction_sites')}}: {{ similarConstructionSiteNames.join(",") }}
+            {{ $t('switch.similar_already_existing_construction_sites') }}: {{
+              similarConstructionSiteNames.join(",")
+            }}
           </small>
         </p>
       </div>
     </text-edit>
-
 
     <text-edit id="streetAddress" :label="$t('construction_site.street_address')"
                v-model="modelValue.streetAddress"
@@ -21,12 +21,12 @@
                @valid="validProperties.streetAddress = $event"/>
 
     <div class="form-row">
-      <text-edit id="postalCode" :label="$t('construction_site.postal_code')" :size="4" type="number"
+      <text-edit class="col-md-4" id="postalCode" :label="$t('construction_site.postal_code')" type="number"
                  v-model.number="modelValue.postalCode"
                  @input="emitUpdate"
                  @valid="validProperties.postalCode = $event"/>
 
-      <text-edit id="locality" :label="$t('construction_site.locality')" :size="8"
+      <text-edit class="col-md-8" id="locality" :label="$t('construction_site.locality')"
                  v-model="modelValue.locality"
                  @input="emitUpdate"
                  @valid="validProperties.locality = $event"/>
@@ -35,11 +35,13 @@
 </template>
 
 <script>
-import TextEdit from "./TextEdit";
 import debounce from "lodash.debounce"
+import FormField from "./Layout/FormField";
+import InputWithFeedback from "./Input/InputWithFeedback";
+import TextEdit from "./Widget/TextEdit";
 
 export default {
-  components: {TextEdit},
+  components: {TextEdit, InputWithFeedback, FormField},
   emits: ['update:modelValue', 'valid'],
   data() {
     return {

@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import HumanReadableDate from '../Shared/HumanReadableDate'
+import HumanReadableDate from './View/HumanReadableDate'
 export default {
   components: { HumanReadableDate },
   props: {

@@ -15,9 +15,9 @@
                         @click.prevent="toggleSelectedCraftsmen(craftsmen)">
           </raw-checkbox>
         </th>
-        <order-indicator-th property="company" :order-by="orderBy" @order="orderBy = $event">
+        <ordered-table-head property="company" :order-by="orderBy" @order="orderBy = $event">
           {{ $t('craftsman.company') }}
-        </order-indicator-th>
+        </ordered-table-head>
         <th>{{ $t('craftsman.contact_name') }}</th>
         <th>{{ $t('craftsman.trade') }}</th>
 
@@ -39,7 +39,10 @@
         <td>{{ cws.craftsman.trade }}</td>
 
         <td class="border-left">
-          <issue-statistics :statistics="cws.statistics"/>
+          <number-with-tooltip color-if-nonzero="secondary" :value="cws.statistics.issueOpenCount" :tooltip-title="$t('issue.state.open')" /> /
+          <number-with-tooltip color-if-nonzero="warning" :value="cws.statistics.issueUnreadCount" :tooltip-title="$t('issue.state.unread')" /> /
+          <number-with-tooltip color-if-nonzero="danger" :value="cws.statistics.issueOverdueCount" :tooltip-title="$t('issue.state.overdue')" /> /
+          <number-with-tooltip color-if-nonzero="success" :value="cws.statistics.issueClosedCount" :tooltip-title="$t('issue.state.closed')" />
         </td>
         <td>
           <human-readable-date :value="cws.statistics.next_deadline"/>
@@ -85,17 +88,17 @@
 
 <script>
 
-import IssueStatistics from "./CraftsmanStatisticsTable/IssueStatistics";
-import HumanReadableDate from "./Shared/HumanReadableDate";
-import HumanReadableDateTime from "./Shared/HumanReadableDateTime";
-import Checkbox from "./Form/Checkbox";
-import OrderIndicatorTh from "./Table/OrderIndicatorTh";
-import RawCheckbox from "./Form/RawCheckbox";
+import HumanReadableDate from "./View/HumanReadableDate";
+import HumanReadableDateTime from "./View/HumanReadableDateTime";
+import Checkbox from "./Edit/Input/Checkbox";
+import RawCheckbox from "./Edit/Input/RawCheckbox";
+import OrderedTableHead from "./View/OrderedTableHead";
+import NumberWithTooltip from "./View/NumberWithTooltip";
 
 const defaultOrderBy = {property: 'company', asc: true}
 
 export default {
-  components: {RawCheckbox, OrderIndicatorTh, HumanReadableDateTime, HumanReadableDate, IssueStatistics, Checkbox},
+  components: {RawCheckbox, NumberWithTooltip, OrderedTableHead, HumanReadableDateTime, HumanReadableDate, Checkbox},
   data() {
     return {
       orderBy: null,

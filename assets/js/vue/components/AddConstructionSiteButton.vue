@@ -1,20 +1,20 @@
 <template>
   <div>
-    <button-with-modal :title="$t('switch.actions.create_construction_site')" :can-confirm="canConfirm" @confirm="confirm">
+    <button-with-modal-confirm :title="$t('switch.actions.create_construction_site')" :can-confirm="canConfirm" @confirm="confirm">
       <construction-site-edit v-model="constructionSite" @valid="canConfirm = $event" :construction-sites="constructionSites"/>
-    </button-with-modal>
+    </button-with-modal-confirm>
   </div>
 </template>
 
 <script>
 
-import ConstructionSiteEdit from "./Form/ConstructionSiteEdit";
-import ButtonWithModal from "./Shared/ButtonWithModal";
+import ConstructionSiteEdit from "./Edit/ConstructionSiteEdit";
+import ButtonWithModalConfirm from "./Behaviour/ButtonWithModalConfirm";
 
 const defaultConstructionSite = {}
 
 export default {
-  components: {ButtonWithModal, ConstructionSiteEdit},
+  components: {ButtonWithModalConfirm, ConstructionSiteEdit},
   emits: ['add'],
   data() {
     return {

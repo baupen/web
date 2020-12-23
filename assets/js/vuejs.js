@@ -28,7 +28,6 @@ import it from './localization/it.json'
 import Switch from './vue/Switch.vue'
 import Dashboard from './vue/Dashboard.vue'
 import Dispatch from './vue/Dispatch'
-import Spinner from './vue/components/Spinner.vue'
 
 // settings
 const locale = document.documentElement.lang.substr(0, 2)
@@ -64,7 +63,6 @@ function createVue (app) {
   vue.use(i18n)
   vue.use(VueFlatPickr)
   vue.component('FontAwesomeIcon', FontAwesomeIcon)
-  vue.component('Spinner', Spinner)
 
   return vue
 }

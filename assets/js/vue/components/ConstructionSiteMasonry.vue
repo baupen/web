@@ -13,8 +13,8 @@
 
 <script>
 
-import Masonry from './ConstructionSitePreviews/Masonry'
-import ConstructionSiteCard from "./ConstructionSitePreviews/ConstructionSiteCard";
+import Masonry from './Behaviour/Masonry'
+import ConstructionSiteCard from "./ConstructionSiteCard";
 
 export default {
   components: {

@@ -1,39 +1,21 @@
 <template>
-  <div>
-    <div class="card-group shadow">
-      <summary-card
-        :number="summary.openCount"
-        :description="$t('issue.state.open')"
-      />
-      <summary-card
-        :number="summary.resolvedCount"
-        :description="$t('issue.state.resolved')"
-      />
-      <summary-card
-        :number="summary.closedCount"
-        :description="$t('issue.state.closed')"
-      />
-    </div>
+  <div class="card-group shadow">
+    <small-card :title="this.issuesSummary.openCount.toString()" :description="$t('issue.state.open')" />
+    <small-card :title="this.issuesSummary.resolvedCount.toString()" :description="$t('issue.state.resolved')" />
+    <small-card :title="this.issuesSummary.closedCount.toString()" :description="$t('issue.state.closed')" />
   </div>
 </template>
 
 <script>
 
-import { constructionSiteFormatter } from '../services/formatters'
-import SummaryCard from './IssuesSummary/SummaryCard'
-
+import SmallCard from "./View/SmallCard";
 export default {
-  components: { SummaryCard },
+  components: {SmallCard},
   props: {
-    summary: {
+    issuesSummary: {
       type: Object,
       required: true
     }
   },
-  computed: {
-    address: function () {
-      return constructionSiteFormatter.address(this.constructionSite)
-    }
-  }
 }
 </script>

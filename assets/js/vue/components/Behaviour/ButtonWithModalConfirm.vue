@@ -2,7 +2,7 @@
   <div>
     <button @click="show = !show" class="btn btn-primary">{{ title }}</button>
     <transition name="fade">
-      <modal v-if="show" @hide="show = false" :title="title" @keydown.esc="show = false" @keydown.enter="confirm">
+      <modal v-if="show" :size="modalSize" @hide="show = false" :title="title" @keydown.esc="show = false">
         <template v-slot:modal-body>
           <slot></slot>
         </template>
@@ -40,6 +40,10 @@ export default {
     canConfirm: {
       type: Boolean,
       default: true
+    },
+    modalSize: {
+      type: String,
+      default: null
     }
   },
   methods: {
