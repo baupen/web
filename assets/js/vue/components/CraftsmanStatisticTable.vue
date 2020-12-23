@@ -9,7 +9,12 @@
         <th class="border-left" colspan="3">{{ $t('dispatch.craftsmen_table.last_activity') }}</th>
       </tr>
       <tr class="text-secondary">
-        <th class="w-minimal"></th>
+        <th class="w-minimal">
+          <raw-checkbox :id="'all-craftsmen'"
+                        :checked="arraysAreEqual(craftsmen, selectedCraftsmen)"
+                        @click.prevent="toggleSelectedCraftsmen(craftsmen)">
+          </raw-checkbox>
+        </th>
         <order-indicator-th property="company" :order-by="orderBy" @order="orderBy = $event">
           {{ $t('craftsman.company') }}
         </order-indicator-th>
@@ -25,9 +30,9 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="cws in orderedCraftsmenWithStatistics">
+      <tr v-for="cws in orderedCraftsmenWithStatistics" @click.stop="toggleSelectedCraftsman(cws.craftsman)" class="clickable">
         <td class="w-minimal">
-          <checkbox v-model="selectedCraftsmen" :value="cws.craftsman" :id="'craftsman-'+cws.craftsman['@id']"/>
+          <checkbox @click.stop="" v-model="selectedCraftsmen" :value="cws.craftsman" :id="'craftsman-'+cws.craftsman['@id']"/>
         </td>
         <td>{{ cws.craftsman.company }}</td>
         <td>{{ cws.craftsman.contactName }}</td>
@@ -122,14 +127,8 @@ export default {
       }
       return craftsmanWithStatistics.sort((a, b) => a.craftsman[orderBy.property].localeCompare(b.craftsman[orderBy.property]))
     },
-    craftsmenWithIssuesOpenSelected: function () {
-      return this.arraysAreEqual(this.craftsmenWithIssuesOpen, this.selectedCraftsmen)
-    },
     craftsmenWithIssuesOpen: function () {
       return this.orderedCraftsmenWithStatistics.filter(cws => cws.statistics.issueOpenCount > 0).map(cws => cws.craftsman);
-    },
-    craftsmenWithIssuesUnreadSelected: function () {
-      return this.arraysAreEqual(this.craftsmenWithIssuesUnread, this.selectedCraftsmen)
     },
     craftsmenWithIssuesUnread: function () {
       return this.orderedCraftsmenWithStatistics.filter(cws => cws.statistics.issueUnreadCount > 0).map(cws => cws.craftsman);
@@ -147,6 +146,13 @@ export default {
         this.selectedCraftsmen = [];
       } else {
         this.selectedCraftsmen = [...toggleArray];
+      }
+    },
+    toggleSelectedCraftsman(toggleCraftsman) {
+      if (this.selectedCraftsmen.includes(toggleCraftsman)) {
+        this.selectedCraftsmen = this.selectedCraftsmen.filter(c => c !== toggleCraftsman);
+      } else {
+        this.selectedCraftsmen.push(toggleCraftsman)
       }
     },
     arraysAreEqual(array1, array2) {

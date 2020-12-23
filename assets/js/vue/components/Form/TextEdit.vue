@@ -9,6 +9,7 @@
     <div class="invalid-feedback" v-if="dirty && !isValid">
       <span v-if="required && !localModelValue">{{$t('validation.required')}}<br/></span>
     </div>
+    <slot></slot>
   </div>
 </template>
 

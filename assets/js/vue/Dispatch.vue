@@ -33,7 +33,7 @@ export default {
   computed: {
     craftsmenStatisticsLoading: function () {
       return this.craftsmen === null || this.craftsmenStatistics === null;
-    }
+    },
   },
   mounted() {
     api.setupErrorNotifications(this.$t)

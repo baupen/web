@@ -21,6 +21,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -86,11 +87,8 @@ class EmailService implements EmailServiceInterface
         $entity = Email::create(Email::TYPE_REGISTER_CONFIRM, $constructionManager);
         $subject = $this->translator->trans('register_confirm.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
-        $message = (new TemplatedEmail())
+        $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
             ->subject($subject)
-            ->from($this->mailerFromEmail)
-            ->to($constructionManager->getEmail())
-            ->replyTo($this->mailerFromEmail)
             ->textTemplate('email/register_confirm.txt.twig')
             ->htmlTemplate('email/register_confirm.html.twig')
             ->context($entity->getContext());
@@ -103,11 +101,8 @@ class EmailService implements EmailServiceInterface
         $entity = Email::create(Email::TYPE_RECOVER_CONFIRM, $constructionManager);
         $subject = $this->translator->trans('recover_confirm.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
-        $message = (new TemplatedEmail())
+        $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
             ->subject($subject)
-            ->from($this->mailerFromEmail)
-            ->to($constructionManager->getEmail())
-            ->replyTo($this->mailerFromEmail)
             ->textTemplate('email/recover_confirm.txt.twig')
             ->htmlTemplate('email/recover_confirm.html.twig')
             ->context($entity->getContext());
@@ -120,16 +115,24 @@ class EmailService implements EmailServiceInterface
         $entity = Email::create(Email::TYPE_APP_INVITATION, $constructionManager);
         $subject = $this->translator->trans('app_invitation.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
-        $message = (new TemplatedEmail())
+        $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
             ->subject($subject)
-            ->from($this->mailerFromEmail)
-            ->to($constructionManager->getEmail())
-            ->replyTo($this->mailerFromEmail)
             ->textTemplate('email/app_invitation.txt.twig')
             ->htmlTemplate('email/app_invitation.html.twig')
             ->context($entity->getContext());
 
         return $this->sendAndStoreEMail($message, $entity);
+    }
+
+    private function createTemplatedEmailToConstructionManager(ConstructionManager $constructionManager): TemplatedEmail
+    {
+        $templatedEmail = new TemplatedEmail();
+
+        $templatedEmail->from($this->mailerFromEmail)
+            ->to(new Address($constructionManager->getEmail(), $constructionManager->getName()))
+            ->replyTo($this->mailerFromEmail);
+
+        return $templatedEmail;
     }
 
     private function getCurrentPage()
