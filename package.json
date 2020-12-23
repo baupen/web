@@ -12,6 +12,7 @@
         "flatpickr": "^4.6.6",
         "foundation-emails": "^2.3.1",
         "jquery": "^3.5.1",
+        "lodash.debounce": "^4.0.8",
         "moment": "^2.29.1",
         "noty": "^3.2.0-beta",
         "popper.js": "^1.16.1",
