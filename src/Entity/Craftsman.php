@@ -106,9 +106,8 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     /**
      * @var string[]
      *
-     * @Assert\NotBlank
      * @Groups({"craftsman-read", "craftsman-write"})
-     * @ORM\Column(type="simple_array")
+     * @ORM\Column(type="simple_array", nullable=true)
      */
     private $emailCCs;
 
