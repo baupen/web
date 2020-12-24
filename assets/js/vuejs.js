@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import { createI18n } from 'vue-i18n'
-import Noty from 'noty'
 import moment from 'moment'
 
 import VueFlatPickr from 'vue-flatpickr-component'
@@ -48,11 +47,6 @@ FontawesomeLibrary.add(
 
 // configure moment
 moment.locale(locale)
-
-Noty.overrideDefaults({
-  theme: 'bootstrap-v4',
-  type: 'success'
-})
 
 // configure i18n
 const i18n = createI18n({

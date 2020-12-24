@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Noty from 'noty'
+import { displaySuccess, displayError } from './notifiers'
 
 const api = {
   setupErrorNotifications: function (translator) {
@@ -20,10 +20,8 @@ const api = {
           }
         }
 
-        new Noty({
-          text: translator('messages.danger.request_failed') + ' (' + errorText + ')',
-          type: 'error'
-        }).show()
+        const errorMessage = translator('messages.danger.request_failed') + ' (' + errorText + ')'
+        displayError(errorMessage).show()
 
         return Promise.reject(error)
       }
@@ -78,11 +76,6 @@ const api = {
       }
     )
   },
-  _displaySuccess: function (successMessage) {
-    new Noty({
-      text: successMessage
-    }).show()
-  },
   getMe: function () {
     return this._getItem('/api/me')
   },
@@ -132,7 +125,7 @@ const api = {
             this._writeAllProperties(response.data, instance)
             resolve()
             if (successMessage !== null) {
-              this._displaySuccess(successMessage)
+              displaySuccess(successMessage)
             }
           })
       }
@@ -145,7 +138,7 @@ const api = {
           .then(response => {
             resolve(response.data)
             if (successMessage !== null) {
-              this._displaySuccess(successMessage)
+              displaySuccess(successMessage)
             }
           })
       }
@@ -158,7 +151,7 @@ const api = {
           .then(response => {
             collection.push(response.data)
             if (successMessage !== null) {
-              this._displaySuccess(successMessage)
+              displaySuccess(successMessage)
             }
             resolve()
           })

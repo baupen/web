@@ -66,8 +66,7 @@
       "send_emails": "Inviare"
     },
     "messages": {
-      "emails_sent": "Email inviate",
-      "skipped_emails": "{count} operai sono stati esclusi nell’invio, siccome non hanno (più) pendenze aperte."
+      "emails_sent": "Email inviate"
     }
   },
   "view_resolve": {

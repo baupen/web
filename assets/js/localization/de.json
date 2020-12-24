@@ -81,8 +81,9 @@
       "send_emails": "E-Mail versenden. | {count} E-Mails versenden."
     },
     "messages": {
-      "emails_sent": "E-Mails versandt",
-      "skipped_emails": "{count} Unternehmer wurden beim Versand übersprungen, da diese keine offenen Pendenzen (mehr) haben."
+      "success": {
+        "emails_sent": "E-Mails versandt"
+      }
     }
   },
   "view_resolve": {

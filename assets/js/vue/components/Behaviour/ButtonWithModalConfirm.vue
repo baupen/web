@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="show = !show" class="btn btn-primary">{{ title }}</button>
+    <button @click="show = !show" :disabled="buttonDisabled" class="btn btn-primary">{{ title }}</button>
     <transition name="fade">
       <modal v-if="show" :size="modalSize" @hide="show = false" :title="title" @keydown.esc="show = false">
         <template v-slot:modal-body>
@@ -32,6 +32,10 @@ export default {
     title: {
       type: String,
       required: true
+    },
+    buttonDisabled: {
+      type: Boolean,
+      default: false
     },
     confirmTitle: {
       type: String,

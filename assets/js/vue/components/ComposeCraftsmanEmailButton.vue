@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button-with-modal-confirm modal-size="lg" :title="$t('dispatch.actions.compose_email')" :confirm-title="sendEmailText" :can-confirm="canConfirm" @confirm="confirm">
+    <button-with-modal-confirm modal-size="lg" :title="$t('dispatch.actions.compose_email')" :button-disabled="disabled" :confirm-title="sendEmailText" :can-confirm="canConfirm" @confirm="confirm">
 
       <div class="row">
         <div class="col-2">
@@ -42,13 +42,17 @@ export default {
   emits: ['send'],
   data() {
     return {
-      email: {},
+      email: {selfBcc: false},
       canConfirm: true
     }
   },
   props: {
     craftsmen: {
       type: Array,
+      required: true
+    },
+    disabled: {
+      type: Boolean,
       required: true
     }
   },
