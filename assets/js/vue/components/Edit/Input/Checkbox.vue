@@ -2,7 +2,7 @@
   <div class="custom-control custom-checkbox">
     <input type="checkbox" class="custom-control-input" :id="id"
            v-model="modelValue" :value="value" @change="$emit('update:modelValue', modelValue)">
-    <label class="custom-control-label" :for="id"></label>
+    <label class="custom-control-label" :for="id">{{ label }}</label>
   </div>
 </template>
 
@@ -15,6 +15,9 @@ export default {
     },
     value: {
       required: true
+    },
+    label: {
+      default: ''
     },
     id: {
       type: String,

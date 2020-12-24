@@ -8,11 +8,17 @@
         @valid="validProperties.subject = $event"
         :focus="true" />
 
-    <textarea-with-feedback
+    <textarea-edit
         id="body"
         v-model="modelValue.subject"
         @input="emitUpdate"
         @valid="validProperties.body = $event"/>
+
+    <boolean-edit
+        id="body"
+        :label="$t('email.self_bcc')"
+        v-model="modelValue.selfBcc"
+        @input="emitUpdate" />
   </div>
 </template>
 
@@ -23,9 +29,14 @@ import FormField from "./Layout/FormField";
 import InputWithFeedback from "./Input/InputWithFeedback";
 import TextEdit from "./Widget/TextEdit";
 import InlineTextEdit from "./Widget/InlineTextEdit";
+import BooleanEdit from "./Widget/BooleanEdit";
+import TextareaEdit from "./Widget/TextareaEdit";
 
 export default {
-  components: {InlineTextEdit, TextEdit, InputWithFeedback, FormField, InlineFormField, TextareaWithFeedback},
+  components: {
+    TextareaEdit,
+    BooleanEdit,
+    InlineTextEdit, TextEdit, InputWithFeedback, FormField, InlineFormField, TextareaWithFeedback},
   emits: ['update:modelValue', 'valid'],
   data() {
     return {
