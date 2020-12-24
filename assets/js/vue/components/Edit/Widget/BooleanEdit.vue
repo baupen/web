@@ -1,8 +1,16 @@
 <template>
   <form-field>
-    <checkbox :id="id" :label="label"
-              v-model="localModelValue"
-              @input="$emit('update:modelValue', this.localModelValue)"/>
+    <div class="custom-control custom-checkbox">
+      <input
+          type="checkbox" class="custom-control-input"
+          v-model="localModelValue"
+          :true-value="true"
+          :false-value="false"
+          @input="input"
+          :id="id"
+      >
+      <label class="custom-control-label" :for="id">{{ label }}</label>
+    </div>
   </form-field>
 </template>
 
@@ -13,10 +21,10 @@ import Checkbox from "../Input/Checkbox";
 
 export default {
   components: {Checkbox, InputWithFeedback, FormField},
-  emits: ['update:modelValue', 'valid'],
+  emits: ['update:modelValue'],
   data() {
     return {
-      localModelValue: null
+      localModelValue: false
     }
   },
   props: {
@@ -28,13 +36,12 @@ export default {
     label: {
       type: String,
     },
-    required: {
-      type: Boolean,
-      default: true
-    },
-    focus: {
-      type: Boolean,
-      default: false
+  },
+  methods: {
+    input: function () {
+      // why do I need to invert localModalValue?
+      // and why do I have to bind to @input and not @change
+      this.$emit('update:modelValue', !this.localModelValue)
     }
   },
   mounted() {

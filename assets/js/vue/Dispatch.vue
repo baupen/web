@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     sendEmail: function (email) {
-      api.postRaw(email)
+      api.postRaw('/api/emails', email)
     }
   },
   computed: {

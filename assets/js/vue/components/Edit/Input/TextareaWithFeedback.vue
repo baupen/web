@@ -66,3 +66,10 @@ export default {
   }
 }
 </script>
+
+
+<style scoped="true">
+textarea:required {
+  box-shadow: none;
+}
+</style>

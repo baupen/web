@@ -17,7 +17,6 @@ export default {
   data() {
     return {
       email: {},
-      show: false,
       canConfirm: true
     }
   },
@@ -29,7 +28,9 @@ export default {
   },
   methods: {
     confirm: function () {
+      // TODO: check bcc really works as intendede
       console.log(this.email)
+      console.log(this.craftsmen)
       this.craftsmen.forEach(craftsman => {
         const personalMail = Object.assign({type: 4}, this.email, {receiver: craftsman['@id']});
         console.log(personalMail)

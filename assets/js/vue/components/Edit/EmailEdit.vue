@@ -10,12 +10,12 @@
 
     <textarea-edit
         id="body"
-        v-model="modelValue.subject"
+        v-model="modelValue.body"
         @input="emitUpdate"
         @valid="validProperties.body = $event"/>
 
     <boolean-edit
-        id="body"
+        id="self-bcc"
         :label="$t('email.self_bcc')"
         v-model="modelValue.selfBcc"
         @input="emitUpdate" />

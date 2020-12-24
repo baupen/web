@@ -80,7 +80,7 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
 
         $statusCode = $success ? Response::HTTP_OK : Response::HTTP_SERVICE_UNAVAILABLE;
 
-        return new Response($statusCode);
+        return new Response(Response::$statusTexts[$statusCode], $statusCode);
     }
 
     public function remove($data, array $context = [])

@@ -102,6 +102,7 @@ import NumberWithTooltip from "./View/NumberWithTooltip";
 import {arraysAreEqual} from '../services/algorithms'
 
 export default {
+  emits: ['selected'],
   components: {
     RawCheckbox, NumberWithTooltip, OrderedTableHead, HumanReadableDateTime, HumanReadableDate, Checkbox
   },
@@ -161,6 +162,11 @@ export default {
     },
     arraysAreEqual(array1, array2) {
       return arraysAreEqual(array1, array2);
+    }
+  },
+  watch: {
+    selectedCraftsmen: function () {
+      this.$emit('selected', this.selectedCraftsmen);
     }
   },
   mounted() {
