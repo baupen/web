@@ -5,7 +5,8 @@
               @blur="dirty = true" :required="required"
               v-model="localModelValue"
               @input="emitUpdate"
-              @keydown.enter.stop="">
+              @keydown.enter.stop=""
+    rows="10">
     </textarea>
     <div class="invalid-feedback" v-if="dirty && !isValid">
       <span v-if="required && !localModelValue">{{ $t('validation.required') }}<br/></span>

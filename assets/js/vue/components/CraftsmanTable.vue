@@ -15,9 +15,7 @@
                         @click.prevent="toggleSelectedCraftsmen(craftsmen)">
           </raw-checkbox>
         </th>
-        <ordered-table-head property="company" :order-by="orderBy" @order="orderBy = $event">
-          {{ $t('craftsman.company') }}
-        </ordered-table-head>
+        <th>{{ $t('craftsman.company') }}</th>
         <th>{{ $t('craftsman.contact_name') }}</th>
         <th>{{ $t('craftsman.trade') }}</th>
 
@@ -30,19 +28,28 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="cws in orderedCraftsmenWithStatistics" @click.stop="toggleSelectedCraftsman(cws.craftsman)" class="clickable">
+      <tr v-for="cws in orderedCraftsmenWithStatistics" @click.stop="toggleSelectedCraftsman(cws.craftsman)"
+          class="clickable">
         <td class="w-minimal">
-          <checkbox @click.stop="" v-model="selectedCraftsmen" :value="cws.craftsman" :id="'craftsman-'+cws.craftsman['@id']"/>
+          <checkbox @click.stop="" v-model="selectedCraftsmen" :value="cws.craftsman"
+                    :id="'craftsman-'+cws.craftsman['@id']"/>
         </td>
         <td>{{ cws.craftsman.company }}</td>
         <td>{{ cws.craftsman.contactName }}</td>
         <td>{{ cws.craftsman.trade }}</td>
 
         <td class="border-left">
-          <number-with-tooltip color-if-nonzero="secondary" :value="cws.statistics.issueOpenCount" :tooltip-title="$t('issue.state.open')" /> /
-          <number-with-tooltip color-if-nonzero="warning" :value="cws.statistics.issueUnreadCount" :tooltip-title="$t('issue.state.unread')" /> /
-          <number-with-tooltip color-if-nonzero="danger" :value="cws.statistics.issueOverdueCount" :tooltip-title="$t('issue.state.overdue')" /> /
-          <number-with-tooltip color-if-nonzero="success" :value="cws.statistics.issueClosedCount" :tooltip-title="$t('issue.state.closed')" />
+          <number-with-tooltip color-if-nonzero="secondary" :value="cws.statistics.issueOpenCount"
+                               :tooltip-title="$t('issue.state.open')"/>
+          /
+          <number-with-tooltip color-if-nonzero="warning" :value="cws.statistics.issueUnreadCount"
+                               :tooltip-title="$t('issue.state.unread')"/>
+          /
+          <number-with-tooltip color-if-nonzero="danger" :value="cws.statistics.issueOverdueCount"
+                               :tooltip-title="$t('issue.state.overdue')"/>
+          /
+          <number-with-tooltip color-if-nonzero="success" :value="cws.statistics.issueClosedCount"
+                               :tooltip-title="$t('issue.state.closed')"/>
         </td>
         <td>
           <human-readable-date :value="cws.statistics.next_deadline"/>
@@ -94,14 +101,13 @@ import Checkbox from "./Edit/Input/Checkbox";
 import RawCheckbox from "./Edit/Input/RawCheckbox";
 import OrderedTableHead from "./View/OrderedTableHead";
 import NumberWithTooltip from "./View/NumberWithTooltip";
-
-const defaultOrderBy = {property: 'company', asc: true}
+import {arraysAreEqual} from '../services/algorithms'
 
 export default {
-  components: {RawCheckbox, NumberWithTooltip, OrderedTableHead, HumanReadableDateTime, HumanReadableDate, Checkbox},
+  components: {
+    RawCheckbox, NumberWithTooltip, OrderedTableHead, HumanReadableDateTime, HumanReadableDate, Checkbox},
   data() {
     return {
-      orderBy: null,
       selectedCraftsmen: [],
     }
   },
@@ -124,11 +130,7 @@ export default {
         statistics: statisticsLookup[craftsman['@id']]
       }));
 
-      const orderBy = this.orderBy ?? defaultOrderBy;
-      if (!orderBy.asc) {
-        return craftsmanWithStatistics.sort((a, b) => b.craftsman[orderBy.property].localeCompare(a.craftsman[orderBy.property]))
-      }
-      return craftsmanWithStatistics.sort((a, b) => a.craftsman[orderBy.property].localeCompare(b.craftsman[orderBy.property]))
+      return craftsmanWithStatistics.sort((a, b) => a.craftsman.company.localeCompare(b.craftsman.company))
     },
     craftsmenWithIssuesOpen: function () {
       return this.orderedCraftsmenWithStatistics.filter(cws => cws.statistics.issueOpenCount > 0).map(cws => cws.craftsman);
@@ -159,21 +161,7 @@ export default {
       }
     },
     arraysAreEqual(array1, array2) {
-      if (array1.length !== array2.length) {
-        return false;
-      }
-
-      // sorry, CompSci degree
-      const arr1 = array1.concat().sort();
-      const arr2 = array2.concat().sort();
-
-      for (let i = 0; i < arr1.length; i++) {
-        if (arr1[i] !== arr2[i]) {
-          return false;
-        }
-      }
-
-      return true;
+      return arraysAreEqual(array1, array2);
     }
   },
   mounted() {

@@ -21,7 +21,6 @@ export default {
     modelValue: null,
     forId: {
       type: String,
-      required: true
     },
     label: {
       type: String,

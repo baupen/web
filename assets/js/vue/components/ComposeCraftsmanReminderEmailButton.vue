@@ -16,7 +16,7 @@ export default {
   emits: ['send'],
   data() {
     return {
-      email: [],
+      email: {},
       show: false,
       canConfirm: true
     }
@@ -29,7 +29,12 @@ export default {
   },
   methods: {
     confirm: function () {
-      this.$emit('send', this.email)
+      console.log(this.email)
+      this.craftsmen.forEach(craftsman => {
+        const personalMail = Object.assign({type: 4}, this.email, {receiver: craftsman['@id']});
+        console.log(personalMail)
+        this.$emit('send', personalMail)
+      })
     }
   }
 }

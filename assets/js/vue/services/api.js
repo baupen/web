@@ -132,6 +132,16 @@ const api = {
       }
     )
   },
+  postRaw: function (collectionUrl, post) {
+    return new Promise(
+      (resolve) => {
+        axios.post(collectionUrl, post)
+          .then(response => {
+            resolve(response.data)
+          })
+      }
+    )
+  },
   post: function (collectionUrl, post, collection) {
     return new Promise(
       (resolve) => {

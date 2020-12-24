@@ -1,10 +1,14 @@
 <template>
   <div id="dispatch">
     <loading-indicator :spin="craftsmenStatisticsLoading">
-      <craftsman-table :craftsmen="craftsmen" :statistics="craftsmenStatistics"
-                                 @selected="this.selectedCraftsmen = $event"/>
+      <craftsman-table
+          :craftsmen="craftsmen"
+          :statistics="craftsmenStatistics"
+          @selected="selectedCraftsmen = $event"/>
 
-      <compose-email-button :craftsmen="selectedCraftsmen" />
+      <compose-craftsman-reminder-email-button
+          :craftsmen="selectedCraftsmen"
+          @send="sendEmail"/>
     </loading-indicator>
   </div>
 </template>
@@ -14,13 +18,13 @@ import {api} from './services/api'
 import ConstructionSiteSummary from './components/ConstructionSiteSummary'
 import Feed from './components/Feed'
 import CraftsmanTable from "./components/CraftsmanTable";
-import ComposeEmailButton from "./components/ComposeEmailButton";
 import LoadingIndicator from "./components/View/LoadingIndicator";
+import ComposeCraftsmanReminderEmailButton from "./components/ComposeCraftsmanReminderEmailButton";
 
 export default {
   components: {
+    ComposeCraftsmanReminderEmailButton,
     LoadingIndicator,
-    ComposeEmailButton,
     CraftsmanTable,
     Feed,
     ConstructionSiteSummary
@@ -32,6 +36,11 @@ export default {
       selectedCraftsmen: [],
       craftsmen: null,
       craftsmenStatistics: null
+    }
+  },
+  methods: {
+    sendEmail: function (email) {
+      api.postRaw(email)
     }
   },
   computed: {

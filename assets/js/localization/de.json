@@ -246,7 +246,8 @@
   },
   "email": {
     "to": "An",
-    "subject": "Betreff"
+    "subject": "Betreff",
+    "self_bcc": "BCC Kopie an mich"
   },
   "actions": {
     "save": "speichern",
