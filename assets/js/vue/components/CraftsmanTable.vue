@@ -1,74 +1,72 @@
 <template>
-  <div>
-    <table class="table table-striped-2 table-hover border">
-      <thead>
-      <tr class="bg-light">
-        <th class="w-minimal"></th>
-        <th colspan="3">{{ $t('craftsman._name') }}</th>
-        <th class="border-left" colspan="2">{{ $t('issue._plural') }}</th>
-        <th class="border-left" colspan="3">{{ $t('dispatch.craftsmen_table.last_activity') }}</th>
-      </tr>
-      <tr class="text-secondary">
-        <th class="w-minimal">
-          <raw-checkbox :id="'all-craftsmen'"
-                        :checked="arraysAreEqual(craftsmen, selectedCraftsmen)"
-                        @click.prevent="toggleSelectedCraftsmen(craftsmen)">
-          </raw-checkbox>
-        </th>
-        <th>{{ $t('craftsman.company') }}</th>
-        <th>{{ $t('craftsman.contact_name') }}</th>
-        <th>{{ $t('craftsman.trade') }}</th>
+  <table class="table table-striped-2 table-hover border">
+    <thead>
+    <tr class="bg-light">
+      <th class="w-minimal"></th>
+      <th colspan="3">{{ $t('craftsman._name') }}</th>
+      <th class="border-left" colspan="2">{{ $t('issue._plural') }}</th>
+      <th class="border-left" colspan="3">{{ $t('dispatch.craftsmen_table.last_activity') }}</th>
+    </tr>
+    <tr class="text-secondary">
+      <th class="w-minimal">
+        <raw-checkbox :id="'all-craftsmen'"
+                      :checked="arraysAreEqual(craftsmen, selectedCraftsmen)"
+                      @click.prevent="toggleSelectedCraftsmen(craftsmen)">
+        </raw-checkbox>
+      </th>
+      <th>{{ $t('craftsman.company') }}</th>
+      <th>{{ $t('craftsman.contact_name') }}</th>
+      <th>{{ $t('craftsman.trade') }}</th>
 
-        <th class="border-left">{{ $t('view.count') }}</th>
-        <th>{{ $t('craftsman.next_deadline') }}</th>
+      <th class="border-left">{{ $t('view.count') }}</th>
+      <th>{{ $t('craftsman.next_deadline') }}</th>
 
-        <th class="border-left">{{ $t('craftsman.received_email') }}</th>
-        <th>{{ $t('craftsman.visited_webpage') }}</th>
-        <th>{{ $t('craftsman.resolved_issue') }}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="cws in orderedCraftsmenWithStatistics" @click.stop="toggleSelectedCraftsman(cws.craftsman)"
-          class="clickable">
-        <td class="w-minimal">
-          <checkbox @click.stop="" v-model="selectedCraftsmen" :value="cws.craftsman"
-                    :id="'craftsman-'+cws.craftsman['@id']"/>
-        </td>
-        <td>{{ cws.craftsman.company }}</td>
-        <td>{{ cws.craftsman.contactName }}</td>
-        <td>{{ cws.craftsman.trade }}</td>
+      <th class="border-left">{{ $t('craftsman.received_email') }}</th>
+      <th>{{ $t('craftsman.visited_webpage') }}</th>
+      <th>{{ $t('craftsman.resolved_issue') }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr v-for="cws in orderedCraftsmenWithStatistics" @click.stop="toggleSelectedCraftsman(cws.craftsman)"
+        class="clickable">
+      <td class="w-minimal">
+        <checkbox @click.stop="" v-model="selectedCraftsmen" :value="cws.craftsman"
+                  :id="'craftsman-'+cws.craftsman['@id']"/>
+      </td>
+      <td>{{ cws.craftsman.company }}</td>
+      <td>{{ cws.craftsman.contactName }}</td>
+      <td>{{ cws.craftsman.trade }}</td>
 
-        <td class="border-left">
-          <number-with-tooltip color-if-nonzero="secondary" :value="cws.statistics.issueOpenCount"
-                               :tooltip-title="$t('issue.state.open')"/>
-          /
-          <number-with-tooltip color-if-nonzero="warning" :value="cws.statistics.issueUnreadCount"
-                               :tooltip-title="$t('issue.state.unread')"/>
-          /
-          <number-with-tooltip color-if-nonzero="danger" :value="cws.statistics.issueOverdueCount"
-                               :tooltip-title="$t('issue.state.overdue')"/>
-          /
-          <number-with-tooltip color-if-nonzero="success" :value="cws.statistics.issueClosedCount"
-                               :tooltip-title="$t('issue.state.closed')"/>
-        </td>
-        <td>
-          <human-readable-date :value="cws.statistics.next_deadline"/>
-        </td>
+      <td class="border-left">
+        <number-with-tooltip color-if-nonzero="secondary" :value="cws.statistics.issueOpenCount"
+                             :tooltip-title="$t('issue.state.open')"/>
+        /
+        <number-with-tooltip color-if-nonzero="warning" :value="cws.statistics.issueUnreadCount"
+                             :tooltip-title="$t('issue.state.unread')"/>
+        /
+        <number-with-tooltip color-if-nonzero="danger" :value="cws.statistics.issueOverdueCount"
+                             :tooltip-title="$t('issue.state.overdue')"/>
+        /
+        <number-with-tooltip color-if-nonzero="success" :value="cws.statistics.issueClosedCount"
+                             :tooltip-title="$t('issue.state.closed')"/>
+      </td>
+      <td>
+        <human-readable-date :value="cws.statistics.next_deadline"/>
+      </td>
 
-        <td class="border-left">
-          <human-readable-date :value="cws.statistics.last_email_received"/>
-        </td>
-        <td>
-          <human-readable-date-time :value="cws.statistics.last_visit_online"/>
-        </td>
-        <td>
-          <human-readable-date-time :value="cws.statistics.last_issue_resolved"/>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-    <div>
-      <div v-if="craftsmenWithIssuesUnread.length" class="form-check form-check-inline">
+      <td class="border-left">
+        <human-readable-date :value="cws.statistics.last_email_received"/>
+      </td>
+      <td>
+        <human-readable-date-time :value="cws.statistics.last_visit_online"/>
+      </td>
+      <td>
+        <human-readable-date-time :value="cws.statistics.last_issue_resolved"/>
+      </td>
+    </tr>
+    </tbody>
+    <caption>
+      <div v-if="craftsmenWithIssuesOpen.length" class="form-check form-check-inline">
         <raw-checkbox :id="'issues-open-craftsmen'"
                       :checked="arraysAreEqual(craftsmenWithIssuesOpen, selectedCraftsmen)"
                       @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOpen)">
@@ -89,8 +87,8 @@
           {{ $t('dispatch.craftsmen_table.with_overdue_issues') }}
         </raw-checkbox>
       </div>
-    </div>
-  </div>
+    </caption>
+  </table>
 </template>
 
 <script>
@@ -105,7 +103,8 @@ import {arraysAreEqual} from '../services/algorithms'
 
 export default {
   components: {
-    RawCheckbox, NumberWithTooltip, OrderedTableHead, HumanReadableDateTime, HumanReadableDate, Checkbox},
+    RawCheckbox, NumberWithTooltip, OrderedTableHead, HumanReadableDateTime, HumanReadableDate, Checkbox
+  },
   data() {
     return {
       selectedCraftsmen: [],
