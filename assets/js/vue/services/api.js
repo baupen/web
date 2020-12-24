@@ -13,9 +13,8 @@ const api = {
         let errorText = error
         if (error.response) {
           const response = error.response
-          if (response.data) {
-            const data = response.data
-            errorText = data['hydra:title'] + ': ' + data['hydra:description']
+          if (response.data['hydra:title'] && response.data['hydra:description']) {
+            errorText = response.data['hydra:title'] + ': ' + response.data['hydra:description']
           } else {
             errorText = response.status + ': ' + response.statusText
           }
