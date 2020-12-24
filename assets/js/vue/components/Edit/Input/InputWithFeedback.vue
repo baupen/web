@@ -68,3 +68,9 @@ export default {
   }
 }
 </script>
+
+<style scoped="true">
+input:required {
+  box-shadow: none;
+}
+</style>

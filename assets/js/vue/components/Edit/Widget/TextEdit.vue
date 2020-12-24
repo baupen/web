@@ -4,9 +4,8 @@
                          v-model="localModelValue"
                          @input="$emit('update:modelValue', this.localModelValue)"
                          @valid="$emit('valid', $event)"
-                         :required="required">
-      <slot></slot>
-    </input-with-feedback>
+                         :required="required" />
+    <slot></slot>
   </form-field>
 </template>
 
