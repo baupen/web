@@ -22,7 +22,6 @@ const api = {
 
         new Noty({
           text: translator('messages.danger.request_failed') + ' (' + errorText + ')',
-          theme: 'bootstrap-v4',
           type: 'error'
         }).show()
 
@@ -79,6 +78,11 @@ const api = {
       }
     )
   },
+  _displaySuccess: function (successMessage) {
+    new Noty({
+      text: successMessage
+    }).show()
+  },
   getMe: function () {
     return this._getItem('/api/me')
   },
@@ -120,33 +124,42 @@ const api = {
     queryString += '&lastChangedAt[after]=' + lastChangedAfter.toISOString()
     return this._getItem('/api/issues/feed_entries' + queryString)
   },
-  patch: function (instance, patch) {
+  patch: function (instance, patch, successMessage = null) {
     return new Promise(
       (resolve) => {
         axios.patch(instance['@id'], patch, { headers: { 'Content-Type': 'application/merge-patch+json' } })
           .then(response => {
             this._writeAllProperties(response.data, instance)
             resolve()
+            if (successMessage !== null) {
+              this._displaySuccess(successMessage)
+            }
           })
       }
     )
   },
-  postRaw: function (collectionUrl, post) {
+  postRaw: function (collectionUrl, post, successMessage = null) {
     return new Promise(
       (resolve) => {
         axios.post(collectionUrl, post)
           .then(response => {
             resolve(response.data)
+            if (successMessage !== null) {
+              this._displaySuccess(successMessage)
+            }
           })
       }
     )
   },
-  post: function (collectionUrl, post, collection) {
+  post: function (collectionUrl, post, collection, successMessage = null) {
     return new Promise(
       (resolve) => {
         axios.post(collectionUrl, post)
           .then(response => {
             collection.push(response.data)
+            if (successMessage !== null) {
+              this._displaySuccess(successMessage)
+            }
             resolve()
           })
       }

@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createI18n } from 'vue-i18n'
+import Noty from 'noty'
 import moment from 'moment'
 
 import VueFlatPickr from 'vue-flatpickr-component'
@@ -48,10 +49,18 @@ FontawesomeLibrary.add(
 // configure moment
 moment.locale(locale)
 
+Noty.overrideDefaults({
+  theme: 'bootstrap-v4',
+  type: 'success'
+})
+
 // configure i18n
 const i18n = createI18n({
   locale,
-  messages: { de, it }
+  messages: {
+    de,
+    it
+  }
 })
 
 // configure vue
@@ -69,15 +78,18 @@ function createVue (app) {
 
 // boot apps
 if (document.getElementById('switch') != null) {
-  createVue(Switch).mount('#switch')
+  createVue(Switch)
+    .mount('#switch')
 }
 
 // boot apps
 if (document.getElementById('dashboard') != null) {
-  createVue(Dashboard).mount('#dashboard')
+  createVue(Dashboard)
+    .mount('#dashboard')
 }
 
 // boot apps
 if (document.getElementById('dispatch') != null) {
-  createVue(Dispatch).mount('#dispatch')
+  createVue(Dispatch)
+    .mount('#dispatch')
 }

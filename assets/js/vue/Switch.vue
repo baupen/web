@@ -1,8 +1,8 @@
 <template>
   <div id="switch">
     <div class="mb-5">
-      <h1>{{ $t("switch.mine") }}</h1>
-      <p>{{ $t("switch.mine_help") }}</p>
+      <h1>{{ $t('switch.mine') }}</h1>
+      <p>{{ $t('switch.mine_help') }}</p>
 
       <loading-indicator :spin="isLoading">
         <construction-site-masonry
@@ -16,8 +16,8 @@
         </div>
       </loading-indicator>
     </div>
-    <h2>{{ $t("switch.all") }}</h2>
-    <p>{{ $t("switch.all_help") }}</p>
+    <h2>{{ $t('switch.all') }}</h2>
+    <p>{{ $t('switch.all_help') }}</p>
     <loading-indicator :spin="isLoading">
       <add-construction-site-button
           class="mb-2"
@@ -36,15 +36,21 @@
 </template>
 
 <script>
-import {api} from './services/api'
-import AddConstructionSiteButton from "./components/AddConstructionSiteButton";
-import ConstructionSiteTable from "./components/ConstructionSiteTable";
-import ConstructionSiteMasonry from "./components/ConstructionSiteMasonry";
-import LoadingIndicator from "./components/View/LoadingIndicator";
+import { api } from './services/api'
+import AddConstructionSiteButton from './components/AddConstructionSiteButton'
+import ConstructionSiteTable from './components/ConstructionSiteTable'
+import ConstructionSiteMasonry from './components/ConstructionSiteMasonry'
+import LoadingIndicator from './components/View/LoadingIndicator'
+import Noty from 'noty'
 
 export default {
-  components: {LoadingIndicator, ConstructionSiteMasonry, ConstructionSiteTable, AddConstructionSiteButton},
-  data() {
+  components: {
+    LoadingIndicator,
+    ConstructionSiteMasonry,
+    ConstructionSiteTable,
+    AddConstructionSiteButton
+  },
+  data () {
     return {
       constructionManagerIri: null,
       constructionSites: null,
@@ -66,27 +72,26 @@ export default {
     postConstructionSite: function (constructionSite) {
       this.show = false
       constructionSite.constructionManagers = [this.constructionManagerIri]
-      api.post('/api/construction_sites', constructionSite, this.constructionSites)
+      api.post('/api/construction_sites', constructionSite, this.constructionSites, this.$t('switch.messages.success.added_construction_site'))
     },
     removeSelfFromConstructionSite: function (constructionSite) {
-      const constructionManagersWithoutSelf = constructionSite.constructionManagers.filter(cm => cm !== this.constructionManagerIri)
-      api.patch(constructionSite, {
-        constructionManagers: constructionManagersWithoutSelf
-      })
+      const constructionManagers = constructionSite.constructionManagers.filter(cm => cm !== this.constructionManagerIri)
+      api.patch(constructionSite, { constructionManagers }, this.$t('switch.messages.success.removed_self'))
     },
     addSelfToConstructionSite: function (constructionSite) {
       const constructionManagers = constructionSite.constructionManagers.filter(cm => cm !== this.constructionManagerIri)
       constructionManagers.push(this.constructionManagerIri)
-      api.patch(constructionSite, {
-        constructionManagers: constructionManagers
-      })
+      api.patch(constructionSite, { constructionManagers }, this.$t('switch.messages.success.added_self'))
     }
   },
-  mounted() {
+  mounted () {
     api.setupErrorNotifications(this.$t)
-    api.getMe().then(me => this.constructionManagerIri = me.constructionManagerIri);
-    api.getConstructionSites().then(constructionSites => this.constructionSites = constructionSites)
-    api.getConstructionManagers().then(constructionManagers => this.constructionManagers = constructionManagers)
+    api.getMe()
+        .then(me => this.constructionManagerIri = me.constructionManagerIri)
+    api.getConstructionSites()
+        .then(constructionSites => this.constructionSites = constructionSites)
+    api.getConstructionManagers()
+        .then(constructionManagers => this.constructionManagers = constructionManagers)
   }
 }
 

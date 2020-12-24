@@ -12,6 +12,11 @@
     "messages": {
       "info": {
         "activate_construction_site": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen."
+      },
+      "success": {
+        "added_construction_site": "Die Baustelle wurde hinzugefügt.",
+        "removed_self": "Sie wurden von der Baustelle entfernt.",
+        "added_self": "Sie wurden der Baustelle hinzugefügt."
       }
     }
   },
@@ -62,6 +67,7 @@
     }
   },
   "dispatch": {
+    "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die offenen Pendenzen angeschaut und erledigt werden.",
     "craftsmen_table": {
       "no_entries": "Keine Unternehmer erfasst",
       "filter_placeholder": "Unternehmer\/Gewerk suchen...",
@@ -72,7 +78,7 @@
     },
     "actions": {
       "compose_email": "E-Mail verfassen",
-      "send_email": "Senden"
+      "send_emails": "E-Mail versenden. | {count} E-Mails versenden."
     },
     "messages": {
       "emails_sent": "E-Mails versandt",
@@ -247,7 +253,7 @@
   "email": {
     "to": "An",
     "subject": "Betreff",
-    "self_bcc": "BCC Kopie an mich"
+    "self_bcc": "jeweils mit BCC Kopie an mich"
   },
   "actions": {
     "save": "speichern",
