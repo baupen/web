@@ -34,6 +34,15 @@ trait AssertApiTokenTrait
         return $response;
     }
 
+    private function assertApiTokenRequestNotFound(Client $client, string $token, string $method, string $url, array $payload = null)
+    {
+        $response = $this->requestWithApiToken($client, $token, $method, $url, $payload);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+
+        return $response;
+    }
+
     private function setApiTokenDefaultHeader(Client $client, string $token)
     {
         $client->setDefaultOptions(['headers' => ['X-AUTHENTICATION' => $token]]);

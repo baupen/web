@@ -14,6 +14,7 @@ namespace App\Tests\Api;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
+use App\Tests\DataFixtures\TestEmailTemplateFixtures;
 use App\Tests\DataFixtures\TestFilterFixtures;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
@@ -114,89 +115,42 @@ class ApiAuthenticationTest extends ApiTestCase
         }
     }
 
-    public function testConstructionManagerOnlyAccess()
+    public function testApiAccessEmailTemplates()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class, TestEmailTemplateFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
         $otherConstructionSite = $this->getEmptyConstructionSite();
 
         $constructionManager = $constructionSite->getConstructionManagers()[0];
-        $otherConstructionManager = $this->addConstructionManager($otherConstructionSite);
 
         $craftsman = $constructionSite->getCraftsmen()[0];
-        $otherCraftsman = $this->addCraftsman($otherConstructionSite);
-
         $filter = $constructionSite->getFilters()[0];
-        $otherFilter = $this->addFilter($otherConstructionSite);
 
-        $issue = $constructionSite->getIssues()[0];
-        $otherIssue = $this->addIssue($otherConstructionSite, $constructionManager);
-
-        $map = $constructionSite->getMaps()[0];
-        $otherMap = $this->addMap($otherConstructionSite);
+        $emailTemplate = $constructionSite->getEmailTemplates()[0];
+        $otherEmailTemplate = $this->addMap($otherConstructionSite);
 
         $constructionManagerToken = $this->createApiTokenFor($constructionManager);
         $craftsmanToken = $this->createApiTokenFor($craftsman);
         $filterToken = $this->createApiTokenFor($filter);
 
-        $payloads = [
-            'construction_managers' => [$constructionManager, $otherConstructionManager],
-            'construction_sites' => [$constructionSite, $otherConstructionSite],
-            'craftsmen' => [$craftsman, $otherCraftsman],
-            'filters' => [$filter, $otherFilter],
-            'issues' => [$issue, $otherIssue],
-            'maps' => [$map, $otherMap],
-        ];
+        $apiUrl = '/api/email_templates';
+        $sameConstructionSiteId = $apiUrl.'/'.$emailTemplate->getId();
+        $otherConstructionSiteId = $apiUrl.'/'.$otherEmailTemplate->getId();
 
-        $noPost = ['construction_managers'];
-        $noPatch = ['construction_sites', 'construction_managers', 'filters'];
-        $noDelete = ['construction_sites', 'construction_managers', 'filters'];
+        $this->assertApiTokenRequestSuccessful($client, $constructionManagerToken, 'GET', $sameConstructionSiteId);
+        $this->assertApiTokenRequestNotFound($client, $constructionManagerToken, 'GET', $otherConstructionSiteId);
 
-        foreach ($payloads as $url => $payload) {
-            $apiUrl = '/api/'.$url;
-            $own = $payload[0];
-            $other = $payload[1];
+        $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'GET', $sameConstructionSiteId);
+        $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'POST', $apiUrl, []);
+        $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'PATCH', $sameConstructionSiteId);
+        $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'DELETE', $sameConstructionSiteId);
 
-            $sameConstructionSiteId = $apiUrl.'/'.$own->getId();
-            $otherConstructionSiteId = $apiUrl.'/'.$other->getId();
-
-            $this->assertApiTokenRequestSuccessful($client, $constructionManagerToken, 'GET', $sameConstructionSiteId);
-            if (in_array($url, ['construction_sites', 'construction_managers'])) {
-                $this->assertApiTokenRequestSuccessful($client, $constructionManagerToken, 'GET', $otherConstructionSiteId);
-            } else {
-                $this->assertApiTokenRequestForbidden($client, $constructionManagerToken, 'GET', $otherConstructionSiteId);
-            }
-
-            if (in_array($url, ['filters'])) {
-                $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'GET', $sameConstructionSiteId);
-            } else {
-                $this->assertApiTokenRequestSuccessful($client, $craftsmanToken, 'GET', $sameConstructionSiteId);
-            }
-            $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'GET', $otherConstructionSiteId);
-            if (!in_array($url, $noPost)) {
-                $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'POST', $apiUrl, []);
-            }
-            if ('issues' !== $url && !in_array($url, $noPatch)) {
-                $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'PATCH', $sameConstructionSiteId, []);
-            }
-            if (!in_array($url, $noDelete)) {
-                $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'DELETE', $sameConstructionSiteId, []);
-            }
-
-            $this->assertApiTokenRequestSuccessful($client, $filterToken, 'GET', $sameConstructionSiteId);
-            $this->assertApiTokenRequestForbidden($client, $filterToken, 'GET', $otherConstructionSiteId);
-            if (!in_array($url, $noPost)) {
-                $this->assertApiTokenRequestForbidden($client, $filterToken, 'POST', $apiUrl, []);
-            }
-            if (!in_array($url, $noPatch)) {
-                $this->assertApiTokenRequestForbidden($client, $filterToken, 'PATCH', $sameConstructionSiteId, []);
-            }
-            if (!in_array($url, $noDelete)) {
-                $this->assertApiTokenRequestForbidden($client, $filterToken, 'DELETE', $sameConstructionSiteId, []);
-            }
-        }
+        $this->assertApiTokenRequestForbidden($client, $filterToken, 'GET', $sameConstructionSiteId);
+        $this->assertApiTokenRequestForbidden($client, $filterToken, 'POST', $apiUrl, []);
+        $this->assertApiTokenRequestForbidden($client, $filterToken, 'PATCH', $sameConstructionSiteId);
+        $this->assertApiTokenRequestForbidden($client, $filterToken, 'DELETE', $sameConstructionSiteId);
     }
 
     public function testFileAndImageDownload()
