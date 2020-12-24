@@ -121,7 +121,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      * @var EmailTemplate[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="App\Entity\EmailTemplate", mappedBy="constructionSite", cascade={"persist"})
-     * @ORM\OrderBy({"type": "ASC", "name": "ASC"})
+     * @ORM\OrderBy({"purpose": "ASC", "name": "ASC"})
      */
     private $emailTemplates;
 

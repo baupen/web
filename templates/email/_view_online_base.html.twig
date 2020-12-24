@@ -16,6 +16,8 @@
                         {{ block("body", 'email/recover_confirm.html.twig') }}
                     {% elseif emailType == 3 %}
                         {{ block("body", 'email/app_invitation.html.twig') }}
+                    {% elseif emailType == 4 %}
+                        {{ block("body", 'email/craftsman_issue_reminder.html.twig') }}
                     {% endif %}
                 {% endapply %}
             </div>

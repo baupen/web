@@ -25,13 +25,7 @@ final class Version20201223162710 extends AbstractMigration
         $this->addSql('ALTER TABLE craftsman ADD authentication_token LONGTEXT');
         $this->addSql('ALTER TABLE filter ADD access_allowed_before DATETIME DEFAULT NULL, ADD authentication_token LONGTEXT');
 
-        $this->addSql('UPDATE construction_manager SET authentication_token = UUID()');
-        $this->addSql('UPDATE craftsman SET authentication_token = UUID()');
-        $this->addSql('UPDATE filter SET authentication_token = UUID()');
 
-        $this->addSql('ALTER TABLE construction_manager MODIFY authentication_token LONGTEXT NOT NULL');
-        $this->addSql('ALTER TABLE craftsman MODIFY authentication_token LONGTEXT NOT NULL');
-        $this->addSql('ALTER TABLE filter MODIFY authentication_token LONGTEXT NOT NULL');
     }
 
     public function down(Schema $schema) : void

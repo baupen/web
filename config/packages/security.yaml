@@ -61,6 +61,9 @@ security:
         - { path: ^/email, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/help, role: IS_AUTHENTICATED_ANONYMOUSLY }
 
+        - { path: '^/resolve/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: '^/filtered/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
+
         - { path: '^/construction_sites/[a-zA-Z0-9\-]{36}/image/[a-zA-Z0-9\-]{36}/.+', role: ROLE_FILE_DOWNLOAD }
         - { path: '^/issues/[a-zA-Z0-9\-]{36}/image/[a-zA-Z0-9\-]{36}/.+', role: ROLE_FILE_DOWNLOAD }
         - { path: '^/maps/[a-zA-Z0-9\-]{36}/file/[a-zA-Z0-9\-]{36}/.+', role: ROLE_FILE_DOWNLOAD }

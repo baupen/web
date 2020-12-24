@@ -18,9 +18,9 @@ interface EmailServiceInterface
 {
     public function sendRegisterConfirmLink(ConstructionManager $constructionManager): bool;
 
-    public function sendAppInvitation(ConstructionManager $constructionManager): bool;
-
     public function sendRecoverConfirmLink(ConstructionManager $constructionManager): bool;
+
+    public function sendAppInvitation(ConstructionManager $constructionManager): bool;
 
     public function sendCraftsmanIssueReminder(ConstructionManager $constructionManager, Craftsman $craftsman, string $subject, string $body, bool $constructionManagerInBCC): bool;
 }

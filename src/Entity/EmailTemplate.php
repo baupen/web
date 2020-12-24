@@ -49,10 +49,10 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
     use IdTrait;
     use TimeTrait;
 
-    public const TYPE_USER_DEFINED = 1;
-    public const TYPE_OPEN_ISSUES = 2;
-    public const TYPE_UNREAD_ISSUES = 3;
-    public const TYPE_OVERDUE_ISSUES = 4;
+    public const PURPOSE_USER_DEFINED = 1;
+    public const PURPOSE_OPEN_ISSUES = 2;
+    public const PURPOSE_UNREAD_ISSUES = 3;
+    public const PURPOSE_OVERDUE_ISSUES = 4;
 
     /**
      * @var string
@@ -88,7 +88,7 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
      * @Groups({"email-template-read", "email-template-edit"})
      * @ORM\Column(type="integer")
      */
-    private $type;
+    private $purpose;
 
     /**
      * @var bool
@@ -138,14 +138,14 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
         $this->body = $body;
     }
 
-    public function getType(): int
+    public function getPurpose(): int
     {
-        return $this->type;
+        return $this->purpose;
     }
 
-    public function setType(int $type): void
+    public function setPurpose(int $purpose): void
     {
-        $this->type = $type;
+        $this->purpose = $purpose;
     }
 
     public function getSelfBcc(): bool

@@ -4,5 +4,5 @@
 
 {% block body %}
 {{ "register_confirm.message"|trans({"%page%": app.request.httpHost})  }}
-{{ "register_confirm.activate_link"|trans }}: {{ absolute_url(url('register_confirm', {'authenticationHash': sentBy.authenticationHash})) }}
+{{ "register_confirm.activate_link"|trans }}: {{ absolute_url(link) }}
 {% endblock %}

@@ -11,27 +11,61 @@
 
 namespace App\Api\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * @ApiResource(
+ *     collectionOperations={
+ *      "post" = {"denormalization_context"={"groups"={"email-create"}}}
+ *      },
+ *     itemOperations={
+ *      "none": {"method": "GET", "controller": NonExistingController::class }
+ *     }
+ * )
+ */
 class Email
 {
     /**
      * @var string
+     *
+     * @Assert\NotBlank
+     * @Groups({"email-create"})
      */
     private $receiver;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank
+     * @Groups({"email-create"})
      */
     private $subject;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank
+     * @Groups({"email-create"})
      */
     private $body;
 
     /**
-     * @var string
+     * @var bool
+     *
+     * @Assert\NotNull
+     * @Groups({"email-create"})
      */
     private $selfBcc;
+
+    /**
+     * @var int
+     *
+     * @Assert\NotNull
+     * @Groups({"email-create"})
+     */
+    private $type;
 
     public function getReceiver(): string
     {
@@ -63,13 +97,23 @@ class Email
         $this->body = $body;
     }
 
-    public function getSelfBcc(): string
+    public function getSelfBcc(): bool
     {
         return $this->selfBcc;
     }
 
-    public function setSelfBcc(string $selfBcc): void
+    public function setSelfBcc(bool $selfBcc): void
     {
         $this->selfBcc = $selfBcc;
+    }
+
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    public function setType(int $type): void
+    {
+        $this->type = $type;
     }
 }

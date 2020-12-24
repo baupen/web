@@ -19,6 +19,7 @@ use App\Security\TokenTrait;
 use App\Service\EmailService;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class EmailDataPersister implements ContextAwareDataPersisterInterface
@@ -67,7 +68,15 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
             throw new BadRequestException('receiver must be a craftsman iri');
         }
 
-        $success = $this->emailService->sendCraftsmanIssueReminder($constructionManager, $craftsman, $data->getSubject(), $data->getBody(), $data->getSelfBcc());
+        if (!$constructionManager->getConstructionSites()->contains($craftsman->getConstructionSite())) {
+            throw new HttpException(Response::HTTP_FORBIDDEN);
+        }
+
+        if (\App\Entity\Email::TYPE_CRAFTSMAN_ISSUE_REMINDER === $data->getType()) {
+            $success = $this->emailService->sendCraftsmanIssueReminder($constructionManager, $craftsman, $data->getSubject(), $data->getBody(), $data->getSelfBcc());
+        } else {
+            throw new BadRequestException('unknown email type');
+        }
 
         $statusCode = $success ? Response::HTTP_OK : Response::HTTP_SERVICE_UNAVAILABLE;
 

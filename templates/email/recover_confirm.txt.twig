@@ -4,5 +4,5 @@
 
 {% block body %}
 {{ "recover_confirm.message"|trans({"%page%": app.request.httpHost}) }}
-{{ "recover_confirm.confirm_link"|trans }}: {{ absolute_url(url('recover_confirm', {'authenticationHash': sentBy.authenticationHash})) }}
+{{ "recover_confirm.confirm_link"|trans }}: {{ absolute_url(link) }}
 {% endblock %}

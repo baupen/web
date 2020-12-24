@@ -58,7 +58,7 @@ class EmailTemplateTest extends ApiTestCase
             'name' => 'Template 1',
             'subject' => 'Willkommen',
             'body' => 'Hallo auf der Baustelle 2',
-            'type' => 1,
+            'purpose' => 1,
             'selfBcc' => false,
         ];
 
@@ -68,7 +68,7 @@ class EmailTemplateTest extends ApiTestCase
 
         // test GET returns correct fields
         $this->assertApiCollectionContainsResponseItem($client, '/api/email_templates?constructionSite='.$constructionSite->getId(), $response);
-        $this->assertApiResponseFieldSubset($response, 'name', 'subject', 'body', 'type', 'selfBcc');
+        $this->assertApiResponseFieldSubset($response, 'name', 'subject', 'body', 'purpose', 'selfBcc');
 
         $emailTemplateId = json_decode($response->getContent(), true)['@id'];
 
@@ -85,7 +85,7 @@ class EmailTemplateTest extends ApiTestCase
             'name' => 'Template 2',
             'subject' => 'Willkommen im Paradies',
             'body' => 'Hallo auf der Baustelle 3',
-            'type' => 2,
+            'purpose' => 2,
             'selfBcc' => true,
         ];
         $response = $this->assertApiPatchPayloadPersisted($client, $emailTemplateId, $update);

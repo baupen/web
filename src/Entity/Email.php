@@ -44,6 +44,13 @@ class Email extends BaseEntity
      *
      * @ORM\Column(type="string", nullable=true)
      */
+    private $link;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
     private $body;
 
     /**
@@ -74,12 +81,13 @@ class Email extends BaseEntity
      */
     private $readAt;
 
-    public static function create(int $emailType, ConstructionManager $sentBy, ?string $body = null)
+    public static function create(int $emailType, ConstructionManager $sentBy, ?string $link = null, ?string $body = null)
     {
         $email = new Email();
 
         $email->identifier = UuidV4::v4();
         $email->type = $emailType;
+        $email->link = $link;
         $email->body = $body;
         $email->sentBy = $sentBy;
         $email->sentAt = new \DateTime();
@@ -119,6 +127,6 @@ class Email extends BaseEntity
 
     public function getContext(): array
     {
-        return ['sentBy' => $this->sentBy, 'identifier' => $this->identifier, 'emailType' => $this->type, 'body' => $this->body];
+        return ['sentBy' => $this->sentBy, 'identifier' => $this->identifier, 'emailType' => $this->type, 'body' => $this->body, 'link' => $this->link];
     }
 }

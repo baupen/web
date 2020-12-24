@@ -1,13 +1,13 @@
-{% extends "email/_base.html.twig" %}
+{% extends "email/_base.txt.twig" %}
 
 {% trans_default_domain "email" %}
 
 {% block body %}
-    <p>{{ "recover_confirm.message"|trans({"%page%": app.request.httpHost}) }}</p>
+    <p>{{ body|nl2br  }}</p>
     <spacer size="15"></spacer>
     <center>
         <button href="{{ absolute_url(link) }}">
-            {{ "recover_confirm.confirm_link"|trans }}
+            {{ "craftsman_issue_reminder.view_issues_link"|trans }}
         </button>
     </center>
 {% endblock %}

@@ -85,7 +85,8 @@ class EmailService implements EmailServiceInterface
 
     public function sendRegisterConfirmLink(ConstructionManager $constructionManager): bool
     {
-        $entity = Email::create(Email::TYPE_REGISTER_CONFIRM, $constructionManager);
+        $link = $this->urlGenerator->generate('register_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()]);
+        $entity = Email::create(Email::TYPE_REGISTER_CONFIRM, $constructionManager, $link);
         $subject = $this->translator->trans('register_confirm.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
         $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
@@ -99,7 +100,8 @@ class EmailService implements EmailServiceInterface
 
     public function sendRecoverConfirmLink(ConstructionManager $constructionManager): bool
     {
-        $entity = Email::create(Email::TYPE_RECOVER_CONFIRM, $constructionManager);
+        $link = $this->urlGenerator->generate('recover_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()]);
+        $entity = Email::create(Email::TYPE_RECOVER_CONFIRM, $constructionManager, $link);
         $subject = $this->translator->trans('recover_confirm.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
         $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
@@ -127,7 +129,8 @@ class EmailService implements EmailServiceInterface
 
     public function sendCraftsmanIssueReminder(ConstructionManager $constructionManager, Craftsman $craftsman, string $subject, string $body, bool $constructionManagerInBCC): bool
     {
-        $entity = Email::create(Email::TYPE_CRAFTSMAN_ISSUE_REMINDER, $constructionManager, $body);
+        $link = $this->urlGenerator->generate('public_resolve', ['token' => $craftsman->getAuthenticationToken()]);
+        $entity = Email::create(Email::TYPE_CRAFTSMAN_ISSUE_REMINDER, $constructionManager, $link, $body);
 
         $message = $this->createTemplatedEmailToCraftsman($constructionManager, $craftsman, $constructionManagerInBCC)
             ->subject($subject)
@@ -156,7 +159,7 @@ class EmailService implements EmailServiceInterface
         $constructionManagerAddress = new Address($constructionManager->getEmail(), $constructionManager->getName());
         $templatedEmail->from($this->mailerFromEmail)
             ->to(new Address($craftsman->getEmail(), $craftsman->getContactName()))
-            ->cc($craftsman->getEmailCCs())
+            ->cc(...$craftsman->getEmailCCs())
             ->returnPath($constructionManagerAddress)
             ->replyTo($constructionManagerAddress);
 
