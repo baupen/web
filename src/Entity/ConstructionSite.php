@@ -118,6 +118,14 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     private $issues;
 
     /**
+     * @var EmailTemplate[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\EmailTemplate", mappedBy="constructionSite", cascade={"persist"})
+     * @ORM\OrderBy({"type": "ASC", "name": "ASC"})
+     */
+    private $emailTemplates;
+
+    /**
      * @var Filter[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Filter", mappedBy="constructionSite")
@@ -141,6 +149,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
         $this->mapFiles = new ArrayCollection();
         $this->craftsmen = new ArrayCollection();
         $this->issues = new ArrayCollection();
+        $this->emailTemplates = new ArrayCollection();
         $this->filters = new ArrayCollection();
     }
 
@@ -229,6 +238,14 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     public function setIsTrialConstructionSite(bool $isTrialConstructionSite): void
     {
         $this->isTrialConstructionSite = $isTrialConstructionSite;
+    }
+
+    /**
+     * @return EmailTemplate[]|ArrayCollection
+     */
+    public function getEmailTemplates()
+    {
+        return $this->emailTemplates;
     }
 
     /**

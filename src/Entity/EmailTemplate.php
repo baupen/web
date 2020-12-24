@@ -15,6 +15,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Api\Filters\RequiredSearchFilter;
 use App\Entity\Base\BaseEntity;
+use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\ORM\Mapping as ORM;
@@ -27,7 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     collectionOperations={
  *      "get",
- *      "post" = {"security_post_denormalize" = "is_granted('EMAIL_TEMPLATE_MODIFY', object)", "denormalization_context"={"groups"={"email-template-create", "email-template-write"}}}
+ *      "post" = {"security_post_denormalize" = "is_granted('EMAIL_TEMPLATE_MODIFY', object)", "denormalization_context"={"groups"={"email-template-create", "email-template-edit"}}}
  *      },
  *     itemOperations={
  *      "get" = {"security" = "is_granted('EMAIL_TEMPLATE_VIEW', object)"},
@@ -35,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "delete" = {"security" = "is_granted('EMAIL_TEMPLATE_MODIFY', object)"},
  *     },
  *     normalizationContext={"groups"={"email-template-read"}, "skip_null_values"=false},
- *     denormalizationContext={"groups"={"email-template-write"}},
+ *     denormalizationContext={"groups"={"email-template-edit"}},
  *     attributes={"pagination_enabled"=false}
  * )
  * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
@@ -43,7 +44,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
-class EmailTemplate extends BaseEntity
+class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
     use TimeTrait;
@@ -56,6 +57,7 @@ class EmailTemplate extends BaseEntity
     /**
      * @var string
      *
+     * @Assert\NotBlank
      * @Groups({"email-template-read", "email-template-edit"})
      * @ORM\Column(type="string")
      */
@@ -64,6 +66,7 @@ class EmailTemplate extends BaseEntity
     /**
      * @var string
      *
+     * @Assert\NotBlank
      * @Groups({"email-template-read", "email-template-edit"})
      * @ORM\Column(type="string")
      */
@@ -72,6 +75,7 @@ class EmailTemplate extends BaseEntity
     /**
      * @var string
      *
+     * @Assert\NotBlank
      * @Groups({"email-template-read", "email-template-edit"})
      * @ORM\Column(type="string")
      */
@@ -80,6 +84,7 @@ class EmailTemplate extends BaseEntity
     /**
      * @var int
      *
+     * @Assert\NotBlank
      * @Groups({"email-template-read", "email-template-edit"})
      * @ORM\Column(type="integer")
      */
@@ -88,6 +93,7 @@ class EmailTemplate extends BaseEntity
     /**
      * @var bool
      *
+     * @Assert\NotNull
      * @Groups({"email-template-read", "email-template-edit"})
      * @ORM\Column(type="boolean")
      */
@@ -98,7 +104,7 @@ class EmailTemplate extends BaseEntity
      *
      * @Assert\NotBlank
      * @Groups({"email-template-create"})
-     * @ORM\ManyToOne(targetEntity="ConstructionSite")
+     * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="emailTemplates")
      */
     private $constructionSite;
 
@@ -132,7 +138,17 @@ class EmailTemplate extends BaseEntity
         $this->body = $body;
     }
 
-    public function isSelfBcc(): bool
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    public function setType(int $type): void
+    {
+        $this->type = $type;
+    }
+
+    public function getSelfBcc(): bool
     {
         return $this->selfBcc;
     }
@@ -140,5 +156,20 @@ class EmailTemplate extends BaseEntity
     public function setSelfBcc(bool $selfBcc): void
     {
         $this->selfBcc = $selfBcc;
+    }
+
+    public function getConstructionSite(): ConstructionSite
+    {
+        return $this->constructionSite;
+    }
+
+    public function setConstructionSite(ConstructionSite $constructionSite): void
+    {
+        $this->constructionSite = $constructionSite;
+    }
+
+    public function isConstructionSiteSet(): bool
+    {
+        return null !== $this->constructionSite;
     }
 }
