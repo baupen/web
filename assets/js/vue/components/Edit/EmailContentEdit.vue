@@ -12,13 +12,9 @@
         id="body"
         v-model="modelValue.body"
         @input="emitUpdate"
-        @valid="validProperties.body = $event"/>
-
-    <boolean-edit
-        id="self-bcc"
-        :label="$t('email.self_bcc')"
-        v-model="modelValue.selfBcc"
-        @input="emitUpdate" />
+        @valid="validProperties.body = $event">
+      <slot name="textarea" />
+    </textarea-edit>
   </div>
 </template>
 
@@ -41,7 +37,6 @@ export default {
   data() {
     return {
       validProperties: {
-        template: false,
         subject: false,
         body: false,
       }

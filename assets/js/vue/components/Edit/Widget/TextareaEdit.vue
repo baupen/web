@@ -1,22 +1,25 @@
 <template>
   <form-field :for-id="id" :label="label" :required="required">
     <textarea-with-feedback :id="id" type="text" :focus="focus"
-                         v-model="localModelValue"
-                         @input="$emit('update:modelValue', this.localModelValue)"
-                         @valid="$emit('valid', $event)"
-                         :required="required" />
-    <slot></slot>
+                            v-model="localModelValue"
+                            @input="$emit('update:modelValue', this.localModelValue)"
+                            @valid="$emit('valid', $event)"
+                            :required="required" />
+    <slot />
   </form-field>
 </template>
 
 <script>
-import FormField from "../Layout/FormField";
-import TextareaWithFeedback from "../Input/TextareaWithFeedback";
+import FormField from '../Layout/FormField'
+import TextareaWithFeedback from '../Input/TextareaWithFeedback'
 
 export default {
-  components: {TextareaWithFeedback, FormField},
+  components: {
+    TextareaWithFeedback,
+    FormField
+  },
   emits: ['update:modelValue', 'valid'],
-  data() {
+  data () {
     return {
       localModelValue: null
     }
@@ -39,7 +42,7 @@ export default {
       default: false
     }
   },
-  mounted() {
+  mounted () {
     this.localModelValue = this.modelValue
   }
 }
