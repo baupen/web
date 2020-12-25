@@ -1,6 +1,6 @@
 <template>
   <div id="dispatch">
-    <loading-indicator :spin="craftsmenStatisticsLoading">
+    <loading-indicator :spin="viewLoading">
       <craftsman-table
           :craftsmen="craftsmen"
           :statistics="craftsmenStatistics"
@@ -10,7 +10,10 @@
         <compose-craftsman-email-button
             :disabled="unsentEmails.length > 0"
             :craftsmen="selectedCraftsmen"
-            @send="sendEmails" />
+            :email-templates="emailTemplates"
+            @send="sendEmails"
+            @create-template="createEmailTemplate"
+            @save-template="saveEmailTemplate" />
         <span class="btn btn-link" v-if="unsentEmails.length > 0">{{ unsentEmails.length }}</span>
       </span>
     </loading-indicator>
@@ -41,7 +44,8 @@ export default {
       selectedCraftsmen: [],
       craftsmen: null,
       craftsmenStatistics: null,
-      unsentEmails: []
+      unsentEmails: [],
+      emailTemplates: []
     }
   },
   methods: {
@@ -57,21 +61,63 @@ export default {
       const email = queue.pop()
       api.postRaw('/api/emails', email)
           .then(_ => {
-            this.unsentEmails = this.unsentEmails.filter(e => e !== email)
-            const statistics = this.craftsmenStatistics.find(craftsmanStatistics => craftsmanStatistics['craftsman'] === email.receiver)
-            statistics.last_email_received = (new Date()).toISOString()
+                this.unsentEmails = this.unsentEmails.filter(e => e !== email)
+                const statistics = this.craftsmenStatistics.find(craftsmanStatistics => craftsmanStatistics['craftsman'] === email.receiver)
+                statistics.last_email_received = (new Date()).toISOString()
 
-            if (queue.length === 0) {
-              displaySuccess(this.$t('dispatch.messages.success.emails_sent'))
-            } else {
-              this.sendEmail(queue)
-            }
-          }
-      )
+                if (queue.length === 0) {
+                  displaySuccess(this.$t('dispatch.messages.success.emails_sent'))
+                } else {
+                  this.sendEmail(queue)
+                }
+              }
+          )
+    },
+    createEmailTemplate: function (email) {
+      const emailTemplate = Object.assign({purpose: 1, name: email.subject, constructionSite: this.constructionSite["@id"]}, email)
+      api.post('/api/email_templates', emailTemplate, this.$t('dispatch.messages.success.email_template_saved'))
+    },
+    saveEmailTemplate: function (emailTemplate, patch) {
+      api.patch(emailTemplate, patch, this.$t('dispatch.messages.success.email_template_saved'))
+    },
+    initializeEmailTemplates () {
+      let unreadIssuesTemplate = this.emailTemplates.find(t => t.purpose === 2)
+      if (!unreadIssuesTemplate) {
+        this.addEmailTemplate("unread_issues", 2)
+      }
+
+      let openIssuesTemplate = this.emailTemplates.find(t => t.purpose === 3)
+      if (!openIssuesTemplate) {
+        this.addEmailTemplate("open_issues", 3)
+      }
+
+      let overdueIssuesTemplate = this.emailTemplates.find(t => t.purpose === 4)
+      if (!overdueIssuesTemplate) {
+        this.addEmailTemplate("overdue_issues", 4)
+      }
+    },
+    addEmailTemplate(key, purpose) {
+      const hi = this.$t('email_template.templates.common.hi')
+      const help = this.$t('email_template.templates.common.help')
+
+      const name = this.$t('email_template.templates.' + key + '.name', {"constructionSite": this.constructionSite.name})
+      const subject = this.$t('email_template.templates.' + key + '.subject')
+      const body = this.$t('email_template.templates.' + key + '.body', {"constructionSite": this.constructionSite.name})
+
+      const template = {
+        purpose,
+        name,
+        subject,
+        body: hi + "\n\n" + body+ "\n\n" + help,
+        selfBcc: false,
+        constructionSite: this.constructionSite["@id"]
+      }
+
+      api.post('/api/email_templates', template, this.emailTemplates)
     }
   },
   computed: {
-    craftsmenStatisticsLoading: function () {
+    viewLoading: function () {
       return this.craftsmen === null || this.craftsmenStatistics === null
     },
   },
@@ -85,6 +131,12 @@ export default {
 
           api.getCraftsmen(this.constructionSite, { isDeleted: false })
               .then(craftsmen => this.craftsmen = craftsmen)
+
+          api.getEmailTemplates(this.constructionSite)
+              .then(emailTemplates => {
+                this.emailTemplates = emailTemplates
+                this.initializeEmailTemplates()
+              })
 
           api.getCraftsmenStatistics(this.constructionSite, { isDeleted: false })
               .then(craftsmenStatistics => this.craftsmenStatistics = craftsmenStatistics)

@@ -51,17 +51,17 @@
                              :tooltip-title="$t('issue.state.closed')"/>
       </td>
       <td>
-        <human-readable-date :value="cws.statistics.next_deadline"/>
+        <human-readable-date :value="cws.statistics.nextDeadline"/>
       </td>
 
       <td class="border-left">
-        <human-readable-date :value="cws.statistics.last_email_received"/>
+        <human-readable-date-time :value="cws.statistics.lastEmailReceived"/>
       </td>
       <td>
-        <human-readable-date-time :value="cws.statistics.last_visit_online"/>
+        <human-readable-date-time :value="cws.statistics.lastVisitOnline"/>
       </td>
       <td>
-        <human-readable-date-time :value="cws.statistics.last_issue_resolved"/>
+        <human-readable-date-time :value="cws.statistics.lastIssueResolved"/>
       </td>
     </tr>
     </tbody>

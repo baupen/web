@@ -68,6 +68,7 @@
   },
   "dispatch": {
     "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die offenen Pendenzen angeschaut und erledigt werden.",
+    "save_template_changes": "Änderungen an der Vorlage speichern",
     "craftsmen_table": {
       "no_entries": "Keine Unternehmer erfasst",
       "filter_placeholder": "Unternehmer\/Gewerk suchen...",
@@ -82,7 +83,8 @@
     },
     "messages": {
       "success": {
-        "emails_sent": "E-Mails versandt"
+        "emails_sent": "E-Mails versandt",
+        "email_template_saved": "Vorlage gespeichert"
       }
     }
   },
@@ -249,6 +251,30 @@
       "overdue": "Frist überschritten",
       "to_inspect": "zur Inspektion",
       "marked": "markiert"
+    }
+  },
+  "email_template": {
+    "_name": "Vorlage",
+    "templates": {
+      "common": {
+        "hi": "Guten Tag,",
+        "help": "Mit dem Link in dieser E-Mail können die Pendenzen angeschaut werden. Bitte nach dem Erledigen entsprechend online markieren."
+      },
+      "unread_issues": {
+        "name": "Neue Pendenzen",
+        "subject": "Neue Pendenzen {constructionSite}",
+        "body": "{constructionSite} hat neue Pendenzen, die Ihrem Gewerk zugeordnet sind."
+      },
+      "open_issues": {
+        "name": "Offene Pendenzen",
+        "subject": "Offene Pendenzen auf {constructionSite}",
+        "body": "{constructionSite} hat noch Pendenzen offen, die Ihrem Gewerk zugeordnet sind."
+      },
+      "overdue_issues": {
+        "name": "Fristüberschreitung Pendenzen",
+        "subject": "Überfällige Pendenzen auf {constructionSite}",
+        "body": "{constructionSite} hat Pendenzen, die Ihrem Gewerk zugeordnet sind, dessen Frist überschritten wurde."
+      }
     }
   },
   "email": {

@@ -50,8 +50,8 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
     use TimeTrait;
 
     public const PURPOSE_USER_DEFINED = 1;
-    public const PURPOSE_OPEN_ISSUES = 2;
-    public const PURPOSE_UNREAD_ISSUES = 3;
+    public const PURPOSE_UNREAD_ISSUES = 2;
+    public const PURPOSE_OPEN_ISSUES = 3;
     public const PURPOSE_OVERDUE_ISSUES = 4;
 
     /**

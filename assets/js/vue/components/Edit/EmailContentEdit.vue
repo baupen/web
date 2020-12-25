@@ -5,8 +5,7 @@
         :label="$t('email.subject')"
         v-model="modelValue.subject"
         @input="emitUpdate"
-        @valid="validProperties.subject = $event"
-        :focus="true" />
+        @valid="validProperties.subject = $event" />
 
     <textarea-edit
         id="body"

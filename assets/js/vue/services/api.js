@@ -99,6 +99,10 @@ const api = {
     queryString += '&' + this._getQueryString(query)
     return this._getItem('/api/craftsmen/statistics?' + queryString)
   },
+  getEmailTemplates: function (constructionSite) {
+    const queryString = this._getConstructionSiteQuery(constructionSite)
+    return this._getHydraCollection('/api/email_templates?' + queryString)
+  },
   getIssuesSummary: function (constructionSite) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
     queryString += '&isDeleted=false'

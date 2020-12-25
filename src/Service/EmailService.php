@@ -138,7 +138,15 @@ class EmailService implements EmailServiceInterface
             ->htmlTemplate('email/craftsman_issue_reminder.html.twig')
             ->context($entity->getContext());
 
-        return $this->sendAndStoreEMail($message, $entity);
+        if (!$this->sendAndStoreEMail($message, $entity)) {
+            return false;
+        }
+
+        $craftsman->setLastEmailReceived(new \DateTime());
+        $this->manager->persist($craftsman);
+        $this->manager->flush();
+
+        return true;
     }
 
     private function createTemplatedEmailToConstructionManager(ConstructionManager $constructionManager): TemplatedEmail
