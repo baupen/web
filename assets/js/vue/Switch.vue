@@ -72,7 +72,7 @@ export default {
     postConstructionSite: function (constructionSite) {
       this.show = false
       constructionSite.constructionManagers = [this.constructionManagerIri]
-      api.post('/api/construction_sites', constructionSite, this.constructionSites, this.$t('switch.messages.success.added_construction_site'))
+      api.postConstructionSite(constructionSite, this.constructionSites, this.$t('switch.messages.success.added_construction_site'))
     },
     removeSelfFromConstructionSite: function (constructionSite) {
       const constructionManagers = constructionSite.constructionManagers.filter(cm => cm !== this.constructionManagerIri)

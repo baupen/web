@@ -18,7 +18,7 @@
             </select>
           </form-field>
 
-          <custom-checkbox-field for-id="save-as-template" :label="saveAsTemplateLabel">
+          <custom-checkbox-field for-id="save-as-template" :label="saveAslTemplateLabel">
             <input
                 class="custom-control-input" type="checkbox" id="save-as-template"
                 v-model="saveAsTemplate"
@@ -34,6 +34,8 @@
           :email-template="selectedEmailTemplate"
           :receivers="receivers"
           @update="email = $event" />
+
+      <p class="alert alert-info">{{$t('dispatch.resolve_link_is_appended')}}</p>
 
     </button-with-modal-confirm>
   </div>
@@ -57,11 +59,10 @@ export default {
     ButtonWithModalConfirm,
     EmailContentEdit
   },
-  emits: ['send'],
+  emits: ['send', 'save-template', 'create-template'],
   data () {
     return {
       email: { selfBcc: false },
-      canConfirm: true,
       selectedEmailTemplate: null,
       saveAsTemplate: false
     }
@@ -74,10 +75,6 @@ export default {
     emailTemplates: {
       type: Array,
       required: true
-    },
-    proposedEmailTemplate: {
-      type: Object,
-      required: false
     },
     disabled: {
       type: Boolean,
@@ -94,11 +91,14 @@ export default {
     sortedEmailTemplates: function () {
       return this.emailTemplates.sort((a, b) => a.purpose - b.purpose)
     },
-    saveAsTemplateLabel: function () {
+    saveAslTemplateLabel: function () {
       if (this.selectedEmailTemplate === null) {
         return this.$t('dispatch.save_as_new_template')
       }
       return this.$t('dispatch.save_template_changes')
+    },
+    canConfirm: function () {
+      return this.email !== null;
     }
   },
   methods: {
@@ -107,17 +107,19 @@ export default {
 
       if (this.saveAsTemplate) {
         if (this.selectedEmailTemplate === null) {
-          this.$emit('save-template', this.selectedEmailTemplate, this.email)
-        } else {
           this.$emit('create-template', this.email)
+        } else {
+          this.$emit('save-template', this.selectedEmailTemplate, this.email)
         }
       }
     },
     emailTemplateChanged: function () {
       if (this.selectedEmailTemplate !== null) {
-        this.email.subject = this.selectedEmailTemplate.subject
-        this.email.body = this.selectedEmailTemplate.body
-        this.email.selfBcc = this.selectedEmailTemplate.selfBcc
+        this.email = {
+          subject: this.selectedEmailTemplate.subject,
+          body: this.selectedEmailTemplate.body,
+          selfBcc: this.selectedEmailTemplate.selfBcc
+        }
       }
     }
   }

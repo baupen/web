@@ -89,9 +89,14 @@ export default {
       this.emitUpdate()
     },
     emailTemplate: function () {
-      this.email.subject = this.emailTemplate.subject
-      this.email.body = this.emailTemplate.body
-      this.email.selfBcc = this.emailTemplate.selfBcc
+      if (this.emailTemplate !== null) {
+        this.email = {
+          subject: this.emailTemplate.subject,
+          body: this.emailTemplate.body,
+          selfBcc: this.emailTemplate.selfBcc,
+        }
+        validateFields(this.fields, this.email)
+      }
     },
   },
   computed: {

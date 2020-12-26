@@ -59,7 +59,7 @@ export default {
     },
     sendEmail (queue) {
       const email = queue.pop()
-      api.postRaw('/api/emails', email)
+      api.postEmail(email)
           .then(_ => {
                 this.unsentEmails = this.unsentEmails.filter(e => e !== email)
                 const statistics = this.craftsmenStatistics.find(craftsmanStatistics => craftsmanStatistics['craftsman'] === email.receiver)
@@ -75,9 +75,14 @@ export default {
     },
     createEmailTemplate: function (email) {
       const emailTemplate = Object.assign({purpose: 1, name: email.subject, constructionSite: this.constructionSite["@id"]}, email)
-      api.post('/api/email_templates', emailTemplate, this.$t('dispatch.messages.success.email_template_saved'))
+      api.postEmailTemplate(emailTemplate, this.emailTemplates, this.$t('dispatch.messages.success.email_template_saved'))
     },
-    saveEmailTemplate: function (emailTemplate, patch) {
+    saveEmailTemplate: function (emailTemplate, email) {
+      let patch = email;
+      if (emailTemplate.purpose === 1) {
+        patch = Object.assign({ name: email.name }, patch)
+      }
+
       api.patch(emailTemplate, patch, this.$t('dispatch.messages.success.email_template_saved'))
     },
     initializeEmailTemplates () {
@@ -113,7 +118,7 @@ export default {
         constructionSite: this.constructionSite["@id"]
       }
 
-      api.post('/api/email_templates', template, this.emailTemplates)
+      api.postEmailTemplate(template, this.emailTemplates)
     }
   },
   computed: {

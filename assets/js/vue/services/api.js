@@ -81,6 +81,33 @@ const api = {
       }
     )
   },
+  _postRaw: function (collectionUrl, post, successMessage = null) {
+    return new Promise(
+      (resolve) => {
+        axios.post(collectionUrl, post)
+          .then(response => {
+            resolve(response.data)
+            if (successMessage !== null) {
+              displaySuccess(successMessage)
+            }
+          })
+      }
+    )
+  },
+  _post: function (collectionUrl, post, collection, successMessage = null) {
+    return new Promise(
+      (resolve) => {
+        axios.post(collectionUrl, post)
+          .then(response => {
+            collection.push(response.data)
+            if (successMessage !== null) {
+              displaySuccess(successMessage)
+            }
+            resolve()
+          })
+      }
+    )
+  },
   getMe: function () {
     return this._getItem('/api/me')
   },
@@ -140,32 +167,14 @@ const api = {
       }
     )
   },
-  postRaw: function (collectionUrl, post, successMessage = null) {
-    return new Promise(
-      (resolve) => {
-        axios.post(collectionUrl, post)
-          .then(response => {
-            resolve(response.data)
-            if (successMessage !== null) {
-              displaySuccess(successMessage)
-            }
-          })
-      }
-    )
+  postEmailTemplate: function (emailTemplate, collection, successMessage = null) {
+    return this._post('/api/email_templates', emailTemplate, collection, successMessage)
   },
-  post: function (collectionUrl, post, collection, successMessage = null) {
-    return new Promise(
-      (resolve) => {
-        axios.post(collectionUrl, post)
-          .then(response => {
-            collection.push(response.data)
-            if (successMessage !== null) {
-              displaySuccess(successMessage)
-            }
-            resolve()
-          })
-      }
-    )
+  postConstructionSite: function (constructionSite, collection, successMessage = null) {
+    return this._post('/api/construction_sites', constructionSite, collection, successMessage)
+  },
+  postEmail: function (email) {
+    return this._postRaw('/api/emails', email)
   }
 }
 
