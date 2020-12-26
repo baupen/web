@@ -42,14 +42,14 @@
       <td>{{ cws.craftsman.trade }}</td>
 
       <td class="border-left">
-        <number-with-tooltip color-if-nonzero="secondary" :value="cws.statistics.issueOpenCount"
-                             :tooltip-title="$t('issue.state.open')" />
+        <number-with-tooltip color-if-nonzero="danger" :value="cws.statistics.issueOverdueCount"
+                             :tooltip-title="$t('issue.state.overdue')" />
         /
         <number-with-tooltip color-if-nonzero="warning" :value="cws.statistics.issueUnreadCount"
                              :tooltip-title="$t('issue.state.unread')" />
         /
-        <number-with-tooltip color-if-nonzero="danger" :value="cws.statistics.issueOverdueCount"
-                             :tooltip-title="$t('issue.state.overdue')" />
+        <number-with-tooltip color-if-nonzero="secondary" :value="cws.statistics.issueOpenCount"
+                             :tooltip-title="$t('issue.state.open')" />
         /
         <number-with-tooltip color-if-nonzero="success" :value="cws.statistics.issueClosedCount"
                              :tooltip-title="$t('issue.state.closed')" />
