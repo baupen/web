@@ -14,7 +14,9 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
+use App\Entity\Traits\AuthenticationTrait;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\TimeTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -38,6 +40,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
+    use AuthenticationTrait;
+    use TimeTrait;
 
     /**
      * @var bool|null
@@ -142,6 +146,14 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @ORM\Column(type="simple_array", nullable=true)
      */
     private $mapIds;
+
+    /**
+     * @var DateTime|null
+     *
+     * @Groups({"filter-create"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $accessAllowedBefore;
 
     /**
      * @var ConstructionSite
@@ -317,6 +329,16 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public function setMapIds(?array $mapIds): void
     {
         $this->mapIds = $mapIds;
+    }
+
+    public function getAccessAllowedBefore(): ?DateTime
+    {
+        return $this->accessAllowedBefore;
+    }
+
+    public function setAccessAllowedBefore(?DateTime $accessAllowedBefore): void
+    {
+        $this->accessAllowedBefore = $accessAllowedBefore;
     }
 
     public function getConstructionSite(): ConstructionSite

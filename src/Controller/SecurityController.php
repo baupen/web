@@ -105,7 +105,7 @@ class SecurityController extends BaseFormController
                     $constructionManager = $existing;
                 }
 
-                $constructionManager->generateAuthenticationHash();
+                $constructionManager->setAuthenticationHash();
                 $this->fastSave($constructionManager);
 
                 if ($emailService->sendRegisterConfirmLink($constructionManager)) {
@@ -126,6 +126,7 @@ class SecurityController extends BaseFormController
      */
     public function registerConfirmAction(Request $request, string $authenticationHash, TranslatorInterface $translator, EmailServiceInterface $emailService, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
     {
+        /** @var ConstructionManager $constructionManager */
         if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $constructionManager)) {
             return $this->redirectToRoute('login');
         }
@@ -135,7 +136,7 @@ class SecurityController extends BaseFormController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form->get('password'), $constructionManager, $translator)) {
-            $constructionManager->generateAuthenticationHash();
+            $constructionManager->setAuthenticationToken();
             $this->fastSave($constructionManager);
 
             $this->loginUser($constructionManager, $authenticator, $guardHandler, $request);
@@ -183,6 +184,7 @@ class SecurityController extends BaseFormController
      */
     public function recoverConfirmAction(Request $request, $authenticationHash, TranslatorInterface $translator, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
     {
+        /** @var ConstructionManager $constructionManager */
         if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $constructionManager)) {
             return $this->redirectToRoute('login');
         }
@@ -192,7 +194,8 @@ class SecurityController extends BaseFormController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form, $constructionManager, $translator)) {
-            $constructionManager->generateAuthenticationHash();
+            $constructionManager->setAuthenticationHash();
+            $constructionManager->setAuthenticationToken();
             $this->fastSave($constructionManager);
 
             $message = $translator->trans('recover_confirm.success.password_set', [], 'security');
@@ -263,7 +266,7 @@ class SecurityController extends BaseFormController
 
     private function sendAuthenticationLink(ConstructionManager $existingConstructionManager, EmailServiceInterface $emailService, LoggerInterface $logger, TranslatorInterface $translator): void
     {
-        $existingConstructionManager->generateAuthenticationHash();
+        $existingConstructionManager->setAuthenticationHash();
         $this->fastSave($existingConstructionManager);
 
         if ($emailService->sendRecoverConfirmLink($existingConstructionManager)) {

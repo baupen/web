@@ -29,8 +29,8 @@ class CraftsmanFeedEntryDataProvider extends FeedEntryDataProvider
     protected function registerEvents(array $resources, FeedEntryAggregator $aggregator)
     {
         foreach ($resources as $craftsman) {
-            if ($craftsman->getLastOnlineVisit()) {
-                $aggregator->register($craftsman->getLastOnlineVisit(), $craftsman, FeedEntry::TYPE_CRAFTSMAN_VISITED_WEBPAGE);
+            if ($craftsman->getLastVisitOnline()) {
+                $aggregator->register($craftsman->getLastVisitOnline(), $craftsman, FeedEntry::TYPE_CRAFTSMAN_VISITED_WEBPAGE);
             }
         }
     }

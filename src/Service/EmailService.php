@@ -12,6 +12,7 @@
 namespace App\Service;
 
 use App\Entity\ConstructionManager;
+use App\Entity\Craftsman;
 use App\Entity\Email;
 use App\Service\Interfaces\EmailServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -21,6 +22,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -83,14 +85,12 @@ class EmailService implements EmailServiceInterface
 
     public function sendRegisterConfirmLink(ConstructionManager $constructionManager): bool
     {
-        $entity = Email::create(Email::TYPE_REGISTER_CONFIRM, $constructionManager);
+        $link = $this->urlGenerator->generate('register_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()]);
+        $entity = Email::create(Email::TYPE_REGISTER_CONFIRM, $constructionManager, $link);
         $subject = $this->translator->trans('register_confirm.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
-        $message = (new TemplatedEmail())
+        $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
             ->subject($subject)
-            ->from($this->mailerFromEmail)
-            ->to($constructionManager->getEmail())
-            ->replyTo($this->mailerFromEmail)
             ->textTemplate('email/register_confirm.txt.twig')
             ->htmlTemplate('email/register_confirm.html.twig')
             ->context($entity->getContext());
@@ -100,14 +100,12 @@ class EmailService implements EmailServiceInterface
 
     public function sendRecoverConfirmLink(ConstructionManager $constructionManager): bool
     {
-        $entity = Email::create(Email::TYPE_RECOVER_CONFIRM, $constructionManager);
+        $link = $this->urlGenerator->generate('recover_confirm', ['authenticationHash' => $constructionManager->getAuthenticationHash()]);
+        $entity = Email::create(Email::TYPE_RECOVER_CONFIRM, $constructionManager, $link);
         $subject = $this->translator->trans('recover_confirm.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
-        $message = (new TemplatedEmail())
+        $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
             ->subject($subject)
-            ->from($this->mailerFromEmail)
-            ->to($constructionManager->getEmail())
-            ->replyTo($this->mailerFromEmail)
             ->textTemplate('email/recover_confirm.txt.twig')
             ->htmlTemplate('email/recover_confirm.html.twig')
             ->context($entity->getContext());
@@ -120,16 +118,64 @@ class EmailService implements EmailServiceInterface
         $entity = Email::create(Email::TYPE_APP_INVITATION, $constructionManager);
         $subject = $this->translator->trans('app_invitation.subject', ['%page%' => $this->getCurrentPage()], 'email');
 
-        $message = (new TemplatedEmail())
+        $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
             ->subject($subject)
-            ->from($this->mailerFromEmail)
-            ->to($constructionManager->getEmail())
-            ->replyTo($this->mailerFromEmail)
             ->textTemplate('email/app_invitation.txt.twig')
             ->htmlTemplate('email/app_invitation.html.twig')
             ->context($entity->getContext());
 
         return $this->sendAndStoreEMail($message, $entity);
+    }
+
+    public function sendCraftsmanIssueReminder(ConstructionManager $constructionManager, Craftsman $craftsman, string $subject, string $body, bool $constructionManagerInBCC): bool
+    {
+        $link = $this->urlGenerator->generate('public_resolve', ['token' => $craftsman->getAuthenticationToken()]);
+        $entity = Email::create(Email::TYPE_CRAFTSMAN_ISSUE_REMINDER, $constructionManager, $link, $body);
+
+        $message = $this->createTemplatedEmailToCraftsman($constructionManager, $craftsman, $constructionManagerInBCC)
+            ->subject($subject)
+            ->textTemplate('email/craftsman_issue_reminder.txt.twig')
+            ->htmlTemplate('email/craftsman_issue_reminder.html.twig')
+            ->context($entity->getContext());
+
+        if (!$this->sendAndStoreEMail($message, $entity)) {
+            return false;
+        }
+
+        $craftsman->setLastEmailReceived(new \DateTime());
+        $this->manager->persist($craftsman);
+        $this->manager->flush();
+
+        return true;
+    }
+
+    private function createTemplatedEmailToConstructionManager(ConstructionManager $constructionManager): TemplatedEmail
+    {
+        $templatedEmail = new TemplatedEmail();
+
+        $templatedEmail->from($this->mailerFromEmail)
+            ->to(new Address($constructionManager->getEmail(), $constructionManager->getName()))
+            ->replyTo($this->mailerFromEmail);
+
+        return $templatedEmail;
+    }
+
+    private function createTemplatedEmailToCraftsman(ConstructionManager $constructionManager, Craftsman $craftsman, bool $constructionManagerInBCC): TemplatedEmail
+    {
+        $templatedEmail = new TemplatedEmail();
+
+        $constructionManagerAddress = new Address($constructionManager->getEmail(), $constructionManager->getName());
+        $templatedEmail->from($this->mailerFromEmail)
+            ->to(new Address($craftsman->getEmail(), $craftsman->getContactName()))
+            ->cc(...$craftsman->getEmailCCs())
+            ->returnPath($constructionManagerAddress)
+            ->replyTo($constructionManagerAddress);
+
+        if ($constructionManagerInBCC) {
+            $templatedEmail->bcc($constructionManagerAddress);
+        }
+
+        return $templatedEmail;
     }
 
     private function getCurrentPage()

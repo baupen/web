@@ -1,0 +1,40 @@
+<?php
+
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace App\Entity\Traits;
+
+use App\Helper\HashHelper;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
+trait AuthenticationTrait
+{
+    /**
+     * @var string
+     *
+     * @Groups({"construction-manager-read-self", "filter-read"})
+     * @ORM\Column(type="text")
+     */
+    private $authenticationToken;
+
+    public function getAuthenticationToken(): string
+    {
+        return $this->authenticationToken;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function setAuthenticationToken(): void
+    {
+        $this->authenticationToken = HashHelper::getHash();
+    }
+}

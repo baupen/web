@@ -13,7 +13,7 @@ namespace App\Security;
 
 namespace App\Security;
 
-use App\Entity\AuthenticationToken;
+use App\Entity\Craftsman;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,7 +40,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function supports(Request $request)
     {
-        return $request->headers->has('X-AUTH-TOKEN');
+        return $request->headers->has('X-AUTHENTICATION');
     }
 
     /**
@@ -49,7 +49,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function getCredentials(Request $request)
     {
-        return $request->headers->get('X-AUTH-TOKEN');
+        return $request->headers->get('X-AUTHENTICATION');
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
@@ -66,9 +66,10 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
             return null;
         }
 
-        $user->setLastUsedAt();
-        $this->em->persist($user);
-        $this->em->flush();
+        if (($craftsman = $user->getCraftsman()) instanceof Craftsman) {
+            $craftsman->setLastVisitOnline(new \DateTime());
+            $this->em->persist($craftsman);
+        }
 
         return $user;
     }
@@ -76,10 +77,6 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     public function checkCredentials($credentials, UserInterface $user)
     {
         if (!$user instanceof AuthenticationToken) {
-            throw new AuthenticationException();
-        }
-
-        if (null !== $user->getAccessAllowedBefore() && $user->getAccessAllowedBefore() < new \DateTime()) {
             throw new AuthenticationException();
         }
 

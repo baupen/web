@@ -11,7 +11,7 @@
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\BaseDoctrineController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/email")
  */
-class EmailController extends BaseController
+class EmailController extends BaseDoctrineController
 {
     /**
      * @Route("/{identifier}", name="email")
@@ -34,6 +34,9 @@ class EmailController extends BaseController
         if (null === $email) {
             throw new NotFoundHttpException();
         }
+
+        $email->markRead();
+        $this->fastSave($email);
 
         return $this->render('email/_view_online_base.html.twig', $email->getContext());
     }

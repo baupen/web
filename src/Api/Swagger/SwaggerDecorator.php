@@ -24,12 +24,14 @@ final class SwaggerDecorator implements NormalizerInterface
 
     public function normalize($object, $format = null, array $context = [])
     {
+        /** @var array $docs */
         $docs = $this->decorated->normalize($object, $format, $context);
 
         $this->setReportResponse($docs);
         $this->setFeedEntryResponses($docs);
         $this->setSummaryResponse($docs);
         $this->addFilePaths($docs);
+        $this->configureEmailEndpoint($docs);
 
         return $docs;
     }
@@ -203,5 +205,16 @@ final class SwaggerDecorator implements NormalizerInterface
         ];
 
         return $docs;
+    }
+
+    private function configureEmailEndpoint(array &$docs)
+    {
+        // remove GET method
+        unset($docs['paths']['/api/emails/{id}']['get']);
+
+        $docs['paths']['/api/emails']['post']['responses'] = [
+            '200' => ['description' => 'E-Mail sent'],
+            '503' => ['description' => 'E-Mail server unreachable'],
+        ];
     }
 }

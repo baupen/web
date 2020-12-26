@@ -30,6 +30,7 @@ class Email extends BaseEntity
     public const TYPE_REGISTER_CONFIRM = 1;
     public const TYPE_RECOVER_CONFIRM = 2;
     public const TYPE_APP_INVITATION = 3;
+    public const TYPE_CRAFTSMAN_ISSUE_REMINDER = 4;
 
     /**
      * @var string
@@ -37,6 +38,20 @@ class Email extends BaseEntity
      * @ORM\Column(type="guid")
      */
     private $identifier;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $link;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $body;
 
     /**
      * @var int
@@ -50,7 +65,7 @@ class Email extends BaseEntity
      *
      * @ORM\Column(type="datetime")
      */
-    private $sentDateTime;
+    private $sentAt;
 
     /**
      * @var ConstructionManager
@@ -66,14 +81,16 @@ class Email extends BaseEntity
      */
     private $readAt;
 
-    public static function create(int $emailType, ConstructionManager $sentBy)
+    public static function create(int $emailType, ConstructionManager $sentBy, ?string $link = null, ?string $body = null)
     {
         $email = new Email();
 
         $email->identifier = UuidV4::v4();
         $email->type = $emailType;
+        $email->link = $link;
+        $email->body = $body;
         $email->sentBy = $sentBy;
-        $email->sentDateTime = new \DateTime();
+        $email->sentAt = new \DateTime();
 
         return $email;
     }
@@ -93,9 +110,9 @@ class Email extends BaseEntity
         return $this->type;
     }
 
-    public function getSentDateTime(): DateTime
+    public function getSentAt(): DateTime
     {
-        return $this->sentDateTime;
+        return $this->sentAt;
     }
 
     public function getSentBy(): ConstructionManager
@@ -110,6 +127,6 @@ class Email extends BaseEntity
 
     public function getContext(): array
     {
-        return ['sentBy' => $this->sentBy, 'identifier' => $this->identifier, 'emailType' => $this->type];
+        return ['sentBy' => $this->sentBy, 'identifier' => $this->identifier, 'emailType' => $this->type, 'body' => $this->body, 'link' => $this->link];
     }
 }

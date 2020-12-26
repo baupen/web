@@ -62,3 +62,13 @@ body {
 .bg-light-gray {
   background: $primary-200;
 }
+
+.clickable {
+  cursor: pointer;
+}
+
+input:required,
+textarea:required,
+select:required {
+  box-shadow: none;
+}

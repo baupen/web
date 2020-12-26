@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Noty from 'noty'
+import { displaySuccess, displayError } from './notifiers'
 
 const api = {
   setupErrorNotifications: function (translator) {
@@ -8,24 +8,25 @@ const api = {
         return response
       },
       error => {
+        if (error === 'Request aborted') {
+          // hide aborted errors (happens when navigating rapidly in firefox)
+          return
+        }
+
         console.log(error)
 
         let errorText = error
         if (error.response) {
           const response = error.response
-          if (response.data) {
-            const data = response.data
-            errorText = data['hydra:title'] + ': ' + data['hydra:description']
+          if (response.data['hydra:title'] && response.data['hydra:description']) {
+            errorText = response.data['hydra:title'] + ': ' + response.data['hydra:description']
           } else {
             errorText = response.status + ': ' + response.statusText
           }
         }
 
-        new Noty({
-          text: translator('messages.danger.request_failed') + ' (' + errorText + ')',
-          theme: 'bootstrap-v4',
-          type: 'error'
-        }).show()
+        const errorMessage = translator('messages.danger.request_failed') + ' (' + errorText + ')'
+        displayError(errorMessage).show()
 
         return Promise.reject(error)
       }
@@ -45,6 +46,16 @@ const api = {
   },
   _getConstructionSiteQuery: function (constructionSite) {
     return 'constructionSite=' + this._getIdFromIri(constructionSite)
+  },
+  _getQueryString: function (query) {
+    const queryList = []
+    for (const entry in query) {
+      if (Object.prototype.hasOwnProperty.call(query, entry)) {
+        queryList.push(entry + '=' + query[entry])
+      }
+    }
+
+    return queryList.join('&')
   },
   _getIdFromIri: function (object) {
     const iri = object['@id']
@@ -70,6 +81,33 @@ const api = {
       }
     )
   },
+  _postRaw: function (collectionUrl, post, successMessage = null) {
+    return new Promise(
+      (resolve) => {
+        axios.post(collectionUrl, post)
+          .then(response => {
+            resolve(response.data)
+            if (successMessage !== null) {
+              displaySuccess(successMessage)
+            }
+          })
+      }
+    )
+  },
+  _post: function (collectionUrl, post, collection, successMessage = null) {
+    return new Promise(
+      (resolve) => {
+        axios.post(collectionUrl, post)
+          .then(response => {
+            collection.push(response.data)
+            if (successMessage !== null) {
+              displaySuccess(successMessage)
+            }
+            resolve()
+          })
+      }
+    )
+  },
   getMe: function () {
     return this._getItem('/api/me')
   },
@@ -83,13 +121,24 @@ const api = {
   getConstructionSites: function () {
     return this._getHydraCollection('/api/construction_sites')
   },
-  getCraftsmen: function (constructionSite) {
-    const constructionSiteQuery = this._getConstructionSiteQuery(constructionSite)
-    return this._getHydraCollection('/api/craftsmen?' + constructionSiteQuery)
+  getCraftsmen: function (constructionSite, query = {}) {
+    let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&' + this._getQueryString(query)
+    return this._getHydraCollection('/api/craftsmen?' + queryString)
+  },
+  getCraftsmenStatistics: function (constructionSite, query = {}) {
+    let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&' + this._getQueryString(query)
+    return this._getItem('/api/craftsmen/statistics?' + queryString)
+  },
+  getEmailTemplates: function (constructionSite) {
+    const queryString = this._getConstructionSiteQuery(constructionSite)
+    return this._getHydraCollection('/api/email_templates?' + queryString)
   },
   getIssuesSummary: function (constructionSite) {
-    const constructionSiteQuery = this._getConstructionSiteQuery(constructionSite)
-    return this._getItem('/api/issues/summary?' + constructionSiteQuery)
+    let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&isDeleted=false'
+    return this._getItem('/api/issues/summary?' + queryString)
   },
   getCraftsmenFeedEntries: function (constructionSite) {
     const queryString = '?constructionSite=' + this._getIdFromIri(constructionSite)
@@ -104,27 +153,28 @@ const api = {
     queryString += '&lastChangedAt[after]=' + lastChangedAfter.toISOString()
     return this._getItem('/api/issues/feed_entries' + queryString)
   },
-  patch: function (instance, patch) {
+  patch: function (instance, patch, successMessage = null) {
     return new Promise(
       (resolve) => {
         axios.patch(instance['@id'], patch, { headers: { 'Content-Type': 'application/merge-patch+json' } })
           .then(response => {
             this._writeAllProperties(response.data, instance)
             resolve()
+            if (successMessage !== null) {
+              displaySuccess(successMessage)
+            }
           })
       }
     )
   },
-  post: function (collectionUrl, post, collection) {
-    return new Promise(
-      (resolve) => {
-        axios.post(collectionUrl, post)
-          .then(response => {
-            collection.push(response.data)
-            resolve()
-          })
-      }
-    )
+  postEmailTemplate: function (emailTemplate, collection, successMessage = null) {
+    return this._post('/api/email_templates', emailTemplate, collection, successMessage)
+  },
+  postConstructionSite: function (constructionSite, collection, successMessage = null) {
+    return this._post('/api/construction_sites', constructionSite, collection, successMessage)
+  },
+  postEmail: function (email) {
+    return this._postRaw('/api/emails', email)
   }
 }
 

@@ -19,6 +19,7 @@ use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
+use App\Entity\Traits\AuthenticationTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
@@ -38,6 +39,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "get_feed_entries"={
  *          "method"="GET",
  *          "path"="/craftsmen/feed_entries"
+ *      },
+ *      "get_statistics"={
+ *          "method"="GET",
+ *          "path"="/craftsmen/statistics"
  *      }
  *      },
  *     itemOperations={
@@ -61,6 +66,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
 {
     use IdTrait;
     use TimeTrait;
+    use AuthenticationTrait;
     use SoftDeleteTrait;
 
     /**
@@ -100,6 +106,14 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     private $email;
 
     /**
+     * @var string[]
+     *
+     * @Groups({"craftsman-read", "craftsman-write"})
+     * @ORM\Column(type="simple_array", nullable=true)
+     */
+    private $emailCCs;
+
+    /**
      * @var ConstructionSite
      *
      * @Assert\NotBlank
@@ -127,14 +141,14 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $lastEmailSent;
+    private $lastEmailReceived;
 
     /**
      * @var DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $lastOnlineVisit;
+    private $lastVisitOnline;
 
     /**
      * Craftsman constructor.
@@ -185,6 +199,22 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
         $this->email = $email;
     }
 
+    /**
+     * @return string[]
+     */
+    public function getEmailCCs(): array
+    {
+        return $this->emailCCs;
+    }
+
+    /**
+     * @param string[] $emailCCs
+     */
+    public function setEmailCCs(array $emailCCs): void
+    {
+        $this->emailCCs = $emailCCs;
+    }
+
     public function isConstructionSiteSet(): bool
     {
         return null !== $this->constructionSite;
@@ -221,24 +251,24 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
         return $this->getCompany().' ('.$this->getContactName().')';
     }
 
-    public function getLastEmailSent(): ?DateTime
+    public function getLastEmailReceived(): ?DateTime
     {
-        return $this->lastEmailSent;
+        return $this->lastEmailReceived;
     }
 
-    public function setLastEmailSent(?DateTime $lastEmailSent): void
+    public function setLastEmailReceived(?DateTime $lastEmailReceived): void
     {
-        $this->lastEmailSent = $lastEmailSent;
+        $this->lastEmailReceived = $lastEmailReceived;
     }
 
-    public function getLastOnlineVisit(): ?DateTime
+    public function getLastVisitOnline(): ?DateTime
     {
-        return $this->lastOnlineVisit;
+        return $this->lastVisitOnline;
     }
 
-    public function setLastOnlineVisit(?DateTime $lastOnlineVisit): void
+    public function setLastVisitOnline(?DateTime $lastVisitOnline): void
     {
-        $this->lastOnlineVisit = $lastOnlineVisit;
+        $this->lastVisitOnline = $lastVisitOnline;
     }
 
     /**
@@ -246,9 +276,9 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
      */
     public function getLastAction()
     {
-        $lastAction = $this->getLastOnlineVisit();
-        if (null === $lastAction || $lastAction < $this->getLastEmailSent()) {
-            return $this->getLastEmailSent();
+        $lastAction = $this->getLastVisitOnline();
+        if (null === $lastAction || $lastAction < $this->getLastEmailReceived()) {
+            return $this->getLastEmailReceived();
         }
 
         return $lastAction;

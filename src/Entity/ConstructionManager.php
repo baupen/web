@@ -15,6 +15,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Entity\Base\BaseEntity;
+use App\Entity\Traits\AuthenticationTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use App\Entity\Traits\UserTrait;
@@ -38,6 +39,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
 {
     use IdTrait;
     use TimeTrait;
+    use AuthenticationTrait;
     use UserTrait;
 
     // can use any features & impersonate users
@@ -221,10 +223,5 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public function setIsExternalAccount(bool $isExternalAccount): void
     {
         $this->isExternalAccount = $isExternalAccount;
-    }
-
-    public function __toString()
-    {
-        return 'hi';
     }
 }

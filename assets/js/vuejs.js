@@ -27,7 +27,7 @@ import it from './localization/it.json'
 
 import Switch from './vue/Switch.vue'
 import Dashboard from './vue/Dashboard.vue'
-import Spinner from './vue/components/Spinner.vue'
+import Dispatch from './vue/Dispatch'
 
 // settings
 const locale = document.documentElement.lang.substr(0, 2)
@@ -51,7 +51,10 @@ moment.locale(locale)
 // configure i18n
 const i18n = createI18n({
   locale,
-  messages: { de, it }
+  messages: {
+    de,
+    it
+  }
 })
 
 // configure vue
@@ -63,17 +66,24 @@ function createVue (app) {
   vue.use(i18n)
   vue.use(VueFlatPickr)
   vue.component('FontAwesomeIcon', FontAwesomeIcon)
-  vue.component('Spinner', Spinner)
 
   return vue
 }
 
 // boot apps
 if (document.getElementById('switch') != null) {
-  createVue(Switch).mount('#switch')
+  createVue(Switch)
+    .mount('#switch')
 }
 
 // boot apps
 if (document.getElementById('dashboard') != null) {
-  createVue(Dashboard).mount('#dashboard')
+  createVue(Dashboard)
+    .mount('#dashboard')
+}
+
+// boot apps
+if (document.getElementById('dispatch') != null) {
+  createVue(Dispatch)
+    .mount('#dispatch')
 }

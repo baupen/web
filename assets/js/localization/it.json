@@ -63,13 +63,10 @@
       "filter_placeholder": "Cercare operaio\/funzione..."
     },
     "actions": {
-      "send_emails": "Inviare email",
-      "send_emails_to_all": "Invia E-mail a tutti",
-      "send_emails_to_selected": "Invia E-mail a selezionati"
+      "send_emails": "Inviare"
     },
     "messages": {
-      "emails_sent": "Email inviate",
-      "skipped_emails": "{count} operai sono stati esclusi nell’invio, siccome non hanno (più) pendenze aperte."
+      "emails_sent": "Email inviate"
     }
   },
   "view_resolve": {
@@ -198,11 +195,11 @@
     "trade": "Settore",
     "contact_name": "Persona di contatto",
     "email": "E-mail",
-    "company": "Operaio",
+    "company": "Azienda",
     "not_responded_issues_count": "Pendenze non risposte",
     "not_read_issues_count": "Pendenze non lette",
     "open_issues_count": "Pendenze aperte",
-    "next_response_limit": "Prossimo termine",
+    "next_deadline": "Prossimo termine",
     "last_email_sent": "Ultima email inviata",
     "last_online_visit": "Ultima visita alla pagina"
   },
@@ -212,7 +209,6 @@
     "name": "Nome",
     "open_issues_count": "Pendenze aperte",
     "closed_issues_count": "Pendenze risolte",
-    "next_response_limit": "Prossimo limite",
     "parent": "Attribuzione"
   },
   "issue": {
@@ -232,6 +228,7 @@
 
       "open": "aperte",
       "read": "letto",
+      "unread": "non letto",
       "overdue": "Termine superato",
       "to_inspect": "da ispezionare",
       "marked": "contrassegnate"

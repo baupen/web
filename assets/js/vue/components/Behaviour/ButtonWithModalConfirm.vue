@@ -1,0 +1,74 @@
+<template>
+  <div>
+    <button @click="show = !show" :disabled="buttonDisabled" class="btn btn-primary">{{ title }}</button>
+    <transition name="fade">
+      <modal v-if="show" :size="modalSize" @hide="show = false" :title="title" @keydown.esc="show = false">
+        <template v-slot:modal-body>
+          <slot></slot>
+        </template>
+        <template v-slot:modal-footer>
+          <button type="submit" :disabled="!canConfirm" @click="confirm" class="btn btn-primary">
+            {{ confirmTitle ?? title }}
+          </button>
+        </template>
+      </modal>
+    </transition>
+  </div>
+</template>
+
+<script>
+
+import Modal from "./Modal";
+
+export default {
+  emits: ['confirm'],
+  components: {Modal},
+  data() {
+    return {
+      show: false
+    }
+  },
+  props: {
+    title: {
+      type: String,
+      required: true
+    },
+    buttonDisabled: {
+      type: Boolean,
+      default: false
+    },
+    confirmTitle: {
+      type: String,
+      default: null
+    },
+    canConfirm: {
+      type: Boolean,
+      default: true
+    },
+    modalSize: {
+      type: String,
+      default: null
+    }
+  },
+  methods: {
+    confirm: function () {
+      this.$emit('confirm');
+      this.show = false;
+    }
+  }
+}
+</script>
+
+
+<style scoped="true">
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+</style>

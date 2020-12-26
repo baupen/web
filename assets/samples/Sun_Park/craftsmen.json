@@ -3,90 +3,90 @@
     "company": "Bauarbeiten AG",
     "contactName": "Flurina Rausch",
     "trade": "Hochbauzeichner",
-    "email": "fr@bauarbeiten.ch"
+    "email": "fr@bauarbeiten.invalid"
   },
   {
     "company": "Bauarbeiten AG",
     "contactName": "Dominic Metzer",
     "trade": "Bauleitung",
-    "email": "mmi@bauarbeiten.ch"
+    "email": "mmi@bauarbeiten.invalid"
   },
   {
     "company": "Bauarbeiten AG",
     "contactName": "Hans-Peter Stoffmann",
     "trade": "Projektleitung",
-    "email": "hph@bauarbeiten.ch"
+    "email": "hph@bauarbeiten.invalid"
   },
   {
     "company": "Davoser Ingenieure AG (DIAG)",
     "contactName": "Paul Fahrer",
     "trade": "Bauingenieur",
-    "email": "schweighauser@deter.ch"
+    "email": "schweighauser@deter.invalid"
   },
   {
     "company": "Wildhaber Elektroplanung AG",
     "contactName": "René Winter",
     "trade": "Elektroingenieur",
-    "email": "info@elektroplanung.ch"
+    "email": "info@elektroplanung.invalid"
   },
   {
     "company": "Remo Collenberg",
     "contactName": "Remo Collenberg",
     "trade": "Heizungsingeneiur",
-    "email": "info2g@remocollenberg.ch"
+    "email": "info2g@remocollenberg.invalid"
   },
   {
     "company": "Marco Felix AG",
     "contactName": "Sandro Felix",
     "trade": "Sanitäringenieur",
-    "email": "s.darms@felix.ch"
+    "email": "s.darms@felix.invalid"
   },
   {
     "company": "Kuster + Partner AG",
     "contactName": "Thomas Partner",
     "trade": "Bauphysiker",
-    "email": "chur@kusterp.ch"
+    "email": "chur@kusterp.invalid"
   },
   {
     "company": "Toneatti AG",
     "contactName": "Patrick Tonetti",
     "trade": "Baumeisterarbeiten",
-    "email": "p.hager@patrick.ch"
+    "email": "p.hager@patrick.invalid"
   },
   {
     "company": "Elekto Rhyner AG",
     "contactName": "Celso Philop",
     "trade": "Elektroinstallationen",
-    "email": "cd@adac.ch"
+    "email": "cd@adac.invalid"
   },
   {
     "company": "Kunz AG",
     "contactName": "Alek Kunz",
     "trade": "Heizungsanlagen",
-    "email": "aleks@kunz.ch"
+    "email": "aleks@kunz.invalid"
   },
   {
     "company": "Kunz AG",
     "contactName": "Antonio Casanova",
     "trade": "Lüftungsanlagen",
-    "email": "mario@kuntz.ch"
+    "email": "mario@kuntz.invalid"
   },
   {
     "company": "Kunz AG",
     "contactName": "Rico Müller",
     "trade": "Sanitäranlagen",
-    "email": "rico@kuntz.ch"
+    "email": "rico@kuntz.invalid"
   },
   {
     "company": "Bernhard Holzbau AG",
     "contactName": "Christine Bernhard",
     "trade": "Kücheneinrichtungen",
-    "email": "jb@bernhardholz.ch"
+    "email": "jb@bernhardholz.invalid"
   },
   {
     "company": "Schindler Aufzüge AG",
     "contactName": "Remo Schindler",
     "trade": "Transportanlagen \/ Aufzüge",
-    "email": "remo.schindler@ch.schindler.com"
+    "email": "remo.schindler@ch.schindler.invalid"
   }
 ]

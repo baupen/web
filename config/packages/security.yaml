@@ -9,9 +9,7 @@ security:
                 class: 'App\Entity\ConstructionManager'
                 property: 'email'
         api_tokens:
-            entity:
-                class: 'App\Entity\AuthenticationToken'
-                property: 'token'
+            id: App\Security\AuthenticationTokenUserProvider
 
     encoders:
         App\Entity\ConstructionManager:
@@ -62,6 +60,9 @@ security:
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/email, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/help, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        - { path: '^/resolve/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: '^/filtered/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
 
         - { path: '^/construction_sites/[a-zA-Z0-9\-]{36}/image/[a-zA-Z0-9\-]{36}/.+', role: ROLE_FILE_DOWNLOAD }
         - { path: '^/issues/[a-zA-Z0-9\-]{36}/image/[a-zA-Z0-9\-]{36}/.+', role: ROLE_FILE_DOWNLOAD }

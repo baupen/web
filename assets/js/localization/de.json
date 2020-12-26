@@ -4,6 +4,7 @@
     "mine_help": "Diese Baustellen werden auch in der App angezeigt.",
     "all": "Alle erfassten Baustellen",
     "all_help": "Aktivieren Sie Baustellen um auf diese zuzugreifen.",
+    "similar_already_existing_construction_sites": "Ähnliche bereits existierende Baustellen",
     "actions": {
       "create_construction_site": "Neue Baustelle erfassen",
       "enter_construction_site": "Zur Baustelle"
@@ -11,6 +12,11 @@
     "messages": {
       "info": {
         "activate_construction_site": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen."
+      },
+      "success": {
+        "added_construction_site": "Die Baustelle wurde hinzugefügt.",
+        "removed_self": "Sie wurden von der Baustelle entfernt.",
+        "added_self": "Sie wurden der Baustelle hinzugefügt."
       }
     }
   },
@@ -61,18 +67,27 @@
     }
   },
   "dispatch": {
-    "table": {
+    "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die offenen Pendenzen angeschaut und erledigt werden.",
+    "save_template_changes": "Änderungen an der Vorlage speichern",
+    "save_as_new_template": "Als neue Vorlage speichern",
+    "no_template": "Keine Vorlage",
+    "craftsmen_table": {
       "no_entries": "Keine Unternehmer erfasst",
-      "filter_placeholder": "Unternehmer\/Gewerk suchen..."
+      "filter_placeholder": "Unternehmer\/Gewerk suchen...",
+      "last_activity": "Letzte Aktivität",
+      "with_open_issues": "mit offenen Pendenzen",
+      "with_unread_issues": "mit ungelesenen Pendenzen",
+      "with_overdue_issues": "mit überfälligen Pendenzen"
     },
     "actions": {
-      "send_emails": "E-Mails versenden",
-      "send_emails_to_all": "E-Mails an alle versenden",
-      "send_emails_to_selected": "E-Mails an ausgewählte versenden"
+      "compose_email": "E-Mail verfassen",
+      "send_emails": "E-Mail versenden | {count} E-Mails versenden"
     },
     "messages": {
-      "emails_sent": "E-Mails versandt",
-      "skipped_emails": "{count} Unternehmer wurden beim Versand übersprungen, da diese keine offenen Pendenzen (mehr) haben."
+      "success": {
+        "emails_sent": "E-Mails versandt",
+        "email_template_saved": "Vorlage gespeichert"
+      }
     }
   },
   "view_resolve": {
@@ -201,13 +216,14 @@
     "trade": "Gewerk",
     "contact_name": "Kontaktperson",
     "email": "E-Mail",
-    "company": "Unternehmer",
+    "company": "Firma",
     "not_responded_issues_count": "Nicht erledigte Pendenzen",
     "not_read_issues_count": "Ungelesene Pendenzen",
     "open_issues_count": "Offene Pendenzen",
-    "next_response_limit": "Nächste Frist",
-    "last_email_sent": "Letzte versandte E-Mail",
-    "last_online_visit": "Letzter Webseitenbesuch"
+    "next_deadline": "Nächste Frist",
+    "received_email": "E-Mail empfangen",
+    "visited_webpage": "Webseite besucht",
+    "resolved_issue": "Pendenz erledigt"
   },
   "map": {
     "_name": "Bauplan",
@@ -215,7 +231,6 @@
     "name": "Name",
     "open_issues_count": "Offene Pendenzen",
     "closed_issues_count": "Geschlossene Pendenzen",
-    "next_response_limit": "Nächste Frist",
     "parent": "Zuordnung"
   },
   "issue": {
@@ -234,10 +249,40 @@
       "closed": "geschlossen",
       "open": "offen",
       "read": "gelesen",
+      "unread": "ungelesen",
       "overdue": "Frist überschritten",
       "to_inspect": "zur Inspektion",
       "marked": "markiert"
     }
+  },
+  "email_template": {
+    "_name": "Vorlage",
+    "templates": {
+      "common": {
+        "hi": "Guten Tag,",
+        "help": "Mit dem Link in dieser E-Mail können die Pendenzen angeschaut werden. Bitte nach dem Erledigen entsprechend online markieren."
+      },
+      "unread_issues": {
+        "name": "Neue Pendenzen",
+        "subject": "Neue Pendenzen {constructionSite}",
+        "body": "{constructionSite} hat neue Pendenzen, die Ihrem Gewerk zugeordnet sind."
+      },
+      "open_issues": {
+        "name": "Offene Pendenzen",
+        "subject": "Offene Pendenzen auf {constructionSite}",
+        "body": "{constructionSite} hat noch Pendenzen offen, die Ihrem Gewerk zugeordnet sind."
+      },
+      "overdue_issues": {
+        "name": "Fristüberschreitung Pendenzen",
+        "subject": "Überfällige Pendenzen auf {constructionSite}",
+        "body": "{constructionSite} hat Pendenzen, die Ihrem Gewerk zugeordnet sind, dessen Frist überschritten wurde."
+      }
+    }
+  },
+  "email": {
+    "to": "An",
+    "subject": "Betreff",
+    "self_bcc": "jeweils mit BCC Kopie an mich"
   },
   "actions": {
     "save": "speichern",
@@ -265,6 +310,7 @@
     "more": "mehr",
     "less": "weniger",
     "today": "heute",
-    "yesterday": "gestern"
+    "yesterday": "gestern",
+    "count": "Anzahl"
   }
 }

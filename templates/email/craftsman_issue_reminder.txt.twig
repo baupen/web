@@ -1,0 +1,9 @@
+{% extends "email/_base.txt.twig" %}
+
+{% trans_default_domain "email" %}
+
+{% block body %}
+{{ body }}
+
+{{ "craftsman_issue_reminder.view_issues_link"|trans }}: {{ absolute_url(link) }}
+{% endblock %}

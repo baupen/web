@@ -1,0 +1,41 @@
+<template>
+  <span v-if="value" ref="value" data-toggle="tooltip" :title="momentDateTime.format('LL')">
+    {{ fromNowDayGranularity }}
+  </span>
+  <span v-else>-</span>
+</template>
+
+<script>
+
+import moment from 'moment'
+
+export default {
+  props: {
+    value: {
+      type: String,
+      default: null
+    }
+  },
+  computed: {
+    momentDateTime: function () {
+      return moment(this.value);
+    },
+    fromNowDayGranularity: function () {
+      const today = moment().startOf('day');
+      if (today <= this.momentDateTime) {
+        return this.$t("view.today");
+      }
+      const yesterday = today.subtract(1, 'days');
+      if (yesterday <= this.momentDateTime) {
+        return this.$t("view.yesterday");
+      }
+      return moment(this.value).fromNow()
+    }
+  },
+  mounted() {
+    if (this.value) {
+      $(this.$refs.value).tooltip();
+    }
+  }
+}
+</script>
