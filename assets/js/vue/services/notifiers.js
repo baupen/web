@@ -7,14 +7,16 @@ Noty.overrideDefaults({
 
 const displaySuccess = function (successMessage) {
   new Noty({
-    text: successMessage
+    text: successMessage,
+    timeout: 1000
   }).show()
 }
 
 const displayError = function (errorMessage) {
   new Noty({
     text: errorMessage,
-    type: 'error'
+    type: 'error',
+    timeout: false
   }).show()
 }
 

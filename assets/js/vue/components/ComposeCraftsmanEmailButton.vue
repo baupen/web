@@ -8,65 +8,52 @@
           {{ $t('email_template._name') }}
         </div>
         <div class="col">
-          <select v-model="selectedEmailTemplate" @change="emailTemplateChanged" class="custom-select">
-            <option :value="null">Keine Vorlage</option>
-            <option :value="'new'">Neue Vorlage erstellen</option>
-            <option disabled></option>
-            <option v-for="emailTemplate in sortedEmailTemplates" :value="emailTemplate" :key="emailTemplate['@id']">
-              {{ emailTemplate.name }}
-            </option>
-          </select>
+          <form-field>
+            <select v-model="selectedEmailTemplate" @change="emailTemplateChanged" class="custom-select">
+              <option :value="null">{{ $t('dispatch.no_template') }}</option>
+              <option disabled></option>
+              <option v-for="emailTemplate in sortedEmailTemplates" :value="emailTemplate" :key="emailTemplate['@id']">
+                {{ emailTemplate.name }}
+              </option>
+            </select>
+          </form-field>
 
-          <boolean-edit v-if="selectedEmailTemplate !== null && selectedEmailTemplate !== 'new'" class="mb-0 mt-2"
-                        id="save-template-changes"
-                        :label="$t('dispatch.save_template_changes')"
-                        v-model="saveTemplateChanges" />
+          <custom-checkbox-field for-id="save-as-template" :label="saveAsTemplateLabel">
+            <input
+                class="custom-control-input" type="checkbox" id="save-as-template"
+                v-model="saveAsTemplate"
+                :true-value="true"
+                :false-value="false">
+          </custom-checkbox-field>
         </div>
       </div>
 
       <hr />
 
-      <div class="row">
-        <div class="col-2">
-          {{ $t('email.to') }}
-        </div>
-        <div class="col">
-          {{ receivers.join(', ') }}
+      <craftsman-email-edit
+          :email-template="selectedEmailTemplate"
+          :receivers="receivers"
+          @update="email = $event" />
 
-          <boolean-edit class="mb-0 mt-2"
-                        id="self-bcc"
-                        :label="$t('email.self_bcc')"
-                        v-model="email.selfBcc" />
-        </div>
-      </div>
-
-      <hr />
-
-
-      <div class="invalid-feedback" v-if="dirty && !isValid">
-        <span v-if="required && !localModelValue">{{ $t('validation.required') }}<br/></span>
-      </div>
-
-      <email-content-edit v-model="email" @valid="canConfirm = $event">
-        <template v-slot:textarea="">
-          <small class="form-text text-muted">{{ $t('dispatch.resolve_link_is_appended') }}</small>
-        </template>
-      </email-content-edit>
     </button-with-modal-confirm>
   </div>
 </template>
 
 <script>
 
-import EmailContentEdit from './Edit/EmailContentEdit'
+import EmailContentEdit from './Edit/CraftsmanEmailEdit'
 import ButtonWithModalConfirm from './Behaviour/ButtonWithModalConfirm'
-import BooleanEdit from './Edit/Widget/BooleanEdit'
-import InlineTextEdit from './Edit/Widget/InlineTextEdit'
+import CraftsmanEmailEdit from './Edit/CraftsmanEmailEdit'
+import CustomCheckbox from './Edit/Layout/CustomCheckboxField'
+import CustomCheckboxField from './Edit/Layout/CustomCheckboxField'
+import FormField from './Edit/Layout/FormField'
 
 export default {
   components: {
-    InlineTextEdit,
-    BooleanEdit,
+    FormField,
+    CustomCheckboxField,
+    CustomCheckbox,
+    CraftsmanEmailEdit,
     ButtonWithModalConfirm,
     EmailContentEdit
   },
@@ -76,7 +63,7 @@ export default {
       email: { selfBcc: false },
       canConfirm: true,
       selectedEmailTemplate: null,
-      saveTemplateChanges: true
+      saveAsTemplate: false
     }
   },
   props: {
@@ -106,16 +93,24 @@ export default {
     },
     sortedEmailTemplates: function () {
       return this.emailTemplates.sort((a, b) => a.purpose - b.purpose)
+    },
+    saveAsTemplateLabel: function () {
+      if (this.selectedEmailTemplate === null) {
+        return this.$t('dispatch.save_as_new_template')
+      }
+      return this.$t('dispatch.save_template_changes')
     }
   },
   methods: {
     confirm: function () {
       this.$emit('send', this.email)
 
-      if (this.selectedEmailTemplate === 'new') {
-        this.$emit('create-template', this.email)
-      } else if (this.selectedEmailTemplate !== null && this.saveTemplateChanges) {
-        this.$emit('save-template', this.selectedEmailTemplate, this.email)
+      if (this.saveAsTemplate) {
+        if (this.selectedEmailTemplate === null) {
+          this.$emit('save-template', this.selectedEmailTemplate, this.email)
+        } else {
+          this.$emit('create-template', this.email)
+        }
       }
     },
     emailTemplateChanged: function () {

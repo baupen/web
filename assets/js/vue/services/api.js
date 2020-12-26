@@ -8,6 +8,11 @@ const api = {
         return response
       },
       error => {
+        if (error === 'Request aborted') {
+          // hide aborted errors (happens when navigating rapidly in firefox)
+          return
+        }
+
         console.log(error)
 
         let errorText = error

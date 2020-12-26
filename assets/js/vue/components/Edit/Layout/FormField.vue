@@ -11,14 +11,7 @@
 <script>
 
 export default {
-  emits: ['update:modelValue', 'valid'],
-  data() {
-    return {
-      localModelValue: "",
-    }
-  },
   props: {
-    modelValue: null,
     forId: {
       type: String,
     },
@@ -30,28 +23,5 @@ export default {
       default: true
     },
   },
-  computed: {
-    classNames: function () {
-      let classNames = []
-
-      if (this.size !== 0) {
-        classNames.push('col-md-' + this.size)
-      }
-
-      if (this.inline) {
-        classNames.push('row')
-      }
-
-      return classNames.join(" ")
-    },
-  },
-  methods: {
-    emitUpdate() {
-      this.$emit('update:modelValue', this.localModelValue)
-    },
-  },
-  mounted() {
-    this.localModelValue = this.modelValue;
-  }
 }
 </script>

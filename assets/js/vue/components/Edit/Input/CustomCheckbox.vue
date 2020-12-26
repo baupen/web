@@ -1,12 +1,10 @@
 <template>
-  <div class="form-group row">
-    <label :for="forId" :class="'pt-2 col-sm-' + labelSize">
+  <div class="custom-control custom-checkbox">
+    <slot></slot>
+    <label class="custom-control-label" :for="forId">
       {{ label }}
       <span v-if="required" class="text-danger">*</span>
     </label>
-    <div :class="'col-sm-' + (12-labelSize)">
-      <slot></slot>
-    </div>
   </div>
 </template>
 
@@ -16,19 +14,15 @@ export default {
   props: {
     forId: {
       type: String,
-      required: true
+      required: false
     },
     label: {
       type: String,
-      required: true
-    },
-    labelSize: {
-      type: Number,
-      default: 2
+      required: false
     },
     required: {
       type: Boolean,
-      default: true
+      default: false
     },
   }
 }

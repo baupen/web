@@ -1,35 +1,49 @@
 <template>
   <div>
-    <text-edit id="name" :label="$t('construction_site.name')" :focus="true"
-               v-model="modelValue.name"
-               @input="emitUpdate"
-               @valid="validProperties.name = $event">
-      <div>
-        <p v-if="similarConstructionSiteNames.length > 0" class="text-primary">
-          <small>
-            {{ $t('switch.similar_already_existing_construction_sites') }}: {{
-              similarConstructionSiteNames.join(",")
-            }}
-          </small>
-        </p>
-      </div>
-    </text-edit>
+    <form-field for-id="name" :label="$t('construction_site.name')">
+      <input id="name" class="form-control" type="text" ref="name" required="required"
+             :class="{'is-valid': fields.name.dirty && !fields.name.errors.length, 'is-invalid': fields.name.dirty && fields.name.errors.length }"
+               @blur="fields.name.dirty = true"
+               v-model="constructionSite.name"
+               @input="validate('name')">
+      <invalid-feedback :errors="fields.name.errors" />
+      <p v-if="similarConstructionSiteNames.length > 0" class="text-primary">
+        <small>
+          {{ $t('switch.similar_already_existing_construction_sites') }}:
+          {{ similarConstructionSiteNames.join(",") }}
+        </small>
+      </p>
+    </form-field>
 
-    <text-edit id="streetAddress" :label="$t('construction_site.street_address')"
-               v-model="modelValue.streetAddress"
-               @input="emitUpdate"
-               @valid="validProperties.streetAddress = $event"/>
+    <form-field for-id="streetAddress" :label="$t('construction_site.street_address')">
+      <input id="streetAddress" class="form-control" type="text" required="required"
+             :class="{'is-valid': fields.streetAddress.dirty && !fields.streetAddress.errors.length, 'is-invalid': fields.streetAddress.dirty && fields.streetAddress.errors.length }"
+             @blur="fields.streetAddress.dirty = true"
+             v-model="constructionSite.streetAddress"
+             @input="validate('streetAddress')">
+      <invalid-feedback :errors="fields.streetAddress.errors" />
+    </form-field>
 
     <div class="form-row">
-      <text-edit class="col-md-4" id="postalCode" :label="$t('construction_site.postal_code')" type="number"
-                 v-model.number="modelValue.postalCode"
-                 @input="emitUpdate"
-                 @valid="validProperties.postalCode = $event"/>
 
-      <text-edit class="col-md-8" id="locality" :label="$t('construction_site.locality')"
-                 v-model="modelValue.locality"
-                 @input="emitUpdate"
-                 @valid="validProperties.locality = $event"/>
+      <form-field class="col-md-4" for-id="postalCode" :label="$t('construction_site.postal_code')">
+        <input id="postalCode" class="form-control" type="number" required="required"
+               :class="{'is-valid': fields.postalCode.dirty && !fields.postalCode.errors.length, 'is-invalid': fields.postalCode.dirty && fields.postalCode.errors.length }"
+               @blur="fields.postalCode.dirty = true"
+               v-model.number="constructionSite.postalCode"
+               @input="validate('postalCode')">
+        <invalid-feedback :errors="fields.postalCode.errors" />
+      </form-field>
+
+      <form-field  class="col-md-8" for-id="locality" :label="$t('construction_site.locality')">
+        <input id="locality" class="form-control" type="text" required="required"
+               :class="{'is-valid': fields.locality.dirty && !fields.locality.errors.length, 'is-invalid': fields.locality.dirty && fields.locality.errors.length }"
+               @blur="fields.locality.dirty = true"
+               v-model="constructionSite.locality"
+               @input="validate('locality')">
+        <invalid-feedback :errors="fields.locality.errors" />
+      </form-field>
+
     </div>
   </div>
 </template>
@@ -37,28 +51,34 @@
 <script>
 import debounce from "lodash.debounce"
 import FormField from "./Layout/FormField";
-import InputWithFeedback from "./Input/InputWithFeedback";
-import TextEdit from "./Widget/TextEdit";
 import { levenshteinDistance } from '../../services/algorithms'
+import { createField, requiredRule, validateField, validateFields } from '../../services/validation'
+import InvalidFeedback from './Layout/InvalidFeedback'
 
 export default {
-  components: {TextEdit, InputWithFeedback, FormField},
-  emits: ['update:modelValue', 'valid'],
+  components: {
+    InvalidFeedback,
+    FormField
+  },
+  emits: ['update'],
   data() {
     return {
-      validProperties: {
-        name: false,
-        streetAddress: false,
-        postalCode: false,
-        locality: false,
+      fields: {
+        name: createField(requiredRule()),
+        streetAddress: createField(requiredRule()),
+        postalCode: createField(requiredRule()),
+        locality: createField(requiredRule()),
+      },
+      constructionSite: {
+        name: null,
+        streetAddress: null,
+        postalCode: null,
+        locality: null,
       },
       similarConstructionSiteNames: []
     }
   },
   props: {
-    modelValue: {
-      type: Object
-    },
     constructionSites: {
       type: Array,
       required: true
@@ -66,18 +86,18 @@ export default {
   },
   watch: {
     isValid: function () {
-      this.emitValid();
+      this.emitUpdate();
     },
-    'modelValue.name': debounce(function (newVal) {
+    'constructionSite.name': debounce(function (newVal) {
       this.determineSimilarConstructionSiteNames(newVal)
     }, 200)
   },
   methods: {
-    emitUpdate: function () {
-      this.$emit('update:modelValue', {...this.modelValue})
+    validate: function (field) {
+      validateField(this.fields[field], this.constructionSite[field])
     },
-    emitValid: function () {
-      this.$emit('valid', this.isValid)
+    emitUpdate: function () {
+      this.$emit('update', this.isValid ? this.constructionSite : null)
     },
     determineSimilarConstructionSiteNames: function (newName) {
       if (!newName || newName.length < 4) {
@@ -99,14 +119,15 @@ export default {
   },
   computed: {
     isValid: function () {
-      return this.validProperties.name &&
-          this.validProperties.streetAddress &&
-          this.validProperties.postalCode &&
-          this.validProperties.locality;
+      return this.fields.name.errors.length === 0 &&
+          this.fields.streetAddress.errors.length === 0 &&
+          this.fields.postalCode.errors.length === 0 &&
+          this.fields.locality.errors.length === 0;
     }
   },
   mounted() {
-    this.emitValid();
+    validateFields(this.fields, this.constructionSite)
+    this.$refs.name.focus()
   }
 }
 </script>

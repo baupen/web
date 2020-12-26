@@ -69,6 +69,8 @@
   "dispatch": {
     "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die offenen Pendenzen angeschaut und erledigt werden.",
     "save_template_changes": "Änderungen an der Vorlage speichern",
+    "save_as_new_template": "Als neue Vorlage speichern",
+    "no_template": "Keine Vorlage",
     "craftsmen_table": {
       "no_entries": "Keine Unternehmer erfasst",
       "filter_placeholder": "Unternehmer\/Gewerk suchen...",
@@ -79,7 +81,7 @@
     },
     "actions": {
       "compose_email": "E-Mail verfassen",
-      "send_emails": "E-Mail versenden. | {count} E-Mails versenden."
+      "send_emails": "E-Mail versenden | {count} E-Mails versenden"
     },
     "messages": {
       "success": {
