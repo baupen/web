@@ -41,7 +41,7 @@ class ConstructionManagerNormalizer implements ContextAwareNormalizerInterface, 
 
         $constructionManager = $this->tryGetConstructionManager($this->tokenStorage->getToken());
         if ($constructionManager === $object) {
-            $context['groups'][] = 'can_retrieve_book';
+            $context['groups'][] = 'construction-manager-read-self';
         }
 
         return $this->normalizer->normalize($object, $format, $context);

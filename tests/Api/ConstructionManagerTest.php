@@ -60,6 +60,24 @@ class ConstructionManagerTest extends ApiTestCase
         $this->assertApiResponseFieldSubset($response, 'givenName', 'familyName', 'email', 'phone');
     }
 
+    public function testGetAuthenticationToken()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class]);
+        $constructionManager = $this->loginApiConstructionManager($client);
+
+        $constructionManagerIri = $this->getIriFromItem($constructionManager);
+        $response = $this->assertApiGetOk($client, '/api/construction_managers');
+        $constructionManagers = json_decode($response->getContent(), true);
+        foreach ($constructionManagers['hydra:member'] as $constructionManager) {
+            if ($constructionManager['@id'] === $constructionManagerIri) {
+                $this->assertArrayHasKey('authenticationToken', $constructionManager);
+            } else {
+                $this->assertArrayNotHasKey('authenticationToken', $constructionManager);
+            }
+        }
+    }
+
     public function testConstructionSiteFilters()
     {
         $client = $this->createClient();
