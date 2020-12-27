@@ -14,5 +14,9 @@
   {
     "craftsman": 1,
     "map": 2
+  },
+  {
+    "craftsman": 2,
+    "map": 2
   }
 ]

@@ -82,6 +82,8 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
 
         $issue = $constructionSite->getIssues()[0];
         $craftsman = $constructionSite->getCraftsmen()[0];
+        $craftsman2 = $constructionSite->getCraftsmen()[1];
+        $craftsman3 = $constructionSite->getCraftsmen()[2];
         $constructionManager = $constructionSite->getConstructionManagers()[0];
 
         // issue 1: open
@@ -116,6 +118,27 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
         $issue->setRegisteredBy($constructionManager);
         $issue->setClosedAt(new \DateTime('today 08:00'));
         $issue->setClosedBy($constructionManager);
+        $manager->persist($issue);
+
+        // issue 3: overdue
+        if ($constructionSite->getIssues()->count() < 4) {
+            return;
+        }
+        $issue = $constructionSite->getIssues()[3];
+        $issue->setCraftsman($craftsman2);
+        $issue->setRegisteredAt(new \DateTime('yesterday 15:00'));
+        $issue->setRegisteredBy($constructionManager);
+        $issue->setDeadline(new \DateTime('yesterday 16:00'));
+        $manager->persist($issue);
+
+        // issue 3: unread
+        if ($constructionSite->getIssues()->count() < 5) {
+            return;
+        }
+        $issue = $constructionSite->getIssues()[4];
+        $issue->setCraftsman($craftsman3);
+        $issue->setRegisteredAt(new \DateTime('yesterday 15:00'));
+        $issue->setRegisteredBy($constructionManager);
         $manager->persist($issue);
     }
 }
