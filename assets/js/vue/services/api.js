@@ -121,6 +121,16 @@ const api = {
   getConstructionSites: function () {
     return this._getHydraCollection('/api/construction_sites')
   },
+  getIssues: function (constructionSite, query = {}) {
+    let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&' + this._getQueryString(query)
+    return this._getHydraCollection('/api/issues?' + queryString)
+  },
+  getMaps: function (constructionSite, query = {}) {
+    let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&' + this._getQueryString(query)
+    return this._getHydraCollection('/api/maps?' + queryString)
+  },
   getCraftsmen: function (constructionSite, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
     queryString += '&' + this._getQueryString(query)

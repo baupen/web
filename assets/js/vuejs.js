@@ -11,15 +11,15 @@ import {
   config as FontawesomeConfig
 } from '@fortawesome/fontawesome-svg-core'
 import {
-  faPlus,
-  faPencil,
-  faTrash,
-  faUserAlt,
-  faStar,
-  faQuestionCircle,
-  faEnvelopeOpen
+  faPlus, faPencil, faTrash, // CRUD
+  faUserAlt, faQuestionCircle, faEnvelopeOpen, // navigation
+  faStar, faUserCheck, // issue states (not active)
+  faFilter, faSearch // table
 } from '@fortawesome/pro-light-svg-icons'
-import { faStar as faStarSolid } from '@fortawesome/pro-solid-svg-icons/faStar'
+import {
+  faStar as faStarSolid, faUserCheck as faUserCheckSolid, // issue states (active)
+  faFilter as faFilterSolid, faSearch as faSearchSolid // table
+} from '@fortawesome/pro-solid-svg-icons'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 
 import de from './localization/de.json'
@@ -28,6 +28,7 @@ import it from './localization/it.json'
 import Switch from './vue/Switch.vue'
 import Dashboard from './vue/Dashboard.vue'
 import Dispatch from './vue/Dispatch'
+import Foyer from './vue/Foyer'
 
 // settings
 const locale = document.documentElement.lang.substr(0, 2)
@@ -35,14 +36,12 @@ const locale = document.documentElement.lang.substr(0, 2)
 // configure fontawesome
 FontawesomeConfig.autoAddCss = false
 FontawesomeLibrary.add(
-  faPlus,
-  faPencil,
-  faTrash,
-  faUserAlt,
-  faStar,
-  faQuestionCircle,
-  faEnvelopeOpen,
-  faStarSolid
+  faPlus, faPencil, faTrash,
+  faUserAlt, faQuestionCircle, faEnvelopeOpen,
+  faStar, faUserCheck,
+  faFilter, faSearch,
+  faStarSolid, faUserCheckSolid,
+  faFilterSolid, faSearchSolid
 )
 
 // configure moment
@@ -70,20 +69,22 @@ function createVue (app) {
   return vue
 }
 
-// boot apps
 if (document.getElementById('switch') != null) {
   createVue(Switch)
     .mount('#switch')
 }
 
-// boot apps
 if (document.getElementById('dashboard') != null) {
   createVue(Dashboard)
     .mount('#dashboard')
 }
 
-// boot apps
 if (document.getElementById('dispatch') != null) {
   createVue(Dispatch)
     .mount('#dispatch')
+}
+
+if (document.getElementById('foyer') != null) {
+  createVue(Foyer)
+    .mount('#foyer')
 }

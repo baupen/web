@@ -48,23 +48,20 @@
   },
   "foyer": {
     "actions": {
-      "confirm_specific_issues": "Pendenz ins Verzeichnis aufnehmen | {count} Pendenzen ins Verzeichnis aufnehmen",
-      "confirm_all_issues": "Alle Pendenzen ins Verzeichnis aufnehmen",
-      "confirm_issues": "Pendenzen im Verzeichnis hinzufügen"
-    },
-    "dialog": {
-      "danger": {
-        "confirm_remove": "Wollen Sie die rot markierten Pendenzen wirklich entfernen? Sie können diesen Schritt nicht rückgängig machen."
-      }
+      "register_issues": "Pendenz ins Verzeichnis aufnehmen | {count} Pendenzen ins Verzeichnis aufnehmen"
     },
     "messages": {
       "success": {
-        "added_to_register": "Zum Verzeichnis hinzugefügt."
-      },
-      "danger": {
-        "confirm_issues_impossible": "Bitte geben Sie bei allen Pendenzen mindestens die Beschreibung und den Unternehmer an."
+        "registered_issues": "Pendenzen zum Verzeichnis hinzugefügt."
       }
     }
+  },
+  "issue_table": {
+    "last_activity": "Letzte Aktivität",
+    "state_archived_by": "{state} von {subject}",
+    "without_description": "ohne Beschreibung",
+    "without_craftsman": "ohne Unternehmer",
+    "without_deadline": "ohne Frist"
   },
   "dispatch": {
     "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die offenen Pendenzen angeschaut und erledigt werden.",
@@ -237,11 +234,13 @@
     "_name": "Pendenz",
     "_plural": "Pendenzen",
     "description": "Beschreibung",
-    "response_limit": "Frist",
+    "deadline": "Frist",
     "map": "Bauplan",
     "status": "Status",
     "number": "Nummer",
     "trade": "Gewerk",
+    "is_marked": "Favorit",
+    "was_added_with_client": "Abnahmependenz",
     "state": {
       "created": "erstellt",
       "registered": "registriert",
