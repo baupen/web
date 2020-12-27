@@ -29,13 +29,13 @@ class IssueFeedEntryDataProvider extends FeedEntryDataProvider
     protected function registerEvents(array $resources, FeedEntryAggregator $aggregator)
     {
         foreach ($resources as $issue) {
-            if ($issue->getRegisteredAt()) {
+            if ($issue->getRegisteredAt() && $issue->getRegisteredBy()) {
                 $aggregator->register($issue->getRegisteredAt(), $issue->getRegisteredBy(), FeedEntry::TYPE_CONSTRUCTION_MANAGER_REGISTERED);
             }
-            if ($issue->getResolvedAt()) {
+            if ($issue->getResolvedAt() && $issue->getResolvedBy()) {
                 $aggregator->register($issue->getResolvedAt(), $issue->getResolvedBy(), FeedEntry::TYPE_CRAFTSMAN_RESOLVED);
             }
-            if ($issue->getClosedAt()) {
+            if ($issue->getClosedAt() && $issue->getClosedBy()) {
                 $aggregator->register($issue->getClosedAt(), $issue->getClosedBy(), FeedEntry::TYPE_CONSTRUCTION_MANAGER_CLOSED);
             }
         }

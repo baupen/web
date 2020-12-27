@@ -18,8 +18,12 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 trait TokenTrait
 {
-    protected function tryGetConstructionManager(TokenInterface $token): ?ConstructionManager
+    protected function tryGetConstructionManager(?TokenInterface $token): ?ConstructionManager
     {
+        if (null === $token) {
+            return null;
+        }
+
         $user = $token->getUser();
         if ($user instanceof ConstructionManager) {
             return $user;
@@ -32,8 +36,12 @@ trait TokenTrait
         return null;
     }
 
-    protected function tryGetCraftsman(TokenInterface $token): ?Craftsman
+    protected function tryGetCraftsman(?TokenInterface $token): ?Craftsman
     {
+        if (null === $token) {
+            return null;
+        }
+
         $user = $token->getUser();
         if ($user instanceof AuthenticationToken) {
             return $user->getCraftsman();
@@ -42,8 +50,12 @@ trait TokenTrait
         return null;
     }
 
-    protected function tryGetFilter(TokenInterface $token): ?Filter
+    protected function tryGetFilter(?TokenInterface $token): ?Filter
     {
+        if (null === $token) {
+            return null;
+        }
+
         $user = $token->getUser();
         if ($user instanceof AuthenticationToken) {
             return $user->getFilter();
