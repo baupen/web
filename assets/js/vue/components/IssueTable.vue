@@ -28,7 +28,7 @@
       <th>{{ $t('craftsman._name') }}</th>
       <th>{{ $t('issue.deadline') }}</th>
       <th>{{ $t('map._name') }}</th>
-      <th class="border-left border-right">{{ $t('issue.status') }}</th>
+      <th class="w-minimal">{{ $t('issue.status') }}</th>
     </tr>
     </thead>
     <tbody>
@@ -69,14 +69,38 @@
           {{ iwr.map.name }}
         </text-with-tooltip>
       </td>
-      <td class="border-left border-right">
-        <text-with-tooltip class="mr-1" v-if="iwr.craftsman"
-                           :tooltip-title="iwr.createdBy.givenName + ' ' + iwr.createdBy.familyName ">
-            <span>
-              <b>{{ $t('issue.state.created') }}</b>
-            </span>
-        </text-with-tooltip>
-        <human-readable-date-time :value="iwr.issue.createdAt"/>
+      <td class="w-minimal white-space-nowrap">
+        <template v-if="iwr.closedBy">
+          <text-with-tooltip
+              class="mr-1" :tooltip-title="iwr.closedBy.givenName + ' ' + iwr.closedBy.familyName ">
+            <b>{{ $t('issue.state.closed') }}</b>
+          </text-with-tooltip>
+          <human-readable-date-time :value="iwr.issue.closedAt"/>
+        </template>
+
+        <template v-else-if="iwr.resolvedBy">
+          <text-with-tooltip
+              class="mr-1" :tooltip-title="iwr.resolvedBy.contactName">
+            <b>{{ $t('issue.state.resolved') }}</b>
+          </text-with-tooltip>
+          <human-readable-date-time :value="iwr.issue.resolvedAt"/>
+        </template>
+
+        <template v-else-if="iwr.registeredBy">
+          <text-with-tooltip
+              class="mr-1" :tooltip-title="iwr.registeredBy.givenName + ' ' + iwr.registeredBy.familyName">
+            <b>{{ $t('issue.state.registered') }}</b>
+          </text-with-tooltip>
+          <human-readable-date-time :value="iwr.issue.registeredAt"/>
+        </template>
+
+        <template v-else>
+          <text-with-tooltip
+              class="mr-1" :tooltip-title="iwr.createdBy.givenName + ' ' + iwr.createdBy.familyName">
+            <b>{{ $t('issue.state.created') }}</b>
+          </text-with-tooltip>
+          <human-readable-date-time :value="iwr.issue.createdAt"/>
+        </template>
       </td>
     </tr>
     </tbody>
@@ -286,5 +310,9 @@ export default {
 
 .custom-checkbox {
   margin-right: -0.5em;
+}
+
+.white-space-nowrap {
+  white-space: nowrap
 }
 </style>

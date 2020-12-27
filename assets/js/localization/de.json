@@ -66,7 +66,7 @@
   "edit_issues_button": {
     "modal_title": "Pendenzen bearbeiten",
     "actions": {
-      "register_issues": "Pendenz speichern | {count} Pendenzen speichern"
+      "save_issues": "Pendenz speichern | {count} Pendenzen speichern"
     }
   },
   "delete_issues_button": {
