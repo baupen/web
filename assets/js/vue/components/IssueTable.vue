@@ -43,7 +43,9 @@
                            :tooltip-title="$t('issue.was_added_with_client')"/>
       </td>
       <td>
-        <img v-if="iwr.issue.imageUrl" :src="iwr.issue.imageUrl" :alt="'thumbnail of ' + iwr.issue.number">
+        <lightbox @click.stop="" v-if="iwr.issue.imageUrl"
+                  :src="iwr.issue.imageUrl" :src-full="iwr.issue.imageUrl + '?size=full'"
+                  :alt="'thumbnail of ' + iwr.issue.number" />
       </td>
       <td>{{ iwr.issue.description }}</td>
       <td>
@@ -110,10 +112,12 @@ import {arraysAreEqual} from '../services/algorithms'
 import CustomCheckbox from './Edit/Input/CustomCheckbox'
 import IconWithTooltip from "./View/IconWithTooltip";
 import TextWithTooltip from "./View/TextWithTooltip";
+import Lightbox from "./Behaviour/Lightbox";
 
 export default {
   emits: ['selected'],
   components: {
+    Lightbox,
     TextWithTooltip,
     IconWithTooltip,
     CustomCheckbox,
