@@ -8,7 +8,7 @@
       </div>
       <div class="col-md-auto min-width-600">
         <loading-indicator :spin="issuesSummaryLoading">
-          <issues-summary :issuesSummary="issuesSummary" />
+          <issues-summary :issuesSummary="issuesSummary"/>
         </loading-indicator>
         <loading-indicator :spin="feedLoading">
           <feed v-if="feedEntries.length > 0" class="mt-4 shadow" :entries="feedEntries"
@@ -64,20 +64,20 @@ export default {
         .then(constructionSite => {
           this.constructionSite = constructionSite
 
-          api.getCraftsmen(this.constructionSite)
+          api.getCraftsmen(constructionSite)
               .then(craftsmen => this.craftsmen = craftsmen)
 
-          api.getIssuesSummary(this.constructionSite)
+          api.getIssuesSummary(constructionSite)
               .then(issuesSummary => this.issuesSummary = issuesSummary)
 
-          api.getIssuesFeedEntries(this.constructionSite)
+          api.getIssuesFeedEntries(constructionSite)
               .then(issuesFeedEntries => {
-                this.feedEntries = issuesFeedEntries.concat(this.feedEntries ?? [])
+                api.getCraftsmenFeedEntries(constructionSite)
+                    .then(craftsmenFeedEntries => {
+                      this.feedEntries = craftsmenFeedEntries.concat(issuesFeedEntries)
+                    })
               })
-          api.getCraftsmenFeedEntries(this.constructionSite)
-              .then(craftsmenFeedEntries => {
-                this.feedEntries = craftsmenFeedEntries.concat(this.feedEntries ?? [])
-              })
+
         })
   }
 }
