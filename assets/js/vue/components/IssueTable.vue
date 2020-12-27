@@ -2,9 +2,16 @@
   <table class="table table-striped-2 table-hover border">
     <thead>
     <tr class="bg-light">
-      <th class="w-minimal"></th>
-      <th colspan="7">{{ $t('issue._name') }}</th>
-      <th class="border-left" colspan="2">{{ $t('issue_table.last_activity') }}</th>
+      <th></th>
+      <th colspan="8">
+        <span class="mt-2 d-inline-block">{{ $t('issue._name') }}</span>
+        <span class="text-right float-right">
+          <span class="btn-group">
+          <edit-issues-button :issues="selectedIssues" :disabled="selectedIssues.length === 0"/>
+          <delete-issues-button :issues="selectedIssues" :disabled="selectedIssues.length === 0"/>
+          </span>
+        </span>
+      </th>
     </tr>
     <tr class="text-secondary">
       <th class="w-minimal">
@@ -21,7 +28,7 @@
       <th>{{ $t('craftsman._name') }}</th>
       <th>{{ $t('issue.deadline') }}</th>
       <th>{{ $t('map._name') }}</th>
-      <th class="border-left">{{ $t('issue.status') }}</th>
+      <th class="border-left border-right">{{ $t('issue.status') }}</th>
     </tr>
     </thead>
     <tbody>
@@ -45,7 +52,7 @@
       <td>
         <lightbox @click.stop="" v-if="iwr.issue.imageUrl"
                   :src="iwr.issue.imageUrl" :src-full="iwr.issue.imageUrl + '?size=full'"
-                  :alt="'thumbnail of ' + iwr.issue.number" />
+                  :alt="'thumbnail of ' + iwr.issue.number"/>
       </td>
       <td>{{ iwr.issue.description }}</td>
       <td>
@@ -62,7 +69,7 @@
           {{ iwr.map.name }}
         </text-with-tooltip>
       </td>
-      <td class="border-left">
+      <td class="border-left border-right">
         <text-with-tooltip class="mr-1" v-if="iwr.craftsman"
                            :tooltip-title="iwr.createdBy.givenName + ' ' + iwr.createdBy.familyName ">
             <span>
@@ -113,10 +120,16 @@ import CustomCheckbox from './Edit/Input/CustomCheckbox'
 import IconWithTooltip from "./View/IconWithTooltip";
 import TextWithTooltip from "./View/TextWithTooltip";
 import Lightbox from "./Behaviour/Lightbox";
+import ButtonWithModalConfirm from "./Behaviour/ButtonWithModalConfirm";
+import EditIssuesButton from "./EditIssuesButton";
+import DeleteIssuesButton from "./DeleteIssuesButton";
 
 export default {
   emits: ['selected'],
   components: {
+    DeleteIssuesButton,
+    EditIssuesButton,
+    ButtonWithModalConfirm,
     Lightbox,
     TextWithTooltip,
     IconWithTooltip,

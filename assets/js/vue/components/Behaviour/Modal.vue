@@ -43,6 +43,7 @@ export default {
 <style scoped="true">
 .show {
   display: block;
+  overflow-y: scroll;
 }
 
 </style>

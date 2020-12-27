@@ -63,6 +63,19 @@
     "without_craftsman": "ohne Unternehmer",
     "without_deadline": "ohne Frist"
   },
+  "edit_issues_button": {
+    "modal_title": "Pendenzen bearbeiten",
+    "actions": {
+      "register_issues": "Pendenz speichern | {count} Pendenzen speichern"
+    }
+  },
+  "delete_issues_button": {
+    "can_not_reverse": "Ich möchte diese Pendenzen wirklich löschen, und verstehe, dass ich dies nicht rückgängig machen kann.",
+    "modal_title": "Pendenzen löschen",
+    "actions": {
+      "delete_issues": "Pendenz löschen | {count} Pendenzen löschen"
+    }
+  },
   "dispatch": {
     "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die offenen Pendenzen angeschaut und erledigt werden.",
     "save_template_changes": "Änderungen an der Vorlage speichern",
