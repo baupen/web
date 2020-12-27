@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class EmailDataPersister implements ContextAwareDataPersisterInterface
 {
@@ -62,6 +63,9 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
     public function persist($data, array $context = [])
     {
         $constructionManager = $this->tryGetConstructionManager($this->tokenStorage->getToken());
+        if (!$constructionManager) {
+            throw new AuthenticationException();
+        }
 
         $craftsman = $this->iriConverter->getItemFromIri($data->getReceiver());
         if (!$craftsman instanceof Craftsman) {

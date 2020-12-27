@@ -33,7 +33,7 @@ class ReportElements
      */
     private $withImages = true;
 
-    public static function fromRequest(array $parameters)
+    public static function fromRequest(array $parameters): self
     {
         $self = new self();
 
@@ -45,7 +45,7 @@ class ReportElements
         return $self;
     }
 
-    private static function getValue(array $parameters, string $config, bool $default)
+    private static function getValue(array $parameters, string $config, bool $default): bool
     {
         $key = 'report['.$config.']';
         if (!isset($parameters[$key])) {
@@ -53,16 +53,6 @@ class ReportElements
         }
 
         return (bool) $parameters[$key];
-    }
-
-    /**
-     * @return static
-     */
-    public static function forCraftsman()
-    {
-        $elem = new static();
-
-        return $elem;
     }
 
     public function getTableByTrade(): bool

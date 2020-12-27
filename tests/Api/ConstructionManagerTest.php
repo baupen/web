@@ -50,30 +50,27 @@ class ConstructionManagerTest extends ApiTestCase
         $this->assertApiOperationNotAuthorized($client, '/api/construction_managers/'.$testUser->getId(), 'GET');
     }
 
-    public function testGet()
-    {
-        $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class]);
-        $this->loginApiConstructionManager($client);
-
-        $response = $this->assertApiGetOk($client, '/api/construction_managers');
-        $this->assertApiResponseFieldSubset($response, 'givenName', 'familyName', 'email', 'phone');
-    }
-
     public function testGetAuthenticationToken()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
 
+        $otherConstructionManagerFields = ['@id', '@type', 'givenName', 'familyName', 'email', 'phone'];
+        $selfConstructionManagerFields = array_merge($otherConstructionManagerFields, ['authenticationToken']);
+        sort($otherConstructionManagerFields);
+        sort($selfConstructionManagerFields);
+
         $constructionManagerIri = $this->getIriFromItem($constructionManager);
         $response = $this->assertApiGetOk($client, '/api/construction_managers');
         $constructionManagers = json_decode($response->getContent(), true);
         foreach ($constructionManagers['hydra:member'] as $constructionManager) {
+            $actualFields = array_keys($constructionManager);
+            sort($actualFields);
             if ($constructionManager['@id'] === $constructionManagerIri) {
-                $this->assertArrayHasKey('authenticationToken', $constructionManager);
+                $this->assertArraySubset($actualFields, $selfConstructionManagerFields);
             } else {
-                $this->assertArrayNotHasKey('authenticationToken', $constructionManager);
+                $this->assertArraySubset($actualFields, $otherConstructionManagerFields);
             }
         }
     }

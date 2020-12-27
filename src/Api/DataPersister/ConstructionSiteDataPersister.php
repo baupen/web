@@ -14,14 +14,13 @@ namespace App\Api\DataPersister;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\ConstructionSite;
 use App\Service\Interfaces\StorageServiceInterface;
-use Symfony\Component\Security\Core\Security;
 
 class ConstructionSiteDataPersister implements ContextAwareDataPersisterInterface
 {
     private $decorated;
     private $storageService;
 
-    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, StorageServiceInterface $storageService, Security $security)
+    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, StorageServiceInterface $storageService)
     {
         $this->decorated = $decoratedDataPersister;
         $this->storageService = $storageService;
