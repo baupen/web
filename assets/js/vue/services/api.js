@@ -115,8 +115,12 @@ const api = {
     const constructionSiteUrl = this._getConstructionSiteIriFromLocation()
     return this._getItem(constructionSiteUrl)
   },
-  getConstructionManagers: function () {
-    return this._getHydraCollection('/api/construction_managers')
+  getConstructionManagers: function (constructionSite = null) {
+    let urlSuffix = ''
+    if (constructionSite) {
+      urlSuffix = '?' + this._getConstructionSiteQuery(constructionSite)
+    }
+    return this._getHydraCollection('/api/construction_managers' + urlSuffix)
   },
   getConstructionSites: function () {
     return this._getHydraCollection('/api/construction_sites')

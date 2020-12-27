@@ -58,7 +58,7 @@
   },
   "issue_table": {
     "last_activity": "Letzte Aktivität",
-    "state_archived_by": "{state} von {subject}",
+    "state_archived_by_connector": "von",
     "without_description": "ohne Beschreibung",
     "without_craftsman": "ohne Unternehmer",
     "without_deadline": "ohne Frist"

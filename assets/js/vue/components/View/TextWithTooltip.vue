@@ -1,17 +1,13 @@
 <template>
-  <span ref="value" :title="tooltipTitle">
-    <font-awesome-icon :icon="icon"/>
-  </span>
+  <p ref="value" class="d-inline-block" :title="tooltipTitle">
+    <slot></slot>
+  </p>
 </template>
 
 <script>
 
 export default {
   props: {
-    icon: {
-      type: Array,
-      required: true
-    },
     tooltipTitle: {
       type: String,
       required: true

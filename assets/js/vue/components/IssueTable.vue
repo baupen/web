@@ -3,54 +3,71 @@
     <thead>
     <tr class="bg-light">
       <th class="w-minimal"></th>
-      <th colspan="6">{{ $t('issue._name') }}</th>
+      <th colspan="7">{{ $t('issue._name') }}</th>
       <th class="border-left" colspan="2">{{ $t('issue_table.last_activity') }}</th>
     </tr>
     <tr class="text-secondary">
       <th class="w-minimal">
-        <custom-checkbox @click.prevent="toggleSelectedIssues(orderedIssues)">
+        <custom-checkbox id="all-issues"
+                         @click.prevent="toggleSelectedIssues(issues)">
           <input class="custom-control-input" type="checkbox"
-                 :checked="arraysAreEqual(orderedIssues, selectedIssues)">
+                 :checked="entityListsAreEqual(issues, selectedIssues)">
         </custom-checkbox>
       </th>
       <th class="w-minimal"></th>
       <th class="w-minimal"></th>
       <th class="w-minimal"></th>
       <th>{{ $t('issue.description') }}</th>
-      <th>{{ $t('craftsman.name') }}</th>
+      <th>{{ $t('craftsman._name') }}</th>
       <th>{{ $t('issue.deadline') }}</th>
+      <th>{{ $t('map._name') }}</th>
       <th class="border-left">{{ $t('issue.status') }}</th>
     </tr>
     </thead>
     <tbody>
-    <tr v-for="issue in orderedIssues" @click.stop="toggleSelectedIssue(issue)" class="clickable">
+    <tr v-for="iwr in orderedIssuesWithRelations" @click.stop="toggleSelectedIssue(iwr.issue)" class="clickable">
       <td class="w-minimal">
         <custom-checkbox>
           <input
               class="custom-control-input" type="checkbox"
               v-model="selectedIssues"
-              :value="issue">
+              :value="iwr.issue">
         </custom-checkbox>
       </td>
-      <td>{{ issue.number }}</td>
+      <td>{{ iwr.issue.number }}</td>
       <td>
-        <icon-with-tooltip :icon="issue.isMarked ? ['fas', 'star'] : ['fal', 'star']" :tooltip-title="$t('issue.is_marked')" /> <br/>
-        <icon-with-tooltip :icon="issue.wasAddedWithClient ? ['fas', 'user-check'] : ['fal', 'user-check']" :tooltip-title="$t('issue.was_added_with_client')" />
+        <icon-with-tooltip :icon="iwr.issue.isMarked ? ['fas', 'star'] : ['fal', 'star']"
+                           :tooltip-title="$t('issue.is_marked')"/>
+        <br/>
+        <icon-with-tooltip :icon="iwr.issue.wasAddedWithClient ? ['fas', 'user-check'] : ['fal', 'user-check']"
+                           :tooltip-title="$t('issue.was_added_with_client')"/>
       </td>
       <td>
-        <img v-if="issue.imageUrl" :src="issue.imageUrl" :alt="'thumbnail of ' + issue.number">
+        <img v-if="iwr.issue.imageUrl" :src="iwr.issue.imageUrl" :alt="'thumbnail of ' + iwr.issue.number">
       </td>
-      <td>{{ issue.description }}</td>
+      <td>{{ iwr.issue.description }}</td>
       <td>
-        {{ issue.craftsman.company }}<br/>
-        {{ issue.craftsman.trade }}
+        <text-with-tooltip v-if="iwr.craftsman" :tooltip-title="iwr.craftsman.contactName">
+          {{ iwr.craftsman.company }}<br/>
+          {{ iwr.craftsman.trade }}
+        </text-with-tooltip>
       </td>
       <td>
-        <human-readable-date :value="issue.deadline" />
+        <human-readable-date :value="iwr.issue.deadline"/>
+      </td>
+      <td>
+        <text-with-tooltip v-if="iwr.map" :tooltip-title="iwr.mapParents.map(m => m.name).join(' > ')">
+          {{ iwr.map.name }}
+        </text-with-tooltip>
       </td>
       <td class="border-left">
-        <span>{{ $t('issue_table.state_archived_by', {'state': $t('issue.state.created'), 'subject': issue.createdBy.givenName + ' ' + issue.createdBy.familyName }) }}</span>
-        <human-readable-date-time :value="issue.createdAt" />
+        <text-with-tooltip class="mr-1" v-if="iwr.craftsman"
+                           :tooltip-title="iwr.createdBy.givenName + ' ' + iwr.createdBy.familyName ">
+            <span>
+              <b>{{ $t('issue.state.created') }}</b>
+            </span>
+        </text-with-tooltip>
+        <human-readable-date-time :value="iwr.issue.createdAt"/>
       </td>
     </tr>
     </tbody>
@@ -58,25 +75,25 @@
       <div v-if="issuesWithoutDescription.length" class="form-check form-check-inline">
         <custom-checkbox id="issues-without-description"
                          :label="$t('issue_table.without_description')"
-                         @click.prevent="toggleSelectedIssues(issuesWithoutDescription)" >
+                         @click.prevent="toggleSelectedIssues(issuesWithoutDescription)">
           <input class="custom-control-input" type="checkbox"
-                 :checked="arraysAreEqual(issuesWithoutDescription, selectedIssues)">
+                 :checked="entityListsAreEqual(issuesWithoutDescription, selectedIssues)">
         </custom-checkbox>
       </div>
       <div v-if="issuesWithoutCraftsman.length" class="form-check form-check-inline">
         <custom-checkbox id="issues-without-craftsman"
                          :label="$t('issue_table.without_craftsman')"
-                         @click.prevent="toggleSelectedIssues(issuesWithoutCraftsman)" >
+                         @click.prevent="toggleSelectedIssues(issuesWithoutCraftsman)">
           <input class="custom-control-input" type="checkbox"
-                 :checked="arraysAreEqual(issuesWithoutCraftsman, selectedIssues)">
+                 :checked="entityListsAreEqual(issuesWithoutCraftsman, selectedIssues)">
         </custom-checkbox>
       </div>
       <div v-if="issuesWithoutDeadline.length" class="form-check form-check-inline">
         <custom-checkbox id="issues-without-deadline"
                          :label="$t('issue_table.without_deadline')"
-                         @click.prevent="toggleSelectedIssues(issuesWithoutDeadline)" >
+                         @click.prevent="toggleSelectedIssues(issuesWithoutDeadline)">
           <input class="custom-control-input" type="checkbox"
-                 :checked="arraysAreEqual(issuesWithoutDeadline, selectedIssues)">
+                 :checked="entityListsAreEqual(issuesWithoutDeadline, selectedIssues)">
         </custom-checkbox>
       </div>
     </caption>
@@ -89,13 +106,15 @@ import HumanReadableDate from './View/HumanReadableDate'
 import HumanReadableDateTime from './View/HumanReadableDateTime'
 import OrderedTableHead from './View/OrderedTableHead'
 import NumberWithTooltip from './View/NumberWithTooltip'
-import { arraysAreEqual } from '../services/algorithms'
+import {arraysAreEqual} from '../services/algorithms'
 import CustomCheckbox from './Edit/Input/CustomCheckbox'
 import IconWithTooltip from "./View/IconWithTooltip";
+import TextWithTooltip from "./View/TextWithTooltip";
 
 export default {
   emits: ['selected'],
   components: {
+    TextWithTooltip,
     IconWithTooltip,
     CustomCheckbox,
     NumberWithTooltip,
@@ -103,7 +122,7 @@ export default {
     HumanReadableDateTime,
     HumanReadableDate
   },
-  data () {
+  data() {
     return {
       selectedIssues: [],
     }
@@ -113,13 +132,87 @@ export default {
       type: Array,
       required: true
     },
+    craftsmen: {
+      type: Array,
+      required: true
+    },
+    maps: {
+      type: Array,
+      required: true
+    },
+    constructionManagers: {
+      type: Array,
+      required: true
+    },
     proposedSelectedIssues: {
       type: Array
     }
   },
   computed: {
-    orderedIssues: function () {
-      return this.issues.sort((a, b) => a.number - b.number)
+    craftsmanLookup: function () {
+      let craftsmanLookup = {}
+      this.craftsmen.forEach(c => craftsmanLookup[c['@id']] = c)
+
+      return craftsmanLookup
+    },
+    mapLookup: function () {
+      let mapLookup = {}
+      this.maps.forEach(m => mapLookup[m['@id']] = m)
+
+      return mapLookup
+    },
+    mapParentsLookup: function () {
+      let mapParentsLookup = {}
+      this.maps.forEach(m => {
+        let currentMap = m
+        let mapParents = []
+        let infiniteLoopPrevention = 10
+
+        // collect array with parents, in order
+        // for EG -> Haus -> Baustelle: mapParent = [Haus, Baustelle]
+        while (currentMap.parent && infiniteLoopPrevention-- > 0) {
+          currentMap = this.mapLookup[currentMap.parent]
+          mapParents.push(currentMap)
+
+          if (currentMap.parent && mapParentsLookup[currentMap.parent['@id']] !== undefined) {
+            mapParents = mapParents.concat(...mapParentsLookup[currentMap.parent['@id']])
+            break
+          }
+        }
+
+        mapParentsLookup[m['@id']] = mapParents
+
+        while (mapParents.length > 0) {
+          let nextInPath = [...mapParents].shift()
+          if (mapParentsLookup[nextInPath['@id']]) {
+            break;
+          }
+
+          mapParentsLookup[nextInPath['@id']] = mapParents
+        }
+      });
+
+      return mapParentsLookup
+    },
+    constructionManagerLookup: function () {
+      let constructionManagerLookup = {}
+      this.constructionManagers.forEach(cm => constructionManagerLookup[cm['@id']] = cm)
+
+      return constructionManagerLookup
+    },
+    orderedIssuesWithRelations: function () {
+      return this.issues.map(issue => {
+        return {
+          issue,
+          craftsman: this.craftsmanLookup[issue.craftsman],
+          map: this.mapLookup[issue.map],
+          mapParents: this.mapParentsLookup[issue.map],
+          createdBy: this.constructionManagerLookup[issue.createdBy],
+          registeredBy: this.constructionManagerLookup[issue.registeredBy],
+          resolvedBy: this.craftsmanLookup[issue.resolvedBy],
+          closedBy: this.constructionManagerLookup[issue.closedBy]
+        };
+      }).sort((a, b) => a.issue.number - b.issue.number)
     },
     issuesWithoutDescription: function () {
       return this.issues.filter(i => i.description === null || i.description === "")
@@ -129,25 +222,27 @@ export default {
     },
     issuesWithoutCraftsman: function () {
       return this.issues.filter(i => i.craftsman === null)
-    }
+    },
   },
   methods: {
-    toggleSelectedIssues (toggleArray) {
-      if (this.arraysAreEqual(toggleArray, this.selectedIssues)) {
+    toggleSelectedIssues(toggleArray) {
+      if (this.entityListsAreEqual(toggleArray, this.selectedIssues)) {
         this.selectedIssues = []
       } else {
         this.selectedIssues = [...toggleArray]
       }
     },
-    toggleSelectedIssue (toggleIssue) {
+    toggleSelectedIssue(toggleIssue) {
       if (this.selectedIssues.includes(toggleIssue)) {
         this.selectedIssues = this.selectedIssues.filter(c => c !== toggleIssue)
       } else {
         this.selectedIssues.push(toggleIssue)
       }
     },
-    arraysAreEqual (array1, array2) {
-      return arraysAreEqual(array1, array2)
+    entityListsAreEqual(array1, array2) {
+      return arraysAreEqual(array1, array2, (a, b) => {
+        return a['@id'].localeCompare(b['@id'])
+      })
     }
   },
   watch: {

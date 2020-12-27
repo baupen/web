@@ -14,6 +14,7 @@
           :issues="issues"
           :craftsmen="craftsmen"
           :maps="maps"
+          :construction-managers="constructionManagers"
           :proposed-selected-issues="issues"
           @selected="selectedIssues = $event"/>
     </loading-indicator>
@@ -38,6 +39,7 @@ export default {
       issues: null,
       craftsmen: null,
       maps: null,
+      constructionManagers: null,
       selectedIssues: [],
       unprocessedIssues: [],
     }
@@ -69,7 +71,7 @@ export default {
   },
   computed: {
     issueTableLoading: function () {
-      return this.issues === null || this.craftsmen === null || this.maps === null
+      return this.issues === null || this.craftsmen === null || this.maps === null || this.constructionManagers === null
     }
   },
   mounted() {
@@ -88,6 +90,9 @@ export default {
 
           api.getMaps(this.constructionSite)
               .then(maps => this.maps = maps)
+
+          api.getConstructionManagers(this.constructionSite)
+              .then(constructionManagers => this.constructionManagers = constructionManagers)
         })
   }
 }

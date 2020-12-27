@@ -1,5 +1,5 @@
 <template>
-  <span :class="'badge ' + badgeTheme" ref="value" data-toggle="tooltip" :title="tooltipTitle">
+  <span :class="'badge ' + badgeTheme" ref="value" :title="tooltipTitle">
     {{ value }}
   </span>
 </template>
