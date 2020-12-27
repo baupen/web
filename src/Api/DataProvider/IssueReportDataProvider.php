@@ -103,7 +103,7 @@ class IssueReportDataProvider implements ContextAwareCollectionDataProviderInter
         return $response;
     }
 
-    private function getAuthor(TokenInterface $token): ?string
+    private function getAuthor(?TokenInterface $token): ?string
     {
         if ($user = $this->tryGetConstructionManager($token)) {
             return $user->getName();
