@@ -1,19 +1,37 @@
 [
   {
-    "description": "Steckdose eingedrückt"
+    "description": "Grosser Bagger steht herum"
   },
   {
-    "description": "nachbessern"
+    "description": "Grosser Helm zu allen Zeiten tragen"
   },
   {
-    "description": "nicht fertig",
+    "description": "Schaufel liegt noch neben dem Bohrloch herum",
     "isMarked": true,
     "wasAddedWithClient": true
   },
   {
-    "description": "Verdichtung schliessen"
+    "description": "Toitoi reinigen"
   },
   {
-    "description": "Kranplatz verdichten"
+    "description": "Gerüst abbauen"
+  },
+  {
+    "description": "Ziegelsteine"
+  },
+  {
+    "description": "Kran wegbringen"
+  },
+  {
+    "description": "Paletten entsorgen"
+  },
+  {
+    "description": "Kamera funktioniert nicht"
+  },
+  {
+    "description": "Schlauch reinigen"
+  },
+  {
+    "description": "Zementbohrer vergessen"
   }
 ]
