@@ -33,6 +33,9 @@ export default {
   methods: {
     confirm: function () {
       this.$emit('add', this.constructionSite)
+
+      // reset state for next display
+      this.constructionSite = null
     }
   }
 }

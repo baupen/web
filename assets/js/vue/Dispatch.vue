@@ -1,33 +1,34 @@
 <template>
   <div id="dispatch">
-    <loading-indicator :spin="viewLoading">
+    <div class="btn-group mb-4">
+      <compose-craftsman-email-button
+          :disabled="unsentEmails.length > 0 || selectedCraftsmen.length === 0 || emailTemplatesLoading"
+          :craftsmen="selectedCraftsmen"
+          :email-templates="emailTemplates"
+          :proposed-email-template="proposedEmailTemplate"
+          @send="sendEmails"
+          @create-template="createEmailTemplate"
+          @save-template="saveEmailTemplate"/>
+      <span class="btn btn-link" v-if="unsentEmails.length > 0">{{ unsentEmails.length }}</span>
+    </div>
+
+    <loading-indicator :spin="craftsmenLoading">
       <craftsman-table
           :craftsmen="craftsmen"
           :statistics="craftsmenStatistics"
-          @selected="selectedCraftsmen = $event" />
-
-      <span class="btn-group">
-        <compose-craftsman-email-button
-            :disabled="unsentEmails.length > 0"
-            :craftsmen="selectedCraftsmen"
-            :email-templates="emailTemplates"
-            @send="sendEmails"
-            @create-template="createEmailTemplate"
-            @save-template="saveEmailTemplate" />
-        <span class="btn btn-link" v-if="unsentEmails.length > 0">{{ unsentEmails.length }}</span>
-      </span>
+          @selected="selectedCraftsmen = $event"/>
     </loading-indicator>
   </div>
 </template>
 
 <script>
-import { api } from './services/api'
+import {api} from './services/api'
 import ConstructionSiteSummary from './components/ConstructionSiteSummary'
 import Feed from './components/Feed'
 import CraftsmanTable from './components/CraftsmanTable'
 import LoadingIndicator from './components/View/LoadingIndicator'
 import ComposeCraftsmanEmailButton from './components/ComposeCraftsmanEmailButton'
-import { displaySuccess } from './services/notifiers'
+import {displaySuccess} from './services/notifiers'
 
 export default {
   components: {
@@ -37,33 +38,33 @@ export default {
     Feed,
     ConstructionSiteSummary
   },
-  data () {
+  data() {
     return {
       constructionManagerIri: null,
       constructionSite: null,
-      selectedCraftsmen: [],
       craftsmen: null,
       craftsmenStatistics: null,
+      emailTemplates: null,
+      selectedCraftsmen: [],
       unsentEmails: [],
-      emailTemplates: []
     }
   },
   methods: {
     sendEmails: function (email) {
       this.unsentEmails = this.selectedCraftsmen.map(craftsman => {
-        return Object.assign({ type: 4 }, email, { receiver: craftsman['@id'] })
+        return Object.assign({type: 4}, email, {receiver: craftsman['@id']})
       })
 
       const toBeSentEmails = [...this.unsentEmails]
       this.sendEmail(toBeSentEmails)
     },
-    sendEmail (queue) {
+    sendEmail(queue) {
       const email = queue.pop()
       api.postEmail(email)
           .then(_ => {
                 this.unsentEmails = this.unsentEmails.filter(e => e !== email)
                 const statistics = this.craftsmenStatistics.find(craftsmanStatistics => craftsmanStatistics['craftsman'] === email.receiver)
-                statistics.last_email_received = (new Date()).toISOString()
+                statistics.lastEmailReceived = (new Date()).toISOString()
 
                 if (queue.length === 0) {
                   displaySuccess(this.$t('dispatch.messages.success.emails_sent'))
@@ -74,46 +75,49 @@ export default {
           )
     },
     createEmailTemplate: function (email) {
-      const emailTemplate = Object.assign({purpose: 1, name: email.subject, constructionSite: this.constructionSite["@id"]}, email)
+      const emailTemplate = Object.assign({
+        name: email.subject,
+        constructionSite: this.constructionSite["@id"]
+      }, email)
       api.postEmailTemplate(emailTemplate, this.emailTemplates, this.$t('dispatch.messages.success.email_template_saved'))
     },
     saveEmailTemplate: function (emailTemplate, email) {
       let patch = email;
-      if (emailTemplate.purpose === 1) {
-        patch = Object.assign({ name: email.name }, patch)
+      if (emailTemplate.purpose === null) {
+        patch = Object.assign({name: email.subject}, patch)
       }
 
       api.patch(emailTemplate, patch, this.$t('dispatch.messages.success.email_template_saved'))
     },
-    initializeEmailTemplates () {
+    initializeEmailTemplates() {
+      let openIssuesTemplate = this.emailTemplates.find(t => t.purpose === 1)
+      if (!openIssuesTemplate) {
+        this.addEmailTemplate("open_issues", 1)
+      }
+
       let unreadIssuesTemplate = this.emailTemplates.find(t => t.purpose === 2)
       if (!unreadIssuesTemplate) {
         this.addEmailTemplate("unread_issues", 2)
       }
 
-      let openIssuesTemplate = this.emailTemplates.find(t => t.purpose === 3)
-      if (!openIssuesTemplate) {
-        this.addEmailTemplate("open_issues", 3)
-      }
-
-      let overdueIssuesTemplate = this.emailTemplates.find(t => t.purpose === 4)
+      let overdueIssuesTemplate = this.emailTemplates.find(t => t.purpose === 3)
       if (!overdueIssuesTemplate) {
-        this.addEmailTemplate("overdue_issues", 4)
+        this.addEmailTemplate("overdue_issues", 3)
       }
     },
     addEmailTemplate(key, purpose) {
       const hi = this.$t('email_template.templates.common.hi')
       const help = this.$t('email_template.templates.common.help')
 
-      const name = this.$t('email_template.templates.' + key + '.name', {"constructionSite": this.constructionSite.name})
-      const subject = this.$t('email_template.templates.' + key + '.subject')
+      const name = this.$t('email_template.templates.' + key + '.name')
+      const subject = this.$t('email_template.templates.' + key + '.subject', {"constructionSite": this.constructionSite.name})
       const body = this.$t('email_template.templates.' + key + '.body', {"constructionSite": this.constructionSite.name})
 
       const template = {
         purpose,
         name,
         subject,
-        body: hi + "\n\n" + body+ "\n\n" + help,
+        body: hi + "\n\n" + body + "\n\n" + help,
         selfBcc: false,
         constructionSite: this.constructionSite["@id"]
       }
@@ -122,11 +126,21 @@ export default {
     }
   },
   computed: {
-    viewLoading: function () {
+    craftsmenLoading: function () {
       return this.craftsmen === null || this.craftsmenStatistics === null
     },
+    emailTemplatesLoading: function () {
+      return this.emailTemplates === null || this.emailTemplates.length < 3
+    },
+    proposedEmailTemplate: function () {
+      if (this.emailTemplates === null) {
+        return null;
+      }
+
+      return this.emailTemplates.find(t => t.purpose === 1);
+    }
   },
-  mounted () {
+  mounted() {
     api.setupErrorNotifications(this.$t)
     api.getMe()
         .then(me => this.constructionManagerIri = me.constructionManagerIri)
@@ -134,7 +148,7 @@ export default {
         .then(constructionSite => {
           this.constructionSite = constructionSite
 
-          api.getCraftsmen(this.constructionSite, { isDeleted: false })
+          api.getCraftsmen(this.constructionSite, {isDeleted: false})
               .then(craftsmen => this.craftsmen = craftsmen)
 
           api.getEmailTemplates(this.constructionSite)
@@ -143,7 +157,7 @@ export default {
                 this.initializeEmailTemplates()
               })
 
-          api.getCraftsmenStatistics(this.constructionSite, { isDeleted: false })
+          api.getCraftsmenStatistics(this.constructionSite, {isDeleted: false})
               .then(craftsmenStatistics => this.craftsmenStatistics = craftsmenStatistics)
         })
   }

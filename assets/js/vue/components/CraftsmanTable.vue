@@ -186,7 +186,7 @@ export default {
     }
   },
   mounted () {
-    this.selectedCraftsmen = [this.craftsmen[0]]
+    this.selectedCraftsmen = [...this.craftsmenWithIssuesOpen]
   }
 }
 </script>
