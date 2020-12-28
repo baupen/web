@@ -191,13 +191,13 @@ class IssueTest extends ApiTestCase
         $this->assertApiPatchOk($client, $issueId, ['registeredBy' => $constructionManagerId, 'registeredAt' => $time]);
         $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=1', $issueId);
 
-        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=4', $issueId);
+        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=2', $issueId);
         $this->assertApiPatchOk($client, $issueId, ['resolvedBy' => $craftsmanId, 'resolvedAt' => $time]);
-        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=4', $issueId);
+        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=2', $issueId);
 
-        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=8', $issueId);
+        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=4', $issueId);
         $this->assertApiPatchOk($client, $issueId, ['closedBy' => $constructionManagerId, 'closedAt' => $time]);
-        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=8', $issueId);
+        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=4', $issueId);
     }
 
     public function testLastChangedAtFilter()
