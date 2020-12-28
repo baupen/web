@@ -52,8 +52,9 @@ scripts:
     hook: after_deploy
     instance_filter: '*:*:dev'
     script:
-      - wget -O composer.phar https://getcomposer.org/composer-stable.phar && chmod +x composer.phar && ./composer.phar install --optimize-autoloader --no-scripts
+      - wget -O composer.phar https://getcomposer.org/composer-stable.phar && chmod +x composer.phar && ./composer.phar install --prefer-dist --no-scripts
       - php bin/console --env=dev doctrine:fixtures:load -n --purge-with-truncate
+      - php composer.phar install --prefer-dist --no-interaction --no-dev --optimize-autoloader --no-scripts
 
 tasks:
   copy_prod_to_staging_before_deploy:
