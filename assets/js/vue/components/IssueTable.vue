@@ -46,11 +46,15 @@
       </td>
       <td>{{ iwr.issue.number }}</td>
       <td>
-        <icon-with-tooltip :icon="iwr.issue.isMarked ? ['fas', 'star'] : ['fal', 'star']"
-                           :tooltip-title="$t('issue.is_marked')"/>
+        <toggle-icon-with-tooltip
+            icon="star"
+            :value="iwr.issue.isMarked"
+            :tooltip-title="$t('issue.is_marked')"/>
         <br/>
-        <icon-with-tooltip :icon="iwr.issue.wasAddedWithClient ? ['fas', 'user-check'] : ['fal', 'user-check']"
-                           :tooltip-title="$t('issue.was_added_with_client')"/>
+        <toggle-icon-with-tooltip
+            icon="user-check"
+            :value="iwr.issue.wasAddedWithClient"
+            :tooltip-title="$t('issue.was_added_with_client')"/>
       </td>
       <td>
         <lightbox @click.stop="" v-if="iwr.issue.imageUrl"
@@ -152,10 +156,12 @@ import EditIssuesButton from "./EditIssuesButton";
 import {api} from "../services/api";
 import {displaySuccess} from "../services/notifiers";
 import RemoveIssuesButton from "./RemoveIssuesButton";
+import ToggleIconWithTooltip from "./View/ToggleIconWithTooltip";
 
 export default {
   emits: ['selected', 'save', 'delete'],
   components: {
+    ToggleIconWithTooltip,
     RemoveIssuesButton,
     EditIssuesButton,
     ButtonWithModalConfirm,

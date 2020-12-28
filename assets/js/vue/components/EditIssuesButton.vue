@@ -19,7 +19,7 @@
             :true-value="true"
             :false-value="false"
             :indeterminate.prop="issue.isMarked === null"
-            @blur="fields.isMarked.dirty = true"
+            @change="fields.isMarked.dirty = true"
             @input="validate('isMarked')"
         >
         <template v-slot:after>
@@ -39,7 +39,7 @@
             :true-value="true"
             :false-value="false"
             :indeterminate.prop="issue.wasAddedWithClient === null"
-            @blur="fields.wasAddedWithClient.dirty = true"
+            @change="fields.wasAddedWithClient.dirty = true"
             @input="validate('wasAddedWithClient')"
         >
         <template v-slot:after>
@@ -56,8 +56,8 @@
       <form-field for-id="description" :label="$t('issue.description')">
         <input id="description" class="form-control" type="text" required="required"
                :class="{'is-valid': fields.description.dirty && !fields.description.errors.length, 'is-invalid': fields.description.dirty && fields.description.errors.length }"
-               @blur="fields.description.dirty = true"
                v-model="issue.description"
+               @change="fields.description.dirty = true"
                @input="validate('description')">
         <invalid-feedback :errors="fields.description.errors"/>
         <a class="btn-link clickable" v-if="fields.description.dirty" @click="reset('description')">
@@ -76,8 +76,8 @@
         </select>
         <select class="custom-select"
                 :class="{'is-valid': fields.craftsman.dirty && !fields.craftsman.errors.length, 'is-invalid': fields.craftsman.dirty && fields.craftsman.errors.length }"
-                @blur="fields.craftsman.dirty = true"
                 v-model="issue.craftsman"
+                @change="fields.craftsman.dirty = true"
                 @input="validate('craftsman')"
         >
           <option v-if="!tradeFilter" :value="null">{{ $t('edit_issues_button.no_craftsman') }}</option>
@@ -97,8 +97,8 @@
         <span ref="deadline-anchor"/>
         <flat-pickr
             id="deadline" class="form-control"
-            @blur="fields.deadline.dirty = true"
             v-model="issue.deadline"
+            @change="fields.deadline.dirty = true"
             @input="validate('deadline')"
             :config="datePickerConfig">
         </flat-pickr>
