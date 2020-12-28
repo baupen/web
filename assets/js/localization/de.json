@@ -47,6 +47,7 @@
     }
   },
   "foyer": {
+    "no_unregistered_issues": "Keine neuen Pendenzen. Sie können neue Pendenzen mit der App erfassen.",
     "actions": {
       "register_issues": "Pendenz ins Verzeichnis aufnehmen | {count} Pendenzen ins Verzeichnis aufnehmen"
     },

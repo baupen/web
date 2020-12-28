@@ -1,6 +1,6 @@
 <template>
   <div id="dispatch">
-    <div class="btn-group mb-4">
+    <div v-if="issueTableLoading || issues.length > 0" class="btn-group mb-4">
       <button class="btn btn-primary"
               :disabled="preRegisterIssues.length > 0 || selectedIssues.length === 0"
               @click="registerSelectedIssues">
@@ -11,12 +11,16 @@
 
     <loading-indicator :spin="issueTableLoading">
       <issue-table
+          v-if="issues.length"
           :issues="issues"
           :craftsmen="craftsmen"
           :maps="maps"
           :construction-managers="constructionManagers"
           @selected="selectedIssues = $event"
           @deleted="deletedIssue"/>
+      <span v-else class="alert alert-info">
+        {{ $t('foyer.no_unregistered_issues')}}
+      </span>
     </loading-indicator>
   </div>
 </template>
@@ -61,6 +65,8 @@ export default {
       api.patch(payload.issue, payload.patch)
           .then(_ => {
                 this.preRegisterIssues.shift()
+                this.issues = this.issues.filter(i => i !== payload.issue);
+                this.selectedIssues = this.selectedIssues.filter(i => i !== payload.issue);
 
                 if (this.preRegisterIssues.length === 0) {
                   displaySuccess(this.$t('foyer.messages.success.registered_issues'))
@@ -84,7 +90,7 @@ export default {
         .then(constructionSite => {
           this.constructionSite = constructionSite
 
-          api.getIssues(this.constructionSite, {isDeleted: false})
+          api.getIssues(this.constructionSite, {isDeleted: false, state: 0})
               .then(issues => this.issues = issues)
 
           api.getCraftsmen(this.constructionSite)

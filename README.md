@@ -74,8 +74,8 @@ Milestone 3 (Operations):
 Milestone 4 (UI)
 - [x] implement switch UI
 - [x] implement dashboard UI
-- [ ] implement craftsman UI 
-- [ ] implement foyer UI with scalable table
+- [x] implement craftsman UI 
+- [x] implement foyer UI with scalable table
 - [ ] implement register UI with same table as foyer
 - [ ] implement edit UI with easier map edit
 - [ ] finalize filter in API
