@@ -159,7 +159,7 @@ import RemoveIssuesButton from "./RemoveIssuesButton";
 import ToggleIconWithTooltip from "./View/ToggleIconWithTooltip";
 
 export default {
-  emits: ['selected', 'save', 'delete'],
+  emits: ['selected', 'deleted'],
   components: {
     ToggleIconWithTooltip,
     RemoveIssuesButton,
@@ -197,9 +197,6 @@ export default {
     constructionManagers: {
       type: Array,
       required: true
-    },
-    proposedSelectedIssues: {
-      type: Array
     }
   },
   computed: {
@@ -310,11 +307,11 @@ export default {
       api.delete(issue)
           .then(_ => {
                 this.preDeletedIssues.shift()
-                this.$emit('delete', issue)
+                this.$emit('deleted', issue)
                 this.selectedIssues = this.selectedIssues.filter(i => i !== issue)
 
                 if (this.preDeletedIssues.length === 0) {
-                  displaySuccess(this.$t('issue_table.messages.success.deleted_issues'))
+                  displaySuccess(this.$t('issue_table.messages.success.remove_issues'))
                 } else {
                   this.deleteIssues()
                 }
@@ -342,17 +339,12 @@ export default {
     }
   },
   watch: {
-    proposedSelectedIssues: function () {
-      this.selectedIssues = this.proposedSelectedIssues
-    },
     selectedIssues: function () {
       this.$emit('selected', this.selectedIssues)
     }
   },
   mounted() {
-    if (this.proposedSelectedIssues) {
-      this.selectedIssues = this.proposedSelectedIssues
-    }
+    this.selectedIssues = this.issues
   }
 }
 </script>

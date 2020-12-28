@@ -7,7 +7,14 @@
     </template>
 
     <div>
-      {{ issues }}
+      <custom-checkbox-field for-id="confirm-removal" :label="$t('remove_issues_button.can_not_reverse')">
+        <input
+            class="custom-control-input" type="checkbox" id="confirm-removal"
+            v-model="hasConfirmed"
+            :true-value="true"
+            :false-value="false"
+        >
+      </custom-checkbox-field>
     </div>
 
   </button-with-modal-confirm>
@@ -15,10 +22,11 @@
 
 <script>
 import ButtonWithModalConfirm from "./Behaviour/ButtonWithModalConfirm";
+import CustomCheckboxField from "./Edit/Layout/CustomCheckboxField";
 
 export default {
   emits: ['remove'],
-  components: {ButtonWithModalConfirm},
+  components: {CustomCheckboxField, ButtonWithModalConfirm},
   data() {
     return {
       hasConfirmed: false

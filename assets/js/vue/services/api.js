@@ -181,6 +181,24 @@ const api = {
       }
     )
   },
+  delete: function (instance, successMessage = null) {
+    return new Promise(
+      (resolve) => {
+        axios.delete(instance['@id'])
+          .then(response => {
+            // DELETE request might return entity in answer
+            if (response.data['@id'] === instance) {
+              this._writeAllProperties(response.data, instance)
+            }
+
+            resolve()
+            if (successMessage !== null) {
+              displaySuccess(successMessage)
+            }
+          })
+      }
+    )
+  },
   postEmailTemplate: function (emailTemplate, collection, successMessage = null) {
     return this._post('/api/email_templates', emailTemplate, collection, successMessage)
   },

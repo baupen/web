@@ -8,7 +8,6 @@
       {{ $t('edit_issues_button.modal_title')}}
 
     </template>
-
     <div>
 
       <custom-checkbox-field for-id="is-marked" :label="$t('issue.is_marked')">
@@ -160,7 +159,7 @@ export default {
 
       let translatedEditedFields = this.editedFields.map(field => this.$t('issue.' + field.replace(/([A-Z])/g, "_$1").toLowerCase()))
       let fields = translatedEditedFields.join(", ")
-      return this.$tc('edit_issues_button.actions.save_issues_with_fields', this.issues.length, {
+      return this.$tc('edit_issues_button.actions.save_issue_fields', this.issues.length, {
         'count': this.issues.length,
         'fields': fields
       })

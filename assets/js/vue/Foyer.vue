@@ -15,7 +15,6 @@
           :craftsmen="craftsmen"
           :maps="maps"
           :construction-managers="constructionManagers"
-          :proposed-selected-issues="issues"
           @selected="selectedIssues = $event"
           @deleted="deletedIssue"/>
     </loading-indicator>
