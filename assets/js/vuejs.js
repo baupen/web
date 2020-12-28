@@ -2,9 +2,6 @@ import { createApp } from 'vue'
 import { createI18n } from 'vue-i18n'
 import moment from 'moment'
 
-import VueFlatPickr from 'vue-flatpickr-component'
-import 'flatpickr/dist/flatpickr.css'
-
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {
   library as FontawesomeLibrary,
@@ -63,7 +60,6 @@ function createVue (app) {
 
   vue.config.productionTip = false
   vue.use(i18n)
-  vue.use(VueFlatPickr)
   vue.component('FontAwesomeIcon', FontAwesomeIcon)
 
   return vue

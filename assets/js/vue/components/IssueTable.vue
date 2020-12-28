@@ -6,9 +6,9 @@
       <th colspan="8">
         <span class="mt-2 d-inline-block">{{ $t('issue._name') }}</span>
         <span class="text-right float-right">
-          <span class="btn-group">
-          <edit-issues-button :issues="selectedIssues" :disabled="selectedIssues.length === 0"/>
-          <delete-issues-button :issues="selectedIssues" :disabled="selectedIssues.length === 0"/>
+          <span class="btn-group reset-table-styles">
+            <edit-issues-button :issues="selectedIssues" :disabled="selectedIssues.length === 0"/>
+            <delete-issues-button :issues="selectedIssues" :disabled="selectedIssues.length === 0"/>
           </span>
         </span>
       </th>
@@ -314,5 +314,10 @@ export default {
 
 .white-space-nowrap {
   white-space: nowrap
+}
+
+.reset-table-styles {
+  text-align: left;
+  font-weight: normal;
 }
 </style>

@@ -66,7 +66,9 @@
   "edit_issues_button": {
     "modal_title": "Pendenzen bearbeiten",
     "actions": {
-      "save_issues": "Pendenz speichern | {count} Pendenzen speichern"
+      "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
+      "save_issues_with_fields": "{fields} von Pendenz speichern | {fields} von {count} Pendenzen speichern",
+      "reset": "zurücksetzen"
     }
   },
   "delete_issues_button": {
@@ -248,6 +250,7 @@
     "_plural": "Pendenzen",
     "description": "Beschreibung",
     "deadline": "Frist",
+    "craftsman": "Unternehmer",
     "map": "Bauplan",
     "status": "Status",
     "number": "Nummer",

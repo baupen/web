@@ -24,7 +24,7 @@
             </select>
           </form-field>
 
-          <custom-checkbox-field for-id="save-as-template" :label="saveAslTemplateLabel">
+          <custom-checkbox-field for-id="save-as-template" :label="saveAsTemplateLabel">
             <input
                 class="custom-control-input" type="checkbox" id="save-as-template"
                 v-model="saveAsTemplate"
@@ -103,7 +103,7 @@ export default {
     sortedEmailTemplatesCustom: function () {
       return this.emailTemplates.filter(et => et.purpose === null).sort((a, b) => a.name.localeCompare(a.name))
     },
-    saveAslTemplateLabel: function () {
+    saveAsTemplateLabel: function () {
       if (this.selectedEmailTemplate === null) {
         return this.$t('dispatch.save_as_new_template')
       }
