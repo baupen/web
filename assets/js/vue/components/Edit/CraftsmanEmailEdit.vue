@@ -114,6 +114,8 @@ export default {
         selfBcc: emailTemplate.selfBcc,
       }
       validateFields(this.fields, this.email)
+
+      this.emitUpdate()
     }
   },
   mounted () {
