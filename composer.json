@@ -106,10 +106,7 @@
       "@fixtures"
     ],
     "fixtures": [
-      "php bin/console doctrine:database:drop --force --if-exists --no-interaction",
-      "php bin/console doctrine:database:create --no-interaction",
-      "php bin/console doctrine:migrations:migrate  --no-interaction",
-      "php bin/console doctrine:fixtures:load --no-interaction"
+      "php bin/console doctrine:fixtures:load --no-interaction --purge-with-truncate"
     ],
     "create-migration": [
       "php bin/console doctrine:migrations:diff --no-interaction"
