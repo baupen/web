@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { displaySuccess, displayError } from './notifiers'
 
+const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
+
 const api = {
   setupErrorNotifications: function (translator) {
     axios.interceptors.response.use(
@@ -210,4 +212,4 @@ const api = {
   }
 }
 
-export { api }
+export { api, validImageTypes }

@@ -2,10 +2,10 @@
   <button-with-modal-confirm
       :title="$t('edit_issues_button.modal_title')" color="secondary" :can-confirm="editedFields.length > 0"
       :confirm-title="storeIssuesText" :button-disabled="disabled"
-  @confirm="confirm">
+      @confirm="confirm">
     <template v-slot:button-content>
-     <font-awesome-icon :icon="['fal', 'pencil']"/>
-      {{ $t('edit_issues_button.modal_title')}}
+      <font-awesome-icon :icon="['fal', 'pencil']"/>
+      {{ $t('edit_issues_button.modal_title') }}
 
     </template>
     <div>
@@ -107,6 +107,17 @@
         </a>
       </form-field>
 
+      <hr/>
+
+      <dropzone id="image"
+                :label="$t('issue.image')" :help="$t('edit_issues_button.image_drop_or_choose')" :valid-file-types="validFileTypes"
+                @input="image = $event">
+        <a class="btn-link clickable" v-if="image" @click="image = null">
+          {{ $t('edit_issues_button.actions.reset') }}
+          {{ image }}
+        </a>
+      </dropzone>
+
     </div>
 
   </button-with-modal-confirm>
@@ -119,10 +130,12 @@ import {createField, resetFields, validateField} from "../services/validation";
 import FormField from "./Edit/Layout/FormField";
 import InvalidFeedback from "./Edit/Layout/InvalidFeedback";
 import {dateConfig, flatPickr} from "../services/flatpickr";
+import Dropzone from "./Edit/Input/Dropzone";
+import {validImageTypes} from "../services/api";
 
 export default {
   emits: ['save'],
-  components: {InvalidFeedback, FormField, CustomCheckboxField, ButtonWithModalConfirm, flatPickr},
+  components: {Dropzone, InvalidFeedback, FormField, CustomCheckboxField, ButtonWithModalConfirm, flatPickr},
   data() {
     return {
       fields: {
@@ -134,7 +147,8 @@ export default {
       },
       tradeFilter: null,
       isMarkedIndeterminate: false,
-      issue: null
+      issue: null,
+      image: null
     }
   },
   props: {
@@ -164,6 +178,9 @@ export default {
         'fields': fields
       })
     },
+    validFileTypes: function () {
+      return validImageTypes;
+    },
     datePickerConfig: function () {
       return dateConfig;
     },
@@ -176,7 +193,7 @@ export default {
         selectableCraftsmen = selectableCraftsmen.filter(c => c.trade === this.tradeFilter)
       }
 
-      return selectableCraftsmen.sort((a,b) => a.company.localeCompare(b.company))
+      return selectableCraftsmen.sort((a, b) => a.company.localeCompare(b.company))
     },
     sortedTrade: function () {
       const tradeSet = new Set(this.selectableCraftsmen.map(c => c.trade))

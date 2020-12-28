@@ -73,6 +73,7 @@
     "modal_title": "Pendenzen bearbeiten",
     "no_craftsman": "Kein Unternehmer",
     "no_trade_filter": "Kein Gewerk",
+    "image_drop_or_choose": "Bild (.jpg, .png, .gif) hineinziehen oder auswählen",
     "actions": {
       "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
       "save_issue_fields": "{fields} von Pendenz setzen | {fields} von {count} Pendenzen setzen",
@@ -260,6 +261,7 @@
     "deadline": "Frist",
     "craftsman": "Unternehmer",
     "map": "Bauplan",
+    "image": "Bild",
     "status": "Status",
     "number": "Nummer",
     "trade": "Gewerk",
