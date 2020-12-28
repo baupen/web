@@ -63,11 +63,27 @@
       </form-field>
 
       <form-field for-id="craftsman" :label="$t('issue.craftsman')">
-        <input id="craftsman" class="form-control" type="text" required="required"
-               :class="{'is-valid': fields.craftsman.dirty && !fields.craftsman.errors.length, 'is-invalid': fields.craftsman.dirty && fields.craftsman.errors.length }"
-               @blur="fields.craftsman.dirty = true"
-               v-model="issue.craftsman"
-               @input="validate('craftsman')">
+        <select class="custom-select"
+                v-model="tradeFilter">
+          <option :value="null">{{ $t('edit_issues_button.no_trade_filter') }}</option>
+          <option disabled></option>
+          <option v-for="trade in sortedTrade" :value="trade">
+            {{ trade }}
+          </option>
+        </select>
+        <select class="custom-select"
+                :class="{'is-valid': fields.craftsman.dirty && !fields.craftsman.errors.length, 'is-invalid': fields.craftsman.dirty && fields.craftsman.errors.length }"
+                @blur="fields.craftsman.dirty = true"
+                v-model="issue.craftsman"
+                @input="validate('craftsman')"
+        >
+          <option v-if="!tradeFilter" :value="null">{{ $t('edit_issues_button.no_craftsman') }}</option>
+          <option v-if="!tradeFilter" disabled></option>
+          <option v-for="craftsman in sortedCraftsmen" :value="craftsman['@id']"
+                  :key="craftsman['@id']">
+            {{ craftsman.company }} - {{ craftsman.contactName }}
+          </option>
+        </select>
         <invalid-feedback :errors="fields.description.errors"/>
         <a class="btn-link clickable" v-if="fields.craftsman.dirty" @click="reset('craftsman')">
           {{ $t('edit_issues_button.actions.reset') }}
@@ -89,7 +105,6 @@
         </a>
       </form-field>
 
-      {{ issue }}
     </div>
 
   </button-with-modal-confirm>
@@ -98,7 +113,7 @@
 <script>
 import ButtonWithModalConfirm from "./Behaviour/ButtonWithModalConfirm";
 import CustomCheckboxField from "./Edit/Layout/CustomCheckboxField";
-import {createField, requiredRule, validateField} from "../services/validation";
+import {createField, requiredRule, resetFields, validateField} from "../services/validation";
 import FormField from "./Edit/Layout/FormField";
 import InvalidFeedback from "./Edit/Layout/InvalidFeedback";
 import {dateConfig, flatPickr} from "../services/flatpickr";
@@ -114,12 +129,17 @@ export default {
         craftsman: createField(),
         deadline: createField()
       },
+      tradeFilter: null,
       isMarkedIndeterminate: false,
       issue: null
     }
   },
   props: {
     issues: {
+      type: Array,
+      required: true
+    },
+    craftsmen: {
       type: Array,
       required: true
     },
@@ -143,6 +163,22 @@ export default {
     },
     datePickerConfig: function () {
       return dateConfig;
+    },
+    selectableCraftsmen: function () {
+      return this.craftsmen.filter(c => !c.isDeleted)
+    },
+    sortedCraftsmen: function () {
+      let selectableCraftsmen = this.selectableCraftsmen
+      if (this.tradeFilter) {
+        selectableCraftsmen = selectableCraftsmen.filter(c => c.trade === this.tradeFilter)
+      }
+
+      return selectableCraftsmen.sort((a,b) => a.company.localeCompare(b.company))
+    },
+    sortedTrade: function () {
+      const tradeSet = new Set(this.selectableCraftsmen.map(c => c.trade))
+
+      return Array.from(tradeSet).sort()
     },
     editedFields: function () {
       let editedFields = []
@@ -172,13 +208,29 @@ export default {
 
       return {
         isMarked: sameValue('isMarked'),
-        description: sameValue('description')
+        wasAddedWithClient: sameValue('wasAddedWithClient'),
+        description: sameValue('description'),
+        craftsman: sameValue('craftsman'),
+        deadline: sameValue('deadline')
       }
     }
   },
   watch: {
-    issues: function () {
+    sortedCraftsmen: function () {
+      if (this.sortedCraftsmen.length === 1) {
+        this.issue.craftsman = this.sortedCraftsmen[0]['@id']
+        this.fields.craftsman.dirty = true
+      }
+    },
+    unionIssue: function () {
       this.issue = Object.assign({}, this.unionIssue);
+      if (this.issue.craftsman) {
+        this.tradeFilter = this.craftsmen.find(c => c['@id'] === this.issue.craftsman).trade
+      }
+
+      this.$nextTick(() => {
+        resetFields(this.fields)
+      })
     },
     'fields.deadline.dirty': function () {
       const visibleInput = this.$refs['deadline-anchor'].parentElement.childNodes[4]

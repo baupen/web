@@ -65,6 +65,8 @@
   },
   "edit_issues_button": {
     "modal_title": "Pendenzen bearbeiten",
+    "no_craftsman": "Kein Unternehmer",
+    "no_trade_filter": "Kein Gewerk",
     "actions": {
       "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
       "save_issues_with_fields": "{fields} von Pendenz speichern | {fields} von {count} Pendenzen speichern",

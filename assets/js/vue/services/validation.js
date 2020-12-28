@@ -40,9 +40,21 @@ const validateFields = function (fields, values) {
   }
 }
 
+const resetFields = function (fields) {
+  for (const fieldName in fields) {
+    if (Object.prototype.hasOwnProperty.call(fields, fieldName)) {
+      fields[fieldName].valid = false
+      fields[fieldName].invalid = false
+      fields[fieldName].dirty = false
+      fields[fieldName].errors = []
+    }
+  }
+}
+
 export {
   createField,
   requiredRule,
   validateField,
-  validateFields
+  validateFields,
+  resetFields
 }
