@@ -1,7 +1,5 @@
 const createField = function () {
   const field = {
-    valid: false,
-    invalid: false,
     dirty: false,
     rules: [],
     errors: []
@@ -40,9 +38,19 @@ const validateFields = function (fields, values) {
   }
 }
 
+const resetFields = function (fields) {
+  for (const fieldName in fields) {
+    if (Object.prototype.hasOwnProperty.call(fields, fieldName)) {
+      fields[fieldName].dirty = false
+      fields[fieldName].errors = []
+    }
+  }
+}
+
 export {
   createField,
   requiredRule,
   validateField,
-  validateFields
+  validateFields,
+  resetFields
 }

@@ -3,6 +3,7 @@
     <custom-checkbox :for-id="forId" :label="label" :required="required">
       <slot></slot>
     </custom-checkbox>
+    <slot name="after"></slot>
   </div>
 </template>
 

@@ -9,16 +9,22 @@
         </div>
         <div class="col">
           <form-field>
-            <select v-model="selectedEmailTemplate" @change="emailTemplateChanged" class="custom-select">
+            <select v-model="selectedEmailTemplate" class="custom-select">
               <option :value="null">{{ $t('dispatch.no_template') }}</option>
               <option disabled></option>
-              <option v-for="emailTemplate in sortedEmailTemplates" :value="emailTemplate" :key="emailTemplate['@id']">
+              <option v-for="emailTemplate in sortedEmailTemplatesWithPurpose" :value="emailTemplate"
+                      :key="emailTemplate['@id']">
+                {{ emailTemplate.name }}
+              </option>
+              <option disabled v-if="sortedEmailTemplatesCustom.length > 0"></option>
+              <option v-for="emailTemplate in sortedEmailTemplatesCustom" :value="emailTemplate"
+                      :key="emailTemplate['@id']">
                 {{ emailTemplate.name }}
               </option>
             </select>
           </form-field>
 
-          <custom-checkbox-field for-id="save-as-template" :label="saveAslTemplateLabel">
+          <custom-checkbox-field for-id="save-as-template" :label="saveAsTemplateLabel">
             <input
                 class="custom-control-input" type="checkbox" id="save-as-template"
                 v-model="saveAsTemplate"
@@ -28,14 +34,14 @@
         </div>
       </div>
 
-      <hr />
+      <hr/>
 
       <craftsman-email-edit
           :email-template="selectedEmailTemplate"
           :receivers="receivers"
-          @update="email = $event" />
+          @update="email = $event"/>
 
-      <p class="alert alert-info">{{$t('dispatch.resolve_link_is_appended')}}</p>
+      <p class="alert alert-info">{{ $t('dispatch.resolve_link_is_appended') }}</p>
 
     </button-with-modal-confirm>
   </div>
@@ -60,9 +66,9 @@ export default {
     EmailContentEdit
   },
   emits: ['send', 'save-template', 'create-template'],
-  data () {
+  data() {
     return {
-      email: { selfBcc: false },
+      email: {selfBcc: false},
       selectedEmailTemplate: null,
       saveAsTemplate: false
     }
@@ -74,7 +80,10 @@ export default {
     },
     emailTemplates: {
       type: Array,
-      required: true
+    },
+    proposedEmailTemplate: {
+      type: Object,
+      required: false
     },
     disabled: {
       type: Boolean,
@@ -86,12 +95,15 @@ export default {
       return this.craftsmen.map(craftsman => craftsman.contactName + ' (' + craftsman.company + ')')
     },
     sendEmailText: function () {
-      return this.$tc('dispatch.actions.send_emails', this.craftsmen.length, { 'count': this.craftsmen.length })
+      return this.$tc('dispatch.actions.send_emails', this.craftsmen.length, {'count': this.craftsmen.length})
     },
-    sortedEmailTemplates: function () {
-      return this.emailTemplates.sort((a, b) => a.purpose - b.purpose)
+    sortedEmailTemplatesWithPurpose: function () {
+      return this.emailTemplates.filter(et => et.purpose !== null).sort((a, b) => a.purpose - b.purpose)
     },
-    saveAslTemplateLabel: function () {
+    sortedEmailTemplatesCustom: function () {
+      return this.emailTemplates.filter(et => et.purpose === null).sort((a, b) => a.name.localeCompare(a.name))
+    },
+    saveAsTemplateLabel: function () {
       if (this.selectedEmailTemplate === null) {
         return this.$t('dispatch.save_as_new_template')
       }
@@ -100,6 +112,11 @@ export default {
     canConfirm: function () {
       return this.email !== null;
     }
+  },
+  watch: {
+    proposedEmailTemplate: function () {
+      this.selectedEmailTemplate = this.proposedEmailTemplate
+    },
   },
   methods: {
     confirm: function () {
@@ -112,16 +129,21 @@ export default {
           this.$emit('save-template', this.selectedEmailTemplate, this.email)
         }
       }
+
+      // reset state for next display
+      this.selectedEmailTemplate = null
+      this.saveAsTemplate = false
     },
-    emailTemplateChanged: function () {
-      if (this.selectedEmailTemplate !== null) {
-        this.email = {
-          subject: this.selectedEmailTemplate.subject,
-          body: this.selectedEmailTemplate.body,
-          selfBcc: this.selectedEmailTemplate.selfBcc
-        }
+    applyEmailTemplate: function (emailTemplate) {
+      this.email = {
+        subject: emailTemplate.subject,
+        body: emailTemplate.body,
+        selfBcc: emailTemplate.selfBcc
       }
     }
+  },
+  mounted() {
+    this.selectedEmailTemplate = this.proposedEmailTemplate
   }
 }
 </script>

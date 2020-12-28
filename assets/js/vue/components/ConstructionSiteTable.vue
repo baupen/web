@@ -13,7 +13,8 @@
       <tbody>
       <tr v-for="constructionSite in constructionSites" :key="constructionSite['@id']">
         <td>
-          <img v-if="constructionSite.imageUrl" :src="constructionSite.imageUrl" :alt="'thumbnail of ' + constructionSite.name">
+          <lightbox :src="constructionSite.imageUrl" :src-full="constructionSite.imageUrl + '?size=full'"
+                    :alt="'thumbnail of ' + constructionSite.name" />
         </td>
         <td>{{ constructionSite.name }}</td>
         <td>{{ formatConstructionSiteAddress(constructionSite).join(", ") }}</td>
@@ -22,7 +23,7 @@
         </td>
         <td>
           <button type="button" class="btn btn-toggle" aria-pressed="true"
-                  :class="{'active': this.ownsConstructionSite(constructionSite)}"
+                  :class="{'active': ownsConstructionSite(constructionSite)}"
                   @click="toggleOwnConstructionSite(constructionSite)">
             <div class="handle"></div>
           </button>
@@ -37,6 +38,7 @@
 
 import {constructionSiteFormatter} from '../services/formatters'
 import Masonry from './Behaviour/Masonry'
+import Lightbox from './Behaviour/Lightbox'
 import ConstructionSiteCard from "./ConstructionSiteCard";
 import HumanReadableDateTime from "./View/HumanReadableDateTime";
 
@@ -45,7 +47,8 @@ export default {
   components: {
     HumanReadableDateTime,
     ConstructionSiteCard,
-    Masonry
+    Masonry,
+    Lightbox
   },
   props: {
     constructionSites: {

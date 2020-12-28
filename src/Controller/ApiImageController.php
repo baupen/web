@@ -32,7 +32,10 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ImageController extends BaseDoctrineController
+/**
+ * @Route("/api")
+ */
+class ApiImageController extends BaseDoctrineController
 {
     /**
      * @Route("/construction_sites/{constructionSite}/image/{constructionSiteImage}/{filename}", name="construction_site_image", methods={"GET"})

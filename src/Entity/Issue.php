@@ -89,16 +89,14 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * - resolved (resolved, but not closed)
      * - closed (closed).
      *
-     * The following states are also interesting determines the following states:
+     * The following states are also interesting:
      * - seen (opened < last visit of craftsman)
      * - overdue (deadline > resolved or (deadline > now && resolved == null))
      */
     public const STATE_CREATED = 0;
     public const STATE_REGISTERED = 1;
-    public const STATE_SEEN = 2;
-    // public const STATE_OVERDUE = 4; -> this should be added #359
-    public const STATE_RESOLVED = 4;
-    public const STATE_CLOSED = 8;
+    public const STATE_RESOLVED = 2;
+    public const STATE_CLOSED = 4;
 
     /**
      * @var int

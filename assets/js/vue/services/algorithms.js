@@ -23,14 +23,14 @@ const levenshteinDistance = function (a, b) {
   return m[b.length][a.length]
 }
 
-const arraysAreEqual = function (array1, array2) {
+const arraysAreEqual = function (array1, array2, compareFn = undefined) {
   if (array1.length !== array2.length) {
     return false
   }
 
   // sorry, CompSci degree
-  const arr1 = array1.concat().sort()
-  const arr2 = array2.concat().sort()
+  const arr1 = array1.concat().sort(compareFn)
+  const arr2 = array2.concat().sort(compareFn)
 
   for (let i = 0; i < arr1.length; i++) {
     if (arr1[i] !== arr2[i]) {

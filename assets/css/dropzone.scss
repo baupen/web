@@ -1,0 +1,42 @@
+.form-control-dropzone {
+  height: 10em;
+}
+
+.form-control-dropzone:hover,
+.form-control-dropzone.can-drop {
+  background-color: $input-focus-bg;
+  border-color: $input-focus-border-color;
+  color: $input-focus-color;
+  outline: 0;
+
+  @if $enable-shadows {
+    @include box-shadow($input-box-shadow, $input-focus-box-shadow);
+  }
+
+  @else {
+    // Avoid using mixin so we can pass custom focus shadow properly
+    box-shadow: $input-focus-box-shadow;
+  }
+
+  &.is-valid {
+    border-color: $form-feedback-valid-color;
+    box-shadow: none;
+  }
+
+  &.is-invalid {
+    border-color: $form-feedback-invalid-color;
+    box-shadow: none;
+  }
+}
+
+.form-control-dropzone-hint {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+}
+
+.form-control-dropzone-hint > input {
+  display: none;
+}

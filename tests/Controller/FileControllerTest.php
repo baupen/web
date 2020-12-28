@@ -42,7 +42,7 @@ class FileControllerTest extends WebTestCase
 
         $filename = '2OG_2.pdf';
         $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/map_files/'.$filename);
-        $baseUrl = '/maps/'.$map->getId().'/file';
+        $baseUrl = '/api/maps/'.$map->getId().'/file';
         $url = $this->assertPostUploadFile($client, $baseUrl, $uploadedFile);
 
         $this->assertStringNotContainsString($oldGuid, $url);

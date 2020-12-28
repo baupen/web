@@ -36,20 +36,20 @@ class StateFilter extends AbstractContextAwareFilter
         $alias = $queryBuilder->getRootAliases()[0];
         if ($value & Issue::STATE_REGISTERED) {
             $queryBuilder->andWhere($alias.'.registeredAt IS NOT NULL');
-        }
-
-        if ($value & Issue::STATE_SEEN) {
-            $craftsmanAlias = $alias.'c';
-            $queryBuilder->leftJoin($alias.'.craftsman', $craftsmanAlias);
-            $queryBuilder->where($alias.'.registeredAt < '.$craftsmanAlias.'.lastOnlineVisit');
+        } elseif ($value < Issue::STATE_REGISTERED) {
+            $queryBuilder->andWhere($alias.'.registeredAt IS NULL');
         }
 
         if ($value & Issue::STATE_RESOLVED) {
             $queryBuilder->andWhere($alias.'.resolvedAt IS NOT NULL');
+        } elseif ($value < Issue::STATE_RESOLVED) {
+            $queryBuilder->andWhere($alias.'.resolvedAt IS NULL');
         }
 
         if ($value & Issue::STATE_CLOSED) {
             $queryBuilder->andWhere($alias.'.closedAt IS NOT NULL');
+        } else {
+            $queryBuilder->andWhere($alias.'.closedAt IS NULL');
         }
     }
 

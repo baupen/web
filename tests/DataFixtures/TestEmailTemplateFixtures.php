@@ -28,7 +28,7 @@ class TestEmailTemplateFixtures extends Fixture implements OrderedFixtureInterfa
 
         $emailTemplate = new EmailTemplate();
         $emailTemplate->setConstructionSite($constructionSite);
-        $emailTemplate->setPurpose(EmailTemplate::PURPOSE_USER_DEFINED);
+        $emailTemplate->setPurpose(EmailTemplate::PURPOSE_OPEN_ISSUES);
         $emailTemplate->setName('Template');
         $emailTemplate->setSubject('Subject');
         $emailTemplate->setBody('Body');

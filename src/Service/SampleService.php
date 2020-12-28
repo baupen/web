@@ -183,7 +183,7 @@ class SampleService implements SampleServiceInterface
             $expectedIssueImageFileName = FileHelper::sanitizeFileName($issue->getDescription());
             $issueImagePath = $path.DIRECTORY_SEPARATOR.'issue_images'.DIRECTORY_SEPARATOR.$expectedIssueImageFileName.'.jpg';
             if (!file_exists($issueImagePath)) {
-                $this->logger->error($issueImagePath.' does not exist');
+                // $this->logger->error($issueImagePath.' does not exist'); allow issues without images
                 continue;
             }
 

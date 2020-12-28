@@ -20,7 +20,6 @@ security:
         ROLE_CONSTRUCTION_MANAGER: [ROLE_CONSTRUCTION_SITE_MEMBER, ROLE_USER]
         ROLE_EXTERNAL_CONSTRUCTION_MANAGER: [ROLE_CONSTRUCTION_SITE_MEMBER, ROLE_USER]
         ROLE_CONSTRUCTION_SITE_MEMBER: [ROLE_API_USER]
-        ROLE_API_USER: [ROLE_FILE_DOWNLOAD]
 
     firewalls:
         dev:
@@ -63,10 +62,6 @@ security:
 
         - { path: '^/resolve/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: '^/filtered/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
-
-        - { path: '^/construction_sites/[a-zA-Z0-9\-]{36}/image/[a-zA-Z0-9\-]{36}/.+', role: ROLE_FILE_DOWNLOAD }
-        - { path: '^/issues/[a-zA-Z0-9\-]{36}/image/[a-zA-Z0-9\-]{36}/.+', role: ROLE_FILE_DOWNLOAD }
-        - { path: '^/maps/[a-zA-Z0-9\-]{36}/file/[a-zA-Z0-9\-]{36}/.+', role: ROLE_FILE_DOWNLOAD }
 
         - { path: ^/api, role: ROLE_API_USER }
 

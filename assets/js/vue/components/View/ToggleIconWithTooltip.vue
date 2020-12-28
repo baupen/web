@@ -1,6 +1,7 @@
 <template>
-  <span :class="'badge ' + badgeTheme" ref="value" :title="tooltipTitle">
-    {{ value }}
+  <span ref="value" :title="tooltipTitle">
+    <font-awesome-icon v-if="value" :icon="['fas', icon]"/>
+    <font-awesome-icon v-else :icon="['fal', icon]"/>
   </span>
 </template>
 
@@ -9,21 +10,16 @@
 export default {
   props: {
     value: {
-      type: Number,
+      type: Boolean,
+      required: true
+    },
+    icon: {
+      type: String,
       required: true
     },
     tooltipTitle: {
       type: String,
       required: true
-    },
-    colorIfNonzero: {
-      type: String,
-      required: true
-    }
-  },
-  computed: {
-    badgeTheme: function (){
-      return this.value ? 'badge-'+this.colorIfNonzero : ''
     }
   },
   mounted() {

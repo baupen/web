@@ -58,7 +58,6 @@ class EmailTemplateTest extends ApiTestCase
             'name' => 'Template 1',
             'subject' => 'Willkommen',
             'body' => 'Hallo auf der Baustelle 2',
-            'purpose' => 1,
             'selfBcc' => false,
         ];
 

@@ -23,7 +23,7 @@
     <hr />
 
     <inline-form-field for-id="subject" :label="$t('email.subject')">
-      <input id="subject" class="form-control" type="text" required="required"
+      <input ref="subject" id="subject" class="form-control" type="text" required="required"
              :class="{'is-valid': fields.subject.dirty && !fields.subject.errors.length, 'is-invalid': fields.subject.dirty && fields.subject.errors.length }"
              @blur="fields.subject.dirty = true"
              v-model="email.subject"
@@ -90,12 +90,7 @@ export default {
     },
     emailTemplate: function () {
       if (this.emailTemplate !== null) {
-        this.email = {
-          subject: this.emailTemplate.subject,
-          body: this.emailTemplate.body,
-          selfBcc: this.emailTemplate.selfBcc,
-        }
-        validateFields(this.fields, this.email)
+        this.applyEmailTemplate(this.emailTemplate)
       }
     },
   },
@@ -112,9 +107,24 @@ export default {
     validate: function (field) {
       validateField(this.fields[field], this.email[field])
     },
+    applyEmailTemplate: function (emailTemplate) {
+      this.email = {
+        subject: emailTemplate.subject,
+        body: emailTemplate.body,
+        selfBcc: emailTemplate.selfBcc,
+      }
+      validateFields(this.fields, this.email)
+
+      this.emitUpdate()
+    }
   },
   mounted () {
     validateFields(this.fields, this.email)
+    this.$refs.subject.focus()
+
+    if (this.emailTemplate !== null) {
+      this.applyEmailTemplate(this.emailTemplate)
+    }
   }
 }
 </script>

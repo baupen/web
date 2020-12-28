@@ -143,7 +143,7 @@ final class SwaggerDecorator implements NormalizerInterface
 
     private function addFilePaths(array &$docs)
     {
-        $path = '/issues/{issue}/image';
+        $path = '/api/issues/{id}/image';
         $pathParameters = [
             $this->createRequiredPathParameter('issue'),
         ];
@@ -163,7 +163,7 @@ final class SwaggerDecorator implements NormalizerInterface
 
         $docs['paths'][$path] = [
             'post' => [
-                'tags' => ['File'],
+                'tags' => ['Issue'],
                 'parameters' => $pathParameters,
                 'requestBody' => [
                     'description' => 'The image to upload and assign to the issue',

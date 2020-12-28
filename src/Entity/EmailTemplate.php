@@ -49,10 +49,9 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
     use IdTrait;
     use TimeTrait;
 
-    public const PURPOSE_USER_DEFINED = 1;
+    public const PURPOSE_OPEN_ISSUES = 1;
     public const PURPOSE_UNREAD_ISSUES = 2;
-    public const PURPOSE_OPEN_ISSUES = 3;
-    public const PURPOSE_OVERDUE_ISSUES = 4;
+    public const PURPOSE_OVERDUE_ISSUES = 3;
 
     /**
      * @var string
@@ -82,11 +81,10 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
     private $body;
 
     /**
-     * @var int
+     * @var int|null
      *
-     * @Assert\NotBlank
      * @Groups({"email-template-read", "email-template-edit"})
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $purpose;
 
@@ -138,12 +136,12 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
         $this->body = $body;
     }
 
-    public function getPurpose(): int
+    public function getPurpose(): ?int
     {
         return $this->purpose;
     }
 
-    public function setPurpose(int $purpose): void
+    public function setPurpose(?int $purpose): void
     {
         $this->purpose = $purpose;
     }

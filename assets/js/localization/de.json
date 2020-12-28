@@ -47,23 +47,46 @@
     }
   },
   "foyer": {
+    "no_unregistered_issues": "Keine neuen Pendenzen. Sie können neue Pendenzen mit der App erfassen.",
     "actions": {
-      "confirm_specific_issues": "Pendenz ins Verzeichnis aufnehmen | {count} Pendenzen ins Verzeichnis aufnehmen",
-      "confirm_all_issues": "Alle Pendenzen ins Verzeichnis aufnehmen",
-      "confirm_issues": "Pendenzen im Verzeichnis hinzufügen"
-    },
-    "dialog": {
-      "danger": {
-        "confirm_remove": "Wollen Sie die rot markierten Pendenzen wirklich entfernen? Sie können diesen Schritt nicht rückgängig machen."
-      }
+      "register_issues": "Pendenz ins Verzeichnis aufnehmen | {count} Pendenzen ins Verzeichnis aufnehmen"
     },
     "messages": {
       "success": {
-        "added_to_register": "Zum Verzeichnis hinzugefügt."
-      },
-      "danger": {
-        "confirm_issues_impossible": "Bitte geben Sie bei allen Pendenzen mindestens die Beschreibung und den Unternehmer an."
+        "registered_issues": "Pendenzen zum Verzeichnis hinzugefügt."
       }
+    }
+  },
+  "issue_table": {
+    "last_activity": "Letzte Aktivität",
+    "state_archived_by_connector": "von",
+    "without_description": "ohne Beschreibung",
+    "without_craftsman": "ohne Unternehmer",
+    "without_deadline": "ohne Frist",
+    "messages": {
+      "success": {
+        "saved_issues": "Pendenzen gespeichert",
+        "remove_issues": "Pendenzen entfernt",
+        "save_issue_images": "Pendenzen Bilder gespeichert"
+      }
+    }
+  },
+  "edit_issues_button": {
+    "modal_title": "Pendenzen bearbeiten",
+    "no_craftsman": "Kein Unternehmer",
+    "no_trade_filter": "Kein Gewerk",
+    "image_drop_or_choose": "Bild (.jpg, .png, .gif) hineinziehen oder auswählen",
+    "actions": {
+      "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
+      "save_issue_fields": "{fields} von Pendenz setzen | {fields} von {count} Pendenzen setzen",
+      "reset": "zurücksetzen"
+    }
+  },
+  "remove_issues_button": {
+    "can_not_reverse": "Ich möchte diese Pendenzen wirklich löschen, und verstehe, dass ich dies nicht rückgängig machen kann.",
+    "modal_title": "Pendenzen löschen",
+    "actions": {
+      "remove_issues": "Pendenz löschen | {count} Pendenzen löschen"
     }
   },
   "dispatch": {
@@ -237,11 +260,15 @@
     "_name": "Pendenz",
     "_plural": "Pendenzen",
     "description": "Beschreibung",
-    "response_limit": "Frist",
+    "deadline": "Frist",
+    "craftsman": "Unternehmer",
     "map": "Bauplan",
+    "image": "Bild",
     "status": "Status",
     "number": "Nummer",
     "trade": "Gewerk",
+    "is_marked": "Favorit",
+    "was_added_with_client": "Abnahmependenz",
     "state": {
       "created": "erstellt",
       "registered": "registriert",

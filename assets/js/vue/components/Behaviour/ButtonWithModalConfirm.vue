@@ -1,19 +1,21 @@
 <template>
-  <div>
-    <button @click="show = !show" :disabled="buttonDisabled" class="btn btn-primary">{{ title }}</button>
-    <transition name="fade">
-      <modal v-if="show" :size="modalSize" @hide="show = false" :title="title" @keydown.esc="show = false">
-        <template v-slot:modal-body>
-          <slot></slot>
-        </template>
-        <template v-slot:modal-footer>
-          <button type="submit" :disabled="!canConfirm" @click="confirm" class="btn btn-primary">
-            {{ confirmTitle ?? title }}
-          </button>
-        </template>
-      </modal>
-    </transition>
-  </div>
+  <button @click="show = !show" :disabled="buttonDisabled" :class="'btn btn-outline-' + color">
+    <slot name="button-content">
+      {{ title }}
+    </slot>
+  </button>
+  <transition name="fade">
+    <modal v-if="show" :size="modalSize" @hide="show = false" :title="title" @keydown.esc="show = false">
+      <template v-slot:modal-body>
+        <slot></slot>
+      </template>
+      <template v-slot:modal-footer>
+        <button type="submit" :disabled="!canConfirm" @click="confirm" class="btn btn-primary">
+          {{ confirmTitle ?? title }}
+        </button>
+      </template>
+    </modal>
+  </transition>
 </template>
 
 <script>
@@ -31,7 +33,7 @@ export default {
   props: {
     title: {
       type: String,
-      required: true
+      required: false
     },
     buttonDisabled: {
       type: Boolean,
@@ -48,6 +50,10 @@ export default {
     modalSize: {
       type: String,
       default: null
+    },
+    color: {
+      type: String,
+      default: 'primary'
     }
   },
   methods: {

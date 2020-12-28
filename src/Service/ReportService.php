@@ -171,11 +171,11 @@ class ReportService implements ReportServiceInterface
         //collect all set status
         if (null !== $filter->getState()) {
             $status = [];
+            if ($filter->getState() & Issue::STATE_CREATED) {
+                $status[] = $this->translator->trans('state_values.created', [], 'entity_issue');
+            }
             if ($filter->getState() & Issue::STATE_REGISTERED) {
                 $status[] = $this->translator->trans('state_values.registered', [], 'entity_issue');
-            }
-            if ($filter->getState() & Issue::STATE_SEEN) {
-                $status[] = $this->translator->trans('state_values.seen', [], 'entity_issue');
             }
             if ($filter->getState() & Issue::STATE_RESOLVED) {
                 $status[] = $this->translator->trans('state_values.resolved', [], 'entity_issue');
