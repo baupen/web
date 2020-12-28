@@ -23,7 +23,13 @@ const api = {
           if (response.data['hydra:title'] && response.data['hydra:description']) {
             errorText = response.data['hydra:title'] + ': ' + response.data['hydra:description']
           } else {
-            errorText = response.status + ': ' + response.statusText
+            errorText = response.status
+            console.log(response)
+            if (response.data && response.data.detail) {
+              errorText += ': ' + response.data.detail
+            } else if (response.statusText) {
+              errorText += ': ' + response.statusText
+            }
           }
         }
 
@@ -105,6 +111,33 @@ const api = {
             if (successMessage !== null) {
               displaySuccess(successMessage)
             }
+            resolve()
+          })
+      }
+    )
+  },
+  _postMultipart: function (collectionUrl, file, fileKey, successMessage = null) {
+    const formData = new FormData()
+    formData.append(fileKey, file)
+
+    return new Promise(
+      (resolve) => {
+        axios.post(collectionUrl, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+          .then(response => {
+            if (successMessage !== null) {
+              displaySuccess(successMessage)
+            }
+            resolve(response.data)
+          })
+      }
+    )
+  },
+  _postAttachment: function (entity, file, fileKey, successMessage = null) {
+    return new Promise(
+      (resolve) => {
+        this._postMultipart(entity['@id'] + '/' + fileKey, file, fileKey, successMessage)
+          .then(response => {
+            entity[fileKey + 'Url'] = response
             resolve()
           })
       }
@@ -206,6 +239,9 @@ const api = {
   },
   postConstructionSite: function (constructionSite, collection, successMessage = null) {
     return this._post('/api/construction_sites', constructionSite, collection, successMessage)
+  },
+  postIssueImage: function (issue, image, successMessage = null) {
+    return this._postAttachment(issue, image, 'image', successMessage)
   },
   postEmail: function (email) {
     return this._postRaw('/api/emails', email)

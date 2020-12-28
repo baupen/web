@@ -46,6 +46,7 @@ export default {
     mouseUpOutside: function (event) {
       if (!this.lastMouseDownEvent) {
         this.$emit('hide')
+        return
       }
 
       const diffX = Math.abs(event.pageX - this.lastMouseDownEvent.pageX);

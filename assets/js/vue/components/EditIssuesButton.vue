@@ -109,14 +109,18 @@
 
       <hr/>
 
-      <dropzone id="image"
-                :label="$t('issue.image')" :help="$t('edit_issues_button.image_drop_or_choose')" :valid-file-types="validFileTypes"
-                @input="image = $event">
+      <form-field for-id="image" :label="$t('issue.image')">
+        <dropzone
+            v-if="!image"
+            id="image" :help="$t('edit_issues_button.image_drop_or_choose')"
+            :valid-file-types="validFileTypes"
+            @input="image = $event[0]" />
+        <input v-if="image" id="image" class="form-control is-valid" type="text" readonly="readonly"
+               :value="image.name">
         <a class="btn-link clickable" v-if="image" @click="image = null">
           {{ $t('edit_issues_button.actions.reset') }}
-          {{ image }}
         </a>
-      </dropzone>
+      </form-field>
 
     </div>
 
@@ -134,7 +138,7 @@ import Dropzone from "./Edit/Input/Dropzone";
 import {validImageTypes} from "../services/api";
 
 export default {
-  emits: ['save'],
+  emits: ['save', 'save-image'],
   components: {Dropzone, InvalidFeedback, FormField, CustomCheckboxField, ButtonWithModalConfirm, flatPickr},
   data() {
     return {
@@ -210,6 +214,10 @@ export default {
         }
       }
 
+      if (this.image) {
+        editedFields.push('image')
+      }
+
       return editedFields
     },
     unionIssue: function () {
@@ -274,17 +282,27 @@ export default {
       this.issue[field] = this.unionIssue[field]
     },
     confirm: function () {
-      const payload = {}
-      this.editedFields.forEach(field => {
-        payload[field] = this.issue[field]
-      })
+      let editedFields = this.editedFields
+      if (editedFields.includes('image')) {
+        this.$emit('save-image', this.image)
+        this.image = null;
 
-      // set empty datetime to null
-      if (payload.deadline === "") {
-        payload.deadline = null;
+        editedFields.splice(editedFields.indexOf('image'), 1);
       }
 
-      this.$emit('save', payload)
+      if (editedFields.length > 0) {
+        const payload = {}
+        this.editedFields.forEach(field => {
+          payload[field] = this.issue[field]
+        })
+
+        // set empty datetime to null
+        if (payload.deadline === "") {
+          payload.deadline = null;
+        }
+
+        this.$emit('save', payload)
+      }
     }
   },
   mounted() {

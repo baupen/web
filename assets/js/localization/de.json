@@ -65,7 +65,8 @@
     "messages": {
       "success": {
         "saved_issues": "Pendenzen gespeichert",
-        "remove_issues": "Pendenzen entfernt"
+        "remove_issues": "Pendenzen entfernt",
+        "save_issue_images": "Pendenzen Bilder gespeichert"
       }
     }
   },
