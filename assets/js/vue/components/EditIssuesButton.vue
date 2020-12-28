@@ -19,8 +19,8 @@
             :true-value="true"
             :false-value="false"
             :indeterminate.prop="issue.isMarked === null"
-            @change="fields.isMarked.dirty = true"
-            @input="validate('isMarked')"
+            @input="fields.isMarked.dirty = true"
+            @change="validate('isMarked')"
         >
         <template v-slot:after>
           <div>
@@ -39,8 +39,8 @@
             :true-value="true"
             :false-value="false"
             :indeterminate.prop="issue.wasAddedWithClient === null"
-            @change="fields.wasAddedWithClient.dirty = true"
-            @input="validate('wasAddedWithClient')"
+            @input="fields.wasAddedWithClient.dirty = true"
+            @change="validate('wasAddedWithClient')"
         >
         <template v-slot:after>
           <div>
@@ -57,8 +57,8 @@
         <input id="description" class="form-control" type="text" required="required"
                :class="{'is-valid': fields.description.dirty && !fields.description.errors.length, 'is-invalid': fields.description.dirty && fields.description.errors.length }"
                v-model="issue.description"
-               @change="fields.description.dirty = true"
-               @input="validate('description')">
+               @change="validate('description')"
+               @input="fields.description.dirty = true">
         <invalid-feedback :errors="fields.description.errors"/>
         <a class="btn-link clickable" v-if="fields.description.dirty" @click="reset('description')">
           {{ $t('edit_issues_button.actions.reset') }}
@@ -77,8 +77,8 @@
         <select class="custom-select"
                 :class="{'is-valid': fields.craftsman.dirty && !fields.craftsman.errors.length, 'is-invalid': fields.craftsman.dirty && fields.craftsman.errors.length }"
                 v-model="issue.craftsman"
-                @change="fields.craftsman.dirty = true"
-                @input="validate('craftsman')"
+                @input="fields.craftsman.dirty = true"
+                @change="validate('craftsman')"
         >
           <option v-if="!tradeFilter" :value="null">{{ $t('edit_issues_button.no_craftsman') }}</option>
           <option v-if="!tradeFilter" disabled></option>
@@ -98,8 +98,8 @@
         <flat-pickr
             id="deadline" class="form-control"
             v-model="issue.deadline"
-            @change="fields.deadline.dirty = true"
-            @input="validate('deadline')"
+            @input="fields.deadline.dirty = true"
+            @change="validate('deadline')"
             :config="datePickerConfig">
         </flat-pickr>
         <invalid-feedback :errors="fields.deadline.errors"/>
