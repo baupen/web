@@ -29,7 +29,10 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-class FileController extends BaseDoctrineController
+/**
+ * @Route("/api")
+ */
+class ApiFileController extends BaseDoctrineController
 {
     /**
      * @Route("/maps/{map}/file/{mapFile}/{filename}", name="map_file", methods={"GET"})

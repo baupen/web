@@ -40,7 +40,7 @@ class ImageControllerTest extends WebTestCase
 
         $filename = 'preview_2.jpg';
         $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/'.$filename);
-        $baseUrl = '/construction_sites/'.$testConstructionSite->getId().'/image';
+        $baseUrl = '/api/construction_sites/'.$testConstructionSite->getId().'/image';
         $url = $this->assertPostFile($client, $baseUrl, $uploadedFile);
 
         $image = $testConstructionSite->getImage();
@@ -62,7 +62,7 @@ class ImageControllerTest extends WebTestCase
 
         $filename = 'nachbessern_2.jpg';
         $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/issue_images/'.$filename);
-        $baseUrl = '/issues/'.$issue->getId().'/image';
+        $baseUrl = '/api/issues/'.$issue->getId().'/image';
         $url = $this->assertPostFile($client, $baseUrl, $uploadedFile);
 
         $this->assertStringNotContainsString($oldGuid, $url);
