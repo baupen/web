@@ -1,6 +1,6 @@
 <template>
   <div class="modal-wrapper">
-    <div class="modal show fade" @click.self="$emit('hide')" id="modal" tabindex="-1" role="dialog"
+    <div class="modal show fade" @mousedown="lastMouseDownEvent = $event" @mouseup.self="mouseUpOutside" id="modal" tabindex="-1" role="dialog"
          aria-labelledby="modal-title"
          aria-hidden="true">
       <div class="modal-dialog shadow" :class="{'modal-sm': size === 'sm', 'modal-lg': size === 'lg'}" role="document">
@@ -35,6 +35,25 @@ export default {
     size: {
       type: String,
       default: null
+    }
+  },
+  data() {
+    return {
+      lastMouseDownEvent: null
+    }
+  },
+  methods: {
+    mouseUpOutside: function (event) {
+      if (!this.lastMouseDownEvent) {
+        this.$emit('hide')
+      }
+
+      const diffX = Math.abs(event.pageX - this.lastMouseDownEvent.pageX);
+      const diffY = Math.abs(event.pageY - this.lastMouseDownEvent.pageY);
+
+      if (diffX < 10 && diffY < 10) {
+        this.$emit('hide')
+      }
     }
   }
 }
