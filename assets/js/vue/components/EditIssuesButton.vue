@@ -1,9 +1,12 @@
 <template>
   <button-with-modal-confirm
       :title="$t('edit_issues_button.modal_title')" color="secondary" :can-confirm="editedFields.length > 0"
-      :confirm-title="storeIssuesText" :button-disabled="disabled">
+      :confirm-title="storeIssuesText" :button-disabled="disabled"
+  @confirm="confirm">
     <template v-slot:button-content>
-      <font-awesome-icon :icon="['fal', 'pencil']"/>
+     <font-awesome-icon :icon="['fal', 'pencil']"/>
+      {{ $t('edit_issues_button.modal_title')}}
+
     </template>
 
     <div>
@@ -113,12 +116,13 @@
 <script>
 import ButtonWithModalConfirm from "./Behaviour/ButtonWithModalConfirm";
 import CustomCheckboxField from "./Edit/Layout/CustomCheckboxField";
-import {createField, requiredRule, resetFields, validateField} from "../services/validation";
+import {createField, resetFields, validateField} from "../services/validation";
 import FormField from "./Edit/Layout/FormField";
 import InvalidFeedback from "./Edit/Layout/InvalidFeedback";
 import {dateConfig, flatPickr} from "../services/flatpickr";
 
 export default {
+  emits: ['save'],
   components: {InvalidFeedback, FormField, CustomCheckboxField, ButtonWithModalConfirm, flatPickr},
   data() {
     return {
@@ -233,6 +237,10 @@ export default {
       })
     },
     'fields.deadline.dirty': function () {
+      if (!this.$refs['deadline-anchor']) {
+        return
+      }
+
       const visibleInput = this.$refs['deadline-anchor'].parentElement.childNodes[4]
       if (this.fields.deadline.dirty) {
         visibleInput.classList.add('is-valid');
@@ -248,6 +256,19 @@ export default {
     reset: function (field) {
       this.fields[field].dirty = false
       this.issue[field] = this.unionIssue[field]
+    },
+    confirm: function () {
+      const payload = {}
+      this.editedFields.forEach(field => {
+        payload[field] = this.issue[field]
+      })
+
+      // set empty datetime to null
+      if (payload.deadline === "") {
+        payload.deadline = null;
+      }
+
+      this.$emit('save', payload)
     }
   },
   mounted() {

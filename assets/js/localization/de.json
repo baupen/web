@@ -61,7 +61,13 @@
     "state_archived_by_connector": "von",
     "without_description": "ohne Beschreibung",
     "without_craftsman": "ohne Unternehmer",
-    "without_deadline": "ohne Frist"
+    "without_deadline": "ohne Frist",
+    "messages": {
+      "success": {
+        "saved_issues": "Pendenzen gespeichert",
+        "remove_issues": "Pendenzen entfernt"
+      }
+    }
   },
   "edit_issues_button": {
     "modal_title": "Pendenzen bearbeiten",
@@ -73,11 +79,11 @@
       "reset": "zurücksetzen"
     }
   },
-  "delete_issues_button": {
+  "remove_issues_button": {
     "can_not_reverse": "Ich möchte diese Pendenzen wirklich löschen, und verstehe, dass ich dies nicht rückgängig machen kann.",
     "modal_title": "Pendenzen löschen",
     "actions": {
-      "delete_issues": "Pendenz löschen | {count} Pendenzen löschen"
+      "remove_issues": "Pendenz löschen | {count} Pendenzen löschen"
     }
   },
   "dispatch": {

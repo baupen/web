@@ -2,11 +2,11 @@
   <div id="dispatch">
     <div class="btn-group mb-4">
       <button class="btn btn-primary"
-              :disabled="unprocessedIssues.length > 0 || selectedIssues.length === 0"
+              :disabled="preRegisterIssues.length > 0 || selectedIssues.length === 0"
               @click="registerSelectedIssues">
-        {{$tc("foyer.actions.register_issues", selectedIssues.length)}}
+        {{ $tc("foyer.actions.register_issues", selectedIssues.length) }}
       </button>
-      <span class="btn btn-link" v-if="unprocessedIssues.length > 0">{{ unprocessedIssues.length }}</span>
+      <span class="btn btn-link" v-if="preRegisterIssues.length > 0">{{ preRegisterIssues.length }}</span>
     </div>
 
     <loading-indicator :spin="issueTableLoading">
@@ -16,7 +16,8 @@
           :maps="maps"
           :construction-managers="constructionManagers"
           :proposed-selected-issues="issues"
-          @selected="selectedIssues = $event"/>
+          @selected="selectedIssues = $event"
+          @deleted="deletedIssue"/>
     </loading-indicator>
   </div>
 </template>
@@ -41,29 +42,31 @@ export default {
       maps: null,
       constructionManagers: null,
       selectedIssues: [],
-      unprocessedIssues: [],
+      preRegisterIssues: [],
     }
   },
   methods: {
     registerSelectedIssues: function () {
       const nowString = (new Date()).toISOString();
-      this.unprocessedIssues = this.selectedIssues.map(issue => {
+      this.preRegisterIssues = this.selectedIssues.map(issue => {
         return {issue, patch: {registeredAt: nowString, registeredBy: this.constructionManagerIri}}
       })
 
-      const toBePatchedIssues = [...this.unprocessedIssues]
-      this.patchIssues(toBePatchedIssues)
+      this.processUnregisteredIssues()
     },
-    patchIssues(queue) {
-      const payload = queue.pop()
+    deletedIssue(issue) {
+      this.issues = this.issues.filter(i => i !== issue)
+    },
+    processUnregisteredIssues() {
+      const payload = this.preRegisterIssues[0]
       api.patch(payload.issue, payload.patch)
           .then(_ => {
-                this.unprocessedIssues = this.unprocessedIssues.filter(e => e !== payload)
+                this.preRegisterIssues.shift()
 
-                if (queue.length === 0) {
+                if (this.preRegisterIssues.length === 0) {
                   displaySuccess(this.$t('foyer.messages.success.registered_issues'))
                 } else {
-                  this.patchIssues(queue)
+                  this.processUnregisteredIssues()
                 }
               }
           )

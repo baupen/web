@@ -1,12 +1,13 @@
 <template>
-  <button-with-modal-confirm :title="$t('delete_issues_button.modal_title')" color="danger" :can-confirm="hasConfirmed"
-                             :confirm-title="deleteIssuesText" :button-disabled="disabled">
+  <button-with-modal-confirm :title="$t('remove_issues_button.modal_title')" color="danger" :can-confirm="hasConfirmed"
+                             :confirm-title="removeIssuesText" :button-disabled="disabled"
+                             @confirm="$emit('remove')">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'trash']"/>
     </template>
 
     <div>
-      {{issues}}
+      {{ issues }}
     </div>
 
   </button-with-modal-confirm>
@@ -16,6 +17,7 @@
 import ButtonWithModalConfirm from "./Behaviour/ButtonWithModalConfirm";
 
 export default {
+  emits: ['remove'],
   components: {ButtonWithModalConfirm},
   data() {
     return {
@@ -33,8 +35,8 @@ export default {
     }
   },
   computed: {
-    deleteIssuesText: function () {
-      return this.$tc('delete_issues_button.actions.delete_issues', this.issues.length, {'count': this.issues.length})
+    removeIssuesText: function () {
+      return this.$tc('remove_issues_button.actions.remove_issues', this.issues.length, {'count': this.issues.length})
     },
   }
 }

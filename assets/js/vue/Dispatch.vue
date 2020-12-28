@@ -55,21 +55,20 @@ export default {
         return Object.assign({type: 4}, email, {receiver: craftsman['@id']})
       })
 
-      const toBeSentEmails = [...this.unsentEmails]
-      this.sendEmail(toBeSentEmails)
+      this.processUnsentEmails()
     },
-    sendEmail(queue) {
-      const email = queue.pop()
+    processUnsentEmails() {
+      const email = this.unsentEmails[0]
       api.postEmail(email)
           .then(_ => {
-                this.unsentEmails = this.unsentEmails.filter(e => e !== email)
+                this.unsentEmails.shift()
                 const statistics = this.craftsmenStatistics.find(craftsmanStatistics => craftsmanStatistics['craftsman'] === email.receiver)
                 statistics.lastEmailReceived = (new Date()).toISOString()
 
-                if (queue.length === 0) {
+                if (this.unsentEmails.length === 0) {
                   displaySuccess(this.$t('dispatch.messages.success.emails_sent'))
                 } else {
-                  this.sendEmail(queue)
+                  this.processUnsentEmails()
                 }
               }
           )

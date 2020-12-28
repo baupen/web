@@ -7,8 +7,11 @@
         <span class="mt-2 d-inline-block">{{ $t('issue._name') }}</span>
         <span class="text-right float-right">
           <span class="btn-group reset-table-styles">
-            <edit-issues-button :issues="selectedIssues" :craftsmen="craftsmen" :disabled="selectedIssues.length === 0"/>
-            <delete-issues-button :issues="selectedIssues" :disabled="selectedIssues.length === 0"/>
+            <span class="btn btn-link" v-if="prePatchedIssues.length > 0">{{ prePatchedIssues.length }}</span>
+            <edit-issues-button :issues="selectedIssues" :craftsmen="craftsmen" :disabled="selectedIssues.length === 0"
+                                @save="saveIssues"/>
+            <remove-issues-button :issues="selectedIssues" :disabled="selectedIssues.length === 0"
+                                  @remove="removeIssues"/>
           </span>
         </span>
       </th>
@@ -146,12 +149,14 @@ import TextWithTooltip from "./View/TextWithTooltip";
 import Lightbox from "./Behaviour/Lightbox";
 import ButtonWithModalConfirm from "./Behaviour/ButtonWithModalConfirm";
 import EditIssuesButton from "./EditIssuesButton";
-import DeleteIssuesButton from "./DeleteIssuesButton";
+import {api} from "../services/api";
+import {displaySuccess} from "../services/notifiers";
+import RemoveIssuesButton from "./RemoveIssuesButton";
 
 export default {
-  emits: ['selected'],
+  emits: ['selected', 'save', 'delete'],
   components: {
-    DeleteIssuesButton,
+    RemoveIssuesButton,
     EditIssuesButton,
     ButtonWithModalConfirm,
     Lightbox,
@@ -166,6 +171,8 @@ export default {
   data() {
     return {
       selectedIssues: [],
+      prePatchedIssues: [],
+      preDeletedIssues: [],
     }
   },
   props: {
@@ -266,6 +273,48 @@ export default {
     },
   },
   methods: {
+    saveIssues: function (patch) {
+      this.prePatchedIssues = this.selectedIssues.map(issue => {
+        return {issue, patch: Object.assign({}, patch)}
+      })
+
+      this.patchIssues()
+    },
+    removeIssues: function () {
+      this.preDeletedIssues = [...this.selectedIssues]
+
+      this.deleteIssues()
+    },
+    patchIssues() {
+      const payload = this.prePatchedIssues[0]
+      api.patch(payload.issue, payload.patch)
+          .then(_ => {
+                this.prePatchedIssues.shift()
+
+                if (this.prePatchedIssues.length === 0) {
+                  displaySuccess(this.$t('issue_table.messages.success.saved_issues'))
+                } else {
+                  this.patchIssues()
+                }
+              }
+          )
+    },
+    deleteIssues() {
+      const issue = this.preDeletedIssues[0]
+      api.delete(issue)
+          .then(_ => {
+                this.preDeletedIssues.shift()
+                this.$emit('delete', issue)
+                this.selectedIssues = this.selectedIssues.filter(i => i !== issue)
+
+                if (this.preDeletedIssues.length === 0) {
+                  displaySuccess(this.$t('issue_table.messages.success.deleted_issues'))
+                } else {
+                  this.deleteIssues()
+                }
+              }
+          )
+    },
     toggleSelectedIssues(toggleArray) {
       if (this.entityListsAreEqual(toggleArray, this.selectedIssues)) {
         this.selectedIssues = []

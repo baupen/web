@@ -26,7 +26,7 @@ const api = {
         }
 
         const errorMessage = translator('messages.danger.request_failed') + ' (' + errorText + ')'
-        displayError(errorMessage).show()
+        displayError(errorMessage)
 
         return Promise.reject(error)
       }
