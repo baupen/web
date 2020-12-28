@@ -120,14 +120,13 @@ export default {
   },
   methods: {
     confirm: function () {
-      const email = Object.assign({}, this.email)
-      this.$emit('send', email)
+      this.$emit('send', this.email)
 
       if (this.saveAsTemplate) {
         if (this.selectedEmailTemplate === null) {
-          this.$emit('create-template', email)
+          this.$emit('create-template', this.email)
         } else {
-          this.$emit('save-template', this.selectedEmailTemplate, email)
+          this.$emit('save-template', this.selectedEmailTemplate, this.email)
         }
       }
 
