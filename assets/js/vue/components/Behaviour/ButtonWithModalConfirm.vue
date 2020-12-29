@@ -10,6 +10,8 @@
         <slot></slot>
       </template>
       <template v-slot:modal-footer>
+        <slot name="secondary-footer">
+        </slot>
         <button type="submit" :disabled="!canConfirm" @click="confirm" class="btn btn-primary">
           {{ confirmTitle ?? title }}
         </button>
@@ -23,7 +25,7 @@
 import Modal from "./Modal";
 
 export default {
-  emits: ['confirm'],
+  emits: ['confirm', 'shown', 'hidden'],
   components: {Modal},
   data() {
     return {
@@ -54,6 +56,17 @@ export default {
     color: {
       type: String,
       default: 'primary'
+    }
+  },
+  watch: {
+    show: function () {
+      this.$nextTick(() => {
+        if (this.show) {
+          this.$emit('shown')
+        } else {
+          this.$emit('hidden')
+        }
+      })
     }
   },
   methods: {
