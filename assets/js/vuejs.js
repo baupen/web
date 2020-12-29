@@ -26,6 +26,7 @@ import Switch from './vue/Switch.vue'
 import Dashboard from './vue/Dashboard.vue'
 import Dispatch from './vue/Dispatch'
 import Foyer from './vue/Foyer'
+import Register from './vue/Register'
 
 // settings
 const locale = document.documentElement.lang.substr(0, 2)
@@ -83,4 +84,9 @@ if (document.getElementById('dispatch') != null) {
 if (document.getElementById('foyer') != null) {
   createVue(Foyer)
     .mount('#foyer')
+}
+
+if (document.getElementById('register') != null) {
+  createVue(Register)
+    .mount('#register')
 }

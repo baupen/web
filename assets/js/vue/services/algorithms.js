@@ -41,4 +41,30 @@ const arraysAreEqual = function (array1, array2, compareFn = undefined) {
   return true
 }
 
-export { levenshteinDistance, arraysAreEqual }
+const objectsAreEqual = function (object1, object2) {
+  if (typeof object1 !== 'object' || typeof object2 !== 'object') {
+    return false
+  }
+
+  // loop through properties in object 1 & ensure equality
+  for (const object1PropertyName in object1) {
+    if (Object.prototype.hasOwnProperty.call(object1, object1PropertyName) !== Object.prototype.hasOwnProperty.call(object2, object1PropertyName)) return false
+
+    switch (typeof (object1[object1PropertyName])) {
+      case 'object':
+        if (!objectsAreEqual(object1[object1PropertyName], object2[object1PropertyName])) return false
+        break
+      default:
+        if (object1[object1PropertyName] !== object2[object1PropertyName]) return false
+    }
+  }
+
+  // loop through object 2 to detect extra properties
+  for (const object2PropertyName in object2) {
+    if (Object.prototype.hasOwnProperty.call(object1, object2PropertyName) !== Object.prototype.hasOwnProperty.call(object2, object2PropertyName)) return false
+  }
+
+  return true
+}
+
+export { levenshteinDistance, arraysAreEqual, objectsAreEqual }

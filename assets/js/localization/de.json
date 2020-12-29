@@ -57,6 +57,11 @@
       }
     }
   },
+  "register": {
+    "actions": {
+      "export_issues": "Pendenzen exportieren"
+    }
+  },
   "issue_table": {
     "last_activity": "Letzte Aktivität",
     "state_archived_by_connector": "von",
@@ -187,27 +192,27 @@
         "time": "Zeit",
         "time_set": "{state} am"
       }
-    },
-    "export": {
-      "name": "Export",
-      "pdf": {
-        "name": "PDF",
+    }
+  },
+  "export_issues_button": {
+    "export_source_filter": "{count} Pendenzen die auf die Filter zutreffen",
+    "export_source_selection": "{count} Pendenzen die markiert wurden",
+    "export_type": {
+      "report": {
+        "name": ".pdf Bericht",
+        "help": "Fürs Drucken optimiert: Die Pendenzen möglichst platzsparend aufs Papier bringen.",
         "with_images": "mit Fotos",
-        "generate": "generieren",
-        "tables": {
-          "name": "Zusammenfassungstabellen",
-          "table_by_craftsman": "nach Unternehmer",
-          "table_by_trade": "nach Gewerk",
-          "table_by_map": "nach Bauplan"
-        }
+        "summary_tables": "Zusammenfassungstabellen",
+        "by_craftsman": "nach Unternehmer",
+        "by_map": "nach Bauplan"
       },
       "link": {
         "name": "Link",
-        "with_limit": "Mit Ablaufdatum",
-        "valid_till": "gültig bis",
-        "generate": "erstellen"
+        "help": "Immer aktuell: Die Pendenzen Externen einfach zugänglich machen.",
+        "access_allowed_before": "Ablaufdatum des Zugriffes"
       }
-    }
+    },
+    "generate": "erstellen"
   },
   "construction_manager": {
     "_name": "Bauleiter",

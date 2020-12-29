@@ -1,11 +1,15 @@
 <template>
-  <table class="table table-striped-2 table-hover border">
-    <thead>
-    <tr class="bg-light">
-      <th></th>
-      <th colspan="8">
-        <span class="mt-2 d-inline-block">{{ $t('issue._name') }}</span>
-        <span class="text-right float-right">
+  <loading-indicator :spin="filtersLoading">
+    <div class="alert alert-info" v-if="issues !== null && issues.length === 0 && filterEqualsDefaultFilter">
+      keine pendenzen mit default filter
+    </div>
+    <table v-else class="table table-striped-2 table-hover border">
+      <thead>
+      <tr class="bg-light">
+        <th></th>
+        <th colspan="8">
+          <span class="mt-2 d-inline-block">{{ $t('issue._name') }}</span>
+          <span class="text-right float-right">
           <span class="btn-group reset-table-styles">
             <span class="btn btn-link" v-if="editButtonPendingRequestCount > 0">
               {{ editButtonPendingRequestCount }}
@@ -23,150 +27,163 @@
                                   @remove="removeIssues"/>
           </span>
         </span>
-      </th>
-    </tr>
-    <tr class="text-secondary">
-      <th class="w-minimal">
-        <custom-checkbox id="all-issues"
-                         @click.prevent="toggleSelectedIssues(issues)">
-          <input class="custom-control-input" type="checkbox"
-                 :checked="entityListsAreEqual(issues, selectedIssues)">
-        </custom-checkbox>
-      </th>
-      <th class="w-minimal">
-        <font-awesome-icon :icon="['fal', 'search']"/>
-      </th>
-      <th class="w-minimal">
-        <font-awesome-icon :icon="['fal', 'filter']"/>
-      </th>
-      <th class="w-minimal"></th>
-      <th>
-        {{ $t('issue.description') }}
-        <font-awesome-icon class="ml-1" :icon="['fal', 'search']"/>
-      </th>
-      <th>
-        {{ $t('craftsman._name') }}
-        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
-      </th>
-      <th>
-        {{ $t('map._name') }}
-        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
-      </th>
-      <th>
-        {{ $t('issue.deadline') }}
-        <font-awesome-icon class="ml-1" :icon="['fal', 'sort']"/>
-        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
-      </th>
-      <th class="w-minimal">
-        {{ $t('issue.status') }}
-        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
-      </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr v-for="iwr in orderedIssuesWithRelations" @click.stop="toggleSelectedIssue(iwr.issue)" class="clickable">
-      <td class="w-minimal">
-        <custom-checkbox>
-          <input
-              class="custom-control-input" type="checkbox"
-              v-model="selectedIssues"
-              :value="iwr.issue">
-        </custom-checkbox>
-      </td>
-      <td>{{ iwr.issue.number }}</td>
-      <td>
-        <toggle-icon-with-tooltip
-            icon="star"
-            :value="iwr.issue.isMarked"
-            :tooltip-title="$t('issue.is_marked')"/>
-        <br/>
-        <toggle-icon-with-tooltip
-            icon="user-check"
-            :value="iwr.issue.wasAddedWithClient"
-            :tooltip-title="$t('issue.was_added_with_client')"/>
-      </td>
-      <td>
-        <lightbox @click.stop="" v-if="iwr.issue.imageUrl"
-                  :src="iwr.issue.imageUrl" :src-full="iwr.issue.imageUrl + '?size=full'"
-                  :alt="'thumbnail of ' + iwr.issue.number"/>
-      </td>
-      <td>{{ iwr.issue.description }}</td>
-      <td>
-        <text-with-tooltip v-if="iwr.craftsman" :tooltip-title="iwr.craftsman.contactName">
-          {{ iwr.craftsman.company }}<br/>
-          {{ iwr.craftsman.trade }}
-        </text-with-tooltip>
-      </td>
-      <td>
-        <text-with-tooltip v-if="iwr.map" :tooltip-title="iwr.mapParents.map(m => m.name).join(' > ')">
-          {{ iwr.map.name }}
-        </text-with-tooltip>
-      </td>
-      <td>
-        <human-readable-date :value="iwr.issue.deadline"/>
-      </td>
-      <td class="w-minimal white-space-nowrap">
-        <template v-if="iwr.closedBy">
-          <text-with-tooltip
-              class="mr-1" :tooltip-title="iwr.closedBy.givenName + ' ' + iwr.closedBy.familyName ">
-            <b>{{ $t('issue.state.closed') }}</b>
+        </th>
+      </tr>
+      <tr class="text-secondary">
+        <th class="w-minimal">
+          <custom-checkbox
+              id="all-issues"
+              @click.prevent="toggleSelectedIssues(issues)">
+            <input class="custom-control-input" type="checkbox"
+                   :disabled="issues === null"
+                   :checked="issues !== null && entityListsAreEqual(issues, selectedIssues)">
+          </custom-checkbox>
+        </th>
+        <th class="w-minimal">
+          <font-awesome-icon :icon="['fal', 'search']"/>
+        </th>
+        <th class="w-minimal">
+          <font-awesome-icon :icon="['fal', 'filter']"/>
+        </th>
+        <th class="w-minimal"></th>
+        <th>
+          {{ $t('issue.description') }}
+          <font-awesome-icon class="ml-1" :icon="['fal', 'search']"/>
+        </th>
+        <th>
+          {{ $t('craftsman._name') }}
+          <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
+        </th>
+        <th>
+          {{ $t('map._name') }}
+          <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
+        </th>
+        <th>
+          {{ $t('issue.deadline') }}
+          <font-awesome-icon class="ml-1" :icon="['fal', 'sort']"/>
+          <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
+        </th>
+        <th class="w-minimal">
+          {{ $t('issue.status') }}
+          <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
+        </th>
+      </tr>
+      </thead>
+      <tbody v-if="issues !== null">
+      <tr v-if="issuesLoading">
+        <td colspan="9">
+          <p class="text-center">loading</p>
+        </td>
+      </tr>
+      <tr v-for="iwr in issuesWithRelations" @click.stop="toggleSelectedIssue(iwr.issue)" class="clickable">
+        <td class="w-minimal">
+          <custom-checkbox>
+            <input
+                class="custom-control-input" type="checkbox"
+                v-model="selectedIssues"
+                :value="iwr.issue">
+          </custom-checkbox>
+        </td>
+        <td>{{ iwr.issue.number }}</td>
+        <td>
+          <toggle-icon-with-tooltip
+              icon="star"
+              :value="iwr.issue.isMarked"
+              :tooltip-title="$t('issue.is_marked')"/>
+          <br/>
+          <toggle-icon-with-tooltip
+              icon="user-check"
+              :value="iwr.issue.wasAddedWithClient"
+              :tooltip-title="$t('issue.was_added_with_client')"/>
+        </td>
+        <td>
+          <lightbox @click.stop="" v-if="iwr.issue.imageUrl"
+                    :src="iwr.issue.imageUrl" :src-full="iwr.issue.imageUrl + '?size=full'"
+                    :alt="'thumbnail of ' + iwr.issue.number"/>
+        </td>
+        <td>{{ iwr.issue.description }}</td>
+        <td>
+          <text-with-tooltip v-if="iwr.craftsman" :tooltip-title="iwr.craftsman.contactName">
+            {{ iwr.craftsman.company }}<br/>
+            {{ iwr.craftsman.trade }}
           </text-with-tooltip>
-          <human-readable-date-time :value="iwr.issue.closedAt"/>
-        </template>
+        </td>
+        <td>
+          <text-with-tooltip v-if="iwr.map" :tooltip-title="iwr.mapParents.map(m => m.name).join(' > ')">
+            {{ iwr.map.name }}
+          </text-with-tooltip>
+        </td>
+        <td>
+          <human-readable-date :value="iwr.issue.deadline"/>
+        </td>
+        <td class="w-minimal white-space-nowrap">
+          <template v-if="iwr.closedBy">
+            <text-with-tooltip
+                class="mr-1" :tooltip-title="iwr.closedBy.givenName + ' ' + iwr.closedBy.familyName ">
+              <b>{{ $t('issue.state.closed') }}</b>
+            </text-with-tooltip>
+            <human-readable-date-time :value="iwr.issue.closedAt"/>
+          </template>
 
-        <template v-else-if="iwr.resolvedBy">
-          <text-with-tooltip
-              class="mr-1" :tooltip-title="iwr.resolvedBy.contactName">
-            <b>{{ $t('issue.state.resolved') }}</b>
-          </text-with-tooltip>
-          <human-readable-date-time :value="iwr.issue.resolvedAt"/>
-        </template>
+          <template v-else-if="iwr.resolvedBy">
+            <text-with-tooltip
+                class="mr-1" :tooltip-title="iwr.resolvedBy.contactName">
+              <b>{{ $t('issue.state.resolved') }}</b>
+            </text-with-tooltip>
+            <human-readable-date-time :value="iwr.issue.resolvedAt"/>
+          </template>
 
-        <template v-else-if="iwr.registeredBy">
-          <text-with-tooltip
-              class="mr-1" :tooltip-title="iwr.registeredBy.givenName + ' ' + iwr.registeredBy.familyName">
-            <b>{{ $t('issue.state.registered') }}</b>
-          </text-with-tooltip>
-          <human-readable-date-time :value="iwr.issue.registeredAt"/>
-        </template>
+          <template v-else-if="iwr.registeredBy">
+            <text-with-tooltip
+                class="mr-1" :tooltip-title="iwr.registeredBy.givenName + ' ' + iwr.registeredBy.familyName">
+              <b>{{ $t('issue.state.registered') }}</b>
+            </text-with-tooltip>
+            <human-readable-date-time :value="iwr.issue.registeredAt"/>
+          </template>
 
-        <template v-else>
-          <text-with-tooltip
-              class="mr-1" :tooltip-title="iwr.createdBy.givenName + ' ' + iwr.createdBy.familyName">
-            <b>{{ $t('issue.state.created') }}</b>
-          </text-with-tooltip>
-          <human-readable-date-time :value="iwr.issue.createdAt"/>
+          <template v-else>
+            <text-with-tooltip
+                class="mr-1" :tooltip-title="iwr.createdBy.givenName + ' ' + iwr.createdBy.familyName">
+              <b>{{ $t('issue.state.created') }}</b>
+            </text-with-tooltip>
+            <human-readable-date-time :value="iwr.issue.createdAt"/>
+          </template>
+        </td>
+      </tr>
+      </tbody>
+      <caption class="caption-top">
+        <template v-if="view === 'foyer'">
+          <div v-if="issuesWithoutDescription.length" class="form-check form-check-inline">
+            <custom-checkbox id="issues-without-description"
+                             :label="$t('issue_table.without_description')"
+                             @click.prevent="toggleSelectedIssues(issuesWithoutDescription)">
+              <input class="custom-control-input" type="checkbox"
+                     :checked="entityListsAreEqual(issuesWithoutDescription, selectedIssues)">
+            </custom-checkbox>
+          </div>
+          <div v-if="issuesWithoutCraftsman.length" class="form-check form-check-inline">
+            <custom-checkbox id="issues-without-craftsman"
+                             :label="$t('issue_table.without_craftsman')"
+                             @click.prevent="toggleSelectedIssues(issuesWithoutCraftsman)">
+              <input class="custom-control-input" type="checkbox"
+                     :checked="entityListsAreEqual(issuesWithoutCraftsman, selectedIssues)">
+            </custom-checkbox>
+          </div>
+          <div v-if="issuesWithoutDeadline.length" class="form-check form-check-inline">
+            <custom-checkbox id="issues-without-deadline"
+                             :label="$t('issue_table.without_deadline')"
+                             @click.prevent="toggleSelectedIssues(issuesWithoutDeadline)">
+              <input class="custom-control-input" type="checkbox"
+                     :checked="entityListsAreEqual(issuesWithoutDeadline, selectedIssues)">
+            </custom-checkbox>
+          </div>
         </template>
-      </td>
-    </tr>
-    </tbody>
-    <caption>
-      <div v-if="issuesWithoutDescription.length" class="form-check form-check-inline">
-        <custom-checkbox id="issues-without-description"
-                         :label="$t('issue_table.without_description')"
-                         @click.prevent="toggleSelectedIssues(issuesWithoutDescription)">
-          <input class="custom-control-input" type="checkbox"
-                 :checked="entityListsAreEqual(issuesWithoutDescription, selectedIssues)">
-        </custom-checkbox>
-      </div>
-      <div v-if="issuesWithoutCraftsman.length" class="form-check form-check-inline">
-        <custom-checkbox id="issues-without-craftsman"
-                         :label="$t('issue_table.without_craftsman')"
-                         @click.prevent="toggleSelectedIssues(issuesWithoutCraftsman)">
-          <input class="custom-control-input" type="checkbox"
-                 :checked="entityListsAreEqual(issuesWithoutCraftsman, selectedIssues)">
-        </custom-checkbox>
-      </div>
-      <div v-if="issuesWithoutDeadline.length" class="form-check form-check-inline">
-        <custom-checkbox id="issues-without-deadline"
-                         :label="$t('issue_table.without_deadline')"
-                         @click.prevent="toggleSelectedIssues(issuesWithoutDeadline)">
-          <input class="custom-control-input" type="checkbox"
-                 :checked="entityListsAreEqual(issuesWithoutDeadline, selectedIssues)">
-        </custom-checkbox>
-      </div>
-    </caption>
-  </table>
+        <div class="float-right">
+          {{ totalIssues }} {{ $t('issue._plural') }}
+        </div>
+      </caption>
+    </table>
+  </loading-indicator>
 </template>
 
 <script>
@@ -175,7 +192,7 @@ import HumanReadableDate from './View/HumanReadableDate'
 import HumanReadableDateTime from './View/HumanReadableDateTime'
 import OrderedTableHead from './View/OrderedTableHead'
 import NumberWithTooltip from './View/NumberWithTooltip'
-import {arraysAreEqual} from '../services/algorithms'
+import {arraysAreEqual, objectsAreEqual} from '../services/algorithms'
 import CustomCheckbox from './Edit/Input/CustomCheckbox'
 import IconWithTooltip from "./View/IconWithTooltip";
 import TextWithTooltip from "./View/TextWithTooltip";
@@ -186,10 +203,12 @@ import {api} from "../services/api";
 import {displaySuccess} from "../services/notifiers";
 import RemoveIssuesButton from "./RemoveIssuesButton";
 import ToggleIconWithTooltip from "./View/ToggleIconWithTooltip";
+import LoadingIndicator from "./View/LoadingIndicator";
 
 export default {
-  emits: ['selected', 'deleted'],
+  emits: ['selected', 'filtered'],
   components: {
+    LoadingIndicator,
     ToggleIconWithTooltip,
     RemoveIssuesButton,
     EditIssuesButton,
@@ -205,6 +224,14 @@ export default {
   },
   data() {
     return {
+      constructionManagers: null,
+      maps: null,
+      craftsmen: null,
+      issues: [],
+      issuePage: 1,
+      totalIssues: 0,
+      issuesLoading: true,
+      filter: {},
       selectedIssues: [],
       prePatchedIssues: [],
       prePostedIssueImages: [],
@@ -212,26 +239,30 @@ export default {
     }
   },
   props: {
-    issues: {
-      type: Array,
+    constructionSite: {
+      type: Object,
       required: true
     },
-    craftsmen: {
-      type: Array,
-      required: true
+    defaultFilter: {
+      type: Object,
+      required: false,
+      default: {}
     },
-    maps: {
-      type: Array,
-      required: true
-    },
-    constructionManagers: {
-      type: Array,
-      required: true
+    view: {
+      type: String,
+      required: false,
+      default: 'register'
     }
   },
   computed: {
+    filterEqualsDefaultFilter: function () {
+      return objectsAreEqual(this.defaultFilter, this.filter)
+    },
     editButtonPendingRequestCount: function () {
       return this.prePatchedIssues.length + this.prePostedIssueImages.length
+    },
+    filtersLoading: function () {
+      return this.constructionManagers === null || this.craftsmen === null || this.maps === null
     },
     craftsmanLookup: function () {
       let craftsmanLookup = {}
@@ -284,7 +315,7 @@ export default {
 
       return constructionManagerLookup
     },
-    orderedIssuesWithRelations: function () {
+    issuesWithRelations: function () {
       return this.issues.map(issue => {
         return {
           issue,
@@ -296,7 +327,7 @@ export default {
           resolvedBy: this.craftsmanLookup[issue.resolvedBy],
           closedBy: this.constructionManagerLookup[issue.closedBy]
         };
-      }).sort((a, b) => a.issue.number - b.issue.number)
+      })
     },
     issuesWithoutDescription: function () {
       return this.issues.filter(i => i.description === null || i.description === "")
@@ -395,10 +426,29 @@ export default {
   watch: {
     selectedIssues: function () {
       this.$emit('selected', this.selectedIssues)
+    },
+    filter: function () {
+      this.$emit('filtered', this.filter)
     }
   },
   mounted() {
-    this.selectedIssues = this.issues
+    this.filter = this.defaultFilter
+
+    api.getCraftsmen(this.constructionSite)
+        .then(craftsmen => this.craftsmen = craftsmen)
+
+    api.getMaps(this.constructionSite)
+        .then(maps => this.maps = maps)
+
+    api.getConstructionManagers(this.constructionSite)
+        .then(constructionManagers => this.constructionManagers = constructionManagers)
+
+    api.getPaginatedIssues(this.constructionSite, this.filter)
+        .then(payload => {
+          this.issues = payload.items
+          this.totalIssues = payload.totalItems
+          this.issuesLoading = false;
+        })
   }
 }
 </script>

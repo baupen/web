@@ -79,6 +79,20 @@ const api = {
       }
     )
   },
+  _getPaginatedHydraCollection: function (url) {
+    return new Promise(
+      (resolve) => {
+        axios.get(url)
+          .then(response => {
+            const payload = {
+              items: response.data['hydra:member'],
+              totalItems: response.data['hydra:totalItems']
+            }
+            resolve(payload)
+          })
+      }
+    )
+  },
   _getItem: function (url) {
     return new Promise(
       (resolve) => {
@@ -160,10 +174,10 @@ const api = {
   getConstructionSites: function () {
     return this._getHydraCollection('/api/construction_sites')
   },
-  getIssues: function (constructionSite, query = {}) {
+  getPaginatedIssues: function (constructionSite, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
     queryString += '&' + this._getQueryString(query)
-    return this._getHydraCollection('/api/issues?' + queryString)
+    return this._getPaginatedHydraCollection('/api/issues?' + queryString)
   },
   getMaps: function (constructionSite, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
