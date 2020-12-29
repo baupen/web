@@ -90,7 +90,7 @@
     }
   },
   "dispatch": {
-    "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die offenen Pendenzen angeschaut und erledigt werden.",
+    "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und auf erledigt setzen.",
     "save_template_changes": "Änderungen an der Vorlage speichern",
     "save_as_new_template": "Als neue Vorlage speichern",
     "no_template": "Keine Vorlage",

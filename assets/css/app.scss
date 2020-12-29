@@ -4,6 +4,7 @@ $border-radius-sm: 0;
 $modal-backdrop-opacity: 0.3;
 $primary: #343477;
 $primary-200: #eaecef;
+$custom-control-cursor: pointer;
 
 @import '~bootstrap/scss/bootstrap';
 @import '~noty/src/noty';
@@ -73,4 +74,8 @@ input:required,
 textarea:required,
 select:required {
   box-shadow: none;
+}
+
+.caption-top {
+  caption-side: top;
 }
