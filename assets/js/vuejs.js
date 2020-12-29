@@ -15,7 +15,7 @@ import {
 } from '@fortawesome/pro-light-svg-icons'
 import {
   faStar as faStarSolid, faUserCheck as faUserCheckSolid, // issue states (active)
-  faFilter as faFilterSolid, faSearch as faSearchSolid, faSortUp, faSortDown // table
+  faFilter as faFilterSolid, faSearch as faSearchSolid, faSortUp as faSortUpSolid, faSortDown as faSortDownSolid // table
 } from '@fortawesome/pro-solid-svg-icons'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 
@@ -38,7 +38,7 @@ FontawesomeLibrary.add(
   faStar, faUserCheck,
   faFilter, faSearch, faSort,
   faStarSolid, faUserCheckSolid,
-  faFilterSolid, faSearchSolid, faSortUp, faSortDown
+  faFilterSolid, faSearchSolid, faSortUpSolid, faSortDownSolid
 )
 
 // configure moment

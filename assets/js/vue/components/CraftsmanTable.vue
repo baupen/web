@@ -15,8 +15,8 @@
         </custom-checkbox>
       </th>
       <th>{{ $t('craftsman.company') }}</th>
-      <th>{{ $t('craftsman.contact_name') }}</th>
       <th>{{ $t('craftsman.trade') }}</th>
+      <th>{{ $t('craftsman.contact_name') }}</th>
 
       <th class="border-left">{{ $t('view.count') }}</th>
       <th>{{ $t('craftsman.next_deadline') }}</th>
@@ -38,8 +38,8 @@
         </custom-checkbox>
       </td>
       <td>{{ cws.craftsman.company }}</td>
-      <td>{{ cws.craftsman.contactName }}</td>
       <td>{{ cws.craftsman.trade }}</td>
+      <td>{{ cws.craftsman.contactName }}</td>
 
       <td class="border-left">
         <number-with-tooltip color-if-nonzero="danger" :value="cws.statistics.issueOverdueCount"

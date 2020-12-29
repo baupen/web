@@ -7,12 +7,19 @@
         <span class="mt-2 d-inline-block">{{ $t('issue._name') }}</span>
         <span class="text-right float-right">
           <span class="btn-group reset-table-styles">
-            <span class="btn btn-link" v-if="editButtonPendingRequestCount > 0">{{ editButtonPendingRequestCount }}</span>
-            <edit-issues-button :issues="selectedIssues" :craftsmen="craftsmen" :disabled="selectedIssues.length === 0 || editButtonPendingRequestCount > 0"
+            <span class="btn btn-link" v-if="editButtonPendingRequestCount > 0">
+              {{ editButtonPendingRequestCount }}
+            </span>
+            <edit-issues-button :issues="selectedIssues" :craftsmen="craftsmen"
+                                :disabled="selectedIssues.length === 0 || editButtonPendingRequestCount > 0"
                                 @save="saveIssues"
                                 @save-image="saveIssueImages"/>
-            <span class="btn btn-link" v-if="preDeletedIssues.length > 0">{{ preDeletedIssues.length }}</span>
-            <remove-issues-button :issues="selectedIssues" :disabled="selectedIssues.length === 0 || preDeletedIssues.length > 0"
+
+            <span class="btn btn-link" v-if="preDeletedIssues.length > 0">
+              {{ preDeletedIssues.length }}
+            </span>
+            <remove-issues-button :issues="selectedIssues"
+                                  :disabled="selectedIssues.length === 0 || preDeletedIssues.length > 0"
                                   @remove="removeIssues"/>
           </span>
         </span>
@@ -27,33 +34,32 @@
         </custom-checkbox>
       </th>
       <th class="w-minimal">
-        <font-awesome-icon :icon="['fal', 'search']" />
+        <font-awesome-icon :icon="['fal', 'search']"/>
       </th>
       <th class="w-minimal">
-        <font-awesome-icon :icon="['fal', 'filter']" />
+        <font-awesome-icon :icon="['fal', 'filter']"/>
       </th>
       <th class="w-minimal"></th>
       <th>
         {{ $t('issue.description') }}
-        <font-awesome-icon class="ml-1" :icon="['fal', 'search']" />
+        <font-awesome-icon class="ml-1" :icon="['fal', 'search']"/>
       </th>
       <th>
         {{ $t('craftsman._name') }}
-        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']" />
+        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
       </th>
       <th>
         {{ $t('map._name') }}
-        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']" />
+        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
       </th>
       <th>
         {{ $t('issue.deadline') }}
-        <font-awesome-icon class="ml-1" :icon="['fal', 'sort']" />
-        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']" />
+        <font-awesome-icon class="ml-1" :icon="['fal', 'sort']"/>
+        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
       </th>
       <th class="w-minimal">
         {{ $t('issue.status') }}
-        <font-awesome-icon class="ml-1" :icon="['fal', 'sort']" />
-        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']" />
+        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
       </th>
     </tr>
     </thead>
