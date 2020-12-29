@@ -11,11 +11,11 @@ import {
   faPlus, faPencil, faTrash, // CRUD
   faUserAlt, faQuestionCircle, faEnvelopeOpen, // navigation
   faStar, faUserCheck, // issue states (not active)
-  faFilter, faSearch // table
+  faFilter, faSearch, faSort // table
 } from '@fortawesome/pro-light-svg-icons'
 import {
   faStar as faStarSolid, faUserCheck as faUserCheckSolid, // issue states (active)
-  faFilter as faFilterSolid, faSearch as faSearchSolid // table
+  faFilter as faFilterSolid, faSearch as faSearchSolid, faSortUp, faSortDown // table
 } from '@fortawesome/pro-solid-svg-icons'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 
@@ -36,9 +36,9 @@ FontawesomeLibrary.add(
   faPlus, faPencil, faTrash,
   faUserAlt, faQuestionCircle, faEnvelopeOpen,
   faStar, faUserCheck,
-  faFilter, faSearch,
+  faFilter, faSearch, faSort,
   faStarSolid, faUserCheckSolid,
-  faFilterSolid, faSearchSolid
+  faFilterSolid, faSearchSolid, faSortUp, faSortDown
 )
 
 // configure moment

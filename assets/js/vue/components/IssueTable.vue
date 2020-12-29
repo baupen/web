@@ -26,14 +26,35 @@
                  :checked="entityListsAreEqual(issues, selectedIssues)">
         </custom-checkbox>
       </th>
+      <th class="w-minimal">
+        <font-awesome-icon :icon="['fal', 'search']" />
+      </th>
+      <th class="w-minimal">
+        <font-awesome-icon :icon="['fal', 'filter']" />
+      </th>
       <th class="w-minimal"></th>
-      <th class="w-minimal"></th>
-      <th class="w-minimal"></th>
-      <th>{{ $t('issue.description') }}</th>
-      <th>{{ $t('craftsman._name') }}</th>
-      <th>{{ $t('issue.deadline') }}</th>
-      <th>{{ $t('map._name') }}</th>
-      <th class="w-minimal">{{ $t('issue.status') }}</th>
+      <th>
+        {{ $t('issue.description') }}
+        <font-awesome-icon class="ml-1" :icon="['fal', 'search']" />
+      </th>
+      <th>
+        {{ $t('craftsman._name') }}
+        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']" />
+      </th>
+      <th>
+        {{ $t('map._name') }}
+        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']" />
+      </th>
+      <th>
+        {{ $t('issue.deadline') }}
+        <font-awesome-icon class="ml-1" :icon="['fal', 'sort']" />
+        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']" />
+      </th>
+      <th class="w-minimal">
+        {{ $t('issue.status') }}
+        <font-awesome-icon class="ml-1" :icon="['fal', 'sort']" />
+        <font-awesome-icon class="ml-1" :icon="['fal', 'filter']" />
+      </th>
     </tr>
     </thead>
     <tbody>
@@ -71,12 +92,12 @@
         </text-with-tooltip>
       </td>
       <td>
-        <human-readable-date :value="iwr.issue.deadline"/>
-      </td>
-      <td>
         <text-with-tooltip v-if="iwr.map" :tooltip-title="iwr.mapParents.map(m => m.name).join(' > ')">
           {{ iwr.map.name }}
         </text-with-tooltip>
+      </td>
+      <td>
+        <human-readable-date :value="iwr.issue.deadline"/>
       </td>
       <td class="w-minimal white-space-nowrap">
         <template v-if="iwr.closedBy">
