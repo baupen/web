@@ -9,26 +9,17 @@
       <template v-slot:body>
         <slot></slot>
       </template>
-      <template v-slot:after-body>
-        <div class="modal-footer">
-          <slot name="secondary-footer"></slot>
-          <button type="submit" :disabled="!canConfirm" @click="confirm" class="btn btn-primary">
-            {{ confirmTitle ?? title }}
-          </button>
-        </div>
-      </template>
     </modal>
   </transition>
 </template>
 
 <script>
 
-import ButtonWithModal from "./ButtonWithModal";
 import Modal from "./Modal";
 
 export default {
   emits: ['confirm', 'shown', 'hidden'],
-  components: {Modal, ButtonWithModal},
+  components: {Modal},
   data() {
     return {
       show: false
@@ -42,14 +33,6 @@ export default {
     buttonDisabled: {
       type: Boolean,
       default: false
-    },
-    confirmTitle: {
-      type: String,
-      default: null
-    },
-    canConfirm: {
-      type: Boolean,
-      default: true
     },
     modalSize: {
       type: String,

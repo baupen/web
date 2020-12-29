@@ -7,7 +7,7 @@
         <custom-checkbox-field for-id="self-bcc" :label="$t('email.self_bcc')">
           <input
               class="custom-control-input" type="checkbox" id="self-bcc"
-              v-model="this.email.selfBcc"
+              v-model="email.selfBcc"
               :true-value="true"
               :false-value="false">
         </custom-checkbox-field>
@@ -66,7 +66,7 @@
         <invalid-feedback :errors="fields.body.errors"/>
       </form-field>
 
-      <p class="alert alert-info">{{ $t('dispatch.resolve_link_is_appended') }}</p>
+      <p class="alert alert-info mb-0">{{ $t('dispatch.resolve_link_is_appended') }}</p>
 
     </button-with-modal-confirm>
   </div>
