@@ -41,7 +41,13 @@
           </custom-checkbox>
         </th>
         <th class="w-minimal">
-          <font-awesome-icon :icon="['fal', 'search']"/>
+          <popover :title="$t('issue.number')">
+            <input v-model.number="filter.number" type="number" name="number">
+
+            <template v-slot:button>
+              <font-awesome-icon :icon="['fal', 'search']"/>
+            </template>
+          </popover>
         </th>
         <th class="w-minimal">
           <font-awesome-icon :icon="['fal', 'filter']"/>
@@ -206,12 +212,14 @@ import RemoveIssuesButton from "./RemoveIssuesButton";
 import ToggleIconWithTooltip from "./View/ToggleIconWithTooltip";
 import LoadingIndicator from "./View/LoadingIndicator";
 import debounce from "lodash.debounce";
+import Popover from "./Behaviour/Popover";
 
 let issuesLoadingDebounce = 0;
 
 export default {
   emits: ['selected', 'filtered'],
   components: {
+    Popover,
     LoadingIndicator,
     ToggleIconWithTooltip,
     RemoveIssuesButton,
@@ -238,7 +246,7 @@ export default {
       maps: null,
 
       filter: {
-        number: "",
+        number: null,
 
         isMarked: null,
         wasAddedWithClient: null,
@@ -463,7 +471,7 @@ export default {
         }
 
         const fieldValue = filter[fieldName]
-        if (fieldValue === null || fieldValue === [] || fieldValue === "") {
+        if (fieldValue === null || fieldValue === "" || (typeof fieldValue.length === 'number' && fieldValue.length === 0)) {
           continue
         }
 
@@ -482,6 +490,8 @@ export default {
         // include query default value
         query.state = query.state ? query.state | state : state
       }
+
+      console.log(query)
 
       return query;
     },

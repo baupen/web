@@ -19,9 +19,14 @@ import {
 } from '@fortawesome/pro-solid-svg-icons'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 
+// languages
 import de from './localization/de.json'
 import it from './localization/it.json'
 
+// directives
+import { clickOutside, focus } from './vue/services/directives'
+
+// views
 import Switch from './vue/Switch.vue'
 import Dashboard from './vue/Dashboard.vue'
 import Dispatch from './vue/Dispatch'
@@ -55,13 +60,14 @@ const i18n = createI18n({
 })
 
 // configure vue
-
 function createVue (app) {
   const vue = createApp(app)
 
   vue.config.productionTip = false
   vue.use(i18n)
   vue.component('FontAwesomeIcon', FontAwesomeIcon)
+  vue.directive('click-outside', clickOutside)
+  vue.directive('focus', focus)
 
   return vue
 }
