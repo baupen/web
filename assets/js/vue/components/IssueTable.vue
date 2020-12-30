@@ -127,11 +127,6 @@
       </tr>
       </thead>
       <tbody v-if="issues !== null">
-      <tr v-if="issuesLoading">
-        <td colspan="9">
-          <p class="text-center">loading</p>
-        </td>
-      </tr>
       <tr v-if="issues.length === 0 && !issuesLoading">
         <td colspan="9">
           <p class="text-center">no issues found</p>
@@ -274,8 +269,6 @@ import FilterPopover from "./View/FilterPopover";
 import CustomCheckboxField from "./Edit/Layout/CustomCheckboxField";
 import FormField from "./Edit/Layout/FormField";
 import IssueTableFilterCraftsmen from "./IssueTableFilterCraftsmen";
-
-let issuesLoadingDebounce = 0;
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count'],
@@ -595,13 +588,12 @@ export default {
     filter: {
       handler: debounce(function (newVal) {
         this.loadIssues(newVal)
-      }, issuesLoadingDebounce),
+      }, 200, {"leading": true}),
       deep: true
     }
   },
   mounted() {
     this.filter = Object.assign({}, this.filter, this.defaultFilter)
-    issuesLoadingDebounce = 0;
 
     api.getCraftsmen(this.constructionSite)
         .then(craftsmen => {
