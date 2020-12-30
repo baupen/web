@@ -3,7 +3,7 @@
     <div class="btn-group mb-4">
       <export-issues-button
           :disabled="exportDisabled"
-          :filter="filter" :filtered-issue-count="filteredIssuesCount" :selected-issues="selectedIssues" />
+          :query="query" :queried-issue-count="queriedIssuesCount" :selected-issues="selectedIssues" />
     </div>
 
     <loading-indicator :spin="constructionSite === null">
@@ -11,7 +11,8 @@
           :construction-site="constructionSite"
           :default-filter="{isDeleted: false}"
           @selected="selectedIssues = $event"
-          @filtered="filter = $event"/>
+          @query="query = $event"
+          @queried-issue-count="queriedIssuesCount = $event"/>
     </loading-indicator>
   </div>
 </template>
@@ -32,8 +33,8 @@ export default {
   data() {
     return {
       constructionSite: null,
-      filteredIssuesCount: 0,
-      filter: {},
+      queriedIssuesCount: 0,
+      query: {},
       selectedIssues: [],
     }
   },
@@ -44,7 +45,7 @@ export default {
   },
   computed: {
     exportDisabled: function () {
-      return this.selectedIssues.length === 0 && this.filteredIssuesCount === 0
+      return this.selectedIssues.length === 0 && this.queriedIssuesCount === 0
     }
   },
   mounted() {

@@ -37,15 +37,15 @@
               @click.prevent="toggleSelectedIssues(issues)">
             <input class="custom-control-input" type="checkbox"
                    :disabled="issues === null"
-                   :checked="issues !== null && entityListsAreEqual(issues, selectedIssues)">
+                   :checked="issues !== null && issues.length > 0 && entityListsAreEqual(issues, selectedIssues)">
           </custom-checkbox>
         </th>
         <th class="w-minimal">
           <popover :title="$t('issue_table.filter.by_number')" @shown="$refs['filter-number'].focus()">
-            <input ref="filter-number" v-model.number="filter.number" type="number" name="filter-number">
+            <input class="form-control" ref="filter-number" v-model.number="filter.number" type="number" name="filter-number">
 
             <template v-slot:button>
-              <font-awesome-icon :icon="['fal', 'search']"/>
+              <font-awesome-icon :class="{'text-primary': filter.number || filter.number === 0}" :icon="['fas', 'search']"/>
             </template>
           </popover>
         </th>
@@ -55,7 +55,7 @@
         <th class="w-minimal"></th>
         <th>
           {{ $t('issue.description') }}
-          <font-awesome-icon class="ml-1" :icon="['fal', 'search']"/>
+          <font-awesome-icon class="ml-1" :icon="['fas', 'search']"/>
         </th>
         <th>
           {{ $t('craftsman._name') }}
@@ -80,6 +80,11 @@
       <tr v-if="issuesLoading">
         <td colspan="9">
           <p class="text-center">loading</p>
+        </td>
+      </tr>
+      <tr v-if="issues.length === 0 && !issuesLoading">
+        <td colspan="9">
+          <p class="text-center">no issues found</p>
         </td>
       </tr>
       <tr v-for="iwr in issuesWithRelations" @click.stop="toggleSelectedIssue(iwr.issue)" class="clickable">
@@ -217,7 +222,7 @@ import Popover from "./Behaviour/Popover";
 let issuesLoadingDebounce = 0;
 
 export default {
-  emits: ['selected', 'filtered'],
+  emits: ['selected', 'query', 'queried-issue-count'],
   components: {
     Popover,
     LoadingIndicator,
@@ -499,11 +504,14 @@ export default {
       this.issuesLoading = true;
 
       let query = this.filterAsQuery(filter)
+      this.$emit('query', query)
 
       api.getPaginatedIssues(this.constructionSite, query)
           .then(payload => {
             this.issues = payload.items
             this.totalIssues = payload.totalItems
+
+            this.$emit('queried-issue-count', payload.totalItems)
 
             this.issuesLoading = false;
           })
@@ -516,7 +524,6 @@ export default {
     filter: {
       handler: debounce(function (newVal) {
         this.loadIssues(newVal)
-        this.$emit('filtered', newVal)
       }, issuesLoadingDebounce),
       deep: true
     }

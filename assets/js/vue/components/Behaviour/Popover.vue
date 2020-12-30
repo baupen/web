@@ -1,9 +1,9 @@
 <template>
   <div>
-    <span class="clickable" ref="button" aria-describedby="tooltip" @click.prevent.stop="show = !show">
+    <span class="clickable" ref="button" aria-describedby="tooltip" @click.prevent.stop="activated = !activated" @mouseenter="hoveredButton" @mouseleave="unHoveredButton">
       <slot name="button"/>
     </span>
-    <div ref="tooltip" class="popover fade bs-popover-top" :show="show" :class="{'show': show}" v-click-outside="clickOutside" role="tooltip">
+    <div ref="tooltip" class="popover fade" :show="show" :class="{'show': show}" @mouseenter="hoveredContent" v-click-outside="clickOutside" role="tooltip">
       <div class="arrow" data-popper-arrow></div>
       <h3 class="popover-header">{{ title }}</h3>
       <div class="popover-body" @click.stop="">
@@ -21,7 +21,9 @@ export default {
   data() {
     return {
       instance: null,
-      show: false
+      activated: false,
+      hover: false,
+      postButtonHover: false
     }
   },
   props: {
@@ -39,7 +41,30 @@ export default {
   },
   methods: {
     clickOutside: function () {
-      this.show = false
+      this.activated = false
+    },
+    hoveredButton: function () {
+      this.hover = true;
+      this.postButtonHover = false
+    },
+    hoveredContent: function () {
+      if (this.postButtonHover) {
+        this.activated = true;
+      }
+    },
+    unHoveredButton: function () {
+      this.postButtonHover = true;
+      setTimeout(()=>{
+        if (this.postButtonHover) {
+          this.hover = false;
+          this.postButtonHover = false;
+        }
+      },300);
+    }
+  },
+  computed: {
+    show: function () {
+      return this.activated || this.hover
     }
   },
   mounted() {

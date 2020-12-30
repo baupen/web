@@ -5,7 +5,7 @@
         :button-disabled="disabled">
 
       <custom-checkbox-field for-id="export-source-filter"
-                             :label="$tc('export_issues_button.export_source_filter', filteredIssueCount)">
+                             :label="$tc('export_issues_button.export_source_filter', queriedIssueCount)">
         <input class="custom-control-input" type="radio" name="export-source" value="filter" id="export-source-filter"
                v-model="exportSource">
       </custom-checkbox-field>
@@ -121,11 +121,11 @@ export default {
       type: Array,
       required: true
     },
-    filteredIssueCount: {
+    queriedIssueCount: {
       type: Number,
       required: true
     },
-    filter: {
+    query: {
       type: Object,
       required: true
     },
