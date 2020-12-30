@@ -1,7 +1,7 @@
 <template>
   <div>
     <button-with-modal-confirm modal-size="lg" :title="$t('dispatch.actions.compose_email')"
-                               :button-disabled="disabled" @shown="initializeForm" :can-confirm="canConfirm" :confirm-title="sendEmailText" @confirm="confirm">
+                               :button-disabled="disabled" :can-confirm="canConfirm" :confirm-title="sendEmailText" @confirm="confirm">
 
       <template v-slot:secondary-footer>
         <custom-checkbox-field for-id="self-bcc" :label="$t('email.self_bcc')">
@@ -47,7 +47,7 @@
       <hr/>
 
       <inline-form-field for-id="subject" :label="$t('email.subject')">
-        <input ref="subject" id="subject" class="form-control" type="text" required="required"
+        <input v-focus id="subject" class="form-control" type="text" required="required"
                :class="{'is-valid': fields.subject.dirty && !fields.subject.errors.length, 'is-invalid': fields.subject.dirty && fields.subject.errors.length }"
                @blur="fields.subject.dirty = true"
                v-model="email.subject"
@@ -178,9 +178,6 @@ export default {
       }
       validateFields(this.fields, this.email)
     },
-    initializeForm: function () {
-      this.$refs.subject.focus()
-    }
   },
   mounted() {
     validateFields(this.fields, this.email)
