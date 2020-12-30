@@ -72,10 +72,14 @@
       "by_number": "Nach Nummer filtern",
       "by_description": "Nach Beschreibung filtern",
       "by_is_marked_or_added_with_client": "Nach Favorit / Abnahmependenz",
-      "by_craftsman": "Nach Unternehmer"
+      "by_craftsman": "Nach Unternehmer",
+      "by_maps": "Nach Bauplan"
     },
-    "filter_craftsman": {
+    "filter_craftsmen": {
       "all_craftsmen": "Alle Unternehmer"
+    },
+    "filter_maps": {
+      "all_maps": "Alle Karten"
     },
     "messages": {
       "success": {

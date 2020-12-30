@@ -113,7 +113,13 @@
         </th>
         <th>
           {{ $t('map._name') }}
-          <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
+
+          <filter-popover
+              :title="$t('issue_table.filter.by_maps')"
+              :valid="filter.maps.length < maps.length && filter.maps.length > 0">
+
+            <issue-table-filter-map :maps="maps" @input="filter.maps = $event"/>
+          </filter-popover>
         </th>
         <th>
           {{ $t('issue.deadline') }}
@@ -269,10 +275,12 @@ import FilterPopover from "./View/FilterPopover";
 import CustomCheckboxField from "./Edit/Layout/CustomCheckboxField";
 import FormField from "./Edit/Layout/FormField";
 import IssueTableFilterCraftsmen from "./IssueTableFilterCraftsmen";
+import IssueTableFilterMap from "./IssueTableFilterMap";
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count'],
   components: {
+    IssueTableFilterMap,
     IssueTableFilterCraftsmen,
     FormField,
     CustomCheckboxField,
