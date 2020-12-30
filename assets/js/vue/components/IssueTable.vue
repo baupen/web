@@ -49,7 +49,44 @@
           </search-popover>
         </th>
         <th class="w-minimal">
-          <font-awesome-icon :icon="['fal', 'filter']"/>
+          <filter-popover
+              :title="$t('issue_table.filter.by_is_marked_or_added_with_client')"
+              :valid="!!(filter.isMarked || filter.wasAddedWithClient)">
+
+            <custom-checkbox-field for-id="filter-is-marked" :label="$t('issue.is_marked')">
+              <input
+                  class="custom-control-input" type="checkbox" id="filter-is-marked"
+                  v-model="filter.isMarked"
+                  :true-value="true"
+                  :false-value="false"
+                  :indeterminate.prop="filter.isMarked === null"
+              >
+              <template v-slot:after>
+                <div>
+                  <a class="btn-link clickable" v-if="filter.isMarked !== null" @click="filter.isMarked = null">
+                    {{ $t('edit_issues_button.actions.reset') }}
+                  </a>
+                </div>
+              </template>
+            </custom-checkbox-field>
+
+            <custom-checkbox-field for-id="filter-was-added-with-client" :label="$t('issue.was_added_with_client')">
+              <input
+                  class="custom-control-input" type="checkbox" id="filter-was-added-with-client"
+                  v-model="filter.wasAddedWithClient"
+                  :true-value="true"
+                  :false-value="false"
+                  :indeterminate.prop="filter.wasAddedWithClient === null"
+              >
+              <template v-slot:after>
+                <div>
+                  <a class="btn-link clickable" v-if="filter.wasAddedWithClient !== null" @click="filter.wasAddedWithClient = null">
+                    {{ $t('edit_issues_button.actions.reset') }}
+                  </a>
+                </div>
+              </template>
+            </custom-checkbox-field>
+          </filter-popover>
         </th>
         <th class="w-thumbnail"></th>
         <th>
@@ -65,7 +102,13 @@
         </th>
         <th>
           {{ $t('craftsman._name') }}
-          <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
+
+          <filter-popover
+              :title="$t('issue_table.filter.by_craftsman')"
+              :valid="filter.craftsman.length > 0">
+
+            <issue-table-filter-craftsmen :craftsmen="craftsmen" @input="filter.craftsman = $event" />
+          </filter-popover>
         </th>
         <th>
           {{ $t('map._name') }}
@@ -226,12 +269,20 @@ import debounce from "lodash.debounce";
 import Popover from "./Behaviour/Popover";
 import ActivatablePopover from "./Behaviour/ActivatablePopover";
 import SearchPopover from "./View/SearchPopover";
+import FilterPopover from "./View/FilterPopover";
+import CustomCheckboxField from "./Edit/Layout/CustomCheckboxField";
+import FormField from "./Edit/Layout/FormField";
+import IssueTableFilterCraftsmen from "./IssueTableFilterCraftsmen";
 
 let issuesLoadingDebounce = 0;
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count'],
   components: {
+    IssueTableFilterCraftsmen,
+    FormField,
+    CustomCheckboxField,
+    FilterPopover,
     SearchPopover,
     ActivatablePopover,
     Popover,

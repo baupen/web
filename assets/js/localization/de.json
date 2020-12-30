@@ -70,7 +70,12 @@
     "without_deadline": "ohne Frist",
     "filter": {
       "by_number": "Nach Nummer filtern",
-      "by_description": "Nach Beschreibung filtern"
+      "by_description": "Nach Beschreibung filtern",
+      "by_is_marked_or_added_with_client": "Nach Favorit / Abnahmependenz",
+      "by_craftsman": "Nach Unternehmer"
+    },
+    "filter_craftsman": {
+      "all_craftsmen": "Alle Unternehmer"
     },
     "messages": {
       "success": {

@@ -14,7 +14,7 @@ import {
   faFilter, faSort // table
 } from '@fortawesome/pro-light-svg-icons'
 import {
-  faSearch as faSearchRegular // table
+  faSearch as faSearchRegular, faFilter as faFilterRegular // table
 } from '@fortawesome/pro-regular-svg-icons'
 import {
   faStar as faStarSolid, faUserCheck as faUserCheckSolid, // issue states (active)
@@ -46,7 +46,7 @@ FontawesomeLibrary.add(
   faUserAlt, faQuestionCircle, faEnvelopeOpen,
   faStar, faUserCheck,
   faFilter, faSort,
-  faSearchRegular,
+  faSearchRegular, faFilterRegular,
   faStarSolid, faUserCheckSolid,
   faFilterSolid, faSearchSolid, faSortUpSolid, faSortDownSolid
 )
