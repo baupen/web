@@ -3,7 +3,7 @@
     <span class="clickable" ref="button" aria-describedby="tooltip" @click.prevent.stop="show = !show">
       <slot name="button"/>
     </span>
-    <div ref="tooltip" class="popover fade bs-popover-right" :show="show" :class="{'show': show}" v-click-outside="clickOutside" role="tooltip">
+    <div ref="tooltip" class="popover fade bs-popover-top" :show="show" :class="{'show': show}" v-click-outside="clickOutside" role="tooltip">
       <div class="arrow" data-popper-arrow></div>
       <h3 class="popover-header">{{ title }}</h3>
       <div class="popover-body" @click.stop="">
@@ -17,6 +17,7 @@
 import {createPopper} from '@popperjs/core';
 
 export default {
+  emits: ['shown'],
   data() {
     return {
       instance: null,
@@ -29,6 +30,13 @@ export default {
       required: true,
     }
   },
+  watch: {
+    show: function () {
+      if (this.show) {
+        this.$emit('shown')
+      }
+    }
+  },
   methods: {
     clickOutside: function () {
       this.show = false
@@ -39,7 +47,7 @@ export default {
     const tooltip = this.$refs.tooltip;
 
     this.instance = createPopper(button, tooltip, {
-      placement: 'right',
+      placement: 'top',
       modifiers: [
         {
           name: 'offset',

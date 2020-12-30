@@ -41,8 +41,8 @@
           </custom-checkbox>
         </th>
         <th class="w-minimal">
-          <popover :title="$t('issue.number')">
-            <input v-model.number="filter.number" type="number" name="number">
+          <popover :title="$t('issue_table.filter.by_number')" @shown="$refs['filter-number'].focus()">
+            <input ref="filter-number" v-model.number="filter.number" type="number" name="filter-number">
 
             <template v-slot:button>
               <font-awesome-icon :icon="['fal', 'search']"/>

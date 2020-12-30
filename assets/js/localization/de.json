@@ -68,6 +68,9 @@
     "without_description": "ohne Beschreibung",
     "without_craftsman": "ohne Unternehmer",
     "without_deadline": "ohne Frist",
+    "filter": {
+      "by_number": "Nach Nummer filtern"
+    },
     "messages": {
       "success": {
         "saved_issues": "Pendenzen gespeichert",
