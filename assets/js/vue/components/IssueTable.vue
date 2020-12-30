@@ -1,6 +1,7 @@
 <template>
   <loading-indicator :spin="filtersLoading">
-    <div class="alert alert-info" v-if="issues !== null && issues.length === 0 && filterEqualsDefaultFilter">
+    <div class="alert alert-info"
+         v-if="issues !== null && issues.length === 0 && filterEqualsDefaultFilter && !issuesLoading">
       keine pendenzen mit default filter
     </div>
     <table v-else class="table table-striped-2 table-hover border">
@@ -10,7 +11,7 @@
         <th colspan="8">
           <span class="mt-2 d-inline-block">{{ $t('issue._name') }}</span>
           <span class="text-right float-right">
-          <span class="btn-group reset-table-styles">
+          <span class="btn-group reset-table-styles" v-if="craftsmen">
             <span class="btn btn-link" v-if="editButtonPendingRequestCount > 0">
               {{ editButtonPendingRequestCount }}
             </span>
@@ -204,6 +205,9 @@ import {displaySuccess} from "../services/notifiers";
 import RemoveIssuesButton from "./RemoveIssuesButton";
 import ToggleIconWithTooltip from "./View/ToggleIconWithTooltip";
 import LoadingIndicator from "./View/LoadingIndicator";
+import debounce from "lodash.debounce";
+
+let issuesLoadingDebounce = 0;
 
 export default {
   emits: ['selected', 'filtered'],
@@ -224,14 +228,40 @@ export default {
   },
   data() {
     return {
-      constructionManagers: null,
-      maps: null,
-      craftsmen: null,
       issues: [],
       issuePage: 1,
       totalIssues: 0,
       issuesLoading: true,
-      filter: {},
+
+      constructionManagers: null,
+      craftsmen: null,
+      maps: null,
+
+      filter: {
+        number: "",
+
+        isMarked: null,
+        wasAddedWithClient: null,
+
+        description: "",
+        craftsman: [],
+        map: [],
+        'deadline[before]': null,
+        'deadline[after]': null,
+
+        isRegistered: null,
+        isResolved: null,
+        isClosed: null,
+
+        'createdAt[before]': null,
+        'createdAt[after]': null,
+        'registeredAt[before]': null,
+        'registeredAt[after]': null,
+        'resolvedAt[before]': null,
+        'resolvedAt[after]': null,
+        'closedAt[before]': null,
+        'closedAt[after]': null,
+      },
       selectedIssues: [],
       prePatchedIssues: [],
       prePostedIssueImages: [],
@@ -421,18 +451,69 @@ export default {
       return arraysAreEqual(array1, array2, (a, b) => {
         return a['@id'].localeCompare(b['@id'])
       })
+    },
+    filterAsQuery: function (filter) {
+      let query = {}
+
+      let state = 0;
+
+      for (const fieldName in filter) {
+        if (!Object.prototype.hasOwnProperty.call(filter, fieldName)) {
+          continue
+        }
+
+        const fieldValue = filter[fieldName]
+        if (fieldValue === null || fieldValue === [] || fieldValue === "") {
+          continue
+        }
+
+        if (fieldName === 'isRegistered') {
+          state = state | 1
+        } else if (fieldName === 'isResolved') {
+          state = state | 2
+        } else if (fieldName === 'îsClosed') {
+          state = state | 4
+        } else {
+          query[fieldName] = fieldValue
+        }
+      }
+
+      if (state > 0) {
+        // include query default value
+        query.state = query.state ? query.state | state : state
+      }
+
+      return query;
+    },
+    loadIssues(filter) {
+      this.issuesLoading = true;
+
+      let query = this.filterAsQuery(filter)
+
+      api.getPaginatedIssues(this.constructionSite, query)
+          .then(payload => {
+            this.issues = payload.items
+            this.totalIssues = payload.totalItems
+
+            this.issuesLoading = false;
+          })
     }
   },
   watch: {
     selectedIssues: function () {
       this.$emit('selected', this.selectedIssues)
     },
-    filter: function () {
-      this.$emit('filtered', this.filter)
+    filter: {
+      handler: debounce(function (newVal) {
+        this.loadIssues(newVal)
+        this.$emit('filtered', newVal)
+      }, issuesLoadingDebounce),
+      deep: true
     }
   },
   mounted() {
-    this.filter = this.defaultFilter
+    this.filter = Object.assign({}, this.filter, this.defaultFilter)
+    issuesLoadingDebounce = 0;
 
     api.getCraftsmen(this.constructionSite)
         .then(craftsmen => this.craftsmen = craftsmen)
@@ -442,13 +523,6 @@ export default {
 
     api.getConstructionManagers(this.constructionSite)
         .then(constructionManagers => this.constructionManagers = constructionManagers)
-
-    api.getPaginatedIssues(this.constructionSite, this.filter)
-        .then(payload => {
-          this.issues = payload.items
-          this.totalIssues = payload.totalItems
-          this.issuesLoading = false;
-        })
   }
 }
 </script>
