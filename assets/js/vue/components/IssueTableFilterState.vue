@@ -1,6 +1,5 @@
 <template>
   <div>
-    <p>{{$t('issue_table.filter_state.by_active_state')}}</p>
     <custom-checkbox-field for-id="filter-state-is-registered" :label="$t('issue.state.registered')">
       <input
           class="custom-control-input" type="checkbox" id="filter-state-is-registered"

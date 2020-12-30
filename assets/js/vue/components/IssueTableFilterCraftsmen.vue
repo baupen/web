@@ -1,25 +1,26 @@
 <template>
+  <div>
+    <custom-checkbox-field
+        id="filter-all-craftsmen"
+        @click.prevent="toggleSelectedCraftsmen(craftsmen)"
+        :label="$t('issue_table.filter_craftsmen.all_craftsmen')">
+      <input class="custom-control-input" type="checkbox"
+             :disabled="craftsmen === null"
+             :checked="craftsmen !== null && craftsmen.length > 0 && entityListsAreEqual(craftsmen, selectedCraftsmen)">
+    </custom-checkbox-field>
 
-  <custom-checkbox-field
-      id="filter-all-craftsmen"
-      @click.prevent="toggleSelectedCraftsmen(craftsmen)"
-      :label="$t('issue_table.filter_craftsmen.all_craftsmen')">
-    <input class="custom-control-input" type="checkbox"
-           :disabled="craftsmen === null"
-           :checked="craftsmen !== null && craftsmen.length > 0 && entityListsAreEqual(craftsmen, selectedCraftsmen)">
-  </custom-checkbox-field>
+    <hr/>
 
-  <hr/>
-
-  <custom-checkbox-field
-      v-for="craftsman in craftsmen" :key="craftsman['@id']"
-      :for-id="'filter-craftsman-' + craftsman['@id']" :label="craftsman.company" :secondary-label="craftsman.trade">
-    <input
-        class="custom-control-input" type="checkbox" :id="'filter-craftsman-' + craftsman['@id']"
-        v-model="selectedCraftsmen"
-        :value="craftsman"
-    >
-  </custom-checkbox-field>
+    <custom-checkbox-field
+        v-for="craftsman in craftsmen" :key="craftsman['@id']"
+        :for-id="'filter-craftsman-' + craftsman['@id']" :label="craftsman.company" :secondary-label="craftsman.trade">
+      <input
+          class="custom-control-input" type="checkbox" :id="'filter-craftsman-' + craftsman['@id']"
+          v-model="selectedCraftsmen"
+          :value="craftsman"
+      >
+    </custom-checkbox-field>
+  </div>
 </template>
 
 

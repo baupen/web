@@ -1,5 +1,5 @@
 <template>
-  <activatable-popover :title="title" :active="valid" :active-icon="['fas', 'search']" :inactive-icon="['far', 'search']" @shown="$emit('shown')">
+  <activatable-popover :title="title" :size="size" :active="valid" :active-icon="['fas', 'search']" :inactive-icon="['far', 'search']" @shown="$emit('shown')">
     <slot></slot>
   </activatable-popover>
 </template>
@@ -16,6 +16,10 @@ export default {
     valid: {
       type: Boolean,
       required: true
+    },
+    size: {
+      type: String,
+      default: 'filter-sm'
     }
   }
 }

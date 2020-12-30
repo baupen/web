@@ -85,6 +85,11 @@
     "filter_state": {
       "by_active_state": "Aktueller Status"
     },
+    "filter_time": {
+      "by_time": "Nach Zeitpunkt",
+      "before": "vor",
+      "after": "nach"
+    },
     "messages": {
       "success": {
         "saved_issues": "Pendenzen gespeichert",

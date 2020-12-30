@@ -1,26 +1,27 @@
 <template>
+  <div>
+    <custom-checkbox-field
+        id="filter-all-maps"
+        @click.prevent="toggleSelectedMaps(maps)"
+        :label="$t('issue_table.filter_maps.all_maps')">
+      <input class="custom-control-input" type="checkbox"
+             :disabled="maps === null"
+             :checked="maps !== null && maps.length > 0 && entityListsAreEqual(maps, selectedMaps)">
+    </custom-checkbox-field>
 
-  <custom-checkbox-field
-      id="filter-all-maps"
-      @click.prevent="toggleSelectedMaps(maps)"
-      :label="$t('issue_table.filter_maps.all_maps')">
-    <input class="custom-control-input" type="checkbox"
-           :disabled="maps === null"
-           :checked="maps !== null && maps.length > 0 && entityListsAreEqual(maps, selectedMaps)">
-  </custom-checkbox-field>
+    <hr/>
 
-  <hr/>
-
-  <custom-checkbox-field
-      v-for="map in flattenedMaps" :key="map.entity['@id']"
-      :for-id="'filter-map-' + map.entity['@id']" :label="map.entity.name">
-    <span :class="'spacer-' + map.level"/>
-    <input
-        class="custom-control-input" type="checkbox" :id="'filter-map-' + map.entity['@id']"
-        v-model="selectedMaps"
-        :value="map.entity"
-    >
-  </custom-checkbox-field>
+    <custom-checkbox-field
+        v-for="map in flattenedMaps" :key="map.entity['@id']"
+        :for-id="'filter-map-' + map.entity['@id']" :label="map.entity.name">
+      <span :class="'spacer-' + map.level"/>
+      <input
+          class="custom-control-input" type="checkbox" :id="'filter-map-' + map.entity['@id']"
+          v-model="selectedMaps"
+          :value="map.entity"
+      >
+    </custom-checkbox-field>
+  </div>
 </template>
 
 <script>

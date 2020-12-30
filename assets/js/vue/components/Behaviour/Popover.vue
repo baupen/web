@@ -3,12 +3,12 @@
         @mouseenter="hoveredButton" @mouseleave="unHoveredButton">
     <slot name="button"/>
   </span>
-  <div ref="tooltip" class="popover fade" role="tooltip" v-click-outside="clickOutside"
-       :show="show" :class="{'show': show}"
+  <div ref="tooltip" role="tooltip" v-click-outside="clickOutside"
+       :show="show" :class="popoverClass"
        @mouseenter="hoveredContent">
     <div class="arrow" data-popper-arrow></div>
     <h3 class="popover-header">{{ title }}</h3>
-    <div class="popover-body popover-body-size" @click.stop="">
+    <div class="popover-body" @click.stop="">
       <slot></slot>
     </div>
   </div>
@@ -31,6 +31,10 @@ export default {
     title: {
       type: String,
       required: true,
+    },
+    size: {
+      type: String,
+      default: 'sm'
     }
   },
   watch: {
@@ -67,6 +71,14 @@ export default {
   computed: {
     show: function () {
       return this.focus || this.hover
+    },
+    popoverClass: function () {
+      let classes = 'popover fade popover-' + this.size
+      if (this.show) {
+        classes += ' show'
+      }
+
+      return classes
     }
   },
   mounted() {

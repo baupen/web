@@ -1,5 +1,5 @@
 <template>
-  <popover :title="title" @shown="$emit('shown')">
+  <popover :title="title" :size="size" @shown="$emit('shown')">
     <slot></slot>
     <template v-slot:button>
       <span>
@@ -33,6 +33,10 @@ export default {
     active: {
       type: Boolean,
       required: true
+    },
+    size: {
+      type: String,
+      default: 'sm'
     }
   },
   computed: {

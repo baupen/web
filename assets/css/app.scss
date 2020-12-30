@@ -85,8 +85,18 @@ select:required {
   caption-side: top;
 }
 
-.popover-body-size {
+.popover-filter-sm .popover-body {
   max-height: 22em;
   min-width: 14em;
+  overflow-y: auto;
+}
+
+.popover-filter-wide {
+  max-width: 40em;
+}
+
+.popover-filter-wide .popover-body {
+  max-height: 22em;
+  min-width: 25em;
   overflow-y: auto;
 }

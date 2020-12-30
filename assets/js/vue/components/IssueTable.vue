@@ -49,8 +49,8 @@
               :title="$t('issue_table.filter.by_is_marked_or_added_with_client')"
               :valid="!!(filter.isMarked || filter.wasAddedWithClient)">
 
-            <issue-table-filter-is-marked :default="null" @input="filter.isMarked = $event"/>
-            <issue-table-filter-was-added-with-client :default="null" @input="filter.wasAddedWithClient = $event"/>
+            <issue-table-filter-is-marked class="mt-2" :default="null" @input="filter.isMarked = $event"/>
+            <issue-table-filter-was-added-with-client class="mb-2" :default="null" @input="filter.wasAddedWithClient = $event"/>
 
           </filter-popover>
         </th>
@@ -73,7 +73,7 @@
               :title="$t('issue_table.filter.by_craftsman')"
               :valid="filter.craftsmen.length < craftsmen.length && filter.craftsmen.length > 0">
 
-            <issue-table-filter-craftsmen :craftsmen="craftsmen" @input="filter.craftsmen = $event"/>
+            <issue-table-filter-craftsmen class="mt-2" :craftsmen="craftsmen" @input="filter.craftsmen = $event"/>
           </filter-popover>
         </th>
         <th>
@@ -83,7 +83,7 @@
               :title="$t('issue_table.filter.by_maps')"
               :valid="filter.maps.length < maps.length && filter.maps.length > 0">
 
-            <issue-table-filter-map :maps="maps" @input="filter.maps = $event"/>
+            <issue-table-filter-map class="mt-2" :maps="maps" @input="filter.maps = $event"/>
           </filter-popover>
         </th>
         <th>
@@ -95,10 +95,29 @@
           {{ $t('issue.status') }}
 
           <filter-popover
+              size="filter-wide"
               :title="$t('issue_table.filter.by_state')"
               :valid="!forceState && filter.state !== 7">
-            <issue-table-filter-state @input="filter.state = $event" :minimal-state="minimalState"
-                                      :force-state="forceState"/>
+            <template v-if="!forceState">
+              <p class="font-weight-bold">{{$t('issue_table.filter_state.by_active_state')}}</p>
+
+              <issue-table-filter-state
+                  :minimal-state="minimalState" :force-state="forceState"
+                  @input="filter.state = $event"/>
+
+              <hr/>
+            </template>
+
+            <p class="font-weight-bold">{{ $t('issue_table.filter_time.by_time') }}</p>
+            <issue-table-filter-time
+                :minimal-state="minimalState" :force-state="forceState"
+                @input-registered-at-before="filter['registeredAt[before]'] = $event"
+                @input-registered-at-after="filter['registeredAt[after]'] = $event"
+                @input-resolved-at-before="filter['resolvedAt[before]'] = $event"
+                @input-resolved-at-after="filter['resolvedAt[after]'] = $event"
+                @input-closed-at-before="filter['closedAt[before]'] = $event"
+                @input-closed-at-after="filter['closedAt[after]'] = $event"
+            />
           </filter-popover>
         </th>
       </tr>
@@ -250,10 +269,12 @@ import IssueTableFilterMap from "./IssueTableFilterMap";
 import IssueTableFilterIsMarked from "./IssueTableFilterIsMarked";
 import IssueTableFilterWasAddedWithClient from "./IssueTableFilterWasAddedWithClient";
 import IssueTableFilterState from "./IssueTableFilterState";
+import IssueTableFilterTime from "./IssueTableFilterTime";
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count'],
   components: {
+    IssueTableFilterTime,
     IssueTableFilterState,
     IssueTableFilterWasAddedWithClient,
     IssueTableFilterIsMarked,
@@ -561,6 +582,10 @@ export default {
     }
   },
   mounted() {
+    if (this.forceState) {
+      this.filter.state = this.forceState
+    }
+
     api.getCraftsmen(this.constructionSite)
         .then(craftsmen => {
           this.craftsmen = craftsmen
