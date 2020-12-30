@@ -9,7 +9,7 @@
     <loading-indicator :spin="constructionSite === null">
       <issue-table
           :construction-site="constructionSite"
-          :default-filter="{isDeleted: false}"
+          :minimal-state="1"
           @selected="selectedIssues = $event"
           @query="query = $event"
           @queried-issue-count="queriedIssuesCount = $event"/>

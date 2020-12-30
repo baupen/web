@@ -8,7 +8,7 @@
        @mouseenter="hoveredContent">
     <div class="arrow" data-popper-arrow></div>
     <h3 class="popover-header">{{ title }}</h3>
-    <div class="popover-body popover-body-limited-size" @click.stop="">
+    <div class="popover-body popover-body-size" @click.stop="">
       <slot></slot>
     </div>
   </div>

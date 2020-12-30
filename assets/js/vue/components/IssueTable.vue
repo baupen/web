@@ -1,10 +1,6 @@
 <template>
   <loading-indicator :spin="filtersLoading">
-    <div class="alert alert-info"
-         v-if="issues !== null && issues.length === 0 && filterEqualsDefaultFilter && !issuesLoading">
-      keine pendenzen mit default filter
-    </div>
-    <table v-else class="table table-striped-2 table-hover border">
+    <table class="table table-striped-2 table-hover border">
       <thead>
       <tr class="bg-light">
         <th></th>
@@ -53,40 +49,9 @@
               :title="$t('issue_table.filter.by_is_marked_or_added_with_client')"
               :valid="!!(filter.isMarked || filter.wasAddedWithClient)">
 
-            <custom-checkbox-field for-id="filter-is-marked" :label="$t('issue.is_marked')">
-              <input
-                  class="custom-control-input" type="checkbox" id="filter-is-marked"
-                  v-model="filter.isMarked"
-                  :true-value="true"
-                  :false-value="false"
-                  :indeterminate.prop="filter.isMarked === null"
-              >
-              <template v-slot:after>
-                <div>
-                  <a class="btn-link clickable" v-if="filter.isMarked !== null" @click="filter.isMarked = null">
-                    {{ $t('edit_issues_button.actions.reset') }}
-                  </a>
-                </div>
-              </template>
-            </custom-checkbox-field>
+            <issue-table-filter-is-marked :default="null" @input="filter.isMarked = $event"/>
+            <issue-table-filter-was-added-with-client :default="null" @input="filter.wasAddedWithClient = $event"/>
 
-            <custom-checkbox-field for-id="filter-was-added-with-client" :label="$t('issue.was_added_with_client')">
-              <input
-                  class="custom-control-input" type="checkbox" id="filter-was-added-with-client"
-                  v-model="filter.wasAddedWithClient"
-                  :true-value="true"
-                  :false-value="false"
-                  :indeterminate.prop="filter.wasAddedWithClient === null"
-              >
-              <template v-slot:after>
-                <div>
-                  <a class="btn-link clickable" v-if="filter.wasAddedWithClient !== null"
-                     @click="filter.wasAddedWithClient = null">
-                    {{ $t('edit_issues_button.actions.reset') }}
-                  </a>
-                </div>
-              </template>
-            </custom-checkbox-field>
           </filter-popover>
         </th>
         <th class="w-thumbnail"></th>
@@ -128,7 +93,13 @@
         </th>
         <th class="w-minimal">
           {{ $t('issue.status') }}
-          <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
+
+          <filter-popover
+              :title="$t('issue_table.filter.by_state')"
+              :valid="!forceState && filter.state !== 7">
+            <issue-table-filter-state @input="filter.state = $event" :minimal-state="minimalState"
+                                      :force-state="forceState"/>
+          </filter-popover>
         </th>
       </tr>
       </thead>
@@ -276,10 +247,16 @@ import CustomCheckboxField from "./Edit/Layout/CustomCheckboxField";
 import FormField from "./Edit/Layout/FormField";
 import IssueTableFilterCraftsmen from "./IssueTableFilterCraftsmen";
 import IssueTableFilterMap from "./IssueTableFilterMap";
+import IssueTableFilterIsMarked from "./IssueTableFilterIsMarked";
+import IssueTableFilterWasAddedWithClient from "./IssueTableFilterWasAddedWithClient";
+import IssueTableFilterState from "./IssueTableFilterState";
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count'],
   components: {
+    IssueTableFilterState,
+    IssueTableFilterWasAddedWithClient,
+    IssueTableFilterIsMarked,
     IssueTableFilterMap,
     IssueTableFilterCraftsmen,
     FormField,
@@ -325,9 +302,7 @@ export default {
         'deadline[before]': null,
         'deadline[after]': null,
 
-        isRegistered: null,
-        isResolved: null,
-        isClosed: null,
+        state: null,
 
         'createdAt[before]': null,
         'createdAt[after]': null,
@@ -337,6 +312,8 @@ export default {
         'resolvedAt[after]': null,
         'closedAt[before]': null,
         'closedAt[after]': null,
+
+        isDeleted: false
       },
       selectedIssues: [],
       prePatchedIssues: [],
@@ -349,10 +326,15 @@ export default {
       type: Object,
       required: true
     },
-    defaultFilter: {
-      type: Object,
+    minimalState: {
+      type: Number,
       required: false,
-      default: {}
+      default: null
+    },
+    forceState: {
+      type: Number,
+      required: false,
+      default: null
     },
     view: {
       type: String,
@@ -361,9 +343,6 @@ export default {
     }
   },
   computed: {
-    filterEqualsDefaultFilter: function () {
-      return objectsAreEqual(this.defaultFilter, this.filter)
-    },
     editButtonPendingRequestCount: function () {
       return this.prePatchedIssues.length + this.prePostedIssueImages.length
     },
@@ -531,8 +510,6 @@ export default {
     filterAsQuery: function (filter) {
       let query = {}
 
-      let state = 0;
-
       for (const fieldName in filter) {
         if (!Object.prototype.hasOwnProperty.call(filter, fieldName)) {
           continue
@@ -548,26 +525,9 @@ export default {
           if (fieldValue.length === 0 || fieldValue.length !== this.maps.length) {
             query['map[]'] = fieldValue.map(e => iriToId(e['@id']))
           }
-        } else if (fieldName === 'isRegistered') {
-          if (fieldValue) {
-            state = state | 1
-          }
-        } else if (fieldName === 'isResolved') {
-          if (fieldValue) {
-            state = state | 2
-          }
-        } else if (fieldName === 'îsClosed') {
-          if (fieldValue) {
-            state = state | 4
-          }
         } else if (fieldValue !== null && fieldValue !== "") {
           query[fieldName] = fieldValue
         }
-      }
-
-      if (state > 0) {
-        // include query default value
-        query.state = query.state ? query.state | state : state
       }
 
       return query;
@@ -601,8 +561,6 @@ export default {
     }
   },
   mounted() {
-    this.filter = Object.assign({}, this.filter, this.defaultFilter)
-
     api.getCraftsmen(this.constructionSite)
         .then(craftsmen => {
           this.craftsmen = craftsmen

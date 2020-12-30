@@ -85,7 +85,8 @@ select:required {
   caption-side: top;
 }
 
-.popover-body-limited-size {
+.popover-body-size {
   max-height: 22em;
-  overflow-y: scroll;
+  min-width: 14em;
+  overflow-y: auto;
 }

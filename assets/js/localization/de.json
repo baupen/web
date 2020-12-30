@@ -73,13 +73,17 @@
       "by_description": "Nach Beschreibung filtern",
       "by_is_marked_or_added_with_client": "Nach Favorit / Abnahmependenz",
       "by_craftsman": "Nach Unternehmer",
-      "by_maps": "Nach Bauplan"
+      "by_maps": "Nach Bauplan",
+      "by_state": "Nach Status"
     },
     "filter_craftsmen": {
       "all_craftsmen": "Alle Unternehmer"
     },
     "filter_maps": {
       "all_maps": "Alle Karten"
+    },
+    "filter_state": {
+      "by_active_state": "Aktueller Status"
     },
     "messages": {
       "success": {
@@ -292,6 +296,7 @@
       "registered": "registriert",
       "resolved": "erledigt",
       "closed": "geschlossen",
+
       "open": "offen",
       "read": "gelesen",
       "unread": "ungelesen",

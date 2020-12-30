@@ -34,29 +34,27 @@ class StateFilter extends AbstractContextAwareFilter
         }
 
         $alias = $queryBuilder->getRootAliases()[0];
+        $orQueries = [];
         if ($value & Issue::STATE_REGISTERED) {
-            $queryBuilder->andWhere($alias.'.registeredAt IS NOT NULL');
-        } elseif ($value < Issue::STATE_REGISTERED) {
-            $queryBuilder->andWhere($alias.'.registeredAt IS NULL');
+            $orQueries[] = $alias.'.registeredAt IS NOT NULL AND '.$alias.'.resolvedAt IS NULL AND '.$alias.'.closedAt IS NULL';
         }
-
         if ($value & Issue::STATE_RESOLVED) {
-            $queryBuilder->andWhere($alias.'.resolvedAt IS NOT NULL');
-        } elseif ($value < Issue::STATE_RESOLVED) {
-            $queryBuilder->andWhere($alias.'.resolvedAt IS NULL');
+            $orQueries[] = $alias.'.resolvedAt IS NOT NULL AND '.$alias.'.closedAt IS NULL';
+        }
+        if ($value & Issue::STATE_CLOSED) {
+            $orQueries[] = $alias.'.closedAt IS NOT NULL';
         }
 
-        if ($value & Issue::STATE_CLOSED) {
-            $queryBuilder->andWhere($alias.'.closedAt IS NOT NULL');
-        } else {
-            $queryBuilder->andWhere($alias.'.closedAt IS NULL');
+        if (count($orQueries) > 0) {
+            $queryBuilder->andWhere('('.implode(') OR (', $orQueries).')');
         }
     }
 
     private function normalizeValue($value)
     {
         $intValue = (int) $value;
-        if (Issue::STATE_CREATED <= $intValue && $intValue <= Issue::STATE_CLOSED) {
+        $maxCombination = Issue::STATE_REGISTERED | Issue::STATE_RESOLVED | Issue::STATE_CLOSED;
+        if (Issue::STATE_CREATED <= $intValue && $intValue <= $maxCombination) {
             return $intValue;
         }
 

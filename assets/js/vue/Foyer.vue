@@ -12,7 +12,7 @@
     <loading-indicator :spin="constructionSite === null">
       <issue-table
           :construction-site="constructionSite"
-          :default-filter="{isDeleted: false, state: 0}"
+          :force-state="0"
           @selected="selectedIssues = $event"/>
     </loading-indicator>
   </div>
