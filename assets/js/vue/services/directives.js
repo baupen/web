@@ -1,6 +1,5 @@
 const clickOutside = {
   beforeMount: (el, binding) => {
-    console.log(binding)
     el.clickOutsideEvent = event => {
       // here I check that click was outside the el and his children
       if (!(el === event.target || el.contains(event.target))) {

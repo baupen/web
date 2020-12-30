@@ -59,6 +59,10 @@ body {
   width: 1%;
 }
 
+.w-thumbnail {
+  width: calc(100px + 1.5rem);
+}
+
 .pre {
   white-space: pre;
 }

@@ -41,21 +41,27 @@
           </custom-checkbox>
         </th>
         <th class="w-minimal">
-          <popover :title="$t('issue_table.filter.by_number')" @shown="$refs['filter-number'].focus()">
-            <input class="form-control" ref="filter-number" v-model.number="filter.number" type="number" name="filter-number">
-
-            <template v-slot:button>
-              <font-awesome-icon :class="{'text-primary': filter.number || filter.number === 0}" :icon="['fas', 'search']"/>
-            </template>
-          </popover>
+          <search-popover
+              :title="$t('issue_table.filter.by_number')" :valid="!!(filter.number || filter.number === 0)"
+              @shown="$refs['filter-number'].focus()">
+            <input class="form-control" ref="filter-number" v-model.number="filter.number" type="number"
+                   name="filter-number">
+          </search-popover>
         </th>
         <th class="w-minimal">
           <font-awesome-icon :icon="['fal', 'filter']"/>
         </th>
-        <th class="w-minimal"></th>
+        <th class="w-thumbnail"></th>
         <th>
-          {{ $t('issue.description') }}
-          <font-awesome-icon class="ml-1" :icon="['fas', 'search']"/>
+          <span class="mr-1">
+            {{ $t('issue.description') }}
+          </span>
+          <search-popover
+              :title="$t('issue_table.filter.by_description')" :valid="!!(filter.description)"
+              @shown="$refs['filter-description'].focus()">
+            <input class="form-control" ref="filter-description" v-model="filter.description" type="text"
+                   name="filter-description">
+          </search-popover>
         </th>
         <th>
           {{ $t('craftsman._name') }}
@@ -218,12 +224,16 @@ import ToggleIconWithTooltip from "./View/ToggleIconWithTooltip";
 import LoadingIndicator from "./View/LoadingIndicator";
 import debounce from "lodash.debounce";
 import Popover from "./Behaviour/Popover";
+import ActivatablePopover from "./Behaviour/ActivatablePopover";
+import SearchPopover from "./View/SearchPopover";
 
 let issuesLoadingDebounce = 0;
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count'],
   components: {
+    SearchPopover,
+    ActivatablePopover,
     Popover,
     LoadingIndicator,
     ToggleIconWithTooltip,
@@ -495,8 +505,6 @@ export default {
         // include query default value
         query.state = query.state ? query.state | state : state
       }
-
-      console.log(query)
 
       return query;
     },

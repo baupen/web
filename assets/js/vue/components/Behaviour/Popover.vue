@@ -1,14 +1,15 @@
 <template>
-  <div>
-    <span class="clickable" ref="button" aria-describedby="tooltip" @click.prevent.stop="activated = !activated" @mouseenter="hoveredButton" @mouseleave="unHoveredButton">
-      <slot name="button"/>
-    </span>
-    <div ref="tooltip" class="popover fade" :show="show" :class="{'show': show}" @mouseenter="hoveredContent" v-click-outside="clickOutside" role="tooltip">
-      <div class="arrow" data-popper-arrow></div>
-      <h3 class="popover-header">{{ title }}</h3>
-      <div class="popover-body" @click.stop="">
-        <slot></slot>
-      </div>
+  <span class="clickable d-inline-block" ref="button" aria-describedby="tooltip" @click.prevent.stop="focus = !focus"
+        @mouseenter="hoveredButton" @mouseleave="unHoveredButton">
+    <slot name="button"/>
+  </span>
+  <div ref="tooltip" class="popover fade" role="tooltip" v-click-outside="clickOutside"
+       :show="show" :class="{'show': show}"
+       @mouseenter="hoveredContent">
+    <div class="arrow" data-popper-arrow></div>
+    <h3 class="popover-header">{{ title }}</h3>
+    <div class="popover-body" @click.stop="">
+      <slot></slot>
     </div>
   </div>
 </template>
@@ -21,7 +22,7 @@ export default {
   data() {
     return {
       instance: null,
-      activated: false,
+      focus: false,
       hover: false,
       postButtonHover: false
     }
@@ -35,13 +36,14 @@ export default {
   watch: {
     show: function () {
       if (this.show) {
+        this.instance.update()
         this.$emit('shown')
       }
     }
   },
   methods: {
     clickOutside: function () {
-      this.activated = false
+      this.focus = false
     },
     hoveredButton: function () {
       this.hover = true;
@@ -49,22 +51,22 @@ export default {
     },
     hoveredContent: function () {
       if (this.postButtonHover) {
-        this.activated = true;
+        this.focus = true;
       }
     },
     unHoveredButton: function () {
       this.postButtonHover = true;
-      setTimeout(()=>{
+      setTimeout(() => {
         if (this.postButtonHover) {
           this.hover = false;
           this.postButtonHover = false;
         }
-      },300);
+      }, 300);
     }
   },
   computed: {
     show: function () {
-      return this.activated || this.hover
+      return this.focus || this.hover
     }
   },
   mounted() {
@@ -89,13 +91,3 @@ export default {
   }
 }
 </script>
-
-<style scoped="true">
-.tooltip {
-  background-color: #333;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 13px;
-}
-</style>
