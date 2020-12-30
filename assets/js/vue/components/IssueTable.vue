@@ -106,9 +106,9 @@
 
           <filter-popover
               :title="$t('issue_table.filter.by_craftsman')"
-              :valid="filter.craftsman.length > 0">
+              :valid="filter.craftsmen.length < craftsmen.length && filter.craftsmen.length > 0">
 
-            <issue-table-filter-craftsmen :craftsmen="craftsmen" @input="filter.craftsman = $event"/>
+            <issue-table-filter-craftsmen :craftsmen="craftsmen" @input="filter.craftsmen = $event"/>
           </filter-popover>
         </th>
         <th>
@@ -261,7 +261,7 @@ import TextWithTooltip from "./View/TextWithTooltip";
 import Lightbox from "./Behaviour/Lightbox";
 import ButtonWithModalConfirm from "./Behaviour/ButtonWithModalConfirm";
 import EditIssuesButton from "./EditIssuesButton";
-import {api} from "../services/api";
+import {api, iriToId} from "../services/api";
 import {displaySuccess} from "../services/notifiers";
 import RemoveIssuesButton from "./RemoveIssuesButton";
 import ToggleIconWithTooltip from "./View/ToggleIconWithTooltip";
@@ -319,8 +319,8 @@ export default {
         wasAddedWithClient: null,
 
         description: "",
-        craftsman: [],
-        map: [],
+        craftsmen: [],
+        maps: [],
         'deadline[before]': null,
         'deadline[after]': null,
 
@@ -538,17 +538,28 @@ export default {
         }
 
         const fieldValue = filter[fieldName]
-        if (fieldValue === null || fieldValue === "" || (typeof fieldValue.length === 'number' && fieldValue.length === 0)) {
-          continue
-        }
 
-        if (fieldName === 'isRegistered') {
-          state = state | 1
+        if (fieldName === 'craftsmen') {
+          if (fieldValue.length === 0 || fieldValue.length !== this.craftsmen.length) {
+            query['craftsman[]'] = fieldValue.map(e => iriToId(e['@id']))
+          }
+        } else if (fieldName === 'maps') {
+          if (fieldValue.length === 0 || fieldValue.length !== this.maps.length) {
+            query['map[]'] = fieldValue.map(e => iriToId(e['@id']))
+          }
+        } else if (fieldName === 'isRegistered') {
+          if (fieldValue) {
+            state = state | 1
+          }
         } else if (fieldName === 'isResolved') {
-          state = state | 2
+          if (fieldValue) {
+            state = state | 2
+          }
         } else if (fieldName === 'îsClosed') {
-          state = state | 4
-        } else {
+          if (fieldValue) {
+            state = state | 4
+          }
+        } else if (fieldValue !== null && fieldValue !== "") {
           query[fieldName] = fieldValue
         }
       }
@@ -593,10 +604,16 @@ export default {
     issuesLoadingDebounce = 0;
 
     api.getCraftsmen(this.constructionSite)
-        .then(craftsmen => this.craftsmen = craftsmen)
+        .then(craftsmen => {
+          this.craftsmen = craftsmen
+          this.filter.craftsmen = this.craftsmen
+        })
 
     api.getMaps(this.constructionSite)
-        .then(maps => this.maps = maps)
+        .then(maps => {
+          this.maps = maps
+          this.filter.maps = this.maps
+        })
 
     api.getConstructionManagers(this.constructionSite)
         .then(constructionManagers => this.constructionManagers = constructionManagers)

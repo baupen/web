@@ -41,16 +41,8 @@ export default {
     },
   },
   watch: {
-    selectedCraftsmen: {
-      deep: true,
-      handler: function () {
-        console.log('selected craftsmen: ', this.selectedCraftsmen)
-
-        const publishedList = this.selectedCraftsmen.length === this.craftsmen.length ? [] : this.selectedCraftsmen
-        console.log('published list craftsmen: ', publishedList)
-
-        this.$emit('input', publishedList)
-      }
+    selectedCraftsmen: function () {
+      this.$emit('input', this.selectedCraftsmen)
     },
     craftsmen: function () {
       this.selectedCraftsmen = this.craftsmen
@@ -69,6 +61,9 @@ export default {
         return a['@id'].localeCompare(b['@id'])
       })
     },
+  },
+  mounted() {
+    this.selectedCraftsmen = this.craftsmen
   }
 }
 </script>

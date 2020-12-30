@@ -3,6 +3,10 @@ import { displaySuccess, displayError } from './notifiers'
 
 const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
 
+const iriToId = function (iri) {
+  return iri.substr(iri.lastIndexOf('/') + 1)
+}
+
 const api = {
   setupErrorNotifications: function (translator) {
     axios.interceptors.response.use(
@@ -53,21 +57,23 @@ const api = {
     return '/api' + urlArray.join('/')
   },
   _getConstructionSiteQuery: function (constructionSite) {
-    return 'constructionSite=' + this._getIdFromIri(constructionSite)
+    return 'constructionSite=' + iriToId(constructionSite['@id'])
   },
   _getQueryString: function (query) {
     const queryList = []
     for (const entry in query) {
       if (Object.prototype.hasOwnProperty.call(query, entry)) {
-        queryList.push(entry + '=' + query[entry])
+        if (Array.isArray(query[entry])) {
+          query[entry].forEach(item => {
+            queryList.push(entry + '=' + item)
+          })
+        } else {
+          queryList.push(entry + '=' + query[entry])
+        }
       }
     }
 
     return queryList.join('&')
-  },
-  _getIdFromIri: function (object) {
-    const iri = object['@id']
-    return iri.substr(iri.lastIndexOf('/') + 1)
   },
   _getHydraCollection: function (url) {
     return new Promise(
@@ -204,11 +210,11 @@ const api = {
     return this._getItem('/api/issues/summary?' + queryString)
   },
   getCraftsmenFeedEntries: function (constructionSite) {
-    const queryString = '?constructionSite=' + this._getIdFromIri(constructionSite)
+    const queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
     return this._getItem('/api/craftsmen/feed_entries' + queryString)
   },
   getIssuesFeedEntries: function (constructionSite, weeksInThePast = 0) {
-    let queryString = '?constructionSite=' + this._getIdFromIri(constructionSite)
+    let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
     const week = 7 * 24 * 60 * 60 * 1000
     const lastChangedBefore = new Date(Date.now() - week * weeksInThePast)
     queryString += '&lastChangedAt[before]=' + lastChangedBefore.toISOString()
@@ -262,4 +268,4 @@ const api = {
   }
 }
 
-export { api, validImageTypes }
+export { api, iriToId, validImageTypes }
