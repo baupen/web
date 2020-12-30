@@ -254,6 +254,8 @@ export default {
       this.issue = Object.assign({}, this.unionIssue);
       if (this.issue.craftsman) {
         this.tradeFilter = this.craftsmen.find(c => c['@id'] === this.issue.craftsman).trade
+      } else {
+        this.tradeFilter = null
       }
 
       this.$nextTick(() => {

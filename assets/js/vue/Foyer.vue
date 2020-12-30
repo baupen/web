@@ -33,7 +33,6 @@ export default {
     return {
       constructionManagerIri: null,
       constructionSite: null,
-      constructionManagers: null,
       selectedIssues: [],
       preRegisterIssues: [],
     }
