@@ -1,6 +1,6 @@
 <template>
   <div class="form-group">
-    <custom-checkbox :for-id="forId" :label="label" :required="required">
+    <custom-checkbox :for-id="forId" :label="label" :secondary-label="secondaryLabel" :required="required">
       <slot></slot>
     </custom-checkbox>
     <slot name="after"></slot>
@@ -18,6 +18,10 @@ export default {
       required: false
     },
     label: {
+      type: String,
+      required: false
+    },
+    secondaryLabel: {
       type: String,
       required: false
     },

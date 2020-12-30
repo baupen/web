@@ -80,7 +80,8 @@
               >
               <template v-slot:after>
                 <div>
-                  <a class="btn-link clickable" v-if="filter.wasAddedWithClient !== null" @click="filter.wasAddedWithClient = null">
+                  <a class="btn-link clickable" v-if="filter.wasAddedWithClient !== null"
+                     @click="filter.wasAddedWithClient = null">
                     {{ $t('edit_issues_button.actions.reset') }}
                   </a>
                 </div>
@@ -107,7 +108,7 @@
               :title="$t('issue_table.filter.by_craftsman')"
               :valid="filter.craftsman.length > 0">
 
-            <issue-table-filter-craftsmen :craftsmen="craftsmen" @input="filter.craftsman = $event" />
+            <issue-table-filter-craftsmen :craftsmen="craftsmen" @input="filter.craftsman = $event"/>
           </filter-popover>
         </th>
         <th>
@@ -166,7 +167,7 @@
         <td>
           <text-with-tooltip v-if="iwr.craftsman" :tooltip-title="iwr.craftsman.contactName">
             {{ iwr.craftsman.company }}<br/>
-            {{ iwr.craftsman.trade }}
+            <span class="text-muted">{{ iwr.craftsman.trade }}</span>
           </text-with-tooltip>
         </td>
         <td>

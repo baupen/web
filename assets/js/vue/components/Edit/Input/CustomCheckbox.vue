@@ -4,6 +4,7 @@
     <label class="custom-control-label" :for="forId">
       {{ label }}
       <span v-if="required" class="text-danger">*</span>
+      <span v-if="secondaryLabel" class="text-muted"><br/>{{ secondaryLabel }}</span>
     </label>
   </div>
 </template>
@@ -17,6 +18,10 @@ export default {
       required: false
     },
     label: {
+      type: String,
+      required: false
+    },
+    secondaryLabel: {
       type: String,
       required: false
     },
