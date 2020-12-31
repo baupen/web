@@ -104,7 +104,7 @@ import InvalidFeedback from "./Edit/Layout/InvalidFeedback";
 import {dateConfig, flatPickr} from "../services/flatpickr";
 import CustomRadioField from "./Edit/Layout/CustomRadioField";
 import CustomCheckbox from "./Edit/Input/CustomCheckbox";
-import {api} from "../services/api";
+import {api, iriToId} from "../services/api";
 
 export default {
   components: {
@@ -158,8 +158,15 @@ export default {
     datePickerConfig: function () {
       return dateConfig;
     },
+    selectedIssueNumbers: function () {
+      return this.selectedIssues.map(issue => issue.number)
+    },
     reportLink: function () {
-      return api.getReportLink(this.constructionSite, this.report, this.query)
+      if (this.exportSource === 'filter') {
+        return api.getReportLink(this.constructionSite, this.report, this.query)
+      } else {
+        return api.getReportLink(this.constructionSite, this.report, {'number[]': this.selectedIssueNumbers})
+      }
     }
   },
   methods: {
