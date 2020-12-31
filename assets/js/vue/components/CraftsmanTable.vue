@@ -11,12 +11,12 @@
       <th class="w-minimal">
         <custom-checkbox @click.prevent="toggleSelectedCraftsmen(craftsmen)">
           <input class="custom-control-input" type="checkbox"
-                 :checked="arraysAreEqual(craftsmen, selectedCraftsmen)">
+                 :checked="entityListsAreEqual(craftsmen, selectedCraftsmen)">
         </custom-checkbox>
       </th>
       <th>{{ $t('craftsman.company') }}</th>
-      <th>{{ $t('craftsman.contact_name') }}</th>
       <th>{{ $t('craftsman.trade') }}</th>
+      <th>{{ $t('craftsman.contact_name') }}</th>
 
       <th class="border-left">{{ $t('view.count') }}</th>
       <th>{{ $t('craftsman.next_deadline') }}</th>
@@ -38,8 +38,8 @@
         </custom-checkbox>
       </td>
       <td>{{ cws.craftsman.company }}</td>
-      <td>{{ cws.craftsman.contactName }}</td>
       <td>{{ cws.craftsman.trade }}</td>
+      <td>{{ cws.craftsman.contactName }}</td>
 
       <td class="border-left">
         <number-with-tooltip color-if-nonzero="danger" :value="cws.statistics.issueOverdueCount"
@@ -69,13 +69,13 @@
       </td>
     </tr>
     </tbody>
-    <caption>
+    <caption class="caption-top">
       <div v-if="craftsmenWithIssuesOpen.length" class="form-check form-check-inline">
         <custom-checkbox id="issues-open-craftsmen"
             :label="$t('dispatch.craftsmen_table.with_open_issues')"
             @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOpen)" >
           <input class="custom-control-input" type="checkbox"
-                 :checked="arraysAreEqual(craftsmenWithIssuesOpen, selectedCraftsmen)">
+                 :checked="entityListsAreEqual(craftsmenWithIssuesOpen, selectedCraftsmen)">
         </custom-checkbox>
       </div>
       <div v-if="craftsmenWithIssuesUnread.length" class="ml-4 form-check form-check-inline">
@@ -83,7 +83,7 @@
                          :label="$t('dispatch.craftsmen_table.with_unread_issues')"
                          @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesUnread)" >
           <input class="custom-control-input" type="checkbox"
-                 :checked="arraysAreEqual(craftsmenWithIssuesUnread, selectedCraftsmen)">
+                 :checked="entityListsAreEqual(craftsmenWithIssuesUnread, selectedCraftsmen)">
         </custom-checkbox>
       </div>
       <div v-if="craftsmenWithIssuesOverdue.length" class="ml-4 form-check form-check-inline">
@@ -91,8 +91,11 @@
                          :label="$t('dispatch.craftsmen_table.with_overdue_issues')"
                          @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOverdue)" >
           <input class="custom-control-input" type="checkbox"
-                 :checked="arraysAreEqual(craftsmenWithIssuesOverdue, selectedCraftsmen)">
+                 :checked="entityListsAreEqual(craftsmenWithIssuesOverdue, selectedCraftsmen)">
         </custom-checkbox>
+      </div>
+      <div class="float-right">
+        {{craftsmen.length}} {{$t('craftsman._plural')}}
       </div>
     </caption>
   </table>
@@ -163,7 +166,7 @@ export default {
       }
     },
     toggleSelectedCraftsmen (toggleArray) {
-      if (this.arraysAreEqual(toggleArray, this.selectedCraftsmen)) {
+      if (this.entityListsAreEqual(toggleArray, this.selectedCraftsmen)) {
         this.selectedCraftsmen = []
       } else {
         this.selectedCraftsmen = [...toggleArray]
@@ -176,8 +179,10 @@ export default {
         this.selectedCraftsmen.push(toggleCraftsman)
       }
     },
-    arraysAreEqual (array1, array2) {
-      return arraysAreEqual(array1, array2)
+    entityListsAreEqual(array1, array2) {
+      return arraysAreEqual(array1, array2, (a, b) => {
+        return a['@id'].localeCompare(b['@id'])
+      })
     }
   },
   watch: {

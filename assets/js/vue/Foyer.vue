@@ -1,6 +1,6 @@
 <template>
   <div id="dispatch">
-    <div v-if="issueTableLoading || issues.length > 0" class="btn-group mb-4">
+    <div class="btn-group mb-4">
       <button class="btn btn-primary"
               :disabled="preRegisterIssues.length > 0 || selectedIssues.length === 0"
               @click="registerSelectedIssues">
@@ -9,18 +9,11 @@
       <span class="btn btn-link" v-if="preRegisterIssues.length > 0">{{ preRegisterIssues.length }}</span>
     </div>
 
-    <loading-indicator :spin="issueTableLoading">
+    <loading-indicator :spin="constructionSite === null">
       <issue-table
-          v-if="issues.length"
-          :issues="issues"
-          :craftsmen="craftsmen"
-          :maps="maps"
-          :construction-managers="constructionManagers"
-          @selected="selectedIssues = $event"
-          @deleted="deletedIssue"/>
-      <span v-else class="alert alert-info">
-        {{ $t('foyer.no_unregistered_issues')}}
-      </span>
+          :construction-site="constructionSite"
+          :force-state="0"
+          @selected="selectedIssues = $event"/>
     </loading-indicator>
   </div>
 </template>
@@ -40,10 +33,6 @@ export default {
     return {
       constructionManagerIri: null,
       constructionSite: null,
-      issues: null,
-      craftsmen: null,
-      maps: null,
-      constructionManagers: null,
       selectedIssues: [],
       preRegisterIssues: [],
     }
@@ -56,9 +45,6 @@ export default {
       })
 
       this.processUnregisteredIssues()
-    },
-    deletedIssue(issue) {
-      this.issues = this.issues.filter(i => i !== issue)
     },
     processUnregisteredIssues() {
       const payload = this.preRegisterIssues[0]
@@ -77,11 +63,6 @@ export default {
           )
     },
   },
-  computed: {
-    issueTableLoading: function () {
-      return this.issues === null || this.craftsmen === null || this.maps === null || this.constructionManagers === null
-    }
-  },
   mounted() {
     api.setupErrorNotifications(this.$t)
     api.getMe()
@@ -89,18 +70,6 @@ export default {
     api.getConstructionSite()
         .then(constructionSite => {
           this.constructionSite = constructionSite
-
-          api.getIssues(this.constructionSite, {isDeleted: false, state: 0})
-              .then(issues => this.issues = issues)
-
-          api.getCraftsmen(this.constructionSite)
-              .then(craftsmen => this.craftsmen = craftsmen)
-
-          api.getMaps(this.constructionSite)
-              .then(maps => this.maps = maps)
-
-          api.getConstructionManagers(this.constructionSite)
-              .then(constructionManagers => this.constructionManagers = constructionManagers)
         })
   }
 }

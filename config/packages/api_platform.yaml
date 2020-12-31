@@ -12,7 +12,7 @@ api_platform:
             items_per_page: 100
             client_items_per_page: true
 
-    version: '0.3.0'
+    version: '0.4.0'
     show_webby: false
 
     # to debug nodes directly

@@ -17,7 +17,7 @@
   "dashboard": {
     "name": "Pendenze",
     "messages": {
-      "info" : {
+      "info": {
         "new_issues_in_foyer": "Una nuova pendenza | {count} nuove pendenze"
       },
       "warning": {
@@ -143,27 +143,25 @@
         "time": "Ora",
         "time_set": "{state} alle"
       }
-    },
-    "export": {
-      "name": "Esporta",
-      "pdf": {
-        "name": "PDF",
+    }
+  },
+  "export_issues_button": {
+    "export_type": {
+      "report": {
+        "name": ".pdf Bericht",
+        "help": "Fürs Drucken optimiert: Die Pendenzen möglichst platzsparend aufs Papier bringen.",
         "with_images": "con immagini",
-        "generate": "generare",
-        "tables": {
-          "name": "Tabelle riassuntive",
-          "table_by_craftsman": "per Operaio",
-          "table_by_trade": "per funzione",
-          "table_by_map": "per carte"
-        }
+        "summary_tables": "Tabelle riassuntive",
+        "by_craftsman": "per Operaio",
+        "by_map": "per carte"
       },
       "link": {
         "name": "Link",
-        "with_limit": "Con data di scadenza",
-        "valid_till": "valevole fino",
-        "generate": "creare"
+        "help": "Immer aktuell: Die Pendenzen Externen einfach zugänglich machen.",
+        "access_allowed_before": "Ablaufdatum des Zugriffes"
       }
-    }
+    },
+    "generate": "erstellen"
   },
   "construction_manager": {
     "_name": "Capocantiere",
@@ -225,7 +223,6 @@
       "registered": "registrato",
       "resolved": "risposto",
       "closed": "chiuso",
-
       "open": "aperte",
       "read": "letto",
       "unread": "non letto",

@@ -70,32 +70,6 @@ class IssueHelper
     }
 
     /**
-     * @param Issue[] $issues
-     * @param $orderedTrade
-     * @param $issuesPerTrade
-     */
-    public static function issuesToOrderedTrade(array $issues, &$orderedTrade, &$issuesPerTrade)
-    {
-        static::issuesToOrderedElements(
-            $issues,
-            $orderedTrade,
-            $issuesPerTrade,
-            function ($issue) {
-                /* @var Issue $issue */
-                return $issue->getCraftsman()->getTrade();
-            },
-            function ($trade) {
-                /* @var string $trade */
-                return $trade;
-            },
-            function ($trade) {
-                /* @var string $trade */
-                return $trade;
-            }
-        );
-    }
-
-    /**
      * @param $orderedElements
      * @param $issuesPerElement
      * @param callable $elementProperty    the element we want to use for ordering

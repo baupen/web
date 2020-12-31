@@ -138,6 +138,10 @@ class ReportService implements ReportServiceInterface
         foreach ($issues as $issue) {
             $currentIssue = [];
 
+            if (!$issue->getImage()) {
+                continue;
+            }
+
             $imagePath = $this->imageService->resizeIssueImage($issue->getImage(), ImageServiceInterface::SIZE_PREVIEW);
             if (null === $imagePath) {
                 continue;
@@ -249,9 +253,6 @@ class ReportService implements ReportServiceInterface
         if ($reportElements->getTableByMap()) {
             $elements[] = $this->translator->trans('table.by_map', [], 'report');
         }
-        if ($reportElements->getTableByTrade()) {
-            $elements[] = $this->translator->trans('table.by_trade', [], 'report');
-        }
         $elements[] = $this->translator->trans('issues.detailed', [], 'report');
         if ($reportElements->getWithImages()) {
             $elements[count($elements) - 1] .= ' '.$this->translator->trans('issues.with_images', [], 'report');
@@ -353,9 +354,9 @@ class ReportService implements ReportServiceInterface
         foreach ($orderedMaps as $index => $element) {
             $countPerMap = [0, 0, 0];
             foreach ($issuesPerMap[$index] as $issue) {
-                if ($issue->getClosedAt() >= Issue::STATE_CLOSED) {
+                if ($issue->getClosedAt()) {
                     ++$countPerMap[2];
-                } elseif ($issue->getResolvedAt() >= Issue::STATE_RESOLVED) {
+                } elseif ($issue->getResolvedAt()) {
                     ++$countPerMap[1];
                 } else {
                     ++$countPerMap[0];
@@ -430,31 +431,6 @@ class ReportService implements ReportServiceInterface
         $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_craftsman', [], 'report'));
     }
 
-    /**
-     * @param Issue[] $issues
-     */
-    private function addTableByTrade(Report $report, array $issues)
-    {
-        /* @var string[] $orderedTrade */
-        /* @var Issue[][] $issuesPerTrade */
-        IssueHelper::issuesToOrderedTrade($issues, $orderedTrade, $issuesPerTrade);
-
-        //prepare header & content with specific content
-        $tableHeader = [$this->translator->trans('trade', [], 'entity_craftsman')];
-
-        //add map name & map context to table
-        $tableContent = [];
-        foreach ($orderedTrade as $trade) {
-            $tableContent[$trade] = [$trade];
-        }
-
-        //add accumulated info
-        $this->addAggregatedIssuesInfo($orderedTrade, $issuesPerTrade, $tableContent, $tableHeader);
-
-        //write to pdf
-        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_trade', [], 'report'));
-    }
-
     private function addIssueContent(Filter $filter, ReportElements $reportElements, array $issues, Report $report, string $generationTargetFolder): void
     {
         // add tables
@@ -463,9 +439,6 @@ class ReportService implements ReportServiceInterface
         }
         if ($reportElements->getTableByMap()) {
             $this->addTableByMap($report, $issues);
-        }
-        if ($reportElements->getTableByTrade()) {
-            $this->addTableByTrade($report, $issues);
         }
 
         /* @var Map[] $orderedMaps */

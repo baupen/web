@@ -57,12 +57,41 @@
       }
     }
   },
+  "register": {
+    "actions": {
+      "export_issues": "Pendenzen exportieren"
+    }
+  },
   "issue_table": {
     "last_activity": "Letzte Aktivität",
     "state_archived_by_connector": "von",
     "without_description": "ohne Beschreibung",
     "without_craftsman": "ohne Unternehmer",
     "without_deadline": "ohne Frist",
+    "filter": {
+      "by_number": "Nach Nummer filtern",
+      "by_description": "Nach Beschreibung filtern",
+      "by_is_marked_or_added_with_client": "Nach Favorit / Abnahmependenz",
+      "by_craftsman": "Nach Unternehmer",
+      "by_maps": "Nach Bauplan",
+      "by_state": "Nach Status",
+      "by_deadline": "Nach Frist"
+    },
+    "filter_craftsmen": {
+      "all_craftsmen": "Alle Unternehmer"
+    },
+    "filter_maps": {
+      "all_maps": "Alle Karten"
+    },
+    "filter_state": {
+      "by_active_state": "Aktueller Status"
+    },
+    "filter_time": {
+      "by_time": "Nach Zeitpunkt",
+      "before": "vor",
+      "after": "nach"
+    },
+    "show_more_issues": "Weitere {count} Pendenzen anzeigen",
     "messages": {
       "success": {
         "saved_issues": "Pendenzen gespeichert",
@@ -90,7 +119,7 @@
     }
   },
   "dispatch": {
-    "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die offenen Pendenzen angeschaut und erledigt werden.",
+    "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und auf erledigt setzen.",
     "save_template_changes": "Änderungen an der Vorlage speichern",
     "save_as_new_template": "Als neue Vorlage speichern",
     "no_template": "Keine Vorlage",
@@ -187,27 +216,27 @@
         "time": "Zeit",
         "time_set": "{state} am"
       }
-    },
-    "export": {
-      "name": "Export",
-      "pdf": {
-        "name": "PDF",
+    }
+  },
+  "export_issues_button": {
+    "export_source_filter": "{count} Pendenzen, die auf die Filter zutreffen",
+    "export_source_selection": "{count} Pendenzen, die markiert wurden",
+    "export_type": {
+      "report": {
+        "name": ".pdf Bericht",
+        "help": "Fürs Drucken optimiert: Die Pendenzen möglichst platzsparend aufs Papier bringen.",
         "with_images": "mit Fotos",
-        "generate": "generieren",
-        "tables": {
-          "name": "Zusammenfassungstabellen",
-          "table_by_craftsman": "nach Unternehmer",
-          "table_by_trade": "nach Gewerk",
-          "table_by_map": "nach Bauplan"
-        }
+        "summary_tables": "Zusammenfassungstabellen",
+        "by_craftsman": "nach Unternehmer",
+        "by_map": "nach Bauplan"
       },
       "link": {
         "name": "Link",
-        "with_limit": "Mit Ablaufdatum",
-        "valid_till": "gültig bis",
-        "generate": "erstellen"
+        "help": "Immer aktuell: Die Pendenzen Externen einfach zugänglich machen.",
+        "access_allowed_before": "Ablaufdatum des Zugriffes"
       }
-    }
+    },
+    "generate": "erstellen"
   },
   "construction_manager": {
     "_name": "Bauleiter",
@@ -274,6 +303,7 @@
       "registered": "registriert",
       "resolved": "erledigt",
       "closed": "geschlossen",
+
       "open": "offen",
       "read": "gelesen",
       "unread": "ungelesen",

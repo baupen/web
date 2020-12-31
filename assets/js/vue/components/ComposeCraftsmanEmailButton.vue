@@ -1,7 +1,17 @@
 <template>
   <div>
-    <button-with-modal-confirm modal-size="lg" :title="$t('dispatch.actions.compose_email')" :button-disabled="disabled"
-                               :confirm-title="sendEmailText" :can-confirm="canConfirm" @confirm="confirm">
+    <button-with-modal-confirm modal-size="lg" :title="$t('dispatch.actions.compose_email')"
+                               :button-disabled="disabled" :can-confirm="canConfirm" :confirm-title="sendEmailText" @confirm="confirm">
+
+      <template v-slot:secondary-footer>
+        <custom-checkbox-field for-id="self-bcc" :label="$t('email.self_bcc')">
+          <input
+              class="custom-control-input" type="checkbox" id="self-bcc"
+              v-model="email.selfBcc"
+              :true-value="true"
+              :false-value="false">
+        </custom-checkbox-field>
+      </template>
 
       <div class="row">
         <div class="col-2">
@@ -36,12 +46,27 @@
 
       <hr/>
 
-      <craftsman-email-edit
-          :email-template="selectedEmailTemplate"
-          :receivers="receivers"
-          @update="email = $event"/>
+      <inline-form-field for-id="subject" :label="$t('email.subject')">
+        <input v-focus id="subject" class="form-control" type="text" required="required"
+               :class="{'is-valid': fields.subject.dirty && !fields.subject.errors.length, 'is-invalid': fields.subject.dirty && fields.subject.errors.length }"
+               @blur="fields.subject.dirty = true"
+               v-model="email.subject"
+               @input="validate('subject')">
+        <invalid-feedback :errors="fields.subject.errors"/>
+      </inline-form-field>
 
-      <p class="alert alert-info">{{ $t('dispatch.resolve_link_is_appended') }}</p>
+      <form-field>
+      <textarea id="body" class="form-control" required="required"
+                :class="{'is-valid': fields.body.dirty && !fields.body.errors.length, 'is-invalid': fields.body.dirty && fields.body.errors.length }"
+                @blur="fields.body.dirty = true"
+                v-model="email.body"
+                @input="validate('body')"
+                rows="10">
+      </textarea>
+        <invalid-feedback :errors="fields.body.errors"/>
+      </form-field>
+
+      <p class="alert alert-info mb-0">{{ $t('dispatch.resolve_link_is_appended') }}</p>
 
     </button-with-modal-confirm>
   </div>
@@ -49,26 +74,35 @@
 
 <script>
 
-import EmailContentEdit from './Edit/CraftsmanEmailEdit'
 import ButtonWithModalConfirm from './Behaviour/ButtonWithModalConfirm'
-import CraftsmanEmailEdit from './Edit/CraftsmanEmailEdit'
 import CustomCheckbox from './Edit/Layout/CustomCheckboxField'
 import CustomCheckboxField from './Edit/Layout/CustomCheckboxField'
 import FormField from './Edit/Layout/FormField'
+import InlineFormField from "./Edit/Layout/InlineFormField";
+import InvalidFeedback from "./Edit/Layout/InvalidFeedback";
+import {createField, requiredRule, validateField, validateFields} from "../services/validation";
 
 export default {
   components: {
+    InvalidFeedback,
+    InlineFormField,
     FormField,
     CustomCheckboxField,
     CustomCheckbox,
-    CraftsmanEmailEdit,
     ButtonWithModalConfirm,
-    EmailContentEdit
   },
   emits: ['send', 'save-template', 'create-template'],
   data() {
     return {
-      email: {selfBcc: false},
+      fields: {
+        subject: createField(requiredRule()),
+        body: createField(requiredRule()),
+      },
+      email: {
+        subject: null,
+        body: null,
+        selfBcc: false
+      },
       selectedEmailTemplate: null,
       saveAsTemplate: false
     }
@@ -91,9 +125,6 @@ export default {
     }
   },
   computed: {
-    receivers: function () {
-      return this.craftsmen.map(craftsman => craftsman.contactName + ' (' + craftsman.company + ')')
-    },
     sendEmailText: function () {
       return this.$tc('dispatch.actions.send_emails', this.craftsmen.length, {'count': this.craftsmen.length})
     },
@@ -110,12 +141,21 @@ export default {
       return this.$t('dispatch.save_template_changes')
     },
     canConfirm: function () {
-      return this.email !== null;
+      return this.fields.subject.errors.length === 0 &&
+          this.fields.body.errors.length === 0
     }
   },
   watch: {
     proposedEmailTemplate: function () {
       this.selectedEmailTemplate = this.proposedEmailTemplate
+    },
+    selectedEmailTemplate: function () {
+      if (this.selectedEmailTemplate !== null) {
+        this.applyEmailTemplate(this.selectedEmailTemplate)
+      }
+    },
+    validate: function (field) {
+      validateField(this.fields[field], this.email[field])
     },
   },
   methods: {
@@ -129,10 +169,6 @@ export default {
           this.$emit('save-template', this.selectedEmailTemplate, this.email)
         }
       }
-
-      // reset state for next display
-      this.selectedEmailTemplate = null
-      this.saveAsTemplate = false
     },
     applyEmailTemplate: function (emailTemplate) {
       this.email = {
@@ -140,10 +176,16 @@ export default {
         body: emailTemplate.body,
         selfBcc: emailTemplate.selfBcc
       }
-    }
+      validateFields(this.fields, this.email)
+    },
   },
   mounted() {
-    this.selectedEmailTemplate = this.proposedEmailTemplate
+    validateFields(this.fields, this.email)
+
+    if (this.proposedEmailTemplate !== null) {
+      this.selectedEmailTemplate = this.proposedEmailTemplate
+      this.applyEmailTemplate(this.selectedEmailTemplate)
+    }
   }
 }
 </script>

@@ -4,6 +4,7 @@ $border-radius-sm: 0;
 $modal-backdrop-opacity: 0.3;
 $primary: #343477;
 $primary-200: #eaecef;
+$custom-control-cursor: pointer;
 
 @import '~bootstrap/scss/bootstrap';
 @import '~noty/src/noty';
@@ -11,6 +12,7 @@ $primary-200: #eaecef;
 @import '~flatpickr/dist/flatpickr.css';
 @import 'dropzone';
 @import 'toggle';
+@import 'popover';
 
 html,
 body {
@@ -57,6 +59,10 @@ body {
   width: 1%;
 }
 
+.w-thumbnail {
+  width: calc(100px + 1.5rem);
+}
+
 .pre {
   white-space: pre;
 }
@@ -73,4 +79,16 @@ input:required,
 textarea:required,
 select:required {
   box-shadow: none;
+}
+
+.caption-top {
+  caption-side: top;
+}
+
+.nav-link {
+  cursor: pointer;
+}
+
+.nav-link.active {
+  cursor: default;
 }

@@ -35,7 +35,6 @@ export default {
   },
   data() {
     return {
-      constructionManagerIri: null,
       constructionSite: null,
       constructionManagers: null,
       craftsmen: null,
@@ -56,8 +55,6 @@ export default {
   },
   mounted() {
     api.setupErrorNotifications(this.$t)
-    api.getMe()
-        .then(me => this.constructionManagerIri = me.constructionManagerIri)
     api.getConstructionManagers()
         .then(constructionManagers => this.constructionManagers = constructionManagers);
     api.getConstructionSite()

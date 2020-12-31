@@ -1,17 +1,17 @@
 <template>
   <div class="form-group">
-    <custom-checkbox :for-id="forId" :label="label" :secondary-label="secondaryLabel" :required="required">
+    <custom-radio :for-id="forId" :label="label" :secondary-label="secondaryLabel" :required="required">
       <slot></slot>
-    </custom-checkbox>
+    </custom-radio>
     <slot name="after"></slot>
   </div>
 </template>
 
 <script>
 
-import CustomCheckbox from '../Input/CustomCheckbox'
+import CustomRadio from "../Input/CustomRadio";
 export default {
-  components: { CustomCheckbox },
+  components: {CustomRadio,},
   props: {
     forId: {
       type: String,
