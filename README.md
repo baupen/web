@@ -78,14 +78,16 @@ Milestone 4 (UI)
 - [x] implement foyer UI with scalable table
 - [x] implement register UI with same table as foyer
 - [ ] implement edit UI with easier map edit
-- [ ] finalize filter in API
 - [ ] implement craftsman view
-- [ ] implement filter view
 - [ ] add login QR token for app
-- [ ] add graph of recent issues to dashboard
-- [ ] finishing touches with 0, many & many deleted elements
 
 Milestone 5 (Migration & performance)
 - [ ] write migration from sqlite to mysql
 - [ ] test `app:cache:initialize` command
 - [ ] implement copy environment with mysql database
+  
+Milestone 6 (Pre-release)
+- [ ] finishing touches with 0, many & many deleted elements
+- [ ] finish all still-open issues
+- [ ] implement filter view
+- [ ] work on the nice-to-haves until release
