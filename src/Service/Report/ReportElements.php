@@ -39,14 +39,15 @@ class ReportElements
         return $self;
     }
 
-    private static function getValue(array $parameters, string $config, bool $default): bool
+    private static function getValue(array $parameters, string $key, bool $default): bool
     {
-        $key = 'report['.$config.']';
         if (!isset($parameters[$key])) {
             return $default;
         }
 
-        return (bool) $parameters[$key];
+        $value = $parameters[$key];
+
+        return '1' === $value || 'true' === $value;
     }
 
     public function getTableByCraftsman(): bool

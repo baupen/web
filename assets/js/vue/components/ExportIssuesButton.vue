@@ -28,7 +28,7 @@
             {{ $t('export_issues_button.export_type.report.name') }}
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="false">
           <a class="nav-link" :class="{'active': exportType === 'link'}" @click="exportType = 'link'">
             {{ $t('export_issues_button.export_type.link.name') }}
           </a>
@@ -69,7 +69,6 @@
                      v-model="report.tableByMap">
             </custom-checkbox>
           </div>
-          {{reportLink}}
 
           <a class="btn btn-primary" target="_blank" :href="reportLink">
             {{$t('export_issues_button.generate')}}
@@ -143,7 +142,6 @@ export default {
     },
     constructionSite: {
       type: Object,
-      required: true
     },
     query: {
       type: Object,
@@ -161,11 +159,22 @@ export default {
     selectedIssueNumbers: function () {
       return this.selectedIssues.map(issue => issue.number)
     },
+    reportQuery: function () {
+      return {
+        "report[withImages]": this.report.withImages,
+        "report[tableByCraftsman]": this.report.tableByCraftsman,
+        "report[tableByMap]": this.report.tableByMap,
+      }
+    },
     reportLink: function () {
+      if (this.constructionSite === null) {
+        return null
+      }
+
       if (this.exportSource === 'filter') {
-        return api.getReportLink(this.constructionSite, this.report, this.query)
+        return api.getReportLink(this.constructionSite, this.reportQuery, this.query)
       } else {
-        return api.getReportLink(this.constructionSite, this.report, {'number[]': this.selectedIssueNumbers})
+        return api.getReportLink(this.constructionSite, this.reportQuery, {'number[]': this.selectedIssueNumbers})
       }
     }
   },

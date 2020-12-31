@@ -86,7 +86,9 @@ class IssueReportDataProvider implements ContextAwareCollectionDataProviderInter
         /** @var Paginator $collection */
         $collection = $this->decoratedCollectionDataProvider->getCollection($resourceClass, $operationName, $context);
 
-        $reportElements = ReportElements::fromRequest($this->request->query->all());
+        /** @var array $reportConfig */
+        $reportConfig = $this->request->query->get('report', []);
+        $reportElements = ReportElements::fromRequest($reportConfig);
 
         $author = $this->getAuthor($this->tokenStorage->getToken());
 

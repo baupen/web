@@ -185,9 +185,9 @@ const api = {
     queryString += '&' + this._getQueryString(query)
     return this._getPaginatedHydraCollection('/api/issues?' + queryString)
   },
-  getReportLink: function (constructionSite, reportElements, query = {}) {
+  getReportLink: function (constructionSite, reportQuery, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
-    queryString += '&' + this._getQueryString(reportElements)
+    queryString += '&' + this._getQueryString(reportQuery)
     queryString += '&' + this._getQueryString(query)
     return '/api/issues/report?' + queryString
   },

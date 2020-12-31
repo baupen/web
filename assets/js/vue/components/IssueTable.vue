@@ -100,7 +100,6 @@
                 @input-deadline-after="filter['deadline[after]'] = $event"
             />
           </filter-popover>
-          <font-awesome-icon class="ml-1" :icon="['fal', 'sort']"/>
         </th>
         <th class="w-minimal">
           {{ $t('issue.status') }}
