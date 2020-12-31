@@ -12,10 +12,10 @@ api_platform:
             items_per_page: 100
             client_items_per_page: true
 
-    version: '0.3.0'
+    version: '0.4.0'
     show_webby: false
 
     # to debug nodes directly
-    enable_re_doc: false
-    enable_swagger_ui: false
+    # enable_re_doc: false
+    # enable_swagger_ui: false
 

@@ -91,6 +91,7 @@
       "before": "vor",
       "after": "nach"
     },
+    "show_more_issues": "Weitere {count} Pendenzen anzeigen",
     "messages": {
       "success": {
         "saved_issues": "Pendenzen gespeichert",

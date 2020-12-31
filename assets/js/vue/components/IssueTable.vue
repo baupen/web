@@ -246,6 +246,11 @@
         </div>
       </caption>
     </table>
+    <p class="text-center">
+      <button class="btn btn-outline-secondary" v-if="notLoadedIssueCount > 0 && !issuesLoading" @click="loadNextPage">
+        {{$tc('issue_table.show_more_issues', notLoadedIssueCount)}}
+      </button>
+    </p>
   </loading-indicator>
 </template>
 
@@ -376,6 +381,9 @@ export default {
     }
   },
   computed: {
+    notLoadedIssueCount: function () {
+      return this.totalIssues - this.issues.length;
+    },
     editButtonPendingRequestCount: function () {
       return this.prePatchedIssues.length + this.prePostedIssueImages.length
     },
@@ -565,16 +573,26 @@ export default {
 
       return query;
     },
-    loadIssues(filter) {
+    loadNextPage() {
+      this.loadIssues(this.filter, this.issuePage + 1)
+    },
+    loadIssues(filter, page = 1) {
       this.issuesLoading = true;
 
       let query = this.filterAsQuery(filter)
       this.$emit('query', query)
 
+      query = Object.assign({}, query, {page})
+
       api.getPaginatedIssues(this.constructionSite, query)
           .then(payload => {
-            this.issues = payload.items
+            if (page === 1) {
+              this.issues = payload.items
+            } else {
+              this.issues = this.issues.concat(payload.items)
+            }
             this.totalIssues = payload.totalItems
+            this.issuePage = page
 
             this.$emit('queried-issue-count', payload.totalItems)
 
@@ -591,16 +609,17 @@ export default {
     },
     filter: {
       handler: debounce(function (newVal) {
+        // skip first watch
+        if (newVal.state === null) {
+          return;
+        }
+
         this.loadIssues(newVal)
       }, 200, {"leading": true}),
       deep: true
     }
   },
   mounted() {
-    if (this.forceState) {
-      this.filter.state = this.forceState
-    }
-
     api.getCraftsmen(this.constructionSite)
         .then(craftsmen => {
           this.craftsmen = craftsmen
