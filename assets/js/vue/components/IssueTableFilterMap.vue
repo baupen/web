@@ -11,27 +11,31 @@
 
     <hr/>
 
-    <custom-checkbox-field
-        v-for="map in flattenedMaps" :key="map.entity['@id']"
-        :for-id="'filter-map-' + map.entity['@id']" :label="map.entity.name">
-      <span :class="'spacer-' + map.level"/>
-      <input
-          class="custom-control-input" type="checkbox" :id="'filter-map-' + map.entity['@id']"
-          v-model="selectedMaps"
-          :value="map.entity"
-      >
-    </custom-checkbox-field>
+    <div class="form-group">
+      <custom-checkbox
+          class="mb-1"
+          v-for="map in flattenedMaps" :key="map.entity['@id']"
+          :for-id="'filter-map-' + map.entity['@id']" :label="map.entity.name">
+        <span :class="'spacer-' + map.level"/>
+        <input
+            class="custom-control-input" type="checkbox" :id="'filter-map-' + map.entity['@id']"
+            v-model="selectedMaps"
+            :value="map.entity"
+        >
+      </custom-checkbox>
+    </div>
   </div>
 </template>
 
 <script>
 import CustomCheckboxField from "./Edit/Layout/CustomCheckboxField";
 import {arraysAreEqual} from "../services/algorithms";
+import CustomCheckbox from "./Edit/Input/CustomCheckbox";
 
 const rootKey = 'root'
 
 export default {
-  components: {CustomCheckboxField},
+  components: {CustomCheckbox, CustomCheckboxField},
   emits: ['input'],
   data() {
     return {

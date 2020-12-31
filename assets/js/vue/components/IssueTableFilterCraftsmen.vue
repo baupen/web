@@ -11,15 +11,19 @@
 
     <hr/>
 
-    <custom-checkbox-field
-        v-for="craftsman in craftsmen" :key="craftsman['@id']"
-        :for-id="'filter-craftsman-' + craftsman['@id']" :label="craftsman.company" :secondary-label="craftsman.trade">
-      <input
-          class="custom-control-input" type="checkbox" :id="'filter-craftsman-' + craftsman['@id']"
-          v-model="selectedCraftsmen"
-          :value="craftsman"
-      >
-    </custom-checkbox-field>
+    <div class="form-group">
+      <custom-checkbox
+          class="mb-1"
+          v-for="craftsman in craftsmen" :key="craftsman['@id']"
+          :for-id="'filter-craftsman-' + craftsman['@id']" :label="craftsman.company"
+          :secondary-label="craftsman.trade">
+        <input
+            class="custom-control-input" type="checkbox" :id="'filter-craftsman-' + craftsman['@id']"
+            v-model="selectedCraftsmen"
+            :value="craftsman"
+        >
+      </custom-checkbox>
+    </div>
   </div>
 </template>
 
@@ -27,9 +31,10 @@
 <script>
 import CustomCheckboxField from "./Edit/Layout/CustomCheckboxField";
 import {arraysAreEqual} from "../services/algorithms";
+import CustomCheckbox from "./Edit/Input/CustomCheckbox";
 
 export default {
-  components: {CustomCheckboxField},
+  components: {CustomCheckbox, CustomCheckboxField},
   emits: ['input'],
   data() {
     return {

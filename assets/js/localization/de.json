@@ -74,7 +74,8 @@
       "by_is_marked_or_added_with_client": "Nach Favorit / Abnahmependenz",
       "by_craftsman": "Nach Unternehmer",
       "by_maps": "Nach Bauplan",
-      "by_state": "Nach Status"
+      "by_state": "Nach Status",
+      "by_deadline": "Nach Frist"
     },
     "filter_craftsmen": {
       "all_craftsmen": "Alle Unternehmer"
@@ -217,8 +218,8 @@
     }
   },
   "export_issues_button": {
-    "export_source_filter": "{count} Pendenzen die auf die Filter zutreffen",
-    "export_source_selection": "{count} Pendenzen die markiert wurden",
+    "export_source_filter": "{count} Pendenzen, die auf die Filter zutreffen",
+    "export_source_selection": "{count} Pendenzen, die markiert wurden",
     "export_type": {
       "report": {
         "name": ".pdf Bericht",

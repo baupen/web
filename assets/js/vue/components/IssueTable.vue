@@ -50,7 +50,8 @@
               :valid="!!(filter.isMarked || filter.wasAddedWithClient)">
 
             <issue-table-filter-is-marked class="mt-2" :default="null" @input="filter.isMarked = $event"/>
-            <issue-table-filter-was-added-with-client class="mb-2" :default="null" @input="filter.wasAddedWithClient = $event"/>
+            <issue-table-filter-was-added-with-client class="mb-2" :default="null"
+                                                      @input="filter.wasAddedWithClient = $event"/>
 
           </filter-popover>
         </th>
@@ -109,7 +110,7 @@
               :title="$t('issue_table.filter.by_state')"
               :valid="!forceState && filter.state !== 7">
             <template v-if="!forceState">
-              <p class="font-weight-bold">{{$t('issue_table.filter_state.by_active_state')}}</p>
+              <p class="font-weight-bold">{{ $t('issue_table.filter_state.by_active_state') }}</p>
 
               <issue-table-filter-state
                   :minimal-state="minimalState" :force-state="forceState"
@@ -583,8 +584,11 @@ export default {
     }
   },
   watch: {
-    selectedIssues: function () {
-      this.$emit('selected', this.selectedIssues)
+    selectedIssues: {
+      deep: true,
+      handler: function () {
+        this.$emit('selected', this.selectedIssues)
+      }
     },
     filter: {
       handler: debounce(function (newVal) {

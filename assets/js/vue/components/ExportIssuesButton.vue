@@ -4,18 +4,21 @@
         :title="$t('register.actions.export_issues')"
         :button-disabled="disabled">
 
-      <custom-checkbox-field for-id="export-source-filter"
-                             :label="$tc('export_issues_button.export_source_filter', queriedIssueCount)">
-        <input class="custom-control-input" type="radio" name="export-source" value="filter" id="export-source-filter"
+      <custom-radio-field for-id="export-source-filter"
+                          :label="$tc('export_issues_button.export_source_filter', queriedIssueCount)">
+        <input id="export-source-filter" class="custom-control-input" type="radio"
+               name="export-source" value="filter"
+               :disabled="queriedIssueCount === 0"
                v-model="exportSource">
-      </custom-checkbox-field>
+      </custom-radio-field>
 
-      <custom-checkbox-field for-id="export-source-filter"
-                             :label="$tc('export_issues_button.export_source_selection', selectedIssues.length)">
-        <input class="custom-control-input" type="radio" name="export-source" value="selection"
-               id="export-source-selection"
+      <custom-radio-field for-id="export-source-selection"
+                          :label="$tc('export_issues_button.export_source_selection', selectedIssues.length)">
+        <input id="export-source-selection" class="custom-control-input" type="radio"
+               name="export-source" value="selection"
+               :disabled="selectedIssues.length === 0"
                v-model="exportSource">
-      </custom-checkbox-field>
+      </custom-radio-field>
 
       <hr/>
 
@@ -31,7 +34,7 @@
           </a>
         </li>
       </ul>
-      <div class="tab-content">
+      <div class="tab-content p-3 border border-top-0">
         <div class="tab-pane fade" :class="{'show active': exportType === 'report'}">
           <p class="alert alert-info">
             {{ $t('export_issues_button.export_type.report.help') }}
@@ -46,31 +49,34 @@
           </custom-checkbox-field>
 
           <p class="mb-0">{{ $t('export_issues_button.export_type.report.summary_tables') }}</p>
+          <div class="form-group">
+            <custom-checkbox
+                class="mb-1"
+                for-id="report-table-by-craftsman"
+                :label="$t('export_issues_button.export_type.report.by_craftsman')">
+              <input class="custom-control-input" type="checkbox" name="report-table-by-craftsman" value="selection"
+                     id="report-table-by-craftsman"
+                     :true-value="true" :false-value="false"
+                     v-model="report.tableByCraftsman">
+            </custom-checkbox>
 
-          <custom-checkbox-field
-              for-id="report-table-by-craftsman"
-              :label="$t('export_issues_button.export_type.report.by_craftsman')">
-            <input class="custom-control-input" type="checkbox" name="report-table-by-craftsman" value="selection"
-                   id="report-table-by-craftsman"
-                   :true-value="true" :false-value="false"
-                   v-model="report.tableByCraftsman">
-          </custom-checkbox-field>
-          
-          <custom-checkbox-field
-              for-id="report-table-by-map"
-              :label="$t('export_issues_button.export_type.report.by_map')">
-            <input class="custom-control-input" type="checkbox" name="report-table-by-map" value="selection"
-                   id="report-table-by-map"
-                   :true-value="true" :false-value="false"
-                   v-model="report.tableByMap">
-          </custom-checkbox-field>
+            <custom-checkbox
+                for-id="report-table-by-map"
+                :label="$t('export_issues_button.export_type.report.by_map')">
+              <input class="custom-control-input" type="checkbox" name="report-table-by-map" value="selection"
+                     id="report-table-by-map"
+                     :true-value="true" :false-value="false"
+                     v-model="report.tableByMap">
+            </custom-checkbox>
+          </div>
         </div>
         <div class="tab-pane fade" :class="{'show active': exportType === 'link'}">
           <p class="alert alert-info">
             {{ $t('export_issues_button.export_type.link.help') }}
           </p>
 
-          <form-field for-id="link-access-allowed-before" :label="$t('export_issues_button.export_type.link.access_allowed_before')">
+          <form-field for-id="link-access-allowed-before"
+                      :label="$t('export_issues_button.export_type.link.access_allowed_before')">
             <flat-pickr
                 id="link-access-allowed-before" class="form-control"
                 v-model="link.accessAllowedBefore"
@@ -91,9 +97,13 @@ import ButtonWithModal from "./Behaviour/ButtonWithModal";
 import FormField from "./Edit/Layout/FormField";
 import InvalidFeedback from "./Edit/Layout/InvalidFeedback";
 import {dateConfig, flatPickr} from "../services/flatpickr";
+import CustomRadioField from "./Edit/Layout/CustomRadioField";
+import CustomCheckbox from "./Edit/Input/CustomCheckbox";
 
 export default {
   components: {
+    CustomCheckbox,
+    CustomRadioField,
     InvalidFeedback,
     FormField,
     ButtonWithModal,
