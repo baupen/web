@@ -2,7 +2,7 @@
   <div id="register">
     <div class="btn-group mb-4">
       <export-issues-button
-          :disabled="exportDisabled"
+          :disabled="exportDisabled" :construction-site="constructionSite"
           :query="query" :queried-issue-count="queriedIssuesCount" :selected-issues="selectedIssues" />
     </div>
 

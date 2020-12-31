@@ -16,11 +16,6 @@ class ReportElements
     /**
      * @var bool
      */
-    private $tableByTrade = false;
-
-    /**
-     * @var bool
-     */
     private $tableByCraftsman = false;
 
     /**
@@ -37,10 +32,9 @@ class ReportElements
     {
         $self = new self();
 
-        $self->tableByTrade = static::getValue($parameters, 'table_by_trade', false);
-        $self->tableByTrade = static::getValue($parameters, 'table_by_craftsman', false);
-        $self->tableByTrade = static::getValue($parameters, 'table_by_map', true);
-        $self->tableByTrade = static::getValue($parameters, 'with_images', true);
+        $self->tableByCraftsman = static::getValue($parameters, 'tableByCraftsman', false);
+        $self->tableByMap = static::getValue($parameters, 'tableByMap', true);
+        $self->withImages = static::getValue($parameters, 'withImages', true);
 
         return $self;
     }
@@ -53,16 +47,6 @@ class ReportElements
         }
 
         return (bool) $parameters[$key];
-    }
-
-    public function getTableByTrade(): bool
-    {
-        return $this->tableByTrade;
-    }
-
-    public function setTableByTrade(bool $tableByTrade): void
-    {
-        $this->tableByTrade = $tableByTrade;
     }
 
     public function getTableByCraftsman(): bool

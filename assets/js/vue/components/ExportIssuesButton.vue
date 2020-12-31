@@ -69,6 +69,11 @@
                      v-model="report.tableByMap">
             </custom-checkbox>
           </div>
+          {{reportLink}}
+
+          <a class="btn btn-primary" target="_blank" :href="reportLink">
+            {{$t('export_issues_button.generate')}}
+          </a>
         </div>
         <div class="tab-pane fade" :class="{'show active': exportType === 'link'}">
           <p class="alert alert-info">
@@ -99,6 +104,7 @@ import InvalidFeedback from "./Edit/Layout/InvalidFeedback";
 import {dateConfig, flatPickr} from "../services/flatpickr";
 import CustomRadioField from "./Edit/Layout/CustomRadioField";
 import CustomCheckbox from "./Edit/Input/CustomCheckbox";
+import {api} from "../services/api";
 
 export default {
   components: {
@@ -135,6 +141,10 @@ export default {
       type: Number,
       required: true
     },
+    constructionSite: {
+      type: Object,
+      required: true
+    },
     query: {
       type: Object,
       required: true
@@ -147,6 +157,9 @@ export default {
   computed: {
     datePickerConfig: function () {
       return dateConfig;
+    },
+    reportLink: function () {
+      return api.getReportLink(this.constructionSite, this.report, this.query)
     }
   },
   methods: {
@@ -154,5 +167,15 @@ export default {
       console.log('create link')
     },
   },
+  watch: {
+    selectedIssues: {
+      deep: true,
+      handler: function (){
+        if (this.selectedIssues.length === 0) {
+          this.exportSource = 'filter'
+        }
+      }
+    }
+  }
 }
 </script>
