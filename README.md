@@ -76,7 +76,7 @@ Milestone 4 (UI)
 - [x] implement dashboard UI
 - [x] implement craftsman UI 
 - [x] implement foyer UI with scalable table
-- [ ] implement register UI with same table as foyer
+- [x] implement register UI with same table as foyer
 - [ ] implement edit UI with easier map edit
 - [ ] finalize filter in API
 - [ ] implement craftsman view
