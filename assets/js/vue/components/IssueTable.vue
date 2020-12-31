@@ -88,8 +88,18 @@
         </th>
         <th>
           {{ $t('issue.deadline') }}
+
+          <filter-popover
+              size="filter-wide"
+              :title="$t('issue_table.filter.by_deadline')"
+              :valid="filter['deadline[before]'] !== null && filter['deadline[after]']">
+
+            <issue-table-filter-deadline
+                @input-deadline-before="filter['deadline[before]'] = $event"
+                @input-deadline-after="filter['deadline[after]'] = $event"
+            />
+          </filter-popover>
           <font-awesome-icon class="ml-1" :icon="['fal', 'sort']"/>
-          <font-awesome-icon class="ml-1" :icon="['fal', 'filter']"/>
         </th>
         <th class="w-minimal">
           {{ $t('issue.status') }}
@@ -270,10 +280,12 @@ import IssueTableFilterIsMarked from "./IssueTableFilterIsMarked";
 import IssueTableFilterWasAddedWithClient from "./IssueTableFilterWasAddedWithClient";
 import IssueTableFilterState from "./IssueTableFilterState";
 import IssueTableFilterTime from "./IssueTableFilterTime";
+import IssueTableFilterDeadline from "./IssueTableFilterDeadline";
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count'],
   components: {
+    IssueTableFilterDeadline,
     IssueTableFilterTime,
     IssueTableFilterState,
     IssueTableFilterWasAddedWithClient,
