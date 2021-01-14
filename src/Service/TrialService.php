@@ -154,6 +154,7 @@ class TrialService implements TrialServiceInterface
         // create manager
         $constructionManager = new ConstructionManager();
         $constructionManager->setIsTrialAccount(true);
+        $constructionManager->setIsEnabled(true);
         $constructionManager->setGivenName($proposedGivenName !== null ? $proposedGivenName : $this->faker->firstNameMale);
         $constructionManager->setFamilyName($proposedFamilyName !== null ? $proposedFamilyName : $this->faker->lastName);
 
