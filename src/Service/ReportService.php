@@ -282,11 +282,11 @@ class ReportService implements ReportServiceInterface
         }
 
         if (null !== $before) {
-            return$this->translator->trans('introduction.filter.earlier_than', ['%date%' => $beforeString], 'report');
+            return $this->translator->trans('introduction.filter.earlier_than', ['%date%' => $beforeString], 'report');
         }
 
         if (null !== $after) {
-            return$this->translator->trans('introduction.filter.later_than', ['%date%' => $afterString], 'report');
+            return $this->translator->trans('introduction.filter.later_than', ['%date%' => $afterString], 'report');
         }
 
         return null;

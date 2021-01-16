@@ -78,7 +78,6 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
     use SoftDeleteTrait;
-
     use IssuePositionTrait;
     use IssueStatusTrait;
 
@@ -309,7 +308,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     /**
      * @Groups({"issue-read"})
      */
-    public function getLastChangedAt(): \DateTime
+    public function getLastChangedAt(): DateTime
     {
         return $this->lastChangedAt;
     }

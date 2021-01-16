@@ -65,7 +65,7 @@ class MyTwigExtension extends AbstractExtension
         return mb_strtolower(preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $propertyName));
     }
 
-    public function dateFormatFilter(?\DateTime $date): string
+    public function dateFormatFilter(?DateTime $date): string
     {
         if ($date instanceof DateTime) {
             return $this->prependDayName($date).', '.$date->format(DateTimeFormatter::DATE_FORMAT);
@@ -74,7 +74,7 @@ class MyTwigExtension extends AbstractExtension
         return '-';
     }
 
-    public function dateTimeFormatFilter(?\DateTime $date): string
+    public function dateTimeFormatFilter(?DateTime $date): string
     {
         if ($date instanceof DateTime) {
             return $this->prependDayName($date).', '.$date->format(DateTimeFormatter::DATE_TIME_FORMAT);

@@ -27,11 +27,9 @@ trait AssertApiTrait
     use AssertApiCollectionFilterTrait;
     use AssertApiOperationsTrait;
     use AssertApiResponseTrait;
-
     use AssertApiGetTrait;
     use AssertApiPostTrait;
     use AssertApiPatchTrait;
     use AssertApiDeleteTrait;
-
     use AssertApiTokenTrait;
 }
