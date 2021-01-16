@@ -295,7 +295,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     /**
      * @Groups({"craftsman-read"})
      */
-    public function getLastChangedAt(): \DateTime
+    public function getLastChangedAt(): DateTime
     {
         return $this->lastChangedAt;
     }
