@@ -44,13 +44,13 @@ export default {
   },
   computed: {
     constructionSiteSummaryLoading: function () {
-      return this.constructionSite === null
+      return !this.constructionSite
     },
     issuesSummaryLoading: function () {
-      return this.issuesSummary === null
+      return !this.issuesSummary
     },
     feedLoading: function () {
-      return this.feedEntries === null || this.constructionManagers === null || this.craftsmen === null
+      return !this.feedEntries || !this.constructionManagers || !this.craftsmen
     },
   },
   mounted() {

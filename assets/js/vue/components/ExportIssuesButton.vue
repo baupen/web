@@ -167,7 +167,7 @@ export default {
       }
     },
     reportLink: function () {
-      if (this.constructionSite === null) {
+      if (!this.constructionSite) {
         return null
       }
 

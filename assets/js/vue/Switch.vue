@@ -59,7 +59,7 @@ export default {
   },
   computed: {
     isLoading: function () {
-      return this.constructionSites === null || this.constructionManagers === null || this.constructionManagerIri === null
+      return !this.constructionSites || !this.constructionManagers || !this.constructionManagerIri
     },
     memberOfConstructionSites: function () {
       return this.constructionSiteList.filter(constructionSite => constructionSite.constructionManagers.includes(this.constructionManagerIri))

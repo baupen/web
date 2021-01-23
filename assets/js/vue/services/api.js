@@ -7,6 +7,12 @@ const iriToId = function (iri) {
   return iri.substr(iri.lastIndexOf('/') + 1)
 }
 
+const displaySuccessMessageIfExists = function (successMessage = null) {
+  if (successMessage) {
+    displaySuccess(successMessage)
+  }
+}
+
 const api = {
   setupErrorNotifications: function (translator) {
     axios.interceptors.response.use(
@@ -115,9 +121,7 @@ const api = {
         axios.post(collectionUrl, post)
           .then(response => {
             resolve(response.data)
-            if (successMessage !== null) {
-              displaySuccess(successMessage)
-            }
+            displaySuccessMessageIfExists(successMessage)
           })
       }
     )
@@ -128,9 +132,7 @@ const api = {
         axios.post(collectionUrl, post)
           .then(response => {
             collection.push(response.data)
-            if (successMessage !== null) {
-              displaySuccess(successMessage)
-            }
+            displaySuccessMessageIfExists(successMessage)
             resolve()
           })
       }
@@ -144,9 +146,7 @@ const api = {
       (resolve) => {
         axios.post(collectionUrl, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
           .then(response => {
-            if (successMessage !== null) {
-              displaySuccess(successMessage)
-            }
+            displaySuccessMessageIfExists(successMessage)
             resolve(response.data)
           })
       }
@@ -235,9 +235,7 @@ const api = {
           .then(response => {
             this._writeAllProperties(response.data, instance)
             resolve()
-            if (successMessage !== null) {
-              displaySuccess(successMessage)
-            }
+            displaySuccessMessageIfExists(successMessage)
           })
       }
     )
@@ -253,9 +251,7 @@ const api = {
             }
 
             resolve()
-            if (successMessage !== null) {
-              displaySuccess(successMessage)
-            }
+            displaySuccessMessageIfExists(successMessage)
           })
       }
     )

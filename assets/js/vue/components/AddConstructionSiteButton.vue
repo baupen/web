@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     canConfirm: function () {
-      return this.constructionSite !== null
+      return !!this.constructionSite
     }
   },
   methods: {

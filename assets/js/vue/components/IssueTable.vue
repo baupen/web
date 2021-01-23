@@ -32,8 +32,8 @@
               id="all-issues"
               @click.prevent="toggleSelectedIssues(issues)">
             <input class="custom-control-input" type="checkbox"
-                   :disabled="issues === null"
-                   :checked="issues !== null && issues.length > 0 && entityListsAreEqual(issues, selectedIssues)">
+                   :disabled="!issues"
+                   :checked="issues && issues.length > 0 && entityListsAreEqual(issues, selectedIssues)">
           </custom-checkbox>
         </th>
         <th class="w-minimal">
@@ -93,7 +93,7 @@
           <filter-popover
               size="filter-wide"
               :title="$t('issue_table.filter.by_deadline')"
-              :valid="filter['deadline[before]'] !== null && filter['deadline[after]']">
+              :valid="filter['deadline[before]'] && filter['deadline[after]']">
 
             <issue-table-filter-deadline
                 @input-deadline-before="filter['deadline[before]'] = $event"
@@ -132,7 +132,7 @@
         </th>
       </tr>
       </thead>
-      <tbody v-if="issues !== null">
+      <tbody v-if="issues">
       <tr v-if="issues.length === 0 && !issuesLoading">
         <td colspan="9">
           <p class="text-center">no issues found</p>
@@ -388,7 +388,7 @@ export default {
       return this.prePatchedIssues.length + this.prePostedIssueImages.length
     },
     filtersLoading: function () {
-      return this.constructionManagers === null || this.craftsmen === null || this.maps === null
+      return !this.constructionManagers || !this.craftsmen || !this.maps
     },
     craftsmanLookup: function () {
       let craftsmanLookup = {}
@@ -456,13 +456,13 @@ export default {
       })
     },
     issuesWithoutDescription: function () {
-      return this.issues.filter(i => i.description === null || i.description === "")
+      return this.issues.filter(i => !i.description)
     },
     issuesWithoutDeadline: function () {
-      return this.issues.filter(i => i.deadline === null)
+      return this.issues.filter(i => !i.deadline)
     },
     issuesWithoutCraftsman: function () {
-      return this.issues.filter(i => i.craftsman === null)
+      return this.issues.filter(i => !i.craftsman)
     },
   },
   methods: {
@@ -566,7 +566,8 @@ export default {
           if (fieldValue.length === 0 || fieldValue.length !== this.maps.length) {
             query['map[]'] = fieldValue.map(e => iriToId(e['@id']))
           }
-        } else if (fieldValue !== null && fieldValue !== "") {
+        } else if (fieldValue || fieldValue === false) {
+          // "false" is the only Falsy value applicable as filter
           query[fieldName] = fieldValue
         }
       }
