@@ -6,6 +6,7 @@
       <span v-if="required" class="text-danger">*</span>
       <span v-if="secondaryLabel" class="text-muted"><br/>{{ secondaryLabel }}</span>
     </label>
+    <slot name="after"></slot>
   </div>
 </template>
 

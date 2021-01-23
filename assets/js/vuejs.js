@@ -30,11 +30,12 @@ import it from './localization/it.json'
 import { clickOutside, focus } from './vue/services/directives'
 
 // views
-import Switch from './vue/Switch.vue'
 import Dashboard from './vue/Dashboard.vue'
 import Dispatch from './vue/Dispatch'
+import Edit from './vue/Edit'
 import Foyer from './vue/Foyer'
 import Register from './vue/Register'
+import Switch from './vue/Switch.vue'
 
 // settings
 const locale = document.documentElement.lang.substr(0, 2)
@@ -76,11 +77,6 @@ function createVue (app) {
   return vue
 }
 
-if (document.getElementById('switch') != null) {
-  createVue(Switch)
-    .mount('#switch')
-}
-
 if (document.getElementById('dashboard') != null) {
   createVue(Dashboard)
     .mount('#dashboard')
@@ -91,6 +87,11 @@ if (document.getElementById('dispatch') != null) {
     .mount('#dispatch')
 }
 
+if (document.getElementById('edit') != null) {
+  createVue(Edit)
+    .mount('#edit')
+}
+
 if (document.getElementById('foyer') != null) {
   createVue(Foyer)
     .mount('#foyer')
@@ -99,4 +100,9 @@ if (document.getElementById('foyer') != null) {
 if (document.getElementById('register') != null) {
   createVue(Register)
     .mount('#register')
+}
+
+if (document.getElementById('switch') != null) {
+  createVue(Switch)
+    .mount('#switch')
 }

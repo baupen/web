@@ -12,7 +12,7 @@
       <template v-slot:after-body>
         <div class="modal-footer">
           <slot name="secondary-footer"></slot>
-          <button type="submit" :disabled="!canConfirm" @click="confirm" class="btn btn-primary">
+          <button type="submit" :disabled="!canConfirm" @click="confirm" :class="'btn btn-' + color">
             {{ confirmTitle ?? title }}
           </button>
         </div>

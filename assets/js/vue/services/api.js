@@ -210,8 +210,9 @@ const api = {
     const queryString = this._getConstructionSiteQuery(constructionSite)
     return this._getHydraCollection('/api/email_templates?' + queryString)
   },
-  getIssuesSummary: function (constructionSite) {
+  getIssuesSummary: function (constructionSite, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&' + this._getQueryString(query)
     queryString += '&isDeleted=false'
     return this._getItem('/api/issues/summary?' + queryString)
   },
@@ -245,7 +246,7 @@ const api = {
       (resolve) => {
         axios.delete(instance['@id'])
           .then(response => {
-            // DELETE request might return entity in answer
+            // DELETE request might return entity in answer (for entities with soft-delete)
             if (response.data['@id'] === instance) {
               this._writeAllProperties(response.data, instance)
             }
@@ -255,6 +256,9 @@ const api = {
           })
       }
     )
+  },
+  postCraftsman: function (craftsman, successMessage = null) {
+    return this._postRaw('/api/craftsmen', craftsman, successMessage)
   },
   postEmailTemplate: function (emailTemplate, collection, successMessage = null) {
     return this._post('/api/email_templates', emailTemplate, collection, successMessage)

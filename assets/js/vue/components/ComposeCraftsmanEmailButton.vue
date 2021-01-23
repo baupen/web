@@ -56,13 +56,13 @@
       </inline-form-field>
 
       <form-field>
-      <textarea id="body" class="form-control" required="required"
-                :class="{'is-valid': fields.body.dirty && !fields.body.errors.length, 'is-invalid': fields.body.dirty && fields.body.errors.length }"
-                @blur="fields.body.dirty = true"
-                v-model="email.body"
-                @input="validate('body')"
-                rows="10">
-      </textarea>
+        <textarea id="body" class="form-control" required="required"
+                  :class="{'is-valid': fields.body.dirty && !fields.body.errors.length, 'is-invalid': fields.body.dirty && fields.body.errors.length }"
+                  @blur="fields.body.dirty = true"
+                  v-model="email.body"
+                  @input="validate('body')"
+                  rows="10">
+        </textarea>
         <invalid-feedback :errors="fields.body.errors"/>
       </form-field>
 

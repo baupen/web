@@ -29,10 +29,7 @@
                 {{ own_macros.nav_item(path("construction_site_register", {"constructionSite": constructionSite.id}), "register.title"|trans({}, "construction_site")) }}
             </ul>
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link"
-                       href="{{ path("construction_site_edit", {"constructionSite": constructionSite.id}) }}">{{ "edit.title"|trans({}, "construction_site") }}</a>
-                </li>
+                {{ own_macros.nav_item(path("construction_site_edit", {"constructionSite": constructionSite.id}), "edit.title"|trans({}, "construction_site")) }}
             </ul>
         </div>
     </nav>

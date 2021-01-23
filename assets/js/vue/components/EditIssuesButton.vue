@@ -4,7 +4,7 @@
       :confirm-title="storeIssuesText" :button-disabled="disabled"
       @confirm="confirm">
     <template v-slot:button-content>
-      <font-awesome-icon :icon="['fal', 'pencil']"/>
+      <font-awesome-icon :icon="['fal', 'pencil']" class="pr-1"/>
       {{ $t('edit_issues_button.modal_title') }}
 
     </template>

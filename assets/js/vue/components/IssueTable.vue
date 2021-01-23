@@ -112,7 +112,7 @@
               <p class="font-weight-bold">{{ $t('issue_table.filter_state.by_active_state') }}</p>
 
               <issue-table-filter-state
-                  :minimal-state="minimalState" :force-state="forceState"
+                  :minimal-state="minimalState"
                   @input="filter.state = $event"/>
 
               <hr/>
