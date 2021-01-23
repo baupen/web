@@ -5,8 +5,8 @@
         @click.prevent="toggleSelectedCraftsmen(craftsmen)"
         :label="$t('issue_table.filter_craftsmen.all_craftsmen')">
       <input class="custom-control-input" type="checkbox"
-             :disabled="craftsmen === null"
-             :checked="craftsmen !== null && craftsmen.length > 0 && entityListsAreEqual(craftsmen, selectedCraftsmen)">
+             :disabled="!craftsmen"
+             :checked="craftsmen && craftsmen.length > 0 && entityListsAreEqual(craftsmen, selectedCraftsmen)">
     </custom-checkbox-field>
 
     <hr/>

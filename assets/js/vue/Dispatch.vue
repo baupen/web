@@ -81,7 +81,7 @@ export default {
     },
     saveEmailTemplate: function (emailTemplate, email) {
       let patch = email;
-      if (emailTemplate.purpose === null) {
+      if (!emailTemplate.purpose) {
         patch = Object.assign({name: email.subject}, patch)
       }
 
@@ -125,13 +125,13 @@ export default {
   },
   computed: {
     craftsmenLoading: function () {
-      return this.craftsmen === null || this.craftsmenStatistics === null
+      return !this.craftsmen || !this.craftsmenStatistics
     },
     emailTemplatesLoading: function () {
-      return this.emailTemplates === null || this.emailTemplates.length < 3
+      return !this.emailTemplates || this.emailTemplates.length < 3
     },
     proposedEmailTemplate: function () {
-      if (this.emailTemplates === null) {
+      if (!this.emailTemplates) {
         return null;
       }
 

@@ -6,7 +6,7 @@
           :query="query" :queried-issue-count="queriedIssuesCount" :selected-issues="selectedIssues" />
     </div>
 
-    <loading-indicator :spin="constructionSite === null">
+    <loading-indicator :spin="!constructionSite">
       <issue-table
           :construction-site="constructionSite"
           :minimal-state="1"

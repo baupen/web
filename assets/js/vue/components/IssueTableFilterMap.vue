@@ -5,8 +5,8 @@
         @click.prevent="toggleSelectedMaps(maps)"
         :label="$t('issue_table.filter_maps.all_maps')">
       <input class="custom-control-input" type="checkbox"
-             :disabled="maps === null"
-             :checked="maps !== null && maps.length > 0 && entityListsAreEqual(maps, selectedMaps)">
+             :disabled="!maps"
+             :checked="maps && maps.length > 0 && entityListsAreEqual(maps, selectedMaps)">
     </custom-checkbox-field>
 
     <hr/>

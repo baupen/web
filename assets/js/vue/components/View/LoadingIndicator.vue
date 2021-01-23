@@ -21,7 +21,7 @@ export default {
   props: {
     spin: {
       type: Boolean,
-      required: true
+      default: true
     }
   }
 }

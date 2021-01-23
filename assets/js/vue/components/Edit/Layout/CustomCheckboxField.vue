@@ -2,8 +2,10 @@
   <div class="form-group">
     <custom-checkbox :for-id="forId" :label="label" :secondary-label="secondaryLabel" :required="required">
       <slot></slot>
+      <template v-slot:after>
+        <slot name="after"></slot>
+      </template>
     </custom-checkbox>
-    <slot name="after"></slot>
   </div>
 </template>
 

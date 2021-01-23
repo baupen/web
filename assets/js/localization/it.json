@@ -88,6 +88,9 @@
     "issues_overview": "Panoramica delle pendenze",
     "no_issues": "Non sono disponibili pendenze"
   },
+  "edit": {
+    "construction_managers_help": "Concedi ad altri capocantiere l'accesso a questo cantiere in modo che possano anche registrare e gestire i pendenze."
+  },
   "construction_site_edit": {
     "description": "Cambia indirizzo e foto di copertina.",
     "drag_files_to_upload": "Trascina un'immagine .jpg o .png in quest'area per impostarla come nuova immagine di copertina.",
@@ -101,13 +104,11 @@
     }
   },
   "construction_managers_edit": {
-    "help": "Concedi ad altri capocantiere l'accesso a questo cantiere in modo che possano anche registrare e gestire i pendenze..",
     "actions": {
       "add": "Aggiungi e informa via e-mail"
     }
   },
   "maps_edit": {
-    "description": "Modificare la struttura dei progetti di costruzione.",
     "default_map_name": "Nuovo progetto di costruzione",
     "drag_files_to_upload": "Trascina i file .pdf in quest'area per aggiungerli come nuovi progetti di costruzione",
     "actions": {
@@ -122,7 +123,6 @@
     }
   },
   "craftsmen_edit": {
-    "help": "Aggiorna i dati degli operai.",
     "actions": {
       "add_craftsman": "Aggiungere operaio",
       "download_excel_template": "Scarica il modello Excel",

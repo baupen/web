@@ -68,10 +68,6 @@ export default {
   },
   methods: {
     updateState: function () {
-      if (this.forceState !== null) {
-        this.$emit('input', this.forceState)
-      }
-
       let state = 0;
       if (this.isRegistered || this.minimalState >= 1) {
         state = state | 1;

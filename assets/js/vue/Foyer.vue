@@ -9,7 +9,7 @@
       <span class="btn btn-link" v-if="preRegisterIssues.length > 0">{{ preRegisterIssues.length }}</span>
     </div>
 
-    <loading-indicator :spin="constructionSite === null">
+    <loading-indicator :spin="!constructionSite">
       <issue-table
           :construction-site="constructionSite"
           :force-state="0"

@@ -15,7 +15,7 @@ const createField = function () {
 const requiredRule = function () {
   return {
     isValid: function (value) {
-      return value !== null && value.toString().length > 0
+      return !!value
     },
     errorMessage: 'validation.required'
   }
@@ -38,6 +38,21 @@ const validateFields = function (fields, values) {
   }
 }
 
+const changedFieldValues = function (fields, values, template) {
+  const result = {}
+  for (const fieldName in fields) {
+    if (Object.prototype.hasOwnProperty.call(fields, fieldName)) {
+      if (template && template[fieldName] === values[fieldName]) {
+        continue
+      }
+
+      result[fieldName] = values[fieldName]
+    }
+  }
+
+  return result
+}
+
 const resetFields = function (fields) {
   for (const fieldName in fields) {
     if (Object.prototype.hasOwnProperty.call(fields, fieldName)) {
@@ -52,5 +67,6 @@ export {
   requiredRule,
   validateField,
   validateFields,
+  changedFieldValues,
   resetFields
 }

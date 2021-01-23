@@ -56,13 +56,13 @@
       </inline-form-field>
 
       <form-field>
-      <textarea id="body" class="form-control" required="required"
-                :class="{'is-valid': fields.body.dirty && !fields.body.errors.length, 'is-invalid': fields.body.dirty && fields.body.errors.length }"
-                @blur="fields.body.dirty = true"
-                v-model="email.body"
-                @input="validate('body')"
-                rows="10">
-      </textarea>
+        <textarea id="body" class="form-control" required="required"
+                  :class="{'is-valid': fields.body.dirty && !fields.body.errors.length, 'is-invalid': fields.body.dirty && fields.body.errors.length }"
+                  @blur="fields.body.dirty = true"
+                  v-model="email.body"
+                  @input="validate('body')"
+                  rows="10">
+        </textarea>
         <invalid-feedback :errors="fields.body.errors"/>
       </form-field>
 
@@ -129,16 +129,16 @@ export default {
       return this.$tc('dispatch.actions.send_emails', this.craftsmen.length, {'count': this.craftsmen.length})
     },
     sortedEmailTemplatesWithPurpose: function () {
-      return this.emailTemplates.filter(et => et.purpose !== null).sort((a, b) => a.purpose - b.purpose)
+      return this.emailTemplates.filter(et => et.purpose).sort((a, b) => a.purpose - b.purpose)
     },
     sortedEmailTemplatesCustom: function () {
-      return this.emailTemplates.filter(et => et.purpose === null).sort((a, b) => a.name.localeCompare(a.name))
+      return this.emailTemplates.filter(et => !et.purpose).sort((a, b) => a.name.localeCompare(a.name))
     },
     saveAsTemplateLabel: function () {
-      if (this.selectedEmailTemplate === null) {
-        return this.$t('dispatch.save_as_new_template')
+      if (this.selectedEmailTemplate) {
+        return this.$t('dispatch.save_template_changes')
       }
-      return this.$t('dispatch.save_template_changes')
+      return this.$t('dispatch.save_as_new_template')
     },
     canConfirm: function () {
       return this.fields.subject.errors.length === 0 &&
@@ -150,7 +150,7 @@ export default {
       this.selectedEmailTemplate = this.proposedEmailTemplate
     },
     selectedEmailTemplate: function () {
-      if (this.selectedEmailTemplate !== null) {
+      if (this.selectedEmailTemplate) {
         this.applyEmailTemplate(this.selectedEmailTemplate)
       }
     },
@@ -163,10 +163,10 @@ export default {
       this.$emit('send', this.email)
 
       if (this.saveAsTemplate) {
-        if (this.selectedEmailTemplate === null) {
-          this.$emit('create-template', this.email)
-        } else {
+        if (this.selectedEmailTemplate) {
           this.$emit('save-template', this.selectedEmailTemplate, this.email)
+        } else {
+          this.$emit('create-template', this.email)
         }
       }
     },
@@ -182,7 +182,7 @@ export default {
   mounted() {
     validateFields(this.fields, this.email)
 
-    if (this.proposedEmailTemplate !== null) {
+    if (this.proposedEmailTemplate) {
       this.selectedEmailTemplate = this.proposedEmailTemplate
       this.applyEmailTemplate(this.selectedEmailTemplate)
     }

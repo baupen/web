@@ -7,6 +7,12 @@ const iriToId = function (iri) {
   return iri.substr(iri.lastIndexOf('/') + 1)
 }
 
+const displaySuccessMessageIfExists = function (successMessage = null) {
+  if (successMessage) {
+    displaySuccess(successMessage)
+  }
+}
+
 const api = {
   setupErrorNotifications: function (translator) {
     axios.interceptors.response.use(
@@ -115,9 +121,7 @@ const api = {
         axios.post(collectionUrl, post)
           .then(response => {
             resolve(response.data)
-            if (successMessage !== null) {
-              displaySuccess(successMessage)
-            }
+            displaySuccessMessageIfExists(successMessage)
           })
       }
     )
@@ -128,9 +132,7 @@ const api = {
         axios.post(collectionUrl, post)
           .then(response => {
             collection.push(response.data)
-            if (successMessage !== null) {
-              displaySuccess(successMessage)
-            }
+            displaySuccessMessageIfExists(successMessage)
             resolve()
           })
       }
@@ -144,9 +146,7 @@ const api = {
       (resolve) => {
         axios.post(collectionUrl, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
           .then(response => {
-            if (successMessage !== null) {
-              displaySuccess(successMessage)
-            }
+            displaySuccessMessageIfExists(successMessage)
             resolve(response.data)
           })
       }
@@ -210,8 +210,9 @@ const api = {
     const queryString = this._getConstructionSiteQuery(constructionSite)
     return this._getHydraCollection('/api/email_templates?' + queryString)
   },
-  getIssuesSummary: function (constructionSite) {
+  getIssuesSummary: function (constructionSite, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&' + this._getQueryString(query)
     queryString += '&isDeleted=false'
     return this._getItem('/api/issues/summary?' + queryString)
   },
@@ -235,9 +236,7 @@ const api = {
           .then(response => {
             this._writeAllProperties(response.data, instance)
             resolve()
-            if (successMessage !== null) {
-              displaySuccess(successMessage)
-            }
+            displaySuccessMessageIfExists(successMessage)
           })
       }
     )
@@ -247,18 +246,19 @@ const api = {
       (resolve) => {
         axios.delete(instance['@id'])
           .then(response => {
-            // DELETE request might return entity in answer
+            // DELETE request might return entity in answer (for entities with soft-delete)
             if (response.data['@id'] === instance) {
               this._writeAllProperties(response.data, instance)
             }
 
             resolve()
-            if (successMessage !== null) {
-              displaySuccess(successMessage)
-            }
+            displaySuccessMessageIfExists(successMessage)
           })
       }
     )
+  },
+  postCraftsman: function (craftsman, successMessage = null) {
+    return this._postRaw('/api/craftsmen', craftsman, successMessage)
   },
   postEmailTemplate: function (emailTemplate, collection, successMessage = null) {
     return this._post('/api/email_templates', emailTemplate, collection, successMessage)
