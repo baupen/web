@@ -71,7 +71,7 @@
     </tr>
     </tbody>
     <caption class="caption-top">
-      <div v-if="craftsmenWithIssuesOpen.length" class="form-check form-check-inline">
+      <div v-if="craftsmenWithIssuesOpen.length" class="form-check form-check-inline mr-4">
         <custom-checkbox id="issues-open-craftsmen"
                          :label="$t('dispatch.craftsmen_table.with_open_issues')"
                          @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOpen)">
@@ -79,7 +79,7 @@
                  :checked="entityListsAreEqual(craftsmenWithIssuesOpen, selectedCraftsmen)">
         </custom-checkbox>
       </div>
-      <div v-if="craftsmenWithIssuesUnread.length" class="ml-4 form-check form-check-inline">
+      <div v-if="craftsmenWithIssuesUnread.length" class="form-check form-check-inline mr-4">
         <custom-checkbox id="issues-unread-craftsmen"
                          :label="$t('dispatch.craftsmen_table.with_unread_issues')"
                          @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesUnread)">
@@ -87,7 +87,7 @@
                  :checked="entityListsAreEqual(craftsmenWithIssuesUnread, selectedCraftsmen)">
         </custom-checkbox>
       </div>
-      <div v-if="craftsmenWithIssuesOverdue.length" class="ml-4 form-check form-check-inline">
+      <div v-if="craftsmenWithIssuesOverdue.length" class="form-check form-check-inline">
         <custom-checkbox id="issues-overdue-craftsmen"
                          :label="$t('dispatch.craftsmen_table.with_overdue_issues')"
                          @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOverdue)">
@@ -156,7 +156,7 @@ export default {
       return craftsmanWithStatistics.sort((a, b) => a.craftsman.trade.localeCompare(b.craftsman.trade))
     },
     craftsmenWithIssuesOpen: function () {
-      return this.orderedCraftsmenWithStatistics.filter(cws => cws.statistics.issueOpenCount > 0)
+      return this.orderedCraftsmenWithStatistics.filter(cws => cws.statistics.issueSummary.openCount > 0)
           .map(cws => cws.craftsman)
     },
     craftsmenWithIssuesUnread: function () {
@@ -188,6 +188,7 @@ export default {
       } else {
         this.selectedCraftsmen.push(toggleCraftsman)
       }
+      console.log(this.selectedCraftsmen)
     },
     entityListsAreEqual (array1, array2) {
       return arraysAreEqual(array1, array2, (a, b) => {
@@ -196,6 +197,12 @@ export default {
     }
   },
   watch: {
+    isLoading: function ()  {
+      if (!this.isLoading) {
+        console.log("setting ", this.selectedCraftsmen)
+        this.selectedCraftsmen = [...this.craftsmenWithIssuesOpen]
+      }
+    },
     selectedCraftsmen: function () {
       this.$emit('selected', this.selectedCraftsmen)
     }
