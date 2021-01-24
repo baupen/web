@@ -1,27 +1,24 @@
 <template>
-  <div>
-    <custom-checkbox-field for-id="remove-confirm" :label="$t('actions.remove_confirm')">
-      <input
-          class="custom-control-input" type="checkbox" id="remove-confirm"
-          :class="{'is-valid': removeConfirmField.dirty && !removeConfirmField.errors.length, 'is-invalid': removeConfirmField.dirty && removeConfirmField.errors.length }"
-          v-model="removeConfirm"
-          :true-value="true"
-          :false-value="false"
-          @input="removeConfirmField.dirty = true"
-          @change="validateremoveConfirm"
-      >
-      <template v-slot:after>
-        <invalid-feedback :errors="removeConfirmField.errors" />
-      </template>
-    </custom-checkbox-field>
-  </div>
+  <custom-checkbox-field for-id="remove-confirm" :label="$t('actions.remove_confirm')">
+    <input
+        class="custom-control-input" type="checkbox" id="remove-confirm"
+        :class="{'is-valid': removeConfirmField.dirty && !removeConfirmField.errors.length, 'is-invalid': removeConfirmField.dirty && removeConfirmField.errors.length }"
+        v-model="removeConfirm"
+        :true-value="true"
+        :false-value="false"
+        @input="removeConfirmField.dirty = true"
+        @change="validateremoveConfirm"
+    >
+    <template v-slot:after>
+      <invalid-feedback :errors="removeConfirmField.errors" />
+    </template>
+  </custom-checkbox-field>
 </template>
 
 <script>
 import { createField, requiredRule, validateField } from '../../services/validation'
 import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
-
 
 export default {
   components: {

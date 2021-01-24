@@ -11,22 +11,33 @@
 
 namespace App\Api\Entity;
 
-class Summary
+class IssueSummary
 {
     /**
      * @var int
      */
-    private $openCount;
+    private $openCount = 0;
 
     /**
      * @var int
      */
-    private $resolvedCount;
+    private $resolvedCount = 0;
 
     /**
      * @var int
      */
-    private $closedCount;
+    private $closedCount = 0;
+
+    public static function fromArray(int $openCount, int $resolvedCount, int $closedCount): self
+    {
+        $self = new self();
+
+        $self->openCount = $openCount;
+        $self->resolvedCount = $resolvedCount;
+        $self->closedCount = $closedCount;
+
+        return $self;
+    }
 
     public function getOpenCount(): int
     {

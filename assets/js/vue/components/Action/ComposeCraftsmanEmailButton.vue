@@ -1,138 +1,132 @@
 <template>
-  <div>
-    <button-with-modal-confirm modal-size="lg" :title="$t('dispatch.actions.compose_email')"
-                               :button-disabled="disabled" :can-confirm="canConfirm" :confirm-title="sendEmailText" @confirm="confirm">
+  <span class="btn btn-link" v-if="unsentEmails.length > 0">{{ unsentEmails.length }}</span>
+  <button-with-modal-confirm
+      modal-size="lg" :title="$t('dispatch.actions.compose_email')"
+      :button-disabled="disabled" :can-confirm="canConfirm" :confirm-title="sendEmailText"
+      @confirm="confirm">
 
-      <template v-slot:secondary-footer>
-        <custom-checkbox-field for-id="self-bcc" :label="$t('email.self_bcc')">
+    <template v-slot:secondary-footer>
+      <custom-checkbox-field for-id="self-bcc" :label="$t('email.self_bcc')">
+        <input
+            class="custom-control-input" type="checkbox" id="self-bcc"
+            v-model="selfBcc"
+            :true-value="true"
+            :false-value="false">
+      </custom-checkbox-field>
+    </template>
+
+    <div class="row">
+      <div class="col-2">
+        {{ $t('email_template._name') }}
+      </div>
+      <div class="col">
+        <loading-indicator-secondary v-if="emailTemplatesLoading" />
+        <form-field v-else>
+          <select v-model="selectedEmailTemplate" class="custom-select">
+            <option :value="null">{{ $t('dispatch.no_template') }}</option>
+            <option disabled></option>
+            <option v-for="emailTemplate in sortedEmailTemplatesWithPurpose" :value="emailTemplate"
+                    :key="emailTemplate['@id']">
+              {{ emailTemplate.name }}
+            </option>
+            <option disabled v-if="sortedEmailTemplatesCustom.length > 0"></option>
+            <option v-for="emailTemplate in sortedEmailTemplatesCustom" :value="emailTemplate"
+                    :key="emailTemplate['@id']">
+              {{ emailTemplate.name }}
+            </option>
+          </select>
+        </form-field>
+
+        <custom-checkbox-field for-id="save-as-template" :label="saveAsTemplateLabel">
           <input
-              class="custom-control-input" type="checkbox" id="self-bcc"
-              v-model="email.selfBcc"
+              class="custom-control-input" type="checkbox" id="save-as-template"
+              v-model="saveAsTemplate"
               :true-value="true"
               :false-value="false">
         </custom-checkbox-field>
-      </template>
-
-      <div class="row">
-        <div class="col-2">
-          {{ $t('email_template._name') }}
-        </div>
-        <div class="col">
-          <form-field>
-            <select v-model="selectedEmailTemplate" class="custom-select">
-              <option :value="null">{{ $t('dispatch.no_template') }}</option>
-              <option disabled></option>
-              <option v-for="emailTemplate in sortedEmailTemplatesWithPurpose" :value="emailTemplate"
-                      :key="emailTemplate['@id']">
-                {{ emailTemplate.name }}
-              </option>
-              <option disabled v-if="sortedEmailTemplatesCustom.length > 0"></option>
-              <option v-for="emailTemplate in sortedEmailTemplatesCustom" :value="emailTemplate"
-                      :key="emailTemplate['@id']">
-                {{ emailTemplate.name }}
-              </option>
-            </select>
-          </form-field>
-
-          <custom-checkbox-field for-id="save-as-template" :label="saveAsTemplateLabel">
-            <input
-                class="custom-control-input" type="checkbox" id="save-as-template"
-                v-model="saveAsTemplate"
-                :true-value="true"
-                :false-value="false">
-          </custom-checkbox-field>
-        </div>
       </div>
+    </div>
 
-      <hr/>
+    <hr />
 
-      <inline-form-field for-id="subject" :label="$t('email.subject')">
-        <input v-focus id="subject" class="form-control" type="text" required="required"
-               :class="{'is-valid': fields.subject.dirty && !fields.subject.errors.length, 'is-invalid': fields.subject.dirty && fields.subject.errors.length }"
-               @blur="fields.subject.dirty = true"
-               v-model="email.subject"
-               @input="validate('subject')">
-        <invalid-feedback :errors="fields.subject.errors"/>
-      </inline-form-field>
+    <email-form :template="selectedEmailTemplate" @update="email = $event" />
 
-      <form-field>
-        <textarea id="body" class="form-control" required="required"
-                  :class="{'is-valid': fields.body.dirty && !fields.body.errors.length, 'is-invalid': fields.body.dirty && fields.body.errors.length }"
-                  @blur="fields.body.dirty = true"
-                  v-model="email.body"
-                  @input="validate('body')"
-                  rows="10">
-        </textarea>
-        <invalid-feedback :errors="fields.body.errors"/>
-      </form-field>
+    <p class="alert alert-info mb-0">{{ $t('dispatch.resolve_link_is_appended') }}</p>
 
-      <p class="alert alert-info mb-0">{{ $t('dispatch.resolve_link_is_appended') }}</p>
-
-    </button-with-modal-confirm>
-  </div>
+  </button-with-modal-confirm>
 </template>
 
 <script>
 
-import ButtonWithModalConfirm from './Behaviour/ButtonWithModalConfirm'
-import CustomCheckbox from './Edit/Layout/CustomCheckboxField'
-import CustomCheckboxField from './Edit/Layout/CustomCheckboxField'
-import FormField from './Edit/Layout/FormField'
-import InlineFormField from "./Edit/Layout/InlineFormField";
-import InvalidFeedback from "./Edit/Layout/InvalidFeedback";
-import {createField, requiredRule, validateField, validateFields} from "../services/validation";
+import { api } from '../../services/api'
+import { displaySuccess } from '../../services/notifiers'
+import EmailForm from '../Form/EmailForm'
+import LoadingIndicatorSecondary from '../Library/View/LoadingIndicatorSecondary'
+import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
+import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
+import FormField from '../Library/FormLayout/FormField'
 
 export default {
   components: {
-    InvalidFeedback,
-    InlineFormField,
     FormField,
     CustomCheckboxField,
-    CustomCheckbox,
     ButtonWithModalConfirm,
+    LoadingIndicatorSecondary,
+    EmailForm,
   },
-  emits: ['send', 'save-template', 'create-template'],
-  data() {
+  emits: ['email-sent'],
+  data () {
     return {
-      fields: {
-        subject: createField(requiredRule()),
-        body: createField(requiredRule()),
-      },
-      email: {
-        subject: null,
-        body: null,
-        selfBcc: false
-      },
+      selfBcc: false,
+      email: null,
+      emailTemplates: null,
       selectedEmailTemplate: null,
+      unsentEmails: [],
       saveAsTemplate: false
     }
   },
   props: {
+    constructionSite: {
+      type: Object,
+      required: true
+    },
     craftsmen: {
       type: Array,
       required: true
     },
-    emailTemplates: {
-      type: Array,
+    defaultPurpose: {
+      type: Number,
+      default: 1 // issues open template
     },
-    proposedEmailTemplate: {
-      type: Object,
-      required: false
+    type: {
+      type: Number,
+      default: 4 // craftsman issue reminder
     },
-    disabled: {
-      type: Boolean,
-      required: true
-    }
   },
   computed: {
+    disabled: function () {
+      return this.unsentEmails.length > 0 || this.craftsmen.length === 0
+    },
+    emailTemplatesLoading: function () {
+      return !this.emailTemplates || this.emailTemplates.length < 3
+    },
     sendEmailText: function () {
-      return this.$tc('dispatch.actions.send_emails', this.craftsmen.length, {'count': this.craftsmen.length})
+      return this.$tc('dispatch.actions.send_emails', this.craftsmen.length, { 'count': this.craftsmen.length })
+    },
+    proposedEmailTemplate: function () {
+      if (!this.emailTemplates) {
+        return null
+      }
+
+      return this.emailTemplates.find(t => t.purpose === this.defaultPurpose)
     },
     sortedEmailTemplatesWithPurpose: function () {
-      return this.emailTemplates.filter(et => et.purpose).sort((a, b) => a.purpose - b.purpose)
+      return this.emailTemplates.filter(et => et.purpose)
+          .sort((a, b) => a.purpose - b.purpose)
     },
     sortedEmailTemplatesCustom: function () {
-      return this.emailTemplates.filter(et => !et.purpose).sort((a, b) => a.name.localeCompare(a.name))
+      return this.emailTemplates.filter(et => !et.purpose)
+          .sort((a, b) => a.name.localeCompare(b.name))
     },
     saveAsTemplateLabel: function () {
       if (this.selectedEmailTemplate) {
@@ -141,51 +135,106 @@ export default {
       return this.$t('dispatch.save_as_new_template')
     },
     canConfirm: function () {
-      return this.fields.subject.errors.length === 0 &&
-          this.fields.body.errors.length === 0
+      return !!this.email
     }
   },
   watch: {
     proposedEmailTemplate: function () {
       this.selectedEmailTemplate = this.proposedEmailTemplate
     },
-    selectedEmailTemplate: function () {
-      if (this.selectedEmailTemplate) {
-        this.applyEmailTemplate(this.selectedEmailTemplate)
-      }
-    },
-    validate: function (field) {
-      validateField(this.fields[field], this.email[field])
-    },
   },
   methods: {
     confirm: function () {
-      this.$emit('send', this.email)
+      this.sendEmails()
 
       if (this.saveAsTemplate) {
         if (this.selectedEmailTemplate) {
-          this.$emit('save-template', this.selectedEmailTemplate, this.email)
+          this.saveEmailTemplate()
         } else {
-          this.$emit('create-template', this.email)
+          this.createEmailTemplateFromEmail()
         }
       }
     },
-    applyEmailTemplate: function (emailTemplate) {
-      this.email = {
-        subject: emailTemplate.subject,
-        body: emailTemplate.body,
-        selfBcc: emailTemplate.selfBcc
+    sendEmails: function () {
+      this.unsentEmails = this.selectedCraftsmen.map(craftsman => {
+        return Object.assign({ type: this.type }, this.email, { receiver: craftsman['@id'] })
+      })
+
+      this.processUnsentEmails()
+    },
+    processUnsentEmails () {
+      const email = this.unsentEmails[0]
+      api.postEmail(email)
+          .then(_ => {
+                this.unsentEmails.shift()
+                this.$emit('email-sent', this.craftsmen.find(c => c['@id'] === email.receiver))
+
+                if (this.unsentEmails.length === 0) {
+                  displaySuccess(this.$t('dispatch.messages.success.emails_sent'))
+                } else {
+                  this.processUnsentEmails()
+                }
+              }
+          )
+    },
+    createEmailTemplateFromEmail: function () {
+      const emailTemplate = Object.assign({
+        name: this.email.subject,
+        constructionSite: this.constructionSite['@id']
+      }, this.email)
+      api.postEmailTemplate(emailTemplate, this.emailTemplates, this.$t('dispatch.messages.success.email_template_saved'))
+    },
+    saveEmailTemplate: function () {
+      let patch = Object.assign({}, this.email)
+      if (!this.selectedEmailTemplate.purpose) {
+        patch.name = this.email.subject
       }
-      validateFields(this.fields, this.email)
+
+      api.patch(this.selectedEmailTemplate, patch, this.$t('dispatch.messages.success.email_template_saved'))
+    },
+    initializeDefaultEmailTemplates () {
+      let openIssuesTemplate = this.emailTemplates.find(t => t.purpose === 1)
+      if (!openIssuesTemplate) {
+        this.addDefaultEmailTemplate('open_issues', 1)
+      }
+
+      let unreadIssuesTemplate = this.emailTemplates.find(t => t.purpose === 2)
+      if (!unreadIssuesTemplate) {
+        this.addDefaultEmailTemplate('unread_issues', 2)
+      }
+
+      let overdueIssuesTemplate = this.emailTemplates.find(t => t.purpose === 3)
+      if (!overdueIssuesTemplate) {
+        this.addDefaultEmailTemplate('overdue_issues', 3)
+      }
+    },
+    addDefaultEmailTemplate (key, purpose) {
+      const hi = this.$t('email_template.templates.common.hi')
+      const help = this.$t('email_template.templates.common.help')
+
+      const name = this.$t('email_template.templates.' + key + '.name')
+      const subject = this.$t('email_template.templates.' + key + '.subject', { 'constructionSite': this.constructionSite.name })
+      const body = this.$t('email_template.templates.' + key + '.body', { 'constructionSite': this.constructionSite.name })
+
+      const template = {
+        purpose,
+        name,
+        subject,
+        body: hi + '\n\n' + body + '\n\n' + help,
+        selfBcc: false,
+        constructionSite: this.constructionSite['@id']
+      }
+
+      api.postEmailTemplate(template, this.emailTemplates)
     },
   },
-  mounted() {
-    validateFields(this.fields, this.email)
+  mounted () {
+    api.getEmailTemplates(this.constructionSite)
+        .then(emailTemplates => {
+          this.emailTemplates = emailTemplates
+          this.initializeDefaultEmailTemplates()
+        })
 
-    if (this.proposedEmailTemplate) {
-      this.selectedEmailTemplate = this.proposedEmailTemplate
-      this.applyEmailTemplate(this.selectedEmailTemplate)
-    }
   }
 }
 </script>

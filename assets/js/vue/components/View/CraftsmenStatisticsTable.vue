@@ -3,9 +3,10 @@
     <thead>
     <tr class="bg-light">
       <th class="w-minimal"></th>
-      <th colspan="3">{{ $t('craftsman._name') }}</th>
+      <th colspan="2">{{ $t('craftsman._name') }}</th>
       <th class="border-left" colspan="2">{{ $t('issue._plural') }}</th>
-      <th class="border-left" colspan="3">{{ $t('dispatch.craftsmen_table.last_activity') }}</th>
+      <th class="border-left" colspan="2">{{ $t('dispatch.craftsmen_table.last_activity') }}</th>
+      <th class="border-left"></th>
     </tr>
     <tr class="text-secondary">
       <th class="w-minimal">
@@ -14,20 +15,21 @@
                  :checked="entityListsAreEqual(craftsmen, selectedCraftsmen)">
         </custom-checkbox>
       </th>
-      <th>{{ $t('craftsman.company') }}</th>
       <th>{{ $t('craftsman.trade') }}</th>
-      <th>{{ $t('craftsman.contact_name') }}</th>
+      <th>{{ $t('craftsman.company') }}</th>
 
       <th class="border-left">{{ $t('view.count') }}</th>
       <th>{{ $t('craftsman.next_deadline') }}</th>
 
-      <th class="border-left">{{ $t('craftsman.received_email') }}</th>
-      <th>{{ $t('craftsman.visited_webpage') }}</th>
+      <th class="border-left">{{ $t('craftsman.visited_webpage') }}</th>
       <th>{{ $t('craftsman.resolved_issue') }}</th>
+
+      <th class="border-left">{{ $t('craftsman.received_email') }}</th>
     </tr>
     </thead>
     <tbody>
-    <tr v-for="cws in orderedCraftsmenWithStatistics" @click.stop="toggleSelectedCraftsman(cws.craftsman)"
+    <loading-indicator-table-body v-if="isLoading" />
+    <tr v-else v-for="cws in orderedCraftsmenWithStatistics" @click.stop="toggleSelectedCraftsman(cws.craftsman)"
         class="clickable">
       <td class="w-minimal">
         <custom-checkbox>
@@ -37,43 +39,42 @@
               :value="cws.craftsman">
         </custom-checkbox>
       </td>
-      <td>{{ cws.craftsman.company }}</td>
       <td>{{ cws.craftsman.trade }}</td>
-      <td>{{ cws.craftsman.contactName }}</td>
-
-      <td class="border-left">
-        <number-with-tooltip color-if-nonzero="danger" :value="cws.statistics.issueOverdueCount"
-                             :tooltip-title="$t('issue.state.overdue')" />
-        /
-        <number-with-tooltip color-if-nonzero="warning" :value="cws.statistics.issueUnreadCount"
-                             :tooltip-title="$t('issue.state.unread')" />
-        /
-        <number-with-tooltip color-if-nonzero="secondary" :value="cws.statistics.issueOpenCount"
-                             :tooltip-title="$t('issue.state.open')" />
-        /
-        <number-with-tooltip color-if-nonzero="success" :value="cws.statistics.issueClosedCount"
-                             :tooltip-title="$t('issue.state.closed')" />
-      </td>
       <td>
-        <human-readable-date :value="cws.statistics.nextDeadline" />
+        {{ cws.craftsman.company }} <br/>
+        {{ cws.craftsman.contactName }}
       </td>
 
       <td class="border-left">
-        <human-readable-date-time :value="cws.statistics.lastEmailReceived" />
+        <issue-summary-badges :summary="cws.statistics.issueSummary" />
       </td>
       <td>
-        <human-readable-date-time :value="cws.statistics.lastVisitOnline" />
+        <date-human-readable :value="cws.statistics.nextDeadline" /><br/>
+        <span v-if="cws.statistics.issueOverdueCount" class="badge badge-danger">
+          {{ cws.statistics.issueOverdueCount }} {{$t('issue.state.overdue')}}
+        </span>
+      </td>
+
+      <td class="border-left">
+        <date-time-human-readable :value="cws.statistics.lastVisitOnline" /><br/>
+        <span v-if="cws.statistics.issueUnreadCount" class="badge badge-warning">
+          {{ cws.statistics.issueUnreadCount }} {{$t('issue.state.unread')}}
+        </span>
       </td>
       <td>
-        <human-readable-date-time :value="cws.statistics.lastIssueResolved" />
+        <date-time-human-readable :value="cws.statistics.lastIssueResolved" />
+      </td>
+
+      <td class="border-left">
+        <date-time-human-readable :value="cws.statistics.lastEmailReceived" />
       </td>
     </tr>
     </tbody>
     <caption class="caption-top">
       <div v-if="craftsmenWithIssuesOpen.length" class="form-check form-check-inline">
         <custom-checkbox id="issues-open-craftsmen"
-            :label="$t('dispatch.craftsmen_table.with_open_issues')"
-            @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOpen)" >
+                         :label="$t('dispatch.craftsmen_table.with_open_issues')"
+                         @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOpen)">
           <input class="custom-control-input" type="checkbox"
                  :checked="entityListsAreEqual(craftsmenWithIssuesOpen, selectedCraftsmen)">
         </custom-checkbox>
@@ -81,7 +82,7 @@
       <div v-if="craftsmenWithIssuesUnread.length" class="ml-4 form-check form-check-inline">
         <custom-checkbox id="issues-unread-craftsmen"
                          :label="$t('dispatch.craftsmen_table.with_unread_issues')"
-                         @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesUnread)" >
+                         @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesUnread)">
           <input class="custom-control-input" type="checkbox"
                  :checked="entityListsAreEqual(craftsmenWithIssuesUnread, selectedCraftsmen)">
         </custom-checkbox>
@@ -89,13 +90,13 @@
       <div v-if="craftsmenWithIssuesOverdue.length" class="ml-4 form-check form-check-inline">
         <custom-checkbox id="issues-overdue-craftsmen"
                          :label="$t('dispatch.craftsmen_table.with_overdue_issues')"
-                         @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOverdue)" >
+                         @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOverdue)">
           <input class="custom-control-input" type="checkbox"
                  :checked="entityListsAreEqual(craftsmenWithIssuesOverdue, selectedCraftsmen)">
         </custom-checkbox>
       </div>
-      <div class="float-right">
-        {{craftsmen.length}} {{$t('craftsman._plural')}}
+      <div class="float-right" v-if="!isLoading">
+        {{ craftsmen.length }} {{ $t('craftsman._plural') }}
       </div>
     </caption>
   </table>
@@ -103,21 +104,23 @@
 
 <script>
 
-import HumanReadableDate from './View/DateHumanReadable'
-import HumanReadableDateTime from './View/DateTimeHumanReadable'
-import OrderedTableHead from './View/OrderedTableHead'
-import NumberWithTooltip from './View/TooltipNumber'
-import { arraysAreEqual } from '../services/algorithms'
-import CustomCheckbox from './Edit/Input/CustomCheckbox'
+import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody'
+import CustomCheckbox from '../Library/FormInput/CustomCheckbox'
+import TooltipNumber from '../Library/View/TooltipBadge'
+import DateHumanReadable from '../Library/View/DateHumanReadable'
+import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
+import { arraysAreEqual } from '../../services/algorithms'
+import IssueSummaryBadges from './IssueSummaryBadges'
 
 export default {
   emits: ['selected'],
   components: {
+    IssueSummaryBadges,
+    DateTimeHumanReadable,
+    DateHumanReadable,
+    TooltipNumber,
     CustomCheckbox,
-    NumberWithTooltip,
-    OrderedTableHead,
-    HumanReadableDateTime,
-    HumanReadableDate
+    LoadingIndicatorTableBody,
   },
   data () {
     return {
@@ -127,15 +130,22 @@ export default {
   props: {
     craftsmen: {
       type: Array,
-      required: true
+      required: false
     },
     statistics: {
       type: Array,
-      required: true
+      required: false
     },
   },
   computed: {
+    isLoading: function () {
+      return !this.craftsmen || !this.statistics
+    },
     orderedCraftsmenWithStatistics: function () {
+      if (this.isLoading) {
+        return []
+      }
+
       const statisticsLookup = {}
       this.statistics.forEach(statistics => statisticsLookup[statistics['craftsman']] = statistics)
       const craftsmanWithStatistics = this.craftsmen.map(craftsman => ({
@@ -143,7 +153,7 @@ export default {
         statistics: statisticsLookup[craftsman['@id']]
       }))
 
-      return craftsmanWithStatistics.sort((a, b) => a.craftsman.company.localeCompare(b.craftsman.company))
+      return craftsmanWithStatistics.sort((a, b) => a.craftsman.trade.localeCompare(b.craftsman.trade))
     },
     craftsmenWithIssuesOpen: function () {
       return this.orderedCraftsmenWithStatistics.filter(cws => cws.statistics.issueOpenCount > 0)
@@ -179,7 +189,7 @@ export default {
         this.selectedCraftsmen.push(toggleCraftsman)
       }
     },
-    entityListsAreEqual(array1, array2) {
+    entityListsAreEqual (array1, array2) {
       return arraysAreEqual(array1, array2, (a, b) => {
         return a['@id'].localeCompare(b['@id'])
       })
@@ -189,9 +199,6 @@ export default {
     selectedCraftsmen: function () {
       this.$emit('selected', this.selectedCraftsmen)
     }
-  },
-  mounted () {
-    this.selectedCraftsmen = [...this.craftsmenWithIssuesOpen]
   }
 }
 </script>

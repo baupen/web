@@ -1,45 +1,44 @@
 <template>
-  <div>
-    <form-field for-id="company" :label="$t('craftsman.company')">
-      <input id="company" class="form-control" type="text" required="required"
-             :class="{'is-valid': fields.company.dirty && !fields.company.errors.length, 'is-invalid': fields.company.dirty && fields.company.errors.length }"
-             @blur="fields.company.dirty = true"
-             v-model="craftsman.company"
-             @input="validate('company')">
-      <invalid-feedback :errors="fields.company.errors" />
+  <form-field for-id="company" :label="$t('craftsman.company')">
+    <input id="company" class="form-control" type="text" required="required"
+           :class="{'is-valid': fields.company.dirty && !fields.company.errors.length, 'is-invalid': fields.company.dirty && fields.company.errors.length }"
+           @blur="fields.company.dirty = true"
+           v-model="craftsman.company"
+           @input="validate('company')">
+    <invalid-feedback :errors="fields.company.errors" />
+  </form-field>
+
+  <form-field for-id="trade" :label="$t('craftsman.trade')">
+    <input id="trade" class="form-control" type="text" required="required"
+           :class="{'is-valid': fields.trade.dirty && !fields.trade.errors.length, 'is-invalid': fields.trade.dirty && fields.trade.errors.length }"
+           @blur="fields.trade.dirty = true"
+           v-model="craftsman.trade"
+           @input="validate('trade')">
+    <invalid-feedback :errors="fields.trade.errors" />
+  </form-field>
+
+  <hr />
+
+  <div class="form-row">
+    <form-field class="col-md-6" for-id="contactName" :label="$t('craftsman.contact_name')">
+      <input id="contactName" class="form-control" type="text" required="required"
+             :class="{'is-valid': fields.contactName.dirty && !fields.contactName.errors.length, 'is-invalid': fields.contactName.dirty && fields.contactName.errors.length }"
+             @blur="fields.contactName.dirty = true"
+             v-model="craftsman.contactName"
+             @input="validate('contactName')">
+      <invalid-feedback :errors="fields.contactName.errors" />
     </form-field>
-
-    <form-field for-id="trade" :label="$t('craftsman.trade')">
-      <input id="trade" class="form-control" type="text" required="required"
-             :class="{'is-valid': fields.trade.dirty && !fields.trade.errors.length, 'is-invalid': fields.trade.dirty && fields.trade.errors.length }"
-             @blur="fields.trade.dirty = true"
-             v-model="craftsman.trade"
-             @input="validate('trade')">
-      <invalid-feedback :errors="fields.trade.errors" />
+    <form-field class="col-md-6" for-id="email" :label="$t('craftsman.email')">
+      <input id="email" class="form-control" type="text" required="required"
+             :class="{'is-valid': fields.email.dirty && !fields.email.errors.length, 'is-invalid': fields.email.dirty && fields.email.errors.length }"
+             @blur="fields.email.dirty = true"
+             v-model="craftsman.email"
+             @input="validate('email')">
+      <invalid-feedback :errors="fields.email.errors" />
     </form-field>
+  </div>
 
-    <hr />
-
-    <div class="form-row">
-      <form-field class="col-md-6" for-id="contactName" :label="$t('craftsman.contact_name')">
-        <input id="contactName" class="form-control" type="text" required="required"
-               :class="{'is-valid': fields.contactName.dirty && !fields.contactName.errors.length, 'is-invalid': fields.contactName.dirty && fields.contactName.errors.length }"
-               @blur="fields.contactName.dirty = true"
-               v-model="craftsman.contactName"
-               @input="validate('contactName')">
-        <invalid-feedback :errors="fields.contactName.errors" />
-      </form-field>
-      <form-field class="col-md-6" for-id="email" :label="$t('craftsman.email')">
-        <input id="email" class="form-control" type="text" required="required"
-               :class="{'is-valid': fields.email.dirty && !fields.email.errors.length, 'is-invalid': fields.email.dirty && fields.email.errors.length }"
-               @blur="fields.email.dirty = true"
-               v-model="craftsman.email"
-               @input="validate('email')">
-        <invalid-feedback :errors="fields.email.errors" />
-      </form-field>
-    </div>
-
-    <form-field for-id="emailCCs" :label="$t('craftsman.emailCCs')" :required="false">
+  <form-field for-id="emailCCs" :label="$t('craftsman.emailCCs')" :required="false">
         <textarea id="emailCCs" class="form-control"
                   :class="{'is-valid': fields.emailCCs.dirty && !fields.emailCCs.errors.length, 'is-invalid': fields.emailCCs.dirty && fields.emailCCs.errors.length }"
                   @blur="fields.emailCCs.dirty = true"
@@ -47,10 +46,9 @@
                   @input="validate('emailCCs')"
                   rows="3">
         </textarea>
-      <help :help="$t('craftsman_form.emailCCs_help')" />
-      <invalid-feedback :errors="fields.emailCCs.errors" />
-    </form-field>
-  </div>
+    <help :help="$t('craftsman_form.emailCCs_help')" />
+    <invalid-feedback :errors="fields.emailCCs.errors" />
+  </form-field>
 </template>
 
 <script>
@@ -65,7 +63,6 @@ export default {
     Help,
     InvalidFeedback,
     FormField
-
   },
   emits: ['update'],
   data () {
@@ -95,7 +92,7 @@ export default {
   watch: {
     updatePayload: {
       deep: true,
-      handler: function() {
+      handler: function () {
         if (this.mounted) {
           this.$emit('update', this.updatePayload)
         }
@@ -122,31 +119,32 @@ export default {
           this.fields.contactName.errors.length ||
           this.fields.email.errors.length ||
           this.fields.emailCCs.errors.length) {
-        return null;
+        return null
       }
 
       const values = changedFieldValues(this.fields, this.craftsman, this.templateTransformed)
-      if (Object.prototype.hasOwnProperty.call(values, "emailCCs")) {
-        values.emailCCs = values.emailCCs ? values.emailCCs.split('\n').filter(e => e) : []
+      if (Object.prototype.hasOwnProperty.call(values, 'emailCCs')) {
+        values.emailCCs = values.emailCCs ? values.emailCCs.split('\n')
+            .filter(e => e) : []
       }
 
-      return values;
+      return values
     },
     templateTransformed: function () {
       if (!this.template) {
-        return null;
+        return null
       }
 
       const emailString = this.template.emailCCs.join('\n')
-      return Object.assign({}, this.template, {emailCCs: emailString})
+      return Object.assign({}, this.template, { emailCCs: emailString })
     }
   },
   mounted () {
-    console.log("mounted")
+    console.log('mounted')
     this.setCraftsmanFromTemplate()
     validateFields(this.fields, this.craftsman)
 
-    this.mounted = true;
+    this.mounted = true
     this.$emit('update', this.updatePayload)
   }
 }

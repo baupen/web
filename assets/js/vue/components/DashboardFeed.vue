@@ -1,12 +1,11 @@
 <template>
   <div class="card">
     <div class="card-body limited-height">
-      <loading-indicator-secondary :spin="isLoading">
-        <template v-for="(entry, index) in orderedFeedEntries">
-          <hr v-if="index !== 0" />
-          <feed-entry :entry="entry" :construction-managers="constructionManagers" :craftsmen="craftsmen" />
-        </template>
-      </loading-indicator-secondary>
+      <loading-indicator-secondary v-if="isLoading" class="loading-center" />
+      <template v-else v-for="(entry, index) in orderedFeedEntries">
+        <hr v-if="index !== 0" />
+        <feed-entry :entry="entry" :construction-managers="constructionManagers" :craftsmen="craftsmen" />
+      </template>
     </div>
   </div>
 </template>
@@ -66,5 +65,10 @@ export default {
 .limited-height {
   max-height: 22em;
   overflow-y: auto;
+}
+
+.loading-center {
+  display: block;
+  margin: 0 auto;
 }
 </style>

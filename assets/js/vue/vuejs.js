@@ -31,6 +31,7 @@ import { clickOutside, focus } from './services/directives'
 
 // views
 import Dashboard from './Dashboard'
+import Dispatch from './Dispatch'
 import Edit from './Edit'
 import Switch from './Switch'
 
@@ -79,11 +80,10 @@ if (document.getElementById('dashboard') != null) {
     .mount('#dashboard')
 }
 
-/*
 if (document.getElementById('dispatch') != null) {
   createVue(Dispatch)
     .mount('#dispatch')
-} */
+}
 
 if (document.getElementById('edit') != null) {
   createVue(Edit)
