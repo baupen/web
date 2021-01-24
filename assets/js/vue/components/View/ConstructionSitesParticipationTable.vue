@@ -11,18 +11,18 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="constructionSite in constructionSites" :key="constructionSite['@id']">
+      <loading-indicator-table-body v-if="!constructionSites" />
+      <tr v-else v-for="constructionSite in constructionSitesOrdered" :key="constructionSite['@id']">
         <td>
-          <lightbox :src="constructionSite.imageUrl" :src-full="constructionSite.imageUrl + '?size=full'"
-                    :alt="'thumbnail of ' + constructionSite.name" />
+          <image-lightbox :src="constructionSite.imageUrl" :subject="constructionSite.name" />
         </td>
         <td>{{ constructionSite.name }}</td>
-        <td>{{ formatConstructionSiteAddress(constructionSite).join(", ") }}</td>
+        <td>{{ formatConstructionSiteAddress(constructionSite).join(', ') }}</td>
         <td>
-          <date-time-human-readable :value="constructionSite.createdAt"/>
+          <date-time-human-readable :value="constructionSite.createdAt" />
         </td>
         <td>
-          <button type="button" class="btn btn-toggle" aria-pressed="true"
+          <button type="button" class="btn btn-toggle"
                   :class="{'active': ownsConstructionSite(constructionSite)}"
                   @click="toggleOwnConstructionSite(constructionSite)">
             <div class="handle"></div>
@@ -36,22 +36,29 @@
 
 <script>
 
-import ConstructionSiteCard from "./ConstructionSitesEnterMasonryCard";
+import ConstructionSiteCard from './ConstructionSitesEnterMasonryCard'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
-import Lightbox from '../Library/Behaviour/Lightbox'
 import { constructionSiteFormatter } from '../../services/formatters'
+import { api } from '../../services/api'
+import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody'
+import ImageLightbox from './ImageLightbox'
 
 export default {
-  emits: ['add-self', 'remove-self'],
+  emits: ['loaded-construction-sites'],
   components: {
+    ImageLightbox,
+    LoadingIndicatorTableBody,
     DateTimeHumanReadable,
-    ConstructionSiteCard,
-    Lightbox
+    ConstructionSiteCard
   },
   props: {
+    isLoading: {
+      type: Boolean,
+      required: true
+    },
     constructionSites: {
       type: Array,
-      required: true
+      required: false
     },
     constructionManagerIri: {
       type: String,
@@ -60,17 +67,25 @@ export default {
   },
   methods: {
     formatConstructionSiteAddress: function (constructionSite) {
-      return constructionSiteFormatter.address(constructionSite);
+      return constructionSiteFormatter.address(constructionSite)
     },
     ownsConstructionSite: function (constructionSite) {
-      return constructionSite.constructionManagers.includes(this.constructionManagerIri);
+      return constructionSite.constructionManagers.includes(this.constructionManagerIri)
     },
     toggleOwnConstructionSite: function (constructionSite) {
-      if (!this.ownsConstructionSite(constructionSite)) {
-        this.$emit('add-self', constructionSite)
+      const ownsConstructionSite = this.ownsConstructionSite(constructionSite)
+      const constructionManagers = constructionSite.constructionManagers.filter(cm => cm !== this.constructionManagerIri)
+      if (ownsConstructionSite) {
+        api.patch(constructionSite, { constructionManagers }, this.$t('switch.messages.success.removed_self'))
       } else {
-        this.$emit('remove-self', constructionSite);
+        constructionManagers.push(this.constructionManagerIri)
+        api.patch(constructionSite, { constructionManagers }, this.$t('switch.messages.success.added_self'))
       }
+    }
+  },
+  computed: {
+    constructionSitesOrdered: function () {
+      return this.constructionSites.sort((a, b) => a.name.localeCompare(b.name))
     }
   }
 }

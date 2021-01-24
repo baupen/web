@@ -35,7 +35,7 @@
 import EditCraftsmanButton from '../Action/EditCraftsmanButton'
 import RemoveCraftsmanButton from '../Action/RemoveCraftsmanButton'
 import { api } from '../../services/api'
-import TableBodyLoadingIndicator from '../Library/View/TableBodyLoadingIndicator'
+import TableBodyLoadingIndicator from '../Library/View/LoadingIndicatorTableBody'
 
 export default {
   components: {

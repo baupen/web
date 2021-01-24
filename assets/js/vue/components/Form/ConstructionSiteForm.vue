@@ -83,7 +83,7 @@ export default {
     },
     constructionSites: {
       type: Array,
-      required: true
+      required: false
     }
   },
   watch: {
@@ -102,7 +102,7 @@ export default {
       this.$emit('update', this.isValid ? this.constructionSite : null)
     },
     determineSimilarConstructionSiteNames: function (newName) {
-      if (!newName || newName.length < 4) {
+      if (!newName || newName.length < 4 || !this.constructionSites) {
         return this.similarConstructionSiteNames = [];
       }
 
