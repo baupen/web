@@ -14,14 +14,14 @@
             <edit-issues-button :issues="selectedIssues" :craftsmen="craftsmen"
                                 :disabled="selectedIssues.length === 0 || editButtonPendingRequestCount > 0"
                                 @save="saveIssues"
-                                @save-image="saveIssueImages"/>
+                                @save-image="saveIssueImages" />
 
             <span class="btn btn-link" v-if="preDeletedIssues.length > 0">
               {{ preDeletedIssues.length }}
             </span>
             <remove-issues-button :issues="selectedIssues"
                                   :disabled="selectedIssues.length === 0 || preDeletedIssues.length > 0"
-                                  @remove="removeIssues"/>
+                                  @remove="removeIssues" />
           </span>
         </span>
         </th>
@@ -49,9 +49,8 @@
               :title="$t('issue_table.filter.by_is_marked_or_added_with_client')"
               :valid="!!(filter.isMarked || filter.wasAddedWithClient)">
 
-            <issue-table-filter-is-marked class="mt-2" :default="null" @input="filter.isMarked = $event"/>
-            <issue-table-filter-was-added-with-client class="mb-2" :default="null"
-                                                      @input="filter.wasAddedWithClient = $event"/>
+            <is-marked-filter class="mt-2" @input="filter.isMarked = $event" />
+            <was-added-with-client-filter class="mb-2" @input="filter.wasAddedWithClient = $event" />
 
           </filter-popover>
         </th>
@@ -74,7 +73,7 @@
               :title="$t('issue_table.filter.by_craftsman')"
               :valid="filter.craftsmen.length < craftsmen.length && filter.craftsmen.length > 0">
 
-            <issue-table-filter-craftsmen class="mt-2" :craftsmen="craftsmen" @input="filter.craftsmen = $event"/>
+            <craftsmen-filter class="mt-2" :craftsmen="craftsmen" @input="filter.craftsmen = $event" />
           </filter-popover>
         </th>
         <th>
@@ -84,7 +83,7 @@
               :title="$t('issue_table.filter.by_maps')"
               :valid="filter.maps.length < maps.length && filter.maps.length > 0">
 
-            <issue-table-filter-map class="mt-2" :maps="maps" @input="filter.maps = $event"/>
+            <map-filter class="mt-2" :maps="maps" @input="filter.maps = $event" />
           </filter-popover>
         </th>
         <th>
@@ -93,9 +92,9 @@
           <filter-popover
               size="filter-wide"
               :title="$t('issue_table.filter.by_deadline')"
-              :valid="filter['deadline[before]'] && filter['deadline[after]']">
+              :valid="!!(filter['deadline[before]'] && filter['deadline[after]'])">
 
-            <issue-table-filter-deadline
+            <deadline-filter
                 @input-deadline-before="filter['deadline[before]'] = $event"
                 @input-deadline-after="filter['deadline[after]'] = $event"
             />
@@ -112,15 +111,15 @@
             <template v-if="!forceState">
               <p class="font-weight-bold">{{ $t('issue_table.filter_state.by_active_state') }}</p>
 
-              <issue-table-filter-state
+              <state-filter
                   :minimal-state="minimalState"
-                  @input="filter.state = $event"/>
+                  @input="filter.state = $event" />
 
-              <hr/>
+              <hr />
             </template>
 
             <p class="font-weight-bold">{{ $t('issue_table.filter_time.by_time') }}</p>
-            <issue-table-filter-time
+            <time-filter
                 :minimal-state="minimalState" :force-state="forceState"
                 @input-registered-at-before="filter['registeredAt[before]'] = $event"
                 @input-registered-at-after="filter['registeredAt[after]'] = $event"
@@ -150,67 +149,67 @@
         </td>
         <td>{{ iwr.issue.number }}</td>
         <td>
-          <toggle-icon-with-tooltip
+          <tooltip-toggle-icon
               icon="star"
               :value="iwr.issue.isMarked"
-              :tooltip-title="$t('issue.is_marked')"/>
-          <br/>
-          <toggle-icon-with-tooltip
+              :tooltip-title="$t('issue.is_marked')" />
+          <br />
+          <tooltip-toggle-icon
               icon="user-check"
               :value="iwr.issue.wasAddedWithClient"
-              :tooltip-title="$t('issue.was_added_with_client')"/>
+              :tooltip-title="$t('issue.was_added_with_client')" />
         </td>
         <td>
-          <lightbox @click.stop="" v-if="iwr.issue.imageUrl"
-                    :src="iwr.issue.imageUrl" :src-full="iwr.issue.imageUrl + '?size=full'"
-                    :alt="'thumbnail of ' + iwr.issue.number"/>
+          <image-lightbox
+              :src="iwr.issue.imageUrl" :subject="iwr.issue.number"
+              @click.stop="" />
         </td>
         <td>{{ iwr.issue.description }}</td>
         <td>
-          <text-with-tooltip v-if="iwr.craftsman" :tooltip-title="iwr.craftsman.contactName">
-            {{ iwr.craftsman.company }}<br/>
-            <span class="text-muted">{{ iwr.craftsman.trade }}</span>
-          </text-with-tooltip>
+          <tooltip-text v-if="iwr.craftsman" :tooltip-title="iwr.craftsman.contactName">
+            {{ iwr.craftsman.trade }}<br />
+            <span class="text-muted">{{ iwr.craftsman.company }}</span>
+          </tooltip-text>
         </td>
         <td>
-          <text-with-tooltip v-if="iwr.map" :tooltip-title="iwr.mapParents.map(m => m.name).join(' > ')">
+          <tooltip-text v-if="iwr.map" :tooltip-title="iwr.mapParents.map(m => m.name).join(' > ')">
             {{ iwr.map.name }}
-          </text-with-tooltip>
+          </tooltip-text>
         </td>
         <td>
-          <human-readable-date :value="iwr.issue.deadline"/>
+          <date-human-readable :value="iwr.issue.deadline" />
         </td>
         <td class="w-minimal white-space-nowrap">
           <template v-if="iwr.closedBy">
-            <text-with-tooltip
+            <tooltip-text
                 class="mr-1" :tooltip-title="iwr.closedBy.givenName + ' ' + iwr.closedBy.familyName ">
               <b>{{ $t('issue.state.closed') }}</b>
-            </text-with-tooltip>
-            <human-readable-date-time :value="iwr.issue.closedAt"/>
+            </tooltip-text>
+            <date-time-human-readable :value="iwr.issue.closedAt" />
           </template>
 
           <template v-else-if="iwr.resolvedBy">
-            <text-with-tooltip
+            <tooltip-text
                 class="mr-1" :tooltip-title="iwr.resolvedBy.contactName">
               <b>{{ $t('issue.state.resolved') }}</b>
-            </text-with-tooltip>
-            <human-readable-date-time :value="iwr.issue.resolvedAt"/>
+            </tooltip-text>
+            <date-time-human-readable :value="iwr.issue.resolvedAt" />
           </template>
 
           <template v-else-if="iwr.registeredBy">
-            <text-with-tooltip
+            <tooltip-text
                 class="mr-1" :tooltip-title="iwr.registeredBy.givenName + ' ' + iwr.registeredBy.familyName">
               <b>{{ $t('issue.state.registered') }}</b>
-            </text-with-tooltip>
-            <human-readable-date-time :value="iwr.issue.registeredAt"/>
+            </tooltip-text>
+            <date-time-human-readable :value="iwr.issue.registeredAt" />
           </template>
 
           <template v-else>
-            <text-with-tooltip
+            <tooltip-text
                 class="mr-1" :tooltip-title="iwr.createdBy.givenName + ' ' + iwr.createdBy.familyName">
               <b>{{ $t('issue.state.created') }}</b>
-            </text-with-tooltip>
-            <human-readable-date-time :value="iwr.issue.createdAt"/>
+            </tooltip-text>
+            <date-time-human-readable :value="iwr.issue.createdAt" />
           </template>
         </td>
       </tr>
@@ -249,7 +248,7 @@
     </table>
     <p class="text-center">
       <button class="btn btn-outline-secondary" v-if="notLoadedIssueCount > 0 && !issuesLoading" @click="loadNextPage">
-        {{$tc('issue_table.show_more_issues', notLoadedIssueCount)}}
+        {{ $tc('issue_table.show_more_issues', notLoadedIssueCount) }}
       </button>
     </p>
   </loading-indicator>
@@ -257,68 +256,52 @@
 
 <script>
 
-import HumanReadableDate from './View/DateHumanReadable'
-import HumanReadableDateTime from './View/DateTimeHumanReadable'
-import OrderedTableHead from './View/OrderedTableHead'
-import NumberWithTooltip from './View/TooltipNumber'
-import {arraysAreEqual, objectsAreEqual} from '../services/algorithms'
-import CustomCheckbox from './Edit/Input/CustomCheckbox'
-import IconWithTooltip from "./View/TooltipIcon";
-import TextWithTooltip from "./View/TooltipText";
-import Lightbox from "./Behaviour/Lightbox";
-import ButtonWithModalConfirm from "./Behaviour/ButtonWithModalConfirm";
-import EditIssuesButton from "./EditIssuesButton";
-import {api, iriToId} from "../services/api";
-import {displaySuccess} from "../services/notifiers";
-import RemoveIssuesButton from "./RemoveIssuesButton";
-import ToggleIconWithTooltip from "./View/TooltipToggleIcon";
-import LoadingIndicator from "./View/LoadingIndicator";
-import debounce from "lodash.debounce";
-import Popover from "./Behaviour/Popover";
-import ActivatablePopover from "./Behaviour/ActivatablePopover";
-import SearchPopover from "./View/SearchPopover";
-import FilterPopover from "./View/FilterPopover";
-import CustomCheckboxField from "./Edit/Layout/CustomCheckboxField";
-import FormField from "./Edit/Layout/FormField";
-import IssueTableFilterCraftsmen from "./IssueTableFilterCraftsmen";
-import IssueTableFilterMap from "./IssueTableFilterMap";
-import IssueTableFilterIsMarked from "./IssueTableFilterIsMarked";
-import IssueTableFilterWasAddedWithClient from "./IssueTableFilterWasAddedWithClient";
-import IssueTableFilterState from "./IssueTableFilterState";
-import IssueTableFilterTime from "./IssueTableFilterTime";
-import IssueTableFilterDeadline from "./IssueTableFilterDeadline";
+import LoadingIndicator from '../Library/View/LoadingIndicator'
+import EditIssuesButton from '../Action/EditIssuesButton'
+import RemoveIssuesButton from '../Action/RemoveIssuesButton'
+import CustomCheckbox from '../Library/FormInput/CustomCheckbox'
+import SearchPopover from '../Action/SearchPopover'
+import FilterPopover from '../Action/FilterPopover'
+import IsMarkedFilter from '../Filter/IsMarkedFilter'
+import WasAddedWithClientFilter from '../Filter/WasAddedWithClientFilter'
+import CraftsmenFilter from '../Filter/CraftsmenFilter'
+import MapFilter from '../Filter/MapFilter'
+import DeadlineFilter from '../Filter/DeadlineFilter'
+import StateFilter from '../Filter/StateFilter'
+import TimeFilter from '../Filter/TimeFilter'
+import TooltipToggleIcon from '../Library/View/TooltipToggleIcon'
+import TooltipText from '../Library/View/TooltipText'
+import DateHumanReadable from '../Library/View/DateHumanReadable'
+import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
+import debounce from 'lodash.debounce'
+import { api } from '../../services/api'
+import { displaySuccess } from '../../services/notifiers'
+import { arraysAreEqual } from '../../services/algorithms'
+import ImageLightbox from './ImageLightbox'
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count'],
   components: {
-    IssueTableFilterDeadline,
-    IssueTableFilterTime,
-    IssueTableFilterState,
-    IssueTableFilterWasAddedWithClient,
-    IssueTableFilterIsMarked,
-    IssueTableFilterMap,
-    IssueTableFilterCraftsmen,
-    FormField,
-    CustomCheckboxField,
+    ImageLightbox,
+    DateTimeHumanReadable,
+    DateHumanReadable,
+    TooltipText,
+    TooltipToggleIcon,
+    TimeFilter,
+    StateFilter,
+    DeadlineFilter,
+    MapFilter,
+    CraftsmenFilter,
+    WasAddedWithClientFilter,
+    IsMarkedFilter,
     FilterPopover,
     SearchPopover,
-    ActivatablePopover,
-    Popover,
-    LoadingIndicator,
-    ToggleIconWithTooltip,
+    CustomCheckbox,
     RemoveIssuesButton,
     EditIssuesButton,
-    ButtonWithModalConfirm,
-    Lightbox,
-    TextWithTooltip,
-    IconWithTooltip,
-    CustomCheckbox,
-    NumberWithTooltip,
-    OrderedTableHead,
-    HumanReadableDateTime,
-    HumanReadableDate
+    LoadingIndicator
   },
-  data() {
+  data () {
     return {
       issues: [],
       issuePage: 1,
@@ -335,7 +318,7 @@ export default {
         isMarked: null,
         wasAddedWithClient: null,
 
-        description: "",
+        description: '',
         craftsmen: [],
         maps: [],
         'deadline[before]': null,
@@ -383,7 +366,7 @@ export default {
   },
   computed: {
     notLoadedIssueCount: function () {
-      return this.totalIssues - this.issues.length;
+      return this.totalIssues - this.issues.length
     },
     editButtonPendingRequestCount: function () {
       return this.prePatchedIssues.length + this.prePostedIssueImages.length
@@ -427,12 +410,12 @@ export default {
         while (mapParents.length > 0) {
           let nextInPath = [...mapParents].shift()
           if (mapParentsLookup[nextInPath['@id']]) {
-            break;
+            break
           }
 
           mapParentsLookup[nextInPath['@id']] = mapParents
         }
-      });
+      })
 
       return mapParentsLookup
     },
@@ -453,7 +436,7 @@ export default {
           registeredBy: this.constructionManagerLookup[issue.registeredBy],
           resolvedBy: this.craftsmanLookup[issue.resolvedBy],
           closedBy: this.constructionManagerLookup[issue.closedBy]
-        };
+        }
       })
     },
     issuesWithoutDescription: function () {
@@ -469,14 +452,20 @@ export default {
   methods: {
     saveIssues: function (patch) {
       this.prePatchedIssues = this.selectedIssues.map(issue => {
-        return {issue, patch: Object.assign({}, patch)}
+        return {
+          issue,
+          patch: Object.assign({}, patch)
+        }
       })
 
       this.patchIssues()
     },
     saveIssueImages: function (image) {
       this.prePostedIssueImages = this.selectedIssues.map(issue => {
-        return {issue, image}
+        return {
+          issue,
+          image
+        }
       })
 
       this.postIssueImages()
@@ -486,7 +475,7 @@ export default {
 
       this.deleteIssues()
     },
-    patchIssues() {
+    patchIssues () {
       const payload = this.prePatchedIssues[0]
       api.patch(payload.issue, payload.patch)
           .then(_ => {
@@ -500,7 +489,7 @@ export default {
               }
           )
     },
-    deleteIssues() {
+    deleteIssues () {
       const issue = this.preDeletedIssues[0]
       api.delete(issue)
           .then(_ => {
@@ -516,7 +505,7 @@ export default {
               }
           )
     },
-    postIssueImages() {
+    postIssueImages () {
       const payload = this.prePostedIssueImages[0]
       api.postIssueImage(payload.issue, payload.image)
           .then(_ => {
@@ -530,21 +519,21 @@ export default {
               }
           )
     },
-    toggleSelectedIssues(toggleArray) {
+    toggleSelectedIssues (toggleArray) {
       if (this.entityListsAreEqual(toggleArray, this.selectedIssues)) {
         this.selectedIssues = []
       } else {
         this.selectedIssues = [...toggleArray]
       }
     },
-    toggleSelectedIssue(toggleIssue) {
+    toggleSelectedIssue (toggleIssue) {
       if (this.selectedIssues.includes(toggleIssue)) {
         this.selectedIssues = this.selectedIssues.filter(c => c !== toggleIssue)
       } else {
         this.selectedIssues.push(toggleIssue)
       }
     },
-    entityListsAreEqual(array1, array2) {
+    entityListsAreEqual (array1, array2) {
       return arraysAreEqual(array1, array2, (a, b) => {
         return a['@id'].localeCompare(b['@id'])
       })
@@ -573,18 +562,18 @@ export default {
         }
       }
 
-      return query;
+      return query
     },
-    loadNextPage() {
+    loadNextPage () {
       this.loadIssues(this.filter, this.issuePage + 1)
     },
-    loadIssues(filter, page = 1) {
-      this.issuesLoading = true;
+    loadIssues (filter, page = 1) {
+      this.issuesLoading = true
 
       let query = this.filterAsQuery(filter)
       this.$emit('query', query)
 
-      query = Object.assign({}, query, {page})
+      query = Object.assign({}, query, { page })
 
       api.getPaginatedIssues(this.constructionSite, query)
           .then(payload => {
@@ -598,7 +587,7 @@ export default {
 
             this.$emit('queried-issue-count', payload.totalItems)
 
-            this.issuesLoading = false;
+            this.issuesLoading = false
           })
     }
   },
@@ -613,15 +602,15 @@ export default {
       handler: debounce(function (newVal) {
         // skip first watch
         if (newVal.state === null) {
-          return;
+          return
         }
 
         this.loadIssues(newVal)
-      }, 200, {"leading": true}),
+      }, 200, { 'leading': true }),
       deep: true
     }
   },
-  mounted() {
+  mounted () {
     api.getCraftsmen(this.constructionSite)
         .then(craftsmen => {
           this.craftsmen = craftsmen

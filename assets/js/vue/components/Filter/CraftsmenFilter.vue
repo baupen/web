@@ -27,14 +27,16 @@
   </div>
 </template>
 
-
 <script>
-import CustomCheckboxField from "./Edit/Layout/CustomCheckboxField";
-import {arraysAreEqual} from "../services/algorithms";
-import CustomCheckbox from "./Edit/Input/CustomCheckbox";
 
+import CustomCheckbox from '../Library/FormInput/CustomCheckbox'
+import { arraysAreEqual } from '../../services/algorithms'
+import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 export default {
-  components: {CustomCheckbox, CustomCheckboxField},
+  components: {
+    CustomCheckboxField,
+    CustomCheckbox
+  },
   emits: ['input'],
   data() {
     return {

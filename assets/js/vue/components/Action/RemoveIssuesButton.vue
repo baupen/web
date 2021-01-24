@@ -21,12 +21,12 @@
 </template>
 
 <script>
-import ButtonWithModalConfirm from "./Behaviour/ButtonWithModalConfirm";
-import CustomCheckboxField from "./Edit/Layout/CustomCheckboxField";
 
+import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
+import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 export default {
   emits: ['remove'],
-  components: {CustomCheckboxField, ButtonWithModalConfirm},
+  components: { ButtonWithModalConfirm, CustomCheckboxField },
   data() {
     return {
       hasConfirmed: false

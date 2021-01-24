@@ -33,6 +33,7 @@ import { clickOutside, focus } from './services/directives'
 import Dashboard from './Dashboard'
 import Dispatch from './Dispatch'
 import Edit from './Edit'
+import Foyer from './Foyer'
 import Switch from './Switch'
 
 // settings
@@ -90,12 +91,12 @@ if (document.getElementById('edit') != null) {
     .mount('#edit')
 }
 
-/*
 if (document.getElementById('foyer') != null) {
   createVue(Foyer)
     .mount('#foyer')
 }
 
+/*
 if (document.getElementById('register') != null) {
   createVue(Register)
     .mount('#register')

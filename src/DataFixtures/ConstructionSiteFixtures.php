@@ -69,7 +69,7 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
             $manager->persist($constructionSite);
         }
 
-        // $this->simulateManyOpenIssues($manager, $constructionSites[1]);
+        $this->simulateManyOpenIssues($manager, $constructionSites[1]);
 
         $manager->flush();
     }
@@ -160,11 +160,13 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
         for ($i = $nextNumber; $i < 1000; ++$i) {
             $issue = new Issue();
             $issue->setNumber($i);
+
             $issue->setConstructionSite($constructionSite);
             $issue->setMap($map);
-            $issue->setCreatedAt(new \DateTime());
-            $issue->setClosedBy($constructionManager);
             $issue->setCraftsman($craftsman);
+
+            $issue->setCreatedAt(new \DateTime());
+            $issue->setCreatedBy($constructionManager);
             $issue->setRegisteredAt(new \DateTime());
             $issue->setRegisteredBy($constructionManager);
 

@@ -61,11 +61,14 @@
 
 
 <script>
-import FormField from "./Edit/Layout/FormField";
-import {dateConfig, dateTimeConfig, flatPickr} from "../services/flatpickr";
+
+import {dateConfig, flatPickr} from "../../services/flatpickr";
+import FormField from '../Library/FormLayout/FormField'
 
 export default {
-  components: {FormField, flatPickr},
+  components: {
+    FormField,
+    flatPickr},
   emits: [
     'input-registered-at-before',
     'input-registered-at-after',

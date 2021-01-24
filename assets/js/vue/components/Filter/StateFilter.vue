@@ -1,8 +1,8 @@
 <template>
   <div>
-    <custom-checkbox-field for-id="filter-state-is-registered" :label="$t('issue.state.registered')">
+    <custom-checkbox-field for-id="filter-state-is-open" :label="$t('issue.state.open')">
       <input
-          class="custom-control-input" type="checkbox" id="filter-state-is-registered"
+          class="custom-control-input" type="checkbox" id="filter-state-is-open"
           v-model="isRegistered"
           :true-value="true"
           :false-value="false"
@@ -31,11 +31,11 @@
 
 
 <script>
-import CustomCheckboxField from "./Edit/Layout/CustomCheckboxField";
-import {arraysAreEqual} from "../services/algorithms";
 
+
+import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 export default {
-  components: {CustomCheckboxField},
+  components: { CustomCheckboxField },
   emits: ['input'],
   data() {
     return {

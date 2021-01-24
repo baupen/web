@@ -18,7 +18,6 @@ export default {
       required: false
     },
     subject: {
-      type: String,
       required: true
     }
   }

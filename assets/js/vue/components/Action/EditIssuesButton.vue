@@ -128,18 +128,26 @@
 </template>
 
 <script>
-import ButtonWithModalConfirm from "./Behaviour/ButtonWithModalConfirm";
-import CustomCheckboxField from "./Edit/Layout/CustomCheckboxField";
-import {createField, resetFields, validateField} from "../services/validation";
-import FormField from "./Edit/Layout/FormField";
-import InvalidFeedback from "./Edit/Layout/InvalidFeedback";
-import {dateConfig, flatPickr} from "../services/flatpickr";
-import Dropzone from "./Edit/Input/Dropzone";
-import {validImageTypes} from "../services/api";
+
+import {dateConfig, flatPickr} from "../../services/flatpickr";
+import {createField, resetFields, validateField} from "../../services/validation";
+import {validImageTypes} from "../../services/api";
+import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
+import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
+import FormField from '../Library/FormLayout/FormField'
+import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
+import Dropzone from '../Library/FormInput/Dropzone'
 
 export default {
   emits: ['save', 'save-image'],
-  components: {Dropzone, InvalidFeedback, FormField, CustomCheckboxField, ButtonWithModalConfirm, flatPickr},
+  components: {
+    Dropzone,
+    InvalidFeedback,
+    FormField,
+    CustomCheckboxField,
+    ButtonWithModalConfirm,
+    flatPickr
+  },
   data() {
     return {
       fields: {

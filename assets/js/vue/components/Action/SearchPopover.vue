@@ -4,9 +4,10 @@
   </activatable-popover>
 </template>
 <script>
-import ActivatablePopover from "../Behaviour/ActivatablePopover";
+
+import ActivatablePopover from '../Library/Behaviour/ActivatablePopover'
 export default {
-  components: {ActivatablePopover},
+  components: { ActivatablePopover },
   emits: ['shown'],
   props: {
     title: {

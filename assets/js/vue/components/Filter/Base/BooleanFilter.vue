@@ -1,16 +1,15 @@
 <template>
-  <custom-checkbox-field for-id="filter-was-added-with-client" :label="$t('issue.was_added_with_client')">
+  <custom-checkbox-field for-id="filter-is-marked" :label="$t('issue.is_marked')">
     <input
-        class="custom-control-input" type="checkbox" id="filter-was-added-with-client"
-        v-model="wasAddedWithClient"
+        class="custom-control-input" type="checkbox" id="filter-is-marked"
+        v-model="value"
         :true-value="true"
         :false-value="false"
-        :indeterminate.prop="wasAddedWithClient === null"
+        :indeterminate.prop="value === null"
     >
     <template v-slot:after>
       <div>
-        <a class="btn-link clickable" v-if="wasAddedWithClient !== null"
-           @click="wasAddedWithClient = null">
+        <a class="btn-link clickable" v-if="value !== null" @click="value = null">
           {{ $t('edit_issues_button.actions.reset') }}
         </a>
       </div>
@@ -20,25 +19,32 @@
 
 
 <script>
-import CustomCheckboxField from "./Edit/Layout/CustomCheckboxField";
-import {arraysAreEqual} from "../services/algorithms";
+
+import CustomCheckboxField from '../../Library/FormLayout/CustomCheckboxField'
 
 export default {
-  components: {CustomCheckboxField},
+  components: {
+    CustomCheckboxField
+
+  },
   emits: ['input'],
-  data() {
+  data () {
     return {
-      wasAddedWithClient: false
+      value: false
     }
   },
-  props: ['default'],
+  props: {
+    default: {
+      default: null
+    }
+  },
   watch: {
-    wasAddedWithClient: function () {
-      this.$emit('input', this.wasAddedWithClient)
+    value: function () {
+      this.$emit('input', this.value)
     },
   },
-  mounted() {
-    this.wasAddedWithClient = this.default
+  mounted () {
+    this.value = this.default
   }
 }
 </script>
