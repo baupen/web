@@ -11,11 +11,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr v-if="!craftsmen">
-      <td colspan="100">
-        <loading-indicator />
-      </td>
-    </tr>
+    <table-body-loading-indicator v-if="!craftsmen" />
     <tr v-else v-for="craftsman in craftsmen">
       <td>{{ craftsman.company }}</td>
       <td>{{ craftsman.trade }}</td>
@@ -38,14 +34,14 @@
 
 import EditCraftsmanButton from '../Action/EditCraftsmanButton'
 import RemoveCraftsmanButton from '../Action/RemoveCraftsmanButton'
-import LoadingIndicator from '../Library/View/LoadingIndicator'
 import { api } from '../../services/api'
+import TableBodyLoadingIndicator from '../Library/View/TableBodyLoadingIndicator'
+
 export default {
   components: {
-    LoadingIndicator,
+    TableBodyLoadingIndicator,
     RemoveCraftsmanButton,
     EditCraftsmanButton
-
   },
   data () {
     return {

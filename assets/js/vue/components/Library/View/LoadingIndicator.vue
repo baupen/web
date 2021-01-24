@@ -1,14 +1,11 @@
 <template>
-  <div>
-    <atom-spinner
+  <atom-spinner
       v-if="spin"
       :animation-duration="1000"
       :size="60"
-      color="#ff1d5e"
-    />
-
-    <slot v-else />
-  </div>
+      color="#343477"
+  />
+  <slot v-else />
 </template>
 
 <script>
