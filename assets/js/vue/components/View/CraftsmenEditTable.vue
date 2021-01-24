@@ -26,7 +26,7 @@
         <div class="btn-group">
           <span /> <!-- fixes button css -->
           <edit-craftsman-button :craftsman="craftsman" />
-          <delete-craftsman-button :construction-site="constructionSite" :craftsman="craftsman" />
+          <remove-craftsman-button :construction-site="constructionSite" :craftsman="craftsman" />
         </div>
       </td>
     </tr>
@@ -36,18 +36,16 @@
 
 <script>
 
-import { api } from '../services/api'
-import LoadingIndicator from './View/LoadingIndicator'
-import EditCraftsmanButton from './Action/EditCraftsmanButton'
-import DeleteCraftsmanButton from './Action/RemoveCraftsmanButton'
-import ButtonWithModalConfirm from './Behaviour/ButtonWithModalConfirm'
-
+import EditCraftsmanButton from '../Action/EditCraftsmanButton'
+import RemoveCraftsmanButton from '../Action/RemoveCraftsmanButton'
+import LoadingIndicator from '../Library/View/LoadingIndicator'
+import { api } from '../../services/api'
 export default {
   components: {
-    ButtonWithModalConfirm,
-    DeleteCraftsmanButton,
-    EditCraftsmanButton,
-    LoadingIndicator
+    LoadingIndicator,
+    RemoveCraftsmanButton,
+    EditCraftsmanButton
+
   },
   data () {
     return {

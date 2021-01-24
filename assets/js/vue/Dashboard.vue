@@ -4,6 +4,7 @@
       <div class="col-md-auto">
         <loading-indicator :spin="constructionSiteSummaryLoading">
           <construction-site-summary :construction-site="constructionSite"/>
+          <hr/>
         </loading-indicator>
       </div>
       <div class="col-md-auto min-width-600">
@@ -21,9 +22,9 @@
 
 <script>
 import {api} from './services/api'
-import ConstructionSiteSummary from './components/ConstructionSiteSummary'
-import Feed from './components/Feed'
-import IssuesSummary from "./components/IssuesSummary";
+import ConstructionSiteSummary from './components/DashboardConstructionSite'
+import Feed from './components/FeedCard'
+import IssuesSummary from "./components/IssuesSummaryCards";
 import LoadingIndicator from "./components/View/LoadingIndicator";
 
 export default {

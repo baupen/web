@@ -54,16 +54,18 @@
 </template>
 
 <script>
-import FormField from './Layout/FormField'
+
 import { createField, requiredRule, validateField, validateFields, changedFieldValues } from '../../services/validation'
-import InvalidFeedback from './Layout/InvalidFeedback'
-import Help from './Layout/Help'
+import FormField from '../Library/FormLayout/FormField'
+import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
+import Help from '../Library/FormLayout/Help'
 
 export default {
   components: {
     Help,
     InvalidFeedback,
     FormField
+
   },
   emits: ['update'],
   data () {

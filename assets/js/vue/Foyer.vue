@@ -22,7 +22,7 @@
 import {api} from './services/api'
 import LoadingIndicator from './components/View/LoadingIndicator'
 import {displaySuccess} from './services/notifiers'
-import IssueTable from "./components/IssueTable";
+import IssueTable from "./components/IssuesTable";
 
 export default {
   components: {

@@ -20,7 +20,7 @@
 
 <script>
 
-import { constructionSiteFormatter } from '../services/formatters'
+import { constructionSiteFormatter } from '../../services/formatters'
 
 export default {
   props: {

@@ -104,6 +104,7 @@
         <th class="w-minimal">
           {{ $t('issue.status') }}
 
+
           <filter-popover
               size="filter-wide"
               :title="$t('issue_table.filter.by_state')"
@@ -256,21 +257,21 @@
 
 <script>
 
-import HumanReadableDate from './View/HumanReadableDate'
-import HumanReadableDateTime from './View/HumanReadableDateTime'
+import HumanReadableDate from './View/DateHumanReadable'
+import HumanReadableDateTime from './View/DateTimeHumanReadable'
 import OrderedTableHead from './View/OrderedTableHead'
-import NumberWithTooltip from './View/NumberWithTooltip'
+import NumberWithTooltip from './View/TooltipNumber'
 import {arraysAreEqual, objectsAreEqual} from '../services/algorithms'
 import CustomCheckbox from './Edit/Input/CustomCheckbox'
-import IconWithTooltip from "./View/IconWithTooltip";
-import TextWithTooltip from "./View/TextWithTooltip";
+import IconWithTooltip from "./View/TooltipIcon";
+import TextWithTooltip from "./View/TooltipText";
 import Lightbox from "./Behaviour/Lightbox";
 import ButtonWithModalConfirm from "./Behaviour/ButtonWithModalConfirm";
 import EditIssuesButton from "./EditIssuesButton";
 import {api, iriToId} from "../services/api";
 import {displaySuccess} from "../services/notifiers";
 import RemoveIssuesButton from "./RemoveIssuesButton";
-import ToggleIconWithTooltip from "./View/ToggleIconWithTooltip";
+import ToggleIconWithTooltip from "./View/TooltipToggleIcon";
 import LoadingIndicator from "./View/LoadingIndicator";
 import debounce from "lodash.debounce";
 import Popover from "./Behaviour/Popover";

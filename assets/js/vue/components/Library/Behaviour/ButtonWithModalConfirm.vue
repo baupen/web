@@ -22,7 +22,6 @@
 </template>
 
 <script>
-
 import ButtonWithModal from "./ButtonWithModal";
 import Modal from "./Modal";
 

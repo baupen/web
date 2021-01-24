@@ -6,7 +6,6 @@
     <p>
       <span class="pre">{{ address.join("\n") }}</span>
     </p>
-    <hr/>
   </div>
 </template>
 

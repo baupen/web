@@ -1,18 +1,20 @@
 <template>
   <div>
     <button-with-modal-confirm :title="$t('switch.actions.create_construction_site')" :can-confirm="canConfirm" @confirm="confirm">
-      <construction-site-edit @update="constructionSite = $event" :construction-sites="constructionSites"/>
+      <construction-site-form @update="constructionSite = $event" :construction-sites="constructionSites"/>
     </button-with-modal-confirm>
   </div>
 </template>
 
 <script>
 
-import ConstructionSiteEdit from "./Edit/ConstructionSiteEdit";
-import ButtonWithModalConfirm from "./Behaviour/ButtonWithModalConfirm";
-
+import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
+import ConstructionSiteForm from '../Form/ConstructionSiteForm'
 export default {
-  components: {ButtonWithModalConfirm, ConstructionSiteEdit},
+  components: {
+    ConstructionSiteForm,
+    ButtonWithModalConfirm
+  },
   emits: ['add'],
   data() {
     return {

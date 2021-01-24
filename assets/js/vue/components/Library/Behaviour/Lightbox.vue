@@ -56,7 +56,6 @@ export default {
 
   /* Translucent background */
   background: rgba(0, 0, 0, 0.8);
-
   text-align: center;
 }
 

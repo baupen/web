@@ -19,7 +19,7 @@
         <td>{{ constructionSite.name }}</td>
         <td>{{ formatConstructionSiteAddress(constructionSite).join(", ") }}</td>
         <td>
-          <human-readable-date-time :value="constructionSite.createdAt"/>
+          <date-time-human-readable :value="constructionSite.createdAt"/>
         </td>
         <td>
           <button type="button" class="btn btn-toggle" aria-pressed="true"
@@ -36,18 +36,16 @@
 
 <script>
 
-import {constructionSiteFormatter} from '../services/formatters'
-import Masonry from './Behaviour/Masonry'
-import Lightbox from './Behaviour/Lightbox'
-import ConstructionSiteCard from "./ConstructionSiteCard";
-import HumanReadableDateTime from "./View/HumanReadableDateTime";
+import ConstructionSiteCard from "./ConstructionSitesEnterMasonryCard";
+import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
+import Lightbox from '../Library/Behaviour/Lightbox'
+import { constructionSiteFormatter } from '../../services/formatters'
 
 export default {
   emits: ['add-self', 'remove-self'],
   components: {
-    HumanReadableDateTime,
+    DateTimeHumanReadable,
     ConstructionSiteCard,
-    Masonry,
     Lightbox
   },
   props: {

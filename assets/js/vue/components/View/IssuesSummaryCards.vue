@@ -8,7 +8,7 @@
 
 <script>
 
-import SmallCard from "./View/SmallCard";
+import SmallCard from "./View/CardSmall";
 export default {
   components: {SmallCard},
   props: {

@@ -19,13 +19,14 @@
 
 <script>
 import { createField, requiredRule, validateField } from '../../services/validation'
-import CustomCheckboxField from './Layout/CustomCheckboxField'
-import InvalidFeedback from './Layout/InvalidFeedback'
+import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
+import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
+
 
 export default {
   components: {
     InvalidFeedback,
-    CustomCheckboxField,
+    CustomCheckboxField
   },
   emits: ['update'],
   data () {

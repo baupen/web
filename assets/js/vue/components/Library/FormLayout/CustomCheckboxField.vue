@@ -11,9 +11,11 @@
 
 <script>
 
-import CustomCheckbox from '../Input/CustomCheckbox'
+import CustomCheckbox from '../FormInput/CustomCheckbox'
 export default {
-  components: { CustomCheckbox },
+  components: {
+    CustomCheckbox
+  },
   props: {
     forId: {
       type: String,

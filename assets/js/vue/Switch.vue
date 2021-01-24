@@ -5,7 +5,7 @@
       <p>{{ $t('switch.mine_help') }}</p>
 
       <loading-indicator :spin="isLoading">
-        <construction-site-masonry
+        <construction-sites-enter-masonry
             v-if="memberOfConstructionSites.length > 0"
             :construction-sites="memberOfConstructionSites"
             :construction-managers="constructionManagers"
@@ -25,7 +25,7 @@
           @add="postConstructionSite"
       />
 
-      <construction-site-table
+      <construction-sites-participation-table
           :construction-sites="constructionSiteList"
           :construction-manager-iri="constructionManagerIri"
           @remove-self="removeSelfFromConstructionSite"
@@ -37,18 +37,17 @@
 
 <script>
 import { api } from './services/api'
-import AddConstructionSiteButton from './components/AddConstructionSiteButton'
-import ConstructionSiteTable from './components/ConstructionSiteTable'
-import ConstructionSiteMasonry from './components/ConstructionSiteMasonry'
-import LoadingIndicator from './components/View/LoadingIndicator'
-import Noty from 'noty'
+import LoadingIndicator from './components/Library/View/LoadingIndicator'
+import AddConstructionSiteButton from './components/Action/AddConstructionSiteButton'
+import ConstructionSitesParticipationTable from './components/View/ConstructionSitesParticipationTable'
+import ConstructionSitesEnterMasonry from './components/View/ConstructionSitesEnterMasonry'
 
 export default {
   components: {
-    LoadingIndicator,
-    ConstructionSiteMasonry,
-    ConstructionSiteTable,
-    AddConstructionSiteButton
+    ConstructionSitesEnterMasonry,
+    ConstructionSitesParticipationTable,
+    AddConstructionSiteButton,
+    LoadingIndicator
   },
   data () {
     return {

@@ -103,10 +103,10 @@
 
 <script>
 
-import HumanReadableDate from './View/HumanReadableDate'
-import HumanReadableDateTime from './View/HumanReadableDateTime'
+import HumanReadableDate from './View/DateHumanReadable'
+import HumanReadableDateTime from './View/DateTimeHumanReadable'
 import OrderedTableHead from './View/OrderedTableHead'
-import NumberWithTooltip from './View/NumberWithTooltip'
+import NumberWithTooltip from './View/TooltipNumber'
 import { arraysAreEqual } from '../services/algorithms'
 import CustomCheckbox from './Edit/Input/CustomCheckbox'
 

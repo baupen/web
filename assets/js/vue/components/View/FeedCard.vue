@@ -11,7 +11,7 @@
 
 <script>
 
-import FeedEntry from './FeedEntry'
+import FeedEntry from './FeedCardEntry'
 
 export default {
   components: {

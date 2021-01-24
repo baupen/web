@@ -25,7 +25,6 @@
     </form-field>
 
     <div class="form-row">
-
       <form-field class="col-md-4" for-id="postalCode" :label="$t('construction_site.postal_code')">
         <input id="postalCode" class="form-control" type="number" required="required"
                :class="{'is-valid': fields.postalCode.dirty && !fields.postalCode.errors.length, 'is-invalid': fields.postalCode.dirty && fields.postalCode.errors.length }"
@@ -50,10 +49,10 @@
 
 <script>
 import debounce from "lodash.debounce"
-import FormField from "./Layout/FormField";
 import { levenshteinDistance } from '../../services/algorithms'
 import { createField, requiredRule, validateField, validateFields } from '../../services/validation'
-import InvalidFeedback from './Layout/InvalidFeedback'
+import FormField from '../Library/FormLayout/FormField'
+import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
 
 export default {
   components: {
@@ -79,6 +78,9 @@ export default {
     }
   },
   props: {
+    template: {
+      type: Object
+    },
     constructionSites: {
       type: Array,
       required: true
