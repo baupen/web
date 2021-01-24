@@ -34,6 +34,7 @@ import Dashboard from './Dashboard'
 import Dispatch from './Dispatch'
 import Edit from './Edit'
 import Foyer from './Foyer'
+import Register from './Register'
 import Switch from './Switch'
 
 // settings
@@ -96,11 +97,10 @@ if (document.getElementById('foyer') != null) {
     .mount('#foyer')
 }
 
-/*
 if (document.getElementById('register') != null) {
   createVue(Register)
     .mount('#register')
-} */
+}
 
 if (document.getElementById('switch') != null) {
   createVue(Switch)

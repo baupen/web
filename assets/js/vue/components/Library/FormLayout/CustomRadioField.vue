@@ -9,7 +9,7 @@
 
 <script>
 
-import CustomRadio from "../Input/CustomRadio";
+import CustomRadio from "../FormInput/CustomRadio";
 export default {
   components: {CustomRadio,},
   props: {

@@ -39,9 +39,3 @@ export default {
 }
 
 </script>
-
-<style scoped="true">
-.min-width-600 {
-  min-width: 600px;
-}
-</style>
