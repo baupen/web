@@ -13,6 +13,7 @@ namespace App\DataFixtures;
 
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
+use App\Entity\Issue;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\SampleServiceInterface;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -53,6 +54,7 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
 
         $constructionManagers = $manager->getRepository(ConstructionManager::class)->findAll();
 
+        $constructionSites = [];
         foreach (SampleServiceInterface::ALL_SAMPLES as $sample) {
             $leadConstructionManager = $constructionManagers[0];
             $constructionSite = $this->sampleService->createSampleConstructionSite($sample, $leadConstructionManager);
@@ -63,8 +65,11 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
 
             $this->simulateActivity($manager, $constructionSite);
 
+            $constructionSites[] = $constructionSite;
             $manager->persist($constructionSite);
         }
+
+        $this->simulateManyOpenIssues($manager, $constructionSites[1]);
 
         $manager->flush();
     }
@@ -140,5 +145,30 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
         $issue->setRegisteredAt(new \DateTime('yesterday 15:00'));
         $issue->setRegisteredBy($constructionManager);
         $manager->persist($issue);
+    }
+
+    private function simulateManyOpenIssues(ObjectManager $manager, ConstructionSite $constructionSite)
+    {
+        /** @var Issue|false $maxIssue */
+        $maxIssue = $constructionSite->getIssues()->last();
+        $craftsman = $constructionSite->getCraftsmen()[0];
+        $map = $constructionSite->getMaps()[0];
+        $constructionManager = $constructionSite->getConstructionManagers()[0];
+
+        $nextNumber = $maxIssue ? $maxIssue->getNumber() : 1;
+
+        for ($i = $nextNumber; $i < 1000; ++$i) {
+            $issue = new Issue();
+            $issue->setNumber($i);
+            $issue->setConstructionSite($constructionSite);
+            $issue->setMap($map);
+            $issue->setCreatedAt(new \DateTime());
+            $issue->setClosedBy($constructionManager);
+            $issue->setCraftsman($craftsman);
+            $issue->setRegisteredAt(new \DateTime());
+            $issue->setRegisteredBy($constructionManager);
+
+            $manager->persist($issue);
+        }
     }
 }

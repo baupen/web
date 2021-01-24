@@ -30,6 +30,7 @@ import it from './localization/it.json'
 import { clickOutside, focus } from './services/directives'
 
 // views
+import Dashboard from './Dashboard'
 import Edit from './Edit'
 import Switch from './Switch'
 
@@ -73,12 +74,12 @@ function createVue (app) {
   return vue
 }
 
-/*
 if (document.getElementById('dashboard') != null) {
   createVue(Dashboard)
     .mount('#dashboard')
 }
 
+/*
 if (document.getElementById('dispatch') != null) {
   createVue(Dispatch)
     .mount('#dispatch')

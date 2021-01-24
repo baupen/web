@@ -24,7 +24,7 @@
 <script>
 import {api} from './services/api'
 import ConstructionSiteSummary from './components/DashboardConstructionSite'
-import Feed from './components/FeedCard'
+import Feed from './components/DashboardFeed'
 import CraftsmanTable from './components/CraftsmenTable'
 import LoadingIndicator from './components/View/LoadingIndicator'
 import ComposeCraftsmanEmailButton from './components/ComposeCraftsmanEmailButton'

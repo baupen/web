@@ -21,15 +21,16 @@
     </span>
     <span class="text-secondary">
       -
-      <human-readable-date :value="entry.date" />
+      <date-human-readable :value="entry.date" />
     </span>
   </span>
 </template>
 
 <script>
-import HumanReadableDate from './View/DateHumanReadable'
+
+import DateHumanReadable from '../Library/View/DateHumanReadable'
 export default {
-  components: { HumanReadableDate },
+  components: { DateHumanReadable },
   props: {
     entry: {
       type: Object,
