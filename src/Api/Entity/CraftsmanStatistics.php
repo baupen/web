@@ -19,9 +19,9 @@ class CraftsmanStatistics
     private $craftsman;
 
     /**
-     * @var int
+     * @var IssueSummary
      */
-    public $issueOpenCount = 0;
+    private $issueSummary;
 
     /**
      * @var int
@@ -32,11 +32,6 @@ class CraftsmanStatistics
      * @var int
      */
     public $issueOverdueCount = 0;
-
-    /**
-     * @var int
-     */
-    public $issueClosedCount = 0;
 
     /**
      * @var \DateTime|null
@@ -58,6 +53,11 @@ class CraftsmanStatistics
      */
     public $lastIssueResolved;
 
+    public function __construct()
+    {
+        $this->issueSummary = new IssueSummary();
+    }
+
     public function getCraftsman(): string
     {
         return $this->craftsman;
@@ -68,14 +68,9 @@ class CraftsmanStatistics
         $this->craftsman = $craftsman;
     }
 
-    public function getIssueOpenCount(): int
+    public function getIssueSummary(): IssueSummary
     {
-        return $this->issueOpenCount;
-    }
-
-    public function setIssueOpenCount(int $issueOpenCount): void
-    {
-        $this->issueOpenCount = $issueOpenCount;
+        return $this->issueSummary;
     }
 
     public function getIssueUnreadCount(): int
@@ -96,16 +91,6 @@ class CraftsmanStatistics
     public function setIssueOverdueCount(int $issueOverdueCount): void
     {
         $this->issueOverdueCount = $issueOverdueCount;
-    }
-
-    public function getIssueClosedCount(): int
-    {
-        return $this->issueClosedCount;
-    }
-
-    public function setIssueClosedCount(int $issueClosedCount): void
-    {
-        $this->issueClosedCount = $issueClosedCount;
     }
 
     public function getNextDeadline(): ?\DateTime

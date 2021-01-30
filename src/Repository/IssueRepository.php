@@ -11,11 +11,9 @@
 
 namespace App\Repository;
 
-use App\Entity\ConstructionSite;
 use App\Entity\Issue;
-use DateTime;
 use Doctrine\ORM\EntityRepository;
-use Exception;
+use Doctrine\ORM\QueryBuilder;
 
 class IssueRepository extends EntityRepository
 {
@@ -32,26 +30,53 @@ class IssueRepository extends EntityRepository
     }
 
     /**
-     * gets recently changed issues.
-     *
-     * @param int $days
-     *
-     * @throws Exception
-     *
-     * @return Issue[]
+     * @return int[]
      */
-    public function findByRecentlyChanged(ConstructionSite $constructionSite, $days = 14)
+    public function countOpenResolvedAndClosed(string $rootAlias, QueryBuilder $queryBuilder): array
     {
-        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
-        $queryBuilder->select('i');
-        $queryBuilder->from(Issue::class, 'i');
-        $queryBuilder->leftJoin('i.craftsman', 'c');
-        $queryBuilder->where('c.constructionSite = :constructionSite');
-        $queryBuilder->setParameter(':constructionSite', $constructionSite->getId());
-        $queryBuilder->andWhere('i.lastChangedAt > :lastChangedAt');
-        $queryBuilder->setParameter('lastChangedAt', new DateTime('now -'.$days.' days'));
-        $queryBuilder->orderBy('i.lastChangedAt', 'DESC');
+        $openCount = $this->filterAndCount($rootAlias, $queryBuilder, [$this, 'filterOpenIssues']);
+        $resolvedCount = $this->filterAndCount($rootAlias, $queryBuilder, [$this, 'filterResolvedIssues']);
+        $closedCount = $this->filterAndCount($rootAlias, $queryBuilder, [$this, 'filterClosedIssues']);
 
-        return $queryBuilder->getQuery()->getResult();
+        return [$openCount, $resolvedCount, $closedCount];
+    }
+
+    private function filterAndCount(string $rootAlias, QueryBuilder $builder, callable $filter): int
+    {
+        $filteredBuilder = $filter($rootAlias, clone $builder);
+
+        return $this->countResult($rootAlias, $filteredBuilder);
+    }
+
+    public function filterOpenIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
+    {
+        $builder->andWhere($rootAlias.'.registeredAt IS NOT NULL')
+            ->andWhere($rootAlias.'.resolvedAt IS NULL')
+            ->andWhere($rootAlias.'.closedAt IS NULL');
+
+        return $builder;
+    }
+
+    public function filterResolvedIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
+    {
+        $builder->andWhere($rootAlias.'.registeredAt IS NOT NULL')
+            ->andWhere($rootAlias.'.resolvedAt IS NOT NULL')
+            ->andWhere($rootAlias.'.closedAt IS NULL');
+
+        return $builder;
+    }
+
+    public function filterClosedIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
+    {
+        $builder->andWhere($rootAlias.'.registeredAt IS NOT NULL')
+            ->andWhere($rootAlias.'.closedAt IS NOT NULL');
+
+        return $builder;
+    }
+
+    private function countResult(string $rootAlias, QueryBuilder $builder): int
+    {
+        return $builder->select('count('.$rootAlias.')')
+            ->getQuery()->getSingleScalarResult();
     }
 }

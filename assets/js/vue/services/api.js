@@ -263,8 +263,8 @@ const api = {
   postEmailTemplate: function (emailTemplate, collection, successMessage = null) {
     return this._post('/api/email_templates', emailTemplate, collection, successMessage)
   },
-  postConstructionSite: function (constructionSite, collection, successMessage = null) {
-    return this._post('/api/construction_sites', constructionSite, collection, successMessage)
+  postConstructionSite: function (constructionSite, successMessage = null) {
+    return this._postRaw('/api/construction_sites', constructionSite, successMessage)
   },
   postIssueImage: function (issue, image, successMessage = null) {
     return this._postAttachment(issue, image, 'image', successMessage)

@@ -18,15 +18,13 @@
 
 <script>
 
-import ButtonWithModalConfirm from '../Behaviour/ButtonWithModalConfirm'
-import CraftsmanForm from '../Edit/CraftsmanForm'
 import { api } from '../../services/api'
-import DeleteForm from '../Edit/DeleteForm'
+import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
+import DeleteForm from '../Form/DeleteForm'
 
 export default {
   components: {
     DeleteForm,
-    CraftsmanForm,
     ButtonWithModalConfirm
   },
   emits: ['removed'],

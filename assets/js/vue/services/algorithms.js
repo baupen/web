@@ -24,6 +24,10 @@ const levenshteinDistance = function (a, b) {
 }
 
 const arraysAreEqual = function (array1, array2, compareFn = undefined) {
+  if (!array1 || !array2) {
+    return array1 === array2
+  }
+
   if (array1.length !== array2.length) {
     return false
   }

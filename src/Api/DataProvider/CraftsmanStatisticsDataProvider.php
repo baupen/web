@@ -99,10 +99,11 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
             $statisticsDictionary[$craftsman->getId()] = $statistic;
         }
 
-        $this->countOpenIssues($craftsmen, $statisticsDictionary);
-        $this->countClosedIssues($craftsmen, $statisticsDictionary);
+        $this->createIssueSummary($craftsmen, $statisticsDictionary);
+
         $this->countUnreadIssues($craftsmen, $statisticsDictionary);
         $this->countOverdueIssues($craftsmen, $statisticsDictionary);
+
         $this->findNextDeadline($craftsmen, $statisticsDictionary);
         $this->findLastIssueResolved($craftsmen, $statisticsDictionary);
         $this->findLastActivity($craftsmen, $statisticsDictionary);
@@ -110,27 +111,34 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
         return array_values($statisticsDictionary);
     }
 
-    private function countOpenIssues(array $craftsmen, array $statisticsDictionary)
+    private function createIssueSummary(array $craftsmen, array $statisticsDictionary)
     {
-        $queryBuilder = $this->getOpenCraftsmanIssuesQueryBuilder('i', $craftsmen);
+        $issueRepository = $this->manager->getRepository(Issue::class);
 
+        $rootAlias = 'i';
+        $queryBuilder = $this->getCraftsmanIssuesQueryBuilder($rootAlias, $craftsmen);
+
+        $queryBuilderOpenIssues = $issueRepository->filterOpenIssues($rootAlias, clone $queryBuilder);
         $this->groupByCraftsmanAndEvaluate(
-            $queryBuilder, $statisticsDictionary, 'COUNT(i)',
+            $queryBuilderOpenIssues, $statisticsDictionary, 'COUNT(i)',
             function (CraftsmanStatistics $statistics, $value) {
-                $statistics->setIssueOpenCount($value);
+                $statistics->getIssueSummary()->setOpenCount($value);
             }
         );
-    }
 
-    private function countClosedIssues(array $craftsmen, array $statisticsDictionary)
-    {
-        $queryBuilder = $this->getCraftsmanIssuesQueryBuilder('i', $craftsmen)
-            ->andWhere('i.closedAt IS NOT NULL');
-
+        $queryBuilderResolvedIssues = $issueRepository->filterResolvedIssues($rootAlias, clone $queryBuilder);
         $this->groupByCraftsmanAndEvaluate(
-            $queryBuilder, $statisticsDictionary, 'COUNT(i)',
+            $queryBuilderResolvedIssues, $statisticsDictionary, 'COUNT(i)',
             function (CraftsmanStatistics $statistics, $value) {
-                $statistics->setIssueClosedCount($value);
+                $statistics->getIssueSummary()->setResolvedCount($value);
+            }
+        );
+
+        $queryBuilderClosedIssues = $issueRepository->filterClosedIssues($rootAlias, clone $queryBuilder);
+        $this->groupByCraftsmanAndEvaluate(
+            $queryBuilderClosedIssues, $statisticsDictionary, 'COUNT(i)',
+            function (CraftsmanStatistics $statistics, $value) {
+                $statistics->getIssueSummary()->setClosedCount($value);
             }
         );
     }
@@ -195,7 +203,9 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
      */
     private function findLastIssueResolved(array $craftsmen, array $statisticsDictionary)
     {
-        $queryBuilder = $this->getCraftsmanIssuesQueryBuilder('i', $craftsmen);
+        $rootAlias = 'i';
+        $queryBuilder = $this->getCraftsmanIssuesQueryBuilder($rootAlias, $craftsmen)
+            ->andWhere($rootAlias.'.registeredAt IS NOT NULL');
 
         $this->groupByCraftsmanAndEvaluate(
             $queryBuilder, $statisticsDictionary, 'MAX(i.resolvedAt)',
@@ -213,16 +223,18 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
 
         return $issueRepository->createQueryBuilder($rootAlias)
             ->andWhere($rootAlias.'.deletedAt IS NULL')
-            ->andWhere($rootAlias.'.registeredAt IS NOT NULL')
             ->andWhere($rootAlias.'.craftsman IN (:craftsmanIds)')
             ->setParameter(':craftsmanIds', $craftsmanIds);
     }
 
     private function getOpenCraftsmanIssuesQueryBuilder(string $rootAlias, array $craftsmen)
     {
-        return $this->getCraftsmanIssuesQueryBuilder($rootAlias, $craftsmen)
-            ->andWhere($rootAlias.'.resolvedAt IS NULL')
-            ->andWhere($rootAlias.'.closedAt IS NULL');
+        $queryBuilder = $this->getCraftsmanIssuesQueryBuilder($rootAlias, $craftsmen);
+
+        $issueRepository = $this->manager->getRepository(Issue::class);
+        $issueRepository->filterOpenIssues($rootAlias, $queryBuilder);
+
+        return $queryBuilder;
     }
 
     private function groupByCraftsmanAndEvaluate(QueryBuilder $queryBuilder, array $statisticsDictionary, string $selectExpression, \Closure $processResult)

@@ -12,9 +12,8 @@
 namespace App\Api\DataProvider;
 
 use App\Api\DataProvider\Base\NoPaginationDataProvider;
-use App\Api\Entity\Summary;
+use App\Api\Entity\IssueSummary;
 use App\Entity\Issue;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,10 +26,16 @@ class IssueSummaryDataProvider extends NoPaginationDataProvider
      */
     private $serializer;
 
+    /**
+     * @var ManagerRegistry
+     */
+    private $manager;
+
     public function __construct(SerializerInterface $serializer, ManagerRegistry $managerRegistry, iterable $collectionExtensions = [])
     {
         parent::__construct($managerRegistry, $collectionExtensions);
         $this->serializer = $serializer;
+        $this->manager = $managerRegistry;
     }
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
@@ -43,45 +48,11 @@ class IssueSummaryDataProvider extends NoPaginationDataProvider
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
         $rootAlias = $queryBuilder->getRootAliases()[0];
 
-        $summary = new Summary();
-        $summary->setOpenCount($this->countOpenIssues($rootAlias, clone $queryBuilder));
-        $summary->setResolvedCount($this->countResolvedIssues($rootAlias, clone $queryBuilder));
-        $summary->setClosedCount($this->countClosedIssues($rootAlias, clone $queryBuilder));
+        $issueCounts = $this->manager->getRepository(Issue::class)->countOpenResolvedAndClosed($rootAlias, $queryBuilder);
 
+        $summary = IssueSummary::fromArray(...$issueCounts);
         $json = $this->serializer->serialize($summary, 'json');
 
         return new JsonResponse($json, Response::HTTP_OK, [], true);
-    }
-
-    private function countOpenIssues(string $rootAlias, QueryBuilder $builder)
-    {
-        $builder->andWhere($rootAlias.'.registeredAt IS NOT NULL')
-            ->andWhere($rootAlias.'.resolvedAt IS NULL')
-            ->andWhere($rootAlias.'.closedAt IS NULL');
-
-        return $this->countResult($rootAlias, $builder);
-    }
-
-    private function countResolvedIssues(string $rootAlias, QueryBuilder $builder)
-    {
-        $builder->andWhere($rootAlias.'.registeredAt IS NOT NULL')
-            ->andWhere($rootAlias.'.resolvedAt IS NOT NULL')
-            ->andWhere($rootAlias.'.closedAt IS NULL');
-
-        return $this->countResult($rootAlias, $builder);
-    }
-
-    private function countClosedIssues(string $rootAlias, QueryBuilder $builder)
-    {
-        $builder->andWhere($rootAlias.'.registeredAt IS NOT NULL')
-            ->andWhere($rootAlias.'.closedAt IS NOT NULL');
-
-        return $this->countResult($rootAlias, $builder);
-    }
-
-    private function countResult(string $rootAlias, QueryBuilder $builder)
-    {
-        return $builder->select('count('.$rootAlias.')')
-            ->getQuery()->getSingleScalarResult();
     }
 }

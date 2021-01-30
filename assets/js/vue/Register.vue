@@ -1,55 +1,36 @@
 <template>
-  <div id="register">
-    <div class="btn-group mb-4">
-      <export-issues-button
-          :disabled="exportDisabled" :construction-site="constructionSite"
-          :query="query" :queried-issue-count="queriedIssuesCount" :selected-issues="selectedIssues" />
-    </div>
-
+  <div id="dispatch">
     <loading-indicator :spin="!constructionSite">
-      <issue-table
-          :construction-site="constructionSite"
-          :minimal-state="1"
-          @selected="selectedIssues = $event"
-          @query="query = $event"
-          @queried-issue-count="queriedIssuesCount = $event"/>
+      <register-issues :construction-site="constructionSite" :construction-manager-iri="constructionManagerIri" />
     </loading-indicator>
   </div>
 </template>
 
 <script>
 import {api} from './services/api'
-import LoadingIndicator from './components/View/LoadingIndicator'
-import {displaySuccess} from './services/notifiers'
-import IssueTable from "./components/IssueTable";
-import ExportIssuesButton from "./components/ExportIssuesButton";
+import LoadingIndicator from './components/Library/View/LoadingIndicator'
+import RegisterIssues from './components/RegisterIssues'
 
 export default {
   components: {
-    ExportIssuesButton,
-    IssueTable,
-    LoadingIndicator,
+    RegisterIssues,
+    LoadingIndicator
   },
   data() {
     return {
+      constructionManagerIri: null,
       constructionSite: null,
-      queriedIssuesCount: 0,
-      query: {},
-      selectedIssues: [],
     }
   },
-  methods: {
-    deletedIssue(issue) {
-      this.issues = this.issues.filter(i => i !== issue)
-    },
-  },
   computed: {
-    exportDisabled: function () {
-      return this.selectedIssues.length === 0 && this.queriedIssuesCount === 0
+    isLoading: function () {
+      return !this.constructionSite || !this.constructionManagerIri
     }
   },
   mounted() {
     api.setupErrorNotifications(this.$t)
+    api.getMe()
+        .then(me => this.constructionManagerIri = me.constructionManagerIri)
     api.getConstructionSite()
         .then(constructionSite => {
           this.constructionSite = constructionSite
@@ -58,9 +39,3 @@ export default {
 }
 
 </script>
-
-<style scoped="true">
-.min-width-600 {
-  min-width: 600px;
-}
-</style>

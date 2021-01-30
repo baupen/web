@@ -1,5 +1,5 @@
 import '../css/app.scss'
-import './vuejs'
+import './vue/vuejs'
 
 import { dom } from '@fortawesome/fontawesome-svg-core'
 

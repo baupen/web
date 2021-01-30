@@ -13,10 +13,9 @@
 
 <script>
 
-import ButtonWithModalConfirm from '../Behaviour/ButtonWithModalConfirm'
-import CraftsmanForm from '../Edit/CraftsmanForm'
 import { api } from '../../services/api'
-import { displaySuccess } from '../../services/notifiers'
+import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
+import CraftsmanForm from '../Form/CraftsmanForm'
 
 export default {
   components: {

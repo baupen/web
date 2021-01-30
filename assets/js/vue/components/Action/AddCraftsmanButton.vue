@@ -8,16 +8,16 @@
 
 <script>
 
-import ButtonWithModalConfirm from '../Behaviour/ButtonWithModalConfirm'
-import CraftsmanForm from '../Edit/CraftsmanForm'
 import { api } from '../../services/api'
-import { displaySuccess } from '../../services/notifiers'
+import CraftsmanForm from '../Form/CraftsmanForm'
+import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 
 export default {
   emits: ['added'],
   components: {
-    CraftsmanForm,
-    ButtonWithModalConfirm
+    ButtonWithModalConfirm,
+    CraftsmanForm
+
   },
   data () {
     return {
