@@ -72,8 +72,6 @@ export default {
         }
       })
 
-      console.log(post, patch)
-
       return {
         post,
         patch

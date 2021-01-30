@@ -7,7 +7,7 @@
         :true-value="true"
         :false-value="false"
         @input="removeConfirmField.dirty = true"
-        @change="validateremoveConfirm"
+        @change="validateRemoveConfirm"
     >
     <template v-slot:after>
       <invalid-feedback :errors="removeConfirmField.errors" />
@@ -38,8 +38,7 @@ export default {
     },
   },
   methods: {
-    validateremoveConfirm: function () {
-      console.log(this.removeConfirmField)
+    validateRemoveConfirm: function () {
       validateField(this.removeConfirmField, this.removeConfirm)
     },
   },

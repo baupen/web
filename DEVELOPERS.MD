@@ -2,13 +2,13 @@
 
 ## About the setup
 
-The **Backend** is writting using the symfony framework with ApiPlatform on top. It follows conventions of both frameworks as close as possible.
+The **Backend** is in PHP, using the symfony framework 5 with ApiPlatform 2 on top. It follows conventions of both frameworks as close as possible.
 
 Backend technical dept:
 - [ ] PHP 8.0 is out
 - [ ] symfony will replace its authentication system, see here: https://symfony.com/doc/current/security/experimental_authenticators.html
 
-The **Frontend** is written using Vue.JS 3. As there are fewer conventions out there, we need to follow our own ones.
+The **Frontend** isin js, using Vue.JS 3. As there are fewer conventions out there, we need to follow our own ones.
 
 | `assets/js/vue` | Content | Purpose |
 | --- | --- | --- | --- |

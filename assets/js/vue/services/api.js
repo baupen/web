@@ -34,7 +34,6 @@ const api = {
             errorText = response.data['hydra:title'] + ': ' + response.data['hydra:description']
           } else {
             errorText = response.status
-            console.log(response)
             if (response.data && response.data.detail) {
               errorText += ': ' + response.data.detail
             } else if (response.statusText) {

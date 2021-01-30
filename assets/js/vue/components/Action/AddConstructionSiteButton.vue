@@ -52,7 +52,6 @@ export default {
     confirm: function () {
       this.posting = true;
       const payload = Object.assign({}, this.constructionSite, { constructionManagers: [this.constructionManagerIri]})
-      console.log(payload)
       api.postConstructionSite(payload, this.$t('switch.messages.success.added_construction_site'))
           .then(constructionSite => {
             this.$emit('added', constructionSite)

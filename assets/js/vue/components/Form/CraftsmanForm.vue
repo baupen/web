@@ -140,7 +140,6 @@ export default {
     }
   },
   mounted () {
-    console.log('mounted')
     this.setCraftsmanFromTemplate()
     validateFields(this.fields, this.craftsman)
 
