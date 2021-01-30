@@ -23,7 +23,7 @@ matrix:
 before_install:
   # install imagick
   - sudo apt-get install -y gnupg git libmagickwand-dev php-pear ghostscript
-  - printf "\n" | sudo pecl install imagick-3.4.3
+  - printf "\n" | sudo pecl install imagick
   - echo "extension=imagick.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
   # backend
