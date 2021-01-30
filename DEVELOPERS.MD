@@ -2,45 +2,31 @@
 
 ## About the setup
 
-This project uses the symfony framework for its php backend, the VueJS framework for its JavaScript frontend, and ApiPlatform for its API.
+The **Backend** is writting using the symfony framework with ApiPlatform on top. It follows conventions of both frameworks as close as possible.
 
-backend:
-- `symfony/sceleton`, `orm`, `translations`, `logging`, `dotenv`, `mailer`, `form`, `requirements-checker`, `templates` and `api`. For pdfs, `tecnickcom/tcpdf` is used, which will be replaced by `famoser/pdf-generator` in the future.
-- dev dependencies include `encore`, `orm-fixtures`, `cs-fixer`, `security-checker`, `debug`, `simple-phpunit`, `brainmaestro/composer-git-hooks`.
-- for deployment, `famoser/agnes` is used.
-
-The previous setup also relied on:
-- `fzaninotto/faker` for sample data
-- `spatie/pdf-to-image` (unsure if ever used)
-- `ramsey/uuid`(can probably be replaced by native php)
-- `intervention/image` for resizing images
-
-frontend; previously relied upon:
-
-likely still used:
-```
-    "bootstrap-select": "^1",
-    "bootstrap-vue": "^2.14",
-    "crypto-js": "^3.1.9-1",
-    "debounce": "^1.2.0",
-    "deepmerge": "^2",
-    "eol": "^0.9.1",
-```
-
-likely not used anymore:
-```
-    "lodash": "^4.17.13",
-    "open-iconic": "^1",
-    "open-sans-fontface": "^1",
-    "popper.js": "^1.12",
-    "uuid": "^3.3.2",
-    "vue-async-computed": "^3",
-    "vue-fragment": "^1.5.0",
-    "vue-headful": "^2",
-```
-
-technical dept:
+Backend technical dept:
+- [ ] PHP 8.0 is out
 - [ ] symfony will replace its authentication system, see here: https://symfony.com/doc/current/security/experimental_authenticators.html
+
+The **Frontend** is written using Vue.JS 3. As there are fewer conventions out there, we need to follow our own ones.
+
+| `assets/js/vue` | Content | Purpose |
+| --- | --- | --- | --- |
+| `.` | vue entry points | abstract navigation from layout |
+| `./components` | purpose-specific layouts | abstract layout from content |
+| `./components/Action` | user-initiated interactions | abstract interactions from input |
+| `./components/Filter` | issue filters | abstract filter result from filtering |
+| `./components/Form` | entity specific forms | abstract entity edit from interactions |
+| `./components/Library` | project-independent resources | abstract clean encapsulation of patterns & layout from domain |
+| `./components/View` | view structures (tables, grids) | abstract data display / filtering |
+| `./services` | non-VueJS specific code | abstract validation, api & more |
+
+As we do not use a store at the moment, all data must be stored within components. To avoid huge parent components, (a) push data to the smallest child (but keep it at the highest parent where multiple children use it) and (b) execute requests as low as possible.
+
+Frontend technical dept:
+- [ ] Translations need a clean concept. Its difficult to find a good compromise between purpose / domain ordering
+- [ ] IssueTable & its filters do too much. Less than optimal UX & hard to maintain.
+- [ ] Actions should execute the requests themselves
 
 ## Developing
 
@@ -67,7 +53,7 @@ deployment:
 - `vendor/bin/agnes release` to create a new release
 - `vendor/bin/agnes deploy` to deploy a release or commitish  
 
-## Troubleshooting
+## Prepare local machine
 
 ### fortawesome
 
@@ -99,50 +85,6 @@ add to .bashrc
 export LOKALISE_TOKEN=<token>
 ```
 
-### Deployment
-
-server must fulfil requirements of `composer.json` & include ghostscript (`gs`)  
-
-a sample prod `.env.local` could look like this:
-
-```dotenv
-APP_ENV=prod
-APP_SECRET=NEW_SECRET
-MAILER_URL=smtp://info@example.com:NOT_REAL@smtp.mail.com:465/?encryption=ssl&auth_mode=login
-```
-
-if you deploy to the main installation, create `var/transient/domainOverrides.json` with a content similar than this
-```json
-{
-   "domainOverrides":[
-      {
-         "userInputDomain":"mangel.io",
-         "serverURL":"https://app.mangel.io",
-         "userLoginDomain":"mangel.io"
-      },
-      {
-         "userInputDomain":"dev.mangel.io",
-         "serverURL":"https://dev.app.mangel.io",
-         "userLoginDomain":"mangel.io"
-      }
-   ]
-}
-```
-
-### Setup mysql
-
-- `mysql -u root` to login as root
-- `CREATE USER 'symfony'@'localhost' IDENTIFIED BY 'password';` to create `symfony` user with password `password`.
-- `GRANT ALL PRIVILEGES ON *.* TO 'symfony'@'localhost';` to allow `symfony` use to create databases
-- `FLUSH PRIVILEGES;` to reload privileges
-- `quit` to exit 
-
-### Setup ssh
-
-`ssh-copy-id -i ~/.ssh/id_rsa.pub username@domain` to add ssh key  
-`cat ~/.ssh/id_rsa.pub` to query the active ssh key  
-`ssh-keygen -t rsa -b 4096 -C "username@domain" && eval $(ssh-agent -s) && ssh-add ~/.ssh/id_rsa` generate a new key & add it to ssh  
-
-## Testing with PHPStorm
+### Testing with PHPStorm
 
 You need to configure PHPStorm to use the `symfony/phpunit-bridge` as phpunit implementation. See here: https://stackoverrun.com/de/q/13027505
