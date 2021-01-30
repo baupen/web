@@ -42,7 +42,7 @@
       <td>{{ cws.craftsman.trade }}</td>
       <td>
         {{ cws.craftsman.company }} <br/>
-        {{ cws.craftsman.contactName }}
+        <span class="text-secondary">{{ cws.craftsman.contactName }}</span>
       </td>
 
       <td class="border-left">

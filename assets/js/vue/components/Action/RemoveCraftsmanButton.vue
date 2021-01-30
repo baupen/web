@@ -27,7 +27,6 @@ export default {
     DeleteForm,
     ButtonWithModalConfirm
   },
-  emits: ['removed'],
   data () {
     return {
       issueSummary: null,
@@ -48,9 +47,6 @@ export default {
   methods: {
     confirm: function () {
       api.delete(this.craftsman, this.$t('actions.messages.success.craftsman_removed'))
-          .then(_ => {
-            this.$emit('removed', this.craftsman)
-          })
 
       // reset state for next display
       this.issueSummary = null

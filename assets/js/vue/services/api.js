@@ -246,9 +246,11 @@ const api = {
       (resolve) => {
         axios.delete(instance['@id'])
           .then(response => {
-            // DELETE request might return entity in answer (for entities with soft-delete)
-            if (response.data['@id'] === instance) {
-              this._writeAllProperties(response.data, instance)
+            if (response.status === 204) {
+              // if isDeleted property exists, this is an entity with soft delete
+              if (Object.prototype.hasOwnProperty.call(instance, 'isDeleted')) {
+                instance.isDeleted = true
+              }
             }
 
             resolve()
