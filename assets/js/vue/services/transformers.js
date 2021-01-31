@@ -15,14 +15,15 @@ const mapTransformer = {
       this._sortChildren(child.children)
     })
   },
-  _flattenChildren: function (children, level = 0) {
+  _flattenChildren: function (children, parent = null, level = 0) {
     let result = []
     children.forEach(child => {
       result.push({
         entity: child.entity,
+        parent,
         level
       })
-      result = result.concat(...this._flattenChildren(child.children, level + 1))
+      result = result.concat(...this._flattenChildren(child.children, child.entity, level + 1))
     })
 
     return result

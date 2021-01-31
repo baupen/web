@@ -1,20 +1,23 @@
 <template>
   <div id="edit">
     <loading-indicator :spin="!constructionSite">
-      <edit-craftsman :construction-site="constructionSite" />
+      <edit-maps :construction-site="constructionSite" />
+      <edit-craftsmen :construction-site="constructionSite" />
     </loading-indicator>
   </div>
 </template>
 
 <script>
 import {api} from './services/api'
-import EditCraftsman from './components/EditCraftsman'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
+import EditCraftsmen from './components/EditCraftsmen'
+import EditMaps from './components/EditMaps'
 
 export default {
   components: {
+    EditMaps,
+    EditCraftsmen,
     LoadingIndicator,
-    EditCraftsman,
   },
   data() {
     return {

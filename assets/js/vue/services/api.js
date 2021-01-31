@@ -258,6 +258,9 @@ const api = {
       }
     )
   },
+  postMap: function (map, successMessage = null) {
+    return this._postRaw('/api/maps', map, successMessage)
+  },
   postCraftsman: function (craftsman, successMessage = null) {
     return this._postRaw('/api/craftsmen', craftsman, successMessage)
   },
@@ -266,6 +269,9 @@ const api = {
   },
   postConstructionSite: function (constructionSite, successMessage = null) {
     return this._postRaw('/api/construction_sites', constructionSite, successMessage)
+  },
+  postMapFile: function (map, file, successMessage = null) {
+    return this._postAttachment(map, file, 'file', successMessage)
   },
   postIssueImage: function (issue, image, successMessage = null) {
     return this._postAttachment(issue, image, 'image', successMessage)
