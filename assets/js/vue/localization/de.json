@@ -1,5 +1,8 @@
 {
   "actions": {
+    "associate_construction_manager": "Bauleiter der Baustelle hinzufügen",
+    "dissociate_construction_manager": "Bauleiter von Baustelle entfernen",
+    "dissociate_construction_manager_help": "Der Bauleiter wird von der Baustelle entfernt.",
     "add_construction_site": "Baustelle hinzufügen",
     "add_craftsman": "Unternehmer hinzufügen",
     "add_map": "Karte hinzufügen",
@@ -25,7 +28,9 @@
         "map_added": "Karte hinzugefügt",
         "map_saved": "Karte gespeichert",
         "map_file_replaced": "PDF ersetzt",
-        "map_removed": "Karte entfernt"
+        "map_removed": "Karte entfernt",
+        "construction_manager_dissociated":"Bauleiter von Baustelle entfernt",
+        "construction_manager_associated":"Bauleiter der Baustelle hinzugefügt"
       }
     }
   },

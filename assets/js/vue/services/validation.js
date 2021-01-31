@@ -53,7 +53,7 @@ const dirtyFieldValues = function (fields, values) {
   return result
 }
 
-const changedFieldValues = function (fields, values, template) {
+const changedFieldValues = function (fields, values, template = null) {
   const result = {}
   for (const fieldName in fields) {
     if (Object.prototype.hasOwnProperty.call(fields, fieldName)) {

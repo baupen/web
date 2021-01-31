@@ -1,3 +1,9 @@
+const constructionManagerFormatter = {
+  name: function (instance) {
+    return instance.givenName + ' ' + instance.familyName
+  }
+}
+
 const constructionSiteFormatter = {
   address: function (instance) {
     const address = []
@@ -25,4 +31,4 @@ const mapFormatter = {
   }
 }
 
-export { constructionSiteFormatter, mapFormatter }
+export { constructionManagerFormatter, constructionSiteFormatter, mapFormatter }

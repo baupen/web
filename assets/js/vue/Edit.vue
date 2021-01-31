@@ -4,6 +4,7 @@
       <edit-construction-site :construction-site="constructionSite" />
       <edit-maps :construction-site="constructionSite" />
       <edit-craftsmen :construction-site="constructionSite" />
+      <edit-construction-managers :construction-site="constructionSite" />
     </loading-indicator>
   </div>
 </template>
@@ -14,9 +15,11 @@ import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import EditCraftsmen from './components/EditCraftsmen'
 import EditMaps from './components/EditMaps'
 import EditConstructionSite from './components/EditConstructionSite'
+import EditConstructionManagers from './components/EditConstructionManagers'
 
 export default {
   components: {
+    EditConstructionManagers,
     EditConstructionSite,
     EditMaps,
     EditCraftsmen,
@@ -25,6 +28,7 @@ export default {
   data() {
     return {
       constructionSite: null,
+      constructionManagerIri: null
     }
   },
   mounted() {
