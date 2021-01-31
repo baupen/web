@@ -54,6 +54,7 @@ class MapTest extends ApiTestCase
         $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/maps?constructionSite='.$constructionSite->getId());
         $this->assertApiResponseFieldSubset($response, 'name', 'parent', 'fileUrl', 'isDeleted', 'lastChangedAt');
         $this->assertApiResponseFileIsDownloadable($client, $response, 'fileUrl', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        $this->assertApiResponseFileIsDownloadable($client, $response, 'fileUrl', ResponseHeaderBag::DISPOSITION_INLINE, '/render.jpg');
     }
 
     public function testPostPatchAndDelete()
