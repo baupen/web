@@ -4,18 +4,22 @@
     <tr class="bg-light">
       <th>{{ $t('map.name') }}</th>
       <th>{{ $t('map.parent') }}</th>
-      <th class="w-minimal" />
-      <th class="w-minimal" />
+      <th></th>
+      <th class="w-minimal"></th>
+      <th class="w-minimal"></th>
     </tr>
     </thead>
     <tbody>
     <table-body-loading-indicator v-if="!flatHierarchicalMaps" />
     <tr v-else v-for="flatHierarchy in flatHierarchicalMaps">
       <td>
-        {{ "&nbsp;&nbsp;&nbsp;&nbsp;".repeat(flatHierarchy.level) }}{{ flatHierarchy.entity.name }}
+        {{ '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(flatHierarchy.level) }}{{ flatHierarchy.entity.name }}
       </td>
       <td>
-        {{ flatHierarchy.parent ? flatHierarchy.parent.name : $t('map.no_parent_name') }}<br/>
+        {{ flatHierarchy.parent ? flatHierarchy.parent.name : $t('map.no_parent_name') }}<br />
+      </td>
+      <td>
+        {{ flatHierarchy.entity.fileUrl.substr(flatHierarchy.entity.fileUrl.lastIndexOf('/') + 1) }}
       </td>
       <td class="text-right">
         <file-render-lightbox class="h-btn" :src="flatHierarchy.entity.fileUrl" :subject="flatHierarchy.entity.name" />
@@ -60,10 +64,10 @@ export default {
   computed: {
     flatHierarchicalMaps: function () {
       if (!this.maps) {
-        return null;
+        return null
       }
 
-      return  mapTransformer.flatHierarchy(this.maps)
+      return mapTransformer.flatHierarchy(this.maps)
     },
   },
 }
