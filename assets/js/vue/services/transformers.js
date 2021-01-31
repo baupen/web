@@ -1,13 +1,18 @@
 const mapTransformer = {
-  _getChildren: function (key, parentLookup) {
+  _cutChildrenFromLookup: function (key, parentLookup) {
     if (!(key in parentLookup)) {
       return []
     }
 
-    return parentLookup[key].map(entry => ({
+    const children = parentLookup[key].map(entry => ({
       entity: entry,
-      children: this._getChildren(entry['@id'], parentLookup)
+      children: this._cutChildrenFromLookup(entry['@id'], parentLookup)
     }))
+
+    // remove processed entries in lookup
+    delete parentLookup[key]
+
+    return children
   },
   _sortChildren: function (children) {
     children.sort((a, b) => a.entity.name.localeCompare(b.entity.name))
@@ -21,6 +26,7 @@ const mapTransformer = {
       result.push({
         entity: child.entity,
         parent,
+        children: child.children.map(e => e.entity),
         level
       })
       result = result.concat(...this._flattenChildren(child.children, child.entity, level + 1))
@@ -42,7 +48,19 @@ const mapTransformer = {
       parentLookup[parentKey].push(m)
     })
 
-    return this._getChildren(rootKey, parentLookup)
+    const children = this._cutChildrenFromLookup(rootKey, parentLookup)
+
+    // append any entries that remain. this case should never happen (mean broken relations!)
+    for (const key in parentLookup) {
+      if (Object.prototype.hasOwnProperty.call(parentLookup, key)) {
+        children.push(...parentLookup[key].map(entry => ({
+          entity: entry,
+          children: []
+        })))
+      }
+    }
+
+    return children
   },
   flatHierarchy: function (maps) {
     const hierarchy = this._hierarchy(maps)

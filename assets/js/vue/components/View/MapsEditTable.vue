@@ -16,7 +16,7 @@
         {{ '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(flatHierarchy.level) }}{{ flatHierarchy.entity.name }}
       </td>
       <td>
-        {{ flatHierarchy.parent ? flatHierarchy.parent.name : $t('map.no_parent_name') }}<br />
+        {{ getParentName(flatHierarchy) }}<br />
       </td>
       <td>
         {{ getOriginalFilename(flatHierarchy.entity) }}
@@ -28,7 +28,7 @@
         <div class="btn-group">
           <span /> <!-- fixes button css -->
           <edit-map-button :map="flatHierarchy.entity" :maps="maps" />
-          <remove-map-button :construction-site="constructionSite" :map="flatHierarchy.entity" />
+          <remove-map-button v-if="!flatHierarchy.children.length" :construction-site="constructionSite" :map="flatHierarchy.entity" />
         </div>
       </td>
     </tr>
@@ -74,6 +74,16 @@ export default {
   methods: {
     getOriginalFilename: function (map) {
       return mapFormatter.originalFilename(map)
+    },
+    getParentName: function (flatHierarchy) {
+      if (!flatHierarchy.entity.parent) {
+        return this.$t('view.maps_edit.no_parent_name')
+      }
+      if (!flatHierarchy.parent) {
+        return this.$t('view.maps_edit.parent_not_found')
+      }
+
+      return flatHierarchy.parent.name
     }
   }
 }
