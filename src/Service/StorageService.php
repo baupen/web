@@ -78,7 +78,7 @@ class StorageService implements StorageServiceInterface
             return null;
         }
 
-        $mapFile->getMaps()->add($map);
+        $mapFile->setMap($map);
         $mapFile->setConstructionSite($map->getConstructionSite());
         $map->setFile($mapFile);
 

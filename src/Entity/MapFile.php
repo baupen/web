@@ -15,7 +15,6 @@ use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\FileTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,16 +37,11 @@ class MapFile extends BaseEntity
     private $constructionSite;
 
     /**
-     * @var Map[]|ArrayCollection
+     * @var Map
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Map", mappedBy="file")
+     * @ORM\OneToOne(targetEntity="App\Entity\Map", inversedBy="file")
      */
-    private $maps;
-
-    public function __construct()
-    {
-        $this->maps = new ArrayCollection();
-    }
+    private $map;
 
     public function getConstructionSite(): ConstructionSite
     {
@@ -64,11 +58,13 @@ class MapFile extends BaseEntity
         return $this->filename;
     }
 
-    /**
-     * @return Map[]|ArrayCollection
-     */
-    public function getMaps()
+    public function getMap(): Map
     {
-        return $this->maps;
+        return $this->map;
+    }
+
+    public function setMap(Map $map): void
+    {
+        $this->map = $map;
     }
 }

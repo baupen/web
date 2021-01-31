@@ -130,11 +130,17 @@ class ApiController extends BaseDoctrineController
     public function postMapFile(Request $request, Map $map, StorageServiceInterface $storageService, CacheServiceInterface $cacheService)
     {
         $this->denyAccessUnlessGranted(MapVoter::MAP_MODIFY, $map);
+
+        $oldFile = $map->getFile();
         $file = $this->getPdf($request->files);
 
         $mapFile = $storageService->uploadMapFile($file, $map);
         if (null === $mapFile) {
             throw new BadRequestException();
+        }
+
+        if ($oldFile) {
+            $this->removeDetached($oldFile);
         }
 
         $this->fastSave($map, $mapFile);
@@ -173,15 +179,16 @@ class ApiController extends BaseDoctrineController
     {
         $this->denyAccessUnlessGranted(ConstructionSiteVoter::CONSTRUCTION_SITE_MODIFY, $constructionSite);
 
+        $oldImage = $constructionSite->getImage();
         $image = $this->getImage($request->files);
-
-        if ($constructionSite->getImage()) {
-            $this->fastRemove($constructionSite->getImage());
-        }
 
         $constructionSiteImage = $storageService->uploadConstructionSiteImage($image, $constructionSite);
         if (null === $constructionSiteImage) {
             throw new BadRequestException();
+        }
+
+        if ($oldImage) {
+            $this->removeDetached($oldImage);
         }
 
         $this->fastSave($constructionSite, $constructionSiteImage);
@@ -220,15 +227,16 @@ class ApiController extends BaseDoctrineController
     {
         $this->denyAccessUnlessGranted(IssueVoter::ISSUE_MODIFY, $issue);
 
+        $oldImage = $issue->getImage();
         $image = $this->getImage($request->files);
-
-        if ($issue->getImage()) {
-            $this->fastRemove($issue->getImage());
-        }
 
         $issueImage = $storageService->uploadIssueImage($image, $issue);
         if (null === $issueImage) {
             throw new BadRequestException();
+        }
+
+        if ($oldImage) {
+            $this->removeDetached($oldImage);
         }
 
         $this->fastSave($issue, $issueImage);
@@ -298,5 +306,12 @@ class ApiController extends BaseDoctrineController
         }
 
         return $candidate;
+    }
+
+    private function removeDetached($entity)
+    {
+        $manager = $this->getDoctrine()->getManager();
+        $manager->remove($entity);
+        $manager->flush($entity);
     }
 }

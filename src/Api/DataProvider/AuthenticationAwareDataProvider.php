@@ -28,6 +28,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
+    use TokenTrait;
     /**
      * @var ContextAwareCollectionDataProviderInterface
      */
@@ -58,8 +59,6 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 
         return true;
     }
-
-    use TokenTrait;
 
     public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
     {

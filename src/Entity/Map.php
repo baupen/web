@@ -96,7 +96,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     /**
      * @var MapFile|null
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="maps", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\MapFile", mappedBy="map", cascade={"persist"})
      */
     private $file;
 

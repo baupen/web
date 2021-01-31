@@ -20,8 +20,9 @@ use App\Tests\Traits\TestDataTrait;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
-class ImageControllerTest extends WebTestCase
+class ApiControllerTest extends WebTestCase
 {
     use FixturesTrait;
     use AuthenticationTrait;
@@ -38,8 +39,7 @@ class ImageControllerTest extends WebTestCase
         $image = $testConstructionSite->getImage();
         $oldGuid = $image->getId();
 
-        $filename = 'preview_2.jpg';
-        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/'.$filename);
+        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/preview_2.jpg');
         $baseUrl = '/api/construction_sites/'.$testConstructionSite->getId().'/image';
         $url = $this->assertPostFile($client, $baseUrl, $uploadedFile);
 
@@ -48,6 +48,13 @@ class ImageControllerTest extends WebTestCase
         $this->assertStringContainsString($image->getId(), $url);
 
         $this->assertImageDownloads($client, $url);
+
+        // try a second time
+        $uploadedFile2 = new AssetFile(__DIR__.'/../../assets/samples/Test/preview.jpg');
+        $url2 = $this->assertPostFile($client, $baseUrl, $uploadedFile2);
+
+        $this->assertNotEquals($url, $url2);
+        $this->assertSingleImageDownloads($client, $url2);
     }
 
     public function testIssueImage()
@@ -60,8 +67,7 @@ class ImageControllerTest extends WebTestCase
         $issue = $testConstructionSite->getIssues()[0];
         $oldGuid = $issue->getImage()->getId();
 
-        $filename = 'nachbessern_2.jpg';
-        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/issue_images/'.$filename);
+        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/issue_images/nachbessern_2.jpg');
         $baseUrl = '/api/issues/'.$issue->getId().'/image';
         $url = $this->assertPostFile($client, $baseUrl, $uploadedFile);
 
@@ -69,6 +75,42 @@ class ImageControllerTest extends WebTestCase
         $this->assertStringContainsString($issue->getImage()->getId(), $url);
 
         $this->assertImageDownloads($client, $url);
+
+        // try a second time
+        $uploadedFile2 = new AssetFile(__DIR__.'/../../assets/samples/Test/issue_images/nachbessern.jpg');
+        $url2 = $this->assertPostFile($client, $baseUrl, $uploadedFile2);
+
+        $this->assertNotEquals($url, $url2);
+        $this->assertSingleImageDownloads($client, $url2);
+    }
+
+    public function testMapFile()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginConstructionManager($client);
+
+        $testConstructionSite = $this->getTestConstructionSite();
+        $map = $testConstructionSite->getMaps()[0];
+        $oldGuid = $map->getFile()->getId();
+
+        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/map_files/2OG_2.pdf');
+        $baseUrl = '/api/maps/'.$map->getId().'/file';
+        $url = $this->assertPostFile($client, $baseUrl, $uploadedFile);
+
+        $this->assertStringNotContainsString($oldGuid, $url);
+        $this->assertStringContainsString($map->getFile()->getId(), $url);
+
+        $this->assertGetFile($client, $url, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        $this->assertGetFile($client, $url.'?variant=ios', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        $this->assertFileNotFound($client, $url.'?variant=undefined');
+
+        // try a second time
+        $uploadedFile2 = new AssetFile(__DIR__.'/../../assets/samples/Test/map_files/2OG.pdf');
+        $url2 = $this->assertPostFile($client, $baseUrl, $uploadedFile2);
+
+        $this->assertNotEquals($url, $url2);
+        $this->assertGetFile($client, $url2, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
     }
 
     private function assertImageDownloads(KernelBrowser $client, string $imageUrl): void
@@ -78,5 +120,10 @@ class ImageControllerTest extends WebTestCase
         $this->assertGetFile($client, $imageUrl.'?size=preview');
         $this->assertGetFile($client, $imageUrl.'?size=full');
         $this->assertFileNotFound($client, $imageUrl.'?size=null');
+    }
+
+    private function assertSingleImageDownloads(KernelBrowser $client, string $imageUrl): void
+    {
+        $this->assertGetFile($client, $imageUrl);
     }
 }

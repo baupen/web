@@ -74,7 +74,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     /**
      * @var ConstructionSiteImage|null
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\ConstructionSiteImage", inversedBy="constructionSite", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\ConstructionSiteImage", mappedBy="constructionSite", cascade={"persist"})
      */
     private $image;
 
