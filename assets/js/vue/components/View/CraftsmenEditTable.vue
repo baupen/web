@@ -4,6 +4,7 @@
     <tr class="bg-light">
       <th>{{ $t('craftsman.trade') }}</th>
       <th>{{ $t('craftsman.company') }}</th>
+      <th class="border-left">{{ $t('craftsman.contact_name') }}</th>
       <th>{{ $t('craftsman.email') }}</th>
       <th>{{ $t('craftsman.emailCCs') }}</th>
       <th class="w-minimal" />
@@ -14,8 +15,10 @@
     <tr v-else v-for="craftsman in orderedCraftsmen">
       <td>{{ craftsman.trade }}</td>
       <td>
-        {{ craftsman.company }}<br/>
-        <span class="text-secondary">{{ craftsman.contactName }}</span>
+        {{ craftsman.company }}
+      </td>
+      <td class="border-left">
+        {{ craftsman.contactName }}
       </td>
       <td>{{ craftsman.email }}</td>
       <td>{{ craftsman.emailCCs.length ? craftsman.emailCCs.join(', ') : '-' }}</td>
