@@ -111,13 +111,13 @@ export default {
       }
     },
     determineSimilarConstructionSiteNames: function (newName) {
-      if (!newName || newName.length < 4 || !this.constructionSites) {
+      if (!newName || newName.length < 4 || !this.constructionSitesWithoutTemplate) {
         return this.similarConstructionSiteNames = []
       }
 
       const maxDistanceForWarning = Math.sqrt(newName.length)
 
-      let similarConstructionSites = this.constructionSites.map(constructionSite => ({
+      let similarConstructionSites = this.constructionSitesWithoutTemplate.map(constructionSite => ({
         constructionSite,
         distance: levenshteinDistance(newName.toLowerCase(), constructionSite.name.toLowerCase())
       }))
@@ -130,6 +130,9 @@ export default {
     },
   },
   computed: {
+    constructionSitesWithoutTemplate: function () {
+      return this.constructionSites.filter(c => c !== this.template)
+    },
     updatePayload: function () {
       if (this.fields.name.errors.length ||
           this.fields.streetAddress.errors.length ||

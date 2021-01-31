@@ -3,6 +3,7 @@
     "add_construction_site": "Baustelle hinzufügen",
     "add_craftsman": "Unternehmer hinzufügen",
     "add_map": "Karte hinzufügen",
+    "edit_construction_site": "Baustelle bearbeiten",
     "edit_craftsman": "Unternehmer bearbeiten",
     "edit_map": "Karte bearbeiten",
     "import_craftsmen": "Unternehmer importieren",
@@ -16,6 +17,8 @@
     "messages": {
       "success": {
         "construction_site_added": "Baustelle hinzugefügt",
+        "construction_site_image_replaced": "Bild ersetzt",
+        "construction_site_saved": "Baustelle gespeichert",
         "craftsman_added": "Unternehmer hinzugefügt.",
         "craftsman_saved": "Unternehmer gespeichert.",
         "craftsman_removed": "Unternehmer entfernt.",

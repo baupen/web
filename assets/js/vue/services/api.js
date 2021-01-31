@@ -177,8 +177,24 @@ const api = {
     }
     return this._getHydraCollection('/api/construction_managers' + urlSuffix)
   },
-  getConstructionSites: function () {
-    return this._getHydraCollection('/api/construction_sites')
+  getConstructionSites: function (alreadyLoadedConstructionSite = null) {
+    return new Promise(
+      (resolve) => {
+        this._getHydraCollection('/api/construction_sites')
+          .then(collection => {
+            if (alreadyLoadedConstructionSite) {
+              collection = collection.map(c => {
+                if (c['@id'] !== alreadyLoadedConstructionSite['@id']) {
+                  return c
+                }
+
+                return alreadyLoadedConstructionSite
+              })
+            }
+            resolve(collection)
+          })
+      }
+    )
   },
   getPaginatedIssues: function (constructionSite, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
