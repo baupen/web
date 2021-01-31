@@ -19,7 +19,7 @@
         {{ flatHierarchy.parent ? flatHierarchy.parent.name : $t('map.no_parent_name') }}<br />
       </td>
       <td>
-        {{ flatHierarchy.entity.fileUrl.substr(flatHierarchy.entity.fileUrl.lastIndexOf('/') + 1) }}
+        {{ getOriginalFilename(flatHierarchy.entity) }}
       </td>
       <td class="text-right">
         <file-render-lightbox class="h-btn" :src="flatHierarchy.entity.fileUrl" :subject="flatHierarchy.entity.name" />
@@ -43,6 +43,7 @@ import { mapTransformer } from '../../services/transformers'
 import FileRenderLightbox from './FileRenderLightbox'
 import EditMapButton from '../Action/EditMapButton'
 import RemoveMapButton from '../Action/RemoveMapButton'
+import { mapFormatter } from '../../services/formatters'
 
 export default {
   components: {
@@ -70,5 +71,10 @@ export default {
       return mapTransformer.flatHierarchy(this.maps)
     },
   },
+  methods: {
+    getOriginalFilename: function (map) {
+      return mapFormatter.originalFilename(map)
+    }
+  }
 }
 </script>

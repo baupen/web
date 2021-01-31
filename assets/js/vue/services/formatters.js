@@ -14,4 +14,15 @@ const constructionSiteFormatter = {
   }
 }
 
-export { constructionSiteFormatter }
+const mapFormatter = {
+  originalFilename: function (instance) {
+    const currentFilename = instance.fileUrl.substr(instance.fileUrl.lastIndexOf('/') + 1)
+    if (currentFilename.indexOf('_duplicate_') === -1) {
+      return currentFilename
+    }
+
+    return currentFilename.substr(0, currentFilename.indexOf('_duplicate_'))
+  }
+}
+
+export { constructionSiteFormatter, mapFormatter }
