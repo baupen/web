@@ -24,9 +24,7 @@
         <div class="btn-group">
           <span /> <!-- fixes button css -->
           <edit-map-button :map="flatHierarchy.entity" :maps="maps" />
-          <!--
-          <remove-map-button :construction-site="constructionSite" :map="map" />
-          -->
+          <remove-map-button :construction-site="constructionSite" :map="flatHierarchy.entity" />
         </div>
       </td>
     </tr>
@@ -40,9 +38,11 @@ import TableBodyLoadingIndicator from '../Library/View/LoadingIndicatorTableBody
 import { mapTransformer } from '../../services/transformers'
 import FileRenderLightbox from './FileRenderLightbox'
 import EditMapButton from '../Action/EditMapButton'
+import RemoveMapButton from '../Action/RemoveMapButton'
 
 export default {
   components: {
+    RemoveMapButton,
     EditMapButton,
     FileRenderLightbox,
     TableBodyLoadingIndicator,

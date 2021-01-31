@@ -1,7 +1,7 @@
 <template>
   <button-with-modal-confirm
       color="danger"
-      :title="$t('actions.remove_craftsman')" :can-confirm="canConfirm"
+      :title="$t('actions.remove_map')" :can-confirm="canConfirm"
       @confirm="confirm">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'trash']" />
@@ -12,7 +12,7 @@
     </p>
 
     <p class="alert alert-info">
-      {{ $t('actions.remove_craftsman_help') }}
+      {{ $t('actions.remove_map_help') }}
     </p>
 
     <delete-form @update="canConfirm = $event" />
@@ -36,7 +36,6 @@ export default {
   data () {
     return {
       issueSummary: null,
-      craftsmanPatch: null,
       canConfirm: false
     }
   },
@@ -45,21 +44,21 @@ export default {
       type: Object,
       required: true
     },
-    craftsman: {
+    map: {
       type: Object,
       required: true
     }
   },
   methods: {
     confirm: function () {
-      api.delete(this.craftsman, this.$t('actions.messages.success.craftsman_removed'))
+      api.delete(this.map, this.$t('actions.messages.success.map_removed'))
 
       // reset state for next display
       this.issueSummary = null
     }
   },
   mounted () {
-    api.getIssuesSummary(this.constructionSite, { craftsman: this.craftsman['@id'] })
+    api.getIssuesSummary(this.constructionSite, { map: this.map['@id'] })
         .then(issueSummary => {
           this.issueSummary = issueSummary
         })

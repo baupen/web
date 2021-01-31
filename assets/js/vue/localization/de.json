@@ -6,7 +6,9 @@
     "edit_map": "Karte bearbeiten",
     "import_craftsmen":"Unternehmer importieren",
     "remove_craftsman": "Unternehmer entfernen",
-    "remove_craftsman_help": "Sie können Sie dem Unternehmer keine Pendenzen mehr zuweisen. Der Unternehmer verliert den Zugriff auf den personalisierten Link.",
+    "remove_craftsman_help": "Nach dem Entfernen können Sie dem Unternehmer keine Pendenzen mehr zuweisen. Der Unternehmer verliert den Zugriff auf den personalisierten Link.",
+    "remove_map": "Karte entfernen",
+    "remove_map_help": "Nach dem Entfernen können Sie der Karte keine Pendenzen mehr zuweisen.",
     "import": "Importieren",
     "save_changes": "Änderungen speichern",
     "remove_confirm": "Ich verstehe, dass ich diesen Schnritt nicht rückgängig machen kann.",
@@ -17,7 +19,8 @@
         "craftsman_removed": "Unternehmer entfernt.",
         "map_added": "Karte hinzugefügt",
         "map_saved": "Karte gespeichert",
-        "map_file_replaced": "PDF ersetzt"
+        "map_file_replaced": "PDF ersetzt",
+        "map_removed": "Karte entfernt"
       }
     }
   },
