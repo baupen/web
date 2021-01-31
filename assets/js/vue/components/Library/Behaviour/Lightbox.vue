@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- thumbnail image wrapped in a link -->
-    <span class="clickable" @click="open = !open" @blur="open = false">
+    <span class="lightbox-thumbnail clickable" @click="open = !open" @blur="open = false">
       <img :src="src" :alt="alt">
     </span>
 
@@ -38,6 +38,10 @@ export default {
 </script>
 
 <style scoped="true">
+
+.lightbox-thumbnail > img {
+  max-height: 100%;
+}
 
 .lightbox {
   /* Default to hidden */

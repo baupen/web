@@ -15,11 +15,11 @@
             @input="fields.parent.dirty = true"
             @change="validate('parent')"
     >
-      <option :value="null">{{ $t('form.map.no_parent') }}</option>
+      <option :value="null">{{ $t('map.no_parent_name') }}</option>
       <option disabled></option>
-      <option v-for="flatHierarchy in flatHierarchicalMaps" :value="flatHierarchy.map['@id']"
-              :key="flatHierarchy.map['@id']">
-        {{ "&nbsp;".repeat(flatHierarchy.level) }} {{ flatHierarchy.map.name}}
+      <option v-for="flatHierarchy in flatHierarchicalMaps" :value="flatHierarchy.entity['@id']"
+              :key="flatHierarchy.entity['@id']">
+        {{ "&nbsp;".repeat(flatHierarchy.level) }} {{ flatHierarchy.entity.name}}
       </option>
     </select>
     <invalid-feedback :errors="fields.parent.errors"/>
@@ -57,7 +57,8 @@ export default {
       type: Object
     },
     maps: {
-      type: Array
+      type: Array,
+      default: []
     }
   },
   watch: {

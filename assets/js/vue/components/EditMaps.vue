@@ -2,7 +2,7 @@
   <h2 class="mt-5">{{ $t('map._plural') }}</h2>
   <p>{{ $t('edit.maps_help') }}</p>
   <div class="btn-group">
-    <add-map-button :construction-site="constructionSite" @added="maps.push($event)" />
+    <add-map-button :construction-site="constructionSite" :maps="notDeletedMaps" @added="maps.push($event)" />
     <!-- <import-maps-button :construction-site="constructionSite" :maps="maps" @imported="reload" /> -->
   </div>
   <maps-edit-table class="mt-2" :construction-site="constructionSite" :maps="notDeletedMaps" />

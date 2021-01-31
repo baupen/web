@@ -1,8 +1,8 @@
 <template>
   <button-with-modal-confirm
-      :button-disabled="posting" :title="$t('actions.add_map')" :can-confirm="canConfirm"
+      :button-disabled="posting || !maps" :title="$t('actions.add_map')" :can-confirm="canConfirm"
       @confirm="confirm">
-    <map-form @update="post = $event" />
+    <map-form :maps="maps" @update="post = $event" />
     <file-form @update="file = $event" />
   </button-with-modal-confirm>
 </template>
@@ -32,6 +32,10 @@ export default {
     constructionSite: {
       type: Object,
       required: true
+    },
+    maps: {
+      type: Array,
+      required: false
     },
   },
   computed: {

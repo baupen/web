@@ -33,7 +33,7 @@ export default {
   watch: {
     file: function () {
       if (this.mounted) {
-        this.$emit('update-file', this.file)
+        this.$emit('update', this.file)
       }
     },
   },
