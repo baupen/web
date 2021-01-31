@@ -1,9 +1,10 @@
 <template>
   <div>
     <button-with-modal-confirm
-        :title="$t('switch.actions.create_construction_site')" :can-confirm="canConfirm" :button-disabled="buttonDisabled"
+        :button-disabled="posting || !constructionSites" :title="$t('actions.add_construction_site')" :can-confirm="canConfirm"
         @confirm="confirm">
-      <construction-site-form @update="constructionSite = $event" :construction-sites="constructionSites" />
+      <construction-site-form :construction-sites="constructionSites" @update="post = $event" />
+      <image-form @update="image = $event" />
     </button-with-modal-confirm>
   </div>
 </template>
@@ -13,24 +14,25 @@
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import ConstructionSiteForm from '../Form/ConstructionSiteForm'
 import { api } from '../../services/api'
+import FileForm from '../Form/FileForm'
+import ImageForm from '../Form/ImageForm'
 
 export default {
+  emits: ['added'],
   components: {
+    ImageForm,
+    FileForm,
     ConstructionSiteForm,
     ButtonWithModalConfirm
   },
-  emits: ['added'],
   data () {
     return {
-      constructionSite: null,
+      image: null,
+      post: null,
       posting: false,
     }
   },
   props: {
-    disabled: {
-      type: Boolean,
-      required: true
-    },
     constructionManagerIri: {
       type: String,
       required: true
@@ -42,20 +44,32 @@ export default {
   },
   computed: {
     canConfirm: function () {
-      return !!this.constructionSite
-    },
-    buttonDisabled: function () {
-      return this.disabled || this.posting
+      return !!this.post
     }
   },
   methods: {
     confirm: function () {
       this.posting = true;
-      const payload = Object.assign({}, this.constructionSite, { constructionManagers: [this.constructionManagerIri]})
-      api.postConstructionSite(payload, this.$t('switch.messages.success.added_construction_site'))
+      const payload = Object.assign({}, this.post, { constructionManagers: [this.constructionManagerIri]})
+
+      let successMessage = this.$t('actions.messages.success.construction_site_added')
+
+      if (!this.image) {
+        api.postConstructionSite(payload, successMessage)
+            .then(constructionSite => {
+              this.posting = false
+              this.$emit('added', constructionSite)
+            })
+        return
+      }
+
+      api.postConstructionSite(payload)
           .then(constructionSite => {
-            this.$emit('added', constructionSite)
-            this.posting = false;
+            api.postConstructionSiteImage(constructionSite, this.image, successMessage)
+                .then(_ => {
+                  this.posting = false
+                  this.$emit('added', constructionSite)
+                })
           })
     }
   }

@@ -1,5 +1,6 @@
 {
   "actions": {
+    "add_construction_site": "Baustelle hinzufügen",
     "add_craftsman": "Unternehmer hinzufügen",
     "add_map": "Karte hinzufügen",
     "edit_craftsman": "Unternehmer bearbeiten",
@@ -14,6 +15,7 @@
     "remove_confirm": "Ich verstehe, dass ich diesen Schnritt nicht rückgängig machen kann.",
     "messages": {
       "success": {
+        "construction_site_added": "Baustelle hinzugefügt",
         "craftsman_added": "Unternehmer hinzugefügt.",
         "craftsman_saved": "Unternehmer gespeichert.",
         "craftsman_removed": "Unternehmer entfernt.",

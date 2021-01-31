@@ -1,14 +1,14 @@
 <template>
-  <form-field for-id="file" :label="$t('form.file.label')">
+  <form-field for-id="file" :label="$t('form.image.label')">
     <dropzone
         v-if="!file"
-        id="file" :help="$t('form.file.drop_or_choose')"
+        id="file" :help="$t('form.image.drop_or_choose')"
         :valid-file-types="validFileTypes"
         @input="file = $event[0]" />
     <input v-if="file" id="file" class="form-control is-valid" type="text" readonly="readonly"
            :value="file.name">
     <a class="btn-link clickable" v-if="file" @click="file = null">
-      {{ $t('form.file.reset') }}
+      {{ $t('form.image.reset') }}
     </a>
   </form-field>
 </template>
@@ -17,7 +17,7 @@
 
 import FormField from '../Library/FormLayout/FormField'
 import Dropzone from '../Library/FormInput/Dropzone'
-import { validFileTypes } from '../../services/api'
+import { validImageTypes } from '../../services/api'
 
 export default {
   components: {
@@ -40,7 +40,7 @@ export default {
   },
   computed: {
     validFileTypes: function () {
-      return validFileTypes;
+      return validImageTypes;
     }
   },
   mounted () {

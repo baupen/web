@@ -2,6 +2,7 @@ import axios from 'axios'
 import { displaySuccess, displayError } from './notifiers'
 
 const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
+const validFileTypes = ['application/pdf']
 
 const iriToId = function (iri) {
   return iri.substr(iri.lastIndexOf('/') + 1)
@@ -276,9 +277,12 @@ const api = {
   postIssueImage: function (issue, image, successMessage = null) {
     return this._postAttachment(issue, image, 'image', successMessage)
   },
+  postConstructionSiteImage: function (constructionSite, image, successMessage = null) {
+    return this._postAttachment(constructionSite, image, 'image', successMessage)
+  },
   postEmail: function (email) {
     return this._postRaw('/api/emails', email)
   }
 }
 
-export { api, iriToId, validImageTypes }
+export { api, iriToId, validImageTypes, validFileTypes }

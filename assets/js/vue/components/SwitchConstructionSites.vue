@@ -19,7 +19,6 @@
   <p>{{ $t('switch.all_help') }}</p>
   <add-construction-site-button
       class="mb-2"
-      :disabled="isLoading"
       :construction-manager-iri="constructionManagerIri"
       :construction-sites="constructionSites"
       @added="constructionSites.push($event)"
