@@ -12,7 +12,7 @@
 namespace App\Command;
 
 use App\Entity\ConstructionManager;
-use App\Service\Interfaces\AuthorizationServiceInterface;
+use App\Service\Interfaces\UserServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,19 +26,19 @@ class RefreshAuthorizationCommand extends Command
     private $registry;
 
     /**
-     * @var AuthorizationServiceInterface
+     * @var UserServiceInterface
      */
-    private $authorizationService;
+    private $userService;
 
     /**
      * ImportLdapUsersCommand constructor.
      */
-    public function __construct(ManagerRegistry $registry, AuthorizationServiceInterface $authorizationService)
+    public function __construct(ManagerRegistry $registry, UserServiceInterface $authorizationService)
     {
         parent::__construct();
 
         $this->registry = $registry;
-        $this->authorizationService = $authorizationService;
+        $this->userService = $authorizationService;
     }
 
     /**
@@ -48,7 +48,7 @@ class RefreshAuthorizationCommand extends Command
     {
         $this
             ->setName('app:authorization:refresh')
-            ->setDescription('Authorizes construction managers contained in the whitelists and denies the others access.')
+            ->setDescription('Refreshes authorization; e.g. by comparing with whitelists.')
         ;
     }
 
@@ -61,7 +61,7 @@ class RefreshAuthorizationCommand extends Command
 
         $constructionManagers = $this->registry->getRepository(ConstructionManager::class)->findAll();
         foreach ($constructionManagers as $constructionManager) {
-            $this->authorizationService->setIsEnabled($constructionManager);
+            $this->userService->refreshAuthorization($constructionManager);
             $entityManager->persist($constructionManager);
         }
 

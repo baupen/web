@@ -13,9 +13,11 @@ namespace App\Service\Interfaces;
 
 use App\Entity\ConstructionManager;
 
-interface AuthorizationServiceInterface
+interface UserServiceInterface
 {
-    public function setIsEnabled(ConstructionManager $constructionManager): bool;
+    public function authorize(ConstructionManager $constructionManager): void;
 
-    public function setDefaultValues(ConstructionManager $constructionManager);
+    public function refreshAuthorization(ConstructionManager $constructionManager): void;
+
+    public function setDefaultValues(ConstructionManager $constructionManager): void;
 }

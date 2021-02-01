@@ -15,8 +15,8 @@ register:
   description: 'Lassen Sie uns Ihnen bei der Pendenzverwaltung helfen.'
   back_to_login: 'Zurück zum Login.'
   error:
-    email_invalid: 'Mit dieser E-Mail dürfen Sie sich leider nicht registrieren. Benutzen Sie Ihre Geschäftsemail.'
-    already_registered: 'Sie sind bereits registriert. Loggen Sie sich wie gewohnt ein.'
+    email_disabled: 'Der Account ist deaktiviert.'
+    already_registered: 'Sie sind bereits registriert. Loggen Sie sich wie gewohnt ein (oder setzen Sie das Passwort zurück).'
   success:
     welcome: 'Sie wurden erfolgreich registriert! Prüfen Sie Ihre E-Mails um den Account zu aktivieren.'
   fail:

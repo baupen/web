@@ -47,7 +47,7 @@ trait UserTrait
      *
      * @ORM\Column(type="boolean")
      */
-    private $isEnabled = false;
+    private $isEnabled = true;
 
     /**
      * @return string

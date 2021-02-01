@@ -21,16 +21,14 @@ class TestConstructionManagerFixtures extends Fixture implements OrderedFixtureI
     public const ORDER = 0;
     public const CONSTRUCTION_MANAGER_EMAIL = 'test@mangel.io';
     public const CONSTRUCTION_MANAGER_2_EMAIL = 'test2@mangel.io';
-    public const CONSTRUCTION_MANAGER_TRIAL_EMAIL = 'trial@mangel.io';
-    public const CONSTRUCTION_MANAGER_EXTERNAL_EMAIL = 'external@mangel.io';
+    public const ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL = 'associated@mangel.io';
 
     public function load(ObjectManager $manager)
     {
         $entries = [
-            [self::CONSTRUCTION_MANAGER_EMAIL, 'asdf', 'GivenName', 'FamilyName'],
-            [self::CONSTRUCTION_MANAGER_2_EMAIL, 'asdf', 'GivenName', 'FamilyName'],
-            [self::CONSTRUCTION_MANAGER_TRIAL_EMAIL, 'asdf', 'GivenName', 'FamilyName', true],
-            [self::CONSTRUCTION_MANAGER_EXTERNAL_EMAIL, 'asdf', 'GivenName', 'FamilyName', false, true],
+            [self::CONSTRUCTION_MANAGER_EMAIL, 'asdf', 'GivenName', 'FamilyName', true],
+            [self::CONSTRUCTION_MANAGER_2_EMAIL, 'asdf', 'GivenName', 'FamilyName', true],
+            [self::ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL, 'asdf', 'GivenName', 'FamilyName', false],
         ];
 
         foreach ($entries as $entry) {
@@ -39,8 +37,7 @@ class TestConstructionManagerFixtures extends Fixture implements OrderedFixtureI
             $constructionManager->setPasswordFromPlain($entry[1]);
             $constructionManager->setGivenName($entry[2]);
             $constructionManager->setFamilyName($entry[3]);
-            $constructionManager->setIsTrialAccount($entry[4] ?? false);
-            $constructionManager->setIsExternalAccount($entry[5] ?? false);
+            $constructionManager->setCanAssociateSelf($entry[4]);
             $constructionManager->setIsEnabled(true);
             $manager->persist($constructionManager);
         }

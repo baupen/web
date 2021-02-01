@@ -37,7 +37,7 @@ class MapTest extends ApiTestCase
         $this->assertApiOperationNotAuthorized($client, '/api/maps?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
         $this->assertApiOperationNotAuthorized($client, '/api/maps/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
 
-        $this->loginApiConstructionManagerExternal($client);
+        $this->loginApiAssociatedConstructionManager($client);
         $this->assertApiOperationForbidden($client, '/api/maps', 'POST');
         $this->assertApiOperationForbidden($client, '/api/maps/'.$constructionSite->getMaps()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }

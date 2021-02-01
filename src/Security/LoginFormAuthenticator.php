@@ -22,6 +22,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\DisabledException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -36,7 +37,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     use TargetPathTrait;
 
     public const LOGIN_ROUTE = 'login';
-    public const PASSWORD_UNSET = 'password_unset';
 
     /**
      * @var EntityManagerInterface
@@ -114,6 +114,10 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     {
         if (!$user instanceof ConstructionManager) {
             throw new AuthenticationException();
+        }
+
+        if (!$user->getIsEnabled()) {
+            throw new DisabledException();
         }
 
         if (null === $user->getPassword()) {

@@ -35,18 +35,14 @@ class ConstructionSiteVoter extends ConstructionSiteOwnedEntityVoter
         return [self::CONSTRUCTION_SITE_VIEW];
     }
 
-    protected function getRelatedConstructionManagerAttributes(bool $isLimitedAccount): array
+    protected function getAssociatedConstructionManagerAttributes(): array
     {
-        if ($isLimitedAccount) {
-            return [self::CONSTRUCTION_SITE_VIEW];
-        }
-
         return [self::CONSTRUCTION_SITE_VIEW, self::CONSTRUCTION_SITE_MODIFY];
     }
 
-    protected function getUnrelatedConstructionManagerAttributes(bool $isLimitedAccount): array
+    protected function getDissociatedConstructionManagerAttributes(bool $canAssociateSelf): array
     {
-        if ($isLimitedAccount) {
+        if (!$canAssociateSelf) {
             return [];
         }
 
