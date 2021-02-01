@@ -38,14 +38,10 @@ const validateFields = function (fields, values) {
   }
 }
 
-const dirtyFieldValues = function (fields, values) {
+const fieldValues = function (fields, values) {
   const result = {}
   for (const fieldName in fields) {
     if (Object.prototype.hasOwnProperty.call(fields, fieldName)) {
-      if (!fields[fieldName].dirty) {
-        continue
-      }
-
       result[fieldName] = values[fieldName]
     }
   }
@@ -83,6 +79,6 @@ export {
   validateField,
   validateFields,
   changedFieldValues,
-  dirtyFieldValues,
+  fieldValues,
   resetFields
 }

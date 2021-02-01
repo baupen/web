@@ -88,7 +88,7 @@ class ConstructionSiteTest extends ApiTestCase
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-        $constructionManager = $this->loginApiConstructionManager($client);
+        $this->loginApiConstructionManager($client);
 
         $sample = [
             'name' => 'New',
@@ -97,7 +97,7 @@ class ConstructionSiteTest extends ApiTestCase
             'locality' => 'Allschwil',
         ];
 
-        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/construction_sites', $sample);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/construction_sites', $sample);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/construction_sites', $sample);
 
         $newConstructionSite = json_decode($response->getContent(), true);

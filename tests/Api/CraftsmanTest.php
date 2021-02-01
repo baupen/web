@@ -78,7 +78,7 @@ class CraftsmanTest extends ApiTestCase
             'email' => 'new@craftsman.ch',
         ];
 
-        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen', $sample, $affiliation);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/craftsmen', $sample, $affiliation);
         $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/craftsmen', $affiliation, $sample);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/craftsmen', $sample, $affiliation);
         $this->assertApiCollectionContainsResponseItem($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $response);

@@ -80,7 +80,7 @@ class MapTest extends ApiTestCase
             'parent' => $parentId,
         ];
 
-        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/maps', $sample, $affiliation);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/maps', $sample, $affiliation);
         $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/maps', $affiliation, $sample);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/maps', array_merge($sample, $optionalProperties), $affiliation);
         $this->assertApiCollectionContainsResponseItem($client, '/api/maps?constructionSite='.$constructionSite->getId(), $response);

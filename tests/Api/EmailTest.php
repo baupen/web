@@ -60,7 +60,7 @@ class EmailTest extends ApiTestCase
         ];
 
         $this->loginApiConstructionManager($client);
-        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/emails', $payload);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/emails', $payload);
         $this->assertApiPostStatusCodeSame(Response::HTTP_OK, $client, '/api/emails', $payload);
         $this->assertSingleEmailSentWithBodyContains($craftsman->getAuthenticationToken());
 

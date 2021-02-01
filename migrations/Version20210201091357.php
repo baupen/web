@@ -88,4 +88,9 @@ final class Version20210201091357 extends AbstractMigration
         $this->addSql('DROP TABLE map');
         $this->addSql('DROP TABLE map_file');
     }
+
+    public function isTransactional(): bool
+    {
+        return false;
+    }
 }

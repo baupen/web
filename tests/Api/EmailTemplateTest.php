@@ -61,7 +61,7 @@ class EmailTemplateTest extends ApiTestCase
             'selfBcc' => false,
         ];
 
-        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/email_templates', $sample, $affiliation);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/email_templates', $sample, $affiliation);
         $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/email_templates', $affiliation, $sample);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/email_templates', $sample, $affiliation);
 
