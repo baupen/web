@@ -29,6 +29,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
     use TokenTrait;
+
     /**
      * @var ContextAwareCollectionDataProviderInterface
      */
@@ -82,21 +83,34 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 
     private function ensureConstructionManagerQueryValid(ConstructionManager $manager, string $resourceClass, array $query): void
     {
-        if (ConstructionSite::class === $resourceClass || ConstructionManager::class === $resourceClass) {
+        if ($manager->getCanAssociateSelf() && (ConstructionSite::class === $resourceClass || ConstructionManager::class === $resourceClass)) {
             return;
         }
 
-        if (!isset($query['constructionSite'])) {
-            throw new BadRequestException('constructionSite filter missing.');
+        $ownConstructionSiteIds = [];
+        foreach ($manager->getConstructionSites() as $constructionSite) {
+            $ownConstructionSiteIds[] = $constructionSite->getId();
         }
 
-        foreach ($manager->getConstructionSites() as $constructionSite) {
-            if ($constructionSite->getId() === $query['constructionSite']) {
+        if (!$manager->getCanAssociateSelf()) {
+            if (ConstructionSite::class === $resourceClass) {
+                $this->ensureSearchFilterValid($query, 'constructionManagers.id', $manager->getId());
+
+                return;
+            }
+
+            if (ConstructionManager::class === $resourceClass) {
+                if ($manager->getCanAssociateSelf()) {
+                    return;
+                }
+
+                $this->ensureSearchFilterValid($query, 'constructionSites.id', $ownConstructionSiteIds);
+
                 return;
             }
         }
 
-        throw new BadRequestException('You are not allowed to query a construction site you are not part of.');
+        $this->ensureSearchFilterValid($query, 'constructionSite', $ownConstructionSiteIds);
     }
 
     private function ensureCraftsmanQueryValid(Craftsman $craftsman, string $resourceClass, array $query): void

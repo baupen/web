@@ -46,7 +46,7 @@ class ConstructionSiteTest extends ApiTestCase
         $this->assertApiOperationNotAuthorized($client, '/api/construction_sites', 'GET', 'POST');
         $this->assertApiOperationNotAuthorized($client, '/api/construction_sites/'.$testConstructionSite->getId(), 'GET');
 
-        $this->loginApiAssociatedConstructionManager($client);
+        $this->loginApiDisassociatedConstructionManager($client);
         $this->assertApiOperationForbidden($client, '/api/construction_sites', 'POST');
         $this->assertApiOperationForbidden($client, '/api/construction_sites/'.$testConstructionSite->getId(), 'GET');
     }
@@ -62,12 +62,33 @@ class ConstructionSiteTest extends ApiTestCase
         $this->assertApiResponseFileIsDownloadable($client, $response, 'imageUrl');
     }
 
+    public function testConstructionManagerFilter()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $constructionSiteId = $this->getIriFromItem($constructionSite);
+        $constructionSite = $this->getEmptyConstructionSite();
+        $emptyConstructionSiteId = $this->getIriFromItem($constructionSite);
+
+        // ensure filter is applied
+        $constructionManager = $this->loginApiConstructionManager($client);
+        $this->assertApiCollectionContainsIri($client, '/api/construction_sites?constructionManagers.id='.$constructionManager->getId(), $constructionSiteId);
+        $this->assertApiCollectionNotContainsIri($client, '/api/construction_sites?constructionManagers.id='.$constructionManager->getId(), $emptyConstructionSiteId);
+
+        // ensure filter is enforced for associated construction managers
+        $associatedConstructionManager = $this->loginApiAssociatedConstructionManager($client);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_sites');
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_sites?constructionManagers.id='.$constructionManager->getId());
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_sites?constructionManagers.id='.$associatedConstructionManager->getId());
+    }
+
     public function testPostAndPatch()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
-        $constructionManagerIri = $this->getIriFromItem($constructionManager);
 
         $sample = [
             'name' => 'New',

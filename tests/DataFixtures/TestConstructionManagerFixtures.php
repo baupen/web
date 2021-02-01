@@ -20,15 +20,15 @@ class TestConstructionManagerFixtures extends Fixture implements OrderedFixtureI
 {
     public const ORDER = 0;
     public const CONSTRUCTION_MANAGER_EMAIL = 'test@mangel.io';
-    public const CONSTRUCTION_MANAGER_2_EMAIL = 'test2@mangel.io';
     public const ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL = 'associated@mangel.io';
+    public const DISASSOCIATED_CONSTRUCTION_MANAGER_EMAIL = 'disassociated@mangel.io';
 
     public function load(ObjectManager $manager)
     {
         $entries = [
             [self::CONSTRUCTION_MANAGER_EMAIL, 'asdf', 'GivenName', 'FamilyName', true],
-            [self::CONSTRUCTION_MANAGER_2_EMAIL, 'asdf', 'GivenName', 'FamilyName', true],
             [self::ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL, 'asdf', 'GivenName', 'FamilyName', false],
+            [self::DISASSOCIATED_CONSTRUCTION_MANAGER_EMAIL, 'asdf', 'GivenName', 'FamilyName', false],
         ];
 
         foreach ($entries as $entry) {

@@ -13,7 +13,7 @@ namespace App\Api\Filters;
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
-class RequiredSearchFilter extends SearchFilter
+class ExactSearchFilter extends SearchFilter
 {
     /**
      * {@inheritdoc}
@@ -28,7 +28,6 @@ class RequiredSearchFilter extends SearchFilter
                 continue;
             }
 
-            $entry['required'] = true;
             $filteredDescription[$key] = $entry;
         }
 

@@ -37,7 +37,7 @@ class EmailTemplateTest extends ApiTestCase
         $this->assertApiOperationNotAuthorized($client, '/api/email_templates?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
         $this->assertApiOperationNotAuthorized($client, '/api/email_templates/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
 
-        $this->loginApiAssociatedConstructionManager($client);
+        $this->loginApiDisassociatedConstructionManager($client);
         $this->assertApiOperationForbidden($client, '/api/email_templates', 'POST');
         $this->assertApiOperationForbidden($client, '/api/email_templates/'.$constructionSite->getEmailTemplates()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }

@@ -20,6 +20,7 @@ use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\TestDataTrait;
 use Doctrine\Persistence\ManagerRegistry;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
 
 class ConstructionManagerTest extends ApiTestCase
@@ -81,7 +82,7 @@ class ConstructionManagerTest extends ApiTestCase
         $constructionManager = $this->loginApiConstructionManager($client);
 
         $otherConstructionManagerFields = ['@id', '@type', 'givenName', 'familyName', 'email', 'phone'];
-        $selfConstructionManagerFields = array_merge($otherConstructionManagerFields, ['authenticationToken']);
+        $selfConstructionManagerFields = array_merge($otherConstructionManagerFields, ['authenticationToken', 'canAssociateSelf']);
         sort($otherConstructionManagerFields);
         sort($selfConstructionManagerFields);
 
@@ -103,13 +104,22 @@ class ConstructionManagerTest extends ApiTestCase
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
-        $constructionManager = $this->loginApiConstructionManager($client);
-        $constructionManagerIri = $this->getIriFromItem($constructionManager);
 
         $constructionSite = $this->getTestConstructionSite();
         $emptyConstructionSite = $this->getEmptyConstructionSite();
 
+        $constructionManager = $this->loginApiConstructionManager($client);
+        $constructionManagerIri = $this->getIriFromItem($constructionManager);
+
+        // ensure filter is applied
+        $this->loginApiConstructionManager($client);
         $this->assertApiCollectionContainsIri($client, '/api/construction_managers?constructionSites.id='.$constructionSite->getId(), $constructionManagerIri);
         $this->assertApiCollectionNotContainsIri($client, '/api/construction_managers?constructionSites.id='.$emptyConstructionSite->getId(), $constructionManagerIri);
+
+        // ensure filter is enforced for associated construction managers
+        $this->loginApiAssociatedConstructionManager($client);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers');
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers?constructionSites.id='.$emptyConstructionSite->getId());
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers?constructionSites.id='.$constructionSite->getId());
     }
 }

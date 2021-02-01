@@ -13,7 +13,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Api\Filters\ExactSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AuthenticationTrait;
 use App\Entity\Traits\IdTrait;
@@ -32,7 +32,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     denormalizationContext={"groups"={"construction-manager-write"}},
  *     attributes={"pagination_enabled"=false}
  * )
- * @ApiFilter(SearchFilter::class, properties={"constructionSites.id": "exact"})
+ * @ApiFilter(ExactSearchFilter::class, properties={"constructionSites.id": "exact"})
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
@@ -109,6 +109,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @var bool
      *
+     * @Groups({"construction-manager-read-self"})
      * @ORM\Column(type="boolean", options={"default": false})
      */
     private $canAssociateSelf = false;

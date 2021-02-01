@@ -32,14 +32,19 @@ trait AuthenticationTrait
         return $item->getAuthenticationToken();
     }
 
+    private function loginApiConstructionManager(Client $client): ConstructionManager
+    {
+        return $this->loginConstructionManager($client->getKernelBrowser());
+    }
+
     private function loginApiAssociatedConstructionManager(Client $client): ConstructionManager
     {
         return $this->loginUser($client->getKernelBrowser(), TestConstructionManagerFixtures::ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL);
     }
 
-    private function loginApiConstructionManager(Client $client): ConstructionManager
+    private function loginApiDisassociatedConstructionManager(Client $client): ConstructionManager
     {
-        return $this->loginConstructionManager($client->getKernelBrowser());
+        return $this->loginUser($client->getKernelBrowser(), TestConstructionManagerFixtures::DISASSOCIATED_CONSTRUCTION_MANAGER_EMAIL);
     }
 
     private function loginConstructionManager(KernelBrowser $client): ConstructionManager
