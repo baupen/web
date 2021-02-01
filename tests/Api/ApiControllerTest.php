@@ -42,7 +42,7 @@ class ApiControllerTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
 
-        $constructionManager = $constructionSite->getConstructionManagers()[0];
+        $constructionManager = $this->getTestConstructionManager();
         $constructionManagerIri = $this->getIriFromItem($constructionManager);
         $constructionManagerToken = $this->createApiTokenFor($constructionManager);
 

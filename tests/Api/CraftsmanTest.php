@@ -177,7 +177,7 @@ class CraftsmanTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
-        $constructionManager = $constructionSite->getConstructionManagers()[0];
+        $constructionManager = $this->getTestConstructionManager();
         $craftsman = $constructionSite->getCraftsmen()[0];
 
         $yesterday = new \DateTime('yesterday');

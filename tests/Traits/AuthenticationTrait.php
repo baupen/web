@@ -54,15 +54,7 @@ trait AuthenticationTrait
 
     private function loginUser(KernelBrowser $client, string $email): ConstructionManager
     {
-        /** @var ManagerRegistry $managerRegistry */
-        $managerRegistry = static::$container->get(ManagerRegistry::class);
-        $userRepository = $managerRegistry->getRepository(ConstructionManager::class);
-        $testUser = $userRepository->findOneBy(['email' => $email]);
-
-        if (!$testUser) {
-            throw new \Exception('User for E-Mail '.$email.' not found. Likely you need to load the '.TestConstructionManagerFixtures::class.' fixture first.');
-        }
-
+        $testUser = $this->getConstructionManagerByEmail($email);
         $client->loginUser($testUser);
 
         return $testUser;

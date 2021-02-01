@@ -38,7 +38,7 @@ class ApiAuthenticationTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
         $otherConstructionSite = $this->getEmptyConstructionSite();
 
-        $constructionManager = $constructionSite->getConstructionManagers()[0];
+        $constructionManager = $this->getTestConstructionManager();
         $otherConstructionManager = $this->addConstructionManager($otherConstructionSite);
 
         $craftsman = $constructionSite->getCraftsmen()[0];
@@ -123,7 +123,7 @@ class ApiAuthenticationTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
         $otherConstructionSite = $this->getEmptyConstructionSite();
 
-        $constructionManager = $constructionSite->getConstructionManagers()[0];
+        $constructionManager = $this->getTestConstructionManager();
 
         $craftsman = $constructionSite->getCraftsmen()[0];
         $filter = $constructionSite->getFilters()[0];
@@ -159,7 +159,7 @@ class ApiAuthenticationTest extends ApiTestCase
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
 
         $testConstructionSite = $this->getTestConstructionSite();
-        $constructionManager = $testConstructionSite->getConstructionManagers()[0];
+        $constructionManager = $this->getTestConstructionManager();
 
         $craftsman = $testConstructionSite->getCraftsmen()[0];
         $filter = $testConstructionSite->getFilters()[0];
@@ -259,7 +259,7 @@ class ApiAuthenticationTest extends ApiTestCase
 
         $testConstructionSite = $this->getTestConstructionSite();
         $otherConstructionSite = $this->getEmptyConstructionSite();
-        $constructionManager = $testConstructionSite->getConstructionManagers()[0];
+        $constructionManager = $this->getTestConstructionManager();
 
         $filterToken = $this->createApiTokenFor($constructionManager);
         $this->setApiTokenDefaultHeader($client, $filterToken);
@@ -296,7 +296,7 @@ class ApiAuthenticationTest extends ApiTestCase
         $issue = $craftsman->getIssues()[0];
         $issueIri = $this->getIriFromItem($issue);
 
-        $otherConstructionManager = $this->getTestConstructionSite()->getConstructionManagers()[1];
+        $otherConstructionManager = $this->getTestConstructionManager();
         $otherConstructionManagerId = $this->getIriFromItem($otherConstructionManager);
 
         $forbiddenUpdate = [

@@ -18,6 +18,7 @@ use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Entity\MapFile;
+use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -26,6 +27,16 @@ trait TestDataTrait
     private function getIriFromItem($item)
     {
         return static::$container->get('api_platform.iri_converter')->getIriFromItem($item);
+    }
+
+    private function getTestConstructionManager(): ConstructionManager
+    {
+        return $this->getConstructionManagerByEmail(TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL);
+    }
+
+    private function getTestAssociatedConstructionManager(): ConstructionManager
+    {
+        return $this->getConstructionManagerByEmail(TestConstructionManagerFixtures::ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL);
     }
 
     private function getTestConstructionSite(): ConstructionSite
@@ -45,6 +56,15 @@ trait TestDataTrait
         $constructionSiteRepository = $registry->getRepository(ConstructionSite::class);
 
         return $constructionSiteRepository->findOneBy(['name' => $constructionSiteName]);
+    }
+
+    private function getConstructionManagerByEmail(string $constructionManagerEmail): ConstructionManager
+    {
+        /** @var ManagerRegistry $registry */
+        $registry = static::$container->get(ManagerRegistry::class);
+        $constructionManagerRepository = $registry->getRepository(ConstructionManager::class);
+
+        return $constructionManagerRepository->findOneBy(['email' => $constructionManagerEmail]);
     }
 
     private function addConstructionManager(ConstructionSite $constructionSite, string $email = 'some@mail.com'): ConstructionManager

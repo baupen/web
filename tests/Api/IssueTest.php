@@ -114,7 +114,7 @@ class IssueTest extends ApiTestCase
 
         $otherMap = $this->getTestConstructionSite()->getMaps()[1];
         $otherMapId = $this->getIriFromItem($otherMap);
-        $otherConstructionManager = $this->getTestConstructionSite()->getConstructionManagers()[1];
+        $otherConstructionManager = $this->getTestAssociatedConstructionManager();
         $otherConstructionManagerId = $this->getIriFromItem($otherConstructionManager);
 
         $emptyConstructionSite = $this->getEmptyConstructionSite();
