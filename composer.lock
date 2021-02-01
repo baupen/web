@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2b27b22894d838ccffd97e6047cd290a",
+    "content-hash": "bdf12b67faf95f381f2895cc397d22c9",
     "packages": [
         {
             "name": "api-platform/core",
@@ -7652,21 +7652,22 @@
         },
         {
             "name": "tecnickcom/tcpdf",
-            "version": "6.3.5",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/TCPDF.git",
-                "reference": "19a535eaa7fb1c1cac499109deeb1a7a201b4549"
+                "reference": "456b794f1fae9aee5c151a1ee515aae2aaa619a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/19a535eaa7fb1c1cac499109deeb1a7a201b4549",
-                "reference": "19a535eaa7fb1c1cac499109deeb1a7a201b4549",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/456b794f1fae9aee5c151a1ee515aae2aaa619a3",
+                "reference": "456b794f1fae9aee5c151a1ee515aae2aaa619a3",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "classmap": [
@@ -7712,9 +7713,15 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/TCPDF/issues",
-                "source": "https://github.com/tecnickcom/TCPDF/tree/6.3.5"
+                "source": "https://github.com/tecnickcom/TCPDF/tree/main"
             },
-            "time": "2020-02-14T14:20:12+00:00"
+            "funding": [
+                {
+                    "url": "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tcpdf%20project",
+                    "type": "custom"
+                }
+            ],
+            "time": "2020-12-09T07:15:50+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
@@ -11659,6 +11666,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "tecnickcom/tcpdf": 20,
         "liip/test-fixtures-bundle": 15
     },
     "prefer-stable": false,

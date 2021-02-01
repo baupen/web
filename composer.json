@@ -40,7 +40,7 @@
     "symfony/validator": "^5.1",
     "symfony/webpack-encore-bundle": "^1.7",
     "symfony/yaml": "^5.1",
-    "tecnickcom/tcpdf": "^6.3",
+    "tecnickcom/tcpdf": "dev-main",
     "twig/cssinliner-extra": "^3.0",
     "twig/extra-bundle": "^3.0",
     "twig/inky-extra": "^3.0",

@@ -141,8 +141,12 @@ export default {
   watch: {
     proposedEmailTemplate: function () {
       this.selectedEmailTemplate = this.proposedEmailTemplate
-      this.selfBcc = this.proposedEmailTemplate.selfBcc
     },
+    selectedEmailTemplate: function () {
+      if (this.selectedEmailTemplate) {
+         this.selfBcc = this.selectedEmailTemplate.selfBcc
+      }
+    }
   },
   methods: {
     confirm: function () {

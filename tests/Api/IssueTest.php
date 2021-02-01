@@ -106,7 +106,7 @@ class IssueTest extends ApiTestCase
             'closedBy' => $constructionManagerId,
         ];
 
-        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $sample, $affiliation);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/issues', $sample, $affiliation);
         $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/issues', $affiliation, $sample);
         $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', array_merge($sample, $optionalProperties), $affiliation);
         $this->assertApiCollectionContainsResponseItem($client, '/api/issues?constructionSite='.$constructionSite->getId(), $response);
@@ -227,7 +227,7 @@ class IssueTest extends ApiTestCase
             'positionZoomScale' => 0.7,
         ];
 
-        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/issues', $payload, $basePayload);
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
     }
 
@@ -243,8 +243,8 @@ class IssueTest extends ApiTestCase
         $map = $this->addMap($otherConstructionSite);
         $craftsman = $this->addCraftsman($otherConstructionSite);
 
-        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues', array_merge($basePayload, ['map' => $this->getIriFromItem($map)]));
-        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues', array_merge($basePayload, ['craftsman' => $this->getIriFromItem($craftsman)]));
+        $this->assertApiPostStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/issues', array_merge($basePayload, ['map' => $this->getIriFromItem($map)]));
+        $this->assertApiPostStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/issues', array_merge($basePayload, ['craftsman' => $this->getIriFromItem($craftsman)]));
         $this->assertApiPostPayloadPersisted($client, '/api/issues', [], $basePayload);
     }
 
@@ -262,15 +262,15 @@ class IssueTest extends ApiTestCase
         $time = (new \DateTime('today'))->format('c');
 
         $payload = ['registeredBy' => $constructionManagerId, 'registeredAt' => $time];
-        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/issues', $payload, $basePayload);
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
 
         $payload = ['resolvedBy' => $craftsmanId, 'resolvedAt' => $time];
-        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/issues', $payload, $basePayload);
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
 
         $payload = ['closedBy' => $constructionManagerId, 'closedAt' => $time];
-        $this->assertApiPostPayloadMinimal(Response::HTTP_BAD_REQUEST, $client, '/api/issues', $payload, $basePayload);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/issues', $payload, $basePayload);
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
     }
 
