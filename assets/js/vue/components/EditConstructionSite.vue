@@ -5,7 +5,6 @@
 
 <script>
 
-import { addNonDuplicatesById, api } from '../services/api'
 import ConstructionSiteEditView from './View/ConstructionSiteEditView'
 
 export default {

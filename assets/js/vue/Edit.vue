@@ -1,8 +1,8 @@
 <template>
   <div id="edit">
-    <loading-indicator :spin="!constructionSite">
+    <loading-indicator :spin="loading">
       <edit-construction-site :construction-site="constructionSite" />
-      <edit-construction-managers :construction-site="constructionSite" />
+      <edit-construction-managers :construction-site="constructionSite" :construction-manager="constructionManager" />
       <edit-maps :construction-site="constructionSite" />
       <edit-craftsmen :construction-site="constructionSite" />
     </loading-indicator>
@@ -28,11 +28,25 @@ export default {
   data() {
     return {
       constructionSite: null,
-      constructionManagerIri: null
+      constructionManagerIri: null,
+      constructionManager: null
+    }
+  },
+  computed: {
+    loading: function () {
+      return !this.constructionSite || !this.constructionManager
     }
   },
   mounted() {
     api.setupErrorNotifications(this.$t)
+    api.getMe()
+        .then(me => {
+          this.constructionManagerIri = me.constructionManagerIri
+          api.getById(this.constructionManagerIri).then(constructionManager => {
+            this.constructionManager = constructionManager
+          })
+        })
+
     api.getConstructionSite()
         .then(constructionSite => {
           this.constructionSite = constructionSite

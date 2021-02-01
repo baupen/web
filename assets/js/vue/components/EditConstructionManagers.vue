@@ -4,13 +4,13 @@
   <div class="btn-group">
     <associate-construction-manager-button :construction-site="constructionSite" @added="constructionManagers.push($event)" />
   </div>
-  <construction-manager-association-table class="mt-2" :construction-site="constructionSite" :construction-managers="constructionManagers" @removed="remove" />
+  <construction-manager-association-table class="mt-2" :construction-site="constructionSite" :construction-managers="constructionManagers" :self-construction-manager="constructionManager" @removed="remove" />
 </template>
 
 <script>
 import AddCraftsmanButton from './Action/AddCraftsmanButton'
 import CraftsmenEditTable from './View/CraftsmenEditTable'
-import { api } from '../services/api'
+import { addNonDuplicatesById, api } from '../services/api'
 import ImportCraftsmenButton from './Action/ImportCraftsmenButton'
 import AssociateConstructionManagerButton from './Action/AssociateConstructionManagerButton'
 import ConstructionManagerAssociationTable from './View/ConstructionManagerAssociationTable'
@@ -33,6 +33,10 @@ export default {
       type: Object,
       required: true
     },
+    constructionManager: {
+      type: Object,
+      required: true
+    },
   },
   methods: {
     remove: function (constructionManager) {
@@ -40,9 +44,10 @@ export default {
     }
   },
   mounted () {
+    this.constructionManagers = [this.constructionManager]
     api.getConstructionManagers(this.constructionSite)
-    .then(constructionManagers => {
-      this.constructionManagers = constructionManagers
+    .then(addConstructionManagers => {
+      addNonDuplicatesById(this.constructionManagers, addConstructionManagers)
     })
   }
 }

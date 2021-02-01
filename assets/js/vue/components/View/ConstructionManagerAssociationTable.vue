@@ -17,7 +17,10 @@
       <td>
         <div class="btn-group">
           <span /> <!-- fixes button css -->
-          <dissociate-construction-manager-button :construction-site="constructionSite" :constructionManager="constructionManager" @dissociated="$emit('removed', constructionManager)" />
+          <dissociate-construction-manager-button
+              v-if="constructionManager !== selfConstructionManager"
+              :construction-site="constructionSite" :constructionManager="constructionManager"
+              @dissociated="$emit('removed', constructionManager)" />
         </div>
       </td>
     </tr>
@@ -34,7 +37,7 @@ import { constructionManagerFormatter } from '../../services/formatters'
 import DissociateConstructionManagerButton from '../Action/DissociateConstructionManagerButton'
 
 export default {
-  emits: ["removed"],
+  emits: ['removed'],
   components: {
     DissociateConstructionManagerButton,
     TableBodyLoadingIndicator,
@@ -46,6 +49,10 @@ export default {
       type: Object,
       required: true
     },
+    selfConstructionManager: {
+      type: Object,
+      required: true
+    },
     constructionManagers: {
       type: Array,
       required: false
@@ -54,7 +61,7 @@ export default {
   computed: {
     orderedConstructionManagers: function () {
       if (!this.constructionManagers) {
-        return null;
+        return null
       }
 
       return this.constructionManagers.sort((a, b) => a.email.localeCompare(b.email))
