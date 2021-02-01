@@ -55,7 +55,6 @@ before_script:
 script:
   # backend dependency checks
   - composer validate
-  - php bin/console security:check
 
   # backend linters
   - if [[ "$COVERAGE" == true ]]; then ./vendor/bin/php-cs-fixer fix --diff --dry-run -v; fi
