@@ -9,7 +9,6 @@
 <script>
 
 import { api } from '../../services/api'
-import CraftsmanForm from '../Form/CraftsmanForm'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import ConstructionManagerEmailForm from '../Form/ConstructionManagerEmailForm'
 
@@ -44,7 +43,7 @@ export default {
             const constructionManagers = this.constructionSite.constructionManagers.filter(c => c['@id'] !== constructionManager['@id'])
             constructionManagers.push(constructionManager['@id'])
 
-            api.patch(this.constructionSite, { constructionManagers }, this.$t('action.messages.success.construction_manager_associated'))
+            api.patch(this.constructionSite, { constructionManagers }, this.$t('actions.messages.success.construction_manager_associated'))
                 .then(_ => {
                   this.patching = false
                   this.$emit('added', constructionManager)

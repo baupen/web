@@ -21,6 +21,7 @@ import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import DeleteForm from '../Form/DeleteForm'
 
 export default {
+  emits: ['dissociated'],
   components: {
     DeleteForm,
     ButtonWithModalConfirm
@@ -44,8 +45,9 @@ export default {
     confirm: function () {
       this.patching = true
       const constructionManagers = this.constructionSite.constructionManagers.filter(cm => cm !== this.constructionManager['@id'])
-      api.patch(this.constructionSite, { constructionManagers }, this.$t('action.messages.success.construction_manager_dissociated'))
+      api.patch(this.constructionSite, { constructionManagers }, this.$t('actions.messages.success.construction_manager_dissociated'))
         .then(_ => {
+          this.$emit('dissociated')
           this.patching = false
         })
     }

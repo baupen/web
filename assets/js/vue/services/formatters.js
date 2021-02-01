@@ -1,6 +1,8 @@
 const constructionManagerFormatter = {
   name: function (instance) {
-    return instance.givenName + ' ' + instance.familyName
+    return [instance.givenName, instance.familyName]
+      .filter(e => e)
+      .join(' ')
   }
 }
 

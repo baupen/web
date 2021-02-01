@@ -17,7 +17,7 @@
       <td>
         <div class="btn-group">
           <span /> <!-- fixes button css -->
-          <dissociate-construction-manager-button :construction-site="constructionSite" :constructionManager="constructionManager" />
+          <dissociate-construction-manager-button :construction-site="constructionSite" :constructionManager="constructionManager" @dissociated="$emit('removed', constructionManager)" />
         </div>
       </td>
     </tr>
@@ -34,6 +34,7 @@ import { constructionManagerFormatter } from '../../services/formatters'
 import DissociateConstructionManagerButton from '../Action/DissociateConstructionManagerButton'
 
 export default {
+  emits: ["removed"],
   components: {
     DissociateConstructionManagerButton,
     TableBodyLoadingIndicator,

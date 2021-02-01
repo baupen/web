@@ -173,7 +173,7 @@ const api = {
   getConstructionManagers: function (constructionSite = null) {
     let urlSuffix = ''
     if (constructionSite) {
-      urlSuffix = '?' + this._getConstructionSiteQuery(constructionSite)
+      urlSuffix = '?constructionSites.id=' + iriToId(constructionSite['@id'])
     }
     return this._getHydraCollection('/api/construction_managers' + urlSuffix)
   },
@@ -277,6 +277,9 @@ const api = {
   },
   postMap: function (map, successMessage = null) {
     return this._postRaw('/api/maps', map, successMessage)
+  },
+  postConstructionManager: function (constructionManager, successMessage = null) {
+    return this._postRaw('/api/construction_managers', constructionManager, successMessage)
   },
   postCraftsman: function (craftsman, successMessage = null) {
     return this._postRaw('/api/craftsmen', craftsman, successMessage)

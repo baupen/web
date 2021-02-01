@@ -29,8 +29,8 @@
         "map_saved": "Karte gespeichert",
         "map_file_replaced": "PDF ersetzt",
         "map_removed": "Karte entfernt",
-        "construction_manager_dissociated":"Bauleiter von Baustelle entfernt",
-        "construction_manager_associated":"Bauleiter der Baustelle hinzugefügt"
+        "construction_manager_dissociated": "Bauleiter von Baustelle entfernt",
+        "construction_manager_associated": "Bauleiter der Baustelle hinzugefügt"
       }
     }
   },
@@ -319,6 +319,7 @@
     "_name": "Bauleiter",
     "_plural": "Bauleiter",
     "email": "E-Mail",
+    "name": "Name",
     "_placeholders": {
       "email": "max@musterag.ch"
     }

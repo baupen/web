@@ -36,7 +36,7 @@ export default {
   },
   props: {
     constructionSite: {
-      type: Array,
+      type: Object,
       required: false
     },
     constructionSites: {

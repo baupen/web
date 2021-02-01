@@ -4,7 +4,7 @@
   <div class="btn-group">
     <associate-construction-manager-button :construction-site="constructionSite" @added="constructionManagers.push($event)" />
   </div>
-  <construction-manager-association-table class="mt-2" :construction-site="constructionSite" :construction-managers="constructionManagers" />
+  <construction-manager-association-table class="mt-2" :construction-site="constructionSite" :construction-managers="constructionManagers" @removed="remove" />
 </template>
 
 <script>
@@ -33,6 +33,11 @@ export default {
       type: Object,
       required: true
     },
+  },
+  methods: {
+    remove: function (constructionManager) {
+      this.constructionManagers = this.constructionManagers.filter(cm => cm !== constructionManager)
+    }
   },
   mounted () {
     api.getConstructionManagers(this.constructionSite)
