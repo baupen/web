@@ -20,6 +20,7 @@ use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\TestDataTrait;
 use Doctrine\Persistence\ManagerRegistry;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
+use Symfony\Component\HttpFoundation\Response as StatusCode;
 
 class ConstructionManagerTest extends ApiTestCase
 {
@@ -34,7 +35,6 @@ class ConstructionManagerTest extends ApiTestCase
         $this->loadFixtures([TestConstructionManagerFixtures::class]);
         $testUser = $this->loginApiConstructionManager($client);
 
-        $this->assertApiOperationUnsupported($client, '/api/construction_managers', 'POST');
         $this->assertApiOperationUnsupported($client, '/api/construction_managers/'.$testUser->getId(), 'DELETE', 'PUT', 'PATCH');
     }
 
@@ -48,6 +48,30 @@ class ConstructionManagerTest extends ApiTestCase
         $userRepository = static::$container->get(ManagerRegistry::class)->getRepository(ConstructionManager::class);
         $testUser = $userRepository->findOneByEmail(TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL);
         $this->assertApiOperationNotAuthorized($client, '/api/construction_managers/'.$testUser->getId(), 'GET');
+    }
+
+    public function testPost()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class]);
+
+        // can register
+        $this->assertApiPostStatusCodeSame(StatusCode::HTTP_CREATED, $client, '/api/construction_managers', ['email' => 'test@mail.com']);
+        $this->assertEmailCount(1);
+
+        // can create other accounts if logged in fully
+        $this->loginApiConstructionManager($client);
+        $this->assertApiPostPayloadPersisted($client, '/api/construction_managers', ['email' => 'test2@mail.com']);
+        $this->assertEmailCount(1);
+
+        // can execute on already created accounts without error / reregistration
+        $this->assertApiPostPayloadPersisted($client, '/api/construction_managers', ['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
+        $this->assertEmailCount(0);
+
+        // associated construction manager does not get more info
+        $this->loginApiAssociatedConstructionManager($client);
+        $this->assertApiPostStatusCodeSame(StatusCode::HTTP_BAD_REQUEST, $client, '/api/construction_managers', ['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
+        $this->assertEmailCount(0);
     }
 
     public function testGetAuthenticationToken()

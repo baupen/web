@@ -26,9 +26,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
- *     collectionOperations={"get"},
+ *     collectionOperations={"get", "post"},
  *     itemOperations={"get" = {"security" = "is_granted('CONSTRUCTION_MANAGER_VIEW', object)"}},
  *     normalizationContext={"groups"={"construction-manager-read"}, "skip_null_values"=false},
+ *     denormalizationContext={"groups"={"construction-manager-write"}},
  *     attributes={"pagination_enabled"=false}
  * )
  * @ApiFilter(SearchFilter::class, properties={"constructionSites.id": "exact"})
@@ -56,7 +57,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @var string|null
      *
-     * @Groups({"construction-manager-read"})
+     * @Groups({"construction-manager-read", "construction-manager-write"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $givenName;
@@ -64,7 +65,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @var string|null
      *
-     * @Groups({"construction-manager-read"})
+     * @Groups({"construction-manager-read", "construction-manager-write"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $familyName;
@@ -72,7 +73,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @var string|null
      *
-     * @Groups({"construction-manager-read"})
+     * @Groups({"construction-manager-read", "construction-manager-write"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $phone;
@@ -107,18 +108,10 @@ class ConstructionManager extends BaseEntity implements UserInterface
 
     /**
      * @var bool
-     *           added itself using a trial account offering like in the app to a specific construction site
      *
      * @ORM\Column(type="boolean", options={"default": false})
      */
     private $canAssociateSelf = false;
-
-    /**
-     * @var bool added by other construction managers to specific construction sites
-     *
-     * @ORM\Column(type="boolean", options={"default": false})
-     */
-    private $isExternalAccount = false;
 
     /**
      * constructor.

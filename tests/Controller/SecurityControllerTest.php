@@ -84,11 +84,13 @@ class SecurityControllerTest extends WebTestCase
         $form['only_email[email]'] = $email;
 
         $client->submit($form);
-        $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('erfolgreich', $client->getResponse()->getContent()); // alert to user
-
+        $this->assertResponseRedirects();
         $authenticationHash = $this->getAuthenticationHash($email);
         $this->assertSingleEmailSentWithBodyContains($authenticationHash);
+
+        $client->followRedirect();
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('erfolgreich', $client->getResponse()->getContent()); // alert to user
     }
 
     private function registerConfirm(KernelBrowser $client, string $email, string $password): void

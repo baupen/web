@@ -14,12 +14,11 @@ register:
   description: 'Lasciate aiutarvi con l''amministrazione della pendenza.'
   back_to_login: 'Tornare al login.'
   error:
-    email_invalid: 'Purtroppo non è possibile registrarsi con questa E-mail. Usi la sua E-mail aziendale.'
+    email_disabled: 'Purtroppo non è possibile registrarsi con questa E-mail.'
     already_registered: 'Sei già registrato. Effettuate il login come di consueto.'
+    welcome_email_not_sent: 'L’invio dell’E-mail è fallito. Questo è un errore interno, la preghiamo di contattare il supporto tecnico.'
   success:
     welcome: 'Sei stato registrato con successo! Controlla le tue E-mail per attivare l''account.'
-  fail:
-    welcome_email_not_sent: 'L’invio dell’E-mail è fallito. Questo è un errore interno, la preghiamo di contattare il supporto tecnico.'
 
 register_confirm:
   title: 'Attivare l''account.'

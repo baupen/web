@@ -34,7 +34,7 @@ class ConstructionManagerFixtures extends Fixture implements OrderedFixtureInter
             $constructionManager->setPasswordFromPlain($entry[1]);
             $constructionManager->setGivenName($entry[2]);
             $constructionManager->setFamilyName($entry[3]);
-            $constructionManager->setIsEnabled(true);
+            $constructionManager->setCanAssociateSelf(true);
             $manager->persist($constructionManager);
         }
 

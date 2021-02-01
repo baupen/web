@@ -12,8 +12,10 @@
 namespace App\Service;
 
 use App\Entity\ConstructionManager;
+use App\Service\Interfaces\EmailServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\UserServiceInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 class UserService implements UserServiceInterface
 {
@@ -25,6 +27,16 @@ class UserService implements UserServiceInterface
      * @var PathServiceInterface
      */
     private $pathService;
+
+    /**
+     * @var EmailServiceInterface
+     */
+    private $emailService;
+
+    /**
+     * @var ManagerRegistry
+     */
+    private $registry;
 
     /**
      * @var string[][]|null
@@ -44,9 +56,11 @@ class UserService implements UserServiceInterface
     /**
      * AuthorizationService constructor.
      */
-    public function __construct(PathServiceInterface $pathService, string $authorizationMethod)
+    public function __construct(PathServiceInterface $pathService, ManagerRegistry $manager, EmailServiceInterface $emailService, string $authorizationMethod)
     {
         $this->pathService = $pathService;
+        $this->registry = $manager;
+        $this->emailService = $emailService;
         $this->authorizationMethod = $authorizationMethod;
     }
 
@@ -79,6 +93,41 @@ class UserService implements UserServiceInterface
             default:
                 throw new \Exception('invalid authorization method configured: '.$this->authorizationMethod);
         }
+    }
+
+    public function tryRegister(ConstructionManager $template, ?string &$error = null): bool
+    {
+        /** @var ConstructionManager $existing */
+        $existing = $this->registry->getRepository(ConstructionManager::class)->findOneBy(['email' => $template->getEmail()]);
+
+        if (null !== $existing && $existing->getRegistrationCompleted()) {
+            $error = UserServiceInterface::REGISTRATION_FAIL_ALREADY_REGISTERED;
+
+            return false;
+        }
+
+        if (null !== $existing) {
+            $template = $existing;
+        }
+
+        if (!$template->getIsEnabled()) {
+            $error = UserServiceInterface::REGISTRATION_FAIL_ACCOUNT_DISABLED;
+
+            return false;
+        }
+
+        $template->setAuthenticationHash();
+        $manager = $this->registry->getManager();
+        $manager->persist($template);
+        $manager->flush();
+
+        if (!$this->emailService->sendRegisterConfirmLink($template)) {
+            $error = UserServiceInterface::REGISTRATION_FAIL_EMAIL_NOT_SENT;
+
+            return false;
+        }
+
+        return true;
     }
 
     public function setDefaultValues(ConstructionManager $constructionManager): void

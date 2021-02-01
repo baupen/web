@@ -32,6 +32,7 @@ final class SwaggerDecorator implements NormalizerInterface
         $this->setSummaryResponse($docs);
         $this->addFilePaths($docs);
         $this->configureEmailEndpoint($docs);
+        $this->configureRegistrationEndpoint($docs);
 
         return $docs;
     }
@@ -216,5 +217,15 @@ final class SwaggerDecorator implements NormalizerInterface
             '200' => ['description' => 'E-Mail sent'],
             '503' => ['description' => 'E-Mail server unreachable'],
         ];
+    }
+
+    private function configureRegistrationEndpoint(array &$docs)
+    {
+        $postNode = $docs['paths']['/api/construction_managers']['post'];
+
+        $postNode['description'] = 'If called by construction manager allowed to associate, will never error & return a construction manager body. Else the body is an error identifier or empty. Allows unauthenticated calls.';
+        $postNode['responses']['400'] = ['description' => 'Already registered'];
+        $postNode['responses']['417'] = ['description' => 'Account is deactivated'];
+        $postNode['responses']['503'] = ['description' => 'E-Mail server unreachable'];
     }
 }

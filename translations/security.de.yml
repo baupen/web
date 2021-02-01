@@ -15,12 +15,12 @@ register:
   description: 'Lassen Sie uns Ihnen bei der Pendenzverwaltung helfen.'
   back_to_login: 'Zurück zum Login.'
   error:
-    email_disabled: 'Der Account ist deaktiviert.'
+    account_disabled: 'Der Account ist deaktiviert.'
     already_registered: 'Sie sind bereits registriert. Loggen Sie sich wie gewohnt ein (oder setzen Sie das Passwort zurück).'
+    unknown: 'Etwas ist fehlgeschlagen. Kontaktieren Sie den Support.'
+    welcome_email_not_sent: 'Der E-Mail Versand ist fehlgeschlagen. Dies ist ein interner Fehler, bitte kontaktieren Sie den Support.'
   success:
     welcome: 'Sie wurden erfolgreich registriert! Prüfen Sie Ihre E-Mails um den Account zu aktivieren.'
-  fail:
-    welcome_email_not_sent: 'Der E-Mail Versand ist fehlgeschlagen. Dies ist ein interner Fehler, bitte kontaktieren Sie den Support.'
 
 register_confirm:
   title: 'Account aktivieren.'
