@@ -37,6 +37,7 @@ export default {
     constructionManagerNames: function () {
       return this.constructionSite.constructionManagers
           .map(id => this.constructionManagers.find(manager => manager["@id"] === id))
+          .filter(m => m)
           .map(manager => constructionManagerFormatter.name(manager));
     },
     address: function () {

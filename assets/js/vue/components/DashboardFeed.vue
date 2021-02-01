@@ -43,7 +43,7 @@ export default {
     },
   },
   mounted () {
-    api.getConstructionManagers()
+    api.getConstructionManagers(this.constructionSite)
         .then(constructionManagers => this.constructionManagers = constructionManagers)
 
     api.getCraftsmen(this.constructionSite)

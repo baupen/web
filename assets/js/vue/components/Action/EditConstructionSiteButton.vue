@@ -6,7 +6,7 @@
       <font-awesome-icon :icon="['fal', 'pencil']" />
     </template>
 
-    <construction-site-form :template="constructionSite" :constructionSites="constructionSites" @update="patch = $event" />
+    <construction-site-form :template="constructionSite" @update="patch = $event" />
     <image-form @update="image = $event" />
   </button-with-modal-confirm>
 </template>
@@ -35,11 +35,7 @@ export default {
     constructionSite: {
       type: Object,
       required: true
-    },
-    constructionSites: {
-      type: Array,
-      required: true
-    },
+    }
   },
   computed: {
     canConfirm: function () {

@@ -14,6 +14,14 @@ const displaySuccessMessageIfExists = function (successMessage = null) {
   }
 }
 
+const addNonDuplicatesById = function (originalCollection, addCollection) {
+  addCollection.forEach(add => {
+    if (!originalCollection.find(o => o['@id'] === add['@id'])) {
+      originalCollection.push(add)
+    }
+  })
+}
+
 const api = {
   setupErrorNotifications: function (translator) {
     axios.interceptors.response.use(
@@ -163,6 +171,9 @@ const api = {
       }
     )
   },
+  getById: function (id) {
+    return this._getItem(id)
+  },
   getMe: function () {
     return this._getItem('/api/me')
   },
@@ -177,24 +188,12 @@ const api = {
     }
     return this._getHydraCollection('/api/construction_managers' + urlSuffix)
   },
-  getConstructionSites: function (alreadyLoadedConstructionSite = null) {
-    return new Promise(
-      (resolve) => {
-        this._getHydraCollection('/api/construction_sites')
-          .then(collection => {
-            if (alreadyLoadedConstructionSite) {
-              collection = collection.map(c => {
-                if (c['@id'] !== alreadyLoadedConstructionSite['@id']) {
-                  return c
-                }
-
-                return alreadyLoadedConstructionSite
-              })
-            }
-            resolve(collection)
-          })
-      }
-    )
+  getConstructionSites: function (constructionManager = null) {
+    let urlSuffix = ''
+    if (constructionManager) {
+      urlSuffix = '?constructionManagers.id=' + iriToId(constructionManager['@id'])
+    }
+    return this._getHydraCollection('/api/construction_sites' + urlSuffix)
   },
   getPaginatedIssues: function (constructionSite, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
@@ -304,4 +303,4 @@ const api = {
   }
 }
 
-export { api, iriToId, validImageTypes, validFileTypes }
+export { api, addNonDuplicatesById, iriToId, validImageTypes, validFileTypes }

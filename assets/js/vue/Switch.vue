@@ -2,7 +2,8 @@
   <div id="switch">
     <loading-indicator :spin="isLoading">
       <switch-construction-sites
-          :construction-manager-iri="constructionManagerIri" />
+          :construction-manager-iri="constructionManagerIri"
+          :construction-manager="constructionManager" />
     </loading-indicator>
   </div>
 </template>
@@ -20,17 +21,24 @@ export default {
   data () {
     return {
       constructionManagerIri: null,
+      constructionManager: null,
     }
   },
   computed: {
     isLoading: function () {
-      return !this.constructionManagerIri
+      return !this.constructionManagerIri || !this.constructionManager
     },
   },
   mounted () {
     api.setupErrorNotifications(this.$t)
     api.getMe()
-        .then(me => this.constructionManagerIri = me.constructionManagerIri)
+        .then(me => {
+          this.constructionManagerIri = me.constructionManagerIri
+          api.getById(me.constructionManagerIri)
+              .then(constructionManager => {
+                this.constructionManager = constructionManager
+              })
+        })
   }
 }
 

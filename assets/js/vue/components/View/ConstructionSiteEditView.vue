@@ -1,8 +1,7 @@
 <template>
   <table class="table table-hover border">
     <tbody>
-    <table-body-loading-indicator v-if="!constructionSites" />
-    <tr v-else>
+    <tr>
       <td>
         <image-lightbox :src="constructionSite.imageUrl" :subject="constructionSite.name" />
       </td>
@@ -13,7 +12,7 @@
       <td class="w-minimal">
         <div class="btn-group">
           <span /> <!-- fixes button css -->
-          <edit-construction-site-button :construction-site="constructionSite" :construction-sites="constructionSites" />
+          <edit-construction-site-button :construction-site="constructionSite" />
         </div>
       </td>
     </tr>
@@ -37,10 +36,6 @@ export default {
   props: {
     constructionSite: {
       type: Object,
-      required: false
-    },
-    constructionSites: {
-      type: Array,
       required: false
     }
   },
