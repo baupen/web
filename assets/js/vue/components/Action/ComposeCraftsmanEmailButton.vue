@@ -141,6 +141,7 @@ export default {
   watch: {
     proposedEmailTemplate: function () {
       this.selectedEmailTemplate = this.proposedEmailTemplate
+      this.selfBcc = this.proposedEmailTemplate.selfBcc
     },
   },
   methods: {
@@ -156,8 +157,8 @@ export default {
       }
     },
     sendEmails: function () {
-      this.unsentEmails = this.selectedCraftsmen.map(craftsman => {
-        return Object.assign({ type: this.type }, this.email, { receiver: craftsman['@id'] })
+      this.unsentEmails = this.craftsmen.map(craftsman => {
+        return Object.assign({ type: this.type, selfBcc: this.selfBcc }, this.email, { receiver: craftsman['@id'] })
       })
 
       this.processUnsentEmails()
@@ -185,7 +186,7 @@ export default {
       api.postEmailTemplate(emailTemplate, this.emailTemplates, this.$t('dispatch.messages.success.email_template_saved'))
     },
     saveEmailTemplate: function () {
-      let patch = Object.assign({}, this.email)
+      let patch = Object.assign({selfBcc: this.selfBcc}, this.email)
       if (!this.selectedEmailTemplate.purpose) {
         patch.name = this.email.subject
       }

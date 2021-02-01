@@ -23,7 +23,7 @@
 import InlineFormField from '../Library/FormLayout/InlineFormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
 import FormField from '../Library/FormLayout/FormField'
-import { createField, dirtyFieldValues, requiredRule, validateField, validateFields } from '../../services/validation'
+import { createField, fieldValues, requiredRule, validateField, validateFields } from '../../services/validation'
 
 export default {
   components: {
@@ -81,7 +81,7 @@ export default {
         return null
       }
 
-      return dirtyFieldValues(this.fields, this.email)
+      return fieldValues(this.fields, this.email)
     },
   },
   mounted () {
