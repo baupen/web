@@ -235,7 +235,8 @@
   "edit": {
     "maps_help": "Auf Baukarten werden die Pendenzen platziert.",
     "craftsmen_help": "Unternehmer können mit einem personalisierten Link auf ihre zugeordneten Pendenzen zugreifen, und diese als erledigt markieren.",
-    "construction_managers_help": "Gewähren Sie anderen Bauleitern Zugriff auf diese Baustelle damit diese auch Pendenzen erfassen und verwalten können."
+    "construction_managers_help": "Gewähren Sie anderen Bauleitern Zugriff auf diese Baustelle damit diese auch Pendenzen erfassen und verwalten können.",
+    "construction_managers_disabled": "Die Änderung der Zugriffe ist für Ihren Account deaktiviert."
   },
   "construction_site_edit": {
     "description": "Ändern Sie Adresse & Titelbild.",

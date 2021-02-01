@@ -1,9 +1,12 @@
 <template>
   <h2 class="mt-5">{{ $t('construction_manager._plural') }}</h2>
   <p>{{ $t('edit.construction_managers_help') }}</p>
-  <div class="btn-group">
+  <div class="btn-group" v-if="constructionManager.canAssociateSelf">
     <associate-construction-manager-button :construction-site="constructionSite" @added="constructionManagers.push($event)" />
   </div>
+  <p class="alert alert-info" v-else>
+    {{ $t('edit.construction_managers_disabled') }}
+  </p>
   <construction-manager-association-table class="mt-2" :construction-site="constructionSite" :construction-managers="constructionManagers" :self-construction-manager="constructionManager" @removed="remove" />
 </template>
 

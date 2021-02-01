@@ -15,7 +15,7 @@
         {{ getName(constructionManager) }}
       </td>
       <td>
-        <div class="btn-group">
+        <div class="btn-group" v-if="selfConstructionManager.canAssociateSelf">
           <span /> <!-- fixes button css -->
           <dissociate-construction-manager-button
               v-if="constructionManager !== selfConstructionManager"

@@ -2,9 +2,9 @@
   <div id="edit">
     <loading-indicator :spin="loading">
       <edit-construction-site :construction-site="constructionSite" />
-      <edit-construction-managers :construction-site="constructionSite" :construction-manager="constructionManager" />
       <edit-maps :construction-site="constructionSite" />
       <edit-craftsmen :construction-site="constructionSite" />
+      <edit-construction-managers :construction-site="constructionSite" :construction-manager="constructionManager" />
     </loading-indicator>
   </div>
 </template>
