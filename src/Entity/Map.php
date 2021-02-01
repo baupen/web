@@ -17,7 +17,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Api\Filters\IsDeletedFilter;
-use App\Api\Filters\RequiredSearchFilter;
+use App\Api\Filters\RequiredExactSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
@@ -46,7 +46,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     attributes={"pagination_enabled"=false}
  * )
  * @ApiFilter(SearchFilter::class, properties={"id": "exact"})
- * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
+ * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
  *
@@ -96,7 +96,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     /**
      * @var MapFile|null
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", inversedBy="maps", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\MapFile", mappedBy="map", cascade={"persist"})
      */
     private $file;
 

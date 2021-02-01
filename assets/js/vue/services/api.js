@@ -2,6 +2,7 @@ import axios from 'axios'
 import { displaySuccess, displayError } from './notifiers'
 
 const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
+const validFileTypes = ['application/pdf']
 
 const iriToId = function (iri) {
   return iri.substr(iri.lastIndexOf('/') + 1)
@@ -11,6 +12,14 @@ const displaySuccessMessageIfExists = function (successMessage = null) {
   if (successMessage) {
     displaySuccess(successMessage)
   }
+}
+
+const addNonDuplicatesById = function (originalCollection, addCollection) {
+  addCollection.forEach(add => {
+    if (!originalCollection.find(o => o['@id'] === add['@id'])) {
+      originalCollection.push(add)
+    }
+  })
 }
 
 const api = {
@@ -34,7 +43,6 @@ const api = {
             errorText = response.data['hydra:title'] + ': ' + response.data['hydra:description']
           } else {
             errorText = response.status
-            console.log(response)
             if (response.data && response.data.detail) {
               errorText += ': ' + response.data.detail
             } else if (response.statusText) {
@@ -163,6 +171,9 @@ const api = {
       }
     )
   },
+  getById: function (id) {
+    return this._getItem(id)
+  },
   getMe: function () {
     return this._getItem('/api/me')
   },
@@ -173,12 +184,16 @@ const api = {
   getConstructionManagers: function (constructionSite = null) {
     let urlSuffix = ''
     if (constructionSite) {
-      urlSuffix = '?' + this._getConstructionSiteQuery(constructionSite)
+      urlSuffix = '?constructionSites.id=' + iriToId(constructionSite['@id'])
     }
     return this._getHydraCollection('/api/construction_managers' + urlSuffix)
   },
-  getConstructionSites: function () {
-    return this._getHydraCollection('/api/construction_sites')
+  getConstructionSites: function (constructionManager = null) {
+    let urlSuffix = ''
+    if (constructionManager) {
+      urlSuffix = '?constructionManagers.id=' + iriToId(constructionManager['@id'])
+    }
+    return this._getHydraCollection('/api/construction_sites' + urlSuffix)
   },
   getPaginatedIssues: function (constructionSite, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
@@ -246,9 +261,11 @@ const api = {
       (resolve) => {
         axios.delete(instance['@id'])
           .then(response => {
-            // DELETE request might return entity in answer (for entities with soft-delete)
-            if (response.data['@id'] === instance) {
-              this._writeAllProperties(response.data, instance)
+            if (response.status === 204) {
+              // if isDeleted property exists, this is an entity with soft delete
+              if (Object.prototype.hasOwnProperty.call(instance, 'isDeleted')) {
+                instance.isDeleted = true
+              }
             }
 
             resolve()
@@ -256,6 +273,12 @@ const api = {
           })
       }
     )
+  },
+  postMap: function (map, successMessage = null) {
+    return this._postRaw('/api/maps', map, successMessage)
+  },
+  postConstructionManager: function (constructionManager, successMessage = null) {
+    return this._postRaw('/api/construction_managers', constructionManager, successMessage)
   },
   postCraftsman: function (craftsman, successMessage = null) {
     return this._postRaw('/api/craftsmen', craftsman, successMessage)
@@ -266,12 +289,18 @@ const api = {
   postConstructionSite: function (constructionSite, successMessage = null) {
     return this._postRaw('/api/construction_sites', constructionSite, successMessage)
   },
+  postMapFile: function (map, file, successMessage = null) {
+    return this._postAttachment(map, file, 'file', successMessage)
+  },
   postIssueImage: function (issue, image, successMessage = null) {
     return this._postAttachment(issue, image, 'image', successMessage)
+  },
+  postConstructionSiteImage: function (constructionSite, image, successMessage = null) {
+    return this._postAttachment(constructionSite, image, 'image', successMessage)
   },
   postEmail: function (email) {
     return this._postRaw('/api/emails', email)
   }
 }
 
-export { api, iriToId, validImageTypes }
+export { api, addNonDuplicatesById, iriToId, validImageTypes, validFileTypes }

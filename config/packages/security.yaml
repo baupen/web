@@ -17,9 +17,8 @@ security:
 
     role_hierarchy:
         ROLE_ADMIN: [ROLE_CONSTRUCTION_MANAGER, ROLE_ALLOWED_TO_SWITCH]
-        ROLE_CONSTRUCTION_MANAGER: [ROLE_CONSTRUCTION_SITE_MEMBER, ROLE_USER]
-        ROLE_EXTERNAL_CONSTRUCTION_MANAGER: [ROLE_CONSTRUCTION_SITE_MEMBER, ROLE_USER]
-        ROLE_CONSTRUCTION_SITE_MEMBER: [ROLE_API_USER]
+        ROLE_CONSTRUCTION_MANAGER: [ROLE_ASSOCIATED_CONSTRUCTION_MANAGER]
+        ROLE_ASSOCIATED_CONSTRUCTION_MANAGER: [ROLE_USER, ROLE_API_USER]
 
     firewalls:
         dev:
@@ -59,16 +58,11 @@ security:
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/email, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/help, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/construction_managers, role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [POST] } # API registration
 
         - { path: '^/resolve/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: '^/filtered/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
 
         - { path: ^/api, role: ROLE_API_USER }
-
         - { path: ^/set_locale, role: ROLE_USER }
-
-        - { path: ^/construction_sites, role: ROLE_CONSTRUCTION_SITE_MEMBER }
-        - { path: ^/maps, role: ROLE_CONSTRUCTION_SITE_MEMBER }
-        - { path: ^/issues, role: ROLE_CONSTRUCTION_SITE_MEMBER }
-
-        - { path: ^/, role: ROLE_CONSTRUCTION_MANAGER }
+        - { path: ^/, role: ROLE_ASSOCIATED_CONSTRUCTION_MANAGER }

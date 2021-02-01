@@ -64,7 +64,7 @@ class EmailTest extends ApiTestCase
         $this->assertApiPostStatusCodeSame(Response::HTTP_OK, $client, '/api/emails', $payload);
         $this->assertSingleEmailSentWithBodyContains($craftsman->getAuthenticationToken());
 
-        $this->loginApiConstructionManagerExternal($client);
+        $this->loginApiDisassociatedConstructionManager($client);
         $this->assertApiPostStatusCodeSame(Response::HTTP_FORBIDDEN, $client, '/api/emails', $payload);
     }
 }

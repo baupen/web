@@ -42,7 +42,7 @@
       <td>{{ cws.craftsman.trade }}</td>
       <td>
         {{ cws.craftsman.company }} <br/>
-        {{ cws.craftsman.contactName }}
+        <span class="text-secondary">{{ cws.craftsman.contactName }}</span>
       </td>
 
       <td class="border-left">
@@ -188,7 +188,6 @@ export default {
       } else {
         this.selectedCraftsmen.push(toggleCraftsman)
       }
-      console.log(this.selectedCraftsmen)
     },
     entityListsAreEqual (array1, array2) {
       return arraysAreEqual(array1, array2, (a, b) => {
@@ -199,7 +198,6 @@ export default {
   watch: {
     isLoading: function ()  {
       if (!this.isLoading) {
-        console.log("setting ", this.selectedCraftsmen)
         this.selectedCraftsmen = [...this.craftsmenWithIssuesOpen]
       }
     },

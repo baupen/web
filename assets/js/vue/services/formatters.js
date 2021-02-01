@@ -1,3 +1,11 @@
+const constructionManagerFormatter = {
+  name: function (instance) {
+    return [instance.givenName, instance.familyName]
+      .filter(e => e)
+      .join(' ')
+  }
+}
+
 const constructionSiteFormatter = {
   address: function (instance) {
     const address = []
@@ -14,4 +22,15 @@ const constructionSiteFormatter = {
   }
 }
 
-export { constructionSiteFormatter }
+const mapFormatter = {
+  originalFilename: function (instance) {
+    const currentFilename = instance.fileUrl.substr(instance.fileUrl.lastIndexOf('/') + 1)
+    if (currentFilename.indexOf('_duplicate_') === -1) {
+      return currentFilename
+    }
+
+    return currentFilename.substr(0, currentFilename.indexOf('_duplicate_'))
+  }
+}
+
+export { constructionManagerFormatter, constructionSiteFormatter, mapFormatter }

@@ -1,13 +1,4 @@
 <template>
-  <form-field for-id="company" :label="$t('craftsman.company')">
-    <input id="company" class="form-control" type="text" required="required"
-           :class="{'is-valid': fields.company.dirty && !fields.company.errors.length, 'is-invalid': fields.company.dirty && fields.company.errors.length }"
-           @blur="fields.company.dirty = true"
-           v-model="craftsman.company"
-           @input="validate('company')">
-    <invalid-feedback :errors="fields.company.errors" />
-  </form-field>
-
   <form-field for-id="trade" :label="$t('craftsman.trade')">
     <input id="trade" class="form-control" type="text" required="required"
            :class="{'is-valid': fields.trade.dirty && !fields.trade.errors.length, 'is-invalid': fields.trade.dirty && fields.trade.errors.length }"
@@ -18,25 +9,34 @@
   </form-field>
 
   <hr />
+  <form-field for-id="company" :label="$t('craftsman.company')">
+    <input id="company" class="form-control" type="text" required="required"
+           :class="{'is-valid': fields.company.dirty && !fields.company.errors.length, 'is-invalid': fields.company.dirty && fields.company.errors.length }"
+           @blur="fields.company.dirty = true"
+           v-model="craftsman.company"
+           @input="validate('company')">
+    <invalid-feedback :errors="fields.company.errors" />
+  </form-field>
 
-  <div class="form-row">
-    <form-field class="col-md-6" for-id="contactName" :label="$t('craftsman.contact_name')">
-      <input id="contactName" class="form-control" type="text" required="required"
-             :class="{'is-valid': fields.contactName.dirty && !fields.contactName.errors.length, 'is-invalid': fields.contactName.dirty && fields.contactName.errors.length }"
-             @blur="fields.contactName.dirty = true"
-             v-model="craftsman.contactName"
-             @input="validate('contactName')">
-      <invalid-feedback :errors="fields.contactName.errors" />
-    </form-field>
-    <form-field class="col-md-6" for-id="email" :label="$t('craftsman.email')">
-      <input id="email" class="form-control" type="text" required="required"
-             :class="{'is-valid': fields.email.dirty && !fields.email.errors.length, 'is-invalid': fields.email.dirty && fields.email.errors.length }"
-             @blur="fields.email.dirty = true"
-             v-model="craftsman.email"
-             @input="validate('email')">
-      <invalid-feedback :errors="fields.email.errors" />
-    </form-field>
-  </div>
+  <form-field for-id="contactName" :label="$t('craftsman.contact_name')">
+    <input id="contactName" class="form-control" type="text" required="required"
+           :class="{'is-valid': fields.contactName.dirty && !fields.contactName.errors.length, 'is-invalid': fields.contactName.dirty && fields.contactName.errors.length }"
+           @blur="fields.contactName.dirty = true"
+           v-model="craftsman.contactName"
+           @input="validate('contactName')">
+    <invalid-feedback :errors="fields.contactName.errors" />
+  </form-field>
+
+  <hr />
+
+  <form-field for-id="email" :label="$t('craftsman.email')">
+    <input id="email" class="form-control" type="text" required="required"
+           :class="{'is-valid': fields.email.dirty && !fields.email.errors.length, 'is-invalid': fields.email.dirty && fields.email.errors.length }"
+           @blur="fields.email.dirty = true"
+           v-model="craftsman.email"
+           @input="validate('email')">
+    <invalid-feedback :errors="fields.email.errors" />
+  </form-field>
 
   <form-field for-id="emailCCs" :label="$t('craftsman.emailCCs')" :required="false">
         <textarea id="emailCCs" class="form-control"
@@ -140,7 +140,6 @@ export default {
     }
   },
   mounted () {
-    console.log('mounted')
     this.setCraftsmanFromTemplate()
     validateFields(this.fields, this.craftsman)
 

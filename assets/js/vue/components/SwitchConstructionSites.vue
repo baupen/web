@@ -11,24 +11,30 @@
       />
 
       <div v-else class="alert alert-info">
-        {{ $t('switch.messages.info.activate_construction_site') }}
+        <template v-if="canAssociateSelf">
+          {{ $t('switch.messages.info.activate_construction_site') }}
+        </template>
+        <template v-else>
+          {{ $t('switch.messages.info.no_construction_site_associated') }}
+        </template>
       </div>
     </loading-indicator-secondary>
   </div>
-  <h2>{{ $t('switch.all') }}</h2>
-  <p>{{ $t('switch.all_help') }}</p>
-  <add-construction-site-button
-      class="mb-2"
-      :disabled="isLoading"
-      :construction-manager-iri="constructionManagerIri"
-      :construction-sites="constructionSites"
-      @added="constructionSites.push($event)"
-  />
-  <construction-sites-participation-table
-      :is-loading="isLoading"
-      :construction-sites="constructionSites"
-      :construction-manager-iri="constructionManagerIri"
-  />
+  <template v-if="canAssociateSelf">
+    <h2>{{ $t('switch.all') }}</h2>
+    <p>{{ $t('switch.all_help') }}</p>
+    <add-construction-site-button
+        class="mb-2"
+        :construction-manager-iri="constructionManagerIri"
+        :construction-sites="constructionSites"
+        @added="constructionSites.push($event)"
+    />
+    <construction-sites-participation-table
+        :is-loading="isLoading"
+        :construction-sites="constructionSites"
+        :construction-manager-iri="constructionManagerIri"
+    />
+  </template>
 </template>
 
 <script>
@@ -36,7 +42,7 @@ import ConstructionSitesEnterMasonry from './View/ConstructionSitesEnterMasonry'
 import ConstructionSitesParticipationTable from './View/ConstructionSitesParticipationTable'
 import AddConstructionSiteButton from './Action/AddConstructionSiteButton'
 import LoadingIndicator from './Library/View/LoadingIndicator'
-import { api } from '../services/api'
+import { addNonDuplicatesById, api } from '../services/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 
 export default {
@@ -57,6 +63,10 @@ export default {
     constructionManagerIri: {
       type: String,
       required: true
+    },
+    constructionManager: {
+      type: Object,
+      required: true
     }
   },
   computed: {
@@ -68,13 +78,33 @@ export default {
     },
     constructionSiteList: function () {
       return this.constructionSites.filter(constructionSite => !constructionSite.isDeleted)
+    },
+    canAssociateSelf: function () {
+      return this.constructionManager.canAssociateSelf
     }
   },
   mounted () {
-    api.getConstructionSites()
-        .then(constructionSites => this.constructionSites = constructionSites)
-    api.getConstructionManagers()
-        .then(constructionManagers => this.constructionManagers = constructionManagers)
+    this.constructionManagers = [this.constructionManager]
+    if (this.canAssociateSelf) {
+      api.getConstructionSites()
+          .then(constructionSites => this.constructionSites = constructionSites)
+      api.getConstructionManagers()
+          .then(addConstructionManagers => {
+            addNonDuplicatesById(this.constructionManagers, addConstructionManagers)
+      })
+    } else {
+      this.constructionManagers = [this.constructionManager]
+      api.getConstructionSites(this.constructionManager)
+          .then(constructionSites => {
+            this.constructionSites = constructionSites
+
+            this.constructionSites.forEach(constructionSite => {
+              api.getConstructionManagers(constructionSite).then(addConstructionManagers => {
+                addNonDuplicatesById(this.constructionManagers, addConstructionManagers)
+              })
+            })
+          })
+    }
   }
 }
 </script>

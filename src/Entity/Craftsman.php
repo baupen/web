@@ -16,7 +16,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Api\Filters\IsDeletedFilter;
-use App\Api\Filters\RequiredSearchFilter;
+use App\Api\Filters\RequiredExactSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\AuthenticationTrait;
@@ -55,7 +55,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     attributes={"pagination_enabled"=false}
  * )
  * @ApiFilter(SearchFilter::class, properties={"id": "exact", "trade": "exact"})
- * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
+ * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
  *

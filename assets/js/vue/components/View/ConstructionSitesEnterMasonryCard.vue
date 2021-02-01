@@ -20,7 +20,7 @@
 
 <script>
 
-import { constructionSiteFormatter } from '../../services/formatters'
+import { constructionSiteFormatter, constructionManagerFormatter } from '../../services/formatters'
 
 export default {
   props: {
@@ -37,7 +37,8 @@ export default {
     constructionManagerNames: function () {
       return this.constructionSite.constructionManagers
           .map(id => this.constructionManagers.find(manager => manager["@id"] === id))
-          .map(manager => manager.givenName + " " + manager.familyName);
+          .filter(m => m)
+          .map(manager => constructionManagerFormatter.name(manager));
     },
     address: function () {
       return constructionSiteFormatter.address(this.constructionSite)

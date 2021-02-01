@@ -6,7 +6,12 @@
          @drop.stop.prevent="fileDropped"
     >
       <label class="form-control-dropzone-hint">
-        {{ help }}
+        <span>
+          {{ help }}
+          <span v-if="lastInvalidFileType && isDropTarget" class="text-danger d-block text-center">
+            {{lastInvalidFileType}}
+          </span>
+        </span>
         <input type="file" :id="id" @change="$emit('input', $event.target.files)"/>
       </label>
     </div>
@@ -20,7 +25,8 @@ export default {
     return {
       isDropTarget: false,
       validDropDetected: false,
-      invalidDropDetected: false
+      invalidDropDetected: false,
+      lastInvalidFileType: null
     }
   },
   props: {
@@ -45,10 +51,16 @@ export default {
         return
       }
 
-      const result = Array.from(files).every(file => this.validFileTypes.some(e => file.type === e))
+      let lastInvalidFileType = null;
+      Array.from(files).forEach(file => {
+        if (!this.validFileTypes.some(e => file.type === e)) {
+          lastInvalidFileType = file.type
+        }
+      })
 
-      this.validDropDetected = result
-      this.invalidDropDetected = !result
+      this.validDropDetected = !lastInvalidFileType
+      this.invalidDropDetected = !this.validDropDetected
+      this.lastInvalidFileType = lastInvalidFileType
     },
     fileDropped: function (event) {
       this.isDropTarget = false

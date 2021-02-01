@@ -13,7 +13,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Api\Filters\ExactSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AuthenticationTrait;
 use App\Entity\Traits\IdTrait;
@@ -26,12 +26,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
- *     collectionOperations={"get"},
+ *     collectionOperations={"get", "post"},
  *     itemOperations={"get" = {"security" = "is_granted('CONSTRUCTION_MANAGER_VIEW', object)"}},
  *     normalizationContext={"groups"={"construction-manager-read"}, "skip_null_values"=false},
+ *     denormalizationContext={"groups"={"construction-manager-write"}},
  *     attributes={"pagination_enabled"=false}
  * )
- * @ApiFilter(SearchFilter::class, properties={"constructionSites.id": "exact"})
+ * @ApiFilter(ExactSearchFilter::class, properties={"constructionSites.id": "exact"})
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
@@ -42,19 +43,21 @@ class ConstructionManager extends BaseEntity implements UserInterface
     use AuthenticationTrait;
     use UserTrait;
 
+    public const AUTHORIZATION_AUTHORITY_WHITELIST = 'AUTHORIZATION_AUTHORITY_WHITELIST';
+
     // can use any features & impersonate users
     public const ROLE_ADMIN = 'ROLE_ADMIN';
 
     // can use any features
     public const ROLE_CONSTRUCTION_MANAGER = 'ROLE_CONSTRUCTION_MANAGER';
 
-    // can not see other construction sites
-    public const ROLE_EXTERNAL_CONSTRUCTION_MANAGER = 'ROLE_EXTERNAL_CONSTRUCTION_MANAGER';
+    // can not see data related to other construction sites (including the other construction sites itself)
+    public const ROLE_ASSOCIATED_CONSTRUCTION_MANAGER = 'ROLE_ASSOCIATED_CONSTRUCTION_MANAGER';
 
     /**
      * @var string|null
      *
-     * @Groups({"construction-manager-read"})
+     * @Groups({"construction-manager-read", "construction-manager-write"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $givenName;
@@ -62,7 +65,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @var string|null
      *
-     * @Groups({"construction-manager-read"})
+     * @Groups({"construction-manager-read", "construction-manager-write"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $familyName;
@@ -70,7 +73,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @var string|null
      *
-     * @Groups({"construction-manager-read"})
+     * @Groups({"construction-manager-read", "construction-manager-write"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $phone;
@@ -90,6 +93,13 @@ class ConstructionManager extends BaseEntity implements UserInterface
     private $locale = 'de';
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $authorizationAuthority;
+
+    /**
      * @var bool
      *
      * @ORM\Column(type="boolean", options={"default": false})
@@ -98,19 +108,11 @@ class ConstructionManager extends BaseEntity implements UserInterface
 
     /**
      * @var bool
-     *           added itself using a trial account offering like in the app to a specific construction site
      *
+     * @Groups({"construction-manager-read-self"})
      * @ORM\Column(type="boolean", options={"default": false})
      */
-    private $isTrialAccount = false;
-
-    /**
-     * @var bool
-     *           added by other construction managers to specific construction sites
-     *
-     * @ORM\Column(type="boolean", options={"default": false})
-     */
-    private $isExternalAccount = false;
+    private $canAssociateSelf = false;
 
     /**
      * constructor.
@@ -188,11 +190,11 @@ class ConstructionManager extends BaseEntity implements UserInterface
             return [self::ROLE_ADMIN];
         }
 
-        if (!$this->getIsTrialAccount() && !$this->getIsExternalAccount()) {
-            return [self::ROLE_CONSTRUCTION_MANAGER];
+        if (!$this->getCanAssociateSelf()) {
+            return [self::ROLE_ASSOCIATED_CONSTRUCTION_MANAGER];
         }
 
-        return [self::ROLE_EXTERNAL_CONSTRUCTION_MANAGER];
+        return [self::ROLE_CONSTRUCTION_MANAGER];
     }
 
     public function getLocale(): string
@@ -205,19 +207,24 @@ class ConstructionManager extends BaseEntity implements UserInterface
         $this->locale = $locale;
     }
 
-    public function getIsTrialAccount(): bool
+    public function getAuthorizationAuthority(): ?string
     {
-        return $this->isTrialAccount;
+        return $this->authorizationAuthority;
     }
 
-    public function setIsTrialAccount(bool $isTrialAccount): void
+    public function setAuthorizationAuthority(?string $authorizationAuthority): void
     {
-        $this->isTrialAccount = $isTrialAccount;
+        $this->authorizationAuthority = $authorizationAuthority;
     }
 
-    public function getIsExternalAccount(): bool
+    public function getCanAssociateSelf(): bool
     {
-        return $this->isExternalAccount;
+        return $this->canAssociateSelf;
+    }
+
+    public function setCanAssociateSelf(bool $canAssociateSelf): void
+    {
+        $this->canAssociateSelf = $canAssociateSelf;
     }
 
     public function setIsExternalAccount(bool $isExternalAccount): void

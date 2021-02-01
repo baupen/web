@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     canConfirm: function () {
-      return this.post
+      return !!this.post
     }
   },
   methods: {

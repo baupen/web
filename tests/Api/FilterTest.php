@@ -38,7 +38,7 @@ class FilterTest extends ApiTestCase
         $someId = $constructionSite->getId();
         $this->assertApiOperationNotAuthorized($client, '/api/filters/'.$someId, 'GET');
 
-        $this->loginApiConstructionManagerExternal($client);
+        $this->loginApiDisassociatedConstructionManager($client);
         $this->assertApiOperationForbidden($client, '/api/filters', 'POST');
         $this->assertApiOperationForbidden($client, '/api/filters/'.$constructionSite->getFilters()[0]->getId(), 'GET');
     }

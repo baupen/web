@@ -37,6 +37,10 @@
   justify-content: center;
 }
 
+.form-control-dropzone-hint * {
+  pointer-events: none;
+}
+
 .form-control-dropzone-hint > input {
   display: none;
 }

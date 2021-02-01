@@ -42,7 +42,7 @@ trait AssertApiResponseTrait
         }
     }
 
-    private function assertApiResponseFileIsDownloadable(Client $client, Response $response, string $fileUrlProperty, string $mode = ResponseHeaderBag::DISPOSITION_INLINE): ?string
+    private function assertApiResponseFileIsDownloadable(Client $client, Response $response, string $fileUrlProperty, string $mode = ResponseHeaderBag::DISPOSITION_INLINE, string $suffix = ''): ?string
     {
         $content = $response->getContent();
         $hydraPayload = json_decode($content, true);
@@ -54,6 +54,8 @@ trait AssertApiResponseTrait
                     continue;
                 }
 
+                $url .= $suffix;
+
                 $response = $this->assertApiGetOk($client, $url);
                 $this->assertStringStartsWith($mode, $response->getHeaders()['content-disposition'][0]);
 
@@ -61,12 +63,8 @@ trait AssertApiResponseTrait
             }
 
             $this->fail('no member has a the property '.$fileUrlProperty.' set, hence can not assert this url is valid.');
-
-            return null;
         }
 
         $this->fail('only collections support this assertion.');
-
-        return null;
     }
 }

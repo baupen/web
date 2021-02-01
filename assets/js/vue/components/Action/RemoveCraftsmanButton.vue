@@ -7,6 +7,10 @@
       <font-awesome-icon :icon="['fal', 'trash']" />
     </template>
 
+    <p v-if="issueSummary">
+      {{$t("issue._plural")}}: <issue-summary-badges :summary="issueSummary" />
+    </p>
+
     <p class="alert alert-info">
       {{ $t('actions.remove_craftsman_help') }}
     </p>
@@ -21,13 +25,14 @@
 import { api } from '../../services/api'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import DeleteForm from '../Form/DeleteForm'
+import IssueSummaryBadges from '../View/IssueSummaryBadges'
 
 export default {
   components: {
+    IssueSummaryBadges,
     DeleteForm,
     ButtonWithModalConfirm
   },
-  emits: ['removed'],
   data () {
     return {
       issueSummary: null,
@@ -48,9 +53,6 @@ export default {
   methods: {
     confirm: function () {
       api.delete(this.craftsman, this.$t('actions.messages.success.craftsman_removed'))
-          .then(_ => {
-            this.$emit('removed', this.craftsman)
-          })
 
       // reset state for next display
       this.issueSummary = null

@@ -48,7 +48,7 @@
 <script>
 import debounce from 'lodash.debounce'
 import { levenshteinDistance } from '../../services/algorithms'
-import { createField, requiredRule, validateField, validateFields } from '../../services/validation'
+import { changedFieldValues, createField, requiredRule, validateField, validateFields } from '../../services/validation'
 import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
 
@@ -60,6 +60,7 @@ export default {
   emits: ['update'],
   data () {
     return {
+      mounted: false,
       fields: {
         name: createField(requiredRule()),
         streetAddress: createField(requiredRule()),
@@ -85,8 +86,16 @@ export default {
     }
   },
   watch: {
-    isValid: function () {
-      this.emitUpdate()
+    updatePayload: {
+      deep: true,
+      handler: function () {
+        if (this.mounted) {
+          this.$emit('update', this.updatePayload)
+        }
+      }
+    },
+    template: function () {
+      this.setConstructionSiteFromTemplate()
     },
     'constructionSite.name': debounce(function (newVal) {
       this.determineSimilarConstructionSiteNames(newVal)
@@ -96,17 +105,19 @@ export default {
     validate: function (field) {
       validateField(this.fields[field], this.constructionSite[field])
     },
-    emitUpdate: function () {
-      this.$emit('update', this.isValid ? this.constructionSite : null)
+    setConstructionSiteFromTemplate: function () {
+      if (this.template) {
+        this.constructionSite = Object.assign({}, this.template)
+      }
     },
     determineSimilarConstructionSiteNames: function (newName) {
-      if (!newName || newName.length < 4 || !this.constructionSites) {
+      if (!newName || newName.length < 4 || !this.constructionSitesWithoutTemplate) {
         return this.similarConstructionSiteNames = []
       }
 
       const maxDistanceForWarning = Math.sqrt(newName.length)
 
-      let similarConstructionSites = this.constructionSites.map(constructionSite => ({
+      let similarConstructionSites = this.constructionSitesWithoutTemplate.map(constructionSite => ({
         constructionSite,
         distance: levenshteinDistance(newName.toLowerCase(), constructionSite.name.toLowerCase())
       }))
@@ -119,15 +130,26 @@ export default {
     },
   },
   computed: {
-    isValid: function () {
-      return this.fields.name.errors.length === 0 &&
-          this.fields.streetAddress.errors.length === 0 &&
-          this.fields.postalCode.errors.length === 0 &&
-          this.fields.locality.errors.length === 0
+    constructionSitesWithoutTemplate: function () {
+      return this.constructionSites.filter(c => c !== this.template)
+    },
+    updatePayload: function () {
+      if (this.fields.name.errors.length ||
+          this.fields.streetAddress.errors.length ||
+          this.fields.postalCode.errors.length ||
+          this.fields.locality.errors.length) {
+        return null
+      }
+
+      return  changedFieldValues(this.fields, this.constructionSite, this.template)
     }
   },
   mounted () {
+    this.setConstructionSiteFromTemplate()
     validateFields(this.fields, this.constructionSite)
+
+    this.mounted = true
+    this.$emit('update', this.updatePayload)
   }
 }
 </script>

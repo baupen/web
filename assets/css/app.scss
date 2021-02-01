@@ -59,6 +59,10 @@ body {
   width: 1%;
 }
 
+.h-btn {
+  height: calc(2em + 2px);
+}
+
 .w-thumbnail {
   width: calc(100px + 1.5rem);
 }
@@ -91,4 +95,8 @@ select:required {
 
 .nav-link.active {
   cursor: default;
+}
+
+.white-space-pre-line {
+  white-space: pre-line;
 }

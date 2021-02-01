@@ -38,12 +38,12 @@ abstract class ConstructionSiteRelatedEntityVoter extends Voter
         return [];
     }
 
-    protected function getRelatedConstructionManagerAttributes(bool $isLimitedAccount): array
+    protected function getAssociatedConstructionManagerAttributes(): array
     {
         return $this->getAllAttributes();
     }
 
-    protected function getUnrelatedConstructionManagerAttributes(bool $isLimitedAccount): array
+    protected function getDissociatedConstructionManagerAttributes(bool $canAssociateSelf): array
     {
         return [];
     }
@@ -95,12 +95,13 @@ abstract class ConstructionSiteRelatedEntityVoter extends Voter
         $constructionManager = $this->tryGetConstructionManager($token);
         if (null !== $constructionManager) {
             $isConstructionManagerRelatedWithSubject = $this->isConstructionManagerRelated($constructionManager, $subject);
-            $isLimitedAccount = $constructionManager->getIsExternalAccount() || $constructionManager->getIsTrialAccount();
-            if ($isConstructionManagerRelatedWithSubject && in_array($attribute, $this->getRelatedConstructionManagerAttributes($isLimitedAccount))) {
+            if ($isConstructionManagerRelatedWithSubject && in_array($attribute, $this->getAssociatedConstructionManagerAttributes())) {
                 return true;
             }
 
-            return in_array($attribute, $this->getUnrelatedConstructionManagerAttributes($isLimitedAccount));
+            $canAssociateSelf = $constructionManager->getCanAssociateSelf();
+
+            return in_array($attribute, $this->getDissociatedConstructionManagerAttributes($canAssociateSelf));
         }
 
         $craftsman = $this->tryGetCraftsman($token);

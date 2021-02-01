@@ -21,7 +21,7 @@ trait UserTrait
     /**
      * @var string
      *
-     * @Groups({"construction-manager-read"})
+     * @Groups({"construction-manager-read", "construction-manager-write"})
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\NotBlank()
      * @Assert\Email()
@@ -47,7 +47,7 @@ trait UserTrait
      *
      * @ORM\Column(type="boolean")
      */
-    private $isEnabled = false;
+    private $isEnabled = true;
 
     /**
      * @return string

@@ -19,7 +19,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Api\Filters\IsDeletedFilter;
-use App\Api\Filters\RequiredSearchFilter;
+use App\Api\Filters\RequiredExactSearchFilter;
 use App\Api\Filters\StateFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
@@ -61,7 +61,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *     denormalizationContext={"groups"={}},
  *     normalizationContext={"groups"={"issue-read"}, "skip_null_values"=false}
  * )
- * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
+ * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt", "createdAt", "registeredAt", "resolvedAt", "closedAt", "deadline"})
  * @ApiFilter(BooleanFilter::class, properties={"isMarked", "wasAddedWithClient"})

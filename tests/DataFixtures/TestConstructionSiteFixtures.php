@@ -47,11 +47,11 @@ class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInte
         $manager->persist($constructionSite);
         $manager->persist($constructionManager);
 
-        /** @var ConstructionManager $constructionManager2 */
-        $constructionManager2 = $constructionManagerRepository->findOneBy(['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_2_EMAIL]);
-        $constructionSite->getConstructionManagers()->add($constructionManager2);
-        $constructionManager2->getConstructionSites()->add($constructionSite);
-        $manager->persist($constructionManager2);
+        /** @var ConstructionManager $associatedConstructionManager */
+        $associatedConstructionManager = $constructionManagerRepository->findOneBy(['email' => TestConstructionManagerFixtures::ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL]);
+        $constructionSite->getConstructionManagers()->add($associatedConstructionManager);
+        $associatedConstructionManager->getConstructionSites()->add($constructionSite);
+        $manager->persist($associatedConstructionManager);
 
         $constructionSite = $this->createEmptyConstructionSite();
         $manager->persist($constructionSite);

@@ -37,7 +37,7 @@ class MapTest extends ApiTestCase
         $this->assertApiOperationNotAuthorized($client, '/api/maps?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
         $this->assertApiOperationNotAuthorized($client, '/api/maps/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
 
-        $this->loginApiConstructionManagerExternal($client);
+        $this->loginApiDisassociatedConstructionManager($client);
         $this->assertApiOperationForbidden($client, '/api/maps', 'POST');
         $this->assertApiOperationForbidden($client, '/api/maps/'.$constructionSite->getMaps()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }
@@ -54,6 +54,7 @@ class MapTest extends ApiTestCase
         $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/maps?constructionSite='.$constructionSite->getId());
         $this->assertApiResponseFieldSubset($response, 'name', 'parent', 'fileUrl', 'isDeleted', 'lastChangedAt');
         $this->assertApiResponseFileIsDownloadable($client, $response, 'fileUrl', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        $this->assertApiResponseFileIsDownloadable($client, $response, 'fileUrl', ResponseHeaderBag::DISPOSITION_INLINE, '/render.jpg');
     }
 
     public function testPostPatchAndDelete()

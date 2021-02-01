@@ -35,6 +35,8 @@ services:
         tags: ['controller.service_arguments']
 
     # ApiPlatform services
+    App\Api\DataPersister\ConstructionManagerDataPersister:
+        bind: { $decoratedDataPersister: '@api_platform.doctrine.orm.data_persister' }
     App\Api\DataPersister\ConstructionSiteDataPersister:
         bind: { $decoratedDataPersister: '@api_platform.doctrine.orm.data_persister' }
     App\Api\DataPersister\IssueDataPersister:

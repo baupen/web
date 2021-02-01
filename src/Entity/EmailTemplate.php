@@ -13,7 +13,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Api\Filters\RequiredSearchFilter;
+use App\Api\Filters\RequiredExactSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     denormalizationContext={"groups"={"email-template-edit"}},
  *     attributes={"pagination_enabled"=false}
  * )
- * @ApiFilter(RequiredSearchFilter::class, properties={"constructionSite"})
+ * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
  *
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks

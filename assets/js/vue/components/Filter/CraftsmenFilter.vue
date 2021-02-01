@@ -15,8 +15,8 @@
       <custom-checkbox
           class="mb-1"
           v-for="craftsman in craftsmen" :key="craftsman['@id']"
-          :for-id="'filter-craftsman-' + craftsman['@id']" :label="craftsman.company"
-          :secondary-label="craftsman.trade">
+          :for-id="'filter-craftsman-' + craftsman['@id']" :label="craftsman.trade"
+          :secondary-label="craftsman.company">
         <input
             class="custom-control-input" type="checkbox" :id="'filter-craftsman-' + craftsman['@id']"
             v-model="selectedCraftsmen"

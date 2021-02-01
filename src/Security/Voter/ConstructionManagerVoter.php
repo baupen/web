@@ -59,9 +59,9 @@ class ConstructionManagerVoter extends ConstructionSiteRelatedEntityVoter
         return [self::CONSTRUCTION_MANAGER_VIEW];
     }
 
-    protected function getUnrelatedConstructionManagerAttributes(bool $isLimitedAccount): array
+    protected function getDissociatedConstructionManagerAttributes(bool $canAssociateSelf): array
     {
-        if ($isLimitedAccount) {
+        if (!$canAssociateSelf) {
             return [];
         }
 

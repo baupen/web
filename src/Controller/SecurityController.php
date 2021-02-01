@@ -19,8 +19,9 @@ use App\Form\UserTrait\OnlyEmailType;
 use App\Form\UserTrait\SetPasswordType;
 use App\Security\Exceptions\UserWithoutPasswordAuthenticationException;
 use App\Security\LoginFormAuthenticator;
-use App\Service\Interfaces\AuthorizationServiceInterface;
 use App\Service\Interfaces\EmailServiceInterface;
+use App\Service\Interfaces\SampleServiceInterface;
+use App\Service\Interfaces\UserServiceInterface;
 use LogicException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -77,7 +78,7 @@ class SecurityController extends BaseFormController
      *
      * @return Response
      */
-    public function registerAction(Request $request, AuthorizationServiceInterface $authorizationService, TranslatorInterface $translator, EmailServiceInterface $emailService)
+    public function registerAction(Request $request, TranslatorInterface $translator, UserServiceInterface $userService, EmailServiceInterface $emailService)
     {
         $constructionManager = new ConstructionManager();
         $constructionManager->setEmail($request->query->get('email'));
@@ -87,33 +88,27 @@ class SecurityController extends BaseFormController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $authorizationService->setIsEnabled($constructionManager);
+            if ($userService->tryRegister($constructionManager, $error)) {
+                $message = $translator->trans('register.success.welcome', [], 'security');
+                $this->displaySuccess($message);
 
-            if (!$constructionManager->getIsEnabled()) {
-                $this->displayError($translator->trans('register.error.email_invalid', [], 'security'));
-            } else {
-                /** @var ConstructionManager $existing */
-                $existing = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
-
-                if (null !== $existing && $existing->getRegistrationCompleted()) {
-                    $this->displayError($translator->trans('register.error.already_registered', [], 'security'));
-
-                    return $this->redirectToRoute('login');
-                }
-
-                if (null !== $existing) {
-                    $constructionManager = $existing;
-                }
-
-                $constructionManager->setAuthenticationHash();
-                $this->fastSave($constructionManager);
-
-                if ($emailService->sendRegisterConfirmLink($constructionManager)) {
-                    $this->displaySuccess($translator->trans('register.success.welcome', [], 'security'));
-                } else {
-                    $this->displayError($translator->trans('register.fail.welcome_email_not_sent', [], 'security'));
-                }
+                return $this->redirectToRoute('login');
             }
+
+            $message = $translator->trans('register.error.unknown', [], 'security');
+            switch ($error) {
+                case UserServiceInterface::REGISTRATION_FAIL_ACCOUNT_DISABLED:
+                    $message = $translator->trans('register.error.account_disabled', [], 'security');
+                    break;
+                case UserServiceInterface::REGISTRATION_FAIL_ALREADY_REGISTERED:
+                    $message = $translator->trans('register.error.already_registered', [], 'security');
+                    break;
+                case UserServiceInterface::REGISTRATION_FAIL_EMAIL_NOT_SENT:
+                    $message = $translator->trans('register.error.welcome_email_not_sent', [], 'security');
+                    break;
+            }
+
+            $this->displayError($message);
         }
 
         return $this->render('security/register.html.twig', ['form' => $form->createView()]);
@@ -124,12 +119,21 @@ class SecurityController extends BaseFormController
      *
      * @return Response
      */
-    public function registerConfirmAction(Request $request, string $authenticationHash, TranslatorInterface $translator, EmailServiceInterface $emailService, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
+    public function registerConfirmAction(Request $request, string $authenticationHash, TranslatorInterface $translator, EmailServiceInterface $emailService, SampleServiceInterface $sampleService, UserServiceInterface $userService, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
     {
         /** @var ConstructionManager $constructionManager */
         if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $constructionManager)) {
             return $this->redirectToRoute('login');
         }
+
+        if ($constructionManager->getRegistrationCompleted()) {
+            $this->displayError($translator->trans('register.error.already_registered', [], 'security'));
+
+            return $this->redirectToRoute('login');
+        }
+
+        $userService->setDefaultValues($constructionManager);
+        $userService->authorize($constructionManager);
 
         $form = $this->createForm(RegisterConfirmType::class, $constructionManager);
         $form->add('submit', SubmitType::class, ['translation_domain' => 'security', 'label' => 'register_confirm.submit']);
@@ -138,6 +142,10 @@ class SecurityController extends BaseFormController
         if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form->get('password'), $constructionManager, $translator)) {
             $constructionManager->setAuthenticationToken();
             $this->fastSave($constructionManager);
+
+            if (!$constructionManager->getCanAssociateSelf() && 0 === count($constructionManager->getConstructionSites())) {
+                $sampleService->createSampleConstructionSite(SampleServiceInterface::SAMPLE_SIMPLE, $constructionManager);
+            }
 
             $this->loginUser($constructionManager, $authenticator, $guardHandler, $request);
             $this->displaySuccess($translator->trans('register_confirm.success.welcome', [], 'security'));
