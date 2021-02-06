@@ -73,7 +73,9 @@ const objectsAreEqual = function (object1, object2) {
 
 const createEntityIdLookup = function (entities) {
   const entityIdLookup = {}
-  entities.forEach(entity => entityIdLookup[entity['@id']] = entity)
+  entities.forEach(entity => {
+    entityIdLookup[entity['@id']] = entity
+  })
   return entityIdLookup
 }
 
