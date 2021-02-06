@@ -1,10 +1,15 @@
 <template>
   <div class="mb-5">
-    <h1>{{ $t('resolve.issues') }}</h1>
-    <p>{{ $t('resolve.issues_help') }}</p>
-
+    <p class="alert alert-info">
+      {{ $t('resolve.help') }}
+    </p>
     <loading-indicator-secondary :spin="isLoading">
-      <issues-resolve-masonry :craftsman="craftsman" :maps="maps" :construction-managers="constructionManagers" :issues="issues" />
+      <issues-resolve-masonry
+          v-if="issues.length > 0" :craftsman="craftsman" :maps="maps"
+          :construction-managers="constructionManagers" :issues="issues" />
+      <p v-else class="alert alert-success">
+        {{ $t('resolve.thanks') }}
+      </p>
     </loading-indicator-secondary>
   </div>
 </template>
@@ -54,7 +59,11 @@ export default {
       return !this.constructionManagers || !this.maps || !this.issues
     },
     query: function () {
-      return {craftsman: iriToId(this.craftsman['@id']), isDeleted: false, state: 2}
+      return {
+        craftsman: iriToId(this.craftsman['@id']),
+        isDeleted: false,
+        state: 2
+      }
     }
   },
   mounted () {

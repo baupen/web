@@ -3,7 +3,7 @@
     <div v-for="mapIssues in groupedByMapIssues" :key="mapIssues.entity['@id']" class="mt-5">
       <h2>{{ mapIssues.entity.name }}</h2>
       <masonry
-          :cols="{default: 6, 2400: 5, 2100: 4, 1800: 3, 1200: 2, 600: 1}"
+          :cols="{default: 4, 2700: 3, 1800: 2, 900: 1}"
           :gutter="{default: '10px'}"
           class="mt-2">
         <div class="grid-item" v-for="issue in mapIssues.issues" :key="issue['@id']">

@@ -1,5 +1,5 @@
 <template>
-  <p v-if="issue.resolvedAt" class="alert alert-success">
+  <p v-if="issue.resolvedAt" class="alert alert-success m-0">
     {{ this.$t('actions.messages.success.issue_resolved') }}
   </p>
   <button v-else class="btn btn-primary" :disabled="isLoading" @click="resolve">
@@ -37,7 +37,7 @@ export default {
         resolvedAt: (new Date()).toISOString()
       }
 
-      api.patch(this.issue, patch, this.$t('actions.messages.success.issue_resolved'))
+      api.patch(this.issue, patch)
           .then(_ => {
             this.isLoading = false
           })

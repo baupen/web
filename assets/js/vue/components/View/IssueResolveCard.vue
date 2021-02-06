@@ -1,21 +1,26 @@
 <template>
   <div class="card">
     <div class="card-body">
-      <div class="row">
+      <div class="row mb-3">
         <div class="col">
-          <map-issue-render :src="map.fileUrl" :subject="issue.number + ' on ' + map.name" />
+          <map-issue-render :src="map.fileUrl" :subject="issue.number + ' on ' + map.name" :preview="true" />
         </div>
         <div class="col">
-          <image-lightbox :src="issue.imageUrl" :subject="issue.number + ': ' + issue.description" />
+          <image-lightbox :src="issue.imageUrl" :subject="issue.number + ': ' + issue.description" :preview="true" />
         </div>
       </div>
-      <p>
-        <b>{{issue.number}}: </b> {{issue.description}}
+      <p v-if="issue.description" class="bg-light-gray p-2">
+        {{ issue.description }}
+      </p>
+      <p v-if="issue.deadline">
+        <b>{{ $t('issue.deadline')}}</b>: <date-human-readable :value="issue.deadline" />
+        <span v-if="overdue" class="badge badge-danger ml-1">{{ $t('issue.state.overdue')}}</span>
       </p>
       <resolve-issue-button :issue="issue" :craftsman-iri="craftsmanIri" />
     </div>
     <div class="card-footer">
       <small class="text-muted">
+        #{{issue.number}} |
         <date-time-human-readable :value="issue.createdAt" /> |
         {{ createdByConstructionManagerName }}
       </small>
@@ -30,9 +35,10 @@ import ImageLightbox from './ImageLightbox'
 import MapIssueRender from './MapIssueRender'
 import ResolveIssueButton from '../Action/ResolveIssueButton'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
+import DateHumanReadable from '../Library/View/DateHumanReadable'
 
 export default {
-  components: { DateTimeHumanReadable, ResolveIssueButton, MapIssueRender, ImageLightbox },
+  components: { DateHumanReadable, DateTimeHumanReadable, ResolveIssueButton, MapIssueRender, ImageLightbox },
   props: {
     issue: {
       type: Object,
@@ -52,6 +58,15 @@ export default {
     }
   },
   computed: {
+    overdue: function () {
+      if (!this.issue.deadline) {
+        return false
+      }
+
+      const deadline = Date.parse(this.issue.deadline);
+      const now = Date.now();
+      return deadline < now
+    },
     createdByConstructionManagerName: function () {
       return constructionManagerFormatter.name(this.createdByConstructionManager);
     }

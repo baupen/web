@@ -1,7 +1,7 @@
 <template>
   <lightbox
       v-if="src"
-      :src="src" :src-full="src + '?size=full'"
+      :src="srcUrl" :src-full="srcFullUrl"
       :alt="'thumbnail of ' + subject" />
 </template>
 
@@ -19,6 +19,30 @@ export default {
     },
     subject: {
       required: true
+    },
+    preview: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    srcUrl: function () {
+      if (!this.src) {
+        return null;
+      }
+
+      if (this.preview) {
+        return this.src + '?size=preview'
+      }
+
+      return this.src
+    },
+    srcFullUrl: function () {
+      if (!this.src) {
+        return null;
+      }
+
+      return this.src + '?size=full'
     }
   }
 

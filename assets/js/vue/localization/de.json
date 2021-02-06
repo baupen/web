@@ -14,6 +14,7 @@
     "remove_craftsman_help": "Nach dem Entfernen können Sie dem Unternehmer keine Pendenzen mehr zuweisen. Der Unternehmer verliert den Zugriff auf den personalisierten Link.",
     "remove_map": "Karte entfernen",
     "remove_map_help": "Nach dem Entfernen können Sie der Karte keine Pendenzen mehr zuweisen.",
+    "resolve_issue": "Pendenz als erledigt markieren",
     "import": "Importieren",
     "save_changes": "Änderungen speichern",
     "remove_confirm": "Ich verstehe, dass ich diesen Schnritt nicht rückgängig machen kann.",
@@ -30,7 +31,8 @@
         "map_file_replaced": "PDF ersetzt",
         "map_removed": "Karte entfernt",
         "construction_manager_dissociated": "Bauleiter von Baustelle entfernt",
-        "construction_manager_associated": "Bauleiter der Baustelle hinzugefügt"
+        "construction_manager_associated": "Bauleiter der Baustelle hinzugefügt",
+        "issue_resolved": "Pendenz als erledigt markiert."
       }
     }
   },
@@ -116,6 +118,10 @@
       "construction_manager_closed": "{constructionManager} hat eine Pendenz geschlossen. | {constructionManager} hat {count} Pendenzen geschlossen.",
       "craftsman_visited_webpage": "{craftsman} hat die Pendenzen angeschaut."
     }
+  },
+  "resolve": {
+    "help": "Markieren Sie Pendenzen als erledigt damit die Bauleitung diese schliesen kann.",
+    "thanks": "Sie haben keine offenen Pendenzen."
   },
   "foyer": {
     "no_unregistered_issues": "Keine neuen Pendenzen. Sie können neue Pendenzen mit der App erfassen.",

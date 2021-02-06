@@ -61,6 +61,7 @@ moment.locale(locale)
 // configure i18n
 const i18n = createI18n({
   locale,
+  fallbackLocale: 'de',
   messages: {
     de,
     it
