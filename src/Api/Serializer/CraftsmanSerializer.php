@@ -12,18 +12,24 @@
 namespace App\Api\Serializer;
 
 use App\Entity\Craftsman;
+use App\Security\TokenTrait;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class CraftsmanSerializer implements NormalizerInterface
 {
+    use TokenTrait;
+
     private $decorated;
     private $urlGenerator;
+    private $tokenStorage;
 
-    public function __construct(NormalizerInterface $decoratedNormalizer, UrlGeneratorInterface $urlGenerator)
+    public function __construct(NormalizerInterface $decoratedNormalizer, UrlGeneratorInterface $urlGenerator, TokenStorageInterface $tokenStorage)
     {
         $this->decorated = $decoratedNormalizer;
         $this->urlGenerator = $urlGenerator;
+        $this->tokenStorage = $tokenStorage;
     }
 
     public function supportsNormalization($data, string $format = null)
@@ -39,11 +45,13 @@ class CraftsmanSerializer implements NormalizerInterface
     {
         $data = $this->decorated->normalize($object, $format, $context);
 
-        $url = $this->urlGenerator->generate('public_resolve', [
-            'token' => $object->getAuthenticationToken(),
-        ]);
+        if ($this->tryGetConstructionManager($this->tokenStorage->getToken())) {
+            $url = $this->urlGenerator->generate('public_resolve', [
+                'token' => $object->getAuthenticationToken(),
+            ]);
 
-        $data['resolveUrl'] = $url;
+            $data['resolveUrl'] = $url;
+        }
 
         return $data;
     }
