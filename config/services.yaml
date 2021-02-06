@@ -79,5 +79,7 @@ services:
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
     'App\Api\Serializer\MapSerializer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
+    'App\Api\Serializer\CraftsmanSerializer':
+        bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
     'App\Api\Serializer\IssueSerializer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }

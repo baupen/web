@@ -11,25 +11,34 @@
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\BaseDoctrineController;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
-use Http\Discovery\Exception\NotFoundException;
+use App\Security\TokenTrait;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class PublicController extends BaseController
+class PublicController extends BaseDoctrineController
 {
+    use TokenTrait;
+
     /**
      * @Route("/resolve/{token}", name="public_resolve")
      *
      * @return Response
      */
-    public function resolveAction(string $token)
+    public function resolveAction(string $token, TokenStorageInterface $tokenStorage)
     {
         $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['authenticationToken' => $token, 'deletedAt' => null]);
         if (null === $craftsman) {
-            throw new NotFoundException();
+            throw new NotFoundHttpException();
+        }
+
+        if (!$this->tryGetConstructionManager($tokenStorage->getToken())) {
+            $craftsman->setLastVisitOnline(new \DateTime());
+            $this->fastSave($craftsman);
         }
 
         return $this->render('public/resolve.html.twig');
@@ -40,11 +49,16 @@ class PublicController extends BaseController
      *
      * @return Response
      */
-    public function filteredAction(string $token)
+    public function filteredAction(string $token, TokenStorageInterface $tokenStorage)
     {
         $filter = $this->getDoctrine()->getRepository(Filter::class)->findOneBy(['authenticationToken' => $token]);
         if (null === $filter || $filter->getAccessAllowedBefore() < new \DateTime()) {
-            throw new NotFoundException();
+            throw new NotFoundHttpException();
+        }
+
+        if (!$this->tryGetConstructionManager($tokenStorage->getToken())) {
+            $filter->setLastUsedAt(new \DateTime());
+            $this->fastSave($filter);
         }
 
         return $this->render('public/filtered.html.twig');

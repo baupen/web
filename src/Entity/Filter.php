@@ -165,6 +165,13 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $constructionSite;
 
     /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastUsedAt;
+
+    /**
      * @var Issue[]
      *
      * @Groups({"filter-read"})
@@ -370,5 +377,15 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public function setIssues(array $issues): void
     {
         $this->issues = $issues;
+    }
+
+    public function getLastUsedAt(): ?DateTime
+    {
+        return $this->lastUsedAt;
+    }
+
+    public function setLastUsedAt(?DateTime $lastUsedAt): void
+    {
+        $this->lastUsedAt = $lastUsedAt;
     }
 }

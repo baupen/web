@@ -3,7 +3,7 @@
     <thead>
     <tr class="bg-light">
       <th class="w-minimal"></th>
-      <th colspan="2">{{ $t('craftsman._name') }}</th>
+      <th colspan="3">{{ $t('craftsman._name') }}</th>
       <th class="border-left" colspan="2">{{ $t('issue._plural') }}</th>
       <th class="border-left" colspan="2">{{ $t('dispatch.craftsmen_table.last_activity') }}</th>
       <th class="border-left"></th>
@@ -17,6 +17,7 @@
       </th>
       <th>{{ $t('craftsman.trade') }}</th>
       <th>{{ $t('craftsman.company') }}</th>
+      <th class="w-minimal"></th>
 
       <th class="border-left">{{ $t('view.count') }}</th>
       <th>{{ $t('craftsman.next_deadline') }}</th>
@@ -40,25 +41,29 @@
         </custom-checkbox>
       </td>
       <td>{{ cws.craftsman.trade }}</td>
+      <td>{{ cws.craftsman.company }}</td>
       <td>
-        {{ cws.craftsman.company }} <br/>
-        <span class="text-secondary">{{ cws.craftsman.contactName }}</span>
+        <a :href="cws.craftsman.resolveUrl" target="_blank">
+          <font-awesome-icon :icon="['fal', 'user']" />
+        </a>
       </td>
 
       <td class="border-left">
         <issue-summary-badges :summary="cws.statistics.issueSummary" />
       </td>
       <td>
-        <date-human-readable :value="cws.statistics.nextDeadline" /><br/>
+        <date-human-readable :value="cws.statistics.nextDeadline" />
+        <br />
         <span v-if="cws.statistics.issueOverdueCount" class="badge badge-danger">
-          {{ cws.statistics.issueOverdueCount }} {{$t('issue.state.overdue')}}
+          {{ cws.statistics.issueOverdueCount }} {{ $t('issue.state.overdue') }}
         </span>
       </td>
 
       <td class="border-left">
-        <date-time-human-readable :value="cws.statistics.lastVisitOnline" /><br/>
+        <date-time-human-readable :value="cws.statistics.lastVisitOnline" />
+        <br />
         <span v-if="cws.statistics.issueUnreadCount" class="badge badge-warning">
-          {{ cws.statistics.issueUnreadCount }} {{$t('issue.state.unread')}}
+          {{ cws.statistics.issueUnreadCount }} {{ $t('issue.state.unread') }}
         </span>
       </td>
       <td>
@@ -196,7 +201,7 @@ export default {
     }
   },
   watch: {
-    isLoading: function ()  {
+    isLoading: function () {
       if (!this.isLoading) {
         this.selectedCraftsmen = [...this.craftsmenWithIssuesOpen]
       }

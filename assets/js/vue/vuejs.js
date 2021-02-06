@@ -10,14 +10,15 @@ import {
 import {
   faPlus, faPencil, faTrash, // CRUD
   faUserAlt, faQuestionCircle, faEnvelopeOpen, // navigation
-  faStar, faUserCheck, // issue states (not active)
-  faFilter, faSort // table
+  faStar, faUserCheck, // issue states (toggle off)
+  faFilter, faSort, // table
+  faUser // craftsman link
 } from '@fortawesome/pro-light-svg-icons'
 import {
   faSearch as faSearchRegular, faFilter as faFilterRegular // table
 } from '@fortawesome/pro-regular-svg-icons'
 import {
-  faStar as faStarSolid, faUserCheck as faUserCheckSolid, // issue states (active)
+  faStar as faStarSolid, faUserCheck as faUserCheckSolid, // issue states (toggle on)
   faFilter as faFilterSolid, faSearch as faSearchSolid, faSortUp as faSortUpSolid, faSortDown as faSortDownSolid // table
 } from '@fortawesome/pro-solid-svg-icons'
 import '@fortawesome/fontawesome-svg-core/styles.css'
@@ -47,6 +48,7 @@ FontawesomeLibrary.add(
   faUserAlt, faQuestionCircle, faEnvelopeOpen,
   faStar, faUserCheck,
   faFilter, faSort,
+  faUser,
   faSearchRegular, faFilterRegular,
   faStarSolid, faUserCheckSolid,
   faFilterSolid, faSearchSolid, faSortUpSolid, faSortDownSolid
