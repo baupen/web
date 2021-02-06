@@ -71,4 +71,10 @@ const objectsAreEqual = function (object1, object2) {
   return true
 }
 
-export { levenshteinDistance, arraysAreEqual, objectsAreEqual }
+const createEntityIdLookup = function (entities) {
+  const entityIdLookup = {}
+  entities.forEach(entity => entityIdLookup[entity['@id']] = entity)
+  return entityIdLookup
+}
+
+export { levenshteinDistance, arraysAreEqual, objectsAreEqual, createEntityIdLookup }
