@@ -37,8 +37,7 @@ export default {
   },
   mounted () {
     api.setupErrorNotifications(this.$t)
-    api.authenticateApi()
-    api.getMe()
+    api.authenticateFromUrl()
         .then(me => {
           this.craftsmanIri = me.craftsmanIri
           this.constructionSiteIri = me.constructionSiteIri

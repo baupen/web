@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import {api} from './services/api'
+import { api } from './services/api'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import EditCraftsmen from './components/EditCraftsmen'
 import EditMaps from './components/EditMaps'
@@ -25,7 +25,7 @@ export default {
     EditCraftsmen,
     LoadingIndicator,
   },
-  data() {
+  data () {
     return {
       constructionSite: null,
       constructionManagerIri: null,
@@ -37,19 +37,20 @@ export default {
       return !this.constructionSite || !this.constructionManager
     }
   },
-  mounted() {
+  mounted () {
     api.setupErrorNotifications(this.$t)
-    api.getMe()
+    api.authenticate()
         .then(me => {
           this.constructionManagerIri = me.constructionManagerIri
-          api.getById(this.constructionManagerIri).then(constructionManager => {
-            this.constructionManager = constructionManager
-          })
-        })
+          api.getById(this.constructionManagerIri)
+              .then(constructionManager => {
+                this.constructionManager = constructionManager
+              })
 
-    api.getConstructionSite()
-        .then(constructionSite => {
-          this.constructionSite = constructionSite
+          api.getConstructionSite()
+              .then(constructionSite => {
+                this.constructionSite = constructionSite
+              })
         })
   }
 }

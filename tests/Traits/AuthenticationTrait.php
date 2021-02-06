@@ -34,17 +34,17 @@ trait AuthenticationTrait
 
     private function loginApiConstructionManager(Client $client): ConstructionManager
     {
-        return $this->loginConstructionManager($client->getKernelBrowser());
+        return $this->loginApiUser($client, TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL);
     }
 
     private function loginApiAssociatedConstructionManager(Client $client): ConstructionManager
     {
-        return $this->loginUser($client->getKernelBrowser(), TestConstructionManagerFixtures::ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL);
+        return $this->loginApiUser($client, TestConstructionManagerFixtures::ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL);
     }
 
     private function loginApiDisassociatedConstructionManager(Client $client): ConstructionManager
     {
-        return $this->loginUser($client->getKernelBrowser(), TestConstructionManagerFixtures::DISASSOCIATED_CONSTRUCTION_MANAGER_EMAIL);
+        return $this->loginApiUser($client, TestConstructionManagerFixtures::DISASSOCIATED_CONSTRUCTION_MANAGER_EMAIL);
     }
 
     private function loginConstructionManager(KernelBrowser $client): ConstructionManager
@@ -52,10 +52,19 @@ trait AuthenticationTrait
         return $this->loginUser($client, TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL);
     }
 
+    private function loginApiUser(Client $client, string $email): ConstructionManager
+    {
+        $testUser = $this->getConstructionManagerByEmail($email);
+        $client->setDefaultOptions(['headers' => ['X-AUTHENTICATION' => [$testUser->getAuthenticationToken()]]]);
+
+        return $testUser;
+    }
+
     private function loginUser(KernelBrowser $client, string $email): ConstructionManager
     {
         $testUser = $this->getConstructionManagerByEmail($email);
         $client->loginUser($testUser);
+        $client->loginUser($testUser, 'api');
 
         return $testUser;
     }

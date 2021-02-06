@@ -58,14 +58,6 @@ const api = {
       }
     )
   },
-  authenticateApi: function () {
-    const token = this._getTokenFromLocation()
-    axios.interceptors.request.use(function (config) {
-      config.headers['X-AUTHENTICATION'] = token
-
-      return config
-    })
-  },
   _writeAllProperties: function (source, target) {
     for (const prop in source) {
       if (Object.prototype.hasOwnProperty.call(source, prop) && Object.prototype.hasOwnProperty.call(target, prop)) {
@@ -183,11 +175,29 @@ const api = {
       }
     )
   },
+  _getMe: function (authenticationToken) {
+    axios.defaults.headers['X-AUTHENTICATION'] = authenticationToken
+    return this._getItem('/api/me')
+  },
+  authenticateFromUrl: function () {
+    const token = this._getTokenFromLocation()
+    return this._getMe(token)
+  },
+  authenticate: function () {
+    return new Promise(
+      (resolve) => {
+        axios.get('/token')
+          .then(response => {
+            this._getMe(response.data)
+              .then(response => {
+                resolve(response)
+              })
+          })
+      }
+    )
+  },
   getById: function (id) {
     return this._getItem(id)
-  },
-  getMe: function () {
-    return this._getItem('/api/me')
   },
   getConstructionSite: function () {
     const constructionSiteUrl = this._getConstructionSiteIriFromLocation()

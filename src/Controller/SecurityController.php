@@ -74,6 +74,16 @@ class SecurityController extends BaseFormController
     }
 
     /**
+     * @Route("/token", name="token")
+     */
+    public function token(): Response
+    {
+        $token = $this->getUser()->getAuthenticationToken();
+
+        return new Response($token);
+    }
+
+    /**
      * @Route("/register", name="register")
      *
      * @return Response

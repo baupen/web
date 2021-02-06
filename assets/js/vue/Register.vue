@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import {api} from './services/api'
+import { api } from './services/api'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import RegisterIssues from './components/RegisterIssues'
 
@@ -16,7 +16,7 @@ export default {
     RegisterIssues,
     LoadingIndicator
   },
-  data() {
+  data () {
     return {
       constructionManagerIri: null,
       constructionSite: null,
@@ -27,13 +27,15 @@ export default {
       return !this.constructionSite || !this.constructionManagerIri
     }
   },
-  mounted() {
+  mounted () {
     api.setupErrorNotifications(this.$t)
-    api.getMe()
-        .then(me => this.constructionManagerIri = me.constructionManagerIri)
-    api.getConstructionSite()
-        .then(constructionSite => {
-          this.constructionSite = constructionSite
+    api.authenticate()
+        .then(me => {
+          this.constructionManagerIri = me.constructionManagerIri
+          api.getConstructionSite()
+              .then(constructionSite => {
+                this.constructionSite = constructionSite
+              })
         })
   }
 }
