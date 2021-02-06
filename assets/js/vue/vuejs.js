@@ -36,6 +36,7 @@ import Dispatch from './Dispatch'
 import Edit from './Edit'
 import Foyer from './Foyer'
 import Register from './Register'
+import Resolve from './Resolve'
 import Switch from './Switch'
 
 // settings
@@ -102,6 +103,11 @@ if (document.getElementById('foyer') != null) {
 if (document.getElementById('register') != null) {
   createVue(Register)
     .mount('#register')
+}
+
+if (document.getElementById('resolve') != null) {
+  createVue(Resolve)
+    .mount('#resolve')
 }
 
 if (document.getElementById('switch') != null) {

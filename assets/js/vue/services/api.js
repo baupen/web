@@ -58,6 +58,14 @@ const api = {
       }
     )
   },
+  authenticateApi: function () {
+    const token = this._getTokenFromLocation()
+    axios.interceptors.request.use(function (config) {
+      config.headers['X-AUTHENTICATION'] = token
+
+      return config
+    })
+  },
   _writeAllProperties: function (source, target) {
     for (const prop in source) {
       if (Object.prototype.hasOwnProperty.call(source, prop) && Object.prototype.hasOwnProperty.call(target, prop)) {
@@ -69,6 +77,10 @@ const api = {
     const urlArray = window.location.pathname.split('/')
     urlArray.splice(3)
     return '/api' + urlArray.join('/')
+  },
+  _getTokenFromLocation: function () {
+    const urlArray = window.location.pathname.split('/')
+    return urlArray[2] // location of the form "domain.com/resolve/<token>"
   },
   _getConstructionSiteQuery: function (constructionSite) {
     return 'constructionSite=' + iriToId(constructionSite['@id'])

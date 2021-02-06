@@ -64,11 +64,13 @@ class ApiController extends BaseDoctrineController
         $craftsman = $this->tryGetCraftsman($token);
         if (null !== $craftsman) {
             $data['craftsmanIri'] = $iriConverter->getIriFromItem($craftsman);
+            $data['constructionSiteIri'] = $iriConverter->getIriFromItem($craftsman->getConstructionSite());
         }
 
         $filter = $this->tryGetFilter($token);
         if (null !== $filter) {
             $data['filterIri'] = $iriConverter->getIriFromItem($filter);
+            $data['constructionSiteIri'] = $iriConverter->getIriFromItem($filter->getConstructionSite());
         }
 
         return $this->json($data);
