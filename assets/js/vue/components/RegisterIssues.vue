@@ -8,7 +8,7 @@
 
     <issues-table
         :construction-site="constructionSite"
-        :minimal-state="1"
+        :minimal-state="2"
         @selected="selectedIssues = $event"
         @query="query = $event"
         @queried-issue-count="queriedIssuesCount = $event" />

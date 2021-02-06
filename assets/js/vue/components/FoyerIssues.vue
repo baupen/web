@@ -11,7 +11,7 @@
 
     <issues-table
         :construction-site="constructionSite"
-        :force-state="0"
+        :force-state="1"
         @selected="selectedIssues = $event" />
   </div>
 </template>
