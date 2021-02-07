@@ -110,7 +110,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function getMapFileRenderAction(Request $request, Map $map, MapFile $mapFile, string $filename, ImageServiceInterface $imageService)
+    public function getMapFileRenderAction(Request $request, Map $map, MapFile $mapFile, string $filename, ImageServiceInterface $imageService, PathServiceInterface $pathService)
     {
         $this->denyAccessUnlessGranted(MapVoter::MAP_VIEW, $map);
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
@@ -119,7 +119,19 @@ class ApiController extends BaseDoctrineController
 
         $size = $request->query->get('size', 'thumbnail');
         $this->assertValidSize($size);
-        $path = $imageService->renderMapFileToJpg($mapFile, $size);
+
+        $issueIds = $request->query->get('issues[]', []);
+        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByConstructionSite($issueIds, $map->getConstructionSite());
+        if (count($issues) > 0) {
+            $folder = $pathService->getTransientFolderForReports($map->getConstructionSite()).'/'.uniqid();
+            mkdir($folder, true);
+            $path = $folder.'/'.'render.jpg';
+            if (!$imageService->renderMapFileWithIssuesToFile($mapFile, $issues, $path, $size)) {
+                $path = null;
+            }
+        } else {
+            $path = $imageService->renderMapFileToJpg($mapFile, $size);
+        }
 
         return $this->tryCreateInlineFileResponse($path, 'render.jpg');
     }

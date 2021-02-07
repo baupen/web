@@ -1,5 +1,5 @@
 <template>
-  <div id="dispatch">
+  <div id="register">
     <loading-indicator :spin="isLoading">
       <register-issues :construction-site="constructionSite" :construction-manager-iri="constructionManagerIri" />
     </loading-indicator>

@@ -14,7 +14,7 @@
     "remove_craftsman_help": "Nach dem Entfernen können Sie dem Unternehmer keine Pendenzen mehr zuweisen. Der Unternehmer verliert den Zugriff auf den personalisierten Link.",
     "remove_map": "Karte entfernen",
     "remove_map_help": "Nach dem Entfernen können Sie der Karte keine Pendenzen mehr zuweisen.",
-    "resolve_issue": "Pendenz als erledigt markieren",
+    "resolve_issue": "Als erledigt markieren",
     "import": "Importieren",
     "save_changes": "Änderungen speichern",
     "remove_confirm": "Ich verstehe, dass ich diesen Schnritt nicht rückgängig machen kann.",
@@ -120,7 +120,7 @@
     }
   },
   "resolve": {
-    "help": "Markieren Sie Pendenzen als erledigt damit die Bauleitung diese schliesen kann.",
+    "help": "Markieren Sie Pendenzen als erledigt damit die Bauleitung diese schliessen kann.",
     "thanks": "Sie haben keine offenen Pendenzen."
   },
   "foyer": {

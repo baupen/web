@@ -2,10 +2,10 @@
   <div class="card">
     <div class="card-body">
       <div class="row mb-3">
-        <div class="col">
-          <map-issue-render :src="map.fileUrl" :subject="issue.number + ' on ' + map.name" :preview="true" />
+        <div class="col pr-2" v-if="issue.positionX">
+          <map-issue-render :map="map" :issue="issue" />
         </div>
-        <div class="col">
+        <div class="col" :class="{'pl-2': issue.positionX}">
           <image-lightbox :src="issue.imageUrl" :subject="issue.number + ': ' + issue.description" :preview="true" />
         </div>
       </div>

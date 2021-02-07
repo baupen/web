@@ -1,26 +1,47 @@
 [
   {
-    "description": "Grosser Bagger steht herum"
+    "description": "Grosser Bagger steht herum",
+    "positionX": 0.2,
+    "positionY": 0.6,
+    "positionZoomScale": 0.2
   },
   {
-    "description": "Grosser Helm zu allen Zeiten tragen"
+    "description": "Grosser Helm zu allen Zeiten tragen",
+    "positionX": 0.3,
+    "positionY": 0.3,
+    "positionZoomScale": 0.6
   },
   {
     "description": "Schaufel liegt noch neben dem Bohrloch herum",
     "isMarked": true,
-    "wasAddedWithClient": true
+    "wasAddedWithClient": true,
+    "positionX": 0.6,
+    "positionY": 0.3,
+    "positionZoomScale": 0.9
   },
   {
-    "description": "Toitoi reinigen"
+    "description": "Toitoi reinigen",
+    "positionX": 0.2,
+    "positionY": 0.3,
+    "positionZoomScale": 0.9
   },
   {
-    "description": "Gerüst abbauen"
+    "description": "Gerüst abbauen",
+    "positionX": 0.4,
+    "positionY": 0.5,
+    "positionZoomScale": 0.3
   },
   {
-    "description": "Ziegelsteine"
+    "description": "Ziegelsteine",
+    "positionX": 0.5,
+    "positionY": 0.5,
+    "positionZoomScale": 0.7
   },
   {
-    "description": "Kran wegbringen"
+    "description": "Kran wegbringen",
+    "positionX": 0.2,
+    "positionY": 0.3,
+    "positionZoomScale": 0.9
   },
   {
     "description": "Paletten entsorgen"
@@ -29,9 +50,15 @@
     "description": "Kamera funktioniert nicht"
   },
   {
-    "description": "Schlauch reinigen"
+    "description": "Schlauch reinigen",
+    "positionX": 0.8,
+    "positionY": 0.8,
+    "positionZoomScale": 0.7
   },
   {
-    "description": "Zementbohrer vergessen"
+    "description": "Zementbohrer vergessen",
+    "positionX": 0.1,
+    "positionY": 0.1,
+    "positionZoomScale": 0.3
   }
 ]

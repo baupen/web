@@ -63,7 +63,6 @@ export default {
       api.patch(payload.issue, payload.patch)
           .then(_ => {
                 this.preRegisterIssues.shift()
-                this.issues = this.issues.filter(i => i !== payload.issue)
                 this.selectedIssues = this.selectedIssues.filter(i => i !== payload.issue)
 
                 if (this.preRegisterIssues.length === 0) {

@@ -31,20 +31,19 @@ export default {
         return null;
       }
 
+      let url = new URL(this.src, window.location.origin);
+
       if (this.preview) {
-        return this.src + '?size=preview'
+        url.searchParams.set('size', 'preview');
       }
 
-      return this.src
+      return url.toString()
     },
     srcFullUrl: function () {
-      if (!this.src) {
-        return null;
-      }
-
-      return this.src + '?size=full'
+      let url = new URL(this.src, window.location.origin);
+      url.searchParams.set('size', 'full')
+      return url.toString()
     }
   }
-
 }
 </script>

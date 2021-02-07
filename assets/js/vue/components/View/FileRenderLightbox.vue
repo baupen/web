@@ -1,15 +1,14 @@
 <template>
-  <lightbox
-      v-if="src"
-      :src="renderSrc" :src-full="renderSrc + '?size=full'"
-      :alt="'thumbnail of ' + subject" />
+  <image-lightbox :src="renderUrl" :subject="subject" :preview="preview" />
 </template>
 
 <script>
 import Lightbox from '../Library/Behaviour/Lightbox'
+import ImageLightbox from './ImageLightbox'
 
 export default {
   components: {
+    ImageLightbox,
     Lightbox
   },
   props: {
@@ -19,13 +18,15 @@ export default {
     },
     subject: {
       required: true
+    },
+    preview: {
+      default: false
     }
   },
   computed: {
-    renderSrc: function () {
-      return this.src + "/render.jpg";
+    renderUrl: function () {
+      return this.src ? this.src + '/render.jpg' : null;
     }
   }
-
 }
 </script>

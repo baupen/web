@@ -11,6 +11,7 @@
 
 namespace App\Repository;
 
+use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -27,6 +28,17 @@ class IssueRepository extends EntityRepository
         $qb->setMaxResults(1);
 
         $issue->setNumber($qb->getQuery()->getSingleScalarResult() + 1);
+    }
+
+    public function findByConstructionSite(array $issueIds, ConstructionSite $constructionSite)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->select('i')
+            ->from(Issue::class, 'i')
+            ->where('i.id IN (:ids)', $issueIds)
+            ->andWhere('i.constructionSite = :constructionSite', $constructionSite->getId());
+
+        return $qb->getQuery()->getResult();
     }
 
     /**
