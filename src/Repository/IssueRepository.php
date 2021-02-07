@@ -35,8 +35,10 @@ class IssueRepository extends EntityRepository
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('i')
             ->from(Issue::class, 'i')
-            ->where('i.id IN (:ids)', $issueIds)
-            ->andWhere('i.constructionSite = :constructionSite', $constructionSite->getId());
+            ->where('i.id IN (:ids)')
+            ->setParameter(':ids', $issueIds)
+            ->andWhere('i.constructionSite = :constructionSite')
+            ->setParameter(':constructionSite', $constructionSite->getId());
 
         return $qb->getQuery()->getResult();
     }

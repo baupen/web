@@ -120,11 +120,12 @@ class ApiController extends BaseDoctrineController
         $size = $request->query->get('size', 'thumbnail');
         $this->assertValidSize($size);
 
-        $issueIds = $request->query->get('issues[]', []);
+        /** @var array $issueIds */
+        $issueIds = $request->query->get('issues', []);
         $issues = $this->getDoctrine()->getRepository(Issue::class)->findByConstructionSite($issueIds, $map->getConstructionSite());
         if (count($issues) > 0) {
             $folder = $pathService->getTransientFolderForReports($map->getConstructionSite()).'/'.uniqid();
-            mkdir($folder, true);
+            mkdir($folder, 0777, true);
             $path = $folder.'/'.'render.jpg';
             if (!$imageService->renderMapFileWithIssuesToFile($mapFile, $issues, $path, $size)) {
                 $path = null;

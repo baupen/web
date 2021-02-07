@@ -150,17 +150,44 @@ class ImageService implements ImageServiceInterface
      */
     private function drawIssuesOnJpg(&$image, array $issues): void
     {
-        $xSize = imagesx($image);
-        $ySize = imagesy($image);
-
-        //draw the issues on the map
+        // estimate how much is drawn on the map
+        $drawnIssues = [];
+        $drawnTextLength = 0;
         foreach ($issues as $issue) {
             if (null !== $issue->getPositionX()) {
-                $yCoordinate = $issue->getPositionX() * $ySize;
-                $xCoordinate = $issue->getPositionY() * $xSize;
-                $circleColor = null !== $issue->getClosedAt() ? 'green' : 'orange';
-                $this->gdService->drawRectangleWithText($yCoordinate, $xCoordinate, $circleColor, (string) $issue->getNumber(), $image);
+                $drawnIssues[] = $issue;
+                $drawnTextLength += mb_strlen((string) $issue->getNumber());
             }
+        }
+
+        $minPercentage = 1; // percentage of image occupied with issue bubbles when only few text (=1) contained
+        $maxPercentage = 10; // percentage of image occupied with many issues bubbles (=maxPercentagelength chars)
+        $maxPercentageLength = 100;
+        $minimalCharDimension = 10;
+        $maximalCharDimension = 100;
+
+        if ($drawnTextLength < $maxPercentageLength) {
+            $percentage = $minPercentage + (($maxPercentage - $minPercentage) * ($drawnTextLength / $maxPercentageLength));
+        } else {
+            $percentage = $maxPercentage;
+        }
+
+        $xSize = imagesx($image);
+        $ySize = imagesy($image);
+        $imageSize = $xSize * $ySize;
+        $availableSpace = $percentage * $imageSize / 100;
+
+        $targetCharDimension = $availableSpace / $drawnTextLength;
+        $targetCharDimension = max($minimalCharDimension, $targetCharDimension);
+        $targetCharDimension = min($maximalCharDimension, $targetCharDimension);
+
+        dump($percentage, $targetCharDimension);
+
+        foreach ($drawnIssues as $drawnIssue) {
+            $yCoordinate = $drawnIssue->getPositionX() * $ySize;
+            $xCoordinate = $drawnIssue->getPositionY() * $xSize;
+            $circleColor = null !== $drawnIssue->getClosedAt() ? 'green' : 'orange';
+            $this->gdService->drawRectangleWithText($yCoordinate, $xCoordinate, $circleColor, (string) $issue->getNumber(), $targetCharDimension, $image);
         }
     }
 

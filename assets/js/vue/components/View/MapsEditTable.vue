@@ -22,7 +22,7 @@
         {{ getOriginalFilename(flatHierarchy.entity) }}
       </td>
       <td class="text-right">
-        <file-render-lightbox class="h-btn" :src="flatHierarchy.entity.fileUrl" :subject="flatHierarchy.entity.name" />
+        <map-render-lightbox class="h-btn" :map="flatHierarchy.entity" />
       </td>
       <td>
         <div class="btn-group">
@@ -40,7 +40,7 @@
 
 import TableBodyLoadingIndicator from '../Library/View/LoadingIndicatorTableBody'
 import { mapTransformer } from '../../services/transformers'
-import FileRenderLightbox from './FileRenderLightbox'
+import MapRenderLightbox from './MapRenderLightbox'
 import EditMapButton from '../Action/EditMapButton'
 import RemoveMapButton from '../Action/RemoveMapButton'
 import { mapFormatter } from '../../services/formatters'
@@ -49,7 +49,7 @@ export default {
   components: {
     RemoveMapButton,
     EditMapButton,
-    FileRenderLightbox,
+    MapRenderLightbox,
     TableBodyLoadingIndicator,
   },
   props: {

@@ -27,38 +27,24 @@ class GdService
     private $logger;
 
     /**
-     * @var int the bubble size as an abstract unit
-     *          the higher the number the smaller the resulting bubble
-     */
-    private $bubbleScale = 800;
-
-    /**
      * @param float $yPosition
      * @param float $xPosition
      * @param $circleColor
      * @param $text
      * @param $image
      */
-    public function drawRectangleWithText($yPosition, $xPosition, $circleColor, $text, &$image)
+    public function drawRectangleWithText($yPosition, $xPosition, $circleColor, $text, $targetCharDimension, &$image)
     {
-        $textFactor = mb_strlen($text) / 2.6;
-
-        //get sizes
-        $xSize = imagesx($image);
-        $ySize = imagesy($image);
-        $imageSize = $xSize * $ySize;
-        $targetTextDimension = sqrt($imageSize / ($this->bubbleScale * M_PI)) * $textFactor;
-
         //get text dimensions
-        $font = __DIR__.'/../../assets/fonts/OpenSans-Bold.ttf';
+        $font = __DIR__.'/../../../assets/report/fonts/OpenSans-Bold.ttf';
         $testFontSize = 30;
         $txtSize = imagettfbbox($testFontSize, 0, $font, $text);
         $testTextWidth = abs($txtSize[4] - $txtSize[0]);
         $testTextHeight = abs($txtSize[5] - $txtSize[1]);
 
         //calculate appropriate font size
-        $maxTextDimension = max($testTextWidth, $testTextHeight * 1.4); //*1.4 to counter single number being too big
-        $scalingFactor = $targetTextDimension / $maxTextDimension;
+        $testedCharDimension = max($testTextWidth / mb_strlen($text), $testTextHeight);
+        $scalingFactor = $targetCharDimension / $testedCharDimension;
         $fontSize = $scalingFactor * $testFontSize;
         $textWidth = $testTextWidth * $scalingFactor;
         $textHeight = $testTextHeight * $scalingFactor;

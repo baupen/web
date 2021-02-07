@@ -3,7 +3,7 @@
     <div class="card-body">
       <div class="row mb-3">
         <div class="col pr-2" v-if="issue.positionX">
-          <map-issue-render :map="map" :issue="issue" />
+          <map-render-lightbox :map="map" :issues="[issue]" :preview="true" />
         </div>
         <div class="col" :class="{'pl-2': issue.positionX}">
           <image-lightbox :src="issue.imageUrl" :subject="issue.number + ': ' + issue.description" :preview="true" />
@@ -13,15 +13,17 @@
         {{ issue.description }}
       </p>
       <p v-if="issue.deadline">
-        <b>{{ $t('issue.deadline')}}</b>: <date-human-readable :value="issue.deadline" />
-        <span v-if="overdue" class="badge badge-danger ml-1">{{ $t('issue.state.overdue')}}</span>
+        <b>{{ $t('issue.deadline') }}</b>:
+        <date-human-readable :value="issue.deadline" />
+        <span v-if="overdue" class="badge badge-danger ml-1">{{ $t('issue.state.overdue') }}</span>
       </p>
       <resolve-issue-button :issue="issue" :craftsman-iri="craftsmanIri" />
     </div>
     <div class="card-footer">
       <small class="text-muted">
-        #{{issue.number}} |
-        <date-time-human-readable :value="issue.createdAt" /> |
+        #{{ issue.number }} |
+        <date-time-human-readable :value="issue.createdAt" />
+        |
         {{ createdByConstructionManagerName }}
       </small>
     </div>
@@ -32,13 +34,19 @@
 
 import { constructionManagerFormatter } from '../../services/formatters'
 import ImageLightbox from './ImageLightbox'
-import MapIssueRender from './MapIssueRender'
 import ResolveIssueButton from '../Action/ResolveIssueButton'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import DateHumanReadable from '../Library/View/DateHumanReadable'
+import MapRenderLightbox from './MapRenderLightbox'
 
 export default {
-  components: { DateHumanReadable, DateTimeHumanReadable, ResolveIssueButton, MapIssueRender, ImageLightbox },
+  components: {
+    DateHumanReadable,
+    DateTimeHumanReadable,
+    ResolveIssueButton,
+    ImageLightbox,
+    MapRenderLightbox
+  },
   props: {
     issue: {
       type: Object,
@@ -63,12 +71,12 @@ export default {
         return false
       }
 
-      const deadline = Date.parse(this.issue.deadline);
-      const now = Date.now();
+      const deadline = Date.parse(this.issue.deadline)
+      const now = Date.now()
       return deadline < now
     },
     createdByConstructionManagerName: function () {
-      return constructionManagerFormatter.name(this.createdByConstructionManager);
+      return constructionManagerFormatter.name(this.createdByConstructionManager)
     }
   }
 }
