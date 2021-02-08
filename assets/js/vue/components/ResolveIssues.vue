@@ -5,8 +5,9 @@
     </p>
     <loading-indicator-secondary :spin="isLoading">
       <issues-resolve-masonry
-          v-if="issues.length > 0" :craftsman="craftsman" :maps="maps"
-          :construction-managers="constructionManagers" :issues="issues" />
+          v-if="issues.length > 0"
+          :craftsman="craftsman" :issues="issues"
+          :construction-site="constructionSite" :maps="maps" :construction-managers="constructionManagers" />
       <p v-else class="alert alert-success">
         {{ $t('resolve.thanks') }}
       </p>

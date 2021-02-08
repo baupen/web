@@ -5,7 +5,7 @@
 <script>
 import Lightbox from '../Library/Behaviour/Lightbox'
 import ImageLightbox from './ImageLightbox'
-import { iriToId } from '../../services/api'
+import { api, iriToId } from '../../services/api'
 
 export default {
   components: {
@@ -13,15 +13,32 @@ export default {
     Lightbox
   },
   props: {
+    constructionSite: {
+      type: Object,
+      required: true
+    },
     map: {
       type: Object,
       required: true
     },
-    issues: {
-      type: Array,
-      default: []
+    craftsman: {
+      type: Object,
+      required: false
+    },
+    issue: {
+      type: Object,
+      required: false
+    },
+    state: {
+      type: Number,
+      required: false
+    },
+    query: {
+      type: Object,
+      default: { }
     },
     preview: {
+      type: Boolean,
       default: false
     }
   },
@@ -34,14 +51,18 @@ export default {
         return null
       }
 
-      let url = this.map.fileUrl + '/render.jpg'
-
-      const ids = this.issues.map(i => iriToId(i['@id']))
-      if (ids.length) {
-        url += "?issues[]=" + ids.join("&issues[]=")
+      let query = Object.assign({}, this.query)
+      if (this.craftsman) {
+        query['craftsman'] = iriToId(this.craftsman['@id']);
+      }
+      if (this.issue) {
+        query['number'] = this.issue.number;
+      }
+      if (this.state) {
+        query['state'] = this.state;
       }
 
-      return url
+      return api.getIssuesRenderLink(this.constructionSite, this.map, query)
     }
   }
 }

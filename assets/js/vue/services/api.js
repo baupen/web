@@ -266,6 +266,13 @@ const api = {
     queryString += '&lastChangedAt[after]=' + lastChangedAfter.toISOString()
     return this._getItem('/api/issues/feed_entries' + queryString)
   },
+  getIssuesRenderLink: function (constructionSite, map, query = {}) {
+    let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&map=' + iriToId(map['@id'])
+    queryString += '&' + this._getQueryString(query)
+    queryString += '&isDeleted=false'
+    return '/api/issues/render.jpg?' + queryString
+  },
   patch: function (instance, patch, successMessage = null) {
     return new Promise(
       (resolve) => {

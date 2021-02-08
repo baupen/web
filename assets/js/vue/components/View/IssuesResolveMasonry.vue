@@ -10,13 +10,19 @@
           :gutter="{default: '10px'}"
           class="mt-2">
         <div class="grid-item mb-2">
-          <map-issue-overview-card :map="mapIssues.entity" :issues="mapIssues.issues.map(e => e.issue)" />
+          <div class="card">
+            <div class="card-body bg-light-gray p-2">
+              <map-render-lightbox
+                  :preview="true"
+                  :construction-site="constructionSite" :map="mapIssues.entity" :craftsman="craftsman" :state="2" />
+            </div>
+          </div>
         </div>
         <div class="grid-item mb-2" v-for="issue in mapIssues.issues" :key="issue['@id']">
           <issue-resolve-card
               :issue="issue.issue"
-              :created-by-construction-manager="issue.createdByConstructionManager" :map="mapIssues.entity"
-              :craftsman-iri="craftsman['@id']" />
+              :construction-site="constructionSite" :craftsman="craftsman" :map="mapIssues.entity"
+              :created-by-construction-manager="issue.createdByConstructionManager" />
         </div>
       </masonry>
     </div>
@@ -30,17 +36,20 @@ import Masonry from '../Library/Behaviour/Masonry'
 import IssueResolveCard from './IssueResolveCard'
 import { createEntityIdLookup } from '../../services/algorithms'
 import { mapTransformer } from '../../services/transformers'
-import { mapFormatter } from '../../services/formatters'
-import MapIssueOverviewCard from './MapIssueOverviewCard'
+import MapRenderLightbox from './MapRenderLightbox'
 
 export default {
   components: {
-    MapIssueOverviewCard,
+    MapRenderLightbox,
     IssueResolveCard,
     Masonry,
     ConstructionSitesEnterMasonryCard
   },
   props: {
+    constructionSite: {
+      type: Object,
+      required: true
+    },
     constructionManagers: {
       type: Object,
       required: true

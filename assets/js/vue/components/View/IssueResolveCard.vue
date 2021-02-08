@@ -3,7 +3,7 @@
     <div class="card-body p-2">
       <div class="row mb-3">
         <div class="col pr-2"  :class="{'pr-2': issue.imageUrl}" v-if="issue.positionX">
-          <map-render-lightbox :map="map" :issues="[issue]" :preview="true" />
+          <map-render-lightbox :construction-site="constructionSite" :map="map" :craftsman="craftsman" :issue="issue" :preview="true" />
         </div>
         <div class="col" v-if="issue.imageUrl" :class="{'pl-2': issue.positionX}">
           <image-lightbox :src="issue.imageUrl" :subject="issue.number + ': ' + issue.description" :preview="true" />
@@ -17,7 +17,7 @@
         <date-human-readable :value="issue.deadline" />
         <span v-if="overdue" class="badge badge-danger ml-1">{{ $t('issue.state.overdue') }}</span>
       </p>
-      <resolve-issue-button :issue="issue" :craftsman-iri="craftsmanIri" />
+      <resolve-issue-button :issue="issue" :craftsman="craftsman" />
     </div>
     <div class="card-footer">
       <small class="text-muted">
@@ -48,7 +48,7 @@ export default {
     MapRenderLightbox
   },
   props: {
-    issue: {
+    constructionSite: {
       type: Object,
       required: true
     },
@@ -56,12 +56,16 @@ export default {
       type: Object,
       required: true
     },
-    createdByConstructionManager: {
+    craftsman: {
       type: Object,
       required: true
     },
-    craftsmanIri: {
-      type: String,
+    issue: {
+      type: Object,
+      required: true
+    },
+    createdByConstructionManager: {
+      type: Object,
       required: true
     }
   },

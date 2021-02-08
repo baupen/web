@@ -23,8 +23,8 @@ export default {
       type: Object,
       required: true
     },
-    craftsmanIri: {
-      type: String,
+    craftsman: {
+      type: Object,
       required: true
     }
   },
@@ -33,7 +33,7 @@ export default {
       this.isLoading = true
 
       const patch = {
-        resolvedBy: this.craftsmanIri,
+        resolvedBy: this.craftsman['@id'],
         resolvedAt: (new Date()).toISOString()
       }
 
