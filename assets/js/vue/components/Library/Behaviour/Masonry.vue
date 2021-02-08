@@ -135,7 +135,14 @@ export default {
 
     _getChildItemsInColumnsArray() {
       const columns = [];
-      let childItems = this.$slots.default()[0].children;
+      let childItems = []
+      this.$slots.default().forEach(s => {
+        if (s.props) { // detect if virtual node or real node whether they have props (like class) assigned
+          childItems.push(s)
+        } else {
+          childItems = childItems.concat(s.children)
+        }
+      });
 
       // Loop through child elements
       for (let i = 0, visibleItemI = 0; i < childItems.length; i++, visibleItemI++) {
