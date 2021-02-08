@@ -47,7 +47,10 @@
     "description": "Paletten entsorgen"
   },
   {
-    "description": "Kamera funktioniert nicht"
+    "description": "Kamera funktioniert nicht",
+    "positionX": 0.4,
+    "positionY": 0.5,
+    "positionZoomScale": 0.3
   },
   {
     "description": "Schlauch reinigen",

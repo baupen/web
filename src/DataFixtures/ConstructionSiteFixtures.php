@@ -170,6 +170,10 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
             $issue->setRegisteredAt(new \DateTime());
             $issue->setRegisteredBy($constructionManager);
 
+            $issue->setPositionX(rand(0, 1000) / 1000);
+            $issue->setPositionY(rand(0, 1000) / 1000);
+            $issue->setPositionZoomScale(rand(0, 1000) / 1000);
+
             $manager->persist($issue);
         }
     }
