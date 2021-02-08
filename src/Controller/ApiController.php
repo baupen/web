@@ -13,6 +13,8 @@ namespace App\Controller;
 
 use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Controller\Base\BaseDoctrineController;
+use App\Controller\Traits\FileResponseTrait;
+use App\Controller\Traits\ImageRequestTrait;
 use App\Entity\ConstructionSite;
 use App\Entity\ConstructionSiteImage;
 use App\Entity\Issue;
@@ -28,13 +30,11 @@ use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\StorageServiceInterface;
 use App\Service\MapFileService;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -45,6 +45,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class ApiController extends BaseDoctrineController
 {
     use TokenTrait;
+    use FileResponseTrait;
+    use ImageRequestTrait;
 
     /**
      * @Route("/me", name="api_me")
@@ -117,22 +119,8 @@ class ApiController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
-        $size = $request->query->get('size', 'thumbnail');
-        $this->assertValidSize($size);
-
-        /** @var array $issueIds */
-        $issueIds = $request->query->get('issues', []);
-        $issues = $this->getDoctrine()->getRepository(Issue::class)->findByConstructionSite($issueIds, $map->getConstructionSite());
-        if (count($issues) > 0) {
-            $folder = $pathService->getTransientFolderForReports($map->getConstructionSite()).'/'.uniqid();
-            mkdir($folder, 0777, true);
-            $path = $folder.'/'.'render.jpg';
-            if (!$imageService->renderMapFileWithIssuesToFile($mapFile, $issues, $path, $size)) {
-                $path = null;
-            }
-        } else {
-            $path = $imageService->renderMapFileToJpg($mapFile, $size);
-        }
+        $size = $this->getValidImageSizeFromQuery($request->query);
+        $path = $imageService->renderMapFileToJpg($mapFile, $size);
 
         return $this->tryCreateInlineFileResponse($path, 'render.jpg');
     }
@@ -178,8 +166,7 @@ class ApiController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
-        $size = $request->query->get('size', 'thumbnail');
-        $this->assertValidSize($size);
+        $size = $this->getValidImageSizeFromQuery($request->query);
         $path = $imageService->resizeConstructionSiteImage($constructionSiteImage, $size);
 
         return $this->tryCreateInlineFileResponse($path, $constructionSiteImage->getFilename());
@@ -226,8 +213,7 @@ class ApiController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
-        $size = $request->query->get('size', 'thumbnail');
-        $this->assertValidSize($size);
+        $size = $this->getValidImageSizeFromQuery($request->query);
         $path = $imageService->resizeIssueImage($issueImage, $size);
 
         return $this->tryCreateInlineFileResponse($path, $issueImage->getFilename());
@@ -260,39 +246,6 @@ class ApiController extends BaseDoctrineController
         $url = $this->generateUrl('issue_image', ['issue' => $issue->getId(), 'issueImage' => $issueImage->getId(), 'filename' => $issueImage->getFilename()]);
 
         return new Response($url, Response::HTTP_CREATED);
-    }
-
-    private function assertValidSize(string $size): void
-    {
-        if (!in_array($size, ImageServiceInterface::VALID_SIZES)) {
-            throw new NotFoundHttpException();
-        }
-    }
-
-    private function tryCreateInlineFileResponse(?string $path, string $filename): BinaryFileResponse
-    {
-        return $this->tryCreateFileResponse($path, $filename, ResponseHeaderBag::DISPOSITION_INLINE);
-    }
-
-    private function tryCreateAttachmentFileResponse(?string $path, string $filename): BinaryFileResponse
-    {
-        return $this->tryCreateFileResponse($path, $filename, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
-    }
-
-    private function tryCreateFileResponse(?string $path, string $filename, string $disposition)
-    {
-        if (null === $path) {
-            throw new NotFoundHttpException();
-        }
-
-        $response = new BinaryFileResponse($path);
-
-        $response->setContentDisposition(
-            $disposition,
-            $filename
-        );
-
-        return $response;
     }
 
     private function getPdf(FileBag $fileBag): UploadedFile

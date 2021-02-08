@@ -353,7 +353,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $issueIri, 'craftsman.trade', $craftsman->getTrade());
     }
 
-    public function testDownloadReport()
+    public function testReport()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -361,6 +361,18 @@ class IssueTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $this->assertApiGetOk($client, '/api/issues/report?constructionSite='.$constructionSite->getId());
+    }
+
+    public function testRender()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $map = $constructionSite->getMaps()[0];
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues/render.jpg?constructionSite='.$constructionSite->getId());
+        $this->assertApiGetOk($client, '/api/issues/render.jpg?constructionSite='.$constructionSite->getId().'&map='.$map->getId());
     }
 
     public function testSummary()

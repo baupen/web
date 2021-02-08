@@ -44,6 +44,10 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *          "method"="GET",
  *          "path"="/issues/report"
  *      },
+ *      "get_render"={
+ *          "method"="GET",
+ *          "path"="/issues/render.jpg"
+ *      },
  *      "get_summary"={
  *          "method"="GET",
  *          "path"="/issues/summary"
