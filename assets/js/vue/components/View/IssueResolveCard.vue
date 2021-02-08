@@ -2,10 +2,10 @@
   <div class="card">
     <div class="card-body p-2">
       <div class="row mb-3">
-        <div class="col pr-2" v-if="issue.positionX">
+        <div class="col pr-2"  :class="{'pr-2': issue.imageUrl}" v-if="issue.positionX">
           <map-render-lightbox :map="map" :issues="[issue]" :preview="true" />
         </div>
-        <div class="col" :class="{'pl-2': issue.positionX}">
+        <div class="col" v-if="issue.imageUrl" :class="{'pl-2': issue.positionX}">
           <image-lightbox :src="issue.imageUrl" :subject="issue.number + ': ' + issue.description" :preview="true" />
         </div>
       </div>

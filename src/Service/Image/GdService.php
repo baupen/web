@@ -26,33 +26,34 @@ class GdService
      */
     private $logger;
 
+    private const FONT = __DIR__.'/../../../assets/report/fonts/OpenSans-Bold.ttf';
+
     /**
-     * @param float $yPosition
-     * @param float $xPosition
-     * @param $circleColor
-     * @param $text
-     * @param $image
+     * GdService constructor.
      */
-    public function drawRectangleWithText($yPosition, $xPosition, $circleColor, $text, $targetCharDimension, &$image)
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    public function measureTextDimensions(float $fontSize, string $text)
     {
         //get text dimensions
-        $font = __DIR__.'/../../../assets/report/fonts/OpenSans-Bold.ttf';
-        $testFontSize = 30;
-        $txtSize = imagettfbbox($testFontSize, 0, $font, $text);
-        $testTextWidth = abs($txtSize[4] - $txtSize[0]);
-        $testTextHeight = abs($txtSize[5] - $txtSize[1]);
+        $boundingBox = imagettfbbox($fontSize, 0, self::FONT, $text);
+        $textWidth = abs($boundingBox[4] - $boundingBox[0]);
+        $textHeight = abs($boundingBox[5] - $boundingBox[1]);
 
-        //calculate appropriate font size
-        $testedCharDimension = max($testTextWidth / mb_strlen($text), $testTextHeight);
-        $scalingFactor = $targetCharDimension / $testedCharDimension;
-        $fontSize = $scalingFactor * $testFontSize;
-        $textWidth = $testTextWidth * $scalingFactor;
-        $textHeight = $testTextHeight * $scalingFactor;
+        return [$textWidth, $textHeight];
+    }
 
+    /**
+     * @param resource $image
+     */
+    public function drawRectangleWithText(float $xPosition, float $yPosition, string $color, float $padding, string $text, float $textFontSize, float $textWidth, float $textHeight, &$image)
+    {
         //draw white base ellipse before the colored one
         $white = $this->createColor($image, 255, 255, 255);
-        $fillColor = 'green' == $circleColor ? $this->createColor($image, 18, 140, 45) : $this->createColor($image, 201, 151, 0);
-        $padding = $textHeight * 0.3;
+        $fillColor = 'green' == $color ? $this->createColor($image, 18, 140, 45) : $this->createColor($image, 201, 151, 0);
         $halfHeight = $textHeight / 2;
         $textStart = $xPosition - ($textWidth / 2);
         $textEnd = $xPosition + ($textWidth / 2);
@@ -60,7 +61,7 @@ class GdService
         imagefilledrectangle($image, (int) ($textStart - $padding), (int) ($yPosition - $padding - $halfHeight), (int) ($textEnd + $padding), (int) ($yPosition + $halfHeight + $padding), $fillColor);
 
         //draw text
-        imagettftext($image, $fontSize, 0, (int) ($textStart), (int) ($yPosition + $halfHeight), $white, $font, $text);
+        imagettftext($image, $textFontSize, 0, (int) ($textStart), (int) ($yPosition + $halfHeight), $white, self::FONT, $text);
     }
 
     public function resizeImage(string $sourcePath, string $targetPath, int $maxWidth, int $maxHeight): bool

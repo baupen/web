@@ -31,6 +31,16 @@ class ImageService implements ImageServiceInterface
     private const PDF_RENDER_NAME = 'render.jpg';
 
     /**
+     * constants for drawing the issues on the maps.
+     */
+    private const PADDING_PROPORTION = 0.375; // how much padding proportional to height is drawn around the issue number
+    private const SINGLE_CHARACTER_SURFACE_PERCENTAGE = 0.005; // how much surface of the image a single character should take
+    private const MAX_CHARACTERS_SURFACE_PERCENTAGE = 0.1; // how much surface of the image all characters should take
+    private const MAXIMAL_CHARACTER_PROPORTION = 0.05; // how large a single character is allowed to be relative to the full image
+    private const MINIMAL_CHARACTER_HEIGHT = 8.0; // minimal pixels a single character is allowed to be
+    private const MAXIMAL_CHARACTER_HEIGHT = 30.0; // maximal pixels a single character is allowed to be
+
+    /**
      * @var PathServiceInterface
      */
     private $pathService;
@@ -152,41 +162,82 @@ class ImageService implements ImageServiceInterface
     {
         // estimate how much is drawn on the map
         $drawnIssues = [];
-        $drawnTextLength = 0;
+        $measurementFontSize = 30;
+
+        $totalTextWidth = 0;
+        $totalTextLength = 0;
+        $totalTextHeight = 0;
         foreach ($issues as $issue) {
             if (null !== $issue->getPositionX()) {
-                $drawnIssues[] = $issue;
-                $drawnTextLength += mb_strlen((string) $issue->getNumber());
+                $circleColor = null !== $issue->getClosedAt() ? 'green' : 'orange';
+
+                $issueText = (string) $issue->getNumber();
+                list($textWidth, $textHeight) = $this->gdService->measureTextDimensions($measurementFontSize, $issueText);
+
+                $drawnIssues[] = [
+                    'text' => $issueText,
+                    'x' => $issue->getPositionX(),
+                    'y' => $issue->getPositionY(),
+                    'color' => $circleColor,
+                    'width' => $textWidth,
+                    'height' => $textHeight,
+                ];
+
+                $totalTextWidth += $textWidth;
+                $totalTextLength += mb_strlen($issueText);
+                $totalTextHeight += $textHeight;
             }
         }
 
-        $minPercentage = 1; // percentage of image occupied with issue bubbles when only few text (=1) contained
-        $maxPercentage = 10; // percentage of image occupied with many issues bubbles (=maxPercentageLength chars)
-        $maxPercentageLength = 100;
-        $minimalCharDimension = 10;
-        $maximalCharDimension = 100;
-
-        if ($drawnTextLength < $maxPercentageLength) {
-            $percentage = $minPercentage + (($maxPercentage - $minPercentage) * ($drawnTextLength / $maxPercentageLength));
-        } else {
-            $percentage = $maxPercentage;
+        if (0 === count($drawnIssues)) {
+            return;
         }
+
+        $averageTextHeight = $totalTextHeight / count($drawnIssues);
+        $averageTextWidth = $totalTextWidth / $totalTextLength;
+        $padding = $averageTextHeight * self::PADDING_PROPORTION;
 
         $xSize = imagesx($image);
         $ySize = imagesy($image);
-        $imageSize = $xSize * $ySize;
-        $availableSpace = $percentage * $imageSize / 100;
+        $imageSurface = $xSize * $ySize;
+        $textSurface = ($totalTextWidth + 2 * count($drawnIssues) * $padding) * ($averageTextHeight + 2 * $padding);
 
-        $targetCharDimension = $availableSpace / $drawnTextLength;
-        $targetCharDimension = max($minimalCharDimension, $targetCharDimension);
-        $targetCharDimension = min($maximalCharDimension, $targetCharDimension);
+        $targetTextSurfaceShare = min(self::MAX_CHARACTERS_SURFACE_PERCENTAGE, self::SINGLE_CHARACTER_SURFACE_PERCENTAGE * $totalTextLength); // 0.5% for single issue; cap at 10%
+        $actualTextSurfaceShare = $textSurface / $imageSurface;
 
-        foreach ($drawnIssues as $drawnIssue) {
-            $yCoordinate = $drawnIssue->getPositionX() * $ySize;
-            $xCoordinate = $drawnIssue->getPositionY() * $xSize;
-            $circleColor = null !== $drawnIssue->getClosedAt() ? 'green' : 'orange';
-            $this->gdService->drawRectangleWithText($yCoordinate, $xCoordinate, $circleColor, (string) $issue->getNumber(), $targetCharDimension, $image);
+        $optimalFontScale = sqrt($targetTextSurfaceShare / $actualTextSurfaceShare);
+        // max: single character should not be larger than maxbounds of longer side
+        if ($xSize < $ySize) {
+            $fontScale = $this->ensureMaxBounds(self::MAXIMAL_CHARACTER_PROPORTION * $ySize, $averageTextHeight, $optimalFontScale);
+        } else {
+            $fontScale = $this->ensureMaxBounds(self::MAXIMAL_CHARACTER_PROPORTION * $xSize, $averageTextWidth, $optimalFontScale);
         }
+
+        // min: single character should not be smaller
+        $minFontScale = self::MINIMAL_CHARACTER_HEIGHT / $averageTextHeight;
+        $fontScale = max($minFontScale, $fontScale);
+
+        // max: single character should not be larger
+        $maxFontScale = self::MAXIMAL_CHARACTER_HEIGHT / $averageTextHeight;
+        $fontScale = min($maxFontScale, $fontScale);
+
+        $actualPadding = $padding * $fontScale;
+        $actualFontSize = $measurementFontSize * $fontScale;
+
+        foreach ($drawnIssues as $issue) {
+            $positionX = $issue['x'] * $xSize;
+            $positionY = $issue['y'] * $ySize;
+            $textWidth = $issue['width'] * $fontScale;
+            $textHeight = $issue['height'] * $fontScale;
+            $this->gdService->drawRectangleWithText($positionX, $positionY, $issue['color'], $actualPadding, $issue['text'], $actualFontSize, $textWidth, $textHeight, $image);
+        }
+    }
+
+    private function ensureMaxBounds(float $maxSize, float $currentSize, float $currentMultiplier)
+    {
+        $resultSize = $currentSize * $currentMultiplier;
+
+        return $currentMultiplier * min($maxSize / $resultSize, 1);
     }
 
     private function renderPdfToJpg(string $sourcePath, string $targetFolder): ?string
