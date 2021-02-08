@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <div class="card-body">
+    <div class="card-body p-2">
       <div class="row mb-3">
         <div class="col pr-2" v-if="issue.positionX">
           <map-render-lightbox :map="map" :issues="[issue]" :preview="true" />
