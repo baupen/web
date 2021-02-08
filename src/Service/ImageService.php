@@ -161,7 +161,7 @@ class ImageService implements ImageServiceInterface
         }
 
         $minPercentage = 1; // percentage of image occupied with issue bubbles when only few text (=1) contained
-        $maxPercentage = 10; // percentage of image occupied with many issues bubbles (=maxPercentagelength chars)
+        $maxPercentage = 10; // percentage of image occupied with many issues bubbles (=maxPercentageLength chars)
         $maxPercentageLength = 100;
         $minimalCharDimension = 10;
         $maximalCharDimension = 100;
@@ -180,8 +180,6 @@ class ImageService implements ImageServiceInterface
         $targetCharDimension = $availableSpace / $drawnTextLength;
         $targetCharDimension = max($minimalCharDimension, $targetCharDimension);
         $targetCharDimension = min($maximalCharDimension, $targetCharDimension);
-
-        dump($percentage, $targetCharDimension);
 
         foreach ($drawnIssues as $drawnIssue) {
             $yCoordinate = $drawnIssue->getPositionX() * $ySize;
