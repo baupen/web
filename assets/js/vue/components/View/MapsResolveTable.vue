@@ -4,7 +4,7 @@
     <tr>
       <th>{{$t('map._name')}}</th>
       <th>{{$t('issue._plural')}}</th>
-      <th>{{$t('craftsman.next_deadline')}}</th>
+      <th class="text-nowrap">{{$t('craftsman.next_deadline')}}</th>
       <th class="w-minimal">
         <a href="#" v-if="notShownMapContainers.length > 0" @click="showAllContainers">
           {{ $t('actions.load_all_maps') }}
@@ -14,7 +14,7 @@
     </thead>
     <tbody>
     <tr v-for="mapContainer in mapContainerWithGroups" :key="mapContainer.container.entity['@id']">
-      <td>
+      <td class="text-nowrap">
         {{ '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(mapContainer.container.level) }}
         {{mapContainer.container.entity.name}}
       </td>

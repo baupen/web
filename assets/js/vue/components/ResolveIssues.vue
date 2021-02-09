@@ -12,7 +12,7 @@
       <div class="row">
         <div class="col-md-6">
           <div class="card">
-            <div class="card-body">
+            <div class="card-body p-2">
               <div class="table-responsive">
                 <maps-resolve-table
                     :map-containers="flatMaps" :map-groups="mapGroups"
