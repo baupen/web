@@ -2,7 +2,7 @@
   <div class="card">
     <div class="card-body p-2">
       <div class="row mb-3">
-        <div class="col pr-2"  :class="{'pr-2': issue.imageUrl}" v-if="issue.positionX">
+        <div class="col"  :class="{'pr-2': issue.imageUrl}" v-if="issue.positionX">
           <map-render-lightbox :construction-site="constructionSite" :map="map" :craftsman="craftsman" :issue="issue" :preview="true" />
         </div>
         <div class="col" v-if="issue.imageUrl" :class="{'pl-2': issue.positionX}">

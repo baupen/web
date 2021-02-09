@@ -112,7 +112,7 @@ export default {
     api.getMaps(this.constructionSite)
         .then(maps => this.maps = maps)
 
-    api.getIssuesGroup(this.constructionSite, 'map', {craftsman: iriToId(this.craftsman['@id'])})
+    api.getIssuesGroup(this.constructionSite, 'map', {craftsman: iriToId(this.craftsman['@id']), state: 2})
         .then(groups => this.mapGroups = groups)
   }
 }
