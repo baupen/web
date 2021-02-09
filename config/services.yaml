@@ -63,6 +63,10 @@ services:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:
             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+    App\Api\DataProvider\IssueGroupDataProvider:
+        tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
+        arguments:
+            $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
     App\Api\DataProvider\IssueRenderDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:

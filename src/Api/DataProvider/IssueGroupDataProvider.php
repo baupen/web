@@ -74,19 +74,27 @@ class IssueGroupDataProvider extends NoPaginationDataProvider
 
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
         $rootAlias = $queryBuilder->getRootAliases()[0];
-        $queryBuilder
-            ->groupBy($rootAlias.'.map')
-            ->select('IDENTITY('.$rootAlias.'.map)')
-            ->addSelect('COUNT('.$rootAlias.')')
-            ->addSelect('MAX('.$rootAlias.'.deadline)');
+        $validIssueIdResult = $queryBuilder->select($rootAlias.'.id')->getQuery()->getResult();
+        $validIssueIds = [];
+        foreach ($validIssueIdResult as $entry) {
+            $validIssueIds[] = $entry['id'];
+        }
 
-        $issueGroupResults = $queryBuilder->getQuery()->getResult();
+        $issueRepository = $this->manager->getRepository(Issue::class);
+        $groupByQuery = $issueRepository
+            ->createQueryBuilder('i')
+            ->select(['IDENTITY(i.map)', 'COUNT(i)', 'MAX(i.deadline)'])
+            ->where('i.id IN (:ids)')
+            ->setParameter(':ids', $validIssueIds)
+            ->groupBy('i.map');
+
+        $issueGroupResults = $groupByQuery->getQuery()->getResult();
         $issueGroups = [];
         foreach ($issueGroupResults as $issueGroupResult) {
             // indexes are 1-based
             $iri = $this->iriConverter->getItemIriFromResourceClass(Map::class, ['id' => $issueGroupResult[1]]);
             $count = $issueGroupResult[2];
-            $maxDeadline = $issueGroupResult[3] ? new \DateTime($issueGroupResults[3]) : null;
+            $maxDeadline = $issueGroupResult[3] ? new \DateTime($issueGroupResult[3]) : null;
             $issueGroups[] = IssueGroup::create($iri, $count, $maxDeadline);
         }
 
