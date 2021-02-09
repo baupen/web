@@ -1,7 +1,6 @@
 .lightbox-thumbnail > img {
   border: 1px solid $gray-400;
   max-height: 100%;
-  max-width: 100%;
 }
 
 .lightbox {
@@ -37,4 +36,9 @@
   /* Full width and height */
   max-width: 100%;
   vertical-align: middle;
+}
+
+// constrain thumbnail size if within sized container
+.card .lightbox-thumbnail > img {
+  max-width: 100%;
 }
