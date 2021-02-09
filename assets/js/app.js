@@ -8,6 +8,8 @@ window.$ = $
 require('bootstrap')
 require('typeface-open-sans')
 
+const QRious = require('qrious')
+
 // register some basic usability functionality
 $(document)
   .ready(() => {
@@ -28,4 +30,26 @@ $(document)
       .tooltip()
 
     dom.watch()
+
+    const authenticationTokenPlaceholder = document.getElementById('authentication-token-canvas')
+    if (authenticationTokenPlaceholder != null) {
+      $.ajax('/token', // request url
+        {
+          success: function (token) {
+            const payload = {
+              token: token,
+              origin: window.location.origin
+            }
+
+            const data = JSON.stringify(payload)
+
+            new QRious({
+              element: authenticationTokenPlaceholder,
+              level: 'Q',
+              value: data,
+              size: 300
+            })
+          }
+        })
+    }
   })

@@ -11,6 +11,16 @@
         </button>
 
         <div class="collapse navbar-collapse" id="mainNavbar">
+            {% if app.request.requestUri == "/" %}
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="#connect-app-modal" data-target="#connect-app-modal" data-toggle="modal"
+                           class="nav-link">
+                            {{ "connect_app.title"|trans({}, "help") }}
+                        </a>
+                    </li>
+                </ul>
+            {% endif %}
             <ul class="navbar-nav ml-auto">
                 {% if app.request.requestUri != "/" %}
                     <li class="nav-item">
@@ -46,17 +56,37 @@
 
     {% endblock %}
 
-    <!-- help modal -->
-    <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label"
-         aria-hidden="true">
+    <div class="modal fade" id="help-modal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ "overview.title"|trans({}, "help") }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="modal-body">
-                    <h2>{{ "overview.title"|trans({}, "help") }}</h2>
-                    <p>{{ "overview.description"|trans({}, "help") }}</p>
                     {% include "help/articles/overview.html.twig" %}
                 </div>
             </div>
         </div>
     </div>
+
+    {% if app.request.requestUri == "/" %}
+        <div class="modal fade" id="connect-app-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ "connect_app.title"|trans({}, "help") }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% include "help/articles/connect_app.html.twig" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

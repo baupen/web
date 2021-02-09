@@ -1,6 +1,6 @@
 overview:
   title: 'So funktioniert''s.'
-  description: 'Pendenzmangement in 6 Schritten.'
+  description: 'Pendenzenmangement in 6 Schritten.'
   create: Erfassen
   create_description: 'Nimm mit unserer iOS-App Pendenzen auf.'
   download_ios_app: 'zum App Store'
@@ -17,3 +17,9 @@ overview:
   start: 'Zur Anwendung'
   send_app_links: 'E-Mail mit Login Informationen zusenden'
   app_login: 'Beim Login in der App, gib %website% als Webseite ein.'
+
+connect_app:
+  title: 'Mit App verbinden'
+  description: 'Verbinden Sie ihren Account mit der App um alle Funktionen zu nutzen.'
+  activation_code: 'Aktivierungscode'
+  download_ios_app: 'iOS App herunterladen'
