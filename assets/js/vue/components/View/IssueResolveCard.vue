@@ -10,12 +10,12 @@
         </div>
       </div>
       <p v-if="issue.description" class="bg-light-gray p-2">
-        {{ issue.description }}
-      </p>
-      <p v-if="issue.deadline">
-        <b>{{ $t('issue.deadline') }}</b>:
-        <date-human-readable :value="issue.deadline" />
-        <span v-if="overdue" class="badge badge-danger ml-1">{{ $t('issue.state.overdue') }}</span>
+        {{ issue.description }} <br/>
+        <span v-if="issue.deadline">
+          <b>{{ $t('issue.deadline') }}</b>:
+          <date-human-readable :value="issue.deadline" />
+          <span v-if="overdue" class="badge badge-danger ml-1">{{ $t('issue.state.overdue') }}</span>
+        </span>
       </p>
       <resolve-issue-button :issue="issue" :craftsman="craftsman" />
     </div>

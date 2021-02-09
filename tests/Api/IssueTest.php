@@ -385,6 +385,39 @@ class IssueTest extends ApiTestCase
         $this->assertApiGetOk($client, '/api/issues/summary?constructionSite='.$constructionSite->getId());
     }
 
+    public function testGroup()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues/group?constructionSite='.$constructionSite->getId());
+        $response = $this->assertApiGetOk($client, '/api/issues/group?constructionSite='.$constructionSite->getId().'&group=map');
+
+        $groups = json_decode($response->getContent(), true);
+
+        $mapLookupByIri = [];
+        foreach ($constructionSite->getMaps() as $map) {
+            $mapLookupByIri['/api/maps/'.$map->getId()] = $map;
+        }
+
+        // each group count should match with map issue count
+        foreach ($groups as $group) {
+            $mapIri = $group['entity'];
+
+            $map = $mapLookupByIri[$mapIri];
+            $this->assertSame($map->getIssues()->count(), $group['count']);
+
+            unset($mapLookupByIri[$mapIri]);
+        }
+
+        // all other maps not contained in group should have no issues assigned
+        foreach ($mapLookupByIri as $map) {
+            $this->assertEmpty($map->getIssues());
+        }
+    }
+
     public function testFeed()
     {
         $client = $this->createClient();
