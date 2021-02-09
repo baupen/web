@@ -56,7 +56,7 @@ class CraftsmanTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/craftsmen?constructionSite='.$constructionSite->getId());
-        $this->assertApiResponseFieldSubset($response, 'email', 'emailCCs', 'contactName', 'company', 'trade', 'isDeleted', 'lastChangedAt');
+        $this->assertApiResponseFieldSubset($response, 'email', 'emailCCs', 'contactName', 'company', 'trade', 'resolveUrl', 'isDeleted', 'lastChangedAt');
     }
 
     public function testPostPatchAndDelete()

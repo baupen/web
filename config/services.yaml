@@ -43,30 +43,38 @@ services:
         bind: { $decoratedDataPersister: '@api_platform.doctrine.orm.data_persister' }
     App\Api\DataPersister\SoftDeleteDataPersister:
         bind: { $decoratedDataPersister: '@api_platform.doctrine.orm.data_persister' }
-    'App\Api\Swagger\SwaggerDecorator':
-        decorates: 'api_platform.swagger.normalizer.api_gateway'
-        arguments: [ '@App\Api\Swagger\SwaggerDecorator.inner' ]
-        autoconfigure: false
+    App\Api\OpenApi\OpenApiFactory:
+       decorates: 'api_platform.openapi.factory'
+       arguments: [ '@App\Api\OpenApi\OpenApiFactory.inner' ]
+       autoconfigure: false
 
     # higher priority are called first
     App\Api\DataProvider\AuthenticationAwareDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 4 } ]
         bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
-    App\Api\DataProvider\IssueReportDataProvider:
-        tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
-        bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
-    App\Api\DataProvider\CraftsmanStatisticsDataProvider:
-        tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
-        bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
-    App\Api\DataProvider\IssueSummaryDataProvider:
+    App\Api\DataProvider\CraftsmanFeedEntryDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:
             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+    App\Api\DataProvider\CraftsmanStatisticsDataProvider:
+        tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
+        bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
     App\Api\DataProvider\IssueFeedEntryDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:
             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
-    App\Api\DataProvider\CraftsmanFeedEntryDataProvider:
+    App\Api\DataProvider\IssueGroupDataProvider:
+        tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
+        arguments:
+            $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+    App\Api\DataProvider\IssueRenderDataProvider:
+        tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
+        arguments:
+            $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+    App\Api\DataProvider\IssueReportDataProvider:
+        tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
+        bind: { $decoratedCollectionDataProvider: '@api_platform.collection_data_provider' }
+    App\Api\DataProvider\IssueSummaryDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:
             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
@@ -78,6 +86,8 @@ services:
     'App\Api\Serializer\ConstructionSiteSerializer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
     'App\Api\Serializer\MapSerializer':
+        bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
+    'App\Api\Serializer\CraftsmanSerializer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
     'App\Api\Serializer\IssueSerializer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }

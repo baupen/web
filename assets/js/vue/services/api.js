@@ -70,6 +70,10 @@ const api = {
     urlArray.splice(3)
     return '/api' + urlArray.join('/')
   },
+  _getTokenFromLocation: function () {
+    const urlArray = window.location.pathname.split('/')
+    return urlArray[2] // location of the form "domain.com/resolve/<token>"
+  },
   _getConstructionSiteQuery: function (constructionSite) {
     return 'constructionSite=' + iriToId(constructionSite['@id'])
   },
@@ -171,11 +175,29 @@ const api = {
       }
     )
   },
+  _getMe: function (authenticationToken) {
+    axios.defaults.headers['X-AUTHENTICATION'] = authenticationToken
+    return this._getItem('/api/me')
+  },
+  authenticateFromUrl: function () {
+    const token = this._getTokenFromLocation()
+    return this._getMe(token)
+  },
+  authenticate: function () {
+    return new Promise(
+      (resolve) => {
+        axios.get('/token')
+          .then(response => {
+            this._getMe(response.data)
+              .then(response => {
+                resolve(response)
+              })
+          })
+      }
+    )
+  },
   getById: function (id) {
     return this._getItem(id)
-  },
-  getMe: function () {
-    return this._getItem('/api/me')
   },
   getConstructionSite: function () {
     const constructionSiteUrl = this._getConstructionSiteIriFromLocation()
@@ -231,6 +253,13 @@ const api = {
     queryString += '&isDeleted=false'
     return this._getItem('/api/issues/summary?' + queryString)
   },
+  getIssuesGroup: function (constructionSite, group, query = {}) {
+    let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&group=' + group
+    queryString += '&' + this._getQueryString(query)
+    queryString += '&isDeleted=false'
+    return this._getItem('/api/issues/group?' + queryString)
+  },
   getCraftsmenFeedEntries: function (constructionSite) {
     const queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
     return this._getItem('/api/craftsmen/feed_entries' + queryString)
@@ -243,6 +272,13 @@ const api = {
     const lastChangedAfter = new Date(Date.now() - week * (weeksInThePast + 1))
     queryString += '&lastChangedAt[after]=' + lastChangedAfter.toISOString()
     return this._getItem('/api/issues/feed_entries' + queryString)
+  },
+  getIssuesRenderLink: function (constructionSite, map, query = {}) {
+    let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&map=' + iriToId(map['@id'])
+    queryString += '&' + this._getQueryString(query)
+    queryString += '&isDeleted=false'
+    return '/api/issues/render.jpg?' + queryString
   },
   patch: function (instance, patch, successMessage = null) {
     return new Promise(

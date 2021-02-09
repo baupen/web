@@ -36,7 +36,6 @@
 
 <script>
 
-import ConstructionSiteCard from './ConstructionSitesEnterMasonryCard'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import { constructionSiteFormatter } from '../../services/formatters'
 import { api } from '../../services/api'
@@ -49,7 +48,6 @@ export default {
     ImageLightbox,
     LoadingIndicatorTableBody,
     DateTimeHumanReadable,
-    ConstructionSiteCard
   },
   props: {
     isLoading: {

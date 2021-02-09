@@ -1,0 +1,44 @@
+.lightbox-thumbnail > img {
+  border: 1px solid $gray-400;
+  max-height: 100%;
+}
+
+.lightbox {
+  /* Translucent background */
+  background: rgba(0, 0, 0, 0.8);
+  bottom: 0;
+
+  /* display it */
+  display: block;
+  left: 0;
+
+  /* A bit of padding around image */
+  padding: 1em;
+
+  /* Overlay entire screen */
+  position: fixed;
+  right: 0;
+  text-align: center;
+  top: 0;
+  z-index: 999;
+}
+
+.lightbox .sizer {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.lightbox img {
+  margin: 0 auto;
+  max-height: 100%;
+
+  /* Full width and height */
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+// constrain thumbnail size if within sized container
+.card .lightbox-thumbnail > img {
+  max-width: 100%;
+}

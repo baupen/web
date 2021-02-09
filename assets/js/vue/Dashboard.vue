@@ -36,8 +36,12 @@ export default {
   },
   mounted () {
     api.setupErrorNotifications(this.$t)
-    api.getConstructionSite()
-        .then(constructionSite => { this.constructionSite = constructionSite })
+    api.authenticate()
+        .then(_ => {
+              api.getConstructionSite()
+                  .then(constructionSite => { this.constructionSite = constructionSite })
+            }
+        )
   }
 }
 

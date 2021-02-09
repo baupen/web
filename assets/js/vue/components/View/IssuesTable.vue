@@ -248,7 +248,7 @@
     </table>
     <p class="text-center">
       <button class="btn btn-outline-secondary" v-if="notLoadedIssueCount > 0 && !issuesLoading" @click="loadNextPage">
-        {{ $tc('issue_table.show_more_issues', notLoadedIssueCount) }}
+        {{ $tc('actions.show_more_issues', notLoadedIssueCount) }}
       </button>
     </p>
   </loading-indicator>
@@ -556,7 +556,7 @@ export default {
           if (fieldValue.length === 0 || fieldValue.length !== this.maps.length) {
             query['map[]'] = fieldValue.map(e => iriToId(e['@id']))
           }
-        } else if (fieldValue || fieldValue === false) {
+        } else if (fieldValue || fieldValue === false || fieldValue === 0) {
           // "false" is the only Falsy value applicable as filter
           query[fieldName] = fieldValue
         }
@@ -611,6 +611,10 @@ export default {
     }
   },
   mounted () {
+    if (this.forceState !== null) {
+      this.filter.state = this.forceState
+    }
+
     api.getCraftsmen(this.constructionSite)
         .then(craftsmen => {
           this.craftsmen = craftsmen

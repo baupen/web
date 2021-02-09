@@ -1,8 +1,14 @@
 [
   {
-    "description": "Steckdose eingedrückt"
+    "description": "Steckdose eingedrückt",
+    "positionX": 0.2,
+    "positionY": 0.2,
+    "positionZoomScale": 0.4
   },
   {
-    "description": "nachbessern"
+    "description": "nachbessern",
+    "positionX": 0.5,
+    "positionY": 0.5,
+    "positionZoomScale": 0.7
   }
 ]

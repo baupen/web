@@ -63,6 +63,8 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
         $user = $userProvider->loadUserByUsername($credentials);
 
         if (!$user instanceof AuthenticationToken) {
+            throw new \Exception('Not found');
+
             return null;
         }
 

@@ -31,6 +31,16 @@ class ImageService implements ImageServiceInterface
     private const PDF_RENDER_NAME = 'render.jpg';
 
     /**
+     * constants for drawing the issues on the maps.
+     */
+    private const PADDING_PROPORTION = 0.375; // how much padding proportional to height is drawn around the issue number
+    private const SINGLE_CHARACTER_SURFACE_PERCENTAGE = 0.005; // how much surface of the image a single character should take
+    private const MAX_CHARACTERS_SURFACE_PERCENTAGE = 0.1; // how much surface of the image all characters should take
+    private const MAXIMAL_CHARACTER_PROPORTION = 0.05; // how large a single character is allowed to be relative to the full image
+    private const MINIMAL_CHARACTER_HEIGHT = 8.0; // minimal pixels a single character is allowed to be
+    private const MAXIMAL_CHARACTER_HEIGHT = 30.0; // maximal pixels a single character is allowed to be
+
+    /**
      * @var PathServiceInterface
      */
     private $pathService;
@@ -79,7 +89,7 @@ class ImageService implements ImageServiceInterface
      * @param Issue[] $issues
      * @param string  $size
      */
-    public function renderMapFileWithIssues(MapFile $mapFile, array $issues, string $targetFilePath, $size = self::SIZE_THUMBNAIL): bool
+    public function renderMapFileWithIssuesToFile(MapFile $mapFile, array $issues, string $targetFilePath, $size = self::SIZE_THUMBNAIL): bool
     {
         $mapFileJpgPath = $this->renderMapFileToJpg($mapFile, $size);
         if (null === $mapFileJpgPath) {
@@ -150,18 +160,84 @@ class ImageService implements ImageServiceInterface
      */
     private function drawIssuesOnJpg(&$image, array $issues): void
     {
-        $xSize = imagesx($image);
-        $ySize = imagesy($image);
+        // estimate how much is drawn on the map
+        $drawnIssues = [];
+        $measurementFontSize = 30;
 
-        //draw the issues on the map
+        $totalTextWidth = 0;
+        $totalTextLength = 0;
+        $totalTextHeight = 0;
         foreach ($issues as $issue) {
             if (null !== $issue->getPositionX()) {
-                $yCoordinate = $issue->getPositionX() * $ySize;
-                $xCoordinate = $issue->getPositionY() * $xSize;
                 $circleColor = null !== $issue->getClosedAt() ? 'green' : 'orange';
-                $this->gdService->drawRectangleWithText($yCoordinate, $xCoordinate, $circleColor, (string) $issue->getNumber(), $image);
+
+                $issueText = (string) $issue->getNumber();
+                list($textWidth, $textHeight) = $this->gdService->measureTextDimensions($measurementFontSize, $issueText);
+
+                $drawnIssues[] = [
+                    'text' => $issueText,
+                    'x' => $issue->getPositionX(),
+                    'y' => $issue->getPositionY(),
+                    'color' => $circleColor,
+                    'width' => $textWidth,
+                    'height' => $textHeight,
+                ];
+
+                $totalTextWidth += $textWidth;
+                $totalTextLength += mb_strlen($issueText);
+                $totalTextHeight += $textHeight;
             }
         }
+
+        if (0 === count($drawnIssues)) {
+            return;
+        }
+
+        $averageTextHeight = $totalTextHeight / count($drawnIssues);
+        $averageTextWidth = $totalTextWidth / $totalTextLength;
+        $padding = $averageTextHeight * self::PADDING_PROPORTION;
+
+        $xSize = imagesx($image);
+        $ySize = imagesy($image);
+        $imageSurface = $xSize * $ySize;
+        $textSurface = ($totalTextWidth + 2 * count($drawnIssues) * $padding) * ($averageTextHeight + 2 * $padding);
+
+        $targetTextSurfaceShare = min(self::MAX_CHARACTERS_SURFACE_PERCENTAGE, self::SINGLE_CHARACTER_SURFACE_PERCENTAGE * $totalTextLength); // 0.5% for single issue; cap at 10%
+        $actualTextSurfaceShare = $textSurface / $imageSurface;
+
+        $optimalFontScale = sqrt($targetTextSurfaceShare / $actualTextSurfaceShare);
+        // max: single character should not be larger than maxbounds of longer side
+        if ($xSize < $ySize) {
+            $fontScale = $this->ensureMaxBounds(self::MAXIMAL_CHARACTER_PROPORTION * $ySize, $averageTextHeight, $optimalFontScale);
+        } else {
+            $fontScale = $this->ensureMaxBounds(self::MAXIMAL_CHARACTER_PROPORTION * $xSize, $averageTextWidth, $optimalFontScale);
+        }
+
+        // min: single character should not be smaller
+        $minFontScale = self::MINIMAL_CHARACTER_HEIGHT / $averageTextHeight;
+        $fontScale = max($minFontScale, $fontScale);
+
+        // max: single character should not be larger
+        $maxFontScale = self::MAXIMAL_CHARACTER_HEIGHT / $averageTextHeight;
+        $fontScale = min($maxFontScale, $fontScale);
+
+        $actualPadding = $padding * $fontScale;
+        $actualFontSize = $measurementFontSize * $fontScale;
+
+        foreach ($drawnIssues as $issue) {
+            $positionX = $issue['x'] * $xSize;
+            $positionY = $issue['y'] * $ySize;
+            $textWidth = $issue['width'] * $fontScale;
+            $textHeight = $issue['height'] * $fontScale;
+            $this->gdService->drawRectangleWithText($positionX, $positionY, $issue['color'], $actualPadding, $issue['text'], $actualFontSize, $textWidth, $textHeight, $image);
+        }
+    }
+
+    private function ensureMaxBounds(float $maxSize, float $currentSize, float $currentMultiplier)
+    {
+        $resultSize = $currentSize * $currentMultiplier;
+
+        return $currentMultiplier * min($maxSize / $resultSize, 1);
     }
 
     private function renderPdfToJpg(string $sourcePath, string $targetFolder): ?string

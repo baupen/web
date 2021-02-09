@@ -12,12 +12,15 @@
 namespace App\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class LocaleSubscriber implements EventSubscriberInterface
 {
     private $defaultLocale;
+    private const LOCALE_KEY = '_locale';
 
     public function __construct(string $defaultLocale = 'en')
     {
@@ -33,11 +36,17 @@ class LocaleSubscriber implements EventSubscriberInterface
 
         // try to see if the locale has been set as a _locale routing parameter
         if ($locale = $request->attributes->get('_locale')) {
-            $request->getSession()->set('_locale', $locale);
-        } else {
-            // if no explicit locale has been set on this request, use one from the session
-            $request->setLocale($request->getSession()->get('_locale', $this->defaultLocale));
+            $request->getSession()->set(self::LOCALE_KEY, $locale);
         }
+
+        // ensure only valid locales set
+        $validLocales = ['de', 'it'];
+        if (!in_array($request->getSession()->get(self::LOCALE_KEY), $validLocales)) {
+            $request->getSession()->set(self::LOCALE_KEY, $validLocales[0]);
+        }
+
+        // set locale to request from session
+        $request->setLocale($request->getSession()->get(self::LOCALE_KEY, $this->defaultLocale));
     }
 
     public static function getSubscribedEvents()

@@ -78,7 +78,7 @@ Milestone 4 (UI)
 - [x] implement foyer UI with scalable table
 - [x] implement register UI with same table as foyer
 - [x] implement edit UI with easier map edit
-- [ ] implement craftsman view
+- [x] implement craftsman view
 - [ ] add login QR token for app
 
 Milestone 5 (Migration & performance)

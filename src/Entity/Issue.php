@@ -40,6 +40,18 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *     collectionOperations={
  *      "get",
  *      "post" = {"security_post_denormalize" = "is_granted('ISSUE_MODIFY', object)", "denormalization_context"={"groups"={"issue-create", "issue-write"}}},
+ *      "get_feed_entries"={
+ *          "method"="GET",
+ *          "path"="/issues/feed_entries"
+ *      },
+ *      "get_group"={
+ *          "method"="GET",
+ *          "path"="/issues/group"
+ *      },
+ *      "get_render"={
+ *          "method"="GET",
+ *          "path"="/issues/render.jpg"
+ *      },
  *      "get_report"={
  *          "method"="GET",
  *          "path"="/issues/report"
@@ -47,10 +59,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *      "get_summary"={
  *          "method"="GET",
  *          "path"="/issues/summary"
- *      },
- *      "get_feed_entries"={
- *          "method"="GET",
- *          "path"="/issues/feed_entries"
  *      }
  *      },
  *     itemOperations={
@@ -92,10 +100,10 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * - seen (opened < last visit of craftsman)
      * - overdue (deadline > resolved or (deadline > now && resolved == null))
      */
-    public const STATE_CREATED = 0;
-    public const STATE_REGISTERED = 1;
-    public const STATE_RESOLVED = 2;
-    public const STATE_CLOSED = 4;
+    public const STATE_CREATED = 1;
+    public const STATE_REGISTERED = 2;
+    public const STATE_RESOLVED = 4;
+    public const STATE_CLOSED = 8;
 
     /**
      * @var int

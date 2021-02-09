@@ -1,9 +1,6 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        chain_provider:
-            chain:
-                providers: [construction_managers, api_tokens]
         construction_managers:
             entity:
                 class: 'App\Entity\ConstructionManager'
@@ -24,15 +21,19 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        api:
+            pattern: ^/api/
+            anonymous: true
+            provider: api_tokens
+            guard:
+                authenticators:
+                    - App\Security\TokenAuthenticator
         main:
             anonymous: true
-            lazy: true
-            provider: chain_provider
+            provider: construction_managers
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
-                    - App\Security\TokenAuthenticator
-                entry_point: App\Security\LoginFormAuthenticator
             logout:
                 path: logout
                 # where to redirect after logout
@@ -43,13 +44,12 @@ security:
                 path: /
                 always_remember_me: true
                 samesite: 'strict'
+            # https://symfony.com/doc/current/security/impersonating_user.html
             switch_user: true
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used

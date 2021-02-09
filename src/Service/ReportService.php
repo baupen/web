@@ -92,9 +92,7 @@ class ReportService implements ReportServiceInterface
         //create folder
         $reportId = $formattedDate.'-'.uniqid();
         $generationTargetFolder = $this->pathService->getTransientFolderForReports($constructionSite).'/'.$reportId;
-        if (!file_exists($generationTargetFolder)) {
-            mkdir($generationTargetFolder, 0777, true);
-        }
+        mkdir($generationTargetFolder, 0777, true);
 
         // initialize report
         $logoPath = $this->reportAssetDir.'/logo.png';
@@ -119,7 +117,7 @@ class ReportService implements ReportServiceInterface
     private function addMap(Report $report, Map $map, array $issues, string $generationTargetFolder)
     {
         $targetPath = $generationTargetFolder.'/'.$map->getId().'.jpg';
-        if (!$this->imageService->renderMapFileWithIssues($map->getFile(), $issues, $targetPath, ImageServiceInterface::SIZE_FULL)) {
+        if (!$this->imageService->renderMapFileWithIssuesToFile($map->getFile(), $issues, $targetPath, ImageServiceInterface::SIZE_FULL)) {
             $targetPath = null;
         }
 
@@ -201,7 +199,9 @@ class ReportService implements ReportServiceInterface
         //add craftsmen
         if (null !== $filter->getCraftsmanIds()) {
             $entities = $this->doctrine->getRepository(Craftsman::class)->findBy(['id' => $filter->getCraftsmanIds()]);
-            $names = array_map(function (Craftsman $craftsman) { $craftsman->getName(); }, $entities);
+            $names = array_map(function (Craftsman $craftsman) {
+                $craftsman->getName();
+            }, $entities);
             $craftsmen = $this->translator->trans('introduction.filter.craftsmen', ['%count%' => count($names)], 'report');
             $filterEntries[$craftsmen] = implode(', ', $names);
         }
@@ -215,7 +215,9 @@ class ReportService implements ReportServiceInterface
         //add maps
         if (null !== $filter->getMapIds()) {
             $entities = $this->doctrine->getRepository(Map::class)->findBy(['id' => $filter->getMapIds()]);
-            $names = array_map(function (Map $map) { $map->getContext(); }, $entities);
+            $names = array_map(function (Map $map) {
+                $map->getContext();
+            }, $entities);
             $maps = $this->translator->trans('introduction.filter.maps', ['%count%' => count($names)], 'report');
             $filterEntries[$maps] = implode(', ', $names);
         }

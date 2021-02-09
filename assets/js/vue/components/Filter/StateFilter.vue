@@ -70,13 +70,13 @@ export default {
     updateState: function () {
       let state = 0;
       if (this.isRegistered || this.minimalState >= 1) {
-        state = state | 1;
-      }
-      if (this.isResolved || this.minimalState >= 2) {
         state = state | 2;
       }
-      if (this.isClosed || this.minimalState >= 4) {
+      if (this.isResolved || this.minimalState >= 2) {
         state = state | 4;
+      }
+      if (this.isClosed || this.minimalState >= 4) {
+        state = state | 8;
       }
 
       this.$emit('input', state)

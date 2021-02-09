@@ -5,7 +5,7 @@
         :gutter="{default: '10px'}"
         class="mt-2">
       <div class="grid-item" v-for="constructionSite in constructionSites" :key="constructionSite['@id']">
-        <construction-sites-enter-masonry-card class="mb-2" :construction-site="constructionSite" :construction-managers="constructionManagers" />
+        <construction-site-enter-card class="mb-2" :construction-site="constructionSite" :construction-managers="constructionManagers" />
       </div>
     </masonry>
   </div>
@@ -13,12 +13,12 @@
 
 <script>
 
-import ConstructionSitesEnterMasonryCard from './ConstructionSitesEnterMasonryCard'
+import ConstructionSiteEnterCard from './ConstructionSiteEnterCard'
 import Masonry from '../Library/Behaviour/Masonry'
 export default {
   components: {
     Masonry,
-    ConstructionSitesEnterMasonryCard
+    ConstructionSiteEnterCard
   },
   props: {
     constructionSites: {

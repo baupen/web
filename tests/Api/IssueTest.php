@@ -187,17 +187,21 @@ class IssueTest extends ApiTestCase
         $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', [], $basePayload);
         $issueId = json_decode($response->getContent(), true)['@id'];
 
-        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=1', $issueId);
-        $this->assertApiPatchOk($client, $issueId, ['registeredBy' => $constructionManagerId, 'registeredAt' => $time]);
         $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=1', $issueId);
 
         $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=2', $issueId);
-        $this->assertApiPatchOk($client, $issueId, ['resolvedBy' => $craftsmanId, 'resolvedAt' => $time]);
+        $this->assertApiPatchOk($client, $issueId, ['registeredBy' => $constructionManagerId, 'registeredAt' => $time]);
         $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=2', $issueId);
 
+        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=1', $issueId);
+
         $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=4', $issueId);
-        $this->assertApiPatchOk($client, $issueId, ['closedBy' => $constructionManagerId, 'closedAt' => $time]);
+        $this->assertApiPatchOk($client, $issueId, ['resolvedBy' => $craftsmanId, 'resolvedAt' => $time]);
         $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=4', $issueId);
+
+        $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=8', $issueId);
+        $this->assertApiPatchOk($client, $issueId, ['closedBy' => $constructionManagerId, 'closedAt' => $time]);
+        $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=8', $issueId);
     }
 
     public function testLastChangedAtFilter()
@@ -349,7 +353,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $issueIri, 'craftsman.trade', $craftsman->getTrade());
     }
 
-    public function testDownloadReport()
+    public function testReport()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -357,6 +361,18 @@ class IssueTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $this->assertApiGetOk($client, '/api/issues/report?constructionSite='.$constructionSite->getId());
+    }
+
+    public function testRender()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $map = $constructionSite->getMaps()[0];
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues/render.jpg?constructionSite='.$constructionSite->getId());
+        $this->assertApiGetOk($client, '/api/issues/render.jpg?constructionSite='.$constructionSite->getId().'&map='.$map->getId());
     }
 
     public function testSummary()
@@ -367,6 +383,39 @@ class IssueTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $this->assertApiGetOk($client, '/api/issues/summary?constructionSite='.$constructionSite->getId());
+    }
+
+    public function testGroup()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues/group?constructionSite='.$constructionSite->getId());
+        $response = $this->assertApiGetOk($client, '/api/issues/group?constructionSite='.$constructionSite->getId().'&group=map');
+
+        $groups = json_decode($response->getContent(), true);
+
+        $mapLookupByIri = [];
+        foreach ($constructionSite->getMaps() as $map) {
+            $mapLookupByIri['/api/maps/'.$map->getId()] = $map;
+        }
+
+        // each group count should match with map issue count
+        foreach ($groups as $group) {
+            $mapIri = $group['entity'];
+
+            $map = $mapLookupByIri[$mapIri];
+            $this->assertSame($map->getIssues()->count(), $group['count']);
+
+            unset($mapLookupByIri[$mapIri]);
+        }
+
+        // all other maps not contained in group should have no issues assigned
+        foreach ($mapLookupByIri as $map) {
+            $this->assertEmpty($map->getIssues());
+        }
     }
 
     public function testFeed()
