@@ -30,10 +30,10 @@ The next version will feature:
 - [x] more stable API scaling to many more issues (10x more than before estimated)
 - [x] removed `Notes` (no one used it)
 - [x] reimplementation of the login flow to ease boarding users
-- [ ] ease authentication in App with a QR code
+- [x] ease authentication in App with a QR code
+- [x] foyer & register table of issues supports more issues & allows edit of more properties
+- [x] edit view simplified
 - [ ] dashboard features graph with issue progress
-- [ ] foyer & register table of issues supports more issues & allows edit of more properties
-- [ ] edit view simplified
 
 Besides, some bigger maintenance tasks are completed:
 - [x] migrate to symfony 5 (from 4)
