@@ -9,35 +9,35 @@ import { h } from 'vue'
 // Get the resulting value from  `:col=` prop
 // based on the window width
 const breakpointValue = (mixed, windowWidth) => {
-  const valueAsNum = parseInt(mixed);
+  const valueAsNum = parseInt(mixed)
 
   if (valueAsNum > -1) {
-    return mixed;
+    return mixed
   } else if (typeof mixed !== 'object') {
-    return 0;
+    return 0
   }
 
-  let matchedBreakpoint = Infinity;
-  let matchedValue = mixed.default || 0;
+  let matchedBreakpoint = Infinity
+  let matchedValue = mixed.default || 0
 
   for (let k in mixed) {
-    const breakpoint = parseInt(k);
-    const breakpointValRaw = mixed[breakpoint];
-    const breakpointVal = parseInt(breakpointValRaw);
+    const breakpoint = parseInt(k)
+    const breakpointValRaw = mixed[breakpoint]
+    const breakpointVal = parseInt(breakpointValRaw)
 
     if (isNaN(breakpoint) || isNaN(breakpointVal)) {
-      continue;
+      continue
     }
 
-    const isNewBreakpoint = windowWidth <= breakpoint && breakpoint < matchedBreakpoint;
+    const isNewBreakpoint = windowWidth <= breakpoint && breakpoint < matchedBreakpoint
 
     if (isNewBreakpoint) {
-      matchedBreakpoint = breakpoint;
-      matchedValue = breakpointValRaw;
+      matchedBreakpoint = breakpoint
+      matchedValue = breakpointValRaw
     }
   }
 
-  return matchedValue;
+  return matchedValue
 }
 
 export default {
@@ -71,99 +71,103 @@ export default {
       default: () => ({})
     },
   },
-  data() {
+  data () {
     return {
       displayColumns: 2,
       displayGutter: 0
     }
   },
-  mounted() {
+  mounted () {
     this.$nextTick(() => {
-      this.reCalculate();
-    });
+      this.reCalculate()
+    })
 
     // Bind resize handler to page
     if (window) {
-      window.addEventListener('resize', this.reCalculate);
+      window.addEventListener('resize', this.reCalculate)
     }
   },
 
-  updated() {
+  updated () {
     this.$nextTick(() => {
-      this.reCalculate();
-    });
+      this.reCalculate()
+    })
   },
 
-  beforeUnmount() {
+  beforeUnmount () {
     if (window) {
-      window.removeEventListener('resize', this.reCalculate);
+      window.removeEventListener('resize', this.reCalculate)
     }
   },
 
   methods: {
     // Recalculate how many columns to display based on window width
     // and the value of the passed `:cols=` prop
-    reCalculate() {
-      const previousWindowWidth = this.windowWidth;
+    reCalculate () {
+      const previousWindowWidth = this.windowWidth
 
-      this.windowWidth = (window ? window.innerWidth : null) || Infinity;
+      this.windowWidth = (window ? window.innerWidth : null) || Infinity
 
       // Window resize events get triggered on page height
       // change which when loading the page can result in multiple
       // needless calculations. We prevent this here.
       if (previousWindowWidth === this.windowWidth) {
-        return;
+        return
       }
 
-      this._reCalculateColumnCount(this.windowWidth);
+      this._reCalculateColumnCount(this.windowWidth)
 
-      this._reCalculateGutterSize(this.windowWidth);
+      this._reCalculateGutterSize(this.windowWidth)
     },
 
-    _reCalculateGutterSize(windowWidth) {
-      this.displayGutter = breakpointValue(this.gutter, windowWidth);
+    _reCalculateGutterSize (windowWidth) {
+      this.displayGutter = breakpointValue(this.gutter, windowWidth)
     },
 
-    _reCalculateColumnCount(windowWidth) {
-      let newColumns = breakpointValue(this.cols, windowWidth);
+    _reCalculateColumnCount (windowWidth) {
+      let newColumns = breakpointValue(this.cols, windowWidth)
 
       // Make sure we can return a valid value
-      newColumns = Math.max(1, Number(newColumns) || 0);
+      newColumns = Math.max(1, Number(newColumns) || 0)
 
-      this.displayColumns = newColumns;
+      this.displayColumns = newColumns
     },
 
-    _getChildItemsInColumnsArray() {
-      const columns = [];
+    _getChildItemsInColumnsArray () {
+      const columns = []
       let childItems = []
-      this.$slots.default().forEach(s => {
-        if (s.props) { // detect if virtual node or real node whether they have props (like class) assigned
-          childItems.push(s)
-        } else {
-          childItems = childItems.concat(s.children)
-        }
-      });
+      console.log(this.$slots.default())
+      this.$slots.default()
+          .forEach(s => {
+            if (s.type.toString() === 'Symbol(Comment)') {
+              // skip comment nodes
+            } else if (s.props) { // if real node, then props (like class) is assigned
+              childItems.push(s)
+            } else { // if virtual node, want only to include its children
+              childItems = childItems.concat(s.children)
+            }
+          })
 
       // Loop through child elements
       for (let i = 0, visibleItemI = 0; i < childItems.length; i++, visibleItemI++) {
         // Get the column index the child item will end up in
-        const columnIndex = visibleItemI % this.displayColumns;
+        const columnIndex = visibleItemI % this.displayColumns
 
         if (!columns[columnIndex]) {
-          columns[columnIndex] = [];
+          columns[columnIndex] = []
         }
 
-        columns[columnIndex].push(childItems[i]);
+        columns[columnIndex].push(childItems[i])
       }
 
-      return columns;
+      return columns
     }
   },
 
-  render() {
-    const columnsContainingChildren = this._getChildItemsInColumnsArray();
-    const isGutterSizeUnitless = parseInt(this.displayGutter) === this.displayGutter * 1;
-    const gutterSizeWithUnit = isGutterSizeUnitless ? `${this.displayGutter}px` : this.displayGutter;
+  render () {
+    const columnsContainingChildren = this._getChildItemsInColumnsArray()
+    const isGutterSizeUnitless = parseInt(this.displayGutter) === this.displayGutter * 1
+    const gutterSizeWithUnit = isGutterSizeUnitless ? `${this.displayGutter}px` : this.displayGutter
 
     const columnStyle = {
       boxSizing: 'border-box',
@@ -171,7 +175,7 @@ export default {
       width: `${100 / this.displayColumns}%`,
       border: '0 solid transparent',
       borderLeftWidth: gutterSizeWithUnit
-    };
+    }
 
     const columns = columnsContainingChildren.map((children, index) => {
       /// Create column element and inject the children
@@ -180,21 +184,21 @@ export default {
         style: this.css ? columnStyle : null,
         class: this.columnClass,
         attrs: this.columnAttr
-      }, children); // specify child items here
-    });
+      }, children) // specify child items here
+    })
 
     const containerStyle = {
       display: ['-webkit-box', '-ms-flexbox', 'flex'],
       marginLeft: `-${gutterSizeWithUnit}`
-    };
+    }
 
     // Return wrapper with columns
     return h(
         this.tag, // tag name
-        this.css ? {style: containerStyle} : null, // element options
+        this.css ? { style: containerStyle } : null, // element options
         columns // column vue elements
-    );
+    )
   }
-};
+}
 
 </script>

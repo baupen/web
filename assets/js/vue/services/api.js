@@ -253,6 +253,13 @@ const api = {
     queryString += '&isDeleted=false'
     return this._getItem('/api/issues/summary?' + queryString)
   },
+  getIssuesGroup: function (constructionSite, group, query = {}) {
+    let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&group=' + group
+    queryString += '&' + this._getQueryString(query)
+    queryString += '&isDeleted=false'
+    return this._getItem('/api/issues/group?' + queryString)
+  },
   getCraftsmenFeedEntries: function (constructionSite) {
     const queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
     return this._getItem('/api/craftsmen/feed_entries' + queryString)

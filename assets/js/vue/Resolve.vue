@@ -1,7 +1,7 @@
 <template>
   <div id="resolve">
     <loading-indicator :spin="isLoading">
-      <resolve-issues :craftsman-iri="craftsmanIri" :craftsman="craftsman" :construction-site="constructionSite" />
+      <resolve-issues :craftsman="craftsman" :construction-site="constructionSite" />
     </loading-indicator>
   </div>
 </template>
@@ -24,7 +24,6 @@ export default {
   },
   data () {
     return {
-      craftsmanIri: null,
       constructionSiteIri: null,
       craftsman: null,
       constructionSite: null
@@ -32,16 +31,16 @@ export default {
   },
   computed: {
     isLoading: function () {
-      return !this.craftsmanIri || !this.craftsman || !this.constructionSite
+      return !this.craftsman || !this.constructionSite
     }
   },
   mounted () {
     api.setupErrorNotifications(this.$t)
     api.authenticateFromUrl()
         .then(me => {
-          this.craftsmanIri = me.craftsmanIri
+          let craftsmanIri = me.craftsmanIri
           this.constructionSiteIri = me.constructionSiteIri
-          api.getById(this.craftsmanIri)
+          api.getById(craftsmanIri)
               .then(craftsman => {
                 this.craftsman = craftsman
               })

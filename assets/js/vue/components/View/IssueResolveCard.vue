@@ -48,6 +48,10 @@ export default {
     MapRenderLightbox
   },
   props: {
+    constructionManagers: {
+      type: Array,
+      required: true
+    },
     constructionSite: {
       type: Object,
       required: true
@@ -64,10 +68,6 @@ export default {
       type: Object,
       required: true
     },
-    createdByConstructionManager: {
-      type: Object,
-      required: true
-    }
   },
   computed: {
     overdue: function () {
@@ -80,7 +80,12 @@ export default {
       return deadline < now
     },
     createdByConstructionManagerName: function () {
-      return constructionManagerFormatter.name(this.createdByConstructionManager)
+      const createdByConstructionManager = this.constructionManagers.find(m => m['@id'] === this.issue.createdBy)
+      if (!createdByConstructionManager) {
+        return '';
+      }
+
+      return constructionManagerFormatter.name(createdByConstructionManager)
     }
   }
 }

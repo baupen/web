@@ -18,6 +18,7 @@
     "import": "Importieren",
     "save_changes": "Änderungen speichern",
     "remove_confirm": "Ich verstehe, dass ich diesen Schnritt nicht rückgängig machen kann.",
+    "show_more_issues": "Weitere {count} Pendenzen anzeigen",
     "messages": {
       "success": {
         "construction_site_added": "Baustelle hinzugefügt",
@@ -168,7 +169,6 @@
       "before": "vor",
       "after": "nach"
     },
-    "show_more_issues": "Weitere {count} Pendenzen anzeigen",
     "messages": {
       "success": {
         "saved_issues": "Pendenzen gespeichert",

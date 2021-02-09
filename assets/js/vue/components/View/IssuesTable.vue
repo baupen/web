@@ -248,7 +248,7 @@
     </table>
     <p class="text-center">
       <button class="btn btn-outline-secondary" v-if="notLoadedIssueCount > 0 && !issuesLoading" @click="loadNextPage">
-        {{ $tc('issue_table.show_more_issues', notLoadedIssueCount) }}
+        {{ $tc('actions.show_more_issues', notLoadedIssueCount) }}
       </button>
     </p>
   </loading-indicator>
