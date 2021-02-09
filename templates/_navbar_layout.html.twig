@@ -57,7 +57,7 @@
     {% endblock %}
 
     <div class="modal fade" id="help-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ "overview.title"|trans({}, "help") }}</h5>
@@ -83,6 +83,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <p class="mb-4">{{ "connect_app.description"|trans({}, "help") }}</p>
                         {% include "help/articles/connect_app.html.twig" %}
                     </div>
                 </div>

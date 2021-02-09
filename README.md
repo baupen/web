@@ -79,7 +79,7 @@ Milestone 4 (UI)
 - [x] implement register UI with same table as foyer
 - [x] implement edit UI with easier map edit
 - [x] implement craftsman view
-- [ ] add login QR token for app
+- [x] add login QR token for app
 
 Milestone 5 (Migration & performance)
 - [ ] write migration from sqlite to mysql

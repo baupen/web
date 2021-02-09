@@ -4,16 +4,11 @@
     <p>{{ "overview.description"|trans({}, "help") }}</p>
 
     <h2 class="mt-4">{{ "overview.create"|trans }}</h2>
-    <p>{{ "overview.create_description"|trans }}
-        <a href="https://itunes.apple.com/app/id1414077195" target="_blank">
-            {{ "overview.download_ios_app"|trans }}
-        </a>
-    </p>
-    <img class="img-fluid" src="{{ asset('build/images/help/1_erfassen.gif') }}"
+    <p>{{ "overview.create_description"|trans }}</p>
+    <img class="img-fluid mb-4" src="{{ asset('build/images/help/1_erfassen.gif') }}"
          alt="{{ "overview.create_description"|trans }}">
-    <p class="text-secondary mt-2">
-        {{ "overview.app_login"|trans({'%website%': app.request.httpHost}) }}
-    </p>
+    {% include 'help/articles/connect_app.html.twig' %}
+
     <h2 class="mt-5">{{ "overview.populate"|trans }}</h2>
     <p>{{ "overview.populate_description"|trans }}</p>
     <img class="img-fluid" src="{{ asset('build/images/help/2_einpflegen.gif') }}"

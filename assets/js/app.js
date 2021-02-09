@@ -31,8 +31,8 @@ $(document)
 
     dom.watch()
 
-    const authenticationTokenPlaceholder = document.getElementById('authentication-token-canvas')
-    if (authenticationTokenPlaceholder != null) {
+    const authenticationTokenPlaceholders = document.getElementsByClassName('authentication-token-canvas')
+    if (authenticationTokenPlaceholders.length) {
       $.ajax('/token', // request url
         {
           success: function (token) {
@@ -43,12 +43,16 @@ $(document)
 
             const data = JSON.stringify(payload)
 
-            new QRious({
-              element: authenticationTokenPlaceholder,
-              level: 'Q',
-              value: data,
-              size: 300
-            })
+            for (const index in authenticationTokenPlaceholders) {
+              const authenticationTokenPlaceholder = authenticationTokenPlaceholders[index]
+
+              new QRious({
+                element: authenticationTokenPlaceholder,
+                level: 'Q',
+                value: data,
+                size: 300
+              })
+            }
           }
         })
     }
