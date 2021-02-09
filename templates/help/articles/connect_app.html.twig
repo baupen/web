@@ -1,0 +1,17 @@
+{% trans_default_domain "help" %}
+
+<article class="connect-app">
+    <div class="mb-3 text-center">
+        <a href="https://itunes.apple.com/app/id1414077195" target="_blank">
+            <img src="{{ asset('build/images/connect_app/app_store_download.svg') }}"
+                 alt="{{ "connect_app.download_ios_app"|trans }}">
+        </a>
+    </div>
+
+    <div class="p-2 bg-light-gray text-center">
+        <p class="mb-2">{{ "connect_app.activation_code"|trans }}</p>
+        <canvas class="authentication-token-canvas">
+
+        </canvas>
+    </div>
+</article>
