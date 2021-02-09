@@ -16,7 +16,7 @@
               <div class="table-responsive">
                 <maps-resolve-table
                     :map-containers="flatMaps" :map-groups="mapGroups"
-                    @show="showMapContainer($event)" />
+                    @show="showMapContainer($event)" @showMultiple="showMultipleMapContainers($event)" />
               </div>
             </div>
           </div>
@@ -72,8 +72,15 @@ export default {
       }
       return parentList
     },
-    showMapContainer: function(mapContainer) {
+    showMultipleMapContainers: function(mapContainers) {
+      mapContainers.forEach(mc => this.showMapContainer(mc, false))
+    },
+    showMapContainer: function(mapContainer, scrollTo = true) {
       this.shownMapContainers.push(mapContainer);
+
+      if (!scrollTo) {
+        return
+      }
 
       this.$nextTick(() => {
         const newDisplayedMap = this.$refs[mapContainer.entity['@id']].$el;

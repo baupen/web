@@ -5,14 +5,18 @@
       <th>{{$t('map._name')}}</th>
       <th>{{$t('issue._plural')}}</th>
       <th>{{$t('craftsman.next_deadline')}}</th>
-      <th class="w-minimal"></th>
+      <th class="w-minimal">
+        <a href="#" v-if="notShownMapContainers.length > 0" @click="showAllContainers">
+          {{ $t('actions.load_all_maps') }}
+        </a>
+      </th>
     </tr>
     </thead>
     <tbody>
-    <tr v-for="mapContainer in mapContainerWithGroups" :key="mapContainer.entity['@id']">
+    <tr v-for="mapContainer in mapContainerWithGroups" :key="mapContainer.container.entity['@id']">
       <td>
-        {{ '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(mapContainer.level) }}
-        {{mapContainer.entity.name}}
+        {{ '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(mapContainer.container.level) }}
+        {{mapContainer.container.entity.name}}
       </td>
       <td>{{mapContainer.group ? mapContainer.group.count : null}}</td>
       <td>
@@ -21,10 +25,10 @@
           {{ $t('issue.state.overdue') }}
         </span>
       </td>
-      <td>
-        <button v-if="canShowMapContainer(mapContainer)" class="btn btn-secondary" @click="showMapContainer(mapContainer)">
-          anzeigen
-        </button>
+      <td class="text-right">
+        <a href="#"  v-if="notShownMapContainers.includes(mapContainer.container)" @click="showContainer(mapContainer.container)">
+          {{ $t('actions.load_map') }}
+        </a>
       </td>
     </tr>
     </tbody>
@@ -33,10 +37,12 @@
 
 <script>
 import DateHumanReadable from '../Library/View/DateHumanReadable'
-import { mapTransformer } from '../../services/transformers'
+import ButtonWithModal from '../Library/Behaviour/ButtonWithModal'
+
 export default {
-  emits: ['show'],
+  emits: ['show', 'show-multiple'],
   components: {
+    ButtonWithModal,
     DateHumanReadable
   },
   data() {
@@ -62,24 +68,31 @@ export default {
 
       return Date.now() > new Date(mapContainer.group.maxDeadline)
     },
-    canShowMapContainer: function (mapContainer) {
-      return mapContainer.group && mapContainer.group.count > 0 && !this.shownMapContainers.includes(mapContainer);
-    },
-    showMapContainer: function (mapContainer) {
+    showContainer: function (mapContainer) {
       this.shownMapContainers.push(mapContainer)
       this.$emit('show', mapContainer)
+    },
+    showAllContainers: function () {
+      this.$emit('show-multiple', this.notShownMapContainers)
+      this.shownMapContainers.push(...this.notShownMapContainers)
     }
   },
   computed: {
+    notShownMapContainers: function () {
+      return this.mapContainerWithGroups.filter(mc => mc.group && mc.group.count > 0)
+          .map(mcc => mcc.container)
+          .filter(mc => !this.shownMapContainers.includes(mc))
+    },
     mapContainerWithGroups: function () {
       let groupLookup = {}
       this.mapGroups.forEach(mg => groupLookup[mg.entity] = mg)
 
       let mapContainerWithGroups = [];
       this.mapContainers.forEach(mapContainer => {
-        mapContainerWithGroups.push(Object.assign(mapContainer, {
-          group: groupLookup[mapContainer.entity['@id']]
-        }));
+        mapContainerWithGroups.push({
+          group: groupLookup[mapContainer.entity['@id']],
+          container: mapContainer
+        });
       })
 
       return mapContainerWithGroups
