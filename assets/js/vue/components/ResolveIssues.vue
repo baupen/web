@@ -13,42 +13,17 @@
         <div class="col-md-6">
           <div class="card">
             <div class="card-body">
-              <table class="table table-striped table-hover">
-                <thead>
-                <tr>
-                  <th>{{$t('map._name')}}</th>
-                  <th>{{$t('issue._plural')}}</th>
-                  <th>{{$t('craftsman.next_deadline')}}</th>
-                  <th class="w-minimal"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="mapContainer in mapContainerWithGroups" :key="mapContainer.entity['@id']">
-                  <td>
-                    {{ '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(mapContainer.level) }}
-                    {{mapContainer.entity.name}}
-                  </td>
-                  <td>{{mapContainer.group ? mapContainer.group.count : null}}</td>
-                  <td>
-                    <date-human-readable v-if="mapContainer.group" :value="mapContainer.group.maxDeadline" /> <br/>
-                    <span v-if="isOverdue(mapContainer)" class="badge badge-danger">
-                      {{ $t('issue.state.overdue') }}
-                    </span>
-                  </td>
-                  <td>
-                    <button v-if="canShowMapContainer(mapContainer)" class="btn btn-secondary" @click="shownMapContainers.push(mapContainer)">
-                      anzeigen
-                    </button>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <maps-resolve-table
+                    :map-containers="flatMaps" :map-groups="mapGroups"
+                    @show="showMapContainer($event)" />
+              </div>
             </div>
           </div>
         </div>
       </div>
       <issues-resolve-masonry class="mt-5"
-          v-for="mapContainer in shownMapContainers"
+          v-for="mapContainer in shownMapContainers" :key="mapContainer.entity['@id']" :ref="mapContainer.entity['@id']"
           :map="mapContainer.entity" :map-context="getMapContext(mapContainer)"
           :craftsman="craftsman" :construction-site="constructionSite" :construction-managers="constructionManagers" />
     </loading-indicator-secondary>
@@ -56,28 +31,17 @@
 </template>
 
 <script>
-import ConstructionSitesEnterMasonry from './View/ConstructionSitesEnterMasonry'
-import ConstructionSitesParticipationTable from './View/ConstructionSitesParticipationTable'
-import AddConstructionSiteButton from './Action/AddConstructionSiteButton'
-import LoadingIndicator from './Library/View/LoadingIndicator'
-import { addNonDuplicatesById, api, iriToId } from '../services/api'
+import { api, iriToId } from '../services/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 import IssuesResolveMasonry from './View/MapIssuesResolveMasonry'
-import { createEntityIdLookup } from '../services/algorithms'
 import { mapTransformer } from '../services/transformers'
-import DateHumanReadable from './Library/View/DateHumanReadable'
-import ButtonWithModal from './Library/Behaviour/ButtonWithModal'
+import MapsResolveTable from './View/MapsResolveTable'
 
 export default {
   components: {
-    ButtonWithModal,
-    DateHumanReadable,
+    MapsResolveTable,
     IssuesResolveMasonry,
     LoadingIndicatorSecondary,
-    ConstructionSitesEnterMasonry,
-    ConstructionSitesParticipationTable,
-    AddConstructionSiteButton,
-    LoadingIndicator
   },
   data () {
     return {
@@ -99,16 +63,6 @@ export default {
     }
   },
   methods: {
-    isOverdue: function (mapContainer) {
-      if (!mapContainer.group || !mapContainer.group.maxDeadline) {
-        return false
-      }
-
-      return Date.now() > new Date(mapContainer.group.maxDeadline)
-    },
-    canShowMapContainer: function (mapContainer) {
-      return mapContainer.group && mapContainer.group.count > 0 && !this.shownMapContainers.includes(mapContainer);
-    },
     getMapContext: function (mapContainer) {
       let parentList = ''
       let currentContainer = mapContainer
@@ -117,6 +71,18 @@ export default {
         currentContainer = currentContainer.parent
       }
       return parentList
+    },
+    showMapContainer: function(mapContainer) {
+      this.shownMapContainers.push(mapContainer);
+
+      this.$nextTick(() => {
+        const newDisplayedMap = this.$refs[mapContainer.entity['@id']].$el;
+        const newDisplayedMapOffset = $(newDisplayedMap).offset().top
+
+        $('html').animate({
+          scrollTop: newDisplayedMapOffset
+        });
+      })
     }
   },
   computed: {
@@ -128,19 +94,6 @@ export default {
     },
     flatMaps: function () {
       return mapTransformer.flatHierarchy(this.maps)
-    },
-    mapContainerWithGroups: function () {
-      let groupLookup = {}
-      this.mapGroups.forEach(mg => groupLookup[mg.entity] = mg)
-
-      let mapContainerWithGroups = [];
-      this.flatMaps.forEach(mapContainer => {
-        mapContainerWithGroups.push(Object.assign(mapContainer, {
-          group: groupLookup[mapContainer.entity['@id']]
-        }));
-      })
-
-      return mapContainerWithGroups
     },
   },
   mounted () {

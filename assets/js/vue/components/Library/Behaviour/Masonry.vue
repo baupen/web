@@ -136,7 +136,6 @@ export default {
     _getChildItemsInColumnsArray () {
       const columns = []
       let childItems = []
-      console.log(this.$slots.default())
       this.$slots.default()
           .forEach(s => {
             if (s.type.toString() === 'Symbol(Comment)') {
