@@ -138,6 +138,7 @@ export default {
       let childItems = []
       this.$slots.default()
           .forEach(s => {
+            childItems = childItems.concat(s.children)
             if (s.type.toString() === 'Symbol(Comment)') {
               // skip comment nodes
             } else if (s.props) { // if real node, then props (like class) is assigned
