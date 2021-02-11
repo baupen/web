@@ -1,6 +1,5 @@
 example:
   name: '%name%’s Baustelle'
-  country: Schweiz
   street_address: 'Am Bergweg 12'
   locality: Terwil
   postal_code: '4157'

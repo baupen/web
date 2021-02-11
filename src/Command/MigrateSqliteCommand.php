@@ -71,6 +71,9 @@ class MigrateSqliteCommand extends Command
         $count = $this->migrateConstructionManagers($sourcePdo, $targetPdo, $io);
         $io->text('Migrated '.$count.' construction managers');
 
+        $count = $this->migrateConstructionSites($sourcePdo, $targetPdo, $io);
+        $io->text('Migrated '.$count.' construction sites');
+
         return 0;
     }
 
@@ -135,34 +138,69 @@ class MigrateSqliteCommand extends Command
             'email', 'password', 'authentication_hash', 'is_enabled',
         ];
 
-        $query = $sourcePdo->prepare('SELECT '.implode(', ', $commonFields).', is_registration_completed FROM construction_manager');
-        $query->execute();
-        $constructionManagers = $query->fetchAll(PDO::FETCH_ASSOC);
+        $sourceFields = ['is_registration_completed'];
 
-        if (0 === count($constructionManagers)) {
-            $io->warning('no construction managers');
-
-            return 0;
-        }
-
-        foreach ($constructionManagers as &$constructionManager) {
+        $migrateReference = function (array &$constructionManager) {
             $constructionManager['authentication_token'] = HashHelper::getHash();
             $constructionManager['authorization_authority'] = null;
             $constructionManager['is_admin_account'] = 0;
             $constructionManager['can_associate_self'] = 0;
 
-            $constructionManager['password'] = $constructionManager['is_registration_completed'] ? $constructionManager['password'] : null;
+            // simply drop. this loses the information who has logged in before; but does not take the risk someone can not login anymore which could before
             unset($constructionManager['is_registration_completed']);
+        };
+
+        return $this->migrate($sourcePdo, $targetPdo, $io, 'construction_manager', array_merge($commonFields, $sourceFields), $migrateReference);
+    }
+
+    private function migrateConstructionSites(PDO $sourcePdo, PDO $targetPdo, SymfonyStyle $io): int
+    {
+        /*
+         * drops:
+         * is_automatic_edit_enabled (removed functionality)
+         */
+
+        $commonFields = ['id', 'name', 'folder_name', 'is_trial_construction_site',
+            'street_address', 'postal_code', 'locality', 'country',
+            'created_at', 'last_changed_at',
+        ];
+
+        $migrateReference = function (array &$constructionSite) {
+            $constructionSite['deleted_at'] = null;
+
+            if ('Schweiz' === $constructionSite['country']) {
+                $constructionSite['country'] = 'CH';
+            }
+        };
+
+        return $this->migrate($sourcePdo, $targetPdo, $io, 'construction_site', $commonFields, $migrateReference);
+    }
+
+    private function migrate(PDO $sourcePdo, PDO $targetPdo, SymfonyStyle $io, string $table, array $sourceFields, callable $migrateReference): int
+    {
+        $query = $sourcePdo->prepare('SELECT '.implode(', ', $sourceFields).' FROM '.$table);
+        $query->execute();
+        $entities = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        if (0 === count($entities)) {
+            $io->warning($table.' is empty');
+
+            return 0;
         }
 
-        $keys = array_keys($constructionManagers[0]);
+        foreach ($entities as &$entity) {
+            $migrateReference($entity);
+        }
+        unset($entity);
+
+        $keys = array_keys($entities[0]);
         $placeHolders = array_fill(0, count($keys), '?');
-        $insertQuery = $targetPdo->prepare('INSERT INTO construction_manager ('.implode(', ', $keys).') VALUES ('.implode(', ', $placeHolders).')');
+        $insertQuery = $targetPdo->prepare('INSERT INTO '.$table.' ('.implode(', ', $keys).') VALUES ('.implode(', ', $placeHolders).')');
 
-        foreach ($constructionManagers as $constructionManager) {
-            $insertQuery->execute(array_values($constructionManager));
+        foreach ($entities as $entity) {
+            $insertQuery->execute(array_values($entity));
         }
 
-        return count($constructionManagers);
+        return count($entities);
     }
 }
