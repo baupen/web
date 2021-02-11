@@ -9,7 +9,7 @@ api_platform:
             - { name: 'X-AUTHENTICATION', type: 'header' }
     collection:
         pagination:
-            items_per_page: 100
+            items_per_page: 30
             client_items_per_page: true
 
     version: '0.4.0'
