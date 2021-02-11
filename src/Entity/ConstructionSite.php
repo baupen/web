@@ -98,14 +98,6 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     private $maps;
 
     /**
-     * @var MapFile[]|ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="MapFile", mappedBy="constructionSite", cascade={"persist"})
-     * @ORM\OrderBy({"filename": "ASC"})
-     */
-    private $mapFiles;
-
-    /**
      * @var Craftsman[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite", cascade={"persist"})
@@ -148,7 +140,6 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     {
         $this->constructionManagers = new ArrayCollection();
         $this->maps = new ArrayCollection();
-        $this->mapFiles = new ArrayCollection();
         $this->craftsmen = new ArrayCollection();
         $this->issues = new ArrayCollection();
         $this->emailTemplates = new ArrayCollection();
@@ -204,14 +195,6 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     public function getMaps()
     {
         return $this->maps;
-    }
-
-    /**
-     * @return MapFile[]|ArrayCollection
-     */
-    public function getMapFiles()
-    {
-        return $this->mapFiles;
     }
 
     /**
