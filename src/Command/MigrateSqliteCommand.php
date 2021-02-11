@@ -67,24 +67,31 @@ class MigrateSqliteCommand extends Command
 
         $this->clearTarget($targetPdo);
         $io->text('Cleared target database');
+        $io->newLine();
 
-        $count = $this->migrateConstructionManagers($sourcePdo, $targetPdo);
+        $count = $this->migrateConstructionManagers($io, $sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' construction managers');
+        $io->newLine();
 
-        $count = $this->migrateConstructionSites($sourcePdo, $targetPdo);
+        $count = $this->migrateConstructionSites($io, $sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' construction sites');
+        $io->newLine();
 
-        $count = $this->migrateConstructionSiteConstructionManagers($sourcePdo, $targetPdo);
+        $count = $this->migrateConstructionSiteConstructionManagers($io, $sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' construction site <-> construction manager relations');
+        $io->newLine();
 
-        $count = $this->migrateConstructionSiteImages($sourcePdo, $targetPdo);
+        $count = $this->migrateConstructionSiteImages($io, $sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' construction images');
+        $io->newLine();
 
-        $count = $this->migrateMaps($sourcePdo, $targetPdo);
+        $count = $this->migrateMaps($io, $sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' maps');
+        $io->newLine();
 
-        $count = $this->migrateCraftsmen($sourcePdo, $targetPdo);
+        $count = $this->migrateCraftsmen($io, $sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' craftsmen');
+        $io->newLine();
 
         return 0;
     }
@@ -134,7 +141,7 @@ class MigrateSqliteCommand extends Command
         return [$sourcePdo, $targetPdo];
     }
 
-    private function migrateConstructionManagers(PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateConstructionManagers(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
         /*
          * drops:
@@ -163,10 +170,10 @@ class MigrateSqliteCommand extends Command
             unset($constructionManager['is_registration_completed']);
         };
 
-        return $this->migrateTable($sourcePdo, $targetPdo, 'construction_manager', array_merge($commonFields, $sourceFields), $migrateReference);
+        return $this->migrateTable($io, $sourcePdo, $targetPdo, 'construction_manager', array_merge($commonFields, $sourceFields), $migrateReference);
     }
 
-    private function migrateConstructionSites(PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateConstructionSites(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
         /*
          * drops:
@@ -187,17 +194,17 @@ class MigrateSqliteCommand extends Command
             }
         };
 
-        return $this->migrateTable($sourcePdo, $targetPdo, 'construction_site', $commonFields, $migrateReference);
+        return $this->migrateTable($io, $sourcePdo, $targetPdo, 'construction_site', $commonFields, $migrateReference);
     }
 
-    private function migrateConstructionSiteConstructionManagers(PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateConstructionSiteConstructionManagers(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
         $commonFields = ['construction_site_id', 'construction_manager_id'];
 
-        return $this->migrateTable($sourcePdo, $targetPdo, 'construction_site_construction_manager', $commonFields);
+        return $this->migrateTable($io, $sourcePdo, $targetPdo, 'construction_site_construction_manager', $commonFields);
     }
 
-    private function migrateMaps(PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateMaps(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
         /*
          * drops:
@@ -214,7 +221,7 @@ class MigrateSqliteCommand extends Command
             $map['deleted_at'] = null;
         };
 
-        $count = $this->migrateTable($sourcePdo, $targetPdo, 'map', $commonFields, $migrateReference);
+        $count = $this->migrateTable($io, $sourcePdo, $targetPdo, 'map', $commonFields, $migrateReference);
         if (0 === $count) {
             return 0;
         }
@@ -232,7 +239,7 @@ class MigrateSqliteCommand extends Command
         return $count;
     }
 
-    private function migrateCraftsmen(PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateCraftsmen(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
         /*
          * drops:
@@ -256,25 +263,25 @@ class MigrateSqliteCommand extends Command
             unset($craftsman['email_identifier']);
         };
 
-        return $this->migrateTable($sourcePdo, $targetPdo, 'craftsman', $commonFields, $migrateReference);
+        return $this->migrateTable($io, $sourcePdo, $targetPdo, 'craftsman', $commonFields, $migrateReference);
     }
 
-    private function migrateConstructionSiteImages(PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateConstructionSiteImages(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
-        return $this->migrateFile($sourcePdo, $targetPdo, 'construction_site_image', 'construction_site', 'image_id');
+        return $this->migrateFile($io, $sourcePdo, $targetPdo, 'construction_site_image', 'construction_site', 'image_id');
     }
 
-    private function migrateIssueImages(PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateIssueImages(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
-        return $this->migrateFile($sourcePdo, $targetPdo, 'issue_image', 'issue', 'image_id');
+        return $this->migrateFile($io, $sourcePdo, $targetPdo, 'issue_image', 'issue', 'image_id');
     }
 
-    private function migrateMapFiles(PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateMapFiles(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
-        return $this->migrateFile($sourcePdo, $targetPdo, 'map_file', 'map', 'file_id');
+        return $this->migrateFile($io, $sourcePdo, $targetPdo, 'map_file', 'map', 'file_id');
     }
 
-    private function migrateFile(PDO $sourcePdo, PDO $targetPdo, string $table, string $ownerTable, string $ownerColumn): int
+    private function migrateFile(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $table, string $ownerTable, string $ownerColumn): int
     {
         /**
          * drops: displayName (functionality removed).
@@ -287,28 +294,57 @@ class MigrateSqliteCommand extends Command
         ];
         $sql = 'SELECT '.implode(', ', $fields).' FROM '.$ownerTable.' o INNER JOIN '.$table.' t ON t.id = o.'.$ownerColumn;
 
-        return $this->migrate($sourcePdo, $targetPdo, $sql, $table);
+        return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table);
     }
 
-    private function migrateTable(PDO $sourcePdo, PDO $targetPdo, string $table, array $sourceFields, callable $migrateReference = null): int
+    private function migrateTable(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $table, array $sourceFields, callable $migrateReference = null): int
     {
         $sql = 'SELECT '.implode(', ', $sourceFields).' FROM '.$table;
 
-        return $this->migrate($sourcePdo, $targetPdo, $sql, $table, $migrateReference);
+        return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, $migrateReference);
     }
 
-    private function migrate(PDO $sourcePdo, PDO $targetPdo, string $sql, string $table, callable $migrateReference = null): int
+    private function migrate(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $sql, string $table, callable $migrateReference = null): int
     {
-        $entities = $this->fetchAll($sourcePdo, $sql);
+        $limit = 300;
+        $offset = 0;
 
-        if (is_callable($migrateReference)) {
-            foreach ($entities as &$entity) {
-                $migrateReference($entity);
-            }
-            unset($entity); // need to unset &$entity reference variable
+        $total = $this->count($sourcePdo, $table);
+        $multipleBatchesRequired = $total > $limit;
+        if ($multipleBatchesRequired) {
+            $io->text('Large table with '.$total.' entries. Need '.ceil((float) $total / $limit).' batches.');
         }
 
-        return $this->insertAll($targetPdo, $table, $entities);
+        while (true) {
+            $batchSql = $sql.' LIMIT '.$limit.' OFFSET '.$offset;
+
+            $entities = $this->fetchAll($sourcePdo, $batchSql);
+            if (0 === count($entities)) {
+                break;
+            }
+
+            $io->text('Migrating '.($offset + count($entities)).'/'.$total);
+            $offset += $limit;
+
+            if (is_callable($migrateReference)) {
+                foreach ($entities as &$entity) {
+                    $migrateReference($entity);
+                }
+                unset($entity); // need to unset &$entity reference variable
+            }
+
+            $this->insertAll($targetPdo, $table, $entities);
+        }
+
+        return $total;
+    }
+
+    private function count(PDO $PDO, string $table): int
+    {
+        $query = $PDO->prepare('SELECT COUNT(*) FROM '.$table);
+        $query->execute();
+
+        return $query->fetch(PDO::FETCH_NUM)[0];
     }
 
     private function fetchAll(PDO $PDO, string $sql)
