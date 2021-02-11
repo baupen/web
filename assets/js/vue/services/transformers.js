@@ -1,3 +1,5 @@
+import { createEntityIdLookup } from './algorithms'
+
 const mapTransformer = {
   _cutChildrenFromLookup: function (key, parentLookup) {
     if (!(key in parentLookup)) {
@@ -34,6 +36,13 @@ const mapTransformer = {
 
     return result
   },
+  _childrenLookup: function (lookup, children, parents = []) {
+    children.forEach(child => {
+      lookup[child.entity['@id']] = parents
+      const newParents = [...parents, child.entity]
+      this._childrenLookup(lookup, child.children, newParents)
+    })
+  },
   _hierarchy: function (maps) {
     const rootKey = 'root'
 
@@ -61,6 +70,14 @@ const mapTransformer = {
     }
 
     return children
+  },
+  parentsLookup: function (maps) {
+    const hierarchy = this._hierarchy(maps)
+
+    const lookup = {}
+    this._childrenLookup(lookup, hierarchy)
+
+    return lookup
   },
   flatHierarchy: function (maps) {
     const hierarchy = this._hierarchy(maps)

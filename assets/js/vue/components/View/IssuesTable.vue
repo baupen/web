@@ -278,6 +278,7 @@ import { api, iriToId } from '../../services/api'
 import { displaySuccess } from '../../services/notifiers'
 import { arraysAreEqual } from '../../services/algorithms'
 import ImageLightbox from './ImageLightbox'
+import { mapTransformer } from '../../services/transformers'
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count'],
@@ -387,37 +388,7 @@ export default {
       return mapLookup
     },
     mapParentsLookup: function () {
-      let mapParentsLookup = {}
-      this.maps.forEach(m => {
-        let currentMap = m
-        let mapParents = []
-        let infiniteLoopPrevention = 10
-
-        // collect array with parents, in order
-        // for EG -> Haus -> Baustelle: mapParent = [Haus, Baustelle]
-        while (currentMap.parent && infiniteLoopPrevention-- > 0) {
-          currentMap = this.mapLookup[currentMap.parent]
-          mapParents.push(currentMap)
-
-          if (currentMap.parent && mapParentsLookup[currentMap.parent['@id']] !== undefined) {
-            mapParents = mapParents.concat(...mapParentsLookup[currentMap.parent['@id']])
-            break
-          }
-        }
-
-        mapParentsLookup[m['@id']] = mapParents
-
-        while (mapParents.length > 0) {
-          let nextInPath = [...mapParents].shift()
-          if (mapParentsLookup[nextInPath['@id']]) {
-            break
-          }
-
-          mapParentsLookup[nextInPath['@id']] = mapParents
-        }
-      })
-
-      return mapParentsLookup
+      return mapTransformer.parentsLookup(this.maps)
     },
     constructionManagerLookup: function () {
       let constructionManagerLookup = {}
