@@ -32,22 +32,17 @@ class MapFile extends BaseEntity
     /**
      * @var Map
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\Map", inversedBy="file")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Map")
      */
-    private $map;
+    private $createdFor;
 
-    public function getFilename(): string
+    public function getCreatedFor(): Map
     {
-        return $this->filename;
+        return $this->createdFor;
     }
 
-    public function getMap(): Map
+    public function setCreatedFor(Map $createdFor): void
     {
-        return $this->map;
-    }
-
-    public function setMap(Map $map): void
-    {
-        $this->map = $map;
+        $this->createdFor = $createdFor;
     }
 }

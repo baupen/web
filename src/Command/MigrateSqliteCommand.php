@@ -72,40 +72,52 @@ class MigrateSqliteCommand extends Command
         $io->text('Cleared target database');
         $io->newLine();
 
-        $count = $this->migrateConstructionManagers($io, $sourcePdo, $targetPdo);
-        $io->text('Migrated '.$count.' construction managers');
+        $count = $this->migrateConstructionSiteImages($io, $sourcePdo, $targetPdo);
+        $io->text('Migrated '.$count.' construction images');
         $io->newLine();
 
         $count = $this->migrateConstructionSites($io, $sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' construction sites');
         $io->newLine();
 
-        $count = $this->migrateConstructionSiteConstructionManagers($io, $sourcePdo, $targetPdo);
-        $io->text('Migrated '.$count.' construction site <-> construction manager relations');
-        $io->newLine();
-
-        $count = $this->migrateConstructionSiteImages($io, $sourcePdo, $targetPdo);
-        $io->text('Migrated '.$count.' construction images');
-        $io->newLine();
-
-        $count = $this->migrateMaps($io, $sourcePdo, $targetPdo);
-        $io->text('Migrated '.$count.' maps');
+        $count = $this->finalizeConstructionSiteImages($io, $sourcePdo, $targetPdo);
+        $io->text('Finalized '.$count.' construction images');
         $io->newLine();
 
         $count = $this->migrateMapFiles($io, $sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' map files');
         $io->newLine();
 
+        $count = $this->migrateMaps($io, $sourcePdo, $targetPdo);
+        $io->text('Migrated '.$count.' maps');
+        $io->newLine();
+
+        $count = $this->finalizeMapFiles($io, $sourcePdo, $targetPdo);
+        $io->text('Finalized '.$count.' map files');
+        $io->newLine();
+
+        $count = $this->migrateConstructionManagers($io, $sourcePdo, $targetPdo);
+        $io->text('Migrated '.$count.' construction managers');
+        $io->newLine();
+
+        $count = $this->migrateConstructionSiteConstructionManagers($io, $sourcePdo, $targetPdo);
+        $io->text('Migrated '.$count.' construction site <-> construction manager relations');
+        $io->newLine();
+
         $count = $this->migrateCraftsmen($io, $sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' craftsmen');
+        $io->newLine();
+
+        $count = $this->migrateIssueImages($io, $sourcePdo, $targetPdo);
+        $io->text('Migrated '.$count.' issue images');
         $io->newLine();
 
         $count = $this->migrateIssues($io, $sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' issues');
         $io->newLine();
 
-        $count = $this->migrateIssueImages($io, $sourcePdo, $targetPdo);
-        $io->text('Migrated '.$count.' issue images');
+        $count = $this->finalizeIssueImages($io, $sourcePdo, $targetPdo);
+        $io->text('Finalized '.$count.' issue images');
         $io->newLine();
 
         return 0;
@@ -113,7 +125,7 @@ class MigrateSqliteCommand extends Command
 
     private function clearTarget(PDO $targetPdo)
     {
-        $referencesToClear = ['map.parent_id'];
+        $referencesToClear = ['map.parent_id', 'issue_image.created_for_id', 'map_file.created_for_id', 'construction_site_image.created_for_id'];
         foreach ($referencesToClear as $reference) {
             list($table, $column) = explode('.', $reference);
             $targetPdo->query("UPDATE $table SET $column = NULL");
@@ -121,13 +133,11 @@ class MigrateSqliteCommand extends Command
 
         $tablesToClear = [
             'email', 'email_template', 'filter',
-            'issue_image',
             'issue',
-            'map_file',
             'map', 'craftsman',
-            'construction_site_image',
             'construction_site_construction_manager',
             'construction_manager', 'construction_site',
+            'map_file', 'issue_image', 'construction_site_image',
         ];
 
         foreach ($tablesToClear as $table) {
@@ -197,7 +207,8 @@ class MigrateSqliteCommand extends Command
          */
 
         $commonFields = [
-            'id', 'name', 'folder_name', 'is_trial_construction_site',
+            'id', 'image_id',
+            'name', 'folder_name', 'is_trial_construction_site',
             'street_address', 'postal_code', 'locality', 'country',
             'created_at', 'last_changed_at',
         ];
@@ -226,7 +237,7 @@ class MigrateSqliteCommand extends Command
          */
 
         $fields = [
-            'id', 'construction_site_id',
+            'id', 'construction_site_id', 'file_id',
             'name',
             'created_at', 'last_changed_at',
         ];
@@ -274,7 +285,7 @@ class MigrateSqliteCommand extends Command
          */
 
         $fields = [
-            'id', 'map_id', 'craftsman_id',
+            'id', 'map_id', 'craftsman_id', 'image_id',
             'number', 'is_marked', 'was_added_with_client', 'description',
             'registered_at', 'created_at',
             'last_changed_at',
@@ -349,33 +360,53 @@ class MigrateSqliteCommand extends Command
 
     private function migrateConstructionSiteImages(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
-        return $this->migrateFile($io, $sourcePdo, $targetPdo, 'construction_site_image', 'construction_site', 'image_id');
+        return $this->migrateFile($io, $sourcePdo, $targetPdo, 'construction_site_image');
     }
 
     private function migrateIssueImages(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
-        return $this->migrateFile($io, $sourcePdo, $targetPdo, 'issue_image', 'issue', 'image_id');
+        return $this->migrateFile($io, $sourcePdo, $targetPdo, 'issue_image');
     }
 
     private function migrateMapFiles(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
-        return $this->migrateFile($io, $sourcePdo, $targetPdo, 'map_file', 'map', 'file_id');
+        return $this->migrateFile($io, $sourcePdo, $targetPdo, 'map_file');
     }
 
-    private function migrateFile(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $table, string $ownerTable, string $ownerColumn): int
+    private function finalizeConstructionSiteImages(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    {
+        return $this->setFileCreatedFor($io, $sourcePdo, $targetPdo, 'construction_site_image', 'construction_site', 'image_id');
+    }
+
+    private function finalizeIssueImages(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    {
+        return $this->setFileCreatedFor($io, $sourcePdo, $targetPdo, 'issue_image', 'issue', 'image_id');
+    }
+
+    private function finalizeMapFiles(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    {
+        return $this->setFileCreatedFor($io, $sourcePdo, $targetPdo, 'map_file', 'map', 'file_id');
+    }
+
+    private function migrateFile(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $table): int
     {
         /**
          * drops: displayName (functionality removed).
          */
         $fields = [
-            't.id AS id',
-            'o.id AS '.$ownerTable.'_id',
-            't.created_at AS created_at', 't.last_changed_at AS last_changed_at',
-            't.filename AS filename', 't.hash AS hash',
+            'id',
+            'created_at', 'last_changed_at',
+            'filename', 'hash',
         ];
-        $sql = 'SELECT '.implode(', ', $fields).' FROM '.$ownerTable.' o INNER JOIN '.$table.' t ON t.id = o.'.$ownerColumn;
 
-        return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, self::MODE_INSERT);
+        return $this->migrateTable($io, $sourcePdo, $targetPdo, $table, $fields);
+    }
+
+    private function setFileCreatedFor(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $table, string $ownerTable, string $ownerColumn): int
+    {
+        $sql = 'SELECT '.$ownerColumn.' as id, id as created_for_id FROM '.$ownerTable;
+
+        return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, self::MODE_UPDATE);
     }
 
     private function migrateTable(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $table, array $sourceFields, callable $migrateReference = null): int
