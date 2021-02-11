@@ -92,7 +92,7 @@ class ImageService implements ImageServiceInterface
     {
         $mapFileJpgPath = $this->renderMapFileToJpg($mapFile, $size);
         if (null === $mapFileJpgPath) {
-            return false;
+            return null;
         }
 
         $content = [];

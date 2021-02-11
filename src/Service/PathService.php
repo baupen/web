@@ -73,7 +73,7 @@ class PathService implements PathServiceInterface
 
     public function getFolderForMapFiles(ConstructionSite $constructionSite): string
     {
-        return $this->getFolderForConstructionSite($constructionSite).DIRECTORY_SEPARATOR.'map_files';
+        return $this->getFolderForConstructionSite($constructionSite).DIRECTORY_SEPARATOR.'maps';
     }
 
     public function getFolderForIssueImages(ConstructionSite $constructionSite): string
@@ -88,7 +88,7 @@ class PathService implements PathServiceInterface
 
     public function getTransientFolderForMapFile(MapFile $mapFile): string
     {
-        return $this->getTransientFolderForConstructionSite($mapFile->getCreatedFor()->getConstructionSite()).DIRECTORY_SEPARATOR.'map_files'.DIRECTORY_SEPARATOR.$mapFile->getFilename();
+        return $this->getTransientFolderForConstructionSite($mapFile->getCreatedFor()->getConstructionSite()).DIRECTORY_SEPARATOR.'maps'.DIRECTORY_SEPARATOR.$mapFile->getFilename();
     }
 
     public function getTransientFolderForIssueImage(IssueImage $issueImage): string
