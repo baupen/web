@@ -23,6 +23,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class MigrateSqliteCommand extends Command
 {
+    private const MODE_UPDATE = 'update';
+    private const MODE_INSERT = 'insert';
     /**
      * @var ManagerRegistry
      */
@@ -89,9 +91,23 @@ class MigrateSqliteCommand extends Command
         $io->text('Migrated '.$count.' maps');
         $io->newLine();
 
+        $count = $this->migrateMapFiles($io, $sourcePdo, $targetPdo);
+        $io->text('Migrated '.$count.' map files');
+        $io->newLine();
+
         $count = $this->migrateCraftsmen($io, $sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' craftsmen');
         $io->newLine();
+
+        /*
+        $count = $this->migrateIssues($io, $sourcePdo, $targetPdo);
+        $io->text('Migrated '.$count.' issues');
+        $io->newLine();
+
+        $count = $this->migrateIssueImages($io, $sourcePdo, $targetPdo);
+        $io->text('Migrated '.$count.' issue images');
+        $io->newLine();
+        */
 
         return 0;
     }
@@ -106,8 +122,9 @@ class MigrateSqliteCommand extends Command
 
         $tablesToClear = [
             'email', 'email_template', 'filter',
-            'issue_image', 'map_file',
+            'issue_image',
             'issue',
+            'map_file',
             'map', 'craftsman',
             'construction_site_image',
             'construction_site_construction_manager',
@@ -222,19 +239,9 @@ class MigrateSqliteCommand extends Command
         };
 
         $count = $this->migrateTable($io, $sourcePdo, $targetPdo, 'map', $commonFields, $migrateReference);
-        if (0 === $count) {
-            return 0;
-        }
 
-        // set parent_id in second step to avoid breaking FK
         $sql = 'SELECT parent_id, id FROM map';
-        $parentIdTuples = $this->fetchAll($sourcePdo, $sql);
-
-        $insertQuery = $targetPdo->prepare('UPDATE map SET parent_id = ? WHERE id = ?');
-
-        foreach ($parentIdTuples as $parentIdTuple) {
-            $insertQuery->execute(array_values($parentIdTuple));
-        }
+        $this->migrate($io, $sourcePdo, $targetPdo, $sql, 'map', self::MODE_UPDATE);
 
         return $count;
     }
@@ -261,6 +268,44 @@ class MigrateSqliteCommand extends Command
             unset($craftsman['last_online_visit']);
             $craftsman['authentication_token'] = $craftsman['email_identifier'];
             unset($craftsman['email_identifier']);
+        };
+
+        return $this->migrateTable($io, $sourcePdo, $targetPdo, 'craftsman', $commonFields, $migrateReference);
+    }
+
+    private function migrateIssues(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    {
+        /*
+         * drops:
+         * write_authorization_token (removed functionality)
+         */
+
+        $commonFields = [
+            'id', 'map_id', 'construction_site_id', 'craftsman_id',
+            'number', 'is_marked', 'was_added_with_client', 'description', 'response_limit',
+        ];
+
+        /**
+        position_x
+        position_y
+        position_zoom_scale
+         *
+        created_by_id
+        registered_by_id
+        resolved_by_id
+        closed_by_id
+         *
+        created_at
+        registered_at
+        resolved_at
+        closed_at
+         *
+        last_changed_at
+        deleted_at
+         */
+        $migrateReference = function (array &$craftsman) {
+            $craftsman['deadline'] = $craftsman['response_limit'];
+            unset($craftsman['response_limit']);
         };
 
         return $this->migrateTable($io, $sourcePdo, $targetPdo, 'craftsman', $commonFields, $migrateReference);
@@ -294,17 +339,17 @@ class MigrateSqliteCommand extends Command
         ];
         $sql = 'SELECT '.implode(', ', $fields).' FROM '.$ownerTable.' o INNER JOIN '.$table.' t ON t.id = o.'.$ownerColumn;
 
-        return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table);
+        return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, self::MODE_INSERT);
     }
 
     private function migrateTable(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $table, array $sourceFields, callable $migrateReference = null): int
     {
         $sql = 'SELECT '.implode(', ', $sourceFields).' FROM '.$table;
 
-        return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, $migrateReference);
+        return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, self::MODE_INSERT, $migrateReference);
     }
 
-    private function migrate(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $sql, string $table, callable $migrateReference = null): int
+    private function migrate(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $sql, string $table, string $mode, callable $migrateReference = null): int
     {
         $limit = 300;
         $offset = 0;
@@ -323,9 +368,6 @@ class MigrateSqliteCommand extends Command
                 break;
             }
 
-            $io->text('Migrating '.($offset + count($entities)).'/'.$total);
-            $offset += $limit;
-
             if (is_callable($migrateReference)) {
                 foreach ($entities as &$entity) {
                     $migrateReference($entity);
@@ -333,7 +375,18 @@ class MigrateSqliteCommand extends Command
                 unset($entity); // need to unset &$entity reference variable
             }
 
-            $this->insertAll($targetPdo, $table, $entities);
+            $progressExpression = ($offset + count($entities)).'/'.$total;
+            $offset += $limit;
+
+            if (self::MODE_INSERT === $mode) {
+                $io->text('Inserting '.$progressExpression);
+                $this->insertAll($targetPdo, $table, $entities);
+            } elseif (self::MODE_UPDATE === $mode) {
+                $io->text('Updating '.$progressExpression);
+                $this->updateAllById($targetPdo, $table, $entities);
+            } else {
+                throw new \Exception('Unknown mode '.$mode);
+            }
         }
 
         return $total;
@@ -355,13 +408,30 @@ class MigrateSqliteCommand extends Command
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    private function insertAll(PDO $targetPdo, string $table, array $entities): int
+    private function updateAllById(PDO $targetPdo, string $table, array $entities): void
     {
-        $insertCount = count($entities);
-        if (0 === $insertCount) {
-            return 0;
+        $updateColumns = [];
+        foreach (array_keys($entities[0]) as $column) {
+            if ('id' !== $column) {
+                $updateColumns[] = $column.' = :'.$column;
+            }
         }
 
+        $sql = 'UPDATE '.$table.' SET '.implode(', ', $updateColumns).' WHERE id = :id';
+        $updateQuery = $targetPdo->prepare($sql);
+
+        foreach ($entities as $entity) {
+            $params = [];
+            foreach ($entity as $key => $value) {
+                $params[':'.$key] = $value;
+            }
+
+            $updateQuery->execute($params);
+        }
+    }
+
+    private function insertAll(PDO $targetPdo, string $table, array $entities): void
+    {
         $keys = array_keys($entities[0]);
         $placeHolders = array_fill(0, count($keys), '?');
         $insertQuery = $targetPdo->prepare('INSERT INTO '.$table.' ('.implode(', ', $keys).') VALUES ('.implode(', ', $placeHolders).')');
@@ -369,7 +439,5 @@ class MigrateSqliteCommand extends Command
         foreach ($entities as $entity) {
             $insertQuery->execute(array_values($entity));
         }
-
-        return $insertCount;
     }
 }
