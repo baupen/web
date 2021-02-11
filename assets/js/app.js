@@ -46,6 +46,7 @@ $(document)
             for (const index in authenticationTokenPlaceholders) {
               const authenticationTokenPlaceholder = authenticationTokenPlaceholders[index]
 
+              // eslint-disable-next-line no-new
               new QRious({
                 element: authenticationTokenPlaceholder,
                 level: 'Q',
