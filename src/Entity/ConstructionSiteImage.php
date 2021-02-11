@@ -43,9 +43,4 @@ class ConstructionSiteImage extends BaseEntity
     {
         $this->createdFor = $createdFor;
     }
-
-    public function getConstructionSite()
-    {
-        return '';
-    }
 }

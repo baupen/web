@@ -58,7 +58,7 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
      *
      * @Assert\NotBlank
      * @Groups({"email-template-read", "email-template-edit"})
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="text")
      */
     private $name;
 
@@ -67,7 +67,7 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
      *
      * @Assert\NotBlank
      * @Groups({"email-template-read", "email-template-edit"})
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="text")
      */
     private $subject;
 
@@ -76,7 +76,7 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
      *
      * @Assert\NotBlank
      * @Groups({"email-template-read", "email-template-edit"})
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="text")
      */
     private $body;
 

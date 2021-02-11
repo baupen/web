@@ -83,17 +83,17 @@ class PathService implements PathServiceInterface
 
     public function getTransientFolderForConstructionSiteImages(ConstructionSiteImage $constructionSiteImage): string
     {
-        return $this->getTransientFolderForConstructionSite($constructionSiteImage->getConstructionSite()).DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.$constructionSiteImage->getFilename();
+        return $this->getTransientFolderForConstructionSite($constructionSiteImage->getCreatedFor()).DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.$constructionSiteImage->getFilename();
     }
 
     public function getTransientFolderForMapFile(MapFile $mapFile): string
     {
-        return $this->getTransientFolderForConstructionSite($mapFile->getConstructionSite()).DIRECTORY_SEPARATOR.'map_files'.DIRECTORY_SEPARATOR.$mapFile->getFilename();
+        return $this->getTransientFolderForConstructionSite($mapFile->getCreatedFor()->getConstructionSite()).DIRECTORY_SEPARATOR.'map_files'.DIRECTORY_SEPARATOR.$mapFile->getFilename();
     }
 
     public function getTransientFolderForIssueImage(IssueImage $issueImage): string
     {
-        return $this->getTransientFolderForConstructionSite($issueImage->getIssue()->getMap()->getConstructionSite()).DIRECTORY_SEPARATOR.'issues'.DIRECTORY_SEPARATOR.$issueImage->getFilename();
+        return $this->getTransientFolderForConstructionSite($issueImage->getCreatedFor()->getConstructionSite()).DIRECTORY_SEPARATOR.'issues'.DIRECTORY_SEPARATOR.$issueImage->getFilename();
     }
 
     public function getTransientFolderForReports(ConstructionSite $constructionSite): string
