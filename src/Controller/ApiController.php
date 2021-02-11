@@ -95,7 +95,7 @@ class ApiController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
-        $path = $pathService->getFolderForMapFiles($mapFile->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
+        $path = $pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
 
         if ('ios' === $sanitizedVariant) {
             $optimized = $mapFileService->renderForMobileDevice($mapFile);
@@ -134,16 +134,11 @@ class ApiController extends BaseDoctrineController
     {
         $this->denyAccessUnlessGranted(MapVoter::MAP_MODIFY, $map);
 
-        $oldFile = $map->getFile();
         $file = $this->getPdf($request->files);
 
         $mapFile = $storageService->uploadMapFile($file, $map);
         if (null === $mapFile) {
             throw new BadRequestException();
-        }
-
-        if ($oldFile) {
-            $this->removeDetached($oldFile);
         }
 
         $this->fastSave($map, $mapFile);
@@ -181,16 +176,11 @@ class ApiController extends BaseDoctrineController
     {
         $this->denyAccessUnlessGranted(ConstructionSiteVoter::CONSTRUCTION_SITE_MODIFY, $constructionSite);
 
-        $oldImage = $constructionSite->getImage();
         $image = $this->getImage($request->files);
 
         $constructionSiteImage = $storageService->uploadConstructionSiteImage($image, $constructionSite);
         if (null === $constructionSiteImage) {
             throw new BadRequestException();
-        }
-
-        if ($oldImage) {
-            $this->removeDetached($oldImage);
         }
 
         $this->fastSave($constructionSite, $constructionSiteImage);
@@ -228,16 +218,11 @@ class ApiController extends BaseDoctrineController
     {
         $this->denyAccessUnlessGranted(IssueVoter::ISSUE_MODIFY, $issue);
 
-        $oldImage = $issue->getImage();
         $image = $this->getImage($request->files);
 
         $issueImage = $storageService->uploadIssueImage($image, $issue);
         if (null === $issueImage) {
             throw new BadRequestException();
-        }
-
-        if ($oldImage) {
-            $this->removeDetached($oldImage);
         }
 
         $this->fastSave($issue, $issueImage);

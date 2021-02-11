@@ -30,41 +30,19 @@ class MapFile extends BaseEntity
     use FileTrait;
 
     /**
-     * @var ConstructionSite
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="mapFiles")
-     */
-    private $constructionSite;
-
-    /**
      * @var Map
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\Map", inversedBy="file")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Map")
      */
-    private $map;
+    private $createdFor;
 
-    public function getConstructionSite(): ConstructionSite
+    public function getCreatedFor(): Map
     {
-        return $this->constructionSite;
+        return $this->createdFor;
     }
 
-    public function setConstructionSite(ConstructionSite $constructionSite): void
+    public function setCreatedFor(Map $createdFor): void
     {
-        $this->constructionSite = $constructionSite;
-    }
-
-    public function getFilename(): string
-    {
-        return $this->filename;
-    }
-
-    public function getMap(): Map
-    {
-        return $this->map;
-    }
-
-    public function setMap(Map $map): void
-    {
-        $this->map = $map;
+        $this->createdFor = $createdFor;
     }
 }

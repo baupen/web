@@ -32,17 +32,17 @@ class IssueImage extends BaseEntity
     /**
      * @var Issue
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\Issue", inversedBy="image")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Issue")
      */
-    private $issue;
+    private $createdFor;
 
-    public function getIssue(): Issue
+    public function getCreatedFor(): Issue
     {
-        return $this->issue;
+        return $this->createdFor;
     }
 
-    public function setIssue(Issue $issue): void
+    public function setCreatedFor(Issue $createdFor): void
     {
-        $this->issue = $issue;
+        $this->createdFor = $createdFor;
     }
 }

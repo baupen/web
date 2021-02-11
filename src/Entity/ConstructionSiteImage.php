@@ -30,17 +30,17 @@ class ConstructionSiteImage extends BaseEntity
     /**
      * @var ConstructionSite
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="image")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite")
      */
-    private $constructionSite;
+    private $createdFor;
 
-    public function getConstructionSite(): ConstructionSite
+    public function getCreatedFor(): ConstructionSite
     {
-        return $this->constructionSite;
+        return $this->createdFor;
     }
 
-    public function setConstructionSite(ConstructionSite $constructionSite): void
+    public function setCreatedFor(ConstructionSite $createdFor): void
     {
-        $this->constructionSite = $constructionSite;
+        $this->createdFor = $createdFor;
     }
 }

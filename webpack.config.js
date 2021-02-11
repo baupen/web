@@ -76,4 +76,10 @@ Encore
     options.writeToDisk = true
   })
 
+  .configureDefinePlugin(options => {
+    options.__VUE_I18N_LEGACY_API__ = true
+    options.__VUE_I18N_FULL_INSTALL__ = true
+    options.__INTLIFY_PROD_DEVTOOLS__ = false
+  })
+
 module.exports = Encore.getWebpackConfig()

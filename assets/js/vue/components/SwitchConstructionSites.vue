@@ -4,20 +4,23 @@
     <p>{{ $t('switch.mine_help') }}</p>
 
     <loading-indicator-secondary :spin="isLoading">
-      <construction-sites-enter-masonry
-          v-if="memberOfConstructionSites.length > 0"
-          :construction-sites="memberOfConstructionSites"
-          :construction-managers="constructionManagers"
-      />
+      <div class="container mt-5">
+        <construction-sites-enter-list
+            v-if="memberOfConstructionSites.length > 0"
+            :construction-sites="memberOfConstructionSites"
+            :construction-managers="constructionManagers"
+        />
 
-      <div v-else class="alert alert-info">
-        <template v-if="canAssociateSelf">
-          {{ $t('switch.messages.info.activate_construction_site') }}
-        </template>
-        <template v-else>
-          {{ $t('switch.messages.info.no_construction_site_associated') }}
-        </template>
+        <div v-else class="alert alert-info">
+          <template v-if="canAssociateSelf">
+            {{ $t('switch.messages.info.activate_construction_site') }}
+          </template>
+          <template v-else>
+            {{ $t('switch.messages.info.no_construction_site_associated') }}
+          </template>
+        </div>
       </div>
+
     </loading-indicator-secondary>
   </div>
   <template v-if="canAssociateSelf">
@@ -38,7 +41,7 @@
 </template>
 
 <script>
-import ConstructionSitesEnterMasonry from './View/ConstructionSitesEnterMasonry'
+import ConstructionSitesEnterList from './View/ConstructionSitesEnterList'
 import ConstructionSitesParticipationTable from './View/ConstructionSitesParticipationTable'
 import AddConstructionSiteButton from './Action/AddConstructionSiteButton'
 import LoadingIndicator from './Library/View/LoadingIndicator'
@@ -48,7 +51,7 @@ import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 export default {
   components: {
     LoadingIndicatorSecondary,
-    ConstructionSitesEnterMasonry,
+    ConstructionSitesEnterList,
     ConstructionSitesParticipationTable,
     AddConstructionSiteButton,
     LoadingIndicator
@@ -91,7 +94,7 @@ export default {
       api.getConstructionManagers()
           .then(addConstructionManagers => {
             addNonDuplicatesById(this.constructionManagers, addConstructionManagers)
-      })
+          })
     } else {
       this.constructionManagers = [this.constructionManager]
       api.getConstructionSites(this.constructionManager)
@@ -99,9 +102,10 @@ export default {
             this.constructionSites = constructionSites
 
             this.constructionSites.forEach(constructionSite => {
-              api.getConstructionManagers(constructionSite).then(addConstructionManagers => {
-                addNonDuplicatesById(this.constructionManagers, addConstructionManagers)
-              })
+              api.getConstructionManagers(constructionSite)
+                  .then(addConstructionManagers => {
+                    addNonDuplicatesById(this.constructionManagers, addConstructionManagers)
+                  })
             })
           })
     }

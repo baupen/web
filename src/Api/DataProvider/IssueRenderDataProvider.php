@@ -79,12 +79,7 @@ class IssueRenderDataProvider extends NoPaginationDataProvider
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
         $issues = $queryBuilder->getQuery()->getResult();
 
-        $folder = $this->pathService->getTransientFolderForReports($map->getConstructionSite()).'/'.uniqid();
-        mkdir($folder, 0777, true);
-        $path = $folder.'/'.'render.jpg';
-        if (!$this->imageService->renderMapFileWithIssuesToFile($map->getFile(), $issues, $path, $size)) {
-            $path = null;
-        }
+        $path = $this->imageService->renderMapFileWithIssuesToJpg($map->getFile(), $issues, $size);
 
         return $this->tryCreateInlineFileResponse($path, 'render.jpg');
     }

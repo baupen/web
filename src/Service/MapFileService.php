@@ -40,7 +40,7 @@ class MapFileService implements MapFileServiceInterface
 
     public function renderForMobileDevice(MapFile $mapFile): ?string
     {
-        $sourceFilePath = $this->pathService->getFolderForMapFiles($mapFile->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
+        $sourceFilePath = $this->pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
 
         $targetFolder = $this->pathService->getTransientFolderForMapFile($mapFile);
         $fileName = pathinfo($sourceFilePath, PATHINFO_FILENAME);

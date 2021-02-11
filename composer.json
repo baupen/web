@@ -100,8 +100,7 @@
     },
     "prepare-environment": [
       "touch .env.local",
-      "vendor/bin/cghooks update",
-      "@fixtures"
+      "vendor/bin/cghooks update"
     ],
     "fixtures": [
       "php bin/console doctrine:database:drop --force",

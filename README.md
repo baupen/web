@@ -82,7 +82,7 @@ Milestone 4 (UI)
 - [x] add login QR token for app
 
 Milestone 5 (Migration & performance)
-- [ ] write migration from sqlite to mysql
+- [x] write migration from sqlite to mysql
 - [ ] test `app:cache:initialize` command
 - [ ] implement copy environment with mysql database
   
@@ -91,3 +91,11 @@ Milestone 6 (Pre-release)
 - [ ] finish all still-open issues
 - [ ] implement filter view
 - [ ] work on the nice-to-haves until release
+
+## Migration
+
+To migrate, do the following:
+- install the new application; ensure `persistent` and `transient` folders are linked as before
+- run `php bin/console app:migrate:sqlite` to copy sqlite data into mysql database
+- run `php bin/console app:authorization:refresh` to authorize users on whitelists
+- run `php bin/console app:cache:initialize` to initialize the cache

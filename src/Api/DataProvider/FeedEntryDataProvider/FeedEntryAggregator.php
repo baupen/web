@@ -13,6 +13,7 @@ namespace App\Api\DataProvider\FeedEntryDataProvider;
 
 use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Api\Entity\FeedEntry;
+use App\Helper\DateTimeFormatter;
 
 class FeedEntryAggregator
 {
@@ -37,7 +38,7 @@ class FeedEntryAggregator
     public function register(\DateTime $dateTime, object $subject, int $action)
     {
         $iri = $this->iriConverter->getIriFromItem($subject);
-        $dateTimeString = $dateTime->format('Y-m-d');
+        $dateTimeString = $dateTime->format(DateTimeFormatter::ISO_DATE_FORMAT);
 
         if (!isset($this->aggregator[$dateTimeString][$iri][$action])) {
             $this->aggregator[$dateTimeString][$iri][$action] = 0;

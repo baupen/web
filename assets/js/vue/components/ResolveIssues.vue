@@ -64,13 +64,8 @@ export default {
   },
   methods: {
     getMapContext: function (mapContainer) {
-      let parentList = ''
-      let currentContainer = mapContainer
-      while (currentContainer.parent) {
-        parentList = currentContainer.parent.name + ' > ' + parentList
-        currentContainer = currentContainer.parent
-      }
-      return parentList
+      const parents = this.mapParentsLookup[mapContainer.entity['@id']]
+      return parents.map(p => p.name).join(" > ");
     },
     showMultipleMapContainers: function(mapContainers) {
       mapContainers.forEach(mc => this.showMapContainer(mc, false))
@@ -98,6 +93,9 @@ export default {
     },
     isLoading: function () {
       return !this.maps || !this.mapGroups
+    },
+    mapParentsLookup: function () {
+      return mapTransformer.parentsLookup(this.maps)
     },
     flatMaps: function () {
       return mapTransformer.flatHierarchy(this.maps)

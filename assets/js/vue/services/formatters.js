@@ -24,6 +24,10 @@ const constructionSiteFormatter = {
 
 const mapFormatter = {
   originalFilename: function (instance) {
+    if (!instance.fileUrl) {
+      return null
+    }
+
     const currentFilename = instance.fileUrl.substr(instance.fileUrl.lastIndexOf('/') + 1)
     if (currentFilename.indexOf('_duplicate_') === -1) {
       return currentFilename

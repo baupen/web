@@ -18,6 +18,7 @@ use App\Entity\Filter;
 use App\Entity\Issue;
 use App\Entity\Map;
 use App\Helper\DateTimeFormatter;
+use App\Helper\FileHelper;
 use App\Helper\IssueHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
@@ -89,11 +90,6 @@ class ReportService implements ReportServiceInterface
             $footer = $this->translator->trans('generated_with_author', ['%date%' => $formattedDate, '%name%' => $author], 'report');
         }
 
-        //create folder
-        $reportId = $formattedDate.'-'.uniqid();
-        $generationTargetFolder = $this->pathService->getTransientFolderForReports($constructionSite).'/'.$reportId;
-        mkdir($generationTargetFolder, 0777, true);
-
         // initialize report
         $logoPath = $this->reportAssetDir.'/logo.png';
         $pdfDefinition = new PdfDefinition($constructionSite->getName(), $footer, $logoPath);
@@ -102,26 +98,49 @@ class ReportService implements ReportServiceInterface
         $this->addIntroduction($report, $constructionSite, $paginator, count($issues), $filter, $reportElements);
 
         if (count($issues) > 0) {
-            $this->addIssueContent($filter, $reportElements, $issues, $report, $generationTargetFolder);
+            $this->addIssueContent($filter, $reportElements, $issues, $report);
         }
 
-        $targetFilepath = $generationTargetFolder.'pdf';
-        $report->save($targetFilepath);
+        $folder = $this->pathService->getTransientFolderForReports($constructionSite);
+        FileHelper::ensureFolderExists($folder);
 
-        return $targetFilepath;
+        $path = $folder.'/'.(new DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT).'_'.uniqid().'.pdf';
+        $report->save($path);
+
+        return $path;
+    }
+
+    private function addIssueContent(Filter $filter, ReportElements $reportElements, array $issues, Report $report): void
+    {
+        // add tables
+        if ($reportElements->getTableByCraftsman()) {
+            $this->addTableByCraftsman($report, $issues);
+        }
+        if ($reportElements->getTableByMap()) {
+            $this->addTableByMap($report, $issues);
+        }
+
+        /* @var Map[] $orderedMaps */
+        /* @var Issue[][] $issuesPerMap */
+        IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
+        foreach ($orderedMaps as $map) {
+            $issues = $issuesPerMap[$map->getId()];
+            $this->addMap($report, $map, $issues);
+            $this->addIssueTable($report, $filter, $issues);
+            if ($reportElements->getWithImages()) {
+                $this->addIssueImageGrid($report, $issues);
+            }
+        }
     }
 
     /**
      * @param Issue[] $issues
      */
-    private function addMap(Report $report, Map $map, array $issues, string $generationTargetFolder)
+    private function addMap(Report $report, Map $map, array $issues)
     {
-        $targetPath = $generationTargetFolder.'/'.$map->getId().'.jpg';
-        if (!$this->imageService->renderMapFileWithIssuesToFile($map->getFile(), $issues, $targetPath, ImageServiceInterface::SIZE_FULL)) {
-            $targetPath = null;
-        }
+        $path = $this->imageService->renderMapFileWithIssuesToJpg($map->getFile(), $issues, ImageServiceInterface::SIZE_FULL);
 
-        $report->addMap($map->getName(), $map->getContext(), $targetPath);
+        $report->addMap($map->getName(), $map->getContext(), $path);
     }
 
     /**
@@ -431,29 +450,6 @@ class ReportService implements ReportServiceInterface
 
         //write to pdf
         $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_craftsman', [], 'report'));
-    }
-
-    private function addIssueContent(Filter $filter, ReportElements $reportElements, array $issues, Report $report, string $generationTargetFolder): void
-    {
-        // add tables
-        if ($reportElements->getTableByCraftsman()) {
-            $this->addTableByCraftsman($report, $issues);
-        }
-        if ($reportElements->getTableByMap()) {
-            $this->addTableByMap($report, $issues);
-        }
-
-        /* @var Map[] $orderedMaps */
-        /* @var Issue[][] $issuesPerMap */
-        IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
-        foreach ($orderedMaps as $map) {
-            $issues = $issuesPerMap[$map->getId()];
-            $this->addMap($report, $map, $issues, $generationTargetFolder);
-            $this->addIssueTable($report, $filter, $issues);
-            if ($reportElements->getWithImages()) {
-                $this->addIssueImageGrid($report, $issues);
-            }
-        }
     }
 
     private function setScriptRuntime(int $numberOfIssues): void

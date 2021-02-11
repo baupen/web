@@ -1,18 +1,25 @@
 <template>
   <div class="card">
-    <img class="card-img-top" v-if="constructionSite.imageUrl" :src="constructionSite.imageUrl + '?size=preview'" :alt="'image of ' + constructionSite.name">
     <div class="card-body">
-      <h2>{{ constructionSite.name }}</h2>
-      <p>
-        <span class="pre">{{ address.join("\n") }}</span>
-      </p>
-      <a :href="constructionSiteDashboardHref" class="btn btn-primary">
-        {{$t('switch.actions.enter_construction_site')}}
-      </a>
+      <div class="row">
+        <div class="col-md-3">
+          <img class="img-fluid" v-if="constructionSite.imageUrl" :src="constructionSite.imageUrl + '?size=preview'"
+               :alt="'image of ' + constructionSite.name">
+        </div>
+        <div class="col-md-9">
+          <h2>{{ constructionSite.name }}</h2>
+          <p>
+            <span class="pre">{{ address.join('\n') }}</span>
+          </p>
+          <a :href="constructionSiteDashboardHref" class="btn btn-primary">
+            {{ $t('switch.actions.enter_construction_site') }}
+          </a>
+        </div>
+      </div>
     </div>
     <div class="card-footer">
       <small class="text-muted">
-        {{ constructionManagerNames.join(", ") }}
+        {{ constructionManagerNames.join(', ') }}
       </small>
     </div>
   </div>
@@ -36,15 +43,15 @@ export default {
   computed: {
     constructionManagerNames: function () {
       return this.constructionSite.constructionManagers
-          .map(id => this.constructionManagers.find(manager => manager["@id"] === id))
+          .map(id => this.constructionManagers.find(manager => manager['@id'] === id))
           .filter(m => m)
-          .map(manager => constructionManagerFormatter.name(manager));
+          .map(manager => constructionManagerFormatter.name(manager))
     },
     address: function () {
       return constructionSiteFormatter.address(this.constructionSite)
     },
     constructionSiteDashboardHref: function () {
-      return this.constructionSite['@id'].replace("/api", "") + "/dashboard";
+      return this.constructionSite['@id'].replace('/api', '') + '/dashboard'
     }
   }
 }

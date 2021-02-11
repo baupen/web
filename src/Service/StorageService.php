@@ -18,6 +18,7 @@ use App\Entity\IssueImage;
 use App\Entity\Map;
 use App\Entity\MapFile;
 use App\Entity\Traits\FileTrait;
+use App\Helper\DateTimeFormatter;
 use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\StorageServiceInterface;
@@ -58,13 +59,14 @@ class StorageService implements StorageServiceInterface
 
     public function uploadConstructionSiteImage(UploadedFile $file, ConstructionSite $constructionSite): ?ConstructionSiteImage
     {
-        $targetFolder = $this->pathService->getFolderForConstructionSiteImages($constructionSite);
         $constructionSiteImage = new ConstructionSiteImage();
+        $constructionSiteImage->setCreatedFor($constructionSite);
+
+        $targetFolder = $this->pathService->getFolderForConstructionSiteImages($constructionSite);
         if (!$this->uploadFile($file, $targetFolder, $constructionSiteImage)) {
             return null;
         }
 
-        $constructionSiteImage->setConstructionSite($constructionSite);
         $constructionSite->setImage($constructionSiteImage);
 
         return $constructionSiteImage;
@@ -72,14 +74,14 @@ class StorageService implements StorageServiceInterface
 
     public function uploadMapFile(UploadedFile $file, Map $map): ?MapFile
     {
-        $targetFolder = $this->pathService->getFolderForMapFiles($map->getConstructionSite());
         $mapFile = new MapFile();
+        $mapFile->setCreatedFor($map);
+
+        $targetFolder = $this->pathService->getFolderForMapFiles($map->getConstructionSite());
         if (!$this->uploadFile($file, $targetFolder, $mapFile)) {
             return null;
         }
 
-        $mapFile->setMap($map);
-        $mapFile->setConstructionSite($map->getConstructionSite());
         $map->setFile($mapFile);
 
         return $mapFile;
@@ -87,13 +89,14 @@ class StorageService implements StorageServiceInterface
 
     public function uploadIssueImage(UploadedFile $file, Issue $issue): ?IssueImage
     {
-        $targetFolder = $this->pathService->getFolderForIssueImages($issue->getMap()->getConstructionSite());
         $issueImage = new IssueImage();
+        $issueImage->setCreatedFor($issue);
+
+        $targetFolder = $this->pathService->getFolderForIssueImages($issue->getMap()->getConstructionSite());
         if (!$this->uploadFile($file, $targetFolder, $issueImage)) {
             return null;
         }
 
-        $issueImage->setIssue($issue);
         $issue->setImage($issueImage);
 
         return $issueImage;
@@ -133,7 +136,7 @@ class StorageService implements StorageServiceInterface
         $now = new DateTime();
         $counter = 0;
         do {
-            $prefix = $sanitizedFileName.'_duplicate_'.$now->format('Y-m-d\THis');
+            $prefix = $sanitizedFileName.'_duplicate_'.$now->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT);
             if ($counter++ > 0) {
                 $prefix .= '_'.$counter;
             }

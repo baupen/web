@@ -170,7 +170,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     /**
      * @var IssueImage|null
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\IssueImage", mappedBy="issue", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\IssueImage", cascade={"persist"})
      */
     private $image;
 

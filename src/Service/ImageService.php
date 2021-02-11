@@ -68,7 +68,7 @@ class ImageService implements ImageServiceInterface
     public function resizeIssueImage(IssueImage $issueImage, string $size = self::SIZE_THUMBNAIL): ?string
     {
         //setup paths
-        $sourceFolder = $this->pathService->getFolderForIssueImages($issueImage->getIssue()->getMap()->getConstructionSite());
+        $sourceFolder = $this->pathService->getFolderForIssueImages($issueImage->getCreatedFor()->getConstructionSite());
         $sourcePath = $sourceFolder.DIRECTORY_SEPARATOR.$issueImage->getFilename();
         $targetFolder = $this->pathService->getTransientFolderForIssueImage($issueImage);
 
@@ -78,7 +78,7 @@ class ImageService implements ImageServiceInterface
     public function resizeConstructionSiteImage(ConstructionSiteImage $constructionSiteImage, string $size = self::SIZE_THUMBNAIL): ?string
     {
         //setup paths
-        $sourceFolder = $this->pathService->getFolderForConstructionSiteImages($constructionSiteImage->getConstructionSite());
+        $sourceFolder = $this->pathService->getFolderForConstructionSiteImages($constructionSiteImage->getCreatedFor());
         $sourcePath = $sourceFolder.DIRECTORY_SEPARATOR.$constructionSiteImage->getFilename();
         $targetFolder = $this->pathService->getTransientFolderForConstructionSiteImages($constructionSiteImage);
 
@@ -87,27 +87,54 @@ class ImageService implements ImageServiceInterface
 
     /**
      * @param Issue[] $issues
-     * @param string  $size
      */
-    public function renderMapFileWithIssuesToFile(MapFile $mapFile, array $issues, string $targetFilePath, $size = self::SIZE_THUMBNAIL): bool
+    public function renderMapFileWithIssuesToJpg(MapFile $mapFile, array $issues, string $size = self::SIZE_THUMBNAIL): ?string
     {
         $mapFileJpgPath = $this->renderMapFileToJpg($mapFile, $size);
         if (null === $mapFileJpgPath) {
-            return false;
+            return null;
         }
 
-        // render issues on image
-        $image = imagecreatefromjpeg($mapFileJpgPath);
-        $this->drawIssuesOnJpg($image, $issues);
-        imagejpeg($image, $targetFilePath);
+        $content = [];
+        foreach ($issues as $issue) {
+            if (null !== $issue->getPositionX()) {
+                $circleColor = null !== $issue->getClosedAt() ? 'green' : 'orange';
+                $issueText = (string) $issue->getNumber();
+                $content[] = [
+                    'text' => $issueText,
+                    'x' => $issue->getPositionX(),
+                    'y' => $issue->getPositionY(),
+                    'color' => $circleColor,
+                ];
+            }
+        }
 
-        return true;
+        if (0 === count($content)) {
+            return $mapFileJpgPath;
+        }
+
+        $contentHash = hash('sha256', serialize($content));
+        $targetFolder = $this->pathService->getTransientFolderForMapFile($mapFile);
+        $targetFilePath = $this->getPathForSize($mapFileJpgPath, $targetFolder, $contentHash, $size);
+        if (file_exists($targetFilePath)) {
+            return $targetFilePath;
+        }
+
+        FileHelper::ensureFolderExists($targetFolder);
+        $this->drawContentOnJpg($mapFileJpgPath, $targetFilePath, $content);
+
+        //abort if generation failed
+        if (!file_exists($targetFilePath)) {
+            return null;
+        }
+
+        return $targetFilePath;
     }
 
     public function renderMapFileToJpg(MapFile $mapFile, string $size = self::SIZE_THUMBNAIL): ?string
     {
         //setup paths
-        $sourceFilePath = $this->pathService->getFolderForMapFiles($mapFile->getConstructionSite()).DIRECTORY_SEPARATOR.$mapFile->getFilename();
+        $sourceFilePath = $this->pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()).DIRECTORY_SEPARATOR.$mapFile->getFilename();
         $targetFolder = $this->pathService->getTransientFolderForMapFile($mapFile);
 
         // render pdf
@@ -122,13 +149,8 @@ class ImageService implements ImageServiceInterface
 
     private function renderSizeFor(string $sourcePath, string $targetFolder, string $size): ?string
     {
-        //setup paths
-        $ending = pathinfo($sourcePath, PATHINFO_EXTENSION);
-        $fileName = pathinfo($sourcePath, PATHINFO_FILENAME);
-        $targetFileName = $fileName.'_'.$size.'.'.$ending;
-        $targetFilePath = $targetFolder.DIRECTORY_SEPARATOR.$targetFileName;
-
-        //return if already created
+        $filename = pathinfo($sourcePath, PATHINFO_FILENAME);
+        $targetFilePath = $this->getPathForSize($sourcePath, $targetFolder, $filename, $size);
         if (file_exists($targetFilePath)) {
             return $targetFilePath;
         }
@@ -155,52 +177,47 @@ class ImageService implements ImageServiceInterface
         return $targetFilePath;
     }
 
+    private function getPathForSize(string $sourcePath, string $targetFolder, string $filename, string $size)
+    {
+        $ending = pathinfo($sourcePath, PATHINFO_EXTENSION);
+
+        $targetFileName = $filename.'_'.$size.'.'.$ending;
+
+        return $targetFolder.DIRECTORY_SEPARATOR.$targetFileName;
+    }
+
     /**
-     * @param Issue[] $issues
+     * @param string[][] $content
      */
-    private function drawIssuesOnJpg(&$image, array $issues): void
+    private function drawContentOnJpg(string $sourcePath, string $targetPath, array $content): void
     {
         // estimate how much is drawn on the map
-        $drawnIssues = [];
         $measurementFontSize = 30;
 
         $totalTextWidth = 0;
         $totalTextLength = 0;
         $totalTextHeight = 0;
-        foreach ($issues as $issue) {
-            if (null !== $issue->getPositionX()) {
-                $circleColor = null !== $issue->getClosedAt() ? 'green' : 'orange';
+        foreach ($content as &$entry) {
+            list($textWidth, $textHeight) = $this->gdService->measureTextDimensions($measurementFontSize, $entry['text']);
 
-                $issueText = (string) $issue->getNumber();
-                list($textWidth, $textHeight) = $this->gdService->measureTextDimensions($measurementFontSize, $issueText);
+            $entry['width'] = $textWidth;
+            $entry['height'] = $textHeight;
 
-                $drawnIssues[] = [
-                    'text' => $issueText,
-                    'x' => $issue->getPositionX(),
-                    'y' => $issue->getPositionY(),
-                    'color' => $circleColor,
-                    'width' => $textWidth,
-                    'height' => $textHeight,
-                ];
-
-                $totalTextWidth += $textWidth;
-                $totalTextLength += mb_strlen($issueText);
-                $totalTextHeight += $textHeight;
-            }
+            $totalTextWidth += $textWidth;
+            $totalTextLength += mb_strlen($entry['text']);
+            $totalTextHeight += $textHeight;
         }
+        unset($entry);
 
-        if (0 === count($drawnIssues)) {
-            return;
-        }
-
-        $averageTextHeight = $totalTextHeight / count($drawnIssues);
+        $averageTextHeight = $totalTextHeight / count($content);
         $averageTextWidth = $totalTextWidth / $totalTextLength;
         $padding = $averageTextHeight * self::PADDING_PROPORTION;
 
+        $image = imagecreatefromjpeg($sourcePath);
         $xSize = imagesx($image);
         $ySize = imagesy($image);
         $imageSurface = $xSize * $ySize;
-        $textSurface = ($totalTextWidth + 2 * count($drawnIssues) * $padding) * ($averageTextHeight + 2 * $padding);
+        $textSurface = ($totalTextWidth + 2 * count($content) * $padding) * ($averageTextHeight + 2 * $padding);
 
         $targetTextSurfaceShare = min(self::MAX_CHARACTERS_SURFACE_PERCENTAGE, self::SINGLE_CHARACTER_SURFACE_PERCENTAGE * $totalTextLength); // 0.5% for single issue; cap at 10%
         $actualTextSurfaceShare = $textSurface / $imageSurface;
@@ -224,13 +241,15 @@ class ImageService implements ImageServiceInterface
         $actualPadding = $padding * $fontScale;
         $actualFontSize = $measurementFontSize * $fontScale;
 
-        foreach ($drawnIssues as $issue) {
+        foreach ($content as $issue) {
             $positionX = $issue['x'] * $xSize;
             $positionY = $issue['y'] * $ySize;
             $textWidth = $issue['width'] * $fontScale;
             $textHeight = $issue['height'] * $fontScale;
             $this->gdService->drawRectangleWithText($positionX, $positionY, $issue['color'], $actualPadding, $issue['text'], $actualFontSize, $textWidth, $textHeight, $image);
         }
+
+        imagejpeg($image, $targetPath);
     }
 
     private function ensureMaxBounds(float $maxSize, float $currentSize, float $currentMultiplier)
