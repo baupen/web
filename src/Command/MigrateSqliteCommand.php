@@ -25,6 +25,7 @@ class MigrateSqliteCommand extends Command
 {
     private const MODE_UPDATE = 'update';
     private const MODE_INSERT = 'insert';
+
     /**
      * @var ManagerRegistry
      */
@@ -99,7 +100,6 @@ class MigrateSqliteCommand extends Command
         $io->text('Migrated '.$count.' craftsmen');
         $io->newLine();
 
-        /*
         $count = $this->migrateIssues($io, $sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' issues');
         $io->newLine();
@@ -107,7 +107,6 @@ class MigrateSqliteCommand extends Command
         $count = $this->migrateIssueImages($io, $sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' issue images');
         $io->newLine();
-        */
 
         return 0;
     }
@@ -204,8 +203,6 @@ class MigrateSqliteCommand extends Command
         ];
 
         $migrateReference = function (array &$constructionSite) {
-            $constructionSite['deleted_at'] = null;
-
             if ('Schweiz' === $constructionSite['country']) {
                 $constructionSite['country'] = 'CH';
             }
@@ -228,17 +225,13 @@ class MigrateSqliteCommand extends Command
          * is_automatic_edit_enabled (removed functionality)
          */
 
-        $commonFields = [
+        $fields = [
             'id', 'construction_site_id',
             'name',
             'created_at', 'last_changed_at',
         ];
 
-        $migrateReference = function (array &$map) {
-            $map['deleted_at'] = null;
-        };
-
-        $count = $this->migrateTable($io, $sourcePdo, $targetPdo, 'map', $commonFields, $migrateReference);
+        $count = $this->migrateTable($io, $sourcePdo, $targetPdo, 'map', $fields);
 
         $sql = 'SELECT parent_id, id FROM map';
         $this->migrate($io, $sourcePdo, $targetPdo, $sql, 'map', self::MODE_UPDATE);
@@ -253,7 +246,7 @@ class MigrateSqliteCommand extends Command
          * write_authorization_token (removed functionality)
          */
 
-        $commonFields = [
+        $fields = [
             'id', 'construction_site_id',
             'contact_name', 'company', 'trade', 'email',
             'last_email_sent', 'last_online_visit',
@@ -270,45 +263,88 @@ class MigrateSqliteCommand extends Command
             unset($craftsman['email_identifier']);
         };
 
-        return $this->migrateTable($io, $sourcePdo, $targetPdo, 'craftsman', $commonFields, $migrateReference);
+        return $this->migrateTable($io, $sourcePdo, $targetPdo, 'craftsman', $fields, $migrateReference);
     }
 
     private function migrateIssues(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
         /*
          * drops:
-         * write_authorization_token (removed functionality)
+         * uploaded_at (same as created_at)
          */
 
-        $commonFields = [
-            'id', 'map_id', 'construction_site_id', 'craftsman_id',
-            'number', 'is_marked', 'was_added_with_client', 'description', 'response_limit',
+        $fields = [
+            'id', 'map_id', 'craftsman_id',
+            'number', 'is_marked', 'was_added_with_client', 'description',
+            'registered_at', 'created_at',
+            'last_changed_at',
         ];
 
-        /**
-        position_x
-        position_y
-        position_zoom_scale
-         *
-        created_by_id
-        registered_by_id
-        resolved_by_id
-        closed_by_id
-         *
-        created_at
-        registered_at
-        resolved_at
-        closed_at
-         *
-        last_changed_at
-        deleted_at
-         */
-        $migrateReference = function (array &$craftsman) {
-            $craftsman['deadline'] = $craftsman['response_limit'];
-            unset($craftsman['response_limit']);
+        $mapFields = [
+            'construction_site_id',
+        ];
+
+        $renames = [
+            'response_limit' => 'deadline',
+            'upload_by_id' => 'created_by_id',
+            'registration_by_id' => 'registered_by_id',
+            'response_by_id' => 'resolved_by_id',
+            'responded_at' => 'resolved_at',
+            'review_by_id' => 'closed_by_id',
+            'reviewed_at' => 'closed_at',
+        ];
+
+        $migrateReference = function (array &$issue) use ($renames) {
+            foreach ($renames as $source => $target) {
+                $issue[$target] = $issue[$source];
+                unset($issue[$source]);
+            }
         };
 
-        return $this->migrateTable($io, $sourcePdo, $targetPdo, 'craftsman', $commonFields, $migrateReference);
+        $prefixedFields = [];
+        foreach ($fields as $field) {
+            $prefixedFields[] = 'i.'.$field.' AS '.$field;
+        }
+        foreach ($mapFields as $field) {
+            $prefixedFields[] = 'm.'.$field.' AS '.$field;
+        }
+        foreach (array_keys($renames) as $field) {
+            $prefixedFields[] = 'i.'.$field.' AS '.$field;
+        }
+
+        $selectSql = 'SELECT '.implode(', ', $prefixedFields).' FROM issue i INNER JOIN map m on m.id = i.map_id';
+
+        $sql = 'SELECT m.construction_site_id, MAX(i.number) as max_number FROM issue i INNER JOIN map m on m.id = i.map_id GROUP BY m.construction_site_id';
+        $constructionSiteMaxResult = $this->fetchAll($sourcePdo, $sql);
+        $maxNumbers = [];
+        foreach ($constructionSiteMaxResult as $result) {
+            $maxNumbers[$result['construction_site_id']] = $result['max_number'];
+        }
+
+        $sql = $selectSql.' WHERE number IS NULL';
+        $entities = $this->fetchAll($sourcePdo, $sql);
+        if (count($entities) > 0) {
+            foreach ($entities as &$entity) {
+                $migrateReference($entity);
+
+                $constructionSiteId = $entity['construction_site_id'];
+                $nextNumber = max($maxNumbers[$constructionSiteId] + 1, 1);
+                $maxNumbers[$constructionSiteId] = $nextNumber;
+                $entity['number'] = $nextNumber;
+            }
+            unset($entity); // need to unset &$entity reference variable
+
+            $io->text('Inserting '.count($entities).' with patched number');
+            $this->insertAll($targetPdo, 'issue', $entities);
+        }
+
+        $sql = $selectSql.' WHERE number IS NOT NULL';
+        $count = $this->migrate($io, $sourcePdo, $targetPdo, $sql, 'issue', self::MODE_INSERT, $migrateReference);
+
+        $sql = 'SELECT issue_id as id, position_x, position_y, position_zoom_scale FROM issue_position';
+        $this->migrate($io, $sourcePdo, $targetPdo, $sql, 'issue', self::MODE_UPDATE);
+
+        return $count;
     }
 
     private function migrateConstructionSiteImages(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
@@ -351,7 +387,7 @@ class MigrateSqliteCommand extends Command
 
     private function migrate(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $sql, string $table, string $mode, callable $migrateReference = null): int
     {
-        $limit = 300;
+        $limit = 500;
         $offset = 0;
 
         $total = $this->count($sourcePdo, $table);
