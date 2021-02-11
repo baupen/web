@@ -57,7 +57,7 @@ class AuthenticationTokenUserProvider implements UserProviderInterface, Password
         $token = new AuthenticationToken();
         $token->setToken($username);
 
-        $constructionManager = $this->manager->getRepository(ConstructionManager::class)->findOneBy(['authenticationToken' => $username]);
+        $constructionManager = $this->manager->getRepository(ConstructionManager::class)->findOneBy(['authenticationToken' => $username, 'isEnabled' => true]);
         if (null !== $constructionManager) {
             $token->setConstructionManager($constructionManager);
 

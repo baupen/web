@@ -17,6 +17,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class RefreshAuthorizationCommand extends Command
 {
@@ -66,6 +67,9 @@ class RefreshAuthorizationCommand extends Command
         }
 
         $entityManager->flush();
+
+        $io = new SymfonyStyle($input, $output);
+        $io->text('Refreshed authorization of '.count($constructionManagers).' construction managers.');
 
         return 0;
     }

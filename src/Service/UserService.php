@@ -153,6 +153,7 @@ class UserService implements UserServiceInterface
             // is on whitelist
             $constructionManager->setAuthorizationAuthority(ConstructionManager::AUTHORIZATION_AUTHORITY_WHITELIST);
             $constructionManager->setCanAssociateSelf(true);
+            $constructionManager->setIsEnabled(true);
         } elseif (ConstructionManager::AUTHORIZATION_AUTHORITY_WHITELIST === $constructionManager->getAuthorizationAuthority()) {
             // was on whitelist, but not anymore
             $constructionManager->setIsEnabled(false);

@@ -59,6 +59,8 @@ class InitializeCacheCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // TODO: remove construction site transient folder; split in other command?
+
         $constructionSiteImages = $this->registry->getRepository(ConstructionSiteImage::class)->findAll();
         foreach ($constructionSiteImages as $constructionSiteImage) {
             $this->cacheService->warmUpCacheForConstructionSiteImage($constructionSiteImage);
