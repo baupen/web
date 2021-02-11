@@ -68,14 +68,23 @@ class MigrateSqliteCommand extends Command
         $this->clearTarget($targetPdo);
         $io->text('Cleared target database');
 
-        $count = $this->migrateConstructionManagers($sourcePdo, $targetPdo, $io);
+        $count = $this->migrateConstructionManagers($sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' construction managers');
 
-        $count = $this->migrateConstructionSites($sourcePdo, $targetPdo, $io);
+        $count = $this->migrateConstructionSites($sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' construction sites');
 
-        $count = $this->migrateConstructionSiteImages($sourcePdo, $targetPdo, $io);
+        $count = $this->migrateConstructionSiteConstructionManagers($sourcePdo, $targetPdo);
+        $io->text('Migrated '.$count.' construction site <-> construction manager relations');
+
+        $count = $this->migrateConstructionSiteImages($sourcePdo, $targetPdo);
         $io->text('Migrated '.$count.' construction images');
+
+        $count = $this->migrateMaps($sourcePdo, $targetPdo);
+        $io->text('Migrated '.$count.' maps');
+
+        $count = $this->migrateCraftsmen($sourcePdo, $targetPdo);
+        $io->text('Migrated '.$count.' craftsmen');
 
         return 0;
     }
@@ -90,8 +99,11 @@ class MigrateSqliteCommand extends Command
 
         $tablesToClear = [
             'email', 'email_template', 'filter',
-            'issue_image', 'issue', 'map_file', 'map', 'craftsman',
-            'construction_site_image', 'construction_site_construction_manager',
+            'issue_image', 'map_file',
+            'issue',
+            'map', 'craftsman',
+            'construction_site_image',
+            'construction_site_construction_manager',
             'construction_manager', 'construction_site',
         ];
 
@@ -122,7 +134,7 @@ class MigrateSqliteCommand extends Command
         return [$sourcePdo, $targetPdo];
     }
 
-    private function migrateConstructionManagers(PDO $sourcePdo, PDO $targetPdo, SymfonyStyle $io): int
+    private function migrateConstructionManagers(PDO $sourcePdo, PDO $targetPdo): int
     {
         /*
          * drops:
@@ -133,7 +145,8 @@ class MigrateSqliteCommand extends Command
          * active_construction_site_id (dropped)
          */
 
-        $commonFields = ['id', 'given_name', 'family_name', 'phone', 'locale',
+        $commonFields = [
+            'id', 'given_name', 'family_name', 'phone', 'locale',
             'created_at', 'last_changed_at',
             'email', 'password', 'authentication_hash', 'is_enabled',
         ];
@@ -150,17 +163,18 @@ class MigrateSqliteCommand extends Command
             unset($constructionManager['is_registration_completed']);
         };
 
-        return $this->migrate($sourcePdo, $targetPdo, $io, 'construction_manager', array_merge($commonFields, $sourceFields), $migrateReference);
+        return $this->migrateTable($sourcePdo, $targetPdo, 'construction_manager', array_merge($commonFields, $sourceFields), $migrateReference);
     }
 
-    private function migrateConstructionSites(PDO $sourcePdo, PDO $targetPdo, SymfonyStyle $io): int
+    private function migrateConstructionSites(PDO $sourcePdo, PDO $targetPdo): int
     {
         /*
          * drops:
          * is_automatic_edit_enabled (removed functionality)
          */
 
-        $commonFields = ['id', 'name', 'folder_name', 'is_trial_construction_site',
+        $commonFields = [
+            'id', 'name', 'folder_name', 'is_trial_construction_site',
             'street_address', 'postal_code', 'locality', 'country',
             'created_at', 'last_changed_at',
         ];
@@ -173,16 +187,98 @@ class MigrateSqliteCommand extends Command
             }
         };
 
-        return $this->migrate($sourcePdo, $targetPdo, $io, 'construction_site', $commonFields, $migrateReference);
+        return $this->migrateTable($sourcePdo, $targetPdo, 'construction_site', $commonFields, $migrateReference);
     }
 
-    private function migrateConstructionSiteImages(PDO $sourcePdo, PDO $targetPdo, SymfonyStyle $io): int
+    private function migrateConstructionSiteConstructionManagers(PDO $sourcePdo, PDO $targetPdo): int
     {
-        return $this->migrateFile($sourcePdo, $targetPdo, $io, 'construction_site_image', 'construction_site', 'image_id');
+        $commonFields = ['construction_site_id', 'construction_manager_id'];
+
+        return $this->migrateTable($sourcePdo, $targetPdo, 'construction_site_construction_manager', $commonFields);
     }
 
-    private function migrateFile(PDO $sourcePdo, PDO $targetPdo, SymfonyStyle $io, string $table, string $ownerTable, string $ownerColumn): int
+    private function migrateMaps(PDO $sourcePdo, PDO $targetPdo): int
     {
+        /*
+         * drops:
+         * is_automatic_edit_enabled (removed functionality)
+         */
+
+        $commonFields = [
+            'id', 'construction_site_id',
+            'name',
+            'created_at', 'last_changed_at',
+        ];
+
+        $migrateReference = function (array &$map) {
+            $map['deleted_at'] = null;
+        };
+
+        $count = $this->migrateTable($sourcePdo, $targetPdo, 'map', $commonFields, $migrateReference);
+        if (0 === $count) {
+            return 0;
+        }
+
+        // set parent_id in second step to avoid breaking FK
+        $sql = 'SELECT parent_id, id FROM map';
+        $parentIdTuples = $this->fetchAll($sourcePdo, $sql);
+
+        $insertQuery = $targetPdo->prepare('UPDATE map SET parent_id = ? WHERE id = ?');
+
+        foreach ($parentIdTuples as $parentIdTuple) {
+            $insertQuery->execute(array_values($parentIdTuple));
+        }
+
+        return $count;
+    }
+
+    private function migrateCraftsmen(PDO $sourcePdo, PDO $targetPdo): int
+    {
+        /*
+         * drops:
+         * write_authorization_token (removed functionality)
+         */
+
+        $commonFields = [
+            'id', 'construction_site_id',
+            'contact_name', 'company', 'trade', 'email',
+            'last_email_sent', 'last_online_visit',
+            'email_identifier',
+            'created_at', 'last_changed_at',
+        ];
+
+        $migrateReference = function (array &$craftsman) {
+            $craftsman['last_email_received'] = $craftsman['last_email_sent'];
+            unset($craftsman['last_email_sent']);
+            $craftsman['last_visit_online'] = $craftsman['last_online_visit'];
+            unset($craftsman['last_online_visit']);
+            $craftsman['authentication_token'] = $craftsman['email_identifier'];
+            unset($craftsman['email_identifier']);
+        };
+
+        return $this->migrateTable($sourcePdo, $targetPdo, 'craftsman', $commonFields, $migrateReference);
+    }
+
+    private function migrateConstructionSiteImages(PDO $sourcePdo, PDO $targetPdo): int
+    {
+        return $this->migrateFile($sourcePdo, $targetPdo, 'construction_site_image', 'construction_site', 'image_id');
+    }
+
+    private function migrateIssueImages(PDO $sourcePdo, PDO $targetPdo): int
+    {
+        return $this->migrateFile($sourcePdo, $targetPdo, 'issue_image', 'issue', 'image_id');
+    }
+
+    private function migrateMapFiles(PDO $sourcePdo, PDO $targetPdo): int
+    {
+        return $this->migrateFile($sourcePdo, $targetPdo, 'map_file', 'map', 'file_id');
+    }
+
+    private function migrateFile(PDO $sourcePdo, PDO $targetPdo, string $table, string $ownerTable, string $ownerColumn): int
+    {
+        /**
+         * drops: displayName (functionality removed).
+         */
         $fields = [
             't.id AS id',
             'o.id AS '.$ownerTable.'_id',
@@ -191,21 +287,26 @@ class MigrateSqliteCommand extends Command
         ];
         $sql = 'SELECT '.implode(', ', $fields).' FROM '.$ownerTable.' o INNER JOIN '.$table.' t ON t.id = o.'.$ownerColumn;
 
-        $entities = $this->fetchAll($sourcePdo, $sql);
-
-        return $this->insertAll($targetPdo, $table, $entities);
+        return $this->migrate($sourcePdo, $targetPdo, $sql, $table);
     }
 
-    private function migrate(PDO $sourcePdo, PDO $targetPdo, SymfonyStyle $io, string $table, array $sourceFields, callable $migrateReference): int
+    private function migrateTable(PDO $sourcePdo, PDO $targetPdo, string $table, array $sourceFields, callable $migrateReference = null): int
     {
         $sql = 'SELECT '.implode(', ', $sourceFields).' FROM '.$table;
 
+        return $this->migrate($sourcePdo, $targetPdo, $sql, $table, $migrateReference);
+    }
+
+    private function migrate(PDO $sourcePdo, PDO $targetPdo, string $sql, string $table, callable $migrateReference = null): int
+    {
         $entities = $this->fetchAll($sourcePdo, $sql);
 
-        foreach ($entities as &$entity) {
-            $migrateReference($entity);
+        if (is_callable($migrateReference)) {
+            foreach ($entities as &$entity) {
+                $migrateReference($entity);
+            }
+            unset($entity); // need to unset &$entity reference variable
         }
-        unset($entity);
 
         return $this->insertAll($targetPdo, $table, $entities);
     }
