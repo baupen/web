@@ -74,12 +74,12 @@ class MigrateSqliteCommand extends Command
         $count = $this->migrateConstructionSites($sourcePdo, $targetPdo, $io);
         $io->text('Migrated '.$count.' construction sites');
 
+        $count = $this->migrateConstructionSiteImages($sourcePdo, $targetPdo, $io);
+        $io->text('Migrated '.$count.' construction images');
+
         return 0;
     }
 
-    /**
-     * @throws \Exception
-     */
     private function clearTarget(PDO $targetPdo)
     {
         $referencesToClear = ['map.parent_id'];
@@ -176,22 +176,54 @@ class MigrateSqliteCommand extends Command
         return $this->migrate($sourcePdo, $targetPdo, $io, 'construction_site', $commonFields, $migrateReference);
     }
 
+    private function migrateConstructionSiteImages(PDO $sourcePdo, PDO $targetPdo, SymfonyStyle $io): int
+    {
+        return $this->migrateFile($sourcePdo, $targetPdo, $io, 'construction_site_image', 'construction_site', 'image_id');
+    }
+
+    private function migrateFile(PDO $sourcePdo, PDO $targetPdo, SymfonyStyle $io, string $table, string $ownerTable, string $ownerColumn): int
+    {
+        $fields = [
+            't.id AS id',
+            'o.id AS '.$ownerTable.'_id',
+            't.created_at AS created_at', 't.last_changed_at AS last_changed_at',
+            't.filename AS filename', 't.hash AS hash',
+        ];
+        $sql = 'SELECT '.implode(', ', $fields).' FROM '.$ownerTable.' o INNER JOIN '.$table.' t ON t.id = o.'.$ownerColumn;
+
+        $entities = $this->fetchAll($sourcePdo, $sql);
+
+        return $this->insertAll($targetPdo, $table, $entities);
+    }
+
     private function migrate(PDO $sourcePdo, PDO $targetPdo, SymfonyStyle $io, string $table, array $sourceFields, callable $migrateReference): int
     {
-        $query = $sourcePdo->prepare('SELECT '.implode(', ', $sourceFields).' FROM '.$table);
-        $query->execute();
-        $entities = $query->fetchAll(PDO::FETCH_ASSOC);
+        $sql = 'SELECT '.implode(', ', $sourceFields).' FROM '.$table;
 
-        if (0 === count($entities)) {
-            $io->warning($table.' is empty');
-
-            return 0;
-        }
+        $entities = $this->fetchAll($sourcePdo, $sql);
 
         foreach ($entities as &$entity) {
             $migrateReference($entity);
         }
         unset($entity);
+
+        return $this->insertAll($targetPdo, $table, $entities);
+    }
+
+    private function fetchAll(PDO $PDO, string $sql)
+    {
+        $query = $PDO->prepare($sql);
+        $query->execute();
+
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    private function insertAll(PDO $targetPdo, string $table, array $entities): int
+    {
+        $insertCount = count($entities);
+        if (0 === $insertCount) {
+            return 0;
+        }
 
         $keys = array_keys($entities[0]);
         $placeHolders = array_fill(0, count($keys), '?');
@@ -201,6 +233,6 @@ class MigrateSqliteCommand extends Command
             $insertQuery->execute(array_values($entity));
         }
 
-        return count($entities);
+        return $insertCount;
     }
 }
