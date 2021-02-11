@@ -109,6 +109,10 @@ class ImageService implements ImageServiceInterface
             }
         }
 
+        if (0 === count($content)) {
+            return $mapFileJpgPath;
+        }
+
         $contentHash = hash('sha256', serialize($content));
         $targetFolder = $this->pathService->getTransientFolderForMapFile($mapFile);
         $targetFilePath = $this->getPathForSize($mapFileJpgPath, $targetFolder, $contentHash, $size);
@@ -117,7 +121,7 @@ class ImageService implements ImageServiceInterface
         }
 
         FileHelper::ensureFolderExists($targetFolder);
-        $this->drawContentOnJpg($mapFileJpgPath, $targetFolder, $content);
+        $this->drawContentOnJpg($mapFileJpgPath, $targetFilePath, $content);
 
         //abort if generation failed
         if (!file_exists($targetFilePath)) {
@@ -204,10 +208,6 @@ class ImageService implements ImageServiceInterface
             $totalTextHeight += $textHeight;
         }
         unset($entry);
-
-        if (0 === count($content)) {
-            return;
-        }
 
         $averageTextHeight = $totalTextHeight / count($content);
         $averageTextWidth = $totalTextWidth / $totalTextLength;

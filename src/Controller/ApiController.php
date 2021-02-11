@@ -95,7 +95,7 @@ class ApiController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
-        $path = $pathService->getFolderForMapFiles($mapFile->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
+        $path = $pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
 
         if ('ios' === $sanitizedVariant) {
             $optimized = $mapFileService->renderForMobileDevice($mapFile);
