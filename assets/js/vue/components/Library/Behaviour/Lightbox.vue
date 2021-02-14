@@ -2,7 +2,7 @@
   <div>
     <!-- thumbnail image wrapped in a link -->
     <span class="lightbox-thumbnail clickable" @click="open = !open" @blur="open = false">
-      <img :src="src" :alt="alt">
+      <img class="img-fluid" :src="src" :alt="alt">
     </span>
 
     <!-- lightbox container hidden with CSS -->

@@ -1,23 +1,29 @@
 <template>
   <div class="card">
-    <div class="card-body p-2">
-      <div class="row mb-3">
-        <div class="col"  :class="{'pr-2': issue.imageUrl}" v-if="issue.positionX">
-          <map-render-lightbox :construction-site="constructionSite" :map="map" :craftsman="craftsman" :issue="issue" :preview="true" />
+    <div class="card-body">
+      <div class="row">
+        <div v-if="issue.positionX" :class="{'col-md-3': issue.imageUrl, 'col-md-6': !issue.imageUrl}">
+          <map-render-lightbox
+              :preview="true"
+              :construction-site="constructionSite" :map="map" :craftsman="craftsman" :issue="issue" />
         </div>
-        <div class="col" v-if="issue.imageUrl" :class="{'pl-2': issue.positionX}">
-          <image-lightbox :src="issue.imageUrl" :subject="issue.number + ': ' + issue.description" :preview="true" />
+        <div v-if="issue.imageUrl" :class="{'col-md-3': issue.positionX, 'col-md-6': !issue.positionX}">
+          <image-lightbox
+              :preview="true"
+              :src="issue.imageUrl" :subject="issue.number + ': ' + issue.description" />
+        </div>
+        <div class="col-md-6">
+          <p class="bg-light-gray p-2">
+            {{ issue.description }}
+          </p>
+          <p v-if="issue.deadline">
+            <b>{{ $t('issue.deadline') }}</b>:
+            <date-human-readable :value="issue.deadline" /> <br/>
+            <span v-if="overdue" class="badge badge-danger">{{ $t('issue.state.overdue') }}</span>
+          </p>
+          <resolve-issue-button :issue="issue" :craftsman="craftsman" />
         </div>
       </div>
-      <p v-if="issue.description" class="bg-light-gray p-2">
-        {{ issue.description }} <br/>
-        <span v-if="issue.deadline">
-          <b>{{ $t('issue.deadline') }}</b>:
-          <date-human-readable :value="issue.deadline" />
-          <span v-if="overdue" class="badge badge-danger ml-1">{{ $t('issue.state.overdue') }}</span>
-        </span>
-      </p>
-      <resolve-issue-button :issue="issue" :craftsman="craftsman" />
     </div>
     <div class="card-footer">
       <small class="text-muted">
@@ -82,7 +88,7 @@ export default {
     createdByConstructionManagerName: function () {
       const createdByConstructionManager = this.constructionManagers.find(m => m['@id'] === this.issue.createdBy)
       if (!createdByConstructionManager) {
-        return '';
+        return ''
       }
 
       return constructionManagerFormatter.name(createdByConstructionManager)
