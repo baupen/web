@@ -19,8 +19,9 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
-class InitializeCacheCommand extends Command
+class WarumupCacheCommand extends Command
 {
     /**
      * @var ManagerRegistry
@@ -49,9 +50,8 @@ class InitializeCacheCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('app:cache:initialize')
-            ->setDescription('Warms up the cache for all database entries.')
-        ;
+            ->setName('app:cache:warmup')
+            ->setDescription('Warms up the cache for all database entries.');
     }
 
     /**
@@ -59,23 +59,36 @@ class InitializeCacheCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // TODO: remove construction site transient folder; split in other command?
+        $symfony = new SymfonyStyle($input, $output);
 
         $constructionSiteImages = $this->registry->getRepository(ConstructionSiteImage::class)->findAll();
-        foreach ($constructionSiteImages as $constructionSiteImage) {
+        $this->warmUpCacheFor($symfony, 'construction site images', $constructionSiteImages, function (ConstructionSiteImage $constructionSiteImage) {
             $this->cacheService->warmUpCacheForConstructionSiteImage($constructionSiteImage);
-        }
+        });
 
         $mapFiles = $this->registry->getRepository(MapFile::class)->findAll();
-        foreach ($mapFiles as $mapFile) {
+        $this->warmUpCacheFor($symfony, 'map files', $mapFiles, function (MapFile $mapFile) {
             $this->cacheService->warmUpCacheForMapFile($mapFile);
-        }
+        });
 
         $issueImages = $this->registry->getRepository(IssueImage::class)->findAll();
-        foreach ($issueImages as $issueImage) {
+        $this->warmUpCacheFor($symfony, 'issue images', $issueImages, function (IssueImage $issueImage) {
             $this->cacheService->warmUpCacheForIssueImage($issueImage);
-        }
+        });
 
         return 0;
+    }
+
+    private function warmUpCacheFor(SymfonyStyle $io, string $entityPlural, array $entities, callable $actionPerEntity)
+    {
+        $constructionSiteImageCount = count($entities);
+
+        $io->text('Warming up cache for '.$constructionSiteImageCount.' '.$entityPlural);
+        $io->progressStart($constructionSiteImageCount);
+        foreach ($entities as $entity) {
+            $actionPerEntity($entity);
+            $io->progressAdvance();
+        }
+        $io->progressFinish();
     }
 }
