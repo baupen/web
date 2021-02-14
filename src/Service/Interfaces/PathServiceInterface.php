@@ -42,13 +42,17 @@ interface PathServiceInterface
 
     public function getTransientFolderForAuthorization(): string;
 
+    public function getTransientFolderForConstructionSites(): string;
+
+    public function getTransientFolderForReports(): string;
+
     public function getTransientFolderForConstructionSiteImages(ConstructionSiteImage $constructionSiteImage): string;
 
     public function getTransientFolderForMapFile(MapFile $mapFile): string;
 
     public function getTransientFolderForIssueImage(IssueImage $issueImage): string;
 
-    public function getTransientFolderForReports(ConstructionSite $constructionSite): string;
+    public function getTransientFolderForMapFileRenders(MapFile $mapFile): string;
 
     public function getSampleConstructionSite(string $name): string;
 }

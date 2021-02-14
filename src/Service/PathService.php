@@ -91,14 +91,14 @@ class PathService implements PathServiceInterface
         return $this->getTransientFolderForConstructionSite($mapFile->getCreatedFor()->getConstructionSite()).DIRECTORY_SEPARATOR.'maps'.DIRECTORY_SEPARATOR.$mapFile->getFilename();
     }
 
+    public function getTransientFolderForMapFileRenders(MapFile $mapFile): string
+    {
+        return $this->getTransientFolderForRenders().DIRECTORY_SEPARATOR.$mapFile->getCreatedFor()->getConstructionSite()->getFolderName().'maps'.DIRECTORY_SEPARATOR.$mapFile->getFilename();
+    }
+
     public function getTransientFolderForIssueImage(IssueImage $issueImage): string
     {
         return $this->getTransientFolderForConstructionSite($issueImage->getCreatedFor()->getConstructionSite()).DIRECTORY_SEPARATOR.'issues'.DIRECTORY_SEPARATOR.$issueImage->getFilename();
-    }
-
-    public function getTransientFolderForReports(ConstructionSite $constructionSite): string
-    {
-        return $this->getTransientFolderForConstructionSite($constructionSite).DIRECTORY_SEPARATOR.'reports';
     }
 
     private function getFolderForConstructionSite(ConstructionSite $constructionSite): string
@@ -108,12 +108,27 @@ class PathService implements PathServiceInterface
 
     private function getTransientFolderForConstructionSite(ConstructionSite $constructionSite): string
     {
-        return $this->transientFolderRoot.DIRECTORY_SEPARATOR.'construction_sites'.DIRECTORY_SEPARATOR.$constructionSite->getFolderName();
+        return $this->getTransientFolderForConstructionSites().DIRECTORY_SEPARATOR.$constructionSite->getFolderName();
+    }
+
+    public function getTransientFolderForConstructionSites(): string
+    {
+        return $this->transientFolderRoot.DIRECTORY_SEPARATOR.'construction_sites';
     }
 
     public function getTransientFolderForAuthorization(): string
     {
         return $this->transientFolderRoot.DIRECTORY_SEPARATOR.'authorization';
+    }
+
+    public function getTransientFolderForReports(): string
+    {
+        return $this->transientFolderRoot.DIRECTORY_SEPARATOR.'reports';
+    }
+
+    public function getTransientFolderForRenders(): string
+    {
+        return $this->transientFolderRoot.DIRECTORY_SEPARATOR.'renders';
     }
 
     public function getSampleConstructionSite(string $name): string

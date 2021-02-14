@@ -109,13 +109,14 @@ class ImageService implements ImageServiceInterface
             }
         }
 
-        if (0 === count($content)) {
+        $contentCount = count($content);
+        if (0 === $contentCount) {
             return $mapFileJpgPath;
         }
 
         $contentHash = hash('sha256', serialize($content));
-        $targetFolder = $this->pathService->getTransientFolderForMapFile($mapFile);
-        $targetFilePath = $this->getPathForSize($mapFileJpgPath, $targetFolder, $contentHash, $size);
+        $targetFolder = $this->pathService->getTransientFolderForMapFileRenders($mapFile);
+        $targetFilePath = $this->getPathForSize($mapFileJpgPath, $targetFolder, $contentCount.'_'.$contentHash, $size);
         if (file_exists($targetFilePath)) {
             return $targetFilePath;
         }
