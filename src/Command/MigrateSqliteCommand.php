@@ -360,35 +360,35 @@ class MigrateSqliteCommand extends Command
 
     private function migrateConstructionSiteImages(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
-        return $this->migrateFile($io, $sourcePdo, $targetPdo, 'construction_site_image');
+        return $this->migrateFile($io, $sourcePdo, $targetPdo, 'construction_site_image', 'construction_site');
     }
 
     private function migrateIssueImages(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
-        return $this->migrateFile($io, $sourcePdo, $targetPdo, 'issue_image');
+        return $this->migrateFile($io, $sourcePdo, $targetPdo, 'issue_image', 'issue');
     }
 
     private function migrateMapFiles(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
-        return $this->migrateFile($io, $sourcePdo, $targetPdo, 'map_file');
+        return $this->migrateFile($io, $sourcePdo, $targetPdo, 'map_file', 'map');
     }
 
     private function finalizeConstructionSiteImages(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
-        return $this->setFileCreatedFor($io, $sourcePdo, $targetPdo, 'construction_site_image', 'construction_site', 'image_id');
+        return $this->setFileCreatedFor($io, $sourcePdo, $targetPdo, 'construction_site_image', 'construction_site');
     }
 
     private function finalizeIssueImages(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
-        return $this->setFileCreatedFor($io, $sourcePdo, $targetPdo, 'issue_image', 'issue', 'image_id');
+        return $this->setFileCreatedFor($io, $sourcePdo, $targetPdo, 'issue_image', 'issue');
     }
 
     private function finalizeMapFiles(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
     {
-        return $this->setFileCreatedFor($io, $sourcePdo, $targetPdo, 'map_file', 'map', 'file_id');
+        return $this->setFileCreatedFor($io, $sourcePdo, $targetPdo, 'map_file', 'map');
     }
 
-    private function migrateFile(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $table): int
+    private function migrateFile(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $table, string $ownerName): int
     {
         /**
          * drops: displayName (functionality removed).
@@ -399,12 +399,14 @@ class MigrateSqliteCommand extends Command
             'filename', 'hash',
         ];
 
-        return $this->migrateTable($io, $sourcePdo, $targetPdo, $table, $fields);
+        $sql = 'SELECT '.implode(', ', $fields).' FROM '.$table.' WHERE '.$ownerName.'_id IN (SELECT id FROM '.$ownerName.')';
+
+        return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, self::MODE_INSERT);
     }
 
-    private function setFileCreatedFor(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $table, string $ownerTable, string $ownerColumn): int
+    private function setFileCreatedFor(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $table, string $ownerName): int
     {
-        $sql = 'SELECT '.$ownerColumn.' as id, id as created_for_id FROM '.$ownerTable;
+        $sql = 'SELECT id as id, '.$ownerName.'_id as created_for_id FROM '.$table.' WHERE '.$ownerName.'_id IN (SELECT id FROM '.$ownerName.')';
 
         return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, self::MODE_UPDATE);
     }
