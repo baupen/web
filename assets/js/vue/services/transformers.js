@@ -1,5 +1,3 @@
-import { createEntityIdLookup } from './algorithms'
-
 const mapTransformer = {
   _cutChildrenFromLookup: function (key, parentLookup) {
     if (!(key in parentLookup)) {
