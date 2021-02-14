@@ -10,11 +10,9 @@
 <script>
 
 import ConstructionSiteEnterCard from './ConstructionSiteEnterCard'
-import Masonry from '../Library/Behaviour/Masonry'
 
 export default {
   components: {
-    Masonry,
     ConstructionSiteEnterCard
   },
   props: {

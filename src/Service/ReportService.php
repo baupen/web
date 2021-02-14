@@ -101,7 +101,7 @@ class ReportService implements ReportServiceInterface
             $this->addIssueContent($filter, $reportElements, $issues, $report);
         }
 
-        $folder = $this->pathService->getTransientFolderForReports($constructionSite);
+        $folder = $this->pathService->getTransientFolderForReports();
         FileHelper::ensureFolderExists($folder);
 
         $path = $folder.'/'.(new DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT).'_'.uniqid().'.pdf';

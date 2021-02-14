@@ -25,6 +25,7 @@ security:
             pattern: ^/api/
             anonymous: true
             provider: api_tokens
+            stateless: true
             guard:
                 authenticators:
                     - App\Security\TokenAuthenticator
@@ -63,6 +64,11 @@ security:
 
         - { path: '^/resolve/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: '^/filtered/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        - { path: '^/api/construction_sites/[a-fA-F\d]{8}-(?:[a-fA-F\d]{4}-){3}[a-fA-F\d]{12}/image/.+', role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
+        - { path: '^/api/maps/[a-fA-F\d]{8}-(?:[a-fA-F\d]{4}-){3}[a-fA-F\d]{12}/file/.+', role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [ GET ] }
+        - { path: '^/api/issues/[a-fA-F\d]{8}-(?:[a-fA-F\d]{4}-){3}[a-fA-F\d]{12}/image/.+', role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [ GET ] }
+        - { path: '^/api/issues/render.+', role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [ GET ] }
 
         - { path: ^/api, role: ROLE_API_USER }
         - { path: ^/set_locale, role: ROLE_USER }

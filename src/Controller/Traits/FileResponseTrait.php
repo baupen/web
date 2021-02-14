@@ -17,17 +17,17 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait FileResponseTrait
 {
-    private function tryCreateInlineFileResponse(?string $path, string $filename): BinaryFileResponse
+    private function tryCreateInlineFileResponse(?string $path, string $filename, bool $deleteFileAfterSend = false): BinaryFileResponse
     {
-        return $this->tryCreateFileResponse($path, $filename, ResponseHeaderBag::DISPOSITION_INLINE);
+        return $this->tryCreateFileResponse($path, ResponseHeaderBag::DISPOSITION_INLINE, $filename, $deleteFileAfterSend);
     }
 
-    private function tryCreateAttachmentFileResponse(?string $path, string $filename): BinaryFileResponse
+    private function tryCreateAttachmentFileResponse(?string $path, string $filename, bool $deleteFileAfterSend = false): BinaryFileResponse
     {
-        return $this->tryCreateFileResponse($path, $filename, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        return $this->tryCreateFileResponse($path, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename, $deleteFileAfterSend);
     }
 
-    private function tryCreateFileResponse(?string $path, string $filename, string $disposition)
+    private function tryCreateFileResponse(?string $path, string $disposition, string $filename, bool $deleteFileAfterSend)
     {
         if (null === $path) {
             throw new NotFoundHttpException();
@@ -35,10 +35,8 @@ trait FileResponseTrait
 
         $response = new BinaryFileResponse($path);
 
-        $response->setContentDisposition(
-            $disposition,
-            $filename
-        );
+        $response->setContentDisposition($disposition, $filename);
+        $response->deleteFileAfterSend($deleteFileAfterSend);
 
         return $response;
     }

@@ -14,21 +14,21 @@ namespace App\Api\DataProvider;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
 use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
+use App\Controller\Traits\FileResponseTrait;
 use App\Entity\Issue;
 use App\Security\TokenTrait;
 use App\Service\Interfaces\FilterServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\ReportElements;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class IssueReportDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
     use TokenTrait;
+    use FileResponseTrait;
 
     /**
      * @var ContextAwareCollectionDataProviderInterface
@@ -95,14 +95,7 @@ class IssueReportDataProvider implements ContextAwareCollectionDataProviderInter
         $filter = $this->filterService->createFromQuery($context['filters']);
         $filePath = $this->reportService->generatePdfReport($collection, $filter, $reportElements, $author);
 
-        $response = new BinaryFileResponse($filePath);
-
-        $response->setContentDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            'report.pdf'
-        );
-
-        return $response;
+        return $this->tryCreateAttachmentFileResponse($filePath, 'report.pdf', true);
     }
 
     private function getAuthor(?TokenInterface $token): ?string

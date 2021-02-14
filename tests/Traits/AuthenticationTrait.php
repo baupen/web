@@ -64,7 +64,7 @@ trait AuthenticationTrait
     {
         $testUser = $this->getConstructionManagerByEmail($email);
         $client->loginUser($testUser);
-        $client->loginUser($testUser, 'api');
+        $client->setServerParameter('HTTP_X-AUTHENTICATION', $testUser->getAuthenticationToken());
 
         return $testUser;
     }

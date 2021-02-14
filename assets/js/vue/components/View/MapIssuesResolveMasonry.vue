@@ -4,44 +4,35 @@
       <span class="text-secondary"><small>{{ mapContext }}</small></span>
       {{ map.name }}
     </h2>
-    <masonry
-        :cols="{default: 5, 1720: 4, 1290: 3, 860: 2, 430: 1}"
-        :gutter="{default: '10px'}"
-        class="mt-2">
-      <div class="grid-item mb-2">
-        <div class="card">
-          <div class="card-body bg-light-gray p-2">
-            <map-render-lightbox
-                :preview="true"
-                :construction-site="constructionSite" :map="map" :craftsman="craftsman" :state="2" />
-          </div>
+    <div class="row">
+      <div class="col-md-3">
+        <map-render-lightbox
+            :preview="true"
+            :construction-site="constructionSite" :map="map" :craftsman="craftsman" :state="2" />
+      </div>
+      <div class="col-md-9">
+        <div class="grid-item mb-2" v-for="issue in issues" :key="issue['@id']">
+          <issue-resolve-card
+              :issue="issue"
+              :construction-site="constructionSite" :craftsman="craftsman" :map="map"
+              :construction-managers="constructionManagers" />
         </div>
+        <loading-indicator-secondary v-if="issuesLoading" />
+        <p v-else class="text-center">
+          <button class="btn btn-outline-secondary" v-if="notLoadedIssueCount > 0 && !issuesLoading"
+                  @click="loadNextPage">
+            {{ $tc('actions.show_more_issues', notLoadedIssueCount) }}
+          </button>
+        </p>
       </div>
-      <div class="grid-item mb-2" v-for="issue in issues" :key="issue['@id']">
-        <issue-resolve-card
-            :issue="issue"
-            :construction-site="constructionSite" :craftsman="craftsman" :map="map"
-            :construction-managers="constructionManagers" />
-      </div>
-      <div v-if="issuesLoading" class="grid-item mb-2">
-        <loading-indicator-secondary />
-      </div>
-    </masonry>
-    <p class="text-center">
-      <button class="btn btn-outline-secondary" v-if="notLoadedIssueCount > 0 && !issuesLoading" @click="loadNextPage">
-        {{ $tc('actions.show_more_issues', notLoadedIssueCount) }}
-      </button>
-    </p>
+    </div>
   </div>
 </template>
 
 <script>
 
 import ConstructionSitesEnterMasonryCard from './ConstructionSiteEnterCard'
-import Masonry from '../Library/Behaviour/Masonry'
 import IssueResolveCard from './IssueResolveCard'
-import { createEntityIdLookup } from '../../services/algorithms'
-import { mapTransformer } from '../../services/transformers'
 import MapRenderLightbox from './MapRenderLightbox'
 import { api, iriToId } from '../../services/api'
 import LoadingIndicatorSecondary from '../Library/View/LoadingIndicatorSecondary'
@@ -51,7 +42,6 @@ export default {
     LoadingIndicatorSecondary,
     MapRenderLightbox,
     IssueResolveCard,
-    Masonry,
     ConstructionSitesEnterMasonryCard
   },
   data () {
