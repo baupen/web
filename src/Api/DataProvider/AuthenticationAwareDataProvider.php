@@ -75,7 +75,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         } elseif ($filter = $this->tryGetFilter($token)) {
             $this->ensureFilterQueryValid($filter, $resourceClass, $existingFilter);
         } else {
-            throw new HttpException(Response::HTTP_FORBIDDEN);
+            $this->ensureRenderQuery($resourceClass, $operationName, $existingFilter);
         }
 
         return $this->decoratedCollectionDataProvider->getCollection($resourceClass, $operationName, $context);
@@ -207,5 +207,16 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         }
 
         throw new BadRequestException($property.' filter missing or value not equal to '.$expectedValue.'.');
+    }
+
+    private function ensureRenderQuery(string $resourceClass, ?string $operationName, array $existingFilter)
+    {
+        if (Issue::class === $resourceClass && 'get_render' === $operationName) {
+            if (isset($existingFilter['map']) && !isset($existingFilter['map[]'])) {
+                return;
+            }
+        }
+
+        throw new HttpException(Response::HTTP_FORBIDDEN);
     }
 }

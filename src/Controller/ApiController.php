@@ -85,7 +85,6 @@ class ApiController extends BaseDoctrineController
      */
     public function getMapFileAction(Request $request, Map $map, MapFile $mapFile, string $filename, PathServiceInterface $pathService, MapFileService $mapFileService)
     {
-        $this->denyAccessUnlessGranted(MapVoter::MAP_VIEW, $map);
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
             throw new NotFoundHttpException();
         }
@@ -114,7 +113,6 @@ class ApiController extends BaseDoctrineController
      */
     public function getMapFileRenderAction(Request $request, Map $map, MapFile $mapFile, string $filename, ImageServiceInterface $imageService, PathServiceInterface $pathService)
     {
-        $this->denyAccessUnlessGranted(MapVoter::MAP_VIEW, $map);
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
             throw new NotFoundHttpException();
         }
@@ -156,7 +154,6 @@ class ApiController extends BaseDoctrineController
      */
     public function getConstructionSiteImageAction(Request $request, ConstructionSite $constructionSite, ConstructionSiteImage $constructionSiteImage, string $filename, ImageServiceInterface $imageService)
     {
-        $this->denyAccessUnlessGranted(ConstructionSiteVoter::CONSTRUCTION_SITE_VIEW, $constructionSite);
         if ($constructionSite->getImage() !== $constructionSiteImage || $constructionSiteImage->getFilename() !== $filename) {
             throw new NotFoundHttpException();
         }
@@ -198,7 +195,6 @@ class ApiController extends BaseDoctrineController
      */
     public function getIssueImageAction(Request $request, Issue $issue, IssueImage $issueImage, string $filename, ImageServiceInterface $imageService)
     {
-        $this->denyAccessUnlessGranted(IssueVoter::ISSUE_VIEW, $issue);
         if ($issue->getImage() !== $issueImage || $issueImage->getFilename() !== $filename) {
             throw new NotFoundHttpException();
         }
