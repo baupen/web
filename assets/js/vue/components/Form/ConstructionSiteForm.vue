@@ -82,7 +82,8 @@ export default {
     },
     constructionSites: {
       type: Array,
-      required: false
+      required: false,
+      default: []
     }
   },
   watch: {
