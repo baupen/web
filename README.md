@@ -83,7 +83,7 @@ Milestone 4 (UI)
 
 Milestone 5 (Migration & performance)
 - [x] write migration from sqlite to mysql
-- [ ] test `app:cache:initialize` command
+- [x] test `app:cache:initialize` command
 - [ ] implement copy environment with mysql database
   
 Milestone 6 (Pre-release)
@@ -98,4 +98,5 @@ To migrate, do the following:
 - install the new application; ensure `persistent` and `transient` folders are linked as before
 - run `php bin/console app:migrate:sqlite` to copy sqlite data into mysql database
 - run `php bin/console app:authorization:refresh` to authorize users on whitelists
-- run `php bin/console app:cache:initialize` to initialize the cache
+- run `php bin/console app:cache:clear --construction-sites --renders --force` to remove the old cache
+- run `php bin/console app:cache:warmup` to warmup the cache
