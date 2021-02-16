@@ -8,6 +8,18 @@ server must fulfil requirements of `composer.json` & include ghostscript (`gs`)
 
 see the `./.env` file for how to configure
 
+to deploy master to all instances, simply run
+```
+- ./vendor/bin/agnes deploy *:*:* master 
+```
+
+if you want to use a staging area, run the following commands:
+```bash
+- ./vendor/bin/agnes run *:*:prod backup_db
+- ./vendor/bin/agnes deploy *:*:staging master
+- ./vendor/bin/agnes run *:*:staging restore_db
+```
+
 ## Backup
 
 you only need to backup the files in the `/var/persistent` folder.

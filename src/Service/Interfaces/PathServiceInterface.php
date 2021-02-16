@@ -37,6 +37,8 @@ use App\Entity\MapFile;
  */
 interface PathServiceInterface
 {
+    public function getDatabaseBackupFolder(): string;
+
     public function getRootFolderOfConstructionSites(): string;
 
     public function getFolderForConstructionSiteImages(ConstructionSite $constructionSite): string;

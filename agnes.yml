@@ -48,6 +48,14 @@ scripts:
       - cd $PREVIOUS_RELEASE_PATH && export MIGRATE_TO=$(php bin/console doctrine:migrations:latest)
       - php bin/console doctrine:migrations:migrate $MIGRATE_TO -n
 
+  backup_db:
+    script:
+      - php bin/console app:database:backup
+
+  restore_db:
+    script:
+      - php bin/console app:database:restore
+
   fixtures:
     hook: after_deploy
     instance_filter: '*:*:dev'
