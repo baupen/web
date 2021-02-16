@@ -84,7 +84,7 @@ Milestone 4 (UI)
 Milestone 5 (Migration & performance)
 - [x] write migration from sqlite to mysql
 - [x] test `app:cache:initialize` command
-- [ ] implement copy environment with mysql database
+- [x] implement copy environment with mysql database
   
 Milestone 6 (Pre-release)
 - [ ] finishing touches with 0, many & many deleted elements
