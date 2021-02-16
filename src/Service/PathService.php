@@ -61,6 +61,11 @@ class PathService implements PathServiceInterface
         $this->constructionSiteFolderRoot = $this->folderRoot.DIRECTORY_SEPARATOR.'construction_sites';
     }
 
+    public function getDatabaseBackupFolder(): string
+    {
+        return $this->folderRoot.DIRECTORY_SEPARATOR.'backup';
+    }
+
     public function getRootFolderOfConstructionSites(): string
     {
         return $this->constructionSiteFolderRoot;
