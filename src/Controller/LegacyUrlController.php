@@ -45,7 +45,7 @@ class LegacyUrlController extends BaseController
     }
 
     /**
-     * @Route("/{route}", name="legacy_dashboard", requirements={"route"="(dashboard)|(foyer)|(register)|(dispatch)|(edit)|(switch)"})
+     * @Route("/{route}", name="legacy_dashboard", requirements={"route"="(dashboard)|(foyer)|(dispatch)|(edit)|(switch)"})
      *
      * @return Response
      */

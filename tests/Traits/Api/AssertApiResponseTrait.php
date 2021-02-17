@@ -30,7 +30,8 @@ trait AssertApiResponseTrait
                 $actualFields = array_keys($member);
                 sort($actualFields);
 
-                $this->assertArraySubset($actualFields, $whitelist);
+                $validEntries = array_intersect($actualFields, $whitelist);
+                $this->assertSameSize($validEntries, $actualFields);
             }
         } else {
             $whitelist = array_merge(['@context'], $whitelist);
@@ -38,7 +39,9 @@ trait AssertApiResponseTrait
 
             $actualFields = array_keys($hydraPayload);
             sort($actualFields);
-            $this->assertArraySubset($actualFields, $whitelist);
+
+            $validEntries = array_intersect($actualFields, $whitelist);
+            $this->assertSameSize($validEntries, $actualFields);
         }
     }
 

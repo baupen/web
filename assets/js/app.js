@@ -46,8 +46,7 @@ $(document)
     }
   })
 
-function renderQRCode(authenticationTokenPlaceholders, token)
-{
+function renderQRCode (authenticationTokenPlaceholders, token) {
   const payload = {
     token: token,
     origin: window.location.origin
