@@ -31,22 +31,22 @@ $(document)
 
     dom.watch()
 
-    const authenticationTokenPlaceholders = document.getElementsByClassName('authentication-token-canvas')
-    if (authenticationTokenPlaceholders.length) {
+    const authenticationTokenCanvas = document.getElementsByClassName('authentication-token-canvas')
+    if (authenticationTokenCanvas.length) {
       if (window.token) {
-        renderQRCode(authenticationTokenPlaceholders, window.token)
+        renderQRCode(window.token)
       } else {
         $.ajax('/token', // request url
           {
             success: function (token) {
-              renderQRCode(authenticationTokenPlaceholders, token)
+              renderQRCode(token)
             }
           })
       }
     }
   })
 
-function renderQRCode (authenticationTokenPlaceholders, token) {
+function renderQRCode (token) {
   const payload = {
     token: token,
     origin: window.location.origin
@@ -54,15 +54,23 @@ function renderQRCode (authenticationTokenPlaceholders, token) {
 
   const data = JSON.stringify(payload)
 
-  for (const index in authenticationTokenPlaceholders) {
-    const authenticationTokenPlaceholder = authenticationTokenPlaceholders[index]
+  const authenticationTokenCanvas = document.getElementsByClassName('authentication-token-canvas')
+  for (const index in authenticationTokenCanvas) {
+    const element = authenticationTokenCanvas[index]
 
     // eslint-disable-next-line no-new
     new QRious({
-      element: authenticationTokenPlaceholder,
+      element,
       level: 'Q',
       value: data,
       size: 300
     })
+  }
+
+  const authenticationTokenLinks = $('.authentication-token-link')
+  for (const index in authenticationTokenLinks) {
+    const element = authenticationTokenLinks[index]
+
+    element.setAttribute('href', 'mangelio://login?payload=' + btoa(data))
   }
 }
