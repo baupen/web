@@ -22,7 +22,7 @@
           </div>
         </div>
       </div>
-      <issues-resolve-masonry class="mt-5"
+      <issues-resolve-view class="mt-5"
           v-for="mapContainer in shownMapContainers" :key="mapContainer.entity['@id']" :ref="mapContainer.entity['@id']"
           :map="mapContainer.entity" :map-context="getMapContext(mapContainer)"
           :craftsman="craftsman" :construction-site="constructionSite" :construction-managers="constructionManagers" />
@@ -33,14 +33,14 @@
 <script>
 import { api, iriToId } from '../services/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
-import IssuesResolveMasonry from './View/MapIssuesResolveMasonry'
+import IssuesResolveView from './View/MapIssuesResolveView'
 import { mapTransformer } from '../services/transformers'
 import MapsResolveTable from './View/MapsResolveTable'
 
 export default {
   components: {
     MapsResolveTable,
-    IssuesResolveMasonry,
+    IssuesResolveView,
     LoadingIndicatorSecondary,
   },
   data () {
