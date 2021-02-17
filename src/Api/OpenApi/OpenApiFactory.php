@@ -145,7 +145,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $imageContent = [
             'multipart/form-data' => [
                 'schema' => [
-                    '$ref' => "#/components/schemas/Image"
+                    '$ref' => '#/components/schemas/Image',
                 ],
                 'encoding' => [
                     'image' => [
@@ -214,10 +214,6 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $openApi = $openApi->withComponents($components);
     }
 
-    /**
-     * @param OpenApi $openApi
-     * @return OpenApi
-     */
     private function removePath(OpenApi $openApi, string $path): OpenApi
     {
         $paths = $openApi->getPaths()->getPaths();

@@ -50,20 +50,20 @@ class MyTwigExtension extends AbstractExtension
             new TwigFilter('booleanFormat', [$this, 'booleanFilter']),
             new TwigFilter('camelCaseToUnderscore', [$this, 'camelCaseToUnderscoreFilter']),
             new TwigFilter('truncate', [$this, 'truncateFilter'], ['needs_environment' => true]),
-            new TwigFilter('iOSLoginLink', [$this, 'iOSLoginLinkFilter'])
+            new TwigFilter('iOSLoginLink', [$this, 'iOSLoginLinkFilter']),
         ];
     }
 
     public function getFunctions()
     {
         return [
-            new TwigFunction('apiSubRequest', [$this, 'apiSubRequestFunction'])
+            new TwigFunction('apiSubRequest', [$this, 'apiSubRequestFunction']),
         ];
     }
 
     public function apiSubRequestFunction(string $url)
     {
-        $request = Request::create($url, 'GET', [], [], [], ["HTTP_ACCEPT" => null]);
+        $request = Request::create($url, 'GET', [], [], [], ['HTTP_ACCEPT' => null]);
         $response = $this->httpKernel->handle(
             $request,
             HttpKernelInterface::SUB_REQUEST
