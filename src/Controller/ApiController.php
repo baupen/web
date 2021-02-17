@@ -87,10 +87,10 @@ class ApiController extends BaseDoctrineController
     {
         $data = [];
 
-        $applicationVersion = $request->headers->get("X-APPLICATION-VERSION");
-        list($os, $version) = explode("_", $applicationVersion);
+        $applicationVersion = $request->headers->get('X-APPLICATION-VERSION');
+        list($os, $version) = explode('_', $applicationVersion);
 
-        /**
+        /*
          * $data['messageDe'] = "Bitte aktualisieren Sie die neue App";
          * $data['messageIt'] = "Pro favore ...";
          */
