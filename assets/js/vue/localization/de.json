@@ -179,6 +179,9 @@
       }
     }
   },
+  "maps_resolve_table": {
+    "open_issues": "Offene Pendenzen"
+  },
   "edit_issues_button": {
     "modal_title": "Pendenzen bearbeiten",
     "no_craftsman": "Kein Unternehmer",
@@ -388,6 +391,7 @@
     "trade": "Gewerk",
     "is_marked": "Favorit",
     "was_added_with_client": "Abnahmependenz",
+    "position": "Platzierung",
     "state": {
       "created": "erstellt",
       "registered": "registriert",

@@ -9,23 +9,19 @@
         {{ $t('resolve.thanks') }}
       </p>
 
-      <div class="card">
-        <div class="card-body">
-          <div class="table-responsive">
-            <maps-resolve-table
-                :map-containers="flatMaps" :map-groups="mapGroups"
-                :craftsman="craftsman" :construction-site="constructionSite"
-                @load="loadMapContainer($event)" @loadMultiple="loadMultipleMapContainers($event)" />
-          </div>
-        </div>
-      </div>
+      <template v-else>
+        <maps-resolve-table
+            :map-containers="flatMaps" :map-groups="mapGroups"
+            :craftsman="craftsman" :construction-site="constructionSite"
+            @scroll-to="scrollTo($event)" />
 
-      <issues-resolve-view
-          class="mt-5" :ref="mapContainer.entity['@id']"
-          v-for="mapContainer in loadedMapContainers" :key="mapContainer.entity['@id']"
-          :map="mapContainer.entity" :map-context="getMapContext(mapContainer)"
-          :craftsman="craftsman" :construction-site="constructionSite"
-          :construction-managers="constructionManagers" />
+        <issues-resolve-view
+            class="mt-5" :ref="mapContainer.entity['@id']"
+            v-for="mapContainer in mapsWithIssues" :key="mapContainer.entity['@id']"
+            :map="mapContainer.entity" :map-context="getMapContext(mapContainer)"
+            :craftsman="craftsman" :construction-site="constructionSite"
+            :construction-managers="constructionManagers" />
+      </template>
     </loading-indicator-secondary>
   </div>
 </template>
@@ -47,9 +43,7 @@ export default {
     return {
       constructionManagers: null,
       maps: null,
-      mapGroups: null,
-
-      loadedMapContainers: []
+      mapGroups: null
     }
   },
   props: {
@@ -72,27 +66,18 @@ export default {
       return parents.map(p => p.name)
           .join(' > ') + ' > '
     },
-    loadMultipleMapContainers: function (mapContainers) {
-      mapContainers.forEach(mc => this.loadMapContainer(mc, false))
-    },
-    loadMapContainer: function (mapContainer, scrollTo = true) {
-      this.loadedMapContainers.push(mapContainer)
-
-      if (!scrollTo) {
-        return
-      }
-
+    scrollTo: function (mapContainer) {
       this.$nextTick(() => {
         const newDisplayedMap = this.$refs[mapContainer.entity['@id']].$el
-        const newDisplayedMapOffset = $(newDisplayedMap)
-            .offset().top
+        if (!newDisplayedMap) {
+          return;
+        }
 
-        $('html')
-            .animate({
-              scrollTop: newDisplayedMapOffset
-            })
+        const newDisplayedMapOffset = $(newDisplayedMap).offset().top
+
+        $('html').animate({scrollTop: newDisplayedMapOffset})
       })
-    }
+    },
   },
   computed: {
     groupCountSum: function () {
@@ -107,6 +92,15 @@ export default {
     flatMaps: function () {
       return mapTransformer.flatHierarchy(this.maps)
     },
+    mapsWithIssues: function () {
+      let groupLookup = {}
+      this.mapGroups.forEach(mg => groupLookup[mg.entity] = mg)
+
+      return this.flatMaps.filter(m => {
+        const group = groupLookup[m.entity['@id']]
+        return group && group.count > 0
+      })
+    }
   },
   mounted () {
     api.getConstructionManagers(this.constructionSite)
@@ -120,8 +114,7 @@ export default {
     api.getIssuesGroup(this.constructionSite, 'map', {
       craftsman: iriToId(this.craftsman['@id']),
       state: 2
-    })
-        .then(groups => this.mapGroups = groups)
+    }).then(groups => this.mapGroups = groups)
   }
 }
 </script>
