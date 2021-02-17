@@ -32,6 +32,7 @@ import ButtonWithModal from '../Library/Behaviour/ButtonWithModal'
 import MapRenderLightbox from './MapRenderLightbox'
 
 export default {
+  emits: ['scroll-to'],
   components: {
     MapRenderLightbox,
     ButtonWithModal,

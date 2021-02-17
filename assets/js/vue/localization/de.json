@@ -123,7 +123,7 @@
     }
   },
   "resolve": {
-    "help": "Markieren Sie Pendenzen als erledigt damit die Bauleitung diese schliessen kann.",
+    "help": "Markieren Sie Pendenzen als erledigt, damit die Bauleitung diese schliessen kann.",
     "thanks": "Sie haben keine offenen Pendenzen."
   },
   "foyer": {

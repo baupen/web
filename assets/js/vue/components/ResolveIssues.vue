@@ -59,12 +59,7 @@ export default {
   methods: {
     getMapContext: function (mapContainer) {
       const parents = this.mapParentsLookup[mapContainer.entity['@id']]
-      if (!parents.length) {
-        return ''
-      }
-
-      return parents.map(p => p.name)
-          .join(' > ') + ' > '
+      return parents.map(p => p.name).join(' > ')
     },
     scrollTo: function (mapContainer) {
       this.$nextTick(() => {
