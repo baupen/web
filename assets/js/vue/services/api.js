@@ -177,7 +177,18 @@ const api = {
   },
   _getMe: function (authenticationToken) {
     axios.defaults.headers['X-AUTHENTICATION'] = authenticationToken
-    return this._getItem('/api/me')
+    return new Promise(
+      (resolve) => {
+        if (window.me && window.token === authenticationToken) {
+          resolve(window.me)
+        } else {
+          axios.get('/api/me')
+            .then(response => {
+              resolve(response.data)
+            })
+        }
+      }
+    )
   },
   authenticateFromUrl: function () {
     const token = this._getTokenFromLocation()
@@ -186,13 +197,20 @@ const api = {
   authenticate: function () {
     return new Promise(
       (resolve) => {
-        axios.get('/token')
-          .then(response => {
-            this._getMe(response.data)
-              .then(response => {
-                resolve(response)
-              })
-          })
+        if (window.token) {
+          this._getMe(window.token)
+            .then(response => {
+              resolve(response)
+            })
+        } else {
+          axios.get('/token')
+            .then(response => {
+              this._getMe(response.data)
+                .then(response => {
+                  resolve(response)
+                })
+            })
+        }
       }
     )
   },
@@ -200,8 +218,19 @@ const api = {
     return this._getItem(id)
   },
   getConstructionSite: function () {
-    const constructionSiteUrl = this._getConstructionSiteIriFromLocation()
-    return this._getItem(constructionSiteUrl)
+    return new Promise(
+      (resolve) => {
+        if (window.constructionSite) {
+          resolve(window.constructionSite)
+        } else {
+          const constructionSiteUrl = this._getConstructionSiteIriFromLocation()
+          axios.get(constructionSiteUrl)
+            .then(response => {
+              resolve(response.data)
+            })
+        }
+      }
+    )
   },
   getConstructionManagers: function (constructionSite = null) {
     let urlSuffix = ''

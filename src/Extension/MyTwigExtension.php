@@ -15,21 +15,26 @@ use App\Entity\ConstructionManager;
 use App\Enum\BooleanType;
 use App\Helper\DateTimeFormatter;
 use DateTime;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 class MyTwigExtension extends AbstractExtension
 {
     private $translator;
     private $request;
+    private $httpKernel;
 
-    public function __construct(TranslatorInterface $translator, RequestStack $requestStack)
+    public function __construct(TranslatorInterface $translator, RequestStack $requestStack, HttpKernelInterface $httpKernel)
     {
         $this->translator = $translator;
         $this->request = $requestStack->getCurrentRequest();
+        $this->httpKernel = $httpKernel;
     }
 
     /**
@@ -45,8 +50,26 @@ class MyTwigExtension extends AbstractExtension
             new TwigFilter('booleanFormat', [$this, 'booleanFilter']),
             new TwigFilter('camelCaseToUnderscore', [$this, 'camelCaseToUnderscoreFilter']),
             new TwigFilter('truncate', [$this, 'truncateFilter'], ['needs_environment' => true]),
-            new TwigFilter('iOSLoginLink', [$this, 'iOSLoginLinkFilter']),
+            new TwigFilter('iOSLoginLink', [$this, 'iOSLoginLinkFilter'])
         ];
+    }
+
+    public function getFunctions()
+    {
+        return [
+            new TwigFunction('apiSubRequest', [$this, 'apiSubRequestFunction'])
+        ];
+    }
+
+    public function apiSubRequestFunction(string $url)
+    {
+        $request = Request::create($url, 'GET', [], [], [], ["HTTP_ACCEPT" => null]);
+        $response = $this->httpKernel->handle(
+            $request,
+            HttpKernelInterface::SUB_REQUEST
+        );
+
+        return $response->getContent();
     }
 
     public function iOSLoginLinkFilter(ConstructionManager $constructionManager): string

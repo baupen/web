@@ -33,28 +33,37 @@ $(document)
 
     const authenticationTokenPlaceholders = document.getElementsByClassName('authentication-token-canvas')
     if (authenticationTokenPlaceholders.length) {
-      $.ajax('/token', // request url
-        {
-          success: function (token) {
-            const payload = {
-              token: token,
-              origin: window.location.origin
+      if (window.token) {
+        renderQRCode(authenticationTokenPlaceholders, window.token)
+      } else {
+        $.ajax('/token', // request url
+          {
+            success: function (token) {
+              renderQRCode(authenticationTokenPlaceholders, token)
             }
-
-            const data = JSON.stringify(payload)
-
-            for (const index in authenticationTokenPlaceholders) {
-              const authenticationTokenPlaceholder = authenticationTokenPlaceholders[index]
-
-              // eslint-disable-next-line no-new
-              new QRious({
-                element: authenticationTokenPlaceholder,
-                level: 'Q',
-                value: data,
-                size: 300
-              })
-            }
-          }
-        })
+          })
+      }
     }
   })
+
+function renderQRCode(authenticationTokenPlaceholders, token)
+{
+  const payload = {
+    token: token,
+    origin: window.location.origin
+  }
+
+  const data = JSON.stringify(payload)
+
+  for (const index in authenticationTokenPlaceholders) {
+    const authenticationTokenPlaceholder = authenticationTokenPlaceholders[index]
+
+    // eslint-disable-next-line no-new
+    new QRious({
+      element: authenticationTokenPlaceholder,
+      level: 'Q',
+      value: data,
+      size: 300
+    })
+  }
+}
