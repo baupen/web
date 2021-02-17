@@ -32,6 +32,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $this->setFeedEntryResponses($openApi);
         $this->setSummaryResponse($openApi);
         $this->addFilePaths($openApi);
+        $this->addFileUrlProperties($openApi);
         $this->configureEmailEndpoint($openApi);
         $this->configureRegistrationEndpoint($openApi);
 
@@ -53,10 +54,10 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $openApi->getPaths()->getPath('/api/issues/report')->getGet()->addResponse($response, 200);
     }
 
-    private function setFeedEntryResponses(OpenApi $openApi)
+    private function setFeedEntryResponses(OpenApi &$openApi)
     {
         $feedEntrySchemaName = 'FeedEntry';
-        $openApi->getComponents()->getSchemas()[$feedEntrySchemaName] = [
+        $feedEntrySchema = [
             'type' => 'object',
             'description' => 'Some action which happened on the construction site.',
             'required' => ['date', 'subject', 'type', 'count'],
@@ -67,6 +68,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 'count' => ['type' => 'integer'],
             ],
         ];
+        $this->patchSchema($openApi, $feedEntrySchemaName, $feedEntrySchema);
 
         $feedEntryArrayContent = [
             'application/json' => [
@@ -86,10 +88,10 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $openApi->getPaths()->getPath('/api/craftsmen/feed_entries')->getGet()->addResponse($response, 200);
     }
 
-    private function setSummaryResponse(OpenApi $openApi)
+    private function setSummaryResponse(OpenApi &$openApi)
     {
         $summarySchemaName = 'Summary';
-        $openApi->getComponents()->getSchemas()[$summarySchemaName] = [
+        $summarySchema = [
             'type' => 'object',
             'description' => 'Quick count of relevant issue categories.',
             'required' => ['openCount', 'overdueCount', 'resolvedCount', 'closedCount'],
@@ -99,6 +101,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 'closedCount' => ['type' => 'integer'],
             ],
         ];
+        $this->patchSchema($openApi, $summarySchemaName, $summarySchema);
 
         $summarySchemeContent = [
             'application/json' => [
@@ -124,10 +127,9 @@ class OpenApiFactory implements OpenApiFactoryInterface
         ];
     }
 
-    private function addFilePaths(OpenApi $openApi)
+    private function addFilePaths(OpenApi &$openApi)
     {
-        $imageSchemaName = 'Image';
-        $openApi->getComponents()->getSchemas()[$imageSchemaName] = [
+        $imageSchema = [
             'type' => 'object',
             'description' => 'Image (.jpg, .gif, .png).',
             'properties' => [
@@ -138,23 +140,16 @@ class OpenApiFactory implements OpenApiFactoryInterface
             ],
             'required' => ['image'],
         ];
+        $this->patchSchema($openApi, 'Image', $imageSchema);
 
         $imageContent = [
             'multipart/form-data' => [
                 'schema' => [
-                    'type' => 'object',
-                    'description' => 'Image (.jpg, .gif, .png).',
-                    'properties' => [
-                        'image' => [
-                            'type' => 'string',
-                            'format' => 'binary',
-                        ],
-                    ],
-                    'required' => ['image'],
+                    '$ref' => "#/components/schemas/Image"
                 ],
                 'encoding' => [
                     'image' => [
-                        'contentType' => ['image/jpeg', 'image/gif', 'image/png'],
+                        'contentType' => 'image/jpeg, image/gif, image/png',
                     ],
                 ],
             ],
@@ -173,7 +168,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $requestBody = new Model\RequestBody('The image to upload and assign to the issue', new \ArrayObject($imageContent));
         $postOperation = (new Model\Operation('postIssueImage'))
             ->withTags(['Issue'])
-            ->withParameters([$this->createRequiredPathParameter('issue')])
+            ->withParameters([$this->createRequiredPathParameter('id')])
             ->withRequestBody($requestBody)
             ->addResponse($response, 201);
 
@@ -183,10 +178,9 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $openApi->getPaths()->addPath('/api/issues/{id}/image', $path);
     }
 
-    private function configureEmailEndpoint(OpenApi $openApi)
+    private function configureEmailEndpoint(OpenApi &$openApi)
     {
-        // remove GET method
-        $openApi->getPaths()->addPath('/api/emails/{noneIdentifier}', new Model\PathItem());
+        $openApi = $this->removePath($openApi, '/api/emails/{noneIdentifier}');
 
         $postOperation = $openApi->getPaths()->getPath('/api/emails')->getPost();
         $postOperation->addResponse(new Model\Response('E-Mail sent'), 200);
@@ -207,5 +201,48 @@ class OpenApiFactory implements OpenApiFactoryInterface
 
         $path = $path->withPost($postOperation);
         $openApi->getPaths()->addPath($pathName, $path);
+    }
+
+    private function patchSchema(OpenApi &$openApi, string $schemaName, array $schemaPatch)
+    {
+        $schemas = $openApi->getComponents()->getSchemas()->getArrayCopy();
+
+        $currentSchema = isset($schemas[$schemaName]) ? $schemas[$schemaName]->getArrayCopy() : [];
+        $schemas[$schemaName] = new \ArrayObject(array_merge_recursive($currentSchema, $schemaPatch));
+
+        $components = $openApi->getComponents()->withSchemas(new \ArrayObject($schemas));
+        $openApi = $openApi->withComponents($components);
+    }
+
+    /**
+     * @param OpenApi $openApi
+     * @return OpenApi
+     */
+    private function removePath(OpenApi $openApi, string $path): OpenApi
+    {
+        $paths = $openApi->getPaths()->getPaths();
+        unset($paths[$path]);
+
+        $newPaths = new Model\Paths();
+        foreach ($paths as $url => $path) {
+            $newPaths->addPath($url, $path);
+        }
+
+        return $openApi->withPaths($newPaths);
+    }
+
+    private function addFileUrlProperties(OpenApi &$openApi)
+    {
+        $schemaPatch = ['properties' => ['imageUrl' => ['type' => 'string', 'nullable' => true]]];
+        $this->patchSchema($openApi, 'Issue.jsonld-issue-read', $schemaPatch);
+        $this->patchSchema($openApi, 'Issue-issue-read', $schemaPatch);
+
+        $schemaPatch = ['properties' => ['imageUrl' => ['type' => 'string', 'nullable' => true]]];
+        $this->patchSchema($openApi, 'ConstructionSite.jsonld-construction-site-read', $schemaPatch);
+        $this->patchSchema($openApi, 'ConstructionSite-construction-site-read', $schemaPatch);
+
+        $schemaPatch = ['properties' => ['fileUrl' => ['type' => 'string', 'nullable' => true]]];
+        $this->patchSchema($openApi, 'Map.jsonld-map-read', $schemaPatch);
+        $this->patchSchema($openApi, 'Map-map-read', $schemaPatch);
     }
 }
