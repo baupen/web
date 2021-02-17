@@ -34,6 +34,15 @@ class BaseController extends AbstractController
      * @param string $message the translation message to display
      * @param string $link
      */
+    protected function displayWarning($message, $link = null)
+    {
+        $this->displayFlash('warning', $message, $link);
+    }
+
+    /**
+     * @param string $message the translation message to display
+     * @param string $link
+     */
     protected function displayError($message, $link = null)
     {
         $this->displayFlash('danger', $message, $link);

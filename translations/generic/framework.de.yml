@@ -6,9 +6,15 @@ date_time:
   Fri: Fr
   Sat: Sa
   Sun: So
+
 error:
   form_validation_failed: 'Die Verarbeitung konnte nicht abgeschlossen werden. Sind alle benötigten Felder richtig ausgefüllt?'
+
 outdated:
   your_browser_is_outdated: 'Ihr Browser wird nicht unterstützt!'
   update_to_view_correctly: 'Die Seite wird daher möglicherweise nicht richtig dargestellt.'
   update_now: 'Browser jetzt aktualisieren '
+
+legacy:
+  warning:
+    redirected_from_legacy_url: 'Sie wurden automatisch weitergeleitet, weil sich der Link geändert hat. Bitte aktualisieren Sie ihre Lesezeichen.'
