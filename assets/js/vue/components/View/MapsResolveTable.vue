@@ -2,11 +2,12 @@
   <table class="table table-striped table-hover">
     <thead>
     <tr>
+      <th class="w-minimal"></th>
       <th>{{$t('map._name')}}</th>
       <th>{{$t('issue._plural')}}</th>
       <th class="text-nowrap">{{$t('craftsman.next_deadline')}}</th>
       <th class="w-minimal">
-        <a href="#" v-if="notShownMapContainers.length > 0" @click="showAllContainers">
+        <a href="#" v-if="notYetLoadedMapContainers.length > 0" @click="loadAllContainers">
           {{ $t('actions.load_all_maps') }}
         </a>
       </th>
@@ -14,6 +15,10 @@
     </thead>
     <tbody>
     <tr v-for="mapContainer in mapContainerWithGroups" :key="mapContainer.container.entity['@id']">
+      <td>
+        <map-render-lightbox
+            :construction-site="constructionSite" :map="mapContainer.container.entity" :craftsman="craftsman" :state="2" />
+      </td>
       <td class="text-nowrap">
         {{ '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(mapContainer.container.level) }}
         {{mapContainer.container.entity.name}}
@@ -26,7 +31,7 @@
         </span>
       </td>
       <td class="text-right">
-        <a href="#"  v-if="notShownMapContainers.includes(mapContainer.container)" @click="showContainer(mapContainer.container)">
+        <a href="#" v-if="mapContainer.canLoad && !loadedMapContainers.includes(mapContainer.container)" @click="loadContainer(mapContainer.container)">
           {{ $t('actions.load_map') }}
         </a>
       </td>
@@ -38,19 +43,29 @@
 <script>
 import DateHumanReadable from '../Library/View/DateHumanReadable'
 import ButtonWithModal from '../Library/Behaviour/ButtonWithModal'
+import MapRenderLightbox from './MapRenderLightbox'
 
 export default {
-  emits: ['show', 'show-multiple'],
+  emits: ['load', 'load-multiple'],
   components: {
+    MapRenderLightbox,
     ButtonWithModal,
     DateHumanReadable
   },
   data() {
     return {
-      shownMapContainers: []
+      loadedMapContainers: []
     }
   },
   props: {
+    constructionSite: {
+      type: Object,
+      required: true
+    },
+    craftsman: {
+      type: Object,
+      required: true
+    },
     mapContainers: {
       type: Array,
       required: true
@@ -68,34 +83,59 @@ export default {
 
       return Date.now() > new Date(mapContainer.group.maxDeadline)
     },
-    showContainer: function (mapContainer) {
-      this.shownMapContainers.push(mapContainer)
-      this.$emit('show', mapContainer)
+    loadContainer: function (mapContainer) {
+      this.$emit('load', mapContainer)
+      this.loadedMapContainers.push(mapContainer)
     },
-    showAllContainers: function () {
-      this.$emit('show-multiple', this.notShownMapContainers)
-      this.shownMapContainers.push(...this.notShownMapContainers)
+    loadAllContainers: function () {
+      this.$emit('load-multiple', this.notYetLoadedMapContainers)
+      this.loadedMapContainers.push(...this.notYetLoadedMapContainers)
     }
   },
   computed: {
-    notShownMapContainers: function () {
-      return this.mapContainerWithGroups.filter(mc => mc.group && mc.group.count > 0)
-          .map(mcc => mcc.container)
-          .filter(mc => !this.shownMapContainers.includes(mc))
+    loadableMapContains: function () {
+      return this.mapContainerWithGroups.filter(mc => mc.canLoad)
+    },
+    notYetLoadedMapContainers: function () {
+      return this.loadableMapContains
+          .map(mc => mc.container)
+          .filter(c => !this.loadedMapContainers.includes(c))
     },
     mapContainerWithGroups: function () {
       let groupLookup = {}
       this.mapGroups.forEach(mg => groupLookup[mg.entity] = mg)
 
       let mapContainerWithGroups = [];
-      this.mapContainers.forEach(mapContainer => {
-        mapContainerWithGroups.push({
-          group: groupLookup[mapContainer.entity['@id']],
-          container: mapContainer
-        });
-      })
+      let dirtyLevel = -1
+      for (let i = this.mapContainers.length-1; i >= 0; i--) {
+        let mapContainer = this.mapContainers[i];
 
-      return mapContainerWithGroups
+        const group = groupLookup[mapContainer.entity['@id']];
+
+        const canLoad = group && group.count > 0
+        if (canLoad) {
+          dirtyLevel = mapContainer.level
+        }
+
+        // ensures parents are displayed too
+        const show = dirtyLevel === mapContainer.level
+        if (show) {
+          dirtyLevel--;
+        }
+
+        const mapContainerWithGroup = {
+          group,
+          show,
+          canLoad,
+          container: mapContainer
+        }
+
+        mapContainerWithGroups.push(mapContainerWithGroup);
+      }
+
+      mapContainerWithGroups = mapContainerWithGroups.reverse()
+
+      return mapContainerWithGroups.filter(mc => mc.show)
     },
   },
 }
