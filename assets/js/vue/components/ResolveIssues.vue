@@ -9,23 +9,19 @@
         {{ $t('resolve.thanks') }}
       </p>
 
-      <div class="row">
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-body p-2">
-              <div class="table-responsive">
-                <maps-resolve-table
-                    :map-containers="flatMaps" :map-groups="mapGroups"
-                    @show="showMapContainer($event)" @showMultiple="showMultipleMapContainers($event)" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <issues-resolve-masonry class="mt-5"
-          v-for="mapContainer in shownMapContainers" :key="mapContainer.entity['@id']" :ref="mapContainer.entity['@id']"
-          :map="mapContainer.entity" :map-context="getMapContext(mapContainer)"
-          :craftsman="craftsman" :construction-site="constructionSite" :construction-managers="constructionManagers" />
+      <template v-else>
+        <maps-resolve-table
+            :map-containers="flatMaps" :map-groups="mapGroups"
+            :craftsman="craftsman" :construction-site="constructionSite"
+            @scroll-to="scrollTo($event)" />
+
+        <issues-resolve-view
+            class="mt-5" :ref="mapContainer.entity['@id']"
+            v-for="mapContainer in mapsWithIssues" :key="mapContainer.entity['@id']"
+            :map="mapContainer.entity" :map-context="getMapContext(mapContainer)"
+            :craftsman="craftsman" :construction-site="constructionSite"
+            :construction-managers="constructionManagers" />
+      </template>
     </loading-indicator-secondary>
   </div>
 </template>
@@ -33,23 +29,21 @@
 <script>
 import { api, iriToId } from '../services/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
-import IssuesResolveMasonry from './View/MapIssuesResolveMasonry'
+import IssuesResolveView from './View/MapIssuesResolveView'
 import { mapTransformer } from '../services/transformers'
 import MapsResolveTable from './View/MapsResolveTable'
 
 export default {
   components: {
     MapsResolveTable,
-    IssuesResolveMasonry,
+    IssuesResolveView,
     LoadingIndicatorSecondary,
   },
   data () {
     return {
       constructionManagers: null,
       maps: null,
-      mapGroups: null,
-
-      shownMapContainers: []
+      mapGroups: null
     }
   },
   props: {
@@ -65,27 +59,20 @@ export default {
   methods: {
     getMapContext: function (mapContainer) {
       const parents = this.mapParentsLookup[mapContainer.entity['@id']]
-      return parents.map(p => p.name).join(" > ");
+      return parents.map(p => p.name).join(' > ')
     },
-    showMultipleMapContainers: function(mapContainers) {
-      mapContainers.forEach(mc => this.showMapContainer(mc, false))
-    },
-    showMapContainer: function(mapContainer, scrollTo = true) {
-      this.shownMapContainers.push(mapContainer);
-
-      if (!scrollTo) {
-        return
-      }
-
+    scrollTo: function (mapContainer) {
       this.$nextTick(() => {
-        const newDisplayedMap = this.$refs[mapContainer.entity['@id']].$el;
+        const newDisplayedMap = this.$refs[mapContainer.entity['@id']].$el
+        if (!newDisplayedMap) {
+          return;
+        }
+
         const newDisplayedMapOffset = $(newDisplayedMap).offset().top
 
-        $('html').animate({
-          scrollTop: newDisplayedMapOffset
-        });
+        $('html').animate({scrollTop: newDisplayedMapOffset})
       })
-    }
+    },
   },
   computed: {
     groupCountSum: function () {
@@ -100,6 +87,15 @@ export default {
     flatMaps: function () {
       return mapTransformer.flatHierarchy(this.maps)
     },
+    mapsWithIssues: function () {
+      let groupLookup = {}
+      this.mapGroups.forEach(mg => groupLookup[mg.entity] = mg)
+
+      return this.flatMaps.filter(m => {
+        const group = groupLookup[m.entity['@id']]
+        return group && group.count > 0
+      })
+    }
   },
   mounted () {
     api.getConstructionManagers(this.constructionSite)
@@ -110,8 +106,10 @@ export default {
     api.getMaps(this.constructionSite)
         .then(maps => this.maps = maps)
 
-    api.getIssuesGroup(this.constructionSite, 'map', {craftsman: iriToId(this.craftsman['@id']), state: 2})
-        .then(groups => this.mapGroups = groups)
+    api.getIssuesGroup(this.constructionSite, 'map', {
+      craftsman: iriToId(this.craftsman['@id']),
+      state: 2
+    }).then(groups => this.mapGroups = groups)
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>
-      <span class="text-secondary"><small>{{ mapContext }}</small></span>
+      <span class="text-secondary text-sm" v-if="mapContext">{{ mapContext }}<br/></span>
       {{ map.name }}
     </h2>
     <div class="row">

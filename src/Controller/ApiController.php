@@ -79,6 +79,26 @@ class ApiController extends BaseDoctrineController
     }
 
     /**
+     * @Route("/status", name="api_status")
+     *
+     * @return Response
+     */
+    public function statusAction(Request $request)
+    {
+        $data = [];
+
+        $applicationVersion = $request->headers->get('X-APPLICATION-VERSION');
+        list($os, $version) = explode('_', $applicationVersion);
+
+        /*
+         * $data['messageDe'] = "Bitte aktualisieren Sie die neue App";
+         * $data['messageIt'] = "Pro favore ...";
+         */
+
+        return $this->json($data);
+    }
+
+    /**
      * @Route("/maps/{map}/file/{mapFile}/{filename}", name="map_file", methods={"GET"})
      *
      * @return Response

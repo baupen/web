@@ -7,16 +7,16 @@
 
     public const TYPE_CRAFTSMAN_VISITED_WEBPAGE = 10;
     -->
-    <span v-if="entry.type === 1">
+    <span v-if="entry.type === 1 && this.constructionManagerName">
       {{$tc('feed.entries.construction_manager_registered', this.entry.count, {'constructionManager': this.constructionManagerName})}}
     </span>
-    <span v-else-if="entry.type === 2">
+    <span v-else-if="entry.type === 2 && this.craftsmanName">
       {{$tc('feed.entries.craftsman_resolved', this.entry.count, {'craftsman': this.craftsmanName})}}
     </span>
-    <span v-else-if="entry.type === 3">
+    <span v-else-if="entry.type === 3 && this.constructionManagerName">
       {{$tc('feed.entries.construction_manager_closed', this.entry.count, {'constructionManager': this.constructionManagerName})}}
     </span>
-    <span v-else-if="entry.type === 10">
+    <span v-else-if="entry.type === 10 && this.craftsmanName">
       {{$tc('feed.entries.craftsman_visited_webpage', this.entry.count, {'craftsman': this.craftsmanName})}}
     </span>
     <span class="text-secondary">
@@ -29,6 +29,7 @@
 <script>
 
 import DateHumanReadable from '../Library/View/DateHumanReadable'
+import { constructionManagerFormatter } from '../../services/formatters'
 export default {
   components: { DateHumanReadable },
   props: {
@@ -51,7 +52,11 @@ export default {
     },
     constructionManagerName: function () {
       const constructionManager = this.constructionManagers.find(c => c['@id'] === this.entry.subject);
-      return constructionManager.givenName + " " + constructionManager.familyName;
+      if (!constructionManager) {
+        return null;
+      }
+
+      return constructionManagerFormatter.name(constructionManager);
     }
   }
 }

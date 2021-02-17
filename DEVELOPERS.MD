@@ -11,7 +11,7 @@ Backend technical dept:
 The **Frontend** isin js, using Vue.JS 3. As there are fewer conventions out there, we need to follow our own ones.
 
 | `assets/js/vue` | Content | Purpose |
-| --- | --- | --- | --- |
+| --- | --- | --- |
 | `.` | vue entry points | abstract navigation from layout |
 | `./components` | purpose-specific layouts | abstract layout from content |
 | `./components/Action` | user-initiated interactions | abstract interactions from input |

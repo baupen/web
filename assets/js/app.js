@@ -31,30 +31,46 @@ $(document)
 
     dom.watch()
 
-    const authenticationTokenPlaceholders = document.getElementsByClassName('authentication-token-canvas')
-    if (authenticationTokenPlaceholders.length) {
-      $.ajax('/token', // request url
-        {
-          success: function (token) {
-            const payload = {
-              token: token,
-              origin: window.location.origin
+    const authenticationTokenCanvas = document.getElementsByClassName('authentication-token-canvas')
+    if (authenticationTokenCanvas.length) {
+      if (window.token) {
+        renderQRCode(window.token)
+      } else {
+        $.ajax('/token', // request url
+          {
+            success: function (token) {
+              renderQRCode(token)
             }
-
-            const data = JSON.stringify(payload)
-
-            for (const index in authenticationTokenPlaceholders) {
-              const authenticationTokenPlaceholder = authenticationTokenPlaceholders[index]
-
-              // eslint-disable-next-line no-new
-              new QRious({
-                element: authenticationTokenPlaceholder,
-                level: 'Q',
-                value: data,
-                size: 300
-              })
-            }
-          }
-        })
+          })
+      }
     }
   })
+
+function renderQRCode (token) {
+  const payload = {
+    token: token,
+    origin: window.location.origin
+  }
+
+  const data = JSON.stringify(payload)
+
+  const authenticationTokenCanvas = document.getElementsByClassName('authentication-token-canvas')
+  for (const index in authenticationTokenCanvas) {
+    const element = authenticationTokenCanvas[index]
+
+    // eslint-disable-next-line no-new
+    new QRious({
+      element,
+      level: 'Q',
+      value: data,
+      size: 300
+    })
+  }
+
+  const authenticationTokenLinks = $('.authentication-token-link')
+  for (const index in authenticationTokenLinks) {
+    const element = authenticationTokenLinks[index]
+
+    element.setAttribute('href', 'mangelio://login?payload=' + btoa(data))
+  }
+}

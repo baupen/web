@@ -1,56 +1,52 @@
 <template>
-  <table class="table table-striped table-hover">
-    <thead>
-    <tr>
-      <th>{{$t('map._name')}}</th>
-      <th>{{$t('issue._plural')}}</th>
-      <th class="text-nowrap">{{$t('craftsman.next_deadline')}}</th>
-      <th class="w-minimal">
-        <a href="#" v-if="notShownMapContainers.length > 0" @click="showAllContainers">
-          {{ $t('actions.load_all_maps') }}
-        </a>
-      </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr v-for="mapContainer in mapContainerWithGroups" :key="mapContainer.container.entity['@id']">
-      <td class="text-nowrap">
-        {{ '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(mapContainer.container.level) }}
-        {{mapContainer.container.entity.name}}
-      </td>
-      <td>{{mapContainer.group ? mapContainer.group.count : null}}</td>
-      <td>
-        <date-human-readable v-if="mapContainer.group" :value="mapContainer.group.maxDeadline" /> <br/>
-        <span v-if="isOverdue(mapContainer)" class="badge badge-danger">
-          {{ $t('issue.state.overdue') }}
-        </span>
-      </td>
-      <td class="text-right">
-        <a href="#"  v-if="notShownMapContainers.includes(mapContainer.container)" @click="showContainer(mapContainer.container)">
-          {{ $t('actions.load_map') }}
-        </a>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+      <tbody>
+      <tr v-for="mapContainer in mapContainerWithGroups" :key="mapContainer.container.entity['@id']">
+        <td class="text-nowrap">
+          <span :class="'space-'+mapContainer.container.level"></span>
+          <a v-if="mapContainer.hasIssues" href="#" @click="$emit('scroll-to', mapContainer.container)">
+            {{ mapContainer.container.entity.name }}
+          </a>
+          <template v-else>
+            {{ mapContainer.container.entity.name }}
+          </template>
+          <span v-if="mapContainer.group" class="badge badge-secondary ml-1">
+            {{ mapContainer.group.count }}
+          </span>
+          <template v-if="isOverdue(mapContainer)">
+            <span class="badge badge-danger">
+              {{ $t('issue.state.overdue') }}
+            </span>
+          </template>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script>
 import DateHumanReadable from '../Library/View/DateHumanReadable'
 import ButtonWithModal from '../Library/Behaviour/ButtonWithModal'
+import MapRenderLightbox from './MapRenderLightbox'
 
 export default {
-  emits: ['show', 'show-multiple'],
+  emits: ['scroll-to'],
   components: {
+    MapRenderLightbox,
     ButtonWithModal,
     DateHumanReadable
   },
-  data() {
-    return {
-      shownMapContainers: []
-    }
-  },
   props: {
+    constructionSite: {
+      type: Object,
+      required: true
+    },
+    craftsman: {
+      type: Object,
+      required: true
+    },
     mapContainers: {
       type: Array,
       required: true
@@ -61,42 +57,77 @@ export default {
     }
   },
   methods: {
-    isOverdue: function (mapContainer) {
-      if (!mapContainer.group || !mapContainer.group.maxDeadline) {
+    isOverdue: function (container) {
+      if (!container.group) {
         return false
       }
 
-      return Date.now() > new Date(mapContainer.group.maxDeadline)
-    },
-    showContainer: function (mapContainer) {
-      this.shownMapContainers.push(mapContainer)
-      this.$emit('show', mapContainer)
-    },
-    showAllContainers: function () {
-      this.$emit('show-multiple', this.notShownMapContainers)
-      this.shownMapContainers.push(...this.notShownMapContainers)
+      return Date.now() > new Date(container.group.maxDeadline)
     }
   },
   computed: {
-    notShownMapContainers: function () {
-      return this.mapContainerWithGroups.filter(mc => mc.group && mc.group.count > 0)
-          .map(mcc => mcc.container)
-          .filter(mc => !this.shownMapContainers.includes(mc))
+    maxDeadline: function () {
+      const orderedDeadlines = this.mapContainerWithGroups
+          .filter(mc => mc.group)
+          .map(mc => mc.group.maxDeadline)
+          .sort()
+
+      if (!orderedDeadlines.length) {
+        return null
+      }
+
+      return orderedDeadlines[0]
+    },
+    loadableMapContains: function () {
+      return this.mapContainerWithGroups.filter(mc => mc.canLoad)
     },
     mapContainerWithGroups: function () {
       let groupLookup = {}
       this.mapGroups.forEach(mg => groupLookup[mg.entity] = mg)
 
-      let mapContainerWithGroups = [];
-      this.mapContainers.forEach(mapContainer => {
-        mapContainerWithGroups.push({
-          group: groupLookup[mapContainer.entity['@id']],
-          container: mapContainer
-        });
-      })
+      let mapContainerWithGroups = []
+      let dirtyLevel = -1
+      for (let i = this.mapContainers.length - 1; i >= 0; i--) {
+        let mapContainer = this.mapContainers[i]
 
-      return mapContainerWithGroups
+        const group = groupLookup[mapContainer.entity['@id']]
+
+        const hasIssues = group && group.count > 0
+        if (hasIssues) {
+          dirtyLevel = mapContainer.level
+        }
+
+        // ensures parents are displayed too
+        const show = dirtyLevel === mapContainer.level
+        if (show) {
+          dirtyLevel--
+        }
+
+        const mapContainerWithGroup = {
+          group,
+          show,
+          hasIssues,
+          container: mapContainer
+        }
+
+        mapContainerWithGroups.push(mapContainerWithGroup)
+      }
+
+      mapContainerWithGroups = mapContainerWithGroups.reverse()
+
+      return mapContainerWithGroups.filter(mc => mc.show)
     },
   },
 }
 </script>
+
+<style scoped="true" lang="scss">
+@for $i from 1 through 10 {
+  .space-#{$i} {
+    display: inline-block;
+    width: $i*1em;
+  }
+}
+
+
+</style>

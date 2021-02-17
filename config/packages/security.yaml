@@ -61,6 +61,11 @@ security:
         - { path: ^/email, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/help, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/construction_managers, role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [POST] } # API registration
+        - { path: ^/api/docs, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/status, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        # legacy URLs; catched by legacy URL controller
+        - { path: '^/api/external.+', role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [ GET ] }
 
         - { path: '^/resolve/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: '^/filtered/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
