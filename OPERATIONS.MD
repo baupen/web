@@ -20,6 +20,15 @@ if you want to use a staging area, run the following commands:
 - ./vendor/bin/agnes run *:*:staging restore_db
 ```
 
+## API
+
+API is automatically documented. Visit `/api`.
+
+Apps request `/api/status` after each sync. You can place a message there which is then displayed in the app.
+For details investigate in `./src/Controller/ApiController.php` the method `statusAction`.
+
+Apps expect a `422` return code if their API requests are wrong (e.g. API has moved).
+
 ## Backup
 
 you only need to backup the files in the `/var/persistent` folder.
