@@ -7,8 +7,8 @@
     </div>
 
     <issues-table
+        view="register"
         :construction-site="constructionSite"
-        :minimal-state="2"
         @selected="selectedIssues = $event"
         @query="query = $event"
         @queried-issue-count="queriedIssuesCount = $event" />

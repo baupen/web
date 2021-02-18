@@ -9,6 +9,7 @@
     "edit_construction_site": "Baustelle bearbeiten",
     "edit_craftsman": "Unternehmer bearbeiten",
     "edit_map": "Karte bearbeiten",
+    "edit_issues": "Pendenzen bearbeiten",
     "load_map": "laden",
     "load_all_maps": "alle laden",
     "import_craftsmen": "Unternehmer importieren",
@@ -16,10 +17,14 @@
     "remove_craftsman_help": "Nach dem Entfernen können Sie dem Unternehmer keine Pendenzen mehr zuweisen. Der Unternehmer verliert den Zugriff auf den personalisierten Link.",
     "remove_map": "Karte entfernen",
     "remove_map_help": "Nach dem Entfernen können Sie der Karte keine Pendenzen mehr zuweisen.",
+    "remove_issues": "Pendenzen entfernen",
+    "reset": "zurücksetzen",
     "resolve_issue": "Als erledigt markieren",
     "import": "Importieren",
     "save_changes": "Änderungen speichern",
-    "remove_confirm": "Ich verstehe, dass ich diesen Schnritt nicht rückgängig machen kann.",
+    "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
+    "save_issue_fields": "{fields} von Pendenz setzen | {fields} von {count} Pendenzen setzen",
+    "remove_confirm": "Ich verstehe, dass ich diesen Schritt nicht rückgängig machen kann.",
     "show_more_issues": "Weitere {count} Pendenzen anzeigen",
     "messages": {
       "success": {
@@ -185,20 +190,7 @@
   "edit_issues_button": {
     "modal_title": "Pendenzen bearbeiten",
     "no_craftsman": "Kein Unternehmer",
-    "no_trade_filter": "Kein Gewerk",
-    "image_drop_or_choose": "Bild (.jpg, .png, .gif) hineinziehen oder auswählen",
-    "actions": {
-      "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
-      "save_issue_fields": "{fields} von Pendenz setzen | {fields} von {count} Pendenzen setzen",
-      "reset": "zurücksetzen"
-    }
-  },
-  "remove_issues_button": {
-    "can_not_reverse": "Ich möchte diese Pendenzen wirklich löschen, und verstehe, dass ich dies nicht rückgängig machen kann.",
-    "modal_title": "Pendenzen löschen",
-    "actions": {
-      "remove_issues": "Pendenz löschen | {count} Pendenzen löschen"
-    }
+    "no_trade_filter": "Kein Gewerk"
   },
   "dispatch": {
     "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und auf erledigt setzen.",

@@ -1,31 +1,27 @@
 <template>
-  <loading-indicator :spin="filtersLoading">
     <table class="table table-striped-2 table-hover border">
       <thead>
+      <!--
       <tr class="bg-light">
         <th></th>
         <th colspan="8">
-          <span class="mt-2 d-inline-block">{{ $t('issue._name') }}</span>
-          <span class="text-right float-right">
-          <span class="btn-group reset-table-styles" v-if="craftsmen">
-            <span class="btn btn-link" v-if="editButtonPendingRequestCount > 0">
-              {{ editButtonPendingRequestCount }}
-            </span>
-            <edit-issues-button :issues="selectedIssues" :craftsmen="craftsmen"
-                                :disabled="selectedIssues.length === 0 || editButtonPendingRequestCount > 0"
-                                @save="saveIssues"
-                                @save-image="saveIssueImages" />
-
-            <span class="btn btn-link" v-if="preDeletedIssues.length > 0">
-              {{ preDeletedIssues.length }}
-            </span>
-            <remove-issues-button :issues="selectedIssues"
-                                  :disabled="selectedIssues.length === 0 || preDeletedIssues.length > 0"
-                                  @remove="removeIssues" />
+          <span class="mt-2 d-inline-block">
+            <filter-issues-button
+                :view="view"
+                :disabled="isLoading"
+                :template="filterTemplate" :craftsmen="craftsmen" :maps="maps"
+                @update="filter"
+            />
           </span>
-        </span>
+          <span class="text-right float-right">
+            <span class="btn-group reset-table-styles">
+              <edit-issues-button :issues="selectedIssues" :craftsmen="craftsmen" />
+              <remove-issues-button :issues="selectedIssues" @removed="removeIssue($event)" />
+            </span>
+          </span>
         </th>
       </tr>
+      -->
       <tr class="text-secondary">
         <th class="w-minimal">
           <custom-checkbox
@@ -37,108 +33,37 @@
           </custom-checkbox>
         </th>
         <th class="w-minimal">
-          <search-popover
-              :title="$t('issue_table.filter.by_number')" :valid="!!(filter.number || filter.number === 0)"
-              @shown="$refs['filter-number'].focus()">
-            <input class="form-control" ref="filter-number" v-model.number="filter.number" type="number"
-                   name="filter-number">
-          </search-popover>
         </th>
         <th class="w-minimal">
-          <filter-popover
-              :title="$t('issue_table.filter.by_is_marked_or_added_with_client')"
-              :valid="!!(filter.isMarked || filter.wasAddedWithClient)">
-
-            <is-marked-filter class="mt-2" @input="filter.isMarked = $event" />
-            <was-added-with-client-filter class="mb-2" @input="filter.wasAddedWithClient = $event" />
-
-          </filter-popover>
         </th>
         <th class="w-thumbnail"></th>
         <th>
           <span class="mr-1">
             {{ $t('issue.description') }}
           </span>
-          <search-popover
-              :title="$t('issue_table.filter.by_description')" :valid="!!(filter.description)"
-              @shown="$refs['filter-description'].focus()">
-            <input class="form-control" ref="filter-description" v-model="filter.description" type="text"
-                   name="filter-description">
-          </search-popover>
         </th>
         <th>
           {{ $t('craftsman._name') }}
-
-          <filter-popover
-              :title="$t('issue_table.filter.by_craftsman')"
-              :valid="filter.craftsmen.length < craftsmen.length && filter.craftsmen.length > 0">
-
-            <craftsmen-filter class="mt-2" :craftsmen="craftsmen" @input="filter.craftsmen = $event" />
-          </filter-popover>
         </th>
         <th>
           {{ $t('map._name') }}
-
-          <filter-popover
-              :title="$t('issue_table.filter.by_maps')"
-              :valid="filter.maps.length < maps.length && filter.maps.length > 0">
-
-            <map-filter class="mt-2" :maps="maps" @input="filter.maps = $event" />
-          </filter-popover>
         </th>
         <th>
           {{ $t('issue.deadline') }}
-
-          <filter-popover
-              size="filter-wide"
-              :title="$t('issue_table.filter.by_deadline')"
-              :valid="!!(filter['deadline[before]'] && filter['deadline[after]'])">
-
-            <deadline-filter
-                @input-deadline-before="filter['deadline[before]'] = $event"
-                @input-deadline-after="filter['deadline[after]'] = $event"
-            />
-          </filter-popover>
         </th>
         <th class="w-minimal">
           {{ $t('issue.status') }}
-
-
-          <filter-popover
-              size="filter-wide"
-              :title="$t('issue_table.filter.by_state')"
-              :valid="!forceState && filter.state !== 7">
-            <template v-if="!forceState">
-              <p class="font-weight-bold">{{ $t('issue_table.filter_state.by_active_state') }}</p>
-
-              <state-filter
-                  :minimal-state="minimalState"
-                  @input="filter.state = $event" />
-
-              <hr />
-            </template>
-
-            <p class="font-weight-bold">{{ $t('issue_table.filter_time.by_time') }}</p>
-            <time-filter
-                :minimal-state="minimalState" :force-state="forceState"
-                @input-registered-at-before="filter['registeredAt[before]'] = $event"
-                @input-registered-at-after="filter['registeredAt[after]'] = $event"
-                @input-resolved-at-before="filter['resolvedAt[before]'] = $event"
-                @input-resolved-at-after="filter['resolvedAt[after]'] = $event"
-                @input-closed-at-before="filter['closedAt[before]'] = $event"
-                @input-closed-at-after="filter['closedAt[after]'] = $event"
-            />
-          </filter-popover>
         </th>
       </tr>
       </thead>
-      <tbody v-if="issues">
-      <tr v-if="issues.length === 0 && !issuesLoading">
+      <tbody>
+      <loading-indicator-table-body v-if="isLoading" />
+      <tr v-else-if="issues.length === 0">
         <td colspan="9">
-          <p class="text-center">no issues found</p>
+          <p class="text-center">{{ $t('view.no_issues_found') }}</p>
         </td>
       </tr>
-      <tr v-for="iwr in issuesWithRelations" @click.stop="toggleSelectedIssue(iwr.issue)" class="clickable">
+      <tr v-else v-for="iwr in issuesWithRelations" @click.stop="toggleSelectedIssue(iwr.issue)" :key="iwr.issue['@id']" class="clickable">
         <td class="w-minimal">
           <custom-checkbox>
             <input
@@ -251,7 +176,6 @@
         {{ $tc('actions.show_more_issues', notLoadedIssueCount) }}
       </button>
     </p>
-  </loading-indicator>
 </template>
 
 <script>
@@ -260,43 +184,28 @@ import LoadingIndicator from '../Library/View/LoadingIndicator'
 import EditIssuesButton from '../Action/EditIssuesButton'
 import RemoveIssuesButton from '../Action/RemoveIssuesButton'
 import CustomCheckbox from '../Library/FormInput/CustomCheckbox'
-import SearchPopover from '../Action/SearchPopover'
-import FilterPopover from '../Action/FilterPopover'
-import IsMarkedFilter from '../Filter/IsMarkedFilter'
-import WasAddedWithClientFilter from '../Filter/WasAddedWithClientFilter'
-import CraftsmenFilter from '../Filter/CraftsmenFilter'
-import MapFilter from '../Filter/MapFilter'
-import DeadlineFilter from '../Filter/DeadlineFilter'
-import StateFilter from '../Filter/StateFilter'
-import TimeFilter from '../Filter/TimeFilter'
 import TooltipToggleIcon from '../Library/View/TooltipToggleIcon'
 import TooltipText from '../Library/View/TooltipText'
 import DateHumanReadable from '../Library/View/DateHumanReadable'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import debounce from 'lodash.debounce'
 import { api, iriToId } from '../../services/api'
-import { displaySuccess } from '../../services/notifiers'
 import { arraysAreEqual } from '../../services/algorithms'
 import ImageLightbox from './ImageLightbox'
 import { mapTransformer } from '../../services/transformers'
+import FilterIssuesButton from '../Action/FilterIssuesButton'
+import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody'
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count'],
   components: {
+    LoadingIndicatorTableBody,
+    FilterIssuesButton,
     ImageLightbox,
     DateTimeHumanReadable,
     DateHumanReadable,
     TooltipText,
     TooltipToggleIcon,
-    TimeFilter,
-    StateFilter,
-    DeadlineFilter,
-    MapFilter,
-    CraftsmenFilter,
-    WasAddedWithClientFilter,
-    IsMarkedFilter,
-    FilterPopover,
-    SearchPopover,
     CustomCheckbox,
     RemoveIssuesButton,
     EditIssuesButton,
@@ -304,44 +213,18 @@ export default {
   },
   data () {
     return {
+      constructionManagers: null,
+      craftsmen: null,
+      maps: null,
+
+      filter: null,
+
       issues: [],
       issuePage: 1,
       totalIssues: 0,
       issuesLoading: true,
 
-      constructionManagers: null,
-      craftsmen: null,
-      maps: null,
-
-      filter: {
-        number: null,
-
-        isMarked: null,
-        wasAddedWithClient: null,
-
-        description: '',
-        craftsmen: [],
-        maps: [],
-        'deadline[before]': null,
-        'deadline[after]': null,
-
-        state: null,
-
-        'createdAt[before]': null,
-        'createdAt[after]': null,
-        'registeredAt[before]': null,
-        'registeredAt[after]': null,
-        'resolvedAt[before]': null,
-        'resolvedAt[after]': null,
-        'closedAt[before]': null,
-        'closedAt[after]': null,
-
-        isDeleted: false
-      },
       selectedIssues: [],
-      prePatchedIssues: [],
-      prePostedIssueImages: [],
-      preDeletedIssues: [],
     }
   },
   props: {
@@ -349,31 +232,29 @@ export default {
       type: Object,
       required: true
     },
-    minimalState: {
-      type: Number,
-      required: false,
-      default: null
-    },
-    forceState: {
-      type: Number,
-      required: false,
-      default: null
-    },
     view: {
       type: String,
-      required: false,
-      default: 'register'
+      required: true,
     }
   },
   computed: {
+    filterTemplate: function () {
+      if (this.view === 'foyer') {
+        return {state: 1}
+      } else if (this.view === 'register') {
+        return {state: 8}
+      } else {
+        return {}
+      }
+    },
+    isLoading: function () {
+      return !this.constructionManagers || !this.maps || !this.craftsmen || this.issuesLoading;
+    },
     notLoadedIssueCount: function () {
       return this.totalIssues - this.issues.length
     },
     editButtonPendingRequestCount: function () {
       return this.prePatchedIssues.length + this.prePostedIssueImages.length
-    },
-    filtersLoading: function () {
-      return !this.constructionManagers || !this.craftsmen || !this.maps
     },
     craftsmanLookup: function () {
       let craftsmanLookup = {}
@@ -421,74 +302,10 @@ export default {
     },
   },
   methods: {
-    saveIssues: function (patch) {
-      this.prePatchedIssues = this.selectedIssues.map(issue => {
-        return {
-          issue,
-          patch: Object.assign({}, patch)
-        }
-      })
-
-      this.patchIssues()
-    },
-    saveIssueImages: function (image) {
-      this.prePostedIssueImages = this.selectedIssues.map(issue => {
-        return {
-          issue,
-          image
-        }
-      })
-
-      this.postIssueImages()
-    },
-    removeIssues: function () {
-      this.preDeletedIssues = [...this.selectedIssues]
-
-      this.deleteIssues()
-    },
-    patchIssues () {
-      const payload = this.prePatchedIssues[0]
-      api.patch(payload.issue, payload.patch)
-          .then(_ => {
-                this.prePatchedIssues.shift()
-
-                if (this.prePatchedIssues.length === 0) {
-                  displaySuccess(this.$t('issue_table.messages.success.saved_issues'))
-                } else {
-                  this.patchIssues()
-                }
-              }
-          )
-    },
-    deleteIssues () {
-      const issue = this.preDeletedIssues[0]
-      api.delete(issue)
-          .then(_ => {
-                this.preDeletedIssues.shift()
-                this.$emit('deleted', issue)
-                this.selectedIssues = this.selectedIssues.filter(i => i !== issue)
-
-                if (this.preDeletedIssues.length === 0) {
-                  displaySuccess(this.$t('issue_table.messages.success.remove_issues'))
-                } else {
-                  this.deleteIssues()
-                }
-              }
-          )
-    },
-    postIssueImages () {
-      const payload = this.prePostedIssueImages[0]
-      api.postIssueImage(payload.issue, payload.image)
-          .then(_ => {
-                this.prePostedIssueImages.shift()
-
-                if (this.prePostedIssueImages.length === 0) {
-                  displaySuccess(this.$t('issue_table.messages.success.save_issue_images'))
-                } else {
-                  this.postIssueImages()
-                }
-              }
-          )
+    removeIssue(issue) {
+      this.issues = this.issues.filter(i => i !== issue)
+      this.selectedIssues = this.selectedIssues.filter(i => i !== issue)
+      this.totalIssues--;
     },
     toggleSelectedIssues (toggleArray) {
       if (this.entityListsAreEqual(toggleArray, this.selectedIssues)) {
@@ -582,20 +399,16 @@ export default {
     }
   },
   mounted () {
-    if (this.forceState !== null) {
-      this.filter.state = this.forceState
-    }
+    this.filter = this.filterTemplate;
 
     api.getCraftsmen(this.constructionSite)
         .then(craftsmen => {
           this.craftsmen = craftsmen
-          this.filter.craftsmen = this.craftsmen
         })
 
     api.getMaps(this.constructionSite)
         .then(maps => {
           this.maps = maps
-          this.filter.maps = this.maps
         })
 
     api.getConstructionManagers(this.constructionSite)
