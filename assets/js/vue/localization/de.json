@@ -62,9 +62,26 @@
       "label": "Bild Datei (.jpg, .png, .gif)",
       "drop_or_choose": "Bild (.jpg, .png, .gif) hineinziehen oder auswählen",
       "reset": "Zurücksetzen"
+    },
+    "issue_filter": {
+      "state": "Status",
+      "last_activity": "Letzte Aktivität",
+      "state_archived_by_connector": "von",
+      "without_description": "ohne Beschreibung",
+      "without_craftsman": "ohne Unternehmer",
+      "without_deadline": "ohne Frist",
+      "all_craftsmen": "Alle Unternehmer",
+      "all_maps": "Alle Karten",
+      "by_active_state": "Aktueller Status",
+      "filter_time": {
+        "by_time": "Nach Zeitpunkt",
+        "before": "vor",
+        "after": "nach"
+      }
     }
   },
   "view": {
+    "no_issues": "Keine Pendenzen",
     "more": "mehr",
     "less": "weniger",
     "today": "heute",
@@ -153,36 +170,6 @@
   "register": {
     "actions": {
       "export_issues": "Pendenzen exportieren"
-    }
-  },
-  "issue_table": {
-    "last_activity": "Letzte Aktivität",
-    "state_archived_by_connector": "von",
-    "without_description": "ohne Beschreibung",
-    "without_craftsman": "ohne Unternehmer",
-    "without_deadline": "ohne Frist",
-    "filter": {
-      "by_number": "Nach Nummer filtern",
-      "by_description": "Nach Beschreibung filtern",
-      "by_is_marked_or_added_with_client": "Nach Favorit / Abnahmependenz",
-      "by_craftsman": "Nach Unternehmer",
-      "by_maps": "Nach Bauplan",
-      "by_state": "Nach Status",
-      "by_deadline": "Nach Frist"
-    },
-    "filter_craftsmen": {
-      "all_craftsmen": "Alle Unternehmer"
-    },
-    "filter_maps": {
-      "all_maps": "Alle Karten"
-    },
-    "filter_state": {
-      "by_active_state": "Aktueller Status"
-    },
-    "filter_time": {
-      "by_time": "Nach Zeitpunkt",
-      "before": "vor",
-      "after": "nach"
     }
   },
   "maps_resolve_table": {

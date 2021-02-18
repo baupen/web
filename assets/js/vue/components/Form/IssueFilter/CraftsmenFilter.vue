@@ -3,7 +3,7 @@
     <custom-checkbox-field
         id="filter-all-craftsmen"
         @click.prevent="toggleSelectedCraftsmen(craftsmen)"
-        :label="$t('issue_table.filter_craftsmen.all_craftsmen')">
+        :label="$t('form.issue_filter.all_craftsmen')">
       <input class="custom-control-input" type="checkbox"
              :disabled="!craftsmen"
              :checked="craftsmen && craftsmen.length > 0 && entityListsAreEqual(craftsmen, selectedCraftsmen)">
@@ -29,13 +29,14 @@
 
 <script>
 
-import CustomCheckbox from '../Library/FormInput/CustomCheckbox'
-import { arraysAreEqual } from '../../services/algorithms'
-import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
+import CustomCheckbox from '../../Library/FormInput/CustomCheckbox'
+import CustomCheckboxField from '../../Library/FormLayout/CustomCheckboxField'
+import { arraysAreEqual } from '../../../services/algorithms'
 export default {
   components: {
     CustomCheckboxField,
     CustomCheckbox
+
   },
   emits: ['input'],
   data() {
@@ -50,10 +51,10 @@ export default {
   },
   watch: {
     selectedCraftsmen: function () {
-      this.$emit('input', this.selectedCraftsmen)
+      this.$emit('input', [...this.selectedCraftsmen])
     },
     craftsmen: function () {
-      this.selectedCraftsmen = this.craftsmen
+      this.selectedCraftsmen = [...this.craftsmen]
     }
   },
   methods: {
@@ -71,7 +72,7 @@ export default {
     },
   },
   mounted() {
-    this.selectedCraftsmen = this.craftsmen
+    this.selectedCraftsmen = [...this.craftsmen]
   }
 }
 </script>

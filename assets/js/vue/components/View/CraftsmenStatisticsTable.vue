@@ -191,7 +191,7 @@ export default {
       if (this.selectedCraftsmen.includes(toggleCraftsman)) {
         this.selectedCraftsmen = this.selectedCraftsmen.filter(c => c !== toggleCraftsman)
       } else {
-        this.selectedCraftsmen.push(toggleCraftsman)
+        this.selectedCraftsmen = [...this.selectedCraftsmen, toggleCraftsman]
       }
     },
     entityListsAreEqual (array1, array2) {

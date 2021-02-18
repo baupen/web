@@ -9,7 +9,7 @@
                 :view="view"
                 :disabled="isLoading"
                 :template="filterTemplate" :craftsmen="craftsmen" :maps="maps"
-                @update="filter"
+                @update="filter = $event"
             />
           </span>
           <span class="text-right float-right">
@@ -58,7 +58,7 @@
       <loading-indicator-table-body v-if="isLoading" />
       <tr v-else-if="issues.length === 0">
         <td colspan="9">
-          <p class="text-center">{{ $t('view.no_issues_found') }}</p>
+          <p class="text-center">{{ $t('view.no_issues') }}</p>
         </td>
       </tr>
       <tr v-else v-for="iwr in issuesWithRelations" @click.stop="toggleSelectedIssue(iwr.issue)" :key="iwr.issue['@id']" class="clickable">
@@ -237,7 +237,7 @@ export default {
       return !this.constructionManagers || !this.maps || !this.craftsmen || (this.issuesLoading && this.issuePage === 1);
     },
     filterTemplate: function () {
-      let defaultFilter = {isDeleted: false}
+      let defaultFilter = Object.assign({isDeleted: false}, this.filter)
       if (this.view === 'foyer') {
         return Object.assign(defaultFilter, {state: 1})
       } else if (this.view === 'register') {
@@ -314,7 +314,7 @@ export default {
       if (this.selectedIssues.includes(toggleIssue)) {
         this.selectedIssues = this.selectedIssues.filter(c => c !== toggleIssue)
       } else {
-        this.selectedIssues.push(toggleIssue)
+        this.selectedIssues = [...this.selectedIssues, toggleIssue]
       }
     },
     entityListsAreEqual (array1, array2) {
@@ -333,11 +333,11 @@ export default {
         const fieldValue = filter[fieldName]
 
         if (fieldName === 'craftsmen') {
-          if (fieldValue.length === 0 || fieldValue.length !== this.craftsmen.length) {
+          if (fieldValue && (fieldValue.length > 0 || fieldValue.length !== this.craftsmen.length)) {
             query['craftsman[]'] = fieldValue.map(e => iriToId(e['@id']))
           }
         } else if (fieldName === 'maps') {
-          if (fieldValue.length === 0 || fieldValue.length !== this.maps.length) {
+          if (fieldValue && (fieldValue.length > 0 || fieldValue.length !== this.maps.length)) {
             query['map[]'] = fieldValue.map(e => iriToId(e['@id']))
           }
         } else if (fieldValue || fieldValue === false || fieldValue === 0) {

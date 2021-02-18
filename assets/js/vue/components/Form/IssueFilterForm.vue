@@ -1,12 +1,12 @@
 <template>
   <div class="form-row">
-    <form-field class="col-md-4" for-id="description" :label="$t('issue.description')">
-      <input id="description" class="form-control" type="text"
-             v-model="filter.description">
-    </form-field>
-    <form-field class="col-md-8" for-id="number" :label="$t('issue.number')">
+    <form-field class="col-md-4" for-id="number" :label="$t('issue.number')">
       <input id="number" class="form-control" type="number"
              v-model="filter.number">
+    </form-field>
+    <form-field class="col-md-8" for-id="description" :label="$t('issue.description')">
+      <input id="description" class="form-control" type="text"
+             v-model="filter.description">
     </form-field>
   </div>
 
@@ -34,35 +34,19 @@
     >
   </custom-checkbox-field>
 
+  <hr/>
+
+  <toggle-card :title="$t('form.issue_filter.state')" v-if="showState" @active-toggled="filterActive.state = $event">
+    <state-filter @input="filter.state = $event" />
+  </toggle-card>
+
+  <toggle-card class="mt-2" :title="$t('craftsman._plural')" v-if="showState" @active-toggled="filterActive.craftsmen = $event">
+    <craftsmen-filter :craftsmen="craftsmen" @input="filter.craftsmen = $event" />
+  </toggle-card>
+
 
   <!--
-  <search-popover
-      :title="$t('issue_table.filter.by_number')" :valid="!!(filter.number || filter.number === 0)"
-      @shown="$refs['filter-number'].focus()">
-    <input class="form-control" ref="filter-number" v-model.number="filter.number" type="number"
-           name="filter-number">
-  </search-popover>
 
-  <th class="w-minimal">
-    <search-popover
-        :title="$t('issue_table.filter.by_number')" :valid="!!(filter.number || filter.number === 0)"
-        @shown="$refs['filter-number'].focus()">
-      <input class="form-control" ref="filter-number" v-model.number="filter.number" type="number"
-             name="filter-number">
-    </search-popover>
-  </th>
-  <th class="w-thumbnail"></th>
-  <th>
-          <span class="mr-1">
-            {{ $t('issue.description') }}
-          </span>
-    <search-popover
-        :title="$t('issue_table.filter.by_description')" :valid="!!(filter.description)"
-        @shown="$refs['filter-description'].focus()">
-      <input class="form-control" ref="filter-description" v-model="filter.description" type="text"
-             name="filter-description">
-    </search-popover>
-  </th>
   <th>
     {{ $t('craftsman._name') }}
 
@@ -135,9 +119,15 @@
 import FormField from '../Library/FormLayout/FormField'
 import BooleanFilter from './IssueFilter/BooleanFilter'
 import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
+import StateFilter from './IssueFilter/StateFilter'
+import ToggleCard from '../Library/Behaviour/ToggleCard'
+import CraftsmenFilter from './IssueFilter/CraftsmenFilter'
 
 export default {
   components: {
+    CraftsmenFilter,
+    ToggleCard,
+    StateFilter,
     CustomCheckboxField,
     BooleanFilter,
     FormField
@@ -171,6 +161,11 @@ export default {
 
         isDeleted: false
       },
+      filterActive: {
+        state: false,
+        craftsmen: false,
+        maps: false,
+      },
     }
   },
   props: {
@@ -191,12 +186,10 @@ export default {
     }
   },
   watch: {
-    filter: {
+    actualFilter: {
       deep: true,
       handler: function () {
-        if (this.mounted) {
-          this.$emit('update', this.filter)
-        }
+        this.$emit('update', this.actualFilter)
       }
     },
     template: function () {
@@ -204,10 +197,19 @@ export default {
     }
   },
   computed: {
-    showStateFilter: function () {
-      return this.showStateFilter
-    },
+    actualFilter: function() {
+      let actualFilter = Object.assign({}, this.filter)
+      for (const field in this.filterActive) {
+        if (Object.prototype.hasOwnProperty.call(this.filterActive, field)) {
+          // set deactivated fields to null
+          if (!this.filterActive[field]) {
+            actualFilter[field] = null
+          }
+        }
+      }
 
+      return actualFilter
+    }
   },
   methods: {
     setFilterFromTemplate: function () {
@@ -218,9 +220,6 @@ export default {
   },
   mounted () {
     this.setFilterFromTemplate()
-
-    this.mounted = true
-    this.$emit('update', this.filter)
   }
 }
 </script>
