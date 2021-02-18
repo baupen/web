@@ -1,3 +1,5 @@
+import { iriToId } from './api'
+
 const mapTransformer = {
   _cutChildrenFromLookup: function (key, parentLookup) {
     if (!(key in parentLookup)) {
@@ -85,4 +87,61 @@ const mapTransformer = {
   }
 }
 
-export { mapTransformer }
+const filterTransformer = {
+  actualFilter: function (filter, filterActive) {
+    let actualFilter = Object.assign({}, filter)
+    if (!filterActive.state) {
+      actualFilter.state = null
+    }
+    if (!filterActive.craftsmen) {
+      actualFilter.craftsmen = null
+    }
+    if (!filterActive.maps) {
+      actualFilter.maps = null
+    }
+    if (!filterActive.deadline) {
+      actualFilter['deadline[before]'] = null
+      actualFilter['deadline[after]'] = null
+    }
+    if (!filterActive.time) {
+      actualFilter['createdAt[before]'] = null
+      actualFilter['createdAt[after]'] = null
+      actualFilter['registeredAt[before]'] = null
+      actualFilter['registeredAt[after]'] = null
+      actualFilter['resolvedAt[before]'] = null
+      actualFilter['resolvedAt[after]'] = null
+      actualFilter['closedAt[before]'] = null
+      actualFilter['closedAt[after]'] = null
+    }
+
+    return actualFilter
+  },
+  filterToQuery: function (filter) {
+    let query = {}
+
+    for (const fieldName in filter) {
+      if (!Object.prototype.hasOwnProperty.call(filter, fieldName)) {
+        continue
+      }
+
+      const fieldValue = filter[fieldName]
+
+      if (fieldName === 'craftsmen') {
+        if (fieldValue && (fieldValue.length > 0 || fieldValue.length !== this.craftsmen.length)) {
+          query['craftsman[]'] = fieldValue.map(e => iriToId(e['@id']))
+        }
+      } else if (fieldName === 'maps') {
+        if (fieldValue && (fieldValue.length > 0 || fieldValue.length !== this.maps.length)) {
+          query['map[]'] = fieldValue.map(e => iriToId(e['@id']))
+        }
+      } else if (fieldValue || fieldValue === false || fieldValue === 0) {
+        // "false" is the only Falsy value applicable as filter
+        query[fieldName] = fieldValue
+      }
+    }
+
+    return query
+  }
+}
+
+export { mapTransformer, filterTransformer }

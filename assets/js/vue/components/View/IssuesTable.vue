@@ -152,10 +152,10 @@ import TooltipText from '../Library/View/TooltipText'
 import DateHumanReadable from '../Library/View/DateHumanReadable'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import debounce from 'lodash.debounce'
-import { api, iriToId } from '../../services/api'
+import { api } from '../../services/api'
 import { arraysAreEqual } from '../../services/algorithms'
 import ImageLightbox from './ImageLightbox'
-import { mapTransformer } from '../../services/transformers'
+import { filterTransformer, mapTransformer } from '../../services/transformers'
 import FilterIssuesButton from '../Action/FilterIssuesButton'
 import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody'
 import ToggleIcon from '../Library/View/ToggleIcon'
@@ -293,30 +293,7 @@ export default {
       })
     },
     filterAsQuery: function (filter) {
-      let query = {}
-
-      for (const fieldName in filter) {
-        if (!Object.prototype.hasOwnProperty.call(filter, fieldName)) {
-          continue
-        }
-
-        const fieldValue = filter[fieldName]
-
-        if (fieldName === 'craftsmen') {
-          if (fieldValue && (fieldValue.length > 0 || fieldValue.length !== this.craftsmen.length)) {
-            query['craftsman[]'] = fieldValue.map(e => iriToId(e['@id']))
-          }
-        } else if (fieldName === 'maps') {
-          if (fieldValue && (fieldValue.length > 0 || fieldValue.length !== this.maps.length)) {
-            query['map[]'] = fieldValue.map(e => iriToId(e['@id']))
-          }
-        } else if (fieldValue || fieldValue === false || fieldValue === 0) {
-          // "false" is the only Falsy value applicable as filter
-          query[fieldName] = fieldValue
-        }
-      }
-
-      return query
+      return filterTransformer.filterToQuery(filter)
     },
     loadNextPage () {
       this.loadIssues(this.filter, this.issuePage + 1)

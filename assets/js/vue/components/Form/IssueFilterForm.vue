@@ -60,7 +60,7 @@
 
   <toggle-card class="mt-2" :title="$t('form.issue_filter.time')"
                @active-toggled="filterActive.time = $event">
-    
+
     <time-filter
         v-if="showState || template.state === 1"
         :label="$t('issue.state.created')"
@@ -105,6 +105,7 @@ import ToggleCard from '../Library/Behaviour/ToggleCard'
 import CraftsmenFilter from './IssueFilter/CraftsmenFilter'
 import MapFilter from './IssueFilter/MapFilter'
 import TimeFilter from './IssueFilter/TimeFilter'
+import { filterTransformer } from '../../services/transformers'
 
 export default {
   components: {
@@ -187,32 +188,7 @@ export default {
   },
   computed: {
     actualFilter: function () {
-      let actualFilter = Object.assign({}, this.filter)
-      if (!this.filterActive.state) {
-        actualFilter.state = null
-      }
-      if (!this.filterActive.craftsmen) {
-        actualFilter.craftsmen = null
-      }
-      if (!this.filterActive.maps) {
-        actualFilter.maps = null
-      }
-      if (!this.filterActive.deadline) {
-        actualFilter['deadline[before]'] = null
-        actualFilter['deadline[after]'] = null
-      }
-      if (!this.filterActive.time) {
-        actualFilter['createdAt[before]'] = null
-        actualFilter['createdAt[after]'] = null
-        actualFilter['registeredAt[before]'] = null
-        actualFilter['registeredAt[after]'] = null
-        actualFilter['resolvedAt[before]'] = null
-        actualFilter['resolvedAt[after]'] = null
-        actualFilter['closedAt[before]'] = null
-        actualFilter['closedAt[after]'] = null
-      }
-
-      return actualFilter
+      return filterTransformer.actualFilter(this.filter, this.filterActive)
     }
   },
   methods: {
