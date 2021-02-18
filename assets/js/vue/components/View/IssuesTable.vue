@@ -46,7 +46,7 @@
         <th>
           {{ $t('map._name') }}
         </th>
-        <th>
+        <th class="border-left">
           {{ $t('issue.deadline') }}
         </th>
         <th class="w-minimal">
@@ -56,7 +56,7 @@
       </thead>
       <tbody>
       <loading-indicator-table-body v-if="isLoading" />
-      <tr v-else-if="issues.length === 0 && !this.issuesLoading">
+      <tr v-else-if="issues.length === 0">
         <td colspan="9">
           <p class="text-center">{{ $t('view.no_issues_found') }}</p>
         </td>
@@ -72,15 +72,13 @@
         </td>
         <td>{{ iwr.issue.number }}</td>
         <td>
-          <tooltip-toggle-icon
+          <toggle-icon
               icon="star"
-              :value="iwr.issue.isMarked"
-              :tooltip-title="$t('issue.is_marked')" />
+              :value="iwr.issue.isMarked" />
           <br />
-          <tooltip-toggle-icon
+          <toggle-icon
               icon="user-check"
-              :value="iwr.issue.wasAddedWithClient"
-              :tooltip-title="$t('issue.was_added_with_client')" />
+              :value="iwr.issue.wasAddedWithClient" />
         </td>
         <td>
           <image-lightbox
@@ -89,17 +87,14 @@
         </td>
         <td>{{ iwr.issue.description }}</td>
         <td>
-          <tooltip-text v-if="iwr.craftsman" :tooltip-title="iwr.craftsman.contactName">
             {{ iwr.craftsman.trade }}<br />
             <span class="text-muted">{{ iwr.craftsman.company }}</span>
-          </tooltip-text>
         </td>
         <td>
-          <tooltip-text v-if="iwr.map" :tooltip-title="iwr.mapParents.map(m => m.name).join(' > ')">
-            {{ iwr.map.name }}
-          </tooltip-text>
+          {{ iwr.map.name }}<br />
+          <span class="text-muted">{{ iwr.mapParents.map(m => m.name).join(' > ') }}</span>
         </td>
-        <td>
+        <td class="border-left">
           <date-human-readable :value="iwr.issue.deadline" />
         </td>
         <td class="w-minimal white-space-nowrap">
@@ -193,10 +188,12 @@ import ImageLightbox from './ImageLightbox'
 import { mapTransformer } from '../../services/transformers'
 import FilterIssuesButton from '../Action/FilterIssuesButton'
 import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody'
+import ToggleIcon from '../Library/View/ToggleIcon'
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count'],
   components: {
+    ToggleIcon,
     LoadingIndicatorTableBody,
     FilterIssuesButton,
     ImageLightbox,
@@ -237,7 +234,7 @@ export default {
   },
   computed: {
     isLoading: function () {
-      return !this.constructionManagers || !this.maps || !this.craftsmen || !this.issuePage > 0;
+      return !this.constructionManagers || !this.maps || !this.craftsmen || (this.issuesLoading && this.issuePage === 1);
     },
     filterTemplate: function () {
       let defaultFilter = {isDeleted: false}
@@ -356,6 +353,7 @@ export default {
     },
     loadIssues (filter, page = 1) {
       this.issuesLoading = true
+      this.issuePage = page
 
       let query = this.filterAsQuery(filter)
       this.$emit('query', query)
@@ -370,7 +368,6 @@ export default {
               this.issues = this.issues.concat(payload.items)
             }
             this.totalIssues = payload.totalItems
-            this.issuePage = page
 
             this.$emit('queried-issue-count', payload.totalItems)
 
@@ -387,11 +384,6 @@ export default {
     },
     filter: {
       handler: debounce(function (newVal) {
-        // skip first watch
-        if (newVal.state === null) {
-          return
-        }
-
         this.loadIssues(newVal)
       }, 200, { 'leading': true }),
       deep: true
