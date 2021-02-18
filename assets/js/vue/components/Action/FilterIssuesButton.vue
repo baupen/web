@@ -5,12 +5,12 @@
       @confirm="confirm">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'filter']" class="pr-1" />
-      {{ $t('filter._name') }}
+      {{ $t('actions.filter') }}
     </template>
 
     <issue-filter-form
         :template="template" :maps="maps" :craftsmen="craftsmen"
-        :view="view"
+        :show-state="showState"
         @update="filter = $event" />
   </button-with-modal-confirm>
 </template>
@@ -22,6 +22,7 @@ import CraftsmanForm from '../Form/CraftsmanForm'
 import IssueFilterForm from '../Form/IssueFilterForm'
 
 export default {
+  emits: ['update'],
   components: {
     IssueFilterForm,
     CraftsmanForm,
@@ -58,6 +59,11 @@ export default {
   methods: {
     confirm: function () {
       this.$emit('update', this.filter)
+    }
+  },
+  computed: {
+    showState: function () {
+      return this.view === 'register'
     }
   }
 }

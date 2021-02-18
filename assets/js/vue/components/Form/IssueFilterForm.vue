@@ -1,8 +1,38 @@
 <template>
-  <form-field for-id="description" :label="$t('issue.description')">
-    <input id="description" class="form-control" type="text" required="required"
-           v-model="filter.description">
-  </form-field>
+  <div class="form-row">
+    <form-field class="col-md-4" for-id="description" :label="$t('issue.description')">
+      <input id="description" class="form-control" type="text"
+             v-model="filter.description">
+    </form-field>
+    <form-field class="col-md-8" for-id="number" :label="$t('issue.number')">
+      <input id="number" class="form-control" type="number"
+             v-model="filter.number">
+    </form-field>
+  </div>
+
+  <custom-checkbox-field
+      for-id="filter-is-marked" :label="$t('issue.is_marked')"
+      :show-reset="filter.isMarked !== null" @reset="filter.isMarked = null">
+    <input
+        class="custom-control-input" type="checkbox" id="filter-is-marked"
+        v-model="filter.isMarked"
+        :true-value="true"
+        :false-value="false"
+        :indeterminate.prop="filter.isMarked === null"
+    >
+  </custom-checkbox-field>
+
+  <custom-checkbox-field
+      for-id="filter-was-added-with-client" :label="$t('issue.was_added_with_client')"
+      :show-reset="filter.wasAddedWithClient !== null" @reset="filter.wasAddedWithClient = null">
+    <input
+        class="custom-control-input" type="checkbox" id="filter-was-added-with-client"
+        v-model="filter.wasAddedWithClient"
+        :true-value="true"
+        :false-value="false"
+        :indeterminate.prop="filter.wasAddedWithClient === null"
+    >
+  </custom-checkbox-field>
 
 
   <!--
@@ -20,16 +50,6 @@
       <input class="form-control" ref="filter-number" v-model.number="filter.number" type="number"
              name="filter-number">
     </search-popover>
-  </th>
-  <th class="w-minimal">
-    <filter-popover
-        :title="$t('issue_table.filter.by_is_marked_or_added_with_client')"
-        :valid="!!(filter.isMarked || filter.wasAddedWithClient)">
-
-      <is-marked-filter class="mt-2" @input="filter.isMarked = $event" />
-      <was-added-with-client-filter class="mb-2" @input="filter.wasAddedWithClient = $event" />
-
-    </filter-popover>
   </th>
   <th class="w-thumbnail"></th>
   <th>
@@ -113,9 +133,13 @@
 <script>
 
 import FormField from '../Library/FormLayout/FormField'
+import BooleanFilter from './IssueFilter/BooleanFilter'
+import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 
 export default {
   components: {
+    CustomCheckboxField,
+    BooleanFilter,
     FormField
   },
   emits: ['update'],
@@ -153,8 +177,8 @@ export default {
     template: {
       type: Object
     },
-    view: {
-      type: String,
+    showState: {
+      type: Boolean,
       required: true
     },
     maps: {
@@ -180,14 +204,15 @@ export default {
     }
   },
   computed: {
-    showStateFilter: function() {
+    showStateFilter: function () {
       return this.showStateFilter
     },
+
   },
   methods: {
     setFilterFromTemplate: function () {
       if (this.template) {
-        this.filter = Object.assign({}, this.template)
+        this.filter = Object.assign({}, this.filter, this.template)
       }
     }
   },

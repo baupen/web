@@ -10,6 +10,8 @@
     "edit_craftsman": "Unternehmer bearbeiten",
     "edit_map": "Karte bearbeiten",
     "edit_issues": "Pendenzen bearbeiten",
+    "filter": "Filtern",
+    "filter_issues": "Pendenzen filtern",
     "load_map": "laden",
     "load_all_maps": "alle laden",
     "import_craftsmen": "Unternehmer importieren",
@@ -18,12 +20,14 @@
     "remove_map": "Karte entfernen",
     "remove_map_help": "Nach dem Entfernen können Sie der Karte keine Pendenzen mehr zuweisen.",
     "remove_issues": "Pendenzen entfernen",
+    "remove_issues_help": "Die Pendenzen werden nirgendswo mehr angezeigt.",
     "reset": "zurücksetzen",
     "resolve_issue": "Als erledigt markieren",
     "import": "Importieren",
     "save_changes": "Änderungen speichern",
     "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
     "save_issue_fields": "{fields} von Pendenz setzen | {fields} von {count} Pendenzen setzen",
+    "set_filter": "Filter setzen",
     "remove_confirm": "Ich verstehe, dass ich diesen Schritt nicht rückgängig machen kann.",
     "show_more_issues": "Weitere {count} Pendenzen anzeigen",
     "messages": {
@@ -40,11 +44,15 @@
         "map_removed": "Karte entfernt",
         "construction_manager_dissociated": "Bauleiter von Baustelle entfernt",
         "construction_manager_associated": "Bauleiter der Baustelle hinzugefügt",
-        "issue_resolved": "Pendenz als erledigt markiert."
+        "issue_resolved": "Pendenz als erledigt markiert.",
+        "issues_removed": "Pendenzen entfernt.",
+        "issues_saved": "Pendenzen gespeichert.",
+        "issue_images_replaced": "Bild ersetzt."
       }
     }
   },
   "form": {
+    "reset": "zurücksetzen",
     "file": {
       "label": "PDF Datei (.pdf)",
       "drop_or_choose": "PDF (.pdf) hineinziehen oder auswählen",
@@ -175,13 +183,6 @@
       "by_time": "Nach Zeitpunkt",
       "before": "vor",
       "after": "nach"
-    },
-    "messages": {
-      "success": {
-        "saved_issues": "Pendenzen gespeichert",
-        "remove_issues": "Pendenzen entfernt",
-        "save_issue_images": "Pendenzen Bilder gespeichert"
-      }
     }
   },
   "maps_resolve_table": {
@@ -301,7 +302,7 @@
     }
   },
   "export_issues_button": {
-    "export_source_filter": "{count} Pendenzen, die auf die Filter zutreffen",
+    "export_source_filter": "{count} Pendenzen, auf die der Filter zutrifft",
     "export_source_selection": "{count} Pendenzen, die markiert wurden",
     "export_type": {
       "report": {

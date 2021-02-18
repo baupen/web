@@ -1,11 +1,10 @@
 <template>
     <table class="table table-striped-2 table-hover border">
       <thead>
-      <!--
       <tr class="bg-light">
         <th></th>
         <th colspan="8">
-          <span class="mt-2 d-inline-block">
+          <span class="reset-table-styles">
             <filter-issues-button
                 :view="view"
                 :disabled="isLoading"
@@ -21,7 +20,6 @@
           </span>
         </th>
       </tr>
-      -->
       <tr class="text-secondary">
         <th class="w-minimal">
           <custom-checkbox
@@ -58,7 +56,7 @@
       </thead>
       <tbody>
       <loading-indicator-table-body v-if="isLoading" />
-      <tr v-else-if="issues.length === 0">
+      <tr v-else-if="issues.length === 0 && !this.issuesLoading">
         <td colspan="9">
           <p class="text-center">{{ $t('view.no_issues_found') }}</p>
         </td>
@@ -220,7 +218,7 @@ export default {
       filter: null,
 
       issues: [],
-      issuePage: 1,
+      issuePage: 0,
       totalIssues: 0,
       issuesLoading: true,
 
@@ -238,17 +236,18 @@ export default {
     }
   },
   computed: {
-    filterTemplate: function () {
-      if (this.view === 'foyer') {
-        return {state: 1}
-      } else if (this.view === 'register') {
-        return {state: 8}
-      } else {
-        return {}
-      }
-    },
     isLoading: function () {
-      return !this.constructionManagers || !this.maps || !this.craftsmen || this.issuesLoading;
+      return !this.constructionManagers || !this.maps || !this.craftsmen || !this.issuePage > 0;
+    },
+    filterTemplate: function () {
+      let defaultFilter = {isDeleted: false}
+      if (this.view === 'foyer') {
+        return Object.assign(defaultFilter, {state: 1})
+      } else if (this.view === 'register') {
+        return Object.assign(defaultFilter, {state: 8})
+      } else {
+        return defaultFilter
+      }
     },
     notLoadedIssueCount: function () {
       return this.totalIssues - this.issues.length

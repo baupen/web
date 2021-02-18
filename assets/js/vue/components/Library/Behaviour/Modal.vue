@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-wrapper">
+  <div class="modal-wrapper d-inline-block">
     <div class="modal show fade" @mousedown="lastMouseDownEvent = $event" @mouseup.self="mouseUpOutside" id="modal" tabindex="-1" role="dialog"
          aria-labelledby="modal-title"
          aria-hidden="true">

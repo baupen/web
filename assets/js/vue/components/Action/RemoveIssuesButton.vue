@@ -1,9 +1,9 @@
 <template>
   <button-with-modal-confirm
       color="danger"
-      :title="$t('actions.remove_issue')" :can-confirm="canConfirm"
+      :title="$t('actions.remove_issues')" :can-confirm="canConfirm"
       :button-disabled="issues.length === 0"
-      :confirm-title="removeIssuesText"
+      :confirm-title="confirmTitle"
       @confirm="confirm">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'trash']" />
@@ -13,7 +13,7 @@
     </template>
 
     <p class="alert alert-info">
-      {{ $t('actions.remove_issue_help') }}
+      {{ $t('actions.remove_issues_help') }}
     </p>
 
     <delete-form @update="canConfirm = $event" />
@@ -46,6 +46,11 @@ export default {
       default: []
     }
   },
+  computed: {
+    confirmTitle: function () {
+      return this.$tc('actions.remove_issues', this.issues.length, {'count': this.issues.length})
+    },
+  },
   methods: {
     confirm: function () {
       this.preDeletedIssues = [...this.issues]
@@ -60,15 +65,12 @@ export default {
                 this.$emit('removed', issue)
 
                 if (this.preDeletedIssues.length === 0) {
-                  displaySuccess(this.$t('issue_table.messages.success.removed_issues'))
+                  displaySuccess(this.$t('actions.messages.success.issues_removed'))
                 } else {
                   this.deleteIssues()
                 }
               }
           )
-    },
-    removeIssuesText: function () {
-      return this.$tc('remove_issues_button.actions.remove_issues', this.issues.length, {'count': this.issues.length})
     },
   }
 }

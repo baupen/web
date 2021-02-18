@@ -64,7 +64,7 @@ function renderQRCode (token) {
       size: 300
     })
   })
-  
+
   const authenticationTokenLinks = document.getElementsByClassName('authentication-token-link')
   Array.from(authenticationTokenLinks).forEach(element => {
     element.setAttribute('href', 'mangelio://login?payload=' + btoa(data))

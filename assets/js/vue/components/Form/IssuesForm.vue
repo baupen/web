@@ -103,7 +103,7 @@ import { createField, validateField, validateFields, changedFieldValues, resetFi
 import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
 import Help from '../Library/FormLayout/Help'
-import { dateConfig } from '../../services/flatpickr'
+import { dateConfig, flatPickr } from '../../services/flatpickr'
 import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 
 export default {
@@ -111,7 +111,8 @@ export default {
     CustomCheckboxField,
     Help,
     InvalidFeedback,
-    FormField
+    FormField,
+    flatPickr
   },
   emits: ['update'],
   data () {
@@ -137,6 +138,10 @@ export default {
   props: {
     template: {
       type: Object
+    },
+    craftsmen: {
+      type: Array,
+      required: true
     }
   },
   watch: {
