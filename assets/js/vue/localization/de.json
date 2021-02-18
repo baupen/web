@@ -371,9 +371,13 @@
     "position": "Platzierung",
     "state": {
       "created": "erstellt",
+      "created_help": "Pendenz wurde auf dem Gerät erfasst",
       "registered": "registriert",
+      "registered_help": "Pendenz wurde ins Verzeichnis aufgenommen",
       "resolved": "erledigt",
+      "resolved_help": "Pendenz wurde vom Handwerker als erledigt markiert",
       "closed": "geschlossen",
+      "closed_help": "Pendenz wurde geschlossen",
       "open": "offen",
       "read": "gelesen",
       "unread": "ungelesen",

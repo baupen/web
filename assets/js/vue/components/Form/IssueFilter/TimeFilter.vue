@@ -18,6 +18,11 @@
             :config="dateTimePickerConfig">
         </flat-pickr>
       </div>
+      <p v-if="help" class="text-muted mt-1 mb-0">
+        <small>
+          {{help}}
+        </small>
+      </p>
     </form-field>
   </div>
 </template>
@@ -41,6 +46,10 @@ export default {
     label: {
       type: String,
       required: true
+    },
+    help: {
+      type: String,
+      required: false
     }
   },
   data () {
