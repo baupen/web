@@ -65,16 +65,11 @@
     },
     "issue_filter": {
       "state": "Status",
-      "last_activity": "Letzte Aktivität",
-      "state_archived_by_connector": "von",
+      "time": "Zeitpunkt",
       "all_craftsmen": "Alle Unternehmer",
       "all_maps": "Alle Karten",
-      "by_active_state": "Aktueller Status",
-      "filter_time": {
-        "by_time": "Nach Zeitpunkt",
-        "before": "vor",
-        "after": "nach"
-      }
+      "from": "von",
+      "until": "bis"
     }
   },
   "issue_table": {

@@ -98,37 +98,7 @@
           <date-human-readable :value="iwr.issue.deadline" />
         </td>
         <td class="w-minimal white-space-nowrap">
-          <template v-if="iwr.closedBy">
-            <tooltip-text
-                class="mr-1" :tooltip-title="iwr.closedBy.givenName + ' ' + iwr.closedBy.familyName ">
-              <b>{{ $t('issue.state.closed') }}</b>
-            </tooltip-text>
-            <date-time-human-readable :value="iwr.issue.closedAt" />
-          </template>
-
-          <template v-else-if="iwr.resolvedBy">
-            <tooltip-text
-                class="mr-1" :tooltip-title="iwr.resolvedBy.contactName">
-              <b>{{ $t('issue.state.resolved') }}</b>
-            </tooltip-text>
-            <date-time-human-readable :value="iwr.issue.resolvedAt" />
-          </template>
-
-          <template v-else-if="iwr.registeredBy">
-            <tooltip-text
-                class="mr-1" :tooltip-title="iwr.registeredBy.givenName + ' ' + iwr.registeredBy.familyName">
-              <b>{{ $t('issue.state.registered') }}</b>
-            </tooltip-text>
-            <date-time-human-readable :value="iwr.issue.registeredAt" />
-          </template>
-
-          <template v-else>
-            <tooltip-text
-                class="mr-1" :tooltip-title="iwr.createdBy.givenName + ' ' + iwr.createdBy.familyName">
-              <b>{{ $t('issue.state.created') }}</b>
-            </tooltip-text>
-            <date-time-human-readable :value="iwr.issue.createdAt" />
-          </template>
+          (visual)
         </td>
       </tr>
       </tbody>

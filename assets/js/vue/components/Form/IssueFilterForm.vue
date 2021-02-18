@@ -48,53 +48,33 @@
     <map-filter :maps="maps" @input="filter.maps = $event" />
   </toggle-card>
 
+  <toggle-card class="mt-2" :title="$t('issue.deadline')" v-if="showState" @active-toggled="filterActive.deadline = $event">
+    <time-filter
+        :label="$t('issue.deadline')"
+        @input-before="filter['deadline[before]'] = $event"
+        @input-after="filter['deadline[after]'] = $event"
+    />
+  </toggle-card>
 
-  <!--
-  <th>
-    {{ $t('issue.deadline') }}
+  <toggle-card class="mt-2" :title="$t('form.issue_filter.time')" v-if="showState" @active-toggled="filterActive.time = $event">
+    <time-filter v-if="showState || state === 2"
+                     :label="$t('issue.state.registered')"
+                     @input-before="filter['registeredAt[before]'] = $event"
+                     @input-after="filter['registeredAt[after]'] = $event"
+    />
 
-    <filter-popover
-        size="filter-wide"
-        :title="$t('issue_table.filter.by_deadline')"
-        :valid="!!(filter['deadline[before]'] && filter['deadline[after]'])">
+    <time-filter v-if="showState || state === 4"
+                     :label="$t('issue.state.resolved')"
+                     @input-before="filter['resolvedAt[before]'] = $event"
+                     @input-after="filter['resolvedAt[after]'] = $event"
+    />
 
-      <deadline-filter
-          @input-deadline-before="filter['deadline[before]'] = $event"
-          @input-deadline-after="filter['deadline[after]'] = $event"
-      />
-    </filter-popover>
-  </th>
-  <th class="w-minimal">
-    {{ $t('issue.status') }}
-
-
-    <filter-popover
-        size="filter-wide"
-        :title="$t('issue_table.filter.by_state')"
-        :valid="!forceState && filter.state !== 7">
-      <template v-if="!forceState">
-        <p class="font-weight-bold">{{ $t('issue_table.filter_state.by_active_state') }}</p>
-
-        <state-filter
-            v-if="showStateFilter"
-            @input="filter.state = $event" />
-
-        <hr />
-      </template>
-
-      <p class="font-weight-bold">{{ $t('issue_table.filter_time.by_time') }}</p>
-      <time-filter
-          :minimal-state="minimalState" :force-state="forceState"
-          @input-registered-at-before="filter['registeredAt[before]'] = $event"
-          @input-registered-at-after="filter['registeredAt[after]'] = $event"
-          @input-resolved-at-before="filter['resolvedAt[before]'] = $event"
-          @input-resolved-at-after="filter['resolvedAt[after]'] = $event"
-          @input-closed-at-before="filter['closedAt[before]'] = $event"
-          @input-closed-at-after="filter['closedAt[after]'] = $event"
-      />
-    </filter-popover>
-  </th>
-  -->
+    <time-filter v-if="showState || state === 8"
+                     :label="$t('issue.state.closed')"
+                     @input-before="filter['closedAt[before]'] = $event"
+                     @input-after="filter['closedAt[after]'] = $event"
+    />
+  </toggle-card>
 </template>
 
 <script>
@@ -106,9 +86,11 @@ import StateFilter from './IssueFilter/StateFilter'
 import ToggleCard from '../Library/Behaviour/ToggleCard'
 import CraftsmenFilter from './IssueFilter/CraftsmenFilter'
 import MapFilter from './IssueFilter/MapFilter'
+import TimeFilter from './IssueFilter/TimeFilter'
 
 export default {
   components: {
+    TimeFilter,
     MapFilter,
     CraftsmenFilter,
     ToggleCard,
@@ -148,6 +130,8 @@ export default {
         state: false,
         craftsmen: false,
         maps: false,
+        deadline: false,
+        time: false
       },
     }
   },
@@ -182,13 +166,28 @@ export default {
   computed: {
     actualFilter: function() {
       let actualFilter = Object.assign({}, this.filter)
-      for (const field in this.filterActive) {
-        if (Object.prototype.hasOwnProperty.call(this.filterActive, field)) {
-          // set deactivated fields to null
-          if (!this.filterActive[field]) {
-            actualFilter[field] = null
-          }
-        }
+      if (!this.filterActive.state) {
+        actualFilter.state = null;
+      }
+      if (!this.filterActive.craftsmen) {
+        actualFilter.craftsmen = null;
+      }
+      if (!this.filterActive.maps) {
+        actualFilter.maps = null;
+      }
+      if (!this.filterActive.deadline) {
+        actualFilter['deadline[before]'] = null;
+        actualFilter['deadline[after]'] = null;
+      }
+      if (!this.filterActive.time) {
+        actualFilter['createdAt[before]'] = null;
+        actualFilter['createdAt[after]'] = null;
+        actualFilter['registeredAt[before]'] = null;
+        actualFilter['registeredAt[after]'] = null;
+        actualFilter['resolvedAt[before]'] = null;
+        actualFilter['resolvedAt[after]'] = null;
+        actualFilter['closedAt[before]'] = null;
+        actualFilter['closedAt[after]'] = null;
       }
 
       return actualFilter
