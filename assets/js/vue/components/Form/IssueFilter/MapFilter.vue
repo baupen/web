@@ -3,10 +3,10 @@
     <custom-checkbox-field
         id="filter-all-maps"
         @click.prevent="toggleSelectedMaps(maps)"
-        :label="$t('issue_table.filter_maps.all_maps')">
+        :label="$t('form.issue_filter.all_maps')">
       <input class="custom-control-input" type="checkbox"
-             :disabled="!maps"
-             :checked="maps && maps.length > 0 && entityListsAreEqual(maps, selectedMaps)">
+             :indeterminate.prop="selectedMaps.length > 0 && !allMapsSelected"
+             :checked="maps.length > 0 && allMapsSelected">
     </custom-checkbox-field>
 
     <hr/>
@@ -28,10 +28,10 @@
 </template>
 
 <script>
-import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
-import CustomCheckbox from '../Library/FormInput/CustomCheckbox'
-import { arraysAreEqual } from '../../services/algorithms'
-import { mapTransformer } from '../../services/transformers'
+import CustomCheckboxField from '../../Library/FormLayout/CustomCheckboxField'
+import CustomCheckbox from '../../Library/FormInput/CustomCheckbox'
+import { arraysAreEqual } from '../../../services/algorithms'
+import { mapTransformer } from '../../../services/transformers'
 
 export default {
   components: { CustomCheckbox, CustomCheckboxField },
@@ -44,6 +44,7 @@ export default {
   props: {
     maps: {
       type: Array,
+      default: []
     },
   },
   watch: {
@@ -51,12 +52,15 @@ export default {
       this.$emit('input', this.selectedMaps)
     },
     maps: function () {
-      this.selectedMaps = this.maps
+      this.selectedMaps = [...this.maps]
     },
   },
   computed: {
     flattenedMaps: function () {
       return mapTransformer.flatHierarchy(this.maps)
+    },
+    allMapsSelected: function () {
+      return this.entityListsAreEqual(this.maps, this.selectedMaps)
     }
   },
   methods: {
@@ -74,30 +78,16 @@ export default {
     },
   },
   mounted() {
-    this.selectedMaps = this.maps
+    this.selectedMaps = [...this.maps]
   }
 }
 </script>
 
-<style scoped="true">
-.spacer-1 {
-  padding-left: 2em;
-}
-
-.spacer-2 {
-  padding-left: 4em;
-}
-
-.spacer-3 {
-  padding-left: 6em;
-}
-
-.spacer-4 {
-  padding-left: 8em;
-}
-
-.spacer-5 {
-  padding-left: 10em;
+<style scoped="true" lang="scss">
+@for $i from 1 through 10 {
+  .spacer-#{$i} {
+    padding-left: $i*1em;
+  }
 }
 
 </style>

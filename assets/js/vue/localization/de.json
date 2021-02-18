@@ -67,9 +67,6 @@
       "state": "Status",
       "last_activity": "Letzte Aktivität",
       "state_archived_by_connector": "von",
-      "without_description": "ohne Beschreibung",
-      "without_craftsman": "ohne Unternehmer",
-      "without_deadline": "ohne Frist",
       "all_craftsmen": "Alle Unternehmer",
       "all_maps": "Alle Karten",
       "by_active_state": "Aktueller Status",
@@ -79,6 +76,11 @@
         "after": "nach"
       }
     }
+  },
+  "issue_table": {
+    "without_description": "ohne Beschreibung",
+    "without_craftsman": "ohne Unternehmer",
+    "without_deadline": "ohne Frist"
   },
   "view": {
     "no_issues": "Keine Pendenzen",

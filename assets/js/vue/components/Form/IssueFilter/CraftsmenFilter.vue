@@ -5,8 +5,8 @@
         @click.prevent="toggleSelectedCraftsmen(craftsmen)"
         :label="$t('form.issue_filter.all_craftsmen')">
       <input class="custom-control-input" type="checkbox"
-             :disabled="!craftsmen"
-             :checked="craftsmen && craftsmen.length > 0 && entityListsAreEqual(craftsmen, selectedCraftsmen)">
+             :indeterminate.prop="selectedCraftsmen.length > 0 && !allCraftsmenSelected"
+             :checked="craftsmen.length > 0 && allCraftsmenSelected">
     </custom-checkbox-field>
 
     <hr/>
@@ -36,7 +36,6 @@ export default {
   components: {
     CustomCheckboxField,
     CustomCheckbox
-
   },
   emits: ['input'],
   data() {
@@ -47,6 +46,7 @@ export default {
   props: {
     craftsmen: {
       type: Array,
+      default: []
     },
   },
   watch: {
@@ -70,6 +70,11 @@ export default {
         return a['@id'].localeCompare(b['@id'])
       })
     },
+  },
+  computed: {
+    allCraftsmenSelected: function () {
+      return this.entityListsAreEqual(this.craftsmen, this.selectedCraftsmen);
+    }
   },
   mounted() {
     this.selectedCraftsmen = [...this.craftsmen]

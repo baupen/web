@@ -44,29 +44,12 @@
     <craftsmen-filter :craftsmen="craftsmen" @input="filter.craftsmen = $event" />
   </toggle-card>
 
+  <toggle-card class="mt-2" :title="$t('map._plural')" v-if="showState" @active-toggled="filterActive.maps = $event">
+    <map-filter :maps="maps" @input="filter.maps = $event" />
+  </toggle-card>
+
 
   <!--
-
-  <th>
-    {{ $t('craftsman._name') }}
-
-    <filter-popover
-        :title="$t('issue_table.filter.by_craftsman')"
-        :valid="filter.craftsmen.length < craftsmen.length && filter.craftsmen.length > 0">
-
-      <craftsmen-filter class="mt-2" :craftsmen="craftsmen" @input="filter.craftsmen = $event" />
-    </filter-popover>
-  </th>
-  <th>
-    {{ $t('map._name') }}
-
-    <filter-popover
-        :title="$t('issue_table.filter.by_maps')"
-        :valid="filter.maps.length < maps.length && filter.maps.length > 0">
-
-      <map-filter class="mt-2" :maps="maps" @input="filter.maps = $event" />
-    </filter-popover>
-  </th>
   <th>
     {{ $t('issue.deadline') }}
 
@@ -122,9 +105,11 @@ import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 import StateFilter from './IssueFilter/StateFilter'
 import ToggleCard from '../Library/Behaviour/ToggleCard'
 import CraftsmenFilter from './IssueFilter/CraftsmenFilter'
+import MapFilter from './IssueFilter/MapFilter'
 
 export default {
   components: {
+    MapFilter,
     CraftsmenFilter,
     ToggleCard,
     StateFilter,
@@ -137,18 +122,18 @@ export default {
     return {
       mounted: false,
       filter: {
-        number: null,
+        number: '',
+        description: '',
 
         isMarked: null,
         wasAddedWithClient: null,
 
-        description: '',
+        state: null,
         craftsmen: [],
         maps: [],
+
         'deadline[before]': null,
         'deadline[after]': null,
-
-        state: null,
 
         'createdAt[before]': null,
         'createdAt[after]': null,
@@ -157,9 +142,7 @@ export default {
         'resolvedAt[before]': null,
         'resolvedAt[after]': null,
         'closedAt[before]': null,
-        'closedAt[after]': null,
-
-        isDeleted: false
+        'closedAt[after]': null
       },
       filterActive: {
         state: false,
