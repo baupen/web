@@ -47,6 +47,14 @@ export default {
       type: String,
       required: true
     },
+    initialBefore: {
+      type: String,
+      required: false
+    },
+    initialAfter: {
+      type: String,
+      required: false
+    },
     help: {
       type: String,
       required: false
@@ -78,6 +86,14 @@ export default {
   computed: {
     dateTimePickerConfig: function () {
       return dateConfig
+    }
+  },
+  mounted () {
+    if (this.initialBefore) {
+      this.before = this.initialBefore
+    }
+    if (this.initialAfter) {
+      this.after = this.initialAfter
     }
   }
 }

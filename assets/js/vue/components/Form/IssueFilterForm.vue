@@ -47,7 +47,8 @@
       class="mt-2"
       :title="$t('craftsman._plural')" :initial-activated="configurationTemplate.craftsmen"
       @active-toggled="configuration.craftsmen = $event">
-    <craftsmen-filter :initial-selected-entities="template.craftsmen" :entities="craftsmen" @input="filter.craftsmen = $event" />
+    <craftsmen-filter :initial-selected-entities="template.craftsmen" :entities="craftsmen"
+                      @input="filter.craftsmen = $event" />
   </toggle-card>
 
   <toggle-card
@@ -63,8 +64,8 @@
       @active-toggled="configuration.deadline = $event">
     <time-filter
         :label="$t('issue.deadline')"
-        @input-before="filter['deadline[before]'] = $event"
-        @input-after="filter['deadline[after]'] = $event"
+        :initial-before="template['deadline[before]']" :initial-after="template['deadline[after]']"
+        @input-before="filter['deadline[before]'] = $event" @input-after="filter['deadline[after]'] = $event"
     />
   </toggle-card>
 
@@ -75,34 +76,30 @@
 
     <time-filter
         v-if="configuration.showState || template.state === 1"
-        :label="$t('issue.state.created')"
-        :help="$t('issue.state.created_help')"
-        @input-before="filter['createdAt[before]'] = $event"
-        @input-after="filter['createdAt[after]'] = $event"
+        :label="$t('issue.state.created')" :help="$t('issue.state.created_help')"
+        :initial-before="template['createdAt[before]']" :initial-after="template['createdAt[after]']"
+        @input-before="filter['createdAt[before]'] = $event" @input-after="filter['createdAt[after]'] = $event"
     />
 
     <time-filter
         v-if="configuration.showState || template.state === 2"
-        :label="$t('issue.state.registered')"
-        :help="$t('issue.state.registered_help')"
-        @input-before="filter['registeredAt[before]'] = $event"
-        @input-after="filter['registeredAt[after]'] = $event"
+        :label="$t('issue.state.registered')" :help="$t('issue.state.registered_help')"
+        :initial-before="template['registeredAt[before]']" :initial-after="template['registeredAt[after]']"
+        @input-before="filter['registeredAt[before]'] = $event" @input-after="filter['registeredAt[after]'] = $event"
     />
 
     <time-filter
         v-if="configuration.showState || template.state === 4"
-        :label="$t('issue.state.resolved')"
-        :help="$t('issue.state.resolved_help')"
-        @input-before="filter['resolvedAt[before]'] = $event"
-        @input-after="filter['resolvedAt[after]'] = $event"
+        :label="$t('issue.state.resolved')" :help="$t('issue.state.resolved_help')"
+        :initial-before="template['resolvedAt[before]']" :initial-after="template['resolvedAt[after]']"
+        @input-before="filter['resolvedAt[before]'] = $event" @input-after="filter['resolvedAt[after]'] = $event"
     />
 
     <time-filter
         v-if="configuration.showState || template.state === 8"
-        :label="$t('issue.state.closed')"
-        :help="$t('issue.state.closed_help')"
-        @input-before="filter['closedAt[before]'] = $event"
-        @input-after="filter['closedAt[after]'] = $event"
+        :label="$t('issue.state.closed')" :help="$t('issue.state.closed_help')"
+        :initial-before="template['closedAt[before]']" :initial-after="template['closedAt[after]']"
+        @input-before="filter['closedAt[before]'] = $event" @input-after="filter['closedAt[after]'] = $event"
     />
   </toggle-card>
 </template>
@@ -185,26 +182,17 @@ export default {
     }
   },
   watch: {
-    actualFilter: {
+    filter: {
       deep: true,
       handler: function () {
-        this.$emit('update', this.actualFilter)
+        this.$emit('update', this.filter)
       }
     },
-    actualConfiguration: {
+    configuration: {
       deep: true,
       handler: function () {
-        this.$emit('update-configuration', this.actualConfiguration)
+        this.$emit('update-configuration', this.configuration)
       }
-    }
-  },
-  computed: {
-    actualFilter: function () {
-      const actualFilter = filterTransformer.actualFilter(this.filter, this.configuration)
-      return Object.assign({}, this.template, actualFilter)
-    },
-    actualConfiguration: function () {
-      return Object.assign({}, this.configurationTemplate, this.configuration)
     }
   },
   mounted () {

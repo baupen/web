@@ -56,7 +56,7 @@
     </thead>
     <tbody>
     <loading-indicator-table-body v-if="isLoading" />
-    <tr v-else-if="issues.length === 0">
+    <tr v-else-if="issues.length === 0 && !issuesLoading">
       <td colspan="9">
         <p class="text-center">{{ $t('view.no_issues') }}</p>
       </td>
@@ -102,6 +102,7 @@
         (visual)
       </td>
     </tr>
+    <loading-indicator-table-body v-if="issuesLoading && !isLoading" />
     </tbody>
     <caption class="caption-top">
       <template v-if="view === 'foyer'">
@@ -153,7 +154,7 @@ import TooltipText from '../Library/View/TooltipText'
 import DateHumanReadable from '../Library/View/DateHumanReadable'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import debounce from 'lodash.debounce'
-import { api } from '../../services/api'
+import { addNonDuplicatesById, api } from '../../services/api'
 import { arraysAreEqual } from '../../services/algorithms'
 import ImageLightbox from './ImageLightbox'
 import { filterTransformer, mapTransformer } from '../../services/transformers'
@@ -205,18 +206,8 @@ export default {
     }
   },
   computed: {
-    defaultFilter: function () {
-      return filterTransformer.defaultFilter(this.view)
-    },
-    filterTemplate: function () {
-      return this.filter ? this.filter : this.defaultFilter
-    },
-    filterConfigurationTemplate: function () {
-      const defaultConfiguration = filterTransformer.defaultConfiguration(this.view)
-      return this.filterConfiguration ? this.filterConfiguration : defaultConfiguration
-    },
     isLoading: function () {
-      return !this.constructionManagers || !this.maps || !this.craftsmen || (this.issuesLoading && this.issuePage === 1)
+      return !this.constructionManagers || !this.maps || !this.craftsmen
     },
     notLoadedIssueCount: function () {
       return this.totalIssues - this.issues.length
@@ -268,6 +259,18 @@ export default {
     issuesWithoutCraftsman: function () {
       return this.issues.filter(i => !i.craftsman)
     },
+    defaultFilter: function () {
+      return filterTransformer.defaultFilter(this.view)
+    },
+    defaultFilterConfiguration: function () {
+      return filterTransformer.defaultConfiguration(this.view);
+    },
+    filterTemplate: function () {
+      return this.filter ?? this.defaultFilter
+    },
+    filterConfigurationTemplate: function () {
+      return this.filterConfiguration ?? this.defaultFilterConfiguration;
+    }
   },
   methods: {
     removeIssue (issue) {
@@ -301,17 +304,17 @@ export default {
       this.issuesLoading = true
       this.issuePage = page
 
-      let query = filterTransformer.filterToQuery(this.filter, this.craftsmen, this.maps)
+      let query = filterTransformer.filterToQuery(this.defaultFilter, filter, this.configuration, this.craftsmen, this.maps)
       this.$emit('query', query)
 
-      query = Object.assign({}, query, { page })
+      query.page = page
 
       api.getPaginatedIssues(this.constructionSite, query)
           .then(payload => {
             if (page === 1) {
               this.issues = payload.items
             } else {
-              this.issues = this.issues.concat(payload.items)
+              addNonDuplicatesById(this.issues, payload.items)
             }
             this.totalIssues = payload.totalItems
 
@@ -336,7 +339,7 @@ export default {
     }
   },
   mounted () {
-    this.filter = Object.assign({}, this.filterTemplate)
+    this.loadIssues(this.defaultFilter)
 
     api.getCraftsmen(this.constructionSite)
         .then(craftsmen => {

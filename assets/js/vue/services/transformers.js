@@ -1,4 +1,5 @@
 import { iriToId } from './api'
+import { text } from '@fortawesome/fontawesome-svg-core'
 
 const mapTransformer = {
   _cutChildrenFromLookup: function (key, parentLookup) {
@@ -104,59 +105,49 @@ const filterTransformer = {
       time: false
     }
   },
-  actualFilter: function (filter, configuration) {
-    let whitelistProps = ['number', 'description', 'isMarked', 'wasAddedWithClient']
-    let whitelistDateTimeProps = []
+  shouldIncludeCollection: function (value, collection) {
+    return value && (value.length > 0 || value.length !== collection.length)
+  },
+  filterToQuery: function (defaultFilter, filter, configuration, craftsmen, maps) {
+    let query = Object.assign({}, defaultFilter)
+
+    if (!filter) {
+      return query;
+    }
+
+    const textProps = ['number', 'description']
+    textProps.filter(p => filter[p]).forEach(p => query[p] = filter[p])
+
+    const booleanProps = ['isMarked', 'wasAddedWithClient']
+    booleanProps.filter(p => filter[p] || filter[p] === false).forEach(p => query[p] = filter[p])
+
+    if (!configuration) {
+      return query;
+    }
+
     if (configuration.state) {
-      whitelistProps.push('state')
+      query['state'] = filter['state']
     }
-    if (configuration.craftsmen) {
-      whitelistProps.push('craftsmen')
+    if (configuration.craftsmen && this.shouldIncludeCollection(filter['craftsmen'], craftsmen)) {
+      query['craftsman[]'] = filter['craftsmen'].map(e => iriToId(e['@id']))
     }
-    if (configuration.maps) {
-      whitelistProps.push('maps')
+    if (configuration.maps && this.shouldIncludeCollection(filter['maps'], maps)) {
+      query['maps[]'] = filter['maps'].map(e => iriToId(e['@id']))
     }
+
+    let whitelistDateTimePropNames = []
     if (configuration.deadline) {
-      whitelistDateTimeProps.push('deadline')
+      whitelistDateTimePropNames.push('deadline')
     }
     if (configuration.time) {
-      whitelistDateTimeProps.push('createdAt', 'registeredAt', 'resolvedAt', 'closedAt')
+      whitelistDateTimePropNames.push('createdAt', 'registeredAt', 'resolvedAt', 'closedAt')
     }
-
-    let actualFilter = {}
-    whitelistProps.forEach(prop => {
-      actualFilter[prop] = filter[prop]
+    let whitelistDateTimeProps = []
+    whitelistDateTimePropNames.forEach(prop => {
+      whitelistDateTimeProps.push(prop + '[before]')
+      whitelistDateTimeProps.push(prop + '[after]')
     })
-    whitelistDateTimeProps.forEach(prop => {
-      actualFilter[prop + '[before]'] = filter[prop + '[before]']
-      actualFilter[prop + '[after]'] = filter[prop + '[after]']
-    })
-
-    return actualFilter
-  },
-  filterToQuery: function (filter, craftsmen, maps) {
-    let query = {}
-
-    for (const fieldName in filter) {
-      if (!Object.prototype.hasOwnProperty.call(filter, fieldName)) {
-        continue
-      }
-
-      const fieldValue = filter[fieldName]
-
-      if (fieldName === 'craftsmen') {
-        if (fieldValue && (fieldValue.length > 0 || fieldValue.length !== craftsmen.length)) {
-          query['craftsman[]'] = fieldValue.map(e => iriToId(e['@id']))
-        }
-      } else if (fieldName === 'maps') {
-        if (fieldValue && (fieldValue.length > 0 || fieldValue.length !== maps.length)) {
-          query['map[]'] = fieldValue.map(e => iriToId(e['@id']))
-        }
-      } else if (fieldValue || fieldValue === false || fieldValue === 0) {
-        // "false" is the only Falsy value applicable as filter
-        query[fieldName] = fieldValue
-      }
-    }
+    whitelistDateTimeProps.filter(p => filter[p]).forEach(p => query[p] = filter[p])
 
     return query
   }
