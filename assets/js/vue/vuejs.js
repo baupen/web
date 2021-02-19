@@ -16,7 +16,7 @@ import {
 } from '@fortawesome/pro-light-svg-icons'
 import {
   faPlusCircle as faPlusCircleRegular, faDotCircle as faDotCircleRegular, // issue icons
-  faExclamationCircle as faExclamationCircleRegular, faCheckCircle as faCheckCircleRegular, // issue icons
+  faExclamationCircle as faExclamationCircleRegular, faCheckCircle as faCheckCircleRegular // issue icons
 } from '@fortawesome/pro-regular-svg-icons'
 
 import {

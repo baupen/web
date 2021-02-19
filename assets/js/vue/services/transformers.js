@@ -2,8 +2,8 @@ import { iriToId } from './api'
 
 const issueTransformer = {
   isOverdue: function (issue) {
-    if (!issue.deadline || issue.responseBy || issue.closedBy) {
-      return false;
+    if (!issue.deadline || issue.resolvedBy || issue.closedBy) {
+      return false
     }
 
     const deadline = Date.parse(issue.deadline)
@@ -120,45 +120,48 @@ const filterTransformer = {
     return value && (value.length > 0 || value.length !== collection.length)
   },
   filterToQuery: function (defaultFilter, filter, configuration, craftsmen, maps) {
-    let query = Object.assign({}, defaultFilter)
+    const query = Object.assign({}, defaultFilter)
 
     if (!filter) {
-      return query;
+      return query
     }
 
     const textProps = ['number', 'description']
-    textProps.filter(p => filter[p]).forEach(p => query[p] = filter[p])
+    textProps.filter(p => filter[p])
+      .forEach(p => { query[p] = filter[p] })
 
     const booleanProps = ['isMarked', 'wasAddedWithClient']
-    booleanProps.filter(p => filter[p] || filter[p] === false).forEach(p => query[p] = filter[p])
+    booleanProps.filter(p => filter[p] || filter[p] === false)
+      .forEach(p => { query[p] = filter[p] })
 
     if (!configuration) {
-      return query;
+      return query
     }
 
     if (configuration.state) {
-      query['state'] = filter['state']
+      query.state = filter.state
     }
-    if (configuration.craftsmen && this.shouldIncludeCollection(filter['craftsmen'], craftsmen)) {
-      query['craftsman[]'] = filter['craftsmen'].map(e => iriToId(e['@id']))
+    if (configuration.craftsmen && this.shouldIncludeCollection(filter.craftsmen, craftsmen)) {
+      query['craftsman[]'] = filter.craftsmen.map(e => iriToId(e['@id']))
     }
-    if (configuration.maps && this.shouldIncludeCollection(filter['maps'], maps)) {
-      query['maps[]'] = filter['maps'].map(e => iriToId(e['@id']))
+    if (configuration.maps && this.shouldIncludeCollection(filter.maps, maps)) {
+      query['maps[]'] = filter.maps.map(e => iriToId(e['@id']))
     }
 
-    let whitelistDateTimePropNames = []
+    const whitelistDateTimePropNames = []
     if (configuration.deadline) {
       whitelistDateTimePropNames.push('deadline')
     }
     if (configuration.time) {
       whitelistDateTimePropNames.push('createdAt', 'registeredAt', 'resolvedAt', 'closedAt')
     }
-    let whitelistDateTimeProps = []
+    const whitelistDateTimeProps = []
     whitelistDateTimePropNames.forEach(prop => {
       whitelistDateTimeProps.push(prop + '[before]')
       whitelistDateTimeProps.push(prop + '[after]')
     })
-    whitelistDateTimeProps.filter(p => filter[p]).forEach(p => query[p] = filter[p])
+    whitelistDateTimeProps.filter(p => filter[p])
+      .forEach(p => { query[p] = filter[p] })
 
     return query
   }

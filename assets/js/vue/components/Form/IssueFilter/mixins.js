@@ -2,7 +2,7 @@ import { arraysAreEqual } from '../../../services/algorithms'
 
 const entityFilterMixin = {
   emits: ['input'],
-  data() {
+  data () {
     return {
       selectedEntities: []
     }
@@ -15,7 +15,7 @@ const entityFilterMixin = {
     initialSelectedEntities: {
       type: Array,
       required: false
-    },
+    }
   },
   watch: {
     selectedEntities: function () {
@@ -26,25 +26,25 @@ const entityFilterMixin = {
     }
   },
   methods: {
-    toggleAllEntitiesSelected() {
+    toggleAllEntitiesSelected () {
       if (this.entityListsAreEqual(this.entities, this.selectedEntities)) {
         this.selectedEntities = []
       } else {
         this.selectedEntities = [...this.entities]
       }
     },
-    entityListsAreEqual(array1, array2) {
+    entityListsAreEqual (array1, array2) {
       return arraysAreEqual(array1, array2, (a, b) => {
         return a['@id'].localeCompare(b['@id'])
       })
-    },
+    }
   },
   computed: {
     allEntitiesSelected: function () {
-      return this.entityListsAreEqual(this.entities, this.selectedEntities);
+      return this.entityListsAreEqual(this.entities, this.selectedEntities)
     }
   },
-  mounted() {
+  mounted () {
     if (this.initialSelectedEntities) {
       this.selectedEntities = [...this.initialSelectedEntities]
     } else {

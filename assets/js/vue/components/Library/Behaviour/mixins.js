@@ -1,5 +1,5 @@
 const orderMixin = {
-  emits: ["ordered"],
+  emits: ['ordered'],
   props: {
     order: {
       type: Object,
@@ -15,12 +15,12 @@ const orderMixin = {
       return this.order && this.order.property === this.property
     },
     isAscOrdered: function () {
-      return this.isActive && this.order.value === 'asc';
+      return this.isActive && this.order.value === 'asc'
     },
     isDescOrdered: function () {
-      return this.isActive && this.order.value === 'desc';
+      return this.isActive && this.order.value === 'desc'
     }
-  },
+  }
 }
 
 export { orderMixin }
