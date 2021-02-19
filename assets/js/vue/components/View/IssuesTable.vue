@@ -98,9 +98,7 @@
         <date-human-readable :value="iwr.issue.deadline" />
       </td>
       <td class="w-minimal white-space-nowrap">
-        <button class="btn btn-outline-secondary">
-          <issue-state-icon :issue="iwr.issue" />
-        </button>
+        <view-issue-button :issue="iwr.issue" />
       </td>
     </tr>
     <loading-indicator-table-body v-if="issuesLoading && !isLoading" />
@@ -162,14 +160,14 @@ import { filterTransformer, mapTransformer } from '../../services/transformers'
 import FilterIssuesButton from '../Action/FilterIssuesButton'
 import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody'
 import ToggleIcon from '../Library/View/ToggleIcon'
-import IssueStateIcon from './IssueStateIcon'
 import AddCraftsmanButton from '../Action/AddCraftsmanButton'
+import ViewIssueButton from '../Action/ViewIssueButton'
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count'],
   components: {
+    ViewIssueButton,
     AddCraftsmanButton,
-    IssueStateIcon,
     ToggleIcon,
     LoadingIndicatorTableBody,
     FilterIssuesButton,
