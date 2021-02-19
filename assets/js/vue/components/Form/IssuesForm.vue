@@ -1,43 +1,92 @@
 <template>
-  <custom-checkbox-field for-id="is-marked" :label="$t('issue.is_marked')">
-    <input
-        class="custom-control-input" type="checkbox" id="is-marked"
-        :class="{'is-valid': fields.isMarked.dirty && !fields.isMarked.errors.length, 'is-invalid': fields.isMarked.dirty && fields.isMarked.errors.length }"
-        v-model="issue.isMarked"
-        :true-value="true"
-        :false-value="false"
-        :indeterminate.prop="issue.isMarked === null"
-        @input="fields.isMarked.dirty = true"
-        @change="validate('isMarked')"
-    >
-    <template v-slot:after>
-      <div>
-        <a class="btn-link clickable" v-if="fields.isMarked.dirty" @click="reset('isMarked')">
-          {{ $t('form.reset') }}
-        </a>
-      </div>
-    </template>
-  </custom-checkbox-field>
+  <div class="row">
+    <div class="col-md-6">
+      <custom-checkbox-field for-id="is-marked" :label="$t('issue.is_marked')">
+        <input
+            class="custom-control-input" type="checkbox" id="is-marked"
+            :class="{'is-valid': fields.isMarked.dirty && !fields.isMarked.errors.length, 'is-invalid': fields.isMarked.dirty && fields.isMarked.errors.length }"
+            v-model="issue.isMarked"
+            :true-value="true"
+            :false-value="false"
+            :indeterminate.prop="issue.isMarked === null"
+            @input="fields.isMarked.dirty = true"
+            @change="validate('isMarked')"
+        >
+        <template v-slot:after>
+          <div>
+            <a class="btn-link clickable" v-if="fields.isMarked.dirty" @click="reset('isMarked')">
+              {{ $t('form.reset') }}
+            </a>
+          </div>
+        </template>
+      </custom-checkbox-field>
 
-  <custom-checkbox-field for-id="was-added-with-client" :label="$t('issue.was_added_with_client')">
-    <input
-        class="custom-control-input" type="checkbox" id="was-added-with-client"
-        :class="{'is-valid': fields.wasAddedWithClient.dirty && !fields.wasAddedWithClient.errors.length, 'is-invalid': fields.wasAddedWithClient.dirty && fields.wasAddedWithClient.errors.length }"
-        v-model="issue.wasAddedWithClient"
-        :true-value="true"
-        :false-value="false"
-        :indeterminate.prop="issue.wasAddedWithClient === null"
-        @input="fields.wasAddedWithClient.dirty = true"
-        @change="validate('wasAddedWithClient')"
-    >
-    <template v-slot:after>
-      <div>
-        <a class="btn-link clickable" v-if="fields.wasAddedWithClient.dirty" @click="reset('wasAddedWithClient')">
-          {{ $t('form.reset') }}
-        </a>
-      </div>
-    </template>
-  </custom-checkbox-field>
+      <custom-checkbox-field for-id="was-added-with-client" :label="$t('issue.was_added_with_client')">
+        <input
+            class="custom-control-input" type="checkbox" id="was-added-with-client"
+            :class="{'is-valid': fields.wasAddedWithClient.dirty && !fields.wasAddedWithClient.errors.length, 'is-invalid': fields.wasAddedWithClient.dirty && fields.wasAddedWithClient.errors.length }"
+            v-model="issue.wasAddedWithClient"
+            :true-value="true"
+            :false-value="false"
+            :indeterminate.prop="issue.wasAddedWithClient === null"
+            @input="fields.wasAddedWithClient.dirty = true"
+            @change="validate('wasAddedWithClient')"
+        >
+        <template v-slot:after>
+          <div>
+            <a class="btn-link clickable" v-if="fields.wasAddedWithClient.dirty" @click="reset('wasAddedWithClient')">
+              {{ $t('form.reset') }}
+            </a>
+          </div>
+        </template>
+      </custom-checkbox-field>
+    </div>
+    <div class="col-md-6 border-left">
+      <custom-checkbox-field for-id="is-resolved" :label="$t('issue.state.resolved')">
+        <input
+            class="custom-control-input" type="checkbox" id="is-resolved"
+            :class="{'is-valid': fields.isResolved.dirty && !fields.isResolved.errors.length, 'is-invalid': fields.isResolved.dirty && fields.isResolved.errors.length }"
+            v-model="issue.isResolved"
+            :true-value="true"
+            :false-value="false"
+            :indeterminate.prop="issue.isResolved === null"
+            @input="fields.isResolved.dirty = true"
+            @change="validate('isResolved')"
+        >
+        <template v-slot:after>
+          <div>
+            <a class="btn-link clickable" v-if="fields.isResolved.dirty" @click="reset('isResolved')">
+              {{ $t('form.reset') }}
+            </a>
+          </div>
+        </template>
+      </custom-checkbox-field>
+
+      <custom-checkbox-field for-id="is-closed" :label="$t('issue.state.closed')">
+        <input
+            class="custom-control-input" type="checkbox" id="is-closed"
+            :class="{'is-valid': fields.isClosed.dirty && !fields.isClosed.errors.length, 'is-invalid': fields.isClosed.dirty && fields.isClosed.errors.length }"
+            v-model="issue.isClosed"
+            :true-value="true"
+            :false-value="false"
+            :indeterminate.prop="issue.isClosed === null"
+            @input="fields.isClosed.dirty = true"
+            @change="validate('isClosed')"
+        >
+        <template v-slot:after>
+          <div>
+            <a class="btn-link clickable" v-if="fields.isClosed.dirty" @click="reset('isClosed')">
+              {{ $t('form.reset') }}
+            </a>
+          </div>
+        </template>
+      </custom-checkbox-field>
+    </div>
+  </div>
+
+  <p class="alert alert-warning mt-2" v-if="fields.isResolved.dirty && issue.isResolved">
+    {{ $t('actions.messages.resolved_as_impersonated_craftsman')}}
+  </p>
 
   <hr />
 
@@ -85,10 +134,11 @@
     <span ref="deadline-anchor" />
     <flat-pickr
         id="deadline" class="form-control"
+        :class="{'is-valid': fields.deadline.dirty && !fields.deadline.errors.length, 'is-invalid': fields.deadline.dirty && fields.deadline.errors.length }"
         v-model="issue.deadline"
+        :config="datePickerConfig"
         @input="fields.deadline.dirty = true"
-        @change="validate('deadline')"
-        :config="datePickerConfig">
+        @change="validate('deadline')">
     </flat-pickr>
     <invalid-feedback :errors="fields.deadline.errors" />
     <a class="btn-link clickable" v-if="fields.deadline.dirty" @click="reset('deadline')">
@@ -123,7 +173,9 @@ export default {
         wasAddedWithClient: createField(),
         description: createField(),
         craftsman: createField(),
-        deadline: createField()
+        deadline: createField(),
+        isResolved: createField(),
+        isClosed: createField(),
       },
       issue: {
         isMarked: null,
@@ -131,6 +183,8 @@ export default {
         description: null,
         craftsman: null,
         deadline: null,
+        isResolved: null,
+        isClosed: null,
       },
       tradeFilter: null,
     }
@@ -180,8 +234,16 @@ export default {
       validateField(this.fields[field], this.issue[field])
     },
     reset: function (field) {
-      this.fields[field].dirty = false
+      if (field === 'craftsman') {
+        this.tradeFilter = null
+      }
       this.issue[field] = this.template[field]
+      this.fields[field].dirty = false
+
+      // need to wait for next tick for datetime picker
+      this.$nextTick(() => {
+        this.fields[field].dirty = false
+      })
     },
     setIssueFromTemplate: function () {
       this.issue = Object.assign({}, this.template)
@@ -221,7 +283,9 @@ export default {
           this.fields.wasAddedWithClient.errors.length ||
           this.fields.description.errors.length ||
           this.fields.craftsman.errors.length ||
-          this.fields.deadline.errors.length) {
+          this.fields.deadline.errors.length ||
+          this.fields.isResolved.errors.length ||
+          this.fields.isClosed.errors.length) {
         return null
       }
 
@@ -230,6 +294,11 @@ export default {
       // ensure empty string is null
       if (Object.prototype.hasOwnProperty.call(values, 'deadline')) {
         values.deadline = values.deadline ? values.deadline : null
+
+        // '2020-01-01'.length === 4+3+3
+        if (values.deadline && this.template.deadline && values.deadline.substr(0, 10) === this.template.deadline.substr(0, 10)) {
+          delete values.deadline
+        }
       }
 
       return values

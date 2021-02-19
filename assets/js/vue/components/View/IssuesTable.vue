@@ -19,7 +19,7 @@
           </span>
         <span class="text-right float-right">
             <span class="btn-group reset-table-styles">
-              <edit-issues-button :issues="selectedIssues" :craftsmen="craftsmen" />
+              <edit-issues-button :construction-manager-iri="constructionManagerIri" :issues="selectedIssues" :craftsmen="craftsmen" />
               <remove-issues-button :issues="selectedIssues" @removed="removeIssue($event)" />
             </span>
           </span>
@@ -215,6 +215,10 @@ export default {
     }
   },
   props: {
+    constructionManagerIri: {
+      type: String,
+      required: true
+    },
     constructionSite: {
       type: Object,
       required: true

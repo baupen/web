@@ -52,6 +52,10 @@ export default {
     craftsmen: {
       type: Array,
       default: []
+    },
+    constructionManagerIri: {
+      type: String,
+      required: true
     }
   },
   computed: {
@@ -66,10 +70,15 @@ export default {
       let translatedFields = []
       for (let field in this.patch) {
         if (Object.prototype.hasOwnProperty.call(this.patch, field)) {
-          const translationKey = field.replace(/([A-Z])/g, '_$1')
-              .toLowerCase()
-          const translatedField = this.$t('issue.' + translationKey)
-          translatedFields.push(translatedField)
+          if (field === 'isResolved' || field === 'isClosed') {
+            const translatedField = this.$t('issue.state.' + field.substr(2).toLowerCase())
+            translatedFields.push(translatedField)
+          } else {
+            const translationKey = field.replace(/([A-Z])/g, '_$1')
+                .toLowerCase()
+            const translatedField = this.$t('issue.' + translationKey)
+            translatedFields.push(translatedField)
+          }
         }
       }
 
@@ -92,13 +101,23 @@ export default {
     },
     template: function () {
       if (this.issues.length === 0) {
-        return { }
+        return {}
       }
 
-      const canary = this.issues[0];
+      const canary = this.issues[0]
       const sameValue = (field) => {
         let defaultValue = canary[field]
         if (!this.issues.every(i => i[field] === defaultValue)) {
+          return null
+        }
+
+        return defaultValue
+      }
+
+      const sameState = (field) => {
+        const fieldName = field + 'At'
+        let defaultValue = !!canary[fieldName]
+        if (!this.issues.every(i => !!i[fieldName] === defaultValue)) {
           return null
         }
 
@@ -110,17 +129,44 @@ export default {
         wasAddedWithClient: sameValue('wasAddedWithClient'),
         description: sameValue('description'),
         craftsman: sameValue('craftsman'),
-        deadline: sameValue('deadline')
+        deadline: sameValue('deadline'),
+        isResolved: sameState('resolved'),
+        isClosed: sameState('closed')
       }
     }
   },
   methods: {
+    transformStatePatch: function (patch, patchPropertyName, stateName, owner, issue) {
+      if (Object.prototype.hasOwnProperty.call(patch, patchPropertyName)) {
+        const dateTimeStateName = stateName + 'At'
+        const dateTimeTargetValue = patch[patchPropertyName] ? (new Date()).toISOString() : null
+
+        // only patch if state different
+        if (!!issue[dateTimeStateName] !== !!dateTimeTargetValue) {
+          patch[stateName + 'At'] = dateTimeTargetValue
+          patch[stateName + 'By'] = patch[patchPropertyName] ? owner : null
+        }
+
+        delete patch[patchPropertyName]
+      }
+    },
     confirm: function () {
       if (this.patchPending) {
-        this.prePatchedIssues = this.issues.map(issue => Object.assign({
-          issue,
-          patch: Object.assign({}, this.patch)
-        }))
+        this.prePatchedIssues = this.issues.map(issue => {
+          let patch = Object.assign({}, this.patch)
+
+          this.transformStatePatch(patch, 'isResolved', 'resolved', issue.craftsman, issue)
+          this.transformStatePatch(patch, 'isClosed', 'closed', this.constructionManagerIri, issue)
+
+          if (patch.length === 0) {
+            return null;
+          }
+
+          return {
+            issue,
+            patch
+          }
+        }).filter(p => p)
 
         this.patchIssues()
       }

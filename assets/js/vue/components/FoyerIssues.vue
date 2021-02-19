@@ -10,6 +10,7 @@
     </div>
 
     <issues-table
+        :construction-manager-iri="constructionManagerIri"
         :construction-site="constructionSite"
         view="foyer"
         @selected="selectedIssues = $event" />

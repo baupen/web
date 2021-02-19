@@ -34,6 +34,7 @@
     "remove_confirm": "Ich verstehe, dass ich diesen Schritt nicht rückgängig machen kann.",
     "show_more_issues": "Weitere {count} Pendenzen anzeigen",
     "messages": {
+      "resolved_as_impersonated_craftsman": "'Erledigt' wird im Namen des Unternehmers.",
       "success": {
         "construction_site_added": "Baustelle hinzugefügt",
         "construction_site_image_replaced": "Bild ersetzt",

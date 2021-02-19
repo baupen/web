@@ -1,6 +1,6 @@
 <template>
   <span v-if="value">
-    {{ momentDateTime.format('DD.MM.YYYY HH:ss') }}
+    {{ momentDateTime.format('DD.MM.YYYY HH:mm') }}
   </span>
   <span v-else>-</span>
 </template>
