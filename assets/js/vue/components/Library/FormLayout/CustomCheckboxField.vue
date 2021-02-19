@@ -3,6 +3,11 @@
     <custom-checkbox :for-id="forId" :label="label" :secondary-label="secondaryLabel" :required="required">
       <slot></slot>
       <template v-slot:after>
+        <div v-if="showReset">
+          <a class="btn-link clickable" @click="$emit('reset')">
+            {{ $t('form.reset') }}
+          </a>
+        </div>
         <slot name="after"></slot>
       </template>
     </custom-checkbox>
@@ -13,6 +18,7 @@
 
 import CustomCheckbox from '../FormInput/CustomCheckbox'
 export default {
+  emits: ['reset'],
   components: {
     CustomCheckbox
   },
@@ -33,6 +39,10 @@ export default {
       type: Boolean,
       default: false
     },
+    showReset: {
+      type: Boolean,
+      default: false
+    }
   }
 }
 </script>

@@ -204,6 +204,32 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=8', $issueId);
     }
 
+    public function testOrder()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+        $constructionSite = $this->getTestConstructionSite();
+
+        $issue = $constructionSite->getIssues()[0];
+        $issue->setDeadline(new \DateTime());
+        $this->saveEntity($issue);
+
+        $order = ['lastChangedAt', 'deadline', 'number'];
+        foreach ($order as $entry) {
+            $url = '/api/issues?constructionSite='.$constructionSite->getId().'&order['.$entry.']=';
+
+            $ascCollectionResponse = $this->assertApiGetOk($client, $url.'asc');
+            $ascCollection = json_decode($ascCollectionResponse->getContent(), true);
+
+            $descCollectionResponse = $this->assertApiGetOk($client, $url.'desc');
+            $descCollection = json_decode($descCollectionResponse->getContent(), true);
+
+            $reversedDescEntries = array_reverse($descCollection['hydra:member']);
+            $this->assertEquals($ascCollection['hydra:member'], $reversedDescEntries, 'filter '.$entry.' has not been applied');
+        }
+    }
+
     public function testLastChangedAtFilter()
     {
         $client = $this->createClient();

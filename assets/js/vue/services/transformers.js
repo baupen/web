@@ -1,3 +1,17 @@
+import { iriToId } from './api'
+
+const issueTransformer = {
+  isOverdue: function (issue) {
+    if (!issue.deadline || issue.resolvedBy || issue.closedBy) {
+      return false
+    }
+
+    const deadline = Date.parse(issue.deadline)
+    const now = Date.now()
+    return deadline < now
+  }
+}
+
 const mapTransformer = {
   _cutChildrenFromLookup: function (key, parentLookup) {
     if (!(key in parentLookup)) {
@@ -85,4 +99,72 @@ const mapTransformer = {
   }
 }
 
-export { mapTransformer }
+const filterTransformer = {
+  defaultFilter: function (view) {
+    return {
+      isDeleted: false,
+      state: view === 'foyer' ? 1 : 14 // 14 = 8 | 4 | 2
+    }
+  },
+  defaultConfiguration: function (view) {
+    return {
+      showState: view === 'register',
+      state: false,
+      craftsmen: false,
+      maps: false,
+      deadline: false,
+      time: false
+    }
+  },
+  shouldIncludeCollection: function (value, collection) {
+    return value && (value.length > 0 || value.length !== collection.length)
+  },
+  filterToQuery: function (defaultFilter, filter, configuration, craftsmen, maps) {
+    const query = Object.assign({}, defaultFilter)
+
+    if (!filter) {
+      return query
+    }
+
+    const textProps = ['number', 'description']
+    textProps.filter(p => filter[p])
+      .forEach(p => { query[p] = filter[p] })
+
+    const booleanProps = ['isMarked', 'wasAddedWithClient']
+    booleanProps.filter(p => filter[p] || filter[p] === false)
+      .forEach(p => { query[p] = filter[p] })
+
+    if (!configuration) {
+      return query
+    }
+
+    if (configuration.state) {
+      query.state = filter.state
+    }
+    if (configuration.craftsmen && this.shouldIncludeCollection(filter.craftsmen, craftsmen)) {
+      query['craftsman[]'] = filter.craftsmen.map(e => iriToId(e['@id']))
+    }
+    if (configuration.maps && this.shouldIncludeCollection(filter.maps, maps)) {
+      query['maps[]'] = filter.maps.map(e => iriToId(e['@id']))
+    }
+
+    const whitelistDateTimePropNames = []
+    if (configuration.deadline) {
+      whitelistDateTimePropNames.push('deadline')
+    }
+    if (configuration.time) {
+      whitelistDateTimePropNames.push('createdAt', 'registeredAt', 'resolvedAt', 'closedAt')
+    }
+    const whitelistDateTimeProps = []
+    whitelistDateTimePropNames.forEach(prop => {
+      whitelistDateTimeProps.push(prop + '[before]')
+      whitelistDateTimeProps.push(prop + '[after]')
+    })
+    whitelistDateTimeProps.filter(p => filter[p])
+      .forEach(p => { query[p] = filter[p] })
+
+    return query
+  }
+}
+
+export { issueTransformer, mapTransformer, filterTransformer }

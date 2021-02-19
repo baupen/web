@@ -1,5 +1,5 @@
 <template>
-  <th class="clickable" @click="order">
+  <th class="clickable" @click="toggleOrder">
     <slot>
 
     </slot>
@@ -28,36 +28,23 @@
 </template>
 
 <script>
+import { orderMixin } from './mixins'
+
 export default {
-  emits: ["order"],
-  props: {
-    orderBy: {
-      type: Object,
-      required: false
-    },
-    property: {
-      type: String,
-      required: false
-    }
-  },
-  computed: {
-    isAscOrdered: function () {
-      return !!(this.orderBy && this.orderBy.asc && this.orderBy.property === this.property);
-    },
-    isDescOrdered: function () {
-      return !!(this.orderBy && !this.orderBy.asc && this.orderBy.property === this.property);
-    }
-  },
+  mixins: [orderMixin],
   methods: {
-    order: function () {
-      let payload = null;
-      if (this.isAscOrdered) {
-        payload = {property: this.property, asc: false}
-      } else if (!this.isDescOrdered && !this.isAscOrdered) {
-        payload = {property: this.property, asc: true}
+    toggleOrder: function () {
+      // toggle states: !isActive => isAscOrdered => isDescOrdered => !isActive
+      let payload = {property: this.property};
+      if (!this.isActive) {
+        payload.value = 'asc'
+      } else if (this.isAscOrdered) {
+        payload.value = 'desc'
+      } else {
+        payload = null;
       }
 
-      this.$emit('order', payload)
+      this.$emit('ordered', payload)
     }
   }
 }

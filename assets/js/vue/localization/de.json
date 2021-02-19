@@ -6,9 +6,15 @@
     "add_construction_site": "Baustelle hinzufügen",
     "add_craftsman": "Unternehmer hinzufügen",
     "add_map": "Karte hinzufügen",
+    "close": "Schliessen",
+    "sort_by_last_activity": "Nach letzter Aktivität sortieren",
     "edit_construction_site": "Baustelle bearbeiten",
     "edit_craftsman": "Unternehmer bearbeiten",
     "edit_map": "Karte bearbeiten",
+    "edit_issues": "Pendenzen bearbeiten",
+    "view_issue": "Pendenz anschauen",
+    "filter": "Filtern",
+    "filter_issues": "Pendenzen filtern",
     "load_map": "laden",
     "load_all_maps": "alle laden",
     "import_craftsmen": "Unternehmer importieren",
@@ -16,12 +22,19 @@
     "remove_craftsman_help": "Nach dem Entfernen können Sie dem Unternehmer keine Pendenzen mehr zuweisen. Der Unternehmer verliert den Zugriff auf den personalisierten Link.",
     "remove_map": "Karte entfernen",
     "remove_map_help": "Nach dem Entfernen können Sie der Karte keine Pendenzen mehr zuweisen.",
+    "remove_issues": "Pendenzen entfernen",
+    "remove_issues_help": "Die Pendenzen werden nirgendswo mehr angezeigt.",
+    "reset": "zurücksetzen",
     "resolve_issue": "Als erledigt markieren",
     "import": "Importieren",
     "save_changes": "Änderungen speichern",
-    "remove_confirm": "Ich verstehe, dass ich diesen Schnritt nicht rückgängig machen kann.",
+    "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
+    "save_issue_fields": "{fields} von Pendenz setzen | {fields} von {count} Pendenzen setzen",
+    "set_filter": "Filter setzen",
+    "remove_confirm": "Ich verstehe, dass ich diesen Schritt nicht rückgängig machen kann.",
     "show_more_issues": "Weitere {count} Pendenzen anzeigen",
     "messages": {
+      "resolved_as_impersonated_craftsman": "'Erledigt' wird im Namen des Unternehmers.",
       "success": {
         "construction_site_added": "Baustelle hinzugefügt",
         "construction_site_image_replaced": "Bild ersetzt",
@@ -35,11 +48,15 @@
         "map_removed": "Karte entfernt",
         "construction_manager_dissociated": "Bauleiter von Baustelle entfernt",
         "construction_manager_associated": "Bauleiter der Baustelle hinzugefügt",
-        "issue_resolved": "Pendenz als erledigt markiert."
+        "issue_resolved": "Pendenz als erledigt markiert.",
+        "issues_removed": "Pendenzen entfernt.",
+        "issues_saved": "Pendenzen gespeichert.",
+        "issue_images_replaced": "Bild ersetzt."
       }
     }
   },
   "form": {
+    "reset": "zurücksetzen",
     "file": {
       "label": "PDF Datei (.pdf)",
       "drop_or_choose": "PDF (.pdf) hineinziehen oder auswählen",
@@ -49,9 +66,23 @@
       "label": "Bild Datei (.jpg, .png, .gif)",
       "drop_or_choose": "Bild (.jpg, .png, .gif) hineinziehen oder auswählen",
       "reset": "Zurücksetzen"
+    },
+    "issue_filter": {
+      "state": "Status",
+      "time": "Zeitpunkt",
+      "all_craftsmen": "Alle Unternehmer",
+      "all_maps": "Alle Karten",
+      "from": "von",
+      "until": "bis"
     }
   },
+  "issue_table": {
+    "without_description": "ohne Beschreibung",
+    "without_craftsman": "ohne Unternehmer",
+    "without_deadline": "ohne Frist"
+  },
   "view": {
+    "no_issues": "Keine Pendenzen",
     "more": "mehr",
     "less": "weniger",
     "today": "heute",
@@ -142,63 +173,13 @@
       "export_issues": "Pendenzen exportieren"
     }
   },
-  "issue_table": {
-    "last_activity": "Letzte Aktivität",
-    "state_archived_by_connector": "von",
-    "without_description": "ohne Beschreibung",
-    "without_craftsman": "ohne Unternehmer",
-    "without_deadline": "ohne Frist",
-    "filter": {
-      "by_number": "Nach Nummer filtern",
-      "by_description": "Nach Beschreibung filtern",
-      "by_is_marked_or_added_with_client": "Nach Favorit / Abnahmependenz",
-      "by_craftsman": "Nach Unternehmer",
-      "by_maps": "Nach Bauplan",
-      "by_state": "Nach Status",
-      "by_deadline": "Nach Frist"
-    },
-    "filter_craftsmen": {
-      "all_craftsmen": "Alle Unternehmer"
-    },
-    "filter_maps": {
-      "all_maps": "Alle Karten"
-    },
-    "filter_state": {
-      "by_active_state": "Aktueller Status"
-    },
-    "filter_time": {
-      "by_time": "Nach Zeitpunkt",
-      "before": "vor",
-      "after": "nach"
-    },
-    "messages": {
-      "success": {
-        "saved_issues": "Pendenzen gespeichert",
-        "remove_issues": "Pendenzen entfernt",
-        "save_issue_images": "Pendenzen Bilder gespeichert"
-      }
-    }
-  },
   "maps_resolve_table": {
     "open_issues": "Offene Pendenzen"
   },
   "edit_issues_button": {
     "modal_title": "Pendenzen bearbeiten",
     "no_craftsman": "Kein Unternehmer",
-    "no_trade_filter": "Kein Gewerk",
-    "image_drop_or_choose": "Bild (.jpg, .png, .gif) hineinziehen oder auswählen",
-    "actions": {
-      "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
-      "save_issue_fields": "{fields} von Pendenz setzen | {fields} von {count} Pendenzen setzen",
-      "reset": "zurücksetzen"
-    }
-  },
-  "remove_issues_button": {
-    "can_not_reverse": "Ich möchte diese Pendenzen wirklich löschen, und verstehe, dass ich dies nicht rückgängig machen kann.",
-    "modal_title": "Pendenzen löschen",
-    "actions": {
-      "remove_issues": "Pendenz löschen | {count} Pendenzen löschen"
-    }
+    "no_trade_filter": "Kein Gewerk"
   },
   "dispatch": {
     "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und auf erledigt setzen.",
@@ -309,7 +290,7 @@
     }
   },
   "export_issues_button": {
-    "export_source_filter": "{count} Pendenzen, die auf die Filter zutreffen",
+    "export_source_filter": "{count} Pendenzen, auf die der Filter zutrifft",
     "export_source_selection": "{count} Pendenzen, die markiert wurden",
     "export_type": {
       "report": {
@@ -394,9 +375,13 @@
     "position": "Platzierung",
     "state": {
       "created": "erstellt",
+      "created_help": "Pendenz wurde auf dem Gerät erfasst",
       "registered": "registriert",
+      "registered_help": "Pendenz wurde ins Verzeichnis aufgenommen",
       "resolved": "erledigt",
+      "resolved_help": "Pendenz wurde vom Handwerker als erledigt markiert",
       "closed": "geschlossen",
+      "closed_help": "Pendenz wurde geschlossen",
       "open": "offen",
       "read": "gelesen",
       "unread": "ungelesen",

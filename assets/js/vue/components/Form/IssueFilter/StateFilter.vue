@@ -18,7 +18,8 @@
       >
     </custom-checkbox-field>
 
-    <custom-checkbox-field for-id="filter-state-is-closed" :label="$t('issue.state.closed')">
+    <custom-checkbox-field
+        for-id="filter-state-is-closed" :label="$t('issue.state.closed')">
       <input
           class="custom-control-input" type="checkbox" id="filter-state-is-closed"
           v-model="isClosed"
@@ -32,12 +33,12 @@
 
 <script>
 
+import CustomCheckboxField from '../../Library/FormLayout/CustomCheckboxField'
 
-import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 export default {
   components: { CustomCheckboxField },
   emits: ['input'],
-  data() {
+  data () {
     return {
       isRegistered: true,
       isResolved: true,
@@ -45,49 +46,36 @@ export default {
     }
   },
   props: {
-    defaultIsRegistered: {
-      default: true
-    },
-    defaultIsClosed: {
-      default: true
-    },
-    defaultIsResolved: {
-      default: true
-    },
-  },
-  watch: {
-    isRegistered: function () {
-      this.updateState()
-    },
-    isResolved: function () {
-      this.updateState()
-    },
-    isClosed: function () {
-      this.updateState()
-    },
-  },
-  methods: {
-    updateState: function () {
-      let state = 0;
-      if (this.isRegistered || this.minimalState >= 1) {
-        state = state | 2;
-      }
-      if (this.isResolved || this.minimalState >= 2) {
-        state = state | 4;
-      }
-      if (this.isClosed || this.minimalState >= 4) {
-        state = state | 8;
-      }
-
-      this.$emit('input', state)
+    initialState: {
+      type: Number,
+      required: true
     }
   },
-  mounted() {
-    this.isRegistered = this.defaultIsRegistered
-    this.isResolved = this.defaultIsResolved
-    this.isClosed = this.defaultIsClosed
+  watch: {
+    state: function () {
+      this.$emit('input', this.state)
+    },
+  },
+  computed: {
+    state: function () {
+      let state = 0
+      if (this.isRegistered) {
+        state = state | 2
+      }
+      if (this.isResolved) {
+        state = state | 4
+      }
+      if (this.isClosed) {
+        state = state | 8
+      }
 
-    this.updateState()
+      return state > 0 ? state : null
+    }
+  },
+  mounted () {
+    this.isRegistered = !!(this.initialState & 2)
+    this.isResolved = !!(this.initialState & 4)
+    this.isClosed = !!(this.initialState & 8)
   }
 }
 </script>

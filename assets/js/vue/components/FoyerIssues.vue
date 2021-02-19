@@ -10,8 +10,9 @@
     </div>
 
     <issues-table
+        :construction-manager-iri="constructionManagerIri"
         :construction-site="constructionSite"
-        :force-state="1"
+        view="foyer"
         @selected="selectedIssues = $event" />
   </div>
 </template>

@@ -1,13 +1,14 @@
 <template>
   <span ref="value" :title="tooltipTitle">
-    <font-awesome-icon v-if="value" :icon="['fas', icon]"/>
-    <font-awesome-icon v-else :icon="['fal', icon]"/>
+    <toggle-icon :value="value" :icon="icon" />
   </span>
 </template>
 
 <script>
 
+import ToggleIcon from './ToggleIcon'
 export default {
+  components: { ToggleIcon },
   props: {
     value: {
       type: Boolean,

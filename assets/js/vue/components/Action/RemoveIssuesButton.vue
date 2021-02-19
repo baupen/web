@@ -1,50 +1,76 @@
 <template>
-  <button-with-modal-confirm :title="$t('remove_issues_button.modal_title')" color="danger" :can-confirm="hasConfirmed"
-                             :confirm-title="removeIssuesText" :button-disabled="disabled"
-                             @confirm="$emit('remove')">
+  <button-with-modal-confirm
+      color="danger"
+      :title="$t('actions.remove_issues')" :can-confirm="canConfirm"
+      :button-disabled="issues.length === 0"
+      :confirm-title="confirmTitle"
+      @confirm="confirm">
     <template v-slot:button-content>
-      <font-awesome-icon :icon="['fal', 'trash']"/>
+      <font-awesome-icon :icon="['fal', 'trash']" />
+      <span class="btn btn-link" v-if="preDeletedIssues > 0">
+        {{ preDeletedIssues }}
+      </span>
     </template>
 
-    <div>
-      <custom-checkbox-field for-id="confirm-removal" :label="$t('remove_issues_button.can_not_reverse')">
-        <input
-            class="custom-control-input" type="checkbox" id="confirm-removal"
-            v-model="hasConfirmed"
-            :true-value="true"
-            :false-value="false"
-        >
-      </custom-checkbox-field>
-    </div>
+    <p class="alert alert-info">
+      {{ $t('actions.remove_issues_help') }}
+    </p>
+
+    <delete-form @update="canConfirm = $event" />
 
   </button-with-modal-confirm>
 </template>
 
 <script>
 
-import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
+import { api } from '../../services/api'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
+import DeleteForm from '../Form/DeleteForm'
+import { displaySuccess } from '../../services/notifiers'
+
 export default {
-  emits: ['remove'],
-  components: { ButtonWithModalConfirm, CustomCheckboxField },
-  data() {
+  emits: ['removed'],
+  components: {
+    DeleteForm,
+    ButtonWithModalConfirm
+  },
+  data () {
     return {
-      hasConfirmed: false
+      canConfirm: false,
+      preDeletedIssues: []
     }
   },
   props: {
     issues: {
       type: Array,
-      required: true
-    },
-    disabled: {
-      type: Boolean,
-      required: true
+      default: []
     }
   },
   computed: {
-    removeIssuesText: function () {
-      return this.$tc('remove_issues_button.actions.remove_issues', this.issues.length, {'count': this.issues.length})
+    confirmTitle: function () {
+      return this.$tc('actions.remove_issues', this.issues.length, {'count': this.issues.length})
+    },
+  },
+  methods: {
+    confirm: function () {
+      this.preDeletedIssues = [...this.issues]
+
+      this.deleteIssues()
+    },
+    deleteIssues () {
+      const issue = this.preDeletedIssues[0]
+      api.delete(issue)
+          .then(_ => {
+                this.preDeletedIssues.shift()
+                this.$emit('removed', issue)
+
+                if (this.preDeletedIssues.length === 0) {
+                  displaySuccess(this.$t('actions.messages.success.issues_removed'))
+                } else {
+                  this.deleteIssues()
+                }
+              }
+          )
     },
   }
 }

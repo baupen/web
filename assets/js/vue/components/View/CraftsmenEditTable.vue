@@ -11,7 +11,7 @@
     </tr>
     </thead>
     <tbody>
-    <table-body-loading-indicator v-if="!orderedCraftsmen" />
+    <loading-indicator-table-body v-if="!orderedCraftsmen" />
     <tr v-else v-for="craftsman in orderedCraftsmen">
       <td>{{ craftsman.trade }}</td>
       <td>
@@ -38,12 +38,11 @@
 
 import EditCraftsmanButton from '../Action/EditCraftsmanButton'
 import RemoveCraftsmanButton from '../Action/RemoveCraftsmanButton'
-import { api } from '../../services/api'
-import TableBodyLoadingIndicator from '../Library/View/LoadingIndicatorTableBody'
+import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody'
 
 export default {
   components: {
-    TableBodyLoadingIndicator,
+    LoadingIndicatorTableBody,
     RemoveCraftsmanButton,
     EditCraftsmanButton
   },

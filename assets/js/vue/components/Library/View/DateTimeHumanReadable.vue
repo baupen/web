@@ -1,6 +1,6 @@
 <template>
-  <span v-if="value" ref="value" data-toggle="tooltip" :title="momentDateTime.format('LLL')">
-    {{ momentDateTime.fromNow() }}
+  <span v-if="value">
+    {{ momentDateTime.format('DD.MM.YYYY HH:mm') }}
   </span>
   <span v-else>-</span>
 </template>
@@ -19,11 +19,6 @@ export default {
   computed: {
     momentDateTime: function () {
       return moment(this.value);
-    }
-  },
-  mounted() {
-    if (this.value) {
-      $(this.$refs.value).tooltip();
     }
   }
 }

@@ -80,6 +80,10 @@ body {
   cursor: pointer;
 }
 
+.cursor-normal {
+  cursor: default;
+}
+
 input:required,
 textarea:required,
 select:required {

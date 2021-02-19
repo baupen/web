@@ -2,15 +2,18 @@
   <div class="card">
     <div class="card-body">
       <div class="row">
-        <div v-if="issue.positionX" :class="{'col-md-3': issue.imageUrl, 'col-md-6': !issue.imageUrl}">
-          <map-render-lightbox
-              :preview="true"
-              :construction-site="constructionSite" :map="map" :craftsman="craftsman" :issue="issue" />
-        </div>
-        <div v-if="issue.imageUrl" :class="{'col-md-3': issue.positionX, 'col-md-6': !issue.positionX}">
-          <image-lightbox
-              :preview="true"
-              :src="issue.imageUrl" :subject="issue.number + ': ' + issue.description" />
+        <div class="col-md-6">
+          <div class="w-50 d-inline-block pr-1">
+            <map-render-lightbox
+                :preview="true"
+                :construction-site="constructionSite" :map="map" :issue="issue" />
+          </div>
+          <div class="w-50 d-inline-block pl-1">
+            <image-lightbox
+                v-if="issue.imageUrl"
+                :preview="true"
+                :src="issue.imageUrl" :subject="issue.number + ': ' + issue.description" />
+          </div>
         </div>
         <div class="col-md-6">
           <p class="bg-light-gray p-2">
@@ -18,8 +21,9 @@
           </p>
           <p v-if="issue.deadline">
             <b>{{ $t('issue.deadline') }}</b>:
-            <date-human-readable :value="issue.deadline" /> <br/>
-            <span v-if="overdue" class="badge badge-danger">{{ $t('issue.state.overdue') }}</span>
+            <date-human-readable :value="issue.deadline" />
+            <br />
+            <span v-if="isOverdue" class="badge badge-danger">{{ $t('issue.state.overdue') }}</span>
           </p>
           <resolve-issue-button :issue="issue" :craftsman="craftsman" />
         </div>
@@ -44,6 +48,7 @@ import ResolveIssueButton from '../Action/ResolveIssueButton'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import DateHumanReadable from '../Library/View/DateHumanReadable'
 import MapRenderLightbox from './MapRenderLightbox'
+import { issueTransformer } from '../../services/transformers'
 
 export default {
   components: {
@@ -76,14 +81,8 @@ export default {
     },
   },
   computed: {
-    overdue: function () {
-      if (!this.issue.deadline) {
-        return false
-      }
-
-      const deadline = Date.parse(this.issue.deadline)
-      const now = Date.now()
-      return deadline < now
+    isOverdue: function () {
+       return issueTransformer.isOverdue(this.issue)
     },
     createdByConstructionManagerName: function () {
       const createdByConstructionManager = this.constructionManagers.find(m => m['@id'] === this.issue.createdBy)

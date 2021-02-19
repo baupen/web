@@ -7,8 +7,9 @@
     </div>
 
     <issues-table
+        view="register"
+        :construction-manager-iri="constructionManagerIri"
         :construction-site="constructionSite"
-        :minimal-state="2"
         @selected="selectedIssues = $event"
         @query="query = $event"
         @queried-issue-count="queriedIssuesCount = $event" />
@@ -33,6 +34,10 @@ export default {
     }
   },
   props: {
+    constructionManagerIri: {
+      type: String,
+      required: true
+    },
     constructionSite: {
       type: Object,
       required: true

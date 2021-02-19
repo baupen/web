@@ -77,7 +77,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "craftsman.trade": "exact", "map": "exact", "description": "partial"})
  * @ApiFilter(StateFilter::class, properties={"state"})
  *
- * @ApiFilter(OrderFilter::class, properties={"lastChangedAt": "ASC"})
+ * @ApiFilter(OrderFilter::class, properties={"lastChangedAt": "ASC", "deadline": "ASC", "number": "ASC"})
  *
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks

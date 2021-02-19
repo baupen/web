@@ -1,12 +1,14 @@
 <template>
-  <div class="modal-wrapper">
+  <div class="modal-wrapper d-inline-block">
     <div class="modal show fade" @mousedown="lastMouseDownEvent = $event" @mouseup.self="mouseUpOutside" id="modal" tabindex="-1" role="dialog"
          aria-labelledby="modal-title"
          aria-hidden="true">
       <div class="modal-dialog shadow" :class="{'modal-sm': size === 'sm', 'modal-lg': size === 'lg'}" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="modal-title">{{ title }}</h5>
+            <slot name="header">
+              <h5 class="modal-title" id="modal-title">{{ title }}</h5>
+            </slot>
             <button type="button" class="close" aria-label="Close" @click="$emit('hide')">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -28,7 +30,7 @@ export default {
   props: {
     title: {
       type: String,
-      required: true
+      required: null
     },
     size: {
       type: String,
