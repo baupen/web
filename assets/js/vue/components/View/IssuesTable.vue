@@ -46,11 +46,10 @@
       <th>
         {{ $t('map._name') }}
       </th>
-      <th class="border-left">
+      <th>
         {{ $t('issue.deadline') }}
       </th>
       <th class="w-minimal">
-        {{ $t('issue.status') }}
       </th>
     </tr>
     </thead>
@@ -95,11 +94,13 @@
         {{ iwr.map.name }}<br />
         <span class="text-muted">{{ iwr.mapParents.map(m => m.name).join(' > ') }}</span>
       </td>
-      <td class="border-left">
+      <td>
         <date-human-readable :value="iwr.issue.deadline" />
       </td>
       <td class="w-minimal white-space-nowrap">
-        (visual)
+        <button class="btn btn-outline-secondary">
+          <issue-state-icon :issue="iwr.issue" />
+        </button>
       </td>
     </tr>
     <loading-indicator-table-body v-if="issuesLoading && !isLoading" />
@@ -161,10 +162,14 @@ import { filterTransformer, mapTransformer } from '../../services/transformers'
 import FilterIssuesButton from '../Action/FilterIssuesButton'
 import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody'
 import ToggleIcon from '../Library/View/ToggleIcon'
+import IssueStateIcon from './IssueStateIcon'
+import AddCraftsmanButton from '../Action/AddCraftsmanButton'
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count'],
   components: {
+    AddCraftsmanButton,
+    IssueStateIcon,
     ToggleIcon,
     LoadingIndicatorTableBody,
     FilterIssuesButton,
@@ -263,13 +268,13 @@ export default {
       return filterTransformer.defaultFilter(this.view)
     },
     defaultFilterConfiguration: function () {
-      return filterTransformer.defaultConfiguration(this.view);
+      return filterTransformer.defaultConfiguration(this.view)
     },
     filterTemplate: function () {
       return this.filter ?? this.defaultFilter
     },
     filterConfigurationTemplate: function () {
-      return this.filterConfiguration ?? this.defaultFilterConfiguration;
+      return this.filterConfiguration ?? this.defaultFilterConfiguration
     }
   },
   methods: {
@@ -303,19 +308,18 @@ export default {
     loadIssues (filter, page = 1) {
       this.issuesLoading = true
       this.issuePage = page
+      if (page === 1) {
+        this.issues = []
+      }
 
-      let query = filterTransformer.filterToQuery(this.defaultFilter, filter, this.configuration, this.craftsmen, this.maps)
+      let query = filterTransformer.filterToQuery(this.defaultFilter, filter, this.filterConfiguration, this.craftsmen, this.maps)
       this.$emit('query', query)
 
       query.page = page
 
       api.getPaginatedIssues(this.constructionSite, query)
           .then(payload => {
-            if (page === 1) {
-              this.issues = payload.items
-            } else {
-              addNonDuplicatesById(this.issues, payload.items)
-            }
+            addNonDuplicatesById(this.issues, payload.items)
             this.totalIssues = payload.totalItems
 
             this.$emit('queried-issue-count', payload.totalItems)

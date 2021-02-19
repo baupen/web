@@ -15,8 +15,10 @@ import {
   faUser // craftsman link
 } from '@fortawesome/pro-light-svg-icons'
 import {
-  faSearch as faSearchRegular, faFilter as faFilterRegular // table
+  faPlusCircle as faPlusCircleRegular, faDotCircle as faDotCircleRegular, // issue icons
+  faExclamationCircle as faExclamationCircleRegular, faCheckCircle as faCheckCircleRegular, // issue icons
 } from '@fortawesome/pro-regular-svg-icons'
+
 import {
   faStar as faStarSolid, faUserCheck as faUserCheckSolid, // issue states (toggle on)
   faFilter as faFilterSolid, faSearch as faSearchSolid, faSortUp as faSortUpSolid, faSortDown as faSortDownSolid // table
@@ -50,7 +52,7 @@ FontawesomeLibrary.add(
   faStar, faUserCheck,
   faFilter, faSort,
   faUser,
-  faSearchRegular, faFilterRegular,
+  faPlusCircleRegular, faDotCircleRegular, faExclamationCircleRegular, faCheckCircleRegular,
   faStarSolid, faUserCheckSolid,
   faFilterSolid, faSearchSolid, faSortUpSolid, faSortDownSolid
 )

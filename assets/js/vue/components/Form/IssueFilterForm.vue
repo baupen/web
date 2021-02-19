@@ -1,15 +1,4 @@
 <template>
-  <div class="form-row">
-    <form-field class="col-md-4" for-id="number" :label="$t('issue.number')">
-      <input id="number" class="form-control" type="number"
-             v-model="filter.number">
-    </form-field>
-    <form-field class="col-md-8" for-id="description" :label="$t('issue.description')">
-      <input id="description" class="form-control" type="text"
-             v-model="filter.description">
-    </form-field>
-  </div>
-
   <custom-checkbox-field
       for-id="filter-is-marked" :label="$t('issue.is_marked')"
       :show-reset="filter.isMarked !== null" @reset="filter.isMarked = null">
@@ -34,7 +23,17 @@
     >
   </custom-checkbox-field>
 
-  <hr />
+  <div class="form-row">
+    <form-field class="col-md-4" for-id="number" :label="$t('issue.number')" :required="false">
+      <input id="number" class="form-control" type="number"
+             v-model="filter.number">
+    </form-field>
+    <form-field class="col-md-8" for-id="description" :label="$t('issue.description')" :required="false">
+      <input id="description" class="form-control" type="text"
+             v-model="filter.description">
+    </form-field>
+  </div>
+
 
   <toggle-card
       v-if="configuration.showState"

@@ -1,6 +1,6 @@
 <template>
   <button-with-modal-confirm
-      :title="$t('actions.edit_issues')" color="secondary" :can-confirm="canConfirm"
+      :title="$t('actions.edit_issues')" color="primary" :can-confirm="canConfirm"
       :confirm-title="confirmTitle" :button-disabled="pendingRequestCount > 0 || issues.length === 0"
       @confirm="confirm">
     <template v-slot:button-content>
