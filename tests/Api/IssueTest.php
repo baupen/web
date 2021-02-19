@@ -228,7 +228,6 @@ class IssueTest extends ApiTestCase
             $reversedDescEntries = array_reverse($descCollection['hydra:member']);
             $this->assertEquals($ascCollection['hydra:member'], $reversedDescEntries, 'filter '.$entry.' has not been applied');
         }
-
     }
 
     public function testLastChangedAtFilter()
