@@ -73,6 +73,57 @@
 
     <hr />
 
+    <div class="row">
+      <div class="col-md-3">
+        <p class="m-0 state-icon text-primary">
+          <font-awesome-icon :icon="['far', 'plus-circle']" />
+        </p>
+      </div>
+      <div class="col">
+        {{createdByName}}<br/>
+        <date-time-human-readable :value="issue.createdAt" />
+      </div>
+    </div>
+
+    <div class="row mt-3" v-if="isRegistered">
+      <div class="col-md-3">
+        <p class="m-0 state-icon text-primary">
+          <font-awesome-icon :icon="['far', 'dot-circle']" />
+          <span class="state-joiner" />
+        </p>
+      </div>
+      <div class="col">
+        {{registeredByName}}<br/>
+        <date-time-human-readable :value="issue.registeredAt" />
+      </div>
+    </div>
+
+    <div class="row mt-3" v-if="isResolved">
+      <div class="col-md-3">
+        <p class="m-0 state-icon text-warning">
+          <font-awesome-icon :icon="['far', 'exclamation-circle']" />
+          <span class="state-joiner" />
+        </p>
+      </div>
+      <div class="col">
+        {{resolvedByName}}<br/>
+        <date-time-human-readable :value="issue.resolvedAt" />
+      </div>
+    </div>
+
+    <div class="row mt-3" v-if="isClosed">
+      <div class="col-md-3">
+        <p class="m-0 state-icon text-success">
+          <font-awesome-icon :icon="['far', 'check-circle']" />
+          <span class="state-joiner" />
+        </p>
+      </div>
+      <div class="col">
+        {{closedByName}}<br/>
+        <date-time-human-readable :value="issue.closedAt" />
+      </div>
+    </div>
+
   </button-with-modal-confirm>
 </template>
 
@@ -84,9 +135,12 @@ import ImageLightbox from '../View/ImageLightbox'
 import DateHumanReadable from '../Library/View/DateHumanReadable'
 import { issueTransformer } from '../../services/transformers'
 import ToggleIcon from '../Library/View/ToggleIcon'
+import { constructionManagerFormatter } from '../../services/formatters'
+import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 
 export default {
   components: {
+    DateTimeHumanReadable,
     ToggleIcon,
     DateHumanReadable,
     ImageLightbox,
@@ -130,14 +184,26 @@ export default {
     isOverdue: function () {
       return issueTransformer.isOverdue(this.issue)
     },
-    createdBy: function () {
-      return this.constructionManagerLookup[this.issue.createdBy]
+    createdByName: function () {
+      const createdBy = this.constructionManagerLookup[this.issue.createdBy]
+      return createdBy ? constructionManagerFormatter.name(createdBy) : ""
     },
     registeredBy: function () {
       return this.constructionManagerLookup[this.issue.registeredBy]
     },
+    registeredByName: function () {
+      const registeredBy = this.constructionManagerLookup[this.issue.registeredBy]
+      return registeredBy ? constructionManagerFormatter.name(registeredBy) : ""
+    },
+    resolvedByName: function () {
+      return this.resolvedBy ? this.resolvedBy.company : null
+    },
     closedBy: function () {
       return this.constructionManagerLookup[this.issue.closedBy]
+    },
+    closedByName: function () {
+      const closedBy = this.constructionManagerLookup[this.issue.closedBy]
+      return closedBy ? constructionManagerFormatter.name(closedBy) : ""
     },
     stateColor: function () {
       if (this.isClosed) {
@@ -162,3 +228,20 @@ export default {
   }
 }
 </script>
+
+<style scoped="true">
+.state-icon {
+  font-size: 2em;
+  position: relative;
+  text-align: right;
+}
+
+.state-joiner {
+  background-color: rgba(0, 0, 0, 0.1);
+  bottom: calc(1.25em + 1px);
+  height: 1em;
+  position: absolute;
+  right: calc(0.5em - 1px);
+  width: 2px;
+}
+</style>

@@ -102,7 +102,7 @@
       <td>
         <date-human-readable :value="iwr.issue.deadline" />
       </td>
-      <td>
+      <td @click.stop="" class="cursor-normal">
         <view-issue-button
             :construction-site="constructionSite"
             :constructionManagers="constructionManagers"
