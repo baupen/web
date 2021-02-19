@@ -2,11 +2,11 @@
   <div>
     <custom-checkbox-field
         id="filter-all-maps"
-        @click.prevent="toggleSelectedMaps(maps)"
+        @click.prevent="toggleAllEntitiesSelected"
         :label="$t('form.issue_filter.all_maps')">
       <input class="custom-control-input" type="checkbox"
-             :indeterminate.prop="selectedMaps.length > 0 && !allMapsSelected"
-             :checked="maps.length > 0 && allMapsSelected">
+             :indeterminate.prop="selectedEntities.length > 0 && !allEntitiesSelected"
+             :checked="entities.length > 0 && allEntitiesSelected">
     </custom-checkbox-field>
 
     <hr/>
@@ -19,7 +19,7 @@
         <span :class="'spacer-' + map.level"/>
         <input
             class="custom-control-input" type="checkbox" :id="'filter-map-' + map.entity['@id']"
-            v-model="selectedMaps"
+            v-model="selectedEntities"
             :value="map.entity"
         >
       </custom-checkbox>
@@ -32,54 +32,18 @@ import CustomCheckboxField from '../../Library/FormLayout/CustomCheckboxField'
 import CustomCheckbox from '../../Library/FormInput/CustomCheckbox'
 import { arraysAreEqual } from '../../../services/algorithms'
 import { mapTransformer } from '../../../services/transformers'
+import { entityFilterMixin } from './mixins'
 
 export default {
   components: { CustomCheckbox, CustomCheckboxField },
-  emits: ['input'],
-  data() {
-    return {
-      selectedMaps: []
-    }
-  },
-  props: {
-    maps: {
-      type: Array,
-      default: []
-    },
-  },
-  watch: {
-    selectedMaps: function () {
-      this.$emit('input', this.selectedMaps)
-    },
-    maps: function () {
-      this.selectedMaps = [...this.maps]
-    },
-  },
+  mixins: [
+    entityFilterMixin
+  ],
   computed: {
     flattenedMaps: function () {
-      return mapTransformer.flatHierarchy(this.maps)
-    },
-    allMapsSelected: function () {
-      return this.entityListsAreEqual(this.maps, this.selectedMaps)
+      return mapTransformer.flatHierarchy(this.entities)
     }
   },
-  methods: {
-    toggleSelectedMaps(toggleArray) {
-      if (this.entityListsAreEqual(toggleArray, this.selectedMaps)) {
-        this.selectedMaps = []
-      } else {
-        this.selectedMaps = [...toggleArray]
-      }
-    },
-    entityListsAreEqual(array1, array2) {
-      return arraysAreEqual(array1, array2, (a, b) => {
-        return a['@id'].localeCompare(b['@id'])
-      })
-    },
-  },
-  mounted() {
-    this.selectedMaps = [...this.maps]
-  }
 }
 </script>
 

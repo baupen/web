@@ -134,7 +134,7 @@ const filterTransformer = {
 
     return actualFilter
   },
-  filterToQuery: function (filter) {
+  filterToQuery: function (filter, craftsmen, maps) {
     let query = {}
 
     for (const fieldName in filter) {
@@ -145,11 +145,11 @@ const filterTransformer = {
       const fieldValue = filter[fieldName]
 
       if (fieldName === 'craftsmen') {
-        if (fieldValue && (fieldValue.length > 0 || fieldValue.length !== this.craftsmen.length)) {
+        if (fieldValue && (fieldValue.length > 0 || fieldValue.length !== craftsmen.length)) {
           query['craftsman[]'] = fieldValue.map(e => iriToId(e['@id']))
         }
       } else if (fieldName === 'maps') {
-        if (fieldValue && (fieldValue.length > 0 || fieldValue.length !== this.maps.length)) {
+        if (fieldValue && (fieldValue.length > 0 || fieldValue.length !== maps.length)) {
           query['map[]'] = fieldValue.map(e => iriToId(e['@id']))
         }
       } else if (fieldValue || fieldValue === false || fieldValue === 0) {

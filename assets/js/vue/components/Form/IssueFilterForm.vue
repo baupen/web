@@ -47,14 +47,14 @@
       class="mt-2"
       :title="$t('craftsman._plural')" :initial-activated="configurationTemplate.craftsmen"
       @active-toggled="configuration.craftsmen = $event">
-    <craftsmen-filter :craftsmen="craftsmen" @input="filter.craftsmen = $event" />
+    <craftsmen-filter :initial-selected-entities="template.craftsmen" :entities="craftsmen" @input="filter.craftsmen = $event" />
   </toggle-card>
 
   <toggle-card
       class="mt-2"
       :title="$t('map._plural')" :initial-activated="configurationTemplate.maps"
       @active-toggled="configuration.maps = $event">
-    <map-filter :maps="maps" @input="filter.maps = $event" />
+    <map-filter :initial-selected-entities="template.maps" :entities="maps" @input="filter.maps = $event" />
   </toggle-card>
 
   <toggle-card

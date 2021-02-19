@@ -301,7 +301,7 @@ export default {
       this.issuesLoading = true
       this.issuePage = page
 
-      let query = filterTransformer.filterToQuery(this.filter)
+      let query = filterTransformer.filterToQuery(this.filter, this.craftsmen, this.maps)
       this.$emit('query', query)
 
       query = Object.assign({}, query, { page })
