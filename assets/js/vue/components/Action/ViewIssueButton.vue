@@ -10,7 +10,9 @@
       <font-awesome-icon v-else :icon="['far', 'plus-circle']" />
     </template>
 
-    hi mom
+
+
+    <hr />
 
   </button-with-modal-confirm>
 </template>

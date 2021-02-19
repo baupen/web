@@ -62,7 +62,7 @@
       <td class="border-left">
         <date-time-human-readable :value="cws.statistics.lastVisitOnline" />
         <br />
-        <span v-if="cws.statistics.issueUnreadCount" class="badge badge-warning">
+        <span v-if="cws.statistics.issueUnreadCount" class="badge badge-secondary">
           {{ cws.statistics.issueUnreadCount }} {{ $t('issue.state.unread') }}
         </span>
       </td>

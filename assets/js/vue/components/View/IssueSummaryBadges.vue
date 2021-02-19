@@ -2,7 +2,7 @@
   <tooltip-badge color-if-nonzero="primary" :value="summary.openCount"
                   :tooltip-title="$t('issue.state.open')" />
   /
-  <tooltip-badge color-if-nonzero="secondary" :value="summary.resolvedCount"
+  <tooltip-badge color-if-nonzero="warning" :value="summary.resolvedCount"
                   :tooltip-title="$t('issue.state.resolved')" />
   /
   <tooltip-badge color-if-nonzero="success" :value="summary.closedCount"
