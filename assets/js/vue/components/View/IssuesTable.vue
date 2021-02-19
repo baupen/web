@@ -11,6 +11,11 @@
                 @update="filter = $event"
                 @update-configuration="filterConfiguration = $event"
             />
+            <order-checkbox
+                class="d-inline-block ml-3"
+                property="lastChangedAt" order-value="desc" id="order-by-last-changed-at"
+                :label="$t('actions.sort_by_last_activity')" :order="order"
+                @ordered="order = $event" />
           </span>
         <span class="text-right float-right">
             <span class="btn-group reset-table-styles">
@@ -46,9 +51,9 @@
       <th>
         {{ $t('map._name') }}
       </th>
-      <th>
+      <order-table-head class="white-space-nowrap" :order="order" property="deadline" @ordered="order = $event">
         {{ $t('issue.deadline') }}
-      </th>
+      </order-table-head>
       <th class="w-minimal">
       </th>
     </tr>
@@ -162,10 +167,14 @@ import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody
 import ToggleIcon from '../Library/View/ToggleIcon'
 import AddCraftsmanButton from '../Action/AddCraftsmanButton'
 import ViewIssueButton from '../Action/ViewIssueButton'
+import OrderTableHead from '../Library/Behaviour/OrderTableHead'
+import OrderCheckbox from '../Library/Behaviour/OrderCheckbox'
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count'],
   components: {
+    OrderCheckbox,
+    OrderTableHead,
     ViewIssueButton,
     AddCraftsmanButton,
     ToggleIcon,
@@ -189,6 +198,8 @@ export default {
 
       filter: null,
       filterConfiguration: null,
+
+      order: null,
 
       issues: [],
       issuePage: 0,
@@ -311,10 +322,17 @@ export default {
       }
 
       let query = filterTransformer.filterToQuery(this.defaultFilter, filter, this.filterConfiguration, this.craftsmen, this.maps)
+
+      // set order
+      const currentOrder = this.order ? this.order : {
+        property: 'number',
+        value: 'desc'
+      }
+      query['order[' + currentOrder.property + ']'] = currentOrder.value
+
       this.$emit('query', query)
 
       query.page = page
-
       api.getPaginatedIssues(this.constructionSite, query)
           .then(payload => {
             addNonDuplicatesById(this.issues, payload.items)
@@ -332,6 +350,9 @@ export default {
       handler: function () {
         this.$emit('selected', this.selectedIssues)
       }
+    },
+    order: function () {
+      this.loadIssues(this.filter)
     },
     filter: {
       handler: debounce(function (newVal) {
