@@ -36,21 +36,31 @@
 
   <hr />
 
-  <toggle-card :title="$t('form.issue_filter.state')" v-if="showState" @active-toggled="filterActive.state = $event">
-    <state-filter @input="filter.state = $event" />
+  <toggle-card
+      v-if="configuration.showState"
+      :title="$t('form.issue_filter.state')" :initial-activated="configurationTemplate.state"
+      @active-toggled="configuration.state = $event">
+    <state-filter :initial-state="template.state" @input="filter.state = $event" />
   </toggle-card>
 
-  <toggle-card class="mt-2" :title="$t('craftsman._plural')"
-               @active-toggled="filterActive.craftsmen = $event">
+  <toggle-card
+      class="mt-2"
+      :title="$t('craftsman._plural')" :initial-activated="configurationTemplate.craftsmen"
+      @active-toggled="configuration.craftsmen = $event">
     <craftsmen-filter :craftsmen="craftsmen" @input="filter.craftsmen = $event" />
   </toggle-card>
 
-  <toggle-card class="mt-2" :title="$t('map._plural')" @active-toggled="filterActive.maps = $event">
+  <toggle-card
+      class="mt-2"
+      :title="$t('map._plural')" :initial-activated="configurationTemplate.maps"
+      @active-toggled="configuration.maps = $event">
     <map-filter :maps="maps" @input="filter.maps = $event" />
   </toggle-card>
 
-  <toggle-card class="mt-2" :title="$t('issue.deadline')"
-               @active-toggled="filterActive.deadline = $event">
+  <toggle-card
+      class="mt-2"
+      :title="$t('issue.deadline')" :initial-activated="configurationTemplate.deadline"
+      @active-toggled="configuration.deadline = $event">
     <time-filter
         :label="$t('issue.deadline')"
         @input-before="filter['deadline[before]'] = $event"
@@ -58,11 +68,13 @@
     />
   </toggle-card>
 
-  <toggle-card class="mt-2" :title="$t('form.issue_filter.time')"
-               @active-toggled="filterActive.time = $event">
+  <toggle-card
+      class="mt-2"
+      :title="$t('form.issue_filter.time')" :initial-activated="configurationTemplate.time"
+      @active-toggled="configuration.time = $event">
 
     <time-filter
-        v-if="showState || template.state === 1"
+        v-if="configuration.showState || template.state === 1"
         :label="$t('issue.state.created')"
         :help="$t('issue.state.created_help')"
         @input-before="filter['createdAt[before]'] = $event"
@@ -70,7 +82,7 @@
     />
 
     <time-filter
-        v-if="showState || template.state === 2"
+        v-if="configuration.showState || template.state === 2"
         :label="$t('issue.state.registered')"
         :help="$t('issue.state.registered_help')"
         @input-before="filter['registeredAt[before]'] = $event"
@@ -78,7 +90,7 @@
     />
 
     <time-filter
-        v-if="showState || template.state === 4"
+        v-if="configuration.showState || template.state === 4"
         :label="$t('issue.state.resolved')"
         :help="$t('issue.state.resolved_help')"
         @input-before="filter['resolvedAt[before]'] = $event"
@@ -86,7 +98,7 @@
     />
 
     <time-filter
-        v-if="showState || template.state === 8"
+        v-if="configuration.showState || template.state === 8"
         :label="$t('issue.state.closed')"
         :help="$t('issue.state.closed_help')"
         @input-before="filter['closedAt[before]'] = $event"
@@ -118,7 +130,7 @@ export default {
     BooleanFilter,
     FormField
   },
-  emits: ['update'],
+  emits: ['update', 'update-configuration'],
   data () {
     return {
       mounted: false,
@@ -145,7 +157,7 @@ export default {
         'closedAt[before]': null,
         'closedAt[after]': null
       },
-      filterActive: {
+      configuration: {
         state: false,
         craftsmen: false,
         maps: false,
@@ -156,15 +168,12 @@ export default {
   },
   props: {
     template: {
-      type: Object
-    },
-    showState: {
-      type: Boolean,
+      type: Object,
       required: true
     },
-    state: {
-      type: Number,
-      default: 0
+    configurationTemplate: {
+      type: Object,
+      required: true
     },
     maps: {
       type: Array,
@@ -182,24 +191,25 @@ export default {
         this.$emit('update', this.actualFilter)
       }
     },
-    template: function () {
-      this.setFilterFromTemplate()
+    actualConfiguration: {
+      deep: true,
+      handler: function () {
+        this.$emit('update-configuration', this.actualConfiguration)
+      }
     }
   },
   computed: {
     actualFilter: function () {
-      return filterTransformer.actualFilter(this.filter, this.filterActive)
-    }
-  },
-  methods: {
-    setFilterFromTemplate: function () {
-      if (this.template) {
-        this.filter = Object.assign({}, this.filter, this.template)
-      }
+      const actualFilter = filterTransformer.actualFilter(this.filter, this.configuration)
+      return Object.assign({}, this.template, actualFilter)
+    },
+    actualConfiguration: function () {
+      return Object.assign({}, this.configurationTemplate, this.configuration)
     }
   },
   mounted () {
-    this.setFilterFromTemplate()
+    this.filter = Object.assign({}, this.filter, this.template)
+    this.configuration = Object.assign({}, this.configuration, this.configurationTemplate)
   }
 }
 </script>

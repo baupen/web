@@ -88,31 +88,49 @@ const mapTransformer = {
 }
 
 const filterTransformer = {
-  actualFilter: function (filter, filterActive) {
-    let actualFilter = Object.assign({}, filter)
-    if (!filterActive.state) {
-      actualFilter.state = null
+  defaultFilter: function (view) {
+    return {
+      isDeleted: false,
+      state: view === 'foyer' ? 1 : 14 // 14 = 8 | 4 | 2
     }
-    if (!filterActive.craftsmen) {
-      actualFilter.craftsmen = null
+  },
+  defaultConfiguration: function (view) {
+    return {
+      showState: view === 'register',
+      state: false,
+      craftsmen: false,
+      maps: false,
+      deadline: false,
+      time: false
     }
-    if (!filterActive.maps) {
-      actualFilter.maps = null
+  },
+  actualFilter: function (filter, configuration) {
+    let whitelistProps = ['number', 'description', 'isMarked', 'wasAddedWithClient']
+    let whitelistDateTimeProps = []
+    if (configuration.state) {
+      whitelistProps.push('state')
     }
-    if (!filterActive.deadline) {
-      actualFilter['deadline[before]'] = null
-      actualFilter['deadline[after]'] = null
+    if (configuration.craftsmen) {
+      whitelistProps.push('craftsmen')
     }
-    if (!filterActive.time) {
-      actualFilter['createdAt[before]'] = null
-      actualFilter['createdAt[after]'] = null
-      actualFilter['registeredAt[before]'] = null
-      actualFilter['registeredAt[after]'] = null
-      actualFilter['resolvedAt[before]'] = null
-      actualFilter['resolvedAt[after]'] = null
-      actualFilter['closedAt[before]'] = null
-      actualFilter['closedAt[after]'] = null
+    if (configuration.maps) {
+      whitelistProps.push('maps')
     }
+    if (configuration.deadline) {
+      whitelistDateTimeProps.push('deadline')
+    }
+    if (configuration.time) {
+      whitelistDateTimeProps.push('createdAt', 'registeredAt', 'resolvedAt', 'closedAt')
+    }
+
+    let actualFilter = {}
+    whitelistProps.forEach(prop => {
+      actualFilter[prop] = filter[prop]
+    })
+    whitelistDateTimeProps.forEach(prop => {
+      actualFilter[prop + '[before]'] = filter[prop + '[before]']
+      actualFilter[prop + '[after]'] = filter[prop + '[after]']
+    })
 
     return actualFilter
   },

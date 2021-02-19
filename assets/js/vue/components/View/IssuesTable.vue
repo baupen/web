@@ -1,144 +1,145 @@
 <template>
-    <table class="table table-striped-2 table-hover border">
-      <thead>
-      <tr class="bg-light">
-        <th></th>
-        <th colspan="8">
+  <table class="table table-striped-2 table-hover border">
+    <thead>
+    <tr class="bg-light">
+      <th></th>
+      <th colspan="8">
           <span class="reset-table-styles">
             <filter-issues-button
-                :view="view"
-                :disabled="isLoading"
-                :template="filterTemplate" :craftsmen="craftsmen" :maps="maps"
+                :disabled="isLoading" :craftsmen="craftsmen" :maps="maps"
+                :template="filterTemplate" :configuration-template="filterConfigurationTemplate"
                 @update="filter = $event"
+                @update-configuration="filterConfiguration = $event"
             />
           </span>
-          <span class="text-right float-right">
+        <span class="text-right float-right">
             <span class="btn-group reset-table-styles">
               <edit-issues-button :issues="selectedIssues" :craftsmen="craftsmen" />
               <remove-issues-button :issues="selectedIssues" @removed="removeIssue($event)" />
             </span>
           </span>
-        </th>
-      </tr>
-      <tr class="text-secondary">
-        <th class="w-minimal">
-          <custom-checkbox
-              id="all-issues"
-              @click.prevent="toggleSelectedIssues(issues)">
-            <input class="custom-control-input" type="checkbox"
-                   :disabled="!issues"
-                   :checked="issues && issues.length > 0 && entityListsAreEqual(issues, selectedIssues)">
-          </custom-checkbox>
-        </th>
-        <th class="w-minimal">
-        </th>
-        <th class="w-minimal">
-        </th>
-        <th class="w-thumbnail"></th>
-        <th>
+      </th>
+    </tr>
+    <tr class="text-secondary">
+      <th class="w-minimal">
+        <custom-checkbox
+            id="all-issues"
+            @click.prevent="toggleSelectedIssues(issues)">
+          <input class="custom-control-input" type="checkbox"
+                 :disabled="!issues"
+                 :checked="issues && issues.length > 0 && entityListsAreEqual(issues, selectedIssues)">
+        </custom-checkbox>
+      </th>
+      <th class="w-minimal">
+      </th>
+      <th class="w-minimal">
+      </th>
+      <th class="w-thumbnail"></th>
+      <th>
           <span class="mr-1">
             {{ $t('issue.description') }}
           </span>
-        </th>
-        <th>
-          {{ $t('craftsman._name') }}
-        </th>
-        <th>
-          {{ $t('map._name') }}
-        </th>
-        <th class="border-left">
-          {{ $t('issue.deadline') }}
-        </th>
-        <th class="w-minimal">
-          {{ $t('issue.status') }}
-        </th>
-      </tr>
-      </thead>
-      <tbody>
-      <loading-indicator-table-body v-if="isLoading" />
-      <tr v-else-if="issues.length === 0">
-        <td colspan="9">
-          <p class="text-center">{{ $t('view.no_issues') }}</p>
-        </td>
-      </tr>
-      <tr v-else v-for="iwr in issuesWithRelations" @click.stop="toggleSelectedIssue(iwr.issue)" :key="iwr.issue['@id']" class="clickable">
-        <td class="w-minimal">
-          <custom-checkbox>
-            <input
-                class="custom-control-input" type="checkbox"
-                v-model="selectedIssues"
-                :value="iwr.issue">
+      </th>
+      <th>
+        {{ $t('craftsman._name') }}
+      </th>
+      <th>
+        {{ $t('map._name') }}
+      </th>
+      <th class="border-left">
+        {{ $t('issue.deadline') }}
+      </th>
+      <th class="w-minimal">
+        {{ $t('issue.status') }}
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <loading-indicator-table-body v-if="isLoading" />
+    <tr v-else-if="issues.length === 0">
+      <td colspan="9">
+        <p class="text-center">{{ $t('view.no_issues') }}</p>
+      </td>
+    </tr>
+    <tr v-else v-for="iwr in issuesWithRelations" @click.stop="toggleSelectedIssue(iwr.issue)" :key="iwr.issue['@id']"
+        class="clickable">
+      <td class="w-minimal">
+        <custom-checkbox>
+          <input
+              class="custom-control-input" type="checkbox"
+              v-model="selectedIssues"
+              :value="iwr.issue">
+        </custom-checkbox>
+      </td>
+      <td>{{ iwr.issue.number }}</td>
+      <td>
+        <toggle-icon
+            icon="star"
+            :value="iwr.issue.isMarked" />
+        <br />
+        <toggle-icon
+            icon="user-check"
+            :value="iwr.issue.wasAddedWithClient" />
+      </td>
+      <td>
+        <image-lightbox
+            :src="iwr.issue.imageUrl" :subject="iwr.issue.number"
+            @click.stop="" />
+      </td>
+      <td>{{ iwr.issue.description }}</td>
+      <td>
+        {{ iwr.craftsman.trade }}<br />
+        <span class="text-muted">{{ iwr.craftsman.company }}</span>
+      </td>
+      <td>
+        {{ iwr.map.name }}<br />
+        <span class="text-muted">{{ iwr.mapParents.map(m => m.name).join(' > ') }}</span>
+      </td>
+      <td class="border-left">
+        <date-human-readable :value="iwr.issue.deadline" />
+      </td>
+      <td class="w-minimal white-space-nowrap">
+        (visual)
+      </td>
+    </tr>
+    </tbody>
+    <caption class="caption-top">
+      <template v-if="view === 'foyer'">
+        <div v-if="issuesWithoutDescription.length" class="form-check form-check-inline">
+          <custom-checkbox id="issues-without-description"
+                           :label="$t('issue_table.without_description')"
+                           @click.prevent="toggleSelectedIssues(issuesWithoutDescription)">
+            <input class="custom-control-input" type="checkbox"
+                   :checked="entityListsAreEqual(issuesWithoutDescription, selectedIssues)">
           </custom-checkbox>
-        </td>
-        <td>{{ iwr.issue.number }}</td>
-        <td>
-          <toggle-icon
-              icon="star"
-              :value="iwr.issue.isMarked" />
-          <br />
-          <toggle-icon
-              icon="user-check"
-              :value="iwr.issue.wasAddedWithClient" />
-        </td>
-        <td>
-          <image-lightbox
-              :src="iwr.issue.imageUrl" :subject="iwr.issue.number"
-              @click.stop="" />
-        </td>
-        <td>{{ iwr.issue.description }}</td>
-        <td>
-            {{ iwr.craftsman.trade }}<br />
-            <span class="text-muted">{{ iwr.craftsman.company }}</span>
-        </td>
-        <td>
-          {{ iwr.map.name }}<br />
-          <span class="text-muted">{{ iwr.mapParents.map(m => m.name).join(' > ') }}</span>
-        </td>
-        <td class="border-left">
-          <date-human-readable :value="iwr.issue.deadline" />
-        </td>
-        <td class="w-minimal white-space-nowrap">
-          (visual)
-        </td>
-      </tr>
-      </tbody>
-      <caption class="caption-top">
-        <template v-if="view === 'foyer'">
-          <div v-if="issuesWithoutDescription.length" class="form-check form-check-inline">
-            <custom-checkbox id="issues-without-description"
-                             :label="$t('issue_table.without_description')"
-                             @click.prevent="toggleSelectedIssues(issuesWithoutDescription)">
-              <input class="custom-control-input" type="checkbox"
-                     :checked="entityListsAreEqual(issuesWithoutDescription, selectedIssues)">
-            </custom-checkbox>
-          </div>
-          <div v-if="issuesWithoutCraftsman.length" class="form-check form-check-inline">
-            <custom-checkbox id="issues-without-craftsman"
-                             :label="$t('issue_table.without_craftsman')"
-                             @click.prevent="toggleSelectedIssues(issuesWithoutCraftsman)">
-              <input class="custom-control-input" type="checkbox"
-                     :checked="entityListsAreEqual(issuesWithoutCraftsman, selectedIssues)">
-            </custom-checkbox>
-          </div>
-          <div v-if="issuesWithoutDeadline.length" class="form-check form-check-inline">
-            <custom-checkbox id="issues-without-deadline"
-                             :label="$t('issue_table.without_deadline')"
-                             @click.prevent="toggleSelectedIssues(issuesWithoutDeadline)">
-              <input class="custom-control-input" type="checkbox"
-                     :checked="entityListsAreEqual(issuesWithoutDeadline, selectedIssues)">
-            </custom-checkbox>
-          </div>
-        </template>
-        <div class="float-right">
-          {{ totalIssues }} {{ $t('issue._plural') }}
         </div>
-      </caption>
-    </table>
-    <p class="text-center">
-      <button class="btn btn-outline-secondary" v-if="notLoadedIssueCount > 0 && !issuesLoading" @click="loadNextPage">
-        {{ $tc('actions.show_more_issues', notLoadedIssueCount) }}
-      </button>
-    </p>
+        <div v-if="issuesWithoutCraftsman.length" class="form-check form-check-inline">
+          <custom-checkbox id="issues-without-craftsman"
+                           :label="$t('issue_table.without_craftsman')"
+                           @click.prevent="toggleSelectedIssues(issuesWithoutCraftsman)">
+            <input class="custom-control-input" type="checkbox"
+                   :checked="entityListsAreEqual(issuesWithoutCraftsman, selectedIssues)">
+          </custom-checkbox>
+        </div>
+        <div v-if="issuesWithoutDeadline.length" class="form-check form-check-inline">
+          <custom-checkbox id="issues-without-deadline"
+                           :label="$t('issue_table.without_deadline')"
+                           @click.prevent="toggleSelectedIssues(issuesWithoutDeadline)">
+            <input class="custom-control-input" type="checkbox"
+                   :checked="entityListsAreEqual(issuesWithoutDeadline, selectedIssues)">
+          </custom-checkbox>
+        </div>
+      </template>
+      <div class="float-right">
+        {{ totalIssues }} {{ $t('issue._plural') }}
+      </div>
+    </caption>
+  </table>
+  <p class="text-center">
+    <button class="btn btn-outline-secondary" v-if="notLoadedIssueCount > 0 && !issuesLoading" @click="loadNextPage">
+      {{ $tc('actions.show_more_issues', notLoadedIssueCount) }}
+    </button>
+  </p>
 </template>
 
 <script>
@@ -183,6 +184,7 @@ export default {
       maps: null,
 
       filter: null,
+      filterConfiguration: null,
 
       issues: [],
       issuePage: 0,
@@ -203,18 +205,18 @@ export default {
     }
   },
   computed: {
-    isLoading: function () {
-      return !this.constructionManagers || !this.maps || !this.craftsmen || (this.issuesLoading && this.issuePage === 1);
+    defaultFilter: function () {
+      return filterTransformer.defaultFilter(this.view)
     },
     filterTemplate: function () {
-      let defaultFilter = Object.assign({isDeleted: false}, this.filter)
-      if (this.view === 'foyer') {
-        return Object.assign(defaultFilter, {state: 1})
-      } else if (this.view === 'register') {
-        return Object.assign(defaultFilter, {state: 8})
-      } else {
-        return defaultFilter
-      }
+      return this.filter ? this.filter : this.defaultFilter
+    },
+    filterConfigurationTemplate: function () {
+      const defaultConfiguration = filterTransformer.defaultConfiguration(this.view)
+      return this.filterConfiguration ? this.filterConfiguration : defaultConfiguration
+    },
+    isLoading: function () {
+      return !this.constructionManagers || !this.maps || !this.craftsmen || (this.issuesLoading && this.issuePage === 1)
     },
     notLoadedIssueCount: function () {
       return this.totalIssues - this.issues.length
@@ -268,10 +270,10 @@ export default {
     },
   },
   methods: {
-    removeIssue(issue) {
+    removeIssue (issue) {
       this.issues = this.issues.filter(i => i !== issue)
       this.selectedIssues = this.selectedIssues.filter(i => i !== issue)
-      this.totalIssues--;
+      this.totalIssues--
     },
     toggleSelectedIssues (toggleArray) {
       if (this.entityListsAreEqual(toggleArray, this.selectedIssues)) {
@@ -292,9 +294,6 @@ export default {
         return a['@id'].localeCompare(b['@id'])
       })
     },
-    filterAsQuery: function (filter) {
-      return filterTransformer.filterToQuery(filter)
-    },
     loadNextPage () {
       this.loadIssues(this.filter, this.issuePage + 1)
     },
@@ -302,7 +301,7 @@ export default {
       this.issuesLoading = true
       this.issuePage = page
 
-      let query = this.filterAsQuery(filter)
+      let query = filterTransformer.filterToQuery(this.filter)
       this.$emit('query', query)
 
       query = Object.assign({}, query, { page })
@@ -337,7 +336,7 @@ export default {
     }
   },
   mounted () {
-    this.filter = this.filterTemplate;
+    this.filter = Object.assign({}, this.filterTemplate)
 
     api.getCraftsmen(this.constructionSite)
         .then(craftsmen => {

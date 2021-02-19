@@ -34,41 +34,48 @@
 <script>
 
 import CustomCheckboxField from '../../Library/FormLayout/CustomCheckboxField'
+
 export default {
   components: { CustomCheckboxField },
   emits: ['input'],
-  data() {
+  data () {
     return {
       isRegistered: true,
       isResolved: true,
       isClosed: true,
     }
   },
+  props: {
+    initialState: {
+      type: Number,
+      required: true
+    }
+  },
   watch: {
     state: function () {
-      this.updateState()
+      this.$emit('input', this.state)
     },
   },
   computed: {
     state: function () {
-      let state = 0;
+      let state = 0
       if (this.isRegistered) {
-        state = state | 2;
+        state = state | 2
       }
       if (this.isResolved) {
-        state = state | 4;
+        state = state | 4
       }
       if (this.isClosed) {
-        state = state | 8;
+        state = state | 8
       }
 
-      return state > 0 ? state : null;
+      return state > 0 ? state : null
     }
   },
-  methods: {
-    updateState: function () {
-      this.$emit('input', this.state)
-    }
+  mounted () {
+    this.isRegistered = !!(this.initialState & 2)
+    this.isResolved = !!(this.initialState & 4)
+    this.isClosed = !!(this.initialState & 8)
   }
 }
 </script>

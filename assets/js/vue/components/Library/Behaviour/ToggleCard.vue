@@ -25,6 +25,10 @@ export default {
     title: {
       type: String,
       required: true
+    },
+    initialActivated: {
+      type: Boolean,
+      required: true
     }
   },
   data () {
@@ -36,7 +40,7 @@ export default {
   watch: {
     isActive: function () {
       this.$emit('active-toggled', this.isActive)
-    }
+    },
   },
   methods: {
     toggleOpen: function () {
@@ -52,6 +56,11 @@ export default {
       } else {
         this.isActive = this.isOpen = true
       }
+    }
+  },
+  mounted () {
+    if (this.initialActivated) {
+      this.toggleActive()
     }
   }
 }

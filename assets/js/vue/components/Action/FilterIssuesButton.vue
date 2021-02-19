@@ -9,9 +9,9 @@
     </template>
 
     <issue-filter-form
-        :template="template" :maps="maps" :craftsmen="craftsmen"
-        :show-state="showState"
-        @update="filter = $event" />
+        :maps="maps" :craftsmen="craftsmen"
+        :template="template" :configuration-template="configurationTemplate"
+        @update="filter = $event" @update-configuration="configuration = $event" />
   </button-with-modal-confirm>
 </template>
 
@@ -22,7 +22,7 @@ import CraftsmanForm from '../Form/CraftsmanForm'
 import IssueFilterForm from '../Form/IssueFilterForm'
 
 export default {
-  emits: ['update'],
+  emits: ['update', 'update-configuration'],
   components: {
     IssueFilterForm,
     CraftsmanForm,
@@ -31,7 +31,7 @@ export default {
   data () {
     return {
       filter: null,
-      patching: false
+      configuration: null,
     }
   },
   props: {
@@ -43,28 +43,24 @@ export default {
       type: Array,
       default: []
     },
-    view: {
-      type: String,
+    template: {
+      type: Object,
+      required: true
+    },
+    configurationTemplate: {
+      type: Object,
       required: true
     },
     disabled: {
       type: Boolean,
       required: true
     },
-    template: {
-      type: Object,
-      default: { }
-    }
   },
   methods: {
     confirm: function () {
       this.$emit('update', this.filter)
+      this.$emit('update-configuration', this.configuration)
     }
   },
-  computed: {
-    showState: function () {
-      return this.view === 'register'
-    }
-  }
 }
 </script>
