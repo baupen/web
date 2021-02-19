@@ -92,18 +92,23 @@
       </td>
       <td>{{ iwr.issue.description }}</td>
       <td>
+        {{ iwr.map.name }}<br />
+        <span class="text-muted">{{ iwr.mapParentNames.join(' > ') }}</span>
+      </td>
+      <td>
         {{ iwr.craftsman.trade }}<br />
         <span class="text-muted">{{ iwr.craftsman.company }}</span>
       </td>
       <td>
-        {{ iwr.map.name }}<br />
-        <span class="text-muted">{{ iwr.mapParents.map(m => m.name).join(' > ') }}</span>
-      </td>
-      <td>
         <date-human-readable :value="iwr.issue.deadline" />
       </td>
-      <td class="w-minimal white-space-nowrap">
-        <view-issue-button :issue="iwr.issue" />
+      <td>
+        <view-issue-button
+            :construction-site="constructionSite"
+            :constructionManagers="constructionManagers"
+            :map="iwr.map" :map-parent-names="iwr.mapParentNames"
+            :craftsman="iwr.craftsman" :resolvedBy="iwr.resolvedBy"
+            :issue="iwr.issue" />
       </td>
     </tr>
     <loading-indicator-table-body v-if="issuesLoading && !isLoading" />
@@ -244,23 +249,14 @@ export default {
     mapParentsLookup: function () {
       return mapTransformer.parentsLookup(this.maps)
     },
-    constructionManagerLookup: function () {
-      let constructionManagerLookup = {}
-      this.constructionManagers.forEach(cm => constructionManagerLookup[cm['@id']] = cm)
-
-      return constructionManagerLookup
-    },
     issuesWithRelations: function () {
       return this.issues.map(issue => {
         return {
           issue,
           craftsman: this.craftsmanLookup[issue.craftsman],
           map: this.mapLookup[issue.map],
-          mapParents: this.mapParentsLookup[issue.map],
-          createdBy: this.constructionManagerLookup[issue.createdBy],
-          registeredBy: this.constructionManagerLookup[issue.registeredBy],
-          resolvedBy: this.craftsmanLookup[issue.resolvedBy],
-          closedBy: this.constructionManagerLookup[issue.closedBy]
+          mapParentNames: this.mapParentsLookup[issue.map].map(m => m.name),
+          resolvedBy: this.craftsmanLookup[issue.resolvedBy]
         }
       })
     },

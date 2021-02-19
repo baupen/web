@@ -1,5 +1,16 @@
 import { iriToId } from './api'
-import { text } from '@fortawesome/fontawesome-svg-core'
+
+const issueTransformer = {
+  isOverdue: function (issue) {
+    if (!issue.deadline || issue.responseBy || issue.closedBy) {
+      return false;
+    }
+
+    const deadline = Date.parse(issue.deadline)
+    const now = Date.now()
+    return deadline < now
+  }
+}
 
 const mapTransformer = {
   _cutChildrenFromLookup: function (key, parentLookup) {
@@ -153,4 +164,4 @@ const filterTransformer = {
   }
 }
 
-export { mapTransformer, filterTransformer }
+export { issueTransformer, mapTransformer, filterTransformer }

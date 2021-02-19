@@ -6,6 +6,11 @@
   </button>
   <transition name="fade">
     <modal v-if="show" :size="modalSize" @hide="show = false" :title="title" @keydown.esc="show = false">
+      <template v-slot:header>
+        <slot name="header">
+          <h5 class="modal-title">{{ title }}</h5>
+        </slot>
+      </template>
       <template v-slot:body>
         <slot></slot>
       </template>
