@@ -3,6 +3,7 @@ import { displaySuccess, displayError } from './notifiers'
 
 const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
 const validFileTypes = ['application/pdf']
+const maxIssuesPerReport = 2
 
 const iriToId = function (iri) {
   return iri.substr(iri.lastIndexOf('/') + 1)
@@ -368,4 +369,4 @@ const api = {
   }
 }
 
-export { api, addNonDuplicatesById, iriToId, validImageTypes, validFileTypes }
+export { api, addNonDuplicatesById, iriToId, validImageTypes, validFileTypes, maxIssuesPerReport }

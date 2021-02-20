@@ -97,13 +97,20 @@ const mapTransformer = {
 
     return this._flattenChildren(hierarchy)
   },
-  reportGroups: function (maps) {
-    // get issue count by map
+  reportGroups: function (maps, mapGroups) {
+    // get issue count by map (DONE; in mapGroups)
     // order maps by issue count (biggest first)
     // take highest a
     // join a with all siblings (and all its children) + a.parent into b
     // if b > limit then take a else add b to list
-    // repeat while list not empty
+    // repeat while list not empty / count of next item > 0
+
+    // return list of list of mapIds (already as Ids, not IRI)
+
+    const hierarchy = this._hierarchy(maps)
+    this._sortChildren(hierarchy)
+
+    return this._flattenChildren(hierarchy)
   }
 }
 

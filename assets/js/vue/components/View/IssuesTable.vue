@@ -176,7 +176,7 @@ import OrderTableHead from '../Library/Behaviour/OrderTableHead'
 import OrderCheckbox from '../Library/Behaviour/OrderCheckbox'
 
 export default {
-  emits: ['selected', 'query', 'queried-issue-count'],
+  emits: ['selected', 'query', 'queried-issue-count', 'loaded-maps'],
   components: {
     OrderCheckbox,
     OrderTableHead,
@@ -372,6 +372,7 @@ export default {
     api.getMaps(this.constructionSite)
         .then(maps => {
           this.maps = maps
+          this.$emit('loaded-maps', this.maps)
         })
 
     api.getConstructionManagers(this.constructionSite)

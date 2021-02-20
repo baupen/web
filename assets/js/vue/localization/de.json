@@ -296,7 +296,7 @@
     "export_type": {
       "report": {
         "name": ".pdf Bericht",
-        "help": "Fürs Drucken optimiert: Die Pendenzen möglichst platzsparend aufs Papier bringen.",
+        "help": "Fürs Drucken optimiert: Bringt die Pendenzen platzsparend aufs Papier.",
         "with_images": "mit Fotos",
         "summary_tables": "Zusammenfassungstabellen",
         "by_craftsman": "nach Unternehmer",
