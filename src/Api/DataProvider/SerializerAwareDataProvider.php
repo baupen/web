@@ -1,8 +1,15 @@
 <?php
 
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Api\DataProvider;
-
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryResultCollectionExtensionInterface;
@@ -35,8 +42,6 @@ class SerializerAwareDataProvider
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @throws RuntimeException
      */
     public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
@@ -55,12 +60,12 @@ class SerializerAwareDataProvider
         $queryNameGenerator = new QueryNameGenerator();
         // code taken from ApiPlatform\Core\Bridge\Doctrine\Orm\CollectionDataProvider
         foreach ($this->collectionExtensions as $extension) {
-            /** @noinspection PhpMethodParametersCountMismatchInspection */
+            /* @noinspection PhpMethodParametersCountMismatchInspection */
             $extension->applyToCollection($queryBuilder, $queryNameGenerator, $resourceClass, $operationName, $context);
 
-            /** @noinspection PhpMethodParametersCountMismatchInspection */
+            /* @noinspection PhpMethodParametersCountMismatchInspection */
             if ($extension instanceof QueryResultCollectionExtensionInterface && $extension->supportsResult($resourceClass, $operationName, $context)) {
-                /** @noinspection PhpMethodParametersCountMismatchInspection */
+                /* @noinspection PhpMethodParametersCountMismatchInspection */
                 return $extension->getResult($queryBuilder, $resourceClass, $operationName, $context);
             }
         }
@@ -70,15 +75,15 @@ class SerializerAwareDataProvider
 
     private function addSerializerRelevantJoins(string $resourceClass, string $alias, QueryBuilder $queryBuilder)
     {
-        if ($resourceClass === ConstructionSite::class) {
+        if (ConstructionSite::class === $resourceClass) {
             $queryBuilder->leftJoin($alias.'.image', 'i');
             $queryBuilder->addSelect('i');
             $queryBuilder->leftJoin($alias.'.constructionManagers', 'cm');
             $queryBuilder->addSelect('cm');
-        } elseif ($resourceClass === Map::class) {
+        } elseif (Map::class === $resourceClass) {
             $queryBuilder->leftJoin($alias.'.file', 'f');
             $queryBuilder->addSelect('f');
-        } elseif ($resourceClass === Issue::class) {
+        } elseif (Issue::class === $resourceClass) {
             $queryBuilder->leftJoin($alias.'.image', 'i');
             $queryBuilder->addSelect('i');
         }

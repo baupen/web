@@ -11,7 +11,6 @@
 
 namespace App\Service;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Filter;

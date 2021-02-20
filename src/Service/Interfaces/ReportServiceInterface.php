@@ -11,7 +11,6 @@
 
 namespace App\Service\Interfaces;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
 use App\Entity\Filter;
 use App\Service\Report\ReportElements;
 

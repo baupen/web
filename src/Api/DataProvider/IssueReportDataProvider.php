@@ -11,9 +11,6 @@
 
 namespace App\Api\DataProvider;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
-use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
-use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\Api\DataProvider\Base\NoPaginationDataProvider;
 use App\Controller\Traits\FileResponseTrait;
 use App\Entity\Issue;
