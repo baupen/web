@@ -113,3 +113,20 @@ select:required {
 .text-sm {
   font-size: 0.625em;
 }
+
+.card-body {
+  padding: 0.5rem;
+}
+
+@include media-breakpoint-up(md) {
+  .card-body {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .table-sm-small th,
+  .table-sm-small td {
+    padding: $table-cell-padding-sm;
+  }
+}

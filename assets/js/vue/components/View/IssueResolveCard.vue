@@ -16,7 +16,7 @@
           </div>
         </div>
         <div class="col-md-6">
-          <p class="bg-light-gray p-2">
+          <p class="bg-light-gray p-2 mt-2">
             {{ issue.description }}
           </p>
           <p v-if="issue.deadline">
