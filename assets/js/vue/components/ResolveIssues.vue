@@ -16,7 +16,7 @@
             @scroll-to="scrollTo($event)" />
 
         <issues-resolve-view
-            class="mt-5" :ref="mapContainer.entity['@id']"
+            class="mt-4 mt-md-5" :ref="mapContainer.entity['@id']"
             v-for="mapContainer in mapsWithIssues" :key="mapContainer.entity['@id']"
             :map="mapContainer.entity" :map-context="getMapContext(mapContainer)"
             :craftsman="craftsman" :construction-site="constructionSite"

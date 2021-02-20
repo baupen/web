@@ -82,6 +82,7 @@
     "without_deadline": "ohne Frist"
   },
   "view": {
+    "issues_by_map": "Pendenzen nach Bauplan",
     "no_issues": "Keine Pendenzen",
     "more": "mehr",
     "less": "weniger",

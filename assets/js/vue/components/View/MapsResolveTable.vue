@@ -1,6 +1,11 @@
 <template>
   <div class="table-responsive">
-    <table class="table table-striped table-bordered table-hover">
+    <table class="table table-striped table-bordered table-sm-small table-hover">
+      <thead>
+      <tr>
+        <th colspan="99">{{ $t("view.issues_by_map")}}</th>
+      </tr>
+      </thead>
       <tbody>
       <tr v-for="mapContainer in mapContainerWithGroups" :key="mapContainer.container.entity['@id']">
         <td class="text-nowrap">
