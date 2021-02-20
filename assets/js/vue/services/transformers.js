@@ -96,6 +96,14 @@ const mapTransformer = {
     this._sortChildren(hierarchy)
 
     return this._flattenChildren(hierarchy)
+  },
+  reportGroups: function (maps) {
+    // get issue count by map
+    // order maps by issue count (biggest first)
+    // take highest a
+    // join a with all siblings (and all its children) + a.parent into b
+    // if b > limit then take a else add b to list
+    // repeat while list not empty
   }
 }
 
