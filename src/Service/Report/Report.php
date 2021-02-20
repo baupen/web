@@ -54,7 +54,7 @@ class Report
     /**
      * @param string[] $filterEntries
      */
-    public function addIntroduction(?string $headerImage, string $name, string $address, string $elements, array $filterEntries, ?string $paginatorString, string $filterHeader)
+    public function addIntroduction(?string $headerImage, string $name, string $address, string $elements, array $filterEntries, string $filterHeader)
     {
         $startY = $this->pdfDocument->GetY();
         $maxContentHeight = $startY;
@@ -91,7 +91,7 @@ class Report
         ++$currentColumn;
 
         //filter used for generation
-        if (\count($filterEntries) > 0 || null !== $paginatorString) {
+        if (\count($filterEntries) > 0) {
             $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
             $this->pdfDocument->SetY($startY);
 
@@ -101,11 +101,6 @@ class Report
             foreach ($filterEntries as $name => $value) {
                 $this->pdfDocument->SetX($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
                 $this->printHtmlP('<b>'.$name.'</b>: '.$value);
-            }
-
-            if (null !== $paginatorString) {
-                $this->pdfDocument->SetX($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
-                $this->printHtmlP('<i>'.$paginatorString.'</i>');
             }
         }
 

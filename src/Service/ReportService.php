@@ -11,7 +11,6 @@
 
 namespace App\Service;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
@@ -76,10 +75,9 @@ class ReportService implements ReportServiceInterface
         $this->reportAssetDir = $reportAssetDir;
     }
 
-    public function generatePdfReport(Paginator $paginator, Filter $filter, ReportElements $reportElements, ?string $author = null): string
+    public function generatePdfReport(array $issues, Filter $filter, ReportElements $reportElements, ?string $author = null): string
     {
         $constructionSite = $filter->getConstructionSite();
-        $issues = iterator_to_array($paginator->getIterator());
 
         $this->setScriptRuntime(count($issues));
 
@@ -95,7 +93,7 @@ class ReportService implements ReportServiceInterface
         $pdfDefinition = new PdfDefinition($constructionSite->getName(), $footer, $logoPath);
         $report = new Report($pdfDefinition, $this->reportAssetDir);
 
-        $this->addIntroduction($report, $constructionSite, $paginator, count($issues), $filter, $reportElements);
+        $this->addIntroduction($report, $constructionSite, $issues, $filter, $reportElements);
 
         if (count($issues) > 0) {
             $this->addIssueContent($filter, $reportElements, $issues, $report);
@@ -181,7 +179,7 @@ class ReportService implements ReportServiceInterface
         $report->addImageGrid($imageGrid, $columnCount);
     }
 
-    private function addIntroduction(Report $report, ConstructionSite $constructionSite, Paginator $paginator, int $issueCount, Filter $filter, ReportElements $reportElements)
+    private function addIntroduction(Report $report, ConstructionSite $constructionSite, array $issues, Filter $filter, ReportElements $reportElements)
     {
         $filterEntries = [];
 
@@ -256,16 +254,6 @@ class ReportService implements ReportServiceInterface
         // clear empty entries
         $filterEntries = array_filter($filterEntries);
 
-        // add paginator info
-        $totalItems = (int) $paginator->getTotalItems();
-        $paginatorString = null;
-        if ($totalItems !== $issueCount) {
-            $start = (int) $paginator->getCurrentPage() * $totalItems;
-            $end = $start + $issueCount;
-
-            $paginatorString = $this->translator->trans('introduction.paginator', ['%start%' => $start, '%end%' => $end, '%total%' => $totalItems], 'report');
-        }
-
         //add list of elements which are part of this report
         $elements = [];
         if ($reportElements->getTableByCraftsman()) {
@@ -288,7 +276,6 @@ class ReportService implements ReportServiceInterface
             $addressLines,
             $reportElements,
             $filterEntries,
-            $paginatorString,
             $this->translator->trans('entity.name', [], 'entity_filter')
         );
     }
