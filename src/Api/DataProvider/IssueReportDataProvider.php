@@ -14,26 +14,23 @@ namespace App\Api\DataProvider;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
 use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
+use App\Api\DataProvider\Base\NoPaginationDataProvider;
 use App\Controller\Traits\FileResponseTrait;
 use App\Entity\Issue;
 use App\Security\TokenTrait;
 use App\Service\Interfaces\FilterServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\ReportElements;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class IssueReportDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
+class IssueReportDataProvider extends NoPaginationDataProvider
 {
     use TokenTrait;
     use FileResponseTrait;
-
-    /**
-     * @var ContextAwareCollectionDataProviderInterface
-     */
-    private $decoratedCollectionDataProvider;
 
     /**
      * @var ReportServiceInterface
@@ -60,9 +57,10 @@ class IssueReportDataProvider implements ContextAwareCollectionDataProviderInter
     /**
      * IssueReportDataProvider constructor.
      */
-    public function __construct(ContextAwareCollectionDataProviderInterface $decoratedCollectionDataProvider, ReportServiceInterface $reportService, TokenStorageInterface $tokenStorage, RequestStack $requestStack, FilterServiceInterface $filterService)
+    public function __construct(ManagerRegistry $managerRegistry, ReportServiceInterface $reportService, TokenStorageInterface $tokenStorage, RequestStack $requestStack, FilterServiceInterface $filterService, iterable $collectionExtensions = [])
     {
-        $this->decoratedCollectionDataProvider = $decoratedCollectionDataProvider;
+        parent::__construct($managerRegistry, $collectionExtensions);
+
         $this->reportService = $reportService;
         $this->tokenStorage = $tokenStorage;
         $this->request = $requestStack->getCurrentRequest();
@@ -83,8 +81,8 @@ class IssueReportDataProvider implements ContextAwareCollectionDataProviderInter
     {
         $context[self::ALREADY_CALLED] = true;
 
-        /** @var Paginator $collection */
-        $collection = $this->decoratedCollectionDataProvider->getCollection($resourceClass, $operationName, $context);
+        $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
+        $issues = $queryBuilder->getQuery()->getResult();
 
         /** @var array $reportConfig */
         $reportConfig = $this->request->query->get('report', []);
@@ -93,7 +91,7 @@ class IssueReportDataProvider implements ContextAwareCollectionDataProviderInter
         $author = $this->getAuthor($this->tokenStorage->getToken());
 
         $filter = $this->filterService->createFromQuery($context['filters']);
-        $filePath = $this->reportService->generatePdfReport($collection, $filter, $reportElements, $author);
+        $filePath = $this->reportService->generatePdfReport($issues, $filter, $reportElements, $author);
 
         return $this->tryCreateAttachmentFileResponse($filePath, 'report.pdf', true);
     }

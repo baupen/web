@@ -17,5 +17,5 @@ use App\Service\Report\ReportElements;
 
 interface ReportServiceInterface
 {
-    public function generatePdfReport(Paginator $paginator, Filter $filter, ReportElements $reportElements, ?string $author = null): string;
+    public function generatePdfReport(array $issues, Filter $filter, ReportElements $reportElements, ?string $author = null): string;
 }
