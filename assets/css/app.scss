@@ -10,6 +10,7 @@ $custom-control-cursor: pointer;
 @import '~noty/src/noty';
 @import '~noty/src/themes/bootstrap-v4';
 @import '~flatpickr/dist/flatpickr.css';
+@import 'bootstrap-responsive';
 @import 'dropzone';
 @import 'lightbox';
 @import 'popover';
@@ -114,19 +115,3 @@ select:required {
   font-size: 0.625em;
 }
 
-.card-body {
-  padding: 0.5rem;
-}
-
-@include media-breakpoint-up(md) {
-  .card-body {
-    padding: 1.25rem;
-  }
-}
-
-@media (max-width: 767.98px) {
-  .table-sm-small th,
-  .table-sm-small td {
-    padding: $table-cell-padding-sm;
-  }
-}

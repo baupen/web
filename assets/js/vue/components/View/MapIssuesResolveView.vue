@@ -5,20 +5,20 @@
       {{ map.name }}
     </h2>
     <div class="row">
-      <div class="col-md-3">
+      <div class="col-lg-3">
         <map-render-lightbox
             :preview="true"
             :construction-site="constructionSite" :map="map" :craftsman="craftsman" :state="2" />
       </div>
-      <div class="col-md-9">
-        <div class="mt-2 mt-md-0 mb-md-2" v-for="issue in issues" :key="issue['@id']">
+      <div class="col-lg-9">
+        <div class="mt-2 mt-lg-0 mb-lg-2" v-for="issue in issues" :key="issue['@id']">
           <issue-resolve-card
               :issue="issue"
               :construction-site="constructionSite" :craftsman="craftsman" :map="map"
               :construction-managers="constructionManagers" />
         </div>
-        <loading-indicator-secondary class="mt-2 mt-md-0 mb-md-2" v-if="issuesLoading" />
-        <p v-else class="text-center mt-2 mt-md-0 mb-md-2">
+        <loading-indicator-secondary class="mt-2 mt-lg-0 mb-lg-2" v-if="issuesLoading" />
+        <p v-else class="text-center mt-2 mt-lg-0 mb-lg-2">
           <button class="btn btn-outline-secondary" v-if="notLoadedIssueCount > 0 && !issuesLoading"
                   @click="loadNextPage">
             {{ $tc('actions.show_more_issues', notLoadedIssueCount) }}

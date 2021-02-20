@@ -1,0 +1,28 @@
+.card-body {
+  padding: 0.5rem;
+}
+
+@include media-breakpoint-up(md) {
+  .card-body {
+    padding: 0.75rem;
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  .card-body {
+    padding: 1rem;
+  }
+}
+
+@include media-breakpoint-up(xl) {
+  .card-body {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .table-sm-small th,
+  .table-sm-small td {
+    padding: $table-cell-padding-sm;
+  }
+}
