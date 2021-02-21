@@ -3,7 +3,7 @@ import { displaySuccess, displayError } from './notifiers'
 
 const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
 const validFileTypes = ['application/pdf']
-const maxIssuesPerReport = 300
+const maxIssuesPerReport = 100
 
 const iriToId = function (iri) {
   return iri.substr(iri.lastIndexOf('/') + 1)

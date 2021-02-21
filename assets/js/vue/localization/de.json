@@ -7,6 +7,7 @@
     "add_craftsman": "Unternehmer hinzufügen",
     "add_map": "Karte hinzufügen",
     "close": "Schliessen",
+    "download": "herunterladen",
     "sort_by_last_activity": "Nach letzter Aktivität sortieren",
     "edit_construction_site": "Baustelle bearbeiten",
     "edit_craftsman": "Unternehmer bearbeiten",
@@ -37,8 +38,11 @@
     "show_more_issues": "Weitere {count} Pendenzen anzeigen",
     "messages": {
       "resolved_as_impersonated_craftsman": "'Erledigt' wird im Namen des Unternehmers.",
-      "generating_map": "Grafiken für Bauplan werden generiert",
+      "generating_map": "Grafiken werden generiert",
       "generating_pdf": "PDF wird generiert",
+      "pending": "warten ({issueCount} Pendenzen)",
+      "finished": "fertig",
+      "downloaded": "heruntergeladen",
       "success": {
         "construction_site_added": "Baustelle hinzugefügt",
         "construction_site_image_replaced": "Bild ersetzt",

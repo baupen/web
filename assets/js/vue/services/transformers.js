@@ -230,6 +230,10 @@ const mapTransformer = {
         break
       }
 
+      // TODO: remove self from children list of parent
+      // TODO: first choose maps with issueCount >= maxCount
+      // TODO: merge top-level into single group if maxCount allows
+
       const mapsUnderLimit = shouldIncludeMaps.filter(m => m.issueSumWithChildren <= maxCount)
       const chosenMap = mapsUnderLimit.length ? mapsUnderLimit.sort(sortDesc)[0] : shouldIncludeMaps.sort(sortAsc)[0]
 

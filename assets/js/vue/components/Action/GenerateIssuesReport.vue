@@ -1,20 +1,37 @@
 <template>
-  <div v-for="report in reports">
-    <issue-report-generation-card
-        class="mt-2"
-        :progressLabel="report.progressLabel" :progress="report.progress"
-        :query-result-size="report.queryResultSize"
-        :link="report.link" :aborted="report.aborted" />
-  </div>
+
+  <button v-if="!reports.length" class="btn btn-primary" @click="planGeneration">
+    {{ $t('actions.generate_report') }}
+  </button>
+  <button v-if="reports.length && !abortRequested" class="btn btn-warning" @click="abortRequested = true">
+    {{ $t('actions.abort') }}
+  </button>
+
+  <table v-if="reports.length" class="table table-striped mt-2">
+    <tbody>
+    <tr v-for="report in reports" :key="report">
+      <td>
+        {{report.progressLabel }}
+      </td>
+      <td class="w-minimal">
+        <span v-if="report.link && !report.wasDownloaded">
+          <a target="_blank" @click="report.wasDownloaded = true" :href="report.link">{{ $t("actions.download") }}</a>
+        </span>
+        <span v-else-if="report.wasDownloaded">
+          {{ $t('actions.messages.downloaded') }}
+        </span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 </template>
 
 <script>
 import { api, iriToId, maxIssuesPerReport } from '../../services/api'
 import { mapTransformer } from '../../services/transformers'
-import IssueReportGenerationCard from '../View/IssueReportGenerationCard'
 
 export default {
-  components: { IssueReportGenerationCard },
+  components: { },
   emits: ['generation-finished'],
   data () {
     return {
@@ -43,17 +60,6 @@ export default {
     queryResultSize: {
       type: Number,
       required: true
-    },
-    generationRequested: {
-      type: Boolean,
-      required: false
-    }
-  },
-  watch: {
-    generationRequested: function () {
-      if (this.generationRequested) {
-        this.planGeneration()
-      }
     }
   },
   computed: {
@@ -73,7 +79,7 @@ export default {
       }
     },
     planGeneration: function () {
-      this.reportAbortRequested = false
+      this.abortRequested = false
       this.reports = []
 
       api.getIssuesGroup(this.constructionSite, 'map', this.query)
@@ -81,10 +87,8 @@ export default {
             const mapContainerGroups = mapTransformer.groupByIssueCount(this.maps, issuesGroupByMap, maxIssuesPerReport)
 
             const defaultPayload = {
-              progress: 0,
-              progressLabel: null,
               link: null,
-              aborted: false
+              wasDownloaded: false
             }
 
             this.reports = mapContainerGroups.map(mapContainerGroup => {
@@ -94,11 +98,14 @@ export default {
 
               let currentQuery = Object.assign({}, this.query, {'map[]': includedMaps.map(m => iriToId(m['@id']))})
               const prerenderMaps = includedMaps.filter(m => m.fileUrl) // only prerender if actually file to render
+              let queryResultSize = mapContainerGroup.groupIssueSum
+              let progressLabel = this.$t("actions.messages.pending", {issueCount: queryResultSize})
 
               return Object.assign({
-                queryResultSize: mapContainerGroup.groupIssueSum,
+                queryResultSize,
                 query: currentQuery,
                 prerenderMaps,
+                progressLabel
               }, defaultPayload)
             })
 
@@ -148,19 +155,22 @@ export default {
       api.getReportLink(this.constructionSite, this.reportQuery, currentReport.query)
           .then(link => {
             currentReport.link = link
-            console.log(currentReport)
+            currentReport.progressLabel = this.$t("actions.messages.finished")
             this.startGeneration(reportIndex + 1)
           })
     },
     abortGeneration: function () {
-      if (this.generationRequested) {
-        return false
+      if (this.abortRequested) {
+        this.reports = this.reports.filter(r => r.link)
+
+        return true
       }
 
-      this.reports.filter(r => !r.link).forEach(report => { report.aborted = true})
-
-      return true
+      return false
     },
+  },
+  unmounted() {
+    this.abortRequested = true
   }
 }
 </script>

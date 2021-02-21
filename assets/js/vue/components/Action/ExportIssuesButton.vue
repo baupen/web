@@ -41,19 +41,9 @@
 
         <report-form :template="report" @update="report = $event" />
 
-        <button class="btn btn-primary" @click="reportRequested = true" v-if="!reportRequested">
-          {{ $t('actions.generate_report') }}
-        </button>
-
-        <button class="btn btn-warning" @click="reportRequested = false" v-if="reportRequested">
-          {{ $t('actions.abort') }}
-        </button>
-
         <generate-issues-report
             :construction-site="constructionSite" :maps="maps" :report-configuration="report"
             :query="applyingQuery" :query-result-size="applyingQueryResultSize"
-            :generation-requested="reportRequested"
-            @generation-finished="reportRequested = false"
         />
       </div>
       <div class="tab-pane fade" :class="{'show active': exportType === 'link'}">
@@ -172,13 +162,3 @@ export default {
   },
 }
 </script>
-
-<style scoped="true" lang="scss">
-@for $i from 1 through 100 {
-  .progress-#{$i} {
-    display: inline-block;
-    width: $i*1%;
-  }
-}
-
-</style>
