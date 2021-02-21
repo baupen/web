@@ -14,13 +14,13 @@
     <div class="form-group">
       <custom-checkbox
           class="mb-1"
-          v-for="map in flattenedMaps" :key="map.entity['@id']"
-          :for-id="'filter-map-' + map.entity['@id']" :label="map.entity.name">
-        <span :class="'spacer-' + map.level"/>
+          v-for="mapContainer in mapContainers" :key="mapContainer.entity['@id']"
+          :for-id="'filter-map-' + mapContainer.entity['@id']" :label="mapContainer.entity.name">
+        <span :class="'spacer-' + mapContainer.level"/>
         <input
-            class="custom-control-input" type="checkbox" :id="'filter-map-' + map.entity['@id']"
+            class="custom-control-input" type="checkbox" :id="'filter-map-' + mapContainer.entity['@id']"
             v-model="selectedEntities"
-            :value="map.entity"
+            :value="mapContainer.entity"
         >
       </custom-checkbox>
     </div>
@@ -30,7 +30,6 @@
 <script>
 import CustomCheckboxField from '../../Library/FormLayout/CustomCheckboxField'
 import CustomCheckbox from '../../Library/FormInput/CustomCheckbox'
-import { arraysAreEqual } from '../../../services/algorithms'
 import { mapTransformer } from '../../../services/transformers'
 import { entityFilterMixin } from './mixins'
 
@@ -40,8 +39,8 @@ export default {
     entityFilterMixin
   ],
   computed: {
-    flattenedMaps: function () {
-      return mapTransformer.flatHierarchy(this.entities)
+    mapContainers: function () {
+      return mapTransformer.orderedList(this.entities, mapTransformer.PROPERTY_LEVEL)
     }
   },
 }

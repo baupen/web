@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>
-      <span class="text-secondary text-sm" v-if="mapContext">{{ mapContext }}<br/></span>
+      <span class="text-secondary text-sm" v-if="mapParentNames.length">{{ mapParentNames.join(" > ") }}<br/></span>
       {{ map.name }}
     </h2>
     <div class="row">
@@ -65,8 +65,8 @@ export default {
       type: Object,
       required: true
     },
-    mapContext: {
-      type: String,
+    mapParentNames: {
+      type: Array,
       required: true
     },
     craftsman: {

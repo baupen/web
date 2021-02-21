@@ -2,6 +2,7 @@
   <button-with-modal-confirm
       color="danger"
       :title="$t('actions.remove_map')" :can-confirm="canConfirm"
+      @shown="loadIssueSummary"
       @confirm="confirm">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'trash']" />
@@ -55,13 +56,13 @@ export default {
 
       // reset state for next display
       this.issueSummary = null
+    },
+    loadIssueSummary: function () {
+      api.getIssuesSummary(this.constructionSite, { map: this.map['@id'] })
+          .then(issueSummary => {
+            this.issueSummary = issueSummary
+          })
     }
-  },
-  mounted () {
-    api.getIssuesSummary(this.constructionSite, { map: this.map['@id'] })
-        .then(issueSummary => {
-          this.issueSummary = issueSummary
-        })
   }
 }
 </script>

@@ -2,7 +2,7 @@
   <div id="register">
     <div class="btn-group mb-4">
       <export-issues-button
-          :disabled="exportDisabled" :construction-site="constructionSite"
+          :disabled="exportDisabled" :construction-site="constructionSite" :maps="maps"
           :query="query" :queried-issue-count="queriedIssuesCount" :selected-issues="selectedIssues" />
     </div>
 
@@ -10,6 +10,7 @@
         view="register"
         :construction-manager-iri="constructionManagerIri"
         :construction-site="constructionSite"
+        @loaded-maps="maps = $event"
         @selected="selectedIssues = $event"
         @query="query = $event"
         @queried-issue-count="queriedIssuesCount = $event" />
@@ -31,6 +32,7 @@ export default {
       queriedIssuesCount: 0,
       query: {},
       selectedIssues: [],
+      maps: [],
     }
   },
   props: {

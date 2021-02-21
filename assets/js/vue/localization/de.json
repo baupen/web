@@ -7,6 +7,7 @@
     "add_craftsman": "Unternehmer hinzufügen",
     "add_map": "Karte hinzufügen",
     "close": "Schliessen",
+    "download": "herunterladen",
     "sort_by_last_activity": "Nach letzter Aktivität sortieren",
     "edit_construction_site": "Baustelle bearbeiten",
     "edit_craftsman": "Unternehmer bearbeiten",
@@ -26,6 +27,8 @@
     "remove_issues_help": "Die Pendenzen werden nirgendswo mehr angezeigt.",
     "reset": "zurücksetzen",
     "resolve_issue": "Als erledigt markieren",
+    "generate_report": "Report erstellen",
+    "abort": "Abbrechen",
     "import": "Importieren",
     "save_changes": "Änderungen speichern",
     "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
@@ -35,6 +38,11 @@
     "show_more_issues": "Weitere {count} Pendenzen anzeigen",
     "messages": {
       "resolved_as_impersonated_craftsman": "'Erledigt' wird im Namen des Unternehmers.",
+      "generating_map": "Grafiken werden generiert",
+      "generating_pdf": "PDF wird generiert",
+      "pending": "warten ({issueCount} Pendenzen)",
+      "finished": "fertig",
+      "downloaded": "heruntergeladen",
       "success": {
         "construction_site_added": "Baustelle hinzugefügt",
         "construction_site_image_replaced": "Bild ersetzt",
@@ -83,6 +91,8 @@
   },
   "view": {
     "issues_by_map": "Pendenzen nach Bauplan",
+    "pending": "bevorstehend",
+    "aborted": "abgebrochen",
     "no_issues": "Keine Pendenzen",
     "more": "mehr",
     "less": "weniger",
@@ -92,6 +102,9 @@
     "maps_edit": {
       "no_parent_name": "-",
       "parent_not_found": "(entfernt)"
+    },
+    "issue_report_generation_result": {
+      "contains_issues": "enhält {count} Pendenzen"
     }
   },
   "import_craftsmen": {
@@ -296,7 +309,7 @@
     "export_type": {
       "report": {
         "name": ".pdf Bericht",
-        "help": "Fürs Drucken optimiert: Die Pendenzen möglichst platzsparend aufs Papier bringen.",
+        "help": "Fürs Drucken optimiert: Bringt die Pendenzen platzsparend aufs Papier.",
         "with_images": "mit Fotos",
         "summary_tables": "Zusammenfassungstabellen",
         "by_craftsman": "nach Unternehmer",

@@ -28,12 +28,12 @@ const mapFormatter = {
       return null
     }
 
-    const currentFilename = instance.fileUrl.substr(instance.fileUrl.lastIndexOf('/') + 1)
-    if (currentFilename.indexOf('_duplicate_') === -1) {
-      return currentFilename
+    let currentFilename = instance.fileUrl.substr(instance.fileUrl.lastIndexOf('/') + 1)
+    if (currentFilename.indexOf('_duplicate_') > 0) {
+      currentFilename = currentFilename.substr(0, currentFilename.indexOf('_duplicate_'))
     }
 
-    return currentFilename.substr(0, currentFilename.indexOf('_duplicate_'))
+    return decodeURI(currentFilename)
   }
 }
 

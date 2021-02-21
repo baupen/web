@@ -39,53 +39,20 @@
           {{ $t('export_issues_button.export_type.report.help') }}
         </p>
 
-        <custom-checkbox-field
-            for-id="report-with-images"
-            :label="$t('export_issues_button.export_type.report.with_images')">
-          <input class="custom-control-input" type="checkbox" name="report-with-images" id="report-with-images"
-                 :true-value="true" :false-value="false"
-                 v-model="report.withImages">
-        </custom-checkbox-field>
+        <report-form :template="report" @update="report = $event" />
 
-        <p class="mb-0">{{ $t('export_issues_button.export_type.report.summary_tables') }}</p>
-        <div class="form-group">
-          <custom-checkbox
-              class="mb-1"
-              for-id="report-table-by-craftsman"
-              :label="$t('export_issues_button.export_type.report.by_craftsman')">
-            <input class="custom-control-input" type="checkbox" name="report-table-by-craftsman" value="selection"
-                   id="report-table-by-craftsman"
-                   :true-value="true" :false-value="false"
-                   v-model="report.tableByCraftsman">
-          </custom-checkbox>
-
-          <custom-checkbox
-              for-id="report-table-by-map"
-              :label="$t('export_issues_button.export_type.report.by_map')">
-            <input class="custom-control-input" type="checkbox" name="report-table-by-map" value="selection"
-                   id="report-table-by-map"
-                   :true-value="true" :false-value="false"
-                   v-model="report.tableByMap">
-          </custom-checkbox>
-        </div>
-
-        <a class="btn btn-primary" target="_blank" :href="reportLink">
-          {{ $t('export_issues_button.generate') }}
-        </a>
+        <generate-issues-report
+            :construction-site="constructionSite" :maps="maps" :report-configuration="report"
+            :query="applyingQuery" :query-result-size="applyingQueryResultSize"
+        />
       </div>
       <div class="tab-pane fade" :class="{'show active': exportType === 'link'}">
         <p class="alert alert-info">
           {{ $t('export_issues_button.export_type.link.help') }}
         </p>
 
-        <form-field for-id="link-access-allowed-before"
-                    :label="$t('export_issues_button.export_type.link.access_allowed_before')">
-          <flat-pickr
-              id="link-access-allowed-before" class="form-control"
-              v-model="link.accessAllowedBefore"
-              :config="datePickerConfig">
-          </flat-pickr>
-        </form-field>
+        <filter-form :template="link" @update="link = $event" />
+
       </div>
     </div>
   </button-with-modal>
@@ -93,22 +60,22 @@
 
 <script>
 
-import { dateConfig, flatPickr } from '../../services/flatpickr'
-import { api } from '../../services/api'
+import { iriToId } from '../../services/api'
 import ButtonWithModal from '../Library/Behaviour/ButtonWithModal'
 import CustomRadioField from '../Library/FormLayout/CustomRadioField'
-import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
-import CustomCheckbox from '../Library/FormInput/CustomCheckbox'
 import FormField from '../Library/FormLayout/FormField'
+import ReportForm from '../Form/ReportForm'
+import FilterForm from '../Form/FilterForm'
+import GenerateIssuesReport from './GenerateIssuesReport'
 
 export default {
   components: {
+    GenerateIssuesReport,
+    FilterForm,
+    ReportForm,
     FormField,
-    CustomCheckbox,
-    CustomCheckboxField,
     CustomRadioField,
     ButtonWithModal,
-    flatPickr
   },
   emits: ['send', 'save-template', 'create-template'],
   data () {
@@ -123,6 +90,8 @@ export default {
       link: {
         accessAllowedBefore: null
       },
+
+      reportRequested: false
     }
   },
   props: {
@@ -136,6 +105,11 @@ export default {
     },
     constructionSite: {
       type: Object,
+      required: true
+    },
+    maps: {
+      type: Array,
+      default: []
     },
     query: {
       type: Object,
@@ -146,37 +120,6 @@ export default {
       required: true
     }
   },
-  computed: {
-    datePickerConfig: function () {
-      return dateConfig
-    },
-    selectedIssueNumbers: function () {
-      return this.selectedIssues.map(issue => issue.number)
-    },
-    reportQuery: function () {
-      return {
-        'report[withImages]': this.report.withImages,
-        'report[tableByCraftsman]': this.report.tableByCraftsman,
-        'report[tableByMap]': this.report.tableByMap,
-      }
-    },
-    reportLink: function () {
-      if (!this.constructionSite) {
-        return null
-      }
-
-      if (this.exportSource === 'filter') {
-        return api.getReportLink(this.constructionSite, this.reportQuery, this.query)
-      } else {
-        return api.getReportLink(this.constructionSite, this.reportQuery, { 'number[]': this.selectedIssueNumbers })
-      }
-    }
-  },
-  methods: {
-    createLink: function () {
-      console.log('create link')
-    },
-  },
   watch: {
     selectedIssues: {
       deep: true,
@@ -186,6 +129,36 @@ export default {
         }
       }
     }
-  }
+  },
+  computed: {
+    selectedIssueNumbers: function () {
+      return this.selectedIssues.map(issue => issue.number)
+    },
+    applyingQueryResultSize: function () {
+      if (this.exportSource === 'filter') {
+        return this.queriedIssueCount
+      } else {
+        return this.selectedIssues.length
+      }
+    },
+    applyingQuery: function () {
+      if (this.exportSource === 'filter') {
+        return this.query
+      } else {
+        return {
+          constructionSite: iriToId(this.constructionSite['@id']),
+          'number[]': this.selectedIssueNumbers
+        }
+      }
+    }
+  },
+  methods: {
+    createReport: function () {
+      this.reportRequested = true
+    },
+    createLink: function () {
+      console.log('create link')
+    },
+  },
 }
 </script>

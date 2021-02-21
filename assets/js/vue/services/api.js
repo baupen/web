@@ -3,6 +3,7 @@ import { displaySuccess, displayError } from './notifiers'
 
 const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
 const validFileTypes = ['application/pdf']
+const maxIssuesPerReport = 800
 
 const iriToId = function (iri) {
   return iri.substr(iri.lastIndexOf('/') + 1)
@@ -121,6 +122,16 @@ const api = {
     return new Promise(
       (resolve) => {
         axios.get(url)
+          .then(response => {
+            resolve(response.data)
+          })
+      }
+    )
+  },
+  _getEmptyResponse: function (url) {
+    return new Promise(
+      (resolve) => {
+        axios.get(url, { headers: { 'X-EMPTY-RESPONSE-EXPECTED': '' } })
           .then(response => {
             resolve(response.data)
           })
@@ -255,7 +266,7 @@ const api = {
     let queryString = this._getConstructionSiteQuery(constructionSite)
     queryString += '&' + this._getQueryString(reportQuery)
     queryString += '&' + this._getQueryString(query)
-    return '/api/issues/report?' + queryString
+    return this._getItem('/api/issues/report?' + queryString)
   },
   getMaps: function (constructionSite, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
@@ -308,6 +319,10 @@ const api = {
     queryString += '&' + this._getQueryString(query)
     queryString += '&isDeleted=false'
     return '/api/issues/render.jpg?' + queryString
+  },
+  getIssuesRenderProbe: function (constructionSite, map, query = {}) {
+    const link = this.getIssuesRenderLink(constructionSite, map, query)
+    return this._getEmptyResponse(link)
   },
   patch: function (instance, patch, successMessage = null) {
     return new Promise(
@@ -368,4 +383,4 @@ const api = {
   }
 }
 
-export { api, addNonDuplicatesById, iriToId, validImageTypes, validFileTypes }
+export { api, addNonDuplicatesById, iriToId, validImageTypes, validFileTypes, maxIssuesPerReport }

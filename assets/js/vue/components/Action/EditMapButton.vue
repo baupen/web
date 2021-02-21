@@ -60,7 +60,7 @@ export default {
       this.patching = true
 
       if (this.pendingPatch) {
-        api.patch(this.map, this.patch, this.$t('actions.messages.success.map_added'))
+        api.patch(this.map, this.patch, this.$t('actions.messages.success.map_saved'))
             .then(_ => {
               this.patch = null
               this.patching = this.pendingChanges > 0

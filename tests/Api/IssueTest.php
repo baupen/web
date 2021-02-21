@@ -19,6 +19,7 @@ use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\TestDataTrait;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class IssueTest extends ApiTestCase
@@ -397,8 +398,18 @@ class IssueTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $map = $constructionSite->getMaps()[0];
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues/render.jpg?constructionSite='.$constructionSite->getId());
-        $this->assertApiGetOk($client, '/api/issues/render.jpg?constructionSite='.$constructionSite->getId().'&map='.$map->getId());
+
+        $urlWithConstructionSite = '/api/issues/render.jpg?constructionSite='.$constructionSite->getId();
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, $urlWithConstructionSite);
+
+        $fullUrl = $urlWithConstructionSite.'&map='.$map->getId();
+        $response = $this->assertApiGetOk($client, $fullUrl);
+        $this->assertTrue($response->getKernelResponse() instanceof BinaryFileResponse);
+
+        $response = $client->request('GET', $fullUrl, ['headers' => ['X-EMPTY-RESPONSE-EXPECTED' => '']]);
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertTrue(!$response->getKernelResponse() instanceof BinaryFileResponse);
+        $this->assertTrue('' === $response->getContent());
     }
 
     public function testSummary()

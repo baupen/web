@@ -2,13 +2,15 @@
   <button-with-modal-confirm
       color="danger"
       :title="$t('actions.remove_craftsman')" :can-confirm="canConfirm"
+      @shown="loadIssueSummary"
       @confirm="confirm">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'trash']" />
     </template>
 
     <p v-if="issueSummary">
-      {{$t("issue._plural")}}: <issue-summary-badges :summary="issueSummary" />
+      {{ $t('issue._plural') }}:
+      <issue-summary-badges :summary="issueSummary" />
     </p>
 
     <p class="alert alert-info">
@@ -56,13 +58,13 @@ export default {
 
       // reset state for next display
       this.issueSummary = null
+    },
+    loadIssueSummary: function () {
+      api.getIssuesSummary(this.constructionSite, { craftsman: this.craftsman['@id'] })
+          .then(issueSummary => {
+            this.issueSummary = issueSummary
+          })
     }
   },
-  mounted () {
-    api.getIssuesSummary(this.constructionSite, { craftsman: this.craftsman['@id'] })
-        .then(issueSummary => {
-          this.issueSummary = issueSummary
-        })
-  }
 }
 </script>

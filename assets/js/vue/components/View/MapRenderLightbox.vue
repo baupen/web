@@ -40,6 +40,10 @@ export default {
     preview: {
       type: Boolean,
       default: false
+    },
+    empty: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -60,6 +64,9 @@ export default {
       }
       if (this.state) {
         query['state'] = this.state;
+      }
+      if (this.empty) {
+        query['lastChangedAt[after]'] = (new Date()).toISOString()
       }
 
       return api.getIssuesRenderLink(this.constructionSite, this.map, query)

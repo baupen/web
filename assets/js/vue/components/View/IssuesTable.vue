@@ -40,16 +40,16 @@
       <th class="w-minimal">
       </th>
       <th class="w-thumbnail"></th>
-      <th>
+      <th class="w-40">
           <span class="mr-1">
             {{ $t('issue.description') }}
           </span>
       </th>
       <th>
-        {{ $t('craftsman._name') }}
+        {{ $t('map._name') }}
       </th>
       <th>
-        {{ $t('map._name') }}
+        {{ $t('craftsman._name') }}
       </th>
       <order-table-head class="white-space-nowrap" :order="order" property="deadline" @ordered="order = $event">
         {{ $t('issue.deadline') }}
@@ -176,7 +176,7 @@ import OrderTableHead from '../Library/Behaviour/OrderTableHead'
 import OrderCheckbox from '../Library/Behaviour/OrderCheckbox'
 
 export default {
-  emits: ['selected', 'query', 'queried-issue-count'],
+  emits: ['selected', 'query', 'queried-issue-count', 'loaded-maps'],
   components: {
     OrderCheckbox,
     OrderTableHead,
@@ -244,22 +244,18 @@ export default {
 
       return craftsmanLookup
     },
-    mapLookup: function () {
-      let mapLookup = {}
-      this.maps.forEach(m => mapLookup[m['@id']] = m)
-
-      return mapLookup
-    },
-    mapParentsLookup: function () {
-      return mapTransformer.parentsLookup(this.maps)
+    mapContainerLookup: function () {
+      return mapTransformer.lookup(this.maps, mapTransformer.PROPERTY_MAP_PARENT_NAMES)
     },
     issuesWithRelations: function () {
       return this.issues.map(issue => {
+        let mapContainer = this.mapContainerLookup[issue.map]
+
         return {
           issue,
           craftsman: this.craftsmanLookup[issue.craftsman],
-          map: this.mapLookup[issue.map],
-          mapParentNames: this.mapParentsLookup[issue.map].map(m => m.name),
+          map: mapContainer.entity,
+          mapParentNames: mapContainer.mapParentNames,
           resolvedBy: this.craftsmanLookup[issue.resolvedBy]
         }
       })
@@ -372,6 +368,7 @@ export default {
     api.getMaps(this.constructionSite)
         .then(maps => {
           this.maps = maps
+          this.$emit('loaded-maps', this.maps)
         })
 
     api.getConstructionManagers(this.constructionSite)
