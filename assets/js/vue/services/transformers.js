@@ -1,4 +1,4 @@
-import { iriToId, maxIssuesPerReport } from './api'
+import { iriToId } from './api'
 
 const issueTransformer = {
   isOverdue: function (issue) {

@@ -31,6 +31,11 @@ class IssueReportDataProvider extends NoPaginationDataProvider
     use FileResponseTrait;
 
     /**
+     * @var ManagerRegistry
+     */
+    private $managerRegistry;
+
+    /**
      * @var ReportServiceInterface
      */
     private $reportService;
@@ -64,6 +69,7 @@ class IssueReportDataProvider extends NoPaginationDataProvider
     {
         parent::__construct($managerRegistry, $collectionExtensions);
 
+        $this->managerRegistry = $managerRegistry;
         $this->reportService = $reportService;
         $this->tokenStorage = $tokenStorage;
         $this->request = $requestStack->getCurrentRequest();
@@ -86,6 +92,9 @@ class IssueReportDataProvider extends NoPaginationDataProvider
         $context[self::ALREADY_CALLED] = true;
 
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
+        $queryBuilder->leftJoin($queryBuilder->getRootAliases()[0].'.image', 'i');
+        $queryBuilder->addSelect('i');
+        /** @var Issue[] $issues */
         $issues = $queryBuilder->getQuery()->getResult();
 
         /** @var array $reportConfig */
