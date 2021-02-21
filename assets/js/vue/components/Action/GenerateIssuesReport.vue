@@ -1,8 +1,14 @@
 <template>
+  <div v-for="report in reports">
+    <report-generation-progress
+        :label="report.label" :progress="report.progress"
+        :link="report.link" :aborted="report.aborted" />
+  </div>
   <div v-if="generationStatus">
     <p class="mb-0">{{ generationStatus.label }}</p>
     <div class="progress">
-      <div class="progress-bar progress-bar-striped progress-bar-animated" :class="'progress-'+generationStatus.progress" role="progressbar"></div>
+      <div class="progress-bar progress-bar-striped progress-bar-animated"
+           :class="'progress-'+generationStatus.progress" role="progressbar"></div>
     </div>
   </div>
 </template>
@@ -10,8 +16,11 @@
 <script>
 import { api, maxIssuesPerReport } from '../../services/api'
 import { mapTransformer } from '../../services/transformers'
+import ReportGenerationProgress from '../View/ReportGenerationProgress'
 
 export default {
+  components: { ReportGenerationProgress },
+  emits: ['generation-finished'],
   data () {
     return {
       abortRequested: false,
@@ -28,7 +37,7 @@ export default {
       type: Array,
       default: []
     },
-    report: {
+    reportConfiguration: {
       type: Object,
       required: true
     },
@@ -55,48 +64,49 @@ export default {
   computed: {
     reportQuery: function () {
       return {
-        'report[withImages]': this.report.withImages,
-        'report[tableByCraftsman]': this.report.tableByCraftsman,
-        'report[tableByMap]': this.report.tableByMap,
+        'report[withImages]': this.reportConfiguration.withImages,
+        'report[tableByCraftsman]': this.reportConfiguration.tableByCraftsman,
+        'report[tableByMap]': this.reportConfiguration.tableByMap,
       }
     },
   },
   methods: {
     setGenerationStatus: function (label, progress = 0) {
-      this.reportGenerationStatus = {label, progress: Math.round(progress)}
+      this.reportGenerationStatus = {
+        label,
+        progress: Math.round(progress)
+      }
     },
     planGeneration: function () {
-      this.reportAbortRequested = false;
+      this.reportAbortRequested = false
       this.reports = []
 
       api.getIssuesGroup(this.constructionSite, 'map', this.query)
           .then(mapGroups => {
             const reportGroups = mapTransformer.reportGroups(this.maps, mapGroups, maxIssuesPerReport)
 
-            // better transform to IRI here, so transformer not connected to API!
-
-            if (reportGroups.length === 1) {
-              this.reports.push({query: this.query, mapIds: reportGroups[0]})
-            } else {
-              reportGroups.forEach(mapIds => {
-                const subQuery = Object.assign({}, this.query, { 'maps[]': mapIds })
-                this.reports.push({query: subQuery, mapIds})
-              })
+            const defaultPayload = {
+              progress: 0,
+              progressLabel: null,
+              link: null,
+              aborted: false
             }
+
+            this.reports = reportGroups.map(maps => {
+              return Object.assign({
+                query: this.query,
+                maps,
+              }, defaultPayload)
+            })
+
             this.startGeneration()
           })
-
-    },
-    abortGeneration: function ()  {
-      if (this.generationRequested) {
-        return false
-      }
-
-      this.reports = []
-
-      return true
     },
     startGeneration: function (reportIndex = 0) {
+      if (this.reports.length === reportIndex) {
+        this.$emit('generation-finished')
+        return
+      }
 
       this.generateMap(reportIndex)
     },
@@ -105,26 +115,47 @@ export default {
         return
       }
 
-      const currentReport = this.reports[reportIndex];
-      const query = Object.assign({}, currentReport.query, {'maps[]': currentReport.maps[mapIndex]})
-
-      // call render URL
-
-      if (currentReport.maps.length === mapIndex+1) {
+      const currentReport = this.reports[reportIndex]
+      if (currentReport.maps.length === mapIndex) {
         this.finishGeneration(reportIndex)
+        return
       }
+
+      currentReport.progressLabel = this.$t('actions.messages.generating_map') + ' (' + (mapIndex + 1) + '/' + currentReport.maps.length + ')...'
+      currentReport.progress = mapIndex / currentReport.maps.length * 100
+
+      const query = Object.assign({}, currentReport.query, { 'maps[]': null })
+      delete query['maps[]']
+
+      api.getIssuesRenderProbe(this.constructionSite, currentReport.maps[mapIndex], query)
+          .then(_ => {
+            this.generateMap(reportIndex, mapIndex + 1)
+          })
     },
     finishGeneration: function (reportIndex) {
       if (this.abortGeneration()) {
         return
       }
 
-      // call render URL
+      const currentReport = this.reports[reportIndex]
+      currentReport.progressLabel = this.$t('actions.messages.generating_pdf') + '...'
+      currentReport.progress = 100
 
-      if (this.reports.length > reportIndex+1) {
-        this.startGeneration(reportIndex)
+      api.getReportLink(this.constructionSite, this.reportQuery, currentReport.query)
+          .then(link => {
+            currentReport.link = link
+            this.startGeneration(reportIndex + 1)
+          })
+    },
+    abortGeneration: function () {
+      if (this.generationRequested) {
+        return false
       }
-    }
+
+      this.reports.filter(r => !r.link).forEach(report => { report.aborted = true})
+
+      return true
+    },
   }
 }
 </script>

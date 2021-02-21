@@ -26,6 +26,8 @@
     "remove_issues_help": "Die Pendenzen werden nirgendswo mehr angezeigt.",
     "reset": "zurücksetzen",
     "resolve_issue": "Als erledigt markieren",
+    "generate_report": "Report erstellen",
+    "abort": "Abbrechen",
     "import": "Importieren",
     "save_changes": "Änderungen speichern",
     "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
@@ -35,6 +37,8 @@
     "show_more_issues": "Weitere {count} Pendenzen anzeigen",
     "messages": {
       "resolved_as_impersonated_craftsman": "'Erledigt' wird im Namen des Unternehmers.",
+      "generating_map": "Grafiken für Bauplan werden generiert",
+      "generating_pdf": "PDF wird generiert",
       "success": {
         "construction_site_added": "Baustelle hinzugefügt",
         "construction_site_image_replaced": "Bild ersetzt",

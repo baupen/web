@@ -41,13 +41,19 @@
 
         <report-form :template="report" @update="report = $event" />
 
-        <a class="btn btn-primary" target="_blank" :href="createReport">
-          {{ $t('export_issues_button.generate') }}
-        </a>
+        <button class="btn btn-primary" @click="reportRequested = true" v-if="!reportRequested">
+          {{ $t('actions.generate_report') }}
+        </button>
+
+        <button class="btn btn-warning" @click="reportRequested = false" v-if="reportRequested">
+          {{ $t('actions.abort') }}
+        </button>
 
         <generate-issues-report
-            :construction-site="constructionSite" :maps="maps" :report="report"
+            :construction-site="constructionSite" :maps="maps" :report-configuration="report"
             :query="applyingQuery" :query-result-size="applyingQueryResultSize"
+            :generation-requested="reportRequested"
+            @generation-finished="reportRequested = false"
         />
       </div>
       <div class="tab-pane fade" :class="{'show active': exportType === 'link'}">
