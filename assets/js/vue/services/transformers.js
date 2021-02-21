@@ -94,7 +94,7 @@ const treeTransformer = {
     })
   },
   _addPropertyInPlace: function (tree, property, propertyResolveFunc) {
-    this._traverseDepthFirst(tree, child => child[property] = propertyResolveFunc(child))
+    this._traverseDepthFirst(tree, child => { child[property] = propertyResolveFunc(child) })
   },
   _flattenToList: function (tree) {
     let result = []
@@ -165,7 +165,7 @@ const mapTransformer = {
   },
   _addIssueGroupsInPlace: function (tree, mapGroups) {
     const mapGroupLookup = {}
-    mapGroups.forEach(mg => mapGroupLookup[mg.entity] = mg)
+    mapGroups.forEach(mg => { mapGroupLookup[mg.entity] = mg })
 
     treeTransformer._traverseDepthFirst(tree, node => {
       const mapGroup = mapGroupLookup[node.entity['@id']]
@@ -198,7 +198,7 @@ const mapTransformer = {
     this._addIssueGroupsInPlace(tree, mapGroups)
 
     const list = treeTransformer._flattenToList(tree)
-    list.forEach(entry => entry.taken = false)
+    list.forEach(entry => { entry.taken = false })
     list.sort((a, b) => a.issueCount - b.issueCount)
 
     console.log(list)
