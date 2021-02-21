@@ -216,7 +216,7 @@ const mapTransformer = {
     const tree = this._createMapTree(maps)
 
     this._addIssueGroupsInPlace(tree, mapGroups)
-    const properties = this.PROPERTY_PARENT | this.PROPERTY_SIBLINGS | this.PROPERTY_ISSUE_SUM_WITH_CHILDREN
+    const properties = this.PROPERTY_PARENT | this.PROPERTY_PARENTS | this.PROPERTY_SIBLINGS | this.PROPERTY_ISSUE_SUM_WITH_CHILDREN
     this._addPropertiesInPlace(tree, properties)
 
     let notIncludedMaps = treeTransformer._flattenToList(tree)
@@ -260,7 +260,7 @@ const mapTransformer = {
       notIncludedMaps = notIncludedMaps.filter(m => !group.includes(m))
       chosenMaps.forEach(chosenMap => {
         if (chosenMap.parent) {
-          chosenMap.parent.issueSumWithChildren -= chosenMap.issueSumWithChildren
+          chosenMap.parents.forEach(p => p.issueSumWithChildren -= chosenMap.issueSumWithChildren)
           chosenMap.parent.children = chosenMap.parent.children.filter(c => c !== chosenMap)
         }
       })
