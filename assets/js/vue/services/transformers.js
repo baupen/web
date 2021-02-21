@@ -260,7 +260,7 @@ const mapTransformer = {
       notIncludedMaps = notIncludedMaps.filter(m => !group.includes(m))
       chosenMaps.forEach(chosenMap => {
         if (chosenMap.parent) {
-          chosenMap.parents.forEach(p => p.issueSumWithChildren -= chosenMap.issueSumWithChildren)
+          chosenMap.parents.forEach(p => { p.issueSumWithChildren -= chosenMap.issueSumWithChildren })
           chosenMap.parent.children = chosenMap.parent.children.filter(c => c !== chosenMap)
         }
       })
