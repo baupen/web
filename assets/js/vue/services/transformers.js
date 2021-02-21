@@ -163,6 +163,11 @@ const mapTransformer = {
 
     return treeTransformer._flattenToList(tree)
   },
+  _flattenToLookupWithProperties: function (tree, properties = 0) {
+    this._addPropertiesInPlace(tree, properties)
+
+    return treeTransformer._flattenToLookup(tree, node => node.entity['@id'])
+  },
   _addIssueGroupsInPlace: function (tree, mapGroups) {
     const mapGroupLookup = {}
     mapGroups.forEach(mg => { mapGroupLookup[mg.entity] = mg })
@@ -188,9 +193,7 @@ const mapTransformer = {
   lookup: function (maps, properties) {
     const tree = this._createMapTree(maps)
 
-    this._addPropertiesInPlace(tree, properties)
-
-    return treeTransformer._flattenToLookup(tree, node => node.entity['@id'])
+    return this._flattenToLookupWithProperties(tree, properties)
   },
   groupByIssueCount: function (maps, mapGroups, maxCount) {
     const tree = this._createMapTree(maps)
@@ -262,7 +265,7 @@ const filterTransformer = {
       query['craftsman[]'] = filter.craftsmen.map(e => iriToId(e['@id']))
     }
     if (configuration.maps && this.shouldIncludeCollection(filter.maps, maps)) {
-      query['maps[]'] = filter.maps.map(e => iriToId(e['@id']))
+      query['map[]'] = filter.maps.map(e => iriToId(e['@id']))
     }
 
     const whitelistDateTimePropNames = []

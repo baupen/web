@@ -40,16 +40,16 @@
       <th class="w-minimal">
       </th>
       <th class="w-thumbnail"></th>
-      <th>
+      <th class="w-40">
           <span class="mr-1">
             {{ $t('issue.description') }}
           </span>
       </th>
       <th>
-        {{ $t('craftsman._name') }}
+        {{ $t('map._name') }}
       </th>
       <th>
-        {{ $t('map._name') }}
+        {{ $t('craftsman._name') }}
       </th>
       <order-table-head class="white-space-nowrap" :order="order" property="deadline" @ordered="order = $event">
         {{ $t('issue.deadline') }}
