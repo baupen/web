@@ -10,25 +10,25 @@
     </tr>
     </thead>
     <tbody>
-    <table-body-loading-indicator v-if="!flatHierarchicalMaps" />
-    <tr v-else v-for="flatHierarchy in flatHierarchicalMaps">
+    <table-body-loading-indicator v-if="!mapContainers" />
+    <tr v-else v-for="mapContainer in mapContainers">
       <td>
-        {{ '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(flatHierarchy.level) }}{{ flatHierarchy.entity.name }}
+        {{ '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(mapContainer.level) }}{{ mapContainer.entity.name }}
       </td>
       <td>
-        {{ getParentName(flatHierarchy) }}<br />
+        {{ getParentName(mapContainer) }}<br />
       </td>
       <td>
-        {{ getOriginalFilename(flatHierarchy.entity) }}
+        {{ getOriginalFilename(mapContainer.entity) }}
       </td>
       <td class="text-right">
-        <map-render-lightbox class="h-btn w-thumbnail" :construction-site="constructionSite" :map="flatHierarchy.entity" :empty="true" />
+        <map-render-lightbox class="h-btn w-thumbnail" :construction-site="constructionSite" :map="mapContainer.entity" :empty="true" />
       </td>
       <td>
         <div class="btn-group">
           <span /> <!-- fixes button css -->
-          <edit-map-button :map="flatHierarchy.entity" :maps="maps" />
-          <remove-map-button v-if="!flatHierarchy.children.length" :construction-site="constructionSite" :map="flatHierarchy.entity" />
+          <edit-map-button :map="mapContainer.entity" :maps="maps" />
+          <remove-map-button v-if="!mapContainer.children.length" :construction-site="constructionSite" :map="mapContainer.entity" />
         </div>
       </td>
     </tr>
@@ -63,27 +63,27 @@ export default {
     }
   },
   computed: {
-    flatHierarchicalMaps: function () {
+    mapContainers: function () {
       if (!this.maps) {
         return null
       }
 
-      return mapTransformer.flatHierarchy(this.maps)
+      return mapTransformer.orderedList(this.maps, mapTransformer.PROPERTY_LEVEL | mapTransformer.PROPERTY_PARENT)
     },
   },
   methods: {
     getOriginalFilename: function (map) {
       return mapFormatter.originalFilename(map)
     },
-    getParentName: function (flatHierarchy) {
-      if (!flatHierarchy.entity.parent) {
+    getParentName: function (mapContainer) {
+      if (!mapContainer.entity.parent) {
         return this.$t('view.maps_edit.no_parent_name')
       }
-      if (!flatHierarchy.parent) {
+      if (!mapContainer.parent) {
         return this.$t('view.maps_edit.parent_not_found')
       }
 
-      return flatHierarchy.parent.name
+      return mapContainer.parent.entity.name
     }
   }
 }

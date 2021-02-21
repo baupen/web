@@ -17,9 +17,9 @@
     >
       <option :value="null">{{ $t('map.no_parent_name') }}</option>
       <option disabled></option>
-      <option v-for="flatHierarchy in flatHierarchicalMaps" :value="flatHierarchy.entity['@id']"
-              :key="flatHierarchy.entity['@id']">
-        {{ "&nbsp;".repeat(flatHierarchy.level) }} {{ flatHierarchy.entity.name}}
+      <option v-for="mapContainer in mapContainers" :value="mapContainer.entity['@id']"
+              :key="mapContainer.entity['@id']">
+        {{ "&nbsp;".repeat(mapContainer.level) }} {{ mapContainer.entity.name}}
       </option>
     </select>
     <invalid-feedback :errors="fields.parent.errors"/>
@@ -85,8 +85,8 @@ export default {
     }
   },
   computed: {
-    flatHierarchicalMaps: function () {
-      return mapTransformer.flatHierarchy(this.maps)
+    mapContainers: function () {
+      return mapTransformer.orderedList(this.maps, mapTransformer.PROPERTY_LEVEL)
     },
     updatePayload: function () {
       if (this.fields.name.errors.length ||

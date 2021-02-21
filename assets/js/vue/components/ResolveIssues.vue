@@ -11,14 +11,14 @@
 
       <template v-else>
         <maps-resolve-table
-            :map-containers="flatMaps" :map-groups="mapGroups"
+            :maps="maps" :issues-group-by-map="issuesGroupByMap"
             :craftsman="craftsman" :construction-site="constructionSite"
-            @scroll-to="scrollTo($event)" />
+            @scroll-to-map="scrollToMap($event)" />
 
         <issues-resolve-view
             class="mt-4 mt-md-5" :ref="mapContainer.entity['@id']"
-            v-for="mapContainer in mapsWithIssues" :key="mapContainer.entity['@id']"
-            :map="mapContainer.entity" :map-context="getMapContext(mapContainer)"
+            v-for="mapContainer in mapContainers" :key="mapContainer.entity['@id']"
+            :map="mapContainer.entity" :map-parent-names="mapContainer.mapParentNames"
             :craftsman="craftsman" :construction-site="constructionSite"
             :construction-managers="constructionManagers" />
       </template>
@@ -43,7 +43,7 @@ export default {
     return {
       constructionManagers: null,
       maps: null,
-      mapGroups: null
+      issuesGroupByMap: null
     }
   },
   props: {
@@ -57,44 +57,30 @@ export default {
     }
   },
   methods: {
-    getMapContext: function (mapContainer) {
-      const parents = this.mapParentsLookup[mapContainer.entity['@id']]
-      return parents.map(p => p.name).join(' > ')
-    },
-    scrollTo: function (mapContainer) {
+    scrollToMap: function (map) {
       this.$nextTick(() => {
-        const newDisplayedMap = this.$refs[mapContainer.entity['@id']].$el
-        if (!newDisplayedMap) {
-          return;
+        const newDisplayedMap = this.$refs[map['@id']]
+        if (!newDisplayedMap || !newDisplayedMap.$el) {
+          return
         }
 
-        const newDisplayedMapOffset = $(newDisplayedMap).offset().top
+        const element = newDisplayedMap.$el
+        const newDisplayedMapOffset = $(element).offset().top
 
-        $('html').animate({scrollTop: newDisplayedMapOffset})
+        $('html').animate({ scrollTop: newDisplayedMapOffset })
       })
     },
   },
   computed: {
     groupCountSum: function () {
-      return this.mapGroups.reduce((sum, entry) => sum + entry.count, 0)
+      return this.issuesGroupByMap.reduce((sum, entry) => sum + entry.issueCount, 0)
     },
     isLoading: function () {
-      return !this.maps || !this.mapGroups
+      return !this.maps || !this.issuesGroupByMap
     },
-    mapParentsLookup: function () {
-      return mapTransformer.parentsLookup(this.maps)
-    },
-    flatMaps: function () {
-      return mapTransformer.flatHierarchy(this.maps)
-    },
-    mapsWithIssues: function () {
-      let groupLookup = {}
-      this.mapGroups.forEach(mg => groupLookup[mg.entity] = mg)
-
-      return this.flatMaps.filter(m => {
-        const group = groupLookup[m.entity['@id']]
-        return group && group.count > 0
-      })
+    mapContainers: function () {
+      return mapTransformer.orderedListWithIssuesGroups(this.maps, this.issuesGroupByMap, mapTransformer.PROPERTY_MAP_PARENT_NAMES)
+          .filter(container => container.issueCount > 0)
     }
   },
   mounted () {
@@ -109,7 +95,7 @@ export default {
     api.getIssuesGroup(this.constructionSite, 'map', {
       craftsman: iriToId(this.craftsman['@id']),
       state: 2
-    }).then(groups => this.mapGroups = groups)
+    }).then(groups => this.issuesGroupByMap = groups)
   }
 }
 </script>

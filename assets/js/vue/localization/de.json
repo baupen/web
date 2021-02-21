@@ -87,6 +87,8 @@
   },
   "view": {
     "issues_by_map": "Pendenzen nach Bauplan",
+    "pending": "bevorstehend",
+    "aborted": "abgebrochen",
     "no_issues": "Keine Pendenzen",
     "more": "mehr",
     "less": "weniger",

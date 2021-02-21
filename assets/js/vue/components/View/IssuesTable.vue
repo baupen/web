@@ -244,22 +244,18 @@ export default {
 
       return craftsmanLookup
     },
-    mapLookup: function () {
-      let mapLookup = {}
-      this.maps.forEach(m => mapLookup[m['@id']] = m)
-
-      return mapLookup
-    },
-    mapParentsLookup: function () {
-      return mapTransformer.parentsLookup(this.maps)
+    mapContainerLookup: function () {
+      return mapTransformer.lookup(this.maps, mapTransformer.PROPERTY_MAP_PARENT_NAMES)
     },
     issuesWithRelations: function () {
       return this.issues.map(issue => {
+        let mapContainer = this.mapContainerLookup[issue.map]
+
         return {
           issue,
           craftsman: this.craftsmanLookup[issue.craftsman],
-          map: this.mapLookup[issue.map],
-          mapParentNames: this.mapParentsLookup[issue.map].map(m => m.name),
+          map: mapContainer.entity,
+          mapParentNames: mapContainer.mapParentNames,
           resolvedBy: this.craftsmanLookup[issue.resolvedBy]
         }
       })

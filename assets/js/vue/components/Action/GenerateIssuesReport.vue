@@ -1,25 +1,18 @@
 <template>
   <div v-for="report in reports">
-    <report-generation-progress
-        :label="report.label" :progress="report.progress"
+    <issue-report-generation-progress
+        :progressLabel="report.progressLabel" :progress="report.progress"
         :link="report.link" :aborted="report.aborted" />
-  </div>
-  <div v-if="generationStatus">
-    <p class="mb-0">{{ generationStatus.label }}</p>
-    <div class="progress">
-      <div class="progress-bar progress-bar-striped progress-bar-animated"
-           :class="'progress-'+generationStatus.progress" role="progressbar"></div>
-    </div>
   </div>
 </template>
 
 <script>
 import { api, maxIssuesPerReport } from '../../services/api'
 import { mapTransformer } from '../../services/transformers'
-import ReportGenerationProgress from '../View/ReportGenerationProgress'
+import IssueReportGenerationProgress from '../View/IssueReportGenerationProgress'
 
 export default {
-  components: { ReportGenerationProgress },
+  components: { IssueReportGenerationProgress },
   emits: ['generation-finished'],
   data () {
     return {
@@ -82,8 +75,8 @@ export default {
       this.reports = []
 
       api.getIssuesGroup(this.constructionSite, 'map', this.query)
-          .then(mapGroups => {
-            const reportGroups = mapTransformer.reportGroups(this.maps, mapGroups, maxIssuesPerReport)
+          .then(issuesGroupByMap => {
+            const reportGroups = mapTransformer.reportGroups(this.maps, issuesGroupByMap, maxIssuesPerReport)
 
             const defaultPayload = {
               progress: 0,
