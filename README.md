@@ -31,7 +31,8 @@ The next version will feature:
 - [x] removed `Notes` (no one used it)
 - [x] reimplementation of the login flow to ease boarding users
 - [x] ease authentication in App with a QR code
-- [x] foyer & register table of issues supports more issues & allows edit of more properties
+- [x] faster foyer & register view, even if many issues created 
+- [x] automatic multiple reports generation of many issues selected
 - [x] edit view simplified
 - [ ] dashboard features graph with issue progress
 
@@ -87,10 +88,10 @@ Milestone 5 (Migration & performance)
 - [x] implement copy environment with mysql database
   
 Milestone 6 (Pre-release)
+- [x] finish all still-open issues
 - [ ] finishing touches with 0, many & many deleted elements
-- [ ] finish all still-open issues
+- [ ] implement dashboard graph
 - [ ] implement filter view
-- [ ] work on the nice-to-haves until release
 
 ## Migration
 
