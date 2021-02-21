@@ -1,4 +1,4 @@
-import { iriToId } from './api'
+import { iriToId, maxIssuesPerReport } from './api'
 
 const issueTransformer = {
   isOverdue: function (issue) {
@@ -230,35 +230,43 @@ const mapTransformer = {
         break
       }
 
-      // TODO: remove self from children list of parent
-      // TODO: first choose maps with issueCount >= maxCount
-      // TODO: merge top-level into single group if maxCount allows
-
       const mapsUnderLimit = shouldIncludeMaps.filter(m => m.issueSumWithChildren <= maxCount)
-      const chosenMap = mapsUnderLimit.length ? mapsUnderLimit.sort(sortDesc)[0] : shouldIncludeMaps.sort(sortAsc)[0]
+      const mapsUnderLimitExist = mapsUnderLimit.length
+      const initialChosenMap = mapsUnderLimitExist ? mapsUnderLimit.sort(sortDesc)[0] : shouldIncludeMaps.sort(sortAsc)[0]
 
-      const group = [chosenMap, ...treeTransformer._flattenToList(chosenMap.children)]
+      const chosenMaps = [initialChosenMap]
+      let chosenIssueSum = initialChosenMap.issueSumWithChildren
+
+      if (mapsUnderLimitExist) {
+        // try to combine with siblings
+        initialChosenMap.siblings.sort(sortDesc)
+        initialChosenMap.siblings.forEach(sibling => {
+          if (sibling.issueSumWithChildren + chosenIssueSum <= maxCount) {
+            chosenMaps.push(sibling)
+            chosenIssueSum += sibling.issueSumWithChildren
+          }
+        })
+      }
+
+      let group = [...chosenMaps]
+      chosenMaps.forEach(chosenMap => {
+        group = group.concat(...treeTransformer._flattenToList(chosenMap.children))
+      })
       groups.push({
-        groupIssueSum: chosenMap.issueSumWithChildren,
+        groupIssueSum: chosenIssueSum,
         group
       })
 
       notIncludedMaps = notIncludedMaps.filter(m => !group.includes(m))
-      if (chosenMap.parent) {
-        chosenMap.parent.issueSumWithChildren -= chosenMap.issueSumWithChildren
-      }
+      chosenMaps.forEach(chosenMap => {
+        if (chosenMap.parent) {
+          chosenMap.parent.issueSumWithChildren -= chosenMap.issueSumWithChildren
+          chosenMap.parent.children = chosenMap.parent.children.filter(c => c !== chosenMap)
+        }
+      })
     }
 
     return groups
-
-    // get issue count by map (DONE; in mapGroups)
-    // order maps by issue count (biggest first)
-    // take highest a
-    // join a with all siblings (and all its children) + a.parent into b
-    // if b > limit then take a else add b to list
-    // repeat while list not empty / count of next item > 0
-
-    // return list of list of mapIds (already as Ids, not IRI)
   }
 }
 

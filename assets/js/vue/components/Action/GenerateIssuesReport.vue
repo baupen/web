@@ -1,5 +1,4 @@
 <template>
-
   <button v-if="!reports.length" class="btn btn-primary" @click="planGeneration">
     {{ $t('actions.generate_report') }}
   </button>
