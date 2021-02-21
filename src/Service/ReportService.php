@@ -341,7 +341,7 @@ class ReportService implements ReportServiceInterface
             }
 
             if ($showResolved) {
-                $row[] = null !== $issue->getResolvedAt() ? $issue->getResolvedAt()->format(DateTimeFormatter::DATE_FORMAT)."\n".$issue->getResolvedBy()->getName() : '';
+                $row[] = null !== $issue->getResolvedAt() ? $issue->getResolvedAt()->format(DateTimeFormatter::DATE_FORMAT)."\n".$issue->getResolvedBy()->getCompany() : '';
             }
 
             if ($showClosed) {
@@ -351,7 +351,7 @@ class ReportService implements ReportServiceInterface
             $tableContent[] = $row;
         }
 
-        $report->addTable($tableHeader, $tableContent, null, 10);
+        $report->addTable($tableHeader, $tableContent, null, 12);
     }
 
     /**
@@ -438,7 +438,7 @@ class ReportService implements ReportServiceInterface
         $this->addAggregatedIssuesInfo($orderedCraftsman, $issuesPerCraftsman, $tableContent, $tableHeader);
 
         //write to pdf
-        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_craftsman', [], 'report'));
+        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_craftsman', [], 'report'), 100);
     }
 
     private function setScriptRuntime(int $numberOfIssues): void
