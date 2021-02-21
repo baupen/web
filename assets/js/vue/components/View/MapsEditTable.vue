@@ -22,7 +22,7 @@
         {{ getOriginalFilename(flatHierarchy.entity) }}
       </td>
       <td class="text-right">
-        <map-render-lightbox class="h-btn" :construction-site="constructionSite" :map="flatHierarchy.entity" />
+        <map-render-lightbox class="h-btn w-thumbnail" :construction-site="constructionSite" :map="flatHierarchy.entity" :empty="true" />
       </td>
       <td>
         <div class="btn-group">
