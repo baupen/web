@@ -98,6 +98,9 @@
     "maps_edit": {
       "no_parent_name": "-",
       "parent_not_found": "(entfernt)"
+    },
+    "issue_report_generation_result": {
+      "contains_issues": "enhält {count} Pendenzen"
     }
   },
   "import_craftsmen": {

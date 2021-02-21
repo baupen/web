@@ -87,6 +87,12 @@ const treeTransformer = {
       this._addParentsInPlace(child.children, newParents)
     })
   },
+  _addSiblingsInPlace: function (tree) {
+    tree.forEach(child => {
+      child.siblings = tree.filter(t => t !== child)
+      this._addSiblingsInPlace(child.children)
+    })
+  },
   _traverseDepthFirst: function (tree, func) {
     tree.forEach(child => {
       this._traverseDepthFirst(child.children, func)
@@ -123,8 +129,10 @@ const mapTransformer = {
   PROPERTY_LEVEL: 1,
   PROPERTY_PARENT: 2,
   PROPERTY_PARENTS: 4,
-  PROPERTY_MAP_PARENT_NAMES: 8,
-  PROPERTY_HAS_CHILD_WITH_ISSUES: 16,
+  PROPERTY_SIBLINGS: 8,
+  PROPERTY_MAP_PARENT_NAMES: 16,
+  PROPERTY_HAS_CHILD_WITH_ISSUES: 32,
+  PROPERTY_ISSUE_SUM_WITH_CHILDREN: 64,
   _createMapTree: function (maps) {
     const noParentKey = 'root'
     const parentLookup = treeTransformer._createParentLookup(noParentKey, maps, m => m.parent)
@@ -148,14 +156,23 @@ const mapTransformer = {
     if (properties & this.PROPERTY_PARENTS) {
       treeTransformer._addParentsInPlace(tree)
     }
+    if (properties & this.PROPERTY_SIBLINGS) {
+      treeTransformer._addSiblingsInPlace(tree)
+    }
     if (properties & this.PROPERTY_MAP_PARENT_NAMES) {
       if (!(properties & this.PROPERTY_PARENTS)) {
         treeTransformer._addParentsInPlace(tree)
       }
-      treeTransformer._addPropertyInPlace(tree, 'mapParentNames', node => node.parents.map(p => p.entity.name))
+      const mapParentNamesFunc = node => node.parents.map(p => p.entity.name)
+      treeTransformer._addPropertyInPlace(tree, 'mapParentNames', mapParentNamesFunc)
     }
     if (properties & this.PROPERTY_HAS_CHILD_WITH_ISSUES) {
-      treeTransformer._addPropertyInPlace(tree, 'hasChildWithIssues', child => child.children.some(c => c.issueCount > 0 || c.hasChildWithIssues))
+      const hasChildWithIssuesFunc = child => child.children.some(c => c.issueCount > 0 || c.hasChildWithIssues)
+      treeTransformer._addPropertyInPlace(tree, 'hasChildWithIssues', hasChildWithIssuesFunc)
+    }
+    if (properties & this.PROPERTY_ISSUE_SUM_WITH_CHILDREN) {
+      const issueSumWithChildrenFunc = child => child.issueCount + child.children.reduce((acc, curr) => acc + curr.issueSumWithChildren, 0)
+      treeTransformer._addPropertyInPlace(tree, 'issueSumWithChildren', issueSumWithChildrenFunc)
     }
   },
   _flattenToListWithProperties: function (tree, properties = 0) {
@@ -199,12 +216,36 @@ const mapTransformer = {
     const tree = this._createMapTree(maps)
 
     this._addIssueGroupsInPlace(tree, mapGroups)
+    const properties = this.PROPERTY_PARENT | this.PROPERTY_SIBLINGS | this.PROPERTY_ISSUE_SUM_WITH_CHILDREN
+    this._addPropertiesInPlace(tree, properties)
 
-    const list = treeTransformer._flattenToList(tree)
-    list.forEach(entry => { entry.taken = false })
-    list.sort((a, b) => a.issueCount - b.issueCount)
+    let notIncludedMaps = treeTransformer._flattenToList(tree)
 
-    console.log(list)
+    const sortDesc = (a, b) => b.issueSumWithChildren - a.issueSumWithChildren
+    const sortAsc = (a, b) => a.issueSumWithChildren - b.issueSumWithChildren
+    const groups = []
+    while (true) {
+      const shouldIncludeMaps = notIncludedMaps.filter(m => m.issueSumWithChildren > 0)
+      if (shouldIncludeMaps.length === 0) {
+        break
+      }
+
+      const mapsUnderLimit = shouldIncludeMaps.filter(m => m.issueSumWithChildren <= maxCount)
+      const chosenMap = mapsUnderLimit.length ? mapsUnderLimit.sort(sortDesc)[0] : shouldIncludeMaps.sort(sortAsc)[0]
+
+      const group = [chosenMap, ...treeTransformer._flattenToList(chosenMap.children)]
+      groups.push({
+        groupIssueSum: chosenMap.issueSumWithChildren,
+        group
+      })
+
+      notIncludedMaps = notIncludedMaps.filter(m => !group.includes(m))
+      if (chosenMap.parent) {
+        chosenMap.parent.issueSumWithChildren -= chosenMap.issueSumWithChildren
+      }
+    }
+
+    return groups
 
     // get issue count by map (DONE; in mapGroups)
     // order maps by issue count (biggest first)
@@ -214,8 +255,6 @@ const mapTransformer = {
     // repeat while list not empty / count of next item > 0
 
     // return list of list of mapIds (already as Ids, not IRI)
-
-    return [list]
   }
 }
 

@@ -3,7 +3,7 @@ import { displaySuccess, displayError } from './notifiers'
 
 const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
 const validFileTypes = ['application/pdf']
-const maxIssuesPerReport = 2
+const maxIssuesPerReport = 1000
 
 const iriToId = function (iri) {
   return iri.substr(iri.lastIndexOf('/') + 1)
@@ -131,7 +131,7 @@ const api = {
   _getEmptyResponse: function (url) {
     return new Promise(
       (resolve) => {
-        axios.get(url)
+        axios.get(url, { headers: { 'X-EMPTY-RESPONSE-EXPECTED': '' } })
           .then(response => {
             resolve(response.data)
           })

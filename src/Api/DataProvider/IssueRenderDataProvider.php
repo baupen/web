@@ -22,6 +22,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 
 class IssueRenderDataProvider extends NoPaginationDataProvider
 {
@@ -72,7 +73,7 @@ class IssueRenderDataProvider extends NoPaginationDataProvider
         $size = $this->getValidImageSizeFromQuery($this->request->query);
 
         $map = $this->manager->getRepository(Map::class)->find($existingFilter['map']);
-        if (null === $map || $map->getConstructionSite()->getId() !== $existingFilter['constructionSite']) {
+        if (null === $map || $map->getConstructionSite()->getId() !== $existingFilter['constructionSite'] || !$map->getFile()) {
             throw new BadRequestException();
         }
 
@@ -80,6 +81,11 @@ class IssueRenderDataProvider extends NoPaginationDataProvider
         $issues = $queryBuilder->getQuery()->getResult();
 
         $path = $this->imageService->renderMapFileWithIssuesToJpg($map->getFile(), $issues, $size);
+
+        $emptyAnswer = $this->request->headers->has('X-EMPTY-RESPONSE-EXPECTED');
+        if ($emptyAnswer) {
+            return new Response();
+        }
 
         return $this->tryCreateInlineFileResponse($path, 'render.jpg');
     }

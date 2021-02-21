@@ -1,18 +1,20 @@
 <template>
   <div v-for="report in reports">
-    <issue-report-generation-progress
+    <issue-report-generation-card
+        class="mt-2"
         :progressLabel="report.progressLabel" :progress="report.progress"
+        :query-result-size="report.queryResultSize"
         :link="report.link" :aborted="report.aborted" />
   </div>
 </template>
 
 <script>
-import { api, maxIssuesPerReport } from '../../services/api'
+import { api, iriToId, maxIssuesPerReport } from '../../services/api'
 import { mapTransformer } from '../../services/transformers'
-import IssueReportGenerationProgress from '../View/IssueReportGenerationProgress'
+import IssueReportGenerationCard from '../View/IssueReportGenerationCard'
 
 export default {
-  components: { IssueReportGenerationProgress },
+  components: { IssueReportGenerationCard },
   emits: ['generation-finished'],
   data () {
     return {
@@ -76,7 +78,8 @@ export default {
 
       api.getIssuesGroup(this.constructionSite, 'map', this.query)
           .then(issuesGroupByMap => {
-            const reportGroups = mapTransformer.reportGroups(this.maps, issuesGroupByMap, maxIssuesPerReport)
+            const mapContainerGroups = mapTransformer.groupByIssueCount(this.maps, issuesGroupByMap, maxIssuesPerReport)
+            console.log(mapContainerGroups)
 
             const defaultPayload = {
               progress: 0,
@@ -85,10 +88,18 @@ export default {
               aborted: false
             }
 
-            this.reports = reportGroups.map(maps => {
+            this.reports = mapContainerGroups.map(mapContainerGroup => {
+              const includedMaps = mapContainerGroup.group
+                  .filter(c => c.issueCount > 0) // only include map if any issue contained
+                  .map(c => c.entity)
+
+              let currentQuery = Object.assign({}, this.query, {'map[]': includedMaps.map(m => iriToId(m['@id']))})
+              const prerenderMaps = includedMaps.filter(m => m.fileUrl) // only prerender if actually file to render
+
               return Object.assign({
-                query: this.query,
-                maps,
+                queryResultSize: mapContainerGroup.groupIssueSum,
+                query: currentQuery,
+                prerenderMaps,
               }, defaultPayload)
             })
 
@@ -101,28 +112,29 @@ export default {
         return
       }
 
-      this.generateMap(reportIndex)
+      this.prerenderMap(reportIndex)
     },
-    generateMap: function (reportIndex, mapIndex = 0) {
+    prerenderMap: function (reportIndex, mapIndex = 0) {
       if (this.abortGeneration()) {
         return
       }
 
       const currentReport = this.reports[reportIndex]
-      if (currentReport.maps.length === mapIndex) {
+      if (currentReport.prerenderMaps.length === mapIndex) {
         this.finishGeneration(reportIndex)
         return
       }
 
-      currentReport.progressLabel = this.$t('actions.messages.generating_map') + ' (' + (mapIndex + 1) + '/' + currentReport.maps.length + ')...'
-      currentReport.progress = mapIndex / currentReport.maps.length * 100
+      currentReport.progressLabel = this.$t('actions.messages.generating_map') + ' (' + (mapIndex + 1) + '/' + currentReport.prerenderMaps.length + ')...'
+      currentReport.progress = mapIndex / currentReport.prerenderMaps.length * 100
 
-      const query = Object.assign({}, currentReport.query, { 'maps[]': null })
-      delete query['maps[]']
+      const query = Object.assign({}, currentReport.query)
+      delete query['map[]']
 
-      api.getIssuesRenderProbe(this.constructionSite, currentReport.maps[mapIndex], query)
+      let currentMap = currentReport.prerenderMaps[mapIndex]
+      api.getIssuesRenderProbe(this.constructionSite, currentMap, query)
           .then(_ => {
-            this.generateMap(reportIndex, mapIndex + 1)
+            this.prerenderMap(reportIndex, mapIndex + 1)
           })
     },
     finishGeneration: function (reportIndex) {
