@@ -99,13 +99,15 @@ class ReportService implements ReportServiceInterface
             $this->addIssueContent($filter, $reportElements, $issues, $report);
         }
 
+        $filename = (new DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT).'_'.uniqid().'.pdf';
+
         $folder = $this->pathService->getTransientFolderForReports();
         FileHelper::ensureFolderExists($folder);
 
-        $path = $folder.'/'.(new DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT).'_'.uniqid().'.pdf';
+        $path = $folder.'/'.$filename;
         $report->save($path);
 
-        return $path;
+        return $filename;
     }
 
     private function addIssueContent(Filter $filter, ReportElements $reportElements, array $issues, Report $report): void

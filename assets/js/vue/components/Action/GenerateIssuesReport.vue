@@ -79,7 +79,6 @@ export default {
       api.getIssuesGroup(this.constructionSite, 'map', this.query)
           .then(issuesGroupByMap => {
             const mapContainerGroups = mapTransformer.groupByIssueCount(this.maps, issuesGroupByMap, maxIssuesPerReport)
-            console.log(mapContainerGroups)
 
             const defaultPayload = {
               progress: 0,
@@ -149,6 +148,7 @@ export default {
       api.getReportLink(this.constructionSite, this.reportQuery, currentReport.query)
           .then(link => {
             currentReport.link = link
+            console.log(currentReport)
             this.startGeneration(reportIndex + 1)
           })
     },

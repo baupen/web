@@ -12,9 +12,11 @@
 namespace App\Controller;
 
 use App\Controller\Base\BaseDoctrineController;
+use App\Controller\Traits\FileResponseTrait;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Security\TokenTrait;
+use App\Service\Interfaces\PathServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,6 +25,19 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class PublicController extends BaseDoctrineController
 {
     use TokenTrait;
+    use FileResponseTrait;
+
+    /**
+     * @Route("/download/{filename}", name="public_download")
+     *
+     * @return Response
+     */
+    public function downloadAction(string $filename, PathServiceInterface $pathService)
+    {
+        $path = $pathService->getTransientFolderForReports();
+
+        return $this->tryCreateAttachmentFileResponse($path.'/'.$filename, $filename, true);
+    }
 
     /**
      * @Route("/resolve/{token}", name="public_resolve")

@@ -21,6 +21,7 @@ use App\Service\Report\ReportElements;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
@@ -45,6 +46,11 @@ class IssueReportDataProvider extends NoPaginationDataProvider
     private $request;
 
     /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
      * @var FilterServiceInterface
      */
     private $filterService;
@@ -54,13 +60,14 @@ class IssueReportDataProvider extends NoPaginationDataProvider
     /**
      * IssueReportDataProvider constructor.
      */
-    public function __construct(ManagerRegistry $managerRegistry, ReportServiceInterface $reportService, TokenStorageInterface $tokenStorage, RequestStack $requestStack, FilterServiceInterface $filterService, iterable $collectionExtensions = [])
+    public function __construct(ManagerRegistry $managerRegistry, ReportServiceInterface $reportService, RequestStack $requestStack, TokenStorageInterface $tokenStorage, RouterInterface $router, FilterServiceInterface $filterService, iterable $collectionExtensions = [])
     {
         parent::__construct($managerRegistry, $collectionExtensions);
 
         $this->reportService = $reportService;
         $this->tokenStorage = $tokenStorage;
         $this->request = $requestStack->getCurrentRequest();
+        $this->router = $router;
         $this->filterService = $filterService;
     }
 
@@ -88,9 +95,9 @@ class IssueReportDataProvider extends NoPaginationDataProvider
         $author = $this->getAuthor($this->tokenStorage->getToken());
 
         $filter = $this->filterService->createFromQuery($context['filters']);
-        $filePath = $this->reportService->generatePdfReport($issues, $filter, $reportElements, $author);
+        $filename = $this->reportService->generatePdfReport($issues, $filter, $reportElements, $author);
 
-        return $this->tryCreateAttachmentFileResponse($filePath, 'report.pdf', true);
+        return $this->router->generate('public_download', ['filename' => $filename]);
     }
 
     private function getAuthor(?TokenInterface $token): ?string
