@@ -126,7 +126,11 @@ class MigrateSqliteCommand extends Command
         $io->text('Finalized '.$count.' issue images');
         $io->newLine();
 
-        $this->migrateSpecialCases($io, $sourcePdo, $targetPdo);
+        $this->migrateLocalTimeToUTC($targetPdo);
+        $io->text('Migrated from local time to UTC');
+        $io->newLine();
+
+        $this->migrateSpecialCases($io, $targetPdo);
         $io->text('Finalized');
         $io->newLine();
 
@@ -522,7 +526,7 @@ class MigrateSqliteCommand extends Command
         }
     }
 
-    private function migrateSpecialCases(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo)
+    private function migrateSpecialCases(SymfonyStyle $io, PDO $targetPdo)
     {
         $queries = [
             "UPDATE construction_site SET deleted_at = last_changed_at WHERE id = 'CE6DB20C-6D00-4563-AB83-F35F4512F951'",
@@ -530,6 +534,29 @@ class MigrateSqliteCommand extends Command
 
         $io->text('executing '.count($queries).' queries for special cases.');
         foreach ($queries as $query) {
+            $targetPdo->exec($query);
+        }
+    }
+
+    private function migrateLocalTimeToUTC(PDO $targetPdo)
+    {
+        $impactedFieldsByTable = [
+            'construction_manager' => ['created_at', 'last_changed_at'],
+            'construction_site' => ['created_at', 'last_changed_at', 'deleted_at'],
+            'construction_site_image' => ['created_at', 'last_changed_at'],
+            'craftsman' => ['created_at', 'last_changed_at', 'deleted_at', 'last_email_received', 'last_visit_online'],
+            'issue' => ['created_at', 'last_changed_at', 'deleted_at', 'deadline', 'created_at', 'registered_at', 'resolved_at', 'closed_at'],
+            'issue_image' => ['created_at', 'last_changed_at'],
+            'map' => ['created_at', 'last_changed_at', 'deleted_at'],
+            'map_file' => ['created_at', 'last_changed_at'],
+        ];
+        foreach ($impactedFieldsByTable as $table => $impactedFields) {
+            $sets = [];
+            foreach ($impactedFields as $impactedField) {
+                $sets[] = $impactedField.' = DATE_SUB('.$impactedField.', INTERVAL 1 HOUR)';
+            }
+
+            $query = 'UPDATE '.$table.' SET '.implode(', ', $sets);
             $targetPdo->exec($query);
         }
     }

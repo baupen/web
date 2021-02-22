@@ -15,6 +15,7 @@ use ApiPlatform\Core\Api\IriConverterInterface;
 use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\Api\Entity\CraftsmanStatistics;
+use App\Doctrine\UTCDateTimeType;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
 use Doctrine\ORM\QueryBuilder;
@@ -192,7 +193,7 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
         $this->groupByCraftsmanAndEvaluate(
             $queryBuilder, $statisticsDictionary, 'MIN(i.deadline)',
             function (CraftsmanStatistics $statistics, $value) {
-                $statistics->setNextDeadline(new \DateTime($value));
+                $statistics->setNextDeadline(UTCDateTimeType::tryParseDateTime($value));
             }
         );
     }
@@ -210,7 +211,7 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
         $this->groupByCraftsmanAndEvaluate(
             $queryBuilder, $statisticsDictionary, 'MAX(i.resolvedAt)',
             function (CraftsmanStatistics $statistics, $value) {
-                $statistics->setLastIssueResolved(new \DateTime($value));
+                $statistics->setLastIssueResolved(UTCDateTimeType::tryParseDateTime($value));
             }
         );
     }
