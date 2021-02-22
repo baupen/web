@@ -18,9 +18,6 @@ trait AssertApiCollectionFilterTrait
 {
     private function assertApiCollectionFilterDateTime(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, \DateTime $currentValue)
     {
-        // TODO bug: Need to add an hour so this test passes
-        $currentValue->add(new \DateInterval('PT1H'));
-
         // after and before are both inclusive
         $currentValueString = DateTimeFormatter::toStringUTCTimezone($currentValue); // like 2020-10-30T23:00:00.000000Z
         $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$currentValueString.'&'.$propertyName.'[before]='.$currentValueString, $iri);
