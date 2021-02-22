@@ -28,4 +28,9 @@ final class Version20210222083810 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE construction_site CHANGE is_hidden is_trial_construction_site TINYINT(1) DEFAULT \'0\' NOT NULL');
     }
+
+    public function isTransactional(): bool
+    {
+        return false;
+    }
 }

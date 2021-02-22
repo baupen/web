@@ -6,7 +6,7 @@
         <hr v-if="index !== 0" />
         <feed-entry :entry="entry" :construction-managers="constructionManagers" :craftsmen="craftsmen" />
       </template>
-      <span><i>{{$t("feed.no_entries_yet")}}</i></span>
+      <span v-else><i>{{$t("feed.no_entries_yet")}}</i></span>
     </div>
   </div>
 </template>
