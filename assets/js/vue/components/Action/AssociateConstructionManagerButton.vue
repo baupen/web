@@ -45,7 +45,7 @@ export default {
 
             api.patch(this.constructionSite, { constructionManagers }, this.$t('actions.messages.success.construction_manager_associated'))
                 .then(_ => {
-                  this.patching = false
+                  this.posting = false
                   this.$emit('added', constructionManager)
                 })
           })
