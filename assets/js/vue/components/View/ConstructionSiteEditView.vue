@@ -2,7 +2,7 @@
   <table class="table table-hover border">
     <tbody>
     <tr>
-      <td>
+      <td class="w-thumbnail">
         <image-lightbox :src="constructionSite.imageUrl" :subject="constructionSite.name" />
       </td>
       <td>{{ constructionSite.name }}</td>

@@ -10,7 +10,6 @@
     </div>
   </div>
 </template>
-
 <script>
 
 import FeedEntry from './View/FeedEntry'

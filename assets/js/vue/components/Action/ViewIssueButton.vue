@@ -128,6 +128,7 @@
     </div>
 
     <hr/>
+
     <p class="mb-0 text-secondary">
       {{$t("issue.last_changed_at")}}: <date-time-human-readable :value="issue.lastChangedAt" />
     </p>

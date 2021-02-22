@@ -34,13 +34,11 @@
 <script>
 import DateHumanReadable from '../Library/View/DateHumanReadable'
 import ButtonWithModal from '../Library/Behaviour/ButtonWithModal'
-import MapRenderLightbox from './MapRenderLightbox'
 import { mapTransformer } from '../../services/transformers'
 
 export default {
   emits: ['scroll-to-map'],
   components: {
-    MapRenderLightbox,
     ButtonWithModal,
     DateHumanReadable
   },
