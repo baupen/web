@@ -145,7 +145,7 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
     }
 
     /**
-     * @param Craftsman[] $craftsmen
+     * @param Craftsman[]           $craftsmen
      * @param CraftsmanStatistics[] $statisticsDictionary
      */
     private function countUnreadIssues(array $craftsmen, array $statisticsDictionary)
@@ -163,7 +163,7 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
     }
 
     /**
-     * @param Craftsman[] $craftsmen
+     * @param Craftsman[]           $craftsmen
      * @param CraftsmanStatistics[] $statisticsDictionary
      */
     private function countOverdueIssues(array $craftsmen, array $statisticsDictionary)
@@ -182,7 +182,7 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
     }
 
     /**
-     * @param Craftsman[] $craftsmen
+     * @param Craftsman[]           $craftsmen
      * @param CraftsmanStatistics[] $statisticsDictionary
      */
     private function findNextDeadline(array $craftsmen, array $statisticsDictionary)
@@ -199,7 +199,7 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
     }
 
     /**
-     * @param Craftsman[] $craftsmen
+     * @param Craftsman[]           $craftsmen
      * @param CraftsmanStatistics[] $statisticsDictionary
      */
     private function findLastIssueResolved(array $craftsmen, array $statisticsDictionary)
@@ -254,7 +254,7 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
     }
 
     /**
-     * @param Craftsman[] $craftsmen
+     * @param Craftsman[]           $craftsmen
      * @param CraftsmanStatistics[] $statisticsDictionary
      */
     private function findLastActivity(array $craftsmen, array $statisticsDictionary)

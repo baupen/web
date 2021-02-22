@@ -1,8 +1,15 @@
 <?php
 
+/*
+ * This file is part of the mangel.io project.
+ *
+ * (c) Florian Moser <git@famoser.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Doctrine;
-
 
 use DateTimeInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
@@ -23,7 +30,7 @@ class UTCDateTimeType extends DateTimeType
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        if ($value === null) {
+        if (null === $value) {
             return null;
         }
 
@@ -55,11 +62,7 @@ class UTCDateTimeType extends DateTimeType
         );
 
         if (!$converted) {
-            throw ConversionException::conversionFailedFormat(
-                $value,
-                $this->getName(),
-                $platform->getDateTimeFormatString()
-            );
+            throw ConversionException::conversionFailedFormat($value, $this->getName(), $platform->getDateTimeFormatString());
         }
 
         $converted->setTimezone(self::getLocal());
@@ -79,7 +82,7 @@ class UTCDateTimeType extends DateTimeType
 
     /**
      * This tries to parse "best effort" the datetime returned by the database to a \DateTime object
-     * Includes UTC handling
+     * Includes UTC handling.
      */
     public static function tryParseDateTime(string $value): \DateTime
     {
