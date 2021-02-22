@@ -122,4 +122,14 @@ class ConstructionManagerTest extends ApiTestCase
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers?constructionSites.id='.$emptyConstructionSite->getId());
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers?constructionSites.id='.$constructionSite->getId());
     }
+
+    public function testLastChangedAtFilter()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class]);
+        $constructionManager = $this->loginApiConstructionManager($client);
+        $constructionManagerIri = $this->getIriFromItem($constructionManager);
+
+        $this->assertApiCollectionFilterDateTime($client, '/api/construction_managers?', $constructionManagerIri, 'lastChangedAt', $constructionManager->getLastChangedAt());
+    }
 }
