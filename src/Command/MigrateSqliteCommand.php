@@ -37,14 +37,20 @@ class MigrateSqliteCommand extends Command
     private $pathService;
 
     /**
+     * @var string
+     */
+    private $authorizationMethod;
+
+    /**
      * MigrateSqliteCommand constructor.
      */
-    public function __construct(ManagerRegistry $registry, PathServiceInterface $pathService)
+    public function __construct(ManagerRegistry $registry, PathServiceInterface $pathService, string $authorizationMethod)
     {
         parent::__construct();
 
         $this->registry = $registry;
         $this->pathService = $pathService;
+        $this->authorizationMethod = $authorizationMethod;
     }
 
     /**
@@ -519,6 +525,10 @@ class MigrateSqliteCommand extends Command
         $queries = [
             "UPDATE construction_site SET deleted_at = last_changed_at WHERE id = 'CE6DB20C-6D00-4563-AB83-F35F4512F951'",
         ];
+
+        if ('whitelist' === $this->authorizationMethod) {
+            $queries[] = 'UPDATE construction_site SET deleted_at = NOW() WHERE is_trial_construction_site = 1';
+        }
 
         $io->text('executing '.count($queries).' queries for special cases.');
         foreach ($queries as $query) {
