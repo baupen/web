@@ -94,6 +94,8 @@
     "pending": "bevorstehend",
     "aborted": "abgebrochen",
     "no_issues": "Keine Pendenzen",
+    "no_craftsmen": "Keine Unternehmer",
+    "no_maps": "Keine Baupläne",
     "more": "mehr",
     "less": "weniger",
     "today": "heute",
@@ -132,7 +134,7 @@
     "messages": {
       "info": {
         "activate_construction_site": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen.",
-        "no_construction_site_associated": "Sie sind keiner Baustelle zugehörig."
+        "no_construction_site_associated": "Sie sind keiner Baustelle zugehörig. Sie können einen anderen Bauleiter bitten, Sie einer Baustelle hinzuzufügen."
       },
       "success": {
         "added_construction_site": "Die Baustelle wurde hinzugefügt.",
@@ -195,6 +197,7 @@
     "no_craftsman": "Kein Unternehmer",
     "no_trade_filter": "Kein Gewerk"
   },
+
   "dispatch": {
     "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und auf erledigt setzen.",
     "save_template_changes": "Änderungen an der Vorlage speichern",

@@ -25,6 +25,10 @@ class ConstructionManagerVoter extends ConstructionSiteRelatedEntityVoter
      */
     protected function isConstructionManagerRelated(ConstructionManager $constructionManager, $subject)
     {
+        if ($constructionManager === $subject) {
+            return true;
+        }
+
         foreach ($constructionManager->getConstructionSites() as $constructionSite) {
             if ($constructionSite->getConstructionManagers()->contains($subject)) {
                 return true;

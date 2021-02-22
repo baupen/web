@@ -30,6 +30,11 @@
     </thead>
     <tbody>
     <loading-indicator-table-body v-if="isLoading" />
+    <tr v-else-if="orderedCraftsmenWithStatistics.length === 0">
+      <td colspan="99">
+        <p class="text-center">{{ $t('view.no_craftsmen') }}</p>
+      </td>
+    </tr>
     <tr v-else v-for="cws in orderedCraftsmenWithStatistics" @click.stop="toggleSelectedCraftsman(cws.craftsman)"
         class="clickable">
       <td class="w-minimal">
@@ -100,8 +105,8 @@
                  :checked="entityListsAreEqual(craftsmenWithIssuesOverdue, selectedCraftsmen)">
         </custom-checkbox>
       </div>
-      <div class="float-right" v-if="!isLoading">
-        {{ craftsmen.length }} {{ $t('craftsman._plural') }}
+      <div class="float-right">
+        {{ totalCraftsmen }} {{ $t('craftsman._plural') }}
       </div>
     </caption>
   </table>
@@ -145,6 +150,9 @@ export default {
   computed: {
     isLoading: function () {
       return !this.craftsmen || !this.statistics
+    },
+    totalCraftsmen: function () {
+      return this.craftsmen ? this.craftsmen.length : 0
     },
     orderedCraftsmenWithStatistics: function () {
       if (this.isLoading) {

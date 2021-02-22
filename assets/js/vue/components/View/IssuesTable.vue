@@ -61,7 +61,7 @@
     <tbody>
     <loading-indicator-table-body v-if="isLoading" />
     <tr v-else-if="issueContainers.length === 0 && !issuesLoading">
-      <td colspan="9">
+      <td colspan="99">
         <p class="text-center">{{ $t('view.no_issues') }}</p>
       </td>
     </tr>

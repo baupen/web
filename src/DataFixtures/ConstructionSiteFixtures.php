@@ -69,7 +69,7 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
             $manager->persist($constructionSite);
         }
 
-        $this->simulateManyOpenIssues($manager, $constructionSites[1]);
+        // $this->simulateManyOpenIssues($manager, $constructionSites[1]);
 
         $manager->flush();
     }

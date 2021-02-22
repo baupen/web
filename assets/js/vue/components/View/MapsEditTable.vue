@@ -11,6 +11,11 @@
     </thead>
     <tbody>
     <table-body-loading-indicator v-if="!mapContainers" />
+    <tr v-else-if="mapContainers.length === 0">
+      <td colspan="99">
+        <p class="text-center">{{ $t('view.no_maps') }}</p>
+      </td>
+    </tr>
     <tr v-else v-for="mapContainer in mapContainers">
       <td>
         {{ '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(mapContainer.level) }}{{ mapContainer.entity.name }}

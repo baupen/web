@@ -7,8 +7,8 @@ app_invitation:
   subject: 'App herunterladen für %page%'
   download_to_use_functionality: Laden Sie sich unsere App herunter, um Pendenzen für %page% zu erfassen.
   ios_store: zum iOS Store
-  authenticate: Loggen Sie sich in der App mit der Webseite %page% ein.
-  ios_login_link: In der App einloggen
+  authenticate: Loggen Sie sich in der App mit dem QR Code von der Webseite oder dem nachfolgenden Link ein.
+  ios_login_link: App öffnen & einloggen
 
 craftsman_issue_reminder:
   view_issues_link: 'Pendenzen ansehen'
