@@ -39,7 +39,7 @@ export default {
     },
     constructionSites: {
       type: Array,
-      required: false
+      default: []
     }
   },
   computed: {

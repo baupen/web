@@ -60,12 +60,12 @@
     </thead>
     <tbody>
     <loading-indicator-table-body v-if="isLoading" />
-    <tr v-else-if="issues.length === 0 && !issuesLoading">
+    <tr v-else-if="issueContainers.length === 0 && !issuesLoading">
       <td colspan="9">
         <p class="text-center">{{ $t('view.no_issues') }}</p>
       </td>
     </tr>
-    <tr v-else v-for="iwr in issuesWithRelations" @click.stop="toggleSelectedIssue(iwr.issue)" :key="iwr.issue['@id']"
+    <tr v-else v-for="iwr in issueContainers" @click.stop="toggleSelectedIssue(iwr.issue)" :key="iwr.issue['@id']"
         class="clickable">
       <td class="w-minimal">
         <custom-checkbox>
@@ -92,12 +92,12 @@
       </td>
       <td>{{ iwr.issue.description }}</td>
       <td>
-        {{ iwr.map.name }}<br />
-        <span class="text-muted">{{ iwr.mapParentNames.join(' > ') }}</span>
+        {{ iwr.map?.name }}<br />
+        <span class="text-muted">{{ iwr.mapParentNames?.join(' > ') }}</span>
       </td>
       <td>
-        {{ iwr.craftsman.trade }}<br />
-        <span class="text-muted">{{ iwr.craftsman.company }}</span>
+        {{ iwr.craftsman?.trade }}<br />
+        <span class="text-muted">{{ iwr.craftsman?.company }}</span>
       </td>
       <td>
         <date-human-readable :value="iwr.issue.deadline" />
@@ -115,7 +115,7 @@
     </tbody>
     <caption class="caption-top">
       <template v-if="view === 'foyer'">
-        <div v-if="issuesWithoutDescription.length" class="form-check form-check-inline">
+        <div v-if="issuesWithoutDescription.length" class="form-check form-check-inline mr-4">
           <custom-checkbox id="issues-without-description"
                            :label="$t('issue_table.without_description')"
                            @click.prevent="toggleSelectedIssues(issuesWithoutDescription)">
@@ -123,7 +123,7 @@
                    :checked="entityListsAreEqual(issuesWithoutDescription, selectedIssues)">
           </custom-checkbox>
         </div>
-        <div v-if="issuesWithoutCraftsman.length" class="form-check form-check-inline">
+        <div v-if="issuesWithoutCraftsman.length" class="form-check form-check-inline mr-4">
           <custom-checkbox id="issues-without-craftsman"
                            :label="$t('issue_table.without_craftsman')"
                            @click.prevent="toggleSelectedIssues(issuesWithoutCraftsman)">
@@ -226,6 +226,10 @@ export default {
     view: {
       type: String,
       required: true,
+    },
+    hiddenIssues: {
+      type: Array,
+      default: []
     }
   },
   computed: {
@@ -235,8 +239,8 @@ export default {
     notLoadedIssueCount: function () {
       return this.totalIssues - this.issues.length
     },
-    editButtonPendingRequestCount: function () {
-      return this.prePatchedIssues.length + this.prePostedIssueImages.length
+    displayedIssues: function () {
+      return this.issues.filter(i => !this.hiddenIssues.includes(i))
     },
     craftsmanLookup: function () {
       let craftsmanLookup = {}
@@ -247,8 +251,9 @@ export default {
     mapContainerLookup: function () {
       return mapTransformer.lookup(this.maps, mapTransformer.PROPERTY_MAP_PARENT_NAMES)
     },
-    issuesWithRelations: function () {
-      return this.issues.map(issue => {
+
+    issueContainers: function () {
+      return this.displayedIssues.map(issue => {
         let mapContainer = this.mapContainerLookup[issue.map]
 
         return {
@@ -261,13 +266,13 @@ export default {
       })
     },
     issuesWithoutDescription: function () {
-      return this.issues.filter(i => !i.description)
+      return this.displayedIssues.filter(i => !i.description)
     },
     issuesWithoutDeadline: function () {
-      return this.issues.filter(i => !i.deadline)
+      return this.displayedIssues.filter(i => !i.deadline)
     },
     issuesWithoutCraftsman: function () {
-      return this.issues.filter(i => !i.craftsman)
+      return this.displayedIssues.filter(i => !i.craftsman)
     },
     defaultFilter: function () {
       return filterTransformer.defaultFilter(this.view)
@@ -345,6 +350,12 @@ export default {
       deep: true,
       handler: function () {
         this.$emit('selected', this.selectedIssues)
+      }
+    },
+    hiddenIssues: {
+      deep: true,
+      handler: function () {
+        this.selectedIssues = this.selectedIssues.filter(i => !this.hiddenIssues.includes(i))
       }
     },
     order: function () {

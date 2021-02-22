@@ -197,6 +197,14 @@ class ConstructionManager extends BaseEntity implements UserInterface
         return [self::ROLE_CONSTRUCTION_MANAGER];
     }
 
+    /**
+     * @Groups({"construction-manager-read"})
+     */
+    public function getLastChangedAt(): \DateTime
+    {
+        return $this->lastChangedAt;
+    }
+
     public function getLocale(): string
     {
         return $this->locale;

@@ -66,7 +66,7 @@ export default {
         query['state'] = this.state;
       }
       if (this.empty) {
-        query['lastChangedAt[after]'] = (new Date()).toISOString()
+        query['number'] = -1
       }
 
       return api.getIssuesRenderLink(this.constructionSite, this.map, query)

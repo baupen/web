@@ -230,6 +230,7 @@ const mapTransformer = {
         break
       }
 
+      // try to find map under the specified limit
       const mapsUnderLimit = shouldIncludeMaps.filter(m => m.issueSumWithChildren <= maxCount)
       const mapsUnderLimitExist = mapsUnderLimit.length
       const initialChosenMap = mapsUnderLimitExist ? mapsUnderLimit.sort(sortDesc)[0] : shouldIncludeMaps.sort(sortAsc)[0]
@@ -237,8 +238,8 @@ const mapTransformer = {
       const chosenMaps = [initialChosenMap]
       let chosenIssueSum = initialChosenMap.issueSumWithChildren
 
+      // try to combine with siblings
       if (mapsUnderLimitExist) {
-        // try to combine with siblings
         initialChosenMap.siblings.sort(sortDesc)
         initialChosenMap.siblings.forEach(sibling => {
           if (sibling.issueSumWithChildren + chosenIssueSum <= maxCount) {
@@ -248,6 +249,7 @@ const mapTransformer = {
         })
       }
 
+      // create group with chosen maps & their children (already included in chosenIssueSum)
       let group = [...chosenMaps]
       chosenMaps.forEach(chosenMap => {
         group = group.concat(...treeTransformer._flattenToList(chosenMap.children))
@@ -257,9 +259,11 @@ const mapTransformer = {
         group
       })
 
+      // remove chosen maps from the data structure
       notIncludedMaps = notIncludedMaps.filter(m => !group.includes(m))
       chosenMaps.forEach(chosenMap => {
         if (chosenMap.parent) {
+          chosenMap.siblings.forEach(s => { s.siblings = s.siblings.filter(e => e !== chosenMap) })
           chosenMap.parents.forEach(p => { p.issueSumWithChildren -= chosenMap.issueSumWithChildren })
           chosenMap.parent.children = chosenMap.parent.children.filter(c => c !== chosenMap)
         }

@@ -100,7 +100,7 @@
 
     <div class="row mt-3" v-if="isResolved">
       <div class="col-md-3">
-        <p class="m-0 state-icon text-warning">
+        <p class="m-0 state-icon text-orange">
           <font-awesome-icon :icon="['far', 'exclamation-circle']" />
           <span class="state-joiner" />
         </p>
@@ -211,7 +211,7 @@ export default {
       }
 
       if (this.isResolved) {
-        return 'warning'
+        return 'orange'
       }
 
       return 'primary'

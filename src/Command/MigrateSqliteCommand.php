@@ -37,14 +37,20 @@ class MigrateSqliteCommand extends Command
     private $pathService;
 
     /**
+     * @var string
+     */
+    private $authorizationMethod;
+
+    /**
      * MigrateSqliteCommand constructor.
      */
-    public function __construct(ManagerRegistry $registry, PathServiceInterface $pathService)
+    public function __construct(ManagerRegistry $registry, PathServiceInterface $pathService, string $authorizationMethod)
     {
         parent::__construct();
 
         $this->registry = $registry;
         $this->pathService = $pathService;
+        $this->authorizationMethod = $authorizationMethod;
     }
 
     /**
@@ -118,6 +124,10 @@ class MigrateSqliteCommand extends Command
 
         $count = $this->finalizeIssueImages($io, $sourcePdo, $targetPdo);
         $io->text('Finalized '.$count.' issue images');
+        $io->newLine();
+
+        $this->migrateSpecialCases($io, $sourcePdo, $targetPdo);
+        $io->text('Finalized');
         $io->newLine();
 
         return 0;
@@ -206,7 +216,7 @@ class MigrateSqliteCommand extends Command
          * is_automatic_edit_enabled (removed functionality)
          */
 
-        $commonFields = [
+        $fields = [
             'id', 'image_id',
             'name', 'folder_name', 'is_trial_construction_site',
             'street_address', 'postal_code', 'locality', 'country',
@@ -217,9 +227,11 @@ class MigrateSqliteCommand extends Command
             if ('Schweiz' === $constructionSite['country']) {
                 $constructionSite['country'] = 'CH';
             }
+            $constructionSite['is_hidden'] = $constructionSite['is_trial_construction_site'];
+            unset($constructionSite['is_trial_construction_site']);
         };
 
-        return $this->migrateTable($io, $sourcePdo, $targetPdo, 'construction_site', $commonFields, $migrateReference);
+        return $this->migrateTable($io, $sourcePdo, $targetPdo, 'construction_site', $fields, $migrateReference);
     }
 
     private function migrateConstructionSiteConstructionManagers(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
@@ -507,6 +519,18 @@ class MigrateSqliteCommand extends Command
 
         foreach ($entities as $entity) {
             $insertQuery->execute(array_values($entity));
+        }
+    }
+
+    private function migrateSpecialCases(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo)
+    {
+        $queries = [
+            "UPDATE construction_site SET deleted_at = last_changed_at WHERE id = 'CE6DB20C-6D00-4563-AB83-F35F4512F951'",
+        ];
+
+        $io->text('executing '.count($queries).' queries for special cases.');
+        foreach ($queries as $query) {
+            $targetPdo->exec($query);
         }
     }
 }

@@ -129,9 +129,10 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     /**
      * @var bool
      *
+     * @Groups({"construction-site-read"})
      * @ORM\Column(type="boolean", options={"default": false})
      */
-    private $isTrialConstructionSite = false;
+    private $isHidden = false;
 
     /**
      * Construction site constructor.
@@ -215,14 +216,14 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
         $this->image = $image;
     }
 
-    public function isTrialConstructionSite(): bool
+    public function getIsHidden(): bool
     {
-        return $this->isTrialConstructionSite;
+        return $this->isHidden;
     }
 
-    public function setIsTrialConstructionSite(bool $isTrialConstructionSite): void
+    public function setIsHidden(bool $isHidden): void
     {
-        $this->isTrialConstructionSite = $isTrialConstructionSite;
+        $this->isHidden = $isHidden;
     }
 
     /**

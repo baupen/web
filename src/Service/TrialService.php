@@ -46,7 +46,7 @@ class TrialService implements TrialServiceInterface
         $constructionSite->setLocality($this->translator->trans('example.locality', [], 'entity_construction_site'));
         $constructionSite->setPostalCode((int) $this->translator->trans('example.postal_code', [], 'entity_construction_site'));
         $constructionSite->setCountry('CH');
-        $constructionSite->setIsTrialConstructionSite(true);
+        $constructionSite->setIsHidden(true);
 
         $constructionSite->getConstructionManagers()->add($constructionManager);
         $constructionManager->getConstructionSites()->add($constructionSite);
