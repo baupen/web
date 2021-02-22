@@ -14,7 +14,7 @@
     <div class="form-group">
       <custom-checkbox
           class="mb-1"
-          v-for="craftsman in entities" :key="craftsman['@id']"
+          v-for="craftsman in orderedCraftsmen" :key="craftsman['@id']"
           :for-id="'filter-craftsman-' + craftsman['@id']" :label="craftsman.trade"
           :secondary-label="craftsman.company">
         <input
@@ -40,5 +40,11 @@ export default {
   mixins: [
     entityFilterMixin
   ],
+  computed: {
+    orderedCraftsmen: function () {
+      return this.entities.sort((a, b) => a.trade.localeCompare(b.trade))
+          .filter(c => !c.isDeleted)
+    }
+  }
 }
 </script>

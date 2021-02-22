@@ -9,14 +9,14 @@
              :checked="entities.length > 0 && allEntitiesSelected">
     </custom-checkbox-field>
 
-    <hr/>
+    <hr />
 
     <div class="form-group">
       <custom-checkbox
           class="mb-1"
           v-for="mapContainer in mapContainers" :key="mapContainer.entity['@id']"
           :for-id="'filter-map-' + mapContainer.entity['@id']" :label="mapContainer.entity.name">
-        <span :class="'spacer-' + mapContainer.level"/>
+        <span :class="'spacer-' + mapContainer.level" />
         <input
             class="custom-control-input" type="checkbox" :id="'filter-map-' + mapContainer.entity['@id']"
             v-model="selectedEntities"
@@ -34,13 +34,17 @@ import { mapTransformer } from '../../../services/transformers'
 import { entityFilterMixin } from './mixins'
 
 export default {
-  components: { CustomCheckbox, CustomCheckboxField },
+  components: {
+    CustomCheckbox,
+    CustomCheckboxField
+  },
   mixins: [
     entityFilterMixin
   ],
   computed: {
     mapContainers: function () {
       return mapTransformer.orderedList(this.entities, mapTransformer.PROPERTY_LEVEL)
+          .filter(c => !c.entity.isDeleted)
     }
   },
 }
