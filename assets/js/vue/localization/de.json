@@ -132,7 +132,7 @@
     "messages": {
       "info": {
         "activate_construction_site": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen.",
-        "no_construction_site_associated": "Sie sind keiner Baustelle zugehörig."
+        "no_construction_site_associated": "Sie sind keiner Baustelle zugehörig. Sie können einen anderen Bauleiter bitten, Sie einer Baustelle hinzuzufügen."
       },
       "success": {
         "added_construction_site": "Die Baustelle wurde hinzugefügt.",

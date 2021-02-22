@@ -47,6 +47,7 @@ $(document)
   })
 
 function renderQRCode (token) {
+  // same payload also iOSLoginLink Twig Extension
   const payload = {
     token: token,
     origin: window.location.origin

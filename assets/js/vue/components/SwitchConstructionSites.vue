@@ -4,21 +4,20 @@
     <p>{{ $t('switch.mine_help') }}</p>
 
     <loading-indicator-secondary :spin="isLoading">
-      <div class="container mt-5">
+      <div class="container mt-5"
+           v-if="memberOfConstructionSites.length > 0">
         <construction-sites-enter-list
-            v-if="memberOfConstructionSites.length > 0"
             :construction-sites="memberOfConstructionSites"
             :construction-managers="constructionManagers"
         />
-
-        <div v-else class="alert alert-info">
-          <template v-if="canAssociateSelf">
-            {{ $t('switch.messages.info.activate_construction_site') }}
-          </template>
-          <template v-else>
-            {{ $t('switch.messages.info.no_construction_site_associated') }}
-          </template>
-        </div>
+      </div>
+      <div v-else class="alert alert-info">
+        <template v-if="canAssociateSelf">
+          {{ $t('switch.messages.info.activate_construction_site') }}
+        </template>
+        <template v-else>
+          {{ $t('switch.messages.info.no_construction_site_associated') }}
+        </template>
       </div>
 
     </loading-indicator-secondary>

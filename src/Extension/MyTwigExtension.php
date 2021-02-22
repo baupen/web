@@ -74,13 +74,11 @@ class MyTwigExtension extends AbstractExtension
 
     public function iOSLoginLinkFilter(ConstructionManager $constructionManager): string
     {
-        $username = 'username='.urlencode($constructionManager->getEmail());
-        $domain = $this->request ? 'domain='.urlencode($this->request->getHttpHost()) : null;
+        // same payload also in app.js
+        $payload = ['token' => $constructionManager->getAuthenticationToken(), 'origin' => $this->request->getHttpHost()];
+        $data = json_encode($payload);
 
-        $arguments = array_filter([$username, $domain]);
-        $url = implode('&', $arguments);
-
-        return 'mangel.io://login?'.$url;
+        return 'mangelio://login?payload='.base64_encode($data);
     }
 
     public function camelCaseToUnderscoreFilter(string $propertyName): string
