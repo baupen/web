@@ -29,12 +29,12 @@
     <add-construction-site-button
         class="mb-2"
         :construction-manager-iri="constructionManagerIri"
-        :construction-sites="constructionSites"
+        :construction-sites="orderedConstructionSites"
         @added="constructionSites.push($event)"
     />
     <construction-sites-participation-table
         :is-loading="isLoading"
-        :construction-sites="constructionSites"
+        :construction-sites="orderedConstructionSites"
         :construction-manager-iri="constructionManagerIri"
     />
   </template>
@@ -77,10 +77,16 @@ export default {
       return !this.constructionSites || !this.constructionManagers
     },
     memberOfConstructionSites: function () {
-      return this.constructionSiteList.filter(constructionSite => constructionSite.constructionManagers.includes(this.constructionManagerIri))
+      return this.orderedConstructionSites.filter(constructionSite => constructionSite.constructionManagers.includes(this.constructionManagerIri))
     },
-    constructionSiteList: function () {
-      return this.constructionSites.filter(constructionSite => !constructionSite.isDeleted)
+    orderedConstructionSites: function () {
+      if (!this.constructionSites) {
+        return null
+      }
+
+      return this.constructionSites
+          .filter(constructionSite => !constructionSite.isDeleted)
+          .sort((a, b) => a.name.localeCompare(b.name))
     },
     canAssociateSelf: function () {
       return this.constructionManager.canAssociateSelf

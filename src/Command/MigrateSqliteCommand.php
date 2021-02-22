@@ -120,6 +120,10 @@ class MigrateSqliteCommand extends Command
         $io->text('Finalized '.$count.' issue images');
         $io->newLine();
 
+        $this->migrateSpecialCases($io, $sourcePdo, $targetPdo);
+        $io->text('Finalized');
+        $io->newLine();
+
         return 0;
     }
 
@@ -507,6 +511,18 @@ class MigrateSqliteCommand extends Command
 
         foreach ($entities as $entity) {
             $insertQuery->execute(array_values($entity));
+        }
+    }
+
+    private function migrateSpecialCases(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo)
+    {
+        $queries = [
+            "UPDATE construction_site SET deleted_at = last_changed_at WHERE id = 'CE6DB20C-6D00-4563-AB83-F35F4512F951'",
+        ];
+
+        $io->text('executing '.count($queries).' queries for special cases.');
+        foreach ($queries as $query) {
+            $targetPdo->exec($query);
         }
     }
 }
