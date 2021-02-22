@@ -2,10 +2,11 @@
   <div class="card">
     <div class="card-body limited-height">
       <loading-indicator-secondary v-if="isLoading" class="loading-center" />
-      <template v-else v-for="(entry, index) in orderedFeedEntries">
+      <template v-else-if="orderedFeedEntries" v-for="(entry, index) in orderedFeedEntries">
         <hr v-if="index !== 0" />
         <feed-entry :entry="entry" :construction-managers="constructionManagers" :craftsmen="craftsmen" />
       </template>
+      <span><i>{{$t("feed.no_entries_yet")}}</i></span>
     </div>
   </div>
 </template>

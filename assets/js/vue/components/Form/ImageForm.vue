@@ -1,13 +1,14 @@
 <template>
-  <form-field for-id="file" :label="$t('form.image.label')">
+  <form-field for-id="image" :label="$t('form.image.label')">
     <dropzone
-        v-if="!file"
-        id="file" :help="$t('form.image.drop_or_choose')"
+        v-if="!image"
+        id="image" :help="$t('form.image.drop_or_choose')"
         :valid-file-types="validFileTypes"
-        @input="file = $event[0]" />
-    <input v-if="file" id="file" class="form-control is-valid" type="text" readonly="readonly"
-           :value="file.name">
-    <a class="btn-link clickable" v-if="file" @click="file = null">
+        @input="image = $event[0]" />
+    <input v-if="image" id="image" class="form-control" type="text" readonly="readonly"
+           :class="{'is-valid': imageIsValid, 'is-invalid': !imageIsValid && image !== null }"
+           :value="image.name">
+    <a class="btn-link clickable" v-if="image" @click="image = null">
       {{ $t('form.image.reset') }}
     </a>
   </form-field>
@@ -28,24 +29,31 @@ export default {
   data () {
     return {
       mounted: false,
-      file: null
+      image: null
     }
   },
   watch: {
-    file: function () {
+    image: function () {
       if (this.mounted) {
-        this.$emit('update', this.file)
+        this.$emit('update', this.image)
       }
     },
   },
   computed: {
+    imageIsValid: function () {
+      if (!this.image) {
+        return false
+      }
+
+      return this.validFileTypes.some(e => this.image.type === e)
+    },
     validFileTypes: function () {
       return validImageTypes;
     }
   },
   mounted () {
     this.mounted = true
-    this.$emit('update', this.file)
+    this.$emit('update', this.image)
   }
 }
 </script>

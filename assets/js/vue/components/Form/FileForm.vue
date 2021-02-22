@@ -5,7 +5,8 @@
         id="file" :help="$t('form.file.drop_or_choose')"
         :valid-file-types="validFileTypes"
         @input="file = $event[0]" />
-    <input v-if="file" id="file" class="form-control is-valid" type="text" readonly="readonly"
+    <input v-if="file" id="file" class="form-control" type="text" readonly="readonly"
+           :class="{'is-valid': fileIsValid, 'is-invalid': !fileIsValid && file !== null }"
            :value="file.name">
     <a class="btn-link clickable" v-if="file" @click="file = null">
       {{ $t('form.file.reset') }}
@@ -34,11 +35,18 @@ export default {
   watch: {
     file: function () {
       if (this.mounted) {
-        this.$emit('update', this.file)
+        this.$emit('update', this.fileIsValid ? this.file : null)
       }
     },
   },
   computed: {
+    fileIsValid: function () {
+      if (!this.file) {
+        return false
+      }
+
+      return this.validFileTypes.some(e => this.file.type === e)
+    },
     validFileTypes: function () {
       return validFileTypes;
     }

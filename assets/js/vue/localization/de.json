@@ -94,6 +94,8 @@
     "pending": "bevorstehend",
     "aborted": "abgebrochen",
     "no_issues": "Keine Pendenzen",
+    "no_craftsmen": "Keine Unternehmer",
+    "no_maps": "Keine Baupläne",
     "more": "mehr",
     "less": "weniger",
     "today": "heute",
@@ -195,6 +197,7 @@
     "no_craftsman": "Kein Unternehmer",
     "no_trade_filter": "Kein Gewerk"
   },
+
   "dispatch": {
     "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und auf erledigt setzen.",
     "save_template_changes": "Änderungen an der Vorlage speichern",

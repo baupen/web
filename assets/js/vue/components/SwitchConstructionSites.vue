@@ -32,6 +32,7 @@
         @added="constructionSites.push($event)"
     />
     <construction-sites-participation-table
+        v-if="showConstructionSites && showConstructionSites.length > 0"
         :is-loading="isLoading"
         :construction-sites="showConstructionSites"
         :construction-manager-iri="constructionManagerIri"

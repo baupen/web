@@ -12,6 +12,11 @@
     </thead>
     <tbody>
     <loading-indicator-table-body v-if="!orderedCraftsmen" />
+    <tr v-else-if="orderedCraftsmen.length === 0">
+      <td colspan="99">
+        <p class="text-center">{{ $t('view.no_craftsmen') }}</p>
+      </td>
+    </tr>
     <tr v-else v-for="craftsman in orderedCraftsmen">
       <td>{{ craftsman.trade }}</td>
       <td>

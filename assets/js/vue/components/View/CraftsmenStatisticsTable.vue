@@ -30,6 +30,11 @@
     </thead>
     <tbody>
     <loading-indicator-table-body v-if="isLoading" />
+    <tr v-else-if="orderedCraftsmenWithStatistics.length === 0">
+      <td colspan="99">
+        <p class="text-center">{{ $t('view.no_craftsmen') }}</p>
+      </td>
+    </tr>
     <tr v-else v-for="cws in orderedCraftsmenWithStatistics" @click.stop="toggleSelectedCraftsman(cws.craftsman)"
         class="clickable">
       <td class="w-minimal">
