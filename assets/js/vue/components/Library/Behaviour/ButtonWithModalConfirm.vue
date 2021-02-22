@@ -15,25 +15,30 @@
         <slot></slot>
       </template>
       <template v-slot:after-body>
-        <div class="modal-footer">
-          <slot name="secondary-footer"></slot>
-          <button type="submit" :disabled="!canConfirm" @click="confirm" :class="'btn btn-' + color">
-            {{ confirmTitle ?? title }}
-          </button>
-        </div>
+        <slot name="footer">
+          <div class="modal-footer">
+            <slot name="secondary-footer"></slot>
+            <button type="submit" :disabled="!canConfirm" @click="confirm" :class="'btn btn-' + color">
+              {{ confirmTitle ?? title }}
+            </button>
+          </div>
+        </slot>
       </template>
     </modal>
   </transition>
 </template>
 
 <script>
-import ButtonWithModal from "./ButtonWithModal";
-import Modal from "./Modal";
+import ButtonWithModal from './ButtonWithModal'
+import Modal from './Modal'
 
 export default {
   emits: ['confirm', 'shown', 'hidden'],
-  components: {Modal, ButtonWithModal},
-  data() {
+  components: {
+    Modal,
+    ButtonWithModal
+  },
+  data () {
     return {
       show: false
     }
@@ -77,8 +82,8 @@ export default {
   },
   methods: {
     confirm: function () {
-      this.$emit('confirm');
-      this.show = false;
+      this.$emit('confirm')
+      this.show = false
     }
   }
 }

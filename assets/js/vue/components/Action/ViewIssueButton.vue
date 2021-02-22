@@ -1,7 +1,10 @@
 <template>
   <button-with-modal-confirm
-      :title="$t('actions.view_issue')" :color="stateColor"
-      :confirm-title="$t('actions.close')">
+      :title="$t('actions.view_issue')" :color="stateColor">
+
+    <template v-slot:footer>
+      <span class="d-none"></span>
+    </template>
 
     <template v-slot:button-content>
       <font-awesome-icon v-if="isClosed" :icon="['far', 'check-circle']" />
@@ -123,6 +126,12 @@
         <date-time-human-readable :value="issue.closedAt" />
       </div>
     </div>
+
+    <hr/>
+
+    <p class="mb-0 text-secondary">
+      {{$t("issue.last_changed_at")}}: <date-time-human-readable :value="issue.lastChangedAt" />
+    </p>
 
   </button-with-modal-confirm>
 </template>

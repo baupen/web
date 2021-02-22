@@ -390,6 +390,7 @@
     "is_marked": "Favorit",
     "was_added_with_client": "Abnahmependenz",
     "position": "Platzierung",
+    "last_changed_at": "Zuletzt geändert",
     "state": {
       "created": "erstellt",
       "created_help": "Pendenz wurde auf dem Gerät erfasst",

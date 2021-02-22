@@ -3,7 +3,7 @@
     <table class="table table-hover table-striped">
       <thead>
       <tr>
-        <th class="w-minimal"></th>
+        <th class="w-thumbnail"></th>
         <th>{{ $t('construction_site.name') }}</th>
         <th>{{ $t('construction_site.address') }}</th>
         <th>{{ $t('construction_site.created_at') }}</th>

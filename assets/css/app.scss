@@ -69,10 +69,6 @@ body {
   height: calc(2em + 2px);
 }
 
-.w-thumbnail {
-  width: calc(100px + 1.5rem);
-}
-
 .pre {
   white-space: pre;
 }
@@ -121,4 +117,8 @@ select:required {
 
 .w-40 {
   width: 40%;
+}
+
+.w-thumbnail {
+  width: calc(100px + 1.5rem);
 }

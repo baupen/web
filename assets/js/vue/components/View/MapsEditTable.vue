@@ -5,7 +5,7 @@
       <th>{{ $t('map.name') }}</th>
       <th>{{ $t('map.parent') }}</th>
       <th></th>
-      <th class="w-minimal"></th>
+      <th class="w-thumbnail"></th>
       <th class="w-minimal"></th>
     </tr>
     </thead>
@@ -27,7 +27,7 @@
         {{ getOriginalFilename(mapContainer.entity) }}
       </td>
       <td class="text-right">
-        <map-render-lightbox class="h-btn w-thumbnail" :construction-site="constructionSite" :map="mapContainer.entity" :empty="true" />
+        <map-render-lightbox class="h-btn" :construction-site="constructionSite" :map="mapContainer.entity" :empty="true" />
       </td>
       <td>
         <div class="btn-group">
