@@ -216,7 +216,7 @@ class MigrateSqliteCommand extends Command
          * is_automatic_edit_enabled (removed functionality)
          */
 
-        $commonFields = [
+        $fields = [
             'id', 'image_id',
             'name', 'folder_name', 'is_trial_construction_site',
             'street_address', 'postal_code', 'locality', 'country',
@@ -227,9 +227,11 @@ class MigrateSqliteCommand extends Command
             if ('Schweiz' === $constructionSite['country']) {
                 $constructionSite['country'] = 'CH';
             }
+            $constructionSite['is_hidden'] = $constructionSite['is_trial_construction_site'];
+            unset($constructionSite['is_trial_construction_site']);
         };
 
-        return $this->migrateTable($io, $sourcePdo, $targetPdo, 'construction_site', $commonFields, $migrateReference);
+        return $this->migrateTable($io, $sourcePdo, $targetPdo, 'construction_site', $fields, $migrateReference);
     }
 
     private function migrateConstructionSiteConstructionManagers(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
@@ -525,10 +527,6 @@ class MigrateSqliteCommand extends Command
         $queries = [
             "UPDATE construction_site SET deleted_at = last_changed_at WHERE id = 'CE6DB20C-6D00-4563-AB83-F35F4512F951'",
         ];
-
-        if ('whitelist' === $this->authorizationMethod) {
-            $queries[] = 'UPDATE construction_site SET deleted_at = NOW() WHERE is_trial_construction_site = 1';
-        }
 
         $io->text('executing '.count($queries).' queries for special cases.');
         foreach ($queries as $query) {
