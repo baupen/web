@@ -92,12 +92,12 @@
       </td>
       <td>{{ iwr.issue.description }}</td>
       <td>
-        {{ iwr.map.name }}<br />
-        <span class="text-muted">{{ iwr.mapParentNames.join(' > ') }}</span>
+        {{ iwr.map?.name }}<br />
+        <span class="text-muted">{{ iwr.mapParentNames?.join(' > ') }}</span>
       </td>
       <td>
-        {{ iwr.craftsman.trade }}<br />
-        <span class="text-muted">{{ iwr.craftsman.company }}</span>
+        {{ iwr.craftsman?.trade }}<br />
+        <span class="text-muted">{{ iwr.craftsman?.company }}</span>
       </td>
       <td>
         <date-human-readable :value="iwr.issue.deadline" />
@@ -115,7 +115,7 @@
     </tbody>
     <caption class="caption-top">
       <template v-if="view === 'foyer'">
-        <div v-if="issuesWithoutDescription.length" class="form-check form-check-inline">
+        <div v-if="issuesWithoutDescription.length" class="form-check form-check-inline mr-4">
           <custom-checkbox id="issues-without-description"
                            :label="$t('issue_table.without_description')"
                            @click.prevent="toggleSelectedIssues(issuesWithoutDescription)">
@@ -123,7 +123,7 @@
                    :checked="entityListsAreEqual(issuesWithoutDescription, selectedIssues)">
           </custom-checkbox>
         </div>
-        <div v-if="issuesWithoutCraftsman.length" class="form-check form-check-inline">
+        <div v-if="issuesWithoutCraftsman.length" class="form-check form-check-inline mr-4">
           <custom-checkbox id="issues-without-craftsman"
                            :label="$t('issue_table.without_craftsman')"
                            @click.prevent="toggleSelectedIssues(issuesWithoutCraftsman)">
