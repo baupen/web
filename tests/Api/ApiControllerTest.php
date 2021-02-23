@@ -14,6 +14,9 @@ namespace App\Tests\Api;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
 use App\DataFixtures\Model\AssetFile;
+use App\Entity\ConstructionSite;
+use App\Entity\Issue;
+use App\Entity\Map;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\DataFixtures\TestFilterFixtures;
@@ -102,6 +105,12 @@ class ApiControllerTest extends ApiTestCase
 
         $this->assertNotEquals($url, $url2);
         $this->assertSingleImageDownloads($client->getKernelBrowser(), $url2);
+
+        // try delete
+        $this->assertApiDeleteFile($client->getKernelBrowser(), $baseUrl);
+        /** @var ConstructionSite $testConstructionSite */
+        $testConstructionSite = $this->reloadEntity($testConstructionSite);
+        $this->assertNull($testConstructionSite->getImage());
     }
 
     public function testIssueImage()
@@ -131,6 +140,12 @@ class ApiControllerTest extends ApiTestCase
 
         $this->assertNotEquals($url, $url2);
         $this->assertSingleImageDownloads($client->getKernelBrowser(), $url2);
+
+        // try delete
+        $this->assertApiDeleteFile($client->getKernelBrowser(), $baseUrl);
+        /** @var Issue $issue */
+        $issue = $this->reloadEntity($issue);
+        $this->assertNull($issue->getImage());
     }
 
     public function testMapFile()
@@ -162,6 +177,12 @@ class ApiControllerTest extends ApiTestCase
 
         $this->assertNotEquals($url, $url2);
         $this->assertGetFile($client->getKernelBrowser(), $url2, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+
+        // try delete
+        $this->assertApiDeleteFile($client->getKernelBrowser(), $baseUrl);
+        /** @var Map $map */
+        $map = $this->reloadEntity($map);
+        $this->assertNull($map->getFile());
     }
 
     private function assertImageDownloads(Client $client, string $imageUrl): void

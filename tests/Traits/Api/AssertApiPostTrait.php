@@ -50,4 +50,11 @@ trait AssertApiPostTrait
 
         return $kernelBrowser->getResponse()->getContent();
     }
+
+    private function assertApiDeleteFile(KernelBrowser $kernelBrowser, string $url)
+    {
+        $kernelBrowser->request('DELETE', $url);
+
+        $this->assertEquals(StatusCode::HTTP_NO_CONTENT, $kernelBrowser->getResponse()->getStatusCode());
+    }
 }
