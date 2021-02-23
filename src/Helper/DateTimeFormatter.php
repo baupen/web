@@ -11,20 +11,10 @@
 
 namespace App\Helper;
 
-use DateTimeZone;
-
 class DateTimeFormatter
 {
     public const FILESYSTEM_DATE_TIME_FORMAT = 'Y-m-d\THis';
     public const DATE_TIME_FORMAT = 'd.m.Y H:i';
     public const DATE_FORMAT = 'd.m.Y';
     public const ISO_DATE_FORMAT = 'Y-m-d';
-
-    public static function toStringUTCTimezone(\DateTime $dateTime)
-    {
-        $current = clone $dateTime;
-        $current->setTimezone(new DateTimeZone('UTC'));
-
-        return $current->format('Y-m-d\TH:i:s.u\Z');
-    }
 }
