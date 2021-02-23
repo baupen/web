@@ -18,24 +18,33 @@ trait AssertApiCollectionFilterTrait
 {
     private function assertApiCollectionFilterDateTime(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, \DateTime $currentValue)
     {
+        $format = function (\DateTime $dateTime) {
+            return urlencode($dateTime->format('c'));
+        };
+
+        $formatAlternative = function (\DateTime $dateTime) {
+            $utcDateTime = clone $dateTime;
+            $utcDateTime->setTimezone(new DateTimeZone('UTC'));
+
+            return urlencode($utcDateTime->format('Y-m-d\TH:i:s.u\Z'));
+        };
+
         // after and before are both inclusive
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$currentValue->format('c').'&'.$propertyName.'[before]='.$currentValue->format('c'), $iri);
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$format($currentValue), $iri);
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[before]='.$format($currentValue), $iri);
 
         $afterValue = clone $currentValue;
         $afterValue->add(new \DateInterval('PT1M'));
-        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$afterValue->format('c'), $iri);
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[before]='.$afterValue->format('c'), $iri);
+        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$format($afterValue), $iri);
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[before]='.$format($afterValue), $iri);
 
         $beforeValue = clone $currentValue;
         $beforeValue->sub(new \DateInterval('PT1M'));
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$beforeValue->format('c'), $iri);
-        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'[before]='.$beforeValue->format('c'), $iri);
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$format($beforeValue), $iri);
+        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'[before]='.$format($beforeValue), $iri);
 
-        // ensure timezone parsed valid
-        $utcCurrentValue = clone $currentValue;
-        $utcCurrentValue->setTimezone(new DateTimeZone('UTC'));
-        $utcCurrentValueString = $utcCurrentValue->format('Y-m-d\TH:i:s.u\Z'); // like 2020-10-30T23:00:00.000000Z
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$currentValue->format('c').'&'.$propertyName.'[before]='.$utcCurrentValueString, $iri);
+        // ensure timezones & different formatting respected
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$formatAlternative($currentValue).'&'.$propertyName.'[before]='.$format($currentValue), $iri);
     }
 
     private function assertApiCollectionFilterBoolean(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, bool $currentValue)
