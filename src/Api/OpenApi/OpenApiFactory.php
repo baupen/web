@@ -168,12 +168,21 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $requestBody = new Model\RequestBody('The image to upload and assign to the issue', new \ArrayObject($imageContent));
         $postOperation = (new Model\Operation('postIssueImage'))
             ->withTags(['Issue'])
+            ->withSummary('Add / replace the image of the issue')
             ->withParameters([$this->createRequiredPathParameter('id')])
             ->withRequestBody($requestBody)
             ->addResponse($response, 201);
 
+        $response = new Model\Response('Issue image deleted');
+        $deleteOperation = (new Model\Operation('deleteIssueImage'))
+            ->withTags(['Issue'])
+            ->withSummary('Remove the image of the issue')
+            ->withParameters([$this->createRequiredPathParameter('id')])
+            ->addResponse($response, 204);
+
         $path = (new Model\PathItem())
-            ->withPost($postOperation);
+            ->withPost($postOperation)
+            ->withDelete($deleteOperation);
 
         $openApi->getPaths()->addPath('/api/issues/{id}/image', $path);
     }

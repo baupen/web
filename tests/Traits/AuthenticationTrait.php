@@ -14,6 +14,7 @@ namespace App\Tests\Traits;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
 use App\Entity\Base\BaseEntity;
 use App\Entity\ConstructionManager;
+use App\Entity\Traits\IdTrait;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
@@ -75,5 +76,16 @@ trait AuthenticationTrait
         $manager = self::$container->get(ManagerRegistry::class)->getManager();
         $manager->persist($entity);
         $manager->flush();
+    }
+
+    /**
+     * @param BaseEntity|IdTrait $entity
+     */
+    private function reloadEntity(BaseEntity $entity): BaseEntity
+    {
+        /** @var ObjectManager $manager */
+        $manager = self::$container->get(ManagerRegistry::class)->getManager();
+
+        return $manager->getRepository(get_class($entity))->find($entity->getId());
     }
 }

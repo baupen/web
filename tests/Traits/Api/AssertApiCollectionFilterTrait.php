@@ -12,28 +12,39 @@
 namespace App\Tests\Traits\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
-use App\Helper\DateTimeFormatter;
+use DateTimeZone;
 
 trait AssertApiCollectionFilterTrait
 {
     private function assertApiCollectionFilterDateTime(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, \DateTime $currentValue)
     {
+        $format = function (\DateTime $dateTime) {
+            return urlencode($dateTime->format('c'));
+        };
+
+        $formatAlternative = function (\DateTime $dateTime) {
+            $utcDateTime = clone $dateTime;
+            $utcDateTime->setTimezone(new DateTimeZone('UTC'));
+
+            return urlencode($utcDateTime->format('Y-m-d\TH:i:s.u\Z'));
+        };
+
         // after and before are both inclusive
-        $currentValueString = DateTimeFormatter::toStringUTCTimezone($currentValue); // like 2020-10-30T23:00:00.000000Z
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$currentValueString.'&'.$propertyName.'[before]='.$currentValueString, $iri);
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$currentValue->format('c').'&'.$propertyName.'[before]='.$currentValueString, $iri);
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$format($currentValue), $iri);
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[before]='.$format($currentValue), $iri);
 
         $afterValue = clone $currentValue;
         $afterValue->add(new \DateInterval('PT1M'));
-        $afterValueString = DateTimeFormatter::toStringUTCTimezone($afterValue); // like 2020-10-30T23:00:00.000000Z
-        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$afterValueString, $iri);
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[before]='.$afterValueString, $iri);
+        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$format($afterValue), $iri);
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[before]='.$format($afterValue), $iri);
 
         $beforeValue = clone $currentValue;
         $beforeValue->sub(new \DateInterval('PT1M'));
-        $beforeValueString = DateTimeFormatter::toStringUTCTimezone($beforeValue); // like 2020-10-30T23:00:00.000000Z
-        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$beforeValueString, $iri);
-        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'[before]='.$beforeValueString, $iri);
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$format($beforeValue), $iri);
+        $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'[before]='.$format($beforeValue), $iri);
+
+        // ensure timezones & different formatting respected
+        $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$formatAlternative($currentValue).'&'.$propertyName.'[before]='.$format($currentValue), $iri);
     }
 
     private function assertApiCollectionFilterBoolean(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, bool $currentValue)

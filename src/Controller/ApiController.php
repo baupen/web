@@ -168,6 +168,21 @@ class ApiController extends BaseDoctrineController
     }
 
     /**
+     * @Route("/maps/{map}/file", name="delete_map_file", methods={"DELETE"})
+     *
+     * @return Response
+     */
+    public function deleteMapFileAction(Map $map)
+    {
+        $this->denyAccessUnlessGranted(MapVoter::MAP_MODIFY, $map);
+
+        $map->setFile(null);
+        $this->fastSave($map);
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
      * @Route("/construction_sites/{constructionSite}/image/{constructionSiteImage}/{filename}", name="construction_site_image", methods={"GET"})
      *
      * @return Response
@@ -209,6 +224,21 @@ class ApiController extends BaseDoctrineController
     }
 
     /**
+     * @Route("/construction_sites/{constructionSite}/image", name="delete_construction_site_image", methods={"DELETE"})
+     *
+     * @return Response
+     */
+    public function deleteConstructionSiteImageAction(ConstructionSite $constructionSite)
+    {
+        $this->denyAccessUnlessGranted(ConstructionSiteVoter::CONSTRUCTION_SITE_MODIFY, $constructionSite);
+
+        $constructionSite->setImage(null);
+        $this->fastSave($constructionSite);
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
      * @Route("/issues/{issue}/image/{issueImage}/{filename}", name="issue_image", methods={"GET"})
      *
      * @return Response
@@ -247,6 +277,21 @@ class ApiController extends BaseDoctrineController
         $url = $this->generateUrl('issue_image', ['issue' => $issue->getId(), 'issueImage' => $issueImage->getId(), 'filename' => $issueImage->getFilename()]);
 
         return new Response($url, Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Route("/issues/{issue}/image", name="delete_issue_image", methods={"DELETE"})
+     *
+     * @return Response
+     */
+    public function deleteIssueImageAction(Issue $issue)
+    {
+        $this->denyAccessUnlessGranted(IssueVoter::ISSUE_MODIFY, $issue);
+
+        $issue->setImage(null);
+        $this->fastSave($issue);
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     private function getPdf(FileBag $fileBag): UploadedFile
