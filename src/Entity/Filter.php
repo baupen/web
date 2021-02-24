@@ -31,7 +31,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      },
  *     itemOperations={
  *      "get" = {"security" = "is_granted('FILTER_VIEW', object)"}
- *     }
+ *     },
+ *     normalizationContext={"groups"={"filter-read"}, "skip_null_values"=false},
+ *     denormalizationContext={"groups"={"filter-write"}},
  * )
  *
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
@@ -49,7 +51,39 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="boolean", nullable=true)
      */
+    private $isDeleted;
+
+    /**
+     * @var bool|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="boolean", nullable=true)
+     */
     private $isMarked;
+
+    /**
+     * @var bool|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $wasAddedWithClient;
+
+    /**
+     * @var string[]|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="simple_array", nullable=true)
+     */
+    private $numbers;
+
+    /**
+     * @var string|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
 
     /**
      * @var int|null
@@ -58,6 +92,54 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @ORM\Column(type="integer", nullable=true)
      */
     private $state;
+
+    /**
+     * @var string[]|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="simple_array", nullable=true)
+     */
+    private $craftsmanIds;
+
+    /**
+     * @var string[]|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="simple_array", nullable=true)
+     */
+    private $mapIds;
+
+    /**
+     * @var DateTime|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $deadlineBefore;
+
+    /**
+     * @var DateTime|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $deadlineAfter;
+
+    /**
+     * @var DateTime|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createdAtAfter;
+
+    /**
+     * @var DateTime|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createdAtBefore;
 
     /**
      * @var DateTime|null
@@ -110,46 +192,6 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     /**
      * @var DateTime|null
      *
-     * @Groups({"filter-read", "filter-create"})
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $deadlineAtBefore;
-
-    /**
-     * @var DateTime|null
-     *
-     * @Groups({"filter-read", "filter-create"})
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $deadlineAtAfter;
-
-    /**
-     * @var string[]|null
-     *
-     * @Groups({"filter-read", "filter-create"})
-     * @ORM\Column(type="simple_array", nullable=true)
-     */
-    private $craftsmanIds;
-
-    /**
-     * @var string[]|null
-     *
-     * @Groups({"filter-read", "filter-create"})
-     * @ORM\Column(type="simple_array", nullable=true)
-     */
-    private $craftsmanTrades;
-
-    /**
-     * @var string[]|null
-     *
-     * @Groups({"filter-read", "filter-create"})
-     * @ORM\Column(type="simple_array", nullable=true)
-     */
-    private $mapIds;
-
-    /**
-     * @var DateTime|null
-     *
      * @Groups({"filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -171,12 +213,15 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      */
     private $lastUsedAt;
 
-    /**
-     * @var Issue[]
-     *
-     * @Groups({"filter-read"})
-     */
-    private $issues = [];
+    public function getIsDeleted(): ?bool
+    {
+        return $this->isDeleted;
+    }
+
+    public function setIsDeleted(?bool $isDeleted): void
+    {
+        $this->isDeleted = $isDeleted;
+    }
 
     public function getIsMarked(): ?bool
     {
@@ -188,6 +233,42 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->isMarked = $isMarked;
     }
 
+    public function getWasAddedWithClient(): ?bool
+    {
+        return $this->wasAddedWithClient;
+    }
+
+    public function setWasAddedWithClient(?bool $wasAddedWithClient): void
+    {
+        $this->wasAddedWithClient = $wasAddedWithClient;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getNumbers(): ?array
+    {
+        return !empty($this->numbers) ? $this->numbers : null;
+    }
+
+    /**
+     * @param string[]|null $numbers
+     */
+    public function setNumbers(?array $numbers): void
+    {
+        $this->numbers = $numbers;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
     public function getState(): ?int
     {
         return $this->state;
@@ -196,6 +277,78 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public function setState(?int $state): void
     {
         $this->state = $state;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getCraftsmanIds(): ?array
+    {
+        return !empty($this->craftsmanIds) ? $this->craftsmanIds : null;
+    }
+
+    /**
+     * @param string[]|null $craftsmanIds
+     */
+    public function setCraftsmanIds(?array $craftsmanIds): void
+    {
+        $this->craftsmanIds = $craftsmanIds;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getMapIds(): ?array
+    {
+        return !empty($this->mapIds) ? $this->mapIds : null;
+    }
+
+    /**
+     * @param string[]|null $mapIds
+     */
+    public function setMapIds(?array $mapIds): void
+    {
+        $this->mapIds = $mapIds;
+    }
+
+    public function getDeadlineBefore(): ?DateTime
+    {
+        return $this->deadlineBefore;
+    }
+
+    public function setDeadlineBefore(?DateTime $deadlineBefore): void
+    {
+        $this->deadlineBefore = $deadlineBefore;
+    }
+
+    public function getDeadlineAfter(): ?DateTime
+    {
+        return $this->deadlineAfter;
+    }
+
+    public function setDeadlineAfter(?DateTime $deadlineAfter): void
+    {
+        $this->deadlineAfter = $deadlineAfter;
+    }
+
+    public function getCreatedAtAfter(): ?DateTime
+    {
+        return $this->createdAtAfter;
+    }
+
+    public function setCreatedAtAfter(?DateTime $createdAtAfter): void
+    {
+        $this->createdAtAfter = $createdAtAfter;
+    }
+
+    public function getCreatedAtBefore(): ?DateTime
+    {
+        return $this->createdAtBefore;
+    }
+
+    public function setCreatedAtBefore(?DateTime $createdAtBefore): void
+    {
+        $this->createdAtBefore = $createdAtBefore;
     }
 
     public function getRegisteredAtAfter(): ?DateTime
@@ -258,86 +411,6 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->closedAtBefore = $closedAtBefore;
     }
 
-    public function getDeadlineAtBefore(): ?DateTime
-    {
-        return $this->deadlineAtBefore;
-    }
-
-    public function setDeadlineAtBefore(?DateTime $deadlineAtBefore): void
-    {
-        $this->deadlineAtBefore = $deadlineAtBefore;
-    }
-
-    public function getDeadlineAtAfter(): ?DateTime
-    {
-        return $this->deadlineAtAfter;
-    }
-
-    public function setDeadlineAtAfter(?DateTime $deadlineAtAfter): void
-    {
-        $this->deadlineAtAfter = $deadlineAtAfter;
-    }
-
-    /**
-     * @return string[]|null
-     */
-    public function getCraftsmanIds(): ?array
-    {
-        if (empty($this->craftsmanIds)) {
-            return null;
-        }
-
-        return $this->craftsmanIds;
-    }
-
-    /**
-     * @param string[]|null $craftsmanIds
-     */
-    public function setCraftsmanIds(?array $craftsmanIds): void
-    {
-        $this->craftsmanIds = $craftsmanIds;
-    }
-
-    /**
-     * @return string[]|null
-     */
-    public function getCraftsmanTrades(): ?array
-    {
-        if (empty($this->craftsmanTrades)) {
-            return null;
-        }
-
-        return $this->craftsmanTrades;
-    }
-
-    /**
-     * @param string[]|null $craftsmanTrades
-     */
-    public function setCraftsmanTrades(?array $craftsmanTrades): void
-    {
-        $this->craftsmanTrades = $craftsmanTrades;
-    }
-
-    /**
-     * @return string[]|null
-     */
-    public function getMapIds(): ?array
-    {
-        if (empty($this->mapIds)) {
-            return null;
-        }
-
-        return $this->mapIds;
-    }
-
-    /**
-     * @param string[]|null $mapIds
-     */
-    public function setMapIds(?array $mapIds): void
-    {
-        $this->mapIds = $mapIds;
-    }
-
     public function getAccessAllowedBefore(): ?DateTime
     {
         return $this->accessAllowedBefore;
@@ -363,29 +436,13 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         return null !== $this->constructionSite;
     }
 
-    /**
-     * @return Issue[]
-     */
-    public function getIssues(): array
-    {
-        return $this->issues;
-    }
-
-    /**
-     * @param Issue[] $issues
-     */
-    public function setIssues(array $issues): void
-    {
-        $this->issues = $issues;
-    }
-
     public function getLastUsedAt(): ?DateTime
     {
         return $this->lastUsedAt;
     }
 
-    public function setLastUsedAt(?DateTime $lastUsedAt): void
+    public function setLastUsedAt(): void
     {
-        $this->lastUsedAt = $lastUsedAt;
+        $this->lastUsedAt = new \DateTime();
     }
 }

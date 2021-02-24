@@ -339,6 +339,68 @@ const filterTransformer = {
       .forEach(p => { query[p] = filter[p] })
 
     return query
+  },
+  filterToFilterEntity: function (query, constructionSite) {
+    const filter = { constructionSite: constructionSite['@id'] }
+
+    if (!query) {
+      return filter
+    }
+
+    for (const fieldName in query) {
+      if (Object.prototype.hasOwnProperty.call(query, fieldName)) {
+        const value = query[fieldName]
+        const beforeIndex = fieldName.indexOf('[before]')
+        const afterIndex = fieldName.indexOf('[after]')
+        if (beforeIndex > 0) {
+          filter[fieldName.substr(0, beforeIndex) + 'Before'] = value
+        } else if (afterIndex > 0) {
+          filter[fieldName.substr(0, afterIndex) + 'After'] = value
+        } else if (fieldName === 'craftsman[]') {
+          filter.craftsmanIds = value
+        } else if (fieldName === 'map[]') {
+          filter.mapIds = value
+        } else if (fieldName === 'number[]') {
+          filter.numbers = value
+        } else if (fieldName === 'number') {
+          filter.numbers = [value]
+        } else {
+          filter[fieldName] = value
+        }
+      }
+    }
+
+    return filter
+  },
+  filterEntityToFilter: function (entity) {
+    const filter = {}
+    for (const fieldName in entity) {
+      if (Object.prototype.hasOwnProperty.call(entity, fieldName)) {
+        const value = entity[fieldName]
+        if (value === null) {
+          continue
+        }
+
+        const beforeIndex = fieldName.indexOf('Before')
+        const afterIndex = fieldName.indexOf('After')
+        if (beforeIndex > 0) {
+          filter[fieldName.substr(0, beforeIndex) + '[before]'] = value
+        } else if (afterIndex > 0) {
+          filter[fieldName.substr(0, afterIndex) + '[after]'] = value
+        } else if (fieldName === 'craftsmanIds') {
+          filter['craftsman[]'] = value
+        } else if (fieldName === 'mapIds') {
+          filter['map[]'] = value
+        } else if (fieldName === 'numbers') {
+          filter['number[]'] = value
+        } else if (fieldName === 'constructionSite' || fieldName === 'filteredUrl' || fieldName.startsWith('@')) {
+        } else {
+          filter[fieldName] = value
+        }
+      }
+    }
+
+    return filter
   }
 }
 

@@ -27,7 +27,7 @@
           {{ $t('export_issues_button.export_type.report.name') }}
         </a>
       </li>
-      <li class="nav-item" v-if="false">
+      <li class="nav-item">
         <a class="nav-link" :class="{'active': exportType === 'link'}" @click="exportType = 'link'">
           {{ $t('export_issues_button.export_type.link.name') }}
         </a>
@@ -51,8 +51,11 @@
           {{ $t('export_issues_button.export_type.link.help') }}
         </p>
 
-        <filter-form :template="link" @update="link = $event" />
+        <filter-form :template="filter" @update="filter = $event" />
 
+        <generate-issues-filter
+            :construction-site="constructionSite" :filter-configuration="filter"
+            :query="applyingQuery" />
       </div>
     </div>
   </button-with-modal>
@@ -67,9 +70,11 @@ import FormField from '../Library/FormLayout/FormField'
 import ReportForm from '../Form/ReportForm'
 import FilterForm from '../Form/FilterForm'
 import GenerateIssuesReport from './GenerateIssuesReport'
+import GenerateIssuesFilter from './GenerateIssuesFilter'
 
 export default {
   components: {
+    GenerateIssuesFilter,
     GenerateIssuesReport,
     FilterForm,
     ReportForm,
@@ -87,7 +92,7 @@ export default {
         tableByCraftsman: true,
         tableByMap: false
       },
-      link: {
+      filter: {
         accessAllowedBefore: null
       },
 

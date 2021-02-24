@@ -4,22 +4,26 @@
     <tr class="bg-light">
       <th></th>
       <th colspan="8">
-          <span class="reset-table-styles">
-            <filter-issues-button
-                :disabled="isLoading" :craftsmen="craftsmen" :maps="maps"
-                :template="filterTemplate" :configuration-template="filterConfigurationTemplate"
-                @update="filter = $event"
-                @update-configuration="filterConfiguration = $event"
-            />
-            <order-checkbox
-                class="d-inline-block ml-3"
-                property="lastChangedAt" order-value="desc" id="order-by-last-changed-at"
-                :label="$t('actions.sort_by_last_activity')" :order="order"
-                @ordered="order = $event" />
-          </span>
-        <span class="text-right float-right">
+        <span class="reset-table-styles">
+          <filter-issues-button
+              v-if="canFilter"
+              :disabled="isLoading" :craftsmen="craftsmen" :maps="maps"
+              :template="filterTemplate" :configuration-template="filterConfigurationTemplate"
+              @update="filter = $event"
+              @update-configuration="filterConfiguration = $event"
+          />
+          <order-checkbox
+              :class="{'ml-3': canFilter}"
+              class="d-inline-block"
+              property="lastChangedAt" order-value="desc" id="order-by-last-changed-at"
+              :label="$t('actions.sort_by_last_activity')" :order="order"
+              @ordered="order = $event" />
+        </span>
+        <span class="text-right float-right" v-if="canEdit">
             <span class="btn-group reset-table-styles">
-              <edit-issues-button :construction-manager-iri="constructionManagerIri" :issues="selectedIssues" :craftsmen="craftsmen" />
+              <edit-issues-button
+                  :construction-manager-iri="constructionManagerIri" :issues="selectedIssues"
+                  :craftsmen="craftsmen" />
               <remove-issues-button :issues="selectedIssues" @removed="removeIssue($event)" />
             </span>
           </span>
@@ -215,17 +219,21 @@ export default {
     }
   },
   props: {
-    constructionManagerIri: {
-      type: String,
-      required: true
-    },
     constructionSite: {
       type: Object,
       required: true
     },
+    constructionManagerIri: {
+      type: String,
+      required: false
+    },
     view: {
       type: String,
       required: true,
+    },
+    presetFilter: {
+      type: Object,
+      required: false,
     },
     hiddenIssues: {
       type: Array,
@@ -251,7 +259,12 @@ export default {
     mapContainerLookup: function () {
       return mapTransformer.lookup(this.maps, mapTransformer.PROPERTY_MAP_PARENT_NAMES)
     },
-
+    canEdit: function () {
+      return this.view === 'foyer' || this.view === 'register'
+    },
+    canFilter: function () {
+      return this.canEdit
+    },
     issueContainers: function () {
       return this.displayedIssues.map(issue => {
         let mapContainer = this.mapContainerLookup[issue.map]
@@ -275,7 +288,7 @@ export default {
       return this.displayedIssues.filter(i => !i.craftsman)
     },
     defaultFilter: function () {
-      return filterTransformer.defaultFilter(this.view)
+      return this.presetFilter ?? filterTransformer.defaultFilter(this.view)
     },
     defaultFilterConfiguration: function () {
       return filterTransformer.defaultConfiguration(this.view)
@@ -371,12 +384,20 @@ export default {
   mounted () {
     this.loadIssues(this.defaultFilter)
 
-    api.getCraftsmen(this.constructionSite)
+    let craftsmanQuery = {}
+    if (this.presetFilter && this.presetFilter['craftsman[]']) {
+      craftsmanQuery['id[]'] = this.presetFilter['craftsman[]']
+    }
+    api.getCraftsmen(this.constructionSite, craftsmanQuery)
         .then(craftsmen => {
           this.craftsmen = craftsmen
         })
 
-    api.getMaps(this.constructionSite)
+    let mapQuery = {}
+    if (this.presetFilter && this.presetFilter['map[]']) {
+      mapQuery['id[]'] = this.presetFilter['map[]']
+    }
+    api.getMaps(this.constructionSite, mapQuery)
         .then(maps => {
           this.maps = maps
           this.$emit('loaded-maps', this.maps)

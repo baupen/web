@@ -74,7 +74,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt", "createdAt", "registeredAt", "resolvedAt", "closedAt", "deadline"})
  * @ApiFilter(BooleanFilter::class, properties={"isMarked", "wasAddedWithClient"})
  * @ApiFilter(NumericFilter::class, properties={"number"})
- * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "craftsman.trade": "exact", "map": "exact", "description": "partial"})
+ * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "map": "exact", "description": "partial"})
  * @ApiFilter(StateFilter::class, properties={"state"})
  *
  * @ApiFilter(OrderFilter::class, properties={"lastChangedAt": "ASC", "deadline": "ASC", "number": "ASC"})

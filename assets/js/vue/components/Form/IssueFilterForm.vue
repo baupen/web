@@ -39,14 +39,14 @@
       v-if="configuration.showState"
       :title="$t('form.issue_filter.state')" :initial-activated="configurationTemplate.state"
       @active-toggled="configuration.state = $event">
-    <state-filter :initial-state="template.state" @input="filter.state = $event" />
+    <state-filter :initial-state="filter.state" @input="filter.state = $event" />
   </toggle-card>
 
   <toggle-card
       class="mt-2"
       :title="$t('craftsman._plural')" :initial-activated="configurationTemplate.craftsmen"
       @active-toggled="configuration.craftsmen = $event">
-    <craftsmen-filter :initial-selected-entities="template.craftsmen" :entities="craftsmen"
+    <craftsmen-filter :initial-selected-entities="filter.craftsmen" :entities="craftsmen"
                       @input="filter.craftsmen = $event" />
   </toggle-card>
 
@@ -54,7 +54,7 @@
       class="mt-2"
       :title="$t('map._plural')" :initial-activated="configurationTemplate.maps"
       @active-toggled="configuration.maps = $event">
-    <map-filter :initial-selected-entities="template.maps" :entities="maps" @input="filter.maps = $event" />
+    <map-filter :initial-selected-entities="filter.maps" :entities="maps" @input="filter.maps = $event" />
   </toggle-card>
 
   <toggle-card
@@ -63,7 +63,7 @@
       @active-toggled="configuration.deadline = $event">
     <time-filter
         :label="$t('issue.deadline')"
-        :initial-before="template['deadline[before]']" :initial-after="template['deadline[after]']"
+        :initial-before="filter['deadline[before]']" :initial-after="filter['deadline[after]']"
         @input-before="filter['deadline[before]'] = $event" @input-after="filter['deadline[after]'] = $event"
     />
   </toggle-card>
@@ -76,28 +76,28 @@
     <time-filter
         v-if="configuration.showState || template.state === 1"
         :label="$t('issue.state.created')" :help="$t('issue.state.created_help')"
-        :initial-before="template['createdAt[before]']" :initial-after="template['createdAt[after]']"
+        :initial-before="filter['createdAt[before]']" :initial-after="filter['createdAt[after]']"
         @input-before="filter['createdAt[before]'] = $event" @input-after="filter['createdAt[after]'] = $event"
     />
 
     <time-filter
         v-if="configuration.showState || template.state === 2"
         :label="$t('issue.state.registered')" :help="$t('issue.state.registered_help')"
-        :initial-before="template['registeredAt[before]']" :initial-after="template['registeredAt[after]']"
+        :initial-before="filter['registeredAt[before]']" :initial-after="filter['registeredAt[after]']"
         @input-before="filter['registeredAt[before]'] = $event" @input-after="filter['registeredAt[after]'] = $event"
     />
 
     <time-filter
         v-if="configuration.showState || template.state === 4"
         :label="$t('issue.state.resolved')" :help="$t('issue.state.resolved_help')"
-        :initial-before="template['resolvedAt[before]']" :initial-after="template['resolvedAt[after]']"
+        :initial-before="filter['resolvedAt[before]']" :initial-after="filter['resolvedAt[after]']"
         @input-before="filter['resolvedAt[before]'] = $event" @input-after="filter['resolvedAt[after]'] = $event"
     />
 
     <time-filter
         v-if="configuration.showState || template.state === 8"
         :label="$t('issue.state.closed')" :help="$t('issue.state.closed_help')"
-        :initial-before="template['closedAt[before]']" :initial-after="template['closedAt[after]']"
+        :initial-before="filter['closedAt[before]']" :initial-after="filter['closedAt[after]']"
         @input-before="filter['closedAt[before]'] = $event" @input-after="filter['closedAt[after]'] = $event"
     />
   </toggle-card>
@@ -138,8 +138,8 @@ export default {
         wasAddedWithClient: null,
 
         state: null,
-        craftsmen: [],
-        maps: [],
+        craftsmen: null,
+        maps: null,
 
         'deadline[before]': null,
         'deadline[after]': null,

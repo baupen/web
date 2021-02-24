@@ -12,7 +12,8 @@ import {
   faUserAlt, faQuestionCircle, faEnvelopeOpen, // navigation
   faStar, faUserCheck, // issue states (toggle off)
   faFilter, faSort, // table
-  faUser // craftsman link
+  faUser, // craftsman link
+  faExternalLink // external link
 } from '@fortawesome/pro-light-svg-icons'
 import {
   faPlusCircle as faPlusCircleRegular, faDotCircle as faDotCircleRegular, // issue icons
@@ -36,6 +37,7 @@ import { clickOutside, focus } from './services/directives'
 import Dashboard from './Dashboard'
 import Dispatch from './Dispatch'
 import Edit from './Edit'
+import Filtered from './Filtered'
 import Foyer from './Foyer'
 import Register from './Register'
 import Resolve from './Resolve'
@@ -52,6 +54,7 @@ FontawesomeLibrary.add(
   faStar, faUserCheck,
   faFilter, faSort,
   faUser,
+  faExternalLink,
   faPlusCircleRegular, faDotCircleRegular, faExclamationCircleRegular, faCheckCircleRegular,
   faStarSolid, faUserCheckSolid,
   faFilterSolid, faSearchSolid, faSortUpSolid, faSortDownSolid
@@ -96,6 +99,11 @@ if (document.getElementById('dispatch') != null) {
 if (document.getElementById('edit') != null) {
   createVue(Edit)
     .mount('#edit')
+}
+
+if (document.getElementById('filtered') != null) {
+  createVue(Filtered)
+    .mount('#filtered')
 }
 
 if (document.getElementById('foyer') != null) {

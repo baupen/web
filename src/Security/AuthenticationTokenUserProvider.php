@@ -73,7 +73,7 @@ class AuthenticationTokenUserProvider implements UserProviderInterface, Password
 
         $filter = $this->manager->getRepository(Filter::class)->findOneBy(['authenticationToken' => $username]);
         if (null !== $filter) {
-            if (null === $filter->getAccessAllowedBefore() || $filter->getAccessAllowedBefore() < new \DateTime()) {
+            if (null === $filter->getAccessAllowedBefore() || $filter->getAccessAllowedBefore() > new \DateTime()) {
                 $token->setFilter($filter);
 
                 return $token;

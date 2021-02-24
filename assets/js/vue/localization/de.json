@@ -8,6 +8,7 @@
     "add_map": "Karte hinzufügen",
     "close": "Schliessen",
     "download": "herunterladen",
+    "generate_link": "Link erstellen",
     "sort_by_last_activity": "Nach letzter Aktivität sortieren",
     "edit_construction_site": "Baustelle bearbeiten",
     "edit_craftsman": "Unternehmer bearbeiten",
@@ -320,7 +321,7 @@
       },
       "link": {
         "name": "Link",
-        "help": "Immer aktuell: Die Pendenzen Externen einfach zugänglich machen.",
+        "help": "Immer aktuell: Die Pendenzen schreibgeschützt mit Externen teilen.",
         "access_allowed_before": "Ablaufdatum des Zugriffes"
       }
     },

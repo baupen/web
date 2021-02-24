@@ -1,7 +1,7 @@
 <template>
-  <div id="resolve">
+  <div id="filtered">
     <loading-indicator :spin="isLoading">
-      <resolve-issues :craftsman="craftsman" :construction-site="constructionSite" />
+      <filtered-issues :construction-site="constructionSite" :filter="filter" />
     </loading-indicator>
   </div>
 </template>
@@ -13,9 +13,11 @@ import DashboardIssuesSummary from './components/DashboardIssuesSummary'
 import DashboardFeed from './components/DashboardFeed'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import ResolveIssues from './components/ResolveIssues'
+import FilteredIssues from './components/FilteredIssues'
 
 export default {
   components: {
+    FilteredIssues,
     ResolveIssues,
     LoadingIndicator,
     DashboardFeed,
@@ -24,23 +26,24 @@ export default {
   },
   data () {
     return {
-      craftsman: null,
+      constructionSiteIri: null,
+      filter: null,
       constructionSite: null
     }
   },
   computed: {
     isLoading: function () {
-      return !this.craftsman || !this.constructionSite
+      return !this.filter || !this.constructionSite
     }
   },
   mounted () {
     api.setupErrorNotifications(this.$t)
     api.authenticateFromUrl()
         .then(me => {
-          let craftsmanIri = me.craftsmanIri
-          api.getById(craftsmanIri)
-              .then(craftsman => {
-                this.craftsman = craftsman
+          let filterIri = me.filterIri
+          api.getById(filterIri)
+              .then(filter => {
+                this.filter = filter
               })
 
           let constructionSiteIri = me.constructionSiteIri

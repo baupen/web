@@ -67,12 +67,12 @@ class PublicController extends BaseDoctrineController
     public function filteredAction(string $token, TokenStorageInterface $tokenStorage)
     {
         $filter = $this->getDoctrine()->getRepository(Filter::class)->findOneBy(['authenticationToken' => $token]);
-        if (null === $filter || $filter->getAccessAllowedBefore() < new \DateTime()) {
+        if (null === $filter || ($filter->getAccessAllowedBefore() && $filter->getAccessAllowedBefore() < new \DateTime())) {
             throw new NotFoundHttpException();
         }
 
         if (!$this->tryGetConstructionManager($tokenStorage->getToken())) {
-            $filter->setLastUsedAt(new \DateTime());
+            $filter->setLastUsedAt();
             $this->fastSave($filter);
         }
 

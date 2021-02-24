@@ -248,7 +248,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
 
     public function getName(): string
     {
-        return $this->getCompany().' ('.$this->getContactName().')';
+        return $this->getTrade().' ('.$this->getCompany().')';
     }
 
     public function getLastEmailReceived(): ?DateTime
