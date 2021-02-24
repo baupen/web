@@ -160,10 +160,28 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         }
 
         if (Issue::class === $resourceClass) {
-            $this->ensureSearchFilterValid($query, 'map', $filter->getMapIds());
-            $this->ensureSearchFilterValid($query, 'craftsman', $filter->getCraftsmanIds());
+            $this->ensureSearchFilterValid($query, 'isMarked', $filter->getIsMarked());
+            $this->ensureSearchFilterValid($query, 'wasAddedWithClient', $filter->getWasAddedWithClient());
 
-            // TODO: Fully implement filter properties #350
+            $this->ensureSearchFilterValid($query, 'number', $filter->getNumbers());
+            $this->ensureSearchFilterValid($query, 'description', $filter->getDescription());
+
+            $this->ensureSearchFilterValid($query, 'state', $filter->getState());
+            $this->ensureSearchFilterValid($query, 'craftsman', $filter->getCraftsmanIds());
+            $this->ensureSearchFilterValid($query, 'map', $filter->getMapIds());
+
+            $this->ensureSearchFilterValid($query, 'deadline[before]', $filter->getDeadlineBefore());
+            $this->ensureSearchFilterValid($query, 'deadline[after]', $filter->getDeadlineAfter());
+
+            $this->ensureSearchFilterValid($query, 'createdAt[before]', $filter->getCreatedAtBefore());
+            $this->ensureSearchFilterValid($query, 'createdAt[after]', $filter->getCreatedAtAfter());
+            $this->ensureSearchFilterValid($query, 'registeredAt[before]', $filter->getRegisteredAtBefore());
+            $this->ensureSearchFilterValid($query, 'registeredAt[after]', $filter->getRegisteredAtAfter());
+            $this->ensureSearchFilterValid($query, 'resolvedAt[before]', $filter->getResolvedAtBefore());
+            $this->ensureSearchFilterValid($query, 'resolvedAt[after]', $filter->getResolvedAtAfter());
+            $this->ensureSearchFilterValid($query, 'closedAt[before]', $filter->getClosedAtBefore());
+            $this->ensureSearchFilterValid($query, 'closedAt[after]', $filter->getClosedAtAfter());
+
             return;
         }
 
@@ -177,10 +195,11 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         }
 
         if (is_array($restriction)) {
-            $singleFilterValid = isset($query[$property]) && in_array($query[$property], $restriction);
-            $multipleFilterValid = isset($query[$property.'[]']) && empty(array_diff($restriction, $query[$property.'[]']));
+            $filterValid = is_array($query[$property]) ?
+                empty(array_diff($restriction, $query[$property])) :
+                in_array($query[$property], $restriction);
 
-            if ($singleFilterValid || $multipleFilterValid) {
+            if ($filterValid) {
                 return;
             }
 

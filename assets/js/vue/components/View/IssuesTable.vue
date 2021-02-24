@@ -384,12 +384,20 @@ export default {
   mounted () {
     this.loadIssues(this.defaultFilter)
 
-    api.getCraftsmen(this.constructionSite)
+    let craftsmanQuery = {}
+    if (this.presetFilter && this.presetFilter['craftsman[]']) {
+      craftsmanQuery['id[]'] = this.presetFilter['craftsman[]']
+    }
+    api.getCraftsmen(this.constructionSite, craftsmanQuery)
         .then(craftsmen => {
           this.craftsmen = craftsmen
         })
 
-    api.getMaps(this.constructionSite)
+    let mapQuery = {}
+    if (this.presetFilter && this.presetFilter['map[]']) {
+      mapQuery['id[]'] = this.presetFilter['map[]']
+    }
+    api.getMaps(this.constructionSite, mapQuery)
         .then(maps => {
           this.maps = maps
           this.$emit('loaded-maps', this.maps)
