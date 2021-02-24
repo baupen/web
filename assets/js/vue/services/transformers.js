@@ -340,7 +340,7 @@ const filterTransformer = {
 
     return query
   },
-  queryToFilterEntity: function (query, constructionSite) {
+  filterToFilterEntity: function (query, constructionSite) {
     const filter = { constructionSite: constructionSite['@id'] }
 
     if (!query) {
@@ -365,6 +365,30 @@ const filterTransformer = {
           filter.numbers = [query[fieldName]]
         } else {
           filter[fieldName] = query[fieldName]
+        }
+      }
+    }
+
+    return filter
+  },
+  filterEntityToFilter: function (entity) {
+    const filter = {}
+    for (const fieldName in entity) {
+      if (Object.prototype.hasOwnProperty.call(entity, fieldName)) {
+        const beforeIndex = fieldName.indexOf('Before')
+        const afterIndex = fieldName.indexOf('After')
+        if (beforeIndex > 0) {
+          filter[fieldName.substr(0, beforeIndex) + '[before]'] = entity[fieldName]
+        } else if (afterIndex > 0) {
+          filter[fieldName.substr(0, afterIndex) + '[after]'] = entity[fieldName]
+        } else if (fieldName === 'craftsmanIds') {
+          filter['craftsman[]'] = entity[fieldName]
+        } else if (fieldName === 'mapIds') {
+          filter['map[]'] = entity[fieldName]
+        } else if (fieldName === 'numbers') {
+          filter['number[]'] = entity[fieldName]
+        } else {
+          filter[fieldName] = entity[fieldName]
         }
       }
     }

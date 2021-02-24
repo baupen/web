@@ -1,10 +1,19 @@
 <template>
   <button v-if="!filter" class="btn btn-primary" :disabled="posting"
           @click="generateFilter">
-    {{ $t('actions.generate_filter') }}
+    {{ $t('actions.generate_link') }}
   </button>
 
-  {{ filter.filteredUrl }}
+  <div class="input-group" v-if="filter">
+    <input type="text" class="form-control" readonly :value="filterUrl">
+    <div class="input-group-append">
+      <div class="input-group-text">
+        <a :href="filterUrl" target="_blank">
+          <font-awesome-icon :icon="['fal', 'external-link']" />
+        </a>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -17,7 +26,7 @@ export default {
   data () {
     return {
       posting: false,
-      filter: false
+      filter: null
     }
   },
   props: {
@@ -40,8 +49,15 @@ export default {
         'filter[accessAllowedBefore]': this.filterConfiguration.accessAllowedBefore,
       }
     },
-    filterPost: function () {
-      return Object.assign({}, this.filterConfiguration, filterTransformer.queryToFilterEntity(this.query, this.constructionSite))
+    filterEntity: function () {
+      return Object.assign({}, this.filterConfiguration, filterTransformer.filterToFilterEntity(this.query, this.constructionSite))
+    },
+    filterUrl: function () {
+      if (!this.filter) {
+        return null;
+      }
+
+      return window.location.origin + this.filter.filteredUrl
     }
   },
   methods: {
@@ -53,7 +69,7 @@ export default {
     },
     generateFilter: function () {
       this.posting = true
-      api.postFilter(this.filterPost, this.$t('actions.messages.filter_created'))
+      api.postFilter(this.filterEntity, this.$t('actions.messages.filter_created'))
           .then(filter => {
             this.filter = filter
           })
