@@ -4,21 +4,21 @@
     <tr class="bg-light">
       <th></th>
       <th colspan="8">
-          <span class="reset-table-styles">
-            <filter-issues-button
-                v-if="canFilter"
-                :disabled="isLoading" :craftsmen="craftsmen" :maps="maps"
-                :template="filterTemplate" :configuration-template="filterConfigurationTemplate"
-                @update="filter = $event"
-                @update-configuration="filterConfiguration = $event"
-            />
-            <order-checkbox
-                :class="{'ml-3': canFilter}"
-                class="d-inline-block"
-                property="lastChangedAt" order-value="desc" id="order-by-last-changed-at"
-                :label="$t('actions.sort_by_last_activity')" :order="order"
-                @ordered="order = $event" />
-          </span>
+        <span class="reset-table-styles">
+          <filter-issues-button
+              v-if="canFilter"
+              :disabled="isLoading" :craftsmen="craftsmen" :maps="maps"
+              :template="filterTemplate" :configuration-template="filterConfigurationTemplate"
+              @update="filter = $event"
+              @update-configuration="filterConfiguration = $event"
+          />
+          <order-checkbox
+              :class="{'ml-3': canFilter}"
+              class="d-inline-block"
+              property="lastChangedAt" order-value="desc" id="order-by-last-changed-at"
+              :label="$t('actions.sort_by_last_activity')" :order="order"
+              @ordered="order = $event" />
+        </span>
         <span class="text-right float-right" v-if="canEdit">
             <span class="btn-group reset-table-styles">
               <edit-issues-button
@@ -260,7 +260,7 @@ export default {
       return mapTransformer.lookup(this.maps, mapTransformer.PROPERTY_MAP_PARENT_NAMES)
     },
     canEdit: function () {
-      return this.view === 'resolve' || this.view === 'register'
+      return this.view === 'foyer' || this.view === 'register'
     },
     canFilter: function () {
       return this.canEdit

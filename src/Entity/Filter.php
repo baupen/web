@@ -31,7 +31,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      },
  *     itemOperations={
  *      "get" = {"security" = "is_granted('FILTER_VIEW', object)"}
- *     }
+ *     },
+ *     normalizationContext={"groups"={"filter-read"}, "skip_null_values"=false},
+ *     denormalizationContext={"groups"={"filter-write"}},
  * )
  *
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
@@ -105,7 +107,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $deadlineAtBefore;
+    private $deadlineBefore;
 
     /**
      * @var DateTime|null
@@ -113,7 +115,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $deadlineAtAfter;
+    private $deadlineAfter;
 
     /**
      * @var DateTime|null
@@ -291,24 +293,24 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->mapIds = $mapIds;
     }
 
-    public function getDeadlineAtBefore(): ?DateTime
+    public function getDeadlineBefore(): ?DateTime
     {
-        return $this->deadlineAtBefore;
+        return $this->deadlineBefore;
     }
 
-    public function setDeadlineAtBefore(?DateTime $deadlineAtBefore): void
+    public function setDeadlineBefore(?DateTime $deadlineBefore): void
     {
-        $this->deadlineAtBefore = $deadlineAtBefore;
+        $this->deadlineBefore = $deadlineBefore;
     }
 
-    public function getDeadlineAtAfter(): ?DateTime
+    public function getDeadlineAfter(): ?DateTime
     {
-        return $this->deadlineAtAfter;
+        return $this->deadlineAfter;
     }
 
-    public function setDeadlineAtAfter(?DateTime $deadlineAtAfter): void
+    public function setDeadlineAfter(?DateTime $deadlineAfter): void
     {
-        $this->deadlineAtAfter = $deadlineAtAfter;
+        $this->deadlineAfter = $deadlineAfter;
     }
 
     public function getCreatedAtAfter(): ?DateTime
