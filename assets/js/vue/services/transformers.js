@@ -340,8 +340,8 @@ const filterTransformer = {
 
     return query
   },
-  queryToFilterPost: function (query, constructionSite) {
-    const filter = { constructionSite: iriToId(constructionSite['@id']) }
+  queryToFilterEntity: function (query, constructionSite) {
+    const filter = { constructionSite: constructionSite['@id'] }
 
     if (!query) {
       return filter

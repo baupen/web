@@ -41,7 +41,7 @@ export default {
       }
     },
     filterPost: function () {
-      return Object.assign({}, this.filterConfiguration, filterTransformer.queryToFilterPost(this.query, this.constructionSite))
+      return Object.assign({}, this.filterConfiguration, filterTransformer.queryToFilterEntity(this.query, this.constructionSite))
     }
   },
   methods: {
