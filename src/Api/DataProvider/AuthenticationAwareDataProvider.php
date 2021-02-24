@@ -206,7 +206,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
             throw new BadRequestException($property.' filter missing or value no one of '.implode(', ', $restriction).'.');
         }
 
-        if (isset($query[$property]) && $query[$property] === $restriction) {
+        if (isset($query[$property]) && $query[$property] == $restriction) {
             return;
         }
 
