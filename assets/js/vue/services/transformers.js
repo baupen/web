@@ -339,6 +339,37 @@ const filterTransformer = {
       .forEach(p => { query[p] = filter[p] })
 
     return query
+  },
+  queryToFilterPost: function (query, constructionSite) {
+    const filter = { constructionSite: iriToId(constructionSite['@id']) }
+
+    if (!query) {
+      return filter
+    }
+
+    for (const fieldName in query) {
+      if (Object.prototype.hasOwnProperty.call(query, fieldName)) {
+        const beforeIndex = fieldName.indexOf('[before]')
+        const afterIndex = fieldName.indexOf('[after]')
+        if (beforeIndex > 0) {
+          filter[fieldName.substr(0, beforeIndex) + 'Before'] = query[fieldName]
+        } else if (afterIndex > 0) {
+          filter[fieldName.substr(0, afterIndex) + 'After'] = query[fieldName]
+        } else if (fieldName === 'craftsman[]') {
+          filter.craftsmanIds = query[fieldName]
+        } else if (fieldName === 'map[]') {
+          filter.mapIds = query[fieldName]
+        } else if (fieldName === 'number[]') {
+          filter.numbers = query[fieldName]
+        } else if (fieldName === 'number') {
+          filter.numbers = [query[fieldName]]
+        } else {
+          filter[fieldName] = query[fieldName]
+        }
+      }
+    }
+
+    return filter
   }
 }
 

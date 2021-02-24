@@ -369,6 +369,9 @@ const api = {
   postConstructionSite: function (constructionSite, successMessage = null) {
     return this._postRaw('/api/construction_sites', constructionSite, successMessage)
   },
+  postFilter: function (filter, successMessage = null) {
+    return this._postRaw('/api/filters', filter, successMessage)
+  },
   postMapFile: function (map, file, successMessage = null) {
     return this._postAttachment(map, file, 'file', successMessage)
   },

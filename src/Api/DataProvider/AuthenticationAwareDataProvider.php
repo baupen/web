@@ -155,7 +155,6 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 
         if (Craftsman::class === $resourceClass) {
             $this->ensureSearchFilterValid($query, 'id', $filter->getCraftsmanIds());
-            $this->ensureSearchFilterValid($query, 'trade', $filter->getCraftsmanTrades());
 
             return;
         }
@@ -163,7 +162,6 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         if (Issue::class === $resourceClass) {
             $this->ensureSearchFilterValid($query, 'map', $filter->getMapIds());
             $this->ensureSearchFilterValid($query, 'craftsman', $filter->getCraftsmanIds());
-            $this->ensureSearchFilterValid($query, 'craftsman.trade', $filter->getCraftsmanTrades());
 
             // TODO: Fully implement filter properties #350
             return;

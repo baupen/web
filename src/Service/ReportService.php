@@ -219,16 +219,10 @@ class ReportService implements ReportServiceInterface
         if (null !== $filter->getCraftsmanIds()) {
             $entities = $this->doctrine->getRepository(Craftsman::class)->findBy(['id' => $filter->getCraftsmanIds()]);
             $names = array_map(function (Craftsman $craftsman) {
-                $craftsman->getName();
+                return $craftsman->getName();
             }, $entities);
             $craftsmen = $this->translator->trans('introduction.filter.craftsmen', ['%count%' => count($names)], 'report');
             $filterEntries[$craftsmen] = implode(', ', $names);
-        }
-
-        //add trades
-        if (null !== $filter->getCraftsmanTrades()) {
-            $trades = $this->translator->trans('introduction.filter.trades', ['%count%' => count($filter->getCraftsmanTrades())], 'report');
-            $filterEntries[$trades] = implode(', ', $filter->getCraftsmanTrades());
         }
 
         //add maps

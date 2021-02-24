@@ -60,7 +60,7 @@ class IssueHelper
             },
             function ($craftsman) {
                 /* @var Craftsman $craftsman */
-                return $craftsman->getName();
+                return $craftsman->getTrade().$craftsman->getCompany();
             },
             function ($craftsman) {
                 /* @var Craftsman $craftsman */

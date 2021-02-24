@@ -72,7 +72,7 @@ class PublicController extends BaseDoctrineController
         }
 
         if (!$this->tryGetConstructionManager($tokenStorage->getToken())) {
-            $filter->setLastUsedAt(new \DateTime());
+            $filter->setLastUsedAt();
             $this->fastSave($filter);
         }
 

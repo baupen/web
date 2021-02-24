@@ -40,7 +40,6 @@ class CraftsmanVoter extends ConstructionSiteOwnedEntityVoter
      */
     protected function isIncludedInFilter(Filter $filter, $attribute, $subject): bool
     {
-        return (null === $filter->getCraftsmanIds() || in_array($subject->getId(), $filter->getCraftsmanIds())) &&
-            (null === $filter->getCraftsmanTrades() || in_array($subject->getTrade(), $filter->getCraftsmanTrades()));
+        return null === $filter->getCraftsmanIds() || in_array($subject->getId(), $filter->getCraftsmanIds());
     }
 }

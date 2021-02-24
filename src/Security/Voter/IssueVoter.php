@@ -48,7 +48,6 @@ class IssueVoter extends ConstructionSiteOwnedEntityVoter
     protected function isIncludedInFilter(Filter $filter, $attribute, $subject): bool
     {
         return (null === $filter->getCraftsmanIds() || in_array($subject->getCraftsman()->getId(), $filter->getCraftsmanIds())) &&
-            (null === $filter->getCraftsmanTrades() || in_array($subject->getCraftsman()->getTrade(), $filter->getCraftsmanTrades())) &&
             (null === $filter->getMapIds() || in_array($subject->getMap()->getId(), $filter->getMapIds()));
 
         // TODO: Fully implement filter properties #350
