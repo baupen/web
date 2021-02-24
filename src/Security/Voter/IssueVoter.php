@@ -47,10 +47,47 @@ class IssueVoter extends ConstructionSiteOwnedEntityVoter
      */
     protected function isIncludedInFilter(Filter $filter, $attribute, $subject): bool
     {
-        return (null === $filter->getCraftsmanIds() || in_array($subject->getCraftsman()->getId(), $filter->getCraftsmanIds())) &&
-            (null === $filter->getMapIds() || in_array($subject->getMap()->getId(), $filter->getMapIds()));
+        $listsValid = (null === $filter->getCraftsmanIds() || in_array($subject->getCraftsman()->getId(), $filter->getCraftsmanIds())) &&
+            (null === $filter->getMapIds() || in_array($subject->getMap()->getId(), $filter->getMapIds())) &&
+            (null === $filter->getNumbers() || in_array($subject->getNumber(), $filter->getNumbers()));
 
-        // TODO: Fully implement filter properties #350
+        if (!$listsValid) {
+            return false;
+        }
+
+        $booleansValid = (null === $filter->getIsMarked() || $subject->getIsMarked() === $filter->getIsMarked()) &&
+            (null === $filter->getWasAddedWithClient() || $subject->getWasAddedWithClient() === $filter->getWasAddedWithClient()) &&
+            (null === $filter->getIsDeleted() || $subject->getIsDeleted() === $filter->getIsDeleted());
+
+        if (!$booleansValid) {
+            return false;
+        }
+
+        if ($filter->getDescription() && false === strpos($subject->getDescription(), $filter->getDescription())) {
+            return false;
+        }
+
+        $dateTimeMethods = ['Deadline', 'CreatedAt', 'RegisteredAt', 'ResolvedAt', 'ClosedAt'];
+        foreach ($dateTimeMethods as $dateTimeMethod) {
+            $getter = 'get'.$dateTimeMethod;
+            $realValue = $subject->$getter();
+
+            $beforeGetter = $getter.'Before';
+            $beforeValue = $filter->$beforeGetter();
+            // value must be null or before
+            if (null !== $beforeValue && null !== $realValue && $beforeValue < $realValue) {
+                return false;
+            }
+
+            $afterGetter = $getter.'After';
+            $afterValue = $filter->$afterGetter();
+            // value must not be null and after
+            if (null !== $afterValue && (null === $realValue || $realValue < $afterValue)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

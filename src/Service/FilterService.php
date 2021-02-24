@@ -44,8 +44,55 @@ class FilterService implements FilterServiceInterface
         $filter = new Filter();
         $filter->setConstructionSite($constructionSite);
 
-        // TODO: Fully implement filter properties #350
+        $filter->setIsDeleted($this->getNullableValue($filters, 'isDeleted'));
+
+        $filter->setDescription($this->getNullableValue($filters, 'description'));
+        $filter->setNumbers($this->getArray($filters, 'number'));
+
+        $filter->setWasAddedWithClient($this->getNullableValue($filters, 'wasAddedWithClient'));
+        $filter->setIsMarked($this->getNullableValue($filters, 'isMarked'));
+
+        $filter->setState($this->getNullableInt($filters, 'state'));
+        $filter->setCraftsmanIds($this->getArray($filters, 'craftsman'));
+        $filter->setMapIds($this->getArray($filters, 'map'));
+
+        $dateTimeMethods = ['deadline', 'createdAt', 'registeredAt', 'resolvedAt', 'closedAt'];
+        foreach ($dateTimeMethods as $dateTimeMethod) {
+            $setter = 'set'.ucfirst($dateTimeMethod);
+
+            $beforeSetter = $setter.'Before';
+            $filter->$beforeSetter($this->getNullableDateTime($filters, $dateTimeMethod.'[before]'));
+
+            $afterSetter = $setter.'After';
+            $filter->$afterSetter($this->getNullableDateTime($filters, $dateTimeMethod.'[after]'));
+        }
 
         return $filter;
+    }
+
+    private function getNullableValue(array $source, string $key)
+    {
+        return isset($source[$key]) ? $source[$key] : null;
+    }
+
+    private function getNullableInt(array $source, string $key)
+    {
+        return isset($source[$key]) ? (int) $source[$key] : null;
+    }
+
+    private function getNullableDateTime(array $source, string $key): ?\DateTime
+    {
+        return isset($source[$key]) ? new \DateTime($source[$key]) : null;
+    }
+
+    private function getArray(array $source, string $key): array
+    {
+        if (!isset($source[$key])) {
+            return [];
+        }
+
+        $value = $source[$key];
+
+        return is_array($value) ? $value : [$value];
     }
 }

@@ -66,11 +66,12 @@ class ReportService implements ReportServiceInterface
     /**
      * ReportService constructor.
      */
-    public function __construct(ImageServiceInterface $imageService, SerializerInterface $serializer, TranslatorInterface $translator, PathServiceInterface $pathService, string $reportAssetDir)
+    public function __construct(ImageServiceInterface $imageService, SerializerInterface $serializer, TranslatorInterface $translator, PathServiceInterface $pathService, ManagerRegistry $doctrine, string $reportAssetDir)
     {
         $this->imageService = $imageService;
         $this->serializer = $serializer;
         $this->translator = $translator;
+        $this->doctrine = $doctrine;
         $this->pathService = $pathService;
         $this->reportAssetDir = $reportAssetDir;
     }
