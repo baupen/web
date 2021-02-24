@@ -189,6 +189,17 @@ class ReportService implements ReportServiceInterface
          * intentionally ignoring isMarked as this is part of the application, not the report
          */
 
+        if (null !== $filter->getNumbers()) {
+            $key = $this->translator->trans('number', [], 'entity_issue');
+            $or = $this->translator->trans('introduction.filter.or', [], 'report');
+            $filterEntries[$key] = implode(' '.$or.' ', $filter->getNumbers());
+        }
+
+        if (null !== $filter->getDescription()) {
+            $key = $this->translator->trans('description', [], 'entity_issue');
+            $filterEntries[$key] = $filter->getDescription();
+        }
+
         //collect all set status
         if (null !== $filter->getState()) {
             $status = [];
@@ -206,13 +217,8 @@ class ReportService implements ReportServiceInterface
             }
 
             $key = $this->translator->trans('status', [], 'entity_issue');
-            if (4 === count($status)) {
-                $allStatus = $this->translator->trans('state_values.all', [], 'entity_issue');
-                $filterEntries[$key] = $allStatus;
-            } else {
-                $or = $this->translator->trans('introduction.filter.or', [], 'report');
-                $filterEntries[$key] = implode(' '.$or.' ', $status);
-            }
+            $or = $this->translator->trans('introduction.filter.or', [], 'report');
+            $filterEntries[$key] = implode(' '.$or.' ', $status);
         }
 
         //add craftsmen
@@ -236,16 +242,19 @@ class ReportService implements ReportServiceInterface
         }
 
         $deadline = $this->translator->trans('deadline', [], 'entity_issue');
-        $filterEntries[$deadline] = $this->tryGetDateString($filter->getDeadlineAtBefore(), $filter->getDeadlineAtAfter());
+        $filterEntries[$deadline] = $this->tryGetDateString($filter->getDeadlineBefore(), $filter->getDeadlineAfter());
+
+        $createdAt = $this->translator->trans('created_at', [], 'trait_issue_status');
+        $filterEntries[$createdAt] = $this->tryGetDateString($filter->getCreatedAtBefore(), $filter->getCreatedAtAfter());
 
         $registeredAt = $this->translator->trans('registered_at', [], 'trait_issue_status');
         $filterEntries[$registeredAt] = $this->tryGetDateString($filter->getRegisteredAtBefore(), $filter->getRegisteredAtAfter());
 
-        $registeredAt = $this->translator->trans('resolved_at', [], 'trait_issue_status');
-        $filterEntries[$registeredAt] = $this->tryGetDateString($filter->getResolvedAtBefore(), $filter->getResolvedAtAfter());
+        $resolvedAt = $this->translator->trans('resolved_at', [], 'trait_issue_status');
+        $filterEntries[$resolvedAt] = $this->tryGetDateString($filter->getResolvedAtBefore(), $filter->getResolvedAtAfter());
 
-        $registeredAt = $this->translator->trans('closed_at', [], 'trait_issue_status');
-        $filterEntries[$registeredAt] = $this->tryGetDateString($filter->getClosedAtBefore(), $filter->getClosedAtAfter());
+        $closedAt = $this->translator->trans('closed_at', [], 'trait_issue_status');
+        $filterEntries[$closedAt] = $this->tryGetDateString($filter->getClosedAtBefore(), $filter->getClosedAtAfter());
 
         // clear empty entries
         $filterEntries = array_filter($filterEntries);

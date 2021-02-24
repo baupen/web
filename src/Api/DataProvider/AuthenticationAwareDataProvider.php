@@ -195,9 +195,12 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         }
 
         if (is_array($restriction)) {
-            $filterValid = is_array($query[$property]) ?
-                empty(array_diff($restriction, $query[$property])) :
-                in_array($query[$property], $restriction);
+            $filterValid = false;
+            if (isset($query[$property])) {
+                $filterValid = is_array($query[$property]) ?
+                    empty(array_diff($restriction, $query[$property])) :
+                    in_array($query[$property], $restriction);
+            }
 
             if ($filterValid) {
                 return;
