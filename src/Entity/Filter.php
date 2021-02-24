@@ -51,6 +51,14 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="boolean", nullable=true)
      */
+    private $isDeleted;
+
+    /**
+     * @var bool|null
+     *
+     * @Groups({"filter-read", "filter-create"})
+     * @ORM\Column(type="boolean", nullable=true)
+     */
     private $isMarked;
 
     /**
@@ -204,6 +212,16 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $lastUsedAt;
+
+    public function getIsDeleted(): ?bool
+    {
+        return $this->isDeleted;
+    }
+
+    public function setIsDeleted(?bool $isDeleted): void
+    {
+        $this->isDeleted = $isDeleted;
+    }
 
     public function getIsMarked(): ?bool
     {

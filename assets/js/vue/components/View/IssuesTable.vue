@@ -288,7 +288,7 @@ export default {
       return this.displayedIssues.filter(i => !i.craftsman)
     },
     defaultFilter: function () {
-      return filterTransformer.defaultFilter(this.view)
+      return this.presetFilter ?? filterTransformer.defaultFilter(this.view)
     },
     defaultFilterConfiguration: function () {
       return filterTransformer.defaultConfiguration(this.view)
@@ -382,7 +382,7 @@ export default {
     }
   },
   mounted () {
-    this.loadIssues(this.presetFilter ?? this.defaultFilter)
+    this.loadIssues(this.defaultFilter)
 
     api.getCraftsmen(this.constructionSite)
         .then(craftsmen => {

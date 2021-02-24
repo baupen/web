@@ -349,22 +349,23 @@ const filterTransformer = {
 
     for (const fieldName in query) {
       if (Object.prototype.hasOwnProperty.call(query, fieldName)) {
+        const value = query[fieldName]
         const beforeIndex = fieldName.indexOf('[before]')
         const afterIndex = fieldName.indexOf('[after]')
         if (beforeIndex > 0) {
-          filter[fieldName.substr(0, beforeIndex) + 'Before'] = query[fieldName]
+          filter[fieldName.substr(0, beforeIndex) + 'Before'] = value
         } else if (afterIndex > 0) {
-          filter[fieldName.substr(0, afterIndex) + 'After'] = query[fieldName]
+          filter[fieldName.substr(0, afterIndex) + 'After'] = value
         } else if (fieldName === 'craftsman[]') {
-          filter.craftsmanIds = query[fieldName]
+          filter.craftsmanIds = value
         } else if (fieldName === 'map[]') {
-          filter.mapIds = query[fieldName]
+          filter.mapIds = value
         } else if (fieldName === 'number[]') {
-          filter.numbers = query[fieldName]
+          filter.numbers = value
         } else if (fieldName === 'number') {
-          filter.numbers = [query[fieldName]]
+          filter.numbers = [value]
         } else {
-          filter[fieldName] = query[fieldName]
+          filter[fieldName] = value
         }
       }
     }
@@ -375,20 +376,26 @@ const filterTransformer = {
     const filter = {}
     for (const fieldName in entity) {
       if (Object.prototype.hasOwnProperty.call(entity, fieldName)) {
+        const value = entity[fieldName]
+        if (value === null) {
+          continue
+        }
+
         const beforeIndex = fieldName.indexOf('Before')
         const afterIndex = fieldName.indexOf('After')
         if (beforeIndex > 0) {
-          filter[fieldName.substr(0, beforeIndex) + '[before]'] = entity[fieldName]
+          filter[fieldName.substr(0, beforeIndex) + '[before]'] = value
         } else if (afterIndex > 0) {
-          filter[fieldName.substr(0, afterIndex) + '[after]'] = entity[fieldName]
+          filter[fieldName.substr(0, afterIndex) + '[after]'] = value
         } else if (fieldName === 'craftsmanIds') {
-          filter['craftsman[]'] = entity[fieldName]
+          filter['craftsman[]'] = value
         } else if (fieldName === 'mapIds') {
-          filter['map[]'] = entity[fieldName]
+          filter['map[]'] = value
         } else if (fieldName === 'numbers') {
-          filter['number[]'] = entity[fieldName]
+          filter['number[]'] = value
+        } else if (fieldName === 'constructionSite' || fieldName === 'filteredUrl' || fieldName.startsWith('@')) {
         } else {
-          filter[fieldName] = entity[fieldName]
+          filter[fieldName] = value
         }
       }
     }

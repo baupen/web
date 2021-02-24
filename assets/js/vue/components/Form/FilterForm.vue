@@ -1,5 +1,6 @@
 <template>
   <form-field for-id="link-access-allowed-before"
+              :required="false"
               :label="$t('export_issues_button.export_type.link.access_allowed_before')">
     <flat-pickr
         id="link-access-allowed-before" class="form-control"
