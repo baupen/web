@@ -75,7 +75,7 @@ class MyTwigExtension extends AbstractExtension
     public function iOSLoginLinkFilter(ConstructionManager $constructionManager): string
     {
         // same payload also in app.js
-        $payload = ['token' => $constructionManager->getAuthenticationToken(), 'origin' => $this->request->getHttpHost()];
+        $payload = ['token' => $constructionManager->getAuthenticationToken(), 'origin' => $this->request->getSchemeAndHttpHost()];
         $data = json_encode($payload);
 
         return 'mangelio://login?payload='.base64_encode($data);
