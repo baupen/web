@@ -7,10 +7,10 @@
     <craftsman-import-form :craftsmen="craftsmen" @imported="importedCraftsmen = $event" />
 
     <template v-if="transaction">
-      <p  v-if="transactionMessages.length" class="alert alert-info white-space-pre-line">
-        {{ transactionMessages.join('\n') }} <br/>
+      <p v-if="transactionMessages.length" class="alert alert-info white-space-pre-line">
+        {{ transactionMessages.join('\n') }} <br />
         <small>
-            {{ $t('import_craftsmen.matching_by_email')}}
+          {{ $t('import_craftsmen.matching_by_email') }}
         </small>
       </p>
     </template>
@@ -22,14 +22,12 @@ import { api } from '../../services/api'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import CraftsmanForm from '../Form/CraftsmanForm'
 import FormField from '../Library/FormLayout/FormField'
-import Dropzone from '../Library/FormInput/Dropzone'
 import CraftsmanImportForm from '../Form/CraftsmanImportForm'
 import { displaySuccess } from '../../services/notifiers'
 
 export default {
   components: {
     CraftsmanImportForm,
-    Dropzone,
     FormField,
     CraftsmanForm,
     ButtonWithModalConfirm
@@ -68,7 +66,10 @@ export default {
         if (!existing) {
           post.push(importedCraftsman)
         } else {
-          patch.push({craftsman: existing, patch: importedCraftsman})
+          patch.push({
+            craftsman: existing,
+            patch: importedCraftsman
+          })
         }
       })
 
@@ -80,10 +81,10 @@ export default {
     transactionMessages: function () {
       let messages = []
       if (this.transaction.post.length) {
-        messages.push(this.$tc('import_craftsmen.added', this.transaction.post.length ))
+        messages.push(this.$tc('import_craftsmen.added', this.transaction.post.length))
       }
       if (this.transaction.patch.length) {
-        messages.push(this.$tc('import_craftsmen.overwritten', this.transaction.patch.length ))
+        messages.push(this.$tc('import_craftsmen.overwritten', this.transaction.patch.length))
       }
 
       return messages
@@ -94,20 +95,20 @@ export default {
       this.$emit('edit', this.patch)
 
       this.importing = true
-      this.importTransaction = Object.assign({}, this.transaction);
+      this.importTransaction = Object.assign({}, this.transaction)
       this.continueImport()
     },
     continueImport: function () {
       if (this.importTransaction.post.length) {
-        let currentPost = this.importTransaction.post[0];
-        const postWithConstructionSite = Object.assign({}, currentPost,{constructionSite: this.constructionSite['@id']})
+        let currentPost = this.importTransaction.post[0]
+        const postWithConstructionSite = Object.assign({}, currentPost, { constructionSite: this.constructionSite['@id'] })
         api.postCraftsman(postWithConstructionSite)
             .then(_ => {
               this.importTransaction.post = this.importTransaction.post.filter(e => e !== currentPost)
               this.continueImport()
             })
       } else if (this.importTransaction.patch.length) {
-        let currentPatch = this.importTransaction.patch[0];
+        let currentPatch = this.importTransaction.patch[0]
         api.patch(currentPatch.craftsman, currentPatch.patch)
             .then(_ => {
               this.importTransaction.patch = this.importTransaction.patch.filter(e => e !== currentPatch)
@@ -116,7 +117,7 @@ export default {
       } else {
         displaySuccess(this.$t('import_craftsmen.import_finished'))
         this.importing = false
-        this.$emit("imported")
+        this.$emit('imported')
       }
     }
   }
