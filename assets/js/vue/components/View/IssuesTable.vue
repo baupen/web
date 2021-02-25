@@ -333,6 +333,7 @@ export default {
       this.issuePage = page
       if (page === 1) {
         this.issues = []
+        this.selectedIssues = []
       }
 
       let query = filterTransformer.filterToQuery(this.defaultFilter, filter, this.filterConfiguration, this.craftsmen, this.maps)
