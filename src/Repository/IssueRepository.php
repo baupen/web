@@ -11,7 +11,6 @@
 
 namespace App\Repository;
 
-use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -28,24 +27,9 @@ class IssueRepository extends EntityRepository
         $qb->setMaxResults(1);
 
         $result = $qb->getQuery()->execute();
-        if (!$result) {
-            $result = 0;
-        }
+        $maxNumber = $result ? array_shift($result[0]) : 0;
 
-        $issue->setNumber($result + 1);
-    }
-
-    public function findByConstructionSite(array $issueIds, ConstructionSite $constructionSite)
-    {
-        $qb = $this->getEntityManager()->createQueryBuilder()
-            ->select('i')
-            ->from(Issue::class, 'i')
-            ->where('i.id IN (:ids)')
-            ->setParameter(':ids', $issueIds)
-            ->andWhere('i.constructionSite = :constructionSite')
-            ->setParameter(':constructionSite', $constructionSite->getId());
-
-        return $qb->getQuery()->getResult();
+        $issue->setNumber($maxNumber + 1);
     }
 
     /**
@@ -79,8 +63,7 @@ class IssueRepository extends EntityRepository
     public function filterResolvedIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
     {
         $builder->andWhere($rootAlias.'.registeredAt IS NOT NULL')
-            ->andWhere($rootAlias.'.resolvedAt IS NOT NULL')
-            ->andWhere($rootAlias.'.closedAt IS NULL');
+            ->andWhere($rootAlias.'.resolvedAt IS NOT NULL');
 
         return $builder;
     }
