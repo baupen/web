@@ -2,19 +2,20 @@
   <button v-if="!reports.length" class="btn btn-primary" @click="planGeneration">
     {{ $t('actions.generate_report') }}
   </button>
-  <button v-if="reports.length && !abortRequested" class="btn btn-warning" @click="abortRequested = true">
+  <button v-if="reports.length && !abortRequested && !generationFinished" class="btn btn-warning" @click="abortRequested = true">
     {{ $t('actions.abort') }}
   </button>
 
-  <table v-if="reports.length" class="table table-striped mt-2">
+  <table v-if="reports.length" class="table table-striped mt-2 mb-0">
     <tbody>
-    <tr v-for="report in reports" :key="report">
+    <tr v-for="(report, index) in reports" :key="report">
       <td>
         {{report.progressLabel }}
+        <template v-if="report.link && reports.length > 1">({{index+1}}/{{reports.length}})</template>
       </td>
       <td class="w-minimal">
         <span v-if="report.link && !report.wasDownloaded">
-          <a target="_blank" @click="report.wasDownloaded = true" :href="report.link">{{ $t("actions.download") }}</a>
+          <a class="btn btn-primary btn-sm" target="_blank" @click="report.wasDownloaded = true" :href="report.link">{{ $t("actions.download") }}</a>
         </span>
         <span v-else-if="report.wasDownloaded">
           {{ $t('actions.messages.downloaded') }}
@@ -35,7 +36,7 @@ export default {
   data () {
     return {
       abortRequested: false,
-      generationStatus: null,
+      generationFinished: false,
       reports: []
     }
   },
@@ -114,6 +115,7 @@ export default {
     startGeneration: function (reportIndex = 0) {
       if (this.reports.length === reportIndex) {
         this.$emit('generation-finished')
+        this.generationFinished = true
         return
       }
 
