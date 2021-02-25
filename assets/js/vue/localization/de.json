@@ -77,6 +77,10 @@
       "drop_or_choose": "Bild (.jpg, .png, .gif) hineinziehen oder auswählen",
       "reset": "Zurücksetzen"
     },
+    "craftsman_import": {
+      "emailCCs_format": "mehrere E-Mails durch Komma trennen",
+      "invalid_entry": "Auf der Zeile {line} fehlen Angaben. Die ersten viel Spalten (Gewerk, Firma, Kontaktperson & E-Mail) werden immer benötigt."
+    },
     "issue_filter": {
       "state": "Status",
       "time": "Zeitpunkt",

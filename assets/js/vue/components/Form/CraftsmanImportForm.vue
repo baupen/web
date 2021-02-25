@@ -22,6 +22,8 @@
 
 <script>
 
+import { displayError } from '../../services/notifiers'
+
 const header = ["trade", "company", "contact_name", "email", "emailCCs"];
 const defaultContent = [
   ["Web", "mangel.io", "Florian Moser", "f@mangel.io", "info@mangel.io, support@mangel.io"],
@@ -64,6 +66,7 @@ export default {
       const content = parse(csvContent)
 
       let craftsmen = []
+      let valid = true;
       for (let i = 1; i < content.length; i++) {
         let entry = content[i]
 
@@ -75,6 +78,11 @@ export default {
           emailCCs: []
         }
 
+        if (!craftsman.trade || !craftsman.company || !craftsman.contactName || !craftsman.email) {
+          displayError(this.$t("form.craftsman_import.invalid_entry", {'line': i+1}))
+          valid = false
+        }
+
         if (entry[4]) {
           craftsman.emailCCs = entry[4].split(",").map(e => e.trim()).filter(e => e)
         }
@@ -82,7 +90,9 @@ export default {
         craftsmen.push(craftsman)
       }
 
-      this.$emit('imported', craftsmen)
+      if (valid) {
+        this.$emit('imported', craftsmen)
+      }
     },
   },
   computed: {
@@ -102,6 +112,7 @@ export default {
     },
     sampleCSVString: function () {
       const translatedHeader = header.map(h => this.$t('craftsman.'+h))
+      translatedHeader[translatedHeader.length - 1] += " (" + this.$t("form.craftsman_import.emailCCs_format") +")"
       let content = [translatedHeader, ...defaultContent]
       if (this.craftsmen) {
         content = [translatedHeader, ...this.craftsmen.map(c => [c.trade, c.company, c.contactName, c.email, c.emailCCs.join(", ")])]
