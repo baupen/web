@@ -9,9 +9,10 @@
     <dropzone
         v-if="!file"
         id="file" :help="$t('import_craftsmen.file_drop_or_choose')"
-        :valid-file-types="['text/csv', 'text/plain']"
+        :valid-file-types="validFileTypes"
         @input="file = $event[0]" />
-    <input v-if="file" id="file" class="form-control is-valid" type="text" readonly="readonly"
+    <input v-if="file" id="file" class="form-control" type="text" readonly="readonly"
+           :class="{'is-valid': fileIsValid, 'is-invalid': !fileIsValid && file !== null }"
            :value="file.name">
     <a class="btn-link clickable" v-if="file" @click="file = null">
       {{ $t('import_craftsmen.reset') }}
@@ -20,6 +21,8 @@
 </template>
 
 <script>
+
+import { displayError } from '../../services/notifiers'
 
 const header = ["trade", "company", "contact_name", "email", "emailCCs"];
 const defaultContent = [
@@ -63,6 +66,7 @@ export default {
       const content = parse(csvContent)
 
       let craftsmen = []
+      let valid = true;
       for (let i = 1; i < content.length; i++) {
         let entry = content[i]
 
@@ -74,6 +78,11 @@ export default {
           emailCCs: []
         }
 
+        if (!craftsman.trade || !craftsman.company || !craftsman.contactName || !craftsman.email) {
+          displayError(this.$t("form.craftsman_import.invalid_entry", {'line': i+1}))
+          valid = false
+        }
+
         if (entry[4]) {
           craftsman.emailCCs = entry[4].split(",").map(e => e.trim()).filter(e => e)
         }
@@ -81,16 +90,29 @@ export default {
         craftsmen.push(craftsman)
       }
 
-      this.$emit('imported', craftsmen)
+      if (valid) {
+        this.$emit('imported', craftsmen)
+      }
     },
   },
   computed: {
+    validFileTypes: function () {
+      return ['text/csv', 'text/plain']
+    },
+    fileIsValid: function () {
+      if (!this.file) {
+        return false
+      }
+
+      return this.validFileTypes.some(e => this.file.type === e)
+    },
     downloadSampleCSVHref: function () {
       const blob = new Blob([this.sampleCSVString], {type: 'text/csv'})
       return window.URL.createObjectURL(blob);
     },
     sampleCSVString: function () {
       const translatedHeader = header.map(h => this.$t('craftsman.'+h))
+      translatedHeader[translatedHeader.length - 1] += " (" + this.$t("form.craftsman_import.emailCCs_format") +")"
       let content = [translatedHeader, ...defaultContent]
       if (this.craftsmen) {
         content = [translatedHeader, ...this.craftsmen.map(c => [c.trade, c.company, c.contactName, c.email, c.emailCCs.join(", ")])]

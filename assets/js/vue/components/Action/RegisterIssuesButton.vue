@@ -13,7 +13,7 @@ import { api } from '../../services/api'
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import MapForm from '../Form/MapForm'
 import FileForm from '../Form/FileForm'
-import { displaySuccess } from '../../services/notifiers'
+import { displaySuccess, displayWarning } from '../../services/notifiers'
 
 export default {
   emits: ['registered'],
@@ -45,7 +45,18 @@ export default {
   methods: {
     registerSelectedIssues: function () {
       const nowString = (new Date()).toISOString()
-      this.preRegisterIssues = this.issues.map(issue => {
+
+      let filteredIssues = this.issues.filter(i => i.craftsman)
+      let invalidIssueCount = this.issues.length - filteredIssues.length
+      if (invalidIssueCount > 0) {
+        displayWarning(this.$tc('actions.messages.registration_skipped_no_craftsman', invalidIssueCount))
+      }
+
+      if (filteredIssues.length === 0) {
+        return;
+      }
+
+      this.preRegisterIssues = filteredIssues.map(issue => {
         return {
           issue,
           patch: {

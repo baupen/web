@@ -105,8 +105,6 @@
   <form-field for-id="craftsman" :label="$t('issue.craftsman')">
     <select class="custom-select"
             v-model="tradeFilter">
-      <option :value="null">{{ $t('edit_issues_button.no_trade_filter') }}</option>
-      <option disabled></option>
       <option v-for="trade in sortedTrade" :value="trade">
         {{ trade }}
       </option>
@@ -117,8 +115,6 @@
             @input="fields.craftsman.dirty = true"
             @change="validate('craftsman')"
     >
-      <option v-if="!tradeFilter" :value="null">{{ $t('edit_issues_button.no_craftsman') }}</option>
-      <option v-if="!tradeFilter" disabled></option>
       <option v-for="craftsman in sortedCraftsmen" :value="craftsman['@id']"
               :key="craftsman['@id']">
         {{ craftsman.company }} - {{ craftsman.contactName }}
@@ -247,6 +243,7 @@ export default {
     },
     setIssueFromTemplate: function () {
       this.issue = Object.assign({}, this.template)
+      console.log(this.issue)
       if (this.issue.craftsman) {
         this.tradeFilter = this.craftsmen.find(c => c['@id'] === this.issue.craftsman).trade
       } else {

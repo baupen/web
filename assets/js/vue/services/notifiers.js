@@ -8,7 +8,15 @@ Noty.overrideDefaults({
 const displaySuccess = function (successMessage) {
   new Noty({
     text: successMessage,
-    timeout: 1000
+    timeout: 2000
+  }).show()
+}
+
+const displayWarning = function (warningMessage) {
+  new Noty({
+    text: warningMessage,
+    type: 'warning',
+    timeout: false
   }).show()
 }
 
@@ -20,4 +28,4 @@ const displayError = function (errorMessage) {
   }).show()
 }
 
-export { displaySuccess, displayError }
+export { displaySuccess, displayWarning, displayError }

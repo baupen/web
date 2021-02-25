@@ -370,9 +370,13 @@ class ReportService implements ReportServiceInterface
             foreach ($issuesPerMap[$index] as $issue) {
                 if ($issue->getClosedAt()) {
                     ++$countPerMap[2];
-                } elseif ($issue->getResolvedAt()) {
+                }
+
+                if ($issue->getResolvedAt()) {
                     ++$countPerMap[1];
-                } else {
+                }
+
+                if (null === $issue->getClosedAt() && null === $issue->getResolvedAt()) {
                     ++$countPerMap[0];
                 }
             }
