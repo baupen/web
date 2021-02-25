@@ -27,7 +27,12 @@ class IssueRepository extends EntityRepository
         $qb->orderBy('i.number', 'DESC');
         $qb->setMaxResults(1);
 
-        $issue->setNumber($qb->getQuery()->getSingleScalarResult() + 1);
+        $result = $qb->getQuery()->execute();
+        if (!$result) {
+            $result = 0;
+        }
+
+        $issue->setNumber($result + 1);
     }
 
     public function findByConstructionSite(array $issueIds, ConstructionSite $constructionSite)
