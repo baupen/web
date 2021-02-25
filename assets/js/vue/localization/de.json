@@ -27,7 +27,7 @@
     "remove_issues": "Pendenzen entfernen",
     "remove_issues_help": "Die Pendenzen werden nirgendswo mehr angezeigt.",
     "reset": "zurücksetzen",
-    "resolve_issue": "Als erledigt markieren",
+    "resolve_issue": "Als umgesetzt markieren",
     "generate_report": "Report erstellen",
     "abort": "Abbrechen",
     "import": "Importieren",
@@ -58,7 +58,7 @@
         "map_removed": "Karte entfernt",
         "construction_manager_dissociated": "Bauleiter von Baustelle entfernt",
         "construction_manager_associated": "Bauleiter der Baustelle hinzugefügt",
-        "issue_resolved": "Pendenz als erledigt markiert.",
+        "issue_resolved": "Pendenz als umgesetzt markiert.",
         "issues_removed": "Pendenzen entfernt.",
         "issues_saved": "Pendenzen gespeichert.",
         "issue_images_replaced": "Bild ersetzt."
@@ -170,13 +170,13 @@
     "no_entries_yet": "Keine Aktivitäten auf der Baustelle. Fügen Sie Pendenzen hinzu, damit hier etwas angezeigt wird.",
     "entries": {
       "construction_manager_registered": "{constructionManager} hat eine Pendenz registriert. | {constructionManager} hat {count} Pendenzen registriert.",
-      "craftsman_resolved": "{craftsman} hat eine Pendenz erledigt. | {craftsman} hat {count} Pendenzen erledigt.",
-      "construction_manager_closed": "{constructionManager} hat eine Pendenz geschlossen. | {constructionManager} hat {count} Pendenzen geschlossen.",
+      "craftsman_resolved": "{craftsman} hat eine Pendenz umgesetzt. | {craftsman} hat {count} Pendenzen umgesetzt.",
+      "construction_manager_closed": "{constructionManager} hat eine Pendenz abgeschlossen. | {constructionManager} hat {count} Pendenzen abgeschlossen.",
       "craftsman_visited_webpage": "{craftsman} hat die Pendenzen angeschaut."
     }
   },
   "resolve": {
-    "help": "Markieren Sie Pendenzen als erledigt, damit die Bauleitung diese schliessen kann.",
+    "help": "Markieren Sie Pendenzen als umgesetzt, damit die Bauleitung diese abschliessen kann.",
     "thanks": "Sie haben keine offenen Pendenzen."
   },
   "foyer": {
@@ -205,7 +205,7 @@
   },
 
   "dispatch": {
-    "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und auf erledigt setzen.",
+    "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und als umgesetzt markieren.",
     "save_template_changes": "Änderungen an der Vorlage speichern",
     "save_as_new_template": "Als neue Vorlage speichern",
     "no_template": "Keine Vorlage",
@@ -234,12 +234,12 @@
     "of_craftsman": "von {craftsman} ",
     "dialog": {
       "success": {
-        "thanks": "Alle Pendenzen erledigt. Wir sagen Danke!"
+        "thanks": "Alle Pendenzen umgesetzt. Wir sagen Danke!"
       }
     },
     "actions": {
       "read_only_view": "Schreibgeschützter Link",
-      "send_response": "als erledigt markieren",
+      "send_response": "als umgesetzt markieren",
       "remove_response": "rückgängig"
     }
   },
@@ -249,7 +249,7 @@
   },
   "edit": {
     "maps_help": "Auf Baukarten werden die Pendenzen platziert.",
-    "craftsmen_help": "Unternehmer können mit einem personalisierten Link auf ihre zugeordneten Pendenzen zugreifen, und diese als erledigt markieren.",
+    "craftsmen_help": "Unternehmer können mit einem personalisierten Link auf ihre zugeordneten Pendenzen zugreifen, und diese als umgesetzt markieren.",
     "construction_managers_help": "Gewähren Sie anderen Bauleitern Zugriff auf diese Baustelle damit diese auch Pendenzen erfassen und verwalten können.",
     "construction_managers_disabled": "Die Änderung der Zugriffe ist für Ihren Account deaktiviert."
   },
@@ -365,13 +365,13 @@
     "contact_name": "Kontaktperson",
     "email": "E-Mail",
     "emailCCs": "E-Mail CCs",
-    "not_responded_issues_count": "Nicht erledigte Pendenzen",
+    "not_responded_issues_count": "Nicht umgesetzte Pendenzen",
     "not_read_issues_count": "Ungelesene Pendenzen",
     "open_issues_count": "Offene Pendenzen",
     "next_deadline": "Nächste Frist",
     "received_email": "E-Mail empfangen",
     "visited_webpage": "Webseite besucht",
-    "resolved_issue": "Pendenz erledigt"
+    "resolved_issue": "Pendenz umgesetzt"
   },
   "map": {
     "_name": "Bauplan",
@@ -402,10 +402,10 @@
       "created_help": "Pendenz wurde auf dem Gerät erfasst",
       "registered": "registriert",
       "registered_help": "Pendenz wurde ins Verzeichnis aufgenommen",
-      "resolved": "erledigt",
-      "resolved_help": "Pendenz wurde vom Handwerker als erledigt markiert",
-      "closed": "geschlossen",
-      "closed_help": "Pendenz wurde geschlossen",
+      "resolved": "umgesetzt",
+      "resolved_help": "Pendenz wurde vom Handwerker als umgesetzt markiert",
+      "closed": "abgeschlossen",
+      "closed_help": "Pendenz wurde abgeschlossen",
       "open": "offen",
       "read": "gelesen",
       "unread": "ungelesen",
