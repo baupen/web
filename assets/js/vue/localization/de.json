@@ -44,6 +44,7 @@
       "pending": "warten ({issueCount} Pendenzen)",
       "finished": "fertig",
       "downloaded": "heruntergeladen",
+      "registration_skipped_no_craftsman": "Eine Pendenz wurde übersprungen, da sie noch keinem Unternehmer zugewiesen ist. | {count} Pendenzen wurden übersprungen, da sie noch keinem Unternehmer zugewiesen sind.",
       "success": {
         "construction_site_added": "Baustelle hinzugefügt",
         "construction_site_image_replaced": "Bild ersetzt",
