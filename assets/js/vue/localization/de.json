@@ -26,6 +26,7 @@
     "remove_map_help": "Nach dem Entfernen können Sie der Karte keine Pendenzen mehr zuweisen.",
     "remove_issues": "Pendenzen entfernen",
     "remove_issues_help": "Die Pendenzen werden nirgendswo mehr angezeigt.",
+    "remove_filter": "Filter entfernen",
     "reset": "zurücksetzen",
     "resolve_issue": "Als umgesetzt markieren",
     "generate_report": "Report erstellen",

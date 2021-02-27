@@ -8,7 +8,8 @@
           <filter-issues-button
               v-if="canFilter"
               :disabled="isLoading" :craftsmen="craftsmen" :maps="maps"
-              :template="filterTemplate" :configuration-template="filterConfigurationTemplate"
+              :template="filter" :configuration-template="filterConfiguration"
+              :default="defaultFilter" :default-configuration="defaultFilterConfiguration"
               @update="filter = $event"
               @update-configuration="filterConfiguration = $event"
           />
@@ -292,12 +293,6 @@ export default {
     },
     defaultFilterConfiguration: function () {
       return filterTransformer.defaultConfiguration(this.view)
-    },
-    filterTemplate: function () {
-      return this.filter ?? this.defaultFilter
-    },
-    filterConfigurationTemplate: function () {
-      return this.filterConfiguration ?? this.defaultFilterConfiguration
     }
   },
   methods: {
