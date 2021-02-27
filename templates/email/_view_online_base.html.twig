@@ -1,11 +1,11 @@
-{% extends 'base.html.twig' %}
+{% extends '_base.html.twig' %}
 
 {% trans_default_domain "email" %}
 
 {% block title %}{{ "view_online.title"|trans }}{% endblock %}
 {% block description %}{{ "view_online.description"|trans }}{% endblock %}
 
-{% block content %}
+{% block layout %}
     <section class="center-wrapper">
         <div class="center-content wide">
             <div class="center-content-primary shadow">
