@@ -112,6 +112,12 @@ trait TestDataTrait
         return $map;
     }
 
+    private function assignConstructionManager(ConstructionSite $constructionSite, ConstructionManager $manager): void
+    {
+        $constructionSite->getConstructionManagers()->add($manager);
+        $this->saveEntity($constructionSite);
+    }
+
     private function addIssue(ConstructionSite $constructionSite, ConstructionManager $manager): Issue
     {
         $issue = new Issue();

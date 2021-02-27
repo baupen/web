@@ -82,6 +82,8 @@ export default {
       if (this.template) {
         this.map = Object.assign({}, this.template)
       }
+
+      validateFields(this.fields, this.map)
     }
   },
   computed: {
@@ -99,7 +101,6 @@ export default {
   },
   mounted () {
     this.setMapFromTemplate()
-    validateFields(this.fields, this.map)
 
     this.mounted = true
     this.$emit('update', this.updatePayload)

@@ -184,6 +184,7 @@ export default {
     },
     createEmailTemplateFromEmail: function () {
       const emailTemplate = Object.assign({
+        selfBcc: this.selfBcc,
         name: this.email.subject,
         constructionSite: this.constructionSite['@id']
       }, this.email)

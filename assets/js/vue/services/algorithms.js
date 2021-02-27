@@ -46,6 +46,10 @@ const arraysAreEqual = function (array1, array2, compareFn = undefined) {
 }
 
 const objectsAreEqual = function (object1, object2) {
+  if (!object1) {
+    return object1 === object2
+  }
+
   if (typeof object1 !== 'object' || typeof object2 !== 'object') {
     return false
   }

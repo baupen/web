@@ -17,19 +17,30 @@ use Doctrine\ORM\QueryBuilder;
 
 class IssueRepository extends EntityRepository
 {
-    public function setHighestNumber(Issue $issue)
+    public function assignHighestNumber(Issue $issue)
     {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->select('i.number')->from(Issue::class, 'i');
-        $qb->where('i.constructionSite = :constructionSite');
-        $qb->setParameter(':constructionSite', $issue->getConstructionSite());
-        $qb->orderBy('i.number', 'DESC');
-        $qb->setMaxResults(1);
+        /**
+         * execute query like:
+         * UPDATE issue
+         * SET number = (SELECT COALESCE(MAX(number),0) + 1 FROM issue WHERE construction_site_id = '4CEA314D-3062-499C-8BAC-64E61652AA31')
+         * WHERE id = '0207A5A1-C345-4781-B78E-E8962DDA599F'.
+         */
+        $select = $this->createQueryBuilder('i2')
+            ->select('(COALESCE(MAX(i2.number), 0) + 1)')
+            ->where('i2.constructionSite = :constructionSiteId');
 
-        $result = $qb->getQuery()->execute();
-        $maxNumber = $result ? array_shift($result[0]) : 0;
+        $update = $this->createQueryBuilder('i')
+            ->update()
+            ->set('i.number', '('.$select->getQuery()->getDQL().')')
+            ->where('i.id = :id')
+            ->setParameter(':id', $issue->getId())
+            ->setParameter(':constructionSiteId', $issue->getConstructionSite()->getId()); // for subquery
 
-        $issue->setNumber($maxNumber + 1);
+        $update->getQuery()->execute();
+
+        $this->getEntityManager()->refresh($issue);
+
+        return $issue->getNumber();
     }
 
     /**

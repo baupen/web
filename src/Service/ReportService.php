@@ -139,7 +139,7 @@ class ReportService implements ReportServiceInterface
      */
     private function addMap(Report $report, Map $map, array $issues)
     {
-        $path = $this->imageService->renderMapFileWithIssuesToJpg($map->getFile(), $issues, ImageServiceInterface::SIZE_FULL);
+        $path = $map->getFile() ? $this->imageService->renderMapFileWithIssuesToJpg($map->getFile(), $issues, ImageServiceInterface::SIZE_FULL) : null;
 
         $report->addMap($map->getName(), $map->getContext(), $path);
     }
@@ -236,7 +236,7 @@ class ReportService implements ReportServiceInterface
         if (null !== $filter->getMapIds()) {
             $entities = $this->doctrine->getRepository(Map::class)->findBy(['id' => $filter->getMapIds()]);
             $names = array_map(function (Map $map) {
-                $map->getContext();
+                return $map->getNameWithContext();
             }, $entities);
             $maps = $this->translator->trans('introduction.filter.maps', ['%count%' => count($names)], 'report');
             $filterEntries[$maps] = implode(', ', $names);
@@ -276,8 +276,10 @@ class ReportService implements ReportServiceInterface
 
         $addressLines = implode("\n", $constructionSite->getAddressLines());
 
+        $constructionSiteImage = $constructionSite->getImage() ? $this->imageService->resizeConstructionSiteImage($constructionSite->getImage(), ImageServiceInterface::SIZE_PREVIEW) : null;
+
         $report->addIntroduction(
-            $this->imageService->resizeConstructionSiteImage($constructionSite->getImage(), ImageServiceInterface::SIZE_PREVIEW),
+            $constructionSiteImage,
             $constructionSite->getName(),
             $addressLines,
             $reportElements,

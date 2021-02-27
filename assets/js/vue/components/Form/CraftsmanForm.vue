@@ -111,6 +111,8 @@ export default {
       if (this.templateTransformed) {
         this.craftsman = Object.assign({}, this.templateTransformed)
       }
+
+      validateFields(this.fields, this.craftsman)
     }
   },
   computed: {
@@ -142,7 +144,6 @@ export default {
   },
   mounted () {
     this.setCraftsmanFromTemplate()
-    validateFields(this.fields, this.craftsman)
 
     this.mounted = true
     this.$emit('update', this.updatePayload)

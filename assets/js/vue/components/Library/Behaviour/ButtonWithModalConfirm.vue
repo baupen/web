@@ -17,6 +17,9 @@
       <template v-slot:after-body>
         <slot name="footer">
           <div class="modal-footer">
+            <button v-if="canAbort" type="submit" @click="abort" class="btn btn-light mr-auto">
+              {{ abortTitle }}
+            </button>
             <slot name="secondary-footer"></slot>
             <button type="submit" :disabled="!canConfirm" @click="confirm" :class="'btn btn-' + color">
               {{ confirmTitle ?? title }}
@@ -33,7 +36,7 @@ import ButtonWithModal from './ButtonWithModal'
 import Modal from './Modal'
 
 export default {
-  emits: ['confirm', 'shown', 'hidden'],
+  emits: ['confirm', 'shown', 'hidden', 'abort'],
   components: {
     Modal,
     ButtonWithModal
@@ -60,6 +63,14 @@ export default {
       type: Boolean,
       default: true
     },
+    canAbort: {
+      type: Boolean,
+      default: false
+    },
+    abortTitle: {
+      type: String,
+      required: false
+    },
     modalSize: {
       type: String,
       default: null
@@ -81,6 +92,10 @@ export default {
     }
   },
   methods: {
+    abort: function () {
+      this.$emit('abort')
+      this.show = false
+    },
     confirm: function () {
       this.$emit('confirm')
       this.show = false
