@@ -39,7 +39,7 @@
     "remove_confirm": "Ich verstehe, dass ich diesen Schritt nicht rückgängig machen kann.",
     "show_more_issues": "Weitere {count} Pendenzen anzeigen",
     "messages": {
-      "resolved_as_impersonated_craftsman": "'Erledigt' wird im Namen des Unternehmers.",
+      "resolved_as_impersonated_craftsman": "'Umgesetzt' wird im Namen des Unternehmers.",
       "generating_map": "Grafiken werden generiert",
       "generating_pdf": "PDF wird generiert",
       "pending": "warten ({issueCount} Pendenzen)",
@@ -420,7 +420,7 @@
     "templates": {
       "common": {
         "hi": "Guten Tag,",
-        "help": "Mit dem Link in dieser E-Mail können die Pendenzen angeschaut werden. Bitte nach dem Erledigen entsprechend online markieren."
+        "help": "Mit dem Link in dieser E-Mail können die Pendenzen angeschaut werden. Bitte nach dem Umsetzen entsprechend online markieren."
       },
       "unread_issues": {
         "name": "Neue Pendenzen",
