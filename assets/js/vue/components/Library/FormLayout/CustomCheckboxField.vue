@@ -1,6 +1,6 @@
 <template>
   <div class="form-group">
-    <custom-checkbox :for-id="forId" :label="label" :secondary-label="secondaryLabel" :required="required">
+    <custom-checkbox :for-id="forId" :label="label" :label-icon="labelIcon" :label-icon-checked="labelIconChecked" :checked="checked" :secondary-label="secondaryLabel" :required="required">
       <slot></slot>
       <template v-slot:after>
         <div v-if="showReset">
@@ -29,6 +29,18 @@ export default {
     },
     label: {
       type: String,
+      required: false
+    },
+    labelIcon: {
+      type: Array,
+      required: false
+    },
+    labelIconChecked: {
+      type: Array,
+      required: false
+    },
+    checked: {
+      type: Boolean,
       required: false
     },
     secondaryLabel: {
