@@ -156,6 +156,32 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/issues?constructionSite='.$constructionSite->getId(), $response);
     }
 
+    public function testPostNumberAssignment()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $constructionManager = $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getEmptyConstructionSite();
+        $this->assignConstructionManager($constructionSite, $constructionManager);
+        $map = $this->addMap($constructionSite);
+
+        $constructionSiteId = $this->getIriFromItem($constructionSite);
+        $mapId = $this->getIriFromItem($map);
+        $constructionManagerId = $this->getIriFromItem($constructionManager);
+
+        $affiliation = ['constructionSite' => $constructionSiteId];
+        $payload = ['map' => $mapId, 'createdBy' => $constructionManagerId, 'createdAt' => (new \DateTime())->format('c')];
+
+        $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $affiliation);
+        $number = json_decode($response->getContent(), true)['number'];
+        $this->assertEquals(1, $number);
+
+        $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $affiliation);
+        $number = json_decode($response->getContent(), true)['number'];
+        $this->assertEquals(2, $number);
+    }
+
     public function testIsDeletedFilter()
     {
         $client = $this->createClient();

@@ -40,12 +40,18 @@ class IssueDataPersister implements ContextAwareDataPersisterInterface
      */
     public function persist($data, array $context = [])
     {
-        if (($context['collection_operation_name'] ?? null) === 'post') {
-            $repository = $this->doctrine->getRepository(Issue::class);
-            $repository->setHighestNumber($data);
+        $isCreated = ($context['collection_operation_name'] ?? null) === 'post';
+        if ($isCreated) {
+            $data->setNumber(0);
         }
 
-        return $this->decorated->persist($data, $context);
+        /** @var Issue $result */
+        $result = $this->decorated->persist($data, $context);
+
+        if ($isCreated) {
+            $repository = $this->doctrine->getRepository(Issue::class);
+            $repository->assignHighestNumber($result);
+        }
     }
 
     /**
