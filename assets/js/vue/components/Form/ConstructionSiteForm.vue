@@ -110,6 +110,8 @@ export default {
       if (this.template) {
         this.constructionSite = Object.assign({}, this.template)
       }
+
+      validateFields(this.fields, this.constructionSite)
     },
     determineSimilarConstructionSiteNames: function (newName) {
       if (!newName || newName.length < 4 || !this.constructionSitesWithoutTemplate) {
@@ -147,7 +149,6 @@ export default {
   },
   mounted () {
     this.setConstructionSiteFromTemplate()
-    validateFields(this.fields, this.constructionSite)
 
     this.mounted = true
     this.$emit('update', this.updatePayload)

@@ -72,6 +72,8 @@ export default {
         this.email.subject = this.template.subject
         this.email.body = this.template.body
       }
+      
+      validateFields(this.fields, this.email)
     }
   },
   computed: {
@@ -86,7 +88,6 @@ export default {
   },
   mounted () {
     this.setEmailFromTemplate()
-    validateFields(this.fields, this.email)
 
     this.mounted = true
     this.$emit('update', this.updatePayload)

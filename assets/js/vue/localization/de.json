@@ -167,7 +167,7 @@
   "feed": {
     "name": "Feed",
     "show_more": "Mehr anzeigen",
-    "no_entries_yet": "Keine Aktivitäten auf der Baustelle. Fügen Sie Pendenzen hinzu, damit hier etwas angezeigt wird.",
+    "no_entries": "Zurzeit keine Aktivitäten auf der Baustelle.",
     "entries": {
       "construction_manager_registered": "{constructionManager} hat eine Pendenz registriert. | {constructionManager} hat {count} Pendenzen registriert.",
       "craftsman_resolved": "{craftsman} hat eine Pendenz umgesetzt. | {craftsman} hat {count} Pendenzen umgesetzt.",

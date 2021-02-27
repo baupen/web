@@ -69,6 +69,8 @@ const resetFields = function (fields) {
     if (Object.prototype.hasOwnProperty.call(fields, fieldName)) {
       fields[fieldName].dirty = false
       fields[fieldName].errors = []
+      fields[fieldName].valid = false
+      fields[fieldName].invalid = false
     }
   }
 }

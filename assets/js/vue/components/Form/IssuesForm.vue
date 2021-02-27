@@ -243,7 +243,6 @@ export default {
     },
     setIssueFromTemplate: function () {
       this.issue = Object.assign({}, this.template)
-      console.log(this.issue)
       if (this.issue.craftsman) {
         this.tradeFilter = this.craftsmen.find(c => c['@id'] === this.issue.craftsman).trade
       } else {
@@ -303,7 +302,6 @@ export default {
   },
   mounted () {
     this.setIssueFromTemplate()
-    validateFields(this.fields, this.issue)
 
     this.mounted = true
     this.$emit('update', this.updatePayload)

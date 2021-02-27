@@ -98,7 +98,7 @@ class PathService implements PathServiceInterface
 
     public function getTransientFolderForMapFileRenders(MapFile $mapFile): string
     {
-        return $this->getTransientFolderForRenders().DIRECTORY_SEPARATOR.$mapFile->getCreatedFor()->getConstructionSite()->getFolderName().'maps'.DIRECTORY_SEPARATOR.$mapFile->getFilename();
+        return $this->getTransientFolderForRenders().DIRECTORY_SEPARATOR.$mapFile->getCreatedFor()->getConstructionSite()->getFolderName().DIRECTORY_SEPARATOR.'maps'.DIRECTORY_SEPARATOR.$mapFile->getFilename();
     }
 
     public function getTransientFolderForIssueImage(IssueImage $issueImage): string

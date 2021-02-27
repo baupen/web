@@ -56,7 +56,7 @@ export default {
       this.patching = true
 
       if (this.pendingPatch) {
-        api.patch(this.constructionSite, this.patch, this.$t('actions.messages.success.construction_site_edited'))
+        api.patch(this.constructionSite, this.patch, this.$t('actions.messages.success.construction_site_saved'))
             .then(_ => {
               this.patch = null
               this.patching = this.pendingChanges > 0
