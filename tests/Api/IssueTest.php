@@ -13,6 +13,7 @@ namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\ConstructionManager;
+use App\Entity\Issue;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertApiTrait;
@@ -437,14 +438,77 @@ class IssueTest extends ApiTestCase
         $this->assertTrue('' === $response->getContent());
     }
 
-    public function testSummary()
+    public function testStatistics()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
-        $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiGetOk($client, '/api/issues/summary?constructionSite='.$constructionSite->getId());
+        $constructionSite = $this->getEmptyConstructionSite();
+        $constructionManager = $this->getTestConstructionManager();
+        $this->assignConstructionManager($constructionSite, $constructionManager);
+        $craftsman = $this->addCraftsman($constructionSite);
+
+        $newIssue = function () use ($constructionSite, $constructionManager) {
+            $issue = new Issue();
+
+            $issue->setConstructionSite($constructionSite);
+            $issue->setNumber(0);
+
+            $issue->setCreatedAt(new \DateTime());
+            $issue->setCreatedBy($constructionManager);
+
+            return $issue;
+        };
+
+        $registerIssue = function (Issue $issue) use ($constructionManager) {
+            $issue->setRegisteredAt(new \DateTime());
+            $issue->setRegisteredBy($constructionManager);
+        };
+
+        $resolveIssue = function (Issue $issue) use ($craftsman) {
+            $issue->setResolvedAt(new \DateTime());
+            $issue->setResolvedBy($craftsman);
+        };
+
+        $closeIssue = function (Issue $issue) use ($constructionManager) {
+            $issue->setClosedAt(new \DateTime());
+            $issue->setClosedBy($constructionManager);
+        };
+
+        $newIssues = [];
+
+        $issue = $newIssue();
+        $newIssues[] = $issue;
+
+        $issue = $newIssue();
+        $registerIssue($issue);
+        $newIssues[] = $issue;
+
+        $issue = $newIssue();
+        $registerIssue($issue);
+        $resolveIssue($issue);
+        $newIssues[] = $issue;
+
+        $issue = $newIssue();
+        $registerIssue($issue);
+        $resolveIssue($issue);
+        $closeIssue($issue);
+        $newIssues[] = $issue;
+
+        $issue = $newIssue();
+        $registerIssue($issue);
+        $closeIssue($issue);
+        $newIssues[] = $issue;
+        $this->saveEntity(...$newIssues);
+
+        $response = $this->assertApiGetOk($client, '/api/issues/summary?constructionSite='.$constructionSite->getId());
+        $summary = json_decode($response->getContent(), true);
+
+        $this->assertEquals(1, $summary['newCount']);
+        $this->assertEquals(1, $summary['openCount']);
+        $this->assertEquals(1, $summary['inspectableCount']);
+        $this->assertEquals(2, $summary['closedCount']);
     }
 
     public function testGroup()

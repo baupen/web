@@ -127,11 +127,11 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
             }
         );
 
-        $queryBuilderResolvedIssues = $issueRepository->filterResolvedIssues($rootAlias, clone $queryBuilder);
+        $queryBuilderResolvedIssues = $issueRepository->filterInspectableIssues($rootAlias, clone $queryBuilder);
         $this->groupByCraftsmanAndEvaluate(
             $queryBuilderResolvedIssues, $statisticsDictionary, 'COUNT(i)',
             function (CraftsmanStatistics $statistics, $value) {
-                $statistics->getIssueSummary()->setResolvedCount($value);
+                $statistics->getIssueSummary()->setInspectableCount($value);
             }
         );
 

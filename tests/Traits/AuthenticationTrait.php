@@ -70,11 +70,13 @@ trait AuthenticationTrait
         return $testUser;
     }
 
-    private function saveEntity(BaseEntity $entity): void
+    private function saveEntity(...$entities): void
     {
         /** @var ObjectManager $manager */
         $manager = self::$container->get(ManagerRegistry::class)->getManager();
-        $manager->persist($entity);
+        foreach ($entities as $entity) {
+            $manager->persist($entity);
+        }
         $manager->flush();
     }
 

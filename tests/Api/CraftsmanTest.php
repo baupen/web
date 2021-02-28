@@ -203,7 +203,7 @@ class CraftsmanTest extends ApiTestCase
         $statistics = $this->getStatisticForCraftsman($client, $craftsman);
 
         $this->assertEquals(3, $statistics['issueSummary']['openCount']);
-        $this->assertEquals(3, $statistics['issueSummary']['resolvedCount']);
+        $this->assertEquals(3, $statistics['issueSummary']['inspectableCount']);
         $this->assertEquals(3, $statistics['issueSummary']['closedCount']);
 
         $this->assertEquals(3, $statistics['issueUnreadCount']);

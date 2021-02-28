@@ -11,6 +11,7 @@
 
 namespace App\Repository;
 
+use App\Api\Entity\IssueSummary;
 use App\Entity\Issue;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -43,16 +44,23 @@ class IssueRepository extends EntityRepository
         return $issue->getNumber();
     }
 
-    /**
-     * @return int[]
-     */
-    public function countOpenResolvedAndClosed(string $rootAlias, QueryBuilder $queryBuilder): array
+    public function createSummary(string $rootAlias, QueryBuilder $queryBuilder): IssueSummary
     {
-        $openCount = $this->filterAndCount($rootAlias, $queryBuilder, [$this, 'filterOpenIssues']);
-        $resolvedCount = $this->filterAndCount($rootAlias, $queryBuilder, [$this, 'filterResolvedIssues']);
-        $closedCount = $this->filterAndCount($rootAlias, $queryBuilder, [$this, 'filterClosedIssues']);
+        $issueSummary = new IssueSummary();
 
-        return [$openCount, $resolvedCount, $closedCount];
+        $newCount = $this->filterAndCount($rootAlias, $queryBuilder, [$this, 'filterNewIssues']);
+        $issueSummary->setNewCount($newCount);
+
+        $openCount = $this->filterAndCount($rootAlias, $queryBuilder, [$this, 'filterOpenIssues']);
+        $issueSummary->setOpenCount($openCount);
+
+        $inspectableCount = $this->filterAndCount($rootAlias, $queryBuilder, [$this, 'filterInspectableIssues']);
+        $issueSummary->setInspectableCount($inspectableCount);
+
+        $closedCount = $this->filterAndCount($rootAlias, $queryBuilder, [$this, 'filterClosedIssues']);
+        $issueSummary->setClosedCount($closedCount);
+
+        return $issueSummary;
     }
 
     private function filterAndCount(string $rootAlias, QueryBuilder $builder, callable $filter): int
@@ -60,6 +68,13 @@ class IssueRepository extends EntityRepository
         $filteredBuilder = $filter($rootAlias, clone $builder);
 
         return $this->countResult($rootAlias, $filteredBuilder);
+    }
+
+    public function filterNewIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
+    {
+        $builder->andWhere($rootAlias.'.registeredAt IS NULL');
+
+        return $builder;
     }
 
     public function filterOpenIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
@@ -71,10 +86,10 @@ class IssueRepository extends EntityRepository
         return $builder;
     }
 
-    public function filterResolvedIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
+    public function filterInspectableIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
     {
-        $builder->andWhere($rootAlias.'.registeredAt IS NOT NULL')
-            ->andWhere($rootAlias.'.resolvedAt IS NOT NULL');
+        $builder->andWhere($rootAlias.'.resolvedAt IS NOT NULL')
+            ->andWhere($rootAlias.'.closedAt IS NULL');
 
         return $builder;
     }

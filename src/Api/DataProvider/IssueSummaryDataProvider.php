@@ -12,7 +12,6 @@
 namespace App\Api\DataProvider;
 
 use App\Api\DataProvider\Base\NoPaginationDataProvider;
-use App\Api\Entity\IssueSummary;
 use App\Entity\Issue;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -48,9 +47,7 @@ class IssueSummaryDataProvider extends NoPaginationDataProvider
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
         $rootAlias = $queryBuilder->getRootAliases()[0];
 
-        $issueCounts = $this->manager->getRepository(Issue::class)->countOpenResolvedAndClosed($rootAlias, $queryBuilder);
-
-        $summary = IssueSummary::fromArray(...$issueCounts);
+        $summary = $this->manager->getRepository(Issue::class)->createSummary($rootAlias, $queryBuilder);
         $json = $this->serializer->serialize($summary, 'json');
 
         return new JsonResponse($json, Response::HTTP_OK, [], true);

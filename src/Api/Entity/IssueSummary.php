@@ -16,27 +16,31 @@ class IssueSummary
     /**
      * @var int
      */
+    private $newCount = 0;
+
+    /**
+     * @var int
+     */
     private $openCount = 0;
 
     /**
      * @var int
      */
-    private $resolvedCount = 0;
+    private $inspectableCount = 0;
 
     /**
      * @var int
      */
     private $closedCount = 0;
 
-    public static function fromArray(int $openCount, int $resolvedCount, int $closedCount): self
+    public function getNewCount(): int
     {
-        $self = new self();
+        return $this->newCount;
+    }
 
-        $self->openCount = $openCount;
-        $self->resolvedCount = $resolvedCount;
-        $self->closedCount = $closedCount;
-
-        return $self;
+    public function setNewCount(int $newCount): void
+    {
+        $this->newCount = $newCount;
     }
 
     public function getOpenCount(): int
@@ -49,14 +53,14 @@ class IssueSummary
         $this->openCount = $openCount;
     }
 
-    public function getResolvedCount(): int
+    public function getInspectableCount(): int
     {
-        return $this->resolvedCount;
+        return $this->inspectableCount;
     }
 
-    public function setResolvedCount(int $resolvedCount): void
+    public function setInspectableCount(int $inspectableCount): void
     {
-        $this->resolvedCount = $resolvedCount;
+        $this->inspectableCount = $inspectableCount;
     }
 
     public function getClosedCount(): int
