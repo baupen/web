@@ -7,8 +7,8 @@
           <hr />
         </div>
         <div class="col-md-6 col-lg-4">
-          <dashboard-issues-graph class="shadow mb-2" :construction-site="constructionSite" />
-          <dashboard-issues-summary class="shadow" :construction-site="constructionSite" />
+          <dashboard-issues-summary class="shadow mb-4" :construction-site="constructionSite" />
+          <dashboard-issues-graph class="shadow" :construction-site="constructionSite" />
         </div>
         <div class="col-md-6 col-lg-4">
           <dashboard-feed class="shadow" :construction-site="constructionSite" />

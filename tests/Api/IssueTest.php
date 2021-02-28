@@ -16,6 +16,7 @@ use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;
+use App\Helper\DateTimeFormatter;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertApiTrait;
@@ -559,6 +560,92 @@ class IssueTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $this->assertApiGetOk($client, '/api/issues/feed_entries?constructionSite='.$constructionSite->getId());
+    }
+
+    public function testTimeseries()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+
+        $constructionSite = $this->getEmptyConstructionSite();
+        $constructionManager = $this->getTestConstructionManager();
+        $this->assignConstructionManager($constructionSite, $constructionManager);
+        $craftsman = $this->addCraftsman($constructionSite);
+
+        $newIssue = function () use ($constructionSite, $constructionManager) {
+            $issue = new Issue();
+
+            $issue->setConstructionSite($constructionSite);
+            $issue->setNumber(0);
+
+            $issue->setCreatedAt(new \DateTime('today - 1 month'));
+            $issue->setCreatedBy($constructionManager);
+
+            return $issue;
+        };
+
+        $registerIssue = function (Issue $issue, int $daysInThePast) use ($constructionManager) {
+            $issue->setRegisteredAt(new \DateTime('today - '.$daysInThePast.' days + 1 minute'));
+            $issue->setRegisteredBy($constructionManager);
+        };
+
+        $resolveIssue = function (Issue $issue, int $daysInThePast) use ($craftsman) {
+            $issue->setResolvedAt(new \DateTime('today - '.$daysInThePast.' days + 1 minute'));
+            $issue->setResolvedBy($craftsman);
+        };
+
+        $closeIssue = function (Issue $issue, int $daysInThePast) use ($constructionManager) {
+            $issue->setClosedAt(new \DateTime('today - '.$daysInThePast.' days + 1 minute'));
+            $issue->setClosedBy($constructionManager);
+        };
+
+        $newIssues = [];
+
+        $issue = $newIssue(); //1
+        $newIssues[] = $issue;
+
+        $issue = $newIssue(); //2
+        $registerIssue($issue, 1);
+        $newIssues[] = $issue;
+
+        $issue = $newIssue(); //3
+        $registerIssue($issue, 2);
+        $resolveIssue($issue, 1);
+        $newIssues[] = $issue;
+
+        $issue = $newIssue(); //4
+        $registerIssue($issue, 3);
+        $resolveIssue($issue, 2);
+        $closeIssue($issue, 1);
+        $newIssues[] = $issue;
+
+        $issue = $newIssue(); //5
+        $registerIssue($issue, 4);
+        $closeIssue($issue, 1);
+        $newIssues[] = $issue;
+        $this->saveEntity(...$newIssues);
+
+        $response = $this->assertApiGetOk($client, '/api/issues/timeseries?constructionSite='.$constructionSite->getId());
+        $summaries = json_decode($response->getContent(), true);
+
+        $todayEntry = $summaries[count($summaries) - 1];
+        $yesterdayEntry = $summaries[count($summaries) - 2];
+        $dayBeforeYesterdayEntry = $summaries[count($summaries) - 3];
+
+        $this->assertEquals((new \DateTime('today'))->format(DateTimeFormatter::ISO_DATE_FORMAT), $todayEntry['date']);
+        $this->assertEquals(1, $todayEntry['openCount']); //2
+        $this->assertEquals(1, $todayEntry['inspectableCount']); //3
+        $this->assertEquals(2, $todayEntry['closedCount']); //5 #4
+
+        $this->assertEquals((new \DateTime('yesterday'))->format(DateTimeFormatter::ISO_DATE_FORMAT), $yesterdayEntry['date']);
+        $this->assertEquals(2, $yesterdayEntry['openCount']); //5 #3
+        $this->assertEquals(1, $yesterdayEntry['inspectableCount']); //4
+        $this->assertEquals(0, $yesterdayEntry['closedCount']);
+
+        $this->assertEquals(2, $dayBeforeYesterdayEntry['openCount']); //5 #4
+        $this->assertEquals(0, $dayBeforeYesterdayEntry['inspectableCount']);
+        $this->assertEquals(0, $dayBeforeYesterdayEntry['closedCount']);
     }
 
     private function testOrderAppliedFor(string $entry, Client $client, ConstructionSite $constructionSite): void

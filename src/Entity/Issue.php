@@ -59,6 +59,10 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *      "get_summary"={
  *          "method"="GET",
  *          "path"="/issues/summary"
+ *      },
+ *      "get_timeseries"={
+ *          "method"="GET",
+ *          "path"="/issues/timeseries"
  *      }
  *      },
  *     itemOperations={
