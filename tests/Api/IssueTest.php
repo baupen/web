@@ -12,7 +12,9 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
 use App\Entity\ConstructionManager;
+use App\Entity\ConstructionSite;
 use App\Entity\Issue;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
@@ -232,7 +234,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=8', $issueId);
     }
 
-    public function testOrder()
+    public function testLastChangedOrder()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -240,22 +242,27 @@ class IssueTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
 
         $issue = $constructionSite->getIssues()[0];
-        $issue->setDeadline(new \DateTime());
+        $issue->setDescription("Hi");
         $this->saveEntity($issue);
+        $this->testOrderAppliedFor('lastChangedAt', $client, $constructionSite);
+    }
 
-        $order = ['lastChangedAt', 'deadline', 'number'];
-        foreach ($order as $entry) {
-            $url = '/api/issues?constructionSite='.$constructionSite->getId().'&order['.$entry.']=';
+    public function testDeadlineNumberOrder()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loginApiConstructionManager($client);
+        $constructionSite = $this->getTestConstructionSite();
 
-            $ascCollectionResponse = $this->assertApiGetOk($client, $url.'asc');
-            $ascCollection = json_decode($ascCollectionResponse->getContent(), true);
-
-            $descCollectionResponse = $this->assertApiGetOk($client, $url.'desc');
-            $descCollection = json_decode($descCollectionResponse->getContent(), true);
-
-            $reversedDescEntries = array_reverse($descCollection['hydra:member']);
-            $this->assertEquals($ascCollection['hydra:member'], $reversedDescEntries, 'filter '.$entry.' has not been applied');
+        $counter = 1;
+        foreach ($constructionSite->getIssues() as $issue) {
+            $issue->setNumber($counter);
+            $issue->setDeadline(new \DateTime("today + ".$counter++." hours"));
         }
+        $this->saveEntity(...$constructionSite->getIssues()->toArray());
+
+        $this->testOrderAppliedFor('deadline', $client, $constructionSite);
+        $this->testOrderAppliedFor('number', $client, $constructionSite);
     }
 
     public function testLastChangedAtFilter()
@@ -552,5 +559,24 @@ class IssueTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $this->assertApiGetOk($client, '/api/issues/feed_entries?constructionSite='.$constructionSite->getId());
+    }
+
+    /**
+     * @param string $entry
+     * @param Client $client
+     * @param ConstructionSite $constructionSite
+     */
+    private function testOrderAppliedFor(string $entry, Client $client, ConstructionSite $constructionSite): void
+    {
+        $url = '/api/issues?constructionSite='.$constructionSite->getId().'&order['.$entry.']=';
+
+        $ascCollectionResponse = $this->assertApiGetOk($client, $url.'asc');
+        $ascCollection = json_decode($ascCollectionResponse->getContent(), true);
+
+        $descCollectionResponse = $this->assertApiGetOk($client, $url.'desc');
+        $descCollection = json_decode($descCollectionResponse->getContent(), true);
+
+        $reversedDescEntries = array_reverse($descCollection['hydra:member']);
+        $this->assertEquals($ascCollection['hydra:member'], $reversedDescEntries, 'filter '.$entry.' has not been applied');
     }
 }
