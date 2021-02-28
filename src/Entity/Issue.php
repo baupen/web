@@ -16,9 +16,9 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Api\Filters\IsDeletedFilter;
+use App\Api\Filters\PatchedOrderFilter;
 use App\Api\Filters\RequiredExactSearchFilter;
 use App\Api\Filters\StateFilter;
 use App\Entity\Base\BaseEntity;
@@ -77,7 +77,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "map": "exact", "description": "partial"})
  * @ApiFilter(StateFilter::class, properties={"state"})
  *
- * @ApiFilter(OrderFilter::class, properties={"lastChangedAt": "ASC", "deadline": "ASC", "number": "ASC"})
+ * @ApiFilter(PatchedOrderFilter::class, properties={"lastChangedAt": "ASC", "deadline"={"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "ASC"}, "number": "ASC"})
  *
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks
