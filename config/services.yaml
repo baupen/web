@@ -79,6 +79,10 @@ services:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:
             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+    App\Api\DataProvider\IssueTimeseriesDataProvider:
+        tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
+        arguments:
+            $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
     App\Api\DataProvider\SerializerAwareDataProvider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 3 } ]
         arguments:

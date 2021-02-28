@@ -1,22 +1,24 @@
 <template>
-  <div class="card-group shadow">
-    <card-counter-animated
-        color="primary"
-        :target="issuesSummary.openCount" :description="$t('issue.state.open')"
-        :href="registerOpenUrl" />
-    <card-counter-animated
-        color="warning"
-        :target="issuesSummary.inspectableCount" :description="$t('issue.state.to_inspect')"
-        :href="registerInspectUrl" />
-    <card-counter-animated
-        color="success"
-        :target="issuesSummary.closedCount" :description="$t('issue.state.closed')"
-        :href="registerClosedUrl" />
+  <div>
+    <div class="card-group">
+      <card-counter-animated
+          color="primary"
+          :target="issuesSummary.openCount" :description="$t('issue.state.open')"
+          :href="registerOpenUrl" />
+      <card-counter-animated
+          color="warning"
+          :target="issuesSummary.inspectableCount" :description="$t('issue.state.to_inspect')"
+          :href="registerInspectUrl" />
+      <card-counter-animated
+          color="success"
+          :target="issuesSummary.closedCount" :description="$t('issue.state.closed')"
+          :href="registerClosedUrl" />
+    </div>
+    <p class="alert alert-info" v-if="issuesSummary.newCount > 0">
+      {{ $t('dashboard_issues_summary.new_issues') }}
+      <a :href="foyerUrl">{{ $t('foyer.title') }}</a>
+    </p>
   </div>
-  <p class="alert alert-info shadow" v-if="issuesSummary.newCount > 0">
-    {{ $t('dashboard_issues_summary.new_issues') }}
-    <a :href="foyerUrl">{{ $t('foyer.title') }}</a>
-  </p>
 </template>
 
 <script>

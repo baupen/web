@@ -310,6 +310,12 @@ const api = {
     queryString += '&isDeleted=false'
     return this._getItem('/api/issues/summary?' + queryString)
   },
+  getIssuesTimeseries: function (constructionSite, query = {}) {
+    let queryString = this._getConstructionSiteQuery(constructionSite)
+    queryString += '&' + this._getQueryString(query)
+    queryString += '&isDeleted=false'
+    return this._getItem('/api/issues/timeseries?' + queryString)
+  },
   getIssuesGroup: function (constructionSite, group, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
     queryString += '&group=' + group
