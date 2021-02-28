@@ -10,6 +10,7 @@
         view="register"
         :construction-manager-iri="constructionManagerIri"
         :construction-site="constructionSite"
+        :initial-state="initialStateQuery"
         @loaded-maps="maps = $event"
         @selected="selectedIssues = $event"
         @query="query = $event"
@@ -43,6 +44,10 @@ export default {
     constructionSite: {
       type: Object,
       required: true
+    },
+    initialStateQuery: {
+      type: Number,
+      required: false
     }
   },
   methods: {

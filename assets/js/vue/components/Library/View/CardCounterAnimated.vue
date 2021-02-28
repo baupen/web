@@ -6,7 +6,11 @@
           {{ currentNumber }}
         </span>
       </h3>
-      <p class="card-text">{{ description }}</p>
+      <p class="card-text">
+        <a :href="href">
+          {{ description }}
+        </a>
+      </p>
     </div>
   </div>
 </template>
@@ -30,6 +34,10 @@ export default {
       required: true
     },
     description: {
+      type: String,
+      required: true
+    },
+    href: {
       type: String,
       required: true
     },

@@ -180,7 +180,11 @@
     "help": "Markieren Sie Pendenzen als umgesetzt, damit die Bauleitung diese abschliessen kann.",
     "thanks": "Sie haben keine offenen Pendenzen."
   },
+  "dashboard_issues_summary": {
+    "new_issues": "Neue Pendenzen wurden erfasst."
+  },
   "foyer": {
+    "title": "Pendenzen einpflegen",
     "no_unregistered_issues": "Keine neuen Pendenzen. Sie können neue Pendenzen mit der App erfassen.",
     "actions": {
       "register_issues": "Pendenzen ins Verzeichnis aufnehmen"

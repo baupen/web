@@ -1,7 +1,10 @@
 <template>
   <div id="register">
     <loading-indicator :spin="isLoading">
-      <register-issues :construction-site="constructionSite" :construction-manager-iri="constructionManagerIri" />
+      <register-issues
+          :construction-site="constructionSite" :construction-manager-iri="constructionManagerIri"
+          :initial-state-query="initialStateQuery"
+      />
     </loading-indicator>
   </div>
 </template>
@@ -25,6 +28,12 @@ export default {
   computed: {
     isLoading: function () {
       return !this.constructionSite || !this.constructionManagerIri
+    },
+    initialStateQuery: function () {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+
+      return urlParams.has("state") ? urlParams.get("state") : null
     }
   },
   mounted () {

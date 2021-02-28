@@ -232,6 +232,10 @@ export default {
       type: String,
       required: true,
     },
+    initialState: {
+      type: Number,
+      required: false
+    },
     presetFilter: {
       type: Object,
       required: false,
@@ -378,7 +382,16 @@ export default {
     }
   },
   mounted () {
-    this.loadIssues(this.defaultFilter)
+    if (this.initialState) {
+      this.filter = Object.assign({}, this.defaultFilter, {
+        state: this.initialState
+      })
+      this.filterConfiguration = Object.assign({}, this.defaultFilterConfiguration, {
+        state: true
+      })
+    }
+
+    this.loadIssues(this.filter ?? this.defaultFilter)
 
     let craftsmanQuery = {}
     if (this.presetFilter && this.presetFilter['craftsman[]']) {

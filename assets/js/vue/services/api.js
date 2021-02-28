@@ -66,6 +66,11 @@ const api = {
       }
     }
   },
+  _getConstructionSiteBaseUrlFromLocation: function () {
+    const urlArray = window.location.pathname.split('/')
+    urlArray.splice(3)
+    return urlArray.join('/')
+  },
   _getConstructionSiteIriFromLocation: function () {
     const urlArray = window.location.pathname.split('/')
     urlArray.splice(3)
@@ -200,6 +205,18 @@ const api = {
         }
       }
     )
+  },
+  currentFoyerUrl: function () {
+    return this._getConstructionSiteBaseUrlFromLocation() + '/foyer'
+  },
+  currentRegisterUrl: function (initialState = null) {
+    let url = this._getConstructionSiteBaseUrlFromLocation() + '/register'
+
+    if (initialState) {
+      url += '?state=' + initialState
+    }
+
+    return url
   },
   authenticateFromUrl: function () {
     const token = this._getTokenFromLocation()
