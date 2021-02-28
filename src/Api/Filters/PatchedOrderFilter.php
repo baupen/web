@@ -29,17 +29,7 @@ use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Order the collection by given properties.
- *
- * The ordering is done in the same sequence as they are specified in the query,
- * and for each property a direction value can be specified.
- *
- * For each property passed, if the resource does not have such property or if the
- * direction value is different from "asc" or "desc" (case insensitive), the property
- * is ignored.
- *
- * @author Kévin Dunglas <dunglas@gmail.com>
- * @author Théo FIDRY <theo.fidry@gmail.com>
+ * Extends the original order filter with NULLS_ALWAYS_LAST and NULLS_ALWAYS_FIRST functionality.
  */
 class PatchedOrderFilter extends OrderFilter implements OrderFilterInterface
 {
@@ -92,7 +82,7 @@ class PatchedOrderFilter extends OrderFilter implements OrderFilterInterface
         $nullRankHiddenField = sprintf('_%s_%s_null_rank', $alias, $field);
 
         $queryBuilder->addSelect(sprintf('CASE WHEN %s.%s IS NULL THEN 0 ELSE 1 END AS HIDDEN %s', $alias, $field, $nullRankHiddenField));
-        $queryBuilder->addOrderBy($nullRankHiddenField, self::NULLS_ALWAYS_FIRST ? 'DESC' : 'ASC');
+        $queryBuilder->addOrderBy($nullRankHiddenField, self::NULLS_ALWAYS_FIRST === $nullsComparison ? 'ASC' : 'DESC');
 
         $queryBuilder->addOrderBy(sprintf('%s.%s', $alias, $field), $direction);
     }
