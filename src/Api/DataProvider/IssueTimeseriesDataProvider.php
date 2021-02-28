@@ -54,7 +54,7 @@ class IssueTimeseriesDataProvider extends NoPaginationDataProvider
 
         $summary = $this->manager->getRepository(Issue::class)->createSummary($rootAlias, $queryBuilder);
 
-        $backtrackDate = new DateTime('today - 7 days');
+        $backtrackDate = new DateTime('today - 1 month');
         $stateChangeIssues = $this->getRecentStateChangesOfIssues($queryBuilder, $rootAlias, $backtrackDate);
 
         $countByDayDescending = [];

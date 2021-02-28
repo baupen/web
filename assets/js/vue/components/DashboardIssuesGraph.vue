@@ -1,5 +1,5 @@
 <template>
-  <div class="canvas-container">
+  <div class="canvas-container border">
     <canvas ref="chart" class="chart" width="1600" height="1000"></canvas>
   </div>
 </template>
@@ -43,7 +43,7 @@ export default {
 
       const minValue = Math.min(...closed)
       const diff = maxValue - minValue
-      const targetMin = Math.max(Math.round(minValue - diff / 5), 0)
+      const targetMin = Math.max(minValue - diff * 0.3, 0)
 
       const ctx = this.$refs.chart.getContext('2d')
       this.chart = new Chart(ctx, {
@@ -78,10 +78,18 @@ export default {
             reverse: true
           },
           scales: {
+            xAxes: [{
+                ticks: {
+                  maxRotation: 0,
+                  autoSkipPadding: 35
+                }
+              }
+            ],
             yAxes: [{
               stacked: true,
               ticks: {
-                min: targetMin
+                min: targetMin,
+                autoSkipPadding: 20
               }
             }]
           }
