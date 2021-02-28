@@ -242,7 +242,7 @@ class IssueTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
 
         $issue = $constructionSite->getIssues()[0];
-        $issue->setDescription("Hi");
+        $issue->setDescription('Hi');
         $this->saveEntity($issue);
         $this->testOrderAppliedFor('lastChangedAt', $client, $constructionSite);
     }
@@ -257,7 +257,7 @@ class IssueTest extends ApiTestCase
         $counter = 1;
         foreach ($constructionSite->getIssues() as $issue) {
             $issue->setNumber($counter);
-            $issue->setDeadline(new \DateTime("today + ".$counter++." hours"));
+            $issue->setDeadline(new \DateTime('today + '.$counter++.' hours'));
         }
         $this->saveEntity(...$constructionSite->getIssues()->toArray());
 
@@ -561,11 +561,6 @@ class IssueTest extends ApiTestCase
         $this->assertApiGetOk($client, '/api/issues/feed_entries?constructionSite='.$constructionSite->getId());
     }
 
-    /**
-     * @param string $entry
-     * @param Client $client
-     * @param ConstructionSite $constructionSite
-     */
     private function testOrderAppliedFor(string $entry, Client $client, ConstructionSite $constructionSite): void
     {
         $url = '/api/issues?constructionSite='.$constructionSite->getId().'&order['.$entry.']=';

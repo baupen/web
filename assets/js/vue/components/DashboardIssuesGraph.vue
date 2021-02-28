@@ -89,21 +89,21 @@ export default {
       data: {
         labels: labels,
         datasets: [{
-          label: 'closed',
+          label: this.$t('issue.state.closed'),
           type: 'line',
           borderWidth: 1,
           borderColor: '#28a745',
           backgroundColor: '#bfe5c7',
           data: closed,
         }, {
-          label: 'to inspect',
+          label: this.$t('issue.state.to_inspect'),
           type: 'line',
           borderWidth: 1,
           borderColor: '#ffc107',
           backgroundColor: '#ffecb5',
           data: inspectable,
         },{
-          label: 'open',
+          label: this.$t('issue.state.open'),
           type: 'line',
           borderWidth: 1,
           borderColor: '#343477',
