@@ -1,8 +1,14 @@
 <template>
   <div class="card-group shadow">
-    <card-counter-animated :target="issuesSummary.openCount" :description="$t('issue.state.open')" />
-    <card-counter-animated :target="issuesSummary.resolvedCount" :description="$t('issue.state.resolved')" />
-    <card-counter-animated :target="issuesSummary.closedCount" :description="$t('issue.state.closed')" />
+    <card-counter-animated
+        color="primary"
+        :target="issuesSummary.openCount" :description="$t('issue.state.open')" />
+    <card-counter-animated
+        color="warning"
+        :target="issuesSummary.inspectableCount" :description="$t('issue.state.to_inspect')" />
+    <card-counter-animated
+        color="success"
+        :target="issuesSummary.closedCount" :description="$t('issue.state.closed')" />
   </div>
 </template>
 
@@ -11,11 +17,11 @@ import { api } from '../services/api'
 import CardCounterAnimated from './Library/View/CardCounterAnimated'
 
 export default {
-  data() {
+  data () {
     return {
       issuesSummary: {
         openCount: 0,
-        resolvedCount: 0,
+        inspectableCount: 0,
         closedCount: 0,
       }
     }

@@ -1,7 +1,11 @@
 <template>
   <div class="card text-center">
     <div class="card-body">
-      <h3>{{ currentNumber }}</h3>
+      <h3>
+        <span class="border-bottom pb-1" :class="'border-' + color">
+          {{ currentNumber }}
+        </span>
+      </h3>
       <p class="card-text">{{ description }}</p>
     </div>
   </div>
@@ -11,7 +15,7 @@
 
 const frameDuration = 20
 const maxFrames = 1000 / frameDuration
-const easingFunction = t => t * t * (3.0 - 2.0 * t); // bezier
+const easingFunction = t => t * t * (3.0 - 2.0 * t) // bezier
 
 export default {
   data () {
@@ -28,6 +32,10 @@ export default {
     description: {
       type: String,
       required: true
+    },
+    color: {
+      type: String,
+      required: true
     }
   },
   watch: {
@@ -41,7 +49,7 @@ export default {
         return
       }
 
-      clearInterval(this.currentMultiplierAnimator);
+      clearInterval(this.currentMultiplierAnimator)
       this.currentMultiplierAnimator = null
     },
     startMultiplierAnimator: function () {
@@ -49,16 +57,16 @@ export default {
       this.multiplier = 0
 
       let currentFrame = 0
-      this.currentMultiplierAnimator = setInterval( () => {
-        currentFrame++;
+      this.currentMultiplierAnimator = setInterval(() => {
+        currentFrame++
 
-        this.multiplier = easingFunction( currentFrame / maxFrames );
+        this.multiplier = easingFunction(currentFrame / maxFrames)
 
-        if (currentFrame >= maxFrames ) {
+        if (currentFrame >= maxFrames) {
           this.multiplier = 1
           this.tryStopCurrentMultiplierAnimator()
         }
-      }, frameDuration );
+      }, frameDuration)
     }
   },
   computed: {
@@ -68,3 +76,9 @@ export default {
   }
 }
 </script>
+
+<style scoped="true">
+.underline {
+  text-decoration: underline;
+}
+</style>

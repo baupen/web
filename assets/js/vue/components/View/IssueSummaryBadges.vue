@@ -2,8 +2,8 @@
   <tooltip-badge color-if-nonzero="primary" :value="summary.openCount"
                   :tooltip-title="$t('issue.state.open')" />
   /
-  <tooltip-badge color-if-nonzero="warning" :value="summary.resolvedCount"
-                  :tooltip-title="$t('issue.state.resolved')" />
+  <tooltip-badge color-if-nonzero="warning" :value="summary.inspectableCount"
+                  :tooltip-title="$t('issue.state.to_inspect')" />
   /
   <tooltip-badge color-if-nonzero="success" :value="summary.closedCount"
                   :tooltip-title="$t('issue.state.closed')" />
