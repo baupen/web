@@ -2,13 +2,16 @@
   <div id="dashboard">
     <loading-indicator :spin="!constructionSite">
       <div class="row">
-        <div class="col-md-auto">
+        <div class="col-md-12 col-lg-4">
           <dashboard-construction-site :construction-site="constructionSite" />
           <hr />
         </div>
-        <div class="col-md-auto min-width-600">
-          <dashboard-issues-summary :construction-site="constructionSite" />
-          <dashboard-feed class="mt-4 shadow" :construction-site="constructionSite" />
+        <div class="col-md-6 col-lg-4">
+          <dashboard-issues-graph class="shadow mb-2" :construction-site="constructionSite" />
+          <dashboard-issues-summary class="shadow" :construction-site="constructionSite" />
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <dashboard-feed class="shadow" :construction-site="constructionSite" />
         </div>
       </div>
     </loading-indicator>
@@ -18,6 +21,7 @@
 <script>
 import { api } from './services/api'
 import DashboardConstructionSite from './components/DashboardConstructionSite'
+import DashboardIssuesGraph from './components/DashboardIssuesGraph'
 import DashboardIssuesSummary from './components/DashboardIssuesSummary'
 import DashboardFeed from './components/DashboardFeed'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
@@ -26,6 +30,7 @@ export default {
   components: {
     LoadingIndicator,
     DashboardFeed,
+    DashboardIssuesGraph,
     DashboardIssuesSummary,
     DashboardConstructionSite
   },
