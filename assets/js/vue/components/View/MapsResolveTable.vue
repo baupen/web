@@ -1,9 +1,10 @@
 <template>
   <div class="table-responsive">
-    <table class="table table-striped table-bordered table-sm-small table-hover">
+    <table class="table table-striped table-bordered table-sm-small table-hover modal-width-expanding">
       <thead>
       <tr>
-        <th colspan="99">{{ $t('view.issues_by_map') }}</th>
+        <th>{{ $t('view.issues_by_map') }}</th>
+        <th class="text-right">{{ $t('craftsman.next_deadline') }}</th>
       </tr>
       </thead>
       <tbody>
@@ -19,7 +20,11 @@
           <span v-if="mapContainer.issueCount" class="badge badge-secondary ml-1">
             {{ mapContainer.issueCount }}
           </span>
+        </td>
+        <td class="text-right">
+          <date-human-readable v-if="mapContainer.issueCount > 0" :value="mapContainer.maxDeadline" />
           <template v-if="isOverdue(mapContainer)">
+            <br/>
             <span class="badge badge-danger">
               {{ $t('issue.state.overdue') }}
             </span>
@@ -99,4 +104,8 @@ export default {
   }
 }
 
+.modal-width-expanding {
+  width: auto;
+  min-width: 500px;
+}
 </style>
