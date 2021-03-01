@@ -170,10 +170,10 @@
     "show_more": "Mehr anzeigen",
     "no_entries": "Zurzeit keine Aktivitäten auf der Baustelle.",
     "entries": {
-      "construction_manager_registered": "{constructionManager} hat eine Pendenz registriert. | {constructionManager} hat {count} Pendenzen registriert.",
-      "craftsman_resolved": "{craftsman} hat eine Pendenz umgesetzt. | {craftsman} hat {count} Pendenzen umgesetzt.",
-      "construction_manager_closed": "{constructionManager} hat eine Pendenz abgeschlossen. | {constructionManager} hat {count} Pendenzen abgeschlossen.",
-      "craftsman_visited_webpage": "{craftsman} hat die Pendenzen angeschaut."
+      "has_registered": "hat eine Pendenz registriert. | hat {count} Pendenzen registriert.",
+      "has_resolved": "hat eine Pendenz umgesetzt. | hat {count} Pendenzen umgesetzt.",
+      "has_closed": "hat eine Pendenz abgeschlossen. | hat {count} Pendenzen abgeschlossen.",
+      "has_visited_webpage": "hat die Pendenzen angeschaut."
     }
   },
   "resolve": {

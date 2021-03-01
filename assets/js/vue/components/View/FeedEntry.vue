@@ -8,16 +8,20 @@
     public const TYPE_CRAFTSMAN_VISITED_WEBPAGE = 10;
     -->
     <span v-if="entry.type === 1 && this.constructionManagerName">
-      {{$tc('feed.entries.construction_manager_registered', this.entry.count, {'constructionManager': this.constructionManagerName})}}
+      {{this.constructionManagerName}}
+      {{$tc('feed.entries.has_registered', this.entry.count)}}
     </span>
     <span v-else-if="entry.type === 2 && this.craftsmanName">
-      {{$tc('feed.entries.craftsman_resolved', this.entry.count, {'craftsman': this.craftsmanName})}}
+      <b>{{this.craftsmanName}}</b>
+      {{$tc('feed.entries.has_resolved', this.entry.count)}}
     </span>
     <span v-else-if="entry.type === 3 && this.constructionManagerName">
-      {{$tc('feed.entries.construction_manager_closed', this.entry.count, {'constructionManager': this.constructionManagerName})}}
+      {{this.constructionManagerName}}
+      {{$tc('feed.entries.has_closed', this.entry.count)}}
     </span>
     <span v-else-if="entry.type === 10 && this.craftsmanName">
-      {{$tc('feed.entries.craftsman_visited_webpage', this.entry.count, {'craftsman': this.craftsmanName})}}
+      <b>{{this.craftsmanName}}</b>
+      {{$tc('feed.entries.has_visited_webpage', this.entry.count)}}
     </span>
     <span class="text-secondary">
       -
@@ -48,7 +52,7 @@ export default {
   },
   computed: {
     craftsmanName: function () {
-      return this.craftsmen.find(c => c['@id'] === this.entry.subject).contactName;
+      return this.craftsmen.find(c => c['@id'] === this.entry.subject).company;
     },
     constructionManagerName: function () {
       const constructionManager = this.constructionManagers.find(c => c['@id'] === this.entry.subject);
