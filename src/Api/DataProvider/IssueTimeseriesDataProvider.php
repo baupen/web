@@ -54,7 +54,7 @@ class IssueTimeseriesDataProvider extends NoPaginationDataProvider
 
         $summary = $this->manager->getRepository(Issue::class)->createSummary($rootAlias, $queryBuilder);
 
-        $backtrackDate = new DateTime('today - 1 month');
+        $backtrackDate = new DateTime('today - 8 days');
         $stateChangeIssues = $this->getRecentStateChangesOfIssues($queryBuilder, $rootAlias, $backtrackDate);
 
         $countByDayDescending = [];
@@ -75,9 +75,9 @@ class IssueTimeseriesDataProvider extends NoPaginationDataProvider
                 foreach ($countByDayDescending as [$day, &$openCountCorrection, &$inspectableCountCorrection, &$closedCountCorrection]) {
                     if ($closedAt > $day) {
                         --$closedCountCorrection;
-                        if (null != $resolvedAt && $resolvedAt < $day) {
+                        if (null != $resolvedAt && $resolvedAt <= $day) {
                             ++$inspectableCountCorrection;
-                        } elseif (null != $registeredAt && $registeredAt < $day) {
+                        } elseif (null != $registeredAt && $registeredAt <= $day) {
                             ++$openCountCorrection;
                         }
                     }
@@ -87,7 +87,7 @@ class IssueTimeseriesDataProvider extends NoPaginationDataProvider
                 foreach ($countByDayDescending as [$day, &$openCountCorrection, &$inspectableCountCorrection]) {
                     if ($resolvedAt > $day) {
                         --$inspectableCountCorrection;
-                        if (null != $registeredAt && $registeredAt < $day) {
+                        if (null != $registeredAt && $registeredAt <= $day) {
                             ++$openCountCorrection;
                         }
                     }
@@ -100,6 +100,10 @@ class IssueTimeseriesDataProvider extends NoPaginationDataProvider
                     }
                 }
             }
+
+            unset($openCountCorrection);
+            unset($inspectableCountCorrection);
+            unset($closedCountCorrection);
         }
 
         $summaries = [];
@@ -127,7 +131,7 @@ class IssueTimeseriesDataProvider extends NoPaginationDataProvider
     private function getRecentStateChangesOfIssues(QueryBuilder $queryBuilder, $rootAlias, DateTime $backtrackDate): array
     {
         $queryBuilder->select($rootAlias.'.registeredAt registeredAt, '.$rootAlias.'.resolvedAt resolvedAt, '.$rootAlias.'.closedAt closedAt');
-        $queryBuilder->orWhere($rootAlias.'.registeredAt IS NOT NULL')
+        $queryBuilder
             ->andWhere($rootAlias.'.registeredAt > :backtrack_1 OR '.$rootAlias.'.resolvedAt > :backtrack_2 OR '.$rootAlias.'.closedAt > :backtrack_3')
             ->setParameter(':backtrack_1', $backtrackDate)
             ->setParameter(':backtrack_2', $backtrackDate)

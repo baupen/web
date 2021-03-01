@@ -112,8 +112,7 @@ class IssueRepository extends EntityRepository
 
     public function filterClosedIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
     {
-        $builder->andWhere($rootAlias.'.registeredAt IS NOT NULL')
-            ->andWhere($rootAlias.'.closedAt IS NOT NULL');
+        $builder->andWhere($rootAlias.'.closedAt IS NOT NULL');
 
         return $builder;
     }

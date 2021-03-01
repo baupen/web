@@ -32,6 +32,7 @@ export default {
       let inspectable = []
       let closed = []
       let maxValue = 0
+      console.log(timeseries)
       timeseries.forEach(entry => {
         labels.push(entry.date)
         open.push(entry.openCount)
@@ -43,7 +44,8 @@ export default {
 
       const minValue = Math.min(...closed)
       const diff = maxValue - minValue
-      const targetMin = Math.max(minValue - diff * 0.3, 0)
+      const exactTargetMin = Math.max(minValue - diff * 0.3, 0)
+      const targetMin =  exactTargetMin - (exactTargetMin > 1000 ? exactTargetMin % 100 : exactTargetMin % 10)
 
       const ctx = this.$refs.chart.getContext('2d')
       this.chart = new Chart(ctx, {
@@ -79,11 +81,11 @@ export default {
           },
           scales: {
             xAxes: [{
-                ticks: {
-                  maxRotation: 0,
-                  autoSkipPadding: 35
-                }
+              ticks: {
+                maxRotation: 0,
+                autoSkipPadding: 35
               }
+            }
             ],
             yAxes: [{
               stacked: true,
