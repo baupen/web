@@ -64,8 +64,6 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
 
         if (!$user instanceof AuthenticationToken) {
             throw new \Exception('Not found');
-
-            return null;
         }
 
         if (($craftsman = $user->getCraftsman()) instanceof Craftsman) {
