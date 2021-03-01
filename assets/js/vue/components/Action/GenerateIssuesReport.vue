@@ -2,7 +2,8 @@
   <button v-if="!reports.length" class="btn btn-primary" @click="planGeneration">
     {{ $t('actions.generate_report') }}
   </button>
-  <button v-if="reports.length && !abortRequested && !generationFinished" class="btn btn-warning" @click="abortRequested = true">
+  <button v-if="reports.length && !abortRequested && !generationFinished" class="btn btn-warning"
+          @click="abortRequested = true">
     {{ $t('actions.abort') }}
   </button>
 
@@ -10,12 +11,13 @@
     <tbody>
     <tr v-for="(report, index) in reports" :key="report">
       <td>
-        {{report.progressLabel }}
-        <template v-if="report.link && reports.length > 1">({{index+1}}/{{reports.length}})</template>
+        {{ report.progressLabel }}
+        <template v-if="report.link && reports.length > 1">({{ index + 1 }}/{{ reports.length }})</template>
       </td>
       <td class="w-minimal">
         <span v-if="report.link && !report.wasDownloaded">
-          <a class="btn btn-primary btn-sm" target="_blank" @click="report.wasDownloaded = true" :href="report.link">{{ $t("actions.download") }}</a>
+          <a class="btn btn-primary btn-sm" target="_blank" @click="report.wasDownloaded = true"
+             :href="report.link">{{ $t('actions.download') }}</a>
         </span>
         <span v-else-if="report.wasDownloaded">
           {{ $t('actions.messages.downloaded') }}
@@ -31,7 +33,7 @@ import { api, iriToId, maxIssuesPerReport } from '../../services/api'
 import { mapTransformer } from '../../services/transformers'
 
 export default {
-  components: { },
+  components: {},
   emits: ['generation-finished'],
   data () {
     return {
@@ -96,10 +98,10 @@ export default {
                   .filter(c => c.issueCount > 0) // only include map if any issue contained
                   .map(c => c.entity)
 
-              let currentQuery = Object.assign({}, this.query, {'map[]': includedMaps.map(m => iriToId(m['@id']))})
+              let currentQuery = Object.assign({}, this.query, { 'map[]': includedMaps.map(m => iriToId(m['@id'])) })
               const prerenderMaps = includedMaps.filter(m => m.fileUrl) // only prerender if actually file to render
               let queryResultSize = mapContainerGroup.groupIssueSum
-              let progressLabel = this.$t("actions.messages.pending", {issueCount: queryResultSize})
+              let progressLabel = this.$t('actions.messages.pending', { issueCount: queryResultSize })
 
               return Object.assign({
                 queryResultSize,
@@ -108,6 +110,10 @@ export default {
                 progressLabel
               }, defaultPayload)
             })
+
+            if (this.reports.length === 1) {
+              this.reports[0].query = Object.assign({}, this.query)
+            }
 
             this.startGeneration()
           })
@@ -156,7 +162,7 @@ export default {
       api.getReportLink(this.constructionSite, this.reportQuery, currentReport.query)
           .then(link => {
             currentReport.link = link
-            currentReport.progressLabel = this.$t("actions.messages.finished")
+            currentReport.progressLabel = this.$t('actions.messages.finished')
             this.startGeneration(reportIndex + 1)
           })
     },
@@ -170,7 +176,7 @@ export default {
       return false
     },
   },
-  unmounted() {
+  unmounted () {
     this.abortRequested = true
   }
 }
