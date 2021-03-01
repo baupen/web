@@ -157,13 +157,5 @@ export default {
       }
     }
   },
-  methods: {
-    createReport: function () {
-      this.reportRequested = true
-    },
-    createLink: function () {
-      console.log('create link')
-    },
-  },
 }
 </script>

@@ -21,6 +21,7 @@
             class="custom-control-input" type="checkbox" :id="'filter-map-' + mapContainer.entity['@id']"
             v-model="selectedEntities"
             :value="mapContainer.entity"
+            @change="selected(mapContainer)"
         >
       </custom-checkbox>
     </div>
@@ -41,6 +42,43 @@ export default {
   mixins: [
     entityFilterMixin
   ],
+  methods: {
+    selected: function (mapContainer) {
+      let entityIsNewlySelected = this.selectedEntities.includes(mapContainer.entity)
+      let allChildrenOfOtherElectionState = this.collectChildrenIfExpectedSelectionState(mapContainer.children, !entityIsNewlySelected)
+
+      if (allChildrenOfOtherElectionState) {
+        if (entityIsNewlySelected) {
+          // entity has been newly selected
+          // if no children selected, then select all
+          this.selectedEntities = [...this.selectedEntities, ...allChildrenOfOtherElectionState.map(c => c.entity)]
+        } else {
+          // entity has been newly deselected
+          // if all children selected, then deselect all
+          const deselectEntities = allChildrenOfOtherElectionState.map(c => c.entity)
+          this.selectedEntities = this.selectedEntities.filter(s => !deselectEntities.includes(s))
+        }
+      }
+    },
+    collectChildrenIfExpectedSelectionState: function (children, expected) {
+      let result = []
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i]
+        if (this.selectedEntities.includes(child.entity) !== expected) {
+          return false
+        }
+        result.push(child)
+
+        const recursiveResult = this.collectChildrenIfExpectedSelectionState(child.children, expected)
+        if (!recursiveResult) {
+          return false
+        }
+        result.push(...recursiveResult)
+      }
+
+      return result
+    }
+  },
   computed: {
     mapContainers: function () {
       return mapTransformer.orderedList(this.entities, mapTransformer.PROPERTY_LEVEL)
