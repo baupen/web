@@ -112,14 +112,11 @@ class GdService
     /**
      * create a color using the palette of the image.
      *
-     * @param resource $image
-     * @param int      $red
-     * @param int      $green
-     * @param int      $blue
+     * @param resource|\GdImage $image
      *
      * @return int
      */
-    private function createColor($image, $red, $green, $blue)
+    private function createColor($image, int $red, int $green, int $blue)
     {
         //get color from palette
         $color = imagecolorexact($image, $red, $green, $blue);
