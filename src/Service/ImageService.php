@@ -150,6 +150,7 @@ class ImageService implements ImageServiceInterface
 
     private function renderSizeFor(string $sourcePath, string $targetFolder, string $size): ?string
     {
+        /** @var string $filename */
         $filename = pathinfo($sourcePath, PATHINFO_FILENAME);
         $targetFilePath = $this->getPathForSize($sourcePath, $targetFolder, $filename, $size);
         if (file_exists($targetFilePath)) {
@@ -180,6 +181,7 @@ class ImageService implements ImageServiceInterface
 
     private function getPathForSize(string $sourcePath, string $targetFolder, string $filename, string $size)
     {
+        /** @var string $ending */
         $ending = pathinfo($sourcePath, PATHINFO_EXTENSION);
 
         $targetFileName = $filename.'_'.$size.'.'.$ending;

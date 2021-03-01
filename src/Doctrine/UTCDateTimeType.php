@@ -55,6 +55,7 @@ class UTCDateTimeType extends DateTimeType
             return $value;
         }
 
+        /** @var \DateTime|false $converted */
         $converted = \DateTime::createFromFormat(
             $platform->getDateTimeFormatString(),
             $value,

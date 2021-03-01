@@ -13,7 +13,6 @@ namespace App\Command;
 
 use App\Command\Base\DatabaseCommand;
 use App\Service\Interfaces\PathServiceInterface;
-use Doctrine\DBAL\Connection;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -39,7 +38,7 @@ class DatabaseRestoreCommand extends DatabaseCommand
      */
     public function __construct(ManagerRegistry $registry, PathServiceInterface $pathService)
     {
-        parent::__construct();
+        parent::__construct($registry);
 
         $this->registry = $registry;
         $this->pathService = $pathService;
@@ -74,9 +73,7 @@ class DatabaseRestoreCommand extends DatabaseCommand
         $latestBackup = $backups[count($backups) - 1];
         $io->text('Importing '.$latestBackup);
 
-        /** @var Connection $connection */
-        $connection = $this->registry->getConnection();
-        exec('mysql --user='.$connection->getUsername().' --password='.$connection->getPassword().' '.$connection->getDatabase().' < '.$latestBackup);
+        exec('mysql '.$this->getMysqlCommandLineConnectionParameters().' < '.$latestBackup);
         $io->text('Imported.');
 
         return 0;

@@ -236,9 +236,4 @@ class ConstructionManager extends BaseEntity implements UserInterface
     {
         $this->canAssociateSelf = $canAssociateSelf;
     }
-
-    public function setIsExternalAccount(bool $isExternalAccount): void
-    {
-        $this->isExternalAccount = $isExternalAccount;
-    }
 }

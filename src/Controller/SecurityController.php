@@ -88,7 +88,7 @@ class SecurityController extends BaseFormController
      *
      * @return Response
      */
-    public function registerAction(Request $request, TranslatorInterface $translator, UserServiceInterface $userService, EmailServiceInterface $emailService)
+    public function registerAction(Request $request, TranslatorInterface $translator, UserServiceInterface $userService)
     {
         $constructionManager = new ConstructionManager();
         $constructionManager->setEmail($request->query->get('email'));

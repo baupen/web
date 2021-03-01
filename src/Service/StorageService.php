@@ -124,8 +124,10 @@ class StorageService implements StorageServiceInterface
 
     private function getSanitizedUniqueFileName(string $targetFolder, string $targetFileName): string
     {
-        $fileName = pathinfo($targetFileName, PATHINFO_FILENAME);
-        $extension = pathinfo($targetFileName, PATHINFO_EXTENSION);
+        /** @var string[] $pathInfo */
+        $pathInfo = pathinfo($targetFileName);
+        $fileName = $pathInfo['filename'];
+        $extension = $pathInfo['extension'];
 
         $sanitizedFileName = FileHelper::sanitizeFileName($fileName).'.'.$extension;
         $targetPath = $targetFolder.DIRECTORY_SEPARATOR.$sanitizedFileName;

@@ -63,7 +63,7 @@ class IssueVoter extends ConstructionSiteOwnedEntityVoter
             return false;
         }
 
-        if ($filter->getDescription() && false === strpos($subject->getDescription(), $filter->getDescription())) {
+        if (null !== $filter->getDescription() && false === strpos($subject->getDescription(), $filter->getDescription())) {
             return false;
         }
 

@@ -15,7 +15,6 @@ use App\Command\Base\DatabaseCommand;
 use App\Helper\DateTimeFormatter;
 use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;
-use Doctrine\DBAL\Connection;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -40,7 +39,7 @@ class DatabaseBackupCommand extends DatabaseCommand
      */
     public function __construct(ManagerRegistry $registry, PathServiceInterface $pathService)
     {
-        parent::__construct();
+        parent::__construct($registry);
 
         $this->registry = $registry;
         $this->pathService = $pathService;
@@ -72,9 +71,7 @@ class DatabaseBackupCommand extends DatabaseCommand
         $path = $backupFolder.DIRECTORY_SEPARATOR.$filename;
         $io->text('Dumping database to '.$path.'.');
 
-        /** @var Connection $connection */
-        $connection = $this->registry->getConnection();
-        exec('mysqldump --user='.$connection->getUsername().' --password='.$connection->getPassword().' '.$connection->getDatabase().' > '.$path);
+        exec('mysqldump '.$this->getMysqlCommandLineConnectionParameters().' > '.$path);
         $io->text('Dumped database.');
 
         $backups = glob($backupFolder.DIRECTORY_SEPARATOR.self::BACKUP_FILE_PREFIX.'*');

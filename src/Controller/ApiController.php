@@ -83,14 +83,13 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function statusAction(Request $request)
+    public function statusAction()
     {
         $data = [];
 
-        $applicationVersion = $request->headers->get('X-APPLICATION-VERSION');
-        list($os, $version) = explode('_', $applicationVersion);
-
         /*
+         * $applicationVersion = $request->headers->get('X-APPLICATION-VERSION');
+         * list($os, $version) = explode('_', $applicationVersion);
          * $data['messageDe'] = "Bitte aktualisieren Sie die neue App";
          * $data['messageIt'] = "Pro favore ...";
          */
@@ -131,7 +130,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function getMapFileRenderAction(Request $request, Map $map, MapFile $mapFile, string $filename, ImageServiceInterface $imageService, PathServiceInterface $pathService)
+    public function getMapFileRenderAction(Request $request, Map $map, MapFile $mapFile, string $filename, ImageServiceInterface $imageService)
     {
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
             throw new NotFoundHttpException();
@@ -320,12 +319,5 @@ class ApiController extends BaseDoctrineController
         }
 
         return $candidate;
-    }
-
-    private function removeDetached($entity)
-    {
-        $manager = $this->getDoctrine()->getManager();
-        $manager->remove($entity);
-        $manager->flush($entity);
     }
 }

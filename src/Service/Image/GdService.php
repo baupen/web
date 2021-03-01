@@ -47,7 +47,7 @@ class GdService
     }
 
     /**
-     * @param resource $image
+     * @param resource|\GdImage $image
      */
     public function drawRectangleWithText(float $xPosition, float $yPosition, string $color, float $padding, string $text, float $textFontSize, float $textWidth, float $textHeight, &$image)
     {
@@ -67,6 +67,7 @@ class GdService
     public function resizeImage(string $sourcePath, string $targetPath, int $maxWidth, int $maxHeight): bool
     {
         list($width, $height) = ImageHelper::fitInBoundingBox($sourcePath, $maxWidth, $maxHeight, false);
+        /** @var string $ending */
         $ending = pathinfo($sourcePath, PATHINFO_EXTENSION);
 
         //resize & save
@@ -111,14 +112,11 @@ class GdService
     /**
      * create a color using the palette of the image.
      *
-     * @param resource $image
-     * @param int      $red
-     * @param int      $green
-     * @param int      $blue
+     * @param resource|\GdImage $image
      *
      * @return int
      */
-    private function createColor($image, $red, $green, $blue)
+    private function createColor($image, int $red, int $green, int $blue)
     {
         //get color from palette
         $color = imagecolorexact($image, $red, $green, $blue);

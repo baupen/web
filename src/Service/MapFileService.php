@@ -43,7 +43,9 @@ class MapFileService implements MapFileServiceInterface
         $sourceFilePath = $this->pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.$mapFile->getFilename();
 
         $targetFolder = $this->pathService->getTransientFolderForMapFile($mapFile);
+        /** @var string $fileName */
         $fileName = pathinfo($sourceFilePath, PATHINFO_FILENAME);
+        /** @var string $extension */
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
         $targetFileName = $fileName.'_outlines_'.$extension;
         $targetFilePath = $targetFolder.DIRECTORY_SEPARATOR.$targetFileName;

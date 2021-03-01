@@ -43,7 +43,8 @@ export default {
 
       const minValue = Math.min(...closed)
       const diff = maxValue - minValue
-      const targetMin = Math.max(minValue - diff * 0.3, 0)
+      const exactTargetMin = Math.max(minValue - diff * 0.3, 0)
+      const targetMin = exactTargetMin - (exactTargetMin > 1000 ? exactTargetMin % 100 : exactTargetMin % 10)
 
       const ctx = this.$refs.chart.getContext('2d')
       this.chart = new Chart(ctx, {
@@ -75,19 +76,21 @@ export default {
         },
         options: {
           legend: {
-            reverse: true
+            reverse: true,
+            onClick: null
           },
           scales: {
             xAxes: [{
-                ticks: {
-                  maxRotation: 0,
-                  autoSkipPadding: 35
-                }
+              ticks: {
+                maxRotation: 0,
+                autoSkipPadding: 35
               }
-            ],
+            }],
             yAxes: [{
+              type: 'linear',
               stacked: true,
               ticks: {
+                beginAtZero: false,
                 min: targetMin,
                 autoSkipPadding: 20
               }

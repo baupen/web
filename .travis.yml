@@ -70,7 +70,7 @@ script:
   - cp .env.travis .env.local
   - php bin/console doctrine:database:create --no-interaction
   - php bin/console doctrine:migrations:migrate --no-interaction
-  - php vendor/bin/phpunit
+  - XDEBUG_MODE=coverage php vendor/bin/phpunit
 
   # frontend dependency checks
   - yarn audit --groups dependencies
@@ -81,4 +81,3 @@ script:
 after_script:
   # scrutinizer reporting
   - if [[ $COVERAGE == true ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover ./clover.xml; fi
-  - if [[ $COVERAGE == true ]]; then bash <(curl -s https://codecov.io/bash); fi

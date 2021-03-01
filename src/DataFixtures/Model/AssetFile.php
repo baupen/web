@@ -17,6 +17,7 @@ class AssetFile extends UploadedFile
 {
     public function __construct(string $path)
     {
+        /** @var string $originalName */
         $originalName = pathinfo($path, PATHINFO_BASENAME);
 
         $newPath = $path.'.tmp';

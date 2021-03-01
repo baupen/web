@@ -17,6 +17,7 @@ use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
+use App\Helper\DateTimeFormatter;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertApiTrait;
@@ -160,14 +161,59 @@ class CraftsmanTest extends ApiTestCase
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $craftsmanIri, 'trade', $sample['trade']);
     }
 
-    public function testFeed()
+    public function testFeedEntries()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
-        $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiGetOk($client, '/api/craftsmen/feed_entries?constructionSite='.$constructionSite->getId());
+        $constructionSite = $this->getEmptyConstructionSite();
+        $constructionManager = $this->getTestConstructionManager();
+        $this->assignConstructionManager($constructionSite, $constructionManager);
+        $craftsman1 = $this->addCraftsman($constructionSite);
+        $craftsman1->setLastVisitOnline(new \DateTime('today'));
+        $craftsman2 = $this->addCraftsman($constructionSite);
+        $craftsman2->setLastVisitOnline(new \DateTime('yesterday + 2 hours'));
+        $this->saveEntity($craftsman1, $craftsman2);
+
+        $response = $this->assertApiGetOk($client, '/api/craftsmen/feed_entries?constructionSite='.$constructionSite->getId());
+        $feedEntries = json_decode($response->getContent(), true);
+
+        $craftsman1Iri = $this->getIriFromItem($craftsman1);
+        $craftsman2Iri = $this->getIriFromItem($craftsman2);
+
+        $expectedCombinations = [
+            [
+                (new \DateTime('today'))->format(DateTimeFormatter::ISO_DATE_FORMAT),
+                $craftsman1Iri,
+                10,
+                1,
+            ],
+            [
+                (new \DateTime('yesterday'))->format(DateTimeFormatter::ISO_DATE_FORMAT),
+                $craftsman2Iri,
+                10,
+                1,
+            ],
+        ];
+
+        foreach ($feedEntries as $feedEntry) {
+            $foundCombinationIndex = null;
+            for ($i = 0; $i < count($expectedCombinations); ++$i) {
+                $expectedCombination = $expectedCombinations[$i];
+                if ($expectedCombination[0] === $feedEntry['date'] &&
+                    $expectedCombination[1] === $feedEntry['subject'] &&
+                    $expectedCombination[2] === $feedEntry['type'] &&
+                    $expectedCombination[3] === $feedEntry['count']) {
+                    $foundCombinationIndex = $i;
+                    break;
+                }
+            }
+
+            $this->assertNotNull($foundCombinationIndex, 'not any of the expected combinations');
+            unset($expectedCombinations[$foundCombinationIndex]);
+            $expectedCombinations = array_values($expectedCombinations);
+        }
     }
 
     public function testStatistics()
