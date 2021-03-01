@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img class="img-fluid shadow" v-if="constructionSite.imageUrl" :src="constructionSite.imageUrl + '?size=preview'"
+    <img class="img-fluid shadow" v-if="constructionSite.imageUrl" :src="constructionSite.imageUrl + '?size=full'"
          :alt="'image of ' + constructionSite.name">
     <h4 class="mt-3">{{ constructionSite.name }}</h4>
     <p>

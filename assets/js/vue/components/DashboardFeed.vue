@@ -63,7 +63,7 @@ export default {
 
 <style scoped="true">
 .limited-height {
-  max-height: 22em;
+  max-height: 32em;
   overflow-y: auto;
 }
 

@@ -25,23 +25,39 @@ class IssueRepository extends EntityRepository
          * UPDATE issue
          * SET number = (SELECT COALESCE(MAX(number),0) + 1 FROM issue WHERE construction_site_id = '4CEA314D-3062-499C-8BAC-64E61652AA31')
          * WHERE id = '0207A5A1-C345-4781-B78E-E8962DDA599F'.
+         *
+         * Have to retry due to "Serialization failure: 1213 Deadlock found when trying to get lock; try restarting transaction"
          */
-        $select = $this->createQueryBuilder('i2')
-            ->select('(COALESCE(MAX(i2.number), 0) + 1)')
-            ->where('i2.constructionSite = :constructionSiteId');
+        $retries = 0;
+        $lastException = null;
+        while ($retries++ < 10) {
+            try {
+                $select = $this->createQueryBuilder('i2')
+                    ->select('(COALESCE(MAX(i2.number), 0) + 1)')
+                    ->where('i2.constructionSite = :constructionSiteId');
 
-        $update = $this->createQueryBuilder('i')
-            ->update()
-            ->set('i.number', '('.$select->getQuery()->getDQL().')')
-            ->where('i.id = :id')
-            ->setParameter(':id', $issue->getId())
-            ->setParameter(':constructionSiteId', $issue->getConstructionSite()->getId()); // for subquery
+                $update = $this->createQueryBuilder('i')
+                    ->update()
+                    ->set('i.number', '('.$select->getQuery()->getDQL().')')
+                    ->where('i.id = :id')
+                    ->setParameter(':id', $issue->getId())
+                    ->setParameter(':constructionSiteId', $issue->getConstructionSite()->getId()); // for subquery
 
-        $update->getQuery()->execute();
+                $update->getQuery()->execute();
 
-        $this->getEntityManager()->refresh($issue);
+                $this->getEntityManager()->refresh($issue);
 
-        return $issue->getNumber();
+                return $issue->getNumber();
+            } catch (\Exception $exception) {
+                $lastException = $exception;
+
+                // backoff to allow other threads to complete
+                $randomBackoff = rand(0, 10) * $retries + 5;
+                usleep($randomBackoff);
+            }
+        }
+
+        throw new \Exception('too many retries', 0, $lastException);
     }
 
     public function createSummary(string $rootAlias, QueryBuilder $queryBuilder): IssueSummary
