@@ -202,14 +202,16 @@ class OpenApiFactory implements OpenApiFactoryInterface
 
         $path = $openApi->getPaths()->getPath($pathName);
 
-        $postOperation = $path->getPost()
-            ->withDescription('If called by construction manager allowed to associate, will never error & return a construction manager body. Else the body is an error identifier or empty. Allows unauthenticated calls.')
-            ->addResponse(new Model\Response('Already registered'), 400)
-            ->addResponse(new Model\Response('Account is deactivated'), 417)
-            ->addResponse(new Model\Response('E-Mail server unreachable'), 503);
+        if ($path && ($post = $path->getPost())) {
+            $enrichedPost = $post
+                ->withDescription('If called by construction manager allowed to associate, will never error & return a construction manager body. Else the body is an error identifier or empty. Allows unauthenticated calls.')
+                ->addResponse(new Model\Response('Already registered'), 400)
+                ->addResponse(new Model\Response('Account is deactivated'), 417)
+                ->addResponse(new Model\Response('E-Mail server unreachable'), 503);
 
-        $path = $path->withPost($postOperation);
-        $openApi->getPaths()->addPath($pathName, $path);
+            $path = $path->withPost($enrichedPost);
+            $openApi->getPaths()->addPath($pathName, $path);
+        }
     }
 
     private function patchSchema(OpenApi &$openApi, string $schemaName, array $schemaPatch)

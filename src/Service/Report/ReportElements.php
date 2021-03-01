@@ -28,7 +28,7 @@ class ReportElements
      */
     private $withImages = true;
 
-    public static function fromRequest(array $parameters): self
+    public static function fromRequest(array $parameters = null): self
     {
         $self = new self();
 
@@ -39,9 +39,9 @@ class ReportElements
         return $self;
     }
 
-    private static function getValue(array $parameters, string $key, bool $default): bool
+    private static function getValue(array $parameters = null, string $key, bool $default): bool
     {
-        if (!isset($parameters[$key])) {
+        if (null === $parameters || !isset($parameters[$key])) {
             return $default;
         }
 

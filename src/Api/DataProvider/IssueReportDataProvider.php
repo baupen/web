@@ -97,8 +97,8 @@ class IssueReportDataProvider extends NoPaginationDataProvider
         /** @var Issue[] $issues */
         $issues = $queryBuilder->getQuery()->getResult();
 
-        /** @var array $reportConfig */
-        $reportConfig = $this->request->query->get('report', []);
+        /** @var array|null $reportConfig */
+        $reportConfig = $this->request->query->get('report');
         $reportElements = ReportElements::fromRequest($reportConfig);
 
         $author = $this->getAuthor($this->tokenStorage->getToken());

@@ -36,7 +36,7 @@ class SerializerAwareDataProvider
         $this->collectionExtensions = $collectionExtensions;
     }
 
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    public function supports(string $resourceClass, string $operationName = null): bool
     {
         return $this->managerRegistry->getManagerForClass($resourceClass) instanceof EntityManagerInterface && 'get' === $operationName;
     }

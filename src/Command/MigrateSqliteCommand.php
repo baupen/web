@@ -11,9 +11,9 @@
 
 namespace App\Command;
 
+use App\Command\Base\DatabaseCommand;
 use App\Helper\HashHelper;
 use App\Service\Interfaces\PathServiceInterface;
-use Doctrine\DBAL\Connection;
 use Doctrine\Persistence\ManagerRegistry;
 use PDO;
 use Symfony\Component\Console\Command\Command;
@@ -21,7 +21,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class MigrateSqliteCommand extends Command
+class MigrateSqliteCommand extends DatabaseCommand
 {
     private const MODE_UPDATE = 'update';
     private const MODE_INSERT = 'insert';
@@ -46,7 +46,7 @@ class MigrateSqliteCommand extends Command
      */
     public function __construct(ManagerRegistry $registry, PathServiceInterface $pathService, string $authorizationMethod)
     {
-        parent::__construct();
+        parent::__construct($registry);
 
         $this->registry = $registry;
         $this->pathService = $pathService;
@@ -174,9 +174,8 @@ class MigrateSqliteCommand extends Command
 
         $sourcePdo = new PDO('sqlite:'.$expectedSqlitePath);
 
-        /** @var Connection $connection */
-        $connection = $this->registry->getConnection();
-        $targetPdo = new PDO('mysql:host='.$connection->getHost().';dbname='.$connection->getDatabase(), $connection->getUsername(), $connection->getPassword());
+        $config = $this->getDatabaseConfiguration();
+        $targetPdo = new PDO('mysql:host='.$config['host'].';dbname='.$config['database'], $config['username'], $config['password']);
 
         return [$sourcePdo, $targetPdo];
     }
