@@ -552,14 +552,102 @@ class IssueTest extends ApiTestCase
         }
     }
 
-    public function testFeed()
+    public function testFeedEntries()
     {
         $client = $this->createClient();
         $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
-        $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiGetOk($client, '/api/issues/feed_entries?constructionSite='.$constructionSite->getId());
+        $constructionSite = $this->getEmptyConstructionSite();
+        $constructionManager = $this->getTestConstructionManager();
+        $this->assignConstructionManager($constructionSite, $constructionManager);
+        $craftsman = $this->addCraftsman($constructionSite);
+
+        $newIssue = function () use ($constructionSite, $constructionManager) {
+            $issue = new Issue();
+
+            $issue->setConstructionSite($constructionSite);
+            $issue->setNumber(0);
+
+            $issue->setCreatedAt(new \DateTime('today - 1 month'));
+            $issue->setCreatedBy($constructionManager);
+
+            return $issue;
+        };
+
+        $newIssues = [];
+
+        $issue = $newIssue(); //1
+        $issue->setRegisteredAt(new \DateTime('today'));
+        $issue->setRegisteredBy($constructionManager);
+        $newIssues[] = $issue;
+
+        $issue = $newIssue();
+        $issue->setRegisteredAt(new \DateTime('yesterday'));
+        $issue->setRegisteredBy($constructionManager);
+        $issue->setResolvedAt(new \DateTime('yesterday'));
+        $issue->setResolvedBy($craftsman);
+        $issue->setClosedAt(new \DateTime('yesterday'));
+        $issue->setClosedBy($constructionManager);
+        $newIssues[] = $issue;
+
+        $issue = $newIssue(); //3
+        $issue->setClosedAt(new \DateTime('yesterday'));
+        $issue->setClosedBy($constructionManager);
+        $newIssues[] = $issue;
+
+        $this->saveEntity(...$newIssues);
+
+        $response = $this->assertApiGetOk($client, '/api/issues/feed_entries?constructionSite='.$constructionSite->getId());
+        $feedEntries = json_decode($response->getContent(), true);
+
+        $constructionManagerIri = $this->getIriFromItem($constructionManager);
+        $craftsmanIri = $this->getIriFromItem($craftsman);
+
+        $expectedCombinations = [
+            [
+                (new \DateTime('today'))->format(DateTimeFormatter::ISO_DATE_FORMAT),
+                $constructionManagerIri,
+                1,
+                1,
+            ],
+            [
+                (new \DateTime('yesterday'))->format(DateTimeFormatter::ISO_DATE_FORMAT),
+                $constructionManagerIri,
+                1,
+                1,
+            ],
+            [
+                (new \DateTime('yesterday'))->format(DateTimeFormatter::ISO_DATE_FORMAT),
+                $craftsmanIri,
+                2,
+                1,
+            ],
+            [
+                (new \DateTime('yesterday'))->format(DateTimeFormatter::ISO_DATE_FORMAT),
+                $constructionManagerIri,
+                3,
+                2,
+            ],
+        ];
+
+        foreach ($feedEntries as $feedEntry) {
+            $foundCombinationIndex = null;
+            for ($i = 0; $i < count($expectedCombinations); ++$i) {
+                $expectedCombination = $expectedCombinations[$i];
+                if ($expectedCombination[0] === $feedEntry['date'] &&
+                    $expectedCombination[1] === $feedEntry['subject'] &&
+                    $expectedCombination[2] === $feedEntry['type'] &&
+                    $expectedCombination[3] === $feedEntry['count']) {
+                    $foundCombinationIndex = $i;
+                    break;
+                }
+            }
+
+            $this->assertNotNull($foundCombinationIndex, 'not any of the expected combinations');
+            unset($expectedCombinations[$foundCombinationIndex]);
+            $expectedCombinations = array_values($expectedCombinations);
+        }
     }
 
     public function testTimeseries()
