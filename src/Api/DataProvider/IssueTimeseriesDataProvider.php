@@ -12,6 +12,7 @@
 namespace App\Api\DataProvider;
 
 use App\Api\DataProvider\Base\NoPaginationDataProvider;
+use App\Api\Entity\IssueSummary;
 use App\Api\Entity\IssueSummaryWithDate;
 use App\Entity\Issue;
 use App\Helper\DateTimeFormatter;
@@ -52,17 +53,18 @@ class IssueTimeseriesDataProvider extends NoPaginationDataProvider
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
         $rootAlias = $queryBuilder->getRootAliases()[0];
 
+        /** @var IssueSummary $summary */
         $summary = $this->manager->getRepository(Issue::class)->createSummary($rootAlias, $queryBuilder);
 
-        $backtrackDate = new DateTime('today - 8 days');
+        $backtrackDate = new DateTime('today - 1 month');
         $stateChangeIssues = $this->getRecentStateChangesOfIssues($queryBuilder, $rootAlias, $backtrackDate);
 
         $countByDayDescending = [];
-        $currentDate = new DateTime('today');
+        $today = new DateTime('today');
         $day = new DateInterval('P1D');
-        while ($currentDate >= $backtrackDate) {
-            $countByDayDescending[] = [clone $currentDate, 0, 0, 0];
-            $currentDate->sub($day);
+        while ($today >= $backtrackDate) {
+            $countByDayDescending[] = [clone $today, 0, 0, 0];
+            $today->sub($day);
         }
 
         foreach ($stateChangeIssues as $issue) {
@@ -107,6 +109,7 @@ class IssueTimeseriesDataProvider extends NoPaginationDataProvider
         }
 
         $summaries = [];
+        array_unshift($countByDayDescending, [new \DateTime('tomorrow'), 0, 0, 0]); // include today
         foreach ($countByDayDescending as [$day, $openCountCorrection, $inspectableCountCorrection, $closedCountCorrection]) {
             $currentSummary = new IssueSummaryWithDate();
             $currentSummary->setDate($day->format(DateTimeFormatter::ISO_DATE_FORMAT));
