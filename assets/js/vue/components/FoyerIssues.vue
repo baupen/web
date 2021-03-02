@@ -11,6 +11,7 @@
         :construction-site="constructionSite"
         :hidden-issues="hiddenIssues"
         view="foyer"
+        @reset-hidden="hiddenIssues = []"
         @selected="selectedIssues = $event" />
   </div>
 </template>
