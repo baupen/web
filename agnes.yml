@@ -16,6 +16,7 @@ github:
 data:
   shared_folders:
     - var/persistent
+    - var/transient
 
   files:
     - path: .env.local
