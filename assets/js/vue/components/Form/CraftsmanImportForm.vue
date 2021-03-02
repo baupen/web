@@ -1,8 +1,8 @@
 <template>
   <p class="alert alert-info" v-if="!file">
-    {{$t('import_craftsmen.template_help')}} <br/>
-    <a :href="downloadSampleCSVHref" :download="$t('import_craftsmen.template_file_name')">
-      {{$t('import_craftsmen.template_download')}}
+    {{ $t('import_craftsmen.template_help') }} <br />
+    <a :href="downloadSampleExcelHref" :download="$t('import_craftsmen.template_file_name')">
+      {{ $t('import_craftsmen.template_download') }}
     </a>
   </p>
   <form-field for-id="file" :label="$t('import_craftsmen.file')">
@@ -24,19 +24,25 @@
 
 import { displayError } from '../../services/notifiers'
 
-const header = ["trade", "company", "contact_name", "email", "emailCCs"];
+const header = ['trade', 'company', 'contact_name', 'email', 'emailCCs']
 const defaultContent = [
-  ["Web", "mangel.io", "Florian Moser", "f@mangel.io", "info@mangel.io, support@mangel.io"],
-  ["iOS", "mangel.io", "Julian Dunskus", "j@mangel.io", "info@mangel.io, support@mangel.io"],
+  ['Web', 'mangel.io', 'Florian Moser', 'f@mangel.io', 'info@mangel.io, support@mangel.io'],
+  ['iOS', 'mangel.io', 'Julian Dunskus', 'j@mangel.io', 'info@mangel.io, support@mangel.io'],
 ]
+const xlsxMimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+const xlsMimeType = 'application/vnd.ms-excel'
 
-import { parse, stringify } from '@vanillaes/csv';
 import FormField from '../Library/FormLayout/FormField'
 import Dropzone from '../Library/FormInput/Dropzone'
+import XLSX from 'xlsx'
+
 export default {
-  components: { Dropzone, FormField },
+  components: {
+    Dropzone,
+    FormField
+  },
   emits: ['imported'],
-  data() {
+  data () {
     return {
       file: null
     }
@@ -48,25 +54,30 @@ export default {
     }
   },
   watch: {
-    file: function (){
+    file: function () {
       if (!this.file) {
         this.$emit('imported', null)
         return
       }
 
-      const reader = new FileReader();
-      reader.readAsText(this.file);
+      const reader = new FileReader()
       reader.onload = () => {
-        this.parseCSVFile(reader.result);
-      };
+        this.parseExcelFile(reader.result)
+      }
+      reader.readAsArrayBuffer(this.file)
     }
   },
   methods: {
-    parseCSVFile: function (csvContent) {
-      const content = parse(csvContent)
+    parseExcelFile: function (fileContent) {
+      const data = new Uint8Array(fileContent);
+      const workbook = XLSX.read(data, {type: 'array'});
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]]
+      console.log(worksheet)
+      const content = XLSX.utils.sheet_to_json(worksheet, {header:1})
+      console.log(content)
 
       let craftsmen = []
-      let valid = true;
+      let valid = true
       for (let i = 1; i < content.length; i++) {
         let entry = content[i]
 
@@ -79,12 +90,12 @@ export default {
         }
 
         if (!craftsman.trade || !craftsman.company || !craftsman.contactName || !craftsman.email) {
-          displayError(this.$t("form.craftsman_import.invalid_entry", {'line': i+1}))
+          displayError(this.$t('form.craftsman_import.invalid_entry', { 'line': i + 1 }))
           valid = false
         }
 
         if (entry[4]) {
-          craftsman.emailCCs = entry[4].split(",").map(e => e.trim()).filter(e => e)
+          craftsman.emailCCs = entry[4].split(',').map(e => e.trim()).filter(e => e)
         }
 
         craftsmen.push(craftsman)
@@ -97,7 +108,7 @@ export default {
   },
   computed: {
     validFileTypes: function () {
-      return ['text/csv', 'text/plain']
+      return [xlsxMimeType, xlsMimeType]
     },
     fileIsValid: function () {
       if (!this.file) {
@@ -106,19 +117,27 @@ export default {
 
       return this.validFileTypes.some(e => this.file.type === e)
     },
-    downloadSampleCSVHref: function () {
-      const blob = new Blob([this.sampleCSVString], {type: 'text/csv'})
-      return window.URL.createObjectURL(blob);
+    downloadSampleExcelHref: function () {
+      const blob = new Blob([this.sampleExcelString], { type: xlsxMimeType })
+      return window.URL.createObjectURL(blob)
     },
-    sampleCSVString: function () {
-      const translatedHeader = header.map(h => this.$t('craftsman.'+h))
-      translatedHeader[translatedHeader.length - 1] += " (" + this.$t("form.craftsman_import.emailCCs_format") +")"
+    sampleExcelString: function () {
+      const translatedHeader = header.map(h => this.$t('craftsman.' + h))
+      translatedHeader[translatedHeader.length - 1] += ' (' + this.$t('form.craftsman_import.emailCCs_format') + ')'
       let content = [translatedHeader, ...defaultContent]
       if (this.craftsmen) {
-        content = [translatedHeader, ...this.craftsmen.map(c => [c.trade, c.company, c.contactName, c.email, c.emailCCs.join(", ")])]
+        content = [translatedHeader, ...this.craftsmen.map(c => [c.trade, c.company, c.contactName, c.email, c.emailCCs.join(', ')])]
       }
 
-      return stringify(content)
+      let workbook = XLSX.utils.book_new()
+      const worksheet = XLSX.utils.aoa_to_sheet(content)
+      XLSX.utils.book_append_sheet(workbook, worksheet, this.$t('craftsman._plural'))
+
+      return XLSX.write(workbook, {
+        bookType: 'xlsx',
+        bookSST: false,
+        type: 'array'
+      })
     }
   }
 }

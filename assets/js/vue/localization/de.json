@@ -117,11 +117,11 @@
     }
   },
   "import_craftsmen": {
-    "file": "Excel Datei (.csv)",
-    "file_drop_or_choose": "Excel Datei (.csv) hineinziehen oder auswählen",
-    "template_help": "Mit einem Komma-separierten .csv können Sie mehrere Unternehmer gleichzeitig hinzufügen oder aktualisieren.",
+    "file": "Excel Datei (.xlsx)",
+    "file_drop_or_choose": "Excel Datei (.xlsx) hineinziehen oder auswählen",
+    "template_help": "Mit einem Excel Dokument (.xlsx) können Sie mehrere Unternehmer gleichzeitig hinzufügen oder aktualisieren.",
     "template_download": "Vorlage herunterladen",
-    "template_file_name": "Vorlage.csv",
+    "template_file_name": "Vorlage.xlsx",
     "reset": "zurücksetzen",
     "matching_by_email": "Duplizierungen werden anhand des E-Mail Feldes verhindert.",
     "added": "1 wird hinzugefügt|{count} werden hinzugefügt",
