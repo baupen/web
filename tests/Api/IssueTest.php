@@ -717,9 +717,12 @@ class IssueTest extends ApiTestCase
         $response = $this->assertApiGetOk($client, '/api/issues/timeseries?constructionSite='.$constructionSite->getId());
         $summaries = json_decode($response->getContent(), true);
 
-        $todayEntry = $summaries[count($summaries) - 1];
-        $yesterdayEntry = $summaries[count($summaries) - 2];
-        $dayBeforeYesterdayEntry = $summaries[count($summaries) - 3];
+        $tomorrowEntry = $summaries[count($summaries) - 1];
+        $todayEntry = $summaries[count($summaries) - 2];
+        $yesterdayEntry = $summaries[count($summaries) - 3];
+        $dayBeforeYesterdayEntry = $summaries[count($summaries) - 4];
+
+        $this->assertEquals((new \DateTime('tomorrow'))->format(DateTimeFormatter::ISO_DATE_FORMAT), $tomorrowEntry['date']);
 
         $this->assertEquals((new \DateTime('today'))->format(DateTimeFormatter::ISO_DATE_FORMAT), $todayEntry['date']);
         $this->assertEquals(1, $todayEntry['openCount']); //2

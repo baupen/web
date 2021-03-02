@@ -34,10 +34,10 @@
       <th class="w-minimal">
         <custom-checkbox
             id="all-issues"
-            @click.prevent="toggleSelectedIssues(issues)">
+            @click.prevent="toggleSelectedIssues(displayedIssues)">
           <input class="custom-control-input" type="checkbox"
-                 :disabled="!issues"
-                 :checked="issues && issues.length > 0 && entityListsAreEqual(issues, selectedIssues)">
+                 :disabled="!displayedIssues"
+                 :checked="displayedIssues && displayedIssues.length > 0 && entityListsAreEqual(displayedIssues, selectedIssues)">
         </custom-checkbox>
       </th>
       <th class="w-minimal">
@@ -146,7 +146,7 @@
         </div>
       </template>
       <div class="float-right">
-        {{ totalIssues }} {{ $t('issue._plural') }}
+        {{displayedIssues.length}} / {{ displayableIssueCount }} {{ $t('issue._plural') }}
       </div>
     </caption>
   </table>
@@ -181,7 +181,7 @@ import OrderTableHead from '../Library/Behaviour/OrderTableHead'
 import OrderCheckbox from '../Library/Behaviour/OrderCheckbox'
 
 export default {
-  emits: ['selected', 'query', 'queried-issue-count', 'loaded-maps'],
+  emits: ['selected', 'query', 'queried-issue-count', 'loaded-maps', 'reset-hidden'],
   components: {
     OrderCheckbox,
     OrderTableHead,
@@ -248,6 +248,9 @@ export default {
   computed: {
     isLoading: function () {
       return !this.constructionManagers || !this.maps || !this.craftsmen
+    },
+    displayableIssueCount: function () {
+      return this.totalIssues - this.hiddenIssues.length
     },
     notLoadedIssueCount: function () {
       return this.totalIssues - this.issues.length
@@ -325,7 +328,12 @@ export default {
       })
     },
     loadNextPage () {
-      this.loadIssues(this.filter, this.issuePage + 1)
+      if (this.hiddenIssues.length > 0) {
+        this.$emit('reset-hidden')
+        this.loadIssues(this.filter, 1)
+      } else {
+        this.loadIssues(this.filter, this.issuePage + 1)
+      }
     },
     loadIssues (filter, page = 1) {
       this.issuesLoading = true

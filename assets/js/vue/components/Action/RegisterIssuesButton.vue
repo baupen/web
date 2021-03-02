@@ -2,8 +2,7 @@
   <button class="btn btn-primary"
           :disabled="preRegisterIssues.length > 0 || issues.length === 0"
           @click="registerSelectedIssues">
-    {{ $t('foyer.actions.register_issues') }}
-    <span v-if="preRegisterIssues.length > 0">{{ preRegisterIssues.length }}</span>
+    {{ $tc('foyer.actions.register_issues', this.issues.length) }}
   </button>
 </template>
 
@@ -24,6 +23,7 @@ export default {
   },
   data () {
     return {
+      totalPreRegisterIssues: 0,
       preRegisterIssues: [],
     }
   },
@@ -40,7 +40,7 @@ export default {
   computed: {
     canConfirm: function () {
       return !!this.post
-    }
+    },
   },
   methods: {
     registerSelectedIssues: function () {
@@ -65,6 +65,7 @@ export default {
           }
         }
       })
+      this.totalPreRegisterIssues = this.preRegisterIssues.length
 
       this.processUnregisteredIssues()
     },
@@ -77,6 +78,7 @@ export default {
 
                 if (this.preRegisterIssues.length === 0) {
                   displaySuccess(this.$t('foyer.messages.success.registered_issues'))
+                  this.totalPreRegisterIssues = 0
                 } else {
                   this.processUnregisteredIssues()
                 }

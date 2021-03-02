@@ -25,8 +25,8 @@
     "remove_map": "Karte entfernen",
     "remove_map_help": "Nach dem Entfernen können Sie der Karte keine Pendenzen mehr zuweisen.",
     "remove_issues": "Pendenzen entfernen",
-    "remove_issues_help": "Die Pendenzen werden nirgendswo mehr angezeigt.",
-    "remove_filter": "Filter entfernen",
+    "remove_issues_help": "Die Pendenzen werden nirgends mehr angezeigt.",
+    "reset_filter": "Filter zurücksetzen",
     "reset": "zurücksetzen",
     "resolve_issue": "Als umgesetzt markieren",
     "generate_report": "Report erstellen",
@@ -80,7 +80,7 @@
     },
     "craftsman_import": {
       "emailCCs_format": "mehrere E-Mails durch Komma trennen",
-      "invalid_entry": "Auf der Zeile {line} fehlen Angaben. Die ersten viel Spalten (Gewerk, Firma, Kontaktperson & E-Mail) werden immer benötigt."
+      "invalid_entry": "Auf der Zeile {line} fehlen Angaben. Die ersten vier Spalten (Gewerk, Firma, Kontaktperson & E-Mail) werden immer benötigt."
     },
     "issue_filter": {
       "state": "Status",
@@ -117,11 +117,11 @@
     }
   },
   "import_craftsmen": {
-    "file": "Excel Datei (.csv)",
-    "file_drop_or_choose": "Excel Datei (.csv) hineinziehen oder auswählen",
-    "template_help": "Mit einem Komma-separierten .csv können Sie mehrere Unternehmer gleichzeitig hinzufügen oder aktualisieren.",
+    "file": "Excel Datei (.xlsx)",
+    "file_drop_or_choose": "Excel Datei (.xlsx) hineinziehen oder auswählen",
+    "template_help": "Mit einem Excel Dokument (.xlsx) können Sie mehrere Unternehmer gleichzeitig hinzufügen oder aktualisieren.",
     "template_download": "Vorlage herunterladen",
-    "template_file_name": "Vorlage.csv",
+    "template_file_name": "Vorlage.xlsx",
     "reset": "zurücksetzen",
     "matching_by_email": "Duplizierungen werden anhand des E-Mail Feldes verhindert.",
     "added": "1 wird hinzugefügt|{count} werden hinzugefügt",
@@ -187,7 +187,7 @@
     "title": "Pendenzen einpflegen",
     "no_unregistered_issues": "Keine neuen Pendenzen. Sie können neue Pendenzen mit der App erfassen.",
     "actions": {
-      "register_issues": "Pendenzen ins Verzeichnis aufnehmen"
+      "register_issues": "Eine Pendenz ins Verzeichnis aufnehmen | {count} Pendenzen ins Verzeichnis aufnehmen"
     },
     "messages": {
       "success": {

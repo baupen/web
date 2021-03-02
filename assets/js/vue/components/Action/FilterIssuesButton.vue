@@ -4,7 +4,7 @@
       :confirm-title="$t('actions.set_filter')"
       @confirm="confirm"
       :can-abort="customFilterActive"
-      :abort-title="$t('actions.remove_filter')"
+      :abort-title="$t('actions.reset_filter')"
       @abort="reset">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'filter']" class="pr-1" />
@@ -69,7 +69,7 @@ export default {
   },
   computed: {
     customFilterActive: function () {
-      return this.template && this.configurationTemplate
+      return !!(this.template && this.configurationTemplate)
     },
     formTemplate: function () {
       return this.template ?? this.default
