@@ -25,7 +25,7 @@
     "remove_map": "Karte entfernen",
     "remove_map_help": "Nach dem Entfernen können Sie der Karte keine Pendenzen mehr zuweisen.",
     "remove_issues": "Pendenzen entfernen",
-    "remove_issues_help": "Die Pendenzen werden nirgendswo mehr angezeigt.",
+    "remove_issues_help": "Die Pendenzen werden nirgends mehr angezeigt.",
     "remove_filter": "Filter entfernen",
     "reset": "zurücksetzen",
     "resolve_issue": "Als umgesetzt markieren",
@@ -80,7 +80,7 @@
     },
     "craftsman_import": {
       "emailCCs_format": "mehrere E-Mails durch Komma trennen",
-      "invalid_entry": "Auf der Zeile {line} fehlen Angaben. Die ersten viel Spalten (Gewerk, Firma, Kontaktperson & E-Mail) werden immer benötigt."
+      "invalid_entry": "Auf der Zeile {line} fehlen Angaben. Die ersten vier Spalten (Gewerk, Firma, Kontaktperson & E-Mail) werden immer benötigt."
     },
     "issue_filter": {
       "state": "Status",
