@@ -52,6 +52,6 @@ abstract class DatabaseCommand extends Command
     {
         $config = $this->getDatabaseConfiguration();
 
-        return '--user='.$config['username'].' --password='.$config['password'].' '.$config['database'];
+        return '--host='.$config['host'].' --user='.$config['username'].' --password='.$config['password'].' '.$config['database'];
     }
 }
