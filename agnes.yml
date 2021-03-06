@@ -66,12 +66,6 @@ scripts:
       - php composer.phar install --prefer-dist --no-interaction --no-dev --optimize-autoloader --no-scripts
 
 tasks:
-  copy_prod_to_staging_before_deploy:
-    before: deploy
-    task: copy
-    instance_filter: '*:*:staging'
-    arguments: { source: prod }
-
   deploy_dev_after_release:
     after: release
     task: deploy
