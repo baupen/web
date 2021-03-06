@@ -65,7 +65,7 @@ security:
         - { path: ^/api/status, role: IS_AUTHENTICATED_ANONYMOUSLY }
 
         # legacy URLs; catched by legacy URL controller
-        - { path: '^/api/external.+', role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [ GET ] }
+        - { path: '^/api/external.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
 
         - { path: '^/download/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: '^/resolve/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
