@@ -9,7 +9,7 @@
       >
     </custom-checkbox-field>
 
-    <custom-checkbox-field for-id="filter-state-is-resolved" :label="$t('issue.state.resolved')">
+    <custom-checkbox-field for-id="filter-state-is-resolved" :label="$t('issue.state.to_inspect')">
       <input
           class="custom-control-input" type="checkbox" id="filter-state-is-resolved"
           v-model="isResolved"
