@@ -307,7 +307,7 @@ class ApiController extends BaseDoctrineController
     {
         if ($fileBag->has($key)) {
             // as its a file, have to use all method
-            $candidate = $fileBag->all($key);
+            $candidate = $fileBag->get($key);
         } elseif (1 === $fileBag->count()) {
             $files = $fileBag->all();
             $candidate = $files[array_key_first($files)];
