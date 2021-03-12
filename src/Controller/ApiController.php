@@ -306,6 +306,7 @@ class ApiController extends BaseDoctrineController
     private function getUploadedFile(FileBag $fileBag, string $key, array $mimeTypesWhitelist): UploadedFile
     {
         if ($fileBag->has($key)) {
+            // as its a file, have to use all method
             $candidate = $fileBag->get($key);
         } elseif (1 === $fileBag->count()) {
             $files = $fileBag->all();
