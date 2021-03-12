@@ -160,8 +160,8 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         }
 
         if (Issue::class === $resourceClass) {
-            $this->ensureSearchFilterValid($query, 'isMarked', $filter->getIsMarked());
-            $this->ensureSearchFilterValid($query, 'wasAddedWithClient', $filter->getWasAddedWithClient());
+            $this->ensureBooleanSearchFilterValid($query, 'isMarked', $filter->getIsMarked());
+            $this->ensureBooleanSearchFilterValid($query, 'wasAddedWithClient', $filter->getWasAddedWithClient());
 
             $this->ensureSearchFilterValid($query, 'number', $filter->getNumbers());
             $this->ensureSearchFilterValid($query, 'description', $filter->getDescription());
@@ -188,32 +188,56 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         throw new BadRequestException('You are not allowed to query this resource');
     }
 
+    private function ensureBooleanSearchFilterValid(array $query, string $property, $restriction): void
+    {
+        if (null === $restriction) {
+            return;
+        }
+
+        if (!isset($query[$property])) {
+            throw new BadRequestException($property.' filter missing.');
+        }
+
+        $value = $query[$property];
+        if ($restriction && \in_array($value, [true, 'true', '1'], true)) {
+            return;
+        }
+
+        if (!$restriction && \in_array($value, [false, 'false', '0'], true)) {
+            return;
+        }
+
+        throw new BadRequestException($property.' filter missing or value not equal to '.$restriction.'.');
+    }
+
     private function ensureSearchFilterValid(array $query, string $property, $restriction): void
     {
         if (null === $restriction) {
             return;
         }
 
+        $valueSet = isset($query[$property]);
+        $value = $valueSet ? $query[$property] : null;
         if (is_array($restriction)) {
             $filterValid = false;
-            if (isset($query[$property])) {
-                $filterValid = is_array($query[$property]) ?
+            if ($valueSet) {
+                $filterValid = is_array($value) ?
                     empty(array_diff($restriction, $query[$property])) :
-                    in_array($query[$property], $restriction);
+                    in_array($value, $restriction);
             }
 
             if ($filterValid) {
                 return;
             }
 
-            throw new BadRequestException($property.' filter missing or value no one of '.implode(', ', $restriction).'.');
+            throw new BadRequestException($property.' filter missing or value '.$value.' not one of '.implode(', ', $restriction).'.');
         }
 
-        if (isset($query[$property]) && $query[$property] == $restriction) {
+        if ($valueSet && $value == $restriction) {
             return;
         }
 
-        throw new BadRequestException($property.' filter missing or value not equal to '.$restriction.'.');
+        throw new BadRequestException($property.' filter missing or value '.$value.' not equal to '.$restriction.'.');
     }
 
     private function ensureDeletedFilterValid(array $query, string $property, ?bool $expectedValue): void

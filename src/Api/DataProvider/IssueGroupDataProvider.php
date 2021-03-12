@@ -74,7 +74,7 @@ class IssueGroupDataProvider extends NoPaginationDataProvider
 
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
         $rootAlias = $queryBuilder->getRootAliases()[0];
-        $validIssueIdResult = $queryBuilder->select($rootAlias.'.id')->getQuery()->getResult();
+        $validIssueIdResult = $queryBuilder->addSelect($rootAlias.'.id')->getQuery()->getResult();
         $validIssueIds = [];
         foreach ($validIssueIdResult as $entry) {
             $validIssueIds[] = $entry['id'];
@@ -83,7 +83,7 @@ class IssueGroupDataProvider extends NoPaginationDataProvider
         $issueRepository = $this->manager->getRepository(Issue::class);
         $groupByQuery = $issueRepository
             ->createQueryBuilder('i')
-            ->select(['IDENTITY(i.map)', 'COUNT(i)', 'MAX(i.deadline)'])
+            ->addSelect(['IDENTITY(i.map)', 'COUNT(i)', 'MAX(i.deadline)'])
             ->where('i.id IN (:ids)')
             ->setParameter(':ids', $validIssueIds)
             ->groupBy('i.map');

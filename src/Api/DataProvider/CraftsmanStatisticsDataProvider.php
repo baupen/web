@@ -242,7 +242,7 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
     {
         $rootAlias = $queryBuilder->getRootAliases()[0];
         $queryBuilder->groupBy($rootAlias.'.craftsman')
-            ->select('identity('.$rootAlias.'.craftsman)')
+            ->addSelect('identity('.$rootAlias.'.craftsman)')
             ->addSelect($selectExpression);
 
         $nextDeadlineResult = $queryBuilder->getQuery()->getResult();
