@@ -1,27 +1,84 @@
 {
-  "action": {
-    "associate_construction_manager": "Bauleiter der Baustelle hinzufügen",
-    "dissociate_construction_manager": "Bauleiter von Baustelle entfernen",
-    "dissociate_construction_manager_help": "Der Bauleiter wird von der Baustelle entfernt.",
-    "add_construction_site": "Baustelle hinzufügen",
-    "add_craftsman": "Unternehmer hinzufügen",
-    "add_map": "Karte hinzufügen",
+  "_action": {
     "close": "Schliessen",
-    "download": "herunterladen",
-    "generate_link": "Link erstellen",
-    "sort_by_last_activity": "Nach letzter Aktivität sortieren",
-    "edit_construction_site": "Baustelle bearbeiten",
-    "edit_craftsman": "Unternehmer bearbeiten",
-    "edit_map": "Karte bearbeiten",
-    "edit_issues": "Pendenzen bearbeiten",
-    "register_issues": "Eine Pendenz ins Verzeichnis aufnehmen | {count} Pendenzen ins Verzeichnis aufnehmen",
-    "view_issue": "Pendenz anschauen",
-    "filter": "Filtern",
-    "filter_issues": "Pendenzen filtern",
-    "load_map": "laden",
-    "load_all_maps": "alle laden",
-    "create_construction_site": "Neue Baustelle erfassen",
-    "enter_construction_site": "Zur Baustelle",
+    "associated_self": {
+      "label": "Sie wurden der Baustelle hinzugefügt."
+    },
+    "associate_construction_manager": {
+      "title": "Bauleiter der Baustelle hinzufügen",
+      "associated_construction_manager": "Bauleiter der Baustelle hinzugefügt"
+    },
+    "dissociated_self": {
+      "label": "Sie wurden von der Baustelle entfernt."
+    },
+    "dissociate_construction_manager": {
+      "title": "Bauleiter von Baustelle entfernen",
+      "help": "Der Bauleiter wird von der Baustelle entfernt.",
+      "dissociated_construction_manager": "Bauleiter von Baustelle entfernt"
+    },
+    "add_construction_site": {
+      "title": "Baustelle hinzufügen",
+      "added": "Baustelle hinzugefügt"
+    },
+    "add_craftsman": {
+      "title": "Unternehmer hinzufügen",
+      "added": "Unternehmer hinzugefügt."
+    },
+    "add_map": {
+      "title": "Karte hinzufügen",
+      "added": "Karte hinzugefügt"
+    },
+    "generate_issues_report": {
+      "generate_report": "Report erstellen",
+      "download": "herunterladen",
+      "generating_map": "Grafiken werden generiert",
+      "generating_pdf": "PDF wird generiert",
+      "pending": "warten ({issueCount} Pendenzen)",
+      "finished": "fertig",
+      "downloaded": "heruntergeladen"
+    },
+    "generate_issues_filter": {
+      "generate_link": "Link erstellen"
+    },
+    "edit_construction_site": {
+      "title": "Baustelle bearbeiten",
+      "edited": "Baustelle gespeichert",
+      "replaced_construction_site_image": "Bild ersetzt"
+    },
+    "edit_craftsman": {
+      "title": "Unternehmer bearbeiten",
+      "edited": "Unternehmer gespeichert."
+    },
+    "edit_map": {
+      "title": "Karte bearbeiten",
+      "edited": "Karte gespeichert",
+      "replaced_map_file": "PDF ersetzt"
+    },
+    "edit_issues": {
+      "title": "Pendenzen bearbeiten",
+      "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
+      "save_issue_fields": "{fields} von Pendenz setzen | {fields} von {count} Pendenzen setzen",
+      "resolved_as_impersonated_craftsman": "'Umgesetzt' wird im Namen des Unternehmers.",
+      "replaced_issue_images": "Bild ersetzt.",
+      "edited": "Pendenzen gespeichert."
+    },
+    "register_issues": {
+      "title": "Eine Pendenz ins Verzeichnis aufnehmen | {count} Pendenzen ins Verzeichnis aufnehmen",
+      "registration_skipped_no_craftsman": "Eine Pendenz wurde übersprungen, da sie noch keinem Unternehmer zugewiesen ist. | {count} Pendenzen wurden übersprungen, da sie noch keinem Unternehmer zugewiesen sind.",
+      "registered": "Pendenzen zum Verzeichnis hinzugefügt."
+    },
+    "view_issue": {
+      "title": "Pendenz anschauen"
+    },
+    "filter_issues": {
+      "title": "Pendenzen filtern",
+      "confirm": "Filtern",
+      "set_filter": "Filter setzen",
+      "reset": "Filter zurücksetzen"
+    },
+    "enter_construction_site": {
+      "title": "Zur Baustelle"
+    },
     "import_craftsmen": {
       "label": "Unternehmer importieren",
       "file": "Excel Datei (.xlsx)",
@@ -56,74 +113,47 @@
       },
       "generate": "erstellen"
     },
-    "remove_craftsman": "Unternehmer entfernen",
-    "remove_craftsman_help": "Nach dem Entfernen können Sie dem Unternehmer keine Pendenzen mehr zuweisen. Der Unternehmer verliert den Zugriff auf den personalisierten Link.",
-    "remove_map": "Karte entfernen",
-    "remove_map_help": "Nach dem Entfernen können Sie der Karte keine Pendenzen mehr zuweisen.",
-    "remove_issues": "Pendenzen entfernen",
-    "remove_issues_help": "Die Pendenzen werden nirgends mehr angezeigt.",
-    "reset_filter": "Filter zurücksetzen",
-    "reset": "zurücksetzen",
-    "resolve_issue": "Als umgesetzt markieren",
-    "generate_report": "Report erstellen",
-    "abort": "Abbrechen",
-    "import": "Importieren",
-    "save_changes": "Änderungen speichern",
-    "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
-    "save_issue_fields": "{fields} von Pendenz setzen | {fields} von {count} Pendenzen setzen",
-    "set_filter": "Filter setzen",
-    "remove_confirm": "Ich verstehe, dass ich diesen Schritt nicht rückgängig machen kann.",
-    "show_more_issues": "Weitere {count} Pendenzen anzeigen",
-    "messages": {
-      "resolved_as_impersonated_craftsman": "'Umgesetzt' wird im Namen des Unternehmers.",
-      "generating_map": "Grafiken werden generiert",
-      "generating_pdf": "PDF wird generiert",
-      "pending": "warten ({issueCount} Pendenzen)",
-      "finished": "fertig",
-      "downloaded": "heruntergeladen",
-      "registration_skipped_no_craftsman": "Eine Pendenz wurde übersprungen, da sie noch keinem Unternehmer zugewiesen ist. | {count} Pendenzen wurden übersprungen, da sie noch keinem Unternehmer zugewiesen sind.",
-      "added_construction_site": "Baustelle hinzugefügt",
-      "replaced_construction_site_image": "Bild ersetzt",
-      "edited_construction_site": "Baustelle gespeichert",
-      "added_craftsman": "Unternehmer hinzugefügt.",
-      "edited_craftsman": "Unternehmer gespeichert.",
-      "removed_craftsman": "Unternehmer entfernt.",
-      "added_map": "Karte hinzugefügt",
-      "edited_map": "Karte gespeichert",
-      "removed_map": "Karte entfernt",
-      "dissociated_self": "Sie wurden von der Baustelle entfernt.",
-      "associated_self": "Sie wurden der Baustelle hinzugefügt.",
-      "dissociated_construction_manager": "Bauleiter von Baustelle entfernt",
-      "associated_construction_manager": "Bauleiter der Baustelle hinzugefügt",
-      "resolved_issue": "Pendenz als umgesetzt markiert.",
-      "removed_issues": "Pendenzen entfernt.",
-      "edited_issues": "Pendenzen gespeichert.",
-      "replaced_issue_images": "Bild ersetzt.",
-      "replaced_map_file": "PDF ersetzt",
-      "registered_issues": "Pendenzen zum Verzeichnis hinzugefügt.",
-      "sent_emails": "E-Mails versandt",
-      "saved_email_template": "Vorlage gespeichert"
+    "remove_craftsman": {
+      "title": "Unternehmer entfernen",
+      "help": "Nach dem Entfernen können Sie dem Unternehmer keine Pendenzen mehr zuweisen. Der Unternehmer verliert den Zugriff auf den personalisierten Link.",
+      "removed": "Unternehmer entfernt."
     },
+    "remove_map": {
+      "title": "Karte entfernen",
+      "help": "Nach dem Entfernen können Sie der Karte keine Pendenzen mehr zuweisen.",
+      "removed": "Karte entfernt"
+    },
+    "remove_issues": {
+      "title": "Pendenzen entfernen",
+      "help": "Die Pendenzen werden nirgends mehr angezeigt.",
+      "removed": "Pendenzen entfernt."
+    },
+    "resolve_issue": {
+      "title": "Als umgesetzt markieren",
+      "resolved": "Pendenz als umgesetzt markiert."
+    },
+    "save_changes": "Änderungen speichern",
+    "remove_confirm": "Ich verstehe, dass ich diesen Schritt nicht rückgängig machen kann.",
     "compose_craftsman_email": {
       "label": "E-Mail verfassen",
       "confirm": "E-Mail versenden | {count} E-Mails versenden",
       "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und als umgesetzt markieren.",
       "save_template_changes": "Änderungen an der Vorlage speichern",
       "save_as_new_template": "Als neue Vorlage speichern",
-      "no_template": "Keine Vorlage"
+      "no_template": "Keine Vorlage",
+      "sent_emails": "E-Mails versandt",
+      "saved_email_template": "Vorlage gespeichert"
     }
   },
-  "form": {
+  "_form": {
     "reset": "zurücksetzen",
     "file": {
       "label": "PDF Datei (.pdf)",
-      "drop_or_choose": "PDF (.pdf) hineinziehen oder auswählen",
-      "reset": "Zurücksetzen"
+      "drop_or_choose": "PDF (.pdf) hineinziehen oder auswählen"
     },
     "image": {
       "label": "Bild Datei (.jpg, .png, .gif)",
-      "drop_or_choose": "Bild (.jpg, .png, .gif) hineinziehen oder auswählen",
-      "reset": "Zurücksetzen"
+      "drop_or_choose": "Bild (.jpg, .png, .gif) hineinziehen oder auswählen"
     },
     "construction_site": {
       "similar_already_existing_construction_sites": "Ähnliche bereits existierende Baustellen"
@@ -144,14 +174,16 @@
       "emailCCs_help": "Eine Zeile pro E-Mail"
     }
   },
-  "view": {
+  "_view": {
     "no_issues": "Keine Pendenzen",
     "no_craftsmen": "Keine Unternehmer",
     "no_maps": "Keine Baupläne",
     "issues": {
       "without_description": "ohne Beschreibung",
       "without_craftsman": "ohne Unternehmer",
-      "without_deadline": "ohne Frist"
+      "without_deadline": "ohne Frist",
+      "sort_by_last_activity": "Nach letzter Aktivität sortieren",
+      "show_more_issues": "Weitere {count} Pendenzen anzeigen"
     },
     "craftsmen": {
       "with_open_issues": "mit offenen Pendenzen",
@@ -205,10 +237,7 @@
     "_name": "Bauleiter",
     "_plural": "Bauleiter",
     "email": "E-Mail",
-    "name": "Name",
-    "_placeholders": {
-      "email": "max@musterag.ch"
-    }
+    "name": "Name"
   },
   "construction_site": {
     "_name": "Baustelle",
@@ -222,12 +251,6 @@
   "craftsman": {
     "_name": "Unternehmer",
     "_plural": "Unternehmer",
-    "_placeholders": {
-      "contact_name": "Max Muster",
-      "email": "max@musterag.ch",
-      "company": "Muster AG",
-      "trade": "Elektriker"
-    },
     "name": "Name",
     "trade": "Gewerk",
     "company": "Firma",
@@ -281,9 +304,12 @@
       "to_inspect": "zur Inspektion"
     }
   },
-  "email_template": {
-    "_name": "Vorlage",
+  "email": {
+    "to": "An",
+    "subject": "Betreff",
+    "self_bcc": "jeweils mit BCC Kopie an mich",
     "templates": {
+      "_name": "Vorlage",
       "common": {
         "hi": "Guten Tag,",
         "help": "Mit dem Link in dieser E-Mail können die Pendenzen angeschaut werden. Bitte nach dem Umsetzen entsprechend online markieren."
@@ -304,11 +330,6 @@
         "body": "{constructionSite} hat Pendenzen, die Ihrem Gewerk zugeordnet sind, dessen Frist überschritten wurde."
       }
     }
-  },
-  "email": {
-    "to": "An",
-    "subject": "Betreff",
-    "self_bcc": "jeweils mit BCC Kopie an mich"
   },
   "api": {
     "request_failed": "Die Webanfrage ist fehlgeschlagen."
