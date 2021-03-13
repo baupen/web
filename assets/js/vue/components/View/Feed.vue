@@ -1,5 +1,5 @@
 <template>
-  <template v-else-if="orderedFeedEntries.length > 0" v-for="(entry, index) in orderedFeedEntries">
+  <template v-if="orderedFeedEntries.length > 0" v-for="(entry, index) in orderedFeedEntries">
     <hr v-if="index !== 0" />
     <feed-entry :entry="entry" :construction-managers="constructionManagers" :craftsmen="craftsmen" />
   </template>
