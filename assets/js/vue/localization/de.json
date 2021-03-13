@@ -261,9 +261,9 @@
     "not_read_issues_count": "Ungelesene Pendenzen",
     "open_issues_count": "Offene Pendenzen",
     "next_deadline": "Nächste Frist",
-    "received_email": "E-Mail empfangen",
-    "visited_webpage": "Webseite besucht",
-    "resolved_issue": "Pendenz umgesetzt"
+    "last_email_received": "E-Mail empfangen",
+    "last_visit_online": "Webseite besucht",
+    "last_issue_resolved_at": "Pendenz umgesetzt"
   },
   "map": {
     "_name": "Bauplan",

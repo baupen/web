@@ -2,10 +2,7 @@
   "construction_manager": {
     "_name": "Capocantiere",
     "_plural": "Capocantiere",
-    "email": "E-mail",
-    "_placeholders": {
-      "email": "max@esempio.ch"
-    }
+    "email": "E-mail"
   },
   "construction_site": {
     "_name": "Cantiere",
@@ -19,12 +16,6 @@
   "craftsman": {
     "_name": "Operaio",
     "_plural": "Operai",
-    "_placeholders": {
-      "contact_name": "Max Esempio",
-      "email": "max@esempio.ch",
-      "company": "Esempio AG",
-      "trade": "Elettricista"
-    },
     "name": "Nome",
     "trade": "Settore",
     "contact_name": "Persona di contatto",
@@ -33,9 +24,7 @@
     "not_responded_issues_count": "Pendenze non risposte",
     "not_read_issues_count": "Pendenze non lette",
     "open_issues_count": "Pendenze aperte",
-    "next_deadline": "Prossimo termine",
-    "last_email_sent": "Ultima email inviata",
-    "last_online_visit": "Ultima visita alla pagina"
+    "next_deadline": "Prossimo termine"
   },
   "map": {
     "_name": "Piano di costruzione",
