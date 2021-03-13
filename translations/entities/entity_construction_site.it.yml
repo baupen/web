@@ -1,5 +1,5 @@
 example:
-  name: 'Cantiere %name%'
-  street_address: 'Via Regina 12'
   locality: Caslano
+  name: 'Cantiere %name%'
   postal_code: '6987'
+  street_address: 'Via Regina 12'

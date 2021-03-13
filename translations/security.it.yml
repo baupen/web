@@ -1,57 +1,51 @@
 login:
-  title: 'Per favore effettuare il login.'
   description: 'Utilizzi la sua E-mail aziendale.'
-  submit: 'Effettuare il login'
-  forgot_passwort: 'Password dimenticata?'
   errors:
-    login_failed: 'Login fallito.'
-    email_not_found: 'Questa E-mail non è stata trovata.'
-    password_wrong: 'La password non è corretta.'
     account_disabled: 'Questo account è disattivato'
-
-register:
-  title: 'Creare un account.'
-  description: 'Lasciate aiutarvi con l''amministrazione della pendenza.'
-  back_to_login: 'Tornare al login.'
+    email_not_found: 'Questa E-mail non è stata trovata.'
+    login_failed: 'Login fallito.'
+    password_wrong: 'La password non è corretta.'
+  forgot_passwort: 'Password dimenticata?'
+  submit: 'Effettuare il login'
+  title: 'Per favore effettuare il login.'
+logout:
+  title: Logout
+recover_confirm:
+  description: 'Imposti la sua nuova password.'
   error:
-    email_disabled: 'Purtroppo non è possibile registrarsi con questa E-mail.'
+    invalid_hash: 'Questo link non è più valido. Si noti che ogni link può essere utilizzato solamente una volta.'
+    password_too_short: 'La password è troppo corta. Si prega di inserire almeno 8 caratteri.'
+    passwords_do_not_match: 'Le password non corrispondono.'
+  submit: 'Imposta password'
+  success:
+    password_set: 'La nuova password è stata impostata con successo.'
+  title: Bentornati!
+recover:
+  back_to_login: 'Tornare al login.'
+  description: 'Manderemo una notifica alla vostra E-mail.'
+  fail:
+    email_not_found: 'Questa E-mail non è stata trovata nel nostro sistema.'
+    email_not_sent: 'L’invio dell’E-mail è fallito. Questo è un errore interno, la preghiamo di contattare il supporto tecnico.'
+  forgot_email: 'E-mail dimenticata o altri problemi?'
+  remembered_login: 'Tentare nuovamente il login?'
+  submit: 'Inviare notifica'
+  success:
+    email_sent: 'Le abbiamo appena inviato una E-mail.'
+  title: 'Reimpostare la password.'
+register_confirm:
+  description: 'La vostra E-mail è stata confermata.'
+  error:
+    invalid_hash: 'Questo link non è più valido. Riavviare la registrazione o accedere come di consueto.'
+  submit: attivare
+  success:
+    welcome: 'Il vostro account è ora impostato.'
+  title: 'Attivare l''account.'
+register:
+  back_to_login: 'Tornare al login.'
+  description: 'Lasciate aiutarvi con l''amministrazione della pendenza.'
+  error:
     already_registered: 'Sei già registrato. Effettuate il login come di consueto.'
     welcome_email_not_sent: 'L’invio dell’E-mail è fallito. Questo è un errore interno, la preghiamo di contattare il supporto tecnico.'
   success:
     welcome: 'Sei stato registrato con successo! Controlla le tue E-mail per attivare l''account.'
-
-register_confirm:
-  title: 'Attivare l''account.'
-  description: 'La vostra E-mail è stata confermata.'
-  submit: attivare
-  success:
-    welcome: 'Il vostro account è ora impostato.'
-  error:
-    invalid_hash: 'Questo link non è più valido. Riavviare la registrazione o accedere come di consueto.'
-
-recover:
-  title: 'Reimpostare la password.'
-  description: 'Manderemo una notifica alla vostra E-mail.'
-  submit: 'Inviare notifica'
-  forgot_email: 'E-mail dimenticata o altri problemi?'
-  remembered_login: 'Tentare nuovamente il login?'
-  back_to_login: 'Tornare al login.'
-  success:
-    email_sent: 'Le abbiamo appena inviato una E-mail.'
-  fail:
-    email_not_sent: 'L’invio dell’E-mail è fallito. Questo è un errore interno, la preghiamo di contattare il supporto tecnico.'
-    email_not_found: 'Questa E-mail non è stata trovata nel nostro sistema.'
-
-recover_confirm:
-  title: Bentornati!
-  description: 'Imposti la sua nuova password.'
-  submit: 'Imposta password'
-  success:
-    password_set: 'La nuova password è stata impostata con successo.'
-  error:
-    passwords_do_not_match: 'Le password non corrispondono.'
-    invalid_hash: 'Questo link non è più valido. Si noti che ogni link può essere utilizzato solamente una volta.'
-    password_too_short: 'La password è troppo corta. Si prega di inserire almeno 8 caratteri.'
-
-logout:
-  title: Logout
+  title: 'Creare un account.'

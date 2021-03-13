@@ -1,14 +1,14 @@
-state_values:
-  all: Alle
-  none: Keine
-  created: Erstellt
-  registered: Offen
-  seen: Gesehen
-  resolved: Umgesetzt
-  closed: Abgeschlossen
-number: Nummer
-status: Status
 deadline: Frist
 description: Beschreibung
 entity:
   name: Pendenz
+number: Nummer
+state_values:
+  all: Alle
+  closed: Abgeschlossen
+  created: Erstellt
+  none: Keine
+  registered: Offen
+  resolved: Umgesetzt
+  seen: Gesehen
+status: Status

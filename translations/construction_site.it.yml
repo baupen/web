@@ -1,19 +1,15 @@
 dashboard:
-  title: Dashboard
   description: 'Panoramica dei cantieri'
-
+  title: Dashboard
 dispatch:
-  title: 'Informare gli operai'
   description: 'Informate gli operai di nuove pendenze tramite un’E-mail personalizzata'
-
+  title: 'Informare gli operai'
 edit:
-  title: 'Allestimento del cantiere'
   description: 'Organizza operai e mappe'
-
+  title: 'Allestimento del cantiere'
 foyer:
-  title: 'Inserire pendenze'
   description: 'Aggiungere le nuove pendenze all’elenco.'
-
+  title: 'Inserire pendenze'
 register:
-  title: 'Elenco delle pendenze'
   description: 'Le vostre pendenze inserite'
+  title: 'Elenco delle pendenze'

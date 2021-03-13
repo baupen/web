@@ -1,5 +1,5 @@
 example:
-  name: '%name%’s Baustelle'
-  street_address: 'Am Bergweg 12'
   locality: Terwil
+  name: '%name%’s Baustelle'
   postal_code: '4157'
+  street_address: 'Am Bergweg 12'

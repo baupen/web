@@ -1,27 +1,23 @@
 dashboard:
-  title: Dashboard
   description: 'Überblick über Ihre Baustelle.'
-
+  title: Dashboard
 dispatch:
-  title: 'Unternehmer informieren'
   description: 'Überblick über Unternehmer & Versand personalisierter E-Mails.'
-
+  title: 'Unternehmer informieren'
 edit:
-  title: 'Baustelle einrichten'
   description: 'Verwalten von Bauplänen, Unternehmern und Bauleitern.'
   external_construction_manager:
-    welcome_email:
-      subject: 'Willkommen auf %page%!'
-      body: 'Sie wurden auf %page% registriert, damit Sie die Baustelle %construction_site_name% verwalten können.'
-      action_text: 'Account aktivieren'
     new_construction_site_email:
-      subject: 'Neue Baustelle auf %page% freigeschaltet'
       body: 'Sie wurden auf %page% der Baustelle %construction_site_name% hinzugefügt.'
-
+      subject: 'Neue Baustelle auf %page% freigeschaltet'
+    welcome_email:
+      action_text: 'Account aktivieren'
+      body: 'Sie wurden auf %page% registriert, damit Sie die Baustelle %construction_site_name% verwalten können.'
+      subject: 'Willkommen auf %page%!'
+  title: 'Baustelle einrichten'
 foyer:
-  title: 'Pendenzen einpflegen'
   description: 'Einpflegen von Pendenzen.'
-
+  title: 'Pendenzen einpflegen'
 register:
-  title: Pendenzenverzeichnis
   description: 'Durchsuchen und Exportieren von eingepflegten Pendenzen.'
+  title: Pendenzenverzeichnis

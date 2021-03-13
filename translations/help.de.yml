@@ -1,27 +1,26 @@
+connect_app:
+  activation_code: Aktivierungscode
+  description: 'Verbinden Sie ihren Account mit der App um alle Funktionen zu nutzen.'
+  download_ios_app: 'iOS App herunterladen'
+  open_ios_app: 'iOS App öffnen'
+  or: oder
+  title: 'Mit App verbinden'
 overview:
-  title: 'So funktioniert''s.'
-  description: 'Pendenzenmangement in 6 Schritten.'
+  app_login: 'Beim Login in der App, gib %website% als Webseite ein.'
   create: Erfassen
   create_description: 'Nimm mit unserer iOS-App Pendenzen auf.'
+  description: 'Pendenzenmangement in 6 Schritten.'
   download_ios_app: 'zum App Store'
-  populate: Einpflegen
-  populate_description: 'Bereinige neu erfasste Pendenzen im Warteraum.'
+  inspect: Abschliessen
+  inspect_description: 'Schliesse in der iOS-App die umgesetzten Pendenzen ab.'
   manage: Verwalten
   manage_description: 'Durchsuche, ändere und exportiere eingepflegte Pendenzen im Verzeichnis.'
   notify: Benachrichtigen
   notify_description: 'Informiere Unternehmer über neue Pendenzen.'
+  populate: Einpflegen
+  populate_description: 'Bereinige neu erfasste Pendenzen im Warteraum.'
+  send_app_links: 'E-Mail mit Login Informationen zusenden'
+  start: 'Zur Anwendung'
+  title: 'So funktioniert''s.'
   wait: Rückmeldung
   wait_description: 'Erhalte von den Unternehmern eine Antwort. Diese können mit einem persönlichen Link ihre Pendenzen abarbeiten und als umgesetzt markieren.'
-  inspect: Abschliessen
-  inspect_description: 'Schliesse in der iOS-App die umgesetzten Pendenzen ab.'
-  start: 'Zur Anwendung'
-  send_app_links: 'E-Mail mit Login Informationen zusenden'
-  app_login: 'Beim Login in der App, gib %website% als Webseite ein.'
-
-connect_app:
-  title: 'Mit App verbinden'
-  description: 'Verbinden Sie ihren Account mit der App um alle Funktionen zu nutzen.'
-  activation_code: 'Aktivierungscode'
-  download_ios_app: 'iOS App herunterladen'
-  or: 'oder'
-  open_ios_app: 'iOS App öffnen'

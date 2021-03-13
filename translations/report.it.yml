@@ -1,22 +1,22 @@
+generated: 'generato il %date%'
 generated_with_author: 'generato da %name% il %date%'
 introduction:
   elements: 'Contenuto del rapporto'
   filter:
-    later_than: 'dopo il %date%'
+    and: e
+    craftsmen: Operaio|Operai
     earlier_than: 'prima del %date%'
+    later_than: 'dopo il %date%'
+    maps: Mappa|Mappe
     not: 'non %state%'
     or: oppure
-    and: e
-    trades: Settore|Settori
-    craftsmen: Operaio|Operai
-    maps: Mappa|Mappe
     time: Tempo
-table:
-  by_map: 'Pendenze per mappa'
-  by_craftsman: 'Pendenze per operaio'
-  by_trade: 'Pendenze per settore'
-  in_state_since: 'da %status%'
+    trades: Settore|Settori
 issues:
   detailed: 'Dettagli delle pendenze per mappa'
   with_images: 'con immagini'
-generated: 'generato il %date%'
+table:
+  by_craftsman: 'Pendenze per operaio'
+  by_map: 'Pendenze per mappa'
+  by_trade: 'Pendenze per settore'
+  in_state_since: 'da %status%'

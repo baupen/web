@@ -1,14 +1,14 @@
-state_values:
-  all: Tutte
-  none: Nessuna
-  created: Creato
-  registered: Aperto
-  seen: Letto
-  resolved: Risposte
-  closed: Confermato
-number: Numero
-status: Stato
 deadline: Scadenza
 description: Descrizione
 entity:
   name: Pendenza
+number: Numero
+state_values:
+  all: Tutte
+  closed: Confermato
+  created: Creato
+  none: Nessuna
+  registered: Aperto
+  resolved: Risposte
+  seen: Letto
+status: Stato
