@@ -6,55 +6,50 @@
   },
   "construction_site": {
     "_name": "Cantiere",
-    "name": "Nome",
     "address": "Indirizzo",
-    "street_address": "Via \/ no.",
+    "created_at": "creato il",
     "locality": "Luogo",
+    "name": "Nome",
     "postal_code": "CAP",
-    "created_at": "creato il"
+    "street_address": "Via \/ no."
   },
   "craftsman": {
     "_name": "Operaio",
     "_plural": "Operai",
-    "name": "Nome",
-    "trade": "Settore",
+    "company": "Azienda",
     "contact_name": "Persona di contatto",
     "email": "E-mail",
-    "company": "Azienda",
-    "not_responded_issues_count": "Pendenze non risposte",
+    "name": "Nome",
+    "next_deadline": "Prossimo termine",
     "not_read_issues_count": "Pendenze non lette",
+    "not_responded_issues_count": "Pendenze non risposte",
     "open_issues_count": "Pendenze aperte",
-    "next_deadline": "Prossimo termine"
+    "trade": "Settore"
+  },
+  "issue": {
+    "craftsman": "Operaio",
+    "description": "Descrizione",
+    "map": "Mappa",
+    "number": "Numero",
+    "state": {
+      "closed": "chiuso",
+      "created": "creato",
+      "open": "aperte",
+      "overdue": "Termine superato",
+      "registered": "registrato",
+      "resolved": "risposto",
+      "to_inspect": "da ispezionare"
+    },
+    "status": "Stato",
+    "trade": "Settore"
   },
   "map": {
     "_name": "Piano di costruzione",
     "_plural": "Piani di costruzione",
+    "closed_issues_count": "Pendenze risolte",
     "name": "Nome",
     "open_issues_count": "Pendenze aperte",
-    "closed_issues_count": "Pendenze risolte",
     "parent": "Attribuzione"
-  },
-  "issue": {
-    "description": "Descrizione",
-    "craftsman": "Operaio",
-    "response_limit": "Scadenza",
-    "map": "Mappa",
-    "status": "Stato",
-    "number": "Numero",
-    "trade": "Settore",
-    "no_response_limit": "non specificato",
-    "state": {
-      "created": "creato",
-      "registered": "registrato",
-      "resolved": "risposto",
-      "closed": "chiuso",
-      "open": "aperte",
-      "read": "letto",
-      "unread": "non letto",
-      "overdue": "Termine superato",
-      "to_inspect": "da ispezionare",
-      "marked": "contrassegnate"
-    }
   },
   "validation": {
     "required": "Questo campo non può essere lasciato vuoto."
