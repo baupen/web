@@ -47,7 +47,7 @@
                   @input="validate('emailCCs')"
                   rows="3">
         </textarea>
-    <help :help="$t('craftsman_form.emailCCs_help')" />
+    <help :help="$t('_form.craftsman.emailCCs_help')" />
     <invalid-feedback :errors="fields.emailCCs.errors" />
   </form-field>
 </template>

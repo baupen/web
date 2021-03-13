@@ -9,7 +9,7 @@
            :class="{'is-valid': fileIsValid, 'is-invalid': !fileIsValid && file !== null }"
            :value="file.name">
     <a class="btn-link clickable" v-if="file" @click="file = null">
-      {{ $t('_form.file.reset') }}
+      {{ $t('_form.reset') }}
     </a>
   </form-field>
 </template>

@@ -87,7 +87,7 @@
   </div>
 
   <p class="alert alert-warning mt-2" v-if="fields.isResolved.dirty && issue.isResolved">
-    {{ $t('_action.messages.resolved_as_impersonated_craftsman')}}
+    {{ $t('_form.issues.resolved_as_impersonated_craftsman')}}
   </p>
 
   <hr />

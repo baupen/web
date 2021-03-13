@@ -82,7 +82,7 @@ export default {
     },
     getParentName: function (mapContainer) {
       if (!mapContainer.entity.parent) {
-        return this.$t('map.no_parent_name')
+        return this.$t('map.parent_not_set_name')
       }
       if (!mapContainer.parent) {
         return this.$t('map.parent_not_found_name')

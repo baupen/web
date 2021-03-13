@@ -1,21 +1,21 @@
 <template>
   <p class="alert alert-info" v-if="!file">
-    {{ $t('import_craftsmen.template_help') }} <br />
-    <a :href="downloadSampleExcelHref" :download="$t('import_craftsmen.template_file_name')">
-      {{ $t('import_craftsmen.template_download') }}
+    {{ $t('_form.craftsmen_import.template_help') }} <br />
+    <a :href="downloadSampleExcelHref" :download="$t('_form.craftsmen_import.template_file_name')">
+      {{ $t('_form.craftsmen_import.template_download') }}
     </a>
   </p>
-  <form-field for-id="file" :label="$t('import_craftsmen.file')">
+  <form-field for-id="file" :label="$t('_form.craftsmen_import.file')">
     <dropzone
         v-if="!file"
-        id="file" :help="$t('import_craftsmen.file_drop_or_choose')"
+        id="file" :help="$t('_form.craftsmen_import.file_drop_or_choose')"
         :valid-file-types="validFileTypes"
         @input="file = $event[0]" />
     <input v-if="file" id="file" class="form-control" type="text" readonly="readonly"
            :class="{'is-valid': fileIsValid, 'is-invalid': !fileIsValid && file !== null }"
            :value="file.name">
     <a class="btn-link clickable" v-if="file" @click="file = null">
-      {{ $t('import_craftsmen.reset') }}
+      {{ $t('_form.reset') }}
     </a>
   </form-field>
 </template>

@@ -51,7 +51,7 @@
     "open_issues_count": "Pendenze aperte",
     "parent": "Attribuzione"
   },
-  "validation": {
+  "_validation": {
     "required": "Questo campo non può essere lasciato vuoto."
   }
 }

@@ -9,7 +9,7 @@
            :class="{'is-valid': imageIsValid, 'is-invalid': !imageIsValid && image !== null }"
            :value="image.name">
     <a class="btn-link clickable" v-if="image" @click="image = null">
-      {{ $t('_form.image.reset') }}
+      {{ $t('_form.reset') }}
     </a>
   </form-field>
 </template>

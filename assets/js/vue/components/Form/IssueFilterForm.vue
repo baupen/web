@@ -106,14 +106,12 @@
 <script>
 
 import FormField from '../Library/FormLayout/FormField'
-import BooleanFilter from './IssueFilter/BooleanFilter'
 import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 import StateFilter from './IssueFilter/StateFilter'
 import ToggleCard from '../Library/Behaviour/ToggleCard'
 import CraftsmenFilter from './IssueFilter/CraftsmenFilter'
 import MapFilter from './IssueFilter/MapFilter'
 import TimeFilter from './IssueFilter/TimeFilter'
-import { filterTransformer } from '../../services/transformers'
 
 export default {
   components: {
@@ -123,7 +121,6 @@ export default {
     ToggleCard,
     StateFilter,
     CustomCheckboxField,
-    BooleanFilter,
     FormField
   },
   emits: ['update', 'update-configuration'],

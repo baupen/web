@@ -48,7 +48,6 @@
     "edit_issues": {
       "edited": "Pendenzen gespeichert.",
       "replaced_issue_images": "Bild ersetzt.",
-      "resolved_as_impersonated_craftsman": "'Umgesetzt' wird im Namen des Unternehmers.",
       "save_issue_fields": "{fields} von Pendenz setzen | {fields} von {count} Pendenzen setzen",
       "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
       "title": "Pendenzen bearbeiten"
@@ -95,23 +94,16 @@
     },
     "import_craftsmen": {
       "added": "1 wird hinzugefügt|{count} werden hinzugefügt",
-      "file": "Excel Datei (.xlsx)",
-      "file_drop_or_choose": "Excel Datei (.xlsx) hineinziehen oder auswählen",
       "import_finished": "Import wurde abgeschlossen",
       "title": "Unternehmer importieren",
       "matching_by_email": "Duplizierungen werden anhand des E-Mail Feldes verhindert.",
-      "overwritten": "1 wird aktualisiert|{count} werden aktualisiert",
-      "reset": "zurücksetzen",
-      "template_download": "Vorlage herunterladen",
-      "template_file_name": "Vorlage.xlsx",
-      "template_help": "Mit einem Excel Dokument (.xlsx) können Sie mehrere Unternehmer gleichzeitig hinzufügen oder aktualisieren."
+      "overwritten": "1 wird aktualisiert|{count} werden aktualisiert"
     },
     "register_issues": {
       "registered": "Pendenzen zum Verzeichnis hinzugefügt.",
       "registration_skipped_no_craftsman": "Eine Pendenz wurde übersprungen, da sie noch keinem Unternehmer zugewiesen ist. | {count} Pendenzen wurden übersprungen, da sie noch keinem Unternehmer zugewiesen sind.",
       "title": "Eine Pendenz ins Verzeichnis aufnehmen | {count} Pendenzen ins Verzeichnis aufnehmen"
     },
-    "remove_confirm": "Ich verstehe, dass ich diesen Schritt nicht rückgängig machen kann.",
     "remove_craftsman": {
       "help": "Nach dem Entfernen können Sie dem Unternehmer keine Pendenzen mehr zuweisen. Der Unternehmer verliert den Zugriff auf den personalisierten Link.",
       "removed": "Unternehmer entfernt.",
@@ -137,12 +129,18 @@
     }
   },
   "_form": {
+    "remove_confirm": "Ich verstehe, dass ich diesen Schritt nicht rückgängig machen kann.",
     "construction_site": {
       "similar_already_existing_construction_sites": "Ähnliche bereits existierende Baustellen"
     },
     "craftsman_import": {
       "emailCCs_format": "mehrere E-Mails durch Komma trennen",
-      "invalid_entry": "Auf der Zeile {line} fehlen Angaben. Die ersten vier Spalten (Gewerk, Firma, Kontaktperson & E-Mail) werden immer benötigt."
+      "invalid_entry": "Auf der Zeile {line} fehlen Angaben. Die ersten vier Spalten (Gewerk, Firma, Kontaktperson & E-Mail) werden immer benötigt.",
+      "file": "Excel Datei (.xlsx)",
+      "file_drop_or_choose": "Excel Datei (.xlsx) hineinziehen oder auswählen",
+      "template_download": "Vorlage herunterladen",
+      "template_file_name": "Vorlage.xlsx",
+      "template_help": "Mit einem Excel Dokument (.xlsx) können Sie mehrere Unternehmer gleichzeitig hinzufügen oder aktualisieren."
     },
     "craftsman": {
       "emailCCs_help": "Eine Zeile pro E-Mail"
@@ -150,6 +148,9 @@
     "file": {
       "drop_or_choose": "PDF (.pdf) hineinziehen oder auswählen",
       "label": "PDF Datei (.pdf)"
+    },
+    "issues": {
+      "resolved_as_impersonated_craftsman": "'Umgesetzt' wird im Namen des Unternehmers."
     },
     "issue_report": {
       "by_craftsman": "nach Unternehmer",
@@ -204,7 +205,7 @@
     "no_issues": "Keine Pendenzen",
     "no_maps": "Keine Baupläne"
   },
-  "api": {
+  "_api": {
     "request_failed": "Die Webanfrage ist fehlgeschlagen."
   },
   "construction_manager": {
@@ -314,10 +315,10 @@
     "_plural": "Baupläne",
     "closed_issues_count": "Geschlossene Pendenzen",
     "name": "Name",
-    "no_parent_name": "-",
     "open_issues_count": "Offene Pendenzen",
     "parent": "Zuordnung",
-    "parent_not_found_name": "(entfernt)"
+    "parent_not_found_name": "(entfernt)",
+    "parent_not_set_name": "-"
   },
   "resolve": {
     "help": "Markieren Sie Pendenzen als umgesetzt, damit die Bauleitung diese abschliessen kann.",
@@ -331,7 +332,7 @@
     "mine_none_ask_for_association": "Sie sind keiner Baustelle zugehörig. Sie können einen anderen Bauleiter bitten, Sie einer Baustelle hinzuzufügen.",
     "mine_none_associate_self": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen."
   },
-  "validation": {
+  "_validation": {
     "required": "Bitte Feld ausfüllen."
   }
 }
