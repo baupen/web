@@ -8,7 +8,7 @@
     <invalid-feedback :errors="fields.name.errors" />
     <p v-if="similarConstructionSiteNames.length > 0" class="text-primary">
       <small>
-        {{ $t('switch.similar_already_existing_construction_sites') }}:
+        {{ $t('form.construction_site.similar_already_existing_construction_sites') }}:
         {{ similarConstructionSiteNames.join(',') }}
       </small>
     </p>

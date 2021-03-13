@@ -1,12 +1,9 @@
 <template>
   <div class="card">
     <div class="card-body limited-height">
-      <loading-indicator-secondary v-if="isLoading" class="loading-center" />
-      <template v-else-if="orderedFeedEntries.length > 0" v-for="(entry, index) in orderedFeedEntries">
-        <hr v-if="index !== 0" />
-        <feed-entry :entry="entry" :construction-managers="constructionManagers" :craftsmen="craftsmen" />
-      </template>
-      <span v-else><i>{{$t("feed.no_entries")}}</i></span>
+      <loading-indicator-secondary v-if="isLoading" class="loading-center">
+        <feed :construction-managers="constructionManagers" :craftsmen="craftsmen" :feed-entries="feedEntries" />
+      </loading-indicator-secondary>
     </div>
   </div>
 </template>
@@ -15,9 +12,11 @@
 import FeedEntry from './View/FeedEntry'
 import { api } from '../services/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
+import Feed from './View/Feed'
 
 export default {
   components: {
+    Feed,
     LoadingIndicatorSecondary,
     FeedEntry
   },
@@ -35,9 +34,6 @@ export default {
     }
   },
   computed: {
-    orderedFeedEntries: function () {
-      return this.feedEntries.sort((a, b) => b.date.localeCompare(a.date))
-    },
     isLoading: function () {
       return !this.feedEntries || !this.constructionManagers || !this.craftsmen
     },
