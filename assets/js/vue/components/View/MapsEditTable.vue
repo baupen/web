@@ -82,10 +82,10 @@ export default {
     },
     getParentName: function (mapContainer) {
       if (!mapContainer.entity.parent) {
-        return this.$t('_view.maps_edit.Excelname')
+        return this.$t('map.no_parent_name')
       }
       if (!mapContainer.parent) {
-        return this.$t('_view.maps_edit.parent_not_found')
+        return this.$t('map.parent_not_found_name')
       }
 
       return mapContainer.parent.entity.name

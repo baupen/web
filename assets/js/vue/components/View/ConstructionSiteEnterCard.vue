@@ -11,9 +11,7 @@
           <p>
             <span class="pre">{{ address.join('\n') }}</span>
           </p>
-          <a :href="constructionSiteDashboardHref" class="btn btn-primary">
-            {{ $t('switch.action.enter_construction_site') }}
-          </a>
+          <enter-construction-site :construction-site="constructionSite" />
         </div>
       </div>
     </div>
@@ -28,8 +26,10 @@
 <script>
 
 import { constructionSiteFormatter, constructionManagerFormatter } from '../../services/formatters'
+import EnterConstructionSite from '../Action/EnterConstructionSite'
 
 export default {
+  components: { EnterConstructionSite },
   props: {
     constructionSite: {
       type: Object,
@@ -49,9 +49,6 @@ export default {
     },
     address: function () {
       return constructionSiteFormatter.address(this.constructionSite)
-    },
-    constructionSiteDashboardHref: function () {
-      return this.constructionSite['@id'].replace('/api', '') + '/dashboard'
     }
   }
 }

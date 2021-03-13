@@ -16,8 +16,9 @@
       "associated_construction_manager": "Bauleiter der Baustelle hinzugefügt",
       "title": "Bauleiter der Baustelle hinzufügen"
     },
-    "associated_self": {
-      "title": "Sie wurden der Baustelle hinzugefügt."
+    "toggle_association_construction_site": {
+      "associated": "Sie wurden der Baustelle hinzugefügt.",
+      "dissociated": "Sie wurden von der Baustelle entfernt."
     },
     "close": "Schliessen",
     "compose_craftsman_email": {
@@ -34,9 +35,6 @@
       "dissociated_construction_manager": "Bauleiter von Baustelle entfernt",
       "help": "Der Bauleiter wird von der Baustelle entfernt.",
       "title": "Bauleiter von Baustelle entfernen"
-    },
-    "dissociated_self": {
-      "title": "Sie wurden von der Baustelle entfernt."
     },
     "edit_construction_site": {
       "edited": "Baustelle gespeichert",
@@ -193,7 +191,6 @@
       "no_entries": "Zurzeit keine Aktivitäten auf der Baustelle."
     },
     "issues": {
-      "show_more_issues": "Weitere {count} Pendenzen anzeigen",
       "sort_by_last_activity": "Nach letzter Aktivität sortieren",
       "without_craftsman": "ohne Unternehmer",
       "without_deadline": "ohne Frist",
@@ -202,6 +199,7 @@
     "maps_resolve": {
       "issues_by_map": "Pendenzen nach Bauplan"
     },
+    "show_more_issues": "Weitere {count} Pendenzen anzeigen",
     "no_craftsmen": "Keine Unternehmer",
     "no_issues": "Keine Pendenzen",
     "no_maps": "Keine Baupläne"
@@ -242,11 +240,8 @@
     "trade": "Gewerk"
   },
   "dashboard": {
-    "add_to_register": "Jetzt zum Verzeichnis hinzufügen",
     "feed": "Feed",
-    "name": "Pendenzen",
-    "new_issues_available": "Neue Pendenzen wurden erfasst.",
-    "new_issues_in_foyer": "Eine neue Pendenz | {count} neue Pendenzen"
+    "new_issues_in_foyer": "Eine neue Pendenz erfasst. | {count} neue Pendenzen erfasst."
   },
   "edit": {
     "construction_managers_disabled": "Die Änderung der Zugriffe ist für Ihren Account deaktiviert.",
