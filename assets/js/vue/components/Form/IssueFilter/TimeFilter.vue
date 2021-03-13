@@ -4,7 +4,7 @@
       <div class="input-group">
         <flat-pickr
             class="form-control"
-            :placeholder="$t('form.issue_filter.from')"
+            :placeholder="$t('_form.issue_filter.from')"
             v-model="after"
             :config="dateTimePickerConfig">
         </flat-pickr>
@@ -13,7 +13,7 @@
         </div>
         <flat-pickr
             class="form-control"
-            :placeholder="$t('form.issue_filter.until')"
+            :placeholder="$t('_form.issue_filter.until')"
             v-model="before"
             :config="dateTimePickerConfig">
         </flat-pickr>

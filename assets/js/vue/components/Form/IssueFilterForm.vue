@@ -37,7 +37,7 @@
 
   <toggle-card
       v-if="configuration.showState"
-      :title="$t('form.issue_filter.state')" :initial-activated="configurationTemplate.state"
+      :title="$t('_form.issue_filter.state')" :initial-activated="configurationTemplate.state"
       @active-toggled="configuration.state = $event">
     <state-filter :initial-state="filter.state" @input="filter.state = $event" />
   </toggle-card>
@@ -70,7 +70,7 @@
 
   <toggle-card
       class="mt-2"
-      :title="$t('form.issue_filter.time')" :initial-activated="configurationTemplate.time"
+      :title="$t('_form.issue_filter.time')" :initial-activated="configurationTemplate.time"
       @active-toggled="configuration.time = $event">
 
     <time-filter

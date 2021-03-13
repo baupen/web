@@ -1,15 +1,15 @@
 <template>
-  <form-field for-id="file" :label="$t('form.file.label')">
+  <form-field for-id="file" :label="$t('_form.file.label')">
     <dropzone
         v-if="!file"
-        id="file" :help="$t('form.file.drop_or_choose')"
+        id="file" :help="$t('_form.file.drop_or_choose')"
         :valid-file-types="validFileTypes"
         @input="file = $event[0]" />
     <input v-if="file" id="file" class="form-control" type="text" readonly="readonly"
            :class="{'is-valid': fileIsValid, 'is-invalid': !fileIsValid && file !== null }"
            :value="file.name">
     <a class="btn-link clickable" v-if="file" @click="file = null">
-      {{ $t('form.file.reset') }}
+      {{ $t('_form.file.reset') }}
     </a>
   </form-field>
 </template>

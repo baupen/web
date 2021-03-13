@@ -1,17 +1,17 @@
 <template>
   <custom-checkbox-field
       for-id="report-with-images"
-      :label="$t('export_issues_button.export_type.report.with_images')">
+      :label="$t('_form.issue_report.with_images')">
     <input class="custom-control-input" type="checkbox" name="report-with-images" id="report-with-images"
            :true-value="true" :false-value="false"
            v-model="report.withImages">
   </custom-checkbox-field>
 
-  <form-field :label="$t('export_issues_button.export_type.report.summary_tables')" :required="false">
+  <form-field :label="$t('_form.issue_report.summary_tables')" :required="false">
     <custom-checkbox
         class="mb-1"
         for-id="report-table-by-craftsman"
-        :label="$t('export_issues_button.export_type.report.by_craftsman')">
+        :label="$t('_form.issue_report.by_craftsman')">
       <input class="custom-control-input" type="checkbox" name="report-table-by-craftsman" value="selection"
              id="report-table-by-craftsman"
              :true-value="true" :false-value="false"
@@ -20,7 +20,7 @@
 
     <custom-checkbox
         for-id="report-table-by-map"
-        :label="$t('export_issues_button.export_type.report.by_map')">
+        :label="$t('_form.issue_report.by_map')">
       <input class="custom-control-input" type="checkbox" name="report-table-by-map" value="selection"
              id="report-table-by-map"
              :true-value="true" :false-value="false"

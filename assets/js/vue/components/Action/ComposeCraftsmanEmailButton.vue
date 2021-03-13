@@ -1,7 +1,7 @@
 <template>
   <span class="btn btn-link" v-if="unsentEmails.length > 0">{{ unsentEmails.length }}</span>
   <button-with-modal-confirm
-      modal-size="lg" :title="$t('dispatch.actions.compose_email')"
+      modal-size="lg" :title="$t('dispatch.action.compose_email')"
       :button-disabled="disabled" :can-confirm="canConfirm" :confirm-title="sendEmailText"
       @confirm="confirm">
 
@@ -111,7 +111,7 @@ export default {
       return !this.emailTemplates || this.emailTemplates.length < 3
     },
     sendEmailText: function () {
-      return this.$tc('dispatch.actions.send_emails', this.craftsmen.length, { 'count': this.craftsmen.length })
+      return this.$tc('dispatch.action.send_emails', this.craftsmen.length, { 'count': this.craftsmen.length })
     },
     proposedEmailTemplate: function () {
       if (!this.emailTemplates) {

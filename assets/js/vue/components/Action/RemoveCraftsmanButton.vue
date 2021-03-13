@@ -1,7 +1,7 @@
 <template>
   <button-with-modal-confirm
       color="danger"
-      :title="$t('actions.remove_craftsman')" :can-confirm="canConfirm"
+      :title="$t('_action.remove_craftsman')" :can-confirm="canConfirm"
       @shown="loadIssueSummary"
       @confirm="confirm">
     <template v-slot:button-content>
@@ -14,7 +14,7 @@
     </p>
 
     <p class="alert alert-info">
-      {{ $t('actions.remove_craftsman_help') }}
+      {{ $t('_action.remove_craftsman_help') }}
     </p>
 
     <delete-form @update="canConfirm = $event" />
@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     confirm: function () {
-      api.delete(this.craftsman, this.$t('actions.messages.success.craftsman_removed'))
+      api.delete(this.craftsman, this.$t('_action.messages.success.craftsman_removed'))
 
       // reset state for next display
       this.issueSummary = null

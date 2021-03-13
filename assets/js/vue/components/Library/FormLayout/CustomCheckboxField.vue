@@ -5,7 +5,7 @@
       <template v-slot:after>
         <div v-if="showReset">
           <a class="btn-link clickable" @click="$emit('reset')">
-            {{ $t('form.reset') }}
+            {{ $t('_form.reset') }}
           </a>
         </div>
         <slot name="after"></slot>

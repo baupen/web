@@ -2,7 +2,7 @@
   <button class="btn btn-primary"
           :disabled="preRegisterIssues.length > 0 || issues.length === 0"
           @click="registerSelectedIssues">
-    {{ $tc('foyer.actions.register_issues', this.issues.length) }}
+    {{ $tc('foyer.action.register_issues', this.issues.length) }}
   </button>
 </template>
 
@@ -49,7 +49,7 @@ export default {
       let filteredIssues = this.issues.filter(i => i.craftsman)
       let invalidIssueCount = this.issues.length - filteredIssues.length
       if (invalidIssueCount > 0) {
-        displayWarning(this.$tc('actions.messages.registration_skipped_no_craftsman', invalidIssueCount))
+        displayWarning(this.$tc('_action.messages.registration_skipped_no_craftsman', invalidIssueCount))
       }
 
       if (filteredIssues.length === 0) {

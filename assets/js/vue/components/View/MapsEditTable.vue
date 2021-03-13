@@ -13,7 +13,7 @@
     <table-body-loading-indicator v-if="!mapContainers" />
     <tr v-else-if="mapContainers.length === 0">
       <td colspan="99">
-        <p class="text-center">{{ $t('view.no_maps') }}</p>
+        <p class="text-center">{{ $t('_view.no_maps') }}</p>
       </td>
     </tr>
     <tr v-else v-for="mapContainer in mapContainers">
@@ -82,10 +82,10 @@ export default {
     },
     getParentName: function (mapContainer) {
       if (!mapContainer.entity.parent) {
-        return this.$t('view.maps_edit.Excelname')
+        return this.$t('_view.maps_edit.Excelname')
       }
       if (!mapContainer.parent) {
-        return this.$t('view.maps_edit.parent_not_found')
+        return this.$t('_view.maps_edit.parent_not_found')
       }
 
       return mapContainer.parent.entity.name

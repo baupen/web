@@ -1,14 +1,14 @@
 <template>
   <button-with-modal-confirm
       color="danger"
-      :title="$t('actions.dissociate_construction_manager')"
+      :title="$t('_action.dissociate_construction_manager')"
       @confirm="confirm">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'trash']" />
     </template>
 
     <p class="alert alert-info">
-      {{ $t('actions.dissociate_construction_manager_help') }}
+      {{ $t('_action.dissociate_construction_manager_help') }}
     </p>
 
   </button-with-modal-confirm>
@@ -45,7 +45,7 @@ export default {
     confirm: function () {
       this.patching = true
       const constructionManagers = this.constructionSite.constructionManagers.filter(cm => cm !== this.constructionManager['@id'])
-      api.patch(this.constructionSite, { constructionManagers }, this.$t('actions.messages.success.construction_manager_dissociated'))
+      api.patch(this.constructionSite, { constructionManagers }, this.$t('_action.messages.success.construction_manager_dissociated'))
         .then(_ => {
           this.$emit('dissociated')
           this.patching = false

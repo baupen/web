@@ -17,12 +17,12 @@
       "title": "Bauleiter der Baustelle hinzufügen"
     },
     "associated_self": {
-      "label": "Sie wurden der Baustelle hinzugefügt."
+      "title": "Sie wurden der Baustelle hinzugefügt."
     },
     "close": "Schliessen",
     "compose_craftsman_email": {
       "confirm": "E-Mail versenden | {count} E-Mails versenden",
-      "label": "E-Mail verfassen",
+      "title": "E-Mail verfassen",
       "no_template": "Keine Vorlage",
       "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und als umgesetzt markieren.",
       "save_as_new_template": "Als neue Vorlage speichern",
@@ -36,7 +36,7 @@
       "title": "Bauleiter von Baustelle entfernen"
     },
     "dissociated_self": {
-      "label": "Sie wurden von der Baustelle entfernt."
+      "title": "Sie wurden von der Baustelle entfernt."
     },
     "edit_construction_site": {
       "edited": "Baustelle gespeichert",
@@ -66,23 +66,15 @@
     "export_issues": {
       "export_source_filter": "{count} Pendenzen, auf die der Filter zutrifft",
       "export_source_selection": "{count} Pendenzen, die markiert wurden",
-      "export_type": {
-        "link": {
-          "access_allowed_before": "Ablaufdatum des Zugriffes",
-          "help": "Immer aktuell: Die Pendenzen schreibgeschützt mit Externen teilen.",
-          "name": "Link"
-        },
-        "report": {
-          "by_craftsman": "nach Unternehmer",
-          "by_map": "nach Bauplan",
-          "help": "Fürs Drucken optimiert: Bringt die Pendenzen platzsparend aufs Papier.",
-          "name": ".pdf Bericht",
-          "summary_tables": "Zusammenfassungstabellen",
-          "with_images": "mit Fotos"
-        }
-      },
-      "generate": "erstellen",
-      "label": "Pendenzen exportieren"
+      "title": "Pendenzen exportieren"
+    },
+    "export_issues_report": {
+      "help": "Fürs Drucken optimiert: Bringt die Pendenzen platzsparend aufs Papier.",
+      "title": ".pdf Bericht"
+    },
+    "export_issues_filter": {
+      "help": "Immer aktuell: Die Pendenzen schreibgeschützt mit Externen teilen.",
+      "title": "Link"
     },
     "filter_issues": {
       "confirm": "Filtern",
@@ -90,14 +82,15 @@
       "set_filter": "Filter setzen",
       "title": "Pendenzen filtern"
     },
-    "generate_issues_filter": {
-      "generate_link": "Link erstellen"
+    "generate_issues_link": {
+      "title": "Link erstellen"
     },
     "generate_issues_report": {
       "download": "herunterladen",
+      "abort": "abbrechen",
       "downloaded": "heruntergeladen",
       "finished": "fertig",
-      "generate_report": "Report erstellen",
+      "title": "Report erstellen",
       "generating_map": "Grafiken werden generiert",
       "generating_pdf": "PDF wird generiert",
       "pending": "warten ({issueCount} Pendenzen)"
@@ -107,7 +100,7 @@
       "file": "Excel Datei (.xlsx)",
       "file_drop_or_choose": "Excel Datei (.xlsx) hineinziehen oder auswählen",
       "import_finished": "Import wurde abgeschlossen",
-      "label": "Unternehmer importieren",
+      "title": "Unternehmer importieren",
       "matching_by_email": "Duplizierungen werden anhand des E-Mail Feldes verhindert.",
       "overwritten": "1 wird aktualisiert|{count} werden aktualisiert",
       "reset": "zurücksetzen",
@@ -159,6 +152,15 @@
     "file": {
       "drop_or_choose": "PDF (.pdf) hineinziehen oder auswählen",
       "label": "PDF Datei (.pdf)"
+    },
+    "issue_report": {
+      "by_craftsman": "nach Unternehmer",
+      "by_map": "nach Bauplan",
+      "summary_tables": "Zusammenfassungstabellen",
+      "with_images": "mit Fotos"
+    },
+    "issue_link": {
+      "access_allowed_before": "Ablaufdatum des Zugriffes"
     },
     "image": {
       "drop_or_choose": "Bild (.jpg, .png, .gif) hineinziehen oder auswählen",

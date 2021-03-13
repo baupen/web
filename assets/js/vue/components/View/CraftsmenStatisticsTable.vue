@@ -19,7 +19,7 @@
       <th>{{ $t('craftsman.company') }}</th>
       <th class="w-minimal"></th>
 
-      <th class="border-left">{{ $t('view.count') }}</th>
+      <th class="border-left">{{ $t('_view.count') }}</th>
       <th>{{ $t('craftsman.next_deadline') }}</th>
 
       <th class="border-left">{{ $t('craftsman.visited_webpage') }}</th>
@@ -32,7 +32,7 @@
     <loading-indicator-table-body v-if="isLoading" />
     <tr v-else-if="orderedCraftsmenWithStatistics.length === 0">
       <td colspan="99">
-        <p class="text-center">{{ $t('view.no_craftsmen') }}</p>
+        <p class="text-center">{{ $t('_view.no_craftsmen') }}</p>
       </td>
     </tr>
     <tr v-else v-for="cws in orderedCraftsmenWithStatistics" @click.stop="toggleSelectedCraftsman(cws.craftsman)"

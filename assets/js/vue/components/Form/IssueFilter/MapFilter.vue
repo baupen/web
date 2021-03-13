@@ -3,7 +3,7 @@
     <custom-checkbox-field
         id="filter-all-maps"
         @click.prevent="toggleAllEntitiesSelected"
-        :label="$t('form.issue_filter.all_maps')">
+        :label="$t('_form.issue_filter.all_maps')">
       <input class="custom-control-input" type="checkbox"
              :indeterminate.prop="selectedEntities.length > 0 && !allEntitiesSelected"
              :checked="entities.length > 0 && allEntitiesSelected">

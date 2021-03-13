@@ -1,10 +1,10 @@
 <template>
   <button v-if="!reports.length" class="btn btn-primary" @click="planGeneration">
-    {{ $t('actions.generate_report') }}
+    {{ $t('_action.generate_issues_report.title') }}
   </button>
   <button v-if="reports.length && !abortRequested && !generationFinished" class="btn btn-warning"
           @click="abortRequested = true">
-    {{ $t('actions.abort') }}
+    {{ $t('_action.generate_issues_report.abort') }}
   </button>
 
   <table v-if="reports.length" class="table table-striped mt-2 mb-0">
@@ -17,10 +17,10 @@
       <td class="w-minimal">
         <span v-if="report.link && !report.wasDownloaded">
           <a class="btn btn-primary btn-sm" target="_blank" @click="report.wasDownloaded = true"
-             :href="report.link">{{ $t('actions.download') }}</a>
+             :href="report.link">{{ $t('_action.generate_issues_report.download') }}</a>
         </span>
         <span v-else-if="report.wasDownloaded">
-          {{ $t('actions.messages.downloaded') }}
+          {{ $t('_action.generate_issues_report.downloaded') }}
         </span>
       </td>
     </tr>
@@ -101,7 +101,7 @@ export default {
               let currentQuery = Object.assign({}, this.query, { 'map[]': includedMaps.map(m => iriToId(m['@id'])) })
               const prerenderMaps = includedMaps.filter(m => m.fileUrl) // only prerender if actually file to render
               let queryResultSize = mapContainerGroup.groupIssueSum
-              let progressLabel = this.$t('actions.messages.pending', { issueCount: queryResultSize })
+              let progressLabel = this.$t('_action.generate_issues_report.pending', { issueCount: queryResultSize })
 
               return Object.assign({
                 queryResultSize,
@@ -138,7 +138,7 @@ export default {
         return
       }
 
-      currentReport.progressLabel = this.$t('actions.messages.generating_map') + ' (' + (mapIndex + 1) + '/' + currentReport.prerenderMaps.length + ')...'
+      currentReport.progressLabel = this.$t('_action.generate_issues_report.generating_map') + ' (' + (mapIndex + 1) + '/' + currentReport.prerenderMaps.length + ')...'
       currentReport.progress = mapIndex / currentReport.prerenderMaps.length * 100
 
       const query = Object.assign({}, currentReport.query)
@@ -156,13 +156,13 @@ export default {
       }
 
       const currentReport = this.reports[reportIndex]
-      currentReport.progressLabel = this.$t('actions.messages.generating_pdf') + '...'
+      currentReport.progressLabel = this.$t('_action.generate_issues_report.generating_pdf') + '...'
       currentReport.progress = 100
 
       api.getReportLink(this.constructionSite, this.reportQuery, currentReport.query)
           .then(link => {
             currentReport.link = link
-            currentReport.progressLabel = this.$t('actions.messages.finished')
+            currentReport.progressLabel = this.$t('_action.generate_issues_report.finished')
             this.startGeneration(reportIndex + 1)
           })
     },

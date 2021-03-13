@@ -1,7 +1,7 @@
 <template>
   <div>
     <button-with-modal-confirm
-        :button-disabled="posting || !constructionSites" :title="$t('actions.add_construction_site')" :can-confirm="canConfirm"
+        :button-disabled="posting || !constructionSites" :title="$t('_action.add_construction_site')" :can-confirm="canConfirm"
         @confirm="confirm">
       <construction-site-form :construction-sites="constructionSites" @update="post = $event" />
       <image-form @update="image = $event" />
@@ -52,7 +52,7 @@ export default {
       this.posting = true;
       const payload = Object.assign({}, this.post, { constructionManagers: [this.constructionManagerIri]})
 
-      let successMessage = this.$t('actions.messages.success.construction_site_added')
+      let successMessage = this.$t('_action.messages.success.construction_site_added')
 
       if (!this.image) {
         api.postConstructionSite(payload, successMessage)

@@ -1,14 +1,14 @@
 <template>
   <button-with-modal-confirm
-      :button-disabled="disabled" :title="$t('actions.filter_issues')"
-      :confirm-title="$t('actions.set_filter')"
+      :button-disabled="disabled" :title="$t('_action.filter_issues')"
+      :confirm-title="$t('_action.set_filter')"
       @confirm="confirm"
       :can-abort="customFilterActive"
-      :abort-title="$t('actions.reset_filter')"
+      :abort-title="$t('_action.reset_filter')"
       @abort="reset">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'filter']" class="pr-1" />
-      {{ $t('actions.filter') }}
+      {{ $t('_action.filter') }}
     </template>
 
     <issue-filter-form

@@ -12,7 +12,7 @@
             <span class="pre">{{ address.join('\n') }}</span>
           </p>
           <a :href="constructionSiteDashboardHref" class="btn btn-primary">
-            {{ $t('switch.actions.enter_construction_site') }}
+            {{ $t('switch.action.enter_construction_site') }}
           </a>
         </div>
       </div>

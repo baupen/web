@@ -1,7 +1,7 @@
 <template>
   <button-with-modal-confirm
-      :button-disabled="importing" :title="$t('actions.import_craftsmen')"
-      :confirm-title="$t('actions.import')" :can-confirm="canConfirm"
+      :button-disabled="importing" :title="$t('_action.import_craftsmen')"
+      :confirm-title="$t('_action.import')" :can-confirm="canConfirm"
       @confirm="confirm">
 
     <craftsman-import-form :craftsmen="craftsmen" @imported="importedCraftsmen = $event" />

@@ -16,7 +16,7 @@
         <template v-slot:after>
           <div>
             <a class="btn-link clickable" v-if="fields.isMarked.dirty" @click="reset('isMarked')">
-              {{ $t('form.reset') }}
+              {{ $t('_form.reset') }}
             </a>
           </div>
         </template>
@@ -37,7 +37,7 @@
         <template v-slot:after>
           <div>
             <a class="btn-link clickable" v-if="fields.wasAddedWithClient.dirty" @click="reset('wasAddedWithClient')">
-              {{ $t('form.reset') }}
+              {{ $t('_form.reset') }}
             </a>
           </div>
         </template>
@@ -58,7 +58,7 @@
         <template v-slot:after>
           <div>
             <a class="btn-link clickable" v-if="fields.isResolved.dirty" @click="reset('isResolved')">
-              {{ $t('form.reset') }}
+              {{ $t('_form.reset') }}
             </a>
           </div>
         </template>
@@ -78,7 +78,7 @@
         <template v-slot:after>
           <div>
             <a class="btn-link clickable" v-if="fields.isClosed.dirty" @click="reset('isClosed')">
-              {{ $t('form.reset') }}
+              {{ $t('_form.reset') }}
             </a>
           </div>
         </template>
@@ -87,7 +87,7 @@
   </div>
 
   <p class="alert alert-warning mt-2" v-if="fields.isResolved.dirty && issue.isResolved">
-    {{ $t('actions.messages.resolved_as_impersonated_craftsman')}}
+    {{ $t('_action.messages.resolved_as_impersonated_craftsman')}}
   </p>
 
   <hr />
@@ -100,7 +100,7 @@
            @input="fields.description.dirty = true">
     <invalid-feedback :errors="fields.description.errors" />
     <a class="btn-link clickable" v-if="fields.description.dirty" @click="reset('description')">
-      {{ $t('form.reset') }}
+      {{ $t('_form.reset') }}
     </a>
   </form-field>
 
@@ -124,7 +124,7 @@
     </select>
     <invalid-feedback :errors="fields.description.errors" />
     <a class="btn-link clickable" v-if="fields.craftsman.dirty" @click="reset('craftsman')">
-      {{ $t('form.reset') }}
+      {{ $t('_form.reset') }}
     </a>
   </form-field>
 
@@ -140,7 +140,7 @@
     </flat-pickr>
     <invalid-feedback :errors="fields.deadline.errors" />
     <a class="btn-link clickable" v-if="fields.deadline.dirty" @click="reset('deadline')">
-      {{ $t('form.reset') }}
+      {{ $t('_form.reset') }}
     </a>
   </form-field>
 </template>

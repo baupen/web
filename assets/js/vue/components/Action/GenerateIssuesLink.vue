@@ -1,7 +1,7 @@
 <template>
   <button v-if="!filter" class="btn btn-primary" :disabled="posting"
           @click="generateFilter">
-    {{ $t('actions.generate_link') }}
+    {{ $t('_action.generate_issues_link.title') }}
   </button>
 
   <div class="input-group" v-if="filter">
@@ -69,7 +69,7 @@ export default {
     },
     generateFilter: function () {
       this.posting = true
-      api.postFilter(this.filterEntity, this.$t('actions.messages.filter_created'))
+      api.postFilter(this.filterEntity, this.$t('_action.messages.filter_created'))
           .then(filter => {
             this.filter = filter
           })

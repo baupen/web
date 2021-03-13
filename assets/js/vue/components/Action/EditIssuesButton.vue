@@ -1,11 +1,11 @@
 <template>
   <button-with-modal-confirm
-      :title="$t('actions.edit_issues')" color="primary" :can-confirm="canConfirm"
+      :title="$t('_action.edit_issues')" color="primary" :can-confirm="canConfirm"
       :confirm-title="confirmTitle" :button-disabled="pendingRequestCount > 0 || issues.length === 0"
       @confirm="confirm">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'pencil']" class="pr-1" />
-      {{ $t('actions.edit_issues') }}
+      {{ $t('_action.edit_issues') }}
 
       <span class="btn btn-link" v-if="pendingRequestCount > 0">
         {{ pendingRequestCount }}
@@ -64,7 +64,7 @@ export default {
     },
     confirmTitle: function () {
       if (!this.patchPending) {
-        return this.$tc('actions.save_issues', this.issues.length, { 'count': this.issues.length })
+        return this.$tc('_action.save_issues', this.issues.length, { 'count': this.issues.length })
       }
 
       let translatedFields = []
@@ -82,7 +82,7 @@ export default {
         }
       }
 
-      return this.$tc('actions.save_issue_fields', this.issues.length, {
+      return this.$tc('_action.save_issue_fields', this.issues.length, {
         'count': this.issues.length,
         'fields': translatedFields.join(', ')
       })
@@ -187,7 +187,7 @@ export default {
                 this.prePatchedIssues.shift()
 
                 if (this.prePatchedIssues.length === 0) {
-                  displaySuccess(this.$t('actions.messages.success.issues_saved'))
+                  displaySuccess(this.$t('_action.messages.success.issues_saved'))
                 } else {
                   this.patchIssues()
                 }
@@ -201,7 +201,7 @@ export default {
                 this.prePostedIssueImages.shift()
 
                 if (this.prePostedIssueImages.length === 0) {
-                  displaySuccess(this.$t('actions.messages.success.issue_images_replaced'))
+                  displaySuccess(this.$t('_action.messages.success.issue_images_replaced'))
                 } else {
                   this.postIssueImages()
                 }

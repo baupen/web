@@ -3,7 +3,7 @@
     <table class="table table-striped table-bordered table-sm-small table-hover modal-width-expanding">
       <thead>
       <tr>
-        <th>{{ $t('view.issues_by_map') }}</th>
+        <th>{{ $t('_view.issues_by_map') }}</th>
         <th class="text-right">{{ $t('craftsman.next_deadline') }}</th>
       </tr>
       </thead>

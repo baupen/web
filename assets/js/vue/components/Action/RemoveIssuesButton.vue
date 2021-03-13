@@ -1,7 +1,7 @@
 <template>
   <button-with-modal-confirm
       color="danger"
-      :title="$t('actions.remove_issues')" :can-confirm="canConfirm"
+      :title="$t('_action.remove_issues')" :can-confirm="canConfirm"
       :button-disabled="issues.length === 0"
       :confirm-title="confirmTitle"
       @confirm="confirm">
@@ -13,7 +13,7 @@
     </template>
 
     <p class="alert alert-info">
-      {{ $t('actions.remove_issues_help') }}
+      {{ $t('_action.remove_issues_help') }}
     </p>
 
     <delete-form @update="canConfirm = $event" />
@@ -48,7 +48,7 @@ export default {
   },
   computed: {
     confirmTitle: function () {
-      return this.$tc('actions.remove_issues', this.issues.length, {'count': this.issues.length})
+      return this.$tc('_action.remove_issues', this.issues.length, {'count': this.issues.length})
     },
   },
   methods: {
@@ -65,7 +65,7 @@ export default {
                 this.$emit('removed', issue)
 
                 if (this.preDeletedIssues.length === 0) {
-                  displaySuccess(this.$t('actions.messages.success.issues_removed'))
+                  displaySuccess(this.$t('_action.messages.success.issues_removed'))
                 } else {
                   this.deleteIssues()
                 }

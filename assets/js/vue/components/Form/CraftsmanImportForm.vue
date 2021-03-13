@@ -90,7 +90,7 @@ export default {
         }
 
         if (!craftsman.trade || !craftsman.company || !craftsman.contactName || !craftsman.email) {
-          displayError(this.$t('form.craftsman_import.invalid_entry', { 'line': i + 1 }))
+          displayError(this.$t('_form.craftsman_import.invalid_entry', { 'line': i + 1 }))
           valid = false
         }
 
@@ -123,7 +123,7 @@ export default {
     },
     sampleExcelString: function () {
       const translatedHeader = header.map(h => this.$t('craftsman.' + h))
-      translatedHeader[translatedHeader.length - 1] += ' (' + this.$t('form.craftsman_import.emailCCs_format') + ')'
+      translatedHeader[translatedHeader.length - 1] += ' (' + this.$t('_form.craftsman_import.emailCCs_format') + ')'
       let content = [translatedHeader, ...defaultContent]
       if (this.craftsmen) {
         content = [translatedHeader, ...this.craftsmen.map(c => [c.trade, c.company, c.contactName, c.email, c.emailCCs.join(', ')])]

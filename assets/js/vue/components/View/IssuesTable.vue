@@ -17,7 +17,7 @@
               :class="{'ml-3': canFilter}"
               class="d-inline-block"
               property="lastChangedAt" order-value="desc" id="order-by-last-changed-at"
-              :label="$t('actions.sort_by_last_activity')" :order="order"
+              :label="$t('_action.sort_by_last_activity')" :order="order"
               @ordered="order = $event" />
         </span>
         <span class="text-right float-right" v-if="canEdit">
@@ -67,7 +67,7 @@
     <loading-indicator-table-body v-if="isLoading" />
     <tr v-else-if="issueContainers.length === 0 && !issuesLoading">
       <td colspan="99">
-        <p class="text-center">{{ $t('view.no_issues') }}</p>
+        <p class="text-center">{{ $t('_view.no_issues') }}</p>
       </td>
     </tr>
     <tr v-else v-for="iwr in issueContainers" @click.stop="toggleSelectedIssue(iwr.issue)" :key="iwr.issue['@id']"
@@ -152,7 +152,7 @@
   </table>
   <p class="text-center">
     <button class="btn btn-outline-secondary" v-if="notLoadedIssueCount > 0 && !issuesLoading" @click="loadNextPage">
-      {{ $tc('actions.show_more_issues', notLoadedIssueCount) }}
+      {{ $tc('_action.show_more_issues', notLoadedIssueCount) }}
     </button>
   </p>
 </template>
