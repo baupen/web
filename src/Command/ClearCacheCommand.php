@@ -45,10 +45,10 @@ class ClearCacheCommand extends Command
         $this
             ->setName('app:cache:clear')
             ->setDescription('Clears the cache.')
-            ->addOption('renders', 'r', InputOption::VALUE_NONE, 'Remove all renders.')
-            ->addOption('reports', 'r', InputOption::VALUE_NONE, 'Remove all reports which have not been picked up.')
-            ->addOption('construction-sites', 'cs', InputOption::VALUE_NONE, 'Remove the full construction sites cache. Reverses the app:cache:warmup command. Will slow down the application noticeably, and might lead to timeouts when generating reports.')
-            ->addOption('authorization', 'a', InputOption::VALUE_NONE, 'Remove all authorization data.')
+            ->addOption('renders', null, InputOption::VALUE_NONE, 'Remove all renders.')
+            ->addOption('reports', null, InputOption::VALUE_NONE, 'Remove all reports which have not been picked up.')
+            ->addOption('construction-sites', null, InputOption::VALUE_NONE, 'Remove the full construction sites cache. Reverses the app:cache:warmup command. Will slow down the application noticeably, and might lead to timeouts when generating reports.')
+            ->addOption('authorization', null, InputOption::VALUE_NONE, 'Remove all authorization data.')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'If you add the --construction-sites or --authorization you must set the this parameter.');
     }
 
