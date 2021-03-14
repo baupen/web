@@ -5,7 +5,7 @@ $modal-backdrop-opacity: 0.3;
 $primary: #343477;
 $orange: #fd7e14;
 $theme-colors: (
-  'orange': $orange
+        'orange': $orange
 );
 $yiq-contrasted-threshold: 160;
 $primary-200: #eaecef;
@@ -25,6 +25,15 @@ $custom-control-cursor: pointer;
 html,
 body {
   height: 100%;
+}
+
+//noinspection Stylelint
+label.required {
+  &::after {
+    color: $danger;
+    content: '*';
+    font-size: 1.2em;
+  }
 }
 
 //center layout for messages & easy forms

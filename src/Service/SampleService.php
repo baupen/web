@@ -80,6 +80,10 @@ class SampleService implements SampleServiceInterface
         $this->addCraftsmen($constructionSite, $samplePath);
         $this->addIssues($constructionSite, $constructionManager, $samplePath);
 
+        // add construction manager
+        $constructionSite->getConstructionManagers()->add($constructionManager);
+        $constructionManager->getConstructionSites()->add($constructionSite);
+
         return $constructionSite;
     }
 

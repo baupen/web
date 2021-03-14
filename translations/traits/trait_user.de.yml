@@ -2,7 +2,7 @@ email: E-Mail
 family_name: Nachname
 given_name: Vorname
 password: Passwort
-phone: 'Telefonnummer (für die Unternehmer)'
+phone: 'Telefonnummer'
 plain_password: Passwort
 profile: Profil
 repeat_plain_password: 'Passwort wiederholen'

@@ -154,7 +154,8 @@ class SecurityController extends BaseFormController
             $this->fastSave($constructionManager);
 
             if (!$constructionManager->getCanAssociateSelf() && 0 === count($constructionManager->getConstructionSites())) {
-                $sampleService->createSampleConstructionSite(SampleServiceInterface::SAMPLE_SIMPLE, $constructionManager);
+                $constructionSite = $sampleService->createSampleConstructionSite(SampleServiceInterface::SAMPLE_SIMPLE, $constructionManager);
+                $this->fastSave($constructionSite, $constructionManager);
             }
 
             $this->loginUser($constructionManager, $authenticator, $guardHandler, $request);

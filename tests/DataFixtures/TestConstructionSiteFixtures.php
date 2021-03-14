@@ -43,7 +43,7 @@ class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInte
 
         /** @var ConstructionManager $constructionManager */
         $constructionManager = $constructionManagerRepository->findOneBy(['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
-        $constructionSite = $this->createAndAssignSampleConstructionSite($constructionManager);
+        $constructionSite = $this->sampleService->createSampleConstructionSite(self::TEST_CONSTRUCTION_SITE_NAME, $constructionManager);
         $manager->persist($constructionSite);
         $manager->persist($constructionManager);
 
@@ -62,16 +62,6 @@ class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInte
     public function getOrder()
     {
         return self::ORDER;
-    }
-
-    private function createAndAssignSampleConstructionSite(?ConstructionManager $testUser): ConstructionSite
-    {
-        $constructionSite = $this->sampleService->createSampleConstructionSite(self::TEST_CONSTRUCTION_SITE_NAME, $testUser);
-
-        $constructionSite->getConstructionManagers()->add($testUser);
-        $testUser->getConstructionSites()->add($constructionSite);
-
-        return $constructionSite;
     }
 
     private function createEmptyConstructionSite(): ConstructionSite

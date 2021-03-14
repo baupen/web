@@ -1,6 +1,6 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
-    form_themes: ['form/form_layout.html.twig']
+    form_themes: ['form/form_layout.html.twig', 'form/fields.html.twig']
     paths:
         # point this wherever your css files live
         '%kernel.project_dir%/public/build': build

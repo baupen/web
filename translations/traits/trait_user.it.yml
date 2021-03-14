@@ -2,7 +2,7 @@ email: E-mail
 family_name: Cognome
 given_name: Nome
 password: Password
-phone: 'Numero di telefono (per gli operai)'
+phone: 'Numero di telefono'
 plain_password: Password
 profile: Profilo
 repeat_plain_password: 'Ripetere la password'
