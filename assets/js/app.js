@@ -62,7 +62,7 @@ function renderQRCode (token) {
       element,
       level: 'Q',
       value: data,
-      size: 300
+      size: 210
     })
   })
 
