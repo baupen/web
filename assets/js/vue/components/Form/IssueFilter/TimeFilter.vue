@@ -4,7 +4,7 @@
       <div class="input-group">
         <flat-pickr
             class="form-control"
-            :placeholder="$t('form.issue_filter.from')"
+            :placeholder="$t('_form.issue_filter.from')"
             v-model="after"
             :config="dateTimePickerConfig">
         </flat-pickr>
@@ -13,7 +13,7 @@
         </div>
         <flat-pickr
             class="form-control"
-            :placeholder="$t('form.issue_filter.until')"
+            :placeholder="$t('_form.issue_filter.until')"
             v-model="before"
             :config="dateTimePickerConfig">
         </flat-pickr>
@@ -55,6 +55,10 @@ export default {
       type: String,
       required: false
     },
+    allowFuture: {
+      type: Boolean,
+      default: true
+    },
     help: {
       type: String,
       required: false
@@ -85,7 +89,10 @@ export default {
   },
   computed: {
     dateTimePickerConfig: function () {
-      return dateConfig
+      if (this.allowFuture) {
+        return dateConfig
+      }
+      return Object.assign({maxDate: new Date()}, dateConfig)
     }
   },
   mounted () {

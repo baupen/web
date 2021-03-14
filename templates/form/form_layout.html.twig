@@ -23,19 +23,9 @@
         {% if label is empty -%}
             {%- if label_format is empty -%}
                 {% set label = name|camelCaseToUnderscore %}
-            {%- endif -%}
+            {% endif %}
         {%- endif -%}
     {%- endif -%}
     {{- parent() -}}
 {%- endblock form_label -%}
 
-
-{#
-{%- if label is not empty -%}
-    {%- if required -%}
-        {%- set label = label ~ "*" -%}
-    {%- else -%}
-        {%- set label = label ~ " (freiwllig)" -%}
-    {%- endif -%}
-{%- endif -%}
-#}

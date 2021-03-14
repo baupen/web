@@ -1,6 +1,7 @@
 <template>
   <button-with-modal-confirm
-      :button-disabled="patching" :title="$t('actions.edit_map')" :can-confirm="canConfirm"
+      :button-disabled="patching" :title="$t('_action.edit_map.title')"
+      :confirm-title="$t('_action.save_changes')" :can-confirm="canConfirm"
       @confirm="confirm">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'pencil']" />
@@ -60,14 +61,14 @@ export default {
       this.patching = true
 
       if (this.pendingPatch) {
-        api.patch(this.map, this.patch, this.$t('actions.messages.success.map_saved'))
+        api.patch(this.map, this.patch, this.$t('_action.edit_map.saved'))
             .then(_ => {
               this.patch = null
               this.patching = this.pendingChanges > 0
             })
       }
       if (this.file) {
-        api.postMapFile(this.map, this.file, this.$t('actions.messages.success.map_file_replaced'))
+        api.postMapFile(this.map, this.file, this.$t('_action.edit_map.replaced_map_file'))
             .then(_ => {
               this.file = null
               this.patching = this.pendingChanges > 0

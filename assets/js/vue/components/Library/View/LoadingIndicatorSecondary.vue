@@ -1,10 +1,5 @@
 <template>
-  <looping-rhombus-spinner
-      v-if="spin"
-      class="spinner-center"
-      :animation-duration="2000"
-      :size="40"
-      color="#343477" />
+  <looping-rhombus-spinner v-if="spin" />
   <slot v-else />
 </template>
 

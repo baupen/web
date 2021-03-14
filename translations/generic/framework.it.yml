@@ -1,14 +1,14 @@
 date_time:
-  Mon: Lu
-  Tue: Ma
-  Wed: Me
-  Thu: Gio
   Fri: Ve
+  Mon: Lu
   Sat: Sa
   Sun: Do
+  Thu: Gio
+  Tue: Ma
+  Wed: Me
 error:
   form_validation_failed: 'L’elaborazione dei dati non può essere completata. Sono stati riempiti correttamente tutti i campi necessari?'
 outdated:
-  your_browser_is_outdated: 'Il tuo browser non è supportato!'
-  update_to_view_correctly: 'Si prega di aggiornare il proprio browser per poter utilizzare questo sito Web correttamente.'
   update_now: 'Attualizzare il Browser'
+  update_to_view_correctly: 'Si prega di aggiornare il proprio browser per poter utilizzare questo sito Web correttamente.'
+  your_browser_is_outdated: 'Il tuo browser non è supportato!'

@@ -1,6 +1,6 @@
 <template>
   <button-with-modal-confirm
-      :title="$t('actions.view_issue')" :color="stateColor">
+      :title="$t('_action.view_issue.title')" :color="stateColor">
 
     <template v-slot:footer>
       <span class="d-none"></span>

@@ -1,10 +1,5 @@
 <template>
-  <atom-spinner
-      v-if="spin"
-      :animation-duration="1000"
-      :size="60"
-      color="#343477"
-  />
+  <atom-spinner v-if="spin" />
   <slot v-else />
 </template>
 

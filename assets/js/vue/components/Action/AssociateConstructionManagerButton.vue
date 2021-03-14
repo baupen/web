@@ -1,6 +1,6 @@
 <template>
   <button-with-modal-confirm
-      :button-disabled="posting" :title="$t('actions.associate_construction_manager')" :can-confirm="canConfirm"
+      :button-disabled="posting" :title="$t('_action.associate_construction_manager.title')" :can-confirm="canConfirm"
       @confirm="confirm">
     <construction-manager-email-form @update="post = $event" />
   </button-with-modal-confirm>
@@ -43,7 +43,7 @@ export default {
             const constructionManagers = this.constructionSite.constructionManagers.filter(c => c['@id'] !== constructionManager['@id'])
             constructionManagers.push(constructionManager['@id'])
 
-            api.patch(this.constructionSite, { constructionManagers }, this.$t('actions.messages.success.construction_manager_associated'))
+            api.patch(this.constructionSite, { constructionManagers }, this.$t('_action.associate_construction_manager.associated'))
                 .then(_ => {
                   this.posting = false
                   this.$emit('added', constructionManager)

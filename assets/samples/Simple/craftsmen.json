@@ -1,0 +1,26 @@
+[
+  {
+    "company": "Bauarbeiten AG",
+    "contactName": "Peter Schürch",
+    "trade": "Hochbauzeichner",
+    "email": "peter.schuerch@bauarbeiten.deaktiviert"
+  },
+  {
+    "company": "Huber Elektroplanung AG",
+    "contactName": "René Huber",
+    "trade": "Elektroingenieur",
+    "email": "info@huber-elektroplanung.deaktiviert"
+  },
+  {
+    "company": "Keggler AG",
+    "contactName": "Patrick Junger",
+    "trade": "Baumeisterarbeiten",
+    "email": "p.junger@keggler.deaktiviert"
+  },
+  {
+    "company": "Schindler Aufzüge AG",
+    "contactName": "Reto Schindler",
+    "trade": "Aufzüge",
+    "email": "reto.schindler@ch.schindler.invalid"
+  }
+]

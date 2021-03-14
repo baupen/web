@@ -1,6 +1,6 @@
 <template>
   <button-with-modal-confirm
-      :button-disabled="posting || !maps" :title="$t('actions.add_map')" :can-confirm="canConfirm"
+      :button-disabled="posting || !maps" :title="$t('_action.add_map.title')" :can-confirm="canConfirm"
       @confirm="confirm">
     <map-form :maps="maps" @update="post = $event" />
     <file-form @update="file = $event" />
@@ -48,7 +48,7 @@ export default {
       this.posting = true
       const payload = Object.assign({}, this.post, { constructionSite: this.constructionSite['@id'] })
 
-      let successMessage = this.$t('actions.messages.success.map_added')
+      let successMessage = this.$t('_action.add_map.added')
 
       if (!this.file) {
         api.postMap(payload, successMessage)

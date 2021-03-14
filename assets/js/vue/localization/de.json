@@ -1,461 +1,346 @@
 {
-  "actions": {
-    "associate_construction_manager": "Bauleiter der Baustelle hinzufügen",
-    "dissociate_construction_manager": "Bauleiter von Baustelle entfernen",
-    "dissociate_construction_manager_help": "Der Bauleiter wird von der Baustelle entfernt.",
-    "add_construction_site": "Baustelle hinzufügen",
-    "add_craftsman": "Unternehmer hinzufügen",
-    "add_map": "Karte hinzufügen",
+  "_action": {
+    "add_construction_site": {
+      "added": "Baustelle hinzugefügt",
+      "title": "Baustelle hinzufügen"
+    },
+    "add_craftsman": {
+      "added": "Unternehmer hinzugefügt.",
+      "title": "Unternehmer hinzufügen"
+    },
+    "add_map": {
+      "added": "Karte hinzugefügt",
+      "title": "Karte hinzufügen"
+    },
+    "associate_construction_manager": {
+      "associated": "Bauleiter der Baustelle hinzugefügt",
+      "title": "Bauleiter der Baustelle hinzufügen"
+    },
+    "toggle_association_construction_site": {
+      "associated": "Sie wurden der Baustelle hinzugefügt.",
+      "dissociated": "Sie wurden von der Baustelle entfernt."
+    },
     "close": "Schliessen",
-    "download": "herunterladen",
-    "generate_link": "Link erstellen",
-    "sort_by_last_activity": "Nach letzter Aktivität sortieren",
-    "edit_construction_site": "Baustelle bearbeiten",
-    "edit_craftsman": "Unternehmer bearbeiten",
-    "edit_map": "Karte bearbeiten",
-    "edit_issues": "Pendenzen bearbeiten",
-    "view_issue": "Pendenz anschauen",
-    "filter": "Filtern",
-    "filter_issues": "Pendenzen filtern",
-    "load_map": "laden",
-    "load_all_maps": "alle laden",
-    "import_craftsmen": "Unternehmer importieren",
-    "remove_craftsman": "Unternehmer entfernen",
-    "remove_craftsman_help": "Nach dem Entfernen können Sie dem Unternehmer keine Pendenzen mehr zuweisen. Der Unternehmer verliert den Zugriff auf den personalisierten Link.",
-    "remove_map": "Karte entfernen",
-    "remove_map_help": "Nach dem Entfernen können Sie der Karte keine Pendenzen mehr zuweisen.",
-    "remove_issues": "Pendenzen entfernen",
-    "remove_issues_help": "Die Pendenzen werden nirgends mehr angezeigt.",
-    "reset_filter": "Filter zurücksetzen",
-    "reset": "zurücksetzen",
-    "resolve_issue": "Als umgesetzt markieren",
-    "generate_report": "Report erstellen",
-    "abort": "Abbrechen",
-    "import": "Importieren",
-    "save_changes": "Änderungen speichern",
-    "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
-    "save_issue_fields": "{fields} von Pendenz setzen | {fields} von {count} Pendenzen setzen",
-    "set_filter": "Filter setzen",
-    "remove_confirm": "Ich verstehe, dass ich diesen Schritt nicht rückgängig machen kann.",
-    "show_more_issues": "Weitere {count} Pendenzen anzeigen",
-    "messages": {
-      "resolved_as_impersonated_craftsman": "'Umgesetzt' wird im Namen des Unternehmers.",
+    "compose_craftsman_email": {
+      "send_emails": "E-Mail versenden | {count} E-Mails versenden",
+      "title": "E-Mail verfassen",
+      "no_template": "Keine Vorlage",
+      "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und als umgesetzt markieren.",
+      "save_as_new_template": "Als neue Vorlage speichern",
+      "save_template_changes": "Änderungen an der Vorlage speichern",
+      "saved_email_template": "Vorlage gespeichert",
+      "sent_emails": "E-Mails versandt"
+    },
+    "dissociate_construction_manager": {
+      "dissociated": "Bauleiter von Baustelle entfernt",
+      "help": "Der Bauleiter wird von der Baustelle entfernt.",
+      "title": "Bauleiter von Baustelle entfernen"
+    },
+    "edit_construction_site": {
+      "saved": "Baustelle gespeichert",
+      "replaced_construction_site_image": "Bild ersetzt",
+      "title": "Baustelle bearbeiten"
+    },
+    "edit_craftsman": {
+      "saved": "Unternehmer gespeichert.",
+      "title": "Unternehmer bearbeiten"
+    },
+    "edit_issues": {
+      "saved": "Pendenzen gespeichert.",
+      "replaced_issue_images": "Bild ersetzt.",
+      "save_issue_fields": "{fields} von Pendenz setzen | {fields} von {count} Pendenzen setzen",
+      "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
+      "title": "Pendenzen bearbeiten"
+    },
+    "edit_map": {
+      "saved": "Karte gespeichert",
+      "replaced_map_file": "PDF ersetzt",
+      "title": "Karte bearbeiten"
+    },
+    "enter_construction_site": {
+      "title": "Zur Baustelle"
+    },
+    "export_craftsmen": {
+      "title": "Unternehmer exportieren",
+      "file_name": "Unternehmer"
+    },
+    "export_issues": {
+      "export_source_filter": "{count} Pendenzen, auf die der Filter zutrifft",
+      "export_source_selection": "{count} Pendenzen, die markiert wurden",
+      "title": "Pendenzen exportieren"
+    },
+    "export_issues_report": {
+      "help": "Fürs Drucken optimiert: Bringt die Pendenzen platzsparend aufs Papier.",
+      "title": ".pdf Bericht"
+    },
+    "export_issues_link": {
+      "help": "Immer aktuell: Die Pendenzen schreibgeschützt mit Externen teilen.",
+      "title": "Link"
+    },
+    "filter_issues": {
+      "reset": "Filter zurücksetzen",
+      "confirm": "Filter setzen",
+      "title": "Filtern"
+    },
+    "generate_issues_link": {
+      "title": "Link erstellen",
+      "generated": "Link erstellt"
+    },
+    "generate_issues_report": {
+      "download": "herunterladen",
+      "abort": "abbrechen",
+      "downloaded": "heruntergeladen",
+      "finished": "fertig",
+      "title": "Report erstellen",
       "generating_map": "Grafiken werden generiert",
       "generating_pdf": "PDF wird generiert",
-      "pending": "warten ({issueCount} Pendenzen)",
-      "finished": "fertig",
-      "downloaded": "heruntergeladen",
+      "pending": "warten ({issueCount} Pendenzen)"
+    },
+    "import_craftsmen": {
+      "confirm": "{count} Unternehmer hinzufügen",
+      "title": "Unternehmer importieren",
+      "imported": "Unternehmer importiert",
+      "matching_entries_found": "Im Import wurde eine E-Mail gefunden, die bereits erfasst ist. Möchten Sie diese wirklich ein weiteres Mal hinzufügen? | Im Import wurden {count} E-Mails gefunden, die bereits erfasst sind. Möchten Sie diese wirklich ein weiteres Mal hinzufügen?"
+    },
+    "register_issues": {
+      "registered": "Pendenzen zum Verzeichnis hinzugefügt.",
       "registration_skipped_no_craftsman": "Eine Pendenz wurde übersprungen, da sie noch keinem Unternehmer zugewiesen ist. | {count} Pendenzen wurden übersprungen, da sie noch keinem Unternehmer zugewiesen sind.",
-      "filter_created": "Filter erstellt",
-      "success": {
-        "construction_site_added": "Baustelle hinzugefügt",
-        "construction_site_image_replaced": "Bild ersetzt",
-        "construction_site_saved": "Baustelle gespeichert",
-        "craftsman_added": "Unternehmer hinzugefügt.",
-        "craftsman_saved": "Unternehmer gespeichert.",
-        "craftsman_removed": "Unternehmer entfernt.",
-        "map_added": "Karte hinzugefügt",
-        "map_saved": "Karte gespeichert",
-        "map_file_replaced": "PDF ersetzt",
-        "map_removed": "Karte entfernt",
-        "construction_manager_dissociated": "Bauleiter von Baustelle entfernt",
-        "construction_manager_associated": "Bauleiter der Baustelle hinzugefügt",
-        "issue_resolved": "Pendenz als umgesetzt markiert.",
-        "issues_removed": "Pendenzen entfernt.",
-        "issues_saved": "Pendenzen gespeichert.",
-        "issue_images_replaced": "Bild ersetzt."
-      }
+      "title": "Eine Pendenz ins Verzeichnis aufnehmen | {count} Pendenzen ins Verzeichnis aufnehmen"
+    },
+    "remove_craftsman": {
+      "help": "Nach dem Entfernen können Sie dem Unternehmer keine Pendenzen mehr zuweisen. Der Unternehmer verliert den Zugriff auf den personalisierten Link.",
+      "removed": "Unternehmer entfernt.",
+      "title": "Unternehmer entfernen"
+    },
+    "remove_issues": {
+      "help": "Die Pendenzen werden nirgends mehr angezeigt.",
+      "removed": "Pendenzen entfernt.",
+      "title": "Pendenzen entfernen",
+      "confirm": "Eine Pendenz entfernen | {count} Pendenzen entfernen"
+    },
+    "remove_map": {
+      "help": "Nach dem Entfernen können Sie der Karte keine Pendenzen mehr zuweisen.",
+      "removed": "Karte entfernt",
+      "title": "Karte entfernen"
+    },
+    "resolve_issue": {
+      "resolved": "Pendenz als umgesetzt markiert.",
+      "title": "Als umgesetzt markieren"
+    },
+    "save_changes": "Änderungen speichern",
+    "view_issue": {
+      "title": "Pendenz anschauen"
     }
   },
-  "form": {
-    "reset": "zurücksetzen",
+  "_form": {
+    "remove_confirm": "Ich verstehe, dass ich diesen Schritt nicht rückgängig machen kann.",
+    "construction_site": {
+      "similar_already_existing_construction_sites": "Ähnliche bereits existierende Baustellen"
+    },
+    "craftsmen_import": {
+      "invalid_entry": "Auf der Zeile {line} fehlen Angaben. Die ersten vier Spalten (Gewerk, Firma, Kontaktperson & E-Mail) werden immer benötigt.",
+      "file": "Excel Datei (.xlsx)",
+      "file_drop_or_choose": "Excel Datei (.xlsx) hineinziehen oder auswählen",
+      "template_download": "Vorlage herunterladen",
+      "template_file_name": "Vorlage",
+      "template_help": "Mit einem Excel Dokument (.xlsx) können Sie mehrere Unternehmer gleichzeitig hinzufügen oder aktualisieren."
+    },
+    "craftsman": {
+      "emailCCs_help": "Eine Zeile pro E-Mail"
+    },
     "file": {
-      "label": "PDF Datei (.pdf)",
       "drop_or_choose": "PDF (.pdf) hineinziehen oder auswählen",
-      "reset": "Zurücksetzen"
+      "label": "PDF Datei (.pdf)"
+    },
+    "issues": {
+      "resolved_as_impersonated_craftsman": "'Umgesetzt' wird im Namen des Unternehmers."
+    },
+    "issue_report": {
+      "by_craftsman": "nach Unternehmer",
+      "by_map": "nach Bauplan",
+      "summary_tables": "Zusammenfassungstabellen",
+      "with_images": "mit Fotos"
+    },
+    "issue_link": {
+      "access_allowed_before": "Ablaufdatum des Zugriffes"
     },
     "image": {
-      "label": "Bild Datei (.jpg, .png, .gif)",
       "drop_or_choose": "Bild (.jpg, .png, .gif) hineinziehen oder auswählen",
-      "reset": "Zurücksetzen"
-    },
-    "craftsman_import": {
-      "emailCCs_format": "mehrere E-Mails durch Komma trennen",
-      "invalid_entry": "Auf der Zeile {line} fehlen Angaben. Die ersten vier Spalten (Gewerk, Firma, Kontaktperson & E-Mail) werden immer benötigt."
+      "label": "Bild Datei (.jpg, .png, .gif)"
     },
     "issue_filter": {
-      "state": "Status",
-      "time": "Zeitpunkt",
       "all_craftsmen": "Alle Unternehmer",
       "all_maps": "Alle Karten",
       "from": "von",
+      "state": "Status",
+      "time": "Zeitpunkt",
       "until": "bis"
-    }
-  },
-  "issue_table": {
-    "without_description": "ohne Beschreibung",
-    "without_craftsman": "ohne Unternehmer",
-    "without_deadline": "ohne Frist"
-  },
-  "view": {
-    "issues_by_map": "Pendenzen nach Bauplan",
-    "pending": "bevorstehend",
-    "aborted": "abgebrochen",
-    "no_issues": "Keine Pendenzen",
-    "no_craftsmen": "Keine Unternehmer",
-    "no_maps": "Keine Baupläne",
-    "more": "mehr",
-    "less": "weniger",
-    "today": "heute",
-    "yesterday": "gestern",
-    "count": "Anzahl",
-    "maps_edit": {
-      "no_parent_name": "-",
-      "parent_not_found": "(entfernt)"
     },
-    "issue_report_generation_result": {
-      "contains_issues": "enhält {count} Pendenzen"
-    }
+    "reset": "zurücksetzen"
   },
-  "import_craftsmen": {
-    "file": "Excel Datei (.xlsx)",
-    "file_drop_or_choose": "Excel Datei (.xlsx) hineinziehen oder auswählen",
-    "template_help": "Mit einem Excel Dokument (.xlsx) können Sie mehrere Unternehmer gleichzeitig hinzufügen oder aktualisieren.",
-    "template_download": "Vorlage herunterladen",
-    "template_file_name": "Vorlage.xlsx",
-    "reset": "zurücksetzen",
-    "matching_by_email": "Duplizierungen werden anhand des E-Mail Feldes verhindert.",
-    "added": "1 wird hinzugefügt|{count} werden hinzugefügt",
-    "overwritten": "1 wird aktualisiert|{count} werden aktualisiert",
-    "import_finished": "Import wurde abgeschlossen"
-  },
-  "switch": {
-    "mine": "Meine Baustellen",
-    "mine_help": "Diese Baustellen werden auch in der App angezeigt.",
-    "all": "Alle erfassten Baustellen",
-    "all_help": "Aktivieren Sie Baustellen um auf diese zuzugreifen.",
-    "similar_already_existing_construction_sites": "Ähnliche bereits existierende Baustellen",
-    "actions": {
-      "create_construction_site": "Neue Baustelle erfassen",
-      "enter_construction_site": "Zur Baustelle"
+  "_view": {
+    "craftsmen_statistics": {
+      "count": "Anzahl"
     },
-    "messages": {
-      "info": {
-        "activate_construction_site": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen.",
-        "no_construction_site_associated": "Sie sind keiner Baustelle zugehörig. Sie können einen anderen Bauleiter bitten, Sie einer Baustelle hinzuzufügen."
-      },
-      "success": {
-        "added_construction_site": "Die Baustelle wurde hinzugefügt.",
-        "removed_self": "Sie wurden von der Baustelle entfernt.",
-        "added_self": "Sie wurden der Baustelle hinzugefügt."
-      }
-    }
-  },
-  "dashboard": {
-    "name": "Pendenzen",
-    "messages": {
-      "info": {
-        "new_issues_in_foyer": "Eine neue Pendenz | {count} neue Pendenzen"
-      },
-      "warning": {
-        "overdue_limit": "{craftsman} hat die Frist vom {limit} bei {count} Pendenzen überschritten.",
-        "unread": "{craftsman} hat {count} ungelesene Pendenzen."
-      }
-    },
-    "actions": {
-      "add_to_register": "Jetzt zum Verzeichnis hinzufügen"
-    }
-  },
-  "feed": {
-    "name": "Feed",
-    "show_more": "Mehr anzeigen",
-    "no_entries": "Zurzeit keine Aktivitäten auf der Baustelle.",
-    "entries": {
-      "has_registered": "hat eine Pendenz registriert. | hat {count} Pendenzen registriert.",
-      "has_resolved": "hat eine Pendenz umgesetzt. | hat {count} Pendenzen umgesetzt.",
-      "has_closed": "hat eine Pendenz abgeschlossen. | hat {count} Pendenzen abgeschlossen.",
-      "has_visited_webpage": "hat die Pendenzen angeschaut."
-    }
-  },
-  "resolve": {
-    "help": "Markieren Sie Pendenzen als umgesetzt, damit die Bauleitung diese abschliessen kann.",
-    "thanks": "Sie haben keine offenen Pendenzen."
-  },
-  "dashboard_issues_summary": {
-    "new_issues": "Neue Pendenzen wurden erfasst."
-  },
-  "foyer": {
-    "title": "Pendenzen einpflegen",
-    "no_unregistered_issues": "Keine neuen Pendenzen. Sie können neue Pendenzen mit der App erfassen.",
-    "actions": {
-      "register_issues": "Eine Pendenz ins Verzeichnis aufnehmen | {count} Pendenzen ins Verzeichnis aufnehmen"
-    },
-    "messages": {
-      "success": {
-        "registered_issues": "Pendenzen zum Verzeichnis hinzugefügt."
-      }
-    }
-  },
-  "register": {
-    "actions": {
-      "export_issues": "Pendenzen exportieren"
-    }
-  },
-  "maps_resolve_table": {
-    "open_issues": "Offene Pendenzen"
-  },
-  "edit_issues_button": {
-    "modal_title": "Pendenzen bearbeiten",
-    "no_craftsman": "Kein Unternehmer",
-    "no_trade_filter": "Kein Gewerk"
-  },
-
-  "dispatch": {
-    "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und als umgesetzt markieren.",
-    "save_template_changes": "Änderungen an der Vorlage speichern",
-    "save_as_new_template": "Als neue Vorlage speichern",
-    "no_template": "Keine Vorlage",
-    "craftsmen_table": {
-      "no_entries": "Keine Unternehmer erfasst",
-      "filter_placeholder": "Unternehmer\/Gewerk suchen...",
+    "craftsmen": {
       "last_activity": "Letzte Aktivität",
       "with_open_issues": "mit offenen Pendenzen",
-      "with_unread_issues": "mit ungelesenen Pendenzen",
-      "with_overdue_issues": "mit überfälligen Pendenzen"
+      "with_overdue_issues": "mit überfälligen Pendenzen",
+      "with_unread_issues": "mit ungelesenen Pendenzen"
     },
-    "actions": {
-      "compose_email": "E-Mail verfassen",
-      "send_emails": "E-Mail versenden | {count} E-Mails versenden"
-    },
-    "messages": {
-      "success": {
-        "emails_sent": "E-Mails versandt",
-        "email_template_saved": "Vorlage gespeichert"
-      }
-    }
-  },
-  "view_resolve": {
-    "loading_open_issues": "? offene Pendenzen",
-    "open_issues_header": "Keine offenen Pendenzen | Eine offene Pendenz | {count} offene Pendenzen",
-    "of_craftsman": "von {craftsman} ",
-    "dialog": {
-      "success": {
-        "thanks": "Alle Pendenzen umgesetzt. Wir sagen Danke!"
-      }
-    },
-    "actions": {
-      "read_only_view": "Schreibgeschützter Link",
-      "send_response": "als umgesetzt markieren",
-      "remove_response": "rückgängig"
-    }
-  },
-  "view_filtered": {
-    "issues_overview": "Pendenzenüberblick",
-    "no_issues": "Keine Pendenzen verfügbar"
-  },
-  "edit": {
-    "maps_help": "Auf Baukarten werden die Pendenzen platziert.",
-    "craftsmen_help": "Unternehmer können mit einem personalisierten Link auf ihre zugeordneten Pendenzen zugreifen, und diese als umgesetzt markieren.",
-    "construction_managers_help": "Gewähren Sie anderen Bauleitern Zugriff auf diese Baustelle damit diese auch Pendenzen erfassen und verwalten können.",
-    "construction_managers_disabled": "Die Änderung der Zugriffe ist für Ihren Account deaktiviert."
-  },
-  "construction_site_edit": {
-    "description": "Ändern Sie Adresse & Titelbild.",
-    "drag_files_to_upload": "Ziehen Sie ein .jpg oder .png Bild in diesen Bereich um dieses als neues Titelbild zu setzen.",
-    "actions": {
-      "save": "Änderungen speichern"
-    },
-    "messages": {
-      "error": {
-        "name_already_taken": "Dieser Name ist bereits vergeben."
-      }
-    }
-  },
-  "construction_managers_edit": {
-    "actions": {
-      "add": "Hinzufügen & informieren per E-Mail"
-    }
-  },
-  "maps_edit": {
-    "description": "Ändern Sie die Struktur der Baupläne.",
-    "default_map_name": "Neuer Bauplan",
-    "drag_files_to_upload": "Ziehen Sie .pdf Dateien in diesen Bereich um diese als Baupläne zu nutzen.",
-    "actions": {
-      "add_map": "Bauplan hinzufügen",
-      "reorder": "neu sortieren",
-      "add_map_files": "Bauplanversionen hinzufügen",
-      "hide_map_files": "Bauplanversionen verstecken",
-      "save_changes": "{pendingChangesCount} Änderungen speichern"
-    },
-    "messages": {
-      "uploading": "wird hochgeladen... ({percentage}%)"
-    }
-  },
-  "craftsman_form": {
-    "emailCCs_help": "Eine Zeile pro E-Mail"
-  },
-  "edit_craftsman": {
-    "title": "Unternehmer bearbeiten.",
-    "actions": {
-      "add_craftsman": "Unternehmer hinzufügen",
-      "download_excel_template": "Excel Vorlage herunterladen",
-      "import_from_excel": "Aus Excel importieren"
-    }
-  },
-  "issues_edit": {
-    "no_entries": "Keine Pendenzen",
-    "filter": {
-      "name": "Filter",
-      "only_marked": "nur Favoriten",
-      "only_over_limit": "nur mit überschrittener Frist",
-      "only_was_added_with_client": "nur Abnahmependenzen",
-      "moment": {
-        "later_than": "später als",
-        "earlier_than": "früher als",
-        "status_set": "Status gesetzt",
-        "time": "Zeit",
-        "time_set": "{state} am"
-      }
-    }
-  },
-  "export_issues_button": {
-    "export_source_filter": "{count} Pendenzen, auf die der Filter zutrifft",
-    "export_source_selection": "{count} Pendenzen, die markiert wurden",
-    "export_type": {
-      "report": {
-        "name": ".pdf Bericht",
-        "help": "Fürs Drucken optimiert: Bringt die Pendenzen platzsparend aufs Papier.",
-        "with_images": "mit Fotos",
-        "summary_tables": "Zusammenfassungstabellen",
-        "by_craftsman": "nach Unternehmer",
-        "by_map": "nach Bauplan"
+    "feed": {
+      "entries": {
+        "has_closed": "hat eine Pendenz abgeschlossen. | hat {count} Pendenzen abgeschlossen.",
+        "has_registered": "hat eine Pendenz registriert. | hat {count} Pendenzen registriert.",
+        "has_resolved": "hat eine Pendenz umgesetzt. | hat {count} Pendenzen umgesetzt.",
+        "has_visited_webpage": "hat die Pendenzen angeschaut."
       },
-      "link": {
-        "name": "Link",
-        "help": "Immer aktuell: Die Pendenzen schreibgeschützt mit Externen teilen.",
-        "access_allowed_before": "Ablaufdatum des Zugriffes"
-      }
+      "no_entries": "Zurzeit keine Aktivitäten auf der Baustelle."
     },
-    "generate": "erstellen"
+    "issues": {
+      "sort_by_last_activity": "Nach letzter Aktivität sortieren",
+      "without_craftsman": "ohne Unternehmer",
+      "without_deadline": "ohne Frist",
+      "without_description": "ohne Beschreibung"
+    },
+    "maps_resolve": {
+      "issues_by_map": "Pendenzen nach Bauplan"
+    },
+    "show_more_issues": "Weitere {count} Pendenzen anzeigen",
+    "no_craftsmen": "Keine Unternehmer",
+    "no_issues": "Keine Pendenzen",
+    "no_maps": "Keine Baupläne"
+  },
+  "_api": {
+    "request_failed": "Die Webanfrage ist fehlgeschlagen."
   },
   "construction_manager": {
     "_name": "Bauleiter",
     "_plural": "Bauleiter",
     "email": "E-Mail",
-    "name": "Name",
-    "_placeholders": {
-      "email": "max@musterag.ch"
-    }
+    "name": "Name"
   },
   "construction_site": {
     "_name": "Baustelle",
-    "name": "Name",
     "address": "Adresse",
-    "street_address": "Strasse \/ Nr.",
+    "created_at": "erstellt am",
     "locality": "Ort",
+    "name": "Name",
     "postal_code": "PLZ",
-    "created_at": "erstellt am"
+    "street_address": "Strasse \/ Nr."
   },
   "craftsman": {
     "_name": "Unternehmer",
+    "_excel_format_emailCCs": "mehrere E-Mails durch Komma trennen",
     "_plural": "Unternehmer",
-    "_placeholders": {
-      "contact_name": "Max Muster",
-      "email": "max@musterag.ch",
-      "company": "Muster AG",
-      "trade": "Elektriker"
-    },
-    "name": "Name",
-    "trade": "Gewerk",
     "company": "Firma",
     "contact_name": "Kontaktperson",
     "email": "E-Mail",
     "emailCCs": "E-Mail CCs",
-    "not_responded_issues_count": "Nicht umgesetzte Pendenzen",
-    "not_read_issues_count": "Ungelesene Pendenzen",
-    "open_issues_count": "Offene Pendenzen",
-    "next_deadline": "Nächste Frist",
-    "received_email": "E-Mail empfangen",
-    "visited_webpage": "Webseite besucht",
-    "resolved_issue": "Pendenz umgesetzt"
-  },
-  "map": {
-    "_name": "Bauplan",
-    "_plural": "Baupläne",
+    "last_email_received": "E-Mail empfangen",
+    "last_issue_resolved_at": "Pendenz umgesetzt",
+    "last_visit_online": "Webseite besucht",
     "name": "Name",
+    "next_deadline": "Nächste Frist",
+    "not_read_issues_count": "Ungelesene Pendenzen",
+    "not_responded_issues_count": "Nicht umgesetzte Pendenzen",
     "open_issues_count": "Offene Pendenzen",
-    "closed_issues_count": "Geschlossene Pendenzen",
-    "parent": "Zuordnung",
-    "no_parent_name": "-"
+    "trade": "Gewerk"
+  },
+  "dashboard": {
+    "feed": "Feed",
+    "new_issues_in_foyer": "Eine neue Pendenz erfasst. | {count} neue Pendenzen erfasst."
+  },
+  "edit": {
+    "construction_managers_disabled": "Die Änderung der Zugriffe ist für Ihren Account deaktiviert.",
+    "construction_managers_help": "Gewähren Sie anderen Bauleitern Zugriff auf diese Baustelle damit diese auch Pendenzen erfassen und verwalten können.",
+    "craftsmen_help": "Unternehmer können mit einem personalisierten Link auf ihre zugeordneten Pendenzen zugreifen, und diese als umgesetzt markieren.",
+    "maps_help": "Auf Baukarten werden die Pendenzen platziert."
+  },
+  "email": {
+    "self_bcc": "jeweils mit BCC Kopie an mich",
+    "subject": "Betreff",
+    "templates": {
+      "_name": "Vorlage",
+      "_common": {
+        "help": "Mit dem Link in dieser E-Mail können die Pendenzen angeschaut werden. Bitte nach dem Umsetzen entsprechend online markieren.",
+        "hi": "Guten Tag,"
+      },
+      "open_issues": {
+        "body": "{constructionSite} hat noch Pendenzen offen, die Ihrem Gewerk zugeordnet sind.",
+        "name": "Offene Pendenzen",
+        "subject": "Offene Pendenzen auf {constructionSite}"
+      },
+      "overdue_issues": {
+        "body": "{constructionSite} hat Pendenzen, die Ihrem Gewerk zugeordnet sind, dessen Frist überschritten wurde.",
+        "name": "Fristüberschreitung Pendenzen",
+        "subject": "Überfällige Pendenzen auf {constructionSite}"
+      },
+      "unread_issues": {
+        "body": "{constructionSite} hat neue Pendenzen, die Ihrem Gewerk zugeordnet sind.",
+        "name": "Neue Pendenzen",
+        "subject": "Neue Pendenzen {constructionSite}"
+      }
+    },
+    "to": "An"
+  },
+  "foyer": {
+    "no_unregistered_issues": "Keine neuen Pendenzen. Sie können neue Pendenzen mit der App erfassen.",
+    "title": "Pendenzen einpflegen"
   },
   "issue": {
     "_name": "Pendenz",
     "_plural": "Pendenzen",
-    "description": "Beschreibung",
-    "deadline": "Frist",
     "craftsman": "Unternehmer",
-    "map": "Bauplan",
+    "deadline": "Frist",
+    "description": "Beschreibung",
     "image": "Bild",
-    "status": "Status",
-    "number": "Nummer",
-    "trade": "Gewerk",
     "is_marked": "Favorit",
-    "was_added_with_client": "Abnahmependenz",
-    "position": "Platzierung",
     "last_changed_at": "Zuletzt geändert",
+    "map": "Bauplan",
+    "number": "Nummer",
+    "position": "Platzierung",
     "state": {
-      "created": "erstellt",
-      "created_help": "Pendenz wurde auf dem Gerät erfasst",
-      "registered": "registriert",
-      "registered_help": "Pendenz wurde ins Verzeichnis aufgenommen",
-      "resolved": "umgesetzt",
-      "resolved_help": "Pendenz wurde vom Unternehmer als umgesetzt markiert",
       "closed": "abgeschlossen",
-      "closed_help": "Pendenz wurde abgeschlossen",
+      "closed_help": "Pendenz wurde abgeschlossen.",
+      "created": "erstellt",
+      "created_help": "Pendenz wurde auf dem Gerät erfasst.",
       "open": "offen",
-      "read": "gelesen",
-      "unread": "ungelesen",
       "overdue": "Frist überschritten",
+      "registered": "registriert",
+      "registered_help": "Pendenz wurde ins Verzeichnis aufgenommen.",
+      "resolved": "umgesetzt",
+      "resolved_help": "Pendenz wurde vom Unternehmer als umgesetzt markiert.",
       "to_inspect": "zur Inspektion",
-      "marked": "markiert"
-    }
+      "unread": "ungelesen"
+    },
+    "status": "Status",
+    "trade": "Gewerk",
+    "was_added_with_client": "Abnahmependenz"
   },
-  "email_template": {
-    "_name": "Vorlage",
-    "templates": {
-      "common": {
-        "hi": "Guten Tag,",
-        "help": "Mit dem Link in dieser E-Mail können die Pendenzen angeschaut werden. Bitte nach dem Umsetzen entsprechend online markieren."
-      },
-      "unread_issues": {
-        "name": "Neue Pendenzen",
-        "subject": "Neue Pendenzen {constructionSite}",
-        "body": "{constructionSite} hat neue Pendenzen, die Ihrem Gewerk zugeordnet sind."
-      },
-      "open_issues": {
-        "name": "Offene Pendenzen",
-        "subject": "Offene Pendenzen auf {constructionSite}",
-        "body": "{constructionSite} hat noch Pendenzen offen, die Ihrem Gewerk zugeordnet sind."
-      },
-      "overdue_issues": {
-        "name": "Fristüberschreitung Pendenzen",
-        "subject": "Überfällige Pendenzen auf {constructionSite}",
-        "body": "{constructionSite} hat Pendenzen, die Ihrem Gewerk zugeordnet sind, dessen Frist überschritten wurde."
-      }
-    }
+  "map": {
+    "_name": "Bauplan",
+    "_plural": "Baupläne",
+    "closed_issues_count": "Geschlossene Pendenzen",
+    "name": "Name",
+    "open_issues_count": "Offene Pendenzen",
+    "parent": "Zuordnung",
+    "parent_not_found_name": "(entfernt)",
+    "parent_not_set_name": "-"
   },
-  "email": {
-    "to": "An",
-    "subject": "Betreff",
-    "self_bcc": "jeweils mit BCC Kopie an mich"
+  "resolve": {
+    "help": "Markieren Sie Pendenzen als umgesetzt, damit die Bauleitung diese abschliessen kann.",
+    "thanks": "Sie haben keine offenen Pendenzen."
   },
-  "messages": {
-    "danger": {
-      "unrecoverable": "Es ist ein Fehler aufgetreten. Laden Sie die Seite neu und versuchen Sie es erneut.",
-      "request_failed": "Die Webanfrage ist fehlgeschlagen."
-    }
+  "switch": {
+    "all": "Alle erfassten Baustellen",
+    "all_help": "Aktivieren Sie Baustellen um auf diese zuzugreifen.",
+    "mine": "Meine Baustellen",
+    "mine_help": "Diese Baustellen werden auch in der App angezeigt.",
+    "mine_none_ask_for_association": "Sie sind keiner Baustelle zugehörig. Sie können einen anderen Bauleiter bitten, Sie einer Baustelle hinzuzufügen.",
+    "mine_none_associate_self": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen."
   },
-  "validation": {
+  "_validation": {
     "required": "Bitte Feld ausfüllen."
   }
 }

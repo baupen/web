@@ -18,8 +18,8 @@ class EditProfileType extends AbstractConstructionManagerType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('givenName', TextType::class);
-        $builder->add('familyName', TextType::class);
-        $builder->add('phone', TextType::class);
+        $builder->add('givenName', TextType::class, ['required' => false]);
+        $builder->add('familyName', TextType::class, ['required' => false]);
+        $builder->add('phone', TextType::class, ['required' => false]);
     }
 }

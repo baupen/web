@@ -13,10 +13,10 @@
       </div>
       <div v-else class="alert alert-info">
         <template v-if="canAssociateSelf">
-          {{ $t('switch.messages.info.activate_construction_site') }}
+          {{ $t('switch.mine_none_associate_self') }}
         </template>
         <template v-else>
-          {{ $t('switch.messages.info.no_construction_site_associated') }}
+          {{ $t('switch.mine_none_ask_for_association') }}
         </template>
       </div>
 

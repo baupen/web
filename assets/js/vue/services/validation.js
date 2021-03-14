@@ -17,7 +17,7 @@ const requiredRule = function () {
     isValid: function (value) {
       return !!value
     },
-    errorMessage: 'validation.required'
+    errorMessage: '_validation.required'
   }
 }
 

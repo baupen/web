@@ -17,7 +17,7 @@
               :class="{'ml-3': canFilter}"
               class="d-inline-block"
               property="lastChangedAt" order-value="desc" id="order-by-last-changed-at"
-              :label="$t('actions.sort_by_last_activity')" :order="order"
+              :label="$t('_view.issues.sort_by_last_activity')" :order="order"
               @ordered="order = $event" />
         </span>
         <span class="text-right float-right" v-if="canEdit">
@@ -67,7 +67,7 @@
     <loading-indicator-table-body v-if="isLoading" />
     <tr v-else-if="issueContainers.length === 0 && !issuesLoading">
       <td colspan="99">
-        <p class="text-center">{{ $t('view.no_issues') }}</p>
+        <p class="text-center">{{ $t('_view.no_issues') }}</p>
       </td>
     </tr>
     <tr v-else v-for="iwr in issueContainers" @click.stop="toggleSelectedIssue(iwr.issue)" :key="iwr.issue['@id']"
@@ -122,7 +122,7 @@
       <template v-if="view === 'foyer'">
         <div v-if="issuesWithoutDescription.length" class="form-check form-check-inline mr-4">
           <custom-checkbox id="issues-without-description"
-                           :label="$t('issue_table.without_description')"
+                           :label="$t('_view.issues.without_description')"
                            @click.prevent="toggleSelectedIssues(issuesWithoutDescription)">
             <input class="custom-control-input" type="checkbox"
                    :checked="entityListsAreEqual(issuesWithoutDescription, selectedIssues)">
@@ -130,7 +130,7 @@
         </div>
         <div v-if="issuesWithoutCraftsman.length" class="form-check form-check-inline mr-4">
           <custom-checkbox id="issues-without-craftsman"
-                           :label="$t('issue_table.without_craftsman')"
+                           :label="$t('_view.issues.without_craftsman')"
                            @click.prevent="toggleSelectedIssues(issuesWithoutCraftsman)">
             <input class="custom-control-input" type="checkbox"
                    :checked="entityListsAreEqual(issuesWithoutCraftsman, selectedIssues)">
@@ -138,7 +138,7 @@
         </div>
         <div v-if="issuesWithoutDeadline.length" class="form-check form-check-inline">
           <custom-checkbox id="issues-without-deadline"
-                           :label="$t('issue_table.without_deadline')"
+                           :label="$t('_view.issues.without_deadline')"
                            @click.prevent="toggleSelectedIssues(issuesWithoutDeadline)">
             <input class="custom-control-input" type="checkbox"
                    :checked="entityListsAreEqual(issuesWithoutDeadline, selectedIssues)">
@@ -152,7 +152,7 @@
   </table>
   <p class="text-center">
     <button class="btn btn-outline-secondary" v-if="notLoadedIssueCount > 0 && !issuesLoading" @click="loadNextPage">
-      {{ $tc('actions.show_more_issues', notLoadedIssueCount) }}
+      {{ $tc('_view.show_more_issues', notLoadedIssueCount) }}
     </button>
   </p>
 </template>

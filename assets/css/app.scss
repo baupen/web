@@ -27,6 +27,15 @@ body {
   height: 100%;
 }
 
+/* stylelint-disable selector-no-qualifying-type */
+label.required {
+  &::after {
+    color: $danger;
+    content: '*';
+    font-size: 1.2em;
+  }
+}
+
 //center layout for messages & easy forms
 .center-wrapper {
   align-items: center;

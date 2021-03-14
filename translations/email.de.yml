@@ -1,28 +1,23 @@
-generated: 'Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht darauf.'
-questions: 'Bei Fragen wenden Sie sich an'
-mail_wrong_displayed: 'Diese E-Mail wird nicht richtig dargestellt? Bitte klicken Sie hier.'
-sent_by: 'Versand der E-Mail durch'
-
 app_invitation:
+  authenticate: 'Loggen Sie sich in der App mit dem QR Code von der Webseite oder dem nachfolgenden Link ein.'
+  download_to_use_functionality: 'Laden Sie sich unsere App herunter, um Pendenzen für %page% zu erfassen.'
+  ios_login_link: 'App öffnen & einloggen'
+  ios_store: 'zum iOS Store'
   subject: 'App herunterladen für %page%'
-  download_to_use_functionality: Laden Sie sich unsere App herunter, um Pendenzen für %page% zu erfassen.
-  ios_store: zum iOS Store
-  authenticate: Loggen Sie sich in der App mit dem QR Code von der Webseite oder dem nachfolgenden Link ein.
-  ios_login_link: App öffnen & einloggen
-
 craftsman_issue_reminder:
   view_issues_link: 'Pendenzen ansehen'
-
+generated: 'Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht darauf.'
+mail_wrong_displayed: 'Diese E-Mail wird nicht richtig dargestellt? Bitte klicken Sie hier.'
+questions: 'Bei Fragen wenden Sie sich an'
 recover_confirm:
-  subject: 'Passwort zurücksetzen auf %page%'
-  message: 'Wir haben eine Anfrage erhalten, um Ihr Passwort auf %page% zurückzusetzen. Nutzen Sie den Link unten, um dies nun zu tun.'
   confirm_link: 'Passwort zurücksetzen'
-
+  message: 'Wir haben eine Anfrage erhalten, um Ihr Passwort auf %page% zurückzusetzen. Nutzen Sie den Link unten, um dies nun zu tun.'
+  subject: 'Passwort zurücksetzen auf %page%'
 register_confirm:
-  subject: 'Willkommen auf %page%!'
-  message: 'Ihr Account auf %page% ist erstellt und eingerichtet. Bitte aktivieren Sie diesen, um Pendenzen erfassen zu können.'
   activate_link: 'Account aktivieren'
-
+  message: 'Ihr Account auf %page% ist erstellt und eingerichtet. Bitte aktivieren Sie diesen, um Pendenzen erfassen zu können.'
+  subject: 'Willkommen auf %page%!'
+sent_by: 'Versand der E-Mail durch'
 view_online:
-  title: 'E-Mail lesen'
   description: 'E-Mail im Originallayout lesen.'
+  title: 'E-Mail lesen'

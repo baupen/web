@@ -1,7 +1,7 @@
 <template>
   <form-field for-id="link-access-allowed-before"
               :required="false"
-              :label="$t('export_issues_button.export_type.link.access_allowed_before')">
+              :label="$t('_form.issue_link.access_allowed_before')">
     <flat-pickr
         id="link-access-allowed-before" class="form-control"
         v-model="link.accessAllowedBefore"
@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     datePickerConfig: function () {
-      return dateConfig
+      return Object.assign({minDate: new Date()}, dateConfig)
     },
     actualLink: function () {
       return {

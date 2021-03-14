@@ -1,13 +1,11 @@
 generated: 'Questa e-mail è stata generata automaticamente. Si prega di non rispondere.'
-questions: 'Per domande rivolgersi a '
 mail_wrong_displayed: 'Questa E-mail non è raffigurata correttamente? Fare click qui.'
-
-register_confirm:
-  subject: 'Benvenuti su %page%!'
-  message: 'Abbiamo creato e configurato il vostro account.'
-  activate_link: 'Attivare l''account'
-
+questions: 'Per domande rivolgersi a '
 recover_confirm:
-  subject: 'Reimpostare la password su %page%'
-  message: 'Utilizzare il seguente link per reimpostare la password:'
   confirm_link: 'Reimposta ora la password'
+  message: 'Utilizzare il seguente link per reimpostare la password:'
+  subject: 'Reimpostare la password su %page%'
+register_confirm:
+  activate_link: 'Attivare l''account'
+  message: 'Abbiamo creato e configurato il vostro account.'
+  subject: 'Benvenuti su %page%!'

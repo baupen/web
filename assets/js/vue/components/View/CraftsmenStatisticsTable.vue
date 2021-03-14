@@ -5,7 +5,7 @@
       <th class="w-minimal"></th>
       <th colspan="3">{{ $t('craftsman._name') }}</th>
       <th class="border-left" colspan="2">{{ $t('issue._plural') }}</th>
-      <th class="border-left" colspan="2">{{ $t('dispatch.craftsmen_table.last_activity') }}</th>
+      <th class="border-left" colspan="2">{{ $t('_view.craftsmen.last_activity') }}</th>
       <th class="border-left"></th>
     </tr>
     <tr class="text-secondary">
@@ -19,20 +19,20 @@
       <th>{{ $t('craftsman.company') }}</th>
       <th class="w-minimal"></th>
 
-      <th class="border-left">{{ $t('view.count') }}</th>
+      <th class="border-left">{{ $t('_view.craftsmen_statistics.count') }}</th>
       <th>{{ $t('craftsman.next_deadline') }}</th>
 
-      <th class="border-left">{{ $t('craftsman.visited_webpage') }}</th>
-      <th>{{ $t('craftsman.resolved_issue') }}</th>
+      <th class="border-left">{{ $t('craftsman.last_visit_online') }}</th>
+      <th>{{ $t('craftsman.last_issue_resolved_at') }}</th>
 
-      <th class="border-left">{{ $t('craftsman.received_email') }}</th>
+      <th class="border-left">{{ $t('craftsman.last_email_received') }}</th>
     </tr>
     </thead>
     <tbody>
     <loading-indicator-table-body v-if="isLoading" />
     <tr v-else-if="orderedCraftsmenWithStatistics.length === 0">
       <td colspan="99">
-        <p class="text-center">{{ $t('view.no_craftsmen') }}</p>
+        <p class="text-center">{{ $t('_view.no_craftsmen') }}</p>
       </td>
     </tr>
     <tr v-else v-for="cws in orderedCraftsmenWithStatistics" @click.stop="toggleSelectedCraftsman(cws.craftsman)"
@@ -83,7 +83,7 @@
     <caption class="caption-top">
       <div v-if="craftsmenWithIssuesOpen.length" class="form-check form-check-inline mr-4">
         <custom-checkbox id="issues-open-craftsmen"
-                         :label="$t('dispatch.craftsmen_table.with_open_issues')"
+                         :label="$t('_view.craftsmen.with_open_issues')"
                          @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOpen)">
           <input class="custom-control-input" type="checkbox"
                  :checked="entityListsAreEqual(craftsmenWithIssuesOpen, selectedCraftsmen)">
@@ -91,7 +91,7 @@
       </div>
       <div v-if="craftsmenWithIssuesUnread.length" class="form-check form-check-inline mr-4">
         <custom-checkbox id="issues-unread-craftsmen"
-                         :label="$t('dispatch.craftsmen_table.with_unread_issues')"
+                         :label="$t('_view.craftsmen.with_unread_issues')"
                          @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesUnread)">
           <input class="custom-control-input" type="checkbox"
                  :checked="entityListsAreEqual(craftsmenWithIssuesUnread, selectedCraftsmen)">
@@ -99,7 +99,7 @@
       </div>
       <div v-if="craftsmenWithIssuesOverdue.length" class="form-check form-check-inline">
         <custom-checkbox id="issues-overdue-craftsmen"
-                         :label="$t('dispatch.craftsmen_table.with_overdue_issues')"
+                         :label="$t('_view.craftsmen.with_overdue_issues')"
                          @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOverdue)">
           <input class="custom-control-input" type="checkbox"
                  :checked="entityListsAreEqual(craftsmenWithIssuesOverdue, selectedCraftsmen)">

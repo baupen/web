@@ -9,19 +9,19 @@
     -->
     <span v-if="entry.type === 1 && this.constructionManagerName">
       {{this.constructionManagerName}}
-      {{$tc('feed.entries.has_registered', this.entry.count)}}
+      {{$tc('_view.feed.entries.has_registered', this.entry.count)}}
     </span>
     <span v-else-if="entry.type === 2 && this.craftsmanName">
       <b>{{this.craftsmanName}}</b>
-      {{$tc('feed.entries.has_resolved', this.entry.count)}}
+      {{$tc('_view.feed.entries.has_resolved', this.entry.count)}}
     </span>
     <span v-else-if="entry.type === 3 && this.constructionManagerName">
       {{this.constructionManagerName}}
-      {{$tc('feed.entries.has_closed', this.entry.count)}}
+      {{$tc('_view.feed.entries.has_closed', this.entry.count)}}
     </span>
     <span v-else-if="entry.type === 10 && this.craftsmanName">
       <b>{{this.craftsmanName}}</b>
-      {{$tc('feed.entries.has_visited_webpage', this.entry.count)}}
+      {{$tc('_view.feed.entries.has_visited_webpage', this.entry.count)}}
     </span>
     <span class="text-secondary">
       -

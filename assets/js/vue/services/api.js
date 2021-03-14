@@ -52,7 +52,7 @@ const api = {
           }
         }
 
-        const errorMessage = translator('messages.danger.request_failed') + ' (' + errorText + ')'
+        const errorMessage = translator('_api.request_failed') + ' (' + errorText + ')'
         displayError(errorMessage)
 
         return Promise.reject(error)

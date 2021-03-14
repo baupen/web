@@ -14,7 +14,7 @@
     <loading-indicator-table-body v-if="!orderedCraftsmen" />
     <tr v-else-if="orderedCraftsmen.length === 0">
       <td colspan="99">
-        <p class="text-center">{{ $t('view.no_craftsmen') }}</p>
+        <p class="text-center">{{ $t('_view.no_craftsmen') }}</p>
       </td>
     </tr>
     <tr v-else v-for="craftsman in orderedCraftsmen">
@@ -36,6 +36,9 @@
       </td>
     </tr>
     </tbody>
+    <caption>
+    <slot name="caption"></slot>
+    </caption>
   </table>
 </template>
 

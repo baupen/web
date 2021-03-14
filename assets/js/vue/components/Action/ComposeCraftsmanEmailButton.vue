@@ -1,7 +1,7 @@
 <template>
   <span class="btn btn-link" v-if="unsentEmails.length > 0">{{ unsentEmails.length }}</span>
   <button-with-modal-confirm
-      modal-size="lg" :title="$t('dispatch.actions.compose_email')"
+      modal-size="lg" :title="$t('_action.compose_craftsman_email.title')"
       :button-disabled="disabled" :can-confirm="canConfirm" :confirm-title="sendEmailText"
       @confirm="confirm">
 
@@ -17,13 +17,13 @@
 
     <div class="row">
       <div class="col-2">
-        {{ $t('email_template._name') }}
+        {{ $t('email.templates._name') }}
       </div>
       <div class="col">
         <loading-indicator-secondary v-if="emailTemplatesLoading" />
         <form-field v-else>
           <select v-model="selectedEmailTemplate" class="custom-select">
-            <option :value="null">{{ $t('dispatch.no_template') }}</option>
+            <option :value="null">{{ $t('_action.compose_craftsman_email.no_template') }}</option>
             <option disabled></option>
             <option v-for="emailTemplate in sortedEmailTemplatesWithPurpose" :value="emailTemplate"
                     :key="emailTemplate['@id']">
@@ -51,7 +51,7 @@
 
     <email-form :template="selectedEmailTemplate" @update="email = $event" />
 
-    <p class="alert alert-info mb-0">{{ $t('dispatch.resolve_link_is_appended') }}</p>
+    <p class="alert alert-info mb-0">{{ $t('_action.compose_craftsman_email.resolve_link_is_appended') }}</p>
 
   </button-with-modal-confirm>
 </template>
@@ -111,7 +111,7 @@ export default {
       return !this.emailTemplates || this.emailTemplates.length < 3
     },
     sendEmailText: function () {
-      return this.$tc('dispatch.actions.send_emails', this.craftsmen.length, { 'count': this.craftsmen.length })
+      return this.$tc('_action.compose_craftsman_email.send_emails', this.craftsmen.length, { 'count': this.craftsmen.length })
     },
     proposedEmailTemplate: function () {
       if (!this.emailTemplates) {
@@ -130,9 +130,9 @@ export default {
     },
     saveAsTemplateLabel: function () {
       if (this.selectedEmailTemplate) {
-        return this.$t('dispatch.save_template_changes')
+        return this.$t('_action.compose_craftsman_email.save_template_changes')
       }
-      return this.$t('dispatch.save_as_new_template')
+      return this.$t('_action.compose_craftsman_email.save_as_new_template')
     },
     canConfirm: function () {
       return !!this.email
@@ -175,7 +175,7 @@ export default {
                 this.$emit('email-sent', this.craftsmen.find(c => c['@id'] === email.receiver))
 
                 if (this.unsentEmails.length === 0) {
-                  displaySuccess(this.$t('dispatch.messages.success.emails_sent'))
+                  displaySuccess(this.$t('_action.compose_craftsman_email.sent_emails'))
                 } else {
                   this.processUnsentEmails()
                 }
@@ -188,7 +188,7 @@ export default {
         name: this.email.subject,
         constructionSite: this.constructionSite['@id']
       }, this.email)
-      api.postEmailTemplate(emailTemplate, this.emailTemplates, this.$t('dispatch.messages.success.email_template_saved'))
+      api.postEmailTemplate(emailTemplate, this.emailTemplates, this.$t('_action.compose_craftsman_email.saved_email_template'))
     },
     saveEmailTemplate: function () {
       let patch = Object.assign({selfBcc: this.selfBcc}, this.email)
@@ -196,7 +196,7 @@ export default {
         patch.name = this.email.subject
       }
 
-      api.patch(this.selectedEmailTemplate, patch, this.$t('dispatch.messages.success.email_template_saved'))
+      api.patch(this.selectedEmailTemplate, patch, this.$t('_action.compose_craftsman_email.saved_email_template'))
     },
     initializeDefaultEmailTemplates () {
       let openIssuesTemplate = this.emailTemplates.find(t => t.purpose === 1)
@@ -215,12 +215,12 @@ export default {
       }
     },
     addDefaultEmailTemplate (key, purpose) {
-      const hi = this.$t('email_template.templates.common.hi')
-      const help = this.$t('email_template.templates.common.help')
+      const hi = this.$t('email.templates._common.hi')
+      const help = this.$t('email.templates._common.help')
 
-      const name = this.$t('email_template.templates.' + key + '.name')
-      const subject = this.$t('email_template.templates.' + key + '.subject', { 'constructionSite': this.constructionSite.name })
-      const body = this.$t('email_template.templates.' + key + '.body', { 'constructionSite': this.constructionSite.name })
+      const name = this.$t('email.templates.' + key + '.name')
+      const subject = this.$t('email.templates.' + key + '.subject', { 'constructionSite': this.constructionSite.name })
+      const body = this.$t('email.templates.' + key + '.body', { 'constructionSite': this.constructionSite.name })
 
       const template = {
         purpose,

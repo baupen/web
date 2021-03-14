@@ -15,7 +15,7 @@
             @input="fields.parent.dirty = true"
             @change="validate('parent')"
     >
-      <option :value="null">{{ $t('map.no_parent_name') }}</option>
+      <option :value="null">{{ $t('map.parent_not_set_name') }}</option>
       <option disabled></option>
       <option v-for="mapContainer in mapContainers" :value="mapContainer.entity['@id']"
               :key="mapContainer.entity['@id']">

@@ -1,23 +1,23 @@
+generated: 'generiert am %date%'
 generated_with_author: 'generiert von %name% am %date%'
 introduction:
   elements: 'Inhalt des Berichtes'
-  paginator: '%start% - %end% von %total%'
   filter:
-    later_than: 'nach %date%'
+    and: und
+    craftsmen: Unternehmer
     earlier_than: 'vor %date%'
+    later_than: 'nach %date%'
+    maps: Bauplan|Baupläne
     not: 'nicht %state%'
     or: oder
-    and: und
-    trades: Gewerbe|Gewerbe
-    craftsmen: Unternehmer
-    maps: Bauplan|Baupläne
     time: Zeit
-table:
-  by_map: 'Pendenzen nach Bauplan'
-  by_craftsman: 'Pendenzen nach Unternehmer'
-  by_trade: 'Pendenzen nach Handwerk'
-  in_state_since: '%status% seit'
+    trades: Gewerbe|Gewerbe
+  paginator: '%start% - %end% von %total%'
 issues:
   detailed: 'Pendenzendetails nach Bauplan'
   with_images: 'mit Bildern'
-generated: 'generiert am %date%'
+table:
+  by_craftsman: 'Pendenzen nach Unternehmer'
+  by_map: 'Pendenzen nach Bauplan'
+  by_trade: 'Pendenzen nach Handwerk'
+  in_state_since: '%status% seit'

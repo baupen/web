@@ -1,6 +1,6 @@
 <template>
   <button-with-modal-confirm
-      :button-disabled="posting" :title="$t('actions.add_craftsman')" :can-confirm="canConfirm"
+      :button-disabled="posting" :title="$t('_action.add_craftsman.title')" :can-confirm="canConfirm"
       @confirm="confirm">
     <craftsman-form @update="post = $event" />
   </button-with-modal-confirm>
@@ -40,7 +40,7 @@ export default {
     confirm: function () {
       this.posting = true
       const payload = Object.assign({}, this.post, {constructionSite: this.constructionSite["@id"]})
-      api.postCraftsman(payload, this.$t('actions.messages.success.craftsman_added'))
+      api.postCraftsman(payload, this.$t('_action.add_craftsman.added'))
           .then(craftsman => {
             this.posting = false
             this.$emit('added', craftsman)

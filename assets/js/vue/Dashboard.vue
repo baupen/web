@@ -25,9 +25,11 @@ import DashboardIssuesGraph from './components/DashboardIssuesGraph'
 import DashboardIssuesSummary from './components/DashboardIssuesSummary'
 import DashboardFeed from './components/DashboardFeed'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
+import AtomSpinner from './components/Library/View/Base/AtomSpinner'
 
 export default {
   components: {
+    AtomSpinner,
     LoadingIndicator,
     DashboardFeed,
     DashboardIssuesGraph,

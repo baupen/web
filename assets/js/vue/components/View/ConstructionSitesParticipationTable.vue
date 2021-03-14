@@ -22,11 +22,8 @@
           <date-time-human-readable :value="constructionSite.createdAt" />
         </td>
         <td>
-          <button type="button" class="btn btn-toggle"
-                  :class="{'active': ownsConstructionSite(constructionSite)}"
-                  @click="toggleOwnConstructionSite(constructionSite)">
-            <div class="handle"></div>
-          </button>
+          <toggle-association-construction-site
+              :construction-site="constructionSite" :construction-manager-iri="constructionManagerIri" />
         </td>
       </tr>
       </tbody>
@@ -38,13 +35,14 @@
 
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import { constructionSiteFormatter } from '../../services/formatters'
-import { api } from '../../services/api'
 import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody'
 import ImageLightbox from './ImageLightbox'
+import ToggleAssociationConstructionSite from '../Action/ToggleAssociationConstructionSite'
 
 export default {
   emits: ['loaded-construction-sites'],
   components: {
+    ToggleAssociationConstructionSite,
     ImageLightbox,
     LoadingIndicatorTableBody,
     DateTimeHumanReadable,
@@ -67,19 +65,6 @@ export default {
     formatConstructionSiteAddress: function (constructionSite) {
       return constructionSiteFormatter.address(constructionSite)
     },
-    ownsConstructionSite: function (constructionSite) {
-      return constructionSite.constructionManagers.includes(this.constructionManagerIri)
-    },
-    toggleOwnConstructionSite: function (constructionSite) {
-      const ownsConstructionSite = this.ownsConstructionSite(constructionSite)
-      const constructionManagers = constructionSite.constructionManagers.filter(cm => cm !== this.constructionManagerIri)
-      if (ownsConstructionSite) {
-        api.patch(constructionSite, { constructionManagers }, this.$t('switch.messages.success.removed_self'))
-      } else {
-        constructionManagers.push(this.constructionManagerIri)
-        api.patch(constructionSite, { constructionManagers }, this.$t('switch.messages.success.added_self'))
-      }
-    }
   },
   computed: {
     constructionSitesOrdered: function () {

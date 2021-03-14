@@ -1,261 +1,57 @@
 {
-  "switch": {
-    "mine": "I miei cantieri",
-    "mine_help": "Questi cantieri verranno mostrati anche nell'App.",
-    "all": "Tutti i cantieri registrati",
-    "all_help": "Attivare cantiere per accedervi.",
-    "actions": {
-      "create_construction_site": "Creare nuovo cantiere",
-      "enter_construction_site": "Al cantiere"
-    },
-    "messages": {
-      "info": {
-        "activate_construction_site": "Attivare un cantiere dall'elenco sottostante per accedervi."
-      }
-    }
-  },
-  "dashboard": {
-    "name": "Pendenze",
-    "messages": {
-      "info": {
-        "new_issues_in_foyer": "Una nuova pendenza | {count} nuove pendenze"
-      },
-      "warning": {
-        "overdue_limit": "{craftsman} ha superato il termine di {count} pendenze di {limit}."
-      }
-    },
-    "actions": {
-      "add_to_register": "Aggiungere al registro"
-    }
-  },
-  "feed": {
-    "name": "Feed",
-    "show_more": "Mostrare di più",
-    "no_entries_yet": "Nessuna attività sul cantiere in questo momento. Aggiungi pendenze per visualizzare qualcosa qui.",
-    "entries": {
-      "craftsman_resolved": "{craftsman} ha risposto ad una pendenza. | {craftsman} ha risposto a {count} pendenze.",
-      "craftsman_visited_webpage": "{craftsman} ha visualizzato le pendenze."
-    }
-  },
-  "foyer": {
-    "actions": {
-      "confirm_specific_issues": "Aggiungere la pendenza all'elenco | Aggiungere {count} pendenze all'elenco",
-      "confirm_all_issues": "Aggiungere tutte le pendenze all'elenco",
-      "confirm_issues": "Aggiungere pendenze al registro"
-    },
-    "dialog": {
-      "danger": {
-        "confirm_remove": "Sicuri di voler eliminare le pendenze marcate in rosso? Questa azione è irreversibile."
-      }
-    },
-    "messages": {
-      "success": {
-        "added_to_register": "Aggiunto al registro."
-      },
-      "danger": {
-        "confirm_issues_impossible": "Per favore specificare per tutte le pendenze almeno la descrizione e l’operaio."
-      }
-    }
-  },
-  "dispatch": {
-    "table": {
-      "no_entries": "Nessun operaio registrato",
-      "filter_placeholder": "Cercare operaio\/funzione..."
-    },
-    "actions": {
-      "send_emails": "Inviare"
-    },
-    "messages": {
-      "emails_sent": "Email inviate"
-    }
-  },
-  "view_resolve": {
-    "loading_open_issues": "? pendenze aperte",
-    "open_issues_header": "Nessuna pendenza aperta | Una pendenza aperta | {count} pendenze aperte",
-    "of_craftsman": "da {craftsman}",
-    "dialog": {
-      "success": {
-        "thanks": "Nessuna pendenza aperta. Grazie!"
-      }
-    },
-    "actions": {
-      "read_only_view": "Link protetto da scrittura",
-      "send_response": "marcare come risolta",
-      "remove_response": "annullare"
-    }
-  },
-  "view_filtered": {
-    "issues_overview": "Panoramica delle pendenze",
-    "no_issues": "Non sono disponibili pendenze"
-  },
-  "edit": {
-    "construction_managers_help": "Concedi ad altri capocantiere l'accesso a questo cantiere in modo che possano anche registrare e gestire i pendenze."
-  },
-  "construction_site_edit": {
-    "description": "Cambia indirizzo e foto di copertina.",
-    "drag_files_to_upload": "Trascina un'immagine .jpg o .png in quest'area per impostarla come nuova immagine di copertina.",
-    "actions": {
-      "save": "Salvare le modifiche"
-    },
-    "messages": {
-      "error": {
-        "name_already_taken": "Questo è già stato assegnato."
-      }
-    }
-  },
-  "construction_managers_edit": {
-    "actions": {
-      "add": "Aggiungi e informa via e-mail"
-    }
-  },
-  "maps_edit": {
-    "default_map_name": "Nuovo progetto di costruzione",
-    "drag_files_to_upload": "Trascina i file .pdf in quest'area per aggiungerli come nuovi progetti di costruzione",
-    "actions": {
-      "add_map": "Aggiungi un progetto di costruzione",
-      "reorder": "riordina nuovamente",
-      "add_map_files": "Aggiungere versioni di progetto di costruzione",
-      "hide_map_files": "Nascondere le versioni del progetto",
-      "save_changes": "Salvare {pendingChangesCount} modifice"
-    },
-    "messages": {
-      "uploading": "viene caricato... ({percentage}%)"
-    }
-  },
-  "craftsmen_edit": {
-    "actions": {
-      "add_craftsman": "Aggiungere operaio",
-      "download_excel_template": "Scarica il modello Excel",
-      "import_from_excel": "Importa da Excel"
-    }
-  },
-  "issues_edit": {
-    "no_entries": "Nessuna pendenza",
-    "filter": {
-      "name": "Filtro",
-      "only_marked": "solo marcate",
-      "only_over_limit": "solo oltre il termine",
-      "only_was_added_with_client": "solo accettazione",
-      "moment": {
-        "later_than": "dopo di",
-        "earlier_than": "prima di",
-        "status_set": "Stato fissato",
-        "time": "Ora",
-        "time_set": "{state} alle"
-      }
-    }
-  },
-  "export_issues_button": {
-    "export_type": {
-      "report": {
-        "name": ".pdf Bericht",
-        "help": "Fürs Drucken optimiert: Die Pendenzen möglichst platzsparend aufs Papier bringen.",
-        "with_images": "con immagini",
-        "summary_tables": "Tabelle riassuntive",
-        "by_craftsman": "per Operaio",
-        "by_map": "per carte"
-      },
-      "link": {
-        "name": "Link",
-        "help": "Immer aktuell: Die Pendenzen Externen einfach zugänglich machen.",
-        "access_allowed_before": "Ablaufdatum des Zugriffes"
-      }
-    },
-    "generate": "erstellen"
-  },
   "construction_manager": {
     "_name": "Capocantiere",
     "_plural": "Capocantiere",
-    "email": "E-mail",
-    "_placeholders": {
-      "email": "max@esempio.ch"
-    }
+    "email": "E-mail"
   },
   "construction_site": {
     "_name": "Cantiere",
-    "name": "Nome",
     "address": "Indirizzo",
-    "street_address": "Via \/ no.",
+    "created_at": "creato il",
     "locality": "Luogo",
+    "name": "Nome",
     "postal_code": "CAP",
-    "created_at": "creato il"
+    "street_address": "Via \/ no."
   },
   "craftsman": {
     "_name": "Operaio",
     "_plural": "Operai",
-    "_placeholders": {
-      "contact_name": "Max Esempio",
-      "email": "max@esempio.ch",
-      "company": "Esempio AG",
-      "trade": "Elettricista"
-    },
-    "name": "Nome",
-    "trade": "Settore",
+    "company": "Azienda",
     "contact_name": "Persona di contatto",
     "email": "E-mail",
-    "company": "Azienda",
-    "not_responded_issues_count": "Pendenze non risposte",
-    "not_read_issues_count": "Pendenze non lette",
-    "open_issues_count": "Pendenze aperte",
+    "name": "Nome",
     "next_deadline": "Prossimo termine",
-    "last_email_sent": "Ultima email inviata",
-    "last_online_visit": "Ultima visita alla pagina"
+    "not_read_issues_count": "Pendenze non lette",
+    "not_responded_issues_count": "Pendenze non risposte",
+    "open_issues_count": "Pendenze aperte",
+    "trade": "Settore"
+  },
+  "issue": {
+    "craftsman": "Operaio",
+    "description": "Descrizione",
+    "map": "Mappa",
+    "number": "Numero",
+    "state": {
+      "closed": "chiuso",
+      "created": "creato",
+      "open": "aperte",
+      "overdue": "Termine superato",
+      "registered": "registrato",
+      "resolved": "risposto",
+      "to_inspect": "da ispezionare"
+    },
+    "status": "Stato",
+    "trade": "Settore"
   },
   "map": {
     "_name": "Piano di costruzione",
     "_plural": "Piani di costruzione",
+    "closed_issues_count": "Pendenze risolte",
     "name": "Nome",
     "open_issues_count": "Pendenze aperte",
-    "closed_issues_count": "Pendenze risolte",
     "parent": "Attribuzione"
   },
-  "issue": {
-    "description": "Descrizione",
-    "craftsman": "Operaio",
-    "response_limit": "Scadenza",
-    "map": "Mappa",
-    "status": "Stato",
-    "number": "Numero",
-    "trade": "Settore",
-    "no_response_limit": "non specificato",
-    "state": {
-      "created": "creato",
-      "registered": "registrato",
-      "resolved": "risposto",
-      "closed": "chiuso",
-      "open": "aperte",
-      "read": "letto",
-      "unread": "non letto",
-      "overdue": "Termine superato",
-      "to_inspect": "da ispezionare",
-      "marked": "contrassegnate"
-    }
-  },
-  "actions": {
-    "save": "salva",
-    "save_all": "salva tutto",
-    "remove": "rimuovi",
-    "remove_all": "rimuovi tutto",
-    "remove_selected": "rimuovi selezionati",
-    "abort": "annulla",
-    "print": "stampa"
-  },
-  "messages": {
-    "success": {
-      "removed_entries": "Rimosso con successo.",
-      "saved_changes": "Modifiche salvate."
-    },
-    "danger": {
-      "unrecoverable": "Si è verificato un errore. Ricaricare la pagina e tentare nuovamente."
-    }
-  },
-  "validation": {
+  "_validation": {
     "required": "Questo campo non può essere lasciato vuoto."
-  },
-  "view": {
-    "more": "di più",
-    "less": "meno",
-    "today": "oggi",
-    "yesterday": "ieri"
   }
 }

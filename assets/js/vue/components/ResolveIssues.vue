@@ -17,15 +17,10 @@
 
         <div class="card limited-width mb-2">
           <div class="card-body">
-            <h3>{{ $t('export_issues_button.export_type.report.name') }}</h3>
-            <p>
-              {{ $t('export_issues_button.export_type.report.help') }}
-            </p>
-
-            <generate-issues-report
+            <export-issues-report-view
                 :construction-site="constructionSite" :maps="maps"
                 :query="craftsmanQuery" :query-result-size="groupCountSum"
-                :report-configuration="reportConfiguration" />
+                :default-report-configuration="reportConfiguration" />
           </div>
         </div>
 
@@ -47,9 +42,11 @@ import IssuesResolveView from './View/MapIssuesResolveView'
 import { mapTransformer } from '../services/transformers'
 import MapsResolveTable from './View/MapsResolveTable'
 import GenerateIssuesReport from './Action/GenerateIssuesReport'
+import ExportIssuesReportView from './Action/ExportIssuesReportView'
 
 export default {
   components: {
+    ExportIssuesReportView,
     GenerateIssuesReport,
     MapsResolveTable,
     IssuesResolveView,

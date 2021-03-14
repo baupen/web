@@ -1,10 +1,10 @@
+email: E-mail
+family_name: Cognome
+given_name: Nome
+password: Password
+phone: 'Numero di telefono'
+plain_password: Password
+profile: Profilo
+repeat_plain_password: 'Ripetere la password'
 trait:
   name: Utente
-email: E-mail
-password: Password
-plain_password: Password
-repeat_plain_password: 'Ripetere la password'
-given_name: Nome
-family_name: Cognome
-phone: 'Numero di telefono (per gli operai)'
-profile: Profilo

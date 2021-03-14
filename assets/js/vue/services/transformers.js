@@ -1,4 +1,5 @@
 import { iriToId } from './api'
+import XLSX from 'xlsx'
 
 const issueTransformer = {
   isOverdue: function (issue) {
@@ -9,6 +10,87 @@ const issueTransformer = {
     const deadline = Date.parse(issue.deadline)
     const now = Date.now()
     return deadline < now
+  }
+}
+
+const excelTransformer = {
+  mimeTypeXlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  mimeTypeXls: 'application/vnd.ms-excel',
+  getImportMimeTypes: function () {
+    return [this.mimeTypeXlsx, this.mimeTypeXls]
+  },
+  exportToXlsx: function (content, header, worksheetName) {
+    const workbook = XLSX.utils.book_new()
+    const worksheet = XLSX.utils.aoa_to_sheet([header, ...content])
+    XLSX.utils.book_append_sheet(workbook, worksheet, worksheetName)
+
+    const blobPart = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      bookSST: false,
+      type: 'array'
+    })
+
+    return new Blob([blobPart], { type: this.mimeTypeXlsx })
+  },
+  import: function (arrayBuffer) {
+    const data = new Uint8Array(arrayBuffer)
+    const workbook = XLSX.read(data, { type: 'array' })
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]]
+
+    return XLSX.utils.sheet_to_json(worksheet, { header: 1 })
+  }
+}
+
+const craftsmanTransformer = {
+  tableHeader: ['trade', 'company', 'contact_name', 'email', 'emailCCs'],
+  defaultContent: [
+    ['Support & Requirements', 'mangel.io', 'Adrian Hoffman', 'a@mangel.io', 'info@mangel.io, support@mangel.io'],
+    ['Web', 'mangel.io', 'Florian Moser', 'f@mangel.io'],
+    ['iOS', 'mangel.io', 'Julian Dunskus', 'j@mangel.io']
+  ],
+  _xlsxHeader: function (translator) {
+    const translatedHeader = this.tableHeader.map(h => translator('craftsman.' + h))
+    translatedHeader[translatedHeader.length - 1] += ' (' + translator('craftsman._excel_format_emailCCs') + ')'
+
+    return translatedHeader
+  },
+  _createXlsx: function (content, translator) {
+    const translatedHeader = this._xlsxHeader(translator)
+    const worksheetName = translator('craftsman._plural')
+
+    return excelTransformer.exportToXlsx(content, translatedHeader, worksheetName)
+  },
+  exportToXlsx: function (craftsmen, translator) {
+    const content = craftsmen.map(c => [c.trade, c.company, c.contactName, c.email, c.emailCCs.join(', ')])
+
+    return this._createXlsx(content, translator)
+  },
+  importExcelTemplate: function (translator) {
+    return this._createXlsx(this.defaultContent, translator)
+  },
+  importExcel: function (arrayBuffer) {
+    const content = excelTransformer.import(arrayBuffer)
+
+    const craftsmen = []
+    for (let i = 1; i < content.length; i++) {
+      const entry = content[i]
+
+      const craftsman = {
+        trade: entry[0],
+        company: entry[1],
+        contactName: entry[2],
+        email: entry[3],
+        emailCCs: []
+      }
+
+      if (entry[4]) {
+        craftsman.emailCCs = entry[4].split(',').map(e => e.trim()).filter(e => e)
+      }
+
+      craftsmen.push(craftsman)
+    }
+
+    return craftsmen
   }
 }
 
@@ -404,4 +486,4 @@ const filterTransformer = {
   }
 }
 
-export { issueTransformer, mapTransformer, filterTransformer }
+export { issueTransformer, mapTransformer, filterTransformer, craftsmanTransformer, excelTransformer }
