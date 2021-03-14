@@ -13,8 +13,8 @@ import { api } from '../../services/api'
 export default {
   props: {
     constructionSite: {
-      type: Array,
-      required: false
+      type: Object,
+      required: true
     },
     constructionManagerIri: {
       type: String,

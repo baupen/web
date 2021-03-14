@@ -33,10 +33,6 @@ export default {
       type: Object,
       required: true
     },
-    filterConfiguration: {
-      type: Object,
-      required: true
-    },
     query: {
       type: Object,
       required: true

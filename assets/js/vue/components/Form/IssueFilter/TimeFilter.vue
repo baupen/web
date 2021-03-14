@@ -55,6 +55,10 @@ export default {
       type: String,
       required: false
     },
+    allowFuture: {
+      type: Boolean,
+      default: true
+    },
     help: {
       type: String,
       required: false
@@ -85,7 +89,10 @@ export default {
   },
   computed: {
     dateTimePickerConfig: function () {
-      return dateConfig
+      if (this.allowFuture) {
+        return dateConfig
+      }
+      return Object.assign({maxDate: new Date()}, dateConfig)
     }
   },
   mounted () {

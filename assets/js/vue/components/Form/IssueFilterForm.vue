@@ -75,7 +75,7 @@
 
     <time-filter
         v-if="configuration.showState || template.state === 1"
-        :label="$t('issue.state.created')" :help="$t('issue.state.created_help')"
+        :label="$t('issue.state.created')" :help="$t('issue.state.created_help')" :allow-future="false"
         :initial-before="filter['createdAt[before]']" :initial-after="filter['createdAt[after]']"
         @input-before="filter['createdAt[before]'] = $event" @input-after="filter['createdAt[after]'] = $event"
     />
@@ -83,21 +83,21 @@
     <time-filter
         v-if="configuration.showState || template.state === 2"
         :label="$t('issue.state.registered')" :help="$t('issue.state.registered_help')"
-        :initial-before="filter['registeredAt[before]']" :initial-after="filter['registeredAt[after]']"
+        :initial-before="filter['registeredAt[before]']" :initial-after="filter['registeredAt[after]']" :allow-future="false"
         @input-before="filter['registeredAt[before]'] = $event" @input-after="filter['registeredAt[after]'] = $event"
     />
 
     <time-filter
         v-if="configuration.showState || template.state === 4"
         :label="$t('issue.state.resolved')" :help="$t('issue.state.resolved_help')"
-        :initial-before="filter['resolvedAt[before]']" :initial-after="filter['resolvedAt[after]']"
+        :initial-before="filter['resolvedAt[before]']" :initial-after="filter['resolvedAt[after]']" :allow-future="false"
         @input-before="filter['resolvedAt[before]'] = $event" @input-after="filter['resolvedAt[after]'] = $event"
     />
 
     <time-filter
         v-if="configuration.showState || template.state === 8"
         :label="$t('issue.state.closed')" :help="$t('issue.state.closed_help')"
-        :initial-before="filter['closedAt[before]']" :initial-after="filter['closedAt[after]']"
+        :initial-before="filter['closedAt[before]']" :initial-after="filter['closedAt[after]']" :allow-future="false"
         @input-before="filter['closedAt[before]'] = $event" @input-after="filter['closedAt[after]'] = $event"
     />
   </toggle-card>

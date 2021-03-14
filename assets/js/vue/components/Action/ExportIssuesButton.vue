@@ -4,7 +4,7 @@
       :button-disabled="disabled">
 
     <custom-radio-field for-id="export-source-filter"
-                        :label="$tc('export_issues_button.export_source_filter', queriedIssueCount)">
+                        :label="$tc('_action.export_issues.export_source_filter', queriedIssueCount)">
       <input id="export-source-filter" class="custom-control-input" type="radio"
              name="export-source" value="filter"
              :disabled="queriedIssueCount === 0"
@@ -12,7 +12,7 @@
     </custom-radio-field>
 
     <custom-radio-field for-id="export-source-selection"
-                        :label="$tc('export_issues_button.export_source_selection', selectedIssues.length)">
+                        :label="$tc('_action.export_issues.export_source_selection', selectedIssues.length)">
       <input id="export-source-selection" class="custom-control-input" type="radio"
              name="export-source" value="selection"
              :disabled="selectedIssues.length === 0"
@@ -36,14 +36,14 @@
     <div class="tab-content p-3 border border-top-0">
       <div class="tab-pane fade" :class="{'show active': exportType === 'report'}">
         <export-issues-report-view
-            :construction-site="constructionSite" :maps="maps" :report-configuration="report"
+            :construction-site="constructionSite" :maps="maps"
             :query="applyingQuery" :query-result-size="applyingQueryResultSize"
             :show-title="false"
         />
       </div>
       <div class="tab-pane fade" :class="{'show active': exportType === 'link'}">
         <export-issues-link-view
-            :construction-site="constructionSite" :filter-configuration="filter"
+            :construction-site="constructionSite"
             :query="applyingQuery"
             :show-title="false"
         />

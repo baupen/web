@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     datePickerConfig: function () {
-      return dateConfig
+      return Object.assign({minDate: new Date()}, dateConfig)
     },
     actualLink: function () {
       return {
