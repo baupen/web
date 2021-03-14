@@ -74,10 +74,9 @@
       "title": "Link"
     },
     "filter_issues": {
-      "confirm": "Filtern",
       "reset": "Filter zurücksetzen",
-      "set_filter": "Filter setzen",
-      "title": "Pendenzen filtern"
+      "confirm": "Filter setzen",
+      "title": "Filtern"
     },
     "generate_issues_link": {
       "title": "Link erstellen",
@@ -179,6 +178,9 @@
     "reset": "zurücksetzen"
   },
   "_view": {
+    "craftsmen_statistics": {
+      "count": "Anzahl"
+    },
     "craftsmen": {
       "last_activity": "Letzte Aktivität",
       "with_open_issues": "mit offenen Pendenzen",
@@ -307,7 +309,8 @@
       "registered_help": "Pendenz wurde ins Verzeichnis aufgenommen",
       "resolved": "umgesetzt",
       "resolved_help": "Pendenz wurde vom Unternehmer als umgesetzt markiert",
-      "to_inspect": "zur Inspektion"
+      "to_inspect": "zur Inspektion",
+      "unread": "ungelesen"
     },
     "status": "Status",
     "trade": "Gewerk",

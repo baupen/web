@@ -1,9 +1,10 @@
 <template>
   <div class="card">
     <div class="card-body limited-height">
-      <loading-indicator-secondary v-if="isLoading" class="loading-center">
-        <feed :construction-managers="constructionManagers" :craftsmen="craftsmen" :feed-entries="feedEntries" />
-      </loading-indicator-secondary>
+      <div class="loading-center" v-if="isLoading">
+        <loading-indicator-secondary />
+      </div>
+      <feed v-else :construction-managers="constructionManagers" :craftsmen="craftsmen" :feed-entries="feedEntries" />
     </div>
   </div>
 </template>
@@ -63,7 +64,7 @@ export default {
   overflow-y: auto;
 }
 
-.loading-center {
+.loading-center > * {
   display: block;
   margin: 0 auto;
 }

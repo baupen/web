@@ -19,13 +19,13 @@
       <th>{{ $t('craftsman.company') }}</th>
       <th class="w-minimal"></th>
 
-      <th class="border-left">{{ $t('_view.count') }}</th>
+      <th class="border-left">{{ $t('_view.craftsmen_statistics.count') }}</th>
       <th>{{ $t('craftsman.next_deadline') }}</th>
 
-      <th class="border-left">{{ $t('craftsman.visited_webpage') }}</th>
-      <th>{{ $t('craftsman.resolved_issue') }}</th>
+      <th class="border-left">{{ $t('craftsman.last_visit_online') }}</th>
+      <th>{{ $t('craftsman.last_issue_resolved_at') }}</th>
 
-      <th class="border-left">{{ $t('craftsman.received_email') }}</th>
+      <th class="border-left">{{ $t('craftsman.last_email_received') }}</th>
     </tr>
     </thead>
     <tbody>

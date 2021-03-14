@@ -1,6 +1,7 @@
 <template>
   <button-with-modal-confirm
-      :button-disabled="patching" :title="$t('_action.edit_map.title')" :can-confirm="canConfirm"
+      :button-disabled="patching" :title="$t('_action.edit_map.title')"
+      :confirm-title="$t('_action.save_changes')" :can-confirm="canConfirm"
       @confirm="confirm">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'pencil']" />

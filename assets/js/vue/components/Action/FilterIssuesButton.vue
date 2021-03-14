@@ -1,7 +1,7 @@
 <template>
   <button-with-modal-confirm
       :button-disabled="disabled" :title="$t('_action.filter_issues.title')"
-      :confirm-title="$t('_action.set_filter')"
+      :confirm-title="$t('_action.filter_issues.confirm')"
       @confirm="confirm"
       :can-abort="customFilterActive"
       :abort-title="$t('_action.filter_issues.reset')"

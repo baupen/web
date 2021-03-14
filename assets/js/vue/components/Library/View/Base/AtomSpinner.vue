@@ -1,26 +1,11 @@
 <template>
-  <div
-    class="atom-spinner"
-    :style="spinnerStyle"
-  >
+  <div class="atom-spinner">
     <div class="spinner-inner">
-      <div
-        class="spinner-line"
-        :style="lineStyle"
-      />
-      <div
-        class="spinner-line"
-        :style="lineStyle"
-      />
-      <div
-        class="spinner-line"
-        :style="lineStyle"
-      />
+      <div class="spinner-line" />
+      <div class="spinner-line" />
+      <div class="spinner-line" />
       <!--Chrome renders little circles malformed :(-->
-      <div
-        class="spinner-circle"
-        :style="circleStyle"
-      >
+      <div class="spinner-circle">
         &#9679;
       </div>
     </div>
@@ -32,47 +17,11 @@
  * Source: https://github.com/epicmaxco/epic-spinners/blob/master/src/components/lib/AtomSpinner.vue
  * MIT licensed
  */
-export default {
-  props: {
-    animationDuration: {
-      type: Number,
-      default: 1000
-    },
-    size: {
-      type: Number,
-      default: 60
-    },
-    color: {
-      type: String,
-      default: '#fff'
-    }
-  },
-  computed: {
-    spinnerStyle () {
-      return {
-        height: `${this.size}px`,
-        width: `${this.size}px`
-      }
-    },
-    circleStyle () {
-      return {
-        color: this.color,
-        fontSize: `${this.size * 0.24}px`
-      }
-    },
-    lineStyle () {
-      return {
-        animationDuration: `${this.animationDuration}ms`,
-        borderLeftWidth: `${this.size / 25}px`,
-        borderTopWidth: `${this.size / 25}px`,
-        borderLeftColor: this.color
-      }
-    }
-  }
-}
+export default {}
 </script>
 
-<style scoped>
+<style>
+
 .atom-spinner,
 .atom-spinner * {
   box-sizing: border-box;
@@ -92,7 +41,7 @@ export default {
 }
 
 .atom-spinner .spinner-circle {
-  color: #ff1d5e;
+  color: #343477;
   display: block;
   font-size: calc(60px * 0.24);
   left: 50%;
@@ -103,7 +52,7 @@ export default {
 
 .atom-spinner .spinner-line {
   animation-duration: 1s;
-  border-left-color: #ff1d5e;
+  border-left-color: #343477;
   border-left-style: solid;
   border-left-width: calc(60px / 25);
   border-radius: 50%;

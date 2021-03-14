@@ -1,10 +1,8 @@
 <template>
-  <div class="looping-rhombuses-spinner" :style="spinnerStyle">
-    <div class="rhombus"
-         v-for="(rs, index) in rhombusesStyles"
-         :key="index"
-         :style="rs">
-    </div>
+  <div class="looping-rhombuses-spinner">
+    <div class="rhombus"></div>
+    <div class="rhombus"></div>
+    <div class="rhombus"></div>
   </div>
 </template>
 
@@ -14,60 +12,10 @@
  * MIT licensed
  */
 export default {
-  props: {
-    animationDuration: {
-      type: Number,
-      default: 2500
-    },
-    rhombusSize: {
-      type: Number,
-      default: 15
-    },
-    color: {
-      type: String,
-      default: '#fff'
-    }
-  },
-  data () {
-    return {
-      rhombusesNum: 3
-    }
-  },
-  computed: {
-    spinnerStyle () {
-      return {
-        height: `${this.rhombusSize}px`,
-        width: `${this.rhombusSize * 4}px`
-      }
-    },
-    rhombusStyle () {
-      return {
-        height: `${this.rhombusSize}px`,
-        width: `${this.rhombusSize}px`,
-        backgroundColor: this.color,
-        animationDuration: `${this.animationDuration}ms`,
-        left: `${this.rhombusSize * 4}px`
-      }
-    },
-    rhombusesStyles () {
-      const rhombusesStyles = []
-      const delay = -this.animationDuration / 1.5
-
-      for (let i = 1; i <= this.rhombusesNum; i++) {
-        const style = Object.assign({
-          animationDelay: `${i * delay}ms`
-        }, this.rhombusStyle)
-
-        rhombusesStyles.push(style)
-      }
-
-      return rhombusesStyles
-    }
-  }
 }
 </script>
 
-<style scoped>
+<style>
 .looping-rhombuses-spinner, .looping-rhombuses-spinner * {
   box-sizing: border-box;
 }
@@ -81,7 +29,7 @@ export default {
 .looping-rhombuses-spinner .rhombus {
   height: 15px;
   width: 15px;
-  background-color: #ff1d5e;
+  background-color: #343477;
   left: calc(15px * 4);
   position: absolute;
   margin: 0 auto;
