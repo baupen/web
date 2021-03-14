@@ -1,6 +1,5 @@
 import { iriToId } from './api'
 import XLSX from 'xlsx'
-import { displayError } from './notifiers'
 
 const issueTransformer = {
   isOverdue: function (issue) {
