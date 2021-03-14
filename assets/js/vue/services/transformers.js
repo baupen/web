@@ -393,7 +393,7 @@ const filterTransformer = {
           filter['map[]'] = value
         } else if (fieldName === 'numbers') {
           filter['number[]'] = value
-        } else if (fieldName === 'constructionSite' || fieldName === 'filteredUrl' || fieldName.startsWith('@')) {
+        } else if (fieldName === 'constructionSite' || fieldName === 'filteredUrl' || fieldName === 'authenticationToken' || fieldName.startsWith('@')) {
         } else {
           filter[fieldName] = value
         }
