@@ -5,7 +5,7 @@ $modal-backdrop-opacity: 0.3;
 $primary: #343477;
 $orange: #fd7e14;
 $theme-colors: (
-        'orange': $orange
+  'orange': $orange
 );
 $yiq-contrasted-threshold: 160;
 $primary-200: #eaecef;
@@ -27,7 +27,7 @@ body {
   height: 100%;
 }
 
-//noinspection Stylelint
+/* stylelint-disable selector-no-qualifying-type */
 label.required {
   &::after {
     color: $danger;
