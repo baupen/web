@@ -36,7 +36,10 @@ class PublicController extends BaseDoctrineController
     {
         $path = $pathService->getTransientFolderForReports();
 
-        return $this->tryCreateAttachmentFileResponse($path.'/'.$filename, $filename, true);
+        $response = $this->tryCreateAttachmentFileResponse($path.'/'.$filename, $filename);
+        $response->deleteFileAfterSend();
+
+        return $response;
     }
 
     /**

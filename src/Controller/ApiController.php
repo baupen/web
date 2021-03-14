@@ -122,7 +122,7 @@ class ApiController extends BaseDoctrineController
             }
         }
 
-        return $this->tryCreateInlineFileResponse($path, $mapFile->getFilename(), true);
+        return $this->tryCreateAttachmentFileResponse($path, $mapFile->getFilename());
     }
 
     /**
@@ -139,7 +139,7 @@ class ApiController extends BaseDoctrineController
         $size = $this->getValidImageSizeFromQuery($request->query);
         $path = $imageService->renderMapFileToJpg($mapFile, $size);
 
-        return $this->tryCreateInlineFileResponse($path, 'render.jpg', true);
+        return $this->tryCreateInlineFileResponse($path, 'render.jpg');
     }
 
     /**

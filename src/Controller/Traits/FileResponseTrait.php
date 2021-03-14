@@ -20,15 +20,15 @@ trait FileResponseTrait
 {
     private function tryCreateInlineFileResponse(?string $path, string $filename, bool $cache = false): BinaryFileResponse
     {
-        return $this->tryCreateFileResponse($path, ResponseHeaderBag::DISPOSITION_INLINE, $filename, false, $cache);
+        return $this->tryCreateFileResponse($path, ResponseHeaderBag::DISPOSITION_INLINE, $filename, $cache);
     }
 
-    private function tryCreateAttachmentFileResponse(?string $path, string $filename, bool $deleteFileAfterSend = false): BinaryFileResponse
+    private function tryCreateAttachmentFileResponse(?string $path, string $filename): BinaryFileResponse
     {
-        return $this->tryCreateFileResponse($path, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename, $deleteFileAfterSend, false);
+        return $this->tryCreateFileResponse($path, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename, false);
     }
 
-    private function tryCreateFileResponse(?string $path, string $disposition, string $filename, bool $deleteFileAfterSend, bool $cache)
+    private function tryCreateFileResponse(?string $path, string $disposition, string $filename, bool $cache)
     {
         if (null === $path) {
             throw new NotFoundHttpException();
@@ -37,7 +37,6 @@ trait FileResponseTrait
         $response = new BinaryFileResponse($path);
 
         $response->setContentDisposition($disposition, $filename);
-        $response->deleteFileAfterSend($deleteFileAfterSend);
 
         if ($cache) {
             $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
