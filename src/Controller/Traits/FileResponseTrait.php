@@ -13,21 +13,22 @@ namespace App\Controller\Traits;
 
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait FileResponseTrait
 {
-    private function tryCreateInlineFileResponse(?string $path, string $filename, bool $deleteFileAfterSend = false): BinaryFileResponse
+    private function tryCreateInlineFileResponse(?string $path, string $filename, bool $cache = false): BinaryFileResponse
     {
-        return $this->tryCreateFileResponse($path, ResponseHeaderBag::DISPOSITION_INLINE, $filename, $deleteFileAfterSend);
+        return $this->tryCreateFileResponse($path, ResponseHeaderBag::DISPOSITION_INLINE, $filename, false, $cache);
     }
 
     private function tryCreateAttachmentFileResponse(?string $path, string $filename, bool $deleteFileAfterSend = false): BinaryFileResponse
     {
-        return $this->tryCreateFileResponse($path, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename, $deleteFileAfterSend);
+        return $this->tryCreateFileResponse($path, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename, $deleteFileAfterSend, false);
     }
 
-    private function tryCreateFileResponse(?string $path, string $disposition, string $filename, bool $deleteFileAfterSend)
+    private function tryCreateFileResponse(?string $path, string $disposition, string $filename, bool $deleteFileAfterSend, bool $cache)
     {
         if (null === $path) {
             throw new NotFoundHttpException();
@@ -37,6 +38,12 @@ trait FileResponseTrait
 
         $response->setContentDisposition($disposition, $filename);
         $response->deleteFileAfterSend($deleteFileAfterSend);
+
+        if ($cache) {
+            $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
+            $response->setMaxAge(60 * 60 * 24 * 14); // cache for 14 days
+            $response->setPrivate();
+        }
 
         return $response;
     }
