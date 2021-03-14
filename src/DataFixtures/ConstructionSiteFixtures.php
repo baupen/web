@@ -58,7 +58,8 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
         foreach (SampleServiceInterface::ALL_SAMPLES as $sample) {
             $leadConstructionManager = $constructionManagers[0];
             $constructionSite = $this->sampleService->createSampleConstructionSite($sample, $leadConstructionManager);
-            foreach ($constructionManagers as $constructionManager) {
+            for ($i = 1; $i < count($constructionManagers); ++$i) {
+                $constructionManager = $constructionManagers[$i];
                 $constructionSite->getConstructionManagers()->add($constructionManager);
                 $constructionManager->getConstructionSites()->add($constructionSite);
             }
