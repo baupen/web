@@ -2,10 +2,17 @@
   <h2 class="mt-5">{{ $t('craftsman._plural') }}</h2>
   <p>{{ $t('edit.craftsmen_help') }}</p>
   <div class="btn-group">
-    <add-craftsman-button :construction-site="constructionSite" @added="craftsmen.push($event)" />
-    <import-craftsmen-button :construction-site="constructionSite" :craftsmen="craftsmen" @imported="reload" />
+    <add-craftsman-button
+        :construction-site="constructionSite" @added="craftsmen.push($event)" />
+    <import-craftsmen-button
+        :construction-site="constructionSite" :craftsmen="notDeletedCraftsmen"
+        @imported="reload" />
   </div>
-  <craftsmen-edit-table class="mt-2" :construction-site="constructionSite" :craftsmen="notDeletedCraftsmen" />
+  <craftsmen-edit-table class="mt-2 mb-0" :construction-site="constructionSite" :craftsmen="notDeletedCraftsmen">
+    <template v-slot:caption>
+      <export-craftsmen-button v-if="craftsmen && craftsmen.length > 0" :craftsmen="notDeletedCraftsmen" />
+    </template>
+  </craftsmen-edit-table>
 </template>
 
 <script>
@@ -13,14 +20,16 @@ import AddCraftsmanButton from './Action/AddCraftsmanButton'
 import CraftsmenEditTable from './View/CraftsmenEditTable'
 import { api } from '../services/api'
 import ImportCraftsmenButton from './Action/ImportCraftsmenButton'
+import ExportCraftsmenButton from './Action/ExportCraftsmenButton'
 
 export default {
   components: {
+    ExportCraftsmenButton,
     ImportCraftsmenButton,
     CraftsmenEditTable,
     AddCraftsmanButton
   },
-  data() {
+  data () {
     return {
       craftsmen: null
     }
@@ -33,7 +42,7 @@ export default {
   },
   methods: {
     reload: function () {
-      this.craftsmen = null;
+      this.craftsmen = null
 
       api.getCraftsmen(this.constructionSite)
           .then(craftsmen => this.craftsmen = craftsmen)
@@ -42,7 +51,7 @@ export default {
   computed: {
     notDeletedCraftsmen: function () {
       if (!this.craftsmen) {
-        return null;
+        return null
       }
 
       return this.craftsmen.filter(c => !c.isDeleted)

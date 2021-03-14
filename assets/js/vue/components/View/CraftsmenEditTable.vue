@@ -36,6 +36,9 @@
       </td>
     </tr>
     </tbody>
+    <caption>
+    <slot name="caption"></slot>
+    </caption>
   </table>
 </template>
 

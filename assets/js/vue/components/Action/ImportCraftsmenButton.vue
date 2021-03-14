@@ -1,17 +1,15 @@
 <template>
   <button-with-modal-confirm
       :button-disabled="importing" :title="$t('_action.import_craftsmen.title')"
-      :confirm-title="$t('_action.import_craftsmen.confirm')" :can-confirm="canConfirm"
+      :confirm-title="$tc('_action.import_craftsmen.confirm', this.pendingPost.length)" :can-confirm="canConfirm"
+      @shown="reset"
       @confirm="confirm">
 
     <craftsman-import-form :craftsmen="craftsmen" @imported="importedCraftsmen = $event" />
 
-    <template v-if="transaction">
-      <p v-if="transactionMessages.length" class="alert alert-info white-space-pre-line">
-        {{ transactionMessages.join('\n') }} <br />
-        <small>
-          {{ $t('_action.import_craftsmen.matching_by_email') }}
-        </small>
+    <template v-if="matchingEntriesFound > 0">
+      <p class="alert alert-warning">
+        {{ $tc('_action.import_craftsmen.matching_entries_found', matchingEntriesFound) }}
       </p>
     </template>
   </button-with-modal-confirm>
@@ -37,7 +35,8 @@ export default {
     return {
       importedCraftsmen: null,
       importing: false,
-      importTransaction: null
+      pendingPost: [],
+      matchingEntriesFound: 0
     }
   },
   props: {
@@ -50,75 +49,47 @@ export default {
       required: false
     }
   },
+  watch: {
+    importedCraftsmen: function () {
+      this.matchingEntriesFound = 0
+      this.pendingPost = []
+
+      this.importedCraftsmen.forEach(importedCraftsman => {
+        if (this.craftsmen.find(c => c.email === importedCraftsman.email)) {
+          this.matchingEntriesFound++
+        }
+        this.pendingPost.push(Object.assign({ constructionSite: this.constructionSite['@id'] }, importedCraftsman))
+      })
+    }
+  },
   computed: {
     canConfirm: function () {
-      return !!this.transaction
-    },
-    transaction: function () {
-      if (!this.importedCraftsmen || !this.craftsmen) {
-        return null
-      }
-
-      let patch = []
-      let post = []
-      this.importedCraftsmen.forEach(importedCraftsman => {
-        let existing = this.craftsmen.find(c => c.email === importedCraftsman.email)
-        if (!existing) {
-          post.push(importedCraftsman)
-        } else {
-          patch.push({
-            craftsman: existing,
-            patch: importedCraftsman
-          })
-        }
-      })
-
-      return {
-        post,
-        patch
-      }
-    },
-    transactionMessages: function () {
-      let messages = []
-      if (this.transaction.post.length) {
-        messages.push(this.$tc('_action.import_craftsmen.added', this.transaction.post.length))
-      }
-      if (this.transaction.patch.length) {
-        messages.push(this.$tc('_action.import_craftsmen.overwritten', this.transaction.patch.length))
-      }
-
-      return messages
+      return this.pendingPost.length > 0
     }
   },
   methods: {
+    reset: function () {
+      this.pendingPost = []
+      this.matchingEntriesFound = 0
+    },
     confirm: function () {
-      this.$emit('edit', this.patch)
-
       this.importing = true
-      this.importTransaction = Object.assign({}, this.transaction)
       this.continueImport()
     },
     continueImport: function () {
-      if (this.importTransaction.post.length) {
-        let currentPost = this.importTransaction.post[0]
-        const postWithConstructionSite = Object.assign({}, currentPost, { constructionSite: this.constructionSite['@id'] })
-        api.postCraftsman(postWithConstructionSite)
-            .then(_ => {
-              this.importTransaction.post = this.importTransaction.post.filter(e => e !== currentPost)
-              this.continueImport()
-            })
-      } else if (this.importTransaction.patch.length) {
-        let currentPatch = this.importTransaction.patch[0]
-        api.patch(currentPatch.craftsman, currentPatch.patch)
-            .then(_ => {
-              this.importTransaction.patch = this.importTransaction.patch.filter(e => e !== currentPatch)
-              this.continueImport()
-            })
-      } else {
-        displaySuccess(this.$t('_action.import_craftsmen.finished'))
-        this.importing = false
-        this.$emit('imported')
-      }
+      const payload = this.pendingPost[0]
+      api.postCraftsman(payload)
+          .then(_ => {
+                this.pendingPost.shift()
+
+                if (this.pendingPost.length === 0) {
+                  displaySuccess(this.$t('_action.import_craftsmen.imported'))
+                  this.$emit('imported')
+                } else {
+                  this.continueImport()
+                }
+              }
+          )
     }
   }
 }
