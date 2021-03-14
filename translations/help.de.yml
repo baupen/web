@@ -9,7 +9,7 @@ overview:
   app_login: 'Beim Login in der App, gib %website% als Webseite ein.'
   create: Erfassen
   create_description: 'Nimm mit unserer iOS-App Pendenzen auf.'
-  description: 'Pendenzenmangement in 6 Schritten.'
+  description: 'Pendenzenverwaltung in 6 Schritten.'
   download_ios_app: 'zum App Store'
   inspect: Abschliessen
   inspect_description: 'Schliesse in der iOS-App die umgesetzten Pendenzen ab.'
