@@ -1,7 +1,7 @@
 <template>
   <button-with-modal-confirm
       color="danger"
-      :title="$t('_action.remove_map')" :can-confirm="canConfirm"
+      :title="$t('_action.remove_map.title')" :can-confirm="canConfirm"
       @shown="loadIssueSummary"
       @confirm="confirm">
     <template v-slot:button-content>
@@ -13,7 +13,7 @@
     </p>
 
     <p class="alert alert-info">
-      {{ $t('_action.remove_map_help') }}
+      {{ $t('_action.remove_map.help') }}
     </p>
 
     <delete-form @update="canConfirm = $event" />
@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     confirm: function () {
-      api.delete(this.map, this.$t('_action.messages.success.map_removed'))
+      api.delete(this.map, this.$t('_action.remove_map.removed'))
 
       // reset state for next display
       this.issueSummary = null

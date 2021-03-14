@@ -1,7 +1,7 @@
 <template>
-  <h3 v-if="showTitle">{{ $t('_action.export_issues_filter.title') }}</h3>
+  <h3 v-if="showTitle">{{ $t('_action.export_issues_link.title') }}</h3>
   <p class="alert alert-info">
-    {{ $t('_action.export_issues_filter.help') }}
+    {{ $t('_action.export_issues_link.help') }}
   </p>
 
   <issue-link-form :template="filter" @update="filter = $event" />

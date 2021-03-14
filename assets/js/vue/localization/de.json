@@ -13,7 +13,7 @@
       "title": "Karte hinzufügen"
     },
     "associate_construction_manager": {
-      "associated_construction_manager": "Bauleiter der Baustelle hinzugefügt",
+      "associated": "Bauleiter der Baustelle hinzugefügt",
       "title": "Bauleiter der Baustelle hinzufügen"
     },
     "toggle_association_construction_site": {
@@ -22,7 +22,7 @@
     },
     "close": "Schliessen",
     "compose_craftsman_email": {
-      "confirm": "E-Mail versenden | {count} E-Mails versenden",
+      "send_emails": "E-Mail versenden | {count} E-Mails versenden",
       "title": "E-Mail verfassen",
       "no_template": "Keine Vorlage",
       "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und als umgesetzt markieren.",
@@ -32,28 +32,28 @@
       "sent_emails": "E-Mails versandt"
     },
     "dissociate_construction_manager": {
-      "dissociated_construction_manager": "Bauleiter von Baustelle entfernt",
+      "dissociated": "Bauleiter von Baustelle entfernt",
       "help": "Der Bauleiter wird von der Baustelle entfernt.",
       "title": "Bauleiter von Baustelle entfernen"
     },
     "edit_construction_site": {
-      "edited": "Baustelle gespeichert",
+      "saved": "Baustelle gespeichert",
       "replaced_construction_site_image": "Bild ersetzt",
       "title": "Baustelle bearbeiten"
     },
     "edit_craftsman": {
-      "edited": "Unternehmer gespeichert.",
+      "saved": "Unternehmer gespeichert.",
       "title": "Unternehmer bearbeiten"
     },
     "edit_issues": {
-      "edited": "Pendenzen gespeichert.",
+      "saved": "Pendenzen gespeichert.",
       "replaced_issue_images": "Bild ersetzt.",
       "save_issue_fields": "{fields} von Pendenz setzen | {fields} von {count} Pendenzen setzen",
       "save_issues": "Pendenz speichern | {count} Pendenzen speichern",
       "title": "Pendenzen bearbeiten"
     },
     "edit_map": {
-      "edited": "Karte gespeichert",
+      "saved": "Karte gespeichert",
       "replaced_map_file": "PDF ersetzt",
       "title": "Karte bearbeiten"
     },
@@ -69,7 +69,7 @@
       "help": "Fürs Drucken optimiert: Bringt die Pendenzen platzsparend aufs Papier.",
       "title": ".pdf Bericht"
     },
-    "export_issues_filter": {
+    "export_issues_link": {
       "help": "Immer aktuell: Die Pendenzen schreibgeschützt mit Externen teilen.",
       "title": "Link"
     },
@@ -80,7 +80,8 @@
       "title": "Pendenzen filtern"
     },
     "generate_issues_link": {
-      "title": "Link erstellen"
+      "title": "Link erstellen",
+      "generated": "Link erstellt"
     },
     "generate_issues_report": {
       "download": "herunterladen",
@@ -94,8 +95,9 @@
     },
     "import_craftsmen": {
       "added": "1 wird hinzugefügt|{count} werden hinzugefügt",
-      "import_finished": "Import wurde abgeschlossen",
+      "finished": "Import abgeschlossen",
       "title": "Unternehmer importieren",
+      "confirm": "importieren",
       "matching_by_email": "Duplizierungen werden anhand des E-Mail Feldes verhindert.",
       "overwritten": "1 wird aktualisiert|{count} werden aktualisiert"
     },
@@ -112,7 +114,8 @@
     "remove_issues": {
       "help": "Die Pendenzen werden nirgends mehr angezeigt.",
       "removed": "Pendenzen entfernt.",
-      "title": "Pendenzen entfernen"
+      "title": "Pendenzen entfernen",
+      "confirm": "Eine Pendenz entfernen | {count} Pendenzen entfernen"
     },
     "remove_map": {
       "help": "Nach dem Entfernen können Sie der Karte keine Pendenzen mehr zuweisen.",
@@ -255,7 +258,7 @@
     "subject": "Betreff",
     "templates": {
       "_name": "Vorlage",
-      "common": {
+      "_common": {
         "help": "Mit dem Link in dieser E-Mail können die Pendenzen angeschaut werden. Bitte nach dem Umsetzen entsprechend online markieren.",
         "hi": "Guten Tag,"
       },

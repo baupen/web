@@ -69,7 +69,7 @@ export default {
     },
     generateFilter: function () {
       this.posting = true
-      api.postFilter(this.filterEntity, this.$t('_action.messages.filter_created'))
+      api.postFilter(this.filterEntity, this.$t('_action.generate_issues_link.generated'))
           .then(filter => {
             this.filter = filter
           })

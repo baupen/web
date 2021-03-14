@@ -1,6 +1,6 @@
 <template>
   <button-with-modal-confirm
-      :button-disabled="patching" :title="$t('_action.edit_construction_site')" :can-confirm="canConfirm"
+      :button-disabled="patching" :title="$t('_action.edit_construction_site.title')" :can-confirm="canConfirm"
       @confirm="confirm">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'pencil']" />
@@ -56,14 +56,14 @@ export default {
       this.patching = true
 
       if (this.pendingPatch) {
-        api.patch(this.constructionSite, this.patch, this.$t('_action.messages.success.construction_site_saved'))
+        api.patch(this.constructionSite, this.patch, this.$t('_action.edit_construction_site.saved'))
             .then(_ => {
               this.patch = null
               this.patching = this.pendingChanges > 0
             })
       }
       if (this.image) {
-        api.postConstructionSiteImage(this.constructionSite, this.image, this.$t('_action.messages.success.construction_site_image_replaced'))
+        api.postConstructionSiteImage(this.constructionSite, this.image, this.$t('_action.edit_construction_site.replaced_construction_site_image'))
             .then(_ => {
               this.image = null
               this.patching = this.pendingChanges > 0

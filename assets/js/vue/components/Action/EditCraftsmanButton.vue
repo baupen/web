@@ -1,6 +1,6 @@
 <template>
   <button-with-modal-confirm
-      :button-disabled="patching" :title="$t('_action.edit_craftsman')"
+      :button-disabled="patching" :title="$t('_action.edit_craftsman.title')"
       :confirm-title="$t('_action.save_changes')" :can-confirm="canConfirm"
       @confirm="confirm" >
     <template v-slot:button-content>
@@ -44,7 +44,7 @@ export default {
       this.$emit('edit', this.patch)
 
       this.patching = true
-      api.patch(this.craftsman, this.patch, this.$t('_action.messages.success.craftsman_saved'))
+      api.patch(this.craftsman, this.patch, this.$t('_action.edit_craftsman.saved'))
           .then(_ => { this.patching = false})
     }
   }

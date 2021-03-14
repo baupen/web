@@ -24,12 +24,12 @@
     <ul class="nav nav-tabs" id="export-type-settings">
       <li class="nav-item">
         <a class="nav-link" :class="{'active': exportType === 'report'}" @click="exportType = 'report'">
-          {{ $t('export_issues_button.export_type.report.name') }}
+          {{ $t('_action.export_issues_report.title') }}
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" :class="{'active': exportType === 'link'}" @click="exportType = 'link'">
-          {{ $t('export_issues_button.export_type.link.name') }}
+          {{ $t('_action.export_issues_link.title') }}
         </a>
       </li>
     </ul>

@@ -1,9 +1,9 @@
 <template>
   <p v-if="issue.resolvedAt" class="alert alert-success m-0">
-    {{ this.$t('_action.messages.success.issue_resolved') }}
+    {{ this.$t('_action.resolve_issue.resolved') }}
   </p>
   <button v-else class="btn btn-primary" :disabled="isLoading" @click="resolve">
-    {{ this.$t('_action.resolve_issue') }}
+    {{ this.$t('_action.resolve_issue.title') }}
   </button>
 </template>
 

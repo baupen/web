@@ -1,7 +1,7 @@
 <template>
   <button-with-modal-confirm
-      :button-disabled="importing" :title="$t('_action.import_craftsmen')"
-      :confirm-title="$t('_action.import')" :can-confirm="canConfirm"
+      :button-disabled="importing" :title="$t('_action.import_craftsmen.title')"
+      :confirm-title="$t('_action.import_craftsmen.confirm')" :can-confirm="canConfirm"
       @confirm="confirm">
 
     <craftsman-import-form :craftsmen="craftsmen" @imported="importedCraftsmen = $event" />
@@ -10,7 +10,7 @@
       <p v-if="transactionMessages.length" class="alert alert-info white-space-pre-line">
         {{ transactionMessages.join('\n') }} <br />
         <small>
-          {{ $t('import_craftsmen.matching_by_email') }}
+          {{ $t('_action.import_craftsmen.matching_by_email') }}
         </small>
       </p>
     </template>
@@ -81,10 +81,10 @@ export default {
     transactionMessages: function () {
       let messages = []
       if (this.transaction.post.length) {
-        messages.push(this.$tc('import_craftsmen.added', this.transaction.post.length))
+        messages.push(this.$tc('_action.import_craftsmen.added', this.transaction.post.length))
       }
       if (this.transaction.patch.length) {
-        messages.push(this.$tc('import_craftsmen.overwritten', this.transaction.patch.length))
+        messages.push(this.$tc('_action.import_craftsmen.overwritten', this.transaction.patch.length))
       }
 
       return messages
@@ -115,7 +115,7 @@ export default {
               this.continueImport()
             })
       } else {
-        displaySuccess(this.$t('import_craftsmen.import_finished'))
+        displaySuccess(this.$t('_action.import_craftsmen.finished'))
         this.importing = false
         this.$emit('imported')
       }
