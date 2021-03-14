@@ -195,7 +195,7 @@ class ApiController extends BaseDoctrineController
         $size = $this->getValidImageSizeFromQuery($request->query);
         $path = $imageService->resizeConstructionSiteImage($constructionSiteImage, $size);
 
-        return $this->tryCreateInlineFileResponse($path, $constructionSiteImage->getFilename());
+        return $this->tryCreateInlineFileResponse($path, $constructionSiteImage->getFilename(), true);
     }
 
     /**
@@ -251,7 +251,7 @@ class ApiController extends BaseDoctrineController
         $size = $this->getValidImageSizeFromQuery($request->query);
         $path = $imageService->resizeIssueImage($issueImage, $size);
 
-        return $this->tryCreateInlineFileResponse($path, $issueImage->getFilename());
+        return $this->tryCreateInlineFileResponse($path, $issueImage->getFilename(), true);
     }
 
     /**

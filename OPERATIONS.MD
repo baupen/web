@@ -20,14 +20,19 @@ if you want to use a staging area, run the following commands:
 - ./vendor/bin/agnes run *:*:staging restore_db
 ```
 
-## API
+## cron commands
 
-API is automatically documented. Visit `/api`.
+Some commands should run regularly to optimized memory usage & security.
+
+| command | proposed schedule |
+|----------------------------------------------------| --- |
+| `php bin/console app:cache:clear --renders --reports` | sunday every week |
+| `php bin/console app:authentication:refresh` | every 30 minutes |
+
+## Status
 
 Apps request `/api/status` after each sync. You can place a message there which is then displayed in the app.
 For details investigate in `./src/Controller/ApiController.php` the method `statusAction`.
-
-Apps expect a `422` return code if their API requests are wrong (e.g. API has moved).
 
 ## Backup
 
@@ -78,3 +83,17 @@ http://example.com/somewhere?_switch_user=_exit
 `ssh-copy-id -i ~/.ssh/id_rsa.pub username@domain` to add ssh key  
 `cat ~/.ssh/id_rsa.pub` to query the active ssh key  
 `ssh-keygen -t rsa -b 4096 -C "username@domain" && eval $(ssh-agent -s) && ssh-add ~/.ssh/id_rsa` generate a new key & add it to ssh  
+
+## Migrate
+
+Migration is automatic at minor versions (any combination is supported; downgrades may suffer data loss).
+For major versions, manual intervention is necessary.
+
+### 1.0 -> 2.0
+
+Steps:
+- install the new application; ensure `persistent` and `transient` folders are linked as before
+- run `php bin/console app:migrate:sqlite` to copy sqlite data into mysql database
+- run `php bin/console app:authorization:refresh` to authorize users on whitelists
+- run `php bin/console app:cache:clear --construction-sites --renders --force` to remove the old cache
+- run `php bin/console app:cache:warmup` to warmup the cache

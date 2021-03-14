@@ -21,12 +21,13 @@ The **Frontend** isin js, using Vue.JS 3. As there are fewer conventions out the
 | `./components/View` | view structures (tables, grids) | abstract data display / filtering |
 | `./services` | non-VueJS specific code | abstract validation, api & more |
 
-As we do not use a store at the moment, all data must be stored within components. To avoid huge parent components, (a) push data to the smallest child (but keep it at the highest parent where multiple children use it) and (b) execute requests as low as possible.
+As we do not use a store at the moment, all data must be stored within components. 
+To avoid huge parent components, 
+(a) push data to the smallest child (but keep it at the highest parent where multiple children use it) and 
+(b) execute requests in the most specific component as possible.
 
-Frontend technical dept:
-- [ ] Translations need a clean concept. Its difficult to find a good compromise between purpose / domain ordering
-- [ ] IssueTable & its filters do too much. Less than optimal UX & hard to maintain.
-- [ ] Actions should execute the requests themselves
+The API is automatically documented. Visit `/api`.
+Apps expect a `422` return code if their API requests are wrong (e.g. API has moved).
 
 ## Developing
 
