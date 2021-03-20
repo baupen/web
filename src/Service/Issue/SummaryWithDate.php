@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Entity;
+namespace App\Service\Issue;
 
-class IssueSummaryWithDate extends IssueSummary
+class SummaryWithDate extends Summary
 {
     /**
      * @var string

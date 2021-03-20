@@ -11,7 +11,6 @@
 
 namespace App\Repository;
 
-use App\Api\Entity\IssueSummary;
 use App\Entity\Issue;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -60,32 +59,6 @@ class IssueRepository extends EntityRepository
         throw new \Exception('too many retries', 0, $lastException);
     }
 
-    public function createSummary(string $rootAlias, QueryBuilder $queryBuilder): IssueSummary
-    {
-        $issueSummary = new IssueSummary();
-
-        $newCount = $this->filterAndCount($rootAlias, $queryBuilder, [$this, 'filterNewIssues']);
-        $issueSummary->setNewCount($newCount);
-
-        $openCount = $this->filterAndCount($rootAlias, $queryBuilder, [$this, 'filterOpenIssues']);
-        $issueSummary->setOpenCount($openCount);
-
-        $inspectableCount = $this->filterAndCount($rootAlias, $queryBuilder, [$this, 'filterInspectableIssues']);
-        $issueSummary->setInspectableCount($inspectableCount);
-
-        $closedCount = $this->filterAndCount($rootAlias, $queryBuilder, [$this, 'filterClosedIssues']);
-        $issueSummary->setClosedCount($closedCount);
-
-        return $issueSummary;
-    }
-
-    private function filterAndCount(string $rootAlias, QueryBuilder $builder, callable $filter): int
-    {
-        $filteredBuilder = $filter($rootAlias, clone $builder);
-
-        return $this->countResult($rootAlias, $filteredBuilder);
-    }
-
     public function filterNewIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
     {
         $builder->andWhere($rootAlias.'.registeredAt IS NULL');
@@ -115,11 +88,5 @@ class IssueRepository extends EntityRepository
         $builder->andWhere($rootAlias.'.closedAt IS NOT NULL');
 
         return $builder;
-    }
-
-    private function countResult(string $rootAlias, QueryBuilder $builder): int
-    {
-        return $builder->select('count('.$rootAlias.')')
-            ->getQuery()->getSingleScalarResult();
     }
 }

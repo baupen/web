@@ -13,6 +13,7 @@ namespace App\Api\DataProvider;
 
 use App\Api\DataProvider\Base\NoPaginationDataProvider;
 use App\Entity\Issue;
+use App\Service\Interfaces\IssueServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,15 +27,15 @@ class IssueSummaryDataProvider extends NoPaginationDataProvider
     private $serializer;
 
     /**
-     * @var ManagerRegistry
+     * @var IssueServiceInterface
      */
-    private $manager;
+    private $issueService;
 
-    public function __construct(SerializerInterface $serializer, ManagerRegistry $managerRegistry, iterable $collectionExtensions = [])
+    public function __construct(SerializerInterface $serializer, ManagerRegistry $managerRegistry, IssueServiceInterface $issueService, iterable $collectionExtensions = [])
     {
         parent::__construct($managerRegistry, $collectionExtensions);
         $this->serializer = $serializer;
-        $this->manager = $managerRegistry;
+        $this->issueService = $issueService;
     }
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
@@ -47,7 +48,7 @@ class IssueSummaryDataProvider extends NoPaginationDataProvider
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
         $rootAlias = $queryBuilder->getRootAliases()[0];
 
-        $summary = $this->manager->getRepository(Issue::class)->createSummary($rootAlias, $queryBuilder);
+        $summary = $this->issueService->createSummary($rootAlias, $queryBuilder);
         $json = $this->serializer->serialize($summary, 'json');
 
         return new JsonResponse($json, Response::HTTP_OK, [], true);
