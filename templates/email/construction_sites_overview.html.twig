@@ -1,0 +1,46 @@
+{% extends "email/_base.html.twig" %}
+
+{% trans_default_domain "email" %}
+
+{% macro overview_table_row(title, overview) %}
+    <tr>
+        <td>{{ title }}</td>
+        <td>{{ overview.open }} ({{ overview.openDelta }})</td>
+        <td>{{ overview.resolved }} ({{ overview.resolvedDelta }})</td>
+        <td>{{ overview.closed }} ({{ overview.closedDelta }})</td>
+    </tr>
+{% endmacro %}
+
+{% import _self as _local %}
+
+{% block body %}
+    <p>
+        {{ "construction_sites_overview.message"|trans }}
+    </p>
+    {% for constructionSiteOverview in body.constructionSiteOverviews %}
+        <spacer size="15"></spacer>
+        <h2>{{ constructionSiteOverview.name }}</h2>
+        <p>
+            <a href="{{ constructionSiteOverview.linkDashboard }}">
+                {{ "construction_sites_overview.to_dashboard"|trans }}
+            </a>
+        </p>
+        <spacer size="5"></spacer>
+        <table>
+            <thead>
+            <tr>
+                <th>Unternehmer</th>
+                <th>Offen</th>
+                <th>Umgesetzt</th>
+                <th>Abgeschlossen</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for craftsmanOverview in constructionSiteOverview.craftsmenOverview %}
+                {{ _local.overview_table_row(craftsmanOverview.name, craftsmanOverview) }}
+            {% endfor %}
+            {{ _local.overview_table_row({{ "construction_sites_overview.total"|trans }}, constructionSiteOverview.overview) }}
+            </tbody>
+        </table>
+    {% endfor %}
+{% endblock %}

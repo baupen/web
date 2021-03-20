@@ -15,7 +15,6 @@ use App\Api\DataProvider\Base\NoPaginationDataProvider;
 use App\Entity\Issue;
 use App\Service\Interfaces\IssueServiceInterface;
 use DateInterval;
-use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,9 +49,10 @@ class IssueTimeseriesDataProvider extends NoPaginationDataProvider
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
         $rootAlias = $queryBuilder->getRootAliases()[0];
 
-        $backtrackDate = new DateTime('today - 1 month');
+        $lastPeriodEnd = new \DateTime('today');
         $stepSize = new DateInterval('P1D');
-        $summaries = $this->issueService->getTimeseries($rootAlias, $queryBuilder, $backtrackDate, $stepSize);
+        $stepCount = 30;
+        $summaries = $this->issueService->createTimeseries($rootAlias, $queryBuilder, $lastPeriodEnd, $stepSize, $stepCount);
 
         $json = $this->serializer->serialize($summaries, 'json');
 

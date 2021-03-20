@@ -24,6 +24,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EmailService implements EmailServiceInterface
@@ -59,6 +60,11 @@ class EmailService implements EmailServiceInterface
     private $mailer;
 
     /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    /**
      * @var string
      */
     private $mailerFromEmail;
@@ -71,7 +77,7 @@ class EmailService implements EmailServiceInterface
     /**
      * EmailService constructor.
      */
-    public function __construct(TranslatorInterface $translator, LoggerInterface $logger, RequestStack $request, UrlGeneratorInterface $urlGenerator, ManagerRegistry $registry, MailerInterface $mailer, string $mailerFromEmail, string $supportEmail)
+    public function __construct(TranslatorInterface $translator, LoggerInterface $logger, RequestStack $request, UrlGeneratorInterface $urlGenerator, ManagerRegistry $registry, MailerInterface $mailer, SerializerInterface $serializer, string $mailerFromEmail, string $supportEmail)
     {
         $this->translator = $translator;
         $this->logger = $logger;
@@ -79,6 +85,7 @@ class EmailService implements EmailServiceInterface
         $this->urlGenerator = $urlGenerator;
         $this->manager = $registry->getManager();
         $this->mailer = $mailer;
+        $this->serializer = $serializer;
         $this->mailerFromEmail = $mailerFromEmail;
         $this->supportEmail = $supportEmail;
     }
@@ -93,6 +100,21 @@ class EmailService implements EmailServiceInterface
             ->subject($subject)
             ->textTemplate('email/register_confirm.txt.twig')
             ->htmlTemplate('email/register_confirm.html.twig')
+            ->context($entity->getContext());
+
+        return $this->sendAndStoreEMail($message, $entity);
+    }
+
+    public function sendConstructionSitesOverview(ConstructionManager $constructionManager, array $tableWithLinks): bool
+    {
+        $json = $this->serializer->serialize($tableWithLinks, 'json');
+        $entity = Email::create(Email::TYPE_CONSTRUCTION_SITES_OVERVIEW, $constructionManager, null, $json, true);
+        $subject = $this->translator->trans('construction_sites_overview.subject', ['%page%' => $this->getCurrentPage()], 'email');
+
+        $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
+            ->subject($subject)
+            ->textTemplate('email/construction_sites_overview.txt.twig')
+            ->htmlTemplate('email/construction_sites_overview.html.twig')
             ->context($entity->getContext());
 
         return $this->sendAndStoreEMail($message, $entity);

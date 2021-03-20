@@ -33,6 +33,14 @@ class Summary
      */
     private $closedCount = 0;
 
+    public function writeFrom(self $summary)
+    {
+        $this->newCount = $summary->getNewCount();
+        $this->openCount = $summary->getOpenCount();
+        $this->inspectableCount = $summary->getInspectableCount();
+        $this->closedCount = $summary->getClosedCount();
+    }
+
     public function getNewCount(): int
     {
         return $this->newCount;

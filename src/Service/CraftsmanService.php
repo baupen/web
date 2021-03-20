@@ -16,6 +16,8 @@ use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Service\Craftsman\Statistics;
 use App\Service\Interfaces\CraftsmanServiceInterface;
+use App\Service\Interfaces\IssueServiceInterface;
+use App\Service\Issue\Summary;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -27,11 +29,19 @@ class CraftsmanService implements CraftsmanServiceInterface
     private $manager;
 
     /**
-     * CraftsmanService constructor.
+     * @var IssueServiceInterface
      */
-    public function __construct(ManagerRegistry $manager)
+    private $issueService;
+
+    /**
+     * CraftsmanService constructor.
+     *
+     * @param IssueServiceInterface $issueService
+     */
+    public function __construct(ManagerRegistry $manager, Interfaces\IssueServiceInterface $issueService)
     {
         $this->manager = $manager;
+        $this->issueService = $issueService;
     }
 
     /**
@@ -41,12 +51,13 @@ class CraftsmanService implements CraftsmanServiceInterface
      */
     public function createStatisticLookup(array $craftsmen): array
     {
-        $statisticsDictionary = [];
-        foreach ($craftsmen as $craftsman) {
-            $statisticsDictionary[$craftsman->getId()] = new Statistics();
-        }
+        /** @var Summary[] $craftsmanIssueSummaryLookup */
+        $craftsmanIssueSummaryLookup = $this->createIssueSummaryLookup($craftsmen);
 
-        $this->createIssueSummaryLookup($craftsmen, $statisticsDictionary);
+        $statisticsDictionary = [];
+        foreach ($craftsmanIssueSummaryLookup as $craftsmanId => $issueSummary) {
+            $statisticsDictionary[$craftsmanId] = Statistics::createWithSummary($issueSummary);
+        }
 
         $this->countUnreadIssues($craftsmen, $statisticsDictionary);
         $this->countOverdueIssues($craftsmen, $statisticsDictionary);
@@ -58,36 +69,73 @@ class CraftsmanService implements CraftsmanServiceInterface
         return $statisticsDictionary;
     }
 
-    private function createIssueSummaryLookup(array $craftsmen, array $statisticsDictionary)
+    public function getCurrentAndPastSummaryLookup(array $craftsmen, \DateTime $pastDate): array
     {
+        $issueSummaries = $this->createIssueSummaryLookup($craftsmen);
+
+        $issueRepository = $this->manager->getRepository(Issue::class);
+        $rootAlias = 'i';
+        $queryBuilder = $this->getCraftsmanIssuesQueryBuilder($rootAlias, $craftsmen)->addSelect('identity('.$rootAlias.'.craftsman) AS craftsman');
+        $stateChangeIssues = $issueRepository->getStateChangeIssues($queryBuilder, $rootAlias, $pastDate);
+
+        $stateChangeIssuesByCraftsman = [];
+        foreach ($this->getCraftsmanIds($craftsmen) as $craftsmanId) {
+            $stateChangeIssuesByCraftsman[$craftsmanId] = [];
+        }
+
+        foreach ($stateChangeIssues as $stateChangeIssue) {
+            $craftsman = $stateChangeIssue['craftsman'];
+            $stateChangeIssuesByCraftsman[$craftsman][] = $stateChangeIssue;
+        }
+
+        $craftsmanSummaries = [];
+        foreach ($issueSummaries as $craftsmanId => $issueSummary) {
+            $stateChangeIssues = $stateChangeIssuesByCraftsman[$craftsmanId];
+            list($deltaSummary) = $this->issueService->createDeltaSummaries($issueSummary, $stateChangeIssues, $pastDate);
+            $craftsmanSummaries[$craftsmanId] = [$issueSummary, $deltaSummary];
+        }
+
+        return $craftsmanSummaries;
+    }
+
+    private function createIssueSummaryLookup(array $craftsmen): array
+    {
+        $summaryLookup = [];
+        foreach ($craftsmen as $craftsman) {
+            $summaryLookup[$craftsman->getId()] = new Summary();
+        }
+
         $issueRepository = $this->manager->getRepository(Issue::class);
 
         $rootAlias = 'i';
+        $countSelectExpression = 'COUNT('.$rootAlias.')';
         $queryBuilder = $this->getCraftsmanIssuesQueryBuilder($rootAlias, $craftsmen);
 
         $queryBuilderOpenIssues = $issueRepository->filterOpenIssues($rootAlias, clone $queryBuilder);
         $this->groupByCraftsmanAndEvaluate(
-            $queryBuilderOpenIssues, $statisticsDictionary, 'COUNT(i)',
-            function (Statistics $statistics, $value) {
-                $statistics->getIssueSummary()->setOpenCount($value);
+            $queryBuilderOpenIssues, $countSelectExpression,
+            function (string $craftsmanId, $value) use ($summaryLookup) {
+                $summaryLookup[$craftsmanId]->setOpenCount($value);
             }
         );
 
         $queryBuilderResolvedIssues = $issueRepository->filterInspectableIssues($rootAlias, clone $queryBuilder);
         $this->groupByCraftsmanAndEvaluate(
-            $queryBuilderResolvedIssues, $statisticsDictionary, 'COUNT(i)',
-            function (Statistics $statistics, $value) {
-                $statistics->getIssueSummary()->setInspectableCount($value);
+            $queryBuilderResolvedIssues, $countSelectExpression,
+            function (string $craftsmanId, $value) use ($summaryLookup) {
+                $summaryLookup[$craftsmanId]->setInspectableCount($value);
             }
         );
 
         $queryBuilderClosedIssues = $issueRepository->filterClosedIssues($rootAlias, clone $queryBuilder);
         $this->groupByCraftsmanAndEvaluate(
-            $queryBuilderClosedIssues, $statisticsDictionary, 'COUNT(i)',
-            function (Statistics $statistics, $value) {
-                $statistics->getIssueSummary()->setClosedCount($value);
+            $queryBuilderClosedIssues, $countSelectExpression,
+            function (string $craftsmanId, $value) use ($summaryLookup) {
+                $summaryLookup[$craftsmanId]->setClosedCount($value);
             }
         );
+
+        return $summaryLookup;
     }
 
     /**
@@ -101,9 +149,9 @@ class CraftsmanService implements CraftsmanServiceInterface
             ->andWhere('i.registeredAt > c.lastVisitOnline OR c.lastVisitOnline IS NULL');
 
         $this->groupByCraftsmanAndEvaluate(
-            $queryBuilder, $statisticsDictionary, 'COUNT(i)',
-            function (Statistics $statistics, $value) {
-                $statistics->setIssueUnreadCount($value);
+            $queryBuilder, 'COUNT(i)',
+            function (string $craftsmanId, $value) use ($statisticsDictionary) {
+                $statisticsDictionary[$craftsmanId]->setIssueUnreadCount($value);
             }
         );
     }
@@ -120,9 +168,9 @@ class CraftsmanService implements CraftsmanServiceInterface
             ->setParameter(':now', new \DateTime());
 
         $this->groupByCraftsmanAndEvaluate(
-            $queryBuilder, $statisticsDictionary, 'COUNT(i)',
-            function (Statistics $statistics, $value) {
-                $statistics->setIssueOverdueCount($value);
+            $queryBuilder, 'COUNT(i)',
+            function (string $craftsmanId, int $value) use ($statisticsDictionary) {
+                $statisticsDictionary[$craftsmanId]->setIssueOverdueCount($value);
             }
         );
     }
@@ -137,9 +185,9 @@ class CraftsmanService implements CraftsmanServiceInterface
             ->andWhere('i.deadline IS NOT NULL');
 
         $this->groupByCraftsmanAndEvaluate(
-            $queryBuilder, $statisticsDictionary, 'MIN(i.deadline)',
-            function (Statistics $statistics, $value) {
-                $statistics->setNextDeadline(UTCDateTimeType::tryParseDateTime($value));
+            $queryBuilder, 'MIN(i.deadline)',
+            function (string $craftsmanId, $value) use ($statisticsDictionary) {
+                $statisticsDictionary[$craftsmanId]->setNextDeadline(UTCDateTimeType::tryParseDateTime($value));
             }
         );
     }
@@ -155,9 +203,9 @@ class CraftsmanService implements CraftsmanServiceInterface
             ->andWhere($rootAlias.'.registeredAt IS NOT NULL');
 
         $this->groupByCraftsmanAndEvaluate(
-            $queryBuilder, $statisticsDictionary, 'MAX(i.resolvedAt)',
-            function (Statistics $statistics, $value) {
-                $statistics->setLastIssueResolved(UTCDateTimeType::tryParseDateTime($value));
+            $queryBuilder, 'MAX(i.resolvedAt)',
+            function (string $craftsmanId, $value) use ($statisticsDictionary) {
+                $statisticsDictionary[$craftsmanId]->setLastIssueResolved(UTCDateTimeType::tryParseDateTime($value));
             }
         );
     }
@@ -184,7 +232,7 @@ class CraftsmanService implements CraftsmanServiceInterface
         return $queryBuilder;
     }
 
-    private function groupByCraftsmanAndEvaluate(QueryBuilder $queryBuilder, array $statisticsDictionary, string $selectExpression, \Closure $processResult)
+    private function groupByCraftsmanAndEvaluate(QueryBuilder $queryBuilder, string $selectExpression, \Closure $processResult)
     {
         $rootAlias = $queryBuilder->getRootAliases()[0];
         $queryBuilder->groupBy($rootAlias.'.craftsman')
@@ -195,7 +243,7 @@ class CraftsmanService implements CraftsmanServiceInterface
 
         foreach ($nextDeadlineResult as $entry) {
             list($craftsmanId, $value) = array_values($entry);
-            $processResult($statisticsDictionary[$craftsmanId], $value);
+            $processResult($craftsmanId, $value);
         }
     }
 

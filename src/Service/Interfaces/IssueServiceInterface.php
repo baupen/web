@@ -20,7 +20,9 @@ interface IssueServiceInterface
     /**
      * @return SummaryWithDate[]
      */
-    public function getTimeseries(string $rootAlias, QueryBuilder $queryBuilder, \DateTime $backtrackDate, \DateInterval $stepSize): array;
+    public function createTimeseries(string $rootAlias, QueryBuilder $queryBuilder, \DateTime $lastPeriodEnd, \DateInterval $stepSize, int $stepCount): array;
+
+    public function createDeltaSummaries(Summary $summary, array $stateChangeIssues, \DateTime $lastPeriodEnd, \DateInterval $stepSize = null, int $stepCount = 0): array;
 
     public function createSummary(string $rootAlias, QueryBuilder $queryBuilder): Summary;
 }

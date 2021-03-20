@@ -22,4 +22,6 @@ interface CraftsmanServiceInterface
      * @return Statistics[]
      */
     public function createStatisticLookup(array $craftsmen): array;
+
+    public function getCurrentAndPastSummaryLookup(array $craftsmen, \DateTime $pastDate): array;
 }

@@ -55,6 +55,14 @@ class Statistics
         $this->issueSummary = new Summary();
     }
 
+    public static function createWithSummary(Summary $summary)
+    {
+        $self = new self();
+        $self->issueSummary = $summary;
+
+        return $summary;
+    }
+
     public function writeFrom(self $statistics)
     {
         $this->issueSummary = $statistics->getIssueSummary();
@@ -66,7 +74,7 @@ class Statistics
         $this->lastIssueResolved = $statistics->getLastIssueResolved();
     }
 
-    public function getIssueSummary(): Summary
+    public function getIssueSummary(): ?Summary
     {
         return $this->issueSummary;
     }

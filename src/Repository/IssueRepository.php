@@ -59,6 +59,18 @@ class IssueRepository extends EntityRepository
         throw new \Exception('too many retries', 0, $lastException);
     }
 
+    public function getStateChangeIssues(QueryBuilder $queryBuilder, string $rootAlias, \DateTime $backtrackDate): array
+    {
+        $queryBuilder->addSelect($rootAlias.'.registeredAt registeredAt, '.$rootAlias.'.resolvedAt resolvedAt, '.$rootAlias.'.closedAt closedAt');
+        $queryBuilder
+            ->andWhere($rootAlias.'.registeredAt > :backtrack_1 OR '.$rootAlias.'.resolvedAt > :backtrack_2 OR '.$rootAlias.'.closedAt > :backtrack_3')
+            ->setParameter(':backtrack_1', $backtrackDate)
+            ->setParameter(':backtrack_2', $backtrackDate)
+            ->setParameter(':backtrack_3', $backtrackDate);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
     public function filterNewIssues(string $rootAlias, QueryBuilder $builder): QueryBuilder
     {
         $builder->andWhere($rootAlias.'.registeredAt IS NULL');
