@@ -111,7 +111,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
                 } else {
                     $query['constructionSites.id'] = $ownConstructionSiteIds;
                 }
-                
+
                 return;
             }
         }

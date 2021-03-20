@@ -1,25 +1,40 @@
 {% extends '_base.html.twig' %}
 
 {% block layout %}
-    <section class="center-wrapper">
-        <div class="center-content {% if wide is defined %}wide{% endif %}">
-            <div class="center-content-primary shadow">
-                <h1>{{ block("title") }}</h1>
-
-                <p class="text-secondary">
-                    {{ block("description") }}
-                </p>
-
-                {% block form_content %}
-                    <div class="form-wrapper">
-                        {{ form(form) }}
-                    </div>
-                {% endblock %}
-            </div>
-            <div class="center-content-secondary">
-                {% block secondary_content %}
-                {% endblock %}
-            </div>
+<section class="center-wrapper">
+    <div class="center-content {% if wide is defined %}wide{% endif %}">
+        <div class="center-content-secondary">
+            <p class="mb-0 text-right">
+                {% if app.request.locale == "de" %}
+                    de
+                {% else %}
+                    <a href="{{ path("set_locale", {"locale": "de", "return_to": app.request.requestUri}) }}">de</a>
+                {% endif %}
+                |
+                {% if app.request.locale == "it" %}
+                    it
+                {% else %}
+                    <a href="{{ path("set_locale", {"locale": "it", "return_to": app.request.requestUri}) }}">it</a>
+                {% endif %}
+            </p>
         </div>
-    </section>
+        <div class="center-content-primary shadow">
+            <h1>{{ block("title") }}</h1>
+
+            <p class="text-secondary">
+                {{ block("description") }}
+            </p>
+
+            {% block form_content %}
+                <div class="form-wrapper">
+                    {{ form(form) }}
+                </div>
+            {% endblock %}
+        </div>
+        <div class="center-content-secondary">
+            {% block secondary_content %}
+            {% endblock %}
+        </div>
+    </div>
+</section>
 {% endblock %}
