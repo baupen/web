@@ -1,17 +1,26 @@
+connect_app:
+  activation_code: 'Codice di attivazione'
+  description: 'Collega il tuo account all''app per utilizzare tutte le funzioni.'
+  download_ios_app: 'Scarica l''applicazione iOS'
+  open_ios_app: 'Aprire l''applicazione iOS'
+  or: oppure/o
+  title: 'Connettiti con l''app'
 overview:
+  app_login: 'Quando si accede all''app, inserire %website% come sito Web.'
   create: Registrare
   create_description: 'Registra le pendenze con la nostra app iOS.'
-  description: 'Gestione delle pendenze in 6 passaggi.'
+  description: 'Gestione delle pendenze in 6 passi.'
   download_ios_app: 'all''App Store'
   inspect: Concludere
   inspect_description: 'Contrassegnare le pendenze eseguite come completate nell''app iOS.'
   manage: Gestire
   manage_description: 'Cercare, modificare ed esportare le pendenze inserite nell''elenco.'
   notify: Notificare
-  notify_description: 'Informare gli operai sulle nuove tendenze.'
+  notify_description: 'Informare gli imprenditori sulle nuove questioni in sospeso.'
   populate: Inserire
   populate_description: 'Ripulire le nuove pendenze nella casella d''attesa.'
+  send_app_links: 'Inviare e-mail con le informazioni di accesso'
   start: 'Per l''uso'
   title: 'Funziona così.'
-  wait: Riscontro
+  wait: Feedback
   wait_description: 'Ottieni una risposta dagli operai. Questi possono lavorare sulle loro pendenze con un collegamento personale e contrassegnarli come completati. Buono per gli smartphone!'

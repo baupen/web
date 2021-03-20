@@ -29,8 +29,11 @@ class I18nController extends BaseDoctrineController
         if (\in_array($locale, ['de', 'it'], true)) {
             $request->getSession()->set('_locale', $locale);
             $request->setLocale($locale);
-            $this->getUser()->setLocale($locale);
-            $this->fastSave($this->getUser());
+
+            if ($this->getUser()) {
+                $this->getUser()->setLocale($locale);
+                $this->fastSave($this->getUser());
+            }
         }
 
         return $this->redirect($request->query->get('return_to', $this->generateUrl('index')));

@@ -7,13 +7,14 @@ introduction:
     craftsmen: Operaio|Operai
     earlier_than: 'prima del %date%'
     later_than: 'dopo il %date%'
-    maps: Mappa|Mappe
+    maps: 'Piano di costruzione|Piani di costruzione'
     not: 'non %state%'
-    or: oppure
-    time: Tempo
+    or: oppure/o
+    time: Ora
     trades: Settore|Settori
+  paginator: '%start% - %end%di %total%'
 issues:
-  detailed: 'Dettagli delle pendenze per mappa'
+  detailed: 'dettagli in sospeso secondo il piano di costruzione'
   with_images: 'con immagini'
 table:
   by_craftsman: 'Pendenze per operaio'

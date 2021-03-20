@@ -2,10 +2,10 @@ email: E-Mail
 family_name: Nachname
 given_name: Vorname
 password: Passwort
-phone: 'Telefonnummer'
+phone: Telefonnummer
 plain_password: Passwort
 profile: Profil
 repeat_plain_password: 'Passwort wiederholen'
 trait:
   name: Benutzer
-  name_and_email_optional: "Name & Telefonnummer werden einzig zur Korrespondenz mit den Unternehmern genutzt. Die Angabe ist freiwillig."
+  name_and_email_optional: 'Name & Telefonnummer werden einzig zur Korrespondenz mit den Unternehmern genutzt. Die Angabe ist freiwillig.'

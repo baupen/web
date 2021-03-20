@@ -7,8 +7,11 @@ date_time:
   Tue: Ma
   Wed: Me
 error:
-  form_validation_failed: 'L’elaborazione dei dati non può essere completata. Sono stati riempiti correttamente tutti i campi necessari?'
+  form_validation_failed: 'L''elaborazione non può essere completata. Tutti i campi richiesti sono compilati correttamente?'
+legacy:
+  warning:
+    redirected_from_legacy_url: 'Siete stati reindirizzati automaticamente perché il link è cambiato. Per favore, aggiornate i vostri segnalibri. (Plurale si o no?)'
 outdated:
-  update_now: 'Attualizzare il Browser'
-  update_to_view_correctly: 'Si prega di aggiornare il proprio browser per poter utilizzare questo sito Web correttamente.'
+  update_now: 'Aggiorna il browser ora '
+  update_to_view_correctly: 'La pagina potrebbe quindi non essere visualizzata correttamente.'
   your_browser_is_outdated: 'Il tuo browser non è supportato!'

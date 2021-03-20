@@ -78,10 +78,12 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
             $this->ensureRenderQuery($resourceClass, $operationName, $existingFilter);
         }
 
+        $context['filters'] = $existingFilter;
+
         return $this->decoratedCollectionDataProvider->getCollection($resourceClass, $operationName, $context);
     }
 
-    private function ensureConstructionManagerQueryValid(ConstructionManager $manager, string $resourceClass, array $query): void
+    private function ensureConstructionManagerQueryValid(ConstructionManager $manager, string $resourceClass, array &$query): void
     {
         if ($manager->getCanAssociateSelf() && (ConstructionSite::class === $resourceClass || ConstructionManager::class === $resourceClass)) {
             return;
@@ -94,17 +96,21 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 
         if (!$manager->getCanAssociateSelf()) {
             if (ConstructionSite::class === $resourceClass) {
-                $this->ensureSearchFilterValid($query, 'constructionManagers.id', $manager->getId());
+                if (isset($query['constructionManagers.id'])) {
+                    $this->ensureSearchFilterValid($query, 'constructionManagers.id', $manager->getId());
+                } else {
+                    $query['constructionManagers.id'] = [$manager->getId()];
+                }
 
                 return;
             }
 
             if (ConstructionManager::class === $resourceClass) {
-                if ($manager->getCanAssociateSelf()) {
-                    return;
+                if (isset($query['constructionSites.id'])) {
+                    $this->ensureSearchFilterValid($query, 'constructionSites.id', $ownConstructionSiteIds);
+                } else {
+                    $query['constructionSites.id'] = $ownConstructionSiteIds;
                 }
-
-                $this->ensureSearchFilterValid($query, 'constructionSites.id', $ownConstructionSiteIds);
 
                 return;
             }
