@@ -96,15 +96,11 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 
         if (!$manager->getCanAssociateSelf()) {
             if (ConstructionSite::class === $resourceClass) {
-<<<<<<< HEAD
-                $this->ensureSearchFilterValid($query, 'constructionManagers.id', $manager->getId());
-=======
                 if (isset($query['constructionManagers.id'])) {
                     $this->ensureSearchFilterValid($query, 'constructionManagers.id', $manager->getId());
                 } else {
                     $query['constructionManagers.id'] = [$manager->getId()];
                 }
->>>>>>> bd89196... Resolve #465
 
                 return;
             }
@@ -115,12 +111,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
                 } else {
                     $query['constructionSites.id'] = $ownConstructionSiteIds;
                 }
-
-<<<<<<< HEAD
-                $this->ensureSearchFilterValid($query, 'constructionSites.id', $ownConstructionSiteIds);
-
-=======
->>>>>>> bd89196... Resolve #465
+                
                 return;
             }
         }
