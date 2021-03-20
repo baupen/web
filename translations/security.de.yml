@@ -15,7 +15,7 @@ recover_confirm:
   description: 'Setzen Sie Ihr neues Passwort.'
   error:
     invalid_hash: 'Dieser Link ist nicht mehr gültig. Beachten Sie, das jeder Link nur einmal benutzt werden kann.'
-    password_too_short: 'Das Password ist zu kurz. Bitte mindestens 8 Zeichen angeben.'
+    password_too_short: 'Das Passwort ist zu kurz. Bitte mindestens 8 Zeichen angeben.'
     passwords_do_not_match: 'Die Passwörter stimmen nicht überein.'
   submit: 'Passwort setzen'
   success:

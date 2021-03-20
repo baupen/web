@@ -1,3 +1,3 @@
 entity:
-  name: Operaio
-trade: Settore
+  name: 'Operaio/ Imprenditore'
+trade: 'Settore/ Commercio/ Unione'
