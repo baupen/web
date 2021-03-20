@@ -79,7 +79,8 @@ class ConstructionSiteTest extends ApiTestCase
 
         // ensure filter is enforced for associated construction managers
         $associatedConstructionManager = $this->loginApiAssociatedConstructionManager($client);
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_sites');
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_sites');
+        $this->assertApiCollectionNotContainsIri($client, '/api/construction_sites', $emptyConstructionSiteId);
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_sites?constructionManagers.id='.$constructionManager->getId());
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_sites?constructionManagers.id='.$associatedConstructionManager->getId());
     }
