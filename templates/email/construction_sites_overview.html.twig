@@ -2,23 +2,12 @@
 
 {% trans_default_domain "email" %}
 
-{% macro overview_table_row(title, overview) %}
-    <tr>
-        <td>{{ title }}</td>
-        <td>{{ overview.openCount }} ({{ overview.openCountDelta }})</td>
-        <td>{{ overview.resolvedCount }} ({{ overview.resolvedCountDelta }})</td>
-        <td>{{ overview.closedCount }} ({{ overview.closedCountDelta }})</td>
-    </tr>
-{% endmacro %}
-
-{% import _self as _local %}
-
 {% block body %}
     <p>
         {{ "construction_sites_overview.message"|trans }}
     </p>
     {% for constructionSiteReport in body.constructionSiteReports %}
-        <spacer size="15"></spacer>
+        <spacer size="20"></spacer>
         <h2>{{ constructionSiteReport.name }}</h2>
         <p>
             <a href="{{ constructionSiteReport.dashboardUrl }}">
@@ -37,10 +26,21 @@
             </thead>
             <tbody>
             {% for craftsmanReport in constructionSiteReport.craftsmanReports %}
-                {{ _local.overview_table_row(craftsmanReport.company, craftsmanReport) }}
+                <tr>
+                    <td>{{ craftsmanReport.company }}</td>
+                    <td>{{ craftsmanReport.openCount }} ({{ craftsmanReport.openCountDelta }})</td>
+                    <td>{{ craftsmanReport.resolvedCount }} ({{ craftsmanReport.resolvedCountDelta }})</td>
+                    <td>{{ craftsmanReport.closedCount }} ({{ craftsmanReport.closedCountDelta }})</td>
+                </tr>
             {% endfor %}
-            {{ _local.overview_table_row("construction_sites_overview.total"|trans, constructionSiteReport) }}
+            <tr>
+                <td>{{ "construction_sites_overview.total"|trans }}</td>
+                <td>{{ constructionSiteReport.openCount }} ({{ constructionSiteReport.openCountDelta }})</td>
+                <td>{{ constructionSiteReport.resolvedCount }} ({{ constructionSiteReport.resolvedCountDelta }})</td>
+                <td>{{ constructionSiteReport.closedCount }} ({{ constructionSiteReport.closedCountDelta }})</td>
+            </tr>
             </tbody>
         </table>
+        <spacer size="50"></spacer>
     {% endfor %}
 {% endblock %}

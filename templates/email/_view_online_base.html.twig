@@ -18,6 +18,8 @@
                         {{ block("body", 'email/app_invitation.html.twig') }}
                     {% elseif emailType == 4 %}
                         {{ block("body", 'email/craftsman_issue_reminder.html.twig') }}
+                    {% elseif emailType == 5 %}
+                        {{ block("body", 'email/construction_sites_overview.html.twig') }}
                     {% endif %}
                 {% endapply %}
             </div>
