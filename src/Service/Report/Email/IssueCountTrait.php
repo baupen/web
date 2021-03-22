@@ -13,11 +13,21 @@ namespace App\Service\Report\Email;
 
 trait IssueCountTrait
 {
-    private int $openCount;
+    private int $openCount = 0;
 
-    private int $resolvedCount;
+    private int $resolvedCount = 0;
 
-    private int $closedCount;
+    private int $closedCount = 0;
+
+    /**
+     * @param IssueCountTrait $other
+     */
+    protected function addIssueCount($other)
+    {
+        $this->openCount += $other->getOpenCount();
+        $this->resolvedCount += $other->getResolvedCount();
+        $this->closedCount += $other->getClosedCount();
+    }
 
     public function getOpenCount(): int
     {

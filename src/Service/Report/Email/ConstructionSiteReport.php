@@ -15,6 +15,7 @@ use App\Entity\ConstructionSite;
 
 class ConstructionSiteReport
 {
+    use IssueCountTrait;
     use IssueCountDeltaTrait;
 
     /**
@@ -42,6 +43,11 @@ class ConstructionSiteReport
         $this->constructionSite = $constructionSite;
         $this->comparisonTimestamp = $comparisonTimestamp;
         $this->craftsmanDeltaReports = $craftsmanDeltaReports;
+
+        foreach ($craftsmanDeltaReports as $craftsmanDeltaReport) {
+            $this->addIssueCount($craftsmanDeltaReport);
+            $this->addIssueCountDelta($craftsmanDeltaReport);
+        }
     }
 
     public function getConstructionSite(): ConstructionSite

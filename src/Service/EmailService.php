@@ -14,6 +14,7 @@ namespace App\Service;
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Email;
+use App\Service\Email\EmailBodyGenerator;
 use App\Service\Interfaces\EmailServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
@@ -64,6 +65,8 @@ class EmailService implements EmailServiceInterface
      */
     private $serializer;
 
+    private EmailBodyGenerator $emailBodyGenerator;
+
     /**
      * @var string
      */
@@ -77,7 +80,7 @@ class EmailService implements EmailServiceInterface
     /**
      * EmailService constructor.
      */
-    public function __construct(TranslatorInterface $translator, LoggerInterface $logger, RequestStack $request, UrlGeneratorInterface $urlGenerator, ManagerRegistry $registry, MailerInterface $mailer, SerializerInterface $serializer, string $mailerFromEmail, string $supportEmail)
+    public function __construct(TranslatorInterface $translator, LoggerInterface $logger, RequestStack $request, UrlGeneratorInterface $urlGenerator, ManagerRegistry $registry, MailerInterface $mailer, SerializerInterface $serializer, string $mailerFromEmail, string $supportEmail, EmailBodyGenerator $emailBodyGenerator)
     {
         $this->translator = $translator;
         $this->logger = $logger;
@@ -88,6 +91,7 @@ class EmailService implements EmailServiceInterface
         $this->serializer = $serializer;
         $this->mailerFromEmail = $mailerFromEmail;
         $this->supportEmail = $supportEmail;
+        $this->emailBodyGenerator = $emailBodyGenerator;
     }
 
     public function sendRegisterConfirmLink(ConstructionManager $constructionManager): bool
@@ -105,9 +109,10 @@ class EmailService implements EmailServiceInterface
         return $this->sendAndStoreEMail($message, $entity);
     }
 
-    public function sendConstructionSitesOverview(ConstructionManager $constructionManager, array $tableWithLinks): bool
+    public function sendConstructionSitesReport(ConstructionManager $constructionManager, array $constructionSiteReports): bool
     {
-        $json = $this->serializer->serialize($tableWithLinks, 'json');
+        $emailBody = $this->emailBodyGenerator->fromConstructionSiteReports($constructionSiteReports);
+        $json = $this->serializer->serialize($emailBody, 'json');
         $entity = Email::create(Email::TYPE_CONSTRUCTION_SITES_OVERVIEW, $constructionManager, null, $json, true);
         $subject = $this->translator->trans('construction_sites_overview.subject', ['%page%' => $this->getCurrentPage()], 'email');
 

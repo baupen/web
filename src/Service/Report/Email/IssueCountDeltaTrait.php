@@ -13,11 +13,21 @@ namespace App\Service\Report\Email;
 
 trait IssueCountDeltaTrait
 {
-    private int $openCountDelta;
+    private int $openCountDelta = 0;
 
-    private int $resolvedCountDelta;
+    private int $resolvedCountDelta = 0;
 
-    private int $closedCountDelta;
+    private int $closedCountDelta = 0;
+
+    /**
+     * @param IssueCountDeltaTrait $other
+     */
+    protected function addIssueCountDelta($other)
+    {
+        $this->openCountDelta += $other->getOpenCountDelta();
+        $this->resolvedCountDelta += $other->getResolvedCountDelta();
+        $this->closedCountDelta += $other->getClosedCountDelta();
+    }
 
     public function getOpenCountDelta(): int
     {

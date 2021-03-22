@@ -66,7 +66,7 @@ class ReportService implements ReportServiceInterface
             }
         }
 
-        $this->craftsmanService->findIssueAnalysisByCraftsman($relevantCraftsmen, $craftsmanDeltaReportByCraftsman);
+        $this->craftsmanService->findIssueCountByCraftsman($relevantCraftsmen, $craftsmanDeltaReportByCraftsman);
 
         $rootAlias = 'i';
         $queryBuilder = $this->craftsmanService->getCraftsmanIssuesQueryBuilder($rootAlias, $relevantCraftsmen)->addSelect('identity('.$rootAlias.'.craftsman) AS craftsman');

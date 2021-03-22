@@ -19,6 +19,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Routing\RouterInterface;
 
 class WeeklySendCommand extends Command
 {
@@ -37,16 +38,19 @@ class WeeklySendCommand extends Command
      */
     private $reportService;
 
+    private RouterInterface $router;
+
     /**
      * ImportLdapUsersCommand constructor.
      */
-    public function __construct(ManagerRegistry $registry, EmailServiceInterface $emailService, ReportServiceInterface $reportService)
+    public function __construct(ManagerRegistry $registry, EmailServiceInterface $emailService, ReportServiceInterface $reportService, RouterInterface $router)
     {
         parent::__construct();
 
         $this->registry = $registry;
         $this->emailService = $emailService;
         $this->reportService = $reportService;
+        $this->router = $router;
     }
 
     /**
@@ -92,7 +96,7 @@ class WeeklySendCommand extends Command
                 $relevantConstructionSiteReports[] = $constructionSiteReportLookup[$constructionSite->getId()];
             }
 
-            $this->emailService->sendConstructionSitesOverview($constructionManager, $relevantConstructionSiteReports);
+            $this->emailService->sendConstructionSitesReport($constructionManager, $relevantConstructionSiteReports);
         }
         $io->text('Sent '.count($constructionManagers).' emails.');
 

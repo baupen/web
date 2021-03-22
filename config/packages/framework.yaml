@@ -15,3 +15,6 @@ framework:
     #fragments: true
     php_errors:
         log: true
+
+    router:
+        default_uri: '%env(BASE_URI)%'
