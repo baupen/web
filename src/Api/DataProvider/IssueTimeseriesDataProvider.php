@@ -12,8 +12,9 @@
 namespace App\Api\DataProvider;
 
 use App\Api\DataProvider\Base\NoPaginationDataProvider;
+use App\Api\Entity\IssueSummaryWithDate;
 use App\Entity\Issue;
-use App\Service\Interfaces\IssueServiceInterface;
+use App\Service\Interfaces\AnalysisServiceInterface;
 use DateInterval;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,15 +29,15 @@ class IssueTimeseriesDataProvider extends NoPaginationDataProvider
     private $serializer;
 
     /**
-     * @var IssueServiceInterface
+     * @var AnalysisServiceInterface
      */
-    private $issueService;
+    private $analysisService;
 
-    public function __construct(SerializerInterface $serializer, ManagerRegistry $managerRegistry, IssueServiceInterface $issueService, iterable $collectionExtensions = [])
+    public function __construct(SerializerInterface $serializer, ManagerRegistry $managerRegistry, AnalysisServiceInterface $analysisService, iterable $collectionExtensions = [])
     {
         parent::__construct($managerRegistry, $collectionExtensions);
         $this->serializer = $serializer;
-        $this->issueService = $issueService;
+        $this->analysisService = $analysisService;
     }
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
@@ -52,7 +53,14 @@ class IssueTimeseriesDataProvider extends NoPaginationDataProvider
         $lastPeriodEnd = new \DateTime('today');
         $stepSize = new DateInterval('P1D');
         $stepCount = 30;
-        $summaries = $this->issueService->createTimeseries($rootAlias, $queryBuilder, $lastPeriodEnd, $stepSize, $stepCount);
+        $issueAnalysisByTime = $this->analysisService->createIssueAnalysisByTime($rootAlias, $queryBuilder, $lastPeriodEnd, $stepSize, $stepCount);
+
+        $summaries = [];
+        foreach ($issueAnalysisByTime as $dateFormat => $issueAnalysis) {
+            $summaries[] = IssueSummaryWithDate::createFromIssueAnalysisWithDate($issueAnalysis, $dateFormat);
+        }
+
+        $summaries = array_reverse($summaries); // want earliest (smallest) date first
 
         $json = $this->serializer->serialize($summaries, 'json');
 

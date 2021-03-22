@@ -299,4 +299,9 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     {
         return $this->lastChangedAt;
     }
+
+    public function sort(Craftsman $other)
+    {
+        return strcmp($this->getCompany(), $other->getCompany());
+    }
 }

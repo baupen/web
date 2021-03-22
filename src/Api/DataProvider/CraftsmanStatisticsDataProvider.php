@@ -16,7 +16,7 @@ use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\Api\Entity\CraftsmanStatistics;
 use App\Entity\Craftsman;
-use App\Service\Interfaces\CraftsmanServiceInterface;
+use App\Service\Interfaces\AnalysisServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,9 +40,9 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
     private $serializer;
 
     /**
-     * @var CraftsmanServiceInterface
+     * @var AnalysisServiceInterface
      */
-    private $craftsmanService;
+    private $analysisService;
 
     private const ALREADY_CALLED = 'CRAFTSMAN_STATISTICS_DATA_PROVIDER_ALREADY_CALLED';
 
@@ -51,12 +51,12 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
      *
      * @param ManagerRegistry $manager
      */
-    public function __construct(ContextAwareCollectionDataProviderInterface $decoratedCollectionDataProvider, IriConverterInterface $iriConverter, SerializerInterface $serializer, CraftsmanServiceInterface $craftsmanService)
+    public function __construct(ContextAwareCollectionDataProviderInterface $decoratedCollectionDataProvider, IriConverterInterface $iriConverter, SerializerInterface $serializer, AnalysisServiceInterface $analysisService)
     {
         $this->decoratedCollectionDataProvider = $decoratedCollectionDataProvider;
         $this->iriConverter = $iriConverter;
         $this->serializer = $serializer;
-        $this->craftsmanService = $craftsmanService;
+        $this->analysisService = $analysisService;
     }
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
@@ -76,11 +76,11 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
         /** @var Craftsman[] $craftsmen */
         $craftsmen = $this->decoratedCollectionDataProvider->getCollection($resourceClass, $operationName, $context);
 
-        $statisticDictionary = $this->craftsmanService->createStatisticLookup($craftsmen);
+        $craftsmanAnalysisByCraftsman = $this->analysisService->createCraftsmanAnalysisByCraftsman($craftsmen);
         $statistics = [];
-        foreach ($statisticDictionary as $craftsmanId => $statistic) {
+        foreach ($craftsmanAnalysisByCraftsman as $craftsmanId => $craftsmanAnalysis) {
             $craftsmanIri = $this->iriConverter->getItemIriFromResourceClass(Craftsman::class, ['id' => $craftsmanId]);
-            $statistics[] = new CraftsmanStatistics($craftsmanIri, $statistic);
+            $statistics[] = CraftsmanStatistics::createFromCraftsmanAnalysis($craftsmanAnalysis, $craftsmanIri);
         }
 
         $json = $this->serializer->serialize($statistics, 'json');

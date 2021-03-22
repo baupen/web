@@ -11,12 +11,12 @@
 
 namespace App\Service\Craftsman;
 
-use App\Service\Issue\Summary;
+use App\Service\Issue\Analysis;
 
 class Statistics
 {
     /**
-     * @var Summary
+     * @var Analysis
      */
     private $issueSummary;
 
@@ -52,10 +52,10 @@ class Statistics
 
     public function __construct()
     {
-        $this->issueSummary = new Summary();
+        $this->issueSummary = new Analysis();
     }
 
-    public static function createWithSummary(Summary $summary)
+    public static function createWithSummary(Analysis $summary)
     {
         $self = new self();
         $self->issueSummary = $summary;
@@ -74,7 +74,7 @@ class Statistics
         $this->lastIssueResolved = $statistics->getLastIssueResolved();
     }
 
-    public function getIssueSummary(): ?Summary
+    public function getIssueSummary(): ?Analysis
     {
         return $this->issueSummary;
     }

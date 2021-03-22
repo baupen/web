@@ -11,7 +11,7 @@
 
 namespace App\Service\Issue;
 
-class Summary
+class Analysis
 {
     /**
      * @var int

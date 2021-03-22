@@ -117,6 +117,14 @@ class ConstructionManager extends BaseEntity implements UserInterface
     private $canAssociateSelf = false;
 
     /**
+     * @var bool
+     *
+     * @Groups({"construction-manager-read-self", "construction-manager-write"})
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private $receiveWeekly = false;
+
+    /**
      * constructor.
      */
     public function __construct()
@@ -235,5 +243,15 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public function setCanAssociateSelf(bool $canAssociateSelf): void
     {
         $this->canAssociateSelf = $canAssociateSelf;
+    }
+
+    public function getReceiveWeekly(): bool
+    {
+        return $this->receiveWeekly;
+    }
+
+    public function setReceiveWeekly(bool $receiveWeekly): void
+    {
+        $this->receiveWeekly = $receiveWeekly;
     }
 }

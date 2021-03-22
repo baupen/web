@@ -9,14 +9,26 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Issue;
+namespace App\Api\Entity;
 
-class SummaryWithDate extends Summary
+use App\Service\Analysis\IssueAnalysis;
+
+class IssueSummaryWithDate extends IssueSummary
 {
     /**
      * @var string
      */
     private $date;
+
+    public static function createFromIssueAnalysisWithDate(IssueAnalysis $issueAnalysis, string $date)
+    {
+        $self = new self();
+
+        $self->writeFromIssueAnalysis($issueAnalysis);
+        $self->date = $date;
+
+        return $self;
+    }
 
     public function getDate(): string
     {
