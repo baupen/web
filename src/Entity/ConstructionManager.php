@@ -27,8 +27,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
- *     collectionOperations={"get", "post"},
- *     itemOperations={"get" = {"security" = "is_granted('CONSTRUCTION_MANAGER_VIEW', object)"}},
+ *     collectionOperations={
+ *      "get",
+ *      "post" = {"denormalization_context"={"groups"={"construction-manager-create", "construction-manager-write"}}},
+ *     },
+ *     itemOperations={
+ *      "get" = {"security" = "is_granted('CONSTRUCTION_MANAGER_VIEW', object)"},
+ *      "patch" = {"security" = "is_granted('CONSTRUCTION_MANAGER_SELF', object)"}
+ *     },
  *     normalizationContext={"groups"={"construction-manager-read"}, "skip_null_values"=false},
  *     denormalizationContext={"groups"={"construction-manager-write"}},
  *     attributes={"pagination_enabled"=false}
