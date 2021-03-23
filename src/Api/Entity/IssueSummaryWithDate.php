@@ -11,12 +11,24 @@
 
 namespace App\Api\Entity;
 
+use App\Service\Analysis\IssueAnalysis;
+
 class IssueSummaryWithDate extends IssueSummary
 {
     /**
      * @var string
      */
     private $date;
+
+    public static function createFromIssueAnalysisWithDate(IssueAnalysis $issueAnalysis, string $date)
+    {
+        $self = new self();
+
+        $self->writeFromIssueAnalysis($issueAnalysis);
+        $self->date = $date;
+
+        return $self;
+    }
 
     public function getDate(): string
     {

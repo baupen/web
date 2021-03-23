@@ -27,8 +27,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
- *     collectionOperations={"get", "post"},
- *     itemOperations={"get" = {"security" = "is_granted('CONSTRUCTION_MANAGER_VIEW', object)"}},
+ *     collectionOperations={
+ *      "get",
+ *      "post" = {"denormalization_context"={"groups"={"construction-manager-create", "construction-manager-write"}}},
+ *     },
+ *     itemOperations={
+ *      "get" = {"security" = "is_granted('CONSTRUCTION_MANAGER_VIEW', object)"},
+ *      "patch" = {"security" = "is_granted('CONSTRUCTION_MANAGER_SELF', object)"}
+ *     },
  *     normalizationContext={"groups"={"construction-manager-read"}, "skip_null_values"=false},
  *     denormalizationContext={"groups"={"construction-manager-write"}},
  *     attributes={"pagination_enabled"=false}
@@ -115,6 +121,14 @@ class ConstructionManager extends BaseEntity implements UserInterface
      * @ORM\Column(type="boolean", options={"default": false})
      */
     private $canAssociateSelf = false;
+
+    /**
+     * @var bool
+     *
+     * @Groups({"construction-manager-read-self", "construction-manager-write"})
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private $receiveWeekly = false;
 
     /**
      * constructor.
@@ -235,5 +249,15 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public function setCanAssociateSelf(bool $canAssociateSelf): void
     {
         $this->canAssociateSelf = $canAssociateSelf;
+    }
+
+    public function getReceiveWeekly(): bool
+    {
+        return $this->receiveWeekly;
+    }
+
+    public function setReceiveWeekly(bool $receiveWeekly): void
+    {
+        $this->receiveWeekly = $receiveWeekly;
     }
 }

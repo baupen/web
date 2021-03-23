@@ -31,6 +31,7 @@ class Email extends BaseEntity
     public const TYPE_RECOVER_CONFIRM = 2;
     public const TYPE_APP_INVITATION = 3;
     public const TYPE_CRAFTSMAN_ISSUE_REMINDER = 4;
+    public const TYPE_CONSTRUCTION_SITES_OVERVIEW = 5;
 
     /**
      * @var string
@@ -49,9 +50,16 @@ class Email extends BaseEntity
     /**
      * @var string
      *
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $body;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default" : false})
+     */
+    private $jsonBody;
 
     /**
      * @var int
@@ -81,7 +89,7 @@ class Email extends BaseEntity
      */
     private $readAt;
 
-    public static function create(int $emailType, ConstructionManager $sentBy, ?string $link = null, ?string $body = null)
+    public static function create(int $emailType, ConstructionManager $sentBy, ?string $link = null, ?string $body = null, bool $jsonBody = false)
     {
         $email = new Email();
 
@@ -89,6 +97,7 @@ class Email extends BaseEntity
         $email->type = $emailType;
         $email->link = $link;
         $email->body = $body;
+        $email->jsonBody = $jsonBody;
         $email->sentBy = $sentBy;
         $email->sentAt = new \DateTime();
 
@@ -127,6 +136,8 @@ class Email extends BaseEntity
 
     public function getContext(): array
     {
-        return ['sentBy' => $this->sentBy, 'identifier' => $this->identifier, 'emailType' => $this->type, 'body' => $this->body, 'link' => $this->link];
+        $body = $this->jsonBody ? json_decode($this->body) : $this->body;
+
+        return ['sentBy' => $this->sentBy, 'identifier' => $this->identifier, 'emailType' => $this->type, 'body' => $body, 'link' => $this->link];
     }
 }

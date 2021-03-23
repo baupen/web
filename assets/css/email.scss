@@ -1,7 +1,7 @@
 $primary-color: #009fe3;
 $body-background: #f3f3f3;
 $container-background: $body-background;
-
+$global-width: 800px;
 $body-font-family: 'Source Sans Pro', helvetica, arial, sans-serif !default;
 
 @import '~foundation-emails/scss/foundation-emails';
@@ -12,4 +12,57 @@ $body-font-family: 'Source Sans Pro', helvetica, arial, sans-serif !default;
 
 .secondary-content {
   opacity: 0.6;
+}
+
+.button-secondary-email {
+  padding: 5px;
+  text-decoration: underline;
+}
+
+.table-email {
+  border-bottom: 1px solid #dee2e6;
+  border-top: 1px solid #dee2e6;
+  width: 100%;
+
+  th,
+  td {
+    border-top: 1px solid #dee2e6;
+    padding: 5px;
+  }
+
+  thead th {
+    border-bottom: 2px solid #dee2e6;
+    vertical-align: bottom;
+  }
+
+  .table-email-tfoot {
+    background-color: rgba(0, 0, 0, 0);
+    border-top: 2px solid #dee2e6;
+
+    td {
+      font-weight: bold;
+    }
+  }
+}
+
+.table-email.right-align-except-first {
+  th,
+  td {
+    text-align: right;
+  }
+
+  th:first-child,
+  td:first-child {
+    text-align: left;
+  }
+}
+
+.w-9em {
+  width: 10em;
+}
+
+.table-email.table-email-striped {
+  tr:nth-child(2n) {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
 }

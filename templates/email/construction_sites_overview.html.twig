@@ -1,0 +1,54 @@
+{% extends "email/_base.html.twig" %}
+
+{% trans_default_domain "email" %}
+
+{% macro issue_count_delta_cell_content(count, delta) %}
+{{ count }}{% if delta > 0 %}(+{{ delta }}){% elseif delta < 0 %}({{ delta }}){% endif %}
+{% endmacro %}
+
+{% macro issue_count_delta_row(title, report, tr_class = "") %}
+    {% import _self as _macros %}
+    <tr class="{{ tr_class }}">
+        <td>{{ title }}</td>
+        <td>{{ _macros.issue_count_delta_cell_content(report.openCount, report.openCountDelta) }}</td>
+        <td>{{ _macros.issue_count_delta_cell_content(report.resolvedCount, report.resolvedCountDelta) }}</td>
+        <td>{{ _macros.issue_count_delta_cell_content(report.closedCount, report.closedCountDelta) }}</td>
+    </tr>
+{% endmacro %}
+
+{% block body %}
+    {% import _self as _macros %}
+    <p>
+        {{ "construction_sites_overview.message"|trans }}
+    </p>
+    {% for constructionSiteReport in body.constructionSiteReports %}
+        <spacer size="20"></spacer>
+        <h2>{{ constructionSiteReport.name }}</h2>
+        <p>
+            <a class="button-secondary-email" href="{{ constructionSiteReport.dashboardUrl }}" target="_blank">
+                {{ "construction_sites_overview.to_dashboard"|trans }}
+            </a>
+        </p>
+        <table class="table-email table-email-striped right-align-except-first">
+            <thead>
+            <tr>
+                <th>{{ "entity.name"|trans({}, "entity_craftsman") }}</th>
+                <th class="w-9em">{{ "state_values.open"|trans({}, "entity_issue") }}</th>
+                <th class="w-9em">{{ "state_values.resolved"|trans({}, "entity_issue") }}</th>
+                <th class="w-9em">{{ "state_values.closed"|trans({}, "entity_issue") }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for craftsmanReport in constructionSiteReport.craftsmanReports %}
+                {{ _macros.issue_count_delta_row(craftsmanReport.company, craftsmanReport) }}
+            {% endfor %}
+            {{ _macros.issue_count_delta_row("construction_sites_overview.total"|trans, constructionSiteReport, "table-email-tfoot") }}
+            </tbody>
+        </table>
+        <spacer size="8"></spacer>
+        <p class="text-secondary">
+            {{ constructionSiteReport.constructionManagers|join(", ") }}
+        </p>
+        <spacer size="50"></spacer>
+    {% endfor %}
+{% endblock %}

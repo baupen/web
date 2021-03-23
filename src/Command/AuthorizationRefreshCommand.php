@@ -19,7 +19,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class RefreshAuthorizationCommand extends Command
+class AuthorizationRefreshCommand extends Command
 {
     /**
      * @var ManagerRegistry

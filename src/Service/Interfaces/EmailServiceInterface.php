@@ -23,4 +23,6 @@ interface EmailServiceInterface
     public function sendAppInvitation(ConstructionManager $constructionManager): bool;
 
     public function sendCraftsmanIssueReminder(ConstructionManager $constructionManager, Craftsman $craftsman, string $subject, string $body, bool $constructionManagerInBCC): bool;
+
+    public function sendConstructionSitesReport(ConstructionManager $constructionManager, array $constructionSiteReports): bool;
 }

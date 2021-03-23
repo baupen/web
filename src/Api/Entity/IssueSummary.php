@@ -11,27 +11,46 @@
 
 namespace App\Api\Entity;
 
+use App\Service\Analysis\CraftsmanIssueAnalysis;
+use App\Service\Analysis\IssueAnalysis;
+
 class IssueSummary
 {
-    /**
-     * @var int
-     */
-    private $newCount = 0;
+    private int $newCount;
 
-    /**
-     * @var int
-     */
-    private $openCount = 0;
+    private int $openCount;
 
-    /**
-     * @var int
-     */
-    private $inspectableCount = 0;
+    private int $inspectableCount;
 
-    /**
-     * @var int
-     */
-    private $closedCount = 0;
+    private int $closedCount;
+
+    public static function createFromCraftsmanIssueAnalysis(CraftsmanIssueAnalysis $craftsmanIssueAnalysis)
+    {
+        $self = new self();
+
+        $self->newCount = 0;
+        $self->openCount = $craftsmanIssueAnalysis->getOpenCount();
+        $self->inspectableCount = $craftsmanIssueAnalysis->getInspectableCount();
+        $self->closedCount = $craftsmanIssueAnalysis->getClosedCount();
+
+        return $self;
+    }
+
+    public static function createFromIssueAnalysis(IssueAnalysis $issueAnalysis)
+    {
+        $self = new self();
+        $self->writeFromIssueAnalysis($issueAnalysis);
+
+        return $self;
+    }
+
+    protected function writeFromIssueAnalysis(IssueAnalysis $issueAnalysis)
+    {
+        $this->newCount = $issueAnalysis->getNewCount();
+        $this->openCount = $issueAnalysis->getOpenCount();
+        $this->inspectableCount = $issueAnalysis->getInspectableCount();
+        $this->closedCount = $issueAnalysis->getClosedCount();
+    }
 
     public function getNewCount(): int
     {

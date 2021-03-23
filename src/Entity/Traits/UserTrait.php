@@ -21,7 +21,7 @@ trait UserTrait
     /**
      * @var string
      *
-     * @Groups({"construction-manager-read", "construction-manager-write"})
+     * @Groups({"construction-manager-read", "construction-manager-create"})
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\NotBlank()
      * @Assert\Email()

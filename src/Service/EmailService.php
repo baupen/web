@@ -14,6 +14,7 @@ namespace App\Service;
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Email;
+use App\Service\Email\EmailBodyGenerator;
 use App\Service\Interfaces\EmailServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
@@ -24,6 +25,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EmailService implements EmailServiceInterface
@@ -59,6 +61,13 @@ class EmailService implements EmailServiceInterface
     private $mailer;
 
     /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    private EmailBodyGenerator $emailBodyGenerator;
+
+    /**
      * @var string
      */
     private $mailerFromEmail;
@@ -71,7 +80,7 @@ class EmailService implements EmailServiceInterface
     /**
      * EmailService constructor.
      */
-    public function __construct(TranslatorInterface $translator, LoggerInterface $logger, RequestStack $request, UrlGeneratorInterface $urlGenerator, ManagerRegistry $registry, MailerInterface $mailer, string $mailerFromEmail, string $supportEmail)
+    public function __construct(TranslatorInterface $translator, LoggerInterface $logger, RequestStack $request, UrlGeneratorInterface $urlGenerator, ManagerRegistry $registry, MailerInterface $mailer, SerializerInterface $serializer, string $mailerFromEmail, string $supportEmail, EmailBodyGenerator $emailBodyGenerator)
     {
         $this->translator = $translator;
         $this->logger = $logger;
@@ -79,8 +88,10 @@ class EmailService implements EmailServiceInterface
         $this->urlGenerator = $urlGenerator;
         $this->manager = $registry->getManager();
         $this->mailer = $mailer;
+        $this->serializer = $serializer;
         $this->mailerFromEmail = $mailerFromEmail;
         $this->supportEmail = $supportEmail;
+        $this->emailBodyGenerator = $emailBodyGenerator;
     }
 
     public function sendRegisterConfirmLink(ConstructionManager $constructionManager): bool
@@ -93,6 +104,22 @@ class EmailService implements EmailServiceInterface
             ->subject($subject)
             ->textTemplate('email/register_confirm.txt.twig')
             ->htmlTemplate('email/register_confirm.html.twig')
+            ->context($entity->getContext());
+
+        return $this->sendAndStoreEMail($message, $entity);
+    }
+
+    public function sendConstructionSitesReport(ConstructionManager $constructionManager, array $constructionSiteReports): bool
+    {
+        $emailBody = $this->emailBodyGenerator->fromConstructionSiteReports($constructionSiteReports);
+        $json = $this->serializer->serialize($emailBody, 'json');
+        $entity = Email::create(Email::TYPE_CONSTRUCTION_SITES_OVERVIEW, $constructionManager, null, $json, true);
+        $subject = $this->translator->trans('construction_sites_overview.subject', ['%page%' => $this->getCurrentPage()], 'email');
+
+        $message = $this->createTemplatedEmailToConstructionManager($constructionManager)
+            ->subject($subject)
+            ->textTemplate('email/construction_sites_overview.txt.twig')
+            ->htmlTemplate('email/construction_sites_overview.html.twig')
             ->context($entity->getContext());
 
         return $this->sendAndStoreEMail($message, $entity);

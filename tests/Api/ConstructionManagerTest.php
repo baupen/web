@@ -36,7 +36,7 @@ class ConstructionManagerTest extends ApiTestCase
         $this->loadFixtures([TestConstructionManagerFixtures::class]);
         $testUser = $this->loginApiConstructionManager($client);
 
-        $this->assertApiOperationUnsupported($client, '/api/construction_managers/'.$testUser->getId(), 'DELETE', 'PUT', 'PATCH');
+        $this->assertApiOperationUnsupported($client, '/api/construction_managers/'.$testUser->getId(), 'DELETE', 'PUT');
     }
 
     public function testValidMethodsNeedAuthentication()
@@ -48,7 +48,7 @@ class ConstructionManagerTest extends ApiTestCase
 
         $userRepository = static::$container->get(ManagerRegistry::class)->getRepository(ConstructionManager::class);
         $testUser = $userRepository->findOneByEmail(TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL);
-        $this->assertApiOperationNotAuthorized($client, '/api/construction_managers/'.$testUser->getId(), 'GET');
+        $this->assertApiOperationNotAuthorized($client, '/api/construction_managers/'.$testUser->getId(), 'GET', 'PATCH');
     }
 
     public function testPost()
@@ -75,6 +75,34 @@ class ConstructionManagerTest extends ApiTestCase
         $this->assertEmailCount(0);
     }
 
+    public function testPatch()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $ownConstructionManager = $this->loginApiConstructionManager($client);
+
+        $sample = [
+            'email' => 'patching@mail.com',
+            'givenName' => 'Peter',
+            'familyName' => 'Müller',
+            'phone' => '0781234567',
+        ];
+        $privateSettings = ['receiveWeekly' => false];
+
+        $response = $this->assertApiPostPayloadPersisted($client, '/api/construction_managers', $sample, $privateSettings);
+        $newConstructionManagerId = json_decode($response->getContent(), true)['@id'];
+        $this->assertApiCollectionContainsResponseItem($client, '/api/construction_managers', $response);
+
+        $patch = [
+            'givenName' => 'Dennis',
+            'familyName' => 'Meier',
+            'phone' => '0781234568',
+            'receiveWeekly' => true,
+        ];
+        $this->assertApiPatchStatusCodeSame(StatusCode::HTTP_FORBIDDEN, $client, $newConstructionManagerId, $patch);
+        $this->assertApiPatchPayloadPersisted($client, '/api/construction_managers/'.$ownConstructionManager->getId(), $patch);
+    }
+
     public function testGetAuthenticationToken()
     {
         $client = $this->createClient();
@@ -82,7 +110,7 @@ class ConstructionManagerTest extends ApiTestCase
         $constructionManager = $this->loginApiConstructionManager($client);
 
         $otherConstructionManagerFields = ['@id', '@type', 'givenName', 'familyName', 'email', 'phone', 'lastChangedAt'];
-        $selfConstructionManagerFields = array_merge($otherConstructionManagerFields, ['authenticationToken', 'canAssociateSelf']);
+        $selfConstructionManagerFields = array_merge($otherConstructionManagerFields, ['authenticationToken', 'canAssociateSelf', 'receiveWeekly']);
         sort($otherConstructionManagerFields);
         sort($selfConstructionManagerFields);
 

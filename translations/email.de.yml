@@ -4,6 +4,11 @@ app_invitation:
   ios_login_link: 'App öffnen & einloggen'
   ios_store: 'zum iOS Store'
   subject: 'App herunterladen für %page%'
+construction_sites_overview:
+  message: 'In der Übersicht sind alle Baustellen enthalten, denen Sie zugehörig sind. Falls vorhanden, wird die relative Veränderung zur Vorwoche angebenen.'
+  subject: 'Wöchentliche Übersicht für %page%'
+  to_dashboard: 'Zum Dashboard'
+  total: Total
 craftsman_issue_reminder:
   view_issues_link: 'Pendenzen ansehen'
 generated: 'Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht darauf.'

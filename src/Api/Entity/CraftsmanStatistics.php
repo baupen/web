@@ -11,6 +11,8 @@
 
 namespace App\Api\Entity;
 
+use App\Service\Analysis\CraftsmanAnalysis;
+
 class CraftsmanStatistics
 {
     /**
@@ -26,12 +28,12 @@ class CraftsmanStatistics
     /**
      * @var int
      */
-    public $issueUnreadCount = 0;
+    public $issueUnreadCount;
 
     /**
      * @var int
      */
-    public $issueOverdueCount = 0;
+    public $issueOverdueCount;
 
     /**
      * @var \DateTime|null
@@ -53,9 +55,23 @@ class CraftsmanStatistics
      */
     public $lastIssueResolved;
 
-    public function __construct()
+    /**
+     * CraftsmanStatistics constructor.
+     */
+    public static function createFromCraftsmanAnalysis(CraftsmanAnalysis $craftsmanAnalysis, string $craftsmanIri)
     {
-        $this->issueSummary = new IssueSummary();
+        $self = new self();
+
+        $self->craftsman = $craftsmanIri;
+        $self->issueSummary = IssueSummary::createFromCraftsmanIssueAnalysis($craftsmanAnalysis->getIssueAnalysis());
+        $self->issueUnreadCount = $craftsmanAnalysis->getIssueAnalysis()->getUnreadCount();
+        $self->issueOverdueCount = $craftsmanAnalysis->getIssueAnalysis()->getOverdueCount();
+        $self->nextDeadline = $craftsmanAnalysis->getNextDeadline();
+        $self->lastEmailReceived = $craftsmanAnalysis->getLastEmailReceived();
+        $self->lastVisitOnline = $craftsmanAnalysis->getLastVisitOnline();
+        $self->lastIssueResolved = $craftsmanAnalysis->getLastIssueResolved();
+
+        return $self;
     }
 
     public function getCraftsman(): string
@@ -71,65 +87,5 @@ class CraftsmanStatistics
     public function getIssueSummary(): IssueSummary
     {
         return $this->issueSummary;
-    }
-
-    public function getIssueUnreadCount(): int
-    {
-        return $this->issueUnreadCount;
-    }
-
-    public function setIssueUnreadCount(int $issueUnreadCount): void
-    {
-        $this->issueUnreadCount = $issueUnreadCount;
-    }
-
-    public function getIssueOverdueCount(): int
-    {
-        return $this->issueOverdueCount;
-    }
-
-    public function setIssueOverdueCount(int $issueOverdueCount): void
-    {
-        $this->issueOverdueCount = $issueOverdueCount;
-    }
-
-    public function getNextDeadline(): ?\DateTime
-    {
-        return $this->nextDeadline;
-    }
-
-    public function setNextDeadline(?\DateTime $nextDeadline): void
-    {
-        $this->nextDeadline = $nextDeadline;
-    }
-
-    public function getLastEmailReceived(): ?\DateTime
-    {
-        return $this->lastEmailReceived;
-    }
-
-    public function setLastEmailReceived(?\DateTime $lastEmailReceived): void
-    {
-        $this->lastEmailReceived = $lastEmailReceived;
-    }
-
-    public function getLastVisitOnline(): ?\DateTime
-    {
-        return $this->lastVisitOnline;
-    }
-
-    public function setLastVisitOnline(?\DateTime $lastVisitOnline): void
-    {
-        $this->lastVisitOnline = $lastVisitOnline;
-    }
-
-    public function getLastIssueResolved(): ?\DateTime
-    {
-        return $this->lastIssueResolved;
-    }
-
-    public function setLastIssueResolved(?\DateTime $lastIssueResolved): void
-    {
-        $this->lastIssueResolved = $lastIssueResolved;
     }
 }
