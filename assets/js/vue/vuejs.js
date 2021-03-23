@@ -39,6 +39,7 @@ import Dispatch from './Dispatch'
 import Edit from './Edit'
 import Filtered from './Filtered'
 import Foyer from './Foyer'
+import ReceiveWeekly from './ReceiveWeekly'
 import Register from './Register'
 import Resolve from './Resolve'
 import Switch from './Switch'
@@ -109,6 +110,11 @@ if (document.getElementById('filtered') != null) {
 if (document.getElementById('foyer') != null) {
   createVue(Foyer)
     .mount('#foyer')
+}
+
+if (document.getElementById('receive-weekly') != null) {
+  createVue(ReceiveWeekly)
+    .mount('#receive-weekly')
 }
 
 if (document.getElementById('register') != null) {
