@@ -8,6 +8,7 @@ state_values:
   closed: Abgeschlossen
   created: Erstellt
   none: Keine
+  open: Offen
   registered: Offen
   resolved: Umgesetzt
   seen: Gesehen
