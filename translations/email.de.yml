@@ -21,9 +21,3 @@ sent_by: 'Versand der E-Mail durch'
 view_online:
   description: 'E-Mail im Originallayout lesen.'
   title: 'E-Mail lesen'
-
-construction_sites_overview:
-  subject: 'Wöchentliche Übersicht für %page%'
-  message: 'In der Übersicht sind alle Baustellen enthalten, denen Sie zugehörig sind. Falls vorhanden, wird die relative Veränderung zur Vorwoche angebenen.'
-  to_dashboard: 'Zum Dashboard'
-  total: 'Total'

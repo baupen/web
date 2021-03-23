@@ -1,8 +1,225 @@
 {
+  "_action": {
+    "add_construction_site": {
+      "added": "Cantiere aggiunto",
+      "title": "Aggiungere un cantiere"
+    },
+    "add_craftsman": {
+      "added": "Imprenditore aggiunto.",
+      "title": "Aggiungere un imprenditore"
+    },
+    "add_map": {
+      "added": "Mappa aggiunta",
+      "title": "Aggiungere una mappa"
+    },
+    "associate_construction_manager": {
+      "associated": "Capocantiere aggiunto al cantiere",
+      "title": "Aggiungere un capocantiere"
+    },
+    "close": "Chiudere",
+    "compose_craftsman_email": {
+      "no_template": "Nessun modello",
+      "resolve_link_is_appended": "L'e-mail è complentata con un link personalizzato per imprenditore. Con questo link, gli imprenditori possono visualizzare le loro pendenze e segnarle come implementate.",
+      "save_as_new_template": "Salvare come nuovo modello",
+      "save_template_changes": "Salvare le modifiche apportate al modello",
+      "saved_email_template": "Modello salvato",
+      "send_emails": "Inviare e-mail | {count} e-mail inviare",
+      "sent_emails": "E-mail inviate",
+      "title": "Comporre un e-mail"
+    },
+    "dissociate_construction_manager": {
+      "dissociated": "Gestore delle costruzioni rimosso dal cantiere",
+      "help": "Il capocantiere viene rimosso dal cantiere.",
+      "title": "Rimuovere capocantiere dal cantiere"
+    },
+    "edit_construction_site": {
+      "replaced_construction_site_image": "Immagine sostituita",
+      "saved": "Cantiere salvato",
+      "title": "Adattare il cantiere"
+    },
+    "edit_craftsman": {
+      "saved": "Imprenditore salvato.",
+      "title": "Adattare l' imprenditore"
+    },
+    "edit_issues": {
+      "replaced_issue_images": "Immagine sostituita.",
+      "save_issues": "Salvare la pendenza | {count} salvare le pendenze",
+      "saved": "Pendenze salavate.",
+      "title": "adattare le pendenze"
+    },
+    "edit_map": {
+      "replaced_map_file": "PDF sostituito",
+      "saved": "Mappa salvata",
+      "title": "Modificare la mappa"
+    },
+    "enter_construction_site": {
+      "title": "Al cantiere"
+    },
+    "export_craftsmen": {
+      "file_name": "Imprenditore",
+      "title": "Imprenditori esportatori"
+    },
+    "export_issues_link": {
+      "help": "Sempre attuale: condividi i penden con gli esterni come di sola lettura.",
+      "title": "Link"
+    },
+    "export_issues_report": {
+      "help": "Ottimizzato per la stampa: mette l'pendenzen su carta in modo salvaspazio.",
+      "title": "Rapporto .pdf"
+    },
+    "export_issues": {
+      "export_source_filter": "{count} pendenze, a cui si applica il filtro",
+      "export_source_selection": "{count} pendenze, che erano segnate",
+      "title": "Esportare le pendenze"
+    },
+    "filter_issues": {
+      "confirm": "mettere il filtro",
+      "reset": "Reimpostare il filtro",
+      "title": "Filtrare"
+    },
+    "generate_issues_link": {
+      "generated": "Creato il link",
+      "title": "Creare il link"
+    },
+    "generate_issues_report": {
+      "abort": "interrompere",
+      "download": "scaricare",
+      "downloaded": "scaricato",
+      "finished": "finito",
+      "generating_map": "La grafica viene generata",
+      "generating_pdf": "Il PDF viene generato",
+      "pending": "attendere ({issueCount} pendenze)",
+      "title": "Creare un rapporto"
+    },
+    "import_craftsmen": {
+      "confirm": "{count} Aggiungi imprenditore",
+      "imported": "Imprenditori importati",
+      "matching_entries_found": "Nell'importazione è stata trovata un'email già inserita. Sei sicuro di volerlo aggiungere di nuovo? L'importazione ha trovato {count} email già catturate. Vuoi davvero aggiungerli di nuovo?",
+      "title": "Importa imprenditori"
+    },
+    "register_issues": {
+      "registered": "Pendenze aggiunte al catalogo.",
+      "registration_skipped_no_craftsman": "Una pendenza è stata saltata perché non è ancora assegnata a un imprenditore. | [%1:conteggio] Sono stati saltati perché non sono ancora stati assegnati a un imprenditore.",
+      "title": "Aggiungere una pendenza al catalogo | {count} Aggiungere pendence al catalogo"
+    },
+    "remove_craftsman": {
+      "help": "Dopo la rimozione, non è più possibile assegnare pendenze all'imprenditore. L'imprenditore perde l'accesso al link personalizzato.",
+      "removed": "Imprenditore rimosso.",
+      "title": "Rimuovere un imprenditore"
+    },
+    "remove_issues": {
+      "confirm": "Rimuovere un pendente {count} Rimuovere i pendenti",
+      "help": "Le pendenze non vengono più visualizzati (da nessuna parte.)",
+      "removed": "Pendenze rimosse.",
+      "title": "rimuovere le pendenze"
+    },
+    "remove_map": {
+      "help": "Dopo la rimozione, non sarai più in grado di assegnare pendenze alla carta.",
+      "removed": "Mappa rimossa",
+      "title": "Rimuovere la mappa"
+    },
+    "resolve_issue": {
+      "resolved": "Segnare pendenza come implementata.",
+      "title": "Segna come implementato"
+    },
+    "save_changes": "Salvare le modifiche",
+    "toggle_association_construction_site": {
+      "associated": "È stato aggiunto al cantiere.",
+      "dissociated": "È stato rimosso dal cantiere."
+    },
+    "view_issue": {
+      "title": "osservare la pendenza"
+    }
+  },
+  "_api": {
+    "request_failed": "La richiesta web è fallita."
+  },
+  "_form": {
+    "construction_site": {
+      "similar_already_existing_construction_sites": "Cantieri simili già esistenti"
+    },
+    "craftsman": {
+      "emailCCs_help": "Una riga per e-mail"
+    },
+    "craftsmen_import": {
+      "file": "File Excel (.xlsx)",
+      "file_drop_or_choose": "Trascinare o selezionare il file Excel (.xlsx)",
+      "invalid_entry": "Informazioni mancanti nella riga {line}. Le prime quattro colonne (commercio, imprenditore, contatto & e-mail) sono sempre necessarie.",
+      "template_download": "Scarica il modello",
+      "template_file_name": "Modello",
+      "template_help": "Con un documento Excel (.xlsx) potete aggiungere o aggiornare diversi imprenditori simultaneamente."
+    },
+    "file": {
+      "drop_or_choose": " o selezionare PDF (.pdf)",
+      "label": "File PDF (.pdf)"
+    },
+    "image": {
+      "drop_or_choose": "Trascinare o selezionare un'immagine (.jpg, .png, .gif)",
+      "label": "File di immagine (.jpg, .png, .gif)"
+    },
+    "issue_filter": {
+      "all_craftsmen": "Tutti gli imprenditori",
+      "all_maps": "Tutte le carte",
+      "from": "da ",
+      "state": "Stato",
+      "time": "Ore"
+    },
+    "issue_link": {
+      "access_allowed_before": "Data di scadenza dell'accesso"
+    },
+    "issue_report": {
+      "by_craftsman": "secondo l'imprenditore",
+      "by_map": "secondo il piano di costruzione",
+      "summary_tables": "Tabelle riassuntive",
+      "with_images": "con delle foto"
+    },
+    "issues": {
+      "resolved_as_impersonated_craftsman": "\"Implementato\" viene eseguito per conto dell'imprenditore."
+    },
+    "remove_confirm": "Capisco che non posso annullare questa azione.",
+    "reset": "resettare"
+  },
+  "_validation": {
+    "required": "Si prega di compilare il campo."
+  },
+  "_view": {
+    "craftsmen_statistics": {
+      "count": "Numero"
+    },
+    "craftsmen": {
+      "last_activity": "Ultima attività",
+      "with_open_issues": "con pendenze aperte",
+      "with_overdue_issues": "con pendenze scadute",
+      "with_unread_issues": "con pendenze non lette"
+    },
+    "feed": {
+      "entries": {
+        "has_closed": "ha concluso una pendenza. | ha concluso {count} pendenze.",
+        "has_registered": "ha registrato una pendenza. | ha registrato {count} pendenze.",
+        "has_resolved": "ha realizzato una pendenza. | ha realizzato {count} pendenze.",
+        "has_visited_webpage": "ha osservato le pendenze."
+      },
+      "no_entries": "Attualmente nessuna attività in cantiere."
+    },
+    "issues": {
+      "sort_by_last_activity": "Selezionare per ultima attività",
+      "without_craftsman": "senza imprenditore",
+      "without_deadline": "senza scadenza",
+      "without_description": "senza descrizione"
+    },
+    "maps_resolve": {
+      "issues_by_map": "Pendenze secondo il piano di costruzione"
+    },
+    "no_craftsmen": "Nessun imprenditore",
+    "no_issues": "Nessuna pendenza",
+    "no_maps": "Nessun piano di costruzione",
+    "show_more_issues": "Mostra più {count} impegni in sospeso"
+  },
   "construction_manager": {
     "_name": "Capocantiere",
     "_plural": "Capocantiere",
-    "email": "E-mail"
+    "email": "E-mail",
+    "name": "Nome"
   },
   "construction_site": {
     "_name": "Cantiere",
@@ -14,11 +231,16 @@
     "street_address": "Via \/ no."
   },
   "craftsman": {
+    "_excel_format_emailCCs": "Separare diverse e-mail con la virgola",
     "_name": "Operaio",
     "_plural": "Operai",
     "company": "Azienda",
     "contact_name": "Persona di contatto",
     "email": "E-mail",
+    "emailCCs": "Email CC",
+    "last_email_received": "E-mail ricevuta",
+    "last_issue_resolved_at": "Pendenza realizzata",
+    "last_visit_online": "Sito web visitato",
     "name": "Nome",
     "next_deadline": "Prossimo termine",
     "not_read_issues_count": "Pendenze non lette",
@@ -26,22 +248,74 @@
     "open_issues_count": "Pendenze aperte",
     "trade": "Settore"
   },
+  "dashboard": {
+    "new_issues_in_foyer": "Nuova pendenza registrata | {count} nuove pendenze registrate."
+  },
+  "edit": {
+    "construction_managers_disabled": "La modifica degli accessi è disattivata per il tuo account.",
+    "construction_managers_help": "Offri ad altri capocantieri l'accesso a questo cantiere in modo che possano anche registrare e gestire le pendenze.",
+    "craftsmen_help": "Gli imprenditori possono accedere alle pendenze associate con un link personalizzato e segnarle come implementate."
+  },
+  "email": {
+    "self_bcc": "ciascuno con una copia BCC a me",
+    "subject": "Oggetto",
+    "templates": {
+      "_common": {
+        "help": "Con il link in questa e-mail è possibile visualizzare le pendenze. Si prega di segnare online dopo il trasferimento di conseguenza.",
+        "hi": "Buon giorno,"
+      },
+      "_name": "Modello",
+      "open_issues": {
+        "body": "{constructionSite} ha ancora delle pendenze aperte, che son assegnate al tuo commercio.",
+        "name": "Pendenze aperte",
+        "subject": "Pendenze aperte su {constructionSite}"
+      },
+      "overdue_issues": {
+        "body": "{constructionSite} ha delle pendenze assegnate al tuo commercio la cui scadenza è passata.",
+        "name": "Eccesso di scadenza delle pendenze",
+        "subject": "Pendenze scadute su {constructionSite}"
+      },
+      "unread_issues": {
+        "body": "{constructionSite} ha nuove pendenze assegnati alla tua corporazione.",
+        "name": "Nuove pendenze",
+        "subject": "Nuove pendenze {constructionSite}"
+      }
+    },
+    "to": "A"
+  },
+  "foyer": {
+    "no_unregistered_issues": "Nessuna nuova pendenza. Puoi acquisire nuove pendenze con l'app.",
+    "title": "Inserire pendenze"
+  },
   "issue": {
+    "_name": "Pendenza",
+    "_plural": "Pendenze",
     "craftsman": "Operaio",
+    "deadline": "Scadenza",
     "description": "Descrizione",
+    "image": "Immagine",
+    "is_marked": "Preferito",
+    "last_changed_at": "Ultima modifica",
     "map": "Mappa",
     "number": "Numero",
+    "position": "Posizionamento",
     "state": {
       "closed": "chiuso",
+      "closed_help": "La pendenza è stata complementata.",
       "created": "creato",
+      "created_help": "La pendenza è stata registrata sul dispositivo.",
       "open": "aperte",
       "overdue": "Termine superato",
       "registered": "registrato",
+      "registered_help": "Pendenze sono stati aggiunti al catalogo.",
       "resolved": "risposto",
-      "to_inspect": "da ispezionare"
+      "resolved_help": "Pendenza è stata segnato come implementato dall'imprenditore.",
+      "to_inspect": "da ispezionare",
+      "unread": "Da leggere"
     },
     "status": "Stato",
-    "trade": "Settore"
+    "trade": "Settore",
+    "was_added_with_client": "il collaudo delle pendenze"
   },
   "map": {
     "_name": "Piano di costruzione",
@@ -49,9 +323,20 @@
     "closed_issues_count": "Pendenze risolte",
     "name": "Nome",
     "open_issues_count": "Pendenze aperte",
-    "parent": "Attribuzione"
+    "parent": "Attribuzione",
+    "parent_not_found_name": "(rimosso)",
+    "parent_not_set_name": "-"
   },
-  "_validation": {
-    "required": "Questo campo non può essere lasciato vuoto."
+  "resolve": {
+    "help": "Segnare le pendenze come implementate in modo che la direzione lavori possa chiuderle.",
+    "thanks": "Nessune pendenze aperte."
+  },
+  "switch": {
+    "all": "Tutti i cantieri registrati",
+    "all_help": "Attivare i cantieri per accederli.",
+    "mine": "I miei cantieri",
+    "mine_help": "Questi cantieri vengono visualizzati anche nell'app.",
+    "mine_none_ask_for_association": "Lei non è assegnato a un cantiere. Può chiedere a un altro capocantiere di aggiungerlo a un cantiere.",
+    "mine_none_associate_self": "Attivare un cantiere dalla lista seguente per accederlo."
   }
 }

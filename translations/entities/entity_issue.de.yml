@@ -5,7 +5,6 @@ entity:
 number: Nummer
 state_values:
   all: Alle
-  open: Offen
   closed: Abgeschlossen
   created: Erstellt
   none: Keine
