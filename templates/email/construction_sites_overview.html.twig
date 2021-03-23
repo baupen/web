@@ -10,18 +10,17 @@
         <spacer size="20"></spacer>
         <h2>{{ constructionSiteReport.name }}</h2>
         <p>
-            <a href="{{ constructionSiteReport.dashboardUrl }}">
+            <a class="button-secondary-email" href="{{ constructionSiteReport.dashboardUrl }}" target="_blank">
                 {{ "construction_sites_overview.to_dashboard"|trans }}
             </a>
         </p>
-        <spacer size="5"></spacer>
-        <table>
+        <table class="table-email table-email-striped right-align-except-first">
             <thead>
             <tr>
                 <th>{{ "entity.name"|trans({}, "entity_craftsman") }}</th>
-                <th>{{ "state_values.open"|trans({}, "entity_issue") }}</th>
-                <th>{{ "state_values.resolved"|trans({}, "entity_issue") }}</th>
-                <th>{{ "state_values.closed"|trans({}, "entity_issue") }}</th>
+                <th class="w-9em">{{ "state_values.open"|trans({}, "entity_issue") }}</th>
+                <th class="w-9em">{{ "state_values.resolved"|trans({}, "entity_issue") }}</th>
+                <th class="w-9em">{{ "state_values.closed"|trans({}, "entity_issue") }}</th>
             </tr>
             </thead>
             <tbody>
@@ -33,7 +32,7 @@
                     <td>{{ craftsmanReport.closedCount }} ({{ craftsmanReport.closedCountDelta }})</td>
                 </tr>
             {% endfor %}
-            <tr>
+            <tr class="table-email-tfoot">
                 <td>{{ "construction_sites_overview.total"|trans }}</td>
                 <td>{{ constructionSiteReport.openCount }} ({{ constructionSiteReport.openCountDelta }})</td>
                 <td>{{ constructionSiteReport.resolvedCount }} ({{ constructionSiteReport.resolvedCountDelta }})</td>
@@ -41,6 +40,10 @@
             </tr>
             </tbody>
         </table>
+        <spacer size="8"></spacer>
+        <p class="text-secondary">
+            {{ constructionSiteReport.constructionManagers|join(", ") }}
+        </p>
         <spacer size="50"></spacer>
     {% endfor %}
 {% endblock %}
