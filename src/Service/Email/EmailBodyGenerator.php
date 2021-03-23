@@ -55,7 +55,7 @@ class EmailBodyGenerator
             $constructionManagers[] = $constructionManager->getName();
         }
 
-        $dashboardUrl = $this->urlGenerator->generate('construction_site_dashboard', ['constructionSite' => $constructionSite->getId()]);
+        $dashboardUrl = $this->urlGenerator->generate('construction_site_dashboard', ['constructionSite' => $constructionSite->getId()], UrlGeneratorInterface::ABS_URL);
 
         $craftsmanReports = [];
         foreach ($constructionSiteReport->getCraftsmanDeltaReports() as $craftsmanDeltaReport) {

@@ -3,12 +3,7 @@
 {% trans_default_domain "email" %}
 
 {% macro issue_count_delta_cell_content(count, delta) %}
-        {{ count }}
-        {% if delta > 0 %}
-            (+{{ delta }})
-        {% elseif delta < 0 %}
-            ({{ delta }})
-        {% endif %}
+{{ count }}{% if delta > 0 %}(+{{ delta }}){% elseif delta < 0 %}({{ delta }}){% endif %}
 {% endmacro %}
 
 {% macro issue_count_delta_row(title, report, tr_class = "") %}

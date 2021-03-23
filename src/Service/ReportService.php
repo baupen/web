@@ -13,7 +13,6 @@ namespace App\Service;
 
 use App\Entity\ConstructionSite;
 use App\Entity\Filter;
-use App\Entity\Issue;
 use App\Service\Analysis\Database\CraftsmanService;
 use App\Service\Analysis\Database\IssueService;
 use App\Service\Interfaces\ReportServiceInterface;
@@ -22,6 +21,7 @@ use App\Service\Report\Email\CraftsmanDeltaReport;
 use App\Service\Report\Email\IssueCountDeltaTrait;
 use App\Service\Report\Pdf\PdfService;
 use App\Service\Report\Pdf\ReportElements;
+use DateTime;
 
 class ReportService implements ReportServiceInterface
 {
@@ -55,7 +55,7 @@ class ReportService implements ReportServiceInterface
         return $this->pdfService->generatePdfReport($issues, $filter, $reportElements, $author);
     }
 
-    public function createConstructionSiteReport(ConstructionSite $constructionSite, \DateTime $comparisonTimestamp): ConstructionSiteReport
+    public function createConstructionSiteReport(ConstructionSite $constructionSite, DateTime $comparisonTimestamp): ConstructionSiteReport
     {
         $craftsmanDeltaReportByCraftsman = [];
         $relevantCraftsmen = [];
@@ -91,25 +91,31 @@ class ReportService implements ReportServiceInterface
     /**
      * @param IssueCountDeltaTrait $issueCountDelta
      */
-    private function fillIssueCountDelta($issueCountDelta, \DateTime $timestamp, ?\DateTime $registeredAt, ?\DateTime $resolvedAt, ?\DateTime $closedAt)
+    private function fillIssueCountDelta($issueCountDelta, DateTime $timestamp, ?DateTime $registeredAt, ?DateTime $resolvedAt, ?DateTime $closedAt)
     {
-        if ($closedAt > $timestamp) {
-            // issue newly "closed"
-            $issueCountDelta->setClosedCountDelta($issueCountDelta->getClosedCountDelta() + 1);
-        }
+        // (newly) closed -> no longer open
+        // (newly) resolved => no longer open
+        // (newly) registered
 
-        if ($resolvedAt > $timestamp) {
-            // issue newly "resolved"
-            $issueCountDelta->setResolvedCountDelta($issueCountDelta->getResolvedCountDelta() + 1);
-        }
+        if (null !== $closedAt) {
+            if ($closedAt > $timestamp) {
+                $issueCountDelta->setClosedCountDelta($issueCountDelta->getClosedCountDelta() + 1);
+            }
 
-        if (null !== $registeredAt) {
-            if ($registeredAt > $timestamp && null === $closedAt && null === $resolvedAt) {
-                // issue newly "registered"
-                $issueCountDelta->setOpenCountDelta($issueCountDelta->getOpenCountDelta() + 1);
-            } elseif ($registeredAt < $timestamp && ($closedAt > $timestamp || $resolvedAt > $timestamp)) {
-                // issue has been resolved / closed, hence no longer open
+            if ($registeredAt < $timestamp) {
                 $issueCountDelta->setOpenCountDelta($issueCountDelta->getOpenCountDelta() - 1);
+            }
+        } elseif (null !== $resolvedAt) {
+            if ($resolvedAt > $timestamp) {
+                $issueCountDelta->setResolvedCountDelta($issueCountDelta->getResolvedCountDelta() + 1);
+            }
+
+            if ($registeredAt < $timestamp) {
+                $issueCountDelta->setOpenCountDelta($issueCountDelta->getOpenCountDelta() - 1);
+            }
+        } elseif (null !== $registeredAt) {
+            if ($registeredAt > $timestamp) {
+                $issueCountDelta->setOpenCountDelta($issueCountDelta->getOpenCountDelta() + 1);
             }
         }
     }

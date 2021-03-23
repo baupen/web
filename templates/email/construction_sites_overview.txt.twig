@@ -2,7 +2,32 @@
 
 {% trans_default_domain "email" %}
 
+{% macro issue_count_delta_row(title, report, tr_class = "") %}
+{% import "email/construction_sites_overview.html.twig" as _macros %}
+{{ "%-30s"|format(title) }} | {{ "%-15s"|format(_macros.issue_count_delta_cell_content(report.openCount, report.openCountDelta)) }} | {{ "%-15s"|format(_macros.issue_count_delta_cell_content(report.resolvedCount, report.resolvedCountDelta)) }} | {{ "%-15s"|format(_macros.issue_count_delta_cell_content(report.closedCount, report.closedCountDelta)) }}
+{% endmacro %}
+
 {% block body %}
-{{ body|json_encode }}
-JSON output
+{% import _self as _macros %}
+{{ "construction_sites_overview.message"|trans }}
+
+
+{% for constructionSiteReport in body.constructionSiteReports %}
+########
+{{ constructionSiteReport.name }}
+########
+
+{{ constructionSiteReport.constructionManagers|join(", ") }}
+{{ "construction_sites_overview.to_dashboard"|trans }}: {{ constructionSiteReport.dashboardUrl }}
+
+{{ "%-30s"|format("entity.name"|trans({}, "entity_craftsman")) }} | {{ "%-15s"|format("state_values.open"|trans({}, "entity_issue")) }} | {{ "%-15s"|format("state_values.resolved"|trans({}, "entity_issue")) }} | {{ "%-15s"|format("state_values.closed"|trans({}, "entity_issue")) }}
+--------
+{% for craftsmanReport in constructionSiteReport.craftsmanReports %}
+{{ _macros.issue_count_delta_row(craftsmanReport.company, craftsmanReport) }}
+{% endfor %}
+{{ _macros.issue_count_delta_row("construction_sites_overview.total"|trans, constructionSiteReport, "table-email-tfoot") }}
+
+
+
+{% endfor %}
 {% endblock %}
