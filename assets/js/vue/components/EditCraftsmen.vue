@@ -4,15 +4,14 @@
   <div class="btn-group">
     <add-craftsman-button
         :construction-site="constructionSite" @added="craftsmen.push($event)" />
+  </div>
+  <div class="btn-group ml-2">
     <import-craftsmen-button
         :construction-site="constructionSite" :craftsmen="notDeletedCraftsmen"
         @imported="reload" />
+    <export-craftsmen-button v-if="craftsmen && craftsmen.length > 0" :craftsmen="notDeletedCraftsmen" />
   </div>
-  <craftsmen-edit-table class="mt-2 mb-0" :construction-site="constructionSite" :craftsmen="notDeletedCraftsmen">
-    <template v-slot:caption>
-      <export-craftsmen-button v-if="craftsmen && craftsmen.length > 0" :craftsmen="notDeletedCraftsmen" />
-    </template>
-  </craftsmen-edit-table>
+  <craftsmen-edit-table class="mt-2 mb-0" :construction-site="constructionSite" :craftsmen="notDeletedCraftsmen" />
 </template>
 
 <script>

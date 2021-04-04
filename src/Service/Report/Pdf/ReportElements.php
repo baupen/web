@@ -28,6 +28,11 @@ class ReportElements
      */
     private $withImages = true;
 
+    /**
+     * @var bool
+     */
+    private $withRenders = true;
+
     public static function fromRequest(array $parameters = null): self
     {
         $self = new self();
@@ -35,6 +40,7 @@ class ReportElements
         $self->tableByCraftsman = static::getValue($parameters, 'tableByCraftsman', false);
         $self->tableByMap = static::getValue($parameters, 'tableByMap', true);
         $self->withImages = static::getValue($parameters, 'withImages', true);
+        $self->withRenders = static::getValue($parameters, 'withRenders', true);
 
         return $self;
     }
@@ -78,5 +84,15 @@ class ReportElements
     public function setWithImages(bool $withImages): void
     {
         $this->withImages = $withImages;
+    }
+
+    public function getWithRenders(): bool
+    {
+        return $this->withRenders;
+    }
+
+    public function setWithRenders(bool $withRenders): void
+    {
+        $this->withRenders = $withRenders;
     }
 }

@@ -1,5 +1,5 @@
 <template>
-  <a :href="downloadXlsxExport" :download="filename">
+  <a class="btn btn-link" :href="downloadXlsxExport" :download="filename">
     {{ this.$t('_action.export_craftsmen.title') }}
   </a>
 </template>
@@ -24,7 +24,7 @@ export default {
       const prefix = (new Date()).toISOString().slice(0, 10)
       const filename = this.$t('_action.export_craftsmen.file_name')
 
-      return prefix + " - " + filename + ".xlsx"
+      return prefix + ' - ' + filename + '.xlsx'
     }
   }
 }

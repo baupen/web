@@ -1,11 +1,20 @@
 <template>
-  <custom-checkbox-field
-      for-id="report-with-images"
-      :label="$t('_form.issue_report.with_images')">
-    <input class="custom-control-input" type="checkbox" name="report-with-images" id="report-with-images"
-           :true-value="true" :false-value="false"
-           v-model="report.withImages">
-  </custom-checkbox-field>
+  <div class="form-group">
+    <custom-checkbox-field
+        for-id="report-with-renders"
+        :label="$t('_form.issue_report.with_renders')">
+      <input class="custom-control-input" type="checkbox" name="report-with-images" id="report-with-renders"
+             :true-value="true" :false-value="false"
+             v-model="report.withRenders">
+    </custom-checkbox-field>
+    <custom-checkbox-field
+        for-id="report-with-images"
+        :label="$t('_form.issue_report.with_images')">
+      <input class="custom-control-input" type="checkbox" name="report-with-images" id="report-with-images"
+             :true-value="true" :false-value="false"
+             v-model="report.withImages">
+    </custom-checkbox-field>
+  </div>
 
   <form-field :label="$t('_form.issue_report.summary_tables')" :required="false">
     <custom-checkbox
@@ -48,6 +57,7 @@ export default {
   data () {
     return {
       report: {
+        withRenders: null,
         withImages: null,
         tableByCraftsman: null,
         tableByMap: null

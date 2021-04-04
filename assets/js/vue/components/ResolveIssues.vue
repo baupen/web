@@ -104,6 +104,7 @@ export default {
     },
     reportConfiguration: function () {
       return {
+        withRenders: true,
         withImages: true,
         tableByCraftsman: false,
         tableByMap: true

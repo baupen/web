@@ -14,84 +14,55 @@ namespace App\Helper;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Entity\Map;
+use function ksort;
 
 class IssueHelper
 {
     /**
-     * @param Issue[] $issues
-     * @param $orderedMaps
-     * @param $issuesPerMap
+     * @param Issue[]   $issues
+     * @param Map[]     $orderedMaps
+     * @param Issue[][] $issuesPerMap
      */
     public static function issuesToOrderedMaps(array $issues, &$orderedMaps, &$issuesPerMap)
     {
-        static::issuesToOrderedElements(
-            $issues,
-            $orderedMaps,
-            $issuesPerMap,
-            function ($issue) {
-                /* @var Issue $issue */
-                return $issue->getMap();
-            },
-            function ($map) {
-                /* @var Map $map */
-                return $map->getName().$map->getContext();
-            },
-            function ($map) {
-                /* @var Map $map */
-                return $map->getId();
-            }
-        );
-    }
-
-    /**
-     * @param Issue[] $issues
-     * @param $orderedCraftsman
-     * @param $issuesPerCraftsman
-     */
-    public static function issuesToOrderedCraftsman(array $issues, &$orderedCraftsman, &$issuesPerCraftsman)
-    {
-        static::issuesToOrderedElements(
-            $issues,
-            $orderedCraftsman,
-            $issuesPerCraftsman,
-            function ($issue) {
-                /* @var Issue $issue */
-                return $issue->getCraftsman();
-            },
-            function ($craftsman) {
-                /* @var Craftsman $craftsman */
-                return $craftsman->getTrade().$craftsman->getCompany();
-            },
-            function ($craftsman) {
-                /* @var Craftsman $craftsman */
-                return $craftsman->getId();
-            }
-        );
-    }
-
-    /**
-     * @param $orderedElements
-     * @param $issuesPerElement
-     * @param callable $elementProperty    the element we want to use for ordering
-     * @param callable $orderProperty      the property of the element we want to use for the order
-     * @param callable $identifierProperty the unique identifier for the element we use for ordering
-     */
-    private static function issuesToOrderedElements(array $issues, &$orderedElements, &$issuesPerElement, $elementProperty, $orderProperty, $identifierProperty)
-    {
         $unorderedElements = [];
         /** @var Issue[][] $issuesPerElement */
-        $issuesPerElement = [];
+        $issuesPerMap = [];
         foreach ($issues as $issue) {
-            $element = $elementProperty($issue);
-            $unorderedElements[$orderProperty($element)] = $element;
-            $issuesPerElement[$identifierProperty($element)][] = $issue;
+            $map = $issue->getMap();
+            $unorderedElements[$map->getNameWithContext()] = $map;
+            $issuesPerMap[$map->getId()][] = $issue;
         }
 
         ksort($unorderedElements);
 
-        $orderedElements = [];
+        $orderedMaps = [];
         foreach ($unorderedElements as $orderedElement) {
-            $orderedElements[$identifierProperty($orderedElement)] = $orderedElement;
+            $orderedMaps[$orderedElement->getId()] = $orderedElement;
+        }
+    }
+
+    /**
+     * @param Issue[]     $issues
+     * @param Craftsman[] $orderedCraftsman
+     * @param Issue[][]   $issuesPerCraftsman
+     */
+    public static function issuesToOrderedCraftsman(array $issues, &$orderedCraftsman, &$issuesPerCraftsman)
+    {
+        $unorderedElements = [];
+        /** @var Issue[][] $issuesPerElement */
+        $issuesPerCraftsman = [];
+        foreach ($issues as $issue) {
+            $craftsman = $issue->getCraftsman();
+            $unorderedElements[$craftsman->getTrade().$craftsman->getCompany()] = $craftsman;
+            $issuesPerCraftsman[$craftsman->getId()][] = $issue;
+        }
+
+        ksort($unorderedElements);
+
+        $orderedCraftsman = [];
+        foreach ($unorderedElements as $orderedElement) {
+            $orderedCraftsman[$orderedElement->getId()] = $orderedElement;
         }
     }
 }

@@ -95,10 +95,13 @@ class PdfService
             $this->addIssueContent($filter, $reportElements, $issues, $report);
         }
 
-        $filename = (new DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT).'_'.uniqid().'.pdf';
-
         $folder = $this->pathService->getTransientFolderForReports();
         FileHelper::ensureFolderExists($folder);
+
+        $sanitizedConstructionSiteName = FileHelper::sanitizeFileName($constructionSite->getName());
+        $humanReadablePrefix = (new DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT).'_'.$sanitizedConstructionSiteName;
+        $optimalFilename = $humanReadablePrefix.'.pdf';
+        $filename = file_exists($optimalFilename) ? $humanReadablePrefix.'_'.uniqid().'.pdf' : $optimalFilename;
 
         $path = $folder.'/'.$filename;
         $report->save($path);
@@ -121,7 +124,7 @@ class PdfService
         IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
         foreach ($orderedMaps as $map) {
             $issues = $issuesPerMap[$map->getId()];
-            $this->addMap($report, $map, $issues);
+            $this->addMap($report, $map, $issues, $reportElements->getWithRenders());
             $this->addIssueTable($report, $filter, $issues);
             if ($reportElements->getWithImages()) {
                 $this->addIssueImageGrid($report, $issues);
@@ -132,9 +135,9 @@ class PdfService
     /**
      * @param Issue[] $issues
      */
-    private function addMap(Report $report, Map $map, array $issues)
+    private function addMap(Report $report, Map $map, array $issues, bool $showMap)
     {
-        $path = $map->getFile() ? $this->imageService->renderMapFileWithIssuesToJpg($map->getFile(), $issues, ImageServiceInterface::SIZE_FULL) : null;
+        $path = $map->getFile() && $showMap ? $this->imageService->renderMapFileWithIssuesToJpg($map->getFile(), $issues, ImageServiceInterface::SIZE_FULL) : null;
 
         $report->addMap($map->getName(), $map->getContext(), $path);
     }
@@ -267,6 +270,9 @@ class PdfService
         if ($reportElements->getWithImages()) {
             $elements[count($elements) - 1] .= ' '.$this->translator->trans('issues.with_images', [], 'report');
         }
+        if ($reportElements->getWithRenders()) {
+            $elements[count($elements) - 1] .= ' '.$this->translator->trans('issues.with_renders', [], 'report');
+        }
         $reportElements = implode(', ', $elements);
 
         $addressLines = implode("\n", $constructionSite->getAddressLines());
@@ -312,47 +318,95 @@ class PdfService
         $showResolved = null === $filter->getResolvedAtBefore() || $filter->getResolvedAtAfter();
         $showClosed = null === $filter->getClosedAtBefore() || $filter->getClosedAtAfter();
 
-        $tableHeader[] = '#';
-        $tableHeader[] = $this->translator->trans('entity.name', [], 'entity_craftsman');
-        $tableHeader[] = $this->translator->trans('description', [], 'entity_issue');
-        $tableHeader[] = $this->translator->trans('deadline', [], 'entity_issue');
-
-        if ($showRegistered) {
-            $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('state_values.registered', [], 'entity_issue')], 'report');
-        }
-
-        if ($showResolved) {
-            $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('state_values.resolved', [], 'entity_issue')], 'report');
-        }
-
-        if ($showClosed) {
-            $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('state_values.closed', [], 'entity_issue')], 'report');
-        }
+        $formatDateTime = function (?DateTime $dateTime, string $format) {
+            return $dateTime ? $dateTime->format($format) : '-';
+        };
 
         $tableContent = [];
+        $deadlineFormatInversion = [];
+        $maxIssueNumber = 0;
         foreach ($issues as $issue) {
             $row = [];
+
             $row[] = $issue->getNumber();
+            $maxIssueNumber = max($issue->getNumber(), $maxIssueNumber);
+
             $row[] = $issue->getCraftsman()->getCompany()."\n".$issue->getCraftsman()->getTrade();
             $row[] = $issue->getDescription();
-            $row[] = (null !== $issue->getDeadline()) ? $issue->getDeadline()->format(DateTimeFormatter::DATE_FORMAT) : '';
+
+            $deadlineFormat = $formatDateTime($issue->getDeadline(), DateTimeFormatter::DATE_FORMAT);
+            $row[] = $deadlineFormat;
+            $deadlineFormatInversion[$deadlineFormat] = $formatDateTime($issue->getDeadline(), DateTimeFormatter::ISO_DATE_FORMAT);
 
             if ($showRegistered) {
-                $row[] = null !== $issue->getRegisteredAt() ? $issue->getRegisteredAt()->format(DateTimeFormatter::DATE_FORMAT)."\n".$issue->getRegisteredBy()->getName() : '';
+                $row[] = $formatDateTime($issue->getRegisteredAt(), DateTimeFormatter::DATE_FORMAT);
             }
 
             if ($showResolved) {
-                $row[] = null !== $issue->getResolvedAt() ? $issue->getResolvedAt()->format(DateTimeFormatter::DATE_FORMAT)."\n".$issue->getResolvedBy()->getCompany() : '';
+                $row[] = $formatDateTime($issue->getResolvedAt(), DateTimeFormatter::DATE_FORMAT);
             }
 
             if ($showClosed) {
-                $row[] = null !== $issue->getClosedAt() ? $issue->getClosedAt()->format(DateTimeFormatter::DATE_FORMAT)."\n".$issue->getClosedBy()->getName() : '';
+                $row[] = $formatDateTime($issue->getClosedAt(), DateTimeFormatter::DATE_FORMAT);
             }
 
             $tableContent[] = $row;
         }
 
-        $report->addTable($tableHeader, $tableContent, null, 12);
+        usort($tableContent, function ($a, $b) use ($deadlineFormatInversion) {
+            // order by craftsman
+            if ($a[1] !== $b[1]) {
+                return strcmp($a[1], $b[1]);
+            }
+
+            // order by limit (early first)
+            if ($a[3] !== $b[3]) {
+                return strcmp($deadlineFormatInversion[$a[3]], $deadlineFormatInversion[$b[3]]);
+            }
+
+            // order by number if rest is equal
+            return strcmp($a[0], $b[0]);
+        });
+
+        $totalWidth = 190; // out of the pdfSize config model
+        $cellPadding = 1.6 * 2; // out of the pdfSize config model
+        $dateWidth = 19; // any smaller, the "abgeschlossen" in DE introduces a line break
+        $numberWidth = 1.8; // seems alright even with 5 digits
+
+        $tableSizes = [];
+
+        $tableHeader[] = '#';
+        $tableSizes[] = $cellPadding + strlen($maxIssueNumber) * $numberWidth;
+
+        $tableHeader[] = $this->translator->trans('entity.name', [], 'entity_craftsman');
+        $tableSizes[] = 0;
+
+        $tableHeader[] = $this->translator->trans('description', [], 'entity_issue');
+        $tableSizes[] = 0;
+
+        $tableHeader[] = $this->translator->trans('deadline', [], 'entity_issue');
+        $tableSizes[] = $dateWidth;
+
+        if ($showRegistered) {
+            $tableHeader[] = $this->translator->trans('state_values.registered', [], 'entity_issue');
+            $tableSizes[] = $dateWidth;
+        }
+
+        if ($showResolved) {
+            $tableHeader[] = $this->translator->trans('state_values.resolved', [], 'entity_issue');
+            $tableSizes[] = $dateWidth;
+        }
+
+        if ($showClosed) {
+            $tableHeader[] = $this->translator->trans('state_values.closed', [], 'entity_issue');
+            $tableSizes[] = $dateWidth;
+        }
+
+        $availableWidth = $totalWidth - array_sum($tableSizes);
+        $tableSizes[1] = $availableWidth * 0.4;
+        $tableSizes[2] = $availableWidth * 0.6;
+
+        $report->addSizedTable($tableSizes, $tableHeader, $tableContent);
     }
 
     /**
@@ -406,19 +460,19 @@ class PdfService
         IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
 
         //prepare header & content with specific content
-        $tableHeader = [$this->translator->trans('context', [], 'entity_map'), $this->translator->trans('entity.name', [], 'entity_map')];
+        $tableHeader = [$this->translator->trans('entity.name', [], 'entity_map')];
 
         //add map name & map context to table
         $tableContent = [];
         foreach ($orderedMaps as $mapId => $map) {
-            $tableContent[$mapId] = [$map->getContext(), $map->getName()];
+            $tableContent[$mapId] = [$map->getNameWithContext()];
         }
 
         //add accumulated info
         $this->addAggregatedIssuesInfo($orderedMaps, $issuesPerMap, $tableContent, $tableHeader);
 
         //write to pdf
-        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_map', [], 'report'));
+        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_map', [], 'report'), 100);
     }
 
     /**

@@ -18,9 +18,9 @@
     },
     "close": "Schliessen",
     "compose_craftsman_email": {
-      "no_template": "Keine Vorlage",
+      "no_template": "Neue Vorlage",
       "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und als umgesetzt markieren.",
-      "save_as_new_template": "Als neue Vorlage speichern",
+      "save_as_new_template": "Neue Vorlage speichern",
       "save_template_changes": "Änderungen an der Vorlage speichern",
       "saved_email_template": "Vorlage gespeichert",
       "send_emails": "E-Mail versenden | {count} E-Mails versenden",
@@ -58,7 +58,7 @@
     },
     "export_craftsmen": {
       "file_name": "Unternehmer",
-      "title": "Unternehmer exportieren"
+      "title": "Excel exportieren"
     },
     "export_issues_link": {
       "help": "Immer aktuell: Die Pendenzen schreibgeschützt mit Externen teilen.",
@@ -96,7 +96,7 @@
       "confirm": "{count} Unternehmer hinzufügen",
       "imported": "Unternehmer importiert",
       "matching_entries_found": "Im Import wurde eine E-Mail gefunden, die bereits erfasst ist. Möchten Sie diese wirklich ein weiteres Mal hinzufügen? | Im Import wurden {count} E-Mails gefunden, die bereits erfasst sind. Möchten Sie diese wirklich ein weiteres Mal hinzufügen?",
-      "title": "Unternehmer importieren"
+      "title": "Excel importieren"
     },
     "register_issues": {
       "registered": "Pendenzen zum Verzeichnis hinzugefügt.",
@@ -178,7 +178,8 @@
       "by_craftsman": "nach Unternehmer",
       "by_map": "nach Bauplan",
       "summary_tables": "Zusammenfassungstabellen",
-      "with_images": "mit Fotos"
+      "with_images": "mit Fotos",
+      "with_renders": "mit Bauplänen"
     },
     "issues": {
       "resolved_as_impersonated_craftsman": "'Umgesetzt' wird im Namen des Unternehmers."

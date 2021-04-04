@@ -25,6 +25,7 @@ export default {
   data () {
     return {
       report: {
+        withRenders: true,
         withImages: true,
         tableByCraftsman: true,
         tableByMap: false
