@@ -123,7 +123,6 @@ class Report
         $this->pdfDocument->startPage();
 
         $this->setDefaults();
-        $startY = $this->pdfDocument->GetY();
 
         $printTitle = function () use ($name, $context) {
             $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
@@ -325,15 +324,17 @@ class Report
 
     private function printH2($text, $columnWidth = 0, $description = '')
     {
-        $this->pdfDocument->SetFontSize($this->pdfSizes->getBigFontSize());
-        $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
-        $this->pdfDocument->MultiCell($columnWidth, 0, $text, 0, 'L', false, 1);
-
         if (mb_strlen($description) > 0) {
+            $this->pdfDocument->SetTextColor(...$this->pdfDesign->getSecondaryTextColor());
             $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
             $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
             $this->pdfDocument->MultiCell($columnWidth, 0, $description, 0, 'L', false, 1);
         }
+
+        $this->pdfDocument->SetTextColor(...$this->pdfDesign->getTextColor());
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getBigFontSize());
+        $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
+        $this->pdfDocument->MultiCell($columnWidth, 0, $text, 0, 'L', false, 1);
 
         $this->pdfDocument->Ln($this->pdfSizes->getLnHeight());
     }

@@ -454,19 +454,19 @@ class PdfService
         IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
 
         //prepare header & content with specific content
-        $tableHeader = [$this->translator->trans('context', [], 'entity_map'), $this->translator->trans('entity.name', [], 'entity_map')];
+        $tableHeader = [$this->translator->trans('entity.name', [], 'entity_map')];
 
         //add map name & map context to table
         $tableContent = [];
         foreach ($orderedMaps as $mapId => $map) {
-            $tableContent[$mapId] = [$map->getContext(), $map->getName()];
+            $tableContent[$mapId] = [$map->getNameWithContext()];
         }
 
         //add accumulated info
         $this->addAggregatedIssuesInfo($orderedMaps, $issuesPerMap, $tableContent, $tableHeader);
 
         //write to pdf
-        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_map', [], 'report'));
+        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_map', [], 'report'), 100);
     }
 
     /**
