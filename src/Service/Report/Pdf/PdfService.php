@@ -95,10 +95,13 @@ class PdfService
             $this->addIssueContent($filter, $reportElements, $issues, $report);
         }
 
-        $filename = (new DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT).'_'.uniqid().'.pdf';
-
         $folder = $this->pathService->getTransientFolderForReports();
         FileHelper::ensureFolderExists($folder);
+
+        $sanitizedConstructionSiteName = FileHelper::sanitizeFileName($constructionSite->getName());
+        $humanReadablePrefix = (new DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT).'_'.$sanitizedConstructionSiteName;
+        $optimalFilename = $humanReadablePrefix.'.pdf';
+        $filename = file_exists($optimalFilename) ? $humanReadablePrefix.'_'.uniqid().'.pdf' : $optimalFilename;
 
         $path = $folder.'/'.$filename;
         $report->save($path);
