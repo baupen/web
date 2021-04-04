@@ -1,14 +1,15 @@
 deadline: Scadenza
 description: Descrizione
 entity:
-  name: 'Pendenza/ sospeso'
+  name: 'Pendenza/ Punti in sospeso'
 number: Numero
 state_values:
   all: Tutte
-  closed: Confermato/concluso
+  closed: Terminato
   created: Creato
   none: Nessuna
+  open: Aperto
   registered: Aperto
-  resolved: 'Implementato/ realizzato'
-  seen: Letto/visto
+  resolved: Realizzato
+  seen: Visto
 status: Stato

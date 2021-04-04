@@ -12,6 +12,6 @@ legacy:
   warning:
     redirected_from_legacy_url: 'Sie wurden automatisch weitergeleitet, weil sich der Link geändert hat. Bitte aktualisieren Sie ihre Lesezeichen.'
 outdated:
-  update_now: 'Browser jetzt aktualisieren '
+  update_now: 'Browser jetzt aktualisieren'
   update_to_view_correctly: 'Die Seite wird daher möglicherweise nicht richtig dargestellt.'
   your_browser_is_outdated: 'Ihr Browser wird nicht unterstützt!'

@@ -2,22 +2,22 @@ dashboard:
   description: 'Panoramica dei cantieri'
   title: Dashboard
 dispatch:
-  description: 'Informate gli operai di nuove pendenze tramite un’E-mail personalizzata'
-  title: 'Informare gli operai'
+  description: 'Informa gli imprenditori delle nuove pendenze tramite un’e-mail personalizzata.'
+  title: 'Informa gli imprenditori'
 edit:
-  description: 'Organizza operai e mappe'
+  description: 'Gestire i piani di costruzione, gli imprenditori e i capicantiere.'
   external_construction_manager:
     new_construction_site_email:
-      body: 'Siete stati aggiunti a %page% del cantiere%construction_site_name%.'
-      subject: 'Nuovo cantiere sbloccato su %page%'
+      body: 'Sei stato aggiunto su %page% del cantiere %construction_site_name%.'
+      subject: 'Nuovo cantiere attivato su %page%'
     welcome_email:
-      action_text: 'Attivare l''account'
-      body: 'Sei stato registrato a %page% in modo da poter gestire il cantiere %construction_site_name%.'
-      subject: 'Benvenuti su %page%!'
+      action_text: 'Attiva l''account'
+      body: 'Sei stato registrato su %page% in modo da poter gestire il cantiere %construction_site_name%.'
+      subject: 'Benvenuto su %page%!'
   title: 'Allestimento del cantiere'
 foyer:
-  description: 'Aggiungere le nuove pendenze all’elenco.'
-  title: 'Inserire pendenze'
+  description: 'Inserisci le nuove pendenze nel catalogo.'
+  title: 'Inserisci pendenze'
 register:
-  description: 'Ricerca ed esportazione delle voci in sospeso inserite.'
-  title: 'Elenco delle pendenze'
+  description: 'Ricerca ed esportazione delle pendenze inserite.'
+  title: 'Catalogo delle pendenze'

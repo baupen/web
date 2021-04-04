@@ -1,23 +1,28 @@
 app_invitation:
-  authenticate: 'Accedi all''applicazione usando il codice QR dal sito web o il link seguendo.'
+  authenticate: 'Accedi all''app usando il codice QR del sito web o il link seguente.'
   download_to_use_functionality: 'Scarica la nostra app per registrare gli articoli in sospeso per %page%.'
   ios_login_link: 'Aprire l''app e fare il login'
   ios_store: 'all''iOS Store'
   subject: 'Scarica l''app per %page%.'
+construction_sites_overview:
+  message: 'La panoramica contiene tutti i cantieri a cui lei appartiene. Se presente, verrà specificata la variazione relativa alla settimana precedente.'
+  subject: 'Panoramica settimanale per %page%'
+  to_dashboard: 'Al dashboard'
+  total: Totale
 craftsman_issue_reminder:
-  view_issues_link: 'Visualizza gli articoli in sospeso'
+  view_issues_link: 'Visualizza le pendenze'
 generated: 'Questa e-mail è stata generata automaticamente. Si prega di non rispondere.'
 mail_wrong_displayed: 'Questa e-mail non viene visualizzata correttamente? Clicca qui.'
 questions: 'Per domande rivolgersi a '
 recover_confirm:
-  confirm_link: 'Reimposta ora la password'
-  message: 'Utilizzare il seguente link per reimpostare la password:'
+  confirm_link: 'Reimposta la password'
+  message: 'Abbiamo ricevuto una richiesta di reimpostazione della tua password su %page%. Usa il link qui sotto per farlo ora.'
   subject: 'Reimpostare la password su %page%'
 register_confirm:
-  activate_link: 'Attivare l''account'
-  message: 'Il tuo account su %page% è creato e configurato. Si prega di attivarlo per poter inserire gli articoli in sospeso.'
-  subject: 'Benvenuti su %page%!'
+  activate_link: 'Attiva l''account'
+  message: 'Il tuo account su %page% è creato e configurato. Si prega di attivarlo per poter inserire le pendenze.'
+  subject: 'Benvenuto su %page%!'
 sent_by: 'Invio dell''e-mail attraverso'
 view_online:
-  description: 'Leggere l''email nel layout originale.'
-  title: 'Leggere l''e-mail'
+  description: 'Leggere l''e-mail nel layout originale.'
+  title: 'Leggi l''e-mail'

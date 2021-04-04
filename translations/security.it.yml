@@ -1,40 +1,40 @@
 login:
-  description: 'Utilizzi la sua email aziendale.'
+  description: 'Utilizza la tua e-mail aziendale.'
   errors:
-    account_disabled: 'Questo account è disattivato'
-    email_not_found: 'Questa email non è stata trovata.'
+    account_disabled: 'Questo account è disattivato.'
+    email_not_found: 'Questa e-mail non è stata trovata.'
     login_failed: 'Login fallito.'
     password_wrong: 'La password non è corretta.'
-    registration_not_completed: 'La registrazione non è ancora completata. Ti abbiamo inviato di nuovo l'' email di registrazione.'
+    registration_not_completed: 'La registrazione non è ancora completata. Ti abbiamo inviato nuovamente l'' e-mail di registrazione.'
   forgot_passwort: 'Dimenticato la password?'
   submit: 'Effettuare il login'
-  title: 'Per favore effettuare il login.'
+  title: 'Per favore effettua il login.'
 logout:
   title: Logout
 recover_confirm:
-  description: 'Imposti la sua nuova password.'
+  description: 'Imposta la tua nuova password.'
   error:
-    invalid_hash: 'Questo link non è più valido. Si noti che ogni link può essere utilizzato solamente /solo una volta.'
-    password_too_short: 'La password è troppo corta. Si prega di inserire almeno 8 caratteri.'
+    invalid_hash: 'Questo link non è più valido. Si noti che ogni link può essere utilizzato solamente una volta.'
+    password_too_short: 'La password è troppo corta. Si prega di inserire minimo 8 caratteri.'
     passwords_do_not_match: 'Le password non corrispondono.'
   submit: 'Imposta la password'
   success:
     password_set: 'Nuova password impostata con successo.'
-  title: Bentornati!
+  title: Bentornato!
 recover:
   back_to_login: 'Tornare al login.'
-  description: 'Ti invieremo un messaggio alla tua email.'
+  description: 'Ti inviamo un messaggio alla tua email.'
   fail:
     email_not_found: 'Questa e-mail non è stata trovata nel nostro sistema.'
-    email_not_sent: 'L''invio dell''email è fallito. Questo è un errore interno, contatta il supporto per favore.'
-  forgot_email: 'dimenticato l'' e-mail  o altri problemi?'
-  remembered_login: 'Tentare nuovamente il login?/Riprovare il login?'
-  submit: 'Inviare notifica'
+    email_not_sent: 'L''invio dell'' email è fallito. Questo è un errore interno, per favore contatta il supporto.'
+  forgot_email: 'Dimenticato l'' e-mail o altri problemi?'
+  remembered_login: 'Riprovare il login?'
+  submit: 'Invia messaggio'
   success:
     email_sent: 'Le abbiamo appena inviato un'' e-mail.'
-  title: 'Reimpostare/resettare la password.'
+  title: 'Resettare la password.'
 register_confirm:
-  description: 'La vostra email è stata confermata.'
+  description: 'La vostra e-mail è stata confermata.'
   error:
     invalid_hash: 'Questo link non è più valido. Riavvia la registrazione o accedi come al solito.'
   submit: attivare
@@ -43,15 +43,15 @@ register_confirm:
   title: 'Attivare l''account.'
 register_confirmed:
   description: 'Una breve panoramica su come funziona l''applicazione.'
-  title: Benvenuti
+  title: Benvenuto
 register:
   back_to_login: 'Tornare al login.'
-  description: 'Permetteteci di aiutarvi con la vostra amministrazione delle pendenze.'
+  description: 'Permetteteci di aiutarti con la tua amministrazione delle pendenze.'
   error:
     account_disabled: 'L''account è disattivato.'
     already_registered: 'Sei già registrato. Accedi come al solito (o resetta la password).'
     unknown: 'Qualcosa è fallito. Contatta il supporto.'
     welcome_email_not_sent: 'L''invio dell''email è fallito. Questo è un errore interno, contatta il supporto.'
   success:
-    welcome: 'Sei stato registrato con successo! Controlla la tua email per attivare il tuo account.'
-  title: 'Creare un account.'
+    welcome: 'Sei stato registrato con successo! Controlla la tua e-mail per attivare il tuo account.'
+  title: 'Crea un account.'
