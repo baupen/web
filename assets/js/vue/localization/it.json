@@ -58,7 +58,7 @@
     },
     "export_craftsmen": {
       "file_name": "Imprenditore",
-      "title": "Esporta imprenditore"
+      "title": "Esporta Excel"
     },
     "export_issues_link": {
       "help": "Sempre attuale: Condividi le pendenze con gli esterni protette dalla scrittura.",
@@ -96,7 +96,7 @@
       "confirm": "Aggiungi {count} imprenditori",
       "imported": "Imprenditori importati",
       "matching_entries_found": "Nell'importazione è stata trovata un'e-mail già inserita. Sei sicuro di volerla aggiungere nuovamente? | L'importazione ha trovato {count} e-mail già inserite. Sei sicuro di volerle aggiungere nuovamente?",
-      "title": "Importa imprenditore"
+      "title": "Importa Excel"
     },
     "register_issues": {
       "registered": "Pendenze aggiunte al catalogo.",

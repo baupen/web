@@ -58,7 +58,7 @@
     },
     "export_craftsmen": {
       "file_name": "Unternehmer",
-      "title": "Unternehmer exportieren"
+      "title": "Excel exportieren"
     },
     "export_issues_link": {
       "help": "Immer aktuell: Die Pendenzen schreibgeschützt mit Externen teilen.",
@@ -96,7 +96,7 @@
       "confirm": "{count} Unternehmer hinzufügen",
       "imported": "Unternehmer importiert",
       "matching_entries_found": "Im Import wurde eine E-Mail gefunden, die bereits erfasst ist. Möchten Sie diese wirklich ein weiteres Mal hinzufügen? | Im Import wurden {count} E-Mails gefunden, die bereits erfasst sind. Möchten Sie diese wirklich ein weiteres Mal hinzufügen?",
-      "title": "Unternehmer importieren"
+      "title": "Excel importieren"
     },
     "register_issues": {
       "registered": "Pendenzen zum Verzeichnis hinzugefügt.",
