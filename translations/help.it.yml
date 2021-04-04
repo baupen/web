@@ -1,5 +1,5 @@
 connect_app:
-  activation_code: 'Codice di attivazione'
+  activation_code: 'Codice di login'
   description: 'Collega il tuo account all''app per utilizzare tutte le funzioni.'
   download_ios_app: 'Scarica l''app iOS'
   open_ios_app: 'Aprire l''app iOS'
