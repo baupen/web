@@ -16,6 +16,7 @@ introduction:
 issues:
   detailed: 'Pendenzendetails nach Bauplan'
   with_images: 'mit Bildern'
+  with_renders: 'mit Bauplänen'
 table:
   by_craftsman: 'Pendenzen nach Unternehmer'
   by_map: 'Pendenzen nach Bauplan'

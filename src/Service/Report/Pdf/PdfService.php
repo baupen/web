@@ -121,7 +121,7 @@ class PdfService
         IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
         foreach ($orderedMaps as $map) {
             $issues = $issuesPerMap[$map->getId()];
-            $this->addMap($report, $map, $issues);
+            $this->addMap($report, $map, $issues, $reportElements->getWithRenders());
             $this->addIssueTable($report, $filter, $issues);
             if ($reportElements->getWithImages()) {
                 $this->addIssueImageGrid($report, $issues);
@@ -132,9 +132,9 @@ class PdfService
     /**
      * @param Issue[] $issues
      */
-    private function addMap(Report $report, Map $map, array $issues)
+    private function addMap(Report $report, Map $map, array $issues, bool $showMap)
     {
-        $path = $map->getFile() ? $this->imageService->renderMapFileWithIssuesToJpg($map->getFile(), $issues, ImageServiceInterface::SIZE_FULL) : null;
+        $path = $map->getFile() && $showMap ? $this->imageService->renderMapFileWithIssuesToJpg($map->getFile(), $issues, ImageServiceInterface::SIZE_FULL) : null;
 
         $report->addMap($map->getName(), $map->getContext(), $path);
     }
@@ -266,6 +266,9 @@ class PdfService
         $elements[] = $this->translator->trans('issues.detailed', [], 'report');
         if ($reportElements->getWithImages()) {
             $elements[count($elements) - 1] .= ' '.$this->translator->trans('issues.with_images', [], 'report');
+        }
+        if ($reportElements->getWithRenders()) {
+            $elements[count($elements) - 1] .= ' '.$this->translator->trans('issues.with_renders', [], 'report');
         }
         $reportElements = implode(', ', $elements);
 

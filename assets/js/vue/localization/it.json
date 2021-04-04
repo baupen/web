@@ -178,7 +178,8 @@
       "by_craftsman": "secondo l'imprenditore",
       "by_map": "secondo il piano di costruzione",
       "summary_tables": "Tabelle riassuntive",
-      "with_images": "con foto"
+      "with_images": "con foto",
+      "with_renders": "con mappe"
     },
     "issues": {
       "resolved_as_impersonated_craftsman": "\"Realizzato\" viene eseguito per conto dell'imprenditore."

@@ -178,7 +178,8 @@
       "by_craftsman": "nach Unternehmer",
       "by_map": "nach Bauplan",
       "summary_tables": "Zusammenfassungstabellen",
-      "with_images": "mit Fotos"
+      "with_images": "mit Fotos",
+      "with_renders": "mit Bauplänen"
     },
     "issues": {
       "resolved_as_impersonated_craftsman": "'Umgesetzt' wird im Namen des Unternehmers."

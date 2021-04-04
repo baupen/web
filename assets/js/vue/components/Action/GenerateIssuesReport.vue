@@ -67,6 +67,7 @@ export default {
   computed: {
     reportQuery: function () {
       return {
+        'report[withRenders]': this.reportConfiguration.withRenders,
         'report[withImages]': this.reportConfiguration.withImages,
         'report[tableByCraftsman]': this.reportConfiguration.tableByCraftsman,
         'report[tableByMap]': this.reportConfiguration.tableByMap,
@@ -125,7 +126,11 @@ export default {
         return
       }
 
-      this.prerenderMap(reportIndex)
+      if (this.reportConfiguration.withRenders) {
+        this.prerenderMap(reportIndex)
+      } else {
+        this.finishGeneration(reportIndex)
+      }
     },
     prerenderMap: function (reportIndex, mapIndex = 0) {
       if (this.abortGeneration()) {

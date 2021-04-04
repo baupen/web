@@ -16,6 +16,7 @@ introduction:
 issues:
   detailed: 'Dettagli in sospeso secondo il piano di costruzione'
   with_images: 'con immagini'
+  with_renders: 'con mappe'
 table:
   by_craftsman: 'Pendenze per imprenditore'
   by_map: 'Pendenze per piano di costruzione'
