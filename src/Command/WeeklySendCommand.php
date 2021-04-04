@@ -14,6 +14,7 @@ namespace App\Command;
 use App\Entity\ConstructionManager;
 use App\Service\Interfaces\EmailServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
+use App\Service\Report\Email\ConstructionSiteReport;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -90,16 +91,32 @@ class WeeklySendCommand extends Command
         $io->text('Created '.count($constructionSiteReportLookup).' reports.');
 
         foreach ($constructionManagers as $constructionManager) {
-            $relevantConstructionSiteReports = [];
-
-            foreach ($constructionManager->getConstructionSites() as $constructionSite) {
-                $relevantConstructionSiteReports[] = $constructionSiteReportLookup[$constructionSite->getId()];
-            }
+            $relevantConstructionSiteReports = $this->getOrderedConstructionSiteReportsForManager($constructionManager, $constructionSiteReportLookup);
 
             $this->emailService->sendConstructionSitesReport($constructionManager, $relevantConstructionSiteReports);
         }
         $io->text('Sent '.count($constructionManagers).' emails.');
 
         return 0;
+    }
+
+    /**
+     * @param ConstructionSiteReport[] $constructionSiteReportLookup
+     *
+     * @return ConstructionSiteReport[]
+     */
+    private function getOrderedConstructionSiteReportsForManager(ConstructionManager $constructionManager, array $constructionSiteReportLookup): array
+    {
+        $relevantConstructionSiteReports = [];
+
+        foreach ($constructionManager->getConstructionSites() as $constructionSite) {
+            $relevantConstructionSiteReports[] = $constructionSiteReportLookup[$constructionSite->getId()];
+        }
+
+        usort($relevantConstructionSiteReports, function (ConstructionSiteReport $a, ConstructionSiteReport $b) {
+            return strcmp($a->getConstructionSite()->getName(), $b->getConstructionSite()->getName());
+        });
+
+        return $relevantConstructionSiteReports;
     }
 }
