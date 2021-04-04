@@ -7,7 +7,7 @@
       @confirm="confirm">
     <template v-slot:button-content>
       <font-awesome-icon :icon="['fal', 'trash']" />
-      <span class="btn btn-link" v-if="preDeletedIssues > 0">
+      <span v-if="preDeletedIssues > 0">
         {{ preDeletedIssues }}
       </span>
     </template>

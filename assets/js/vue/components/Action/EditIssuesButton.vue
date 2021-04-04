@@ -7,7 +7,7 @@
       <font-awesome-icon :icon="['fal', 'pencil']" class="pr-1" />
       {{ $t('_action.edit_issues.title') }}
 
-      <span class="btn btn-link" v-if="pendingRequestCount > 0">
+      <span v-if="pendingRequestCount > 0">
         {{ pendingRequestCount }}
       </span>
     </template>
