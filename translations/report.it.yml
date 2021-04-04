@@ -4,20 +4,20 @@ introduction:
   elements: 'Contenuto del rapporto'
   filter:
     and: e
-    craftsmen: Operaio|Operai
+    craftsmen: Imprenditore
     earlier_than: 'prima del %date%'
     later_than: 'dopo il %date%'
-    maps: 'Piano di costruzione|Piani di costruzione'
+    maps: 'Piano di costruzione | Piani di costruzione'
     not: 'non %state%'
-    or: oppure/o
+    or: o
     time: Ora
     trades: Settore|Settori
   paginator: '%start% - %end%di %total%'
 issues:
-  detailed: 'dettagli in sospeso secondo il piano di costruzione'
+  detailed: 'Dettagli in sospeso secondo il piano di costruzione'
   with_images: 'con immagini'
 table:
-  by_craftsman: 'Pendenze per operaio'
-  by_map: 'Pendenze per mappa'
+  by_craftsman: 'Pendenze per imprenditore'
+  by_map: 'Pendenze per piano di costruzione'
   by_trade: 'Pendenze per settore'
   in_state_since: 'da %status%'

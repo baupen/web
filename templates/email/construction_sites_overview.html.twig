@@ -2,17 +2,33 @@
 
 {% trans_default_domain "email" %}
 
-{% macro issue_count_delta_cell_content(count, delta) %}
-{{ count }}{% if delta > 0 %}(+{{ delta }}){% elseif delta < 0 %}({{ delta }}){% endif %}
+{% macro issue_count_delta_cell_content_good(count, delta) %}
+    {{ count }}
+    {% if delta > 0 %}
+        (<span class="color-email-success">+{{ delta }}</span>)
+{# do not show negative numbers with "good" content: less resolved, or less closed issues means some data was corrected. this is not noteworthy
+    {% elseif delta < 0 %}
+        (<span class="color-email-danger">{{ delta }}</span>)
+#}
+    {% endif %}
+{% endmacro %}
+
+{% macro issue_count_delta_cell_content_bad(count, delta) %}
+    {{ count }}
+    {% if delta > 0 %}
+        (<span class="color-email-danger">+{{ delta }}</span>)
+    {% elseif delta < 0 %}
+        (<span class="color-email-success">{{ delta }}</span>)
+    {% endif %}
 {% endmacro %}
 
 {% macro issue_count_delta_row(title, report, tr_class = "") %}
     {% import _self as _macros %}
     <tr class="{{ tr_class }}">
         <td>{{ title }}</td>
-        <td>{{ _macros.issue_count_delta_cell_content(report.openCount, report.openCountDelta) }}</td>
-        <td>{{ _macros.issue_count_delta_cell_content(report.resolvedCount, report.resolvedCountDelta) }}</td>
-        <td>{{ _macros.issue_count_delta_cell_content(report.closedCount, report.closedCountDelta) }}</td>
+        <td>{{ _macros.issue_count_delta_cell_content_bad(report.openCount, report.openCountDelta) }}</td>
+        <td>{{ _macros.issue_count_delta_cell_content_good(report.resolvedCount, report.resolvedCountDelta) }}</td>
+        <td>{{ _macros.issue_count_delta_cell_content_good(report.closedCount, report.closedCountDelta) }}</td>
     </tr>
 {% endmacro %}
 

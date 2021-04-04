@@ -25,9 +25,10 @@ if you want to use a staging area, run the following commands:
 Some commands should run regularly to optimized memory usage & security.
 
 | command | proposed schedule |
-|----------------------------------------------------| --- |
+| ------- | ----------------- |
 | `php bin/console app:cache:clear --renders --reports` | sunday every week |
 | `php bin/console app:authentication:refresh` | every 30 minutes |
+| `php bin/console app:weekly:send` | every week (monday morning recommended) |
 
 ## Status
 

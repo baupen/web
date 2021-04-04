@@ -39,8 +39,6 @@ class EmailBodyGenerator
             $normalizedConstructionSiteReports[] = $this->fromConstructionSiteReport($constructionSiteReport);
         }
 
-        usort($normalizedConstructionSiteReports, function ($a, $b) { return strcmp($a['openCount'], $b['openCount']); });
-
         return [
             'type' => 'construction_site_reports',
             'constructionSiteReports' => $normalizedConstructionSiteReports,

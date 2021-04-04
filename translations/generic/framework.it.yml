@@ -7,11 +7,11 @@ date_time:
   Tue: Ma
   Wed: Me
 error:
-  form_validation_failed: 'L''elaborazione non può essere completata. Tutti i campi richiesti sono compilati correttamente?'
+  form_validation_failed: 'L''elaborazione non può essere completata. Tutti le caselle richieste sono compilate correttamente?'
 legacy:
   warning:
-    redirected_from_legacy_url: 'Siete stati reindirizzati automaticamente perché il link è cambiato. Per favore, aggiornate i vostri segnalibri. (Plurale si o no?)'
+    redirected_from_legacy_url: 'Sei stato reindirizzato automaticamente perché il link è cambiato. Per favore, aggiorna i tuoi segnalibri.'
 outdated:
-  update_now: 'Aggiorna il browser ora '
-  update_to_view_correctly: 'La pagina potrebbe quindi non essere visualizzata correttamente.'
+  update_now: 'Aggiorna ora il browser'
+  update_to_view_correctly: 'La pagina potrebbe non essere visualizzata correttamente.'
   your_browser_is_outdated: 'Il tuo browser non è supportato!'

@@ -51,6 +51,7 @@ class MyTwigExtension extends AbstractExtension
             new TwigFilter('camelCaseToUnderscore', [$this, 'camelCaseToUnderscoreFilter']),
             new TwigFilter('truncate', [$this, 'truncateFilter'], ['needs_environment' => true]),
             new TwigFilter('iOSLoginLink', [$this, 'iOSLoginLinkFilter']),
+            new TwigFilter('repeat', [$this, 'repeatFilter']),
         ];
     }
 
@@ -59,6 +60,11 @@ class MyTwigExtension extends AbstractExtension
         return [
             new TwigFunction('apiSubRequest', [$this, 'apiSubRequestFunction']),
         ];
+    }
+
+    public function repeatFilter(string $entry, int $count)
+    {
+        return str_repeat($entry, $count);
     }
 
     public function apiSubRequestFunction(string $url)

@@ -7,7 +7,7 @@ introduction:
     craftsmen: Unternehmer
     earlier_than: 'vor %date%'
     later_than: 'nach %date%'
-    maps: Bauplan|Baupläne
+    maps: 'Bauplan | Baupläne'
     not: 'nicht %state%'
     or: oder
     time: Zeit
