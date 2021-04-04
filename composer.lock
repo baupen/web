@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5b6671b8452d762c69f552b5997908f2",
+    "content-hash": "df48e32f18050ad1d95b41bdda090eee",
     "packages": [
         {
             "name": "api-platform/core",
@@ -7675,22 +7675,21 @@
         },
         {
             "name": "tecnickcom/tcpdf",
-            "version": "dev-main",
+            "version": "6.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/TCPDF.git",
-                "reference": "c979d00f60fb6910ada7192ebcc2d543dfbf18dc"
+                "reference": "5ba838befdb37ef06a16d9f716f35eb03cb1b329"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/c979d00f60fb6910ada7192ebcc2d543dfbf18dc",
-                "reference": "c979d00f60fb6910ada7192ebcc2d543dfbf18dc",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/5ba838befdb37ef06a16d9f716f35eb03cb1b329",
+                "reference": "5ba838befdb37ef06a16d9f716f35eb03cb1b329",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "classmap": [
@@ -7736,7 +7735,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/TCPDF/issues",
-                "source": "https://github.com/tecnickcom/TCPDF/tree/main"
+                "source": "https://github.com/tecnickcom/TCPDF/tree/6.4.1"
             },
             "funding": [
                 {
@@ -7744,7 +7743,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2021-04-02T11:45:14+00:00"
+            "time": "2021-03-27T16:00:33+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
@@ -11700,10 +11699,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "tecnickcom/tcpdf": 20,
-        "liip/test-fixtures-bundle": 15
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
