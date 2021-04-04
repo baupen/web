@@ -160,6 +160,44 @@ class Report
     }
 
     /**
+     * @param string[]   $columnWidths
+     * @param string[]   $head
+     * @param string[][] $body
+     */
+    public function addSizedTable(array $columnWidths, array $head, array $body)
+    {
+        $this->setDefaults();
+
+        //adapt font for table content
+        $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getSmallFontSize());
+        $this->pdfDocument->SetFont(...$this->pdfDesign->getEmphasisFontFamily());
+
+        //make header upper case
+        $row = [];
+        foreach ($head as $item) {
+            $row[] = mb_strtoupper($item, 'UTF-8');
+        }
+
+        //print header
+        $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
+        $this->printSizedRow($columnWidths, $row, true);
+
+        //print content
+        $currentRow = 0;
+        $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
+        $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
+        $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
+        foreach ($body as $row) {
+            $this->printSizedRow($columnWidths, $row, 1 === $currentRow % 2);
+            ++$currentRow;
+        }
+
+        //define start of next part
+        $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
+    }
+
+    /**
      * @param $tableHead
      * @param $tableContent
      * @param string|null $tableTitle
@@ -351,6 +389,78 @@ class Report
         return $endY - $startY + $pageAdapt;
     }
 
+    /**
+     * if return false, call again with same parameters.
+     *
+     * @param float[]  $columnWidths
+     * @param string[] $row
+     * @param bool     $retry
+     */
+    private function printSizedRow(array $columnWidths, array $row, bool $fill = false, $retry = false)
+    {
+        //put columns
+        $currentContentHeight = 0;
+        $startY = $this->pdfDocument->GetY();
+        $startPage = $this->pdfDocument->getPage();
+        $this->pdfDocument->startTransaction();
+
+        $currentXStart = $this->pdfSizes->getContentXStart();
+        for ($i = 0; $i < count($columnWidths); ++$i) {
+            $currentColumn = $row[$i];
+            $currentWidth = $columnWidths[$i];
+
+            //draw column content
+            $this->pdfDocument->SetXY($currentXStart, $startY);
+            $this->pdfDocument->MultiCell($currentWidth, $currentContentHeight, $currentColumn, 0, 'L', $fill, 1);
+
+            //if new page started; remove from old page and retry on new page
+            if ($this->pdfDocument->getPage() > $startPage) {
+                $this->pdfDocument->rollbackTransaction(true);
+                if ($retry) {
+                    // tried twice; content does not fit on a single page. We abort, as we do not deal with this edge case
+                    return;
+                }
+
+                $this->pdfDocument->AddPage();
+
+                // add top border of table
+                $lineX = $this->pdfSizes->getContentYStart();
+                $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $lineX, $this->pdfSizes->getContentXEnd(), $lineX);
+
+                // set start position
+                $this->pdfDocument->SetXY($this->pdfSizes->getContentXStart(), $lineX + $this->pdfSizes->getLineWidth());
+
+                // retry
+                $this->printSizedRow($columnWidths, $row, $fill, true);
+
+                return;
+            }
+
+            //if row is higher now than before; draw background from preceding columns
+            $actualContentHeight = $this->pdfDocument->GetY() - $startY;
+            if ($actualContentHeight > $currentContentHeight) {
+                // redraw fill of previous cells
+                if ($fill && $i > 0) {
+                    $this->pdfDocument->SetXY($this->pdfSizes->getContentXStart(), $startY + $currentContentHeight);
+                    $this->pdfDocument->SetCellPadding(0);
+                    $this->pdfDocument->Cell($currentXStart - $this->pdfSizes->getContentXStart(), $actualContentHeight - $currentContentHeight, '', 0, 0, '', $fill);
+                    $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
+                }
+
+                $currentContentHeight = $actualContentHeight;
+            }
+
+            $currentXStart += $currentWidth;
+        }
+
+        //draw finishing line & set position for new row
+        $contentEnd = $startY + $currentContentHeight;
+        $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $contentEnd, $this->pdfSizes->getContentXEnd(), $contentEnd);
+        $this->pdfDocument->SetY($contentEnd + $this->pdfSizes->getLineWidth());
+
+        $this->pdfDocument->commitTransaction();
+    }
+
     private function printRow($row, $fill, $fillBackground, $firstColumnSize = null)
     {
         //alternative background colors
@@ -363,12 +473,12 @@ class Report
         $startY = $this->pdfDocument->GetY();
         $startPage = $this->pdfDocument->getPage();
         $this->pdfDocument->startTransaction();
-        foreach ($row as $item) {
+        foreach ($row as $column) {
             $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount, $firstColumnSize), $startY);
             $currentWidth = $this->pdfSizes->getColumnWidth($currentColumn, $columnCount, $firstColumnSize);
 
             //draw cell content
-            $this->pdfDocument->MultiCell($currentWidth, $maxContentHeight - $startY, $item, 0, 'L', $fill, 1);
+            $this->pdfDocument->MultiCell($currentWidth, $maxContentHeight - $startY, $column, 0, 'L', $fill, 1);
 
             //if new page started; remove from old page and retry on new page
             if ($this->pdfDocument->getPage() > $startPage) {
@@ -414,5 +524,10 @@ class Report
         $this->pdfDocument->commitTransaction();
 
         return true;
+    }
+
+    public function getContentWidth()
+    {
+        return $this->pdfSizes->getContentXSize();
     }
 }

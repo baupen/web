@@ -20,4 +20,3 @@ table:
   by_craftsman: 'Pendenze per imprenditore'
   by_map: 'Pendenze per piano di costruzione'
   by_trade: 'Pendenze per settore'
-  in_state_since: 'da %status%'

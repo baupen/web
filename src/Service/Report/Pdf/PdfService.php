@@ -312,47 +312,72 @@ class PdfService
         $showResolved = null === $filter->getResolvedAtBefore() || $filter->getResolvedAtAfter();
         $showClosed = null === $filter->getClosedAtBefore() || $filter->getClosedAtAfter();
 
-        $tableHeader[] = '#';
-        $tableHeader[] = $this->translator->trans('entity.name', [], 'entity_craftsman');
-        $tableHeader[] = $this->translator->trans('description', [], 'entity_issue');
-        $tableHeader[] = $this->translator->trans('deadline', [], 'entity_issue');
-
-        if ($showRegistered) {
-            $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('state_values.registered', [], 'entity_issue')], 'report');
-        }
-
-        if ($showResolved) {
-            $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('state_values.resolved', [], 'entity_issue')], 'report');
-        }
-
-        if ($showClosed) {
-            $tableHeader[] = $this->translator->trans('table.in_state_since', ['%status%' => $this->translator->trans('state_values.closed', [], 'entity_issue')], 'report');
-        }
-
         $tableContent = [];
+        $maxIssueNumber = 0;
         foreach ($issues as $issue) {
             $row = [];
+
             $row[] = $issue->getNumber();
+            $maxIssueNumber = max($issue->getNumber(), $maxIssueNumber);
+
             $row[] = $issue->getCraftsman()->getCompany()."\n".$issue->getCraftsman()->getTrade();
             $row[] = $issue->getDescription();
-            $row[] = (null !== $issue->getDeadline()) ? $issue->getDeadline()->format(DateTimeFormatter::DATE_FORMAT) : '';
+            $row[] = (null !== $issue->getDeadline()) ? $issue->getDeadline()->format(DateTimeFormatter::DATE_FORMAT) : '-';
 
             if ($showRegistered) {
-                $row[] = null !== $issue->getRegisteredAt() ? $issue->getRegisteredAt()->format(DateTimeFormatter::DATE_FORMAT)."\n".$issue->getRegisteredBy()->getName() : '';
+                $row[] = null !== $issue->getRegisteredAt() ? $issue->getRegisteredAt()->format(DateTimeFormatter::DATE_FORMAT) : '';
             }
 
             if ($showResolved) {
-                $row[] = null !== $issue->getResolvedAt() ? $issue->getResolvedAt()->format(DateTimeFormatter::DATE_FORMAT)."\n".$issue->getResolvedBy()->getCompany() : '';
+                $row[] = null !== $issue->getResolvedAt() ? $issue->getResolvedAt()->format(DateTimeFormatter::DATE_FORMAT) : '-';
             }
 
             if ($showClosed) {
-                $row[] = null !== $issue->getClosedAt() ? $issue->getClosedAt()->format(DateTimeFormatter::DATE_FORMAT)."\n".$issue->getClosedBy()->getName() : '';
+                $row[] = null !== $issue->getClosedAt() ? $issue->getClosedAt()->format(DateTimeFormatter::DATE_FORMAT) : '-';
             }
 
             $tableContent[] = $row;
         }
 
-        $report->addTable($tableHeader, $tableContent, null, 12);
+        $totalWidth = 190; // out of the pdfSize config model
+        $cellPadding = 1.6 * 2; // out of the pdfSize config model
+        $dateWidth = 19; // any smaller, the "abgeschlossen" in DE introduces a line break
+        $numberWidth = 1.8; // seems alright even with 5 digits
+
+        $tableSizes = [];
+
+        $tableHeader[] = '#';
+        $tableSizes[] = $cellPadding + strlen($maxIssueNumber) * $numberWidth;
+
+        $tableHeader[] = $this->translator->trans('entity.name', [], 'entity_craftsman');
+        $tableSizes[] = 0;
+
+        $tableHeader[] = $this->translator->trans('description', [], 'entity_issue');
+        $tableSizes[] = 0;
+
+        $tableHeader[] = $this->translator->trans('deadline', [], 'entity_issue');
+        $tableSizes[] = $dateWidth;
+
+        if ($showRegistered) {
+            $tableHeader[] = $this->translator->trans('state_values.registered', [], 'entity_issue');
+            $tableSizes[] = $dateWidth;
+        }
+
+        if ($showResolved) {
+            $tableHeader[] = $this->translator->trans('state_values.resolved', [], 'entity_issue');
+            $tableSizes[] = $dateWidth;
+        }
+
+        if ($showClosed) {
+            $tableHeader[] = $this->translator->trans('state_values.closed', [], 'entity_issue');
+            $tableSizes[] = $dateWidth;
+        }
+
+        $availableWidth = $totalWidth - array_sum($tableSizes);
+        $tableSizes[1] = $availableWidth * 0.3;
+        $tableSizes[2] = $availableWidth * 0.7;
+
+        $report->addSizedTable($tableSizes, $tableHeader, $tableContent);
     }
 
     /**

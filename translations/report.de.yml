@@ -20,4 +20,3 @@ table:
   by_craftsman: 'Pendenzen nach Unternehmer'
   by_map: 'Pendenzen nach Bauplan'
   by_trade: 'Pendenzen nach Handwerk'
-  in_state_since: '%status% seit'
