@@ -312,7 +312,12 @@ class PdfService
         $showResolved = null === $filter->getResolvedAtBefore() || $filter->getResolvedAtAfter();
         $showClosed = null === $filter->getClosedAtBefore() || $filter->getClosedAtAfter();
 
+        $formatDateTime = function (?DateTime $dateTime, string $format) {
+            return $dateTime ? $dateTime->format($format) : '-';
+        };
+
         $tableContent = [];
+        $deadlineFormatInversion = [];
         $maxIssueNumber = 0;
         foreach ($issues as $issue) {
             $row = [];
@@ -322,22 +327,40 @@ class PdfService
 
             $row[] = $issue->getCraftsman()->getCompany()."\n".$issue->getCraftsman()->getTrade();
             $row[] = $issue->getDescription();
-            $row[] = (null !== $issue->getDeadline()) ? $issue->getDeadline()->format(DateTimeFormatter::DATE_FORMAT) : '-';
+
+            $deadlineFormat = $formatDateTime($issue->getDeadline(), DateTimeFormatter::DATE_FORMAT);
+            $row[] = $deadlineFormat;
+            $deadlineFormatInversion[$deadlineFormat] = $formatDateTime($issue->getDeadline(), DateTimeFormatter::ISO_DATE_FORMAT);
 
             if ($showRegistered) {
-                $row[] = null !== $issue->getRegisteredAt() ? $issue->getRegisteredAt()->format(DateTimeFormatter::DATE_FORMAT) : '';
+                $row[] = $formatDateTime($issue->getRegisteredAt(), DateTimeFormatter::DATE_FORMAT);
             }
 
             if ($showResolved) {
-                $row[] = null !== $issue->getResolvedAt() ? $issue->getResolvedAt()->format(DateTimeFormatter::DATE_FORMAT) : '-';
+                $row[] = $formatDateTime($issue->getResolvedAt(), DateTimeFormatter::DATE_FORMAT);
             }
 
             if ($showClosed) {
-                $row[] = null !== $issue->getClosedAt() ? $issue->getClosedAt()->format(DateTimeFormatter::DATE_FORMAT) : '-';
+                $row[] = $formatDateTime($issue->getClosedAt(), DateTimeFormatter::DATE_FORMAT);
             }
 
             $tableContent[] = $row;
         }
+
+        usort($tableContent, function ($a, $b) use ($deadlineFormatInversion) {
+            // order by craftsman
+            if ($a[1] !== $b[1]) {
+                return strcmp($a[1], $b[1]);
+            }
+
+            // order by limit (early first)
+            if ($a[3] !== $b[3]) {
+                return strcmp($deadlineFormatInversion[$a[3]], $deadlineFormatInversion[$b[3]]);
+            }
+
+            // order by number if rest is equal
+            return strcmp($a[0], $b[0]);
+        });
 
         $totalWidth = 190; // out of the pdfSize config model
         $cellPadding = 1.6 * 2; // out of the pdfSize config model
@@ -374,8 +397,8 @@ class PdfService
         }
 
         $availableWidth = $totalWidth - array_sum($tableSizes);
-        $tableSizes[1] = $availableWidth * 0.3;
-        $tableSizes[2] = $availableWidth * 0.7;
+        $tableSizes[1] = $availableWidth * 0.4;
+        $tableSizes[2] = $availableWidth * 0.6;
 
         $report->addSizedTable($tableSizes, $tableHeader, $tableContent);
     }
