@@ -18,9 +18,9 @@
     },
     "close": "Schliessen",
     "compose_craftsman_email": {
-      "no_template": "Keine Vorlage",
+      "no_template": "Neue Vorlage",
       "resolve_link_is_appended": "Die E-Mail wird mit einem personalisierten Link pro Unternehmer ergänzt. Mit diesem Link können die Unternehmer ihre offenen Pendenzen anschauen und als umgesetzt markieren.",
-      "save_as_new_template": "Als neue Vorlage speichern",
+      "save_as_new_template": "Neue Vorlage speichern",
       "save_template_changes": "Änderungen an der Vorlage speichern",
       "saved_email_template": "Vorlage gespeichert",
       "send_emails": "E-Mail versenden | {count} E-Mails versenden",
