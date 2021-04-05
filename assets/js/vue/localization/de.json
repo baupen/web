@@ -297,6 +297,9 @@
     "no_unregistered_issues": "Keine neuen Pendenzen. Sie können neue Pendenzen mit der App erfassen.",
     "title": "Pendenzen einpflegen"
   },
+  "dispatch": {
+    "title": "Unternehmer informieren"
+  },
   "issue": {
     "_name": "Pendenz",
     "_plural": "Pendenzen",

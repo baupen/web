@@ -6,6 +6,15 @@
       </div>
       <feed v-else :construction-managers="constructionManagers" :craftsmen="craftsmen" :feed-entries="feedEntries" />
     </div>
+    <div class="card-footer" v-if="!isLoadingStatistics && (overdueCount > 0 || unreadCount > 0)">
+      <span v-if="overdueCount" class="badge badge-danger mr-1">
+        {{ overdueCount }} {{ $t('issue.state.overdue') }}
+      </span>
+      <span v-if="unreadCount" class="badge badge-secondary mr-1">
+        {{ unreadCount }} {{ $t('issue.state.unread') }}
+      </span>
+      <a :href="dispatchUrl">{{ $t('dispatch.title') }}</a>
+    </div>
   </div>
 </template>
 <script>
@@ -25,6 +34,7 @@ export default {
     return {
       constructionManagers: null,
       craftsmen: null,
+      craftsmenStatistics: null,
       feedEntries: null
     }
   },
@@ -38,6 +48,18 @@ export default {
     isLoading: function () {
       return !this.feedEntries || !this.constructionManagers || !this.craftsmen
     },
+    isLoadingStatistics: function () {
+      return !this.craftsmen || !this.craftsmenStatistics
+    },
+    overdueCount: function () {
+      return this.craftsmenStatistics.reduce((acc, curr) => acc + curr.issueOverdueCount, 0)
+    },
+    unreadCount: function () {
+      return this.craftsmenStatistics.reduce((acc, curr) => acc + curr.issueUnreadCount, 0)
+    },
+    dispatchUrl: function () {
+      return api.currentDispatchUrl()
+    }
   },
   mounted () {
     api.getConstructionManagers(this.constructionSite)
@@ -53,6 +75,9 @@ export default {
                 this.feedEntries = craftsmenFeedEntries.concat(issuesFeedEntries)
               })
         })
+
+    api.getCraftsmenStatistics(this.constructionSite, { isDeleted: false })
+        .then(craftsmenStatistics => this.craftsmenStatistics = craftsmenStatistics)
   }
 }
 </script>

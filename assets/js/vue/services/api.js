@@ -209,6 +209,9 @@ const api = {
   currentFoyerUrl: function () {
     return this._getConstructionSiteBaseUrlFromLocation() + '/foyer'
   },
+  currentDispatchUrl: function () {
+    return this._getConstructionSiteBaseUrlFromLocation() + '/dispatch'
+  },
   currentRegisterUrl: function (initialState = null) {
     let url = this._getConstructionSiteBaseUrlFromLocation() + '/register'
 
