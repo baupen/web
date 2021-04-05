@@ -23,6 +23,7 @@
         <span class="text-right float-right" v-if="canEdit">
             <span class="btn-group reset-table-styles">
               <edit-issues-button
+                  ref="edit-issues"
                   :construction-manager-iri="constructionManagerIri" :issues="selectedIssues"
                   :craftsmen="craftsmen" />
               <remove-issues-button :issues="selectedIssues" @removed="removeIssue($event)" />
@@ -95,7 +96,9 @@
             :src="iwr.issue.imageUrl" :subject="iwr.issue.number"
             @click.stop="" />
       </td>
-      <td>{{ iwr.issue.description }}</td>
+      <td>
+        <span class="clickable-text" @click.stop="editDescription(iwr.issue)">{{ iwr.issue.description }}</span>
+      </td>
       <td>
         {{ iwr.map?.name }}<br />
         <span class="text-muted">{{ iwr.mapParentNames?.join(' > ') }}</span>
@@ -303,6 +306,13 @@ export default {
     }
   },
   methods: {
+    editDescription: function (issue) {
+      this.selectedIssues = [issue]
+      this.$nextTick(() => {
+        this.$refs['edit-issues'].$el.nextSibling.click()
+        this.$refs['edit-issues'].selectDescription()
+      })
+    },
     removeIssue (issue) {
       this.issues = this.issues.filter(i => i !== issue)
       this.selectedIssues = this.selectedIssues.filter(i => i !== issue)
@@ -443,5 +453,13 @@ export default {
 .reset-table-styles {
   text-align: left;
   font-weight: normal;
+}
+
+.clickable-text {
+  display: inline-block;
+}
+
+.clickable-text:hover {
+  border: 1px solid;
 }
 </style>
