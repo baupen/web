@@ -13,11 +13,14 @@
             <feed v-else :construction-managers="constructionManagers" :craftsmen="[craftsman]"
                   :feed-entries="feedEntries" />
           </div>
+          <div class="card-footer">
+            <b v-if="!isLoading">{{$tc('resolve.total_open', groupCountSum)}}</b>
+          </div>
         </div>
       </div>
     </div>
 
-    <hr/>
+    <hr />
 
     <loading-indicator-secondary :spin="isLoading">
       <p v-if="groupCountSum === 0" class="alert alert-success">
@@ -44,7 +47,7 @@
           </div>
         </div>
 
-        <hr/>
+        <hr />
 
         <p class="alert alert-info">
           {{ $t('resolve.help') }}
@@ -117,7 +120,7 @@ export default {
   },
   computed: {
     groupCountSum: function () {
-      return this.issuesGroupByMap.reduce((sum, entry) => sum + entry.issueCount, 0)
+      return this.issuesGroupByMap.reduce((sum, entry) => sum + entry.count, 0)
     },
     address: function () {
       return constructionSiteFormatter.address(this.constructionSite)
@@ -127,14 +130,18 @@ export default {
     },
     mapContainers: function () {
       return mapTransformer.orderedListWithIssuesGroups(this.maps, this.issuesGroupByMap, mapTransformer.PROPERTY_MAP_PARENT_NAMES)
-          .filter(container => container.issueCount > 0)
+          .filter(container => container.count > 0)
     },
     craftsmanQuery: function () {
       return {
         craftsman: iriToId(this.craftsman['@id']),
-        state: 2,
         isDeleted: false
       }
+    },
+    issuesQuery: function () {
+      return Object.assign(this.craftsmanQuery, {
+        state: 2,
+      })
     },
     reportConfiguration: function () {
       return {
@@ -154,12 +161,12 @@ export default {
     api.getMaps(this.constructionSite)
         .then(maps => this.maps = maps)
 
-    api.getIssuesGroup(this.constructionSite, 'map', this.craftsmanQuery)
+    api.getIssuesGroup(this.constructionSite, 'map', this.issuesQuery)
         .then(groups => this.issuesGroupByMap = groups)
 
     api.getIssuesFeedEntries(this.constructionSite, 0, this.craftsmanQuery)
         .then(issuesFeedEntries => {
-          this.feedEntries = issuesFeedEntries
+          this.feedEntries = issuesFeedEntries.concat(issuesFeedEntries).concat(issuesFeedEntries)
         })
   }
 }
@@ -168,5 +175,10 @@ export default {
 <style scoped="true">
 .limited-width {
   max-width: 500px;
+}
+
+.limited-height {
+  max-height: 24.5em;
+  overflow-y: auto;
 }
 </style>
