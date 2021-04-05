@@ -207,7 +207,7 @@
         "has_resolved": "hat eine Pendenz umgesetzt. | hat {count} Pendenzen umgesetzt.",
         "has_visited_webpage": "hat die Pendenzen angeschaut."
       },
-      "no_entries": "Zurzeit keine Aktivitäten auf der Baustelle."
+      "no_entries": "Keine neuen Aktivitäten auf der Baustelle."
     },
     "issues": {
       "sort_by_last_activity": "Nach letzter Aktivität sortieren",

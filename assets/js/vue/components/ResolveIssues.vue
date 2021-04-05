@@ -1,8 +1,23 @@
 <template>
   <div class="mb-5">
-    <p class="alert alert-info">
-      {{ $t('resolve.help') }}
-    </p>
+    <div class="row">
+      <div class="col-md-auto">
+        <construction-site-view class="limited-width" :construction-site="constructionSite" />
+      </div>
+      <div class="col-md-auto">
+        <div class="card limited-width">
+          <div class="card-body limited-height">
+            <div class="loading-center" v-if="!constructionManagers || !feedEntries">
+              <loading-indicator-secondary />
+            </div>
+            <feed v-else :construction-managers="constructionManagers" :craftsmen="[craftsman]"
+                  :feed-entries="feedEntries" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr/>
 
     <loading-indicator-secondary :spin="isLoading">
       <p v-if="groupCountSum === 0" class="alert alert-success">
@@ -10,20 +25,30 @@
       </p>
 
       <template v-else>
-        <maps-resolve-table
-            :maps="maps" :issues-group-by-map="issuesGroupByMap"
-            :craftsman="craftsman" :construction-site="constructionSite"
-            @scroll-to-map="scrollToMap($event)" />
-
-        <div class="card limited-width mb-2">
-          <div class="card-body">
-            <export-issues-report-view
-                :construction-site="constructionSite" :maps="maps"
-                :query="craftsmanQuery" :query-result-size="groupCountSum"
-                :default-report-configuration="reportConfiguration" />
+        <div class="row">
+          <div class="col-md-auto">
+            <maps-resolve-table
+                :maps="maps" :issues-group-by-map="issuesGroupByMap"
+                :craftsman="craftsman" :construction-site="constructionSite"
+                @scroll-to-map="scrollToMap($event)" />
+          </div>
+          <div class="col-md-auto">
+            <div class="card limited-width mb-2">
+              <div class="card-body">
+                <export-issues-report-view
+                    :construction-site="constructionSite" :maps="maps"
+                    :query="craftsmanQuery" :query-result-size="groupCountSum"
+                    :default-report-configuration="reportConfiguration" />
+              </div>
+            </div>
           </div>
         </div>
 
+        <hr/>
+
+        <p class="alert alert-info">
+          {{ $t('resolve.help') }}
+        </p>
         <issues-resolve-view
             class="mt-4 mt-md-5" :ref="mapContainer.entity['@id']"
             v-for="mapContainer in mapContainers" :key="mapContainer.entity['@id']"
@@ -43,9 +68,14 @@ import { mapTransformer } from '../services/transformers'
 import MapsResolveTable from './View/MapsResolveTable'
 import GenerateIssuesReport from './Action/GenerateIssuesReport'
 import ExportIssuesReportView from './Action/ExportIssuesReportView'
+import { constructionSiteFormatter } from '../services/formatters'
+import ConstructionSiteView from './View/ConstructionSiteView'
+import Feed from './View/Feed'
 
 export default {
   components: {
+    Feed,
+    ConstructionSiteView,
     ExportIssuesReportView,
     GenerateIssuesReport,
     MapsResolveTable,
@@ -56,7 +86,8 @@ export default {
     return {
       constructionManagers: null,
       maps: null,
-      issuesGroupByMap: null
+      issuesGroupByMap: null,
+      feedEntries: null
     }
   },
   props: {
@@ -87,6 +118,9 @@ export default {
   computed: {
     groupCountSum: function () {
       return this.issuesGroupByMap.reduce((sum, entry) => sum + entry.issueCount, 0)
+    },
+    address: function () {
+      return constructionSiteFormatter.address(this.constructionSite)
     },
     isLoading: function () {
       return !this.maps || !this.issuesGroupByMap
@@ -122,6 +156,11 @@ export default {
 
     api.getIssuesGroup(this.constructionSite, 'map', this.craftsmanQuery)
         .then(groups => this.issuesGroupByMap = groups)
+
+    api.getIssuesFeedEntries(this.constructionSite, 0, this.craftsmanQuery)
+        .then(issuesFeedEntries => {
+          this.feedEntries = issuesFeedEntries
+        })
   }
 }
 </script>

@@ -33,8 +33,13 @@
       <small class="text-muted">
         #{{ issue.number }} |
         <date-time-human-readable :value="issue.createdAt" />
+        <span v-if="createdByConstructionManager">
         |
         {{ createdByConstructionManagerName }}
+          <a class="pl-1" :href="createdByConstructionManagerEmailHref">
+            <font-awesome-icon :icon="['fal', 'envelope-open']" />
+          </a>
+        </span>
       </small>
     </div>
   </div>
@@ -82,15 +87,16 @@ export default {
   },
   computed: {
     isOverdue: function () {
-       return issueTransformer.isOverdue(this.issue)
+      return issueTransformer.isOverdue(this.issue)
+    },
+    createdByConstructionManager: function () {
+      return this.constructionManagers.find(m => m['@id'] === this.issue.createdBy)
     },
     createdByConstructionManagerName: function () {
-      const createdByConstructionManager = this.constructionManagers.find(m => m['@id'] === this.issue.createdBy)
-      if (!createdByConstructionManager) {
-        return ''
-      }
-
-      return constructionManagerFormatter.name(createdByConstructionManager)
+      return constructionManagerFormatter.name(this.createdByConstructionManager)
+    },
+    createdByConstructionManagerEmailHref: function () {
+      return "mailto:" + this.createdByConstructionManager.email + "?subject=" + this.constructionSite.name + ": #" + this.issue.number
     }
   }
 }

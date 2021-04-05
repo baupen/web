@@ -1,6 +1,6 @@
 <template>
   <div class="table-responsive">
-    <table class="table table-striped table-bordered table-sm-small table-hover modal-width-expanding">
+    <table class="table table-striped table-condensed table-bordered table-sm-small table-hover modal-width-expanding">
       <thead>
       <tr>
         <th>{{ $t('_view.maps_resolve.issues_by_map') }}</th>
