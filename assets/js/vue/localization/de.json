@@ -207,7 +207,7 @@
         "has_resolved": "hat eine Pendenz umgesetzt. | hat {count} Pendenzen umgesetzt.",
         "has_visited_webpage": "hat die Pendenzen angeschaut."
       },
-      "no_entries": "Zurzeit keine Aktivitäten auf der Baustelle."
+      "no_entries": "Keine neuen Aktivitäten auf der Baustelle."
     },
     "issues": {
       "sort_by_last_activity": "Nach letzter Aktivität sortieren",
@@ -297,6 +297,9 @@
     "no_unregistered_issues": "Keine neuen Pendenzen. Sie können neue Pendenzen mit der App erfassen.",
     "title": "Pendenzen einpflegen"
   },
+  "dispatch": {
+    "title": "Unternehmer informieren"
+  },
   "issue": {
     "_name": "Pendenz",
     "_plural": "Pendenzen",
@@ -339,6 +342,7 @@
   },
   "resolve": {
     "help": "Markieren Sie Pendenzen als umgesetzt, damit die Bauleitung diese abschliessen kann.",
+    "total_open": "Keine offenen Pendenzen | Total {count} offene Pendenzen",
     "thanks": "Sie haben keine offenen Pendenzen."
   },
   "switch": {

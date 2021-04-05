@@ -209,6 +209,9 @@ const api = {
   currentFoyerUrl: function () {
     return this._getConstructionSiteBaseUrlFromLocation() + '/foyer'
   },
+  currentDispatchUrl: function () {
+    return this._getConstructionSiteBaseUrlFromLocation() + '/dispatch'
+  },
   currentRegisterUrl: function (initialState = null) {
     let url = this._getConstructionSiteBaseUrlFromLocation() + '/register'
 
@@ -327,13 +330,18 @@ const api = {
     const queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
     return this._getItem('/api/craftsmen/feed_entries' + queryString)
   },
-  getIssuesFeedEntries: function (constructionSite, weeksInThePast = 0) {
+  getIssuesFeedEntries: function (constructionSite, weeksInThePast = 0, query = null) {
     let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
     const week = 7 * 24 * 60 * 60 * 1000
     const lastChangedBefore = new Date(Date.now() - week * weeksInThePast)
     queryString += '&lastChangedAt[before]=' + lastChangedBefore.toISOString()
     const lastChangedAfter = new Date(Date.now() - week * (weeksInThePast + 1))
     queryString += '&lastChangedAt[after]=' + lastChangedAfter.toISOString()
+
+    if (query) {
+      queryString += '&' + this._getQueryString(query)
+    }
+
     return this._getItem('/api/issues/feed_entries' + queryString)
   },
   getIssuesRenderLink: function (constructionSite, map, query = {}) {

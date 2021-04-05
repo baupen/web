@@ -1,29 +1,18 @@
 <template>
-  <div>
-    <img class="img-fluid shadow" v-if="constructionSite.imageUrl" :src="constructionSite.imageUrl + '?size=full'"
-         :alt="'image of ' + constructionSite.name">
-    <h4 class="mt-3">{{ constructionSite.name }}</h4>
-    <p>
-      <span class="pre">{{ address.join("\n") }}</span>
-    </p>
-  </div>
+  <construction-site-view :construction-site="constructionSite" />
 </template>
 
 <script>
 
-import {constructionSiteFormatter} from '../services/formatters'
+import ConstructionSiteView from './View/ConstructionSiteView'
 
 export default {
+  components: { ConstructionSiteView },
   props: {
     constructionSite: {
       type: Object,
       required: true
     }
   },
-  computed: {
-    address: function () {
-      return constructionSiteFormatter.address(this.constructionSite)
-    },
-  }
 }
 </script>
