@@ -42,4 +42,6 @@ interface ImageServiceInterface
      * @param Issue[] $issues
      */
     public function renderMapFileWithIssuesToJpg(MapFile $mapFile, array $issues, string $size = self::SIZE_THUMBNAIL): ?string;
+
+    public function renderMapFileWithSingleIssueToJpg(MapFile $mapFile, Issue $issue, string $size = self::SIZE_THUMBNAIL): ?string;
 }

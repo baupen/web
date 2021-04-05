@@ -93,7 +93,7 @@
   <hr />
 
   <form-field for-id="description" :label="$t('issue.description')">
-    <input id="description" class="form-control" type="text" required="required"
+    <input id="description" class="form-control" type="text" required="required" ref="description"
            :class="{'is-valid': fields.description.dirty && !fields.description.errors.length, 'is-invalid': fields.description.dirty && fields.description.errors.length }"
            v-model="issue.description"
            @change="validate('description')"
@@ -228,6 +228,13 @@ export default {
     }
   },
   methods: {
+    selectDescription: function () {
+      // called from parent
+      this.$nextTick(() => {
+        console.log(this.$refs['description'])
+        this.$refs['description'].focus()
+      })
+    },
     validate: function (field) {
       validateField(this.fields[field], this.issue[field])
     },

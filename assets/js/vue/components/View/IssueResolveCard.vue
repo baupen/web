@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-md-6">
           <div class="w-50 d-inline-block pr-1">
-            <map-render-lightbox
+            <issue-render-lightbox
                 :preview="true"
                 :construction-site="constructionSite" :map="map" :issue="issue" />
           </div>
@@ -47,16 +47,16 @@ import ImageLightbox from './ImageLightbox'
 import ResolveIssueButton from '../Action/ResolveIssueButton'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import DateHumanReadable from '../Library/View/DateHumanReadable'
-import MapRenderLightbox from './MapRenderLightbox'
 import { issueTransformer } from '../../services/transformers'
+import IssueRenderLightbox from './IssueRenderLightbox'
 
 export default {
   components: {
+    IssueRenderLightbox,
     DateHumanReadable,
     DateTimeHumanReadable,
     ResolveIssueButton,
-    ImageLightbox,
-    MapRenderLightbox
+    ImageLightbox
   },
   props: {
     constructionManagers: {

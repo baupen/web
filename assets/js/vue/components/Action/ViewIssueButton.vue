@@ -31,7 +31,7 @@
 
     <div>
       <div class="w-50 d-inline-block pr-1">
-        <map-render-lightbox
+        <issue-render-lightbox
             :preview="true"
             :construction-site="constructionSite" :map="map" :issue="issue" />
       </div>
@@ -139,21 +139,21 @@
 <script>
 
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
-import MapRenderLightbox from '../View/MapRenderLightbox'
 import ImageLightbox from '../View/ImageLightbox'
 import DateHumanReadable from '../Library/View/DateHumanReadable'
 import { issueTransformer } from '../../services/transformers'
 import ToggleIcon from '../Library/View/ToggleIcon'
 import { constructionManagerFormatter } from '../../services/formatters'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
+import IssueRenderLightbox from '../View/IssueRenderLightbox'
 
 export default {
   components: {
+    IssueRenderLightbox,
     DateTimeHumanReadable,
     ToggleIcon,
     DateHumanReadable,
     ImageLightbox,
-    MapRenderLightbox,
     ButtonWithModalConfirm
   },
   props: {

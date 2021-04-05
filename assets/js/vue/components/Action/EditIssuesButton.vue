@@ -13,6 +13,7 @@
     </template>
 
     <issues-form
+        ref="issues-form"
         :template="template" :craftsmen="craftsmen" @update="patch = $event" />
     <image-form @update="image = $event" />
 
@@ -136,6 +137,12 @@ export default {
     }
   },
   methods: {
+    selectDescription: function () {
+      // called from parent
+      this.$nextTick(() => {
+        this.$refs['issues-form'].selectDescription()
+      })
+    },
     transformStatePatch: function (patch, patchPropertyName, stateName, owner, issue) {
       if (Object.prototype.hasOwnProperty.call(patch, patchPropertyName)) {
         const dateTimeStateName = stateName + 'At'
@@ -159,7 +166,7 @@ export default {
           this.transformStatePatch(patch, 'isClosed', 'closed', this.constructionManagerIri, issue)
 
           if (patch.length === 0) {
-            return null;
+            return null
           }
 
           return {

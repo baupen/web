@@ -139,7 +139,7 @@ class ApiController extends BaseDoctrineController
         $size = $this->getValidImageSizeFromQuery($request->query);
         $path = $imageService->renderMapFileToJpg($mapFile, $size);
 
-        return $this->tryCreateInlineFileResponse($path, 'render.jpg');
+        return $this->tryCreateInlineFileResponse($path, 'render.jpg', true);
     }
 
     /**
@@ -252,6 +252,24 @@ class ApiController extends BaseDoctrineController
         $path = $imageService->resizeIssueImage($issueImage, $size);
 
         return $this->tryCreateInlineFileResponse($path, $issueImage->getFilename(), true);
+    }
+
+    /**
+     * @Route("/issues/{issue}/map/render.jpg", name="issue_map_render", methods={"GET"})
+     *
+     * @return Response
+     */
+    public function getIssueRenderAction(Request $request, Issue $issue, ImageServiceInterface $imageService)
+    {
+        $mapFile = $issue->getMap()->getFile();
+        if (null === $mapFile) {
+            throw new NotFoundHttpException();
+        }
+
+        $size = $this->getValidImageSizeFromQuery($request->query);
+        $path = $imageService->renderMapFileWithSingleIssueToJpg($mapFile, $issue, $size);
+
+        return $this->tryCreateInlineFileResponse($path, 'render.jpg', false);
     }
 
     /**

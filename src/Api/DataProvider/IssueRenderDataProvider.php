@@ -87,6 +87,6 @@ class IssueRenderDataProvider extends NoPaginationDataProvider
             return new Response();
         }
 
-        return $this->tryCreateInlineFileResponse($path, 'render.jpg');
+        return $this->tryCreateInlineFileResponse($path, 'render.jpg', false);
     }
 }

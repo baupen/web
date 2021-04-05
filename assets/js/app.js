@@ -53,7 +53,7 @@ function renderQRCode (token) {
     origin: window.location.origin
   }
 
-  const data = JSON.stringify(payload)
+  const href = 'mangelio://login?payload=' + btoa(JSON.stringify(payload))
 
   const authenticationTokenCanvas = document.getElementsByClassName('authentication-token-canvas')
   Array.from(authenticationTokenCanvas).forEach(element => {
@@ -61,13 +61,13 @@ function renderQRCode (token) {
     new QRious({
       element,
       level: 'Q',
-      value: data,
+      value: href,
       size: 210
     })
   })
 
   const authenticationTokenLinks = document.getElementsByClassName('authentication-token-link')
   Array.from(authenticationTokenLinks).forEach(element => {
-    element.setAttribute('href', 'mangelio://login?payload=' + btoa(data))
+    element.setAttribute('href', href)
   })
 }

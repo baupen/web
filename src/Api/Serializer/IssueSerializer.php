@@ -49,6 +49,14 @@ class IssueSerializer implements NormalizerInterface
             $data['imageUrl'] = $url;
         }
 
+        if ($object->hasPosition()) {
+            $url = $this->urlGenerator->generate('issue_map_render', [
+                'issue' => $object->getId(),
+            ]);
+
+            $data['mapRenderUrl'] = $url;
+        }
+
         return $data;
     }
 }
