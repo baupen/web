@@ -52,8 +52,8 @@ class GdService
     public function drawRectangleWithText(float $xPosition, float $yPosition, string $color, float $padding, string $text, float $textFontSize, float $textWidth, float $textHeight, &$image)
     {
         //draw white base ellipse before the colored one
-        $white = $this->createColor($image, 255, 255, 255);
-        $fillColor = 'green' == $color ? $this->createColor($image, 18, 140, 45) : $this->createColor($image, 201, 151, 0);
+        $white = $this->createColorForLabel('white', $image);
+        $fillColor = $this->createColorForLabel($color, $image);
         $halfHeight = $textHeight / 2;
         $textStart = $xPosition - ($textWidth / 2);
         $textEnd = $xPosition + ($textWidth / 2);
@@ -62,6 +62,27 @@ class GdService
 
         //draw text
         imagettftext($image, $textFontSize, 0, (int) ($textStart), (int) ($yPosition + $halfHeight), $white, self::FONT, $text);
+    }
+
+    /**
+     * @param resource|\GdImage $image
+     */
+    public function drawCrosshair(float $positionX, float $positionY, string $color, int $radius, int $circleThickness, int $lineThickness, &$image)
+    {
+        $accent = $this->createColorForLabel($color, $image);
+
+        // image thickness + arcs do not work well: https://stackoverflow.com/a/37974450/2259391
+        imagesetthickness($image, 2);
+        $diameter = $radius * 2;
+        for ($i = $circleThickness; $i > 0; --$i) {
+            imagearc($image, $positionX, $positionY, $diameter - $i, $diameter - $i, 0, 360, $accent);
+        }
+
+        if ($lineThickness > 0) {
+            imagesetthickness($image, $lineThickness);
+            imageline($image, $positionX + $radius, $positionY, $positionX - $radius, $positionY, $accent);
+            imageline($image, $positionX, $positionY + $radius, $positionX, $positionY - $radius, $accent);
+        }
     }
 
     public function resizeImage(string $sourcePath, string $targetPath, int $maxWidth, int $maxHeight): bool
@@ -110,11 +131,34 @@ class GdService
     }
 
     /**
+     * @param \GdImage|resource $image
+     *
+     * @return int|false
+     *
+     * @throws \Exception
+     */
+    private function createColorForLabel(string $label, &$image)
+    {
+        switch ($label) {
+            case 'green':
+                return $this->createColor($image, 18, 140, 45);
+            case 'orange':
+                return $this->createColor($image, 201, 151, 0);
+            case 'blue':
+                return $this->createColor($image, 52, 52, 119);
+            case 'white':
+                return $this->createColor($image, 255, 255, 255);
+            default:
+                throw new \Exception('Unknown color');
+        }
+    }
+
+    /**
      * create a color using the palette of the image.
      *
      * @param resource|\GdImage $image
      *
-     * @return int
+     * @return int|false
      */
     private function createColor($image, int $red, int $green, int $blue)
     {

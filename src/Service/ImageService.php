@@ -97,7 +97,7 @@ class ImageService implements ImageServiceInterface
 
         $content = [];
         foreach ($issues as $issue) {
-            if (null !== $issue->getPositionX()) {
+            if ($issue->hasPosition()) {
                 $circleColor = null !== $issue->getClosedAt() ? 'green' : 'orange';
                 $issueText = (string) $issue->getNumber();
                 $content[] = [
@@ -123,6 +123,40 @@ class ImageService implements ImageServiceInterface
 
         FileHelper::ensureFolderExists($targetFolder);
         $this->drawContentOnJpg($mapFileJpgPath, $targetFilePath, $content);
+
+        //abort if generation failed
+        if (!file_exists($targetFilePath)) {
+            return null;
+        }
+
+        return $targetFilePath;
+    }
+
+    public function renderMapFileWithSingleIssueToJpg(MapFile $mapFile, Issue $issue, string $size = self::SIZE_THUMBNAIL): ?string
+    {
+        $mapFileJpgPath = $this->renderMapFileToJpg($mapFile, $size);
+        if (null === $mapFileJpgPath) {
+            return null;
+        }
+
+        if (!$issue->hasPosition()) {
+            return $mapFileJpgPath;
+        }
+
+        $content = [
+            'x' => $issue->getPositionX(),
+            'y' => $issue->getPositionY(),
+        ];
+
+        $contentHash = hash('sha256', serialize($content));
+        $targetFolder = $this->pathService->getTransientFolderForMapFileRenders($mapFile);
+        $targetFilePath = $this->getPathForSize($mapFileJpgPath, $targetFolder, 'single_'.$issue->getNumber().'_'.$contentHash, $size);
+        if (file_exists($targetFilePath)) {
+            return $targetFilePath;
+        }
+
+        FileHelper::ensureFolderExists($targetFolder);
+        $this->drawCrosshairOnJpg($mapFileJpgPath, $targetFilePath, $issue->getPositionX(), $issue->getPositionY());
 
         //abort if generation failed
         if (!file_exists($targetFilePath)) {
@@ -189,6 +223,38 @@ class ImageService implements ImageServiceInterface
         return $targetFolder.DIRECTORY_SEPARATOR.$targetFileName;
     }
 
+    private function drawCrosshairOnJpg(string $sourcePath, string $targetPath, float $positionX, float $positionY)
+    {
+        $image = imagecreatefromjpeg($sourcePath);
+        $xSize = imagesx($image);
+        $ySize = imagesy($image);
+        $maxSize = max($xSize, $ySize);
+
+        $lineThickness = 5;
+        $circleThickness = $lineThickness * 6;
+        $radius = $circleThickness * 3;
+
+        if ($maxSize > $radius * 2 * 6) {
+            // more than 6 such crosshairs have space on the longer size
+            $this->gdService->drawCrosshair($positionX * $xSize, $positionY * $ySize, 'blue', $radius, $circleThickness, $lineThickness, $image);
+        } else {
+            $lineThickness = 3;
+            $circleThickness = $lineThickness * 3;
+            $radius = $circleThickness * 5;
+
+            if ($maxSize > $radius * 2 * 4) {
+                // more than 4 such crosshairs have space on the longer size
+                $this->gdService->drawCrosshair($positionX * $xSize, $positionY * $ySize, 'blue', $radius, $circleThickness, $lineThickness, $image);
+            } else {
+                // draw a dot only
+                $dotSize = $maxSize / 6;
+                $this->gdService->drawCrosshair($positionX * $xSize, $positionY * $ySize, 'blue', $dotSize / 2, $dotSize, 0, $image);
+            }
+        }
+
+        imagejpeg($image, $targetPath);
+    }
+
     /**
      * @param string[][] $content
      */
@@ -196,7 +262,6 @@ class ImageService implements ImageServiceInterface
     {
         // estimate how much is drawn on the map
         $measurementFontSize = 30;
-
         $totalTextWidth = 0;
         $totalTextLength = 0;
         $totalTextHeight = 0;

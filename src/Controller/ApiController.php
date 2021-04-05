@@ -267,7 +267,7 @@ class ApiController extends BaseDoctrineController
         }
 
         $size = $this->getValidImageSizeFromQuery($request->query);
-        $path = $imageService->renderMapFileWithIssuesToJpg($mapFile, [$issue], $size);
+        $path = $imageService->renderMapFileWithSingleIssueToJpg($mapFile, $issue, $size);
 
         return $this->tryCreateInlineFileResponse($path, 'render.jpg', false);
     }
