@@ -68,6 +68,22 @@ class CacheClearCommand extends Command
             return self::RETURN_CODE_NO_FORCE;
         }
 
+        /*
+         * The following is cached:
+         * - thumbnail, preview and full for each construction site image, map file render and issue image
+         * - render of each issue position onto the map file render with a crosshair (to see its position)
+         * - renders of map file with issue positions
+         * - reports which are about to be downloaded (will be removed after download)
+         * - authentication (like whitelists)
+         *
+         * To further save on storage space, consider the following improvement:
+         * - remove rendered images & rendered position for closed issues
+         *
+         * To further save on computational power, consider the following:
+         * - do not clear the render of issue position
+         * - do not clear any renders
+         */
+
         if ($clearConstructionSites) {
             $directory = $this->pathService->getTransientFolderForConstructionSites();
             $this->clearFolder($io, $directory);
