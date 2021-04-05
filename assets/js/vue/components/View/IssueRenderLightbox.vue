@@ -1,5 +1,5 @@
 <template>
-  <image-lightbox v-if="this.issue.renderUrl" :src="this.issue.renderUrl" :subject="subject" :preview="preview" />
+  <image-lightbox v-if="this.issue.mapRenderUrl" :src="this.issue.mapRenderUrl" :subject="subject" :preview="preview" />
   <map-render-lightbox
       v-else
       :preview="preview" :construction-site="constructionSite" :map="map" :issue="issue" />

@@ -54,7 +54,7 @@ class IssueSerializer implements NormalizerInterface
                 'issue' => $object->getId(),
             ]);
 
-            $data['renderUrl'] = $url;
+            $data['mapRenderUrl'] = $url;
         }
 
         return $data;

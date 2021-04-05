@@ -58,13 +58,14 @@ class IssueTest extends ApiTestCase
         $constructionSite = $this->getTestConstructionSite();
         $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issues?constructionSite='.$constructionSite->getId());
         $fields = ['number', 'description', 'deadline', 'wasAddedWithClient', 'isMarked', 'isDeleted', 'lastChangedAt'];
-        $relationFields = ['craftsman', 'map', 'imageUrl'];
+        $relationFields = ['craftsman', 'map', 'imageUrl', 'mapRenderUrl'];
         $statusFields = ['createdAt', 'createdBy', 'registeredAt', 'registeredBy', 'resolvedAt', 'resolvedBy', 'closedAt', 'closedBy'];
         $positionFields = ['positionX', 'positionY', 'positionZoomScale'];
         $allFields = array_merge($fields, $relationFields, $statusFields, $positionFields);
 
         $this->assertApiResponseFieldSubset($response, ...$allFields);
         $this->assertApiResponseFileIsDownloadable($client, $response, 'imageUrl');
+        $this->assertApiResponseFileIsDownloadable($client, $response, 'mapRenderUrl');
     }
 
     public function testPostPatchAndDelete()
