@@ -89,4 +89,9 @@ trait IssuePositionTrait
     {
         $this->positionZoomScale = $positionZoomScale;
     }
+
+    public function hasPosition()
+    {
+        return null !== $this->getPositionX();
+    }
 }
