@@ -60,6 +60,40 @@ class CraftsmanTest extends ApiTestCase
         $this->assertApiResponseFieldSubset($response, 'email', 'emailCCs', 'contactName', 'company', 'trade', 'resolveUrl', 'isDeleted', 'lastChangedAt', 'canEdit');
     }
 
+    public function testCanEdit()
+    {
+        $client = $this->createClient();
+        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $constructionManager = $constructionSite->getConstructionManagers()[0];
+        $map = $constructionSite->getMaps()[0];
+
+        $craftsman = $this->addCraftsman($constructionSite);
+        $craftsman->setCanEdit(false);
+
+        $issue = $this->addIssue($constructionSite, $constructionManager);
+        $issue->setCraftsman($craftsman);
+        $issue->setMap($map);
+        $issue->setRegisteredAt(new \DateTime());
+        $issue->setRegisteredBy($constructionManager);
+
+        $this->saveEntity($issue, $craftsman);
+
+        $issueId = $this->getIriFromItem($issue);
+        $craftsmanId = $this->getIriFromItem($craftsman);
+        $craftsmanToken = $this->createApiTokenFor($craftsman);
+
+        $patch = ['resolvedAt' => (new \DateTime())->format('c'), 'resolvedBy' => $craftsmanId];
+        $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'PATCH', $issueId, $patch);
+
+        $this->reloadEntity($craftsman);
+        $craftsman->setCanEdit(true);
+        $this->saveEntity($craftsman);
+
+        $this->assertApiTokenRequestSuccessful($client, $craftsmanToken, 'PATCH', $issueId, $patch);
+    }
+
     public function testPostPatchAndDelete()
     {
         $client = $this->createClient();
