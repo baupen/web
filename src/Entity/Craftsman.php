@@ -114,6 +114,14 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     private $emailCCs;
 
     /**
+     * @var bool
+     *
+     * @Groups({"craftsman-read-self", "craftsman-write"})
+     * @ORM\Column(type="boolean", options={"default": true})
+     */
+    private $canEdit = true;
+
+    /**
      * @var ConstructionSite
      *
      * @Assert\NotBlank
@@ -303,5 +311,15 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     public function sort(Craftsman $other)
     {
         return strcmp($this->getCompany(), $other->getCompany());
+    }
+
+    public function getCanEdit(): bool
+    {
+        return $this->canEdit;
+    }
+
+    public function setCanEdit(bool $canEdit): void
+    {
+        $this->canEdit = $canEdit;
     }
 }

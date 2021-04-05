@@ -130,7 +130,7 @@ export default {
     },
     mapContainers: function () {
       return mapTransformer.orderedListWithIssuesGroups(this.maps, this.issuesGroupByMap, mapTransformer.PROPERTY_MAP_PARENT_NAMES)
-          .filter(container => container.count > 0)
+          .filter(container => container.issueCount > 0)
     },
     craftsmanQuery: function () {
       return {

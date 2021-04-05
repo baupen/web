@@ -25,7 +25,7 @@
             <br />
             <span v-if="isOverdue" class="badge badge-danger">{{ $t('issue.state.overdue') }}</span>
           </p>
-          <resolve-issue-button :issue="issue" :craftsman="craftsman" />
+          <resolve-issue-button v-if="craftsman.canEdit" :issue="issue" :craftsman="craftsman" />
         </div>
       </div>
     </div>

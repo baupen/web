@@ -103,7 +103,7 @@ class IssueVoter extends ConstructionSiteOwnedEntityVoter
     {
         $craftsman = $this->tryGetCraftsman($token);
         if (null !== $craftsman && self::ISSUE_RESPOND === $attribute) {
-            return $subject->getCraftsman() === $craftsman && ($subject->getResolvedBy() === $craftsman || null === $subject->getResolvedBy());
+            return $craftsman->getCanEdit() && $subject->getCraftsman() === $craftsman && ($subject->getResolvedBy() === $craftsman || null === $subject->getResolvedBy());
         }
 
         return parent::voteOnAttribute($attribute, $subject, $token);

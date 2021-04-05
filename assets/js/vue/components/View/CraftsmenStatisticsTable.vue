@@ -3,7 +3,7 @@
     <thead>
     <tr class="bg-light">
       <th class="w-minimal"></th>
-      <th colspan="3">{{ $t('craftsman._name') }}</th>
+      <th colspan="4">{{ $t('craftsman._name') }}</th>
       <th class="border-left" colspan="2">{{ $t('issue._plural') }}</th>
       <th class="border-left" colspan="2">{{ $t('_view.craftsmen.last_activity') }}</th>
       <th class="border-left"></th>
@@ -17,6 +17,7 @@
       </th>
       <th>{{ $t('craftsman.trade') }}</th>
       <th>{{ $t('craftsman.company') }}</th>
+      <th class="w-minimal"></th>
       <th class="w-minimal"></th>
 
       <th class="border-left">{{ $t('_view.craftsmen_statistics.count') }}</th>
@@ -47,6 +48,9 @@
       </td>
       <td>{{ cws.craftsman.trade }}</td>
       <td>{{ cws.craftsman.company }}</td>
+      <td>
+        <toggle-can-edit :craftsman="cws.craftsman" />
+      </td>
       <td>
         <a :href="cws.craftsman.resolveUrl" target="_blank">
           <font-awesome-icon :icon="['fal', 'user']" />
@@ -121,10 +125,12 @@ import DateHumanReadable from '../Library/View/DateHumanReadable'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import { arraysAreEqual } from '../../services/algorithms'
 import IssueSummaryBadges from './IssueSummaryBadges'
+import ToggleCanEdit from '../Action/ToggleCanEdit'
 
 export default {
   emits: ['selected'],
   components: {
+    ToggleCanEdit,
     IssueSummaryBadges,
     DateTimeHumanReadable,
     DateHumanReadable,

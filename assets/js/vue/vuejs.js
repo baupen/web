@@ -12,7 +12,7 @@ import {
   faUserAlt, faQuestionCircle, faEnvelopeOpen, // navigation
   faStar, faUserCheck, // issue states (toggle off)
   faFilter, faSort, // table
-  faUser, // craftsman link
+  faUser, faLock, faUnlock, // craftsman link, canEdit, !canEdit
   faExternalLink // external link
 } from '@fortawesome/pro-light-svg-icons'
 import {
@@ -21,8 +21,12 @@ import {
 } from '@fortawesome/pro-regular-svg-icons'
 
 import {
-  faStar as faStarSolid, faUserCheck as faUserCheckSolid, // issue states (toggle on)
-  faFilter as faFilterSolid, faSearch as faSearchSolid, faSortUp as faSortUpSolid, faSortDown as faSortDownSolid // table
+  faStar as faStarSolid,
+  faUserCheck as faUserCheckSolid, // issue states (toggle on)
+  faFilter as faFilterSolid,
+  faSearch as faSearchSolid,
+  faSortUp as faSortUpSolid,
+  faSortDown as faSortDownSolid // table
 } from '@fortawesome/pro-solid-svg-icons'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 
@@ -55,7 +59,7 @@ FontawesomeLibrary.add(
   faStar, faUserCheck,
   faFilter, faSort,
   faUser,
-  faExternalLink,
+  faExternalLink, faLock, faUnlock,
   faPlusCircleRegular, faDotCircleRegular, faExclamationCircleRegular, faCheckCircleRegular,
   faStarSolid, faUserCheckSolid,
   faFilterSolid, faSearchSolid, faSortUpSolid, faSortDownSolid

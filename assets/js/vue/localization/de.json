@@ -128,6 +128,10 @@
       "associated": "Sie wurden der Baustelle hinzugefügt.",
       "dissociated": "Sie wurden von der Baustelle entfernt."
     },
+    "toggle_can_edit": {
+      "can_edit": "Der Unternehmer darf Pendenzen als erledigt markieren.",
+      "no_edit_anymore": "Der Unternehmer darf keine Pendenzen mehr als erledigt markieren."
+    },
     "toggle_receive_weekly": {
       "no_weekly_anymore": "Wir senden Ihnen die wöchentliche Übersicht nicht mehr zu.",
       "weekly": "Wöchentliche Übersicht per E-Mail",
