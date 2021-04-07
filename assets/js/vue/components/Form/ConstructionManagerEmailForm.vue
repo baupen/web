@@ -25,7 +25,6 @@ export default {
   emits: ['update'],
   data () {
     return {
-      mounted: false,
       fields: {
         email: createField(requiredRule()),
       },
@@ -38,9 +37,7 @@ export default {
     updatePayload: {
       deep: true,
       handler: function () {
-        if (this.mounted) {
-          this.$emit('update', this.updatePayload)
-        }
+        this.$emit('update', this.updatePayload)
       }
     }
   },
@@ -61,7 +58,6 @@ export default {
   mounted () {
     validateFields(this.fields, this.constructionManager)
 
-    this.mounted = true
     this.$emit('update', this.updatePayload)
   }
 }

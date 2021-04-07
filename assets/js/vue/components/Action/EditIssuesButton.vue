@@ -24,7 +24,6 @@
 
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import IssuesForm from '../Form/IssuesForm'
-import FileForm from '../Form/FileForm'
 import ImageForm from '../Form/ImageForm'
 import { api } from '../../services/api'
 import { displaySuccess } from '../../services/notifiers'
@@ -33,7 +32,6 @@ export default {
   emits: ['save', 'save-image'],
   components: {
     ImageForm,
-    FileForm,
     IssuesForm,
     ButtonWithModalConfirm,
   },

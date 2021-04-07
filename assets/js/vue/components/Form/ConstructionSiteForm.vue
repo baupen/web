@@ -60,7 +60,6 @@ export default {
   emits: ['update'],
   data () {
     return {
-      mounted: false,
       fields: {
         name: createField(requiredRule()),
         streetAddress: createField(requiredRule()),
@@ -90,9 +89,7 @@ export default {
     updatePayload: {
       deep: true,
       handler: function () {
-        if (this.mounted) {
-          this.$emit('update', this.updatePayload)
-        }
+        this.$emit('update', this.updatePayload)
       }
     },
     template: function () {
@@ -144,14 +141,11 @@ export default {
         return null
       }
 
-      return  changedFieldValues(this.fields, this.constructionSite, this.template)
+      return changedFieldValues(this.fields, this.constructionSite, this.template)
     }
   },
   mounted () {
     this.setConstructionSiteFromTemplate()
-
-    this.mounted = true
-    this.$emit('update', this.updatePayload)
   }
 }
 </script>

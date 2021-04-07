@@ -42,7 +42,6 @@ export default {
         subject: null,
         body: null,
       },
-      mounted: false,
     }
   },
   props: {
@@ -54,9 +53,7 @@ export default {
     updatePayload: {
       deep: true,
       handler: function () {
-        if (this.mounted) {
-          this.$emit('update', this.updatePayload)
-        }
+        this.$emit('update', this.updatePayload)
       }
     },
     template: function () {
@@ -72,7 +69,7 @@ export default {
         this.email.subject = this.template.subject
         this.email.body = this.template.body
       }
-      
+
       validateFields(this.fields, this.email)
     }
   },
@@ -88,9 +85,6 @@ export default {
   },
   mounted () {
     this.setEmailFromTemplate()
-
-    this.mounted = true
-    this.$emit('update', this.updatePayload)
   }
 }
 </script>

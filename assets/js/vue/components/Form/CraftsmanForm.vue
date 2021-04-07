@@ -68,7 +68,6 @@ export default {
   emits: ['update'],
   data () {
     return {
-      mounted: false,
       fields: {
         company: createField(requiredRule()),
         trade: createField(requiredRule()),
@@ -94,9 +93,7 @@ export default {
     updatePayload: {
       deep: true,
       handler: function () {
-        if (this.mounted) {
-          this.$emit('update', this.updatePayload)
-        }
+        this.$emit('update', this.updatePayload)
       }
     },
     template: function () {
@@ -144,9 +141,6 @@ export default {
   },
   mounted () {
     this.setCraftsmanFromTemplate()
-
-    this.mounted = true
-    this.$emit('update', this.updatePayload)
   }
 }
 </script>

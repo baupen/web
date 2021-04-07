@@ -9,18 +9,10 @@
 <script>
 
 import { api } from '../../services/api'
-import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
-import MapForm from '../Form/MapForm'
-import FileForm from '../Form/FileForm'
 import { displaySuccess, displayWarning } from '../../services/notifiers'
 
 export default {
   emits: ['registered'],
-  components: {
-    FileForm,
-    MapForm,
-    ButtonWithModalConfirm,
-  },
   data () {
     return {
       totalPreRegisterIssues: 0,

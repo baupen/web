@@ -1,5 +1,5 @@
 <template>
-  <form-field for-id="image" :label="$t('_form.image.label')">
+  <form-field for-id="image" :label="$t('_form.image.label')" :required="false">
     <dropzone
         v-if="!image"
         id="image" :help="$t('_form.image.drop_or_choose')"
@@ -28,15 +28,12 @@ export default {
   emits: ['update'],
   data () {
     return {
-      mounted: false,
       image: null
     }
   },
   watch: {
     image: function () {
-      if (this.mounted) {
-        this.$emit('update', this.image)
-      }
+      this.$emit('update', this.image)
     },
   },
   computed: {
@@ -48,12 +45,8 @@ export default {
       return this.validFileTypes.some(e => this.image.type === e)
     },
     validFileTypes: function () {
-      return validImageTypes;
+      return validImageTypes
     }
-  },
-  mounted () {
-    this.mounted = true
-    this.$emit('update', this.image)
   }
 }
 </script>

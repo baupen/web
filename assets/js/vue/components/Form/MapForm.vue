@@ -19,10 +19,10 @@
       <option disabled></option>
       <option v-for="mapContainer in mapContainers" :value="mapContainer.entity['@id']"
               :key="mapContainer.entity['@id']">
-        {{ "&nbsp;".repeat(mapContainer.level) }} {{ mapContainer.entity.name}}
+        {{ '&nbsp;'.repeat(mapContainer.level) }} {{ mapContainer.entity.name }}
       </option>
     </select>
-    <invalid-feedback :errors="fields.parent.errors"/>
+    <invalid-feedback :errors="fields.parent.errors" />
   </form-field>
 </template>
 
@@ -41,7 +41,6 @@ export default {
   emits: ['update'],
   data () {
     return {
-      mounted: false,
       fields: {
         name: createField(requiredRule()),
         parent: createField()
@@ -65,9 +64,7 @@ export default {
     updatePayload: {
       deep: true,
       handler: function () {
-        if (this.mounted) {
-          this.$emit('update', this.updatePayload)
-        }
+        this.$emit('update', this.updatePayload)
       }
     },
     template: function () {
@@ -101,9 +98,6 @@ export default {
   },
   mounted () {
     this.setMapFromTemplate()
-
-    this.mounted = true
-    this.$emit('update', this.updatePayload)
   }
 }
 </script>

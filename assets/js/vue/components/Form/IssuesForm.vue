@@ -2,7 +2,8 @@
   <div class="row">
     <div class="col-md-6">
       <custom-checkbox-field for-id="is-marked" :label="$t('issue.is_marked')"
-                             :label-icon="['fal', 'star']" :label-icon-checked="['fas', 'star']" :checked="issue.isMarked">
+                             :label-icon="['fal', 'star']" :label-icon-checked="['fas', 'star']"
+                             :checked="issue.isMarked">
         <input
             class="custom-control-input" type="checkbox" id="is-marked"
             :class="{'is-valid': fields.isMarked.dirty && !fields.isMarked.errors.length, 'is-invalid': fields.isMarked.dirty && fields.isMarked.errors.length }"
@@ -23,7 +24,8 @@
       </custom-checkbox-field>
 
       <custom-checkbox-field for-id="was-added-with-client" :label="$t('issue.was_added_with_client')"
-                             :label-icon="['fal', 'user-check']"  :label-icon-checked="['fas', 'user-check']" :checked="issue.wasAddedWithClient">
+                             :label-icon="['fal', 'user-check']" :label-icon-checked="['fas', 'user-check']"
+                             :checked="issue.wasAddedWithClient">
         <input
             class="custom-control-input" type="checkbox" id="was-added-with-client"
             :class="{'is-valid': fields.wasAddedWithClient.dirty && !fields.wasAddedWithClient.errors.length, 'is-invalid': fields.wasAddedWithClient.dirty && fields.wasAddedWithClient.errors.length }"
@@ -87,7 +89,7 @@
   </div>
 
   <p class="alert alert-warning mt-2" v-if="fields.isResolved.dirty && issue.isResolved">
-    {{ $t('_form.issues.resolved_as_impersonated_craftsman')}}
+    {{ $t('_form.issues.resolved_as_impersonated_craftsman') }}
   </p>
 
   <hr />
@@ -165,7 +167,6 @@ export default {
   emits: ['update'],
   data () {
     return {
-      mounted: false,
       fields: {
         isMarked: createField(),
         wasAddedWithClient: createField(),
@@ -200,9 +201,7 @@ export default {
     updatePayload: {
       deep: true,
       handler: function () {
-        if (this.mounted) {
-          this.$emit('update', this.updatePayload)
-        }
+        this.$emit('update', this.updatePayload)
       }
     },
     template: function () {
@@ -231,7 +230,6 @@ export default {
     selectDescription: function () {
       // called from parent
       this.$nextTick(() => {
-        console.log(this.$refs['description'])
         this.$refs['description'].focus()
       })
     },
@@ -311,9 +309,6 @@ export default {
   },
   mounted () {
     this.setIssueFromTemplate()
-
-    this.mounted = true
-    this.$emit('update', this.updatePayload)
   }
 }
 </script>
