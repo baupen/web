@@ -1,5 +1,5 @@
 <template>
-  <form-field for-id="file" :label="$t('_form.file.label')">
+  <form-field for-id="file" :label="$t('_form.file.label')" :required="false">
     <dropzone
         v-if="!file"
         id="file" :help="$t('_form.file.drop_or_choose')"

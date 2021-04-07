@@ -14,14 +14,12 @@
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import ConstructionSiteForm from '../Form/ConstructionSiteForm'
 import { api } from '../../services/api'
-import FileForm from '../Form/FileForm'
 import ImageForm from '../Form/ImageForm'
 
 export default {
   emits: ['added'],
   components: {
     ImageForm,
-    FileForm,
     ConstructionSiteForm,
     ButtonWithModalConfirm
   },
