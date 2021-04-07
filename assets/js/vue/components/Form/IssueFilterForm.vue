@@ -126,7 +126,6 @@ export default {
   emits: ['update', 'update-configuration'],
   data () {
     return {
-      mounted: false,
       filter: {
         number: '',
         description: '',

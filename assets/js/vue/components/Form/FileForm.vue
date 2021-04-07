@@ -28,15 +28,12 @@ export default {
   emits: ['update'],
   data () {
     return {
-      mounted: false,
       file: null
     }
   },
   watch: {
     file: function () {
-      if (this.mounted) {
-        this.$emit('update', this.fileIsValid ? this.file : null)
-      }
+      this.$emit('update', this.fileIsValid ? this.file : null)
     },
   },
   computed: {
@@ -48,12 +45,8 @@ export default {
       return this.validFileTypes.some(e => this.file.type === e)
     },
     validFileTypes: function () {
-      return validFileTypes;
+      return validFileTypes
     }
-  },
-  mounted () {
-    this.mounted = true
-    this.$emit('update', this.file)
   }
 }
 </script>

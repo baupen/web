@@ -17,7 +17,7 @@ export default {
   computed: {
     downloadXlsxExport: function () {
       const blob = craftsmanTransformer.exportToXlsx(this.craftsmen, this.$t)
-      console.log(blob)
+
       return window.URL.createObjectURL(blob)
     },
     filename: function () {
