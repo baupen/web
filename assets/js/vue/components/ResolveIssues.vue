@@ -166,7 +166,7 @@ export default {
 
     api.getIssuesFeedEntries(this.constructionSite, 0, this.craftsmanQuery)
         .then(issuesFeedEntries => {
-          this.feedEntries = issuesFeedEntries.concat(issuesFeedEntries).concat(issuesFeedEntries)
+          this.feedEntries = issuesFeedEntries
         })
   }
 }
