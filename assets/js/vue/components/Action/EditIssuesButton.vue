@@ -1,5 +1,6 @@
 <template>
   <button-with-modal-confirm
+      ref="modal"
       :title="$t('_action.edit_issues.title')" color="primary" :can-confirm="canConfirm"
       :confirm-title="confirmTitle" :button-disabled="pendingRequestCount > 0 || issues.length === 0"
       @confirm="confirm">
@@ -14,7 +15,7 @@
 
     <issues-form
         ref="issues-form"
-        :template="template" :craftsmen="craftsmen" @update="patch = $event" />
+        :template="template" :craftsmen="craftsmen" @update="patch = $event" @confirm="$refs['modal'].confirm()" />
     <image-form @update="image = $event" />
 
   </button-with-modal-confirm>
@@ -39,6 +40,7 @@ export default {
     return {
       patch: null,
       image: null,
+      show: true,
       prePatchedIssues: [],
       prePostedIssueImages: [],
     }

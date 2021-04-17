@@ -97,7 +97,14 @@
             @click.stop="" />
       </td>
       <td>
-        <span class="clickable-text" @click.stop="editDescription(iwr.issue)">{{ iwr.issue.description }}</span>
+        <span class="clickable-text" @click.stop="editDescription(iwr.issue)">
+          <template v-if="iwr.issue.description">
+          {{ iwr.issue.description }}
+            </template>
+          <i v-else>
+            {{ $t("issue.no_description_yet") }}
+          </i>
+        </span>
       </td>
       <td>
         {{ iwr.map?.name }}<br />

@@ -99,7 +99,8 @@
            :class="{'is-valid': fields.description.dirty && !fields.description.errors.length, 'is-invalid': fields.description.dirty && fields.description.errors.length }"
            v-model="issue.description"
            @change="validate('description')"
-           @input="fields.description.dirty = true">
+           @input="fields.description.dirty = true"
+           @keyup.enter="$emit('confirm')">
     <invalid-feedback :errors="fields.description.errors" />
     <a class="btn-link clickable" v-if="fields.description.dirty" @click="reset('description')">
       {{ $t('_form.reset') }}
@@ -164,7 +165,7 @@ export default {
     FormField,
     flatPickr
   },
-  emits: ['update'],
+  emits: ['update', 'confirm'],
   data () {
     return {
       fields: {
