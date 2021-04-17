@@ -25,5 +25,5 @@ interface ReportServiceInterface
 
     public function createConstructionSiteReport(ConstructionSite $constructionSite, DateTime $comparisonTimestamp): ConstructionSiteReport;
 
-    public function createCraftsmanReport(Craftsman $craftsman, DateTime $comparisonTimestamp): CraftsmanReport;
+    public function createCraftsmanReport(Craftsman $craftsman, ?DateTime $comparisonTimestamp): CraftsmanReport;
 }
