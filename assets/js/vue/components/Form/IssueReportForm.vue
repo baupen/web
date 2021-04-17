@@ -1,19 +1,20 @@
 <template>
   <div class="form-group">
-    <custom-checkbox-field
+    <custom-checkbox
+        class="mb-1"
         for-id="report-with-renders"
         :label="$t('_form.issue_report.with_renders')">
       <input class="custom-control-input" type="checkbox" name="report-with-images" id="report-with-renders"
              :true-value="true" :false-value="false"
              v-model="report.withRenders">
-    </custom-checkbox-field>
-    <custom-checkbox-field
+    </custom-checkbox>
+    <custom-checkbox
         for-id="report-with-images"
         :label="$t('_form.issue_report.with_images')">
       <input class="custom-control-input" type="checkbox" name="report-with-images" id="report-with-images"
              :true-value="true" :false-value="false"
              v-model="report.withImages">
-    </custom-checkbox-field>
+    </custom-checkbox>
   </div>
 
   <form-field :label="$t('_form.issue_report.summary_tables')" :required="false">
