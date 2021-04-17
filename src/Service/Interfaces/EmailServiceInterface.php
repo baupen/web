@@ -13,6 +13,7 @@ namespace App\Service\Interfaces;
 
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
+use App\Service\Report\Email\CraftsmanReport;
 
 interface EmailServiceInterface
 {
@@ -22,7 +23,7 @@ interface EmailServiceInterface
 
     public function sendAppInvitation(ConstructionManager $constructionManager): bool;
 
-    public function sendCraftsmanIssueReminder(ConstructionManager $constructionManager, Craftsman $craftsman, string $subject, string $body, bool $constructionManagerInBCC): bool;
+    public function sendCraftsmanIssueReminder(ConstructionManager $constructionManager, Craftsman $craftsman, CraftsmanReport $craftsmanReport, string $subject, string $body, bool $constructionManagerInBCC): bool;
 
     public function sendConstructionSitesReport(ConstructionManager $constructionManager, array $constructionSiteReports): bool;
 }

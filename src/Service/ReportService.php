@@ -12,12 +12,14 @@
 namespace App\Service;
 
 use App\Entity\ConstructionSite;
+use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Service\Analysis\Database\CraftsmanService;
 use App\Service\Analysis\Database\IssueService;
 use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\Email\ConstructionSiteReport;
 use App\Service\Report\Email\CraftsmanDeltaReport;
+use App\Service\Report\Email\CraftsmanReport;
 use App\Service\Report\Email\IssueCountDeltaTrait;
 use App\Service\Report\Pdf\PdfService;
 use App\Service\Report\Pdf\ReportElements;
@@ -83,9 +85,35 @@ class ReportService implements ReportServiceInterface
             $this->fillIssueCountDelta($craftsmanDeltaReport, $comparisonTimestamp, $registeredAt, $resolvedAt, $closedAt);
         }
 
-        usort($craftsmanDeltaReportByCraftsman, function (CraftsmanDeltaReport $a, CraftsmanDeltaReport $b) {return $a->getCraftsman()->sort($b->getCraftsman()); });
+        usort($craftsmanDeltaReportByCraftsman, function (CraftsmanDeltaReport $a, CraftsmanDeltaReport $b) {
+            return $a->getCraftsman()->sort($b->getCraftsman());
+        });
 
         return new ConstructionSiteReport($constructionSite, $comparisonTimestamp, array_values($craftsmanDeltaReportByCraftsman));
+    }
+
+    public function createCraftsmanReport(Craftsman $craftsman, ?DateTime $comparisonTimestamp): CraftsmanReport
+    {
+        $craftsmanDeltaReport = new CraftsmanReport($craftsman, $comparisonTimestamp);
+        $craftsmanDeltaReportByCraftsman = [$craftsman->getId() => $craftsmanDeltaReport];
+        $relevantCraftsmen[] = $craftsman;
+
+        $this->craftsmanService->findIssueCountByCraftsman($relevantCraftsmen, $craftsmanDeltaReportByCraftsman);
+
+        $rootAlias = 'i';
+        $queryComparisonTimestamp = $comparisonTimestamp ? $comparisonTimestamp : (new \DateTime())->setTimestamp(0);
+        $queryBuilder = $this->craftsmanService->getCraftsmanIssuesQueryBuilder($rootAlias, $relevantCraftsmen)->addSelect('identity('.$rootAlias.'.craftsman) AS craftsman');
+        $stateChangeIssues = $this->issueService->getStateChangeIssues($queryBuilder, $rootAlias, $queryComparisonTimestamp);
+
+        foreach ($stateChangeIssues as $stateChangeIssue) {
+            $registeredAt = $stateChangeIssue['registeredAt'];
+            $resolvedAt = $stateChangeIssue['resolvedAt'];
+            $closedAt = $stateChangeIssue['closedAt'];
+
+            $this->fillIssueCountDelta($craftsmanDeltaReport, $queryComparisonTimestamp, $registeredAt, $resolvedAt, $closedAt);
+        }
+
+        return $craftsmanDeltaReport;
     }
 
     /**

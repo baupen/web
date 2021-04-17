@@ -3,11 +3,29 @@
 {% trans_default_domain "email" %}
 
 {% block body %}
-    <p>{{ body|nl2br  }}</p>
+    {% import "email/construction_sites_overview.html.twig" as _macros %}
+    <p>
+        {% if jsonBody %}
+            {{ body.body|nl2br }}
+        {% else %}
+            {{ body }}
+        {% endif %}
+    </p>
     <spacer size="15"></spacer>
     <center>
         <button href="{{ absolute_url(link) }}">
             {{ "craftsman_issue_reminder.view_issues_link"|trans }}
         </button>
     </center>
+    {% if jsonBody %}
+        <center>
+            <span class="secondary-content">
+                {{ "state_values.open"|trans({}, "entity_issue") }}
+                {{ _macros.issue_count_delta_cell_content_bad(body.report.openCount, body.report.openCountDelta) }}
+                |
+                {{ "state_values.closed"|trans({}, "entity_issue") }}
+                {{ _macros.issue_count_delta_cell_content_good(body.report.closedCount, body.report.closedCountDelta) }}
+            </span>
+        </center>
+    {% endif %}
 {% endblock %}

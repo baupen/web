@@ -138,6 +138,6 @@ class Email extends BaseEntity
     {
         $body = $this->jsonBody ? json_decode($this->body) : $this->body;
 
-        return ['sentBy' => $this->sentBy, 'identifier' => $this->identifier, 'emailType' => $this->type, 'body' => $body, 'link' => $this->link];
+        return ['sentBy' => $this->sentBy, 'identifier' => $this->identifier, 'emailType' => $this->type, 'body' => $body, 'jsonBody' => $this->jsonBody, 'link' => $this->link];
     }
 }

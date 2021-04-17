@@ -12,7 +12,9 @@
 namespace App\Service\Email;
 
 use ApiPlatform\Core\Api\UrlGeneratorInterface;
+use App\Helper\DateTimeFormatter;
 use App\Service\Report\Email\ConstructionSiteReport;
+use App\Service\Report\Email\CraftsmanReport;
 use App\Service\Report\Email\IssueCountDeltaTrait;
 use App\Service\Report\Email\IssueCountTrait;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -45,7 +47,20 @@ class EmailBodyGenerator
         ];
     }
 
-    public function fromConstructionSiteReport(ConstructionSiteReport $constructionSiteReport)
+    public function fromCraftsmanReport(CraftsmanReport $craftsmanReport)
+    {
+        $normalizedCraftsmanReport = [];
+        if ($craftsmanReport->getComparisonTimestamp()) {
+            $normalizedCraftsmanReport['comparisonTimeStamp'] = $craftsmanReport->getComparisonTimestamp()->format(DateTimeFormatter::DATE_TIME_FORMAT);
+        }
+
+        $issueCountProperties = $this->getIssueCountProperties($craftsmanReport);
+        $issueCountDeltaProperties = $this->getIssueCountDeltaProperties($craftsmanReport);
+
+        return array_merge($normalizedCraftsmanReport, $issueCountProperties, $issueCountDeltaProperties);
+    }
+
+    private function fromConstructionSiteReport(ConstructionSiteReport $constructionSiteReport)
     {
         $constructionManagers = [];
         $constructionSite = $constructionSiteReport->getConstructionSite();

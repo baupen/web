@@ -17,6 +17,7 @@ use App\Api\Entity\Email;
 use App\Entity\Craftsman;
 use App\Security\TokenTrait;
 use App\Service\EmailService;
+use App\Service\Interfaces\ReportServiceInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -38,6 +39,11 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
     private $emailService;
 
     /**
+     * @var ReportServiceInterface
+     */
+    private $reportService;
+
+    /**
      * @var IriConverterInterface
      */
     private $iriConverter;
@@ -45,11 +51,12 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
     /**
      * EmailDataPersister constructor.
      */
-    public function __construct(TokenStorageInterface $tokenStorage, EmailService $emailService, IriConverterInterface $iriConverter)
+    public function __construct(TokenStorageInterface $tokenStorage, EmailService $emailService, IriConverterInterface $iriConverter, ReportServiceInterface $reportService)
     {
         $this->tokenStorage = $tokenStorage;
         $this->emailService = $emailService;
         $this->iriConverter = $iriConverter;
+        $this->reportService = $reportService;
     }
 
     public function supports($data, array $context = []): bool
@@ -77,7 +84,8 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
         }
 
         if (\App\Entity\Email::TYPE_CRAFTSMAN_ISSUE_REMINDER === $data->getType()) {
-            $success = $this->emailService->sendCraftsmanIssueReminder($constructionManager, $craftsman, $data->getSubject(), $data->getBody(), $data->getSelfBcc());
+            $craftsmanReport = $this->reportService->createCraftsmanReport($craftsman, $craftsman->getLastVisitOnline());
+            $success = $this->emailService->sendCraftsmanIssueReminder($constructionManager, $craftsman, $craftsmanReport, $data->getSubject(), $data->getBody(), $data->getSelfBcc());
         } else {
             throw new BadRequestException('unknown email type');
         }

@@ -3,7 +3,16 @@
 {% trans_default_domain "email" %}
 
 {% block body %}
+{% import "email/construction_sites_overview.txt.twig" as _macros %}
+{% if jsonBody %}
+{{ body.body  }}
+{% else %}
 {{ body }}
+{% endif %}
 
 {{ "craftsman_issue_reminder.view_issues_link"|trans }}: {{ absolute_url(link) }}
+{% if jsonBody %}
+{{ "state_values.open"|trans({}, "entity_issue") }}: {{ _macros.issue_count_delta_cell_content(body.report.openCount, body.report.openCountDelta, true) }}
+{{ "state_values.closed"|trans({}, "entity_issue") }}: {{ _macros.issue_count_delta_cell_content(body.report.closedCount, body.report.closedCountDelta) }}
+{% endif %}
 {% endblock %}

@@ -16,6 +16,7 @@ use App\Entity\Craftsman;
 use App\Entity\Email;
 use App\Service\Email\EmailBodyGenerator;
 use App\Service\Interfaces\EmailServiceInterface;
+use App\Service\Report\Email\CraftsmanReport;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use Psr\Log\LoggerInterface;
@@ -154,10 +155,13 @@ class EmailService implements EmailServiceInterface
         return $this->sendAndStoreEMail($message, $entity);
     }
 
-    public function sendCraftsmanIssueReminder(ConstructionManager $constructionManager, Craftsman $craftsman, string $subject, string $body, bool $constructionManagerInBCC): bool
+    public function sendCraftsmanIssueReminder(ConstructionManager $constructionManager, Craftsman $craftsman, CraftsmanReport $craftsmanReport, string $subject, string $body, bool $constructionManagerInBCC): bool
     {
+        $report = $this->emailBodyGenerator->fromCraftsmanReport($craftsmanReport);
+        $emailBody = ['report' => $report, 'body' => $body];
+        $json = $this->serializer->serialize($emailBody, 'json');
         $link = $this->urlGenerator->generate('public_resolve', ['token' => $craftsman->getAuthenticationToken()]);
-        $entity = Email::create(Email::TYPE_CRAFTSMAN_ISSUE_REMINDER, $constructionManager, $link, $body);
+        $entity = Email::create(Email::TYPE_CRAFTSMAN_ISSUE_REMINDER, $constructionManager, $link, $json, true);
 
         $message = $this->createTemplatedEmailToCraftsman($constructionManager, $craftsman, $constructionManagerInBCC)
             ->subject($subject)
