@@ -310,6 +310,7 @@
     "craftsman": "Unternehmer",
     "deadline": "Frist",
     "description": "Beschreibung",
+    "no_description_yet": "Noch keine Beschreibung",
     "image": "Bild",
     "is_marked": "Favorit",
     "last_changed_at": "Zuletzt geändert",

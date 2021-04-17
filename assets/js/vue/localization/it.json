@@ -303,6 +303,7 @@
     "craftsman": "Imprenditore",
     "deadline": "Scadenza",
     "description": "Descrizione",
+    "no_description_yet": "Nessuna descrizione",
     "image": "Immagine",
     "is_marked": "Preferito",
     "last_changed_at": "Ultima modifica",
