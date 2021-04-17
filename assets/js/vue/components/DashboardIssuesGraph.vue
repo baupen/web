@@ -42,9 +42,9 @@ export default {
       })
 
       const minValue = Math.min(...closed)
-      const diff = maxValue - minValue
-      const exactTargetMin = Math.max(minValue - diff * 0.3, 0)
-      const targetMin = exactTargetMin - (exactTargetMin > 1000 ? exactTargetMin % 100 : exactTargetMin % 10)
+      const belowMinSpacer = Math.max((maxValue - minValue) * 0.3, 10) // reduce min so graph does not look empty
+      const exactTargetMin = Math.max(minValue - belowMinSpacer, 0) // calculate optimal min
+      const targetMin = exactTargetMin - (exactTargetMin > 1000 ? exactTargetMin % 100 : exactTargetMin % 10) // round min
 
       const ctx = this.$refs.chart.getContext('2d')
       this.chart = new Chart(ctx, {
