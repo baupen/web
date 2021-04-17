@@ -139,7 +139,7 @@ export default {
       }
     },
     issuesQuery: function () {
-      return Object.assign(this.craftsmanQuery, {
+      return Object.assign({}, this.craftsmanQuery, {
         state: 2,
       })
     },
