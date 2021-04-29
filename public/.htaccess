@@ -119,6 +119,11 @@ AddDefaultCharset utf-8
     Header set X-Content-Type-Options "nosniff"
 </IfModule>
 
+# Opt out google cohort tracking
+<IfModule mod_headers.c>
+    Header always set Permissions-Policy: interest-cohort=()
+</IfModule>
+
 # Set referrer policy (disable all potentially leaking information)
 <IfModule mod_headers.c>
     Header set Referrer-Policy: no-referrer
