@@ -40,7 +40,7 @@
               <div class="card-body">
                 <export-issues-report-view
                     :construction-site="constructionSite" :maps="maps"
-                    :query="craftsmanQuery" :query-result-size="groupCountSum"
+                    :query="issuesQuery" :query-result-size="groupCountSum"
                     :default-report-configuration="reportConfiguration" />
               </div>
             </div>

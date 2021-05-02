@@ -22,7 +22,7 @@
           </span>
         </td>
         <td class="text-right">
-          <date-human-readable v-if="mapContainer.issueCount > 0" :value="mapContainer.maxDeadline" />
+          <date-human-readable v-if="mapContainer.issueCount > 0" :value="mapContainer.earliestDeadline" />
           <template v-if="isOverdue(mapContainer)">
             <br/>
             <span class="badge badge-danger">
@@ -67,26 +67,14 @@ export default {
   },
   methods: {
     isOverdue: function (mapContainer) {
-      if (!mapContainer.maxDeadline) {
+      if (!mapContainer.earliestDeadline) {
         return false
       }
 
-      return Date.now() > new Date(mapContainer.maxDeadline)
+      return Date.now() > new Date(mapContainer.earliestDeadline)
     }
   },
   computed: {
-    maxDeadline: function () {
-      const orderedDeadlines = this.mapContainers
-          .map(mc => mc.maxDeadline)
-          .filter(deadline => deadline)
-          .sort()
-
-      if (!orderedDeadlines.length) {
-        return null
-      }
-
-      return orderedDeadlines[0]
-    },
     mapContainers: function () {
       let properties = mapTransformer.PROPERTY_HAS_CHILD_WITH_ISSUES | mapTransformer.PROPERTY_LEVEL
       return mapTransformer.orderedListWithIssuesGroups(this.maps, this.issuesGroupByMap, properties)

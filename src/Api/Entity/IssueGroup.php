@@ -26,15 +26,15 @@ class IssueGroup
     /**
      * @var \DateTime|null
      */
-    private $maxDeadline;
+    private $earliestDeadline;
 
-    public static function create(string $iri, int $count, ?\DateTime $maxDeadline)
+    public static function create(string $iri, int $count, ?\DateTime $earliestDeadline)
     {
         $self = new self();
 
         $self->entity = $iri;
         $self->count = $count;
-        $self->maxDeadline = $maxDeadline;
+        $self->earliestDeadline = $earliestDeadline;
 
         return $self;
     }
@@ -49,8 +49,8 @@ class IssueGroup
         return $this->count;
     }
 
-    public function getMaxDeadline(): ?\DateTime
+    public function getEarliestDeadline(): ?\DateTime
     {
-        return $this->maxDeadline;
+        return $this->earliestDeadline;
     }
 }

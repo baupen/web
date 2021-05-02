@@ -49,10 +49,10 @@
       <td>{{ cws.craftsman.trade }}</td>
       <td>{{ cws.craftsman.company }}</td>
       <td>
-        <toggle-can-edit :craftsman="cws.craftsman" />
+        <toggle-can-edit @click.prevent.stop="" :craftsman="cws.craftsman" />
       </td>
       <td>
-        <a :href="cws.craftsman.resolveUrl" target="_blank">
+        <a @click.stop=""  :href="cws.craftsman.resolveUrl" target="_blank">
           <font-awesome-icon :icon="['fal', 'user']" />
         </a>
       </td>
