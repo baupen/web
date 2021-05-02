@@ -1,5 +1,5 @@
 <template>
-  <div class="canvas-container border">
+  <div class="canvas-container border p-3">
     <canvas ref="chart" class="chart" width="480" height="300"></canvas>
   </div>
 </template>
@@ -9,6 +9,7 @@
 import Chart from 'chart.js'
 import ButtonWithModalConfirm from './Library/Behaviour/ButtonWithModalConfirm'
 import { api } from '../services/api'
+import moment from 'moment'
 
 Chart.platform.disableCSSInjection = true
 
@@ -33,7 +34,7 @@ export default {
       let closed = []
       let maxValue = 0
       timeseries.forEach(entry => {
-        labels.push(entry.date)
+        labels.push(moment(entry.date).format('DD.MM.'))
         open.push(entry.openCount)
         inspectable.push(entry.inspectableCount)
         closed.push(entry.closedCount)
@@ -79,11 +80,17 @@ export default {
             reverse: true,
             onClick: null
           },
+          elements: {
+            point: {
+              radius: 2
+            }
+          },
           scales: {
             xAxes: [{
               ticks: {
                 maxRotation: 0,
-                autoSkipPadding: 35
+                autoSkipPadding: 25,
+                padding: 2
               }
             }],
             yAxes: [{
@@ -92,7 +99,8 @@ export default {
               ticks: {
                 beginAtZero: false,
                 min: targetMin,
-                autoSkipPadding: 20
+                autoSkipPadding: 20,
+                padding: 4
               }
             }]
           }
