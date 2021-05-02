@@ -16,6 +16,7 @@ use App\Api\DataProvider\Base\NoPaginationDataProvider;
 use App\Api\Entity\IssueGroup;
 use App\Controller\Traits\FileResponseTrait;
 use App\Controller\Traits\ImageRequestTrait;
+use App\Doctrine\UTCDateTimeType;
 use App\Entity\Issue;
 use App\Entity\Map;
 use Doctrine\Persistence\ManagerRegistry;
@@ -94,7 +95,7 @@ class IssueGroupDataProvider extends NoPaginationDataProvider
             // indexes are 1-based
             $iri = $this->iriConverter->getItemIriFromResourceClass(Map::class, ['id' => $issueGroupResult[1]]);
             $count = $issueGroupResult[2];
-            $earliestDeadline = $issueGroupResult[3] ? new \DateTime($issueGroupResult[3]) : null;
+            $earliestDeadline = UTCDateTimeType::tryParseDateTime($issueGroupResult[3]);
             $issueGroups[] = IssueGroup::create($iri, $count, $earliestDeadline);
         }
 
