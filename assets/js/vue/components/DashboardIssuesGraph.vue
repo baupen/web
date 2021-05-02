@@ -42,6 +42,13 @@ export default {
         maxValue = Math.max(entry.openCount + entry.inspectableCount + entry.closedCount, maxValue)
       })
 
+      // if 5 issues are resolved on 01.01., then 5 is shown at 02.01., because "until then" the change happened
+      // from a database point of view, this makes sense. for the user, we should adjust the labels
+      const preview = moment(timeseries[0].date).subtract(1, 'day')
+      labels.unshift(preview.format('DD.MM.'))
+      labels.pop()
+
+      // set max/min of graph so relevant part is visible
       const minValue = Math.min(...closed)
       const belowMinSpacer = Math.max((maxValue - minValue) * 0.3, 10) // reduce min so graph does not look empty
       const exactTargetMin = Math.max(minValue - belowMinSpacer, 0) // calculate optimal min
