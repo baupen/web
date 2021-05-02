@@ -83,7 +83,8 @@ export default {
         map: iriToId(this.map['@id']),
         craftsman: iriToId(this.craftsman['@id']),
         isDeleted: false,
-        state: 2
+        state: 2,
+        'order[deadline]': 'asc'
       }
     },
   },

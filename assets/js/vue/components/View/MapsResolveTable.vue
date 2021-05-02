@@ -75,18 +75,6 @@ export default {
     }
   },
   computed: {
-    maxDeadline: function () {
-      const orderedDeadlines = this.mapContainers
-          .map(mc => mc.maxDeadline)
-          .filter(deadline => deadline)
-          .sort()
-
-      if (!orderedDeadlines.length) {
-        return null
-      }
-
-      return orderedDeadlines[0]
-    },
     mapContainers: function () {
       let properties = mapTransformer.PROPERTY_HAS_CHILD_WITH_ISSUES | mapTransformer.PROPERTY_LEVEL
       return mapTransformer.orderedListWithIssuesGroups(this.maps, this.issuesGroupByMap, properties)
