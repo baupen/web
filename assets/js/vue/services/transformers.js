@@ -274,7 +274,7 @@ const mapTransformer = {
     treeTransformer._traverseDepthFirst(tree, node => {
       const mapGroup = mapGroupLookup[node.entity['@id']]
       node.issueCount = mapGroup ? mapGroup.count : 0
-      node.maxDeadline = mapGroup && mapGroup.maxDeadline ? mapGroup.maxDeadline : null
+      node.earliestDeadline = mapGroup && mapGroup.earliestDeadline ? mapGroup.earliestDeadline : null
     })
   },
   orderedList: function (maps, properties = 0) {

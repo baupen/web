@@ -22,7 +22,7 @@
           </span>
         </td>
         <td class="text-right">
-          <date-human-readable v-if="mapContainer.issueCount > 0" :value="mapContainer.maxDeadline" />
+          <date-human-readable v-if="mapContainer.issueCount > 0" :value="mapContainer.earliestDeadline" />
           <template v-if="isOverdue(mapContainer)">
             <br/>
             <span class="badge badge-danger">
@@ -67,11 +67,11 @@ export default {
   },
   methods: {
     isOverdue: function (mapContainer) {
-      if (!mapContainer.maxDeadline) {
+      if (!mapContainer.earliestDeadline) {
         return false
       }
 
-      return Date.now() > new Date(mapContainer.maxDeadline)
+      return Date.now() > new Date(mapContainer.earliestDeadline)
     }
   },
   computed: {

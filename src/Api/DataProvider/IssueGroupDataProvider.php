@@ -83,7 +83,7 @@ class IssueGroupDataProvider extends NoPaginationDataProvider
         $issueRepository = $this->manager->getRepository(Issue::class);
         $groupByQuery = $issueRepository
             ->createQueryBuilder('i')
-            ->addSelect(['IDENTITY(i.map)', 'COUNT(i)', 'MAX(i.deadline)'])
+            ->addSelect(['IDENTITY(i.map)', 'COUNT(i)', 'MIN(i.deadline)'])
             ->where('i.id IN (:ids)')
             ->setParameter(':ids', $validIssueIds)
             ->groupBy('i.map');
@@ -94,8 +94,8 @@ class IssueGroupDataProvider extends NoPaginationDataProvider
             // indexes are 1-based
             $iri = $this->iriConverter->getItemIriFromResourceClass(Map::class, ['id' => $issueGroupResult[1]]);
             $count = $issueGroupResult[2];
-            $maxDeadline = $issueGroupResult[3] ? new \DateTime($issueGroupResult[3]) : null;
-            $issueGroups[] = IssueGroup::create($iri, $count, $maxDeadline);
+            $earliestDeadline = $issueGroupResult[3] ? new \DateTime($issueGroupResult[3]) : null;
+            $issueGroups[] = IssueGroup::create($iri, $count, $earliestDeadline);
         }
 
         $json = $this->serializer->serialize($issueGroups, 'json');
