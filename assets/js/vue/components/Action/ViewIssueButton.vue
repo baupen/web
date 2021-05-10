@@ -60,8 +60,8 @@
         {{ $t('craftsman._name') }}
       </div>
       <div class="col">
-        {{ craftsman.trade }}<br />
-        <span class="text-muted">{{ craftsman.company }}</span>
+        {{ craftsman.company }}<br />
+        <span class="text-muted">{{ craftsman.trade }}</span>
       </div>
     </div>
     <div class="row mt-3" v-if="issue.deadline">

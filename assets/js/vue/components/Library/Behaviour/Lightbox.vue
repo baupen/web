@@ -8,6 +8,11 @@
     <!-- lightbox container hidden with CSS -->
     <div class="lightbox clickable" v-if="open" @click="open = false">
       <span class="sizer"></span>
+      <div class="close-wrapper">
+        <button type="button" class="close" aria-label="Close" data-v-9e369d42="">
+          <span aria-hidden="true" data-v-9e369d42="">×</span>
+        </button>
+      </div>
       <img :src="srcFull" :alt="alt">
     </div>
   </div>
@@ -15,7 +20,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       open: false
     }

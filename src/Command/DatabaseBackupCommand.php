@@ -25,11 +25,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class DatabaseBackupCommand extends DatabaseCommand
 {
     /**
-     * @var ManagerRegistry
-     */
-    private $registry;
-
-    /**
      * @var PathServiceInterface
      */
     private $pathService;
@@ -41,7 +36,6 @@ class DatabaseBackupCommand extends DatabaseCommand
     {
         parent::__construct($registry);
 
-        $this->registry = $registry;
         $this->pathService = $pathService;
     }
 
