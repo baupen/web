@@ -33,6 +33,18 @@
   vertical-align: middle;
 }
 
+.lightbox .close-wrapper {
+  background: #fff;
+  border-color: #000;
+  border-style: solid;
+  border-width: 0 0 1px 1px;
+  opacity: 0.8;
+  padding: 1rem;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
 .lightbox img {
   margin: 0 auto;
   max-height: 100%;
