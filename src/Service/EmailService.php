@@ -76,12 +76,12 @@ class EmailService implements EmailServiceInterface
     /**
      * @var string
      */
-    private $supportEmail;
+    private $baseUri;
 
     /**
      * EmailService constructor.
      */
-    public function __construct(TranslatorInterface $translator, LoggerInterface $logger, RequestStack $request, UrlGeneratorInterface $urlGenerator, ManagerRegistry $registry, MailerInterface $mailer, SerializerInterface $serializer, string $mailerFromEmail, string $supportEmail, EmailBodyGenerator $emailBodyGenerator)
+    public function __construct(TranslatorInterface $translator, LoggerInterface $logger, RequestStack $request, UrlGeneratorInterface $urlGenerator, ManagerRegistry $registry, MailerInterface $mailer, SerializerInterface $serializer, string $mailerFromEmail, string $baseUri, EmailBodyGenerator $emailBodyGenerator)
     {
         $this->translator = $translator;
         $this->logger = $logger;
@@ -91,8 +91,8 @@ class EmailService implements EmailServiceInterface
         $this->mailer = $mailer;
         $this->serializer = $serializer;
         $this->mailerFromEmail = $mailerFromEmail;
-        $this->supportEmail = $supportEmail;
         $this->emailBodyGenerator = $emailBodyGenerator;
+        $this->baseUri = $baseUri;
     }
 
     public function sendRegisterConfirmLink(ConstructionManager $constructionManager): bool
@@ -211,7 +211,11 @@ class EmailService implements EmailServiceInterface
 
     private function getCurrentPage()
     {
-        return $this->request->getCurrentRequest() ? $this->request->getCurrentRequest()->getHttpHost() : 'localhost';
+        if ($this->request->getCurrentRequest()) {
+            return $this->request->getCurrentRequest()->getHttpHost();
+        }
+
+        return preg_replace('(^https?://)', '', $this->baseUri);
     }
 
     private function sendAndStoreEMail(TemplatedEmail $email, Email $entity): bool
