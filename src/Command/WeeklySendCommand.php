@@ -18,9 +18,9 @@ use App\Service\Report\Email\ConstructionSiteReport;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Routing\RouterInterface;
 
 class WeeklySendCommand extends Command
 {
@@ -39,19 +39,16 @@ class WeeklySendCommand extends Command
      */
     private $reportService;
 
-    private RouterInterface $router;
-
     /**
      * ImportLdapUsersCommand constructor.
      */
-    public function __construct(ManagerRegistry $registry, EmailServiceInterface $emailService, ReportServiceInterface $reportService, RouterInterface $router)
+    public function __construct(ManagerRegistry $registry, EmailServiceInterface $emailService, ReportServiceInterface $reportService)
     {
         parent::__construct();
 
         $this->registry = $registry;
         $this->emailService = $emailService;
         $this->reportService = $reportService;
-        $this->router = $router;
     }
 
     /**
@@ -61,7 +58,8 @@ class WeeklySendCommand extends Command
     {
         $this
             ->setName('app:weekly:send')
-            ->setDescription('Sends the weekly construction sites overview email.');
+            ->setDescription('Sends the weekly construction sites overview email.')
+            ->addOption('only', 'o', InputOption::VALUE_OPTIONAL, 'Only send to specific E-Mail');
     }
 
     /**
@@ -72,7 +70,11 @@ class WeeklySendCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $constructionManagerRepository = $this->registry->getRepository(ConstructionManager::class);
-        $constructionManagers = $constructionManagerRepository->findBy(['isEnabled' => true, 'receiveWeekly' => true]);
+        if ($input->getOption('only')) {
+            $constructionManagers = $constructionManagerRepository->findBy(['email' => $input->getOption('only')]);
+        } else {
+            $constructionManagers = $constructionManagerRepository->findBy(['isEnabled' => true, 'receiveWeekly' => true]);
+        }
 
         $relevantConstructionSites = [];
         foreach ($constructionManagers as $constructionManager) {
