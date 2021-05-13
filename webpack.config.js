@@ -82,7 +82,7 @@ Encore
     options.https = {
       pfx: path.join(process.env.HOME, '.symfony/certs/default.p12'),
     }
-    options.dev = {
+    options.devMiddleware = {
       writeToDisk: true
     }
   })
