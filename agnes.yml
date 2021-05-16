@@ -4,7 +4,7 @@ agnes:
 config:
   path: .config
   repository:
-    url: git@gitlab.com:MaengelApp/agnes-config/web.git
+    url: git@gitlab.com:baupen/agnes-config/web.git
 
 build:
   path: .build
