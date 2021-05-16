@@ -10,7 +10,7 @@
  */
 
 /*
- * This file is part of the mangel.io project.
+ * This file is part of the baupen project.
  *
  * (c) Florian Moser <git@famoser.ch>
  *

@@ -30,7 +30,7 @@ class SecurityControllerTest extends WebTestCase
         $client = $this->createClient();
         $this->loadFixtures();
 
-        $email = 'f@mangel.io';
+        $email = 'f@baupen.ch';
         $password = 'asdf1234';
 
         $this->assertNotAuthenticated($client);

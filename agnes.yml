@@ -11,7 +11,7 @@ build:
 
 github:
   api_token: '%env(GITHUB_API_TOKEN)%'
-  repository: mangelio/web
+  repository: baupen/web
 
 data:
   shared_folders:

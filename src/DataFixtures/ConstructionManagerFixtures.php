@@ -23,9 +23,9 @@ class ConstructionManagerFixtures extends Fixture implements OrderedFixtureInter
     public function load(ObjectManager $manager)
     {
         $entries = [
-            ['j@mangel.io', 'asdf', 'Julian', 'Dunskus'],
-            ['a@mangel.io', 'asdf', 'Adrian', 'Hoffmann'],
-            ['f@mangel.io', 'asdf', 'Florian', 'Moser'],
+            ['j@baupen.ch', 'asdf', 'Julian', 'Dunskus'],
+            ['a@baupen.ch', 'asdf', 'Adrian', 'Hoffmann'],
+            ['f@baupen.ch', 'asdf', 'Florian', 'Moser'],
         ];
 
         foreach ($entries as $entry) {

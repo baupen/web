@@ -40,7 +40,7 @@ For details investigate in `./src/Controller/ApiController.php` the method `stat
 you only need to backup the files in the `/var/persistent` folder.
 Using rsync, do something like this: 
 ```
-rsync -azP ~/www/app.mangel.io/production/shared/var/persistent/ user@IP:~/backup/
+rsync -azP ~/www/app.baupen.ch/production/shared/var/persistent/ user@IP:~/backup/
 ```
 
 ## User default values
@@ -51,9 +51,9 @@ hence the file should look something like this:
 ```json
 [
     {
-      "email": "git@mangel.io",
+      "email": "git@baupen.ch",
       "givenName": "git",
-      "familyName": "mangel.io",
+      "familyName": "baupen.ch",
       "phone": "0991234567"
     }
 ]
@@ -63,7 +63,7 @@ hence the file should look something like this:
 
 you may impersonate another user if you an admin (must be set directly in the database) with 
 ```
-http://example.com/somewhere?_switch_user=git@mangel.io
+http://example.com/somewhere?_switch_user=git@baupen.ch
 ```
 
 finish impersonation with
