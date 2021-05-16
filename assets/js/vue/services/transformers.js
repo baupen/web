@@ -45,7 +45,7 @@ const craftsmanTransformer = {
   tableHeader: ['trade', 'company', 'contact_name', 'email', 'emailCCs'],
   defaultContent: [
     ['Support & Requirements', 'baupen.ch', 'Adrian Hoffman', 'adrian.hoffman@baupen.ch', 'info@baupen.ch, support@baupen.ch'],
-    ['Web', 'baupen.ch', 'Florian Moser', 'florian.moser@mangel.io'],
+    ['Web', 'baupen.ch', 'Florian Moser', 'florian.moser@baupen.ch'],
     ['iOS', 'baupen.ch', 'Julian Dunskus', 'julian.dunskus@baupen.ch']
   ],
   _xlsxHeader: function (translator) {
