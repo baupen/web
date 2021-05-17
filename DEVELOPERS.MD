@@ -32,13 +32,13 @@ Apps expect a `422` return code if their API requests are wrong (e.g. API has mo
 ## Developing
 
 setup:
-- `composer install` to install backend dependencies  
+- `composer install` to install backend dependencies. Note: The post-install scripts will fail, if the frontend server has never started yet. This is fine, and will not impact functionality.
 - `yarn install` to install frontend dependencies  
 
 developing:
 - `symfony start` to start the symfony server  
 - `yarn run dev-server` to start the frontend server
-- visit `localhost:8000` and login with `f@mangel.io`, `asdf`  
+- visit `localhost:8000` and login with `f@baupen.ch`, `asdf`  
 - test error templates inside TwigBundle/views by accessing `/_error/404` and `/_error/500`
 
 clean up:
@@ -65,7 +65,7 @@ For this, you need to setup its registry. You can do so by executing
 You can find the auth token on the [fontawesome account page](https://fontawesome.com/account)
 
 You need to add this auth token to all CI services too.  
-[**scrutinizer**](https://scrutinizer-ci.com/g/mangelio/app/settings/build-config)
+[**scrutinizer**](https://scrutinizer-ci.com/g/baupen/web/settings/build-config)
 ```yaml
 build:
     dependencies:
@@ -73,7 +73,7 @@ build:
             - npm config set "@fortawesome:registry" https://npm.fontawesome.com/
             - npm config set "//npm.fontawesome.com/:_authToken" FONTAWESOME_AUTH_TOKEN
 ```
-[**travis**](https://travis-ci.org/mangelio/app/settings)  
+[**travis**](https://travis-ci.com/baupen/web/settings)  
 add an environment variable called `FONTAWESOME_AUTH_TOKEN`
 
 ### Lokalise

@@ -1,6 +1,6 @@
 {
   "type": "project",
-  "name": "mangelio/web",
+  "name": "baupen/web",
   "description": "improve issue management on construction sites ",
   "license": "MIT",
   "require": {

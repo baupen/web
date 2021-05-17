@@ -44,9 +44,9 @@ const excelTransformer = {
 const craftsmanTransformer = {
   tableHeader: ['trade', 'company', 'contact_name', 'email', 'emailCCs'],
   defaultContent: [
-    ['Support & Requirements', 'mangel.io', 'Adrian Hoffman', 'a@mangel.io', 'info@mangel.io, support@mangel.io'],
-    ['Web', 'mangel.io', 'Florian Moser', 'f@mangel.io'],
-    ['iOS', 'mangel.io', 'Julian Dunskus', 'j@mangel.io']
+    ['Support & Requirements', 'baupen.ch', 'Adrian Hoffman', 'adrian.hoffman@baupen.ch', 'info@baupen.ch, support@baupen.ch'],
+    ['Web', 'baupen.ch', 'Florian Moser', 'florian.moser@baupen.ch'],
+    ['iOS', 'baupen.ch', 'Julian Dunskus', 'julian.dunskus@baupen.ch']
   ],
   _xlsxHeader: function (translator) {
     const translatedHeader = this.tableHeader.map(h => translator('craftsman.' + h))

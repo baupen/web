@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the mangel.io project.
+ * This file is part of the baupen project.
  *
  * (c) Florian Moser <git@famoser.ch>
  *
@@ -30,7 +30,7 @@ class SecurityControllerTest extends WebTestCase
         $client = $this->createClient();
         $this->loadFixtures();
 
-        $email = 'f@mangel.io';
+        $email = 'f@baupen.ch';
         $password = 'asdf1234';
 
         $this->assertNotAuthenticated($client);
