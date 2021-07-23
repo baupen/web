@@ -18,6 +18,7 @@ use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
@@ -29,12 +30,14 @@ class MyTwigExtension extends AbstractExtension
     private $translator;
     private $requestStack;
     private $httpKernel;
+    private $storage;
 
-    public function __construct(TranslatorInterface $translator, RequestStack $requestStack, HttpKernelInterface $httpKernel)
+    public function __construct(TranslatorInterface $translator, RequestStack $requestStack, HttpKernelInterface $httpKernel, TokenStorageInterface $storage)
     {
         $this->translator = $translator;
         $this->requestStack = $requestStack;
         $this->httpKernel = $httpKernel;
+        $this->storage = $storage;
     }
 
     /**
@@ -69,9 +72,7 @@ class MyTwigExtension extends AbstractExtension
 
     public function apiSubRequestFunction(string $url)
     {
-        $currentRequest = $this->requestStack->getCurrentRequest();
-
-        $request = Request::create($url, 'GET', [], $currentRequest->cookies->all(), [], array_merge($currentRequest->server->all()));
+        $request = Request::create($url, 'GET', [], [], [], ['HTTP_ACCEPT' => null]);
         $response = $this->httpKernel->handle(
             $request,
             HttpKernelInterface::SUB_REQUEST
