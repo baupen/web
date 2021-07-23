@@ -19,7 +19,6 @@ use App\Service\Interfaces\FilterServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\Pdf\ReportElements;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -46,9 +45,9 @@ class IssueReportDataProvider extends NoPaginationDataProvider
     private $tokenStorage;
 
     /**
-     * @var Request
+     * @var RequestStack
      */
-    private $request;
+    private $requestStack;
 
     /**
      * @var RouterInterface
@@ -72,7 +71,7 @@ class IssueReportDataProvider extends NoPaginationDataProvider
         $this->managerRegistry = $managerRegistry;
         $this->reportService = $reportService;
         $this->tokenStorage = $tokenStorage;
-        $this->request = $requestStack->getCurrentRequest();
+        $this->requestStack = $requestStack;
         $this->router = $router;
         $this->filterService = $filterService;
     }
@@ -97,8 +96,9 @@ class IssueReportDataProvider extends NoPaginationDataProvider
         /** @var Issue[] $issues */
         $issues = $queryBuilder->getQuery()->getResult();
 
+        $currentRequest = $this->requestStack->getCurrentRequest();
         /** @var array|null $reportConfig */
-        $reportConfig = $this->request->query->get('report');
+        $reportConfig = $currentRequest->query->get('report');
         $reportElements = ReportElements::fromRequest($reportConfig);
 
         $author = $this->getAuthor($this->tokenStorage->getToken());

@@ -13,7 +13,6 @@ namespace App\Controller\Base;
 
 use App\Entity\ConstructionManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class BaseController extends AbstractController
 {
@@ -23,11 +22,6 @@ class BaseController extends AbstractController
     protected function getUser()
     {
         return parent::getUser();
-    }
-
-    public static function getSubscribedServices()
-    {
-        return parent::getSubscribedServices() + ['session' => '?'.SessionInterface::class];
     }
 
     /**
@@ -85,6 +79,6 @@ class BaseController extends AbstractController
         if (null !== $link) {
             $message = '<a href="'.$link.'">'.$message.'</a>';
         }
-        $this->get('session')->getFlashBag()->set($type, $message);
+        $this->addFlash($type, $message);
     }
 }

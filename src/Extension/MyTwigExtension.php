@@ -27,13 +27,13 @@ use Twig\TwigFunction;
 class MyTwigExtension extends AbstractExtension
 {
     private $translator;
-    private $request;
+    private $requestStack;
     private $httpKernel;
 
     public function __construct(TranslatorInterface $translator, RequestStack $requestStack, HttpKernelInterface $httpKernel)
     {
         $this->translator = $translator;
-        $this->request = $requestStack->getCurrentRequest();
+        $this->requestStack = $requestStack;
         $this->httpKernel = $httpKernel;
     }
 
@@ -69,7 +69,9 @@ class MyTwigExtension extends AbstractExtension
 
     public function apiSubRequestFunction(string $url)
     {
-        $request = Request::create($url, 'GET', [], [], [], ['HTTP_ACCEPT' => null]);
+        $currentRequest = $this->requestStack->getCurrentRequest();
+
+        $request = Request::create($url, 'GET', [], $currentRequest->cookies->all(), [], array_merge($currentRequest->server->all()));
         $response = $this->httpKernel->handle(
             $request,
             HttpKernelInterface::SUB_REQUEST
@@ -80,8 +82,10 @@ class MyTwigExtension extends AbstractExtension
 
     public function iOSLoginLinkFilter(ConstructionManager $constructionManager): string
     {
+        $currentRequest = $this->requestStack->getCurrentRequest();
+
         // same payload also in app.js
-        $payload = ['token' => $constructionManager->getAuthenticationToken(), 'origin' => $this->request->getSchemeAndHttpHost()];
+        $payload = ['token' => $constructionManager->getAuthenticationToken(), 'origin' => $currentRequest->getSchemeAndHttpHost()];
         $data = json_encode($payload);
 
         return 'mangelio://login?payload='.base64_encode($data);
