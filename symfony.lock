@@ -509,6 +509,9 @@
     "symfony/orm-pack": {
         "version": "v2.0.0"
     },
+    "symfony/password-hasher": {
+        "version": "v5.3.7"
+    },
     "symfony/phpunit-bridge": {
         "version": "4.3",
         "recipe": {
