@@ -46,7 +46,12 @@ class UserService implements UserServiceInterface
     /**
      * @var string[]|null
      */
-    private $emailLookupCache;
+    private $emailWhitelistCache;
+
+    /**
+     * @var string[]|null
+     */
+    private $domainWhitelistCache;
 
     /**
      * @var string
@@ -164,23 +169,46 @@ class UserService implements UserServiceInterface
 
     private function isEmailOnWhitelist(string $email)
     {
-        if (null == $this->emailLookupCache) {
-            $this->emailLookupCache = [];
+        if (null == $this->emailWhitelistCache) {
+            $this->emailWhitelistCache = [];
+            $this->domainWhitelistCache = [];
 
             $whitelistRoot = $this->pathService->getTransientFolderForAuthorization().\DIRECTORY_SEPARATOR.'whitelists';
+            $domainWhitelistPath = $whitelistRoot.\DIRECTORY_SEPARATOR.'domains.txt';
             foreach (glob($whitelistRoot.\DIRECTORY_SEPARATOR.'*.txt') as $whitelistFile) {
                 $whitelist = file_get_contents($whitelistFile);
                 $lines = explode("\n", $whitelist);
                 foreach ($lines as $line) {
                     $cleanedLine = trim($line);
-                    if ('' !== $cleanedLine) {
-                        $this->emailLookupCache[$cleanedLine] = true;
+                    if (0 === strlen($cleanedLine)) {
+                        continue;
+                    }
+
+                    if ($whitelistFile === $domainWhitelistPath) {
+                        $this->domainWhitelistCache[] = $cleanedLine;
+                    } else {
+                        $this->emailWhitelistCache[] = $cleanedLine;
                     }
                 }
             }
         }
 
-        return \array_key_exists($email, $this->emailLookupCache);
+        if (in_array($email, $this->emailWhitelistCache)) {
+            return true;
+        }
+
+        if (0 === count($this->domainWhitelistCache)) {
+            return false;
+        }
+
+        $domainPart = substr($email, strrpos($email, '@') + 1);
+        foreach ($this->domainWhitelistCache as $domain) {
+            if ($domainPart === $domain) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

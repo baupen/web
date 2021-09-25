@@ -140,7 +140,7 @@
             "ref": "cc05ab6abf6894bddb9bbd6a252459010ebe040b"
         },
         "files": [
-            ".php_cs.dist"
+            ".php-cs-fixer.dist.php"
         ]
     },
     "friendsofphp/proxy-manager-lts": {
@@ -505,6 +505,9 @@
     },
     "symfony/orm-pack": {
         "version": "v2.0.0"
+    },
+    "symfony/password-hasher": {
+        "version": "v5.3.7"
     },
     "symfony/phpunit-bridge": {
         "version": "4.3",
