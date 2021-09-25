@@ -140,7 +140,7 @@
             "ref": "cc05ab6abf6894bddb9bbd6a252459010ebe040b"
         },
         "files": [
-            ".php_cs.dist"
+            ".php-cs-fixer.dist.php"
         ]
     },
     "friendsofphp/proxy-manager-lts": {

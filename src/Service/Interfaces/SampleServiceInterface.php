@@ -16,12 +16,12 @@ use App\Entity\ConstructionSite;
 
 interface SampleServiceInterface
 {
-    const SAMPLE_SIMPLE = 'Simple';
-    const SAMPLE_SUN_PARK = 'Sun_Park';
-    const SAMPLE_TIERHOTEL = 'Tierhotel';
-    const TEST = 'Test';
+    public const SAMPLE_SIMPLE = 'Simple';
+    public const SAMPLE_SUN_PARK = 'Sun_Park';
+    public const SAMPLE_TIERHOTEL = 'Tierhotel';
+    public const TEST = 'Test';
 
-    const ALL_SAMPLES = [self::SAMPLE_SIMPLE, self::SAMPLE_SUN_PARK, self::SAMPLE_TIERHOTEL];
+    public const ALL_SAMPLES = [self::SAMPLE_SIMPLE, self::SAMPLE_SUN_PARK, self::SAMPLE_TIERHOTEL];
 
     public function createSampleConstructionSite(string $sampleName, ConstructionManager $constructionManager): ConstructionSite;
 }

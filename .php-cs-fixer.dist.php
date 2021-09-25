@@ -14,11 +14,10 @@ $finder = PhpCsFixer\Finder::create()
     ->in('tests')
 ;
 
-return PhpCsFixer\Config::create()
-    ->setRules([
+$config = new PhpCsFixer\Config();
+return $config->setRules([
         '@Symfony' => true,
         'array_syntax' => ['syntax' => 'short'],
         'header_comment' => ['header' => $fileHeaderComment, 'separate' => 'both'],
     ])
-    ->setFinder($finder)
-;
+    ->setFinder($finder);
