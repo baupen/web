@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 // Colors
 $brand-primary: $primary;
 $gray: $gray-800;
@@ -41,9 +43,9 @@ $toggle-default-size: 1.5rem;
     background: #fff;
     border-radius: $size * 0.75;
     height: $size * 0.75;
-    left: ($size * 0.25) / 2;
+    left: math.div($size * 0.25, 2);
     position: absolute;
-    top: ($size * 0.25) / 2;
+    top: math.div($size * 0.25, 2);
     transition: left 0.25s;
     width: $size * 0.75;
   }
@@ -52,7 +54,7 @@ $toggle-default-size: 1.5rem;
     transition: background-color 0.25s;
 
     > .handle {
-      left: $size + (($size * 0.25) / 2);
+      left: $size + (math.div($size * 0.25, 2));
       transition: left 0.25s;
     }
 

@@ -44,7 +44,7 @@ class EmailService implements EmailServiceInterface
     /**
      * @var RequestStack
      */
-    private $request;
+    private $requestStack;
 
     /**
      * @var UrlGeneratorInterface
@@ -85,7 +85,7 @@ class EmailService implements EmailServiceInterface
     {
         $this->translator = $translator;
         $this->logger = $logger;
-        $this->request = $request;
+        $this->requestStack = $request;
         $this->urlGenerator = $urlGenerator;
         $this->manager = $registry->getManager();
         $this->mailer = $mailer;
@@ -211,8 +211,9 @@ class EmailService implements EmailServiceInterface
 
     private function getCurrentPage()
     {
-        if ($this->request->getCurrentRequest()) {
-            return $this->request->getCurrentRequest()->getHttpHost();
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        if ($currentRequest) {
+            return $currentRequest->getHttpHost();
         }
 
         return preg_replace('(^https?://)', '', $this->baseUri);
