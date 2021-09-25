@@ -18,6 +18,7 @@ use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
@@ -27,14 +28,16 @@ use Twig\TwigFunction;
 class MyTwigExtension extends AbstractExtension
 {
     private $translator;
-    private $request;
+    private $requestStack;
     private $httpKernel;
+    private $storage;
 
-    public function __construct(TranslatorInterface $translator, RequestStack $requestStack, HttpKernelInterface $httpKernel)
+    public function __construct(TranslatorInterface $translator, RequestStack $requestStack, HttpKernelInterface $httpKernel, TokenStorageInterface $storage)
     {
         $this->translator = $translator;
-        $this->request = $requestStack->getCurrentRequest();
+        $this->requestStack = $requestStack;
         $this->httpKernel = $httpKernel;
+        $this->storage = $storage;
     }
 
     /**
@@ -80,8 +83,10 @@ class MyTwigExtension extends AbstractExtension
 
     public function iOSLoginLinkFilter(ConstructionManager $constructionManager): string
     {
+        $currentRequest = $this->requestStack->getCurrentRequest();
+
         // same payload also in app.js
-        $payload = ['token' => $constructionManager->getAuthenticationToken(), 'origin' => $this->request->getSchemeAndHttpHost()];
+        $payload = ['token' => $constructionManager->getAuthenticationToken(), 'origin' => $currentRequest->getSchemeAndHttpHost()];
         $data = json_encode($payload);
 
         return 'mangelio://login?payload='.base64_encode($data);

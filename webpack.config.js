@@ -68,6 +68,7 @@ Encore
   // enables Sass/SCSS support
   .enableSassLoader(options => {
     options.implementation = require('sass')
+    options.sassOptions.quietDeps = true
   })
   .enableVueLoader(() => {}, { runtimeCompilerBuild: false })
   // .enableVueLoader()
@@ -78,7 +79,11 @@ Encore
   .enableIntegrityHashes(Encore.isProduction())
 
   .configureDevServerOptions(options => {
-    options.firewall = false
+    // hotfix for webpack-dev-server 4.0.0rc0
+    // @see: https://github.com/symfony/webpack-encore/issues/951#issuecomment-840719271
+    delete options.client
+
+    // options.firewall = false
     options.https = {
       pfx: path.join(process.env.HOME, '.symfony/certs/default.p12'),
     }
@@ -93,5 +98,5 @@ Encore
     options.__INTLIFY_PROD_DEVTOOLS__ = false
   })
 
-let webpackConfig = Encore.getWebpackConfig()
+const webpackConfig = Encore.getWebpackConfig()
 module.exports = webpackConfig

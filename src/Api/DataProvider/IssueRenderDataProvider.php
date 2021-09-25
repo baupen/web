@@ -20,7 +20,6 @@ use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -30,9 +29,9 @@ class IssueRenderDataProvider extends NoPaginationDataProvider
     use ImageRequestTrait;
 
     /**
-     * @var Request
+     * @var RequestStack
      */
-    private $request;
+    private $requestStack;
 
     /**
      * @var ManagerRegistry
@@ -52,7 +51,7 @@ class IssueRenderDataProvider extends NoPaginationDataProvider
     public function __construct(ManagerRegistry $managerRegistry, RequestStack $requestStack, ImageServiceInterface $imageService, PathServiceInterface $pathService, iterable $collectionExtensions = [])
     {
         parent::__construct($managerRegistry, $collectionExtensions);
-        $this->request = $requestStack->getCurrentRequest();
+        $this->requestStack = $requestStack;
         $this->manager = $managerRegistry;
         $this->imageService = $imageService;
         $this->pathService = $pathService;
@@ -70,7 +69,8 @@ class IssueRenderDataProvider extends NoPaginationDataProvider
             throw new BadRequestException();
         }
 
-        $size = $this->getValidImageSizeFromQuery($this->request->query);
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        $size = $this->getValidImageSizeFromQuery($currentRequest->query);
 
         $map = $this->manager->getRepository(Map::class)->find($existingFilter['map']);
         if (null === $map || $map->getConstructionSite()->getId() !== $existingFilter['constructionSite'] || !$map->getFile()) {
@@ -82,7 +82,7 @@ class IssueRenderDataProvider extends NoPaginationDataProvider
 
         $path = $this->imageService->renderMapFileWithIssuesToJpg($map->getFile(), $issues, $size);
 
-        $emptyAnswer = $this->request->headers->has('X-EMPTY-RESPONSE-EXPECTED');
+        $emptyAnswer = $currentRequest->headers->has('X-EMPTY-RESPONSE-EXPECTED');
         if ($emptyAnswer) {
             return new Response();
         }

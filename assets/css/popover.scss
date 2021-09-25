@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 .popover-filter-sm .popover-body {
   max-height: 22em;
   min-width: 14em;
@@ -26,13 +28,13 @@
 
     &::before {
       border-top-color: $popover-arrow-outer-color;
-      border-width: $popover-arrow-height ($popover-arrow-width / 2) 0;
+      border-width: $popover-arrow-height math.div($popover-arrow-width, 2) 0;
       bottom: 0;
     }
 
     &::after {
       border-top-color: $popover-arrow-color;
-      border-width: $popover-arrow-height ($popover-arrow-width / 2) 0;
+      border-width: $popover-arrow-height math.div($popover-arrow-width, 2) 0;
       bottom: $popover-border-width;
     }
   }
@@ -49,13 +51,13 @@
 
     &::before {
       border-right-color: $popover-arrow-outer-color;
-      border-width: ($popover-arrow-width / 2) $popover-arrow-height ($popover-arrow-width / 2) 0;
+      border-width: math.div($popover-arrow-width, 2) $popover-arrow-height math.div($popover-arrow-width, 2) 0;
       left: 0;
     }
 
     &::after {
       border-right-color: $popover-arrow-color;
-      border-width: ($popover-arrow-width / 2) $popover-arrow-height ($popover-arrow-width / 2) 0;
+      border-width: math.div($popover-arrow-width, 2) $popover-arrow-height math.div($popover-arrow-width, 2) 0;
       left: $popover-border-width;
     }
   }
@@ -69,13 +71,13 @@
 
     &::before {
       border-bottom-color: $popover-arrow-outer-color;
-      border-width: 0 ($popover-arrow-width / 2) $popover-arrow-height ($popover-arrow-width / 2);
+      border-width: math.div($popover-arrow-width, 2) $popover-arrow-height math.div($popover-arrow-width, 2) 0;
       top: 0;
     }
 
     &::after {
       border-bottom-color: $popover-arrow-color;
-      border-width: 0 ($popover-arrow-width / 2) $popover-arrow-height ($popover-arrow-width / 2);
+      border-width: math.div($popover-arrow-width, 2) $popover-arrow-height math.div($popover-arrow-width, 2) 0;
       top: $popover-border-width;
     }
   }
@@ -86,7 +88,7 @@
     content: '';
     display: block;
     left: 50%;
-    margin-left: -$popover-arrow-width / 2;
+    margin-left: - math.div($popover-arrow-width, 2);
     position: absolute;
     top: 0;
     width: $popover-arrow-width;
@@ -104,13 +106,13 @@
 
     &::before {
       border-left-color: $popover-arrow-outer-color;
-      border-width: ($popover-arrow-width / 2) 0 ($popover-arrow-width / 2) $popover-arrow-height;
+      border-width: math.div($popover-arrow-width, 2) 0 math.div($popover-arrow-width, 2) $popover-arrow-height;
       right: 0;
     }
 
     &::after {
       border-left-color: $popover-arrow-color;
-      border-width: ($popover-arrow-width / 2) 0 ($popover-arrow-width / 2) $popover-arrow-height;
+      border-width: math.div($popover-arrow-width, 2) 0 math.div($popover-arrow-width, 2) $popover-arrow-height;
       right: $popover-border-width;
     }
   }

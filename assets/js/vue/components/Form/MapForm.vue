@@ -18,7 +18,7 @@
       <option :value="null">{{ $t('map.parent_not_set_name') }}</option>
       <option disabled></option>
       <option v-for="mapContainer in mapContainers" :value="mapContainer.entity['@id']"
-              :key="mapContainer.entity['@id']">
+              :key="mapContainer.entity['@id']" :disabled="mapContainer.entity === template">
         {{ '&nbsp;'.repeat(mapContainer.level) }} {{ mapContainer.entity.name }}
       </option>
     </select>
