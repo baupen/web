@@ -15,6 +15,7 @@
 
     <issues-form
         ref="issues-form"
+        :enable-state-edit="enableStateEdit"
         :template="template" :craftsmen="craftsmen" @update="patch = $event" @confirm="$refs['modal'].confirm()" />
     <image-form @update="image = $event" />
 
@@ -42,7 +43,7 @@ export default {
       image: null,
       show: true,
       prePatchedIssues: [],
-      prePostedIssueImages: [],
+      prePostedIssueImages: []
     }
   },
   props: {
@@ -57,6 +58,10 @@ export default {
     constructionManagerIri: {
       type: String,
       required: true
+    },
+    enableStateEdit: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {

@@ -24,6 +24,7 @@
             <span class="btn-group reset-table-styles">
               <edit-issues-button
                   ref="edit-issues"
+                  :enable-state-edit="canEditState"
                   :construction-manager-iri="constructionManagerIri" :issues="selectedIssues"
                   :craftsmen="craftsmen" />
               <remove-issues-button :issues="selectedIssues" @removed="removeIssue($event)" />
@@ -279,6 +280,9 @@ export default {
     },
     canEdit: function () {
       return this.view === 'foyer' || this.view === 'register'
+    },
+    canEditState: function () {
+      return this.view !== 'foyer'
     },
     canFilter: function () {
       return this.canEdit
