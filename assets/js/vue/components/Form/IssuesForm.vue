@@ -45,7 +45,7 @@
         </template>
       </custom-checkbox-field>
     </div>
-    <div class="col-md-6 border-left">
+    <div class="col-md-6 border-left" v-if="enableStateEdit">
       <custom-checkbox-field for-id="is-resolved" :label="$t('issue.state.resolved')">
         <input
             class="custom-control-input" type="checkbox" id="is-resolved"
@@ -150,17 +150,15 @@
 
 <script>
 
-import { createField, validateField, validateFields, changedFieldValues, resetFields } from '../../services/validation'
+import { createField, validateField, changedFieldValues, resetFields } from '../../services/validation'
 import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
-import Help from '../Library/FormLayout/Help'
 import { dateConfig, flatPickr } from '../../services/flatpickr'
 import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 
 export default {
   components: {
     CustomCheckboxField,
-    Help,
     InvalidFeedback,
     FormField,
     flatPickr
@@ -186,7 +184,7 @@ export default {
         isResolved: null,
         isClosed: null,
       },
-      tradeFilter: null,
+      tradeFilter: null
     }
   },
   props: {
@@ -196,6 +194,10 @@ export default {
     craftsmen: {
       type: Array,
       required: true
+    },
+    enableStateEdit: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
