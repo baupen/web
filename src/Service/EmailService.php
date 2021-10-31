@@ -195,8 +195,10 @@ class EmailService implements EmailServiceInterface
     {
         $templatedEmail = new TemplatedEmail();
 
+        $from = new Address($this->mailerFromEmail, $constructionManager->getName());
         $constructionManagerAddress = new Address($constructionManager->getEmail(), $constructionManager->getName());
-        $templatedEmail->from($this->mailerFromEmail)
+
+        $templatedEmail->from($from)
             ->to(new Address($craftsman->getEmail(), $craftsman->getContactName()))
             ->cc(...$craftsman->getEmailCCs())
             ->returnPath($constructionManagerAddress)
