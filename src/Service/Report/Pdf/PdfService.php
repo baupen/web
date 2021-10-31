@@ -188,6 +188,14 @@ class PdfService
          * intentionally ignoring isMarked as this is part of the application, not the report
          */
 
+        if (null !== $filter->getWasAddedWithClient()) {
+            $key = $this->translator->trans('was_added_with_client', [], 'entity_issue');
+
+            $filterEntries[$key] = true === $filter->getWasAddedWithClient() ?
+                $this->translator->trans('yes', [], 'enum_boolean_type') :
+                $this->translator->trans('no', [], 'enum_boolean_type');
+        }
+
         if (null !== $filter->getNumbers()) {
             $key = $this->translator->trans('number', [], 'entity_issue');
             $or = $this->translator->trans('introduction.filter.or', [], 'report');

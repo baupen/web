@@ -44,13 +44,13 @@ class FilterService implements FilterServiceInterface
         $filter = new Filter();
         $filter->setConstructionSite($constructionSite);
 
-        $filter->setIsDeleted($this->getNullableValue($filters, 'isDeleted'));
+        $filter->setIsDeleted($this->getNullableBoolean($filters, 'isDeleted'));
 
         $filter->setDescription($this->getNullableValue($filters, 'description'));
         $filter->setNumbers($this->getArray($filters, 'number'));
 
-        $filter->setWasAddedWithClient($this->getNullableValue($filters, 'wasAddedWithClient'));
-        $filter->setIsMarked($this->getNullableValue($filters, 'isMarked'));
+        $filter->setWasAddedWithClient($this->getNullableBoolean($filters, 'wasAddedWithClient'));
+        $filter->setIsMarked($this->getNullableBoolean($filters, 'isMarked'));
 
         $filter->setState($this->getNullableInt($filters, 'state'));
         $filter->setCraftsmanIds($this->getArray($filters, 'craftsman'));
@@ -73,6 +73,15 @@ class FilterService implements FilterServiceInterface
     private function getNullableValue(array $source, string $key)
     {
         return isset($source[$key]) ? $source[$key] : null;
+    }
+
+    private function getNullableBoolean(array $source, string $key)
+    {
+        if (!isset($source[$key])) {
+            return null;
+        }
+
+        return in_array($source[$key], ['true', '1', true], true);
     }
 
     private function getNullableInt(array $source, string $key)

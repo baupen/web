@@ -1,5 +1,6 @@
 deadline: Frist
 description: Beschreibung
+was_added_with_client: "Abnahme"
 entity:
   name: Pendenz
 number: Nummer

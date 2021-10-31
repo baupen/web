@@ -1,5 +1,6 @@
 deadline: Scadenza
 description: Descrizione
+was_added_with_client: "Collaudo"
 entity:
   name: 'Pendenza/ Punti in sospeso'
 number: Numero
