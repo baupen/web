@@ -89,7 +89,7 @@ class GdService
     {
         list($width, $height) = ImageHelper::fitInBoundingBox($sourcePath, $maxWidth, $maxHeight, false);
         /** @var string $ending */
-        $ending = pathinfo($sourcePath, PATHINFO_EXTENSION);
+        $ending = strtolower(pathinfo($sourcePath, PATHINFO_EXTENSION));
 
         //resize & save
         $newImage = imagecreatetruecolor($width, $height);
