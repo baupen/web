@@ -20,12 +20,12 @@ class ImageHelper
      */
     public static function fitInBoundingBox(string $imgPath, int $boxWidth, int $boxHeight, bool $expand = true): array
     {
-        //get image sizes
+        // get image sizes
         $imageSizes = getimagesize($imgPath);
         $imageWidth = $imageSizes[0];
         $imageHeight = $imageSizes[1];
 
-        //get ratios
+        // get ratios
         $widthRatio = (float) $boxWidth / $imageWidth;
         $heightRatio = (float) $boxHeight / $imageHeight;
         $ratio = $widthRatio < $heightRatio ? $widthRatio : $heightRatio;

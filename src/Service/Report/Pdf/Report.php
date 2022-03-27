@@ -36,11 +36,11 @@ class Report
         $this->pdfDesign = new PdfDesign();
         $this->pdfDocument = new Pdf($pdfDefinition, $this->pdfSizes);
 
-        //prepare fonts
+        // prepare fonts
         $checkFilePath = K_PATH_FONTS.'/.copied';
         if (!file_exists($checkFilePath)) {
             $sourceFolder = $reportAssetDir.'/fonts';
-            //copy all fonts from the assets to the fonts folder of tcpdf
+            // copy all fonts from the assets to the fonts folder of tcpdf
             shell_exec('\cp -r '.$sourceFolder.'/* '.K_PATH_FONTS);
             file_put_contents($checkFilePath, time());
         }
@@ -59,18 +59,18 @@ class Report
         $startY = $this->pdfDocument->GetY();
         $maxContentHeight = $startY;
 
-        //three or two column layout
+        // three or two column layout
         $columnCount = 3;
         $currentColumn = 0;
 
-        //image
+        // image
         if (file_exists($headerImage)) {
             $maxImageWidth = $this->pdfSizes->getColumnContentWidth($columnCount);
-            list($width, $height) = ImageHelper::fitInBoundingBox($headerImage, $maxImageWidth, $maxImageWidth);
+            list($width, $height) = ImageHelper::fitInBoundingBox($headerImage, (int) $maxImageWidth, (int) $maxImageWidth);
             $this->pdfDocument->Image($headerImage, $this->pdfSizes->getContentXStart(), $startY, $width, $height);
             $maxContentHeight = max($this->pdfDocument->GetY() + $height, $maxContentHeight);
 
-            //set position for the next content
+            // set position for the next content
             ++$currentColumn;
         } else {
             --$columnCount;
@@ -78,7 +78,7 @@ class Report
 
         $columnWidth = $this->pdfSizes->getColumnContentWidth($columnCount);
 
-        //construction site description
+        // construction site description
         $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
         $this->pdfDocument->SetY($startY);
 
@@ -90,7 +90,7 @@ class Report
         $maxContentHeight = max($this->pdfDocument->GetY(), $maxContentHeight);
         ++$currentColumn;
 
-        //filter used for generation
+        // filter used for generation
         if (\count($filterEntries) > 0) {
             $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
             $this->pdfDocument->SetY($startY);
@@ -104,7 +104,7 @@ class Report
             }
         }
 
-        //define start of next part
+        // define start of next part
         $this->pdfDocument->SetY(max($this->pdfDocument->GetY(), $maxContentHeight) + $this->pdfSizes->getContentSpacerBig());
     }
 
@@ -139,21 +139,21 @@ class Report
 
             $maxWidth = $this->pdfSizes->getContentXSize() - $doubleImgPadding;
             $maxHeight = $this->pdfSizes->getContentYSize() - $headerHeight - $doubleImgPadding;
-            list($width, $height) = ImageHelper::fitInBoundingBox($mapImageFilePath, $maxWidth, $maxHeight);
+            list($width, $height) = ImageHelper::fitInBoundingBox($mapImageFilePath, (int) $maxWidth, (int) $maxHeight);
 
-            //print title
+            // print title
             $printTitle();
 
-            //print image with surrounding box
+            // print image with surrounding box
             $startY = $this->pdfDocument->GetY();
             $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $height + $doubleImgPadding, '', 0, 2, '', true);
             $this->pdfDocument->SetY($startY);
             $this->pdfDocument->Image($mapImageFilePath, $this->pdfSizes->getContentXStart() + (((float) $this->pdfSizes->getContentXSize() - $width) / 2), $this->pdfDocument->GetY() + $imgPadding, $width, $height);
 
-            //adapt Y with spacer for next
+            // adapt Y with spacer for next
             $this->pdfDocument->SetY($startY + $height + $doubleImgPadding + $this->pdfSizes->getContentSpacerBig());
         } else {
-            //only print title
+            // only print title
             $this->printH2($name, 0, $context);
         }
     }
@@ -167,22 +167,22 @@ class Report
     {
         $this->setDefaults();
 
-        //adapt font for table content
+        // adapt font for table content
         $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
         $this->pdfDocument->SetFontSize($this->pdfSizes->getSmallFontSize());
         $this->pdfDocument->SetFont(...$this->pdfDesign->getEmphasisFontFamily());
 
-        //make header upper case
+        // make header upper case
         $row = [];
         foreach ($head as $item) {
             $row[] = mb_strtoupper($item, 'UTF-8');
         }
 
-        //print header
+        // print header
         $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
         $this->printSizedRow($columnWidths, $row, true);
 
-        //print content
+        // print content
         $currentRow = 0;
         $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
         $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
@@ -192,7 +192,7 @@ class Report
             ++$currentRow;
         }
 
-        //define start of next part
+        // define start of next part
         $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
     }
 
@@ -206,44 +206,44 @@ class Report
     {
         $this->setDefaults();
 
-        //print table header
+        // print table header
         if (null !== $tableTitle) {
             $this->printH3($tableTitle, $this->pdfSizes->getContentXSize());
         }
 
-        //adapt font for table content
+        // adapt font for table content
         $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
         $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
         $this->pdfDocument->SetFont(...$this->pdfDesign->getEmphasisFontFamily());
 
-        //make header upper case
+        // make header upper case
         $row = [];
         foreach ($tableHead as $item) {
             $row[] = mb_strtoupper($item, 'UTF-8');
         }
 
-        //print header
+        // print header
         $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
         $maxTries = 3;
         while (!$this->printRow($row, true, $this->pdfDesign->getLightBackground(), $firstColumnSize) && $maxTries > 0) {
-            //simply retry to print row if it did not work
+            // simply retry to print row if it did not work
             --$maxTries;
         }
 
-        //print content
+        // print content
         $currentRow = 0;
         $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLighterBackground());
         $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
         foreach ($tableContent as $row) {
             $maxTries = 3;
             while (!$this->printRow($row, 1 === $currentRow % 2, $this->pdfDesign->getLighterBackground(), $firstColumnSize) && $maxTries > 0) {
-                //simply retry to print row if it did not work
+                // simply retry to print row if it did not work
                 --$maxTries;
             }
             ++$currentRow;
         }
 
-        //define start of next part
+        // define start of next part
         $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
     }
 
@@ -259,35 +259,35 @@ class Report
         $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
         $cellWidthPadding = $this->pdfSizes->getTableCellPadding()[0] + $this->pdfSizes->getTableCellPadding()[2];
         foreach ($imageGrid as $row) {
-            //get row height & calculate the other sizes
+            // get row height & calculate the other sizes
             $rowHeight = 0;
             foreach ($row as &$entry) {
                 $imagePath = $entry['imagePath'];
 
-                list($width, $height) = ImageHelper::fitInBoundingBox($imagePath, $columnWidth, $columnWidth);
+                list($width, $height) = ImageHelper::fitInBoundingBox($imagePath, (int) $columnWidth, (int) $columnWidth);
                 $rowHeight = max($rowHeight, $height);
                 $entry['width'] = $width;
                 $entry['height'] = $height;
             }
 
-            //check if image fits on current page
+            // check if image fits on current page
             if ($this->pdfDocument->GetY() + $rowHeight + $this->pdfSizes->getColumnGutter() > $this->pdfSizes->getContentYEnd()) {
-                //force new page
+                // force new page
                 $this->pdfDocument->AddPage();
                 $this->pdfDocument->SetY($this->pdfSizes->getContentYStart());
             }
             $startY = $this->pdfDocument->GetY();
 
-            //print images
+            // print images
             $currentColumn = 0;
             foreach ($row as &$entry) {
-                //image
+                // image
                 $height = $entry['height'];
                 $width = $entry['width'];
                 $xStart = $this->pdfSizes->getColumnStart($currentColumn, $columnCount);
                 $this->pdfDocument->Image($entry['imagePath'], $xStart, $startY, $width, $height, '', '', '', '', 300, '', false, false, 1);
 
-                //identification
+                // identification
                 $this->pdfDocument->SetXY($xStart, $startY);
                 $width = mb_strlen((string) $entry['identification']) * $this->pdfSizes->getRegularFontSize() / 5 + $cellWidthPadding;
                 $this->pdfDocument->Cell($width, 0, $entry['identification'], 0, 0, '', true);
@@ -300,7 +300,7 @@ class Report
 
     private function setDefaults()
     {
-        //set typography
+        // set typography
         $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
         $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
         $this->pdfDocument->SetLineWidth($this->pdfSizes->getLineWidth());
@@ -310,11 +310,11 @@ class Report
         $this->pdfDocument->SetDrawColor(...$this->pdfDesign->getDarkBackground());
         $this->pdfDocument->SetTextColor(...$this->pdfDesign->getTextColor());
 
-        //set layout
+        // set layout
         $this->pdfDocument->SetLeftMargin($this->pdfSizes->getContentXStart());
         $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getDefaultCellPadding());
 
-        //set position
+        // set position
         $this->pdfDocument->SetX($this->pdfSizes->getContentXStart());
         if ($this->pdfDocument->GetY() > $this->pdfSizes->getContentYEnd()) {
             $this->pdfDocument->AddPage();
@@ -369,7 +369,7 @@ class Report
     private function printHtmlP($html)
     {
         $this->pdfDocument->writeHTMLCell(0, 0, $this->pdfDocument->GetX(), $this->pdfDocument->GetY(), $html, 0, 1);
-        //-2 because the html does not stop at the correct height
+        // -2 because the html does not stop at the correct height
         $this->pdfDocument->SetY($this->pdfDocument->GetY());
     }
 
@@ -399,7 +399,7 @@ class Report
      */
     private function printSizedRow(array $columnWidths, array $row, bool $fill = false, $retry = false)
     {
-        //put columns
+        // put columns
         $currentContentHeight = 0;
         $startY = $this->pdfDocument->GetY();
         $startPage = $this->pdfDocument->getPage();
@@ -410,11 +410,11 @@ class Report
             $currentColumn = $row[$i];
             $currentWidth = $columnWidths[$i];
 
-            //draw column content
+            // draw column content
             $this->pdfDocument->SetXY($currentXStart, $startY);
             $this->pdfDocument->MultiCell($currentWidth, $currentContentHeight, $currentColumn, 0, 'L', $fill, 1);
 
-            //if new page started; remove from old page and retry on new page
+            // if new page started; remove from old page and retry on new page
             if ($this->pdfDocument->getPage() > $startPage) {
                 $this->pdfDocument->rollbackTransaction(true);
                 if ($retry) {
@@ -437,7 +437,7 @@ class Report
                 return;
             }
 
-            //if row is higher now than before; draw background from preceding columns
+            // if row is higher now than before; draw background from preceding columns
             $actualContentHeight = $this->pdfDocument->GetY() - $startY;
             if ($actualContentHeight > $currentContentHeight) {
                 // redraw fill of previous cells
@@ -454,7 +454,7 @@ class Report
             $currentXStart += $currentWidth;
         }
 
-        //draw finishing line & set position for new row
+        // draw finishing line & set position for new row
         $contentEnd = $startY + $currentContentHeight;
         $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $contentEnd, $this->pdfSizes->getContentXEnd(), $contentEnd);
         $this->pdfDocument->SetY($contentEnd + $this->pdfSizes->getLineWidth());
@@ -464,10 +464,10 @@ class Report
 
     private function printRow($row, $fill, $fillBackground, $firstColumnSize = null)
     {
-        //alternative background colors
+        // alternative background colors
         $columnCount = \count($row);
 
-        //put columns
+        // put columns
         $maxContentHeight = 0;
         $currentColumn = 0;
         $fullWidth = 0;
@@ -478,10 +478,10 @@ class Report
             $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart($currentColumn, $columnCount, $firstColumnSize), $startY);
             $currentWidth = $this->pdfSizes->getColumnWidth($currentColumn, $columnCount, $firstColumnSize);
 
-            //draw cell content
+            // draw cell content
             $this->pdfDocument->MultiCell($currentWidth, $maxContentHeight - $startY, $column, 0, 'L', $fill, 1);
 
-            //if new page started; remove from old page and retry on new page
+            // if new page started; remove from old page and retry on new page
             if ($this->pdfDocument->getPage() > $startPage) {
                 $this->pdfDocument->rollbackTransaction(true);
 
@@ -495,12 +495,12 @@ class Report
                 return false;
             }
 
-            //if row is higher now than before; draw background from preceding columns
+            // if row is higher now than before; draw background from preceding columns
             if (0 !== $maxContentHeight && $this->pdfDocument->GetY() > $maxContentHeight) {
                 $diff = $this->pdfDocument->GetY() - $maxContentHeight;
                 $newMaxHeight = $this->pdfDocument->GetY();
 
-                //redraw fill if needed
+                // redraw fill if needed
                 if ($fill) {
                     $this->pdfDocument->SetXY($this->pdfSizes->getColumnStart(0, $columnCount), $maxContentHeight, $firstColumnSize);
                     $this->pdfDocument->SetCellPadding(0);
@@ -508,7 +508,7 @@ class Report
                     $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
                 }
 
-                //set position for new row
+                // set position for new row
                 $this->pdfDocument->SetY($newMaxHeight);
                 $maxContentHeight += $diff;
             } else {
@@ -518,7 +518,7 @@ class Report
             $fullWidth += $currentWidth;
         }
 
-        //draw finishing line & set position for new row
+        // draw finishing line & set position for new row
         $this->pdfDocument->Line($this->pdfSizes->getContentXStart(), $maxContentHeight, $this->pdfSizes->getContentXEnd(), $maxContentHeight);
         $this->pdfDocument->SetY($maxContentHeight + $this->pdfSizes->getLineWidth());
 

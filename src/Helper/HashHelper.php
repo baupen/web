@@ -23,7 +23,7 @@ class HashHelper
     public static function getHash()
     {
         $newHash = '';
-        //0-9, A-Z, a-z
+        // 0-9, A-Z, a-z
         $allowedRanges = [[48, 57], [65, 90], [97, 122]];
         $rangeCount = \count($allowedRanges);
         for ($i = 0; $i < static::HASH_LENGTH; ++$i) {

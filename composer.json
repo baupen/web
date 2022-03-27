@@ -10,7 +10,7 @@
     "ext-iconv": "*",
     "ext-json": "*",
     "ext-pdo": "*",
-    "api-platform/core": "2.6.*",
+    "api-platform/core": "2.6.6",
     "composer/package-versions-deprecated": "^1.11",
     "doctrine/annotations": "^1.0",
     "doctrine/dbal": "^2.13",
@@ -43,7 +43,7 @@
     "symfony/validator": "^5.1",
     "symfony/webpack-encore-bundle": "^1.7",
     "symfony/yaml": "^5.1",
-    "tecnickcom/tcpdf": "v6.4.1",
+    "tecnickcom/tcpdf": "^6.4.4",
     "twig/cssinliner-extra": "^3.0",
     "twig/extra-bundle": "^3.0",
     "twig/inky-extra": "^3.0",
@@ -74,7 +74,10 @@
     "platform": {
       "php": "7.4"
     },
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "symfony/flex": true
+    }
   },
   "autoload": {
     "psr-4": {

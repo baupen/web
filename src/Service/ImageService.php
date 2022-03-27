@@ -67,7 +67,7 @@ class ImageService implements ImageServiceInterface
 
     public function resizeIssueImage(IssueImage $issueImage, string $size = self::SIZE_THUMBNAIL): ?string
     {
-        //setup paths
+        // setup paths
         $sourceFolder = $this->pathService->getFolderForIssueImages($issueImage->getCreatedFor()->getConstructionSite());
         $sourcePath = $sourceFolder.DIRECTORY_SEPARATOR.$issueImage->getFilename();
         $targetFolder = $this->pathService->getTransientFolderForIssueImage($issueImage);
@@ -77,7 +77,7 @@ class ImageService implements ImageServiceInterface
 
     public function resizeConstructionSiteImage(ConstructionSiteImage $constructionSiteImage, string $size = self::SIZE_THUMBNAIL): ?string
     {
-        //setup paths
+        // setup paths
         $sourceFolder = $this->pathService->getFolderForConstructionSiteImages($constructionSiteImage->getCreatedFor());
         $sourcePath = $sourceFolder.DIRECTORY_SEPARATOR.$constructionSiteImage->getFilename();
         $targetFolder = $this->pathService->getTransientFolderForConstructionSiteImages($constructionSiteImage);
@@ -124,7 +124,7 @@ class ImageService implements ImageServiceInterface
         FileHelper::ensureFolderExists($targetFolder);
         $this->drawContentOnJpg($mapFileJpgPath, $targetFilePath, $content);
 
-        //abort if generation failed
+        // abort if generation failed
         if (!file_exists($targetFilePath)) {
             return null;
         }
@@ -158,7 +158,7 @@ class ImageService implements ImageServiceInterface
         FileHelper::ensureFolderExists($targetFolder);
         $this->drawCrosshairOnJpg($mapFileJpgPath, $targetFilePath, $issue->getPositionX(), $issue->getPositionY());
 
-        //abort if generation failed
+        // abort if generation failed
         if (!file_exists($targetFilePath)) {
             return null;
         }
@@ -168,7 +168,7 @@ class ImageService implements ImageServiceInterface
 
     public function renderMapFileToJpg(MapFile $mapFile, string $size = self::SIZE_THUMBNAIL): ?string
     {
-        //setup paths
+        // setup paths
         $sourceFilePath = $this->pathService->getFolderForMapFiles($mapFile->getCreatedFor()->getConstructionSite()).DIRECTORY_SEPARATOR.$mapFile->getFilename();
         $targetFolder = $this->pathService->getTransientFolderForMapFile($mapFile);
 
@@ -191,7 +191,7 @@ class ImageService implements ImageServiceInterface
             return $targetFilePath;
         }
 
-        //generate variant
+        // generate variant
         FileHelper::ensureFolderExists($targetFolder);
         switch ($size) {
             case ImageServiceInterface::SIZE_THUMBNAIL:
@@ -205,7 +205,7 @@ class ImageService implements ImageServiceInterface
                 break;
         }
 
-        //abort if generation failed
+        // abort if generation failed
         if (!file_exists($targetFilePath)) {
             return null;
         }
@@ -336,7 +336,7 @@ class ImageService implements ImageServiceInterface
                 return null;
             }
 
-            //abort if creation failed
+            // abort if creation failed
             if (!file_exists($pdfRenderPath)) {
                 return $pdfRenderPath;
             }
