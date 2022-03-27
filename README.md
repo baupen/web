@@ -1,6 +1,6 @@
 # Introduction
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) 
-[![Build Status](https://travis-ci.com/baupen/web.svg?branch=master)](https://travis-ci.com/baupen/web)
+[![Build Status](https://app.travis-ci.com/baupen/web.svg?branch=master)](https://app.travis-ci.com/baupen/web)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/baupen/web/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/baupen/web/?branch=master)
 [![Scrutinizer Coverage](https://scrutinizer-ci.com/g/baupen/web/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/baupen/web/?branch=master)
 [![translated using lokalise](https://img.shields.io/badge/translations-lokalise.co-%23249BEE.svg)](https://lokalise.co) 
