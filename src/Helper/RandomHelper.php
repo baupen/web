@@ -21,7 +21,7 @@ class RandomHelper
         $vocals = 'aeiou';
         $vocalsLength = mb_strlen($vocals);
 
-        //skip because ambiguous: ck, jyi
+        // skip because ambiguous: ck, jyi
         $normals = 'bdfghklmnpqrstvwxz';
         $normalsLength = mb_strlen($normals);
 

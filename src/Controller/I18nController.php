@@ -25,7 +25,7 @@ class I18nController extends BaseDoctrineController
      */
     public function setLocaleAction(Request $request, string $locale)
     {
-        //only change locale to valid values
+        // only change locale to valid values
         if (\in_array($locale, ['de', 'it'], true)) {
             $request->getSession()->set('_locale', $locale);
             $request->setLocale($locale);

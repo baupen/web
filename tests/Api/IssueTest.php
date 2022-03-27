@@ -578,7 +578,7 @@ class IssueTest extends ApiTestCase
 
         $newIssues = [];
 
-        $issue = $newIssue(); //1
+        $issue = $newIssue(); // 1
         $issue->setRegisteredAt(new \DateTime('today'));
         $issue->setRegisteredBy($constructionManager);
         $newIssues[] = $issue;
@@ -592,7 +592,7 @@ class IssueTest extends ApiTestCase
         $issue->setClosedBy($constructionManager);
         $newIssues[] = $issue;
 
-        $issue = $newIssue(); //3
+        $issue = $newIssue(); // 3
         $issue->setClosedAt(new \DateTime('yesterday'));
         $issue->setClosedBy($constructionManager);
         $newIssues[] = $issue;
@@ -691,25 +691,25 @@ class IssueTest extends ApiTestCase
 
         $newIssues = [];
 
-        $issue = $newIssue(); //1
+        $issue = $newIssue(); // 1
         $newIssues[] = $issue;
 
-        $issue = $newIssue(); //2
+        $issue = $newIssue(); // 2
         $registerIssue($issue, 1);
         $newIssues[] = $issue;
 
-        $issue = $newIssue(); //3
+        $issue = $newIssue(); // 3
         $registerIssue($issue, 2);
         $resolveIssue($issue, 1);
         $newIssues[] = $issue;
 
-        $issue = $newIssue(); //4
+        $issue = $newIssue(); // 4
         $registerIssue($issue, 3);
         $resolveIssue($issue, 2);
         $closeIssue($issue, 1);
         $newIssues[] = $issue;
 
-        $issue = $newIssue(); //5
+        $issue = $newIssue(); // 5
         $registerIssue($issue, 4);
         $closeIssue($issue, 1);
         $newIssues[] = $issue;
@@ -726,16 +726,16 @@ class IssueTest extends ApiTestCase
         $this->assertEquals((new \DateTime('tomorrow'))->format(DateTimeFormatter::ISO_DATE_FORMAT), $tomorrowEntry['date']);
 
         $this->assertEquals((new \DateTime('today'))->format(DateTimeFormatter::ISO_DATE_FORMAT), $todayEntry['date']);
-        $this->assertEquals(1, $todayEntry['openCount']); //2
-        $this->assertEquals(1, $todayEntry['inspectableCount']); //3
-        $this->assertEquals(2, $todayEntry['closedCount']); //5 #4
+        $this->assertEquals(1, $todayEntry['openCount']); // 2
+        $this->assertEquals(1, $todayEntry['inspectableCount']); // 3
+        $this->assertEquals(2, $todayEntry['closedCount']); // 5 #4
 
         $this->assertEquals((new \DateTime('yesterday'))->format(DateTimeFormatter::ISO_DATE_FORMAT), $yesterdayEntry['date']);
-        $this->assertEquals(2, $yesterdayEntry['openCount']); //5 #3
-        $this->assertEquals(1, $yesterdayEntry['inspectableCount']); //4
+        $this->assertEquals(2, $yesterdayEntry['openCount']); // 5 #3
+        $this->assertEquals(1, $yesterdayEntry['inspectableCount']); // 4
         $this->assertEquals(0, $yesterdayEntry['closedCount']);
 
-        $this->assertEquals(2, $dayBeforeYesterdayEntry['openCount']); //5 #4
+        $this->assertEquals(2, $dayBeforeYesterdayEntry['openCount']); // 5 #4
         $this->assertEquals(0, $dayBeforeYesterdayEntry['inspectableCount']);
         $this->assertEquals(0, $dayBeforeYesterdayEntry['closedCount']);
     }

@@ -38,7 +38,7 @@ class GdService
 
     public function measureTextDimensions(float $fontSize, string $text)
     {
-        //get text dimensions
+        // get text dimensions
         $boundingBox = imagettfbbox($fontSize, 0, self::FONT, $text);
         $textWidth = abs($boundingBox[4] - $boundingBox[0]);
         $textHeight = abs($boundingBox[5] - $boundingBox[1]);
@@ -51,7 +51,7 @@ class GdService
      */
     public function drawRectangleWithText(float $xPosition, float $yPosition, string $color, float $padding, string $text, float $textFontSize, float $textWidth, float $textHeight, &$image)
     {
-        //draw white base ellipse before the colored one
+        // draw white base ellipse before the colored one
         $white = $this->createColorForLabel('white', $image);
         $fillColor = $this->createColorForLabel($color, $image);
         $halfHeight = $textHeight / 2;
@@ -60,7 +60,7 @@ class GdService
         imagerectangle($image, (int) ($textStart - $padding - 1), (int) ($yPosition - $halfHeight - $padding - 1), (int) ($textEnd + $padding + 1), (int) ($yPosition + $halfHeight + $padding + 1), $white);
         imagefilledrectangle($image, (int) ($textStart - $padding), (int) ($yPosition - $padding - $halfHeight), (int) ($textEnd + $padding), (int) ($yPosition + $halfHeight + $padding), $fillColor);
 
-        //draw text
+        // draw text
         imagettftext($image, $textFontSize, 0, (int) ($textStart), (int) ($yPosition + $halfHeight), $white, self::FONT, $text);
     }
 
@@ -91,7 +91,7 @@ class GdService
         /** @var string $ending */
         $ending = strtolower(pathinfo($sourcePath, PATHINFO_EXTENSION));
 
-        //resize & save
+        // resize & save
         $newImage = imagecreatetruecolor($width, $height);
         if (!$newImage) {
             return false;
@@ -162,16 +162,16 @@ class GdService
      */
     private function createColor($image, int $red, int $green, int $blue)
     {
-        //get color from palette
+        // get color from palette
         $color = imagecolorexact($image, $red, $green, $blue);
         if (-1 === $color) {
-            //color does not exist...
-            //test if we have used up palette
+            // color does not exist...
+            // test if we have used up palette
             if (imagecolorstotal($image) >= 255) {
-                //palette used up; pick closest assigned color
+                // palette used up; pick closest assigned color
                 $color = imagecolorclosest($image, $red, $green, $blue);
             } else {
-                //palette NOT used up; assign new color
+                // palette NOT used up; assign new color
                 $color = imagecolorallocate($image, $red, $green, $blue);
             }
         }

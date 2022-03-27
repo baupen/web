@@ -167,7 +167,7 @@ class PdfService
             $currentIssue['identification'] = $issue->getNumber();
             $currentRow[] = $currentIssue;
 
-            //add row to grid if applicable
+            // add row to grid if applicable
             if (count($currentRow) === $columnCount) {
                 $imageGrid[] = $currentRow;
                 $currentRow = [];
@@ -207,7 +207,7 @@ class PdfService
             $filterEntries[$key] = $filter->getDescription();
         }
 
-        //collect all set status
+        // collect all set status
         if (null !== $filter->getState()) {
             $status = [];
             if ($filter->getState() & Issue::STATE_CREATED) {
@@ -228,7 +228,7 @@ class PdfService
             $filterEntries[$key] = implode(' '.$or.' ', $status);
         }
 
-        //add craftsmen
+        // add craftsmen
         if (null !== $filter->getCraftsmanIds()) {
             $entities = $this->doctrine->getRepository(Craftsman::class)->findBy(['id' => $filter->getCraftsmanIds()]);
             $names = array_map(function (Craftsman $craftsman) {
@@ -238,7 +238,7 @@ class PdfService
             $filterEntries[$craftsmen] = implode(', ', $names);
         }
 
-        //add maps
+        // add maps
         if (null !== $filter->getMapIds()) {
             $entities = $this->doctrine->getRepository(Map::class)->findBy(['id' => $filter->getMapIds()]);
             $names = array_map(function (Map $map) {
@@ -266,7 +266,7 @@ class PdfService
         // clear empty entries
         $filterEntries = array_filter($filterEntries);
 
-        //add list of elements which are part of this report
+        // add list of elements which are part of this report
         $elements = [];
         if ($reportElements->getTableByCraftsman()) {
             $elements[] = $this->translator->trans('table.by_craftsman', [], 'report');
@@ -422,7 +422,7 @@ class PdfService
      */
     private function addAggregatedIssuesInfo(array $orderedMaps, array $issuesPerMap, array &$tableContent, array &$tableHeader)
     {
-        //count issue status per map
+        // count issue status per map
         $countsPerElement = [];
         foreach ($orderedMaps as $index => $element) {
             $countPerMap = [0, 0, 0];
@@ -467,19 +467,19 @@ class PdfService
         /* @var Issue[][] $issuesPerMap */
         IssueHelper::issuesToOrderedMaps($issues, $orderedMaps, $issuesPerMap);
 
-        //prepare header & content with specific content
+        // prepare header & content with specific content
         $tableHeader = [$this->translator->trans('entity.name', [], 'entity_map')];
 
-        //add map name & map context to table
+        // add map name & map context to table
         $tableContent = [];
         foreach ($orderedMaps as $mapId => $map) {
             $tableContent[$mapId] = [$map->getNameWithContext()];
         }
 
-        //add accumulated info
+        // add accumulated info
         $this->addAggregatedIssuesInfo($orderedMaps, $issuesPerMap, $tableContent, $tableHeader);
 
-        //write to pdf
+        // write to pdf
         $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_map', [], 'report'), 100);
     }
 
@@ -492,19 +492,19 @@ class PdfService
         /* @var Issue[][] $issuesPerCraftsman */
         IssueHelper::issuesToOrderedCraftsman($issues, $orderedCraftsman, $issuesPerCraftsman);
 
-        //prepare header & content with specific content
+        // prepare header & content with specific content
         $tableHeader = [$this->translator->trans('entity.name', [], 'entity_craftsman')];
 
-        //add map name & map context to table
+        // add map name & map context to table
         $tableContent = [];
         foreach ($orderedCraftsman as $craftsmanId => $craftsman) {
             $tableContent[$craftsmanId] = [$craftsman->getName()];
         }
 
-        //add accumulated info
+        // add accumulated info
         $this->addAggregatedIssuesInfo($orderedCraftsman, $issuesPerCraftsman, $tableContent, $tableHeader);
 
-        //write to pdf
+        // write to pdf
         $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_craftsman', [], 'report'), 100);
     }
 

@@ -73,7 +73,7 @@ abstract class BaseEnum
 
             return ['choices' => $res, 'choice_translation_domain' => 'enum_'.$this->camelCaseToTranslation($reflection->getShortName())];
         } catch (ReflectionException $e) {
-            //this never happens due to ReflectionClass is passed the class of the $this object (always valid)
+            // this never happens due to ReflectionClass is passed the class of the $this object (always valid)
         }
 
         return $res;
@@ -98,7 +98,7 @@ abstract class BaseEnum
                 }
             }
         } catch (ReflectionException $e) {
-            //this never happens due to ReflectionClass is passed the class of the $this object (always valid)
+            // this never happens due to ReflectionClass is passed the class of the $this object (always valid)
         }
 
         return '';

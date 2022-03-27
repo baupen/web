@@ -36,13 +36,13 @@ class GsService
 
     public function renderPdfToImage(string $sourcePdfPath, string $targetFilePath): bool
     {
-        //do first low quality render to get artboxsize
+        // do first low quality render to get artboxsize
         $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=1 -dUseCropBox -sPageList=1 -o "'.$targetFilePath.'" "'.$sourcePdfPath.'"';
         if (!$this->execute($command)) {
             return false;
         }
 
-        //second render with correct image dimensions
+        // second render with correct image dimensions
         list($width, $height) = ImageHelper::fitInBoundingBox($targetFilePath, 3840, 2160);
         $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS='.$width.' -dDEVICEHEIGHTPOINTS='.$height.' -dJPEGQ=80 -dUseCropBox -dFitPage -sPageList=1 -o "'.$targetFilePath.'" "'.$sourcePdfPath.'"';
         if (!$this->execute($command)) {

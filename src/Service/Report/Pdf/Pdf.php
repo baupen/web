@@ -34,7 +34,7 @@ class Pdf extends TCPDF
         $this->pdfDefinition = $pdfDefinition;
         $this->pdfSizes = $pdfSizes;
 
-        //set margin
+        // set margin
         $this->SetMargins($this->pdfSizes->getContentXStart(), $this->pdfSizes->getContentYStart());
         $this->SetAutoPageBreak(true, $this->pdfSizes->getMarginBottom());
 
@@ -49,15 +49,15 @@ class Pdf extends TCPDF
      */
     public function Header()
     {
-        //image max one third, the header text the other two thirds
+        // image max one third, the header text the other two thirds
         $contentWidthPart = $this->pdfSizes->getContentXSize() / 3;
 
-        //set image
+        // set image
         $headerHeight = $this->pdfSizes->getHeaderHeight();
         list($width, $height) = ImageHelper::fitInBoundingBox($this->pdfDefinition->getLogoPath(), $contentWidthPart, $headerHeight);
         $this->Image($this->pdfDefinition->getLogoPath(), $this->pdfSizes->getContentXEnd() - $width, $this->pdfSizes->getHeaderYStart(), $width, $height, '', '', 'R');
 
-        //set header text
+        // set header text
         $this->SetXY($this->pdfSizes->getContentXStart(), $this->pdfSizes->getHeaderYStart());
         $this->SetFontSize($this->pdfSizes->getRegularFontSize());
         $this->Cell($contentWidthPart * 2, 0, $this->pdfDefinition->getTitle(), 0, 0, 'L');
@@ -68,16 +68,16 @@ class Pdf extends TCPDF
      */
     public function Footer()
     {
-        //author three forths, page numbers one forth
+        // author three forths, page numbers one forth
         $contentWidthPart = $this->pdfSizes->getContentXSize() / 8;
 
-        //set author
+        // set author
         $this->SetFontSize($this->pdfSizes->getSmallFontSize());
         $this->SetXY($this->pdfSizes->getContentXStart(), $this->pdfSizes->getFooterYStart());
         $this->Cell($contentWidthPart * 3, 0, $this->pdfDefinition->getAuthor(), 0, 0, 'L');
 
-        //set page numbers
-        //+10 because TCPDF uses a placeholder for the page numbers which is replaced at the end. this leads to incorrect alignment.
+        // set page numbers
+        // +10 because TCPDF uses a placeholder for the page numbers which is replaced at the end. this leads to incorrect alignment.
         $this->SetXY($this->pdfSizes->getContentXEnd() - $contentWidthPart + 6.5, $this->pdfSizes->getFooterYStart());
         $this->Cell($contentWidthPart, 0, $this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, 0, 'R');
     }
