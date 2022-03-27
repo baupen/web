@@ -66,7 +66,7 @@ class Report
         // image
         if (file_exists($headerImage)) {
             $maxImageWidth = $this->pdfSizes->getColumnContentWidth($columnCount);
-            list($width, $height) = ImageHelper::fitInBoundingBox($headerImage, $maxImageWidth, $maxImageWidth);
+            list($width, $height) = ImageHelper::fitInBoundingBox($headerImage, (int) $maxImageWidth, (int) $maxImageWidth);
             $this->pdfDocument->Image($headerImage, $this->pdfSizes->getContentXStart(), $startY, $width, $height);
             $maxContentHeight = max($this->pdfDocument->GetY() + $height, $maxContentHeight);
 
@@ -139,7 +139,7 @@ class Report
 
             $maxWidth = $this->pdfSizes->getContentXSize() - $doubleImgPadding;
             $maxHeight = $this->pdfSizes->getContentYSize() - $headerHeight - $doubleImgPadding;
-            list($width, $height) = ImageHelper::fitInBoundingBox($mapImageFilePath, $maxWidth, $maxHeight);
+            list($width, $height) = ImageHelper::fitInBoundingBox($mapImageFilePath, (int) $maxWidth, (int) $maxHeight);
 
             // print title
             $printTitle();
@@ -264,7 +264,7 @@ class Report
             foreach ($row as &$entry) {
                 $imagePath = $entry['imagePath'];
 
-                list($width, $height) = ImageHelper::fitInBoundingBox($imagePath, $columnWidth, $columnWidth);
+                list($width, $height) = ImageHelper::fitInBoundingBox($imagePath, (int) $columnWidth, (int) $columnWidth);
                 $rowHeight = max($rowHeight, $height);
                 $entry['width'] = $width;
                 $entry['height'] = $height;

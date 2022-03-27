@@ -54,7 +54,7 @@ class Pdf extends TCPDF
 
         // set image
         $headerHeight = $this->pdfSizes->getHeaderHeight();
-        list($width, $height) = ImageHelper::fitInBoundingBox($this->pdfDefinition->getLogoPath(), $contentWidthPart, $headerHeight);
+        list($width, $height) = ImageHelper::fitInBoundingBox($this->pdfDefinition->getLogoPath(), (int) $contentWidthPart, (int) $headerHeight);
         $this->Image($this->pdfDefinition->getLogoPath(), $this->pdfSizes->getContentXEnd() - $width, $this->pdfSizes->getHeaderYStart(), $width, $height, '', '', 'R');
 
         // set header text
