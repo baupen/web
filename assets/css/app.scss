@@ -27,6 +27,10 @@ body {
   height: 100%;
 }
 
+svg {
+  height: 1em;
+}
+
 /* stylelint-disable selector-no-qualifying-type */
 label.required {
   &::after {
