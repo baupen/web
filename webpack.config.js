@@ -84,9 +84,6 @@ Encore
     delete options.client
 
     // options.firewall = false
-    options.https = {
-      pfx: path.join(process.env.HOME, '.symfony/certs/default.p12'),
-    }
     options.devMiddleware = {
       writeToDisk: true
     }
