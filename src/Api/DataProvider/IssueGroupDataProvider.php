@@ -70,7 +70,7 @@ class IssueGroupDataProvider extends NoPaginationDataProvider
         $currentRequest = $this->requestStack->getCurrentRequest();
         $group = $currentRequest->query->get('group');
         if ('map' !== $group) {
-            throw new BadRequestException();
+            throw new BadRequestException('The group '.$group.' is unexpected.');
         }
 
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
