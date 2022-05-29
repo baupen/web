@@ -66,7 +66,7 @@ class IssueRenderDataProvider extends NoPaginationDataProvider
     {
         $existingFilter = isset($context['filters']) ? $context['filters'] : [];
         if (!isset($existingFilter['map']) || isset($existingFilter['map[]'])) {
-            throw new BadRequestException();
+            throw new BadRequestException('The map filter is not set.');
         }
 
         $currentRequest = $this->requestStack->getCurrentRequest();
@@ -74,7 +74,7 @@ class IssueRenderDataProvider extends NoPaginationDataProvider
 
         $map = $this->manager->getRepository(Map::class)->find($existingFilter['map']);
         if (null === $map || $map->getConstructionSite()->getId() !== $existingFilter['constructionSite'] || !$map->getFile()) {
-            throw new BadRequestException();
+            throw new BadRequestException('The map does not exist, does not belong to the construction site, or has not file assigned.');
         }
 
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);

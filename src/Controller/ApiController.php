@@ -155,7 +155,7 @@ class ApiController extends BaseDoctrineController
 
         $mapFile = $storageService->uploadMapFile($file, $map);
         if (null === $mapFile) {
-            throw new BadRequestException();
+            throw new BadRequestException('The map file could not be stored');
         }
 
         $this->fastSave($map, $mapFile);
@@ -211,7 +211,7 @@ class ApiController extends BaseDoctrineController
 
         $constructionSiteImage = $storageService->uploadConstructionSiteImage($image, $constructionSite);
         if (null === $constructionSiteImage) {
-            throw new BadRequestException();
+            throw new BadRequestException('The construction site image could not be stored');
         }
 
         $this->fastSave($constructionSite, $constructionSiteImage);
@@ -285,7 +285,7 @@ class ApiController extends BaseDoctrineController
 
         $issueImage = $storageService->uploadIssueImage($image, $issue);
         if (null === $issueImage) {
-            throw new BadRequestException();
+            throw new BadRequestException('The issue site image could not be stored');
         }
 
         $this->fastSave($issue, $issueImage);
@@ -313,7 +313,7 @@ class ApiController extends BaseDoctrineController
 
     private function getPdf(FileBag $fileBag): UploadedFile
     {
-        return $this->getUploadedFile($fileBag, 'file', ['application/pdf']);
+        return $this->getUploadedFile($fileBag, 'file', ['application/pdf', 'application/x-pdf']);
     }
 
     private function getImage(FileBag $fileBag): UploadedFile
@@ -330,11 +330,11 @@ class ApiController extends BaseDoctrineController
             $files = $fileBag->all();
             $candidate = $files[array_key_first($files)];
         } else {
-            throw new BadRequestException();
+            throw new BadRequestException('More than one file uploaded at a time is not allowed');
         }
 
         if (!in_array($candidate->getMimeType(), $mimeTypesWhitelist)) {
-            throw new BadRequestException();
+            throw new BadRequestException('Unexpected mimeType: '.$candidate->getMimeType());
         }
 
         return $candidate;
