@@ -66,9 +66,6 @@ export default {
       handler: function () {
         this.$emit('update', this.updatePayload)
       }
-    },
-    template: function () {
-      this.setMapFromTemplate()
     }
   },
   methods: {

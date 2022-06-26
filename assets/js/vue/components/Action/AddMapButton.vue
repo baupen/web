@@ -63,11 +63,11 @@ export default {
           .then(map => {
             api.postMapFile(map, this.file, successMessage)
                 .then(_ => {
+                  this.file = null
                   this.posting = false
                   this.$emit('added', map)
                 })
           })
-
     }
   }
 }
