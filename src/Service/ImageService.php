@@ -21,6 +21,7 @@ use App\Service\Image\GdService;
 use App\Service\Image\GsService;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
+
 use const DIRECTORY_SEPARATOR;
 
 class ImageService implements ImageServiceInterface

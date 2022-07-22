@@ -205,10 +205,10 @@ class PdfSizes
         }
 
         if (null !== $firstColumnSize) {
-            return ($this->getColumnWidth($currentColumn - 1, $numberOfColumns, $firstColumnSize)) * ($currentColumn - 1) + $firstColumnSize + $this->getContentXStart();
+            return $this->getColumnWidth($currentColumn - 1, $numberOfColumns, $firstColumnSize) * ($currentColumn - 1) + $firstColumnSize + $this->getContentXStart();
         }
 
-        return ($this->getColumnWidth($currentColumn - 1, $numberOfColumns)) * $currentColumn + $this->getContentXStart();
+        return $this->getColumnWidth($currentColumn - 1, $numberOfColumns) * $currentColumn + $this->getContentXStart();
     }
 
     /**

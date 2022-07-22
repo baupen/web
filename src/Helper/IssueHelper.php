@@ -14,6 +14,7 @@ namespace App\Helper;
 use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Entity\Map;
+
 use function ksort;
 
 class IssueHelper
