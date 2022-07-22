@@ -1,5 +1,6 @@
-# IDE
+# local dev environment
 .idea
+.npmrc
 
 # agnes
 .build

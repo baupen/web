@@ -61,7 +61,7 @@ class GdService
         imagefilledrectangle($image, (int) ($textStart - $padding), (int) ($yPosition - $padding - $halfHeight), (int) ($textEnd + $padding), (int) ($yPosition + $halfHeight + $padding), $fillColor);
 
         // draw text
-        imagettftext($image, $textFontSize, 0, (int) ($textStart), (int) ($yPosition + $halfHeight), $white, self::FONT, $text);
+        imagettftext($image, $textFontSize, 0, (int) $textStart, (int) ($yPosition + $halfHeight), $white, self::FONT, $text);
     }
 
     /**
