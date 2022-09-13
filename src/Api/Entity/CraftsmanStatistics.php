@@ -12,46 +12,63 @@
 namespace App\Api\Entity;
 
 use App\Service\Analysis\CraftsmanAnalysis;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 class CraftsmanStatistics
 {
     /**
      * @var string
+     *
+     * @Groups({"craftsman-read"})
      */
     private $craftsman;
 
     /**
      * @var IssueSummary
+     *
+     * @Groups({"craftsman-read"})
      */
     private $issueSummary;
 
     /**
      * @var int
+     *
+     * @Groups({"craftsman-read"})
      */
     public $issueUnreadCount;
 
     /**
      * @var int
+     *
+     * @Groups({"craftsman-read"})
      */
     public $issueOverdueCount;
 
     /**
      * @var \DateTime|null
+     *
+     * @Groups({"craftsman-read"})
      */
     public $nextDeadline;
 
     /**
      * @var \DateTime|null
+     *
+     * @Groups({"craftsman-read"})
      */
     public $lastEmailReceived;
 
     /**
      * @var \DateTime|null
+     *
+     * @Groups({"craftsman-read"})
      */
     public $lastVisitOnline;
 
     /**
      * @var \DateTime|null
+     *
+     * @Groups({"craftsman-read"})
      */
     public $lastIssueResolved;
 

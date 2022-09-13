@@ -11,6 +11,8 @@
 
 namespace App\Api\Entity;
 
+use Symfony\Component\Serializer\Annotation\Groups;
+
 class FeedEntry
 {
     public const TYPE_CONSTRUCTION_MANAGER_REGISTERED = 1;
@@ -21,21 +23,29 @@ class FeedEntry
 
     /**
      * @var string
+     *
+     * @Groups({"issue-read","craftsman-read"})
      */
     private $date;
 
     /**
      * @var string
+     *
+     * @Groups({"issue-read","craftsman-read"})
      */
     private $subject;
 
     /**
      * @var int
+     *
+     * @Groups({"issue-read","craftsman-read"})
      */
     private $type;
 
     /**
      * @var int
+     *
+     * @Groups({"issue-read","craftsman-read"})
      */
     private $count;
 

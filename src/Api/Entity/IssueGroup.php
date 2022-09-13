@@ -11,20 +11,28 @@
 
 namespace App\Api\Entity;
 
+use Symfony\Component\Serializer\Annotation\Groups;
+
 class IssueGroup
 {
     /**
      * @var string
+     *
+     * @Groups({"issue-read"})
      */
     private $entity;
 
     /**
      * @var int
+     *
+     * @Groups({"issue-read"})
      */
     private $count;
 
     /**
      * @var \DateTime|null
+     *
+     * @Groups({"issue-read"})
      */
     private $earliestDeadline;
 
