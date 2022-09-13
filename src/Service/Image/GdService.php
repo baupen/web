@@ -70,25 +70,30 @@ class GdService
     public function drawCrosshair(float $positionX, float $positionY, string $color, int $radius, int $circleThickness, int $lineThickness, &$image)
     {
         $accent = $this->createColorForLabel($color, $image);
+        $transparentAccent = $this->createColorForLabel($color, $image, 0.2);
 
         // image thickness + arcs do not work well: https://stackoverflow.com/a/37974450/2259391
         imagesetthickness($image, 2);
         $diameter = $radius * 2;
-        for ($i = $circleThickness; $i > 0; --$i) {
+        for ($i = $circleThickness - 1; $i > 1; --$i) {
             imagearc($image, $positionX, $positionY, $diameter - $i, $diameter - $i, 0, 360, $accent);
         }
+        imagearc($image, $positionX, $positionY, $diameter - $circleThickness, $diameter - $circleThickness, 0, 360, $transparentAccent);
+        imagearc($image, $positionX, $positionY, $diameter, $diameter, 0, 360, $transparentAccent);
 
         if ($lineThickness > 0) {
             imagesetthickness($image, $lineThickness);
-            imageline($image, $positionX + $radius, $positionY, $positionX - $radius, $positionY, $accent);
-            imageline($image, $positionX, $positionY + $radius, $positionX, $positionY - $radius, $accent);
+
+            // draw only until middle of circle
+            $lineRadius = (int) ($radius - $circleThickness / 2);
+            imageline($image, $positionX + $lineRadius, $positionY, $positionX - $lineRadius, $positionY, $accent);
+            imageline($image, $positionX, $positionY + $lineRadius, $positionX, $positionY - $lineRadius, $accent);
         }
     }
 
     public function resizeImage(string $sourcePath, string $targetPath, int $maxWidth, int $maxHeight): bool
     {
         list($width, $height) = ImageHelper::fitInBoundingBox($sourcePath, $maxWidth, $maxHeight, false);
-        /** @var string $ending */
         $ending = strtolower(pathinfo($sourcePath, PATHINFO_EXTENSION));
 
         // resize & save
@@ -137,17 +142,18 @@ class GdService
      *
      * @throws \Exception
      */
-    private function createColorForLabel(string $label, &$image)
+    private function createColorForLabel(string $label, &$image, float $opacity = 1)
     {
+        $alpha = (int) ((1 - $opacity) * 127);
         switch ($label) {
             case 'green':
-                return $this->createColor($image, 18, 140, 45);
+                return $this->createColor($image, 18, 140, 45, $alpha);
             case 'orange':
-                return $this->createColor($image, 201, 151, 0);
+                return $this->createColor($image, 201, 151, 0, $alpha);
             case 'blue':
-                return $this->createColor($image, 52, 52, 119);
+                return $this->createColor($image, 52, 52, 119, $alpha);
             case 'white':
-                return $this->createColor($image, 255, 255, 255);
+                return $this->createColor($image, 255, 255, 255, $alpha);
             default:
                 throw new \Exception('Unknown color');
         }
@@ -160,19 +166,19 @@ class GdService
      *
      * @return int|false
      */
-    private function createColor($image, int $red, int $green, int $blue)
+    private function createColor($image, int $red, int $green, int $blue, int $alpha = 0)
     {
         // get color from palette
-        $color = imagecolorexact($image, $red, $green, $blue);
+        $color = imagecolorexactalpha($image, $red, $green, $blue, $alpha);
         if (-1 === $color) {
             // color does not exist...
             // test if we have used up palette
             if (imagecolorstotal($image) >= 255) {
-                // palette used up; pick closest assigned color
-                $color = imagecolorclosest($image, $red, $green, $blue);
+                // palette used up; pick the closest assigned color
+                $color = imagecolorclosestalpha($image, $red, $green, $blue, $alpha);
             } else {
                 // palette NOT used up; assign new color
-                $color = imagecolorallocate($image, $red, $green, $blue);
+                $color = imagecolorallocatealpha($image, $red, $green, $blue, $alpha);
             }
         }
 
