@@ -333,7 +333,7 @@ class ImageService implements ImageServiceInterface
         $pdfRenderPath = $targetFolder.DIRECTORY_SEPARATOR.self::PDF_RENDER_NAME;
         if (!file_exists($pdfRenderPath)) {
             FileHelper::ensureFolderExists($targetFolder);
-            if (!$this->gsService->renderPdfToImage($sourcePath, $pdfRenderPath)) {
+            if (!$this->gsService->renderPdfToImage($sourcePath, $pdfRenderPath, 2480, 3508)) {
                 return null;
             }
 

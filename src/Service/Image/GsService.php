@@ -11,7 +11,6 @@
 
 namespace App\Service\Image;
 
-use App\Helper\ImageHelper;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -34,17 +33,19 @@ class GsService
         $this->logger = $logger;
     }
 
-    public function renderPdfToImage(string $sourcePdfPath, string $targetFilePath): bool
+    public function renderPdfToImage(string $sourcePdfPath, string $targetFilePath, int $maxWidth, int $maxHeight): bool
     {
-        // do first low quality render to get artboxsize
-        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS=1920 -dDEVICEHEIGHTPOINTS=1080 -dJPEGQ=1 -dUseCropBox -sPageList=1 -o "'.$targetFilePath.'" "'.$sourcePdfPath.'"';
+        // do first low quality render (quality = 1, dpi = 20) to get cropbox size
+        $dpi = 20;
+        $command = 'gs -sDEVICE=jpeg -dJPEGQ=1 -r'.$dpi.' -dUseCropBox -sPageList=1 -o "'.$targetFilePath.'" "'.$sourcePdfPath.'"';
         if (!$this->execute($command)) {
             return false;
         }
 
-        // second render with correct image dimensions
-        list($width, $height) = ImageHelper::fitInBoundingBox($targetFilePath, 3840, 2160);
-        $command = 'gs -sDEVICE=jpeg -dDEVICEWIDTHPOINTS='.$width.' -dDEVICEHEIGHTPOINTS='.$height.' -dJPEGQ=80 -dUseCropBox -dFitPage -sPageList=1 -o "'.$targetFilePath.'" "'.$sourcePdfPath.'"';
+        // render again tweaking DPI to get expected image size
+        // we do not use -dFitPage as it failed to correctly rotate pages in GPL Ghostscript 9.56.1 (2022-04-04)
+        $newDpi = $this->calculateTargetDpi($targetFilePath, $dpi, $maxWidth, $maxHeight);
+        $command = 'gs -sDEVICE=jpeg -dJPEGQ=80 -r'.$newDpi.' -dUseCropBox -sPageList=1  -o "'.$targetFilePath.'" "'.$sourcePdfPath.'"';
         if (!$this->execute($command)) {
             return false;
         }
@@ -69,5 +70,24 @@ class GsService
         }
 
         return true;
+    }
+
+    public function calculateTargetDpi(string $targetFilePath, int $dpi, int $maxWidth, int $maxHeight): ?int
+    {
+        $imageSize = getimagesize($targetFilePath);
+        if (!$imageSize) {
+            return $dpi;
+        }
+
+        [$imageWidth, $imageHeight] = $imageSize;
+
+        // prevent extreme relations to blow up the DPI
+        $imageWidth = min(3 * $imageHeight, $imageWidth);
+        $imageHeight = min(3 * $imageWidth, $imageHeight);
+
+        $xDpi = (float) $maxWidth / $imageWidth * $dpi;
+        $yDpi = (float) $maxHeight / $imageHeight * $dpi;
+
+        return min($xDpi, $yDpi);
     }
 }
