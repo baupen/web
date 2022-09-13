@@ -47,6 +47,6 @@ trait AssertApiPatchTrait
 
     private function assertApiPatchStatusCodeSame(int $expectedCode, Client $client, string $url, array $payload)
     {
-        return $this->assertApiStatusCodeSame('PATCH', $expectedCode, $client, $url, $payload);
+        return $this->assertApiStatusCodeSame('PATCH', $expectedCode, $client, $url, MimeTypes::JSON_LD_MIME_TYPE, $payload);
     }
 }

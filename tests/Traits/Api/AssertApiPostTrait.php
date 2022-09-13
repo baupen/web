@@ -20,7 +20,7 @@ trait AssertApiPostTrait
 {
     private function assertApiPostStatusCodeSame(int $expectedCode, Client $client, string $url, array $payload)
     {
-        return $this->assertApiStatusCodeSame('POST', $expectedCode, $client, $url, $payload);
+        return $this->assertApiStatusCodeSame('POST', $expectedCode, $client, $url, MimeTypes::JSON_LD_MIME_TYPE, $payload);
     }
 
     private function assertApiPostPayloadMinimal(int $expectedCode, Client $client, string $url, array $payload, array $includeAlways = [])

@@ -42,14 +42,14 @@ trait AssertApiOperationsTrait
             if ('GET' === $method) {
                 $this->assertApiStatusCodeSame($method, $expectedCode, $client, $url);
             } else {
-                $this->assertApiStatusCodeSame($method, $expectedCode, $client, $url, []);
+                $this->assertApiStatusCodeSame($method, $expectedCode, $client, $url, MimeTypes::JSON_LD_MIME_TYPE, []);
             }
         }
     }
 
-    private function assertApiStatusCodeSame(string $method, int $expectedCode, Client $client, string $url, array $payload = null)
+    private function assertApiStatusCodeSame(string $method, int $expectedCode, Client $client, string $url, string $acceptHeader = MimeTypes::JSON_LD_MIME_TYPE, array $payload = null)
     {
-        $body = [];
+        $body = ['headers' => ['Accept' => $acceptHeader]];
         if (is_array($payload)) {
             $body['json'] = $payload;
 
