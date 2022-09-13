@@ -88,6 +88,6 @@ class GsService
         $xDpi = (float) $maxWidth / $imageWidth * $dpi;
         $yDpi = (float) $maxHeight / $imageHeight * $dpi;
 
-        return min($xDpi, $yDpi);
+        return min((int) $xDpi, (int) $yDpi);
     }
 }

@@ -46,7 +46,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(ExactSearchFilter::class, properties={"constructionManagers.id": "exact"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
- *
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
