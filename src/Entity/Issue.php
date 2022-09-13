@@ -54,7 +54,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *      },
  *      "get_report"={
  *          "method"="GET",
- *          "path"="/issues/report"
+ *          "path"="/issues/report",
+ *          "formats"={"pdfIssuesReport"={"application/pdf+issues+report"}},
  *      },
  *      "get_summary"={
  *          "method"="GET",

@@ -422,7 +422,7 @@ class IssueTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiGetOk($client, '/api/issues/report?constructionSite='.$constructionSite->getId());
+        $this->assertApiGetOk($client, '/api/issues/report?constructionSite='.$constructionSite->getId(), 'application/pdf+issues+report');
     }
 
     public function testRender()

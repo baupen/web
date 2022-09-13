@@ -96,6 +96,6 @@ class ReportEncoder implements EncoderInterface, NormalizationAwareInterface
 
     public function supportsEncoding(string $format)
     {
-        return 'issues_report' === $format;
+        return 'pdfIssuesReport' === $format;
     }
 }
