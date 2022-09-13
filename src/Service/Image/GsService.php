@@ -33,7 +33,7 @@ class GsService
         $this->logger = $logger;
     }
 
-    public function renderPdfToImage(string $sourcePdfPath, string $targetFilePath): bool
+    public function renderPdfToImage(string $sourcePdfPath, string $targetFilePath, int $maxWidth, int $maxHeight): bool
     {
         // do first low quality render (quality = 1, dpi = 20) to get cropbox size
         $dpi = 20;
@@ -44,7 +44,7 @@ class GsService
 
         // render again tweaking DPI to get expected image size
         // we do not use -dFitPage as it failed to correctly rotate pages in GPL Ghostscript 9.56.1 (2022-04-04)
-        $newDpi = $this->calculateTargetDpi($targetFilePath, $dpi);
+        $newDpi = $this->calculateTargetDpi($targetFilePath, $dpi, $maxWidth, $maxHeight);
         $command = 'gs -sDEVICE=jpeg -dJPEGQ=80 -r'.$newDpi.' -dUseCropBox -sPageList=1  -o "'.$targetFilePath.'" "'.$sourcePdfPath.'"';
         if (!$this->execute($command)) {
             return false;
@@ -72,7 +72,7 @@ class GsService
         return true;
     }
 
-    public function calculateTargetDpi(string $targetFilePath, int $dpi): ?int
+    public function calculateTargetDpi(string $targetFilePath, int $dpi, int $maxWidth, int $maxHeight): ?int
     {
         $imageSize = getimagesize($targetFilePath);
         if (!$imageSize) {
@@ -85,9 +85,9 @@ class GsService
         $imageWidth = min(3 * $imageHeight, $imageWidth);
         $imageHeight = min(3 * $imageWidth, $imageHeight);
 
-        $xScale = 3840.0 / $imageWidth * $dpi;
-        $yScale = 2160.0 / $imageHeight * $dpi;
+        $xDpi = (float) $maxWidth / $imageWidth * $dpi;
+        $yDpi = (float) $maxHeight / $imageHeight * $dpi;
 
-        return max($xScale, $yScale);
+        return min($xDpi, $yDpi);
     }
 }
