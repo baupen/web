@@ -17,8 +17,6 @@ use App\Entity\Issue;
 use App\Service\Interfaces\AnalysisServiceInterface;
 use DateInterval;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class IssueTimeseriesDataProvider extends NoPaginationDataProvider
@@ -60,10 +58,7 @@ class IssueTimeseriesDataProvider extends NoPaginationDataProvider
             $summaries[] = IssueSummaryWithDate::createFromIssueAnalysisWithDate($issueAnalysis, $dateFormat);
         }
 
-        $summaries = array_reverse($summaries); // want earliest (smallest) date first
-
-        $json = $this->serializer->serialize($summaries, 'json');
-
-        return new JsonResponse($json, Response::HTTP_OK, [], true);
+        // want earliest (smallest) date first
+        return array_reverse($summaries);
     }
 }

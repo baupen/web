@@ -21,9 +21,7 @@ use App\Entity\Issue;
 use App\Entity\Map;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class IssueGroupDataProvider extends NoPaginationDataProvider
@@ -99,8 +97,6 @@ class IssueGroupDataProvider extends NoPaginationDataProvider
             $issueGroups[] = IssueGroup::create($iri, $count, $earliestDeadline);
         }
 
-        $json = $this->serializer->serialize($issueGroups, 'json');
-
-        return new JsonResponse($json, Response::HTTP_OK, [], true);
+        return $issueGroups;
     }
 }
