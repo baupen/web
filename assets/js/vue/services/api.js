@@ -303,7 +303,7 @@ const api = {
   getCraftsmenStatistics: function (constructionSite, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
     queryString += '&' + this._getQueryString(query)
-    return this._getItem('/api/craftsmen/statistics?' + queryString)
+    return this._getHydraCollection('/api/craftsmen/statistics?' + queryString)
   },
   getEmailTemplates: function (constructionSite) {
     const queryString = this._getConstructionSiteQuery(constructionSite)
@@ -313,24 +313,24 @@ const api = {
     let queryString = this._getConstructionSiteQuery(constructionSite)
     queryString += '&' + this._getQueryString(query)
     queryString += '&isDeleted=false'
-    return this._getItem('/api/issues/summary?' + queryString)
+    return this._getHydraCollection('/api/issues/summary?' + queryString)
   },
   getIssuesTimeseries: function (constructionSite, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
     queryString += '&' + this._getQueryString(query)
     queryString += '&isDeleted=false'
-    return this._getItem('/api/issues/timeseries?' + queryString)
+    return this._getHydraCollection('/api/issues/timeseries?' + queryString)
   },
   getIssuesGroup: function (constructionSite, group, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
     queryString += '&group=' + group
     queryString += '&' + this._getQueryString(query)
     queryString += '&isDeleted=false'
-    return this._getItem('/api/issues/group?' + queryString)
+    return this._getHydraCollection('/api/issues/group?' + queryString)
   },
   getCraftsmenFeedEntries: function (constructionSite) {
     const queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
-    return this._getItem('/api/craftsmen/feed_entries' + queryString)
+    return this._getHydraCollection('/api/craftsmen/feed_entries' + queryString)
   },
   getIssuesFeedEntries: function (constructionSite, weeksInThePast = 0, query = null) {
     let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
@@ -344,7 +344,7 @@ const api = {
       queryString += '&' + this._getQueryString(query)
     }
 
-    return this._getItem('/api/issues/feed_entries' + queryString)
+    return this._getHydraCollection('/api/issues/feed_entries' + queryString)
   },
   getIssuesRenderLink: function (constructionSite, map, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)

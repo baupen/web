@@ -15,8 +15,6 @@ use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Api\DataProvider\FeedEntryDataProvider\FeedEntryAggregator;
 use App\Entity\Issue;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class FeedEntryDataProvider extends NoPaginationDataProvider
@@ -56,9 +54,6 @@ abstract class FeedEntryDataProvider extends NoPaginationDataProvider
         $feedEntryAggregator = new FeedEntryAggregator($this->iriConverter);
         $this->registerEvents($issues, $feedEntryAggregator);
 
-        $feedEntries = $feedEntryAggregator->createFeedEntries();
-        $json = $this->serializer->serialize($feedEntries, 'json');
-
-        return new JsonResponse($json, Response::HTTP_OK, [], true);
+        return $feedEntryAggregator->createFeedEntries();
     }
 }
