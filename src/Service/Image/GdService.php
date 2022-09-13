@@ -104,7 +104,7 @@ class GdService
             }
 
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
-            imagejpeg($newImage, $targetPath, 90);
+            imagejpeg($newImage, $targetPath, 80);
         } elseif ('png' === $ending) {
             $originalImage = imagecreatefrompng($sourcePath);
             if (!$originalImage) {
@@ -112,7 +112,7 @@ class GdService
             }
 
             imagecopyresampled($newImage, $originalImage, 0, 0, 0, 0, $width, $height, imagesx($originalImage), imagesy($originalImage));
-            imagepng($newImage, $targetPath, 9);
+            imagepng($newImage, $targetPath, 8);
         } elseif ('gif' === $ending) {
             $originalImage = imagecreatefromgif($sourcePath);
             if (!$originalImage) {
