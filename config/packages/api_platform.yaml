@@ -1,4 +1,8 @@
 api_platform:
+    formats:
+        json: [ 'application/json' ]
+        jsonld:   ['application/ld+json']
+        issues_report: [ 'application/vnd.issues_report' ]
     mapping:
         paths: ['%kernel.project_dir%/src/Entity', '%kernel.project_dir%/src/Api/Entity']
     patch_formats:
