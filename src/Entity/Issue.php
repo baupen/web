@@ -50,12 +50,13 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *      },
  *      "get_render"={
  *          "method"="GET",
- *          "path"="/issues/render.jpg"
+ *          "path"="/issues/render.jpg",
+ *          "formats"={"jpeg"},
  *      },
  *      "get_report"={
  *          "method"="GET",
  *          "path"="/issues/report",
- *          "formats"={"pdfIssuesReport"={"application/pdf+issues+report"}},
+ *          "formats"={"pdf"},
  *      },
  *      "get_summary"={
  *          "method"="GET",

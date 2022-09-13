@@ -12,66 +12,27 @@
 namespace App\Api\DataProvider;
 
 use App\Api\DataProvider\Base\NoPaginationDataProvider;
-use App\Controller\Traits\FileResponseTrait;
 use App\Entity\Issue;
-use App\Security\TokenTrait;
-use App\Service\Interfaces\FilterServiceInterface;
-use App\Service\Interfaces\ReportServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class IssueReportDataProvider extends NoPaginationDataProvider
 {
-    use TokenTrait;
-    use FileResponseTrait;
-
-    /**
-     * @var ManagerRegistry
-     */
-    private $managerRegistry;
-
-    /**
-     * @var ReportServiceInterface
-     */
-    private $reportService;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
     /**
      * @var RequestStack
      */
     private $requestStack;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var FilterServiceInterface
-     */
-    private $filterService;
 
     private const ALREADY_CALLED = 'ISSUE_REPORT_DATA_PROVIDER_ALREADY_CALLED';
 
     /**
      * IssueReportDataProvider constructor.
      */
-    public function __construct(ManagerRegistry $managerRegistry, ReportServiceInterface $reportService, RequestStack $requestStack, TokenStorageInterface $tokenStorage, RouterInterface $router, FilterServiceInterface $filterService, iterable $collectionExtensions = [])
+    public function __construct(ManagerRegistry $managerRegistry, RequestStack $requestStack, iterable $collectionExtensions = [])
     {
         parent::__construct($managerRegistry, $collectionExtensions);
 
-        $this->managerRegistry = $managerRegistry;
-        $this->reportService = $reportService;
-        $this->tokenStorage = $tokenStorage;
         $this->requestStack = $requestStack;
-        $this->router = $router;
-        $this->filterService = $filterService;
     }
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool

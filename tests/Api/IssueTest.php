@@ -422,7 +422,7 @@ class IssueTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiGetOk($client, '/api/issues/report?constructionSite='.$constructionSite->getId(), 'application/pdf+issues+report');
+        $this->assertApiGetOk($client, '/api/issues/report?constructionSite='.$constructionSite->getId(), 'application/pdf');
     }
 
     public function testRender()
@@ -435,13 +435,13 @@ class IssueTest extends ApiTestCase
         $map = $constructionSite->getMaps()[0];
 
         $urlWithConstructionSite = '/api/issues/render.jpg?constructionSite='.$constructionSite->getId();
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, $urlWithConstructionSite);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, $urlWithConstructionSite, 'image/jpeg');
 
         $fullUrl = $urlWithConstructionSite.'&map='.$map->getId();
-        $response = $this->assertApiGetOk($client, $fullUrl);
+        $response = $this->assertApiGetOk($client, $fullUrl, 'image/jpeg');
         $this->assertTrue($response->getKernelResponse() instanceof BinaryFileResponse);
 
-        $response = $client->request('GET', $fullUrl, ['headers' => ['X-EMPTY-RESPONSE-EXPECTED' => '']]);
+        $response = $client->request('GET', $fullUrl, ['headers' => ['X-EMPTY-RESPONSE-EXPECTED' => '', 'Accept' => 'image/jpeg']]);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         $this->assertTrue(!$response->getKernelResponse() instanceof BinaryFileResponse);
         $this->assertTrue('' === $response->getContent());

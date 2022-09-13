@@ -11,6 +11,7 @@
 
 namespace App\Api\Encoder;
 
+use ApiPlatform\Core\Util\RequestAttributesExtractor;
 use App\Controller\Traits\FileResponseTrait;
 use App\Entity\Issue;
 use App\Security\TokenTrait;
@@ -24,7 +25,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\NormalizationAwareInterface;
 
-class ReportEncoder implements EncoderInterface, NormalizationAwareInterface
+class IssueReportPdfEncoder implements EncoderInterface, NormalizationAwareInterface
 {
     use TokenTrait;
     use FileResponseTrait;
@@ -96,6 +97,11 @@ class ReportEncoder implements EncoderInterface, NormalizationAwareInterface
 
     public function supportsEncoding(string $format)
     {
-        return 'pdfIssuesReport' === $format;
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        $attributes = RequestAttributesExtractor::extractAttributes($currentRequest);
+
+        return key_exists('collection_operation_name', $attributes) &&
+            'get_report' === $attributes['collection_operation_name'] &&
+            'pdf' === $format;
     }
 }
