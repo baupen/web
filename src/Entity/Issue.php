@@ -17,6 +17,9 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Api\CustomController\IssuesRender;
+use App\Api\CustomController\IssuesReport;
+use App\Api\CustomController\IssuesSummary;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\PatchedOrderFilter;
 use App\Api\Filters\RequiredExactSearchFilter;
@@ -51,16 +54,19 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *      "get_render"={
  *          "method"="GET",
  *          "path"="/issues/render.jpg",
+ *          "controller"=IssuesRender::class,
  *          "formats"={"jpeg"},
  *      },
  *      "get_report"={
  *          "method"="GET",
  *          "path"="/issues/report",
+ *          "controller"=IssuesReport::class,
  *          "formats"={"pdf"},
  *      },
  *      "get_summary"={
  *          "method"="GET",
- *          "path"="/issues/summary"
+ *          "path"="/issues/summary",
+ *          "controller"=IssuesSummary::class
  *      },
  *      "get_timeseries"={
  *          "method"="GET",

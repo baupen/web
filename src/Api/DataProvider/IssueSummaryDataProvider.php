@@ -16,26 +16,17 @@ use App\Api\Entity\IssueSummary;
 use App\Entity\Issue;
 use App\Service\Interfaces\AnalysisServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class IssueSummaryDataProvider extends NoPaginationDataProvider
 {
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
-
     /**
      * @var AnalysisServiceInterface
      */
     private $analysisService;
 
-    public function __construct(SerializerInterface $serializer, ManagerRegistry $managerRegistry, AnalysisServiceInterface $analysisService, iterable $collectionExtensions = [])
+    public function __construct(ManagerRegistry $managerRegistry, AnalysisServiceInterface $analysisService, iterable $collectionExtensions = [])
     {
         parent::__construct($managerRegistry, $collectionExtensions);
-        $this->serializer = $serializer;
         $this->analysisService = $analysisService;
     }
 
@@ -51,8 +42,7 @@ class IssueSummaryDataProvider extends NoPaginationDataProvider
 
         $issueAnalysis = $this->analysisService->createIssueAnalysis($rootAlias, $queryBuilder);
         $summary = IssueSummary::createFromIssueAnalysis($issueAnalysis);
-        $json = $this->serializer->serialize($summary, 'json');
 
-        return new JsonResponse($json, Response::HTTP_OK, [], true);
+        return [$summary];
     }
 }

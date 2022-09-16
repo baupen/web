@@ -9,9 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Encoder;
+namespace App\Api\CustomController;
 
-use ApiPlatform\Core\Util\RequestAttributesExtractor;
 use App\Controller\Traits\FileResponseTrait;
 use App\Controller\Traits\ImageRequestTrait;
 use App\Entity\Issue;
@@ -20,10 +19,8 @@ use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Encoder\EncoderInterface;
-use Symfony\Component\Serializer\Encoder\NormalizationAwareInterface;
 
-class IssueRenderJpegEncoder implements EncoderInterface, NormalizationAwareInterface
+class IssuesRender
 {
     use FileResponseTrait;
     use ImageRequestTrait;
@@ -48,7 +45,7 @@ class IssueRenderJpegEncoder implements EncoderInterface, NormalizationAwareInte
      */
     private $pathService;
 
-    public function __construct(ManagerRegistry $managerRegistry, RequestStack $requestStack, ImageServiceInterface $imageService, PathServiceInterface $pathService, iterable $collectionExtensions = [])
+    public function __construct(ManagerRegistry $managerRegistry, RequestStack $requestStack, ImageServiceInterface $imageService, PathServiceInterface $pathService)
     {
         $this->requestStack = $requestStack;
         $this->manager = $managerRegistry;
@@ -56,7 +53,7 @@ class IssueRenderJpegEncoder implements EncoderInterface, NormalizationAwareInte
         $this->pathService = $pathService;
     }
 
-    public function encode($data, string $format, array $context = [])
+    public function __invoke($data)
     {
         /** @var Issue[] $data */
         $currentRequest = $this->requestStack->getCurrentRequest();
@@ -71,15 +68,5 @@ class IssueRenderJpegEncoder implements EncoderInterface, NormalizationAwareInte
         }
 
         return $this->tryCreateInlineFileResponse($path, 'render.jpg', false);
-    }
-
-    public function supportsEncoding(string $format)
-    {
-        $currentRequest = $this->requestStack->getCurrentRequest();
-        $attributes = RequestAttributesExtractor::extractAttributes($currentRequest);
-
-        return key_exists('collection_operation_name', $attributes) &&
-            'get_render' === $attributes['collection_operation_name'] &&
-            'jpeg' === $format;
     }
 }

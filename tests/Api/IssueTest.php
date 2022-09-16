@@ -25,6 +25,7 @@ use App\Tests\Traits\TestDataTrait;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response as StatusCode;
 
 class IssueTest extends ApiTestCase
 {
@@ -422,7 +423,8 @@ class IssueTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiGetOk($client, '/api/issues/report?constructionSite='.$constructionSite->getId(), 'application/pdf');
+        $this->assertApiGetStatusCodeSame(StatusCode::HTTP_FOUND, $client, '/api/issues/report?constructionSite='.$constructionSite->getId(), 'application/pdf');
+        $this->assertResponseRedirects();
     }
 
     public function testRender()

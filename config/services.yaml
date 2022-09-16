@@ -93,6 +93,13 @@ services:
         decorates: 'api_platform.serializer.context_builder'
         arguments: [ '@App\Api\Serializer\IssueContextBuilder.inner' ]
 
+    App\Api\CustomController\IssuesRender:
+        tags: [ 'controller.service_arguments']
+    App\Api\CustomController\IssuesReport:
+        tags: [ 'controller.service_arguments']
+    App\Api\CustomController\IssuesSummary:
+        tags: [ 'controller.service_arguments']
+
     'App\Api\Serializer\ConstructionSiteSerializer':
         bind: { $decoratedNormalizer: '@api_platform.jsonld.normalizer.item' }
     'App\Api\Serializer\CraftsmanSerializer':

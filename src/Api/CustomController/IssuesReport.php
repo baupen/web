@@ -9,23 +9,21 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Api\Encoder;
+namespace App\Api\CustomController;
 
-use ApiPlatform\Core\Util\RequestAttributesExtractor;
 use App\Controller\Traits\FileResponseTrait;
 use App\Entity\Issue;
 use App\Security\TokenTrait;
 use App\Service\Interfaces\FilterServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\Pdf\ReportElements;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Serializer\Encoder\EncoderInterface;
-use Symfony\Component\Serializer\Encoder\NormalizationAwareInterface;
 
-class IssueReportPdfEncoder implements EncoderInterface, NormalizationAwareInterface
+class IssuesReport
 {
     use TokenTrait;
     use FileResponseTrait;
@@ -67,7 +65,7 @@ class IssueReportPdfEncoder implements EncoderInterface, NormalizationAwareInter
         $this->filterService = $filterService;
     }
 
-    public function encode($data, string $format, array $context = [])
+    public function __invoke($data)
     {
         /** @var Issue[] $data */
         $currentRequest = $this->requestStack->getCurrentRequest();
@@ -81,7 +79,9 @@ class IssueReportPdfEncoder implements EncoderInterface, NormalizationAwareInter
         $filter = $this->filterService->createFromQuery($filters);
         $filename = $this->reportService->generatePdfReport($data, $filter, $reportElements, $author);
 
-        return $this->router->generate('public_download', ['filename' => $filename]);
+        $path = $this->router->generate('public_download', ['filename' => $filename]);
+
+        return new RedirectResponse($path);
     }
 
     private function getAuthor(?TokenInterface $token): ?string
@@ -93,15 +93,5 @@ class IssueReportPdfEncoder implements EncoderInterface, NormalizationAwareInter
         } else {
             return null;
         }
-    }
-
-    public function supportsEncoding(string $format)
-    {
-        $currentRequest = $this->requestStack->getCurrentRequest();
-        $attributes = RequestAttributesExtractor::extractAttributes($currentRequest);
-
-        return key_exists('collection_operation_name', $attributes) &&
-            'get_report' === $attributes['collection_operation_name'] &&
-            'pdf' === $format;
     }
 }
