@@ -313,7 +313,7 @@ const api = {
     let queryString = this._getConstructionSiteQuery(constructionSite)
     queryString += '&' + this._getQueryString(query)
     queryString += '&isDeleted=false'
-    return this._getHydraCollection('/api/issues/summary?' + queryString)
+    return this._getItem('/api/issues/summary?' + queryString)
   },
   getIssuesTimeseries: function (constructionSite, query = {}) {
     let queryString = this._getConstructionSiteQuery(constructionSite)
