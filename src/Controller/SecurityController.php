@@ -22,6 +22,7 @@ use App\Security\LoginFormAuthenticator;
 use App\Service\Interfaces\EmailServiceInterface;
 use App\Service\Interfaces\SampleServiceInterface;
 use App\Service\Interfaces\UserServiceInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use LogicException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -42,7 +43,7 @@ class SecurityController extends BaseFormController
     /**
      * @Route("/login", name="login")
      */
-    public function login(AuthenticationUtils $authenticationUtils, EmailServiceInterface $emailService, LoggerInterface $logger): Response
+    public function login(AuthenticationUtils $authenticationUtils, EmailServiceInterface $emailService, ManagerRegistry $managerRegistry, LoggerInterface $logger): Response
     {
         if ($this->getUser()) {
             return $this->redirectToRoute('index');
@@ -58,7 +59,9 @@ class SecurityController extends BaseFormController
             $this->displayError($this->getTranslator()->trans('login.errors.email_not_found', [], 'security'));
         } elseif ($error instanceof UserWithoutPasswordAuthenticationException) {
             $this->displayError($this->getTranslator()->trans('login.errors.registration_not_completed', [], 'security'));
-            $emailService->sendRegisterConfirmLink($error->getUser());
+            $userRepo = $managerRegistry->getRepository(ConstructionManager::class);
+            $user = $userRepo->find($error->getUserId());
+            $emailService->sendRegisterConfirmLink($user);
         } elseif (null !== $error) {
             $this->displayError($this->getTranslator()->trans('login.errors.login_failed', [], 'security'));
             $logger->error('login failed', ['exception' => $error]);
