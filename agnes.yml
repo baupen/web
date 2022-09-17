@@ -33,6 +33,7 @@ scripts:
       - composer install --verbose --prefer-dist --no-interaction --no-dev --optimize-autoloader --no-scripts
       - yarn install
       - yarn run encore production
+      - cp public/build/email.*.css public/build/email.css
       - rm -rf node_modules
 
   deploy:
