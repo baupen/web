@@ -1,6 +1,7 @@
 api_platform:
     formats:
         jsonld: ['application/ld+json']
+        json: ['application/json']
         pdf: [ 'application/pdf' ]
         jpeg: [ 'image/jpeg' ]
     mapping:
