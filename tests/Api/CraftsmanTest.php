@@ -231,7 +231,7 @@ class CraftsmanTest extends ApiTestCase
             ],
         ];
 
-        foreach ($feedEntries as $feedEntry) {
+        foreach ($feedEntries['hydra:member'] as $feedEntry) {
             $foundCombinationIndex = null;
             for ($i = 0; $i < count($expectedCombinations); ++$i) {
                 $expectedCombination = $expectedCombinations[$i];
@@ -335,7 +335,7 @@ class CraftsmanTest extends ApiTestCase
         $response = $this->assertApiGetOk($client, '/api/craftsmen/statistics?constructionSite='.$craftsman->getConstructionSite()->getId());
         $craftsmenStatistics = json_decode($response->getContent(), true);
         $statistics = [];
-        foreach ($craftsmenStatistics as $craftsmenStatistic) {
+        foreach ($craftsmenStatistics['hydra:member'] as $craftsmenStatistic) {
             if ($craftsmenStatistic['craftsman'] === $craftsmanIri) {
                 $statistics = $craftsmenStatistic;
             }

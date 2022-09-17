@@ -18,8 +18,6 @@ use App\Api\Entity\CraftsmanStatistics;
 use App\Entity\Craftsman;
 use App\Service\Interfaces\AnalysisServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
@@ -83,8 +81,6 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
             $statistics[] = CraftsmanStatistics::createFromCraftsmanAnalysis($craftsmanAnalysis, $craftsmanIri);
         }
 
-        $json = $this->serializer->serialize($statistics, 'json');
-
-        return new JsonResponse($json, Response::HTTP_OK, [], true);
+        return $statistics;
     }
 }

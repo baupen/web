@@ -13,15 +13,28 @@ namespace App\Api\Entity;
 
 use App\Service\Analysis\CraftsmanIssueAnalysis;
 use App\Service\Analysis\IssueAnalysis;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 class IssueSummary
 {
+    /**
+     * @Groups({"issue-read","craftsman-read"})
+     */
     private int $newCount;
 
+    /**
+     * @Groups({"issue-read","craftsman-read"})
+     */
     private int $openCount;
 
+    /**
+     * @Groups({"issue-read","craftsman-read"})
+     */
     private int $inspectableCount;
 
+    /**
+     * @Groups({"issue-read","craftsman-read"})
+     */
     private int $closedCount;
 
     public static function createFromCraftsmanIssueAnalysis(CraftsmanIssueAnalysis $craftsmanIssueAnalysis)

@@ -21,7 +21,6 @@ use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Response;
 
 class IssueRenderDataProvider extends NoPaginationDataProvider
 {
@@ -71,22 +70,16 @@ class IssueRenderDataProvider extends NoPaginationDataProvider
 
         $currentRequest = $this->requestStack->getCurrentRequest();
         $size = $this->getValidImageSizeFromQuery($currentRequest->query);
+        $currentRequest->attributes->set('size', $size);
 
         $map = $this->manager->getRepository(Map::class)->find($existingFilter['map']);
         if (null === $map || $map->getConstructionSite()->getId() !== $existingFilter['constructionSite'] || !$map->getFile()) {
-            throw new BadRequestException('The map does not exist, does not belong to the construction site, or has not file assigned.');
+            throw new BadRequestException('The map does not exist, does not belong to the construction site, or has no file assigned.');
         }
+        $currentRequest->attributes->set('map', $map);
 
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
-        $issues = $queryBuilder->getQuery()->getResult();
 
-        $path = $this->imageService->renderMapFileWithIssuesToJpg($map->getFile(), $issues, $size);
-
-        $emptyAnswer = $currentRequest->headers->has('X-EMPTY-RESPONSE-EXPECTED');
-        if ($emptyAnswer) {
-            return new Response();
-        }
-
-        return $this->tryCreateInlineFileResponse($path, 'render.jpg', false);
+        return $queryBuilder->getQuery()->getResult();
     }
 }

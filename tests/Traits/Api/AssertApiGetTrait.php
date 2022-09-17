@@ -16,13 +16,13 @@ use Symfony\Component\HttpFoundation\Response as StatusCode;
 
 trait AssertApiGetTrait
 {
-    private function assertApiGetOk(Client $client, string $url)
+    private function assertApiGetOk(Client $client, string $url, string $acceptHeader = MimeTypes::JSON_LD_MIME_TYPE)
     {
-        return $this->assertApiGetStatusCodeSame(StatusCode::HTTP_OK, $client, $url);
+        return $this->assertApiGetStatusCodeSame(StatusCode::HTTP_OK, $client, $url, $acceptHeader);
     }
 
-    private function assertApiGetStatusCodeSame(int $expectedCode, Client $client, string $url)
+    private function assertApiGetStatusCodeSame(int $expectedCode, Client $client, string $url, string $acceptHeader = MimeTypes::JSON_LD_MIME_TYPE)
     {
-        return $this->assertApiStatusCodeSame('GET', $expectedCode, $client, $url);
+        return $this->assertApiStatusCodeSame('GET', $expectedCode, $client, $url, $acceptHeader);
     }
 }

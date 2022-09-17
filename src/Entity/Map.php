@@ -49,7 +49,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
- *
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
@@ -138,17 +137,11 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         return null !== $this->constructionSite;
     }
 
-    /**
-     * @return Map|null
-     */
     public function getParent(): ?self
     {
         return $this->parent;
     }
 
-    /**
-     * @param Map|null $parent
-     */
     public function setParent(?self $parent): void
     {
         $this->parent = $parent;

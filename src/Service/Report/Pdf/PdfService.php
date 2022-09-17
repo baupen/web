@@ -23,7 +23,6 @@ use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PdfService
@@ -44,11 +43,6 @@ class PdfService
     private $doctrine;
 
     /**
-     * @var SerializerInterface
-     */
-    private $serializer;
-
-    /**
      * @var TranslatorInterface
      */
     private $translator;
@@ -61,10 +55,9 @@ class PdfService
     /**
      * ReportService constructor.
      */
-    public function __construct(ImageServiceInterface $imageService, SerializerInterface $serializer, TranslatorInterface $translator, PathServiceInterface $pathService, ManagerRegistry $doctrine, string $reportAssetDir)
+    public function __construct(ImageServiceInterface $imageService, TranslatorInterface $translator, PathServiceInterface $pathService, ManagerRegistry $doctrine, string $reportAssetDir)
     {
         $this->imageService = $imageService;
-        $this->serializer = $serializer;
         $this->translator = $translator;
         $this->doctrine = $doctrine;
         $this->pathService = $pathService;

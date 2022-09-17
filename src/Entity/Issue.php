@@ -17,6 +17,9 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Api\CustomController\IssuesRender;
+use App\Api\CustomController\IssuesReport;
+use App\Api\CustomController\IssuesSummary;
 use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\PatchedOrderFilter;
 use App\Api\Filters\RequiredExactSearchFilter;
@@ -50,15 +53,20 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *      },
  *      "get_render"={
  *          "method"="GET",
- *          "path"="/issues/render.jpg"
+ *          "path"="/issues/render.jpg",
+ *          "controller"=IssuesRender::class,
+ *          "formats"={"jpeg"},
  *      },
  *      "get_report"={
  *          "method"="GET",
- *          "path"="/issues/report"
+ *          "path"="/issues/report",
+ *          "controller"=IssuesReport::class,
+ *          "formats"={"pdf"},
  *      },
  *      "get_summary"={
  *          "method"="GET",
- *          "path"="/issues/summary"
+ *          "path"="/issues/summary",
+ *          "controller"=IssuesSummary::class
  *      },
  *      "get_timeseries"={
  *          "method"="GET",
@@ -80,9 +88,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ApiFilter(NumericFilter::class, properties={"number"})
  * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "map": "exact", "description": "partial"})
  * @ApiFilter(StateFilter::class, properties={"state"})
- *
  * @ApiFilter(PatchedOrderFilter::class, properties={"lastChangedAt": "ASC", "deadline"={"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "ASC"}, "number": "ASC"})
- *
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks
  */

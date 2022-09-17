@@ -35,7 +35,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     normalizationContext={"groups"={"filter-read"}, "skip_null_values"=false},
  *     denormalizationContext={"groups"={"filter-write"}},
  * )
- *
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks
  */

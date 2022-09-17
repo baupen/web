@@ -12,11 +12,14 @@
 namespace App\Api\Entity;
 
 use App\Service\Analysis\IssueAnalysis;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 class IssueSummaryWithDate extends IssueSummary
 {
     /**
      * @var string
+     *
+     * @Groups({"issue-read"})
      */
     private $date;
 

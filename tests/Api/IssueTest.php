@@ -25,6 +25,7 @@ use App\Tests\Traits\TestDataTrait;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response as StatusCode;
 
 class IssueTest extends ApiTestCase
 {
@@ -422,7 +423,8 @@ class IssueTest extends ApiTestCase
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiGetOk($client, '/api/issues/report?constructionSite='.$constructionSite->getId());
+        $this->assertApiGetStatusCodeSame(StatusCode::HTTP_FOUND, $client, '/api/issues/report?constructionSite='.$constructionSite->getId(), 'application/pdf');
+        $this->assertResponseRedirects();
     }
 
     public function testRender()
@@ -435,13 +437,13 @@ class IssueTest extends ApiTestCase
         $map = $constructionSite->getMaps()[0];
 
         $urlWithConstructionSite = '/api/issues/render.jpg?constructionSite='.$constructionSite->getId();
-        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, $urlWithConstructionSite);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, $urlWithConstructionSite, 'image/jpeg');
 
         $fullUrl = $urlWithConstructionSite.'&map='.$map->getId();
-        $response = $this->assertApiGetOk($client, $fullUrl);
+        $response = $this->assertApiGetOk($client, $fullUrl, 'image/jpeg');
         $this->assertTrue($response->getKernelResponse() instanceof BinaryFileResponse);
 
-        $response = $client->request('GET', $fullUrl, ['headers' => ['X-EMPTY-RESPONSE-EXPECTED' => '']]);
+        $response = $client->request('GET', $fullUrl, ['headers' => ['X-EMPTY-RESPONSE-EXPECTED' => '', 'Accept' => 'image/jpeg']]);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         $this->assertTrue(!$response->getKernelResponse() instanceof BinaryFileResponse);
         $this->assertTrue('' === $response->getContent());
@@ -538,7 +540,7 @@ class IssueTest extends ApiTestCase
         }
 
         // each group count should match with map issue count
-        foreach ($groups as $group) {
+        foreach ($groups['hydra:member'] as $group) {
             $mapIri = $group['entity'];
 
             $map = $mapLookupByIri[$mapIri];
@@ -632,7 +634,7 @@ class IssueTest extends ApiTestCase
             ],
         ];
 
-        foreach ($feedEntries as $feedEntry) {
+        foreach ($feedEntries['hydra:member'] as $feedEntry) {
             $foundCombinationIndex = null;
             for ($i = 0; $i < count($expectedCombinations); ++$i) {
                 $expectedCombination = $expectedCombinations[$i];
@@ -718,10 +720,11 @@ class IssueTest extends ApiTestCase
         $response = $this->assertApiGetOk($client, '/api/issues/timeseries?constructionSite='.$constructionSite->getId());
         $summaries = json_decode($response->getContent(), true);
 
-        $tomorrowEntry = $summaries[count($summaries) - 1];
-        $todayEntry = $summaries[count($summaries) - 2];
-        $yesterdayEntry = $summaries[count($summaries) - 3];
-        $dayBeforeYesterdayEntry = $summaries[count($summaries) - 4];
+        $members = $summaries['hydra:member'];
+        $tomorrowEntry = $members[count($members) - 1];
+        $todayEntry = $members[count($members) - 2];
+        $yesterdayEntry = $members[count($members) - 3];
+        $dayBeforeYesterdayEntry = $members[count($members) - 4];
 
         $this->assertEquals((new \DateTime('tomorrow'))->format(DateTimeFormatter::ISO_DATE_FORMAT), $tomorrowEntry['date']);
 

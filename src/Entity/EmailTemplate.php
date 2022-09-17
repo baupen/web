@@ -40,7 +40,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     attributes={"pagination_enabled"=false}
  * )
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
- *
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
