@@ -28,6 +28,9 @@ class UTCDateTimeType extends DateTimeType
      */
     private static $local;
 
+    /**
+     * @return mixed
+     */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         if (null === $value) {
@@ -49,6 +52,9 @@ class UTCDateTimeType extends DateTimeType
         throw ConversionException::conversionFailedInvalidType($value, $this->getName(), ['null', 'DateTime']);
     }
 
+    /**
+     * @return mixed
+     */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         if (null === $value || $value instanceof \DateTime) {

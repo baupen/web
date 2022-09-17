@@ -18,18 +18,30 @@ use Throwable;
 class UserWithoutPasswordAuthenticationException extends AuthenticationException
 {
     /**
-     * @var ConstructionManager
+     * @var string
      */
-    private $user;
+    private $userId;
 
     public function __construct(ConstructionManager $user, $message = '', $code = 0, Throwable $previous = null)
     {
         $this->user = $user;
+        $this->userId = $user->getId();
         parent::__construct($message, $code, $previous);
     }
 
-    public function getUser(): ConstructionManager
+    public function getUserId(): string
     {
-        return $this->user;
+        return $this->userId;
+    }
+
+    public function __serialize(): array
+    {
+        return [$this->userId, parent::__serialize()];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        [$this->userId, $parentData] = $data;
+        parent::__unserialize($parentData);
     }
 }

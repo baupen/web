@@ -20,7 +20,7 @@ class Platform extends MySqlPlatform
     /**
      * {@inheritdoc}
      */
-    public function getTruncateTableSQL($tableName, $cascade = false)
+    public function getTruncateTableSQL($tableName, $cascade = false): string
     {
         $truncateSql = parent::getTruncateTableSQL($tableName, $cascade);
 
