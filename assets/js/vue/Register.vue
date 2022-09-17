@@ -33,7 +33,7 @@ export default {
       const queryString = window.location.search;
       const urlParams = new URLSearchParams(queryString);
 
-      return urlParams.has("state") ? urlParams.get("state") : null
+      return urlParams.has("state") ? Number(urlParams.get("state")) : null
     }
   },
   mounted () {
