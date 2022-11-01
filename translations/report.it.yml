@@ -18,6 +18,7 @@ issues:
   with_images: 'con immagini'
   with_renders: 'con mappe'
 table:
+  total: 'Totale'
   by_craftsman: 'Pendenze per imprenditore'
   by_map: 'Pendenze per piano di costruzione'
   by_trade: 'Pendenze per settore'
