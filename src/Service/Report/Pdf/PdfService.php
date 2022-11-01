@@ -451,6 +451,19 @@ class PdfService
         }
     }
 
+    private function getAggregatedIssuesTotal(array $tableContent)
+    {
+        $total = $this->translator->trans('table.total', [], 'report');
+        $totalRow = [$total, 0, 0, 0];
+        foreach ($tableContent as $entry) {
+            $totalRow[1] += $entry[1];
+            $totalRow[2] += $entry[2];
+            $totalRow[3] += $entry[3];
+        }
+
+        return $totalRow;
+    }
+
     /**
      * @param Issue[] $issues
      */
@@ -471,9 +484,10 @@ class PdfService
 
         // add accumulated info
         $this->addAggregatedIssuesInfo($orderedMaps, $issuesPerMap, $tableContent, $tableHeader);
+        $tableFooter = $this->getAggregatedIssuesTotal($tableContent);
 
         // write to pdf
-        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_map', [], 'report'), 100);
+        $report->addTable($tableHeader, $tableContent, $tableFooter, $this->translator->trans('table.by_map', [], 'report'), 100);
     }
 
     /**
@@ -496,9 +510,10 @@ class PdfService
 
         // add accumulated info
         $this->addAggregatedIssuesInfo($orderedCraftsman, $issuesPerCraftsman, $tableContent, $tableHeader);
+        $tableFooter = $this->getAggregatedIssuesTotal($tableContent);
 
         // write to pdf
-        $report->addTable($tableHeader, $tableContent, $this->translator->trans('table.by_craftsman', [], 'report'), 100);
+        $report->addTable($tableHeader, $tableContent, $tableFooter, $this->translator->trans('table.by_craftsman', [], 'report'), 100);
     }
 
     private function setScriptRuntime(int $numberOfIssues): void

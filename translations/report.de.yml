@@ -18,6 +18,7 @@ issues:
   with_images: 'mit Bildern'
   with_renders: 'mit Bauplänen'
 table:
+  total: 'Total'
   by_craftsman: 'Pendenzen nach Unternehmer'
   by_map: 'Pendenzen nach Bauplan'
   by_trade: 'Pendenzen nach Handwerk'

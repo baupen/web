@@ -202,7 +202,7 @@ class Report
      * @param string|null $tableTitle
      * @param mixed|null  $firstColumnSize
      */
-    public function addTable($tableHead, $tableContent, $tableTitle = null, $firstColumnSize = null)
+    public function addTable($tableHead, $tableContent, $tableFooter, $tableTitle = null, $firstColumnSize = null)
     {
         $this->setDefaults();
 
@@ -214,21 +214,26 @@ class Report
         // adapt font for table content
         $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
         $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
-        $this->pdfDocument->SetFont(...$this->pdfDesign->getEmphasisFontFamily());
 
-        // make header upper case
-        $row = [];
-        foreach ($tableHead as $item) {
-            $row[] = mb_strtoupper($item, 'UTF-8');
-        }
+        $printEmphasizedRow = function ($content) use ($firstColumnSize) {
+            // make upper case
+            $row = [];
+            foreach ($content as $item) {
+                $row[] = mb_strtoupper($item, 'UTF-8');
+            }
 
-        // print header
-        $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
-        $maxTries = 3;
-        while (!$this->printRow($row, true, $this->pdfDesign->getLightBackground(), $firstColumnSize) && $maxTries > 0) {
-            // simply retry to print row if it did not work
-            --$maxTries;
-        }
+            $this->pdfDocument->SetFillColor(...$this->pdfDesign->getLightBackground());
+            $this->pdfDocument->SetFont(...$this->pdfDesign->getEmphasisFontFamily());
+
+            // print
+            $maxTries = 3;
+            while (!$this->printRow($row, true, $this->pdfDesign->getLightBackground(), $firstColumnSize) && $maxTries > 0) {
+                // simply retry to print row if it did not work
+                --$maxTries;
+            }
+        };
+
+        $printEmphasizedRow($tableHead);
 
         // print content
         $currentRow = 0;
@@ -242,6 +247,8 @@ class Report
             }
             ++$currentRow;
         }
+
+        $printEmphasizedRow($tableFooter);
 
         // define start of next part
         $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
