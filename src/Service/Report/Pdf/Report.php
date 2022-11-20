@@ -120,7 +120,7 @@ class Report
 
     public function addMap(string $name, ?string $context, ?string $mapImageFilePath)
     {
-        $this->pdfDocument->startPage();
+        $this->pdfDocument->AddPage();
 
         $this->setDefaults();
 
