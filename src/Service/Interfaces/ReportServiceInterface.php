@@ -17,13 +17,12 @@ use App\Entity\Filter;
 use App\Service\Report\Email\ConstructionSiteReport;
 use App\Service\Report\Email\CraftsmanReport;
 use App\Service\Report\Pdf\ReportElements;
-use DateTime;
 
 interface ReportServiceInterface
 {
     public function generatePdfReport(array $issues, Filter $filter, ReportElements $reportElements, ?string $author = null): string;
 
-    public function createConstructionSiteReport(ConstructionSite $constructionSite, DateTime $comparisonTimestamp): ConstructionSiteReport;
+    public function createConstructionSiteReport(ConstructionSite $constructionSite, \DateTime $comparisonTimestamp): ConstructionSiteReport;
 
-    public function createCraftsmanReport(Craftsman $craftsman, ?DateTime $comparisonTimestamp): CraftsmanReport;
+    public function createCraftsmanReport(Craftsman $craftsman, ?\DateTime $comparisonTimestamp): CraftsmanReport;
 }

@@ -11,7 +11,6 @@
 
 namespace App\Doctrine;
 
-use DateTimeInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\DateTimeType;
@@ -37,7 +36,7 @@ class UTCDateTimeType extends DateTimeType
             return null;
         }
 
-        if ($value instanceof DateTimeInterface) {
+        if ($value instanceof \DateTimeInterface) {
             $originalTimezone = $value->getTimezone();
 
             $value->setTimezone(self::getUtc());

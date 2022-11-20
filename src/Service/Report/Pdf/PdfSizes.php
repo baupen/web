@@ -154,7 +154,6 @@ class PdfSizes
     }
 
     /**
-     * @param $numberOfColumns
      * @param bool       $compact
      * @param mixed|null $firstColumnSize
      *
@@ -172,8 +171,6 @@ class PdfSizes
     }
 
     /**
-     * @param $currentColumn
-     * @param $numberOfColumns
      * @param bool       $compact
      * @param mixed|null $firstColumnSize
      *
@@ -191,8 +188,6 @@ class PdfSizes
     }
 
     /**
-     * @param $currentColumn
-     * @param $numberOfColumns
      * @param bool       $compact
      * @param mixed|null $firstColumnSize
      *

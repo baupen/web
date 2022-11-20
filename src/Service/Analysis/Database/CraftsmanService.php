@@ -97,7 +97,7 @@ class CraftsmanService
         $openIssuesQueryBuilder = $this->getOpenIssuesQueryBuilder('i', $craftsmen);
         $issueRepository = $this->manager->getRepository(Issue::class);
         $this->groupByCraftsmanAndEvaluate(
-            $openIssuesQueryBuilder, 'COUNT('.'i'.')',
+            $openIssuesQueryBuilder, 'COUNT(i)',
             function (string $craftsmanId, $value) use ($targetByCraftsman) {
                 $targetByCraftsman[$craftsmanId]->setOpenCount($value);
             }
@@ -106,7 +106,7 @@ class CraftsmanService
         $queryBuilder = $this->getCraftsmanIssuesQueryBuilder('i', $craftsmen);
         $queryBuilderClosedIssues = $issueRepository->filterClosedIssues('i', clone $queryBuilder);
         $this->groupByCraftsmanAndEvaluate(
-            $queryBuilderClosedIssues, 'COUNT('.'i'.')',
+            $queryBuilderClosedIssues, 'COUNT(i)',
             function (string $craftsmanId, $value) use ($targetByCraftsman) {
                 $targetByCraftsman[$craftsmanId]->setClosedCount($value);
             }

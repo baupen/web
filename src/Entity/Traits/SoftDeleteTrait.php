@@ -21,13 +21,13 @@ use Doctrine\ORM\Mapping as ORM;
 trait SoftDeleteTrait
 {
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $deletedAt;
 
-    public function getDeletedAt(): ?DateTime
+    public function getDeletedAt(): ?\DateTime
     {
         return $this->deletedAt;
     }

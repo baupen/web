@@ -12,7 +12,6 @@
 namespace App\Enum\Base;
 
 use ReflectionClass;
-use ReflectionException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class BaseEnum
@@ -32,8 +31,6 @@ abstract class BaseEnum
     /**
      * returns a translation string for the passed enum value.
      *
-     * @param $enumValue
-     *
      * @return string
      */
     public static function getTranslationForValue($enumValue, TranslatorInterface $translator)
@@ -45,8 +42,6 @@ abstract class BaseEnum
 
     /**
      * makes from camelCase => camel_case.
-     *
-     * @param $camelCase
      *
      * @return string
      */
@@ -64,7 +59,7 @@ abstract class BaseEnum
     {
         $res = [];
         try {
-            $reflection = new ReflectionClass(static::class);
+            $reflection = new \ReflectionClass(static::class);
             $choices = $reflection->getConstants();
 
             foreach ($choices as $name => $value) {
@@ -72,7 +67,7 @@ abstract class BaseEnum
             }
 
             return ['choices' => $res, 'choice_translation_domain' => 'enum_'.$this->camelCaseToTranslation($reflection->getShortName())];
-        } catch (ReflectionException $e) {
+        } catch (\ReflectionException $e) {
             // this never happens due to ReflectionClass is passed the class of the $this object (always valid)
         }
 
@@ -82,14 +77,12 @@ abstract class BaseEnum
     /**
      * returns a translation string for the passed enum value.
      *
-     * @param $enumValue
-     *
      * @return bool|string
      */
     private function getTranslationForValueInternal($enumValue, TranslatorInterface $translator)
     {
         try {
-            $reflection = new ReflectionClass(static::class);
+            $reflection = new \ReflectionClass(static::class);
             $choices = $reflection->getConstants();
 
             foreach ($choices as $name => $value) {
@@ -97,7 +90,7 @@ abstract class BaseEnum
                     return $translator->trans(mb_strtolower($name), [], 'enum_'.$this->camelCaseToTranslation($reflection->getShortName()));
                 }
             }
-        } catch (ReflectionException $e) {
+        } catch (\ReflectionException $e) {
             // this never happens due to ReflectionClass is passed the class of the $this object (always valid)
         }
 

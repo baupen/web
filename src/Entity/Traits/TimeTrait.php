@@ -13,7 +13,6 @@ namespace App\Entity\Traits;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 
 /*
  * automatically keeps track of creation time & last change time
@@ -22,14 +21,14 @@ use Exception;
 trait TimeTrait
 {
     /**
-     * @var DateTime
+     * @var \DateTime
      *
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      *
      * @ORM\Column(type="datetime")
      */
@@ -38,27 +37,27 @@ trait TimeTrait
     /**
      * @ORM\PrePersist()
      *
-     * @throws Exception
-     * @throws Exception
+     * @throws \Exception
+     * @throws \Exception
      */
     public function prePersistTime()
     {
-        $this->createdAt = new DateTime();
-        $this->lastChangedAt = new DateTime();
+        $this->createdAt = new \DateTime();
+        $this->lastChangedAt = new \DateTime();
     }
 
     /**
      * @ORM\PreUpdate()
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function preUpdateTime()
     {
-        $this->lastChangedAt = new DateTime();
+        $this->lastChangedAt = new \DateTime();
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -66,7 +65,7 @@ trait TimeTrait
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getLastChangedAt()
     {

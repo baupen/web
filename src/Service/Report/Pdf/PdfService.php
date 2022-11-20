@@ -21,7 +21,6 @@ use App\Helper\FileHelper;
 use App\Helper\IssueHelper;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
-use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -70,7 +69,7 @@ class PdfService
 
         $this->setScriptRuntime(count($issues));
 
-        $formattedDate = (new DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT);
+        $formattedDate = (new \DateTime())->format(DateTimeFormatter::DATE_TIME_FORMAT);
         if (null === $author) {
             $footer = $this->translator->trans('generated', ['%date%' => $formattedDate], 'report');
         } else {
@@ -92,7 +91,7 @@ class PdfService
         FileHelper::ensureFolderExists($folder);
 
         $sanitizedConstructionSiteName = FileHelper::sanitizeFileName($constructionSite->getName());
-        $humanReadablePrefix = (new DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT).'_'.$sanitizedConstructionSiteName;
+        $humanReadablePrefix = (new \DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT).'_'.$sanitizedConstructionSiteName;
         $optimalFilename = $humanReadablePrefix.'.pdf';
         $filename = file_exists($optimalFilename) ? $humanReadablePrefix.'_'.uniqid().'.pdf' : $optimalFilename;
 
@@ -290,7 +289,7 @@ class PdfService
         );
     }
 
-    private function tryGetDateString(?DateTime $before, ?DateTime $after): ?string
+    private function tryGetDateString(?\DateTime $before, ?\DateTime $after): ?string
     {
         $beforeString = null !== $before ? $before->format(DateTimeFormatter::DATE_FORMAT) : null;
         $afterString = null !== $after ? $after->format(DateTimeFormatter::DATE_FORMAT) : null;
@@ -319,7 +318,7 @@ class PdfService
         $showResolved = null === $filter->getResolvedAtBefore() || $filter->getResolvedAtAfter();
         $showClosed = null === $filter->getClosedAtBefore() || $filter->getClosedAtAfter();
 
-        $formatDateTime = function (?DateTime $dateTime, string $format) {
+        $formatDateTime = function (?\DateTime $dateTime, string $format) {
             return $dateTime ? $dateTime->format($format) : '-';
         };
 

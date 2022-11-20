@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 trait IssueStatusTrait
 {
     /**
-     * @var DateTime
+     * @var \DateTime
      *
      * @Assert\NotBlank()
      * @Groups({"issue-read", "issue-create"})
@@ -40,7 +40,7 @@ trait IssueStatusTrait
     private $createdBy;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @Assert\NotBlank(groups={"after-register"})
      * @Groups({"issue-read", "issue-write"})
@@ -58,7 +58,7 @@ trait IssueStatusTrait
     private $registeredBy;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @Groups({"issue-read", "issue-write", "issue-craftsman-write"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -74,7 +74,7 @@ trait IssueStatusTrait
     private $resolvedBy;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @Groups({"issue-read", "issue-write"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -107,12 +107,12 @@ trait IssueStatusTrait
         }
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTime $createdAt): void
+    public function setCreatedAt(\DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -127,12 +127,12 @@ trait IssueStatusTrait
         $this->createdBy = $createdBy;
     }
 
-    public function getRegisteredAt(): ?DateTime
+    public function getRegisteredAt(): ?\DateTime
     {
         return $this->registeredAt;
     }
 
-    public function setRegisteredAt(?DateTime $registeredAt): void
+    public function setRegisteredAt(?\DateTime $registeredAt): void
     {
         $this->registeredAt = $registeredAt;
     }
@@ -147,12 +147,12 @@ trait IssueStatusTrait
         $this->registeredBy = $registeredBy;
     }
 
-    public function getResolvedAt(): ?DateTime
+    public function getResolvedAt(): ?\DateTime
     {
         return $this->resolvedAt;
     }
 
-    public function setResolvedAt(?DateTime $resolvedAt): void
+    public function setResolvedAt(?\DateTime $resolvedAt): void
     {
         $this->resolvedAt = $resolvedAt;
     }
@@ -167,12 +167,12 @@ trait IssueStatusTrait
         $this->resolvedBy = $resolvedBy;
     }
 
-    public function getClosedAt(): ?DateTime
+    public function getClosedAt(): ?\DateTime
     {
         return $this->closedAt;
     }
 
-    public function setClosedAt(?DateTime $closedAt): void
+    public function setClosedAt(?\DateTime $closedAt): void
     {
         $this->closedAt = $closedAt;
     }

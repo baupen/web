@@ -12,7 +12,6 @@
 namespace App\Tests\Traits\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
-use DateTimeZone;
 
 trait AssertApiCollectionFilterTrait
 {
@@ -24,7 +23,7 @@ trait AssertApiCollectionFilterTrait
 
         $formatAlternative = function (\DateTime $dateTime) {
             $utcDateTime = clone $dateTime;
-            $utcDateTime->setTimezone(new DateTimeZone('UTC'));
+            $utcDateTime->setTimezone(new \DateTimeZone('UTC'));
 
             return urlencode($utcDateTime->format('Y-m-d\TH:i:s.u\Z'));
         };

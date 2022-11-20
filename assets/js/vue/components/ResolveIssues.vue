@@ -53,7 +53,7 @@
           {{ $t('resolve.help') }}
         </p>
         <issues-resolve-view
-            class="mt-4 mt-md-5" :ref="mapContainer.entity['@id']"
+            class="mt-4 mt-md-5" ref="maps"
             v-for="mapContainer in mapContainers" :key="mapContainer.entity['@id']"
             :map="mapContainer.entity" :map-parent-names="mapContainer.mapParentNames"
             :craftsman="craftsman" :construction-site="constructionSite"
@@ -105,8 +105,9 @@ export default {
   },
   methods: {
     scrollToMap: function (map) {
+      console.log("scroll requested to ", map)
       this.$nextTick(() => {
-        const newDisplayedMap = this.$refs[map['@id']]
+        const newDisplayedMap = this.$refs.maps.find(mapRef => mapRef.map['@id'] === map['@id'])
         if (!newDisplayedMap || !newDisplayedMap.$el) {
           return
         }

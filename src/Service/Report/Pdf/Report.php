@@ -197,8 +197,6 @@ class Report
     }
 
     /**
-     * @param $tableHead
-     * @param $tableContent
      * @param string|null $tableTitle
      * @param mixed|null  $firstColumnSize
      */

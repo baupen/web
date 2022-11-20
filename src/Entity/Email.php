@@ -69,7 +69,7 @@ class Email extends BaseEntity
     private $type;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      *
      * @ORM\Column(type="datetime")
      */
@@ -83,7 +83,7 @@ class Email extends BaseEntity
     private $sentBy;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -119,7 +119,7 @@ class Email extends BaseEntity
         return $this->type;
     }
 
-    public function getSentAt(): DateTime
+    public function getSentAt(): \DateTime
     {
         return $this->sentAt;
     }
@@ -129,7 +129,7 @@ class Email extends BaseEntity
         return $this->sentBy;
     }
 
-    public function getReadAt(): ?DateTime
+    public function getReadAt(): ?\DateTime
     {
         return $this->readAt;
     }
