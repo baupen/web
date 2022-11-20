@@ -109,13 +109,11 @@ export default {
       this.$nextTick(() => {
         const newDisplayedMap = this.$refs.maps.find(mapRef => mapRef.map['@id'] === map['@id'])
         if (!newDisplayedMap || !newDisplayedMap.$el) {
-          console.log("not found", this.$refs.maps, newDisplayedMap.$el, newDisplayedMap)
           return
         }
 
         const element = newDisplayedMap.$el
         const newDisplayedMapOffset = $(element).offset().top
-        console.log("new offset", newDisplayedMapOffset)
 
         $('html').animate({ scrollTop: newDisplayedMapOffset })
       })
