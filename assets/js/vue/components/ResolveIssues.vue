@@ -53,7 +53,7 @@
           {{ $t('resolve.help') }}
         </p>
         <issues-resolve-view
-            class="mt-4 mt-md-5" :ref="mapContainer.entity['@id']"
+            class="mt-4 mt-md-5" ref="maps"
             v-for="mapContainer in mapContainers" :key="mapContainer.entity['@id']"
             :map="mapContainer.entity" :map-parent-names="mapContainer.mapParentNames"
             :craftsman="craftsman" :construction-site="constructionSite"
@@ -105,14 +105,17 @@ export default {
   },
   methods: {
     scrollToMap: function (map) {
+      console.log("scroll requested to ", map)
       this.$nextTick(() => {
-        const newDisplayedMap = this.$refs[map['@id']]
+        const newDisplayedMap = this.$refs.maps.find(mapRef => mapRef.map['@id'] === map['@id'])
         if (!newDisplayedMap || !newDisplayedMap.$el) {
+          console.log("not found", this.$refs.maps, newDisplayedMap.$el, newDisplayedMap)
           return
         }
 
         const element = newDisplayedMap.$el
         const newDisplayedMapOffset = $(element).offset().top
+        console.log("new offset", newDisplayedMapOffset)
 
         $('html').animate({ scrollTop: newDisplayedMapOffset })
       })
