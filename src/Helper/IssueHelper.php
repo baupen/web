@@ -15,8 +15,6 @@ use App\Entity\Craftsman;
 use App\Entity\Issue;
 use App\Entity\Map;
 
-use function ksort;
-
 class IssueHelper
 {
     /**
@@ -35,7 +33,7 @@ class IssueHelper
             $issuesPerMap[$map->getId()][] = $issue;
         }
 
-        ksort($unorderedElements);
+        \ksort($unorderedElements);
 
         $orderedMaps = [];
         foreach ($unorderedElements as $orderedElement) {
@@ -59,7 +57,7 @@ class IssueHelper
             $issuesPerCraftsman[$craftsman->getId()][] = $issue;
         }
 
-        ksort($unorderedElements);
+        \ksort($unorderedElements);
 
         $orderedCraftsman = [];
         foreach ($unorderedElements as $orderedElement) {

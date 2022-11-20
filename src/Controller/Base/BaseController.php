@@ -70,8 +70,6 @@ class BaseController extends AbstractController
     }
 
     /**
-     * @param $type
-     * @param $message
      * @param string $link
      */
     private function displayFlash($type, $message, $link = null)

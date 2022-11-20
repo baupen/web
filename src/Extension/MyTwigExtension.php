@@ -14,7 +14,6 @@ namespace App\Extension;
 use App\Entity\ConstructionManager;
 use App\Enum\BooleanType;
 use App\Helper\DateTimeFormatter;
-use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -97,18 +96,18 @@ class MyTwigExtension extends AbstractExtension
         return mb_strtolower(preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $propertyName));
     }
 
-    public function dateFormatFilter(?DateTime $date): string
+    public function dateFormatFilter(?\DateTime $date): string
     {
-        if ($date instanceof DateTime) {
+        if ($date instanceof \DateTime) {
             return $this->prependDayName($date).', '.$date->format(DateTimeFormatter::DATE_FORMAT);
         }
 
         return '-';
     }
 
-    public function dateTimeFormatFilter(?DateTime $date): string
+    public function dateTimeFormatFilter(?\DateTime $date): string
     {
-        if ($date instanceof DateTime) {
+        if ($date instanceof \DateTime) {
             return $this->prependDayName($date).', '.$date->format(DateTimeFormatter::DATE_TIME_FORMAT);
         }
 
@@ -145,7 +144,7 @@ class MyTwigExtension extends AbstractExtension
         return $value;
     }
 
-    private function prependDayName(DateTime $date): string
+    private function prependDayName(\DateTime $date): string
     {
         return $this->translator->trans('date_time.'.$date->format('D'), [], 'framework');
     }

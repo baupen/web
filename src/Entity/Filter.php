@@ -109,7 +109,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $mapIds;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -117,7 +117,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $deadlineBefore;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -125,7 +125,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $deadlineAfter;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -133,7 +133,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $createdAtAfter;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -141,7 +141,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $createdAtBefore;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -149,7 +149,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $registeredAtAfter;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -157,7 +157,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $registeredAtBefore;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -165,7 +165,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $resolvedAtAfter;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -173,7 +173,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $resolvedAtBefore;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -181,7 +181,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $closedAtAfter;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -189,7 +189,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $closedAtBefore;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @Groups({"filter-create"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -310,112 +310,112 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->mapIds = $mapIds;
     }
 
-    public function getDeadlineBefore(): ?DateTime
+    public function getDeadlineBefore(): ?\DateTime
     {
         return $this->deadlineBefore;
     }
 
-    public function setDeadlineBefore(?DateTime $deadlineBefore): void
+    public function setDeadlineBefore(?\DateTime $deadlineBefore): void
     {
         $this->deadlineBefore = $deadlineBefore;
     }
 
-    public function getDeadlineAfter(): ?DateTime
+    public function getDeadlineAfter(): ?\DateTime
     {
         return $this->deadlineAfter;
     }
 
-    public function setDeadlineAfter(?DateTime $deadlineAfter): void
+    public function setDeadlineAfter(?\DateTime $deadlineAfter): void
     {
         $this->deadlineAfter = $deadlineAfter;
     }
 
-    public function getCreatedAtAfter(): ?DateTime
+    public function getCreatedAtAfter(): ?\DateTime
     {
         return $this->createdAtAfter;
     }
 
-    public function setCreatedAtAfter(?DateTime $createdAtAfter): void
+    public function setCreatedAtAfter(?\DateTime $createdAtAfter): void
     {
         $this->createdAtAfter = $createdAtAfter;
     }
 
-    public function getCreatedAtBefore(): ?DateTime
+    public function getCreatedAtBefore(): ?\DateTime
     {
         return $this->createdAtBefore;
     }
 
-    public function setCreatedAtBefore(?DateTime $createdAtBefore): void
+    public function setCreatedAtBefore(?\DateTime $createdAtBefore): void
     {
         $this->createdAtBefore = $createdAtBefore;
     }
 
-    public function getRegisteredAtAfter(): ?DateTime
+    public function getRegisteredAtAfter(): ?\DateTime
     {
         return $this->registeredAtAfter;
     }
 
-    public function setRegisteredAtAfter(?DateTime $registeredAtAfter): void
+    public function setRegisteredAtAfter(?\DateTime $registeredAtAfter): void
     {
         $this->registeredAtAfter = $registeredAtAfter;
     }
 
-    public function getRegisteredAtBefore(): ?DateTime
+    public function getRegisteredAtBefore(): ?\DateTime
     {
         return $this->registeredAtBefore;
     }
 
-    public function setRegisteredAtBefore(?DateTime $registeredAtBefore): void
+    public function setRegisteredAtBefore(?\DateTime $registeredAtBefore): void
     {
         $this->registeredAtBefore = $registeredAtBefore;
     }
 
-    public function getResolvedAtAfter(): ?DateTime
+    public function getResolvedAtAfter(): ?\DateTime
     {
         return $this->resolvedAtAfter;
     }
 
-    public function setResolvedAtAfter(?DateTime $resolvedAtAfter): void
+    public function setResolvedAtAfter(?\DateTime $resolvedAtAfter): void
     {
         $this->resolvedAtAfter = $resolvedAtAfter;
     }
 
-    public function getResolvedAtBefore(): ?DateTime
+    public function getResolvedAtBefore(): ?\DateTime
     {
         return $this->resolvedAtBefore;
     }
 
-    public function setResolvedAtBefore(?DateTime $resolvedAtBefore): void
+    public function setResolvedAtBefore(?\DateTime $resolvedAtBefore): void
     {
         $this->resolvedAtBefore = $resolvedAtBefore;
     }
 
-    public function getClosedAtAfter(): ?DateTime
+    public function getClosedAtAfter(): ?\DateTime
     {
         return $this->closedAtAfter;
     }
 
-    public function setClosedAtAfter(?DateTime $closedAtAfter): void
+    public function setClosedAtAfter(?\DateTime $closedAtAfter): void
     {
         $this->closedAtAfter = $closedAtAfter;
     }
 
-    public function getClosedAtBefore(): ?DateTime
+    public function getClosedAtBefore(): ?\DateTime
     {
         return $this->closedAtBefore;
     }
 
-    public function setClosedAtBefore(?DateTime $closedAtBefore): void
+    public function setClosedAtBefore(?\DateTime $closedAtBefore): void
     {
         $this->closedAtBefore = $closedAtBefore;
     }
 
-    public function getAccessAllowedBefore(): ?DateTime
+    public function getAccessAllowedBefore(): ?\DateTime
     {
         return $this->accessAllowedBefore;
     }
 
-    public function setAccessAllowedBefore(?DateTime $accessAllowedBefore): void
+    public function setAccessAllowedBefore(?\DateTime $accessAllowedBefore): void
     {
         $this->accessAllowedBefore = $accessAllowedBefore;
     }
@@ -435,7 +435,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         return null !== $this->constructionSite;
     }
 
-    public function getLastUsedAt(): ?DateTime
+    public function getLastUsedAt(): ?\DateTime
     {
         return $this->lastUsedAt;
     }

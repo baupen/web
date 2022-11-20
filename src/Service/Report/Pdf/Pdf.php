@@ -12,10 +12,9 @@
 namespace App\Service\Report\Pdf;
 
 use App\Helper\ImageHelper;
-use Exception;
 use TCPDF;
 
-class Pdf extends TCPDF
+class Pdf extends \TCPDF
 {
     /**
      * @var PdfDefinition
@@ -83,12 +82,10 @@ class Pdf extends TCPDF
     }
 
     /**
-     * @param $msg
-     *
-     * @throws Exception
+     * @throws \Exception
      */
     public function Error($msg)
     {
-        throw new Exception($msg);
+        throw new \Exception($msg);
     }
 }

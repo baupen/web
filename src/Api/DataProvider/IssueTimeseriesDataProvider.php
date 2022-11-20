@@ -15,7 +15,6 @@ use App\Api\DataProvider\Base\NoPaginationDataProvider;
 use App\Api\Entity\IssueSummaryWithDate;
 use App\Entity\Issue;
 use App\Service\Interfaces\AnalysisServiceInterface;
-use DateInterval;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -49,7 +48,7 @@ class IssueTimeseriesDataProvider extends NoPaginationDataProvider
         $rootAlias = $queryBuilder->getRootAliases()[0];
 
         $lastPeriodEnd = new \DateTime('today');
-        $stepSize = new DateInterval('P1D');
+        $stepSize = new \DateInterval('P1D');
         $stepCount = 30;
         $issueAnalysisByTime = $this->analysisService->createIssueAnalysisByTime($rootAlias, $queryBuilder, $lastPeriodEnd, $stepSize, $stepCount);
 

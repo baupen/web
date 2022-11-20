@@ -23,7 +23,6 @@ use App\Service\Report\Email\CraftsmanReport;
 use App\Service\Report\Email\IssueCountDeltaTrait;
 use App\Service\Report\Pdf\PdfService;
 use App\Service\Report\Pdf\ReportElements;
-use DateTime;
 
 class ReportService implements ReportServiceInterface
 {
@@ -57,7 +56,7 @@ class ReportService implements ReportServiceInterface
         return $this->pdfService->generatePdfReport($issues, $filter, $reportElements, $author);
     }
 
-    public function createConstructionSiteReport(ConstructionSite $constructionSite, DateTime $comparisonTimestamp): ConstructionSiteReport
+    public function createConstructionSiteReport(ConstructionSite $constructionSite, \DateTime $comparisonTimestamp): ConstructionSiteReport
     {
         $craftsmanDeltaReportByCraftsman = [];
         $relevantCraftsmen = [];
@@ -92,7 +91,7 @@ class ReportService implements ReportServiceInterface
         return new ConstructionSiteReport($constructionSite, $comparisonTimestamp, array_values($craftsmanDeltaReportByCraftsman));
     }
 
-    public function createCraftsmanReport(Craftsman $craftsman, ?DateTime $comparisonTimestamp): CraftsmanReport
+    public function createCraftsmanReport(Craftsman $craftsman, ?\DateTime $comparisonTimestamp): CraftsmanReport
     {
         $craftsmanDeltaReport = new CraftsmanReport($craftsman, $comparisonTimestamp);
         $craftsmanDeltaReportByCraftsman = [$craftsman->getId() => $craftsmanDeltaReport];
@@ -119,7 +118,7 @@ class ReportService implements ReportServiceInterface
     /**
      * @param IssueCountDeltaTrait $issueCountDelta
      */
-    private function fillIssueCountDelta($issueCountDelta, DateTime $timestamp, ?DateTime $registeredAt, ?DateTime $resolvedAt, ?DateTime $closedAt)
+    private function fillIssueCountDelta($issueCountDelta, \DateTime $timestamp, ?\DateTime $registeredAt, ?\DateTime $resolvedAt, ?\DateTime $closedAt)
     {
         // (newly) closed -> no longer open
         // (newly) resolved => no longer open

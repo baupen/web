@@ -15,7 +15,6 @@ use App\Command\Base\DatabaseCommand;
 use App\Helper\HashHelper;
 use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use PDO;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -137,7 +136,7 @@ class MigrateSqliteCommand extends DatabaseCommand
         return 0;
     }
 
-    private function clearTarget(PDO $targetPdo)
+    private function clearTarget(\PDO $targetPdo)
     {
         $referencesToClear = ['map.parent_id', 'issue_image.created_for_id', 'map_file.created_for_id', 'construction_site_image.created_for_id'];
         foreach ($referencesToClear as $reference) {
@@ -160,7 +159,7 @@ class MigrateSqliteCommand extends DatabaseCommand
     }
 
     /**
-     * @return PDO[]
+     * @return \PDO[]
      *
      * @throws \Exception
      */
@@ -172,15 +171,15 @@ class MigrateSqliteCommand extends DatabaseCommand
             throw new \Exception('sqlite file not found at '.realpath($expectedSqlitePath));
         }
 
-        $sourcePdo = new PDO('sqlite:'.$expectedSqlitePath);
+        $sourcePdo = new \PDO('sqlite:'.$expectedSqlitePath);
 
         $config = $this->getDatabaseConfiguration();
-        $targetPdo = new PDO('mysql:host='.$config['host'].';dbname='.$config['database'], $config['username'], $config['password']);
+        $targetPdo = new \PDO('mysql:host='.$config['host'].';dbname='.$config['database'], $config['username'], $config['password']);
 
         return [$sourcePdo, $targetPdo];
     }
 
-    private function migrateConstructionManagers(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateConstructionManagers(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo): int
     {
         /*
          * drops:
@@ -212,7 +211,7 @@ class MigrateSqliteCommand extends DatabaseCommand
         return $this->migrateTable($io, $sourcePdo, $targetPdo, 'construction_manager', array_merge($commonFields, $sourceFields), $migrateReference);
     }
 
-    private function migrateConstructionSites(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateConstructionSites(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo): int
     {
         /*
          * drops:
@@ -237,14 +236,14 @@ class MigrateSqliteCommand extends DatabaseCommand
         return $this->migrateTable($io, $sourcePdo, $targetPdo, 'construction_site', $fields, $migrateReference);
     }
 
-    private function migrateConstructionSiteConstructionManagers(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateConstructionSiteConstructionManagers(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo): int
     {
         $commonFields = ['construction_site_id', 'construction_manager_id'];
 
         return $this->migrateTable($io, $sourcePdo, $targetPdo, 'construction_site_construction_manager', $commonFields);
     }
 
-    private function migrateMaps(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateMaps(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo): int
     {
         /*
          * drops:
@@ -265,7 +264,7 @@ class MigrateSqliteCommand extends DatabaseCommand
         return $count;
     }
 
-    private function migrateCraftsmen(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateCraftsmen(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo): int
     {
         /*
          * drops:
@@ -292,7 +291,7 @@ class MigrateSqliteCommand extends DatabaseCommand
         return $this->migrateTable($io, $sourcePdo, $targetPdo, 'craftsman', $fields, $migrateReference);
     }
 
-    private function migrateIssues(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateIssues(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo): int
     {
         /*
          * drops:
@@ -373,37 +372,37 @@ class MigrateSqliteCommand extends DatabaseCommand
         return $count;
     }
 
-    private function migrateConstructionSiteImages(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateConstructionSiteImages(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo): int
     {
         return $this->migrateFile($io, $sourcePdo, $targetPdo, 'construction_site_image', 'construction_site');
     }
 
-    private function migrateIssueImages(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateIssueImages(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo): int
     {
         return $this->migrateFile($io, $sourcePdo, $targetPdo, 'issue_image', 'issue');
     }
 
-    private function migrateMapFiles(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    private function migrateMapFiles(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo): int
     {
         return $this->migrateFile($io, $sourcePdo, $targetPdo, 'map_file', 'map');
     }
 
-    private function finalizeConstructionSiteImages(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    private function finalizeConstructionSiteImages(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo): int
     {
         return $this->setFileCreatedFor($io, $sourcePdo, $targetPdo, 'construction_site_image', 'construction_site');
     }
 
-    private function finalizeIssueImages(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    private function finalizeIssueImages(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo): int
     {
         return $this->setFileCreatedFor($io, $sourcePdo, $targetPdo, 'issue_image', 'issue');
     }
 
-    private function finalizeMapFiles(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo): int
+    private function finalizeMapFiles(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo): int
     {
         return $this->setFileCreatedFor($io, $sourcePdo, $targetPdo, 'map_file', 'map');
     }
 
-    private function migrateFile(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $table, string $ownerName): int
+    private function migrateFile(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo, string $table, string $ownerName): int
     {
         /**
          * drops: displayName (functionality removed).
@@ -419,21 +418,21 @@ class MigrateSqliteCommand extends DatabaseCommand
         return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, self::MODE_INSERT);
     }
 
-    private function setFileCreatedFor(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $table, string $ownerName): int
+    private function setFileCreatedFor(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo, string $table, string $ownerName): int
     {
         $sql = 'SELECT id as id, '.$ownerName.'_id as created_for_id FROM '.$table.' WHERE '.$ownerName.'_id IN (SELECT id FROM '.$ownerName.')';
 
         return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, self::MODE_UPDATE);
     }
 
-    private function migrateTable(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $table, array $sourceFields, callable $migrateReference = null): int
+    private function migrateTable(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo, string $table, array $sourceFields, callable $migrateReference = null): int
     {
         $sql = 'SELECT '.implode(', ', $sourceFields).' FROM '.$table;
 
         return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, self::MODE_INSERT, $migrateReference);
     }
 
-    private function migrate(SymfonyStyle $io, PDO $sourcePdo, PDO $targetPdo, string $sql, string $table, string $mode, callable $migrateReference = null): int
+    private function migrate(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo, string $sql, string $table, string $mode, callable $migrateReference = null): int
     {
         $limit = 500;
         $offset = 0;
@@ -476,23 +475,23 @@ class MigrateSqliteCommand extends DatabaseCommand
         return $total;
     }
 
-    private function count(PDO $PDO, string $table): int
+    private function count(\PDO $PDO, string $table): int
     {
         $query = $PDO->prepare('SELECT COUNT(*) FROM '.$table);
         $query->execute();
 
-        return $query->fetch(PDO::FETCH_NUM)[0];
+        return $query->fetch(\PDO::FETCH_NUM)[0];
     }
 
-    private function fetchAll(PDO $PDO, string $sql)
+    private function fetchAll(\PDO $PDO, string $sql)
     {
         $query = $PDO->prepare($sql);
         $query->execute();
 
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    private function updateAllById(PDO $targetPdo, string $table, array $entities): void
+    private function updateAllById(\PDO $targetPdo, string $table, array $entities): void
     {
         $updateColumns = [];
         foreach (array_keys($entities[0]) as $column) {
@@ -514,7 +513,7 @@ class MigrateSqliteCommand extends DatabaseCommand
         }
     }
 
-    private function insertAll(PDO $targetPdo, string $table, array $entities): void
+    private function insertAll(\PDO $targetPdo, string $table, array $entities): void
     {
         $keys = array_keys($entities[0]);
         $placeHolders = array_fill(0, count($keys), '?');
@@ -525,7 +524,7 @@ class MigrateSqliteCommand extends DatabaseCommand
         }
     }
 
-    private function migrateSpecialCases(SymfonyStyle $io, PDO $targetPdo)
+    private function migrateSpecialCases(SymfonyStyle $io, \PDO $targetPdo)
     {
         $queries = [
             "UPDATE construction_site SET deleted_at = last_changed_at WHERE id = 'CE6DB20C-6D00-4563-AB83-F35F4512F951'",
@@ -537,7 +536,7 @@ class MigrateSqliteCommand extends DatabaseCommand
         }
     }
 
-    private function migrateLocalTimeToUTC(PDO $targetPdo)
+    private function migrateLocalTimeToUTC(\PDO $targetPdo)
     {
         $impactedFieldsByTable = [
             'construction_manager' => ['created_at', 'last_changed_at'],

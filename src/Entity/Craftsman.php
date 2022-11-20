@@ -144,14 +144,14 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     private $resolvedIssues;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $lastEmailReceived;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -258,28 +258,28 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
         return $this->getTrade().' ('.$this->getCompany().')';
     }
 
-    public function getLastEmailReceived(): ?DateTime
+    public function getLastEmailReceived(): ?\DateTime
     {
         return $this->lastEmailReceived;
     }
 
-    public function setLastEmailReceived(?DateTime $lastEmailReceived): void
+    public function setLastEmailReceived(?\DateTime $lastEmailReceived): void
     {
         $this->lastEmailReceived = $lastEmailReceived;
     }
 
-    public function getLastVisitOnline(): ?DateTime
+    public function getLastVisitOnline(): ?\DateTime
     {
         return $this->lastVisitOnline;
     }
 
-    public function setLastVisitOnline(?DateTime $lastVisitOnline): void
+    public function setLastVisitOnline(?\DateTime $lastVisitOnline): void
     {
         $this->lastVisitOnline = $lastVisitOnline;
     }
 
     /**
-     * @return DateTime|null
+     * @return \DateTime|null
      */
     public function getLastAction()
     {
@@ -302,7 +302,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     /**
      * @Groups({"craftsman-read"})
      */
-    public function getLastChangedAt(): DateTime
+    public function getLastChangedAt(): \DateTime
     {
         return $this->lastChangedAt;
     }

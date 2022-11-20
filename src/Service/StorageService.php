@@ -22,10 +22,6 @@ use App\Helper\DateTimeFormatter;
 use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\StorageServiceInterface;
-use DateTime;
-
-use const DIRECTORY_SEPARATOR;
-
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class StorageService implements StorageServiceInterface
@@ -54,7 +50,7 @@ class StorageService implements StorageServiceInterface
             if ($counter++ > 0) {
                 $uniqueFolderName .= $counter;
             }
-        } while (is_dir($rootFolder.DIRECTORY_SEPARATOR.$uniqueFolderName));
+        } while (is_dir($rootFolder.\DIRECTORY_SEPARATOR.$uniqueFolderName));
 
         $constructionSite->setFolderName($uniqueFolderName);
     }
@@ -116,7 +112,7 @@ class StorageService implements StorageServiceInterface
         }
 
         // write filetrait properties
-        $targetPath = $targetFolder.DIRECTORY_SEPARATOR.$targetFileName;
+        $targetPath = $targetFolder.\DIRECTORY_SEPARATOR.$targetFileName;
         $hash = hash_file('sha256', $targetPath);
         $entity->setHash($hash);
         $entity->setFilename($targetFileName);
@@ -132,12 +128,12 @@ class StorageService implements StorageServiceInterface
         $extension = $pathInfo['extension'];
 
         $sanitizedFileName = FileHelper::sanitizeFileName($fileName).'.'.$extension;
-        $targetPath = $targetFolder.DIRECTORY_SEPARATOR.$sanitizedFileName;
+        $targetPath = $targetFolder.\DIRECTORY_SEPARATOR.$sanitizedFileName;
         if (!is_file($targetPath)) {
             return $sanitizedFileName;
         }
 
-        $now = new DateTime();
+        $now = new \DateTime();
         $counter = 0;
         do {
             $prefix = $sanitizedFileName.'_duplicate_'.$now->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT);
@@ -145,7 +141,7 @@ class StorageService implements StorageServiceInterface
                 $prefix .= '_'.$counter;
             }
             $uniqueFileName = $prefix.'.'.$extension;
-            $uniqueTargetPath = $targetFolder.DIRECTORY_SEPARATOR.$uniqueFileName;
+            $uniqueTargetPath = $targetFolder.\DIRECTORY_SEPARATOR.$uniqueFileName;
         } while (file_exists($uniqueTargetPath));
 
         return $uniqueFileName;

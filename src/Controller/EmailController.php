@@ -24,8 +24,6 @@ class EmailController extends BaseDoctrineController
     /**
      * @Route("/{identifier}", name="email")
      *
-     * @param $identifier
-     *
      * @return Response
      */
     public function emailAction($identifier)

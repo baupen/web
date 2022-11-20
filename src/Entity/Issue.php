@@ -149,7 +149,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $description;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @Groups({"issue-read", "issue-write"})
      * @ORM\Column(type="datetime", nullable=true)
@@ -157,7 +157,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $deadline;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      *
      * @ORM\Column(type="datetime")
      */
@@ -217,7 +217,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      */
     public function prePersistTime()
     {
-        $this->lastChangedAt = new DateTime();
+        $this->lastChangedAt = new \DateTime();
     }
 
     public function getNumber(): ?int
@@ -260,12 +260,12 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->description = $description;
     }
 
-    public function getDeadline(): ?DateTime
+    public function getDeadline(): ?\DateTime
     {
         return $this->deadline;
     }
 
-    public function setDeadline(?DateTime $deadline): void
+    public function setDeadline(?\DateTime $deadline): void
     {
         $this->deadline = $deadline;
     }
@@ -326,7 +326,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     /**
      * @Groups({"issue-read"})
      */
-    public function getLastChangedAt(): DateTime
+    public function getLastChangedAt(): \DateTime
     {
         return $this->lastChangedAt;
     }
