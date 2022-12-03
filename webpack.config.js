@@ -93,7 +93,36 @@ Encore
     options.__VUE_I18N_LEGACY_API__ = true
     options.__VUE_I18N_FULL_INSTALL__ = true
     options.__INTLIFY_PROD_DEVTOOLS__ = false
+
+    options.__VUE_OPTIONS_API__ = true
+    options.__VUE_PROD_DEVTOOLS__ = false
   })
 
 const webpackConfig = Encore.getWebpackConfig()
+
+if (Encore.isProduction()) {
+  // avoid global ship for CSP compliance
+  // see https://github.com/webpack/webpack/issues/6461#issuecomment-36681342
+  webpackConfig.node = {
+    global: false,
+    __filename: false,
+    __dirname: false,
+  }
+
+  // use runtime build of vue-i18n for CSP compliance
+  // see https://vue-i18n.intlify.dev/ja/guide/advanced/optimization.html
+  webpackConfig.resolve.alias = Object.assign(webpackConfig.resolve.alias, {
+    "vue-i18n": "vue-i18n/dist/vue-i18n.runtime.esm-bundler.js"
+  })
+
+  // precompile resources as it is not possible in runtime build
+  // see https://github.com/intlify/bundle-tools/tree/main/packages/vue-i18n-loader
+  webpackConfig.module.rules.push({
+    test: /\.(json5?|ya?ml)$/, // target json, json5, yaml and yml files
+    type: 'javascript/auto',
+    loader: '@intlify/vue-i18n-loader',
+    include: [path.resolve(__dirname, 'assets/js/vue/localization')]
+  })
+}
+
 module.exports = webpackConfig
