@@ -107,7 +107,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 
             if (ConstructionManager::class === $resourceClass) {
                 if (isset($query['constructionSites.id'])) {
-                    $this->ensureSearchFilterValid($query, 'constructionSites.id', $ownConstructionSiteIds);
+                    $this->ensureArraySearchFilterValid($query, 'constructionSites.id', $ownConstructionSiteIds);
                 } else {
                     $query['constructionSites.id'] = $ownConstructionSiteIds;
                 }
@@ -116,7 +116,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
             }
         }
 
-        $this->ensureSearchFilterValid($query, 'constructionSite', $ownConstructionSiteIds);
+        $this->ensureArraySearchFilterValid($query, 'constructionSite', $ownConstructionSiteIds);
     }
 
     private function ensureCraftsmanQueryValid(Craftsman $craftsman, string $resourceClass, array $query): void
@@ -134,7 +134,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         }
 
         if (Issue::class === $resourceClass) {
-            $this->ensureSearchFilterValid($query, 'craftsman', [$craftsman->getId()]);
+            $this->ensureArraySearchFilterValid($query, 'craftsman', [$craftsman->getId()]);
             $this->ensureDeletedFilterValid($query, 'isDeleted', false);
 
             return;
@@ -154,13 +154,13 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         $this->ensureSearchFilterValid($query, 'constructionSite', $filter->getConstructionSite()->getId());
 
         if (Map::class === $resourceClass) {
-            $this->ensureSearchFilterValid($query, 'id', $filter->getMapIds());
+            $this->ensureArraySearchFilterValid($query, 'id', $filter->getMapIds());
 
             return;
         }
 
         if (Craftsman::class === $resourceClass) {
-            $this->ensureSearchFilterValid($query, 'id', $filter->getCraftsmanIds());
+            $this->ensureArraySearchFilterValid($query, 'id', $filter->getCraftsmanIds());
 
             return;
         }
@@ -169,24 +169,24 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
             $this->ensureBooleanSearchFilterValid($query, 'isMarked', $filter->getIsMarked());
             $this->ensureBooleanSearchFilterValid($query, 'wasAddedWithClient', $filter->getWasAddedWithClient());
 
-            $this->ensureSearchFilterValid($query, 'number', $filter->getNumbers());
+            $this->ensureArraySearchFilterValid($query, 'number', $filter->getNumbers());
             $this->ensureSearchFilterValid($query, 'description', $filter->getDescription());
 
             $this->ensureSearchFilterValid($query, 'state', $filter->getState());
-            $this->ensureSearchFilterValid($query, 'craftsman', $filter->getCraftsmanIds());
-            $this->ensureSearchFilterValid($query, 'map', $filter->getMapIds());
+            $this->ensureArraySearchFilterValid($query, 'craftsman', $filter->getCraftsmanIds());
+            $this->ensureArraySearchFilterValid($query, 'map', $filter->getMapIds());
 
-            $this->ensureSearchFilterValid($query, 'deadline[before]', $filter->getDeadlineBefore());
-            $this->ensureSearchFilterValid($query, 'deadline[after]', $filter->getDeadlineAfter());
+            $this->ensureDateTimeSearchFilterValid($query, 'deadline', 'before', $filter->getDeadlineBefore());
+            $this->ensureDateTimeSearchFilterValid($query, 'deadline', 'after', $filter->getDeadlineAfter());
 
-            $this->ensureSearchFilterValid($query, 'createdAt[before]', $filter->getCreatedAtBefore());
-            $this->ensureSearchFilterValid($query, 'createdAt[after]', $filter->getCreatedAtAfter());
-            $this->ensureSearchFilterValid($query, 'registeredAt[before]', $filter->getRegisteredAtBefore());
-            $this->ensureSearchFilterValid($query, 'registeredAt[after]', $filter->getRegisteredAtAfter());
-            $this->ensureSearchFilterValid($query, 'resolvedAt[before]', $filter->getResolvedAtBefore());
-            $this->ensureSearchFilterValid($query, 'resolvedAt[after]', $filter->getResolvedAtAfter());
-            $this->ensureSearchFilterValid($query, 'closedAt[before]', $filter->getClosedAtBefore());
-            $this->ensureSearchFilterValid($query, 'closedAt[after]', $filter->getClosedAtAfter());
+            $this->ensureDateTimeSearchFilterValid($query, 'createdAt', 'before', $filter->getCreatedAtBefore());
+            $this->ensureDateTimeSearchFilterValid($query, 'createdAt', 'after', $filter->getCreatedAtAfter());
+            $this->ensureDateTimeSearchFilterValid($query, 'registeredAt', 'before', $filter->getRegisteredAtBefore());
+            $this->ensureDateTimeSearchFilterValid($query, 'registeredAt', 'after', $filter->getRegisteredAtAfter());
+            $this->ensureDateTimeSearchFilterValid($query, 'resolvedAt', 'before', $filter->getResolvedAtBefore());
+            $this->ensureDateTimeSearchFilterValid($query, 'resolvedAt', 'after', $filter->getResolvedAtAfter());
+            $this->ensureDateTimeSearchFilterValid($query, 'closedAt', 'before', $filter->getClosedAtBefore());
+            $this->ensureDateTimeSearchFilterValid($query, 'closedAt', 'after', $filter->getClosedAtAfter());
 
             return;
         }
@@ -194,56 +194,75 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         throw new BadRequestException('You are not allowed to query this resource');
     }
 
-    private function ensureBooleanSearchFilterValid(array $query, string $property, $restriction): void
-    {
-        if (null === $restriction) {
-            return;
-        }
-
-        if (!isset($query[$property])) {
-            throw new BadRequestException($property.' filter missing.');
-        }
-
-        $value = $query[$property];
-        if ($restriction && \in_array($value, [true, 'true', '1'], true)) {
-            return;
-        }
-
-        if (!$restriction && \in_array($value, [false, 'false', '0'], true)) {
-            return;
-        }
-
-        throw new BadRequestException($property.' filter missing or value not equal to '.$restriction.'.');
-    }
-
+    /**
+     * @param string|int|null $restriction
+     */
     private function ensureSearchFilterValid(array $query, string $property, $restriction): void
     {
-        if (null === $restriction) {
-            return;
-        }
-
-        $valueSet = isset($query[$property]);
-        $value = $valueSet ? $query[$property] : null;
-        if (is_array($restriction)) {
-            $filterValid = false;
-            if ($valueSet) {
-                $filterValid = is_array($value) ?
-                    empty(array_diff($restriction, $query[$property])) :
-                    in_array($value, $restriction);
+        if (null !== $restriction) {
+            if (!isset($query[$property])) {
+                throw new BadRequestException($property . ' filter missing.');
             }
 
-            if ($filterValid) {
+            // must use single equal sign, for int restriction (as query[property] will be string)
+            if ($query[$property] != $restriction) {
+                throw new BadRequestException($property.' filter value '.$query[$property].' not equal to '.$restriction.'.');
+            }
+        }
+    }
+
+    private function ensureBooleanSearchFilterValid(array $query, string $property, ?bool $restriction): void
+    {
+        if (null !== $restriction) {
+            if (!isset($query[$property])) {
+                throw new BadRequestException($property.' filter missing.');
+            }
+
+            if ($restriction && \in_array($query[$property], [true, 'true', '1'], true)) {
                 return;
             }
 
-            throw new BadRequestException($property.' filter missing or value '.$value.' not one of '.implode(', ', $restriction).'.');
+            if (!$restriction && \in_array($query[$property], [false, 'false', '0'], true)) {
+                return;
+            }
+
+            throw new BadRequestException($property.' filter missing or value not equal to '.$restriction.'.');
         }
 
-        if ($valueSet && $value == $restriction) {
-            return;
-        }
+    }
 
-        throw new BadRequestException($property.' filter missing or value '.$value.' not equal to '.$restriction.'.');
+    private function ensureArraySearchFilterValid(array $query, string $property, ?array $restriction): void
+    {
+        if (null !== $restriction) {
+            if (!isset($query[$property])) {
+                throw new BadRequestException($property . ' filter missing.');
+            }
+
+            if (is_array($query[$property])) {
+                if (!empty(array_diff($restriction, $query[$property]))) {
+                    throw new BadRequestException($property . ' filter value ' . implode($query[$property]) . ' not equal ' . implode($restriction) . '.');
+                }
+            } else {
+                if (!in_array($query[$property], $restriction)) {
+                    throw new BadRequestException($property.' filter value '.$query[$property].' not in '.implode($restriction).'.');
+                }
+            }
+        }
+    }
+
+    private function ensureDateTimeSearchFilterValid(array $query, string $property, string $timing, ?\DateTime $restriction): void
+    {
+        if (null !== $restriction) {
+            if (!isset($query[$property]) || !isset($query[$property][$timing])) {
+                throw new BadRequestException($property . ' filter missing.');
+            }
+
+            $parsedValue = str_replace(" ", "+", $query[$property][$timing]);
+            $value = new \DateTime($parsedValue);
+            if ($value != $restriction) {
+                throw new BadRequestException($property.' filter value '.$value->format("c").' not in equal '.$restriction->format("c").'.');
+            }
+        }
     }
 
     private function ensureDeletedFilterValid(array $query, string $property, ?bool $expectedValue): void

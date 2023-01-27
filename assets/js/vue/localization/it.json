@@ -188,7 +188,9 @@
     "reset": "resettare"
   },
   "_validation": {
-    "required": "Si prega di compilare la casella."
+    "required": "Si prega di compilare la casella.",
+    "not_an_email": "Questa non è un'email valida",
+    "one_not_an_email": "Una delle voci non è un'e-mail valida"
   },
   "_view": {
     "craftsmen_statistics": {

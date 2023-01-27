@@ -30,7 +30,7 @@
     </form-field>
 
     <form-field for-id="email" class="col-md-6" :label="$t('craftsman.email')">
-      <input id="email" class="form-control" type="text" required="required"
+      <input id="email" class="form-control" type="email" required="required"
              :class="{'is-valid': fields.email.dirty && !fields.email.errors.length, 'is-invalid': fields.email.dirty && fields.email.errors.length }"
              @blur="fields.email.dirty = true"
              v-model="craftsman.email"
@@ -54,7 +54,14 @@
 
 <script>
 
-import { createField, requiredRule, validateField, validateFields, changedFieldValues } from '../../services/validation'
+import {
+  createField,
+  requiredRule,
+  validateField,
+  validateFields,
+  changedFieldValues,
+  emailRule, emailsRule
+} from '../../services/validation'
 import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
 import Help from '../Library/FormLayout/Help'
@@ -72,8 +79,8 @@ export default {
         company: createField(requiredRule()),
         trade: createField(requiredRule()),
         contactName: createField(requiredRule()),
-        email: createField(requiredRule()),
-        emailCCs: createField(),
+        email: createField(requiredRule(), emailRule()),
+        emailCCs: createField(emailsRule()),
       },
       craftsman: {
         company: null,

@@ -192,7 +192,9 @@
     "reset": "zurücksetzen"
   },
   "_validation": {
-    "required": "Bitte Feld ausfüllen."
+    "required": "Bitte Feld ausfüllen.",
+    "not_an_email": "Dies ist keine valide E-Mail.",
+    "one_not_an_email": "Einer der Einträge ist keine valide E-Mail."
   },
   "_view": {
     "craftsmen_statistics": {

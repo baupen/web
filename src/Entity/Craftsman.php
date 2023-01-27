@@ -99,6 +99,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
      * @var string
      *
      * @Assert\NotBlank
+     * @Assert\Email
      * @Groups({"craftsman-read", "craftsman-write"})
      * @ORM\Column(type="text")
      */

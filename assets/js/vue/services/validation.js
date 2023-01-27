@@ -21,6 +21,33 @@ const requiredRule = function () {
   }
 }
 
+const emailRegex = /^\S+@\S+\.\S+$/
+const emailRule = function () {
+  return {
+    isValid: function (value) {
+      if (!value) {
+        return true
+      }
+
+      return emailRegex.test(value)
+    },
+    errorMessage: '_validation.not_an_email'
+  }
+}
+
+const emailsRule = function () {
+  return {
+    isValid: function (value) {
+      if (!value) {
+        return true
+      }
+
+      return !value.split('\n').some(entry => !emailRegex.test(entry))
+    },
+    errorMessage: '_validation.one_not_an_email'
+  }
+}
+
 const validateField = function (field, value) {
   field.errors = field.rules
     .filter(rule => !rule.isValid(value))
@@ -78,6 +105,8 @@ const resetFields = function (fields) {
 export {
   createField,
   requiredRule,
+  emailRule,
+  emailsRule,
   validateField,
   validateFields,
   changedFieldValues,
