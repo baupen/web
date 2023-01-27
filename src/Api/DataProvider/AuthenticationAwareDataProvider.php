@@ -169,7 +169,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
             $this->ensureBooleanSearchFilterValid($query, 'isMarked', $filter->getIsMarked());
             $this->ensureBooleanSearchFilterValid($query, 'wasAddedWithClient', $filter->getWasAddedWithClient());
 
-            $this->ensureSearchFilterValid($query, 'number', $filter->getNumbers());
+            $this->ensureArraySearchFilterValid($query, 'number', $filter->getNumbers());
             $this->ensureSearchFilterValid($query, 'description', $filter->getDescription());
 
             $this->ensureSearchFilterValid($query, 'state', $filter->getState());
@@ -194,7 +194,10 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         throw new BadRequestException('You are not allowed to query this resource');
     }
 
-    private function ensureSearchFilterValid(array $query, string $property, ?string $restriction): void
+    /**
+     * @param string|int|null $restriction
+     */
+    private function ensureSearchFilterValid(array $query, string $property, $restriction): void
     {
         if (null !== $restriction) {
             if (!isset($query[$property])) {
@@ -235,7 +238,9 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
             }
 
             if (is_array($query[$property])) {
-                throw new BadRequestException($property.' filter value '.implode($query[$property]).' not in equal '.implode($restriction).'.');
+                if (!empty(array_diff($restriction, $query[$property]))) {
+                    throw new BadRequestException($property . ' filter value ' . implode($query[$property]) . ' not equal ' . implode($restriction) . '.');
+                }
             } else {
                 if (!in_array($query[$property], $restriction)) {
                     throw new BadRequestException($property.' filter value '.$query[$property].' not in '.implode($restriction).'.');
