@@ -204,7 +204,8 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
                 throw new BadRequestException($property . ' filter missing.');
             }
 
-            if ($query[$property] !== $restriction) {
+            // must use single equal sign, for int restriction (as query[property] will be string)
+            if ($query[$property] != $restriction) {
                 throw new BadRequestException($property.' filter value '.$query[$property].' not equal to '.$restriction.'.');
             }
         }
