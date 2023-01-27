@@ -131,7 +131,7 @@
     </a>
   </form-field>
 
-  <form-field for-id="deadline" :label="$t('issue.deadline')">
+  <form-field for-id="deadline" :label="$t('issue.deadline')" :required="false">
     <span ref="deadline-anchor" />
     <flat-pickr
         id="deadline" class="form-control"
