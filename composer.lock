@@ -8628,16 +8628,16 @@
         },
         {
             "name": "famoser/agnes",
-            "version": "v4.2.4",
+            "version": "v4.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/famoser/agnes.git",
-                "reference": "a1fa3fefc521013bbae5fe12628c583f56c499c3"
+                "reference": "c09c50c764f5a86e1ce480c15835073bfb188b14"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/famoser/agnes/zipball/a1fa3fefc521013bbae5fe12628c583f56c499c3",
-                "reference": "a1fa3fefc521013bbae5fe12628c583f56c499c3",
+                "url": "https://api.github.com/repos/famoser/agnes/zipball/c09c50c764f5a86e1ce480c15835073bfb188b14",
+                "reference": "c09c50c764f5a86e1ce480c15835073bfb188b14",
                 "shasum": ""
             },
             "require": {
@@ -8689,7 +8689,7 @@
                 "issues": "https://github.com/famoser/agnes/issues",
                 "source": "https://github.com/famoser/agnes"
             },
-            "time": "2022-12-23T17:05:39+00:00"
+            "time": "2023-01-27T20:59:50+00:00"
         },
         {
             "name": "friendsofphp/php-cs-fixer",
