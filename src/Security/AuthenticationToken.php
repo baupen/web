@@ -89,22 +89,22 @@ class AuthenticationToken extends BaseEntity implements UserInterface
         $this->craftsman = $craftsman;
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
         return [self::ROLE_API_USER];
     }
 
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return null;
     }
 
-    public function getSalt()
+    public function getSalt(): ?string
     {
         return null;
     }
 
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->token;
     }
