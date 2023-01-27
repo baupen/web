@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Exception\RfcComplianceException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -163,7 +164,12 @@ class EmailService implements EmailServiceInterface
         $link = $this->urlGenerator->generate('public_resolve', ['token' => $craftsman->getAuthenticationToken()]);
         $entity = Email::create(Email::TYPE_CRAFTSMAN_ISSUE_REMINDER, $constructionManager, $link, $json, true);
 
-        $message = $this->createTemplatedEmailToCraftsman($constructionManager, $craftsman, $constructionManagerInBCC)
+        $message = $this->createTemplatedEmailToCraftsman($constructionManager, $craftsman, $constructionManagerInBCC);
+        if (!$message) {
+            return false;
+        }
+
+        $message
             ->subject($subject)
             ->textTemplate('email/craftsman_issue_reminder.txt.twig')
             ->htmlTemplate('email/craftsman_issue_reminder.html.twig')
@@ -191,15 +197,20 @@ class EmailService implements EmailServiceInterface
         return $templatedEmail;
     }
 
-    private function createTemplatedEmailToCraftsman(ConstructionManager $constructionManager, Craftsman $craftsman, bool $constructionManagerInBCC): TemplatedEmail
+    private function createTemplatedEmailToCraftsman(ConstructionManager $constructionManager, Craftsman $craftsman, bool $constructionManagerInBCC): ?TemplatedEmail
     {
         $templatedEmail = new TemplatedEmail();
 
         $from = new Address($this->mailerFromEmail, $constructionManager->getName());
         $constructionManagerAddress = new Address($constructionManager->getEmail(), $constructionManager->getName());
 
+        $to = $this->tryConstructAddress($craftsman->getEmail(), $craftsman->getContactName());
+        if (!$to) {
+            return null;
+        }
+
         $templatedEmail->from($from)
-            ->to(new Address($craftsman->getEmail(), $craftsman->getContactName()))
+            ->to($to)
             ->cc(...$craftsman->getEmailCCs())
             ->returnPath($constructionManagerAddress)
             ->replyTo($constructionManagerAddress);
@@ -234,6 +245,15 @@ class EmailService implements EmailServiceInterface
             $this->logger->error('email send failed', ['exception' => $exception, 'email' => $entity]);
 
             return false;
+        }
+    }
+
+    private static function tryConstructAddress(string $email, string $name): ?Address
+    {
+        try {
+            return new Address($email, $name);
+        } catch (RfcComplianceException $exception) {
+            return null;
         }
     }
 }
