@@ -248,7 +248,7 @@ class EmailService implements EmailServiceInterface
         }
     }
 
-    private static function tryConstructAddress(string $email, string $name): ?Address
+    public static function tryConstructAddress(string $email, string $name): ?Address
     {
         try {
             return new Address($email, $name);

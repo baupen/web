@@ -83,6 +83,10 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
             throw new HttpException(Response::HTTP_FORBIDDEN);
         }
 
+        if (!EmailService::tryConstructAddress($craftsman->getEmail(), $craftsman->getContactName())) {
+            throw new BadRequestException('Craftsman ' . $craftsman->getContactName() . ' has an invalid E-Mail set: ' . $craftsman->getEmail());
+        }
+
         if (\App\Entity\Email::TYPE_CRAFTSMAN_ISSUE_REMINDER === $data->getType()) {
             $craftsmanReport = $this->reportService->createCraftsmanReport($craftsman, $craftsman->getLastVisitOnline());
             $success = $this->emailService->sendCraftsmanIssueReminder($constructionManager, $craftsman, $craftsmanReport, $data->getSubject(), $data->getBody(), $data->getSelfBcc());
