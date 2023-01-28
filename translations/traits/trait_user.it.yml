@@ -1,6 +1,7 @@
 email: E-mail
 family_name: Cognome
 given_name: Nome
+name: Nome
 password: Password
 phone: 'Numero di telefono'
 plain_password: Password
