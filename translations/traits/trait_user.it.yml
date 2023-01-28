@@ -9,4 +9,4 @@ profile: Profilo
 repeat_plain_password: 'Ripetere la password'
 trait:
   name: Utente
-  name_and_email_optional: 'Nome e numero di telefono saranno usati solo per la corrispondenza con gli imprenditori. L''informazione è volontaria.'
+  name_and_email_optional: 'Nome e numero di telefono saranno usati per la corrispondenza con gli imprenditori.'

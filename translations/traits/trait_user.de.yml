@@ -9,4 +9,4 @@ profile: Profil
 repeat_plain_password: 'Passwort wiederholen'
 trait:
   name: Benutzer
-  name_and_email_optional: 'Name & Telefonnummer werden einzig zur Korrespondenz mit den Unternehmern genutzt. Die Angabe ist freiwillig.'
+  name_and_email_optional: 'Name & Telefonnummer werden zur Korrespondenz mit den Unternehmern genutzt.'
