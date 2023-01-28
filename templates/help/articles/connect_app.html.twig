@@ -9,15 +9,26 @@
         <p class="mb-2">
             {{ "connect_app.or"|trans }}
             <a class="authentication-token-link">
-                {{ "connect_app.open_ios_app"|trans }}
+                {{ "connect_app.open_app"|trans }}
             </a>
         </p>
     </div>
 
     <div class="text-center">
         <a href="https://itunes.apple.com/app/id1414077195" target="_blank">
-            <img src="{{ asset('build/images/connect_app/app_store_download.svg') }}"
-                 alt="{{ "connect_app.download_ios_app"|trans }}">
+            <img class="download-badge"
+                 src="{{ asset('build/images/connect_app/app_store_download.svg') }}"
+                 alt="{{ "connect_app.download_ios_app"|trans }}"
+            >
+        </a>
+    </div>
+
+    <div class="text-center">
+        <a href="https://play.google.com/store/apps/details?id=com.pleasure2cu.baupench" target="_blank">
+            <img class="download-badge"
+                 src="{{ asset('build/images/connect_app/google_play.png') }}"
+                 alt="{{ "connect_app.download_android_app"|trans }}"
+            >
         </a>
     </div>
 </article>

@@ -2,17 +2,18 @@ connect_app:
   activation_code: 'Codice di login'
   description: 'Collega il tuo account all''app per utilizzare tutte le funzioni.'
   download_ios_app: 'Scarica l''app iOS'
-  open_ios_app: 'Aprire l''app iOS'
+  download_android_app: 'Scarica l''app Android'
+  open_app: 'Aprire l''app'
   or: o
   title: 'Connettiti con l''app'
 overview:
   app_login: 'Quando si accede all''app, inserisci %website% come sito Web.'
   create: Registrare
-  create_description: 'Registra le pendenze con la nostra app iOS.'
+  create_description: 'Registra le pendenze con la nostra app.'
   description: 'Gestione delle pendenze in 6 passi.'
   download_ios_app: 'all''App Store'
   inspect: Concludere
-  inspect_description: 'Concludi le pendenze completate nell''app iOS.'
+  inspect_description: 'Concludi le pendenze completate nell''app.'
   manage: Gestire
   manage_description: 'Cercare, modificare ed esportare le pendenze inserite nel catalogo.'
   notify: Notificare

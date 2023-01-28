@@ -1,8 +1,9 @@
 app_invitation:
   authenticate: 'Accedi all''app usando il codice QR del sito web o il link seguente.'
   download_to_use_functionality: 'Scarica la nostra app per registrare gli articoli in sospeso per %page%.'
-  ios_login_link: 'Aprire l''app e fare il login'
+  login_link: 'Aprire l''app e fare il login'
   ios_store: 'all''iOS Store'
+  android_store: 'all''Android Store'
   subject: 'Scarica l''app per %page%.'
 construction_sites_overview:
   message: 'La panoramica contiene tutti i cantieri a cui lei appartiene. Se presente, verrà specificata la variazione relativa alla settimana precedente.'

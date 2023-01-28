@@ -2,17 +2,18 @@ connect_app:
   activation_code: Logincode
   description: 'Verbinden Sie ihren Account mit der App um alle Funktionen zu nutzen.'
   download_ios_app: 'iOS App herunterladen'
-  open_ios_app: 'iOS App öffnen'
+  download_android_app: 'Android App herunterladen'
+  open_app: 'App öffnen'
   or: oder
   title: 'Mit App verbinden'
 overview:
   app_login: 'Beim Login in der App, gib %website% als Webseite ein.'
   create: Erfassen
-  create_description: 'Nimm mit unserer iOS-App Pendenzen auf.'
+  create_description: 'Nimm mit unserer App Pendenzen auf.'
   description: 'Pendenzenverwaltung in 6 Schritten.'
   download_ios_app: 'zum App Store'
   inspect: Abschliessen
-  inspect_description: 'Schliesse in der iOS-App die umgesetzten Pendenzen ab.'
+  inspect_description: 'Schliesse in der App die umgesetzten Pendenzen ab.'
   manage: Verwalten
   manage_description: 'Durchsuche, ändere und exportiere eingepflegte Pendenzen im Verzeichnis.'
   notify: Benachrichtigen

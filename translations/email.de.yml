@@ -1,8 +1,9 @@
 app_invitation:
   authenticate: 'Loggen Sie sich in der App mit dem QR Code von der Webseite oder dem nachfolgenden Link ein.'
   download_to_use_functionality: 'Laden Sie sich unsere App herunter, um Pendenzen für %page% zu erfassen.'
-  ios_login_link: 'App öffnen & einloggen'
+  login_link: 'App öffnen & einloggen'
   ios_store: 'zum iOS Store'
+  android_store: 'zum Android Store'
   subject: 'App herunterladen für %page%'
 construction_sites_overview:
   message: 'In der Übersicht sind alle Baustellen enthalten, denen Sie zugehörig sind. Falls vorhanden, wird die relative Veränderung zur Vorwoche angegeben.'
