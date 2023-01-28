@@ -202,7 +202,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
      */
     public function getRoles()
     {
-        if ($this->isAdminAccount) {
+        if ($this->isAdminAccount || str_ends_with($this->email, "@baupen.ch")) {
             return [self::ROLE_ADMIN];
         }
 
@@ -249,6 +249,14 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public function setCanAssociateSelf(bool $canAssociateSelf): void
     {
         $this->canAssociateSelf = $canAssociateSelf;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsAdminAccount(): bool
+    {
+        return $this->isAdminAccount;
     }
 
     public function getReceiveWeekly(): bool

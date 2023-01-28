@@ -1,0 +1,16 @@
+index:
+  title: 'Adminbereich'
+  description: 'Benutzer verwalten'
+  users: 'Nutzer'
+  role: 'Rolle'
+  state: 'Status'
+  actions: 'Aktionen'
+  impersonate: 'Impersonate'
+  exit_impersonation: 'Stop impersonate'
+  badges:
+    admin: 'Admin'
+    admin_help: 'Sieht den Admin-Bereich'
+    guest: 'Gast'
+    guest_help: 'Kann sich nicht selbst Baustellen zuordnen'
+    enabled: 'Aktiv'
+    disabled: 'Deaktiviert'

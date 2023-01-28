@@ -9,13 +9,16 @@
         <button href="https://apps.apple.com/ch/app/mangel-io/id1414077195">
             {{ "app_invitation.ios_store"|trans }}
         </button>
+        <button href="https://play.google.com/store/apps/details?id=com.pleasure2cu.baupench">
+            {{ "app_invitation.android_store"|trans }}
+        </button>
     </center>
 
     <h2>2.</h2>
     <p>{{ "app_invitation.authenticate"|trans({"%page%": app.request.httpHost})  }}</p>
     <center>
         <button href="{{ sentBy|iOSLoginLink }}">
-            {{ "app_invitation.ios_login_link"|trans }}
+            {{ "app_invitation.login_link"|trans }}
         </button>
     </center>
 {% endblock %}

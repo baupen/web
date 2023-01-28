@@ -43,6 +43,14 @@
     </div>
 {% endif %}
 
+{% if is_granted('IS_IMPERSONATOR') %}
+    <div class="flash-wrapper">
+        <div class="alert alert-danger" role="alert">
+            <a href="{{ impersonation_exit_path(path('admin_index') ) }}">{{ "index.exit_impersonation"|trans({}, "admin") }}</a>
+        </div>
+    </div>
+{% endif %}
+
 {% block layout %}
 
 {% endblock %}

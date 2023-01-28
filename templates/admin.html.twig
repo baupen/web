@@ -1,0 +1,71 @@
+{% extends "_base.html.twig" %}
+
+{% block title %}{{ "index.title"|trans }}{% endblock %}
+{% block description %}{{ "index.description"|trans }}{% endblock %}
+
+{% trans_default_domain "admin" %}
+
+{% block layout %}
+    <div class="container pt-5">
+        <h1 class="pb-2">{{ "index.users"|trans }}</h1>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>{{ "email"|trans({}, 'trait_user') }}</th>
+                <th>{{ "index.role"|trans }}</th>
+                <th>{{ "index.state"|trans }}</th>
+                <th>{{ "index.actions"|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for constructionManager in constructionManagers %}
+                <tr>
+                    <td>
+                        {{ constructionManager.name }} <br/>
+                        <a href="mailto:{{ constructionManager.email }}">
+                            {{ constructionManager.email }}
+                        </a>
+                    </td>
+                    <td>
+                        {% if constructionManager.isAdminAccount %}
+                            <span class="badge badge-danger" data-toggle="tooltip" title="{{ "index.badges.admin_help"|trans }}">
+                                {{ "index.badges.admin"|trans }}
+                            </span>
+                        {% endif %}
+                        {% if not constructionManager.canAssociateSelf %}
+                            <span class="badge badge-info" data-toggle="tooltip" title="{{ "index.badges.guest_help"|trans }}">
+                                {{ "index.badges.guest"|trans }}
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if constructionManager.isEnabled %}
+                            <span class="badge badge-success">
+                                {{ "index.badges.enabled"|trans }}
+                            </span>
+                        {% else %}
+                            <span class="badge badge-danger">
+                                {{ "index.badges.disabled"|trans }}
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('index', {'_switch_user': constructionManager.email}) }}">
+                            {{ "index.impersonate"|trans }}
+                        </a> <br/>
+                        {% if not constructionManager.registrationCompleted %}
+                            <a href="{{ path('register_confirm', {'authenticationHash': constructionManager.getAuthenticationHash}) }}">
+                                {{ "register_confirm.title"|trans({}, "security") }}
+                            </a>
+                        {% else %}
+                            <a href="{{ path('recover_confirm', {'authenticationHash': constructionManager.getAuthenticationHash}) }}">
+                                {{ "recover.title"|trans({}, "security") }}
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
