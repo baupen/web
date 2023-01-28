@@ -204,13 +204,8 @@ class EmailService implements EmailServiceInterface
         $from = new Address($this->mailerFromEmail, $constructionManager->getName());
         $constructionManagerAddress = new Address($constructionManager->getEmail(), $constructionManager->getName());
 
-        $to = $this->tryConstructAddress($craftsman->getEmail(), $craftsman->getContactName());
-        if (!$to) {
-            return null;
-        }
-
         $templatedEmail->from($from)
-            ->to($to)
+            ->to(new Address($craftsman->getEmail(), $craftsman->getContactName()))
             ->cc(...$craftsman->getEmailCCs())
             ->returnPath($constructionManagerAddress)
             ->replyTo($constructionManagerAddress);
@@ -248,7 +243,7 @@ class EmailService implements EmailServiceInterface
         }
     }
 
-    public static function tryConstructAddress(string $email, string $name): ?Address
+    public static function tryConstructAddress(string $email, string $name = ''): ?Address
     {
         try {
             return new Address($email, $name);
