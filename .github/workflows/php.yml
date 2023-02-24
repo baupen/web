@@ -20,6 +20,12 @@ jobs:
           # Fetch more than 1 commit so Scrutinizer can deduce where we are
           fetch-depth: 2
 
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -47,11 +53,21 @@ jobs:
           php bin/console lint:yaml config --parse-tags
           php bin/console lint:twig templates
 
+      - name: Create JS/CSS dependencies
+        env:
+          FONTAWESOME_AUTH_TOKEN: ${{ secrets.FONTAWESOME_AUTH_TOKEN }}
+        run: |
+          npm config set "@fortawesome:registry" https://npm.fontawesome.com/
+          npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_AUTH_TOKEN
+          yarn install
+          yarn encore production
+
       - name: Test
         run: |
+          echo 'DATABASE_URL=mysql://localhost:3306/database?charset=UTF-8&user=root&password=root&charset=utf8mb4' >> .env.test
           php bin/console doctrine:database:create --no-interaction
           php bin/console doctrine:migrations:migrate --no-interaction
-          php vendor/bin/phpunit
+          export XDEBUG_MODE=coverage && php vendor/bin/phpunit
 
       - name: Check dependencies
         run: |
