@@ -153,6 +153,7 @@ class SecurityController extends BaseFormController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form->get('password'), $constructionManager, $translator)) {
             $constructionManager->setAuthenticationToken();
+            $constructionManager->setRegistrationCompletedNow();
             $this->fastSave($constructionManager);
 
             if (!$constructionManager->getCanAssociateSelf() && 0 === count($constructionManager->getConstructionSites())) {

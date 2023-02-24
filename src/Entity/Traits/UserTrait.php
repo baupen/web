@@ -50,6 +50,13 @@ trait UserTrait
     private $isEnabled = true;
 
     /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $registrationCompletedAt;
+
+    /**
      * @return string
      */
     public function getEmail()
@@ -104,6 +111,19 @@ trait UserTrait
     public function getAuthenticationHash(): ?string
     {
         return $this->authenticationHash;
+    }
+
+    public function setRegistrationCompletedNow()
+    {
+        $this->registrationCompletedAt = new \DateTime();
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getRegistrationCompletedAt(): ?\DateTime
+    {
+        return $this->registrationCompletedAt;
     }
 
     /**
