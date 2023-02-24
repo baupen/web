@@ -81,7 +81,7 @@ class IssuesReport
 
         $path = $this->router->generate('public_download', ['filename' => $filename]);
 
-        return new Response($path);
+        return new Response($path, Response::HTTP_FOUND);
     }
 
     private function getAuthor(?TokenInterface $token): ?string

@@ -11,7 +11,7 @@
 
 namespace App\Tests\Traits\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
+use ApiPlatform\Symfony\Bundle\Test\Client;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Response;
 
 trait AssertApiCollectionTrait
@@ -59,8 +59,6 @@ trait AssertApiCollectionTrait
         foreach ($collection['hydra:member'] as $entry) {
             if ($entry['@id'] == $iri) {
                 $this->fail('iri '.$iri.' found in '.$collectionResponse->getContent());
-
-                return;
             }
         }
 
@@ -74,7 +72,7 @@ trait AssertApiCollectionTrait
         foreach ($collection['hydra:member'] as $entry) {
             $compareEntry = array_diff_key($entry, array_flip($excludedFields)); // remove excluded keys
             if ($compareEntry == $item) {
-                $this->assertTrue($compareEntry == $item);
+                $this->assertTrue(true);
 
                 return;
             }

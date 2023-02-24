@@ -12,7 +12,7 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
+use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
@@ -23,8 +23,12 @@ use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\TestDataTrait;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
+use App\Tests\Traits\FixturesTrait;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class CraftsmanTest extends ApiTestCase
 {
@@ -36,7 +40,7 @@ class CraftsmanTest extends ApiTestCase
     public function testValidMethodsNeedAuthentication()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
         $this->assertApiOperationNotAuthorized($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
@@ -50,7 +54,7 @@ class CraftsmanTest extends ApiTestCase
     public function testGet()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/craftsmen');
@@ -63,7 +67,7 @@ class CraftsmanTest extends ApiTestCase
     public function testCanEdit()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
         $constructionManager = $constructionSite->getConstructionManagers()[0];
@@ -97,7 +101,7 @@ class CraftsmanTest extends ApiTestCase
     public function testPostPatchAndDelete()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
@@ -142,7 +146,7 @@ class CraftsmanTest extends ApiTestCase
     public function testIsDeletedFilter()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
@@ -158,7 +162,7 @@ class CraftsmanTest extends ApiTestCase
     public function testLastChangedAtFilter()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
@@ -171,7 +175,7 @@ class CraftsmanTest extends ApiTestCase
     public function testAllFilters()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
@@ -198,7 +202,7 @@ class CraftsmanTest extends ApiTestCase
     public function testFeedEntries()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getEmptyConstructionSite();
@@ -253,7 +257,7 @@ class CraftsmanTest extends ApiTestCase
     public function testStatistics()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
@@ -325,8 +329,13 @@ class CraftsmanTest extends ApiTestCase
     }
 
     /**
-     * @param ConstructionSite $constructionSite
-     * @param $craftsmanIri
+     * @param Client $client
+     * @param Craftsman $craftsman
+     * @return array
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
      */
     private function getStatisticForCraftsman(Client $client, Craftsman $craftsman): array
     {

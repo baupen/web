@@ -17,7 +17,7 @@ use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\TestDataTrait;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
+use App\Tests\Traits\FixturesTrait;
 use Symfony\Component\HttpFoundation\Response;
 
 class ConstructionSiteTest extends ApiTestCase
@@ -30,7 +30,7 @@ class ConstructionSiteTest extends ApiTestCase
     public function testInvalidMethods()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $testConstructionSite = $this->getTestConstructionSite();
@@ -40,7 +40,7 @@ class ConstructionSiteTest extends ApiTestCase
     public function testValidMethodsNeedAuthentication()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
 
         $testConstructionSite = $this->getTestConstructionSite();
         $this->assertApiOperationNotAuthorized($client, '/api/construction_sites', 'GET', 'POST');
@@ -54,7 +54,7 @@ class ConstructionSiteTest extends ApiTestCase
     public function testGet()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $response = $this->assertApiGetOk($client, '/api/construction_sites');
@@ -65,7 +65,7 @@ class ConstructionSiteTest extends ApiTestCase
     public function testConstructionManagerFilter()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
         $constructionSiteId = $this->getIriFromItem($constructionSite);
@@ -88,7 +88,7 @@ class ConstructionSiteTest extends ApiTestCase
     public function testPostAndPatch()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $sample = [
@@ -129,7 +129,7 @@ class ConstructionSiteTest extends ApiTestCase
     public function testLastChangedAtFilter()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();

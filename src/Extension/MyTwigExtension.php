@@ -29,14 +29,12 @@ class MyTwigExtension extends AbstractExtension
     private $translator;
     private $requestStack;
     private $httpKernel;
-    private $storage;
 
     public function __construct(TranslatorInterface $translator, RequestStack $requestStack, HttpKernelInterface $httpKernel, TokenStorageInterface $storage)
     {
         $this->translator = $translator;
         $this->requestStack = $requestStack;
         $this->httpKernel = $httpKernel;
-        $this->storage = $storage;
     }
 
     /**
@@ -73,6 +71,7 @@ class MyTwigExtension extends AbstractExtension
     public function apiSubRequestFunction(string $url)
     {
         $request = Request::create($url, 'GET', [], [], [], ['HTTP_ACCEPT' => null]);
+        $request->setSession($this->requestStack->getSession());
         $response = $this->httpKernel->handle(
             $request,
             HttpKernelInterface::SUB_REQUEST

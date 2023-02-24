@@ -17,7 +17,7 @@ trait AssertEmailTrait
     {
         $this->assertEmailCount(1);
 
-        $email = $this->getMailerMessage(0);
+        $email = $this->getMailerMessage();
         $this->assertEmailHtmlBodyContains($email, $content);
         $this->assertEmailTextBodyContains($email, $content);
     }

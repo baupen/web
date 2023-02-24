@@ -16,7 +16,7 @@ use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertAuthenticationTrait;
 use App\Tests\Traits\AssertEmailTrait;
 use App\Tests\Traits\TestDataTrait;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
+use App\Tests\Traits\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class LegacyUrlControllerTest extends WebTestCase
@@ -29,7 +29,7 @@ class LegacyUrlControllerTest extends WebTestCase
     public function testCanLoginCraftsman()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixturesBrowser($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
         $craftsman = $constructionSite->getCraftsmen()[0];

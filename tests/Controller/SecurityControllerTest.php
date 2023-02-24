@@ -15,7 +15,7 @@ use App\Entity\ConstructionManager;
 use App\Tests\Traits\AssertAuthenticationTrait;
 use App\Tests\Traits\AssertEmailTrait;
 use Doctrine\Persistence\ManagerRegistry;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
+use App\Tests\Traits\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -28,7 +28,7 @@ class SecurityControllerTest extends WebTestCase
     public function testCanRegister()
     {
         $client = $this->createClient();
-        $this->loadFixtures();
+        $this->loadFixturesBrowser($client);
 
         $email = 'f@baupen.ch';
         $password = 'asdf1234';

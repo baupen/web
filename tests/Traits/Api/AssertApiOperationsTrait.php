@@ -11,7 +11,7 @@
 
 namespace App\Tests\Traits\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
+use ApiPlatform\Symfony\Bundle\Test\Client;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
 
 trait AssertApiOperationsTrait
@@ -19,11 +19,6 @@ trait AssertApiOperationsTrait
     private function assertApiOperationUnsupported(Client $client, string $url, string ...$methods)
     {
         $this->assertApiOperationsStatusCodeSame(StatusCode::HTTP_METHOD_NOT_ALLOWED, $client, $url, ...$methods);
-    }
-
-    private function assertApiOperationNotFound(Client $client, string $url, string ...$methods)
-    {
-        $this->assertApiOperationsStatusCodeSame(StatusCode::HTTP_NOT_FOUND, $client, $url, ...$methods);
     }
 
     private function assertApiOperationNotAuthorized(Client $client, string $url, string ...$methods)

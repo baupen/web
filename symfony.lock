@@ -16,9 +16,6 @@
     "brainmaestro/composer-git-hooks": {
         "version": "v2.8.3"
     },
-    "composer/package-versions-deprecated": {
-        "version": "1.11.99.5"
-    },
     "composer/pcre": {
         "version": "3.0.0"
     },
@@ -127,9 +124,6 @@
     },
     "famoser/agnes": {
         "version": "v4.0.0"
-    },
-    "fig/link-util": {
-        "version": "1.1.1"
     },
     "friendsofphp/php-cs-fixer": {
         "version": "2.2",
@@ -314,10 +308,10 @@
         "version": "3.0.2"
     },
     "sensio/framework-extra-bundle": {
-        "version": "5.2",
+        "version": "6.2",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
+            "branch": "main",
             "version": "5.2",
             "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
         },

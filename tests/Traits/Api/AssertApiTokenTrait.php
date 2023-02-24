@@ -11,7 +11,7 @@
 
 namespace App\Tests\Traits\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
+use ApiPlatform\Symfony\Bundle\Test\Client;
 use Symfony\Component\HttpFoundation\Response;
 
 trait AssertApiTokenTrait
@@ -62,8 +62,6 @@ trait AssertApiTokenTrait
             $body['headers'] += ['Content-Type' => $contentType];
         }
 
-        $response = $client->request($method, $url, $body);
-
-        return $response;
+        return $client->request($method, $url, $body);
     }
 }

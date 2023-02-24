@@ -12,7 +12,7 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
+use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\DataFixtures\Model\AssetFile;
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;
@@ -24,7 +24,7 @@ use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AssertFileTrait;
 use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\TestDataTrait;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
+use App\Tests\Traits\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
@@ -39,7 +39,7 @@ class ApiControllerTest extends ApiTestCase
     public function testValidMethodsNeedAuthentication()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
 
         $this->assertApiOperationNotAuthorized($client, '/api/me', 'GET');
     }
@@ -47,7 +47,7 @@ class ApiControllerTest extends ApiTestCase
     public function testMe()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
 
@@ -80,7 +80,7 @@ class ApiControllerTest extends ApiTestCase
     public function testConstructionSiteImage()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginConstructionManager($client->getKernelBrowser());
 
         $testConstructionSite = $this->getTestConstructionSite();
@@ -116,7 +116,7 @@ class ApiControllerTest extends ApiTestCase
     public function testIssueImage()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginConstructionManager($client->getKernelBrowser());
 
         $testConstructionSite = $this->getTestConstructionSite();
@@ -151,7 +151,7 @@ class ApiControllerTest extends ApiTestCase
     public function testMapFile()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginConstructionManager($client->getKernelBrowser());
 
         $testConstructionSite = $this->getTestConstructionSite();

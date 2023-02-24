@@ -11,13 +11,13 @@
 
 namespace App\Tests\Traits\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Response;
+use ApiPlatform\Symfony\Bundle\Test\Client;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 trait AssertApiResponseTrait
 {
-    private function assertApiResponseFieldSubset(Response $response, string ...$expectedFields)
+    private function assertApiResponseFieldSubset(ResponseInterface $response, string ...$expectedFields)
     {
         $content = $response->getContent();
         $hydraPayload = json_decode($content, true);
@@ -45,7 +45,7 @@ trait AssertApiResponseTrait
         }
     }
 
-    private function assertApiResponseFileIsDownloadable(Client $client, Response $response, string $fileUrlProperty, string $mode = ResponseHeaderBag::DISPOSITION_INLINE, string $suffix = ''): ?string
+    private function assertApiResponseFileIsDownloadable(Client $client, ResponseInterface $response, string $fileUrlProperty, string $mode = ResponseHeaderBag::DISPOSITION_INLINE, string $suffix = ''): ?string
     {
         $content = $response->getContent();
         $hydraPayload = json_decode($content, true);

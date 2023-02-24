@@ -19,7 +19,7 @@ use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AssertEmailTrait;
 use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\TestDataTrait;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
+use App\Tests\Traits\FixturesTrait;
 use Symfony\Component\HttpFoundation\Response;
 
 class EmailTest extends ApiTestCase
@@ -33,7 +33,7 @@ class EmailTest extends ApiTestCase
     public function testValidMethodsNeedAuthentication()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestEmailTemplateFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestEmailTemplateFixtures::class]);
 
         $this->assertApiOperationUnsupported($client, '/api/emails', 'GET');
         $this->assertApiOperationNotAuthorized($client, '/api/emails/someid', 'GET');
@@ -45,7 +45,7 @@ class EmailTest extends ApiTestCase
     public function testPost()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
         $craftsman = $constructionSite->getCraftsmen()[0];

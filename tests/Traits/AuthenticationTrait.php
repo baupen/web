@@ -11,7 +11,7 @@
 
 namespace App\Tests\Traits;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
+use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\Entity\Base\BaseEntity;
 use App\Entity\ConstructionManager;
 use App\Entity\Traits\IdTrait;
@@ -23,7 +23,8 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 trait AuthenticationTrait
 {
     /**
-     * @param \App\Entity\Traits\AuthenticationTrait $item
+     * @param BaseEntity $item
+     * @return string
      */
     private function createApiTokenFor(BaseEntity $item): string
     {
@@ -81,7 +82,8 @@ trait AuthenticationTrait
     }
 
     /**
-     * @param BaseEntity|IdTrait $entity
+     * @param BaseEntity $entity
+     * @return BaseEntity
      */
     private function reloadEntity(BaseEntity $entity): BaseEntity
     {

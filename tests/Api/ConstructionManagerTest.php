@@ -19,7 +19,7 @@ use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\TestDataTrait;
 use Doctrine\Persistence\ManagerRegistry;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
+use App\Tests\Traits\FixturesTrait;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
 
@@ -33,7 +33,7 @@ class ConstructionManagerTest extends ApiTestCase
     public function testInvalidMethods()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class]);
         $testUser = $this->loginApiConstructionManager($client);
 
         $this->assertApiOperationUnsupported($client, '/api/construction_managers/'.$testUser->getId(), 'DELETE', 'PUT');
@@ -42,19 +42,19 @@ class ConstructionManagerTest extends ApiTestCase
     public function testValidMethodsNeedAuthentication()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class]);
 
         $this->assertApiOperationNotAuthorized($client, '/api/construction_managers', 'GET');
 
         $userRepository = static::$container->get(ManagerRegistry::class)->getRepository(ConstructionManager::class);
-        $testUser = $userRepository->findOneByEmail(TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL);
+        $testUser = $userRepository->findOneBy(['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
         $this->assertApiOperationNotAuthorized($client, '/api/construction_managers/'.$testUser->getId(), 'GET', 'PATCH');
     }
 
     public function testPost()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class]);
 
         // can register
         $this->assertApiPostStatusCodeSame(StatusCode::HTTP_CREATED, $client, '/api/construction_managers', ['email' => 'test@mail.com']);
@@ -78,7 +78,7 @@ class ConstructionManagerTest extends ApiTestCase
     public function testPatch()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $ownConstructionManager = $this->loginApiConstructionManager($client);
 
         $sample = [
@@ -106,7 +106,7 @@ class ConstructionManagerTest extends ApiTestCase
     public function testGetAuthenticationToken()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
 
         $otherConstructionManagerFields = ['@id', '@type', 'givenName', 'familyName', 'email', 'phone', 'lastChangedAt'];
@@ -131,7 +131,7 @@ class ConstructionManagerTest extends ApiTestCase
     public function testConstructionSiteFilters()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
         $emptyConstructionSite = $this->getEmptyConstructionSite();
@@ -158,7 +158,7 @@ class ConstructionManagerTest extends ApiTestCase
     public function testLastChangedAtFilter()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
         $constructionManagerIri = $this->getIriFromItem($constructionManager);
 

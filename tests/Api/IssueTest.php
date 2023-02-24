@@ -12,7 +12,7 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
+use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Issue;
@@ -22,7 +22,7 @@ use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\TestDataTrait;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
+use App\Tests\Traits\FixturesTrait;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
@@ -37,7 +37,7 @@ class IssueTest extends ApiTestCase
     public function testValidMethodsNeedAuthentication()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
         $this->assertApiOperationNotAuthorized($client, '/api/issues?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
@@ -51,7 +51,7 @@ class IssueTest extends ApiTestCase
     public function testGet()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/issues');
@@ -72,7 +72,7 @@ class IssueTest extends ApiTestCase
     public function testPostPatchAndDelete()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
         $constructionManagerId = $this->getIriFromItem($constructionManager);
 
@@ -165,7 +165,7 @@ class IssueTest extends ApiTestCase
     public function testPostNumberAssignment()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getEmptyConstructionSite();
@@ -191,7 +191,7 @@ class IssueTest extends ApiTestCase
     public function testIsDeletedFilter()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
@@ -207,7 +207,7 @@ class IssueTest extends ApiTestCase
     public function testStateFilter()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
         $constructionManagerId = $this->getIriFromItem($constructionManager);
         $basePayload = $this->getMinimalPostPayload($constructionManager);
@@ -240,12 +240,13 @@ class IssueTest extends ApiTestCase
     public function testLastChangedOrder()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
         $constructionSite = $this->getTestConstructionSite();
 
         $issue = $constructionSite->getIssues()[0];
         $issue->setDescription('Hi');
+        sleep(1); // sleep one second to ensure lastChangedAt different
         $this->saveEntity($issue);
         $this->testOrderAppliedFor('lastChangedAt', $client, $constructionSite);
     }
@@ -253,7 +254,7 @@ class IssueTest extends ApiTestCase
     public function testDeadlineNumberOrder()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
         $constructionSite = $this->getTestConstructionSite();
 
@@ -271,7 +272,7 @@ class IssueTest extends ApiTestCase
     public function testLastChangedAtFilter()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
@@ -284,7 +285,7 @@ class IssueTest extends ApiTestCase
     public function testPositionMustBeFullySetOrNotAtAll()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
 
         $basePayload = $this->getMinimalPostPayload($constructionManager);
@@ -302,7 +303,7 @@ class IssueTest extends ApiTestCase
     public function testRelationsOnSameConstructionSite()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
 
         $basePayload = $this->getMinimalPostPayload($constructionManager);
@@ -319,7 +320,7 @@ class IssueTest extends ApiTestCase
     public function testStatusMustBeFullySetOrNotAtAll()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
         $constructionManagerId = $this->getIriFromItem($constructionManager);
         $basePayload = $this->getMinimalPostPayload($constructionManager);
@@ -362,7 +363,7 @@ class IssueTest extends ApiTestCase
     public function testAllFilters()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
         $constructionManagerId = $this->getIriFromItem($constructionManager);
 
@@ -419,7 +420,7 @@ class IssueTest extends ApiTestCase
     public function testReport()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
@@ -430,7 +431,7 @@ class IssueTest extends ApiTestCase
     public function testRender()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
@@ -452,7 +453,7 @@ class IssueTest extends ApiTestCase
     public function testStatistics()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getEmptyConstructionSite();
@@ -525,7 +526,7 @@ class IssueTest extends ApiTestCase
     public function testGroup()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getTestConstructionSite();
@@ -558,7 +559,7 @@ class IssueTest extends ApiTestCase
     public function testFeedEntries()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getEmptyConstructionSite();
@@ -656,7 +657,7 @@ class IssueTest extends ApiTestCase
     public function testTimeseries()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
         $this->loginApiConstructionManager($client);
 
         $constructionSite = $this->getEmptyConstructionSite();

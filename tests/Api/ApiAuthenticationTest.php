@@ -18,8 +18,8 @@ use App\Tests\DataFixtures\TestEmailTemplateFixtures;
 use App\Tests\DataFixtures\TestFilterFixtures;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
+use App\Tests\Traits\FixturesTrait;
 use App\Tests\Traits\TestDataTrait;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
@@ -33,7 +33,7 @@ class ApiAuthenticationTest extends ApiTestCase
     public function testCannotAccessOrModifyExceptExceptions()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
         $otherConstructionSite = $this->getEmptyConstructionSite();
@@ -118,7 +118,7 @@ class ApiAuthenticationTest extends ApiTestCase
     public function testApiAccessEmailTemplates()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class, TestEmailTemplateFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class, TestEmailTemplateFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
         $otherConstructionSite = $this->getEmptyConstructionSite();
@@ -156,7 +156,7 @@ class ApiAuthenticationTest extends ApiTestCase
     public function testFileAndImageDownload()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
 
         $testConstructionSite = $this->getTestConstructionSite();
         $constructionManager = $this->getTestConstructionManager();
@@ -196,7 +196,7 @@ class ApiAuthenticationTest extends ApiTestCase
     public function testCraftsmanGetQueryEnforced()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
 
         $testConstructionSite = $this->getTestConstructionSite();
         $otherConstructionSite = $this->getEmptyConstructionSite();
@@ -227,7 +227,7 @@ class ApiAuthenticationTest extends ApiTestCase
     public function testFilterGetQueryEnforced()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
 
         $testConstructionSite = $this->getTestConstructionSite();
         $otherConstructionSite = $this->getEmptyConstructionSite();
@@ -255,7 +255,7 @@ class ApiAuthenticationTest extends ApiTestCase
     public function testConstructionSiteGetQueryEnforced()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
 
         $testConstructionSite = $this->getTestConstructionSite();
         $otherConstructionSite = $this->getEmptyConstructionSite();
@@ -282,7 +282,7 @@ class ApiAuthenticationTest extends ApiTestCase
     public function testCraftsmanEdit()
     {
         $client = $this->createClient();
-        $this->loadFixtures([TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
 
         $testConstructionSite = $this->getTestConstructionSite();
         $craftsman = $testConstructionSite->getCraftsmen()[0];
