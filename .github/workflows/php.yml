@@ -14,6 +14,16 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: test
+        ports:
+          - 33306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
       - uses: actions/checkout@v3
         with:
@@ -25,6 +35,15 @@ jobs:
         with:
           node-version: 18.x
           cache: 'npm'
+
+      - name: Prepare JS/CSS dependencies
+        env:
+          FONTAWESOME_AUTH_TOKEN: ${{ secrets.FONTAWESOME_AUTH_TOKEN }}
+        run: |
+          npm config set "@fortawesome:registry" https://npm.fontawesome.com/
+          npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_AUTH_TOKEN
+          yarn install
+          yarn encore production
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -53,18 +72,9 @@ jobs:
           php bin/console lint:yaml config --parse-tags
           php bin/console lint:twig templates
 
-      - name: Create JS/CSS dependencies
-        env:
-          FONTAWESOME_AUTH_TOKEN: ${{ secrets.FONTAWESOME_AUTH_TOKEN }}
-        run: |
-          npm config set "@fortawesome:registry" https://npm.fontawesome.com/
-          npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_AUTH_TOKEN
-          yarn install
-          yarn encore production
-
       - name: Test
         run: |
-          echo 'DATABASE_URL=mysql://localhost:3306/database?charset=UTF-8&user=root&password=root&charset=utf8mb4' >> .env.test
+          echo 'DATABASE_URL=mysql://localhost:3306/test?charset=UTF-8&user=root&password=password&charset=utf8mb4' >> .env.test
           php bin/console doctrine:database:create --no-interaction
           php bin/console doctrine:migrations:migrate --no-interaction
           export XDEBUG_MODE=coverage && php vendor/bin/phpunit
