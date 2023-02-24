@@ -76,18 +76,18 @@ class GdService
         imagesetthickness($image, 2);
         $diameter = $radius * 2;
         for ($i = $circleThickness - 1; $i > 1; --$i) {
-            imagearc($image, $positionX, $positionY, $diameter - $i, $diameter - $i, 0, 360, $accent);
+            imagearc($image, (int) $positionX, (int) $positionY, $diameter - $i, $diameter - $i, 0, 360, $accent);
         }
-        imagearc($image, $positionX, $positionY, $diameter - $circleThickness, $diameter - $circleThickness, 0, 360, $transparentAccent);
-        imagearc($image, $positionX, $positionY, $diameter, $diameter, 0, 360, $transparentAccent);
+        imagearc($image, (int) $positionX, (int) $positionY, $diameter - $circleThickness, $diameter - $circleThickness, 0, 360, $transparentAccent);
+        imagearc($image, (int) $positionX, (int) $positionY, $diameter, $diameter, 0, 360, $transparentAccent);
 
         if ($lineThickness > 0) {
             imagesetthickness($image, $lineThickness);
 
             // draw only until middle of circle
             $lineRadius = (int) ($radius - $circleThickness / 2);
-            imageline($image, $positionX + $lineRadius, $positionY, $positionX - $lineRadius, $positionY, $accent);
-            imageline($image, $positionX, $positionY + $lineRadius, $positionX, $positionY - $lineRadius, $accent);
+            imageline($image, (int) ($positionX + $lineRadius), (int) $positionY, (int) ($positionX - $lineRadius), (int) $positionY, $accent);
+            imageline($image, (int) $positionX, (int) ($positionY + $lineRadius), (int) $positionX, (int) ($positionY - $lineRadius), $accent);
         }
     }
 
