@@ -75,7 +75,7 @@ jobs:
       - name: Test
         run: |
           mv .env.github .env.local
-          php bin/console doctrine:database:create --no-interaction
+          php bin/console doctrine:database:create --no-interaction --if-not-exists
           php bin/console doctrine:migrations:migrate --no-interaction
           export XDEBUG_MODE=coverage && php vendor/bin/phpunit
 
