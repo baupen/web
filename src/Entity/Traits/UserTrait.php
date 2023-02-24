@@ -187,6 +187,11 @@ trait UserTrait
         return $this->email;
     }
 
+    public function getUserIdentifier()
+    {
+        return $this->getUsername();
+    }
+
     /**
      * hashes the plainPassword and erases credentials.
      */
