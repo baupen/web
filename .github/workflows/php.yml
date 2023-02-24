@@ -30,6 +30,9 @@ jobs:
           # Fetch more than 1 commit so Scrutinizer can deduce where we are
           fetch-depth: 2
 
+      - name: Prepare hosting deps
+        run: apk --no-cache add ghostscript
+
       - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
