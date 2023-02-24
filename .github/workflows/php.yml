@@ -74,7 +74,7 @@ jobs:
 
       - name: Test
         run: |
-          echo 'DATABASE_URL=mysql://localhost:3306/test?charset=UTF-8&user=root&password=password&charset=utf8mb4' >> .env.test
+          mv .env.github .env.local
           php bin/console doctrine:database:create --no-interaction
           php bin/console doctrine:migrations:migrate --no-interaction
           export XDEBUG_MODE=coverage && php vendor/bin/phpunit
