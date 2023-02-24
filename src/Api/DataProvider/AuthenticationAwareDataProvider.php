@@ -201,7 +201,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
     {
         if (null !== $restriction) {
             if (!isset($query[$property])) {
-                throw new BadRequestException($property . ' filter missing.');
+                throw new BadRequestException($property.' filter missing.');
             }
 
             // must use single equal sign, for int restriction (as query[property] will be string)
@@ -228,19 +228,18 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 
             throw new BadRequestException($property.' filter missing or value not equal to '.$restriction.'.');
         }
-
     }
 
     private function ensureArraySearchFilterValid(array $query, string $property, ?array $restriction): void
     {
         if (null !== $restriction) {
             if (!isset($query[$property])) {
-                throw new BadRequestException($property . ' filter missing.');
+                throw new BadRequestException($property.' filter missing.');
             }
 
             if (is_array($query[$property])) {
                 if (!empty(array_diff($restriction, $query[$property]))) {
-                    throw new BadRequestException($property . ' filter value ' . implode($query[$property]) . ' not equal ' . implode($restriction) . '.');
+                    throw new BadRequestException($property.' filter value '.implode($query[$property]).' not equal '.implode($restriction).'.');
                 }
             } else {
                 if (!in_array($query[$property], $restriction)) {
@@ -254,13 +253,13 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
     {
         if (null !== $restriction) {
             if (!isset($query[$property]) || !isset($query[$property][$timing])) {
-                throw new BadRequestException($property . ' filter missing.');
+                throw new BadRequestException($property.' filter missing.');
             }
 
-            $parsedValue = str_replace(" ", "+", $query[$property][$timing]);
+            $parsedValue = str_replace(' ', '+', $query[$property][$timing]);
             $value = new \DateTime($parsedValue);
             if ($value != $restriction) {
-                throw new BadRequestException($property.' filter value '.$value->format("c").' not in equal '.$restriction->format("c").'.');
+                throw new BadRequestException($property.' filter value '.$value->format('c').' not in equal '.$restriction->format('c').'.');
             }
         }
     }

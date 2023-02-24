@@ -22,7 +22,9 @@ trait IssuePositionTrait
      * @var float|null
      *
      * @Assert\NotBlank(groups={"position"})
+     *
      * @Groups({"issue-read", "issue-write"})
+     *
      * @ORM\Column(type="float", nullable=true)
      */
     private $positionX;
@@ -31,7 +33,9 @@ trait IssuePositionTrait
      * @var float|null
      *
      * @Assert\NotBlank(groups={"position"})
+     *
      * @Groups({"issue-read", "issue-write"})
+     *
      * @ORM\Column(type="float", nullable=true)
      */
     private $positionY;
@@ -40,7 +44,9 @@ trait IssuePositionTrait
      * @var float|null
      *
      * @Assert\NotBlank(groups={"position"})
+     *
      * @Groups({"issue-read", "issue-write"})
+     *
      * @ORM\Column(type="float", nullable=true)
      */
     private $positionZoomScale;

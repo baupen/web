@@ -37,6 +37,7 @@ class Email
      * @var string
      *
      * @Assert\NotBlank
+     *
      * @Groups({"email-create"})
      */
     private $receiver;
@@ -45,6 +46,7 @@ class Email
      * @var string
      *
      * @Assert\NotBlank
+     *
      * @Groups({"email-create"})
      */
     private $subject;
@@ -53,6 +55,7 @@ class Email
      * @var string
      *
      * @Assert\NotBlank
+     *
      * @Groups({"email-create"})
      */
     private $body;
@@ -61,6 +64,7 @@ class Email
      * @var bool
      *
      * @Assert\NotNull
+     *
      * @Groups({"email-create"})
      */
     private $selfBcc;
@@ -69,6 +73,7 @@ class Email
      * @var int
      *
      * @Assert\NotNull
+     *
      * @Groups({"email-create"})
      */
     private $type;

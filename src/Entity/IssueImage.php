@@ -21,6 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
  * A issue image is the image taken in connection with the issue.
  *
  * @ORM\Entity
+ *
  * @ORM\HasLifecycleCallbacks
  */
 class IssueImage extends BaseEntity

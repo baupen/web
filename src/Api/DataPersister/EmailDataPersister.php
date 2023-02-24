@@ -84,12 +84,12 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
         }
 
         if (!EmailService::tryConstructAddress($craftsman->getEmail(), $craftsman->getContactName())) {
-            throw new BadRequestException('Craftsman ' . $craftsman->getContactName() . ' has an invalid E-Mail set: ' . $craftsman->getEmail());
+            throw new BadRequestException('Craftsman '.$craftsman->getContactName().' has an invalid E-Mail set: '.$craftsman->getEmail());
         }
 
         foreach ($craftsman->getEmailCCs() as $emailCC) {
             if (!EmailService::tryConstructAddress($emailCC)) {
-                throw new BadRequestException('Craftsman ' . $craftsman->getContactName() . ' has an invalid CC E-Mail set: ' . $emailCC);
+                throw new BadRequestException('Craftsman '.$craftsman->getContactName().' has an invalid CC E-Mail set: '.$emailCC);
             }
         }
 

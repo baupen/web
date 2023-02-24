@@ -248,7 +248,7 @@ class ImageService implements ImageServiceInterface
                 // draw a dot only
                 $dotSize = $maxSize / 6;
                 $halfDotSize = $dotSize / 2;
-                $this->gdService->drawCrosshair($positionX * $xSize, $positionY * $ySize, 'blue', (int)$halfDotSize, (int)$dotSize, 0, $image);
+                $this->gdService->drawCrosshair($positionX * $xSize, $positionY * $ySize, 'blue', (int) $halfDotSize, (int) $dotSize, 0, $image);
             }
         }
 

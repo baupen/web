@@ -25,7 +25,9 @@ trait IssueStatusTrait
      * @var \DateTime
      *
      * @Assert\NotBlank()
+     *
      * @Groups({"issue-read", "issue-create"})
+     *
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -34,7 +36,9 @@ trait IssueStatusTrait
      * @var ConstructionManager
      *
      * @Assert\NotBlank()
+     *
      * @Groups({"issue-read", "issue-create"})
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
      */
     private $createdBy;
@@ -43,7 +47,9 @@ trait IssueStatusTrait
      * @var \DateTime|null
      *
      * @Assert\NotBlank(groups={"after-register"})
+     *
      * @Groups({"issue-read", "issue-write"})
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $registeredAt;
@@ -52,7 +58,9 @@ trait IssueStatusTrait
      * @var ConstructionManager|null
      *
      * @Assert\NotBlank(groups={"after-register"})
+     *
      * @Groups({"issue-read", "issue-write"})
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
      */
     private $registeredBy;
@@ -61,6 +69,7 @@ trait IssueStatusTrait
      * @var \DateTime|null
      *
      * @Groups({"issue-read", "issue-write", "issue-craftsman-write"})
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $resolvedAt;
@@ -69,6 +78,7 @@ trait IssueStatusTrait
      * @var Craftsman|null
      *
      * @Groups({"issue-read", "issue-write", "issue-craftsman-write"})
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="resolvedIssues")
      */
     private $resolvedBy;
@@ -77,6 +87,7 @@ trait IssueStatusTrait
      * @var \DateTime|null
      *
      * @Groups({"issue-read", "issue-write"})
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $closedAt;
@@ -85,6 +96,7 @@ trait IssueStatusTrait
      * @var ConstructionManager|null
      *
      * @Groups({"issue-read", "issue-write"})
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
      */
     private $closedBy;

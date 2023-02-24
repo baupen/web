@@ -39,8 +39,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     denormalizationContext={"groups"={"email-template-edit"}},
  *     attributes={"pagination_enabled"=false}
  * )
+ *
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
+ *
  * @ORM\Entity
+ *
  * @ORM\HasLifecycleCallbacks
  */
 class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInterface
@@ -56,7 +59,9 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
      * @var string
      *
      * @Assert\NotBlank
+     *
      * @Groups({"email-template-read", "email-template-edit"})
+     *
      * @ORM\Column(type="text")
      */
     private $name;
@@ -65,7 +70,9 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
      * @var string
      *
      * @Assert\NotBlank
+     *
      * @Groups({"email-template-read", "email-template-edit"})
+     *
      * @ORM\Column(type="text")
      */
     private $subject;
@@ -74,7 +81,9 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
      * @var string
      *
      * @Assert\NotBlank
+     *
      * @Groups({"email-template-read", "email-template-edit"})
+     *
      * @ORM\Column(type="text")
      */
     private $body;
@@ -83,6 +92,7 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
      * @var int|null
      *
      * @Groups({"email-template-read", "email-template-edit"})
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $purpose;
@@ -91,7 +101,9 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
      * @var bool
      *
      * @Assert\NotNull
+     *
      * @Groups({"email-template-read", "email-template-edit"})
+     *
      * @ORM\Column(type="boolean")
      */
     private $selfBcc;
@@ -100,7 +112,9 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
      * @var ConstructionSite
      *
      * @Assert\NotBlank
+     *
      * @Groups({"email-template-create"})
+     *
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="emailTemplates")
      */
     private $constructionSite;

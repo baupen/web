@@ -14,8 +14,8 @@ namespace App\Tests\Controller;
 use App\Entity\ConstructionManager;
 use App\Tests\Traits\AssertAuthenticationTrait;
 use App\Tests\Traits\AssertEmailTrait;
-use Doctrine\Persistence\ManagerRegistry;
 use App\Tests\Traits\FixturesTrait;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

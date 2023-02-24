@@ -35,7 +35,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     normalizationContext={"groups"={"filter-read"}, "skip_null_values"=false},
  *     denormalizationContext={"groups"={"filter-write"}},
  * )
+ *
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
+ *
  * @ORM\HasLifecycleCallbacks
  */
 class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
@@ -48,6 +50,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var bool|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $isDeleted;
@@ -56,6 +59,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var bool|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $isMarked;
@@ -64,6 +68,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var bool|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $wasAddedWithClient;
@@ -72,6 +77,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var string[]|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="simple_array", nullable=true)
      */
     private $numbers;
@@ -80,6 +86,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var string|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
@@ -88,6 +95,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var int|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $state;
@@ -96,6 +104,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var string[]|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="simple_array", nullable=true)
      */
     private $craftsmanIds;
@@ -104,6 +113,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var string[]|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="simple_array", nullable=true)
      */
     private $mapIds;
@@ -112,6 +122,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $deadlineBefore;
@@ -120,6 +131,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $deadlineAfter;
@@ -128,6 +140,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $createdAtAfter;
@@ -136,6 +149,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $createdAtBefore;
@@ -144,6 +158,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $registeredAtAfter;
@@ -152,6 +167,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $registeredAtBefore;
@@ -160,6 +176,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $resolvedAtAfter;
@@ -168,6 +185,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $resolvedAtBefore;
@@ -176,6 +194,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $closedAtAfter;
@@ -184,6 +203,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var \DateTime|null
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $closedAtBefore;
@@ -192,6 +212,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var \DateTime|null
      *
      * @Groups({"filter-create"})
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $accessAllowedBefore;
@@ -200,7 +221,9 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var ConstructionSite
      *
      * @Groups({"filter-read", "filter-create"})
+     *
      * @Assert\NotBlank()
+     *
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="filters")
      */
     private $constructionSite;

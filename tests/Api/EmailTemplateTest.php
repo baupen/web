@@ -17,8 +17,8 @@ use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\DataFixtures\TestEmailTemplateFixtures;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
-use App\Tests\Traits\TestDataTrait;
 use App\Tests\Traits\FixturesTrait;
+use App\Tests\Traits\TestDataTrait;
 use Symfony\Component\HttpFoundation\Response;
 
 class EmailTemplateTest extends ApiTestCase

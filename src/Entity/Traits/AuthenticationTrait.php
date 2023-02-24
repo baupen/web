@@ -21,6 +21,7 @@ trait AuthenticationTrait
      * @var string
      *
      * @Groups({"construction-manager-read-self", "filter-read"})
+     *
      * @ORM\Column(type="text")
      */
     private $authenticationToken;

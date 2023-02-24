@@ -22,8 +22,11 @@ trait UserTrait
      * @var string
      *
      * @Groups({"construction-manager-read", "construction-manager-create"})
+     *
      * @ORM\Column(type="string", length=255, unique=true)
+     *
      * @Assert\NotBlank()
+     *
      * @Assert\Email()
      */
     private $email;
@@ -118,9 +121,6 @@ trait UserTrait
         $this->registrationCompletedAt = new \DateTime();
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getRegistrationCompletedAt(): ?\DateTime
     {
         return $this->registrationCompletedAt;

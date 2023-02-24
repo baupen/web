@@ -23,8 +23,8 @@ use App\Tests\DataFixtures\TestFilterFixtures;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AssertFileTrait;
 use App\Tests\Traits\AuthenticationTrait;
-use App\Tests\Traits\TestDataTrait;
 use App\Tests\Traits\FixturesTrait;
+use App\Tests\Traits\TestDataTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 

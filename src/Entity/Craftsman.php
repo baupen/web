@@ -54,11 +54,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     denormalizationContext={"groups"={"craftsman-write"}},
  *     attributes={"pagination_enabled"=false}
  * )
+ *
  * @ApiFilter(SearchFilter::class, properties={"id": "exact", "trade": "exact"})
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
+ *
  * @ORM\Entity
+ *
  * @ORM\HasLifecycleCallbacks
  */
 class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterface
@@ -72,7 +75,9 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
      * @var string
      *
      * @Assert\NotBlank
+     *
      * @Groups({"craftsman-read", "craftsman-write"})
+     *
      * @ORM\Column(type="text")
      */
     private $contactName;
@@ -81,7 +86,9 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
      * @var string
      *
      * @Assert\NotBlank
+     *
      * @Groups({"craftsman-read", "craftsman-write"})
+     *
      * @ORM\Column(type="text")
      */
     private $company;
@@ -90,7 +97,9 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
      * @var string
      *
      * @Assert\NotBlank
+     *
      * @Groups({"craftsman-read", "craftsman-write"})
+     *
      * @ORM\Column(type="text")
      */
     private $trade;
@@ -99,8 +108,11 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
      * @var string
      *
      * @Assert\NotBlank
+     *
      * @Assert\Email
+     *
      * @Groups({"craftsman-read", "craftsman-write"})
+     *
      * @ORM\Column(type="text")
      */
     private $email;
@@ -109,6 +121,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
      * @var string[]
      *
      * @Groups({"craftsman-read", "craftsman-write"})
+     *
      * @ORM\Column(type="simple_array", nullable=true)
      */
     private $emailCCs;
@@ -117,6 +130,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
      * @var bool
      *
      * @Groups({"craftsman-read-self", "craftsman-write"})
+     *
      * @ORM\Column(type="boolean", options={"default": true})
      */
     private $canEdit = true;
@@ -125,7 +139,9 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
      * @var ConstructionSite
      *
      * @Assert\NotBlank
+     *
      * @Groups({"craftsman-create"})
+     *
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="craftsmen")
      */
     private $constructionSite;

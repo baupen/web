@@ -81,6 +81,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *     denormalizationContext={"groups"={}},
  *     normalizationContext={"groups"={"issue-read"}, "skip_null_values"=false}
  * )
+ *
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt", "createdAt", "registeredAt", "resolvedAt", "closedAt", "deadline"})
@@ -89,7 +90,9 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "map": "exact", "description": "partial"})
  * @ApiFilter(StateFilter::class, properties={"state"})
  * @ApiFilter(PatchedOrderFilter::class, properties={"lastChangedAt": "ASC", "deadline"={"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "ASC"}, "number": "ASC"})
+ *
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
+ *
  * @ORM\HasLifecycleCallbacks
  */
 class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
@@ -119,6 +122,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var int
      *
      * @Groups({"issue-read"})
+     *
      * @ORM\Column(type="integer")
      */
     private $number;
@@ -127,6 +131,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var bool
      *
      * @Groups({"issue-read", "issue-write"})
+     *
      * @ORM\Column(type="boolean")
      */
     private $isMarked = false;
@@ -135,6 +140,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var bool
      *
      * @Groups({"issue-read", "issue-write"})
+     *
      * @ORM\Column(type="boolean")
      */
     private $wasAddedWithClient = false;
@@ -143,7 +149,9 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var string|null
      *
      * @Assert\NotBlank(groups={"after-register"})
+     *
      * @Groups({"issue-read", "issue-write"})
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
@@ -152,6 +160,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var \DateTime|null
      *
      * @Groups({"issue-read", "issue-write"})
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $deadline;
@@ -188,7 +197,9 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var Craftsman|null
      *
      * @Assert\NotBlank(groups={"after-register"})
+     *
      * @Groups({"issue-read", "issue-write"})
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="issues")
      */
     private $craftsman;
@@ -197,7 +208,9 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var Map
      *
      * @Assert\NotBlank()
+     *
      * @Groups({"issue-read", "issue-create"})
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="issues")
      */
     private $map;
@@ -206,13 +219,16 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var ConstructionSite
      *
      * @Assert\NotBlank()
+     *
      * @Groups({"issue-create"})
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="issues")
      */
     private $constructionSite;
 
     /**
      * @ORM\PrePersist()
+     *
      * @ORM\PreUpdate()
      */
     public function prePersistTime()

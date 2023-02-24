@@ -45,11 +45,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     denormalizationContext={"groups"={"map-write"}},
  *     attributes={"pagination_enabled"=false}
  * )
+ *
  * @ApiFilter(SearchFilter::class, properties={"id": "exact"})
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
+ *
  * @ORM\Entity()
+ *
  * @ORM\HasLifecycleCallbacks
  */
 class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
@@ -62,7 +65,9 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var string
      *
      * @Assert\NotBlank
+     *
      * @Groups({"map-read", "map-write"})
+     *
      * @ORM\Column(type="text")
      */
     private $name;
@@ -71,7 +76,9 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var ConstructionSite
      *
      * @Assert\NotBlank
+     *
      * @Groups({"map-create"})
+     *
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="maps")
      */
     private $constructionSite;
@@ -80,7 +87,9 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      * @var Map|null
      *
      * @ApiProperty(readableLink=false, writableLink=false)
+     *
      * @Groups({"map-read", "map-write"})
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="children")
      */
     private $parent;

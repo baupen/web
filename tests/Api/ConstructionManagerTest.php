@@ -17,9 +17,9 @@ use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
+use App\Tests\Traits\FixturesTrait;
 use App\Tests\Traits\TestDataTrait;
 use Doctrine\Persistence\ManagerRegistry;
-use App\Tests\Traits\FixturesTrait;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
 

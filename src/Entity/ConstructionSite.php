@@ -43,10 +43,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     denormalizationContext={"groups"={"construction-site-write"}},
  *     attributes={"pagination_enabled"=false}
  * )
+ *
  * @ApiFilter(ExactSearchFilter::class, properties={"constructionManagers.id": "exact"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
+ *
  * @ORM\Entity
+ *
  * @ORM\HasLifecycleCallbacks
  */
 class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntityInterface
@@ -60,7 +63,9 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      * @var string
      *
      * @Assert\NotBlank
+     *
      * @Groups({"construction-site-read", "construction-site-write"})
+     *
      * @ORM\Column(type="text")
      */
     private $name;
@@ -83,7 +88,9 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      * @var ConstructionManager[]|ArrayCollection
      *
      * @Groups({"construction-site-read", "construction-site-write"})
+     *
      * @ORM\ManyToMany(targetEntity="ConstructionManager", inversedBy="constructionSites")
+     *
      * @ORM\JoinTable(name="construction_site_construction_manager")
      */
     private $constructionManagers;
@@ -92,6 +99,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      * @var Map[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite", cascade={"persist"})
+     *
      * @ORM\OrderBy({"name": "ASC"})
      */
     private $maps;
@@ -114,6 +122,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      * @var EmailTemplate[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="App\Entity\EmailTemplate", mappedBy="constructionSite", cascade={"persist"})
+     *
      * @ORM\OrderBy({"purpose": "ASC", "name": "ASC"})
      */
     private $emailTemplates;
@@ -129,6 +138,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      * @var bool
      *
      * @Groups({"construction-site-read"})
+     *
      * @ORM\Column(type="boolean", options={"default": false})
      */
     private $isHidden = false;

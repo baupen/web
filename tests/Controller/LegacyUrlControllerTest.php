@@ -15,8 +15,8 @@ use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\Traits\AssertAuthenticationTrait;
 use App\Tests\Traits\AssertEmailTrait;
-use App\Tests\Traits\TestDataTrait;
 use App\Tests\Traits\FixturesTrait;
+use App\Tests\Traits\TestDataTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class LegacyUrlControllerTest extends WebTestCase

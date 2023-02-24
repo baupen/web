@@ -14,7 +14,6 @@ namespace App\Tests\Traits;
 use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\Entity\Base\BaseEntity;
 use App\Entity\ConstructionManager;
-use App\Entity\Traits\IdTrait;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
@@ -22,10 +21,6 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 trait AuthenticationTrait
 {
-    /**
-     * @param BaseEntity $item
-     * @return string
-     */
     private function createApiTokenFor(BaseEntity $item): string
     {
         $item->setAuthenticationToken();
@@ -81,10 +76,6 @@ trait AuthenticationTrait
         $manager->flush();
     }
 
-    /**
-     * @param BaseEntity $entity
-     * @return BaseEntity
-     */
     private function reloadEntity(BaseEntity $entity): BaseEntity
     {
         /** @var ObjectManager $manager */

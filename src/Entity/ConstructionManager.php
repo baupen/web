@@ -39,9 +39,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     denormalizationContext={"groups"={"construction-manager-write"}},
  *     attributes={"pagination_enabled"=false}
  * )
+ *
  * @ApiFilter(ExactSearchFilter::class, properties={"constructionSites.id": "exact"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
+ *
  * @ORM\Entity()
+ *
  * @ORM\HasLifecycleCallbacks
  */
 class ConstructionManager extends BaseEntity implements UserInterface
@@ -66,6 +69,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
      * @var string|null
      *
      * @Groups({"construction-manager-read", "construction-manager-write"})
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $givenName;
@@ -74,6 +78,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
      * @var string|null
      *
      * @Groups({"construction-manager-read", "construction-manager-write"})
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $familyName;
@@ -82,6 +87,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
      * @var string|null
      *
      * @Groups({"construction-manager-read", "construction-manager-write"})
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $phone;
@@ -118,6 +124,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
      * @var bool
      *
      * @Groups({"construction-manager-read-self"})
+     *
      * @ORM\Column(type="boolean", options={"default": false})
      */
     private $canAssociateSelf = false;
@@ -126,6 +133,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
      * @var bool
      *
      * @Groups({"construction-manager-read-self", "construction-manager-write"})
+     *
      * @ORM\Column(type="boolean", options={"default": false})
      */
     private $receiveWeekly = false;
@@ -202,7 +210,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
      */
     public function getRoles()
     {
-        if ($this->isAdminAccount || str_ends_with($this->email, "@baupen.ch")) {
+        if ($this->isAdminAccount || str_ends_with($this->email, '@baupen.ch')) {
             return [self::ROLE_ADMIN];
         }
 
@@ -251,9 +259,6 @@ class ConstructionManager extends BaseEntity implements UserInterface
         $this->canAssociateSelf = $canAssociateSelf;
     }
 
-    /**
-     * @return bool
-     */
     public function getIsAdminAccount(): bool
     {
         return $this->isAdminAccount;

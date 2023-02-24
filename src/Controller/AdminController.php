@@ -13,7 +13,6 @@ namespace App\Controller;
 
 use App\Controller\Base\BaseController;
 use App\Entity\ConstructionManager;
-use App\Service\UserService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
