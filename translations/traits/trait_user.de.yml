@@ -10,3 +10,4 @@ repeat_plain_password: 'Passwort wiederholen'
 trait:
   name: Benutzer
   name_and_email_optional: 'Name & Telefonnummer werden zur Korrespondenz mit den Unternehmern genutzt.'
+registration_completed_at: 'Registrationsdatum'

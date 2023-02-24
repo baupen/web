@@ -14,3 +14,5 @@ index:
     guest_help: 'Kann sich nicht selbst Baustellen zuordnen'
     enabled: 'Aktiv'
     disabled: 'Deaktiviert'
+    await_registration: 'Eingeladen'
+  registered_since: 'Registriert seit'

@@ -12,8 +12,8 @@
             <thead>
             <tr>
                 <th>{{ "email"|trans({}, 'trait_user') }}</th>
-                <th>{{ "index.role"|trans }}</th>
-                <th>{{ "index.state"|trans }}</th>
+                <th>{{ 'index.registered_since'|trans({}, 'admin') }}</th>
+                <th>{{ "index.role"|trans }} & {{ "index.state"|trans }}</th>
                 <th>{{ "index.actions"|trans }}</th>
             </tr>
             </thead>
@@ -27,25 +27,37 @@
                         </a>
                     </td>
                     <td>
-                        {% if constructionManager.isAdminAccount %}
-                            <span class="badge badge-danger" data-toggle="tooltip" title="{{ "index.badges.admin_help"|trans }}">
-                                {{ "index.badges.admin"|trans }}
-                            </span>
-                        {% endif %}
-                        {% if not constructionManager.canAssociateSelf %}
-                            <span class="badge badge-info" data-toggle="tooltip" title="{{ "index.badges.guest_help"|trans }}">
-                                {{ "index.badges.guest"|trans }}
-                            </span>
-                        {% endif %}
+                        {{ constructionManager.registrationCompletedAt|dateFormatShort }}
                     </td>
                     <td>
-                        {% if constructionManager.isEnabled %}
+                        {# activation status #}
+                        {% if not constructionManager.registrationCompleted %}
+                            <span class="badge badge-warning">
+                                {{ "index.badges.await_registration"|trans }}
+                            </span>
+                        {% elseif constructionManager.isEnabled %}
                             <span class="badge badge-success">
                                 {{ "index.badges.enabled"|trans }}
                             </span>
                         {% else %}
                             <span class="badge badge-danger">
                                 {{ "index.badges.disabled"|trans }}
+                            </span>
+                        {% endif %}
+
+                        {# special roles #}
+                        {% if constructionManager.isAdminAccount %}
+                            <span class="badge badge-danger" data-toggle="tooltip"
+                                  title="{{ "index.badges.admin_help"|trans }}"
+                            >
+                                {{ "index.badges.admin"|trans }}
+                            </span>
+                        {% endif %}
+                        {% if constructionManager.registrationCompleted and not constructionManager.canAssociateSelf %}
+                            <span class="badge badge-info" data-toggle="tooltip"
+                                  title="{{ "index.badges.guest_help"|trans }}"
+                            >
+                                {{ "index.badges.guest"|trans }}
                             </span>
                         {% endif %}
                     </td>
