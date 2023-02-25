@@ -30,41 +30,41 @@ scripts:
   build:
     hook: build
     script:
-      - composer install --verbose --prefer-dist --no-interaction --no-dev --optimize-autoloader --no-scripts
-      - yarn install
-      - yarn run encore production
-      - cp public/build/email.*.css public/build/email.css
-      - rm -rf node_modules
+      - 'composer install --verbose --prefer-dist --no-interaction --no-dev --optimize-autoloader --no-scripts'
+      - 'yarn install'
+      - 'yarn run encore production'
+      - 'cp public/build/email.*.css public/build/email.css'
+      - 'rm -rf node_modules'
 
   deploy:
     hook: deploy
     script:
-      - php bin/console cache:clear -n
-      - find var -type d -print0 | xargs -0 chmod 0755
-      - find var -type f -print0 | xargs -0 chmod 0644
-      - php bin/console doctrine:migrations:migrate -n
+      - '{{php}} bin/console cache:clear -n'
+      - 'find var -type d -print0 | xargs -0 chmod 0755'
+      - 'find var -type f -print0 | xargs -0 chmod 0644'
+      - '{{php}} bin/console doctrine:migrations:migrate -n'
 
   rollback:
     hook: rollback
     script:
-      - cd $PREVIOUS_RELEASE_PATH && export MIGRATE_TO=$(php bin/console doctrine:migrations:latest)
-      - php bin/console doctrine:migrations:migrate $MIGRATE_TO -n
+      - 'cd $PREVIOUS_RELEASE_PATH && export MIGRATE_TO=$({{php}} bin/console doctrine:migrations:latest)'
+      - '{{php}} bin/console doctrine:migrations:migrate $MIGRATE_TO -n'
 
   backup_db:
     script:
-      - php bin/console app:database:backup
+      - '{{php}} bin/console app:database:backup'
 
   restore_db:
     script:
-      - php bin/console app:database:restore
+      - '{{php}} bin/console app:database:restore'
 
   fixtures:
     hook: after_deploy
     instance_filter: '*:*:dev'
     script:
-      - wget -O composer.phar https://getcomposer.org/composer-stable.phar && chmod +x composer.phar && ./composer.phar install --prefer-dist --no-scripts
-      - php bin/console --env=dev doctrine:fixtures:load -n --purge-with-truncate
-      - php composer.phar install --prefer-dist --no-interaction --no-dev --optimize-autoloader --no-scripts
+      - 'wget -q -O composer.phar https://getcomposer.org/composer-stable.phar && {{php}} composer.phar install --prefer-dist --no-scripts'
+      - '{{php}} bin/console --env=dev doctrine:fixtures:load -n --purge-with-truncate'
+      - '{{php}} composer.phar install --prefer-dist --no-interaction --no-dev --optimize-autoloader --no-scripts'
 
 tasks:
   deploy_dev_after_release:
