@@ -17,6 +17,7 @@ use App\Security\TokenTrait;
 use App\Service\Interfaces\FilterServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
 use App\Service\Report\Pdf\ReportElements;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
@@ -81,7 +82,7 @@ class IssuesReport
 
         $path = $this->router->generate('public_download', ['filename' => $filename]);
 
-        return new Response($path, Response::HTTP_FOUND);
+        return new Response($path);
     }
 
     private function getAuthor(?TokenInterface $token): ?string
