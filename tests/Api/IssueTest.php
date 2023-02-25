@@ -425,7 +425,7 @@ class IssueTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $response = $this->assertApiGetStatusCodeSame(StatusCode::HTTP_OK, $client, '/api/issues/report?constructionSite='.$constructionSite->getId(), 'application/pdf');
-        $this->assertTrue(str_contains($response->getContent(), "/download"));
+        $this->assertTrue(str_contains($response->getContent(), '/download'));
     }
 
     public function testRender()
