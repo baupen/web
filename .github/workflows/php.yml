@@ -21,7 +21,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: test
         ports:
-          - 33306:3306
+          - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
@@ -29,6 +29,9 @@ jobs:
         with:
           # Fetch more than 1 commit so Scrutinizer can deduce where we are
           fetch-depth: 2
+
+      - name: Prepare hosting deps
+        run: sudo apt-get -y install ghostscript
 
       - name: Use Node.js 18.x
         uses: actions/setup-node@v3
@@ -75,7 +78,7 @@ jobs:
       - name: Test
         run: |
           mv .env.github .env.local
-          php bin/console doctrine:database:create --no-interaction
+          php bin/console doctrine:database:create --no-interaction --if-not-exists
           php bin/console doctrine:migrations:migrate --no-interaction
           export XDEBUG_MODE=coverage && php vendor/bin/phpunit
 
@@ -87,4 +90,4 @@ jobs:
 
       - name: Upload Scrutinizer coverage
         run: |
-          wget -q -O ocular.phar https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover ./build/logs/clover.xml
+          ./vendor/bin/ocular code-coverage:upload --format=php-clover ./build/logs/clover.xml
