@@ -58,14 +58,6 @@ scripts:
     script:
       - '{{php}} bin/console app:database:restore'
 
-  fixtures:
-    hook: after_deploy
-    instance_filter: '*:*:dev'
-    script:
-      - 'wget -q -O composer.phar https://getcomposer.org/composer-stable.phar && {{php}} composer.phar install --prefer-dist --no-scripts'
-      - '{{php}} bin/console --env=dev doctrine:fixtures:load -n --purge-with-truncate'
-      - '{{php}} composer.phar install --prefer-dist --no-interaction --no-dev --optimize-autoloader --no-scripts'
-
 tasks:
   deploy_dev_after_release:
     after: release
