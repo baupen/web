@@ -17,6 +17,7 @@ use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Security\TokenTrait;
 use App\Service\Interfaces\PathServiceInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -47,9 +48,9 @@ class PublicController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function resolveAction(string $token, TokenStorageInterface $tokenStorage)
+    public function resolveAction(string $token, TokenStorageInterface $tokenStorage, ManagerRegistry $registry)
     {
-        $craftsman = $this->getDoctrine()->getRepository(Craftsman::class)->findOneBy(['authenticationToken' => $token, 'deletedAt' => null]);
+        $craftsman = $registry->getRepository(Craftsman::class)->findOneBy(['authenticationToken' => $token, 'deletedAt' => null]);
         if (null === $craftsman) {
             throw new NotFoundHttpException();
         }
@@ -67,9 +68,9 @@ class PublicController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function filteredAction(string $token, TokenStorageInterface $tokenStorage)
+    public function filteredAction(string $token, TokenStorageInterface $tokenStorage, ManagerRegistry $registry)
     {
-        $filter = $this->getDoctrine()->getRepository(Filter::class)->findOneBy(['authenticationToken' => $token]);
+        $filter = $registry->getRepository(Filter::class)->findOneBy(['authenticationToken' => $token]);
         if (null === $filter || ($filter->getAccessAllowedBefore() && $filter->getAccessAllowedBefore() < new \DateTime())) {
             throw new NotFoundHttpException();
         }
