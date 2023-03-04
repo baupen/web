@@ -12,6 +12,8 @@
 namespace App\Controller;
 
 use App\Controller\Base\BaseDoctrineController;
+use App\Entity\Email;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,9 +28,9 @@ class EmailController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function emailAction($identifier)
+    public function emailAction(string $identifier, ManagerRegistry $registry)
     {
-        $email = $this->getDoctrine()->getRepository('App:Email')->findOneBy(['identifier' => $identifier]);
+        $email = $registry->getRepository(Email::class)->findOneBy(['identifier' => $identifier]);
         if (null === $email) {
             throw new NotFoundHttpException();
         }

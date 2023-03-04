@@ -176,7 +176,7 @@ class SecurityController extends BaseFormController
      *
      * @return Response
      */
-    public function recoverAction(Request $request, EmailServiceInterface $emailService, TranslatorInterface $translator, LoggerInterface $logger)
+    public function recoverAction(Request $request, EmailServiceInterface $emailService, TranslatorInterface $translator, LoggerInterface $logger, ManagerRegistry $registry)
     {
         $constructionManager = new ConstructionManager();
         $form = $this->createForm(OnlyEmailType::class, $constructionManager);
@@ -185,7 +185,7 @@ class SecurityController extends BaseFormController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var ConstructionManager $existingConstructionManager */
-            $existingConstructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
+            $existingConstructionManager = $registry->getRepository(ConstructionManager::class)->findOneBy(['email' => $constructionManager->getEmail()]);
             if (null === $existingConstructionManager) {
                 $logger->info('could not reset password of unknown user '.$constructionManager->getEmail());
                 $this->displayError($translator->trans('recover.fail.email_not_found', [], 'security'));
