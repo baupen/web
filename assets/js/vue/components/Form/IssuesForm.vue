@@ -99,7 +99,7 @@
            :class="{'is-valid': fields.description.dirty && !fields.description.errors.length, 'is-invalid': fields.description.dirty && fields.description.errors.length }"
            v-model="issue.description"
            @change="validate('description')"
-           @input="fields.description.dirty = true"
+           @blur="fields.description.dirty = true"
            @keyup.enter="$emit('confirm')">
     <invalid-feedback :errors="fields.description.errors" />
     <a class="btn-link clickable" v-if="fields.description.dirty" @click="reset('description')">
@@ -117,7 +117,7 @@
     <select class="custom-select"
             :class="{'is-valid': fields.craftsman.dirty && !fields.craftsman.errors.length, 'is-invalid': fields.craftsman.dirty && fields.craftsman.errors.length }"
             v-model="issue.craftsman"
-            @input="fields.craftsman.dirty = true"
+            @blur="fields.craftsman.dirty = true"
             @change="validate('craftsman')"
     >
       <option v-for="craftsman in sortedCraftsmen" :value="craftsman['@id']"
@@ -138,7 +138,7 @@
         :class="{'is-valid': fields.deadline.dirty && !fields.deadline.errors.length, 'is-invalid': fields.deadline.dirty && fields.deadline.errors.length }"
         v-model="issue.deadline"
         :config="datePickerConfig"
-        @input="fields.deadline.dirty = true"
+        @blur="fields.deadline.dirty = true"
         @change="validate('deadline')">
     </flat-pickr>
     <invalid-feedback :errors="fields.deadline.errors" />
