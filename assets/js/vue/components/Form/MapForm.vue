@@ -2,8 +2,8 @@
   <form-field for-id="name" :label="$t('map.name')">
     <input id="name" class="form-control" type="text" required="required"
            :class="{'is-valid': fields.name.dirty && !fields.name.errors.length, 'is-invalid': fields.name.dirty && fields.name.errors.length }"
-           @blur="fields.name.dirty = true"
            v-model="map.name"
+           @blur="fields.name.dirty = true"
            @input="validate('name')">
     <invalid-feedback :errors="fields.name.errors" />
   </form-field>
@@ -12,8 +12,8 @@
     <select class="custom-select"
             :class="{'is-valid': fields.parent.dirty && !fields.parent.errors.length, 'is-invalid': fields.parent.dirty && fields.parent.errors.length }"
             v-model="map.parent"
-            @input="fields.parent.dirty = true"
-            @change="validate('parent')"
+            @blur="fields.parent.dirty = true"
+            @input="validate('parent')"
     >
       <option :value="null">{{ $t('map.parent_not_set_name') }}</option>
       <option disabled></option>
