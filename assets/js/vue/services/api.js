@@ -30,7 +30,6 @@ const api = {
         return response
       },
       error => {
-        console.log(error)
         /* eslint-disable-next-line eqeqeq */
         if (error == 'Error: Request aborted') {
           // hide aborted errors (happens when navigating rapidly in firefox)
