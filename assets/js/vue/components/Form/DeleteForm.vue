@@ -2,7 +2,7 @@
   <custom-checkbox-field for-id="remove-confirm" :label="$t('_form.remove_confirm')">
     <input
         class="custom-control-input" type="checkbox" id="remove-confirm"
-        :class="{'is-valid': removeConfirmField.dirty && !removeConfirmField.errors.length, 'is-invalid': removeConfirmField.dirty && removeConfirmField.errors.length }"
+        :class="{'is-valid': removeConfirmField.dirty && !removeConfirmField.errors.length }"
         v-model="removeConfirm"
         :true-value="true"
         :false-value="false"
