@@ -13,7 +13,7 @@
             :class="{'is-valid': fields.parent.dirty && !fields.parent.errors.length, 'is-invalid': fields.parent.dirty && fields.parent.errors.length }"
             v-model="map.parent"
             @blur="fields.parent.dirty = true"
-            @input="validate('parent')"
+            @change="validate('parent')"
     >
       <option :value="null">{{ $t('map.parent_not_set_name') }}</option>
       <option disabled></option>
