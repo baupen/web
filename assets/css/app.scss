@@ -13,7 +13,7 @@ $custom-control-cursor: pointer;
 
 @import '~bootstrap/scss/bootstrap';
 @import '~noty/src/noty';
-@import '~noty/src/themes/bootstrap-v4';
+@import 'libraries/noty/bootstrap-v4';
 @import '~flatpickr/dist/flatpickr.css';
 @import '~chart.js/dist/Chart.css';
 @import 'bootstrap-responsive';
