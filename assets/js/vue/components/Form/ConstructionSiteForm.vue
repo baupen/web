@@ -146,6 +146,7 @@ export default {
   },
   mounted () {
     this.setConstructionSiteFromTemplate()
+    this.$emit('update', this.updatePayload)
   }
 }
 </script>

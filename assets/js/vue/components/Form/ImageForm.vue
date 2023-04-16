@@ -47,6 +47,9 @@ export default {
     validFileTypes: function () {
       return validImageTypes
     }
+  },
+  mounted () {
+    this.$emit('update', null)
   }
 }
 </script>

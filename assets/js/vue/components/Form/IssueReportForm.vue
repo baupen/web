@@ -80,7 +80,6 @@ export default {
   },
   mounted () {
     this.report = Object.assign({}, this.template)
-    this.$emit('update', this.report)
   }
 }
 </script>

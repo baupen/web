@@ -148,6 +148,7 @@ export default {
   },
   mounted () {
     this.setCraftsmanFromTemplate()
+    this.$emit('update', this.updatePayload)
   }
 }
 </script>

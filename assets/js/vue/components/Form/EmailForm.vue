@@ -85,6 +85,7 @@ export default {
   },
   mounted () {
     this.setEmailFromTemplate()
+    this.$emit('update', this.updatePayload)
   }
 }
 </script>

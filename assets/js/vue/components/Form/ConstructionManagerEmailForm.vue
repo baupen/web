@@ -57,7 +57,6 @@ export default {
   },
   mounted () {
     validateFields(this.fields, this.constructionManager)
-
     this.$emit('update', this.updatePayload)
   }
 }
