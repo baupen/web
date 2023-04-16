@@ -97,6 +97,9 @@ export default {
       const blob = craftsmanTransformer.importExcelTemplate(this.$t)
       return window.URL.createObjectURL(blob)
     }
+  },
+  mounted () {
+    this.$emit('imported', null)
   }
 }
 </script>

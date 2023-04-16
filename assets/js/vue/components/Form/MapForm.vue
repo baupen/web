@@ -95,6 +95,7 @@ export default {
   },
   mounted () {
     this.setMapFromTemplate()
+    this.$emit('update', this.updatePayload)
   }
 }
 </script>

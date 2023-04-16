@@ -312,6 +312,7 @@ export default {
   },
   mounted () {
     this.setIssueFromTemplate()
+    this.$emit('update', this.updatePayload)
   }
 }
 </script>
