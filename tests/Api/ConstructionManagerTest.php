@@ -109,7 +109,7 @@ class ConstructionManagerTest extends ApiTestCase
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class]);
         $constructionManager = $this->loginApiConstructionManager($client);
 
-        $otherConstructionManagerFields = ['@id', '@type', 'givenName', 'familyName', 'email', 'phone', 'lastChangedAt'];
+        $otherConstructionManagerFields = ['@id', '@type', 'givenName', 'familyName', 'isEnabled', 'email', 'phone', 'lastChangedAt'];
         $selfConstructionManagerFields = array_merge($otherConstructionManagerFields, ['authenticationToken', 'canAssociateSelf', 'receiveWeekly']);
         sort($otherConstructionManagerFields);
         sort($selfConstructionManagerFields);
