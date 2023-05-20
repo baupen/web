@@ -233,7 +233,8 @@
     "_name": "Bauleiter",
     "_plural": "Bauleiter",
     "email": "E-Mail",
-    "name": "Name"
+    "name": "Name",
+    "is_disabled": "Deaktiviert"
   },
   "construction_site": {
     "_name": "Baustelle",
