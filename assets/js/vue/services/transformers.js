@@ -1,5 +1,5 @@
 import { iriToId } from './api'
-import XLSX from 'xlsx'
+import { utils, write, read } from 'xlsx'
 
 const issueTransformer = {
   isOverdue: function (issue) {
@@ -20,11 +20,11 @@ const excelTransformer = {
     return [this.mimeTypeXlsx, this.mimeTypeXls]
   },
   exportToXlsx: function (content, header, worksheetName) {
-    const workbook = XLSX.utils.book_new()
-    const worksheet = XLSX.utils.aoa_to_sheet([header, ...content])
-    XLSX.utils.book_append_sheet(workbook, worksheet, worksheetName)
+    const workbook = utils.book_new()
+    const worksheet = utils.aoa_to_sheet([header, ...content])
+    utils.book_append_sheet(workbook, worksheet, worksheetName)
 
-    const blobPart = XLSX.write(workbook, {
+    const blobPart = write(workbook, {
       bookType: 'xlsx',
       bookSST: false,
       type: 'array'
@@ -34,10 +34,10 @@ const excelTransformer = {
   },
   import: function (arrayBuffer) {
     const data = new Uint8Array(arrayBuffer)
-    const workbook = XLSX.read(data, { type: 'array' })
+    const workbook = read(data, { type: 'array' })
     const worksheet = workbook.Sheets[workbook.SheetNames[0]]
 
-    return XLSX.utils.sheet_to_json(worksheet, { header: 1 })
+    return utils.sheet_to_json(worksheet, { header: 1 })
   }
 }
 
