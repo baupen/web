@@ -85,6 +85,7 @@ export default {
                 if (this.pendingPost.length === 0) {
                   displaySuccess(this.$t('_action.import_craftsmen.imported'))
                   this.$emit('imported')
+                  this.importing = false
                 } else {
                   this.continueImport()
                 }
