@@ -1,11 +1,11 @@
 {
   "dependencies": {
-    "@fortawesome/fontawesome-pro": "^5",
-    "@fortawesome/fontawesome-svg-core": "^1",
-    "@fortawesome/pro-light-svg-icons": "^5",
-    "@fortawesome/pro-regular-svg-icons": "^5",
-    "@fortawesome/pro-solid-svg-icons": "^5",
-    "@fortawesome/vue-fontawesome": "^3.0.0-2",
+    "@fortawesome/fontawesome-pro": "^6.3.0",
+    "@fortawesome/fontawesome-svg-core": "^6.3.0",
+    "@fortawesome/pro-light-svg-icons": "^6.3.0",
+    "@fortawesome/pro-regular-svg-icons": "^6.3.0",
+    "@fortawesome/pro-solid-svg-icons": "^6.3.0",
+    "@fortawesome/vue-fontawesome": "^3.0.3",
     "@popperjs/core": "^2.6.0",
     "axios": "^0.21",
     "bootstrap": "^4",
@@ -22,7 +22,7 @@
     "vue": "^3",
     "vue-flatpickr-component": "^9",
     "vue-i18n": "^9",
-    "xlsx": "^0.17"
+    "xlsx": "^0.18"
   },
   "devDependencies": {
     "@intlify/vue-i18n-loader": "^4.1.0",
