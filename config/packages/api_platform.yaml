@@ -16,7 +16,7 @@ api_platform:
                 type: 'header'
     collection:
         pagination:
-            items_per_page: 30
+            items_per_page: 50
             client_items_per_page: true
 
     version: '0.5.1'
