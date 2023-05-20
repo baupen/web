@@ -48,6 +48,8 @@ trait UserTrait
     /**
      * @var bool
      *
+     * @Groups({"construction-manager-read"})
+     *
      * @ORM\Column(type="boolean")
      */
     private $isEnabled = true;
