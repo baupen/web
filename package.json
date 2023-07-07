@@ -44,7 +44,7 @@
     "regenerator-runtime": "^0.13.2",
     "sass": "^1.35",
     "sass-loader": "^9.0.0",
-    "stylelint": "^13.6.1",
+    "stylelint": "^15.10.1",
     "stylelint-config-sass-guidelines": "^7.0.0",
     "stylelint-config-standard": "^20.0.0",
     "vue-loader": "^16",
