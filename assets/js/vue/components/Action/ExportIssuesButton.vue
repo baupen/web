@@ -4,6 +4,7 @@
       :button-disabled="disabled">
 
     <custom-radio-field for-id="export-source-filter"
+                        class="mb-2"
                         :label="$tc('_action.export_issues.export_source_filter', queriedIssueCount)">
       <input id="export-source-filter" class="custom-control-input" type="radio"
              name="export-source" value="filter"
