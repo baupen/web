@@ -86,7 +86,6 @@ abstract class ConstructionSiteRelatedEntityVoter extends Voter
      * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
      *
      * @param string $attribute
-     * @param mixed  $subject
      *
      * @return bool
      */
@@ -106,15 +105,15 @@ abstract class ConstructionSiteRelatedEntityVoter extends Voter
 
         $craftsman = $this->tryGetCraftsman($token);
         if (null !== $craftsman) {
-            return in_array($attribute, $this->getRelatedCraftsmanAccessibleAttributes()) &&
-                $this->isCraftsmanRelated($craftsman, $subject);
+            return in_array($attribute, $this->getRelatedCraftsmanAccessibleAttributes())
+                && $this->isCraftsmanRelated($craftsman, $subject);
         }
 
         $filter = $this->tryGetFilter($token);
         if (null !== $filter) {
-            return in_array($attribute, $this->getRelatedFilterAccessibleAttributes()) &&
-                $this->isFilterRelated($filter, $subject) &&
-                $this->isIncludedInFilter($filter, $attribute, $subject);
+            return in_array($attribute, $this->getRelatedFilterAccessibleAttributes())
+                && $this->isFilterRelated($filter, $subject)
+                && $this->isIncludedInFilter($filter, $attribute, $subject);
         }
 
         throw new \LogicException('Unknown user in token '.get_class($token));

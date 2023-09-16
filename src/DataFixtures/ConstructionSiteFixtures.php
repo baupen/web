@@ -148,35 +148,35 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
         $manager->persist($issue);
     }
 
-//
-//    private function simulateManyOpenIssues(ObjectManager $manager, ConstructionSite $constructionSite)
-//    {
-//        /** @var Issue|false $maxIssue */
-//        $maxIssue = $constructionSite->getIssues()->last();
-//        $craftsman = $constructionSite->getCraftsmen()[0];
-//        $map = $constructionSite->getMaps()[0];
-//        $constructionManager = $constructionSite->getConstructionManagers()[0];
-//
-//        $nextNumber = $maxIssue ? $maxIssue->getNumber() : 1;
-//
-//        for ($i = $nextNumber; $i < 1000; ++$i) {
-//            $issue = new Issue();
-//            $issue->setNumber($i);
-//
-//            $issue->setConstructionSite($constructionSite);
-//            $issue->setMap($map);
-//            $issue->setCraftsman($craftsman);
-//
-//            $issue->setCreatedAt(new \DateTime());
-//            $issue->setCreatedBy($constructionManager);
-//            $issue->setRegisteredAt(new \DateTime());
-//            $issue->setRegisteredBy($constructionManager);
-//
-//            $issue->setPositionX(rand(0, 1000) / 1000);
-//            $issue->setPositionY(rand(0, 1000) / 1000);
-//            $issue->setPositionZoomScale(rand(0, 1000) / 1000);
-//
-//            $manager->persist($issue);
-//        }
-//    }
+    //
+    //    private function simulateManyOpenIssues(ObjectManager $manager, ConstructionSite $constructionSite)
+    //    {
+    //        /** @var Issue|false $maxIssue */
+    //        $maxIssue = $constructionSite->getIssues()->last();
+    //        $craftsman = $constructionSite->getCraftsmen()[0];
+    //        $map = $constructionSite->getMaps()[0];
+    //        $constructionManager = $constructionSite->getConstructionManagers()[0];
+    //
+    //        $nextNumber = $maxIssue ? $maxIssue->getNumber() : 1;
+    //
+    //        for ($i = $nextNumber; $i < 1000; ++$i) {
+    //            $issue = new Issue();
+    //            $issue->setNumber($i);
+    //
+    //            $issue->setConstructionSite($constructionSite);
+    //            $issue->setMap($map);
+    //            $issue->setCraftsman($craftsman);
+    //
+    //            $issue->setCreatedAt(new \DateTime());
+    //            $issue->setCreatedBy($constructionManager);
+    //            $issue->setRegisteredAt(new \DateTime());
+    //            $issue->setRegisteredBy($constructionManager);
+    //
+    //            $issue->setPositionX(rand(0, 1000) / 1000);
+    //            $issue->setPositionY(rand(0, 1000) / 1000);
+    //            $issue->setPositionZoomScale(rand(0, 1000) / 1000);
+    //
+    //            $manager->persist($issue);
+    //        }
+    //    }
 }

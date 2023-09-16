@@ -100,7 +100,7 @@ class UserService implements UserServiceInterface
         }
     }
 
-    public function tryRegister(ConstructionManager $template, ?string &$error = null): bool
+    public function tryRegister(ConstructionManager $template, string &$error = null): bool
     {
         /** @var ConstructionManager $existing */
         $existing = $this->registry->getRepository(ConstructionManager::class)->findOneBy(['email' => $template->getEmail()]);

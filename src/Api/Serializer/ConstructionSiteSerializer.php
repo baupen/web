@@ -28,8 +28,8 @@ class ConstructionSiteSerializer implements NormalizerInterface
 
     public function supportsNormalization($data, string $format = null)
     {
-        return $data instanceof ConstructionSite &&
-            $this->decorated->supportsNormalization($data, $format);
+        return $data instanceof ConstructionSite
+            && $this->decorated->supportsNormalization($data, $format);
     }
 
     /**

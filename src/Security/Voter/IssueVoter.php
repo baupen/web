@@ -47,17 +47,17 @@ class IssueVoter extends ConstructionSiteOwnedEntityVoter
      */
     protected function isIncludedInFilter(Filter $filter, $attribute, $subject): bool
     {
-        $listsValid = (null === $filter->getCraftsmanIds() || in_array($subject->getCraftsman()->getId(), $filter->getCraftsmanIds())) &&
-            (null === $filter->getMapIds() || in_array($subject->getMap()->getId(), $filter->getMapIds())) &&
-            (null === $filter->getNumbers() || in_array($subject->getNumber(), $filter->getNumbers()));
+        $listsValid = (null === $filter->getCraftsmanIds() || in_array($subject->getCraftsman()->getId(), $filter->getCraftsmanIds()))
+            && (null === $filter->getMapIds() || in_array($subject->getMap()->getId(), $filter->getMapIds()))
+            && (null === $filter->getNumbers() || in_array($subject->getNumber(), $filter->getNumbers()));
 
         if (!$listsValid) {
             return false;
         }
 
-        $booleansValid = (null === $filter->getIsMarked() || $subject->getIsMarked() === $filter->getIsMarked()) &&
-            (null === $filter->getWasAddedWithClient() || $subject->getWasAddedWithClient() === $filter->getWasAddedWithClient()) &&
-            (null === $filter->getIsDeleted() || $subject->getIsDeleted() === $filter->getIsDeleted());
+        $booleansValid = (null === $filter->getIsMarked() || $subject->getIsMarked() === $filter->getIsMarked())
+            && (null === $filter->getWasAddedWithClient() || $subject->getWasAddedWithClient() === $filter->getWasAddedWithClient())
+            && (null === $filter->getIsDeleted() || $subject->getIsDeleted() === $filter->getIsDeleted());
 
         if (!$booleansValid) {
             return false;

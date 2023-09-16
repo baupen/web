@@ -79,7 +79,6 @@ class ConstructionManagerVoter extends ConstructionSiteRelatedEntityVoter
      * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
      *
      * @param string $attribute
-     * @param mixed  $subject
      *
      * @return bool
      */

@@ -17,9 +17,6 @@ use Doctrine\DBAL\Types\Types;
 
 class Platform extends MySqlPlatform
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getTruncateTableSQL($tableName, $cascade = false): string
     {
         $truncateSql = parent::getTruncateTableSQL($tableName, $cascade);

@@ -34,8 +34,8 @@ class CraftsmanSerializer implements NormalizerInterface
 
     public function supportsNormalization($data, string $format = null)
     {
-        return $data instanceof Craftsman &&
-            $this->decorated->supportsNormalization($data, $format);
+        return $data instanceof Craftsman
+            && $this->decorated->supportsNormalization($data, $format);
     }
 
     /**

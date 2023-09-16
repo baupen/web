@@ -154,7 +154,6 @@ class PdfSizes
     }
 
     /**
-     * @param bool       $compact
      * @param mixed|null $firstColumnSize
      *
      * @return float|float
@@ -171,7 +170,6 @@ class PdfSizes
     }
 
     /**
-     * @param bool       $compact
      * @param mixed|null $firstColumnSize
      *
      * @return float|float
@@ -188,7 +186,6 @@ class PdfSizes
     }
 
     /**
-     * @param bool       $compact
      * @param mixed|null $firstColumnSize
      *
      * @return float|float

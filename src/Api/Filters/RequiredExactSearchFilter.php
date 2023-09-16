@@ -13,9 +13,6 @@ namespace App\Api\Filters;
 
 class RequiredExactSearchFilter extends ExactSearchFilter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getDescription(string $resourceClass): array
     {
         $description = parent::getDescription($resourceClass);

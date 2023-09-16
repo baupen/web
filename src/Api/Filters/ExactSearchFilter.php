@@ -15,9 +15,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 class ExactSearchFilter extends SearchFilter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getDescription(string $resourceClass): array
     {
         $description = parent::getDescription($resourceClass);

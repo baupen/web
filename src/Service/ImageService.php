@@ -22,7 +22,6 @@ use App\Service\Image\GdService;
 use App\Service\Image\GsService;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
-use PHPUnit\Util\Exception;
 
 class ImageService implements ImageServiceInterface
 {
