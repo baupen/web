@@ -175,9 +175,9 @@
       "access_allowed_before": "Data di scadenza dell'accesso"
     },
     "issue_report": {
-      "by_craftsman": "secondo l'imprenditore",
-      "by_map": "secondo il piano di costruzione",
-      "summary_tables": "Tabelle riassuntive",
+      "content": "Contenuto",
+      "table_by_craftsman": "con tabella riassuntiva imprenditore",
+      "table_by_map": "con tabella riassuntiva piano di costruzione",
       "with_images": "con foto",
       "with_renders": "con mappe"
     },
