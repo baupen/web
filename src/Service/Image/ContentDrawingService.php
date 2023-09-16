@@ -7,7 +7,6 @@ use App\Service\Interfaces\PathServiceInterface;
 
 class ContentDrawingService
 {
-
     /**
      * @var GdService
      */

@@ -18,7 +18,7 @@ class ImageHelper
      *
      * @return int[]
      */
-    public static function fitInBoundingBox(string $imgPath, int $boxWidth, int $boxHeight, bool $expand = true): array
+    public static function fitInBoundingBox(string $imgPath, mixed $boxWidth, mixed $boxHeight, bool $expand = true): array
     {
         // get image sizes
         $imageSizes = getimagesize($imgPath);
@@ -28,7 +28,7 @@ class ImageHelper
         // get ratios
         $widthRatio = (float) $boxWidth / $imageWidth;
         $heightRatio = (float) $boxHeight / $imageHeight;
-        $ratio = $widthRatio < $heightRatio ? $widthRatio : $heightRatio;
+        $ratio = min($widthRatio, $heightRatio);
 
         if (!$expand) {
             $ratio = min(1, $ratio);

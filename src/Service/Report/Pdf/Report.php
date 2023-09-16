@@ -134,12 +134,12 @@ class Report
         });
 
         if (file_exists($mapImageFilePath)) {
-            $imgPadding = $this->pdfSizes->getImagePadding();
-            $doubleImgPadding = 2 * $this->pdfSizes->getImagePadding();
+            $imgBorder = $this->pdfSizes->getImageBorder();
+            $doubleImgPadding = 2 * $imgBorder;
 
             $maxWidth = $this->pdfSizes->getContentXSize() - $doubleImgPadding;
             $maxHeight = $this->pdfSizes->getContentYSize() - $headerHeight - $doubleImgPadding;
-            list($width, $height) = ImageHelper::fitInBoundingBox($mapImageFilePath, (int) $maxWidth, (int) $maxHeight);
+            list($width, $height) = ImageHelper::fitInBoundingBox($mapImageFilePath, $maxWidth, $maxHeight);
 
             // print title
             $printTitle();
@@ -148,7 +148,7 @@ class Report
             $startY = $this->pdfDocument->GetY();
             $this->pdfDocument->Cell($this->pdfSizes->getContentXSize(), $height + $doubleImgPadding, '', 0, 2, '', true);
             $this->pdfDocument->SetY($startY);
-            $this->pdfDocument->Image($mapImageFilePath, $this->pdfSizes->getContentXStart() + (((float) $this->pdfSizes->getContentXSize() - $width) / 2), $this->pdfDocument->GetY() + $imgPadding, $width, $height);
+            $this->pdfDocument->Image($mapImageFilePath, $this->pdfSizes->getContentXStart() + (($this->pdfSizes->getContentXSize() - $width) / 2), $this->pdfDocument->GetY() + $imgBorder, $width, $height);
 
             // adapt Y with spacer for next
             $this->pdfDocument->SetY($startY + $height + $doubleImgPadding + $this->pdfSizes->getContentSpacerBig());
