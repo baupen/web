@@ -72,6 +72,9 @@ class ContentDrawingService
             $this->gdService->drawRectangleWithText($entry['xCoordinate'], $entry['yCoordinate'], $entry['color'], $actualPadding, $entry['text'], $actualFontSize, $entry['width'], $entry['height'], $image);
         }
 
+        // remove padding whitespace that sometimes exist
+        $image = imagecropauto($image);
+
         imagejpeg($image, $targetPath);
     }
 
@@ -197,7 +200,7 @@ class ContentDrawingService
             if (count($activeGroup) === 0) {
                 $lastItem = array_pop($newContent);
                 $groupName = $this->generateAlphabetColumnName(count($groups));
-                $activeGroup = [$lastItem['text'], $item['text']];
+                $activeGroup = [$lastItem, $item];
                 $groups[$groupName] = $activeGroup;
 
                 list($textWidth) = $this->gdService->measureTextDimensions($fontSize, $groupName);
@@ -213,7 +216,7 @@ class ContentDrawingService
 
             // still within overlap, merge with previous
             if (count($activeGroup) > 0) {
-                $activeGroup[] = $item['text'];
+                $activeGroup[] = $item;
 
                 // adjust x coordinate (weighted)
                 $lastItem = array_pop($newContent);
