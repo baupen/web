@@ -49,7 +49,7 @@ class GdService
     /**
      * @param resource|\GdImage $image
      */
-    public function drawRectangleWithText(float $xPosition, float $yPosition, string $color, float $padding, string $text, float $textFontSize, float $textWidth, float $textHeight, &$image)
+    public function drawBorderedRectangleWithTextCentered(float $xPosition, float $yPosition, string $color, float $padding, string $text, float $textFontSize, float $textWidth, float $textHeight, &$image)
     {
         // draw white base ellipse before the colored one
         $white = $this->createColorForLabel('white', $image);
@@ -62,6 +62,22 @@ class GdService
 
         // draw text
         imagettftext($image, $textFontSize, 0, (int) $textStart, (int) ($yPosition + $halfHeight), $white, self::FONT, $text);
+    }
+
+    /**
+     * @param resource|\GdImage $image
+     */
+    public function drawRectangleWithText(float $xPosition, float $yPosition, string $color, float $padding, string $text, float $textFontSize, float $textWidth, float $textHeight, &$image)
+    {
+        // draw white base ellipse before the colored one
+        $white = $this->createColorForLabel('white', $image);
+        $fillColor = $this->createColorForLabel($color, $image);
+        $width = $textWidth + 2*$padding + 2;
+        $height = $textHeight + 2*$padding + 2;
+        imagefilledrectangle($image, (int) $xPosition, (int) $yPosition, (int) $xPosition + $width, (int) $yPosition + $height, $fillColor);
+
+        // draw text
+        imagettftext($image, $textFontSize, 0, (int) ($xPosition + $padding), (int) ($yPosition + $padding + $textHeight), $white, self::FONT, $text);
     }
 
     /**
