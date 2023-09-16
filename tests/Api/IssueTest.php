@@ -639,10 +639,10 @@ class IssueTest extends ApiTestCase
             $foundCombinationIndex = null;
             for ($i = 0; $i < count($expectedCombinations); ++$i) {
                 $expectedCombination = $expectedCombinations[$i];
-                if ($expectedCombination[0] === $feedEntry['date'] &&
-                    $expectedCombination[1] === $feedEntry['subject'] &&
-                    $expectedCombination[2] === $feedEntry['type'] &&
-                    $expectedCombination[3] === $feedEntry['count']) {
+                if ($expectedCombination[0] === $feedEntry['date']
+                    && $expectedCombination[1] === $feedEntry['subject']
+                    && $expectedCombination[2] === $feedEntry['type']
+                    && $expectedCombination[3] === $feedEntry['count']) {
                     $foundCombinationIndex = $i;
                     break;
                 }

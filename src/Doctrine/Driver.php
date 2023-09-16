@@ -24,9 +24,6 @@ use Doctrine\DBAL\Driver\PDOMySql;
 
 class Driver extends PDOMySql\Driver
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getDatabasePlatform()
     {
         return new Platform();

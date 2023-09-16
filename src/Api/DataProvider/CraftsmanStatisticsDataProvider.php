@@ -17,7 +17,6 @@ use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\Api\Entity\CraftsmanStatistics;
 use App\Entity\Craftsman;
 use App\Service\Interfaces\AnalysisServiceInterface;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
@@ -46,8 +45,6 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
 
     /**
      * CraftsmanStatisticsDataProvider constructor.
-     *
-     * @param ManagerRegistry $manager
      */
     public function __construct(ContextAwareCollectionDataProviderInterface $decoratedCollectionDataProvider, IriConverterInterface $iriConverter, SerializerInterface $serializer, AnalysisServiceInterface $analysisService)
     {

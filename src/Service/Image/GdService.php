@@ -72,8 +72,8 @@ class GdService
         // draw white base ellipse before the colored one
         $white = $this->createColorForLabel('white', $image);
         $fillColor = $this->createColorForLabel($color, $image);
-        $width = $textWidth + 2*$padding + 2;
-        $height = $textHeight + 2*$padding + 2;
+        $width = $textWidth + 2 * $padding + 2;
+        $height = $textHeight + 2 * $padding + 2;
         imagefilledrectangle($image, (int) $xPosition, (int) $yPosition, (int) $xPosition + $width, (int) $yPosition + $height, $fillColor);
 
         // draw text

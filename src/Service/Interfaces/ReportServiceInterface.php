@@ -20,7 +20,7 @@ use App\Service\Report\Pdf\ReportElements;
 
 interface ReportServiceInterface
 {
-    public function generatePdfReport(array $issues, Filter $filter, ReportElements $reportElements, ?string $author = null): string;
+    public function generatePdfReport(array $issues, Filter $filter, ReportElements $reportElements, string $author = null): string;
 
     public function createConstructionSiteReport(ConstructionSite $constructionSite, \DateTime $comparisonTimestamp): ConstructionSiteReport;
 

@@ -28,8 +28,8 @@ class ConstructionSiteDataPersister implements ContextAwareDataPersisterInterfac
 
     public function supports($data, array $context = []): bool
     {
-        return $data instanceof ConstructionSite &&
-            $this->decorated->supports($data, $context);
+        return $data instanceof ConstructionSite
+            && $this->decorated->supports($data, $context);
     }
 
     /**

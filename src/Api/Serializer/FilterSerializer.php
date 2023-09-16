@@ -34,8 +34,8 @@ class FilterSerializer implements NormalizerInterface
 
     public function supportsNormalization($data, string $format = null)
     {
-        return $data instanceof Filter &&
-            $this->decorated->supportsNormalization($data, $format);
+        return $data instanceof Filter
+            && $this->decorated->supportsNormalization($data, $format);
     }
 
     /**

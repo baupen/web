@@ -28,8 +28,8 @@ class MapSerializer implements NormalizerInterface
 
     public function supportsNormalization($data, string $format = null)
     {
-        return $data instanceof Map &&
-            $this->decorated->supportsNormalization($data, $format);
+        return $data instanceof Map
+            && $this->decorated->supportsNormalization($data, $format);
     }
 
     /**

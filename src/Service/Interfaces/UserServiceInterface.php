@@ -25,5 +25,5 @@ interface UserServiceInterface
 
     public function setDefaultValues(ConstructionManager $constructionManager): void;
 
-    public function tryRegister(ConstructionManager $template, ?string &$error = null): bool;
+    public function tryRegister(ConstructionManager $template, string &$error = null): bool;
 }

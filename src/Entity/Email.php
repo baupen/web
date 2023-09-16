@@ -90,7 +90,7 @@ class Email extends BaseEntity
      */
     private $readAt;
 
-    public static function create(int $emailType, ConstructionManager $sentBy, ?string $link = null, ?string $body = null, bool $jsonBody = false)
+    public static function create(int $emailType, ConstructionManager $sentBy, string $link = null, string $body = null, bool $jsonBody = false)
     {
         $email = new Email();
 

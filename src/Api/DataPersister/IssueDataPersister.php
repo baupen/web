@@ -31,8 +31,8 @@ class IssueDataPersister implements ContextAwareDataPersisterInterface
 
     public function supports($data, array $context = []): bool
     {
-        return $data instanceof Issue &&
-            $this->decorated->supports($data, $context);
+        return $data instanceof Issue
+            && $this->decorated->supports($data, $context);
     }
 
     /**

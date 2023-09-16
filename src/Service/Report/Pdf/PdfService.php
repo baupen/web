@@ -63,7 +63,7 @@ class PdfService
         $this->reportAssetDir = $reportAssetDir;
     }
 
-    public function generatePdfReport(array $issues, Filter $filter, ReportElements $reportElements, ?string $author = null): string
+    public function generatePdfReport(array $issues, Filter $filter, ReportElements $reportElements, string $author = null): string
     {
         $constructionSite = $filter->getConstructionSite();
 

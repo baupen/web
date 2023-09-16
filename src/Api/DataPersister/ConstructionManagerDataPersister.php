@@ -64,8 +64,8 @@ class ConstructionManagerDataPersister implements ContextAwareDataPersisterInter
 
     public function supports($data, array $context = []): bool
     {
-        return $data instanceof ConstructionManager &&
-            $this->decorated->supports($data, $context);
+        return $data instanceof ConstructionManager
+            && $this->decorated->supports($data, $context);
     }
 
     /**

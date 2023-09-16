@@ -126,8 +126,7 @@ class AnalysisService implements AnalysisServiceInterface
     }
 
     /**
-     * @param Craftsman[]         $craftsmen
-     * @param CraftsmanAnalysis[] $craftsmanAnalyses
+     * @param Craftsman[] $craftsmen
      */
     private function findLastActivity(array $craftsmen, array $craftsmanAnalysisDictionary)
     {
