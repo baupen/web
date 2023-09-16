@@ -146,6 +146,8 @@ class GdService
     {
         $alpha = (int) ((1 - $opacity) * 127);
         switch ($label) {
+            case 'gray':
+                return $this->createColor($image, 18, 18, 18, $alpha);
             case 'green':
                 return $this->createColor($image, 18, 140, 45, $alpha);
             case 'orange':
