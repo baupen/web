@@ -89,7 +89,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ApiFilter(NumericFilter::class, properties={"number"})
  * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "map": "exact", "description": "partial"})
  * @ApiFilter(StateFilter::class, properties={"state"})
- * @ApiFilter(PatchedOrderFilter::class, properties={"lastChangedAt": "ASC", "deadline"={"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "ASC"}, "number": "ASC"})
+ * @ApiFilter(PatchedOrderFilter::class, properties={"lastChangedAt": "ASC", "deadline"={"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "ASC"}, "number": "ASC", "craftsman.trade": "ASC"})
  *
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
  *
