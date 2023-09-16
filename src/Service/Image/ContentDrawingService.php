@@ -64,18 +64,73 @@ class ContentDrawingService
         $xSize = imagesx($image);
         $ySize = imagesy($image);
 
-        [$actualFontSize, $actualPadding, $averageContentHeight, $widthPadding] = $this->placeWithOptimalFontScale($content, $xSize, $ySize);
-        $this->alignYIntoRows($content, $averageContentHeight);
-        $content = $this->groupOverlaps($content, $widthPadding, $actualFontSize, $groups);
+        [$actualFontSize, $actualPadding, $averageContentHeight] = $this->placeWithOptimalFontScale($content, $xSize, $ySize);
+        $this->alignYIntoRows($content, $actualPadding, $averageContentHeight);
+        $content = $this->groupOverlaps($content, $actualPadding, $actualFontSize, $groups);
 
         foreach ($content as $entry) {
-            $this->gdService->drawRectangleWithText($entry['xCoordinate'], $entry['yCoordinate'], $entry['color'], $actualPadding, $entry['text'], $actualFontSize, $entry['width'], $entry['height'], $image);
+            $this->gdService->drawRectangleWithTextCentered($entry['xCoordinate'], $entry['yCoordinate'], $entry['color'], $actualPadding, $entry['text'], $actualFontSize, $entry['width'], $entry['height'], $image);
         }
 
         // remove padding whitespace that sometimes exist
-        $image = imagecropauto($image);
+        $image = imagecropauto($image, IMG_CROP_WHITE);
+        $xSize = imagesx($image);
+        $ySize = imagesy($image);
+
+        if (count($groups) > 0) {
+            $requiredLines = $this->calculateRequiredLines($xSize, $actualPadding, $groups);
+            $paddingBottom = 2 * $actualPadding + $requiredLines * ($averageContentHeight + $actualPadding);
+
+            // create image with white padding at the bottom
+            $originalImage = $image;
+            $image = imagecreatetruecolor($xSize, $ySize + $paddingBottom);
+            $white = imagecolorallocate($image, 255, 255, 255);
+            imagefilledrectangle($image, 0, $ySize, $xSize, $ySize + $paddingBottom, $white);
+            imagecopy($image, $originalImage, 0, 0, 0, 0, $xSize, $ySize);
+
+            $this->printGroups($image, $xSize, $actualPadding, $ySize + 2*$actualPadding, $actualFontSize, $groups);
+        }
+
 
         imagejpeg($image, $targetPath);
+    }
+
+    private function calculateRequiredLines(int $availableXSpace, float $widthPadding, array $groups): float
+    {
+        $requiredLines = 0;
+        $availableWidth = $availableXSpace;
+        foreach ($groups as $groupEntries) {
+            $width = 0;
+            foreach ($groupEntries as $groupEntry) {
+                $width += $groupEntry['width'] + $widthPadding * 2;
+            }
+
+            // begin new line if not enough space
+            if ($width > $availableWidth && $availableWidth < $availableXSpace) {
+                $requiredLines++;
+                $availableWidth = $availableXSpace;
+            } else {
+                $availableWidth -= $width;
+            }
+        }
+
+        return $requiredLines;
+    }
+
+    private function printGroups(\GdImage $image, int $availableXSpace, float $padding, float $startY, float $fontSize, array $groups)
+    {
+        $requiredLines = 0;
+        $availableWidth = $availableXSpace;
+
+        $currentX = $padding;
+        $currentY = $startY;
+
+        foreach ($groups as $groupEntries) {
+            foreach ($groupEntries as $groupEntry) {
+                $this->gdService->drawRectangleWithText($currentX, $currentY, $groupEntry['color'], $padding, $groupEntry['text'], $fontSize, $groupEntry['width'], $groupEntry['height'], $image);
+                $currentX += $groupEntry['width'] + $padding * 2 + 2 + $padding;
+            }
+        }
     }
 
 
@@ -135,9 +190,8 @@ class ContentDrawingService
         }
         unset($entry);
 
-        $averageContentHeight = $averageTextHeight * $fontScale + $padding / 2 + 2; // +2 for the border
-        $widthPadding = $padding / 2 + 2;
-        return [$actualFontSize, $actualPadding, $averageContentHeight, $widthPadding];
+        $averageContentHeight = $averageTextHeight * $fontScale;
+        return [$actualFontSize, $actualPadding, $averageContentHeight];
     }
 
     private function ensureMaxBounds(float $maxSize, float $currentSize, float $currentMultiplier)
@@ -147,17 +201,18 @@ class ContentDrawingService
         return $currentMultiplier * min($maxSize / $resultSize, 1);
     }
 
-    private function alignYIntoRows(array &$content, float $averageContentHeight)
+    private function alignYIntoRows(array &$content, float $padding, float $averageContentHeight)
     {
-        $offset = $averageContentHeight / 2;
+        $rowHeight = $averageContentHeight + $padding + 2; // + 2 for border; give some slight padding
+        $offset = $rowHeight / 2;
         foreach ($content as &$entry) {
-            $row = floor($entry['yCoordinate'] / $averageContentHeight);
-            $entry['yCoordinate'] = $row * $averageContentHeight + $offset;
+            $row = floor($entry['yCoordinate'] / $rowHeight);
+            $entry['yCoordinate'] = $row * $rowHeight + $offset;
             $entry['row'] = $row;
         }
     }
 
-    private function groupOverlaps(array $content, float $widthPadding, float $fontSize, array &$groups = null)
+    private function groupOverlaps(array $content, float $padding, float $fontSize, array &$groups = null)
     {
         // sort by row and xCoordinate
         usort($content, function ($a, $b) {
@@ -167,14 +222,16 @@ class ContentDrawingService
             return $a['xCoordinate'] <=> $b['xCoordinate'];
         });
 
+        $paddingOverlap = $padding / 2 + 2;
+
         $groups = [];
         $newContent = [];
         $lastRow = -1;
         $lastEnd = -1;
         $activeGroup = [];
         foreach ($content as $item) {
-            $currentEnd = $item['xCoordinate'] + $item['width'] / 2 + $widthPadding;
-            $currentStart = $item['xCoordinate'] - $item['width'] / 2 - $widthPadding;
+            $currentEnd = $item['xCoordinate'] + $item['width'] / 2 + $paddingOverlap;
+            $currentStart = $item['xCoordinate'] - $item['width'] / 2 - $paddingOverlap;
             $currentRow = $item['row'];
 
             // if new row, reset state
@@ -201,16 +258,19 @@ class ContentDrawingService
                 $lastItem = array_pop($newContent);
                 $groupName = $this->generateAlphabetColumnName(count($groups));
                 $activeGroup = [$lastItem, $item];
-                $groups[$groupName] = $activeGroup;
+                $groups[] = $activeGroup;
 
-                list($textWidth) = $this->gdService->measureTextDimensions($fontSize, $groupName);
-                $lastItem['text'] = $groupName;
-                $lastItem['width'] = $textWidth;
-                $lastItem['color'] = 'gray';
-                $lastItem['xCoordinate'] = ($lastItem['xCoordinate'] + $item['xCoordinate']) / 2;
-                $newContent[] = $lastItem;
+                list($textWidth, $textHeight) = $this->gdService->measureTextDimensions($fontSize, $groupName);
+                $groupItem['text'] = $groupName;
+                $groupItem['width'] = $textWidth;
+                $groupItem['height'] = $textHeight;
+                $groupItem['color'] = 'gray';
+                $groupItem['xCoordinate'] = ($lastItem['xCoordinate'] + $item['xCoordinate']) / 2;
+                $groupItem['yCoordinate'] = $lastItem['yCoordinate'];
+                $newContent[] = $groupItem;
+                $activeGroup[] = $groupItem;
 
-                $lastEnd = $item['xCoordinate'] + $item['width'] / 2 + $widthPadding;
+                $lastEnd = $item['xCoordinate'] + $item['width'] / 2 + $paddingOverlap;
                 continue;
             }
 
@@ -220,10 +280,11 @@ class ContentDrawingService
 
                 // adjust x coordinate (weighted)
                 $lastItem = array_pop($newContent);
-                $lastItem['xCoordinate'] = ($lastItem['xCoordinate'] * (count($activeGroup) - 1) + $item['xCoordinate']) / count($activeGroup);
+                $groupedItemsCount = count($activeGroup) - 1; // -1 as the first entry is the group header
+                $lastItem['xCoordinate'] = ($lastItem['xCoordinate'] * ($groupedItemsCount - 1) + $item['xCoordinate']) / ($groupedItemsCount);
                 $newContent[] = $lastItem;
 
-                $lastEnd = $item['xCoordinate'] + $item['width'] / 2 + $widthPadding;
+                $lastEnd = $item['xCoordinate'] + $item['width'] / 2 + $paddingOverlap;
                 continue;
             }
         }
@@ -233,13 +294,13 @@ class ContentDrawingService
 
     private function generateAlphabetColumnName(int $index): string
     {
-        $ordA = ord('A');
-        $ordZ = ord('Z');
-        $len = $ordZ - $ordA + 1;
+        // exclude J, Q (rendering messes up the baseline) and I (as could be confused with 1)
+        $values = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        $len = count($values);
 
         $result = '';
         while ($index >= 0) {
-            $result = chr($index % $len + $ordA) . $result;
+            $result = $values[$index % $len] . $result;
             $index = intval($index / $len) - 1;
         }
 
