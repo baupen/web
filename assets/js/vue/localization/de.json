@@ -179,9 +179,9 @@
       "access_allowed_before": "Ablaufdatum des Zugriffes"
     },
     "issue_report": {
-      "by_craftsman": "nach Unternehmer",
-      "by_map": "nach Bauplan",
-      "summary_tables": "Zusammenfassungstabellen",
+      "content": "Inhalt",
+      "table_by_craftsman": "mit Übersichtstabelle Unternehmer",
+      "table_by_map": "mit Übersichtstabelle Bauplan",
       "with_images": "mit Fotos",
       "with_renders": "mit Bauplänen"
     },
