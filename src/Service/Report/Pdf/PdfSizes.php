@@ -280,9 +280,9 @@ class PdfSizes
         return [$this->scalingFactor, 1, $this->scalingFactor, 1];
     }
 
-    public function getImagePadding(): float
+    public function getImageBorder(): float
     {
-        return $this->getContentSpacerSmall() / 4;
+        return 1;
     }
 
     public function getLineWidth(): float
