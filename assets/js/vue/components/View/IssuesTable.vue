@@ -55,9 +55,9 @@
       <th>
         {{ $t('map._name') }}
       </th>
-      <th>
+      <order-table-head class="white-space-nowrap" :order="order" property="craftsman.trade" @ordered="order = $event">
         {{ $t('craftsman._name') }}
-      </th>
+      </order-table-head>
       <order-table-head class="white-space-nowrap" :order="order" property="deadline" @ordered="order = $event">
         {{ $t('issue.deadline') }}
       </order-table-head>
