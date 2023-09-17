@@ -88,7 +88,7 @@ class ContentDrawingService
             $lineHeight = $averageContentHeight + 2 * $actualPadding + 2 + 2 * $actualPadding;
             $sectionPadding = 2 * $actualPadding;
             $requiredLines = $this->printGroups($image, $ySize + $sectionPadding, $lineHeight, $xSize, $actualPadding, $actualFontSize, $groups, false);
-            $paddingBottom = $sectionPadding + $requiredLines * ($lineHeight + $actualPadding);
+            $paddingBottom = $sectionPadding + $requiredLines * $lineHeight;
 
             // create image with white padding at the bottom
             $originalImage = $image;
@@ -130,7 +130,7 @@ class ContentDrawingService
                     return $a['text'] <=> $b['text'];
                 });
                 foreach ([$firstEntry, ...$groupEntries] as $groupEntry) {
-                    $currentY = $startY + ($currentLine + 1) * $lineHeight;
+                    $currentY = $startY + $currentLine * $lineHeight;
                     $this->gdService->drawRectangleWithText($currentX, $currentY, $groupEntry['color'], $padding, $groupEntry['text'], $fontSize, $groupEntry['width'], $groupEntry['height'], $image);
                     $currentX += $groupEntry['width'] + $badgePadding;
                 }
@@ -140,7 +140,8 @@ class ContentDrawingService
             }
         }
 
-        return $currentLine;
+        // return total lines
+        return $currentLine + 1;
     }
 
     private function placeWithOptimalFontScale(array &$content, int $xSize, int $ySize)
