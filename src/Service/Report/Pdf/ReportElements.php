@@ -33,14 +33,20 @@ class ReportElements
      */
     private $withRenders = true;
 
+    /**
+     * @var bool
+     */
+    private $groupIssuesByCraftsman = true;
+
     public static function fromRequest(array $parameters = null): self
     {
         $self = new self();
 
         $self->tableByCraftsman = static::getValue($parameters, 'tableByCraftsman', false);
-        $self->tableByMap = static::getValue($parameters, 'tableByMap', true);
+        $self->tableByMap = static::getValue($parameters, 'tableByMap', false);
         $self->withImages = static::getValue($parameters, 'withImages', true);
         $self->withRenders = static::getValue($parameters, 'withRenders', true);
+        $self->groupIssuesByCraftsman = static::getValue($parameters, 'groupIssuesByCraftsman', true);
 
         return $self;
     }
@@ -91,8 +97,13 @@ class ReportElements
         return $this->withRenders;
     }
 
-    public function setWithRenders(bool $withRenders): void
+    public function getGroupIssuesByCraftsman(): bool
     {
-        $this->withRenders = $withRenders;
+        return $this->groupIssuesByCraftsman;
+    }
+
+    public function setGroupIssuesByCraftsman(bool $groupIssuesByCraftsman): void
+    {
+        $this->groupIssuesByCraftsman = $groupIssuesByCraftsman;
     }
 }
