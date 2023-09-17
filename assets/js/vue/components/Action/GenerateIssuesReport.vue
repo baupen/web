@@ -1,16 +1,17 @@
 <template>
-  <button v-if="!reports.length" class="btn btn-primary" @click="planGeneration">
+  <button v-if="!reports" class="btn btn-primary" @click="planGeneration">
     {{ $t('_action.generate_issues_report.title') }}
   </button>
-  <button v-if="reports.length && !abortRequested && !generationFinished" class="btn btn-warning"
+  <button v-if="reports && !abortRequested && !generationFinished" class="btn btn-warning"
           @click="abortRequested = true">
     {{ $t('_action.generate_issues_report.abort') }}
   </button>
 
-  <table v-if="reports.length" class="table table-striped mt-2 mb-0">
+  <table v-if="reports" class="table table-striped mt-2 mb-0">
     <tbody>
     <tr v-for="(report, index) in reports" :key="report">
       <td>
+        <span v-if="report.progressLabelPrefix">{{ report.progressLabelPrefix }}: </span>
         {{ report.progressLabel }}
         <template v-if="report.link && reports.length > 1">({{ index + 1 }}/{{ reports.length }})</template>
       </td>
@@ -39,7 +40,7 @@ export default {
     return {
       abortRequested: false,
       generationFinished: false,
-      reports: []
+      reports: undefined
     }
   },
   props: {
@@ -75,9 +76,9 @@ export default {
         'report[withImages]': this.reportConfiguration.withImages,
         'report[tableByCraftsman]': this.reportConfiguration.tableByCraftsman,
         'report[tableByMap]': this.reportConfiguration.tableByMap,
-        'report[groupIssuesByCraftsman]': this.reportConfiguration.groupIssuesByCraftsman,
+        'report[groupIssuesByCraftsman]': this.reportConfiguration.groupIssuesByCraftsman
       }
-    },
+    }
   },
   methods: {
     setGenerationStatus: function (label, progress = 0) {
@@ -90,39 +91,65 @@ export default {
       this.abortRequested = false
       this.reports = []
 
-      api.getIssuesGroup(this.constructionSite, 'map', this.query)
-          .then(issuesGroupByMap => {
-            const mapContainerGroups = mapTransformer.groupByIssueCount(this.maps, issuesGroupByMap, maxIssuesPerReport)
+      if (this.reportConfiguration.separateReportByCraftsman) {
+        const impactedCraftsmen = 'craftsman[]' in this.query
+          ? this.query['craftsman[]']
+          : this.craftsmen.map(craftsman => iriToId(craftsman['@id']))
 
-            const defaultPayload = {
-              link: null,
-              wasDownloaded: false
-            }
+        const sizeAwareReports = impactedCraftsmen.map(craftsmanId => {
+          const craftsman = this.craftsmen.find(craftsman => iriToId(craftsman['@id']) === craftsmanId)
+          const craftsmanLabel = craftsman ? craftsman.trade + ', ' + craftsman.company : undefined
+          const query = Object.assign({}, this.query, { 'craftsman[]': [craftsmanId] })
+          return this.getSizeAwareReports(query, craftsmanLabel)
+        })
 
-            this.reports = mapContainerGroups.map(mapContainerGroup => {
-              const includedMaps = mapContainerGroup.group
+        Promise.all(sizeAwareReports).then(listOfReports => {
+          this.reports = listOfReports.flat()
+          this.startGeneration()
+        })
+      } else {
+        this.reports = this.getSizeAwareReports(this.query)
+        this.startGeneration()
+      }
+    },
+    getSizeAwareReports: function (query, progressLabelPrefix = null) {
+      return new Promise(
+        (resolve) => {
+          api.getIssuesGroup(this.constructionSite, 'map', query)
+            .then(issuesGroupByMap => {
+              const mapContainerGroups = mapTransformer.groupByIssueCount(this.maps, issuesGroupByMap, maxIssuesPerReport)
+
+              const defaultPayload = {
+                link: null,
+                wasDownloaded: false
+              }
+
+              const reports = mapContainerGroups.map(mapContainerGroup => {
+                const includedMaps = mapContainerGroup.group
                   .filter(c => c.issueCount > 0) // only include map if any issue contained
                   .map(c => c.entity)
 
-              let currentQuery = Object.assign({}, this.query, { 'map[]': includedMaps.map(m => iriToId(m['@id'])) })
-              const prerenderMaps = includedMaps.filter(m => m.fileUrl) // only prerender if actually file to render
-              let queryResultSize = mapContainerGroup.groupIssueSum
-              let progressLabel = this.$t('_action.generate_issues_report.pending', { issueCount: queryResultSize })
+                const currentQuery = Object.assign({}, query, { 'map[]': includedMaps.map(m => iriToId(m['@id'])) })
+                const prerenderMaps = includedMaps.filter(m => m.fileUrl) // only prerender if actually file to render
+                const queryResultSize = mapContainerGroup.groupIssueSum
+                const progressLabel = this.$t('_action.generate_issues_report.pending', { issueCount: queryResultSize })
 
-              return Object.assign({
-                queryResultSize,
-                query: currentQuery,
-                prerenderMaps,
-                progressLabel
-              }, defaultPayload)
+                return Object.assign({
+                  queryResultSize,
+                  query: currentQuery,
+                  prerenderMaps,
+                  progressLabel,
+                  progressLabelPrefix
+                }, defaultPayload)
+              })
+
+              if (reports.length === 1) {
+                reports[0].query = Object.assign({}, query)
+              }
+
+              resolve(reports)
             })
-
-            if (this.reports.length === 1) {
-              this.reports[0].query = Object.assign({}, this.query)
-            }
-
-            this.startGeneration()
-          })
+        })
     },
     startGeneration: function (reportIndex = 0) {
       if (this.reports.length === reportIndex) {
@@ -154,11 +181,11 @@ export default {
       const query = Object.assign({}, currentReport.query)
       delete query['map[]']
 
-      let currentMap = currentReport.prerenderMaps[mapIndex]
+      const currentMap = currentReport.prerenderMaps[mapIndex]
       api.getIssuesRenderProbe(this.constructionSite, currentMap, query)
-          .then(_ => {
-            this.prerenderMap(reportIndex, mapIndex + 1)
-          })
+        .then(_ => {
+          this.prerenderMap(reportIndex, mapIndex + 1)
+        })
     },
     finishGeneration: function (reportIndex) {
       if (this.abortGeneration()) {
@@ -170,11 +197,11 @@ export default {
       currentReport.progress = 100
 
       api.getReportLink(this.constructionSite, this.reportQuery, currentReport.query)
-          .then(link => {
-            currentReport.link = link
-            currentReport.progressLabel = this.$t('_action.generate_issues_report.finished')
-            this.startGeneration(reportIndex + 1)
-          })
+        .then(link => {
+          currentReport.link = link
+          currentReport.progressLabel = this.$t('_action.generate_issues_report.finished')
+          this.startGeneration(reportIndex + 1)
+        })
     },
     abortGeneration: function () {
       if (this.abortRequested) {
@@ -184,7 +211,7 @@ export default {
       }
 
       return false
-    },
+    }
   },
   unmounted () {
     this.abortRequested = true
