@@ -53,8 +53,8 @@ const api = {
           }
         }
 
-        const errorMessage = translator('_api.request_failed') + ' (' + errorText + ')'
-        displayError(errorMessage)
+        const errorMessage = translator ? translator('_api.request_failed') : 'Failed'
+        displayError(errorMessage + ' (' + errorText + ')')
 
         return Promise.reject(error)
       }
@@ -350,6 +350,7 @@ const api = {
     queryString += '&map=' + iriToId(map['@id'])
     queryString += '&' + this._getQueryString(query)
     queryString += '&isDeleted=false'
+    queryString += '&size=full'
     return '/api/issues/render.jpg?' + queryString
   },
   getIssuesRenderProbe: function (constructionSite, map, query = {}) {
