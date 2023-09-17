@@ -60,15 +60,11 @@
 <script>
 
 import FormField from '../Library/FormLayout/FormField'
-import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
-import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 import CustomCheckbox from '../Library/FormInput/CustomCheckbox'
 
 export default {
   components: {
     CustomCheckbox,
-    CustomCheckboxField,
-    InvalidFeedback,
     FormField
   },
   emits: ['update'],
