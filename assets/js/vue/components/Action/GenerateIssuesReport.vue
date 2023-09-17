@@ -47,6 +47,10 @@ export default {
       type: Object,
       required: true
     },
+    craftsmen: {
+      type: Array,
+      default: []
+    },
     maps: {
       type: Array,
       default: []
@@ -71,6 +75,7 @@ export default {
         'report[withImages]': this.reportConfiguration.withImages,
         'report[tableByCraftsman]': this.reportConfiguration.tableByCraftsman,
         'report[tableByMap]': this.reportConfiguration.tableByMap,
+        'report[groupIssuesByCraftsman]': this.reportConfiguration.groupIssuesByCraftsman,
       }
     },
   },

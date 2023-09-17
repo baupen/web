@@ -37,9 +37,9 @@
     <div class="tab-content p-3 border border-top-0">
       <div class="tab-pane fade" :class="{'show active': exportType === 'report'}">
         <export-issues-report-view
-            :construction-site="constructionSite" :maps="maps"
+            :construction-site="constructionSite" :craftsmen="craftsmen" :maps="maps"
             :query="applyingQuery" :query-result-size="applyingQueryResultSize"
-            :show-title="false"
+            :show-title="false" :show-multiple-craftsman-options="showMultipleCraftsmanOptions"
         />
       </div>
       <div class="tab-pane fade" :class="{'show active': exportType === 'link'}">
@@ -102,9 +102,17 @@ export default {
       type: Array,
       default: []
     },
+    craftsmen: {
+      type: Array,
+      default: []
+    },
     query: {
       type: Object,
       required: true
+    },
+    showMultipleCraftsmanOptions: {
+      type: Boolean,
+      default: false
     },
     disabled: {
       type: Boolean,

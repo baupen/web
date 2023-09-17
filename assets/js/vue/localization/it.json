@@ -176,8 +176,11 @@
     },
     "issue_report": {
       "content": "Contenuto",
-      "table_by_craftsman": "con tabella riassuntiva imprenditore",
-      "table_by_map": "con tabella riassuntiva piano di costruzione",
+      "craftsmen": "Imprenditore",
+      "group_issues_by_craftsman": "Gruppo di pendenze per imprenditori",
+      "separate_report_by_craftsman": "Rapporto separato per imprenditore",
+      "table_by_craftsman": "con riassuntiva imprenditore",
+      "table_by_map": "con riassuntiva mappe",
       "with_images": "con foto",
       "with_renders": "con mappe"
     },
