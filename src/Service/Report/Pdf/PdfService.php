@@ -529,11 +529,11 @@ class PdfService
     {
         // 0.5s per issue seems reasonable
         $maxExecutionTime = max(120, $numberOfIssues / 2);
-        $executionTime = max(ini_get('max_execution_time'), $maxExecutionTime);
+        $executionTime = (int) max(ini_get('max_execution_time'), $maxExecutionTime);
         ini_set('max_execution_time', $executionTime);
 
         // 500 kb per issue seems reasonable
-        $memoryLimitMbs = max(256, 0.5 * $numberOfIssues);
+        $memoryLimitMbs = (int) max(256, 0.5 * $numberOfIssues);
         ini_set('memory_limit', $memoryLimitMbs.'M');
     }
 }
