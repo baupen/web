@@ -108,8 +108,10 @@ export default {
           this.startGeneration()
         })
       } else {
-        this.reports = this.getSizeAwareReports(this.query)
-        this.startGeneration()
+        this.getSizeAwareReports(this.query).then(reports => {
+          this.reports = reports
+          this.startGeneration()
+        })
       }
     },
     getSizeAwareReports: function (query, progressLabelPrefix = null) {
