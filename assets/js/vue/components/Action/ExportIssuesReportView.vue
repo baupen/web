@@ -4,7 +4,7 @@
     {{ $t('_action.export_issues_report.help') }}
   </p>
 
-  <issue-report-form v-if="allowReportConfiguration" :template="report" @update="report = $event" />
+  <issue-report-form v-if="allowReportConfiguration && reportTemplate" :template="reportTemplate" @update="updateReport($event)" />
 
   <generate-issues-report
       :construction-site="constructionSite" :maps="maps" :report-configuration="report"
@@ -16,6 +16,8 @@
 
 import IssueReportForm from '../Form/IssueReportForm'
 import GenerateIssuesReport from './GenerateIssuesReport'
+
+const REPORT_TEMPLATE_STORAGE_KEY = 'action/ExportIssuesReportView#reportTemplate';
 
 export default {
   components: {
@@ -60,6 +62,28 @@ export default {
     showTitle: {
       type: Boolean,
       default: true
+    }
+  },
+  computed: {
+    reportTemplate: function () {
+      const existingDefaultString = localStorage.getItem(this.reportTemplateStorageKey)
+      const existingDefault = JSON.parse(existingDefaultString)
+      return Object.assign({
+        withRenders: true,
+        withImages: true,
+        tableByCraftsman: true,
+        tableByMap: false
+      }, existingDefault)
+    },
+    reportTemplateStorageKey: function () {
+      return REPORT_TEMPLATE_STORAGE_KEY + window.location.href
+    }
+  },
+  methods: {
+    updateReport: function (report) {
+      this.report = report
+      const value = JSON.stringify(this.report)
+      localStorage.setItem(this.reportTemplateStorageKey, value)
     }
   },
   mounted () {
