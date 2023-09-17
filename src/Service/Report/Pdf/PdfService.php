@@ -117,6 +117,31 @@ class PdfService
         foreach ($orderedMaps as $map) {
             $issues = $issuesPerMap[$map->getId()];
             $this->addMap($report, $map, $issues, $reportElements->getWithRenders());
+
+            if ($reportElements->getGroupIssuesByCraftsman()) {
+                usort($issues, function (Issue $a, Issue $b) {
+                    // order by craftsman
+                    if ($a->getCraftsman() !== $b->getCraftsman()) {
+                        return $a->getCraftsman()->getCompany().$a->getCraftsman()->getTrade() <=>
+                            $b->getCraftsman()->getCompany().$b->getCraftsman()->getTrade();
+                    }
+
+                    // order by limit (early first)
+                    $deadlineA = $a->getDeadline()?->format('c');
+                    $deadlineB = $b->getDeadline()?->format('c');
+                    if ($deadlineA !== $deadlineB) {
+                        return $deadlineA <=> $deadlineB;
+                    }
+
+                    // order by number if rest is equal
+                    return $a->getNumber() <=> $b->getNumber();
+                });
+            } else {
+                usort($issues, function (Issue $a, Issue $b) {
+                    return $a->getNumber() <=> $b->getNumber();
+                });
+            }
+
             $this->addIssueTable($report, $filter, $issues);
             if ($reportElements->getWithImages()) {
                 $this->addIssueImageGrid($report, $issues);
@@ -323,7 +348,6 @@ class PdfService
         };
 
         $tableContent = [];
-        $deadlineFormatInversion = [];
         $maxIssueNumber = 0;
         foreach ($issues as $issue) {
             $row = [];
@@ -336,7 +360,6 @@ class PdfService
 
             $deadlineFormat = $formatDateTime($issue->getDeadline(), DateTimeFormatter::DATE_FORMAT);
             $row[] = $deadlineFormat;
-            $deadlineFormatInversion[$deadlineFormat] = $formatDateTime($issue->getDeadline(), DateTimeFormatter::ISO_DATE_FORMAT);
 
             if ($showRegistered) {
                 $row[] = $formatDateTime($issue->getRegisteredAt(), DateTimeFormatter::DATE_FORMAT);
@@ -352,21 +375,6 @@ class PdfService
 
             $tableContent[] = $row;
         }
-
-        usort($tableContent, function ($a, $b) use ($deadlineFormatInversion) {
-            // order by craftsman
-            if ($a[1] !== $b[1]) {
-                return strcmp($a[1], $b[1]);
-            }
-
-            // order by limit (early first)
-            if ($a[3] !== $b[3]) {
-                return strcmp($deadlineFormatInversion[$a[3]], $deadlineFormatInversion[$b[3]]);
-            }
-
-            // order by number if rest is equal
-            return strcmp($a[0], $b[0]);
-        });
 
         $totalWidth = 190; // out of the pdfSize config model
         $cellPadding = 1.6 * 2; // out of the pdfSize config model
@@ -407,6 +415,8 @@ class PdfService
         $tableSizes[2] = $availableWidth * 0.6;
 
         $report->addSizedTable($tableSizes, $tableHeader, $tableContent);
+
+        return $row;
     }
 
     /**
