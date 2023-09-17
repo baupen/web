@@ -180,8 +180,11 @@
     },
     "issue_report": {
       "content": "Inhalt",
-      "table_by_craftsman": "mit Übersichtstabelle Unternehmer",
-      "table_by_map": "mit Übersichtstabelle Bauplan",
+      "craftsmen": "Unternehmer",
+      "group_issues_by_craftsman": "Pendenzen nach Unternehmer gruppieren",
+      "separate_report_by_craftsman": "Separater Bericht pro Unternehmer",
+      "table_by_craftsman": "mit Übersicht Unternehmer",
+      "table_by_map": "mit Übersicht Baupläne",
       "with_images": "mit Fotos",
       "with_renders": "mit Bauplänen"
     },

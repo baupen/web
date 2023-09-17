@@ -4,10 +4,12 @@
     {{ $t('_action.export_issues_report.help') }}
   </p>
 
-  <issue-report-form v-if="allowReportConfiguration && reportTemplate" :template="reportTemplate" @update="updateReport($event)" />
+  <issue-report-form v-if="allowReportConfiguration && reportTemplate"
+                     :template="reportTemplate" :show-multiple-craftsman-options="showMultipleCraftsmanOptions"
+                     @update="updateReport($event)" />
 
   <generate-issues-report
-      :construction-site="constructionSite" :maps="maps" :report-configuration="report"
+      :construction-site="constructionSite" :craftsmen="craftsmen" :maps="maps" :report-configuration="report"
       :query="query" :query-result-size="queryResultSize"
   />
 </template>
@@ -30,7 +32,9 @@ export default {
         withRenders: true,
         withImages: true,
         tableByCraftsman: true,
-        tableByMap: false
+        tableByMap: false,
+        groupIssuesByCraftsman: true,
+        separateReportByCraftsman: false
       },
     }
   },
@@ -40,6 +44,10 @@ export default {
       required: true
     },
     maps: {
+      type: Array,
+      default: []
+    },
+    craftsmen: {
       type: Array,
       default: []
     },
@@ -58,6 +66,10 @@ export default {
     allowReportConfiguration: {
       type: Boolean,
       default: true
+    },
+    showMultipleCraftsmanOptions: {
+      type: Boolean,
+      default: false
     },
     showTitle: {
       type: Boolean,

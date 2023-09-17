@@ -2,7 +2,7 @@
   <div id="register">
     <div class="btn-group mb-4">
       <export-issues-button
-          :disabled="exportDisabled" :construction-site="constructionSite" :maps="maps"
+          :disabled="exportDisabled" :show-multiple-craftsman-options="true" :construction-site="constructionSite" :craftsmen="craftsmen" :maps="maps"
           :query="query" :queried-issue-count="queriedIssuesCount" :selected-issues="selectedIssues" />
     </div>
 
@@ -12,6 +12,7 @@
         :construction-site="constructionSite"
         :initial-state="initialStateQuery"
         @loaded-maps="maps = $event"
+        @loaded-craftsmen="craftsmen = $event"
         @selected="selectedIssues = $event"
         @query="query = $event"
         @queried-issue-count="queriedIssuesCount = $event" />
@@ -34,6 +35,7 @@ export default {
       query: {},
       selectedIssues: [],
       maps: [],
+      craftsmen: [],
     }
   },
   props: {
@@ -48,7 +50,7 @@ export default {
     initialStateQuery: {
       type: Number,
       required: false
-    }
+    },
   },
   methods: {
     deletedIssue (issue) {

@@ -192,7 +192,7 @@ import OrderTableHead from '../Library/Behaviour/OrderTableHead'
 import OrderCheckbox from '../Library/Behaviour/OrderCheckbox'
 
 export default {
-  emits: ['selected', 'query', 'queried-issue-count', 'loaded-maps', 'reset-hidden'],
+  emits: ['selected', 'query', 'queried-issue-count', 'loaded-craftsmen', 'loaded-maps', 'reset-hidden'],
   components: {
     OrderCheckbox,
     OrderTableHead,
@@ -429,6 +429,7 @@ export default {
     api.getCraftsmen(this.constructionSite, craftsmanQuery)
         .then(craftsmen => {
           this.craftsmen = craftsmen
+          this.$emit('loaded-craftsmen', this.craftsmen)
         })
 
     let mapQuery = {}
