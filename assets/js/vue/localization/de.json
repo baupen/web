@@ -90,7 +90,7 @@
       "generating_map": "Grafiken werden generiert",
       "generating_pdf": "PDF wird generiert",
       "pending": "warten ({issueCount} Pendenzen)",
-      "title": "Report erstellen"
+      "title": "Bericht erstellen"
     },
     "import_craftsmen": {
       "confirm": "{count} Unternehmer hinzufügen",
@@ -181,7 +181,7 @@
     "issue_report": {
       "content": "Inhalt",
       "craftsmen": "Unternehmer",
-      "group_issues_by_craftsman": "Pendenzen nach Unternehmer gruppieren",
+      "group_issues_by_craftsman": "Pendenzen nach Unternehmer sortieren",
       "separate_report_by_craftsman": "Separater Bericht pro Unternehmer",
       "table_by_craftsman": "mit Übersicht Unternehmer",
       "table_by_map": "mit Übersicht Baupläne",
