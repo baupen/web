@@ -90,9 +90,7 @@ class PdfService
         $folder = $this->pathService->getTransientFolderForReports();
         FileHelper::ensureFolderExists($folder);
 
-        $sanitizedConstructionSiteName = FileHelper::sanitizeFileName($constructionSite->getName());
-        $humanReadablePrefix = (new \DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT).'_'.$sanitizedConstructionSiteName;
-
+        $humanReadablePrefix = $this->getHumanReadableFilenamePrefix($constructionSite, $filter);
         $optimalFilename = $humanReadablePrefix.'.pdf';
         $optimalPath = $folder.'/'.$optimalFilename;
         $filename = file_exists($optimalPath) ? $humanReadablePrefix.'_'.uniqid().'.pdf' : $optimalFilename;
@@ -101,6 +99,26 @@ class PdfService
         $report->save($path);
 
         return $filename;
+    }
+
+    private function getHumanReadableFilenamePrefix(ConstructionSite $constructionSite, Filter $filter): string
+    {
+        $humanReadablePrefix = (new \DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT);
+        $humanReadablePrefix .= '_'.FileHelper::sanitizeFileName($constructionSite->getName());
+
+        if ($filter->getCraftsmanIds() && 1 === count($filter->getCraftsmanIds())) {
+            $craftsmanRepository = $this->doctrine->getRepository(Craftsman::class);
+            $craftsman = $craftsmanRepository->findOneBy(['id' => $filter->getCraftsmanIds()[0]]);
+            $humanReadablePrefix .= '_'.FileHelper::sanitizeFileName($craftsman->getCompany());
+        }
+
+        if ($filter->getMapIds() && 1 === count($filter->getMapIds())) {
+            $mapRepository = $this->doctrine->getRepository(Map::class);
+            $map = $mapRepository->findOneBy(['id' => $filter->getMapIds()[0]]);
+            $humanReadablePrefix .= '_'.FileHelper::sanitizeFileName($map->getName());
+        }
+
+        return $humanReadablePrefix;
     }
 
     private function addIssueContent(Filter $filter, ReportElements $reportElements, array $issues, Report $report): void
