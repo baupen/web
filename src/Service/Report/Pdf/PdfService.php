@@ -92,8 +92,10 @@ class PdfService
 
         $sanitizedConstructionSiteName = FileHelper::sanitizeFileName($constructionSite->getName());
         $humanReadablePrefix = (new \DateTime())->format(DateTimeFormatter::FILESYSTEM_DATE_TIME_FORMAT).'_'.$sanitizedConstructionSiteName;
+
         $optimalFilename = $humanReadablePrefix.'.pdf';
-        $filename = file_exists($optimalFilename) ? $humanReadablePrefix.'_'.uniqid().'.pdf' : $optimalFilename;
+        $optimalPath = $folder.'/'.$optimalFilename;
+        $filename = file_exists($optimalPath) ? $humanReadablePrefix.'_'.uniqid().'.pdf' : $optimalFilename;
 
         $path = $folder.'/'.$filename;
         $report->save($path);
