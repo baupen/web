@@ -247,7 +247,7 @@ class EmailService implements EmailServiceInterface
     {
         try {
             return new Address($email, $name);
-        } catch (RfcComplianceException $exception) {
+        } catch (RfcComplianceException) {
             return null;
         }
     }

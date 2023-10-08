@@ -17,7 +17,6 @@ use App\Helper\DateTimeFormatter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
@@ -30,7 +29,7 @@ class MyTwigExtension extends AbstractExtension
     private $requestStack;
     private $httpKernel;
 
-    public function __construct(TranslatorInterface $translator, RequestStack $requestStack, HttpKernelInterface $httpKernel, TokenStorageInterface $storage)
+    public function __construct(TranslatorInterface $translator, RequestStack $requestStack, HttpKernelInterface $httpKernel)
     {
         $this->translator = $translator;
         $this->requestStack = $requestStack;
