@@ -36,6 +36,7 @@ yarn-error.log
 .phpunit
 .phpunit.result.cache
 /phpunit.xml
+.phpunit.cache
 ###< symfony/phpunit-bridge ###
 
 ###> phpunit/phpunit ###
