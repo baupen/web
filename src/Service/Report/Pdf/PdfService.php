@@ -81,7 +81,7 @@ class PdfService
         $pdfDefinition = new PdfDefinition($constructionSite->getName(), $footer, $logoPath);
         $report = new Report($pdfDefinition, $this->reportAssetDir);
 
-        $this->addIntroduction($report, $constructionSite, $issues, $filter, $reportElements);
+        $this->addIntroduction($report, $constructionSite, $filter, $reportElements);
 
         if (count($issues) > 0) {
             $this->addIssueContent($filter, $reportElements, $issues, $report);
@@ -217,7 +217,7 @@ class PdfService
         $report->addImageGrid($imageGrid, $columnCount);
     }
 
-    private function addIntroduction(Report $report, ConstructionSite $constructionSite, array $issues, Filter $filter, ReportElements $reportElements)
+    private function addIntroduction(Report $report, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
     {
         $filterEntries = [];
 
@@ -435,8 +435,6 @@ class PdfService
         $tableSizes[2] = $availableWidth * 0.6;
 
         $report->addSizedTable($tableSizes, $tableHeader, $tableContent);
-
-        return $row;
     }
 
     /**
