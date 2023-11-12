@@ -7,7 +7,7 @@
     "@fortawesome/pro-solid-svg-icons": "^6.3.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@popperjs/core": "^2.6.0",
-    "axios": "^0.21",
+    "axios": "^1",
     "bootstrap": "^4",
     "chart.js": "^2.9.4",
     "flatpickr": "^4.6.6",
