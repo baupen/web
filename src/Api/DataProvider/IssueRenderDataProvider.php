@@ -56,12 +56,12 @@ class IssueRenderDataProvider extends NoPaginationDataProvider
         $this->pathService = $pathService;
     }
 
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    public function supports(string $resourceClass, ?string $operationName = null, array $context = []): bool
     {
         return Issue::class === $resourceClass && 'get_render' === $operationName;
     }
 
-    public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
+    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = [])
     {
         $existingFilter = isset($context['filters']) ? $context['filters'] : [];
         if (!isset($existingFilter['map']) || isset($existingFilter['map[]'])) {

@@ -26,7 +26,7 @@ class IssueSerializer implements NormalizerInterface
         $this->urlGenerator = $urlGenerator;
     }
 
-    public function supportsNormalization($data, string $format = null)
+    public function supportsNormalization($data, ?string $format = null)
     {
         return $data instanceof Issue
             && $this->decorated->supportsNormalization($data, $format);
@@ -35,7 +35,7 @@ class IssueSerializer implements NormalizerInterface
     /**
      * @param Issue $object
      */
-    public function normalize($object, string $format = null, array $context = [])
+    public function normalize($object, ?string $format = null, array $context = [])
     {
         $data = $this->decorated->normalize($object, $format, $context);
 

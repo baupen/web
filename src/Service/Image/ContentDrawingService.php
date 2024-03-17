@@ -223,7 +223,7 @@ class ContentDrawingService
         }
     }
 
-    private function groupOverlaps(array $content, float $padding, float $fontSize, array &$groups = null)
+    private function groupOverlaps(array $content, float $padding, float $fontSize, ?array &$groups = null)
     {
         // sort by row and xCoordinate
         usort($content, function ($a, $b) {

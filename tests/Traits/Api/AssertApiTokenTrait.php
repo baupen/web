@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 trait AssertApiTokenTrait
 {
-    private function assertApiTokenRequestSuccessful(Client $client, string $token, string $method, string $url, array $payload = null)
+    private function assertApiTokenRequestSuccessful(Client $client, string $token, string $method, string $url, ?array $payload = null)
     {
         $response = $this->requestWithApiToken($client, $token, $method, $url, $payload);
 
@@ -25,7 +25,7 @@ trait AssertApiTokenTrait
         return $response;
     }
 
-    private function assertApiTokenRequestForbidden(Client $client, string $token, string $method, string $url, array $payload = null)
+    private function assertApiTokenRequestForbidden(Client $client, string $token, string $method, string $url, ?array $payload = null)
     {
         $response = $this->requestWithApiToken($client, $token, $method, $url, $payload);
 
@@ -34,7 +34,7 @@ trait AssertApiTokenTrait
         return $response;
     }
 
-    private function assertApiTokenRequestNotFound(Client $client, string $token, string $method, string $url, array $payload = null)
+    private function assertApiTokenRequestNotFound(Client $client, string $token, string $method, string $url, ?array $payload = null)
     {
         $response = $this->requestWithApiToken($client, $token, $method, $url, $payload);
 
@@ -48,7 +48,7 @@ trait AssertApiTokenTrait
         $client->setDefaultOptions(['headers' => ['X-AUTHENTICATION' => $token]]);
     }
 
-    private function requestWithApiToken(Client $client, string $token, string $method, string $url, array $payload = null)
+    private function requestWithApiToken(Client $client, string $token, string $method, string $url, ?array $payload = null)
     {
         $body = ['headers' => ['X-AUTHENTICATION' => $token]];
         if (is_array($payload)) {

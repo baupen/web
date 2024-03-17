@@ -51,7 +51,7 @@ class ReportService implements ReportServiceInterface
         $this->craftsmanService = $craftsmanService;
     }
 
-    public function generatePdfReport(array $issues, Filter $filter, ReportElements $reportElements, string $author = null): string
+    public function generatePdfReport(array $issues, Filter $filter, ReportElements $reportElements, ?string $author = null): string
     {
         return $this->pdfService->generatePdfReport($issues, $filter, $reportElements, $author);
     }

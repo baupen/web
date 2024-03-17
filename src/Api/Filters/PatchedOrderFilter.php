@@ -51,7 +51,7 @@ class PatchedOrderFilter extends OrderFilter implements OrderFilterInterface
         return $value;
     }
 
-    protected function filterProperty(string $property, $direction, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null)
+    protected function filterProperty(string $property, $direction, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?string $operationName = null)
     {
         $nullsComparison = $this->properties[$property]['nulls_comparison'] ?? null;
         if (null === $nullsComparison || !in_array($nullsComparison, [self::NULLS_ALWAYS_FIRST, self::NULLS_ALWAYS_LAST])) {

@@ -42,7 +42,7 @@ trait AssertApiOperationsTrait
         }
     }
 
-    private function assertApiStatusCodeSame(string $method, int $expectedCode, Client $client, string $url, string $acceptHeader = MimeTypes::JSON_LD_MIME_TYPE, array $payload = null)
+    private function assertApiStatusCodeSame(string $method, int $expectedCode, Client $client, string $url, string $acceptHeader = MimeTypes::JSON_LD_MIME_TYPE, ?array $payload = null)
     {
         $body = ['headers' => ['Accept' => $acceptHeader]];
         if (is_array($payload)) {

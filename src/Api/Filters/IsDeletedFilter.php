@@ -20,7 +20,7 @@ class IsDeletedFilter extends AbstractContextAwareFilter
 {
     public const IS_DELETED_PROPERTY_NAME = 'isDeleted';
 
-    protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null)
+    protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?string $operationName = null)
     {
         // otherwise filter is applied to order and page as well
         if (!$this->isPropertyEnabled($property, $resourceClass)) {

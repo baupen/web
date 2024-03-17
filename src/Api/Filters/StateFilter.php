@@ -21,7 +21,7 @@ class StateFilter extends AbstractContextAwareFilter
 {
     public const STATE_PROPERTY_NAME = 'state';
 
-    protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null)
+    protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?string $operationName = null)
     {
         // otherwise filter is applied to order and page as well
         if (!$this->isPropertyEnabled($property, $resourceClass)) {

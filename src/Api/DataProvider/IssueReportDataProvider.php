@@ -35,7 +35,7 @@ class IssueReportDataProvider extends NoPaginationDataProvider
         $this->requestStack = $requestStack;
     }
 
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    public function supports(string $resourceClass, ?string $operationName = null, array $context = []): bool
     {
         // Make sure we're not called twice
         if (isset($context[self::ALREADY_CALLED])) {
@@ -45,7 +45,7 @@ class IssueReportDataProvider extends NoPaginationDataProvider
         return Issue::class === $resourceClass && 'get_report' === $operationName;
     }
 
-    public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
+    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = [])
     {
         $context[self::ALREADY_CALLED] = true;
 

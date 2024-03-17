@@ -32,7 +32,7 @@ class FilterSerializer implements NormalizerInterface
         $this->tokenStorage = $tokenStorage;
     }
 
-    public function supportsNormalization($data, string $format = null)
+    public function supportsNormalization($data, ?string $format = null)
     {
         return $data instanceof Filter
             && $this->decorated->supportsNormalization($data, $format);
@@ -41,7 +41,7 @@ class FilterSerializer implements NormalizerInterface
     /**
      * @param Filter $object
      */
-    public function normalize($object, string $format = null, array $context = [])
+    public function normalize($object, ?string $format = null, array $context = [])
     {
         $data = $this->decorated->normalize($object, $format, $context);
 
