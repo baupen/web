@@ -237,7 +237,7 @@ class SecurityController extends BaseFormController
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
-    private function getConstructionManagerFromAuthenticationHash(string $authenticationHash, TranslatorInterface $translator, ConstructionManager &$constructionManager = null)
+    private function getConstructionManagerFromAuthenticationHash(string $authenticationHash, TranslatorInterface $translator, ?ConstructionManager &$constructionManager = null)
     {
         /** @var ConstructionManager $constructionManager */
         $constructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['authenticationHash' => $authenticationHash]);

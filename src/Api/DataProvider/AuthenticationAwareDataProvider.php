@@ -51,7 +51,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         $this->tokenStorage = $tokenStorage;
     }
 
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    public function supports(string $resourceClass, ?string $operationName = null, array $context = []): bool
     {
         // Make sure we're not called twice
         if (isset($context[self::ALREADY_CALLED])) {
@@ -61,7 +61,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         return true;
     }
 
-    public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
+    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = [])
     {
         $context[self::ALREADY_CALLED] = true;
 

@@ -40,12 +40,12 @@ abstract class FeedEntryDataProvider extends NoPaginationDataProvider
 
     abstract protected function registerEvents(array $resources, FeedEntryAggregator $aggregator);
 
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    public function supports(string $resourceClass, ?string $operationName = null, array $context = []): bool
     {
         return $this->getResourceClass() === $resourceClass && 'get_feed_entries' === $operationName;
     }
 
-    public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
+    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = [])
     {
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
         /** @var Issue[] $issues */

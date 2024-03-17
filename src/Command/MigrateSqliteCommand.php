@@ -425,14 +425,14 @@ class MigrateSqliteCommand extends DatabaseCommand
         return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, self::MODE_UPDATE);
     }
 
-    private function migrateTable(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo, string $table, array $sourceFields, callable $migrateReference = null): int
+    private function migrateTable(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo, string $table, array $sourceFields, ?callable $migrateReference = null): int
     {
         $sql = 'SELECT '.implode(', ', $sourceFields).' FROM '.$table;
 
         return $this->migrate($io, $sourcePdo, $targetPdo, $sql, $table, self::MODE_INSERT, $migrateReference);
     }
 
-    private function migrate(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo, string $sql, string $table, string $mode, callable $migrateReference = null): int
+    private function migrate(SymfonyStyle $io, \PDO $sourcePdo, \PDO $targetPdo, string $sql, string $table, string $mode, ?callable $migrateReference = null): int
     {
         $limit = 500;
         $offset = 0;

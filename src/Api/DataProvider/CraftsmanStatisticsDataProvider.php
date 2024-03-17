@@ -54,7 +54,7 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
         $this->analysisService = $analysisService;
     }
 
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    public function supports(string $resourceClass, ?string $operationName = null, array $context = []): bool
     {
         // Make sure we're not called twice
         if (isset($context[self::ALREADY_CALLED])) {
@@ -64,7 +64,7 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
         return Craftsman::class === $resourceClass && 'get_statistics' === $operationName;
     }
 
-    public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
+    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = [])
     {
         $context[self::ALREADY_CALLED] = true;
 

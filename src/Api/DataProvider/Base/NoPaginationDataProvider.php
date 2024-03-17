@@ -33,7 +33,7 @@ abstract class NoPaginationDataProvider implements ContextAwareCollectionDataPro
         $this->collectionExtensions = $collectionExtensions;
     }
 
-    protected function getCollectionQueryBuilerWithoutPagination(string $resourceClass, string $operationName = null, array $context = [])
+    protected function getCollectionQueryBuilerWithoutPagination(string $resourceClass, ?string $operationName = null, array $context = [])
     {
         /** @var EntityManagerInterface $manager */
         $manager = $this->managerRegistry->getManagerForClass($resourceClass);

@@ -21,7 +21,7 @@ class UserWithoutPasswordAuthenticationException extends AuthenticationException
      */
     private $userId;
 
-    public function __construct(ConstructionManager $user, $message = '', $code = 0, \Throwable $previous = null)
+    public function __construct(ConstructionManager $user, $message = '', $code = 0, ?\Throwable $previous = null)
     {
         $this->user = $user;
         $this->userId = $user->getId();

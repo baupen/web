@@ -147,7 +147,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return new RedirectResponse($this->urlGenerator->generate('index'));
     }
 
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, ?AuthenticationException $authException = null)
     {
         if (0 === strpos($request->getPathInfo(), '/api/')) {
             return new Response('Unauthorized', Response::HTTP_UNAUTHORIZED);
