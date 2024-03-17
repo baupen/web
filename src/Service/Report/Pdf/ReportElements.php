@@ -51,7 +51,7 @@ class ReportElements
         return $self;
     }
 
-    private static function getValue(?array $parameters = null, string $key, bool $default): bool
+    private static function getValue(?array $parameters, string $key, bool $default): bool
     {
         if (null === $parameters || !isset($parameters[$key])) {
             return $default;
