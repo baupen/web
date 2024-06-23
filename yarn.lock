@@ -7136,9 +7136,9 @@ ws@^8.13.0:
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.17.1.tgz#9293da530bb548febc95371d90f9c878727d919b"
   integrity sha512-6XQFvXTkbfUOZOKKILFG1PDK2NDQs4azKQl26T0YS5CxqWLgXajbPZ+h4gZekJyRqFU8pvnbAbbs/3TgRPy+GQ==
 
-"xlsx@https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz":
-  version "0.19.3"
-  resolved "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz#f804c1850e2da5260165db0a059dc2a6099d55f3"
+"xlsx@https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz":
+  version "0.20.2"
+  resolved "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz#0f64eeed3f1a46e64724620c3553f2dbd3cd2d7d"
 
 yallist@^3.0.2:
   version "3.1.1"
