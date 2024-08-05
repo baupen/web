@@ -1,3 +1,5 @@
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
 $border-radius: 0;
 $border-radius-lg: 0;
 $border-radius-sm: 0;
@@ -5,7 +7,14 @@ $modal-backdrop-opacity: 0.3;
 $primary: #343477;
 $orange: #fd7e14;
 $theme-colors: (
-  'orange': $orange
+  'primary':    $primary,
+  'secondary':  $secondary,
+  'success':    $success,
+  'info':       $info,
+  'warning':    $warning,
+  'danger':     $danger,
+  'light':      $light,
+  'dark':       $dark
 );
 $yiq-contrasted-threshold: 160;
 $primary-200: #eaecef;

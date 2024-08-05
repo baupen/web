@@ -17,7 +17,7 @@
       <template v-slot:after-body>
         <slot name="footer">
           <div class="modal-footer">
-            <button v-if="canAbort" type="submit" @click="abort" class="btn btn-light mr-auto">
+            <button v-if="canAbort" type="submit" @click="abort" class="btn btn-light me-auto">
               {{ abortTitle }}
             </button>
             <slot name="secondary-footer"></slot>

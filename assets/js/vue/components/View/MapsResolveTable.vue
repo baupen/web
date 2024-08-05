@@ -17,7 +17,7 @@
           <template v-else>
             {{ mapContainer.entity.name }}
           </template>
-          <span v-if="mapContainer.issueCount" class="badge badge-secondary ml-1">
+          <span v-if="mapContainer.issueCount" class="badge badge-secondary ms-1">
             {{ mapContainer.issueCount }}
           </span>
         </td>
