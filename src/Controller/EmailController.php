@@ -25,10 +25,8 @@ class EmailController extends BaseDoctrineController
 {
     /**
      * @Route("/{identifier}", name="email")
-     *
-     * @return Response
      */
-    public function emailAction(string $identifier, ManagerRegistry $registry)
+    public function email(string $identifier, ManagerRegistry $registry): Response
     {
         $email = $registry->getRepository(Email::class)->findOneBy(['identifier' => $identifier]);
         if (null === $email) {

@@ -22,10 +22,8 @@ class HelpController extends BaseController
 {
     /**
      * @Route("/welcome", name="help_welcome")
-     *
-     * @return Response
      */
-    public function welcomeAction()
+    public function welcome(): Response
     {
         return $this->render('help/welcome.html.twig');
     }

@@ -10,6 +10,7 @@
  */
 
 use Rector\Config\RectorConfig;
+use Rector\Symfony\Set\SymfonySetList;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
 
 return RectorConfig::configure()
@@ -18,6 +19,12 @@ return RectorConfig::configure()
     ])
     ->withPreparedSets(
         deadCode: true,
-        codeQuality: true
+        codeQuality: true,
     )
-    ->withPaths(["bin", "config", "migrations", "public", "src", "tests"]);
+    ->withSymfonyContainerXml(__DIR__.'/var/cache/dev/App_KernelDevDebugContainer.xml')
+    ->withSets([
+        SymfonySetList::SYMFONY_64,
+        SymfonySetList::SYMFONY_CODE_QUALITY,
+        SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
+    ])
+    ->withPaths(['bin', 'config', 'migrations', 'public', 'src', 'tests']);

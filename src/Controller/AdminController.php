@@ -24,10 +24,8 @@ class AdminController extends BaseController
 {
     /**
      * @Route("", name="admin_index")
-     *
-     * @return Response
      */
-    public function indexAction(ManagerRegistry $registry)
+    public function index(ManagerRegistry $registry): Response
     {
         $constructionManagerRepo = $registry->getRepository(ConstructionManager::class);
         $constructionManagers = $constructionManagerRepo->findBy([], ['email' => 'ASC']);

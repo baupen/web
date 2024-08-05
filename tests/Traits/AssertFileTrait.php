@@ -19,7 +19,7 @@ trait AssertFileTrait
 {
     private function assertGetFile(KernelBrowser $client, string $url, string $mode = ResponseHeaderBag::DISPOSITION_INLINE)
     {
-        $client->request('GET', $url);
+        $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, $url);
         $this->assertResponseIsSuccessful();
 
         $this->assertStringStartsWith($mode, $client->getResponse()->headers->get('content-disposition'));
@@ -27,7 +27,7 @@ trait AssertFileTrait
 
     private function assertFileNotFound(KernelBrowser $client, string $url)
     {
-        $client->request('GET', $url);
+        $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, $url);
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 }

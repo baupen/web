@@ -22,10 +22,8 @@ class IndexController extends BaseController
 {
     /**
      * @Route("", name="index")
-     *
-     * @return Response
      */
-    public function indexAction()
+    public function index(): Response
     {
         return $this->render('index.html.twig');
     }

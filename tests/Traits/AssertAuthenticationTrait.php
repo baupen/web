@@ -17,13 +17,13 @@ trait AssertAuthenticationTrait
 {
     private function assertNotAuthenticated(KernelBrowser $client)
     {
-        $client->request('GET', '/');
+        $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, '/');
         $this->assertResponseRedirects('/login');
     }
 
     private function assertAuthenticated(KernelBrowser $client)
     {
-        $client->request('GET', '/');
+        $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, '/');
         $this->assertResponseIsSuccessful();
     }
 }
