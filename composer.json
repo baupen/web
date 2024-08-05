@@ -49,7 +49,6 @@
     "twig/twig": "^3.0"
   },
   "require-dev": {
-    "brainmaestro/composer-git-hooks": "^2.8",
     "doctrine/doctrine-fixtures-bundle": "^3.3",
     "famoser/agnes": "^4.0",
     "friendsofphp/php-cs-fixer": "^3",
@@ -99,33 +98,18 @@
     "symfony/polyfill-php56": "*"
   },
   "scripts": {
-    "auto-scripts": {
-      "cache:clear": "symfony-cmd",
-      "assets:install %PUBLIC_DIR%": "symfony-cmd",
-      "requirements-checker": "script"
-    },
-    "prepare-environment": [
-      "touch .env.local",
-      "vendor/bin/cghooks update"
-    ],
     "fixtures": [
       "php bin/console doctrine:database:drop --force --if-exists",
       "php bin/console doctrine:database:create",
       "php bin/console doctrine:migrations:migrate --no-interaction",
       "php bin/console doctrine:fixtures:load --no-interaction"
     ],
-    "create-migration": [
-      "php bin/console doctrine:migrations:diff --no-interaction"
+    "lint": [
+      "./vendor/bin/rector process",
+      "./vendor/bin/php-cs-fixer fix",
+      "yarn run lint-fix"
     ],
-    "download-translations": "lokalise2 --token $LOKALISE_TOKEN --project-id 893141675cbb100cd751c1.44777843 file download --format yml --unzip-to translations --indentation 2sp --export-empty-as skip --plural-format symfony --placeholder-format symfony --export-sort a_z --directory-prefix \"\"",
-    "post-install-cmd": [
-      "@auto-scripts",
-      "@prepare-environment"
-    ],
-    "post-update-cmd": [
-      "@auto-scripts",
-      "@prepare-environment"
-    ]
+    "download-translations": "lokalise2 --token $LOKALISE_TOKEN --project-id 893141675cbb100cd751c1.44777843 file download --format yml --unzip-to translations --indentation 2sp --export-empty-as skip --plural-format symfony --placeholder-format symfony --export-sort a_z --directory-prefix \"\""
   },
   "conflict": {
     "symfony/symfony": "*"
@@ -134,15 +118,6 @@
     "symfony": {
       "allow-contrib": false,
       "require": "^5.4"
-    },
-    "hooks": {
-      "pre-commit": [
-        "echo committing as $(git config user.name)",
-        "./vendor/bin/php-cs-fixer fix",
-        "yarn run lint-fix",
-        "git update-index --again"
-      ],
-      "post-merge": "composer install"
     }
   }
 }

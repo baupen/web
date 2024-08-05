@@ -13,9 +13,6 @@
             "src/Entity/.gitignore"
         ]
     },
-    "brainmaestro/composer-git-hooks": {
-        "version": "v2.8.3"
-    },
     "composer/pcre": {
         "version": "3.0.0"
     },
