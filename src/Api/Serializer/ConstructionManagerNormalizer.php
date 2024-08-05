@@ -13,6 +13,7 @@ namespace App\Api\Serializer;
 
 use App\Entity\ConstructionManager;
 use App\Security\TokenTrait;
+use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
@@ -32,10 +33,20 @@ class ConstructionManagerNormalizer implements ContextAwareNormalizerInterface, 
         $this->tokenStorage = $tokenStorage;
     }
 
+    public function supportsNormalization($data, $format = null, array $context = []): bool
+    {
+        // Make sure we're not called twice
+        if (isset($context[self::ALREADY_CALLED])) {
+            return false;
+        }
+
+        return $data instanceof ConstructionManager;
+    }
+
     /**
      * @param ConstructionManager $object
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
     {
         $context[self::ALREADY_CALLED] = true;
 
@@ -45,15 +56,5 @@ class ConstructionManagerNormalizer implements ContextAwareNormalizerInterface, 
         }
 
         return $this->normalizer->normalize($object, $format, $context);
-    }
-
-    public function supportsNormalization($data, $format = null, array $context = [])
-    {
-        // Make sure we're not called twice
-        if (isset($context[self::ALREADY_CALLED])) {
-            return false;
-        }
-
-        return $data instanceof ConstructionManager;
     }
 }
