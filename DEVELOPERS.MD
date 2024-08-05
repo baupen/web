@@ -33,11 +33,11 @@ Apps expect a `422` return code if their API requests are wrong (e.g. API has mo
 
 setup:
 - `composer install` to install backend dependencies. Note: The post-install scripts will fail, if the frontend server has never started yet. This is fine, and will not impact functionality.
-- `yarn install` to install frontend dependencies  
+- `npm install` to install frontend dependencies  
 
 developing:
 - `symfony start` to start the symfony server  
-- `yarn run dev-server` to start the frontend server
+- `npm run dev-server` to start the frontend server
 - visit `localhost:8000` and login with `f@baupen.ch`, `asdf`  
 - test error templates inside TwigBundle/views by accessing `/_error/404` and `/_error/500`
 
@@ -58,7 +58,7 @@ deployment:
 
 ### fortawesome
 
-to be able to execute `yarn install`, you need to download the fortawesome pro fonts. 
+to be able to execute `npm install`, you need to download the fortawesome pro fonts. 
 For this, you need to setup its registry. You can do so by executing  
 `npm config set "@fortawesome:registry" https://npm.fontawesome.com/`  
 `npm config set "//npm.fontawesome.com/:_authToken" AUTH_TOKEN`  

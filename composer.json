@@ -108,7 +108,7 @@
       ",./bin/console cache:clear",
       "./vendor/bin/rector process",
       "./vendor/bin/php-cs-fixer fix",
-      "yarn run lint-fix"
+      "npm run lint-fix"
     ],
     "download-translations": "lokalise2 --token $LOKALISE_TOKEN --project-id 893141675cbb100cd751c1.44777843 file download --format yml --unzip-to translations --indentation 2sp --export-empty-as skip --plural-format symfony --placeholder-format symfony --export-sort a_z --directory-prefix \"\""
   },
