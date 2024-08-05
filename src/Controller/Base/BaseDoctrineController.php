@@ -28,18 +28,4 @@ class BaseDoctrineController extends BaseController
         }
         $mgr->flush();
     }
-
-    /**
-     * removes entity to database.
-     *
-     * @param BaseEntity[] $entities
-     */
-    protected function fastRemove(...$entities)
-    {
-        $mgr = $this->getDoctrine()->getManager();
-        foreach ($entities as $item) {
-            $mgr->remove($item);
-        }
-        $mgr->flush();
-    }
 }
