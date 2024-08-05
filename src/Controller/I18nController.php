@@ -14,13 +14,14 @@ namespace App\Controller;
 use App\Controller\Base\BaseDoctrineController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class I18nController extends BaseDoctrineController
 {
     /**
      * @return Response
      */
-    #[\Symfony\Component\Routing\Attribute\Route(path: '/set_locale/{locale}', name: 'set_locale')]
+    #[Route(path: '/set_locale/{locale}', name: 'set_locale')]
     public function setLocale(Request $request, string $locale): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         // only change locale to valid values
