@@ -33,10 +33,20 @@ class CraftsmanNormalizer implements ContextAwareNormalizerInterface, Normalizer
         $this->tokenStorage = $tokenStorage;
     }
 
+    public function supportsNormalization($data, $format = null, array $context = []): bool
+    {
+        // Make sure we're not called twice
+        if (isset($context[self::ALREADY_CALLED])) {
+            return false;
+        }
+
+        return $data instanceof Craftsman;
+    }
+
     /**
      * @param ConstructionManager $object
      */
-    public function normalize($object, $format = null, array $context = []): bool
+    public function normalize($object, $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
     {
         $context[self::ALREADY_CALLED] = true;
 
@@ -47,15 +57,5 @@ class CraftsmanNormalizer implements ContextAwareNormalizerInterface, Normalizer
         }
 
         return $this->normalizer->normalize($object, $format, $context);
-    }
-
-    public function supportsNormalization($data, $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
-    {
-        // Make sure we're not called twice
-        if (isset($context[self::ALREADY_CALLED])) {
-            return false;
-        }
-
-        return $data instanceof Craftsman;
     }
 }
