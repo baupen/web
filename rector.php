@@ -11,12 +11,16 @@
 
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\Config\RectorConfig;
+use Rector\Doctrine\Set\DoctrineSetList;
+use Rector\Symfony\Set\SensiolabsSetList;
 use Rector\Symfony\Set\SymfonySetList;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
 
 return RectorConfig::configure()
     ->withRules([
         TypedPropertyFromStrictConstructorRector::class,
+        ReturnTypeFromStrictNativeCallRector::class,
     ])
     ->withSkip([
         FlipTypeControlToUseExclusiveTypeRector::class,
@@ -39,5 +43,8 @@ return RectorConfig::configure()
         SymfonySetList::SYMFONY_64,
         SymfonySetList::SYMFONY_CODE_QUALITY,
         SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
+        DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES,
+        SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES,
+        SensiolabsSetList::ANNOTATIONS_TO_ATTRIBUTES,
     ])
     ->withPaths(['bin', 'config', 'migrations', 'public', 'src', 'tests']);

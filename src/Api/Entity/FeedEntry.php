@@ -21,24 +21,16 @@ class FeedEntry
 
     public const TYPE_CRAFTSMAN_VISITED_WEBPAGE = 10;
 
-    /**
-     * @Groups({"issue-read","craftsman-read"})
-     */
+    #[Groups(['issue-read', 'craftsman-read'])]
     private string $date;
 
-    /**
-     * @Groups({"issue-read","craftsman-read"})
-     */
+    #[Groups(['issue-read', 'craftsman-read'])]
     private string $subject;
 
-    /**
-     * @Groups({"issue-read","craftsman-read"})
-     */
+    #[Groups(['issue-read', 'craftsman-read'])]
     private int $type;
 
-    /**
-     * @Groups({"issue-read","craftsman-read"})
-     */
+    #[Groups(['issue-read', 'craftsman-read'])]
     private int $count;
 
     /**

@@ -18,36 +18,22 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 trait IssuePositionTrait
 {
-    /**
-     * @Assert\NotBlank(groups={"position"})
-     *
-     * @Groups({"issue-read", "issue-write"})
-     *
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[Assert\NotBlank(groups: ['position'])]
+    #[Groups(['issue-read', 'issue-write'])]
+    #[ORM\Column(type: 'float', nullable: true)]
     private ?float $positionX = null;
 
-    /**
-     * @Assert\NotBlank(groups={"position"})
-     *
-     * @Groups({"issue-read", "issue-write"})
-     *
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[Assert\NotBlank(groups: ['position'])]
+    #[Groups(['issue-read', 'issue-write'])]
+    #[ORM\Column(type: 'float', nullable: true)]
     private ?float $positionY = null;
 
-    /**
-     * @Assert\NotBlank(groups={"position"})
-     *
-     * @Groups({"issue-read", "issue-write"})
-     *
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[Assert\NotBlank(groups: ['position'])]
+    #[Groups(['issue-read', 'issue-write'])]
+    #[ORM\Column(type: 'float', nullable: true)]
     private ?float $positionZoomScale = null;
 
-    /**
-     * @Assert\Callback
-     */
+    #[Assert\Callback]
     public function validatePosition(ExecutionContextInterface $context): void
     {
         $nullCount = 0;

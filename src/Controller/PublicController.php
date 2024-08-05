@@ -29,10 +29,9 @@ class PublicController extends BaseDoctrineController
     use FileResponseTrait;
 
     /**
-     * @Route("/download/{filename}", name="public_download")
-     *
      * @return Response
      */
+    #[Route(path: '/download/{filename}', name: 'public_download')]
     public function download(string $filename, PathServiceInterface $pathService)
     {
         $path = $pathService->getTransientFolderForReports();
@@ -43,9 +42,7 @@ class PublicController extends BaseDoctrineController
         return $response;
     }
 
-    /**
-     * @Route("/resolve/{token}", name="public_resolve")
-     */
+    #[Route(path: '/resolve/{token}', name: 'public_resolve')]
     public function resolve(string $token, TokenStorageInterface $tokenStorage, ManagerRegistry $registry): Response
     {
         $craftsman = $registry->getRepository(Craftsman::class)->findOneBy(['authenticationToken' => $token, 'deletedAt' => null]);
@@ -61,9 +58,7 @@ class PublicController extends BaseDoctrineController
         return $this->render('public/resolve.html.twig');
     }
 
-    /**
-     * @Route("/filtered/{token}", name="public_filtered")
-     */
+    #[Route(path: '/filtered/{token}', name: 'public_filtered')]
     public function filtered(string $token, TokenStorageInterface $tokenStorage, ManagerRegistry $registry): Response
     {
         $filter = $registry->getRepository(Filter::class)->findOneBy(['authenticationToken' => $token]);

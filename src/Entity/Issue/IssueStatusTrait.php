@@ -13,7 +13,6 @@ namespace App\Entity\Issue;
 
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -21,79 +20,52 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 trait IssueStatusTrait
 {
-    /**
-     * @Assert\NotBlank()
-     *
-     * @Groups({"issue-read", "issue-create"})
-     *
-     * @ORM\Column(type="datetime")
-     */
+    #[Assert\NotBlank]
+    #[Groups(['issue-read', 'issue-create'])]
+    #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $createdAt = null;
 
-    /**
-     * @Assert\NotBlank()
-     *
-     * @Groups({"issue-read", "issue-create"})
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
-     */
+    #[Assert\NotBlank]
+    #[Groups(['issue-read', 'issue-create'])]
+    #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $createdBy = null;
 
     /**
      * @var \DateTime|null
-     *
-     * @Assert\NotBlank(groups={"after-register"})
-     *
-     * @Groups({"issue-read", "issue-write"})
-     *
-     * @ORM\Column(type="datetime", nullable=true)
      */
+    #[Assert\NotBlank(groups: ['after-register'])]
+    #[Groups(['issue-read', 'issue-write'])]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $registeredAt = null;
 
-    /**
-     * @Assert\NotBlank(groups={"after-register"})
-     *
-     * @Groups({"issue-read", "issue-write"})
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
-     */
+    #[Assert\NotBlank(groups: ['after-register'])]
+    #[Groups(['issue-read', 'issue-write'])]
+    #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $registeredBy = null;
 
     /**
      * @var \DateTime|null
-     *
-     * @Groups({"issue-read", "issue-write", "issue-craftsman-write"})
-     *
-     * @ORM\Column(type="datetime", nullable=true)
      */
+    #[Groups(['issue-read', 'issue-write', 'issue-craftsman-write'])]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $resolvedAt = null;
 
-    /**
-     * @Groups({"issue-read", "issue-write", "issue-craftsman-write"})
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="resolvedIssues")
-     */
+    #[Groups(['issue-read', 'issue-write', 'issue-craftsman-write'])]
+    #[ORM\ManyToOne(targetEntity: Craftsman::class, inversedBy: 'resolvedIssues')]
     private ?Craftsman $resolvedBy = null;
 
     /**
      * @var \DateTime|null
-     *
-     * @Groups({"issue-read", "issue-write"})
-     *
-     * @ORM\Column(type="datetime", nullable=true)
      */
+    #[Groups(['issue-read', 'issue-write'])]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $closedAt = null;
 
-    /**
-     * @Groups({"issue-read", "issue-write"})
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
-     */
+    #[Groups(['issue-read', 'issue-write'])]
+    #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $closedBy = null;
 
-    /**
-     * @Assert\Callback
-     */
+    #[Assert\Callback]
     public function validateStatus(ExecutionContextInterface $context): void
     {
         if ((null === $this->registeredAt) !== (null === $this->registeredBy)) {

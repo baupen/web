@@ -22,13 +22,10 @@ trait IdTrait
     /**
      * @var string|null
      *                  will be null when not inserted into the db yet
-     *
-     * @ORM\Id
-     *
-     * @ORM\Column(name="id", type="guid")
-     *
-     * @ORM\GeneratedValue(strategy="UUID")
      */
+    #[ORM\Id]
+    #[ORM\Column(name: 'id', type: 'guid')]
+    #[ORM\GeneratedValue(strategy: 'UUID')]
     private $id;
 
     /**

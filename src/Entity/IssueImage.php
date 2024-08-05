@@ -19,20 +19,16 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * A issue image is the image taken in connection with the issue.
- *
- * @ORM\Entity
- *
- * @ORM\HasLifecycleCallbacks
  */
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class IssueImage extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
     use FileTrait;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Issue")
-     */
+    #[ORM\ManyToOne(targetEntity: Issue::class)]
     private Issue $createdFor;
 
     public function getCreatedFor(): Issue

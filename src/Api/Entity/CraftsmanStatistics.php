@@ -16,56 +16,46 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class CraftsmanStatistics
 {
-    /**
-     * @Groups({"craftsman-read"})
-     */
+    #[Groups(['craftsman-read'])]
     private string $craftsman;
 
-    /**
-     * @Groups({"craftsman-read"})
-     */
+    #[Groups(['craftsman-read'])]
     private ?IssueSummary $issueSummary = null;
 
     /**
      * @var int
-     *
-     * @Groups({"craftsman-read"})
      */
+    #[Groups(['craftsman-read'])]
     public $issueUnreadCount;
 
     /**
      * @var int
-     *
-     * @Groups({"craftsman-read"})
      */
+    #[Groups(['craftsman-read'])]
     public $issueOverdueCount;
 
     /**
      * @var \DateTime|null
-     *
-     * @Groups({"craftsman-read"})
      */
+    #[Groups(['craftsman-read'])]
     public $nextDeadline;
 
     /**
      * @var \DateTime|null
-     *
-     * @Groups({"craftsman-read"})
      */
+    #[Groups(['craftsman-read'])]
     public $lastEmailReceived;
 
     /**
      * @var \DateTime|null
-     *
-     * @Groups({"craftsman-read"})
      */
+    #[Groups(['craftsman-read'])]
     public $lastVisitOnline;
 
     /**
      * @var \DateTime|null
-     *
-     * @Groups({"craftsman-read"})
      */
+    #[Groups(['craftsman-read'])]
     public $lastIssueResolved;
 
     /**

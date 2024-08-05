@@ -23,7 +23,6 @@ use App\Entity\Traits\AuthenticationTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -60,11 +59,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
- *
- * @ORM\Entity
- *
- * @ORM\HasLifecycleCallbacks
  */
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
@@ -72,91 +69,59 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     use AuthenticationTrait;
     use SoftDeleteTrait;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @Groups({"craftsman-read", "craftsman-write"})
-     *
-     * @ORM\Column(type="text")
-     */
+    #[Assert\NotBlank]
+    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[ORM\Column(type: 'text')]
     private string $contactName;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @Groups({"craftsman-read", "craftsman-write"})
-     *
-     * @ORM\Column(type="text")
-     */
+    #[Assert\NotBlank]
+    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[ORM\Column(type: 'text')]
     private string $company;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @Groups({"craftsman-read", "craftsman-write"})
-     *
-     * @ORM\Column(type="text")
-     */
+    #[Assert\NotBlank]
+    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[ORM\Column(type: 'text')]
     private string $trade;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @Assert\Email
-     *
-     * @Groups({"craftsman-read", "craftsman-write"})
-     *
-     * @ORM\Column(type="text")
-     */
+    #[Assert\NotBlank]
+    #[Assert\Email]
+    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[ORM\Column(type: 'text')]
     private string $email;
 
     /**
      * @var string[]
-     *
-     * @Groups({"craftsman-read", "craftsman-write"})
-     *
-     * @ORM\Column(type="simple_array", nullable=true)
      */
+    #[Groups(['craftsman-read', 'craftsman-write'])]
+    #[ORM\Column(type: 'simple_array', nullable: true)]
     private ?array $emailCCs = null;
 
-    /**
-     * @Groups({"craftsman-read-self", "craftsman-write"})
-     *
-     * @ORM\Column(type="boolean", options={"default": true})
-     */
+    #[Groups(['craftsman-read-self', 'craftsman-write'])]
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
     private bool $canEdit = true;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @Groups({"craftsman-create"})
-     *
-     * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="craftsmen")
-     */
+    #[Assert\NotBlank]
+    #[Groups(['craftsman-create'])]
+    #[ORM\ManyToOne(targetEntity: \ConstructionSite::class, inversedBy: 'craftsmen')]
     private ?ConstructionSite $constructionSite = null;
 
     /**
      * @var Collection<int, Issue>
-     *
-     * @ORM\OneToMany(targetEntity="Issue", mappedBy="craftsman")
      */
+    #[ORM\OneToMany(targetEntity: \Issue::class, mappedBy: 'craftsman')]
     private Collection $issues;
 
     /**
      * @var Collection<int, Issue>
-     *
-     * @ORM\OneToMany(targetEntity="Issue", mappedBy="resolvedBy")
      */
+    #[ORM\OneToMany(targetEntity: \Issue::class, mappedBy: 'resolvedBy')]
     private Collection $resolvedIssues;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTime $lastEmailReceived = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTime $lastVisitOnline = null;
 
     /**
@@ -290,17 +255,13 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
         return $lastAction;
     }
 
-    /**
-     * @Groups({"craftsman-read"})
-     */
+    #[Groups(['craftsman-read'])]
     public function getIsDeleted(): bool
     {
         return null !== $this->deletedAt;
     }
 
-    /**
-     * @Groups({"craftsman-read"})
-     */
+    #[Groups(['craftsman-read'])]
     public function getLastChangedAt(): \DateTimeInterface
     {
         return $this->lastChangedAt;

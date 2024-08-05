@@ -39,9 +39,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SecurityController extends BaseDoctrineController
 {
-    /**
-     * @Route("/login", name="login")
-     */
+    #[Route(path: '/login', name: 'login')]
     public function login(AuthenticationUtils $authenticationUtils, EmailServiceInterface $emailService, ManagerRegistry $managerRegistry, LoggerInterface $logger, TranslatorInterface $translator): Response
     {
         if ($this->getUser()) {
@@ -75,9 +73,7 @@ class SecurityController extends BaseDoctrineController
         return $this->render('security/login.html.twig', ['form' => $form->createView()]);
     }
 
-    /**
-     * @Route("/token", name="token")
-     */
+    #[Route(path: '/token', name: 'token')]
     public function token(): Response
     {
         $token = $this->getUser()->getAuthenticationToken();
@@ -85,9 +81,7 @@ class SecurityController extends BaseDoctrineController
         return new Response($token);
     }
 
-    /**
-     * @Route("/register", name="register")
-     */
+    #[Route(path: '/register', name: 'register')]
     public function register(Request $request, TranslatorInterface $translator, UserServiceInterface $userService): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         $constructionManager = new ConstructionManager();
@@ -124,9 +118,7 @@ class SecurityController extends BaseDoctrineController
         return $this->render('security/register.html.twig', ['form' => $form->createView()]);
     }
 
-    /**
-     * @Route("/register/confirm/{authenticationHash}", name="register_confirm")
-     */
+    #[Route(path: '/register/confirm/{authenticationHash}', name: 'register_confirm')]
     public function registerConfirm(Request $request, string $authenticationHash, TranslatorInterface $translator, EmailServiceInterface $emailService, SampleServiceInterface $sampleService, UserServiceInterface $userService, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         /** @var ConstructionManager $constructionManager */
@@ -167,9 +159,7 @@ class SecurityController extends BaseDoctrineController
         return $this->render('security/register_confirm.html.twig', ['form' => $form->createView()]);
     }
 
-    /**
-     * @Route("/recover", name="recover")
-     */
+    #[Route(path: '/recover', name: 'recover')]
     public function recover(Request $request, EmailServiceInterface $emailService, TranslatorInterface $translator, LoggerInterface $logger, ManagerRegistry $registry): Response
     {
         $constructionManager = new ConstructionManager();
@@ -191,9 +181,7 @@ class SecurityController extends BaseDoctrineController
         return $this->render('security/recover.html.twig', ['form' => $form->createView()]);
     }
 
-    /**
-     * @Route("/recover/confirm/{authenticationHash}", name="recover_confirm")
-     */
+    #[Route(path: '/recover/confirm/{authenticationHash}', name: 'recover_confirm')]
     public function recoverConfirm(Request $request, $authenticationHash, TranslatorInterface $translator, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         /** @var ConstructionManager $constructionManager */
@@ -221,9 +209,7 @@ class SecurityController extends BaseDoctrineController
         return $this->render('security/recover_confirm.html.twig', ['form' => $form->createView()]);
     }
 
-    /**
-     * @Route("/logout", name="logout")
-     */
+    #[Route(path: '/logout', name: 'logout')]
     public function logout(): never
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');

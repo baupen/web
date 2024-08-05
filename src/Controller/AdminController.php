@@ -17,14 +17,10 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/admin")
- */
+#[Route(path: '/admin')]
 class AdminController extends BaseController
 {
-    /**
-     * @Route("", name="admin_index")
-     */
+    #[Route(path: '', name: 'admin_index')]
     public function index(ManagerRegistry $registry): Response
     {
         $constructionManagerRepo = $registry->getRepository(ConstructionManager::class);

@@ -16,9 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class IssueSummaryWithDate extends IssueSummary
 {
-    /**
-     * @Groups({"issue-read"})
-     */
+    #[Groups(['issue-read'])]
     private string $date;
 
     public static function createFromIssueAnalysisWithDate(IssueAnalysis $issueAnalysis, string $date): self

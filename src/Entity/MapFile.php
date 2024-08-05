@@ -19,20 +19,16 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * A MapFile is the actual .pdf file connected to a logical map.
- *
- * @ORM\Entity
- *
- * @ORM\HasLifecycleCallbacks
  */
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class MapFile extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
     use FileTrait;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Map")
-     */
+    #[ORM\ManyToOne(targetEntity: Map::class)]
     private Map $createdFor;
 
     public function getCreatedFor(): Map
