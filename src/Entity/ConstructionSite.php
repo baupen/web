@@ -80,7 +80,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     private ?ConstructionSiteImage $image = null;
 
     /**
-     * @var Collection<int, \App\Entity\ConstructionManager>
+     * @var Collection<int, ConstructionManager>
      *
      * @Groups({"construction-site-read", "construction-site-write"})
      *
@@ -91,7 +91,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     private Collection $constructionManagers;
 
     /**
-     * @var Collection<int, \App\Entity\Map>
+     * @var Collection<int, Map>
      *
      * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite", cascade={"persist"})
      *
@@ -100,21 +100,21 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     private Collection $maps;
 
     /**
-     * @var Collection<int, \App\Entity\Craftsman>
+     * @var Collection<int, Craftsman>
      *
      * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite", cascade={"persist"})
      */
     private Collection $craftsmen;
 
     /**
-     * @var Collection<int, \App\Entity\Issue>
+     * @var Collection<int, Issue>
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="constructionSite", cascade={"persist"})
      */
     private Collection $issues;
 
     /**
-     * @var Collection<int, \App\Entity\EmailTemplate>
+     * @var Collection<int, EmailTemplate>
      *
      * @ORM\OneToMany(targetEntity="App\Entity\EmailTemplate", mappedBy="constructionSite", cascade={"persist"})
      *
@@ -123,7 +123,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     private Collection $emailTemplates;
 
     /**
-     * @var Collection<int, \App\Entity\Filter>
+     * @var Collection<int, Filter>
      *
      * @ORM\OneToMany(targetEntity="Filter", mappedBy="constructionSite")
      */
@@ -193,7 +193,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     }
 
     /**
-     * @return Map[]|Collection
+     * @return Collection<int, Map>
      */
     public function getMaps(): Collection
     {
@@ -201,7 +201,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     }
 
     /**
-     * @return Craftsman[]|Collection
+     * @return Collection<int, Craftsman>
      */
     public function getCraftsmen(): Collection
     {
@@ -229,7 +229,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     }
 
     /**
-     * @return EmailTemplate[]|Collection
+     * @return Collection<int, EmailTemplate>
      */
     public function getEmailTemplates(): Collection
     {
@@ -237,7 +237,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     }
 
     /**
-     * @return Filter[]|Collection
+     * @return Collection<int, Filter>
      */
     public function getFilters(): Collection
     {
@@ -245,7 +245,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     }
 
     /**
-     * @return Issue[]|Collection
+     * @return Collection<int, Issue>
      */
     public function getIssues(): Collection
     {
@@ -268,7 +268,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     /**
      * @Groups({"construction-site-read"})
      */
-    public function getLastChangedAt(): \DateTime
+    public function getLastChangedAt(): \DateTimeInterface
     {
         return $this->lastChangedAt;
     }
@@ -276,7 +276,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     /**
      * @Groups({"construction-site-read"})
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }

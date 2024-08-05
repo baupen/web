@@ -133,17 +133,17 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
      *
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="craftsmen")
      */
-    private ConstructionSite $constructionSite;
+    private ?ConstructionSite $constructionSite = null;
 
     /**
-     * @var Collection<int, \App\Entity\Issue>
+     * @var Collection<int, Issue>
      *
      * @ORM\OneToMany(targetEntity="Issue", mappedBy="craftsman")
      */
     private Collection $issues;
 
     /**
-     * @var Collection<int, \App\Entity\Issue>
+     * @var Collection<int, Issue>
      *
      * @ORM\OneToMany(targetEntity="Issue", mappedBy="resolvedBy")
      */
@@ -240,7 +240,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     }
 
     /**
-     * @return Issue[]|Collection
+     * @return Collection<int, Issue>
      */
     public function getIssues(): Collection
     {
@@ -248,7 +248,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     }
 
     /**
-     * @return Issue[]|Collection
+     * @return Collection<int, Issue>
      */
     public function getResolvedIssues(): Collection
     {
@@ -301,7 +301,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     /**
      * @Groups({"craftsman-read"})
      */
-    public function getLastChangedAt(): \DateTime
+    public function getLastChangedAt(): \DateTimeInterface
     {
         return $this->lastChangedAt;
     }
