@@ -25,20 +25,11 @@ class PathService implements PathServiceInterface
      */
     private $assetsRoot;
 
-    /**
-     * @var string
-     */
-    private $folderRoot;
+    private string $folderRoot;
 
-    /**
-     * @var string
-     */
-    private $transientFolderRoot;
+    private string $transientFolderRoot;
 
-    /**
-     * @var string
-     */
-    private $constructionSiteFolderRoot;
+    private string $constructionSiteFolderRoot;
 
     /**
      * PathService constructor.

@@ -55,7 +55,7 @@ class PublicController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
-        if (!$this->tryGetConstructionManager($tokenStorage->getToken())) {
+        if (!$this->tryGetConstructionManager($tokenStorage->getToken()) instanceof \App\Entity\ConstructionManager) {
             $craftsman->setLastVisitOnline(new \DateTime());
             $this->fastSave($craftsman);
         }
@@ -75,7 +75,7 @@ class PublicController extends BaseDoctrineController
             throw new NotFoundHttpException();
         }
 
-        if (!$this->tryGetConstructionManager($tokenStorage->getToken())) {
+        if (!$this->tryGetConstructionManager($tokenStorage->getToken()) instanceof \App\Entity\ConstructionManager) {
             $filter->setLastUsedAt();
             $this->fastSave($filter);
         }

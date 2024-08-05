@@ -17,10 +17,7 @@ use Symfony\Component\Console\Command\Command;
 
 abstract class DatabaseCommand extends Command
 {
-    /**
-     * @var ManagerRegistry
-     */
-    private $registry;
+    private ManagerRegistry $registry;
 
     protected const BACKUP_FILE_PREFIX = 'mysql_';
 

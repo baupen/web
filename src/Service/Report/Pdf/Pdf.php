@@ -16,15 +16,9 @@ use TCPDF;
 
 class Pdf extends \TCPDF
 {
-    /**
-     * @var PdfDefinition
-     */
-    private $pdfDefinition;
+    private PdfDefinition $pdfDefinition;
 
-    /**
-     * @var PdfSizes
-     */
-    private $pdfSizes;
+    private PdfSizes $pdfSizes;
 
     public function __construct(PdfDefinition $pdfDefinition, PdfSizes $pdfSizes)
     {

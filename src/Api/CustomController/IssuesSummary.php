@@ -17,10 +17,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class IssuesSummary
 {
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
+    private SerializerInterface $serializer;
 
     public function __construct(SerializerInterface $serializer)
     {

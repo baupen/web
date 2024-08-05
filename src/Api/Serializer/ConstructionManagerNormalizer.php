@@ -25,7 +25,7 @@ class ConstructionManagerNormalizer implements ContextAwareNormalizerInterface, 
 
     private const ALREADY_CALLED = 'CONSTRUCTION_MANAGER_NORMALIZER_ALREADY_CALLED';
 
-    private $tokenStorage;
+    private TokenStorageInterface $tokenStorage;
 
     public function __construct(TokenStorageInterface $tokenStorage)
     {

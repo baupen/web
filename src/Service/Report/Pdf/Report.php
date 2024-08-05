@@ -20,15 +20,9 @@ class Report
      */
     private $pdfDocument;
 
-    /**
-     * @var PdfSizes
-     */
-    private $pdfSizes;
+    private PdfSizes $pdfSizes;
 
-    /**
-     * @var PdfDesign
-     */
-    private $pdfDesign;
+    private PdfDesign $pdfDesign;
 
     public function __construct(PdfDefinition $pdfDefinition, string $reportAssetDir)
     {
@@ -91,7 +85,7 @@ class Report
         ++$currentColumn;
 
         // filter used for generation
-        if (\count($filterEntries) > 0) {
+        if ([] !== $filterEntries) {
             $this->pdfDocument->SetLeftMargin($this->pdfSizes->getColumnStart($currentColumn, $columnCount));
             $this->pdfDocument->SetY($startY);
 
@@ -225,7 +219,7 @@ class Report
 
             // print
             $maxTries = 3;
-            while (!$this->printRow($row, true, $this->pdfDesign->getLightBackground(), $firstColumnSize) && $maxTries > 0) {
+            while (!$this->printRow($row, true, $firstColumnSize) && $maxTries > 0) {
                 // simply retry to print row if it did not work
                 --$maxTries;
             }
@@ -239,7 +233,7 @@ class Report
         $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
         foreach ($tableContent as $row) {
             $maxTries = 3;
-            while (!$this->printRow($row, 1 === $currentRow % 2, $this->pdfDesign->getLighterBackground(), $firstColumnSize) && $maxTries > 0) {
+            while (!$this->printRow($row, 1 === $currentRow % 2, $firstColumnSize) && $maxTries > 0) {
                 // simply retry to print row if it did not work
                 --$maxTries;
             }
@@ -411,7 +405,8 @@ class Report
         $this->pdfDocument->startTransaction();
 
         $currentXStart = $this->pdfSizes->getContentXStart();
-        for ($i = 0; $i < count($columnWidths); ++$i) {
+        $counter = count($columnWidths);
+        for ($i = 0; $i < $counter; ++$i) {
             $currentColumn = $row[$i];
             $currentWidth = $columnWidths[$i];
 
@@ -467,7 +462,7 @@ class Report
         $this->pdfDocument->commitTransaction();
     }
 
-    private function printRow($row, $fill, $fillBackground, $firstColumnSize = null)
+    private function printRow($row, $fill, $firstColumnSize = null)
     {
         // alternative background colors
         $columnCount = \count($row);

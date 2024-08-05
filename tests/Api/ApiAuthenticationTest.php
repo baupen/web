@@ -85,7 +85,7 @@ class ApiAuthenticationTest extends ApiTestCase
                 $this->assertApiTokenRequestForbidden($client, $constructionManagerToken, 'GET', $otherConstructionSiteId);
             }
 
-            if (in_array($url, ['filters'])) {
+            if ('filters' === $url) {
                 $this->assertApiTokenRequestForbidden($client, $craftsmanToken, 'GET', $sameConstructionSiteId);
             } else {
                 $this->assertApiTokenRequestSuccessful($client, $craftsmanToken, 'GET', $sameConstructionSiteId);

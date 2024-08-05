@@ -38,30 +38,15 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public const LOGIN_ROUTE = 'login';
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
+    private UrlGeneratorInterface $urlGenerator;
 
-    /**
-     * @var CsrfTokenManagerInterface
-     */
-    private $csrfTokenManager;
+    private CsrfTokenManagerInterface $csrfTokenManager;
 
-    /**
-     * @var UserPasswordEncoderInterface
-     */
-    private $passwordEncoder;
+    private UserPasswordEncoderInterface $passwordEncoder;
 
-    /**
-     * @var EmailServiceInterface
-     */
-    private $emailService;
+    private EmailServiceInterface $emailService;
 
     public function __construct(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder, EmailServiceInterface $emailService)
     {

@@ -17,7 +17,7 @@ use ApiPlatform\Core\OpenApi\OpenApi;
 
 class OpenApiFactory implements OpenApiFactoryInterface
 {
-    private $decorated;
+    private OpenApiFactoryInterface $decorated;
 
     public function __construct(OpenApiFactoryInterface $decorated)
     {

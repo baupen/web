@@ -20,10 +20,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CacheClearCommand extends Command
 {
-    /**
-     * @var PathServiceInterface
-     */
-    private $pathService;
+    private PathServiceInterface $pathService;
 
     public const RETURN_CODE_NO_FORCE = 1;
 

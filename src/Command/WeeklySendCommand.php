@@ -24,20 +24,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class WeeklySendCommand extends Command
 {
-    /**
-     * @var ManagerRegistry
-     */
-    private $registry;
+    private ManagerRegistry $registry;
 
-    /**
-     * @var EmailServiceInterface
-     */
-    private $emailService;
+    private EmailServiceInterface $emailService;
 
-    /**
-     * @var ReportServiceInterface
-     */
-    private $reportService;
+    private ReportServiceInterface $reportService;
 
     /**
      * ImportLdapUsersCommand constructor.

@@ -21,8 +21,8 @@ use Doctrine\Persistence\ManagerRegistry;
 
 abstract class NoPaginationDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
-    private $managerRegistry;
-    private $collectionExtensions;
+    private ManagerRegistry $managerRegistry;
+    private iterable $collectionExtensions;
 
     /**
      * @param ContextAwareQueryCollectionExtensionInterface[] $collectionExtensions

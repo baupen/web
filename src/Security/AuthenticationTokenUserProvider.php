@@ -28,10 +28,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
  */
 class AuthenticationTokenUserProvider implements UserProviderInterface, PasswordUpgraderInterface
 {
-    /**
-     * @var ManagerRegistry
-     */
-    private $manager;
+    private ManagerRegistry $manager;
 
     /**
      * AuthenticationTokenUserProvider constructor.

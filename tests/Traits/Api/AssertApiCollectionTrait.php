@@ -71,7 +71,7 @@ trait AssertApiCollectionTrait
         $collection = json_decode($collectionResponse->getContent(), true);
         foreach ($collection['hydra:member'] as $entry) {
             $compareEntry = array_diff_key($entry, array_flip($excludedFields)); // remove excluded keys
-            if ($compareEntry == $item) {
+            if ($compareEntry === $item) {
                 $this->assertTrue(true);
 
                 return;

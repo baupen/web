@@ -21,9 +21,9 @@ class FilterSerializer implements NormalizerInterface
 {
     use TokenTrait;
 
-    private $decorated;
-    private $urlGenerator;
-    private $tokenStorage;
+    private NormalizerInterface $decorated;
+    private UrlGeneratorInterface $urlGenerator;
+    private TokenStorageInterface $tokenStorage;
 
     public function __construct(NormalizerInterface $decoratedNormalizer, UrlGeneratorInterface $urlGenerator, TokenStorageInterface $tokenStorage)
     {

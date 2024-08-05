@@ -18,20 +18,14 @@ class ConstructionSiteReport
     use IssueCountTrait;
     use IssueCountDeltaTrait;
 
-    /**
-     * @var ConstructionSite
-     */
-    private $constructionSite;
+    private ConstructionSite $constructionSite;
 
-    /**
-     * @var \DateTime
-     */
-    private $comparisonTimestamp;
+    private \DateTime $comparisonTimestamp;
 
     /**
      * @var CraftsmanDeltaReport[]
      */
-    private $craftsmanDeltaReports;
+    private array $craftsmanDeltaReports;
 
     /**
      * ConstructionSiteReport constructor.

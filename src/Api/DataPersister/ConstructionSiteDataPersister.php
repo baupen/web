@@ -17,8 +17,8 @@ use App\Service\Interfaces\StorageServiceInterface;
 
 class ConstructionSiteDataPersister implements ContextAwareDataPersisterInterface
 {
-    private $decorated;
-    private $storageService;
+    private ContextAwareDataPersisterInterface $decorated;
+    private StorageServiceInterface $storageService;
 
     public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, StorageServiceInterface $storageService)
     {

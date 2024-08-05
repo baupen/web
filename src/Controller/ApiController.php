@@ -59,18 +59,18 @@ class ApiController extends BaseDoctrineController
         $token = $tokenStorage->getToken();
 
         $constructionManager = $this->tryGetConstructionManager($token);
-        if (null !== $constructionManager) {
+        if ($constructionManager instanceof \App\Entity\ConstructionManager) {
             $data['constructionManagerIri'] = $iriConverter->getIriFromItem($constructionManager);
         }
 
         $craftsman = $this->tryGetCraftsman($token);
-        if (null !== $craftsman) {
+        if ($craftsman instanceof \App\Entity\Craftsman) {
             $data['craftsmanIri'] = $iriConverter->getIriFromItem($craftsman);
             $data['constructionSiteIri'] = $iriConverter->getIriFromItem($craftsman->getConstructionSite());
         }
 
         $filter = $this->tryGetFilter($token);
-        if (null !== $filter) {
+        if ($filter instanceof \App\Entity\Filter) {
             $data['filterIri'] = $iriConverter->getIriFromItem($filter);
             $data['constructionSiteIri'] = $iriConverter->getIriFromItem($filter->getConstructionSite());
         }
@@ -154,7 +154,7 @@ class ApiController extends BaseDoctrineController
         $file = $this->getPdf($request->files);
 
         $mapFile = $storageService->uploadMapFile($file, $map);
-        if (null === $mapFile) {
+        if (!$mapFile instanceof MapFile) {
             throw new BadRequestException('The map file could not be stored');
         }
 
@@ -210,7 +210,7 @@ class ApiController extends BaseDoctrineController
         $image = $this->getImage($request->files);
 
         $constructionSiteImage = $storageService->uploadConstructionSiteImage($image, $constructionSite);
-        if (null === $constructionSiteImage) {
+        if (!$constructionSiteImage instanceof ConstructionSiteImage) {
             throw new BadRequestException('The construction site image could not be stored');
         }
 
@@ -262,7 +262,7 @@ class ApiController extends BaseDoctrineController
     public function getIssueRenderAction(Request $request, Issue $issue, ImageServiceInterface $imageService)
     {
         $mapFile = $issue->getMap()->getFile();
-        if (null === $mapFile) {
+        if (!$mapFile instanceof MapFile) {
             throw new NotFoundHttpException();
         }
 
@@ -284,7 +284,7 @@ class ApiController extends BaseDoctrineController
         $image = $this->getImage($request->files);
 
         $issueImage = $storageService->uploadIssueImage($image, $issue);
-        if (null === $issueImage) {
+        if (!$issueImage instanceof IssueImage) {
             throw new BadRequestException('The issue site image could not be stored');
         }
 

@@ -23,15 +23,7 @@ class DatabaseRestoreCommand extends DatabaseCommand
 {
     private const ERROR_NO_BACKUP = 1;
 
-    /**
-     * @var ManagerRegistry
-     */
-    private $registry;
-
-    /**
-     * @var PathServiceInterface
-     */
-    private $pathService;
+    private PathServiceInterface $pathService;
 
     /**
      * MigrateSqliteCommand constructor.
@@ -39,8 +31,6 @@ class DatabaseRestoreCommand extends DatabaseCommand
     public function __construct(ManagerRegistry $registry, PathServiceInterface $pathService)
     {
         parent::__construct($registry);
-
-        $this->registry = $registry;
         $this->pathService = $pathService;
     }
 

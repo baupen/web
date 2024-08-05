@@ -30,25 +30,13 @@ class ImageService implements ImageServiceInterface
      */
     private const PDF_RENDER_NAME = 'render.jpg';
 
-    /**
-     * @var PathServiceInterface
-     */
-    private $pathService;
+    private PathServiceInterface $pathService;
 
-    /**
-     * @var GdService
-     */
-    private $gdService;
+    private GdService $gdService;
 
-    /**
-     * @var GsService
-     */
-    private $gsService;
+    private GsService $gsService;
 
-    /**
-     * @var ContentDrawingService
-     */
-    private $contentDrawingService;
+    private ContentDrawingService $contentDrawingService;
 
     /**
      * ImageService constructor.

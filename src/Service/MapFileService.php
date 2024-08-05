@@ -19,15 +19,9 @@ use App\Service\Interfaces\PathServiceInterface;
 
 class MapFileService implements MapFileServiceInterface
 {
-    /**
-     * @var PathServiceInterface
-     */
-    private $pathService;
+    private PathServiceInterface $pathService;
 
-    /**
-     * @var GsService
-     */
-    private $gsService;
+    private GsService $gsService;
 
     /**
      * MapFileService constructor.

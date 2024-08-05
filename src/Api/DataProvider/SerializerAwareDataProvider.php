@@ -24,8 +24,8 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class SerializerAwareDataProvider
 {
-    private $managerRegistry;
-    private $collectionExtensions;
+    private ManagerRegistry $managerRegistry;
+    private iterable $collectionExtensions;
 
     /**
      * @param QueryCollectionExtensionInterface[] $collectionExtensions

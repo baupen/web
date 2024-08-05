@@ -301,7 +301,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     public function getLastAction()
     {
         $lastAction = $this->getLastVisitOnline();
-        if (null === $lastAction || $lastAction < $this->getLastEmailReceived()) {
+        if (!$lastAction instanceof \DateTime || $lastAction < $this->getLastEmailReceived()) {
             return $this->getLastEmailReceived();
         }
 

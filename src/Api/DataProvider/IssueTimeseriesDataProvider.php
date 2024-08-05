@@ -20,20 +20,11 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class IssueTimeseriesDataProvider extends NoPaginationDataProvider
 {
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
-
-    /**
-     * @var AnalysisServiceInterface
-     */
-    private $analysisService;
+    private AnalysisServiceInterface $analysisService;
 
     public function __construct(SerializerInterface $serializer, ManagerRegistry $managerRegistry, AnalysisServiceInterface $analysisService, iterable $collectionExtensions = [])
     {
         parent::__construct($managerRegistry, $collectionExtensions);
-        $this->serializer = $serializer;
         $this->analysisService = $analysisService;
     }
 

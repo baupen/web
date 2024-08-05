@@ -21,40 +21,24 @@ use App\Helper\FileHelper;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\SampleServiceInterface;
 use App\Service\Interfaces\StorageServiceInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class SampleService implements SampleServiceInterface
 {
-    /**
-     * @var PathServiceInterface
-     */
-    private $pathService;
+    private PathServiceInterface $pathService;
 
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
+    private SerializerInterface $serializer;
 
-    /**
-     * @var StorageServiceInterface
-     */
-    private $storageService;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private StorageServiceInterface $storageService;
 
     /**
      * SampleService constructor.
      */
-    public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer, StorageServiceInterface $storageService, LoggerInterface $logger)
+    public function __construct(PathServiceInterface $pathService, SerializerInterface $serializer, StorageServiceInterface $storageService)
     {
         $this->pathService = $pathService;
         $this->serializer = $serializer;
         $this->storageService = $storageService;
-        $this->logger = $logger;
     }
 
     public function createSampleConstructionSite(string $sampleName, ConstructionManager $constructionManager): ConstructionSite

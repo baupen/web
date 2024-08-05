@@ -12,7 +12,6 @@
 namespace App\Api\CustomController;
 
 use App\Controller\Traits\FileResponseTrait;
-use App\Entity\Issue;
 use App\Security\TokenTrait;
 use App\Service\Interfaces\FilterServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
@@ -28,30 +27,15 @@ class IssuesReport
     use TokenTrait;
     use FileResponseTrait;
 
-    /**
-     * @var ReportServiceInterface
-     */
-    private $reportService;
+    private ReportServiceInterface $reportService;
 
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
+    private TokenStorageInterface $tokenStorage;
 
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    private RouterInterface $router;
 
-    /**
-     * @var FilterServiceInterface
-     */
-    private $filterService;
+    private FilterServiceInterface $filterService;
 
     /**
      * IssueReportDataProvider constructor.
@@ -67,7 +51,6 @@ class IssuesReport
 
     public function __invoke($data)
     {
-        /** @var Issue[] $data */
         $currentRequest = $this->requestStack->getCurrentRequest();
         /** @var array|null $reportConfig */
         $reportConfig = $currentRequest->query->get('report');
@@ -86,9 +69,9 @@ class IssuesReport
 
     private function getAuthor(?TokenInterface $token): ?string
     {
-        if ($user = $this->tryGetConstructionManager($token)) {
+        if (($user = $this->tryGetConstructionManager($token)) instanceof \App\Entity\ConstructionManager) {
             return $user->getName();
-        } elseif ($craftsman = $this->tryGetCraftsman($token)) {
+        } elseif (($craftsman = $this->tryGetCraftsman($token)) !== null) {
             return $craftsman->getContactName();
         } else {
             return null;

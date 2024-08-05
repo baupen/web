@@ -21,8 +21,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EmailBodyGenerator
 {
-    private TranslatorInterface $translator;
-
     private UrlGeneratorInterface $urlGenerator;
 
     /**
@@ -30,7 +28,6 @@ class EmailBodyGenerator
      */
     public function __construct(TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator)
     {
-        $this->translator = $translator;
         $this->urlGenerator = $urlGenerator;
     }
 
@@ -50,7 +47,7 @@ class EmailBodyGenerator
     public function fromCraftsmanReport(CraftsmanReport $craftsmanReport)
     {
         $normalizedCraftsmanReport = [];
-        if ($craftsmanReport->getComparisonTimestamp()) {
+        if ($craftsmanReport->getComparisonTimestamp() instanceof \DateTime) {
             $normalizedCraftsmanReport['comparisonTimeStamp'] = $craftsmanReport->getComparisonTimestamp()->format(DateTimeFormatter::DATE_TIME_FORMAT);
         }
 

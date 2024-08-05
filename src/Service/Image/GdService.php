@@ -21,10 +21,7 @@ use Psr\Log\LoggerInterface;
  */
 class GdService
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
     private const FONT = __DIR__.'/../../../assets/report/fonts/OpenSans-Bold.ttf';
 

@@ -24,10 +24,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DatabaseBackupCommand extends DatabaseCommand
 {
-    /**
-     * @var PathServiceInterface
-     */
-    private $pathService;
+    private PathServiceInterface $pathService;
 
     /**
      * MigrateSqliteCommand constructor.

@@ -25,31 +25,15 @@ class MigrateSqliteCommand extends DatabaseCommand
     private const MODE_UPDATE = 'update';
     private const MODE_INSERT = 'insert';
 
-    /**
-     * @var ManagerRegistry
-     */
-    private $registry;
-
-    /**
-     * @var PathServiceInterface
-     */
-    private $pathService;
-
-    /**
-     * @var string
-     */
-    private $authorizationMethod;
+    private PathServiceInterface $pathService;
 
     /**
      * MigrateSqliteCommand constructor.
      */
-    public function __construct(ManagerRegistry $registry, PathServiceInterface $pathService, string $authorizationMethod)
+    public function __construct(ManagerRegistry $registry, PathServiceInterface $pathService)
     {
         parent::__construct($registry);
-
-        $this->registry = $registry;
         $this->pathService = $pathService;
-        $this->authorizationMethod = $authorizationMethod;
     }
 
     /**

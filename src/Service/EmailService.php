@@ -32,52 +32,28 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EmailService implements EmailServiceInterface
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private TranslatorInterface $translator;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
+    private UrlGeneratorInterface $urlGenerator;
 
     /**
      * @var ObjectManager
      */
     private $manager;
 
-    /**
-     * @var MailerInterface
-     */
-    private $mailer;
+    private MailerInterface $mailer;
 
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
+    private SerializerInterface $serializer;
 
     private EmailBodyGenerator $emailBodyGenerator;
 
-    /**
-     * @var string
-     */
-    private $mailerFromEmail;
+    private string $mailerFromEmail;
 
-    /**
-     * @var string
-     */
-    private $baseUri;
+    private string $baseUri;
 
     /**
      * EmailService constructor.
@@ -165,7 +141,7 @@ class EmailService implements EmailServiceInterface
         $entity = Email::create(Email::TYPE_CRAFTSMAN_ISSUE_REMINDER, $constructionManager, $link, $json, true);
 
         $message = $this->createTemplatedEmailToCraftsman($constructionManager, $craftsman, $constructionManagerInBCC);
-        if (!$message) {
+        if (!$message instanceof TemplatedEmail) {
             return false;
         }
 

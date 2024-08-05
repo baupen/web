@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class LocaleSubscriber implements EventSubscriberInterface
 {
-    private $defaultLocale;
+    private string $defaultLocale;
     private const LOCALE_KEY = '_locale';
 
     public function __construct(string $defaultLocale = 'en')

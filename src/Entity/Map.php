@@ -177,7 +177,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      */
     public function getContext()
     {
-        if (null !== $this->getParent()) {
+        if ($this->getParent() instanceof Map) {
             $parentContext = $this->getParent()->getContext();
             if ('' !== $parentContext) {
                 $parentContext .= ' > ';

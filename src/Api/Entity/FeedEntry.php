@@ -22,32 +22,24 @@ class FeedEntry
     public const TYPE_CRAFTSMAN_VISITED_WEBPAGE = 10;
 
     /**
-     * @var string
-     *
      * @Groups({"issue-read","craftsman-read"})
      */
-    private $date;
+    private string $date;
 
     /**
-     * @var string
-     *
      * @Groups({"issue-read","craftsman-read"})
      */
-    private $subject;
+    private string $subject;
 
     /**
-     * @var int
-     *
      * @Groups({"issue-read","craftsman-read"})
      */
-    private $type;
+    private int $type;
 
     /**
-     * @var int
-     *
      * @Groups({"issue-read","craftsman-read"})
      */
-    private $count;
+    private int $count;
 
     /**
      * FeedEntry constructor.

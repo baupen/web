@@ -19,10 +19,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class IssueSummaryDataProvider extends NoPaginationDataProvider
 {
-    /**
-     * @var AnalysisServiceInterface
-     */
-    private $analysisService;
+    private AnalysisServiceInterface $analysisService;
 
     public function __construct(ManagerRegistry $managerRegistry, AnalysisServiceInterface $analysisService, iterable $collectionExtensions = [])
     {

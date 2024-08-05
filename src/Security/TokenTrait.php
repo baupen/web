@@ -20,7 +20,7 @@ trait TokenTrait
 {
     protected function tryGetConstructionManager(?TokenInterface $token): ?ConstructionManager
     {
-        if (null === $token) {
+        if (!$token instanceof TokenInterface) {
             return null;
         }
 
@@ -38,7 +38,7 @@ trait TokenTrait
 
     protected function tryGetCraftsman(?TokenInterface $token): ?Craftsman
     {
-        if (null === $token) {
+        if (!$token instanceof TokenInterface) {
             return null;
         }
 
@@ -52,7 +52,7 @@ trait TokenTrait
 
     protected function tryGetFilter(?TokenInterface $token): ?Filter
     {
-        if (null === $token) {
+        if (!$token instanceof TokenInterface) {
             return null;
         }
 

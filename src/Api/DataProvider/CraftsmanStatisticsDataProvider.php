@@ -21,25 +21,11 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
-    /**
-     * @var ContextAwareCollectionDataProviderInterface
-     */
-    private $decoratedCollectionDataProvider;
+    private ContextAwareCollectionDataProviderInterface $decoratedCollectionDataProvider;
 
-    /**
-     * @var IriConverterInterface
-     */
-    private $iriConverter;
+    private IriConverterInterface $iriConverter;
 
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
-
-    /**
-     * @var AnalysisServiceInterface
-     */
-    private $analysisService;
+    private AnalysisServiceInterface $analysisService;
 
     private const ALREADY_CALLED = 'CRAFTSMAN_STATISTICS_DATA_PROVIDER_ALREADY_CALLED';
 
@@ -50,7 +36,6 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
     {
         $this->decoratedCollectionDataProvider = $decoratedCollectionDataProvider;
         $this->iriConverter = $iriConverter;
-        $this->serializer = $serializer;
         $this->analysisService = $analysisService;
     }
 

@@ -92,7 +92,7 @@ abstract class ConstructionSiteRelatedEntityVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $constructionManager = $this->tryGetConstructionManager($token);
-        if (null !== $constructionManager) {
+        if ($constructionManager instanceof ConstructionManager) {
             $isConstructionManagerRelatedWithSubject = $this->isConstructionManagerRelated($constructionManager, $subject);
             if ($isConstructionManagerRelatedWithSubject && in_array($attribute, $this->getAssociatedConstructionManagerAttributes())) {
                 return true;
@@ -104,13 +104,13 @@ abstract class ConstructionSiteRelatedEntityVoter extends Voter
         }
 
         $craftsman = $this->tryGetCraftsman($token);
-        if (null !== $craftsman) {
+        if ($craftsman instanceof Craftsman) {
             return in_array($attribute, $this->getRelatedCraftsmanAccessibleAttributes())
                 && $this->isCraftsmanRelated($craftsman, $subject);
         }
 
         $filter = $this->tryGetFilter($token);
-        if (null !== $filter) {
+        if ($filter instanceof Filter) {
             return in_array($attribute, $this->getRelatedFilterAccessibleAttributes())
                 && $this->isFilterRelated($filter, $subject)
                 && $this->isIncludedInFilter($filter, $attribute, $subject);

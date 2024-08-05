@@ -637,7 +637,8 @@ class IssueTest extends ApiTestCase
 
         foreach ($feedEntries['hydra:member'] as $feedEntry) {
             $foundCombinationIndex = null;
-            for ($i = 0; $i < count($expectedCombinations); ++$i) {
+            $counter = count($expectedCombinations);
+            for ($i = 0; $i < $counter; ++$i) {
                 $expectedCombination = $expectedCombinations[$i];
                 if ($expectedCombination[0] === $feedEntry['date']
                     && $expectedCombination[1] === $feedEntry['subject']

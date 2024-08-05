@@ -45,7 +45,7 @@ abstract class BaseEnum
      *
      * @return string
      */
-    private static function camelCaseToTranslation($camelCase)
+    private function camelCaseToTranslation($camelCase)
     {
         return mb_strtolower(preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $camelCase));
     }

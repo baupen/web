@@ -23,20 +23,11 @@ class UserService implements UserServiceInterface
     public const AUTHORIZATION_METHOD_DEFAULT_DISALLOW_SELF_ASSOCIATION = 'default_disallow_self_association';
     public const AUTHORIZATION_METHOD_WHITELIST = 'whitelist';
 
-    /**
-     * @var PathServiceInterface
-     */
-    private $pathService;
+    private PathServiceInterface $pathService;
 
-    /**
-     * @var EmailServiceInterface
-     */
-    private $emailService;
+    private EmailServiceInterface $emailService;
 
-    /**
-     * @var ManagerRegistry
-     */
-    private $registry;
+    private ManagerRegistry $registry;
 
     /**
      * @var string[][]|null
@@ -53,10 +44,7 @@ class UserService implements UserServiceInterface
      */
     private $domainWhitelistCache;
 
-    /**
-     * @var string
-     */
-    private $authorizationMethod;
+    private string $authorizationMethod;
 
     /**
      * AuthorizationService constructor.
@@ -180,7 +168,7 @@ class UserService implements UserServiceInterface
                 $lines = explode("\n", $whitelist);
                 foreach ($lines as $line) {
                     $cleanedLine = trim($line);
-                    if (0 === strlen($cleanedLine)) {
+                    if ('' === $cleanedLine) {
                         continue;
                     }
 
@@ -202,13 +190,8 @@ class UserService implements UserServiceInterface
         }
 
         $domainPart = substr($email, strrpos($email, '@') + 1);
-        foreach ($this->domainWhitelistCache as $domain) {
-            if ($domainPart === $domain) {
-                return true;
-            }
-        }
 
-        return false;
+        return in_array($domainPart, $this->domainWhitelistCache, true);
     }
 
     /**

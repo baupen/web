@@ -19,15 +19,13 @@ use Twig\TwigFunction;
 
 class EncoreEmailTwigExtension extends AbstractExtension implements ServiceSubscriberInterface
 {
-    private $container;
-    private $publicDir;
-    private $environment;
+    private ContainerInterface $container;
+    private string $publicDir;
 
-    public function __construct(ContainerInterface $container, string $publicDir, string $environment)
+    public function __construct(ContainerInterface $container, string $publicDir)
     {
         $this->container = $container;
         $this->publicDir = $publicDir;
-        $this->environment = $environment;
     }
 
     public function getFunctions(): array
