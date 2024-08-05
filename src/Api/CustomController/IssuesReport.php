@@ -75,7 +75,7 @@ class IssuesReport
     {
         if (($user = $this->tryGetConstructionManager($token)) instanceof \App\Entity\ConstructionManager) {
             return $user->getName();
-        } elseif (($craftsman = $this->tryGetCraftsman($token)) !== null) {
+        } elseif (($craftsman = $this->tryGetCraftsman($token)) instanceof \App\Entity\Craftsman) {
             return $craftsman->getContactName();
         } else {
             return null;
