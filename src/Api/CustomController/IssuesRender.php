@@ -13,6 +13,7 @@ namespace App\Api\CustomController;
 
 use App\Controller\Traits\FileResponseTrait;
 use App\Controller\Traits\ImageRequestTrait;
+use App\Entity\Issue;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -40,7 +41,10 @@ class IssuesRender
         $this->pathService = $pathService;
     }
 
-    public function __invoke($data)
+    /**
+     * @param Issue[] $data
+     */
+    public function __invoke(array $data): \Symfony\Component\HttpFoundation\BinaryFileResponse|Response
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
         $size = $currentRequest->attributes->get('size');

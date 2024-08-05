@@ -12,6 +12,7 @@
 namespace App\Api\CustomController;
 
 use App\Controller\Traits\FileResponseTrait;
+use App\Entity\Issue;
 use App\Security\TokenTrait;
 use App\Service\Interfaces\FilterServiceInterface;
 use App\Service\Interfaces\ReportServiceInterface;
@@ -49,7 +50,10 @@ class IssuesReport
         $this->filterService = $filterService;
     }
 
-    public function __invoke($data)
+    /**
+     * @param Issue[] $data
+     */
+    public function __invoke(array $data): Response
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
         /** @var array|null $reportConfig */
