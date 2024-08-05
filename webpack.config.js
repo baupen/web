@@ -127,3 +127,4 @@ if (Encore.isProduction()) {
 }
 
 module.exports = webpackConfig
+
