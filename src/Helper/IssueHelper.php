@@ -22,7 +22,7 @@ class IssueHelper
      * @param Map[]     $orderedMaps
      * @param Issue[][] $issuesPerMap
      */
-    public static function issuesToOrderedMaps(array $issues, array &$orderedMaps, array &$issuesPerMap): void
+    public static function issuesToOrderedMaps(array $issues, ?array &$orderedMaps, ?array &$issuesPerMap): void
     {
         $unorderedElements = [];
         $issuesPerMap = [];
@@ -45,7 +45,7 @@ class IssueHelper
      * @param Craftsman[] $orderedCraftsman
      * @param Issue[][]   $issuesPerCraftsman
      */
-    public static function issuesToOrderedCraftsman(array $issues, array &$orderedCraftsman, array &$issuesPerCraftsman): void
+    public static function issuesToOrderedCraftsman(array $issues, ?array &$orderedCraftsman, ?array &$issuesPerCraftsman): void
     {
         $unorderedElements = [];
         $issuesPerCraftsman = [];

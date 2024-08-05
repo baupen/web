@@ -105,7 +105,7 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
      *
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="emailTemplates")
      */
-    private ConstructionSite $constructionSite;
+    private ?ConstructionSite $constructionSite = null;
 
     public function getName(): string
     {

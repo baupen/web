@@ -192,7 +192,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      *
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="filters")
      */
-    private ConstructionSite $constructionSite;
+    private ?ConstructionSite $constructionSite = null;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
