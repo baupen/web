@@ -78,7 +78,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      *
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="maps")
      */
-    private ConstructionSite $constructionSite;
+    private ?ConstructionSite $constructionSite = null;
 
     /**
      * @ApiProperty(readableLink=false, writableLink=false)
@@ -90,7 +90,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private ?self $parent = null;
 
     /**
-     * @var Collection<int, \App\Entity\Map>
+     * @var Collection<int, Map>
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Map", mappedBy="parent")
      */
@@ -102,7 +102,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private ?MapFile $file = null;
 
     /**
-     * @var Collection<int, \App\Entity\Issue>
+     * @var Collection<int, Issue>
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="map")
      */
@@ -150,7 +150,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     }
 
     /**
-     * @return Map[]|Collection
+     * @return Collection<int, Map>
      */
     public function getChildren(): Collection
     {
@@ -158,7 +158,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     }
 
     /**
-     * @return Issue[]|Collection
+     * @return Collection<int, Issue>
      */
     public function getIssues(): Collection
     {
@@ -210,7 +210,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     /**
      * @Groups({"map-read"})
      */
-    public function getLastChangedAt(): \DateTime
+    public function getLastChangedAt(): \DateTimeInterface
     {
         return $this->lastChangedAt;
     }

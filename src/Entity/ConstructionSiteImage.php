@@ -31,7 +31,7 @@ class ConstructionSiteImage extends BaseEntity
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite")
      */
-    private ConstructionSite $createdFor;
+    private ?ConstructionSite $createdFor = null;
 
     public function getCreatedFor(): ConstructionSite
     {

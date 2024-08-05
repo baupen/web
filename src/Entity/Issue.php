@@ -195,7 +195,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="issues")
      */
-    private Map $map;
+    private ?Map $map = null;
 
     /**
      * @Assert\NotBlank()
@@ -204,7 +204,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="issues")
      */
-    private ConstructionSite $constructionSite;
+    private ?ConstructionSite $constructionSite = null;
 
     /**
      * @ORM\PrePersist()
@@ -322,7 +322,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     /**
      * @Groups({"issue-read"})
      */
-    public function getLastChangedAt(): \DateTime
+    public function getLastChangedAt(): \DateTimeInterface
     {
         return $this->lastChangedAt;
     }

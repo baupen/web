@@ -88,7 +88,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     private ?string $phone = null;
 
     /**
-     * @var Collection<int, \App\Entity\ConstructionSite>
+     * @var Collection<int, ConstructionSite>
      *
      * @ORM\ManyToMany(targetEntity="ConstructionSite", mappedBy="constructionManagers")
      */
@@ -162,7 +162,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     }
 
     /**
-     * @return ConstructionSite[]|Collection
+     * @return Collection<int, ConstructionSite>
      */
     public function getConstructionSites(): Collection
     {
@@ -190,7 +190,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
      *
      * @return string[] The user roles
      */
-    public function getRoles()
+    public function getRoles(): array
     {
         if ($this->isAdminAccount || str_ends_with($this->email, '@baupen.ch')) {
             return [self::ROLE_ADMIN];
@@ -206,7 +206,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @Groups({"construction-manager-read"})
      */
-    public function getLastChangedAt(): \DateTime
+    public function getLastChangedAt(): \DateTimeInterface
     {
         return $this->lastChangedAt;
     }
