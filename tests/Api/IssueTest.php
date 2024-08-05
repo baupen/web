@@ -237,7 +237,6 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=8', $issueId);
     }
 
-    #[\PHPUnit\Framework\Attributes\DoesNotPerformAssertions]
     public function testLastChangedOrder(): void
     {
         $client = $this->createClient();
@@ -252,7 +251,6 @@ class IssueTest extends ApiTestCase
         $this->testOrderAppliedFor('lastChangedAt', $client, $constructionSite);
     }
 
-    #[\PHPUnit\Framework\Attributes\DoesNotPerformAssertions]
     public function testDeadlineNumberOrder(): void
     {
         $client = $this->createClient();
