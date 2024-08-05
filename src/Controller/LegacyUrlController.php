@@ -20,10 +20,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class LegacyUrlController extends BaseController
 {
     /**
-     * @Route("/api/external/{route}", name="legacy_api_exernal", requirements={"route"=".+"})
-     *
      * @return Response
      */
+    #[Route(path: '/api/external/{route}', name: 'legacy_api_exernal', requirements: ['route' => '.+'])]
     public function apiExternal(): JsonResponse
     {
         $payload = new \stdClass();
@@ -33,10 +32,9 @@ class LegacyUrlController extends BaseController
     }
 
     /**
-     * @Route("/external/share/c/{identifier}", name="legacy_external_share_c", requirements={"route"=".+"})
-     *
      * @return Response
      */
+    #[Route(path: '/external/share/c/{identifier}', name: 'legacy_external_share_c', requirements: ['route' => '.+'])]
     public function externalShareC(string $identifier, TranslatorInterface $translator): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $this->displayRelinkWarning($translator);
@@ -45,10 +43,9 @@ class LegacyUrlController extends BaseController
     }
 
     /**
-     * @Route("/{route}", name="legacy_dashboard", requirements={"route"="(dashboard)|(foyer)|(dispatch)|(edit)|(switch)"})
-     *
      * @return Response
      */
+    #[Route(path: '/{route}', name: 'legacy_dashboard', requirements: ['route' => '(dashboard)|(foyer)|(dispatch)|(edit)|(switch)'])]
     public function legacy(TranslatorInterface $translator): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $this->displayRelinkWarning($translator);

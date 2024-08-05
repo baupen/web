@@ -48,11 +48,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(ExactSearchFilter::class, properties={"constructionManagers.id": "exact"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
- *
- * @ORM\Entity
- *
- * @ORM\HasLifecycleCallbacks
  */
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
@@ -60,80 +58,59 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     use AddressTrait;
     use SoftDeleteTrait;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @Groups({"construction-site-read", "construction-site-write"})
-     *
-     * @ORM\Column(type="text")
-     */
+    #[Assert\NotBlank]
+    #[Groups(['construction-site-read', 'construction-site-write'])]
+    #[ORM\Column(type: 'text')]
     private string $name;
 
-    /**
-     * @ORM\Column(type="text")
-     */
+    #[ORM\Column(type: 'text')]
     private ?string $folderName = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSiteImage", cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: ConstructionSiteImage::class, cascade: ['persist'])]
     private ?ConstructionSiteImage $image = null;
 
     /**
      * @var Collection<int, ConstructionManager>
-     *
-     * @Groups({"construction-site-read", "construction-site-write"})
-     *
-     * @ORM\ManyToMany(targetEntity="ConstructionManager", inversedBy="constructionSites")
-     *
-     * @ORM\JoinTable(name="construction_site_construction_manager")
      */
+    #[ORM\JoinTable(name: 'construction_site_construction_manager')]
+    #[Groups(['construction-site-read', 'construction-site-write'])]
+    #[ORM\ManyToMany(targetEntity: \ConstructionManager::class, inversedBy: 'constructionSites')]
     private Collection $constructionManagers;
 
     /**
      * @var Collection<int, Map>
-     *
-     * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite", cascade={"persist"})
-     *
-     * @ORM\OrderBy({"name": "ASC"})
      */
+    #[ORM\OneToMany(targetEntity: \Map::class, mappedBy: 'constructionSite', cascade: ['persist'])]
+    #[ORM\OrderBy(['name' => 'ASC'])]
     private Collection $maps;
 
     /**
      * @var Collection<int, Craftsman>
-     *
-     * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite", cascade={"persist"})
      */
+    #[ORM\OneToMany(targetEntity: \Craftsman::class, mappedBy: 'constructionSite', cascade: ['persist'])]
     private Collection $craftsmen;
 
     /**
      * @var Collection<int, Issue>
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="constructionSite", cascade={"persist"})
      */
+    #[ORM\OneToMany(targetEntity: Issue::class, mappedBy: 'constructionSite', cascade: ['persist'])]
     private Collection $issues;
 
     /**
      * @var Collection<int, EmailTemplate>
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\EmailTemplate", mappedBy="constructionSite", cascade={"persist"})
-     *
-     * @ORM\OrderBy({"purpose": "ASC", "name": "ASC"})
      */
+    #[ORM\OneToMany(targetEntity: EmailTemplate::class, mappedBy: 'constructionSite', cascade: ['persist'])]
+    #[ORM\OrderBy(['purpose' => 'ASC', 'name' => 'ASC'])]
     private Collection $emailTemplates;
 
     /**
      * @var Collection<int, Filter>
-     *
-     * @ORM\OneToMany(targetEntity="Filter", mappedBy="constructionSite")
      */
+    #[ORM\OneToMany(targetEntity: \Filter::class, mappedBy: 'constructionSite')]
     private Collection $filters;
 
-    /**
-     * @Groups({"construction-site-read"})
-     *
-     * @ORM\Column(type="boolean", options={"default": false})
-     */
+    #[Groups(['construction-site-read'])]
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isHidden = false;
 
     /**
@@ -257,25 +234,19 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
         $this->folderName = $uniqueFolderName;
     }
 
-    /**
-     * @Groups({"construction-site-read"})
-     */
+    #[Groups(['construction-site-read'])]
     public function getIsDeleted(): bool
     {
         return null !== $this->deletedAt;
     }
 
-    /**
-     * @Groups({"construction-site-read"})
-     */
+    #[Groups(['construction-site-read'])]
     public function getLastChangedAt(): \DateTimeInterface
     {
         return $this->lastChangedAt;
     }
 
-    /**
-     * @Groups({"construction-site-read"})
-     */
+    #[Groups(['construction-site-read'])]
     public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;

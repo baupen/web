@@ -15,14 +15,10 @@ use App\Controller\Base\BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/")
- */
+#[Route(path: '/')]
 class IndexController extends BaseController
 {
-    /**
-     * @Route("", name="index")
-     */
+    #[Route(path: '', name: 'index')]
     public function index(): Response
     {
         return $this->render('index.html.twig');

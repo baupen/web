@@ -51,61 +51,45 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
- *
- * @ORM\Entity()
- *
- * @ORM\HasLifecycleCallbacks
  */
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
     use TimeTrait;
     use SoftDeleteTrait;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @Groups({"map-read", "map-write"})
-     *
-     * @ORM\Column(type="text")
-     */
+    #[Assert\NotBlank]
+    #[Groups(['map-read', 'map-write'])]
+    #[ORM\Column(type: 'text')]
     private string $name;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @Groups({"map-create"})
-     *
-     * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="maps")
-     */
+    #[Assert\NotBlank]
+    #[Groups(['map-create'])]
+    #[ORM\ManyToOne(targetEntity: \ConstructionSite::class, inversedBy: 'maps')]
     private ?ConstructionSite $constructionSite = null;
 
     /**
      * @ApiProperty(readableLink=false, writableLink=false)
-     *
-     * @Groups({"map-read", "map-write"})
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="children")
      */
+    #[Groups(['map-read', 'map-write'])]
+    #[ORM\ManyToOne(targetEntity: Map::class, inversedBy: 'children')]
     private ?self $parent = null;
 
     /**
      * @var Collection<int, Map>
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\Map", mappedBy="parent")
      */
+    #[ORM\OneToMany(targetEntity: Map::class, mappedBy: 'parent')]
     private Collection $children;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: MapFile::class, cascade: ['persist'])]
     private ?MapFile $file = null;
 
     /**
      * @var Collection<int, Issue>
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="map")
      */
+    #[ORM\OneToMany(targetEntity: Issue::class, mappedBy: 'map')]
     private Collection $issues;
 
     public function __construct()
@@ -199,17 +183,13 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         $this->file = $file;
     }
 
-    /**
-     * @Groups({"map-read"})
-     */
+    #[Groups(['map-read'])]
     public function getIsDeleted(): bool
     {
         return null !== $this->deletedAt;
     }
 
-    /**
-     * @Groups({"map-read"})
-     */
+    #[Groups(['map-read'])]
     public function getLastChangedAt(): \DateTimeInterface
     {
         return $this->lastChangedAt;

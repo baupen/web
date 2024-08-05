@@ -41,11 +41,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  *
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
- *
- * @ORM\Entity
- *
- * @ORM\HasLifecycleCallbacks
  */
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
@@ -55,56 +53,33 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
     public const PURPOSE_UNREAD_ISSUES = 2;
     public const PURPOSE_OVERDUE_ISSUES = 3;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @Groups({"email-template-read", "email-template-edit"})
-     *
-     * @ORM\Column(type="text")
-     */
+    #[Assert\NotBlank]
+    #[Groups(['email-template-read', 'email-template-edit'])]
+    #[ORM\Column(type: 'text')]
     private string $name;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @Groups({"email-template-read", "email-template-edit"})
-     *
-     * @ORM\Column(type="text")
-     */
+    #[Assert\NotBlank]
+    #[Groups(['email-template-read', 'email-template-edit'])]
+    #[ORM\Column(type: 'text')]
     private string $subject;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @Groups({"email-template-read", "email-template-edit"})
-     *
-     * @ORM\Column(type="text")
-     */
+    #[Assert\NotBlank]
+    #[Groups(['email-template-read', 'email-template-edit'])]
+    #[ORM\Column(type: 'text')]
     private string $body;
 
-    /**
-     * @Groups({"email-template-read", "email-template-edit"})
-     *
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[Groups(['email-template-read', 'email-template-edit'])]
+    #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $purpose = null;
 
-    /**
-     * @Assert\NotNull
-     *
-     * @Groups({"email-template-read", "email-template-edit"})
-     *
-     * @ORM\Column(type="boolean")
-     */
+    #[Assert\NotNull]
+    #[Groups(['email-template-read', 'email-template-edit'])]
+    #[ORM\Column(type: 'boolean')]
     private bool $selfBcc;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @Groups({"email-template-create"})
-     *
-     * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="emailTemplates")
-     */
+    #[Assert\NotBlank]
+    #[Groups(['email-template-create'])]
+    #[ORM\ManyToOne(targetEntity: \ConstructionSite::class, inversedBy: 'emailTemplates')]
     private ?ConstructionSite $constructionSite = null;
 
     public function getName(): string

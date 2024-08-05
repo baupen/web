@@ -33,39 +33,24 @@ class Email
      */
     private $noneIdentifier;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @Groups({"email-create"})
-     */
+    #[Assert\NotBlank]
+    #[Groups(['email-create'])]
     private string $receiver;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @Groups({"email-create"})
-     */
+    #[Assert\NotBlank]
+    #[Groups(['email-create'])]
     private string $subject;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @Groups({"email-create"})
-     */
+    #[Assert\NotBlank]
+    #[Groups(['email-create'])]
     private string $body;
 
-    /**
-     * @Assert\NotNull
-     *
-     * @Groups({"email-create"})
-     */
+    #[Assert\NotNull]
+    #[Groups(['email-create'])]
     private bool $selfBcc;
 
-    /**
-     * @Assert\NotNull
-     *
-     * @Groups({"email-create"})
-     */
+    #[Assert\NotNull]
+    #[Groups(['email-create'])]
     private int $type;
 
     public function getReceiver(): string

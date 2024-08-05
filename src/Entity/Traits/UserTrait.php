@@ -18,39 +18,26 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 trait UserTrait
 {
-    /**
-     * @Groups({"construction-manager-read", "construction-manager-create"})
-     *
-     * @ORM\Column(type="string", length=255, unique=true)
-     *
-     * @Assert\NotBlank()
-     *
-     * @Assert\Email()
-     */
+    #[Groups(['construction-manager-read', 'construction-manager-create'])]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[Assert\NotBlank]
+    #[Assert\Email]
     private ?string $email = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $password = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $authenticationHash = null;
 
-    /**
-     * @Groups({"construction-manager-read"})
-     *
-     * @ORM\Column(type="boolean")
-     */
+    #[Groups(['construction-manager-read'])]
+    #[ORM\Column(type: 'boolean')]
     private ?bool $isEnabled = true;
 
     /**
      * @var \DateTime|null
-     *
-     * @ORM\Column(type="datetime", nullable=true)
      */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $registrationCompletedAt = null;
 
     /**

@@ -30,7 +30,6 @@ use App\Entity\Issue\IssuePositionTrait;
 use App\Entity\Issue\IssueStatusTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -90,11 +89,9 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ApiFilter(SearchFilter::class, properties={"craftsman": "exact", "map": "exact", "description": "partial"})
  * @ApiFilter(StateFilter::class, properties={"state"})
  * @ApiFilter(PatchedOrderFilter::class, properties={"lastChangedAt": "ASC", "deadline"={"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "ASC"}, "number": "ASC", "craftsman.trade": "ASC"})
- *
- * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
- *
- * @ORM\HasLifecycleCallbacks
  */
+#[ORM\Entity(repositoryClass: \App\Repository\IssueRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
@@ -118,51 +115,31 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public const STATE_RESOLVED = 4;
     public const STATE_CLOSED = 8;
 
-    /**
-     * @Groups({"issue-read"})
-     *
-     * @ORM\Column(type="integer")
-     */
+    #[Groups(['issue-read'])]
+    #[ORM\Column(type: 'integer')]
     private ?int $number = null;
 
-    /**
-     * @Groups({"issue-read", "issue-write"})
-     *
-     * @ORM\Column(type="boolean")
-     */
+    #[Groups(['issue-read', 'issue-write'])]
+    #[ORM\Column(type: 'boolean')]
     private bool $isMarked = false;
 
-    /**
-     * @Groups({"issue-read", "issue-write"})
-     *
-     * @ORM\Column(type="boolean")
-     */
+    #[Groups(['issue-read', 'issue-write'])]
+    #[ORM\Column(type: 'boolean')]
     private bool $wasAddedWithClient = false;
 
-    /**
-     * @Assert\NotBlank(groups={"after-register"})
-     *
-     * @Groups({"issue-read", "issue-write"})
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[Assert\NotBlank(groups: ['after-register'])]
+    #[Groups(['issue-read', 'issue-write'])]
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
-    /**
-     * @Groups({"issue-read", "issue-write"})
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[Groups(['issue-read', 'issue-write'])]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTime $deadline = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private ?\DateTime $lastChangedAt = null;
 
-    /**
-     * @Assert\Callback
-     */
+    #[Assert\Callback]
     public function validateRelations(ExecutionContextInterface $context): void
     {
         if (null !== $this->craftsman && $this->craftsman->getConstructionSite() !== $this->constructionSite) {
@@ -174,43 +151,26 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         }
     }
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\IssueImage", cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: IssueImage::class, cascade: ['persist'])]
     private ?IssueImage $image = null;
 
-    /**
-     * @Assert\NotBlank(groups={"after-register"})
-     *
-     * @Groups({"issue-read", "issue-write"})
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="issues")
-     */
+    #[Assert\NotBlank(groups: ['after-register'])]
+    #[Groups(['issue-read', 'issue-write'])]
+    #[ORM\ManyToOne(targetEntity: Craftsman::class, inversedBy: 'issues')]
     private ?Craftsman $craftsman = null;
 
-    /**
-     * @Assert\NotBlank()
-     *
-     * @Groups({"issue-read", "issue-create"})
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="issues")
-     */
+    #[Assert\NotBlank]
+    #[Groups(['issue-read', 'issue-create'])]
+    #[ORM\ManyToOne(targetEntity: Map::class, inversedBy: 'issues')]
     private ?Map $map = null;
 
-    /**
-     * @Assert\NotBlank()
-     *
-     * @Groups({"issue-create"})
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="issues")
-     */
+    #[Assert\NotBlank]
+    #[Groups(['issue-create'])]
+    #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'issues')]
     private ?ConstructionSite $constructionSite = null;
 
-    /**
-     * @ORM\PrePersist()
-     *
-     * @ORM\PreUpdate()
-     */
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
     public function prePersistTime(): void
     {
         $this->lastChangedAt = new \DateTime();
@@ -311,17 +271,13 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         return null !== $this->constructionSite;
     }
 
-    /**
-     * @Groups({"issue-read"})
-     */
+    #[Groups(['issue-read'])]
     public function getIsDeleted(): bool
     {
         return null !== $this->deletedAt;
     }
 
-    /**
-     * @Groups({"issue-read"})
-     */
+    #[Groups(['issue-read'])]
     public function getLastChangedAt(): \DateTimeInterface
     {
         return $this->lastChangedAt;

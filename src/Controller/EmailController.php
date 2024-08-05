@@ -18,14 +18,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/email")
- */
+#[Route(path: '/email')]
 class EmailController extends BaseDoctrineController
 {
-    /**
-     * @Route("/{identifier}", name="email")
-     */
+    #[Route(path: '/{identifier}', name: 'email')]
     public function email(string $identifier, ManagerRegistry $registry): Response
     {
         $email = $registry->getRepository(Email::class)->findOneBy(['identifier' => $identifier]);

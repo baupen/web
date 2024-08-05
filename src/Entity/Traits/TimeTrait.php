@@ -11,7 +11,6 @@
 
 namespace App\Entity\Traits;
 
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /*
@@ -20,22 +19,17 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait TimeTrait
 {
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $createdAt = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $lastChangedAt = null;
 
     /**
-     * @ORM\PrePersist()
-     *
      * @throws \Exception
      * @throws \Exception
      */
+    #[ORM\PrePersist]
     public function prePersistTime(): void
     {
         $this->createdAt = new \DateTime();
@@ -43,10 +37,9 @@ trait TimeTrait
     }
 
     /**
-     * @ORM\PreUpdate()
-     *
      * @throws \Exception
      */
+    #[ORM\PreUpdate]
     public function preUpdateTime(): void
     {
         $this->lastChangedAt = new \DateTime();

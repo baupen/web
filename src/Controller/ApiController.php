@@ -39,9 +39,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-/**
- * @Route("/api")
- */
+#[Route(path: '/api')]
 class ApiController extends BaseDoctrineController
 {
     use TokenTrait;
@@ -49,10 +47,9 @@ class ApiController extends BaseDoctrineController
     use ImageRequestTrait;
 
     /**
-     * @Route("/me", name="api_me")
-     *
      * @return Response
      */
+    #[Route(path: '/me', name: 'api_me')]
     public function me(TokenStorageInterface $tokenStorage, IriConverterInterface $iriConverter): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $data = [];
@@ -79,10 +76,9 @@ class ApiController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/status", name="api_status")
-     *
      * @return Response
      */
+    #[Route(path: '/status', name: 'api_status')]
     public function status(): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $data = [];
@@ -98,10 +94,9 @@ class ApiController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/maps/{map}/file/{mapFile}/{filename}", name="map_file", methods={"GET"})
-     *
      * @return Response
      */
+    #[Route(path: '/maps/{map}/file/{mapFile}/{filename}', name: 'map_file', methods: ['GET'])]
     public function getMapFile(Request $request, Map $map, MapFile $mapFile, string $filename, PathServiceInterface $pathService, MapFileService $mapFileService): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
@@ -126,10 +121,9 @@ class ApiController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/maps/{map}/file/{mapFile}/{filename}/render.jpg", name="map_file_render", methods={"GET"})
-     *
      * @return Response
      */
+    #[Route(path: '/maps/{map}/file/{mapFile}/{filename}/render.jpg', name: 'map_file_render', methods: ['GET'])]
     public function getMapFileRender(Request $request, Map $map, MapFile $mapFile, string $filename, ImageServiceInterface $imageService): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
@@ -142,9 +136,7 @@ class ApiController extends BaseDoctrineController
         return $this->tryCreateInlineFileResponse($path, 'render.jpg', true);
     }
 
-    /**
-     * @Route("/maps/{map}/file", name="post_map_file", methods={"POST"})
-     */
+    #[Route(path: '/maps/{map}/file', name: 'post_map_file', methods: ['POST'])]
     public function postMapFile(Request $request, Map $map, StorageServiceInterface $storageService, CacheServiceInterface $cacheService): Response
     {
         $this->denyAccessUnlessGranted(MapVoter::MAP_MODIFY, $map);
@@ -164,9 +156,7 @@ class ApiController extends BaseDoctrineController
         return new Response($url, Response::HTTP_CREATED);
     }
 
-    /**
-     * @Route("/maps/{map}/file", name="delete_map_file", methods={"DELETE"})
-     */
+    #[Route(path: '/maps/{map}/file', name: 'delete_map_file', methods: ['DELETE'])]
     public function deleteMapFile(Map $map): Response
     {
         $this->denyAccessUnlessGranted(MapVoter::MAP_MODIFY, $map);
@@ -178,10 +168,9 @@ class ApiController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/construction_sites/{constructionSite}/image/{constructionSiteImage}/{filename}", name="construction_site_image", methods={"GET"})
-     *
      * @return Response
      */
+    #[Route(path: '/construction_sites/{constructionSite}/image/{constructionSiteImage}/{filename}', name: 'construction_site_image', methods: ['GET'])]
     public function getConstructionSiteImage(Request $request, ConstructionSite $constructionSite, ConstructionSiteImage $constructionSiteImage, string $filename, ImageServiceInterface $imageService): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         if ($constructionSite->getImage() !== $constructionSiteImage || $constructionSiteImage->getFilename() !== $filename) {
@@ -194,9 +183,7 @@ class ApiController extends BaseDoctrineController
         return $this->tryCreateInlineFileResponse($path, $constructionSiteImage->getFilename(), true);
     }
 
-    /**
-     * @Route("/construction_sites/{constructionSite}/image", name="post_construction_site_image", methods={"POST"})
-     */
+    #[Route(path: '/construction_sites/{constructionSite}/image', name: 'post_construction_site_image', methods: ['POST'])]
     public function postConstructionSiteImage(Request $request, ConstructionSite $constructionSite, StorageServiceInterface $storageService, CacheServiceInterface $cacheService): Response
     {
         $this->denyAccessUnlessGranted(ConstructionSiteVoter::CONSTRUCTION_SITE_MODIFY, $constructionSite);
@@ -216,9 +203,7 @@ class ApiController extends BaseDoctrineController
         return new Response($url, Response::HTTP_CREATED);
     }
 
-    /**
-     * @Route("/construction_sites/{constructionSite}/image", name="delete_construction_site_image", methods={"DELETE"})
-     */
+    #[Route(path: '/construction_sites/{constructionSite}/image', name: 'delete_construction_site_image', methods: ['DELETE'])]
     public function deleteConstructionSiteImage(ConstructionSite $constructionSite): Response
     {
         $this->denyAccessUnlessGranted(ConstructionSiteVoter::CONSTRUCTION_SITE_MODIFY, $constructionSite);
@@ -230,10 +215,9 @@ class ApiController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/issues/{issue}/image/{issueImage}/{filename}", name="issue_image", methods={"GET"})
-     *
      * @return Response
      */
+    #[Route(path: '/issues/{issue}/image/{issueImage}/{filename}', name: 'issue_image', methods: ['GET'])]
     public function getIssueImage(Request $request, Issue $issue, IssueImage $issueImage, string $filename, ImageServiceInterface $imageService): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         if ($issue->getImage() !== $issueImage || $issueImage->getFilename() !== $filename) {
@@ -247,10 +231,9 @@ class ApiController extends BaseDoctrineController
     }
 
     /**
-     * @Route("/issues/{issue}/map/render.jpg", name="issue_map_render", methods={"GET"})
-     *
      * @return Response
      */
+    #[Route(path: '/issues/{issue}/map/render.jpg', name: 'issue_map_render', methods: ['GET'])]
     public function getIssueRender(Request $request, Issue $issue, ImageServiceInterface $imageService): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $mapFile = $issue->getMap()->getFile();
@@ -264,9 +247,7 @@ class ApiController extends BaseDoctrineController
         return $this->tryCreateInlineFileResponse($path, 'render.jpg', false);
     }
 
-    /**
-     * @Route("/issues/{issue}/image", name="post_issue_image", methods={"POST"})
-     */
+    #[Route(path: '/issues/{issue}/image', name: 'post_issue_image', methods: ['POST'])]
     public function postIssueImage(Request $request, Issue $issue, StorageServiceInterface $storageService, CacheServiceInterface $cacheService): Response
     {
         $this->denyAccessUnlessGranted(IssueVoter::ISSUE_MODIFY, $issue);
@@ -286,9 +267,7 @@ class ApiController extends BaseDoctrineController
         return new Response($url, Response::HTTP_CREATED);
     }
 
-    /**
-     * @Route("/issues/{issue}/image", name="delete_issue_image", methods={"DELETE"})
-     */
+    #[Route(path: '/issues/{issue}/image', name: 'delete_issue_image', methods: ['DELETE'])]
     public function deleteIssueImage(Issue $issue): Response
     {
         $this->denyAccessUnlessGranted(IssueVoter::ISSUE_MODIFY, $issue);

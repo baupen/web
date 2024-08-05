@@ -17,20 +17,15 @@ use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity()
- *
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class ConstructionSiteImage extends BaseEntity
 {
     use IdTrait;
     use TimeTrait;
     use FileTrait;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite")
-     */
+    #[ORM\ManyToOne(targetEntity: ConstructionSite::class)]
     private ?ConstructionSite $createdFor = null;
 
     public function getCreatedFor(): ConstructionSite

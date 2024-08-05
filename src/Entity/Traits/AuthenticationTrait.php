@@ -17,11 +17,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 trait AuthenticationTrait
 {
-    /**
-     * @Groups({"construction-manager-read-self", "filter-read"})
-     *
-     * @ORM\Column(type="text")
-     */
+    #[Groups(['construction-manager-read-self', 'filter-read'])]
+    #[ORM\Column(type: 'text')]
     private ?string $authenticationToken = null;
 
     public function getAuthenticationToken(): string
@@ -29,9 +26,7 @@ trait AuthenticationTrait
         return $this->authenticationToken;
     }
 
-    /**
-     * @ORM\PrePersist()
-     */
+    #[ORM\PrePersist]
     public function setAuthenticationToken(): void
     {
         $this->authenticationToken = HashHelper::getHash();

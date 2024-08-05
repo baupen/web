@@ -19,10 +19,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class I18nController extends BaseDoctrineController
 {
     /**
-     * @Route("/set_locale/{locale}", name="set_locale")
-     *
      * @return Response
      */
+    #[Route(path: '/set_locale/{locale}', name: 'set_locale')]
     public function setLocale(Request $request, string $locale): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         // only change locale to valid values
