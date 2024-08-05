@@ -74,7 +74,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      *
      * @ORM\Column(type="simple_array", nullable=true)
      */
-    private ?array $numbers;
+    private ?array $numbers = null;
 
     /**
      * @Groups({"filter-read", "filter-create"})
@@ -97,7 +97,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      *
      * @ORM\Column(type="simple_array", nullable=true)
      */
-    private ?array $craftsmanIds;
+    private ?array $craftsmanIds = null;
 
     /**
      * @var string[]|null
@@ -106,7 +106,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      *
      * @ORM\Column(type="simple_array", nullable=true)
      */
-    private ?array $mapIds;
+    private ?array $mapIds = null;
 
     /**
      * @Groups({"filter-read", "filter-create"})
