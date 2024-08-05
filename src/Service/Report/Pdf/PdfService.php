@@ -263,7 +263,7 @@ class PdfService
         // add maps
         if (null !== $filter->getMapIds()) {
             $entities = $this->doctrine->getRepository(Map::class)->findBy(['id' => $filter->getMapIds()]);
-            $names = array_map(function (Map $map) {
+            $names = array_map(function (Map $map): string {
                 return $map->getNameWithContext();
             }, $entities);
             $maps = $this->translator->trans('introduction.filter.maps', ['%count%' => count($names)], 'report');

@@ -163,7 +163,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     /**
      * @return ConstructionSite[]|ArrayCollection
      */
-    public function getConstructionSites()
+    public function getConstructionSites(): ArrayCollection
     {
         return $this->constructionSites;
     }

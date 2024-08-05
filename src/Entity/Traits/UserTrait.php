@@ -93,10 +93,7 @@ trait UserTrait
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function setAuthenticationHash()
+    public function setAuthenticationHash(): string
     {
         $this->authenticationHash = HashHelper::getHash();
 

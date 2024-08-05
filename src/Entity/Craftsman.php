@@ -241,7 +241,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     /**
      * @return Issue[]|ArrayCollection
      */
-    public function getIssues()
+    public function getIssues(): ArrayCollection
     {
         return $this->issues;
     }
@@ -249,7 +249,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     /**
      * @return Issue[]|ArrayCollection
      */
-    public function getResolvedIssues()
+    public function getResolvedIssues(): ArrayCollection
     {
         return $this->resolvedIssues;
     }

@@ -37,6 +37,10 @@ class MapVoter extends ConstructionSiteOwnedEntityVoter
 
     protected function isIncludedInFilter(Filter $filter, $attribute, $subject): bool
     {
-        return null === $filter->getMapIds() || in_array($subject->getId(), $filter->getMapIds());
+        if (null === $filter->getMapIds()) {
+            return true;
+        }
+
+        return in_array($subject->getId(), $filter->getMapIds());
     }
 }

@@ -112,7 +112,7 @@ class PdfSizes
      *
      * @return float
      */
-    public function getColumnGutter($compact = false)
+    public function getColumnGutter($compact = false): int|float
     {
         if ($compact) {
             return $this->gutterSize / 2;
@@ -129,10 +129,10 @@ class PdfSizes
         $gutterSpace = ($numberOfColumns - 1) * $this->getColumnGutter();
 
         if (null !== $firstColumnSize) {
-            return (float) ($this->getContentXSize() - $gutterSpace - $firstColumnSize) / ($numberOfColumns - 1);
+            return ($this->getContentXSize() - $gutterSpace - $firstColumnSize) / ($numberOfColumns - 1);
         }
 
-        return (float) ($this->getContentXSize() - $gutterSpace) / $numberOfColumns;
+        return ($this->getContentXSize() - $gutterSpace) / $numberOfColumns;
     }
 
     /**
@@ -179,10 +179,8 @@ class PdfSizes
 
     /**
      * for text.
-     *
-     * @return float
      */
-    public function getRegularFontSize()
+    public function getRegularFontSize(): int
     {
         return $this->baseFontSizes;
     }
@@ -207,10 +205,7 @@ class PdfSizes
         return $this->baseFontSizes * ($this->scalingFactor ** 2);
     }
 
-    /**
-     * @return float
-     */
-    public function getLnHeight()
+    public function getLnHeight(): float
     {
         return $this->scalingFactor;
     }
