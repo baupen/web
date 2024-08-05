@@ -33,7 +33,7 @@ class PublicController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function downloadAction(string $filename, PathServiceInterface $pathService)
+    public function download(string $filename, PathServiceInterface $pathService)
     {
         $path = $pathService->getTransientFolderForReports();
 
@@ -45,10 +45,8 @@ class PublicController extends BaseDoctrineController
 
     /**
      * @Route("/resolve/{token}", name="public_resolve")
-     *
-     * @return Response
      */
-    public function resolveAction(string $token, TokenStorageInterface $tokenStorage, ManagerRegistry $registry)
+    public function resolve(string $token, TokenStorageInterface $tokenStorage, ManagerRegistry $registry): Response
     {
         $craftsman = $registry->getRepository(Craftsman::class)->findOneBy(['authenticationToken' => $token, 'deletedAt' => null]);
         if (null === $craftsman) {
@@ -65,10 +63,8 @@ class PublicController extends BaseDoctrineController
 
     /**
      * @Route("/filtered/{token}", name="public_filtered")
-     *
-     * @return Response
      */
-    public function filteredAction(string $token, TokenStorageInterface $tokenStorage, ManagerRegistry $registry)
+    public function filtered(string $token, TokenStorageInterface $tokenStorage, ManagerRegistry $registry): Response
     {
         $filter = $registry->getRepository(Filter::class)->findOneBy(['authenticationToken' => $token]);
         if (null === $filter || ($filter->getAccessAllowedBefore() && $filter->getAccessAllowedBefore() < new \DateTime())) {

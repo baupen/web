@@ -37,7 +37,7 @@ class LegacyUrlControllerTest extends WebTestCase
         $legacyUrl = '/external/share/c/'.$craftsman->getAuthenticationToken().'?token=ed5aad1d-3698-49e8-baa3-71237127317';
         $newUrl = '/resolve/'.$craftsman->getAuthenticationToken();
 
-        $client->request('GET', $legacyUrl);
+        $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, $legacyUrl);
         $this->assertResponseRedirects($newUrl);
     }
 }

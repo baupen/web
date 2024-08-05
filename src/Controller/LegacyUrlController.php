@@ -24,7 +24,7 @@ class LegacyUrlController extends BaseController
      *
      * @return Response
      */
-    public function apiExternalAction()
+    public function apiExternal()
     {
         $payload = new \stdClass();
         $payload->version = 2;
@@ -37,7 +37,7 @@ class LegacyUrlController extends BaseController
      *
      * @return Response
      */
-    public function externalShareCAction(string $identifier, TranslatorInterface $translator)
+    public function externalShareC(string $identifier, TranslatorInterface $translator): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $this->displayRelinkWarning($translator);
 
@@ -49,7 +49,7 @@ class LegacyUrlController extends BaseController
      *
      * @return Response
      */
-    public function legacyAction(TranslatorInterface $translator)
+    public function legacy(TranslatorInterface $translator): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $this->displayRelinkWarning($translator);
 

@@ -58,7 +58,7 @@ class SecurityControllerTest extends WebTestCase
 
     private function login(KernelBrowser $client, string $email, string $password): void
     {
-        $crawler = $client->request('GET', '/login');
+        $crawler = $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, '/login');
         $this->assertResponseIsSuccessful();
 
         $form = $crawler->selectButton('login_submit')->form();
@@ -71,13 +71,13 @@ class SecurityControllerTest extends WebTestCase
 
     private function logout(KernelBrowser $client): void
     {
-        $client->request('GET', '/logout');
+        $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, '/logout');
         $this->assertResponseRedirects();
     }
 
     private function register(KernelBrowser $client, string $email): void
     {
-        $crawler = $client->request('GET', '/register');
+        $crawler = $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, '/register');
         $this->assertResponseIsSuccessful();
 
         $form = $crawler->selectButton('only_email_submit')->form();
@@ -97,7 +97,7 @@ class SecurityControllerTest extends WebTestCase
     {
         $authenticationHash = $this->getAuthenticationHash($email);
 
-        $crawler = $client->request('GET', '/register/confirm/'.$authenticationHash);
+        $crawler = $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, '/register/confirm/'.$authenticationHash);
         $this->assertResponseIsSuccessful();
 
         $form = $crawler->selectButton('register_confirm_submit')->form();
@@ -116,7 +116,7 @@ class SecurityControllerTest extends WebTestCase
 
     private function recover(KernelBrowser $client, string $email): void
     {
-        $crawler = $client->request('GET', '/recover');
+        $crawler = $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, '/recover');
         $this->assertResponseIsSuccessful();
 
         $form = $crawler->selectButton('only_email_submit')->form();
@@ -134,7 +134,7 @@ class SecurityControllerTest extends WebTestCase
     {
         $authenticationHash = $this->getAuthenticationHash($email);
 
-        $crawler = $client->request('GET', '/recover/confirm/'.$authenticationHash);
+        $crawler = $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, '/recover/confirm/'.$authenticationHash);
         $this->assertResponseIsSuccessful();
 
         $form = $crawler->selectButton('set_password_submit')->form();

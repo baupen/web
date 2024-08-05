@@ -53,7 +53,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function meAction(TokenStorageInterface $tokenStorage, IriConverterInterface $iriConverter)
+    public function me(TokenStorageInterface $tokenStorage, IriConverterInterface $iriConverter): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $data = [];
         $token = $tokenStorage->getToken();
@@ -83,7 +83,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function statusAction()
+    public function status(): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $data = [];
 
@@ -102,7 +102,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function getMapFileAction(Request $request, Map $map, MapFile $mapFile, string $filename, PathServiceInterface $pathService, MapFileService $mapFileService)
+    public function getMapFile(Request $request, Map $map, MapFile $mapFile, string $filename, PathServiceInterface $pathService, MapFileService $mapFileService)
     {
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
             throw new NotFoundHttpException();
@@ -130,7 +130,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function getMapFileRenderAction(Request $request, Map $map, MapFile $mapFile, string $filename, ImageServiceInterface $imageService)
+    public function getMapFileRender(Request $request, Map $map, MapFile $mapFile, string $filename, ImageServiceInterface $imageService)
     {
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
             throw new NotFoundHttpException();
@@ -171,7 +171,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function deleteMapFileAction(Map $map)
+    public function deleteMapFile(Map $map)
     {
         $this->denyAccessUnlessGranted(MapVoter::MAP_MODIFY, $map);
 
@@ -186,7 +186,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function getConstructionSiteImageAction(Request $request, ConstructionSite $constructionSite, ConstructionSiteImage $constructionSiteImage, string $filename, ImageServiceInterface $imageService)
+    public function getConstructionSiteImage(Request $request, ConstructionSite $constructionSite, ConstructionSiteImage $constructionSiteImage, string $filename, ImageServiceInterface $imageService)
     {
         if ($constructionSite->getImage() !== $constructionSiteImage || $constructionSiteImage->getFilename() !== $filename) {
             throw new NotFoundHttpException();
@@ -203,7 +203,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function postConstructionSiteImageAction(Request $request, ConstructionSite $constructionSite, StorageServiceInterface $storageService, CacheServiceInterface $cacheService)
+    public function postConstructionSiteImage(Request $request, ConstructionSite $constructionSite, StorageServiceInterface $storageService, CacheServiceInterface $cacheService)
     {
         $this->denyAccessUnlessGranted(ConstructionSiteVoter::CONSTRUCTION_SITE_MODIFY, $constructionSite);
 
@@ -227,7 +227,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function deleteConstructionSiteImageAction(ConstructionSite $constructionSite)
+    public function deleteConstructionSiteImage(ConstructionSite $constructionSite)
     {
         $this->denyAccessUnlessGranted(ConstructionSiteVoter::CONSTRUCTION_SITE_MODIFY, $constructionSite);
 
@@ -242,7 +242,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function getIssueImageAction(Request $request, Issue $issue, IssueImage $issueImage, string $filename, ImageServiceInterface $imageService)
+    public function getIssueImage(Request $request, Issue $issue, IssueImage $issueImage, string $filename, ImageServiceInterface $imageService)
     {
         if ($issue->getImage() !== $issueImage || $issueImage->getFilename() !== $filename) {
             throw new NotFoundHttpException();
@@ -259,7 +259,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function getIssueRenderAction(Request $request, Issue $issue, ImageServiceInterface $imageService)
+    public function getIssueRender(Request $request, Issue $issue, ImageServiceInterface $imageService)
     {
         $mapFile = $issue->getMap()->getFile();
         if (!$mapFile instanceof MapFile) {
@@ -277,7 +277,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function postIssueImageAction(Request $request, Issue $issue, StorageServiceInterface $storageService, CacheServiceInterface $cacheService)
+    public function postIssueImage(Request $request, Issue $issue, StorageServiceInterface $storageService, CacheServiceInterface $cacheService)
     {
         $this->denyAccessUnlessGranted(IssueVoter::ISSUE_MODIFY, $issue);
 
@@ -301,7 +301,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function deleteIssueImageAction(Issue $issue)
+    public function deleteIssueImage(Issue $issue)
     {
         $this->denyAccessUnlessGranted(IssueVoter::ISSUE_MODIFY, $issue);
 

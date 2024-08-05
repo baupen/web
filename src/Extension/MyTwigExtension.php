@@ -69,7 +69,7 @@ class MyTwigExtension extends AbstractExtension
 
     public function apiSubRequestFunction(string $url)
     {
-        $request = Request::create($url, 'GET', [], [], [], ['HTTP_ACCEPT' => null]);
+        $request = Request::create($url, Request::METHOD_GET, [], [], [], ['HTTP_ACCEPT' => null]);
         $request->setSession($this->requestStack->getSession());
         $response = $this->httpKernel->handle(
             $request,

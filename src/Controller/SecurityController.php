@@ -11,7 +11,7 @@
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseFormController;
+use App\Controller\Base\BaseDoctrineController;
 use App\Entity\ConstructionManager;
 use App\Form\ConstructionManager\RegisterConfirmType;
 use App\Form\UserTrait\LoginType;
@@ -37,12 +37,12 @@ use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class SecurityController extends BaseFormController
+class SecurityController extends BaseDoctrineController
 {
     /**
      * @Route("/login", name="login")
      */
-    public function login(AuthenticationUtils $authenticationUtils, EmailServiceInterface $emailService, ManagerRegistry $managerRegistry, LoggerInterface $logger): Response
+    public function login(AuthenticationUtils $authenticationUtils, EmailServiceInterface $emailService, ManagerRegistry $managerRegistry, LoggerInterface $logger, TranslatorInterface $translator): Response
     {
         if ($this->getUser()) {
             return $this->redirectToRoute('index');
@@ -51,18 +51,18 @@ class SecurityController extends BaseFormController
         // show last auth error
         $error = $authenticationUtils->getLastAuthenticationError();
         if ($error instanceof DisabledException) {
-            $this->displayError($this->getTranslator()->trans('login.errors.account_disabled', [], 'security'));
+            $this->displayError($translator->trans('login.errors.account_disabled', [], 'security'));
         } elseif ($error instanceof BadCredentialsException) {
-            $this->displayError($this->getTranslator()->trans('login.errors.password_wrong', [], 'security'));
+            $this->displayError($translator->trans('login.errors.password_wrong', [], 'security'));
         } elseif ($error instanceof UsernameNotFoundException) {
-            $this->displayError($this->getTranslator()->trans('login.errors.email_not_found', [], 'security'));
+            $this->displayError($translator->trans('login.errors.email_not_found', [], 'security'));
         } elseif ($error instanceof UserWithoutPasswordAuthenticationException) {
-            $this->displayError($this->getTranslator()->trans('login.errors.registration_not_completed', [], 'security'));
+            $this->displayError($translator->trans('login.errors.registration_not_completed', [], 'security'));
             $userRepo = $managerRegistry->getRepository(ConstructionManager::class);
             $user = $userRepo->find($error->getUserId());
             $emailService->sendRegisterConfirmLink($user);
         } elseif (null !== $error) {
-            $this->displayError($this->getTranslator()->trans('login.errors.login_failed', [], 'security'));
+            $this->displayError($translator->trans('login.errors.login_failed', [], 'security'));
             $logger->error('login failed', ['exception' => $error]);
         }
 
@@ -90,7 +90,7 @@ class SecurityController extends BaseFormController
      *
      * @return Response
      */
-    public function registerAction(Request $request, TranslatorInterface $translator, UserServiceInterface $userService)
+    public function register(Request $request, TranslatorInterface $translator, UserServiceInterface $userService)
     {
         $constructionManager = new ConstructionManager();
         $constructionManager->setEmail($request->query->get('email'));
@@ -131,7 +131,7 @@ class SecurityController extends BaseFormController
      *
      * @return Response
      */
-    public function registerConfirmAction(Request $request, string $authenticationHash, TranslatorInterface $translator, EmailServiceInterface $emailService, SampleServiceInterface $sampleService, UserServiceInterface $userService, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
+    public function registerConfirm(Request $request, string $authenticationHash, TranslatorInterface $translator, EmailServiceInterface $emailService, SampleServiceInterface $sampleService, UserServiceInterface $userService, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
     {
         /** @var ConstructionManager $constructionManager */
         if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $constructionManager)) {
@@ -173,10 +173,8 @@ class SecurityController extends BaseFormController
 
     /**
      * @Route("/recover", name="recover")
-     *
-     * @return Response
      */
-    public function recoverAction(Request $request, EmailServiceInterface $emailService, TranslatorInterface $translator, LoggerInterface $logger, ManagerRegistry $registry)
+    public function recover(Request $request, EmailServiceInterface $emailService, TranslatorInterface $translator, LoggerInterface $logger, ManagerRegistry $registry): Response
     {
         $constructionManager = new ConstructionManager();
         $form = $this->createForm(OnlyEmailType::class, $constructionManager);
@@ -202,7 +200,7 @@ class SecurityController extends BaseFormController
      *
      * @return Response
      */
-    public function recoverConfirmAction(Request $request, $authenticationHash, TranslatorInterface $translator, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
+    public function recoverConfirm(Request $request, $authenticationHash, TranslatorInterface $translator, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
     {
         /** @var ConstructionManager $constructionManager */
         if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $constructionManager)) {

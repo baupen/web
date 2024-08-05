@@ -44,7 +44,7 @@ trait AssertApiPostTrait
 
     private function assertApiPostFile(KernelBrowser $kernelBrowser, string $url, AssetFile $file)
     {
-        $kernelBrowser->request('POST', $url, [], ['file' => $file]);
+        $kernelBrowser->request(\Symfony\Component\HttpFoundation\Request::METHOD_POST, $url, [], ['file' => $file]);
 
         $this->assertEquals(StatusCode::HTTP_CREATED, $kernelBrowser->getResponse()->getStatusCode());
 
@@ -53,7 +53,7 @@ trait AssertApiPostTrait
 
     private function assertApiDeleteFile(KernelBrowser $kernelBrowser, string $url)
     {
-        $kernelBrowser->request('DELETE', $url);
+        $kernelBrowser->request(\Symfony\Component\HttpFoundation\Request::METHOD_DELETE, $url);
 
         $this->assertEquals(StatusCode::HTTP_NO_CONTENT, $kernelBrowser->getResponse()->getStatusCode());
     }

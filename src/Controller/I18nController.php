@@ -23,7 +23,7 @@ class I18nController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function setLocaleAction(Request $request, string $locale)
+    public function setLocale(Request $request, string $locale): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         // only change locale to valid values
         if (\in_array($locale, ['de', 'it'], true)) {
