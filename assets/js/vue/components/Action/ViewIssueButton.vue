@@ -19,11 +19,11 @@
           #{{issue.number}}
         </span>
         <toggle-icon
-            class="ml-2"
+            class="ms-2"
             icon="star"
             :value="issue.isMarked" />
         <toggle-icon
-            class="ml-2"
+            class="ms-2"
             icon="user-check"
             :value="issue.wasAddedWithClient" />
       </h5>

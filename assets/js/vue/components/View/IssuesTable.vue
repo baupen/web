@@ -14,7 +14,7 @@
               @update-configuration="filterConfiguration = $event"
           />
           <order-checkbox
-              :class="{'ml-3': canFilter}"
+              :class="{'ms-3': canFilter}"
               class="d-inline-block"
               property="lastChangedAt" order-value="desc" id="order-by-last-changed-at"
               :label="$t('_view.issues.sort_by_last_activity')" :order="order"
@@ -48,7 +48,7 @@
       </th>
       <th class="w-thumbnail"></th>
       <th class="w-40">
-          <span class="mr-1">
+          <span class="me-1">
             {{ $t('issue.description') }}
           </span>
       </th>
@@ -131,7 +131,7 @@
     </tbody>
     <caption class="caption-top">
       <template v-if="view === 'foyer'">
-        <div v-if="issuesWithoutDescription.length" class="form-check form-check-inline mr-4">
+        <div v-if="issuesWithoutDescription.length" class="form-check form-check-inline me-4">
           <custom-checkbox id="issues-without-description"
                            :label="$t('_view.issues.without_description')"
                            @click.prevent="toggleSelectedIssues(issuesWithoutDescription)">
@@ -139,7 +139,7 @@
                    :checked="entityListsAreEqual(issuesWithoutDescription, selectedIssues)">
           </custom-checkbox>
         </div>
-        <div v-if="issuesWithoutCraftsman.length" class="form-check form-check-inline mr-4">
+        <div v-if="issuesWithoutCraftsman.length" class="form-check form-check-inline me-4">
           <custom-checkbox id="issues-without-craftsman"
                            :label="$t('_view.issues.without_craftsman')"
                            @click.prevent="toggleSelectedIssues(issuesWithoutCraftsman)">

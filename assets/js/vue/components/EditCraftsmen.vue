@@ -5,7 +5,7 @@
     <add-craftsman-button
         :construction-site="constructionSite" @added="craftsmen.push($event)" />
   </div>
-  <div class="btn-group ml-2">
+  <div class="btn-group ms-2">
     <import-craftsmen-button
         :construction-site="constructionSite" :craftsmen="notDeletedCraftsmen"
         @imported="reload" />

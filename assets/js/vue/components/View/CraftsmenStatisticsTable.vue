@@ -85,7 +85,7 @@
     </tr>
     </tbody>
     <caption class="caption-top">
-      <div v-if="craftsmenWithIssuesOpen.length" class="form-check form-check-inline mr-4">
+      <div v-if="craftsmenWithIssuesOpen.length" class="form-check form-check-inline me-4">
         <custom-checkbox id="issues-open-craftsmen"
                          :label="$t('_view.craftsmen.with_open_issues')"
                          @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOpen)">
@@ -93,7 +93,7 @@
                  :checked="entityListsAreEqual(craftsmenWithIssuesOpen, selectedCraftsmen)">
         </custom-checkbox>
       </div>
-      <div v-if="craftsmenWithIssuesUnread.length" class="form-check form-check-inline mr-4">
+      <div v-if="craftsmenWithIssuesUnread.length" class="form-check form-check-inline me-4">
         <custom-checkbox id="issues-unread-craftsmen"
                          :label="$t('_view.craftsmen.with_unread_issues')"
                          @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesUnread)">
