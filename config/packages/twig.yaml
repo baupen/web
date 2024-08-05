@@ -9,3 +9,7 @@ twig:
     globals:
         env_support_email: '%env(SUPPORT_EMAIL)%'
         env_base_uri: '%env(BASE_URI)%'
+
+when@test:
+    twig:
+        strict_variables: true
