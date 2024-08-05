@@ -26,7 +26,7 @@ class IssueFeedEntryDataProvider extends FeedEntryDataProvider
     /**
      * @param Issue[] $resources
      */
-    protected function registerEvents(array $resources, FeedEntryAggregator $aggregator)
+    protected function registerEvents(array $resources, FeedEntryAggregator $aggregator): void
     {
         foreach ($resources as $issue) {
             if ($issue->getRegisteredAt() && $issue->getRegisteredBy()) {

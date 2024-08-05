@@ -33,7 +33,7 @@ class IssueTimeseriesDataProvider extends NoPaginationDataProvider
         return Issue::class === $resourceClass && 'get_timeseries' === $operationName;
     }
 
-    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = [])
+    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = []): iterable
     {
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
         $rootAlias = $queryBuilder->getRootAliases()[0];

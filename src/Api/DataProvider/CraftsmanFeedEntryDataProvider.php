@@ -26,7 +26,7 @@ class CraftsmanFeedEntryDataProvider extends FeedEntryDataProvider
     /**
      * @param Craftsman[] $resources
      */
-    protected function registerEvents(array $resources, FeedEntryAggregator $aggregator)
+    protected function registerEvents(array $resources, FeedEntryAggregator $aggregator): void
     {
         foreach ($resources as $craftsman) {
             if ($craftsman->getLastVisitOnline()) {

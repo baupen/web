@@ -51,7 +51,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         return !isset($context[self::ALREADY_CALLED]);
     }
 
-    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = [])
+    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = []): iterable
     {
         $context[self::ALREADY_CALLED] = true;
 
@@ -184,10 +184,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         throw new BadRequestException('You are not allowed to query this resource');
     }
 
-    /**
-     * @param string|int|null $restriction
-     */
-    private function ensureSearchFilterValid(array $query, string $property, $restriction): void
+    private function ensureSearchFilterValid(array $query, string $property, int|string|null $restriction): void
     {
         if (null !== $restriction) {
             if (!isset($query[$property])) {
