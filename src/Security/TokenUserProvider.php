@@ -17,39 +17,32 @@ use App\Entity\Filter;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-/**
- * This "UserProvider" mocks a real user provider.
- * It hands out an authentication token if the
- * Class AuthenticationTokenUserProvider.
- */
-class AuthenticationTokenUserProvider implements UserProviderInterface, PasswordUpgraderInterface
+class TokenUserProvider implements UserProviderInterface, PasswordUpgraderInterface
 {
     private ManagerRegistry $manager;
 
     /**
-     * AuthenticationTokenUserProvider constructor.
+     * TokenUserProvider constructor.
      */
     public function __construct(ManagerRegistry $manager)
     {
         $this->manager = $manager;
     }
 
+    public function supportsClass(string $class): bool
+    {
+        return AuthenticationToken::class === $class || is_subclass_of($class, AuthenticationToken::class);
+    }
+
     /**
-     * Symfony calls this method if you use features like switch_user
-     * or remember_me.
-     *
-     * If you're not using these features, you do not need to implement
-     * this method.
-     *
-     * @return UserInterface
-     *
      * @throws UsernameNotFoundException if the user is not found
      */
-    public function loadUserByUsername(string $username)
+    public function loadUserByUsername(string $username): AuthenticationToken
     {
         $token = new AuthenticationToken();
         $token->setToken($username);
@@ -75,45 +68,24 @@ class AuthenticationTokenUserProvider implements UserProviderInterface, Password
 
                 return $token;
             }
-            throw new UsernameNotFoundException();
+            throw new UserNotFoundException();
         }
 
-        throw new UsernameNotFoundException();
+        throw new UserNotFoundException();
     }
 
     /**
      * Refreshes the user after being reloaded from the session.
      *
-     * When a user is logged in, at the beginning of each request, the
-     * User object is loaded from the session and then this method is
-     * called. Your job is to make sure the user's data is still fresh by,
-     * for example, re-querying for fresh User data.
-     *
      * If your firewall is "stateless: true" (for a pure API), this
      * method is not called.
-     *
-     * @return UserInterface
      */
-    public function refreshUser(UserInterface $user)
+    public function refreshUser(UserInterface $user): AuthenticationToken
     {
         if (!$user instanceof AuthenticationToken) {
             throw new UnsupportedUserException(sprintf('Invalid user class "%s".', get_class($user)));
         }
 
         return $this->loadUserByUsername($user->getToken());
-    }
-
-    public function supportsClass(string $class)
-    {
-        return AuthenticationToken::class === $class || is_subclass_of($class, AuthenticationToken::class);
-    }
-
-    public function upgradePassword(UserInterface $user, string $newEncodedPassword): void
-    {
-        // intentionally skipped, as no passwords are stored
-
-        // when encoded passwords are in use, this method should:
-        // 1. persist the new password in the user storage
-        // 2. update the $user object with $user->setPassword($newEncodedPassword);
     }
 }
