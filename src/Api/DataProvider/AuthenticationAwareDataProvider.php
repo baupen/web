@@ -60,9 +60,9 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         $existingFilter = isset($context['filters']) ? $context['filters'] : [];
         if (($constructionManager = $this->tryGetConstructionManager($token)) instanceof ConstructionManager) {
             $this->ensureConstructionManagerQueryValid($constructionManager, $resourceClass, $existingFilter);
-        } elseif (($craftsman = $this->tryGetCraftsman($token)) !== null) {
+        } elseif (($craftsman = $this->tryGetCraftsman($token)) instanceof Craftsman) {
             $this->ensureCraftsmanQueryValid($craftsman, $resourceClass, $existingFilter);
-        } elseif (($filter = $this->tryGetFilter($token)) !== null) {
+        } elseif (($filter = $this->tryGetFilter($token)) instanceof Filter) {
             $this->ensureFilterQueryValid($filter, $resourceClass, $existingFilter);
         } else {
             $this->ensureRenderQuery($resourceClass, $operationName, $existingFilter);
