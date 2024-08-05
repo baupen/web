@@ -24,6 +24,7 @@ use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -89,11 +90,11 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private ?self $parent = null;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Map>
+     * @var Collection<int, \App\Entity\Map>
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Map", mappedBy="parent")
      */
-    private ArrayCollection $children;
+    private Collection $children;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", cascade={"persist"})
@@ -101,11 +102,11 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private ?MapFile $file = null;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Issue>
+     * @var Collection<int, \App\Entity\Issue>
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="map")
      */
-    private ArrayCollection $issues;
+    private Collection $issues;
 
     public function __construct()
     {

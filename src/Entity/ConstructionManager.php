@@ -21,6 +21,7 @@ use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeTrait;
 use App\Entity\Traits\UserTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -87,11 +88,11 @@ class ConstructionManager extends BaseEntity implements UserInterface
     private ?string $phone = null;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\ConstructionSite>
+     * @var Collection<int, \App\Entity\ConstructionSite>
      *
      * @ORM\ManyToMany(targetEntity="ConstructionSite", mappedBy="constructionManagers")
      */
-    private ArrayCollection $constructionSites;
+    private Collection $constructionSites;
 
     /**
      * @ORM\Column(type="text", options={"default": "de"})

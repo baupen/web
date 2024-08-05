@@ -25,6 +25,7 @@ use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -135,18 +136,18 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     private ConstructionSite $constructionSite;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Issue>
+     * @var Collection<int, \App\Entity\Issue>
      *
      * @ORM\OneToMany(targetEntity="Issue", mappedBy="craftsman")
      */
-    private ArrayCollection $issues;
+    private Collection $issues;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Issue>
+     * @var Collection<int, \App\Entity\Issue>
      *
      * @ORM\OneToMany(targetEntity="Issue", mappedBy="resolvedBy")
      */
-    private ArrayCollection $resolvedIssues;
+    private Collection $resolvedIssues;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
