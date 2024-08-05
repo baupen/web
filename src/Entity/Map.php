@@ -25,6 +25,7 @@ use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -150,17 +151,17 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     }
 
     /**
-     * @return Map[]|ArrayCollection
+     * @return Map[]|Collection
      */
-    public function getChildren(): ArrayCollection
+    public function getChildren(): Collection
     {
         return $this->children;
     }
 
     /**
-     * @return Issue[]|ArrayCollection
+     * @return Issue[]|Collection
      */
-    public function getIssues(): ArrayCollection
+    public function getIssues(): Collection
     {
         return $this->issues;
     }
