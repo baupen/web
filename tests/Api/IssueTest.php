@@ -248,7 +248,7 @@ class IssueTest extends ApiTestCase
         $issue->setDescription('Hi');
         sleep(1); // sleep one second to ensure lastChangedAt different
         $this->saveEntity($issue);
-        $this->testOrderAppliedFor('lastChangedAt', $client, $constructionSite);
+        $this->assertOrderAppliedFor('lastChangedAt', $client, $constructionSite);
     }
 
     public function testDeadlineNumberOrder(): void
@@ -265,8 +265,8 @@ class IssueTest extends ApiTestCase
         }
         $this->saveEntity(...$constructionSite->getIssues()->toArray());
 
-        $this->testOrderAppliedFor('deadline', $client, $constructionSite);
-        $this->testOrderAppliedFor('number', $client, $constructionSite);
+        $this->assertOrderAppliedFor('deadline', $client, $constructionSite);
+        $this->assertOrderAppliedFor('number', $client, $constructionSite);
     }
 
     public function testLastChangedAtFilter(): void
@@ -745,7 +745,7 @@ class IssueTest extends ApiTestCase
         $this->assertSame(0, $dayBeforeYesterdayEntry['closedCount']);
     }
 
-    private function testOrderAppliedFor(string $entry, Client $client, ConstructionSite $constructionSite): void
+    private function assertOrderAppliedFor(string $entry, Client $client, ConstructionSite $constructionSite): void
     {
         $url = '/api/issues?constructionSite='.$constructionSite->getId().'&order['.$entry.']=';
 
