@@ -46,8 +46,19 @@ jobs:
         run: |
           npm config set "@fortawesome:registry" https://npm.fontawesome.com/
           npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_AUTH_TOKEN
-          yarn install
-          yarn encore production
+          npm install
+
+      - name: Cache npm packages
+        id: npm-cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-js-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-js-
+
+      - name: Build npm
+        run: npm run build
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2

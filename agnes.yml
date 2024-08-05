@@ -2,7 +2,7 @@ agnes:
   version: 4
 
 config:
-  path: .config
+  path: .agnes
   repository:
     url: git@gitlab.com:baupen/agnes-config/web.git
 
@@ -31,8 +31,8 @@ scripts:
     hook: build
     script:
       - 'composer install --verbose --prefer-dist --no-interaction --no-dev --optimize-autoloader --no-scripts'
-      - 'yarn install'
-      - 'yarn run encore production'
+      - 'npm install'
+      - 'npm run build'
       - 'cp public/build/email.*.css public/build/email.css'
       - 'rm -rf node_modules'
 
