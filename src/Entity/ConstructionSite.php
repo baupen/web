@@ -23,6 +23,7 @@ use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -79,7 +80,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     private ?ConstructionSiteImage $image = null;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\ConstructionManager>
+     * @var Collection<int, \App\Entity\ConstructionManager>
      *
      * @Groups({"construction-site-read", "construction-site-write"})
      *
@@ -87,46 +88,46 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      *
      * @ORM\JoinTable(name="construction_site_construction_manager")
      */
-    private \Doctrine\Common\Collections\ArrayCollection|array $constructionManagers;
+    private Collection $constructionManagers;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Map>
+     * @var Collection<int, \App\Entity\Map>
      *
      * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite", cascade={"persist"})
      *
      * @ORM\OrderBy({"name": "ASC"})
      */
-    private ArrayCollection $maps;
+    private Collection $maps;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Craftsman>
+     * @var Collection<int, \App\Entity\Craftsman>
      *
      * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite", cascade={"persist"})
      */
-    private ArrayCollection $craftsmen;
+    private Collection $craftsmen;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Issue>
+     * @var Collection<int, \App\Entity\Issue>
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="constructionSite", cascade={"persist"})
      */
-    private ArrayCollection $issues;
+    private Collection $issues;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\EmailTemplate>
+     * @var Collection<int, \App\Entity\EmailTemplate>
      *
      * @ORM\OneToMany(targetEntity="App\Entity\EmailTemplate", mappedBy="constructionSite", cascade={"persist"})
      *
      * @ORM\OrderBy({"purpose": "ASC", "name": "ASC"})
      */
-    private ArrayCollection $emailTemplates;
+    private Collection $emailTemplates;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Filter>
+     * @var Collection<int, \App\Entity\Filter>
      *
      * @ORM\OneToMany(targetEntity="Filter", mappedBy="constructionSite")
      */
-    private ArrayCollection $filters;
+    private Collection $filters;
 
     /**
      * @Groups({"construction-site-read"})
