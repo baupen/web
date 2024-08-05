@@ -119,10 +119,10 @@ class SecurityController extends BaseDoctrineController
     }
 
     #[Route(path: '/register/confirm/{authenticationHash}', name: 'register_confirm')]
-    public function registerConfirm(Request $request, string $authenticationHash, TranslatorInterface $translator, EmailServiceInterface $emailService, SampleServiceInterface $sampleService, UserServiceInterface $userService, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler): \Symfony\Component\HttpFoundation\RedirectResponse|Response
+    public function registerConfirm(Request $request, string $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, EmailServiceInterface $emailService, SampleServiceInterface $sampleService, UserServiceInterface $userService, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         /** @var ConstructionManager $constructionManager */
-        if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $constructionManager)) {
+        if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $registry, $constructionManager)) {
             return $this->redirectToRoute('login');
         }
 
@@ -182,10 +182,10 @@ class SecurityController extends BaseDoctrineController
     }
 
     #[Route(path: '/recover/confirm/{authenticationHash}', name: 'recover_confirm')]
-    public function recoverConfirm(Request $request, $authenticationHash, TranslatorInterface $translator, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler): \Symfony\Component\HttpFoundation\RedirectResponse|Response
+    public function recoverConfirm(Request $request, $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         /** @var ConstructionManager $constructionManager */
-        if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $constructionManager)) {
+        if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $registry, $constructionManager)) {
             return $this->redirectToRoute('login');
         }
 
@@ -215,10 +215,10 @@ class SecurityController extends BaseDoctrineController
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
-    private function getConstructionManagerFromAuthenticationHash(string $authenticationHash, TranslatorInterface $translator, ?ConstructionManager &$constructionManager = null): bool
+    private function getConstructionManagerFromAuthenticationHash(string $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, ?ConstructionManager &$constructionManager = null): bool
     {
         /** @var ConstructionManager $constructionManager */
-        $constructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['authenticationHash' => $authenticationHash]);
+        $constructionManager = $registry->getRepository(ConstructionManager::class)->findOneBy(['authenticationHash' => $authenticationHash]);
         if (null === $constructionManager) {
             $this->displayError($translator->trans('recover_confirm.error.invalid_hash', [], 'security'));
 
