@@ -11,7 +11,6 @@
 
 namespace App\Api\DataPersister;
 
-use ApiPlatform\Core\Api\IriConverterInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
@@ -33,18 +32,15 @@ class ConstructionManagerDataPersister implements ContextAwareDataPersisterInter
 
     private ManagerRegistry $manager;
 
-    private IriConverterInterface $iriConverter;
-
     /**
      * ConstructionManagerDataPersister constructor.
      */
-    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, TokenStorageInterface $tokenStorage, UserServiceInterface $userService, ManagerRegistry $manager, IriConverterInterface $iriConverter)
+    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, TokenStorageInterface $tokenStorage, UserServiceInterface $userService, ManagerRegistry $manager)
     {
         $this->decorated = $decoratedDataPersister;
         $this->tokenStorage = $tokenStorage;
         $this->userService = $userService;
         $this->manager = $manager;
-        $this->iriConverter = $iriConverter;
     }
 
     public function supports($data, array $context = []): bool

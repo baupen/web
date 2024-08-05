@@ -44,7 +44,7 @@ class SerializerAwareDataProvider
     /**
      * @throws RuntimeException
      */
-    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = [])
+    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = []): iterable
     {
         /** @var EntityManagerInterface $manager */
         $manager = $this->managerRegistry->getManagerForClass($resourceClass);
@@ -60,12 +60,9 @@ class SerializerAwareDataProvider
         $queryNameGenerator = new QueryNameGenerator();
         // code taken from ApiPlatform\Core\Bridge\Doctrine\Orm\CollectionDataProvider
         foreach ($this->collectionExtensions as $extension) {
-            /* @noinspection PhpMethodParametersCountMismatchInspection */
             $extension->applyToCollection($queryBuilder, $queryNameGenerator, $resourceClass, $operationName, $context);
 
-            /* @noinspection PhpMethodParametersCountMismatchInspection */
             if ($extension instanceof QueryResultCollectionExtensionInterface && $extension->supportsResult($resourceClass, $operationName, $context)) {
-                /* @noinspection PhpMethodParametersCountMismatchInspection */
                 return $extension->getResult($queryBuilder, $resourceClass, $operationName, $context);
             }
         }
