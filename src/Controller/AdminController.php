@@ -15,11 +15,12 @@ use App\Controller\Base\BaseController;
 use App\Entity\ConstructionManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-#[\Symfony\Component\Routing\Attribute\Route(path: '/admin')]
+#[Route(path: '/admin')]
 class AdminController extends BaseController
 {
-    #[\Symfony\Component\Routing\Attribute\Route(path: '', name: 'admin_index')]
+    #[Route(path: '', name: 'admin_index')]
     public function index(ManagerRegistry $registry): Response
     {
         $constructionManagerRepo = $registry->getRepository(ConstructionManager::class);

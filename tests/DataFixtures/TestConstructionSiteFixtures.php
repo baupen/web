@@ -56,7 +56,7 @@ class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInte
         $manager->flush();
     }
 
-    public function getOrder()
+    public function getOrder(): int
     {
         return self::ORDER;
     }

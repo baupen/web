@@ -45,7 +45,7 @@ class TestConstructionManagerFixtures extends Fixture implements OrderedFixtureI
         $manager->flush();
     }
 
-    public function getOrder()
+    public function getOrder(): int
     {
         return self::ORDER;
     }

@@ -38,7 +38,7 @@ class TestEmailTemplateFixtures extends Fixture implements OrderedFixtureInterfa
         $manager->flush();
     }
 
-    public function getOrder()
+    public function getOrder(): int
     {
         return self::ORDER;
     }
