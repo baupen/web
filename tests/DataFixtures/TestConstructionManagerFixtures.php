@@ -23,7 +23,7 @@ class TestConstructionManagerFixtures extends Fixture implements OrderedFixtureI
     public const ASSOCIATED_CONSTRUCTION_MANAGER_EMAIL = 'associated@baupen.ch';
     public const DISASSOCIATED_CONSTRUCTION_MANAGER_EMAIL = 'disassociated@baupen.ch';
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $entries = [
             [self::CONSTRUCTION_MANAGER_EMAIL, 'asdf', 'GivenName', 'FamilyName', true],

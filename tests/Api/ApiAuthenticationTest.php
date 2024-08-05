@@ -30,7 +30,7 @@ class ApiAuthenticationTest extends ApiTestCase
     use AuthenticationTrait;
     use TestDataTrait;
 
-    public function testCannotAccessOrModifyExceptExceptions()
+    public function testCannotAccessOrModifyExceptExceptions(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
@@ -115,7 +115,7 @@ class ApiAuthenticationTest extends ApiTestCase
         }
     }
 
-    public function testApiAccessEmailTemplates()
+    public function testApiAccessEmailTemplates(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class, TestEmailTemplateFixtures::class]);
@@ -153,7 +153,7 @@ class ApiAuthenticationTest extends ApiTestCase
         $this->assertApiTokenRequestForbidden($client, $filterToken, 'DELETE', $sameConstructionSiteId);
     }
 
-    public function testFileAndImageDownload()
+    public function testFileAndImageDownload(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
@@ -193,7 +193,7 @@ class ApiAuthenticationTest extends ApiTestCase
         $this->assertApiResponseFileIsDownloadable($client, $response, 'imageUrl');
     }
 
-    public function testCraftsmanGetQueryEnforced()
+    public function testCraftsmanGetQueryEnforced(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
@@ -224,7 +224,7 @@ class ApiAuthenticationTest extends ApiTestCase
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issues?'.implode('&', $otherRequiredProperties).'&'.$constructionSiteCondition);
     }
 
-    public function testFilterGetQueryEnforced()
+    public function testFilterGetQueryEnforced(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
@@ -252,7 +252,7 @@ class ApiAuthenticationTest extends ApiTestCase
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issues?'.$constructionSiteCondition);
     }
 
-    public function testConstructionSiteGetQueryEnforced()
+    public function testConstructionSiteGetQueryEnforced(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
@@ -279,7 +279,7 @@ class ApiAuthenticationTest extends ApiTestCase
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/issues?'.$constructionSiteCondition);
     }
 
-    public function testCraftsmanEdit()
+    public function testCraftsmanEdit(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);

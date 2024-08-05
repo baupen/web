@@ -102,7 +102,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function getMapFile(Request $request, Map $map, MapFile $mapFile, string $filename, PathServiceInterface $pathService, MapFileService $mapFileService)
+    public function getMapFile(Request $request, Map $map, MapFile $mapFile, string $filename, PathServiceInterface $pathService, MapFileService $mapFileService): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
             throw new NotFoundHttpException();
@@ -130,7 +130,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function getMapFileRender(Request $request, Map $map, MapFile $mapFile, string $filename, ImageServiceInterface $imageService)
+    public function getMapFileRender(Request $request, Map $map, MapFile $mapFile, string $filename, ImageServiceInterface $imageService): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         if ($map->getFile() !== $mapFile || $mapFile->getFilename() !== $filename) {
             throw new NotFoundHttpException();
@@ -144,10 +144,8 @@ class ApiController extends BaseDoctrineController
 
     /**
      * @Route("/maps/{map}/file", name="post_map_file", methods={"POST"})
-     *
-     * @return Response
      */
-    public function postMapFile(Request $request, Map $map, StorageServiceInterface $storageService, CacheServiceInterface $cacheService)
+    public function postMapFile(Request $request, Map $map, StorageServiceInterface $storageService, CacheServiceInterface $cacheService): Response
     {
         $this->denyAccessUnlessGranted(MapVoter::MAP_MODIFY, $map);
 
@@ -168,10 +166,8 @@ class ApiController extends BaseDoctrineController
 
     /**
      * @Route("/maps/{map}/file", name="delete_map_file", methods={"DELETE"})
-     *
-     * @return Response
      */
-    public function deleteMapFile(Map $map)
+    public function deleteMapFile(Map $map): Response
     {
         $this->denyAccessUnlessGranted(MapVoter::MAP_MODIFY, $map);
 
@@ -186,7 +182,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function getConstructionSiteImage(Request $request, ConstructionSite $constructionSite, ConstructionSiteImage $constructionSiteImage, string $filename, ImageServiceInterface $imageService)
+    public function getConstructionSiteImage(Request $request, ConstructionSite $constructionSite, ConstructionSiteImage $constructionSiteImage, string $filename, ImageServiceInterface $imageService): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         if ($constructionSite->getImage() !== $constructionSiteImage || $constructionSiteImage->getFilename() !== $filename) {
             throw new NotFoundHttpException();
@@ -200,10 +196,8 @@ class ApiController extends BaseDoctrineController
 
     /**
      * @Route("/construction_sites/{constructionSite}/image", name="post_construction_site_image", methods={"POST"})
-     *
-     * @return Response
      */
-    public function postConstructionSiteImage(Request $request, ConstructionSite $constructionSite, StorageServiceInterface $storageService, CacheServiceInterface $cacheService)
+    public function postConstructionSiteImage(Request $request, ConstructionSite $constructionSite, StorageServiceInterface $storageService, CacheServiceInterface $cacheService): Response
     {
         $this->denyAccessUnlessGranted(ConstructionSiteVoter::CONSTRUCTION_SITE_MODIFY, $constructionSite);
 
@@ -224,10 +218,8 @@ class ApiController extends BaseDoctrineController
 
     /**
      * @Route("/construction_sites/{constructionSite}/image", name="delete_construction_site_image", methods={"DELETE"})
-     *
-     * @return Response
      */
-    public function deleteConstructionSiteImage(ConstructionSite $constructionSite)
+    public function deleteConstructionSiteImage(ConstructionSite $constructionSite): Response
     {
         $this->denyAccessUnlessGranted(ConstructionSiteVoter::CONSTRUCTION_SITE_MODIFY, $constructionSite);
 
@@ -242,7 +234,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function getIssueImage(Request $request, Issue $issue, IssueImage $issueImage, string $filename, ImageServiceInterface $imageService)
+    public function getIssueImage(Request $request, Issue $issue, IssueImage $issueImage, string $filename, ImageServiceInterface $imageService): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         if ($issue->getImage() !== $issueImage || $issueImage->getFilename() !== $filename) {
             throw new NotFoundHttpException();
@@ -259,7 +251,7 @@ class ApiController extends BaseDoctrineController
      *
      * @return Response
      */
-    public function getIssueRender(Request $request, Issue $issue, ImageServiceInterface $imageService)
+    public function getIssueRender(Request $request, Issue $issue, ImageServiceInterface $imageService): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $mapFile = $issue->getMap()->getFile();
         if (!$mapFile instanceof MapFile) {
@@ -274,10 +266,8 @@ class ApiController extends BaseDoctrineController
 
     /**
      * @Route("/issues/{issue}/image", name="post_issue_image", methods={"POST"})
-     *
-     * @return Response
      */
-    public function postIssueImage(Request $request, Issue $issue, StorageServiceInterface $storageService, CacheServiceInterface $cacheService)
+    public function postIssueImage(Request $request, Issue $issue, StorageServiceInterface $storageService, CacheServiceInterface $cacheService): Response
     {
         $this->denyAccessUnlessGranted(IssueVoter::ISSUE_MODIFY, $issue);
 
@@ -298,10 +288,8 @@ class ApiController extends BaseDoctrineController
 
     /**
      * @Route("/issues/{issue}/image", name="delete_issue_image", methods={"DELETE"})
-     *
-     * @return Response
      */
-    public function deleteIssueImage(Issue $issue)
+    public function deleteIssueImage(Issue $issue): Response
     {
         $this->denyAccessUnlessGranted(IssueVoter::ISSUE_MODIFY, $issue);
 

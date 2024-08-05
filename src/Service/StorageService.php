@@ -36,7 +36,7 @@ class StorageService implements StorageServiceInterface
         $this->pathService = $pathService;
     }
 
-    public function setNewFolderName(ConstructionSite $constructionSite)
+    public function setNewFolderName(ConstructionSite $constructionSite): void
     {
         $rootFolder = $this->pathService->getRootFolderOfConstructionSites();
         $sanitizedFolderName = FileHelper::sanitizeFileName($constructionSite->getName());
@@ -100,7 +100,7 @@ class StorageService implements StorageServiceInterface
     /**
      * @param FileTrait $entity
      */
-    private function uploadFile(UploadedFile $file, string $targetFolder, $entity): bool
+    private function uploadFile(UploadedFile $file, string $targetFolder, ConstructionSiteImage|MapFile|IssueImage $entity): bool
     {
         FileHelper::ensureFolderExists($targetFolder);
         $targetFileName = $this->getSanitizedUniqueFileName($targetFolder, $file->getClientOriginalName());

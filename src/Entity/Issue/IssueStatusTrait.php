@@ -104,7 +104,7 @@ trait IssueStatusTrait
     /**
      * @Assert\Callback
      */
-    public function validateStatus(ExecutionContextInterface $context)
+    public function validateStatus(ExecutionContextInterface $context): void
     {
         if ((null === $this->registeredAt) !== (null === $this->registeredBy)) {
             $context->buildViolation('registeredAt and registeredBy must both be set or both null.')->addViolation();

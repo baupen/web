@@ -16,22 +16,22 @@ use Symfony\Component\HttpFoundation\Response as StatusCode;
 
 trait AssertApiOperationsTrait
 {
-    private function assertApiOperationUnsupported(Client $client, string $url, string ...$methods)
+    private function assertApiOperationUnsupported(Client $client, string $url, string ...$methods): void
     {
         $this->assertApiOperationsStatusCodeSame(StatusCode::HTTP_METHOD_NOT_ALLOWED, $client, $url, ...$methods);
     }
 
-    private function assertApiOperationNotAuthorized(Client $client, string $url, string ...$methods)
+    private function assertApiOperationNotAuthorized(Client $client, string $url, string ...$methods): void
     {
         $this->assertApiOperationsStatusCodeSame(StatusCode::HTTP_UNAUTHORIZED, $client, $url, ...$methods);
     }
 
-    private function assertApiOperationForbidden(Client $client, string $url, string ...$methods)
+    private function assertApiOperationForbidden(Client $client, string $url, string ...$methods): void
     {
         $this->assertApiOperationsStatusCodeSame(StatusCode::HTTP_FORBIDDEN, $client, $url, ...$methods);
     }
 
-    private function assertApiOperationsStatusCodeSame(int $expectedCode, Client $client, string $url, string ...$methods)
+    private function assertApiOperationsStatusCodeSame(int $expectedCode, Client $client, string $url, string ...$methods): void
     {
         foreach ($methods as $method) {
             if ('GET' === $method) {

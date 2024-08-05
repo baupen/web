@@ -75,7 +75,7 @@ class ReportService implements ReportServiceInterface
             $this->fillIssueCountDelta($craftsmanDeltaReport, $comparisonTimestamp, $registeredAt, $resolvedAt, $closedAt);
         }
 
-        usort($craftsmanDeltaReportByCraftsman, function (CraftsmanDeltaReport $a, CraftsmanDeltaReport $b) {
+        usort($craftsmanDeltaReportByCraftsman, function (CraftsmanDeltaReport $a, CraftsmanDeltaReport $b): int {
             return $a->getCraftsman()->sort($b->getCraftsman());
         });
 
@@ -109,7 +109,7 @@ class ReportService implements ReportServiceInterface
     /**
      * @param IssueCountDeltaTrait $issueCountDelta
      */
-    private function fillIssueCountDelta($issueCountDelta, \DateTime $timestamp, ?\DateTime $registeredAt, ?\DateTime $resolvedAt, ?\DateTime $closedAt)
+    private function fillIssueCountDelta(CraftsmanDeltaReport|CraftsmanReport $issueCountDelta, \DateTime $timestamp, ?\DateTime $registeredAt, ?\DateTime $resolvedAt, ?\DateTime $closedAt): void
     {
         // (newly) closed -> no longer open
         // (newly) resolved => no longer open

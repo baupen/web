@@ -60,29 +60,23 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     use SoftDeleteTrait;
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank
      *
      * @Groups({"construction-site-read", "construction-site-write"})
      *
      * @ORM\Column(type="text")
      */
-    private $name;
+    private string $name;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="text")
      */
-    private $folderName;
+    private ?string $folderName = null;
 
     /**
-     * @var ConstructionSiteImage|null
-     *
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSiteImage", cascade={"persist"})
      */
-    private $image;
+    private ?ConstructionSiteImage $image = null;
 
     /**
      * @var ConstructionManager[]|ArrayCollection
@@ -93,7 +87,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      *
      * @ORM\JoinTable(name="construction_site_construction_manager")
      */
-    private $constructionManagers;
+    private \Doctrine\Common\Collections\ArrayCollection|array $constructionManagers;
 
     /**
      * @var Map[]|ArrayCollection
@@ -102,21 +96,21 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      *
      * @ORM\OrderBy({"name": "ASC"})
      */
-    private $maps;
+    private ArrayCollection $maps;
 
     /**
      * @var Craftsman[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite", cascade={"persist"})
      */
-    private $craftsmen;
+    private ArrayCollection $craftsmen;
 
     /**
      * @var Issue[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="constructionSite", cascade={"persist"})
      */
-    private $issues;
+    private ArrayCollection $issues;
 
     /**
      * @var EmailTemplate[]|ArrayCollection
@@ -125,23 +119,21 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      *
      * @ORM\OrderBy({"purpose": "ASC", "name": "ASC"})
      */
-    private $emailTemplates;
+    private ArrayCollection $emailTemplates;
 
     /**
      * @var Filter[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Filter", mappedBy="constructionSite")
      */
-    private $filters;
+    private ArrayCollection $filters;
 
     /**
-     * @var bool
-     *
      * @Groups({"construction-site-read"})
      *
      * @ORM\Column(type="boolean", options={"default": false})
      */
-    private $isHidden = false;
+    private bool $isHidden = false;
 
     /**
      * Construction site constructor.

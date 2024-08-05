@@ -28,7 +28,7 @@ trait FileResponseTrait
         return $this->tryCreateFileResponse($path, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename, false);
     }
 
-    private function tryCreateFileResponse(?string $path, string $disposition, string $filename, bool $cache)
+    private function tryCreateFileResponse(?string $path, string $disposition, string $filename, bool $cache): BinaryFileResponse
     {
         if (null === $path) {
             throw new NotFoundHttpException();

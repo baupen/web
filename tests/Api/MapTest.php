@@ -28,7 +28,7 @@ class MapTest extends ApiTestCase
     use AuthenticationTrait;
     use TestDataTrait;
 
-    public function testValidMethodsNeedAuthentication()
+    public function testValidMethodsNeedAuthentication(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -42,7 +42,7 @@ class MapTest extends ApiTestCase
         $this->assertApiOperationForbidden($client, '/api/maps/'.$constructionSite->getMaps()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -57,7 +57,7 @@ class MapTest extends ApiTestCase
         $this->assertApiResponseFileIsDownloadable($client, $response, 'fileUrl', ResponseHeaderBag::DISPOSITION_INLINE, '/render.jpg');
     }
 
-    public function testPostPatchAndDelete()
+    public function testPostPatchAndDelete(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -104,7 +104,7 @@ class MapTest extends ApiTestCase
         $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/maps?constructionSite='.$constructionSite->getId(), $response);
     }
 
-    public function testIsDeletedFilter()
+    public function testIsDeletedFilter(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -120,7 +120,7 @@ class MapTest extends ApiTestCase
         $this->assertApiCollectionNotContainsIri($client, '/api/maps?constructionSite='.$constructionSite->getId().'&isDeleted=true', $mapIri);
     }
 
-    public function testLastChangedAtFilter()
+    public function testLastChangedAtFilter(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -133,7 +133,7 @@ class MapTest extends ApiTestCase
         $this->assertApiCollectionFilterDateTime($client, '/api/maps?constructionSite='.$constructionSite->getId().'&', $mapIri, 'lastChangedAt', $map->getLastChangedAt());
     }
 
-    public function testIdFilters()
+    public function testIdFilters(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);

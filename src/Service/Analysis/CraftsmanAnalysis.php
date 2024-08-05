@@ -23,7 +23,7 @@ class CraftsmanAnalysis
 
     private ?\DateTime $lastIssueResolved = null;
 
-    public static function createWithIssueAnalysis(CraftsmanIssueAnalysis $issueAnalysis)
+    public static function createWithIssueAnalysis(CraftsmanIssueAnalysis $issueAnalysis): self
     {
         $self = new self();
 

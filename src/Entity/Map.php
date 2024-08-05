@@ -62,58 +62,50 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     use SoftDeleteTrait;
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank
      *
      * @Groups({"map-read", "map-write"})
      *
      * @ORM\Column(type="text")
      */
-    private $name;
+    private string $name;
 
     /**
-     * @var ConstructionSite
-     *
      * @Assert\NotBlank
      *
      * @Groups({"map-create"})
      *
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="maps")
      */
-    private $constructionSite;
+    private ConstructionSite $constructionSite;
 
     /**
-     * @var Map|null
-     *
      * @ApiProperty(readableLink=false, writableLink=false)
      *
      * @Groups({"map-read", "map-write"})
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="children")
      */
-    private $parent;
+    private ?self $parent = null;
 
     /**
      * @var Map[]
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Map", mappedBy="parent")
      */
-    private $children;
+    private ArrayCollection $children;
 
     /**
-     * @var MapFile|null
-     *
      * @ORM\ManyToOne(targetEntity="App\Entity\MapFile", cascade={"persist"})
      */
-    private $file;
+    private ?MapFile $file = null;
 
     /**
      * @var Issue[]
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="map")
      */
-    private $issues;
+    private ArrayCollection $issues;
 
     public function __construct()
     {
@@ -172,10 +164,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         return $this->issues;
     }
 
-    /**
-     * @return string
-     */
-    public function getContext()
+    public function getContext(): string
     {
         if ($this->getParent() instanceof Map) {
             $parentContext = $this->getParent()->getContext();
@@ -189,10 +178,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
         return '';
     }
 
-    /**
-     * @return string
-     */
-    public function getNameWithContext()
+    public function getNameWithContext(): string
     {
         $context = $this->getContext();
         if (mb_strlen($context) > 0) {

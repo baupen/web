@@ -13,7 +13,7 @@ namespace App\Helper;
 
 class FileHelper
 {
-    public static function ensureFolderExists(string $folderName)
+    public static function ensureFolderExists(string $folderName): void
     {
         if (!is_dir($folderName)) {
             mkdir($folderName, 0777, true);

@@ -20,6 +20,10 @@ return RectorConfig::configure()
     ->withPreparedSets(
         deadCode: true,
         codeQuality: true,
+        symfonyConfigs: true,
+        symfonyCodeQuality: true,
+        privatization: true,
+        typeDeclarations: true,
     )
     ->withSymfonyContainerXml(__DIR__.'/var/cache/dev/App_KernelDevDebugContainer.xml')
     ->withSets([

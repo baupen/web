@@ -104,7 +104,7 @@ class CacheClearCommand extends Command
         return 0;
     }
 
-    private function clearFolder(SymfonyStyle $io, string $folder)
+    private function clearFolder(SymfonyStyle $io, string $folder): void
     {
         $io->text('Removing the folder at '.$folder);
         exec('rm -rf '.$folder);

@@ -48,7 +48,7 @@ class Report
     /**
      * @param string[] $filterEntries
      */
-    public function addIntroduction(?string $headerImage, string $name, string $address, string $elements, array $filterEntries, string $filterHeader)
+    public function addIntroduction(?string $headerImage, string $name, string $address, string $elements, array $filterEntries, string $filterHeader): void
     {
         $startY = $this->pdfDocument->GetY();
         $maxContentHeight = $startY;
@@ -102,7 +102,7 @@ class Report
         $this->pdfDocument->SetY(max($this->pdfDocument->GetY(), $maxContentHeight) + $this->pdfSizes->getContentSpacerBig());
     }
 
-    public function save(string $targetFilePath)
+    public function save(string $targetFilePath): void
     {
         $this->pdfDocument->Output($targetFilePath, 'F');
     }
@@ -112,18 +112,18 @@ class Report
         return $this->pdfDocument->Output($dest = 'S');
     }
 
-    public function addMap(string $name, ?string $context, ?string $mapImageFilePath)
+    public function addMap(string $name, ?string $context, ?string $mapImageFilePath): void
     {
         $this->pdfDocument->AddPage();
 
         $this->setDefaults();
 
-        $printTitle = function () use ($name, $context) {
+        $printTitle = function () use ($name, $context): void {
             $this->pdfDocument->SetY($this->pdfDocument->GetY() + $this->pdfSizes->getContentSpacerBig());
             $this->printH2($name, 0, $context);
         };
 
-        $headerHeight = $this->getHeightOf(function () use ($printTitle) {
+        $headerHeight = $this->getHeightOf(function () use ($printTitle): void {
             $printTitle();
         });
 
@@ -157,7 +157,7 @@ class Report
      * @param string[]   $head
      * @param string[][] $body
      */
-    public function addSizedTable(array $columnWidths, array $head, array $body)
+    public function addSizedTable(array $columnWidths, array $head, array $body): void
     {
         $this->setDefaults();
 
@@ -194,7 +194,7 @@ class Report
      * @param string|null $tableTitle
      * @param mixed|null  $firstColumnSize
      */
-    public function addTable($tableHead, $tableContent, $tableFooter, $tableTitle = null, $firstColumnSize = null)
+    public function addTable($tableHead, $tableContent, $tableFooter, $tableTitle = null, $firstColumnSize = null): void
     {
         $this->setDefaults();
 
@@ -207,7 +207,7 @@ class Report
         $this->pdfDocument->setCellPaddings(...$this->pdfSizes->getTableCellPadding());
         $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
 
-        $printEmphasizedRow = function ($content) use ($firstColumnSize) {
+        $printEmphasizedRow = function ($content) use ($firstColumnSize): void {
             // make upper case
             $row = [];
             foreach ($content as $item) {
@@ -249,7 +249,7 @@ class Report
     /**
      * @param array $imageGrid each grid entry must define an imagePath & identification
      */
-    public function addImageGrid(array $imageGrid, int $columnCount)
+    public function addImageGrid(array $imageGrid, int $columnCount): void
     {
         $this->setDefaults();
 
@@ -297,7 +297,7 @@ class Report
         }
     }
 
-    private function setDefaults()
+    private function setDefaults(): void
     {
         // set typography
         $this->pdfDocument->SetFont(...$this->pdfDesign->getDefaultFontFamily());
@@ -321,7 +321,7 @@ class Report
         }
     }
 
-    private function printH2($text, $columnWidth = 0, $description = '')
+    private function printH2(string $text, $columnWidth = 0, ?string $description = ''): void
     {
         if (mb_strlen($description) > 0) {
             $this->pdfDocument->SetTextColor(...$this->pdfDesign->getSecondaryTextColor());
@@ -338,7 +338,7 @@ class Report
         $this->pdfDocument->Ln($this->pdfSizes->getLnHeight());
     }
 
-    private function printH3($text, $columnWidth = 0, $description = '')
+    private function printH3($text, $columnWidth = 0, $description = ''): void
     {
         $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
         $this->pdfDocument->SetFont(...$this->pdfDesign->getEmphasisFontFamily());
@@ -352,7 +352,7 @@ class Report
         $this->pdfDocument->Ln($this->pdfSizes->getLnHeight());
     }
 
-    private function printP($text, $columnWidth = 0, $secondary = false)
+    private function printP(string $text, $columnWidth = 0, bool $secondary = false): void
     {
         if ($secondary) {
             $this->pdfDocument->SetTextColor(...$this->pdfDesign->getSecondaryTextColor());
@@ -365,14 +365,14 @@ class Report
         $this->pdfDocument->SetTextColor(...$this->pdfDesign->getTextColor());
     }
 
-    private function printHtmlP($html)
+    private function printHtmlP(string $html): void
     {
         $this->pdfDocument->writeHTMLCell(0, 0, $this->pdfDocument->GetX(), $this->pdfDocument->GetY(), $html, 0, 1);
         // -2 because the html does not stop at the correct height
         $this->pdfDocument->SetY($this->pdfDocument->GetY());
     }
 
-    private function getHeightOf($closure)
+    private function getHeightOf(\Closure $closure): int|float
     {
         $this->pdfDocument->startTransaction();
         if ($this->pdfDocument->GetY() > $this->pdfSizes->getPageSizeY()) {
@@ -394,9 +394,8 @@ class Report
      *
      * @param float[]  $columnWidths
      * @param string[] $row
-     * @param bool     $retry
      */
-    private function printSizedRow(array $columnWidths, array $row, bool $fill = false, $retry = false)
+    private function printSizedRow(array $columnWidths, array $row, bool $fill = false, bool $retry = false): void
     {
         // put columns
         $currentContentHeight = 0;
@@ -462,7 +461,7 @@ class Report
         $this->pdfDocument->commitTransaction();
     }
 
-    private function printRow($row, $fill, $firstColumnSize = null)
+    private function printRow($row, bool $fill, $firstColumnSize = null): bool
     {
         // alternative background colors
         $columnCount = \count($row);

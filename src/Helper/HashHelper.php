@@ -17,10 +17,8 @@ class HashHelper
 
     /**
      * generates a hash from alpha numeric characters of length 20.
-     *
-     * @return string
      */
-    public static function getHash()
+    public static function getHash(): string
     {
         $newHash = '';
         // 0-9, A-Z, a-z

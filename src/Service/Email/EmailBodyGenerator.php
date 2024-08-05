@@ -31,7 +31,7 @@ class EmailBodyGenerator
         $this->urlGenerator = $urlGenerator;
     }
 
-    public function fromConstructionSiteReports(array $constructionSiteReports)
+    public function fromConstructionSiteReports(array $constructionSiteReports): array
     {
         $normalizedConstructionSiteReports = [];
         foreach ($constructionSiteReports as $constructionSiteReport) {
@@ -44,7 +44,7 @@ class EmailBodyGenerator
         ];
     }
 
-    public function fromCraftsmanReport(CraftsmanReport $craftsmanReport)
+    public function fromCraftsmanReport(CraftsmanReport $craftsmanReport): array
     {
         $normalizedCraftsmanReport = [];
         if ($craftsmanReport->getComparisonTimestamp() instanceof \DateTime) {
@@ -57,7 +57,7 @@ class EmailBodyGenerator
         return array_merge($normalizedCraftsmanReport, $issueCountProperties, $issueCountDeltaProperties);
     }
 
-    private function fromConstructionSiteReport(ConstructionSiteReport $constructionSiteReport)
+    private function fromConstructionSiteReport(ConstructionSiteReport $constructionSiteReport): array
     {
         $constructionManagers = [];
         $constructionSite = $constructionSiteReport->getConstructionSite();
@@ -80,7 +80,7 @@ class EmailBodyGenerator
         }
 
         // sort craftsmen
-        usort($craftsmanReports, function ($a, $b) { return strcmp($a['company'], $b['company']); });
+        usort($craftsmanReports, function (array $a, array $b): int { return strcmp($a['company'], $b['company']); });
 
         $normalizedConstructionSiteReport = [
             'name' => $constructionSite->getName(),
@@ -96,10 +96,8 @@ class EmailBodyGenerator
 
     /**
      * @param IssueCountTrait $issueCountTrait
-     *
-     * @return array
      */
-    private function getIssueCountProperties($issueCountTrait)
+    private function getIssueCountProperties($issueCountTrait): array
     {
         return [
             'openCount' => $issueCountTrait->getOpenCount(),
@@ -110,10 +108,8 @@ class EmailBodyGenerator
 
     /**
      * @param IssueCountDeltaTrait $issueCountDeltaTrait
-     *
-     * @return array
      */
-    private function getIssueCountDeltaProperties($issueCountDeltaTrait)
+    private function getIssueCountDeltaProperties($issueCountDeltaTrait): array
     {
         return [
             'openCountDelta' => $issueCountDeltaTrait->getOpenCountDelta(),

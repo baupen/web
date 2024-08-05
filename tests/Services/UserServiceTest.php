@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 
 class UserServiceTest extends TestCase
 {
-    public function testWhitelist()
+    public function testWhitelist(): void
     {
         $mockPathService = $this->getMockForAbstractClass(PathServiceInterface::class);
 

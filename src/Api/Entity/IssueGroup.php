@@ -16,27 +16,21 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class IssueGroup
 {
     /**
-     * @var string
-     *
      * @Groups({"issue-read"})
      */
-    private $entity;
+    private ?string $entity = null;
 
     /**
-     * @var int
-     *
      * @Groups({"issue-read"})
      */
-    private $count;
+    private ?int $count = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Groups({"issue-read"})
      */
-    private $earliestDeadline;
+    private ?\DateTime $earliestDeadline = null;
 
-    public static function create(string $iri, int $count, ?\DateTime $earliestDeadline)
+    public static function create(string $iri, int $count, ?\DateTime $earliestDeadline): self
     {
         $self = new self();
 

@@ -25,7 +25,7 @@ class ConstructionManagerVoter extends ConstructionSiteRelatedEntityVoter
     /**
      * @param ConstructionManager $subject
      */
-    protected function isConstructionManagerRelated(ConstructionManager $constructionManager, $subject)
+    protected function isConstructionManagerRelated(ConstructionManager $constructionManager, $subject): bool
     {
         if ($constructionManager === $subject) {
             return true;

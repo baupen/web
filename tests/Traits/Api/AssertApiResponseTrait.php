@@ -17,7 +17,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 trait AssertApiResponseTrait
 {
-    private function assertApiResponseFieldSubset(ResponseInterface $response, string ...$expectedFields)
+    private function assertApiResponseFieldSubset(ResponseInterface $response, string ...$expectedFields): void
     {
         $content = $response->getContent();
         $hydraPayload = json_decode($content, true);

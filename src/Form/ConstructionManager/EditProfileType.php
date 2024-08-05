@@ -16,7 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class EditProfileType extends AbstractConstructionManagerType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('givenName', TextType::class);
         $builder->add('familyName', TextType::class);

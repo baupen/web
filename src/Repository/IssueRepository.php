@@ -17,7 +17,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class IssueRepository extends EntityRepository
 {
-    public function assignHighestNumber(Issue $issue)
+    public function assignHighestNumber(Issue $issue): ?int
     {
         /**
          * execute query like:

@@ -16,7 +16,7 @@ use ApiPlatform\Symfony\Bundle\Test\Client;
 
 trait AssertApiCollectionTrait
 {
-    private function assertApiCollectionContainsResponseItem(Client $client, string $url, Response $itemResponse)
+    private function assertApiCollectionContainsResponseItem(Client $client, string $url, Response $itemResponse): void
     {
         $item = json_decode($itemResponse->getContent(), true);
         unset($item['@context']);
@@ -25,7 +25,7 @@ trait AssertApiCollectionTrait
         $this->assertApiCollectionContains($client, $url, $item, 'lastChangedAt');
     }
 
-    private function assertApiCollectionContainsResponseItemDeleted(Client $client, string $url, Response $itemResponse)
+    private function assertApiCollectionContainsResponseItemDeleted(Client $client, string $url, Response $itemResponse): void
     {
         $item = json_decode($itemResponse->getContent(), true);
         unset($item['@context']);
@@ -35,7 +35,7 @@ trait AssertApiCollectionTrait
         $this->assertApiCollectionContains($client, $url, $item, 'lastChangedAt');
     }
 
-    private function assertApiCollectionContainsIri(Client $client, string $url, string $iri)
+    private function assertApiCollectionContainsIri(Client $client, string $url, string $iri): void
     {
         $collectionResponse = $this->assertApiGetOk($client, $url);
         $collection = json_decode($collectionResponse->getContent(), true);
@@ -51,7 +51,7 @@ trait AssertApiCollectionTrait
         $this->fail('iri '.$iri.' not found in '.$collectionResponse->getContent());
     }
 
-    private function assertApiCollectionNotContainsIri(Client $client, string $url, string $iri)
+    private function assertApiCollectionNotContainsIri(Client $client, string $url, string $iri): void
     {
         $collectionResponse = $this->assertApiGetOk($client, $url);
         $collection = json_decode($collectionResponse->getContent(), true);
@@ -65,7 +65,7 @@ trait AssertApiCollectionTrait
         $this->assertTrue(true);
     }
 
-    private function assertApiCollectionContains(Client $client, string $url, array $item, string ...$excludedFields)
+    private function assertApiCollectionContains(Client $client, string $url, array $item, string ...$excludedFields): void
     {
         $collectionResponse = $this->assertApiGetOk($client, $url);
         $collection = json_decode($collectionResponse->getContent(), true);

@@ -54,7 +54,7 @@ trait IssuePositionTrait
     /**
      * @Assert\Callback
      */
-    public function validatePosition(ExecutionContextInterface $context)
+    public function validatePosition(ExecutionContextInterface $context): void
     {
         $nullCount = 0;
         $nullCount += (null === $this->getPositionX()) ? 1 : 0;
@@ -96,7 +96,7 @@ trait IssuePositionTrait
         $this->positionZoomScale = $positionZoomScale;
     }
 
-    public function hasPosition()
+    public function hasPosition(): bool
     {
         return null !== $this->getPositionX();
     }

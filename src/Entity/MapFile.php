@@ -31,11 +31,9 @@ class MapFile extends BaseEntity
     use FileTrait;
 
     /**
-     * @var Map
-     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Map")
      */
-    private $createdFor;
+    private Map $createdFor;
 
     public function getCreatedFor(): Map
     {

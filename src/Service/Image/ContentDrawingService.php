@@ -62,7 +62,7 @@ class ContentDrawingService
     /**
      * @param string[][] $content
      */
-    public function processContentToDraw(string $sourcePath, string $targetPath, array $content)
+    public function processContentToDraw(string $sourcePath, string $targetPath, array $content): void
     {
         $image = imagecreatefromjpeg($sourcePath);
         $xSize = imagesx($image);
@@ -100,7 +100,7 @@ class ContentDrawingService
         imagejpeg($image, $targetPath);
     }
 
-    private function printGroups(\GdImage $image, float $startY, float $lineHeight, int $availableXSpace, float $padding, float $fontSize, array $groups, bool $print)
+    private function printGroups(\GdImage $image, float $startY, float $lineHeight, int $availableXSpace, float $padding, float $fontSize, array $groups, bool $print): int
     {
         $startX = $padding * 2;
 
@@ -123,7 +123,7 @@ class ContentDrawingService
 
             if ($print) {
                 $firstEntry = array_shift($groupEntries);
-                usort($groupEntries, function ($a, $b) {
+                usort($groupEntries, function (array $a, array $b): int {
                     return $a['text'] <=> $b['text'];
                 });
                 foreach ([$firstEntry, ...$groupEntries] as $groupEntry) {
@@ -141,7 +141,7 @@ class ContentDrawingService
         return $currentLine + 1;
     }
 
-    private function placeWithOptimalFontScale(array &$content, int $xSize, int $ySize)
+    private function placeWithOptimalFontScale(array &$content, int $xSize, int $ySize): array
     {
         // estimate how much is drawn on the map
         $measurementFontSize = 30;
@@ -202,14 +202,14 @@ class ContentDrawingService
         return [$actualFontSize, $actualPadding, $averageContentHeight];
     }
 
-    private function ensureMaxBounds(float $maxSize, float $currentSize, float $currentMultiplier)
+    private function ensureMaxBounds(float $maxSize, float $currentSize, float $currentMultiplier): float
     {
         $resultSize = $currentSize * $currentMultiplier;
 
         return $currentMultiplier * min($maxSize / $resultSize, 1);
     }
 
-    private function alignYIntoRows(array &$content, float $padding, float $averageContentHeight)
+    private function alignYIntoRows(array &$content, float $padding, float $averageContentHeight): void
     {
         $rowHeight = $averageContentHeight + $padding + 2; // + 2 for border; give some slight padding
         $offset = $rowHeight / 2;
@@ -220,10 +220,13 @@ class ContentDrawingService
         }
     }
 
-    private function groupOverlaps(array $content, float $padding, float $fontSize, ?array &$groups = null)
+    /**
+     * @return mixed[]
+     */
+    private function groupOverlaps(array $content, float $padding, float $fontSize, ?array &$groups = null): array
     {
         // sort by row and xCoordinate
-        usort($content, function ($a, $b) {
+        usort($content, function (array $a, array $b): int {
             if ($a['row'] !== $b['row']) {
                 return $a['row'] <=> $b['row'];
             }

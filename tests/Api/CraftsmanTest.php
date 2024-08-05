@@ -37,7 +37,7 @@ class CraftsmanTest extends ApiTestCase
     use AuthenticationTrait;
     use TestDataTrait;
 
-    public function testValidMethodsNeedAuthentication()
+    public function testValidMethodsNeedAuthentication(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -51,7 +51,7 @@ class CraftsmanTest extends ApiTestCase
         $this->assertApiOperationForbidden($client, '/api/craftsmen/'.$constructionSite->getCraftsmen()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -64,7 +64,7 @@ class CraftsmanTest extends ApiTestCase
         $this->assertApiResponseFieldSubset($response, 'email', 'emailCCs', 'contactName', 'company', 'trade', 'resolveUrl', 'isDeleted', 'lastChangedAt', 'canEdit');
     }
 
-    public function testCanEdit()
+    public function testCanEdit(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -98,7 +98,7 @@ class CraftsmanTest extends ApiTestCase
         $this->assertApiTokenRequestSuccessful($client, $craftsmanToken, 'PATCH', $issueId, $patch);
     }
 
-    public function testPostPatchAndDelete()
+    public function testPostPatchAndDelete(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -143,7 +143,7 @@ class CraftsmanTest extends ApiTestCase
         $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/craftsmen?constructionSite='.$constructionSite->getId(), $response);
     }
 
-    public function testIsDeletedFilter()
+    public function testIsDeletedFilter(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -159,7 +159,7 @@ class CraftsmanTest extends ApiTestCase
         $this->assertApiCollectionNotContainsIri($client, '/api/craftsmen?constructionSite='.$constructionSite->getId().'&isDeleted=true', $craftsmanIri);
     }
 
-    public function testLastChangedAtFilter()
+    public function testLastChangedAtFilter(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -172,7 +172,7 @@ class CraftsmanTest extends ApiTestCase
         $this->assertApiCollectionFilterDateTime($client, '/api/craftsmen?constructionSite='.$constructionSite->getId().'&', $craftsmanIri, 'lastChangedAt', $craftsman->getLastChangedAt());
     }
 
-    public function testAllFilters()
+    public function testAllFilters(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -199,7 +199,7 @@ class CraftsmanTest extends ApiTestCase
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $craftsmanIri, 'trade', $sample['trade']);
     }
 
-    public function testFeedEntries()
+    public function testFeedEntries(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -255,7 +255,7 @@ class CraftsmanTest extends ApiTestCase
         }
     }
 
-    public function testStatistics()
+    public function testStatistics(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);

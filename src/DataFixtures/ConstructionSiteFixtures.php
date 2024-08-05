@@ -38,7 +38,7 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
         $this->pathService = $pathService;
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         // clean file system
         $folder = $this->pathService->getRootFolderOfConstructionSites();
@@ -75,7 +75,7 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
         return self::ORDER;
     }
 
-    private function simulateActivity(ObjectManager $manager, ConstructionSite $constructionSite)
+    private function simulateActivity(ObjectManager $manager, ConstructionSite $constructionSite): void
     {
         if ($constructionSite->getIssues()->count() < 1 || $constructionSite->getCraftsmen()->count() < 1 || $constructionSite->getConstructionManagers()->count() < 1) {
             return;

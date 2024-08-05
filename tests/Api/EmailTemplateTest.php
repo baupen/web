@@ -28,7 +28,7 @@ class EmailTemplateTest extends ApiTestCase
     use AuthenticationTrait;
     use TestDataTrait;
 
-    public function testValidMethodsNeedAuthentication()
+    public function testValidMethodsNeedAuthentication(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestEmailTemplateFixtures::class]);
@@ -42,7 +42,7 @@ class EmailTemplateTest extends ApiTestCase
         $this->assertApiOperationForbidden($client, '/api/email_templates/'.$constructionSite->getEmailTemplates()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }
 
-    public function testPostPatchAndDelete()
+    public function testPostPatchAndDelete(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);

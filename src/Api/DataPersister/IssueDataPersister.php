@@ -36,7 +36,7 @@ class IssueDataPersister implements ContextAwareDataPersisterInterface
     /**
      * @param Issue $data
      */
-    public function persist($data, array $context = [])
+    public function persist($data, array $context = []): void
     {
         $isCreated = ($context['collection_operation_name'] ?? null) === 'post';
         if ($isCreated) {

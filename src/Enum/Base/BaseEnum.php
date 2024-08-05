@@ -42,20 +42,16 @@ abstract class BaseEnum
 
     /**
      * makes from camelCase => camel_case.
-     *
-     * @return string
      */
-    private function camelCaseToTranslation($camelCase)
+    private function camelCaseToTranslation(string $camelCase): string
     {
         return mb_strtolower(preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $camelCase));
     }
 
     /**
      * generates an array to be used in form fields.
-     *
-     * @return array
      */
-    private function getChoicesForBuilderInternal()
+    private function getChoicesForBuilderInternal(): array
     {
         $res = [];
         try {

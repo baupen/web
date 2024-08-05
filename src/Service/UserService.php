@@ -32,17 +32,17 @@ class UserService implements UserServiceInterface
     /**
      * @var string[][]|null
      */
-    private $userDataCache;
+    private ?array $userDataCache = null;
 
     /**
      * @var string[]|null
      */
-    private $emailWhitelistCache;
+    private ?array $emailWhitelistCache = null;
 
     /**
      * @var string[]|null
      */
-    private $domainWhitelistCache;
+    private ?array $domainWhitelistCache = null;
 
     private string $authorizationMethod;
 
@@ -140,7 +140,7 @@ class UserService implements UserServiceInterface
         }
     }
 
-    private function doWhitelistAuthorization(ConstructionManager $constructionManager)
+    private function doWhitelistAuthorization(ConstructionManager $constructionManager): void
     {
         if ($this->isEmailOnWhitelist($constructionManager->getEmail())) {
             // is on whitelist

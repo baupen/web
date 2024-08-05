@@ -37,7 +37,7 @@ class IssueSummary
      */
     private int $closedCount;
 
-    public static function createFromCraftsmanIssueAnalysis(CraftsmanIssueAnalysis $craftsmanIssueAnalysis)
+    public static function createFromCraftsmanIssueAnalysis(CraftsmanIssueAnalysis $craftsmanIssueAnalysis): self
     {
         $self = new self();
 
@@ -49,7 +49,7 @@ class IssueSummary
         return $self;
     }
 
-    public static function createFromIssueAnalysis(IssueAnalysis $issueAnalysis)
+    public static function createFromIssueAnalysis(IssueAnalysis $issueAnalysis): self
     {
         $self = new self();
         $self->writeFromIssueAnalysis($issueAnalysis);

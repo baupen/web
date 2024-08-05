@@ -15,13 +15,13 @@ use ApiPlatform\Symfony\Bundle\Test\Client;
 
 trait AssertApiCollectionFilterTrait
 {
-    private function assertApiCollectionFilterDateTime(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, \DateTime $currentValue)
+    private function assertApiCollectionFilterDateTime(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, \DateTime $currentValue): void
     {
-        $format = function (\DateTime $dateTime) {
+        $format = function (\DateTime $dateTime): string {
             return urlencode($dateTime->format('c'));
         };
 
-        $formatAlternative = function (\DateTime $dateTime) {
+        $formatAlternative = function (\DateTime $dateTime): string {
             $utcDateTime = clone $dateTime;
             $utcDateTime->setTimezone(new \DateTimeZone('UTC'));
 
@@ -46,7 +46,7 @@ trait AssertApiCollectionFilterTrait
         $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'[after]='.$formatAlternative($currentValue).'&'.$propertyName.'[before]='.$format($currentValue), $iri);
     }
 
-    private function assertApiCollectionFilterBoolean(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, bool $currentValue)
+    private function assertApiCollectionFilterBoolean(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, bool $currentValue): void
     {
         $trueValues = ['true', '1'];
         $falseValues = ['false', '0'];
@@ -62,7 +62,7 @@ trait AssertApiCollectionFilterTrait
         }
     }
 
-    private function assertApiCollectionFilterSearchPartial(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, string $currentValue)
+    private function assertApiCollectionFilterSearchPartial(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, string $currentValue): void
     {
         $startPart = substr($currentValue, 0, -1);
         $middlePart = substr($currentValue, 1, -2);
@@ -77,7 +77,7 @@ trait AssertApiCollectionFilterTrait
         $this->assertApiCollectionNotContainsIri($client, $collectionUrlPrefix.$propertyName.'='.$currentValue.'null', $iri);
     }
 
-    private function assertApiCollectionFilterSearchExact(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, string $currentValue)
+    private function assertApiCollectionFilterSearchExact(Client $client, string $collectionUrlPrefix, string $iri, string $propertyName, string $currentValue): void
     {
         $invalidPart = substr($currentValue, 0, -1);
 

@@ -25,17 +25,17 @@ use Symfony\Component\Security\Http\SecurityEvents;
  */
 class ConstructionManagerLocaleSubscriber implements EventSubscriberInterface
 {
-    public function onInteractiveLogin(InteractiveLoginEvent $event)
+    public function onInteractiveLogin(InteractiveLoginEvent $event): void
     {
         $this->setLocaleFromUser($event->getRequest(), $event->getAuthenticationToken()->getUser());
     }
 
-    public function onSwitchUser(SwitchUserEvent $event)
+    public function onSwitchUser(SwitchUserEvent $event): void
     {
         $this->setLocaleFromUser($event->getRequest(), $event->getTargetUser());
     }
 
-    private function setLocaleFromUser(Request $request, UserInterface $user)
+    private function setLocaleFromUser(Request $request, UserInterface $user): void
     {
         if ($request->hasSession() && ($session = $request->getSession()) && $user instanceof ConstructionManager) {
             $session->set('_locale', $user->getLocale());

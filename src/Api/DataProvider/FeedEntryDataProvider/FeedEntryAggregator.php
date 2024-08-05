@@ -20,7 +20,7 @@ class FeedEntryAggregator
     /**
      * @var string[][][]
      */
-    private $aggregator = [];
+    private array $aggregator = [];
 
     private IriConverterInterface $iriConverter;
 
@@ -32,7 +32,7 @@ class FeedEntryAggregator
         $this->iriConverter = $iriConverter;
     }
 
-    public function register(\DateTime $dateTime, object $subject, int $action)
+    public function register(\DateTime $dateTime, object $subject, int $action): void
     {
         $iri = $this->iriConverter->getIriFromItem($subject);
         $dateTimeString = $dateTime->format(DateTimeFormatter::ISO_DATE_FORMAT);

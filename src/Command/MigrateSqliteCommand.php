@@ -120,7 +120,7 @@ class MigrateSqliteCommand extends DatabaseCommand
         return 0;
     }
 
-    private function clearTarget(\PDO $targetPdo)
+    private function clearTarget(\PDO $targetPdo): void
     {
         $referencesToClear = ['map.parent_id', 'issue_image.created_for_id', 'map_file.created_for_id', 'construction_site_image.created_for_id'];
         foreach ($referencesToClear as $reference) {
@@ -182,7 +182,7 @@ class MigrateSqliteCommand extends DatabaseCommand
 
         $sourceFields = ['is_registration_completed'];
 
-        $migrateReference = function (array &$constructionManager) {
+        $migrateReference = function (array &$constructionManager): void {
             $constructionManager['authentication_token'] = HashHelper::getHash();
             $constructionManager['authorization_authority'] = null;
             $constructionManager['is_admin_account'] = 0;
@@ -209,7 +209,7 @@ class MigrateSqliteCommand extends DatabaseCommand
             'created_at', 'last_changed_at',
         ];
 
-        $migrateReference = function (array &$constructionSite) {
+        $migrateReference = function (array &$constructionSite): void {
             if ('Schweiz' === $constructionSite['country']) {
                 $constructionSite['country'] = 'CH';
             }
@@ -263,7 +263,7 @@ class MigrateSqliteCommand extends DatabaseCommand
             'created_at', 'last_changed_at',
         ];
 
-        $migrateReference = function (array &$craftsman) {
+        $migrateReference = function (array &$craftsman): void {
             $craftsman['last_email_received'] = $craftsman['last_email_sent'];
             unset($craftsman['last_email_sent']);
             $craftsman['last_visit_online'] = $craftsman['last_online_visit'];
@@ -303,7 +303,7 @@ class MigrateSqliteCommand extends DatabaseCommand
             'reviewed_at' => 'closed_at',
         ];
 
-        $migrateReference = function (array &$issue) use ($renames) {
+        $migrateReference = function (array &$issue) use ($renames): void {
             foreach ($renames as $source => $target) {
                 $issue[$target] = $issue[$source];
                 unset($issue[$source]);
@@ -467,7 +467,7 @@ class MigrateSqliteCommand extends DatabaseCommand
         return $query->fetch(\PDO::FETCH_NUM)[0];
     }
 
-    private function fetchAll(\PDO $PDO, string $sql)
+    private function fetchAll(\PDO $PDO, string $sql): array
     {
         $query = $PDO->prepare($sql);
         $query->execute();
@@ -508,7 +508,7 @@ class MigrateSqliteCommand extends DatabaseCommand
         }
     }
 
-    private function migrateSpecialCases(SymfonyStyle $io, \PDO $targetPdo)
+    private function migrateSpecialCases(SymfonyStyle $io, \PDO $targetPdo): void
     {
         $queries = [
             "UPDATE construction_site SET deleted_at = last_changed_at WHERE id = 'CE6DB20C-6D00-4563-AB83-F35F4512F951'",
@@ -520,7 +520,7 @@ class MigrateSqliteCommand extends DatabaseCommand
         }
     }
 
-    private function migrateLocalTimeToUTC(\PDO $targetPdo)
+    private function migrateLocalTimeToUTC(\PDO $targetPdo): void
     {
         $impactedFieldsByTable = [
             'construction_manager' => ['created_at', 'last_changed_at'],

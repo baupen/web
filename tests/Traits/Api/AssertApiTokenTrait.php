@@ -43,12 +43,12 @@ trait AssertApiTokenTrait
         return $response;
     }
 
-    private function setApiTokenDefaultHeader(Client $client, string $token)
+    private function setApiTokenDefaultHeader(Client $client, string $token): void
     {
         $client->setDefaultOptions(['headers' => ['X-AUTHENTICATION' => $token]]);
     }
 
-    private function requestWithApiToken(Client $client, string $token, string $method, string $url, ?array $payload = null)
+    private function requestWithApiToken(Client $client, string $token, string $method, string $url, ?array $payload = null): \Symfony\Contracts\HttpClient\ResponseInterface
     {
         $body = ['headers' => ['X-AUTHENTICATION' => $token]];
         if (is_array($payload)) {

@@ -39,7 +39,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         return $openApi;
     }
 
-    private function setReportResponse(OpenApi $openApi)
+    private function setReportResponse(OpenApi $openApi): void
     {
         $pdfContent = [
             'application/pdf' => [
@@ -54,7 +54,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $openApi->getPaths()->getPath('/api/issues/report')->getGet()->addResponse($response, 200);
     }
 
-    private function setFeedEntryResponses(OpenApi &$openApi)
+    private function setFeedEntryResponses(OpenApi &$openApi): void
     {
         $feedEntrySchemaName = 'FeedEntry';
         $feedEntrySchema = [
@@ -88,7 +88,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $openApi->getPaths()->getPath('/api/craftsmen/feed_entries')->getGet()->addResponse($response, 200);
     }
 
-    private function setSummaryResponse(OpenApi &$openApi)
+    private function setSummaryResponse(OpenApi &$openApi): void
     {
         $summarySchemaName = 'Summary';
         $summarySchema = [
@@ -127,7 +127,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         ];
     }
 
-    private function addFilePaths(OpenApi &$openApi)
+    private function addFilePaths(OpenApi &$openApi): void
     {
         $imageSchema = [
             'type' => 'object',
@@ -187,7 +187,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $openApi->getPaths()->addPath('/api/issues/{id}/image', $path);
     }
 
-    private function configureEmailEndpoint(OpenApi &$openApi)
+    private function configureEmailEndpoint(OpenApi &$openApi): void
     {
         $openApi = $this->removePath($openApi, '/api/emails/{noneIdentifier}');
 
@@ -196,7 +196,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $postOperation->addResponse(new Model\Response('E-Mail server unreachable'), 503);
     }
 
-    private function configureRegistrationEndpoint(OpenApi $openApi)
+    private function configureRegistrationEndpoint(OpenApi $openApi): void
     {
         $pathName = '/api/construction_managers';
 
@@ -214,7 +214,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         }
     }
 
-    private function patchSchema(OpenApi &$openApi, string $schemaName, array $schemaPatch)
+    private function patchSchema(OpenApi &$openApi, string $schemaName, array $schemaPatch): void
     {
         $schemas = $openApi->getComponents()->getSchemas()->getArrayCopy();
 
@@ -238,7 +238,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         return $openApi->withPaths($newPaths);
     }
 
-    private function addFileUrlProperties(OpenApi &$openApi)
+    private function addFileUrlProperties(OpenApi &$openApi): void
     {
         $schemaPatch = ['properties' => ['imageUrl' => ['type' => 'string', 'nullable' => true]]];
         $this->patchSchema($openApi, 'Issue.jsonld-issue-read', $schemaPatch);

@@ -119,63 +119,51 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public const STATE_CLOSED = 8;
 
     /**
-     * @var int
-     *
      * @Groups({"issue-read"})
      *
      * @ORM\Column(type="integer")
      */
-    private $number;
+    private ?int $number = null;
 
     /**
-     * @var bool
-     *
      * @Groups({"issue-read", "issue-write"})
      *
      * @ORM\Column(type="boolean")
      */
-    private $isMarked = false;
+    private bool $isMarked = false;
 
     /**
-     * @var bool
-     *
      * @Groups({"issue-read", "issue-write"})
      *
      * @ORM\Column(type="boolean")
      */
-    private $wasAddedWithClient = false;
+    private bool $wasAddedWithClient = false;
 
     /**
-     * @var string|null
-     *
      * @Assert\NotBlank(groups={"after-register"})
      *
      * @Groups({"issue-read", "issue-write"})
      *
      * @ORM\Column(type="text", nullable=true)
      */
-    private $description;
+    private ?string $description = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Groups({"issue-read", "issue-write"})
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $deadline;
+    private ?\DateTime $deadline = null;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(type="datetime")
      */
-    private $lastChangedAt;
+    private ?\DateTime $lastChangedAt = null;
 
     /**
      * @Assert\Callback
      */
-    public function validateRelations(ExecutionContextInterface $context)
+    public function validateRelations(ExecutionContextInterface $context): void
     {
         if (null !== $this->craftsman && $this->craftsman->getConstructionSite() !== $this->constructionSite) {
             $context->buildViolation('Craftsman does not belong to construction site')->addViolation();
@@ -187,51 +175,43 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     }
 
     /**
-     * @var IssueImage|null
-     *
      * @ORM\ManyToOne(targetEntity="App\Entity\IssueImage", cascade={"persist"})
      */
-    private $image;
+    private ?IssueImage $image = null;
 
     /**
-     * @var Craftsman|null
-     *
      * @Assert\NotBlank(groups={"after-register"})
      *
      * @Groups({"issue-read", "issue-write"})
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="issues")
      */
-    private $craftsman;
+    private ?Craftsman $craftsman = null;
 
     /**
-     * @var Map
-     *
      * @Assert\NotBlank()
      *
      * @Groups({"issue-read", "issue-create"})
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Map", inversedBy="issues")
      */
-    private $map;
+    private Map $map;
 
     /**
-     * @var ConstructionSite
-     *
      * @Assert\NotBlank()
      *
      * @Groups({"issue-create"})
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite", inversedBy="issues")
      */
-    private $constructionSite;
+    private ConstructionSite $constructionSite;
 
     /**
      * @ORM\PrePersist()
      *
      * @ORM\PreUpdate()
      */
-    public function prePersistTime()
+    public function prePersistTime(): void
     {
         $this->lastChangedAt = new \DateTime();
     }

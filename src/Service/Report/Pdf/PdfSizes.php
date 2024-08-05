@@ -16,52 +16,25 @@ class PdfSizes
     /**
      * @var float the used page size
      */
-    private $pageSize = [210, 297];
+    private array $pageSize = [210, 297];
 
-    /**
-     * @var float
-     */
-    private $marginSide = 10;
+    private int $marginSide = 10;
 
-    /**
-     * @var float
-     */
-    private $marginVerticalOuter = 6;
+    private int $marginVerticalOuter = 6;
 
-    /**
-     * @var float
-     */
-    private $headerSize = 8;
+    private int $headerSize = 8;
 
-    /**
-     * @var float
-     */
-    private $differentContentMargin = 6;
+    private int $differentContentMargin = 6;
 
-    /**
-     * @var float
-     */
-    private $footerSize = 4;
+    private int $footerSize = 4;
 
-    /**
-     * @var float
-     */
-    private $baseFontSizes = 8;
+    private int $baseFontSizes = 8;
 
-    /**
-     * @var float
-     */
-    private $scalingFactor = 1.6;
+    private float $scalingFactor = 1.6;
 
-    /**
-     * @var float
-     */
-    private $gutterSize = 4;
+    private int $gutterSize = 4;
 
-    /**
-     * @var float
-     */
-    private $lineWidth = 0.2;
+    private float $lineWidth = 0.2;
 
     /**
      * the total width of the document.
@@ -96,10 +69,7 @@ class PdfSizes
         return $this->getPageSizeX() - $this->marginSide;
     }
 
-    /**
-     * @return float
-     */
-    public function getContentXSize()
+    public function getContentXSize(): float
     {
         return $this->getContentXEnd() - $this->getContentXStart();
     }
@@ -114,17 +84,15 @@ class PdfSizes
      *
      * @return float
      */
-    public function getContentYEnd()
+    public function getContentYEnd(): int|float
     {
         return $this->getPageSizeY() - $this->marginVerticalOuter - $this->footerSize - $this->differentContentMargin;
     }
 
     /**
      * the width of the content of the document.
-     *
-     * @return float
      */
-    public function getContentYSize()
+    public function getContentYSize(): float
     {
         return $this->getContentYEnd() - $this->getContentYStart();
     }
@@ -155,10 +123,8 @@ class PdfSizes
 
     /**
      * @param mixed|null $firstColumnSize
-     *
-     * @return float|float
      */
-    public function getColumnContentWidth($numberOfColumns, $firstColumnSize = null)
+    public function getColumnContentWidth($numberOfColumns, $firstColumnSize = null): float
     {
         $gutterSpace = ($numberOfColumns - 1) * $this->getColumnGutter();
 
@@ -187,10 +153,8 @@ class PdfSizes
 
     /**
      * @param mixed|null $firstColumnSize
-     *
-     * @return float|float
      */
-    public function getColumnStart($currentColumn, $numberOfColumns, $firstColumnSize = null)
+    public function getColumnStart($currentColumn, $numberOfColumns, $firstColumnSize = null): float
     {
         if (0 === $currentColumn) {
             return $this->getContentXStart();
@@ -208,7 +172,7 @@ class PdfSizes
      *
      * @return float
      */
-    public function getSmallFontSize()
+    public function getSmallFontSize(): int|float
     {
         return $this->getRegularFontSize() / $this->scalingFactor;
     }
@@ -228,7 +192,7 @@ class PdfSizes
      *
      * @return float
      */
-    public function getBigFontSize()
+    public function getBigFontSize(): int|float
     {
         return $this->baseFontSizes * $this->scalingFactor;
     }
@@ -238,7 +202,7 @@ class PdfSizes
      *
      * @return float
      */
-    public function getLargeFontSize()
+    public function getLargeFontSize(): float|int
     {
         return $this->baseFontSizes * ($this->scalingFactor ** 2);
     }

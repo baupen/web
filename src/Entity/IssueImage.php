@@ -31,11 +31,9 @@ class IssueImage extends BaseEntity
     use FileTrait;
 
     /**
-     * @var Issue
-     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Issue")
      */
-    private $createdFor;
+    private Issue $createdFor;
 
     public function getCreatedFor(): Issue
     {

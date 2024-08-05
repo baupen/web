@@ -36,7 +36,7 @@ class CacheService implements CacheServiceInterface
     /**
      * generates all sizes so the getSize call goes faster once it is really needed.
      */
-    public function warmUpCacheForIssueImage(IssueImage $issueImage)
+    public function warmUpCacheForIssueImage(IssueImage $issueImage): void
     {
         foreach (ImageServiceInterface::VALID_SIZES as $validSize) {
             $this->imageService->resizeIssueImage($issueImage, $validSize);
@@ -46,7 +46,7 @@ class CacheService implements CacheServiceInterface
     /**
      * generates all sizes so the getSize call goes faster once it is really needed.
      */
-    public function warmUpCacheForConstructionSiteImage(ConstructionSiteImage $constructionSiteImage)
+    public function warmUpCacheForConstructionSiteImage(ConstructionSiteImage $constructionSiteImage): void
     {
         foreach (ImageServiceInterface::VALID_SIZES as $validSize) {
             $this->imageService->resizeConstructionSiteImage($constructionSiteImage, $validSize);
@@ -56,7 +56,7 @@ class CacheService implements CacheServiceInterface
     /**
      * generates all sizes so the getSize call goes faster once it is really needed.
      */
-    public function warmUpCacheForMapFile(MapFile $mapFile)
+    public function warmUpCacheForMapFile(MapFile $mapFile): void
     {
         foreach (ImageServiceInterface::VALID_SIZES as $validSize) {
             $this->imageService->renderMapFileToJpg($mapFile, $validSize);
