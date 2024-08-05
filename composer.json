@@ -31,6 +31,7 @@
     "symfony/monolog-bundle": "^3.5",
     "symfony/property-access": "^5.1",
     "symfony/property-info": "^5.1",
+    "symfony/runtime": "^5.4",
     "symfony/security-bundle": "^5.1",
     "symfony/security-core": "^5.1",
     "symfony/serializer": "^5.1",
@@ -73,7 +74,8 @@
     },
     "sort-packages": true,
     "allow-plugins": {
-      "symfony/flex": true
+      "symfony/flex": true,
+      "symfony/runtime": true
     }
   },
   "autoload": {
