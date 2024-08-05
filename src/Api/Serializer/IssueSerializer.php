@@ -17,8 +17,8 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class IssueSerializer implements NormalizerInterface
 {
-    private $decorated;
-    private $urlGenerator;
+    private NormalizerInterface $decorated;
+    private UrlGeneratorInterface $urlGenerator;
 
     public function __construct(NormalizerInterface $decoratedNormalizer, UrlGeneratorInterface $urlGenerator)
     {

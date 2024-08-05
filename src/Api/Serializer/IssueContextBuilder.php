@@ -21,8 +21,8 @@ final class IssueContextBuilder implements SerializerContextBuilderInterface
 {
     use TokenTrait;
 
-    private $decorated;
-    private $tokenStorage;
+    private SerializerContextBuilderInterface $decorated;
+    private TokenStorageInterface $tokenStorage;
 
     public function __construct(SerializerContextBuilderInterface $decorated, TokenStorageInterface $tokenStorage)
     {
@@ -37,12 +37,12 @@ final class IssueContextBuilder implements SerializerContextBuilderInterface
 
         if (Issue::class === $resourceClass && isset($context['groups']) && false === $normalization) {
             $constructionManager = $this->tryGetConstructionManager($this->tokenStorage->getToken());
-            if (null !== $constructionManager) {
+            if ($constructionManager instanceof \App\Entity\ConstructionManager) {
                 $context['groups'][] = 'issue-write';
             }
 
             $craftsman = $this->tryGetCraftsman($this->tokenStorage->getToken());
-            if (null !== $craftsman) {
+            if ($craftsman instanceof \App\Entity\Craftsman) {
                 $context['groups'][] = 'issue-craftsman-write';
             }
         }

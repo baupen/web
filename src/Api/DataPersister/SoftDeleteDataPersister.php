@@ -15,17 +15,14 @@ use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\Craftsman;
 use App\Entity\Map;
 use App\Entity\Traits\SoftDeleteTrait;
-use App\Service\Interfaces\StorageServiceInterface;
 
 class SoftDeleteDataPersister implements ContextAwareDataPersisterInterface
 {
-    private $decorated;
-    private $storageService;
+    private ContextAwareDataPersisterInterface $decorated;
 
-    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, StorageServiceInterface $storageService)
+    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister)
     {
         $this->decorated = $decoratedDataPersister;
-        $this->storageService = $storageService;
     }
 
     public function supports($data, array $context = []): bool

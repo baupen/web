@@ -23,15 +23,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CacheWarmupCommand extends Command
 {
-    /**
-     * @var ManagerRegistry
-     */
-    private $registry;
+    private ManagerRegistry $registry;
 
-    /**
-     * @var CacheServiceInterface
-     */
-    private $cacheService;
+    private CacheServiceInterface $cacheService;
 
     /**
      * ImportLdapUsersCommand constructor.

@@ -18,14 +18,12 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class IssueDataPersister implements ContextAwareDataPersisterInterface
 {
-    private $decorated;
-    private $storageService;
-    private $doctrine;
+    private ContextAwareDataPersisterInterface $decorated;
+    private ManagerRegistry $doctrine;
 
     public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, StorageServiceInterface $storageService, ManagerRegistry $registry)
     {
         $this->decorated = $decoratedDataPersister;
-        $this->storageService = $storageService;
         $this->doctrine = $registry;
     }
 

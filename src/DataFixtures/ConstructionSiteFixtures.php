@@ -23,17 +23,11 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterface
 {
-    public const ORDER = ConstructionManagerFixtures::ORDER + 1;
+    public const ORDER = 1;
 
-    /**
-     * @var SampleServiceInterface
-     */
-    private $sampleService;
+    private SampleServiceInterface $sampleService;
 
-    /**
-     * @var PathServiceInterface
-     */
-    private $pathService;
+    private PathServiceInterface $pathService;
 
     /**
      * ConstructionSiteFixtures constructor.
@@ -58,7 +52,8 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
         foreach (SampleServiceInterface::ALL_SAMPLES as $sample) {
             $leadConstructionManager = $constructionManagers[0];
             $constructionSite = $this->sampleService->createSampleConstructionSite($sample, $leadConstructionManager);
-            for ($i = 1; $i < count($constructionManagers); ++$i) {
+            $counter = count($constructionManagers);
+            for ($i = 1; $i < $counter; ++$i) {
                 $constructionManager = $constructionManagers[$i];
                 $constructionSite->getConstructionManagers()->add($constructionManager);
                 $constructionManager->getConstructionSites()->add($constructionSite);
@@ -77,7 +72,7 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
 
     public function getOrder()
     {
-        return ConstructionManagerFixtures::ORDER + 1;
+        return 1;
     }
 
     private function simulateActivity(ObjectManager $manager, ConstructionSite $constructionSite)

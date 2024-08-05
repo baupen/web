@@ -19,20 +19,11 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class FeedEntryDataProvider extends NoPaginationDataProvider
 {
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
-
-    /**
-     * @var IriConverterInterface
-     */
-    private $iriConverter;
+    private IriConverterInterface $iriConverter;
 
     public function __construct(SerializerInterface $serializer, IriConverterInterface $iriConverter, ManagerRegistry $managerRegistry, iterable $collectionExtensions = [])
     {
         parent::__construct($managerRegistry, $collectionExtensions);
-        $this->serializer = $serializer;
         $this->iriConverter = $iriConverter;
     }
 

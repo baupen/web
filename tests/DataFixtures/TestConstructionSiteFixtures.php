@@ -20,10 +20,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInterface
 {
-    /**
-     * @var SampleServiceInterface
-     */
-    private $sampleService;
+    private SampleServiceInterface $sampleService;
 
     public const ORDER = TestConstructionManagerFixtures::ORDER + 1;
     public const TEST_CONSTRUCTION_SITE_NAME = SampleServiceInterface::TEST;

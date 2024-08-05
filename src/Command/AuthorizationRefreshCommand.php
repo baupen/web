@@ -21,15 +21,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AuthorizationRefreshCommand extends Command
 {
-    /**
-     * @var ManagerRegistry
-     */
-    private $registry;
+    private ManagerRegistry $registry;
 
-    /**
-     * @var UserServiceInterface
-     */
-    private $userService;
+    private UserServiceInterface $userService;
 
     /**
      * ImportLdapUsersCommand constructor.

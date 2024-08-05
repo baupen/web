@@ -26,7 +26,7 @@ class CraftsmanNormalizer implements ContextAwareNormalizerInterface, Normalizer
 
     private const ALREADY_CALLED = 'CRAFTSMAN_NORMALIZER_ALREADY_CALLED';
 
-    private $tokenStorage;
+    private TokenStorageInterface $tokenStorage;
 
     public function __construct(TokenStorageInterface $tokenStorage)
     {

@@ -21,9 +21,9 @@ class CraftsmanSerializer implements NormalizerInterface
 {
     use TokenTrait;
 
-    private $decorated;
-    private $urlGenerator;
-    private $tokenStorage;
+    private NormalizerInterface $decorated;
+    private UrlGeneratorInterface $urlGenerator;
+    private TokenStorageInterface $tokenStorage;
 
     public function __construct(NormalizerInterface $decoratedNormalizer, UrlGeneratorInterface $urlGenerator, TokenStorageInterface $tokenStorage)
     {
@@ -45,7 +45,7 @@ class CraftsmanSerializer implements NormalizerInterface
     {
         $data = $this->decorated->normalize($object, $format, $context);
 
-        if ($this->tryGetConstructionManager($this->tokenStorage->getToken())) {
+        if ($this->tryGetConstructionManager($this->tokenStorage->getToken()) instanceof \App\Entity\ConstructionManager) {
             $url = $this->urlGenerator->generate('public_resolve', [
                 'token' => $object->getAuthenticationToken(),
             ]);

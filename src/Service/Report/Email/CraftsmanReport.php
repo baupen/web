@@ -15,10 +15,7 @@ use App\Entity\Craftsman;
 
 class CraftsmanReport extends CraftsmanDeltaReport
 {
-    /**
-     * @var \DateTime|null
-     */
-    private $comparisonTimestamp;
+    private ?\DateTime $comparisonTimestamp;
 
     public function __construct(Craftsman $craftsman, ?\DateTime $comparisonTimestamp)
     {

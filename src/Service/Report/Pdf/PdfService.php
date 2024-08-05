@@ -26,30 +26,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PdfService
 {
-    /**
-     * @var PathServiceInterface
-     */
-    private $pathService;
+    private PathServiceInterface $pathService;
 
-    /**
-     * @var ImageServiceInterface
-     */
-    private $imageService;
+    private ImageServiceInterface $imageService;
 
-    /**
-     * @var ManagerRegistry
-     */
-    private $doctrine;
+    private ManagerRegistry $doctrine;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private TranslatorInterface $translator;
 
-    /**
-     * @var string
-     */
-    private $reportAssetDir;
+    private string $reportAssetDir;
 
     /**
      * ReportService constructor.
@@ -83,7 +68,7 @@ class PdfService
 
         $this->addIntroduction($report, $constructionSite, $filter, $reportElements);
 
-        if (count($issues) > 0) {
+        if ([] !== $issues) {
             $this->addIssueContent($filter, $reportElements, $issues, $report);
         }
 
@@ -210,7 +195,7 @@ class PdfService
                 $currentRow = [];
             }
         }
-        if (count($currentRow) > 0) {
+        if ([] !== $currentRow) {
             $imageGrid[] = $currentRow;
         }
 
@@ -228,7 +213,7 @@ class PdfService
         if (null !== $filter->getWasAddedWithClient()) {
             $key = $this->translator->trans('was_added_with_client', [], 'entity_issue');
 
-            $filterEntries[$key] = true === $filter->getWasAddedWithClient() ?
+            $filterEntries[$key] = $filter->getWasAddedWithClient() ?
                 $this->translator->trans('yes', [], 'enum_boolean_type') :
                 $this->translator->trans('no', [], 'enum_boolean_type');
         }
@@ -247,16 +232,16 @@ class PdfService
         // collect all set status
         if (null !== $filter->getState()) {
             $status = [];
-            if ($filter->getState() & Issue::STATE_CREATED) {
+            if (($filter->getState() & Issue::STATE_CREATED) !== 0) {
                 $status[] = $this->translator->trans('state_values.created', [], 'entity_issue');
             }
-            if ($filter->getState() & Issue::STATE_REGISTERED) {
+            if (($filter->getState() & Issue::STATE_REGISTERED) !== 0) {
                 $status[] = $this->translator->trans('state_values.registered', [], 'entity_issue');
             }
-            if ($filter->getState() & Issue::STATE_RESOLVED) {
+            if (($filter->getState() & Issue::STATE_RESOLVED) !== 0) {
                 $status[] = $this->translator->trans('state_values.resolved', [], 'entity_issue');
             }
-            if ($filter->getState() & Issue::STATE_CLOSED) {
+            if (($filter->getState() & Issue::STATE_CLOSED) !== 0) {
                 $status[] = $this->translator->trans('state_values.closed', [], 'entity_issue');
             }
 
@@ -322,7 +307,7 @@ class PdfService
 
         $addressLines = implode("\n", $constructionSite->getAddressLines());
 
-        $constructionSiteImage = $constructionSite->getImage() ? $this->imageService->resizeConstructionSiteImage($constructionSite->getImage(), ImageServiceInterface::SIZE_PREVIEW) : null;
+        $constructionSiteImage = $constructionSite->getImage() instanceof \App\Entity\ConstructionSiteImage ? $this->imageService->resizeConstructionSiteImage($constructionSite->getImage(), ImageServiceInterface::SIZE_PREVIEW) : null;
 
         $report->addIntroduction(
             $constructionSiteImage,
@@ -336,18 +321,18 @@ class PdfService
 
     private function tryGetDateString(?\DateTime $before, ?\DateTime $after): ?string
     {
-        $beforeString = null !== $before ? $before->format(DateTimeFormatter::DATE_FORMAT) : null;
-        $afterString = null !== $after ? $after->format(DateTimeFormatter::DATE_FORMAT) : null;
+        $beforeString = $before instanceof \DateTime ? $before->format(DateTimeFormatter::DATE_FORMAT) : null;
+        $afterString = $after instanceof \DateTime ? $after->format(DateTimeFormatter::DATE_FORMAT) : null;
 
-        if (null !== $before && null !== $after) {
+        if ($before instanceof \DateTime && $after instanceof \DateTime) {
             return $afterString.' - '.$beforeString;
         }
 
-        if (null !== $before) {
+        if ($before instanceof \DateTime) {
             return $this->translator->trans('introduction.filter.earlier_than', ['%date%' => $beforeString], 'report');
         }
 
-        if (null !== $after) {
+        if ($after instanceof \DateTime) {
             return $this->translator->trans('introduction.filter.later_than', ['%date%' => $afterString], 'report');
         }
 
@@ -359,12 +344,12 @@ class PdfService
      */
     private function addIssueTable(Report $report, Filter $filter, array $issues)
     {
-        $showRegistered = null === $filter->getRegisteredAtBefore() || $filter->getRegisteredAtAfter();
-        $showResolved = null === $filter->getResolvedAtBefore() || $filter->getResolvedAtAfter();
-        $showClosed = null === $filter->getClosedAtBefore() || $filter->getClosedAtAfter();
+        $showRegistered = !$filter->getRegisteredAtBefore() instanceof \DateTime || $filter->getRegisteredAtAfter();
+        $showResolved = !$filter->getResolvedAtBefore() instanceof \DateTime || $filter->getResolvedAtAfter();
+        $showClosed = !$filter->getClosedAtBefore() instanceof \DateTime || $filter->getClosedAtAfter();
 
         $formatDateTime = function (?\DateTime $dateTime, string $format) {
-            return $dateTime ? $dateTime->format($format) : '-';
+            return $dateTime instanceof \DateTime ? $dateTime->format($format) : '-';
         };
 
         $tableContent = [];
@@ -444,7 +429,7 @@ class PdfService
     {
         // count issue status per map
         $countsPerElement = [];
-        foreach ($orderedMaps as $index => $element) {
+        foreach (array_keys($orderedMaps) as $index) {
             $countPerMap = [0, 0, 0];
             foreach ($issuesPerMap[$index] as $issue) {
                 if (null === $issue->getClosedAt() && null === $issue->getResolvedAt()) {

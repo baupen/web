@@ -26,20 +26,11 @@ use App\Service\Report\Pdf\ReportElements;
 
 class ReportService implements ReportServiceInterface
 {
-    /**
-     * @var PdfService
-     */
-    private $pdfService;
+    private PdfService $pdfService;
 
-    /**
-     * @var IssueService
-     */
-    private $issueService;
+    private IssueService $issueService;
 
-    /**
-     * @var CraftsmanService
-     */
-    private $craftsmanService;
+    private CraftsmanService $craftsmanService;
 
     /**
      * ReportService constructor.
@@ -100,7 +91,7 @@ class ReportService implements ReportServiceInterface
         $this->craftsmanService->findIssueCountByCraftsman($relevantCraftsmen, $craftsmanDeltaReportByCraftsman);
 
         $rootAlias = 'i';
-        $queryComparisonTimestamp = $comparisonTimestamp ? $comparisonTimestamp : (new \DateTime())->setTimestamp(0);
+        $queryComparisonTimestamp = $comparisonTimestamp instanceof \DateTime ? $comparisonTimestamp : (new \DateTime())->setTimestamp(0);
         $queryBuilder = $this->craftsmanService->getCraftsmanIssuesQueryBuilder($rootAlias, $relevantCraftsmen)->addSelect('identity('.$rootAlias.'.craftsman) AS craftsman');
         $stateChangeIssues = $this->issueService->getStateChangeIssues($queryBuilder, $rootAlias, $queryComparisonTimestamp);
 
@@ -124,7 +115,7 @@ class ReportService implements ReportServiceInterface
         // (newly) resolved => no longer open
         // (newly) registered
 
-        if (null !== $closedAt) {
+        if ($closedAt instanceof \DateTime) {
             if ($closedAt > $timestamp) {
                 $issueCountDelta->setClosedCountDelta($issueCountDelta->getClosedCountDelta() + 1);
             }
@@ -132,7 +123,7 @@ class ReportService implements ReportServiceInterface
             if ($registeredAt < $timestamp) {
                 $issueCountDelta->setOpenCountDelta($issueCountDelta->getOpenCountDelta() - 1);
             }
-        } elseif (null !== $resolvedAt) {
+        } elseif ($resolvedAt instanceof \DateTime) {
             if ($resolvedAt > $timestamp) {
                 $issueCountDelta->setResolvedCountDelta($issueCountDelta->getResolvedCountDelta() + 1);
             }
@@ -140,7 +131,7 @@ class ReportService implements ReportServiceInterface
             if ($registeredAt < $timestamp) {
                 $issueCountDelta->setOpenCountDelta($issueCountDelta->getOpenCountDelta() - 1);
             }
-        } elseif (null !== $registeredAt) {
+        } elseif ($registeredAt instanceof \DateTime) {
             if ($registeredAt > $timestamp) {
                 $issueCountDelta->setOpenCountDelta($issueCountDelta->getOpenCountDelta() + 1);
             }

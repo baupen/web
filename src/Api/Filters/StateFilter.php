@@ -35,20 +35,20 @@ class StateFilter extends AbstractContextAwareFilter
 
         $alias = $queryBuilder->getRootAliases()[0];
         $orQueries = [];
-        if ($value & Issue::STATE_CREATED) {
+        if (($value & Issue::STATE_CREATED) !== 0) {
             $orQueries[] = $alias.'.registeredAt IS NULL AND '.$alias.'.resolvedAt IS NULL AND '.$alias.'.closedAt IS NULL';
         }
-        if ($value & Issue::STATE_REGISTERED) {
+        if (($value & Issue::STATE_REGISTERED) !== 0) {
             $orQueries[] = $alias.'.registeredAt IS NOT NULL AND '.$alias.'.resolvedAt IS NULL AND '.$alias.'.closedAt IS NULL';
         }
-        if ($value & Issue::STATE_RESOLVED) {
+        if (($value & Issue::STATE_RESOLVED) !== 0) {
             $orQueries[] = $alias.'.resolvedAt IS NOT NULL AND '.$alias.'.closedAt IS NULL';
         }
-        if ($value & Issue::STATE_CLOSED) {
+        if (($value & Issue::STATE_CLOSED) !== 0) {
             $orQueries[] = $alias.'.closedAt IS NOT NULL';
         }
 
-        if (count($orQueries) > 0) {
+        if ([] !== $orQueries) {
             $queryBuilder->andWhere('('.implode(') OR (', $orQueries).')');
         }
     }
@@ -62,7 +62,7 @@ class StateFilter extends AbstractContextAwareFilter
         }
 
         $this->getLogger()->notice('Invalid filter ignored', [
-            'exception' => new InvalidArgumentException(sprintf('Invalid value for '.self::STATE_PROPERTY_NAME.', expected in range '.Issue::STATE_CREATED.' - '.Issue::STATE_CLOSED)),
+            'exception' => new InvalidArgumentException('Invalid value for '.self::STATE_PROPERTY_NAME.', expected in range '.Issue::STATE_CREATED.' - '.Issue::STATE_CLOSED),
         ]);
 
         return null;

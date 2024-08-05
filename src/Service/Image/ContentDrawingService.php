@@ -15,10 +15,7 @@ use App\Entity\Issue;
 
 class ContentDrawingService
 {
-    /**
-     * @var GdService
-     */
-    private $gdService;
+    private GdService $gdService;
 
     /**
      * ImageService constructor.
@@ -252,7 +249,7 @@ class ContentDrawingService
                 $lastEnd = $currentEnd;
                 $newContent[] = $item;
 
-                if (count($activeGroup) > 0) {
+                if ([] !== $activeGroup) {
                     $groups[] = $activeGroup;
                     $activeGroup = [];
                 }
@@ -264,7 +261,7 @@ class ContentDrawingService
                 $lastEnd = $currentEnd;
                 $newContent[] = $item;
 
-                if (count($activeGroup) > 0) {
+                if ([] !== $activeGroup) {
                     $groups[] = $activeGroup;
                     $activeGroup = [];
                 }
@@ -272,7 +269,7 @@ class ContentDrawingService
             }
 
             // new overlap, merge with previous
-            if (0 === count($activeGroup)) {
+            if ([] === $activeGroup) {
                 $groupName = $this->generateAlphabetColumnName(count($groups));
                 list($textWidth, $textHeight) = $this->gdService->measureTextDimensions($fontSize, $groupName);
 
@@ -290,23 +287,18 @@ class ContentDrawingService
                 $lastEnd = $item['xCoordinate'] + $item['width'] / 2 + $paddingOverlap;
                 continue;
             }
-
             // still within overlap, merge with previous
-            if (count($activeGroup) > 0) {
-                $activeGroup[] = $item;
-
-                // adjust x coordinate (weighted)
-                $lastItem = array_pop($newContent);
-                $groupedItemsCount = count($activeGroup) - 1; // -1 as the first entry is the group header
-                $lastItem['xCoordinate'] = ($lastItem['xCoordinate'] * ($groupedItemsCount - 1) + $item['xCoordinate']) / $groupedItemsCount;
-                $newContent[] = $lastItem;
-
-                $lastEnd = $item['xCoordinate'] + $item['width'] / 2 + $paddingOverlap;
-                continue;
-            }
+            $activeGroup[] = $item;
+            // adjust x coordinate (weighted)
+            $lastItem = array_pop($newContent);
+            $groupedItemsCount = count($activeGroup) - 1;
+            // -1 as the first entry is the group header
+            $lastItem['xCoordinate'] = ($lastItem['xCoordinate'] * ($groupedItemsCount - 1) + $item['xCoordinate']) / $groupedItemsCount;
+            $newContent[] = $lastItem;
+            $lastEnd = $item['xCoordinate'] + $item['width'] / 2 + $paddingOverlap;
         }
 
-        if (count($activeGroup) > 0) {
+        if ([] !== $activeGroup) {
             $groups[] = $activeGroup;
         }
 

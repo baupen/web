@@ -27,25 +27,13 @@ class IssueRenderDataProvider extends NoPaginationDataProvider
     use FileResponseTrait;
     use ImageRequestTrait;
 
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    /**
-     * @var ManagerRegistry
-     */
-    private $manager;
+    private ManagerRegistry $manager;
 
-    /**
-     * @var ImageServiceInterface
-     */
-    private $imageService;
+    private ImageServiceInterface $imageService;
 
-    /**
-     * @var PathServiceInterface
-     */
-    private $pathService;
+    private PathServiceInterface $pathService;
 
     public function __construct(ManagerRegistry $managerRegistry, RequestStack $requestStack, ImageServiceInterface $imageService, PathServiceInterface $pathService, iterable $collectionExtensions = [])
     {

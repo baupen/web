@@ -52,7 +52,7 @@ trait AssertApiCollectionFilterTrait
         $falseValues = ['false', '0'];
 
         $currentValueToString = $currentValue ? $trueValues : $falseValues;
-        $notCurrentValueToString = !$currentValue ? $trueValues : $falseValues;
+        $notCurrentValueToString = $currentValue ? $falseValues : $trueValues;
 
         foreach ($currentValueToString as $stringValue) {
             $this->assertApiCollectionContainsIri($client, $collectionUrlPrefix.$propertyName.'='.$stringValue, $iri);

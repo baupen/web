@@ -25,9 +25,9 @@ use Twig\TwigFunction;
 
 class MyTwigExtension extends AbstractExtension
 {
-    private $translator;
-    private $requestStack;
-    private $httpKernel;
+    private TranslatorInterface $translator;
+    private RequestStack $requestStack;
+    private HttpKernelInterface $httpKernel;
 
     public function __construct(TranslatorInterface $translator, RequestStack $requestStack, HttpKernelInterface $httpKernel)
     {

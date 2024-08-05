@@ -18,10 +18,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class IssueReportDataProvider extends NoPaginationDataProvider
 {
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private RequestStack $requestStack;
 
     private const ALREADY_CALLED = 'ISSUE_REPORT_DATA_PROVIDER_ALREADY_CALLED';
 

@@ -29,25 +29,13 @@ class IssueGroupDataProvider extends NoPaginationDataProvider
     use FileResponseTrait;
     use ImageRequestTrait;
 
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    /**
-     * @var ManagerRegistry
-     */
-    private $manager;
+    private ManagerRegistry $manager;
 
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
+    private SerializerInterface $serializer;
 
-    /**
-     * @var IriConverterInterface
-     */
-    private $iriConverter;
+    private IriConverterInterface $iriConverter;
 
     public function __construct(ManagerRegistry $managerRegistry, RequestStack $requestStack, SerializerInterface $serializer, IriConverterInterface $iriConverter, iterable $collectionExtensions = [])
     {

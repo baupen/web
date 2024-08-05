@@ -28,25 +28,13 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
 {
     use TokenTrait;
 
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
+    private TokenStorageInterface $tokenStorage;
 
-    /**
-     * @var EmailService
-     */
-    private $emailService;
+    private EmailService $emailService;
 
-    /**
-     * @var ReportServiceInterface
-     */
-    private $reportService;
+    private ReportServiceInterface $reportService;
 
-    /**
-     * @var IriConverterInterface
-     */
-    private $iriConverter;
+    private IriConverterInterface $iriConverter;
 
     /**
      * EmailDataPersister constructor.
@@ -70,7 +58,7 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
     public function persist($data, array $context = [])
     {
         $constructionManager = $this->tryGetConstructionManager($this->tokenStorage->getToken());
-        if (!$constructionManager) {
+        if (!$constructionManager instanceof \App\Entity\ConstructionManager) {
             throw new AuthenticationException();
         }
 
@@ -83,12 +71,12 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
             throw new HttpException(Response::HTTP_FORBIDDEN);
         }
 
-        if (!EmailService::tryConstructAddress($craftsman->getEmail(), $craftsman->getContactName())) {
+        if (!EmailService::tryConstructAddress($craftsman->getEmail(), $craftsman->getContactName()) instanceof \Symfony\Component\Mime\Address) {
             throw new BadRequestException('Craftsman '.$craftsman->getContactName().' has an invalid E-Mail set: '.$craftsman->getEmail());
         }
 
         foreach ($craftsman->getEmailCCs() as $emailCC) {
-            if (!EmailService::tryConstructAddress($emailCC)) {
+            if (!EmailService::tryConstructAddress($emailCC) instanceof \Symfony\Component\Mime\Address) {
                 throw new BadRequestException('Craftsman '.$craftsman->getContactName().' has an invalid CC E-Mail set: '.$emailCC);
             }
         }

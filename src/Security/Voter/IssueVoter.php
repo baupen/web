@@ -102,7 +102,7 @@ class IssueVoter extends ConstructionSiteOwnedEntityVoter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $craftsman = $this->tryGetCraftsman($token);
-        if (null !== $craftsman && self::ISSUE_RESPOND === $attribute) {
+        if ($craftsman instanceof \App\Entity\Craftsman && self::ISSUE_RESPOND === $attribute) {
             return $craftsman->getCanEdit() && $subject->getCraftsman() === $craftsman && ($subject->getResolvedBy() === $craftsman || null === $subject->getResolvedBy());
         }
 

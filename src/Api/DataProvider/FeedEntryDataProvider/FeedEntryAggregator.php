@@ -22,10 +22,7 @@ class FeedEntryAggregator
      */
     private $aggregator = [];
 
-    /**
-     * @var IriConverterInterface
-     */
-    private $iriConverter;
+    private IriConverterInterface $iriConverter;
 
     /**
      * IssueFeedAggregator constructor.

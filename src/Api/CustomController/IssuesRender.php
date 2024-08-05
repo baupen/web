@@ -13,7 +13,6 @@ namespace App\Api\CustomController;
 
 use App\Controller\Traits\FileResponseTrait;
 use App\Controller\Traits\ImageRequestTrait;
-use App\Entity\Issue;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -25,25 +24,13 @@ class IssuesRender
     use FileResponseTrait;
     use ImageRequestTrait;
 
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    /**
-     * @var ManagerRegistry
-     */
-    private $manager;
+    private ManagerRegistry $manager;
 
-    /**
-     * @var ImageServiceInterface
-     */
-    private $imageService;
+    private ImageServiceInterface $imageService;
 
-    /**
-     * @var PathServiceInterface
-     */
-    private $pathService;
+    private PathServiceInterface $pathService;
 
     public function __construct(ManagerRegistry $managerRegistry, RequestStack $requestStack, ImageServiceInterface $imageService, PathServiceInterface $pathService)
     {
@@ -55,7 +42,6 @@ class IssuesRender
 
     public function __invoke($data)
     {
-        /** @var Issue[] $data */
         $currentRequest = $this->requestStack->getCurrentRequest();
         $size = $currentRequest->attributes->get('size');
         $map = $currentRequest->attributes->get('map');

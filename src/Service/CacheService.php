@@ -20,15 +20,9 @@ use App\Service\Interfaces\MapFileServiceInterface;
 
 class CacheService implements CacheServiceInterface
 {
-    /**
-     * @var ImageServiceInterface
-     */
-    private $imageService;
+    private ImageServiceInterface $imageService;
 
-    /**
-     * @var MapFileServiceInterface
-     */
-    private $mapFileService;
+    private MapFileServiceInterface $mapFileService;
 
     /**
      * CacheService constructor.

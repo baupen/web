@@ -18,10 +18,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class FilterService implements FilterServiceInterface
 {
-    /**
-     * @var ManagerRegistry
-     */
-    private $manager;
+    private ManagerRegistry $manager;
 
     /**
      * FilterService constructor.

@@ -223,10 +223,6 @@ trait UserTrait
             return false;
         }
 
-        if ($this->getPassword() !== $user->getPassword()) {
-            return false;
-        }
-
-        return true;
+        return $this->getPassword() === $user->getPassword();
     }
 }

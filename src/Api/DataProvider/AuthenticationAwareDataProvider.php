@@ -30,15 +30,9 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 {
     use TokenTrait;
 
-    /**
-     * @var ContextAwareCollectionDataProviderInterface
-     */
-    private $decoratedCollectionDataProvider;
+    private ContextAwareCollectionDataProviderInterface $decoratedCollectionDataProvider;
 
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
+    private TokenStorageInterface $tokenStorage;
 
     private const ALREADY_CALLED = 'AUTHENTICATION_AWARE_DATA_PROVIDER_ALREADY_CALLED';
 
@@ -54,11 +48,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
     public function supports(string $resourceClass, ?string $operationName = null, array $context = []): bool
     {
         // Make sure we're not called twice
-        if (isset($context[self::ALREADY_CALLED])) {
-            return false;
-        }
-
-        return true;
+        return !isset($context[self::ALREADY_CALLED]);
     }
 
     public function getCollection(string $resourceClass, ?string $operationName = null, array $context = [])
@@ -68,11 +58,11 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         $token = $this->tokenStorage->getToken();
 
         $existingFilter = isset($context['filters']) ? $context['filters'] : [];
-        if ($constructionManager = $this->tryGetConstructionManager($token)) {
+        if (($constructionManager = $this->tryGetConstructionManager($token)) instanceof ConstructionManager) {
             $this->ensureConstructionManagerQueryValid($constructionManager, $resourceClass, $existingFilter);
-        } elseif ($craftsman = $this->tryGetCraftsman($token)) {
+        } elseif (($craftsman = $this->tryGetCraftsman($token)) !== null) {
             $this->ensureCraftsmanQueryValid($craftsman, $resourceClass, $existingFilter);
-        } elseif ($filter = $this->tryGetFilter($token)) {
+        } elseif (($filter = $this->tryGetFilter($token)) !== null) {
             $this->ensureFilterQueryValid($filter, $resourceClass, $existingFilter);
         } else {
             $this->ensureRenderQuery($resourceClass, $operationName, $existingFilter);
@@ -238,20 +228,18 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
             }
 
             if (is_array($query[$property])) {
-                if (!empty(array_diff($restriction, $query[$property]))) {
+                if ([] !== array_diff($restriction, $query[$property])) {
                     throw new BadRequestException($property.' filter value '.implode($query[$property]).' not equal '.implode($restriction).'.');
                 }
-            } else {
-                if (!in_array($query[$property], $restriction)) {
-                    throw new BadRequestException($property.' filter value '.$query[$property].' not in '.implode($restriction).'.');
-                }
+            } elseif (!in_array($query[$property], $restriction)) {
+                throw new BadRequestException($property.' filter value '.$query[$property].' not in '.implode($restriction).'.');
             }
         }
     }
 
     private function ensureDateTimeSearchFilterValid(array $query, string $property, string $timing, ?\DateTime $restriction): void
     {
-        if (null !== $restriction) {
+        if ($restriction instanceof \DateTime) {
             if (!isset($query[$property]) || !isset($query[$property][$timing])) {
                 throw new BadRequestException($property.' filter missing.');
             }
@@ -279,10 +267,8 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 
     private function ensureRenderQuery(string $resourceClass, ?string $operationName, array $existingFilter)
     {
-        if (Issue::class === $resourceClass && 'get_render' === $operationName) {
-            if (isset($existingFilter['map']) && !isset($existingFilter['map[]'])) {
-                return;
-            }
+        if (Issue::class === $resourceClass && 'get_render' === $operationName && (isset($existingFilter['map']) && !isset($existingFilter['map[]']))) {
+            return;
         }
 
         throw new HttpException(Response::HTTP_FORBIDDEN);

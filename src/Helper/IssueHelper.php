@@ -25,7 +25,6 @@ class IssueHelper
     public static function issuesToOrderedMaps(array $issues, &$orderedMaps, &$issuesPerMap)
     {
         $unorderedElements = [];
-        /** @var Issue[][] $issuesPerElement */
         $issuesPerMap = [];
         foreach ($issues as $issue) {
             $map = $issue->getMap();
@@ -49,7 +48,6 @@ class IssueHelper
     public static function issuesToOrderedCraftsman(array $issues, &$orderedCraftsman, &$issuesPerCraftsman)
     {
         $unorderedElements = [];
-        /** @var Issue[][] $issuesPerElement */
         $issuesPerCraftsman = [];
         foreach ($issues as $issue) {
             $craftsman = $issue->getCraftsman();

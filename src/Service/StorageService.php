@@ -26,10 +26,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class StorageService implements StorageServiceInterface
 {
-    /**
-     * @var PathServiceInterface
-     */
-    private $pathService;
+    private PathServiceInterface $pathService;
 
     /**
      * UploadService constructor.

@@ -17,7 +17,7 @@ class RequiredExactSearchFilter extends ExactSearchFilter
     {
         $description = parent::getDescription($resourceClass);
 
-        foreach ($description as $key => $entry) {
+        foreach ($description as $entry) {
             $entry['required'] = true;
         }
 

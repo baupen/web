@@ -24,15 +24,9 @@ use Doctrine\ORM\QueryBuilder;
 
 class AnalysisService implements AnalysisServiceInterface
 {
-    /**
-     * @var IssueService
-     */
-    private $issueService;
+    private IssueService $issueService;
 
-    /**
-     * @var CraftsmanService
-     */
-    private $craftsmanService;
+    private CraftsmanService $craftsmanService;
 
     /**
      * CraftsmanService constructor.
@@ -141,7 +135,7 @@ class AnalysisService implements AnalysisServiceInterface
      */
     private function applyDeltaToIssueCountAnalysis($issueCountAnalysis, \DateTime $timestamp, ?\DateTime $registeredAt, ?\DateTime $resolvedAt, ?\DateTime $closedAt)
     {
-        if (null !== $closedAt) {
+        if ($closedAt instanceof \DateTime) {
             // summary counted issue at "completed"
             if ($closedAt > $timestamp) {
                 $issueCountAnalysis->setClosedCount($issueCountAnalysis->getClosedCount() - 1);
@@ -151,7 +145,7 @@ class AnalysisService implements AnalysisServiceInterface
                     $issueCountAnalysis->setOpenCount($issueCountAnalysis->getOpenCount() + 1);
                 }
             }
-        } elseif (null !== $resolvedAt) {
+        } elseif ($resolvedAt instanceof \DateTime) {
             // summary counted issue at "resolved"
             if ($resolvedAt > $timestamp) {
                 $issueCountAnalysis->setInspectableCount($issueCountAnalysis->getInspectableCount() - 1);
@@ -159,11 +153,9 @@ class AnalysisService implements AnalysisServiceInterface
                     $issueCountAnalysis->setOpenCount($issueCountAnalysis->getOpenCount() + 1);
                 }
             }
-        } else {
+        } elseif ($registeredAt > $timestamp) {
             // summary counted issue at "open"
-            if ($registeredAt > $timestamp) {
-                $issueCountAnalysis->setOpenCount($issueCountAnalysis->getOpenCount() - 1);
-            }
+            $issueCountAnalysis->setOpenCount($issueCountAnalysis->getOpenCount() - 1);
         }
     }
 

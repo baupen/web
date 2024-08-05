@@ -20,10 +20,7 @@ use Psr\Log\LoggerInterface;
  */
 class GsService
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * GsService constructor.
@@ -46,11 +43,8 @@ class GsService
         // we do not use -dFitPage as it failed to correctly rotate pages in GPL Ghostscript 9.56.1 (2022-04-04)
         $newDpi = $this->calculateTargetDpi($targetFilePath, $dpi, $maxWidth, $maxHeight);
         $command = 'gs -sDEVICE=jpeg -dJPEGQ=80 -r'.$newDpi.' -dUseCropBox -sPageList=1  -o "'.$targetFilePath.'" "'.$sourcePdfPath.'"';
-        if (!$this->execute($command)) {
-            return false;
-        }
 
-        return true;
+        return $this->execute($command);
     }
 
     public function renderPdfWithoutOutlineFonts(string $sourcePdfPath, string $targetFilePath): bool

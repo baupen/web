@@ -13,20 +13,11 @@ namespace App\Service\Report\Pdf;
 
 class PdfDefinition
 {
-    /**
-     * @var string
-     */
-    private $title;
+    private string $title;
 
-    /**
-     * @var string
-     */
-    private $author;
+    private string $author;
 
-    /**
-     * @var string
-     */
-    private $logoPath;
+    private string $logoPath;
 
     /**
      * PdfDefinition constructor.

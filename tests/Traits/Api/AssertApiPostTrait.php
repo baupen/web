@@ -25,7 +25,7 @@ trait AssertApiPostTrait
 
     private function assertApiPostPayloadMinimal(int $expectedCode, Client $client, string $url, array $payload, array $includeAlways = [])
     {
-        foreach ($payload as $key => $value) {
+        foreach (array_keys($payload) as $key) {
             $actualPayload = array_merge($payload, $includeAlways);
             unset($actualPayload[$key]);
 

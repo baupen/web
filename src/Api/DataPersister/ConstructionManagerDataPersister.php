@@ -25,30 +25,15 @@ class ConstructionManagerDataPersister implements ContextAwareDataPersisterInter
 {
     use TokenTrait;
 
-    /**
-     * @var ContextAwareDataPersisterInterface
-     */
-    private $decorated;
+    private ContextAwareDataPersisterInterface $decorated;
 
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
+    private TokenStorageInterface $tokenStorage;
 
-    /**
-     * @var UserServiceInterface
-     */
-    private $userService;
+    private UserServiceInterface $userService;
 
-    /**
-     * @var ManagerRegistry
-     */
-    private $manager;
+    private ManagerRegistry $manager;
 
-    /**
-     * @var IriConverterInterface
-     */
-    private $iriConverter;
+    private IriConverterInterface $iriConverter;
 
     /**
      * ConstructionManagerDataPersister constructor.
