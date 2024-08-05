@@ -234,7 +234,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      */
     public function getNumbers(): ?array
     {
-        return empty($this->numbers) ? null : $this->numbers;
+        return null === $this->numbers || [] === $this->numbers ? null : $this->numbers;
     }
 
     /**
@@ -270,7 +270,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      */
     public function getCraftsmanIds(): ?array
     {
-        return empty($this->craftsmanIds) ? null : $this->craftsmanIds;
+        return null === $this->craftsmanIds || [] === $this->craftsmanIds ? null : $this->craftsmanIds;
     }
 
     /**
@@ -286,7 +286,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
      */
     public function getMapIds(): ?array
     {
-        return empty($this->mapIds) ? null : $this->mapIds;
+        return null === $this->mapIds || [] === $this->mapIds ? null : $this->mapIds;
     }
 
     /**
