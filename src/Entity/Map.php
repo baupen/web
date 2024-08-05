@@ -62,7 +62,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 
     #[Assert\NotBlank]
     #[Groups(['map-read', 'map-write'])]
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private string $name;
 
     #[Assert\NotBlank]

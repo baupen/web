@@ -44,88 +44,88 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     use TimeTrait;
 
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'boolean', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, nullable: true)]
     private ?bool $isDeleted = null;
 
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'boolean', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, nullable: true)]
     private ?bool $isMarked = null;
 
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'boolean', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, nullable: true)]
     private ?bool $wasAddedWithClient = null;
 
     /**
      * @var string[]|null
      */
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'simple_array', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $numbers = null;
 
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
     private ?string $description = null;
 
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'integer', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
     private ?int $state = null;
 
     /**
      * @var string[]|null
      */
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'simple_array', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $craftsmanIds = null;
 
     /**
      * @var string[]|null
      */
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'simple_array', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $mapIds = null;
 
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $deadlineBefore = null;
 
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $deadlineAfter = null;
 
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $createdAtAfter = null;
 
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $createdAtBefore = null;
 
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $registeredAtAfter = null;
 
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $registeredAtBefore = null;
 
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $resolvedAtAfter = null;
 
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $resolvedAtBefore = null;
 
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $closedAtAfter = null;
 
     #[Groups(['filter-read', 'filter-create'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $closedAtBefore = null;
 
     #[Groups(['filter-create'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $accessAllowedBefore = null;
 
     #[Groups(['filter-read', 'filter-create'])]
@@ -133,7 +133,7 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     #[ORM\ManyToOne(targetEntity: \ConstructionSite::class, inversedBy: 'filters')]
     private ?ConstructionSite $constructionSite = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $lastUsedAt = null;
 
     public function getIsDeleted(): ?bool

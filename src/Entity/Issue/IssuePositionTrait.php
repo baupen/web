@@ -20,17 +20,17 @@ trait IssuePositionTrait
 {
     #[Assert\NotBlank(groups: ['position'])]
     #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: 'float', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::FLOAT, nullable: true)]
     private ?float $positionX = null;
 
     #[Assert\NotBlank(groups: ['position'])]
     #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: 'float', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::FLOAT, nullable: true)]
     private ?float $positionY = null;
 
     #[Assert\NotBlank(groups: ['position'])]
     #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: 'float', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::FLOAT, nullable: true)]
     private ?float $positionZoomScale = null;
 
     #[Assert\Callback]

@@ -22,7 +22,7 @@ trait IssueStatusTrait
 {
     #[Assert\NotBlank]
     #[Groups(['issue-read', 'issue-create'])]
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
     #[Assert\NotBlank]
@@ -35,7 +35,7 @@ trait IssueStatusTrait
      */
     #[Assert\NotBlank(groups: ['after-register'])]
     #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $registeredAt = null;
 
     #[Assert\NotBlank(groups: ['after-register'])]
@@ -47,7 +47,7 @@ trait IssueStatusTrait
      * @var \DateTime|null
      */
     #[Groups(['issue-read', 'issue-write', 'issue-craftsman-write'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $resolvedAt = null;
 
     #[Groups(['issue-read', 'issue-write', 'issue-craftsman-write'])]
@@ -58,7 +58,7 @@ trait IssueStatusTrait
      * @var \DateTime|null
      */
     #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $closedAt = null;
 
     #[Groups(['issue-read', 'issue-write'])]

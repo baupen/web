@@ -65,15 +65,15 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public const ROLE_ASSOCIATED_CONSTRUCTION_MANAGER = 'ROLE_ASSOCIATED_CONSTRUCTION_MANAGER';
 
     #[Groups(['construction-manager-read', 'construction-manager-write'])]
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
     private ?string $givenName = null;
 
     #[Groups(['construction-manager-read', 'construction-manager-write'])]
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
     private ?string $familyName = null;
 
     #[Groups(['construction-manager-read', 'construction-manager-write'])]
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
     private ?string $phone = null;
 
     /**
@@ -82,21 +82,21 @@ class ConstructionManager extends BaseEntity implements UserInterface
     #[ORM\ManyToMany(targetEntity: \ConstructionSite::class, mappedBy: 'constructionManagers')]
     private Collection $constructionSites;
 
-    #[ORM\Column(type: 'text', options: ['default' => 'de'])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, options: ['default' => 'de'])]
     private string $locale = 'de';
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
     private ?string $authorizationAuthority = null;
 
-    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => false])]
     private bool $isAdminAccount = false;
 
     #[Groups(['construction-manager-read-self'])]
-    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => false])]
     private bool $canAssociateSelf = false;
 
     #[Groups(['construction-manager-read-self', 'construction-manager-write'])]
-    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => false])]
     private bool $receiveWeekly = false;
 
     /**

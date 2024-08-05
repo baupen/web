@@ -20,7 +20,6 @@ use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class PublicController extends BaseDoctrineController
@@ -31,7 +30,7 @@ class PublicController extends BaseDoctrineController
     /**
      * @return Response
      */
-    #[Route(path: '/download/{filename}', name: 'public_download')]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/download/{filename}', name: 'public_download')]
     public function download(string $filename, PathServiceInterface $pathService)
     {
         $path = $pathService->getTransientFolderForReports();
@@ -42,7 +41,7 @@ class PublicController extends BaseDoctrineController
         return $response;
     }
 
-    #[Route(path: '/resolve/{token}', name: 'public_resolve')]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/resolve/{token}', name: 'public_resolve')]
     public function resolve(string $token, TokenStorageInterface $tokenStorage, ManagerRegistry $registry): Response
     {
         $craftsman = $registry->getRepository(Craftsman::class)->findOneBy(['authenticationToken' => $token, 'deletedAt' => null]);
@@ -58,7 +57,7 @@ class PublicController extends BaseDoctrineController
         return $this->render('public/resolve.html.twig');
     }
 
-    #[Route(path: '/filtered/{token}', name: 'public_filtered')]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/filtered/{token}', name: 'public_filtered')]
     public function filtered(string $token, TokenStorageInterface $tokenStorage, ManagerRegistry $registry): Response
     {
         $filter = $registry->getRepository(Filter::class)->findOneBy(['authenticationToken' => $token]);

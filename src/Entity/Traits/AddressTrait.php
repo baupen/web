@@ -23,20 +23,20 @@ trait AddressTrait
 {
     #[Assert\NotBlank]
     #[Groups(['construction-site-read', 'construction-site-write'])]
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private ?string $streetAddress = null;
 
     #[Assert\NotBlank]
     #[Groups(['construction-site-read', 'construction-site-write'])]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
     private ?int $postalCode = null;
 
     #[Assert\NotBlank]
     #[Groups(['construction-site-read', 'construction-site-write'])]
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private ?string $locality = null;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     #[Assert\Country]
     private ?string $country = 'CH';
 

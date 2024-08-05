@@ -51,7 +51,7 @@ class IssueGroupDataProvider extends NoPaginationDataProvider
         return Issue::class === $resourceClass && 'get_group' === $operationName;
     }
 
-    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = [])
+    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = []): iterable
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
         $group = $currentRequest->query->get('group');

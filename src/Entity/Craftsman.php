@@ -71,34 +71,34 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
 
     #[Assert\NotBlank]
     #[Groups(['craftsman-read', 'craftsman-write'])]
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private string $contactName;
 
     #[Assert\NotBlank]
     #[Groups(['craftsman-read', 'craftsman-write'])]
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private string $company;
 
     #[Assert\NotBlank]
     #[Groups(['craftsman-read', 'craftsman-write'])]
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private string $trade;
 
     #[Assert\NotBlank]
     #[Assert\Email]
     #[Groups(['craftsman-read', 'craftsman-write'])]
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private string $email;
 
     /**
      * @var string[]
      */
     #[Groups(['craftsman-read', 'craftsman-write'])]
-    #[ORM\Column(type: 'simple_array', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $emailCCs = null;
 
     #[Groups(['craftsman-read-self', 'craftsman-write'])]
-    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => true])]
     private bool $canEdit = true;
 
     #[Assert\NotBlank]
@@ -118,10 +118,10 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     #[ORM\OneToMany(targetEntity: \Issue::class, mappedBy: 'resolvedBy')]
     private Collection $resolvedIssues;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $lastEmailReceived = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $lastVisitOnline = null;
 
     /**

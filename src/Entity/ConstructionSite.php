@@ -60,10 +60,10 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
 
     #[Assert\NotBlank]
     #[Groups(['construction-site-read', 'construction-site-write'])]
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private string $name;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private ?string $folderName = null;
 
     #[ORM\ManyToOne(targetEntity: ConstructionSiteImage::class, cascade: ['persist'])]
@@ -81,7 +81,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      * @var Collection<int, Map>
      */
     #[ORM\OneToMany(targetEntity: \Map::class, mappedBy: 'constructionSite', cascade: ['persist'])]
-    #[ORM\OrderBy(['name' => 'ASC'])]
+    #[ORM\OrderBy(['name' => \Doctrine\Common\Collections\Criteria::ASC])]
     private Collection $maps;
 
     /**
@@ -100,7 +100,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      * @var Collection<int, EmailTemplate>
      */
     #[ORM\OneToMany(targetEntity: EmailTemplate::class, mappedBy: 'constructionSite', cascade: ['persist'])]
-    #[ORM\OrderBy(['purpose' => 'ASC', 'name' => 'ASC'])]
+    #[ORM\OrderBy(['purpose' => \Doctrine\Common\Collections\Criteria::ASC, 'name' => 'ASC'])]
     private Collection $emailTemplates;
 
     /**
@@ -110,7 +110,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     private Collection $filters;
 
     #[Groups(['construction-site-read'])]
-    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => false])]
     private bool $isHidden = false;
 
     /**
