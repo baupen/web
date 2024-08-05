@@ -11,6 +11,7 @@
 
 namespace App\Api\CustomController;
 
+use App\Api\Entity\IssueSummary;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -24,7 +25,10 @@ class IssuesSummary
         $this->serializer = $serializer;
     }
 
-    public function __invoke($data): Response
+    /**
+     * @param IssueSummary[] $data
+     */
+    public function __invoke(array $data): Response
     {
         $json = $this->serializer->serialize($data[0], 'json');
 

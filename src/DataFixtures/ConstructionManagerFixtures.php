@@ -18,7 +18,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class ConstructionManagerFixtures extends Fixture implements OrderedFixtureInterface
 {
-    public const ORDER = 0;
+    public const ORDER = 1;
 
     public function load(ObjectManager $manager)
     {

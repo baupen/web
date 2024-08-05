@@ -23,7 +23,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterface
 {
-    public const ORDER = 1;
+    public const ORDER = ConstructionManagerFixtures::ORDER + 1;
 
     private SampleServiceInterface $sampleService;
 
@@ -72,7 +72,7 @@ class ConstructionSiteFixtures extends Fixture implements OrderedFixtureInterfac
 
     public function getOrder()
     {
-        return 1;
+        return self::ORDER;
     }
 
     private function simulateActivity(ObjectManager $manager, ConstructionSite $constructionSite)
