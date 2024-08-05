@@ -5,7 +5,8 @@
          backupGlobals="false"
          colors="true"
          bootstrap="tests/bootstrap.php"
-         convertDeprecationsToExceptions="false">
+         convertDeprecationsToExceptions="false"
+>
     <php>
         <ini name="display_errors" value="1" />
         <ini name="error_reporting" value="-1" />
@@ -33,4 +34,9 @@
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
     </listeners>
+
+    <!-- Uncomment when adding extensions
+    <extensions>
+    </extensions>
+    -->
 </phpunit>
