@@ -1,12 +1,15 @@
 security:
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    enable_authenticator_manager: true
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
     providers:
         construction_managers:
             entity:
                 class: 'App\Entity\ConstructionManager'
                 property: 'email'
         api_tokens:
-            id: App\Security\AuthenticationTokenUserProvider
+            id: App\Security\TokenUserProvider
 
     encoders:
         App\Entity\ConstructionManager:
@@ -23,18 +26,14 @@ security:
             security: false
         api:
             pattern: ^/api/
-            anonymous: true
             provider: api_tokens
             stateless: true
-            guard:
-                authenticators:
-                    - App\Security\TokenAuthenticator
+            custom_authenticators:
+                - App\Security\TokenAuthenticator
         main:
-            anonymous: true
             provider: construction_managers
-            guard:
-                authenticators:
-                    - App\Security\LoginFormAuthenticator
+            custom_authenticators:
+                - App\Security\LoginFormAuthenticator
             logout:
                 path: logout
                 # where to redirect after logout
@@ -45,14 +44,8 @@ security:
                 path: /
                 always_remember_me: true
                 samesite: 'strict'
-            # https://symfony.com/doc/current/security/impersonating_user.html
             switch_user: true
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#firewalls-authentication
-
-
-    # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/admin, role: ROLE_ADMIN }
@@ -84,3 +77,16 @@ security:
         - { path: ^/api, role: ROLE_API_USER }
         - { path: ^/set_locale, role: ROLE_USER }
         - { path: ^/, role: ROLE_ASSOCIATED_CONSTRUCTION_MANAGER }
+
+when@test:
+    security:
+        password_hashers:
+            # By default, password hashers are resource intensive and take time. This is
+            # important to generate secure password hashes. In tests however, secure hashes
+            # are not important, waste resources and increase test times. The following
+            # reduces the work factor to the lowest possible values.
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4 # Lowest possible value for bcrypt
+                time_cost: 3 # Lowest possible value for argon
+                memory_cost: 10 # Lowest possible value for argon
