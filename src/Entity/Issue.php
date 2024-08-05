@@ -116,27 +116,27 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     public const STATE_CLOSED = 8;
 
     #[Groups(['issue-read'])]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
     private ?int $number = null;
 
     #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: 'boolean')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
     private bool $isMarked = false;
 
     #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: 'boolean')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
     private bool $wasAddedWithClient = false;
 
     #[Assert\NotBlank(groups: ['after-register'])]
     #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
     private ?string $description = null;
 
     #[Groups(['issue-read', 'issue-write'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $deadline = null;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
     private ?\DateTime $lastChangedAt = null;
 
     #[Assert\Callback]

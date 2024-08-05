@@ -18,10 +18,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 trait FileTrait
 {
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private ?string $filename = null;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private ?string $hash = null;
 
     public function getFilename(): string

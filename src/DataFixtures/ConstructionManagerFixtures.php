@@ -42,7 +42,7 @@ class ConstructionManagerFixtures extends Fixture implements OrderedFixtureInter
         $manager->flush();
     }
 
-    public function getOrder()
+    public function getOrder(): int
     {
         return self::ORDER;
     }

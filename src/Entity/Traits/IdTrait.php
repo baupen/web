@@ -24,7 +24,7 @@ trait IdTrait
      *                  will be null when not inserted into the db yet
      */
     #[ORM\Id]
-    #[ORM\Column(name: 'id', type: 'guid')]
+    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::GUID)]
     #[ORM\GeneratedValue(strategy: 'UUID')]
     private $id;
 

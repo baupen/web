@@ -49,7 +49,7 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
         return Craftsman::class === $resourceClass && 'get_statistics' === $operationName;
     }
 
-    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = [])
+    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = []): iterable
     {
         $context[self::ALREADY_CALLED] = true;
 

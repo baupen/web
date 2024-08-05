@@ -22,7 +22,7 @@ trait SoftDeleteTrait
     /**
      * @var \DateTime|null
      */
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $deletedAt = null;
 
     public function getDeletedAt(): ?\DateTime

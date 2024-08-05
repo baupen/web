@@ -16,12 +16,11 @@ use App\Entity\Email;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/email')]
+#[\Symfony\Component\Routing\Attribute\Route(path: '/email')]
 class EmailController extends BaseDoctrineController
 {
-    #[Route(path: '/{identifier}', name: 'email')]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/{identifier}', name: 'email')]
     public function email(string $identifier, ManagerRegistry $registry): Response
     {
         $email = $registry->getRepository(Email::class)->findOneBy(['identifier' => $identifier]);

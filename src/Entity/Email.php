@@ -31,28 +31,28 @@ class Email extends BaseEntity
     public const TYPE_CRAFTSMAN_ISSUE_REMINDER = 4;
     public const TYPE_CONSTRUCTION_SITES_OVERVIEW = 5;
 
-    #[ORM\Column(type: 'guid')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::GUID)]
     private ?string $identifier = null;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, nullable: true)]
     private ?string $link = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
     private ?string $body = null;
 
-    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => false])]
     private ?bool $jsonBody = null;
 
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
     private ?int $type = null;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
     private ?\DateTime $sentAt = null;
 
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $sentBy = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $readAt = null;
 
     public static function create(int $emailType, ConstructionManager $sentBy, ?string $link = null, ?string $body = null, bool $jsonBody = false): Email

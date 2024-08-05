@@ -36,7 +36,7 @@ abstract class FeedEntryDataProvider extends NoPaginationDataProvider
         return $this->getResourceClass() === $resourceClass && 'get_feed_entries' === $operationName;
     }
 
-    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = [])
+    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = []): iterable
     {
         $queryBuilder = $this->getCollectionQueryBuilerWithoutPagination($resourceClass, $operationName, $context);
         /** @var Issue[] $issues */

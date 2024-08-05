@@ -13,12 +13,11 @@ namespace App\Controller;
 
 use App\Controller\Base\BaseController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/')]
+#[\Symfony\Component\Routing\Attribute\Route(path: '/')]
 class IndexController extends BaseController
 {
-    #[Route(path: '', name: 'index')]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '', name: 'index')]
     public function index(): Response
     {
         return $this->render('index.html.twig');

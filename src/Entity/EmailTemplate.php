@@ -55,26 +55,26 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
 
     #[Assert\NotBlank]
     #[Groups(['email-template-read', 'email-template-edit'])]
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private string $name;
 
     #[Assert\NotBlank]
     #[Groups(['email-template-read', 'email-template-edit'])]
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private string $subject;
 
     #[Assert\NotBlank]
     #[Groups(['email-template-read', 'email-template-edit'])]
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private string $body;
 
     #[Groups(['email-template-read', 'email-template-edit'])]
-    #[ORM\Column(type: 'integer', nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
     private ?int $purpose = null;
 
     #[Assert\NotNull]
     #[Groups(['email-template-read', 'email-template-edit'])]
-    #[ORM\Column(type: 'boolean')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
     private bool $selfBcc;
 
     #[Assert\NotBlank]

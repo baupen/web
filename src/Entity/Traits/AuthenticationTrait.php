@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 trait AuthenticationTrait
 {
     #[Groups(['construction-manager-read-self', 'filter-read'])]
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private ?string $authenticationToken = null;
 
     public function getAuthenticationToken(): string
