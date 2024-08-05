@@ -151,7 +151,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     /**
      * @return Map[]|ArrayCollection
      */
-    public function getChildren()
+    public function getChildren(): ArrayCollection
     {
         return $this->children;
     }
@@ -159,7 +159,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     /**
      * @return Issue[]|ArrayCollection
      */
-    public function getIssues()
+    public function getIssues(): ArrayCollection
     {
         return $this->issues;
     }

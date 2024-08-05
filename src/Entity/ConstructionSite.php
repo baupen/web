@@ -166,7 +166,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     /**
      * @return ConstructionManager[]|ArrayCollection
      */
-    public function getConstructionManagers()
+    public function getConstructionManagers(): ArrayCollection|array
     {
         return $this->constructionManagers;
     }
@@ -194,7 +194,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     /**
      * @return Map[]|ArrayCollection
      */
-    public function getMaps()
+    public function getMaps(): ArrayCollection
     {
         return $this->maps;
     }
@@ -202,7 +202,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     /**
      * @return Craftsman[]|ArrayCollection
      */
-    public function getCraftsmen()
+    public function getCraftsmen(): ArrayCollection
     {
         return $this->craftsmen;
     }
@@ -230,7 +230,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     /**
      * @return EmailTemplate[]|ArrayCollection
      */
-    public function getEmailTemplates()
+    public function getEmailTemplates(): ArrayCollection
     {
         return $this->emailTemplates;
     }
@@ -238,7 +238,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     /**
      * @return Filter[]|ArrayCollection
      */
-    public function getFilters()
+    public function getFilters(): ArrayCollection
     {
         return $this->filters;
     }
@@ -246,7 +246,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     /**
      * @return Issue[]|ArrayCollection
      */
-    public function getIssues()
+    public function getIssues(): ArrayCollection
     {
         return $this->issues;
     }

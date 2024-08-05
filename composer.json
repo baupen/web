@@ -136,12 +136,6 @@
       "require": "^5.4"
     },
     "hooks": {
-      "pre-commit": [
-        "echo committing as $(git config user.name)",
-        "./vendor/bin/php-cs-fixer fix",
-        "yarn run lint-fix",
-        "git update-index --again"
-      ],
       "post-merge": "composer install"
     }
   }

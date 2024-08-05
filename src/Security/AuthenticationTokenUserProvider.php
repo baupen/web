@@ -74,9 +74,8 @@ class AuthenticationTokenUserProvider implements UserProviderInterface, Password
                 $token->setFilter($filter);
 
                 return $token;
-            } else {
-                throw new UsernameNotFoundException();
             }
+            throw new UsernameNotFoundException();
         }
 
         throw new UsernameNotFoundException();

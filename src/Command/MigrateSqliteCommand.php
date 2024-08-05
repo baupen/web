@@ -332,7 +332,7 @@ class MigrateSqliteCommand extends DatabaseCommand
 
         $sql = $selectSql.' WHERE number IS NULL';
         $entities = $this->fetchAll($sourcePdo, $sql);
-        if (count($entities) > 0) {
+        if ([] !== $entities) {
             foreach ($entities as &$entity) {
                 $migrateReference($entity);
 
@@ -431,7 +431,7 @@ class MigrateSqliteCommand extends DatabaseCommand
             $batchSql = $sql.' LIMIT '.$limit.' OFFSET '.$offset;
 
             $entities = $this->fetchAll($sourcePdo, $batchSql);
-            if (0 === count($entities)) {
+            if ([] === $entities) {
                 break;
             }
 

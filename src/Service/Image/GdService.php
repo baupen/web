@@ -151,11 +151,9 @@ class GdService
     /**
      * @param \GdImage|resource $image
      *
-     * @return int|false
-     *
      * @throws \Exception
      */
-    private function createColorForLabel(string $label, &$image, float $opacity = 1)
+    private function createColorForLabel(string $label, &$image, float $opacity = 1): int|false
     {
         $alpha = (int) ((1 - $opacity) * 127);
         switch ($label) {

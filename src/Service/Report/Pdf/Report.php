@@ -15,10 +15,7 @@ use App\Helper\ImageHelper;
 
 class Report
 {
-    /**
-     * @var Pdf
-     */
-    private $pdfDocument;
+    private Pdf $pdfDocument;
 
     private PdfSizes $pdfSizes;
 
@@ -321,7 +318,7 @@ class Report
         }
     }
 
-    private function printH2(string $text, $columnWidth = 0, ?string $description = ''): void
+    private function printH2(string $text, float|int $columnWidth = 0, ?string $description = ''): void
     {
         if (mb_strlen($description) > 0) {
             $this->pdfDocument->SetTextColor(...$this->pdfDesign->getSecondaryTextColor());
@@ -338,7 +335,7 @@ class Report
         $this->pdfDocument->Ln($this->pdfSizes->getLnHeight());
     }
 
-    private function printH3($text, $columnWidth = 0, $description = ''): void
+    private function printH3($text, float $columnWidth = 0, $description = ''): void
     {
         $this->pdfDocument->SetFontSize($this->pdfSizes->getRegularFontSize());
         $this->pdfDocument->SetFont(...$this->pdfDesign->getEmphasisFontFamily());
@@ -352,7 +349,7 @@ class Report
         $this->pdfDocument->Ln($this->pdfSizes->getLnHeight());
     }
 
-    private function printP(string $text, $columnWidth = 0, bool $secondary = false): void
+    private function printP(string $text, float $columnWidth = 0, bool $secondary = false): void
     {
         if ($secondary) {
             $this->pdfDocument->SetTextColor(...$this->pdfDesign->getSecondaryTextColor());
@@ -526,7 +523,7 @@ class Report
         return true;
     }
 
-    public function getContentWidth()
+    public function getContentWidth(): float
     {
         return $this->pdfSizes->getContentXSize();
     }
