@@ -2,8 +2,6 @@
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) 
 [![PHP Composer](https://github.com/baupen/web/actions/workflows/php.yml/badge.svg)](https://github.com/baupen/web/actions/workflows/php.yml)
 [![Node.js Encore](https://github.com/baupen/web/actions/workflows/node.js.yml/badge.svg)](https://github.com/baupen/web/actions/workflows/node.js.yml)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/baupen/web/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/baupen/web/?branch=master)
-[![Scrutinizer Coverage](https://scrutinizer-ci.com/g/baupen/web/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/baupen/web/?branch=master)
 [![translated using lokalise](https://img.shields.io/badge/translations-lokalise.co-%23249BEE.svg)](https://lokalise.co) 
 
 ## About
