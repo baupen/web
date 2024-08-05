@@ -105,6 +105,7 @@
       "php bin/console doctrine:fixtures:load --no-interaction"
     ],
     "lint": [
+      ",./bin/console cache:clear",
       "./vendor/bin/rector process",
       "./vendor/bin/php-cs-fixer fix",
       "yarn run lint-fix"
