@@ -26,6 +26,7 @@ use App\Entity\Traits\TimeTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -240,17 +241,17 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     }
 
     /**
-     * @return Issue[]|ArrayCollection
+     * @return Issue[]|Collection
      */
-    public function getIssues(): ArrayCollection
+    public function getIssues(): Collection
     {
         return $this->issues;
     }
 
     /**
-     * @return Issue[]|ArrayCollection
+     * @return Issue[]|Collection
      */
-    public function getResolvedIssues(): ArrayCollection
+    public function getResolvedIssues(): Collection
     {
         return $this->resolvedIssues;
     }

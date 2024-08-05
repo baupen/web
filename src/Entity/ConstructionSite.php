@@ -24,6 +24,7 @@ use App\Entity\Traits\SoftDeleteTrait;
 use App\Entity\Traits\TimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -165,9 +166,9 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     }
 
     /**
-     * @return ConstructionManager[]|ArrayCollection
+     * @return ConstructionManager[]|Collection
      */
-    public function getConstructionManagers(): ArrayCollection|array
+    public function getConstructionManagers(): Collection|array
     {
         return $this->constructionManagers;
     }
@@ -193,17 +194,17 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     }
 
     /**
-     * @return Map[]|ArrayCollection
+     * @return Map[]|Collection
      */
-    public function getMaps(): ArrayCollection
+    public function getMaps(): Collection
     {
         return $this->maps;
     }
 
     /**
-     * @return Craftsman[]|ArrayCollection
+     * @return Craftsman[]|Collection
      */
-    public function getCraftsmen(): ArrayCollection
+    public function getCraftsmen(): Collection
     {
         return $this->craftsmen;
     }
@@ -229,25 +230,25 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     }
 
     /**
-     * @return EmailTemplate[]|ArrayCollection
+     * @return EmailTemplate[]|Collection
      */
-    public function getEmailTemplates(): ArrayCollection
+    public function getEmailTemplates(): Collection
     {
         return $this->emailTemplates;
     }
 
     /**
-     * @return Filter[]|ArrayCollection
+     * @return Filter[]|Collection
      */
-    public function getFilters(): ArrayCollection
+    public function getFilters(): Collection
     {
         return $this->filters;
     }
 
     /**
-     * @return Issue[]|ArrayCollection
+     * @return Issue[]|Collection
      */
-    public function getIssues(): ArrayCollection
+    public function getIssues(): Collection
     {
         return $this->issues;
     }
