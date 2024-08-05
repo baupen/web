@@ -16,8 +16,10 @@ $toggle-default-size: 1.5rem;
 // Mixin for Switch Colors
 // Variables: $color, $bg, $active-bg
 @mixin toggle-color($color: $btn-default-color, $bg: $btn-default-bg, $active-bg: $brand-primary) {
-  background: $bg;
-  color: $color;
+  & {
+    background: $bg;
+    color: $color;
+  }
 
   &::before,
   &::after {

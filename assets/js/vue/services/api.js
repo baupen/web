@@ -31,7 +31,7 @@ const api = {
       },
       error => {
         /* eslint-disable-next-line eqeqeq */
-        if (error == 'Error: Request aborted') {
+        if (error == 'AxiosError: Request aborted') {
           // hide aborted errors (happens when navigating rapidly in firefox)
           return
         }
