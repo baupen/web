@@ -21,18 +21,14 @@ use Doctrine\ORM\Mapping as ORM;
 trait TimeTrait
 {
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private ?\DateTimeInterface $createdAt = null;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(type="datetime")
      */
-    private $lastChangedAt;
+    private ?\DateTimeInterface $lastChangedAt = null;
 
     /**
      * @ORM\PrePersist()

@@ -181,11 +181,11 @@ class IssueTest extends ApiTestCase
 
         $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $affiliation);
         $number = json_decode($response->getContent(), true)['number'];
-        $this->assertEquals(1, $number);
+        $this->assertSame(1, $number);
 
         $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $affiliation);
         $number = json_decode($response->getContent(), true)['number'];
-        $this->assertEquals(2, $number);
+        $this->assertSame(2, $number);
     }
 
     public function testIsDeletedFilter(): void
@@ -237,6 +237,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=8', $issueId);
     }
 
+    #[\PHPUnit\Framework\Attributes\DoesNotPerformAssertions]
     public function testLastChangedOrder(): void
     {
         $client = $this->createClient();
@@ -251,6 +252,7 @@ class IssueTest extends ApiTestCase
         $this->testOrderAppliedFor('lastChangedAt', $client, $constructionSite);
     }
 
+    #[\PHPUnit\Framework\Attributes\DoesNotPerformAssertions]
     public function testDeadlineNumberOrder(): void
     {
         $client = $this->createClient();
@@ -442,12 +444,12 @@ class IssueTest extends ApiTestCase
 
         $fullUrl = $urlWithConstructionSite.'&map='.$map->getId();
         $response = $this->assertApiGetOk($client, $fullUrl, 'image/jpeg');
-        $this->assertTrue($response->getKernelResponse() instanceof BinaryFileResponse);
+        $this->assertInstanceOf(BinaryFileResponse::class, $response->getKernelResponse());
 
         $response = $client->request('GET', $fullUrl, ['headers' => ['X-EMPTY-RESPONSE-EXPECTED' => '', 'Accept' => 'image/jpeg']]);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertTrue(!$response->getKernelResponse() instanceof BinaryFileResponse);
-        $this->assertTrue('' === $response->getContent());
+        $this->assertNotInstanceOf(BinaryFileResponse::class, $response->getKernelResponse());
+        $this->assertSame('', $response->getContent());
     }
 
     public function testStatistics(): void
@@ -517,10 +519,10 @@ class IssueTest extends ApiTestCase
         $response = $this->assertApiGetOk($client, '/api/issues/summary?constructionSite='.$constructionSite->getId());
         $summary = json_decode($response->getContent(), true);
 
-        $this->assertEquals(1, $summary['newCount']);
-        $this->assertEquals(1, $summary['openCount']);
-        $this->assertEquals(1, $summary['inspectableCount']);
-        $this->assertEquals(2, $summary['closedCount']);
+        $this->assertSame(1, $summary['newCount']);
+        $this->assertSame(1, $summary['openCount']);
+        $this->assertSame(1, $summary['inspectableCount']);
+        $this->assertSame(2, $summary['closedCount']);
     }
 
     public function testGroup(): void
@@ -728,21 +730,21 @@ class IssueTest extends ApiTestCase
         $yesterdayEntry = $members[count($members) - 3];
         $dayBeforeYesterdayEntry = $members[count($members) - 4];
 
-        $this->assertEquals((new \DateTime('tomorrow'))->format(DateTimeFormatter::ISO_DATE_FORMAT), $tomorrowEntry['date']);
+        $this->assertSame((new \DateTime('tomorrow'))->format(DateTimeFormatter::ISO_DATE_FORMAT), $tomorrowEntry['date']);
 
-        $this->assertEquals((new \DateTime('today'))->format(DateTimeFormatter::ISO_DATE_FORMAT), $todayEntry['date']);
-        $this->assertEquals(1, $todayEntry['openCount']); // 2
-        $this->assertEquals(1, $todayEntry['inspectableCount']); // 3
-        $this->assertEquals(2, $todayEntry['closedCount']); // 5 #4
+        $this->assertSame((new \DateTime('today'))->format(DateTimeFormatter::ISO_DATE_FORMAT), $todayEntry['date']);
+        $this->assertSame(1, $todayEntry['openCount']); // 2
+        $this->assertSame(1, $todayEntry['inspectableCount']); // 3
+        $this->assertSame(2, $todayEntry['closedCount']); // 5 #4
 
-        $this->assertEquals((new \DateTime('yesterday'))->format(DateTimeFormatter::ISO_DATE_FORMAT), $yesterdayEntry['date']);
-        $this->assertEquals(2, $yesterdayEntry['openCount']); // 5 #3
-        $this->assertEquals(1, $yesterdayEntry['inspectableCount']); // 4
-        $this->assertEquals(0, $yesterdayEntry['closedCount']);
+        $this->assertSame((new \DateTime('yesterday'))->format(DateTimeFormatter::ISO_DATE_FORMAT), $yesterdayEntry['date']);
+        $this->assertSame(2, $yesterdayEntry['openCount']); // 5 #3
+        $this->assertSame(1, $yesterdayEntry['inspectableCount']); // 4
+        $this->assertSame(0, $yesterdayEntry['closedCount']);
 
-        $this->assertEquals(2, $dayBeforeYesterdayEntry['openCount']); // 5 #4
-        $this->assertEquals(0, $dayBeforeYesterdayEntry['inspectableCount']);
-        $this->assertEquals(0, $dayBeforeYesterdayEntry['closedCount']);
+        $this->assertSame(2, $dayBeforeYesterdayEntry['openCount']); // 5 #4
+        $this->assertSame(0, $dayBeforeYesterdayEntry['inspectableCount']);
+        $this->assertSame(0, $dayBeforeYesterdayEntry['closedCount']);
     }
 
     private function testOrderAppliedFor(string $entry, Client $client, ConstructionSite $constructionSite): void

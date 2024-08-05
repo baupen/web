@@ -287,18 +287,18 @@ class CraftsmanTest extends ApiTestCase
 
         $statistics = $this->getStatisticForCraftsman($client, $craftsman);
 
-        $this->assertEquals(3, $statistics['issueSummary']['openCount']);
-        $this->assertEquals(3, $statistics['issueSummary']['inspectableCount']);
-        $this->assertEquals(3, $statistics['issueSummary']['closedCount']);
+        $this->assertSame(3, $statistics['issueSummary']['openCount']);
+        $this->assertSame(3, $statistics['issueSummary']['inspectableCount']);
+        $this->assertSame(3, $statistics['issueSummary']['closedCount']);
 
-        $this->assertEquals(3, $statistics['issueUnreadCount']);
-        $this->assertEquals(2, $statistics['issueOverdueCount']);
+        $this->assertSame(3, $statistics['issueUnreadCount']);
+        $this->assertSame(2, $statistics['issueOverdueCount']);
 
         $this->assertEquals(null, $statistics['lastEmailReceived']);
         $this->assertEquals(null, $statistics['lastVisitOnline']);
 
-        $this->assertEquals($yesterday->format('c'), $statistics['nextDeadline']);
-        $this->assertEquals($tomorrow->format('c'), $statistics['lastIssueResolved']);
+        $this->assertSame($yesterday->format('c'), $statistics['nextDeadline']);
+        $this->assertSame($tomorrow->format('c'), $statistics['lastIssueResolved']);
 
         $craftsman = $this->getTestConstructionSite()->getCraftsmen()[0];
         $craftsman->setLastEmailReceived($today);
@@ -306,9 +306,9 @@ class CraftsmanTest extends ApiTestCase
         $this->saveEntity($craftsman);
 
         $statistics = $this->getStatisticForCraftsman($client, $craftsman);
-        $this->assertEquals($today->format('c'), $statistics['lastEmailReceived']);
-        $this->assertEquals($tomorrow->format('c'), $statistics['lastVisitOnline']);
-        $this->assertEquals(0, $statistics['issueUnreadCount']);
+        $this->assertSame($today->format('c'), $statistics['lastEmailReceived']);
+        $this->assertSame($tomorrow->format('c'), $statistics['lastVisitOnline']);
+        $this->assertSame(0, $statistics['issueUnreadCount']);
     }
 
     private function createRegisteredIssueForCraftsman(ConstructionSite $constructionSite, ConstructionManager $constructionManager, Craftsman $craftsman): Issue

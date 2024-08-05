@@ -18,13 +18,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 trait AuthenticationTrait
 {
     /**
-     * @var string
-     *
      * @Groups({"construction-manager-read-self", "filter-read"})
      *
      * @ORM\Column(type="text")
      */
-    private $authenticationToken;
+    private ?string $authenticationToken = null;
 
     public function getAuthenticationToken(): string
     {

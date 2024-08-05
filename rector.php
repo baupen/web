@@ -19,16 +19,20 @@ return RectorConfig::configure()
         TypedPropertyFromStrictConstructorRector::class,
     ])
     ->withSkip([
-        FlipTypeControlToUseExclusiveTypeRector::class
+        FlipTypeControlToUseExclusiveTypeRector::class,
     ])
     ->withPreparedSets(
         deadCode: true,
         codeQuality: true,
-        symfonyConfigs: true,
-        symfonyCodeQuality: true,
-        privatization: true,
         typeDeclarations: true,
+        privatization: true,
         earlyReturn: true,
+        phpunitCodeQuality: true,
+        doctrineCodeQuality: true,
+        symfonyCodeQuality: true,
+        symfonyConfigs: true,
+        twig: true,
+        phpunit: true
     )
     ->withSymfonyContainerXml(__DIR__.'/var/cache/dev/App_KernelDevDebugContainer.xml')
     ->withSets([

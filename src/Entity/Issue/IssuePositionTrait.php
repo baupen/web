@@ -19,37 +19,31 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 trait IssuePositionTrait
 {
     /**
-     * @var float|null
-     *
      * @Assert\NotBlank(groups={"position"})
      *
      * @Groups({"issue-read", "issue-write"})
      *
      * @ORM\Column(type="float", nullable=true)
      */
-    private $positionX;
+    private ?float $positionX = null;
 
     /**
-     * @var float|null
-     *
      * @Assert\NotBlank(groups={"position"})
      *
      * @Groups({"issue-read", "issue-write"})
      *
      * @ORM\Column(type="float", nullable=true)
      */
-    private $positionY;
+    private ?float $positionY = null;
 
     /**
-     * @var float|null
-     *
      * @Assert\NotBlank(groups={"position"})
      *
      * @Groups({"issue-read", "issue-write"})
      *
      * @ORM\Column(type="float", nullable=true)
      */
-    private $positionZoomScale;
+    private ?float $positionZoomScale = null;
 
     /**
      * @Assert\Callback
