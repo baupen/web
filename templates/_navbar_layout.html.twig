@@ -24,7 +24,7 @@
                     </li>
                 </ul>
             {% endif %}
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav ms-auto">
                 {% if app.request.requestUri != "/" %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path("index") }}">{{ "index.title"|trans({}, "index") }}</a>
