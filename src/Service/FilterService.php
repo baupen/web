@@ -72,7 +72,7 @@ class FilterService implements FilterServiceInterface
         return isset($source[$key]) ? $source[$key] : null;
     }
 
-    private function getNullableBoolean(array $source, string $key)
+    private function getNullableBoolean(array $source, string $key): ?bool
     {
         if (!isset($source[$key])) {
             return null;
@@ -81,7 +81,7 @@ class FilterService implements FilterServiceInterface
         return in_array($source[$key], ['true', '1', true], true);
     }
 
-    private function getNullableInt(array $source, string $key)
+    private function getNullableInt(array $source, string $key): ?int
     {
         return isset($source[$key]) ? (int) $source[$key] : null;
     }

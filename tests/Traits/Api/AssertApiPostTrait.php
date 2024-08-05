@@ -23,7 +23,7 @@ trait AssertApiPostTrait
         return $this->assertApiStatusCodeSame('POST', $expectedCode, $client, $url, MimeTypes::JSON_LD_MIME_TYPE, $payload);
     }
 
-    private function assertApiPostPayloadMinimal(int $expectedCode, Client $client, string $url, array $payload, array $includeAlways = [])
+    private function assertApiPostPayloadMinimal(int $expectedCode, Client $client, string $url, array $payload, array $includeAlways = []): void
     {
         foreach (array_keys($payload) as $key) {
             $actualPayload = array_merge($payload, $includeAlways);
@@ -51,7 +51,7 @@ trait AssertApiPostTrait
         return $kernelBrowser->getResponse()->getContent();
     }
 
-    private function assertApiDeleteFile(KernelBrowser $kernelBrowser, string $url)
+    private function assertApiDeleteFile(KernelBrowser $kernelBrowser, string $url): void
     {
         $kernelBrowser->request(\Symfony\Component\HttpFoundation\Request::METHOD_DELETE, $url);
 

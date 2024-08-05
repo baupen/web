@@ -24,7 +24,7 @@ trait AssertApiPatchTrait
         return $response;
     }
 
-    private function assertApiPatchPayloadIgnored(Client $client, string $url, array $payload)
+    private function assertApiPatchPayloadIgnored(Client $client, string $url, array $payload): void
     {
         $noChangeResponse = $this->assertApiPatchOk($client, $url, []);
         $json = json_decode($noChangeResponse->getContent(), true);

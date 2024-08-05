@@ -13,30 +13,15 @@ namespace App\Service\Report\Pdf;
 
 class ReportElements
 {
-    /**
-     * @var bool
-     */
-    private $tableByCraftsman = false;
+    private bool $tableByCraftsman = false;
 
-    /**
-     * @var bool
-     */
-    private $tableByMap = true;
+    private bool $tableByMap = true;
 
-    /**
-     * @var bool
-     */
-    private $withImages = true;
+    private bool $withImages = true;
 
-    /**
-     * @var bool
-     */
-    private $withRenders = true;
+    private bool $withRenders = true;
 
-    /**
-     * @var bool
-     */
-    private $groupIssuesByCraftsman = true;
+    private bool $groupIssuesByCraftsman = true;
 
     public static function fromRequest(?array $parameters = null): self
     {

@@ -28,7 +28,7 @@ class FilterTest extends ApiTestCase
     use AuthenticationTrait;
     use TestDataTrait;
 
-    public function testValidMethodsNeedAuthentication()
+    public function testValidMethodsNeedAuthentication(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
@@ -43,7 +43,7 @@ class FilterTest extends ApiTestCase
         $this->assertApiOperationForbidden($client, '/api/filters/'.$constructionSite->getFilters()[0]->getId(), 'GET');
     }
 
-    public function testPost()
+    public function testPost(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);

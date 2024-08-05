@@ -25,7 +25,7 @@ class SecurityControllerTest extends WebTestCase
     use AssertEmailTrait;
     use AssertAuthenticationTrait;
 
-    public function testCanRegister()
+    public function testCanRegister(): void
     {
         $client = $this->createClient();
         $this->loadFixturesBrowser($client);
@@ -147,7 +147,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertStringContainsString('gesetzt', $client->getResponse()->getContent()); // alert to user
     }
 
-    private function getAuthenticationHash(string $email)
+    private function getAuthenticationHash(string $email): ?string
     {
         $registry = static::$container->get(ManagerRegistry::class);
         $repository = $registry->getRepository(ConstructionManager::class);

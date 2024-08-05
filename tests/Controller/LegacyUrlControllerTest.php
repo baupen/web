@@ -26,7 +26,7 @@ class LegacyUrlControllerTest extends WebTestCase
     use AssertAuthenticationTrait;
     use TestDataTrait;
 
-    public function testCanLoginCraftsman()
+    public function testCanLoginCraftsman(): void
     {
         $client = $this->createClient();
         $this->loadFixturesBrowser($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);

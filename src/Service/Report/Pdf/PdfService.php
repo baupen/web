@@ -124,7 +124,7 @@ class PdfService
             $this->addMap($report, $map, $issues, $reportElements->getWithRenders());
 
             if ($reportElements->getGroupIssuesByCraftsman()) {
-                usort($issues, function (Issue $a, Issue $b) {
+                usort($issues, function (Issue $a, Issue $b): int {
                     // order by craftsman
                     if ($a->getCraftsman() !== $b->getCraftsman()) {
                         return $a->getCraftsman()->getCompany().$a->getCraftsman()->getTrade() <=>
@@ -142,7 +142,7 @@ class PdfService
                     return $a->getNumber() <=> $b->getNumber();
                 });
             } else {
-                usort($issues, function (Issue $a, Issue $b) {
+                usort($issues, function (Issue $a, Issue $b): int {
                     return $a->getNumber() <=> $b->getNumber();
                 });
             }
@@ -157,7 +157,7 @@ class PdfService
     /**
      * @param Issue[] $issues
      */
-    private function addMap(Report $report, Map $map, array $issues, bool $showMap)
+    private function addMap(Report $report, Map $map, array $issues, bool $showMap): void
     {
         $path = $map->getFile() && $showMap ? $this->imageService->renderMapFileWithIssuesToJpg($map->getFile(), $issues, ImageServiceInterface::SIZE_FULL) : null;
 
@@ -167,7 +167,7 @@ class PdfService
     /**
      * @param Issue[] $issues
      */
-    private function addIssueImageGrid(Report $report, array $issues)
+    private function addIssueImageGrid(Report $report, array $issues): void
     {
         $columnCount = 4;
 
@@ -202,7 +202,7 @@ class PdfService
         $report->addImageGrid($imageGrid, $columnCount);
     }
 
-    private function addIntroduction(Report $report, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements)
+    private function addIntroduction(Report $report, ConstructionSite $constructionSite, Filter $filter, ReportElements $reportElements): void
     {
         $filterEntries = [];
 
@@ -253,7 +253,7 @@ class PdfService
         // add craftsmen
         if (null !== $filter->getCraftsmanIds()) {
             $entities = $this->doctrine->getRepository(Craftsman::class)->findBy(['id' => $filter->getCraftsmanIds()]);
-            $names = array_map(function (Craftsman $craftsman) {
+            $names = array_map(function (Craftsman $craftsman): string {
                 return $craftsman->getName();
             }, $entities);
             $craftsmen = $this->translator->trans('introduction.filter.craftsmen', ['%count%' => count($names)], 'report');
@@ -342,7 +342,7 @@ class PdfService
     /**
      * @param Issue[] $issues
      */
-    private function addIssueTable(Report $report, Filter $filter, array $issues)
+    private function addIssueTable(Report $report, Filter $filter, array $issues): void
     {
         $showRegistered = !$filter->getRegisteredAtBefore() instanceof \DateTime || $filter->getRegisteredAtAfter();
         $showResolved = !$filter->getResolvedAtBefore() instanceof \DateTime || $filter->getResolvedAtAfter();
@@ -425,7 +425,7 @@ class PdfService
     /**
      * @param Issue[][] $issuesPerMap
      */
-    private function addAggregatedIssuesInfo(array $orderedMaps, array $issuesPerMap, array &$tableContent, array &$tableHeader)
+    private function addAggregatedIssuesInfo(array $orderedMaps, array $issuesPerMap, array &$tableContent, array &$tableHeader): void
     {
         // count issue status per map
         $countsPerElement = [];
@@ -463,7 +463,7 @@ class PdfService
         }
     }
 
-    private function getAggregatedIssuesTotal(array $tableContent)
+    private function getAggregatedIssuesTotal(array $tableContent): array
     {
         $total = $this->translator->trans('table.total', [], 'report');
         $totalRow = [$total, 0, 0, 0];
@@ -479,7 +479,7 @@ class PdfService
     /**
      * @param Issue[] $issues
      */
-    private function addTableByMap(Report $report, array $issues)
+    private function addTableByMap(Report $report, array $issues): void
     {
         /* @var Map[] $orderedMaps */
         /* @var Issue[][] $issuesPerMap */
@@ -505,7 +505,7 @@ class PdfService
     /**
      * @param Issue[] $issues
      */
-    private function addTableByCraftsman(Report $report, array $issues)
+    private function addTableByCraftsman(Report $report, array $issues): void
     {
         /* @var Craftsman[] $orderedCraftsman */
         /* @var Issue[][] $issuesPerCraftsman */

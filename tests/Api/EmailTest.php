@@ -30,7 +30,7 @@ class EmailTest extends ApiTestCase
     use AssertEmailTrait;
     use TestDataTrait;
 
-    public function testValidMethodsNeedAuthentication()
+    public function testValidMethodsNeedAuthentication(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestEmailTemplateFixtures::class]);
@@ -42,7 +42,7 @@ class EmailTest extends ApiTestCase
         $this->assertApiOperationNotAuthorized($client, '/api/emails', 'POST');
     }
 
-    public function testPost()
+    public function testPost(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);

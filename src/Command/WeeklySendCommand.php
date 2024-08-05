@@ -106,7 +106,7 @@ class WeeklySendCommand extends Command
             $relevantConstructionSiteReports[] = $constructionSiteReportLookup[$constructionSite->getId()];
         }
 
-        usort($relevantConstructionSiteReports, function (ConstructionSiteReport $a, ConstructionSiteReport $b) {
+        usort($relevantConstructionSiteReports, function (ConstructionSiteReport $a, ConstructionSiteReport $b): int {
             return strcmp($a->getConstructionSite()->getName(), $b->getConstructionSite()->getName());
         });
 

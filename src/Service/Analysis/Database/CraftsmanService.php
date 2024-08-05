@@ -36,7 +36,7 @@ class CraftsmanService
      * @param Craftsman[]       $craftsmen
      * @param IssueCountTrait[] $issueCountByCraftsman
      */
-    public function findIssueCountByCraftsman(array $craftsmen, array $issueCountByCraftsman)
+    public function findIssueCountByCraftsman(array $craftsmen, array $issueCountByCraftsman): void
     {
         $this->setOpenAndClosedCount($craftsmen, $issueCountByCraftsman);
 
@@ -45,7 +45,7 @@ class CraftsmanService
         $queryBuilderResolvedIssues = $issueRepository->filterResolvedIssues('i', clone $queryBuilder);
         $this->groupByCraftsmanAndEvaluate(
             $queryBuilderResolvedIssues, 'COUNT(i)',
-            function (string $craftsmanId, $value) use ($issueCountByCraftsman) {
+            function (string $craftsmanId, $value) use ($issueCountByCraftsman): void {
                 $issueCountByCraftsman[$craftsmanId]->setResolvedCount($value);
             }
         );
@@ -55,7 +55,7 @@ class CraftsmanService
      * @param Craftsman[]              $craftsmen
      * @param CraftsmanIssueAnalysis[] $issueAnalysisByCraftsman
      */
-    public function findIssueAnalysisByCraftsman(array $craftsmen, array $issueAnalysisByCraftsman)
+    public function findIssueAnalysisByCraftsman(array $craftsmen, array $issueAnalysisByCraftsman): void
     {
         $this->setOpenAndClosedCount($craftsmen, $issueAnalysisByCraftsman);
 
@@ -64,7 +64,7 @@ class CraftsmanService
         $queryBuilderInspectableIssues = $issueRepository->filterInspectableIssues('i', clone $queryBuilder);
         $this->groupByCraftsmanAndEvaluate(
             $queryBuilderInspectableIssues, 'COUNT(i)',
-            function (string $craftsmanId, $value) use ($issueAnalysisByCraftsman) {
+            function (string $craftsmanId, $value) use ($issueAnalysisByCraftsman): void {
                 $issueAnalysisByCraftsman[$craftsmanId]->setInspectableCount($value);
             }
         );
@@ -75,7 +75,7 @@ class CraftsmanService
             ->andWhere('i.registeredAt > c.lastVisitOnline OR c.lastVisitOnline IS NULL');
         $this->groupByCraftsmanAndEvaluate(
             $unreadIssuesQueryBuilder, 'COUNT(i)',
-            function (string $craftsmanId, $value) use ($issueAnalysisByCraftsman) {
+            function (string $craftsmanId, $value) use ($issueAnalysisByCraftsman): void {
                 $issueAnalysisByCraftsman[$craftsmanId]->setUnreadCount($value);
             }
         );
@@ -86,19 +86,19 @@ class CraftsmanService
             ->setParameter(':now', new \DateTime());
         $this->groupByCraftsmanAndEvaluate(
             $overdueIssuesQueryBuilder, 'COUNT(i)',
-            function (string $craftsmanId, int $value) use ($issueAnalysisByCraftsman) {
+            function (string $craftsmanId, int $value) use ($issueAnalysisByCraftsman): void {
                 $issueAnalysisByCraftsman[$craftsmanId]->setOverdueCount($value);
             }
         );
     }
 
-    private function setOpenAndClosedCount(array $craftsmen, $targetByCraftsman)
+    private function setOpenAndClosedCount(array $craftsmen, array $targetByCraftsman): void
     {
         $openIssuesQueryBuilder = $this->getOpenIssuesQueryBuilder('i', $craftsmen);
         $issueRepository = $this->manager->getRepository(Issue::class);
         $this->groupByCraftsmanAndEvaluate(
             $openIssuesQueryBuilder, 'COUNT(i)',
-            function (string $craftsmanId, $value) use ($targetByCraftsman) {
+            function (string $craftsmanId, $value) use ($targetByCraftsman): void {
                 $targetByCraftsman[$craftsmanId]->setOpenCount($value);
             }
         );
@@ -107,7 +107,7 @@ class CraftsmanService
         $queryBuilderClosedIssues = $issueRepository->filterClosedIssues('i', clone $queryBuilder);
         $this->groupByCraftsmanAndEvaluate(
             $queryBuilderClosedIssues, 'COUNT(i)',
-            function (string $craftsmanId, $value) use ($targetByCraftsman) {
+            function (string $craftsmanId, $value) use ($targetByCraftsman): void {
                 $targetByCraftsman[$craftsmanId]->setClosedCount($value);
             }
         );
@@ -117,14 +117,14 @@ class CraftsmanService
      * @param Craftsman[]         $craftsmen
      * @param CraftsmanAnalysis[] $statisticsDictionary
      */
-    public function findNextDeadline(array $craftsmen, array $statisticsDictionary)
+    public function findNextDeadline(array $craftsmen, array $statisticsDictionary): void
     {
         $queryBuilder = $this->getOpenIssuesQueryBuilder('i', $craftsmen)
             ->andWhere('i.deadline IS NOT NULL');
 
         $this->groupByCraftsmanAndEvaluate(
             $queryBuilder, 'MIN(i.deadline)',
-            function (string $craftsmanId, $value) use ($statisticsDictionary) {
+            function (string $craftsmanId, $value) use ($statisticsDictionary): void {
                 $statisticsDictionary[$craftsmanId]->setNextDeadline(UTCDateTimeType::tryParseDateTime($value));
             }
         );
@@ -134,7 +134,7 @@ class CraftsmanService
      * @param Craftsman[]         $craftsmen
      * @param CraftsmanAnalysis[] $statisticsDictionary
      */
-    public function findLastIssueResolved(array $craftsmen, array $statisticsDictionary)
+    public function findLastIssueResolved(array $craftsmen, array $statisticsDictionary): void
     {
         $rootAlias = 'i';
         $queryBuilder = $this->getCraftsmanIssuesQueryBuilder($rootAlias, $craftsmen)
@@ -142,7 +142,7 @@ class CraftsmanService
 
         $this->groupByCraftsmanAndEvaluate(
             $queryBuilder, 'MAX(i.resolvedAt)',
-            function (string $craftsmanId, $value) use ($statisticsDictionary) {
+            function (string $craftsmanId, $value) use ($statisticsDictionary): void {
                 $statisticsDictionary[$craftsmanId]->setLastIssueResolved(UTCDateTimeType::tryParseDateTime($value));
             }
         );
@@ -170,7 +170,7 @@ class CraftsmanService
         return $queryBuilder;
     }
 
-    private function groupByCraftsmanAndEvaluate(QueryBuilder $queryBuilder, string $selectExpression, \Closure $processResult)
+    private function groupByCraftsmanAndEvaluate(QueryBuilder $queryBuilder, string $selectExpression, \Closure $processResult): void
     {
         $rootAlias = $queryBuilder->getRootAliases()[0];
         $queryBuilder->groupBy($rootAlias.'.craftsman')

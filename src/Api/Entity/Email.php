@@ -34,49 +34,39 @@ class Email
     private $noneIdentifier;
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank
      *
      * @Groups({"email-create"})
      */
-    private $receiver;
+    private string $receiver;
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank
      *
      * @Groups({"email-create"})
      */
-    private $subject;
+    private string $subject;
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank
      *
      * @Groups({"email-create"})
      */
-    private $body;
+    private string $body;
 
     /**
-     * @var bool
-     *
      * @Assert\NotNull
      *
      * @Groups({"email-create"})
      */
-    private $selfBcc;
+    private bool $selfBcc;
 
     /**
-     * @var int
-     *
      * @Assert\NotNull
      *
      * @Groups({"email-create"})
      */
-    private $type;
+    private int $type;
 
     public function getReceiver(): string
     {

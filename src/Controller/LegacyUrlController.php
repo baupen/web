@@ -24,7 +24,7 @@ class LegacyUrlController extends BaseController
      *
      * @return Response
      */
-    public function apiExternal()
+    public function apiExternal(): JsonResponse
     {
         $payload = new \stdClass();
         $payload->version = 2;
@@ -56,7 +56,7 @@ class LegacyUrlController extends BaseController
         return $this->redirectToRoute('index');
     }
 
-    private function displayRelinkWarning(TranslatorInterface $translator)
+    private function displayRelinkWarning(TranslatorInterface $translator): void
     {
         $routeChanged = $translator->trans('legacy.warning.redirected_from_legacy_url', [], 'framework');
         $this->displayWarning($routeChanged);

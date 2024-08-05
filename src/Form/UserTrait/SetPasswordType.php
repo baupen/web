@@ -16,7 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class SetPasswordType extends AbstractUserTraitType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('plainPassword', PasswordType::class, ['mapped' => false]);
         $builder->add('repeatPlainPassword', PasswordType::class, ['mapped' => false]);

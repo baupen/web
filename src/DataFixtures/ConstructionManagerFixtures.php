@@ -20,7 +20,7 @@ class ConstructionManagerFixtures extends Fixture implements OrderedFixtureInter
 {
     public const ORDER = 1;
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $entries = [
             ['j@baupen.ch', 'asdf', 'Julian', 'Dunskus'],

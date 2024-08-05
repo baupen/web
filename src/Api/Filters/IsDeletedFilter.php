@@ -47,7 +47,7 @@ class IsDeletedFilter extends AbstractContextAwareFilter
         }
     }
 
-    public static function normalizeValue($value)
+    public static function normalizeValue($value): ?bool
     {
         if (\in_array($value, [true, 'true', '1'], true)) {
             return true;

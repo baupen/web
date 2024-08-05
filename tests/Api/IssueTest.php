@@ -34,7 +34,7 @@ class IssueTest extends ApiTestCase
     use AuthenticationTrait;
     use TestDataTrait;
 
-    public function testValidMethodsNeedAuthentication()
+    public function testValidMethodsNeedAuthentication(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -48,7 +48,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiOperationForbidden($client, '/api/issues/'.$constructionSite->getIssues()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -69,7 +69,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiResponseFileIsDownloadable($client, $response, 'mapRenderUrl');
     }
 
-    public function testPostPatchAndDelete()
+    public function testPostPatchAndDelete(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -162,7 +162,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionContainsResponseItemDeleted($client, '/api/issues?constructionSite='.$constructionSite->getId(), $response);
     }
 
-    public function testPostNumberAssignment()
+    public function testPostNumberAssignment(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -188,7 +188,7 @@ class IssueTest extends ApiTestCase
         $this->assertEquals(2, $number);
     }
 
-    public function testIsDeletedFilter()
+    public function testIsDeletedFilter(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -204,7 +204,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionNotContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&isDeleted=true', $issueIri);
     }
 
-    public function testStateFilter()
+    public function testStateFilter(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -237,7 +237,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionContainsIri($client, '/api/issues?constructionSite='.$constructionSite->getId().'&state=8', $issueId);
     }
 
-    public function testLastChangedOrder()
+    public function testLastChangedOrder(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -251,7 +251,7 @@ class IssueTest extends ApiTestCase
         $this->testOrderAppliedFor('lastChangedAt', $client, $constructionSite);
     }
 
-    public function testDeadlineNumberOrder()
+    public function testDeadlineNumberOrder(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -269,7 +269,7 @@ class IssueTest extends ApiTestCase
         $this->testOrderAppliedFor('number', $client, $constructionSite);
     }
 
-    public function testLastChangedAtFilter()
+    public function testLastChangedAtFilter(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -282,7 +282,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionFilterDateTime($client, '/api/issues?constructionSite='.$constructionSite->getId().'&', $issueIri, 'lastChangedAt', $issue->getLastChangedAt());
     }
 
-    public function testPositionMustBeFullySetOrNotAtAll()
+    public function testPositionMustBeFullySetOrNotAtAll(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -300,7 +300,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
     }
 
-    public function testRelationsOnSameConstructionSite()
+    public function testRelationsOnSameConstructionSite(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -317,7 +317,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiPostPayloadPersisted($client, '/api/issues', [], $basePayload);
     }
 
-    public function testStatusMustBeFullySetOrNotAtAll()
+    public function testStatusMustBeFullySetOrNotAtAll(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -343,7 +343,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
     }
 
-    private function getMinimalPostPayload(ConstructionManager $constructionManager)
+    private function getMinimalPostPayload(ConstructionManager $constructionManager): array
     {
         $constructionManagerId = $this->getIriFromItem($constructionManager);
         $constructionSite = $this->getTestConstructionSite();
@@ -360,7 +360,7 @@ class IssueTest extends ApiTestCase
         ];
     }
 
-    public function testAllFilters()
+    public function testAllFilters(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -417,7 +417,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiCollectionFilterSearchExact($client, $collectionUrlPrefix, $issueIri, 'craftsman', $sample['craftsman']);
     }
 
-    public function testReport()
+    public function testReport(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -428,7 +428,7 @@ class IssueTest extends ApiTestCase
         $this->assertTrue(str_contains($response->getContent(), '/download'));
     }
 
-    public function testRender()
+    public function testRender(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -450,7 +450,7 @@ class IssueTest extends ApiTestCase
         $this->assertTrue('' === $response->getContent());
     }
 
-    public function testStatistics()
+    public function testStatistics(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -461,7 +461,7 @@ class IssueTest extends ApiTestCase
         $this->assignConstructionManager($constructionSite, $constructionManager);
         $craftsman = $this->addCraftsman($constructionSite);
 
-        $newIssue = function () use ($constructionSite, $constructionManager) {
+        $newIssue = function () use ($constructionSite, $constructionManager): \App\Entity\Issue {
             $issue = new Issue();
 
             $issue->setConstructionSite($constructionSite);
@@ -473,17 +473,17 @@ class IssueTest extends ApiTestCase
             return $issue;
         };
 
-        $registerIssue = function (Issue $issue) use ($constructionManager) {
+        $registerIssue = function (Issue $issue) use ($constructionManager): void {
             $issue->setRegisteredAt(new \DateTime());
             $issue->setRegisteredBy($constructionManager);
         };
 
-        $resolveIssue = function (Issue $issue) use ($craftsman) {
+        $resolveIssue = function (Issue $issue) use ($craftsman): void {
             $issue->setResolvedAt(new \DateTime());
             $issue->setResolvedBy($craftsman);
         };
 
-        $closeIssue = function (Issue $issue) use ($constructionManager) {
+        $closeIssue = function (Issue $issue) use ($constructionManager): void {
             $issue->setClosedAt(new \DateTime());
             $issue->setClosedBy($constructionManager);
         };
@@ -523,7 +523,7 @@ class IssueTest extends ApiTestCase
         $this->assertEquals(2, $summary['closedCount']);
     }
 
-    public function testGroup()
+    public function testGroup(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -556,7 +556,7 @@ class IssueTest extends ApiTestCase
         }
     }
 
-    public function testFeedEntries()
+    public function testFeedEntries(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -567,7 +567,7 @@ class IssueTest extends ApiTestCase
         $this->assignConstructionManager($constructionSite, $constructionManager);
         $craftsman = $this->addCraftsman($constructionSite);
 
-        $newIssue = function () use ($constructionSite, $constructionManager) {
+        $newIssue = function () use ($constructionSite, $constructionManager): \App\Entity\Issue {
             $issue = new Issue();
 
             $issue->setConstructionSite($constructionSite);
@@ -655,7 +655,7 @@ class IssueTest extends ApiTestCase
         }
     }
 
-    public function testTimeseries()
+    public function testTimeseries(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -666,7 +666,7 @@ class IssueTest extends ApiTestCase
         $this->assignConstructionManager($constructionSite, $constructionManager);
         $craftsman = $this->addCraftsman($constructionSite);
 
-        $newIssue = function () use ($constructionSite, $constructionManager) {
+        $newIssue = function () use ($constructionSite, $constructionManager): \App\Entity\Issue {
             $issue = new Issue();
 
             $issue->setConstructionSite($constructionSite);
@@ -678,17 +678,17 @@ class IssueTest extends ApiTestCase
             return $issue;
         };
 
-        $registerIssue = function (Issue $issue, int $daysInThePast) use ($constructionManager) {
+        $registerIssue = function (Issue $issue, int $daysInThePast) use ($constructionManager): void {
             $issue->setRegisteredAt(new \DateTime('today - '.$daysInThePast.' days + 1 minute'));
             $issue->setRegisteredBy($constructionManager);
         };
 
-        $resolveIssue = function (Issue $issue, int $daysInThePast) use ($craftsman) {
+        $resolveIssue = function (Issue $issue, int $daysInThePast) use ($craftsman): void {
             $issue->setResolvedAt(new \DateTime('today - '.$daysInThePast.' days + 1 minute'));
             $issue->setResolvedBy($craftsman);
         };
 
-        $closeIssue = function (Issue $issue, int $daysInThePast) use ($constructionManager) {
+        $closeIssue = function (Issue $issue, int $daysInThePast) use ($constructionManager): void {
             $issue->setClosedAt(new \DateTime('today - '.$daysInThePast.' days + 1 minute'));
             $issue->setClosedBy($constructionManager);
         };

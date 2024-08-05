@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 trait AssertFileTrait
 {
-    private function assertGetFile(KernelBrowser $client, string $url, string $mode = ResponseHeaderBag::DISPOSITION_INLINE)
+    private function assertGetFile(KernelBrowser $client, string $url, string $mode = ResponseHeaderBag::DISPOSITION_INLINE): void
     {
         $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, $url);
         $this->assertResponseIsSuccessful();
@@ -25,7 +25,7 @@ trait AssertFileTrait
         $this->assertStringStartsWith($mode, $client->getResponse()->headers->get('content-disposition'));
     }
 
-    private function assertFileNotFound(KernelBrowser $client, string $url)
+    private function assertFileNotFound(KernelBrowser $client, string $url): void
     {
         $client->request(\Symfony\Component\HttpFoundation\Request::METHOD_GET, $url);
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);

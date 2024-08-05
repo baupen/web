@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RegisterConfirmType extends AbstractConstructionManagerType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('profile', EditProfileType::class, ['inherit_data' => true]);
         $builder->add('password', SetPasswordType::class, ['inherit_data' => true]);
@@ -26,7 +26,7 @@ class RegisterConfirmType extends AbstractConstructionManagerType
         parent::buildForm($builder, $options);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => ConstructionManager::class,

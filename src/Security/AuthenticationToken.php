@@ -29,25 +29,13 @@ class AuthenticationToken extends BaseEntity implements UserInterface
 
     public const ROLE_API_USER = 'ROLE_API_USER';
 
-    /**
-     * @var string
-     */
-    private $token;
+    private string $token;
 
-    /**
-     * @var ConstructionManager|null
-     */
-    private $constructionManager;
+    private ?ConstructionManager $constructionManager = null;
 
-    /**
-     * @var Filter|null
-     */
-    private $filter;
+    private ?Filter $filter = null;
 
-    /**
-     * @var Craftsman|null
-     */
-    private $craftsman;
+    private ?Craftsman $craftsman = null;
 
     public function getToken(): string
     {

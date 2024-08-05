@@ -122,7 +122,7 @@ class AnalysisService implements AnalysisServiceInterface
     /**
      * @param Craftsman[] $craftsmen
      */
-    private function findLastActivity(array $craftsmen, array $craftsmanAnalysisDictionary)
+    private function findLastActivity(array $craftsmen, array $craftsmanAnalysisDictionary): void
     {
         foreach ($craftsmen as $craftsman) {
             $craftsmanAnalysisDictionary[$craftsman->getId()]->setLastEmailReceived($craftsman->getLastEmailReceived());
@@ -133,7 +133,7 @@ class AnalysisService implements AnalysisServiceInterface
     /**
      * @param IssueCountAnalysisTrait $issueCountAnalysis
      */
-    private function applyDeltaToIssueCountAnalysis($issueCountAnalysis, \DateTime $timestamp, ?\DateTime $registeredAt, ?\DateTime $resolvedAt, ?\DateTime $closedAt)
+    private function applyDeltaToIssueCountAnalysis(IssueAnalysis $issueCountAnalysis, \DateTime $timestamp, ?\DateTime $registeredAt, ?\DateTime $resolvedAt, ?\DateTime $closedAt): void
     {
         if ($closedAt instanceof \DateTime) {
             // summary counted issue at "completed"

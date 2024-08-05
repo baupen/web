@@ -30,7 +30,7 @@ class ConstructionManagerTest extends ApiTestCase
     use AssertApiTrait;
     use AuthenticationTrait;
 
-    public function testInvalidMethods()
+    public function testInvalidMethods(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class]);
@@ -39,7 +39,7 @@ class ConstructionManagerTest extends ApiTestCase
         $this->assertApiOperationUnsupported($client, '/api/construction_managers/'.$testUser->getId(), 'DELETE', 'PUT');
     }
 
-    public function testValidMethodsNeedAuthentication()
+    public function testValidMethodsNeedAuthentication(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class]);
@@ -51,7 +51,7 @@ class ConstructionManagerTest extends ApiTestCase
         $this->assertApiOperationNotAuthorized($client, '/api/construction_managers/'.$testUser->getId(), 'GET', 'PATCH');
     }
 
-    public function testPost()
+    public function testPost(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class]);
@@ -75,7 +75,7 @@ class ConstructionManagerTest extends ApiTestCase
         $this->assertEmailCount(0);
     }
 
-    public function testPatch()
+    public function testPatch(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -103,7 +103,7 @@ class ConstructionManagerTest extends ApiTestCase
         $this->assertApiPatchPayloadPersisted($client, '/api/construction_managers/'.$ownConstructionManager->getId(), $patch);
     }
 
-    public function testGetAuthenticationToken()
+    public function testGetAuthenticationToken(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class]);
@@ -128,7 +128,7 @@ class ConstructionManagerTest extends ApiTestCase
         }
     }
 
-    public function testConstructionSiteFilters()
+    public function testConstructionSiteFilters(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -155,7 +155,7 @@ class ConstructionManagerTest extends ApiTestCase
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers?constructionSites.id='.$constructionSite->getId());
     }
 
-    public function testLastChangedAtFilter()
+    public function testLastChangedAtFilter(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class]);

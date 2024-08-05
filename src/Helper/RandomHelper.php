@@ -13,10 +13,7 @@ namespace App\Helper;
 
 class RandomHelper
 {
-    /**
-     * @return bool|string
-     */
-    public static function generateHumanReadableRandom(int $minimalLength, string $divider)
+    public static function generateHumanReadableRandom(int $minimalLength, string $divider): string
     {
         $vocals = 'aeiou';
         $vocalsLength = mb_strlen($vocals);
@@ -54,10 +51,7 @@ class RandomHelper
         return $randomString;
     }
 
-    /**
-     * @return bool|string
-     */
-    private static function getRandomChar(string $selection, int $selectionLength)
+    private static function getRandomChar(string $selection, int $selectionLength): string
     {
         $entry = rand(0, $selectionLength - 1);
 

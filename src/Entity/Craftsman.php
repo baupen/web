@@ -72,41 +72,33 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     use SoftDeleteTrait;
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank
      *
      * @Groups({"craftsman-read", "craftsman-write"})
      *
      * @ORM\Column(type="text")
      */
-    private $contactName;
+    private string $contactName;
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank
      *
      * @Groups({"craftsman-read", "craftsman-write"})
      *
      * @ORM\Column(type="text")
      */
-    private $company;
+    private string $company;
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank
      *
      * @Groups({"craftsman-read", "craftsman-write"})
      *
      * @ORM\Column(type="text")
      */
-    private $trade;
+    private string $trade;
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank
      *
      * @Assert\Email
@@ -115,7 +107,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
      *
      * @ORM\Column(type="text")
      */
-    private $email;
+    private string $email;
 
     /**
      * @var string[]
@@ -124,55 +116,47 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
      *
      * @ORM\Column(type="simple_array", nullable=true)
      */
-    private $emailCCs;
+    private ?array $emailCCs = null;
 
     /**
-     * @var bool
-     *
      * @Groups({"craftsman-read-self", "craftsman-write"})
      *
      * @ORM\Column(type="boolean", options={"default": true})
      */
-    private $canEdit = true;
+    private bool $canEdit = true;
 
     /**
-     * @var ConstructionSite
-     *
      * @Assert\NotBlank
      *
      * @Groups({"craftsman-create"})
      *
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="craftsmen")
      */
-    private $constructionSite;
+    private ConstructionSite $constructionSite;
 
     /**
      * @var Issue[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Issue", mappedBy="craftsman")
      */
-    private $issues;
+    private ArrayCollection $issues;
 
     /**
      * @var Issue[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Issue", mappedBy="resolvedBy")
      */
-    private $resolvedIssues;
+    private ArrayCollection $resolvedIssues;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $lastEmailReceived;
+    private ?\DateTime $lastEmailReceived = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $lastVisitOnline;
+    private ?\DateTime $lastVisitOnline = null;
 
     /**
      * Craftsman constructor.
@@ -295,10 +279,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
         $this->lastVisitOnline = $lastVisitOnline;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getLastAction()
+    public function getLastAction(): ?\DateTime
     {
         $lastAction = $this->getLastVisitOnline();
         if (!$lastAction instanceof \DateTime || $lastAction < $this->getLastEmailReceived()) {
@@ -324,7 +305,7 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
         return $this->lastChangedAt;
     }
 
-    public function sort(Craftsman $other)
+    public function sort(Craftsman $other): int
     {
         return strcmp($this->getCompany(), $other->getCompany());
     }

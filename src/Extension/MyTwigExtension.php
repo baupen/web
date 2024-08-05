@@ -62,7 +62,7 @@ class MyTwigExtension extends AbstractExtension
         ];
     }
 
-    public function repeatFilter(string $entry, int $count)
+    public function repeatFilter(string $entry, int $count): string
     {
         return str_repeat($entry, $count);
     }
@@ -134,7 +134,7 @@ class MyTwigExtension extends AbstractExtension
     /**
      * @source https://github.com/twigphp/Twig-extensions/blob/master/src/TextExtension.php
      */
-    public function truncateFilter(Environment $env, $value, $length = 30, $preserve = false, $separator = '...')
+    public function truncateFilter(Environment $env, $value, $length = 30, $preserve = false, string $separator = '...')
     {
         if (mb_strlen($value, $env->getCharset()) > $length) {
             if ($preserve) {

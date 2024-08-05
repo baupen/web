@@ -13,7 +13,7 @@ namespace App\Tests\Traits;
 
 trait AssertEmailTrait
 {
-    private function assertSingleEmailSentWithBodyContains(string $content)
+    private function assertSingleEmailSentWithBodyContains(string $content): void
     {
         $this->assertEmailCount(1);
 

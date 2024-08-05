@@ -36,7 +36,7 @@ class ApiControllerTest extends ApiTestCase
     use TestDataTrait;
     use AssertFileTrait;
 
-    public function testValidMethodsNeedAuthentication()
+    public function testValidMethodsNeedAuthentication(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -44,7 +44,7 @@ class ApiControllerTest extends ApiTestCase
         $this->assertApiOperationNotAuthorized($client, '/api/me', 'GET');
     }
 
-    public function testMe()
+    public function testMe(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestFilterFixtures::class]);
@@ -63,7 +63,7 @@ class ApiControllerTest extends ApiTestCase
         $filterIri = $this->getIriFromItem($filter);
         $filterToken = $this->createApiTokenFor($filter);
 
-        $jsonUrlEscape = function (string $value) {
+        $jsonUrlEscape = function (string $value): array|string {
             return str_replace('/', '\\/', $value);
         };
 
@@ -77,7 +77,7 @@ class ApiControllerTest extends ApiTestCase
         $this->assertStringContainsString($jsonUrlEscape($filterIri), $response->getContent());
     }
 
-    public function testConstructionSiteImage()
+    public function testConstructionSiteImage(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -113,7 +113,7 @@ class ApiControllerTest extends ApiTestCase
         $this->assertNull($testConstructionSite->getImage());
     }
 
-    public function testIssueImage()
+    public function testIssueImage(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
@@ -148,7 +148,7 @@ class ApiControllerTest extends ApiTestCase
         $this->assertNull($issue->getImage());
     }
 
-    public function testMapFile()
+    public function testMapFile(): void
     {
         $client = $this->createClient();
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);

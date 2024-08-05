@@ -17,18 +17,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class CraftsmanStatistics
 {
     /**
-     * @var string
-     *
      * @Groups({"craftsman-read"})
      */
-    private $craftsman;
+    private string $craftsman;
 
     /**
-     * @var IssueSummary
-     *
      * @Groups({"craftsman-read"})
      */
-    private $issueSummary;
+    private ?IssueSummary $issueSummary = null;
 
     /**
      * @var int
@@ -75,7 +71,7 @@ class CraftsmanStatistics
     /**
      * CraftsmanStatistics constructor.
      */
-    public static function createFromCraftsmanAnalysis(CraftsmanAnalysis $craftsmanAnalysis, string $craftsmanIri)
+    public static function createFromCraftsmanAnalysis(CraftsmanAnalysis $craftsmanAnalysis, string $craftsmanIri): self
     {
         $self = new self();
 

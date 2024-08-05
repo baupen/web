@@ -33,7 +33,7 @@ class GdService
         $this->logger = $logger;
     }
 
-    public function measureTextDimensions(float $fontSize, string $text)
+    public function measureTextDimensions(float $fontSize, string $text): array
     {
         // get text dimensions
         $boundingBox = imagettfbbox($fontSize, 0, self::FONT, $text);
@@ -46,7 +46,7 @@ class GdService
     /**
      * @param resource|\GdImage $image
      */
-    public function drawBorderedRectangleWithTextCentered(float $xPosition, float $yPosition, string $color, float $padding, string $text, float $textFontSize, float $textWidth, float $textHeight, &$image)
+    public function drawBorderedRectangleWithTextCentered(float $xPosition, float $yPosition, string $color, float $padding, string $text, float $textFontSize, float $textWidth, float $textHeight, &$image): void
     {
         // draw white base ellipse before the colored one
         $white = $this->createColorForLabel('white', $image);
@@ -64,7 +64,7 @@ class GdService
     /**
      * @param resource|\GdImage $image
      */
-    public function drawRectangleWithText(float $xPosition, float $yPosition, string $color, float $padding, string $text, float $textFontSize, float $textWidth, float $textHeight, &$image)
+    public function drawRectangleWithText(float $xPosition, float $yPosition, string $color, float $padding, string $text, float $textFontSize, float $textWidth, float $textHeight, &$image): void
     {
         // draw white base ellipse before the colored one
         $white = $this->createColorForLabel('white', $image);
@@ -80,7 +80,7 @@ class GdService
     /**
      * @param resource|\GdImage $image
      */
-    public function drawCrosshair(float $positionX, float $positionY, string $color, int $radius, int $circleThickness, int $lineThickness, &$image)
+    public function drawCrosshair(float $positionX, float $positionY, string $color, int $radius, int $circleThickness, int $lineThickness, &$image): void
     {
         $accent = $this->createColorForLabel($color, $image);
         $transparentAccent = $this->createColorForLabel($color, $image, 0.2);
@@ -178,10 +178,8 @@ class GdService
      * create a color using the palette of the image.
      *
      * @param resource|\GdImage $image
-     *
-     * @return int|false
      */
-    private function createColor($image, int $red, int $green, int $blue, int $alpha = 0)
+    private function createColor($image, int $red, int $green, int $blue, int $alpha = 0): int|false
     {
         // get color from palette
         $color = imagecolorexactalpha($image, $red, $green, $blue, $alpha);

@@ -87,10 +87,8 @@ class SecurityController extends BaseDoctrineController
 
     /**
      * @Route("/register", name="register")
-     *
-     * @return Response
      */
-    public function register(Request $request, TranslatorInterface $translator, UserServiceInterface $userService)
+    public function register(Request $request, TranslatorInterface $translator, UserServiceInterface $userService): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         $constructionManager = new ConstructionManager();
         $constructionManager->setEmail($request->query->get('email'));
@@ -128,10 +126,8 @@ class SecurityController extends BaseDoctrineController
 
     /**
      * @Route("/register/confirm/{authenticationHash}", name="register_confirm")
-     *
-     * @return Response
      */
-    public function registerConfirm(Request $request, string $authenticationHash, TranslatorInterface $translator, EmailServiceInterface $emailService, SampleServiceInterface $sampleService, UserServiceInterface $userService, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
+    public function registerConfirm(Request $request, string $authenticationHash, TranslatorInterface $translator, EmailServiceInterface $emailService, SampleServiceInterface $sampleService, UserServiceInterface $userService, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         /** @var ConstructionManager $constructionManager */
         if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $constructionManager)) {
@@ -197,10 +193,8 @@ class SecurityController extends BaseDoctrineController
 
     /**
      * @Route("/recover/confirm/{authenticationHash}", name="recover_confirm")
-     *
-     * @return Response
      */
-    public function recoverConfirm(Request $request, $authenticationHash, TranslatorInterface $translator, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
+    public function recoverConfirm(Request $request, $authenticationHash, TranslatorInterface $translator, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         /** @var ConstructionManager $constructionManager */
         if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $constructionManager)) {
@@ -230,12 +224,12 @@ class SecurityController extends BaseDoctrineController
     /**
      * @Route("/logout", name="logout")
      */
-    public function logout()
+    public function logout(): never
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
-    private function getConstructionManagerFromAuthenticationHash(string $authenticationHash, TranslatorInterface $translator, ?ConstructionManager &$constructionManager = null)
+    private function getConstructionManagerFromAuthenticationHash(string $authenticationHash, TranslatorInterface $translator, ?ConstructionManager &$constructionManager = null): bool
     {
         /** @var ConstructionManager $constructionManager */
         $constructionManager = $this->getDoctrine()->getRepository(ConstructionManager::class)->findOneBy(['authenticationHash' => $authenticationHash]);
@@ -248,7 +242,7 @@ class SecurityController extends BaseDoctrineController
         return true;
     }
 
-    private function applySetPasswordType(FormInterface $form, ConstructionManager $constructionManager, TranslatorInterface $translator)
+    private function applySetPasswordType(FormInterface $form, ConstructionManager $constructionManager, TranslatorInterface $translator): bool
     {
         $plainPassword = $form->get('plainPassword')->getData();
         $repeatPlainPassword = $form->get('repeatPlainPassword')->getData();
@@ -270,7 +264,7 @@ class SecurityController extends BaseDoctrineController
         return true;
     }
 
-    private function loginUser(UserInterface $user, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler, Request $request)
+    private function loginUser(UserInterface $user, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler, Request $request): ?Response
     {
         // after validating the user and saving them to the database
         // authenticate the user and use onAuthenticationSuccess on the authenticator

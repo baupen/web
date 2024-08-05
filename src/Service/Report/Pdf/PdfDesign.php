@@ -13,35 +13,32 @@ namespace App\Service\Report\Pdf;
 
 class PdfDesign
 {
-    /**
-     * @var string
-     */
-    private $fontFamily = 'opensans';
+    private string $fontFamily = 'opensans';
 
     /**
      * @var int[]
      */
-    private $textColor = [37, 40, 32];
+    private array $textColor = [37, 40, 32];
 
     /**
      * @var int[]
      */
-    private $secondaryTextColor = [68, 73, 58];
+    private array $secondaryTextColor = [68, 73, 58];
 
     /**
      * @var int[]
      */
-    private $darkBackground = [200, 200, 200];
+    private array $darkBackground = [200, 200, 200];
 
     /**
      * @var int[]
      */
-    private $lightBackground = [230, 230, 230];
+    private array $lightBackground = [230, 230, 230];
 
     /**
      * @var int[]
      */
-    private $lighterBackground = [240, 240, 240];
+    private array $lighterBackground = [240, 240, 240];
 
     /**
      * @return string[]

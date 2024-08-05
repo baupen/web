@@ -35,62 +35,46 @@ class Email extends BaseEntity
     public const TYPE_CONSTRUCTION_SITES_OVERVIEW = 5;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="guid")
      */
-    private $identifier;
+    private ?string $identifier = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", nullable=true)
      */
-    private $link;
+    private ?string $link = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="text", nullable=true)
      */
-    private $body;
+    private ?string $body = null;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(type="boolean", options={"default" : false})
      */
-    private $jsonBody;
+    private ?bool $jsonBody = null;
 
     /**
-     * @var int
-     *
      * @ORM\Column(type="integer")
      */
-    private $type;
+    private ?int $type = null;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(type="datetime")
      */
-    private $sentAt;
+    private ?\DateTime $sentAt = null;
 
     /**
-     * @var ConstructionManager
-     *
      * @ORM\ManyToOne (targetEntity="App\Entity\ConstructionManager")
      */
-    private $sentBy;
+    private ?ConstructionManager $sentBy = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $readAt;
+    private ?\DateTime $readAt = null;
 
-    public static function create(int $emailType, ConstructionManager $sentBy, ?string $link = null, ?string $body = null, bool $jsonBody = false)
+    public static function create(int $emailType, ConstructionManager $sentBy, ?string $link = null, ?string $body = null, bool $jsonBody = false): Email
     {
         $email = new Email();
 
@@ -105,7 +89,7 @@ class Email extends BaseEntity
         return $email;
     }
 
-    public function markRead()
+    public function markRead(): void
     {
         $this->readAt = new \DateTime();
     }

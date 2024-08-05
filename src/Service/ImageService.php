@@ -185,7 +185,7 @@ class ImageService implements ImageServiceInterface
         return $targetFilePath;
     }
 
-    private function getPathForSize(string $sourcePath, string $targetFolder, string $filename, string $size)
+    private function getPathForSize(string $sourcePath, string $targetFolder, string $filename, string $size): string
     {
         /** @var string $ending */
         $ending = pathinfo($sourcePath, PATHINFO_EXTENSION);
@@ -195,7 +195,7 @@ class ImageService implements ImageServiceInterface
         return $targetFolder.\DIRECTORY_SEPARATOR.$targetFileName;
     }
 
-    private function drawCrosshairOnJpg(string $sourcePath, string $targetPath, float $positionX, float $positionY)
+    private function drawCrosshairOnJpg(string $sourcePath, string $targetPath, float $positionX, float $positionY): void
     {
         $image = imagecreatefromjpeg($sourcePath);
         $xSize = imagesx($image);

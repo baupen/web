@@ -108,7 +108,7 @@ trait AddressTrait
      *
      * @return string[]
      */
-    public function getAddressLines()
+    public function getAddressLines(): array
     {
         $res = explode("\n", $this->getStreetAddress());
         $prefix = '';

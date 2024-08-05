@@ -66,77 +66,61 @@ class ConstructionManager extends BaseEntity implements UserInterface
     public const ROLE_ASSOCIATED_CONSTRUCTION_MANAGER = 'ROLE_ASSOCIATED_CONSTRUCTION_MANAGER';
 
     /**
-     * @var string|null
-     *
      * @Groups({"construction-manager-read", "construction-manager-write"})
      *
      * @ORM\Column(type="text", nullable=true)
      */
-    private $givenName;
+    private ?string $givenName = null;
 
     /**
-     * @var string|null
-     *
      * @Groups({"construction-manager-read", "construction-manager-write"})
      *
      * @ORM\Column(type="text", nullable=true)
      */
-    private $familyName;
+    private ?string $familyName = null;
 
     /**
-     * @var string|null
-     *
      * @Groups({"construction-manager-read", "construction-manager-write"})
      *
      * @ORM\Column(type="text", nullable=true)
      */
-    private $phone;
+    private ?string $phone = null;
 
     /**
      * @var ConstructionSite[]|ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="ConstructionSite", mappedBy="constructionManagers")
      */
-    private $constructionSites;
+    private ArrayCollection $constructionSites;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="text", options={"default": "de"})
      */
-    private $locale = 'de';
+    private string $locale = 'de';
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="text", nullable=true)
      */
-    private $authorizationAuthority;
+    private ?string $authorizationAuthority = null;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(type="boolean", options={"default": false})
      */
-    private $isAdminAccount = false;
+    private bool $isAdminAccount = false;
 
     /**
-     * @var bool
-     *
      * @Groups({"construction-manager-read-self"})
      *
      * @ORM\Column(type="boolean", options={"default": false})
      */
-    private $canAssociateSelf = false;
+    private bool $canAssociateSelf = false;
 
     /**
-     * @var bool
-     *
      * @Groups({"construction-manager-read-self", "construction-manager-write"})
      *
      * @ORM\Column(type="boolean", options={"default": false})
      */
-    private $receiveWeekly = false;
+    private bool $receiveWeekly = false;
 
     /**
      * constructor.
@@ -184,10 +168,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
         return $this->constructionSites;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return trim($this->getGivenName().' '.$this->getFamilyName());
     }

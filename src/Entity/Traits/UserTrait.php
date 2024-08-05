@@ -118,7 +118,7 @@ trait UserTrait
         return $this->authenticationHash;
     }
 
-    public function setRegistrationCompletedNow()
+    public function setRegistrationCompletedNow(): void
     {
         $this->registrationCompletedAt = new \DateTime();
     }
@@ -148,7 +148,7 @@ trait UserTrait
      *
      * @return string|null The salt
      */
-    public function getSalt()
+    public function getSalt(): null
     {
         return null;
     }
@@ -174,7 +174,7 @@ trait UserTrait
      * This is important if, at any given point, sensitive information like
      * the plain-text password is stored on this object.
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // nothing to do
     }
@@ -197,7 +197,7 @@ trait UserTrait
     /**
      * hashes the plainPassword and erases credentials.
      */
-    public function setPasswordFromPlain(string $plainPassword)
+    public function setPasswordFromPlain(string $plainPassword): void
     {
         $this->password = password_hash($plainPassword, PASSWORD_BCRYPT);
     }
@@ -205,7 +205,7 @@ trait UserTrait
     /**
      * checks if the user has completed the registration.
      */
-    public function getRegistrationCompleted()
+    public function getRegistrationCompleted(): bool
     {
         return null !== $this->password;
     }

@@ -47,31 +47,25 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     use TimeTrait;
 
     /**
-     * @var bool|null
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $isDeleted;
+    private ?bool $isDeleted = null;
 
     /**
-     * @var bool|null
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $isMarked;
+    private ?bool $isMarked = null;
 
     /**
-     * @var bool|null
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $wasAddedWithClient;
+    private ?bool $wasAddedWithClient = null;
 
     /**
      * @var string[]|null
@@ -83,22 +77,18 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $numbers;
 
     /**
-     * @var string|null
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @ORM\Column(type="text", nullable=true)
      */
-    private $description;
+    private ?string $description = null;
 
     /**
-     * @var int|null
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $state;
+    private ?int $state = null;
 
     /**
      * @var string[]|null
@@ -119,121 +109,95 @@ class Filter extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private $mapIds;
 
     /**
-     * @var \DateTime|null
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $deadlineBefore;
+    private ?\DateTime $deadlineBefore = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $deadlineAfter;
+    private ?\DateTime $deadlineAfter = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $createdAtAfter;
+    private ?\DateTime $createdAtAfter = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $createdAtBefore;
+    private ?\DateTime $createdAtBefore = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $registeredAtAfter;
+    private ?\DateTime $registeredAtAfter = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $registeredAtBefore;
+    private ?\DateTime $registeredAtBefore = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $resolvedAtAfter;
+    private ?\DateTime $resolvedAtAfter = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $resolvedAtBefore;
+    private ?\DateTime $resolvedAtBefore = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $closedAtAfter;
+    private ?\DateTime $closedAtAfter = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $closedAtBefore;
+    private ?\DateTime $closedAtBefore = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Groups({"filter-create"})
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $accessAllowedBefore;
+    private ?\DateTime $accessAllowedBefore = null;
 
     /**
-     * @var ConstructionSite
-     *
      * @Groups({"filter-read", "filter-create"})
      *
      * @Assert\NotBlank()
      *
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="filters")
      */
-    private $constructionSite;
+    private ConstructionSite $constructionSite;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $lastUsedAt;
+    private ?\DateTime $lastUsedAt = null;
 
     public function getIsDeleted(): ?bool
     {

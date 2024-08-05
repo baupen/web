@@ -56,24 +56,24 @@ class CacheWarmupCommand extends Command
         $symfony = new SymfonyStyle($input, $output);
 
         $constructionSiteImages = $this->registry->getRepository(ConstructionSiteImage::class)->findAll();
-        $this->warmUpCacheFor($symfony, 'construction site images', $constructionSiteImages, function (ConstructionSiteImage $constructionSiteImage) {
+        $this->warmUpCacheFor($symfony, 'construction site images', $constructionSiteImages, function (ConstructionSiteImage $constructionSiteImage): void {
             $this->cacheService->warmUpCacheForConstructionSiteImage($constructionSiteImage);
         });
 
         $mapFiles = $this->registry->getRepository(MapFile::class)->findAll();
-        $this->warmUpCacheFor($symfony, 'map files', $mapFiles, function (MapFile $mapFile) {
+        $this->warmUpCacheFor($symfony, 'map files', $mapFiles, function (MapFile $mapFile): void {
             $this->cacheService->warmUpCacheForMapFile($mapFile);
         });
 
         $issueImages = $this->registry->getRepository(IssueImage::class)->findAll();
-        $this->warmUpCacheFor($symfony, 'issue images', $issueImages, function (IssueImage $issueImage) {
+        $this->warmUpCacheFor($symfony, 'issue images', $issueImages, function (IssueImage $issueImage): void {
             $this->cacheService->warmUpCacheForIssueImage($issueImage);
         });
 
         return 0;
     }
 
-    private function warmUpCacheFor(SymfonyStyle $io, string $entityPlural, array $entities, callable $actionPerEntity)
+    private function warmUpCacheFor(SymfonyStyle $io, string $entityPlural, array $entities, callable $actionPerEntity): void
     {
         $constructionSiteImageCount = count($entities);
 

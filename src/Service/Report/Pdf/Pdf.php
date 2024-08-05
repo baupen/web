@@ -40,7 +40,7 @@ class Pdf extends \TCPDF
     /**
      * logo right & text left.
      */
-    public function Header()
+    public function Header(): void
     {
         // image max one third, the header text the other two thirds
         $contentWidthPart = $this->pdfSizes->getContentXSize() / 3;
@@ -59,7 +59,7 @@ class Pdf extends \TCPDF
     /**
      * bottom left author.
      */
-    public function Footer()
+    public function Footer(): void
     {
         // author three forths, page numbers one forth
         $contentWidthPart = $this->pdfSizes->getContentXSize() / 8;

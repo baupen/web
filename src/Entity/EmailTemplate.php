@@ -56,68 +56,56 @@ class EmailTemplate extends BaseEntity implements ConstructionSiteOwnedEntityInt
     public const PURPOSE_OVERDUE_ISSUES = 3;
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank
      *
      * @Groups({"email-template-read", "email-template-edit"})
      *
      * @ORM\Column(type="text")
      */
-    private $name;
+    private string $name;
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank
      *
      * @Groups({"email-template-read", "email-template-edit"})
      *
      * @ORM\Column(type="text")
      */
-    private $subject;
+    private string $subject;
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank
      *
      * @Groups({"email-template-read", "email-template-edit"})
      *
      * @ORM\Column(type="text")
      */
-    private $body;
+    private string $body;
 
     /**
-     * @var int|null
-     *
      * @Groups({"email-template-read", "email-template-edit"})
      *
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $purpose;
+    private ?int $purpose = null;
 
     /**
-     * @var bool
-     *
      * @Assert\NotNull
      *
      * @Groups({"email-template-read", "email-template-edit"})
      *
      * @ORM\Column(type="boolean")
      */
-    private $selfBcc;
+    private bool $selfBcc;
 
     /**
-     * @var ConstructionSite
-     *
      * @Assert\NotBlank
      *
      * @Groups({"email-template-create"})
      *
      * @ORM\ManyToOne(targetEntity="ConstructionSite", inversedBy="emailTemplates")
      */
-    private $constructionSite;
+    private ConstructionSite $constructionSite;
 
     public function getName(): string
     {

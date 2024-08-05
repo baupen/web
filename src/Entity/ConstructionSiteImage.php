@@ -29,11 +29,9 @@ class ConstructionSiteImage extends BaseEntity
     use FileTrait;
 
     /**
-     * @var ConstructionSite
-     *
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionSite")
      */
-    private $createdFor;
+    private ConstructionSite $createdFor;
 
     public function getCreatedFor(): ConstructionSite
     {

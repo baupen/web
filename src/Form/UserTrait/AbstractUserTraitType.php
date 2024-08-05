@@ -16,7 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractUserTraitType extends AbstractType
 {
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'translation_domain' => 'trait_user',

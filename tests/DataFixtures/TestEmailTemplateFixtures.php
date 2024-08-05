@@ -21,7 +21,7 @@ class TestEmailTemplateFixtures extends Fixture implements OrderedFixtureInterfa
 {
     public const ORDER = TestConstructionSiteFixtures::ORDER + 1;
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $constructionSiteRepository = $manager->getRepository(ConstructionSite::class);
         $constructionSite = $constructionSiteRepository->findOneBy(['name' => TestConstructionSiteFixtures::TEST_CONSTRUCTION_SITE_NAME]);

@@ -34,7 +34,7 @@ class TestConstructionSiteFixtures extends Fixture implements OrderedFixtureInte
         $this->sampleService = $sampleService;
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $constructionManagerRepository = $manager->getRepository(ConstructionManager::class);
 

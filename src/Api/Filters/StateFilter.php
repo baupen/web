@@ -53,7 +53,7 @@ class StateFilter extends AbstractContextAwareFilter
         }
     }
 
-    private function normalizeValue($value)
+    private function normalizeValue($value): ?int
     {
         $intValue = (int) $value;
         $maxCombination = Issue::STATE_CREATED | Issue::STATE_REGISTERED | Issue::STATE_RESOLVED | Issue::STATE_CLOSED;

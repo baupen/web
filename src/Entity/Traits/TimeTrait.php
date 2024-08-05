@@ -40,7 +40,7 @@ trait TimeTrait
      * @throws \Exception
      * @throws \Exception
      */
-    public function prePersistTime()
+    public function prePersistTime(): void
     {
         $this->createdAt = new \DateTime();
         $this->lastChangedAt = new \DateTime();
@@ -51,7 +51,7 @@ trait TimeTrait
      *
      * @throws \Exception
      */
-    public function preUpdateTime()
+    public function preUpdateTime(): void
     {
         $this->lastChangedAt = new \DateTime();
     }

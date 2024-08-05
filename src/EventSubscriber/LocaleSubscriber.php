@@ -27,7 +27,7 @@ class LocaleSubscriber implements EventSubscriberInterface
         $this->defaultLocale = $defaultLocale;
     }
 
-    public function onKernelRequest(RequestEvent $event)
+    public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
         if (!$request->hasPreviousSession()) {

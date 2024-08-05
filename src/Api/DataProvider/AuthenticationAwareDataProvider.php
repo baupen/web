@@ -265,7 +265,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
         throw new BadRequestException($property.' filter missing or value not equal to '.$expectedValue.'.');
     }
 
-    private function ensureRenderQuery(string $resourceClass, ?string $operationName, array $existingFilter)
+    private function ensureRenderQuery(string $resourceClass, ?string $operationName, array $existingFilter): void
     {
         if (Issue::class === $resourceClass && 'get_render' === $operationName && (isset($existingFilter['map']) && !isset($existingFilter['map[]']))) {
             return;

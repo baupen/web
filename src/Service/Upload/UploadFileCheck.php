@@ -13,25 +13,16 @@ namespace App\Service\Upload;
 
 class UploadFileCheck
 {
-    /**
-     * @var bool
-     */
-    private $uploadPossible;
+    private bool $uploadPossible;
 
     /**
      * @var string[]
      */
-    private $sameHashConflicts;
+    private ?array $sameHashConflicts = null;
 
-    /**
-     * @var string|null
-     */
-    private $fileNameConflict;
+    private ?string $fileNameConflict = null;
 
-    /**
-     * @var string|null
-     */
-    private $derivedFileName;
+    private ?string $derivedFileName = null;
 
     /**
      * @return string[]

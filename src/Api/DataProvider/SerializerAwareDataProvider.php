@@ -73,7 +73,7 @@ class SerializerAwareDataProvider
         return $queryBuilder->getQuery()->getResult();
     }
 
-    private function addSerializerRelevantJoins(string $resourceClass, string $alias, QueryBuilder $queryBuilder)
+    private function addSerializerRelevantJoins(string $resourceClass, string $alias, QueryBuilder $queryBuilder): void
     {
         if (ConstructionSite::class === $resourceClass) {
             $queryBuilder->leftJoin($alias.'.image', 'i');
