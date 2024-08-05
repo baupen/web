@@ -26,7 +26,7 @@ class ConstructionSiteSerializer implements NormalizerInterface
         $this->urlGenerator = $urlGenerator;
     }
 
-    public function supportsNormalization($data, ?string $format = null)
+    public function supportsNormalization($data, ?string $format = null): bool
     {
         return $data instanceof ConstructionSite
             && $this->decorated->supportsNormalization($data, $format);
@@ -35,7 +35,7 @@ class ConstructionSiteSerializer implements NormalizerInterface
     /**
      * @param ConstructionSite $object
      */
-    public function normalize($object, ?string $format = null, array $context = [])
+    public function normalize($object, ?string $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
     {
         $data = $this->decorated->normalize($object, $format, $context);
 

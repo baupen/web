@@ -36,7 +36,7 @@ class CraftsmanNormalizer implements ContextAwareNormalizerInterface, Normalizer
     /**
      * @param ConstructionManager $object
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = []): bool
     {
         $context[self::ALREADY_CALLED] = true;
 
@@ -49,7 +49,7 @@ class CraftsmanNormalizer implements ContextAwareNormalizerInterface, Normalizer
         return $this->normalizer->normalize($object, $format, $context);
     }
 
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
     {
         // Make sure we're not called twice
         if (isset($context[self::ALREADY_CALLED])) {

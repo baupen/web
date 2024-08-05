@@ -11,7 +11,7 @@
 
 namespace App\Api\Serializer;
 
-use ApiPlatform\Core\Serializer\SerializerContextBuilderInterface;
+use ApiPlatform\Serializer\SerializerContextBuilderInterface;
 use App\Entity\Issue;
 use App\Security\TokenTrait;
 use Symfony\Component\HttpFoundation\Request;
