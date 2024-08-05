@@ -22,26 +22,22 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 trait IssueStatusTrait
 {
     /**
-     * @var \DateTime
-     *
      * @Assert\NotBlank()
      *
      * @Groups({"issue-read", "issue-create"})
      *
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private ?\DateTimeInterface $createdAt = null;
 
     /**
-     * @var ConstructionManager
-     *
      * @Assert\NotBlank()
      *
      * @Groups({"issue-read", "issue-create"})
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
      */
-    private $createdBy;
+    private ?ConstructionManager $createdBy = null;
 
     /**
      * @var \DateTime|null
@@ -52,18 +48,16 @@ trait IssueStatusTrait
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $registeredAt;
+    private ?\DateTimeInterface $registeredAt = null;
 
     /**
-     * @var ConstructionManager|null
-     *
      * @Assert\NotBlank(groups={"after-register"})
      *
      * @Groups({"issue-read", "issue-write"})
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
      */
-    private $registeredBy;
+    private ?ConstructionManager $registeredBy = null;
 
     /**
      * @var \DateTime|null
@@ -72,16 +66,14 @@ trait IssueStatusTrait
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $resolvedAt;
+    private ?\DateTimeInterface $resolvedAt = null;
 
     /**
-     * @var Craftsman|null
-     *
      * @Groups({"issue-read", "issue-write", "issue-craftsman-write"})
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Craftsman", inversedBy="resolvedIssues")
      */
-    private $resolvedBy;
+    private ?Craftsman $resolvedBy = null;
 
     /**
      * @var \DateTime|null
@@ -90,16 +82,14 @@ trait IssueStatusTrait
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $closedAt;
+    private ?\DateTimeInterface $closedAt = null;
 
     /**
-     * @var ConstructionManager|null
-     *
      * @Groups({"issue-read", "issue-write"})
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\ConstructionManager")
      */
-    private $closedBy;
+    private ?ConstructionManager $closedBy = null;
 
     /**
      * @Assert\Callback

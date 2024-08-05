@@ -22,46 +22,38 @@ use Symfony\Component\Validator\Constraints as Assert;
 trait AddressTrait
 {
     /**
-     * @var string
-     *
      * @Assert\NotBlank
      *
      * @Groups({"construction-site-read", "construction-site-write"})
      *
      * @ORM\Column(type="text")
      */
-    private $streetAddress;
+    private ?string $streetAddress = null;
 
     /**
-     * @var int
-     *
      * @Assert\NotBlank
      *
      * @Groups({"construction-site-read", "construction-site-write"})
      *
      * @ORM\Column(type="integer")
      */
-    private $postalCode;
+    private ?int $postalCode = null;
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank
      *
      * @Groups({"construction-site-read", "construction-site-write"})
      *
      * @ORM\Column(type="text")
      */
-    private $locality;
+    private ?string $locality = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="text")
      *
      * @Assert\Country()
      */
-    private $country = 'CH';
+    private ?string $country = 'CH';
 
     public function getStreetAddress(): string
     {

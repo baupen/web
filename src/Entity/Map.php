@@ -89,7 +89,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private ?self $parent = null;
 
     /**
-     * @var Map[]
+     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Map>
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Map", mappedBy="parent")
      */
@@ -101,7 +101,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private ?MapFile $file = null;
 
     /**
-     * @var Issue[]
+     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Issue>
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="map")
      */

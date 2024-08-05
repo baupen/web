@@ -25,7 +25,7 @@ trait SoftDeleteTrait
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $deletedAt;
+    private ?\DateTimeInterface $deletedAt = null;
 
     public function getDeletedAt(): ?\DateTime
     {

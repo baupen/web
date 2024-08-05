@@ -79,7 +79,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     private ?ConstructionSiteImage $image = null;
 
     /**
-     * @var ConstructionManager[]|ArrayCollection
+     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\ConstructionManager>
      *
      * @Groups({"construction-site-read", "construction-site-write"})
      *
@@ -90,7 +90,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     private \Doctrine\Common\Collections\ArrayCollection|array $constructionManagers;
 
     /**
-     * @var Map[]|ArrayCollection
+     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Map>
      *
      * @ORM\OneToMany(targetEntity="Map", mappedBy="constructionSite", cascade={"persist"})
      *
@@ -99,21 +99,21 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     private ArrayCollection $maps;
 
     /**
-     * @var Craftsman[]|ArrayCollection
+     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Craftsman>
      *
      * @ORM\OneToMany(targetEntity="Craftsman", mappedBy="constructionSite", cascade={"persist"})
      */
     private ArrayCollection $craftsmen;
 
     /**
-     * @var Issue[]|ArrayCollection
+     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Issue>
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="constructionSite", cascade={"persist"})
      */
     private ArrayCollection $issues;
 
     /**
-     * @var EmailTemplate[]|ArrayCollection
+     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\EmailTemplate>
      *
      * @ORM\OneToMany(targetEntity="App\Entity\EmailTemplate", mappedBy="constructionSite", cascade={"persist"})
      *
@@ -122,7 +122,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     private ArrayCollection $emailTemplates;
 
     /**
-     * @var Filter[]|ArrayCollection
+     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Filter>
      *
      * @ORM\OneToMany(targetEntity="Filter", mappedBy="constructionSite")
      */

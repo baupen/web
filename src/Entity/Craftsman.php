@@ -135,14 +135,14 @@ class Craftsman extends BaseEntity implements ConstructionSiteOwnedEntityInterfa
     private ConstructionSite $constructionSite;
 
     /**
-     * @var Issue[]|ArrayCollection
+     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Issue>
      *
      * @ORM\OneToMany(targetEntity="Issue", mappedBy="craftsman")
      */
     private ArrayCollection $issues;
 
     /**
-     * @var Issue[]|ArrayCollection
+     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Issue>
      *
      * @ORM\OneToMany(targetEntity="Issue", mappedBy="resolvedBy")
      */

@@ -19,8 +19,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 trait UserTrait
 {
     /**
-     * @var string
-     *
      * @Groups({"construction-manager-read", "construction-manager-create"})
      *
      * @ORM\Column(type="string", length=255, unique=true)
@@ -29,37 +27,31 @@ trait UserTrait
      *
      * @Assert\Email()
      */
-    private $email;
+    private ?string $email = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="text", nullable=true)
      */
-    private $password;
+    private ?string $password = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="text", nullable=true)
      */
-    private $authenticationHash;
+    private ?string $authenticationHash = null;
 
     /**
-     * @var bool
-     *
      * @Groups({"construction-manager-read"})
      *
      * @ORM\Column(type="boolean")
      */
-    private $isEnabled = true;
+    private ?bool $isEnabled = true;
 
     /**
      * @var \DateTime|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $registrationCompletedAt;
+    private ?\DateTimeInterface $registrationCompletedAt = null;
 
     /**
      * @return string

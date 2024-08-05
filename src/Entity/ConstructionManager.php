@@ -87,7 +87,7 @@ class ConstructionManager extends BaseEntity implements UserInterface
     private ?string $phone = null;
 
     /**
-     * @var ConstructionSite[]|ArrayCollection
+     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\ConstructionSite>
      *
      * @ORM\ManyToMany(targetEntity="ConstructionSite", mappedBy="constructionManagers")
      */
