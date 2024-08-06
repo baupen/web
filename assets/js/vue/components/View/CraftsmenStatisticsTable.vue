@@ -109,7 +109,7 @@
                  :checked="entityListsAreEqual(craftsmenWithIssuesOverdue, selectedCraftsmen)">
         </custom-checkbox>
       </div>
-      <div class="float-right">
+      <div class="float-end">
         {{ totalCraftsmen }} {{ $t('craftsman._plural') }}
       </div>
     </caption>

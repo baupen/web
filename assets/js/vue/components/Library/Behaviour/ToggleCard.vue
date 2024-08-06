@@ -4,7 +4,7 @@
       <span>
         {{ title }}
       </span>
-      <span class="text-right float-right">
+      <span class="text-end float-end">
         <button type="button" class="btn btn-toggle"
                 :class="{'active': isActive}"
                 @click.prevent.stop="toggleActive">
