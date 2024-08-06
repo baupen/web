@@ -2,7 +2,7 @@
   <div>
     <custom-checkbox-field for-id="filter-state-is-open" :label="$t('issue.state.open')">
       <input
-          class="custom-control-input" type="checkbox" id="filter-state-is-open"
+          class="form-check-input" type="checkbox" id="filter-state-is-open"
           v-model="isRegistered"
           :true-value="true"
           :false-value="false"
@@ -11,7 +11,7 @@
 
     <custom-checkbox-field for-id="filter-state-is-resolved" :label="$t('issue.state.to_inspect')">
       <input
-          class="custom-control-input" type="checkbox" id="filter-state-is-resolved"
+          class="form-check-input" type="checkbox" id="filter-state-is-resolved"
           v-model="isResolved"
           :true-value="true"
           :false-value="false"
@@ -21,7 +21,7 @@
     <custom-checkbox-field
         for-id="filter-state-is-closed" :label="$t('issue.state.closed')">
       <input
-          class="custom-control-input" type="checkbox" id="filter-state-is-closed"
+          class="form-check-input" type="checkbox" id="filter-state-is-closed"
           v-model="isClosed"
           :true-value="true"
           :false-value="false"

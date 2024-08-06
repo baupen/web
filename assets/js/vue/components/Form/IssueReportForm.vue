@@ -4,7 +4,7 @@
         class="mb-1"
         for-id="report-table-by-craftsman"
         :label="$t('_form.issue_report.table_by_craftsman')">
-      <input class="custom-control-input" type="checkbox" name="report-table-by-craftsman" value="selection"
+      <input class="form-check-input" type="checkbox" name="report-table-by-craftsman" value="selection"
              id="report-table-by-craftsman"
              :true-value="true" :false-value="false"
              v-model="report.tableByCraftsman">
@@ -13,7 +13,7 @@
         class="mb-1"
         for-id="report-table-by-map"
         :label="$t('_form.issue_report.table_by_map')">
-      <input class="custom-control-input" type="checkbox" name="report-table-by-map" value="selection"
+      <input class="form-check-input" type="checkbox" name="report-table-by-map" value="selection"
              id="report-table-by-map"
              :true-value="true" :false-value="false"
              v-model="report.tableByMap">
@@ -22,14 +22,14 @@
         class="mb-1"
         for-id="report-with-renders"
         :label="$t('_form.issue_report.with_renders')">
-      <input class="custom-control-input" type="checkbox" name="report-with-images" id="report-with-renders"
+      <input class="form-check-input" type="checkbox" name="report-with-images" id="report-with-renders"
              :true-value="true" :false-value="false"
              v-model="report.withRenders">
     </custom-checkbox>
     <custom-checkbox
         for-id="report-with-images"
         :label="$t('_form.issue_report.with_images')">
-      <input class="custom-control-input" type="checkbox" name="report-with-images" id="report-with-images"
+      <input class="form-check-input" type="checkbox" name="report-with-images" id="report-with-images"
              :true-value="true" :false-value="false"
              v-model="report.withImages">
     </custom-checkbox>
@@ -40,7 +40,7 @@
         class="mb-1"
         for-id="report-group-issues-by-craftsman"
         :label="$t('_form.issue_report.group_issues_by_craftsman')">
-      <input class="custom-control-input" type="checkbox" name="report-group-issues-by-craftsman" value="selection"
+      <input class="form-check-input" type="checkbox" name="report-group-issues-by-craftsman" value="selection"
              id="report-group-issues-by-craftsman"
              :disabled="report.separateReportByCraftsman"
              :true-value="true" :false-value="false"
@@ -49,7 +49,7 @@
     <custom-checkbox
         for-id="report-separate-report-by-craftsman"
         :label="$t('_form.issue_report.separate_report_by_craftsman')">
-      <input class="custom-control-input" type="checkbox" name="report-separate-report-by-craftsman" value="selection"
+      <input class="form-check-input" type="checkbox" name="report-separate-report-by-craftsman" value="selection"
              id="report-separate-report-by-craftsman"
              :true-value="true" :false-value="false"
              v-model="report.separateReportByCraftsman">

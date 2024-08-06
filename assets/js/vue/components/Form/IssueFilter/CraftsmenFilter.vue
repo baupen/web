@@ -4,7 +4,7 @@
         id="filter-all-craftsmen"
         @click.prevent="toggleAllEntitiesSelected"
         :label="$t('_form.issue_filter.all_craftsmen')">
-      <input class="custom-control-input" type="checkbox"
+      <input class="form-check-input" type="checkbox"
              :indeterminate.prop="selectedEntities.length > 0 && !allEntitiesSelected"
              :checked="entities.length > 0 && allEntitiesSelected">
     </custom-checkbox-field>
@@ -18,7 +18,7 @@
           :for-id="'filter-craftsman-' + craftsman['@id']" :label="craftsman.trade"
           :secondary-label="craftsman.company">
         <input
-            class="custom-control-input" type="checkbox" :id="'filter-craftsman-' + craftsman['@id']"
+            class="form-check-input" type="checkbox" :id="'filter-craftsman-' + craftsman['@id']"
             v-model="selectedEntities"
             :value="craftsman"
         >

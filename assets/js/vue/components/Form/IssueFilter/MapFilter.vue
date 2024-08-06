@@ -4,7 +4,7 @@
         id="filter-all-maps"
         @click.prevent="toggleAllEntitiesSelected"
         :label="$t('_form.issue_filter.all_maps')">
-      <input class="custom-control-input" type="checkbox"
+      <input class="form-check-input" type="checkbox"
              :indeterminate.prop="selectedEntities.length > 0 && !allEntitiesSelected"
              :checked="entities.length > 0 && allEntitiesSelected">
     </custom-checkbox-field>
@@ -18,7 +18,7 @@
           :for-id="'filter-map-' + mapContainer.entity['@id']" :label="mapContainer.entity.name">
         <span :class="'spacer-' + mapContainer.level" />
         <input
-            class="custom-control-input" type="checkbox" :id="'filter-map-' + mapContainer.entity['@id']"
+            class="form-check-input" type="checkbox" :id="'filter-map-' + mapContainer.entity['@id']"
             v-model="selectedEntities"
             :value="mapContainer.entity"
             @change="selected(mapContainer)"

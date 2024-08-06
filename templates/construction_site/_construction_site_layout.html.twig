@@ -1,8 +1,8 @@
 {% extends "_navbar_layout.html.twig" %}
 
 {% macro nav_item(link, text) %}
-    <li class="nav-item {% if app.request.pathInfo == link %}active{% endif %}">
-        <a class="nav-link" href="{{ link }}">{{ text }}</a>
+    <li class="nav-item">
+        <a class="nav-link {% if app.request.pathInfo == link %}active{% endif %}" href="{{ link }}">{{ text }}</a>
     </li>
 {% endmacro %}
 {% import _self as own_macros %}
@@ -35,7 +35,7 @@
     </nav>
 
     <div class="container-fluid p-3">
-        <p class="lead text-secondary mb-4">{{ block("description") }}</p>
+        <p class="lead mb-4">{{ block("description") }}</p>
 
         <script type="application/javascript">
             /* cache most common requests to reduce time to interactivity */
