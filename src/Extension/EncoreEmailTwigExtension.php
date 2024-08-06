@@ -43,7 +43,7 @@ class EncoreEmailTwigExtension extends AbstractExtension implements ServiceSubsc
 
         $source = '';
         foreach ($files as $file) {
-            if (0 === strpos($file, 'http://localhost:8080/')) {
+            if (str_starts_with($file, 'http://localhost:8080/')) {
                 $file = substr($file, strlen('http://localhost:8080/'));
             }
 
