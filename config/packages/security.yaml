@@ -27,8 +27,14 @@ security:
                 - App\Security\TokenAuthenticator
         main:
             provider: construction_managers
-            custom_authenticators:
-                - App\Security\LoginFormAuthenticator
+            form_login:
+                login_path: login
+                check_path: /login_check
+                enable_csrf: true
+                username_parameter: 'login[email]'
+                password_parameter: 'login[password]'
+                csrf_parameter: 'login[_token]'
+                csrf_token_id: 'login'
             logout:
                 path: logout
                 # where to redirect after logout

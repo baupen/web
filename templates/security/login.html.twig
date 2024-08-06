@@ -7,7 +7,7 @@
 
 {% block form_content %}
     <div class="form-wrapper">
-        {{ form(form) }}
+        {{ form(form, {action:'/login_check'}) }}
     </div>
     <p>
         oder <a href="{{ path("register") }}">{{ "register.title"|trans }}</a>
