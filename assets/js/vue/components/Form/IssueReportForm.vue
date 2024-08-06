@@ -1,5 +1,5 @@
 <template>
-  <div class="form-group">
+  <div class="mb-3">
     <custom-checkbox
         class="mb-1"
         for-id="report-table-by-craftsman"

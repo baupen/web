@@ -11,7 +11,7 @@
 
     <hr />
 
-    <div class="form-group">
+    <div class="mb-3">
       <custom-checkbox
           class="mb-1"
           v-for="mapContainer in mapContainers" :key="mapContainer.entity['@id']"

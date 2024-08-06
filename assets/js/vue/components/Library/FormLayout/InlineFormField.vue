@@ -1,5 +1,5 @@
 <template>
-  <div class="form-group row">
+  <div class="mb-3 row">
     <label :for="forId" :class="'pt-2 col-sm-' + labelSize">
       {{ label }}
       <span v-if="required" class="text-danger">*</span>
