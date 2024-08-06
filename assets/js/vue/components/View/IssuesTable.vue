@@ -20,7 +20,7 @@
               :label="$t('_view.issues.sort_by_last_activity')" :order="order"
               @ordered="order = $event" />
         </span>
-        <span class="text-right float-right" v-if="canEdit">
+        <span class="text-end float-end" v-if="canEdit">
             <span class="btn-group reset-table-styles">
               <edit-issues-button
                   ref="edit-issues"
@@ -156,7 +156,7 @@
           </custom-checkbox>
         </div>
       </template>
-      <div class="float-right">
+      <div class="float-end">
         {{displayedIssues.length}} / {{ displayableIssueCount }} {{ $t('issue._plural') }}
       </div>
     </caption>

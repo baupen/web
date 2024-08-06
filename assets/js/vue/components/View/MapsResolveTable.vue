@@ -4,7 +4,7 @@
       <thead>
       <tr>
         <th>{{ $t('_view.maps_resolve.issues_by_map') }}</th>
-        <th class="text-right">{{ $t('craftsman.next_deadline') }}</th>
+        <th class="text-end">{{ $t('craftsman.next_deadline') }}</th>
       </tr>
       </thead>
       <tbody>
@@ -21,7 +21,7 @@
             {{ mapContainer.issueCount }}
           </span>
         </td>
-        <td class="text-right">
+        <td class="text-end">
           <date-human-readable v-if="mapContainer.issueCount > 0" :value="mapContainer.earliestDeadline" />
           <template v-if="isOverdue(mapContainer)">
             <br/>
