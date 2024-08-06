@@ -1,5 +1,5 @@
 <template>
-  <div class="form-group">
+  <div class="mb-3">
     <custom-radio :for-id="forId" :label="label" :secondary-label="secondaryLabel" :required="required">
       <slot></slot>
     </custom-radio>
