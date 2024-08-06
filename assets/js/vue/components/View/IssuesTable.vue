@@ -1,5 +1,5 @@
 <template>
-  <table class="table table-striped-2 table-hover border">
+  <table class="table table-striped table-hover border">
     <thead>
     <tr class="bg-light">
       <th></th>
@@ -450,9 +450,6 @@ export default {
 
 
 <style scoped>
-.table-striped-2 tbody tr:nth-of-type(2n) {
-  background-color: rgba(0, 0, 0, 0.05);
-}
 
 .custom-checkbox {
   margin-right: -0.5em;
