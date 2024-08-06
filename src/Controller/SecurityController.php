@@ -19,7 +19,6 @@ use App\Form\UserTrait\OnlyEmailType;
 use App\Form\UserTrait\SetPasswordType;
 use App\Helper\DoctrineHelper;
 use App\Security\Exceptions\UserWithoutPasswordAuthenticationException;
-use App\Security\LoginFormAuthenticator;
 use App\Service\Interfaces\EmailServiceInterface;
 use App\Service\Interfaces\SampleServiceInterface;
 use App\Service\Interfaces\UserServiceInterface;
@@ -73,6 +72,12 @@ class SecurityController extends BaseController
         return $this->render('security/login.html.twig', ['form' => $form->createView()]);
     }
 
+    #[Route(path: '/login_check', name: 'login_check')]
+    public function loginCheck(): never
+    {
+        throw new \Exception('Captured by form_login');
+    }
+
     #[Route(path: '/token', name: 'token')]
     public function token(): Response
     {
@@ -119,7 +124,7 @@ class SecurityController extends BaseController
     }
 
     #[Route(path: '/register/confirm/{authenticationHash}', name: 'register_confirm')]
-    public function registerConfirm(Request $request, string $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, EmailServiceInterface $emailService, SampleServiceInterface $sampleService, UserServiceInterface $userService, LoginFormAuthenticator $authenticator, Security $security): \Symfony\Component\HttpFoundation\RedirectResponse|Response
+    public function registerConfirm(Request $request, string $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, EmailServiceInterface $emailService, SampleServiceInterface $sampleService, UserServiceInterface $userService, Security $security): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         /** @var ConstructionManager $constructionManager */
         if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $registry, $constructionManager)) {
@@ -149,7 +154,7 @@ class SecurityController extends BaseController
                 DoctrineHelper::persistAndFlush($registry, $constructionSite, $constructionManager);
             }
 
-            $security->login($constructionManager, LoginFormAuthenticator::class);
+            $security->login($constructionManager, 'form_login');
             $this->displaySuccess($translator->trans('register_confirm.success.welcome', [], 'security'));
             $emailService->sendAppInvitation($constructionManager);
 
@@ -182,7 +187,7 @@ class SecurityController extends BaseController
     }
 
     #[Route(path: '/recover/confirm/{authenticationHash}', name: 'recover_confirm')]
-    public function recoverConfirm(Request $request, $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, LoginFormAuthenticator $authenticator, Security $security): \Symfony\Component\HttpFoundation\RedirectResponse|Response
+    public function recoverConfirm(Request $request, $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, Security $security): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         /** @var ConstructionManager $constructionManager */
         if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $registry, $constructionManager)) {
@@ -201,7 +206,7 @@ class SecurityController extends BaseController
             $message = $translator->trans('recover_confirm.success.password_set', [], 'security');
             $this->displaySuccess($message);
 
-            $security->login($constructionManager, LoginFormAuthenticator::class);
+            $security->login($constructionManager, 'form_login');
 
             return $this->redirectToRoute('index');
         }
