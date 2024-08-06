@@ -71,7 +71,7 @@ abstract class ConstructionSiteRelatedEntityVoter extends Voter
      *
      * @return bool True if the attribute and subject are supported, false otherwise
      */
-    protected function supports($attribute, $subject)
+    protected function supports($attribute, $subject): bool
     {
         // if the attribute isn't one we support, return false
         if (!in_array($attribute, $this->getAllAttributes())) {
@@ -86,10 +86,8 @@ abstract class ConstructionSiteRelatedEntityVoter extends Voter
      * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
      *
      * @param string $attribute
-     *
-     * @return bool
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         $constructionManager = $this->tryGetConstructionManager($token);
         if ($constructionManager instanceof ConstructionManager) {

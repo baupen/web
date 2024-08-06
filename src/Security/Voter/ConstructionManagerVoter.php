@@ -79,10 +79,8 @@ class ConstructionManagerVoter extends ConstructionSiteRelatedEntityVoter
      * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
      *
      * @param string $attribute
-     *
-     * @return bool
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         if (self::CONSTRUCTION_MANAGER_SELF === $attribute) {
             $constructionManager = $this->tryGetConstructionManager($token);

@@ -72,10 +72,8 @@ abstract class BaseEnum
 
     /**
      * returns a translation string for the passed enum value.
-     *
-     * @return bool|string
      */
-    private function getTranslationForValueInternal($enumValue, TranslatorInterface $translator)
+    private function getTranslationForValueInternal($enumValue, TranslatorInterface $translator): string
     {
         try {
             $reflection = new \ReflectionClass(static::class);
