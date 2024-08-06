@@ -1,7 +1,7 @@
 <template>
   <custom-checkbox :for-id="id" :label="label" :required="false">
     <input
-        class="custom-control-input" type="checkbox" :id="id"
+        class="form-check-input" type="checkbox" :id="id"
         :checked="isOrdered"
         @input="toggleOrder"
     >

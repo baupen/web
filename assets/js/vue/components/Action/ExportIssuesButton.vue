@@ -6,7 +6,7 @@
     <custom-radio-field for-id="export-source-filter"
                         class="mb-2"
                         :label="$tc('_action.export_issues.export_source_filter', queriedIssueCount)">
-      <input id="export-source-filter" class="custom-control-input" type="radio"
+      <input id="export-source-filter" class="form-check-input" type="radio"
              name="export-source" value="filter"
              :disabled="queriedIssueCount === 0"
              v-model="exportSource">
@@ -14,7 +14,7 @@
 
     <custom-radio-field for-id="export-source-selection"
                         :label="$tc('_action.export_issues.export_source_selection', selectedIssues.length)">
-      <input id="export-source-selection" class="custom-control-input" type="radio"
+      <input id="export-source-selection" class="form-check-input" type="radio"
              name="export-source" value="selection"
              :disabled="selectedIssues.length === 0"
              v-model="exportSource">

@@ -37,7 +37,7 @@
         <custom-checkbox
             id="all-issues"
             @click.prevent="toggleSelectedIssues(displayedIssues)">
-          <input class="custom-control-input" type="checkbox"
+          <input class="form-check-input" type="checkbox"
                  :disabled="!displayedIssues"
                  :checked="displayedIssues && displayedIssues.length > 0 && entityListsAreEqual(displayedIssues, selectedIssues)">
         </custom-checkbox>
@@ -77,7 +77,7 @@
       <td class="w-minimal">
         <custom-checkbox>
           <input
-              class="custom-control-input" type="checkbox"
+              class="form-check-input" type="checkbox"
               v-model="selectedIssues"
               :value="iwr.issue">
         </custom-checkbox>
@@ -135,7 +135,7 @@
           <custom-checkbox id="issues-without-description"
                            :label="$t('_view.issues.without_description')"
                            @click.prevent="toggleSelectedIssues(issuesWithoutDescription)">
-            <input class="custom-control-input" type="checkbox"
+            <input class="form-check-input" type="checkbox"
                    :checked="entityListsAreEqual(issuesWithoutDescription, selectedIssues)">
           </custom-checkbox>
         </div>
@@ -143,7 +143,7 @@
           <custom-checkbox id="issues-without-craftsman"
                            :label="$t('_view.issues.without_craftsman')"
                            @click.prevent="toggleSelectedIssues(issuesWithoutCraftsman)">
-            <input class="custom-control-input" type="checkbox"
+            <input class="form-check-input" type="checkbox"
                    :checked="entityListsAreEqual(issuesWithoutCraftsman, selectedIssues)">
           </custom-checkbox>
         </div>
@@ -151,7 +151,7 @@
           <custom-checkbox id="issues-without-deadline"
                            :label="$t('_view.issues.without_deadline')"
                            @click.prevent="toggleSelectedIssues(issuesWithoutDeadline)">
-            <input class="custom-control-input" type="checkbox"
+            <input class="form-check-input" type="checkbox"
                    :checked="entityListsAreEqual(issuesWithoutDeadline, selectedIssues)">
           </custom-checkbox>
         </div>

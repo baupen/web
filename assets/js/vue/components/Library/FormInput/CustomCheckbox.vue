@@ -1,7 +1,7 @@
 <template>
-  <div class="custom-control custom-checkbox">
+  <div class="form-check">
     <slot></slot>
-    <label class="custom-control-label" :for="forId">
+    <label class="form-check-label" :for="forId">
       <font-awesome-icon v-if="labelIcon && (!labelIconChecked || !checked)" :icon="labelIcon" />
       <font-awesome-icon v-if="labelIconChecked && checked" :icon="labelIconChecked" />
       {{ label }}

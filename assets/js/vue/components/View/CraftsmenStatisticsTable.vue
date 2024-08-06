@@ -11,7 +11,7 @@
     <tr class="text-secondary">
       <th class="w-minimal">
         <custom-checkbox @click.prevent="toggleSelectedCraftsmen(craftsmen)">
-          <input class="custom-control-input" type="checkbox"
+          <input class="form-check-input" type="checkbox"
                  :checked="entityListsAreEqual(craftsmen, selectedCraftsmen)">
         </custom-checkbox>
       </th>
@@ -41,7 +41,7 @@
       <td class="w-minimal">
         <custom-checkbox>
           <input
-              class="custom-control-input" type="checkbox"
+              class="form-check-input" type="checkbox"
               v-model="selectedCraftsmen"
               :value="cws.craftsman">
         </custom-checkbox>
@@ -89,7 +89,7 @@
         <custom-checkbox id="issues-open-craftsmen"
                          :label="$t('_view.craftsmen.with_open_issues')"
                          @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOpen)">
-          <input class="custom-control-input" type="checkbox"
+          <input class="form-check-input" type="checkbox"
                  :checked="entityListsAreEqual(craftsmenWithIssuesOpen, selectedCraftsmen)">
         </custom-checkbox>
       </div>
@@ -97,7 +97,7 @@
         <custom-checkbox id="issues-unread-craftsmen"
                          :label="$t('_view.craftsmen.with_unread_issues')"
                          @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesUnread)">
-          <input class="custom-control-input" type="checkbox"
+          <input class="form-check-input" type="checkbox"
                  :checked="entityListsAreEqual(craftsmenWithIssuesUnread, selectedCraftsmen)">
         </custom-checkbox>
       </div>
@@ -105,7 +105,7 @@
         <custom-checkbox id="issues-overdue-craftsmen"
                          :label="$t('_view.craftsmen.with_overdue_issues')"
                          @click.prevent="toggleSelectedCraftsmen(craftsmenWithIssuesOverdue)">
-          <input class="custom-control-input" type="checkbox"
+          <input class="form-check-input" type="checkbox"
                  :checked="entityListsAreEqual(craftsmenWithIssuesOverdue, selectedCraftsmen)">
         </custom-checkbox>
       </div>

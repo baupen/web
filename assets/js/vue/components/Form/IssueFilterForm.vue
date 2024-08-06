@@ -3,7 +3,7 @@
       for-id="filter-is-marked" :label="$t('issue.is_marked')"
       :show-reset="filter.isMarked !== null" @reset="filter.isMarked = null">
     <input
-        class="custom-control-input" type="checkbox" id="filter-is-marked"
+        class="form-check-input" type="checkbox" id="filter-is-marked"
         v-model="filter.isMarked"
         :true-value="true"
         :false-value="false"
@@ -15,7 +15,7 @@
       for-id="filter-was-added-with-client" :label="$t('issue.was_added_with_client')"
       :show-reset="filter.wasAddedWithClient !== null" @reset="filter.wasAddedWithClient = null">
     <input
-        class="custom-control-input" type="checkbox" id="filter-was-added-with-client"
+        class="form-check-input" type="checkbox" id="filter-was-added-with-client"
         v-model="filter.wasAddedWithClient"
         :true-value="true"
         :false-value="false"

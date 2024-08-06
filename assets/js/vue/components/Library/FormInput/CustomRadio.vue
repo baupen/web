@@ -1,7 +1,7 @@
 <template>
-  <div class="custom-control custom-radio">
+  <div class="form-check">
     <slot></slot>
-    <label class="custom-control-label" :for="forId">
+    <label class="form-check-label" :for="forId">
       {{ label }}
       <span v-if="required" class="text-danger">*</span>
       <span v-if="secondaryLabel" class="text-muted"><br/>{{ secondaryLabel }}</span>

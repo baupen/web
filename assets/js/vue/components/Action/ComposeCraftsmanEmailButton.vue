@@ -8,7 +8,7 @@
     <template v-slot:secondary-footer>
       <custom-checkbox-field for-id="self-bcc" :label="$t('email.self_bcc')">
         <input
-            class="custom-control-input" type="checkbox" id="self-bcc"
+            class="form-check-input" type="checkbox" id="self-bcc"
             v-model="selfBcc"
             :true-value="true"
             :false-value="false">
@@ -39,7 +39,7 @@
 
         <custom-checkbox-field for-id="save-as-template" :label="saveAsTemplateLabel">
           <input
-              class="custom-control-input" type="checkbox" id="save-as-template"
+              class="form-check-input" type="checkbox" id="save-as-template"
               v-model="saveAsTemplate"
               :true-value="true"
               :false-value="false">

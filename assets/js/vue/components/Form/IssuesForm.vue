@@ -5,7 +5,7 @@
                              :label-icon="['fal', 'star']" :label-icon-checked="['fas', 'star']"
                              :checked="issue.isMarked">
         <input
-            class="custom-control-input" type="checkbox" id="is-marked"
+            class="form-check-input" type="checkbox" id="is-marked"
             :class="{'is-valid': fields.isMarked.dirty && !fields.isMarked.errors.length, 'is-invalid': fields.isMarked.dirty && fields.isMarked.errors.length }"
             v-model="issue.isMarked"
             :true-value="true"
@@ -27,7 +27,7 @@
                              :label-icon="['fal', 'user-check']" :label-icon-checked="['fas', 'user-check']"
                              :checked="issue.wasAddedWithClient">
         <input
-            class="custom-control-input" type="checkbox" id="was-added-with-client"
+            class="form-check-input" type="checkbox" id="was-added-with-client"
             :class="{'is-valid': fields.wasAddedWithClient.dirty && !fields.wasAddedWithClient.errors.length, 'is-invalid': fields.wasAddedWithClient.dirty && fields.wasAddedWithClient.errors.length }"
             v-model="issue.wasAddedWithClient"
             :true-value="true"
@@ -48,7 +48,7 @@
     <div class="col-md-6 border-left" v-if="enableStateEdit">
       <custom-checkbox-field for-id="is-resolved" :label="$t('issue.state.resolved')">
         <input
-            class="custom-control-input" type="checkbox" id="is-resolved"
+            class="form-check-input" type="checkbox" id="is-resolved"
             :class="{'is-valid': fields.isResolved.dirty && !fields.isResolved.errors.length, 'is-invalid': fields.isResolved.dirty && fields.isResolved.errors.length }"
             v-model="issue.isResolved"
             :true-value="true"
@@ -68,7 +68,7 @@
 
       <custom-checkbox-field for-id="is-closed" :label="$t('issue.state.closed')">
         <input
-            class="custom-control-input" type="checkbox" id="is-closed"
+            class="form-check-input" type="checkbox" id="is-closed"
             :class="{'is-valid': fields.isClosed.dirty && !fields.isClosed.errors.length, 'is-invalid': fields.isClosed.dirty && fields.isClosed.errors.length }"
             v-model="issue.isClosed"
             :true-value="true"
