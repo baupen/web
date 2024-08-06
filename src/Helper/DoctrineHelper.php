@@ -16,10 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class DoctrineHelper
 {
-    /**
-     * @return void
-     */
-    public static function persistAndFlush(ManagerRegistry $registry, BaseEntity ...$entities)
+    public static function persistAndFlush(ManagerRegistry $registry, BaseEntity ...$entities): void
     {
         $manager = $registry->getManager();
         foreach ($entities as $entity) {

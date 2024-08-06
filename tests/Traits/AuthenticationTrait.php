@@ -14,6 +14,7 @@ namespace App\Tests\Traits;
 use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\Entity\Base\BaseEntity;
 use App\Entity\ConstructionManager;
+use App\Helper\DoctrineHelper;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
@@ -68,12 +69,8 @@ trait AuthenticationTrait
 
     private function saveEntity(...$entities): void
     {
-        /** @var ObjectManager $manager */
-        $manager = self::$container->get(ManagerRegistry::class)->getManager();
-        foreach ($entities as $entity) {
-            $manager->persist($entity);
-        }
-        $manager->flush();
+        $registry = self::$container->get(ManagerRegistry::class);
+        DoctrineHelper::persistAndFlush($registry, ...$entities);
     }
 
     private function reloadEntity(BaseEntity $entity): BaseEntity
