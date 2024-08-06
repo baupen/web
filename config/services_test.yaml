@@ -2,6 +2,8 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
 
+    Doctrine\ORM\EntityManagerInterface: '@doctrine.orm.entity_manager'
+
     App\Tests\DataFixtures\:
         resource: '../tests/DataFixtures'
         tags: ['doctrine.fixture.orm']

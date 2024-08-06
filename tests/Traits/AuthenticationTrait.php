@@ -52,7 +52,7 @@ trait AuthenticationTrait
 
     private function loginApiUser(Client $client, string $email): ConstructionManager
     {
-        $testUser = $this->getConstructionManagerByEmail($email);
+        $testUser = $this->getConstructionManagerByEmail($client, $email);
         $client->setDefaultOptions(['headers' => ['X-AUTHENTICATION' => [$testUser->getAuthenticationToken()]]]);
 
         return $testUser;
@@ -69,14 +69,14 @@ trait AuthenticationTrait
 
     private function saveEntity(...$entities): void
     {
-        $registry = self::$container->get(ManagerRegistry::class);
+        $registry = static::getClient()->getContainer()->get(ManagerRegistry::class);
         DoctrineHelper::persistAndFlush($registry, ...$entities);
     }
 
     private function reloadEntity(BaseEntity $entity): BaseEntity
     {
         /** @var ObjectManager $manager */
-        $manager = self::$container->get(ManagerRegistry::class)->getManager();
+        $manager = static::getClient()->getContainer()->get(ManagerRegistry::class)->getManager();
 
         return $manager->getRepository(get_class($entity))->find($entity->getId());
     }
