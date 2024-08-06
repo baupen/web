@@ -6,16 +6,15 @@
 
 <script>
 
-import Chart from 'chart.js'
 import ButtonWithModalConfirm from './Library/Behaviour/ButtonWithModalConfirm'
-import { api } from '../services/api'
+import {api} from '../services/api'
 import moment from 'moment'
+import {CategoryScale, Chart, Legend, LinearScale, LineController, LineElement, PointElement, Title, Tooltip} from "chart.js";
 
-Chart.platform.disableCSSInjection = true
-
+Chart.register(LineController, LineElement, PointElement, LinearScale, Title, Legend, CategoryScale, Tooltip)
 export default {
-  components: { ButtonWithModalConfirm },
-  data () {
+  components: {ButtonWithModalConfirm},
+  data() {
     return {
       chart: null
     }
@@ -52,13 +51,18 @@ export default {
       const minValue = Math.min(...closed)
       const belowMinSpacer = Math.max((maxValue - minValue) * 0.3, 10) // reduce min so graph does not look empty
       const exactTargetMin = Math.max(minValue - belowMinSpacer, 0) // calculate optimal min
-      const targetMin = exactTargetMin - (exactTargetMin > 1000 ? exactTargetMin % 100 : exactTargetMin % 10) // round min
+      const exactTargetMax = maxValue + Math.ceil((maxValue-exactTargetMin)*0.1) // add to max so graph has space to breath
+      console.log(maxValue, exactTargetMin, exactTargetMax)
+
+      // adjust to full numbers
+      const targetMin = exactTargetMin - (exactTargetMin > 1000 ? exactTargetMin % 100 : exactTargetMin % 10)
+      const targetMax = exactTargetMax + (exactTargetMax > 1000 ? 1000-exactTargetMax % 100 : 10-exactTargetMax % 10)
 
       const ctx = this.$refs.chart.getContext('2d')
       this.chart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: labels,
+          labels,
           datasets: [{
             label: this.$t('issue.state.closed'),
             type: 'line',
@@ -83,39 +87,42 @@ export default {
           }]
         },
         options: {
-          legend: {
-            reverse: true,
-            onClick: null
+          plugins: {
+            legend: {
+              reverse: true,
+              onClick: null
+            },
+            tooltip: {}
           },
           elements: {
             point: {
-              radius: 2
+              radius: 4
             }
           },
           scales: {
-            xAxes: [{
+            x: {
               ticks: {
                 maxRotation: 0,
                 autoSkipPadding: 25,
                 padding: 2
               }
-            }],
-            yAxes: [{
-              type: 'linear',
+            },
+            y: {
               stacked: true,
+              beginAtZero: false,
+              min: targetMin,
+              max: targetMax,
               ticks: {
-                beginAtZero: false,
-                min: targetMin,
                 autoSkipPadding: 20,
                 padding: 4
               }
-            }]
+            }
           }
         }
       })
     }
   },
-  mounted () {
+  mounted() {
     api.getIssuesTimeseries(this.constructionSite)
         .then(timeseries => {
           this.draw(timeseries)
@@ -124,7 +131,7 @@ export default {
 }
 </script>
 
-<style scoped="true">
+<style scoped>
 .canvas-container {
   position: relative;
 }
