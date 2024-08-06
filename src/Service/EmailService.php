@@ -192,7 +192,7 @@ class EmailService implements EmailServiceInterface
     private function getCurrentPage(): string
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
-        if ($currentRequest) {
+        if (null !== $currentRequest) {
             return $currentRequest->getHttpHost();
         }
 

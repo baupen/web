@@ -21,19 +21,15 @@ class UserChecker implements UserCheckerInterface
 {
     public function checkPreAuth(UserInterface $user): void
     {
-        if ($user instanceof ConstructionManager) {
-            if (!$user->getIsEnabled()) {
-                throw new DisabledException();
-            }
+        if ($user instanceof ConstructionManager && !$user->getIsEnabled()) {
+            throw new DisabledException();
         }
     }
 
     public function checkPostAuth(UserInterface $user): void
     {
-        if ($user instanceof ConstructionManager) {
-            if (null === $user->getPassword()) {
-                throw new UserWithoutPasswordAuthenticationException($user);
-            }
+        if ($user instanceof ConstructionManager && null === $user->getPassword()) {
+            throw new UserWithoutPasswordAuthenticationException($user);
         }
     }
 }
