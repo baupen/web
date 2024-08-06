@@ -13,13 +13,11 @@ namespace App\Controller\Base;
 
 use App\Entity\ConstructionManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class BaseController extends AbstractController
 {
-    /**
-     * @return ConstructionManager|null
-     */
-    protected function getUser()
+    protected function getUser(): UserInterface|ConstructionManager|null
     {
         return parent::getUser();
     }
