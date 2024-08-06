@@ -9,9 +9,7 @@
     <div class="lightbox clickable" v-if="open" @click="open = false">
       <span class="sizer"></span>
       <div class="close-wrapper">
-        <button type="button" class="close" aria-label="Close" data-v-9e369d42="">
-          <span aria-hidden="true" data-v-9e369d42="">×</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <img :src="srcFull" :alt="alt">
     </div>

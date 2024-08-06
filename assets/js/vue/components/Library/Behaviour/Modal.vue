@@ -9,9 +9,7 @@
             <slot name="header">
               <h5 class="modal-title" id="modal-title">{{ title }}</h5>
             </slot>
-            <button type="button" class="close" aria-label="Close" @click="$emit('hide')">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="$emit('hide')"></button>
           </div>
           <div class="modal-body">
             <slot name="body"></slot>
