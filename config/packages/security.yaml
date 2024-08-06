@@ -23,7 +23,6 @@ security:
         api:
             pattern: ^/api/
             provider: api_tokens
-            stateless: true
             custom_authenticators:
                 - App\Security\TokenAuthenticator
         main:
