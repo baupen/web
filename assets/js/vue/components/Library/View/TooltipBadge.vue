@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     badgeTheme: function (){
-      return this.value ? 'badge-'+this.colorIfNonzero : ''
+      return this.value ? 'text-bg-' + this.colorIfNonzero : 'text-black'
     }
   },
   mounted() {

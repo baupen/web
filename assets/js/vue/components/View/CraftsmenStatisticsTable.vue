@@ -1,14 +1,14 @@
 <template>
-  <table class="table table-striped-2 table-hover border">
+  <table class="table table-striped table-hover border">
     <thead>
-    <tr class="bg-light">
+    <tr class="text-sm">
       <th class="w-minimal"></th>
       <th colspan="4">{{ $t('craftsman._name') }}</th>
       <th class="border-left" colspan="2">{{ $t('issue._plural') }}</th>
       <th class="border-left" colspan="2">{{ $t('_view.craftsmen.last_activity') }}</th>
       <th class="border-left"></th>
     </tr>
-    <tr class="text-secondary">
+    <tr>
       <th class="w-minimal">
         <custom-checkbox @click.prevent="toggleSelectedCraftsmen(craftsmen)">
           <input class="form-check-input" type="checkbox"
@@ -229,10 +229,6 @@ export default {
 
 
 <style scoped>
-.table-striped-2 tbody tr:nth-of-type(2n) {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
 .custom-checkbox {
   margin-right: -0.5em;
 }
