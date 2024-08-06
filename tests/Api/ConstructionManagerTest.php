@@ -46,7 +46,7 @@ class ConstructionManagerTest extends ApiTestCase
 
         $this->assertApiOperationNotAuthorized($client, '/api/construction_managers', 'GET');
 
-        $userRepository = static::$container->get(ManagerRegistry::class)->getRepository(ConstructionManager::class);
+        $userRepository = static::getClient()->getContainer()->get(ManagerRegistry::class)->getRepository(ConstructionManager::class);
         $testUser = $userRepository->findOneBy(['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
         $this->assertApiOperationNotAuthorized($client, '/api/construction_managers/'.$testUser->getId(), 'GET', 'PATCH');
     }

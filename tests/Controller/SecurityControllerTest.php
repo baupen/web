@@ -149,7 +149,7 @@ class SecurityControllerTest extends WebTestCase
 
     private function getAuthenticationHash(string $email): ?string
     {
-        $registry = static::$container->get(ManagerRegistry::class);
+        $registry = static::getClient()->getContainer()->get(ManagerRegistry::class);
         $repository = $registry->getRepository(ConstructionManager::class);
         /** @var ConstructionManager $constructionManager */
         $constructionManager = $repository->findOneBy(['email' => $email]);

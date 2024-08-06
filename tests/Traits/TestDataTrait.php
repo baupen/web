@@ -25,7 +25,7 @@ trait TestDataTrait
 {
     private function getIriFromItem($item)
     {
-        return static::$container->get('api_platform.iri_converter')->getIriFromItem($item);
+        return static::getClient()->getContainer()->get('api_platform.iri_converter')->getIriFromItem($item);
     }
 
     private function getTestConstructionManager(): ConstructionManager
@@ -51,7 +51,7 @@ trait TestDataTrait
     private function getConstructionSiteByName(string $constructionSiteName): ConstructionSite
     {
         /** @var ManagerRegistry $registry */
-        $registry = static::$container->get(ManagerRegistry::class);
+        $registry = static::getClient()->getContainer()->get(ManagerRegistry::class);
         $constructionSiteRepository = $registry->getRepository(ConstructionSite::class);
 
         return $constructionSiteRepository->findOneBy(['name' => $constructionSiteName]);
@@ -60,7 +60,7 @@ trait TestDataTrait
     private function getConstructionManagerByEmail(string $constructionManagerEmail): ConstructionManager
     {
         /** @var ManagerRegistry $registry */
-        $registry = static::$container->get(ManagerRegistry::class);
+        $registry = static::getClient()->getContainer()->get(ManagerRegistry::class);
         $constructionManagerRepository = $registry->getRepository(ConstructionManager::class);
 
         return $constructionManagerRepository->findOneBy(['email' => $constructionManagerEmail]);
