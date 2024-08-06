@@ -37,6 +37,7 @@ class EncoreEmailTwigExtension extends AbstractExtension implements ServiceSubsc
 
     public function getEncoreEntryCssSource(string $entryName): string
     {
+        // TODO: try to inject directly
         $files = $this->container
             ->get(EntrypointLookupInterface::class)
             ->getCssFiles($entryName);
@@ -53,7 +54,7 @@ class EncoreEmailTwigExtension extends AbstractExtension implements ServiceSubsc
         return $source;
     }
 
-    public static function getSubscribedServices()
+    public static function getSubscribedServices(): array
     {
         return [
             EntrypointLookupInterface::class,
