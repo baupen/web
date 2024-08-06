@@ -28,7 +28,7 @@ class BaseController extends AbstractController
      * @param string $message the translation message to display
      * @param string $link
      */
-    protected function displayWarning($message, $link = null)
+    protected function displayWarning($message, $link = null): void
     {
         $this->displayFlash('warning', $message, $link);
     }
@@ -37,7 +37,7 @@ class BaseController extends AbstractController
      * @param string $message the translation message to display
      * @param string $link
      */
-    protected function displayError($message, $link = null)
+    protected function displayError($message, $link = null): void
     {
         $this->displayFlash('danger', $message, $link);
     }
@@ -46,7 +46,7 @@ class BaseController extends AbstractController
      * @param string $message the translation message to display
      * @param string $link
      */
-    protected function displaySuccess($message, $link = null)
+    protected function displaySuccess($message, $link = null): void
     {
         $this->displayFlash('success', $message, $link);
     }
@@ -55,7 +55,7 @@ class BaseController extends AbstractController
      * @param string $message the translation message to display
      * @param string $link
      */
-    protected function displayDanger($message, $link = null)
+    protected function displayDanger($message, $link = null): void
     {
         $this->displayFlash('danger', $message, $link);
     }
@@ -64,7 +64,7 @@ class BaseController extends AbstractController
      * @param string $message the translation message to display
      * @param string $link
      */
-    protected function displayInfo($message, $link = null)
+    protected function displayInfo($message, $link = null): void
     {
         $this->displayFlash('info', $message, $link);
     }

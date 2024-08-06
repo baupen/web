@@ -11,15 +11,16 @@
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseDoctrineController;
+use App\Controller\Base\BaseController;
 use App\Entity\Email;
+use App\Helper\DoctrineHelper;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/email')]
-class EmailController extends BaseDoctrineController
+class EmailController extends BaseController
 {
     #[Route(path: '/{identifier}', name: 'email')]
     public function email(string $identifier, ManagerRegistry $registry): Response
@@ -30,7 +31,7 @@ class EmailController extends BaseDoctrineController
         }
 
         $email->markRead();
-        $this->fastSave($email);
+        DoctrineHelper::persistAndFlush($registry, $email);
 
         return $this->render('email/_view_online_base.html.twig', $email->getContext());
     }
