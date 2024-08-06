@@ -11,12 +11,13 @@
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseDoctrineController;
+use App\Controller\Base\BaseController;
 use App\Entity\ConstructionManager;
 use App\Form\ConstructionManager\RegisterConfirmType;
 use App\Form\UserTrait\LoginType;
 use App\Form\UserTrait\OnlyEmailType;
 use App\Form\UserTrait\SetPasswordType;
+use App\Helper\DoctrineHelper;
 use App\Security\Exceptions\UserWithoutPasswordAuthenticationException;
 use App\Security\LoginFormAuthenticator;
 use App\Service\Interfaces\EmailServiceInterface;
@@ -37,7 +38,7 @@ use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class SecurityController extends BaseDoctrineController
+class SecurityController extends BaseController
 {
     #[Route(path: '/login', name: 'login')]
     public function login(AuthenticationUtils $authenticationUtils, EmailServiceInterface $emailService, ManagerRegistry $managerRegistry, LoggerInterface $logger, TranslatorInterface $translator): Response
@@ -142,11 +143,11 @@ class SecurityController extends BaseDoctrineController
         if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form->get('password'), $constructionManager, $translator)) {
             $constructionManager->setAuthenticationToken();
             $constructionManager->setRegistrationCompletedNow();
-            $this->fastSave($constructionManager);
+            DoctrineHelper::persistAndFlush($registry, $constructionManager);
 
             if (!$constructionManager->getCanAssociateSelf() && 0 === count($constructionManager->getConstructionSites())) {
                 $constructionSite = $sampleService->createSampleConstructionSite(SampleServiceInterface::SAMPLE_SIMPLE, $constructionManager);
-                $this->fastSave($constructionSite, $constructionManager);
+                DoctrineHelper::persistAndFlush($registry, $constructionSite, $constructionManager);
             }
 
             $this->loginUser($constructionManager, $authenticator, $guardHandler, $request);
@@ -196,7 +197,7 @@ class SecurityController extends BaseDoctrineController
         if ($form->isSubmitted() && $form->isValid() && $this->applySetPasswordType($form, $constructionManager, $translator)) {
             $constructionManager->setAuthenticationHash();
             $constructionManager->setAuthenticationToken();
-            $this->fastSave($constructionManager);
+            DoctrineHelper::persistAndFlush($registry, $constructionManager);
 
             $message = $translator->trans('recover_confirm.success.password_set', [], 'security');
             $this->displaySuccess($message);
@@ -262,10 +263,10 @@ class SecurityController extends BaseDoctrineController
         );
     }
 
-    private function sendAuthenticationLink(ConstructionManager $existingConstructionManager, EmailServiceInterface $emailService, LoggerInterface $logger, TranslatorInterface $translator): void
+    private function sendAuthenticationLink(ConstructionManager $existingConstructionManager, EmailServiceInterface $emailService, LoggerInterface $logger, TranslatorInterface $translator, ManagerRegistry $registry): void
     {
         $existingConstructionManager->setAuthenticationHash();
-        $this->fastSave($existingConstructionManager);
+        DoctrineHelper::persistAndFlush($registry, $existingConstructionManager);
 
         if ($emailService->sendRecoverConfirmLink($existingConstructionManager)) {
             $logger->info('sent password reset email to '.$existingConstructionManager->getEmail());

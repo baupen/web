@@ -11,10 +11,11 @@
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseDoctrineController;
+use App\Controller\Base\BaseController;
 use App\Controller\Traits\FileResponseTrait;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
+use App\Helper\DoctrineHelper;
 use App\Security\TokenTrait;
 use App\Service\Interfaces\PathServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,7 +24,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class PublicController extends BaseDoctrineController
+class PublicController extends BaseController
 {
     use TokenTrait;
     use FileResponseTrait;
@@ -52,7 +53,7 @@ class PublicController extends BaseDoctrineController
 
         if (!$this->tryGetConstructionManager($tokenStorage->getToken()) instanceof \App\Entity\ConstructionManager) {
             $craftsman->setLastVisitOnline(new \DateTime());
-            $this->fastSave($craftsman);
+            DoctrineHelper::persistAndFlush($registry, $craftsman);
         }
 
         return $this->render('public/resolve.html.twig');
@@ -68,7 +69,7 @@ class PublicController extends BaseDoctrineController
 
         if (!$this->tryGetConstructionManager($tokenStorage->getToken()) instanceof \App\Entity\ConstructionManager) {
             $filter->setLastUsedAt();
-            $this->fastSave($filter);
+            DoctrineHelper::persistAndFlush($registry, $filter);
         }
 
         return $this->render('public/filtered.html.twig');

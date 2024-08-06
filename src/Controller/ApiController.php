@@ -12,7 +12,7 @@
 namespace App\Controller;
 
 use ApiPlatform\Core\Api\IriConverterInterface;
-use App\Controller\Base\BaseDoctrineController;
+use App\Controller\Base\BaseController;
 use App\Controller\Traits\FileResponseTrait;
 use App\Controller\Traits\ImageRequestTrait;
 use App\Entity\ConstructionSite;
@@ -21,6 +21,7 @@ use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\Map;
 use App\Entity\MapFile;
+use App\Helper\DoctrineHelper;
 use App\Security\TokenTrait;
 use App\Security\Voter\ConstructionSiteVoter;
 use App\Security\Voter\IssueVoter;
@@ -30,6 +31,7 @@ use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\StorageServiceInterface;
 use App\Service\MapFileService;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
@@ -40,7 +42,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[Route(path: '/api')]
-class ApiController extends BaseDoctrineController
+class ApiController extends BaseController
 {
     use TokenTrait;
     use FileResponseTrait;
@@ -137,7 +139,7 @@ class ApiController extends BaseDoctrineController
     }
 
     #[Route(path: '/maps/{map}/file', name: 'post_map_file', methods: ['POST'])]
-    public function postMapFile(Request $request, Map $map, StorageServiceInterface $storageService, CacheServiceInterface $cacheService): Response
+    public function postMapFile(Request $request, Map $map, StorageServiceInterface $storageService, CacheServiceInterface $cacheService, ManagerRegistry $registry): Response
     {
         $this->denyAccessUnlessGranted(MapVoter::MAP_MODIFY, $map);
 
@@ -148,7 +150,7 @@ class ApiController extends BaseDoctrineController
             throw new BadRequestException('The map file could not be stored');
         }
 
-        $this->fastSave($map, $mapFile);
+        DoctrineHelper::persistAndFlush($registry, $map, $mapFile);
         $cacheService->warmUpCacheForMapFile($mapFile);
 
         $url = $this->generateUrl('map_file', ['map' => $map->getId(), 'mapFile' => $mapFile->getId(), 'filename' => $mapFile->getFilename()]);
@@ -157,12 +159,12 @@ class ApiController extends BaseDoctrineController
     }
 
     #[Route(path: '/maps/{map}/file', name: 'delete_map_file', methods: ['DELETE'])]
-    public function deleteMapFile(Map $map): Response
+    public function deleteMapFile(Map $map, ManagerRegistry $registry): Response
     {
         $this->denyAccessUnlessGranted(MapVoter::MAP_MODIFY, $map);
 
         $map->setFile(null);
-        $this->fastSave($map);
+        DoctrineHelper::persistAndFlush($registry, $map);
 
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
@@ -184,7 +186,7 @@ class ApiController extends BaseDoctrineController
     }
 
     #[Route(path: '/construction_sites/{constructionSite}/image', name: 'post_construction_site_image', methods: ['POST'])]
-    public function postConstructionSiteImage(Request $request, ConstructionSite $constructionSite, StorageServiceInterface $storageService, CacheServiceInterface $cacheService): Response
+    public function postConstructionSiteImage(Request $request, ConstructionSite $constructionSite, StorageServiceInterface $storageService, CacheServiceInterface $cacheService, ManagerRegistry $registry): Response
     {
         $this->denyAccessUnlessGranted(ConstructionSiteVoter::CONSTRUCTION_SITE_MODIFY, $constructionSite);
 
@@ -195,7 +197,7 @@ class ApiController extends BaseDoctrineController
             throw new BadRequestException('The construction site image could not be stored');
         }
 
-        $this->fastSave($constructionSite, $constructionSiteImage);
+        DoctrineHelper::persistAndFlush($registry, $constructionSite, $constructionSiteImage);
         $cacheService->warmUpCacheForConstructionSiteImage($constructionSiteImage);
 
         $url = $this->generateUrl('construction_site_image', ['constructionSite' => $constructionSite->getId(), 'constructionSiteImage' => $constructionSiteImage->getId(), 'filename' => $constructionSiteImage->getFilename()]);
@@ -204,12 +206,12 @@ class ApiController extends BaseDoctrineController
     }
 
     #[Route(path: '/construction_sites/{constructionSite}/image', name: 'delete_construction_site_image', methods: ['DELETE'])]
-    public function deleteConstructionSiteImage(ConstructionSite $constructionSite): Response
+    public function deleteConstructionSiteImage(ConstructionSite $constructionSite, ManagerRegistry $registry): Response
     {
         $this->denyAccessUnlessGranted(ConstructionSiteVoter::CONSTRUCTION_SITE_MODIFY, $constructionSite);
 
         $constructionSite->setImage(null);
-        $this->fastSave($constructionSite);
+        DoctrineHelper::persistAndFlush($registry, $constructionSite);
 
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
@@ -248,7 +250,7 @@ class ApiController extends BaseDoctrineController
     }
 
     #[Route(path: '/issues/{issue}/image', name: 'post_issue_image', methods: ['POST'])]
-    public function postIssueImage(Request $request, Issue $issue, StorageServiceInterface $storageService, CacheServiceInterface $cacheService): Response
+    public function postIssueImage(Request $request, Issue $issue, StorageServiceInterface $storageService, CacheServiceInterface $cacheService, ManagerRegistry $registry): Response
     {
         $this->denyAccessUnlessGranted(IssueVoter::ISSUE_MODIFY, $issue);
 
@@ -259,7 +261,7 @@ class ApiController extends BaseDoctrineController
             throw new BadRequestException('The issue site image could not be stored');
         }
 
-        $this->fastSave($issue, $issueImage);
+        DoctrineHelper::persistAndFlush($registry, $issue, $issueImage);
         $cacheService->warmUpCacheForIssueImage($issueImage);
 
         $url = $this->generateUrl('issue_image', ['issue' => $issue->getId(), 'issueImage' => $issueImage->getId(), 'filename' => $issueImage->getFilename()]);
@@ -268,12 +270,12 @@ class ApiController extends BaseDoctrineController
     }
 
     #[Route(path: '/issues/{issue}/image', name: 'delete_issue_image', methods: ['DELETE'])]
-    public function deleteIssueImage(Issue $issue): Response
+    public function deleteIssueImage(Issue $issue, ManagerRegistry $registry): Response
     {
         $this->denyAccessUnlessGranted(IssueVoter::ISSUE_MODIFY, $issue);
 
         $issue->setImage(null);
-        $this->fastSave($issue);
+        DoctrineHelper::persistAndFlush($registry, $issue);
 
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
