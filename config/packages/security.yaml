@@ -11,10 +11,6 @@ security:
         api_tokens:
             id: App\Security\TokenUserProvider
 
-    encoders:
-        App\Entity\ConstructionManager:
-            algorithm: auto
-
     role_hierarchy:
         ROLE_ADMIN: [ROLE_CONSTRUCTION_MANAGER, ROLE_ALLOWED_TO_SWITCH]
         ROLE_CONSTRUCTION_MANAGER: [ROLE_ASSOCIATED_CONSTRUCTION_MANAGER]

@@ -39,9 +39,9 @@ class MyTwigExtension extends AbstractExtension
     /**
      * makes the filters available to twig.
      *
-     * @return array
+     * @return TwigFilter[]
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('dateFormat', [$this, 'dateFormatFilter']),
@@ -55,7 +55,10 @@ class MyTwigExtension extends AbstractExtension
         ];
     }
 
-    public function getFunctions()
+    /**
+     * @return TwigFunction[]
+     */
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('apiSubRequest', [$this, 'apiSubRequestFunction']),
@@ -67,7 +70,7 @@ class MyTwigExtension extends AbstractExtension
         return str_repeat($entry, $count);
     }
 
-    public function apiSubRequestFunction(string $url)
+    public function apiSubRequestFunction(string $url): false|string
     {
         $request = Request::create($url, Request::METHOD_GET, [], [], [], ['HTTP_ACCEPT' => null]);
         $request->setSession($this->requestStack->getSession());
@@ -134,7 +137,7 @@ class MyTwigExtension extends AbstractExtension
     /**
      * @source https://github.com/twigphp/Twig-extensions/blob/master/src/TextExtension.php
      */
-    public function truncateFilter(Environment $env, $value, $length = 30, $preserve = false, string $separator = '...')
+    public function truncateFilter(Environment $env, string $value, int $length = 30, bool $preserve = false, string $separator = '...'): string
     {
         if (mb_strlen($value, $env->getCharset()) > $length) {
             if ($preserve) {
