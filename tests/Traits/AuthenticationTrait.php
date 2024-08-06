@@ -52,7 +52,7 @@ trait AuthenticationTrait
 
     private function loginApiUser(Client $client, string $email): ConstructionManager
     {
-        $testUser = $this->getConstructionManagerByEmail($client, $email);
+        $testUser = $this->getConstructionManagerByEmail($email);
         $client->setDefaultOptions(['headers' => ['X-AUTHENTICATION' => [$testUser->getAuthenticationToken()]]]);
 
         return $testUser;

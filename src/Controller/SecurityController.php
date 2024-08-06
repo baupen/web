@@ -25,6 +25,7 @@ use App\Service\Interfaces\SampleServiceInterface;
 use App\Service\Interfaces\UserServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,9 +33,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\DisabledException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -53,7 +52,7 @@ class SecurityController extends BaseController
             $this->displayError($translator->trans('login.errors.account_disabled', [], 'security'));
         } elseif ($error instanceof BadCredentialsException) {
             $this->displayError($translator->trans('login.errors.password_wrong', [], 'security'));
-        } elseif ($error instanceof UsernameNotFoundException) {
+        } elseif ($error instanceof UserNotFoundException) {
             $this->displayError($translator->trans('login.errors.email_not_found', [], 'security'));
         } elseif ($error instanceof UserWithoutPasswordAuthenticationException) {
             $this->displayError($translator->trans('login.errors.registration_not_completed', [], 'security'));
@@ -120,7 +119,7 @@ class SecurityController extends BaseController
     }
 
     #[Route(path: '/register/confirm/{authenticationHash}', name: 'register_confirm')]
-    public function registerConfirm(Request $request, string $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, EmailServiceInterface $emailService, SampleServiceInterface $sampleService, UserServiceInterface $userService, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler): \Symfony\Component\HttpFoundation\RedirectResponse|Response
+    public function registerConfirm(Request $request, string $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, EmailServiceInterface $emailService, SampleServiceInterface $sampleService, UserServiceInterface $userService, LoginFormAuthenticator $authenticator, Security $security): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         /** @var ConstructionManager $constructionManager */
         if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $registry, $constructionManager)) {
@@ -150,7 +149,7 @@ class SecurityController extends BaseController
                 DoctrineHelper::persistAndFlush($registry, $constructionSite, $constructionManager);
             }
 
-            $this->loginUser($constructionManager, $authenticator, $guardHandler, $request);
+            $security->login($constructionManager, LoginFormAuthenticator::class);
             $this->displaySuccess($translator->trans('register_confirm.success.welcome', [], 'security'));
             $emailService->sendAppInvitation($constructionManager);
 
@@ -175,7 +174,7 @@ class SecurityController extends BaseController
                 $logger->info('could not reset password of unknown user '.$constructionManager->getEmail());
                 $this->displayError($translator->trans('recover.fail.email_not_found', [], 'security'));
             } else {
-                $this->sendAuthenticationLink($existingConstructionManager, $emailService, $logger, $translator);
+                $this->sendAuthenticationLink($existingConstructionManager, $emailService, $logger, $translator, $registry);
             }
         }
 
@@ -183,7 +182,7 @@ class SecurityController extends BaseController
     }
 
     #[Route(path: '/recover/confirm/{authenticationHash}', name: 'recover_confirm')]
-    public function recoverConfirm(Request $request, $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler): \Symfony\Component\HttpFoundation\RedirectResponse|Response
+    public function recoverConfirm(Request $request, $authenticationHash, TranslatorInterface $translator, ManagerRegistry $registry, LoginFormAuthenticator $authenticator, Security $security): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         /** @var ConstructionManager $constructionManager */
         if (!$this->getConstructionManagerFromAuthenticationHash($authenticationHash, $translator, $registry, $constructionManager)) {
@@ -202,7 +201,7 @@ class SecurityController extends BaseController
             $message = $translator->trans('recover_confirm.success.password_set', [], 'security');
             $this->displaySuccess($message);
 
-            $this->loginUser($constructionManager, $authenticator, $guardHandler, $request);
+            $security->login($constructionManager, LoginFormAuthenticator::class);
 
             return $this->redirectToRoute('index');
         }
@@ -249,18 +248,6 @@ class SecurityController extends BaseController
         $constructionManager->setPasswordFromPlain($plainPassword);
 
         return true;
-    }
-
-    private function loginUser(UserInterface $user, LoginFormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler, Request $request): ?Response
-    {
-        // after validating the user and saving them to the database
-        // authenticate the user and use onAuthenticationSuccess on the authenticator
-        return $guardHandler->authenticateUserAndHandleSuccess(
-            $user,          // the User object you just created
-            $request,
-            $authenticator, // authenticator whose onAuthenticationSuccess you want to use
-            'main'          // the name of your firewall in security.yaml
-        );
     }
 
     private function sendAuthenticationLink(ConstructionManager $existingConstructionManager, EmailServiceInterface $emailService, LoggerInterface $logger, TranslatorInterface $translator, ManagerRegistry $registry): void
