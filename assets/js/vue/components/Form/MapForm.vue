@@ -9,7 +9,7 @@
   </form-field>
 
   <form-field for-id="parent" :label="$t('map.parent')">
-    <select class="custom-select"
+    <select class="form-select"
             :class="{'is-valid': fields.parent.dirty && !fields.parent.errors.length, 'is-invalid': fields.parent.dirty && fields.parent.errors.length }"
             v-model="map.parent"
             @blur="fields.parent.dirty = true"

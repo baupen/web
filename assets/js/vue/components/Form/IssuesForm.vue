@@ -108,13 +108,13 @@
   </form-field>
 
   <form-field for-id="craftsman" :label="$t('issue.craftsman')">
-    <select class="custom-select"
+    <select class="form-select"
             v-model="tradeFilter">
       <option v-for="trade in sortedTrade" :value="trade">
         {{ trade }}
       </option>
     </select>
-    <select class="custom-select"
+    <select class="form-select"
             :class="{'is-valid': fields.craftsman.dirty && !fields.craftsman.errors.length, 'is-invalid': fields.craftsman.dirty && fields.craftsman.errors.length }"
             v-model="issue.craftsman"
             @blur="fields.craftsman.dirty = true"
