@@ -46,29 +46,29 @@ security:
     access_control:
         - { path: ^/admin, role: ROLE_ADMIN }
 
-        - { path: ^/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/recover, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/email, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/help, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/set_locale, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/construction_managers, role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [POST] } # API registration
-        - { path: ^/api/docs, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/status, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, role: PUBLIC_ACCESS }
+        - { path: ^/recover, role: PUBLIC_ACCESS }
+        - { path: ^/register, role: PUBLIC_ACCESS }
+        - { path: ^/email, role: PUBLIC_ACCESS }
+        - { path: ^/help, role: PUBLIC_ACCESS }
+        - { path: ^/set_locale, role: PUBLIC_ACCESS }
+        - { path: ^/api/construction_managers, role: PUBLIC_ACCESS, methods: [POST] } # API registration
+        - { path: ^/api/docs, role: PUBLIC_ACCESS }
+        - { path: ^/api/status, role: PUBLIC_ACCESS }
 
         # legacy URLs; catched by legacy URL controller
-        - { path: '^/api/external.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: '^/external/share/c.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: '^/api/external.+', role: PUBLIC_ACCESS }
+        - { path: '^/external/share/c.+', role: PUBLIC_ACCESS }
 
-        - { path: '^/download/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: '^/resolve/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: '^/filtered/.+', role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: '^/download/.+', role: PUBLIC_ACCESS }
+        - { path: '^/resolve/.+', role: PUBLIC_ACCESS }
+        - { path: '^/filtered/.+', role: PUBLIC_ACCESS }
 
-        - { path: '^/api/construction_sites/[a-fA-F\d]{8}-(?:[a-fA-F\d]{4}-){3}[a-fA-F\d]{12}/image/.+', role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
-        - { path: '^/api/maps/[a-fA-F\d]{8}-(?:[a-fA-F\d]{4}-){3}[a-fA-F\d]{12}/file/.+', role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
-        - { path: '^/api/issues/[a-fA-F\d]{8}-(?:[a-fA-F\d]{4}-){3}[a-fA-F\d]{12}/image/.+', role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
-        - { path: '^/api/issues/render.+', role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
-        - { path: '^/api/issues/[a-fA-F\d]{8}-(?:[a-fA-F\d]{4}-){3}[a-fA-F\d]{12}/map/render.+', role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
+        - { path: '^/api/construction_sites/[a-fA-F\d]{8}-(?:[a-fA-F\d]{4}-){3}[a-fA-F\d]{12}/image/.+', role: PUBLIC_ACCESS, methods: [GET] }
+        - { path: '^/api/maps/[a-fA-F\d]{8}-(?:[a-fA-F\d]{4}-){3}[a-fA-F\d]{12}/file/.+', role: PUBLIC_ACCESS, methods: [GET] }
+        - { path: '^/api/issues/[a-fA-F\d]{8}-(?:[a-fA-F\d]{4}-){3}[a-fA-F\d]{12}/image/.+', role: PUBLIC_ACCESS, methods: [GET] }
+        - { path: '^/api/issues/render.+', role: PUBLIC_ACCESS, methods: [GET] }
+        - { path: '^/api/issues/[a-fA-F\d]{8}-(?:[a-fA-F\d]{4}-){3}[a-fA-F\d]{12}/map/render.+', role: PUBLIC_ACCESS, methods: [GET] }
 
         - { path: ^/api, role: ROLE_API_USER }
         - { path: ^/set_locale, role: ROLE_USER }

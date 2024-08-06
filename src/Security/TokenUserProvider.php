@@ -18,6 +18,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -37,6 +38,16 @@ class TokenUserProvider implements UserProviderInterface, PasswordUpgraderInterf
     public function supportsClass(string $class): bool
     {
         return AuthenticationToken::class === $class || is_subclass_of($class, AuthenticationToken::class);
+    }
+
+    public function loadUserByIdentifier(string $identifier): UserInterface
+    {
+        return $this->loadUserByUsername($identifier);
+    }
+
+    public function upgradePassword(UserInterface|PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
+    {
+        throw new \Exception('not implemented / not useful for tokens');
     }
 
     /**
