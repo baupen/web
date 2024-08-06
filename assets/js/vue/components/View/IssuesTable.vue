@@ -131,7 +131,7 @@
     </tbody>
     <caption class="caption-top">
       <template v-if="view === 'foyer'">
-        <div v-if="issuesWithoutDescription.length" class="form-check form-check-inline me-4">
+        <div v-if="issuesWithoutDescription.length" class="form-check-inline me-4">
           <custom-checkbox id="issues-without-description"
                            :label="$t('_view.issues.without_description')"
                            @click.prevent="toggleSelectedIssues(issuesWithoutDescription)">
@@ -139,7 +139,7 @@
                    :checked="entityListsAreEqual(issuesWithoutDescription, selectedIssues)">
           </custom-checkbox>
         </div>
-        <div v-if="issuesWithoutCraftsman.length" class="form-check form-check-inline me-4">
+        <div v-if="issuesWithoutCraftsman.length" class="form-check-inline me-4">
           <custom-checkbox id="issues-without-craftsman"
                            :label="$t('_view.issues.without_craftsman')"
                            @click.prevent="toggleSelectedIssues(issuesWithoutCraftsman)">
@@ -147,7 +147,7 @@
                    :checked="entityListsAreEqual(issuesWithoutCraftsman, selectedIssues)">
           </custom-checkbox>
         </div>
-        <div v-if="issuesWithoutDeadline.length" class="form-check form-check-inline">
+        <div v-if="issuesWithoutDeadline.length" class="form-check-inline">
           <custom-checkbox id="issues-without-deadline"
                            :label="$t('_view.issues.without_deadline')"
                            @click.prevent="toggleSelectedIssues(issuesWithoutDeadline)">
