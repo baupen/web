@@ -5,7 +5,7 @@
       :confirm-title="confirmTitle" :button-disabled="pendingRequestCount > 0 || issues.length === 0"
       @confirm="confirm">
     <template v-slot:button-content>
-      <font-awesome-icon :icon="['fal', 'pencil']" class="pr-1" />
+      <font-awesome-icon :icon="['fal', 'pencil']" class="pe-1" />
       {{ $t('_action.edit_issues.title') }}
 
       <span v-if="pendingRequestCount > 0">

@@ -85,7 +85,7 @@ export default {
 }
 </script>
 
-<style scoped="true">
+<style scoped>
 .underline {
   text-decoration: underline;
 }

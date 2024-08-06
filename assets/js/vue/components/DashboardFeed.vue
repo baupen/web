@@ -83,7 +83,7 @@ export default {
 </script>
 
 
-<style scoped="true">
+<style scoped>
 .limited-height {
   max-height: 32em;
   overflow-y: auto;

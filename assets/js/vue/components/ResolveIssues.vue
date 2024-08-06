@@ -173,7 +173,7 @@ export default {
 }
 </script>
 
-<style scoped="true">
+<style scoped>
 .limited-width {
   max-width: 500px;
 }

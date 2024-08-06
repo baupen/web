@@ -7,7 +7,7 @@
       :abort-title="$t('_action.filter_issues.reset')"
       @abort="reset">
     <template v-slot:button-content>
-      <font-awesome-icon :icon="['fal', 'filter']" class="pr-1" />
+      <font-awesome-icon :icon="['fal', 'filter']" class="pe-1" />
       {{ $t('_action.filter_issues.title') }}
     </template>
 

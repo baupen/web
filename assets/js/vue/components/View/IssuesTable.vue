@@ -449,7 +449,7 @@ export default {
 </script>
 
 
-<style scoped="true">
+<style scoped>
 .table-striped-2 tbody tr:nth-of-type(2n) {
   background-color: rgba(0, 0, 0, 0.05);
 }

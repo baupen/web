@@ -17,7 +17,7 @@ export default {
 </script>
 
 
-<style scoped="true">
+<style scoped>
 .spinner-center {
   display: block;
   margin: 0 auto;

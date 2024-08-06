@@ -8,14 +8,14 @@
 {% import _self as own_macros %}
 
 {% block navigation_primary_brand %}
-    <a class="navbar-brand pl-2"
+    <a class="navbar-brand p-2"
        href="{{ path("construction_site_dashboard", {"constructionSite": constructionSite.id}) }}">
         {{ constructionSite.name }}
     </a>
 {% endblock %}
 
 {% block navbar_content %}
-    <nav class="navbar navbar-light bg-light border-bottom navbar-expand">
+    <nav class="navbar navbar-light bg-light border-bottom navbar-expand p-2">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#constructionSiteNavbar"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -34,7 +34,7 @@
         </div>
     </nav>
 
-    <div class="container-fluid p-4">
+    <div class="container-fluid p-3">
         <p class="lead text-secondary mb-4">{{ block("description") }}</p>
 
         <script type="application/javascript">
