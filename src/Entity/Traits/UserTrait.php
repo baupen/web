@@ -81,10 +81,8 @@ trait UserTrait
 
     /**
      * checks if the user is allowed to login.
-     *
-     * @return bool
      */
-    public function canLogin()
+    public function canLogin(): bool
     {
         return $this->isEnabled;
     }
@@ -112,7 +110,7 @@ trait UserTrait
      *
      * @return string The password
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -139,7 +137,7 @@ trait UserTrait
      *
      * @see DisabledException
      */
-    public function getIsEnabled()
+    public function getIsEnabled(): bool
     {
         return $this->isEnabled;
     }
@@ -160,12 +158,12 @@ trait UserTrait
      *
      * @return string The username
      */
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->email;
     }
 
-    public function getUserIdentifier()
+    public function getUserIdentifier(): string
     {
         return $this->getUsername();
     }
@@ -190,10 +188,8 @@ trait UserTrait
      * check if two users are equal.
      *
      * @param UserTrait $user
-     *
-     * @return bool
      */
-    protected function isEqualToUser($user)
+    protected function isEqualToUser($user): bool
     {
         if ($this->getUsername() !== $user->getUsername()) {
             return false;
