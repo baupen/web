@@ -11,7 +11,7 @@
 
 namespace App\Api\DataPersister;
 
-use ApiPlatform\Core\Api\IriConverterInterface;
+use ApiPlatform\Api\IriConverterInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Api\Entity\Email;
 use App\Entity\Craftsman;
@@ -62,7 +62,7 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
             throw new AuthenticationException();
         }
 
-        $craftsman = $this->iriConverter->getItemFromIri($data->getReceiver());
+        $craftsman = $this->iriConverter->getResourceFromIri($data->getReceiver());
         if (!$craftsman instanceof Craftsman) {
             throw new BadRequestException('receiver must be a craftsman iri');
         }

@@ -11,17 +11,16 @@
 
 namespace App\Api\DataProvider\Base;
 
-use ApiPlatform\Core\Api\IriConverterInterface;
+use ApiPlatform\Api\IriConverterInterface;
 use App\Api\DataProvider\FeedEntryDataProvider\FeedEntryAggregator;
 use App\Entity\Issue;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class FeedEntryDataProvider extends NoPaginationDataProvider
 {
     private IriConverterInterface $iriConverter;
 
-    public function __construct(SerializerInterface $serializer, IriConverterInterface $iriConverter, ManagerRegistry $managerRegistry, iterable $collectionExtensions = [])
+    public function __construct(IriConverterInterface $iriConverter, ManagerRegistry $managerRegistry, iterable $collectionExtensions = [])
     {
         parent::__construct($managerRegistry, $collectionExtensions);
         $this->iriConverter = $iriConverter;

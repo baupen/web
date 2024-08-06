@@ -11,7 +11,7 @@
 
 namespace App\Api\DataProvider\FeedEntryDataProvider;
 
-use ApiPlatform\Core\Api\IriConverterInterface;
+use ApiPlatform\Api\IriConverterInterface;
 use App\Api\Entity\FeedEntry;
 use App\Helper\DateTimeFormatter;
 
@@ -34,7 +34,7 @@ class FeedEntryAggregator
 
     public function register(\DateTime $dateTime, object $subject, int $action): void
     {
-        $iri = $this->iriConverter->getIriFromItem($subject);
+        $iri = $this->iriConverter->getIriFromResource($subject);
         $dateTimeString = $dateTime->format(DateTimeFormatter::ISO_DATE_FORMAT);
 
         if (!isset($this->aggregator[$dateTimeString][$iri][$action])) {

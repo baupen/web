@@ -11,7 +11,8 @@
 
 namespace App\Api\DataProvider;
 
-use ApiPlatform\Core\Api\IriConverterInterface;
+use ApiPlatform\Api\IriConverterInterface;
+use ApiPlatform\Api\UrlGeneratorInterface;
 use App\Api\DataProvider\Base\NoPaginationDataProvider;
 use App\Api\Entity\IssueGroup;
 use App\Controller\Traits\FileResponseTrait;
@@ -79,7 +80,7 @@ class IssueGroupDataProvider extends NoPaginationDataProvider
         $issueGroups = [];
         foreach ($issueGroupResults as $issueGroupResult) {
             // indexes are 1-based
-            $iri = $this->iriConverter->getItemIriFromResourceClass(Map::class, ['id' => $issueGroupResult[1]]);
+            $iri = $this->iriConverter->getIriFromResource(Map::class, UrlGeneratorInterface::ABS_PATH, null, ['uri_variables' => ['id' => $issueGroupResult[1]]]);
             $count = $issueGroupResult[2];
             $earliestDeadline = UTCDateTimeType::tryParseDateTime($issueGroupResult[3]);
             $issueGroups[] = IssueGroup::create($iri, $count, $earliestDeadline);

@@ -11,7 +11,8 @@
 
 namespace App\Api\DataProvider;
 
-use ApiPlatform\Core\Api\IriConverterInterface;
+use ApiPlatform\Api\IriConverterInterface;
+use ApiPlatform\Api\UrlGeneratorInterface;
 use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\Api\Entity\CraftsmanStatistics;
@@ -59,7 +60,7 @@ class CraftsmanStatisticsDataProvider implements ContextAwareCollectionDataProvi
         $craftsmanAnalysisByCraftsman = $this->analysisService->createCraftsmanAnalysisByCraftsman($craftsmen);
         $statistics = [];
         foreach ($craftsmanAnalysisByCraftsman as $craftsmanId => $craftsmanAnalysis) {
-            $craftsmanIri = $this->iriConverter->getItemIriFromResourceClass(Craftsman::class, ['id' => $craftsmanId]);
+            $craftsmanIri = $this->iriConverter->getIriFromResource(Craftsman::class, UrlGeneratorInterface::ABS_PATH, null, ['uri_variables' => ['id' => $craftsmanId]]);
             $statistics[] = CraftsmanStatistics::createFromCraftsmanAnalysis($craftsmanAnalysis, $craftsmanIri);
         }
 
