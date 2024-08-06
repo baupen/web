@@ -22,7 +22,7 @@
       <div class="col">
         <loading-indicator-secondary v-if="emailTemplatesLoading" />
         <form-field v-else>
-          <select v-model="selectedEmailTemplate" class="custom-select">
+          <select v-model="selectedEmailTemplate" class="form-select">
             <option :value="null">{{ $t('_action.compose_craftsman_email.no_template') }}</option>
             <option disabled></option>
             <option v-for="emailTemplate in sortedEmailTemplatesWithPurpose" :value="emailTemplate"
