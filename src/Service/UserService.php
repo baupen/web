@@ -12,6 +12,7 @@
 namespace App\Service;
 
 use App\Entity\ConstructionManager;
+use App\Helper\DoctrineHelper;
 use App\Service\Interfaces\EmailServiceInterface;
 use App\Service\Interfaces\PathServiceInterface;
 use App\Service\Interfaces\UserServiceInterface;
@@ -110,9 +111,7 @@ class UserService implements UserServiceInterface
         }
 
         $template->setAuthenticationHash();
-        $manager = $this->registry->getManager();
-        $manager->persist($template);
-        $manager->flush();
+        DoctrineHelper::persistAndFlush($this->registry, $template);
 
         if (!$this->emailService->sendRegisterConfirmLink($template)) {
             $error = UserServiceInterface::REGISTRATION_FAIL_EMAIL_NOT_SENT;

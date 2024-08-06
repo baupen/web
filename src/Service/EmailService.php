@@ -14,11 +14,11 @@ namespace App\Service;
 use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Email;
+use App\Helper\DoctrineHelper;
 use App\Service\Email\EmailBodyGenerator;
 use App\Service\Interfaces\EmailServiceInterface;
 use App\Service\Report\Email\CraftsmanReport;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Persistence\ObjectManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -40,10 +40,7 @@ class EmailService implements EmailServiceInterface
 
     private UrlGeneratorInterface $urlGenerator;
 
-    /**
-     * @var ObjectManager
-     */
-    private $manager;
+    private ManagerRegistry $registry;
 
     private MailerInterface $mailer;
 
@@ -64,7 +61,7 @@ class EmailService implements EmailServiceInterface
         $this->logger = $logger;
         $this->requestStack = $request;
         $this->urlGenerator = $urlGenerator;
-        $this->manager = $registry->getManager();
+        $this->registry = $registry;
         $this->mailer = $mailer;
         $this->serializer = $serializer;
         $this->mailerFromEmail = $mailerFromEmail;
@@ -156,8 +153,7 @@ class EmailService implements EmailServiceInterface
         }
 
         $craftsman->setLastEmailReceived(new \DateTime());
-        $this->manager->persist($craftsman);
-        $this->manager->flush();
+        DoctrineHelper::persistAndFlush($this->registry, $craftsman);
 
         return true;
     }
@@ -193,7 +189,7 @@ class EmailService implements EmailServiceInterface
         return $templatedEmail;
     }
 
-    private function getCurrentPage()
+    private function getCurrentPage(): string
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
         if ($currentRequest) {
@@ -207,9 +203,7 @@ class EmailService implements EmailServiceInterface
     {
         try {
             $this->mailer->send($email);
-
-            $this->manager->persist($entity);
-            $this->manager->flush();
+            DoctrineHelper::persistAndFlush($this->registry, $entity);
 
             return true;
         } catch (TransportExceptionInterface $exception) {
