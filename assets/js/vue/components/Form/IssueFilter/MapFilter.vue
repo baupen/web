@@ -88,7 +88,7 @@ export default {
 }
 </script>
 
-<style scoped="true" lang="scss">
+<style scoped lang="scss">
 @for $i from 1 through 10 {
   .spacer-#{$i} {
     padding-left: $i*1em;

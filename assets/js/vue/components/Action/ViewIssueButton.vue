@@ -30,12 +30,12 @@
     </template>
 
     <div>
-      <div class="w-50 d-inline-block pr-1">
+      <div class="w-50 d-inline-block pe-1">
         <issue-render-lightbox
             :preview="true"
             :construction-site="constructionSite" :map="map" :issue="issue" />
       </div>
-      <div class="w-50 d-inline-block pl-1">
+      <div class="w-50 d-inline-block ps-1">
         <image-lightbox
             v-if="issue.imageUrl"
             :preview="true"
@@ -238,7 +238,7 @@ export default {
 }
 </script>
 
-<style scoped="true">
+<style scoped>
 .state-icon {
   font-size: 2em;
   position: relative;

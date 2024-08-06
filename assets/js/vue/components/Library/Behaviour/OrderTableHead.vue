@@ -3,7 +3,7 @@
     <slot>
 
     </slot>
-    <span class="pl-1"></span>
+    <span class="ps-1"></span>
     <svg v-if="isAscOrdered" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-up"
          role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"
          class="svg-inline--fa fa-sort-up fa-w-10">

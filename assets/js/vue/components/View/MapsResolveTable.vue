@@ -84,7 +84,7 @@ export default {
 }
 </script>
 
-<style scoped="true" lang="scss">
+<style scoped lang="scss">
 @for $i from 1 through 10 {
   .space-#{$i} {
     display: inline-block;

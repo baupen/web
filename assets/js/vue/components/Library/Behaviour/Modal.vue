@@ -60,7 +60,7 @@ export default {
 }
 </script>
 
-<style scoped="true">
+<style scoped>
 .show {
   display: block;
   overflow-y: scroll;

@@ -3,12 +3,12 @@
     <div class="card-body">
       <div class="row">
         <div class="col-md-6">
-          <div class="w-50 d-inline-block pr-1">
+          <div class="w-50 d-inline-block pe-1">
             <issue-render-lightbox
                 :preview="true"
                 :construction-site="constructionSite" :map="map" :issue="issue" />
           </div>
-          <div class="w-50 d-inline-block pl-1">
+          <div class="w-50 d-inline-block ps-1">
             <image-lightbox
                 v-if="issue.imageUrl"
                 :preview="true"
@@ -36,7 +36,7 @@
         <span v-if="createdByConstructionManager">
         |
         {{ createdByConstructionManagerName }}
-          <a class="pl-1" :href="createdByConstructionManagerEmailHref">
+          <a class="ps-1" :href="createdByConstructionManagerEmailHref">
             <font-awesome-icon :icon="['fal', 'envelope-open']" />
           </a>
         </span>
