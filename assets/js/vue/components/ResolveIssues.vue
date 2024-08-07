@@ -105,7 +105,6 @@ export default {
   },
   methods: {
     scrollToMap: function (map) {
-      console.log("scroll requested to ", map)
       this.$nextTick(() => {
         const newDisplayedMap = this.$refs.maps.find(mapRef => mapRef.map['@id'] === map['@id'])
         if (!newDisplayedMap || !newDisplayedMap.$el) {
@@ -113,9 +112,14 @@ export default {
         }
 
         const element = newDisplayedMap.$el
-        const newDisplayedMapOffset = $(element).offset().top
+        const newDisplayedMapOffset = element.getBoundingClientRect().top + window.scrollY
 
-        $('html').animate({ scrollTop: newDisplayedMapOffset })
+        console.log(newDisplayedMapOffset, window.scrollY)
+
+        window.scrollTo({
+          top: newDisplayedMapOffset,
+          behavior: 'smooth' // This enables smooth scrolling
+        });
       })
     },
   },

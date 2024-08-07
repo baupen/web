@@ -6,7 +6,14 @@
 
 <script>
 
+import { Tooltip } from 'bootstrap'
+
 export default {
+  data () {
+    return {
+      instance: null
+    }
+  },
   props: {
     value: {
       required: true
@@ -26,7 +33,10 @@ export default {
     }
   },
   mounted() {
-    $(this.$refs.value).tooltip();
+    this.instance = new Tooltip(this.$refs.value);
+  },
+  unmounted() {
+    this.instance.dispose()
   }
 }
 </script>

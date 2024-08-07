@@ -11,13 +11,13 @@
       <tr v-for="mapContainer in mapContainers" :key="mapContainer.entity['@id']">
         <td class="text-nowrap">
           <span :class="'space-'+mapContainer.level"></span>
-          <a v-if="mapContainer.issueCount" href="#" @click="$emit('scroll-to-map', mapContainer.entity)">
+          <a v-if="mapContainer.issueCount" href="" @click.prevent="$emit('scroll-to-map', mapContainer.entity)">
             {{ mapContainer.entity.name }}
           </a>
           <template v-else>
             {{ mapContainer.entity.name }}
           </template>
-          <span v-if="mapContainer.issueCount" class="badge badge-secondary ms-1">
+          <span v-if="mapContainer.issueCount" class="badge bg-secondary ms-1">
             {{ mapContainer.issueCount }}
           </span>
         </td>
@@ -25,7 +25,7 @@
           <date-human-readable v-if="mapContainer.issueCount > 0" :value="mapContainer.earliestDeadline" />
           <template v-if="isOverdue(mapContainer)">
             <br/>
-            <span class="badge badge-danger">
+            <span class="badge bg-danger">
               {{ $t('issue.state.overdue') }}
             </span>
           </template>

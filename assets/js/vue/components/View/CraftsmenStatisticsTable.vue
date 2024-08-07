@@ -63,7 +63,7 @@
       <td>
         <date-human-readable :value="cws.statistics.nextDeadline" />
         <br />
-        <span v-if="cws.statistics.issueOverdueCount" class="badge badge-danger">
+        <span v-if="cws.statistics.issueOverdueCount" class="badge bg-danger">
           {{ cws.statistics.issueOverdueCount }} {{ $t('issue.state.overdue') }}
         </span>
       </td>
@@ -71,7 +71,7 @@
       <td class="border-left">
         <date-time-human-readable :value="cws.statistics.lastVisitOnline" />
         <br />
-        <span v-if="cws.statistics.issueUnreadCount" class="badge badge-secondary">
+        <span v-if="cws.statistics.issueUnreadCount" class="badge bg-secondary">
           {{ cws.statistics.issueUnreadCount }} {{ $t('issue.state.unread') }}
         </span>
       </td>

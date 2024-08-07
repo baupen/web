@@ -6,6 +6,8 @@
 
 <script>
 
+import {Tooltip} from "bootstrap";
+
 export default {
   props: {
     icon: {
@@ -18,7 +20,10 @@ export default {
     }
   },
   mounted() {
-    $(this.$refs.value).tooltip();
+    this.instance = new Tooltip(this.$refs.value);
+  },
+  unmounted() {
+    this.instance.dispose()
   }
 }
 </script>

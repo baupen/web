@@ -70,7 +70,7 @@
       </div>
       <div class="col">
         <date-human-readable :value="issue.deadline" /> <br/>
-        <span v-if="isOverdue" class="badge badge-danger">{{ $t('issue.state.overdue') }}</span>
+        <span v-if="isOverdue" class="badge bg-danger">{{ $t('issue.state.overdue') }}</span>
       </div>
     </div>
 
