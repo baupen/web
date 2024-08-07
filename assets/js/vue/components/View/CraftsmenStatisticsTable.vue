@@ -10,10 +10,10 @@
     </tr>
     <tr>
       <th class="w-minimal">
-        <custom-checkbox @click.prevent="toggleSelectedCraftsmen(craftsmen)">
+        <div @click="toggleSelectedCraftsmen(craftsmen)">
           <input class="form-check-input" type="checkbox"
                  :checked="entityListsAreEqual(craftsmen, selectedCraftsmen)">
-        </custom-checkbox>
+        </div>
       </th>
       <th>{{ $t('craftsman.trade') }}</th>
       <th>{{ $t('craftsman.company') }}</th>
@@ -39,12 +39,12 @@
     <tr v-else v-for="cws in orderedCraftsmenWithStatistics" @click.stop="toggleSelectedCraftsman(cws.craftsman)"
         class="clickable">
       <td class="w-minimal">
-        <custom-checkbox>
+        <div>
           <input
               class="form-check-input" type="checkbox"
               v-model="selectedCraftsmen"
               :value="cws.craftsman">
-        </custom-checkbox>
+        </div>
       </td>
       <td>{{ cws.craftsman.trade }}</td>
       <td>{{ cws.craftsman.company }}</td>

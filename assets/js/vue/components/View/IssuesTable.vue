@@ -34,13 +34,13 @@
     </tr>
     <tr class="text-secondary">
       <th class="w-minimal">
-        <custom-checkbox
+        <div
             id="all-issues"
-            @click.prevent="toggleSelectedIssues(displayedIssues)">
+            @click="toggleSelectedIssues(displayedIssues)">
           <input class="form-check-input" type="checkbox"
                  :disabled="!displayedIssues"
                  :checked="displayedIssues && displayedIssues.length > 0 && entityListsAreEqual(displayedIssues, selectedIssues)">
-        </custom-checkbox>
+        </div>
       </th>
       <th class="w-minimal">
       </th>
@@ -75,12 +75,12 @@
     <tr v-else v-for="iwr in issueContainers" @click.stop="toggleSelectedIssue(iwr.issue)" :key="iwr.issue['@id']"
         class="clickable">
       <td class="w-minimal">
-        <custom-checkbox>
+        <div>
           <input
               class="form-check-input" type="checkbox"
               v-model="selectedIssues"
               :value="iwr.issue">
-        </custom-checkbox>
+        </div>
       </td>
       <td>{{ iwr.issue.number }}</td>
       <td>
