@@ -1,4 +1,5 @@
 @use 'sass:math';
+@use '~bootstrap/scss/functions' as funcs;
 
 .popover-filter-sm .popover-body {
   max-height: 22em;
@@ -24,7 +25,7 @@
   margin-bottom: $popover-arrow-height;
 
   > .arrow {
-    bottom: subtract(-$popover-arrow-height, $popover-border-width);
+    bottom: funcs.subtract(-$popover-arrow-height, $popover-border-width);
 
     &::before {
       border-top-color: $popover-arrow-outer-color;
@@ -45,7 +46,7 @@
 
   > .arrow {
     height: $popover-arrow-width;
-    left: subtract(-$popover-arrow-height, $popover-border-width);
+    left: funcs.subtract(-$popover-arrow-height, $popover-border-width);
     margin: $popover-border-radius 0; // make sure the arrow does not touch the popover's rounded corners
     width: $popover-arrow-height;
 
@@ -67,7 +68,7 @@
   margin-top: $popover-arrow-height;
 
   > .arrow {
-    top: subtract(-$popover-arrow-height, $popover-border-width);
+    top: funcs.subtract(-$popover-arrow-height, $popover-border-width);
 
     &::before {
       border-bottom-color: $popover-arrow-outer-color;
@@ -101,7 +102,7 @@
   > .arrow {
     height: $popover-arrow-width;
     margin: $popover-border-radius 0; // make sure the arrow does not touch the popover's rounded corners
-    right: subtract(-$popover-arrow-height, $popover-border-width);
+    right: funcs.subtract(-$popover-arrow-height, $popover-border-width);
     width: $popover-arrow-height;
 
     &::before {

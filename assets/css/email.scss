@@ -2,9 +2,9 @@ $primary-color: #009fe3;
 $body-background: #f3f3f3;
 $container-background: $body-background;
 $global-width: 800px;
-$body-font-family: 'Source Sans Pro', helvetica, arial, sans-serif !default;
+$body-font-family: 'Source Sans Pro', helvetica, arial, sans-serif;
 
-@import '~foundation-emails/scss/foundation-emails';
+@import url('~foundation-emails/scss/foundation-emails');
 
 .bg-white {
   background-color: #fff;
@@ -36,7 +36,7 @@ $body-font-family: 'Source Sans Pro', helvetica, arial, sans-serif !default;
   }
 
   .table-email-tfoot {
-    background-color: rgba(0, 0, 0, 0);
+    background-color: rgb(0 0 0 / 0%);
     border-top: 2px solid #dee2e6;
 
     td {
@@ -63,7 +63,7 @@ $body-font-family: 'Source Sans Pro', helvetica, arial, sans-serif !default;
 
 .table-email.table-email-striped {
   tr:nth-child(2n) {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgb(0 0 0 / 5%);
   }
 }
 

@@ -4,7 +4,7 @@ import './vue/vuejs'
 import { dom } from '@fortawesome/fontawesome-svg-core'
 
 // noinspection ES6UnusedImports; imports code so modals etc work
-import * as boostrap from 'bootstrap'
+import * as boostrap from 'bootstrap' // eslint-disable-line
 
 const QRious = require('qrious')
 
