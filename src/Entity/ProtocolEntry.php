@@ -149,4 +149,10 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
     {
         return null !== $this->constructionSite;
     }
+
+    #[Groups(['protocol-entry-read'])]
+    public function getIsDeleted(): bool
+    {
+        return null !== $this->deletedAt;
+    }
 }

@@ -102,10 +102,10 @@ class ProtocolEntryTest extends ApiTestCase
         $protocolEntry = $constructionSite->getProtocolEntries()[0];
         $this->assertFalse($protocolEntry->getIsDeleted(), 'ensure not deleted, else the following tests will fail');
 
-        $mapIri = $this->getIriFromItem($protocolEntry);
-        $this->assertApiCollectionContainsIri($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId(), $mapIri);
-        $this->assertApiCollectionContainsIri($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId().'&isDeleted=false', $mapIri);
-        $this->assertApiCollectionNotContainsIri($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId().'&isDeleted=true', $mapIri);
+        $protocolEntryIri = $this->getIriFromItem($protocolEntry);
+        $this->assertApiCollectionContainsIri($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId(), $protocolEntryIri);
+        $this->assertApiCollectionContainsIri($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId().'&isDeleted=false', $protocolEntryIri);
+        $this->assertApiCollectionNotContainsIri($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId().'&isDeleted=true', $protocolEntryIri);
     }
 
     public function testCreatedAtFilter(): void
