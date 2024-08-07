@@ -23,7 +23,7 @@
     >
   </custom-checkbox-field>
 
-  <div class="form-row">
+  <div class="row">
     <form-field class="col-md-4" for-id="number" :label="$t('issue.number')" :required="false">
       <input id="number" class="form-control" type="number"
              v-model="filter.number">

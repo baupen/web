@@ -19,7 +19,7 @@
 
   <hr />
 
-  <div class="form-row">
+  <div class="row">
     <form-field for-id="contactName" class="col-md-6" :label="$t('craftsman.contact_name')">
       <input id="contactName" class="form-control" type="text" required="required"
              :class="{'is-valid': fields.contactName.dirty && !fields.contactName.errors.length, 'is-invalid': fields.contactName.dirty && fields.contactName.errors.length }"
