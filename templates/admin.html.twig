@@ -47,14 +47,14 @@
 
                         {# special roles #}
                         {% if constructionManager.isAdminAccount %}
-                            <span class="badge badge-danger" data-toggle="tooltip"
+                            <span class="badge badge-danger" data-bs-toggle="tooltip"
                                   title="{{ "index.badges.admin_help"|trans }}"
                             >
                                 {{ "index.badges.admin"|trans }}
                             </span>
                         {% endif %}
                         {% if constructionManager.registrationCompleted and not constructionManager.canAssociateSelf %}
-                            <span class="badge badge-info" data-toggle="tooltip"
+                            <span class="badge badge-info" data-bs-toggle="tooltip"
                                   title="{{ "index.badges.guest_help"|trans }}"
                             >
                                 {{ "index.badges.guest"|trans }}

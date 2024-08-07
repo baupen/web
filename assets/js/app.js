@@ -3,9 +3,8 @@ import './vue/vuejs'
 
 import { dom } from '@fortawesome/fontawesome-svg-core'
 
-const $ = require('jquery')
-window.$ = $
-require('bootstrap')
+// noinspection ES6UnusedImports; imports code so modals etc work
+import * as boostrap from 'bootstrap'
 
 const QRious = require('qrious')
 
@@ -21,12 +20,6 @@ $(document)
           $buttons.addClass('disabled')
         }
       })
-
-    $('[data-toggle="popover"]')
-      .popover()
-
-    $('[data-toggle="tooltip"]')
-      .tooltip()
 
     dom.watch()
 
