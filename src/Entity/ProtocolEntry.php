@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *       "get" = {"security" = "is_granted('PROTOCOL_ENTRY_VIEW', object)"},
  *       "delete" = {"security" = "is_granted('PROTOCOL_ENTRY_MODIFY', object)"},
  *      },
- *      denormalizationContext={"groups"={}},
+ *      denormalizationContext={"groups"={"protocol-entry-create"}},
  *      normalizationContext={"groups"={"protocol-entry-read"}, "skip_null_values"=false}
  *  )
  *
@@ -75,6 +75,9 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, nullable: true)]
     private ?string $payload = null;
 
+    /**
+     * @var \DateTime|null
+     */
     #[Assert\NotBlank]
     #[Groups(['protocol-entry-read', 'protocol-entry-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
@@ -125,16 +128,6 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
         $this->payload = $payload;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(): void
-    {
-        $this->createdAt = new \DateTime();
-    }
-
     public function getCreatedBy(): ?string
     {
         return $this->createdBy;
@@ -154,5 +147,15 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
     public function getIsDeleted(): bool
     {
         return null !== $this->deletedAt;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
     }
 }
