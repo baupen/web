@@ -22,7 +22,7 @@
 
     </loading-indicator-secondary>
   </div>
-  <div v-if="canAssociateSelf" class="mt-5">
+  <div v-if="canAssociateSelf" class="mt-10">
     <h2>{{ $t('switch.all') }}</h2>
     <p>{{ $t('switch.all_help') }}</p>
     <add-construction-site-button

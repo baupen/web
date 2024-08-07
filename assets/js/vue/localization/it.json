@@ -125,6 +125,7 @@
     },
     "save_changes": "Salva le modifiche",
     "toggle_association_construction_site": {
+      "associated_short": "aggiunto",
       "associated": "È stato aggiunto al cantiere.",
       "dissociated": "Sei stato rimosso dal cantiere."
     },

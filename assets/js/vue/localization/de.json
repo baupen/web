@@ -125,6 +125,7 @@
     },
     "save_changes": "Änderungen speichern",
     "toggle_association_construction_site": {
+      "associated_short": "aktiv",
       "associated": "Sie wurden der Baustelle hinzugefügt.",
       "dissociated": "Sie wurden von der Baustelle entfernt."
     },

@@ -7,7 +7,7 @@
                :alt="'image of ' + constructionSite.name">
         </div>
         <div class="col-md-8">
-          <h2>{{ constructionSite.name }}</h2>
+          <h3>{{ constructionSite.name }}</h3>
           <p>
             <span class="pre">{{ address.join('\n') }}</span>
           </p>
