@@ -56,6 +56,9 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
     use IdTrait;
     use SoftDeleteTrait;
 
+    public const ISSUE_STATE_RESOLVED_TEXT = 'RESOLVED';
+    public const ISSUE_STATE_CLOSED_TEXT = 'CLOSED';
+
     #[Assert\NotBlank]
     #[Groups(['protocol-entry-create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'protocolEntries')]
@@ -87,6 +90,42 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
     #[Groups(['protocol-entry-read', 'protocol-entry-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING)]
     private ?string $createdBy = null;
+
+    /**
+     * @return ProtocolEntry[]
+     */
+    public static function createFromChangedIssue(?Issue $previous, Issue $current, string $authority): array
+    {
+        $entries = [];
+
+        $createEntry = function () use ($current, $authority) {
+            $entry = new self();
+            $entry->setConstructionSite($current->getConstructionSite());
+            $entry->setRoot($current->getId());
+            $entry->setCreatedAt(new \DateTime());
+            $entry->setCreatedBy($authority);
+
+            return $entry;
+        };
+
+        if ($previous?->getResolvedAt() != $current->getResolvedAt()) {
+            $entry = $createEntry();
+            $entry->setPayload(self::ISSUE_STATE_RESOLVED_TEXT);
+            $entry->setType($current->getResolvedAt() ? ProtocolEntryTypes::StatusSet : ProtocolEntryTypes::StatusUnset);
+
+            $entries[] = $entry;
+        }
+
+        if ($previous?->getClosedAt() != $current->getClosedAt()) {
+            $entry = $createEntry();
+            $entry->setPayload(self::ISSUE_STATE_CLOSED_TEXT);
+            $entry->setType($current->getClosedAt() ? ProtocolEntryTypes::StatusSet : ProtocolEntryTypes::StatusUnset);
+
+            $entries[] = $entry;
+        }
+
+        return $entries;
+    }
 
     public function getConstructionSite(): ConstructionSite
     {

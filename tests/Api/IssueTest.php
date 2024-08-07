@@ -343,7 +343,7 @@ class IssueTest extends ApiTestCase
         $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
     }
 
-    private function getMinimalPostPayload(ConstructionManager $constructionManager): array
+    public function getMinimalPostPayload(ConstructionManager $constructionManager): array
     {
         $constructionManagerId = $this->getIriFromItem($constructionManager);
         $constructionSite = $this->getTestConstructionSite();
