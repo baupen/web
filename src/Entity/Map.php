@@ -67,7 +67,7 @@ class Map extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 
     #[Assert\NotBlank]
     #[Groups(['map-create'])]
-    #[ORM\ManyToOne(targetEntity: \ConstructionSite::class, inversedBy: 'maps')]
+    #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'maps')]
     private ?ConstructionSite $constructionSite = null;
 
     /**

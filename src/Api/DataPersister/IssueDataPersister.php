@@ -13,7 +13,6 @@ namespace App\Api\DataPersister;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\Issue;
-use App\Service\Interfaces\StorageServiceInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 class IssueDataPersister implements ContextAwareDataPersisterInterface
@@ -21,7 +20,7 @@ class IssueDataPersister implements ContextAwareDataPersisterInterface
     private ContextAwareDataPersisterInterface $decorated;
     private ManagerRegistry $doctrine;
 
-    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, StorageServiceInterface $storageService, ManagerRegistry $registry)
+    public function __construct(ContextAwareDataPersisterInterface $decoratedDataPersister, ManagerRegistry $registry)
     {
         $this->decorated = $decoratedDataPersister;
         $this->doctrine = $registry;
@@ -50,6 +49,8 @@ class IssueDataPersister implements ContextAwareDataPersisterInterface
             $repository = $this->doctrine->getRepository(Issue::class);
             $repository->assignHighestNumber($result);
         }
+
+        // TODO: record change log
     }
 
     /**

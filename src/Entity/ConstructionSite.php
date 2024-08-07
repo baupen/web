@@ -74,20 +74,20 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      */
     #[ORM\JoinTable(name: 'construction_site_construction_manager')]
     #[Groups(['construction-site-read', 'construction-site-write'])]
-    #[ORM\ManyToMany(targetEntity: \ConstructionManager::class, inversedBy: 'constructionSites')]
+    #[ORM\ManyToMany(targetEntity: ConstructionManager::class, inversedBy: 'constructionSites')]
     private Collection $constructionManagers;
 
     /**
      * @var Collection<int, Map>
      */
-    #[ORM\OneToMany(targetEntity: \Map::class, mappedBy: 'constructionSite', cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: Map::class, mappedBy: 'constructionSite', cascade: ['persist'])]
     #[ORM\OrderBy(['name' => \Doctrine\Common\Collections\Criteria::ASC])]
     private Collection $maps;
 
     /**
      * @var Collection<int, Craftsman>
      */
-    #[ORM\OneToMany(targetEntity: \Craftsman::class, mappedBy: 'constructionSite', cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: Craftsman::class, mappedBy: 'constructionSite', cascade: ['persist'])]
     private Collection $craftsmen;
 
     /**
@@ -95,6 +95,12 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
      */
     #[ORM\OneToMany(targetEntity: Issue::class, mappedBy: 'constructionSite', cascade: ['persist'])]
     private Collection $issues;
+
+    /**
+     * @var Collection<int, ProtocolEntry>
+     */
+    #[ORM\OneToMany(targetEntity: ProtocolEntry::class, mappedBy: 'constructionSite', cascade: ['persist'])]
+    private Collection $protocolEntries;
 
     /**
      * @var Collection<int, EmailTemplate>
@@ -106,7 +112,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     /**
      * @var Collection<int, Filter>
      */
-    #[ORM\OneToMany(targetEntity: \Filter::class, mappedBy: 'constructionSite')]
+    #[ORM\OneToMany(targetEntity: Filter::class, mappedBy: 'constructionSite')]
     private Collection $filters;
 
     #[Groups(['construction-site-read'])]
@@ -183,6 +189,14 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     public function getCraftsmen(): Collection
     {
         return $this->craftsmen;
+    }
+
+    /**
+     * @return Collection<int, ProtocolEntry>
+     */
+    public function getProtocolEntries(): Collection
+    {
+        return $this->protocolEntries;
     }
 
     public function getImage(): ?ConstructionSiteImage

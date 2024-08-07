@@ -21,7 +21,7 @@ abstract class ConstructionSiteOwnedEntityVoter extends ConstructionSiteRelatedE
     /**
      * @param ConstructionSiteOwnedEntityInterface $subject
      */
-    protected function isConstructionManagerRelated(ConstructionManager $constructionManager, $subject)
+    protected function isConstructionManagerRelated(ConstructionManager $constructionManager, $subject): bool
     {
         return $subject->isConstructionSiteSet() && $constructionManager->getConstructionSites()->contains($subject->getConstructionSite());
     }
@@ -29,7 +29,7 @@ abstract class ConstructionSiteOwnedEntityVoter extends ConstructionSiteRelatedE
     /**
      * @param ConstructionSiteOwnedEntityInterface $subject
      */
-    protected function isCraftsmanRelated(Craftsman $craftsman, $subject)
+    protected function isCraftsmanRelated(Craftsman $craftsman, $subject): bool
     {
         return $craftsman->isConstructionSiteSet() && $craftsman->getConstructionSite() === $subject->getConstructionSite();
     }
@@ -37,7 +37,7 @@ abstract class ConstructionSiteOwnedEntityVoter extends ConstructionSiteRelatedE
     /**
      * @param ConstructionSiteOwnedEntityInterface $subject
      */
-    protected function isFilterRelated(Filter $filter, $subject)
+    protected function isFilterRelated(Filter $filter, $subject): bool
     {
         return $filter->isConstructionSiteSet() && $filter->getConstructionSite() === $subject->getConstructionSite();
     }
