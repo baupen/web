@@ -12,6 +12,7 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\Enum\ProtocolEntryTypes;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
@@ -55,7 +56,7 @@ class ProtocolEntryTest extends ApiTestCase
 
         $constructionSite = $this->getTestConstructionSite();
         $response = $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/protocol_entries?constructionSite='.$constructionSite->getId());
-        $this->assertApiResponseFieldSubset($response, 'root', 'type', 'payload', 'createdAt', 'createdBy');
+        $this->assertApiResponseFieldSubset($response, 'root', 'type', 'payload', 'createdAt', 'createdBy', 'isDeleted');
     }
 
     public function testPostAndDelete(): void
@@ -119,5 +120,63 @@ class ProtocolEntryTest extends ApiTestCase
         $protocolEntryIri = $this->getIriFromItem($protocolEntry);
 
         $this->assertApiCollectionFilterDateTime($client, '/api/protocol_entries?constructionSite='.$constructionSite->getId().'&', $protocolEntryIri, 'createdAt', $protocolEntry->getCreatedAt());
+    }
+
+    public function testIssueStatusChangeCreatesEntries(): void
+    {
+        $client = $this->createClient();
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+        $constructionManager = $this->loginApiConstructionManager($client);
+        $constructionManagerId = $this->getIriFromItem($constructionManager);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $constructionSiteId = $this->getIriFromItem($constructionSite);
+        $map = $constructionSite->getMaps()[0];
+        $mapId = $this->getIriFromItem($map);
+        $basePayload = [
+            'constructionSite' => $constructionSiteId,
+            'map' => $mapId,
+
+            'createdBy' => $constructionManagerId,
+            'createdAt' => (new \DateTime())->format('c'),
+        ];
+
+        $craftsman = $constructionSite->getCraftsmen()[0];
+        $craftsmanId = $this->getIriFromItem($craftsman);
+        $time = (new \DateTime('today'))->format('c');
+
+        // post initially; no status change
+        $payload = ['registeredBy' => $constructionManagerId, 'registeredAt' => $time];
+        $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
+        $currentIssue = json_decode($response->getContent(), true);
+        $issueId = substr($currentIssue['@id'], strrpos($currentIssue['@id'], '/') + 1);
+        $this->assertProtocolEntries($client, $constructionSiteId, $issueId, []);
+
+        // change resolved by, hence expect corresponding log entry
+        $payload = ['resolvedBy' => $craftsmanId, 'resolvedAt' => $time];
+        $this->assertApiPatchOk($client, '/api/issues/'.$issueId, array_merge($currentIssue, $payload));
+        $currentIssue = json_decode($response->getContent(), true);
+        $this->assertProtocolEntries($client, $constructionSiteId, $issueId, [[ProtocolEntryTypes::StatusSet, 'RESOLVED']]);
+
+        $payload = ['closedBy' => $constructionManagerId, 'closedAt' => $time];
+    }
+
+    /**
+     * @param array{0: ProtocolEntryTypes, 1: string}[] $expectedEntries
+     */
+    private function assertProtocolEntries(Client $client, string $constructionSiteId, string $root, array $expectedEntries): void
+    {
+        $url = '/api/protocol_entries?constructionSite='.$constructionSiteId.'&root='.$root;
+        $collectionResponse = $this->assertApiGetOk($client, $url);
+        $collection = json_decode($collectionResponse->getContent(), true);
+
+        $this->assertSameSize($expectedEntries, $collection['hydra:member']);
+        for ($i = 0; $i < count($expectedEntries); ++$i) {
+            $expectedEntry = $expectedEntries[$i];
+            $actualEntry = $collection['hydra:member'][$i];
+
+            $this->assertEquals($expectedEntry[0], $actualEntry['type']);
+            $this->assertEquals($expectedEntry[1], $actualEntry['payload']);
+        }
     }
 }

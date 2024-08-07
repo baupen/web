@@ -73,10 +73,10 @@ class IssuesReport
 
     private function getAuthor(?TokenInterface $token): ?string
     {
-        if (($user = $this->tryGetConstructionManager($token)) instanceof \App\Entity\ConstructionManager) {
+        if ($user = $this->tryGetConstructionManager($token)) {
             return $user->getName();
         }
-        if (($craftsman = $this->tryGetCraftsman($token)) instanceof \App\Entity\Craftsman) {
+        if ($craftsman = $this->tryGetCraftsman($token)) {
             return $craftsman->getContactName();
         }
 

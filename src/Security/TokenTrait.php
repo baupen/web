@@ -50,6 +50,21 @@ trait TokenTrait
         return null;
     }
 
+    protected function tryGetAuthority(?TokenInterface $token): ?string
+    {
+        $constructionManager = $this->tryGetConstructionManager($token);
+        if ($constructionManager) {
+            return $constructionManager->getId();
+        }
+
+        $craftsman = $this->tryGetCraftsman($token);
+        if ($craftsman) {
+            return $craftsman->getId();
+        }
+
+        return null;
+    }
+
     protected function tryGetFilter(?TokenInterface $token): ?Filter
     {
         if (!$token instanceof TokenInterface) {
