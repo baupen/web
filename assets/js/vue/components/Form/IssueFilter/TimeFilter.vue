@@ -1,5 +1,5 @@
 <template>
-  <div class="form-row">
+  <div class="row">
     <form-field :label="label">
       <div class="input-group">
         <flat-pickr

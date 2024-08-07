@@ -23,7 +23,7 @@
     <invalid-feedback :errors="fields.streetAddress.errors" />
   </form-field>
 
-  <div class="form-row">
+  <div class="row">
     <form-field class="col-md-4" for-id="postalCode" :label="$t('construction_site.postal_code')">
       <input id="postalCode" class="form-control" type="number" required="required"
              :class="{'is-valid': fields.postalCode.dirty && !fields.postalCode.errors.length, 'is-invalid': fields.postalCode.dirty && fields.postalCode.errors.length }"
