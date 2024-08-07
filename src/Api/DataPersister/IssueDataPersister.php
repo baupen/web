@@ -50,13 +50,8 @@ class IssueDataPersister implements ContextAwareDataPersisterInterface
         if ($isCreated) {
             $data->setNumber(0);
         } else {
-            $previousState = $data;
-            $data = clone $data;
-
-            $entityManager = $this->doctrine->getManager();
-            $entityManager->refresh($previousState);
-            $entityManager->detach($previousState);
-            $entityManager->persist($data);
+            $unitOfWork = $this->doctrine->getManager()->getUnitOfWork();
+            $previousState = $unitOfWork->getOriginalEntityData($data);
         }
 
         $repository = $this->doctrine->getRepository(Issue::class);
