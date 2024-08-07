@@ -12,7 +12,7 @@
     <tr v-else v-for="constructionManager in orderedConstructionManagers">
       <td>
         {{ constructionManager.email }}
-        <span v-if="!constructionManager.isEnabled" class="badge badge-danger ms-2">
+        <span v-if="!constructionManager.isEnabled" class="badge bg-danger ms-2">
             {{ $t('construction_manager.is_disabled') }}
         </span>
       </td>

@@ -23,7 +23,7 @@
             <b>{{ $t('issue.deadline') }}</b>:
             <date-human-readable :value="issue.deadline" />
             <br />
-            <span v-if="isOverdue" class="badge badge-danger">{{ $t('issue.state.overdue') }}</span>
+            <span v-if="isOverdue" class="badge bg-danger">{{ $t('issue.state.overdue') }}</span>
           </p>
           <resolve-issue-button v-if="craftsman.canEdit" :issue="issue" :craftsman="craftsman" />
         </div>

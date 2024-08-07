@@ -7,6 +7,7 @@
 <script>
 
 import ToggleIcon from './ToggleIcon'
+import {Tooltip} from "bootstrap";
 export default {
   components: { ToggleIcon },
   props: {
@@ -24,7 +25,10 @@ export default {
     }
   },
   mounted() {
-    $(this.$refs.value).tooltip();
+    this.instance = new Tooltip(this.$refs.value);
+  },
+  unmounted() {
+    this.instance.dispose()
   }
 }
 </script>

@@ -7,10 +7,10 @@
       <feed v-else :construction-managers="constructionManagers" :craftsmen="craftsmen" :feed-entries="feedEntries" />
     </div>
     <div class="card-footer" v-if="!isLoadingStatistics && (overdueCount > 0 || unreadCount > 0)">
-      <span v-if="overdueCount" class="badge badge-danger me-1">
+      <span v-if="overdueCount" class="badge bg-danger me-1">
         {{ overdueCount }} {{ $t('issue.state.overdue') }}
       </span>
-      <span v-if="unreadCount" class="badge badge-secondary me-1">
+      <span v-if="unreadCount" class="badge bg-secondary me-1">
         {{ unreadCount }} {{ $t('issue.state.unread') }}
       </span>
       <a :href="dispatchUrl">{{ $t('dispatch.title') }}</a>

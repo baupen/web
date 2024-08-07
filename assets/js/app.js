@@ -9,34 +9,38 @@ import * as boostrap from 'bootstrap'
 const QRious = require('qrious')
 
 // register some basic usability functionality
-$(document)
-  .ready(() => {
-    // give instant feedback on form submission
-    $('form')
-      .on('submit', () => {
-        const $form = $(this)
-        const $buttons = $('.btn', $form)
-        if (!$buttons.hasClass('no-disable')) {
-          $buttons.addClass('disabled')
-        }
-      })
-
-    dom.watch()
-
-    const authenticationTokenCanvas = document.getElementsByClassName('authentication-token-canvas')
-    if (authenticationTokenCanvas.length) {
-      if (window.token) {
-        renderQRCode(window.token)
-      } else {
-        $.ajax('/token', // request url
-          {
-            success: function (token) {
-              renderQRCode(token)
+document.addEventListener('DOMContentLoaded', () => {
+  // Give instant feedback on form submission
+  document.querySelectorAll('form')
+    .forEach(form => {
+      form.addEventListener('submit', function () {
+        form.querySelectorAll('.btn')
+          .forEach(button => {
+            if (!button.classList.contains('no-disable')) {
+              button.classList.add('disabled')
             }
           })
-      }
+      })
+    })
+
+  dom.watch()
+
+  const authenticationTokenCanvas = document.getElementsByClassName('authentication-token-canvas')
+  if (authenticationTokenCanvas.length) {
+    if (window.token) {
+      renderQRCode(window.token)
+    } else {
+      fetch('/token') // request URL
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText)
+          }
+
+          renderQRCode(response.text())
+        })
     }
-  })
+  }
+})
 
 function renderQRCode (token) {
   // same payload also iOSLoginLink Twig Extension
