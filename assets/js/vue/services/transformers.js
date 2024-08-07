@@ -412,13 +412,19 @@ const filterTransformer = {
     if (configuration.time) {
       whitelistDateTimePropNames.push('createdAt', 'registeredAt', 'resolvedAt', 'closedAt')
     }
-    const whitelistDateTimeProps = []
-    whitelistDateTimePropNames.forEach(prop => {
-      whitelistDateTimeProps.push(prop + '[before]')
-      whitelistDateTimeProps.push(prop + '[after]')
-    })
-    whitelistDateTimeProps.filter(p => filter[p])
-      .forEach(p => { query[p] = filter[p] })
+    whitelistDateTimePropNames.filter(p => filter[p + '[after]'])
+      .forEach(p => { query[p + '[after]'] = filter[p + '[after]'] })
+    whitelistDateTimePropNames.filter(p => filter[p + '[before]'])
+      .forEach(p => {
+        const dateString = filter[p + '[before]']
+        const date = new Date(dateString)
+        if (date) {
+          date.setDate(date.getDate() + 1)
+          query[p + '[before]'] = date.toISOString().split('T')[0]
+        } else {
+          query[p + '[before]'] = dateString
+        }
+      })
 
     return query
   },
