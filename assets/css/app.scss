@@ -5,6 +5,7 @@ $border-radius-lg: 0;
 $border-radius-sm: 0;
 $modal-backdrop-opacity: 0.3;
 $primary: #343477;
+$link-color: $primary;
 $orange: #fd7e14;
 $theme-colors: (
   'primary':    $primary,
@@ -30,10 +31,13 @@ $custom-control-cursor: pointer;
 @import 'lightbox';
 @import 'popover';
 @import 'toggle';
+@import 'typography';
+@import 'utils';
 
 html,
 body {
   height: 100%;
+  font-family: Inter, sans-serif;
 }
 
 svg {
