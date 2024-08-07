@@ -4,13 +4,12 @@
     <p>{{ $t('switch.mine_help') }}</p>
 
     <loading-indicator-secondary :spin="isLoading">
-      <div class="mt-2"
-           v-if="memberOfConstructionSites.length > 0">
+      <template v-if="memberOfConstructionSites.length > 0">
         <construction-sites-enter-list
             :construction-sites="memberOfConstructionSites"
             :construction-managers="constructionManagers"
         />
-      </div>
+      </template>
       <div v-else class="alert alert-info">
         <template v-if="canAssociateSelf">
           {{ $t('switch.mine_none_associate_self') }}
