@@ -6,13 +6,13 @@
       @confirm="confirm">
 
     <template v-slot:secondary-footer>
-      <custom-checkbox-field for-id="self-bcc" :label="$t('email.self_bcc')">
+      <custom-checkbox for-id="self-bcc" :label="$t('email.self_bcc')">
         <input
             class="form-check-input" type="checkbox" id="self-bcc"
             v-model="selfBcc"
             :true-value="true"
             :false-value="false">
-      </custom-checkbox-field>
+      </custom-checkbox>
     </template>
 
     <div class="row">
@@ -65,9 +65,11 @@ import LoadingIndicatorSecondary from '../Library/View/LoadingIndicatorSecondary
 import ButtonWithModalConfirm from '../Library/Behaviour/ButtonWithModalConfirm'
 import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 import FormField from '../Library/FormLayout/FormField'
+import CustomCheckbox from "../Library/FormInput/CustomCheckbox.vue";
 
 export default {
   components: {
+    CustomCheckbox,
     FormField,
     CustomCheckboxField,
     ButtonWithModalConfirm,
