@@ -37,6 +37,7 @@ class TestProtocolEntryFixtures extends Fixture implements OrderedFixtureInterfa
         $protocolEntry->setRoot($constructionSite->getId());
         $protocolEntry->setType(ProtocolEntryTypes::Text);
         $protocolEntry->setPayload(self::TEST_TEXT_ENTRY);
+        $protocolEntry->setCreatedAt();
         $protocolEntry->setCreatedBy($constructionManager->getId());
         $manager->persist($protocolEntry);
 

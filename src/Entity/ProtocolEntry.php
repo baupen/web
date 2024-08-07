@@ -16,13 +16,16 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Api\Filters\IsDeletedFilter;
 use App\Api\Filters\RequiredExactSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\SoftDeleteTrait;
 use App\Enum\ProtocolEntryTypes;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A protocol entry adds context to the linked entity.
@@ -34,6 +37,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *      },
  *      itemOperations={
  *       "get" = {"security" = "is_granted('PROTOCOL_ENTRY_VIEW', object)"},
+ *       "delete" = {"security" = "is_granted('PROTOCOL_ENTRY_MODIFY', object)"},
  *      },
  *      denormalizationContext={"groups"={}},
  *      normalizationContext={"groups"={"protocol-entry-read"}, "skip_null_values"=false}
@@ -43,21 +47,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiFilter(DateFilter::class, properties={"createdAt"})
  * @ApiFilter(SearchFilter::class, properties={"root": "exact"})
  * @ApiFilter(OrderFilter::class, properties={"createdAt": "ASC"})
+ * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
  */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
+    use SoftDeleteTrait;
 
+    #[Assert\NotBlank]
     #[Groups(['protocol-entry-create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'protocolEntries')]
     private ?ConstructionSite $constructionSite = null;
 
+    #[Assert\NotBlank]
     #[Groups(['protocol-entry-read', 'protocol-entry-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING)]
     private ?string $root = null;
 
+    #[Assert\NotBlank]
     #[Groups(['protocol-entry-read', 'protocol-entry-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, enumType: ProtocolEntryTypes::class)]
     private ProtocolEntryTypes $type = ProtocolEntryTypes::Text;
@@ -66,19 +75,15 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, nullable: true)]
     private ?string $payload = null;
 
-    #[Groups(['protocol-entry-read'])]
+    #[Assert\NotBlank]
+    #[Groups(['protocol-entry-read', 'protocol-entry-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[Groups(['protocol-entry-read'])]
+    #[Assert\NotBlank]
+    #[Groups(['protocol-entry-read', 'protocol-entry-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING)]
     private ?string $createdBy = null;
-
-    #[ORM\PrePersist]
-    public function prePersistTime(): void
-    {
-        $this->createdAt = new \DateTime();
-    }
 
     public function getConstructionSite(): ConstructionSite
     {
@@ -123,6 +128,11 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
+    }
+
+    public function setCreatedAt(): void
+    {
+        $this->createdAt = new \DateTime();
     }
 
     public function getCreatedBy(): ?string
