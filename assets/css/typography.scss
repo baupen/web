@@ -1,8 +1,26 @@
 @font-face {
-  font-family: 'Open Sans', sans-serif;
+  font-family: Inter;
   font-optical-sizing: auto;
   font-weight: 300 - 800;
   font-style: normal;
-  font-variation-settings: 'wdth' 100;
-  src: url('../fonts/OpenSans-VariableFont_wdth,wght.ttf');
+  src: url('../fonts/InterVariable.woff2');
+}
+
+h1 {
+  font-weight: 400;
+  font-size: 2.6em;
+}
+
+h2 {
+  font-weight: 400;
+  font-size: 2em;
+}
+
+h3 {
+  font-size: 1.3em;
+  font-weight: 600;
+}
+
+.lead {
+  font-size: 1.3em;
 }
