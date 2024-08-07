@@ -1,5 +1,5 @@
-@import '~bootstrap/scss/functions';
-@import '~bootstrap/scss/variables';
+@import url('~bootstrap/scss/functions');
+@import url('~bootstrap/scss/variables');
 $border-radius: 0;
 $border-radius-lg: 0;
 $border-radius-sm: 0;
@@ -21,15 +21,15 @@ $yiq-contrasted-threshold: 160;
 $primary-200: #eaecef;
 $custom-control-cursor: pointer;
 
-@import '~bootstrap/scss/bootstrap';
-@import '~noty/src/noty';
-@import '~noty/src/themes/bootstrap-v4';
-@import '~flatpickr/dist/flatpickr.css';
-@import 'bootstrap-responsive';
-@import 'dropzone';
-@import 'lightbox';
-@import 'popover';
-@import 'toggle';
+@import url('~bootstrap/scss/bootstrap');
+@import url('~noty/src/noty');
+@import url('~noty/src/themes/bootstrap-v4');
+@import url('~flatpickr/dist/flatpickr.css');
+@import url('bootstrap-responsive');
+@import url('dropzone');
+@import url('lightbox');
+@import url('popover');
+@import url('toggle');
 
 html,
 body {

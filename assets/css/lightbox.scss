@@ -5,21 +5,18 @@
 
 .lightbox {
   /* Translucent background */
-  background: rgba(0, 0, 0, 0.8);
-  bottom: 0;
+  background: rgb(0 0 0 / 80%);
+  inset: 0;
 
   /* display it */
   display: block;
-  left: 0;
 
   /* A bit of padding around image */
   padding: 1em;
 
   /* Overlay entire screen */
   position: fixed;
-  right: 0;
   text-align: center;
-  top: 0;
   z-index: 999;
 }
 
