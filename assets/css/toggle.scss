@@ -17,7 +17,7 @@ $toggle-default-size: 1.5rem;
 // Variables: $color, $bg, $active-bg
 @mixin toggle-color($color: $btn-default-color, $bg: $btn-default-bg, $active-bg: $brand-primary) {
   &,
- &:hover { /* stylelint-disable-line scss/selector-no-redundant-nesting-selector */
+  &:hover { /* stylelint-disable-line scss/selector-no-redundant-nesting-selector */
     background: $bg;
     color: $color;
   }
