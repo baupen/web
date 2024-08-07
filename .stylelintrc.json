@@ -4,6 +4,7 @@
     "stylelint-config-sass-guidelines"
   ],
   "rules": {
-    "max-nesting-depth": 3
+    "max-nesting-depth": 3,
+    "import-notation": null
   }
 }

@@ -4,7 +4,7 @@ $container-background: $body-background;
 $global-width: 800px;
 $body-font-family: 'Source Sans Pro', helvetica, arial, sans-serif;
 
-@import url('~foundation-emails/scss/foundation-emails');
+@import '~foundation-emails/scss/foundation-emails';
 
 .bg-white {
   background-color: #fff;
