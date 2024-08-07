@@ -1,13 +1,13 @@
 <template>
   <div>
-    <table class="table table-hover table-striped">
+    <table class="table table-hover table-striped border">
       <thead>
       <tr>
         <th class="w-thumbnail"></th>
         <th>{{ $t('construction_site.name') }}</th>
         <th>{{ $t('construction_site.address') }}</th>
         <th>{{ $t('construction_site.created_at') }}</th>
-        <th class="w-minimal"></th>
+        <th class="w-minimal">{{ $t('_action.toggle_association_construction_site.associated_short') }}</th>
       </tr>
       </thead>
       <tbody>
