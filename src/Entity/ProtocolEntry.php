@@ -94,7 +94,7 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
     /**
      * @return ProtocolEntry[]
      */
-    public static function createFromChangedIssue(?Issue $previous, Issue $current, string $authority): array
+    public static function createFromChangedIssue(?array $previousState, Issue $current, string $authority): array
     {
         $entries = [];
 
@@ -108,7 +108,7 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
             return $entry;
         };
 
-        if ($previous?->getResolvedAt() != $current->getResolvedAt()) {
+        if ($previousState && ($previousState['resolved_at'] != $current->getResolvedAt())) {
             $entry = $createEntry();
             $entry->setPayload(self::ISSUE_STATE_RESOLVED_TEXT);
             $entry->setType($current->getResolvedAt() ? ProtocolEntryTypes::StatusSet : ProtocolEntryTypes::StatusUnset);
@@ -116,7 +116,7 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
             $entries[] = $entry;
         }
 
-        if ($previous?->getClosedAt() != $current->getClosedAt()) {
+        if ($previousState && ($previousState['closedAt'] != $current->getClosedAt())) {
             $entry = $createEntry();
             $entry->setPayload(self::ISSUE_STATE_CLOSED_TEXT);
             $entry->setType($current->getClosedAt() ? ProtocolEntryTypes::StatusSet : ProtocolEntryTypes::StatusUnset);

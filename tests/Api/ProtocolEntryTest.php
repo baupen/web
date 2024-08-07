@@ -150,13 +150,13 @@ class ProtocolEntryTest extends ApiTestCase
         $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
         $currentIssue = json_decode($response->getContent(), true);
         $issueId = substr($currentIssue['@id'], strrpos($currentIssue['@id'], '/') + 1);
-        $this->assertProtocolEntries($client, $constructionSiteId, $issueId, []);
+        $this->assertProtocolEntries($client, $constructionSite->getId(), $issueId, []);
 
         // change resolved by, hence expect corresponding log entry
         $payload = ['resolvedBy' => $craftsmanId, 'resolvedAt' => $time];
         $this->assertApiPatchOk($client, '/api/issues/'.$issueId, array_merge($currentIssue, $payload));
         $currentIssue = json_decode($response->getContent(), true);
-        $this->assertProtocolEntries($client, $constructionSiteId, $issueId, [[ProtocolEntryTypes::StatusSet, 'RESOLVED']]);
+        $this->assertProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusSet, 'RESOLVED']]);
 
         $payload = ['closedBy' => $constructionManagerId, 'closedAt' => $time];
     }
@@ -175,7 +175,7 @@ class ProtocolEntryTest extends ApiTestCase
             $expectedEntry = $expectedEntries[$i];
             $actualEntry = $collection['hydra:member'][$i];
 
-            $this->assertEquals($expectedEntry[0], $actualEntry['type']);
+            $this->assertEquals($expectedEntry[0]->value, $actualEntry['type']);
             $this->assertEquals($expectedEntry[1], $actualEntry['payload']);
         }
     }
