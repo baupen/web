@@ -1,10 +1,10 @@
 <template>
-  <div class="mb-5">
+  <div>
     <h1>{{ $t('switch.mine') }}</h1>
     <p>{{ $t('switch.mine_help') }}</p>
 
     <loading-indicator-secondary :spin="isLoading">
-      <div class="container mt-5"
+      <div class="mt-2"
            v-if="memberOfConstructionSites.length > 0">
         <construction-sites-enter-list
             :construction-sites="memberOfConstructionSites"
@@ -22,7 +22,7 @@
 
     </loading-indicator-secondary>
   </div>
-  <template v-if="canAssociateSelf">
+  <div v-if="canAssociateSelf" class="mt-5">
     <h2>{{ $t('switch.all') }}</h2>
     <p>{{ $t('switch.all_help') }}</p>
     <add-construction-site-button
@@ -37,7 +37,7 @@
         :construction-sites="showConstructionSites"
         :construction-manager-iri="constructionManagerIri"
     />
-  </template>
+  </div>
 </template>
 
 <script>

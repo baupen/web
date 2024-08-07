@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <construction-site-enter-card
-        class="mb-4"
-        v-for="constructionSite in constructionSites" :key="constructionSite['@id']"
-        :construction-site="constructionSite" :construction-managers="constructionManagers" />
+  <div class="row row-cols-3">
+    <div class="col" v-for="constructionSite in constructionSites" :key="constructionSite['@id']">
+      <construction-site-enter-card
+          :construction-site="constructionSite" :construction-managers="constructionManagers"/>
+    </div>
   </div>
 </template>
 

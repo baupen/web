@@ -2,11 +2,11 @@
   <div class="card">
     <div class="card-body">
       <div class="row">
-        <div class="col-md-3">
-          <img class="img-fluid" v-if="constructionSite.imageUrl" :src="constructionSite.imageUrl + '?size=preview'"
+        <div class="col-md-4">
+          <img class="img-fluid cover" v-if="constructionSite.imageUrl" :src="constructionSite.imageUrl + '?size=preview'"
                :alt="'image of ' + constructionSite.name">
         </div>
-        <div class="col-md-9">
+        <div class="col-md-8">
           <h2>{{ constructionSite.name }}</h2>
           <p>
             <span class="pre">{{ address.join('\n') }}</span>
@@ -53,3 +53,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+ .cover {
+   height: 100%;
+   object-fit: cover;
+ }
+</style>
