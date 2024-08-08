@@ -18,7 +18,9 @@ import {
 } from '@fortawesome/pro-light-svg-icons'
 import {
   faPlusCircle as faPlusCircleRegular, faDotCircle as faDotCircleRegular, // issue icons
-  faExclamationCircle as faExclamationCircleRegular, faCheckCircle as faCheckCircleRegular // issue icons
+  faExclamationCircle as faExclamationCircleRegular, faCheckCircle as faCheckCircleRegular, // issue icons
+  faCircle as faCircleRegular, faCircleUser as faCircleUserRegular, faCircleO as faCircleORegular, // text protocol
+  faCircleEnvelope as faCircleEnvelopeRegular, faCircleCamera as faCircleCameraRegular, faCircleDown as faCircleDownRegular // text protocol
 } from '@fortawesome/pro-regular-svg-icons'
 
 import {
@@ -62,6 +64,7 @@ FontawesomeLibrary.add(
   faUser,
   faExternalLink, faLock, faUnlock, faChevronRight,
   faPlusCircleRegular, faDotCircleRegular, faExclamationCircleRegular, faCheckCircleRegular,
+  faCircleRegular, faCircleUserRegular, faCircleORegular, faCircleEnvelopeRegular, faCircleCameraRegular, faCircleDownRegular,
   faStarSolid, faUserCheckSolid,
   faFilterSolid, faSearchSolid, faSortUpSolid, faSortDownSolid
 )
