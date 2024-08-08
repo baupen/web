@@ -2,20 +2,22 @@
   <div class="row mb-3">
     <div class="col-md-3">
       <p class="m-0 state-icon" :class="'text-' + iconColor">
-        <font-awesome-icon :icon="['far', 'check-circle']"/>
+        <font-awesome-icon :icon="icon"/>
         <span class="state-joiner" v-if="!last"/>
       </p>
     </div>
     <div class="col">
-      <div class="mb-2">
+      <div>
         <span v-if="protocolEntry.type === 'TEXT'" class="white-space-pre-line">
           {{ protocolEntry.payload }}
         </span>
         <span v-else-if="protocolEntry.type === 'STATUS_SET'">
-          <b>{{ $t('_view.protocol_entry.status_set') }}</b>
+          <b>{{ $t('issue.state.' + protocolEntry.payload.toLowerCase()) }}</b>
         </span>
         <span v-else-if="protocolEntry.type === 'STATUS_UNSET'">
-          <b>{{ $t('_view.protocol_entry.status_unset') }}</b>
+          <b>
+            <del>{{ $t('issue.state.' + protocolEntry.payload.toLowerCase()) }}</del>
+          </b>
         </span>
       </div>
       <p class="text-secondary mb-0">
@@ -123,7 +125,7 @@ export default {
 .state-joiner {
   position: absolute;
   top: calc(2.4rem);
-  height: calc(100% - 0.4rem);
+  height: calc(100% - 1rem);
   right: calc(0.5em - 1px);
 
   background-color: rgba(0, 0, 0, 0.1);
