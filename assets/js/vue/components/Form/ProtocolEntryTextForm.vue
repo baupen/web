@@ -7,7 +7,19 @@
                   @input="validate('payload')"
                   rows="3">
         </textarea>
-    <invalid-feedback :errors="fields.payload.errors" />
+    <invalid-feedback :errors="fields.payload.errors"/>
+  </form-field>
+
+  <form-field for-id="createdAt" :label="$t('protocol_entry.created_at')" :required="false">
+    <span ref="createdAt-anchor"/>
+    <flat-pickr
+        id="createdAt" class="form-control"
+        v-model="protocolEntry.createdAt"
+        :config="dateTimePickerConfig"
+        @blur="fields.createdAt.dirty = true"
+        @change="validate('createdAt')">
+    </flat-pickr>
+    <invalid-feedback :errors="fields.createdAt.errors"/>
   </form-field>
 </template>
 
@@ -21,22 +33,26 @@ import {
 import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
 import Help from '../Library/FormLayout/Help'
+import {dateTimeConfig, flatPickr, toggleAnchorValidity} from "../../services/flatpickr";
 
 export default {
   components: {
     Help,
     InvalidFeedback,
-    FormField
+    FormField,
+    flatPickr
   },
   emits: ['update'],
-  data () {
+  data() {
     return {
       fields: {
         payload: createField(requiredRule()),
+        createdAt: createField(requiredRule()),
       },
       protocolEntry: {
         type: 'TEXT',
         payload: null,
+        createdAt: (new Date()).toISOString()
       },
     }
   },
@@ -49,6 +65,12 @@ export default {
     },
     template: function () {
       this.setFromTemplate()
+    },
+    'fields.createdAt.dirty': function () {
+      toggleAnchorValidity(this.$refs['createdAt-anchor'], this.fields.createdAt)
+    },
+    'fields.createdAt.errors.length': function () {
+      toggleAnchorValidity(this.$refs['createdAt-anchor'], this.fields.createdAt)
     }
   },
   methods: {
@@ -64,15 +86,19 @@ export default {
     }
   },
   computed: {
+    dateTimePickerConfig: function () {
+      return dateTimeConfig
+    },
     updatePayload: function () {
-      if (this.fields.payload.errors.length) {
+      if (this.fields.payload.errors.length ||
+          this.fields.createdAt.errors.length) {
         return null
       }
 
       return this.protocolEntry
     },
   },
-  mounted () {
+  mounted() {
     this.setFromTemplate()
     this.$emit('update', this.updatePayload)
   }

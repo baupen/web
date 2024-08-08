@@ -76,7 +76,6 @@ export default {
         constructionSite: this.constructionSite["@id"],
         root: iriToId(this.root['@id']),
         createdBy: iriToId(this.authorityIri),
-        createdAt: (new Date()).toISOString()
       }
 
       let payload = null;
