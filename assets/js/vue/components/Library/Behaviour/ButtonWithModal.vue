@@ -5,7 +5,7 @@
     </slot>
   </button>
   <transition name="fade">
-    <modal v-if="show" :size="modalSize" @hide="show = false" :title="title" @keydown.esc="show = false">
+    <modal v-if="show" :size="modalSize" @hide="show = false" :title="title" @keydown.esc.stop="show = false">
       <template v-slot:body>
         <slot></slot>
       </template>
