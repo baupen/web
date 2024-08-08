@@ -30,6 +30,32 @@ final class Version20240807115435 extends AbstractMigration
                 construction_site_id,
                 id as root,
                 \'STATUS_SET\' as type,
+                \'CREATED\' as payload,
+                created_at as created_at,
+                created_by_id as created_by_id
+            FROM issue WHERE created_at IS NOT NULL
+        ');
+        $this->addSql('
+            INSERT INTO protocol_entry
+                (id, construction_site_id, root, type, payload, created_at, created_by)
+            SELECT
+                UUID() as id,
+                construction_site_id,
+                id as root,
+                \'STATUS_SET\' as type,
+                \'REGISTERED\' as payload,
+                registered_at as created_at,
+                registered_by_id as created_by_id
+            FROM issue WHERE registered_at IS NOT NULL
+        ');
+        $this->addSql('
+            INSERT INTO protocol_entry
+                (id, construction_site_id, root, type, payload, created_at, created_by)
+            SELECT
+                UUID() as id,
+                construction_site_id,
+                id as root,
+                \'STATUS_SET\' as type,
                 \'RESOLVED\' as payload,
                 resolved_at as created_at,
                 resolved_by_id as created_by_id
