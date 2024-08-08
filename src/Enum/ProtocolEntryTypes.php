@@ -18,4 +18,5 @@ enum ProtocolEntryTypes: string
     case StatusUnset = 'STATUS_UNSET';
     case Email = 'EMAIL';
     case Image = 'IMAGE';
+    case File = 'FILE';
 }

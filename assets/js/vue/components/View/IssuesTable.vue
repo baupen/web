@@ -122,8 +122,8 @@
         <view-issue-button
             :construction-site="constructionSite"
             :constructionManagers="constructionManagers"
+            :craftsmen="craftsmen"
             :map="iwr.map" :map-parent-names="iwr.mapParentNames"
-            :craftsman="iwr.craftsman" :resolvedBy="iwr.resolvedBy"
             :issue="iwr.issue" />
       </td>
     </tr>
