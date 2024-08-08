@@ -1,11 +1,22 @@
 <template>
-  <loading-indicator-secondary :spin="issueProtocolEntries === null || craftsmanProtocolEntries === null"/>
-  <protocol-entry v-for="(entry, index) in orderedProtocolEntries" :id="entry['@id']"
-                  :last="index+1 === orderedProtocolEntries.length"
-                  :protocol-entry="entry"
-                  :root="issue"
-                  :created-by="responsiblesLookup[entry['createdBy']]"
-  />
+  <loading-indicator-secondary :spin="issueProtocolEntries === null && craftsmanProtocolEntries === null">
+    <div class="row mb-3">
+      <div class="col-3">
+        {{ $t('protocol_entry._plural_short') }}
+      </div>
+      <div class="col">
+        <add-protocol-entry-button :authority-iri="authorityIri" :root="issue" :construction-site="constructionSite"
+                                   @added="issueProtocolEntries.push($event)"/>
+      </div>
+    </div>
+
+    <protocol-entry v-for="(entry, index) in orderedProtocolEntries" :id="entry['@id']"
+                    :last="index+1 === orderedProtocolEntries.length"
+                    :protocol-entry="entry"
+                    :root="issue"
+                    :created-by="responsiblesLookup[entry['createdBy']]"
+    />
+  </loading-indicator-secondary>
 </template>
 
 <script>
@@ -13,9 +24,11 @@
 import {api, iriToId} from "../../services/api";
 import ProtocolEntry from "./ProtocolEntry.vue";
 import LoadingIndicatorSecondary from "../Library/View/LoadingIndicatorSecondary.vue";
+import AddProtocolEntryButton from "../Action/AddProtocolEntryButton.vue";
 
 export default {
   components: {
+    AddProtocolEntryButton,
     LoadingIndicatorSecondary,
     ProtocolEntry,
   },
@@ -42,14 +55,18 @@ export default {
       type: Array,
       required: true
     },
+    authorityIri: {
+      type: String,
+      required: false
+    },
   },
   computed: {
     responsiblesLookup: function () {
-      let constructionManagerLookup = {}
-      this.constructionManagers.forEach(cm => constructionManagerLookup[iriToId(cm['@id'])] = cm)
-      this.craftsmen.forEach(cm => constructionManagerLookup[iriToId(cm['@id'])] = cm)
+      let responsiblesLookup = {}
+      this.constructionManagers.forEach(cm => responsiblesLookup[iriToId(cm['@id'])] = cm)
+      this.craftsmen.forEach(cm => responsiblesLookup[iriToId(cm['@id'])] = cm)
 
-      return constructionManagerLookup
+      return responsiblesLookup
     },
     orderedProtocolEntries: function () {
       const protocolEntries = [...(this.issueProtocolEntries ?? []), ...(this.craftsmanProtocolEntries ?? [])]

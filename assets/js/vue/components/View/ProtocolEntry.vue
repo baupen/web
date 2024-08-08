@@ -9,7 +9,7 @@
     <div class="col">
       <div>
         <span v-if="protocolEntry.type === 'TEXT'" class="white-space-pre-line">
-          {{ protocolEntry.payload }}
+          {{ protocolEntry.payload }}&nbsp;
         </span>
         <span v-else-if="protocolEntry.type === 'STATUS_SET'">
           <b>{{ $t('issue.state.' + protocolEntry.payload.toLowerCase()) }}</b>

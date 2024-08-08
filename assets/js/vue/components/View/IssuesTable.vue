@@ -121,7 +121,8 @@
       <td @click.stop="" class="cursor-normal">
         <view-issue-button
             :construction-site="constructionSite"
-            :constructionManagers="constructionManagers"
+            :construction-managers="constructionManagers"
+            :construction-manager-iri="constructionManagerIri"
             :craftsmen="craftsmen"
             :map="iwr.map" :map-parent-names="iwr.mapParentNames"
             :issue="iwr.issue" />

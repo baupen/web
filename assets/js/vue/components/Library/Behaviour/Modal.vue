@@ -3,7 +3,7 @@
     <div class="modal show fade" ref="modal" @keyup.esc="$emit('hide')" @mousedown="lastMouseDownEvent = $event" @mouseup.self="mouseUpOutside" id="modal" tabindex="-1" role="dialog"
          aria-labelledby="modal-title"
          aria-hidden="true">
-      <div class="modal-dialog shadow" :class="{'modal-sm': size === 'sm', 'modal-lg': size === 'lg'}" role="document">
+      <div class="modal-dialog shadow" :class="'modal-' + size" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <slot name="header">
@@ -32,7 +32,7 @@ export default {
     },
     size: {
       type: String,
-      default: null
+      default: 'md'
     }
   },
   data() {

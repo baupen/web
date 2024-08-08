@@ -1,5 +1,6 @@
 <template>
   <button-with-modal-confirm
+      modal-size="mmd"
       :title="$t('_action.view_issue.title')" :color="stateColor">
 
     <template v-slot:footer>
@@ -29,7 +30,7 @@
       </h5>
     </template>
 
-    <div>
+    <div class="mh-30em">
       <div class="w-50 d-inline-block pe-1">
         <issue-render-lightbox
             :preview="true"
@@ -78,7 +79,9 @@
 
     <issue-timeline
         :construction-site="constructionSite" :issue="issue"
-        :craftsmen="craftsmen" :construction-managers="constructionManagers" />
+        :craftsmen="craftsmen" :construction-managers="constructionManagers"
+        :authority-iri="constructionManagerIri"
+    />
 
     <hr/>
 
@@ -100,6 +103,7 @@ import { constructionManagerFormatter } from '../../services/formatters'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import IssueRenderLightbox from '../View/IssueRenderLightbox'
 import IssueTimeline from "../View/IssueTimeline.vue";
+import AddProtocolEntryButton from "./AddProtocolEntryButton.vue";
 
 export default {
   components: {
@@ -133,6 +137,10 @@ export default {
     },
     issue: {
       type: Object,
+      required: true
+    },
+    constructionManagerIri: {
+      type: String,
       required: true
     },
   },

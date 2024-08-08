@@ -422,6 +422,9 @@ const api = {
   },
   postEmail: function (email) {
     return this._postRaw('/api/emails', email)
+  },
+  postProtocolEntry: function (protocolEntry) {
+    return this._postRaw('/api/protocol_entries', protocolEntry)
   }
 }
 

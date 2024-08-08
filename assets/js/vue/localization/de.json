@@ -12,6 +12,13 @@
       "added": "Karte hinzugefügt",
       "title": "Karte hinzufügen"
     },
+    "add_protocol_entry": {
+      "added": "Protokolleintrag hinzugefügt",
+      "title": "Protokolleintrag hinzufügen",
+      "type_text": "Text",
+      "type_image": "Bild",
+      "type_file": "Datei"
+    },
     "associate_construction_manager": {
       "associated": "Bauleiter der Baustelle hinzugefügt",
       "title": "Bauleiter der Baustelle hinzufügen"
@@ -341,6 +348,12 @@
     "status": "Status",
     "trade": "Gewerk",
     "was_added_with_client": "Abnahmependenz"
+  },
+  "protocol_entry": {
+    "_name": "Protokolleintrag",
+    "_plural": "Protokolleinträge",
+    "_plural_short": "Protokoll",
+    "text_payload": "Text"
   },
   "map": {
     "_name": "Bauplan",
