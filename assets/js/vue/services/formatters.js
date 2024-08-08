@@ -1,9 +1,9 @@
 const entityFormatter = {
   name: function (instance) {
-    if (instance['@id'].includes('construction_manager')) {
+    if (instance['@id'].includes('construction_managers')) {
       return constructionManagerFormatter.name(instance)
-    } else if (instance['@id'].includes('craftsman')) {
-      return instance.name
+    } else if (instance['@id'].includes('craftsmen')) {
+      return instance.company
     }
 
     return ''
