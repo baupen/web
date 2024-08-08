@@ -353,6 +353,7 @@
     "_name": "Protokolleintrag",
     "_plural": "Protokolleinträge",
     "_plural_short": "Protokoll",
+    "created_at": "Zeitpunkt",
     "text_payload": "Text"
   },
   "map": {
