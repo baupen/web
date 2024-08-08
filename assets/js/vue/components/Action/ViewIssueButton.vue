@@ -74,58 +74,11 @@
       </div>
     </div>
 
-    <hr />
+    <hr/>
 
-    <div class="row">
-      <div class="col-md-3">
-        <p class="m-0 state-icon text-primary">
-          <font-awesome-icon :icon="['far', 'plus-circle']" />
-        </p>
-      </div>
-      <div class="col">
-        {{createdByName}}<br/>
-        <date-time-human-readable :value="issue.createdAt" />
-      </div>
-    </div>
-
-    <div class="row mt-3" v-if="isRegistered">
-      <div class="col-md-3">
-        <p class="m-0 state-icon text-primary">
-          <font-awesome-icon :icon="['far', 'dot-circle']" />
-          <span class="state-joiner" />
-        </p>
-      </div>
-      <div class="col">
-        {{registeredByName}}<br/>
-        <date-time-human-readable :value="issue.registeredAt" />
-      </div>
-    </div>
-
-    <div class="row mt-3" v-if="isResolved">
-      <div class="col-md-3">
-        <p class="m-0 state-icon text-orange">
-          <font-awesome-icon :icon="['far', 'exclamation-circle']" />
-          <span class="state-joiner" />
-        </p>
-      </div>
-      <div class="col">
-        {{resolvedByName}}<br/>
-        <date-time-human-readable :value="issue.resolvedAt" />
-      </div>
-    </div>
-
-    <div class="row mt-3" v-if="isClosed">
-      <div class="col-md-3">
-        <p class="m-0 state-icon text-success">
-          <font-awesome-icon :icon="['far', 'check-circle']" />
-          <span class="state-joiner" />
-        </p>
-      </div>
-      <div class="col">
-        {{closedByName}}<br/>
-        <date-time-human-readable :value="issue.closedAt" />
-      </div>
-    </div>
+    <issue-timeline
+        :construction-site="constructionSite" :issue="issue"
+        :craftsmen="craftsmen" :construction-managers="constructionManagers" />
 
     <hr/>
 
@@ -146,9 +99,11 @@ import ToggleIcon from '../Library/View/ToggleIcon'
 import { constructionManagerFormatter } from '../../services/formatters'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import IssueRenderLightbox from '../View/IssueRenderLightbox'
+import IssueTimeline from "../View/IssueTimeline.vue";
 
 export default {
   components: {
+    IssueTimeline,
     IssueRenderLightbox,
     DateTimeHumanReadable,
     ToggleIcon,
@@ -168,15 +123,13 @@ export default {
     mapParentNames: {
       type: Array,
     },
-    craftsman: {
-      type: Object,
-    },
-    resolvedBy: {
-      type: Object,
-    },
     constructionManagers: {
-      type: Object,
+      type: Array,
       required: true
+    },
+    craftsmen: {
+      type: Array,
+      required: true,
     },
     issue: {
       type: Object,
@@ -193,6 +146,9 @@ export default {
     isOverdue: function () {
       return issueTransformer.isOverdue(this.issue)
     },
+    craftsman: function () {
+      return this.craftsmen.find(craftsman => craftsman['@id'] === this.issue.craftsman)
+    },
     createdByName: function () {
       const createdBy = this.constructionManagerLookup[this.issue.createdBy]
       return createdBy ? constructionManagerFormatter.name(createdBy) : ""
@@ -205,7 +161,8 @@ export default {
       return registeredBy ? constructionManagerFormatter.name(registeredBy) : ""
     },
     resolvedByName: function () {
-      return this.resolvedBy ? this.resolvedBy.company : null
+      const resolvedBy = this.craftsmen.find(craftsman => craftsman['@id'] === this.issue.resolvedBy)
+      return resolvedBy?.company
     },
     closedBy: function () {
       return this.constructionManagerLookup[this.issue.closedBy]
@@ -238,19 +195,3 @@ export default {
 }
 </script>
 
-<style scoped>
-.state-icon {
-  font-size: 2em;
-  position: relative;
-  text-align: right;
-}
-
-.state-joiner {
-  background-color: rgba(0, 0, 0, 0.1);
-  bottom: calc(1.25em + 1px);
-  height: 1em;
-  position: absolute;
-  right: calc(0.5em - 1px);
-  width: 2px;
-}
-</style>

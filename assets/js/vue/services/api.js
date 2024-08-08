@@ -357,6 +357,12 @@ const api = {
     const link = this.getIssuesRenderLink(constructionSite, map, query)
     return this._getEmptyResponse(link)
   },
+  getProtocolEntries: function (constructionSite, root) {
+    const queryString = '?constructionSite=' + iriToId(constructionSite['@id']) +
+      '&root=' + iriToId(root['@id'])
+
+    return this._getHydraCollection('/api/protocol_entries' + queryString)
+  },
   patch: function (instance, patch, successMessage = null) {
     return new Promise(
       (resolve) => {

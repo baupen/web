@@ -1,3 +1,15 @@
+const entityFormatter = {
+  name: function (instance) {
+    if (instance['@id'].includes('construction_manager')) {
+      return constructionManagerFormatter.name(instance)
+    } else if (instance['@id'].includes('craftsman')) {
+      return instance.name
+    }
+
+    return ''
+  }
+}
+
 const constructionManagerFormatter = {
   name: function (instance) {
     return [instance.givenName, instance.familyName]
@@ -37,4 +49,4 @@ const mapFormatter = {
   }
 }
 
-export { constructionManagerFormatter, constructionSiteFormatter, mapFormatter }
+export { entityFormatter, constructionManagerFormatter, constructionSiteFormatter, mapFormatter }
