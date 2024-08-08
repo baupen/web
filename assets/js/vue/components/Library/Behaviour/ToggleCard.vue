@@ -2,6 +2,9 @@
   <div class="card">
     <div class="card-header clickable" @click="toggleOpen">
       <span>
+        <span class="card-header-icon">
+            <font-awesome-icon :icon="['fal', 'chevron-right']" class="rotate-icon" :class="{'rotated': isOpen}"/>
+        </span>
         {{ title }}
       </span>
       <span class="text-end float-end">
@@ -19,7 +22,10 @@
 </template>
 
 <script>
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+
 export default {
+  components: {FontAwesomeIcon},
   emits: ['active-toggled'],
   props: {
     title: {
@@ -65,3 +71,18 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.card-header-icon {
+  margin-left: -0.25rem;
+  margin-right: 0.25rem;
+}
+
+.rotate-icon {
+  transition: transform 0.3s;
+}
+
+.rotated {
+  transform: rotate(90deg);
+}
+</style>

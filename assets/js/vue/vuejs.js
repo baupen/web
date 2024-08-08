@@ -13,7 +13,8 @@ import {
   faStar, faUserCheck, // issue states (toggle off)
   faFilter, faSort, // table
   faUser, faLock, faUnlock, // craftsman link, canEdit, !canEdit
-  faExternalLink // external link
+  faExternalLink, // external link
+  faChevronRight
 } from '@fortawesome/pro-light-svg-icons'
 import {
   faPlusCircle as faPlusCircleRegular, faDotCircle as faDotCircleRegular, // issue icons
@@ -59,7 +60,7 @@ FontawesomeLibrary.add(
   faStar, faUserCheck,
   faFilter, faSort,
   faUser,
-  faExternalLink, faLock, faUnlock,
+  faExternalLink, faLock, faUnlock, faChevronRight,
   faPlusCircleRegular, faDotCircleRegular, faExclamationCircleRegular, faCheckCircleRegular,
   faStarSolid, faUserCheckSolid,
   faFilterSolid, faSearchSolid, faSortUpSolid, faSortDownSolid
