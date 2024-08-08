@@ -1,13 +1,13 @@
 <template>
   <div class="row mb-3">
     <div class="col-md-3">
-      <p class="m-0 state-icon" :class="'text-' + iconColor">
+      <p class="m-0 state-icon h-100" :class="'text-' + iconColor">
         <font-awesome-icon :icon="icon"/>
         <span class="state-joiner" v-if="!last"/>
       </p>
     </div>
     <div class="col">
-      <div>
+      <div class="mt-1">
         <span v-if="protocolEntry.type === 'TEXT'" class="white-space-pre-line">
           {{ protocolEntry.payload }}&nbsp;
         </span>
