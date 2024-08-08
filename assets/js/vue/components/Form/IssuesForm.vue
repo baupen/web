@@ -135,7 +135,6 @@
     <span ref="deadline-anchor" />
     <flat-pickr
         id="deadline" class="form-control"
-        :class="{'is-valid': fields.deadline.dirty && !fields.deadline.errors.length, 'is-invalid': fields.deadline.dirty && fields.deadline.errors.length }"
         v-model="issue.deadline"
         :config="datePickerConfig"
         @blur="fields.deadline.dirty = true"
@@ -153,7 +152,7 @@
 import { createField, validateField, changedFieldValues, resetFields } from '../../services/validation'
 import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
-import { dateConfig, flatPickr } from '../../services/flatpickr'
+import {dateConfig, flatPickr, toggleAnchorValidity} from '../../services/flatpickr'
 import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 
 export default {
@@ -217,16 +216,10 @@ export default {
       }
     },
     'fields.deadline.dirty': function () {
-      if (!this.$refs['deadline-anchor']) {
-        return
-      }
-
-      const visibleInput = this.$refs['deadline-anchor'].parentElement.childNodes[4]
-      if (this.fields.deadline.dirty) {
-        visibleInput.classList.add('is-valid')
-      } else {
-        visibleInput.classList.remove('is-valid')
-      }
+      toggleAnchorValidity(this.$refs['deadline-anchor'], this.fields.deadline)
+    },
+    'fields.deadline.errors.length': function () {
+      toggleAnchorValidity(this.$refs['deadline-anchor'], this.fields.deadline)
     }
   },
   methods: {
