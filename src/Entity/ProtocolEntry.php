@@ -131,6 +131,7 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
             $entry = $createEntry();
             $entry->setPayload(self::ISSUE_STATE_RESOLVED_TEXT);
             $entry->setType($current->getResolvedAt() ? ProtocolEntryTypes::StatusSet : ProtocolEntryTypes::StatusUnset);
+            $entry->setCreatedBy($current->getResolvedBy() ? $current->getResolvedBy()->getId() : $authority);
 
             $entries[] = $entry;
         }
