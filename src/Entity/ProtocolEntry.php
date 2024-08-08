@@ -56,6 +56,8 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
     use IdTrait;
     use SoftDeleteTrait;
 
+    public const ISSUE_STATE_CREATED_TEXT = 'CREATED';
+    public const ISSUE_STATE_REGISTERED_TEXT = 'REGISTERED';
     public const ISSUE_STATE_RESOLVED_TEXT = 'RESOLVED';
     public const ISSUE_STATE_CLOSED_TEXT = 'CLOSED';
 
@@ -108,6 +110,23 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
             return $entry;
         };
 
+        if (!$previousState || null === $previousState['createdAt']) {
+            $entry = $createEntry();
+            $entry->setPayload(self::ISSUE_STATE_CREATED_TEXT);
+            $entry->setType(ProtocolEntryTypes::StatusSet);
+
+            $entries[] = $entry;
+        }
+
+        if ((!$previousState || null === $previousState['registeredAt']) && $current->getRegisteredAt()) {
+            $entry = $createEntry();
+            $entry->setPayload(self::ISSUE_STATE_REGISTERED_TEXT);
+            $entry->setType(ProtocolEntryTypes::StatusSet);
+
+            $entries[] = $entry;
+        }
+
+        // state may be removed or changed
         if ($previousState && ($previousState['resolvedAt'] != $current->getResolvedAt())) {
             $entry = $createEntry();
             $entry->setPayload(self::ISSUE_STATE_RESOLVED_TEXT);
@@ -116,6 +135,7 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
             $entries[] = $entry;
         }
 
+        // state may be removed or changed
         if ($previousState && ($previousState['closedAt'] != $current->getClosedAt())) {
             $entry = $createEntry();
             $entry->setPayload(self::ISSUE_STATE_CLOSED_TEXT);

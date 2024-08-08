@@ -146,24 +146,33 @@ class ProtocolEntryTest extends ApiTestCase
         $time = (new \DateTime())->format('c');
 
         // post initially; no status change
-        $payload = ['registeredBy' => $constructionManagerId, 'registeredAt' => $time];
-        $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', $payload, $basePayload);
+        $response = $this->assertApiPostPayloadPersisted($client, '/api/issues', [], $basePayload);
         $currentIssue = json_decode($response->getContent(), true);
         $issueId = substr($currentIssue['@id'], strrpos($currentIssue['@id'], '/') + 1);
-        $this->assertProtocolEntries($client, $constructionSite->getId(), $issueId, []);
+        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusSet, 'CREATED']]);
+
+        sleep(1); // to enforce order
+
+        // register issue
+        $payload = ['registeredBy' => $constructionManagerId, 'registeredAt' => $time];
+        $response = $this->assertApiPatchOk($client, '/api/issues/'.$issueId, array_merge($currentIssue, $payload));
+        $currentIssue = json_decode($response->getContent(), true);
+        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusSet, 'REGISTERED']]);
+
+        sleep(1); // to enforce order
 
         // change resolved by, hence expect corresponding log entry
         $payload = ['resolvedBy' => $craftsmanId, 'resolvedAt' => $time];
         $response = $this->assertApiPatchOk($client, '/api/issues/'.$issueId, array_merge($currentIssue, $payload));
         $currentIssue = json_decode($response->getContent(), true);
-        $this->assertProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusSet, 'RESOLVED']]);
+        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusSet, 'RESOLVED']]);
 
         sleep(1); // to enforce order
 
         $payload = ['closedBy' => $constructionManagerId, 'closedAt' => $time];
         $response = $this->assertApiPatchOk($client, '/api/issues/'.$issueId, array_merge($currentIssue, $payload));
         $currentIssue = json_decode($response->getContent(), true);
-        $this->assertProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusSet, 'RESOLVED'], [ProtocolEntryTypes::StatusSet, 'CLOSED']]);
+        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusSet, 'CLOSED']]);
 
         sleep(1); // to enforce order
 
@@ -171,24 +180,35 @@ class ProtocolEntryTest extends ApiTestCase
         $payload = ['closedBy' => $constructionManagerId, 'closedAt' => $time];
         $response = $this->assertApiPatchOk($client, '/api/issues/'.$issueId, array_merge($currentIssue, $payload));
         $currentIssue = json_decode($response->getContent(), true);
-        $this->assertProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusSet, 'RESOLVED'], [ProtocolEntryTypes::StatusSet, 'CLOSED'], [ProtocolEntryTypes::StatusSet, 'CLOSED']]);
+        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusSet, 'CLOSED']]);
 
         sleep(1); // to enforce order
 
         $payload = ['resolvedBy' => null, 'resolvedAt' => null, 'closedBy' => null, 'closedAt' => null];
         $response = $this->assertApiPatchOk($client, '/api/issues/'.$issueId, array_merge($currentIssue, $payload));
         json_decode($response->getContent(), true);
-        $this->assertProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusSet, 'RESOLVED'], [ProtocolEntryTypes::StatusSet, 'CLOSED'], [ProtocolEntryTypes::StatusSet, 'CLOSED'], [ProtocolEntryTypes::StatusUnset, 'RESOLVED'], [ProtocolEntryTypes::StatusUnset, 'CLOSED']]);
+        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusUnset, 'RESOLVED'], [ProtocolEntryTypes::StatusUnset, 'CLOSED']]);
     }
 
     /**
-     * @param array{0: ProtocolEntryTypes, 1: string}[] $expectedEntries
+     * @var array array{0: ProtocolEntryTypes, 1: string}[][]
      */
-    private function assertProtocolEntries(Client $client, string $constructionSiteId, string $root, array $expectedEntries): void
+    private array $protocolEntries = [];
+
+    /**
+     * @param array{0: ProtocolEntryTypes, 1: string}[] $newEntries
+     */
+    private function assertNewProtocolEntries(Client $client, string $constructionSiteId, string $root, array $newEntries): void
     {
         $url = '/api/protocol_entries?constructionSite='.$constructionSiteId.'&root='.$root.'&order[createdAt]=asc';
         $collectionResponse = $this->assertApiGetOk($client, $url);
         $collection = json_decode($collectionResponse->getContent(), true);
+
+        $expectedEntries = $newEntries;
+        if (isset($this->protocolEntries[$root])) {
+            $expectedEntries = [...$this->protocolEntries[$root], ...$expectedEntries];
+        }
+        $this->protocolEntries[$root] = $expectedEntries;
 
         $this->assertSameSize($expectedEntries, $collection['hydra:member']);
         for ($i = 0; $i < count($expectedEntries); ++$i) {
