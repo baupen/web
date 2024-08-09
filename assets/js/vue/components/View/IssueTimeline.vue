@@ -43,7 +43,7 @@ export default {
       newProtocolEntries: [],
       issueProtocolEntries: null,
       craftsmanProtocolEntries: null,
-      constructionSiteEntries: null,
+      constructionSiteProtocolEntries: null,
       showSecondaryEntries: false
     }
   },
@@ -78,7 +78,7 @@ export default {
       return responsiblesLookup
     },
     orderedProtocolEntries: function () {
-      const protocolEntries = [...this.newProtocolEntries, ...(this.issueProtocolEntries ?? []), ...(this.craftsmanProtocolEntries ?? []), ...(this.constructionSiteEntries ?? [])]
+      const protocolEntries = [...this.newProtocolEntries, ...(this.issueProtocolEntries ?? []), ...(this.craftsmanProtocolEntries ?? []), ...(this.constructionSiteProtocolEntries ?? [])]
           .filter(entry => !entry.isDeleted)
       protocolEntries.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
       return protocolEntries
@@ -92,7 +92,7 @@ export default {
       if (this.craftsmanProtocolEntries?.includes(protocolEntry)) {
         return this.craftsman
       }
-      if (this.constructionSiteEntries?.includes(protocolEntry)) {
+      if (this.constructionSiteProtocolEntries?.includes(protocolEntry)) {
         return this.constructionSite
       }
 
@@ -104,14 +104,13 @@ export default {
         .then(entries => {
           this.issueProtocolEntries = entries
         })
-
     api.getProtocolEntries(this.constructionSite, this.craftsman)
         .then(entries => {
           this.craftsmanProtocolEntries = entries
         })
     api.getProtocolEntries(this.constructionSite, this.constructionSite)
         .then(entries => {
-          this.constructionSiteEntries = entries
+          this.constructionSiteProtocolEntries = entries
         })
   }
 }
