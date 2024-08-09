@@ -246,6 +246,9 @@
     "maps_resolve": {
       "issues_by_map": "Pendenzen nach Bauplan"
     },
+    "protocol_entry": {
+      "show_email_body": "Inhalt anzeigen"
+    },
     "no_craftsmen": "Keine Unternehmer",
     "no_issues": "Keine Pendenzen",
     "no_maps": "Keine Baupläne",

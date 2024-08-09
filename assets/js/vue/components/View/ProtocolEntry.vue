@@ -32,10 +32,19 @@
             {{ $t('_view.download') }}
           </a>
         </p>
+        <p v-else-if="protocolEntry.type === 'EMAIL'" class="mb-0">
+          {{ emailPayload.subject }}
+          <a v-if="!showEmailBody" href="" @click.prevent.stop="showEmailBody = true">
+            {{ $t('_view.protocol_entry.show_email_body') }}
+          </a>
+          <span v-if="showEmailBody" class="d-block quote mt-1 mb-1 white-space-pre-line border-start border-4 ps-2">
+            {{ emailPayload.body }}
+          </span>
+        </p>
       </div>
       <p class="text-secondary mb-0">
         <date-time-human-readable :value="protocolEntry.createdAt"/>
-        ,
+        <span>, </span>
         {{ createdByName }}
       </p>
     </div>
@@ -63,6 +72,11 @@ export default {
     FontAwesomeIcon,
     DateTimeHumanReadable,
   },
+  data() {
+    return {
+      showEmailBody: false,
+    }
+  },
   props: {
     protocolEntry: {
       type: Object,
@@ -89,13 +103,16 @@ export default {
     createdByName: function () {
       return this.createdBy ? entityFormatter.name(this.createdBy) : null
     },
+    emailPayload: function () {
+      return JSON.parse(this.protocolEntry.payload)
+    },
     icon: function () {
       if ('TEXT' === this.protocolEntry.type) {
-        if (this.root['@id'].includes('issue')) {
+        if (this.root['@id'].includes('issues')) {
           return ['far', 'circle']
-        } else if (this.root['@id'].includes('craftsman')) {
+        } else if (this.root['@id'].includes('craftsmen')) {
           return ['far', 'circle-user']
-        } else if (this.root['@id'].includes('construction_side')) {
+        } else if (this.root['@id'].includes('construction_sides')) {
           return ['far', 'circle-o']
         }
       }
@@ -162,5 +179,6 @@ export default {
   background-color: rgba(0, 0, 0, 0.1);
   width: 2px;
 }
+
 </style>
 
