@@ -4,9 +4,9 @@
     <tr class="text-sm">
       <th class="w-minimal"></th>
       <th colspan="4">{{ $t('craftsman._name') }}</th>
-      <th class="border-left" colspan="2">{{ $t('issue._plural') }}</th>
-      <th class="border-left" colspan="2">{{ $t('_view.craftsmen.last_activity') }}</th>
-      <th class="border-left"></th>
+      <th class="border-start" colspan="2">{{ $t('issue._plural') }}</th>
+      <th class="border-start" colspan="2">{{ $t('_view.craftsmen.last_activity') }}</th>
+      <th class="border-start"></th>
     </tr>
     <tr>
       <th class="w-minimal">
@@ -20,13 +20,13 @@
       <th class="w-minimal"></th>
       <th class="w-minimal"></th>
 
-      <th class="border-left">{{ $t('_view.craftsmen_statistics.count') }}</th>
+      <th class="border-start">{{ $t('_view.craftsmen_statistics.count') }}</th>
       <th>{{ $t('craftsman.next_deadline') }}</th>
 
-      <th class="border-left">{{ $t('craftsman.last_visit_online') }}</th>
+      <th class="border-start">{{ $t('craftsman.last_visit_online') }}</th>
       <th>{{ $t('craftsman.last_issue_resolved_at') }}</th>
 
-      <th class="border-left">{{ $t('craftsman.last_email_received') }}</th>
+      <th class="border-start">{{ $t('craftsman.last_email_received') }}</th>
     </tr>
     </thead>
     <tbody>
@@ -57,7 +57,7 @@
         </a>
       </td>
 
-      <td class="border-left">
+      <td class="border-start">
         <issue-summary-badges :summary="cws.statistics.issueSummary" />
       </td>
       <td>
@@ -68,7 +68,7 @@
         </span>
       </td>
 
-      <td class="border-left">
+      <td class="border-start">
         <date-time-human-readable :value="cws.statistics.lastVisitOnline" />
         <br />
         <span v-if="cws.statistics.issueUnreadCount" class="badge bg-secondary">
@@ -78,8 +78,7 @@
       <td>
         <date-time-human-readable :value="cws.statistics.lastIssueResolved" />
       </td>
-
-      <td class="border-left">
+      <td class="border-start">
         <date-time-human-readable :value="cws.statistics.lastEmailReceived" />
       </td>
     </tr>
