@@ -13,7 +13,8 @@
     <protocol-entry v-for="(entry, index) in orderedProtocolEntries" :id="entry['@id']"
                     :last="index+1 === orderedProtocolEntries.length"
                     :protocol-entry="entry"
-                    :root="craftsman"
+                    :root="getRoot(entry)"
+                    :is-context="!(craftsmanProtocolEntries.includes(entry) || newProtocolEntries.includes(entry))"
                     :is-removable="newProtocolEntries.includes(entry)"
                     :created-by="responsiblesLookup[entry['createdBy']]"
     />
@@ -37,6 +38,7 @@ export default {
     return {
       newProtocolEntries: [],
       craftsmanProtocolEntries: null,
+      constructionSiteProtocolEntries: null,
     }
   },
   props: {
@@ -65,16 +67,29 @@ export default {
       return responsiblesLookup
     },
     orderedProtocolEntries: function () {
-      const protocolEntries = [...this.newProtocolEntries, ...(this.craftsmanProtocolEntries ?? [])]
+      const protocolEntries = [...this.newProtocolEntries, ...(this.craftsmanProtocolEntries ?? []), ...(this.constructionSiteProtocolEntries ?? [])]
           .filter(entry => !entry.isDeleted)
       protocolEntries.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
       return protocolEntries
     }
   },
+  methods: {
+    getRoot: function (protocolEntry) {
+      if (this.constructionSiteProtocolEntries?.includes(protocolEntry)) {
+        return this.constructionSite
+      }
+
+      return this.craftsman
+    },
+  },
   mounted() {
     api.getProtocolEntries(this.constructionSite, this.craftsman)
         .then(entries => {
           this.craftsmanProtocolEntries = entries
+        })
+    api.getProtocolEntries(this.constructionSite, this.constructionSite)
+        .then(entries => {
+          this.constructionSiteProtocolEntries = entries
         })
   }
 }
