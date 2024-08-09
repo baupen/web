@@ -17,6 +17,8 @@ use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\Map;
 use App\Entity\MapFile;
+use App\Entity\ProtocolEntry;
+use App\Entity\ProtocolEntryFile;
 use App\Entity\Traits\FileTrait;
 use App\Helper\DateTimeFormatter;
 use App\Helper\FileHelper;
@@ -97,10 +99,25 @@ class StorageService implements StorageServiceInterface
         return $issueImage;
     }
 
+    public function uploadProtocolEntryFile(UploadedFile $file, ProtocolEntry $protocolEntry): ?ProtocolEntryFile
+    {
+        $protocolEntryFile = new ProtocolEntryFile();
+        $protocolEntryFile->setCreatedFor($protocolEntry);
+
+        $targetFolder = $this->pathService->getFolderForProtocolEntryFiles($protocolEntry->getConstructionSite());
+        if (!$this->uploadFile($file, $targetFolder, $protocolEntryFile)) {
+            return null;
+        }
+
+        $protocolEntry->setFile($protocolEntryFile);
+
+        return $protocolEntryFile;
+    }
+
     /**
      * @param FileTrait $entity
      */
-    private function uploadFile(UploadedFile $file, string $targetFolder, ConstructionSiteImage|MapFile|IssueImage $entity): bool
+    private function uploadFile(UploadedFile $file, string $targetFolder, ConstructionSiteImage|MapFile|IssueImage|ProtocolEntryFile $entity): bool
     {
         FileHelper::ensureFolderExists($targetFolder);
         $targetFileName = $this->getSanitizedUniqueFileName($targetFolder, $file->getClientOriginalName());

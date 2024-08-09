@@ -20,6 +20,7 @@ use App\Entity\Map;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
 use App\Tests\DataFixtures\TestFilterFixtures;
+use App\Tests\DataFixtures\TestProtocolEntryFixtures;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AssertFileTrait;
 use App\Tests\Traits\AuthenticationTrait;
@@ -183,6 +184,40 @@ class ApiControllerTest extends ApiTestCase
         /** @var Map $map */
         $map = $this->reloadEntity($map);
         $this->assertNull($map->getFile());
+    }
+
+    public function testProtocolEntryFile(): void
+    {
+        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/protocol_entry_files/nachbessern.jpg');
+        $this->assertProtocolEntryFileUploaded($uploadedFile, function (Client $client, string $url) {
+            $this->assertImageDownloads($client, $url);
+        });
+
+        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/protocol_entry_files/mail.eml');
+        $this->assertProtocolEntryFileUploaded($uploadedFile, function (Client $client, string $url) {
+            $this->assertGetFile($client->getKernelBrowser(), $url, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        });
+
+        $uploadedFile = new AssetFile(__DIR__.'/../../assets/samples/Test/protocol_entry_files/paper.pdf');
+        $this->assertProtocolEntryFileUploaded($uploadedFile, function (Client $client, string $url) {
+            $this->assertGetFile($client->getKernelBrowser(), $url, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        });
+    }
+
+    protected function assertProtocolEntryFileUploaded(AssetFile $file, callable $assertDownloadSuccessful): void
+    {
+        $client = $this->createClient();
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestProtocolEntryFixtures::class]);
+        $this->loginConstructionManager($client->getKernelBrowser());
+
+        $testConstructionSite = $this->getTestConstructionSite();
+        $protocolEntry = $testConstructionSite->getProtocolEntries()->get(0);
+
+        $baseUrl = '/api/protocol_entries/'.$protocolEntry->getId().'/file';
+        $url = $this->assertApiPostFile($client->getKernelBrowser(), $baseUrl, $file);
+
+        $this->assertStringContainsString($protocolEntry->getFile()->getId(), $url);
+        $assertDownloadSuccessful($client, $url);
     }
 
     private function assertImageDownloads(Client $client, string $imageUrl): void

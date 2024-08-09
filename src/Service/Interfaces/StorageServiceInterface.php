@@ -17,6 +17,8 @@ use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\Map;
 use App\Entity\MapFile;
+use App\Entity\ProtocolEntry;
+use App\Entity\ProtocolEntryFile;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 interface StorageServiceInterface
@@ -28,4 +30,6 @@ interface StorageServiceInterface
     public function uploadMapFile(UploadedFile $file, Map $map): ?MapFile;
 
     public function uploadIssueImage(UploadedFile $file, Issue $issue): ?IssueImage;
+
+    public function uploadProtocolEntryFile(UploadedFile $file, ProtocolEntry $protocolEntry): ?ProtocolEntryFile;
 }

@@ -1,0 +1,64 @@
+Return-Path: <florian.moser@baupen.ch>
+Delivered-To: florian.moser@baupen.ch
+Received: from mail-lb1.adm.hostpoint.ch ([10.4.2.213])
+	by popimap028.mail.hostpoint.internal with LMTP
+	id kJ8OA5/LtWYQIwEA9BAvQA:P1
+	(envelope-from <florian.moser@baupen.ch>)
+	for <florian.moser@baupen.ch>; Fri, 09 Aug 2024 09:56:15 +0200
+Received: from mxin013.mail.hostpoint.ch ([10.4.2.213])
+	by mail-lb1.adm.hostpoint.ch with LMTP
+	id kJ8OA5/LtWYQIwEA9BAvQA
+	(envelope-from <florian.moser@baupen.ch>)
+	for <florian.moser@baupen.ch>; Fri, 09 Aug 2024 09:56:15 +0200
+Received: from mailnull by mxin013.mail.hostpoint.ch with local_accounts_spamscanned (Exim 4.97.1 (FreeBSD))
+	(envelope-from <florian.moser@baupen.ch>)
+	id 1scKTu-00000000K34-3YK6
+	for florian.moser@baupen.ch;
+	Fri, 09 Aug 2024 09:56:15 +0200
+X-Spam-Checker-Version: SpamAssassin 4.0.0 (2022-12-14) on
+	mxin013.mail.hostpoint.ch
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.0 required=5.0 tests=HP_VS_LEGIT,SPF_HELO_PASS,
+	SPF_PASS autolearn=disabled version=4.0.0
+Received: from mxout017.mail.hostpoint.ch ([2a00:d70:0:e::317])
+	by mxin013.mail.hostpoint.ch with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.97.1 (FreeBSD))
+	(envelope-from <florian.moser@baupen.ch>)
+	id 1scKTu-00000000K2h-3LvV
+	for florian.moser@baupen.ch;
+	Fri, 09 Aug 2024 09:56:14 +0200
+Received: from [10.0.2.44] (helo=asmtp014.mail.hostpoint.ch)
+	by mxout017.mail.hostpoint.ch with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.97.1 (FreeBSD))
+	(envelope-from <florian.moser@baupen.ch>)
+	id 1scKTu-000000009kX-2q4q
+	for florian.moser@baupen.ch;
+	Fri, 09 Aug 2024 09:56:14 +0200
+Received: from [152.81.72.121]
+	by asmtp014.mail.hostpoint.ch with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.97.1 (FreeBSD))
+	(envelope-from <florian.moser@baupen.ch>)
+	id 1scKTu-00000000Mhy-2A7H
+	for florian.moser@baupen.ch;
+	Fri, 09 Aug 2024 09:56:14 +0200
+X-Authenticated-Sender-Id: florian.moser@baupen.ch
+Message-ID: <06407198-d905-4d3c-bab2-b7b7bf19ce1d@baupen.ch>
+Date: Fri, 9 Aug 2024 09:56:13 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US, fr, de-DE
+To: florian.moser@baupen.ch
+From: Florian Moser <florian.moser@baupen.ch>
+Subject: Baupen testmail
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Whitelisted-By: dnswl.hostpoint.dnslist
+X-Vs-State: 0
+X-Hostpoint-Spambox:  YES 
+
+Hi
+
+This is a testmail to check mimetype.
+
+Best regards
+

@@ -46,13 +46,12 @@ class IssueDataPersister implements ContextAwareDataPersisterInterface
     public function persist($data, array $context = []): void
     {
         $isCreated = ($context['collection_operation_name'] ?? null) === 'post';
-        $previousState = null;
         if ($isCreated) {
             $data->setNumber(0);
-        } else {
-            $unitOfWork = $this->doctrine->getManager()->getUnitOfWork();
-            $previousState = $unitOfWork->getOriginalEntityData($data);
         }
+
+        $unitOfWork = $this->doctrine->getManager()->getUnitOfWork();
+        $previousState = $unitOfWork->getOriginalEntityData($data);
 
         $repository = $this->doctrine->getRepository(Issue::class);
 

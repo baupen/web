@@ -15,6 +15,7 @@ use App\Entity\ConstructionSiteImage;
 use App\Entity\Issue;
 use App\Entity\IssueImage;
 use App\Entity\MapFile;
+use App\Entity\ProtocolEntryFile;
 
 interface ImageServiceInterface
 {
@@ -32,9 +33,15 @@ interface ImageServiceInterface
     // all valid sizes
     public const VALID_SIZES = [self::SIZE_THUMBNAIL, self::SIZE_PREVIEW, self::SIZE_FULL];
 
+    public const IMAGE_FILENAME_ENDINGS = ['jpg', 'jpeg', 'png', 'gif'];
+
+    public function isImageFilename(string $filename): bool;
+
     public function resizeIssueImage(IssueImage $issueImage, string $size = self::SIZE_THUMBNAIL): ?string;
 
     public function resizeConstructionSiteImage(ConstructionSiteImage $constructionSiteImage, string $size = self::SIZE_THUMBNAIL): ?string;
+
+    public function resizeProtocolEntryImage(ProtocolEntryFile $protocolEntryFile, string $size = self::SIZE_THUMBNAIL): ?string;
 
     public function renderMapFileToJpg(MapFile $mapFile, string $size = self::SIZE_THUMBNAIL): ?string;
 

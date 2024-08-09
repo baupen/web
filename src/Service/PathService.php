@@ -15,6 +15,7 @@ use App\Entity\ConstructionSite;
 use App\Entity\ConstructionSiteImage;
 use App\Entity\IssueImage;
 use App\Entity\MapFile;
+use App\Entity\ProtocolEntryFile;
 use App\Service\Interfaces\PathServiceInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -76,6 +77,11 @@ class PathService implements PathServiceInterface
         return $this->getFolderForConstructionSite($constructionSite).\DIRECTORY_SEPARATOR.'issues';
     }
 
+    public function getFolderForProtocolEntryFiles(ConstructionSite $constructionSite): string
+    {
+        return $this->getFolderForConstructionSite($constructionSite).\DIRECTORY_SEPARATOR.'protocol_entries';
+    }
+
     public function getTransientFolderForConstructionSiteImages(ConstructionSiteImage $constructionSiteImage): string
     {
         return $this->getTransientFolderForConstructionSite($constructionSiteImage->getCreatedFor()).\DIRECTORY_SEPARATOR.'images'.\DIRECTORY_SEPARATOR.$constructionSiteImage->getFilename();
@@ -94,6 +100,11 @@ class PathService implements PathServiceInterface
     public function getTransientFolderForIssueImage(IssueImage $issueImage): string
     {
         return $this->getTransientFolderForConstructionSite($issueImage->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.'issues'.\DIRECTORY_SEPARATOR.$issueImage->getFilename();
+    }
+
+    public function getTransientFolderForProtocolEntryFile(ProtocolEntryFile $protocolEntryFile): string
+    {
+        return $this->getTransientFolderForConstructionSite($protocolEntryFile->getCreatedFor()->getConstructionSite()).\DIRECTORY_SEPARATOR.'protocol_entries'.\DIRECTORY_SEPARATOR.$protocolEntryFile->getFilename();
     }
 
     private function getFolderForConstructionSite(ConstructionSite $constructionSite): string
