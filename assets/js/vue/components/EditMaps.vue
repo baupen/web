@@ -3,7 +3,6 @@
   <p>{{ $t('edit.maps_help') }}</p>
   <div class="btn-group">
     <add-map-button :construction-site="constructionSite" :maps="notDeletedMaps" @added="maps.push($event)" />
-    <!-- <import-maps-button :construction-site="constructionSite" :maps="maps" @imported="reload" /> -->
   </div>
   <maps-edit-table class="mt-2" :construction-site="constructionSite" :maps="notDeletedMaps" />
 </template>
@@ -29,14 +28,6 @@ export default {
       required: true
     }
   },
-  methods: {
-    reload: function () {
-      this.maps = null;
-
-      api.getMaps(this.constructionSite)
-          .then(maps => this.maps = maps)
-    }
-  },
   computed: {
     notDeletedMaps: function () {
       if (!this.maps) {
@@ -47,7 +38,8 @@ export default {
     }
   },
   mounted () {
-    this.reload()
+    api.getMaps(this.constructionSite)
+        .then(maps => this.maps = maps)
   }
 }
 </script>
