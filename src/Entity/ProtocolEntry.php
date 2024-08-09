@@ -95,6 +95,9 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING)]
     private ?string $createdBy = null;
 
+    #[ORM\ManyToOne(targetEntity: ProtocolEntryFile::class, cascade: ['persist', 'remove'])]
+    private ?ProtocolEntryFile $file = null;
+
     /**
      * @return ProtocolEntry[]
      */
@@ -200,6 +203,26 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
         $this->createdBy = $createdBy;
     }
 
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    public function getFile(): ?ProtocolEntryFile
+    {
+        return $this->file;
+    }
+
+    public function setFile(?ProtocolEntryFile $file): void
+    {
+        $this->file = $file;
+    }
+
     public function isConstructionSiteSet(): bool
     {
         return null !== $this->constructionSite;
@@ -209,15 +232,5 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
     public function getIsDeleted(): bool
     {
         return null !== $this->deletedAt;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(?\DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
     }
 }

@@ -14,6 +14,7 @@ namespace App\Service;
 use App\Entity\ConstructionSiteImage;
 use App\Entity\IssueImage;
 use App\Entity\MapFile;
+use App\Entity\ProtocolEntryFile;
 use App\Service\Interfaces\CacheServiceInterface;
 use App\Service\Interfaces\ImageServiceInterface;
 use App\Service\Interfaces\MapFileServiceInterface;
@@ -63,5 +64,14 @@ class CacheService implements CacheServiceInterface
         }
 
         $this->mapFileService->renderForMobileDevice($mapFile);
+    }
+
+    public function warmUpCacheForProtocolEntryFile(ProtocolEntryFile $protocolEntryFile): void
+    {
+        if ($this->imageService->isImageFilename($protocolEntryFile->getFilename())) {
+            foreach (ImageServiceInterface::VALID_SIZES as $validSize) {
+                $this->imageService->resizeProtocolEntryImage($protocolEntryFile, $validSize);
+            }
+        }
     }
 }
