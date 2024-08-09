@@ -30,7 +30,7 @@
         <a :href="'mailto:'+craftsman.email">{{ craftsman.email }}</a>
         <template v-if="craftsman.emailCCs.length">
           <br/>
-          {{ $t('craftsman.CCs') }}: {{ craftsman.emailCCs.join(", ") }}
+          {{ $t('craftsman.CCs') + ':' }} {{ craftsman.emailCCs.join(", ") }}
         </template>
       </div>
     </div>

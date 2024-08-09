@@ -79,7 +79,7 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
     private ProtocolEntryTypes $type = ProtocolEntryTypes::Text;
 
     #[Groups(['protocol-entry-read', 'protocol-entry-create'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, nullable: true)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
     private ?string $payload = null;
 
     /**
