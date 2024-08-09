@@ -1,6 +1,6 @@
 <template>
   <div class="row mb-3">
-    <div class="col-md-3">
+    <div class="col-3">
       <p class="m-0 state-icon h-100" :class="'text-' + iconColor">
         <font-awesome-icon :icon="icon"/>
         <span class="state-joiner" v-if="!last"/>
@@ -20,7 +20,7 @@
           </b>
         </p>
         <div v-else-if="protocolEntry.type === 'IMAGE'">
-          <image-lightbox :subject="protocolEntry.payload" :src="protocolEntry.fileUrl" />
+          <image-lightbox :subject="protocolEntry.payload" :src="protocolEntry.fileUrl"/>
           <p v-if="protocolEntry.payload" class="mb-0">
             {{ protocolEntry.payload }}
           </p>
@@ -28,15 +28,19 @@
         <p v-else-if="protocolEntry.type === 'FILE'" class="mb-0">
           {{ protocolEntry.payload }}&nbsp;
           <a :href="protocolEntry.fileUrl" download>
-            <font-awesome-icon :icon="['far', 'down']" />
+            <font-awesome-icon :icon="['far', 'down']"/>
             {{ $t('_view.download') }}
           </a>
         </p>
       </div>
       <p class="text-secondary mb-0">
-        <date-time-human-readable :value="protocolEntry.createdAt"/>,
+        <date-time-human-readable :value="protocolEntry.createdAt"/>
+        ,
         {{ createdByName }}
       </p>
+    </div>
+    <div class="col-auto" v-if="isRemovable">
+      <remove-protocol-entry-button :protocol-entry="protocolEntry" @removed="$emit('removed')" />
     </div>
   </div>
 </template>
@@ -47,9 +51,14 @@ import {entityFormatter} from '../../services/formatters'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import ImageLightbox from "./ImageLightbox.vue";
+import ButtonWithModal from "../Library/Behaviour/ButtonWithModal.vue";
+import RemoveProtocolEntryButton from "../Action/RemoveProtocolEntryButton.vue";
 
 export default {
+  emits: ['removed'],
   components: {
+    RemoveProtocolEntryButton,
+    ButtonWithModal,
     ImageLightbox,
     FontAwesomeIcon,
     DateTimeHumanReadable,
@@ -69,6 +78,11 @@ export default {
     },
     last: {
       type: Boolean,
+      default: false
+    },
+    isRemovable: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -116,7 +130,7 @@ export default {
           case 'REGISTERED':
             return 'primary'
           case 'RESOLVED':
-              return 'orange'
+            return 'orange'
           case 'CLOSED':
             return 'success'
         }

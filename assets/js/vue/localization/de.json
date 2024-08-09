@@ -126,6 +126,11 @@
       "removed": "Karte entfernt",
       "title": "Karte entfernen"
     },
+    "remove_protocol_entry": {
+      "help": "Entfernt diesen Protokolleintrag.",
+      "removed": "Protokolleintrag entfernt",
+      "title": "Protokolleintrag entfernen"
+    },
     "resolve_issue": {
       "resolved": "Pendenz als umgesetzt markiert.",
       "title": "Als umgesetzt markieren"

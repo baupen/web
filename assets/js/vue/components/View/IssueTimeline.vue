@@ -6,7 +6,7 @@
       </div>
       <div class="col">
         <add-protocol-entry-button :authority-iri="authorityIri" :root="issue" :construction-site="constructionSite"
-                                   @added="issueProtocolEntries.push($event)"/>
+                                   @added="newProtocolEntries.push($event)"/>
       </div>
     </div>
 
@@ -14,6 +14,7 @@
                     :last="index+1 === orderedProtocolEntries.length"
                     :protocol-entry="entry"
                     :root="issue"
+                    :is-removable="newProtocolEntries.includes(entry)"
                     :created-by="responsiblesLookup[entry['createdBy']]"
     />
   </loading-indicator-secondary>
@@ -34,6 +35,7 @@ export default {
   },
   data() {
     return {
+      newProtocolEntries: [],
       issueProtocolEntries: null,
       craftsmanProtocolEntries: null,
     }
@@ -69,7 +71,8 @@ export default {
       return responsiblesLookup
     },
     orderedProtocolEntries: function () {
-      const protocolEntries = [...(this.issueProtocolEntries ?? []), ...(this.craftsmanProtocolEntries ?? [])]
+      const protocolEntries = [...this.newProtocolEntries, ...(this.issueProtocolEntries ?? []), ...(this.craftsmanProtocolEntries ?? [])]
+          .filter(entry => !entry.isDeleted)
       protocolEntries.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
       return protocolEntries
     }
