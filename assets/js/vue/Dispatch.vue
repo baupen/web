@@ -1,7 +1,7 @@
 <template>
   <div id="dispatch">
-    <loading-indicator :spin="!constructionSite">
-      <dispatch-craftsmen :construction-site="constructionSite" />
+    <loading-indicator :spin="!constructionSite || !constructionManagers">
+      <dispatch-craftsmen :construction-manager-iri="constructionManagerIri" :construction-site="constructionSite" :construction-managers="constructionManagers" />
     </loading-indicator>
   </div>
 </template>
@@ -18,17 +18,23 @@ export default {
   },
   data () {
     return {
+      constructionManagerIri: null,
       constructionSite: null,
+      constructionManagers: null
     }
   },
   mounted () {
     api.setupErrorNotifications(this.$t)
     api.authenticate()
-        .then(_ => {
+        .then(me => {
+          this.constructionManagerIri = me.constructionManagerIri
           api.getConstructionSite()
               .then(constructionSite => {
                 this.constructionSite = constructionSite
               })
+
+          api.getConstructionManagers(this.constructionSite)
+              .then(constructionManagers => this.constructionManagers = constructionManagers)
         })
   }
 }

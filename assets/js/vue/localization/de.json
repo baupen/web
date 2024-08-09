@@ -152,6 +152,9 @@
     },
     "view_issue": {
       "title": "Pendenz anschauen"
+    },
+    "view_craftsman_timeline": {
+      "title": "Protokoll anschauen"
     }
   },
   "_api": {
@@ -268,11 +271,13 @@
   "craftsman": {
     "_excel_format_emailCCs": "mehrere E-Mails durch Komma trennen",
     "_name": "Unternehmer",
+    "_contact": "Kontaktdaten",
     "_plural": "Unternehmer",
     "company": "Firma",
     "contact_name": "Kontaktperson",
     "email": "E-Mail",
     "emailCCs": "E-Mail CCs",
+    "CCs": "CCs",
     "last_email_received": "E-Mail empfangen",
     "last_issue_resolved_at": "Pendenz umgesetzt",
     "last_visit_online": "Webseite besucht",

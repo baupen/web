@@ -5,7 +5,7 @@
       <th class="w-minimal"></th>
       <th colspan="4">{{ $t('craftsman._name') }}</th>
       <th class="border-start" colspan="2">{{ $t('issue._plural') }}</th>
-      <th class="border-start" colspan="3">{{ $t('_view.craftsmen.last_activity') }}</th>
+      <th class="border-start" colspan="4">{{ $t('_view.craftsmen.last_activity') }}</th>
     </tr>
     <tr>
       <th class="w-minimal">
@@ -25,7 +25,7 @@
       <th class="border-start">{{ $t('craftsman.last_email_received') }}</th>
       <th>{{ $t('craftsman.last_visit_online') }}</th>
       <th>{{ $t('craftsman.last_issue_resolved_at') }}</th>
-
+      <th class="w-minimal"></th>
     </tr>
     </thead>
     <tbody>
@@ -86,6 +86,12 @@
       <td>
         <date-time-human-readable :value="cws.statistics.lastIssueResolved" />
       </td>
+      <td @click.stop="" class="cursor-normal">
+        <view-craftsman-timeline-button
+            :construction-manager-iri="constructionManagerIri"
+            :construction-site="constructionSite" :construction-managers="constructionManagers"
+            :craftsman="cws.craftsman" />
+      </td>
     </tr>
     </tbody>
     <caption class="caption-top">
@@ -131,10 +137,14 @@ import { arraysAreEqual } from '../../services/algorithms'
 import IssueSummaryBadges from './IssueSummaryBadges'
 import ToggleCanEdit from '../Action/ToggleCanEdit'
 import TooltipBadge from "../Library/View/TooltipBadge.vue";
+import CraftsmanTimeline from "./CraftsmanTimeline.vue";
+import ViewCraftsmanTimelineButton from "../Action/ViewCraftsmanTimelineButton.vue";
 
 export default {
   emits: ['selected'],
   components: {
+    ViewCraftsmanTimelineButton,
+    CraftsmanTimeline,
     TooltipBadge,
     ToggleCanEdit,
     IssueSummaryBadges,
@@ -150,7 +160,19 @@ export default {
     }
   },
   props: {
+    constructionManagerIri: {
+      type: String,
+      required: true
+    },
+    constructionSite: {
+      type: Object,
+      required: true
+    },
     craftsmen: {
+      type: Array,
+      required: false
+    },
+    constructionManagers: {
       type: Array,
       required: false
     },
@@ -161,7 +183,7 @@ export default {
   },
   computed: {
     isLoading: function () {
-      return !this.craftsmen || !this.statistics
+      return !this.craftsmen || !this.constructionManagers || !this.statistics
     },
     totalCraftsmen: function () {
       return this.craftsmen ? this.craftsmen.length : 0
