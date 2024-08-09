@@ -15,9 +15,13 @@ use ApiPlatform\Api\IriConverterInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Api\Entity\Email;
 use App\Entity\Craftsman;
+use App\Entity\ProtocolEntry;
+use App\Enum\ProtocolEntryTypes;
+use App\Helper\DoctrineHelper;
 use App\Security\TokenTrait;
 use App\Service\EmailService;
 use App\Service\Interfaces\ReportServiceInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -36,15 +40,18 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
 
     private IriConverterInterface $iriConverter;
 
+    private ManagerRegistry $managerRegistry;
+
     /**
      * EmailDataPersister constructor.
      */
-    public function __construct(TokenStorageInterface $tokenStorage, EmailService $emailService, IriConverterInterface $iriConverter, ReportServiceInterface $reportService)
+    public function __construct(TokenStorageInterface $tokenStorage, EmailService $emailService, IriConverterInterface $iriConverter, ReportServiceInterface $reportService, ManagerRegistry $managerRegistry)
     {
         $this->tokenStorage = $tokenStorage;
         $this->emailService = $emailService;
         $this->iriConverter = $iriConverter;
         $this->reportService = $reportService;
+        $this->managerRegistry = $managerRegistry;
     }
 
     public function supports($data, array $context = []): bool
@@ -84,6 +91,26 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
         if (\App\Entity\Email::TYPE_CRAFTSMAN_ISSUE_REMINDER === $data->getType()) {
             $craftsmanReport = $this->reportService->createCraftsmanReport($craftsman, $craftsman->getLastVisitOnline());
             $success = $this->emailService->sendCraftsmanIssueReminder($constructionManager, $craftsman, $craftsmanReport, $data->getSubject(), $data->getBody(), $data->getSelfBcc());
+
+            // add to protocol
+            $protocolEntry = new ProtocolEntry();
+            $protocolEntry->setConstructionSite($craftsman->getConstructionSite());
+            $protocolEntry->setRoot($craftsman->getId());
+            $protocolEntry->setCreatedBy($constructionManager->getId());
+            $protocolEntry->setCreatedAt(new \DateTime());
+            $protocolEntry->setType(ProtocolEntryTypes::Email);
+
+            $payload = [
+                'receiver' => $craftsman->getEmail(),
+                'receiverCCs' => $craftsman->getEmailCCs(),
+                'receiverBCC' => $data->getSelfBcc() ? $constructionManager->getEmail() : null,
+                'subject' => $data->getSubject(),
+                'body' => $data->getBody(),
+                'type' => ProtocolEntry::EMAIL_TYPE_CRAFTSMAN_ISSUE_REMINDER,
+            ];
+            $protocolEntry->setPayload(json_encode($payload));
+
+            DoctrineHelper::persistAndFlush($this->managerRegistry, $protocolEntry);
         } else {
             throw new BadRequestException('unknown email type');
         }
