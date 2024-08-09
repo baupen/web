@@ -8,7 +8,7 @@
     </template>
 
     <map-form :template="map" :maps="maps" @update="patch = $event" />
-    <file-form @update="file = $event" />
+    <file-form @update="file = $event" :pdf-mode="true" />
   </button-with-modal-confirm>
 </template>
 

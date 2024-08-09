@@ -305,6 +305,7 @@ class ApiController extends BaseController
 
     private function getSafeFile(FileBag $fileBag): UploadedFile
     {
+        // ensure remains in sync what is checked client-side
         return $this->getUploadedFile($fileBag, 'file', [
             'application/pdf', 'application/x-pdf', // pdf
             'image/jpeg', 'image/gif', 'image/png', // gif

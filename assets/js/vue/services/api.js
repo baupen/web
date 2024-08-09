@@ -2,7 +2,18 @@ import axios from 'axios'
 import { displaySuccess, displayError } from './notifiers'
 
 const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
-const validFileTypes = ['application/pdf']
+const validPdfFileTypes = ['application/pdf', 'application/x-pdf']
+// ensure remains in sync what is checked server-side
+const validSafeFileTypes = [
+  ...validPdfFileTypes,
+  ...validImageTypes,
+  'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // word
+  'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // excel
+  'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', // presentation
+  'application/vnd.ms-outlook', 'message/rfc822', // emails
+  'text/html', 'text/plain', // text or plain
+  'application/zip', 'application/octet-stream'// general
+]
 const maxIssuesPerReport = 800
 
 const iriToId = function (iri) {
@@ -414,6 +425,9 @@ const api = {
   postMapFile: function (map, file, successMessage = null) {
     return this._postAttachment(map, file, 'file', successMessage)
   },
+  postProtocolEntryFile: function (protocolEntry, file, successMessage = null) {
+    return this._postAttachment(protocolEntry, file, 'file', successMessage)
+  },
   postIssueImage: function (issue, image, successMessage = null) {
     return this._postAttachment(issue, image, 'image', successMessage)
   },
@@ -428,4 +442,4 @@ const api = {
   }
 }
 
-export { api, addNonDuplicatesById, iriToId, validImageTypes, validFileTypes, maxIssuesPerReport }
+export { api, addNonDuplicatesById, iriToId, validImageTypes, validPdfFileTypes, validSafeFileTypes, maxIssuesPerReport }
