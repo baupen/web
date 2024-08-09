@@ -23,4 +23,10 @@ class IndexController extends BaseController
     {
         return $this->render('index.html.twig');
     }
+
+    #[Route(path: '/common.js', name: 'common_js')]
+    public function commonJson(): Response
+    {
+        return $this->render('_common.js.twig');
+    }
 }

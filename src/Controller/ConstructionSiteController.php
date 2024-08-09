@@ -19,6 +19,12 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/construction_sites/{constructionSite}')]
 class ConstructionSiteController extends BaseController
 {
+    #[Route(path: '/common.js', name: 'construction_site_common_js')]
+    public function commonJson(ConstructionSite $constructionSite): Response
+    {
+        return $this->render('construction_site/_common.js.twig', ['constructionSite' => $constructionSite]);
+    }
+
     #[Route(path: '/dashboard', name: 'construction_site_dashboard')]
     public function dashboard(ConstructionSite $constructionSite): Response
     {

@@ -1,0 +1,4 @@
+/* cache most common requests to reduce time to interactivity */
+window.token = "{{ app.user.authenticationToken }}";
+window.me = JSON.parse('{{ apiSubRequest('/api/me')|raw }}');
+window.constructionSite = JSON.parse('{{ apiSubRequest('/api/construction_sites/'~constructionSite.id)|raw }}');
