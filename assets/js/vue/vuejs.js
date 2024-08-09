@@ -14,14 +14,15 @@ import {
   faFilter, faSort, // table
   faUser, faLock, faUnlock, // craftsman link, canEdit, !canEdit
   faExternalLink, // external link
-  faChevronRight
+  faChevronRight // open expands
 } from '@fortawesome/pro-light-svg-icons'
 import {
   faPlusCircle as faPlusCircleRegular, faDotCircle as faDotCircleRegular, // issue icons
   faExclamationCircle as faExclamationCircleRegular, faCheckCircle as faCheckCircleRegular, // issue icons
   faCircle as faCircleRegular, faCircleUser as faCircleUserRegular, faCircleO as faCircleORegular, // text protocol
   faCircleEnvelope as faCircleEnvelopeRegular, faCircleCamera as faCircleCameraRegular, faCircleDown as faCircleDownRegular, // text protocol,
-  faDown as faDownRegular
+  faDown as faDownRegular,
+  faListUl as faListUlRegular
 } from '@fortawesome/pro-regular-svg-icons'
 
 import {
@@ -65,7 +66,7 @@ FontawesomeLibrary.add(
   faUser,
   faExternalLink, faLock, faUnlock, faChevronRight,
   faPlusCircleRegular, faDotCircleRegular, faExclamationCircleRegular, faCheckCircleRegular,
-  faCircleRegular, faCircleUserRegular, faCircleORegular, faCircleEnvelopeRegular, faCircleCameraRegular, faCircleDownRegular, faDownRegular,
+  faCircleRegular, faCircleUserRegular, faCircleORegular, faCircleEnvelopeRegular, faCircleCameraRegular, faCircleDownRegular, faDownRegular, faListUlRegular,
   faStarSolid, faUserCheckSolid,
   faFilterSolid, faSearchSolid, faSortUpSolid, faSortDownSolid
 )

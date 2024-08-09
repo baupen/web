@@ -6,7 +6,9 @@
   </div>
 
   <craftsmen-statistics-table
-      :construction-site="constructionSite" :craftsmen="craftsmen" :statistics="craftsmenStatistics"
+      :construction-manager-iri="constructionManagerIri"
+      :construction-site="constructionSite" :construction-managers="constructionManagers"
+      :craftsmen="craftsmen" :statistics="craftsmenStatistics"
       @selected="selectedCraftsmen = $event" />
 </template>
 
@@ -28,8 +30,16 @@ export default {
     }
   },
   props: {
+    constructionManagerIri: {
+      type: String,
+      required: true
+    },
     constructionSite: {
       type: Object,
+      required: true
+    },
+    constructionManagers: {
+      type: Array,
       required: true
     }
   },
