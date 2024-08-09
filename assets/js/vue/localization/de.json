@@ -220,6 +220,7 @@
     },
     "craftsmen": {
       "last_activity": "Letzte Aktivität",
+      "issues_published_since_last_visit": "Eine Pendenz registiert seit dem letzen Besuch der Webseite | {count} Pendenzen registiert seit dem letzen Besuch der Webseite",
       "with_open_issues": "mit offenen Pendenzen",
       "with_overdue_issues": "mit überfälligen Pendenzen",
       "with_unread_issues": "mit ungelesenen Pendenzen"

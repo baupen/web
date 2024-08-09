@@ -5,8 +5,7 @@
       <th class="w-minimal"></th>
       <th colspan="4">{{ $t('craftsman._name') }}</th>
       <th class="border-start" colspan="2">{{ $t('issue._plural') }}</th>
-      <th class="border-start" colspan="2">{{ $t('_view.craftsmen.last_activity') }}</th>
-      <th class="border-start"></th>
+      <th class="border-start" colspan="3">{{ $t('_view.craftsmen.last_activity') }}</th>
     </tr>
     <tr>
       <th class="w-minimal">
@@ -23,10 +22,10 @@
       <th class="border-start">{{ $t('_view.craftsmen_statistics.count') }}</th>
       <th>{{ $t('craftsman.next_deadline') }}</th>
 
-      <th class="border-start">{{ $t('craftsman.last_visit_online') }}</th>
+      <th class="border-start">{{ $t('craftsman.last_email_received') }}</th>
+      <th>{{ $t('craftsman.last_visit_online') }}</th>
       <th>{{ $t('craftsman.last_issue_resolved_at') }}</th>
 
-      <th class="border-start">{{ $t('craftsman.last_email_received') }}</th>
     </tr>
     </thead>
     <tbody>
@@ -69,17 +68,23 @@
       </td>
 
       <td class="border-start">
+        <date-time-human-readable :value="cws.statistics.lastEmailReceived" />
+      </td>
+      <td>
         <date-time-human-readable :value="cws.statistics.lastVisitOnline" />
+        <template v-if="cws.statistics.issueUnreadCount">
+
         <br />
-        <span v-if="cws.statistics.issueUnreadCount" class="badge bg-secondary">
-          {{ cws.statistics.issueUnreadCount }} {{ $t('issue.state.unread') }}
+        <tooltip-badge color-if-nonzero="secondary" :value="cws.statistics.issueUnreadCount + ' ' + $t('issue.state.unread')"
+                       :tooltip-title="$tc('_view.craftsmen.issues_published_since_last_visit', cws.statistics.issueUnreadCount)" />
+        </template>
+
+        <span  class="badge bg-secondary">
+
         </span>
       </td>
       <td>
         <date-time-human-readable :value="cws.statistics.lastIssueResolved" />
-      </td>
-      <td class="border-start">
-        <date-time-human-readable :value="cws.statistics.lastEmailReceived" />
       </td>
     </tr>
     </tbody>
@@ -125,10 +130,12 @@ import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import { arraysAreEqual } from '../../services/algorithms'
 import IssueSummaryBadges from './IssueSummaryBadges'
 import ToggleCanEdit from '../Action/ToggleCanEdit'
+import TooltipBadge from "../Library/View/TooltipBadge.vue";
 
 export default {
   emits: ['selected'],
   components: {
+    TooltipBadge,
     ToggleCanEdit,
     IssueSummaryBadges,
     DateTimeHumanReadable,
