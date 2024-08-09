@@ -3,7 +3,7 @@
       :button-disabled="posting || !maps" :title="$t('_action.add_map.title')" :can-confirm="canConfirm"
       @confirm="confirm">
     <map-form :maps="maps" @update="post = $event" />
-    <file-form @update="file = $event" />
+    <file-form @update="file = $event" :pdf-mode="true" />
   </button-with-modal-confirm>
 </template>
 

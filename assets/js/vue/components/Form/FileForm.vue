@@ -1,8 +1,8 @@
 <template>
-  <form-field for-id="file" :label="$t('_form.file.label')" :required="false">
+  <form-field for-id="file" :label="pdfMode ? $t('_form.file.pdf_label') : $t('_form.file.label')" :required="false">
     <dropzone
         v-if="!file"
-        id="file" :help="$t('_form.file.drop_or_choose')"
+        id="file" :help="pdfMode ? $t('_form.file.pdf_drop_or_choose') : $t('_form.file.drop_or_choose')"
         :valid-file-types="validFileTypes"
         @input="file = $event[0]" />
     <input v-if="file" id="file" class="form-control" type="text" readonly="readonly"
@@ -18,7 +18,7 @@
 
 import FormField from '../Library/FormLayout/FormField'
 import Dropzone from '../Library/FormInput/Dropzone'
-import { validFileTypes } from '../../services/api'
+import {validPdfFileTypes, validSafeFileTypes} from '../../services/api'
 
 export default {
   components: {
@@ -29,6 +29,12 @@ export default {
   data () {
     return {
       file: null
+    }
+  },
+  props: {
+    pdfMode: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
@@ -45,7 +51,11 @@ export default {
       return this.validFileTypes.some(e => this.file.type === e)
     },
     validFileTypes: function () {
-      return validFileTypes
+      if (this.pdfMode) {
+        return validPdfFileTypes
+      } else {
+        return validSafeFileTypes
+      }
     }
   },
   mounted () {

@@ -168,8 +168,10 @@
       "template_help": "Mit einem Excel Dokument (.xlsx) können Sie mehrere Unternehmer gleichzeitig hinzufügen oder aktualisieren."
     },
     "file": {
-      "drop_or_choose": "PDF (.pdf) hineinziehen oder auswählen",
-      "label": "PDF Datei (.pdf)"
+      "drop_or_choose": "Datei (.pdf, .txt, .zip, office, email) hineinziehen oder auswählen",
+      "label": "Datei (.pdf, .txt, .zip, office, email)",
+      "pdf_drop_or_choose": "PDF (.pdf) hineinziehen oder auswählen",
+      "pdf_label": "PDF Datei (.pdf)"
     },
     "image": {
       "drop_or_choose": "Bild (.jpg, .png, .gif) hineinziehen oder auswählen",
@@ -354,7 +356,8 @@
     "_plural": "Protokolleinträge",
     "_plural_short": "Protokoll",
     "created_at": "Zeitpunkt",
-    "text_payload": "Text"
+    "text_payload": "Text",
+    "file_payload": "Beschreibung"
   },
   "map": {
     "_name": "Bauplan",
