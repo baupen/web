@@ -4,7 +4,7 @@
     <tr class="bg-light">
       <th>{{ $t('craftsman.trade') }}</th>
       <th>{{ $t('craftsman.company') }}</th>
-      <th class="border-left">{{ $t('craftsman.contact_name') }}</th>
+      <th class="border-start">{{ $t('craftsman.contact_name') }}</th>
       <th>{{ $t('craftsman.email') }}</th>
       <th>{{ $t('craftsman.emailCCs') }}</th>
       <th class="w-minimal" />
@@ -22,7 +22,7 @@
       <td>
         {{ craftsman.company }}
       </td>
-      <td class="border-left">
+      <td class="border-start">
         {{ craftsman.contactName }}
       </td>
       <td>{{ craftsman.email }}</td>

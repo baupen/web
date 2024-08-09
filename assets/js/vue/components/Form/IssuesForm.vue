@@ -45,7 +45,7 @@
         </template>
       </custom-checkbox-field>
     </div>
-    <div class="col-md-6 border-left" v-if="enableStateEdit">
+    <div class="col-md-6 border-start" v-if="enableStateEdit">
       <custom-checkbox-field for-id="is-resolved" :label="$t('issue.state.resolved')">
         <input
             class="form-check-input" type="checkbox" id="is-resolved"
