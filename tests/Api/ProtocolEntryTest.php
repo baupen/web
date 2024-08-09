@@ -13,6 +13,7 @@ namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\Client;
+use App\Entity\Craftsman;
 use App\Enum\ProtocolEntryTypes;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
@@ -188,6 +189,37 @@ class ProtocolEntryTest extends ApiTestCase
         $response = $this->assertApiPatchOk($client, '/api/issues/'.$issueId, array_merge($currentIssue, $payload));
         json_decode($response->getContent(), true);
         $this->assertNewProtocolEntries($client, $constructionSite->getId(), $issueId, [[ProtocolEntryTypes::StatusUnset, 'RESOLVED'], [ProtocolEntryTypes::StatusUnset, 'CLOSED']]);
+    }
+
+    public function testCraftsmanEmailEntry(): void
+    {
+        $client = $this->createClient();
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+
+        $constructionSite = $this->getTestConstructionSite();
+        $craftsman = $constructionSite->getCraftsmen()[0]; /** @var Craftsman $craftsman */
+        $craftsmanId = $this->getIriFromItem($craftsman);
+
+        $payload = [
+            'receiver' => $craftsmanId,
+            'subject' => 'Willkommen',
+            'body' => 'Hallo auf der Baustelle 2',
+            'selfBcc' => false,
+            'type' => 4,
+        ];
+
+        $this->loginApiConstructionManager($client);
+        $this->assertApiPostStatusCodeSame(Response::HTTP_OK, $client, '/api/emails', $payload);
+
+        $expectedPayload = [
+            'receiver' => $craftsman->getEmail(),
+            'receiverCCs' => $craftsman->getEmailCCs(),
+            'receiverBCC' => null,
+            'subject' => $payload['subject'],
+            'body' => $payload['body'],
+            'type' => 'CRAFTSMAN_ISSUE_REMINDER',
+        ];
+        $this->assertNewProtocolEntries($client, $constructionSite->getId(), $craftsman->getId(), [[ProtocolEntryTypes::Email, json_encode($expectedPayload)]]);
     }
 
     /**

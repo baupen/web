@@ -61,6 +61,8 @@ class ProtocolEntry extends BaseEntity implements ConstructionSiteOwnedEntityInt
     public const ISSUE_STATE_RESOLVED_TEXT = 'RESOLVED';
     public const ISSUE_STATE_CLOSED_TEXT = 'CLOSED';
 
+    public const EMAIL_TYPE_CRAFTSMAN_ISSUE_REMINDER = 'CRAFTSMAN_ISSUE_REMINDER';
+
     #[Assert\NotBlank]
     #[Groups(['protocol-entry-create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'protocolEntries')]
