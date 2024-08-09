@@ -3,8 +3,8 @@
 .npmrc
 
 # agnes
+.agnes
 .build
-.config
 
 # testing
 clover.xml
