@@ -1,8 +1,8 @@
 <template>
-  <div class="row mb-3">
+  <div class="row pt-1 pb-1" :class="{'bg-secondary-subtle': isContext}">
     <div class="col-3">
       <p class="m-0 state-icon h-100" :class="'text-' + iconColor">
-        <font-awesome-icon :icon="icon"/>
+        <font-awesome-icon :icon="icon" :class="iconOpacity"/>
         <span class="state-joiner" v-if="!last"/>
       </p>
     </div>
@@ -37,19 +37,22 @@
           <a v-if="!showEmailBody" href="" @click.prevent.stop="showEmailBody = true">
             {{ $t('_view.protocol_entry.show_email_body') }}
           </a>
-          <span v-if="showEmailBody" class="d-block quote mt-1 mb-1 white-space-pre-line border-start border-4 ps-2">
+          <span v-if="showEmailBody" class="d-block quote mt-1 mb-1 white-space-pre-line border-start border-2 border-secondary ps-2">
             {{ emailPayload.body }}
           </span>
         </p>
       </div>
       <p class="text-secondary mb-0">
+        <span v-if="isContext">
+          {{ rootTypeName + ", " }}
+        </span>
         <date-time-human-readable :value="protocolEntry.createdAt"/>
         <span>, </span>
         {{ createdByName }}
       </p>
     </div>
     <div class="col-auto" v-if="isRemovable">
-      <remove-protocol-entry-button :protocol-entry="protocolEntry" @removed="$emit('removed')" />
+      <remove-protocol-entry-button :protocol-entry="protocolEntry" @removed="$emit('removed')"/>
     </div>
   </div>
 </template>
@@ -94,6 +97,10 @@ export default {
       type: Boolean,
       default: false
     },
+    isContext: {
+      type: Boolean,
+      default: false
+    },
     isRemovable: {
       type: Boolean,
       default: false
@@ -102,6 +109,15 @@ export default {
   computed: {
     createdByName: function () {
       return this.createdBy ? entityFormatter.name(this.createdBy) : null
+    },
+    rootTypeName: function () {
+      if (this.root['@id'].includes('issues')) {
+        return this.$t('issue._name')
+      } else if (this.root['@id'].includes('craftsmen')) {
+        return this.$t('craftsman._name')
+      } else if (this.root['@id'].includes('construction_sites')) {
+        return this.$t('construction_site._name')
+      }
     },
     emailPayload: function () {
       return JSON.parse(this.protocolEntry.payload)
@@ -112,7 +128,7 @@ export default {
           return ['far', 'circle']
         } else if (this.root['@id'].includes('craftsmen')) {
           return ['far', 'circle-user']
-        } else if (this.root['@id'].includes('construction_sides')) {
+        } else if (this.root['@id'].includes('construction_sites')) {
           return ['far', 'circle-o']
         }
       }
@@ -140,21 +156,28 @@ export default {
 
       return []
     },
-    iconColor: function () {
-      if ('STATUS_SET' === this.protocolEntry.type) {
-        switch (this.protocolEntry.payload) {
-          case 'CREATED':
-          case 'REGISTERED':
-            return 'primary'
-          case 'RESOLVED':
-            return 'orange'
-          case 'CLOSED':
-            return 'success'
-        }
+    iconOpacity: function () {
+      if ('STATUS_UNSET' === this.protocolEntry.type) {
+        return 'opacity-25'
       }
 
-      if ('STATUS_UNSET' === this.protocolEntry.type) {
-        return 'secondary'
+      return ''
+    },
+    iconColor: function () {
+      if (this.root['@id'].includes('issues')) {
+        if (['STATUS_SET', 'STATUS_UNSET'].includes(this.protocolEntry.type)) {
+          switch (this.protocolEntry.payload) {
+            case 'CREATED':
+            case 'REGISTERED':
+              return 'primary'
+            case 'RESOLVED':
+              return 'orange'
+            case 'CLOSED':
+              return 'success'
+          }
+        }
+
+        return 'primary'
       }
 
       return 'black'
@@ -173,7 +196,7 @@ export default {
 .state-joiner {
   position: absolute;
   top: calc(2.4rem);
-  height: calc(100% - 1rem);
+  height: calc(100% - 1.4rem);
   right: calc(0.5em - 1px);
 
   background-color: rgba(0, 0, 0, 0.1);
