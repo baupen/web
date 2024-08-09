@@ -1,6 +1,6 @@
 <template>
-  <loading-indicator-secondary :spin="issueProtocolEntries === null && craftsmanProtocolEntries === null">
-    <div class="row mb-3">
+  <loading-indicator-secondary :spin="issueProtocolEntries === null">
+    <div class="row">
       <div class="col-3">
         {{ $t('protocol_entry._plural_short') }}
       </div>
@@ -13,7 +13,8 @@
     <protocol-entry v-for="(entry, index) in orderedProtocolEntries" :id="entry['@id']"
                     :last="index+1 === orderedProtocolEntries.length"
                     :protocol-entry="entry"
-                    :root="issue"
+                    :root="getRoot(entry)"
+                    :is-context="!(issueProtocolEntries.includes(entry) || newProtocolEntries.includes(entry))"
                     :is-removable="newProtocolEntries.includes(entry)"
                     :created-by="responsiblesLookup[entry['createdBy']]"
     />
@@ -26,9 +27,13 @@ import {api, iriToId} from "../../services/api";
 import ProtocolEntry from "./ProtocolEntry.vue";
 import LoadingIndicatorSecondary from "../Library/View/LoadingIndicatorSecondary.vue";
 import AddProtocolEntryButton from "../Action/AddProtocolEntryButton.vue";
+import CustomCheckboxField from "../Library/FormLayout/CustomCheckboxField.vue";
+import CustomCheckbox from "../Library/FormInput/CustomCheckbox.vue";
 
 export default {
   components: {
+    CustomCheckbox,
+    CustomCheckboxField,
     AddProtocolEntryButton,
     LoadingIndicatorSecondary,
     ProtocolEntry,
@@ -38,6 +43,8 @@ export default {
       newProtocolEntries: [],
       issueProtocolEntries: null,
       craftsmanProtocolEntries: null,
+      constructionSiteEntries: null,
+      showSecondaryEntries: false
     }
   },
   props: {
@@ -71,11 +78,26 @@ export default {
       return responsiblesLookup
     },
     orderedProtocolEntries: function () {
-      const protocolEntries = [...this.newProtocolEntries, ...(this.issueProtocolEntries ?? []), ...(this.craftsmanProtocolEntries ?? [])]
+      const protocolEntries = [...this.newProtocolEntries, ...(this.issueProtocolEntries ?? []), ...(this.craftsmanProtocolEntries ?? []), ...(this.constructionSiteEntries ?? [])]
           .filter(entry => !entry.isDeleted)
       protocolEntries.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
       return protocolEntries
+    },
+    craftsman: function () {
+      return this.craftsmen.find(craftsman => craftsman['@id'] === this.issue.craftsman);
     }
+  },
+  methods: {
+    getRoot: function (protocolEntry) {
+      if (this.craftsmanProtocolEntries?.includes(protocolEntry)) {
+        return this.craftsman
+      }
+      if (this.constructionSiteEntries?.includes(protocolEntry)) {
+        return this.constructionSite
+      }
+
+      return this.issue
+    },
   },
   mounted() {
     api.getProtocolEntries(this.constructionSite, this.issue)
@@ -83,9 +105,13 @@ export default {
           this.issueProtocolEntries = entries
         })
 
-    api.getProtocolEntries(this.constructionSite, this.craftsmen.find(craftsman => craftsman['@id'] === this.issue.craftsman))
+    api.getProtocolEntries(this.constructionSite, this.craftsman)
         .then(entries => {
           this.craftsmanProtocolEntries = entries
+        })
+    api.getProtocolEntries(this.constructionSite, this.constructionSite)
+        .then(entries => {
+          this.constructionSiteEntries = entries
         })
   }
 }
