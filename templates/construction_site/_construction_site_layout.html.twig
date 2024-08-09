@@ -37,13 +37,7 @@
     <div class="container-fluid p-3">
         <p class="lead mb-4">{{ block("description") }}</p>
 
-        <script type="application/javascript">
-            /* cache most common requests to reduce time to interactivity */
-            window.token = "{{ app.user.authenticationToken }}";
-            window.me = JSON.parse('{{ apiSubRequest('/api/me')|raw }}');
-            window.constructionSite = JSON.parse('{{ apiSubRequest('/api/construction_sites/'~constructionSite.id)|raw }}');
-        </script>
-
+        <script src="{{ url('construction_site_common_js', {"constructionSite": constructionSite.id}) }}"></script>
         <div id="{{ application_name }}">
         </div>
     </div>
