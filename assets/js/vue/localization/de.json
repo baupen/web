@@ -240,7 +240,8 @@
     "no_craftsmen": "Keine Unternehmer",
     "no_issues": "Keine Pendenzen",
     "no_maps": "Keine Baupläne",
-    "show_more_issues": "Weitere {count} Pendenzen anzeigen"
+    "show_more_issues": "Weitere {count} Pendenzen anzeigen",
+    "download": "herunterladen"
   },
   "construction_manager": {
     "_name": "Bauleiter",

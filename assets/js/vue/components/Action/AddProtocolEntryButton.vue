@@ -24,7 +24,15 @@
     </ul>
     <div class="tab-content p-3 border border-top-0">
       <div class="tab-pane fade" :class="{'show active': entryType === 'TEXT'}">
-        <protocol-entry-text-form :template="textPost" @update="textPost = $event"/>
+        <protocol-entry-text-form @update="textPost = $event" :text-mode="true"/>
+      </div>
+      <div class="tab-pane fade" :class="{'show active': entryType === 'IMAGE'}">
+        <image-form @update="image = $event" />
+        <protocol-entry-text-form @update="imagePost = $event" :text-mode="false"/>
+      </div>
+      <div class="tab-pane fade" :class="{'show active': entryType === 'FILE'}">
+        <file-form @update="file = $event" />
+        <protocol-entry-text-form @update="filePost = $event" :text-mode="false"/>
       </div>
     </div>
   </button-with-modal-confirm>
@@ -35,17 +43,28 @@
 import {api, iriToId} from '../../services/api'
 import ProtocolEntryTextForm from "../Form/ProtocolEntryTextForm.vue";
 import ButtonWithModalConfirm from "../Library/Behaviour/ButtonWithModalConfirm.vue";
+import MapForm from "../Form/MapForm.vue";
+import FileForm from "../Form/FileForm.vue";
+import ImageForm from "../Form/ImageForm.vue";
 
 export default {
   components: {
+    ImageForm,
+    FileForm, MapForm,
     ButtonWithModalConfirm,
     ProtocolEntryTextForm,
   },
   emits: ['added'],
   data() {
     return {
-      textPost: null,
       entryType: 'TEXT',
+
+      textPost: null,
+      imagePost: null,
+      filePost: null,
+
+      image: null,
+      file: null,
 
       posting: false,
     }
@@ -66,30 +85,54 @@ export default {
   },
   computed: {
     canConfirm: function () {
-      return this.entryType === 'TEXT' && !!this.textPost
+      return (this.entryType === 'TEXT' && !!this.textPost) ||
+          (this.entryType === 'IMAGE' && !!this.imagePost && !!this.image) ||
+          (this.entryType === 'FILE' && !!this.filePost && !!this.file)
     }
   },
   methods: {
     confirm: function () {
       this.posting = true
-      const basePayload = {
+      let payload = Object.assign({
         constructionSite: this.constructionSite["@id"],
         root: iriToId(this.root['@id']),
+        type: this.entryType,
         createdBy: iriToId(this.authorityIri),
+      })
+
+      // add meta
+      switch (this.entryType) {
+        case "TEXT":
+          payload = {...payload, ...this.textPost}
+          break;
+        case "IMAGE":
+          payload = {...payload, ...this.imagePost}
+          break;
+        case "FILE":
+          payload = {...payload, ...this.filePost}
+          break;
       }
 
-      let payload = null;
-      if (this.entryType === 'TEXT') {
-        payload = Object.assign({}, basePayload, this.textPost)
-      }
-
-      if (payload) {
-        api.postProtocolEntry(payload, this.$t('_action.add_protocol_entry.added'))
+      const successMessage = this.$t('_action.add_protocol_entry.added');
+      if (!this.file && !this.image) {
+        api.postProtocolEntry(payload, successMessage)
             .then(protocolEntry => {
               this.posting = false
               this.$emit('added', protocolEntry)
             })
+        return
       }
+
+      api.postProtocolEntry(payload)
+          .then(protocolEntry => {
+            const file = this.entryType === 'IMAGE' ? this.image : this.file;
+            api.postProtocolEntryFile(protocolEntry, file, successMessage)
+                .then(_ => {
+                  this.file = null
+                  this.posting = false
+                  this.$emit('added', protocolEntry)
+                })
+          })
     }
   }
 }

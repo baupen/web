@@ -1,11 +1,13 @@
 <template>
-  <form-field for-id="payload" :label="$t('protocol_entry.text_payload')" :required="false">
+  <form-field for-id="payload" :label="textMode ? $t('protocol_entry.text_payload') : $t('protocol_entry.file_payload')"
+              :required="textMode">
         <textarea id="payload" class="form-control"
                   :class="{'is-valid': fields.payload.dirty && !fields.payload.errors.length, 'is-invalid': fields.payload.dirty && fields.payload.errors.length }"
                   @blur="fields.payload.dirty = true"
                   v-model="protocolEntry.payload"
                   @input="validate('payload')"
-                  rows="3">
+                  :rows="textMode ? 3 : 1"
+        >
         </textarea>
     <invalid-feedback :errors="fields.payload.errors"/>
   </form-field>
@@ -45,15 +47,19 @@ export default {
   emits: ['update'],
   data() {
     return {
-      fields: {
-        payload: createField(requiredRule()),
-        createdAt: createField(requiredRule()),
-      },
       protocolEntry: {
-        type: 'TEXT',
         payload: null,
         createdAt: (new Date()).toISOString()
       },
+    }
+  },
+  props: {
+    template: {
+      type: Object
+    },
+    textMode: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
@@ -86,6 +92,19 @@ export default {
     }
   },
   computed: {
+    fields: function() {
+      if (this.textMode) {
+        return {
+          payload: createField(requiredRule()),
+          createdAt: createField(requiredRule()),
+        }
+      } else {
+        return {
+          payload: createField(),
+          createdAt: createField(requiredRule()),
+        }
+      }
+    },
     dateTimePickerConfig: function () {
       return dateTimeConfig
     },

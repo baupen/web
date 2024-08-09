@@ -8,17 +8,30 @@
     </div>
     <div class="col">
       <div class="mt-1">
-        <span v-if="protocolEntry.type === 'TEXT'" class="white-space-pre-line">
+        <p v-if="protocolEntry.type === 'TEXT'" class="white-space-pre-line mb-0">
           {{ protocolEntry.payload }}&nbsp;
-        </span>
-        <span v-else-if="protocolEntry.type === 'STATUS_SET'">
+        </p>
+        <p v-else-if="protocolEntry.type === 'STATUS_SET'" class="mb-0">
           <b>{{ $t('issue.state.' + protocolEntry.payload.toLowerCase()) }}</b>
-        </span>
-        <span v-else-if="protocolEntry.type === 'STATUS_UNSET'">
+        </p>
+        <p v-else-if="protocolEntry.type === 'STATUS_UNSET'" class="mb-0">
           <b>
             <del>{{ $t('issue.state.' + protocolEntry.payload.toLowerCase()) }}</del>
           </b>
-        </span>
+        </p>
+        <div v-else-if="protocolEntry.type === 'IMAGE'">
+          <image-lightbox :subject="protocolEntry.payload" :src="protocolEntry.fileUrl" />
+          <p v-if="protocolEntry.payload" class="mb-0">
+            {{ protocolEntry.payload }}
+          </p>
+        </div>
+        <p v-else-if="protocolEntry.type === 'FILE'" class="mb-0">
+          {{ protocolEntry.payload }}&nbsp;
+          <a :href="protocolEntry.fileUrl" download>
+            <font-awesome-icon :icon="['far', 'down']" />
+            {{ $t('_view.download') }}
+          </a>
+        </p>
       </div>
       <p class="text-secondary mb-0">
         <date-time-human-readable :value="protocolEntry.createdAt"/>,
@@ -32,9 +45,13 @@
 
 import {entityFormatter} from '../../services/formatters'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import ImageLightbox from "./ImageLightbox.vue";
 
 export default {
   components: {
+    ImageLightbox,
+    FontAwesomeIcon,
     DateTimeHumanReadable,
   },
   props: {
