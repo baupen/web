@@ -22,7 +22,10 @@ class ConstructionSiteController extends BaseController
     #[Route(path: '/common.js', name: 'construction_site_common_js')]
     public function commonJson(ConstructionSite $constructionSite): Response
     {
-        return $this->render('construction_site/_common.js.twig', ['constructionSite' => $constructionSite]);
+        $response = $this->render('construction_site/_common.js.twig', ['constructionSite' => $constructionSite]);
+        $response->headers->set('Content-Type', 'text/javascript');
+
+        return $response;
     }
 
     #[Route(path: '/dashboard', name: 'construction_site_dashboard')]
