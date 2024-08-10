@@ -1,5 +1,5 @@
 <template>
-  <div class="card shadow">
+  <div class="card">
     <img class="card-img-top max-heighted" v-if="constructionSite.imageUrl" :src="constructionSite.imageUrl + '?size=full'"
          :alt="'image of ' + constructionSite.name">
     <div class="card-body">

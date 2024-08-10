@@ -1,6 +1,6 @@
 <template>
   <loading-indicator-secondary :spin="issueProtocolEntries === null">
-    <div class="row">
+    <div class="row mb-2">
       <div class="col-3">
         {{ $t('protocol_entry._plural_short') }}
       </div>
