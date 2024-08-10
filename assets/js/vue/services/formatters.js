@@ -12,9 +12,10 @@ const entityFormatter = {
 
 const constructionManagerFormatter = {
   name: function (instance) {
-    return [instance.givenName, instance.familyName]
+    const name = [instance.givenName, instance.familyName]
       .filter(e => e)
       .join(' ')
+    return name ?? instance.email
   }
 }
 
