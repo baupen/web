@@ -1,6 +1,6 @@
 <template>
   <loading-indicator-secondary :spin="craftsmanProtocolEntries === null">
-    <div class="row mb-3">
+    <div class="row mb-2">
       <div class="col-3">
         {{ $t('protocol_entry._plural_short') }}
       </div>

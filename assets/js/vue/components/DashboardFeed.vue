@@ -32,21 +32,25 @@ export default {
   },
   data () {
     return {
-      constructionManagers: null,
       craftsmen: null,
       craftsmenStatistics: null,
-      feedEntries: null
+      feedEntries: null,
+      remainingFeedsToLoad: 2
     }
   },
   props: {
     constructionSite: {
       type: Object,
       required: true
+    },
+    constructionManagers: {
+      type: Array,
+      required: true
     }
   },
   computed: {
     isLoading: function () {
-      return !this.feedEntries || !this.constructionManagers || !this.craftsmen
+      return (this.feedEntries?.length === 0 && this.remainingFeedsToLoad > 0) || !this.craftsmen
     },
     isLoadingStatistics: function () {
       return !this.craftsmen || !this.craftsmenStatistics
@@ -62,18 +66,20 @@ export default {
     }
   },
   mounted () {
-    api.getConstructionManagers(this.constructionSite)
-        .then(constructionManagers => this.constructionManagers = constructionManagers)
-
     api.getCraftsmen(this.constructionSite)
         .then(craftsmen => this.craftsmen = craftsmen)
 
+    this.feedEntries = []
     api.getIssuesFeedEntries(this.constructionSite)
         .then(issuesFeedEntries => {
-          api.getCraftsmenFeedEntries(this.constructionSite)
-              .then(craftsmenFeedEntries => {
-                this.feedEntries = craftsmenFeedEntries.concat(issuesFeedEntries)
-              })
+          this.feedEntries = this.feedEntries.concat(issuesFeedEntries)
+          this.remainingFeedsToLoad--
+        })
+
+    api.getCraftsmenFeedEntries(this.constructionSite)
+        .then(craftsmenFeedEntries => {
+          this.feedEntries = this.feedEntries.concat(craftsmenFeedEntries)
+          this.remainingFeedsToLoad--
         })
 
     api.getCraftsmenStatistics(this.constructionSite, { isDeleted: false })

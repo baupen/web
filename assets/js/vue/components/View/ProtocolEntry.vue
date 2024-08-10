@@ -26,7 +26,8 @@
           </p>
         </div>
         <p v-else-if="protocolEntry.type === 'FILE'" class="mb-0">
-          {{ protocolEntry.payload }}&nbsp;
+          {{ protocolEntry.payload }}
+          <span v-if="protocolEntry.payload">&nbsp;</span>
           <a :href="protocolEntry.fileUrl" download>
             <font-awesome-icon :icon="['far', 'down']"/>
             {{ $t('_view.download') }}
