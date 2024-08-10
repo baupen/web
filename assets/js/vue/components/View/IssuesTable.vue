@@ -26,7 +26,7 @@
                   ref="edit-issues"
                   :enable-state-edit="canEditState"
                   :construction-manager-iri="constructionManagerIri" :issues="selectedIssues"
-                  :craftsmen="craftsmen" />
+                  :craftsmen="craftsmen" :maps="maps" />
               <remove-issues-button :issues="selectedIssues" @removed="removeIssue($event)" />
             </span>
           </span>

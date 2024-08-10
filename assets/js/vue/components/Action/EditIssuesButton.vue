@@ -16,7 +16,8 @@
     <issues-form
         ref="issues-form"
         :enable-state-edit="enableStateEdit"
-        :template="template" :craftsmen="craftsmen" @update="patch = $event" @confirm="$refs['modal'].confirm()" />
+        :template="template" :craftsmen="craftsmen" :maps="maps"
+        @update="patch = $event" @confirm="$refs['modal'].confirm()" />
     <image-form @update="image = $event" />
 
   </button-with-modal-confirm>
@@ -52,6 +53,10 @@ export default {
       default: []
     },
     craftsmen: {
+      type: Array,
+      default: []
+    },
+    maps: {
       type: Array,
       default: []
     },
@@ -135,6 +140,7 @@ export default {
         wasAddedWithClient: sameValue('wasAddedWithClient'),
         description: sameValue('description'),
         craftsman: sameValue('craftsman'),
+        map: sameValue('map'),
         deadline: sameValue('deadline'),
         isResolved: sameState('resolved'),
         isClosed: sameState('closed')
