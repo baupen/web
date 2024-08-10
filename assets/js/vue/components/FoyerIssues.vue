@@ -20,8 +20,6 @@
 
 import LoadingIndicator from './Library/View/LoadingIndicator'
 import IssuesTable from './View/IssuesTable'
-import { api } from '../services/api'
-import { displaySuccess } from '../services/notifiers'
 import RegisterIssuesButton from './Action/RegisterIssuesButton'
 
 export default {

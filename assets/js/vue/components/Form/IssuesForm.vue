@@ -16,7 +16,7 @@
         >
         <template v-slot:after>
           <div>
-            <a class="btn-link clickable" v-if="fields.isMarked.dirty" @click="reset('isMarked')">
+            <a class="btn-link clickable" v-if="fields.isMarked.dirty && template" @click="reset('isMarked')">
               {{ $t('_form.reset') }}
             </a>
           </div>
@@ -38,7 +38,7 @@
         >
         <template v-slot:after>
           <div>
-            <a class="btn-link clickable" v-if="fields.wasAddedWithClient.dirty" @click="reset('wasAddedWithClient')">
+            <a class="btn-link clickable" v-if="fields.wasAddedWithClient.dirty && template" @click="reset('wasAddedWithClient')">
               {{ $t('_form.reset') }}
             </a>
           </div>
@@ -59,7 +59,7 @@
         >
         <template v-slot:after>
           <div>
-            <a class="btn-link clickable" v-if="fields.isResolved.dirty" @click="reset('isResolved')">
+            <a class="btn-link clickable" v-if="fields.isResolved.dirty && template" @click="reset('isResolved')">
               {{ $t('_form.reset') }}
             </a>
           </div>
@@ -79,7 +79,7 @@
         >
         <template v-slot:after>
           <div>
-            <a class="btn-link clickable" v-if="fields.isClosed.dirty" @click="reset('isClosed')">
+            <a class="btn-link clickable" v-if="fields.isClosed.dirty && template" @click="reset('isClosed')">
               {{ $t('_form.reset') }}
             </a>
           </div>
@@ -113,7 +113,7 @@
         :position="position"
         @selected="position = $event" />
 
-    <a class="btn-link clickable" v-if="fields.map.dirty || this.position" @click="reset('map')">
+    <a class="btn-link clickable" v-if="(fields.map.dirty || this.position) && template" @click="reset('map')">
       {{ $t('_form.reset') }}
     </a>
   </form-field>
@@ -130,7 +130,7 @@
            @blur="fields.description.dirty = true"
            @keyup.enter="$emit('confirm')">
     <invalid-feedback :errors="fields.description.errors" />
-    <a class="btn-link clickable" v-if="fields.description.dirty" @click="reset('description')">
+    <a class="btn-link clickable" v-if="fields.description.dirty && template" @click="reset('description')">
       {{ $t('_form.reset') }}
     </a>
   </form-field>
@@ -155,7 +155,7 @@
       </option>
     </select>
     <invalid-feedback :errors="fields.description.errors" />
-    <a class="btn-link clickable" v-if="fields.craftsman.dirty" @click="reset('craftsman')">
+    <a class="btn-link clickable" v-if="fields.craftsman.dirty && template" @click="reset('craftsman')">
       {{ $t('_form.reset') }}
     </a>
   </form-field>
@@ -170,7 +170,7 @@
         @change="validate('deadline')">
     </flat-pickr>
     <invalid-feedback :errors="fields.deadline.errors" />
-    <a class="btn-link clickable" v-if="fields.deadline.dirty" @click="reset('deadline')">
+    <a class="btn-link clickable" v-if="fields.deadline.dirty && template" @click="reset('deadline')">
       {{ $t('_form.reset') }}
     </a>
   </form-field>
@@ -222,9 +222,6 @@ export default {
     }
   },
   props: {
-    template: {
-      type: Object
-    },
     constructionSite: {
       type: Object,
       required: true
@@ -236,6 +233,10 @@ export default {
     craftsmen: {
       type: Array,
       required: true
+    },
+    template: {
+      type: Object,
+      required: false
     },
     enableStateEdit: {
       type: Boolean,
@@ -301,6 +302,10 @@ export default {
       })
     },
     setIssueFromTemplate: function () {
+      if (!this.template) {
+        return
+      }
+
       this.issue = Object.assign({}, this.template)
       if (this.issue.craftsman) {
         this.tradeFilter = this.craftsmen.find(c => c['@id'] === this.issue.craftsman).trade
@@ -368,7 +373,7 @@ export default {
         values.deadline = values.deadline ? values.deadline : null
 
         // '2020-01-01'.length === 4+3+3
-        if (values.deadline && this.template.deadline && values.deadline.substr(0, 10) === this.template.deadline.substr(0, 10)) {
+        if (values.deadline && this.template?.deadline && values.deadline.substr(0, 10) === this.template?.deadline.substr(0, 10)) {
           delete values.deadline
         }
       }
@@ -377,11 +382,11 @@ export default {
     },
     selectedMap: function () {
       if (!this.issue.map) {
-        if (!this.template.map) {
+        if (!this.template?.map) {
           return null
         }
 
-        return this.maps.find(map => map['@id'] === this.template.map)
+        return this.maps.find(map => map['@id'] === this.template?.map)
       }
 
       return this.maps.find(map => map['@id'] === this.issue.map)
