@@ -20,6 +20,10 @@ export default {
     subject: {
       required: true
     },
+    contentHash: {
+      type: String,
+      required: false
+    },
     preview: {
       type: Boolean,
       default: false
@@ -35,6 +39,9 @@ export default {
 
       if (this.preview) {
         url.searchParams.set('size', 'preview');
+        if (this.contentHash) {
+          url.searchParams.set('ch', this.contentHash);
+        }
       }
 
       return url.toString()
@@ -42,6 +49,9 @@ export default {
     srcFullUrl: function () {
       let url = new URL(this.src, window.location.origin);
       url.searchParams.set('size', 'full')
+      if (this.contentHash) {
+        url.searchParams.set('ch', this.contentHash);
+      }
       return url.toString()
     }
   }

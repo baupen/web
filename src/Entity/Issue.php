@@ -160,7 +160,7 @@ class Issue extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     private ?Craftsman $craftsman = null;
 
     #[Assert\NotBlank]
-    #[Groups(['issue-read', 'issue-create'])]
+    #[Groups(['issue-read', 'issue-write'])]
     #[ORM\ManyToOne(targetEntity: Map::class, inversedBy: 'issues')]
     private ?Map $map = null;
 

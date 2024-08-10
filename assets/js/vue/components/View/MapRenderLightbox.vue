@@ -1,5 +1,5 @@
 <template>
-  <image-lightbox :src="src" :subject="subject" :preview="preview" />
+  <image-lightbox :src="src" :subject="subject" :preview="preview" :content-hash="contentHash" />
 </template>
 
 <script>
@@ -28,6 +28,9 @@ export default {
     issue: {
       type: Object,
       required: false
+    },
+    contentHash: {
+      required: true
     },
     state: {
       type: Number,
