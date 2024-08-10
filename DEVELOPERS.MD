@@ -64,17 +64,8 @@ For this, you need to setup its registry. You can do so by executing
 `npm config set "//npm.fontawesome.com/:_authToken" AUTH_TOKEN`  
 You can find the auth token on the [fontawesome account page](https://fontawesome.com/account)
 
-You need to add this auth token to all CI services too.  
-[**scrutinizer**](https://scrutinizer-ci.com/g/baupen/web/settings/build-config)
-```yaml
-build:
-    dependencies:
-        before:
-            - npm config set "@fortawesome:registry" https://npm.fontawesome.com/
-            - npm config set "//npm.fontawesome.com/:_authToken" FONTAWESOME_AUTH_TOKEN
-```
-[**travis**](https://travis-ci.com/baupen/web/settings)  
-add an environment variable called `FONTAWESOME_AUTH_TOKEN`
+You need to add this auth token to all CI services too. 
+You can add an environment variable called `FONTAWESOME_AUTH_TOKEN`
 
 ### Lokalise
 
