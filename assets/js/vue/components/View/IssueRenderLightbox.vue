@@ -1,8 +1,8 @@
 <template>
-  <image-lightbox v-if="this.issue.mapRenderUrl" :src="this.issue.mapRenderUrl" :subject="subject" :preview="preview" />
+  <image-lightbox v-if="this.issue.mapRenderUrl" :src="this.issue.mapRenderUrl" :subject="subject" :content-hash="contentHash" :preview="preview" />
   <map-render-lightbox
       v-else
-      :preview="preview" :construction-site="constructionSite" :map="map" :issue="issue" />
+      :preview="preview" :construction-site="constructionSite" :map="map" :issue="issue" :content-hash="contentHash" />
 </template>
 
 <script>
@@ -36,6 +36,9 @@ export default {
     subject: function () {
       return this.map.name + ': ' + this.issue.number
     },
+    contentHash: function () {
+      return 'x=' + this.issue.positionX + ',y=' + this.issue.positionY
+    }
   }
 }
 </script>

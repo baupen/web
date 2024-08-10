@@ -16,9 +16,12 @@
     <issues-form
         ref="issues-form"
         :enable-state-edit="enableStateEdit"
-        :template="template" :craftsmen="craftsmen" :maps="maps"
-        @update="patch = $event" @confirm="$refs['modal'].confirm()" />
-    <image-form @update="image = $event" />
+        :template="template" :construction-site="constructionSite" :craftsmen="craftsmen" :maps="maps"
+        @update="patch = $event" @confirm="$refs['modal'].confirm()">
+      <template v-slot:before-description>
+        <image-form @update="image = $event" />
+      </template>
+    </issues-form>
 
   </button-with-modal-confirm>
 </template>
@@ -52,6 +55,10 @@ export default {
       type: Array,
       default: []
     },
+    constructionSite: {
+      type: Object,
+      required: true
+    },
     craftsmen: {
       type: Array,
       default: []
@@ -79,12 +86,19 @@ export default {
       }
 
       let translatedFields = []
+      let positionFields = ['positionX', 'positionY', 'positionZoomScale']
       for (let field in this.patch) {
         if (Object.prototype.hasOwnProperty.call(this.patch, field)) {
           if (field === 'isResolved' || field === 'isClosed') {
             const translatedField = this.$t('issue.state.' + field.substr(2).toLowerCase())
             translatedFields.push(translatedField)
-          } else {
+          } else if (positionFields.includes(field)) {
+            if (positionFields.indexOf(field) === 0) {
+              const translatedField = this.$t('issue.position')
+              translatedFields.push(translatedField)
+            }
+          }
+          else {
             const translationKey = field.replace(/([A-Z])/g, '_$1')
                 .toLowerCase()
             const translatedField = this.$t('issue.' + translationKey)

@@ -94,6 +94,34 @@
 
   <hr />
 
+  <form-field for-id="map" :label="$t('issue.map')">
+    <select class="form-select mb-2"
+            :class="{'is-valid': fields.map.dirty && !fields.map.errors.length, 'is-invalid': fields.map.dirty && fields.map.errors.length }"
+            v-model="issue.map"
+            @change="validate('map')"
+    >
+      <option v-for="mapContainer in mapContainers" :value="mapContainer.entity['@id']"
+              :key="mapContainer.entity['@id']">
+        {{ '&nbsp;'.repeat(mapContainer.level) }} {{ mapContainer.entity.name }}
+      </option>
+    </select>
+    <invalid-feedback :errors="fields.map.errors" />
+
+    <select-map-position-checkbox
+        v-if="selectedMap && selectedMap.fileUrl"
+        :construction-site="constructionSite" :map="selectedMap"
+        :position="position"
+        @selected="position = $event" />
+
+    <a class="btn-link clickable" v-if="fields.map.dirty || this.position" @click="reset('map')">
+      {{ $t('_form.reset') }}
+    </a>
+  </form-field>
+
+  <hr/>
+
+  <slot name="before-description" />
+
   <form-field for-id="description" :label="$t('issue.description')">
     <input id="description" class="form-control" type="text" required="required" ref="description"
            :class="{'is-valid': fields.description.dirty && !fields.description.errors.length, 'is-invalid': fields.description.dirty && fields.description.errors.length }"
@@ -106,6 +134,8 @@
       {{ $t('_form.reset') }}
     </a>
   </form-field>
+
+  <hr/>
 
   <form-field for-id="craftsman" :label="$t('issue.craftsman')">
     <select class="form-select"
@@ -144,23 +174,6 @@
       {{ $t('_form.reset') }}
     </a>
   </form-field>
-
-  <form-field for-id="map" :label="$t('issue.map')">
-    <select class="form-select"
-            :class="{'is-valid': fields.map.dirty && !fields.map.errors.length, 'is-invalid': fields.map.dirty && fields.map.errors.length }"
-            v-model="issue.map"
-            @change="validate('map')"
-    >
-      <option v-for="mapContainer in mapContainers" :value="mapContainer.entity['@id']"
-              :key="mapContainer.entity['@id']">
-        {{ '&nbsp;'.repeat(mapContainer.level) }} {{ mapContainer.entity.name }}
-      </option>
-    </select>
-    <invalid-feedback :errors="fields.map.errors" />
-    <a class="btn-link clickable" v-if="fields.map.dirty" @click="reset('map')">
-      {{ $t('_form.reset') }}
-    </a>
-  </form-field>
 </template>
 
 <script>
@@ -171,9 +184,11 @@ import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
 import {dateConfig, flatPickr, toggleAnchorValidity} from '../../services/flatpickr'
 import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 import {mapTransformer} from "../../services/transformers";
+import SelectMapPositionCheckbox from "../Action/SelectMapPositionCheckbox.vue";
 
 export default {
   components: {
+    SelectMapPositionCheckbox,
     CustomCheckboxField,
     InvalidFeedback,
     FormField,
@@ -202,12 +217,17 @@ export default {
         isResolved: null,
         isClosed: null,
       },
+      position: null,
       tradeFilter: null
     }
   },
   props: {
     template: {
       type: Object
+    },
+    constructionSite: {
+      type: Object,
+      required: true
     },
     maps: {
       type: Array,
@@ -220,7 +240,7 @@ export default {
     enableStateEdit: {
       type: Boolean,
       default: false
-    }
+    },
   },
   watch: {
     updatePayload: {
@@ -231,6 +251,13 @@ export default {
     },
     template: function () {
       this.setIssueFromTemplate()
+    },
+    selectedMap: function () {
+      this.position = null
+
+      if (!this.selectedMap.fileUrl) {
+        this.position = { isNull: true }
+      }
     },
     sortedCraftsmen: function () {
       if (this.sortedCraftsmen.length === 1) {
@@ -261,6 +288,9 @@ export default {
     reset: function (field) {
       if (field === 'craftsman') {
         this.tradeFilter = this.craftsmen.find(c => c['@id'] === this.template.craftsman).trade
+      }
+      if (field === 'map') {
+        this.position = null
       }
       this.issue[field] = this.template[field]
       this.fields[field].dirty = false
@@ -320,6 +350,19 @@ export default {
 
       const values = changedFieldValues(this.fields, this.issue, this.template)
 
+      // set position
+      if (this.position)  {
+        if (this.position.isNull) {
+          values['positionX'] = null
+          values['positionY'] = null
+          values['positionZoomScale'] = null
+        } else {
+          values['positionX'] = this.position.x
+          values['positionY'] = this.position.y
+          values['positionZoomScale'] = this.position.zoomScale
+        }
+      }
+
       // ensure empty string is null
       if (Object.prototype.hasOwnProperty.call(values, 'deadline')) {
         values.deadline = values.deadline ? values.deadline : null
@@ -332,6 +375,17 @@ export default {
 
       return values
     },
+    selectedMap: function () {
+      if (!this.issue.map) {
+        if (!this.template.map) {
+          return null
+        }
+
+        return this.maps.find(map => map['@id'] === this.template.map)
+      }
+
+      return this.maps.find(map => map['@id'] === this.issue.map)
+    }
   },
   mounted () {
     this.setIssueFromTemplate()

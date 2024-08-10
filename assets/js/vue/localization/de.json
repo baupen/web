@@ -136,6 +136,12 @@
       "title": "Als umgesetzt markieren"
     },
     "save_changes": "Änderungen speichern",
+    "select_map_position": {
+      "title": "Position setzen",
+      "help": "Auf die Karte klicken, um die Position zu setzen.",
+      "no_position": "Keine Platzierung setzen",
+      "no_position_set": "keine Platzierung"
+    },
     "toggle_association_construction_site": {
       "associated_short": "aktiv",
       "associated": "Sie wurden der Baustelle hinzugefügt.",
