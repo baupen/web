@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-3">
+  <div>
     <custom-checkbox :for-id="forId" :label="label" :label-icon="labelIcon" :label-icon-checked="labelIconChecked" :checked="checked" :secondary-label="secondaryLabel" :required="required">
       <slot></slot>
       <template v-slot:after>
