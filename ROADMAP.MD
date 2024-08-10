@@ -46,3 +46,6 @@ Report:
 
 Edit:
 - When adding an external construction manager, add context to the registration email about who did it, and for what construction site.
+
+Framework:
+- Frontend often cannot recover from failed backend calls (e.g. button remains disabled)
