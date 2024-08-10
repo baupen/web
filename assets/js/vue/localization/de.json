@@ -293,6 +293,7 @@
   },
   "dashboard": {
     "feed": "Feed",
+    "activity": "Aktivität",
     "new_issues_in_foyer": "Eine neue Pendenz erfasst. | {count} neue Pendenzen erfasst."
   },
   "edit": {
