@@ -1,11 +1,13 @@
 <template>
-  <div>
-    <img class="img-fluid shadow" v-if="constructionSite.imageUrl" :src="constructionSite.imageUrl + '?size=full'"
+  <div class="card shadow">
+    <img class="card-img-top max-heighted" v-if="constructionSite.imageUrl" :src="constructionSite.imageUrl + '?size=full'"
          :alt="'image of ' + constructionSite.name">
-    <h4 class="mt-3">{{ constructionSite.name }}</h4>
-    <p>
-      <span class="pre">{{ address.join("\n") }}</span>
-    </p>
+    <div class="card-body">
+      <h5 class="card-title">{{ constructionSite.name }}</h5>
+      <p class="card-text">
+        <span class="pre">{{ address.join("\n") }}</span>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -27,3 +29,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.max-heighted {
+  max-height: 20em;
+  object-fit: cover;
+}
+</style>
