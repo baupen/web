@@ -12,7 +12,6 @@
     <select class="form-select"
             :class="{'is-valid': fields.parent.dirty && !fields.parent.errors.length, 'is-invalid': fields.parent.dirty && fields.parent.errors.length }"
             v-model="map.parent"
-            @blur="fields.parent.dirty = true"
             @change="validate('parent')"
     >
       <option :value="null">{{ $t('map.parent_not_set_name') }}</option>
@@ -70,6 +69,9 @@ export default {
   },
   methods: {
     validate: function (field) {
+      if (field === 'parent') {
+        this.fields[field].dirty = true
+      }
       validateField(this.fields[field], this.map[field])
     },
     setMapFromTemplate: function () {
