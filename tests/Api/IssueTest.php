@@ -128,7 +128,6 @@ class IssueTest extends ApiTestCase
         $emptyConstructionSiteId = $this->getIriFromItem($emptyConstructionSite);
         $writeProtected = [
             'constructionSite' => $emptyConstructionSiteId,
-            'map' => $otherMapId,
             'createdAt' => (new \DateTime('tomorrow'))->format('c'),
             'createdBy' => $otherConstructionManagerId,
         ];
@@ -138,6 +137,7 @@ class IssueTest extends ApiTestCase
         $otherCraftsmanId = $this->getIriFromItem($otherCraftsman);
         $update = [
             'craftsman' => $otherCraftsmanId,
+            'map' => $otherMapId,
 
             'description' => 'hello world 2',
             'wasAddedWithClient' => false,
