@@ -407,6 +407,9 @@ const api = {
   postMap: function (map, successMessage = null) {
     return this._postRaw('/api/maps', map, successMessage)
   },
+  postIssue: function (issue, successMessage = null) {
+    return this._postRaw('/api/issues', issue, successMessage)
+  },
   postConstructionManager: function (constructionManager, successMessage = null) {
     return this._postRaw('/api/construction_managers', constructionManager, successMessage)
   },

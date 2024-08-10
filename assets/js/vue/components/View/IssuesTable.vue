@@ -18,17 +18,26 @@
               class="d-inline-block"
               property="lastChangedAt" order-value="desc" id="order-by-last-changed-at"
               :label="$t('_view.issues.sort_by_last_activity')" :order="order"
-              @ordered="order = $event" />
+              @ordered="order = $event"/>
         </span>
         <span class="text-end float-end" v-if="canEdit">
+            <span class="reset-table-styles me-2">
+              <add-issue-button
+                  v-if="view === 'foyer'"
+                  :construction-manager-iri="constructionManagerIri"
+                  :construction-site="constructionSite" :maps="maps" :craftsmen="craftsmen"
+                  @added="addIssue($event)"/>
+            </span>
+
             <span class="btn-group reset-table-styles">
+
               <edit-issues-button
                   ref="edit-issues"
                   :enable-state-edit="canEditState"
                   :construction-manager-iri="constructionManagerIri" :construction-site="constructionSite"
                   :issues="selectedIssues"
-                  :craftsmen="craftsmen" :maps="maps" />
-              <remove-issues-button :issues="selectedIssues" @removed="removeIssue($event)" />
+                  :craftsmen="craftsmen" :maps="maps"/>
+              <remove-issues-button :issues="selectedIssues" @removed="removeIssue($event)"/>
             </span>
           </span>
       </th>
@@ -67,7 +76,7 @@
     </tr>
     </thead>
     <tbody>
-    <loading-indicator-table-body v-if="isLoading" />
+    <loading-indicator-table-body v-if="isLoading"/>
     <tr v-else-if="issueContainers.length === 0 && !issuesLoading">
       <td colspan="99">
         <p class="text-center">{{ $t('_view.no_issues') }}</p>
@@ -87,16 +96,16 @@
       <td>
         <toggle-icon
             icon="star"
-            :value="iwr.issue.isMarked" />
-        <br />
+            :value="iwr.issue.isMarked"/>
+        <br/>
         <toggle-icon
             icon="user-check"
-            :value="iwr.issue.wasAddedWithClient" />
+            :value="iwr.issue.wasAddedWithClient"/>
       </td>
       <td>
         <image-lightbox
             :src="iwr.issue.imageUrl" :subject="iwr.issue.number"
-            @click.stop="" />
+            @click.stop=""/>
       </td>
       <td>
         <span class="clickable-text" @click.stop="editDescription(iwr.issue)">
@@ -109,15 +118,15 @@
         </span>
       </td>
       <td>
-        {{ iwr.map?.name }}<br />
+        {{ iwr.map?.name }}<br/>
         <span class="text-muted">{{ iwr.mapParentNames?.join(' > ') }}</span>
       </td>
       <td>
-        {{ iwr.craftsman?.trade }}<br />
+        {{ iwr.craftsman?.trade }}<br/>
         <span class="text-muted">{{ iwr.craftsman?.company }}</span>
       </td>
       <td>
-        <date-human-readable :value="iwr.issue.deadline" />
+        <date-human-readable :value="iwr.issue.deadline"/>
       </td>
       <td @click.stop="" class="cursor-normal">
         <view-issue-button
@@ -126,10 +135,10 @@
             :construction-manager-iri="constructionManagerIri"
             :craftsmen="craftsmen"
             :map="iwr.map" :map-parent-names="iwr.mapParentNames"
-            :issue="iwr.issue" />
+            :issue="iwr.issue"/>
       </td>
     </tr>
-    <loading-indicator-table-body v-if="issuesLoading && !isLoading" />
+    <loading-indicator-table-body v-if="issuesLoading && !isLoading"/>
     </tbody>
     <caption class="caption-top">
       <template v-if="view === 'foyer'">
@@ -159,7 +168,7 @@
         </div>
       </template>
       <div class="float-end">
-        {{displayedIssues.length}} / {{ displayableIssueCount }} {{ $t('issue._plural') }}
+        {{ displayedIssues.length }} / {{ displayableIssueCount }} {{ $t('issue._plural') }}
       </div>
     </caption>
   </table>
@@ -181,10 +190,10 @@ import TooltipText from '../Library/View/TooltipText'
 import DateHumanReadable from '../Library/View/DateHumanReadable'
 import DateTimeHumanReadable from '../Library/View/DateTimeHumanReadable'
 import debounce from 'lodash.debounce'
-import { addNonDuplicatesById, api } from '../../services/api'
-import { arraysAreEqual } from '../../services/algorithms'
+import {addNonDuplicatesById, api} from '../../services/api'
+import {arraysAreEqual} from '../../services/algorithms'
 import ImageLightbox from './ImageLightbox'
-import { filterTransformer, mapTransformer } from '../../services/transformers'
+import {filterTransformer, mapTransformer} from '../../services/transformers'
 import FilterIssuesButton from '../Action/FilterIssuesButton'
 import LoadingIndicatorTableBody from '../Library/View/LoadingIndicatorTableBody'
 import ToggleIcon from '../Library/View/ToggleIcon'
@@ -192,10 +201,14 @@ import AddCraftsmanButton from '../Action/AddCraftsmanButton'
 import ViewIssueButton from '../Action/ViewIssueButton'
 import OrderTableHead from '../Library/Behaviour/OrderTableHead'
 import OrderCheckbox from '../Library/Behaviour/OrderCheckbox'
+import RegisterIssuesButton from "../Action/RegisterIssuesButton.vue";
+import AddIssueButton from "../Action/AddIssueButton.vue";
 
 export default {
   emits: ['selected', 'query', 'queried-issue-count', 'loaded-craftsmen', 'loaded-maps', 'reset-hidden'],
   components: {
+    AddIssueButton,
+    RegisterIssuesButton,
     OrderCheckbox,
     OrderTableHead,
     ViewIssueButton,
@@ -319,6 +332,15 @@ export default {
     }
   },
   methods: {
+    addIssue: function (issue) {
+      // prevent reload in easy default cause
+      if (this.filter === null && this.order === null && this.issuePage === 1) {
+        this.issues.unshift(issue)
+        this.totalIssues += 1
+      } else {
+        this.loadIssues(this.filter, this.issuePage)
+      }
+    },
     editDescription: function (issue) {
       this.selectedIssues = [issue]
       this.$nextTick(() => {
