@@ -117,7 +117,6 @@
     <select class="form-select"
             :class="{'is-valid': fields.craftsman.dirty && !fields.craftsman.errors.length, 'is-invalid': fields.craftsman.dirty && fields.craftsman.errors.length }"
             v-model="issue.craftsman"
-            @blur="fields.craftsman.dirty = true"
             @change="validate('craftsman')"
     >
       <option v-for="craftsman in sortedCraftsmen" :value="craftsman['@id']"
@@ -145,6 +144,23 @@
       {{ $t('_form.reset') }}
     </a>
   </form-field>
+
+  <form-field for-id="map" :label="$t('issue.map')">
+    <select class="form-select"
+            :class="{'is-valid': fields.map.dirty && !fields.map.errors.length, 'is-invalid': fields.map.dirty && fields.map.errors.length }"
+            v-model="issue.map"
+            @change="validate('map')"
+    >
+      <option v-for="mapContainer in mapContainers" :value="mapContainer.entity['@id']"
+              :key="mapContainer.entity['@id']">
+        {{ '&nbsp;'.repeat(mapContainer.level) }} {{ mapContainer.entity.name }}
+      </option>
+    </select>
+    <invalid-feedback :errors="fields.map.errors" />
+    <a class="btn-link clickable" v-if="fields.map.dirty" @click="reset('map')">
+      {{ $t('_form.reset') }}
+    </a>
+  </form-field>
 </template>
 
 <script>
@@ -154,6 +170,7 @@ import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
 import {dateConfig, flatPickr, toggleAnchorValidity} from '../../services/flatpickr'
 import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
+import {mapTransformer} from "../../services/transformers";
 
 export default {
   components: {
@@ -170,6 +187,7 @@ export default {
         wasAddedWithClient: createField(),
         description: createField(),
         craftsman: createField(),
+        map: createField(),
         deadline: createField(),
         isResolved: createField(),
         isClosed: createField(),
@@ -179,6 +197,7 @@ export default {
         wasAddedWithClient: null,
         description: null,
         craftsman: null,
+        map: null,
         deadline: null,
         isResolved: null,
         isClosed: null,
@@ -189,6 +208,10 @@ export default {
   props: {
     template: {
       type: Object
+    },
+    maps: {
+      type: Array,
+      required: true
     },
     craftsmen: {
       type: Array,
@@ -230,11 +253,14 @@ export default {
       })
     },
     validate: function (field) {
+      if (field === 'map' || field === 'craftsman') {
+        this.fields[field].dirty = true
+      }
       validateField(this.fields[field], this.issue[field])
     },
     reset: function (field) {
       if (field === 'craftsman') {
-        this.tradeFilter = null
+        this.tradeFilter = this.craftsmen.find(c => c['@id'] === this.template.craftsman).trade
       }
       this.issue[field] = this.template[field]
       this.fields[field].dirty = false
@@ -261,6 +287,9 @@ export default {
     datePickerConfig: function () {
       return dateConfig
     },
+    mapContainers: function () {
+      return mapTransformer.orderedList(this.maps.filter(m => !m.isDeleted), mapTransformer.PROPERTY_LEVEL)
+    },
     selectableCraftsmen: function () {
       return this.craftsmen.filter(c => !c.isDeleted)
     },
@@ -282,6 +311,7 @@ export default {
           this.fields.wasAddedWithClient.errors.length ||
           this.fields.description.errors.length ||
           this.fields.craftsman.errors.length ||
+          this.fields.map.errors.length ||
           this.fields.deadline.errors.length ||
           this.fields.isResolved.errors.length ||
           this.fields.isClosed.errors.length) {
