@@ -407,7 +407,9 @@
     "_name": "Aufgabe",
     "_plural": "Aufgaben",
     "description": "Beschreibung",
-    "deadline": "Frist"
+    "deadline": "Frist",
+    "created_by": "erstellt von",
+    "closed_by": "erledigt von"
   },
   "resolve": {
     "help": "Markieren Sie Pendenzen als umgesetzt, damit die Bauleitung diese abschliessen kann.",
