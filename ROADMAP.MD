@@ -11,7 +11,7 @@ Allow to track context of issues, craftsman and construction sites.
 Implementation is finished somewhat, with some open issues remaning. However, it is ready for testing to get customer feedback. Before full release, issues need to be resolved or conciously be set back.
 
 Usability:
-- [ ] The empty protocol looks weird, both on craftsman / construction site. Add a help alert there?
+- [ ] The empty protocol looks weird, both on craftsman / construction site. Add a help alert there? -> no, refactor design to align to task view
 - [ ] Customer feedback indicates craftsman protocol is useful to see within the issues protocol. However, holistic solution to integrate next higher context into the protocol (issues integrates CS and craftsman, craftsman integrates CS) seems to not work well. How to consiliate?
 - [ ] Customer usage implies that last protocol entry useful to see in overviews. However, difficult to implement / visualize. Is this really necessary?
 - [ ] The "Last activity" checkbox in the issues table excludes protocol activity, which might be surprising.
@@ -21,6 +21,14 @@ Technical:
 - [ ] Translations are not yet done
 
 
+### Tasks
+
+Remember pending tasks inside a construction site, with deadline.
+
+Usability:
+- [ ] How / where to show in the dashboard? Attached to the construction sites, or separate card?
+- [ ] Allow to edit / remove entries? Only recently added?
+
 ### Other upcoming features
 
 wait for protocol:
@@ -29,7 +37,6 @@ wait for protocol:
 others:
 - Add issue online, incl. placing of issues on map
 - Store e-mail template, but without sending email
-- Allow to add / manage reminders per construction site, and provide access in overview
 
 
 ## Future improvements
