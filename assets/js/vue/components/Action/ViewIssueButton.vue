@@ -31,12 +31,12 @@
     </template>
 
     <div class="mh-30em">
-      <div class="w-50 d-inline-block pe-1">
+      <div class="mw-50 d-inline-block pe-1">
         <issue-render-lightbox
             :preview="true"
             :construction-site="constructionSite" :map="map" :issue="issue" />
       </div>
-      <div class="w-50 d-inline-block ps-1">
+      <div class="mw-50 d-inline-block ps-1">
         <image-lightbox
             v-if="issue.imageUrl"
             :preview="true"

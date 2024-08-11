@@ -138,7 +138,7 @@
   <hr/>
 
   <form-field for-id="craftsman" :label="$t('issue.craftsman')">
-    <select class="form-select"
+    <select class="form-select mb-1"
             v-model="tradeFilter">
       <option v-for="trade in sortedTrade" :value="trade">
         {{ trade }}
