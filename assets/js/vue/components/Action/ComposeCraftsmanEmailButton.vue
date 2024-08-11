@@ -6,6 +6,9 @@
       @confirm="confirm">
 
     <template v-slot:secondary-footer>
+      <button class="btn btn-outline-secondary me-auto" @click="saveEmailTemplate" :disabled="storingTemplate">
+        {{ $t('_action.compose_craftsman_email.save_as_template') }}
+      </button>
       <custom-checkbox for-id="self-bcc" :label="$t('email.self_bcc')">
         <input
             class="form-check-input" type="checkbox" id="self-bcc"
@@ -36,14 +39,6 @@
             </option>
           </select>
         </form-field>
-
-        <custom-checkbox-field for-id="save-as-template" :label="saveAsTemplateLabel">
-          <input
-              class="form-check-input" type="checkbox" id="save-as-template"
-              v-model="saveAsTemplate"
-              :true-value="true"
-              :false-value="false">
-        </custom-checkbox-field>
       </div>
     </div>
 
@@ -84,7 +79,7 @@ export default {
       emailTemplates: null,
       selectedEmailTemplate: null,
       unsentEmails: [],
-      saveAsTemplate: false
+      storingTemplate: false
     }
   },
   props: {
@@ -130,12 +125,6 @@ export default {
       return this.emailTemplates.filter(et => !et.purpose)
           .sort((a, b) => a.name.localeCompare(b.name))
     },
-    saveAsTemplateLabel: function () {
-      if (this.selectedEmailTemplate) {
-        return this.$t('_action.compose_craftsman_email.save_template_changes')
-      }
-      return this.$t('_action.compose_craftsman_email.save_as_new_template')
-    },
     canConfirm: function () {
       return !!this.email
     }
@@ -153,14 +142,6 @@ export default {
   methods: {
     confirm: function () {
       this.sendEmails()
-
-      if (this.saveAsTemplate) {
-        if (this.selectedEmailTemplate) {
-          this.saveEmailTemplate()
-        } else {
-          this.createEmailTemplateFromEmail()
-        }
-      }
     },
     sendEmails: function () {
       this.unsentEmails = this.craftsmen.map(craftsman => {
@@ -184,21 +165,30 @@ export default {
               }
           )
     },
-    createEmailTemplateFromEmail: function () {
-      const emailTemplate = Object.assign({
-        selfBcc: this.selfBcc,
-        name: this.email.subject,
-        constructionSite: this.constructionSite['@id']
-      }, this.email)
-      api.postEmailTemplate(emailTemplate, this.emailTemplates, this.$t('_action.compose_craftsman_email.saved_email_template'))
-    },
     saveEmailTemplate: function () {
-      let patch = Object.assign({selfBcc: this.selfBcc}, this.email)
-      if (!this.selectedEmailTemplate.purpose) {
-        patch.name = this.email.subject
-      }
+      this.storingTemplate = true
 
-      api.patch(this.selectedEmailTemplate, patch, this.$t('_action.compose_craftsman_email.saved_email_template'))
+      if (this.selectedEmailTemplate) {
+        let patch = Object.assign({selfBcc: this.selfBcc}, this.email)
+        if (!this.selectedEmailTemplate.purpose) {
+          patch.name = this.email.subject
+        }
+
+        api.patch(this.selectedEmailTemplate, patch, this.$t('_action.compose_craftsman_email.saved_email_template'))
+            .then(_ => this.storingTemplate = false)
+      } else {
+        const emailTemplate = Object.assign({
+          selfBcc: this.selfBcc,
+          name: this.email.subject,
+          constructionSite: this.constructionSite['@id']
+        }, this.email)
+
+        api.postEmailTemplate(emailTemplate, this.emailTemplates, this.$t('_action.compose_craftsman_email.saved_email_template'))
+            .then(emailTemplate => {
+              this.storingTemplate = false
+              this.selectedEmailTemplate = emailTemplate
+            })
+      }
     },
     initializeDefaultEmailTemplates () {
       let openIssuesTemplate = this.emailTemplates.find(t => t.purpose === 1)
