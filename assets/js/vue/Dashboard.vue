@@ -17,8 +17,11 @@
         </div>
         <div class="col-md-6 col-lg-4">
           <h3>{{ $t('dashboard.activity') }}</h3>
-          <dashboard-feed class="shadow" :construction-site="constructionSite"
+          <dashboard-feed class="shadow mb-4" :construction-site="constructionSite"
                           :construction-managers="constructionManagers"/>
+          <dashboard-tasks class="shadow"
+                           :construction-site="constructionSite" :construction-managers="constructionManagers"
+                           :construction-manager-iri="constructionManagerIri" />
         </div>
       </div>
     </loading-indicator>
@@ -34,9 +37,11 @@ import DashboardFeed from './components/DashboardFeed'
 import LoadingIndicator from './components/Library/View/LoadingIndicator'
 import AtomSpinner from './components/Library/View/Base/AtomSpinner'
 import DashboardProtocol from "./components/DashboardProtocol.vue";
+import DashboardTasks from "./components/DashboardTasks.vue";
 
 export default {
   components: {
+    DashboardTasks,
     DashboardProtocol,
     AtomSpinner,
     LoadingIndicator,
