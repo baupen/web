@@ -173,7 +173,7 @@ const api = {
           .then(response => {
             collection.push(response.data)
             displaySuccessMessageIfExists(successMessage)
-            resolve()
+            resolve(response.data)
           })
       }
     )
