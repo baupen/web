@@ -14,14 +14,14 @@ namespace App\Tests\Api;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use App\Tests\DataFixtures\TestConstructionManagerFixtures;
 use App\Tests\DataFixtures\TestConstructionSiteFixtures;
-use App\Tests\DataFixtures\TestReminderFixtures;
+use App\Tests\DataFixtures\TestTaskFixtures;
 use App\Tests\Traits\AssertApiTrait;
 use App\Tests\Traits\AuthenticationTrait;
 use App\Tests\Traits\FixturesTrait;
 use App\Tests\Traits\TestDataTrait;
 use Symfony\Component\HttpFoundation\Response;
 
-class ReminderTest extends ApiTestCase
+class TaskTest extends ApiTestCase
 {
     use FixturesTrait;
     use AssertApiTrait;
@@ -31,15 +31,15 @@ class ReminderTest extends ApiTestCase
     public function testValidMethodsNeedAuthentication(): void
     {
         $client = $this->createClient();
-        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestReminderFixtures::class]);
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class, TestTaskFixtures::class]);
 
         $constructionSite = $this->getTestConstructionSite();
-        $this->assertApiOperationNotAuthorized($client, '/api/reminders?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
-        $this->assertApiOperationNotAuthorized($client, '/api/reminders/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
+        $this->assertApiOperationNotAuthorized($client, '/api/tasks?constructionSite='.$constructionSite->getId(), 'GET', 'POST');
+        $this->assertApiOperationNotAuthorized($client, '/api/tasks/'.$constructionSite->getId(), 'GET', 'PATCH', 'DELETE');
 
         $this->loginApiDisassociatedConstructionManager($client);
-        $this->assertApiOperationForbidden($client, '/api/reminders', 'POST');
-        $this->assertApiOperationForbidden($client, '/api/reminders/'.$constructionSite->getReminders()[0]->getId(), 'GET', 'PATCH', 'DELETE');
+        $this->assertApiOperationForbidden($client, '/api/tasks', 'POST');
+        $this->assertApiOperationForbidden($client, '/api/tasks/'.$constructionSite->getTasks()[0]->getId(), 'GET', 'PATCH', 'DELETE');
     }
 
     public function testPostPatchAndDelete(): void
@@ -67,15 +67,15 @@ class ReminderTest extends ApiTestCase
             'closedBy' => $constructionManagerId,
         ];
 
-        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/reminders', $sample, $affiliation);
-        $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/reminders', $affiliation, $sample);
-        $response = $this->assertApiPostPayloadPersisted($client, '/api/reminders', array_merge($sample, $optionalProperties), $affiliation);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_UNPROCESSABLE_ENTITY, $client, '/api/tasks', $sample, $affiliation);
+        $this->assertApiPostPayloadMinimal(Response::HTTP_FORBIDDEN, $client, '/api/tasks', $affiliation, $sample);
+        $response = $this->assertApiPostPayloadPersisted($client, '/api/tasks', array_merge($sample, $optionalProperties), $affiliation);
 
         // test GET returns correct fields
-        $this->assertApiCollectionContainsResponseItem($client, '/api/reminders?constructionSite='.$constructionSite->getId(), $response);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/tasks?constructionSite='.$constructionSite->getId(), $response);
         $this->assertApiResponseFieldSubset($response, 'description', 'createdBy', 'createdAt', 'deadline', 'closedBy', 'closedAt');
 
-        $reminderId = json_decode($response->getContent(), true)['@id'];
+        $taskId = json_decode($response->getContent(), true)['@id'];
 
         // test construction site can not be changed anymore
         $emptyConstructionSite = $this->getEmptyConstructionSite();
@@ -87,7 +87,7 @@ class ReminderTest extends ApiTestCase
             'createdBy' => $otherConstructionManagerId,
             'createdAt' => (new \DateTime('now'))->format('c'),
         ];
-        $this->assertApiPatchPayloadIgnored($client, $reminderId, $writeProtected);
+        $this->assertApiPatchPayloadIgnored($client, $taskId, $writeProtected);
 
         // test PATCH applies changes
         $update = [
@@ -96,11 +96,11 @@ class ReminderTest extends ApiTestCase
             'closedBy' => $otherConstructionManagerId,
             'closedAt' => (new \DateTime('now'))->format('c'),
         ];
-        $response = $this->assertApiPatchPayloadPersisted($client, $reminderId, $update);
-        $this->assertApiCollectionContainsResponseItem($client, '/api/reminders?constructionSite='.$constructionSite->getId(), $response);
+        $response = $this->assertApiPatchPayloadPersisted($client, $taskId, $update);
+        $this->assertApiCollectionContainsResponseItem($client, '/api/tasks?constructionSite='.$constructionSite->getId(), $response);
 
         // test DELETE removes item
-        $this->assertApiDeleteOk($client, $reminderId);
-        $this->assertApiCollectionNotContainsIri($client, '/api/reminders?constructionSite='.$constructionSite->getId(), $reminderId);
+        $this->assertApiDeleteOk($client, $taskId);
+        $this->assertApiCollectionNotContainsIri($client, '/api/tasks?constructionSite='.$constructionSite->getId(), $taskId);
     }
 }
