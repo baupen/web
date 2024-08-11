@@ -23,6 +23,10 @@
       "type_image": "Bild",
       "type_file": "Datei"
     },
+    "add_task": {
+      "added": "Aufgabe hinzugefügt",
+      "title": "Aufgabe hinzufügen"
+    },
     "associate_construction_manager": {
       "associated": "Bauleiter der Baustelle hinzugefügt",
       "title": "Bauleiter der Baustelle hinzufügen"
@@ -153,6 +157,10 @@
     "toggle_can_edit": {
       "can_edit": "Der Unternehmer darf Pendenzen als erledigt markieren.",
       "no_edit_anymore": "Der Unternehmer darf keine Pendenzen mehr als erledigt markieren."
+    },
+    "toggle_open_closed_task": {
+      "opened": "Aufgabe wieder geöffnet",
+      "closed": "Aufgabe erledigt"
     },
     "toggle_receive_weekly": {
       "no_weekly_anymore": "Wir senden Ihnen die wöchentliche Übersicht nicht mehr zu.",
@@ -303,7 +311,8 @@
   "dashboard": {
     "feed": "Feed",
     "activity": "Aktivität",
-    "new_issues_in_foyer": "Eine neue Pendenz erfasst. | {count} neue Pendenzen erfasst."
+    "new_issues_in_foyer": "Eine neue Pendenz erfasst. | {count} neue Pendenzen erfasst.",
+    "show_closed_tasks": "Eine erledigte Aufgabe anzeigen. | {count} erledigte Aufgaben anzeigen."
   },
   "edit": {
     "construction_managers_disabled": "Die Änderung der Zugriffe ist für Ihren Account deaktiviert.",
@@ -393,6 +402,12 @@
     "parent": "Zuordnung",
     "parent_not_found_name": "(entfernt)",
     "parent_not_set_name": "-"
+  },
+  "task": {
+    "_name": "Aufgabe",
+    "_plural": "Aufgaben",
+    "description": "Beschreibung",
+    "deadline": "Frist"
   },
   "resolve": {
     "help": "Markieren Sie Pendenzen als umgesetzt, damit die Bauleitung diese abschliessen kann.",

@@ -368,6 +368,11 @@ const api = {
     const link = this.getIssuesRenderLink(constructionSite, map, query)
     return this._getEmptyResponse(link)
   },
+  getTasks: function (constructionSite) {
+    const queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
+
+    return this._getHydraCollection('/api/tasks' + queryString)
+  },
   getProtocolEntries: function (constructionSite, root) {
     const queryString = '?constructionSite=' + iriToId(constructionSite['@id']) +
       '&root=' + iriToId(root['@id'])
@@ -424,6 +429,9 @@ const api = {
   },
   postFilter: function (filter, successMessage = null) {
     return this._postRaw('/api/filters', filter, successMessage)
+  },
+  postTask: function (task, successMessage = null) {
+    return this._postRaw('/api/tasks', task, successMessage)
   },
   postMapFile: function (map, file, successMessage = null) {
     return this._postAttachment(map, file, 'file', successMessage)
