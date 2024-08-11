@@ -11,21 +11,21 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Reminder;
+use App\Entity\Task;
 use App\Security\Voter\Base\ConstructionSiteOwnedEntityVoter;
 
-class ReminderVoter extends ConstructionSiteOwnedEntityVoter
+class TaskVoter extends ConstructionSiteOwnedEntityVoter
 {
-    public const REMINDER_VIEW = 'REMINDER_VIEW';
-    public const REMINDER_MODIFY = 'REMINDER_MODIFY';
+    public const TASK_VIEW = 'TASK_VIEW';
+    public const TASK_MODIFY = 'TASK_MODIFY';
 
     protected function isInstanceOf($entity): bool
     {
-        return $entity instanceof Reminder;
+        return $entity instanceof Task;
     }
 
     protected function getAllAttributes(): array
     {
-        return [self::REMINDER_VIEW, self::REMINDER_MODIFY];
+        return [self::TASK_VIEW, self::TASK_MODIFY];
     }
 }

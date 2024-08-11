@@ -13,12 +13,12 @@ namespace App\Tests\DataFixtures;
 
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
-use App\Entity\Reminder;
+use App\Entity\Task;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class TestReminderFixtures extends Fixture implements OrderedFixtureInterface
+class TestTaskFixtures extends Fixture implements OrderedFixtureInterface
 {
     public const ORDER = TestConstructionSiteFixtures::ORDER + TestConstructionManagerFixtures::ORDER + 1;
     public const TEST_TEXT_ENTRY = 'hello world';
@@ -31,7 +31,7 @@ class TestReminderFixtures extends Fixture implements OrderedFixtureInterface
         $constructionManagerRepository = $manager->getRepository(ConstructionManager::class);
         $constructionManager = $constructionManagerRepository->findOneBy(['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
 
-        $protocolEntry = new Reminder();
+        $protocolEntry = new Task();
         $protocolEntry->setConstructionSite($constructionSite);
         $protocolEntry->setDescription(self::TEST_TEXT_ENTRY);
         $protocolEntry->setCreatedAt(new \DateTime());

@@ -24,20 +24,20 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * A reminder helps to remember something to do on the level of construction site.
+ * A task helps to remember something to do on the level of construction site.
  *
  * @ApiResource(
  *      collectionOperations={
  *       "get",
- *       "post" = {"security_post_denormalize" = "is_granted('REMINDER_MODIFY', object)", "denormalization_context"={"groups"={"reminder-create", "reminder-write"}}},
+ *       "post" = {"security_post_denormalize" = "is_granted('TASK_MODIFY', object)", "denormalization_context"={"groups"={"task-create", "task-write"}}},
  *      },
  *      itemOperations={
- *       "get" = {"security" = "is_granted('REMINDER_VIEW', object)"},
- *       "patch" = {"security" = "is_granted('REMINDER_MODIFY', object)"},
- *       "delete" = {"security" = "is_granted('REMINDER_MODIFY', object)"},
+ *       "get" = {"security" = "is_granted('TASK_VIEW', object)"},
+ *       "patch" = {"security" = "is_granted('TASK_MODIFY', object)"},
+ *       "delete" = {"security" = "is_granted('TASK_MODIFY', object)"},
  *      },
- *      denormalizationContext={"groups"={"reminder-write"}},
- *      normalizationContext={"groups"={"reminder-read"}, "skip_null_values"=false}
+ *      denormalizationContext={"groups"={"task-write"}},
+ *      normalizationContext={"groups"={"task-read"}, "skip_null_values"=false}
  *  )
  *
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
@@ -46,21 +46,21 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class Reminder extends BaseEntity implements ConstructionSiteOwnedEntityInterface
+class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
 
     #[Assert\NotBlank]
-    #[Groups(['reminder-create'])]
-    #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'reminders')]
+    #[Groups(['task-create'])]
+    #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'tasks')]
     private ?ConstructionSite $constructionSite = null;
 
     #[Assert\NotBlank]
-    #[Groups(['reminder-read', 'reminder-write'])]
+    #[Groups(['task-read', 'task-write'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT)]
     private ?string $description = null;
 
-    #[Groups(['reminder-read', 'reminder-write'])]
+    #[Groups(['task-read', 'task-write'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $deadline = null;
 
@@ -68,23 +68,23 @@ class Reminder extends BaseEntity implements ConstructionSiteOwnedEntityInterfac
      * @var \DateTime|null
      */
     #[Assert\NotBlank]
-    #[Groups(['reminder-read', 'reminder-create'])]
+    #[Groups(['task-read', 'task-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
     #[Assert\NotBlank]
-    #[Groups(['reminder-read', 'reminder-create'])]
+    #[Groups(['task-read', 'task-create'])]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $createdBy = null;
 
     /**
      * @var \DateTime|null
      */
-    #[Groups(['reminder-read', 'reminder-write'])]
+    #[Groups(['task-read', 'task-write'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $closedAt = null;
 
-    #[Groups(['reminder-read', 'reminder-write'])]
+    #[Groups(['task-read', 'task-write'])]
     #[ORM\ManyToOne(targetEntity: ConstructionManager::class)]
     private ?ConstructionManager $closedBy = null;
 

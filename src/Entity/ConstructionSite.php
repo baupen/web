@@ -103,10 +103,10 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     private Collection $protocolEntries;
 
     /**
-     * @var Collection<int, Reminder>
+     * @var Collection<int, Task>
      */
-    #[ORM\OneToMany(targetEntity: Reminder::class, mappedBy: 'constructionSite', cascade: ['persist'])]
-    private Collection $reminders;
+    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'constructionSite', cascade: ['persist'])]
+    private Collection $tasks;
 
     /**
      * @var Collection<int, EmailTemplate>
@@ -137,7 +137,7 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
         $this->emailTemplates = new ArrayCollection();
         $this->filters = new ArrayCollection();
         $this->protocolEntries = new ArrayCollection();
-        $this->reminders = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
     }
 
     public function getName(): string
@@ -208,11 +208,11 @@ class ConstructionSite extends BaseEntity implements ConstructionSiteOwnedEntity
     }
 
     /**
-     * @return Collection<int, Reminder>
+     * @return Collection<int, Task>
      */
-    public function getReminders(): Collection
+    public function getTasks(): Collection
     {
-        return $this->reminders;
+        return $this->tasks;
     }
 
     public function getImage(): ?ConstructionSiteImage
