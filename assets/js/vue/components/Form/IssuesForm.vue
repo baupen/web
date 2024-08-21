@@ -114,6 +114,7 @@
         <set-map-position-button
             v-if="position === undefined"
             :construction-site="constructionSite" :map="selectedMap"
+            :current-position="currentPosition"
             @selected="position = $event"/>
         <template v-else-if="position === null">
           <input id="position" class="form-control is-valid" type="text" readonly :value="$t('_form.issues.position_null')">
@@ -358,6 +359,14 @@ export default {
       const tradeSet = new Set(this.selectableCraftsmen.map(c => c.trade))
 
       return Array.from(tradeSet).sort()
+    },
+    currentPosition: function () {
+      // ensure it shows up when selecting a new position
+      if (this.template.positionX === null || this.template.positionY === null || this.template.positionZoomScale === null) {
+        return null
+      }
+
+      return {x: this.template.positionX, y:this.template.positionY, zoomScale: this.template.positionZoomScale}
     },
     updatePayload: function () {
       if (this.fields.isMarked.errors.length ||

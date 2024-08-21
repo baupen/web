@@ -1,20 +1,20 @@
 <template>
   <div class="map-container">
     <img ref="map" :src="src" class="img-fluid img-within-modal img-set-position border" :alt="'image of ' + map.name"
-         @click="selectPosition"/>
+         @click="selectPosition" @load="drawCanvas"/>
     <canvas ref="map-canvas" class="map-canvas" />
   </div>
 </template>
 <script>
 import {api} from "../../services/api";
 
-const getCanvasPosition = function (x, y, canvasRect, imageRect) {
+const getCanvasPosition = function (position, canvasRect, imageRect) {
   const leftShift = imageRect.left - canvasRect.left;
   const marginHorizontal = leftShift + canvasRect.right - imageRect.right
-  const xPos = (canvasRect.width - marginHorizontal) * x + leftShift;
+  const xPos = (canvasRect.width - marginHorizontal) * position.x + leftShift;
   const topShift = imageRect.top - canvasRect.top
   const marginVertical = topShift + canvasRect.bottom - imageRect.bottom
-  const yPos = (canvasRect.height - marginVertical) * y + topShift;
+  const yPos = (canvasRect.height - marginVertical) * position.y + topShift;
 
   return {x: xPos, y: yPos}
 }
@@ -46,9 +46,16 @@ export default {
     position: {
       deep: true,
       handler: function () {
+        this.drawCanvas()
         this.$emit('update', this.position)
       }
     },
+    currentPosition: {
+      deep: true,
+      handler: function () {
+        this.drawCanvas()
+      }
+    }
   },
   methods: {
     drawCanvas: function () {
@@ -59,7 +66,7 @@ export default {
       // Clear the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      if (!this.position) {
+      if (!this.position && !this.currentPosition) {
         return
       }
 
@@ -70,7 +77,7 @@ export default {
 
       // Calculate pixel position from percentage
       const imageRect = this.$refs['map'].getBoundingClientRect();
-      const position = getCanvasPosition(this.position.x, this.position.y, rect, imageRect)
+      const position = getCanvasPosition(this.position ?? this.currentPosition, rect, imageRect)
 
       const crosshairSize = 20; // Length of the crosshair lines
       const linewidth = 2;
@@ -112,7 +119,6 @@ export default {
       const yPercentage = y / height;
 
       this.position = {x: xPercentage, y: yPercentage, zoomScale: 1}
-      this.drawCanvas()
     },
   },
   computed: {
@@ -126,6 +132,7 @@ export default {
   },
   mounted () {
     this.$emit('update', this.position)
+    this.drawCanvas()
   }
 }
 </script>
