@@ -284,6 +284,9 @@ export default {
       if (field === 'map' || field === 'craftsman') {
         this.fields[field].dirty = true
       }
+      if (field === 'craftsman') {
+          this.tradeFilter = this.craftsmen.find(c => c['@id'] === this.issue[field]).trade
+      }
       validateField(this.fields[field], this.issue[field])
     },
     reset: function (field) {
