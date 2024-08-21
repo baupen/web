@@ -158,9 +158,12 @@ export default {
         map: sameValue('map'),
         deadline: sameValue('deadline'),
         isResolved: sameState('resolved'),
-        isClosed: sameState('closed')
+        isClosed: sameState('closed'),
+        positionX: sameValue('positionX'),
+        positionY: sameValue('positionY'),
+        positionZoomScale: sameValue('positionZoomScale')
       }
-    }
+    },
   },
   methods: {
     selectDescription: function () {
