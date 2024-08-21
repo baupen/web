@@ -55,7 +55,6 @@ export default {
 <style scoped>
 .limited-height {
   max-height: 30em;
-  overflow-x: scroll;
 }
 
 </style>
