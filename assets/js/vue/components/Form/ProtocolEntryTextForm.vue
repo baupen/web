@@ -119,7 +119,13 @@ export default {
   },
   mounted() {
     this.setFromTemplate()
-    this.$emit('update', this.updatePayload)
+
+    // fix that validation is only applied in second render, leading to form appearing valid even though it is not
+    if (this.textMode) {
+      this.$emit('update', null)
+    } else {
+      this.$emit('update', this.updatePayload)
+    }
   }
 }
 </script>
