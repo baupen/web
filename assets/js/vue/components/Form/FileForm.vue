@@ -48,6 +48,11 @@ export default {
         return false
       }
 
+      // be permissive here, server will filter
+      if (this.file.type === '') {
+        return  true;
+      }
+
       return this.validFileTypes.some(e => this.file.type === e)
     },
     validFileTypes: function () {
