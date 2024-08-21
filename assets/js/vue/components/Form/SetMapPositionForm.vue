@@ -8,6 +8,17 @@
 <script>
 import {api} from "../../services/api";
 
+const getCanvasPosition = function (x, y, canvasRect, imageRect) {
+  const leftShift = imageRect.left - canvasRect.left;
+  const marginHorizontal = leftShift + canvasRect.right - imageRect.right
+  const xPos = (canvasRect.width - marginHorizontal) * x + leftShift;
+  const topShift = imageRect.top - canvasRect.top
+  const marginVertical = topShift + canvasRect.bottom - imageRect.bottom
+  const yPos = (canvasRect.height - marginVertical) * y + topShift;
+
+  return {x: xPos, y: yPos}
+}
+
 export default {
   components: {
   },
@@ -45,7 +56,6 @@ export default {
       const rect = canvas.getBoundingClientRect();
       const ctx = canvas.getContext('2d');
 
-
       // Clear the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -60,24 +70,19 @@ export default {
 
       // Calculate pixel position from percentage
       const imageRect = this.$refs['map'].getBoundingClientRect();
-      const leftShift = imageRect.left - rect.left;
-      const marginHorizontal = leftShift + rect.right - imageRect.right
-      const xPos = (canvas.width - marginHorizontal) * this.position.x + leftShift;
-      const topShift = imageRect.top - rect.top
-      const marginVertical = topShift + rect.bottom - imageRect.bottom
-      const yPos = (canvas.height - marginVertical) * this.position.y + topShift;
+      const position = getCanvasPosition(this.position.x, this.position.y, rect, imageRect)
 
       const crosshairSize = 20; // Length of the crosshair lines
       const linewidth = 2;
 
       // draw the circle around the crosshair
       ctx.beginPath();
-      ctx.arc(xPos, yPos, crosshairSize, 0, 2 * Math.PI);
+      ctx.arc(position.x, position.y, crosshairSize, 0, 2 * Math.PI);
       ctx.strokeStyle = 'white';
       ctx.lineWidth = linewidth * 3;
       ctx.stroke();
       ctx.beginPath();
-      ctx.arc(xPos, yPos, crosshairSize, 0, 2 * Math.PI);
+      ctx.arc(position.x, position.y, crosshairSize, 0, 2 * Math.PI);
       ctx.strokeStyle = 'black';
       ctx.lineWidth = linewidth * 2;
       ctx.stroke();
@@ -86,12 +91,12 @@ export default {
       ctx.strokeStyle = 'black';
       ctx.lineWidth = linewidth;
       ctx.beginPath();
-      ctx.moveTo(xPos - crosshairSize, yPos);
-      ctx.lineTo(xPos + crosshairSize, yPos);
+      ctx.moveTo(position.x - crosshairSize, position.y);
+      ctx.lineTo(position.x + crosshairSize, position.y);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(xPos, yPos - crosshairSize);
-      ctx.lineTo(xPos, yPos + crosshairSize);
+      ctx.moveTo(position.x, position.y - crosshairSize);
+      ctx.lineTo(position.x, position.y + crosshairSize);
       ctx.stroke();
     },
     selectPosition: function (event) {
