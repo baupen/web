@@ -104,10 +104,12 @@ export default {
         .then(entries => {
           this.issueProtocolEntries = entries
         })
-    api.getProtocolEntries(this.constructionSite, this.craftsman)
-        .then(entries => {
-          this.craftsmanProtocolEntries = entries
-        })
+    if (this.craftsman) {
+      api.getProtocolEntries(this.constructionSite, this.craftsman)
+          .then(entries => {
+            this.craftsmanProtocolEntries = entries
+          })
+    }
     api.getProtocolEntries(this.constructionSite, this.constructionSite)
         .then(entries => {
           this.constructionSiteProtocolEntries = entries

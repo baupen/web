@@ -6,7 +6,7 @@
       :can-abort="true"
       :abort-title="$t('_action.select_map_position.no_position')"
       @abort="abort"
-  modal-size="lg">
+      modal-size="lg">
 
     <set-map-position-form :current-position="currentPosition" :construction-site="constructionSite" :map="map" @update="position = $event" />
   </button-with-modal-confirm>

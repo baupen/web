@@ -110,17 +110,25 @@
       </select>
       <invalid-feedback :errors="fields.map.errors"/>
 
-      <set-map-position-button
-          v-if="selectedMap && selectedMap.fileUrl"
-          :construction-site="constructionSite" :map="selectedMap"
-          :current-position="position"
+      <template v-if="selectedMap && selectedMap.fileUrl">
+        <set-map-position-button
+            v-if="position === undefined"
+            :construction-site="constructionSite" :map="selectedMap"
+            @selected="position = $event"/>
+        <template v-else-if="position === null">
+          <input id="position" class="form-control is-valid" type="text" readonly :value="$t('_form.issues.position_null')">
+        </template>
+        <template v-else>
+          <input id="position" class="form-control is-valid" type="text" readonly :value="$t('_form.issues.position_set')">
+        </template>
+      </template>
 
-          @selected="position = $event"/>
-
-      <a class="btn-link clickable" v-if="(fields.map.dirty || this.position) && mode === 'edit_single'"
-         @click="reset('map')">
-        {{ $t('_form.reset') }}
-      </a>
+      <p class="mb-0">
+        <a class="btn-link clickable" v-if="(fields.map.dirty || this.position !== undefined) && mode === 'edit_single'"
+           @click="reset('map')">
+          {{ $t('_form.reset') }}
+        </a>
+      </p>
     </form-field>
 
     <hr/>
@@ -224,7 +232,7 @@ export default {
         isResolved: null,
         isClosed: null,
       },
-      position: null,
+      position: undefined,
       tradeFilter: null
     }
   },
@@ -265,7 +273,7 @@ export default {
       this.setIssueFromTemplate()
     },
     selectedMap: function () {
-      this.position = null
+      this.position = undefined
     },
     sortedCraftsmen: function () {
       if (this.sortedCraftsmen.length === 1) {
@@ -301,7 +309,7 @@ export default {
         this.tradeFilter = this.craftsmen.find(c => c['@id'] === this.template.craftsman).trade
       }
       if (field === 'map') {
-        this.position = null
+        this.position = undefined
       }
       this.issue[field] = this.template[field]
       this.fields[field].dirty = false
@@ -365,15 +373,16 @@ export default {
 
       const values = changedFieldValues(this.fields, this.issue, this.template)
 
-      // set position TODO how to deal with undefined
-      if (this.position) {
-        values['positionX'] = this.position.x
-        values['positionY'] = this.position.y
-        values['positionZoomScale'] = this.position.zoomScale
-      } else {
-        values['positionX'] = null
-        values['positionY'] = null
-        values['positionZoomScale'] = null
+      if (this.position !== undefined) {
+        if (this.position !== null) {
+          values['positionX'] = this.position.x
+          values['positionY'] = this.position.y
+          values['positionZoomScale'] = this.position.zoomScale
+        } else {
+          values['positionX'] = null
+          values['positionY'] = null
+          values['positionZoomScale'] = null
+        }
       }
 
       // ensure empty string is null

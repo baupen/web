@@ -223,7 +223,9 @@
       "with_renders": "mit Bauplänen"
     },
     "issues": {
-      "resolved_as_impersonated_craftsman": "'Umgesetzt' wird im Namen des Unternehmers."
+      "resolved_as_impersonated_craftsman": "'Umgesetzt' wird im Namen des Unternehmers.",
+      "position_set": "Position gesetzt",
+      "position_null": "Ohne Platzierung"
     },
     "remove_confirm": "Ich verstehe, dass ich diesen Schritt nicht rückgängig machen kann.",
     "reset": "zurücksetzen"
