@@ -4,8 +4,8 @@
       @confirm="confirm">
 
     <issues-form
-        :construction-site="constructionSite" :craftsmen="craftsmen" :maps="maps"
-        @update="post = $event" @confirm="$refs['modal'].confirm()">
+        :construction-site="constructionSite" :craftsmen="craftsmen" :maps="maps" :template="template"
+        mode="create" @update="post = $event" @confirm="$refs['modal'].confirm()">
       <template v-slot:before-description>
         <image-form @update="image = $event"/>
       </template>
@@ -29,6 +29,10 @@ export default {
   },
   data() {
     return {
+      template: {
+        isMarked: false,
+        wasAddedWithClient: false,
+      },
       image: null,
       post: null,
       posting: false
@@ -55,7 +59,7 @@ export default {
   computed: {
     canConfirm: function () {
       return !!this.post && !!this.post?.map
-    }
+    },
   },
   methods: {
     confirm: function () {
@@ -66,9 +70,6 @@ export default {
         createdAt: (new Date()).toISOString()
       };
       const payload = Object.assign({}, this.post, basic)
-
-      const booleanFields = ['isMarked', 'wasAddedWithClient']
-      booleanFields.forEach(field => payload[field] = !!payload[field])
 
       let successMessage = this.$t('_action.add_issue.added')
 
