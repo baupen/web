@@ -5,36 +5,48 @@
       @confirm="confirm"
   >
 
-    <ul class="nav nav-tabs" id="add-protocol-entry-type">
-      <li class="nav-item">
-        <a class="nav-link" :class="{'active': entryType === 'TEXT'}" @click="entryType = 'TEXT'">
-          {{ $t('_action.add_protocol_entry.type_text') }}
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" :class="{'active': entryType === 'IMAGE'}" @click="entryType = 'IMAGE'">
-          {{ $t('_action.add_protocol_entry.type_image') }}
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" :class="{'active': entryType === 'FILE'}" @click="entryType = 'FILE'">
-          {{ $t('_action.add_protocol_entry.type_file') }}
-        </a>
-      </li>
-    </ul>
-    <div class="tab-content p-3 border border-top-0">
-      <div class="tab-pane fade" :class="{'show active': entryType === 'TEXT'}">
-        <protocol-entry-text-form @update="textPost = $event" :text-mode="true"/>
-      </div>
-      <div class="tab-pane fade" :class="{'show active': entryType === 'IMAGE'}">
-        <image-form @update="image = $event" />
-        <protocol-entry-text-form @update="imagePost = $event" :text-mode="false"/>
-      </div>
-      <div class="tab-pane fade" :class="{'show active': entryType === 'FILE'}">
-        <file-form @update="file = $event" />
-        <protocol-entry-text-form @update="filePost = $event" :text-mode="false"/>
-      </div>
+    <div class="mb-3">
+      <custom-radio-field
+          for-id="protocol-entry-type-text"
+          :label="$t('_action.add_protocol_entry.type_text')">
+        <input
+            id="protocol-entry-type-text" class="form-check-input" type="radio"
+            name="protocol-entry-type" value="TEXT"
+            v-model="entryType">
+      </custom-radio-field>
+
+      <custom-radio-field
+          for-id="protocol-entry-type-image"
+          :label="$t('_action.add_protocol_entry.type_image')">
+        <input
+            id="protocol-entry-type-image" class="form-check-input" type="radio"
+            name="protocol-entry-type" value="IMAGE"
+            v-model="entryType">
+      </custom-radio-field>
+
+      <custom-radio-field
+          for-id="protocol-entry-type-file"
+          :label="$t('_action.add_protocol_entry.type_file')">
+        <input
+            id="protocol-entry-type-file" class="form-check-input" type="radio"
+            name="protocol-entry-type" value="FILE"
+            v-model="entryType">
+      </custom-radio-field>
     </div>
+
+    <template v-if="entryType === 'TEXT'">
+      <protocol-entry-text-form @update="textPost = $event" :text-mode="true"/>
+    </template>
+
+    <template v-if="entryType === 'IMAGE'">
+      <image-form @update="image = $event"/>
+      <protocol-entry-text-form @update="imagePost = $event" :text-mode="false"/>
+    </template>
+    <template v-if="entryType === 'FILE'">
+      <file-form @update="file = $event"/>
+      <protocol-entry-text-form @update="filePost = $event" :text-mode="false"/>
+    </template>
+
   </button-with-modal-confirm>
 </template>
 
@@ -46,9 +58,11 @@ import ButtonWithModalConfirm from "../Library/Behaviour/ButtonWithModalConfirm.
 import MapForm from "../Form/MapForm.vue";
 import FileForm from "../Form/FileForm.vue";
 import ImageForm from "../Form/ImageForm.vue";
+import CustomRadioField from "../Library/FormLayout/CustomRadioField.vue";
 
 export default {
   components: {
+    CustomRadioField,
     ImageForm,
     FileForm, MapForm,
     ButtonWithModalConfirm,
@@ -114,7 +128,7 @@ export default {
       }
 
       const successMessage = this.$t('_action.add_protocol_entry.added');
-      if (!this.file && !this.image) {
+      if (this.entryType === 'TEXT') {
         api.postProtocolEntry(payload, successMessage)
             .then(protocolEntry => {
               this.posting = false
