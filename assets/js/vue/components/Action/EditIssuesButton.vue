@@ -15,6 +15,7 @@
 
     <issues-form
         ref="issues-form"
+        :mode="issues.length === 1 ? 'edit_single' : 'edit_multiple'"
         :enable-state-edit="enableStateEdit"
         :template="template" :construction-site="constructionSite" :craftsmen="craftsmen" :maps="maps"
         @update="patch = $event" @confirm="$refs['modal'].confirm()">

@@ -16,7 +16,7 @@
         >
         <template v-slot:after>
           <div>
-            <a class="btn-link clickable" v-if="fields.isMarked.dirty && template" @click="reset('isMarked')">
+            <a class="btn-link clickable" v-if="fields.isMarked.dirty && mode !== 'create'" @click="reset('isMarked')">
               {{ $t('_form.reset') }}
             </a>
           </div>
@@ -38,7 +38,8 @@
         >
         <template v-slot:after>
           <div>
-            <a class="btn-link clickable" v-if="fields.wasAddedWithClient.dirty && template" @click="reset('wasAddedWithClient')">
+            <a class="btn-link clickable" v-if="fields.wasAddedWithClient.dirty && mode !== 'create'"
+               @click="reset('wasAddedWithClient')">
               {{ $t('_form.reset') }}
             </a>
           </div>
@@ -59,7 +60,8 @@
         >
         <template v-slot:after>
           <div>
-            <a class="btn-link clickable" v-if="fields.isResolved.dirty && template" @click="reset('isResolved')">
+            <a class="btn-link clickable" v-if="fields.isResolved.dirty && mode !== 'create'"
+               @click="reset('isResolved')">
               {{ $t('_form.reset') }}
             </a>
           </div>
@@ -79,7 +81,7 @@
         >
         <template v-slot:after>
           <div>
-            <a class="btn-link clickable" v-if="fields.isClosed.dirty && template" @click="reset('isClosed')">
+            <a class="btn-link clickable" v-if="fields.isClosed.dirty && mode !== 'create'" @click="reset('isClosed')">
               {{ $t('_form.reset') }}
             </a>
           </div>
@@ -92,35 +94,39 @@
     {{ $t('_form.issues.resolved_as_impersonated_craftsman') }}
   </p>
 
-  <hr />
-
-  <form-field for-id="map" :label="$t('issue.map')">
-    <select class="form-select mb-2"
-            :class="{'is-valid': fields.map.dirty && !fields.map.errors.length, 'is-invalid': fields.map.dirty && fields.map.errors.length }"
-            v-model="issue.map"
-            @change="validate('map')"
-    >
-      <option v-for="mapContainer in mapContainers" :value="mapContainer.entity['@id']"
-              :key="mapContainer.entity['@id']">
-        {{ '&nbsp;'.repeat(mapContainer.level) }} {{ mapContainer.entity.name }}
-      </option>
-    </select>
-    <invalid-feedback :errors="fields.map.errors" />
-
-    <select-map-position-checkbox
-        v-if="selectedMap && selectedMap.fileUrl"
-        :construction-site="constructionSite" :map="selectedMap"
-        :position="position"
-        @selected="position = $event" />
-
-    <a class="btn-link clickable" v-if="(fields.map.dirty || this.position) && template" @click="reset('map')">
-      {{ $t('_form.reset') }}
-    </a>
-  </form-field>
-
   <hr/>
 
-  <slot name="before-description" />
+  <template v-if="mode === 'create' || mode === 'edit_single'">
+    <form-field for-id="map" :label="$t('issue.map')">
+      <select class="form-select mb-2"
+              :class="{'is-valid': fields.map.dirty && !fields.map.errors.length, 'is-invalid': fields.map.dirty && fields.map.errors.length }"
+              v-model="issue.map"
+              @change="validate('map')"
+      >
+        <option v-for="mapContainer in mapContainers" :value="mapContainer.entity['@id']"
+                :key="mapContainer.entity['@id']">
+          {{ '&nbsp;'.repeat(mapContainer.level) }} {{ mapContainer.entity.name }}
+        </option>
+      </select>
+      <invalid-feedback :errors="fields.map.errors"/>
+
+      <select-map-position-checkbox
+          v-if="selectedMap && selectedMap.fileUrl"
+          :construction-site="constructionSite" :map="selectedMap"
+          :position="position"
+          @selected="position = $event"/>
+
+      <a class="btn-link clickable" v-if="(fields.map.dirty || this.position) && mode === 'edit_single'"
+         @click="reset('map')">
+        {{ $t('_form.reset') }}
+      </a>
+    </form-field>
+
+    <hr/>
+
+  </template>
+
+  <slot name="before-description"/>
 
   <form-field for-id="description" :label="$t('issue.description')">
     <input id="description" class="form-control" type="text" required="required" ref="description"
@@ -129,8 +135,8 @@
            @change="validate('description')"
            @blur="fields.description.dirty = true"
            @keyup.enter="$emit('confirm')">
-    <invalid-feedback :errors="fields.description.errors" />
-    <a class="btn-link clickable" v-if="fields.description.dirty && template" @click="reset('description')">
+    <invalid-feedback :errors="fields.description.errors"/>
+    <a class="btn-link clickable" v-if="fields.description.dirty && mode !== 'create'" @click="reset('description')">
       {{ $t('_form.reset') }}
     </a>
   </form-field>
@@ -154,14 +160,14 @@
         {{ craftsman.company }} - {{ craftsman.contactName }}
       </option>
     </select>
-    <invalid-feedback :errors="fields.description.errors" />
-    <a class="btn-link clickable" v-if="fields.craftsman.dirty && template" @click="reset('craftsman')">
+    <invalid-feedback :errors="fields.description.errors"/>
+    <a class="btn-link clickable" v-if="fields.craftsman.dirty && mode !== 'create'" @click="reset('craftsman')">
       {{ $t('_form.reset') }}
     </a>
   </form-field>
 
   <form-field for-id="deadline" :label="$t('issue.deadline')" :required="false">
-    <span ref="deadline-anchor" />
+    <span ref="deadline-anchor"/>
     <flat-pickr
         id="deadline" class="form-control"
         v-model="issue.deadline"
@@ -169,8 +175,8 @@
         @blur="fields.deadline.dirty = true"
         @change="validate('deadline')">
     </flat-pickr>
-    <invalid-feedback :errors="fields.deadline.errors" />
-    <a class="btn-link clickable" v-if="fields.deadline.dirty && template" @click="reset('deadline')">
+    <invalid-feedback :errors="fields.deadline.errors"/>
+    <a class="btn-link clickable" v-if="fields.deadline.dirty && mode !== 'create'" @click="reset('deadline')">
       {{ $t('_form.reset') }}
     </a>
   </form-field>
@@ -237,6 +243,10 @@ export default {
     template: {
       type: Object,
       required: false
+    },
+    mode: {
+      type: String,
+      required: true
     },
     enableStateEdit: {
       type: Boolean,
