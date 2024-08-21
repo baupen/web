@@ -110,10 +110,11 @@
       </select>
       <invalid-feedback :errors="fields.map.errors"/>
 
-      <select-map-position-checkbox
+      <set-map-position-button
           v-if="selectedMap && selectedMap.fileUrl"
           :construction-site="constructionSite" :map="selectedMap"
-          :position="position"
+          :current-position="position"
+
           @selected="position = $event"/>
 
       <a class="btn-link clickable" v-if="(fields.map.dirty || this.position) && mode === 'edit_single'"
@@ -184,24 +185,24 @@
 
 <script>
 
-import { createField, validateField, changedFieldValues, resetFields } from '../../services/validation'
+import {createField, validateField, changedFieldValues, resetFields} from '../../services/validation'
 import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
 import {dateConfig, flatPickr, toggleAnchorValidity} from '../../services/flatpickr'
 import CustomCheckboxField from '../Library/FormLayout/CustomCheckboxField'
 import {mapTransformer} from "../../services/transformers";
-import SelectMapPositionCheckbox from "../Action/SelectMapPositionCheckbox.vue";
+import SetMapPositionButton from "../Action/SetMapPositionButton.vue";
 
 export default {
   components: {
-    SelectMapPositionCheckbox,
+    SetMapPositionButton,
     CustomCheckboxField,
     InvalidFeedback,
     FormField,
     flatPickr
   },
   emits: ['update', 'confirm'],
-  data () {
+  data() {
     return {
       fields: {
         isMarked: createField(),
@@ -265,10 +266,6 @@ export default {
     },
     selectedMap: function () {
       this.position = null
-
-      if (!this.selectedMap.fileUrl) {
-        this.position = { isNull: true }
-      }
     },
     sortedCraftsmen: function () {
       if (this.sortedCraftsmen.length === 1) {
@@ -295,7 +292,7 @@ export default {
         this.fields[field].dirty = true
       }
       if (field === 'craftsman') {
-          this.tradeFilter = this.craftsmen.find(c => c['@id'] === this.issue[field]).trade
+        this.tradeFilter = this.craftsmen.find(c => c['@id'] === this.issue[field]).trade
       }
       validateField(this.fields[field], this.issue[field])
     },
@@ -368,17 +365,15 @@ export default {
 
       const values = changedFieldValues(this.fields, this.issue, this.template)
 
-      // set position
-      if (this.position)  {
-        if (this.position.isNull) {
-          values['positionX'] = null
-          values['positionY'] = null
-          values['positionZoomScale'] = null
-        } else {
-          values['positionX'] = this.position.x
-          values['positionY'] = this.position.y
-          values['positionZoomScale'] = this.position.zoomScale
-        }
+      // set position TODO how to deal with undefined
+      if (this.position) {
+        values['positionX'] = this.position.x
+        values['positionY'] = this.position.y
+        values['positionZoomScale'] = this.position.zoomScale
+      } else {
+        values['positionX'] = null
+        values['positionY'] = null
+        values['positionZoomScale'] = null
       }
 
       // ensure empty string is null
@@ -405,7 +400,7 @@ export default {
       return this.maps.find(map => map['@id'] === this.issue.map)
     }
   },
-  mounted () {
+  mounted() {
     this.setIssueFromTemplate()
     this.$emit('update', this.updatePayload)
   }
