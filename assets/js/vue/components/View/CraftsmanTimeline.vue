@@ -27,6 +27,7 @@ import {api, iriToId} from "../../services/api";
 import ProtocolEntry from "./ProtocolEntry.vue";
 import LoadingIndicatorSecondary from "../Library/View/LoadingIndicatorSecondary.vue";
 import AddProtocolEntryButton from "../Action/AddProtocolEntryButton.vue";
+import {sortProtocolEntries} from "../../services/sorters";
 
 export default {
   components: {
@@ -69,7 +70,7 @@ export default {
     orderedProtocolEntries: function () {
       const protocolEntries = [...this.newProtocolEntries, ...(this.craftsmanProtocolEntries ?? []), ...(this.constructionSiteProtocolEntries ?? [])]
           .filter(entry => !entry.isDeleted)
-      protocolEntries.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      sortProtocolEntries(protocolEntries)
       return protocolEntries
     }
   },

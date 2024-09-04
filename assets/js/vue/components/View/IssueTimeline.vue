@@ -29,6 +29,7 @@ import LoadingIndicatorSecondary from "../Library/View/LoadingIndicatorSecondary
 import AddProtocolEntryButton from "../Action/AddProtocolEntryButton.vue";
 import CustomCheckboxField from "../Library/FormLayout/CustomCheckboxField.vue";
 import CustomCheckbox from "../Library/FormInput/CustomCheckbox.vue";
+import {sortProtocolEntries} from "../../services/sorters";
 
 export default {
   components: {
@@ -80,7 +81,7 @@ export default {
     orderedProtocolEntries: function () {
       const protocolEntries = [...this.newProtocolEntries, ...(this.issueProtocolEntries ?? []), ...(this.craftsmanProtocolEntries ?? []), ...(this.constructionSiteProtocolEntries ?? [])]
           .filter(entry => !entry.isDeleted)
-      protocolEntries.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      sortProtocolEntries(protocolEntries)
       return protocolEntries
     },
     craftsman: function () {
