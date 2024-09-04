@@ -56,8 +56,7 @@ class IssuesReport
     public function __invoke(array $data): Response
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
-        /** @var array|null $reportConfig */
-        $reportConfig = $currentRequest->query->get('report');
+        $reportConfig = $currentRequest->query->all('report');
         $reportElements = ReportElements::fromRequest($reportConfig);
 
         $author = $this->getAuthor($this->tokenStorage->getToken());
