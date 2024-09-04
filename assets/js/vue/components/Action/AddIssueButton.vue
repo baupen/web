@@ -2,6 +2,10 @@
   <button-with-modal-confirm
       :button-disabled="posting" :title="$t('_action.add_issue.title')" :can-confirm="canConfirm"
       @confirm="confirm">
+    <template v-slot:button-content>
+      <font-awesome-icon :icon="['fal', 'plus']" class="pe-1" />
+      {{ $t('_action.add_issue.title') }}
+    </template>
 
     <issues-form
         :construction-site="constructionSite" :craftsmen="craftsmen" :maps="maps" :template="template"
