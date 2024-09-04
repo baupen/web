@@ -63,17 +63,16 @@ export default {
       const rect = canvas.getBoundingClientRect();
       const ctx = canvas.getContext('2d');
 
-      // Clear the canvas
+      // ensure high resolution & reset
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.scale(dpr, dpr);
 
       if (!this.position && !this.currentPosition) {
         return
       }
-
-      // ensure high resolution
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
 
       // Calculate pixel position from percentage
       const imageRect = this.$refs['map'].getBoundingClientRect();
