@@ -68,6 +68,7 @@ Encore
   .enableSassLoader(options => {
     options.implementation = require('sass')
     options.sassOptions.quietDeps = true
+    options.sassOptions.silenceDeprecations = ['legacy-js-api']
   })
   .enableVueLoader(() => {}, { runtimeCompilerBuild: false })
   // .enableVueLoader()
