@@ -55,3 +55,6 @@ register:
   success:
     welcome: 'Sie wurden erfolgreich registriert! Prüfen Sie Ihre E-Mails um den Account zu aktivieren.'
   title: 'Account erstellen.'
+captcha:
+  label: 'Was ergibt %challenge% + 2?'
+  invalid: 'Captcha ist falsch.'
