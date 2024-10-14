@@ -29,3 +29,10 @@
     {{- parent() -}}
 {%- endblock form_label -%}
 
+{% block captcha_label -%}
+    {%- set label = 'captcha.label' -%}
+    {%- set translation_domain = 'security' -%}
+    {%- set label_translation_parameters = {'%challenge%': challenge} -%}
+
+    {{- block('form_label') -}}
+{%- endblock captcha_label %}

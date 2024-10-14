@@ -13,6 +13,7 @@ namespace App\Controller;
 
 use App\Controller\Base\BaseController;
 use App\Entity\ConstructionManager;
+use App\Form\CaptchaType;
 use App\Form\ConstructionManager\RegisterConfirmType;
 use App\Form\UserTrait\LoginType;
 use App\Form\UserTrait\OnlyEmailType;
@@ -87,12 +88,15 @@ class SecurityController extends BaseController
     }
 
     #[Route(path: '/register', name: 'register')]
-    public function register(Request $request, TranslatorInterface $translator, UserServiceInterface $userService): \Symfony\Component\HttpFoundation\RedirectResponse|Response
+    public function register(Request $request, TranslatorInterface $translator, UserServiceInterface $userService, string $needCaptcha): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         $constructionManager = new ConstructionManager();
         $constructionManager->setEmail($request->query->get('email'));
 
         $form = $this->createForm(OnlyEmailType::class, $constructionManager);
+        if ($needCaptcha) {
+            $form->add('captcha', CaptchaType::class);
+        }
         $form->add('submit', SubmitType::class, ['translation_domain' => 'security', 'label' => 'register.title']);
 
         $form->handleRequest($request);
