@@ -25,7 +25,6 @@
       <th class="border-start">{{ $t('craftsman.last_email_received') }}</th>
       <th>{{ $t('craftsman.last_visit_online') }}</th>
       <th>{{ $t('craftsman.last_issue_resolved_at') }}</th>
-      <th class="w-minimal"></th>
     </tr>
     </thead>
     <tbody>
@@ -85,12 +84,6 @@
       </td>
       <td>
         <date-time-human-readable :value="cws.statistics.lastIssueResolved" />
-      </td>
-      <td @click.stop="" class="cursor-normal">
-        <view-craftsman-timeline-button
-            :construction-manager-iri="constructionManagerIri"
-            :construction-site="constructionSite" :construction-managers="constructionManagers"
-            :craftsman="cws.craftsman" />
       </td>
     </tr>
     </tbody>

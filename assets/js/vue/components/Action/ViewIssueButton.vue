@@ -77,14 +77,6 @@
 
     <hr/>
 
-    <issue-timeline
-        :construction-site="constructionSite" :issue="issue"
-        :craftsmen="craftsmen" :construction-managers="constructionManagers"
-        :authority-iri="constructionManagerIri"
-    />
-
-    <hr/>
-
     <p class="mb-0 text-secondary">
       {{$t("issue.last_changed_at")}}: <date-time-human-readable :value="issue.lastChangedAt" />
     </p>
