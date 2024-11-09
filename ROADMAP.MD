@@ -8,7 +8,7 @@ Features which fit the vision of the product, and have been requested by custome
 
 Allow to track context of issues, craftsman and construction sites.
 
-Implementation is finished somewhat, with some open issues remaining. However, it is ready for testing to get customer feedback. Before full release, issues need to be resolved or conciously be set back.
+Implementation is finished somewhat, with some open issues remaning. However, it is ready for testing to get customer feedback. Before full release, issues need to be resolved or conciously be set back.
 
 Usability:
 - [ ] The empty protocol looks weird, both on craftsman / construction site. Add a help alert there? -> no, refactor design to align to task view
@@ -19,7 +19,7 @@ Usability:
 Technical:
 - [ ] The UI architecture was compromised; in the 'View' folder, now also API requests are done.
 - [ ] Translations are not yet done
-- [ ] To roll out, revert c6292a668eaa1f157368ef2ea809992c403cef2d and "fix: Recover old protocol" (this commit)
+
 
 ### Tasks
 
@@ -33,6 +33,10 @@ Usability:
 
 wait for protocol:
 - let craftsman add their own entries
+
+others:
+- Add issue online, incl. placing of issues on map
+- Store e-mail template, but without sending email
 
 
 ## Future improvements

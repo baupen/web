@@ -77,59 +77,6 @@
 
     <hr/>
 
-    <div class="row">
-      <div class="col-md-3">
-        <p class="m-0 state-icon text-primary">
-          <font-awesome-icon :icon="['far', 'plus-circle']" />
-        </p>
-      </div>
-      <div class="col">
-        {{createdByName}}<br/>
-        <date-time-human-readable :value="issue.createdAt" />
-      </div>
-    </div>
-
-    <div class="row mt-3" v-if="isRegistered">
-      <div class="col-md-3">
-        <p class="m-0 state-icon text-primary">
-          <font-awesome-icon :icon="['far', 'dot-circle']" />
-          <span class="state-joiner" />
-        </p>
-      </div>
-      <div class="col">
-        {{registeredByName}}<br/>
-        <date-time-human-readable :value="issue.registeredAt" />
-      </div>
-    </div>
-
-    <div class="row mt-3" v-if="isResolved">
-      <div class="col-md-3">
-        <p class="m-0 state-icon text-orange">
-          <font-awesome-icon :icon="['far', 'exclamation-circle']" />
-          <span class="state-joiner" />
-        </p>
-      </div>
-      <div class="col">
-        {{resolvedByName}}<br/>
-        <date-time-human-readable :value="issue.resolvedAt" />
-      </div>
-    </div>
-
-    <div class="row mt-3" v-if="isClosed">
-      <div class="col-md-3">
-        <p class="m-0 state-icon text-success">
-          <font-awesome-icon :icon="['far', 'check-circle']" />
-          <span class="state-joiner" />
-        </p>
-      </div>
-      <div class="col">
-        {{closedByName}}<br/>
-        <date-time-human-readable :value="issue.closedAt" />
-      </div>
-    </div>
-
-    <hr/>
-
     <p class="mb-0 text-secondary">
       {{$t("issue.last_changed_at")}}: <date-time-human-readable :value="issue.lastChangedAt" />
     </p>
@@ -247,19 +194,4 @@ export default {
   }
 }
 </script>
-<style scoped>
-.state-icon {
-  font-size: 2em;
-  position: relative;
-  text-align: right;
-}
-.state-joiner {
-  background-color: rgba(0, 0, 0, 0.1);
-  bottom: calc(1.25em + 1px);
-  height: 1em;
-  position: absolute;
-  right: calc(0.5em - 1px);
-  width: 2px;
-}
-</style>
 
