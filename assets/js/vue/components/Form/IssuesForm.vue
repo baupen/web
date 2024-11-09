@@ -137,9 +137,8 @@
   </template>
 
   <slot name="before-description"/>
-
-  <form-field for-id="description" :label="$t('issue.description')">
-    <input id="description" class="form-control" type="text" required="required" ref="description"
+  <form-field for-id="description" :label="$t('issue.description')" :required="false">
+    <input id="description" class="form-control" type="text" ref="description"
            :class="{'is-valid': fields.description.dirty && !fields.description.errors.length, 'is-invalid': fields.description.dirty && fields.description.errors.length }"
            v-model="issue.description"
            @change="validate('description')"
@@ -153,7 +152,7 @@
 
   <hr/>
 
-  <form-field for-id="craftsman" :label="$t('issue.craftsman')">
+  <form-field for-id="craftsman" :label="$t('issue.craftsman')" :required="false">
     <select class="form-select mb-1"
             v-model="tradeFilter">
       <option v-for="trade in sortedTrade" :value="trade">
@@ -194,7 +193,7 @@
 
 <script>
 
-import {createField, validateField, changedFieldValues, resetFields} from '../../services/validation'
+import {createField, validateField, changedFieldValues, resetFields, requiredRule} from '../../services/validation'
 import FormField from '../Library/FormLayout/FormField'
 import InvalidFeedback from '../Library/FormLayout/InvalidFeedback'
 import {dateConfig, flatPickr, toggleAnchorValidity} from '../../services/flatpickr'
