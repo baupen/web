@@ -13,6 +13,7 @@ namespace App\Api\DataProvider;
 
 use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
+use App\Api\Filters\IsDeletedFilter;
 use App\Entity\ConstructionManager;
 use App\Entity\ConstructionSite;
 use App\Entity\Craftsman;
@@ -124,6 +125,7 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
 
         if (Issue::class === $resourceClass) {
             $this->ensureArraySearchFilterValid($query, 'craftsman', [$craftsman->getId()]);
+            $this->ensureDeletedFilterValid($query, 'isDeleted', false);
 
             return;
         }
@@ -245,6 +247,19 @@ class AuthenticationAwareDataProvider implements ContextAwareCollectionDataProvi
                 throw new BadRequestException($property.' filter value '.$value->format('c').' not in equal '.$restriction->format('c').'.');
             }
         }
+    }
+
+    private function ensureDeletedFilterValid(array $query, string $property, ?bool $expectedValue): void
+    {
+        if (null === $expectedValue) {
+            return;
+        }
+
+        if (isset($query[$property]) && IsDeletedFilter::normalizeValue($query[$property]) === $expectedValue) {
+            return;
+        }
+
+        throw new BadRequestException($property.' filter missing or value not equal to '.$expectedValue.'.');
     }
 
     private function ensureRenderQuery(string $resourceClass, ?string $operationName, array $existingFilter): void
