@@ -380,8 +380,9 @@ const api = {
     return this._getHydraCollection('/api/tasks' + queryString)
   },
   getProtocolEntries: function (constructionSite, root) {
-    const queryString = '?constructionSite=' + iriToId(constructionSite['@id']) +
-      '&root=' + iriToId(root['@id'])
+    let queryString = '?constructionSite=' + iriToId(constructionSite['@id'])
+    queryString += '&root=' + iriToId(root['@id'])
+    queryString += '&isDeleted=false'
 
     return this._getHydraCollection('/api/protocol_entries' + queryString)
   },

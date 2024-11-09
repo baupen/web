@@ -1,6 +1,6 @@
 <template>
-  <div class="row pt-1 pb-1" :class="{'bg-secondary-subtle': isContext}">
-    <div class="col-3">
+  <div class="row pt-1 pb-1 g-3" :class="{'bg-secondary-subtle': isContext}">
+    <div class="col-auto">
       <p class="m-0 state-icon h-100" :class="'text-' + iconColor">
         <font-awesome-icon :icon="icon" :class="iconOpacity"/>
         <span class="state-joiner" v-if="!last"/>

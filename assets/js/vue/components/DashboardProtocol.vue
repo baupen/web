@@ -1,32 +1,45 @@
 <template>
   <div class="card">
     <div class="card-body limited-height">
-      <div class="loading-center" v-if="constructionSiteProtocolEntries === null">
-        <loading-indicator-secondary />
+      <div class="loading-center" v-if="protocolEntries === null">
+        <loading-indicator-secondary/>
       </div>
-      <construction-site-timeline
-          v-else
-          :construction-site="constructionSite"
-          :construction-managers="constructionManagers" :authority-iri="constructionManagerIri"
-          :protocol-entries="constructionSiteProtocolEntries"/>
+      <template v-else>
+        <add-protocol-entry-button
+            :authority-iri="constructionManagerIri" :root="constructionSite"
+            :construction-site="constructionSite"
+            @added="protocolEntries.push($event)"/>
+
+        <div class="mt-3" v-if="orderedProtocolEntries.length">
+          <protocol-entry v-for="(entry, index) in orderedProtocolEntries" :id="entry['@id']"
+                          :last="index+1 === orderedProtocolEntries.length"
+                          :protocol-entry="entry"
+                          :root="constructionSite"
+                          :created-by="responsiblesLookup[entry['createdBy']]"
+          />
+        </div>
+
+      </template>
     </div>
   </div>
 </template>
 
 <script>
 
-import ConstructionSiteTimeline from "./View/ConstructionSiteTimeline.vue";
 import LoadingIndicatorSecondary from "./Library/View/LoadingIndicatorSecondary.vue";
-import {api} from "../services/api";
+import {api, iriToId} from "../services/api";
+import ProtocolEntry from "./View/ProtocolEntry.vue";
+import AddProtocolEntryButton from "./Action/AddProtocolEntryButton.vue";
+import {sortProtocolEntries} from "../services/sorters";
 
 export default {
   components: {
+    AddProtocolEntryButton, ProtocolEntry,
     LoadingIndicatorSecondary,
-    ConstructionSiteTimeline,
   },
   data() {
     return {
-      constructionSiteProtocolEntries: null,
+      protocolEntries: null,
     }
   },
   props: {
@@ -43,10 +56,23 @@ export default {
       required: false
     },
   },
+  computed: {
+    responsiblesLookup: function () {
+      let responsiblesLookup = {}
+      this.constructionManagers.forEach(cm => responsiblesLookup[iriToId(cm['@id'])] = cm)
+
+      return responsiblesLookup
+    },
+    orderedProtocolEntries: function () {
+      const protocolEntries = [...this.protocolEntries]
+      sortProtocolEntries(protocolEntries)
+      return protocolEntries
+    }
+  },
   mounted() {
     api.getProtocolEntries(this.constructionSite, this.constructionSite)
         .then(entries => {
-          this.constructionSiteProtocolEntries = entries
+          this.protocolEntries = entries
         })
   }
 }

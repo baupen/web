@@ -4,7 +4,6 @@
       :button-disabled="posting" :can-confirm="canConfirm"
       @confirm="confirm"
   >
-
     <div class="mb-3">
       <custom-radio-field
           for-id="protocol-entry-type-text"
