@@ -9,11 +9,13 @@
                          @added="this.tasks.push($event)"/>
 
         <template v-if="orderedOpenTasks.length">
-          <div class="mt-3">
-            <task-row v-for="(task, index) in orderedOpenTasks" :key="task['@id']" :task="task"
-                      :class="index < orderedOpenTasks.length-1 ? 'mb-2' : null"
-                      :construction-managers="constructionManagers"
-                      :construction-manager-iri="constructionManagerIri"/>
+          <div class="mt-3 row g-2">
+            <div class="col-12" v-for="task in orderedOpenTasks" :key="task['@id']">
+              <task-row
+                  :task="task"
+                  :construction-managers="constructionManagers"
+                  :construction-manager-iri="constructionManagerIri"/>
+            </div>
           </div>
         </template>
 
@@ -21,11 +23,12 @@
           <a class="mt-3 d-inline-block" v-if="!showClosedTasks" href="" @click.prevent="showClosedTasks = true">
             {{ $tc('dashboard.show_closed_tasks', orderedClosedTasks.length) }}
           </a>
-          <div :class="orderedOpenTasks.length ? 'mt-5' : 'mt-3'" v-else>
-            <task-row v-for="(task, index) in orderedClosedTasks" :key="task['@id']" :task="task"
-                      :class="index < orderedClosedTasks.length-1 ? 'mb-2' : null"
-                      :construction-managers="constructionManagers"
-                      :construction-manager-iri="constructionManagerIri"/>
+          <div class="row g-2" :class="orderedOpenTasks.length ? 'mt-5' : 'mt-3'" v-else>
+            <div class="col-12" v-for="task in orderedClosedTasks" :key="task['@id']">
+              <task-row :key="task['@id']" :task="task"
+                        :construction-managers="constructionManagers"
+                        :construction-manager-iri="constructionManagerIri"/>
+            </div>
           </div>
         </template>
       </template>
