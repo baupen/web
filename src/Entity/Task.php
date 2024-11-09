@@ -14,7 +14,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use App\Api\Filters\PatchedOrderFilter;
 use App\Api\Filters\RequiredExactSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
@@ -42,7 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(DateFilter::class, properties={"createdAt", "closedAt"})
- * @ApiFilter(OrderFilter::class, properties={"createdAt": "ASC", "closedAt": "ASC"})
+ * @ApiFilter(PatchedOrderFilter::class, properties={"createdAt": "ASC", "deadline"={"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "ASC"}, "closedAt": "ASC"})
  */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
