@@ -14,6 +14,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
 use App\Api\Filters\PatchedOrderFilter;
 use App\Api\Filters\RequiredExactSearchFilter;
 use App\Entity\Base\BaseEntity;
@@ -42,6 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
  * @ApiFilter(DateFilter::class, properties={"createdAt", "closedAt"})
+ * @ApiFilter(ExistsFilter::class, properties={"closedAt", "deadline"})
  * @ApiFilter(PatchedOrderFilter::class, properties={"createdAt": "ASC", "deadline"={"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "ASC"}, "closedAt": "ASC"})
  */
 #[ORM\Entity]
@@ -51,7 +53,7 @@ class Task extends BaseEntity implements ConstructionSiteOwnedEntityInterface
     use IdTrait;
 
     #[Assert\NotBlank]
-    #[Groups(['task-create'])]
+    #[Groups(['task-create', 'task-read'])]
     #[ORM\ManyToOne(targetEntity: ConstructionSite::class, inversedBy: 'tasks')]
     private ?ConstructionSite $constructionSite = null;
 
