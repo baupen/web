@@ -1,5 +1,5 @@
 <template>
-  <div class="row pt-1 pb-1 g-3" :class="{'bg-secondary-subtle': isContext}">
+  <div class="row pt-1 pb-1 g-4" :class="{'bg-secondary-subtle': isContext}">
     <div class="col-auto">
       <p class="m-0 state-icon h-100" :class="'text-' + iconColor">
         <font-awesome-icon :icon="icon" :class="iconOpacity"/>
