@@ -13,12 +13,28 @@ declare(strict_types=1);
 
 namespace App\Api\Filters;
 
+use ApiPlatform\Core\Api\IdentifiersExtractorInterface;
+use ApiPlatform\Core\Api\IriConverterInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use App\Entity\ConstructionManager;
+use App\Security\TokenTrait;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Serializer\NameConverter\NameConverterInterface;
 
 class PatchedExactSearchFilter extends ExactSearchFilter
 {
+    use TokenTrait;
+
+    public function __construct(private readonly TokenStorageInterface $storage, ManagerRegistry $managerRegistry, ?RequestStack $requestStack, IriConverterInterface $iriConverter, ?PropertyAccessorInterface $propertyAccessor = null, ?LoggerInterface $logger = null, ?array $properties = null, ?IdentifiersExtractorInterface $identifiersExtractor = null, ?NameConverterInterface $nameConverter = null)
+    {
+        parent::__construct($managerRegistry, $requestStack, $iriConverter, $propertyAccessor, $logger, $properties, $identifiersExtractor, $nameConverter);
+    }
+
     protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?string $operationName = null)
     {
         if ('constructionSites.id' !== $property || ConstructionManager::class !== $resourceClass) {
@@ -33,6 +49,13 @@ class PatchedExactSearchFilter extends ExactSearchFilter
         // get whitelist of connected construction managers
         $repository = $this->managerRegistry->getRepository(ConstructionManager::class);
         $whitelist = $repository->getRelatedConstructionManagers($value);
+
+        // add self, as always safe
+        $token = $this->storage->getToken();
+        $constructionManager = $this->tryGetConstructionManager($token);
+        if ($constructionManager) {
+            $whitelist[] = $constructionManager->getId();
+        }
 
         $alias = $queryBuilder->getRootAliases()[0];
         $queryBuilder
