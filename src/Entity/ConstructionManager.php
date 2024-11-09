@@ -14,7 +14,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use App\Api\Filters\ExactSearchFilter;
+use App\Api\Filters\PatchedExactSearchFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Traits\AuthenticationTrait;
 use App\Entity\Traits\IdTrait;
@@ -42,10 +42,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     attributes={"pagination_enabled"=false}
  * )
  *
- * @ApiFilter(ExactSearchFilter::class, properties={"constructionSites.id": "exact"})
+ * @ApiFilter(PatchedExactSearchFilter::class, properties={"constructionSites.id": "exact"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
  */
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \App\Repository\ConstructionManagerRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class ConstructionManager extends BaseEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {

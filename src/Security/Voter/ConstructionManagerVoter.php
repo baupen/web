@@ -15,12 +15,17 @@ use App\Entity\ConstructionManager;
 use App\Entity\Craftsman;
 use App\Entity\Filter;
 use App\Security\Voter\Base\ConstructionSiteRelatedEntityVoter;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class ConstructionManagerVoter extends ConstructionSiteRelatedEntityVoter
 {
     public const CONSTRUCTION_MANAGER_VIEW = 'CONSTRUCTION_MANAGER_VIEW';
     public const CONSTRUCTION_MANAGER_SELF = 'CONSTRUCTION_MANAGER_SELF';
+
+    public function __construct(private readonly ManagerRegistry $registry)
+    {
+    }
 
     /**
      * @param ConstructionManager $subject
@@ -31,10 +36,9 @@ class ConstructionManagerVoter extends ConstructionSiteRelatedEntityVoter
             return true;
         }
 
-        foreach ($constructionManager->getConstructionSites() as $constructionSite) {
-            if ($constructionSite->getConstructionManagers()->contains($subject)) {
-                return true;
-            }
+        $constructionManagerRepository = $this->registry->getRepository(ConstructionManager::class);
+        if ($constructionManagerRepository->checkConstructionManagerRelated($subject, $constructionManager->getConstructionSites())) {
+            return true;
         }
 
         return false;

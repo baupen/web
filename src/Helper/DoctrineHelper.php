@@ -12,6 +12,7 @@
 namespace App\Helper;
 
 use App\Entity\Base\BaseEntity;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
 
 class DoctrineHelper
@@ -23,5 +24,21 @@ class DoctrineHelper
             $manager->persist($entity);
         }
         $manager->flush();
+    }
+
+    /**
+     * @param Collection<int, BaseEntity> $collection
+     *
+     * @return array<string>
+     */
+    public static function getIdList(Collection $collection): array
+    {
+        $ids = [];
+
+        foreach ($collection->toArray() as $entry) {
+            $ids[] = $entry->getId();
+        }
+
+        return $ids;
     }
 }
