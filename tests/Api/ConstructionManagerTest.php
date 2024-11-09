@@ -21,7 +21,6 @@ use App\Tests\Traits\FixturesTrait;
 use App\Tests\Traits\TestDataTrait;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Response as StatusCode;
 
 class ConstructionManagerTest extends ApiTestCase
 {
@@ -57,7 +56,7 @@ class ConstructionManagerTest extends ApiTestCase
         $this->loadFixtures($client, [TestConstructionManagerFixtures::class]);
 
         // can register
-        $this->assertApiPostStatusCodeSame(StatusCode::HTTP_CREATED, $client, '/api/construction_managers', ['email' => 'test@mail.com']);
+        $this->assertApiPostStatusCodeSame(Response::HTTP_CREATED, $client, '/api/construction_managers', ['email' => 'test@mail.com']);
         $this->assertEmailCount(1);
 
         // can create other accounts if logged in fully
@@ -71,7 +70,7 @@ class ConstructionManagerTest extends ApiTestCase
 
         // associated construction manager does not get more info
         $this->loginApiAssociatedConstructionManager($client);
-        $this->assertApiPostStatusCodeSame(StatusCode::HTTP_BAD_REQUEST, $client, '/api/construction_managers', ['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
+        $this->assertApiPostStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers', ['email' => TestConstructionManagerFixtures::CONSTRUCTION_MANAGER_EMAIL]);
         $this->assertEmailCount(0);
     }
 
@@ -99,7 +98,7 @@ class ConstructionManagerTest extends ApiTestCase
             'phone' => '0781234568',
             'receiveWeekly' => true,
         ];
-        $this->assertApiPatchStatusCodeSame(StatusCode::HTTP_FORBIDDEN, $client, $newConstructionManagerId, $patch);
+        $this->assertApiPatchStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $newConstructionManagerId, $patch);
         $this->assertApiPatchPayloadPersisted($client, '/api/construction_managers/'.$ownConstructionManager->getId(), $patch);
     }
 
@@ -139,20 +138,42 @@ class ConstructionManagerTest extends ApiTestCase
         $constructionManager = $this->loginApiConstructionManager($client);
         $constructionManagerIri = $this->getIriFromItem($constructionManager);
 
-        $otherConstructionManager = $this->addConstructionManager($emptyConstructionSite);
-        $otherConstructionManagerIri = $this->getIriFromItem($otherConstructionManager);
+        $emptyManager = $this->addConstructionManager($emptyConstructionSite);
+        $emptyManagerIri = $this->getIriFromItem($emptyManager);
 
         // ensure filter is applied
         $this->loginApiConstructionManager($client);
         $this->assertApiCollectionContainsIri($client, '/api/construction_managers?constructionSites.id='.$constructionSite->getId(), $constructionManagerIri);
         $this->assertApiCollectionNotContainsIri($client, '/api/construction_managers?constructionSites.id='.$emptyConstructionSite->getId(), $constructionManagerIri);
 
-        // ensure filter is enforced for associated construction managers
+        // ensure associated construction manager cannot access empty construction site
         $this->loginApiAssociatedConstructionManager($client);
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers');
-        $this->assertApiCollectionNotContainsIri($client, '/api/construction_managers', $otherConstructionManagerIri);
+        $this->assertApiCollectionNotContainsIri($client, '/api/construction_managers', $emptyManagerIri);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_FORBIDDEN, $client, $emptyManagerIri);
         $this->assertApiGetStatusCodeSame(Response::HTTP_BAD_REQUEST, $client, '/api/construction_managers?constructionSites.id='.$emptyConstructionSite->getId());
         $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers?constructionSites.id='.$constructionSite->getId());
+    }
+
+    public function testConstructionSiteFiltersWithDisassociatedConstructionManagers(): void
+    {
+        $client = $this->createClient();
+        $this->loadFixtures($client, [TestConstructionManagerFixtures::class, TestConstructionSiteFixtures::class]);
+
+        $constructionSite = $this->getTestConstructionSite();
+
+        $emptyConstructionSite = $this->getEmptyConstructionSite();
+        $newManager = $this->addConstructionManager($emptyConstructionSite);
+        $newManagerIri = $this->getIriFromItem($newManager);
+
+        $this->addIssue($constructionSite, $newManager);
+
+        // ensure associated construction manager gets access to all relevant construction managers
+        // note: newManager never added to constructionSite, but still returned, as has an issue created for it
+        $this->loginApiAssociatedConstructionManager($client);
+        $this->assertApiGetStatusCodeSame(Response::HTTP_OK, $client, '/api/construction_managers/'.$newManager->getId());
+        $this->assertApiCollectionContainsIri($client, '/api/construction_managers', $newManagerIri);
+        $this->assertApiCollectionContainsIri($client, '/api/construction_managers?constructionSites.id='.$constructionSite->getId(), $newManagerIri);
     }
 
     public function testLastChangedAtFilter(): void
