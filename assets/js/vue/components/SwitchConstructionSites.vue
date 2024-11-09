@@ -45,7 +45,7 @@
 import ConstructionSitesParticipationTable from './View/ConstructionSitesParticipationTable'
 import AddConstructionSiteButton from './Action/AddConstructionSiteButton'
 import LoadingIndicator from './Library/View/LoadingIndicator'
-import { addNonDuplicatesById, api } from '../services/api'
+import {addNonDuplicatesById, api} from '../services/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 import ConstructionSiteEnterCard from "./View/ConstructionSiteEnterCard.vue";
 
@@ -57,7 +57,7 @@ export default {
     AddConstructionSiteButton,
     LoadingIndicator
   },
-  data () {
+  data() {
     return {
       constructionSites: null,
       constructionManagers: null
@@ -100,29 +100,14 @@ export default {
       return this.constructionManager.canAssociateSelf
     }
   },
-  mounted () {
+  mounted() {
     this.constructionManagers = [this.constructionManager]
-    if (this.canAssociateSelf) {
-      api.getConstructionSites()
-          .then(constructionSites => this.constructionSites = constructionSites)
-      api.getConstructionManagers()
-          .then(addConstructionManagers => {
-            addNonDuplicatesById(this.constructionManagers, addConstructionManagers)
-          })
-    } else {
-      this.constructionManagers = [this.constructionManager]
-      api.getConstructionSites(this.constructionManager)
-          .then(constructionSites => {
-            this.constructionSites = constructionSites
-
-            this.constructionSites.forEach(constructionSite => {
-              api.getConstructionManagers(constructionSite)
-                  .then(addConstructionManagers => {
-                    addNonDuplicatesById(this.constructionManagers, addConstructionManagers)
-                  })
-            })
-          })
-    }
+    api.getConstructionSites()
+        .then(constructionSites => this.constructionSites = constructionSites)
+    api.getConstructionManagers()
+        .then(addConstructionManagers => {
+          addNonDuplicatesById(this.constructionManagers, addConstructionManagers)
+        })
   }
 }
 </script>
