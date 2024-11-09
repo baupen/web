@@ -5,10 +5,12 @@
 
     <loading-indicator-secondary :spin="isLoading">
       <template v-if="memberOfConstructionSites.length > 0">
-        <construction-sites-enter-list
-            :construction-sites="memberOfConstructionSites"
-            :construction-managers="constructionManagers"
-        />
+        <div class="row row-cols-3 g-4">
+          <div class="col" v-for="constructionSite in constructionSites" :key="constructionSite['@id']">
+            <construction-site-enter-card
+                :construction-site="constructionSite" :construction-managers="constructionManagers"/>
+          </div>
+        </div>
       </template>
       <div v-else class="alert alert-info">
         <template v-if="canAssociateSelf">
@@ -40,17 +42,17 @@
 </template>
 
 <script>
-import ConstructionSitesEnterList from './View/ConstructionSitesEnterList'
 import ConstructionSitesParticipationTable from './View/ConstructionSitesParticipationTable'
 import AddConstructionSiteButton from './Action/AddConstructionSiteButton'
 import LoadingIndicator from './Library/View/LoadingIndicator'
 import { addNonDuplicatesById, api } from '../services/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
+import ConstructionSiteEnterCard from "./View/ConstructionSiteEnterCard.vue";
 
 export default {
   components: {
+    ConstructionSiteEnterCard,
     LoadingIndicatorSecondary,
-    ConstructionSitesEnterList,
     ConstructionSitesParticipationTable,
     AddConstructionSiteButton,
     LoadingIndicator
