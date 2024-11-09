@@ -1,6 +1,6 @@
 <template>
   <inline-form-field for-id="subject" :label="$t('email.subject')">
-    <input v-focus id="subject" class="form-control" type="text" required="required"
+    <input id="subject" class="form-control" type="text" required="required"
            :class="{'is-valid': fields.subject.dirty && !fields.subject.errors.length, 'is-invalid': fields.subject.dirty && fields.subject.errors.length }"
            @blur="fields.subject.dirty = true"
            v-model="email.subject"

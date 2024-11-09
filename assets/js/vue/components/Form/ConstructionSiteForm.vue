@@ -1,6 +1,6 @@
 <template>
   <form-field for-id="name" :label="$t('construction_site.name')">
-    <input id="name" class="form-control" type="text" v-focus required="required"
+    <input id="name" class="form-control" type="text" required="required"
            :class="{'is-valid': fields.name.dirty && !fields.name.errors.length, 'is-invalid': fields.name.dirty && fields.name.errors.length }"
            @blur="fields.name.dirty = true"
            v-model="constructionSite.name"
