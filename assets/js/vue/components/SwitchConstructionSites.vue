@@ -5,10 +5,20 @@
 
     <loading-indicator-secondary :spin="isLoading">
       <template v-if="memberOfConstructionSites.length > 0">
-        <div class="row row-cols-3 g-4">
-          <div class="col" v-for="constructionSite in constructionSites" :key="constructionSite['@id']">
-            <construction-site-enter-card
-                :construction-site="constructionSite" :construction-managers="constructionManagers"/>
+        <div class="row">
+          <div class="col-8">
+            <div class="row row-cols-2 g-4">
+              <div class="col" v-for="constructionSite in constructionSites" :key="constructionSite['@id']">
+                <construction-site-enter-card
+                    :construction-site="constructionSite" :construction-managers="constructionManagers"/>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <switch-tasks
+                :construction-manager-iri="constructionManagerIri"
+                :construction-managers="constructionManagers"
+                :construction-sites="constructionSites" />
           </div>
         </div>
       </template>
@@ -48,9 +58,11 @@ import LoadingIndicator from './Library/View/LoadingIndicator'
 import {addNonDuplicatesById, api} from '../services/api'
 import LoadingIndicatorSecondary from './Library/View/LoadingIndicatorSecondary'
 import ConstructionSiteEnterCard from "./View/ConstructionSiteEnterCard.vue";
+import SwitchTasks from "./SwitchTasks.vue";
 
 export default {
   components: {
+    SwitchTasks,
     ConstructionSiteEnterCard,
     LoadingIndicatorSecondary,
     ConstructionSitesParticipationTable,
