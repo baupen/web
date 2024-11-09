@@ -14,8 +14,8 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
 use App\Api\Filters\ExactSearchFilter;
-use App\Api\Filters\IsDeletedFilter;
 use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\AddressTrait;
@@ -46,7 +46,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  *
  * @ApiFilter(ExactSearchFilter::class, properties={"constructionManagers.id": "exact"})
- * @ApiFilter(IsDeletedFilter::class, properties={"isDeleted"})
+ * @ApiFilter(ExistsFilter::class, properties={"isDeleted"})
  * @ApiFilter(DateFilter::class, properties={"lastChangedAt"})
  */
 #[ORM\Entity]
