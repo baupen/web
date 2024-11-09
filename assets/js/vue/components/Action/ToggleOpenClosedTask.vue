@@ -1,5 +1,5 @@
 <template>
-  <div @click="toggleClosed">
+  <div @click="toggleClosed" class="fs-5">
     <input class="form-check-input" type="checkbox" :checked="task.closedAt" :disabled="isPatching">
   </div>
 </template>

@@ -8,14 +8,16 @@
         <add-task-button :construction-manager-iri="constructionManagerIri" :construction-site="constructionSite"
                          @added="this.tasks.push($event)"/>
 
-        <div class="mt-3">
-          <task-row v-for="(task, index) in orderedOpenTasks" :key="task['@id']" :task="task"
-                    :class="index < orderedOpenTasks.length-1 ? 'mb-2' : null"
-                    :construction-managers="constructionManagers"
-                    :construction-manager-iri="constructionManagerIri"/>
-        </div>
+        <template v-if="orderedOpenTasks.length">
+          <div class="mt-3">
+            <task-row v-for="(task, index) in orderedOpenTasks" :key="task['@id']" :task="task"
+                      :class="index < orderedOpenTasks.length-1 ? 'mb-2' : null"
+                      :construction-managers="constructionManagers"
+                      :construction-manager-iri="constructionManagerIri"/>
+          </div>
+        </template>
 
-        <div v-if="orderedClosedTasks.length">
+        <template v-if="orderedClosedTasks.length">
           <a class="mt-3 d-inline-block" v-if="!showClosedTasks" href="" @click.prevent="showClosedTasks = true">
             {{ $tc('dashboard.show_closed_tasks', orderedClosedTasks.length) }}
           </a>
@@ -25,7 +27,7 @@
                       :construction-managers="constructionManagers"
                       :construction-manager-iri="constructionManagerIri"/>
           </div>
-        </div>
+        </template>
       </template>
     </div>
   </div>
@@ -33,7 +35,6 @@
 
 <script>
 
-import ConstructionSiteTimeline from "./View/ConstructionSiteTimeline.vue";
 import LoadingIndicatorSecondary from "./Library/View/LoadingIndicatorSecondary.vue";
 import {api} from "../services/api";
 import TaskRow from "./View/TaskRow.vue";
@@ -44,7 +45,6 @@ export default {
     AddTaskButton,
     TaskRow,
     LoadingIndicatorSecondary,
-    ConstructionSiteTimeline,
   },
   data() {
     return {
