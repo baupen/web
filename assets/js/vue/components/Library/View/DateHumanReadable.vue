@@ -1,6 +1,6 @@
 <template>
   <span v-if="value">
-    {{ momentDateTime.format('L') }}
+    {{ momentDateTime.format(showYear ? 'L' : 'D.M.') }}
   </span>
   <span v-else>-</span>
 </template>
@@ -14,9 +14,21 @@ export default {
     value: {
       type: String,
       default: null
+    },
+    hideCurrentYear: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
+    showYear: function() {
+      if (!this.hideCurrentYear) {
+        return true
+      }
+
+      const now = new Date()
+      return now.getFullYear() !== this.momentDateTime.year()
+    },
     momentDateTime: function () {
       return moment(this.value);
     },
