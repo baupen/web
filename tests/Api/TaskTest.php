@@ -73,7 +73,7 @@ class TaskTest extends ApiTestCase
 
         // test GET returns correct fields
         $this->assertApiCollectionContainsResponseItem($client, '/api/tasks?constructionSite='.$constructionSite->getId(), $response);
-        $this->assertApiResponseFieldSubset($response, 'description', 'createdBy', 'createdAt', 'deadline', 'closedBy', 'closedAt');
+        $this->assertApiResponseFieldSubset($response, 'constructionSite', 'description', 'createdBy', 'createdAt', 'deadline', 'closedBy', 'closedAt');
 
         $taskId = json_decode($response->getContent(), true)['@id'];
 
