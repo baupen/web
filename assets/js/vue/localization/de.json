@@ -66,6 +66,10 @@
       "saved": "Pendenzen gespeichert",
       "title": "Pendenzen bearbeiten"
     },
+    "edit_issue_event": {
+      "saved": "Ereignis gespeichert",
+      "title": "Ereignis bearbeiten"
+    },
     "edit_map": {
       "replaced_map_file": "PDF ersetzt",
       "saved": "Karte gespeichert",
@@ -399,9 +403,11 @@
   "issue_event": {
     "_name": "Ereignis",
     "_plural": "Ereignisse",
-    "created_at": "Zeitpunkt",
+    "timestamp": "Zeitpunkt",
     "text_payload": "Text",
-    "file_payload": "Beschreibung"
+    "file_payload": "Beschreibung",
+    "created_at": "Erstellt",
+    "last_changed_at": "Zuletzt geändert"
   },
   "map": {
     "_name": "Bauplan",

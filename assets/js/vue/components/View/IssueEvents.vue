@@ -10,12 +10,11 @@
       </div>
     </div>
 
-    <issue-event v-for="(entry, index) in orderedIssueEvents" :id="entry['@id']"
+    <issue-event-row v-for="(entry, index) in orderedIssueEvents" :id="entry['@id']"
                     :last="index+1 === orderedIssueEvents.length"
                     :issue-event="entry"
                     :root="getRoot(entry)"
                     :is-context="!(issueIssueEvents.includes(entry) || newIssueEvents.includes(entry))"
-                    :is-removable="newIssueEvents.includes(entry)"
                     :created-by="responsiblesLookup[entry['createdBy']]"
     />
   </loading-indicator-secondary>
@@ -24,20 +23,20 @@
 <script>
 
 import {api, iriToId} from "../../services/api";
-import IssueEvent from "./IssueEvent.vue";
 import LoadingIndicatorSecondary from "../Library/View/LoadingIndicatorSecondary.vue";
 import AddIssueEventButton from "../Action/AddIssueEventButton.vue";
 import CustomCheckboxField from "../Library/FormLayout/CustomCheckboxField.vue";
 import CustomCheckbox from "../Library/FormInput/CustomCheckbox.vue";
 import {sortIssueEvents} from "../../services/sorters";
+import IssueEventRow from "./IssueEventRow.vue";
 
 export default {
   components: {
+    IssueEventRow,
     CustomCheckbox,
     CustomCheckboxField,
     AddIssueEventButton,
     LoadingIndicatorSecondary,
-    IssueEvent,
   },
   data() {
     return {

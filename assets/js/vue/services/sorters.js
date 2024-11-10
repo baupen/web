@@ -13,7 +13,7 @@ const statusIssueEventOrder = (issueEvent) => {
 }
 export const sortIssueEvents = (issueEvents) => {
   issueEvents.sort((a, b) => {
-    if (b.createdAt === a.createdAt && statusIssueEvents.includes(a.type) && statusIssueEvents.includes(b.type)) {
+    if (b.timestamp === a.timestamp && statusIssueEvents.includes(a.type) && statusIssueEvents.includes(b.type)) {
       const aOrder = statusIssueEventOrder(a)
       const bOrder = statusIssueEventOrder(b)
 
@@ -25,6 +25,6 @@ export const sortIssueEvents = (issueEvents) => {
       }
     }
 
-    return b.createdAt.localeCompare(a.createdAt)
+    return b.timestamp.localeCompare(a.timestamp)
   })
 }

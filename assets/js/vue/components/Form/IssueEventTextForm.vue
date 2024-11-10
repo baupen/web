@@ -12,16 +12,16 @@
     <invalid-feedback :errors="fields.payload.errors"/>
   </form-field>
 
-  <form-field for-id="createdAt" :label="$t('issue_event.created_at')" :required="true">
-    <span ref="createdAt-anchor"/>
+  <form-field for-id="timestamp" :label="$t('issue_event.timestamp')" :required="true">
+    <span ref="timestamp-anchor"/>
     <flat-pickr
-        id="createdAt" class="form-control"
-        v-model="issueEvent.createdAt"
+        id="timestamp" class="form-control"
+        v-model="issueEvent.timestamp"
         :config="dateTimePickerConfig"
-        @blur="fields.createdAt.dirty = true"
-        @change="validate('createdAt')">
+        @blur="fields.timestamp.dirty = true"
+        @change="validate('timestamp')">
     </flat-pickr>
-    <invalid-feedback :errors="fields.createdAt.errors"/>
+    <invalid-feedback :errors="fields.timestamp.errors"/>
   </form-field>
 </template>
 
@@ -49,11 +49,11 @@ export default {
     return {
       fields: {
         payload: createField(),
-        createdAt: createField(requiredRule()),
+        timestamp: createField(requiredRule()),
       },
       issueEvent: {
         payload: null,
-        createdAt: (new Date()).toISOString()
+        timestamp: (new Date()).toISOString()
       },
     }
   },
@@ -76,14 +76,14 @@ export default {
     template: function () {
       this.setFromTemplate()
     },
-    'issueEvent.createdAt': function () {
-      validateField(this.fields['createdAt'], this.issueEvent['createdAt'])
+    'issueEvent.timestamp': function () {
+      validateField(this.fields['timestamp'], this.issueEvent['timestamp'])
     },
-    'fields.createdAt.dirty': function () {
-      toggleAnchorValidity(this.$refs['createdAt-anchor'], this.fields.createdAt)
+    'fields.timestamp.dirty': function () {
+      toggleAnchorValidity(this.$refs['timestamp-anchor'], this.fields.timestamp)
     },
-    'fields.createdAt.errors.length': function () {
-      toggleAnchorValidity(this.$refs['createdAt-anchor'], this.fields.createdAt)
+    'fields.timestamp.errors.length': function () {
+      toggleAnchorValidity(this.$refs['timestamp-anchor'], this.fields.timestamp)
     }
   },
   methods: {
@@ -104,7 +104,7 @@ export default {
     },
     updatePayload: function () {
       if (this.fields.payload.errors.length ||
-          this.fields.createdAt.errors.length) {
+          this.fields.timestamp.errors.length) {
         return null
       }
 
