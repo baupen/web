@@ -6,7 +6,7 @@
     <loading-indicator-secondary :spin="isLoading">
       <template v-if="memberOfConstructionSites.length > 0">
         <div class="row">
-          <div class="col-8">
+          <div class="col-9">
             <div class="row row-cols-2 g-4">
               <div class="col" v-for="constructionSite in constructionSites" :key="constructionSite['@id']">
                 <construction-site-enter-card
@@ -14,7 +14,7 @@
               </div>
             </div>
           </div>
-          <div class="col-4">
+          <div class="col-3" v-if="memberOfConstructionSites.length > 1">
             <switch-tasks
                 :construction-manager-iri="constructionManagerIri"
                 :construction-managers="constructionManagers"

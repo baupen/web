@@ -17,7 +17,7 @@
         </template>
       </p>
     </div>
-    <div class="col-auto col-deadline">
+    <div class="col-auto col-deadline" v-if="showDeadline">
       <date-human-readable :value="task.deadline"/>
     </div>
   </div>
@@ -44,6 +44,10 @@ export default {
     constructionManagerIri: {
       type: String,
       required: false
+    },
+    showDeadline: {
+      type: Boolean,
+      default: true
     },
   },
   computed: {

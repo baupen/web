@@ -71,9 +71,7 @@ export default {
   },
   computed: {
     orderedOpenTasks: function () {
-      const openTasks = this.tasks.filter(task => !task.closedAt)
-      openTasks.sort((a, b) => (a.deadline ?? '').localeCompare(b.deadline ?? ''))
-      return openTasks
+      return this.tasks.filter(task => !task.closedAt)
     },
     orderedClosedTasks: function () {
       const openTasks = this.tasks.filter(task => task.closedAt)
@@ -93,6 +91,8 @@ export default {
 <style scoped>
 .limited-height {
   max-height: 30em;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 </style>

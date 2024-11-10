@@ -423,6 +423,9 @@
     "mine": "Meine Baustellen",
     "mine_help": "Diese Baustellen werden auch in der App angezeigt.",
     "mine_none_ask_for_association": "Sie sind keiner Baustelle zugehörig. Sie können einen anderen Bauleiter bitten, Sie einer Baustelle hinzuzufügen.",
-    "mine_none_associate_self": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen."
+    "mine_none_associate_self": "Aktivieren Sie eine Baustelle aus der Liste unten, um auf diese zuzugreifen.",
+    "no_tasks_pending": "Keine Aufgaben fällig.",
+    "tasks_loaded_until": "Aufgaben mit Frist vor dem {deadlineLoaded} geladen.",
+    "load_more_tasks": "Weitere Aufgaben laden"
   }
 }

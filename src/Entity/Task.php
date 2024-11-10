@@ -42,9 +42,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *  )
  *
  * @ApiFilter(RequiredExactSearchFilter::class, properties={"constructionSite"})
- * @ApiFilter(DateFilter::class, properties={"createdAt", "closedAt"})
- * @ApiFilter(ExistsFilter::class, properties={"closedAt", "deadline"})
- * @ApiFilter(PatchedOrderFilter::class, properties={"createdAt": "ASC", "deadline"={"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "ASC"}, "closedAt": "ASC"})
+ * @ApiFilter(DateFilter::class, properties={"createdAt", "deadline", "closedAt",})
+ * @ApiFilter(ExistsFilter::class, properties={"closedAt"})
+ * @ApiFilter(PatchedOrderFilter::class, properties={"deadline"={"nulls_comparison": PatchedOrderFilter::NULLS_ALWAYS_LAST, "default_direction": "DESC"}, "createdAt": "ASC", "closedAt": "ASC"})
  */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
