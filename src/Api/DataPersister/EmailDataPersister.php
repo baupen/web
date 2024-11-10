@@ -97,7 +97,8 @@ class EmailDataPersister implements ContextAwareDataPersisterInterface
             $issueEvent->setConstructionSite($craftsman->getConstructionSite());
             $issueEvent->setRoot($craftsman->getId());
             $issueEvent->setCreatedBy($constructionManager->getId());
-            $issueEvent->setCreatedAt(new \DateTime());
+            $issueEvent->setLastChangedBy($constructionManager->getId());
+            $issueEvent->setTimestamp(new \DateTime());
             $issueEvent->setType(IssueEventTypes::Email);
 
             $payload = [

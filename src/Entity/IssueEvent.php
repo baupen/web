@@ -22,6 +22,7 @@ use App\Entity\Base\BaseEntity;
 use App\Entity\Interfaces\ConstructionSiteOwnedEntityInterface;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\SoftDeleteTrait;
+use App\Entity\Traits\TimeTrait;
 use App\Enum\IssueEventTypes;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -33,13 +34,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *      collectionOperations={
  *       "get",
- *       "post" = {"security_post_denormalize" = "is_granted('ISSUE_EVENT_MODIFY', object)", "denormalization_context"={"groups"={"issue-event-create"}}},
+ *       "post" = {"security_post_denormalize" = "is_granted('ISSUE_EVENT_MODIFY', object)", "denormalization_context"={"groups"={"issue-event-create", "issue-event-write"}}},
  *      },
  *      itemOperations={
  *       "get" = {"security" = "is_granted('ISSUE_EVENT_VIEW', object)"},
+ *       "patch" = {"security" = "is_granted('ISSUE_EVENT_MODIFY', object)"},
  *       "delete" = {"security" = "is_granted('ISSUE_EVENT_MODIFY', object)"},
  *      },
- *      denormalizationContext={"groups"={"issue-event-create"}},
+ *      denormalizationContext={"groups"={"issue-event-write"}},
  *      normalizationContext={"groups"={"issue-event-read"}, "skip_null_values"=false}
  *  )
  *
@@ -54,6 +56,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterface
 {
     use IdTrait;
+    use TimeTrait;
     use SoftDeleteTrait;
 
     public const ISSUE_STATE_CREATED_TEXT = 'CREATED';
@@ -78,22 +81,24 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, enumType: IssueEventTypes::class)]
     private IssueEventTypes $type = IssueEventTypes::Text;
 
-    #[Groups(['issue-event-read', 'issue-event-create'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
-    private ?string $payload = null;
-
-    /**
-     * @var \DateTime|null
-     */
-    #[Assert\NotBlank]
-    #[Groups(['issue-event-read', 'issue-event-create'])]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
-
     #[Assert\NotBlank]
     #[Groups(['issue-event-read', 'issue-event-create'])]
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING)]
     private ?string $createdBy = null;
+
+    #[Assert\NotBlank]
+    #[Groups(['issue-event-read', 'issue-event-write'])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING)]
+    private ?string $lastChangedBy = null;
+
+    #[Groups(['issue-event-read', 'issue-event-write'])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true)]
+    private ?string $payload = null;
+
+    #[Assert\NotBlank]
+    #[Groups(['issue-event-read', 'issue-event-write'])]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $timestamp = null;
 
     #[ORM\ManyToOne(targetEntity: IssueEventFile::class, cascade: ['persist', 'remove'])]
     private ?IssueEventFile $file = null;
@@ -109,8 +114,9 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
             $entry = new self();
             $entry->setConstructionSite($current->getConstructionSite());
             $entry->setRoot($current->getId());
+            $entry->setTimestamp(new \DateTime());
             $entry->setCreatedBy($authority);
-            $entry->setCreatedAt(new \DateTime());
+            $entry->setLastChangedBy($authority);
 
             return $entry;
         };
@@ -136,7 +142,9 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
             $entry = $createEntry();
             $entry->setPayload(self::ISSUE_STATE_RESOLVED_TEXT);
             $entry->setType($current->getResolvedAt() ? IssueEventTypes::StatusSet : IssueEventTypes::StatusUnset);
-            $entry->setCreatedBy($current->getResolvedBy() ? $current->getResolvedBy()->getId() : $authority);
+            $createdBy = $current->getResolvedBy() ? $current->getResolvedBy()->getId() : $authority;
+            $entry->setCreatedBy($createdBy);
+            $entry->setLastChangedBy($createdBy);
 
             $entries[] = $entry;
         }
@@ -183,16 +191,6 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
         $this->type = $type;
     }
 
-    public function getPayload(): ?string
-    {
-        return $this->payload;
-    }
-
-    public function setPayload(?string $payload): void
-    {
-        $this->payload = $payload;
-    }
-
     public function getCreatedBy(): ?string
     {
         return $this->createdBy;
@@ -203,14 +201,34 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
         $this->createdBy = $createdBy;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getLastChangedBy(): ?string
     {
-        return $this->createdAt;
+        return $this->lastChangedBy;
     }
 
-    public function setCreatedAt(?\DateTime $createdAt): void
+    public function setLastChangedBy(?string $lastChangedBy): void
     {
-        $this->createdAt = $createdAt;
+        $this->lastChangedBy = $lastChangedBy;
+    }
+
+    public function getPayload(): ?string
+    {
+        return $this->payload;
+    }
+
+    public function setPayload(?string $payload): void
+    {
+        $this->payload = $payload;
+    }
+
+    public function getTimestamp(): ?\DateTimeInterface
+    {
+        return $this->timestamp;
+    }
+
+    public function setTimestamp(?\DateTimeInterface $timestamp): void
+    {
+        $this->timestamp = $timestamp;
     }
 
     public function getFile(): ?IssueEventFile
@@ -232,5 +250,17 @@ class IssueEvent extends BaseEntity implements ConstructionSiteOwnedEntityInterf
     public function getIsDeleted(): bool
     {
         return null !== $this->deletedAt;
+    }
+
+    #[Groups(['issue-event-read'])]
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    #[Groups(['issue-event-read'])]
+    public function getLastChangedAt(): \DateTimeInterface
+    {
+        return $this->lastChangedAt;
     }
 }
